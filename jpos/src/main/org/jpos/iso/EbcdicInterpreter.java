@@ -60,8 +60,7 @@ public class EbcdicInterpreter implements Interpreter
 	 */
     public void interpret(String data, byte[] b, int offset)
     {
-        byte[] raw = ISOUtil.asciiToEbcdic(data);
-        System.arraycopy(raw, 0, b, offset, raw.length);
+        ISOUtil.asciiToEbcdic(data, b, offset);
     }
 
     /**

@@ -48,8 +48,6 @@
  */
 
 package org.jpos.iso;
-import java.io.IOException;
-import java.io.InputStream;
 
 /**
  * EBCDIC version of IFB_LLNUM
@@ -62,62 +60,16 @@ import java.io.InputStream;
  * @see ISOFieldPackager
  * @see ISOComponent
  */
-public class IFE_LLNUM extends ISOFieldPackager 
+public class IFE_LLNUM extends ISOStringFieldPackager 
 {
-    public IFE_LLNUM () {
-        super();
+    public IFE_LLNUM() {
+        super(NullPadder.INSTANCE, EbcdicInterpreter.INSTANCE, EbcdicPrefixer.LL);
     }
     /**
-    * @param len - field len
-    * @param description symbolic descrption
-    */
-    public IFE_LLNUM (int len, String description) {
-        super (len, description);
-    }
-    /**
-    * @param c - a component
-    * @return packed component
-    * @exception ISOException
-    */
-    public byte[] pack (ISOComponent c) throws ISOException {
-        int len;
-        String s = (String) c.getValue();
-    
-        if ((len=s.length()) > getLength() || len>99)   // paranoia settings
-            throw new ISOException (
-                "invalid len "+len +" packing LLNUM field "+(Integer) c.getKey()
-            );
-
-        byte[] ebcdic = ISOUtil.asciiToEbcdic( s );
-        byte[] b   = new byte[ebcdic.length + 2];
-        byte[] l   = ISOUtil.asciiToEbcdic(
-            ISOUtil.zeropad (Integer.toString (len), 2)
-        );
-        System.arraycopy(l, 0, b, 0, l.length);
-        System.arraycopy(ebcdic, 0, b, 2, ebcdic.length);
-        return b;
-    }
-    /**
-    * @param c - the Component to unpack
-    * @param b - binary image
-    * @param offset - starting offset within the binary image
-    * @return consumed bytes
-    * @exception ISOException
-    */
-    public int unpack (ISOComponent c, byte[] b, int offset)
-        throws ISOException
-    {
-        int len = Integer.parseInt (ISOUtil.ebcdicToAscii(b, offset, 2));
-        c.setValue (ISOUtil.ebcdicToAscii(b, offset + 2, len));
-        return 2 + len;
-    }
-    public void unpack (ISOComponent c, InputStream in) 
-        throws IOException, ISOException
-    {
-        int len = Integer.parseInt (ISOUtil.ebcdicToAscii(readBytes (in, 2)));
-        c.setValue(ISOUtil.ebcdicToAscii(readBytes (in, len)));
-    }
-    public int getMaxPackedLength() {
-        return getLength()+2;
+     * @param len - field len
+     * @param description symbolic descrption
+     */
+    public IFE_LLNUM(int len, String description) {
+        super(len, description, NullPadder.INSTANCE, EbcdicInterpreter.INSTANCE, EbcdicPrefixer.LL);
     }
 }

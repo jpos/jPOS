@@ -49,63 +49,22 @@
 
 package org.jpos.iso;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 /**
- * ISOFieldPackager ASCII variable len CHAR
+ * ISOFieldPackager ASCII variable len CHAR.
+ * No padding, ASCII Interpreter, Single digit ASCII length Prefixer.
  * @author Kris Leite, IMC of Seattle, WA  USA
+ * @author jonathan.oconnor@xcom.de
  */
-public class IFA_LCHAR extends ISOFieldPackager {
+public class IFA_LCHAR extends ISOStringFieldPackager {
     public IFA_LCHAR() {
-        super();
+        super(NullPadder.INSTANCE, AsciiInterpreter.INSTANCE, AsciiPrefixer.L);
     }
     /**
      * @param len - field len
      * @param description symbolic descrption
      */
     public IFA_LCHAR(int len, String description) {
-        super(len, description);
-    }
-    /**
-     * @param c - a component
-     * @return packed component
-     * @exception ISOException
-     */
-    public byte[] pack (ISOComponent c) throws ISOException {
-        int len;
-        String s = (String) c.getValue();
-    
-        if ((len=s.length()) > getLength() || len>9)   // paranoia settings
-            throw new ISOException (
-                "invalid len "+len +" packing LCHAR field "+(Integer) c.getKey()
-            );
-
-        return (ISOUtil.zeropad(Integer.toString(len), 1) + s).getBytes();
-    }
-
-    /**
-     * @param c - the Component to unpack
-     * @param b - binary image
-     * @param offset - starting offset within the binary image
-     * @return consumed bytes
-     * @exception ISOException
-     */
-    public int unpack (ISOComponent c, byte[] b, int offset)
-        throws ISOException
-    {
-        int len = Integer.parseInt(new String(b, offset, 1));
-        c.setValue (new String (b, offset+1, len));
-        return len + 1;
-    }
-    public int getMaxPackedLength() {
-        return getLength() + 1;
-    }
-    public void unpack (ISOComponent c, InputStream in) 
-        throws IOException, ISOException
-    {
-        int len = Integer.parseInt(new String(readBytes (in, 1)));
-        unpack (c, readBytes (in, len), 0);
+        super(len, description, NullPadder.INSTANCE, AsciiInterpreter.INSTANCE, AsciiPrefixer.L);
     }
 }
 

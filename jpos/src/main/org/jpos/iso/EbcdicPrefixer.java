@@ -65,8 +65,12 @@ public class EbcdicPrefixer implements Prefixer
      */
     public static final EbcdicPrefixer LLLL = new EbcdicPrefixer(4);
 
-    private static final Padder PADDER = LeftPadder.ZERO_PADDER;
-    private static final Interpreter INTERPRETER = EbcdicInterpreter.INSTANCE;
+    /** Used in the encoding algorithm */
+    private static int[] POWERS_OF_10 = {1, 1, 10, 100, 1000, 10000, 100000, 1000000, 10000000}; 
+
+    private static byte[] EBCDIC_DIGITS = {(byte)0xF0, (byte)0xF1, (byte)0xF2,
+        (byte)0xF3, (byte)0xF4, (byte)0xF5, (byte)0xF6, (byte)0xF7, (byte)0xF8, 
+        (byte)0xF9}; 
 
     /** The number of digits allowed to express the length */
     private int nDigits;
@@ -81,14 +85,13 @@ public class EbcdicPrefixer implements Prefixer
 	 * 
 	 * @see xcom.traxbahn.util.messages.iso.Prefixer#encodeLength(int, byte[])
 	 */
-    public void encodeLength(int length, byte[] b) throws ISOException
+    public void encodeLength(int length, byte[] b)
     {
-        String sLen = Integer.toString(length);
-        if (sLen.length() > nDigits)
+        for (int i = nDigits, j = 0; i > 0; i--, j++)
         {
-            throw new ISOException("Length " + sLen + " too long for length field size:" + nDigits);
+            b[j] = EBCDIC_DIGITS[length / POWERS_OF_10[i]];
+            length %= POWERS_OF_10[i];
         }
-        INTERPRETER.interpret(PADDER.pad(sLen, nDigits), b, 0);
     }
 
     /*
@@ -98,10 +101,12 @@ public class EbcdicPrefixer implements Prefixer
 	 */
     public int decodeLength(byte[] b, int offset)
     {
-        // Note it is safe to leave out the unpadding step, because the
-		// parseInt can cope
-        // with left padded zeros.
-        return Integer.parseInt(INTERPRETER.uninterpret(b, offset, nDigits));
+        int len = 0;
+        for (int i = 0; i < nDigits; i++)
+        {
+            len = len * 10 + (b[offset + i] & 0x0F);
+        }
+        return len;
     }
 
     /*
@@ -109,7 +114,7 @@ public class EbcdicPrefixer implements Prefixer
 	 * 
 	 * @see xcom.traxbahn.util.messages.iso.Prefixer#getLengthInBytes()
 	 */
-    public int getLengthInBytes()
+    public int getPackedLength()
     {
         return nDigits;
     }

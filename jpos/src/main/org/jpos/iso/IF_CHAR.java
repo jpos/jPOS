@@ -58,10 +58,10 @@ package org.jpos.iso;
  * @version $Id$
  * @see ISOComponent
  */
-public class IF_CHAR extends ISOBaseFieldPackager {
+public class IF_CHAR extends ISOStringFieldPackager {
     /** Used for the GenericPackager. */
     public IF_CHAR() {
-        super(0, null, DT_STRING, LiteralInterpreter.INSTANCE, RightTPadder.SPACE_PADDER, NullPrefixer.INSTANCE);
+        super(0, null, RightTPadder.SPACE_PADDER, LiteralInterpreter.INSTANCE, NullPrefixer.INSTANCE);
     }
 
     /**
@@ -69,6 +69,6 @@ public class IF_CHAR extends ISOBaseFieldPackager {
      * @param description symbolic descrption
      */
     public IF_CHAR(int len, String description) {
-        super(len, description, DT_STRING, LiteralInterpreter.INSTANCE, RightTPadder.SPACE_PADDER, NullPrefixer.INSTANCE);
+        super(len, description, RightTPadder.SPACE_PADDER, LiteralInterpreter.INSTANCE, NullPrefixer.INSTANCE);
     }
 }

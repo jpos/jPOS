@@ -50,21 +50,24 @@
 package org.jpos.iso;
 
 /**
- * ISOFieldPackager ASCII AMOUNT
+ * ISOFieldPackager ASCII AMOUNT.
+ * This packager pads the amount to the left with zeros, prepends the sign amount, and
+ * interprets the chars with an ASCII interpreter. It has no length prefix.
  *
+ * @author jonathan.oconnor@xcom.de
  * @author apr@cs.com.uy
  * @version $Id$
  * @see ISOFieldPackager
  */
-public class IFA_AMOUNT extends ISOBaseFieldPackager {
+public class IFA_AMOUNT extends ISOAmountFieldPackager {
     public IFA_AMOUNT() {
-        super(0, null, DT_AMOUNT, AsciiInterpreter.INSTANCE, RightPadder.SPACE_PADDER, NullPrefixer.INSTANCE);
+        super(0, null, LeftPadder.ZERO_PADDER, AsciiInterpreter.INSTANCE, NullPrefixer.INSTANCE);
     }
     /**
      * @param len - field len
      * @param description symbolic descrption
      */
     public IFA_AMOUNT(int len, String description) {
-        super(len, description, DT_AMOUNT, AsciiInterpreter.INSTANCE, RightPadder.SPACE_PADDER, NullPrefixer.INSTANCE);
+        super(len, description, LeftPadder.ZERO_PADDER, AsciiInterpreter.INSTANCE, NullPrefixer.INSTANCE);
     }
 }

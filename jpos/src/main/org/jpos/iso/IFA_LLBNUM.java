@@ -61,6 +61,18 @@ import java.io.IOException;
  * @see ISOComponent
  */
 public class IFA_LLBNUM extends ISOFieldPackager {
+//    public IFA_LLBNUM () {
+//        super(NullPadder.INSTANCE, BCDInterpreter.LEFT_PADDED, AsciiPrefixer.LL);
+//    }
+//    /**
+//     * @param len - field len
+//     * @param description symbolic descrption
+//     */
+//    public  IFA_LLBNUM (int len, String description, boolean pad) {
+//        super(len, description, NullPadder.INSTANCE,
+//                pad ? BCDInterpreter.LEFT_PADDED : BCDInterpreter.RIGHT_PADDED,
+//                    AsciiPrefixer.LL);
+//    }
     public IFA_LLBNUM () {
         super();
     }

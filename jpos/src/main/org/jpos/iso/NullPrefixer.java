@@ -77,7 +77,7 @@ public class NullPrefixer implements Prefixer
 	 * 
 	 * @see xcom.traxbahn.util.messages.iso.Prefixer#getLengthInBytes()
 	 */
-    public int getLengthInBytes()
+    public int getPackedLength()
     {
         return 0;
     }

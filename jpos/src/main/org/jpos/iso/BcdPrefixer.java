@@ -39,50 +39,49 @@
 
 package org.jpos.iso;
 
+import org.jpos.iso.ISOException;
+
 /**
- * AsciiPrefixer constructs a prefix for ASCII messages.
+ * BcdPrefixer constructs a prefix storing the length in BCD.
  * 
  * @author joconnor
  * @version $Revision$ $Date$
  */
-public class AsciiPrefixer implements Prefixer
+public class BcdPrefixer implements Prefixer
 {
     /**
      * A length prefixer for upto 9 chars. The length is encoded with 1 ASCII
      * char representing 1 decimal digit.
      */
-    public static final AsciiPrefixer L = new AsciiPrefixer(1);
+    public static final BcdPrefixer L = new BcdPrefixer(1);
     /**
 	 * A length prefixer for upto 99 chars. The length is encoded with 2 ASCII
 	 * chars representing 2 decimal digits.
 	 */
-    public static final AsciiPrefixer LL = new AsciiPrefixer(2);
+    public static final BcdPrefixer LL = new BcdPrefixer(2);
     /**
 	 * A length prefixer for upto 999 chars. The length is encoded with 3 ASCII
 	 * chars representing 3 decimal digits.
 	 */
-    public static final AsciiPrefixer LLL = new AsciiPrefixer(3);
+    public static final BcdPrefixer LLL = new BcdPrefixer(3);
     /**
 	 * A length prefixer for upto 9999 chars. The length is encoded with 4
 	 * ASCII chars representing 4 decimal digits.
 	 */
-    public static final AsciiPrefixer LLLL = new AsciiPrefixer(4);
+    public static final BcdPrefixer LLLL = new BcdPrefixer(4);
     /**
      * A length prefixer for upto 99999 chars. The length is encoded with 5
      * ASCII chars representing 5 decimal digits.
      */
-    public static final AsciiPrefixer LLLLL = new AsciiPrefixer(5);
+    public static final BcdPrefixer LLLLL = new BcdPrefixer(5);
 
-    //private static final LeftPadder PADDER = LeftPadder.ZERO_PADDER;
-    //private static final AsciiInterpreter INTERPRETER = AsciiInterpreter.INSTANCE;
+    private static final Padder PADDER = LeftPadder.ZERO_PADDER;
+    private static final Interpreter INTERPRETER = BCDInterpreter.LEFT_PADDED;
 
     /** The number of digits allowed to express the length */
     private int nDigits;
-    
-    /** Used in the encoding algorithm */
-    private static int[] POWERS_OF_10 = {1, 1, 10, 100, 1000, 10000, 100000, 1000000, 10000000}; 
 
-    public AsciiPrefixer(int nDigits)
+    public BcdPrefixer(int nDigits)
     {
         this.nDigits = nDigits;
     }
@@ -92,13 +91,14 @@ public class AsciiPrefixer implements Prefixer
 	 * 
 	 * @see xcom.traxbahn.util.messages.iso.Prefixer#encodeLength(int, byte[])
 	 */
-    public void encodeLength(int length, byte[] b)
+    public void encodeLength(int length, byte[] b) throws ISOException
     {
-        for (int i = nDigits, j = 0; i > 0; i--, j++)
+        String sLen = Integer.toString(length);
+        if (sLen.length() > nDigits)
         {
-            b[j] = (byte)(length / POWERS_OF_10[i] + '0');
-            length %= POWERS_OF_10[i];
+            throw new ISOException("Length " + sLen + " too long for length field size:" + nDigits);
         }
+        INTERPRETER.interpret(PADDER.pad(sLen, (nDigits + 1) & ~1), b, 0);
     }
 
     /*
@@ -109,9 +109,9 @@ public class AsciiPrefixer implements Prefixer
     public int decodeLength(byte[] b, int offset)
     {
         int len = 0;
-        for (int i = 0; i < nDigits; i++)
+        for (int i = 0; i < (nDigits + 1) / 2; i++)
         {
-            len = len * 10 + b[offset + i] - (byte)'0';
+            len = 100 * len + ((b[offset + i] & 0xF0) >> 4) * 10 + ((b[offset + i] & 0x0F));
         }
         return len;
     }
@@ -123,6 +123,6 @@ public class AsciiPrefixer implements Prefixer
 	 */
     public int getPackedLength()
     {
-        return nDigits;
+        return (nDigits + 1) / 2;
     }
 }

@@ -74,5 +74,5 @@ public interface Prefixer
     /**
 	 * Returns the number of bytes taken up by the length encoding.
 	 */
-    int getLengthInBytes();
+    int getPackedLength();
 }

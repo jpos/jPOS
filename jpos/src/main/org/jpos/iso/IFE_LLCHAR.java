@@ -48,8 +48,6 @@
  */
 
 package org.jpos.iso;
-import java.io.IOException;
-import java.io.InputStream;
 
 /**
  * EBCDIC version of IF_LLCHAR
@@ -60,61 +58,16 @@ import java.io.InputStream;
  * @see ISOFieldPackager
  * @see ISOComponent
  */
-public class IFE_LLCHAR extends ISOFieldPackager 
+public class IFE_LLCHAR extends ISOStringFieldPackager 
 {
-    public IFE_LLCHAR()
-    {
-        super();
+    public IFE_LLCHAR() {
+        super(NullPadder.INSTANCE, EbcdicInterpreter.INSTANCE, EbcdicPrefixer.LL);
     }
     /**
-    * @param len - field len
-    * @param description symbolic descrption
-    */
-    public IFE_LLCHAR(int len, String description) 
-    {
-        super(len, description);
-    }
-    /**
-    * @param c - a component
-    * @return packed component
-    * @exception ISOException
-    */
-    public byte[] pack (ISOComponent c) throws ISOException 
-    {
-        int len;
-        String s = (String) c.getValue();
-        if ((len=s.length()) > getLength() || len>99)   // paranoia settings
-            throw new ISOException (
-                "invalid len "+len +" packing LLECHAR field "+(Integer) c.getKey());
-
-        String l = ISOUtil.zeropad (Integer.toString(len), 2);
-
-        return ISOUtil.asciiToEbcdic(l + s);
-    }
-    /**
-    * @param c - the Component to unpack
-    * @param b - binary image
-    * @param offset - starting offset within the binary image
-    * @return consumed bytes
-    * @exception ISOException
-    */
-    public int unpack (ISOComponent c, byte[] b, int offset)
-        throws ISOException
-    {
-        int len = Integer.parseInt (ISOUtil.ebcdicToAscii(b, offset, 2));
-        c.setValue(ISOUtil.ebcdicToAscii(b, offset+2, len));
-        return len+2;
-    }
-    public int getMaxPackedLength() 
-    {
-        return getLength()+2;
-    }
-
-    public void unpack (ISOComponent c, InputStream in) 
-        throws IOException, ISOException
-    {
-        int len = Integer.parseInt (ISOUtil.ebcdicToAscii(readBytes (in, 2)));
-        c.setValue(ISOUtil.ebcdicToAscii(readBytes (in, len)));
+     * @param len - field len
+     * @param description symbolic descrption
+     */
+    public IFE_LLCHAR(int len, String description) {
+        super(len, description, NullPadder.INSTANCE, EbcdicInterpreter.INSTANCE, EbcdicPrefixer.LL);
     }
 }
-

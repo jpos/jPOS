@@ -50,21 +50,55 @@
 package org.jpos.iso;
 
 /**
- * ISOFieldPackager Binary LLLCHAR
- *
- * @author apr@cs.com.uy
- * @version $Id$
- * @see ISOComponent
+ * Implements BCD Interpreter. Numeric Strings (consisting of chars '0'..'9' are converted
+ * to and from BCD bytes. Thus, "1234" is converted into 2 bytes: 0x12, 0x34.
+ * 
+ * @author joconnor
+ * @version $Revision$ $Date$
  */
-public class IFB_LLLCHAR extends ISOStringFieldPackager {
-    public IFB_LLLCHAR() {
-        super(NullPadder.INSTANCE, AsciiInterpreter.INSTANCE, BcdPrefixer.LLL);
+public class BCDInterpreter implements Interpreter
+{
+    /** This BCDInterpreter sometimes adds a 0-nibble to the left. */
+    public static final BCDInterpreter LEFT_PADDED = new BCDInterpreter(true);
+    /** This BCDInterpreter sometimes adds a 0-nibble to the right. */
+    public static final BCDInterpreter RIGHT_PADDED = new BCDInterpreter(false);
+
+    private boolean leftPadded;
+
+    /** Kept private. Only two instances are possible. */
+    private BCDInterpreter(boolean leftPadded) {
+        this.leftPadded = leftPadded;
     }
+
     /**
-     * @param len - field len
-     * @param description symbolic descrption
-     */
-    public IFB_LLLCHAR(int len, String description) {
-        super(len, description, NullPadder.INSTANCE, AsciiInterpreter.INSTANCE, BcdPrefixer.LLL);
+	 * (non-Javadoc)
+	 * 
+	 * @see xcom.traxbahn.util.messages.iso.Interpreter#interpret(java.lang.String)
+	 */
+    public void interpret(String data, byte[] b, int offset)
+    {
+        byte[] packed = ISOUtil.str2bcd (data, leftPadded);
+        System.arraycopy(packed, 0, b, offset, packed.length);
+    }
+
+    /**
+	 * (non-Javadoc)
+	 * 
+	 * @see xcom.traxbahn.util.messages.iso.Interpreter#uninterpret(byte[])
+	 */
+    public String uninterpret(byte[] rawData, int offset, int length)
+    {
+        return ISOUtil.bcd2str (rawData, offset, length, leftPadded);
+    }
+
+    /**
+	 * Each numeric digit is packed into a nibble, so 2 digits per byte, plus the
+     * possibility of padding.
+	 * 
+	 * @see xcom.traxbahn.util.messages.iso.Interpreter#getPackedLength(int)
+	 */
+    public int getPackedLength(int nDataUnits)
+    {
+        return (nDataUnits + 1) / 2;
     }
 }

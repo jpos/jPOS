@@ -70,16 +70,8 @@ public class AsciiInterpreter implements Interpreter
 	 */
     public void interpret(String data, byte[] b, int offset)
     {
-        byte[] raw;
-        try
-        {
-            raw = data.getBytes("US-ASCII");
-        } catch (UnsupportedEncodingException e)
-        {
-            System.out.println("US-ASCII not recognised as char set");
-            raw = data.getBytes();
-        }
-        System.arraycopy(raw, 0, b, offset, raw.length);
+        // The getBytes call is deprecated but I still want to use this.
+        data.getBytes(0, data.length(), b, offset);
     }
 
     /**
@@ -89,14 +81,7 @@ public class AsciiInterpreter implements Interpreter
 	 */
     public String uninterpret(byte[] rawData, int offset, int length)
     {
-        try
-        {
-            return new String(rawData, offset, length, "US-ASCII");
-        } catch (UnsupportedEncodingException e)
-        {
-            System.out.println("US-ASCII not recognised as char set");
-            return new String(rawData, offset, length);
-        }
+        return new String(rawData, offset, length);
     }
 
     /**
