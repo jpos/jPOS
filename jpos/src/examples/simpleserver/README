@@ -54,3 +54,10 @@ ISORequestListener won't send them. This is not true in a real
 life application, ISORequestListener should handle requests
 and provide responses.
 
+ISOServer
+---------
+Although 'simpleserver' can be used as an example to
+build complex interchanges you may want to have a look at
+ISOServer component and 'isoserver' example for a better
+solution.
+

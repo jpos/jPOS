@@ -30,6 +30,7 @@ We recommend that you read them in the following order:
    - simplemux: runs between simpleserver and simpleclient
      multiplexing messages
 
+
 Misc examples:
    
    We use examples source tree to create simple applications used
@@ -38,5 +39,6 @@ This is the case of:
 
    - xmlpacking (pack/unpack to/from XML file)
    - channelfilter (test ISOChannel's filters [see ISOFilter])
+   - isoserver: similar to simpleserver, uses ISOServer component
 
 
