@@ -1,12 +1,18 @@
 $Id$
 
 In order to build 'ext' module you will have to install here
-the following files:
+(or anywhere within your CLASSPATH) the following files:
 
   - activation.jar and mail.jar (javax.mail available from sun)
     used by OperatorLogListener
 
   - sun-util.jar (available as part of Jini 1.1 distribution)
-    Used by ReliableSequencer
+    used by ReliableSequencer
 
+  - CommAPI (comm.jar) file and a CommAPI provider such as RXTX
+    (http://www.rxtx.com) for Linux or Sun's CommAPI implementation
+    for Windows.
+    used by V24, LeasedLineModem, SimpleDialupModem.java and
+    VISA1Link at the moment.
+ 
 
