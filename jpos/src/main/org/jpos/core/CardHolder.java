@@ -47,52 +47,11 @@
  * information please see <http://www.jpos.org/>.
  */
 
-/*
- * $Log$
- * Revision 1.12  2000/11/02 12:09:18  apr
- * Added license to every source file
- *
- * Revision 1.11  2000/10/23 10:43:17  apr
- * Added seemsManualEntry() method
- *
- * Revision 1.10  2000/07/22 20:29:17  apr
- * Added equals method
- *
- * Revision 1.9  2000/06/20 11:05:17  apr
- * Added set/get Trailler
- *
- * Revision 1.8  2000/04/16 23:53:06  apr
- * LogProducer renamed to LogSource
- *
- * Revision 1.7  2000/03/02 12:31:01  apr
- * Get rid of javadoc warnings - done
- *
- * Revision 1.6  2000/03/01 14:44:38  apr
- * Changed package name to org.jpos
- *
- * Revision 1.5  2000/01/11 01:24:40  apr
- * moved non ISO-8583 related classes from jpos.iso to jpos.util package
- * (AntiHog LeasedLineModem LogEvent LogListener LogSource
- *  Loggeable Logger Modem RotateLogListener SimpleAntiHog SimpleDialupModem
- *  SimpleLogListener SimpleLogSource SystemMonitor V24)
- *
- * Revision 1.4  1999/12/11 18:06:45  apr
- * Added getServiceCode() method
- *
- * Revision 1.3  1999/11/26 12:16:46  apr
- * CVS devel snapshot
- *
- * Revision 1.2  1999/09/26 22:31:57  apr
- * CVS sync
- *
- * Revision 1.1  1999/09/26 19:54:05  apr
- * jPOS core 0.0.1 - setting up artifacts
- *
- */
-
 package org.jpos.core;
 import java.io.*;
+import org.jpos.iso.ISOMsg;
 import org.jpos.iso.ISODate;
+import org.jpos.iso.ISOException;
 import org.jpos.util.Loggeable;
 
 /**
@@ -157,6 +116,30 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
 	super();
 	setPAN (pan);
 	setEXP (exp);
+    }
+
+    /**
+     * Construct a CardHolder based on content received on
+     * field 35 (track2) or field 2 (PAN) + field 14 (EXP)
+     * @param m an ISOMsg
+     * @throws InvalidCardException
+     */
+    public CardHolder (ISOMsg m)
+        throws InvalidCardException
+    {
+        super();
+        try {
+            if (m.hasField(35))
+                parseTrack2 ((String) m.getValue(35));
+            else if (m.hasField(2) && m.hasField (14)) {
+                setPAN ((String) m.getValue(2));
+                setEXP ((String) m.getValue(14));
+            } else {
+                throw new InvalidCardException("required fields not present");
+            }
+        } catch (ISOException e) {
+            throw new InvalidCardException();
+        }
     }
 
     /**
