@@ -264,20 +264,19 @@ public class ChannelAdaptor
         }
     }
     protected void checkConnection () {
-        try {
-            while (running() && !channel.isConnected ()) {
-                while (sp.inp (ready) != null)
-                    ;
+        while (running() && !channel.isConnected ()) {
+            while (sp.inp (ready) != null)
+                ;
+            try {
                 channel.connect ();
-                if (!channel.isConnected ())
-                    ISOUtil.sleep (delay);
+            } catch (IOException e) {
+                getLog().warn ("check-connection", e.getMessage ());
             }
-            if (running()) 
-                sp.out (ready, new Object ());
-        } catch (IOException e) {
-            getLog().warn ("check-connection", e.getMessage ());
-            ISOUtil.sleep (delay);
+            if (!channel.isConnected ())
+                ISOUtil.sleep (delay);
         }
+        if (running()) 
+            sp.out (ready, new Object ());
     }
     protected void disconnect () {
         try {
