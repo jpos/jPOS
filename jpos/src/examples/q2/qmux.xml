@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<mux class="org.jpos.q2.qbean.QMUX" logger="Q2">
- <in>receive</in>
- <out>send</out>
- <unhandled>unhandled</unhandled>
- <request-listener class="bouncer.Bouncer" logger="Q2" realm="bouncer" />
-</mux>
-

@@ -1,6 +1,0 @@
-<JMSSpaceConnector1 class="org.jpos.jms.SpaceConnector" logger="Q2" name="JMSSpaceConnector1">
-    <attr name="space">default</attr>
-    <attr name="fromKey">SpaceConIn</attr>
-    <attr name="toKey">SpaceConOut</attr>
-    <!--attr name="byteBufSize" type="java.lang.Integer">200</attr-->
-</JMSSpaceConnector1>

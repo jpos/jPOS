@@ -1,6 +1,0 @@
-<sequencer name="default-sequencer"
-           class="org.jpos.core.ReliableSequencer"
-           logger="Q2" realm="default-sequencer" >
- <property name="logdir" value="log/sequencer" />
-</sequencer>
-

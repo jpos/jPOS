@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<rmi-adaptor class="org.jpos.q2.qbean.RMIAdaptor"
-                        name="service=RMIAdaptor" >
-   <attr name="jndiName">jrmp</attr>
-</rmi-adaptor>
