@@ -1,0 +1,5 @@
+#!/bin/sh
+cd `dirname $0`/..
+CLASSPATH=build/classes:$CLASSPATH
+CLASSPATH=`echo lib/*.jar ext/*.jar | tr ' ' ':'`:$JAVA_HOME/lib/tools.jar:$CLASSPATH
+exec java -cp $CLASSPATH bsh.Interpreter $*
