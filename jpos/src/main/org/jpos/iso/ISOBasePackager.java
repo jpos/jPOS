@@ -10,6 +10,15 @@ import java.util.*;
  * @see ISO87APackager
  * @see ISO87BPackager
  */
+
+
+/*
+ * $Log$
+ * Revision 1.13  1999/08/06 13:55:46  apr
+ * Added support for Bitmap-less ISOMsgs (usually nested messages)
+ *
+ */
+
 public abstract class ISOBasePackager implements ISOPackager {
     protected ISOFieldPackager[] fld;
 
@@ -36,16 +45,20 @@ public abstract class ISOBasePackager implements ISOPackager {
         len += b.length;
         v.addElement (b);
 
-        // BITMAP (-1 in HashTable)
-        c = (ISOComponent) fields.get (new Integer (-1));
-        b = getBitMapfieldPackager().pack(c);
-        len += b.length;
-        v.addElement (b);
+        boolean hasBitMap = (fld[1] instanceof ISOBitMapPackager);
+
+        if (hasBitMap) {
+            // BITMAP (-1 in HashTable)
+            c = (ISOComponent) fields.get (new Integer (-1));
+            b = getBitMapfieldPackager().pack(c);
+            len += b.length;
+            v.addElement (b);
+        }
 
         // if Field 1 is a BitMap then we are packing an
         // ISO-8583 message so next field is fld#2.
         // else we are packing an ANSI X9.2 message, first field is 1
-        for (int i=(fld[1] instanceof ISOBitMapPackager) ? 2 : 1;
+        for (int i=hasBitMap ? 2 : 1;
             i<=m.getMaxField(); i++)
         {
             if ((c = (ISOComponent) fields.get (new Integer (i))) != null) {
@@ -78,27 +91,24 @@ public abstract class ISOBasePackager implements ISOPackager {
         ISOField mti     = new ISOField (0);
         ISOBitMap bitmap = new ISOBitMap (-1);
         consumed  = fld[0].unpack(mti, b, 0);
-        consumed += getBitMapfieldPackager().unpack(bitmap, b, consumed);
-        BitSet bmap = (BitSet) bitmap.getValue();
         m.set (mti);
-        m.set (bitmap);
 
-        // if Field 1 is a BitMap then we are packing an
-        // ISO-8583 message so next field is fld#2.
-        // else we are packing an ANSI X9.2 message, first field is 1
-        for (int i=(fld[1] instanceof ISOBitMapPackager) ? 2 : 1;
-            i<=bmap.size(); i++)
-        {
-            if (bmap.get(i)) {
+        if (fld[1] instanceof ISOBitMapPackager) {
+            consumed += getBitMapfieldPackager().unpack(bitmap, b, consumed);
+            BitSet bmap = (BitSet) bitmap.getValue();
+            m.set (bitmap);
+            for (int i=2; i<bmap.size(); i++) {
+                if (bmap.get(i)) {
+                    ISOComponent c = fld[i].createComponent(i);
+                    consumed += fld[i].unpack (c, b, consumed);
+                    m.set(c);
+                }
+            }
+        }
+        else {
+            for (int i=1; i<fld.length; i++) {
                 ISOComponent c = fld[i].createComponent(i);
                 consumed += fld[i].unpack (c, b, consumed);
-                if (c instanceof ISOField) {
-                    // System.out.println (i + ":" + consumed + ":"+(String)
-                    //    c.getValue() + ":");
-                }
-                else {
-                    // System.out.println (i + ":" + consumed + "<BINARY>");
-                }
                 m.set(c);
             }
         }
