@@ -54,6 +54,7 @@ Main targets:
     <mkdir dir="${htdocs}"/>
     <mkdir dir="${classes}"/>
     <mkdir dir="${classes.examples}"/>
+    <mkdir dir="${classes.examples}/securekeystore"/>
     <mkdir dir="${dist}"/>
     <mkdir dir="log"/>
     <mkdir dir="deploy/lib"/>
