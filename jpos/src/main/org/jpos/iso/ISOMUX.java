@@ -22,6 +22,10 @@ import java.util.*;
 
 /*
  * $Log$
+ * Revision 1.22  1999/09/30 22:52:54  apr
+ * terminate() now receives an optional param with timeout
+ * Added isTerminating() member function
+ *
  * Revision 1.21  1999/09/30 10:33:20  apr
  * Check for txQueue and rxQueue to become empty when terminating
  * (Vincent.Greene@amo.com)
@@ -33,7 +37,7 @@ import java.util.*;
 
 public class ISOMUX implements Runnable, LogProducer {
     private ISOChannel channel;
-    private Thread rx;
+    private Thread rx = null, tx = null;
     private Vector txQueue;
     private Hashtable rxQueue;
     private int traceNumberField = 11;
@@ -237,8 +241,9 @@ public class ISOMUX implements Runnable, LogProducer {
         }
     }
     public void run () {
+        tx = Thread.currentThread();
 	                                        // OS/400 V4R4 JVM 
-	// rx.setPriority (rx.getPriority()+1); // Thread problem
+	rx.setPriority (rx.getPriority()+1);    // Thread problem
 					        // (Vincent.Greene@amo.com)
         rx.start();
 	boolean firstTime = true;
@@ -308,13 +313,42 @@ public class ISOMUX implements Runnable, LogProducer {
 	txQueue.addElement(m);
 	this.notify();
     }
-    public void terminate() {
-	Logger.log (new LogEvent (this, "mux", "terminate request received"));
+
+    private void terminate(boolean hard) {
+	Logger.log (new LogEvent (this, "mux", 
+            "<terminate type=\"" + (hard ? "hard" : "soft") +"\"/>"));
 	terminate = true;
         synchronized(this) {
+            if (hard) {
+                txQueue.removeAllElements();
+                rxQueue.clear();
+            }
             this.notify();
         }
     }
+
+    /**
+     * terminate MUX
+     * @param wait Time to wait before forcing shutdown
+     */
+    public void terminate (int wait) {
+        terminate(false);
+        try {
+            tx.join(wait);
+            if (tx.isAlive()) {
+                terminate(true);
+                tx.join();
+            }
+        } catch (InterruptedException e) { }
+    }
+
+    /**
+     * terminate MUX (soft terminate, wait forever if necessary)
+     */
+    public void terminate() {
+	terminate(0);
+    }
+
     public boolean isConnected() {
         return channel.isConnected();
     }
@@ -327,5 +361,8 @@ public class ISOMUX implements Runnable, LogProducer {
     }
     public Logger getLogger() {
 	return logger;
+    }
+    public boolean isTerminating() {
+	return terminate;
     }
 }
