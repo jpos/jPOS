@@ -36,7 +36,7 @@
 <!ATTLIST filter direction (incoming|outgoing|both) 'both'>
 
 <!-- mux -->
-<!ELEMENT mux (channel,request-listener*)*>
+<!ELEMENT mux (property*,channel,request-listener*)*>
 <!ATTLIST mux name ID #REQUIRED>
 <!ATTLIST mux logger IDREF #IMPLIED>
 <!ATTLIST mux realm CDATA #IMPLIED>
