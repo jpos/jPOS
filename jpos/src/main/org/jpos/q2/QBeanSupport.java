@@ -56,8 +56,8 @@ import org.jpos.iso.ISOUtil;
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
  */
 public class QBeanSupport implements QBean, QBeanSupportMBean {
-    Element element;
-    int state = QBean.STARTING;
+    Element configElement;
+    int state;
     Q2 server;
 
     public QBeanSupport () {
@@ -85,14 +85,24 @@ public class QBeanSupport implements QBean, QBeanSupportMBean {
     public void setState (int state) {
         this.state = state;
     }
-    public void init (Element e) {
-        this.element = e;
+    public void init () {
+        this.state = QBean.STARTING;
     }
-    public Element persist() {
-        return element;
+    public void setConfigElement (Element config) {
+        this.configElement = configElement;
+    }
+    public Element getConfigElement () {
+        return configElement;
     }
     public boolean isModified () {
         return false;
+    }
+    public void setName (String name) {
+        System.out.println ("called setName: " + name);
+    }
+    public String getName () {
+        System.out.println ("getName called");
+        return null;
     }
 }
 

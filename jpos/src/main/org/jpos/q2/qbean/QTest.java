@@ -10,6 +10,10 @@ public class QTest extends QBeanSupport implements Runnable {
         super();
         System.out.println ("QTest: constructor");
     }
+    public void init () {
+        System.out.println ("QTest: init");
+        super.init ();
+    }
     public void start() {
         System.out.println ("QTest: start");
         super.start ();
@@ -21,13 +25,13 @@ public class QTest extends QBeanSupport implements Runnable {
     public void destroy () {
         System.out.println ("QTest: destroy");
     }
-    public void init (Element e) {
-        System.out.println ("QTest: init");
-        super.init (e);
+    public void setConfigElement (Element e) {
+        System.out.println ("QTest: setConfigElement");
+        super.setConfigElement (e);
     }
-    public Element persist() {
-        System.out.println ("QTest: persist");
-        return super.persist ();
+    public Element getConfigElement () {
+        System.out.println ("QTest: getConfigElement");
+        return super.getConfigElement ();
     }
     public void run () {
         while (getState() == QBean.STARTED) {
