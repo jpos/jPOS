@@ -59,7 +59,7 @@ import org.jpos.iso.IFB_LLHNUM;
 import org.jpos.iso.IFB_LLLNUM;
 import org.jpos.iso.IFB_LLNUM;
 import org.jpos.iso.IFB_NUMERIC;
-import org.jpos.iso.IF_ECHAR;
+import org.jpos.iso.IFE_CHAR;
 import org.jpos.iso.ISOBasePackager;
 import org.jpos.iso.ISOFieldPackager;
 import org.jpos.iso.ISOMsgFieldPackager;
@@ -115,13 +115,13 @@ public class Base1Packager extends ISOBasePackager
 /*034*/ new IFB_LLHNUM  ( 28, "PAN EXTENDED", pad),
 /*035*/ new IFB_LLHNUM  ( 37, "TRACK 2 DATA", pad),
 /*036*/ new IFB_LLLNUM  (104, "TRACK 3 DATA", pad),
-/*037*/ new IF_ECHAR    ( 12, "RETRIEVAL REFERENCE NUMBER"),
-/*038*/ new IF_ECHAR    (  6, "AUTHORIZATION IDENTIFICATION RESPONSE"),
-/*039*/ new IF_ECHAR    (  2, "RESPONSE CODE"),
-/*040*/ new IF_ECHAR    (  3, "SERVICE RESTRICTION CODE"),
-/*041*/ new IF_ECHAR    (  8, "CARD ACCEPTOR TERMINAL IDENTIFICACION"),
-/*042*/ new IF_ECHAR    ( 15, "CARD ACCEPTOR IDENTIFICATION CODE" ),
-/*043*/ new IF_ECHAR    ( 40, "CARD ACCEPTOR NAME/LOCATION"),
+/*037*/ new IFE_CHAR    ( 12, "RETRIEVAL REFERENCE NUMBER"),
+/*038*/ new IFE_CHAR    (  6, "AUTHORIZATION IDENTIFICATION RESPONSE"),
+/*039*/ new IFE_CHAR    (  2, "RESPONSE CODE"),
+/*040*/ new IFE_CHAR    (  3, "SERVICE RESTRICTION CODE"),
+/*041*/ new IFE_CHAR    (  8, "CARD ACCEPTOR TERMINAL IDENTIFICACION"),
+/*042*/ new IFE_CHAR    ( 15, "CARD ACCEPTOR IDENTIFICATION CODE" ),
+/*043*/ new IFE_CHAR    ( 40, "CARD ACCEPTOR NAME/LOCATION"),
 /*044*/ new IFB_LLHECHAR( 25, "ADITIONAL RESPONSE DATA"),
 /*045*/ new IFB_LLCHAR  ( 76, "TRACK 1 DATA"),
 /*046*/ new IFB_LLCHAR  ( 99, "ADITIONAL DATA - ISO"),
@@ -169,14 +169,14 @@ public class Base1Packager extends ISOBasePackager
 /*088*/ new IFB_NUMERIC ( 16, "DEBITS, AMOUNT", true),
 /*089*/ new IFB_NUMERIC ( 16, "DEBITS, REVERSAL AMOUNT", true),
 /*090*/ new IFB_NUMERIC ( 42, "ORIGINAL DATA ELEMENTS", true),
-/*091*/ new IF_ECHAR    (  1, "FILE UPDATE CODE"),
-/*092*/ new IF_ECHAR    (  2, "FILE SECURITY CODE"),
-/*093*/ new IF_ECHAR    (  5, "RESPONSE INDICATOR"),
-/*094*/ new IF_ECHAR    (  7, "SERVICE INDICATOR"),
-/*095*/ new IF_ECHAR    ( 42, "REPLACEMENT AMOUNTS"),
+/*091*/ new IFE_CHAR    (  1, "FILE UPDATE CODE"),
+/*092*/ new IFE_CHAR    (  2, "FILE SECURITY CODE"),
+/*093*/ new IFE_CHAR    (  5, "RESPONSE INDICATOR"),
+/*094*/ new IFE_CHAR    (  7, "SERVICE INDICATOR"),
+/*095*/ new IFE_CHAR    ( 42, "REPLACEMENT AMOUNTS"),
 /*096*/ new IFB_BINARY  (  8, "MESSAGE SECURITY CODE"),
 /*097*/ new IFB_AMOUNT  ( 17, "AMOUNT, NET SETTLEMENT", pad),
-/*098*/ new IF_ECHAR    ( 25, "PAYEE"),
+/*098*/ new IFE_CHAR    ( 25, "PAYEE"),
 /*099*/ new IFB_LLHNUM  ( 11, "SETTLEMENT INSTITUTION IDENT CODE", pad),
 /*100*/ new IFB_LLHNUM  ( 11, "RECEIVING INSTITUTION IDENT CODE", pad),
 /*101*/ new IFB_LLHECHAR( 17, "FILE NAME"),
@@ -218,16 +218,16 @@ public class Base1Packager extends ISOBasePackager
         protected ISOFieldPackager fld126[] =
         {
             new Base1_BITMAP126(16, "Bit Map"),
-            new IF_ECHAR     (25, "Customer Name"),
-            new IF_ECHAR     (57, "Customer Address"),
-            new IF_ECHAR     (57, "Biller Address"),
-            new IF_ECHAR     (18, "Biller Telephone Number"),
-            new IF_ECHAR     (6,  "Process By Date"),
+            new IFE_CHAR     (25, "Customer Name"),
+            new IFE_CHAR     (57, "Customer Address"),
+            new IFE_CHAR     (57, "Biller Address"),
+            new IFE_CHAR     (18, "Biller Telephone Number"),
+            new IFE_CHAR     (6,  "Process By Date"),
             new IFB_LLNUM    (17, "Cardholder Cert Serial Number", true),
             new IFB_LLNUM    (17, "Merchant Cert Serial Number", true),
             new IFB_NUMERIC  (40, "Transaction ID", true),
             new IFB_NUMERIC  (40, "TransStain", true),
-            new IF_ECHAR     (6,  "CVV2 Request Data"),
+            new IFE_CHAR     (6,  "CVV2 Request Data"),
         };
 
         protected F126Packager ()
@@ -241,11 +241,11 @@ public class Base1Packager extends ISOBasePackager
     {
         protected ISOFieldPackager fld127[] = 
         {
-            new IF_ECHAR    (1,   "FILE UPDATE COD"),
+            new IFE_CHAR    (1,   "FILE UPDATE COD"),
             new IFB_LLHNUM  (19,  "ACCOUNT NUMBER", true),
             new IFB_NUMERIC (4,   "PURGE DATE", true),
-            new IF_ECHAR    (2,   "ACTION CODE"),
-            new IF_ECHAR    (9,   "REGION CODING"),
+            new IFE_CHAR    (2,   "ACTION CODE"),
+            new IFE_CHAR    (9,   "REGION CODING"),
             new IFB_NUMERIC (4,   "FILLER", true),
         };
         protected F127Packager () 
