@@ -44,8 +44,6 @@
     <echo message="  jar      Generates ${archive}.jar" />
     <echo message="  qsp      Generates ${qsp-archive}.jar" />
     <echo message="  tarball  Generates distro tarball" />
-    <echo message=
-      "  extdoc  Create javadoc documentation for main+ext modules" />
   </target>
 
   <target name="prepare">
