@@ -229,6 +229,23 @@ public class QBeanSupport implements QBean, QPersist, QBeanSupportMBean {
         attr.setText (value);
         e.addContent (attr);
     }
+    protected Iterator getAttrs () {
+        return getPersist().getChildren ("attr").iterator();
+    }
+    protected Iterator getAttrs (String parent) {
+        return getPersist().getChild (parent).
+            getChildren ("attr").iterator();
+    }
+    protected void setAttr (Iterator attrs, String name, Object obj) {
+        String value = obj == null ? "null" : obj.toString ();
+        while (attrs.hasNext ()) {
+            Element e = (Element) attrs.next ();
+            if (name.equals (e.getAttributeValue ("name")))  {
+                e.setText (value);
+                break;
+            }
+        }
+    }
     protected Iterator getProperties (String parent) {
         return getPersist().getChild (parent).
                getChildren ("property").iterator();
