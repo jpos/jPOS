@@ -1,0 +1,33 @@
+$Id$
+
+Starting at release 1.2 jPOS drops GNUmake support and builds 
+using Ant (http://jakarta.apache.org).
+
+We currently distribute 2 modules: 'main' and 'ext'.
+
+While 'main' module's classes are self contained, 'ext' module
+requires external classes (to be installed at jpos/ext directory)
+
+Currently the required jars are:
+
+   mail.jar and activation.jar (available from Sun)
+   sun-util.jar (from Jini1.1 distro)
+
+'ext' module implements just 'ReliableSequencer' and 'OperatorLogListener'
+at the moment but the idea is that 'ext' module will contains classes
+that fit within org.jpos package structure _but_ requires some kind
+of external non-distributable jar file.
+
+Running build (build.sh on Unix, build.bat on Windows) will show
+the available targets:
+
+Examples:
+
+   build main javadoc : builds main and javadoc on a Windows machine
+   ./build.sh ext doc : builds main, ext, extdoc and doc
+
+This is work in progress, feel free to ask. We run a developers
+mailing list at jpos-dev@onelist.com (jpos-dev-subscribe@onelist.com)
+
+--The jPOS Team
+
