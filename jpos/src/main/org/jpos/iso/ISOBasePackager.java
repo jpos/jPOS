@@ -14,6 +14,10 @@ import java.util.*;
 
 /*
  * $Log$
+ * Revision 1.16  1999/09/30 12:01:13  apr
+ * Added emitBitMap() and getFirstField() to fix broken X92Packager
+ * after pack()/unpack() changes (reported by dflc@cs.com.uy)
+ *
  * Revision 1.15  1999/09/25 13:35:07  apr
  * pack ignore field exceptions, log event and continue with next field
  *
@@ -33,6 +37,20 @@ public abstract class ISOBasePackager implements ISOPackager, LogProducer {
 
     protected void setFieldPackager (ISOFieldPackager[] fld) {
         this.fld = fld;
+    }
+    /**
+     * @return true if BitMap have to be emited
+     */
+    protected boolean emitBitMap () {
+	return (fld[1] instanceof ISOBitMapPackager);
+    }
+    /**
+     * usually 2 for normal fields, 1 for bitmap-less
+     * or ANSI X9.2 
+     * @return first valid field
+     */
+    protected int getFirstField() {
+	return (fld[1] instanceof ISOBitMapPackager) ? 2 : 1;
     }
     /**
      * @param   m   the Component to pack
@@ -56,9 +74,7 @@ public abstract class ISOBasePackager implements ISOPackager, LogProducer {
 	    len += b.length;
 	    v.addElement (b);
 
-	    boolean hasBitMap = (fld[1] instanceof ISOBitMapPackager);
-
-	    if (hasBitMap) {
+	    if (emitBitMap()) {
 		// BITMAP (-1 in HashTable)
 		c = (ISOComponent) fields.get (new Integer (-1));
 		b = getBitMapfieldPackager().pack(c);
@@ -69,7 +85,7 @@ public abstract class ISOBasePackager implements ISOPackager, LogProducer {
 	    // if Field 1 is a BitMap then we are packing an
 	    // ISO-8583 message so next field is fld#2.
 	    // else we are packing an ANSI X9.2 message, first field is 1
-	    for (int i=hasBitMap ? 2 : 1; i<=m.getMaxField(); i++) {
+	    for (int i=getFirstField(); i<=m.getMaxField(); i++) {
 		if ((c = (ISOComponent) fields.get (new Integer (i))) != null) {
 		    try {
 			b = fld[i].pack(c);
@@ -120,21 +136,16 @@ public abstract class ISOBasePackager implements ISOPackager, LogProducer {
 	    consumed  = fld[0].unpack(mti, b, 0);
 	    m.set (mti);
 
-	    if (fld[1] instanceof ISOBitMapPackager) {
-		consumed +=
-		    getBitMapfieldPackager().unpack(bitmap, b, consumed);
-		BitSet bmap = (BitSet) bitmap.getValue();
+	    BitSet bmap = null;
+	    int maxField = fld.length;
+	    if (emitBitMap()) {
+		consumed += getBitMapfieldPackager().unpack(bitmap,b,consumed);
+		bmap = (BitSet) bitmap.getValue();
 		m.set (bitmap);
-		for (int i=2; i<bmap.size(); i++) {
-		    if (bmap.get(i)) {
-			ISOComponent c = fld[i].createComponent(i);
-			consumed += fld[i].unpack (c, b, consumed);
-			m.set(c);
-		    }
-		}
+		maxField = bmap.size();
 	    }
-	    else {
-		for (int i=1; i<fld.length; i++) {
+	    for (int i=getFirstField(); i<maxField; i++) {
+		if (bmap == null || bmap.get(i)) {
 		    ISOComponent c = fld[i].createComponent(i);
 		    consumed += fld[i].unpack (c, b, consumed);
 		    m.set(c);

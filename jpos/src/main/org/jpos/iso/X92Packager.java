@@ -93,4 +93,12 @@ public class X92Packager extends ISOBasePackager {
     protected ISOFieldPackager getBitMapfieldPackager() {
         return bitMapPackager;
     }
+    /**
+     * Although field 1 is not a Bitmap ANSI X9.2 do have
+     * a Bitmap field that have to be packed/unpacked
+     * @return true
+     */
+    protected boolean emitBitMap () {
+	return true;
+    }
 }
