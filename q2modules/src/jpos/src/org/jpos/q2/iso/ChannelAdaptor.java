@@ -220,6 +220,10 @@ public class ChannelAdaptor
                 channel.addIncomingFilter (filter);
             else if ("outgoing".equalsIgnoreCase (direction))
                 channel.addOutgoingFilter (filter);
+            else if ("both".equalsIgnoreCase (direction)) {
+                channel.addIncomingFilter (filter);
+                channel.addOutgoingFilter (filter);
+            }
         }
     }
 
