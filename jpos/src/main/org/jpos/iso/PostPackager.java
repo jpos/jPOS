@@ -2,22 +2,26 @@ package uy.com.cs.jpos.iso;
 
 import java.util.*;
 
-/**
- * ISO 8583 v1987 Packager for Postilion
- *
- * @author salaman@teknos.com
- * @version Id: PostPackager.java,v 1.9 1999/09/17 12:08:02 salaman Exp 
- * @see ISOPackager
- * @see ISOBasePackager
- * @see ISOComponent
- */
-
 /*
  * $Log$
+ * Revision 1.4  2000/02/27 14:28:05  apr
+ * PostPackager compatible with new jPOS ISOMsgFieldPackager
+ * Support for new Postillion version [Victor]
+ *
  * Revision 1.3  1999/09/20 12:33:03  apr
  * Removed external PostPrivatePackager - now Victor uses ISOMsgFieldPackager
  * with inner PostPrivatePackager
  *
+ */
+
+/**
+ * ISO 8583 v1987 Packager for Postilion
+ *
+ * @author Victor A. Salaman <salaman@teknos.com>
+ * @version Id: PostPackager.java,v 1.9 1999/09/17 12:08:02 salaman Exp 
+ * @see ISOPackager
+ * @see ISOBasePackager
+ * @see ISOComponent
  */
 
 public class PostPackager extends ISOBasePackager {
@@ -160,8 +164,9 @@ public class PostPackager extends ISOBasePackager {
 	{ 
 		protected ISOFieldPackager fld127[] = 
 		{
-		    new IF_CHAR     (1,   "PLACEHOLDER"),
-		    new IFA_LLCHAR  (32,  "SWITCH KEY"),
+			new IF_CHAR		(0,   "PLACEHOLDER"),
+			new IFB_BITMAP	(8,	  "BITMAP"),
+			new IFA_LLCHAR  (32,  "SWITCH KEY"),
 		    new IF_CHAR     (48,  "ROUTING INFORMATION"),
 		    new IF_CHAR     (22,  "POS DATA"),
 		    new IF_CHAR     (73,  "SERVICE STATION DATA"),
@@ -178,7 +183,13 @@ public class PostPackager extends ISOBasePackager {
 		    new IF_CHAR     (1,   "AVS RESPONSE"),
 		    new IFA_LLCHAR  (50,  "CARDHOLDER INFORMATION"),
 		    new IFA_LLCHAR  (50,  "VALIDATION DATA"),
-		    new IF_CHAR     (45,  "PAYEE BANK ACCOUNT") 
+		    new IF_CHAR     (45,  "BANK DETAILS"), 
+		    new IFA_NUMERIC (8,   "AUTHORIZER DATE SETTLEMENT"), 
+		    new IFA_LLCHAR  (12,  "RECORD IDENTIFICATION"), 
+		    new IFA_LLLLLCHAR  (99999,  "STRUCTURED DATA"), 
+		    new IF_CHAR     (253,  "PAYEE NAME AND ADDRESS"), 
+		    new IFA_LLCHAR  (28,  "PAYER ACCOUNT INFORMATION"), 
+		    new IFA_LLLLCHAR(8000,  "ICC DATA")
 		};  
 
 	protected PostPrivatePackager()
