@@ -29,6 +29,14 @@ import java.net.Socket;
  * @see Logger
  *
  */
+
+/*
+ * $Log$
+ * Revision 1.22  1999/09/11 22:21:21  apr
+ * Added getPackager() member function
+ *
+ */
+
 public abstract class ISOChannel extends Observable implements LogProducer {
     private Socket socket;
     private String host;
@@ -85,6 +93,13 @@ public abstract class ISOChannel extends Observable implements LogProducer {
      */
     public void setPackager(ISOPackager p) {
         this.packager = p;
+    }
+
+    /**
+     * @return current packager
+     */
+    public ISOPackager getPackager() {
+	return packager;
     }
 
     /**
