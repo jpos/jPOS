@@ -7,6 +7,9 @@
 
 /*
  * $Log$
+ * Revision 1.3  1999/07/29 15:55:03  apr
+ * Added LOG_CAPACITY checks
+ *
  * Revision 1.2  1999/07/08 13:44:10  apr
  * Added acquirer support
  * Removed 'System.outs'
@@ -38,6 +41,7 @@ public class ISOChannelPanel extends JPanel implements Observer {
 	ISOMeter meter;
 	DefaultListModel log;
 	String symbolicName;
+	public static final int LOG_CAPACITY = 250;
 
 	public ISOChannelPanel
 		(ISOChannel channel, String symbolicName) {
@@ -84,7 +88,11 @@ public class ISOChannelPanel extends JPanel implements Observer {
 				else if (m.isOutgoing())
 					meter.setValue(imti, mti);
 
-				log.insertElementAt(m,0);
+				// log.insertElementAt(m,0);
+				log.addElement(m);
+				if (log.getSize() > LOG_CAPACITY) 
+					log.remove(0);
+
 			} catch (ISOException e) { 
 				meter.setValue(ISOMeter.mass, "ERROR");
 			}

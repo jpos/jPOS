@@ -9,6 +9,9 @@
 
 /*
  * $Log$
+ * Revision 1.2  1999/07/29 15:55:12  apr
+ * Added LOG_CAPACITY checks
+ *
  * Revision 1.1  1999/05/18 12:02:59  apr
  * Added GUI package
  *
@@ -28,6 +31,7 @@ import uy.com.cs.jpos.iso.*;
 public class ISORequestListenerPanel extends JPanel implements Observer {
 	DefaultListModel log;
 	String symbolicName;
+	public static final int LOG_CAPACITY = 250;
 
 	public ISORequestListenerPanel (
 		ISORequestListener requestListener,
@@ -55,7 +59,9 @@ public class ISORequestListenerPanel extends JPanel implements Observer {
 			try {
 				String mti = (String) m.getValue(0);
 				int imti   = Integer.parseInt(mti);
-				log.insertElementAt(m,0);
+				log.addElement(m);
+				if (log.getSize() > LOG_CAPACITY) 
+					log.remove(0);
 			} catch (ISOException e) { }
 		}
 	}
