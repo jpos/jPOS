@@ -66,6 +66,7 @@ import org.jdom.output.XMLOutputter;
 
 import org.jpos.core.Configuration;
 import org.jpos.core.SimpleConfiguration;
+import org.jpos.util.Log;
 
 /**
  * @author <a href="mailto:taherkordy@dpi2.dpi.net.ir">Alireza Taherkordi</a>
@@ -74,10 +75,12 @@ import org.jpos.core.SimpleConfiguration;
  */
 public class QFactory {
     ObjectName loaderName;
+    Log log;
 
-    public QFactory (ObjectName loaderName) {
+    public QFactory (ObjectName loaderName, Log log) {
         super ();
         this.loaderName = loaderName;
+        this.log = log;
     }
     public ObjectInstance createQBean (Q2 server, Element e) 
         throws ClassNotFoundException, 
@@ -126,7 +129,7 @@ public class QFactory {
                 try {
                     loader.addURL (u.getTextTrim ());
                 } catch (MalformedURLException ex) {
-                    ex.printStackTrace();
+                    log.warn (u.getTextTrim(), ex);
                 }
             }
         }

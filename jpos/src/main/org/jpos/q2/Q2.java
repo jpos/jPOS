@@ -128,7 +128,7 @@ public class Q2 implements FileFilter {
         ObjectName loaderName = new ObjectName (Q2_CLASS_LOADER);
         loader = new QClassLoader (server, libDir, loaderName);
 	server.registerMBean (loader, loaderName);//new
-        factory = new QFactory (loaderName);
+        factory = new QFactory (loaderName, log);
         for (;;) {
             try {
                 loader = loader.scan ();
