@@ -55,6 +55,7 @@ import org.jpos.core.ConfigurationException;
 import org.jpos.util.Logger;
 import org.jpos.util.LogSource;
 import org.jpos.util.LogEvent;
+import org.jpos.util.NameRegistrar;
 
 import java.sql.*;
 import java.util.*;
@@ -318,4 +319,16 @@ public class ConnectionPool implements Runnable, LogSource, Configurable {
     public Logger getLogger() {
         return logger;
     }
+
+    /**
+     * @return ISOMUX instance with given name.
+     * @throws NameRegistrar.NotFoundException;
+     * @see NameRegistrar
+     */
+    public static ConnectionPool getConnectionPool (String name)
+	throws NameRegistrar.NotFoundException
+    {
+	return (ConnectionPool) NameRegistrar.get ("connection.pool."+name);
+    }
+
 }
