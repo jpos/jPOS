@@ -73,6 +73,7 @@ public class RotateLogListener extends SimpleLogListener
     long maxSize;
     int  msgCount;
     public static final int CHECK_INTERVAL = 100;
+    public static final long DEFAULT_MAXSIZE = 10000000;
 
     /**
      * @param name base log filename
@@ -101,7 +102,7 @@ public class RotateLogListener extends SimpleLogListener
         (String logName, int sleepTime, int maxCopies) 
 	throws IOException
     {
-        this (logName, sleepTime, maxCopies, 100*1024*1024); // safe maxSize
+        this (logName, sleepTime, maxCopies, DEFAULT_MAXSIZE); 
     }
 
     public RotateLogListener () {
@@ -127,6 +128,7 @@ public class RotateLogListener extends SimpleLogListener
 	sleepTime = cfg.getInt  ("window") * 1000;
 	logName   = cfg.get     ("file");
         maxSize   = cfg.getLong ("maxsize");
+        maxSize   = maxSize <= 0 ? DEFAULT_MAXSIZE : maxSize;
 
 	try {
             openLogFile();
