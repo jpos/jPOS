@@ -106,6 +106,7 @@ public class Q2 implements FileFilter {
     }
 
     private void scan () {
+    //TODO Check for existance of deployment directory
         File file[] = deployDir.listFiles (this);
         for (int i=0; i<file.length; i++) 
             register (file[i]);
