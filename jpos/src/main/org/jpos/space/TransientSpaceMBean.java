@@ -49,6 +49,8 @@
 
 package org.jpos.space;
 
+import java.util.Set;
+
 /**
  * TransientSpace MBean (used to monitor/debug TransientSpace)
  * @author Alejandro Revilla
@@ -56,10 +58,6 @@ package org.jpos.space;
  * @see TransientSpace
  */
 public interface TransientSpaceMBean {
-    /**
-     * @return a list of keys present in the Space
-     */
-    public String getKeys ();
     /**
      * same as Space.out (key,value)
      * @param key Key
@@ -73,5 +71,10 @@ public interface TransientSpaceMBean {
      * @return value.toString()
      */
     public String read  (String key);
+
+    /**
+     * @return set of keys present in the Space
+     */
+    public Set getKeySet ();
 }
 
