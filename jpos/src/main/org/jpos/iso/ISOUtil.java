@@ -8,6 +8,9 @@
 
 /*
  * $Log$
+ * Revision 1.3  1998/12/11 14:06:26  apr
+ * Added 'pad' parameter en 'IFB_[L*]NUM*' y 'IFB_AMOUNT'
+ *
  * Revision 1.2  1998/12/01 12:48:12  apr
  * Added padleft
  *
@@ -128,6 +131,24 @@ public class ISOUtil {
 			d[i>>1] |= Character.digit((char) b[offset+i], 16) << shift;
 		}
 		return d;
+	}
+
+	/**
+	 * format double value
+	 * @param amount	the amount
+	 * @param fieldLen	the field len
+	 * @return a String of fieldLen characters (right justified)
+	 */
+	public static String formatDouble(double d, int len) {
+		String prefix = Long.toString((long) d);
+		String suffix = Integer.toString ((int) ((d * 100) % 100));
+		try {
+			prefix = ISOUtil.padleft(prefix,len-3,' ');
+			suffix = ISOUtil.zeropad(suffix, 2);
+		} catch (ISOException e) {
+			e.printStackTrace();
+		}
+		return prefix + "." + suffix;
 	}
 
     public static void main (String args[]) {

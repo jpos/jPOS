@@ -10,6 +10,9 @@
 
 /*
  * $Log$
+ * Revision 1.3  1998/12/11 14:06:26  apr
+ * Added 'pad' parameter en 'IFB_[L*]NUM*' y 'IFB_AMOUNT'
+ *
  * Revision 1.2  1998/11/28 16:25:54  apr
  * *** empty log message ***
  *
@@ -188,13 +191,19 @@ public class ISOMUX implements Runnable {
 			catch (UnknownHostException e) { 
 			 	// System.out.println(e);
 				try {
-					Thread.sleep(60000);
+					Thread.sleep(50000);
 				} catch (InterruptedException ie) { }
 			}
 			catch (ConnectException e) { 
 			 	// System.out.println(e);
 				try {
-					Thread.sleep(10000);
+					Thread.sleep(50000);
+				} catch (InterruptedException ie) { }
+			}
+			catch (java.net.SocketException e) { 
+			 	// System.out.println(e);
+				try {
+					Thread.sleep(50000);
 				} catch (InterruptedException ie) { }
 			}
 			catch (IOException e) {

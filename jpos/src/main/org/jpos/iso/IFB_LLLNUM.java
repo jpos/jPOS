@@ -8,6 +8,9 @@
 
 /*
  * $Log$
+ * Revision 1.2  1998/12/11 14:06:23  apr
+ * Added 'pad' parameter en 'IFB_[L*]NUM*' y 'IFB_AMOUNT'
+ *
  * Revision 1.1  1998/11/09 23:40:16  apr
  * *** empty log message ***
  *
@@ -16,8 +19,10 @@
 package uy.com.cs.jpos.iso;
 
 public class IFB_LLLNUM extends ISOFieldPackager {
-	public IFB_LLLNUM(int len, String description) {
+	private boolean pad;
+	public IFB_LLLNUM(int len, String description, boolean pad) {
 		super(len, description);
+		this.pad = pad;
 	}
 	public byte[] pack (ISOComponent c) throws ISOException {
 		int len;
@@ -28,7 +33,7 @@ public class IFB_LLLNUM extends ISOFieldPackager {
 				"invalid len "+len +" packing LLNUM field "+(Integer) c.getKey()
 			);
 
-		byte[] bcd = ISOUtil.str2bcd (s, true);
+		byte[] bcd = ISOUtil.str2bcd (s, pad);
 		byte[] b   = new byte[bcd.length + 2];
 		String slen = ISOUtil.zeropad(Integer.toString(len),3);
 		byte[] l   = ISOUtil.str2bcd (slen, true);
@@ -42,7 +47,7 @@ public class IFB_LLLNUM extends ISOFieldPackager {
 	{
 		int len = b[offset++] & 0x0F;
 		len += ((b[offset] >> 4) & 0x0F) * 10 + (b[offset] & 0x0F);
-		c.setValue (ISOUtil.bcd2str (b, offset+1, len, true));
+		c.setValue (ISOUtil.bcd2str (b, offset+1, len, pad));
 		return 2 + (++len >> 1);
 	}
 }
