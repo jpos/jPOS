@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  $Id$
+
+  <!DOCTYPE jpos PUBLIC "-//JPOS/jPOS DTD Version 1.0//EN" 
+            "http://cvs.jpos.org/jpos.dtd" >
+-->
+
+<!ELEMENT isomsg (field+,(isomsg,field)*)>
+<!ATTLIST isomsg id CDATA #IMPLIED >
+
+<!ELEMENT field EMPTY>
+<!ATTLIST field 
+	id CDATA #REQUIRED
+	type (binary) #IMPLIED
+	value CDATA #REQUIRED
+>
+
+
