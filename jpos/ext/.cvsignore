@@ -1,5 +1,1 @@
-activation.jar
-mail.jar
-sun-util.jar
-comm.jar
-xslp.jar
+*.jar
