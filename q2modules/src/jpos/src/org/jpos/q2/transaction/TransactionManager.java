@@ -165,7 +165,7 @@ public class TransactionManager
         } catch (Throwable t) {
             getLog().warn ("PREPARE-FOR-ABORT: " + Long.toString (id), t);
         }
-        return ABORTED;
+        return ABORTED | NO_JOIN;
     }
     protected int prepare 
         (TransactionParticipant p, long id, Serializable context) 
