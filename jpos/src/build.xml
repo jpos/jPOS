@@ -326,6 +326,7 @@ Main targets:
   <target name="jpos-util" depends="main" description="Build jpos-util.jar">
     <delete file="${dist}/jpos-util.jar" />
     <copy file="${source}/etc/LICENSE" tofile="${classes}/LICENSE" />
+    <copy file="${source}/etc/MANIFEST.MF" tofile="${classes}/MANIFEST.MF" />
     <jar jarfile="${dist}/jpos-util.jar"
          basedir="${classes}"
          manifest="${classes}/MANIFEST.MF" 
