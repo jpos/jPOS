@@ -95,5 +95,11 @@ public class ISODate {
 	public static String getANSIDate(Date d) {
 		return formatDate (d, "yyMMdd");
 	}
+	/**
+	 * @return date in yyMM format - suitable for field 14
+	 */
+	public static String getExpirationDate(Date d) {
+		return formatDate (d, "yyMM");
+	}
 }
 
