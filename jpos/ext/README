@@ -39,3 +39,13 @@ In order to build 'ext' module you will have to install here
   - stcjms.jar (Used by Q2 Egate JMS Sender and Receiver services)
     The jar is on the Egate development CD's. If you do not know what Egate is,
     do not bother.
+
+In order to build jPOS' aspects you need:
+
+  - aspectj-ant.jar
+  - aspectjrt.jar
+  - aspectjtools.jar 
+
+  see http://www.eclipse.org/aspectj/
+
+
