@@ -48,23 +48,22 @@
  */
 
 package org.jpos.iso;
-import java.io.IOException;
-import java.io.InputStream;
 
 /**
  * BINARY version of IFE_LLLCHAR
- * Uses a 3 EBCDIC byte length field
+ * Uses a 3 EBCDIC byte length field, and the binary data is stored as is.
  * 
  * @author Alejandro Revila
+ * @author Jonathan O'Connor
  * @version $Id$
  * @see ISOFieldPackager
  * @see ISOComponent
  */
-public class IFE_LLLBINARY extends ISOFieldPackager 
+public class IFE_LLLBINARY extends ISOBinaryFieldPackager 
 {
     public IFE_LLLBINARY()
     {
-        super();
+        super(LiteralBinaryInterpreter.INSTANCE, EbcdicPrefixer.LLL);
     }
     /**
     * @param len - field len
@@ -72,51 +71,13 @@ public class IFE_LLLBINARY extends ISOFieldPackager
     */
     public IFE_LLLBINARY(int len, String description) 
     {
-        super(len, description);
+        super(len, description, LiteralBinaryInterpreter.INSTANCE, EbcdicPrefixer.LLL);
+        checkLength(len, 999);
     }
-    /**
-    * @param c - a component
-    * @return packed component
-    * @exception ISOException
-    */
-    public byte[] pack(ISOComponent c) throws ISOException 
-    {
-        byte[] v = (byte[]) c.getValue();
-        int len  = v.length;
-        if (len > getLength() || len>999)
-            throw new ISOException (
-                "invalid len "+len +" packing field "+ (Integer) c.getKey()
-            );
 
-        String s = new String (v);
-        String l = ISOUtil.zeropad(Integer.toString(len), 3);
-        return ISOUtil.asciiToEbcdic(l + s);
-    }
-    /**
-    * @param c - the Component to unpack
-    * @param b - binary image
-    * @param offset - starting offset within the binary image
-    * @return consumed bytes
-    * @exception ISOException
-    */
-    public int unpack(ISOComponent c, byte[] b, int offset)
-        throws ISOException
+    public void setLength(int len)
     {
-        int len = Integer.parseInt (ISOUtil.ebcdicToAscii(b, offset, 3));
-        c.setValue(ISOUtil.ebcdicToAsciiBytes(b, offset+3, len));
-        return len+3;
-    }
-    public int getMaxPackedLength() 
-    {
-        return getLength()+3;
-    }
-    public ISOComponent createComponent(int fieldNumber) {
-        return new ISOBinaryField (fieldNumber);
-    }
-    public void unpack (ISOComponent c, InputStream in) 
-        throws IOException, ISOException
-    {
-        int len = Integer.parseInt (ISOUtil.ebcdicToAscii(readBytes (in, 3)));
-        c.setValue(ISOUtil.ebcdicToAscii(readBytes (in, len)));
+        checkLength(len, 999);
+        super.setLength(len);
     }
 }
