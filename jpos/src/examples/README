@@ -16,6 +16,9 @@ We recommend that you read them in the following order:
      You are also welcome to use it outside jPOS in your own 
      applications as well.
 
+   - isomsg: show how to handle ISOMsg manipulation (set/unset
+     fields, merge, clone, restricted-clone, nested messages)
+
    - simplepacking: shows how to pack and unpack an ISOMsg;
      provides instructions on how to extend ISOPackagers
      and ISOFieldPackagers
