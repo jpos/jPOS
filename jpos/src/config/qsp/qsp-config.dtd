@@ -135,6 +135,7 @@
 <!ATTLIST persistent-engine name ID #REQUIRED>
 <!ATTLIST persistent-engine logger IDREF #IMPLIED>
 <!ATTLIST persistent-engine realm CDATA #IMPLIED>
+<!ATTLIST persistent-engine class NMTOKEN #IMPLIED>
 
 <!-- connection-pool -->
 <!ELEMENT connection-pool (property)*>
