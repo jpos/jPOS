@@ -162,6 +162,7 @@ public class ISOMUX implements Runnable {
 			else {
 				ISOMsg m = r.getRequest();
 				channel.send(m);
+				m.dump (System.out, "---> ");
 				cnt[TX]++;
 				rxQueue.put (getKey(m), r);
 			}

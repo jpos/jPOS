@@ -90,10 +90,8 @@ public abstract class ISOChannel {
 	public void send (ISOMsg m) throws IOException, ISOException {
 		m.setPackager (packager);
 		byte[] b = m.pack();
-		// 
-		// System.out.println (
-		//	"--[pack]--\n"+ ISOUtil.hexString(b) + "\n--[end]--");
-		// 
+		System.out.println (
+			"--[pack]--\n"+ ISOUtil.hexString(b) + "\n--[end]--");
 		sendMessageLength(b.length);
 		sendMessageHeader(m);
 		serverOut.write(b, 0, b.length);
@@ -124,10 +122,8 @@ public abstract class ISOChannel {
 			if ((l=serverIn.read(b,0,len)) != len)
 				throw new ISOException(
 					"receive error. expected " +len + " received " +l);
-			//
-			// System.out.println (
-			// 	"--[unpack]--\n"+ ISOUtil.hexString(b) + "\n--[end]--");
-			//
+			 System.out.println (
+			 	"--[unpack]--\n"+ ISOUtil.hexString(b) + "\n--[end]--");
 		}
 		else
 			throw new ISOException("receive length " +len + " seems extrange");

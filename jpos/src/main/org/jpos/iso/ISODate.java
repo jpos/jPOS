@@ -57,7 +57,7 @@ public class ISODate {
 	}
 	/**
 	 * @return date in HHmmss format - suitable for field 12
-	 *
+	 */
 	public static String getTime (Date d) {
 		return formatDate (d, "HHmmss");
 	}
