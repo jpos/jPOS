@@ -83,7 +83,9 @@ public class Logger implements Runnable {
 	name = "";
         sp  = TransientSpace.getSpace ();
         isDestroyed = false;
-        new Thread (this).start ();
+        Thread t = new Thread (this);
+        t.setDaemon (true);
+        t.start ();
     }
     public void addListener (LogListener l) {
         synchronized (listeners) {
