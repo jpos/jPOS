@@ -74,7 +74,8 @@ public class SimpleDialupModem implements Modem {
 	"CONNECT",
 	"NO DIALTONE\r",
 	"BUSY\r",
-	"NO ANSWER\r"
+	"NO ANSWER\r",
+	"NO DIAL TONE",
     };
     
     public SimpleDialupModem (V24 v24) {
@@ -116,7 +117,7 @@ public class SimpleDialupModem implements Modem {
 		    "ATB0M1X4L1"+dialPrefix+phoneNumber +"\r", 
 			resultCodes,45000
 		);
-		if (rc == 5) {
+		if ((rc == 1) || (rc == 5)) {
 		    Thread.sleep (500); // CD debouncing/settlement time
 		    break;
 		}
