@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.3  2000/01/26 21:48:50  apr
+ * CVS sync
+ *
  * Revision 1.2  2000/01/23 16:12:10  apr
  * CVS devel sync
  *
@@ -26,41 +29,13 @@ import uy.com.cs.jpos.util.Loggeable;
  */
 public class FinancialTransaction extends AuthorizationTransaction
 {
-    private transient CardTransactionResponse response;
-    private transient BatchManager batchManager;
-
     public FinancialTransaction() {
 	super();
     }
-    public FinancialTransaction
-	(BatchManager batchManager, String action, String rrn) 
-	throws IOException
-    {
-	setBatchManager (batchManager);
+    public FinancialTransaction (String action) {
 	setAction (action);
-	setRRN (rrn);
-	batchManager.fetch (this);
     }
-    public void setBatchManager (BatchManager batchManager) {
-	this.batchManager = batchManager;
-    }
-    public void dump (PrintStream p, String indent) {
-	String inner = indent + "  ";
-	p.println (indent + "<FinancialTransaction>");
-	dump0 (p, inner);
-	if (response != null && response instanceof Loggeable)
-	    ((Loggeable)response).dump (p, inner);
-	p.println (indent + "</FinancialTransaction>");
-    }
-    public void setResponse (CardTransactionResponse response) {
-	this.response = response;
-    }
-    public CardTransactionResponse getResponse () {
-	return response;
-    }
-    public void sync () throws IOException {
-	if (batchManager == null)
-	    throw new IOException ("batch manager not available");
-	batchManager.sync (this);
+    protected String getTagName() {
+	return "FinancialTransaction";
     }
 }

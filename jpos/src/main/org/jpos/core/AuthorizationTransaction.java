@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.6  2000/01/26 21:48:47  apr
+ * CVS sync
+ *
  * Revision 1.5  2000/01/20 23:02:44  apr
  * Adding FinancialTransaction support - CVS sync
  *
@@ -54,6 +57,8 @@ public class AuthorizationTransaction
     public byte numberOfPayments;
 
     protected String action;
+    protected String[] args = { "" };
+    private transient CardTransactionResponse response;
 
     public AuthorizationTransaction() {
 	cardHolder = null;
@@ -101,8 +106,14 @@ public class AuthorizationTransaction
     public void setAction (String action) {
 	this.action = action;
     }
+    public void setArgs (String[] args) {
+	this.args = args;
+    }
     public String getAction() {
 	return action;
+    }
+    public String[] getArgs() {
+	return args;
     }
     public void setPurchasePlan(String purchasePlan) {
 	this.purchasePlan = purchasePlan;
@@ -116,7 +127,9 @@ public class AuthorizationTransaction
     public int getNumberOfPayments() {
 	return (int) numberOfPayments;
     }
-    protected void dump0 (PrintStream p, String inner) {
+    public void dump (PrintStream p, String indent) {
+	String inner = indent + "  ";
+	p.println (indent + "<" + getTagName() + ">");
 	p.println (inner  + "<action>" + action + "</action>");
 	getCardHolder().dump (p, inner);
 	p.println (inner  + "<amount>"      + amount      + "</amount>");
@@ -126,11 +139,17 @@ public class AuthorizationTransaction
 	p.println (inner  + "<numberOfPayments>" + numberOfPayments + 
 			   "</numberOfPayments>"
 	);
+	if (response != null && response instanceof Loggeable)
+	    ((Loggeable)response).dump (p, inner);
+	p.println (indent + "</" + getTagName() + ">");
     }
-    public void dump (PrintStream p, String indent) {
-	String inner = indent + "  ";
-	p.println (indent + "<AuthorizationTransaction>");
-	dump0 (p, indent + "  ");
-	p.println (indent + "</AuthorizationTransaction>");
+    protected String getTagName() {
+	return "AuthorizationTransaction";
+    }
+    public void setResponse (CardTransactionResponse response) {
+	this.response = response;
+    }
+    public CardTransactionResponse getResponse () {
+	return response;
     }
 }

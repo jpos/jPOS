@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.5  2000/01/26 21:48:49  apr
+ * CVS sync
+ *
  * Revision 1.4  1999/11/26 12:16:48  apr
  * CVS devel snapshot
  *
@@ -29,5 +32,18 @@ import java.util.*;
  * @see CardHolder
  */
 public interface CardTransaction extends Serializable {
+    /**
+     * @return desired action
+     */
     public String getAction();
+
+    /**
+     * @return action arguments
+     */ 
+    public String[] getArgs();
+
+    /**
+     * @return agent generated response (should not be null)
+     */
+    public CardTransactionResponse getResponse ();
 }

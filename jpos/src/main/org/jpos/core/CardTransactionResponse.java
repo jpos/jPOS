@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.3  2000/01/26 21:48:49  apr
+ * CVS sync
+ *
  * Revision 1.2  2000/01/20 23:02:45  apr
  * Adding FinancialTransaction support - CVS sync
  *
@@ -36,4 +39,5 @@ public interface CardTransactionResponse extends Serializable {
     public boolean isApproved();
     public boolean canContinue();
     public boolean isAuthoritative();
+    public String  getBatchName();
 }
