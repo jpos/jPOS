@@ -54,6 +54,7 @@ import org.jpos.q2.QFactory;
 import org.jpos.q2.QBeanSupport;
 import org.jpos.util.Destroyable;
 import org.jpos.util.LogSource;
+import org.jpos.util.NameRegistrar;
 import org.jpos.core.Configurable;
 
 /**
@@ -61,8 +62,6 @@ import org.jpos.core.Configurable;
  *
  * @author Alejandro Revilla
  * @version $Revision$ $Date$
- * @jmx:mbean description="Task adaptor QBean"
- *                  extends="org.jpos.q2.QBeanSupportMBean"
  */
 public class TaskAdaptor extends QBeanSupport {
     Object task;
@@ -85,14 +84,18 @@ public class TaskAdaptor extends QBeanSupport {
             );
     }
     protected void startService () throws Exception {
+        NameRegistrar.register (getName (), task);
         if (task instanceof Runnable) {
             new Thread ((Runnable) task).start ();
         }
     }
-
     protected void stopService () throws Exception {
+        NameRegistrar.unregister (getName ());
         if (task instanceof Destroyable)
             ((Destroyable)task).destroy ();
+    }
+    public Object getObject () {
+        return task;
     }
 }
 
