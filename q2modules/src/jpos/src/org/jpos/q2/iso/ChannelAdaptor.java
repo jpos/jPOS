@@ -1,52 +1,9 @@
 /*
- * Copyright (c) 2000 jPOS.org.  All rights reserved.
+ * Copyright (c) 2004 jPOS.org 
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
+ * See terms of license at http://jpos.org/license.html
  *
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- *
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in
- *    the documentation and/or other materials provided with the
- *    distribution.
- *
- * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:
- *    "This product includes software developed by the jPOS project 
- *    (http://www.jpos.org/)". Alternately, this acknowledgment may 
- *    appear in the software itself, if and wherever such third-party 
- *    acknowledgments normally appear.
- *
- * 4. The names "jPOS" and "jPOS.org" must not be used to endorse 
- *    or promote products derived from this software without prior 
- *    written permission. For written permission, please contact 
- *    license@jpos.org.
- *
- * 5. Products derived from this software may not be called "jPOS",
- *    nor may "jPOS" appear in their name, without prior written
- *    permission of the jPOS project.
- *
- * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
- * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  
- * IN NO EVENT SHALL THE JPOS PROJECT OR ITS CONTRIBUTORS BE LIABLE FOR 
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL 
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS 
- * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) 
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, 
- * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING 
- * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
- * POSSIBILITY OF SUCH DAMAGE.
- * ====================================================================
- *
- * This software consists of voluntary contributions made by many
- * individuals on behalf of the jPOS Project.  For more
- * information please see <http://www.jpos.org/>.
  */
-
 package org.jpos.q2.iso;
 
 import java.io.IOException;
@@ -54,25 +11,19 @@ import java.util.Date;
 import java.util.Iterator;
 import org.jpos.iso.ISOMsg;
 import org.jpos.iso.ISOUtil;
-import org.jpos.util.SimpleLogSource;
-import org.jpos.util.Logger;
-import org.jpos.util.LogEvent;
 import org.jpos.space.Space;
 import org.jpos.space.SpaceFactory;
-import org.jpos.space.TransientSpace;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
-import org.jpos.core.Configurable;
 import org.jpos.iso.ISOChannel;
+import org.jpos.iso.ISOClientSocketFactory;
 import org.jpos.iso.ISOPackager;
-import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOFilter;
 import org.jpos.iso.FilteredChannel;
-import org.jpos.util.LogSource;
-
 import org.jpos.q2.QBeanSupport;
 import org.jpos.q2.QFactory;
 import org.jpos.q2.Q2ConfigurationException;
+import org.jpos.util.LogSource;
 import org.jpos.util.NameRegistrar;
 
 import org.jdom.Element;
@@ -111,6 +62,15 @@ public class ChannelAdaptor
         delay    = s != null ? Long.parseLong (s) : 10000; // reasonable default
 
         channel = newChannel (e, getFactory());
+        
+        String socketFactoryString = getSocketFactory();
+        if (socketFactoryString != null) {
+            ISOClientSocketFactory sFac = (ISOClientSocketFactory) getFactory().newInstance(socketFactoryString);
+            if (sFac != null && sFac instanceof LogSource) {
+                ((LogSource) sFac).setLogger(log.getLogger(),getName() + ".socket-factory");
+            }
+            channel.setSocketFactory(sFac);
+        }
         ready   = getName() + ".ready";
 
         reconnect = getName() + ".reconnect";
@@ -199,7 +159,7 @@ public class ChannelAdaptor
             channel.setPackager (packager);
             f.setConfiguration (packager, e);
         }
-        f.invoke (channel, "setHeader", e.getAttributeValue ("header"));
+        QFactory.invoke (channel, "setHeader", e.getAttributeValue ("header"));
         f.setLogger        (channel, e);
         f.setConfiguration (channel, e);
 
@@ -341,6 +301,21 @@ public class ChannelAdaptor
         } catch (NumberFormatException e) { }
         return port;
     }
+    /**
+     * @jmx:managed-attribute description="socket factory" 
+     */
+    public synchronized void setSocketFactory (String sFac) {
+        setProperty(getProperties("channel"), "socketFactory", sFac);
+        setModified(true);
+    }
+    
+    /**
+     * @jmx:managed-attribute description="socket factory" 
+     */
+    public String getSocketFactory() {
+        return getProperty(getProperties ("channel"), "socketFactory");
+    }
+    
     private Space grabSpace (Element e) {
         return SpaceFactory.getSpace (e != null ? e.getText() : "");
     }
