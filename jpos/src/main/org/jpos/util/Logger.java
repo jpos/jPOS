@@ -90,6 +90,13 @@ public class Logger {
     }
     public void removeAllListeners () {
         synchronized (listeners) {
+            Iterator i = listeners.iterator();
+            while (i.hasNext()) {
+                LogListener l = ((LogListener) i.next());
+                if (l instanceof Destroyable) {
+                    ((Destroyable) l).destroy ();
+                }
+            }
             listeners.clear ();
         }
     }
