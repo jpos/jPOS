@@ -49,6 +49,7 @@
 
 package org.jpos.iso.packager;
 
+import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Properties;
@@ -92,9 +93,11 @@ public class GenericValidatingPackager extends GenericPackager implements ISOVal
     public GenericValidatingPackager(  ) throws ISOException{
         super();
     }
-
-    public GenericValidatingPackager( String fileName ) throws ISOException{
+    public GenericValidatingPackager( String fileName ) throws ISOException {
         super( fileName );
+    }
+    public GenericValidatingPackager (InputStream stream) throws ISOException {
+        super (stream);
     }
 
     /**

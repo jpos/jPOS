@@ -49,6 +49,7 @@
 
 package org.jpos.iso.packager;
 
+import java.io.InputStream;
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOFieldPackager;
 import org.jpos.iso.X92_BITMAP;
@@ -68,6 +69,9 @@ public class X92GenericPackager extends GenericPackager {
     }
     public X92GenericPackager(String filename) throws ISOException {
         super(filename);
+    }
+    public X92GenericPackager(InputStream stream) throws ISOException {
+        super(stream);
     }
     /**
      * @return Bitmap's ISOFieldPackager
