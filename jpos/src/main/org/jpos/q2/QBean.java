@@ -71,22 +71,22 @@ public interface QBean {
     /**
      * init the service
      */
-    void init ();
+    void init () throws Exception;
 
     /**
      * start the service
      */
-    void start ();
+    void start () throws Exception;
 
     /**
      * stop the service
      */
-    void stop ();
+    void stop () throws Exception;
 
     /**
      * destroy the service
      */
-    void destroy ();
+    void destroy () throws Exception;
 
     /**
      * @return state (STARTING, STARTED, FAILED, DESTROYED ...)
