@@ -10,7 +10,11 @@ import org.jpos.util.Loggeable;
  * @version $Revision$ $Date$
  */
 public class ISOException extends Exception implements Loggeable {
+    /**
+     * @serial
+     */
     Exception nested = null;
+
     /**
      * Constructs an <code>ISOException</code> with no detail message. 
      */
