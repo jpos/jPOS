@@ -112,7 +112,9 @@ public class SystemMonitor implements Runnable, LogSource, Loggeable
 
     public void run() {
 	for (;;) {
-	    Logger.log (new LogEvent (this, "SystemMonitor", this));
+            LogEvent evt = new LogEvent (this, "SystemMonitor", this);
+            evt.addMessage (NameRegistrar.getInstance ());
+	    Logger.log (evt);
 	    try {
 		long expected = System.currentTimeMillis() + sleepTime;
 		Thread.sleep (sleepTime);
@@ -123,12 +125,16 @@ public class SystemMonitor implements Runnable, LogSource, Loggeable
     public void dump (PrintStream p, String indent) {
 	String newIndent = indent + "  ";
 	Runtime r = Runtime.getRuntime();
+        p.println (indent + "<memory>");
 	p.println (newIndent+" freeMemory="+r.freeMemory());
 	p.println (newIndent+"totalMemory="+r.totalMemory());
 	p.println (newIndent+"inUseMemory="+(r.totalMemory()-r.freeMemory()));
+        p.println (indent + "</memory>");
+        p.println (indent + "<threads>");
 	p.println (newIndent+"      delay="+delay+" ms");
 	p.println (newIndent+"    threads="+Thread.activeCount());
 	showThreadGroup (Thread.currentThread().getThreadGroup(), p, newIndent);
+        p.println (indent + "</threads>");
     }
     public void setLogger (Logger logger, String realm) {
 	this.logger = logger;
