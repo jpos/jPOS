@@ -148,8 +148,9 @@ public class ISOMsg extends ISOComponent implements Cloneable {
 
 		ISOComponent c;
         BitSet bmap = new BitSet (getMaxField() > 64 ? 128 : 64);
+
 		for (int i=1; i<=maxField; i++)
-			if ((c = (ISOComponent) fields.get (new Integer (i))) != null)
+			if ((c = (ISOComponent) fields.get (new Integer (i))) != null) 
 				bmap.set (i);
 		set (new ISOBitMap (-1, bmap));
 		dirty = false;

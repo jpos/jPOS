@@ -263,6 +263,7 @@ public class ISOUtil {
 	 */
 	public static String bitSet2String (BitSet b) {
 		int len = b.size();
+		len = (len > 128) ? 128: len;
 		StringBuffer d = new StringBuffer(len);
 		for (int i=0; i<len; i++)
 			d.append (b.get(i) ? '1' : '0');
@@ -277,6 +278,7 @@ public class ISOUtil {
 	public static byte[] bitSet2byte (BitSet b)
 	{
 		int len = (b.size() >> 3) << 3;
+		len = (len > 128) ? 128: len;
 		byte[] d = new byte[len >> 3];
 		for (int i=0; i<len; i++) 
 			if (b.get(i+1)) 

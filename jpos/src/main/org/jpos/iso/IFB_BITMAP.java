@@ -36,8 +36,10 @@ public class IFB_BITMAP extends ISOBitMapPackager {
 	public int unpack (ISOComponent c, byte[] b, int offset)
 		throws ISOException
 	{
+		int len;
 		BitSet bmap = ISOUtil.byte2BitSet (b, offset, true);
 		c.setValue(bmap);
-		return (bmap.size() >> 3);
+		len = ((len=bmap.size()) > 128) ? 128 : len;
+		return (len >> 3);
 	}
 }
