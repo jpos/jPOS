@@ -54,6 +54,13 @@ public class AsciiPrefixerTest extends TestCase
         TestUtils.assertEquals(new byte[]{0x32, 0x31}, b);
     }
 
+    public void testEncodeShortLength() throws Exception
+    {
+        byte[] b = new byte[2];
+        AsciiPrefixer.LL.encodeLength(3, b);
+        TestUtils.assertEquals(new byte[]{0x30, 0x33}, b);
+    }
+
     public void testDecode() throws Exception
     {
         byte[] b = new byte[]{0x32, 0x35};

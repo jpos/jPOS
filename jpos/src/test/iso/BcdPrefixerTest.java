@@ -39,39 +39,72 @@ package iso;
 
 import junit.framework.TestCase;
 
-import org.jpos.iso.IF_CHAR;
-import org.jpos.iso.ISOField;
+import org.jpos.iso.BcdPrefixer;
 
 /**
- * @author joconnor
+ * Tests the ASCII length Prefixer.
+ * @author jonathan.oconnor@xcom
  */
-public class IF_CHARTest extends TestCase
+public class BcdPrefixerTest extends TestCase
 {
-    public void testPack() throws Exception
+    public void testEncode() throws Exception
     {
-        ISOField field = new ISOField(12, "ABCD");
-        IF_CHAR packager = new IF_CHAR(10, "Should be ABCD      ");
-        TestUtils.assertEquals(new byte[]{65, 66, 67, 68, 32, 32, 32, 32, 32, 32}, packager.pack(
-                field));
+        byte[] b = new byte[1];
+        BcdPrefixer.LL.encodeLength(21, b);
+        TestUtils.assertEquals(new byte[]{0x21}, b);
     }
 
-    public void testUninterpret() throws Exception
+    public void testEncodeShortLength() throws Exception
     {
-        byte[] raw = new byte[]{65, 66, 67, 68, 32, 32, 32, 32, 32, 32};
-        IF_CHAR packager = new IF_CHAR(10, "Should be ABCD      ");
-        ISOField field = new ISOField(12);
-        packager.unpack(field, raw, 0);
-        assertEquals("ABCD      ", (String) field.getValue());
+        byte[] b = new byte[1];
+        BcdPrefixer.LL.encodeLength(3, b);
+        TestUtils.assertEquals(new byte[]{0x03}, b);
+    }
+
+    public void testEncodeLLL() throws Exception
+    {
+        byte[] b = new byte[2];
+        BcdPrefixer.LLL.encodeLength(321, b);
+        TestUtils.assertEquals(new byte[]{0x03, 0x21}, b);
+    }
+
+    public void testEncodeLLLShortLength() throws Exception
+    {
+        byte[] b = new byte[2];
+        BcdPrefixer.LLL.encodeLength(3, b);
+        TestUtils.assertEquals(new byte[]{0x00, 0x03}, b);
+    }
+
+    public void testEncode99() throws Exception
+    {
+        byte[] b = new byte[1];
+        BcdPrefixer.LL.encodeLength(99, b);
+        TestUtils.assertEquals(new byte[]{(byte)0x99}, b);
+    }
+
+    public void testDecode() throws Exception
+    {
+        byte[] b = new byte[]{0x25};
+        assertEquals(25, BcdPrefixer.LL.decodeLength(b, 0));
+    }
+
+    public void testDecode19() throws Exception
+    {
+        byte[] b = new byte[]{0x19};
+        assertEquals(19, BcdPrefixer.LL.decodeLength(b, 0));
+    }
+
+    public void testDecode99() throws Exception
+    {
+        byte[] b = new byte[]{(byte)0x99};
+        assertEquals(99, BcdPrefixer.LL.decodeLength(b, 0));
     }
 
     public void testReversability() throws Exception
     {
-        String origin = "Abc123:.-";
-        ISOField f = new ISOField(12, origin);
-        IF_CHAR packager = new IF_CHAR(10, "Should be ABCD      ");
-
-        ISOField unpack = new ISOField(12);
-        packager.unpack(unpack, packager.pack(f), 0);
-        assertEquals(origin + " ", (String) unpack.getValue());
+        int len = 3;
+        byte[] b = new byte[1];
+        BcdPrefixer.LL.encodeLength(len, b);
+        assertEquals(len, BcdPrefixer.LL.decodeLength(b, 0));
     }
 }

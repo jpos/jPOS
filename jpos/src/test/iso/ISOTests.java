@@ -46,12 +46,9 @@ import junit.framework.TestSuite;
  */
 public class ISOTests
 {
-    public static void main(String[] args)
-    {}
-
     public static Test suite()
     {
-        TestSuite suite = new TestSuite("Test for xcom.traxbahn.util");
+        TestSuite suite = new TestSuite("Tests for new ISO Field Packagers");
         //$JUnit-BEGIN$
         suite.addTest(new TestSuite(LeftPadderTest.class));
         suite.addTest(new TestSuite(RightPadderTest.class));
@@ -61,6 +58,28 @@ public class ISOTests
         suite.addTest(new TestSuite(AsciiPrefixerTest.class));
         suite.addTest(new TestSuite(EbcdicPrefixerTest.class));
         suite.addTest(new TestSuite(IF_CHARTest.class));
+        suite.addTest(new TestSuite(IFA_AMOUNTTest.class));
+        suite.addTest(new TestSuite(IFA_LLBNUMTest.class));
+        suite.addTest(new TestSuite(IFA_LCHARTest.class));
+        suite.addTest(new TestSuite(IFA_LLCHARTest.class));
+        suite.addTest(new TestSuite(IFA_LLLCHARTest.class));
+        suite.addTest(new TestSuite(IFA_LLLLCHARTest.class));
+        suite.addTest(new TestSuite(IFA_LLLLLCHARTest.class));
+        suite.addTest(new TestSuite(IFA_LLNUMTest.class));
+        suite.addTest(new TestSuite(IFA_LLLNUMTest.class));
+        suite.addTest(new TestSuite(IFA_NUMERICTest.class));
+        
+        suite.addTest(new TestSuite(IFB_LLCHARTest.class));
+        suite.addTest(new TestSuite(IFB_LLLCHARTest.class));
+        suite.addTest(new TestSuite(IFB_LLNUMTest.class));
+        suite.addTest(new TestSuite(IFB_LLLNUMTest.class));
+        suite.addTest(new TestSuite(IFB_NUMERICTest.class));
+
+        suite.addTest(new TestSuite(IFE_CHARTest.class));
+        suite.addTest(new TestSuite(IFE_LLCHARTest.class));
+        suite.addTest(new TestSuite(IFE_LLLCHARTest.class));
+        suite.addTest(new TestSuite(IFE_LLNUMTest.class));
+        suite.addTest(new TestSuite(IFE_NUMERICTest.class));
         //$JUnit-END$
         return suite;
     }

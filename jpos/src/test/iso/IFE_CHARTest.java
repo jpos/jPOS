@@ -39,26 +39,26 @@ package iso;
 
 import junit.framework.TestCase;
 
-import org.jpos.iso.IF_CHAR;
+import org.jpos.iso.IFE_CHAR;
 import org.jpos.iso.ISOField;
 
 /**
  * @author joconnor
  */
-public class IF_CHARTest extends TestCase
+public class IFE_CHARTest extends TestCase
 {
     public void testPack() throws Exception
     {
         ISOField field = new ISOField(12, "ABCD");
-        IF_CHAR packager = new IF_CHAR(10, "Should be ABCD      ");
-        TestUtils.assertEquals(new byte[]{65, 66, 67, 68, 32, 32, 32, 32, 32, 32}, packager.pack(
+        IFE_CHAR packager = new IFE_CHAR(10, "Should be ABCD      ");
+        TestUtils.assertEquals(new byte[]{(byte)0xC1, (byte)0xC2, (byte)0xC3, (byte)0xC4, 0x40, 0x40, 0x40, 0x40, 0x40, 0x40}, packager.pack(
                 field));
     }
 
     public void testUninterpret() throws Exception
     {
-        byte[] raw = new byte[]{65, 66, 67, 68, 32, 32, 32, 32, 32, 32};
-        IF_CHAR packager = new IF_CHAR(10, "Should be ABCD      ");
+        byte[] raw = new byte[]{(byte)0xC1, (byte)0xC2, (byte)0xC3, (byte)0xC4, 0x40, 0x40, 0x40, 0x40, 0x40, 0x40};
+        IFE_CHAR packager = new IFE_CHAR(10, "Should be ABCD      ");
         ISOField field = new ISOField(12);
         packager.unpack(field, raw, 0);
         assertEquals("ABCD      ", (String) field.getValue());
@@ -68,7 +68,7 @@ public class IF_CHARTest extends TestCase
     {
         String origin = "Abc123:.-";
         ISOField f = new ISOField(12, origin);
-        IF_CHAR packager = new IF_CHAR(10, "Should be ABCD      ");
+        IFE_CHAR packager = new IFE_CHAR(10, "Should be ABCD      ");
 
         ISOField unpack = new ISOField(12);
         packager.unpack(unpack, packager.pack(f), 0);

@@ -39,39 +39,39 @@ package iso;
 
 import junit.framework.TestCase;
 
-import org.jpos.iso.IF_CHAR;
+import org.jpos.iso.IFA_LLBNUM;
 import org.jpos.iso.ISOField;
 
 /**
  * @author joconnor
  */
-public class IF_CHARTest extends TestCase
+public class IFA_LLBNUMTest extends TestCase
 {
     public void testPack() throws Exception
     {
-        ISOField field = new ISOField(12, "ABCD");
-        IF_CHAR packager = new IF_CHAR(10, "Should be ABCD      ");
-        TestUtils.assertEquals(new byte[]{65, 66, 67, 68, 32, 32, 32, 32, 32, 32}, packager.pack(
+        ISOField field = new ISOField(12, "123");
+        IFA_LLBNUM packager = new IFA_LLBNUM(10, "Should be 0x30340123", true);
+        TestUtils.assertEquals(new byte[]{0x30, 0x34, 0x01, 0x23}, packager.pack(
                 field));
     }
 
     public void testUninterpret() throws Exception
     {
-        byte[] raw = new byte[]{65, 66, 67, 68, 32, 32, 32, 32, 32, 32};
-        IF_CHAR packager = new IF_CHAR(10, "Should be ABCD      ");
-        ISOField field = new ISOField(12);
+        byte[] raw = new byte[]{0x30, 0x34, 0x01, 0x23};
+        IFA_LLBNUM packager = new IFA_LLBNUM(10, "Should be 0x30330123", true);
+        ISOField field = new ISOField();
         packager.unpack(field, raw, 0);
-        assertEquals("ABCD      ", (String) field.getValue());
+        assertEquals("0123", (String) field.getValue());
     }
 
     public void testReversability() throws Exception
     {
-        String origin = "Abc123:.-";
+        String origin = "123456789";
         ISOField f = new ISOField(12, origin);
-        IF_CHAR packager = new IF_CHAR(10, "Should be ABCD      ");
+        IFA_LLBNUM packager = new IFA_LLBNUM(10, "Should be 0x31301234567890", false);
 
-        ISOField unpack = new ISOField(12);
+        ISOField unpack = new ISOField();
         packager.unpack(unpack, packager.pack(f), 0);
-        assertEquals(origin + " ", (String) unpack.getValue());
+        assertEquals(origin + "0", (String) unpack.getValue());
     }
 }
