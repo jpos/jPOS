@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.6  1999/12/16 23:31:49  apr
+ * CVS snapshot
+ *
  * Revision 1.5  1999/12/15 16:11:12  apr
  * Testing ...
  *
@@ -160,6 +163,7 @@ public class VISA1Link implements LogProducer, Runnable
     synchronized public byte[] request (byte[] request) 
 	throws IOException
     {
+	Logger.log (new LogEvent (this, "[enteredRequest]"));
 	String buf;
 	byte[] response = null;
 	long timeout = this.timeout;
@@ -172,7 +176,6 @@ public class VISA1Link implements LogProducer, Runnable
 			&& response == null && mdm.isConnected()) 
 	{
 	    long elapsed = System.currentTimeMillis() - start;
-	    System.out.println ("-------------> state:" + state);
 	    switch (state) {
 		case 0:
 		    evt.addMessage ("<enq>" + elapsed + "</enq>");
@@ -182,20 +185,15 @@ public class VISA1Link implements LogProducer, Runnable
 		    break;
 		case 1:
 		    evt.addMessage ("<tx>" + elapsed + "</tx>");
-		    System.out.println ("[Transmiting]");
 		    sendPacket (request, evt);
-		    System.out.println (
-			"[waiting for ACK or NAK] timeout="+timeout);
 		    buf = v24.readUntil ("\002\025", timeout, true);
-		    System.out.println ("[end readUntil]");
-		    if (buf.endsWith ("\002")) {
-			System.out.println ("[Got STX]");
+		    if (buf.endsWith ("\002")) 
 			state++;
-		    }
 		    break;
 		case 2:
 		    evt.addMessage ("<rx>" + elapsed + "</rx>");
 		    response = receivePacket (timeout, evt);
+		    // response = "AUTOR. 123456".getBytes();
 		    v24.send (response == null ? NAK : ACK);
 		    break;
 	    }
@@ -206,6 +204,7 @@ public class VISA1Link implements LogProducer, Runnable
 	}
 	evt.addMessage ("<rx>"+(System.currentTimeMillis() - start)+"</rx>");
 	Logger.log (evt);
+	Logger.log (new LogEvent (this, "[endedRequest]"));
 	return response;
     }
 
