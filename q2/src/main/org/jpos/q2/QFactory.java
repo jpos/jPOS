@@ -221,7 +221,8 @@ public class QFactory {
             mserver.invoke (objectName, "stop",  null, null);
             mserver.invoke (objectName, "destroy",  null, null);
         }
-        mserver.unregisterMBean (objectName);
+        if (objectName != null)
+            mserver.unregisterMBean (objectName);
     }
 
     public void configureQBean(MBeanServer server, ObjectName objectName, Element e)
