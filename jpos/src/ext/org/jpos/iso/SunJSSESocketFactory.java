@@ -89,7 +89,7 @@ public class SunJSSESocketFactory
     private String password=null;
     private String keyPassword=null;
 
-    public void setKeyStore(String keystore){
+    public void setKeyStore(String keyStore){
         this.keyStore=keyStore;  
     }
 
