@@ -79,18 +79,22 @@ import org.jpos.core.ConfigurationException;
  */
 public class Sender 
     extends SimpleLogSource
-    implements Runnable, ReConfigurable
+    implements Runnable, ReConfigurable, SenderMBean
 {
     ISOMUX mux;
     File message;
     long initialDelay;
     long delay;
     int  waitForResponse;
+    long lastRoundTrip = -1;
     Logger logger;
     String realm;
     ISOPackager packager;
     Sequencer seq;
     Configuration cfg;
+    boolean disabled = false;
+    String lastResponseCode = null;
+    Thread thisThread;
 
     public Sender() {
 	super();
@@ -145,6 +149,7 @@ public class Sender
     }
 
     public void run () {
+        thisThread = Thread.currentThread ();
 	if (initialDelay > 0)
 	    try {
 		Thread.sleep (initialDelay);
@@ -166,7 +171,7 @@ public class Sender
 	} while (!cfg.getBoolean ("one-shot"));
     }
 
-    private void sendOne(LogEvent evt) throws IOException {
+    public void sendOne(LogEvent evt) throws IOException {
 	FileInputStream fis = new FileInputStream (message);
 	try {
 	    byte[] b = new byte[fis.available()];
@@ -177,11 +182,30 @@ public class Sender
             applyProps (m);
 	    evt.addMessage (m);
 	    ISORequest req = new ISORequest (m);
+            long start = System.currentTimeMillis ();
 	    mux.queue (req);
 	    if (waitForResponse > 0) {
 		ISOMsg resp = req.getResponse (waitForResponse);
-		if (resp != null)
+		if (resp != null) {
+                    lastRoundTrip = System.currentTimeMillis () - start;
+
+                    StringBuffer sb = new StringBuffer (resp.getMTI());
+                    if (resp.hasField (39)) {
+                        sb.append (' ');
+                        sb.append (resp.getString (39));
+                    }
+                    if (resp.hasField (38)) {
+                        sb.append (' ');
+                        sb.append (resp.getString (38));
+                    }
+                    lastResponseCode = sb.toString ();
+
 		    evt.addMessage (resp);
+                }
+                else {
+                    lastRoundTrip = -1;
+                    lastResponseCode = "<timed-out>";
+                }
 	    }
 	} catch (ISOException e) {
 	    evt.addMessage (e);
@@ -189,4 +213,43 @@ public class Sender
 	    fis.close();
 	}
     }
+
+    public void forceSend () {
+        LogEvent evt = new LogEvent (this, "force-send");
+        try {
+            if (!disabled)
+                sendOne (evt);
+        } catch (IOException e) {
+            evt.addMessage (e);
+        }
+        Logger.log (evt);
+    }
+    public long getLastRoundTrip () {
+        return lastRoundTrip;
+    }
+    public void setDisabled (boolean disabled) {
+        if (disabled != this.disabled) {
+            Logger.log (
+                new LogEvent (this, "sender", 
+                    "sender task has been " + 
+                        (disabled ? "disabled" : "enabled")
+                        )
+            );
+        }
+        this.disabled = disabled;
+    }
+    public boolean isDisabled () {
+        return disabled;
+    }
+    public void setDelay (long delay) {
+        this.delay = delay;
+        thisThread.interrupt ();
+    }
+    public long getDelay () {
+        return delay;
+    }
+    public String getLastResponseCode () {
+        return lastResponseCode;
+    }
 }
+
