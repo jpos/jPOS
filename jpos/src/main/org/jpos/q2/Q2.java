@@ -54,6 +54,8 @@ import java.io.FileFilter;
 import java.io.FileWriter;
 import java.net.URL;
 import java.net.MalformedURLException;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Date;
 import java.util.HashMap;
@@ -85,7 +87,7 @@ public class Q2 implements FileFilter {
     public static final String DEFAULT_DEPLOY_DIR  = "deploy";
     public static final String JMX_NAME            = "Q2";
     public static final String QBEAN_NAME          = "Q2:type=qbean,service=";
-    public static final String Q2_CLASS_LOADER     =  QBEAN_NAME + "loader";
+    public static final String Q2_CLASS_LOADER     = "Q2:type=system,service=loader";
     private MBeanServer server;
     private File deployDir, libDir;
     private Map dirMap;
@@ -141,6 +143,7 @@ public class Q2 implements FileFilter {
     }
 
     private void deploy () {
+        List startList = new ArrayList ();
         Iterator iter = dirMap.entrySet().iterator();
         while (iter.hasNext()) {
             Map.Entry entry = (Map.Entry) iter.next();
@@ -148,12 +151,19 @@ public class Q2 implements FileFilter {
             QEntry qentry   = (QEntry) entry.getValue ();
             long deployed   = qentry.getDeployed ();
             if (deployed == 0) {
-                qentry.setInstance (deploy (f));
+                ObjectInstance instance = deploy (f);
+                qentry.setInstance (instance);
+                startList.add (instance);
                 qentry.setDeployed (f.lastModified ());
             } else if (deployed != f.lastModified ()) {
                 undeploy (f);
                 iter.remove ();
             }
+        }
+
+        iter = startList.iterator();
+        while (iter.hasNext ()) {
+            start ((ObjectInstance) iter.next ());
         }
     }
 
@@ -242,6 +252,14 @@ public class Q2 implements FileFilter {
             e.printStackTrace ();
         }
         return null;
+    }
+
+    private void start (ObjectInstance instance) {
+        try {
+            factory.startQBean (this, instance.getObjectName());
+        } catch (Exception e) {
+            e.printStackTrace ();
+        }
     }
 
     public MBeanServer getMBeanServer () {

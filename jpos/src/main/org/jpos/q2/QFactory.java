@@ -106,10 +106,9 @@ public class QFactory {
 
         setAttribute (mserver, objectName, "Server", server);
         setAttribute (mserver, objectName, "Persist", e);
+        setAttribute (mserver, objectName, "Name", e);
         configureQBean(mserver,objectName,e);
-
         mserver.invoke (objectName, "init",  null, null);
-        mserver.invoke (objectName, "start", null, null);
 
         return instance;
     }
@@ -145,6 +144,25 @@ public class QFactory {
             // okay to fail
         }
     }
+
+    public void startQBean (Q2 server, ObjectName objectName)
+        throws ClassNotFoundException, 
+               InstantiationException,
+               IllegalAccessException,
+               MalformedObjectNameException,
+               MalformedURLException,
+               InstanceAlreadyExistsException,
+               MBeanRegistrationException,
+               InstanceNotFoundException,
+               MBeanException,
+               NotCompliantMBeanException,
+               InvalidAttributeValueException,
+               ReflectionException
+    {
+        MBeanServer mserver = server.getMBeanServer();
+        mserver.invoke (objectName, "start",  null, null);
+    }
+
 
     public void destroyQBean (Q2 server, ObjectName objectName)
         throws ClassNotFoundException, 
