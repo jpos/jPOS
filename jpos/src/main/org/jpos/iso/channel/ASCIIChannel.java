@@ -66,6 +66,7 @@ import org.jpos.iso.*;
  * @see ISOChannel
  */
 public class ASCIIChannel extends BaseChannel {
+    protected byte[] header = null;
     /**
      * Public constructor (used by Class.forName("...").newInstance())
      */
@@ -140,5 +141,20 @@ public class ASCIIChannel extends BaseChannel {
     protected void sendMessageHeader(ISOMsg m, int len) throws IOException { 
 	if (m.getHeader() != null)
             serverOut.write(m.getHeader());
+        else if (header != null) 
+            serverOut.write(header);
+    }
+    protected int getHeaderLength() { 
+        return header != null ? header.length : 0;
+    }
+    public void setHeader (byte[] header) {
+	this.header = header;
+    }
+    public void setHeader (String header) {
+	setHeader (header.getBytes());
+    }
+    public byte[] getHeader () {
+	return header;
     }
 }
+
