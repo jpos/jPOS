@@ -194,14 +194,7 @@ public class PersistentEngine implements LogSource, Configurable {
 		s.close();
 	}
     }
-    public ResultSet executeQuery (String sql) throws SQLException {
-	Connection conn = getConnection();
-	try {
-	    return executeQuery (sql, conn);
-	} finally {
-	    releaseConnection (conn);
-	}
-    }
+
     /**
      * Execute SQL Query. 
      * @param sql  sql command
@@ -214,17 +207,10 @@ public class PersistentEngine implements LogSource, Configurable {
     {
 	Statement s = null;
 	ResultSet rs;
-	try {
-	    s = conn.createStatement();
-	    if (logger != null && logger.hasListeners()) 
-		Logger.log (new LogEvent (this, "sql-query", sql));
-	    rs = s.executeQuery (sql);
-	} finally {
-	    if (s != null)
-		s.close();
-	}
-        s.close();
-        return rs;
+        s = conn.createStatement();
+        if (logger != null && logger.hasListeners()) 
+            Logger.log (new LogEvent (this, "sql-query", sql));
+        return s.executeQuery (sql);
     }
 
     /**
