@@ -575,15 +575,27 @@ public class ISOMsg extends ISOComponent
      * @exception ISOException on MTI not set or it is not a request
      */
     public void setResponseMTI() throws ISOException {
-	if (!isRequest())
-	    throw new ISOException ("not a request - can't set response MTI");
+        if (!isRequest())
+            throw new ISOException ("not a request - can't set response MTI");
 
-	String mti = getMTI();
-	set (new ISOField (0,
-	    mti.substring(0,2)
-		+(Character.getNumericValue(getMTI().charAt (2))+1) + "0"
-	    )
-	);
+        String mti = getMTI();
+        char c1 = mti.charAt(3);
+        char c2 = '0';
+        switch (c1)
+        {
+            case '0' :
+            case '1' : c2='0';break;
+            case '2' :
+            case '3' : c2='2';break;
+            case '4' :
+            case '5' : c2='4';break;
+
+        }
+        set (new ISOField (0,
+            mti.substring(0,2)
+            +(Character.getNumericValue(getMTI().charAt (2))+1) + c2
+            )
+        );
     }
     /**
      * sets an appropiate retransmission MTI<br>
