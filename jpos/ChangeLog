@@ -1,6 +1,7 @@
 $Id$
 
 -- 1.4.7 --
+Bugfix: NPE in ISOServer.checkPermission when used standalone
 
 -- 1.4.6 -- released Jul 2003 (tagged: v1_4_6)
 

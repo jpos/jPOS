@@ -198,7 +198,7 @@ public class ISOServer extends Observable
         public void checkPermission (Socket socket, LogEvent evt) 
             throws ISOException 
         {
-            if (allow.length > 0) {
+            if (allow != null && allow.length > 0) {
                 String ip = socket.getInetAddress().getHostAddress ();
                 for (int i=0; i<allow.length; i++) {
                     if (ip.equals (allow[i])) {
