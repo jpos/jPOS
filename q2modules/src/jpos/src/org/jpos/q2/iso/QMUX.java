@@ -82,7 +82,7 @@ public class QMUX
     implements SpaceListener, MUX, QMUXMBean
 {
     LocalSpace sp;
-    String in, out, unhandled;
+    String in, out, unhandled, ready;
     String spaceName;
     List listeners;
     public QMUX () {
@@ -94,6 +94,7 @@ public class QMUX
         sp        = grabSpace (e.getChild ("space")); 
         in        = e.getChildTextTrim ("in");
         out       = e.getChildTextTrim ("out");
+        ready     = e.getChildTextTrim ("ready");
         addListeners ();
         unhandled = e.getChildTextTrim ("unhandled");
     }
@@ -246,6 +247,12 @@ public class QMUX
             return (LocalSpace) sp;
         }
         throw new Q2ConfigurationException ("Invalid space " + uri);
+    }
+    public boolean isConnected() {
+        if (ready != null) 
+            return sp.rdp (ready) != null;
+        else
+            return true;
     }
 }
 
