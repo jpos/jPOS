@@ -228,8 +228,22 @@ public class ConfigUtil {
     public static void invoke (Object obj, String m, Object p) 
 	throws ConfigurationException 
     {
+        invoke (obj, m, p, p != null ? p.getClass() : null);
+    }
+   /**
+    * Tries to invoke a method (usually a setter) on the given object
+    * silently ignoring if method does not exist
+    * @param obj the object
+    * @param m method to invoke
+    * @param p parameter
+    * @param pc parameter class
+    * @throws ConfigurationException if method happens to throw an exception
+    */
+    public static void invoke (Object obj, String m, Object p, Class pc) 
+	throws ConfigurationException 
+    {
 	try {
-	    Class[] paramTemplate = { p.getClass() };
+	    Class[] paramTemplate = { pc };
 	    Method method = obj.getClass().getMethod(m, paramTemplate);
 	    Object[] param = new Object[1];
 	    param[0] = p;
@@ -245,3 +259,4 @@ public class ConfigUtil {
 	}
     }
 }
+

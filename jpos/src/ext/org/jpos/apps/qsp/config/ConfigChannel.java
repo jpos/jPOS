@@ -55,9 +55,11 @@ import java.util.Arrays;
 import javax.swing.JPanel;
 
 import org.jpos.iso.ISOChannel;
+import org.jpos.iso.BaseChannel;
 import org.jpos.iso.ClientChannel;
 import org.jpos.iso.ISOPackager;
 import org.jpos.iso.ISOException;
+import org.jpos.iso.ISOClientSocketFactory;
 import org.jpos.iso.ISOUtil;
 import org.jpos.iso.gui.ISOChannelPanel;
 import org.jpos.util.Logger;
@@ -93,6 +95,7 @@ public class ConfigChannel implements QSPReConfigurator {
 		    "host",
 		    "port",
 		    "timeout",
+                    "socket-factory",
 		    "name"  // used here to update digest
 		};
 
@@ -187,6 +190,21 @@ public class ConfigChannel implements QSPReConfigurator {
 	    if (p instanceof Configurable) {
 		((Configurable)p).setConfiguration (cfg);
 	    }
+            String socketFactoryName = cfg.get ("socket-factory", null);
+            if (socketFactoryName != null) {
+                ISOClientSocketFactory factory = 
+                    getSocketFactory (socketFactoryName);
+                if (factory != null) {
+                    if (factory instanceof LogSource)
+                        ((LogSource)factory).setLogger (logger, realm);
+                    if (factory instanceof Configurable)
+                        ((Configurable)factory).setConfiguration (cfg);
+	            ConfigUtil.invoke (
+                        channel, "setSocketFactory", 
+                        factory, ISOClientSocketFactory.class
+                    );
+                }
+            }
 
 	    if (cfg.get ("timeout", null) != null)
 		ConfigUtil.invoke (
@@ -215,6 +233,27 @@ public class ConfigChannel implements QSPReConfigurator {
 	} catch (NullPointerException e) {
 	    throw new ConfigurationException ("error creating channel", e);
 	}
+    }
+
+    private ISOClientSocketFactory getSocketFactory (String name) 
+        throws ConfigurationException
+    {
+        ISOClientSocketFactory factory = null;
+        try {
+            Class c = Class.forName (name);
+            if (c != null) {
+                factory = (ISOClientSocketFactory) c.newInstance();
+		// if (logger != null && (factory instanceof LogSource))
+		//    ((LogSource) factory).setLogger (logger, realm);
+            }
+        } catch (ClassNotFoundException e) {
+	    throw new ConfigurationException (name, e);
+        } catch (InstantiationException e) {
+	    throw new ConfigurationException (name, e);
+        } catch (IllegalAccessException e) {
+	    throw new ConfigurationException (name, e);
+	}
+        return factory;
     }
 
     private ISOChannel newChannel
