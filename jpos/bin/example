@@ -1,0 +1,28 @@
+#! /bin/sh
+
+# $Id$
+
+if [ -z "$JAVA_HOME" ] ; then
+  JAVA=`which java`
+  if [ -z "$JAVA" ] ; then
+    echo "Cannot find 'java'. check your PATH."
+    exit 1
+  fi
+  JAVA_BIN=`dirname $JAVA`
+  JAVA_HOME=$JAVA_BIN/..
+fi
+
+JAVA=$JAVA_HOME/bin/java
+
+CLASSPATH=./build/classes:./build/examples:$CLASSPATH
+CLASSPATH=`echo lib/*.jar | tr ' ' ':'`:$CLASSPATH
+CLASSPATH=`echo ext/*.jar | tr ' ' ':'`:$CLASSPATH
+CLASSPATH=$JAVA_HOME/lib/tools.jar:$CLASSPATH
+
+if [ -z $1 ] ; then
+  echo "Usage: example <package>";
+  exit;
+fi
+$JAVA -cp $CLASSPATH $1.Test $2 $3 $4 $5 $6
+
+
