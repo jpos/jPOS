@@ -199,8 +199,17 @@
     </javac>
   </target>
 
+  <target name="ext.jceadapter" depends="ext.check" if="jce.present">
+    <javac srcdir="${ext}" destdir="${classes}"
+        includes="**/security/jceadapter/**"
+        debug="${debug}"
+        deprecation="${deprecation}" >
+        <classpath refid="ext.classpath" />
+    </javac>
+  </target>
+
   <target name="ext" 
-       depends="ext.sun-util, ext.comm, ext.jsse, ext.jce, ext.mail, ext.opencard, ext.jetty">
+       depends="ext.sun-util, ext.comm, ext.jsse, ext.jce, ext.mail, ext.opencard, ext.jetty, ext.jceadapter">
     <javac srcdir="${ext}" destdir="${classes}"
         includes="**/apps/qsp/**"
         debug="${debug}"
