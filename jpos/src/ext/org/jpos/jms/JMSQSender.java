@@ -117,10 +117,8 @@ public class JMSQSender extends QBeanSupport implements JMSQSenderMBean,SpaceLis
                 sender.send ((Message) obj);
             } catch (JMSException e) {
                 log.error (e);
-                deaf2Space ();
+                restart ();
                 space.out (k, obj);
-                disconnectJMS ();
-                new Thread (this).start ();
             }
     }
 
@@ -185,6 +183,12 @@ public class JMSQSender extends QBeanSupport implements JMSQSenderMBean,SpaceLis
         } catch (InterruptedException e) { }
     }
 
+    private void restart () {
+        deaf2Space ();
+        disconnectJMS ();
+        new Thread (this).start ();
+    }
+
     /**
      * @jmx:managed-attribute description="Queue Connection Factory"
      */
@@ -199,6 +203,8 @@ public class JMSQSender extends QBeanSupport implements JMSQSenderMBean,SpaceLis
         this.connectionFactory = connectionFactory;
         setAttr (getAttrs(), "connectionFactory", connectionFactory);
         setModified (true);
+        if (jmsState == STARTED)
+            restart ();
     }
 
     /**
@@ -215,6 +221,8 @@ public class JMSQSender extends QBeanSupport implements JMSQSenderMBean,SpaceLis
         this.queueName = queueName;
         setAttr (getAttrs(), "queueName", queueName);
         setModified (true);
+        if (jmsState == STARTED)
+            restart ();
     }
 
     /**
@@ -231,6 +239,8 @@ public class JMSQSender extends QBeanSupport implements JMSQSenderMBean,SpaceLis
         this.username = username;
         setAttr (getAttrs(), "username", username);
         setModified (true);
+        if (jmsState == STARTED)
+            restart ();
     }
 
     /**
@@ -240,6 +250,8 @@ public class JMSQSender extends QBeanSupport implements JMSQSenderMBean,SpaceLis
         this.password = password;
         setAttr (getAttrs(), "password", password);
         setModified (true);
+        if (jmsState == STARTED)
+            restart ();
     }
 
     /**
@@ -263,13 +275,23 @@ public class JMSQSender extends QBeanSupport implements JMSQSenderMBean,SpaceLis
         this.spaceName = spaceName;
         setAttr (getAttrs(), "space", spaceName);
         setModified (true);
+        if (jmsState == STARTED) {
+            deaf2Space ();
+            space = TransientSpace.getSpace (spaceName);
+            listen2Space ();
+        } else 
+            space = TransientSpace.getSpace (spaceName);
     }
 
     /**
      * @jmx:managed-attribute description="Space Key"
      */
     public synchronized void setSpaceKey (String spaceKey) {
+        if (jmsState == STARTED)
+            deaf2Space ();
         this.spaceKey = spaceKey;
+        if (jmsState == STARTED)
+            listen2Space ();
         setAttr (getAttrs(), "spaceKey", spaceKey);
         setModified (true);
     }
