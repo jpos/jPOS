@@ -365,4 +365,20 @@ public class ISOUtil {
 		}
 		return prefix + "." + suffix;
 	}
+	/*
+	 * prepare long value used as amount for display
+	 * (implicit 2 decimals)
+	 * @param l value
+	 * @param len display len
+	 * @return formated field
+	 * @exception ISOException
+	 */
+	public static String formatAmount(long l, int len) throws ISOException {
+		String buf = Long.toString(l);
+		if (l < 100)
+			buf = zeropad(buf, 3);
+		StringBuffer s = new StringBuffer(padleft (buf, len-1, ' ') );
+		s.insert(len-3, '.');
+		return s.toString();
+	}
 }
