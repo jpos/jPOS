@@ -73,9 +73,9 @@ import org.jdom.Element;
  *                  extends="org.jpos.q2.QBeanSupportMBean"
  */
 
-public class ServerAdaptor
+public class QServer
     extends QBeanSupport
-    implements ServerAdaptorMBean 
+    implements QServerMBean 
 {
     private int port = 0;
     private int maxSessions = 100;
@@ -84,7 +84,7 @@ public class ServerAdaptor
     private ISOPackager packager = null;
     private ISOServer server;
 
-    public ServerAdaptor () {
+    public QServer () {
         super ();
     }
 
