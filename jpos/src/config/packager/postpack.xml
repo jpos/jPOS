@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE isopackager SYSTEM "genericpackager.dtd">
 
-<!-- Postillion field descriptions for GenericPackager -->
-
 <isopackager>
   <isofield
       id="0"
@@ -11,7 +9,7 @@
       class="org.jpos.iso.IFA_NUMERIC"/>
   <isofield
       id="1"
-      length="8"
+      length="16"
       name="BIT MAP"
       class="org.jpos.iso.IFB_BITMAP"/>
   <isofield
@@ -644,7 +642,7 @@
       id="127"  
       length="999"
       name="RESERVED PRIVATE USE"
-      class="org.jpos.iso.IFA_LLLBINARY"
+      class="org.jpos.iso.IFA_LLLLLLBINARY"
       packager="org.jpos.iso.packager.GenericSubFieldPackager">
       <isofield
           id="0"
@@ -783,4 +781,5 @@
       length="999"
       name="MAC 2"
       class="org.jpos.iso.IFA_LLLCHAR"/>
+
 </isopackager>
