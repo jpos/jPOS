@@ -15,14 +15,14 @@
  *
  * 3. The end-user documentation included with the redistribution,
  *    if any, must include the following acknowledgment:
- *    "This product includes software developed by the jPOS project 
- *    (http://www.jpos.org/)". Alternately, this acknowledgment may 
- *    appear in the software itself, if and wherever such third-party 
+ *    "This product includes software developed by the jPOS project
+ *    (http://www.jpos.org/)". Alternately, this acknowledgment may
+ *    appear in the software itself, if and wherever such third-party
  *    acknowledgments normally appear.
  *
- * 4. The names "jPOS" and "jPOS.org" must not be used to endorse 
- *    or promote products derived from this software without prior 
- *    written permission. For written permission, please contact 
+ * 4. The names "jPOS" and "jPOS.org" must not be used to endorse
+ *    or promote products derived from this software without prior
+ *    written permission. For written permission, please contact
  *    license@jpos.org.
  *
  * 5. Products derived from this software may not be called "jPOS",
@@ -31,14 +31,14 @@
  *
  * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  
- * IN NO EVENT SHALL THE JPOS PROJECT OR ITS CONTRIBUTORS BE LIABLE FOR 
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL 
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS 
- * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) 
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, 
- * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING 
- * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE JPOS PROJECT OR ITS CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+ * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+ * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  * ====================================================================
  *
@@ -46,120 +46,125 @@
  * individuals on behalf of the jPOS Project.  For more
  * information please see <http://www.jpos.org/>.
  */
-
 package org.jpos.q2.qbean;
 
-import org.jpos.util.Logger;
-import org.jpos.util.LogEvent;
-import org.jpos.util.LogSource;
-import org.jpos.core.Configurable;
-import org.jpos.core.Configuration;
-import org.jpos.core.SimpleConfiguration;
-import org.jpos.core.ConfigurationException;
-
-import org.jpos.q2.QBeanSupport;
+import org.jpos.q2.Q2;
+import org.jpos.q2.QBean;
 import org.jdom.Element;
 
-import javax.management.ObjectName;
-
-import mx4j.adaptor.http.ProcessorMBean;
-
-import java.io.IOException;
+import javax.management.*;
 
 /**
  * @author <a href="mailto:taherkordy@dpi2.dpi.net.ir">Alireza Taherkordi</a>
  *
- * &lt;task name="HttpAdaptor" class="org.jpos.apps.qsp.task.HttpAdaptor"
- *     logger="qsp" realm="Http-Adaptor"&gt;
- *  &lt;property name="host" value="localhost" /&gt;
- *  &lt;property name="port" value="8082" /&gt;
- *  &lt;property name="user" value="jpos" /&gt;
- *  &lt;property name="password" value="jpos" /&gt;
- *  &lt;property name="processor" value="mx4j.adaptor.http.XSLTProcessor" /&gt;
- * &lt;/task>
+ * <http-adaptor class="org.jpos.q2.qbean.HttpAdaptor"
+ *                       name="service=http-adaptor" >
+ *  <attr name="host">localhost</attr>
+ *  <attr name="port" type="java.lang.Integer">8082</attr>
+ * </http-adaptor>
  *
- * set host property to "localhost" if you want to can't access the server 
+ * set host property to "localhost" if you want to can't access the server
  * from another computer,This is good for security reasons.
  *
  * @version $Revision$ $Date$
  */
-public class HttpAdaptor 
-    extends QBeanSupport 
-    implements LogSource, Configurable
+public class HttpAdaptor
+            extends mx4j.adaptor.http.HttpAdaptor
+        implements  HttpAdaptorMBean , QBean
 {
-    Configuration cfg;
-    Logger logger;
-    String realm;
-    mx4j.adaptor.http.HttpAdaptor adaptor;
+    Element persist;
+    int state;
+    Q2 server;
+    boolean modified;
+    ObjectName processorName;
 
-    public HttpAdaptor () {
-        super();
-        adaptor = new mx4j.adaptor.http.HttpAdaptor();
+    public void setServer (Q2 server) {
+        this.server = server;
     }
-    public void setLogger (Logger logger, String realm) {
-        this.logger = logger;
-        this.realm = realm;
+    public Q2 getServer () {
+        return server;
     }
-    public Logger getLogger () {
-        return logger;
-    }
-    public String getRealm () {
-        return realm;
-    }
-    public void setConfiguration (Configuration cfg) 
-        throws ConfigurationException
-    {
-        this.cfg = cfg;
-        try {
-            int port = cfg.getInt ("port", 8080);
-            ObjectName name = new ObjectName(
-                "HttpAdaptor:name=HttpAdaptor,port=" + port
-            );
-            adaptor.setPort (port);
 
-            String host = cfg.get ("host", "0.0.0.0");
-            adaptor.setHost(host);
 
-            String user = cfg.get ("user", null);
-            if (user != null) {
-                adaptor.addAuthorization(user,cfg.get ("password", ""));
-                adaptor.setAuthenticationMethod("basic");
-            }
-            getServer ().getMBeanServer().registerMBean (adaptor, name);
-
-            String processor = cfg.get ("processor", null);
-            if (processor!=null) {
-                ObjectName processorName = new ObjectName("HttpAdaptor:name=" + processor);
-                ProcessorMBean processorMBean = (ProcessorMBean)Class.forName(processor).newInstance();
-                getServer ().getMBeanServer().registerMBean(processorMBean,processorName);
-                adaptor.setProcessorName(processorName);
-            }
-            else{
-                ObjectName processorName = new ObjectName("HttpAdaptor:name=mx4j.adaptor.http.XSLTProcessor");
-                mx4j.adaptor.http.XSLTProcessor processorMBean = new mx4j.adaptor.http.XSLTProcessor();
-                getServer().getMBeanServer().registerMBean(processorMBean,processorName);
-                adaptor.setProcessorName(processorName);
-            }
-            Logger.log (new LogEvent (this, "register", name.toString()));
-        } catch (Exception e) {
-            throw new ConfigurationException (e);
-        }
-    }
-    public void initService()
+    public void init ()
     {
         try {
-            setConfiguration (new SimpleConfiguration ());
+            processorName = new ObjectName("MX4J:name=mx4j.adaptor.http.XSLTProcessor");
+            mx4j.adaptor.http.XSLTProcessor processorMBean = new mx4j.adaptor.http.XSLTProcessor();
+            getServer().getMBeanServer().registerMBean(processorMBean,processorName);
+            setProcessorName(processorName);
         } catch (Exception e) {
-            e.printStackTrace ();
+            e.printStackTrace(System.out);
         }
-    }
-    public void startService () throws Exception{
-        adaptor.start ();
-    }
 
-    public void stopService () throws Exception{
-        adaptor.stop();
     }
+    public void start()
+    {
+        if (state != QBean.DESTROYED &&
+            state != QBean.STOPPED   &&
+            state != QBean.FAILED)
+           return;
 
+        this.state = QBean.STARTING;
+
+        try {
+           super.start();
+        } catch (Throwable t) {
+           state = QBean.FAILED;
+           t.printStackTrace();
+           return;
+        }
+        state = QBean.STARTED;
+    }
+    public void stop ()
+    {
+        if (state != QBean.STARTED)
+           return;
+        state = QBean.STOPPING;
+        try {
+           super.stop();
+        } catch (Throwable t) {
+           state = QBean.FAILED;
+           t.printStackTrace();
+           return;
+        }
+        state = QBean.STOPPED;
+    }
+    public void destroy ()
+    {
+        if (state == QBean.DESTROYED)
+           return;
+        if (state != QBean.STOPPED)
+           stop();
+
+        try {
+            getServer().getMBeanServer().unregisterMBean(processorName);
+        } catch (Exception e) {
+            e.printStackTrace(System.out);
+        }
+
+        state = QBean.DESTROYED;
+    }
+    public int getState () {
+        return state;
+    }
+    public void setState (int state) {
+        this.state = state;
+    }
+    public void setPersist (Element persist) {
+        this.persist = persist ;
+    }
+    public synchronized Element getPersist () {
+        setModified (false);
+        return persist;
+    }
+    public synchronized void setModified (boolean modified) {
+        this.modified = modified;
+    }
+    public synchronized boolean isModified () {
+        return modified;
+    }
+    protected boolean running () {
+        return state == QBean.STARTING || state == QBean.STARTED;
+    }
 }
-
