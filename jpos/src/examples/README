@@ -5,10 +5,8 @@ This directory contains examples that demonstrate the use of jPOS classes.
 In order to run the examples you have to
 (from your base jPOS installation directory)
 
-   build examples
+   bin/build examples
    example <example-name> (i.e. example hello)
-
-(add .sh or .bat depending on your OS)
 
 We recommend that you read them in the following order:
 
