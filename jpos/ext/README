@@ -18,3 +18,5 @@ In order to build 'ext' module you will have to install here
   - jsse.jar and jnet.jar from Sun's JSSE distro (required by
     SunJSSESocketFactory)
 
+  - jce.jar (1.2.1+) required by CryptoPackager
+
