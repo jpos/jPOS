@@ -64,7 +64,7 @@ import org.jpos.space.SpaceListener;
  * @jmx:mbean description="JMS Q Sender"
  *      extends="org.jpos.q2.QBeanSupportMBean"
  */
-public class JMSQSender extends QBeanSupport implements JMSQSenderMBean,SpaceListener {
+public class JMSQSender extends QBeanSupport implements JMSQSenderMBean,SpaceListener,Runnable {
     private QueueConnectionFactory queueConnectionFactory = null;
     private QueueConnection queueConnection = null;
     private Queue queue = null;
@@ -80,6 +80,9 @@ public class JMSQSender extends QBeanSupport implements JMSQSenderMBean,SpaceLis
 
     private LocalSpace space = null;
 
+    private int jmsState = STOPPED;
+    private long jmsRetryInterval = 5000;
+
     public JMSQSender () {
         super ();
     }
@@ -91,36 +94,20 @@ public class JMSQSender extends QBeanSupport implements JMSQSenderMBean,SpaceLis
             throw new Q2ConfigurationException ("Queue name not specified");
         if ((spaceName == null) || (spaceKey == null))
             throw new Q2ConfigurationException ("Space Name or Key not specified");
+        space = TransientSpace.getSpace (spaceName);
         try {
-            space = TransientSpace.getSpace (spaceName);
-            queueConnectionFactory = Utilities.getQueueConnectionFactory (connectionFactory);
-            if (username == null)
-                queueConnection = Utilities.getQueueConnection (queueConnectionFactory);
-            else
-                queueConnection = Utilities.getQueueConnection (queueConnectionFactory, username, password);
-            queue = Utilities.getQueue (queueName);
-            queueSession = queueConnection.createQueueSession (false, Session.AUTO_ACKNOWLEDGE);
-            sender = queueSession.createSender (queue);
-            queueConnection.start ();
+            connect2JMS ();
             listen2Space ();
+            jmsState = STARTED;
         } catch (Exception e) {
-            throw new Q2ConfigurationException ("Config failure", e);
+            log.warn ("JMS connection problems! Misconfigured? Retrying anyway", e);
+            new Thread (this).start ();
         }
     }
 
     protected void stopService () {
-        try {
-            deaf2Space ();
-            queueConnection.stop ();
-            sender.close ();
-            sender = null;
-            queueSession.close ();
-            queueSession = null;
-            queueConnection.close ();
-            queueConnection = null;
-        } catch (JMSException e) {
-            log.error (e);
-        }
+        deaf2Space ();
+        disconnectJMS ();
     }
 
     public void notify (Object k, Object value) {
@@ -130,15 +117,72 @@ public class JMSQSender extends QBeanSupport implements JMSQSenderMBean,SpaceLis
                 sender.send ((Message) obj);
             } catch (JMSException e) {
                 log.error (e);
+                deaf2Space ();
+                space.out (k, obj);
+                disconnectJMS ();
+                new Thread (this).start ();
             }
     }
 
+    public void run () {
+        log.info ("run");
+        while (jmsState != STARTED) {
+            relax (jmsRetryInterval);
+            try {
+                connect2JMS ();
+                jmsState = STARTED;
+                listen2Space ();
+                log.info ("JMS connection established");
+            } catch (Exception e) {
+                log.warn ("Still no JMS connection! Retrying", e);
+            }
+        }
+    }
+
+    private void connect2JMS() throws Exception {
+        log.info ("connect2JMS");
+        queueConnectionFactory = Utilities.getQueueConnectionFactory (connectionFactory);
+        if (username == null)
+            queueConnection = Utilities.getQueueConnection (queueConnectionFactory);
+        else
+            queueConnection = Utilities.getQueueConnection (queueConnectionFactory, username, password);
+        queue = Utilities.getQueue (queueName);
+        queueSession = queueConnection.createQueueSession (false, Session.AUTO_ACKNOWLEDGE);
+        sender = queueSession.createSender (queue);
+        queueConnection.start ();
+    }
+
+    private void disconnectJMS() {
+        log.info ("disconnectJMS");
+        try {
+            queueConnection.stop ();
+            sender.close ();
+            queueSession.close ();
+            queueConnection.close ();
+        } catch (JMSException e) {
+            log.error (e);
+        } finally {
+            sender = null;
+            queueSession = null;
+            queueConnection = null;
+            jmsState = STOPPED;
+        }
+    }
+
     private void listen2Space() {
+        log.info ("listen2Space");
         space.addListener (spaceKey, this);
     }
 
     private void deaf2Space() {
+        log.info ("deaf2Space");
         space.removeListener (spaceKey, this);
+    }
+
+    private void relax (long sleep) {
+        try {
+            Thread.sleep (sleep);
+        } catch (InterruptedException e) { }
     }
 
     /**
@@ -151,8 +195,9 @@ public class JMSQSender extends QBeanSupport implements JMSQSenderMBean,SpaceLis
     /**
      * @jmx:managed-attribute description="Queue Connection Factory"
      */
-    public void setConnectionFactory (String connectionFactory) {
+    public synchronized void setConnectionFactory (String connectionFactory) {
         this.connectionFactory = connectionFactory;
+        setAttr (getAttrs(), "connectionFactory", connectionFactory);
         setModified (true);
     }
 
@@ -166,8 +211,9 @@ public class JMSQSender extends QBeanSupport implements JMSQSenderMBean,SpaceLis
     /**
      * @jmx:managed-attribute description="Queue Name"
      */
-    public void setQueueName (String queueName) {
+    public synchronized void setQueueName (String queueName) {
         this.queueName = queueName;
+        setAttr (getAttrs(), "queueName", queueName);
         setModified (true);
     }
 
@@ -181,16 +227,18 @@ public class JMSQSender extends QBeanSupport implements JMSQSenderMBean,SpaceLis
     /**
      * @jmx:managed-attribute description="Username"
      */
-    public void setUsername (String username) {
+    public synchronized void setUsername (String username) {
         this.username = username;
+        setAttr (getAttrs(), "username", username);
         setModified (true);
     }
 
     /**
      * @jmx:managed-attribute description="Password"
      */
-    public void setPassword (String password) {
+    public synchronized void setPassword (String password) {
         this.password = password;
+        setAttr (getAttrs(), "password", password);
         setModified (true);
     }
 
@@ -211,16 +259,18 @@ public class JMSQSender extends QBeanSupport implements JMSQSenderMBean,SpaceLis
     /**
      * @jmx:managed-attribute description="Out Space"
      */
-    public void setSpace (String spaceName) {
+    public synchronized void setSpace (String spaceName) {
         this.spaceName = spaceName;
+        setAttr (getAttrs(), "space", spaceName);
         setModified (true);
     }
 
     /**
      * @jmx:managed-attribute description="Space Key"
      */
-    public void setSpaceKey (String spaceKey) {
+    public synchronized void setSpaceKey (String spaceKey) {
         this.spaceKey = spaceKey;
+        setAttr (getAttrs(), "spaceKey", spaceKey);
         setModified (true);
     }
 
@@ -229,5 +279,35 @@ public class JMSQSender extends QBeanSupport implements JMSQSenderMBean,SpaceLis
      */
     public String getSpaceKey () {
         return spaceKey;
+    }
+
+    /**
+     * @jmx:managed-attribute description="JMS connection retry interval"
+     */
+    public long getJmsRetryInterval () {
+        return jmsRetryInterval;
+    }
+
+    /**
+     * @jmx:managed-attribute description="JMS connection retry interval"
+     */
+    public synchronized void setJmsRetryInterval (long retryInterval) {
+        jmsRetryInterval = retryInterval;
+        setAttr (getAttrs(), "jmsRetryInterval", new Long(jmsRetryInterval));
+        setModified (true);
+    }
+
+    /**
+     * @jmx:managed-attribute description="JMS state"
+     */
+    public int getJmsState () {
+        return jmsState;
+    }
+
+    /**
+     * @jmx:managed-attribute description "JMS state As String"
+     */
+    public String getJmsStateAsString () {
+        return jmsState >= 0 ? stateString[jmsState] : "Unknown";
     }
 }
