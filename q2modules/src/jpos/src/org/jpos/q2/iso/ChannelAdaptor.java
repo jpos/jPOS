@@ -279,7 +279,7 @@ public class ChannelAdaptor
         if (running() && (sp.rdp (ready) == null))
             sp.out (ready, new Object ());
     }
-    protected void disconnect () {
+    protected synchronized void disconnect () {
         try {
             while (sp.inp (ready) != null)
                 ;
