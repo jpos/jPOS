@@ -16,15 +16,14 @@ fi
 
 JAVA=$JAVA_HOME/bin/java
 
-CLASSPATH=./build/classes:./build/examples:$CLASSPATH
+CLASSPATH=build/classes:build/examples:lib/xerces_1_2_3.jar:lib/xalan_2_0_0.jar:lib/log4j.jar 
 CLASSPATH=`echo ext/*.jar | tr ' ' ':'`:$CLASSPATH
-CLASSPATH=`echo lib/*.jar | tr ' ' ':'`:$CLASSPATH
-CLASSPATH=$JAVA_HOME/lib/tools.jar:$CLASSPATH
 
 if [ -z $1 ] ; then
   echo "Usage: example <package>";
   exit;
 fi
+
 $JAVA -cp $CLASSPATH -Djpos.config=src/etc/jpos.cfg \
 	-Djava.compiler=NONE \
 	-Dsax.parser=org.apache.xerces.parsers.SAXParser \
