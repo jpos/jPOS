@@ -114,10 +114,10 @@ public class LogChannel extends BaseChannel {
         boolean inMsg = false;
         while (reader != null) {
             String s = reader.readLine();
-            if (s.indexOf ("<isomsg") >= 0)
-                inMsg = true;
             if (s == null)
                 throw new EOFException();
+            if (s.indexOf ("<isomsg") >= 0)
+                inMsg = true;
             if (inMsg) 
                 sb.append (s);
             if (s.indexOf ("</isomsg>") >= 0)
