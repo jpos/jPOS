@@ -51,7 +51,6 @@ public class QSP implements ErrorHandler, LogProducer {
 	Logger.log (new LogEvent (this, "fatalError", e));
 	throw e;
     }
-
     public void setLogger (Logger logger, String realm) {
 	this.logger = logger;
 	this.realm  = realm;
@@ -62,14 +61,12 @@ public class QSP implements ErrorHandler, LogProducer {
     public Logger getLogger () {
 	return logger;
     }
-
     public void configure (String tagname) throws ConfigurationException {
 	QSPConfigurator configurator = QSPConfiguratorFactory.create (tagname);
 	NodeList nodes = config.getElementsByTagName (tagname);
 	for (int i=0; i<nodes.getLength(); i++) 
 	    configurator.config (this, nodes.item(i));
     }
-
     public static void main (String args[]) {
 	DOMParser parser = new DOMParser();
 	QSP qsp = new QSP();
@@ -84,6 +81,7 @@ public class QSP implements ErrorHandler, LogProducer {
 	    qsp.configure ("channel");
 	    qsp.configure ("filter");
 	    qsp.configure ("mux");
+	    qsp.configure ("request-listener");
 	    qsp.configure ("task");
 	    new SystemMonitor (3600000, qsp.getLogger(), "monitor");
 	} catch (IOException e) {

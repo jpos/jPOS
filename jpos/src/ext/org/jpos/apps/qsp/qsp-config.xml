@@ -20,9 +20,14 @@
     <property name="reread" value="yes" />
    </filter>
    <filter class="org.jpos.iso.filter.DelayFilter" direction="incoming">
-    <property name="delay" value="5000" />
+    <property name="delay" value="1000" />
    </filter>
   </channel>
+  <!--request-listener class="org.jpos.apps.qsp.Connector"
+    logger="qsp" realm="acme.mux.request.listener">
+    <property name="destination-mux" value="acme.mux" />
+    <property name="timeout" value="15000" />
+  </request-listener -->
  </mux>
 
  <task class="org.jpos.apps.qsp.task.Sender" logger="qsp" realm="acme-sender">
