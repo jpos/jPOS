@@ -115,6 +115,7 @@
     <uptodate property="xdoclet-generate">
       <srcfiles dir="${main}" includes="org/jpos/q2/QClassLoader.java" />
       <srcfiles dir="${main}" includes="org/jpos/q2/qbean/QTest.java" />
+      <srcfiles dir="${main}" includes="org/jpos/q2/qbean/QMUX.java" />
       <srcfiles dir="${main}" includes="org/jpos/q2/qbean/ChannelAdaptor.java" />
       <mapper type="glob" from="*.java" to="*MBean.java"/>
     </uptodate>
@@ -129,6 +130,7 @@
       <fileset dir="${main}">
         <include name="org/jpos/q2/QClassLoader.java" />
         <include name="org/jpos/q2/qbean/QTest.java" />
+        <include name="org/jpos/q2/qbean/QMUX.java" />
         <include name="org/jpos/q2/qbean/ChannelAdaptor.java" />
       </fileset>
       <mbeaninterface/>
