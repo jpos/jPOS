@@ -120,7 +120,7 @@ public class QBeanSupport implements QBean, QPersist, QBeanSupportMBean {
             }
         }
     }
-    public void start() {
+    public synchronized void start() {
         if (state != QBean.DESTROYED && 
             state != QBean.STOPPED   && 
             state != QBean.FAILED)
@@ -137,7 +137,7 @@ public class QBeanSupport implements QBean, QPersist, QBeanSupportMBean {
         }
         state = QBean.STARTED;
     }
-    public void stop () {
+    public synchronized void stop () {
         if (state != QBean.STARTED)
            return;
         state = QBean.STOPPING;
