@@ -3,5 +3,6 @@
  <in>receive</in>
  <out>send</out>
  <unhandled>unhandled</unhandled>
+ <request-listener class="bouncer.Bouncer" logger="Q2" realm="bouncer" />
 </mux>
 
