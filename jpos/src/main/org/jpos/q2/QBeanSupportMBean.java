@@ -56,17 +56,10 @@ import org.jpos.iso.ISOUtil;
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
  * @version $Revision$ $Date$
  */
-public interface QBeanSupportMBean {
-    public void init ();
-    public void start();
-    public void stop ();
-    public void destroy ();
-    public int  getState ();
-    public boolean isModified ();
+public interface QBeanSupportMBean extends QBean, QPersist {
     public void setServer (Q2 server);
     public Q2 getServer ();
     public void setPersist (Element e);
-    public Element getPersist ();
     public void setName (String name);
     public String getName ();
     public void setLogger (String name);
