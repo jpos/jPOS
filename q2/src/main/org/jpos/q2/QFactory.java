@@ -135,7 +135,7 @@ public class QFactory {
 
         ObjectName objectName = new ObjectName (Q2.QBEAN_NAME + name);
         MBeanServer mserver = server.getMBeanServer();
-
+        if(mserver.isRegistered(objectName)) mserver.unregisterMBean(objectName);
         ObjectInstance instance = mserver.registerMBean (
             obj, objectName 
         );
