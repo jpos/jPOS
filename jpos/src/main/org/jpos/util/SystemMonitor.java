@@ -66,6 +66,12 @@ public class SystemMonitor implements Runnable, LogSource, Loggeable
     private Thread thread = null;
 
     /**
+     * noargs constructor
+     */
+    public SystemMonitor () {
+        super();
+    }
+    /**
      * @param sleepTime sleep
      * @param logger current logger
      * @param realm  instance realm
