@@ -52,7 +52,7 @@
     logger="qsp" realm="dummyclient.mux" connect="yes">
   <channel name="dummyclient.channel" 
           class="org.jpos.iso.channel.ASCIIChannel" 
-          packager="org.jpos.iso.packager.ConfigurablePackager"
+          packager="org.jpos.iso.packager.GenericPackager"
 	  packager-config="src/config/packager/iso87ascii.xml"
 	  packager-logger="qsp" 
 	  packager-realm="packager"
