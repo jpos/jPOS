@@ -126,7 +126,11 @@ Main targets:
      <include name="**/CryptoPackager.java"             if="jce.present"     />
      <include name="**/security/jceadapter/**"          if="jce.present"     />
 
-     <include name="**/TLV*Packager.java"           if="opencard.present"    />
+     <include name="**/TLVPackager.java"            if="opencard.present"    />
+     <include name="**/TLVSubFieldPackager.java"    if="opencard.present"    />
+     <include name="**/ISO93BTLVPackager.java"          if="optf.present"    />
+     <include name="**/TLVField.java"                   if="optf.present"    />
+     <include name="**/IFB_LLLTLVBINARY.java"           if="optf.present"    />
      <include name="**/ui/factory/SwiXMLFactory.java" if="swixml.present"    />
   </patternset>
 
@@ -223,6 +227,9 @@ Main targets:
     <available property="opencard.present"
            classpathref="ext.classpath"
               classname="opencard.opt.util.TLV" />
+    <available property="optf.present"
+           classpathref="ext.classpath"
+              classname="optfx.util.tlv.RawTLV" />
     <available property="jep.present"
            classpathref="ext.classpath"
               classname="org.nfunk.jep.JEP" />

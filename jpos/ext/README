@@ -27,7 +27,11 @@ install here (or anywhere within your CLASSPATH) these optional files:
 
   - ejb.jar (required by QSP's EJBConnector)
 
-  - base-opt.jar (see www.opencard.org - required by TLVPackager)
+  - base-opt.jar (see www.opencard.org - required by TLVPackager 
+    deprecated see TLVField/ISO93BTLVPackager instead)
+
+  - optf.jar required by TLVField/ISO93BTLVPackager
+    (see www.globalplatform.org)
 
   - jep.jar (used by CalculateFilter and SQLFilter)
     see http://sf.net/projects/jep

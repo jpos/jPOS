@@ -1,6 +1,7 @@
 $Id$
 
 -- 1.4.7 --
+New ISO93BTLVPackager/TLVField, etc.
 LogListener.log now returns a [possibly null] LogEvent
 New package org.jpos.ui
 Added org.jpos.bsh (BSHFilter, BSHRequestListener)
