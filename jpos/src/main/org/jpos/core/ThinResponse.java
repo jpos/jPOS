@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.6  2000/03/02 12:31:01  apr
+ * Get rid of javadoc warnings - done
+ *
  * Revision 1.5  2000/03/01 14:44:38  apr
  * Changed package name to org.jpos
  *
@@ -40,11 +43,35 @@ import org.jpos.util.Loggeable;
  * to jPOS Agents)
  */
 public class ThinResponse implements CardTransactionResponse, Loggeable {
+
+   /**
+    * @serial
+    */
     public String code;
+
+   /**
+    * @serial
+    */
     public String message;
+
+   /**
+    * @serial
+    */
     public String autNumber;
+
+   /**
+    * @serial
+    */
     public boolean authoritative;
+
+   /**
+    * @serial
+    */
     public boolean canContinue;
+
+   /**
+    * @serial
+    */
     public boolean approved;
 
     public ThinResponse(CardTransactionResponse c) {

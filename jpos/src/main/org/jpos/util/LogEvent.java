@@ -7,6 +7,9 @@ import java.sql.SQLException;
 
 /*
  * $Log$
+ * Revision 1.3  2000/03/02 12:31:10  apr
+ * Get rid of javadoc warnings - done
+ *
  * Revision 1.2  2000/03/01 14:44:45  apr
  * Changed package name to org.jpos
  *
@@ -33,8 +36,17 @@ import java.sql.SQLException;
  * @serial
  */
 public class LogEvent extends EventObject {
+   /**
+    * @serial
+    */
     LogProducer source;
+   /**
+    * @serial
+    */
     public String tag;
+   /**
+    * @serial
+    */
     public Vector payLoad;
     
     public LogEvent (LogProducer source, String tag) {

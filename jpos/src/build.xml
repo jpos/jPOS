@@ -84,7 +84,7 @@
     <deltree dir="${build}/doc/javadoc" />
     <mkdir   dir="${build}/doc/javadoc" />
     <copydir src="${doc}/images"  dest="${build}/doc/images" />
-    <javadoc sourcepath="${main}"
+    <javadoc2 sourcepath="${main}"
 	destdir="${build}/doc/javadoc" dir="."
         windowtitle="jPOS ${version} API Documentation" 
         doctitle="jPOS ${version} API Documentation" 
@@ -92,7 +92,8 @@
 	footer="CompuService Srl."
 	public="true" noindex="true" author="true" 
 	overview="${doc}/javadoc/Overview.html"
-        packagenames="org.jpos.util, org.jpos.iso, org.jpos.core.*" />
+        packagenames="org.jpos.util, org.jpos.iso, org.jpos.core.*"
+    />
   </target>
 
   <target name="extdoc" depends="ext">
@@ -105,7 +106,7 @@
     <copydir src="${main}" dest="${build}/doc/tmp" />
     <copydir src="${ext}"  dest="${build}/doc/tmp" />
     <copydir src="${doc}/images"  dest="${build}/doc/images" />
-    <javadoc sourcepath="${main}"
+    <javadoc2 sourcepath="${main}"
 	destdir="${build}/doc/javadoc" dir="."
         windowtitle="jPOS ${version} API Documentation" 
         doctitle="jPOS ${version} API Documentation" 
@@ -113,7 +114,8 @@
 	footer="CompuService Srl."
 	public="true" noindex="true" author="true" 
 	overview="${doc}/javadoc/Overview.html"
-        packagenames="org.jpos.util, org.jpos.iso, org.jpos.core.*" />
+        packagenames="org.jpos.util, org.jpos.iso, org.jpos.core.*"
+    />
     <deltree dir="${build}/doc/tmp" />
   </target>
 

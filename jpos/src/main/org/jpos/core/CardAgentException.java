@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.5  2000/03/02 12:31:01  apr
+ * Get rid of javadoc warnings - done
+ *
  * Revision 1.4  2000/03/01 14:44:38  apr
  * Changed package name to org.jpos
  *
@@ -22,6 +25,9 @@ package org.jpos.core;
  * @since jPOS 1.1
  */
 public class CardAgentException extends Exception {
+    /**
+     * @serial
+     */
     Exception e = null;
 
     public CardAgentException () {

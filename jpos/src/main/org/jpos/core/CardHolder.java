@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.7  2000/03/02 12:31:01  apr
+ * Get rid of javadoc warnings - done
+ *
  * Revision 1.6  2000/03/01 14:44:38  apr
  * Changed package name to org.jpos
  *
@@ -41,18 +44,22 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
     private static final int  MINPANLEN        = 10;
     /**
      * Primary Account Number
+     * @serial
      */
     protected String pan;
     /**
      * Expiration date (YYMM)
+     * @serial
      */
     protected String exp;
     /**
      * Track2 trailler
+     * @serial
      */
     protected String trailler;
     /**
      * Optional security code (CVC, CVV, Locale ID, wse)
+     * @serial
      */
     protected String securityCode;
 
@@ -236,7 +243,7 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
      * for security reasons.
      * @param p a PrintStream usually suplied by Logger
      * @param indent ditto
-     * @see org.jpos.iso.Loggeable
+     * @see org.jpos.util.Loggeable
      */
     public void dump (PrintStream p, String indent) {
         p.print (indent + "<CardHolder");

@@ -29,7 +29,6 @@ public class IF_NOP extends ISOFieldPackager {
      * @param b - binary image
      * @param offset - starting offset within the binary image
      * @return consumed bytes
-     * @exception ISOException
      */
     public int unpack (ISOComponent c, byte[] b, int offset) {
         return 0;

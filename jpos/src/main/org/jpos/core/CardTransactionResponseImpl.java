@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.4  2000/03/02 12:31:01  apr
+ * Get rid of javadoc warnings - done
+ *
  * Revision 1.3  2000/03/01 14:44:38  apr
  * Changed package name to org.jpos
  *
@@ -28,9 +31,24 @@ import org.jpos.core.*;
  */
 public class CardTransactionResponseImpl implements CardTransactionResponse
 {
+   /**
+    * @serial
+    */
     CardAgent agent;
+
+   /**
+    * @serial
+    */
     byte[] image;
+
+   /**
+    * @serial
+    */
     ISOMsg[] msg;
+
+   /**
+    * @serial
+    */
     int flags;
 
     public static final int AUTHORIZATION = 0x00000001;

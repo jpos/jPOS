@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.5  2000/03/02 12:31:01  apr
+ * Get rid of javadoc warnings - done
+ *
  * Revision 1.4  2000/03/01 14:44:38  apr
  * Changed package name to org.jpos
  *
@@ -69,7 +72,6 @@ public class CardAgentLookup {
      * locate agent able to process a given CardTransaction
      * @param t CardTransaction holding an Operation to be performed
      * @return suitable array of agents
-     * @exception CardAgentNotFoundException
      */
     synchronized public static CardAgent[] getAgents (CardTransaction t) {
 	ArrayList l = new ArrayList();

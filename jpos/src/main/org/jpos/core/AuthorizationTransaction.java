@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.8  2000/03/02 12:31:01  apr
+ * Get rid of javadoc warnings - done
+ *
  * Revision 1.7  2000/03/01 14:44:38  apr
  * Changed package name to org.jpos
  *
@@ -47,20 +50,48 @@ import org.jpos.util.Loggeable;
  * @see CardTransaction
  * @see CardAgentLookup
  * @see CardHolder
+ * @serial
  */
 public class AuthorizationTransaction
     implements CardTransaction, Loggeable
 {
+    /**
+     * @serial
+     */
     public CardHolder cardHolder;
+    /**
+     * @serial
+     */
     public BigDecimal amount;
+    /**
+     * @serial
+     */
     public Integer currency;
+    /**
+     * @serial
+     */
     public String rrn;
+    /**
+     * @serial
+     */
     public String terminal;
+    /**
+     * @serial
+     */
     public String purchasePlan;
+    /**
+     * @serial
+     */
     public byte numberOfPayments;
-
+    /**
+     * @serial
+     */
     protected String action;
+    /**
+     * @serial
+     */
     protected String[] args = { "" };
+
     private transient CardTransactionResponse response;
 
     public AuthorizationTransaction() {
