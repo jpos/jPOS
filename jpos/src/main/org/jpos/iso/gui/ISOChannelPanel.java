@@ -1,5 +1,9 @@
 /*
  * $Log$
+ * Revision 1.9  2000/04/26 00:47:47  apr
+ * Temporary workaround allows ISOChannelPanel to Observe ISOServer as well
+ * as ISOChannel
+ *
  * Revision 1.8  2000/04/24 01:55:38  apr
  * clone logged message
  *
@@ -97,7 +101,6 @@ public class ISOChannelPanel extends JPanel implements Observer {
     }
 
     public void update(Observable o, Object arg) {
-        ISOChannel c = (ISOChannel) o;
         if (arg != null && arg instanceof ISOMsg) {
             ISOMsg m = (ISOMsg) arg;
             try {
@@ -118,16 +121,20 @@ public class ISOChannelPanel extends JPanel implements Observer {
             }
             meter.setValue(ISOMeter.mass);
         }
-        meter.setConnected(c.isConnected());
-        int cnt[] = c.getCounters();
-        try {
-            meter.setPositiveCounter(
-                ISOUtil.zeropad(Integer.toString(cnt[ISOChannel.TX]), 6)
-            );
-            meter.setNegativeCounter(
-                ISOUtil.zeropad(Integer.toString(cnt[ISOChannel.RX]), 6)
-            );
-        } catch (ISOException e) { }
+	if (o instanceof ISOChannel) {
+	    ISOChannel c = (ISOChannel) o;
+	    meter.setConnected(c.isConnected());
+	    int cnt[] = c.getCounters();
+	    try {
+		meter.setPositiveCounter(
+		    ISOUtil.zeropad(Integer.toString(cnt[ISOChannel.TX]), 6)
+		);
+		meter.setNegativeCounter(
+		    ISOUtil.zeropad(Integer.toString(cnt[ISOChannel.RX]), 6)
+		);
+	    } catch (ISOException e) { }
+	} else 
+	    meter.setConnected(true);
     }
 
     private JPanel createCountersPanel() {
