@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.4  2000/03/14 12:58:49  apr
+ * Autoanswer with ATS0=1 instead of RING+ATA
+ *
  * Revision 1.3  2000/03/14 00:00:12  apr
  * Added answer method
  *
@@ -31,7 +34,6 @@ import javax.comm.*;
 public class SimpleDialupModem implements Modem {
     V24 v24;
     String dialPrefix = "DT";
-    String answerCommand = "ATA\r";
     public final String[] resultCodes = {
 	"OK\r",
 	"CONNECT\r",
@@ -50,9 +52,6 @@ public class SimpleDialupModem implements Modem {
     }
     public void setDialPrefix (String dialPrefix) {
 	this.dialPrefix = dialPrefix;
-    }
-    public void setAnswerCommand (String answerCommand) {
-	this.answerCommand = answerCommand + "\r";
     }
     private boolean checkAT() throws IOException {
 	return v24.waitfor ("AT\r", resultCodes, 10000) == 0;
@@ -106,13 +105,14 @@ public class SimpleDialupModem implements Modem {
 	v24.setAutoFlushReceiver(false);
 	if (!checkAT())
 	    throw new IOException ("unable to initialize modem (0)");
-	if (v24.waitfor ("ATV1Q0S0=0H0\r", resultCodes, 10000) != 0)
+	if (v24.waitfor ("ATB0V1Q0S0=1\r", resultCodes, 10000) != 0)
 	    throw new IOException ("unable to initialize modem (1)");
-	if (v24.waitfor ("RING", 10*60*1000) != 0)
-	    throw new IOException ("10 minutes Idle - reinitializing");
-	v24.flushReceiver();
-	if (v24.waitfor (answerCommand, "CONNECT", 20*1000) != 0)
-	    throw new IOException ("NO CARRIER Answering");
+	if (v24.waitfor ("CONNECT", 10*60*1000) != 0)
+	    throw new IOException ("NO CALLS so far - reinitializing");
 	v24.setAutoFlushReceiver(true);
+	try {
+	    Thread.sleep (1000);
+	} catch (InterruptedException e) { }
+	v24.setAutoFlushReceiver(false);
     }
 }
