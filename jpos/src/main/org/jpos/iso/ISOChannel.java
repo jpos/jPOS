@@ -155,7 +155,7 @@ public abstract class ISOChannel extends Observable {
 		byte[] b = m.pack();
 		System.out.println (
 			"--[pack]--\n"+ ISOUtil.hexString(b) + "\n--[end]--");
-		sendMessageLength(b.length);
+		sendMessageLength(b.length + getHeaderLength());
 		sendMessageHeader(m, b.length);
 		serverOut.write(b, 0, b.length);
 		sendMessageTrailer(m, b.length);

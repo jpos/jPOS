@@ -61,6 +61,7 @@ public class BASE1Header {
 		header[2] = (byte) format;
 	}
 	public void setLen(int len) {
+		len += LENGTH;
 		header[3]  = (byte) ((len >> 8) & 0xff);
 		header[4]  = (byte) (len        & 0xff);
 	}
@@ -71,5 +72,11 @@ public class BASE1Header {
 	public void setSource(String src) {
 		byte[] d = ISOUtil.str2bcd(src, true);
 		System.arraycopy(d, 0, header, 8, 3);
+	}
+	public void swapDirection() {
+		byte[] source = new byte[3];
+		System.arraycopy(header, 8, source, 0, 3);
+		System.arraycopy(header, 5, header, 8, 3);
+		System.arraycopy(source, 0, header, 5, 3);
 	}
 };
