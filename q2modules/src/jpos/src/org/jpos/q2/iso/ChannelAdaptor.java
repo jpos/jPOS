@@ -202,7 +202,8 @@ public class ChannelAdaptor
         if (channel instanceof FilteredChannel) {
             addFilters ((FilteredChannel) channel, e, f);
         }
-        channel.setName (getName ());
+        if (getName () != null)
+            channel.setName (getName ());
         return channel;
     }
 
