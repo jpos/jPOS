@@ -69,6 +69,7 @@ public class Test implements ISORequestListener {
 
     public boolean process (ISOSource source, ISOMsg m) {
 	try {
+            m = (ISOMsg) m.clone ();
 	    m.setResponseMTI();
 	    m.set (new ISOField(39, "99"));
 	    source.send(m);
