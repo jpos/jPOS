@@ -77,9 +77,7 @@ public class TaskAdaptor extends QBeanSupport {
         factory.setLogger (task, e);
     }
     protected void startService () throws Exception {
-        if (task instanceof Configurable) {
-            getServer().getFactory().setConfiguration(task, getPersist());
-        }
+        getServer().getFactory().setConfiguration(task, getPersist());
         NameRegistrar.register (getName (), task);
         if (task instanceof Runnable) {
             new Thread ((Runnable) task).start ();
