@@ -67,17 +67,25 @@ package org.jpos.space;
  * @since 2.0
  * @see LeasedReference
  * @see TransientSpace
+ * @see SpaceError
  * @see <a href="http://www.cs.yale.edu/Linda/linda-lang.html">The Linda Coordination Language</a>
  */
 
 public interface Space {
-
     /**
      * Write a new entry into the Space
      * @param key Entry's key
      * @param value Object value
      */
-    public void   out (Object key, Object value);
+    public void out (Object key, Object value);
+
+    /**
+     * Write a new entry into the Space, with an timeout value
+     * @param key Entry's key
+     * @param value Object value
+     * @param timeout timeout value
+     */
+    public void out (Object key, Object value, long timeout);
 
     /**
      * Take an entry from the space, waiting forever until one exists.
