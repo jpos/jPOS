@@ -265,10 +265,14 @@ public abstract class BaseChannel extends Observable
      * @see ISOClientSocketFactory
      */
     protected Socket newSocket() throws IOException {
-        if (socketFactory != null)
-            return socketFactory.createSocket (host, port);
-        else
-            return new Socket(host,port);
+        try {
+            if (socketFactory != null)
+                return socketFactory.createSocket (host, port);
+            else
+                return new Socket(host,port);
+        } catch (ISOException e) {
+            throw new IOException (e.getMessage());
+        }
     }
     /**
      * @return current socket
