@@ -32,7 +32,7 @@ public class IFA_FLLCHAR extends ISOFieldPackager {
             );
 
         s = ISOUtil.strpad(s, getLength());
-        return (ISOUtil.zeropad(Integer.toString(getLength()), 2) + s).getBytes();
+        return (ISOUtil.zeropad(Integer.toString(len), 2) + s).getBytes();
     }
     public int getMaxPackedLength() {
         return getLength() + 2;
