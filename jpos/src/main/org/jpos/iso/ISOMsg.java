@@ -91,11 +91,20 @@ public class ISOMsg extends ISOComponent
         header = null;
     }
     /**
-     * Creates an inner ISOMsg
+     * Creates a nested ISOMsg
      */
     public ISOMsg (int fieldNumber) {
         this();
-        this.fieldNumber = fieldNumber;
+        setFieldNumber (fieldNumber);
+    }
+    /**
+     * changes this Component field number<br>
+     * Use with care, this method does not change
+     * any reference held by a Composite.
+     * @param fieldNumber new field number
+     */
+    public void setFieldNumber (int fieldNumber) {
+	this.fieldNumber = fieldNumber;
     }
     /**
      * Creates an ISOMsg with given mti

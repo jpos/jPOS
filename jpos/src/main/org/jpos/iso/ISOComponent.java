@@ -134,6 +134,13 @@ public abstract class ISOComponent implements Cloneable {
     public Hashtable getChildren() {
         return new Hashtable();
     }
+    /**
+     * changes this Component field number<br>
+     * Use with care, this method does not change
+     * any reference held by a Composite.
+     * @param fieldNumber new field number
+     */
+    public abstract void setFieldNumber (int fieldNumber);
     public abstract void setValue(Object obj) throws ISOException;
     public abstract byte[] pack() throws ISOException;
     public abstract int unpack(byte[] b) throws ISOException;

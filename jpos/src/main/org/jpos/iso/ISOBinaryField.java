@@ -105,6 +105,15 @@ public class ISOBinaryField
         value = b;
     }
     /**
+     * changes this Component field number<br>
+     * Use with care, this method does not change
+     * any reference held by a Composite.
+     * @param fieldNumber new field number
+     */
+    public void setFieldNumber (int fieldNumber) {
+	this.fieldNumber = fieldNumber;
+    }
+    /**
      * not available on Leaf - always throw ISOException
      * @exception ISOException
      */
