@@ -92,50 +92,50 @@ public class Log implements LogSource {
     public void setRealm (String realm) {
         this.realm = realm;
     }
-    public void trace (String detail) {
+    public void trace (Object detail) {
         Logger.log (createTrace (detail));
     }
-    public void trace (String detail, Object obj) {
+    public void trace (Object detail, Object obj) {
         LogEvent evt = createTrace (detail);
         evt.addMessage (obj);
         Logger.log (evt);
     }
-    public void debug (String detail) {
+    public void debug (Object detail) {
         Logger.log (createDebug (detail));
     }
-    public void debug (String detail, Object obj) {
+    public void debug (Object detail, Object obj) {
         LogEvent evt = createDebug (detail);
         evt.addMessage (obj);
         Logger.log (evt);
     }
-    public void info (String detail) {
+    public void info (Object detail) {
         Logger.log (createInfo (detail));
     }
-    public void info (String detail, Object obj) {
+    public void info (Object detail, Object obj) {
         LogEvent evt = createInfo (detail);
         evt.addMessage (obj);
         Logger.log (evt);
     }
-    public void warn (String detail) {
+    public void warn (Object detail) {
         Logger.log (createWarn (detail));
     }
-    public void warn (String detail, Object obj) {
+    public void warn (Object detail, Object obj) {
         LogEvent evt = createWarn (detail);
         evt.addMessage (obj);
         Logger.log (evt);
     }
-    public void error (String detail) {
+    public void error (Object detail) {
         Logger.log (createError (detail));
     }
-    public void error (String detail, Object obj) {
+    public void error (Object detail, Object obj) {
         LogEvent evt = createError (detail);
         evt.addMessage (obj);
         Logger.log (evt);
     }
-    public void fatal (String detail) {
+    public void fatal (Object detail) {
         Logger.log (createFatal (detail));
     }
-    public void fatal (String detail, Object obj) {
+    public void fatal (Object detail, Object obj) {
         LogEvent evt = createFatal (detail);
         evt.addMessage (obj);
         Logger.log (evt);
@@ -143,43 +143,43 @@ public class Log implements LogSource {
     public LogEvent createLogEvent (String level) {
         return new LogEvent (this, level);
     }
-    public LogEvent createLogEvent (String level, String detail) {
+    public LogEvent createLogEvent (String level, Object detail) {
         return new LogEvent (this, level, detail);
     }
     public LogEvent createTrace () {
         return createLogEvent (TRACE);
     }
-    public LogEvent createTrace (String detail) {
+    public LogEvent createTrace (Object detail) {
         return createLogEvent (TRACE, detail);
     }
     public LogEvent createDebug() {
         return createLogEvent (TRACE);
     }
-    public LogEvent createDebug(String detail) {
+    public LogEvent createDebug(Object detail) {
         return createLogEvent (TRACE, detail);
     }
     public LogEvent createInfo () {
         return createLogEvent (INFO);
     }
-    public LogEvent createInfo (String detail) {
+    public LogEvent createInfo (Object detail) {
         return createLogEvent (INFO, detail);
     }
     public LogEvent createWarn () {
         return createLogEvent (WARN);
     }
-    public LogEvent createWarn (String detail) {
+    public LogEvent createWarn (Object detail) {
         return createLogEvent (WARN, detail);
     }
     public LogEvent createError () {
         return createLogEvent (ERROR);
     }
-    public LogEvent createError (String detail) {
+    public LogEvent createError (Object detail) {
         return createLogEvent (ERROR, detail);
     }
     public LogEvent createFatal () {
         return createLogEvent (FATAL);
     }
-    public LogEvent createFatal (String detail) {
+    public LogEvent createFatal (Object detail) {
         return createLogEvent (FATAL, detail);
     }
 }
