@@ -50,6 +50,7 @@
 package org.jpos.jms;
 
 import javax.jms.*;
+import java.io.Serializable;
 import org.jpos.q2.QBeanSupport;
 import org.jpos.q2.Q2ConfigurationException;
 import org.jpos.space.LocalSpace;
@@ -122,7 +123,13 @@ public class JMSQSender extends QBeanSupport implements JMSQSenderMBean,SpaceLis
         Object obj = space.inp (k);
         if (obj != null)
             try {
-                sender.send ((Message) obj);
+                if (obj instanceof Message)
+                    sender.send ((Message) obj);
+                else if (obj instanceof Object) {
+                    ObjectMessage objMessage = queueSession.createObjectMessage ();
+                    objMessage.setObject ( (Serializable) obj);
+                    sender.send (objMessage);
+                }
             } catch (JMSException e) {
                 log.error (e);
                 restart ();
