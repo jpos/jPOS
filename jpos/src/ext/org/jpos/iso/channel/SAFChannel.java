@@ -364,14 +364,7 @@ public class SAFChannel extends LogHandler
                 }
                 mux = ISOMUX.getMUX (cfg.get ("destination-mux"));
                 if (mux != null && mux.isConnected ()) {
-                    Object obj = queue.dequeue();
-                    if (obj instanceof String) {
-                        System.out.println (
-                            "Should read file: "+obj.toString()
-                        );
-                        continue;
-                    }
-                    ISOMsg msg = (ISOMsg) obj;
+                    ISOMsg msg = (ISOMsg) queue.dequeue();
                     ISOMsg m   = (ISOMsg) msg.clone();
                     m.setDirection(ISOMsg.OUTGOING);
                     m = applyFilters (outgoingFilters, m, null);
