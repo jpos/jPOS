@@ -533,7 +533,7 @@ public abstract class BaseChannel extends Observable
             if (b.length > 0)  // Ignore NULL messages
                 m.unpack (b);
             m.setDirection(ISOMsg.INCOMING);
-            m = applyIncomingFilters (m, evt);
+            m = applyIncomingFilters (m, header, b, evt);
             m.setDirection(ISOMsg.INCOMING);
             evt.addMessage (m);
             cnt[RX]++;
@@ -726,12 +726,17 @@ public abstract class BaseChannel extends Observable
             m = ((ISOFilter) iter.next()).filter (this, m, evt);
         return m;
     }
-    protected ISOMsg applyIncomingFilters (ISOMsg m, LogEvent evt) 
+    protected ISOMsg applyIncomingFilters (ISOMsg m, byte[] header, byte[] image, LogEvent evt) 
         throws VetoException
     {
         Iterator iter  = incomingFilters.iterator();
-        while (iter.hasNext())
-            m = ((ISOFilter) iter.next()).filter (this, m, evt);
+        while (iter.hasNext()) {
+            ISOFilter f = (ISOFilter) iter.next ();
+            if (f instanceof RawIncomingFilter)
+                m = ((RawIncomingFilter)f).filter (this, m, header, image, evt);
+            else
+                m = f.filter (this, m, evt);
+        }
         return m;
     }
    /**
