@@ -182,10 +182,10 @@ public class ISOMeter extends JComponent implements Runnable {
     }
 
     public void start() {
-	Thread t = new Thread (this);
-	t.setPriority (Thread.NORM_PRIORITY-1);
-	t.setName ("ISOMeter");
-	t.start();
+        Thread t = new Thread (this);
+        t.setPriority (Thread.NORM_PRIORITY-1);
+        t.setName ("ISOMeter");
+        t.start();
     }
 
     public void showLogList() {
@@ -319,13 +319,13 @@ public class ISOMeter extends JComponent implements Runnable {
         img.drawString (n, width-45, height-3);
     }
     public void run () {
-	for (;;) {
+        for (;;) {
             if (continueScroll > 0)
                 repaint();
-	    try { 
-		Thread.sleep(refreshPanel);
-	    } catch (InterruptedException e) { }
-	}
+            try { 
+                Thread.sleep(refreshPanel);
+            } catch (InterruptedException e) { }
+        }
     }
     public void update (Graphics g) {
         paint (g);

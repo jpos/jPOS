@@ -58,6 +58,9 @@
 
 /*
  * $Log$
+ * Revision 1.9  2003/10/13 10:30:22  apr
+ * tabs expanded to 8 spaces
+ *
  * Revision 1.8  2003/05/16 04:15:18  alwyns
  * Import cleanups.
  *
@@ -130,8 +133,8 @@ public class ISORequestListenerPanel extends JPanel implements Observer {
         setBorder(BorderFactory.createRaisedBevelBorder());
         log = new DefaultListModel();
         add(createPanel());
-	if (requestListener instanceof Observable)
-	    ((Observable)requestListener).addObserver(this);
+        if (requestListener instanceof Observable)
+            ((Observable)requestListener).addObserver(this);
     }
     public final String getSymbolicName() {
         return symbolicName;

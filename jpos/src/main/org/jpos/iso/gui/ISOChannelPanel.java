@@ -49,6 +49,9 @@
 
 /*
  * $Log$
+ * Revision 1.13  2003/10/13 10:30:22  apr
+ * tabs expanded to 8 spaces
+ *
  * Revision 1.12  2003/05/16 04:15:17  alwyns
  * Import cleanups.
  *
@@ -143,8 +146,8 @@ public class ISOChannelPanel extends JPanel implements Observer {
         log = new DefaultListModel();
         add(createCountersPanel());
         meter.setConnected(channel.isConnected());
-	if (channel instanceof Observable) 
-	    ((Observable)channel).addObserver(this);
+        if (channel instanceof Observable) 
+            ((Observable)channel).addObserver(this);
     }
     /**
      * Unconnected constructor allows for instantiation of
@@ -189,20 +192,20 @@ public class ISOChannelPanel extends JPanel implements Observer {
             }
             meter.setValue(ISOMeter.mass);
         }
-	if (o instanceof BaseChannel) {
-	    BaseChannel c = (BaseChannel) o;
-	    meter.setConnected(c.isConnected());
-	    int cnt[] = c.getCounters();
-	    try {
-		meter.setPositiveCounter(
-		    ISOUtil.zeropad(Integer.toString(cnt[ISOChannel.TX]), 6)
-		);
-		meter.setNegativeCounter(
-		    ISOUtil.zeropad(Integer.toString(cnt[ISOChannel.RX]), 6)
-		);
-	    } catch (ISOException e) { }
-	} else 
-	    meter.setConnected(true);
+        if (o instanceof BaseChannel) {
+            BaseChannel c = (BaseChannel) o;
+            meter.setConnected(c.isConnected());
+            int cnt[] = c.getCounters();
+            try {
+                meter.setPositiveCounter(
+                    ISOUtil.zeropad(Integer.toString(cnt[ISOChannel.TX]), 6)
+                );
+                meter.setNegativeCounter(
+                    ISOUtil.zeropad(Integer.toString(cnt[ISOChannel.RX]), 6)
+                );
+            } catch (ISOException e) { }
+        } else 
+            meter.setConnected(true);
     }
 
     private JPanel createCountersPanel() {
