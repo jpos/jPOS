@@ -1,4 +1,11 @@
-package org.jpos.bsh.action;
+/*
+ * Copyright (c) 2004 jPOS.org
+ *
+ * See terms of license at http://jpos.org/license.html
+ *
+ */
+
+package org.jpos.bsh;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
