@@ -256,11 +256,14 @@ public class ISOMUX implements Runnable, LogProducer {
                     doTransmit();
                 }
                 else {
-		    if (firstTime)
+		    if (firstTime) {
 			firstTime = !firstTime;
-		    else
+			channel.connect();
+		    }
+		    else {
 			Thread.sleep(5000);
-                    channel.reconnect();
+			channel.reconnect();
+		    }
                     cnt[CONNECT]++;
                     synchronized(rx) {
                         rx.notify();
