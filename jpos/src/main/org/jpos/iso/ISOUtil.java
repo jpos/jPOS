@@ -353,7 +353,8 @@ public class ISOUtil {
 	 */
 	public static String formatDouble(double d, int len) {
 		String prefix = Long.toString((long) d);
-		String suffix = Integer.toString ((int) ((d * 100) % 100));
+		String suffix = Integer.toString (
+			(int) ((Math.round(d * 100f)) % 100) );
 		try {
 			prefix = ISOUtil.padleft(prefix,len-3,' ');
 			suffix = ISOUtil.zeropad(suffix, 2);
