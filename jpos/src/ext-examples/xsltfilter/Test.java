@@ -14,7 +14,7 @@ import org.jpos.iso.ISOPackager;
 import org.jpos.iso.ISOUtil;
 import org.jpos.iso.ISODate;
 import org.jpos.iso.ISOException;
-import org.jpos.iso.XSLTFilter;
+import org.jpos.iso.filter.XSLTFilter;
 import org.jpos.util.LogProducer;
 import org.jpos.util.LogEvent;
 import org.jpos.util.SimpleLogListener;
