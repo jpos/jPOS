@@ -57,6 +57,7 @@ import java.util.Iterator;
 import java.util.Observer;
 import java.util.Observable;
 import java.util.Collection;
+import java.util.Random;
 import java.net.Socket;
 import java.net.ServerSocket;
 import org.jpos.util.LogSource;
@@ -65,7 +66,7 @@ import org.jpos.util.LogEvent;
 import org.jpos.util.Logger;
 import org.jpos.util.ThreadPool;
 import org.jpos.util.NameRegistrar;
-import org.jpos.core.Configurable;
+import org.jpos.core.ReConfigurable;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
 
@@ -76,7 +77,7 @@ import org.jpos.core.ConfigurationException;
  * @version $Revision$ $Date$
  */
 public class ISOServer extends Observable 
-    implements LogSource, Runnable, Observer, ISOServerMBean
+    implements LogSource, Runnable, Observer, ISOServerMBean, ReConfigurable
 {
     int port;
     ISOChannel clientSideChannel;
@@ -92,6 +93,7 @@ public class ISOServer extends Observable
     public static final int CONNECT      = 0;
     public static final int SIZEOF_CNT   = 1;
     private int[] cnt;
+    protected Configuration cfg;
 
    /**
     * @param port port to listen
@@ -125,10 +127,26 @@ public class ISOServer extends Observable
         }
         public void run() {
             if (channel instanceof BaseChannel) {
+                LogEvent ev = new LogEvent (this, "session-start");
                 Socket socket = ((BaseChannel)channel).getSocket ();
                 realm = realm + socket.getInetAddress();
+                try {
+                    checkPermission (socket, ev);
+                } catch (ISOException e) {
+                    try {
+                        int delay = 1000 + new Random().nextInt (4000);
+                        ev.addMessage (e.getMessage());
+                        ev.addMessage ("delay=" + delay);
+                        ISOUtil.sleep (delay);
+                        socket.close ();
+                    } catch (IOException ioe) {
+                        ev.addMessage (ioe);
+                    }
+                    return;
+                } finally {
+                    Logger.log (ev);
+                }
             }
-            Logger.log (new LogEvent (this, "session-start"));
             try {
                 for (;;) {
                     ISOMsg m = channel.receive();
@@ -166,6 +184,24 @@ public class ISOServer extends Observable
 	public Logger getLogger() {
 	    return ISOServer.this.getLogger();
 	}
+        public void checkPermission (Socket socket, LogEvent evt) 
+            throws ISOException 
+        {
+            if (cfg != null) {
+                String ip = socket.getInetAddress().getHostAddress ();
+
+                String[] allow = cfg.getAll ("allow");
+                if (allow.length > 0) {
+                    for (int i=0; i<allow.length; i++) {
+                        if (ip.equals (allow[i])) {
+                            evt.addMessage ("access granted, ip=" + ip);
+                            return;
+                        }
+                    }
+                    throw new ISOException ("access denied, ip=" + ip);
+                }
+            }
+        }
     }
    /**
     * add an ISORequestListener
@@ -332,6 +368,9 @@ public class ISOServer extends Observable
     }
     public int getPendingCount () {
         return pool.getPendingCount();
+    }
+    public void setConfiguration (Configuration cfg) {
+        this.cfg = cfg;
     }
 }
 
