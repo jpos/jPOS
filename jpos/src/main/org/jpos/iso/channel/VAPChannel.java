@@ -130,7 +130,9 @@ public class VAPChannel extends BaseChannel {
 		m.getISOHeader() :
 		new BASE1Header (srcid, dstid);
 
-        //h.setLen(len);
+        if (h instanceof BASE1Header)
+            ((BASE1Header)h).setLen(len);
+
         serverOut.write(h.pack());
     }
     protected int getMessageLength() throws IOException, ISOException {
