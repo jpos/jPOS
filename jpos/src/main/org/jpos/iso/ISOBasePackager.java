@@ -89,4 +89,14 @@ public abstract class ISOBasePackager implements ISOPackager {
 		}
 		return consumed;
 	}
+	/**
+	 * @param	m	the Container (i.e. an ISOMsg)
+	 * @param	fldNumber the Field Number
+	 * @return	Field Description
+	 * @exception ISOException
+	 */
+	public String getFieldDescription(ISOComponent m, int fldNumber)
+	{
+		return fld[fldNumber].getDescription();
+	}
 }

@@ -20,4 +20,11 @@ public interface ISOPackager {
 	 * @exception ISOException
 	 */
 	public int unpack (ISOComponent m, byte[] b) throws ISOException;
+
+	/**
+	 * @param	m	the Container (i.e. an ISOMsg)
+	 * @param	fldNumber the Field Number
+	 * @return	Field Description
+	 */
+	public String getFieldDescription(ISOComponent m, int fldNumber);
 }
