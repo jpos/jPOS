@@ -37,12 +37,14 @@ ANT build for jPOS ${version}
 Main targets:
 
  clean         Remove build and dist directories
- examples      build examples
- ext-examples  build extended examples
- info          Echoes system properties
+ main          Compiles classes
  jar           Build jpos.jar
  javadoc       Generate javadoc
- main          Compiles classes
+ aspects       Precompile aspects
+ examples      Build examples
+ ext-examples  Build extended examples
+ info          Echoes system properties
+ test          Self tests
 
     </echo>
   </target>
@@ -83,7 +85,6 @@ Main targets:
       <fileset dir="${extlib}">
           <include name="*.jar"/>
       </fileset>
-      <pathelement location="${build}/test"/>
       <pathelement location="${build}/classes"/>
   </path>
 
@@ -160,6 +161,14 @@ Main targets:
    </copy>
   </target>
 
+  <target name="copy-test" depends="copy-src">
+   <copy todir="${buildsrc}">
+    <fileset dir="${source}/test">
+     <include name="**/*.java"/>
+    </fileset>
+   </copy>
+  </target>
+
   <target name="xdoclet-uptodate" depends="copy-src">
     <uptodate property="xdoclet-generate">
       <srcfiles dir="${buildsrc}" includes="org/jpos/q2/QClassLoader.java" />
@@ -202,23 +211,6 @@ Main targets:
   <target name="main" depends="copy-src, generate"
     description="Compiles classes">
 
-    <!-- 
-    <mkdir dir="${build}/aop" />
-    <taskdef name="ajc"
-      classname="org.aspectj.tools.ant.taskdefs.Ajc" >
-      <classpath>
-        <pathelement location="lib/aspectj-ant.jar"/>
-        <pathelement location="lib/aspectjtools.jar"/>
-      </classpath>
-     </taskdef>
-    <ajc srcdir="${main}" destdir="${classes}"
-        workingdir="${build}/tmp"
-        preprocess="false"
-        debug="${debug}"
-        deprecation="${deprecation}" >
-        <classpath refid="ext.classpath" />
-    </ajc>
-    -->
 
     <javac srcdir="${buildsrc}" destdir="${classes}"
         debug="${debug}"
@@ -280,20 +272,12 @@ Main targets:
   </target>
 
   <target name="examples" depends="copy-examples, main" 
-     description="build examples" />
+     description="Build examples" />
 
   <target name="ext-examples" depends="copy-ext-examples, main" 
-     description="build extended examples" />
+     description="Build extended examples" />
 
-  <target name="compile.test" depends="main">
-    <javac srcdir="${source}/test"
-           destdir="${build}/test"
-           debug="${debug}" deprecation="${deprecation}">
-      <classpath refid="test.classpath" />
-    </javac>
-  </target>
-
-  <target name="test" depends="compile.test">
+  <target name="test" depends="copy-test, main" description="Self tests">
     <java classname="junit.textui.TestRunner" fork="yes">
       <classpath refid="test.classpath" />
       <arg value="AllTests" />
@@ -427,5 +411,37 @@ Main targets:
     <echo message="user.language=${user.language}" />
   </target>
 
+  <target name="aspects" description="Precompile aspects" 
+    depends="copy-src, generate">
+
+   <mkdir dir="${build}/aop"/>
+   <copy todir="${buildsrc}">
+    <fileset dir="${source}/aop">
+     <include name="**/*.java"/>
+    </fileset>
+   </copy>
+   <taskdef name="ajc"
+     classname="org.aspectj.tools.ant.taskdefs.Ajc" >
+     <classpath>
+       <pathelement location="ext/aspectj-ant.jar"/>
+       <pathelement location="ext/aspectjtools.jar"/>
+     </classpath>
+    </taskdef>
+    <ajc srcdir="${buildsrc}" destdir="${classes}"
+        preprocess="false"
+        workingdir="build/aop"
+        debug="${debug}"
+        X="lint"
+        deprecation="${deprecation}" >
+        <classpath refid="ext.classpath" />
+    </ajc>
+    <!-- uncomment this if you set preprocess to "true"
+    <copy todir="${buildsrc}">
+     <fileset dir="${build}/aop">
+      <include name="**/*.java"/>
+     </fileset>
+    </copy>
+    -->
+   </target>
 </project>
 
