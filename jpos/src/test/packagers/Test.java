@@ -52,6 +52,14 @@ public class Test extends TestCase {
     public void testISO87BPackager() throws Exception {
         doTest (new ISO87BPackager(), "ISO87", "ISO87BPackager");
     }
+    public void testGeneric87ascii() throws Exception {
+        doTest (new GenericPackager ("src/config/packager/iso87ascii.xml"),
+            "ISO87", "ISO87APackager");
+    }
+    public void testGeneric87binary() throws Exception {
+        doTest (new GenericPackager ("src/config/packager/iso87binary.xml"),
+            "ISO87", "ISO87BPackager");
+    }
     private void doTest (ISOPackager packager, String msg, String img)
         throws Exception
     {
@@ -60,7 +68,7 @@ public class Test extends TestCase {
         ISOMsg m = getMsg (msg);
         m.setPackager (packager);
         byte[] p = m.pack();
-        writeImage (img, p);
+        // writeImage (img, p);
 
         byte[] b = getImage (img);
         assertTrue (Arrays.equals (b, p));
