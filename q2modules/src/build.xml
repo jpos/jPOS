@@ -7,13 +7,13 @@
 <project name="q2modules" default="dist" basedir="..">
   &properties;
 
-  <target name="dist" description="Build distribution" depends="get-required">
+  <target name="dist" description="Build distribution">
     <antcall target="do-all">
       <param name="target" value="dist"/>
     </antcall>
   </target>
 
-  <target name="jars" description="Build all modules" depends="get-required">
+  <target name="jars" description="Build all modules">
     <mkdir dir="dist"/>
     <antcall target="do-all">
       <param name="target" value="jars"/>
@@ -80,9 +80,46 @@
     />
   </target>
 
-  <target name="get-required" description="Get required jars">
-   <get src="file:../jpos/dist/jpos-1.4.5.jar" dest="lib/jpos-1.4.5.jar" />
+  <target name="get-required">
+   <get src="file:../jpos/dist/jpos-1.4.6.jar" dest="lib/jpos-1.4.6.jar" />
    <get src="file:../q2/dist/q2.jar" dest="lib/q2.jar" />
+  </target>
+
+  <target name="release" depends="jars, doc" 
+           description="Create a tarball composed of R2R Q2">
+    <property name="release" value="${build}/q2mod-${version}" />
+    <mkdir dir="${release}/bin" />
+    <mkdir dir="${release}/src" />
+    <mkdir dir="${release}/lib" />
+    <mkdir dir="${release}/bin" />
+    <mkdir dir="${release}/dist" />
+    <mkdir dir="${release}/javadoc" />
+    <copy    todir="${release}/src" >
+      <fileset dir="${source}" />
+    </copy>
+    <copy    todir="${release}/lib" >
+      <fileset dir="${lib}" />
+    </copy>
+    <copy    todir="${release}/bin" >
+      <fileset dir="bin" />
+    </copy>
+    <copy    todir="${release}/dist" >
+      <fileset dir="dist" />
+    </copy>
+    <copy    todir="${release}/javadoc" >
+      <fileset dir="${build}/javadoc" />
+    </copy>
+    <chmod file="${release}/bin/build" perm="750" />
+
+    <tar compression="gzip"
+         destfile="dist/q2mod-${version}.tar.gz" 
+         defaultexcludes="true"> 	  
+      <tarfileset dir="${build}" mode="755">
+        <include name="q2mod-${version}/**"/>
+      </tarfileset>
+    </tar>
+    <zip zipfile="dist/q2mod-${version}.zip" basedir="${build}"
+         includes="q2mod-${version}/**" />
   </target>
 
 </project>

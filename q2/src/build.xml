@@ -210,7 +210,7 @@
     </copy>
 
     <tar compression="gzip"
-         destfile="${dist}/${archive}.tgz" defaultexcludes="true"> 	  
+         destfile="${dist}/${archive}.tar.gz" defaultexcludes="true"> 	  
       <tarfileset dir="${build}" mode="755">
         <include name="${archive}/bin/q2"/>
       </tarfileset>
