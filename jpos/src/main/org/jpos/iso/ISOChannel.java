@@ -153,13 +153,8 @@ public abstract class ISOChannel extends Observable implements LogProducer {
     /**
      * Associates this ISOChannel with a server socket
      * @param serverSocket where to accept a connection
-     * @exception ISOException
      */
-    public void setServerSocket (ServerSocket sock) throws ISOException {
-	if (host != null)
-	    throw new ISOException 
-		("Can't set server socket on client ISOChannel");
-
+    public void setServerSocket (ServerSocket sock) {
 	setHost (null, 0);
 	this.serverSocket = sock;
 	name = "";
