@@ -1,18 +1,21 @@
 /*
  * $Log$
+ * Revision 1.2  2000/03/01 14:44:45  apr
+ * Changed package name to org.jpos
+ *
  * Revision 1.1  2000/01/23 16:04:48  apr
  * Added OperatorLogListener
  *
  */
 
-package uy.com.cs.jpos.util;
+package org.jpos.util;
 
 import java.io.*;
 import java.util.*;
 import javax.mail.*;
 import javax.mail.internet.*;
 import javax.activation.*;
-import uy.com.cs.jpos.core.Configuration;
+import org.jpos.core.Configuration;
 
 /**
  * send e-mail with selected LogEvents to operator account

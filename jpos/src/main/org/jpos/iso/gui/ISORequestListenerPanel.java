@@ -2,13 +2,16 @@
  * ISORequestListenerPanel
  * Allows visualization of unhandled ISOMUX messages
  * @author apr@cs.com.uy
- * @see uy.com.cs.jpos.iso.ISOMsg
- * @see uy.com.cs.jpos.iso.ISOMUX
+ * @see org.jpos.iso.ISOMsg
+ * @see org.jpos.iso.ISOMUX
  * @see ISOMsgPanel
  */
 
 /*
  * $Log$
+ * Revision 1.5  2000/03/01 14:44:45  apr
+ * Changed package name to org.jpos
+ *
  * Revision 1.4  1999/09/06 17:20:22  apr
  * Added Logger SubSystem
  *
@@ -23,7 +26,7 @@
  *
  */
 
-package uy.com.cs.jpos.iso.gui;
+package org.jpos.iso.gui;
 
 import java.util.Observer;
 import java.util.Observable;
@@ -32,7 +35,7 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.event.*;
 
-import uy.com.cs.jpos.iso.*;
+import org.jpos.iso.*;
 
 public class ISORequestListenerPanel extends JPanel implements Observer {
     /**

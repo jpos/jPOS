@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.6  2000/03/01 14:44:38  apr
+ * Changed package name to org.jpos
+ *
  * Revision 1.5  2000/01/11 01:24:40  apr
  * moved non ISO-8583 related classes from jpos.iso to jpos.util package
  * (AntiHog LeasedLineModem LogEvent LogListener LogProducer
@@ -20,10 +23,10 @@
  *
  */
 
-package uy.com.cs.jpos.core;
+package org.jpos.core;
 import java.io.*;
-import uy.com.cs.jpos.iso.ISODate;
-import uy.com.cs.jpos.util.Loggeable;
+import org.jpos.iso.ISODate;
+import org.jpos.util.Loggeable;
 
 /**
  * @author apr@cs.com.uy
@@ -233,7 +236,7 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
      * for security reasons.
      * @param p a PrintStream usually suplied by Logger
      * @param indent ditto
-     * @see uy.com.cs.jpos.iso.Loggeable
+     * @see org.jpos.iso.Loggeable
      */
     public void dump (PrintStream p, String indent) {
         p.print (indent + "<CardHolder");

@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.2  2000/03/01 14:44:45  apr
+ * Changed package name to org.jpos
+ *
  * Revision 1.1  2000/01/11 01:24:56  apr
  * moved non ISO-8583 related classes from jpos.iso to jpos.util package
  * (AntiHog LeasedLineModem LogEvent LogListener LogProducer
@@ -11,7 +14,7 @@
  *
  */
 
-package uy.com.cs.jpos.util;
+package org.jpos.util;
 
 import java.io.*;
 import javax.comm.*;

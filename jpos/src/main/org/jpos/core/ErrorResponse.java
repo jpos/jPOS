@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.5  2000/03/01 14:44:38  apr
+ * Changed package name to org.jpos
+ *
  * Revision 1.4  2000/01/30 23:33:51  apr
  * CVS sync/backup - intermediate version
  *
@@ -14,11 +17,11 @@
  *
  */
 
-package uy.com.cs.jpos.core;
+package org.jpos.core;
 
 import java.io.*;
 import java.util.*;
-import uy.com.cs.jpos.util.Loggeable;
+import org.jpos.util.Loggeable;
 
 /**
  * @author apr@cs.com.uy

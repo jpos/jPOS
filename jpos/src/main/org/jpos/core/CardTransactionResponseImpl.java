@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.3  2000/03/01 14:44:38  apr
+ * Changed package name to org.jpos
+ *
  * Revision 1.2  2000/01/30 23:33:50  apr
  * CVS sync/backup - intermediate version
  *
@@ -8,12 +11,12 @@
  *
  */
 
-package uy.com.cs.jpos.core;
+package org.jpos.core;
 
 import java.io.*;
 import java.util.*;
-import uy.com.cs.jpos.iso.*;
-import uy.com.cs.jpos.core.*;
+import org.jpos.iso.*;
+import org.jpos.core.*;
 
 /**
  * CardTransactionResponse reference Implementation

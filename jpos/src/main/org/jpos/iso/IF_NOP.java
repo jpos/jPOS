@@ -1,6 +1,6 @@
-package uy.com.cs.jpos.iso;
+package org.jpos.iso;
 
-import uy.com.cs.jpos.iso.*;
+import org.jpos.iso.*;
 
 /**
  * @author apr@cs.com.uy & dflc@cs.com.uy

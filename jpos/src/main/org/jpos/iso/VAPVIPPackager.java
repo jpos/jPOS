@@ -1,4 +1,4 @@
-package uy.com.cs.jpos.iso;
+package org.jpos.iso;
 
 import java.util.*;
 
@@ -15,6 +15,9 @@ import java.util.*;
 
 /*
  * $Log$
+ * Revision 1.6  2000/03/01 14:44:45  apr
+ * Changed package name to org.jpos
+ *
  * Revision 1.5  1999/11/18 23:40:52  apr
  * field 44 ASCII --> EBCDIC
  *

@@ -1,12 +1,15 @@
-package uy.com.cs.jpos.iso;
+package org.jpos.iso;
 
 import java.io.*;
 import java.util.*;
-import uy.com.cs.jpos.util.Loggeable;
-import uy.com.cs.jpos.util.LogProducer;
+import org.jpos.util.Loggeable;
+import org.jpos.util.LogProducer;
 
 /*
  * $Log$
+ * Revision 1.16  2000/03/01 14:44:45  apr
+ * Changed package name to org.jpos
+ *
  * Revision 1.15  2000/01/11 01:24:47  apr
  * moved non ISO-8583 related classes from jpos.iso to jpos.util package
  * (AntiHog LeasedLineModem LogEvent LogListener LogProducer

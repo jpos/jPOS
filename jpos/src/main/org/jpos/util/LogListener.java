@@ -1,4 +1,4 @@
-package uy.com.cs.jpos.util;
+package org.jpos.util;
 
 
 import java.io.*;

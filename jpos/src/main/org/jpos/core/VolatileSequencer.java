@@ -1,12 +1,15 @@
 
 /*
  * $Log$
+ * Revision 1.2  2000/03/01 14:44:38  apr
+ * Changed package name to org.jpos
+ *
  * Revision 1.1  1999/09/26 22:32:03  apr
  * CVS sync
  *
  */
 
-package uy.com.cs.jpos.core;
+package org.jpos.core;
 
 import java.io.*;
 import java.util.*;

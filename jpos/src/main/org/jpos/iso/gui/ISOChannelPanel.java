@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.6  2000/03/01 14:44:45  apr
+ * Changed package name to org.jpos
+ *
  * Revision 1.5  1999/09/06 17:20:19  apr
  * Added Logger SubSystem
  *
@@ -18,7 +21,7 @@
  *
  */
 
-package uy.com.cs.jpos.iso.gui;
+package org.jpos.iso.gui;
 
 /**
  * allows for easy visualization of channel utilization. 
@@ -35,7 +38,7 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.event.*;
 
-import uy.com.cs.jpos.iso.*;
+import org.jpos.iso.*;
 
 public class ISOChannelPanel extends JPanel implements Observer {
     /**

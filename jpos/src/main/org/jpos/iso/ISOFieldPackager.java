@@ -1,4 +1,4 @@
-package uy.com.cs.jpos.iso;
+package org.jpos.iso;
 
 /**
  * base class for the various IF*.java Field Packagers

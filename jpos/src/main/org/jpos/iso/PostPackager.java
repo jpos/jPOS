@@ -1,10 +1,13 @@
-package uy.com.cs.jpos.iso;
+package org.jpos.iso;
 
 import java.util.*;
-import uy.com.cs.jpos.util.Logger;
+import org.jpos.util.Logger;
 
 /*
  * $Log$
+ * Revision 1.6  2000/03/01 14:44:45  apr
+ * Changed package name to org.jpos
+ *
  * Revision 1.5  2000/02/28 11:11:37  apr
  * Added inner ISOMsg logging
  *

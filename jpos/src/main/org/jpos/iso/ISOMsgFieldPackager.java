@@ -1,4 +1,4 @@
-package uy.com.cs.jpos.iso;
+package org.jpos.iso;
 
 /**
  * ISOMsgFieldPackager is a packager able to pack compound ISOMsgs

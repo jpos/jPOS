@@ -1,4 +1,4 @@
-package uy.com.cs.jpos.iso;
+package org.jpos.iso;
 
 /**
  * ISOFieldPackager ASCII variable len padded (fixed) CHAR

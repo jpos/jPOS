@@ -1,7 +1,10 @@
-package uy.com.cs.jpos.util;
+package org.jpos.util;
 
 /*
  * $Log$
+ * Revision 1.2  2000/03/01 14:44:45  apr
+ * Changed package name to org.jpos
+ *
  * Revision 1.1  2000/02/03 00:49:47  apr
  * Added DefaultLockManager support/minor changes
  *

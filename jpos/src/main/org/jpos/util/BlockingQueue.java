@@ -1,4 +1,4 @@
-package uy.com.cs.jpos.util;
+package org.jpos.util;
 
 import java.util.LinkedList;
 
@@ -6,6 +6,9 @@ import java.util.LinkedList;
  * $Id$
  *
  * $Log$
+ * Revision 1.4  2000/03/01 14:44:45  apr
+ * Changed package name to org.jpos
+ *
  * Revision 1.3  2000/02/02 00:07:27  apr
  * sync sync sync
  *

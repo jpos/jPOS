@@ -1,4 +1,4 @@
-package uy.com.cs.jpos.iso;
+package org.jpos.iso;
 
 /**
  * IF*_BITMAP classes extends this class instead of ISOFieldPackager

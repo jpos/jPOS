@@ -2,11 +2,14 @@
  * ISOMsgPanel
  * Swing based GUI to ISOMsg
  * @author apr@cs.com.uy
- * @see uy.com.cs.jpos.iso.ISOMsg
+ * @see org.jpos.iso.ISOMsg
  */
 
 /*
  * $Log$
+ * Revision 1.6  2000/03/01 14:44:45  apr
+ * Changed package name to org.jpos
+ *
  * Revision 1.5  1999/09/06 17:20:21  apr
  * Added Logger SubSystem
  *
@@ -24,7 +27,7 @@
  *
  */
 
-package uy.com.cs.jpos.iso.gui;
+package org.jpos.iso.gui;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -33,7 +36,7 @@ import javax.swing.event.*;
 import javax.swing.table.*;
 import java.util.*;
 
-import uy.com.cs.jpos.iso.*;
+import org.jpos.iso.*;
 
 /**
  * Called from ISOChannelPanel when you click on it's ISOMeter.<br>

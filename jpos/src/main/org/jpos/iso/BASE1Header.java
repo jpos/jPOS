@@ -1,6 +1,6 @@
-package uy.com.cs.jpos.iso;
+package org.jpos.iso;
 
-import uy.com.cs.jpos.iso.*;
+import org.jpos.iso.*;
 
 /*
  * BASE1 Header

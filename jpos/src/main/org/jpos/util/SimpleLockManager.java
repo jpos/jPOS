@@ -1,7 +1,10 @@
-package uy.com.cs.jpos.util;
+package org.jpos.util;
 
 /*
  * $Log$
+ * Revision 1.3  2000/03/01 14:44:45  apr
+ * Changed package name to org.jpos
+ *
  * Revision 1.2  2000/02/03 00:41:55  apr
  * .
  *
@@ -21,7 +24,7 @@ import java.util.Map;
 import java.util.List;
 import java.util.Hashtable;
 import java.util.Vector;
-import uy.com.cs.jpos.util.LockManager.Ticket;
+import org.jpos.util.LockManager.Ticket;
 
 public class SimpleLockManager implements LockManager {
     Map locks;

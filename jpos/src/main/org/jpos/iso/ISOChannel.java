@@ -1,12 +1,12 @@
-package uy.com.cs.jpos.iso;
+package org.jpos.iso;
 
 import java.io.*;
 import java.util.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import uy.com.cs.jpos.util.Logger;
-import uy.com.cs.jpos.util.LogEvent;
-import uy.com.cs.jpos.util.LogProducer;
+import org.jpos.util.Logger;
+import org.jpos.util.LogEvent;
+import org.jpos.util.LogProducer;
 
 /**
  * ISOChannel is an abstract class that provides functionality that
@@ -35,6 +35,9 @@ import uy.com.cs.jpos.util.LogProducer;
 
 /*
  * $Log$
+ * Revision 1.26  2000/03/01 14:44:45  apr
+ * Changed package name to org.jpos
+ *
  * Revision 1.25  2000/01/23 16:07:30  apr
  * BugFix: BASE24Channel was not handling Headers
  * (reported by Mike Trank <mike@netcomsa.com>)

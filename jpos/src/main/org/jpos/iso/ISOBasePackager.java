@@ -1,12 +1,15 @@
-package uy.com.cs.jpos.iso;
+package org.jpos.iso;
 
 import java.util.*;
-import uy.com.cs.jpos.util.Logger;
-import uy.com.cs.jpos.util.LogProducer;
-import uy.com.cs.jpos.util.LogEvent;
+import org.jpos.util.Logger;
+import org.jpos.util.LogProducer;
+import org.jpos.util.LogEvent;
 
 /*
  * $Log$
+ * Revision 1.22  2000/03/01 14:44:45  apr
+ * Changed package name to org.jpos
+ *
  * Revision 1.21  2000/02/28 10:46:40  apr
  * BugFix: changed (String)_--> toString() on unpack (logging) [Victor Salaman]
  *

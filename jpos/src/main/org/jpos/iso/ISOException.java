@@ -1,4 +1,4 @@
-package uy.com.cs.jpos.iso;
+package org.jpos.iso;
 
 /**
  * Signals that an ISO exception of some sort has occurred. 

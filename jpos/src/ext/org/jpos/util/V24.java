@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.3  2000/03/01 14:44:45  apr
+ * Changed package name to org.jpos
+ *
  * Revision 1.2  2000/01/17 18:26:06  apr
  * Supervise every 100 executions
  *
@@ -23,12 +26,12 @@
  *
  */
 
-package uy.com.cs.jpos.util;
+package org.jpos.util;
 
 import java.io.*;
 import java.util.*;
 import javax.comm.*;
-import uy.com.cs.jpos.iso.ISOUtil;
+import org.jpos.iso.ISOUtil;
 
 /**
  * handy Serial port functions 
@@ -175,7 +178,7 @@ public class V24 implements SerialPortEventListener, LogProducer
     /**
      * @param logger current logger
      * @param realm  logger realm
-     * @see uy.com.cs.jpos.iso.LogProducer
+     * @see org.jpos.iso.LogProducer
      */
     public void setLogger (Logger logger, String realm) {
 	this.logger = logger;
@@ -183,7 +186,7 @@ public class V24 implements SerialPortEventListener, LogProducer
     }
     /**
      * @return current log realm
-     * @see uy.com.cs.jpos.iso.LogProducer
+     * @see org.jpos.iso.LogProducer
      */
     public String getRealm () {
 	return realm;

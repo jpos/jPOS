@@ -2,11 +2,14 @@
  * ISOMsgPanel
  * Swing based GUI to ISOMsg
  * @author apr@cs.com.uy
- * @see uy.com.cs.jpos.iso.ISOMsg
+ * @see org.jpos.iso.ISOMsg
  */
 
 /*
  * $Log$
+ * Revision 1.6  2000/03/01 14:44:45  apr
+ * Changed package name to org.jpos
+ *
  * Revision 1.5  1999/09/19 21:39:29  apr
  * Changed from Timer based to Thread based timing (again)
  *
@@ -24,12 +27,12 @@
  *
  */
 
-package uy.com.cs.jpos.iso.gui;
+package org.jpos.iso.gui;
 
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
-import uy.com.cs.jpos.iso.*;
+import org.jpos.iso.*;
 
 public class ISOMeter extends JComponent implements Runnable {
     /**

@@ -1,4 +1,4 @@
-package uy.com.cs.jpos.iso;
+package org.jpos.iso;
 
 import java.util.*;
 
@@ -12,6 +12,9 @@ import java.util.*;
 
 /*
  * $Log$
+ * Revision 1.18  2000/03/01 14:44:45  apr
+ * Changed package name to org.jpos
+ *
  * Revision 1.17  1999/12/15 13:04:13  apr
  * BugFix: bad FS definition
  *

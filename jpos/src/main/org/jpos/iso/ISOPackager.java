@@ -1,5 +1,5 @@
-package uy.com.cs.jpos.iso;
-import uy.com.cs.jpos.util.LogProducer;
+package org.jpos.iso;
+import org.jpos.util.LogProducer;
 
 /**
  * @author apr@cs.com.uy

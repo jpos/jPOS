@@ -1,7 +1,7 @@
-package uy.com.cs.jpos.iso;
+package org.jpos.iso;
 
 import java.util.*;
-import uy.com.cs.jpos.iso.ISOUtil;
+import org.jpos.iso.ISOUtil;
 
 class Currency
 {

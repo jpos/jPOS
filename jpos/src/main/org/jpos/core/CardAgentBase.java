@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.7  2000/03/01 14:44:38  apr
+ * Changed package name to org.jpos
+ *
  * Revision 1.6  2000/02/01 12:50:35  apr
  * Added dummy cancel
  *
@@ -24,15 +27,15 @@
  *
  */
 
-package uy.com.cs.jpos.core;
+package org.jpos.core;
 
 import java.io.*;
 import java.util.*;
 import java.math.*;
 import java.lang.reflect.*;
 
-import uy.com.cs.jpos.iso.*;
-import uy.com.cs.jpos.util.*;
+import org.jpos.iso.*;
+import org.jpos.util.*;
 
 /**
  * @author apr@cs.com.uy

@@ -1,11 +1,11 @@
-package uy.com.cs.jpos.iso;
+package org.jpos.iso;
 
 import java.io.*;
 import java.util.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import uy.com.cs.jpos.util.Logger;
-import uy.com.cs.jpos.util.LogEvent;
+import org.jpos.util.Logger;
+import org.jpos.util.LogEvent;
 
 /**
  * ISOChannel implementation - VISA's VAP framing

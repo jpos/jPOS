@@ -1,9 +1,12 @@
-package uy.com.cs.jpos.util;
+package org.jpos.util;
 
 /*
  * $Id$
  *
  * $Log$
+ * Revision 1.4  2000/03/01 14:44:45  apr
+ * Changed package name to org.jpos
+ *
  * Revision 1.3  2000/02/02 00:06:28  apr
  * CVS sync
  *
@@ -16,7 +19,7 @@ package uy.com.cs.jpos.util;
  */
 
 import java.io.PrintStream;
-import uy.com.cs.jpos.util.BlockingQueue.Closed;
+import org.jpos.util.BlockingQueue.Closed;
 
 /**
  * Implements a ThreadPool with the ability to run simple Runnable
