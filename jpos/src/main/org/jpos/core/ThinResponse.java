@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.7  2000/07/26 10:17:49  apr
+ * changed dump
+ *
  * Revision 1.6  2000/03/02 12:31:01  apr
  * Get rid of javadoc warnings - done
  *
@@ -127,21 +130,21 @@ public class ThinResponse implements CardTransactionResponse, Loggeable {
     }
     public void dump (PrintStream p, String indent) {
 	String inner = indent + "  ";
-	p.print (indent + "<ThinResponse");
+	p.print (indent + "<thin-response");
 	if (isApproved())
-	    p.print (" APPROVED");
+	    p.print (" approved=\"true\"");
 	if (canContinue())
-	    p.print (" CANCONTINUE");
+	    p.print (" can-continue=\"true\"");
 	if (isAuthoritative())
-	    p.print (" AUTHORITATIVE");
+	    p.print (" authoritative=\"true\"");
 	p.println (">");
 
-	p.println (inner  + "<autCode>"+getAutCode()+"</autCode>");
+	p.println (inner  + "<aut-code>"+getAutCode()+"</aut-code>");
 	String autNumber = getAutNumber();
 	if (autNumber != null)
-	    p.println (inner  + "<autNumber>"+autNumber+"</autNumber>");
-	p.println (inner  + "<msg>"+getMessage()+"</msg>");
-	p.println (indent + "</ThinResponse>");
+	    p.println (inner  + "<aut-number>"+autNumber+"</aut-number>");
+	p.println (inner  + "<aut-message>"+getMessage()+"</aut-message>");
+	p.println (indent + "</thin-response>");
     }
     public String getBatchName () {
 	return null;
