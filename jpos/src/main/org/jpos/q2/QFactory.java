@@ -52,6 +52,7 @@ package org.jpos.q2;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileInputStream;
 import java.util.*;
 import java.net.MalformedURLException;
 import java.lang.reflect.InvocationTargetException;
@@ -62,6 +63,9 @@ import org.jdom.Document;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 import org.jdom.output.XMLOutputter;
+
+import org.jpos.core.Configuration;
+import org.jpos.core.SimpleConfiguration;
 
 /**
  * @author <a href="mailto:taherkordy@dpi2.dpi.net.ir">Alireza Taherkordi</a>
@@ -106,7 +110,7 @@ public class QFactory {
 
         setAttribute (mserver, objectName, "Server", server);
         setAttribute (mserver, objectName, "Persist", e);
-        setAttribute (mserver, objectName, "Name", e);
+        setAttribute (mserver, objectName, "Name", name);
         configureQBean(mserver,objectName,e);
         mserver.invoke (objectName, "init",  null, null);
 
@@ -230,13 +234,47 @@ public class QFactory {
      * @param name
      * @return
      */
-    public static String getAttributeName(String name)
+    public String getAttributeName(String name)
     {
         StringBuffer tmp = new StringBuffer(name);
         tmp.setCharAt(0,name.toUpperCase().charAt(0)) ;
         return tmp.toString();
     }
 
+    public Object newInstance (String className)
+	throws Q2ConfigurationException
+    {
+        try {
+            return Class.forName(className).newInstance();
+        } catch (ClassNotFoundException e) {
+	    throw new Q2ConfigurationException (className, e);
+        } catch (InstantiationException e) {
+	    throw new Q2ConfigurationException (className, e);
+        } catch (IllegalAccessException e) {
+	    throw new Q2ConfigurationException (className, e);
+	}
+    }
 
+    public Configuration getConfiguration (Element e) 
+	throws Q2ConfigurationException
+    {
+        Properties props = new Properties ();
+        Iterator iter = e.getChildren ("property").iterator();
+        while (iter.hasNext()) {
+            Element property = (Element) iter.next ();
+            String name  = property.getAttributeValue("name");
+            String value = property.getAttributeValue("value");
+            String file  = property.getAttributeValue("file");
+            if (file != null)
+                try {
+                    props.load (new FileInputStream (new File (file)));
+                } catch (Exception ex) {
+                    throw new Q2ConfigurationException (file, ex);
+                }
+            else if (name != null && value != null)
+                props.put (name, value);
+        }
+        return new SimpleConfiguration (props);
+    }
 }
 
