@@ -44,6 +44,8 @@ public class LoopbackChannel extends FilteredBase implements LogSource {
     public void connect () {
 	cnt[CONNECT]++;
 	usable = true;
+        setChanged();
+        notifyObservers();
     }
 
     /**
@@ -52,10 +54,14 @@ public class LoopbackChannel extends FilteredBase implements LogSource {
      */
     public void disconnect () {
 	usable = false;
+        setChanged();
+        notifyObservers();
     }
 
     public void reconnect() {
 	usable = true;
+        setChanged();
+        notifyObservers();
     }
 
     public boolean isConnected() {
@@ -94,6 +100,8 @@ public class LoopbackChannel extends FilteredBase implements LogSource {
 
     public void setUsable(boolean b) {
 	this.usable = usable;
+        setChanged();
+        notifyObservers();
     }
 
     public int[] getCounters() {
