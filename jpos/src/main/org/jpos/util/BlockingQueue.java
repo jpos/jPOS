@@ -92,6 +92,23 @@ public class BlockingQueue {
 	consumers--;
 	return queue.removeFirst();
     }
+
+    public synchronized Object dequeue (long timeout)
+	throws InterruptedException, Closed
+    {
+        if (timeout == 0)
+            return dequeue ();
+
+	consumers++;
+        long maxTime = System.currentTimeMillis() + timeout;
+	while (queue.size() == 0 && System.currentTimeMillis() < maxTime) {
+	    wait (timeout);
+	    if (closed)
+		throw new Closed();
+	}
+	consumers--;
+	return queue.size() > 0 ? queue.removeFirst() : null;
+    }
     public synchronized void close() {
 	closed = true;
 	notifyAll();
