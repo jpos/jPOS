@@ -60,7 +60,6 @@ import org.jpos.iso.ISOMsg;
 import org.jpos.iso.ISOValidator;
 import org.jpos.iso.validator.ISOVException;
 import org.jpos.util.LogEvent;
-import org.jpos.util.LogSource;
 import org.jpos.util.Logger;
 
 /**
@@ -74,23 +73,10 @@ import org.jpos.util.Logger;
  * @author Jose Eduardo Leon
  * @version 1.0
  */
-public class ISOBaseValidatingPackager extends ISOBasePackager implements ISOValidator, LogSource {
+public class ISOBaseValidatingPackager extends ISOBasePackager implements ISOValidator {
 
     public ISOBaseValidatingPackager() {
         super();
-    }
-
-    public void setLogger ( Logger logger, String realm ) {
-        this.logger = logger;
-        this.realm  = realm;
-    }
-
-    public String getRealm () {
-        return realm;
-    }
-
-    public Logger getLogger() {
-        return logger;
     }
 
     public ISOComponent validate(ISOComponent m) throws ISOException {
@@ -132,7 +118,7 @@ public class ISOBaseValidatingPackager extends ISOBasePackager implements ISOVal
             return m;
         }
         finally {
-            logger.log( evt );
+            Logger.log( evt );
         }
     }
 
@@ -154,6 +140,4 @@ public class ISOBaseValidatingPackager extends ISOBasePackager implements ISOVal
     /** field validator array. **/
 //    protected ISOFieldValidator[] fldVld;
     protected ISOValidator[] fldVld;
-    protected Logger logger = null;
-    protected String realm = null;
 }
