@@ -5,6 +5,9 @@ import java.util.*;
 
 /*
  * $Log$
+ * Revision 1.11  2000/04/07 01:07:17  apr
+ * Added setFieldNumber() method
+ *
  * Revision 1.10  2000/04/06 16:45:19  apr
  * Added getBytes() when possible as suggested
  * by Eoin Flood <eoin.flood@orbiscom.com>
@@ -107,5 +110,14 @@ public class ISOField extends ISOComponent implements Cloneable {
 	    XMLPackager.ID_ATTR +"=\"" +fieldNumber +"\" "+
 	    XMLPackager.VALUE_ATTR
 	    +"=\"" +ISOUtil.normalize (value) +"\"/>");
+    }
+    /**
+     * changes this Component field number<br>
+     * Use with care, this method does not change
+     * any reference held by a Composite.
+     * @param fieldNumber new field number
+     */
+    public void setFieldNumber (int fieldNumber) {
+	this.fieldNumber = fieldNumber;
     }
 }
