@@ -83,15 +83,10 @@ public class ConfigThreadPool implements QSPConfigurator {
             NamedNodeMap atts = node.getAttributes();
             int initialSize = Integer.parseInt(atts.getNamedItem("initial-size").getNodeValue());
             int maxSize = Integer.parseInt(atts.getNamedItem("max-size").getNodeValue());
-            ThreadPool threadPool = new ThreadPool(initialSize, maxSize);
+            ThreadPool threadPool = new ThreadPool (initialSize, maxSize);
             threadPool.setLogger (
                 ConfigLogger.getLogger (node),
                 ConfigLogger.getRealm (node)
-            );
-            threadPool.setConfiguration (
-                new SimpleConfiguration (
-                    ConfigUtil.addProperties (node, null, evt)
-                )
             );
             evt.addMessage (threadPool);
             String name = atts.getNamedItem ("name").getNodeValue();
