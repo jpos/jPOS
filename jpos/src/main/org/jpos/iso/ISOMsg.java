@@ -556,8 +556,8 @@ public class ISOMsg extends ISOComponent
     }
     /**
      * sets an appropiate response MTI<br>
-     * i.e. 0110 becomes 0120<br>
-     * i.e. 0111 becomes 0120<br>
+     * i.e. 0100 becomes 0110<br>
+     * i.e. 0201 becomes 0210<br>
      * i.e. 1201 becomes 1210<br>
      * @exception ISOException on MTI not set or it is not a request
      */
@@ -571,6 +571,16 @@ public class ISOMsg extends ISOComponent
 		+(Character.getNumericValue(getMTI().charAt (2))+1) + "0"
 	    )
 	);
+    }
+    /**
+     * sets an appropiate retransmission MTI<br>
+     * @exception ISOException on MTI not set or it is not a request
+     */
+    public void setRetransmissionMTI() throws ISOException {
+	if (!isRequest())
+	    throw new ISOException ("not a request - can't set response MTI");
+
+	set (new ISOField (0, getMTI().substring(0,3) + "1"));
     }
     protected void writeHeader (ObjectOutput out) throws IOException {
         int len = header.getLength();
