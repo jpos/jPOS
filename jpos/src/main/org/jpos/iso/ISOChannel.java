@@ -94,9 +94,14 @@ public interface ISOChannel {
      */
     public void setName (String name);
 
-    /**
-     * @return this ISOChannel's name ("" if no name was set)
-     */
+   /**
+    * @return this ISOChannel's name ("" if no name was set)
+    */
     public String getName();
+
+   /**
+    * @return current packager
+    */
+    public ISOPackager getPackager();
 }
 
