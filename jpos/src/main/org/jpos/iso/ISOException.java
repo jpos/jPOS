@@ -60,9 +60,12 @@ public class ISOException extends Exception implements Loggeable {
 	return nested;
     }
 
+    protected String getTagName() {
+	return "iso-exception";
+    }
     public void dump (PrintStream p, String indent) {
 	String inner = indent + "  ";
-	p.println (indent + "<isoexception>");
+	p.println (indent + "<"+getTagName()+">");
 	p.println (inner  + getMessage());
 	if (nested != null) {
 	    if (nested instanceof ISOException) 
@@ -76,6 +79,12 @@ public class ISOException extends Exception implements Loggeable {
 	}
 	p.print (inner);
 	printStackTrace (p);
-	p.println (indent + "</isoexception>");
+	p.println (indent + "</"+getTagName()+">");
+    }
+    public String toString() {
+	StringBuffer buf = new StringBuffer (super.toString());
+	if (nested != null)
+	    buf.append (" (" + nested.toString() +")");
+	return buf.toString();
     }
 }
