@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.StringTokenizer;
 import org.jpos.util.NameRegistrar;
 import org.jdom.Element;
 import org.jpos.space.Space;
@@ -221,8 +222,14 @@ public class TransactionManager
             if (p instanceof GroupSelector) {
                 String groupName = ((GroupSelector)p).select (id, context);
                 if (groupName != null) {
-                    addGroup (id, groupName);
-                    iter = getParticipants(groupName).iterator();
+                    StringTokenizer st = new StringTokenizer (groupName, " ,");
+                    List participants = new ArrayList();
+                    while (st.hasMoreTokens ()) {
+                        String grp = st.nextToken();
+                        addGroup (id, grp);
+                        participants.addAll (getParticipants (grp));
+                    }
+                    iter = participants.iterator();
                     continue;
                 }
             }
