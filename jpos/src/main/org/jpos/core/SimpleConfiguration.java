@@ -47,29 +47,6 @@
  * information please see <http://www.jpos.org/>.
  */
 
-
-/*
- * $Log$
- * Revision 1.6  2000/11/02 12:09:18  apr
- * Added license to every source file
- *
- * Revision 1.5  2000/09/01 16:34:53  apr
- * Accept "yes" as "true" response for getBoolean
- *
- * Revision 1.4  2000/03/01 14:44:38  apr
- * Changed package name to org.jpos
- *
- * Revision 1.3  1999/11/26 12:16:51  apr
- * CVS devel snapshot
- *
- * Revision 1.2  1999/11/11 10:18:49  apr
- * added get(name,name), getInt(name), getLong(name) and getDouble(name)
- *
- * Revision 1.1  1999/09/26 22:32:01  apr
- * CVS sync
- *
- */
-
 package org.jpos.core;
 
 import java.io.*;
@@ -104,16 +81,35 @@ public class SimpleConfiguration implements Configuration {
     synchronized public int getInt (String name) {
         return Integer.parseInt(props.getProperty(name, "0").trim());
     }
+    synchronized public int getInt (String name, int def) {
+        return Integer.parseInt(
+            props.getProperty (name, Integer.toString (def)).trim());
+    }
     synchronized public long getLong (String name) {
         return Long.parseLong(props.getProperty(name, "0").trim());
+    }
+    synchronized public long getLong (String name, long def) {
+        return Long.parseLong (
+            props.getProperty (name, Long.toString (def)).trim());
     }
     synchronized public double getDouble(String name) {
         return Double.valueOf(
 	    props.getProperty(name,"0.00").trim()).doubleValue();
     }
+    synchronized public double getDouble(String name, double def) {
+        return Double.valueOf(
+	    props.getProperty(name,Double.toString(def)).trim()).doubleValue();
+    }
     public boolean getBoolean (String name) {
 	String v = get (name, "false").trim();
 	return v.equalsIgnoreCase("true") || v.equalsIgnoreCase("yes");
+    }
+    public boolean getBoolean (String name, boolean def) {
+	String v = get (name);
+        if (v != null)
+            v = v.trim();
+	return v == null ? def :
+            v.equalsIgnoreCase("true") || v.equalsIgnoreCase("yes");
     }
     synchronized public void load(String filename) 
 	throws FileNotFoundException, IOException

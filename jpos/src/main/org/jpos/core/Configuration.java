@@ -47,25 +47,6 @@
  * information please see <http://www.jpos.org/>.
  */
 
-/*
- * $Log$
- * Revision 1.5  2000/11/02 12:09:18  apr
- * Added license to every source file
- *
- * Revision 1.4  2000/03/01 14:44:38  apr
- * Changed package name to org.jpos
- *
- * Revision 1.3  1999/11/26 12:16:49  apr
- * CVS devel snapshot
- *
- * Revision 1.2  1999/11/11 10:18:48  apr
- * added get(name,name), getInt(name), getLong(name) and getDouble(name)
- *
- * Revision 1.1  1999/09/26 22:31:59  apr
- * CVS sync
- *
- */
-
 package org.jpos.core;
 
 import java.io.*;
@@ -83,7 +64,11 @@ public interface Configuration {
     public String get       (String propertyName);
     public String get       (String propertyName, String defaultValue);
     public int getInt       (String propertyName);
+    public int getInt       (String propertyName, int defaultValue);
     public long getLong     (String propertyName);
+    public long getLong     (String propertyName, long defaultValue);
     public double getDouble (String propertyName);
+    public double getDouble (String propertyName, double defaultValue);
     public boolean getBoolean (String propertyName);
+    public boolean getBoolean (String propertyName, boolean defaultValue);
 }
