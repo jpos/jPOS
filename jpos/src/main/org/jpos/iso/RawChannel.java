@@ -1,23 +1,3 @@
-/**
- * ISOChannel implementation - RAW Channel
- * Transmite largo en un long nbo, el resto es 'raw'.
- * Incluye TPDU opcional.
- *
- * @author apr@cs.com.uy
- * @version $Id$
- * @see ISOMsg
- * @see ISOException
- * @see ISOChannel
- */
-
-/*
- * $Log$
- * Revision 1.1  1998/12/14 22:48:23  apr
- * Added RawChannel support
- * Pruebas OK packaging POSNet
- *
- */
-
 package uy.com.cs.jpos.iso;
 
 import java.io.*;
@@ -25,8 +5,28 @@ import java.util.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+/**
+ * ISOChannel implementation - RAW Channel
+ * Send packet len (4 bytes network byte order) followed by
+ * raw data. Usefull when you need to send propietary headers
+ * with ISOMsgs (such as NAC's TPDUs)
+ *
+ * @author apr@cs.com.uy
+ * @version $Id$
+ * @see ISOMsg
+ * @see ISOException
+ * @see ISOChannel
+ */
 public class RawChannel extends ISOChannel {
 	byte[] TPDU;
+
+	/**
+	 * @param host	server TCP Address
+	 * @param port  server port number
+	 * @param p     an ISOPackager
+	 * @param TPDU  an optional raw header (i.e. TPDU)
+	 * @see ISOPackager
+	 */
 	public RawChannel (String host, int port, ISOPackager p, byte[] TPDU) {
 		super(host, port, p);
 		this.TPDU = TPDU;

@@ -1,27 +1,35 @@
+package uy.com.cs.jpos.iso;
+
 /**
- * ISOFieldPackager Binary Numeric
+ * ISOFieldPackager Binary Char
  *
  * @author apr@cs.com.uy
  * @version $Id$
  * @see ISOComponent
  */
- 
-/*
- * $Log$
- * Revision 1.1  1998/11/09 23:40:14  apr
- * *** empty log message ***
- *
- */
-
-package uy.com.cs.jpos.iso;
-
 public class IFB_CHAR extends ISOFieldPackager {
+	/**
+	 * @param len - field len
+	 * @param description symbolic descrption
+	 */
 	public IFB_CHAR(int len, String description) {
 		super(len, description);
 	}
+	/**
+	 * @param c - a component
+	 * @return packed component
+	 * @exception ISOException
+	 */
 	public byte[] pack (ISOComponent c) throws ISOException {
 		return (ISOUtil.strpad ((String) c.getValue(), getLen())).getBytes();
 	}
+	/**
+	 * @param c - the Component to unpack
+	 * @param b - binary image
+	 * @param offset - starting offset within the binary image
+	 * @return consumed bytes
+	 * @exception ISOException
+	 */
 	public int unpack (ISOComponent c, byte[] b, int offset)
 		throws ISOException
 	{

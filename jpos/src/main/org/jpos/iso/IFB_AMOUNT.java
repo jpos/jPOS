@@ -1,29 +1,27 @@
+package uy.com.cs.jpos.iso;
+
 /**
- * ISOFieldPackager Binary Numeric
+ * ISOFieldPackager Binary Amount
  *
  * @author apr@cs.com.uy
  * @version $Id$
  * @see ISOComponent
  */
-
-/*
- * $Log$
- * Revision 1.2  1998/12/11 14:06:21  apr
- * Added 'pad' parameter en 'IFB_[L*]NUM*' y 'IFB_AMOUNT'
- *
- * Revision 1.1  1998/11/09 23:40:13  apr
- * *** empty log message ***
- *
- */
-
-package uy.com.cs.jpos.iso;
-
 public class IFB_AMOUNT extends ISOFieldPackager {
 	private boolean pad;
+	/**
+	 * @param len - field len
+	 * @param description symbolic descrption
+	 */
 	public IFB_AMOUNT(int len, String description, boolean pad) {
 		super(len, description);
 		this.pad = pad;
 	}
+	/**
+	 * @param c - a component
+	 * @return packed component
+	 * @exception ISOException
+	 */
 	public byte[] pack (ISOComponent c) throws ISOException {
 		String s = (String) c.getValue();
 		String amnt = ISOUtil.zeropad(s.substring(1),getLen()-1);
@@ -33,6 +31,13 @@ public class IFB_AMOUNT extends ISOFieldPackager {
 	    System.arraycopy(bcd, 0, b, 1, bcd.length);
 		return b;
 	}
+	/**
+	 * @param c - the Component to unpack
+	 * @param b - binary image
+	 * @param offset - starting offset within the binary image
+	 * @return consumed bytes
+	 * @exception ISOException
+	 */
 	public int unpack (ISOComponent c, byte[] b, int offset)
 		throws ISOException
 	{

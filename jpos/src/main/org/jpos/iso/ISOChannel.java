@@ -1,32 +1,3 @@
-/**
- * Provee funciones basicas para transmitir y recibir ISOMsg(s)
- * a traves de una sesion TCP/IP.
- *
- * No es una clase 'synchronized', cuenta con que ISOMUX meneje threads
- * separados para transmision/recepcion y control
- *
- * @author apr@cs.com.uy
- * @version $Id$
- * @see ISOMsg
- * @see ISOMUX
- * @see ISOException
- * @see "Internetworking with TCP/IP ISBN 0-13-474321-0"
- */
-
-/*
- * $Log$
- * Revision 1.3  1998/12/14 22:48:23  apr
- * Added RawChannel support
- * Pruebas OK packaging POSNet
- *
- * Revision 1.2  1998/11/28 16:25:53  apr
- * *** empty log message ***
- *
- * Revision 1.1  1998/11/09 23:40:23  apr
- * *** empty log message ***
- *
- */
-
 package uy.com.cs.jpos.iso;
 
 import java.io.*;
@@ -34,6 +5,25 @@ import java.util.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+/**
+ * ISOChannel is an abstract class that provides functionality that
+ * allows the transmision and reception of ISO 8583 Messages
+ * over a TCP/IP session.<br>
+ *
+ * It is not thread-safe, ISOMUX takes care of the
+ * synchronization details
+ *
+ * @see ISOMUX
+ *
+ * @author apr@cs.com.uy
+ * @version $Id$
+ * @see ISOMsg
+ * @see ISOMUX
+ * @see ISOException
+ * @see CSChannel
+ * @see Internetworking_with_TCP/IP_ISBN_0-13-474321-0
+ *
+ */
 public abstract class ISOChannel {
 	private Socket socket;
 	private String host;
@@ -43,14 +33,27 @@ public abstract class ISOChannel {
 	protected DataOutputStream serverOut;
 	protected ISOPackager packager;
 
+	/**
+	 * @param host	server TCP Address
+	 * @param port  server port number
+	 * @param p     an ISOPackager
+	 * @see ISOPackager
+	 */
 	public ISOChannel (String host, int port, ISOPackager p) {
 		this.host = host;
 		this.port = port;
 		this.packager = p;
 	}
+	/**
+	 * @return the connection state
+	 */
 	public boolean isConnected() {
 		return socket != null && usable;
 	}
+	/**
+	 * Actually connects to the server
+	 * @exception IOException
+	 */
     public void connect () throws IOException {
        	socket =  new Socket (host, port);
 		serverIn = new DataInputStream (
@@ -61,6 +64,10 @@ public abstract class ISOChannel {
 		);
 		usable = true;
     }
+	/**
+	 * @param b - new Usable state (used by ISOMUX internals to
+	 * flag as unusable in order to force a reconnection)
+	 */
 	public void setUsable(boolean b) {
 		usable = b;
 	}
@@ -74,17 +81,31 @@ public abstract class ISOChannel {
 	protected byte[] streamReceive() throws IOException {
 		return new byte[0];
 	}
+	/**
+	 * sends an ISOMsg over the TCP/IP session
+	 * @param m the Message to be sent
+	 * @exception IOException
+	 * @exception ISOException
+	 */
 	public void send (ISOMsg m) throws IOException, ISOException {
 		m.setPackager (packager);
 		byte[] b = m.pack();
-		System.out.println (
-			"--[pack]--\n"+ ISOUtil.hexString(b) + "\n--[end]--");
+		// 
+		// System.out.println (
+		//	"--[pack]--\n"+ ISOUtil.hexString(b) + "\n--[end]--");
+		// 
 		sendMessageLength(b.length);
 		sendMessageHeader(m);
 		serverOut.write(b, 0, b.length);
 		sendMessageTrailer(m);
 		serverOut.flush ();
 	}
+	/**
+	 * Waits and receive an ISOMsg over the TCP/IP session
+	 * @return the Message received
+	 * @exception IOException
+	 * @exception ISOException
+	 */
 	public ISOMsg receive() throws IOException, ISOException {
 		byte[] b;
 		int len  = getMessageLength();
@@ -96,17 +117,17 @@ public abstract class ISOChannel {
 			if (hLen > 0) {
 				// ignore message header (TPDU)
 				b = new byte [hLen];
-				System.out.println ("reading header len="+hLen);
 				serverIn.read(b,0,hLen);
 				len -= hLen;
 			}
 			b = new byte[len];
-			System.out.println ("reading message len=" +len);
 			if ((l=serverIn.read(b,0,len)) != len)
 				throw new ISOException(
 					"receive error. expected " +len + " received " +l);
-			System.out.println (
-				"--[unpack]--\n"+ ISOUtil.hexString(b) + "\n--[end]--");
+			//
+			// System.out.println (
+			// 	"--[unpack]--\n"+ ISOUtil.hexString(b) + "\n--[end]--");
+			//
 		}
 		else
 			throw new ISOException("receive length " +len + " seems extrange");
@@ -117,9 +138,19 @@ public abstract class ISOChannel {
 			m.unpack (b);
 		return m;
 	}
+	/**
+	 * Low level receive
+	 * @param b byte array
+	 * @exception IOException
+	 */
 	public int getBytes (byte[] b) throws IOException {
 		return serverIn.read (b);
 	}
+	/**
+	 * disconnects the TCP/IP session. The instance is ready for
+	 * a reconnection. There is no need to create a new ISOChannel<br>
+	 * @exception IOException
+	 */
 	public void disconnect () throws IOException {
 		usable = false;
 		serverIn  = null;
@@ -128,6 +159,10 @@ public abstract class ISOChannel {
 			socket.close ();
 		socket = null;
 	}	
+	/**
+	 * Issues a disconnect followed by a connect
+	 * @exception IOException
+	 */
 	public void reconnect() throws IOException {
 		disconnect();
 		connect();

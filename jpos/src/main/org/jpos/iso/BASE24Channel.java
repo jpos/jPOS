@@ -1,20 +1,3 @@
-/**
- * ISOChannel implementation - BASE24 X.25 framing
- *
- * @author apr@cs.com.uy
- * @version $Id$
- * @see ISOMsg
- * @see ISOException
- * @see ISOChannel
- */
-
-/*
- * $Log$
- * Revision 1.1  1998/11/09 23:40:04  apr
- * *** empty log message ***
- *
- */
-
 package uy.com.cs.jpos.iso;
 
 import java.io.*;
@@ -23,13 +6,41 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 
+/**
+ * Implements an ISOChannel able to exchange messages with
+ * ACI's BASE24 over an X.25 link.<br>
+ * An instance of this class exchange messages by means of an
+ * intermediate 'port server' as described in the
+ * <a href="API_users_guide.html#LowLevelAdapters">API Users Guide</a>
+ * @author apr@cs.com.uy
+ *
+ * @version $Id$
+ *
+ * @see ISOMsg
+ * @see ISOException
+ * @see ISOChannel
+ */
 public class BASE24Channel extends ISOChannel {
+	/**
+	 * @param host	server TCP Address
+	 * @param port  server port number
+	 * @param p     an ISOPackager
+	 * @see ISOPackager
+	 */
 	public BASE24Channel (String host, int port, ISOPackager p) {
 		super(host, port, p);
 	}
+	/**
+	 * @param m	the Message to send (in this case it is unused)
+	 * @exception IOException
+	 */
 	protected void sendMessageTrailer(ISOMsg m) throws IOException {
 		serverOut.write (3);
 	}
+	/**
+	 * @return a byte array with the received message
+	 * @exception IOException
+	 */
 	protected byte[] streamReceive() throws IOException {
 		int i;
 		byte[] buf = new byte[4096];
@@ -50,26 +61,5 @@ public class BASE24Channel extends ISOChannel {
 		byte[] d = new byte[i];
 	    System.arraycopy(buf, 0, d, 0, i);
 		return d;
-	}
-	public static void main (String args[]) {
-		System.out.println ("ISOChannel running");
-		ISOChannel channel=new BASE24Channel
-			(args[0], Integer.parseInt(args[1]), new ISO87APackager());
-		try {
-			ISOMsg m = new ISOMsg ();
-			m.set(new ISOField (0,  "0800"));
-			m.set(new ISOField (3,  "000001"));
-			m.set(new ISOField (7,  ISODate.getDateTime(new Date())));
-			m.dump(System.out, "");
-			channel.connect();
-			channel.send(m);
-			ISOMsg d = channel.receive();
-			d.dump(System.out, "");
-			channel.disconnect();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (ISOException e) {
-			e.printStackTrace();
-		}
 	}
 }

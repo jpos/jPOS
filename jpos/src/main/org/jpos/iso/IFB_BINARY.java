@@ -1,24 +1,26 @@
+package uy.com.cs.jpos.iso;
+
 /**
- * ISOFieldPackager Binary Numeric
+ * ISOFieldPackager Binary Field
  *
  * @author apr@cs.com.uy
  * @version $Id$
  * @see ISOComponent
  */
 
-/*
- * $Log$
- * Revision 1.1  1998/11/09 23:40:13  apr
- * *** empty log message ***
- *
- */
-
-package uy.com.cs.jpos.iso;
-
 public class IFB_BINARY extends ISOFieldPackager {
+	/**
+	 * @param len - field len
+	 * @param description symbolic descrption
+	 */
 	public IFB_BINARY(int len, String description) {
 		super(len, description);
 	}
+	/**
+	 * @param c - a component
+	 * @return packed component
+	 * @exception ISOException
+	 */
 	public byte[] pack (ISOComponent c) throws ISOException {
 		byte[] b = (byte[]) c.getValue();
 		if (b.length != getLen()) 
@@ -28,6 +30,13 @@ public class IFB_BINARY extends ISOFieldPackager {
 			);
 		return (byte[]) c.getValue();
 	}
+	/**
+	 * @param c - the Component to unpack
+	 * @param b - binary image
+	 * @param offset - starting offset within the binary image
+	 * @return consumed bytes
+	 * @exception ISOException
+	 */
 	public int unpack (ISOComponent c, byte[] b, int offset)
 		throws ISOException
 	{

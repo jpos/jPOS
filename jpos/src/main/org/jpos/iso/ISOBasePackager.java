@@ -1,37 +1,25 @@
-/**
- * ISO 8583 v1987 BINARY Packager
- *
- * @author apr@cs.com.uy
- * @version $Id$
- * @see ISOPackager
- * @see ISOComponent
- */
-
-/*
- * $Log$
- * Revision 1.2  1998/12/14 22:48:22  apr
- * Added RawChannel support
- * Pruebas OK packaging POSNet
- *
- * Revision 1.1  1998/11/09 23:40:21  apr
- * *** empty log message ***
- *
- */
-
 package uy.com.cs.jpos.iso;
 
 import java.util.*;
 
-public class ISOBasePackager implements ISOPackager {
+/**
+ * provides base functionality for the actual packagers
+ *
+ * @author apr@cs.com.uy
+ * @version $Id$
+ * @see ISO87APackager
+ * @see ISO87BPackager
+ */
+public abstract class ISOBasePackager implements ISOPackager {
 	protected ISOFieldPackager[] fld;
 
 	protected void setFieldPackager (ISOFieldPackager[] fld) {
 		this.fld = fld;
 	}
-
 	/**
 	 * @param	m	the Component to pack
 	 * @return		Message image
+	 * @exception ISOException
 	 */
 	public byte[] pack (ISOComponent m) throws ISOException {
 		if (m.getComposite() != m) 
@@ -67,6 +55,7 @@ public class ISOBasePackager implements ISOPackager {
 	 * @param	m	the Container of this message
 	 * @param	b	ISO message image
 	 * @return		consumed bytes
+	 * @exception ISOException
 	 */
 	public int unpack (ISOComponent m, byte[] b) throws ISOException {
 		if (m.getComposite() != m) 

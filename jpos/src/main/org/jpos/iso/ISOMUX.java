@@ -1,26 +1,3 @@
-/**
- * Corre en su propio Thread e implementa un MUX
- *
- * @author apr@cs.com.uy
- * @version $Id$
- * @see ISOMsg
- * @see ISOException
- * @see ISOChannel
- */
-
-/*
- * $Log$
- * Revision 1.3  1998/12/11 14:06:26  apr
- * Added 'pad' parameter en 'IFB_[L*]NUM*' y 'IFB_AMOUNT'
- *
- * Revision 1.2  1998/11/28 16:25:54  apr
- * *** empty log message ***
- *
- * Revision 1.1  1998/11/09 23:40:27  apr
- * *** empty log message ***
- *
- */
-
 package uy.com.cs.jpos.iso;
 
 import java.io.*;
@@ -28,6 +5,19 @@ import java.net.*;
 import java.lang.*;
 import java.util.*;
 
+/**
+ * Should run in it's own thread. Starts another Receiver thread
+ *
+ * See the
+ * <a href="API_users_guide.html#ISOMUX">API User's Guide</a>
+ * for details.
+ *
+ * @author apr@cs.com.uy
+ * @version $Id$
+ * @see ISORequest
+ * @see ISOChannel
+ * @see ISOException
+ */
 public class ISOMUX implements Runnable {
 	private ISOChannel channel;
 	private Thread rx;
@@ -46,6 +36,9 @@ public class ISOMUX implements Runnable {
 
 	private int[] cnt;
 
+	/**
+	 * @param c a connected or unconnected ISOChannel
+	 */
 	public ISOMUX (ISOChannel c) {
 		channel = c;
 		rx = null;
@@ -56,10 +49,9 @@ public class ISOMUX implements Runnable {
 	}
 
 	/**
-	 * Genera clave para matchear responses con sus
-	 * respectivos requests.
+	 * construct key to match request with responses
 	 * @param	m	request/response
-	 * @return		key (default terminal(41) + tracenumber(11)
+	 * @return		key (default terminal(41) + tracenumber(11))
 	 */
 	protected String getKey(ISOMsg m) throws ISOException {
 		return    ISOUtil.zeropad((String) m.getValue(41),8) 
@@ -67,7 +59,7 @@ public class ISOMUX implements Runnable {
 	}
 
 	/**
-	 * Elimina de rxQueue requests expired
+	 * get rid of expired requests
 	 */
 	private void purgeRxQueue() {
 		Enumeration e = rxQueue.keys();
@@ -81,6 +73,10 @@ public class ISOMUX implements Runnable {
 		}
 	}
 
+	/**
+	 * show Counters
+	 * @param p - where to print
+	 */
 	public void showCounters(PrintStream p) {
 		int[] c = getCounters();
 		p.println("           Conexiones: " + c[CONNECT]);
@@ -93,6 +89,10 @@ public class ISOMUX implements Runnable {
 		p.println("    rx no reconocidos: " + c[RX_UNKNOWN]);
 	}
 
+	/**
+	 * get the counters in order to pretty print them
+	 * or for stats purposes
+	 */
 	public int[] getCounters() {
 		cnt[TX_PENDING] = txQueue.size();
 		cnt[RX_PENDING] = rxQueue.size();
@@ -223,59 +223,6 @@ public class ISOMUX implements Runnable {
 		synchronized(this) {
 			txQueue.addElement(r);
 			this.notify();
-		}
-	}
-
-	public static void main (String args[]) {
-		ISOChannel channel=new BASE24Channel
-			(args[0], Integer.parseInt(args[1]), new ISO87APackager());
-		ISOMUX mux = new ISOMUX (channel);
-
-		Thread t = new Thread (mux);
-		t.start();
-
-		ISOMsg m = new ISOMsg ();
-		ISOPackager packager = new ISO87APackager ();
-		m.setPackager (packager);
-		try {
-			m.set(new ISOField (0,  "0200"));
-			m.set(new ISOField (2,  "1234")); // LLNUM
-	
-			m.set(new ISOField (3,  "000001"));
-			m.set(new ISOField (4,  "0000001000"));
-			// m.set(new ISOField (30, "C100"));
-			m.set(new ISOField (34, "TEST"));
-			m.set(new ISOField (36, "5678"));
-			m.set(new ISOField (37, "123456789"));
-			m.set(new ISOField (38, "123456"));
-			m.set(new ISOField (41, "29110000")); 
-		} catch (ISOException e) {
-			e.printStackTrace();
-		}
-		for (int i=0; i<100; i++) {
-			try {
-				m = (ISOMsg) m.clone();
-				m.set(new ISOField (11, Integer.toString(i)));
-			} catch (ISOException e) {
-				e.printStackTrace();
-			}
-			mux.queue (new ISORequest (m));
-		}
-
-		// ISOMsg response = r.getResponse (60*1000);
-		// if (response != null) {
-		//	response.dump(System.out, "");
-		//}
-		//else {
-		//	System.out.println ("No answer");
-		//}
-
-		for (;;) {
-			mux.showCounters(System.out);
-			System.out.println();
-			try {
-				Thread.sleep(5000);
-			} catch (InterruptedException ie) { }
 		}
 	}
 }

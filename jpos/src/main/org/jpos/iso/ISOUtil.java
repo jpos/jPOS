@@ -1,29 +1,22 @@
+package uy.com.cs.jpos.iso;
+
+import java.util.*;
+
 /**
- * ISOUtil (kinda csstr)
+ * varios functions needed to pack/unpack ISO-8583 fields
  *
  * @author apr@cs.com.uy
  * @version $Id$
  * @see ISOComponent
  */
-
-/*
- * $Log$
- * Revision 1.3  1998/12/11 14:06:26  apr
- * Added 'pad' parameter en 'IFB_[L*]NUM*' y 'IFB_AMOUNT'
- *
- * Revision 1.2  1998/12/01 12:48:12  apr
- * Added padleft
- *
- * Revision 1.1  1998/11/09 23:40:33  apr
- * *** empty log message ***
- *
- */
-
-package uy.com.cs.jpos.iso;
-
-import java.util.*;
-
 public class ISOUtil {
+	/**
+	 * pad to the left
+	 * @param s - original string
+	 * @param len - desired len
+	 * @param c - padding char
+	 * @return padded string
+	 */
 	public static String padleft(String s, int len, char c)
 		throws ISOException 
 	{
@@ -38,17 +31,34 @@ public class ISOUtil {
 		return d.toString();
 	}
 
+	/**
+	 * left pad with '0'
+	 * @param s - original string
+	 * @param len - desired len
+	 * @return zero padded string
+	 */
 	public static String zeropad(String s, int len) throws ISOException {
 		return padleft(s, len, '0');
 	}
 
+	/**
+	 * pads to the right
+	 * @param s - original string
+	 * @param len - desired len
+	 * @return zero padded string
+	 */
 	public static String strpad(String s, int len) {
 		StringBuffer d = new StringBuffer(s);
 		while (d.length() < len)
 			d.append(' ');
 		return d.toString();
 	}
-
+	/**
+	 * converts to BCD
+	 * @param s - the number
+	 * @param padLeft - flag indicating left/right padding
+	 * @return BCD representation of the number
+	 */
 	public static byte[] str2bcd(String s, boolean padLeft) {
 		int len = s.length();
 		byte[] d = new byte[ (len+1) >> 1 ];
@@ -57,6 +67,14 @@ public class ISOUtil {
 			d [i >> 1] |= (s.charAt(i-start)-'0') << ((i & 1) == 1 ? 0 : 4);
 		return d;
 	}
+	/**
+	 * converts a BCD representation of a number to a String
+	 * @param b - BCD representation
+	 * @param offset - starting offset
+	 * @param len - BCD field len
+	 * @param padLeft - was padLeft packed?
+	 * @return the String representation of the number
+	 */
 	public static String bcd2str(byte[] b, int offset,
 						int len, boolean padLeft)
 	{
@@ -68,6 +86,12 @@ public class ISOUtil {
 		}
 		return d.toString();
 	}
+	/**
+	 * converts a byte array to hex string 
+	 * (suitable for dumps and ASCII packaging of Binary fields
+	 * @param b - byte array
+	 * @return String representation
+	 */
 	public static String hexString(byte[] b) {
 		StringBuffer d = new StringBuffer(b.length * 2);
 		for (int i=0; i<b.length; i++) {
@@ -79,6 +103,12 @@ public class ISOUtil {
 		return d.toString();
 	}
 
+	/**
+	 * bit representation of a BitSet
+	 * suitable for dumps and debugging
+	 * @param b - the BitSet
+	 * @return string representing the bits (i.e. 011010010...)
+	 */
 	public static String bitSet2String (BitSet b) {
 		int len = b.size();
 		StringBuffer d = new StringBuffer(len);
@@ -86,7 +116,12 @@ public class ISOUtil {
 			d.append (b.get(i) ? '1' : '0');
 		return d.toString();
 	}
-
+	/**
+	 * converts a BitSet into a binary field
+	 * used in pack routines
+	 * @param b - the BitSet
+	 * @return binary representation
+	 */
 	public static byte[] bitSet2byte (BitSet b) {
 		int len = (b.size() >> 3) << 3;
 		byte[] d = new byte[len >> 3];
@@ -98,6 +133,13 @@ public class ISOUtil {
 		return d;
 	}
 
+	/**
+	 * Converts a binary representation of a Bitmap field
+	 * into a Java BitSet
+	 * @param b - binary representation
+	 * @param offset - staring offset
+	 * @return java BitSet object
+	 */
 	public static BitSet byte2BitSet (byte[] b, int offset) {
 		int len = (b[offset] & 0x80) == 0x80 ? 128 : 64;
 		BitSet bmap = new BitSet (len);
@@ -107,6 +149,13 @@ public class ISOUtil {
 		return bmap;
 	}
 
+	/**
+	 * Converts an ASCII representation of a Bitmap field
+	 * into a Java BitSet
+	 * @param b - binary representation
+	 * @param offset - staring offset
+	 * @return java BitSet object
+	 */
 	public static BitSet hex2BitSet (byte[] b, int offset) {
 		int len = (Character.digit((char)b[offset],16) & 0x08) == 8 ? 128 : 64;
 		BitSet bmap = new BitSet (len);
@@ -150,47 +199,4 @@ public class ISOUtil {
 		}
 		return prefix + "." + suffix;
 	}
-
-    public static void main (String args[]) {
-        String s = "123456789";
-        try {
-            s = zeropad (s, 9);
-			byte[] b;
-
-			// System.out.println ("---[ testing hexString ]---");
-			// b = new byte[4];
-			// b[0] = 9;
-			// b[1] = 10;
-			// b[2] = 11;
-			// b[3] = 12;
-			// System.out.println ("hexString()="+ hexString(b));
-
-			// System.out.println ("---[ padLeft false ]---");
-            // b = str2bcd (s, false);
-            // System.out.println ("hex=" +hexString(b));
-            // System.out.println ("bcd=" +bcd2str(b, 0, 9, false));
-
-			// System.out.println ("---[ padLeft true ]---");
-            // b = str2bcd (s, true);
-            // System.out.println ("hex=" +hexString(b));
-            // System.out.println ("bcd=" +bcd2str(b, 0, 9, true));
-
-			BitSet bitset = new BitSet (64);
-			bitset.set(3);
-			bitset.set(7);
-			System.out.println (bitSet2String (bitset));
-			b = bitSet2byte (bitset);
-            System.out.println ("hex=" +hexString(b));
-
-			BitSet destbitset = byte2BitSet (b, 0);
-			System.out.println ("destbitset=" +destbitset);
-
-			// String hexbit = "0123456789ABCEF0";
-			// byte[] binbit = hex2byte(hexbit.getBytes(), 0, 8);
-			// System.out.println ("binbit=" +hexString(binbit));
-
-        } catch (ISOException e) {
-            e.printStackTrace();
-        }
-    }
 }

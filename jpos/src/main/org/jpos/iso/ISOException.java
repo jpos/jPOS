@@ -1,19 +1,11 @@
+package uy.com.cs.jpos.iso;
+
 /**
  * Signals that an ISO exception of some sort has occurred. 
  *
  * @author  apr@cs.com.uy
  * @version $Id$
  */
-
-/*
- * $Log$
- * Revision 1.1  1998/11/09 23:40:25  apr
- * *** empty log message ***
- *
- */
-
-package uy.com.cs.jpos.iso;
-
 public
 class ISOException extends Exception {
 	/**

@@ -1,24 +1,25 @@
+package uy.com.cs.jpos.iso;
+
 /**
- * ISOFieldPackager Binary Numeric
+ * ISOFieldPackager ASCII variable len NUMERIC
  *
  * @author apr@cs.com.uy
  * @version $Id$
  * @see ISOComponent
  */
-
-/*
- * $Log$
- * Revision 1.1  1998/11/09 23:40:12  apr
- * *** empty log message ***
- *
- */
-
-package uy.com.cs.jpos.iso;
-
 public class IFA_LLNUM extends ISOFieldPackager {
+	/**
+	 * @param len - field len
+	 * @param description symbolic descrption
+	 */
 	public IFA_LLNUM(int len, String description) {
 		super(len, description);
 	}
+	/**
+	 * @param c - a component
+	 * @return packed component
+	 * @exception ISOException
+	 */
 	public byte[] pack (ISOComponent c) throws ISOException {
 		int len;
 		String s = (String) c.getValue();
@@ -30,7 +31,13 @@ public class IFA_LLNUM extends ISOFieldPackager {
 
 		return (ISOUtil.zeropad(Integer.toString(len), 2) + s).getBytes();
 	}
-
+	/**
+	 * @param c - the Component to unpack
+	 * @param b - binary image
+	 * @param offset - starting offset within the binary image
+	 * @return consumed bytes
+	 * @exception ISOException
+	 */
 	public int unpack (ISOComponent c, byte[] b, int offset)
 		throws ISOException
 	{

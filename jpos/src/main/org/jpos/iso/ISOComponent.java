@@ -1,11 +1,15 @@
+package uy.com.cs.jpos.iso;
+
+import java.io.*;
+import java.util.*;
+
 /**
- * ISOComponent implementa un <b>Component</b>
- * dentro de un <b>Composite pattern</b>
+ * implements a <b>Component</b>
+ * within a <b>Composite pattern</b>
  *
- * @see "Design Patterns ISBN 0-201-63361-2"
- *
- * ISOComponent es una abstract class de la cual derivan
- * ISOMsg (the Composite) y ISOField (the Leaf)
+ * See the
+ * <a href="API_users_guide.html">API User's Guide</a>
+ * for details.
  *
  * @author apr@cs.com.uy
  * @version $Id$
@@ -13,38 +17,64 @@
  * @see ISOField
  * @see ISOException
  */
-
-/*
- * $Log$
- * Revision 1.1  1998/11/09 23:40:24  apr
- * *** empty log message ***
- *
- */
-
-package uy.com.cs.jpos.iso;
-
-import java.io.*;
-import java.util.*;
-
 public abstract class ISOComponent implements Cloneable {
+	/**
+	 * Set a field within this message
+	 * @param c - a component
+	 * @exception ISOException
+	 */
 	public void set (ISOComponent c) throws ISOException {
 		throw new ISOException ("Can't add to Leaf");
 	}
+	/**
+	 * Unset a field
+	 * @param fldno - the field number
+	 * @exception ISOException
+	 */
 	public void unset (int fldno) throws ISOException {
 		throw new ISOException ("Can't remove from Leaf");
 	}
+	/**
+	 * In order to interchange <b>Composites</b> and <b>Leafs</b> we use
+	 * getComposite(). A <b>Composite component</b> returns itself and
+	 * a Leaf returns null. The base class ISOComponent provides
+	 * <b>Leaf</b> functionality.
+	 *
+	 * @return ISOComponent
+	 */
 	public ISOComponent getComposite() {
 		return null;
 	}
+	/**
+	 * valid on Leafs only.
+	 * The value returned is used by ISOMsg as a key
+	 * to this field.
+	 *
+	 * @return object representing the field number
+	 * @exception ISOException
+	 */
 	public Object getKey() throws ISOException {
 		throw new ISOException ("N/A in Composite");
 	}
+	/**
+	 * valid on Leafs only.
+	 * @return object representing the field value
+	 * @exception ISOException
+	 */
 	public Object getValue() throws ISOException {
 		throw new ISOException ("N/A in Composite");
 	}
+	/**
+	 * a Composite must override this function
+	 * @return the max field number associated with this message
+	 */
 	public int getMaxField() {
 		return 0;
 	}
+	/**
+	 * dummy behaveour - return 0 elements Hashtable
+	 * @return children (in this case 0 children)
+	 */
 	public Hashtable getChildren() {
 		return new Hashtable();
 	}

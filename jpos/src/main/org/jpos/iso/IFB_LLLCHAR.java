@@ -1,28 +1,25 @@
+package uy.com.cs.jpos.iso;
+
 /**
- * ISOFieldPackager Binary Numeric
+ * ISOFieldPackager Binary LLLCHAR
  *
  * @author apr@cs.com.uy
  * @version $Id$
  * @see ISOComponent
  */
-
-/*
- * $Log$
- * Revision 1.2  1998/12/14 22:48:21  apr
- * Added RawChannel support
- * Pruebas OK packaging POSNet
- *
- * Revision 1.1  1998/11/09 23:40:15  apr
- * *** empty log message ***
- *
- */
-
-package uy.com.cs.jpos.iso;
-
 public class IFB_LLLCHAR extends ISOFieldPackager {
+	/**
+	 * @param len - field len
+	 * @param description symbolic descrption
+	 */
 	public IFB_LLLCHAR (int len, String description) {
 		super(len, description);
 	}
+	/**
+	 * @param c - a component
+	 * @return packed component
+	 * @exception ISOException
+	 */
 	public byte[] pack (ISOComponent c) throws ISOException {
 		int len;
 		String s = (String) c.getValue();
@@ -40,6 +37,13 @@ public class IFB_LLLCHAR extends ISOFieldPackager {
 	    System.arraycopy(s.getBytes(), 0, b, 2, len);
 		return b;
 	}
+	/**
+	 * @param c - the Component to unpack
+	 * @param b - binary image
+	 * @param offset - starting offset within the binary image
+	 * @return consumed bytes
+	 * @exception ISOException
+	 */
 	public int unpack (ISOComponent c, byte[] b, int offset)
 		throws ISOException
 	{

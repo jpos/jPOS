@@ -1,3 +1,7 @@
+package uy.com.cs.jpos.iso;
+
+import java.util.*;
+
 /**
  * ISO 8583 v1987 BINARY Packager
  *
@@ -7,24 +11,6 @@
  * @see ISOBasePackager
  * @see ISOComponent
  */
-
-/*
- * $Log$
- * Revision 1.3  1998/12/11 17:09:08  apr
- * Default padLeft en campos IFB_NUMERIC
- *
- * Revision 1.2  1998/12/11 14:06:25  apr
- * Added 'pad' parameter en 'IFB_[L*]NUM*' y 'IFB_AMOUNT'
- *
- * Revision 1.1  1998/11/09 23:40:20  apr
- * *** empty log message ***
- *
- */
-
-package uy.com.cs.jpos.iso;
-
-import java.util.*;
-
 public class ISO87BPackager extends ISOBasePackager {
 	private static final boolean pad = false;
 	protected ISOFieldPackager fld[] = {

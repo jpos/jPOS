@@ -1,26 +1,21 @@
-/**
- * ISOMsg implementa <b>Composite</b>
- * dentro de un <b>Composite pattern</b>
- *
- * @see "Design Patterns ISBN 0-201-63361-2"
- *
- * @author apr@cs.com.uy
- * @version $Id$
- * @see ISOComponent
- */
-
-/*
- * $Log$
- * Revision 1.1  1998/11/09 23:40:28  apr
- * *** empty log message ***
- *
- */
-
 package uy.com.cs.jpos.iso;
 
 import java.io.*;
 import java.util.*;
 
+/**
+ * implements <b>Composite</b>
+ * whithin a <b>Composite pattern</b>
+ *
+ * See the
+ * <a href="API_users_guide.html">API User's Guide</a>
+ * for details.
+ *
+ * @author apr@cs.com.uy
+ * @version $Id$
+ * @see ISOComponent
+ * @see ISOField
+ */
 public class ISOMsg extends ISOComponent implements Cloneable {
 	protected Hashtable fields;
 	protected int maxField;
@@ -32,15 +27,29 @@ public class ISOMsg extends ISOComponent implements Cloneable {
 		maxField = -1;
 		dirty = true;
 	}
+	/**
+	 * @return the max field number associated with this message
+	 */
 	public int getMaxField() {
 		return maxField;
 	}
+	/**
+	 * @param p - a peer packager
+	 */
 	public void setPackager (ISOPackager p) {
 		packager = p;
 	}
+	/**
+	 * @return the peer packager
+	 */
 	public ISOPackager getPackager () {
 		return packager;
 	}
+	/**
+	 * Set a field within this message
+	 * @param c - a component
+	 * @exception ISOException
+	 */
 	public void set (ISOComponent c) throws ISOException {
 		Integer i = (Integer) c.getKey();
 		fields.put (i, c);
@@ -48,16 +57,31 @@ public class ISOMsg extends ISOComponent implements Cloneable {
 			maxField = i.intValue();
 		dirty = true;
 	}
+	/**
+	 * Unset a field
+	 * @param fldno - the field number
+	 * @exception ISOException
+	 */
 	public void unset (int fldno) throws ISOException {
 		ISOComponent c = (ISOComponent) fields.remove (new Integer (fldno));
 		if (c == null)
 			throw new ISOException ("Field " +fldno +" not found. unset failed");
 		dirty = true;
 	}
+	/**
+	 * In order to interchange <b>Composites</b> and <b>Leafs</b> we use
+	 * getComposite(). A <b>Composite component</b> returns itself and
+	 * a Leaf returns null.
+	 *
+	 * @return ISOComponent
+	 */
 	public ISOComponent getComposite() {
 		return this;
 	}
-
+	/**
+	 * setup BitMap
+	 * @exception ISOException
+	 */
 	public void recalcBitMap () throws ISOException {
 		if (!dirty)
 			return;
@@ -77,16 +101,39 @@ public class ISOMsg extends ISOComponent implements Cloneable {
 		set (new ISOBitMap (1, bmap));
 		dirty = false;
 	}
+	/**
+	 * clone fields
+	 */
 	public Hashtable getChildren() {
 		return (Hashtable) fields.clone();
 	}
+	/**
+	 * pack the message with the current packager
+	 * @return the packed message
+	 * @exception ISOException
+	 */
 	public byte[] pack() throws ISOException {
 		recalcBitMap();
 		return packager.pack(this);
 	}
+	/**
+	 * unpack a message
+	 * @param b - raw message
+	 * @return consumed bytes
+	 * @exception ISOException
+	 */
 	public int unpack(byte[] b) throws ISOException {
 		return packager.unpack(this, b);
 	}
+	/**
+	 * dump the message to a PrintStream. The output is sorta
+	 * XML, intended to be easily parsed.
+	 * <br>
+	 * Each component is responsible for its own dump function,
+	 * ISOMsg just calls dump on every valid field.
+	 * @param p - print stream
+	 * @param indent - optional indent string
+	 */
 	public void dump (PrintStream p, String indent) {
 		ISOComponent c;
 		p.println (indent + "<ISOMsg>");
@@ -95,19 +142,40 @@ public class ISOMsg extends ISOComponent implements Cloneable {
 				c.dump (p, indent + " ");
 		p.println (indent + "</ISOMsg>");
 	}
+	/**
+	 * get the component associated with the given field number
+	 * @param fldno the Field Number
+	 * @return the Component
+	 */
 	public ISOComponent getComponent(int fldno) {
 		return (ISOComponent) fields.get(new Integer(fldno));
 	}
+	/**
+	 * Return the object value associated with the given field number
+	 * @param fldno the Field Number
+	 * @return the field Object
+	 */
 	public Object getValue(int fldno) throws ISOException {
 		return getComponent(fldno).getValue();
 	}
+	/**
+	 * Check if a given field is valid
+	 * @param fldno the Field Number
+	 * @return boolean indicating the existence of the field
+	 */
 	public boolean hasField(int fldno) {
 		return fields.get(new Integer(fldno)) != null;
 	}
+	/**
+	 * Don't call setValue on an ISOMsg. You'll sure get
+	 * an ISOException. It's intended to be used on Leafs
+	 * @see ISOField
+	 * @see ISOException
+	 */
 	public void setValue(Object obj) throws ISOException {
 		throw new ISOException ("setValue N/A in ISOMsg");
 	}
-
+	
 	public Object clone() {
 		try {
 			ISOMsg m = (ISOMsg) super.clone();
@@ -115,37 +183,6 @@ public class ISOMsg extends ISOComponent implements Cloneable {
 			return (Object) m;
 		} catch (CloneNotSupportedException e) {
 			throw new InternalError();
-		}
-	}
-	public static void main (String args[]) {
-		try {
-			ISOMsg m = new ISOMsg ();
-			ISOPackager packager = new ISO87APackager ();
-			m.setPackager (packager);
-			m.set(new ISOField (0,  "0200"));
-			m.set(new ISOField (2,  "1234")); // LLNUM
-
-			m.set(new ISOField (3,  "000001"));
-			m.set(new ISOField (4,  "0000001000"));
-			m.set(new ISOField (11, "000001"));
-			m.set(new ISOField (30, "C100"));
-			m.set(new ISOField (34, "TEST"));	// LLCHAR
-			m.set(new ISOField (36, "5678")); // Prueba LLLCHAR
-			m.set(new ISOField (37, "RETREFNBR")); // Prueba CHAR
-			m.set(new ISOBinaryField (52, "ABCDEFGH".getBytes())); // BINARY 
-			m.set(new ISOField (95, "1234"));
-			m.dump(System.out, "");
-			byte[] b = m.pack();
-			System.out.println (
-				"<ISOMsg hexdump>"+ISOUtil.hexString(b) +"</ISOMsg>"
-			);
-			ISOMsg d = new ISOMsg ();
-			d.setPackager (packager);
-			System.out.println ("message=" + new String(b));
-			d.unpack (b);
-			d.dump(System.out, "");
-		} catch (ISOException e) {
-			e.printStackTrace();
 		}
 	}
 }

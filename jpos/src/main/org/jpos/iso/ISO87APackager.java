@@ -1,5 +1,9 @@
+package uy.com.cs.jpos.iso;
+
+import java.util.*;
+
 /**
- * ISO 8583 v1987 BINARY Packager
+ * ISO 8583 v1987 ASCII Packager
  *
  * @author apr@cs.com.uy
  * @version $Id$
@@ -7,18 +11,6 @@
  * @see ISOBasePackager
  * @see ISOComponent
  */
-
-/*
- * $Log$
- * Revision 1.1  1998/11/09 23:40:19  apr
- * *** empty log message ***
- *
- */
-
-package uy.com.cs.jpos.iso;
-
-import java.util.*;
-
 public class ISO87APackager extends ISOBasePackager {
 	protected ISOFieldPackager fld[] = {
 			new IFA_NUMERIC	(  4, "MESSAGE TYPE INDICATOR"),

@@ -1,52 +1,76 @@
-/**
- * ISOBinaryField implementa <b>Leaf</b>
- * dentro de un <b>Composite pattern</b>
- *
- * @see "Design Patterns ISBN 0-201-63361-2"
- *
- * @author apr@cs.com.uy
- * @version $Id$
- * @see ISOComponent
- */
-
-/*
- * $Log$
- * Revision 1.1  1998/11/09 23:40:22  apr
- * *** empty log message ***
- *
- */
-
 package uy.com.cs.jpos.iso;
 
 import java.io.*;
 import java.util.*;
 
+/**
+ * implements <b>Leaf</b> for binary fields
+ *
+ * See the
+ * <a href="API_users_guide.html">API User's Guide</a>
+ * for details.
+ *
+ * @author apr@cs.com.uy
+ * @version $Id$
+ * @see ISOComponent
+ */
 public class ISOBinaryField extends ISOComponent implements Cloneable {
 	protected int fieldNumber;
 	protected byte[] value;
 
+	/**
+	 * @param n - the FieldNumber
+	 */
 	public ISOBinaryField(int n) {
 		fieldNumber = n;
 	}
+	/**
+	 * @param n - fieldNumber
+	 * @param v - fieldValue
+	 */
 	public ISOBinaryField(int n, byte[] v) {
 		fieldNumber = n;
 		value = v;
 	}
+	/**
+	 * not available on Leaf - always throw ISOException
+	 * @exception ISOException
+	 */
 	public byte[] pack() throws ISOException {
 		throw new ISOException ("Not available on Leaf");
 	}
+	/**
+	 * not available on Leaf - always throw ISOException
+	 * @exception ISOException
+	 */
 	public int unpack(byte[] b) throws ISOException {
 		throw new ISOException ("Not available on Leaf");
 	}
+	/**
+	 * @return Object representing this field number
+	 */
 	public Object getKey() {
 		return new Integer(fieldNumber);
 	}
+	/**
+	 * @return Object representing this field value
+	 */
 	public Object getValue() {
 		return value;
 	}
+	/**
+	 * @param obj - Object representing this field value
+	 * @exception ISOException
+	 */
 	public void setValue(Object obj) throws ISOException {
 		value = (byte[]) obj;
 	}
+	/**
+	 * dump this field to PrintStream. The output is sorta
+	 * XML, intended to be easily parsed.
+	 * @param p - print stream
+	 * @param indent - optional indent string
+	 */
 	public void dump (PrintStream p, String indent) {
 		p.println (indent +"<fld binary id=\"" 
 			+fieldNumber +"\" value=\"" +ISOUtil.hexString(value) +"\"/>");
