@@ -510,17 +510,27 @@ public abstract class BaseChannel extends Observable
 	    usable = false;
 	    setChanged();
 	    notifyObservers();
-	    serverIn  = null;
-	    serverOut = null;
+            if (serverIn != null) {
+                try {
+                    serverIn.close();
+                } catch (IOException ex) { evt.addMessage (ex); }
+	        serverIn  = null;
+            }
+            if (serverOut != null) {
+                try {
+                    serverOut.close();
+                } catch (IOException ex) { evt.addMessage (ex); }
+                serverOut = null;
+            }
 	    if (socket != null)
 		socket.close ();
-	    socket = null;
 	    Logger.log (evt);
 	} catch (IOException e) {
 	    evt.addMessage (e);
 	    Logger.log (evt);
 	    throw e;
 	}
+        socket = null;
     }   
     /**
      * Issues a disconnect followed by a connect
