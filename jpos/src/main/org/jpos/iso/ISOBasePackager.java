@@ -14,6 +14,9 @@ import java.util.*;
 
 /*
  * $Log$
+ * Revision 1.15  1999/09/25 13:35:07  apr
+ * pack ignore field exceptions, log event and continue with next field
+ *
  * Revision 1.14  1999/09/06 17:20:06  apr
  * Added Logger SubSystem
  *
@@ -68,9 +71,15 @@ public abstract class ISOBasePackager implements ISOPackager, LogProducer {
 	    // else we are packing an ANSI X9.2 message, first field is 1
 	    for (int i=hasBitMap ? 2 : 1; i<=m.getMaxField(); i++) {
 		if ((c = (ISOComponent) fields.get (new Integer (i))) != null) {
-		    b = fld[i].pack(c);
-		    len += b.length;
-		    v.addElement (b);
+		    try {
+			b = fld[i].pack(c);
+			len += b.length;
+			v.addElement (b);
+		    } catch (Exception e) {
+			evt.addMessage ("error packing field "+i);
+			evt.addMessage (c);
+			evt.addMessage (e);
+		    }
 		}
 	    }
 	    int k = 0;
