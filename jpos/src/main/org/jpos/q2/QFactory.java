@@ -83,6 +83,12 @@ import org.jdom.output.XMLOutputter;
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
  */
 public class QFactory {
+    ObjectName loaderName;
+
+    public QFactory (ObjectName loaderName) {
+        super ();
+        this.loaderName = loaderName;
+    }
     public ObjectInstance createQBean (Q2 server, Element e) 
         throws ClassNotFoundException, 
                InstantiationException,
@@ -106,7 +112,7 @@ public class QFactory {
         MBeanServer mserver = server.getMBeanServer();
 
         ObjectInstance instance = mserver.createMBean (
-            clazz, objectName, null
+            clazz, objectName, loaderName
         );
 
         setAttribute (mserver, objectName, "Server", server);

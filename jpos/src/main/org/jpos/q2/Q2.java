@@ -82,23 +82,33 @@ import org.jdom.output.XMLOutputter;
 public class Q2 implements FileFilter {
     public static final String DEFAULT_DEPLOY_DIR  = "deploy";
     public static final String JMX_NAME            = "Q2";
+    public static final String Q2_CLASS_LOADER     = "Q2:service=loader";
     private MBeanServer server;
-    private File deployDir;
+    private File deployDir, libDir;
     private Map dirMap;
     private QFactory factory;
 
     public Q2 (String dir) {
         super();
-        this.deployDir = new File (dir);
-        this.dirMap    = new HashMap ();
-        this.factory   = new QFactory ();
+        this.deployDir  = new File (dir);
+        this.libDir     = new File (deployDir, "lib");
+        this.dirMap     = new HashMap ();
+        deployDir.mkdirs ();
     }
 
-    public void start () {
-        server = MBeanServerFactory.createMBeanServer (JMX_NAME);
-        deployDir.mkdirs ();
+    public void start () 
+        throws MalformedObjectNameException,
+               InstanceAlreadyExistsException,
+               NotCompliantMBeanException,
+               MBeanRegistrationException
+    {
+        server  = MBeanServerFactory.createMBeanServer (JMX_NAME);
+        ObjectName loaderName = new ObjectName (Q2_CLASS_LOADER);
+        QClassLoader loader = new QClassLoader (server, libDir, loaderName);
+        factory = new QFactory (loaderName);
         for (;;) {
             try {
+                loader.scan ();
                 scan ();
                 deploy ();
                 checkModified ();
@@ -108,6 +118,7 @@ public class Q2 implements FileFilter {
             }
         }
     }
+
     public boolean accept (File f) {
         return f.getName().endsWith (".xml");
     }
@@ -169,7 +180,7 @@ public class Q2 implements FileFilter {
                     (Boolean) server.getAttribute (name, "Modified")
                 ).booleanValue();
             } catch (Exception e) {
-                e.printStackTrace();
+                // Okay to fail
             }
         }
         return modified;
@@ -226,7 +237,7 @@ public class Q2 implements FileFilter {
         return server;
     }
 
-    public static void main (String[] args) {
+    public static void main (String[] args) throws Exception {
         new Q2 (args.length > 0 ? args[0] : DEFAULT_DEPLOY_DIR).start ();
     }
 
