@@ -53,7 +53,6 @@ import org.jpos.iso.IFB_AMOUNT;
 import org.jpos.iso.IFB_BINARY;
 import org.jpos.iso.IFB_BITMAP;
 import org.jpos.iso.IFB_LLCHAR;
-import org.jpos.iso.IFB_LLHCHAR;
 import org.jpos.iso.IFB_LLHBINARY;
 import org.jpos.iso.IFB_LLHECHAR;
 import org.jpos.iso.IFB_LLHNUM;
