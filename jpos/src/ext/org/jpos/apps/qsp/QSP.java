@@ -82,6 +82,7 @@ public class QSP implements ErrorHandler, LogProducer {
 	    qsp.configure ("logger");
 	    qsp.configure ("log-listener");
 	    qsp.configure ("channel");
+	    qsp.configure ("filter");
 	    qsp.configure ("mux");
 	    qsp.configure ("task");
 	    new SystemMonitor (3600000, qsp.getLogger(), "monitor");

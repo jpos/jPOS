@@ -16,7 +16,7 @@
 <!ATTLIST log-listener copies   CDATA #IMPLIED>
 
 <!-- channel -->
-<!ELEMENT channel (#PCDATA)>
+<!ELEMENT channel (filter*)>
 <!ATTLIST channel name ID #REQUIRED>
 <!ATTLIST channel class CDATA #REQUIRED>
 <!ATTLIST channel packager CDATA #REQUIRED>
@@ -27,6 +27,11 @@
 <!ATTLIST channel logger IDREF #IMPLIED>
 <!ATTLIST channel realm CDATA #IMPLIED>
 <!ATTLIST channel header CDATA #IMPLIED>
+
+<!-- filter -->
+<!ELEMENT filter (property*)>
+<!ATTLIST filter class CDATA #REQUIRED>
+<!ATTLIST filter direction (incoming|outgoing|both) 'both'>
 
 <!-- mux -->
 <!ELEMENT mux (channel)>

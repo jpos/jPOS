@@ -14,6 +14,11 @@
           host="localhost" port="8000"
           logger="qsp" realm="acme"
 	  connect="no" >
+   <filter class="org.jpos.iso.XSLTFilter" direction="outgoing">
+    <property name="xsltfile" 
+              value="src/ext/org/jpos/apps/qsp/msg/outgoing.xsl" />
+    <property name="reread" value="yes" />
+   </filter>
   </channel>
  </mux>
 
@@ -22,6 +27,7 @@
   <property name="message" value="src/ext/org/jpos/apps/qsp/msg/0800.xml" />
   <property name="wait-for-response" value="15000" />
   <property name="initial-delay" value="1000" />
-  <property name="delay" value="60000" />
+  <property name="delay" value="10000" />
  </task>
+
 </qsp-config>
