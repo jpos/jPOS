@@ -49,6 +49,9 @@
 
 /*
  * $Log$
+ * Revision 1.6  2002/12/04 11:34:12  apr
+ * Oops: missing import
+ *
  * Revision 1.5  2002/12/04 01:32:43  apr
  * Different filenames in multiparts.
  * End filenames with ".txt" so dumb mailers that doesn't
@@ -76,6 +79,7 @@ import java.util.*;
 import javax.mail.*;
 import javax.mail.internet.*;
 import javax.activation.*;
+import org.jpos.iso.ISOUtil;
 import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
