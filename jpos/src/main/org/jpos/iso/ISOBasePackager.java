@@ -7,6 +7,10 @@ import org.jpos.util.LogEvent;
 
 /*
  * $Log$
+ * Revision 1.27  2000/05/03 12:31:38  apr
+ * Bugfix: Math.min while getting bmap.size()
+ * (thanks to Arun Kumar U <bksys@vsnl.com> observations!)
+ *
  * Revision 1.26  2000/04/26 12:33:19  apr
  * javadoc warnings ...
  *
@@ -200,7 +204,7 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
 		if (logger != null)
 		    evt.addMessage ("<bitmap>"+bmap.toString()+"</bitmap>");
 		m.set (bitmap);
-		maxField = bmap.size();
+		maxField = Math.min(maxField, bmap.size());
 	    }
 		
 	    for (int i=getFirstField(); i<maxField; i++) {
