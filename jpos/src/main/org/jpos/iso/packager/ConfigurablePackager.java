@@ -59,7 +59,6 @@ import org.jpos.util.Logger;
 /**
  * extends GenericPackager providing ReConfigurable support
  * @see GenericPackager
- * @see org.jpos.apps.qsp.config.ConfigChannel
  * @author Alejandro Revilla
  * @version $$evision: $ $Date$
  */
