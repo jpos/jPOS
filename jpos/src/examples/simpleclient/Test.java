@@ -27,13 +27,12 @@ public class Test extends SimpleLogProducer {
     private Sequencer seq;
     private static final String COUNTERNAME = "test.counter";
 
-    public Test (Configuration cfg, Logger logger, String realm) 
+    public Test (Configuration cfg, Logger logger, String realm, String cfgPrefix)
 	throws ISOException, IOException
     {
 	super();
 	setLogger (logger, realm);
-	channel = ISOFactory.newChannel 
-	    (cfg, "simpleclient", logger, realm);
+	channel = ISOFactory.newChannel (cfg, cfgPrefix, logger, realm);
 	seq     = new VolatileSequencer();
 
 	//
@@ -79,17 +78,26 @@ public class Test extends SimpleLogProducer {
 	channel.disconnect();
     }
     public static void main (String args[]) {
+	int n = 1;  // number of iterations
+	String cfgPrefix = "simpleclient";
+	if (args.length > 0 && args[0].equals ("-testmux"))
+	    cfgPrefix = cfgPrefix + args[0];
+	if (args.length > 1)
+	    n = Integer.parseInt (args[1]);
+
 	Logger logger = new Logger();
 	logger.addListener (new SimpleLogListener (System.out));
 
 	String cfgFile    = System.getProperties().getProperty("jpos.config");
         try {
 	    Configuration cfg = new SimpleConfiguration (cfgFile);
-	    Test t = new Test (cfg, logger, "Test");
-	    t.send ("0100");
-	    t.send ("0101");
-	    t.send ("0200");
-	    t.send ("0800");
+	    Test t = new Test (cfg, logger, "Test", cfgPrefix);
+	    for (int i=0; i<n; i++) {
+		t.send ("0100");
+		t.send ("0101");
+		t.send ("0200");
+		t.send ("0800");
+	    }
 	    t.disconnect();
 	} catch (ISOException e) {
 	    e.printStackTrace();

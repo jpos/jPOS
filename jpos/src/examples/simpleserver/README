@@ -36,9 +36,21 @@ After running you will see the message:
 
 at that point, in order to verify that the server is running, 
 you can "telnet localhost 8000", you'll notice a session creation 
-message as well as an EOFException when you terminate telnet session.
+message as well as <peer-disconnect/> when you terminate telnet session.
 
 You can run now the simpleclient example that will send a couple
 of messages to your new server.
 
+After running simpleclient example against simpleserver,
+you will probably get to 'simplemux' example. At this point
+you should start simpleserver with '-testmux' argument.
+
+-testmux optional commandline argument instructs simpleserver to
+send '0800' messages that are unexpected for ISOMUX and will be
+forwarded to an ISORequestListener. We do not expect a response
+in this particular example, just to keep it simple (we would
+need a MUX here also if we are to receive responses), so
+ISORequestListener won't send them. This is not true in a real
+life application, ISORequestListener should handle requests
+and provide responses.
 

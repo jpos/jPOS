@@ -17,3 +17,10 @@ Sequencer (we are using VolatileSequencer here, have a look
 at the ext module [<jpos>/src/ext/org/jpos/core/ReliableSequencer]
 for a reliable diskbased one).
 
+simpleclient accepts a couple of optional arguments on the command line,
+the first one is used to have it read an alternate configuration while
+the second one allows you to specify the number of iterations over the
+main loop (sending ISOMsgs to server).
+
+You will use this optional arguments when running 'simplemux' example.
+

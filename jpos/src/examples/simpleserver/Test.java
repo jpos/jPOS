@@ -22,10 +22,12 @@ public class Test implements Runnable, LogProducer {
     Logger logger;
     String realm;
     public static final String CFG_PORT = "simpleserver.port";
+    boolean testMux;
 
-    public Test (Logger logger, String realm) {
+    public Test (Logger logger, String realm, boolean testMux) {
 	super();
 	setLogger (logger, realm);
+	this.testMux = testMux;
     }
     public void setLogger (Logger logger, String realm) {
 	this.logger = logger;
@@ -50,6 +52,12 @@ public class Test implements Runnable, LogProducer {
 		    m.setResponseMTI();
                     m.set (new ISOField(39, "00"));
                     channel.send(m);
+		    if (testMux && m.getMTI().equals ("0810")) {
+			// on 'testMux' mode we originate an unexpected
+			// message that will be handled by ISOMUX's ISORequestListener
+			m.setMTI ("0800");
+			channel.send(m);
+		    }
                 }
 	    } catch (EOFException e) {
             } catch (Exception e) { 
@@ -91,8 +99,9 @@ public class Test implements Runnable, LogProducer {
         }
     }
     public static void main(String args[]) {
+	boolean testMux = args.length > 0 && args[0].equals ("-testmux");
 	Logger logger = new Logger();
 	logger.addListener (new SimpleLogListener (System.out));
-        new Thread(new Test(logger, "SimpleServer")).start();
+        new Thread(new Test(logger, "SimpleServer", testMux)).start();
     }
 }
