@@ -54,6 +54,7 @@ import org.jpos.q2.QBeanSupport;
 import org.jpos.q2.Q2ConfigurationException;
 import org.jpos.space.Space;
 import org.jpos.space.TransientSpace;
+import org.jpos.iso.ISOUtil;
 
 /**
  * Asynchronous JMS Queue Receiver forwarding data to a LocalSpace.
@@ -76,11 +77,13 @@ public class JMSQReceiver extends QBeanSupport implements JMSQReceiverMBean,Runn
     private String password = null;
     private String spaceName = null;
     private String spaceKey = null;
+    private boolean mustUnpack = false;
 
     private Space space = null;
 
     private int jmsState = STOPPED;
     private long jmsRetryInterval = 5000;
+    private int byteBufSize = 200;
 
     private class ExcListener implements ExceptionListener {
         public void onException (JMSException exception) {
@@ -91,7 +94,38 @@ public class JMSQReceiver extends QBeanSupport implements JMSQReceiverMBean,Runn
 
     private class MsgListener implements MessageListener {
         public void onMessage (Message message) {
-            space.out (spaceKey, message);
+            if (!mustUnpack) {
+                space.out (spaceKey, message);
+            } else {
+                if (message instanceof ObjectMessage) {
+                    log.info ("Received ObjectMessage");
+                    ObjectMessage obj = (ObjectMessage) message;
+                    try {
+                        space.out (spaceKey, obj.getObject ());
+                    } catch (JMSException e) {
+                        log.error ("Could not extract object, dropping", e);
+                    }
+                } else if (message instanceof BytesMessage) {
+                    log.info ("Received BytesMessage");
+                    BytesMessage bm = (BytesMessage) message;
+                    byte[] totalBuf = new byte[0];
+                    byte[] tempBuf = new byte[byteBufSize];
+                    try {
+                        bm.reset ();
+                        int numRead = bm.readBytes (tempBuf, byteBufSize);
+                        while (numRead != -1) {
+                            if (numRead < byteBufSize)
+                                ISOUtil.trim (tempBuf, numRead);
+                            totalBuf = ISOUtil.concat (totalBuf,0,totalBuf.length,tempBuf,0,numRead);
+                            numRead = bm.readBytes (tempBuf, byteBufSize);
+                        }
+                    } catch (JMSException e) {
+                        log.error ("Could not extract byte array, dropping", e);
+                    }
+                    log.info ("TotalByteBuf="+ISOUtil.hexString (totalBuf));
+                    space.out (spaceKey, totalBuf);
+                }
+            }
         }
     }
 
@@ -319,5 +353,37 @@ public class JMSQReceiver extends QBeanSupport implements JMSQReceiverMBean,Runn
      */
     public String getJmsStateAsString () {
         return jmsState >= 0 ? stateString[jmsState] : "Unknown";
+    }
+
+    /**
+     * @jmx:managed-attribute description="Unpack or not"
+     */
+    public void setMustUnpack (boolean unpack) {
+        mustUnpack = unpack;
+        setAttr (getAttrs(), "mustUnpack", new Boolean (mustUnpack));
+        setModified (true);
+    }
+
+    /**
+     * @jmx:managed-attribute description="Unpack or not"
+     */
+    public boolean getMustUnpack () {
+        return mustUnpack;
+    }
+
+    /**
+     * @jmx:managed-attribute description="Byte Buffer Size"
+     */
+    public void setByteBufSize (int bufSize) {
+        byteBufSize = bufSize;
+        setAttr (getAttrs(), "byteBufSize", new Integer (byteBufSize));
+        setModified (true);
+    }
+
+    /**
+     * @jmx:managed-attribute description="Byte Buffer Size"
+     */
+    public int getByteBufSize () {
+        return byteBufSize;
     }
 }
