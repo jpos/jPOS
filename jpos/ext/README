@@ -15,4 +15,6 @@ In order to build 'ext' module you will have to install here
     used by V24, LeasedLineModem, SimpleDialupModem.java and
     VISA1Link at the moment.
  
+  - jsse.jar and jnet.jar from Sun's JSSE distro (required by
+    SunJSSESocketFactory)
 
