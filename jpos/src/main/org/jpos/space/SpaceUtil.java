@@ -90,5 +90,16 @@ public class SpaceUtil {
         while (sp.inp (key) != null)
             ;
     }
+    public static long nextLong (Space sp, Object key) {
+        long l = 0L;
+        synchronized (sp) {
+            Object obj = sp.inp (key);
+            wipe (sp, key); // just in case
+            if (obj instanceof Long) 
+                l = ((Long)obj).longValue();
+            sp.out (key, new Long (++l));
+        }
+        return l;
+    }
 }
 

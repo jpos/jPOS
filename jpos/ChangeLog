@@ -1,6 +1,7 @@
 $Id$
 
 -- 1.4.7 --
+Added SpaceUtil.nextLong(sp,key)
 MX4J upgraded to 2.0.1
 ISOServer: new factory method createSession
 ISOServer: new method getLastConnectedISOChannel 
