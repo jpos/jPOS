@@ -92,4 +92,12 @@ public class RawChannel extends BaseChannel {
     public void setTPDU (byte[] TPDU) {
 	this.TPDU = TPDU;
     }
+
+    /**
+     * New QSP compatible signature (see QSP's ConfigChannel)
+     * @param header Strnig as seen by QSP
+     */
+    public void setHeader (String header) {
+	setTPDU (ISOUtil.str2bcd(header, false));
+    }
 }

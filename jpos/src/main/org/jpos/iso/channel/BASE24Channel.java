@@ -105,4 +105,7 @@ public class BASE24Channel extends BaseChannel {
     public void setHeader (byte[] header) {
 	this.header = header;
     }
+    public void setHeader (String header) {
+	setHeader (header.getBytes());
+    }
 }
