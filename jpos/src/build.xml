@@ -89,6 +89,7 @@ Main targets:
   </path>
 
   <path id="xdoclet.classpath">
+    <pathelement location="${lib}/commons-collections-2.0.jar"/>
     <pathelement location="${lib}/commons-logging.jar"/>
     <pathelement location="${lib}/xjavadoc-1.0.2.jar"/>
     <pathelement location="${lib}/xdoclet-1.2.jar"/>
