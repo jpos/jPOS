@@ -84,7 +84,7 @@
     <deltree dir="${build}/doc/javadoc" />
     <mkdir   dir="${build}/doc/javadoc" />
     <copydir src="${doc}/images"  dest="${build}/doc/images" />
-    <javadoc2 sourcepath="${main}"
+    <javadoc sourcepath="${main}"
 	destdir="${build}/doc/javadoc" dir="."
         windowtitle="jPOS ${version} API Documentation" 
         doctitle="jPOS ${version} API Documentation" 
@@ -106,7 +106,7 @@
     <copydir src="${main}" dest="${build}/doc/tmp" />
     <copydir src="${ext}"  dest="${build}/doc/tmp" />
     <copydir src="${doc}/images"  dest="${build}/doc/images" />
-    <javadoc2 sourcepath="${main}"
+    <javadoc sourcepath="${main}"
 	destdir="${build}/doc/javadoc" dir="."
         windowtitle="jPOS ${version} API Documentation" 
         doctitle="jPOS ${version} API Documentation" 
