@@ -1,6 +1,8 @@
 $Id$
 
 -- 1.3.9 --
+Added preliminary JMX support
+Tagged all files as v1_3_9_preJMX
 added byte[] ISOUtil.hex2byte (String s)
 added static Configuration QSP.getGlobalConfiguration()
 
