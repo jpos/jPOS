@@ -58,6 +58,7 @@ import java.util.List;
 import java.util.Iterator;
 import java.util.ResourceBundle;
 import java.util.MissingResourceException;
+import java.util.Arrays;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jpos.util.Log;
@@ -205,10 +206,22 @@ public class UI implements UIFactory, UIObjectFactory {
      * dispose this UI object
      */
     public void dispose () {
-        destroyed = true;
+     /* This is the right code for the dispose, but it freezes in
+        JVM running under WinXP (in linux went fine.. I didn't 
+        test it under other OS's)
+        (last version tested: JRE 1.5.0-beta2)
+  
         if (mainFrame != null) {
             // dumpComponent (mainFrame);
             mainFrame.dispose ();
+     */
+        destroyed = true;
+
+        Iterator it = (Arrays.asList(Frame.getFrames())).iterator();
+
+        while (it.hasNext()) {
+            JFrame jf = (JFrame) it.next();
+            removeComponent(jf);
         }
     }
     /**
@@ -246,6 +259,18 @@ public class UI implements UIFactory, UIObjectFactory {
             } else {
                 frame.show ();
             }
+        }
+    }
+
+    private void removeComponent (Component c) {
+        if (c instanceof Container) {
+            Container cont = (Container) c;
+            Component[] cc = cont.getComponents();
+            
+            for (int i=0; i<cc.length; i++) {
+                removeComponent (cc[i]);
+            }
+            cont.removeAll();
         }
     }
 
