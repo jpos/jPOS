@@ -351,6 +351,10 @@ public class ISOMsg extends ISOComponent
             p.print (" "+XMLPackager.ID_ATTR +"=\""+fieldNumber +"\"");
         p.println (">");
         String newIndent = indent + "  ";
+
+        if (header instanceof Loggeable)
+            ((Loggeable) header).dump (p, newIndent);
+
         for (int i=0; i<=maxField; i++) {
             if ((c = (ISOComponent) fields.get (new Integer (i))) != null)
                 c.dump (p, newIndent);
