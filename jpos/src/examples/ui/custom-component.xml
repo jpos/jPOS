@@ -1,0 +1,24 @@
+<ui width="600" height="400" 
+    full-screen="false" undecorated="false" close="exit">
+ <caption>Custom component</caption>
+ <components>
+   <border-layout>
+    <center>
+     <grid rows="2">
+      <cell>
+       <component class="ui.MyComponent">A Custom component (using class)</component>
+      </cell>
+      <cell>
+       <my-component>A Custom component (using mappings)</my-component>
+      </cell>
+     </grid>
+    </center>
+    <south>
+     <button action="exit">Dismiss</button>
+    </south>
+   </border-layout>
+  </components>
+  <action class="org.jpos.ui.action.Exit"  id="exit" />
+  <mapping name="my-component" factory="ui.MyComponent" />
+</ui>
+
