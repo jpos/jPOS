@@ -48,6 +48,9 @@
  */
 /*
  * $Log$
+ * Revision 1.6  2003/12/02 16:14:39  alcarraz
+ * Fixed a bug introduced in last commit, event was not considered as processed if last tried script didn't exist.
+ *
  * Revision 1.5  2003/11/26 21:37:17  alcarraz
  * added support to  save variables of the script between runs
  *
@@ -193,9 +196,10 @@ public class BSHLogListener implements org.jpos.util.LogListener, org.jpos.core.
                                 info.setCode(null);
                             }
                         }
-                        if(processed=(info.getCode() != null))
+                        if(info.getCode() != null){
+                            processed = true;
                             bsh.eval(new StringReader(info.getCode()));
-                        else scripts.remove(sources[i]);
+                        }else scripts.remove(sources[i]);
                     }
                     ret = (LogEvent)bsh.get("event");
                     Object saveNS = bsh.get("saveNameSpace");
