@@ -52,6 +52,12 @@ import org.jdom.Element;
 import org.jpos.util.Log;
 import org.jpos.util.Logger;
 
+import java.lang.reflect.Method;
+import java.beans.BeanInfo;
+import java.beans.Introspector;
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
+
 /**
  * @author <a href="mailto:taherkordy@dpi2.dpi.net.ir">Alireza Taherkordi</a>
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
@@ -79,9 +85,11 @@ public class QBeanSupport implements QBean, QPersist, QBeanSupportMBean {
         if (this.name == null) 
             this.name = name;
         log.setRealm (name);
+        setModified (true);
     }
     public void setLogger (String loggerName) {
         log = Log.getLog (loggerName, getClass().getName());
+        setModified (true);
     }
 
     public String getLogger () {
@@ -94,10 +102,11 @@ public class QBeanSupport implements QBean, QPersist, QBeanSupportMBean {
         return name;
     }
     public void init () {
+        setModified (false);
         try {
             initService();
         } catch (Throwable t) {
-            t.printStackTrace();
+            log.warn ("init", t);
         }
     }
     public void start() {
@@ -112,7 +121,7 @@ public class QBeanSupport implements QBean, QPersist, QBeanSupportMBean {
            startService();
         } catch (Throwable t) {
            state = QBean.FAILED;
-           t.printStackTrace();
+           log.warn ("start", t);
            return;
         }
         state = QBean.STARTED;
@@ -125,7 +134,7 @@ public class QBeanSupport implements QBean, QPersist, QBeanSupportMBean {
            stopService();
         } catch (Throwable t) {
            state = QBean.FAILED;
-           t.printStackTrace();
+           log.warn ("stop", t);
            return;
         }
         state = QBean.STOPPED;
@@ -140,7 +149,7 @@ public class QBeanSupport implements QBean, QPersist, QBeanSupportMBean {
            destroyService();
         }
         catch (Throwable t) {
-           t.printStackTrace();
+           log.warn ("destroy", t);
         }
         state = QBean.DESTROYED;
     }
@@ -170,5 +179,40 @@ public class QBeanSupport implements QBean, QPersist, QBeanSupportMBean {
     protected void startService()   throws Exception {}
     protected void stopService()    throws Exception {}
     protected void destroyService() throws Exception {}
+
+    protected Element createElement (String name, Class mbeanClass) {
+        Element e = new Element (name);
+        e.setAttribute ("class", getClass().getName());
+        if (!e.getName().equals (getName ()))
+            e.setAttribute ("name", getName());
+        String loggerName = getLogger();
+        if (loggerName != null)
+            e.setAttribute ("logger", loggerName);
+
+        try {
+            BeanInfo info = Introspector.getBeanInfo (mbeanClass);
+            PropertyDescriptor[] desc = info.getPropertyDescriptors();
+            for (int i=0; i<desc.length; i++) {
+                Method read = desc[i].getReadMethod();
+                Object obj  = read.invoke (this, new Object[] { } );
+                String type = read.getReturnType().getName();
+                if ("java.lang.String".equals (type))
+                    type = null;
+
+                addAttr (e, desc[i].getName(), obj.toString(), type);
+            }
+        } catch (Exception ex) {
+            log.warn ("get-persist", ex);
+        } 
+        return e;
+    }
+    protected void addAttr (Element e, String name, String value, String type) {
+        Element attr = new Element ("attr");
+        attr.setAttribute ("name", name);
+        if (type != null)
+            attr.setAttribute ("type", type);
+        attr.setText (value);
+        e.addContent (attr);
+    }
 }
 
