@@ -50,6 +50,9 @@
 package org.jpos.util;
 
 import java.io.PrintStream;
+import org.jpos.core.Configurable;
+import org.jpos.core.Configuration;
+import org.jpos.core.ConfigurationException;
 import org.jpos.util.BlockingQueue.Closed;
 
 /**
@@ -57,8 +60,9 @@ import org.jpos.util.BlockingQueue.Closed;
  * tasks as well as Jobs (supervised Runnable tasks)
  * @since 1.1
  * @author apr@cs.com.uy
+ * @author <a href=mailto:alcarraz@fing.edu.uy>Andr&eacute;s Alcarraz</a>
  */
-public class ThreadPool extends ThreadGroup implements LogSource, Loggeable 
+public class ThreadPool extends ThreadGroup implements LogSource, Loggeable, Configurable, ThreadPoolMBean
 {
     private static int poolNumber=0;
     private static int threadNumber=0;
@@ -67,7 +71,7 @@ public class ThreadPool extends ThreadGroup implements LogSource, Loggeable
     private Logger logger;
     private String realm;
     private int jobs = 0;
-
+    public static final int DEFAULT_MAX_THREADS = 100;
     public interface Supervised {
 	public boolean expired ();
     }
@@ -115,8 +119,18 @@ public class ThreadPool extends ThreadGroup implements LogSource, Loggeable
     public ThreadPool (int poolSize, int maxPoolSize) {
 	super ("ThreadPool-" + poolNumber++);
 	this.maxPoolSize = maxPoolSize;
-	while (activeCount() < Math.min (poolSize, maxPoolSize))
+        init(poolSize);
+    }
+    
+    private void init(int poolSize){
+      	while (activeCount() < Math.min (poolSize, maxPoolSize))
 	    new PooledThread().start();
+    }
+    /**
+     * Default constructor for ThreadPool
+     */
+    public ThreadPool () {
+	this(1, DEFAULT_MAX_THREADS);
     }
     public void close () {
 	pool.close();
@@ -197,4 +211,14 @@ public class ThreadPool extends ThreadGroup implements LogSource, Loggeable
     public Logger getLogger() {
 	return logger;
     }
+    
+    /** @param cfg Configuration object
+     * @throws ConfigurationException
+     *
+     */
+    public void setConfiguration(Configuration cfg) throws ConfigurationException {
+        maxPoolSize = cfg.getInt("max-threads", DEFAULT_MAX_THREADS);
+        init(cfg.getInt("initial-threads"));
+    }
+    
 }
