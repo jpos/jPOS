@@ -53,6 +53,9 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.ByteArrayOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.net.MalformedURLException;
 import java.util.List;
@@ -73,6 +76,10 @@ import javax.management.InstanceAlreadyExistsException;
 import javax.management.MBeanServer;
 import javax.management.MBeanException;
 import javax.management.MBeanServerFactory;
+
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
+import java.security.GeneralSecurityException;
 
 import org.jdom.Element;
 import org.jdom.Document;
@@ -109,6 +116,7 @@ public class Q2 implements FileFilter {
     public static final String QBEAN_NAME          = "Q2:type=qbean,service=";
     public static final String Q2_CLASS_LOADER     = "Q2:type=system,service=loader";
 
+    public static final String PROTECTED_QBEAN     = "protected-qbean";
     public static final int SCAN_INTERVAL = 2500;
 
     private MBeanServer server;
@@ -324,7 +332,7 @@ public class Q2 implements FileFilter {
                 log.info ("deploy:" + f.getName());
             QEntry qentry = (QEntry) dirMap.get (f);
             SAXBuilder builder = new SAXBuilder ();
-            Document doc = builder.build (f);
+            Document doc = decrypt (builder.build (f));
 
             Object obj = factory.instantiate (this, doc.getRootElement ());
             qentry.setObject (obj);
@@ -386,6 +394,7 @@ public class Q2 implements FileFilter {
         options.addOption ("d","deploydir", true, "Deployment directory");
         options.addOption ("h","help", false, "Usage information");
         options.addOption ("c","config", true, "Configuration bundle");
+        options.addOption ("e","encrypt", true, "Encrypt configuration bundle");
 
         try {
             CommandLine line = parser.parse (options, args);
@@ -404,24 +413,27 @@ public class Q2 implements FileFilter {
             }
             this.deployDir  = new File (dir);
             if (line.hasOption ("c"))
-                deployBundle (new File (line.getOptionValue ("c")));
+                deployBundle (new File (line.getOptionValue ("c")), false);
+            if (line.hasOption ("e"))
+                deployBundle (new File (line.getOptionValue ("e")), true);
         } catch (Exception e) {
             e.printStackTrace ();
             System.exit (1);
         }
     }
-    private void deployBundle (File bundle) 
-        throws JDOMException, IOException, ISOException 
+    private void deployBundle (File bundle, boolean encrypt) 
+        throws JDOMException, IOException, 
+                ISOException, GeneralSecurityException
     {
         SAXBuilder builder = new SAXBuilder ();
         Document doc = builder.build (bundle);
         Iterator iter = doc.getRootElement().getChildren ().iterator ();
         for (int i=0; iter.hasNext (); i += 5) {
-            deployElement ((Element) iter.next (), i);
+            deployElement ((Element) iter.next (), i, encrypt);
         }
     }
-    private void deployElement (Element e, int i) 
-        throws ISOException, IOException
+    private void deployElement (Element e, int i, boolean encrypt) 
+        throws ISOException, IOException, GeneralSecurityException
     {
         e = ((Element) e.clone ()).detach ();
 
@@ -434,8 +446,62 @@ public class Q2 implements FileFilter {
             + e.getName () + ".xml"
         );
         FileWriter writer = new FileWriter (qbean);
+        if (encrypt)
+            doc = encrypt (doc);
         out.output (doc, writer);
         writer.close ();
+    }
+
+    private byte[] dodes (byte[] data, int mode) 
+       throws GeneralSecurityException
+    {
+        Cipher cipher = Cipher.getInstance ("DES");
+        cipher.init (mode, new SecretKeySpec(getKey(), "DES"));
+        return cipher.doFinal (data);
+    }
+    protected byte[] getKey() {
+        return "CAFEBABE".getBytes();
+    }
+    protected Document encrypt (Document doc)
+        throws GeneralSecurityException, IOException
+    {
+        ByteArrayOutputStream os = new ByteArrayOutputStream ();
+        OutputStreamWriter writer = new OutputStreamWriter (os);
+        XMLOutputter out = new XMLOutputter (" ", true);
+        out.output (doc, writer);
+        writer.close ();
+
+        byte[] crypt = dodes (os.toByteArray(), Cipher.ENCRYPT_MODE);
+
+        Document secureDoc = new Document ();
+        Element root = new Element (PROTECTED_QBEAN);
+        secureDoc.setRootElement (root);
+        Element secureData = new Element ("data");
+        root.addContent (secureData);
+
+        secureData.setText (
+            ISOUtil.hexString (crypt)
+        );
+        return secureDoc;
+    }
+
+    protected Document decrypt (Document doc) 
+        throws GeneralSecurityException, IOException, JDOMException
+    {
+        Element root = doc.getRootElement ();
+        if (PROTECTED_QBEAN.equals (root.getName ())) {
+            Element data = root.getChild ("data");
+            if (data != null) {
+                ByteArrayInputStream is = new ByteArrayInputStream (
+                    dodes (
+                        ISOUtil.hex2byte (data.getTextTrim()),
+                        Cipher.DECRYPT_MODE)
+                );
+                SAXBuilder builder = new SAXBuilder ();
+                doc = builder.build (is);
+            }
+        }
+        return doc;
     }
 
     public static void main (String[] args) throws Exception {
