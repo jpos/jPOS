@@ -7,6 +7,11 @@ import org.jpos.util.LogEvent;
 
 /*
  * $Log$
+ * Revision 1.29  2000/10/16 16:04:16  apr
+ * handle cases where field 0 is bitmap
+ * (required by Jonathan_Easterling@s2systems.com
+ * Base1Packager inner fields)
+ *
  * Revision 1.28  2000/05/04 13:30:32  apr
  * Bugfix to problem reported by Arun Kumar U <bksys@vsnl.com>
  * Handle situations where inner message 'MTI' (aka field 0) is not an
@@ -202,7 +207,9 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
 		evt.addMessage (ISOUtil.hexString (b));
 
 	    int consumed = 0;
-	    if (!(fld[0] instanceof ISOMsgFieldPackager)) {
+	    if (!(fld[0] instanceof ISOMsgFieldPackager) &&
+                !(fld[0] instanceof ISOBitMapPackager))
+            {
 		ISOComponent mti     = new ISOField (0);
 		consumed  = fld[0].unpack(mti, b, 0);
 		m.set (mti);
