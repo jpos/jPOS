@@ -81,8 +81,6 @@ public class QBeanSupport implements QBean, QPersist, QBeanSupportMBean {
     }
     public void setLogger (String loggerName) {
         log = Log.getLog (loggerName, getClass().getName());
-        System.out.println (getClass().getName() + " setLogger: "+loggerName + " getLogger:" +getLogger());
-
     }
 
     public String getLogger () {
