@@ -53,6 +53,7 @@ import java.util.List;
 import java.util.Iterator;
 
 import org.jpos.util.ThreadPool;
+import org.jpos.util.NameRegistrar;
 import org.jpos.iso.ISOServer;
 import org.jpos.iso.ISOPackager;
 import org.jpos.iso.ISORequestListener;
@@ -119,6 +120,7 @@ public class QServer
 
         server = new ISOServer (port, (ServerChannel) channel, pool);
         server.setLogger (log.getLogger(), getName() + ".server");
+        server.setName (getName ());
         getFactory().setConfiguration (server, getPersist());
         addListeners ();
         new Thread (server).start();
@@ -132,6 +134,7 @@ public class QServer
         }
     }
     public void stopService () {
+        NameRegistrar.unregister ("server." + getName());
         server.shutdown ();
     }
 
