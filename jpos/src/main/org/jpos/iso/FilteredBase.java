@@ -1,6 +1,7 @@
 package org.jpos.iso;
 
 import java.util.Vector;
+import java.util.Observable;
 import java.util.Collection;
 import java.util.Iterator;
 import org.jpos.util.LogEvent;
@@ -14,7 +15,9 @@ import org.jpos.iso.ISOFilter.VetoException;
  * @see FilteredChannel
  */
 
-public abstract class FilteredBase implements FilteredChannel {
+public abstract class FilteredBase extends Observable 
+    implements FilteredChannel
+{
     protected Vector incomingFilters, outgoingFilters;
 
     public FilteredBase () {
@@ -105,6 +108,8 @@ public abstract class FilteredBase implements FilteredChannel {
 	    m = ((ISOFilter) iter.next()).filter (this, m, evt);
 	}
 	m.setDirection(ISOMsg.OUTGOING);
+	setChanged ();
+	notifyObservers (m);
 	return m;
     }
     protected ISOMsg applyIncomingFilters (ISOMsg m, LogEvent evt) 
@@ -116,6 +121,8 @@ public abstract class FilteredBase implements FilteredChannel {
 	    m = ((ISOFilter) iter.next()).filter (this, m, evt);
 	}
 	m.setDirection(ISOMsg.INCOMING);
+	setChanged ();
+	notifyObservers (m);
 	return m;
     }
     public Collection getIncomingFilters() {
