@@ -76,7 +76,8 @@ import org.jpos.ui.UIFactory;
 public class PanelFactory implements UIFactory {
     public JComponent create (UI ui, Element e) {
         JPanel p = new JPanel ();
-        p.add (ui.create (e));
+        if (e.getChildren().size() > 0)
+            p.add (ui.create (e));
         return p;
     }
 }
