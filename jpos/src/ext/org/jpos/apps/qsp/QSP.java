@@ -421,7 +421,8 @@ public class QSP implements ErrorHandler, LogSource, Runnable, QSPMBean {
 	    if (qsp.getLogger() != null) 
 		new SystemMonitor (3600000, qsp.getLogger(), "monitor");
 
-            (new Thread (qsp)).start();
+            ThreadGroup group = new ThreadGroup("QSP");
+            new Thread (group, qsp).start();
 	} catch (Exception e) {
 	    Logger.log (new LogEvent (qsp, "error", e));
 	    System.out.println (e);
