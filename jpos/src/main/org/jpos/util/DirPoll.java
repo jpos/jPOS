@@ -317,7 +317,7 @@ public class DirPoll extends SimpleLogSource
 	    }
 	}
     }
-    public class DirPollException extends ISOException {
+    public static class DirPollException extends ISOException {
 	public DirPollException () {
 	    super();
 	}
