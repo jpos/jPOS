@@ -108,7 +108,7 @@ public class Q2 implements FileFilter {
         factory = new QFactory (loaderName);
         for (;;) {
             try {
-                loader.scan ();
+                loader = loader.scan ();
                 scan ();
                 deploy ();
                 checkModified ();

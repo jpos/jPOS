@@ -93,7 +93,7 @@ public class QClassLoader
         return libDir.canRead () && (lastModified != libDir.lastModified());
     }
 
-    public void scan () 
+    public QClassLoader scan () 
         throws InstanceAlreadyExistsException,
                InstanceNotFoundException,
                NotCompliantMBeanException,
@@ -102,19 +102,25 @@ public class QClassLoader
     
     {
         if (!isModified ())
-            return;
-        if (server.isRegistered (loaderName))
+            return this;
+        QClassLoader loader;
+        if (server.isRegistered (loaderName)) {
             server.unregisterMBean (loaderName);
+            loader = new QClassLoader (server, libDir, loaderName);
+        } else
+            loader = this;
+
         File file[] = libDir.listFiles (this);
         for (int i=0; i<file.length; i++) {
             try {
-                addURL (file[i].toURL ());
+                loader.addURL (file[i].toURL ());
             } catch (MalformedURLException e) {
                 e.printStackTrace ();
             }
         }
-        lastModified = libDir.lastModified ();
-        server.registerMBean (this, loaderName);
+        loader.lastModified = libDir.lastModified ();
+        server.registerMBean (loader, loaderName);
+        return loader;
     }
 }
 
