@@ -282,12 +282,14 @@ public class Q2 implements FileFilter {
     private void undeploy (File f) {
         QEntry qentry = (QEntry) dirMap.get (f);
         try {
+            if (log != null)
+                log.trace ("undeploying:" + f.getName());
+
             Object obj      = qentry.getObject ();
             ObjectName name = qentry.getObjectName ();
             factory.destroyQBean (this, name, obj);
-
             if (log != null)
-                log.info ("undeploy:" + f.getName());
+                log.info ("undeployed:" + f.getName());
         } catch (Exception e) {
             getLog().warn ("undeploy", e);
         }
