@@ -86,4 +86,11 @@ public class Logger {
     public String getName() {
 	return this.name;
     }
+    /**
+     * Used by heavy used methods to avoid LogEvent creation 
+     * @return true if Logger has associated LogListsners
+     */
+    public boolean hasListeners() {
+	return listeners.size() > 0;
+    }
 }
