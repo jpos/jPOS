@@ -3,6 +3,7 @@
 package logger;
 
 import java.io.PrintStream;
+import org.jpos.iso.ISOException;
 import org.jpos.util.Logger;
 import org.jpos.util.LogEvent;
 import org.jpos.util.Loggeable;
@@ -36,7 +37,7 @@ public class Test extends SimpleLogProducer implements Loggeable {
 	evt.addMessage ("We a this (Loggeable) and also an exception");
 	evt.addMessage (this);
 	evt.addMessage (
-	    new Exception ("This not an error either")
+	    new Exception ("This is not an error either")
 	);
 	Logger.log (evt);
     }
@@ -45,6 +46,20 @@ public class Test extends SimpleLogProducer implements Loggeable {
 	p.println (indent + "<loggeable>");
 	p.println (inner  + "This class implements Loggeable");
 	p.println (indent + "</loggeable>");
+    }
+    public void testISOException() {
+	LogEvent evt = new LogEvent (this, "ExceptionDemo");
+	evt.addMessage (
+	    new Exception ("This is a simple exception - not an error")
+	);
+	evt.addMessage (
+	    new ISOException ("This is a simple ISOException")
+	);
+	Exception simple    = new Exception ("Simple Exception");
+	ISOException inner  = new ISOException ("some detail message", simple);
+	ISOException outter  = new ISOException (inner);
+	evt.addMessage (outter);
+	Logger.log (evt);
     }
 
     public static void main (String args[]) {
@@ -56,5 +71,6 @@ public class Test extends SimpleLogProducer implements Loggeable {
 	t.testLoggeable();
 	t.testException();
 	t.testMulti();
+	t.testISOException();
     }
 }
