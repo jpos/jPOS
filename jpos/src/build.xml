@@ -25,6 +25,7 @@
   <property name="debug" value="on" />
   <property name="project" value="jpos" />
   <property name="archive" value="${project}-${version}" />
+  <property name="q2.archive" value="q2-${version}" />
 
   <target name="targets">
     <echo>
@@ -41,6 +42,7 @@
         test         Test jPOS using jUnit
         jar          Generates ${archive}.jar
         qsp          Generates ${archive}.jar containing QSP application
+        q2           Generates ${q2.archive}.jar containing Q2 application
         tarball      Generates distro tarball
 
     </echo>
@@ -376,6 +378,21 @@
     <jar jarfile="${dist}/${archive}.jar" 
          basedir="${classes}"
          manifest="${classes}/MANIFEST.MF" 
+	 includes="LICENSE,README,org/**" />
+  </target>
+
+  <target name="q2" depends="main">
+    <delete file="${dist}/${q2.archive}.jar" />
+    <copy file="${source}/etc/MANIFEST.Q2" tofile="${classes}/MANIFEST.Q2" />
+    <replace file="${classes}/MANIFEST.Q2" 
+             token="$$VERSION$$" value="${version}"/>
+    <copy file="${source}/etc/LICENSE" tofile="${classes}/LICENSE" />
+    <copy file="${source}/etc/README"  tofile="${classes}/README" />
+    <copy file="ChangeLog" tofile="${classes}/ChangeLog" />
+
+    <jar jarfile="${dist}/${q2.archive}.jar" 
+         basedir="${classes}"
+         manifest="${classes}/MANIFEST.Q2" 
 	 includes="LICENSE,README,org/**" />
   </target>
 
