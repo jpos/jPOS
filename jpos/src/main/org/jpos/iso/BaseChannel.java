@@ -327,7 +327,7 @@ public abstract class BaseChannel extends Observable
             if (serverSocket != null) {
 		accept(serverSocket);
 		evt.addMessage ("local port "+serverSocket.getLocalPort()
-		    +" remote host "+serverSocket.getInetAddress());
+		    +" remote host "+socket.getInetAddress());
 	    }
 	    else {
 		evt.addMessage (host+":"+port);
