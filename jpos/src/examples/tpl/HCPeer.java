@@ -97,8 +97,9 @@ public class HCPeer implements PersistentPeer {
 		NotFoundException
     {
 	ResultSet rs = null;
+	Connection conn = engine.getConnection();
 	try {
-	    rs = engine.executeQuery (getSelectSql (pan));
+	    rs = engine.executeQuery (getSelectSql (pan), conn);
 	    if (!rs.next()) 
 		throw new 
 		    NotFoundException (pan + " not found");
@@ -106,6 +107,7 @@ public class HCPeer implements PersistentPeer {
 	} finally {
 	    if (rs != null)
 		rs.close();
+	    engine.releaseConnection (conn);
 	}
     }
 
@@ -114,8 +116,10 @@ public class HCPeer implements PersistentPeer {
     {
 	Collection c = new ArrayList();
 	ResultSet rs = null;
+	Connection conn = engine.getConnection();
 	try {
-	    rs = engine.executeQuery (getSelectRangeSql (initialPan, finalPan));
+	    rs = engine.executeQuery 
+		(getSelectRangeSql (initialPan, finalPan), conn);
 	    while (rs.next()) {
 		HC hc = new HC();
 		load (hc, rs);
@@ -124,6 +128,7 @@ public class HCPeer implements PersistentPeer {
 	} finally {
 	    if (rs != null)
 		rs.close();
+	    engine.releaseConnection (conn);
 	}
 	return c;
     }
