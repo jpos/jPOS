@@ -57,17 +57,6 @@ import java.util.Set;
  */
 public interface LocalSpace extends Space {
     /**
-     * Write a new leased entry into the Space. Entry will remain valid
-     * for a limited amount of time.
-     * @see LeasedReference
-     * @param key Entry's key
-     * @param value Object value
-     * @param timeout entry valid time
-     * @return a LeasedReference that can be used to extend original timeout
-     */
-    public LeasedReference out (Object key, Object value, long timeout);
-
-    /**
      * add a SpaceListener associated with a given key
      * @param key Entry's key
      * @param listener a SpaceListener
