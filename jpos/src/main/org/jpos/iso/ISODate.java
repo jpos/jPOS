@@ -8,6 +8,9 @@
 
 /*
  * $Log$
+ * Revision 1.2  1998/12/15 23:43:17  apr
+ * Pruebas finales Devoto
+ *
  * Revision 1.1  1998/11/09 23:40:25  apr
  * *** empty log message ***
  *
@@ -52,7 +55,7 @@ public class ISODate {
 		return formatDate (d, "MMdd");
 	}
 	public static void main (String args[]) {
-		Date d = parse("28/05/1963");
+		Date d = parse(args[0]);	// Ej. 28/05/1963
 		System.out.println ("getDate() = " + getDate (d));
 		System.out.println ("getTime() = " + getTime (d));
 		System.out.println ("Date: " + d);
