@@ -269,7 +269,7 @@
       id="45"
       length="76"
       name="TRACK 1 DATA"
-      class="org.jpos.iso.IFB_LLCHAR"/>
+      class="org.jpos.iso.IFB_LLHCHAR"/>
   <isofield
       id="46"
       length="99"
