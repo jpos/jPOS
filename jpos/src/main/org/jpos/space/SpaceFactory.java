@@ -50,6 +50,7 @@
 package org.jpos.space;
 
 import java.util.StringTokenizer;
+import org.jpos.util.NameRegistrar;
 
 /**
  * Creates a space based on a space URI.
@@ -87,6 +88,7 @@ public class SpaceFactory {
     public static final String TRANSIENT  = "transient";
     public static final String PERSISTENT = "persistent";
     public static final String JDBM       = "jdbm";
+    public static final String DEFAULT    = "default";
 
     /**
      * @return the default TransientSpace
@@ -112,6 +114,7 @@ public class SpaceFactory {
         int count = st.countTokens();
         if (count == 0) {
             scheme = TRANSIENT;
+            name   = DEFAULT;
         }
         else if (count == 1) {
             scheme = TRANSIENT;
@@ -124,27 +127,48 @@ public class SpaceFactory {
         if (st.hasMoreTokens()) {
             param  = st.nextToken ();
         }
-        if (TRANSIENT.equals (scheme)) {
-            if (name != null)
-                sp = TransientSpace.getSpace (name);
-            else
-                sp = TransientSpace.getSpace ();
-        } else if (PERSISTENT.equals (scheme)) {
-            if (name != null)
-                sp = PersistentSpace.getSpace (name);
-            else
-                sp = PersistentSpace.getSpace ();
-        } else if (JDBM.equals (scheme)) {
-            if (name != null && param != null)
-                sp = JDBMSpace.getSpace (name, param);
-            else if (name != null) 
-                sp = JDBMSpace.getSpace (name);
-            else
-                sp = JDBMSpace.getSpace ();
+        return getSpace (scheme, name, param);
+    }
+    public static Space getSpace (String scheme, String name, String param) {
+        Space sp = null;
+        String uri = normalize (scheme, name, param);
+        synchronized (SpaceFactory.class) {
+            try {
+                sp = (Space) NameRegistrar.get (uri);
+            } catch (NameRegistrar.NotFoundException e) {
+                sp = createSpace (scheme, name, param);
+                NameRegistrar.register (uri, sp);
+            }
         }
-        if (sp == null)
-            throw new SpaceError ("Invalid space URI: " + spaceUri);
+        if (sp == null) {
+            throw new SpaceError ("Invalid space: " + uri);
+        }
         return sp;
+    }
+    private static Space createSpace (String scheme, String name, String param)
+    {
+        Space sp = null;
+        if (TRANSIENT.equals (scheme)) {
+            sp = TransientSpace.getSpace (name);
+        } else if (PERSISTENT.equals (scheme)) {
+            sp = PersistentSpace.getSpace (name);
+        } else if (JDBM.equals (scheme)) {
+            if (param != null)
+                sp = JDBMSpace.getSpace (name, param);
+            else 
+                sp = JDBMSpace.getSpace (name);
+        }
+        return sp;
+    }
+    private static String normalize (String scheme, String name, String param) {
+        StringBuffer sb = new StringBuffer (scheme);
+        sb.append (':');
+        sb.append (name);
+        if (param != null) {
+            sb.append (':');
+            sb.append (param);
+        }
+        return sb.toString();
     }
 }
 
