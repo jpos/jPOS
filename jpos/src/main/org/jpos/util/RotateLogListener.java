@@ -62,9 +62,8 @@ import org.jpos.core.ConfigurationException;
  * @see org.jpos.core.Configurable
  * @since jPOS 1.2
  */
-
 public class RotateLogListener extends SimpleLogListener 
-    implements Configurable
+    implements Configurable, Destroyable
 {
     FileOutputStream f;
     String logName;
@@ -72,6 +71,7 @@ public class RotateLogListener extends SimpleLogListener
     long sleepTime;
     long maxSize;
     int  msgCount;
+    Rotate rotate;
     public static final int CHECK_INTERVAL = 100;
     public static final long DEFAULT_MAXSIZE = 10000000;
 
@@ -94,8 +94,9 @@ public class RotateLogListener extends SimpleLogListener
 	f = null;
 	openLogFile ();
         Timer timer = DefaultTimer.getTimer();
-	if (sleepTime != 0) 
-            timer.schedule (new Rotate(), sleepTime, sleepTime);
+	if (sleepTime != 0) {
+            timer.schedule (rotate = new Rotate(), sleepTime, sleepTime);
+        }
     }
 
     public RotateLogListener 
@@ -137,7 +138,7 @@ public class RotateLogListener extends SimpleLogListener
 	}
         Timer timer = DefaultTimer.getTimer();
 	if (sleepTime != 0) 
-            timer.schedule (new Rotate(), sleepTime, sleepTime);
+            timer.schedule (rotate = new Rotate(), sleepTime, sleepTime);
     }
     public synchronized void log (LogEvent ev) {
         if (msgCount++ > CHECK_INTERVAL) {
@@ -194,5 +195,9 @@ public class RotateLogListener extends SimpleLogListener
                 e.printStackTrace (System.err);
             }
         }
+    }
+    public void destroy () {
+        if (rotate != null)
+            rotate.cancel ();
     }
 }
