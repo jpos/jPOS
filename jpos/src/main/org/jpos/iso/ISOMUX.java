@@ -11,10 +11,6 @@ import org.jpos.util.LogProducer;
 /**
  * Should run in it's own thread. Starts another Receiver thread
  *
- * See the
- * <a href="API_users_guide.html#ISOMUX">API User's Guide</a>
- * for details.
- *
  * @author apr@cs.com.uy
  * @version $Id$
  * @see ISORequest
@@ -25,6 +21,9 @@ import org.jpos.util.LogProducer;
 
 /*
  * $Log$
+ * Revision 1.26  2000/03/20 21:56:39  apr
+ * DocBugFix: broken links to API_users_guide
+ *
  * Revision 1.25  2000/03/01 14:44:45  apr
  * Changed package name to org.jpos
  *

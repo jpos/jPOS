@@ -7,6 +7,9 @@ import org.jpos.util.LogProducer;
 
 /*
  * $Log$
+ * Revision 1.21  2000/03/20 21:56:39  apr
+ * DocBugFix: broken links to API_users_guide
+ *
  * Revision 1.20  2000/03/09 02:34:32  apr
  * New methods isRequest, isResponse, isRetransmission, setMTI, getMTI and
  * setResponseMTI
@@ -38,10 +41,6 @@ import org.jpos.util.LogProducer;
 /**
  * implements <b>Composite</b>
  * whithin a <b>Composite pattern</b>
- *
- * See the
- * <a href="API_users_guide.html">API User's Guide</a>
- * for details.
  *
  * @author apr@cs.com.uy
  * @version $Id$

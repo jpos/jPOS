@@ -7,9 +7,8 @@ import java.util.*;
  * implements a <b>Component</b>
  * within a <b>Composite pattern</b>
  *
- * See the
- * <a href="API_users_guide.html">API User's Guide</a>
- * for details.
+ * See 
+ * <a href="/doc/javadoc/overview-summary.html">Overview</a> for details.
  *
  * @author apr@cs.com.uy
  * @version $Id$

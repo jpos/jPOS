@@ -5,6 +5,9 @@ import java.util.*;
 
 /*
  * $Log$
+ * Revision 1.8  2000/03/20 21:56:39  apr
+ * DocBugFix: broken links to API_users_guide
+ *
  * Revision 1.7  2000/03/05 01:56:41  apr
  * Take XML tag and attributes names from constants in XMLPackager
  *
@@ -21,10 +24,6 @@ import java.util.*;
 
 /**
  * implements <b>Leaf</b> for standard fields
- *
- * See the
- * <a href="API_users_guide.html">API User's Guide</a>
- * for details.
  *
  * @author apr@cs.com.uy
  * @version $Id$

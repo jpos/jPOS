@@ -6,10 +6,6 @@ import java.util.*;
 /**
  * implements <b>Leaf</b> for Bitmap field
  *
- * See the
- * <a href="API_users_guide.html">API User's Guide</a>
- * for details.
- *
  * @author apr@cs.com.uy
  * @version $Id$
  * @see ISOComponent
