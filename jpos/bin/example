@@ -23,6 +23,8 @@ if [ -z $1 ] ; then
   echo "Usage: example <package>";
   exit;
 fi
-$JAVA -cp $CLASSPATH -Djpos.config=src/etc/jpos.cfg $1.Test $2 $3 $4 $5 $6
+$JAVA -cp $CLASSPATH -Djpos.config=src/etc/jpos.cfg \
+	-Dsax.parser=org.apache.xerces.parsers.SAXParser \
+	$1.Test $*
 
 
