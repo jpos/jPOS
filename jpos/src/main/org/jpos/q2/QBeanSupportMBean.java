@@ -64,5 +64,6 @@ public interface QBeanSupportMBean extends QBean, QPersist {
     public String getName ();
     public void setLogger (String name);
     public String getLogger ();
+    public void shutdownQ2 ();
 }
 
