@@ -388,7 +388,7 @@ public class ISOMsg extends ISOComponent
             try {
                 Object obj = getValue(fldno);
                 if (obj instanceof String)
-                    s = (String) obj;
+                    s = new String ((String) obj);
             } catch (ISOException e) {
                 // ignore ISOException - return null
             }
