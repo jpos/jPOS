@@ -55,6 +55,9 @@ import org.jpos.iso.*;
 
 /*
  * $Log$
+ * Revision 1.3  2001/01/13 19:26:09  victor
+ * changed bitmap size to 16
+ *
  * Revision 1.2  2000/11/02 12:09:18  apr
  * Added license to every source file
  *
@@ -92,7 +95,7 @@ public class PostPackager extends ISOBasePackager {
     protected PostPrivatePackager p127 = new PostPrivatePackager();
     protected ISOFieldPackager fld[] = {
             new IFA_NUMERIC (  4, "MESSAGE TYPE INDICATOR"),
-            new IFB_BITMAP  (  8, "BIT MAP"),
+            new IFB_BITMAP  ( 16, "BIT MAP"),
             new IFA_LLNUM   ( 19, "PAN - PRIMARY ACCOUNT NUMBER"),
             new IFA_NUMERIC (  6, "PROCESSING CODE"),
             new IFA_NUMERIC ( 12, "AMOUNT, TRANSACTION"),
