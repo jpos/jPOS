@@ -50,6 +50,11 @@
           class="org.jpos.iso.channel.LoopbackChannel" 
           logger="qsp" realm="loopback.channel"
 	  connect="no">
+   <filter class="org.jpos.iso.filter.XSLTFilter" direction="outgoing">
+    <property name="xsltfile" 
+              value="src/ext/org/jpos/apps/qsp/msg/outgoing.xsl" />
+    <property name="reread" value="yes" />
+   </filter>
   </channel>
  </mux>
 
