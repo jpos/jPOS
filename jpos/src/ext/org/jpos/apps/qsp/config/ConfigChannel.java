@@ -115,8 +115,12 @@ public class ConfigChannel implements QSPReConfigurator {
             qsp.registerMBean (channel, "type=channel,name="+name);
         } catch (NotCompliantMBeanException e) {
             evt.addMessage (e.getMessage());
+        } catch (Exception e) {
+            evt.addMessage (e);
+            throw new ConfigurationException (e);
+        } finally {
+	    Logger.log (evt);
         }
-	Logger.log (evt);
     }
     public void reconfig (QSP qsp, Node node) throws ConfigurationException
     {
