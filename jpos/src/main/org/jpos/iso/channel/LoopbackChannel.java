@@ -11,6 +11,7 @@ import org.jpos.iso.ISOMsg;
 import org.jpos.iso.ISOChannel;
 import org.jpos.iso.ISOPackager;
 import org.jpos.iso.ISOException;
+import org.jpos.iso.FilteredBase;
 import org.jpos.util.NameRegistrar;
 import org.jpos.util.BlockingQueue;
 import org.jpos.util.Logger;
@@ -18,7 +19,7 @@ import org.jpos.util.LogEvent;
 import org.jpos.util.LogSource;
 import org.jpos.iso.ISOFilter.VetoException;
 
-public class LoopbackChannel implements ISOChannel, LogSource {
+public class LoopbackChannel extends FilteredBase implements LogSource {
     boolean usable = true;
     private int[] cnt;
     String name;
@@ -32,8 +33,12 @@ public class LoopbackChannel implements ISOChannel, LogSource {
 	queue = new BlockingQueue();
     }
 
-    public void setPackager(ISOPackager p) {
-	// do nothing - N/A
+   /**
+    * setPackager is optional on LoopbackChannel, it is
+    * used for debugging/formating purposes only
+    */
+    public void setPackager(ISOPackager packager) {
+	// N/A
     }
 
     public void connect () {
@@ -60,17 +65,25 @@ public class LoopbackChannel implements ISOChannel, LogSource {
     public void send (ISOMsg m)
 	throws IOException,ISOException, VetoException
     {
-	cnt[TX]++;
-	Logger.log (new LogEvent (this, "loopback-send", m));
+	if (!isConnected())
+	    throw new ISOException ("unconnected ISOChannel");
+	LogEvent evt = new LogEvent (this, "loopback-send");
+	applyOutgoingFilters (m, evt);
 	queue.enqueue (m);
+	cnt[TX]++;
+	Logger.log (evt);
     }
 
     public ISOMsg receive() throws IOException, ISOException
     {
+	if (!isConnected())
+	    throw new ISOException ("unconnected ISOChannel");
 	try {
+	    LogEvent evt = new LogEvent (this, "loopback-receive");
 	    ISOMsg m = (ISOMsg) queue.dequeue();
+	    applyIncomingFilters (m, evt);
 	    cnt[RX]++;
-	    Logger.log (new LogEvent (this, "loopback-receive", m));
+	    Logger.log (evt);
 	    return m;
 	} catch (InterruptedException e) {
 	    throw new IOException (e.toString());
