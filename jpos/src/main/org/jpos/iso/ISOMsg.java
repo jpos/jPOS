@@ -7,6 +7,9 @@ import org.jpos.util.LogProducer;
 
 /*
  * $Log$
+ * Revision 1.23  2000/03/29 12:58:03  apr
+ * change Victor's tabs to 8 spaces - no other change
+ *
  * Revision 1.22  2000/03/29 08:28:39  victor
  * Added support for tertiary bitmap
  *
@@ -186,14 +189,14 @@ public class ISOMsg extends ISOComponent implements Cloneable, Loggeable {
         if (!dirty)
             return;
 
-		if(maxField>128)
-		{
-			BitSet bmap=new BitSet(64);
-			for (int i=1; i<=64; i++)
-				if((c=(ISOComponent) fields.get(new Integer (i+128))) != null) 
-					bmap.set (i);
-			set (new ISOBitMap (65, bmap));
-		}
+	if(maxField>128)
+	{
+	    BitSet bmap=new BitSet(64);
+	    for (int i=1; i<=64; i++)
+		if((c=(ISOComponent) fields.get(new Integer (i+128))) != null) 
+		    bmap.set (i);
+	    set (new ISOBitMap (65, bmap));
+	}
 		
         BitSet bmap = new BitSet (getMaxField() > 64 ? 128 : 64);
 		int tmpMaxField=maxField > 128 ? 128 : maxField;
