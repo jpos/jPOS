@@ -198,7 +198,7 @@ public class PersistentEngine implements LogSource, Configurable {
      * @throws SQLException
      */
     public void load (Object o) 
-	throws NoPeerException, SQLException
+	throws NoPeerException, SQLException, NotFoundException
     {
 	PersistentPeer peer = getPeer(o);
 	peer.setPersistentEngine (this);
@@ -211,7 +211,7 @@ public class PersistentEngine implements LogSource, Configurable {
      * @throws SQLException
      */
     public void remove (Object o) 
-	throws NoPeerException, SQLException
+	throws NoPeerException, SQLException, NotFoundException
     {
 	PersistentPeer peer = getPeer(o);
 	peer.setPersistentEngine (this);
@@ -224,7 +224,7 @@ public class PersistentEngine implements LogSource, Configurable {
      * @throws SQLException
      */
     public void update (Object o) 
-	throws NoPeerException, SQLException
+	throws NoPeerException, SQLException, NotFoundException
     {
 	PersistentPeer peer = getPeer(o);
 	peer.setPersistentEngine (this);

@@ -10,7 +10,7 @@ import java.sql.SQLException;
 public interface PersistentPeer {
     public void setPersistentEngine (PersistentEngine engine);
     public void create (Object obj) throws SQLException;
-    public void load   (Object obj) throws SQLException;
-    public void update (Object obj) throws SQLException;
-    public void remove (Object obj) throws SQLException;
+    public void load   (Object obj) throws SQLException, NotFoundException;
+    public void update (Object obj) throws SQLException, NotFoundException;
+    public void remove (Object obj) throws SQLException, NotFoundException;
 }
