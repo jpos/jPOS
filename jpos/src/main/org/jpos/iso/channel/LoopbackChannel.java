@@ -125,6 +125,7 @@ public class LoopbackChannel extends FilteredBase implements LogSource {
 	applyOutgoingFilters (m, evt);
 	queue.enqueue (m);
 	cnt[TX]++;
+        notifyObservers();
 	Logger.log (evt);
     }
 
@@ -137,6 +138,7 @@ public class LoopbackChannel extends FilteredBase implements LogSource {
 	    LogEvent evt = new LogEvent (this, "loopback-receive", m);
 	    applyIncomingFilters (m, evt);
 	    cnt[RX]++;
+            notifyObservers();
 	    Logger.log (evt);
 	    return m;
 	} catch (InterruptedException e) {
