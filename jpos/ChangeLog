@@ -1,6 +1,7 @@
 $Id$
 
 -- 1.4.7 --
+Bugfix: IFB_LLLHECHAR wrong maxlength
 Added helper ISOUtil.hexdump (String)
 Bugfix: handle ISOException in ISOMUX.doTransmit
 Added ISOBasePackager.setFieldPackager (int, ISOFieldPackager)
