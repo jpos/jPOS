@@ -14,10 +14,13 @@
           host="localhost" port="8000"
           logger="qsp" realm="acme"
 	  connect="no" >
-   <filter class="org.jpos.iso.XSLTFilter" direction="outgoing">
+   <filter class="org.jpos.iso.filter.XSLTFilter" direction="outgoing">
     <property name="xsltfile" 
               value="src/ext/org/jpos/apps/qsp/msg/outgoing.xsl" />
     <property name="reread" value="yes" />
+   </filter>
+   <filter class="org.jpos.iso.filter.DelayFilter" direction="incoming">
+    <property name="delay" value="5000" />
    </filter>
   </channel>
  </mux>
