@@ -10,6 +10,9 @@ import org.jpos.util.LogEvent;
 import org.jpos.util.LogSource;
 import org.jpos.util.NameRegistrar;
 import org.jpos.iso.ISOFilter.VetoException;
+import org.jpos.core.Configurable;
+import org.jpos.core.Configuration;
+import org.jpos.core.ConfigurationException;
 
 /*
  * BaseChannel was ISOChannel. Now ISOChannel is an interface
@@ -41,7 +44,8 @@ import org.jpos.iso.ISOFilter.VetoException;
  *
  */
 public abstract class BaseChannel extends Observable 
-    implements FilteredChannel, ClientChannel, ServerChannel, LogSource
+    implements FilteredChannel, ClientChannel, ServerChannel, 
+	       LogSource, Configurable
 {
     private Socket socket;
     private String host;
@@ -523,5 +527,28 @@ public abstract class BaseChannel extends Observable
 	while (iter.hasNext())
 	    m = ((ISOFilter) iter.next()).filter (this, m, evt);
 	return m;
+    }
+   /**
+    * Implements Configurable<br>
+    * Properties:<br>
+    * <ul>
+    * <li>host - destination host (if ClientChannel)
+    * <li>port - port number      (if ClientChannel)
+    * </ul>
+    * (host not present indicates a ServerChannel)
+    *
+    * @param cfg Configuration
+    * @throws ConfigurationException
+    */
+    public void setConfiguration (Configuration cfg)
+	throws ConfigurationException 
+    {
+	String h = cfg.get    ("host");
+	int port = cfg.getInt ("port");
+	if (h != null) {
+	    if (port == 0)
+		throw new ConfigurationException ("invalid port");
+	    setHost (h, cfg.getInt ("port"));
+	}
     }
 }
