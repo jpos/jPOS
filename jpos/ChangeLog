@@ -1,6 +1,7 @@
 $Id$
 
 -- 1.4.5 --
+Removed Q2 and related modules.
 Added PersistentSpace
 Added ISOMsg setSource/getSource
 Support for ISOValidators (contributed by Jose Eduardo Leon)
