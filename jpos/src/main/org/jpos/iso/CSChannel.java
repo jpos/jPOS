@@ -42,19 +42,26 @@ public class CSChannel extends ISOChannel {
 	 * @exception IOException
 	 */
 	protected void sendMessageLength(int len) throws IOException {
-		serverOut.write (len >> 24);
-		serverOut.write (len >> 16);
 		serverOut.write (len >> 8);
 		serverOut.write (len);
+		serverOut.write (0);
+		serverOut.write (0);
 	}
 	/**
 	 * @return the Message len
 	 * @exception IOException, ISOException
 	 */
 	protected int getMessageLength() throws IOException, ISOException {
+		int l = 0;
 		byte[] b = new byte[4];
-		if (serverIn.read(b,0,4) != 4)
-			throw new ISOException("error reading message length");
-		return (int) (b[0] << 24) | (b[1] << 16) | (b[2] << 8) | b[3];
+		while (l == 0) {
+			serverIn.readFully(b,0,4);
+			l = ((((int)b[0])&0xFF) << 8) | (((int)b[1])&0xFF);
+			if (l == 0) {
+				serverOut.write(b);
+				serverOut.flush();
+			}
+		}
+		return l;
 	}
 }
