@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.3  2000/05/25 23:34:13  apr
+ * Implements Configurable (used by QSP)
+ *
  * Revision 1.2  2000/03/01 14:44:45  apr
  * Changed package name to org.jpos
  *
@@ -15,7 +18,9 @@ import java.util.*;
 import javax.mail.*;
 import javax.mail.internet.*;
 import javax.activation.*;
+import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
+import org.jpos.core.ConfigurationException;
 
 /**
  * send e-mail with selected LogEvents to operator account
@@ -32,14 +37,31 @@ import org.jpos.core.Configuration;
  * @author apr@cs.com.uy
  * @version $Id$
  */
-public class OperatorLogListener implements LogListener, Runnable {
+public class OperatorLogListener 
+    implements LogListener, Configurable, Runnable
+{
     Configuration cfg;
     BlockingQueue queue;
 
+    public OperatorLogListener () {
+	super();
+	queue = new BlockingQueue();
+    }
     public OperatorLogListener (Configuration cfg) {
 	super();
 	this.cfg = cfg;
 	queue = new BlockingQueue();
+	new Thread(this).start();
+    }
+    public void setConfiguration (Configuration cfg) 
+	throws ConfigurationException
+    {
+	this.cfg = cfg;
+	assertProperty ("jpos.operator.to");
+	assertProperty ("jpos.operator.subject.prefix");
+	assertProperty ("jpos.operator.tags");
+	assertProperty ("jpos.operator.delay");
+	assertProperty ("jpos.mail.smtp.host");
 	new Thread(this).start();
     }
     public void run() {
@@ -119,5 +141,11 @@ public class OperatorLogListener implements LogListener, Runnable {
     public synchronized void log (LogEvent ev) {
 	if (checkOperatorTag(ev))
 	    queue.enqueue (ev);
+    }
+    private void assertProperty (String propName) throws ConfigurationException
+    {
+	if (cfg.get (propName) == null)
+	    throw new ConfigurationException 
+		(propName + " property not present");
     }
 }
