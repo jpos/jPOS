@@ -11,6 +11,7 @@ import org.jpos.util.Logger;
 import org.jpos.util.LogEvent;
 import org.jpos.util.LogSource;
 import org.jpos.util.ThreadPool;
+import org.jpos.util.NameRegistrar;
 import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
@@ -27,6 +28,7 @@ public class ISOServer extends SimpleLogSource implements Runnable {
     Collection clientOutgoingFilters, clientIncomingFilters, listeners;
     ThreadPool pool;
     public static final int DEFAULT_MAX_THREADS = 100;
+    String name;
 
    /**
     * @param port port to listen
@@ -47,6 +49,7 @@ public class ISOServer extends SimpleLogSource implements Runnable {
 	this.pool = (pool == null) ?  
 	    new ThreadPool (1, DEFAULT_MAX_THREADS) : pool;
 	listeners = new Vector();
+	name = "";
     }
 
     protected class Session implements Runnable, LogSource {
@@ -142,11 +145,36 @@ public class ISOServer extends SimpleLogSource implements Runnable {
 	    ((FilteredChannel)channel) .
 		setIncomingFilters (clientOutgoingFilters);
     }
-
     private void relax() {
 	try {
 	    Thread.sleep (5000);
 	} catch (InterruptedException e) { }
+    }
+
+    /**
+     * associates this ISOServer with a name using NameRegistrar
+     * @param name name to register
+     * @see NameRegistrar
+     */
+    public void setName (String name) {
+	this.name = name;
+	NameRegistrar.register ("server."+name, this);
+    }
+    /**
+     * @return ISOMUX instance with given name.
+     * @throws NameRegistrar.NotFoundException;
+     * @see NameRegistrar
+     */
+    public static ISOServer getServer (String name)
+	throws NameRegistrar.NotFoundException
+    {
+	return (ISOServer) NameRegistrar.get ("server."+name);
+    }
+    /**
+     * @return this ISOServer's name ("" if no name was set)
+     */
+    public String getName() {
+	return this.name;
     }
 }
 
