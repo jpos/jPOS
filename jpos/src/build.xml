@@ -120,6 +120,7 @@
       <srcfiles dir="${main}" includes="org/jpos/q2/qbean/ServerAdaptor.java" />
       <srcfiles dir="${main}" includes="org/jpos/q2/qbean/SpaceProxyAdaptor.java" />
       <srcfiles dir="${main}" includes="org/jpos/q2/qbean/NameRegistrarInspector.java" />
+      <srcfiles dir="${ext}" includes="org/jpos/q2/jetty/Jetty.java" />
       <mapper type="glob" from="*.java" to="*MBean.java"/>
     </uptodate>
   </target>
@@ -138,6 +139,13 @@
         <include name="org/jpos/q2/qbean/ServerAdaptor.java" />
         <include name="org/jpos/q2/qbean/SpaceProxyAdaptor.java" />
         <include name="org/jpos/q2/qbean/NameRegistrarInspector.java" />
+      </fileset>
+      <mbeaninterface/>
+      <mx4jdescription/>
+    </jmxdoclet>
+    <jmxdoclet destdir="${ext}" force="yes" verbose="false">
+      <fileset dir="${ext}">
+        <include name="org/jpos/q2/jetty/Jetty.java" />
       </fileset>
       <mbeaninterface/>
       <mx4jdescription/>
@@ -213,7 +221,7 @@
 
   <target name="ext.jetty" depends="ext.check" if="jetty.present">
     <javac srcdir="${ext}" destdir="${classes}"
-        includes="**/apps/jetty/**"
+        includes="**/apps/jetty/**,**/q2/jetty/**"
         debug="${debug}"
         deprecation="${deprecation}" >
         <classpath refid="ext.classpath" />
