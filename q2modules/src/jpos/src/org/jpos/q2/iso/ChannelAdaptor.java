@@ -232,7 +232,7 @@ public class ChannelAdaptor
             while (running ()){
                 try {
                     checkConnection ();
-                    Object o = sp.in (in);
+                    Object o = sp.in (in, delay);
                     if (o instanceof ISOMsg)
                         channel.send ((ISOMsg) o);
                 } catch (Exception e) { 
@@ -272,10 +272,10 @@ public class ChannelAdaptor
                 if (!channel.isConnected ())
                     ISOUtil.sleep (delay);
             }
-            if (running())
+            if (running()) 
                 sp.out (ready, new Object ());
         } catch (IOException e) {
-            getLog().warn ("check-connection", e);
+            getLog().warn ("check-connection", e.getMessage ());
             ISOUtil.sleep (delay);
         }
     }
