@@ -104,7 +104,7 @@ public abstract class BaseChannel extends Observable
     private int port, timeout;
     private boolean usable;
     private String name;
-    private int serverPort = -1;
+    // private int serverPort = -1;
     protected DataInputStream serverIn;
     protected DataOutputStream serverOut;
     protected ISOPackager packager;
@@ -302,9 +302,9 @@ public abstract class BaseChannel extends Observable
 	LogEvent evt = new LogEvent (this, "connect");
 	try {
             if (serverSocket != null) {
+		accept(serverSocket);
 		evt.addMessage ("local port "+serverSocket.getLocalPort()
 		    +" remote host "+serverSocket.getInetAddress());
-		accept(serverSocket);
 	    }
 	    else {
 		evt.addMessage (host+":"+port);
@@ -328,12 +328,16 @@ public abstract class BaseChannel extends Observable
      * @exception IOException
      */
     public void accept(ServerSocket s) throws IOException {
-        if (serverPort > 0)
-            s = new ServerSocket (serverPort);
-        else
-            serverPort = s.getLocalPort();
+        // if (serverPort > 0)
+        //    s = new ServerSocket (serverPort);
+        // else
+        //     serverPort = s.getLocalPort();
+
         connect(s.accept());
-        s.close();
+
+        // Warning - closing here breaks ISOServer, we need an
+        // accept that keep ServerSocket open.
+        // s.close();
     }
 
     /**
