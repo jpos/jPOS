@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Id$ -->
 
-<!ELEMENT qsp-config (logger*,mux*,task*,server*,
+<!ELEMENT qsp-config (logger*,mux*,task*,daily-task*,server*,
                       control-panel*,sequencer*,card-agent*,
 		      persistent-engine*, dir-poll*)*>
 <!ATTLIST qsp-config logger IDREF #IMPLIED>
@@ -109,4 +109,13 @@
 <!ATTLIST dir-poll processor CDATA #REQUIRED>
 <!ATTLIST dir-poll logger IDREF #IMPLIED>
 <!ATTLIST dir-poll realm  CDATA #IMPLIED>
+
+<!-- daily-task -->
+<!ELEMENT daily-task (property)*>
+<!ATTLIST daily-task class CDATA #REQUIRED>
+<!ATTLIST daily-task logger IDREF #IMPLIED>
+<!ATTLIST daily-task realm CDATA #IMPLIED>
+<!ATTLIST daily-task name ID #IMPLIED>
+<!ATTLIST daily-task start CDATA #REQUIRED>
+<!ATTLIST daily-task poolsize CDATA #IMPLIED>
 
