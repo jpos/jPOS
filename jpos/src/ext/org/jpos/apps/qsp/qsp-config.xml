@@ -1,4 +1,13 @@
 <?xml version="1.0" ?>
+<!--
+
+  $Id$
+
+  This QSP config file is used for debugging purposes, try out a simpler
+  example such as isoserver.xml in order to get familiar with QSP
+
+-->
+
 <!DOCTYPE qsp-config SYSTEM "qsp-config.dtd"> 
 <qsp-config>
  <logger name="qsp">
@@ -58,4 +67,21 @@
   </channel>
  </mux>
 
+ <server name="acme.server" logger="qsp" realm="server" port="8000">
+  <channel name="server.channel" 
+          class="org.jpos.iso.channel.ASCIIChannel" 
+          packager="org.jpos.iso.packager.ISO87APackager"
+          type="server" logger="qsp" realm="server" >
+   <filter class="org.jpos.iso.filter.XSLTFilter" direction="outgoing">
+    <property name="xsltfile" 
+              value="src/ext/org/jpos/apps/qsp/msg/outgoing.xsl" />
+    <property name="reread" value="yes" />
+   </filter>
+  </channel>
+  <request-listener class="org.jpos.apps.qsp.Connector"
+    logger="qsp" realm="acme.mux.request.listener">
+    <property name="destination-mux" value="acme.mux" />
+    <property name="timeout" value="15000" />
+  </request-listener>
+ </server>
 </qsp-config>

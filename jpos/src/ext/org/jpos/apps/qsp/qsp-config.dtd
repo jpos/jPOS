@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Id$ -->
 
-<!ELEMENT qsp-config (logger*,mux*,task*)*>
+<!ELEMENT qsp-config (logger*,mux*,task*,server*)*>
 
 <!-- logger -->
 <!ELEMENT logger (log-listener*)>
@@ -29,7 +29,7 @@
 <!ATTLIST filter direction (incoming|outgoing|both) 'both'>
 
 <!-- mux -->
-<!ELEMENT mux (channel,request-listener*)>
+<!ELEMENT mux (channel,request-listener*)*>
 <!ATTLIST mux name ID #REQUIRED>
 <!ATTLIST mux logger IDREF #IMPLIED>
 <!ATTLIST mux realm CDATA #IMPLIED>
@@ -50,3 +50,12 @@
 <!ATTLIST request-listener class CDATA #REQUIRED>
 <!ATTLIST request-listener logger IDREF #IMPLIED>
 <!ATTLIST request-listener realm CDATA #IMPLIED>
+
+<!-- server  -->
+<!ELEMENT server (channel,request-listener*)*>
+<!ATTLIST server name ID #REQUIRED>
+<!ATTLIST server port CDATA #REQUIRED>
+<!ATTLIST server logger IDREF #IMPLIED>
+<!ATTLIST server realm CDATA #IMPLIED>
+<!ATTLIST server maxSessions CDATA #IMPLIED>
+

@@ -67,6 +67,11 @@ public class QSP implements ErrorHandler, LogSource {
 	    configurator.config (this, nodes.item(i));
     }
     public static void main (String args[]) {
+	if (args.length != 1) {
+	    System.out.println ("Usage: org.jpos.apps.qsp.QSP <configfile>");
+	    System.exit (1);
+	}
+    
 	DOMParser parser = new DOMParser();
 	QSP qsp = new QSP();
 	// qsp.getLogger().addListener (new SimpleLogListener(System.out));
@@ -80,6 +85,7 @@ public class QSP implements ErrorHandler, LogSource {
 	    qsp.configure ("channel");
 	    qsp.configure ("filter");
 	    qsp.configure ("mux");
+	    qsp.configure ("server");
 	    qsp.configure ("request-listener");
 	    qsp.configure ("task");
 	    new SystemMonitor (3600000, qsp.getLogger(), "monitor");

@@ -2,7 +2,7 @@
 
 # $Id$
 
-QSPCONFIG=`pwd`/`dirname $0`/qsp-config.xml
+QSPBASE=`pwd`/`dirname $0`/
 cd `dirname $0`/../../../../../..
 
 if [ -z "$JAVA_HOME" ] ; then
@@ -23,6 +23,5 @@ CLASSPATH=$JAVA_HOME/lib/tools.jar:$CLASSPATH
 
 $JAVA -cp $CLASSPATH -Djpos.config=src/etc/jpos.cfg \
 	-Dsax.parser=org.apache.xerces.parsers.SAXParser \
-	org.jpos.apps.qsp.QSP $QSPCONFIG
-
+	org.jpos.apps.qsp.QSP $QSPBASE/$1
 
