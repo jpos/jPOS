@@ -38,7 +38,7 @@ public class SpaceProxy implements RemoteSpace, ReConfigurable {
     private RemoteStub stub;
     public SpaceProxy () throws RemoteException {
         super();
-        sp = TransientSpace.getSpace ();
+        sp = SpaceFactory.getSpace ();
         startService ();
     }
     public SpaceProxy (String spaceUri) throws RemoteException {
