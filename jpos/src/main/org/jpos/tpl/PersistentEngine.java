@@ -16,7 +16,6 @@ import org.jpos.core.ConfigurationException;
  * @version $Id$
  */
 public class PersistentEngine implements LogSource, Configurable {
-    Connection sqlConnection;
     Configuration cfg;
     Logger logger;
     String realm;
@@ -55,7 +54,6 @@ public class PersistentEngine implements LogSource, Configurable {
     }
     private void initEngine () throws ConfigurationException {
 	initJDBC();
-	sqlConnection = getConnection();
     }
     private void initJDBC() throws ConfigurationException {
         try {
@@ -72,11 +70,19 @@ public class PersistentEngine implements LogSource, Configurable {
 		String pass = cfg.get ("jdbc.password");
 		return DriverManager.getConnection(url,user,pass);
 	    } catch (SQLException e) {
-		Logger.log (new LogEvent(this, "sqlconnection", e));
+		Logger.log (new LogEvent(this, "sql-connection", e));
 		try {
 		    Thread.sleep (2000);
 		} catch (InterruptedException ex) { }
 	    }
+	}
+    }
+    public void releaseConnection (Connection conn) {
+	// Connection pooling hook
+	try {
+	    conn.close();
+	} catch (SQLException e) {
+	    Logger.log (new LogEvent(this, "sql-release-connection", e));
 	}
     }
     public void setLogger (Logger logger, String realm) {
@@ -112,29 +118,55 @@ public class PersistentEngine implements LogSource, Configurable {
      * @exception SQLException
      */
     public void executeUpdate (String sql) throws SQLException {
+	Connection conn = getConnection();
+	try {
+	    executeUpdate (sql, conn);
+	} finally {
+	    releaseConnection (conn);
+	}
+    }
+    /**
+     * Execute SQL Update
+     * @param sql  sql command
+     * @param conn sql connection
+     * @exception SQLException
+     */
+    public void executeUpdate (String sql, Connection conn) 
+	throws SQLException
+    {
 	Statement s = null;
 	try {
-	    s = sqlConnection.createStatement();
+	    s = conn.createStatement();
 	    if (logger.hasListeners()) 
 		Logger.log (new LogEvent (this, "sql-update", sql));
 	    s.executeUpdate (sql);
-	    s.close();
 	} finally {
 	    if (s != null)
 		s.close();
 	}
     }
+    public ResultSet executeQuery (String sql) throws SQLException {
+	Connection conn = getConnection();
+	try {
+	    return executeQuery (sql, conn);
+	} finally {
+	    releaseConnection (conn);
+	}
+    }
     /**
      * Execute SQL Query. 
-     * @param sql sql command
+     * @param sql  sql command
+     * @param conn sql connection
      * @return ResultSet (please close() it after using - thanks)
      * @exception SQLException
      */
-    public ResultSet executeQuery (String sql) throws SQLException {
+    public ResultSet executeQuery (String sql, Connection conn) 
+	throws SQLException
+    {
 	Statement s = null;
 	ResultSet rs;
 	try {
-	    s = sqlConnection.createStatement();
+	    s = conn.createStatement();
 	    if (logger.hasListeners()) 
 		Logger.log (new LogEvent (this, "sql-query", sql));
 	    rs = s.executeQuery (sql);
@@ -197,6 +229,14 @@ public class PersistentEngine implements LogSource, Configurable {
 	PersistentPeer peer = getPeer(o);
 	peer.setPersistentEngine (this);
 	peer.update(o);
+    }
+
+    public long getOID (Connection conn) throws SQLException {
+	String sql = "SELECT last_insert_id()";
+	ResultSet rs = executeQuery (sql, conn);
+	long oid = rs.getLong (1);
+	rs.close();
+	return oid;
     }
 }
 
