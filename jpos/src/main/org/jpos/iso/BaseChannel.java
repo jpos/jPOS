@@ -549,10 +549,11 @@ public abstract class BaseChannel extends Observable
     {
 	String h = cfg.get    ("host");
 	int port = cfg.getInt ("port");
-	if (h != null) {
+	if (h != null && h.length() > 0) {
 	    if (port == 0)
-		throw new ConfigurationException ("invalid port");
-	    setHost (h, cfg.getInt ("port"));
+		throw new ConfigurationException 
+		    ("invalid port for host '"+h+"'");
+	    setHost (h, port);
 	}
     }
 
