@@ -71,6 +71,7 @@ public class ChannelAdaptor
             if (sFac != null && sFac instanceof LogSource) {
                 ((LogSource) sFac).setLogger(log.getLogger(),getName() + ".socket-factory");
             }
+            getFactory().setConfiguration (sFac, e);
             ((FactoryChannel)channel).setSocketFactory(sFac);
         }
         ready   = getName() + ".ready";
