@@ -8,6 +8,9 @@
 
 /*
  * $Log$
+ * Revision 1.2  1998/12/01 12:48:12  apr
+ * Added padleft
+ *
  * Revision 1.1  1998/11/09 23:40:33  apr
  * *** empty log message ***
  *
@@ -18,17 +21,24 @@ package uy.com.cs.jpos.iso;
 import java.util.*;
 
 public class ISOUtil {
-	public static String zeropad(String s, int len) throws ISOException {
+	public static String padleft(String s, int len, char c)
+		throws ISOException 
+	{
 		s = s.trim();
 		if (s.length() > len)
 			throw new ISOException("invalid len " +s.length() + "/" +len);
 		StringBuffer d = new StringBuffer (len);
 		int fill = len - s.length();
 		while (fill-- > 0)
-			d.append ('0');
+			d.append (c);
 		d.append(s);
 		return d.toString();
 	}
+
+	public static String zeropad(String s, int len) throws ISOException {
+		return padleft(s, len, '0');
+	}
+
 	public static String strpad(String s, int len) {
 		StringBuffer d = new StringBuffer(s);
 		while (d.length() < len)
