@@ -104,9 +104,7 @@ public class LeasedReference extends TimerTask {
     }
     public void run () {
         long duration = expiration - System.currentTimeMillis();
-        if (duration > 0)
-            timer.schedule (this, duration);
-        else
+        if (duration < 0)
             discard ();
     }
 }
