@@ -61,9 +61,10 @@ public class TestUtils {
             }
             // Following always fails, but gives a nice error message
             Assert.assertEquals("Wrong size array", expected.length, was.length);
-        }
-        for (int i= 0; i < expected.length; i++) {
-            Assert.assertEquals("Non-equal objects at index " + i, expected[i], was[i]);
+        } else {
+            for (int i= 0; i < expected.length; i++) {
+                Assert.assertEquals("Non-equal objects at index " + i, expected[i], was[i]);
+            }
         }
     }
 }
