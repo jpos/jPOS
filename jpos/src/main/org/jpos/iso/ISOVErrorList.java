@@ -64,7 +64,7 @@ public interface ISOVErrorList {
 
     /**
      * Add an ISOVError to the list.
-     * @see org.jpos.iso.ISOVError.
+     * @see org.jpos.iso.ISOVError
      * @param Error error detailed instance.
      * @return true if error list change after operation. See Collection.
      */

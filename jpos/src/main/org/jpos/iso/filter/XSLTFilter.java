@@ -109,10 +109,13 @@ public class XSLTFilter implements ISOFilter, Configurable {
     }
 
    /**
+    * configure filter.
+    *
     * <ul>
     *  <li>xsltfile - source XSL-T file
     *  <li>reread   - something != "no" will re-read source file
     * </ul>
+    *
     * @param cfg new ConfigurationFile
     */
     public void setConfiguration (Configuration cfg) 

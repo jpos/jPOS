@@ -124,7 +124,7 @@ public class IVA_NUMNOZERO extends IVA_NUM {
 
 
     /**
-     * @see super class. Validate that component is not zero-filled.
+     * Validate that component is not zero-filled.
      */
     public ISOComponent validate ( ISOComponent f ) throws ISOException {
         ISOField c = (ISOField)f;

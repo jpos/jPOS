@@ -75,7 +75,6 @@ import java.io.EOFException;
  * @see IFB_AMOUNT
  * @see IFB_BINARY
  * @see IFB_BITMAP
- * @see IFB_CHAR
  * @see IFB_LLBINARY
  * @see IFB_LLCHAR
  * @see IFB_LLHBINARY

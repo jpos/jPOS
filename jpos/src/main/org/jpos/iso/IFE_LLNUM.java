@@ -52,10 +52,9 @@ import java.io.InputStream;
 import java.io.IOException;
 
 /**
- * <pre>
  * EBCDIC version of IFB_LLNUM
  * Uses a 2 EBCDIC byte length field
- * </pre>
+ *
  * based on Eoin's IFE_LLCHAR
  * @author apr@cs.com.uy
  * @author Jonathan.O'Connor@xcom.de

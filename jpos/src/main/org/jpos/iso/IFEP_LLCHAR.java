@@ -58,12 +58,12 @@ import java.io.IOException;
 /**
  * ISOFieldPackager ASCII variable len CHAR 
  * suitable for EuroPay subfield 48<br>
- * <pre>
+ * <code>
  * Format LLTT....
  * Where LL is the 2 digit field length
  *       TT is the 2 digit field number (Tag)
  *       is the field content   
- * </pre>
+ * </code>
  *
  * @author <a href="mailto:eoin.flood@orbiscom.com">Eoin Flood</a>
  * @version $Id$

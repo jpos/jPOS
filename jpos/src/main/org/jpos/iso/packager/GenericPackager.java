@@ -142,11 +142,14 @@ public class GenericPackager
     }
 
     /**
-     * <pre>
-     *  packager-config
-     *  packager-logger
-     *  packager-realm
-     * </pre>
+     * Packager Configuration.
+     *
+     * <ul>
+     *  <li>packager-config
+     *  <li>packager-logger
+     *  <li>packager-realm
+     * </ul>
+     *
      * @param cfg Configuration
      */
     public void setConfiguration (Configuration cfg) 

@@ -62,13 +62,13 @@ import org.jpos.util.LogSource;
 import org.jpos.util.SimpleLogSource;
 
 /**
- * Forwards incoming requests to custom ISORequestListener
+ * Forwards incoming requests to custom ISORequestListener 
  * implementation based on MTI
- * <pre>
+ * <code>
  *  &lt;request-listener class="org.jpos.apps.qsp.RequestDispatcher"&gt;
  *   &lt;property name="prefix" value="com.your.company.Incoming_" /&gt;
  *  &lt;/request-listener&gt;
- * </pre>
+ * </code>
  * You should provide suitable com.your.company.Incoming_XXXX
  * implementations (XXXX is replaced by incoming MTI)
  */

@@ -50,10 +50,9 @@
 package org.jpos.iso;
 
 /**
- * <pre>
  * EBCDIC version of IFA_NUMERIC
  * Right Justify, zero fill (0xf0) fields
- * </pre>
+ *
  * @author eoin.flood@orbiscom.com
  * @version $Id$
  * @see IFA_NUMERIC

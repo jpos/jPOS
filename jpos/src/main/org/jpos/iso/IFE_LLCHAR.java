@@ -52,10 +52,9 @@ import java.io.InputStream;
 import java.io.IOException;
 
 /**
- * <pre>
  * EBCDIC version of IF_LLCHAR
  * Uses a 2 EBCDIC byte length field
- * </pre>
+ *
  * @author eoin.flood@orbiscom.com
  * @version $Id$
  * @see ISOFieldPackager

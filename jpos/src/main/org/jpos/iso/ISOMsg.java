@@ -570,7 +570,8 @@ public class ISOMsg extends ISOComponent
 	return getMTI().charAt(3) == '1';
     }
     /**
-     * sets an appropiate response MTI<br>
+     * sets an appropiate response MTI.
+     *
      * i.e. 0100 becomes 0110<br>
      * i.e. 0201 becomes 0210<br>
      * i.e. 1201 becomes 1210<br>

@@ -60,4 +60,8 @@ public interface HttpAdaptorMBean
     public void setUser (String user);
     public String getUser ();
     public void setPassword (String password);
+    public void init ();
+    public void start ();
+    public void stop ();
+    public void destroy ();
 }

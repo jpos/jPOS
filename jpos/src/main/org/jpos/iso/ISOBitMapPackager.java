@@ -53,7 +53,7 @@ package org.jpos.iso;
  * IF*_BITMAP classes extends this class instead of ISOFieldPackager
  * so packagers can check if field-1 ISOFieldPackager is an instance
  * of an ISOBitMapPackager and handle differences between ANSI X9.2
- * and ISO-8583 packaging schemes.<br>
+ * and ISO-8583 packaging schemes.
  *
  * @author apr@cs.com.uy
  * @version $Id$

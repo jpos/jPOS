@@ -99,12 +99,12 @@ public interface FilteredChannel extends ISOChannel {
     public Collection getOutgoingFilters();
 
    /**
-    * @filters incoming filter set
+    * @param filters incoming filter set
     */
     public void setIncomingFilters (Collection filters);
 
    /**
-    * @filters outgoing filter set
+    * @param filters outgoing filter set
     */
     public void setOutgoingFilters (Collection filters);
 }

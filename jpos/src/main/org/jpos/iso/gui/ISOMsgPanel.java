@@ -56,6 +56,9 @@
 
 /*
  * $Log$
+ * Revision 1.8  2002/12/16 12:47:25  apr
+ * Minor changes to reduce new Doclet warnings.
+ *
  * Revision 1.7  2000/11/02 12:09:18  apr
  * Added license to every source file
  *
@@ -91,14 +94,13 @@ import java.util.*;
 import org.jpos.iso.*;
 
 /**
- * Called from ISOChannelPanel when you click on it's ISOMeter.<br>
+ * Called from ISOChannelPanel when you click on it's ISOMeter.
  * It enable field and header visualization by means of visual
  * components such as JTable
  *
  * @see ISOChannelPanel
  * @see ISORequestListenerPanel
  */
-
 public class ISOMsgPanel extends JPanel {
     /**
      * @serial

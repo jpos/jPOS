@@ -50,18 +50,18 @@
 package org.jpos.iso;
 
 /**
- * <pre>
- * Uses a 2 EBCDIC byte length field (right-justified with leading 0)
- * and packed data as BCD. 2 BCD digits per byte and adding the value hex('F')
+ * Uses a 2 EBCDIC byte length field.
+ *
+ * right-justified with leading 0
+ * and packed data as BCD. 2 BCD digits 
+ * per byte and adding the value hex(0xF) 
  * for padding if length is odd.
- * </pre>
+ *
  * @author julien.moebs@paybox.net
  * @version $Id$
  * @see ISOFieldPackager
  * @see ISOComponent
  */
-
-
 public class IFEB_LLNUM extends ISOFieldPackager {
     public IFEB_LLNUM () {
         super();

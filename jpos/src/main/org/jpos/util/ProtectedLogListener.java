@@ -60,7 +60,8 @@ import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
 
 /**
- * Protects selected fields from Logs<br>
+ * Protects selected fields from LogEvents.
+ *
  * ProtectedLogListener acts like a filter for Event logs,
  * it should be defined _before_ other standard LogListeners
  * such as SimpleLogListener or RotateLogListeners.<br>

@@ -605,7 +605,8 @@ public class ISOUtil {
 	return normalize (s, true);
     }
     /**
-     * Protects PAN, Track2, CVC (suitable for logs)
+     * Protects PAN, Track2, CVC (suitable for logs).
+     *
      * <pre>
      * "40000101010001" is converted to "400001____0001"
      * "40000101010001=020128375" is converted to "400001____0001=0201_____"
@@ -764,8 +765,7 @@ public class ISOUtil {
     }
 
     /**
-     * Return true if the string is zero-filled.
-     * ( 0 char filled )
+     * @return true if the string is zero-filled ( 0 char filled )
      **/
     public static boolean isZero( String s ) {
         int i = 0, len = s.length();
@@ -776,17 +776,16 @@ public class ISOUtil {
     }
 
     /**
-     * Return true if the string is blank filled.
-     * ( space char filled )
+     * @return true if the string is blank filled (space char filled)
      */
     public static boolean isBlank( String s ){
         return (s.trim().length() == 0);
     }
 
     /**
-     * Return true if the string is alphanum
-     * {letter digit (.) (_) (-) ( ) (?) }
-     * <br><br>
+     * Return true if the string is alphanum.
+     * <code>{letter digit (.) (_) (-) ( ) (?) }</code>
+     * 
      **/
     public static boolean isAlphaNumeric ( String s ) {
         int i = 0, len = s.length();

@@ -54,7 +54,7 @@ import org.jpos.iso.ISOException;
 import org.jpos.iso.validator.ISOVException;
 
 /**
- * Validator for no zero-filled fields. @see super class.
+ * Validator for no zero-filled fields.
  * <p>Title: jPOS</p>
  * <p>Description: Java Framework for Financial Systems</p>
  * <p>Copyright: Copyright (c) 2000 jPOS.org.  All rights reserved.</p>
@@ -96,7 +96,7 @@ public class IVA_ALPHANUMNOZERO extends IVA_ALPHANUM {
     }
 
     /**
-     * @see super class. Validate that the component is not zero-filled.
+     * Validate that the component is not zero-filled.
      */
     public ISOComponent validate ( ISOComponent f ) throws ISOException {
         ISOField c = (ISOField)f;

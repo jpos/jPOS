@@ -53,8 +53,11 @@ package  org.jpos.security;
 /**
  * A class that implements the SecurityModuleAdapter interface would act as an
  * adapter to the real security module device (by communicating with it using
- * its proprietary protocol). But application programmers will be communicating
+ * its proprietary protocol). 
+ *
+ * But application programmers will be communicating
  * with the security module using this simple interface.
+ *
  * @todo support for PIN Verification API's and RSA
  * @author Hani S. Kirollos
  * @version $Revision$ $Date$
@@ -77,83 +80,119 @@ public interface SMAdapter {
      * manually in order that further keys can be exchanged automatically.
      */
     public static final String TYPE_ZMK = "ZMK";
+
     /**
-     * ZPK: Zone PIN Key is a DES (or Triple-DES) data-encrypting key which is distributed automatically
-     * and is used to encrypt PINs for transfer between communicating parties (e.g. between acquirers and issuers).
+     * ZPK: Zone PIN Key.
+     *
+     * is a DES (or Triple-DES) data-encrypting key which is distributed 
+     * automatically and is used to encrypt PINs for transfer between 
+     * communicating parties (e.g. between acquirers and issuers).
      */
     public static final String TYPE_ZPK = "ZPK";
+
     /**
-     * TMK: Terminal Master Key is a  DES (or Triple-DES) key-encrypting key which is distributed manually,
-     * or automatically under a previously installed TMK. It is used to distribute
-     * data-encrypting keys, whithin a local network, to an ATM or POS terminal or similar.
+     * TMK: Terminal Master Key.
+     *
+     * is a  DES (or Triple-DES) key-encrypting key which is distributed 
+     * manually, or automatically under a previously installed TMK. It is 
+     * used to distribute data-encrypting keys, whithin a local network, 
+     * to an ATM or POS terminal or similar.
      */
     public static final String TYPE_TMK = "TMK";
+
     /**
-     * TPK: Terminal PIN Key is a  DES (or Triple-DES) data-encrypting key which is used to encrypt PINs
-     * for transmission, within a local network, between the terminal and the terminal
-     * data acquirer.
+     * TPK: Terminal PIN Key.
+     *
+     * is a  DES (or Triple-DES) data-encrypting key which is used 
+     * to encrypt PINs for transmission, within a local network, 
+     * between the terminal and the terminal data acquirer.
      */
     public static final String TYPE_TPK = "TPK";
+
     /**
-     * TAK: Terminal Authentication Key is a  DES (or Triple-DES) data-encrypting key which is used to
-     * generate and verify a Message Authentication Code (MAC) when data is transmitted,
-     *  within a local network, between the terminal and the terminal data acquirer.
+     * TAK: Terminal Authentication Key.
+     *
+     * is a  DES (or Triple-DES) data-encrypting key which is used to
+     * generate and verify a Message Authentication Code (MAC) when data 
+     * is transmitted, within a local network, between the terminal and 
+     * the terminal data acquirer.
      */
     public static final String TYPE_TAK = "TAK";
+
     /**
-     * PVK: PIN Verification Key is a  DES (or Triple-DES) data-encrypting key which is used to generate
-     * and verify PIN verification data and thus verify the authenticity of a PIN.
+     * PVK: PIN Verification Key.
+     * is a  DES (or Triple-DES) data-encrypting key which is used to 
+     * generate and verify PIN verification data and thus verify the 
+     * authenticity of a PIN.
      */
     public static final String TYPE_PVK = "PVK";
+
     /**
-     * CVK: Card Verification Key is similar for PVK but for card information instead
-     * of PIN
+     * CVK: Card Verification Key.
+     *
+     * is similar for PVK but for card information instead of PIN
      */
     public static final String TYPE_CVK = "CVK";
+
     /**
-     * BDK: Base Derivation Key is a  Triple-DES key-encryption key used to derive transaction keys in DUKPT (see ANSI X9.24)
+     * BDK: Base Derivation Key.
+     * is a  Triple-DES key-encryption key used to derive transaction 
+     * keys in DUKPT (see ANSI X9.24)
      */
     public static final String TYPE_BDK = "BDK";
+
     /**
-     * ZAK: Zone Authentication Key a  DES (or Triple-DES) data-encrypting key that is distributed automatically,
-     * and is used to generate and verify a Message Authentication Code (MAC)
-     * when data is transmitted between communicating parties (e.g. between acquirers and issuers)
+     * ZAK: Zone Authentication Key.
+     *
+     * a  DES (or Triple-DES) data-encrypting key that is distributed 
+     * automatically, and is used to generate and verify a Message 
+     * Authentication Code (MAC) when data is transmitted between 
+     * communicating parties (e.g. between acquirers and issuers)
      */
     public static final String TYPE_ZAK = "ZAK";
 
     /**
-     * This is the PIN Block Format adopted by ANSI (ANSI X9.8) and is one of
-     * two formats supported by the ISO (ISO 95641 - format 0)
+     * PIN Block Format adopted by ANSI (ANSI X9.8) and is one of
+     * two formats supported by the ISO (ISO 95641 - format 0).
      */
     public static final byte FORMAT01 = (byte)01;
+
     /**
      * PIN Block Format 02 supports Douctel ATMs.
      */
     public static final byte FORMAT02 = (byte)02;
+
     /**
-     * PIN Block Format 04 is the PIN block format adopted by the PLUS network
+     * PIN Block Format 04 is the PIN block format adopted 
+     * by the PLUS network.
      */
     public static final byte FORMAT04 = (byte)04;
+
     /**
-     * PIN Block Format 05 is the ISO 9564-1 Format 1 PIN Block
+     * PIN Block Format 05 is the ISO 9564-1 Format 1 PIN Block.
      */
     public static final byte FORMAT05 = (byte)05;
     /**
+     * Proprietary PIN Block format.
+     *
+     * Most Security Modules use a proprietary PIN Block format 
+     * when encrypting the PIN under the LMK of the Security Module 
+     * hence this format (FORMAT00).
+     *
      * <p>
-     * Most Security Modules use a proprietary PIN Block format when encrypting the
-     * PIN under the LMK of the Security Module, hence this format (FORMAT00).
-     * </p>
-     * <p>
-     * This is not a standard format, every Security Module would interpret FORMAT00
-     * differently.
-     * So, no interchange would accept PIN Blocks from other interchanges using
-     * this format. It is useful only when working with PIN's inside your own interchange.
+     * This is not a standard format, every Security Module would 
+     * interpret FORMAT00 differently.
+     *
+     * So, no interchange would accept PIN Blocks from other interchanges 
+     * using this format. It is useful only when working with PIN's inside 
+     * your own interchange.
      * </p>
      */
     public static final byte FORMAT00 = (byte)00;
 
     /**
-     * Generates a random DES Key
+     * Generates a random DES Key.
+     *
      * @param keyType type of the key to be generated (TYPE_ZMK, TYPE_TMK...etc)
      * @param keyLength bit length of the key to be generated (LENGTH_DES, LENGTH_DES3_2KEY...)
      * @return the random key secured by the security module<BR>
@@ -164,7 +203,9 @@ public interface SMAdapter {
 
 
     /**
-     * Imports a key from encryption under a KEK (Key-Encrypting Key) to protection under the security module.
+     * Imports a key from encryption under a KEK (Key-Encrypting Key) 
+     * to protection under the security module.
+     *
      * @param keyLength bit length of the key to be imported (LENGTH_DES, LENGTH_DES3_2KEY...etc)
      * @param keyType type of the key to be imported (TYPE_ZMK, TYPE_TMK...etc)
      * @param encryptedKey key to be imported encrypted under KEK
@@ -179,7 +220,7 @@ public interface SMAdapter {
 
 
     /**
-     * Exports secure key to encryption under a KEK (Key-Encrypting Key)
+     * Exports secure key to encryption under a KEK (Key-Encrypting Key).
      * @param key the secure key to be exported
      * @param kek the key-encrypting key
      * @return the exported key (key encrypted under kek)
@@ -187,10 +228,9 @@ public interface SMAdapter {
      */
     public byte[] exportKey (SecureDESKey key, SecureDESKey kek) throws SMException;
 
-
-
     /**
-     * Encrypts a clear pin under LMK<br>
+     * Encrypts a clear pin under LMK.
+     *
      * CAUTION: The use of clear pin presents a significant security risk
      * @param pin clear pin as entered by card holder
      * @param accountNumber The 12 right-most digits of the account number excluding the check digit. Should also function correctly if the complete account number, including the check digit is passed.
@@ -199,10 +239,8 @@ public interface SMAdapter {
      */
     public EncryptedPIN encryptPIN (String pin, String accountNumber) throws SMException;
 
-
-
     /**
-     * Decrypts an Encrypted PIN (under LMK)<br>
+     * Decrypts an Encrypted PIN (under LMK).
      * CAUTION: The use of clear pin presents a significant security risk
      * @param pinUnderLmk
      * @return clear pin as entered by card holder
@@ -210,10 +248,10 @@ public interface SMAdapter {
      */
     public String decryptPIN (EncryptedPIN pinUnderLmk) throws SMException;
 
-
-
     /**
-     * Imports a PIN from encryption under KD (Data Key) to encryption under LMK
+     * Imports a PIN from encryption under KD (Data Key) 
+     * to encryption under LMK.
+     *
      * @param pinUnderKd1 the encrypted PIN
      * @param kd1 Data Key under which the pin is encrypted
      * @return pin encrypted under LMK
@@ -224,7 +262,8 @@ public interface SMAdapter {
 
 
     /**
-     * Translates a PIN from encrytion under KD1 to encryption under KD2
+     * Translates a PIN from encrytion under KD1 to encryption under KD2.
+     *
      * @param pinUnderKd1 pin encrypted under KD1
      * @param kd1 Data Key (also called session key) under which the pin is encrypted
      * @param kd2 the destination Data Key 2 under which the pin will be encrypted
@@ -238,7 +277,9 @@ public interface SMAdapter {
 
 
     /**
-     * Imports a PIN from encryption under a transaction key to encryption under LMK.<br>
+     * Imports a PIN from encryption under a transaction key to encryption 
+     * under LMK.
+     *
      * The transaction key is derived from the Key Serial Number and the Base Derivation Key using DUKPT (Derived Unique Key per Transaction). See ANSI X9.24 for more information.
      * @param pinUnderDuk pin encrypted under a transaction key
      * @param ksn Key Serial Number (also called Key Name, in ANSI X9.24) needed to derive the transaction key
@@ -252,7 +293,9 @@ public interface SMAdapter {
 
 
     /**
-     * Translates a PIN from encryption under a transaction key to encryption under a KD (Data Key).<br>
+     * Translates a PIN from encryption under a transaction key to 
+     * encryption under a KD (Data Key).
+     *
      * The transaction key is derived from the Key Serial Number and the Base Derivation Key using DUKPT (Derived Unique Key per Transaction). See ANSI X9.24 for more information.
      * @param pinUnderDuk pin encrypted under a DUKPT transaction key
      * @param ksn Key Serial Number (also called Key Name, in ANSI X9.24) needed to derive the transaction key
@@ -268,7 +311,9 @@ public interface SMAdapter {
 
 
     /**
-     * Exports a PIN from encryption under LMK to encryption under a KD (Data Key)
+     * Exports a PIN from encryption under LMK to encryption under a KD 
+     * (Data Key).
+     *
      * @param pinUnderLmk pin encrypted under LMK
      * @param kd2 the destination data key (also called session key) under which the pin will be encrypted
      * @param destinationPINBlockFormat the PIN Block Format of the exported encrypted PIN
@@ -280,7 +325,9 @@ public interface SMAdapter {
 
 
     /**
-     * Generates CBC-MAC (Cipher Block Chaining Message Authentication Code) for some data
+     * Generates CBC-MAC (Cipher Block Chaining Message Authentication Code) 
+     * for some data.
+     *
      * @param data the data to be MACed
      * @param kd the key used for MACing
      * @return the MAC

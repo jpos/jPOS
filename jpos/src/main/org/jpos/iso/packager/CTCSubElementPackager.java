@@ -55,7 +55,8 @@ import org.jpos.util.*;
 import java.util.Hashtable;
 
 /**
- * Test validatingPackager for subelements in field 48
+ * Test validatingPackager for subelements in field 48.
+ *
  * <p>Title: jPOS</p>
  * <p>Description: Java Framework for Financial Systems</p>
  * <p>Copyright: Copyright (c) 2000 jPOS.org.  All rights reserved.</p>

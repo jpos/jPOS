@@ -57,8 +57,9 @@ import java.net.SocketException;
 import org.jpos.iso.*;
 
 /**
- * Implements an ISOChannel able to exchange messages with
- * ACI's BASE24 over an X.25 link.<br>
+ * Implements an ISOChannel capable to exchange messages with
+ * ACI's BASE24[tm] over an X.25 link.
+ *
  * An instance of this class exchanges messages by means of an
  * intermediate 'port server' as described in the
  * <a href="/doc/javadoc/overview-summary.html">Overview</a> page.

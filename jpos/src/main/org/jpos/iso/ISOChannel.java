@@ -62,11 +62,10 @@ import org.jpos.iso.ISOFilter.VetoException;
 
 /**
  * allows the transmision and reception of ISO 8583 Messages
- * <p>
+ *
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
  * @version $Revision$ $Date$
  */
-
 public interface ISOChannel extends ISOSource {
     public static final int CONNECT      = 0;
     public static final int TX           = 1;

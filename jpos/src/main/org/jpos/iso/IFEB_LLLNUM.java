@@ -50,10 +50,9 @@
 package org.jpos.iso;
 
 /**
- * <pre>
  * EBCDIC version of IF_LLCHAR
  * Uses a 2 EBCDIC byte length field
- * </pre>
+ *
  * @author julien.moebs@paybox.net
  * @version $Id$
  * @see ISOFieldPackager

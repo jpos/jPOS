@@ -169,7 +169,8 @@ public class VAPChannel extends BaseChannel {
     }
 
     /**
-     * sends an ISOMsg over the TCP/IP session<br>
+     * sends an ISOMsg over the TCP/IP session.
+     *
      * swap source/destination addresses in BASE1Header if
      * a reply message is detected.<br>
      * Sending an incoming message is seen as a reply.

@@ -56,11 +56,12 @@ import  org.jpos.iso.ISOUtil;
 
 
 /**
- * <p>
  * Represents a key that cannot be used except by your security module and for
- * performing the operations allowed by the security module for this type of keys.<br>
+ * performing the operations allowed by the security module for this type 
+ * of keys.
+ *
  * So, a SecureKey can be safely stored in a clear file or database.
- * </p>
+ *
  * <p>
  * A SecureKey is typically a key encrypted under one of the secret keys that are
  * protected by the security module itself (Local Master Keys --LMK for short).<br>
