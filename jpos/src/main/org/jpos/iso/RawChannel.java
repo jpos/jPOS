@@ -43,6 +43,20 @@ public class RawChannel extends ISOChannel {
 		super(p);
 		this.TPDU = TPDU;
 	}
+	/**
+	 * constructs a server ISOChannel associated with a Server Socket
+	 * @param p     an ISOPackager
+	 * @param TPDU  an optional raw header (i.e. TPDU)
+	 * @param serverSocket where to accept a connection
+	 * @exception IOException
+	 * @see ISOPackager
+	 */
+	public RawChannel (ISOPackager p, byte[] TPDU, ServerSocket serverSocket) 
+		throws IOException
+	{
+		super(p, serverSocket);
+		this.TPDU = TPDU;
+	}
 	protected void sendMessageLength(int len) throws IOException {
 		if (TPDU != null)
 			len += TPDU.length;

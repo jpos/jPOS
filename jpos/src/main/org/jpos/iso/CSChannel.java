@@ -40,6 +40,7 @@ public class CSChannel extends ISOChannel {
 	/**
 	 * constructs a server ISOChannel associated with a Server Socket
 	 * @param p     an ISOPackager
+	 * @param serverSocket where to accept a connection
 	 * @exception IOException
 	 * @see ISOPackager
 	 */

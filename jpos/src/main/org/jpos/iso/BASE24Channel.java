@@ -41,6 +41,18 @@ public class BASE24Channel extends ISOChannel {
 		super(p);
 	}
 	/**
+	 * constructs a server ISOChannel associated with a Server Socket
+	 * @param p     an ISOPackager
+	 * @param serverSocket where to accept a connection
+	 * @exception IOException
+	 * @see ISOPackager
+	 */
+	public BASE24Channel (ISOPackager p, ServerSocket serverSocket) 
+		throws IOException
+	{
+		super(p, serverSocket);
+	}
+	/**
 	 * @param m	the Message to send (in this case it is unused)
 	 * @param len	message len (ignored)
 	 * @exception IOException

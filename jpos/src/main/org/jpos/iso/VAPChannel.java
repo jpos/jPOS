@@ -36,6 +36,18 @@ public class VAPChannel extends ISOChannel {
 	public VAPChannel (ISOPackager p) throws IOException {
 		super(p);
 	}
+	/**
+	 * constructs a server ISOChannel associated with a Server Socket
+	 * @param p     an ISOPackager
+	 * @param serverSocket where to accept a connection
+	 * @exception IOException
+	 * @see ISOPackager
+	 */
+	public VAPChannel (ISOPackager p, ServerSocket serverSocket) 
+		throws IOException
+	{
+		super(p, serverSocket);
+	}
 	protected void sendMessageLength(int len) throws IOException {
 		serverOut.write (len >> 8);
 		serverOut.write (len);

@@ -36,6 +36,18 @@ public class ASCIIChannel extends ISOChannel {
 		super(p);
 	}
 	/**
+	 * constructs a server ISOChannel associated with a Server Socket
+	 * @param p     an ISOPackager
+	 * @param serverSocket where to accept a connection
+	 * @exception IOException
+	 * @see ISOPackager
+	 */
+	public ASCIIChannel (ISOPackager p, ServerSocket serverSocket) 
+		throws IOException
+	{
+		super(p, serverSocket);
+	}
+	/**
 	 * @param len the packed Message len
 	 * @exception IOException
 	 */
