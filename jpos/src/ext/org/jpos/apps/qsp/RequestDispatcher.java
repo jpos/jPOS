@@ -85,9 +85,12 @@ public class RequestDispatcher
     }
     public boolean process (ISOSource source, ISOMsg m) {
         try {
-            String mti = m.getMTI();
+            String mti      = m.getMTI();
+            String proccode = m.hasField(3) ? m.getString(3) : "";
             String className = cfg.get("prefix", "") + mti;
-            Class c = Class.forName(className);
+            Class c = Class.forName(className + "_" + proccode);
+            if (c == null)
+                c = Class.forName(className);
             if (c != null) {
                 ISORequestListener rl = (ISORequestListener) c.newInstance();
                 if (rl instanceof LogSource)
