@@ -7,6 +7,9 @@
 
 /*
  * $Log$
+ * Revision 1.5  1999/09/19 21:39:29  apr
+ * Changed from Timer based to Thread based timing (again)
+ *
  * Revision 1.4  1999/09/06 17:20:20  apr
  * Added Logger SubSystem
  *
@@ -28,7 +31,7 @@ import java.awt.event.*;
 import javax.swing.*;
 import uy.com.cs.jpos.iso.*;
 
-public class ISOMeter extends JComponent implements ActionListener {
+public class ISOMeter extends JComponent implements Runnable {
     /**
      * @serial
      */
@@ -120,7 +123,13 @@ public class ISOMeter extends JComponent implements ActionListener {
             }
         };
         addMouseListener(mouseListener);
-        ti = new Timer(1000, this);
+    }
+
+    public void start() {
+	Thread t = new Thread (this);
+	t.setPriority (Thread.NORM_PRIORITY-1);
+	t.setName ("ISOMeter");
+	t.start();
     }
 
     public void showLogList() {
@@ -132,10 +141,6 @@ public class ISOMeter extends JComponent implements ActionListener {
         f.show();
     }
 
-    public void start() {
-        ti.start();
-    }
-    
     public JComponent createLogList() {
         final JList logList = new JList(parent.getLog());
         JPanel A = new JPanel();
@@ -235,11 +240,16 @@ public class ISOMeter extends JComponent implements ActionListener {
     private void plotCounters(String p, String n) {
         img.setColor(Color.lightGray);
         img.setFont(fontSmall);
-        img.drawString (p, width-37, 13);
-        img.drawString (n, width-37, height-3);
+        img.drawString (p, width-45, 13);
+        img.drawString (n, width-45, height-3);
     }
-    public void actionPerformed(ActionEvent e) {
-        repaint();
+    public void run () {
+	for (;;) {
+	    repaint();
+	    try { 
+		Thread.sleep(500);
+	    } catch (InterruptedException e) { }
+	}
     }
     public void update (Graphics g) {
         paint (g);
