@@ -212,7 +212,7 @@ public class BASE24Packager extends ISOBasePackager {
             new IFA_LLLCHAR (12, "S-124 DEPOSIT TYPE OR BATCH/SHIFT DATA"),
             new IFA_LLLCHAR (15, "S-125 ATM ACCT INDICATOR OR POS SETTLEMENT DATA"),
             new IFA_LLLCHAR (999, "S-126 ATM ADDIC. DATA OR POS PRE-AUTH/CHARGEBACK"),
-            new IFA_LLCHAR (200, "BASE24-POS User Data"),
+            new IFA_LLCHAR (99, "BASE24-POS User Data"),
             new IFA_NUMERIC (16, "MAC 2")
         };
     public BASE24Packager() {
