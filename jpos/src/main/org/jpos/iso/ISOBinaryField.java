@@ -134,8 +134,11 @@ public class ISOBinaryField
      * @param obj - Object representing this field value
      * @exception ISOException
      */
-    public void setValue(Object obj) throws ISOException {
-        value = (byte[]) obj;
+    public void setValue (Object obj) throws ISOException {
+        if (obj instanceof String)
+            value = ((String) obj).getBytes();
+        else
+            value = (byte[]) obj;
     }
     /**
      * @return byte[] representing this field
