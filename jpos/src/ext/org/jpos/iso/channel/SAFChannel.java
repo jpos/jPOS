@@ -460,9 +460,13 @@ public class SAFChannel extends LogHandler
                     break;
             }
             if (tag != null) {
-                p.println (indent + "<" + tag + ">");
-                ((ISOMsg)value).dump (p, inner);
-                p.println (indent + "</" + tag + ">");
+                if (value instanceof ISOMsg) {
+                    p.println (indent + "<" + tag + ">");
+                    ((ISOMsg)value).dump (p, inner);
+                    p.println (indent + "</" + tag + ">");
+                } else {
+                    p.println (indent + "<" + tag + "/>");
+                }
             }
 	}
     }
