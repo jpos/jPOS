@@ -8,6 +8,9 @@ import org.jpos.iso.packager.XMLPackager;
 
 /*
  * $Log$
+ * Revision 1.27  2000/09/09 10:58:39  apr
+ * unset now silently ignores if field does not exist
+ *
  * Revision 1.26  2000/05/03 16:18:56  apr
  * commented out bitmaps in logs
  *
@@ -169,16 +172,12 @@ public class ISOMsg extends ISOComponent implements Cloneable, Loggeable {
         dirty = true;
     }
     /**
-     * Unset a field
+     * Unset a field if it exists, otherwise ignore.
      * @param fldno - the field number
-     * @exception ISOException
      */
-    public void unset (int fldno) throws ISOException {
-        ISOComponent c = (ISOComponent) fields.remove (new Integer (fldno));
-        if (c == null)
-            throw new ISOException ("Field " +fldno +" not found. unset failed");
-        dirty = true;
-        maxFieldDirty = true;
+    public void unset (int fldno) {
+        if (fields.remove (new Integer (fldno)) != null)
+	    dirty = maxFieldDirty = true;
     }
     /**
      * In order to interchange <b>Composites</b> and <b>Leafs</b> we use
