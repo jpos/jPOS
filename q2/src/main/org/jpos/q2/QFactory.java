@@ -51,7 +51,6 @@ package org.jpos.q2;
 
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.util.List;
 import java.util.Iterator;
@@ -65,16 +64,10 @@ import java.util.Collection;
 import javax.management.*;
 
 import org.jdom.Element;
-import org.jdom.Document;
-import org.jdom.JDOMException;
-import org.jdom.input.SAXBuilder;
-import org.jdom.output.XMLOutputter;
-
 import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
 import org.jpos.core.SimpleConfiguration;
-import org.jpos.util.Log;
 import org.jpos.util.Logger;
 import org.jpos.util.LogSource;
 
