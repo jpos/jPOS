@@ -48,7 +48,7 @@ public class IFB_LLHECHAR extends ISOFieldPackager {
 	public int unpack (ISOComponent c, byte[] b, int offset)
 		throws ISOException
 	{
-		int len = (int) b[offset] & 0xFF;
+		int len = Math.min ((int) b[offset] & 0xFF, getLen());
 		c.setValue(ISOUtil.ebcdicToAscii(b, ++offset, len));
 		return ++len;
 	}

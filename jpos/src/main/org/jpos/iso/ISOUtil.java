@@ -254,6 +254,25 @@ public class ISOUtil {
 		}
 		return d.toString();
 	}
+	/**
+	 * converts a byte array to hex string 
+	 * (suitable for dumps and ASCII packaging of Binary fields
+	 * @param b - byte array
+	 * @param offset  - starting position
+	 * @param len
+	 * @return String representation
+	 */
+	public static String hexString(byte[] b, int offset, int len) {
+		StringBuffer d = new StringBuffer(len * 2);
+		len += offset;
+		for (int i=offset; i<len; i++) {
+			char hi = Character.forDigit ((b[i] >> 4) & 0x0F, 16);
+			char lo = Character.forDigit (b[i] & 0x0F, 16);
+			d.append(Character.toUpperCase(hi));
+			d.append(Character.toUpperCase(lo));
+		}
+		return d.toString();
+	}
 
 	/**
 	 * bit representation of a BitSet

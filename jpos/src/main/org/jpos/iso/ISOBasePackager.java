@@ -54,10 +54,6 @@ public abstract class ISOBasePackager implements ISOPackager {
                 v.addElement (b);
             }
 		}
-        for (int i=0; i<v.size(); i++) {
-			b = (byte[]) v.elementAt(i);
-            String s = ISOUtil.hexString (b);
-        }
 		int k = 0;
 		byte[] d = new byte[len];
         for (int i=0; i<v.size(); i++) {
