@@ -48,6 +48,17 @@
  */
 package org.jpos.space;
 
+/**
+ * org.jpos.space.Space operations do not declare any checked exceptions.
+ * 
+ * Persistent space implementations can raise some exceptions that 
+ * are wrapped around this unchecked SpaceError that we recommend to
+ * catch.
+ *
+ * @author Alejandro Revilla
+ * @version $Revision$ $Date$
+ * @since 1.4.7
+ */
 public class SpaceError extends Error {
     public SpaceError() {
 	super();
