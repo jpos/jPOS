@@ -88,6 +88,8 @@ public class QBeanSupportMBeanDescription extends mx4j.MBeanDescriptionAdapter {
             return "Stop service";
         if (operation.getName().equals("destroy"))
             return "Destroy service";
+        if (operation.getName().equals("shutdownQ2"))
+            return "Shutdown and undeploy EVERYTHING";
         return super.getOperationDescription (operation);
     }
 }
