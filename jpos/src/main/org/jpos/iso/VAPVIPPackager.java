@@ -15,6 +15,9 @@ import java.util.*;
 
 /*
  * $Log$
+ * Revision 1.5  1999/11/18 23:40:52  apr
+ * field 44 ASCII --> EBCDIC
+ *
  * Revision 1.4  1999/09/04 22:01:32  apr
  * Minor BugFixes/packager changes
  *
@@ -70,7 +73,7 @@ public class VAPVIPPackager extends ISOBasePackager {
             new IF_ECHAR    (  8, "CARD ACCEPTOR TERMINAL IDENTIFICACION"),
             new IF_ECHAR    ( 15, "CARD ACCEPTOR IDENTIFICATION CODE" ),
             new IF_ECHAR    ( 40, "CARD ACCEPTOR NAME/LOCATION"),
-            new IFB_LLHCHAR ( 25, "ADITIONAL RESPONSE DATA"),
+            new IFB_LLHECHAR( 25, "ADITIONAL RESPONSE DATA"),
             new IFB_LLCHAR  ( 76, "TRACK 1 DATA"),
             new IFB_LLCHAR  ( 99, "ADITIONAL DATA - ISO"),
             new IFB_LLCHAR  ( 99, "ADITIONAL DATA - NATIONAL"),
