@@ -60,7 +60,7 @@ import java.io.PrintStream;
  * @version $Revision$ $Date$
  */
 public class NameRegistrar implements Loggeable {
-    private static NameRegistrar instance = null;
+    private static NameRegistrar instance = new NameRegistrar();
     private Map registrar;
 
     public static class NotFoundException extends Exception {
@@ -83,12 +83,6 @@ public class NameRegistrar implements Loggeable {
      * @return singleton instance
      */
     public static NameRegistrar getInstance() {
-        if (instance == null) {
-            synchronized (NameRegistrar.class) {
-                if (instance == null) 
-                    instance = new NameRegistrar();
-            }
-        }
         return instance;
     }
     /**

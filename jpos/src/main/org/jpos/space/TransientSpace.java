@@ -69,7 +69,7 @@ import java.lang.reflect.Field;
  */
 public class TransientSpace implements LocalSpace, TransientSpaceMBean {
     protected Map map;
-    static LocalSpace defaultSpace = null;
+    static LocalSpace defaultSpace = new TransientSpace ();
 
     /**
      * @jmx:managed-constructor description="Default Constructor"
@@ -244,12 +244,6 @@ public class TransientSpace implements LocalSpace, TransientSpaceMBean {
         }
     }
     public static final LocalSpace getSpace () {
-        if (defaultSpace == null) {
-            synchronized (TransientSpace.class) {
-                if (defaultSpace == null)
-                    defaultSpace = new TransientSpace ();
-            }
-        }
         return defaultSpace;
     }
     public static final LocalSpace getSpace (String spaceName) {

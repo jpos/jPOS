@@ -72,7 +72,7 @@ import org.jpos.space.*;
 public class PersistentSpace implements LocalSpace // PersistentSpaceMBean {
 {
     protected Map map;
-    static LocalSpace defaultSpace = null;
+    static LocalSpace defaultSpace = new PersistentSpace ();
     static int cacheSize = 16;
 
     public PersistentSpace() {
@@ -338,12 +338,6 @@ public class PersistentSpace implements LocalSpace // PersistentSpaceMBean {
         }
     }
     public static final LocalSpace getSpace () {
-        if (defaultSpace == null) {
-            synchronized (PersistentSpace.class) {
-                if (defaultSpace == null)
-                    defaultSpace = new PersistentSpace ();
-            }
-        }
         return defaultSpace;
     }
     public static final LocalSpace getSpace (String spaceName) {
