@@ -1,7 +1,5 @@
 package org.jpos.iso;
 
-import java.util.*;
-
 /**
  * It is possible to ask ISOMUX to forward all unmatched
  * messages received through its associated ISOChannel
@@ -16,5 +14,4 @@ public interface ISORequestListener {
      * @param   m   the unmatched request
      */
     public void process(ISOMsg m);
-    public void addObserver(Observer o);
 }
