@@ -49,6 +49,9 @@
 
 /*
  * $Log$
+ * Revision 1.8  2002/01/14 15:48:26  apr
+ * JMX support
+ *
  * Revision 1.7  2000/11/02 12:09:17  apr
  * Added license to every source file
  *
@@ -96,7 +99,7 @@ import com.sun.jini.reliableLog.LogHandler;
  */
 public class ReliableSequencer 
     extends LogHandler 
-    implements Sequencer, Loggeable, Configurable
+    implements Sequencer, Loggeable, Configurable, ReliableSequencerMBean
 {
     private Map map;
     private ReliableLog log;
@@ -237,6 +240,13 @@ public class ReliableSequencer
 	}
 
 	p.println (indent + "</reliable-sequencer>");
+    }
+
+    public String[] getCounterNames () {
+        Object[] o = map.keySet().toArray();
+        String[] s = new String [o.length];
+        System.arraycopy (o, 0, s, 0, o.length);
+        return s;
     }
 
     public static int usage () {
