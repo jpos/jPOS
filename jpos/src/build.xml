@@ -175,6 +175,7 @@ Main targets:
     <uptodate property="xdoclet-generate">
       <srcfiles dir="${buildsrc}" includes="org/jpos/q2/QClassLoader.java" />
       <srcfiles dir="${buildsrc}" includes="org/jpos/q2/qbean/QTest.java" />
+      <srcfiles dir="${buildsrc}" includes="org/jpos/q2/qbean/QExec.java" />
       <srcfiles dir="${buildsrc}" includes="org/jpos/q2/qbean/QMUX.java" />
       <srcfiles dir="${buildsrc}" 
            includes="org/jpos/q2/qbean/ChannelAdaptor.java" />
@@ -204,6 +205,7 @@ Main targets:
       <fileset dir="${buildsrc}">
         <include name="org/jpos/q2/QClassLoader.java" />
         <include name="org/jpos/q2/qbean/QTest.java" />
+        <include name="org/jpos/q2/qbean/QExec.java" />
         <include name="org/jpos/q2/qbean/QMUX.java" />
         <include name="org/jpos/q2/qbean/ChannelAdaptor.java" />
         <include name="org/jpos/q2/qbean/QServer.java" />
