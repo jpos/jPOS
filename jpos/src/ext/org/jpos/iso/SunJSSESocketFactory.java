@@ -56,12 +56,25 @@ import javax.net.ssl.*;
 import java.security.Security; 
 import java.security.KeyStore;
 import java.security.SecureRandom;
-import com.sun.net.ssl.KeyManager;
-import com.sun.net.ssl.KeyManagerFactory;
-import com.sun.net.ssl.SSLContext;
-import com.sun.net.ssl.TrustManager;
-import com.sun.net.ssl.TrustManagerFactory;
+
+//
+// JDK1.3 + JCE
+// import com.sun.net.ssl.KeyManager;
+// import com.sun.net.ssl.KeyManagerFactory;
+// import com.sun.net.ssl.SSLContext;
+// import com.sun.net.ssl.TrustManager;
+// import com.sun.net.ssl.TrustManagerFactory;
+// JDK1.4
+//
+import javax.net.ssl.KeyManager;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.TrustManagerFactory;
+//
+
 import com.sun.net.ssl.internal.ssl.Provider;
+
 import java.io.FileInputStream; 
 import java.io.File;
 import org.jpos.util.Logger;
