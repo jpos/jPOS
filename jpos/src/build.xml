@@ -7,6 +7,7 @@
     <property name="build" value="build" />
     <property name="classes" value="${build}/classes" />
     <property name="examples"  value="${source}/examples" />
+    <property name="ext-examples"  value="${source}/ext-examples" />
     <property name="classes.examples"  value="${build}/examples" />
     <property name="dist" value="dist" />
     <property name="lib" value="lib" />
@@ -30,12 +31,13 @@
     <echo message="  clean    Cleans ${build} and ${dist} directories" />
     <echo message="  main     Builds main ${project} packages" />
     <echo message=
-	"  ext     Builds extended ${project} classes (see ext/README)" />
+	"   ext     Builds extended ${project} classes (see ext/README)" />
     <echo message="  cvs      Clean and update CVS tree for ${project}" />
     <echo message="  javadoc  Create javadoc documentation for main module" />
     <echo message="  extdoc   Create main+ext javadoc docuemtation" />
     <echo message="  doc      Create full documentation (including extdoc)" />
     <echo message="  examples Build examples" />
+    <echo message="  ext-examples Build extended examples (requires ext)" />
     <echo message="  jar      Generates ${archive}.jar" />
     <echo message="  tarball  Generates distro tarball" />
     <echo message=
@@ -68,6 +70,11 @@
 
   <target name="examples" depends="main">
     <javac srcdir="${examples}" destdir="${classes.examples}"
+           classpath="${classpath}" debug="on" deprecation="${deprecation}" />
+  </target>
+
+  <target name="ext-examples" depends="ext">
+    <javac srcdir="${ext-examples}" destdir="${classes.examples}"
            classpath="${classpath}" debug="on" deprecation="${deprecation}" />
   </target>
 
