@@ -64,7 +64,7 @@ public class ISOException extends Exception implements Loggeable {
     /**
      * @serial
      */
-    Exception nested = null;
+    Throwable nested = null;
 
     /**
      * Constructs an <code>ISOException</code> with no detail message. 
@@ -88,7 +88,7 @@ public class ISOException extends Exception implements Loggeable {
      * exception
      * @param nested another exception
      */
-    public ISOException (Exception nested) {
+    public ISOException (Throwable nested) {
         super(nested.toString());
         this.nested = nested;
     }
@@ -99,7 +99,7 @@ public class ISOException extends Exception implements Loggeable {
      * @param   s   the detail message.
      * @param nested another exception
      */
-    public ISOException (String s, Exception nested) {
+    public ISOException (String s, Throwable nested) {
         super(s);
         this.nested = nested;
     }
@@ -107,7 +107,7 @@ public class ISOException extends Exception implements Loggeable {
     /**
      * @return nested exception (may be null)
      */
-    public Exception getNested() {
+    public Throwable getNested() {
         return nested;
     }
 

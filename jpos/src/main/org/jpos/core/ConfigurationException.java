@@ -64,10 +64,10 @@ public class ConfigurationException extends ISOException {
     public ConfigurationException (String detail) {
         super (detail);
     }
-    public ConfigurationException (Exception nested) {
+    public ConfigurationException (Throwable nested) {
         super (nested);
     }
-    public ConfigurationException (String detail, Exception nested) {
+    public ConfigurationException (String detail, Throwable nested) {
         super (detail, nested);
     }
 }
