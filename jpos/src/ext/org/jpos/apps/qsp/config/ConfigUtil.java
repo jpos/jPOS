@@ -159,6 +159,15 @@ public class ConfigUtil {
     }
 
    /**
+    * @param node   context node
+    * @return new props
+    */
+    public static Properties addProperties (Node node)
+    {
+        return addProperties (node, null, null);
+    }
+
+   /**
     * @param className class Name
     * @return new Object instance
     * @throws ConfigurationException (with wrapped exception)
