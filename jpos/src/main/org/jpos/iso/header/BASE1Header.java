@@ -72,6 +72,9 @@ import org.jpos.iso.*;
 public class BASE1Header extends BaseHeader {
     public static final int LENGTH = 22;
 
+    public BASE1Header() {
+	this("000000", "000000");
+    }
     public BASE1Header(String source, String destination) {
         super();
         header = new byte[LENGTH];
