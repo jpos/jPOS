@@ -1,5 +1,9 @@
 package org.jpos.iso;
 
+/*
+ * vim:set ts=8 sw=4:
+ */
+
 /**
  * ISOFieldPackager ASCII variable len CHAR 
  * suitable for EuroPay subfield 48<br>
@@ -10,7 +14,7 @@ package org.jpos.iso;
  *       is the field content   
  * </pre>
  *
- * @author apr@cs.com.uy
+ * @author <a href="mailto:eoin.flood@orbiscom.com">Eoin Flood</a>
  * @version $Id$
  * @see ISOComponent
  */
@@ -31,13 +35,14 @@ public class IFEP_LLCHAR extends ISOFieldPackager {
         int len;
         String s = (String) c.getValue();
     
-        if ((len=s.length()) > getLength() || len>99)   // paranoia settings
+        if ((len=s.length()) > getLength() || len>97)   // paranoia settings
             throw new ISOException (
-                "invalid len "+len +" packing LLEPCHAR field "+(Integer) c.getKey()
+                "invalid len "+len +" packing LLEPCHAR field "
+		+(Integer) c.getKey()
             );
 
         return (
-	    ISOUtil.zeropad(Integer.toString(len), 2) 
+	    ISOUtil.zeropad(Integer.toString(len+2), 2) 
 	   +ISOUtil.zeropad(((Integer) c.getKey()).toString(), 2) 
 	   +s
 	).getBytes();
