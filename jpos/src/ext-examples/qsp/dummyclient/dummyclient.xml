@@ -37,12 +37,12 @@
       <property name="maxsize" value="1000000" />
     </log-listener>
     -->
-    <log-listener class="org.jpos.util.Log4JListener">
+    <!-- log-listener class="org.jpos.util.Log4JListener">
       <property name="config" 
                value="src/ext-examples/qsp/dummyclient/log4j.xml" />
       <property name="priority" value="info" />
       <property name="watch" value="5000" />
-    </log-listener>
+    </log-listener -->
  </logger>
 
  <!-- sequencer name="test" 
