@@ -20,3 +20,5 @@ In order to build 'ext' module you will have to install here
 
   - jce.jar (1.2.1+) required by CryptoPackager
 
+  - jmxtools.jar (required by QSP's HTML adaptor)
+
