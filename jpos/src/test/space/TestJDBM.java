@@ -97,5 +97,19 @@ public class TestJDBM extends TestCase {
         prof.dump (System.out, "SingleKeyLoad in  >");
         assertTrue (sp.rdp (k) == null);
     }
+    public void testTemplate () throws Exception {
+        String key = "TemplateTest";
+        sp.out (key, "Value 1");
+        sp.out (key, "Value 2");
+        sp.out (key, "Value 3");
+
+        String k2r = (String)sp.rdp (new MD5Template (key, "Value 2"));
+        assertEquals (k2r, "Value 2");
+
+        String k2i = (String)sp.inp (new MD5Template (key, "Value 2"));
+        assertEquals (k2i, "Value 2");
+        assertEquals ("Value 1", (String) sp.inp (key));
+        assertEquals ("Value 3", (String) sp.inp (key));
+    }
 }
 
