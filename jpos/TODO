@@ -1,24 +1,5 @@
 $Id$
 
-[ ] ISOMUX disconnect/connect when acting as server.
-[ ] LockManager Shared locks. 
-    SimpleLockManager Configurable and NameRegistrar support
-[ ] Use ThreadPool on ISOMUX
-[ ] IF_MTI Stuff (as suggested by Arun Kumar U <bksys@vsnl.com>)
-[ ] Docos (DocBook?)
-[ ] QSP, move to DOM2
+[ ] ControlPanel support in Q2
 
-Done: jpos-1.3.4
-[v] Write SSLChannel
-
-Done: jpos-1.2.4
-[v] Handle filters on Configurable ISOChannel
-
-Done: jpos-1.2.3
-[v] ISOServer
-[v] checkin Base1Packager stuff
-
-Done: jpos-1.2.2
-[v] ISOChannel should be an Interface
-[v] Get Rid of LogProducer (should be named LogSource)
 
