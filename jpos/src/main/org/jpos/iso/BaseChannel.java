@@ -279,11 +279,13 @@ public abstract class BaseChannel extends Observable
 	    m.setDirection(ISOMsg.OUTGOING); // filter may have drop this info
 	    m.setPackager (packager);
 	    byte[] b = m.pack();
-	    sendMessageLength(b.length + getHeaderLength());
-	    sendMessageHeader(m, b.length);
-	    serverOut.write(b, 0, b.length);
-	    sendMessageTrailler(m, b.length);
-	    serverOut.flush ();
+	    synchronized (serverOut) {
+		sendMessageLength(b.length + getHeaderLength());
+		sendMessageHeader(m, b.length);
+		serverOut.write(b, 0, b.length);
+		sendMessageTrailler(m, b.length);
+		serverOut.flush ();
+	    }
 	    cnt[TX]++;
 	    setChanged();
 	    notifyObservers(m);
@@ -318,31 +320,33 @@ public abstract class BaseChannel extends Observable
 	    if (!isConnected())
 		throw new ISOException ("unconnected ISOChannel");
 
-            int len  = getMessageLength();
-            int hLen = getHeaderLength();
+	    synchronized (serverIn) {
+		int len  = getMessageLength();
+		int hLen = getHeaderLength();
 
-            if (len == -1) {
-		header = new byte [hLen];
-		serverIn.readFully(header,0,hLen);
-		b = streamReceive();
-	    }
-            else if (len > 10 && len <= 4096) {
-		int l;
-		if (hLen > 0) {
-		    // ignore message header (TPDU)
+		if (len == -1) {
 		    header = new byte [hLen];
 		    serverIn.readFully(header,0,hLen);
-		    if (isRejected(header))
-			throw new ISOException ("Unhandled Rejected Message");
-		    len -= hLen;
+		    b = streamReceive();
 		}
-		b = new byte[len];
-		serverIn.readFully(b,0,len);
+		else if (len > 10 && len <= 4096) {
+		    int l;
+		    if (hLen > 0) {
+			// ignore message header (TPDU)
+			header = new byte [hLen];
+			serverIn.readFully(header,0,hLen);
+			if (isRejected(header))
+			    throw new ISOException 
+				("Unhandled Rejected Message");
+			len -= hLen;
+		    }
+		    b = new byte[len];
+		    serverIn.readFully(b,0,len);
+		}
+		else
+		    throw new ISOException(
+			"receive length " +len + " seems extrange");
 	    }
-	    else
-		throw new ISOException(
-		    "receive length " +len + " seems extrange");
-
 	    m.setPackager (packager);
 	    if (b.length > 0)  // Ignore NULL messages
 		m.unpack (b);

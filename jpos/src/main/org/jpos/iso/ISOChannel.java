@@ -14,11 +14,6 @@ import org.jpos.iso.ISOFilter.VetoException;
 /**
  * allows the transmision and reception of ISO 8583 Messages
  * <p>
- * It is not necessarily thread-safe, 
- * ISOMUX or higher level classes should take care of 
- * the synchronization details
- * <p>
- * 
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
  * @version $Revision$ $Date$
  */
