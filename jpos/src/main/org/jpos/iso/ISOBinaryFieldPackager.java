@@ -139,7 +139,7 @@ public class ISOBinaryFieldPackager extends ISOFieldPackager
             {
                 if (data.length != getLength())
                 {
-                    throw new ISOException("Binary data length not the same as the packager length");
+                    throw new ISOException("Binary data length not the same as the packager length (" + data.length + "/" + getLength() + ")");
                 }
             }
             byte[] ret = new byte[interpreter.getPackedLength(data.length) + packedLength];
