@@ -9,17 +9,16 @@ XML configuration file and start jPOS components for you.
 for details on available jPOS components you should refer 
 to http://www.jpos.org.
 
-Installation instructions:
+In order to test your installation have a look at QSP sample 
+configurations on src/ext-examples/qsp directories, and the run:
 
-- Get a copy of xalan.jar and xerces.jar (http://xml.apache.org)
-  and install them under your current directory
 
-To run dummyserver example:
+dummyserver example:
 
-  java -jar qsp.jar dummyserver/dummyserver.xml 
+  java -jar qsp.jar src/ext-examples/qsp/dummyserver/dummyserver.xml 
 
-To run dummyclient example:
+dummyclient example:
 
-  java -jar qsp.jar dummyclient/dummyclient.xml 
+  java -jar qsp.jar src/ext-examples/qsp/dummyclient/dummyclient.xml 
 
 
