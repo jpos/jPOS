@@ -15,14 +15,14 @@
  *
  * 3. The end-user documentation included with the redistribution,
  *    if any, must include the following acknowledgment:
- *    "This product includes software developed by the jPOS project 
- *    (http://www.jpos.org/)". Alternately, this acknowledgment may 
- *    appear in the software itself, if and wherever such third-party 
+ *    "This product includes software developed by the jPOS project
+ *    (http://www.jpos.org/)". Alternately, this acknowledgment may
+ *    appear in the software itself, if and wherever such third-party
  *    acknowledgments normally appear.
  *
- * 4. The names "jPOS" and "jPOS.org" must not be used to endorse 
- *    or promote products derived from this software without prior 
- *    written permission. For written permission, please contact 
+ * 4. The names "jPOS" and "jPOS.org" must not be used to endorse
+ *    or promote products derived from this software without prior
+ *    written permission. For written permission, please contact
  *    license@jpos.org.
  *
  * 5. Products derived from this software may not be called "jPOS",
@@ -31,14 +31,14 @@
  *
  * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  
- * IN NO EVENT SHALL THE JPOS PROJECT OR ITS CONTRIBUTORS BE LIABLE FOR 
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL 
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS 
- * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) 
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, 
- * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING 
- * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE JPOS PROJECT OR ITS CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+ * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+ * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  * ====================================================================
  *
@@ -62,7 +62,7 @@ import optfx.util.tlv.SubRawTLV;
 import org.jpos.iso.packager.XMLPackager;
 
 /**
- * implements <b>Leaf</b> for binary fields
+ * implements <b>Leaf</b> for TLV fields
  *
  * See the
  * <a href="API_users_guide.html">API User's Guide</a>
@@ -71,15 +71,15 @@ import org.jpos.iso.packager.XMLPackager;
  * @author bharavi gade
  * @see ISOComponent
  */
-public class TLVField 
-    extends ISOComponent 
+public class TLVField
+    extends ISOComponent
     implements Cloneable, Externalizable
 {
     protected int fieldNumber;
     //protected byte[] value;
     protected RawTLV tlv;
     /**
-     * No args constructor 
+     * No args constructor
      * <font size="-1">(required by Externalizable support on ISOMsg)</font>
      */
     public TLVField () {
@@ -109,12 +109,12 @@ public class TLVField
      * @param len    - field length
      */
     public TLVField(int n, byte[] v, int offset, int len) {
-	byte[] b = new byte[len];
-	System.arraycopy (v, offset, b, 0, len);
+    byte[] b = new byte[len];
+    System.arraycopy (v, offset, b, 0, len);
         fieldNumber = n;
         //value = b;
         tlv=new RawTLV(b);
-        
+
     }
     /**
      * changes this Component field number<br>
@@ -123,7 +123,7 @@ public class TLVField
      * @param fieldNumber new field number
      */
     public void setFieldNumber (int fieldNumber) {
-	this.fieldNumber = fieldNumber;
+    this.fieldNumber = fieldNumber;
     }
     /**
      * not available on Leaf - always throw ISOException
@@ -175,7 +175,7 @@ public class TLVField
      * @return byte[] representing this field
      */
     public byte[] getBytes() {
-	//return value;
+    //return value;
     return tlv.getValue();
     }
     /**
@@ -186,10 +186,10 @@ public class TLVField
      */
     public void dump (PrintStream p, String indent) {
         p.println (indent +"<"+XMLPackager.ISOFIELD_TAG + " " +
-	    XMLPackager.ID_ATTR +"=\"" +fieldNumber +"\" "+
-	    XMLPackager.VALUE_ATTR +"=\"" +this.toString() + "\" " +
-	    XMLPackager.TYPE_ATTR +"=\"" + XMLPackager.TYPE_BINARY + "\"/>"
-	);
+        XMLPackager.ID_ATTR +"=\"" +fieldNumber +"\" "+
+        XMLPackager.VALUE_ATTR +"=\"" +this.toString() + "\" " +
+        XMLPackager.TYPE_ATTR +"=\"" + XMLPackager.TYPE_BINARY + "\"/>"
+    );
     }
     public String toString() {
       //  return ISOUtil.hexString(value);
@@ -201,9 +201,9 @@ public class TLVField
         out.writeShort (value.length);
         out.write (value);
     }
-    public void readExternal  (ObjectInput in) 
+    public void readExternal  (ObjectInput in)
         throws IOException, ClassNotFoundException
-    {  
+    {
         fieldNumber = in.readShort ();
         byte[] value = new byte[in.readShort()];
         in.readFully (value);
@@ -225,7 +225,7 @@ public class TLVField
        return stlv.getValue();
        return null;
     }
-    
-        
+
+
 }
 
