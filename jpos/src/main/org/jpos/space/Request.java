@@ -24,17 +24,40 @@ import java.util.Set;
 public class Request extends TinySpace {
     public static String REQUEST  = "$REQ";
     public static String RESPONSE = "$RESP";
+    public static String ERROR    = "$ERR";
+    
     public Request () {
         super();
     }
     public Request (Object value) {
         out (REQUEST, value);
     }
+
     public Object getResponse () {
         return in (RESPONSE);
     }
     public Object getResponse (long timeout) {
         return in (RESPONSE, timeout);
+    }
+    public void setResponse (Object o) {
+        out (RESPONSE, o);
+    }
+
+    public Object getRequest () {
+        return in (REQUEST);
+    }
+    public Object getRequest (long timeout) {
+        return in (REQUEST, timeout);
+    }
+
+    public void addError (Object o) {
+        out (ERROR, o);
+    }
+    public Object[] getErrors () {
+        return (Object[]) SpaceUtil.inpAll(this, ERROR);
+    }
+    public Object getError () {
+        return inp (ERROR);
     }
 }
 
