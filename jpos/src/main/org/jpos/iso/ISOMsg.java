@@ -7,6 +7,9 @@ import org.jpos.util.LogProducer;
 
 /*
  * $Log$
+ * Revision 1.22  2000/03/29 08:28:39  victor
+ * Added support for tertiary bitmap
+ *
  * Revision 1.21  2000/03/20 21:56:39  apr
  * DocBugFix: broken links to API_users_guide
  *
@@ -123,7 +126,7 @@ public class ISOMsg extends ISOComponent implements Cloneable, Loggeable {
     private void recalcMaxField() {
         ISOComponent c;
         maxField = 0;
-        for (int i=1; i<=128; i++)
+        for (int i=1; i<=192; i++)
             if ((c = (ISOComponent) fields.get (new Integer (i))) != null)
                 maxField = i;
         maxFieldDirty = false;
@@ -179,16 +182,27 @@ public class ISOMsg extends ISOComponent implements Cloneable, Loggeable {
      * @exception ISOException
      */
     public void recalcBitMap () throws ISOException {
+        ISOComponent c;
         if (!dirty)
             return;
 
-        ISOComponent c;
+		if(maxField>128)
+		{
+			BitSet bmap=new BitSet(64);
+			for (int i=1; i<=64; i++)
+				if((c=(ISOComponent) fields.get(new Integer (i+128))) != null) 
+					bmap.set (i);
+			set (new ISOBitMap (65, bmap));
+		}
+		
         BitSet bmap = new BitSet (getMaxField() > 64 ? 128 : 64);
+		int tmpMaxField=maxField > 128 ? 128 : maxField;
 
-        for (int i=1; i<=maxField; i++)
+        for (int i=1; i<=tmpMaxField; i++)
             if ((c = (ISOComponent) fields.get (new Integer (i))) != null) 
                 bmap.set (i);
         set (new ISOBitMap (-1, bmap));
+		
         dirty = false;
     }
     /**
