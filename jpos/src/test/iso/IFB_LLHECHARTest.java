@@ -37,52 +37,41 @@
 
 package iso;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import junit.framework.TestCase;
+
+import org.jpos.iso.IFB_LLHECHAR;
+import org.jpos.iso.ISOField;
 
 /**
- * Runs all the unit tests for the new ISOPackagers.
- * @author jonathan.oconnor@xcom.de
+ * @author joconnor
  */
-public class ISOTests
+public class IFB_LLHECHARTest extends TestCase
 {
-    public static Test suite()
+    public void testPack() throws Exception
     {
-        TestSuite suite = new TestSuite("Tests for new ISO Field Packagers");
-        //$JUnit-BEGIN$
-        suite.addTest(new TestSuite(LeftPadderTest.class));
-        suite.addTest(new TestSuite(RightPadderTest.class));
-        suite.addTest(new TestSuite(AsciiInterpreterTest.class));
-        suite.addTest(new TestSuite(EbcdicInterpreterTest.class));
-        suite.addTest(new TestSuite(LiteralInterpreterTest.class));
-        suite.addTest(new TestSuite(AsciiPrefixerTest.class));
-        suite.addTest(new TestSuite(EbcdicPrefixerTest.class));
-        suite.addTest(new TestSuite(IF_CHARTest.class));
-        suite.addTest(new TestSuite(IFA_AMOUNTTest.class));
-        suite.addTest(new TestSuite(IFA_LLBNUMTest.class));
-        suite.addTest(new TestSuite(IFA_LCHARTest.class));
-        suite.addTest(new TestSuite(IFA_LLCHARTest.class));
-        suite.addTest(new TestSuite(IFA_LLLCHARTest.class));
-        suite.addTest(new TestSuite(IFA_LLLLCHARTest.class));
-        suite.addTest(new TestSuite(IFA_LLLLLCHARTest.class));
-        suite.addTest(new TestSuite(IFA_LLNUMTest.class));
-        suite.addTest(new TestSuite(IFA_LLLNUMTest.class));
-        suite.addTest(new TestSuite(IFA_NUMERICTest.class));
-        
-        suite.addTest(new TestSuite(IFB_LLCHARTest.class));
-        suite.addTest(new TestSuite(IFB_LLLCHARTest.class));
-        suite.addTest(new TestSuite(IFB_LLNUMTest.class));
-        suite.addTest(new TestSuite(IFB_LLLNUMTest.class));
-        suite.addTest(new TestSuite(IFB_NUMERICTest.class));
-        suite.addTest(new TestSuite(IFB_LLHCHARTest.class));
-        suite.addTest(new TestSuite(IFB_LLHECHARTest.class));
+        ISOField field = new ISOField(12, "ABCD");
+        IFB_LLHECHAR packager = new IFB_LLHECHAR(10, "Should be 04ABCD");
+        TestUtils.assertEquals(new byte[] {(byte)0x04, (byte)0xC1, (byte)0xC2, (byte)0xC3, (byte)0xC4},
+                            packager.pack(field));
+    }
 
-        suite.addTest(new TestSuite(IFE_CHARTest.class));
-        suite.addTest(new TestSuite(IFE_LLCHARTest.class));
-        suite.addTest(new TestSuite(IFE_LLLCHARTest.class));
-        suite.addTest(new TestSuite(IFE_LLNUMTest.class));
-        suite.addTest(new TestSuite(IFE_NUMERICTest.class));
-        //$JUnit-END$
-        return suite;
+    public void testUninterpret() throws Exception
+    {
+        byte[] raw = new byte[] {(byte)0x04, (byte)0xC1, (byte)0xC2, (byte)0xC3, (byte)0xC4};
+        IFB_LLHECHAR packager = new IFB_LLHECHAR(10, "Should be 04ABCD");
+        ISOField field = new ISOField(12);
+        packager.unpack(field, raw, 0);
+        assertEquals("ABCD", (String) field.getValue());
+    }
+
+    public void testReversability() throws Exception
+    {
+        String origin = "Abc123:.-";
+        ISOField f = new ISOField(12, origin);
+        IFB_LLHECHAR packager = new IFB_LLHECHAR(10, "Should be Abc123:.-");
+
+        ISOField unpack = new ISOField(12);
+        packager.unpack(unpack, packager.pack(f), 0);
+        assertEquals(origin, (String) unpack.getValue());
     }
 }
