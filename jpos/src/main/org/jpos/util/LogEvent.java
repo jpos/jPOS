@@ -49,11 +49,14 @@
 
 package org.jpos.util;
 
+import java.io.IOException;
 import java.io.PrintStream;
 import java.sql.SQLException;
 import java.util.EventObject;
 import java.util.Iterator;
 import java.util.Vector;
+import org.jdom.Element;
+import org.jdom.output.XMLOutputter;
 
 /**
  * @author apr@cs.com.uy
@@ -130,6 +133,18 @@ public class LogEvent extends EventObject {
                         p.print (oa[j].toString());
                     }
                     p.println ("]");
+                } 
+                else if (o instanceof Element) {
+                    p.println ("");
+                    p.println (newIndent + "<![CDATA[");
+                    XMLOutputter out = new XMLOutputter (newIndent, true);
+                    try {
+                        out.output ((Element) o, p);
+                    } catch (IOException ex) {
+                        ex.printStackTrace (p);
+                    }
+                    p.println ("");
+                    p.println (newIndent + "]]>");
                 }
                 else if (o != null) {
                     p.println (newIndent + o.toString());

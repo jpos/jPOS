@@ -1,6 +1,7 @@
 $Id$
 
 -- 1.4.7 --
+LogEvent now handle JDom Elements
 added org.jpos.transaction.GroupSelector
 added JDBMSpace.getKeys()
 Bugfix in ISOBasePackager (fields > 128)
