@@ -114,7 +114,7 @@ public class Q2 implements FileFilter {
         deployDir.mkdirs ();
 
         Logger logger = Logger.getLogger (LOGGER_NAME);
-        logger.addListener (new SimpleLogListener (System.out));
+        logger.addListener (new SimpleLogListener (System.err));
         log = new Log (logger, REALM);
     }
 
@@ -129,7 +129,6 @@ public class Q2 implements FileFilter {
         loader = new QClassLoader (server, libDir, loaderName);
 	server.registerMBean (loader, loaderName);//new
         factory = new QFactory (loaderName);
-        log.info ("Q2 started, deploy directory="+deployDir.getAbsolutePath());
         for (;;) {
             try {
                 loader = loader.scan ();
