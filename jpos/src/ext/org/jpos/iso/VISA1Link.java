@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.12  2000/03/14 12:58:09  apr
+ * don't stop on DLE
+ *
  * Revision 1.11  2000/03/14 00:02:45  apr
  * new public method receiveRequest
  *
@@ -165,7 +168,7 @@ public class VISA1Link implements LogProducer, Runnable
     private byte[] receivePacket (long timeout, LogEvent evt) 
 	throws IOException
     {
-	String end     = "\001\002\003\004\005\006\020\025";
+	String end     = "\001\002\003\004\005\006\025";
 	String packet  = v24.readUntil (end, timeout, true);
 	String payload = null;
 	if (packet.length() > 2 && packet.charAt (packet.length()-1) == ETX) {
@@ -227,12 +230,17 @@ public class VISA1Link implements LogProducer, Runnable
 	byte[] request = null;
 	try {
 	    long expired = System.currentTimeMillis() + timeout;
+	    int i = 0;
 	    while (System.currentTimeMillis() < expired) {
-		v24.send (ENQ);
-		request = receivePacket (5*1000, evt);
-		v24.send (request == null ? NAK : ACK);
-		if (request != null)
-		    break;
+		if (i++ % 5 == 0)
+		    v24.send (ENQ);
+		String buf = v24.readUntil ("\002", 5*1000, true);
+		if (buf.endsWith ("\002")) {
+		    request = receivePacket (10*1000, evt);
+		    v24.send (request == null ? NAK : ACK);
+		    if (request != null)
+			break;
+		}
 	    }
 	} catch (IOException e) { 
 	    evt.addMessage (e);
