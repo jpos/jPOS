@@ -29,7 +29,7 @@ public class ConfigCardAgent implements QSPConfigurator {
     {
 	String className = 
 	    node.getAttributes().getNamedItem ("class").getNodeValue();
-	LogEvent evt = new LogEvent (qsp, "config-sequencer", className);
+	LogEvent evt = new LogEvent (qsp, "config-card-agent", className);
         try {
             Class c = Class.forName(className);
 	    CardAgent agent = (CardAgent) c.newInstance();
