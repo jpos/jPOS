@@ -68,7 +68,7 @@ public class RowMap {
         map = new Hashtable();
     }
     public void set (String name, String value) {
-        map.put (name, value != null ? "'"+value+"'" : "null");
+        map.put (name, value != null ? "'"+escape(value)+"'" : "null");
     }
     public void set (String name, int value) {
         map.put (name, Integer.toString (value));
@@ -120,4 +120,19 @@ public class RowMap {
         }
         return "UPDATE "+tableName+ " SET "+sb.toString() + " WHERE " + where;
     }
+    public String escape (String s) {
+        if (s.indexOf ("'") != -1 ) {
+            StringBuffer sb = new StringBuffer(s.length() + 1); // at least 1
+            char c;
+            for(int i=0; i < s.length(); i++ ) {
+                c = s.charAt (i);
+                if (c == '\'' || c == '\\')
+                    sb.append ('\\');
+                sb.append(c);
+            }
+            s = sb.toString();
+        }
+        return s;
+    }
 }
+

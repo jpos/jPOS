@@ -4,6 +4,7 @@ $Id$
 Bugfix in ISOUtil ebcdic tables
 Enhanced support for SSL in ChannelAdaptor and QServer
 Added IFB_LLLHCHAR
+Bugfix in RowMap (escape "'")
 
 -- 1.4.8 -- released Oct 2004 (tagged: v1_4_8)
 
