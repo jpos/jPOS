@@ -59,15 +59,21 @@ package org.jpos.iso;
 public class BCDInterpreter implements Interpreter
 {
     /** This BCDInterpreter sometimes adds a 0-nibble to the left. */
-    public static final BCDInterpreter LEFT_PADDED = new BCDInterpreter(true);
+    public static final BCDInterpreter LEFT_PADDED = new BCDInterpreter(true, false);
     /** This BCDInterpreter sometimes adds a 0-nibble to the right. */
-    public static final BCDInterpreter RIGHT_PADDED = new BCDInterpreter(false);
+    public static final BCDInterpreter RIGHT_PADDED = new BCDInterpreter(false, false);
+    /** This BCDInterpreter sometimes adds a F-nibble to the right. */
+    public static final BCDInterpreter RIGHT_PADDED_F = new BCDInterpreter(false, true);
+    /** This BCDInterpreter sometimes adds a F-nibble to the left. */
+    public static final BCDInterpreter LEFT_PADDED_F = new BCDInterpreter(true, true);
 
     private boolean leftPadded;
+    private boolean fPadded;
 
     /** Kept private. Only two instances are possible. */
-    private BCDInterpreter(boolean leftPadded) {
+    private BCDInterpreter(boolean leftPadded, boolean fPadded) {
         this.leftPadded = leftPadded;
+        this.fPadded = fPadded;
     }
 
     /**
@@ -78,6 +84,9 @@ public class BCDInterpreter implements Interpreter
     public void interpret(String data, byte[] b, int offset)
     {
         ISOUtil.str2bcd(data, leftPadded, b, offset);
+        if (fPadded && !leftPadded) {
+            b[b.length-1] |= (byte)(b[b.length-1] << 4) == 0 ? 0x0F : 0x00;
+        }
     }
 
     /**
