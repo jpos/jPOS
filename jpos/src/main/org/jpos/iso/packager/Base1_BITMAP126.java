@@ -62,6 +62,10 @@ import java.util.*;
  */
 public class Base1_BITMAP126 extends ISOBitMapPackager 
 {
+    public Base1_BITMAP126()
+    {
+	super();
+    }
     /**
     * @param len - field len
     * @param description symbolic descrption
