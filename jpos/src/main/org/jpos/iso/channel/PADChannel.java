@@ -116,6 +116,7 @@ public class PADChannel extends BaseChannel {
         byte[] header = null;
         ISOMsg m = new ISOMsg ();
         m.setPackager (packager);
+        m.setSource (this);
         int hLen = getHeaderLength();
         LogEvent evt = new LogEvent (this, "receive");
         try {
