@@ -70,6 +70,7 @@ public class LoggerAdaptor extends QBeanSupport {
         logger = Logger.getLogger (getName());
     }
     protected void startService () throws Q2ConfigurationException {
+        logger.removeAllListeners ();
         Iterator iter = getPersist ().getChildren ("log-listener").iterator();
         while (iter.hasNext()) 
             addListener ((Element) iter.next ());
