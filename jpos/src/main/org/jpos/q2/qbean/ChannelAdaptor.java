@@ -190,6 +190,7 @@ public class ChannelAdaptor
             packager = (ISOPackager) f.newInstance (packagerName);
             channel.setPackager (packager);
         }
+        f.invoke (channel, "setHeader", e.getAttributeValue ("header"));
         f.setLogger        (channel, e);
         f.setConfiguration (channel, e);
 
