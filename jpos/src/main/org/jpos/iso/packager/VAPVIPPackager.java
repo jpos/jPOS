@@ -112,7 +112,7 @@ public class VAPVIPPackager extends ISOBasePackager {
             new IFE_CHAR    ( 15, "CARD ACCEPTOR IDENTIFICATION CODE" ),
             new IFE_CHAR    ( 40, "CARD ACCEPTOR NAME/LOCATION"),
             new IFB_LLHECHAR( 25, "ADITIONAL RESPONSE DATA"),
-            new IFB_LLCHAR  ( 76, "TRACK 1 DATA"),
+            new IFB_LLHECHAR( 76, "TRACK 1 DATA"),
             new IFB_LLCHAR  ( 99, "ADITIONAL DATA - ISO"),
             new IFB_LLCHAR  ( 99, "ADITIONAL DATA - NATIONAL"),
             new IFB_LLHBINARY ( 99, "ADITIONAL DATA - PRIVATE"),
