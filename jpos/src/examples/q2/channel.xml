@@ -12,6 +12,7 @@
 
   <in>channel-in</in>
   <out>channel-out</out>
+  <reconnect-delay>1000</reconnect-delay>
 
 </channel-adaptor>
 
