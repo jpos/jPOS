@@ -50,7 +50,6 @@
 package org.jpos.iso;
 import java.io.InputStream;
 import java.io.IOException;
-import java.io.EOFException;
 
 /**
  * Length is represented in ASCII (as in IFA_LL*)
