@@ -7,6 +7,8 @@ import java.net.Socket;
 import org.jpos.iso.*;
 import org.jpos.util.Logger;
 import org.jpos.util.LogEvent;
+import org.jpos.core.Configuration;
+import org.jpos.core.ConfigurationException;
 
 /**
  * ISOChannel implementation - VISA's VAP framing
@@ -18,11 +20,14 @@ import org.jpos.util.LogEvent;
  * @see ISOChannel
  */
 public class VAPChannel extends BaseChannel {
+    String srcid, dstid;
     /**
      * Public constructor (used by Class.forName("...").newInstance())
      */
     public VAPChannel () {
         super();
+	srcid = "000000";
+	dstid = "000000";
     }
     /**
      * Construct client ISOChannel
@@ -71,7 +76,10 @@ public class VAPChannel extends BaseChannel {
     protected void sendMessageHeader(ISOMsg m, int len) 
         throws IOException
     {
-        BASE1Header h = new BASE1Header(m.getHeader());
+        BASE1Header h = (m.getHeader() != null) ?
+	    new BASE1Header (m.getHeader()) :
+	    new BASE1Header (srcid, dstid);
+
         h.setLen(len);
         serverOut.write(h.getBytes());
     }
@@ -111,10 +119,18 @@ public class VAPChannel extends BaseChannel {
      */
     public void send (ISOMsg m) throws IOException, ISOException
     {
-        if (m.isIncoming()) {
+        if (m.isIncoming() && m.getHeader() != null) {
             BASE1Header h = new BASE1Header(m.getHeader());
             h.swapDirection();
         }
         super.send(m);
+    }
+
+    public void setConfiguration (Configuration cfg)
+	throws ConfigurationException 
+    {
+	srcid = cfg.get ("srcid", "000000");
+	dstid = cfg.get ("dstid", "000000");
+	super.setConfiguration (cfg);
     }
 }
