@@ -3,6 +3,7 @@ package org.jpos.iso;
 
 import org.jpos.core.Configuration;
 import java.io.IOException;
+import java.net.SocketException;
 import org.jpos.iso.ISOUtil;
 import org.jpos.util.Logger;
 import org.jpos.util.LogSource;
@@ -55,9 +56,16 @@ public class ISOFactory {
 	String header       = cfg.get    (prefix + ".header", null);
 	String host         = cfg.get    (prefix + ".host", null);
 	int    port         = cfg.getInt (prefix + ".port");
+	int    timeout      = cfg.getInt (prefix + ".timeout");
         ISOChannel channel  = newChannel
 	    (channelName, packagerName, logger, realm);
-
+	if (timeout != 0 && channel instanceof BaseChannel) {
+	    try {
+		((BaseChannel)channel).setTimeout (timeout);
+	    } catch (SocketException e) {
+		throw new ISOException (e);
+	    }
+	}
 	if (host != null && channel instanceof ClientChannel)
 	    ((ClientChannel)channel).setHost (host, port);
 	if (header != null) {
