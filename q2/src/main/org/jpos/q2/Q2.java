@@ -171,6 +171,7 @@ public class Q2 implements FileFilter {
     }
     public void shutdown () {
         shutdown = true;
+        q2Thread.interrupt ();
     }
     public QClassLoader getLoader () {
         return loader;
