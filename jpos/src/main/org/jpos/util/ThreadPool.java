@@ -4,6 +4,9 @@ package uy.com.cs.jpos.util;
  * $Id$
  *
  * $Log$
+ * Revision 1.2  2000/01/17 18:26:06  apr
+ * Supervise every 100 executions
+ *
  * Revision 1.1  2000/01/11 17:16:52  apr
  * Added ThreadPool support
  *
@@ -88,7 +91,7 @@ public class ThreadPool extends ThreadGroup implements LogProducer, Loggeable
 	if (!pool.ready())
 	    throw new BlockingQueue.Closed();
 
-	// if (++jobs % 100 == 0 || pool.consumerCount() <= 0)
+	if (++jobs % 100 == 0 || pool.consumerCount() <= 0)
 	    supervise();
 
 	synchronized (pool) {

@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.2  2000/01/17 18:26:06  apr
+ * Supervise every 100 executions
+ *
  * Revision 1.1  2000/01/11 01:25:02  apr
  * moved non ISO-8583 related classes from jpos.iso to jpos.util package
  * (AntiHog LeasedLineModem LogEvent LogListener LogProducer
@@ -524,20 +527,31 @@ public class V24 implements SerialPortEventListener, LogProducer
 	l.addListener (new SimpleLogListener (System.out));
 	V24 v24 = null;
 	try {
-	    v24 = new V24 ("/dev/ttyS1", l, "V24");
-	    v24.setSpeed (1200,
+	    v24 = new V24 ("/dev/ttyS0", l, "V24");
+	    v24.setSpeed (2400,
                 SerialPort.DATABITS_8,
                 SerialPort.STOPBITS_1,
                 SerialPort.PARITY_NONE,
-                SerialPort.FLOWCONTROL_RTSCTS_IN |
-                    SerialPort.FLOWCONTROL_RTSCTS_OUT
+		0
+                // SerialPort.FLOWCONTROL_RTSCTS_IN |
+                //     SerialPort.FLOWCONTROL_RTSCTS_OUT
 	    );
 	    Thread.sleep (1000);
-	    v24.send ("AT\r");
-	    Thread.sleep (60000);
+	    // v24.send ("AT\r");
+	    // v24.waitfor ("OK", 60000);
+	    new Thread() {
+		public void run() {
+		    for (int i=0;;i++) {
+			System.out.println (i);
+			Thread.yield();
+		    }
+		}
+	    }.start();
 
-	    Modem mdm = new SimpleDialupModem (v24);
-	    mdm.dial ("000000", 60000);
+	    Thread.sleep (120000);
+
+	    // Modem mdm = new SimpleDialupModem (v24);
+	    // mdm.dial ("000000", 60000);
 	} catch (IOException e) {
 	    e.printStackTrace();
 	} catch (Throwable e) {
