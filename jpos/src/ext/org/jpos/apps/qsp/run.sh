@@ -22,6 +22,7 @@ CLASSPATH=`echo ext/*.jar | tr ' ' ':'`:$CLASSPATH
 CLASSPATH=$JAVA_HOME/lib/tools.jar:$CLASSPATH
 
 $JAVA -cp $CLASSPATH -Djpos.config=src/etc/jpos.cfg \
+	-Djava.compiler=NONE \
 	-Dsax.parser=org.apache.xerces.parsers.SAXParser \
 	org.jpos.apps.qsp.QSP $QSPBASE/$1
 
