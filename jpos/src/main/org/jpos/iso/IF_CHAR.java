@@ -39,4 +39,7 @@ public class IF_CHAR extends ISOFieldPackager {
 		c.setValue(new String(b, offset, getLen()));
 		return getLen();
 	}
+	public int getMaxPackedLength() {
+		return getLength();
+	}
 }

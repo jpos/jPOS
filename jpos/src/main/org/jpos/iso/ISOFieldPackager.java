@@ -10,7 +10,10 @@ package uy.com.cs.jpos.iso;
  * @see IFA_AMOUNT
  * @see IFA_BINARY
  * @see IFA_BITMAP
+ * @see IFA_FLLCHAR
+ * @see IFA_FLLNUM
  * @see IFA_LLCHAR
+ * @see IFA_LLLBINARY
  * @see IFA_LLLCHAR
  * @see IFA_LLLNUM
  * @see IFA_LLNUM
@@ -19,12 +22,19 @@ package uy.com.cs.jpos.iso;
  * @see IFB_BINARY
  * @see IFB_BITMAP
  * @see IFB_CHAR
+ * @see IFB_LLBINARY
  * @see IFB_LLCHAR
+ * @see IFB_LLHBINARY
+ * @see IFB_LLHCHAR
+ * @see IFB_LLHECHAR
+ * @see IFB_LLHNUM
+ * @see IFB_LLLBINARY
  * @see IFB_LLLCHAR
  * @see IFB_LLLNUM
  * @see IFB_LLNUM
  * @see IFB_NUMERIC
  * @see IF_CHAR
+ * @see IF_ECHAR
  */
 public abstract class ISOFieldPackager {
 	private int len;
@@ -40,9 +50,17 @@ public abstract class ISOFieldPackager {
 	public String getDescription() {
 		return description;
 	}
+	/**
+	 * @deprecated Use getLength() instead
+	 */
 	public int getLen() {
+		return getLength();
+	}
+	public int getLength() {
 		return len;
 	}
+	public abstract int getMaxPackedLength();
+
 	public ISOComponent createComponent(int fieldNumber) {
 		return new ISOField (fieldNumber);
 	}
