@@ -61,20 +61,13 @@ import java.io.IOException;
  * @see ISOComponent
  */
 public class IFA_LLBNUM extends ISOFieldPackager {
-//    public IFA_LLBNUM () {
-//        super(NullPadder.INSTANCE, BCDInterpreter.LEFT_PADDED, AsciiPrefixer.LL);
-//    }
-//    /**
-//     * @param len - field len
-//     * @param description symbolic descrption
-//     */
-//    public  IFA_LLBNUM (int len, String description, boolean pad) {
-//        super(len, description, NullPadder.INSTANCE,
-//                pad ? BCDInterpreter.LEFT_PADDED : BCDInterpreter.RIGHT_PADDED,
-//                    AsciiPrefixer.LL);
-//    }
+    private Interpreter interpreter;
+    private Prefixer prefixer;
+    
     public IFA_LLBNUM () {
         super();
+        interpreter = BCDInterpreter.LEFT_PADDED;
+        prefixer = AsciiPrefixer.LL;
     }
     /**
      * @param len - field len
@@ -83,26 +76,32 @@ public class IFA_LLBNUM extends ISOFieldPackager {
     public  IFA_LLBNUM (int len, String description, boolean pad) {
         super(len, description);
         this.pad = pad;
+        interpreter = pad ? BCDInterpreter.LEFT_PADDED : BCDInterpreter.RIGHT_PADDED;
+        prefixer = AsciiPrefixer.LL;
     }
+
+    public void setPad(boolean pad)
+    {
+        this.pad = pad;
+        interpreter = pad ? BCDInterpreter.LEFT_PADDED : BCDInterpreter.RIGHT_PADDED;
+    }
+
     /**
      * @param c - a component
      * @return packed component
      * @exception ISOException
      */
     public byte[] pack (ISOComponent c) throws ISOException {
-        int len;
         String s = (String) c.getValue();
-        if ((len=s.length()) > getLength() || len>99)   // paranoia settings
+        int len = s.length();
+        if (len > getLength() || len>99)   // paranoia settings
             throw new ISOException (
-                "invalid len "+len +" packing LLNUMAB field "+(Integer) c.getKey()
+                "invalid len "+len +" packing LLNUMAB field " + c.getKey()
             );
 
-        byte[] bcd = ISOUtil.str2bcd (s, pad);
-        byte[] b   = new byte[bcd.length + 2];
-
-        b=ISOUtil.strpad(ISOUtil.zeropad(Integer.toString(bcd.length*2), 2),bcd.length+2).getBytes();
-
-        System.arraycopy(bcd, 0, b, 2, bcd.length);
+        byte[] b = new byte[3 + (len >> 1)];
+        prefixer.encodeLength(((len + 1) >> 1) << 1, b);
+        interpreter.interpret(s, b, 2);
         return b;
     }
 
@@ -116,15 +115,15 @@ public class IFA_LLBNUM extends ISOFieldPackager {
     public int unpack (ISOComponent c, byte[] b, int offset)
         throws ISOException
     {
-        int len = Integer.parseInt(new String (b, offset, 2));
-        c.setValue (ISOUtil.bcd2str (b, offset+2, len, pad));
+        int len = prefixer.decodeLength(b, offset);
+        c.setValue (interpreter.uninterpret(b, offset + 2, len));
         return 2 + (++len >> 1);
     }
     public void unpack (ISOComponent c, InputStream in) 
         throws IOException, ISOException
     {
-        int len = Integer.parseInt(new String(readBytes (in, 2)));
-        c.setValue (ISOUtil.bcd2str (readBytes (in, (len+2) >> 1), 0, len, pad));
+        int len = prefixer.decodeLength(readBytes (in, 2), 2);
+        c.setValue (interpreter.uninterpret(readBytes (in, (len+2) >> 1), 0, len));
     }
     public int getMaxPackedLength() {
         return 1 + ((getLength()+1) >> 1);
