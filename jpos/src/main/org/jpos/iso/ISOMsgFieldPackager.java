@@ -47,7 +47,8 @@ public class ISOMsgFieldPackager extends ISOFieldPackager {
     {
         ISOBinaryField f = new ISOBinaryField(0);
         int consumed = fieldPackager.unpack(f, b, offset);
-        msgPackager.unpack((ISOMsg) c, (byte[]) f.getValue());
+	if (c instanceof ISOMsg) 
+	    msgPackager.unpack((ISOMsg) c, (byte[]) f.getValue());
         return consumed;
     }
     public ISOComponent createComponent(int fieldNumber) {

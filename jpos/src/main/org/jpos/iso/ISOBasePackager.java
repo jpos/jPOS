@@ -7,6 +7,11 @@ import org.jpos.util.LogEvent;
 
 /*
  * $Log$
+ * Revision 1.28  2000/05/04 13:30:32  apr
+ * Bugfix to problem reported by Arun Kumar U <bksys@vsnl.com>
+ * Handle situations where inner message 'MTI' (aka field 0) is not an
+ * ISOField but an ISOMsg (same goes for Bitmap, field 1).
+ *
  * Revision 1.27  2000/05/03 12:31:38  apr
  * Bugfix: Math.min while getting bmap.size()
  * (thanks to Arun Kumar U <bksys@vsnl.com> observations!)
@@ -89,7 +94,9 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
      * @return first valid field
      */
     protected int getFirstField() {
-	return (fld[1] instanceof ISOBitMapPackager) ? 2 : 1;
+	if (!(fld[0] instanceof ISOMsgFieldPackager))
+	    return (fld[1] instanceof ISOBitMapPackager) ? 2 : 1;
+	return 0;
     }
     /**
      * @param   m   the Component to pack
@@ -109,9 +116,12 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
 
 	    // MTI (field 0)
 	    c = (ISOComponent) fields.get (new Integer (0));
-	    byte[] b = fld[0].pack(c);
-	    len += b.length;
-	    v.addElement (b);
+	    byte[] b;
+	    if (c instanceof ISOField) {
+		b = fld[0].pack(c);
+		len += b.length;
+		v.addElement (b);
+	    }
 
 	    if (emitBitMap()) {
 		// BITMAP (-1 in HashTable)
@@ -127,7 +137,8 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
 	    int tmpMaxField=Math.min (m.getMaxField(), 128);
 
 	    for (int i=getFirstField(); i<=tmpMaxField; i++) {
-		if ((c = (ISOComponent) fields.get (new Integer (i))) != null) {
+		if ((c=(ISOComponent) fields.get (new Integer (i))) != null)
+		{
 		    try {
 			b = fld[i].pack(c);
 			len += b.length;
@@ -190,15 +201,16 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
 	    if (logger != null)	 // save a few CPU cycle if no logger available
 		evt.addMessage (ISOUtil.hexString (b));
 
-	    int consumed;
-	    ISOField mti     = new ISOField (0);
-	    ISOBitMap bitmap = new ISOBitMap (-1);
-	    consumed  = fld[0].unpack(mti, b, 0);
-	    m.set (mti);
-
+	    int consumed = 0;
+	    if (!(fld[0] instanceof ISOMsgFieldPackager)) {
+		ISOComponent mti     = new ISOField (0);
+		consumed  = fld[0].unpack(mti, b, 0);
+		m.set (mti);
+	    }
 	    BitSet bmap = null;
 	    int maxField = fld.length;
 	    if (emitBitMap()) {
+		ISOBitMap bitmap = new ISOBitMap (-1);
 		consumed += getBitMapfieldPackager().unpack(bitmap,b,consumed);
 		bmap = (BitSet) bitmap.getValue();
 		if (logger != null)
@@ -215,16 +227,19 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
 			evt.addMessage ("<unpack fld=\"" + i 
 			    +"\" packager=\""
 			    +fld[i].getClass().getName()+ "\">");
-			evt.addMessage ("  <value>" 
-			    +c.getValue().toString()
-			    + "</value>");
+			if (c.getValue() instanceof ISOMsg)
+			    evt.addMessage (c.getValue());
+			else
+			    evt.addMessage ("  <value>" 
+				+c.getValue().toString()
+				+ "</value>");
 			evt.addMessage ("</unpack>");
 		    }
 		    m.set(c);
 		}
 	    }
-	    if (bmap.get(65) && 
-		fld[65] instanceof ISOBitMapPackager && fld.length > 128)
+	    if (bmap != null && bmap.get(65) && fld.length > 128 &&
+		fld[65] instanceof ISOBitMapPackager)
 	    {
 		bmap= (BitSet) 
 		    ((ISOComponent) m.getChildren().get 
