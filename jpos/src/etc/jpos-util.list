@@ -9,7 +9,7 @@ org/jpos/util/LogListener.class
 org/jpos/util/LogSource.class
 org/jpos/util/Loggeable.class
 org/jpos/util/Logger.class
-org/jpos/util/NameRegistrar.class
+org/jpos/util/NameRegistrar*.class
 org/jpos/util/SimpleLogListener.class
 org/jpos/iso/ISOException.class
 org/jpos/iso/ISOUtil.class
