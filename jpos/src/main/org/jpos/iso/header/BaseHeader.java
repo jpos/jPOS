@@ -50,13 +50,16 @@
 
 package org.jpos.iso.header;
 
+import java.io.PrintStream;
+import org.jpos.iso.ISOUtil;
 import org.jpos.iso.ISOHeader;
+import org.jpos.util.Loggeable;
 
 /**
  * @author <a href="mailto:Eoin.Flood@orbiscom.com">Eoin Flood</a>
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
  */
-public class BaseHeader implements ISOHeader {
+public class BaseHeader implements ISOHeader, Loggeable {
     protected byte[] header;
 
     /**
@@ -108,4 +111,14 @@ public class BaseHeader implements ISOHeader {
     public String getDestination() { return null; }
     public String getSource() { return null; }
     public void swapDirection() {}
+
+    public void dump (PrintStream p, String indent) {
+        if (header != null) {
+            p.println (
+                indent 
+              + "<header>" + ISOUtil.hexString (header) + "</header>"
+            );
+        }
+    }
 }
+
