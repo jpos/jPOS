@@ -97,6 +97,8 @@ public class ConfigChannel implements QSPReConfigurator {
 		    "port",
 		    "timeout",
                     "socket-factory",
+                    "scroll",
+                    "refresh",
 		    "name"  // used here to update digest
 		};
 
@@ -242,9 +244,16 @@ public class ConfigChannel implements QSPReConfigurator {
 	    }
 
 	    JPanel panel = ConfigControlPanel.getPanel (node);
-	    if (panel != null) 
-		panel.add (new ISOChannelPanel (channel, name));
-
+            if (panel != null) {
+                ISOChannelPanel icp = new ISOChannelPanel (channel, name);
+                if (props.getProperty ("scroll","yes").equals("no"))
+                    icp.getISOMeter().setScroll(false);
+                if (props.getProperty ("refresh",null) != null) {
+                    int refresh = cfg.getInt ("refresh");
+                    icp.getISOMeter().setRefresh (refresh);
+                }
+                panel.add (icp);
+            }
 	    return channel;
 	} catch (ConfigurationException e) {
 	    throw e;

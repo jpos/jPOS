@@ -110,6 +110,18 @@ public class ConfigServer implements QSPConfigurator {
 	JPanel panel = ConfigControlPanel.getPanel (node);
 	if (panel != null) {
 	    ISOChannelPanel icp = new ISOChannelPanel (name);
+
+            if (node.getAttributes().getNamedItem ("scroll") != null)
+                if (node.getAttributes().getNamedItem("scroll").
+                    getNodeValue().equals("no"))
+                    icp.getISOMeter().setScroll(false);
+            if (node.getAttributes().getNamedItem ("refresh") != null) {
+                int refresh = Integer.parseInt (
+                    node.getAttributes().getNamedItem ("refresh").
+                    getNodeValue()
+                );
+                icp.getISOMeter().setRefresh (refresh);
+            }
 	    panel.add (icp);
 	    server.addObserver (icp);
 	}
