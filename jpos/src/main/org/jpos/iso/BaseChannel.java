@@ -377,6 +377,9 @@ public abstract class BaseChannel extends Observable
         else if (header != null) 
             serverOut.write(header);
     }
+    /**
+     * @deprecated use sendMessageTrailler(ISOMsg m, byte[] b) instead.
+     */
     protected void sendMessageTrailler(ISOMsg m, int len) throws IOException 
     {
     }
