@@ -55,6 +55,37 @@ public class ISOFactory {
 	String header       = cfg.get    (prefix + ".header", null);
 	String host         = cfg.get    (prefix + ".host", null);
 	int    port         = cfg.getInt (prefix + ".port");
+        ISOChannel channel  = newChannel
+	    (channelName, packagerName, logger, realm);
+
+	if (host != null && channel instanceof ClientChannel)
+	    ((ClientChannel)channel).setHost (host, port);
+	if (header != null) {
+		if (channel instanceof RawChannel) 
+		((RawChannel)channel).setTPDU (
+		    ISOUtil.str2bcd(header, false)
+		);
+	    else if (channel instanceof BASE24Channel) {
+		((BASE24Channel)channel).setHeader (header.getBytes());
+	    }
+	}
+        return channel;
+    }
+
+    /**
+     * Creates an ISOChannel, possibly assigning packager and Logger
+     * @see ISOChannel
+     *
+     * @param channelName channel class name
+     * @param packagerName packager class name
+     * @param logger optional logger (may be null)
+     * @param realm  optional realm  (may be null if logger is null)
+     * @exception ISOException catches all possible exceptions into one
+     */
+    public static ISOChannel newChannel
+	(String channelName, String packagerName, Logger logger, String realm)
+	throws ISOException
+    {
         ISOChannel channel  = null;
 	ISOPackager packager= null;
         try {
@@ -66,27 +97,16 @@ public class ISOFactory {
 		    packager = (ISOPackager) p.newInstance();
 		    channel.setPackager(packager);
 		}
-		if (host != null && channel instanceof ClientChannel)
-		    ((ClientChannel)channel).setHost (host, port);
 		if (logger != null && (channel instanceof LogSource))
 		    ((LogSource) channel) .
 			setLogger (logger, realm + ".channel");
-		if (header != null) {
-		    if (channel instanceof RawChannel) 
-			((RawChannel)channel).setTPDU (
-			    ISOUtil.str2bcd(header, false)
-			);
-		    else if (channel instanceof BASE24Channel) {
-			((BASE24Channel)channel).setHeader (header.getBytes());
-		    }
-		}
             }
         } catch (ClassNotFoundException e) {
-	    throw new ISOException ("newChannel:"+prefix, e);
+	    throw new ISOException ("newChannel:"+channelName, e);
         } catch (InstantiationException e) {
-	    throw new ISOException ("newChannel:"+prefix, e);
+	    throw new ISOException ("newChannel:"+channelName, e);
         } catch (IllegalAccessException e) {
-	    throw new ISOException ("newChannel:"+prefix, e);
+	    throw new ISOException ("newChannel:"+channelName, e);
 	}
         return channel;
     }
