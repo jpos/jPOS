@@ -82,6 +82,9 @@ public class Test extends TestCase {
         doTest (new GenericPackager ("src/config/packager/iso87ascii.xml"),
             "ISO87-Field64", "ISO87A-Field64");
     }
+    public void testXMLPackager () throws Exception {
+        doTest (xmlPackager, "XMLPackager", "XMLPackager");
+    }
     private void doTest (ISOPackager packager, String msg, String img)
         throws Exception
     {

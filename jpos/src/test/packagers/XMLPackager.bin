@@ -1,0 +1,11 @@
+<isomsg>
+  <field id="0" value="1100"/>
+  <field id="2" value="1234567890123456789"/>
+  <field id="3" value="000000"/>
+  <field id="52" value="4141414141414141" type="binary"/>
+  <isomsg id="126">
+    <field id="1" value="p"/>
+    <field id="2" value="4"/>
+    <field id="3" value="3"/>
+  </isomsg>
+</isomsg>
