@@ -17,7 +17,7 @@
   <property name="extlib" value="ext" />
   <property name="doc" value="${source}/doc" />
   <property name="etc" value="${source}/etc" />
-  <property name="htdocs" value="${build}/htdocs" />
+  <property name="htdocs" value="${build}" />
 
   <property file="${etc}/VERSION" />
   <property name="classpath" value="${classpath}:${classes}" />
@@ -201,7 +201,7 @@
 
     <!-- QSP stuff -->
     <mkdir dir="${ext-examples}/qsp/dtd" />
-    <copy file="${ext}/org/jpos/apps/qsp/qsp-config.dtd"
+    <copy file="${source}/config/qsp/qsp-config.dtd"
         tofile="${ext-examples}/qsp/dtd/qsp-config.dtd" />
   </target>
 
@@ -301,7 +301,7 @@
     <fixcrlf srcdir="${build}/src" includes="*" />
   </target>
 
-  <target name="tarball" depends="jar, doc, source">
+  <target name="tarball" depends="ext, jar, doc, source">
     <property name="bin" value="${build}/${archive}" />
     <delete   file="${dist}/${archive}.tgz" />
     <delete   file="${dist}/${archive}.zip" />
