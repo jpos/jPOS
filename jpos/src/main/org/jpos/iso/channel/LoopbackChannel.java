@@ -122,7 +122,7 @@ public class LoopbackChannel extends FilteredBase implements LogSource {
         if (!isConnected())
             throw new ISOException ("unconnected ISOChannel");
         LogEvent evt = new LogEvent (this, "loopback-send", m);
-        applyOutgoingFilters (m, evt);
+        m = applyOutgoingFilters (m, evt);
         queue.enqueue (m);
         cnt[TX]++;
         notifyObservers();
@@ -136,7 +136,7 @@ public class LoopbackChannel extends FilteredBase implements LogSource {
         try {
             ISOMsg m = (ISOMsg) ((ISOMsg) queue.dequeue()).clone();
             LogEvent evt = new LogEvent (this, "loopback-receive", m);
-            applyIncomingFilters (m, evt);
+            m = applyIncomingFilters (m, evt);
             cnt[RX]++;
             notifyObservers();
             Logger.log (evt);
