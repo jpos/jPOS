@@ -67,12 +67,15 @@ public class Test {
     public static void main (String[] args) throws Exception {
         if (args.length == 0)
             System.exit (usage ());
-        Logger logger= new Logger ();
+        Logger logger= Logger.getLogger ("Test");
         logger.addListener (new SimpleLogListener (System.out));
         Document doc = read (new File ("src/examples/ui/" + args[0]));
         UI ui = new UI (doc.getRootElement ());
         ui.setLog (new Log (logger, "examples-ui"));
         ui.configure();
+        Log log = new Log (logger, "test");
+        for (int i=0; i<100; i++)
+            log.info ("Test message " + i);
     }
 
     public static void write (Document doc, File f) 
