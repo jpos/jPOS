@@ -126,6 +126,9 @@ public class SubConfiguration implements Configuration{
     public int getInt(String propertyName, int defaultValue){
         return cfg.getInt(prefix + propertyName, defaultValue);
     }
+    public void put (String name, Object value) {
+        cfg.put (prefix + name, value);
+    }
     /**
      * Creates a new object, it takes the class from the value of the property
      * <code>propertyName</code>
