@@ -483,6 +483,9 @@ public abstract class BaseChannel extends Observable
         // VAP Header support - see VAPChannel
         return false;
     }
+    protected ISOMsg createMsg () {
+        return new ISOMsg();
+    }
     /**
      * Waits and receive an ISOMsg over the TCP/IP session
      * @return the Message received
@@ -493,7 +496,7 @@ public abstract class BaseChannel extends Observable
         byte[] b=null;
         byte[] header=null;
         LogEvent evt = new LogEvent (this, "receive");
-        ISOMsg m = new ISOMsg();
+        ISOMsg m = createMsg ();
         m.setSource (this);
         try {
             if (!isConnected())
