@@ -1,4 +1,5 @@
 org/jpos/core/Configurable.class
+org/jpos/core/ReConfigurable.class
 org/jpos/core/Configuration.class
 org/jpos/core/ConfigurationException.class
 org/jpos/core/SimpleConfiguration.class
@@ -13,5 +14,11 @@ org/jpos/util/Loggeable.class
 org/jpos/util/Logger.class
 org/jpos/util/NameRegistrar*.class
 org/jpos/util/SimpleLogListener.class
+org/jpos/util/SimpleLogSource.class
 org/jpos/iso/ISOException.class
 org/jpos/iso/ISOUtil.class
+org/jpos/space/Space.class
+org/jpos/space/SpaceProxy*.class
+org/jpos/space/LocalSpace.class
+org/jpos/space/RemoteSpace.class
+org/jpos/space/TransientSpace*.class
