@@ -1,6 +1,7 @@
 $Id$
 
 -- 1.4.7 --
+Added org.jpos.bsh (BSHFilter, BSHRequestListener)
 New method ISOUtil.str2bcd (String s, boolean padLeft, byte fill)
 Bugfix: NPE in ISOServer.checkPermission when used standalone
 Bugfix: RotateLogListener.logDebug () - synchronized
