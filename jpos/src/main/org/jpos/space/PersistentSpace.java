@@ -173,6 +173,11 @@ public class PersistentSpace implements LocalSpace // PersistentSpaceMBean {
              map.put (key, (data = new Data (key)));
         data.addListener (listener);
     }
+    public synchronized void addListener 
+        (Object key, SpaceListener listener, long timeout) {
+        // #FIXME# not implemented 
+        addListener (key, listener);
+    }
     public synchronized void removeListener (Object key, SpaceListener listener) {
         Data data = (Data) map.get (key);
         if (data != null)

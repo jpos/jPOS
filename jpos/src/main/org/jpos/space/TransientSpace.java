@@ -163,6 +163,12 @@ public class TransientSpace implements LocalSpace, TransientSpaceMBean {
             map.put (key, (data = new Data()));
         data.addListener (listener);
     }
+    public synchronized void addListener 
+        (Object key, SpaceListener listener, long timeout) 
+    {
+        // Not properly implemented, use new TSpace class instead
+        addListener (key, listener);
+    }
     public synchronized void removeListener (Object key, SpaceListener listener) {
         Data data = (Data) map.get (key);
         if (data != null)
