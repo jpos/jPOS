@@ -94,6 +94,7 @@ public class QSP implements ErrorHandler, LogSource {
 	    qsp.setConfig (parser.getDocument());
 	    qsp.configure ("logger");
 	    qsp.configure ("log-listener");
+	    qsp.configure ("sequencer");
 	    qsp.configure ("control-panel");
 	    qsp.configure ("channel");
 	    qsp.configure ("filter");

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Id$ -->
 
-<!ELEMENT qsp-config (logger*,mux*,task*,server*,control-panel*)*>
+<!ELEMENT qsp-config (logger*,mux*,task*,server*,control-panel*,sequencer*)*>
 
 <!-- logger -->
 <!ELEMENT logger (log-listener*)>
@@ -69,4 +69,11 @@
 <!-- panel -->
 <!ELEMENT panel EMPTY>
 <!ATTLIST panel name ID #REQUIRED>
+
+<!-- sequencer -->
+<!ELEMENT sequencer (property)*>
+<!ATTLIST sequencer name ID #REQUIRED>
+<!ATTLIST sequencer class CDATA #REQUIRED>
+<!ATTLIST sequencer logger IDREF #IMPLIED>
+<!ATTLIST sequencer realm CDATA #IMPLIED>
 
