@@ -95,7 +95,7 @@ public class SpaceFactory {
      * @return the default TransientSpace
      */
     public static Space getSpace () {
-        return getSpace (TRANSIENT);
+        return getSpace (TRANSIENT, DEFAULT, null);
     }
 
     /**
