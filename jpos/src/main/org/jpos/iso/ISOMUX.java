@@ -370,8 +370,12 @@ public class ISOMUX implements Runnable, ISOSource, LogSource, MUX,
 		m = (ISOMsg) o;
 	    }
 	    if (m != null) {
-                channel.send(m);
-                cnt[TX]++;
+                try {
+                    channel.send(m);
+                    cnt[TX]++;
+                } catch (ISOException e) {
+		    Logger.log (new LogEvent (this, "error", e));
+                }
             }
             txQueue.removeElement(o);
             txQueue.trimToSize();
