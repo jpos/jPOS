@@ -83,6 +83,11 @@ public interface ISOChannel {
     public int[] getCounters();
 
     /**
+     * reset counters
+     */
+    public void resetCounters();
+
+    /**
      * associates this ISOChannel with a name on NameRegistrar
      * @param name name to register
      * @see NameRegistrar
