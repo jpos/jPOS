@@ -56,6 +56,30 @@ public class IFB_LLHCHARTest extends TestCase
             packager.pack(field));
     }
 
+    public void testPackagerTooLong() throws Exception
+    {
+        try
+        {
+            new IFB_LLHCHAR(256, "Too long for this");
+            fail("256 is too long and should have thrown an exception");
+        } catch (Exception ignored)
+        {
+        }
+    }
+
+    public void testPackTooMuch() throws Exception
+    {
+        ISOField field = new ISOField(12, "ABCDEFGHIJ");
+        IFB_LLHCHAR packager = new IFB_LLHCHAR(5, "Should be ABCDEFGHIJ");
+        try
+        {
+            packager.pack(field);
+            fail("field is too long and should have thrown an exception");
+        } catch (Exception ignored)
+        {
+        }
+    }
+
     public void testUninterpret() throws Exception
     {
         byte[] raw = new byte[] {0x0A, 0x41, 0x42, 0x43, 0x44,
