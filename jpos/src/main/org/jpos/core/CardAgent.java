@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.3  1999/10/08 12:53:56  apr
+ * Devel intermediate version - CVS sync
+ *
  * Revision 1.2  1999/09/26 22:31:55  apr
  * CVS sync
  *
@@ -39,8 +42,8 @@ public interface CardAgent {
      * based on a generic one
      * @param t Generic CardTransaction
      * @return specialized CardTransaction
-     */
     public CardTransaction promote (CardTransaction t);
+     */
 
     /**
      * create a CardTransaction based on a previously serialized image
@@ -48,9 +51,9 @@ public interface CardAgent {
      * @return CardTransaction
      * @exception IOException
      * @exception ClassNotFoundException
-     */
     public CardTransaction create (byte[] b)
 	throws IOException, ClassNotFoundException;
+     */
 
     /**
      * provides a [signed] [encripted] serialized image of a given
@@ -60,9 +63,9 @@ public interface CardAgent {
      * @return a serialized image of this transaction
      * @exception IOException if problems arise during serialization
      * @exception CardAgentException if not ready for Serialization
-     */
     public byte[] getImage(CardTransaction t)
 	throws IOException, CardAgentException;
+     */
 
 
     /**
@@ -77,6 +80,6 @@ public interface CardAgent {
      * @param l List of pre-aprooved transactions
      * @return List of actually closed transactions
      * @exception CardAgentException
-     */
     public List processBatch (List l) throws CardAgentException;
+     */
 }

@@ -1,0 +1,46 @@
+/*
+ * $Log$
+ * Revision 1.1  1999/10/08 12:53:57  apr
+ * Devel intermediate version - CVS sync
+ *
+ */
+
+package uy.com.cs.jpos.core;
+
+import java.util.*;
+
+/**
+ * @author apr@cs.com.uy
+ * @version $Id$
+ * @since jPOS 1.1
+ *
+ * represents a CardBrand and SubBrand
+ */
+public class CardBrand {
+    String name, productName;
+
+    /**
+     * @param name Card brand's name
+     */
+    public CardBrand (String name) {
+	this.name = name;
+	this.productName = null;
+    }
+    /**
+     * @param name Card brand's name
+     * @param productName Card's product name (i.e. vanity name)
+     */
+    public CardBrand (String name, String productName) {
+	this.name = name;
+	this.productName = productName;
+    }
+    public String toString() {
+	return name + (productName != null ? "/" + productName : "");
+    }
+    public String getName() {
+	return name;
+    }
+    public String getProduct() {
+	return productName != null ? productName : "";
+    }
+}

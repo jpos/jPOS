@@ -1,6 +1,6 @@
 /*
  * $Log$
- * Revision 1.3  1999/10/08 12:53:59  apr
+ * Revision 1.1  1999/10/08 12:53:59  apr
  * Devel intermediate version - CVS sync
  *
  * Revision 1.2  1999/09/26 22:32:01  apr
@@ -18,11 +18,11 @@ package uy.com.cs.jpos.core;
  * @version $Id$
  * @since jPOS 1.1
  */
-public class InvalidCardException extends Exception {
-    public InvalidCardException () {
+public class UnknownCardException extends Exception {
+    public UnknownCardException () {
 	super();
     }
-    public InvalidCardException (String s) {
+    public UnknownCardException (String s) {
 	super(s);
     }
 }

@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.3  1999/10/08 12:53:57  apr
+ * Devel intermediate version - CVS sync
+ *
  * Revision 1.2  1999/09/26 22:31:57  apr
  * CVS sync
  *
@@ -9,8 +12,6 @@
  */
 
 package uy.com.cs.jpos.core;
-import java.io.*;
-import uy.com.cs.jpos.iso.ISODate;
 
 /**
  * @author apr@cs.com.uy
