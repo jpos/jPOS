@@ -354,6 +354,9 @@ public class ISOMUX implements Runnable, ISOSource, LogSource,
 		    m = r.getRequest();
 		    rxQueue.put (getKey(m), r);
 		    r.setTransmitted ();
+                    synchronized(rx) {
+                        rx.notify(); // required by ChannelPool
+                    }
 		}
 	    } else if (o instanceof ISOMsg) {
 		m = (ISOMsg) o;
