@@ -86,7 +86,7 @@ public class SimpleDialupModem implements Modem {
 	this.dialPrefix = dialPrefix;
     }
     private boolean checkAT() throws IOException {
-	return v24.waitfor ("ATE1Q0V1\r", resultCodes, 10000) == 0;
+	return v24.waitfor ("ATE1Q0V1H0\r", resultCodes, 10000) == 0;
     }
     private void reset() throws IOException {
 	try {
@@ -94,9 +94,9 @@ public class SimpleDialupModem implements Modem {
             v24.flushAndLog ();
 	    if (v24.waitfor ("ATE1Q0V1H0\r", resultCodes, 1000) == 0) 
 		return;
-	    v24.dtr (false);     Thread.sleep (1000);
-	    v24.dtr (true);      Thread.sleep (1000);
-	    v24.send ("+++"); Thread.sleep (1000);
+	    v24.dtr (false);     Thread.sleep (1500);
+	    v24.dtr (true);      Thread.sleep (1500);
+	    v24.send ("+++"); Thread.sleep (1500);
 	} catch (InterruptedException e) { 
 	} 
 	v24.flushAndLog();
