@@ -54,7 +54,7 @@ public class IFB_LLLCHARTest extends TestCase
         TestUtils.assertEquals(new byte[] {0x00, 0x04, 0x41, 0x42, 0x43, 0x44}, packager.pack(field));
     }
 
-    public void testUninterpret() throws Exception
+    public void testUnpack() throws Exception
     {
         byte[] raw = new byte[] {0x00, 0x04, 0x41, 0x42, 0x43, 0x44};
         IFB_LLLCHAR packager = new IFB_LLLCHAR(10, "Should be 04ABCD");

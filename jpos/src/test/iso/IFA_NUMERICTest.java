@@ -54,7 +54,7 @@ public class IFA_NUMERICTest extends TestCase
         TestUtils.assertEquals("0000001234".getBytes(), packager.pack(field));
     }
 
-    public void testUninterpret() throws Exception
+    public void testUnpack() throws Exception
     {
         byte[] raw = "0000001234".getBytes();
         IFA_NUMERIC packager = new IFA_NUMERIC(10, "Should be 0000001234");

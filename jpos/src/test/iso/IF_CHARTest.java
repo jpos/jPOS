@@ -55,7 +55,7 @@ public class IF_CHARTest extends TestCase
                 field));
     }
 
-    public void testUninterpret() throws Exception
+    public void testUnpack() throws Exception
     {
         byte[] raw = new byte[]{65, 66, 67, 68, 32, 32, 32, 32, 32, 32};
         IF_CHAR packager = new IF_CHAR(10, "Should be ABCD      ");

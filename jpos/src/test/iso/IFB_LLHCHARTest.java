@@ -80,7 +80,7 @@ public class IFB_LLHCHARTest extends TestCase
         }
     }
 
-    public void testUninterpret() throws Exception
+    public void testUnpack() throws Exception
     {
         byte[] raw = new byte[] {0x0A, 0x41, 0x42, 0x43, 0x44,
         0x45, 0x46, 0x47, 0x48, 0x49, 0x4A};

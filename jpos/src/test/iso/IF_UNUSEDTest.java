@@ -60,7 +60,7 @@ public class IF_UNUSEDTest extends TestCase
         }
     }
 
-    public void testUninterpret() throws Exception
+    public void testUnpack() throws Exception
     {
         byte[] raw = new byte[]{};
         IF_UNUSED packager = new IF_UNUSED();

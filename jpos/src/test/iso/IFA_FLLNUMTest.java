@@ -54,7 +54,7 @@ public class IFA_FLLNUMTest extends TestCase
         TestUtils.assertEquals("041234      ".getBytes(), packager.pack(field));
     }
 
-    public void testUninterpret() throws Exception
+    public void testUnpack() throws Exception
     {
         byte[] raw = "041234      ".getBytes();
         IFA_FLLNUM packager = new IFA_FLLNUM(10, "Should be 04ABCD");

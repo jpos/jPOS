@@ -55,7 +55,7 @@ public class IFE_NUMERICTest extends TestCase
                                 packager.pack(field));
     }
 
-    public void testUninterpret() throws Exception
+    public void testUnpack() throws Exception
     {
         byte[] raw = new byte[] {(byte)0xF0, (byte)0xF0, (byte)0xF0, (byte)0xF0, (byte)0xF0, (byte)0xF0, (byte)0xF1, (byte)0xF2, (byte)0xF3, (byte)0xF4};
         IFE_NUMERIC packager = new IFE_NUMERIC(10, "Should be 0000001234");

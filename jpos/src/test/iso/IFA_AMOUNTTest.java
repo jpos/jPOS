@@ -55,7 +55,7 @@ public class IFA_AMOUNTTest extends TestCase
                 field));
     }
 
-    public void testUninterpret() throws Exception
+    public void testUnpack() throws Exception
     {
         byte[] raw = new byte[]{68, 48, 48, 49, 50, 51};
         IFA_AMOUNT packager = new IFA_AMOUNT(6, "Should be D00123");

@@ -54,7 +54,7 @@ public class IFA_LLLLLCHARTest extends TestCase
         TestUtils.assertEquals("00004ABCD".getBytes(), packager.pack(field));
     }
 
-    public void testUninterpret() throws Exception
+    public void testUnpack() throws Exception
     {
         byte[] raw = "00004ABCD".getBytes();
         IFA_LLLLLCHAR packager = new IFA_LLLLLCHAR(10, "Should be 00004ABCD");

@@ -51,13 +51,13 @@ public class IFE_LLLBINARYTest extends TestCase
     {
         ISOBinaryField field = new ISOBinaryField(12, new byte[] {0x30, 0x31});
         IFE_LLLBINARY packager = new IFE_LLLBINARY(100, "Should be 1234");
-        TestUtils.assertEquals(new byte[] {(byte)0xF0, (byte)0xF0, (byte)0xF2, (byte)0xF0, (byte)0xF1},
+        TestUtils.assertEquals(new byte[] {(byte)0xF0, (byte)0xF0, (byte)0xF2, (byte)0x30, (byte)0x31},
                                 packager.pack(field));
     }
 
-    public void testUninterpret() throws Exception
+    public void testUnpack() throws Exception
     {
-        byte[] raw = new byte[] {(byte)0xF0, (byte)0xF0, (byte)0xF2, (byte)0xF0, (byte)0xF1};
+        byte[] raw = new byte[] {(byte)0xF0, (byte)0xF0, (byte)0xF2, (byte)0x30, (byte)0x31};
         IFE_LLLBINARY packager = new IFE_LLLBINARY(100, "Should be 1234");
         ISOBinaryField field = new ISOBinaryField(12);
         packager.unpack(field, raw, 0);

@@ -55,7 +55,7 @@ public class IFA_LLBNUMTest extends TestCase
                 field));
     }
 
-    public void testUninterpret() throws Exception
+    public void testUnpack() throws Exception
     {
         byte[] raw = new byte[]{0x30, 0x34, 0x01, 0x23};
         IFA_LLBNUM packager = new IFA_LLBNUM(10, "Should be 0x30330123", true);

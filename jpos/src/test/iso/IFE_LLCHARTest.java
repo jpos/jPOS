@@ -55,7 +55,7 @@ public class IFE_LLCHARTest extends TestCase
                             packager.pack(field));
     }
 
-    public void testUninterpret() throws Exception
+    public void testUnpack() throws Exception
     {
         byte[] raw = new byte[] {(byte)0xF0, (byte)0xF4, (byte)0xC1, (byte)0xC2, (byte)0xC3, (byte)0xC4};
         IFE_LLCHAR packager = new IFE_LLCHAR(10, "Should be 04ABCD");

@@ -54,7 +54,7 @@ public class IFB_LLHNUMTest extends TestCase
         TestUtils.assertEquals(new byte[]{0x04, 0x12, 0x34}, packager.pack(field));
     }
 
-    public void testUninterpret() throws Exception
+    public void testUnpack() throws Exception
     {
         byte[] raw = new byte[]{0x04, 0x12, 0x34};
         IFB_LLHNUM packager = new IFB_LLHNUM(10, "Should be 041234", true);

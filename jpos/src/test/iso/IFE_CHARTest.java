@@ -55,7 +55,7 @@ public class IFE_CHARTest extends TestCase
                 field));
     }
 
-    public void testUninterpret() throws Exception
+    public void testUnpack() throws Exception
     {
         byte[] raw = new byte[]{(byte)0xC1, (byte)0xC2, (byte)0xC3, (byte)0xC4, 0x40, 0x40, 0x40, 0x40, 0x40, 0x40};
         IFE_CHAR packager = new IFE_CHAR(10, "Should be ABCD      ");

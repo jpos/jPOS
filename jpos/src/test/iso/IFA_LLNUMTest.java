@@ -54,7 +54,7 @@ public class IFA_LLNUMTest extends TestCase
         TestUtils.assertEquals("041234".getBytes(), packager.pack(field));
     }
 
-    public void testUninterpret() throws Exception
+    public void testUnpack() throws Exception
     {
         byte[] raw = "041234".getBytes();
         IFA_LLNUM packager = new IFA_LLNUM(10, "Should be 041234");

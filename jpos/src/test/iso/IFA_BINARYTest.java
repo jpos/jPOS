@@ -54,7 +54,22 @@ public class IFA_BINARYTest extends TestCase
         TestUtils.assertEquals("1234".getBytes(), packager.pack(field));
     }
 
-    public void testUninterpret() throws Exception
+    public void testPackWrongLength() throws Exception
+    {
+        try
+        {
+            ISOBinaryField field = new ISOBinaryField(12, new byte[] {0x12, 0x34});
+            IFA_BINARY packager = new IFA_BINARY(3, "Should be 1234");
+            packager.pack(field);
+            fail("Packing 2 bytes into 3 should throw an exception");
+        }
+        catch (Exception ignored)
+        {
+            // Exception expected - correct behaviour
+        }
+    }
+
+    public void testUnpack() throws Exception
     {
         byte[] raw = "1234".getBytes();
         IFA_BINARY packager = new IFA_BINARY(2, "Should be 1234");

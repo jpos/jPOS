@@ -54,7 +54,7 @@ public class IFB_LLHFBINARYTest extends TestCase
         TestUtils.assertEquals(new byte[] {0x02, 0x12, 0x34, 0x00, 0x00}, packager.pack(field));
     }
 
-    public void testUninterpret() throws Exception
+    public void testUnpack() throws Exception
     {
         byte[] raw = new byte[] {0x02, 0x12, 0x34, 0x00, 0x00};
         IFB_LLHFBINARY packager = new IFB_LLHFBINARY(4, "Should be 1234");

@@ -54,7 +54,7 @@ public class IF_NOPTest extends TestCase
         assertNull(packager.pack(field));
     }
 
-    public void testUninterpret() throws Exception
+    public void testUnpack() throws Exception
     {
         byte[] raw = new byte[]{};
         IF_NOP packager = new IF_NOP();
