@@ -269,7 +269,7 @@
       id="45"
       length="76"
       name="TRACK 1 DATA"
-      class="org.jpos.iso.IFB_LLHCHAR"/>
+      class="org.jpos.iso.IFB_LLHECHAR"/>
   <isofield
       id="46"
       length="99"
@@ -326,17 +326,17 @@
       class="org.jpos.iso.IFB_LLHBINARY"/>
   <isofield
       id="56"
-      length="255"
+      length="99"
       name="RESERVED ISO"
       class="org.jpos.iso.IFB_LLCHAR"/>
   <isofield
       id="57"
-      length="255"
+      length="99"
       name="RESERVED NATIONAL"
       class="org.jpos.iso.IFB_LLCHAR"/>
   <isofield
       id="58"
-      length="255"
+      length="99"
       name="RESERVED NATIONAL"
       class="org.jpos.iso.IFB_LLCHAR"/>
   <isofield
@@ -595,7 +595,7 @@
       class="org.jpos.iso.IFB_LLCHAR"/>
   <isofield
       id="104"
-      length="100"
+      length="99"
       name="TRANSACTION DESCRIPTION"
       class="org.jpos.iso.IFB_LLCHAR"/>
   <isofield
@@ -696,7 +696,7 @@
       class="org.jpos.iso.IFB_LLCHAR"/>
   <isofield
       id="124"
-      length="135"
+      length="99"
       name="FREE-FORM TEXT-JAPAN"
       class="org.jpos.iso.IFB_LLCHAR"/>
   <isofield
@@ -713,7 +713,7 @@
       packager="org.jpos.iso.packager.Base1SubFieldPackager">
       <isofield
           id="0"
-          length="16"
+          length="8"
           name="Bit Map"
           class="org.jpos.iso.packager.Base1_BITMAP126"/>
       <isofield
