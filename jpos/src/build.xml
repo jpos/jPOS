@@ -115,6 +115,7 @@ Main targets:
      <include name="**/JepUtil.java"                    if="jep.present"     />
      <include name="**/filter/CalculateFilter.java"     if="jep.present"     />
      <include name="**/filter/SQLFilter.java"           if="jep.present"     />
+     <include name="**/filter/BSHFilter.java"           if="bsh.present"     />
 
      <include name="**/VISA1Link.java"                  if="comm.present"    />
      <include name="**/V24.java"                        if="comm.present"    />
@@ -230,6 +231,9 @@ Main targets:
     <available property="jdk1.4.present"
            classpathref="ext.classpath"
           classname="java.util.LinkedHashMap" />
+    <available property="bsh.present"
+           classpathref="ext.classpath"
+              classname="bsh.Interpreter" />
   </target>
   <target name="ext.check.mail" depends="ext.check" if="activation.present">
     <available property="mail.present"
