@@ -58,7 +58,7 @@ import org.jpos.util.SimpleLogSource;
 
 /**
  * EuroPay packager
- * @author <a href="mailto:eoin.flood@orbiscom.com">Eoin Flood</a>
+ * @author Eoin Flood
  * @version $Revision$ $Date$
  * @see ISOPackager
  * @see ISOBasePackager
@@ -212,12 +212,12 @@ public class EuroPackager extends ISOBasePackager {
 	f48Packager.setLogger (logger, realm + ".field-48");
     }
 
-    protected class Euro48Packager extends SimpleLogSource
-            implements ISOPackager
+    protected class Euro48Packager extends EuroSubFieldPackager
     { 
         // EuroPay refers to the message subfields as 
         // Private Data Subelements (PDS)
-        protected ISOFieldPackager fld48[] = {
+        private ISOFieldPackager fld48[] = 
+	{
 	    new IF_CHAR     (4,  "PLACEHOLDER"),
 	    new IFEP_LLCHAR  (18, "Field 48 - PDS01"),
 	    new IFEP_LLCHAR  (4,  "Field 48 - PDS02"),
@@ -316,58 +316,7 @@ public class EuroPackager extends ISOBasePackager {
         protected Euro48Packager ()
         {
             super();
-            // setFieldPackager(fld48);
-        }
-
-        public byte[] pack (ISOComponent c) throws ISOException
-        {
-            int len;
-            Hashtable tab = c.getChildren();
-            StringBuffer sb = new StringBuffer();
-
-            // Handle first Required IF_CHAR field
-            ISOField f0 = (ISOField) tab.get (new Integer(0));
-            String s = (String) f0.getValue();
-            sb.append (s);
-            for (int i =1; i<fld48.length; i++) {
-                ISOField fld = (ISOField) tab.get (new Integer(i));
-                if (fld != null) 
-                    sb.append (new String(fld48[i].pack(fld)));
-            }
-            return sb.toString().getBytes();
-        }
-
-        public int unpack (ISOComponent m, byte[] b) throws ISOException
-        {
-	    LogEvent evt = new LogEvent (this, "unpack");
-            // Unpack the IF_CHAR field
-            int consumed = 0;
-            ISOComponent c = fld48[0].createComponent(0);
-            consumed += fld48[0].unpack (c, b, consumed);
-            m.set(c);
-
-            // Now unpack the IFEP_LLCHAR fields
-            for (int i=1; consumed < b.length ; i++) {
-		c = fld48[i].createComponent(i);
-                consumed += fld48[i].unpack (c, b, consumed);
-		if (logger != null) {
-		    evt.addMessage ("<unpack fld=\"" + i 
-			+"\" packager=\""
-			+fld[i].getClass().getName()+ "\">");
-		    evt.addMessage ("  <value>" 
-			+c.getValue().toString()
-			+ "</value>");
-		    evt.addMessage ("</unpack>");
-		}
-		m.set(c);
-            }
-	    Logger.log (evt);
-            return consumed;
-        }
-
-        public String getFieldDescription (ISOComponent m, int fldNumber)
-        {
-            return fld48[fldNumber].getDescription();
+            setFieldPackager(fld48);
         }
     }
 }
