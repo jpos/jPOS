@@ -7,7 +7,7 @@ import org.jpos.iso.*;
  * ISO 8583 v1993 ASCII Packager<br>
  * <b>WARNING UNTESTED</b>
  *
- * @author <a href="mailto:bksys@vsnl.com">Arun Kumar U</a>
+ * @author <a href="mailto:u_arunkumar@yahoo.com">Arun Kumar U</a>
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
  * @version $Id$
  * @see ISOPackager
