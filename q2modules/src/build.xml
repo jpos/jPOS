@@ -86,7 +86,7 @@
   </target>
 
   <target name="get-required">
-   <get src="file:../jpos/dist/jpos-1.4.7.jar" dest="lib/jpos-1.4.7.jar" />
+   <get src="file:../jpos/dist/jpos-1.4.8.jar" dest="lib/jpos-1.4.8.jar" />
    <get src="file:../q2/dist/q2.jar" dest="lib/q2.jar" />
   </target>
 
