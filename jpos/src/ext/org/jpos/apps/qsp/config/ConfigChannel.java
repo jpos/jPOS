@@ -53,6 +53,7 @@ import java.io.IOException;
 import java.util.Properties;
 import java.util.Arrays;
 import javax.swing.JPanel;
+import javax.management.NotCompliantMBeanException;
 
 import org.jpos.iso.ISOChannel;
 import org.jpos.iso.BaseChannel;
@@ -110,15 +111,11 @@ public class ConfigChannel implements QSPReConfigurator {
 	    channel = createChannel (name, node, evt);
 	    channel.setName (name);
 	}
-        // WORK IN PROGRESS 
-        // try {
-            // if (channel instanceof BaseChannel)
-            //    qsp.registerMBean (
-            //        (BaseChannel) channel, "type=channel,name="+name
-            //    );
-        // } catch (Exception e) {
-        //    throw new ConfigurationException (e);
-        // }
+        try {
+            qsp.registerMBean (channel, "type=channel,name="+name);
+        } catch (NotCompliantMBeanException e) {
+            evt.addMessage (e.getMessage());
+        }
 	Logger.log (evt);
     }
     public void reconfig (QSP qsp, Node node) throws ConfigurationException
