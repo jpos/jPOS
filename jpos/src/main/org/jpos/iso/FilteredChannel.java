@@ -1,5 +1,7 @@
 package org.jpos.iso;
 
+import java.util.Collection;
+
 /**
  * Filtered Channel
  * 
@@ -36,5 +38,25 @@ public interface FilteredChannel extends ISOChannel {
      * @param filter outgoing filter to remove
      */
     public void removeOutgoingFilter (ISOFilter filter);
+
+   /**
+    * @return Collection containing all incoming filters
+    */
+    public Collection getIncomingFilters();
+
+   /**
+    * @return Collection containing all outgoing filters
+    */
+    public Collection getOutgoingFilters();
+
+   /**
+    * @filters incoming filter set
+    */
+    public void setIncomingFilters (Collection filters);
+
+   /**
+    * @filters outgoing filter set
+    */
+    public void setOutgoingFilters (Collection filters);
 }
 

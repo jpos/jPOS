@@ -1,6 +1,7 @@
 package org.jpos.iso;
 
 import java.util.Vector;
+import java.util.Collection;
 import java.util.Iterator;
 import org.jpos.util.LogEvent;
 import org.jpos.iso.ISOFilter.VetoException;
@@ -116,6 +117,18 @@ public abstract class FilteredBase implements FilteredChannel {
 	}
 	m.setDirection(ISOMsg.INCOMING);
 	return m;
+    }
+    public Collection getIncomingFilters() {
+	return incomingFilters;
+    }
+    public Collection getOutgoingFilters() {
+	return outgoingFilters;
+    }
+    public void setIncomingFilters (Collection filters) {
+	incomingFilters = new Vector (filters);
+    }
+    public void setOutgoingFilters (Collection filters) {
+	outgoingFilters = new Vector (filters);
     }
 }
 

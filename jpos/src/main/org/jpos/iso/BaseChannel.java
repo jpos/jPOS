@@ -555,4 +555,17 @@ public abstract class BaseChannel extends Observable
 	    setHost (h, cfg.getInt ("port"));
 	}
     }
+
+    public Collection getIncomingFilters() {
+	return incomingFilters;
+    }
+    public Collection getOutgoingFilters() {
+	return outgoingFilters;
+    }
+    public void setIncomingFilters (Collection filters) {
+	incomingFilters = new Vector (filters);
+    }
+    public void setOutgoingFilters (Collection filters) {
+	outgoingFilters = new Vector (filters);
+    }
 }
