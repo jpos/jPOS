@@ -71,8 +71,7 @@ import org.jpos.core.ConfigurationException;
 public class ConfigUtil {
     public static String DIGEST_PROPERTY = "digest";
    /**
-    * @param propertyName property name
-    * @param attributeName attribute name
+    * @param name property name
     * @param props  container (created if null)
     * @param node   context node
     * @param evt    optional LogEvent (can be null)
@@ -84,11 +83,30 @@ public class ConfigUtil {
 	Node n = node.getAttributes().getNamedItem (name);
 	if (n != null) {
 	    value = n.getNodeValue();
-	    props.put (name, value);
+            putProperty (props, name, value);
 	    if (evt != null)
 		evt.addMessage (name+"="+value);
 	}
 	return value;
+    }
+    private static void putProperty
+        (Properties props, String propName, String propValue)
+    {
+        Object obj = props.get (propName);
+        if (obj == null) {
+            props.put (propName, propValue);;
+        } else if (obj instanceof String) {
+            String[] dest = new String[2];
+            dest[0] = (String) obj;
+            dest[1] = propValue;
+            props.put (propName, dest);
+        } else if (obj instanceof String[]) {
+            String[] src  = (String[]) obj;
+            String[] dest = new String [src.length + 1];
+            System.arraycopy (src, 0, dest, 0, src.length);
+            dest [src.length] = propValue;
+            props.put (propName, dest);
+        }
     }
 
    /**
@@ -149,7 +167,7 @@ public class ConfigUtil {
 			n.getAttributes().getNamedItem ("name").getNodeValue();
 		    String value = 
 			n.getAttributes().getNamedItem ("value").getNodeValue();
-		    props.put (name, value);
+                    putProperty (props, name, value);
 		    if (evt != null)
 			evt.addMessage (name + "=" + value);
 		}
