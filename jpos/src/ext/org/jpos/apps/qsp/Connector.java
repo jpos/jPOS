@@ -60,6 +60,7 @@ import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
 import org.jpos.iso.ISOMsg;
 import org.jpos.iso.ISOMUX;
+import org.jpos.iso.ISOUtil;
 import org.jpos.iso.ISOField;
 import org.jpos.iso.ISOChannel;
 import org.jpos.iso.ISOSource;
@@ -167,6 +168,15 @@ public class Connector
 		"connector-request-listener");
 	    try {
 		ISOMsg c = (ISOMsg) m.clone();
+                // clone header
+                byte[] h = m.getHeader();
+                if (h != null) {
+                    byte[] t = new byte[h.length];
+                    System.arraycopy (h, 0, t, 0, h.length);
+                    h = t;
+                    evt.addMessage (
+                        "<header>" + ISOUtil.hexString (h) +"</header>");
+                }
                 c.setHeader (m.getHeader());
 		evt.addMessage (c);
 		if (destMux != null) {
@@ -182,6 +192,7 @@ public class Connector
 			if (response != null) {
 			    evt.addMessage ("<got-response/>");
 			    evt.addMessage (response);
+                            response.setHeader (h); 
 			    source.send(response);
 			} else {
 			    processNullResponse (source, m, evt);
@@ -192,6 +203,7 @@ public class Connector
 		    }
 		} else if (destChannel != null) {
 		    evt.addMessage ("<sent-to-channel/>");
+                    c.setHeader (h);
 		    destChannel.send (c);
 		}
 	    } catch (ISOException e) {
@@ -201,6 +213,7 @@ public class Connector
 	    }
 	    Logger.log (evt);
 	}
+
     }
     public boolean process (ISOSource source, ISOMsg m) {
 	pool.execute (new Process (source, m));
