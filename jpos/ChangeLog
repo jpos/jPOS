@@ -1,6 +1,7 @@
 $Id$
 
 -- 1.4.9 -- 
+JDBMSpace and TSpace performs automatic gc by means of a Timer task
 Added LocalSpace.addListener(key,listener,timeout)
 New TSpace implementation
 Added ObjectTemplate
