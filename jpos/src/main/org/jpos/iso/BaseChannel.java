@@ -350,7 +350,7 @@ public abstract class BaseChannel extends Observable
 		getHost()+":"+getPort())
 	    );
 	} catch (IOException e) {
-	    evt.addMessage (e);
+	    evt.addMessage (e.getMessage ());
 	    Logger.log (evt);
 	    throw e;
 	}
