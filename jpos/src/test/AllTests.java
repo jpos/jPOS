@@ -71,6 +71,7 @@ public class AllTests {
         suite.addTestSuite (packagers.Test.class);
         suite.addTest (iso.ISOTests.suite());
         suite.addTestSuite (jceadapter.Test.class);
+        suite.addTestSuite (space.TestTSpace.class);
         suite.addTestSuite (space.Test.class);
         suite.addTestSuite (space.TestPersistent.class);
         suite.addTestSuite (space.TestJDBM.class);
