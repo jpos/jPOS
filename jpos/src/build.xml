@@ -78,7 +78,7 @@
            classpath="${classpath}" debug="on" deprecation="${deprecation}" />
   </target>
 
-  <target name="mod-uruguay" depends="main">
+  <target name="mod-uruguay" depends="ext">
     <javac srcdir="${mod-uruguay}" destdir="${classes}"
            classpath="${classpath}" debug="on" deprecation="${deprecation}" />
   </target>
