@@ -516,7 +516,7 @@ public abstract class BaseChannel extends Observable
 		}
 		else
 		    throw new ISOException(
-			"receive length " +len + " seems extrange");
+			"receive length " +len + " seems strange");
 	    }
 	    m.setPackager (getDynamicPackager(b));
 	    m.setHeader (getDynamicHeader(header));
