@@ -4,6 +4,9 @@ package uy.com.cs.jpos.util;
  * $Id$
  *
  * $Log$
+ * Revision 1.3  2000/02/02 00:06:28  apr
+ * CVS sync
+ *
  * Revision 1.2  2000/01/17 18:26:06  apr
  * Supervise every 100 executions
  *
@@ -13,12 +16,11 @@ package uy.com.cs.jpos.util;
  */
 
 import java.io.PrintStream;
+import uy.com.cs.jpos.util.BlockingQueue.Closed;
 
 /**
  * Implements a ThreadPool with the ability to run simple Runnable
  * tasks as well as Jobs (supervised Runnable tasks)
- * @see #Job
- * @see http://www.javaworld.com/javaworld/jw-05-1999/jw-05-toolbox.html
  * @since 1.1
  * @author apr@cs.com.uy
  */
@@ -62,7 +64,7 @@ public class ThreadPool extends ThreadGroup implements LogProducer, Loggeable
 		    }
 		}
 	    } catch (InterruptedException e) {
-	    } catch (BlockingQueue.Closed e) {
+	    } catch (Closed e) {
 	    }
 	}
 	public synchronized void supervise () {
@@ -85,11 +87,10 @@ public class ThreadPool extends ThreadGroup implements LogProducer, Loggeable
     public void close () {
 	pool.close();
     }
-    public synchronized void execute (Runnable action) 
-	throws BlockingQueue.Closed
+    public synchronized void execute (Runnable action) throws Closed
     {
 	if (!pool.ready())
-	    throw new BlockingQueue.Closed();
+	    throw new Closed();
 
 	if (++jobs % 100 == 0 || pool.consumerCount() <= 0)
 	    supervise();

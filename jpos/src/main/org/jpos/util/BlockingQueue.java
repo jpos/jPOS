@@ -6,6 +6,9 @@ import java.util.LinkedList;
  * $Id$
  *
  * $Log$
+ * Revision 1.2  2000/02/02 00:06:27  apr
+ * CVS sync
+ *
  * Revision 1.1  2000/01/11 17:16:51  apr
  * Added ThreadPool support
  *
@@ -14,7 +17,6 @@ import java.util.LinkedList;
 /**
  * implements a blocking queue 
  * @see ThreadPool
- * @see http://www.javaworld.com/javaworld/jw-05-1999/jw-05-toolbox.html
  * @since 1.1
  */
 public class BlockingQueue {
@@ -22,9 +24,9 @@ public class BlockingQueue {
     private boolean closed = false;
     private int consumers = 0;
 
-    public static class Closed extends RuntimeException {
+    public static class Closed extends Exception {
 	public Closed() {
-	    super ("queue is closed");
+	    super ("queue closed");
 	}
     }
 
