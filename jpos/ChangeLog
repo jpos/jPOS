@@ -1,6 +1,7 @@
 $Id$
 
 -- 1.3.7 --
+ConnectionPool QSP example (added by Rajal)
 bugfix: XMLPackager - problem with inner messages (added unittest)
 bugfix: ProtectedLogListener setting alien wiped fields
         (Thanks Søren Hilmer <sh@itplus.dk>).
