@@ -22,3 +22,4 @@ In order to build 'ext' module you will have to install here
 
   - jmxtools.jar (required by QSP's HTML adaptor)
 
+  - ejb.jar (required by QSP's EJBConnector)
