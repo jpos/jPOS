@@ -36,7 +36,8 @@ public class Connector
     String realm;
     ISOMUX destMux;
     ISOChannel destChannel;
-    int timeout=0;
+    int timeout = 0;
+    boolean bounce = false;
     ThreadPool pool;
     public Connector () {
 	super();
@@ -61,6 +62,7 @@ public class Connector
     * <li>destination-mux
     * <li>destination-channel
     * <li>timeout
+    * <li>bounce
     * </ul>
     * @param cfg Configuration
     */
@@ -68,6 +70,7 @@ public class Connector
 	throws ConfigurationException
     {
 	timeout = cfg.getInt ("timeout");
+	bounce  = cfg.getBoolean ("bounce");
 	String muxName     = cfg.get ("destination-mux");
 	String channelName = cfg.get ("destination-channel");
 	try {
@@ -91,7 +94,15 @@ public class Connector
     protected void processNullResponse (ISOSource s, ISOMsg m, LogEvent evt) 
 	throws ISOException, IOException
     {
-	evt.addMessage ("<null-response/>");
+	if (bounce) {
+	    ISOMsg c = (ISOMsg) m.clone();
+	    c.setResponseMTI();
+	    if (c.hasField (39))
+		c.unset (39);
+	    s.send (c);
+	    evt.addMessage ("<bounced/>");
+	} else
+	    evt.addMessage ("<null-response/>");
     }
 
     protected class Process implements Runnable {
@@ -110,10 +121,14 @@ public class Connector
 		evt.addMessage (c);
 		if (destMux != null) {
 		    if (timeout > 0) {
-			ISORequest req = new ISORequest (c);
-			destMux.queue (req);
-			evt.addMessage ("<queue/>");
-			ISOMsg response = req.getResponse (timeout);
+			ISOMsg response = null;
+			if (destMux.isConnected()) {
+			    ISORequest req = new ISORequest (c);
+			    destMux.queue (req);
+			    evt.addMessage ("<queued/>");
+			    response = req.getResponse (timeout);
+			} else
+			    evt.addMessage ("<mux-not-connected/>");
 			if (response != null) {
 			    evt.addMessage ("<got-response/>");
 			    evt.addMessage (response);
