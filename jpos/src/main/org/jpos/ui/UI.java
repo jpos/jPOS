@@ -474,6 +474,10 @@ public class UI implements UIFactory, UIObjectFactory {
         }
         return component;
     }
+    public JFrame getMainFrame() {
+        return mainFrame;
+    }
+    
     private void createObjects (Element e, String name) {
         Iterator iter = e.getChildren (name).iterator ();
         while (iter.hasNext()) {
