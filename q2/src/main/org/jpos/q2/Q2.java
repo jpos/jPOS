@@ -118,6 +118,7 @@ public class Q2 implements FileFilter {
 
     public static final String PROTECTED_QBEAN     = "protected-qbean";
     public static final int SCAN_INTERVAL = 2500;
+    public static final long SHUTDOWN_TIMEOUT      = 60000;
 
     private MBeanServer server;
     private File deployDir, libDir;
@@ -235,7 +236,7 @@ public class Q2 implements FileFilter {
                     log.info ("shutting down");
                     if (q2Thread != null) {
                         try {
-                            q2Thread.join ();
+                            q2Thread.join (SHUTDOWN_TIMEOUT);
                         } catch (InterruptedException e) { }
                     }
                 }
