@@ -1,0 +1,4 @@
+<spaceproxy class="org.jpos.q2.qbean.SpaceProxyAdaptor" logger="Q2" name="ExampleSpaceProxy">
+    <!-- Comment out the next line if you want to use a specific space name -->
+    <!-- attr name="spaceName">coolspace</attr -->
+</spaceproxy>
