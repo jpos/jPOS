@@ -709,5 +709,126 @@ public class ISOUtil {
             Thread.sleep (millis);
         } catch (InterruptedException e) { }
     }
+
+    /**
+     * Left unPad with '0'
+     * @param s - original string
+     * @return zero unPadded string
+     */
+    public static String zeroUnPad( String s ) {
+        return unPadLeft(s, '0');
+    }
+
+    /**
+     * Right unPad with ' '
+     * @param s - original string
+     * @return blank unPadded string
+     */
+    public static String blankUnPad( String s ) {
+        return unPadRight(s, ' ');
+    }
+
+    /**
+     * Unpad from right. In case the string to be returned
+     * is empty, the result is c
+     * @param s - original string
+     * @param c - padding char
+     * @return unPadded string.
+     */
+    public static String unPadRight(String s, char c) {
+        if ( (s.trim().length() == 0) && (c == ' ') )
+            return (new Character( c )).toString();
+        else if ( (s.trim().length() == 0) )
+            return s;
+        s = s.trim();
+        int end = s.length();
+        while ( ( 0 < end) && (s.charAt(end-1) == c) ) end --;
+        return ( 0 < end )? s.substring( 0, end ): s.substring( 0, 1 );
+    }
+
+    /**
+     * Unpad from left. In case the string to be returned
+     * is empty, the result is c
+     * @param s - original string
+     * @param c - padding char
+     * @return unPadded string.
+     */
+    public static String unPadLeft(String s, char c) {
+        if ( (s.trim().length() == 0) && (c == ' ') )
+            return (new Character( c )).toString();
+        else if ( (s.trim().length() == 0) )
+            return s;
+        s = s.trim();
+        int fill = 0, end = s.length();
+        while ( (fill < end) && (s.charAt(fill) == c) ) fill ++;
+        return ( fill < end ) ? 
+            s.substring( fill, end ) : s.substring( fill-1, end );
+    }
+
+    /**
+     * Return true if the string is zero-filled.
+     * ( 0 char filled )
+    **/
+    public static boolean isZero( String s ) {
+        int i = 0, len = s.length();
+        while ( i < len && ( s.charAt( i ) == '0' ) ){
+            i++;
+        }
+        return ( i >= len );
+    }
+
+    /**
+     * Return true if the string is blank filled.
+     * ( space char filled )
+     */
+    public static boolean isBlank( String s ){
+        return (s.trim().length() == 0);
+    }
+
+    /**
+     * Return true if the string is alphanum
+     * {letter digit (.) (_) (-) ( ) }
+     * <br><br>
+    **/
+    public static boolean isAlphaNumeric ( String s ) {
+        int i = 0, len = s.length();
+        while ( i < len && ( Character.isLetterOrDigit( s.charAt( i ) ) ||
+            s.charAt( i ) == ' ' || s.charAt( i ) == '.' ||
+            s.charAt( i ) == '-' || s.charAt( i ) == '_' ) ){
+            i++;
+        }
+        return ( i >= len );
+    }
+
+    /**
+     * Return true if the string represent a number
+     * in the specified radix.
+     * <br><br>
+    **/
+    public static boolean isNumeric ( String s, int radix ) {
+        int i = 0, len = s.length();
+        while ( i < len && Character.digit( s.charAt( i ), radix ) > -1  ){
+            i++;
+        }
+        return ( i >= len );
+    }
+
+    /**
+     * Converts a BitSet into an extended binary field
+     * used in pack routines. The result is always in the
+     * extended format: (16 bytes of length)
+     * <br><br>
+     * @param b - the BitSet
+     * @return binary representation
+     */
+    public static byte[] bitSet2extendedByte ( BitSet b ){
+        int len = 128;
+        byte[] d = new byte[len >> 3];
+        for ( int i=0; i<len; i++ )
+            if (b.get(i+1))
+                d[i >> 3] |= (0x80 >> (i % 8));
+        d[0] |= 0x80;
+        return d;
+    }
 }
 
