@@ -25,6 +25,7 @@ import org.jpos.core.SimpleConfiguration;
 public class Test extends SimpleLogProducer {
     private ISOChannel channel;
     private Sequencer seq;
+    private static final String COUNTERNAME = "test.counter";
 
     public Test (Configuration cfg, Logger logger, String realm) 
 	throws ISOException, IOException
@@ -34,6 +35,13 @@ public class Test extends SimpleLogProducer {
 	channel = ISOFactory.newChannel 
 	    (cfg, "simpleclient", logger, realm);
 	seq     = new VolatileSequencer();
+
+	//
+	// Simple 'seed' used to differentiate TraceNumbers when
+	// running simultaneous simpleclients
+	// (i.e. while testing simplemux example - See ISOMUX.getKey())
+	//
+	seq.set (COUNTERNAME, (int) (System.currentTimeMillis() % 1000000));
 	channel.connect();
     }
 
@@ -47,7 +55,7 @@ public class Test extends SimpleLogProducer {
 
             m.set (new ISOField (11,
 		ISOUtil.zeropad(
-		    new Integer(seq.get ("test.counter")).toString(),6)
+		    new Integer(seq.get (COUNTERNAME)).toString(),6)
 		)
 	    );
 
