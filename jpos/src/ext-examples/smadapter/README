@@ -1,0 +1,4 @@
+This is a simple demo for org.jpos.security.SMAdapter
+
+SMAdapter provides access to Security Modules (also called cryptographic modules).
+This example makes use of org.jpos.security.jceadapter.JCESecurityModule
