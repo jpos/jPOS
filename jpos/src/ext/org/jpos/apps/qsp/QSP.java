@@ -63,11 +63,13 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.NamedNodeMap;
 import org.xml.sax.ErrorHandler;
 
+import org.jpos.iso.ISOMUX;
 import org.jpos.util.SimpleLogListener;
 import org.jpos.util.SystemMonitor;
 import org.jpos.util.Logger;
 import org.jpos.util.LogEvent;
 import org.jpos.util.LogSource;
+import org.jpos.util.NameRegistrar;
 import org.jpos.core.ConfigurationException;
 
 /**
@@ -183,7 +185,16 @@ public class QSP implements ErrorHandler, LogSource {
 		Thread.sleep (monitorConfigInterval);
 	    } catch (InterruptedException e) { }
 	lastModified = l;
-	return true;
+	return lastModified != 0;
+    }
+    public static void shutdownMuxes() {
+        Iterator iter = NameRegistrar.getMap().values().iterator();
+        while (iter.hasNext()) {
+            Object obj = iter.next();
+            if (obj instanceof ISOMUX) {
+                ((ISOMUX)obj).terminate (60000);
+            }
+        }
     }
     public static void main (String args[]) {
 	if (args.length != 1) {
@@ -215,6 +226,10 @@ public class QSP implements ErrorHandler, LogSource {
 		while (iter.hasNext())
 		    qsp.reconfigure ((String) iter.next());
 	    }
+	    Logger.log (new LogEvent (qsp, "shutdown-start"));
+            shutdownMuxes ();
+	    Logger.log (new LogEvent (qsp, "shutdown"));
+            System.exit (0);
 	} catch (IOException e) {
 	    Logger.log (new LogEvent (qsp, "error", e));
 	    System.out.println (e);
