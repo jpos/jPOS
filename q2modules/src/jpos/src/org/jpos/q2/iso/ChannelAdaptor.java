@@ -89,7 +89,7 @@ public class ChannelAdaptor
     Space sp;
     Configuration cfg;
     ISOChannel channel;
-    String in, out, ready;
+    String in, out, ready, reconnect;
     long delay;
     public ChannelAdaptor () {
         super ();
@@ -111,6 +111,8 @@ public class ChannelAdaptor
 
         channel = newChannel (e, getFactory());
         ready   = getName() + ".ready";
+
+        reconnect = getName() + ".reconnect";
     }
     public void startService () {
         try {
@@ -267,8 +269,14 @@ public class ChannelAdaptor
                     if (running()) {
                         getLog().warn ("channel-receiver-"+out, e);
                         disconnect ();
-                        ISOUtil.sleep (1000);
+                        sp.inp (ready); // soft-clean of the ready flag
+                        while (running() && 
+                               sp.rdp (reconnect) != null)
+                        {
+                            ISOUtil.sleep(1000);
+                        }
                         sp.out (in, new Object()); // wake-up Sender
+                        sp.out (reconnect, new Object(), delay);
                     }
                 }
             }
