@@ -80,7 +80,7 @@ public class Test extends SimpleLogSource {
     public static void main (String args[]) {
 	int n = 1;  // number of iterations
 	String cfgPrefix = "simpleclient";
-	if (args.length > 0 && args[0].equals ("-testmux"))
+	if (args.length > 0)
 	    cfgPrefix = cfgPrefix + args[0];
 	if (args.length > 1)
 	    n = Integer.parseInt (args[1]);
