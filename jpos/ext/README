@@ -15,5 +15,7 @@ In order to build 'ext' module you will have to install here
     used by V24, LeasedLineModem, SimpleDialupModem.java and
     VISA1Link at the moment.
  
-
+  - xalan and xerces (used by XSLTFilter).
+    (We're using xalan_1_0_0.jar and xerces_1_0_3.jar
+     at the moment)
 
