@@ -15,6 +15,7 @@ import org.jpos.space.Space;
 import org.jpos.space.SpaceFactory;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
+import org.jpos.iso.FactoryChannel;
 import org.jpos.iso.ISOChannel;
 import org.jpos.iso.ISOClientSocketFactory;
 import org.jpos.iso.ISOPackager;
@@ -64,12 +65,12 @@ public class ChannelAdaptor
         channel = newChannel (e, getFactory());
         
         String socketFactoryString = getSocketFactory();
-        if (socketFactoryString != null) {
+        if (socketFactoryString != null && channel instanceof FactoryChannel) {
             ISOClientSocketFactory sFac = (ISOClientSocketFactory) getFactory().newInstance(socketFactoryString);
             if (sFac != null && sFac instanceof LogSource) {
                 ((LogSource) sFac).setLogger(log.getLogger(),getName() + ".socket-factory");
             }
-            channel.setSocketFactory(sFac);
+            ((FactoryChannel)channel).setSocketFactory(sFac);
         }
         ready   = getName() + ".ready";
 
