@@ -16,6 +16,7 @@ import org.jpos.space.SpaceFactory;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
 import org.jpos.iso.FactoryChannel;
+import org.jpos.iso.Channel;
 import org.jpos.iso.ISOChannel;
 import org.jpos.iso.ISOClientSocketFactory;
 import org.jpos.iso.ISOPackager;
@@ -37,7 +38,7 @@ import org.jdom.Element;
  */
 public class ChannelAdaptor 
     extends QBeanSupport
-    implements ChannelAdaptorMBean
+    implements ChannelAdaptorMBean, Channel
 {
     Space sp;
     Configuration cfg;
@@ -155,6 +156,13 @@ public class ChannelAdaptor
      */
     public void send (ISOMsg m, long timeout) {
         sp.out (in, m, timeout);
+    }
+
+    /**
+     * Receive message
+     */
+    public ISOMsg receive () {
+        return (ISOMsg) sp.in (out);
     }
 
     /**
