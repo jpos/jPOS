@@ -49,9 +49,6 @@ public class VAPChannel extends ISOChannel {
 		super(p, serverSocket);
 	}
 	protected void sendMessageLength(int len) throws IOException {
-		System.out.println ("VAPChannel.sendMessageLen: len=" 
-			+len + " serverOut=" +serverOut);
-
 		serverOut.write (len >> 8);
 		serverOut.write (len);
 		serverOut.write (0);
