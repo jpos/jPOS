@@ -137,10 +137,13 @@ public class ISOServer extends Observable
                     channel.disconnect();
                 } catch (IOException ex) { }
             } catch (Exception e) { 
-		Logger.log (new LogEvent (this, "SessionError", e));
+                LogEvent evt = new LogEvent (this, "SessionError", e);
                 try {
                     channel.disconnect();
-                } catch (IOException ex) { }
+                } catch (IOException ex) { 
+                    evt.addMessage (ex);
+                }
+                Logger.log (evt);
             } 
 	    Logger.log (new LogEvent (this, "SessionEnd"));
         }
