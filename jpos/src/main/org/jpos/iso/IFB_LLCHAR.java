@@ -8,6 +8,10 @@
 
 /*
  * $Log$
+ * Revision 1.2  1998/12/14 22:48:20  apr
+ * Added RawChannel support
+ * Pruebas OK packaging POSNet
+ *
  * Revision 1.1  1998/11/09 23:40:15  apr
  * *** empty log message ***
  *
@@ -37,7 +41,7 @@ public class IFB_LLCHAR extends ISOFieldPackager {
 	public int unpack (ISOComponent c, byte[] b, int offset)
 		throws ISOException
 	{
-		int len = ((b[offset] >> 4) & 0x0F) * 10 + b[offset] & 0x0F;
+		int len = (((b[offset] >> 4) & 0x0F) * 10) + (b[offset] & 0x0F);
 		c.setValue(new String(b, ++offset, len));
 		return ++len;
 	}

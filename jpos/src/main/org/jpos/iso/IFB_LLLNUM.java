@@ -8,6 +8,10 @@
 
 /*
  * $Log$
+ * Revision 1.3  1998/12/14 22:48:22  apr
+ * Added RawChannel support
+ * Pruebas OK packaging POSNet
+ *
  * Revision 1.2  1998/12/11 14:06:23  apr
  * Added 'pad' parameter en 'IFB_[L*]NUM*' y 'IFB_AMOUNT'
  *
@@ -45,8 +49,8 @@ public class IFB_LLLNUM extends ISOFieldPackager {
 	public int unpack (ISOComponent c, byte[] b, int offset)
 		throws ISOException
 	{
-		int len = b[offset++] & 0x0F;
-		len += ((b[offset] >> 4) & 0x0F) * 10 + (b[offset] & 0x0F);
+		int len = (b[offset++] & 0x0F) * 100;
+		len += (((b[offset] >> 4) & 0x0F) * 10) + (b[offset] & 0x0F);
 		c.setValue (ISOUtil.bcd2str (b, offset+1, len, pad));
 		return 2 + (++len >> 1);
 	}

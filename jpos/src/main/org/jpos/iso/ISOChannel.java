@@ -15,6 +15,10 @@
 
 /*
  * $Log$
+ * Revision 1.3  1998/12/14 22:48:23  apr
+ * Added RawChannel support
+ * Pruebas OK packaging POSNet
+ *
  * Revision 1.2  1998/11/28 16:25:53  apr
  * *** empty log message ***
  *
@@ -66,12 +70,15 @@ public abstract class ISOChannel {
 	protected int getMessageLength() throws IOException, ISOException {
 		return -1;
 	}
+	protected int getHeaderLength() { return 0; }
 	protected byte[] streamReceive() throws IOException {
 		return new byte[0];
 	}
 	public void send (ISOMsg m) throws IOException, ISOException {
 		m.setPackager (packager);
 		byte[] b = m.pack();
+		System.out.println (
+			"--[pack]--\n"+ ISOUtil.hexString(b) + "\n--[end]--");
 		sendMessageLength(b.length);
 		sendMessageHeader(m);
 		serverOut.write(b, 0, b.length);
@@ -80,15 +87,26 @@ public abstract class ISOChannel {
 	}
 	public ISOMsg receive() throws IOException, ISOException {
 		byte[] b;
-		int len = getMessageLength();
+		int len  = getMessageLength();
+		int hLen = getHeaderLength();
 		if (len == -1) 
 			b = streamReceive();
 		else if (len > 10 && len <= 4096) {
 			int l;
+			if (hLen > 0) {
+				// ignore message header (TPDU)
+				b = new byte [hLen];
+				System.out.println ("reading header len="+hLen);
+				serverIn.read(b,0,hLen);
+				len -= hLen;
+			}
 			b = new byte[len];
+			System.out.println ("reading message len=" +len);
 			if ((l=serverIn.read(b,0,len)) != len)
 				throw new ISOException(
 					"receive error. expected " +len + " received " +l);
+			System.out.println (
+				"--[unpack]--\n"+ ISOUtil.hexString(b) + "\n--[end]--");
 		}
 		else
 			throw new ISOException("receive length " +len + " seems extrange");

@@ -9,6 +9,10 @@
 
 /*
  * $Log$
+ * Revision 1.2  1998/12/14 22:48:22  apr
+ * Added RawChannel support
+ * Pruebas OK packaging POSNet
+ *
  * Revision 1.1  1998/11/09 23:40:21  apr
  * *** empty log message ***
  *
@@ -81,15 +85,19 @@ public class ISOBasePackager implements ISOPackager {
 			if (bmap.get(i)) {
 				ISOComponent c = fld[i].createComponent(i);
 				consumed += fld[i].unpack (c, b, consumed);
-				// System.out.println (i + ":" + consumed + ":"+(String)
-				//	  c.getValue() + ":");
+				System.out.println (i + ":" + consumed + ":"+(String)
+				 	  c.getValue() + ":");
 				m.set(c);
 			}
 		}
-		if (b.length != consumed) 
-			throw new ISOException (
-				"unpack error len=" +b.length +" consumed=" +consumed
+		if (b.length != consumed) {
+			System.out.println (
+				"Warning: unpack len=" +b.length +" consumed=" +consumed
 			);
+			// throw new ISOException (
+			//	"unpack error len=" +b.length +" consumed=" +consumed
+			// );
+		}
 		return consumed;
 	}
 }
