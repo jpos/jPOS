@@ -143,9 +143,9 @@ public class Router
       if (nodes.item(i).getNodeName().equals ("router")) {
         condition[j] = nodes.item(i).getAttributes().
                getNamedItem ("switch").getNodeValue();
-	type[j] = nodes.item(i).getAttributes().
+        type[j] = nodes.item(i).getAttributes().
            getNamedItem ("type").getNodeValue();
-	String destination = nodes.item(i).getAttributes().
+        String destination = nodes.item(i).getAttributes().
                       getNamedItem ("destination").getNodeValue();
         Node attrnode = nodes.item(i).getAttributes().
                         getNamedItem ("timeout");
@@ -165,8 +165,8 @@ public class Router
                     NameRegistrar.get (type[j]+"."+destination));
         } catch (NotFoundException e) {
           throw new ConfigurationException (e);
-	}
-	j++;
+        }
+        j++;
       }
     }
     condNum = j;
@@ -188,8 +188,8 @@ public class Router
       ISOMsg c = (ISOMsg) m.clone();
       c.setResponseMTI();
       if (c.hasField (39))
-	c.unset (39);
-	s.send (c);
+        c.unset (39);
+        s.send (c);
         evt.addMessage ("<bounced/>");
     } else
       evt.addMessage ("<null-response/>");
@@ -221,54 +221,54 @@ public class Router
     
     public void run (){
       LogEvent evt = new LogEvent ( Router.this,
-		"Router");
+                "Router");
       try {
-	ISOMsg c = (ISOMsg) m.clone();
-	evt.addMessage (c);
-	int direction = getDestination( evt, c , jeputil );
+        ISOMsg c = (ISOMsg) m.clone();
+        evt.addMessage (c);
+        int direction = getDestination( evt, c , jeputil );
         if( direction == -1 ) return;
-	String key = String.valueOf( direction );
-	Object destobj = dest.get(key);
+        String key = String.valueOf( direction );
+        Object destobj = dest.get(key);
 
         if ( type[direction].equals ("mux") ) {
-	    ISOMUX destMux = (ISOMUX)( destobj );
-	    if ( timeout[direction] > 0) {
-		ISOMsg response = null;
-		if ( destMux.isConnected()) {
-		    ISORequest req = new ISORequest (c);
-		    destMux.queue (req);
-		    evt.addMessage ("<queued/>");
-		    response = req.getResponse (timeout[direction]);
-		} else
-		    evt.addMessage ("<mux-not-connected/>");
-		if (response != null) {
-		    evt.addMessage ("<got-response/>");
-		    evt.addMessage (response);
+            ISOMUX destMux = (ISOMUX)( destobj );
+            if ( timeout[direction] > 0) {
+                ISOMsg response = null;
+                if ( destMux.isConnected()) {
+                    ISORequest req = new ISORequest (c);
+                    destMux.queue (req);
+                    evt.addMessage ("<queued/>");
+                    response = req.getResponse (timeout[direction]);
+                } else
+                    evt.addMessage ("<mux-not-connected/>");
+                if (response != null) {
+                    evt.addMessage ("<got-response/>");
+                    evt.addMessage (response);
                     response.setHeader (c.getISOHeader());
                     source.send(response);
-		} else {
-		    processNullResponse (source, m, evt, bounce[direction]);
-		}
+                } else {
+                    processNullResponse (source, m, evt, bounce[direction]);
+                }
             } else {
-			evt.addMessage ("<sent-through-mux/>");
-			destMux.send (c);
-		    }
-		} else if (type[direction].equals ("channel")) {
-		    evt.addMessage ("<sent-to-channel/>");
-		    ISOChannel destChannel = (ISOChannel)( destobj );
+                        evt.addMessage ("<sent-through-mux/>");
+                        destMux.send (c);
+                    }
+                } else if (type[direction].equals ("channel")) {
+                    evt.addMessage ("<sent-to-channel/>");
+                    ISOChannel destChannel = (ISOChannel)( destobj );
                     destChannel.send (c);
                 }
-	    } catch (ISOException e) {
-		evt.addMessage (e);
-	    } catch (IOException e) {
-		evt.addMessage (e);
-	    }
-	    Logger.log (evt);
-	}
+            } catch (ISOException e) {
+                evt.addMessage (e);
+            } catch (IOException e) {
+                evt.addMessage (e);
+            }
+            Logger.log (evt);
+        }
     }
 
     public boolean process (ISOSource source, ISOMsg m) {
-	pool.execute (new Process (source, m));
-	return true;
+        pool.execute (new Process (source, m));
+        return true;
     }
 }

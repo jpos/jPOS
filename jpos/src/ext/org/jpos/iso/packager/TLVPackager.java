@@ -225,8 +225,8 @@ public class TLVPackager extends ISOBasePackager {
     protected class TLV55Packager extends TLVSubFieldPackager
     {
         private ISOFieldPackager fld55[] = {
-     	    new IFB_BINARY (  3,  "Sample TLV Field"),
-     	    new IFB_BINARY (  3,  "Sample TLV Field"),
+            new IFB_BINARY (  3,  "Sample TLV Field"),
+            new IFB_BINARY (  3,  "Sample TLV Field"),
             new IFB_BINARY (  3,  "Sample TLV Field"),
             new IFB_BINARY (  3,  "Sample TLV Field"),
         };

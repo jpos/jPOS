@@ -67,42 +67,42 @@ import org.w3c.dom.NodeList;
 public class ConfigControlPanel implements QSPConfigurator {
     public void config (QSP qsp, Node node) throws ConfigurationException
     {
-	String rows = 
-	    node.getAttributes().getNamedItem ("rows").getNodeValue();
-	String cols = 
-	    node.getAttributes().getNamedItem ("cols").getNodeValue();
+        String rows = 
+            node.getAttributes().getNamedItem ("rows").getNodeValue();
+        String cols = 
+            node.getAttributes().getNamedItem ("cols").getNodeValue();
 
-	qsp.initControlPanel (Integer.parseInt (rows),
-			      Integer.parseInt (cols));
+        qsp.initControlPanel (Integer.parseInt (rows),
+                              Integer.parseInt (cols));
 
-	configChilds (qsp, node);
+        configChilds (qsp, node);
     }
 
     private void configChilds (QSP qsp, Node node) throws
-	ConfigurationException
+        ConfigurationException
     {
-	NodeList childs = node.getChildNodes();
-	for (int i=0; i<childs.getLength(); i++) {
-	    Node n = childs.item(i);
-	    if (n.getNodeName().equals ("panel")) {
-		String panelName = 
-		  n.getAttributes().getNamedItem("name").getNodeValue();
-		JPanel panel = new JPanel();
-		NameRegistrar.register ("panel."+panelName, panel);
-		qsp.getControlPanel().add (panel);
-	    }
-	}
+        NodeList childs = node.getChildNodes();
+        for (int i=0; i<childs.getLength(); i++) {
+            Node n = childs.item(i);
+            if (n.getNodeName().equals ("panel")) {
+                String panelName = 
+                  n.getAttributes().getNamedItem("name").getNodeValue();
+                JPanel panel = new JPanel();
+                NameRegistrar.register ("panel."+panelName, panel);
+                qsp.getControlPanel().add (panel);
+            }
+        }
     }
 
     public static JPanel getPanel (Node node) {
-	JPanel panel = null;
-	Node n = node.getAttributes().getNamedItem ("panel");
-	if (n != null) {
-	    try {
-		panel = (JPanel) 
-		    NameRegistrar.get ("panel." + n.getNodeValue());
-	    } catch (NameRegistrar.NotFoundException  e) { }
-	}
-	return panel;
+        JPanel panel = null;
+        Node n = node.getAttributes().getNamedItem ("panel");
+        if (n != null) {
+            try {
+                panel = (JPanel) 
+                    NameRegistrar.get ("panel." + n.getNodeValue());
+            } catch (NameRegistrar.NotFoundException  e) { }
+        }
+        return panel;
     }
 }

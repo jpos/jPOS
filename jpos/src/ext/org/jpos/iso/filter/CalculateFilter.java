@@ -76,57 +76,57 @@ public class CalculateFilter
     JepUtil jeputil;
 
     public CalculateFilter () {
-	super();
-	condition = null;
-	statement = null;
-	field = null;
-	condNum = 0;
+        super();
+        condition = null;
+        statement = null;
+        field = null;
+        condNum = 0;
         jeputil = new JepUtil();
     }
 
 
    public void setConfiguration (Node node)
-	throws ConfigurationException
+        throws ConfigurationException
     {
-	NodeList nodes = node.getChildNodes();
-	condNum = nodes.getLength();
-	int i, j = 0;
-	for( i=0 ; i < condNum; i++ )
-	{
-	    if (nodes.item(i).getNodeName().equals ("calculate"))
-	    j++;
-	}
+        NodeList nodes = node.getChildNodes();
+        condNum = nodes.getLength();
+        int i, j = 0;
+        for( i=0 ; i < condNum; i++ )
+        {
+            if (nodes.item(i).getNodeName().equals ("calculate"))
+            j++;
+        }
 
-	condition = new String[j];
-	field = new String[j];
-	statement = new String[j];
-	j = 0;
-	for( i=0 ; i < condNum; i++ )
-	{
-	    if (nodes.item(i).getNodeName().equals ("calculate")) {
-		condition[j] = nodes.item(i).getAttributes().getNamedItem ("switch").getNodeValue();
-		field[j] = nodes.item(i).getAttributes().getNamedItem ("field").getNodeValue();
-		statement[j] = nodes.item(i).getAttributes().getNamedItem ("statement").getNodeValue();
-   		j++;
-	   }
-	}
-	condNum = j;
+        condition = new String[j];
+        field = new String[j];
+        statement = new String[j];
+        j = 0;
+        for( i=0 ; i < condNum; i++ )
+        {
+            if (nodes.item(i).getNodeName().equals ("calculate")) {
+                condition[j] = nodes.item(i).getAttributes().getNamedItem ("switch").getNodeValue();
+                field[j] = nodes.item(i).getAttributes().getNamedItem ("field").getNodeValue();
+                statement[j] = nodes.item(i).getAttributes().getNamedItem ("statement").getNodeValue();
+                j++;
+           }
+        }
+        condNum = j;
     }
 
    private void calculateStatement( LogEvent evt , ISOMsg m )
-    	throws ISOException
+        throws ISOException
     {
-    	int i = 0;
-    	for( i = 0 ; i < condNum ; i++ )
-    	{
+        int i = 0;
+        for( i = 0 ; i < condNum ; i++ )
+        {
 
             if( jeputil.getResultBoolean( m , condition[i] ) )
              {
               String valueString = jeputil.getResult( m , statement[i] );
-	      evt.addMessage( "<calculate field=\""+field[i]+"\" value=\""+valueString+"\"/>" );
-	      m.set( Integer.valueOf( field[i]).intValue() , valueString );
+              evt.addMessage( "<calculate field=\""+field[i]+"\" value=\""+valueString+"\"/>" );
+              m.set( Integer.valueOf( field[i]).intValue() , valueString );
              }
-	}
+        }
     }
 
     public ISOMsg filter (ISOChannel channel, ISOMsg m, LogEvent evt)
@@ -134,10 +134,10 @@ public class CalculateFilter
     {
         try {
           calculateStatement( evt , m );
-	} catch (ISOException e) {
+        } catch (ISOException e) {
            evt.addMessage (e);
           throw new VetoException (e);
         }
-	return m;
+        return m;
     }
 }

@@ -95,13 +95,13 @@ public class ConfigThreadPool implements QSPConfigurator {
         }
     }
     public static ThreadPool getThreadPool (Node node) {
-	Node n = node.getAttributes().getNamedItem ("thread-pool");
-	if (n != null) {
-	    try {
-		return ThreadPool.getThreadPool (n.getNodeValue ());
-	    } catch (NotFoundException e) { }
+        Node n = node.getAttributes().getNamedItem ("thread-pool");
+        if (n != null) {
+            try {
+                return ThreadPool.getThreadPool (n.getNodeValue ());
+            } catch (NotFoundException e) { }
         }
-	return null;
+        return null;
     }
 }
 

@@ -91,19 +91,19 @@ public class Connector
         pool = new ThreadPool (1, 100);
     }
     public Connector () {
-	super();
-	destMux = null;
-	destChannel = null;
+        super();
+        destMux = null;
+        destChannel = null;
     }
     public void setLogger (Logger logger, String realm) {
-	this.logger = logger;
-	this.realm  = realm;
+        this.logger = logger;
+        this.realm  = realm;
     }
     public String getRealm () {
-	return realm;
+        return realm;
     }
     public Logger getLogger() {
-	return logger;
+        return logger;
     }
    /**
     * Destination can be a Channel or a MUX. If Destination is a Channel
@@ -117,20 +117,20 @@ public class Connector
     * @param cfg Configuration
     */
     public void setConfiguration (Configuration cfg)
-	throws ConfigurationException
+        throws ConfigurationException
     {
-	timeout = cfg.getInt ("timeout");
-	bounce  = cfg.getBoolean ("bounce");
-	String muxName     = cfg.get ("destination-mux", null);
-	String channelName = cfg.get ("destination-channel", null);
-	try {
-	    if (muxName != null)
-		destMux = ISOMUX.getMUX (muxName);
-	    else if (channelName != null)
-		destChannel = BaseChannel.getChannel (channelName);
-	} catch (NotFoundException e) {
-	    throw new ConfigurationException (e);
-	}
+        timeout = cfg.getInt ("timeout");
+        bounce  = cfg.getBoolean ("bounce");
+        String muxName     = cfg.get ("destination-mux", null);
+        String channelName = cfg.get ("destination-channel", null);
+        try {
+            if (muxName != null)
+                destMux = ISOMUX.getMUX (muxName);
+            else if (channelName != null)
+                destChannel = BaseChannel.getChannel (channelName);
+        } catch (NotFoundException e) {
+            throw new ConfigurationException (e);
+        }
     }
 
     /**
@@ -142,70 +142,70 @@ public class Connector
      * @exception IOException
      */
     protected void processNullResponse (ISOSource s, ISOMsg m, LogEvent evt) 
-	throws ISOException, IOException
+        throws ISOException, IOException
     {
-	if (bounce) {
-	    ISOMsg c = (ISOMsg) m.clone();
-	    c.setResponseMTI();
-	    if (c.hasField (39))
-		c.unset (39);
-	    s.send (c);
-	    evt.addMessage ("<bounced/>");
-	} else
-	    evt.addMessage ("<null-response/>");
+        if (bounce) {
+            ISOMsg c = (ISOMsg) m.clone();
+            c.setResponseMTI();
+            if (c.hasField (39))
+                c.unset (39);
+            s.send (c);
+            evt.addMessage ("<bounced/>");
+        } else
+            evt.addMessage ("<null-response/>");
     }
 
     protected class Process implements Runnable {
-	ISOSource source;
-	ISOMsg m;
-	Process (ISOSource source, ISOMsg m) {
-	    super();
-	    this.source = source;
-	    this.m = m;
-	}
-	public void run () {
-	    LogEvent evt = new LogEvent (Connector.this, 
-		"connector-request-listener");
-	    try {
-		ISOMsg c = (ISOMsg) m.clone();
-		evt.addMessage (c);
-		if (destMux != null) {
-		    if (timeout > 0) {
-			ISOMsg response = null;
-			if (destMux.isConnected()) {
-			    ISORequest req = new ISORequest (c);
-			    destMux.queue (req);
-			    evt.addMessage ("<queued/>");
-			    response = req.getResponse (timeout);
-			} else
-			    evt.addMessage ("<mux-not-connected/>");
-			if (response != null) {
-			    evt.addMessage ("<got-response/>");
-			    evt.addMessage (response);
+        ISOSource source;
+        ISOMsg m;
+        Process (ISOSource source, ISOMsg m) {
+            super();
+            this.source = source;
+            this.m = m;
+        }
+        public void run () {
+            LogEvent evt = new LogEvent (Connector.this, 
+                "connector-request-listener");
+            try {
+                ISOMsg c = (ISOMsg) m.clone();
+                evt.addMessage (c);
+                if (destMux != null) {
+                    if (timeout > 0) {
+                        ISOMsg response = null;
+                        if (destMux.isConnected()) {
+                            ISORequest req = new ISORequest (c);
+                            destMux.queue (req);
+                            evt.addMessage ("<queued/>");
+                            response = req.getResponse (timeout);
+                        } else
+                            evt.addMessage ("<mux-not-connected/>");
+                        if (response != null) {
+                            evt.addMessage ("<got-response/>");
+                            evt.addMessage (response);
                             response.setHeader (c.getISOHeader()); 
-			    source.send(response);
-			} else {
-			    processNullResponse (source, m, evt);
-			}
-		    } else {
-			evt.addMessage ("<sent-through-mux/>");
-			destMux.send (c);
-		    }
-		} else if (destChannel != null) {
-		    evt.addMessage ("<sent-to-channel/>");
-		    destChannel.send (c);
-		}
-	    } catch (ISOException e) {
-		evt.addMessage (e);
-	    } catch (IOException e) {
-		evt.addMessage (e);
-	    }
-	    Logger.log (evt);
-	}
+                            source.send(response);
+                        } else {
+                            processNullResponse (source, m, evt);
+                        }
+                    } else {
+                        evt.addMessage ("<sent-through-mux/>");
+                        destMux.send (c);
+                    }
+                } else if (destChannel != null) {
+                    evt.addMessage ("<sent-to-channel/>");
+                    destChannel.send (c);
+                }
+            } catch (ISOException e) {
+                evt.addMessage (e);
+            } catch (IOException e) {
+                evt.addMessage (e);
+            }
+            Logger.log (evt);
+        }
 
     }
     public boolean process (ISOSource source, ISOMsg m) {
-	pool.execute (new Process (source, m));
-	return true;
+        pool.execute (new Process (source, m));
+        return true;
     }
 }

@@ -64,15 +64,15 @@ import org.w3c.dom.Node;
 public class ConfigQspConfig implements QSPReConfigurator {
     public void config (QSP qsp, Node node) throws ConfigurationException
     {
-	qsp.setLogger (ConfigLogger.getLogger (node),
-		       ConfigLogger.getRealm (node));
+        qsp.setLogger (ConfigLogger.getLogger (node),
+                       ConfigLogger.getRealm (node));
 
-	Node reloadNode = node.getAttributes().getNamedItem ("reload");
-	if (reloadNode != null)
-	    qsp.setMonitorConfigInterval (
-		Long.parseLong (reloadNode.getNodeValue())
-	    );
-	String name  = getValue (node, "name", QSP.DEFAULT_NAME);
+        Node reloadNode = node.getAttributes().getNamedItem ("reload");
+        if (reloadNode != null)
+            qsp.setMonitorConfigInterval (
+                Long.parseLong (reloadNode.getNodeValue())
+            );
+        String name  = getValue (node, "name", QSP.DEFAULT_NAME);
         NameRegistrar.register (QSP.NAMEREGISTRAR_PREFIX+name, qsp);
         qsp.setConfiguration (
             new SimpleConfiguration (
@@ -81,10 +81,10 @@ public class ConfigQspConfig implements QSPReConfigurator {
         );
     }
     public void reconfig (QSP qsp, Node node) throws ConfigurationException {
-	config (qsp, node);
+        config (qsp, node);
     }
     private String getValue (Node node, String tagName, String def) {
-	Node n = node.getAttributes().getNamedItem (tagName);
-	return n != null ? n.getNodeValue() : def;
+        Node n = node.getAttributes().getNamedItem (tagName);
+        return n != null ? n.getNodeValue() : def;
     }
 }

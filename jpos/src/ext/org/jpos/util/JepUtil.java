@@ -85,15 +85,15 @@ public class JepUtil {
     public String replaceMacro( ISOMsg m, String s )
     throws ISOException
     {
-    	int beginIdx;
-    	int tagIdx, endIdx;
-    	StringBuffer result = new StringBuffer();
+        int beginIdx;
+        int tagIdx, endIdx;
+        StringBuffer result = new StringBuffer();
         beginIdx = 0;
-    	tagIdx = s.indexOf( BEGIN_TAG );
+        tagIdx = s.indexOf( BEGIN_TAG );
         int BEGIN_TAG_LEN = BEGIN_TAG.length();
         int END_TAG_LEN = END_TAG.length();
-    	while( tagIdx != -1 ){
-    		endIdx = s.indexOf( END_TAG , tagIdx );
+        while( tagIdx != -1 ){
+                endIdx = s.indexOf( END_TAG , tagIdx );
                 if( endIdx == -1 )
                   throw new ISOException ( "tags not match" );
                 result.append( s.substring(beginIdx , tagIdx));
@@ -104,7 +104,7 @@ public class JepUtil {
                 result.append( m.getValue(field) );
                 beginIdx = endIdx + END_TAG_LEN;
                 tagIdx = s.indexOf( BEGIN_TAG , beginIdx );
-    	}
+        }
         result.append( s.substring(beginIdx));
         return result.toString();
     }

@@ -64,24 +64,24 @@ import org.w3c.dom.Node;
 public class ConfigLogger implements QSPConfigurator {
     public void config (QSP qsp, Node node) throws ConfigurationException
     {
-	String name = node.getAttributes().getNamedItem ("name").getNodeValue();
-	Logger.getLogger (name);
-	Logger.log (
-	    new LogEvent (qsp, "config-logger", name)
-	);
+        String name = node.getAttributes().getNamedItem ("name").getNodeValue();
+        Logger.getLogger (name);
+        Logger.log (
+            new LogEvent (qsp, "config-logger", name)
+        );
     }
    /**
     * @return Logger for this node or null
     */
     public static Logger getLogger (Node node) {
-	Node n = node.getAttributes().getNamedItem ("logger");
-	return (n != null) ? Logger.getLogger (n.getNodeValue()) : null;
+        Node n = node.getAttributes().getNamedItem ("logger");
+        return (n != null) ? Logger.getLogger (n.getNodeValue()) : null;
     }
    /**
     * @return realm for this node (or "")
     */
     public static String getRealm(Node node) {
-	Node n = node.getAttributes().getNamedItem ("realm");
-	return (n != null) ? n.getNodeValue() : "";
+        Node n = node.getAttributes().getNamedItem ("realm");
+        return (n != null) ? n.getNodeValue() : "";
     }
 }

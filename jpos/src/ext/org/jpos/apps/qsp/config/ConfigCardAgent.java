@@ -72,58 +72,58 @@ import org.w3c.dom.Node;
 public class ConfigCardAgent implements QSPReConfigurator {
     public void config (QSP qsp, Node node) throws ConfigurationException
     {
-	String className = 
-	    node.getAttributes().getNamedItem ("class").getNodeValue();
-	LogEvent evt = new LogEvent (qsp, "config-card-agent", className);
+        String className = 
+            node.getAttributes().getNamedItem ("class").getNodeValue();
+        LogEvent evt = new LogEvent (qsp, "config-card-agent", className);
         try {
             Class c = Class.forName(className);
-	    CardAgent agent = (CardAgent) c.newInstance();
-	    if (agent instanceof LogSource) {
-		((LogSource)agent).setLogger (
-		    ConfigLogger.getLogger (node),
-		    ConfigLogger.getRealm (node)
-		);
-	    }
-	    if (agent instanceof Configurable)
-		configureAgent ((Configurable) agent, node, evt);
+            CardAgent agent = (CardAgent) c.newInstance();
+            if (agent instanceof LogSource) {
+                ((LogSource)agent).setLogger (
+                    ConfigLogger.getLogger (node),
+                    ConfigLogger.getRealm (node)
+                );
+            }
+            if (agent instanceof Configurable)
+                configureAgent ((Configurable) agent, node, evt);
 
-	    agent.setPersistentEngine 
-		(ConfigPersistentEngine.getPersistentEngine (node));
+            agent.setPersistentEngine 
+                (ConfigPersistentEngine.getPersistentEngine (node));
 
-	    if (agent instanceof Loggeable)
-		evt.addMessage (agent);
+            if (agent instanceof Loggeable)
+                evt.addMessage (agent);
 
-	    CardAgentLookup.add (agent);
+            CardAgentLookup.add (agent);
         } catch (ClassNotFoundException e) {
-	    throw new ConfigurationException ("config-agent:"+className, e);
+            throw new ConfigurationException ("config-agent:"+className, e);
         } catch (InstantiationException e) {
-	    throw new ConfigurationException ("config-agent:"+className, e);
+            throw new ConfigurationException ("config-agent:"+className, e);
         } catch (IllegalAccessException e) {
-	    throw new ConfigurationException ("config-agent:"+className, e);
-	}
-	Logger.log (evt);
+            throw new ConfigurationException ("config-agent:"+className, e);
+        }
+        Logger.log (evt);
     }
     public void reconfig (QSP qsp, Node node) throws ConfigurationException
     {
-	String className = 
-	    node.getAttributes().getNamedItem ("class").getNodeValue();
-	LogEvent evt = new LogEvent (qsp, "re-config-agent", className);
-	try {
-	    CardAgent agent = CardAgentLookup.getAgent (className);
-	    if (agent instanceof ReConfigurable) 
-		configureAgent ((Configurable) agent, node, evt);
-	} catch (CardAgentNotFoundException e) {
-	    evt.addMessage ("<card-agent-not-found/>");
-	}
-	Logger.log (evt);
+        String className = 
+            node.getAttributes().getNamedItem ("class").getNodeValue();
+        LogEvent evt = new LogEvent (qsp, "re-config-agent", className);
+        try {
+            CardAgent agent = CardAgentLookup.getAgent (className);
+            if (agent instanceof ReConfigurable) 
+                configureAgent ((Configurable) agent, node, evt);
+        } catch (CardAgentNotFoundException e) {
+            evt.addMessage ("<card-agent-not-found/>");
+        }
+        Logger.log (evt);
     }
     private void configureAgent (Configurable agent, Node node, LogEvent evt)
-	throws ConfigurationException
+        throws ConfigurationException
     {
-	agent.setConfiguration (new SimpleConfiguration (
-		ConfigUtil.addProperties (node, null, evt)
-	    )
-	);
+        agent.setConfiguration (new SimpleConfiguration (
+                ConfigUtil.addProperties (node, null, evt)
+            )
+        );
     }
 }
 

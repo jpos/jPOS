@@ -99,20 +99,20 @@ public class Sender
     Thread thisThread;
 
     public Sender() {
-	super();
+        super();
     }
 
     public void setConfiguration (Configuration cfg) 
-	throws ConfigurationException
+        throws ConfigurationException
     {
         this.cfg = cfg;
-	try {
-	    mux = ISOMUX.getMUX (cfg.get ("mux"));
-	    message = new File (cfg.get ("message"));
-	    initialDelay    = cfg.getLong ("initial-delay");
-	    waitForResponse = cfg.getInt  ("wait-for-response");
-	    delay           = cfg.getLong ("delay");
-	    packager        = new XMLPackager();
+        try {
+            mux = ISOMUX.getMUX (cfg.get ("mux"));
+            message = new File (cfg.get ("message"));
+            initialDelay    = cfg.getLong ("initial-delay");
+            waitForResponse = cfg.getInt  ("wait-for-response");
+            delay           = cfg.getLong ("delay");
+            packager        = new XMLPackager();
 
             String seqName  = cfg.get ("sequencer", null);
             if (seqName != null) {
@@ -122,11 +122,11 @@ public class Sender
             } else if (seq == null) {
                 seq = new VolatileSequencer();
             }
-	} catch (NameRegistrar.NotFoundException e) {
-	    throw new ConfigurationException (e);
-	} catch (ISOException e) {
-	    throw new ConfigurationException (e);
-	}
+        } catch (NameRegistrar.NotFoundException e) {
+            throw new ConfigurationException (e);
+        } catch (ISOException e) {
+            throw new ConfigurationException (e);
+        }
     }
 
     private void applyProps (ISOMsg m) throws ISOException {
@@ -156,43 +156,43 @@ public class Sender
 
     public void run () {
         thisThread = Thread.currentThread ();
-	if (initialDelay > 0)
-	    try {
-		Thread.sleep (initialDelay);
-	    } catch (InterruptedException e) { }
+        if (initialDelay > 0)
+            try {
+                Thread.sleep (initialDelay);
+            } catch (InterruptedException e) { }
 
-	do {
-	    LogEvent evt = new LogEvent (this, "sender-run");
-	    try {
-		sendOne (evt);
-	    } catch (Throwable e) {
-		evt.addMessage (e);
-	    } finally  {
-		Logger.log (evt);
-	    }
-	    if (delay > 0)
-		try {
-		    Thread.sleep (delay);
-		} catch (InterruptedException e) { }
-	} while (!cfg.getBoolean ("one-shot"));
+        do {
+            LogEvent evt = new LogEvent (this, "sender-run");
+            try {
+                sendOne (evt);
+            } catch (Throwable e) {
+                evt.addMessage (e);
+            } finally  {
+                Logger.log (evt);
+            }
+            if (delay > 0)
+                try {
+                    Thread.sleep (delay);
+                } catch (InterruptedException e) { }
+        } while (!cfg.getBoolean ("one-shot"));
     }
 
     public void sendOne(LogEvent evt) throws IOException {
-	FileInputStream fis = new FileInputStream (message);
-	try {
-	    byte[] b = new byte[fis.available()];
-	    fis.read (b);
-	    ISOMsg m = new ISOMsg ();
-	    m.setPackager (packager);
-	    m.unpack (b);
+        FileInputStream fis = new FileInputStream (message);
+        try {
+            byte[] b = new byte[fis.available()];
+            fis.read (b);
+            ISOMsg m = new ISOMsg ();
+            m.setPackager (packager);
+            m.unpack (b);
             applyProps (m);
-	    evt.addMessage (m);
-	    ISORequest req = new ISORequest (m);
+            evt.addMessage (m);
+            ISORequest req = new ISORequest (m);
             long start = System.currentTimeMillis ();
-	    mux.queue (req);
-	    if (waitForResponse > 0) {
-		ISOMsg resp = req.getResponse (waitForResponse);
-		if (resp != null) {
+            mux.queue (req);
+            if (waitForResponse > 0) {
+                ISOMsg resp = req.getResponse (waitForResponse);
+                if (resp != null) {
                     lastRoundTrip = System.currentTimeMillis () - start;
 
                     StringBuffer sb = new StringBuffer (resp.getMTI());
@@ -206,18 +206,18 @@ public class Sender
                     }
                     lastResponseCode = sb.toString ();
 
-		    evt.addMessage (resp);
+                    evt.addMessage (resp);
                 }
                 else {
                     lastRoundTrip = -1;
                     lastResponseCode = "<timed-out>";
                 }
-	    }
-	} catch (ISOException e) {
-	    evt.addMessage (e);
-    	} finally {
-	    fis.close();
-	}
+            }
+        } catch (ISOException e) {
+            evt.addMessage (e);
+        } finally {
+            fis.close();
+        }
     }
 
     public void forceSend () {

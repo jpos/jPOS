@@ -74,24 +74,24 @@ import org.w3c.dom.Node;
 public class ConfigObject implements QSPReConfigurator {
     public void config (QSP qsp, Node node) throws ConfigurationException
     {
-	String className = 
-	    node.getAttributes().getNamedItem ("class").getNodeValue();
-	String name   = getValue (node, "name");
-	LogEvent evt  = new LogEvent (qsp, "config-object", className);
+        String className = 
+            node.getAttributes().getNamedItem ("class").getNodeValue();
+        String name   = getValue (node, "name");
+        LogEvent evt  = new LogEvent (qsp, "config-object", className);
         try {
             Class c = Class.forName(className);
-	    Object task = c.newInstance();
-	    if (task instanceof LogSource) {
-		((LogSource)task).setLogger (
-		    ConfigLogger.getLogger (node),
-		    ConfigLogger.getRealm (node)
-		);
-	    }
-	    if (task instanceof Configurable) 
-		configureTask ((Configurable) task, node, evt);
+            Object task = c.newInstance();
+            if (task instanceof LogSource) {
+                ((LogSource)task).setLogger (
+                    ConfigLogger.getLogger (node),
+                    ConfigLogger.getRealm (node)
+                );
+            }
+            if (task instanceof Configurable) 
+                configureTask ((Configurable) task, node, evt);
 
-	    if (name != null) {
-		NameRegistrar.register (name, task);
+            if (name != null) {
+                NameRegistrar.register (name, task);
                 try {
                     qsp.registerMBean (task, "type=object,name="+name);
                 } catch (NotCompliantMBeanException e) {
@@ -101,9 +101,9 @@ public class ConfigObject implements QSPReConfigurator {
             }
 
             if (task instanceof Runnable) {
-	        Thread thread = new Thread ((Runnable) task);
-	        thread.setName ("qsp-object-"+name);
-	        thread.start();
+                Thread thread = new Thread ((Runnable) task);
+                thread.setName ("qsp-object-"+name);
+                thread.start();
             }
 
             if (task instanceof Stopable) {
@@ -116,42 +116,42 @@ public class ConfigObject implements QSPReConfigurator {
                 }
             }
         } catch (Exception e) {
-	    throw new ConfigurationException ("config-task:"+className, e);
+            throw new ConfigurationException ("config-task:"+className, e);
         } finally {
-	    Logger.log (evt);
+            Logger.log (evt);
         }
     }
     public void reconfig (QSP qsp, Node node) throws ConfigurationException
     {
-	String name   = getValue (node, "name");
-	if (name == null)
-	    return; // nothing to do
+        String name   = getValue (node, "name");
+        if (name == null)
+            return; // nothing to do
 
-	LogEvent evt = new LogEvent (qsp, "re-config-object", name);
-	try {
-	    Object task = NameRegistrar.get (name);
-	    if (task instanceof ReConfigurable) 
-		configureTask ((Configurable) task, node, evt);
-	} catch (NameRegistrar.NotFoundException e) {
-	    evt.addMessage ("<object-not-found/>");
-	}
-	Logger.log (evt);
+        LogEvent evt = new LogEvent (qsp, "re-config-object", name);
+        try {
+            Object task = NameRegistrar.get (name);
+            if (task instanceof ReConfigurable) 
+                configureTask ((Configurable) task, node, evt);
+        } catch (NameRegistrar.NotFoundException e) {
+            evt.addMessage ("<object-not-found/>");
+        }
+        Logger.log (evt);
     }
     private void configureTask (Configurable task, Node node, LogEvent evt)
-	throws ConfigurationException
+        throws ConfigurationException
     {
         String [] attributeNames = { "name", "connection-pool", "thread-pool" };
         Properties props = ConfigUtil.addAttributes (
             node, attributeNames, null, evt
         );
-	task.setConfiguration (new SimpleConfiguration (
-	    ConfigUtil.addProperties (node, props, evt)
-	    )
-	);
+        task.setConfiguration (new SimpleConfiguration (
+            ConfigUtil.addProperties (node, props, evt)
+            )
+        );
     }
     private String getValue (Node node, String tagName) {
-	Node n = node.getAttributes().getNamedItem (tagName);
-	return n != null ? n.getNodeValue() : null;
+        Node n = node.getAttributes().getNamedItem (tagName);
+        return n != null ? n.getNodeValue() : null;
     }
 }
 

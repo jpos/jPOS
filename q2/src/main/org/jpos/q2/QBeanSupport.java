@@ -107,7 +107,7 @@ public class QBeanSupport
     }
 
     public String getLogger () {
-    	return log.getLogger().getName();
+        return log.getLogger().getName();
     }
     public Log getLog () {
         return log;

@@ -75,38 +75,38 @@ import org.w3c.dom.Node;
 public class ConfigServer implements QSPReConfigurator {
     public void config (QSP qsp, Node node) throws ConfigurationException
     {
-	ThreadPool pool = null;
-	LogEvent evt = new LogEvent (qsp, "config-server");
-	String name = node.getAttributes().getNamedItem ("name").getNodeValue();
-	int port = Integer.parseInt (
-	    node.getAttributes().getNamedItem ("port").getNodeValue()
-	);
-	Node maxSessions = node.getAttributes().getNamedItem ("maxSessions");
-	if (maxSessions != null) 
-	    pool = new ThreadPool (
-		1, Integer.parseInt (maxSessions.getNodeValue())
-	    );
-	Logger logger = ConfigLogger.getLogger (node);
-	String realm  = ConfigLogger.getRealm (node);
-	ISOChannel channel = ConfigChannel.getChildChannel (node);
+        ThreadPool pool = null;
+        LogEvent evt = new LogEvent (qsp, "config-server");
+        String name = node.getAttributes().getNamedItem ("name").getNodeValue();
+        int port = Integer.parseInt (
+            node.getAttributes().getNamedItem ("port").getNodeValue()
+        );
+        Node maxSessions = node.getAttributes().getNamedItem ("maxSessions");
+        if (maxSessions != null) 
+            pool = new ThreadPool (
+                1, Integer.parseInt (maxSessions.getNodeValue())
+            );
+        Logger logger = ConfigLogger.getLogger (node);
+        String realm  = ConfigLogger.getRealm (node);
+        ISOChannel channel = ConfigChannel.getChildChannel (node);
 
-	if (!(channel instanceof ServerChannel))
-	    throw new ConfigurationException (
-		channel.getName() + " does not implement ServerChannel"
-	    );
+        if (!(channel instanceof ServerChannel))
+            throw new ConfigurationException (
+                channel.getName() + " does not implement ServerChannel"
+            );
 
-	ISOServer server = new ISOServer (port, (ServerChannel) channel, pool);
+        ISOServer server = new ISOServer (port, (ServerChannel) channel, pool);
 
-	evt.addMessage ("Server "+name+"/"+channel.getName()+"/"+port);
-	server.setName (name);
-	server.setLogger (logger, realm);
+        evt.addMessage ("Server "+name+"/"+channel.getName()+"/"+port);
+        server.setName (name);
+        server.setLogger (logger, realm);
         if (server instanceof Configurable) 
-	    ((Configurable)server).setConfiguration (
+            ((Configurable)server).setConfiguration (
                 new SimpleConfiguration (ConfigUtil.addProperties (node, null, evt))
             );
-	JPanel panel = ConfigControlPanel.getPanel (node);
-	if (panel != null) {
-	    ISOChannelPanel icp = new ISOChannelPanel (name);
+        JPanel panel = ConfigControlPanel.getPanel (node);
+        if (panel != null) {
+            ISOChannelPanel icp = new ISOChannelPanel (name);
 
             if (node.getAttributes().getNamedItem ("scroll") != null)
                 if (node.getAttributes().getNamedItem("scroll").
@@ -119,30 +119,30 @@ public class ConfigServer implements QSPReConfigurator {
                 );
                 icp.getISOMeter().setRefresh (refresh);
             }
-	    panel.add (icp);
-	    server.addObserver (icp);
-	}
-	new Thread (server).start();
+            panel.add (icp);
+            server.addObserver (icp);
+        }
+        new Thread (server).start();
         try {
             qsp.registerMBean (server, "type=server,name="+name);
         } catch (Exception e) {
             evt.addMessage (e.getMessage());
         } 
-	Logger.log (evt);
+        Logger.log (evt);
     }
     public static ISOServer getServer (Node node) {
-	Node n = node.getAttributes().getNamedItem ("name");
-	if (n != null)
-	    try {
-		return ISOServer.getServer (n.getNodeValue());
-	    } catch (NotFoundException e) { }
-	return null;
+        Node n = node.getAttributes().getNamedItem ("name");
+        if (n != null)
+            try {
+                return ISOServer.getServer (n.getNodeValue());
+            } catch (NotFoundException e) { }
+        return null;
     }
     public void reconfig (QSP qsp, Node node) throws ConfigurationException {
         ISOServer server = getServer (node);
-	LogEvent evt = new LogEvent (qsp, "re-config-server");
+        LogEvent evt = new LogEvent (qsp, "re-config-server");
         if (server instanceof ReConfigurable) 
-	    ((ReConfigurable)server).setConfiguration (
+            ((ReConfigurable)server).setConfiguration (
                 new SimpleConfiguration (ConfigUtil.addProperties (node, null, evt))
             );
         Logger.log (evt);

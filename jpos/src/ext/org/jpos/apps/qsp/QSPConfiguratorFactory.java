@@ -59,7 +59,7 @@ import org.jpos.core.ConfigurationException;
  */
 public class QSPConfiguratorFactory {
     public static final String PACKAGEPREFIX = 
-	"org.jpos.apps.qsp.config.Config";
+        "org.jpos.apps.qsp.config.Config";
 
    /**
     * creates an instance of a QSPConfigurator<br>
@@ -68,18 +68,18 @@ public class QSPConfiguratorFactory {
     * @throws ConfigurationException
     */
     public static QSPConfigurator create (String tagName) 
-	throws ConfigurationException
+        throws ConfigurationException
     {
-	String className = toClassName (tagName);
-	try {
+        String className = toClassName (tagName);
+        try {
             Class c = Class.forName(className);
-	    return (QSPConfigurator) c.newInstance();
-	} catch (Exception e) {
-	    throw new ConfigurationException ("can't create "+className, e);
-	}
+            return (QSPConfigurator) c.newInstance();
+        } catch (Exception e) {
+            throw new ConfigurationException ("can't create "+className, e);
+        }
     }
     private static String toClassName (String s) {
-	boolean capitalize = true;
+        boolean capitalize = true;
         StringTokenizer st = new StringTokenizer (s, ":");
         String packagePrefix;
        
@@ -89,17 +89,17 @@ public class QSPConfiguratorFactory {
         } else
             packagePrefix = PACKAGEPREFIX;
             
-	s = s.toLowerCase();
-	StringBuffer sb = new StringBuffer(packagePrefix);
-	for (int i=0; i<s.length(); i++) {
-	    char c = s.charAt(i);
-	    if (c == '-') {
-		capitalize = true;
-		continue;
-	    }
-	    sb.append (capitalize ? Character.toUpperCase(c) : c);
-	    capitalize = false;
-	}
-	return sb.toString();
+        s = s.toLowerCase();
+        StringBuffer sb = new StringBuffer(packagePrefix);
+        for (int i=0; i<s.length(); i++) {
+            char c = s.charAt(i);
+            if (c == '-') {
+                capitalize = true;
+                continue;
+            }
+            sb.append (capitalize ? Character.toUpperCase(c) : c);
+            capitalize = false;
+        }
+        return sb.toString();
     }
 }

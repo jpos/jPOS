@@ -68,42 +68,42 @@ import org.jpos.iso.packager.EuroPackager;
 
 public class Test extends SimpleLogSource {
     public Test (Logger logger, String realm) {
-	setLogger (logger, realm);
+        setLogger (logger, realm);
     }
     public void simpleMessage () {
-	LogEvent evt = new LogEvent (this, "europay");
-	Date d = new Date();
+        LogEvent evt = new LogEvent (this, "europay");
+        Date d = new Date();
 
-	ISOPackager packager = new EuroPackager(); 
-	packager.setLogger (getLogger(), "Packager");
+        ISOPackager packager = new EuroPackager(); 
+        packager.setLogger (getLogger(), "Packager");
 
-	try {
-	    String hex = 
-		 "3038303080200000800100000400"
-		+"00001000000030313635353930363637"
-		+"39333939303238202020203034303231"
-		+"30303430333330303430373031303430"
-		+"3832353030313036303033303330";
+        try {
+            String hex = 
+                 "3038303080200000800100000400"
+                +"00001000000030313635353930363637"
+                +"39333939303238202020203034303231"
+                +"30303430333330303430373031303430"
+                +"3832353030313036303033303330";
 
-	    byte[] b = ISOUtil.hex2byte 
-	    	(hex.getBytes(), 0, hex.length()/2);
+            byte[] b = ISOUtil.hex2byte 
+                (hex.getBytes(), 0, hex.length()/2);
 
 
-	    ISOMsg m = new ISOMsg();
-	    m.setPackager (packager);
-	    m.unpack (b);
-	    evt.addMessage (m);
-	    byte[] bp = m.pack();
-	} catch (ISOException e) {
-	    evt.addMessage (e);
-	}
-	Logger.log (evt);
+            ISOMsg m = new ISOMsg();
+            m.setPackager (packager);
+            m.unpack (b);
+            evt.addMessage (m);
+            byte[] bp = m.pack();
+        } catch (ISOException e) {
+            evt.addMessage (e);
+        }
+        Logger.log (evt);
     }
     public static void main (String args[]) {
-	Logger logger = new Logger();
-	logger.addListener (new SimpleLogListener (System.out));
+        Logger logger = new Logger();
+        logger.addListener (new SimpleLogListener (System.out));
 
-	Test t = new Test (logger, "Test");
-	t.simpleMessage();
+        Test t = new Test (logger, "Test");
+        t.simpleMessage();
     }
 }

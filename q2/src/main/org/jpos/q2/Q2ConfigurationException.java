@@ -56,10 +56,10 @@ package org.jpos.q2;
 public class Q2ConfigurationException extends Exception {
     Throwable cause;
     public Q2ConfigurationException () {
-	super();
+        super();
     }
     public Q2ConfigurationException (String detail) {
-	super (detail);
+        super (detail);
     }
     public Q2ConfigurationException (Exception cause) {
         super (cause.toString ());

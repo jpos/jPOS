@@ -183,13 +183,13 @@ public class ChannelAdaptor
     }
 
     public ISOChannel newChannel (Element e, QFactory f) 
-	throws Q2ConfigurationException
+        throws Q2ConfigurationException
     {
         String channelName  = e.getAttributeValue ("class");
         String packagerName = e.getAttributeValue ("packager");
 
         ISOChannel channel   = (ISOChannel) f.newInstance (channelName);
-	ISOPackager packager = null;
+        ISOPackager packager = null;
         if (packagerName != null) {
             packager = (ISOPackager) f.newInstance (packagerName);
             channel.setPackager (packager);
@@ -208,7 +208,7 @@ public class ChannelAdaptor
     }
 
     private void addFilters (FilteredChannel channel, Element e, QFactory fact) 
-	throws Q2ConfigurationException
+        throws Q2ConfigurationException
     {
         Iterator iter = e.getChildren ("filter").iterator();
         while (iter.hasNext()) {

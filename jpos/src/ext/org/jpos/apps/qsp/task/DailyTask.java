@@ -68,8 +68,8 @@ import org.jpos.util.ThreadPool;
  * @version $Revision$ $Date$
  */
 public class DailyTask 
-	extends SimpleLogSource 
-	implements Runnable, ReConfigurable, DailyTaskMBean
+        extends SimpleLogSource 
+        implements Runnable, ReConfigurable, DailyTaskMBean
 {
     Configuration cfg;
     Thread thisThread = null;
@@ -77,45 +77,45 @@ public class DailyTask
     Runnable task;
 
     public DailyTask () {
-	super();
+        super();
     }
 
     public DailyTask(Runnable task, ThreadPool pool) {
-	super();
-	this.task = task;
-	this.pool = pool;
+        super();
+        this.task = task;
+        this.pool = pool;
     }
 
     public void setConfiguration (Configuration cfg) 
-	throws ConfigurationException
+        throws ConfigurationException
     {
 
-	if ( (task instanceof ReConfigurable) ||
-	     (this.cfg == null && task instanceof Configurable) )
-	    ((Configurable)task).setConfiguration (cfg);
+        if ( (task instanceof ReConfigurable) ||
+             (this.cfg == null && task instanceof Configurable) )
+            ((Configurable)task).setConfiguration (cfg);
 
-	this.cfg = cfg;
-	try {
-	    getWhen ();
-	    if (thisThread != null) 
-		thisThread.interrupt();
-	} catch (Exception e) {
-	    throw new ConfigurationException 
-		("property start invalid: "+cfg.get ("start"), e);
-	}
+        this.cfg = cfg;
+        try {
+            getWhen ();
+            if (thisThread != null) 
+                thisThread.interrupt();
+        } catch (Exception e) {
+            throw new ConfigurationException 
+                ("property start invalid: "+cfg.get ("start"), e);
+        }
     }
     public void run () {
-	thisThread = Thread.currentThread();
-	for (;;) {
-	    waitUntilStartTime();
-	    if (task != null) {
-		if (pool != null)
-		    pool.execute(task);
-		else
-		    task.run();
-	    }
-	    waitOneMinute();
-	}
+        thisThread = Thread.currentThread();
+        for (;;) {
+            waitUntilStartTime();
+            if (task != null) {
+                if (pool != null)
+                    pool.execute(task);
+                else
+                    task.run();
+            }
+            waitOneMinute();
+        }
     }
 
     public void forceRun () {
@@ -123,31 +123,31 @@ public class DailyTask
     }
 
     protected void waitUntilStartTime() {
-	Date when = getWhen();
-	for (;;) {
-	    Date now = new Date();
-	    if (now.before (when)) {
-		long sleepTime = when.getTime() - now.getTime();
-		Logger.log (new LogEvent (this, "sleeping",
-		    (sleepTime/1000) + " secs until " + when.toString()));
-		try {
-		    Thread.sleep (sleepTime);
-		} catch (InterruptedException e) { 
-		    when = getWhen();
-		}
-	    } else
-		break;
-	}
+        Date when = getWhen();
+        for (;;) {
+            Date now = new Date();
+            if (now.before (when)) {
+                long sleepTime = when.getTime() - now.getTime();
+                Logger.log (new LogEvent (this, "sleeping",
+                    (sleepTime/1000) + " secs until " + when.toString()));
+                try {
+                    Thread.sleep (sleepTime);
+                } catch (InterruptedException e) { 
+                    when = getWhen();
+                }
+            } else
+                break;
+        }
     }
 
     protected void waitOneMinute () {
-	try {
-	    Thread.sleep (60000);
-	} catch (InterruptedException e) { }
+        try {
+            Thread.sleep (60000);
+        } catch (InterruptedException e) { }
     }
 
     public Date getWhen() {
-	String s = cfg.get ("start")+":00:00";
+        String s = cfg.get ("start")+":00:00";
         int hh = Integer.parseInt(s.substring (0, 2));
         int mm = Integer.parseInt(s.substring (3, 5));
         int ss = Integer.parseInt(s.substring (6, 8));
@@ -160,15 +160,15 @@ public class DailyTask
         cal.set (Calendar.MINUTE, mm);
         cal.set (Calendar.SECOND, ss);
 
-	Date when = cal.getTime();
-	if (when.before(now)) 
-	    when = new Date(when.getTime() + 24*60*60*1000);
+        Date when = cal.getTime();
+        if (when.before(now)) 
+            when = new Date(when.getTime() + 24*60*60*1000);
 
-	return when;
+        return when;
     }
     public void setLogger (Logger logger, String realm) {
-	super.setLogger (logger, realm);
-	if (task instanceof LogSource)
-	    ((LogSource)task).setLogger (logger, realm + ".task");
+        super.setLogger (logger, realm);
+        if (task instanceof LogSource)
+            ((LogSource)task).setLogger (logger, realm + ".task");
     }
 }

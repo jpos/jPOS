@@ -72,110 +72,110 @@ public class ConfigDirPoll implements QSPReConfigurator {
 
     public void config (QSP qsp, Node node) throws ConfigurationException
     {
-	LogEvent evt = new LogEvent (qsp, "config-dir-poll");
-	try {
-	    DirPoll dp = new DirPoll();
-	    configDirPoll (qsp, node, dp, evt);
+        LogEvent evt = new LogEvent (qsp, "config-dir-poll");
+        try {
+            DirPoll dp = new DirPoll();
+            configDirPoll (qsp, node, dp, evt);
 
-	    // non-reconfigurable attributes
-	    dp.setThreadPool (new ThreadPool (1, getPoolSize (node, evt)));
+            // non-reconfigurable attributes
+            dp.setThreadPool (new ThreadPool (1, getPoolSize (node, evt)));
 
-	    String name = ConfigUtil.getAttribute (node, "name", null);
-	    if (name != null)
-		NameRegistrar.register (NAMEREGISTRAR_PREFIX+name, dp);
+            String name = ConfigUtil.getAttribute (node, "name", null);
+            if (name != null)
+                NameRegistrar.register (NAMEREGISTRAR_PREFIX+name, dp);
 
-	    Thread thread = new Thread(dp);
-	    thread.setName ("qsp-dir-poll-"+name);
-	    thread.start();
-	} finally {
-	    Logger.log (evt);
-	}
+            Thread thread = new Thread(dp);
+            thread.setName ("qsp-dir-poll-"+name);
+            thread.start();
+        } finally {
+            Logger.log (evt);
+        }
     }
 
     public void reconfig (QSP qsp, Node node) throws ConfigurationException
     {
-	Node nameNode = node.getAttributes().getNamedItem ("name");
-	if (nameNode == null)
-	    return; 
+        Node nameNode = node.getAttributes().getNamedItem ("name");
+        if (nameNode == null)
+            return; 
 
-	String name   = nameNode.getNodeValue();
-	LogEvent evt = new LogEvent (qsp, "re-config-dir-poll");
-	evt.addMessage ("<name>" + name + "</name>");
-	try {
-	    DirPoll dp = (DirPoll) 
-		NameRegistrar.get (NAMEREGISTRAR_PREFIX + name);
-	    if (dp != null)
-		configDirPoll (qsp, node, dp, evt);
-	} catch (NameRegistrar.NotFoundException e) {
-	    evt.addMessage ("<dir-poll-not-found/>");
-	}
-	Logger.log (evt);
+        String name   = nameNode.getNodeValue();
+        LogEvent evt = new LogEvent (qsp, "re-config-dir-poll");
+        evt.addMessage ("<name>" + name + "</name>");
+        try {
+            DirPoll dp = (DirPoll) 
+                NameRegistrar.get (NAMEREGISTRAR_PREFIX + name);
+            if (dp != null)
+                configDirPoll (qsp, node, dp, evt);
+        } catch (NameRegistrar.NotFoundException e) {
+            evt.addMessage ("<dir-poll-not-found/>");
+        }
+        Logger.log (evt);
     }
     // ---------------------------------------------------- private helpers
     private void configureProcessor 
-	(Configurable processor, Node node, LogEvent evt)
-	throws ConfigurationException
+        (Configurable processor, Node node, LogEvent evt)
+        throws ConfigurationException
     {
-	processor.setConfiguration (new SimpleConfiguration (
-		ConfigUtil.addProperties (node, null, evt)
-	    )
-	);
+        processor.setConfiguration (new SimpleConfiguration (
+                ConfigUtil.addProperties (node, null, evt)
+            )
+        );
     }
     private int getPoolSize(Node node, LogEvent evt) {
-	int i = ConfigUtil.getAttributeAsInt (node, "poolsize", 10);
-	evt.addMessage ("<poolsize>"+i+"</poolsize>");
-	return i;
+        int i = ConfigUtil.getAttributeAsInt (node, "poolsize", 10);
+        evt.addMessage ("<poolsize>"+i+"</poolsize>");
+        return i;
     }
     private int getPollInterval (Node node, LogEvent evt) {
-	int i = ConfigUtil.getAttributeAsInt (node, "interval", 1000);
-	evt.addMessage ("<interval>"+i+"</interval>");
-	return i;
+        int i = ConfigUtil.getAttributeAsInt (node, "interval", 1000);
+        evt.addMessage ("<interval>"+i+"</interval>");
+        return i;
     }
     private String getPriorities (Node node, LogEvent evt) {
-	String s = ConfigUtil.getAttribute (node, "priorities", "");
-	evt.addMessage ("<priorities>"+s+"</priorities>");
-	return s;
+        String s = ConfigUtil.getAttribute (node, "priorities", "");
+        evt.addMessage ("<priorities>"+s+"</priorities>");
+        return s;
     }
     private String getPath (Node node, LogEvent evt) { 
-	String s = ConfigUtil.getAttribute (node, "path", "");
-	evt.addMessage ("<path>"+s+"</path>");
-	return s;
+        String s = ConfigUtil.getAttribute (node, "path", "");
+        evt.addMessage ("<path>"+s+"</path>");
+        return s;
     }
     private void configDirPoll (QSP qsp, Node node, DirPoll dp, LogEvent evt)
-	throws ConfigurationException
+        throws ConfigurationException
     {
-	dp.setPath (getPath (node, evt));
-	dp.setLogger (
-	    ConfigLogger.getLogger (node),
-	    ConfigLogger.getRealm  (node)
-	);
-	dp.setPollInterval (getPollInterval (node, evt));
-	dp.setPriorities (getPriorities (node, evt)); 
-	dp.setConfiguration (
+        dp.setPath (getPath (node, evt));
+        dp.setLogger (
+            ConfigLogger.getLogger (node),
+            ConfigLogger.getRealm  (node)
+        );
+        dp.setPollInterval (getPollInterval (node, evt));
+        dp.setPriorities (getPriorities (node, evt)); 
+        dp.setConfiguration (
             new SimpleConfiguration (
-		ConfigUtil.addProperties (node, null, evt)
-	    )
-	);
+                ConfigUtil.addProperties (node, null, evt)
+            )
+        );
 
-	String className = ConfigUtil.getAttribute (node, "processor", null);
-	Object processor = ConfigUtil.newInstance (className);
+        String className = ConfigUtil.getAttribute (node, "processor", null);
+        Object processor = ConfigUtil.newInstance (className);
 
-	if (!(processor instanceof DirPoll.Processor) &&
+        if (!(processor instanceof DirPoll.Processor) &&
             !(processor instanceof DirPoll.FileProcessor))
-	    throw new ConfigurationException (
-		"invalid class "+className
-		+" does not implement DirPoll.[File]Processor");
-	dp.setProcessor (processor);
-	evt.addMessage ("<processor>"+className+"</processor>");
-	if (ConfigUtil.getAttribute (node, "create", "no").equals ("yes")) {
-	    evt.addMessage ("<create-dirs/>");
-	    dp.createDirs();
-	}
-	if (processor instanceof LogSource)
-	    ((LogSource)processor).setLogger (dp.getLogger(), dp.getRealm());
+            throw new ConfigurationException (
+                "invalid class "+className
+                +" does not implement DirPoll.[File]Processor");
+        dp.setProcessor (processor);
+        evt.addMessage ("<processor>"+className+"</processor>");
+        if (ConfigUtil.getAttribute (node, "create", "no").equals ("yes")) {
+            evt.addMessage ("<create-dirs/>");
+            dp.createDirs();
+        }
+        if (processor instanceof LogSource)
+            ((LogSource)processor).setLogger (dp.getLogger(), dp.getRealm());
 
-	if (processor instanceof Configurable)
-	    configureProcessor ((Configurable) processor, node, evt);
+        if (processor instanceof Configurable)
+            configureProcessor ((Configurable) processor, node, evt);
     }
 }
 

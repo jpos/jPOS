@@ -112,11 +112,11 @@ public class SAFChannel extends LogHandler
     Vector outgoingFilters, incomingFilters;
 
     public SAFChannel () {
-	super();
+        super();
         cnt = new int[SIZEOF_CNT];
-	queue = new BlockingQueue();
-	outgoingFilters = new Vector();
-	incomingFilters = new Vector();
+        queue = new BlockingQueue();
+        outgoingFilters = new Vector();
+        incomingFilters = new Vector();
         new Thread (this).start ();
     }
 
@@ -129,22 +129,22 @@ public class SAFChannel extends LogHandler
     public void reconnect ()  { }
 
     public boolean isConnected() {
-	return usable;
+        return usable;
     }
 
     public synchronized void send (ISOMsg m)
-	throws IOException,ISOException, VetoException
+        throws IOException,ISOException, VetoException
     {
-	if (!isConnected())
-	    throw new ISOException ("unconnected ISOChannel retry later");
+        if (!isConnected())
+            throw new ISOException ("unconnected ISOChannel retry later");
         m.setDirection(ISOMsg.INCOMING);
-	LogEvent evt = new LogEvent (this, "saf-send", m);
+        LogEvent evt = new LogEvent (this, "saf-send", m);
         m = applyFilters (outgoingFilters, m, evt);
         m.setDirection(ISOMsg.INCOMING);
         logUpdate (new LogEntry (LogEntry.QUEUE, m));
         queue.enqueue (m);
-	cnt[TX]++;
-	Logger.log (evt);
+        cnt[TX]++;
+        Logger.log (evt);
     }
 
     /* ---------------------------------------------------------------
@@ -168,33 +168,33 @@ public class SAFChannel extends LogHandler
     }
 
     public void setUsable (boolean usable) {
-	this.usable = usable;
+        this.usable = usable;
     }
 
     public void setName (String name) {
-	this.name = name;
-	NameRegistrar.register ("channel."+name, this);
+        this.name = name;
+        NameRegistrar.register ("channel."+name, this);
     }
 
     public String getName() {
-	return name;
+        return name;
     }
 
     public ISOPackager getPackager() {
-	return null;
+        return null;
     }
     public void resetCounters() {
         cnt = new int[SIZEOF_CNT];
     }
     public void setLogger (Logger logger, String realm) {
-	this.logger = logger;
-	this.realm  = realm;
+        this.logger = logger;
+        this.realm  = realm;
     }
     public String getRealm () {
-	return realm;
+        return realm;
     }
     public Logger getLogger() {
-	return logger;
+        return logger;
     }
     /**
      * @param cfg 
@@ -212,7 +212,7 @@ public class SAFChannel extends LogHandler
     {
         debug = cfg.getBoolean ("debug") && (getLogger() != null);
         if (this.cfg == null) {
-	    try {
+            try {
                 ReliableLog log = 
                     new ReliableLog (cfg.get("logdir",null), this);
                 try {
@@ -225,9 +225,9 @@ public class SAFChannel extends LogHandler
                 if (debug)
                     dumpList ();
                 setUsable (true);
-	    } catch (IOException e) {
-	        throw new ConfigurationException (e);
-	    } 
+            } catch (IOException e) {
+                throw new ConfigurationException (e);
+            } 
         }
         this.cfg = cfg;
     }
@@ -262,25 +262,25 @@ public class SAFChannel extends LogHandler
      * @param log an already recovered - ready to use ReliableLog
      */
     public void setReliableLog (ReliableLog log) {
-	this.log = log;
+        this.log = log;
     }
     public void snapshot(OutputStream out) throws Exception {
-	ObjectOutputStream stream = new ObjectOutputStream(out);
-	stream.writeUTF(this.getClass().getName());
-	stream.writeObject(queue.getQueue());
-	stream.writeObject(null);
-	stream.flush();
+        ObjectOutputStream stream = new ObjectOutputStream(out);
+        stream.writeUTF(this.getClass().getName());
+        stream.writeObject(queue.getQueue());
+        stream.writeObject(null);
+        stream.flush();
     }
     public void recover(InputStream in) throws Exception
     {
-	ObjectInputStream stream = new ObjectInputStream(in);
-	if (!this.getClass().getName().equals(stream.readUTF()))
-	    throw new IOException("log from wrong implementation");
-	queue.setQueue ((LinkedList) stream.readObject());
+        ObjectInputStream stream = new ObjectInputStream(in);
+        if (!this.getClass().getName().equals(stream.readUTF()))
+            throw new IOException("log from wrong implementation");
+        queue.setQueue ((LinkedList) stream.readObject());
     }
     public void applyUpdate(Object update) throws Exception {
-	if (!(update instanceof LogEntry))
-	    throw new Exception ("not a LogEntry");
+        if (!(update instanceof LogEntry))
+            throw new Exception ("not a LogEntry");
 
         LinkedList list = queue.getQueue();
         LogEntry entry = (LogEntry) update;
@@ -331,27 +331,27 @@ public class SAFChannel extends LogHandler
         outgoingFilters.remove (filter);
     }
     public Collection getIncomingFilters() {
-	return incomingFilters;
+        return incomingFilters;
     }
     public Collection getOutgoingFilters() {
-	return outgoingFilters;
+        return outgoingFilters;
     }
     public void setIncomingFilters (Collection filters) {
-	incomingFilters = new Vector (filters);
+        incomingFilters = new Vector (filters);
     }
     public void setOutgoingFilters (Collection filters) {
-	outgoingFilters = new Vector (filters);
+        outgoingFilters = new Vector (filters);
     }
     protected ISOMsg applyFilters (Collection filters, ISOMsg m, LogEvent evt) 
-	throws VetoException
+        throws VetoException
     {
-	Iterator iter  = outgoingFilters.iterator();
-	while (iter.hasNext()) {
-	    m.setDirection(ISOMsg.OUTGOING);
-	    m = ((ISOFilter) iter.next()).filter (this, m, evt);
-	}
-	m.setDirection(ISOMsg.OUTGOING);
-	return m;
+        Iterator iter  = outgoingFilters.iterator();
+        while (iter.hasNext()) {
+            m.setDirection(ISOMsg.OUTGOING);
+            m = ((ISOFilter) iter.next()).filter (this, m, evt);
+        }
+        m.setDirection(ISOMsg.OUTGOING);
+        return m;
     }
 
     public void run () {
@@ -434,11 +434,11 @@ public class SAFChannel extends LogHandler
         private static final long serialVersionUID=1;
 
         public int op;
-	public Object value;
-	public LogEntry (int op, Object value) {
+        public Object value;
+        public LogEntry (int op, Object value) {
             super();
             this.op = op;
-	    this.value = value;
+            this.value = value;
         }
         public void dump (PrintStream p, String indent) {
             String inner = indent + "  ";
@@ -463,7 +463,7 @@ public class SAFChannel extends LogHandler
                     p.println (indent + "<" + tag + "/>");
                 }
             }
-	}
+        }
     }
     public int getPendingCount() {
         return queue.pending ();

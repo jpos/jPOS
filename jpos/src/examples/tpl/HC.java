@@ -56,17 +56,17 @@ public class HC {
     public String pan = null;
     
     public HC () {
-	super();
+        super();
     }
     public HC (String pan) {
-	super();
-	this.pan = pan;
+        super();
+        this.pan = pan;
     }
     public void setPan (String pan) {
-	this.pan = pan;
+        this.pan = pan;
     }
     public String getPan () {
-	return pan;
+        return pan;
     }
 }
 

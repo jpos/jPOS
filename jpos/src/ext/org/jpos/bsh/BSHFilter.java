@@ -66,7 +66,7 @@ import bsh.Interpreter;
 public class BSHFilter implements ISOFilter, ReConfigurable {
     Configuration cfg;
     public BSHFilter () {
-	super();
+        super();
     }
    /**
     * @param cfg
@@ -99,7 +99,7 @@ public class BSHFilter implements ISOFilter, ReConfigurable {
             evt.addMessage (e);
             throw new VetoException (e);
         }
-	return m;
+        return m;
     }
 }
 

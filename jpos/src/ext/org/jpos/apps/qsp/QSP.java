@@ -107,31 +107,31 @@ public class QSP implements ErrorHandler, LogSource, Runnable, QSPMBean {
     protected boolean newConfigFile;
 
     public static String[] SUPPORTED_TAGS = 
-	{ "logger",
-	  "qsp-config",
-	  "log-listener",
+        { "logger",
+          "qsp-config",
+          "log-listener",
           "thread-pool",
           "connection-pool",
           "object",
-	  "persistent-engine",
-	  "sequencer",
+          "persistent-engine",
+          "sequencer",
           "s-m-adapter",
           "secure-key-store",
-	  "control-panel",
-	  "channel",
-	  "filter",
-	  "mux",
-	  "server",
-	  "request-listener",
-	  "card-agent",
-	  "dir-poll",
-	  "task",
-	  "daily-task"
-	};
+          "control-panel",
+          "channel",
+          "filter",
+          "mux",
+          "server",
+          "request-listener",
+          "card-agent",
+          "dir-poll",
+          "task",
+          "daily-task"
+        };
 
     public QSP () {
-	super();
-	reconfigurables = new ArrayList();
+        super();
+        reconfigurables = new ArrayList();
         supportedTags = SUPPORTED_TAGS;
         extendedTags = new String[0];
         validation = true;
@@ -148,7 +148,7 @@ public class QSP implements ErrorHandler, LogSource, Runnable, QSPMBean {
         String[] extendedTags, 
         boolean validation)
     {
-	this();
+        this();
         if (supportedTags != null)
             this.supportedTags = supportedTags;
         if (extendedTags != null)
@@ -191,7 +191,7 @@ public class QSP implements ErrorHandler, LogSource, Runnable, QSPMBean {
         this.parser     = parser;
     }
     public void setConfig (Document config) {
-	this.config = config;
+        this.config = config;
     }
     public void setConfigFile (String f) throws IOException {
         File newFile = new File (f);
@@ -207,7 +207,7 @@ public class QSP implements ErrorHandler, LogSource, Runnable, QSPMBean {
         }
     }
     public void setMonitorConfigInterval (long l) {
-	monitorConfigInterval = l;
+        monitorConfigInterval = l;
         // this is causing problems on JDK1.4's AWT (when using panels)
         // Thread.currentThread().interrupt ();
     }
@@ -215,62 +215,62 @@ public class QSP implements ErrorHandler, LogSource, Runnable, QSPMBean {
         return monitorConfigInterval;
     }
     public String getConfigFile () {
-	return configFile.toString ();
+        return configFile.toString ();
     }
     public Collection getReConfigurables() {
-	return reconfigurables;
+        return reconfigurables;
     }
     public ControlPanel initControlPanel (int rows, int cols) {
-	if (controlPanel == null) {
-	    synchronized (QSP.class) {
-		if (controlPanel == null) 
-		    controlPanel = new ControlPanel (this, rows, cols);
-	    }
-	}
-	return controlPanel;
+        if (controlPanel == null) {
+            synchronized (QSP.class) {
+                if (controlPanel == null) 
+                    controlPanel = new ControlPanel (this, rows, cols);
+            }
+        }
+        return controlPanel;
     }
     public ControlPanel getControlPanel (){
-	return controlPanel;
+        return controlPanel;
     }
     public void warning (SAXParseException e) throws SAXException {
-	Logger.log (new LogEvent (this, "warning", e));
-	throw e;
+        Logger.log (new LogEvent (this, "warning", e));
+        throw e;
     }
     public void error (SAXParseException e) throws SAXException {
-	Logger.log (new LogEvent (this, "error", e));
-	throw e;
+        Logger.log (new LogEvent (this, "error", e));
+        throw e;
     }
     public void fatalError (SAXParseException e) throws SAXException {
-	Logger.log (new LogEvent (this, "fatalError", e));
-	throw e;
+        Logger.log (new LogEvent (this, "fatalError", e));
+        throw e;
     }
     public void setLogger (Logger logger, String realm) {
-	this.logger = logger;
-	this.realm  = realm;
+        this.logger = logger;
+        this.realm  = realm;
     }
     public String getRealm () {
-	return realm;
+        return realm;
     }
     public Logger getLogger () {
-	return logger;
+        return logger;
     }
     public void configure (String tagname) throws ConfigurationException {
-	QSPConfigurator configurator = QSPConfiguratorFactory.create (tagname);
-	NodeList nodes = config.getElementsByTagName (tagname);
-	if (configurator instanceof QSPReConfigurator && nodes.getLength()>0)
-	    reconfigurables.add (tagname);
-	for (int i=0; i<nodes.getLength(); i++) {
-	    configurator.config (this, nodes.item(i));
-	}
+        QSPConfigurator configurator = QSPConfiguratorFactory.create (tagname);
+        NodeList nodes = config.getElementsByTagName (tagname);
+        if (configurator instanceof QSPReConfigurator && nodes.getLength()>0)
+            reconfigurables.add (tagname);
+        for (int i=0; i<nodes.getLength(); i++) {
+            configurator.config (this, nodes.item(i));
+        }
     }
     public void reconfigure (String tagname) throws ConfigurationException {
-	QSPConfigurator configurator = QSPConfiguratorFactory.create (tagname);
-	if (configurator instanceof QSPReConfigurator) {
-	    NodeList nodes = config.getElementsByTagName (tagname);
-	    for (int i=0; i<nodes.getLength(); i++) 
-		((QSPReConfigurator)configurator).reconfig 
-		    (this, nodes.item(i));
-	}
+        QSPConfigurator configurator = QSPConfiguratorFactory.create (tagname);
+        if (configurator instanceof QSPReConfigurator) {
+            NodeList nodes = config.getElementsByTagName (tagname);
+            for (int i=0; i<nodes.getLength(); i++) 
+                ((QSPReConfigurator)configurator).reconfig 
+                    (this, nodes.item(i));
+        }
     }
     protected void configure () throws ConfigurationException {
         LogEvent evt = new LogEvent (this, "configure");
@@ -289,7 +289,7 @@ public class QSP implements ErrorHandler, LogSource, Runnable, QSPMBean {
         Logger.log (evt);
     }
     private boolean monitorConfigFile () {
-	long l;
+        long l;
         while (lastModified == (l=configFile.lastModified())) {
             if (newConfigFile) {
                 Logger.log (new LogEvent (this, "new-config-detected"));
@@ -309,7 +309,7 @@ public class QSP implements ErrorHandler, LogSource, Runnable, QSPMBean {
                 return true;
             }
         }
-	return (lastModified = l) != 0;
+        return (lastModified = l) != 0;
     }
     public void shutdown () {
         Logger.log (new LogEvent (this, "shutdown"));
@@ -404,34 +404,34 @@ public class QSP implements ErrorHandler, LogSource, Runnable, QSPMBean {
         String[] supportedTags, 
         String[] extendedTags, boolean validation)
     {
-	DOMParser parser = new DOMParser();
+        DOMParser parser = new DOMParser();
         QSP qsp = new QSP (supportedTags, extendedTags, validation);
-	try {
+        try {
             qsp.setParser (parser);
-	    qsp.setConfigFile (configFile);
-	    parser.setFeature(
+            qsp.setConfigFile (configFile);
+            parser.setFeature(
                 "http://xml.org/sax/features/validation", 
                 qsp.getValidation()
             );
-	    parser.setErrorHandler (qsp);
-	    parser.parse (qsp.configFile.getPath());
-	    qsp.setConfig (parser.getDocument());
+            parser.setErrorHandler (qsp);
+            parser.parse (qsp.configFile.getPath());
+            qsp.setConfig (parser.getDocument());
             qsp.configure ();
                 qsp.registerMBean (
                 TransientSpace.getSpace (), "type=space,name=default"
             );
-	    if (controlPanel != null)
-		controlPanel.showUp();
+            if (controlPanel != null)
+                controlPanel.showUp();
 
-	    if (qsp.getLogger() != null) 
-		new SystemMonitor (3600000, qsp.getLogger(), "monitor");
+            if (qsp.getLogger() != null) 
+                new SystemMonitor (3600000, qsp.getLogger(), "monitor");
 
             ThreadGroup group = new ThreadGroup("QSP");
             new Thread (group, qsp).start();
-	} catch (Exception e) {
-	    Logger.log (new LogEvent (qsp, "error", e));
+        } catch (Exception e) {
+            Logger.log (new LogEvent (qsp, "error", e));
             e.printStackTrace ();
-	}
+        }
     }
     /**
      * @return task instance with given name.
@@ -439,9 +439,9 @@ public class QSP implements ErrorHandler, LogSource, Runnable, QSPMBean {
      * @see NameRegistrar
      */
     public static Object getTask (String name)
-	throws NameRegistrar.NotFoundException
+        throws NameRegistrar.NotFoundException
     {
-	return NameRegistrar.get (
+        return NameRegistrar.get (
             ConfigTask.NAMEREGISTRAR_PREFIX+name
         );
     }
@@ -482,10 +482,10 @@ public class QSP implements ErrorHandler, LogSource, Runnable, QSPMBean {
         launch (configFile, SUPPORTED_TAGS, new String[0], true);
     }
     public static void main (String args[]) {
-	if (args.length != 1) {
-	    System.out.println ("Usage: org.jpos.apps.qsp.QSP <configfile>");
-	    System.exit (1);
-	}
+        if (args.length != 1) {
+            System.out.println ("Usage: org.jpos.apps.qsp.QSP <configfile>");
+            System.exit (1);
+        }
         launch (args[0]);
     }
 }

@@ -49,6 +49,9 @@
 
 /*
  * $Log$
+ * Revision 1.10  2003/10/13 11:04:20  apr
+ * tabs expanded to spaces
+ *
  * Revision 1.9  2003/09/03 00:22:14  apr
  * New LogListener interface returns [possibly null] LogEvent
  *
@@ -118,106 +121,106 @@ public class OperatorLogListener
     BlockingQueue queue;
 
     public OperatorLogListener () {
-	super();
-	queue = new BlockingQueue();
+        super();
+        queue = new BlockingQueue();
     }
     public OperatorLogListener (Configuration cfg) {
-	super();
-	this.cfg = cfg;
-	queue = new BlockingQueue();
-	new Thread(this).start();
+        super();
+        this.cfg = cfg;
+        queue = new BlockingQueue();
+        new Thread(this).start();
     }
     public void setConfiguration (Configuration cfg) 
-	throws ConfigurationException
+        throws ConfigurationException
     {
-	this.cfg = cfg;
-	assertProperty ("jpos.operator.to");
-	assertProperty ("jpos.operator.subject.prefix");
-	assertProperty ("jpos.operator.tags");
-	assertProperty ("jpos.operator.delay");
-	assertProperty ("jpos.mail.smtp.host");
-	new Thread(this).start();
+        this.cfg = cfg;
+        assertProperty ("jpos.operator.to");
+        assertProperty ("jpos.operator.subject.prefix");
+        assertProperty ("jpos.operator.tags");
+        assertProperty ("jpos.operator.delay");
+        assertProperty ("jpos.mail.smtp.host");
+        new Thread(this).start();
     }
     public void run() {
-	Thread.currentThread().setName ("OperatorLogListener");
-	int delay = cfg.getInt ("jpos.operator.delay");
-	try {
+        Thread.currentThread().setName ("OperatorLogListener");
+        int delay = cfg.getInt ("jpos.operator.delay");
+        try {
             ISOUtil.sleep (2500);   // initial delay
-	    for (;;) {
-		try {
-		    LogEvent ev[] = new LogEvent[1];
-		    if (queue.pending() > 0) {
-			ev = new LogEvent [queue.pending()];
-			for (int i=0; i < ev.length; i++)
-			    ev[i] = (LogEvent) queue.dequeue();
-		    } else 
-			ev[0] = (LogEvent) queue.dequeue();
-		    sendMail (ev);
-		    if (delay > 0)
-			Thread.sleep (delay);
-		} catch (InterruptedException e) { }
-	    }
-	} catch (BlockingQueue.Closed e) { }
+            for (;;) {
+                try {
+                    LogEvent ev[] = new LogEvent[1];
+                    if (queue.pending() > 0) {
+                        ev = new LogEvent [queue.pending()];
+                        for (int i=0; i < ev.length; i++)
+                            ev[i] = (LogEvent) queue.dequeue();
+                    } else 
+                        ev[0] = (LogEvent) queue.dequeue();
+                    sendMail (ev);
+                    if (delay > 0)
+                        Thread.sleep (delay);
+                } catch (InterruptedException e) { }
+            }
+        } catch (BlockingQueue.Closed e) { }
     }
     private void sendMail (LogEvent[] ev) {
-	String from    = cfg.get ("jpos.operator.from", "jpos-logger");
-	String[] to    = cfg.getAll ("jpos.operator.to");
-	String[] cc    = cfg.getAll ("jpos.operator.cc");
-	String[] bcc   = cfg.getAll ("jpos.operator.bcc");
-	String subject = cfg.get ("jpos.operator.subject.prefix");
-	if (ev.length > 1) 
-	    subject = subject + ev.length + " events";
-	else
-	    subject = subject + ev[0].getRealm() + " - " +ev[0].tag;
+        String from    = cfg.get ("jpos.operator.from", "jpos-logger");
+        String[] to    = cfg.getAll ("jpos.operator.to");
+        String[] cc    = cfg.getAll ("jpos.operator.cc");
+        String[] bcc   = cfg.getAll ("jpos.operator.bcc");
+        String subject = cfg.get ("jpos.operator.subject.prefix");
+        if (ev.length > 1) 
+            subject = subject + ev.length + " events";
+        else
+            subject = subject + ev[0].getRealm() + " - " +ev[0].tag;
 
-	// create some properties and get the default Session
-	Properties props = System.getProperties();
-	props.put("mail.smtp.host", cfg.get ("jpos.mail.smtp.host", 
-		"localhost"));
-	
-	Session session = Session.getDefaultInstance(props, null);
-	session.setDebug(false);
-	
-	try {
-	    // create a message
-	    MimeMessage msg = new MimeMessage(session);
-	    msg.setFrom (new InternetAddress(from));
+        // create some properties and get the default Session
+        Properties props = System.getProperties();
+        props.put("mail.smtp.host", cfg.get ("jpos.mail.smtp.host", 
+                "localhost"));
+        
+        Session session = Session.getDefaultInstance(props, null);
+        session.setDebug(false);
+        
+        try {
+            // create a message
+            MimeMessage msg = new MimeMessage(session);
+            msg.setFrom (new InternetAddress(from));
 
-	    InternetAddress[] address = new InternetAddress[to.length];
+            InternetAddress[] address = new InternetAddress[to.length];
             for (int i=0; i<to.length; i++) 
                 address[i] = new InternetAddress (to[i]);
-	    msg.setRecipients (Message.RecipientType.TO, getAddress (to));
-	    msg.setRecipients (Message.RecipientType.CC, getAddress (cc));
-	    msg.setRecipients (Message.RecipientType.BCC, getAddress (bcc));
-	    msg.setSubject(subject);
-	    Multipart mp = new MimeMultipart();
+            msg.setRecipients (Message.RecipientType.TO, getAddress (to));
+            msg.setRecipients (Message.RecipientType.CC, getAddress (cc));
+            msg.setRecipients (Message.RecipientType.BCC, getAddress (bcc));
+            msg.setSubject(subject);
+            Multipart mp = new MimeMultipart();
 
-	    for(int i=0; i<ev.length; i++) {
-		ByteArrayOutputStream buf = new ByteArrayOutputStream();
-		PrintStream p = new PrintStream (buf);
-		ev[i].dump (p, "");
-		p.close();
-	
-		// create and fill the first message part
-		MimeBodyPart mbp = new MimeBodyPart();
-		mbp.setText(buf.toString());
-		mbp.setFileName (ev[i].tag + "_" + i + ".txt");
-		mp.addBodyPart(mbp);
-	    }
-	    msg.setContent(mp);
-	    msg.setSentDate(new Date());
-	    Transport.send(msg);
-	} catch (MessagingException mex) {
-	    mex.printStackTrace();
-	    Exception ex = null;
-	    if ((ex = mex.getNextException()) != null) {
-		ex.printStackTrace();
-	    }
-	}
+            for(int i=0; i<ev.length; i++) {
+                ByteArrayOutputStream buf = new ByteArrayOutputStream();
+                PrintStream p = new PrintStream (buf);
+                ev[i].dump (p, "");
+                p.close();
+        
+                // create and fill the first message part
+                MimeBodyPart mbp = new MimeBodyPart();
+                mbp.setText(buf.toString());
+                mbp.setFileName (ev[i].tag + "_" + i + ".txt");
+                mp.addBodyPart(mbp);
+            }
+            msg.setContent(mp);
+            msg.setSentDate(new Date());
+            Transport.send(msg);
+        } catch (MessagingException mex) {
+            mex.printStackTrace();
+            Exception ex = null;
+            if ((ex = mex.getNextException()) != null) {
+                ex.printStackTrace();
+            }
+        }
     }
     private boolean checkOperatorTag(LogEvent ev) {
-	String tags = cfg.get ("jpos.operator.tags");
-	return tags.indexOf (ev.tag) >= 0;
+        String tags = cfg.get ("jpos.operator.tags");
+        return tags.indexOf (ev.tag) >= 0;
     }
     private InternetAddress[] getAddress (String[] s) throws AddressException {
         InternetAddress[] address = new InternetAddress[s.length];
@@ -226,14 +229,14 @@ public class OperatorLogListener
         return address;
     }
     public synchronized LogEvent log (LogEvent ev) {
-	if (checkOperatorTag(ev))
-	    queue.enqueue (ev);
+        if (checkOperatorTag(ev))
+            queue.enqueue (ev);
         return ev;
     }
     private void assertProperty (String propName) throws ConfigurationException
     {
-	if (cfg.get (propName) == null)
-	    throw new ConfigurationException 
-		(propName + " property not present");
+        if (cfg.get (propName) == null)
+            throw new ConfigurationException 
+                (propName + " property not present");
     }
 }

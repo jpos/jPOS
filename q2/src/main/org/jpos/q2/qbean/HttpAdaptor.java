@@ -118,7 +118,7 @@ public class HttpAdaptor
 
     public String getLogger () 
     {
-    	return log.getLogger().getName();
+        return log.getLogger().getName();
     }
 
     public void init ()

@@ -66,30 +66,30 @@ import java.util.Properties;
  */
 public class Test {
     public static void main(String[] args) throws Exception
-	{
-		// Create an RMIConnector, passing it the JNDI name of the JRMP Adaptor
-		String jndiName = "jrmp";
-		Properties prop = System.getProperties();
-		/*
-		Hashtable prop = new Hashtable();
-		prop.put("java.naming.factory.initial","com.sun.jndi.rmi.registry.RegistryContextFactory");
-		prop.put("java.naming.provider.url","rmi://localhost:1099");
-		*/
-		RMIConnector connector = new JRMPConnector();
-		connector.connect(jndiName,prop);
+        {
+                // Create an RMIConnector, passing it the JNDI name of the JRMP Adaptor
+                String jndiName = "jrmp";
+                Properties prop = System.getProperties();
+                /*
+                Hashtable prop = new Hashtable();
+                prop.put("java.naming.factory.initial","com.sun.jndi.rmi.registry.RegistryContextFactory");
+                prop.put("java.naming.provider.url","rmi://localhost:1099");
+                */
+                RMIConnector connector = new JRMPConnector();
+                connector.connect(jndiName,prop);
 
-		RemoteMBeanServer server = connector.getRemoteMBeanServer();
-		
-		//get Attribute value
-		ObjectName objName = new ObjectName("QSP:type=server,name=server");
-		int jobcount = ((Integer)server.getAttribute(objName,"JobCount")).intValue();
-		System.out.println("jobcount:" + jobcount);
-		int port = ((Integer)server.getAttribute(objName,"Port")).intValue();
-		System.out.println("port:" + port);
-		
-		//invoke method
-		server.invoke(objName,"resetCounters",new Object[0],new String[0]);
+                RemoteMBeanServer server = connector.getRemoteMBeanServer();
+                
+                //get Attribute value
+                ObjectName objName = new ObjectName("QSP:type=server,name=server");
+                int jobcount = ((Integer)server.getAttribute(objName,"JobCount")).intValue();
+                System.out.println("jobcount:" + jobcount);
+                int port = ((Integer)server.getAttribute(objName,"Port")).intValue();
+                System.out.println("port:" + port);
+                
+                //invoke method
+                server.invoke(objName,"resetCounters",new Object[0],new String[0]);
 
-	}
+        }
 }
 

@@ -207,7 +207,7 @@ public class QMUX
         return unhandled;
     }
     private void addListeners () 
-	throws Q2ConfigurationException
+        throws Q2ConfigurationException
     {
         QFactory factory = getFactory ();
         Iterator iter = getPersist().getChildren (
@@ -223,7 +223,7 @@ public class QMUX
         }
     }
     public void addISORequestListener(ISORequestListener l) {
-	listeners.add (l);
+        listeners.add (l);
     }
     protected void processUnhandled (ISOMsg m) {
         ISOSource source = m.getSource ();

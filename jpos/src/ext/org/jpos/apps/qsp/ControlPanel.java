@@ -69,9 +69,9 @@ public class ControlPanel extends JPanel {
     static JFrame frame;
     QSP qsp;
     public ControlPanel (QSP qsp, int rows, int cols) {
-	super();
-	this.qsp = qsp;
-	setLayout (new GridLayout(rows, cols));
+        super();
+        this.qsp = qsp;
+        setLayout (new GridLayout(rows, cols));
     }
     public void showUp () {
         frame = new JFrame("jPOS QSP");
@@ -85,7 +85,7 @@ public class ControlPanel extends JPanel {
         frame.getContentPane().setLayout(new BorderLayout());
         // frame.setJMenuBar(createMenuBar());
         frame.getContentPane().add(this, BorderLayout.CENTER);
-	frame.show();
-	frame.pack();
+        frame.show();
+        frame.pack();
     }
 }

@@ -75,12 +75,12 @@ import org.w3c.dom.Node;
 public class ConfigMux implements QSPReConfigurator {
     public void config (QSP qsp, Node node) throws ConfigurationException
     {
-	String name = node.getAttributes().getNamedItem ("name").getNodeValue();
-	LogEvent evt = new LogEvent (qsp, "config-mux", name);
-	Logger logger = ConfigLogger.getLogger (node);
-	String realm  = ConfigLogger.getRealm (node);
-	ISOChannel channel = ConfigChannel.getChildChannel (node);
-	ISOMUX mux = null;
+        String name = node.getAttributes().getNamedItem ("name").getNodeValue();
+        LogEvent evt = new LogEvent (qsp, "config-mux", name);
+        Logger logger = ConfigLogger.getLogger (node);
+        String realm  = ConfigLogger.getRealm (node);
+        ISOChannel channel = ConfigChannel.getChildChannel (node);
+        ISOMUX mux = null;
         try{
             if(node.getAttributes().getNamedItem("class")==null) 
                 mux = new ISOMUX (channel, logger, realm);
@@ -93,18 +93,18 @@ public class ConfigMux implements QSPReConfigurator {
         }catch(Exception e){
             throw new ConfigurationException("error trying to construct ISOMUX", e);
         }
-	boolean connect = node.getAttributes()
-			.getNamedItem("connect").getNodeValue().equals("yes");
-	evt.addMessage ("MUX "+name+"/"+channel.getName());
-	mux.setName (name);
-	mux.setConnect (connect);
+        boolean connect = node.getAttributes()
+                        .getNamedItem("connect").getNodeValue().equals("yes");
+        evt.addMessage ("MUX "+name+"/"+channel.getName());
+        mux.setName (name);
+        mux.setConnect (connect);
         if (mux instanceof Configurable) {
             Configuration cfg = new SimpleConfiguration (
                 ConfigUtil.addProperties (node, new Properties(), evt)
             );
             ((Configurable)mux).setConfiguration (cfg);
         }
-	new Thread (mux).start();
+        new Thread (mux).start();
         try {
             qsp.registerMBean (mux, "type=mux,name="+name);
         } catch (NotCompliantMBeanException e) {
@@ -113,41 +113,41 @@ public class ConfigMux implements QSPReConfigurator {
             evt.addMessage (e);
             throw new ConfigurationException (e);
         } finally {
-	    Logger.log (evt);
+            Logger.log (evt);
         }
     }
     public void reconfig (QSP qsp, Node node) throws ConfigurationException
     {
-	String name = node.getAttributes().getNamedItem ("name").getNodeValue();
-	LogEvent evt = new LogEvent (qsp, "re-config-mux", name);
-	boolean connect = node.getAttributes()
-			.getNamedItem("connect").getNodeValue().equals("yes");
-	try {
-	    ISOMUX mux = ISOMUX.getMUX (name);
-	    mux.setLogger (ConfigLogger.getLogger (node),
-			   ConfigLogger.getRealm (node));
-	    mux.setConnect (connect);
+        String name = node.getAttributes().getNamedItem ("name").getNodeValue();
+        LogEvent evt = new LogEvent (qsp, "re-config-mux", name);
+        boolean connect = node.getAttributes()
+                        .getNamedItem("connect").getNodeValue().equals("yes");
+        try {
+            ISOMUX mux = ISOMUX.getMUX (name);
+            mux.setLogger (ConfigLogger.getLogger (node),
+                           ConfigLogger.getRealm (node));
+            mux.setConnect (connect);
 
-	    if (mux instanceof ReConfigurable) {
-	        Configuration cfg = new SimpleConfiguration (
-		    ConfigUtil.addProperties (node, new Properties(), evt)
-	        );
-		((Configurable)mux).setConfiguration (cfg);
-	    }
-	} catch (NotFoundException e) {
-	    evt.addMessage (e);
-	    throw new ConfigurationException (e);
-	} finally {
-	    Logger.log (evt);
-	}
+            if (mux instanceof ReConfigurable) {
+                Configuration cfg = new SimpleConfiguration (
+                    ConfigUtil.addProperties (node, new Properties(), evt)
+                );
+                ((Configurable)mux).setConfiguration (cfg);
+            }
+        } catch (NotFoundException e) {
+            evt.addMessage (e);
+            throw new ConfigurationException (e);
+        } finally {
+            Logger.log (evt);
+        }
     }
 
     public static ISOMUX getMUX (Node node) {
-	Node n = node.getAttributes().getNamedItem ("name");
-	if (n != null)
-	    try {
-		return ISOMUX.getMUX (n.getNodeValue());
-	    } catch (NotFoundException e) { }
-	return null;
+        Node n = node.getAttributes().getNamedItem ("name");
+        if (n != null)
+            try {
+                return ISOMUX.getMUX (n.getNodeValue());
+            } catch (NotFoundException e) { }
+        return null;
     }
 }

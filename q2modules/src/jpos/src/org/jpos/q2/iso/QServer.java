@@ -215,7 +215,7 @@ public class QServer
         return minSessions;
     }
     private void addListeners () 
-	throws Q2ConfigurationException
+        throws Q2ConfigurationException
     {
         QFactory factory = getFactory ();
         Iterator iter = getPersist().getChildren (

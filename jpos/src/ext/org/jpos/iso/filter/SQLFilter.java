@@ -81,7 +81,7 @@ public class SQLFilter implements ISOFilter, Configurable, NodeConfigurable {
     int condNum;
 
     public SQLFilter () {
-	super();
+        super();
         condNum = 0;
         SQLUpdate = null;
         condition = null;
@@ -127,7 +127,7 @@ public class SQLFilter implements ISOFilter, Configurable, NodeConfigurable {
         j++;
        }
       }
-	condNum = j;
+        condNum = j;
     }
 
     private void SQLStatement( ISOMsg m,  LogEvent evt)
@@ -161,7 +161,7 @@ public class SQLFilter implements ISOFilter, Configurable, NodeConfigurable {
           throw new VetoException(e);
         }
       }
-   	return m;
+        return m;
     }
 }
 

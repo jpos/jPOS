@@ -73,61 +73,61 @@ public class ConfigLogListener implements QSPConfigurator {
 
     public void config (QSP qsp, Node node) throws ConfigurationException
     {
-	LogEvent evt = new LogEvent (qsp, "config-log-listener");
-	LogListener listener = getLogListener (node, evt);
-	Node parent;
+        LogEvent evt = new LogEvent (qsp, "config-log-listener");
+        LogListener listener = getLogListener (node, evt);
+        Node parent;
 
-	// Find parent logger name
-	if ( (parent  = node.getParentNode()) == null)
-	    throw new ConfigurationException ("orphan log-listener");
-	String loggerName = 
-	    parent.getAttributes().getNamedItem ("name").getNodeValue();
+        // Find parent logger name
+        if ( (parent  = node.getParentNode()) == null)
+            throw new ConfigurationException ("orphan log-listener");
+        String loggerName = 
+            parent.getAttributes().getNamedItem ("name").getNodeValue();
 
-	Logger l = Logger.getLogger(loggerName);
-	l.addListener(listener);
-	evt.addMessage ("parent logger=" + loggerName);
-	Logger.log (evt);
+        Logger l = Logger.getLogger(loggerName);
+        l.addListener(listener);
+        evt.addMessage ("parent logger=" + loggerName);
+        Logger.log (evt);
     }
 
     private LogListener getLogListener (Node node, LogEvent evt) 
-	throws ConfigurationException
+        throws ConfigurationException
     {
-	LogListener listener = null;
+        LogListener listener = null;
 
-	Node n = node.getAttributes().getNamedItem ("name");
-	String name = null;
-	if (n != null) {
-	    name = n.getNodeValue();
-	    try {
-		listener = (LogListener) 
-		    NameRegistrar.get ("log-listener." + name);
-		evt.addMessage ("log-listener '" + name + "' reused");
-	    } catch (NameRegistrar.NotFoundException e) { }
-	}
-	if (listener == null) {
-	    listener = createLogListener (node, evt);
-	    if (name != null)
-		NameRegistrar.register ("log-listener." + name, listener);
-	}
-	return listener;
+        Node n = node.getAttributes().getNamedItem ("name");
+        String name = null;
+        if (n != null) {
+            name = n.getNodeValue();
+            try {
+                listener = (LogListener) 
+                    NameRegistrar.get ("log-listener." + name);
+                evt.addMessage ("log-listener '" + name + "' reused");
+            } catch (NameRegistrar.NotFoundException e) { }
+        }
+        if (listener == null) {
+            listener = createLogListener (node, evt);
+            if (name != null)
+                NameRegistrar.register ("log-listener." + name, listener);
+        }
+        return listener;
     }
 
     private LogListener createLogListener (Node node, LogEvent evt) 
-	throws ConfigurationException 
+        throws ConfigurationException 
     {
-	String className =
-	    node.getAttributes().getNamedItem ("class").getNodeValue();
-	LogListener listener =
-	    (LogListener) ConfigUtil.newInstance (className);
+        String className =
+            node.getAttributes().getNamedItem ("class").getNodeValue();
+        LogListener listener =
+            (LogListener) ConfigUtil.newInstance (className);
 
-	evt.addMessage ("<log-listener class=\""+className+"\"/>");
-	if (listener instanceof Configurable) {
-	    Properties props = ConfigUtil.addProperties (node, null, evt);
-	    ((Configurable)listener).setConfiguration (
-		new SimpleConfiguration (props)
-	    );
-	    evt.addMessage ("<configurable/>");
-	}
-	return listener;
+        evt.addMessage ("<log-listener class=\""+className+"\"/>");
+        if (listener instanceof Configurable) {
+            Properties props = ConfigUtil.addProperties (node, null, evt);
+            ((Configurable)listener).setConfiguration (
+                new SimpleConfiguration (props)
+            );
+            evt.addMessage ("<configurable/>");
+        }
+        return listener;
     }
 }

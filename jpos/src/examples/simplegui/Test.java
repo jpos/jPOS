@@ -73,22 +73,22 @@ public class Test extends JPanel implements Runnable {
 
     public Test () {
         super();
-	setLayout(new BorderLayout());
+        setLayout(new BorderLayout());
         add (createChannelPanel());
     }
 
     private ISOChannelPanel createChannelPanel() {
-	Logger logger = new Logger();
-	logger.addListener (new SimpleLogListener (System.out));
+        Logger logger = new Logger();
+        logger.addListener (new SimpleLogListener (System.out));
 
-	channel = 
-	    new ASCIIChannel("localhost", 8000, new ISO87APackager());
-	mux = new ISOMUX (channel);
-	((LogSource)channel).setLogger (logger, "channel");
-	mux.setLogger (logger, "mux");
+        channel = 
+            new ASCIIChannel("localhost", 8000, new ISO87APackager());
+        mux = new ISOMUX (channel);
+        ((LogSource)channel).setLogger (logger, "channel");
+        mux.setLogger (logger, "mux");
         Thread t = new Thread(mux);
-	t.start();
-	return new ISOChannelPanel (channel, "localhost:8000");
+        t.start();
+        return new ISOChannelPanel (channel, "localhost:8000");
     }
 
     private JMenuBar createMenuBar() {
@@ -126,32 +126,32 @@ public class Test extends JPanel implements Runnable {
         return file;
     }
     public void run () {
-	Sequencer seq = new VolatileSequencer();
-	for (;;) {
-	    try { 
-		Thread.sleep (10000);
-		Date d = new Date();
-		ISOMsg m = new ISOMsg();
-		m.setMTI ("0800");
-		m.set (new ISOField (11,
-		    ISOUtil.zeropad(
-			new Integer(seq.get ("traceno")).toString(),6)
-		    )
-		);
-		m.set (new ISOField(12,ISODate.getTime(d)));
-		m.set (new ISOField(13,ISODate.getDate(d))); 
-		m.set (new ISOField(41, "00000001"));
-		m.set (new ISOField(70, "301"));
-		if (!channel.isConnected())
-		    channel.connect();
-		channel.send (m);
-		// ISORequest req = new ISORequest (m);
-		// mux.queue (req);
-		// req.getResponse (10000);
-	    } catch (Exception e) {
-		e.printStackTrace();
-	    }
-	}
+        Sequencer seq = new VolatileSequencer();
+        for (;;) {
+            try { 
+                Thread.sleep (10000);
+                Date d = new Date();
+                ISOMsg m = new ISOMsg();
+                m.setMTI ("0800");
+                m.set (new ISOField (11,
+                    ISOUtil.zeropad(
+                        new Integer(seq.get ("traceno")).toString(),6)
+                    )
+                );
+                m.set (new ISOField(12,ISODate.getTime(d)));
+                m.set (new ISOField(13,ISODate.getDate(d))); 
+                m.set (new ISOField(41, "00000001"));
+                m.set (new ISOField(70, "301"));
+                if (!channel.isConnected())
+                    channel.connect();
+                channel.send (m);
+                // ISORequest req = new ISORequest (m);
+                // mux.queue (req);
+                // req.getResponse (10000);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public static void main (String args[]) {
@@ -163,13 +163,13 @@ public class Test extends JPanel implements Runnable {
         };
         frame.addWindowListener(l);
 
-	Test test = new Test();
+        Test test = new Test();
         JOptionPane.setRootFrame(frame);
         frame.getContentPane().setLayout(new BorderLayout());
         frame.setJMenuBar(test.createMenuBar());
         frame.getContentPane().add(test, BorderLayout.CENTER);
-	frame.pack();
+        frame.pack();
         frame.show();
-	new Thread (test).start();
+        new Thread (test).start();
     }
 }

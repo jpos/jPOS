@@ -69,38 +69,38 @@ import org.w3c.dom.Node;
 public class ConfigPersistentEngine implements QSPConfigurator {
     public void config (QSP qsp, Node node) throws ConfigurationException
     {
-	String className = 
-	    node.getAttributes().getNamedItem("class") != null ? 
-		node.getAttributes().getNamedItem ("class").getNodeValue() :
-		"org.jpos.tpl.PersistentEngine";
-	LogEvent evt = 
-	new LogEvent (qsp, "config-persistent-engine", className);
-	PersistentEngine engine = new PersistentEngine();
-	engine.setLogger (
-	    ConfigLogger.getLogger (node),
-	    ConfigLogger.getRealm (node)
-	);
-	engine.setConfiguration (
-	    new SimpleConfiguration (
-		ConfigUtil.addProperties (node, null, evt)
-	    )
-	);
-	if (engine instanceof Loggeable)
-	    evt.addMessage (engine);
-	NameRegistrar.register ("persistent.engine."+ 
-	    node.getAttributes().getNamedItem ("name").getNodeValue(),
-	    engine
-	);
-	Logger.log (evt);
+        String className = 
+            node.getAttributes().getNamedItem("class") != null ? 
+                node.getAttributes().getNamedItem ("class").getNodeValue() :
+                "org.jpos.tpl.PersistentEngine";
+        LogEvent evt = 
+        new LogEvent (qsp, "config-persistent-engine", className);
+        PersistentEngine engine = new PersistentEngine();
+        engine.setLogger (
+            ConfigLogger.getLogger (node),
+            ConfigLogger.getRealm (node)
+        );
+        engine.setConfiguration (
+            new SimpleConfiguration (
+                ConfigUtil.addProperties (node, null, evt)
+            )
+        );
+        if (engine instanceof Loggeable)
+            evt.addMessage (engine);
+        NameRegistrar.register ("persistent.engine."+ 
+            node.getAttributes().getNamedItem ("name").getNodeValue(),
+            engine
+        );
+        Logger.log (evt);
     }
     public static PersistentEngine getPersistentEngine (Node node) {
-	Node n = node.getAttributes().getNamedItem ("persistent-engine");
-	if (n != null)
-	    try {
-		return (PersistentEngine) 
-		    NameRegistrar.get("persistent.engine."+n.getNodeValue());
-	    } catch (NotFoundException e) { }
-	return null;
+        Node n = node.getAttributes().getNamedItem ("persistent-engine");
+        if (n != null)
+            try {
+                return (PersistentEngine) 
+                    NameRegistrar.get("persistent.engine."+n.getNodeValue());
+            } catch (NotFoundException e) { }
+        return null;
     }
 }
 

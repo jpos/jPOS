@@ -69,15 +69,15 @@ public class DummyProcessor extends SimpleLogSource
 {
     public byte[] process(String name, byte[] request) throws DirPollException
     {
-	Logger.log (new LogEvent (this, "dummy-processor", name));
-	return ("response: "+ new String(request)).getBytes();
+        Logger.log (new LogEvent (this, "dummy-processor", name));
+        return ("response: "+ new String(request)).getBytes();
     }
     public void setConfiguration (Configuration cfg) 
-	throws ConfigurationException
+        throws ConfigurationException
     {
-	// dummy ReConfigurable (just to check re-config requests from QSP)
-	Logger.log (
-	    new LogEvent (this, "dummy-processor","setConfiguration called")
-	);
+        // dummy ReConfigurable (just to check re-config requests from QSP)
+        Logger.log (
+            new LogEvent (this, "dummy-processor","setConfiguration called")
+        );
     }
 }

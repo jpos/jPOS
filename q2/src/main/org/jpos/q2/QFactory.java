@@ -286,18 +286,18 @@ public class QFactory {
     }
 
     public Object newInstance (String clazz)
-	throws Q2ConfigurationException
+        throws Q2ConfigurationException
     {
         try {
             MBeanServer mserver = q2.getMBeanServer();
             return mserver.instantiate (clazz, loaderName);
         } catch (Exception e) {
-	    throw new Q2ConfigurationException (clazz, e);
-	}
+            throw new Q2ConfigurationException (clazz, e);
+        }
     }
 
     public Configuration getConfiguration (Element e) 
-	throws Q2ConfigurationException
+        throws Q2ConfigurationException
     {
         Properties props = new Properties ();
         Iterator iter = e.getChildren ("property").iterator();
@@ -344,7 +344,7 @@ public class QFactory {
         }
     }
     public void setConfiguration (Object obj, Element e) 
-	throws Q2ConfigurationException 
+        throws Q2ConfigurationException 
     {
         try {
             if (obj instanceof Configurable)
@@ -362,7 +362,7 @@ public class QFactory {
     * @throws Q2ConfigurationException if method happens to throw an exception
     */
     public static void invoke (Object obj, String m, Object p) 
-	throws Q2ConfigurationException 
+        throws Q2ConfigurationException 
     {
         invoke (obj, m, p, p != null ? p.getClass() : null);
     }
@@ -376,23 +376,23 @@ public class QFactory {
     * @throws Q2ConfigurationException if method happens to throw an exception
     */
     public static void invoke (Object obj, String m, Object p, Class pc) 
-	throws Q2ConfigurationException 
+        throws Q2ConfigurationException 
     {
-	try {
-	    Class[] paramTemplate = { pc };
-	    Method method = obj.getClass().getMethod(m, paramTemplate);
-	    Object[] param = new Object[1];
-	    param[0] = p;
-	    method.invoke (obj, param);
-	} catch (NoSuchMethodException e) { 
-	} catch (NullPointerException e) {
-	} catch (IllegalAccessException e) {
-	} catch (InvocationTargetException e) {
-	    throw new Q2ConfigurationException (
-		obj.getClass().getName() + "." + m + "("+p.toString()+")" ,
-		((Exception) e.getTargetException())
-	    );
-	}
+        try {
+            Class[] paramTemplate = { pc };
+            Method method = obj.getClass().getMethod(m, paramTemplate);
+            Object[] param = new Object[1];
+            param[0] = p;
+            method.invoke (obj, param);
+        } catch (NoSuchMethodException e) { 
+        } catch (NullPointerException e) {
+        } catch (IllegalAccessException e) {
+        } catch (InvocationTargetException e) {
+            throw new Q2ConfigurationException (
+                obj.getClass().getName() + "." + m + "("+p.toString()+")" ,
+                ((Exception) e.getTargetException())
+            );
+        }
     }
 }
 

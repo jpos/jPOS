@@ -75,27 +75,27 @@ public class ConfigDailyTask implements QSPReConfigurator {
 
     public void config (QSP qsp, Node node) throws ConfigurationException
     {
-	String className = 
-	    node.getAttributes().getNamedItem ("class").getNodeValue();
-	LogEvent evt    = new LogEvent (qsp, "config-daily-task", className);
-	String name     = getValue (node, "name");
-	String poolSize = getValue (node, "poolsize");
-	ThreadPool pool = (poolSize != null)  ?
-	    new ThreadPool (1, Integer.parseInt (poolSize)) : null;
+        String className = 
+            node.getAttributes().getNamedItem ("class").getNodeValue();
+        LogEvent evt    = new LogEvent (qsp, "config-daily-task", className);
+        String name     = getValue (node, "name");
+        String poolSize = getValue (node, "poolsize");
+        ThreadPool pool = (poolSize != null)  ?
+            new ThreadPool (1, Integer.parseInt (poolSize)) : null;
 
         try {
             Class c = Class.forName(className);
-	    Runnable task = (Runnable) c.newInstance();
-	    DailyTask controller = new DailyTask (task, pool);
+            Runnable task = (Runnable) c.newInstance();
+            DailyTask controller = new DailyTask (task, pool);
 
-	    controller.setLogger (
-		ConfigLogger.getLogger (node),
-		ConfigLogger.getRealm (node) + ".daily-task" 
-	    );
-	    configureTask (controller, node, evt);
+            controller.setLogger (
+                ConfigLogger.getLogger (node),
+                ConfigLogger.getRealm (node) + ".daily-task" 
+            );
+            configureTask (controller, node, evt);
 
-	    if (name != null) {
-		NameRegistrar.register (NAMEREGISTRAR_PREFIX+name, controller);
+            if (name != null) {
+                NameRegistrar.register (NAMEREGISTRAR_PREFIX+name, controller);
                 try {
                     qsp.registerMBean (controller, "type=dailytask,name="+name);
                 } catch (NotCompliantMBeanException e) {
@@ -103,49 +103,49 @@ public class ConfigDailyTask implements QSPReConfigurator {
                     evt.addMessage (e.getMessage());
                 } 
             }
-	    Thread thread = new Thread(controller);
-	    thread.setName ("qsp-daily-task-"+name);
-	    thread.start();
+            Thread thread = new Thread(controller);
+            thread.setName ("qsp-daily-task-"+name);
+            thread.start();
         } catch (Exception e) {
-	    throw new ConfigurationException ("config-daily-task:"+className,e);
+            throw new ConfigurationException ("config-daily-task:"+className,e);
         } finally {
-	    Logger.log (evt);
+            Logger.log (evt);
         }
     }
     public void reconfig (QSP qsp, Node node) throws ConfigurationException
     {
-	String name   = getValue (node, "name");
-	if (name == null)
-	    return; // nothing to do
+        String name   = getValue (node, "name");
+        if (name == null)
+            return; // nothing to do
 
-	LogEvent evt = new LogEvent (qsp, "re-config-task", name);
-	try {
-	    DailyTask controller = (DailyTask) 
-		NameRegistrar.get (NAMEREGISTRAR_PREFIX + name);
-	    configureTask (controller, node, evt);
-	} catch (NameRegistrar.NotFoundException e) {
-	    evt.addMessage ("<task-not-found/>");
-	}
-	Logger.log (evt);
+        LogEvent evt = new LogEvent (qsp, "re-config-task", name);
+        try {
+            DailyTask controller = (DailyTask) 
+                NameRegistrar.get (NAMEREGISTRAR_PREFIX + name);
+            configureTask (controller, node, evt);
+        } catch (NameRegistrar.NotFoundException e) {
+            evt.addMessage ("<task-not-found/>");
+        }
+        Logger.log (evt);
     }
     private void configureTask (Configurable task, Node node, LogEvent evt)
-	throws ConfigurationException
+        throws ConfigurationException
     {
-	Properties props = new Properties();
-	String start = getValue (node, "start");
-	if (start == null)
-	    throw new ConfigurationException ("Attribute 'start' no found");
+        Properties props = new Properties();
+        String start = getValue (node, "start");
+        if (start == null)
+            throw new ConfigurationException ("Attribute 'start' no found");
 
-	props.put ("start", start);
-	task.setConfiguration (
-	    new SimpleConfiguration (
-		ConfigUtil.addProperties (node, props, evt)
-	    )
-	);
+        props.put ("start", start);
+        task.setConfiguration (
+            new SimpleConfiguration (
+                ConfigUtil.addProperties (node, props, evt)
+            )
+        );
     }
     private String getValue (Node node, String tagName) {
-	Node n = node.getAttributes().getNamedItem (tagName);
-	return n != null ? n.getNodeValue() : null;
+        Node n = node.getAttributes().getNamedItem (tagName);
+        return n != null ? n.getNodeValue() : null;
     }
 }
 

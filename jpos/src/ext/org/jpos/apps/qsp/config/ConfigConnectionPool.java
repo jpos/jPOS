@@ -69,37 +69,37 @@ import org.w3c.dom.Node;
 public class ConfigConnectionPool implements QSPConfigurator {
     public void config (QSP qsp, Node node) throws ConfigurationException
     {
-	String className =
-	    node.getAttributes().getNamedItem("class") != null ?
-		node.getAttributes().getNamedItem ("class").getNodeValue() :
-		"org.jpos.tpl.ConnectionPool";
-	LogEvent evt =
-	new LogEvent (qsp, "config-connection-pool", className);
-	ConnectionPool connectionPool = new ConnectionPool();
-	connectionPool.setLogger (
-	    ConfigLogger.getLogger (node),
-	    ConfigLogger.getRealm (node)
-	);
-	connectionPool.setConfiguration (
-	    new SimpleConfiguration (
-		ConfigUtil.addProperties (node, null, evt)
-	    )
-	);
-	if (connectionPool instanceof Loggeable)
-	    evt.addMessage (connectionPool);
-	NameRegistrar.register ("connection.pool."+
-	    node.getAttributes().getNamedItem ("name").getNodeValue(),
-	    connectionPool
-	);
-	Logger.log (evt);
+        String className =
+            node.getAttributes().getNamedItem("class") != null ?
+                node.getAttributes().getNamedItem ("class").getNodeValue() :
+                "org.jpos.tpl.ConnectionPool";
+        LogEvent evt =
+        new LogEvent (qsp, "config-connection-pool", className);
+        ConnectionPool connectionPool = new ConnectionPool();
+        connectionPool.setLogger (
+            ConfigLogger.getLogger (node),
+            ConfigLogger.getRealm (node)
+        );
+        connectionPool.setConfiguration (
+            new SimpleConfiguration (
+                ConfigUtil.addProperties (node, null, evt)
+            )
+        );
+        if (connectionPool instanceof Loggeable)
+            evt.addMessage (connectionPool);
+        NameRegistrar.register ("connection.pool."+
+            node.getAttributes().getNamedItem ("name").getNodeValue(),
+            connectionPool
+        );
+        Logger.log (evt);
     }
     public static ConnectionPool getConnectionPool (Node node) {
-	Node n = node.getAttributes().getNamedItem ("connection-pool");
-	if (n != null)
-	    try {
-		return (ConnectionPool)
-		    NameRegistrar.get("connection.pool."+n.getNodeValue());
-	    } catch (NotFoundException e) { }
-	return null;
+        Node n = node.getAttributes().getNamedItem ("connection-pool");
+        if (n != null)
+            try {
+                return (ConnectionPool)
+                    NameRegistrar.get("connection.pool."+n.getNodeValue());
+            } catch (NotFoundException e) { }
+        return null;
     }
 }

@@ -68,37 +68,37 @@ import org.jpos.util.ThreadPool;
 public class Test implements ISORequestListener {
 
     public boolean process (ISOSource source, ISOMsg m) {
-	try {
+        try {
             m = (ISOMsg) m.clone ();
-	    m.setResponseMTI();
-	    m.set (new ISOField(39, "99"));
-	    source.send(m);
-	} catch (Exception e) {
-	    return false;
-	}
-	return true;
+            m.setResponseMTI();
+            m.set (new ISOField(39, "99"));
+            source.send(m);
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
     }
 
     public static void main(String args[]) {
-	try {
-	    Logger logger = new Logger();
-	    logger.addListener (new SimpleLogListener (System.out));
+        try {
+            Logger logger = new Logger();
+            logger.addListener (new SimpleLogListener (System.out));
 
-	    ISOChannel clientSideChannel = new ASCIIChannel 
-		(new ISO87APackager()); // see jpos.cfg
+            ISOChannel clientSideChannel = new ASCIIChannel 
+                (new ISO87APackager()); // see jpos.cfg
 
-	    ThreadPool pool = new ThreadPool (5, 30);
-	    pool.setLogger (logger, "iso-server-pool");
+            ThreadPool pool = new ThreadPool (5, 30);
+            pool.setLogger (logger, "iso-server-pool");
 
-	    ISOServer server = 
-		new ISOServer (
-		    8000, (ServerChannel) clientSideChannel, pool);
+            ISOServer server = 
+                new ISOServer (
+                    8000, (ServerChannel) clientSideChannel, pool);
 
-	    server.setLogger (logger, "iso-server");
-	    server.addISORequestListener (new Test());
-	    new Thread (server).start();
-	} catch (Exception e) {
-	    e.printStackTrace();
-	}
+            server.setLogger (logger, "iso-server");
+            server.addISORequestListener (new Test());
+            new Thread (server).start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

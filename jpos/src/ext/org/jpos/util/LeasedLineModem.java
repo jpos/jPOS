@@ -49,6 +49,9 @@
 
 /*
  * $Log$
+ * Revision 1.7  2003/10/13 11:04:20  apr
+ * tabs expanded to spaces
+ *
  * Revision 1.6  2003/05/16 04:26:22  alwyns
  * Import cleanups.
  *
@@ -83,21 +86,21 @@ public class LeasedLineModem implements Modem {
     V24 v24;
 
     public LeasedLineModem (V24 v24) {
-	super();
-	this.v24 = v24;
+        super();
+        this.v24 = v24;
     }
     
     public void dial (String phoneNumber, long aproxTimeout) 
-	throws IOException
+        throws IOException
     {
     }
     public void answer () throws IOException
     {
     }
     public void hangup () throws IOException {
-	throw new IOException ("LeasedLine - cannot hangup");
+        throw new IOException ("LeasedLine - cannot hangup");
     }
     public boolean isConnected() {
-	return v24.isConnected();
+        return v24.isConnected();
     }
 }

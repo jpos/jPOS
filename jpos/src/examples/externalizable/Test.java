@@ -58,7 +58,7 @@ import org.jpos.iso.packager.*;
 
 public class Test extends SimpleLogSource {
     public Test (Logger logger, String realm) {
-	setLogger (logger, realm);
+        setLogger (logger, realm);
     }
     public ISOMsg readMessage() throws ISOException, IOException {
         FileInputStream fis = new FileInputStream (
@@ -111,12 +111,12 @@ public class Test extends SimpleLogSource {
         Logger.log (evt);
     }
     public static void main (String args[]) {
-	Logger logger = new Logger();
-	logger.addListener (new SimpleLogListener (System.out));
+        Logger logger = new Logger();
+        logger.addListener (new SimpleLogListener (System.out));
 
-	Test t = new Test (logger, "Test");
+        Test t = new Test (logger, "Test");
         try {
-	    t.test();
+            t.test();
         } catch (Exception e) {
             Logger.log (new LogEvent (t, "main", e));
         }
