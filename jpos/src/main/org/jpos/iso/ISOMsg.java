@@ -113,7 +113,7 @@ public class ISOMsg extends ISOComponent
      * @param fieldNumber new field number
      */
     public void setFieldNumber (int fieldNumber) {
-	this.fieldNumber = fieldNumber;
+        this.fieldNumber = fieldNumber;
     }
     /**
      * Creates an ISOMsg with given mti
@@ -122,7 +122,7 @@ public class ISOMsg extends ISOComponent
     public ISOMsg (String mti) {
         this();
         try {
-	    setMTI (mti);
+            setMTI (mti);
         } catch (ISOException e) {
             // should never happen
         }
@@ -143,21 +143,21 @@ public class ISOMsg extends ISOComponent
     }
 
     public void setHeader (ISOHeader header) {
-    	this.header = header;
+        this.header = header;
     }
     /**
      * get optional message header image
      * @return message header image (may be null)
      */
     public byte[] getHeader() {
-    	return (header != null) ? header.pack() : null;
+        return (header != null) ? header.pack() : null;
     } 
 
     /**
      * Return this messages ISOHeader
      */
     public ISOHeader getISOHeader() {
-    	return header;
+        return header;
     }
     /**
      * @return the direction (ISOMsg.INCOMING or ISOMsg.OUTGOING)
@@ -249,7 +249,7 @@ public class ISOMsg extends ISOComponent
      */
     public void unset (int fldno) {
         if (fields.remove (new Integer (fldno)) != null)
-	    dirty = maxFieldDirty = true;
+            dirty = maxFieldDirty = true;
     }
     /**
      * Unsets several fields at once
@@ -277,22 +277,22 @@ public class ISOMsg extends ISOComponent
         if (!dirty)
             return;
 
-	if (getMaxField() > 128) {
-	    BitSet bmap=new BitSet(64);
-	    for (int i=1; i<=64; i++)
-		if(((ISOComponent) fields.get(new Integer (i+128))) != null) 
-		    bmap.set (i);
-	    set (new ISOBitMap (65, bmap));
-	}
-		
+        if (getMaxField() > 128) {
+            BitSet bmap=new BitSet(64);
+            for (int i=1; i<=64; i++)
+                if(((ISOComponent) fields.get(new Integer (i+128))) != null) 
+                    bmap.set (i);
+            set (new ISOBitMap (65, bmap));
+        }
+                
         BitSet bmap = new BitSet (getMaxField() > 64 ? 128 : 64);
-		int tmpMaxField=maxField > 128 ? 128 : maxField;
+                int tmpMaxField=maxField > 128 ? 128 : maxField;
 
         for (int i=1; i<=tmpMaxField; i++)
             if (((ISOComponent) fields.get (new Integer (i))) != null) 
                 bmap.set (i);
         set (new ISOBitMap (-1, bmap));
-		
+                
         dirty = false;
     }
     /**
@@ -339,31 +339,31 @@ public class ISOMsg extends ISOComponent
      */
     public void dump (PrintStream p, String indent) {
         ISOComponent c;
-	p.print (indent + "<" + XMLPackager.ISOMSG_TAG);
-	switch (direction) {
-	    case INCOMING:
-		p.print (" direction=\"incoming\"");
-		break;
-	    case OUTGOING:
-		p.print (" direction=\"outgoing\"");
-		break;
-	}
-	if (fieldNumber != -1)
-	    p.print (" "+XMLPackager.ID_ATTR +"=\""+fieldNumber +"\"");
-	p.println (">");
-	String newIndent = indent + "  ";
+        p.print (indent + "<" + XMLPackager.ISOMSG_TAG);
+        switch (direction) {
+            case INCOMING:
+                p.print (" direction=\"incoming\"");
+                break;
+            case OUTGOING:
+                p.print (" direction=\"outgoing\"");
+                break;
+        }
+        if (fieldNumber != -1)
+            p.print (" "+XMLPackager.ID_ATTR +"=\""+fieldNumber +"\"");
+        p.println (">");
+        String newIndent = indent + "  ";
         for (int i=0; i<=maxField; i++) {
             if ((c = (ISOComponent) fields.get (new Integer (i))) != null)
                 c.dump (p, newIndent);
-	    //
-	    // Uncomment to include bitmaps within logs
-	    // 
-	    // if (i == 0) {
-	    //  if ((c = (ISOComponent) fields.get (new Integer (-1))) != null)
-	    //    c.dump (p, newIndent);
-	    // }
-	    //
-	}
+            //
+            // Uncomment to include bitmaps within logs
+            // 
+            // if (i == 0) {
+            //  if ((c = (ISOComponent) fields.get (new Integer (-1))) != null)
+            //    c.dump (p, newIndent);
+            // }
+            //
+        }
 
         p.println (indent + "</" + XMLPackager.ISOMSG_TAG+">");
     }
@@ -417,7 +417,7 @@ public class ISOMsg extends ISOComponent
      * @return true if all fields are present
      */
     public boolean hasFields (int[] fields) {
-	for (int i=0; i<fields.length; i++) 
+        for (int i=0; i<fields.length; i++) 
             if (!hasField (fields[i]))
                 return false;
         return true;
@@ -436,8 +436,8 @@ public class ISOMsg extends ISOComponent
         try {
             ISOMsg m = (ISOMsg) super.clone();
             m.fields = (Hashtable) fields.clone();
-	    if (header != null)
-		m.header = (ISOHeader) header.clone();
+            if (header != null)
+                m.header = (ISOHeader) header.clone();
             return (Object) m;
         } catch (CloneNotSupportedException e) {
             throw new InternalError();
@@ -476,13 +476,13 @@ public class ISOMsg extends ISOComponent
      * @param m ISOMsg to merge
      */
     public void merge (ISOMsg m) {
-	for (int i=0; i<=m.getMaxField(); i++) 
-	    try {
-		if (m.hasField(i))
-		    set (m.getComponent(i));
-	    } catch (ISOException e) {
-		// should never happen 
-	    }
+        for (int i=0; i<=m.getMaxField(); i++) 
+            try {
+                if (m.hasField(i))
+                    set (m.getComponent(i));
+            } catch (ISOException e) {
+                // should never happen 
+            }
     }
 
     /**
@@ -522,16 +522,16 @@ public class ISOMsg extends ISOComponent
      * @return true on inner messages
      */
     public boolean isInner() {
-	return fieldNumber > -1;
+        return fieldNumber > -1;
     }
     /**
      * @param mti new MTI
      * @exception ISOException if message is inner message
      */
     public void setMTI (String mti) throws ISOException {
-	if (isInner())
-	    throw new ISOException ("can't setMTI on inner message");
-	set (new ISOField (0, mti));
+        if (isInner())
+            throw new ISOException ("can't setMTI on inner message");
+        set (new ISOField (0, mti));
     }
     /**
      * moves a field (renumber)
@@ -556,32 +556,32 @@ public class ISOMsg extends ISOComponent
      * @exception ISOException on inner message or MTI not set
      */
     public String getMTI() throws ISOException {
-	if (isInner())
-	    throw new ISOException ("can't getMTI on inner message");
-	else if (!hasField(0))
-	    throw new ISOException ("MTI not available");
-	return (String) getValue(0);
+        if (isInner())
+            throw new ISOException ("can't getMTI on inner message");
+        else if (!hasField(0))
+            throw new ISOException ("MTI not available");
+        return (String) getValue(0);
     }
     /**
      * @return true if message "seems to be" a request
      * @exception ISOException on MTI not set
      */
     public boolean isRequest() throws ISOException {
-	return Character.getNumericValue(getMTI().charAt (2))%2 == 0;
+        return Character.getNumericValue(getMTI().charAt (2))%2 == 0;
     }
     /**
      * @return true if message "seems not to be" a request
      * @exception ISOException on MTI not set
      */
     public boolean isResponse() throws ISOException {
-	return !isRequest();
+        return !isRequest();
     }
     /**
      * @return true if message is Retransmission
      * @exception ISOException on MTI not set
      */
     public boolean isRetransmission() throws ISOException {
-	return getMTI().charAt(3) == '1';
+        return getMTI().charAt(3) == '1';
     }
     /**
      * sets an appropiate response MTI.
@@ -619,10 +619,10 @@ public class ISOMsg extends ISOComponent
      * @exception ISOException on MTI not set or it is not a request
      */
     public void setRetransmissionMTI() throws ISOException {
-	if (!isRequest())
-	    throw new ISOException ("not a request");
+        if (!isRequest())
+            throw new ISOException ("not a request");
 
-	set (new ISOField (0, getMTI().substring(0,3) + "1"));
+        set (new ISOField (0, getMTI().substring(0,3) + "1"));
     }
     protected void writeHeader (ObjectOutput out) throws IOException {
         int len = header.getLength();
