@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.Iterator;
+import org.jpos.util.NameRegistrar;
 import org.jdom.Element;
 import org.jpos.space.Space;
 import org.jpos.space.JDBMSpace;
@@ -65,6 +66,7 @@ public class TransactionManager
         initParticipants (getPersist());
     }
     public void startService () {
+        NameRegistrar.register (getName (), this);
         recover ();
         long sessions = cfg.getLong ("sessions", 1);
         for (int i=0; i<sessions; i++) {
@@ -74,9 +76,13 @@ public class TransactionManager
         }
     }
     public void stopService () {
+        NameRegistrar.unregister (getName ());
         long sessions = cfg.getLong ("sessions", 1);
         for (int i=0; i<sessions; i++)
             sp.out (queue, this, 60*1000);
+    }
+    public void queue (Serializable context) {
+        sp.out (queue, context);
     }
     public void run () {
         long id;
