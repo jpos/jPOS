@@ -78,10 +78,13 @@ public class ISOMsgFieldPackager extends ISOFieldPackager {
      * @exception ISOException
      */
     public byte[] pack (ISOComponent c) throws ISOException {
-        ISOMsg m = (ISOMsg) c;
-        m.recalcBitMap();
-        ISOBinaryField f = new ISOBinaryField(0, msgPackager.pack(m));
-        return fieldPackager.pack(f);
+        if (c instanceof ISOMsg) {
+            ISOMsg m = (ISOMsg) c;
+            m.recalcBitMap();
+            ISOBinaryField f = new ISOBinaryField(0, msgPackager.pack(m));
+            return fieldPackager.pack(f);
+        }
+        return fieldPackager.pack(c);
     }
 
     /**
