@@ -56,6 +56,8 @@ import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOMsg;
 import org.jpos.util.Loggeable;
 
+import java.util.StringTokenizer;
+
 /**
  * @author apr@cs.com.uy
  * @version $Id$
@@ -64,6 +66,7 @@ import org.jpos.util.Loggeable;
  * represents a CardHolder
  */
 public class CardHolder implements Cloneable, Serializable, Loggeable {
+    private static final String TRACK1_SEPARATOR = "^";
     private static final char TRACK2_SEPARATOR = '=';
     private static final int  BINLEN           =  6;
     private static final int  MINPANLEN        = 10;
@@ -87,6 +90,11 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
      * @serial
      */
     protected String securityCode;
+    /**
+     * Track1 Data
+     * @serial
+     */
+    protected String track1;
 
     /**
      * creates an empty CardHolder
@@ -159,6 +167,43 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
             trailler = s.substring(separatorIndex+1+4);
         } else 
             throw new InvalidCardException (s);
+    }
+
+    /**
+     * @param track1 card's track1
+     */
+    public void setTrack1(String track1) {
+        this.track1 = track1;
+    }
+
+    /**
+     * @return the track1
+     */
+    public String getTrack1() {
+        return track1;
+    }
+
+    /**
+     * @return true if we have a track1
+     */
+    public boolean hasTrack1() {
+        return (track1!=null);
+    }
+
+    /**
+     * @return the Name written on the card (from track1)
+     */
+    public String getNameOnCard() {
+        String name = null;
+        if (track1!=null) {
+            StringTokenizer st = 
+                    new StringTokenizer(track1, TRACK1_SEPARATOR);
+            if (st.countTokens()<2)
+                return null;
+            st.nextToken(); // Skips the first token
+            name = st.nextToken(); // This is the name
+        }
+        return name;
     }
 
     /**
@@ -301,7 +346,7 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
 
     /**
      * dumps CardHolder basic information<br>
-     * by default we do not dump neither track2 nor securityCode
+     * by default we do not dump neither track1/2 nor securityCode
      * for security reasons.
      * @param p a PrintStream usually suplied by Logger
      * @param indent ditto
@@ -309,6 +354,9 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
      */
     public void dump (PrintStream p, String indent) {
         p.print (indent + "<CardHolder");
+        if (hasTrack1())
+            p.print (" trk1=\"true\"");
+
         if (hasTrack2())
             p.print (" trk2=\"true\"");
 
