@@ -77,8 +77,7 @@ public class BCDInterpreter implements Interpreter
 	 */
     public void interpret(String data, byte[] b, int offset)
     {
-        byte[] packed = ISOUtil.str2bcd (data, leftPadded);
-        System.arraycopy(packed, 0, b, offset, packed.length);
+        ISOUtil.str2bcd(data, leftPadded, b, offset);
     }
 
     /**

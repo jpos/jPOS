@@ -292,15 +292,27 @@ public class ISOUtil {
      * converts to BCD
      * @param s - the number
      * @param padLeft - flag indicating left/right padding
+     * @param d The byte array to copy into.
+     * @param offset Where to start copying into.
+     * @return BCD representation of the number
+     */
+    public static byte[] str2bcd(String s, boolean padLeft, byte[] d, int offset) {
+        int len = s.length();
+        int start = (((len & 1) == 1) && padLeft) ? 1 : 0;
+        for (int i=start; i < len+start; i++) 
+            d [offset + (i >> 1)] |= (s.charAt(i-start)-'0') << ((i & 1) == 1 ? 0 : 4);
+        return d;
+    }
+    /**
+     * converts to BCD
+     * @param s - the number
+     * @param padLeft - flag indicating left/right padding
      * @return BCD representation of the number
      */
     public static byte[] str2bcd(String s, boolean padLeft) {
         int len = s.length();
         byte[] d = new byte[ (len+1) >> 1 ];
-        int start = (((len & 1) == 1) && padLeft) ? 1 : 0;
-        for (int i=start; i < len+start; i++) 
-            d [i >> 1] |= (s.charAt(i-start)-'0') << ((i & 1) == 1 ? 0 : 4);
-        return d;
+        return str2bcd(s, padLeft, d, 0);
     }
     /**
      * converts to BCD
