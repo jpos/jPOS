@@ -110,7 +110,7 @@ public class ChannelAdaptor
         delay    = s != null ? Long.parseLong (s) : 10000; // reasonable default
 
         channel = newChannel (e, getFactory());
-        ready   = channel.toString() + ".ready";
+        ready   = getName() + ".ready";
     }
     public void startService () {
         try {
