@@ -402,6 +402,8 @@ public class SAFChannel extends LogHandler
                     if (delay > 0)
                         Thread.sleep (delay);
                 }
+                else
+                    relax ();
             } catch (NameRegistrar.NotFoundException e) {
                 relax ();
             } catch (Exception e) { 
