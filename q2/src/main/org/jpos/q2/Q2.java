@@ -307,6 +307,7 @@ public class Q2 implements FileFilter {
                 FileWriter writer = new FileWriter (tmp);
                 out.output (doc, writer);
                 writer.close ();
+                f.delete();
                 tmp.renameTo (f);
                 deployed = f.lastModified ();
             }
