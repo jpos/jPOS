@@ -74,6 +74,8 @@ public class QBeanSupportMBeanDescription extends mx4j.MBeanDescriptionAdapter {
             return "MBeanServer Object";
         if (attribute.equals("State"))
             return "Runtime Status";
+        if (attribute.equals("StateAsString"))
+            return "Runtime Status";
         return super.getAttributeDescription (attribute);
     }
 
