@@ -26,5 +26,8 @@
 #DEFAULT (echo ""; id; echo %{sVv}; date; cat) >> $CVSROOT/CVSROOT/commitlog
 CVSROOT $CVSROOT/CVSROOT/syncmail %{sVv} apr@users.sourceforge.net
 jpos    $CVSROOT/CVSROOT/syncmail %{sVv} jpos-devel@lists.sourceforge.net
+q2      $CVSROOT/CVSROOT/syncmail %{sVv} jpos-devel@lists.sourceforge.net
+q2modules $CVSROOT/CVSROOT/syncmail %{sVv} jpos-devel@lists.sourceforge.net
+q2mbean $CVSROOT/CVSROOT/syncmail %{sVv} jpos-devel@lists.sourceforge.net
 DEFAULT $CVSROOT/CVSROOT/syncmail %{sVv} apr@users.sourceforge.net
 
