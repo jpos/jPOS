@@ -1,6 +1,7 @@
 $Id$
 
 -- 1.4.7 --
+added JDBMSpace.getKeys()
 Bugfix in ISOBasePackager (fields > 128)
 Added SpaceUtil.nextLong(sp,key)
 MX4J upgraded to 2.0.1
