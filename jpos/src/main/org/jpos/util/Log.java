@@ -67,7 +67,7 @@ public class Log implements LogSource {
     public static final String ERROR   = "error";
     public static final String FATAL   = "fatal";
 
-    private Log () {
+    public Log () {
 	super();
     }
     public static Log getLog (String logName, String realm) {
