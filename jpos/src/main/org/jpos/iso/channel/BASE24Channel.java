@@ -83,7 +83,7 @@ public class BASE24Channel extends BaseChannel {
             if (c == 03)
                 break;
             else if (c == -1)
-                throw new IOException("connection closed");
+                throw new EOFException("connection closed");
 	    buf[i] = (byte) c;
         }
         if (i == 4096)
