@@ -260,12 +260,10 @@ public abstract class BaseChannel extends Observable
     }
     /**
      * factory method pattern (as suggested by Vincent.Greene@amo.com)
-     * @param host hostname
-     * @param port portnumber
      * @throws UnknownHostException
      * @throws IOException
      */
-    protected Socket newSocket(String host, int port) 
+    protected Socket newSocket() 
 	throws UnknownHostException, IOException {
 	return new Socket(host, port);
     }
@@ -313,7 +311,7 @@ public abstract class BaseChannel extends Observable
 	    }
 	    else {
 		evt.addMessage (host+":"+port);
-		connect(newSocket (host, port));
+		connect(newSocket ());
 	    }
 	    applyTimeout();
 	    Logger.log (evt);
