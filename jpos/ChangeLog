@@ -1,6 +1,9 @@
 $Id$
 
 -- 1.4.9 -- 
+Added LocalSpace.addListener(key,listener,timeout)
+New TSpace implementation
+Added ObjectTemplate
 bugfix in SpaceProxy jndi binding
 BSHRequestListener whitelist support
 Added BSHTransactionParticipant and BSHGroupSelector
