@@ -432,6 +432,9 @@ public abstract class BaseChannel extends Observable
 	} catch (IOException e) {
 	    evt.addMessage (e);
 	    throw e;
+	} catch (Exception e) {
+	    evt.addMessage (e);
+	    throw new ISOException ("unexpected exception", e);
 	} finally {
 	    Logger.log (evt);
 	}
@@ -507,6 +510,9 @@ public abstract class BaseChannel extends Observable
 	    if (usable) 
 		evt.addMessage (e);
 	    throw e;
+	} catch (Exception e) { 
+            evt.addMessage (e);
+	    throw new ISOException ("unexpected exception", e);
 	} finally {
 	    Logger.log (evt);
 	}
