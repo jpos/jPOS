@@ -1,6 +1,8 @@
 $Id$
 
 -- 1.4.7 --
+ISOServer: new factory method createSession
+ISOServer: new method getLastConnectedISOChannel 
 BaseHeader implements Loggeable
 ISOMsg.dump dumps header
 BaseChannel.receive hexdumps header and binary image on ISOException
