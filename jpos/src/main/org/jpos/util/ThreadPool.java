@@ -53,6 +53,9 @@ package org.jpos.util;
  * $Id$
  *
  * $Log$
+ * Revision 1.8  2001/11/06 23:24:21  apr
+ * Added public int getIdleCount() method
+ *
  * Revision 1.7  2000/11/02 12:09:18  apr
  * Added license to every source file
  *
@@ -192,5 +195,8 @@ public class ThreadPool extends ThreadGroup implements LogSource, Loggeable
     }
     public Logger getLogger() {
 	return logger;
+    }
+    public int getIdleCount () {
+        return pool.consumerCount ();
     }
 }
