@@ -61,8 +61,8 @@ import org.apache.log4j.xml.*;
 /**
  * @author Eoin P. FLood</a>
  * @version $Revision$ $Date$
- * @see org.jpos.core.LogListener
- * @see org.jpos.core.LogEvent
+ * @see org.jpos.util.LogListener
+ * @see org.jpos.util.LogEvent
  * @since jPOS 1.3
  *
  * This class acts as a simple bridge between jPOS's logging system
