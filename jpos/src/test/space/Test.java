@@ -28,6 +28,18 @@
             rx = (String) sp.in (key);
         }
 
+        public void testRenewReference () throws Exception {
+            final String KEY = "TestRenew";
+            LeasedReference ref = sp.out (KEY, "TEST", 100);
+            assertTrue (sp.rdp (KEY) != null);
+            ref.renew (200);
+            assertTrue (sp.rdp (KEY) != null);
+            Thread.sleep (100);
+            assertTrue (sp.rdp (KEY) != null);
+            Thread.sleep (200);
+            assertTrue (sp.rdp (KEY) == null);
+        }
+
         public void testLeasedReference () throws Exception {
             Object o = new Boolean (true);
 
