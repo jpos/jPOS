@@ -118,6 +118,7 @@ public class QSP implements ErrorHandler, LogSource, Runnable, QSPMBean {
 	{ "logger",
 	  "qsp-config",
 	  "log-listener",
+          "thread-pool",
           "object",
           "connection-pool",
 	  "persistent-engine",
