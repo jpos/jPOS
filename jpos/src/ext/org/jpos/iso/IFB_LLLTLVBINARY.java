@@ -15,14 +15,14 @@
  *
  * 3. The end-user documentation included with the redistribution,
  *    if any, must include the following acknowledgment:
- *    "This product includes software developed by the jPOS project 
- *    (http://www.jpos.org/)". Alternately, this acknowledgment may 
- *    appear in the software itself, if and wherever such third-party 
+ *    "This product includes software developed by the jPOS project
+ *    (http://www.jpos.org/)". Alternately, this acknowledgment may
+ *    appear in the software itself, if and wherever such third-party
  *    acknowledgments normally appear.
  *
- * 4. The names "jPOS" and "jPOS.org" must not be used to endorse 
- *    or promote products derived from this software without prior 
- *    written permission. For written permission, please contact 
+ * 4. The names "jPOS" and "jPOS.org" must not be used to endorse
+ *    or promote products derived from this software without prior
+ *    written permission. For written permission, please contact
  *    license@jpos.org.
  *
  * 5. Products derived from this software may not be called "jPOS",
@@ -31,14 +31,14 @@
  *
  * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  
- * IN NO EVENT SHALL THE JPOS PROJECT OR ITS CONTRIBUTORS BE LIABLE FOR 
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL 
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS 
- * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) 
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, 
- * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING 
- * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE JPOS PROJECT OR ITS CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+ * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+ * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  * ====================================================================
  *
@@ -52,15 +52,14 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * ISOFieldPackager Binary LLLBINARY
+ * ISOFieldPackager Binary LLLTLVBINARY
  *
- * @author apr@cs.com.uy
- * @version $Id$
+ * @author bharavi gade
  * @see ISOComponent
  */
 public class IFB_LLLTLVBINARY extends ISOFieldPackager {
     public IFB_LLLTLVBINARY() {
-    	super();
+        super();
     }
     /**
      * @param len - field len
@@ -76,7 +75,7 @@ public class IFB_LLLTLVBINARY extends ISOFieldPackager {
      */
     public byte[] pack (ISOComponent c) throws ISOException {
         int len = ((byte[]) c.getValue()).length;
-    
+
         if (len > getLength() || len>999)   // paranoia settings
             throw new ISOException (
                 "invalid len "+len +" packing field "+(Integer) c.getKey()
@@ -108,12 +107,12 @@ public class IFB_LLLTLVBINARY extends ISOFieldPackager {
         return len+2;
     }
     public ISOComponent createComponent(int fieldNumber) {
-        return new ISOBinaryField (fieldNumber);
+        return new TLVField (fieldNumber);
     }
     public int getMaxPackedLength() {
         return getLength() + 2;
     }
-    public void unpack (ISOComponent c, InputStream in) 
+    public void unpack (ISOComponent c, InputStream in)
         throws IOException, ISOException
     {
         byte[] b = readBytes (in, 2);
