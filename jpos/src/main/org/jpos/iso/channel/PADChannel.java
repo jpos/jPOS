@@ -117,6 +117,9 @@ public class PADChannel extends BaseChannel {
 	    ISOUtil.hex2byte (header.getBytes(), 0, header.getBytes().length)
 	);
     }
+    public byte[] getHeader () {
+	return header;
+    }
     protected void sendMessageHeader(ISOMsg m, int len) throws IOException { 
 	if (m.getHeader() != null)
             serverOut.write(m.getHeader());

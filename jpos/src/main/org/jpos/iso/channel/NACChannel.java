@@ -82,15 +82,17 @@ public class NACChannel extends BaseChannel {
     protected int getHeaderLength() { 
         return TPDU != null ? TPDU.length : 0;
     }
-    public void setTPDU (byte[] TPDU) {
+    public void setHeader (byte[] TPDU) {
 	this.TPDU = TPDU;
     }
-
     /**
      * New QSP compatible signature (see QSP's ConfigChannel)
      * @param header String as seen by QSP
      */
     public void setHeader (String header) {
-	setTPDU (ISOUtil.str2bcd(header, false));
+	setHeader (ISOUtil.str2bcd(header, false));
+    }
+    public byte[] getHeader () {
+	return TPDU;
     }
 }
