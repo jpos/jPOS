@@ -61,6 +61,7 @@
    <copy todir="${buildsrc}">
     <fileset dir="${main}">
      <exclude name="**/qbean/BSH.java" unless="bsh.present" />
+     <exclude name="**/qbean/SpaceLet.java" unless="bsh.present" /> 
      <include name="**/*.java"/>
     </fileset>
    </copy>
