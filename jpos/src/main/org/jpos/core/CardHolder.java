@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.9  2000/06/20 11:05:17  apr
+ * Added set/get Trailler
+ *
  * Revision 1.8  2000/04/16 23:53:06  apr
  * LogProducer renamed to LogSource
  *
@@ -149,6 +152,19 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
      */
     public boolean hasSecurityCode() {
 	return securityCode != null;
+    }
+    /**
+     * @return trailler (may be null)
+     */
+    public String getTrailler() {
+	return trailler;
+    }
+    /**
+     * Set Trailler (used by OR-mapping stuff)
+     * @param trailler
+     */
+    public void setTrailler (String trailler) {
+	this.trailler = trailler;
     }
 
     /**
