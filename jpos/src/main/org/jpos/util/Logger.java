@@ -55,4 +55,26 @@ public class Logger {
 		((LogListener) i.next()).log (ev);
 	}
     }
+    /**
+     * associates this Logger with a name using NameRegistrar
+     * @param name name to register
+     * @see NameRegistrar
+     */
+    public void setName (String name) {
+	NameRegistrar.register ("logger."+name, this);
+    }
+    /**
+     * @return logger instance with given name. Creates one if necessary
+     * @see NameRegistrar
+     */
+    public static Logger getLogger (String name) {
+	Logger l;
+	try {
+	    l = (Logger) NameRegistrar.get ("logger."+name);
+	} catch (NameRegistrar.NotFoundException e) {
+	    l = new Logger();
+	    l.setName (name);
+	}
+	return l;
+    }
 }
