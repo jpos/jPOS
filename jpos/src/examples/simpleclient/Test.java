@@ -31,7 +31,7 @@ public class Test extends SimpleLogProducer {
     {
 	super();
 	setLogger (logger, realm);
-	channel = ISOFactory.createChannel 
+	channel = ISOFactory.newChannel 
 	    (cfg, "simpleclient", logger, realm);
 	seq     = new VolatileSequencer();
 	channel.connect();

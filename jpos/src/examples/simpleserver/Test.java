@@ -75,7 +75,7 @@ public class Test implements Runnable, LogProducer {
 	       new LogEvent (this, "message", "listening on port "+port)
 	    );
             for (;;) {
-		channel = ISOFactory.createChannel 
+		channel = ISOFactory.newChannel 
 		    (cfg, "simpleserver", logger, realm);
                 channel.accept(serverSocket);
                 Thread t = new Thread (new Session(channel));
