@@ -295,7 +295,6 @@
     <copy file="${source}/etc/LICENSE" tofile="${classes}/LICENSE" />
     <copy file="${source}/etc/README"  tofile="${classes}/README" />
     <copy file="ChangeLog" tofile="${classes}/ChangeLog" />
-    <copy file="${source}/etc/jpos.cfg"  tofile="${classes}/jpos.cfg" />
 
     <jar jarfile="${dist}/${archive}.jar" 
          basedir="${classes}"
