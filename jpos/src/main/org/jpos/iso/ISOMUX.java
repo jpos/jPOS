@@ -11,42 +11,12 @@ import org.jpos.util.LogProducer;
 /**
  * Should run in it's own thread. Starts another Receiver thread
  *
- * @author apr@cs.com.uy
- * @version $Id$
+ * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
+ * @version $Revission: $ $Date$
  * @see ISORequest
  * @see ISOChannel
  * @see ISOException
  * @see ISORequestListener
- */
-
-/*
- * $Log$
- * Revision 1.26  2000/03/20 21:56:39  apr
- * DocBugFix: broken links to API_users_guide
- *
- * Revision 1.25  2000/03/01 14:44:45  apr
- * Changed package name to org.jpos
- *
- * Revision 1.24  2000/01/11 01:24:46  apr
- * moved non ISO-8583 related classes from jpos.iso to jpos.util package
- * (AntiHog LeasedLineModem LogEvent LogListener LogProducer
- *  Loggeable Logger Modem RotateLogListener SimpleAntiHog SimpleDialupModem
- *  SimpleLogListener SimpleLogProducer SystemMonitor V24)
- *
- * Revision 1.23  1999/10/10 15:52:29  apr
- * Added ISORequest.isTransmitted() support
- *
- * Revision 1.22  1999/09/30 22:52:54  apr
- * terminate() now receives an optional param with timeout
- * Added isTerminating() member function
- *
- * Revision 1.21  1999/09/30 10:33:20  apr
- * Check for txQueue and rxQueue to become empty when terminating
- * (Vincent.Greene@amo.com)
- *
- * Revision 1.20  1999/09/25 13:39:05  apr
- * Added terminate() support as suggested by Vincent.Greene@amo.com
- *
  */
 
 public class ISOMUX implements Runnable, LogProducer {
@@ -79,6 +49,20 @@ public class ISOMUX implements Runnable, LogProducer {
      * @param c a connected or unconnected ISOChannel
      */
     public ISOMUX (ISOChannel c) {
+	super();
+	initMUX(c);
+    }
+    /**
+     * @param c a connected or unconnected ISOChannel
+     * @param logger a logger
+     * @param realm  logger's realm
+     */
+    public ISOMUX (ISOChannel c, Logger logger, String realm) {
+	super();
+	setLogger (logger, realm);
+	initMUX (c);
+    }
+    private void initMUX (ISOChannel c) {
         channel = c;
         rx = null;
         txQueue = new Vector();
