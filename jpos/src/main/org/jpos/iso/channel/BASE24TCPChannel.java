@@ -55,6 +55,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import org.jpos.iso.*;
+import org.jpos.util.*;
 
 /**
  * Implements an ISOChannel able to exchange messages with
@@ -72,7 +73,9 @@ import org.jpos.iso.*;
  * @see ISOException
  * @see ISOChannel
  */
-public class BASE24TCPChannel extends CSChannel {
+
+public class BASE24TCPChannel extends BaseChannel {
+    protected byte[] header;
     /**
      * Public constructor (used by Class.forName("...").newInstance())
      */
@@ -118,29 +121,49 @@ public class BASE24TCPChannel extends CSChannel {
     protected void sendMessageTrailler(ISOMsg m, int len) throws IOException {
         serverOut.write (3);
     }
-    /**
-     * @return a byte array with the received message
-     * @exception IOException
-     */
-    protected byte[] streamReceive() throws IOException {
-        int i;
-        byte[] buf = new byte[4096];
-        for (i=0; i<4096; i++) {
-            int c = -1;
-            try {
-                c = serverIn.read();
-            } catch (SocketException e) { }
-            if (c == 03)
-                break;
-            else if (c == -1)
-                throw new IOException("connection closed");
-            buf[i] = (byte) c;
+    protected void sendMessageHeader(ISOMsg m, int len) throws IOException { 
+	if (m.getHeader() != null)
+            serverOut.write(m.getHeader());
+        else if (header != null) 
+            serverOut.write(header);
+    }
+    protected int getHeaderLength() { 
+        return header != null ? header.length : 0;
+    }
+    public void setHeader (byte[] header) {
+	this.header = header;
+    }
+    public void setHeader (String header) {
+	setHeader (header.getBytes());
+    }
+    public byte[] getHeader () {
+	return header;
+    }
+    protected void sendMessageLength(int len) throws IOException {
+        len++;  // one byte trailler
+        serverOut.write (len >> 8);
+        serverOut.write (len);
+    }
+    protected int getMessageLength() throws IOException, ISOException {
+        int l = 0;
+        byte[] b = new byte[2];
+        Logger.log (new LogEvent (this, "get-message-length"));
+        while (l == 0) {
+            serverIn.readFully(b,0,2);
+            l = ((((int)b[0])&0xFF) << 8) | (((int)b[1])&0xFF);
+            if (l == 0) {
+                serverOut.write(b);
+                serverOut.flush();
+            }
         }
-        if (i == 4096)
-            throw new IOException("packet too long");
-
-        byte[] d = new byte[i];
-        System.arraycopy(buf, 0, d, 0, i);
-        return d;
+        Logger.log (new LogEvent (this, "got-message-length", Integer.toString(l)));
+        return l - 1;   // trailler length
+    }
+    protected void getMessageTrailler() throws IOException {
+        Logger.log (new LogEvent (this, "get-message-trailler"));
+        byte[] b = new byte[1];
+        serverIn.readFully(b,0,1);
+        Logger.log (new LogEvent (this, "got-message-trailler", ISOUtil.hexString(b)));
     }
 }
+
