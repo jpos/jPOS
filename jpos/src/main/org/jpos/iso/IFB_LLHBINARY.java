@@ -75,7 +75,7 @@ public class IFB_LLHBINARY extends ISOFieldPackager {
     public byte[] pack (ISOComponent c) throws ISOException {
         int len = ((byte[]) c.getValue()).length;
     
-        if (len > getLength() || len>99)    // paranoia settings
+        if (len > getLength() || len>255)    // paranoia settings
             throw new ISOException (
                 "invalid len "+len +" packing field "+(Integer) c.getKey()
             );
