@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+
+<log4j:configuration>
+    <renderer
+        renderedClass="org.jpos.iso.ISOMsg"
+        renderingClass="org.jpos.log4j.ISOMsgRenderer" />
+    <renderer
+        renderedClass="org.jpos.util.LogEvent"
+        renderingClass="org.jpos.log4j.LogEventRenderer" />
+
+    <root>
+        <priority value="debug" />
+        <appender-ref ref="Debug"/>
+        <appender-ref ref="STDOUT" />
+    </root>
+
+    <appender name="STDOUT" class="org.apache.log4j.ConsoleAppender">
+        <!--param name="threshold" value="info" /-->
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern"
+                  value="#%d{HH:mm:ss,SSS} [%r] %-5p %c{2}\n%m\n" />
+        </layout>       
+    </appender>
+
+    <appender name="Debug" class="org.apache.log4j.FileAppender">
+        <param name="File"   value="log/debug.log" />
+        <param name="Append" value="true" />            
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" 
+                  value="#%d [%r] %-5p [%t] %c (%F:%L)\n%m\n"/>
+        </layout>       
+    </appender>
+
+</log4j:configuration>
+
