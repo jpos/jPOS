@@ -40,6 +40,7 @@
 <!ATTLIST mux name ID #REQUIRED>
 <!ATTLIST mux logger IDREF #IMPLIED>
 <!ATTLIST mux realm CDATA #IMPLIED>
+<!ATTLIST mux connect (yes|no) 'yes'>
 
 <!-- task -->
 <!ELEMENT task (property)*>

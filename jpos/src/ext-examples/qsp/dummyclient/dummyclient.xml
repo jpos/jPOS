@@ -43,7 +43,8 @@
 	    logger="qsp" realm="test.sequencer" >
  </sequencer>
 
- <mux name="dummyclient.mux" logger="qsp" realm="dummyclient.mux">
+ <mux name="dummyclient.mux" 
+    logger="qsp" realm="dummyclient.mux" connect="yes">
   <channel name="dummyclient.channel" 
           class="org.jpos.iso.channel.ASCIIChannel" 
           packager="org.jpos.iso.packager.ISO87APackager"
