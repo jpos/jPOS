@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.15  2000/03/20 19:25:36  apr
+ * Testing ISOGetty (mod-uruguay
+ *
  * Revision 1.14  2000/03/15 12:55:15  apr
  * Changed dumpString to hexString
  *
@@ -174,7 +177,7 @@ public class VISA1Link implements LogProducer, Runnable
     private byte[] receivePacket (long timeout, LogEvent evt) 
 	throws IOException
     {
-	String end     = "\001\002\003\004\005\006\025";
+	String end     = "\002\003\004\005\006\025";
 	String packet  = v24.readUntil (end, timeout, true);
 	String payload = null;
 	if (packet.length() > 2 && packet.charAt (packet.length()-1) == ETX) {
@@ -240,12 +243,14 @@ public class VISA1Link implements LogProducer, Runnable
 	    while (System.currentTimeMillis() < expired) {
 		if (i++ % 5 == 0)
 		    v24.send (ENQ);
-		String buf = v24.readUntil ("\002", 5*1000, true);
+		String buf = v24.readUntil ("\002\004", 5*1000, true);
 		if (buf.endsWith ("\002")) {
 		    request = receivePacket (10*1000, evt);
 		    v24.send (request == null ? NAK : ACK);
 		    if (request != null)
 			break;
+		} else if (buf.endsWith ("\004")) {
+		    mdm.hangup();
 		}
 	    }
 	} catch (IOException e) { 
