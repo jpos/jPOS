@@ -133,23 +133,48 @@ public class ISOAmountFieldPackager extends ISOFieldPackager
         return prefixer.getPackedLength() + interpreter.getPackedLength(getLength());
     }
 
+    /** Create a nice readable message for errors */
+    private String makeExceptionMessage(ISOComponent c, String operation) {
+        Object fieldKey = "unknown";
+        if (c != null)
+        {
+            try
+            {
+                fieldKey = c.getKey();
+            } catch (Exception ignore)
+            {
+            }
+        }
+        return this.getClass().getName() + ": Problem " + operation + " field " + fieldKey;
+    }
+
     /**
 	 * Packs the component into a byte[].
 	 */
     public byte[] pack(ISOComponent c) throws ISOException
     {
-        String data = (String)c.getValue();
-        String sign = data.substring(0, 1);
-        String amount = data.substring(1);
-        String paddedData = padder.pad(amount, getLength()-1);
-        int signLength = interpreter.getPackedLength(1);
-        byte[] rawData = new byte[prefixer.getPackedLength()
-                + signLength
-                + interpreter.getPackedLength(paddedData.length())];
-        prefixer.encodeLength(paddedData.length(), rawData);
-        interpreter.interpret(sign, rawData, prefixer.getPackedLength());
-        interpreter.interpret(paddedData, rawData, prefixer.getPackedLength() + signLength);
-        return rawData;
+        try
+        {
+            String data = (String)c.getValue();
+            if (data.length() > getLength())
+            {
+                throw new ISOException("Field length " + data.length() + " too long. Max: " + getLength());
+            }
+            String sign = data.substring(0, 1);
+            String amount = data.substring(1);
+            String paddedData = padder.pad(amount, getLength()-1);
+            int signLength = interpreter.getPackedLength(1);
+            byte[] rawData = new byte[prefixer.getPackedLength()
+                    + signLength
+                    + interpreter.getPackedLength(paddedData.length())];
+            prefixer.encodeLength(paddedData.length(), rawData);
+            interpreter.interpret(sign, rawData, prefixer.getPackedLength());
+            interpreter.interpret(paddedData, rawData, prefixer.getPackedLength() + signLength);
+            return rawData;
+        } catch(Exception e)
+        {
+            throw new ISOException(makeExceptionMessage(c, "packing"), e);
+        }
     }
 
     /**
@@ -161,17 +186,23 @@ public class ISOAmountFieldPackager extends ISOFieldPackager
      */
     public int unpack(ISOComponent c, byte[] b, int offset) throws ISOException
     {
-        int len = prefixer.decodeLength(b, offset);
-        if (len == -1)
+        try
         {
-            // The prefixer doesn't know how long the field is, so use
-			// maxLength instead
-            len = getLength();
+            int len = prefixer.decodeLength(b, offset);
+            if (len == -1)
+            {
+                // The prefixer doesn't know how long the field is, so use
+    			// maxLength instead
+                len = getLength();
+            }
+            int lenLen = prefixer.getPackedLength();
+            String unpacked = interpreter.uninterpret(b, offset + lenLen, len);
+            c.setValue(unpacked);
+            return lenLen + interpreter.getPackedLength(len);
+        } catch(Exception e)
+        {
+            throw new ISOException(makeExceptionMessage(c, "unpacking"), e);
         }
-        int lenLen = prefixer.getPackedLength();
-        String unpacked = interpreter.uninterpret(b, offset + lenLen, len);
-        c.setValue(unpacked);
-        return lenLen + interpreter.getPackedLength(len);
     }
     
     /**
@@ -183,17 +214,23 @@ public class ISOAmountFieldPackager extends ISOFieldPackager
     public void unpack (ISOComponent c, InputStream in) 
         throws IOException, ISOException
     {
-        int lenLen = prefixer.getPackedLength ();
-        int len;
-        if (lenLen == 0)
+        try
         {
-            len = getLength();
-        } else
+            int lenLen = prefixer.getPackedLength ();
+            int len;
+            if (lenLen == 0)
+            {
+                len = getLength();
+            } else
+            {
+                len = prefixer.decodeLength (readBytes (in, lenLen), 0);
+            }
+            int packedLen = interpreter.getPackedLength(len);
+            String unpacked = interpreter.uninterpret(readBytes (in, packedLen), 0, len);
+            c.setValue(unpacked);
+        } catch(ISOException e)
         {
-            len = prefixer.decodeLength (readBytes (in, lenLen), 0);
+            throw new ISOException(makeExceptionMessage(c, "unpacking"), e);
         }
-        int packedLen = interpreter.getPackedLength(len);
-        String unpacked = interpreter.uninterpret(readBytes (in, packedLen), 0, len);
-        c.setValue(unpacked);
     }
 }

@@ -66,5 +66,18 @@ public class IFB_LLCHAR extends ISOStringFieldPackager {
      */
     public IFB_LLCHAR(int len, String description) {
         super(len, description, NullPadder.INSTANCE, AsciiInterpreter.INSTANCE, BcdPrefixer.LL);
+        if (len > 99)
+        {
+            throw new IllegalArgumentException("Length " + len + " too long for " + this.getClass().getName());
+        }
+    }
+
+    public void setLength(int len)
+    {
+        if (len > 99)
+        {
+            throw new IllegalArgumentException("Length " + len + " too long for " + this.getClass().getName());
+        }
+        super.setLength(len);
     }
 }

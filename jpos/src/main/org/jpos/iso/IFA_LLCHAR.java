@@ -66,5 +66,18 @@ public class IFA_LLCHAR extends ISOStringFieldPackager {
      */
     public IFA_LLCHAR(int len, String description) {
         super(len, description, NullPadder.INSTANCE, AsciiInterpreter.INSTANCE, AsciiPrefixer.LL);
+        if (len > 99)
+        {
+            throw new IllegalArgumentException("Length " + len + " too long for " + this.getClass().getName());
+        }
+    }
+
+    public void setLength(int len)
+    {
+        if (len > 99)
+        {
+            throw new IllegalArgumentException("Length " + len + " too long for " + this.getClass().getName());
+        }
+        super.setLength(len);
     }
 }

@@ -133,6 +133,21 @@ public class ISOStringFieldPackager extends ISOFieldPackager
         return prefixer.getPackedLength() + interpreter.getPackedLength(getLength());
     }
 
+    /** Create a nice readable message for errors */
+    private String makeExceptionMessage(ISOComponent c, String operation) {
+        Object fieldKey = "unknown";
+        if (c != null)
+        {
+            try
+            {
+                fieldKey = c.getKey();
+            } catch (Exception ignore)
+            {
+            }
+        }
+        return this.getClass().getName() + ": Problem " + operation + " field " + fieldKey;
+    }
+
     /**
 	 * Convert the component into a byte[].
 	 */
@@ -140,38 +155,20 @@ public class ISOStringFieldPackager extends ISOFieldPackager
     {
         try
         {
-            String paddedData = padder.pad(((String)c.getValue()), getLength());
+            String data = (String)c.getValue();
+            if (data.length() > getLength())
+            {
+                throw new ISOException("Field length " + data.length() + " too long. Max: " + getLength());
+            }
+            String paddedData = padder.pad(data, getLength());
             byte[] rawData = new byte[prefixer.getPackedLength()
                     + interpreter.getPackedLength(paddedData.length())];
             prefixer.encodeLength(paddedData.length(), rawData);
             interpreter.interpret(paddedData, rawData, prefixer.getPackedLength());
             return rawData;
-        } catch(ISOException e)
-        {
-            Object fieldKey = "unknown";
-            if (c != null)
-            {
-                try
-                {
-                    fieldKey = c.getKey();
-                } catch (Exception ignore)
-                {
-                }
-            }
-            throw new ISOException(this.getClass().getName() + ": Problem packing field " + fieldKey, e);
         } catch(Exception e)
         {
-            Object fieldKey = "unknown";
-            if (c != null)
-            {
-                try
-                {
-                    fieldKey = c.getKey();
-                } catch (Exception ignore)
-                {
-                }
-            }
-            throw new ISOException(this.getClass().getName() + ": Problem packing field " + fieldKey, e);
+            throw new ISOException(makeExceptionMessage(c, "packing"), e);
         }
     }
 
@@ -197,32 +194,9 @@ public class ISOStringFieldPackager extends ISOFieldPackager
             String unpacked = interpreter.uninterpret(b, offset + lenLen, len);
             c.setValue(unpacked);
             return lenLen + interpreter.getPackedLength(len);
-        } catch(ISOException e)
-        {
-            Object fieldKey = "unknown";
-            if (c != null)
-            {
-                try
-                {
-                    fieldKey = c.getKey();
-                } catch (Exception ignore)
-                {
-                }
-            }
-            throw new ISOException(this.getClass().getName() + ": Problem unpacking field " + fieldKey, e);
         } catch(Exception e)
         {
-            Object fieldKey = "unknown";
-            if (c != null)
-            {
-                try
-                {
-                    fieldKey = c.getKey();
-                } catch (Exception ignore)
-                {
-                }
-            }
-            throw new ISOException(this.getClass().getName() + ": Problem unpacking field " + fieldKey, e);
+            throw new ISOException(makeExceptionMessage(c, "unpacking"), e);
         }
     }
 
@@ -235,17 +209,23 @@ public class ISOStringFieldPackager extends ISOFieldPackager
     public void unpack (ISOComponent c, InputStream in) 
         throws IOException, ISOException
     {
-        int lenLen = prefixer.getPackedLength ();
-        int len;
-        if (lenLen == 0)
+        try
         {
-            len = getLength();
-        } else
+            int lenLen = prefixer.getPackedLength ();
+            int len;
+            if (lenLen == 0)
+            {
+                len = getLength();
+            } else
+            {
+                len = prefixer.decodeLength (readBytes (in, lenLen), 0);
+            }
+            int packedLen = interpreter.getPackedLength(len);
+            String unpacked = interpreter.uninterpret(readBytes (in, packedLen), 0, len);
+            c.setValue(unpacked);
+        } catch(ISOException e)
         {
-            len = prefixer.decodeLength (readBytes (in, lenLen), 0);
+            throw new ISOException(makeExceptionMessage(c, "unpacking"), e);
         }
-        int packedLen = interpreter.getPackedLength(len);
-        String unpacked = interpreter.uninterpret(readBytes (in, packedLen), 0, len);
-        c.setValue(unpacked);
     }
 }

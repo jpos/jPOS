@@ -69,5 +69,18 @@ public class IFE_LLLCHAR extends ISOStringFieldPackager
      */
     public IFE_LLLCHAR(int len, String description) {
         super(len, description, NullPadder.INSTANCE, EbcdicInterpreter.INSTANCE, EbcdicPrefixer.LLL);
+        if (len > 999)
+        {
+            throw new IllegalArgumentException("Length " + len + " too long for " + this.getClass().getName());
+        }
+    }
+
+    public void setLength(int len)
+    {
+        if (len > 999)
+        {
+            throw new IllegalArgumentException("Length " + len + " too long for " + this.getClass().getName());
+        }
+        super.setLength(len);
     }
 }
