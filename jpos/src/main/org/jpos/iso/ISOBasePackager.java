@@ -56,6 +56,10 @@ import org.jpos.util.LogEvent;
 
 /*
  * $Log$
+ * Revision 1.31  2000/12/06 12:27:48  eoin
+ * Changed setFieldPackager to public access
+ * so that GenericPackager can call it.
+ *
  * Revision 1.30  2000/11/02 12:09:18  apr
  * Added license to every source file
  *
@@ -136,7 +140,7 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
     protected Logger logger = null;
     protected String realm = null;
 
-    protected void setFieldPackager (ISOFieldPackager[] fld) {
+    public void setFieldPackager (ISOFieldPackager[] fld) {
         this.fld = fld;
     }
     /**
@@ -279,7 +283,7 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
 	    }
 		
 	    for (int i=getFirstField(); i<maxField; i++) {
-		if (bmap == null || bmap.get(i)) {
+		if ((bmap == null || bmap.get(i)) && fld[i] != null) {
 		    ISOComponent c = fld[i].createComponent(i);
 		    consumed += fld[i].unpack (c, b, consumed);
 		    if (logger != null) {
