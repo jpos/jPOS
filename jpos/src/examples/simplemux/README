@@ -21,10 +21,10 @@ as in the following example:
     //
     // use Retrieval Reference Number [field 37] as Key
     //
-    ISOMUX mux = new ISOMUX {
-	public String getKey(ISOMsg m) {
-	    return (String) m.getValue (37);
-	}
+    ISOMUX mux = new ISOMUX (channel) {
+        public String getKey(ISOMsg m) throws ISOException {
+            return (String) m.getValue (37);
+        }
     };
 
 simplemux example
