@@ -52,7 +52,7 @@ package org.jpos.space;
 import java.io.*;
 import java.util.Set;
 import java.util.Map;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Iterator;
@@ -77,7 +77,7 @@ public class PersistentSpace implements Space // PersistentSpaceMBean
 
     public PersistentSpace() {
         super();
-        map = new LinkedHashMap ();
+        map = new HashMap ();
     }
     public synchronized void setCacheSize (int cacheSize) {
         this.cacheSize = cacheSize;

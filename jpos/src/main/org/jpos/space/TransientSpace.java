@@ -51,7 +51,7 @@ package org.jpos.space;
 
 import java.util.Set;
 import java.util.Map;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Iterator;
@@ -72,7 +72,7 @@ public class TransientSpace implements Space, TransientSpaceMBean {
 
     public TransientSpace () {
         super();
-        map = new LinkedHashMap ();
+        map = new HashMap ();
     }
     public void out (Object key, Object value) {
         List listeners;
