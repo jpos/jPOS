@@ -48,15 +48,18 @@
  */
 package org.jpos.q2.qbean;
 
+import java.util.Set;
 import java.util.List;
 import java.util.Iterator;
 
 import org.jpos.util.ThreadPool;
 import org.jpos.iso.ISOServer;
 import org.jpos.iso.ISOPackager;
+import org.jpos.iso.ISORequestListener;
 import org.jpos.iso.ISOChannel;
 import org.jpos.iso.ServerChannel;
 
+import org.jpos.q2.QFactory;
 import org.jpos.q2.QBeanSupport;
 import org.jpos.q2.Q2ConfigurationException;
 
@@ -86,23 +89,13 @@ public class ServerAdaptor
     }
 
     private void newChannel () throws Q2ConfigurationException {
-        try {
-            Class c = Class.forName (channelString);
-            if (c != null) {
-                channel = (ISOChannel) c.newInstance ();
-                if (packagerString != null) {
-                    Class p = Class.forName (packagerString);
-                    packager = (ISOPackager) p.newInstance ();
-                    channel.setPackager (packager);
-                }
-            } 
-        } catch (ClassNotFoundException e) {
-            throw new Q2ConfigurationException (e);
-        } catch (InstantiationException e) {
-            throw new Q2ConfigurationException (e);
-        } catch (IllegalAccessException e) {
-            throw new Q2ConfigurationException (e);
-        }
+        Element persist = getPersist ();
+        Element e = persist.getChild ("channel");
+        if (e == null)
+            throw new Q2ConfigurationException ("channel element missing");
+
+        ChannelAdaptor adaptor = new ChannelAdaptor ();
+        channel = adaptor.newChannel (e, getFactory ());
     }
 
     private void initServer () 
@@ -110,25 +103,22 @@ public class ServerAdaptor
     {
         if (port == 0)
             throw new Q2ConfigurationException ("Port value not set");
-        if (channelString == null)
-            throw new Q2ConfigurationException ("Channel name not set");
-
         newChannel();
-
         if (channel == null)
             throw new Q2ConfigurationException ("ISO Channel is null");
 
         if (!(channel instanceof ServerChannel)) {
-            throw new Q2ConfigurationException (channelString + "does not implement ServerChannel");
+            throw new Q2ConfigurationException (channelString + 
+                  "does not implement ServerChannel");
         }
 
         ThreadPool pool = null;
         pool = new ThreadPool (1,maxSessions);
         pool.setLogger (log.getLogger(), getName() + ".pool");
 
-        ISOServer server = new ISOServer (port, (ServerChannel) channel, pool);
+        server = new ISOServer (port, (ServerChannel) channel, pool);
         server.setLogger (log.getLogger(), getName() + ".server");
-        
+        addListeners ();
         new Thread (server).start();
     }
 
@@ -138,6 +128,9 @@ public class ServerAdaptor
         } catch (Exception e) {
             getLog().warn ("error starting service", e);
         }
+    }
+    public void stopService () {
+        server.shutdown ();
     }
 
     /**
@@ -202,6 +195,22 @@ public class ServerAdaptor
      */
     public int getMaxSessions () {
         return maxSessions;
+    }
+    private void addListeners () 
+	throws Q2ConfigurationException
+    {
+        QFactory factory = getFactory ();
+        Iterator iter = getPersist().getChildren (
+            "request-listener"
+        ).iterator();
+        while (iter.hasNext()) {
+            Element l = (Element) iter.next();
+            ISORequestListener listener = (ISORequestListener) 
+                factory.newInstance (l.getAttributeValue ("class"));
+            factory.setLogger        (listener, l);
+            factory.setConfiguration (listener, l);
+            server.addISORequestListener (listener);
+        }
     }
 }
 
