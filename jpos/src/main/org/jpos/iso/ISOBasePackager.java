@@ -220,22 +220,29 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
             }
                 
             for (int i=getFirstField(); i<maxField; i++) {
-                if ((bmap == null || bmap.get(i)) && fld[i] != null) {
-                    ISOComponent c = fld[i].createComponent(i);
-                    consumed += fld[i].unpack (c, b, consumed);
-                    if (logger != null) {
-                        evt.addMessage ("<unpack fld=\"" + i 
-                            +"\" packager=\""
-                            +fld[i].getClass().getName()+ "\">");
-                        if (c.getValue() instanceof ISOMsg)
-                            evt.addMessage (c.getValue());
-                        else
-                            evt.addMessage ("  <value>" 
-                                +c.getValue().toString()
-                                + "</value>");
-                        evt.addMessage ("</unpack>");
+                try {
+                    if ((bmap == null || bmap.get(i)) && fld[i] != null) {
+                        ISOComponent c = fld[i].createComponent(i);
+                        consumed += fld[i].unpack (c, b, consumed);
+                        if (logger != null) {
+                            evt.addMessage ("<unpack fld=\"" + i 
+                                +"\" packager=\""
+                                +fld[i].getClass().getName()+ "\">");
+                            if (c.getValue() instanceof ISOMsg)
+                                evt.addMessage (c.getValue());
+                            else
+                                evt.addMessage ("  <value>" 
+                                    +c.getValue().toString()
+                                    + "</value>");
+                            evt.addMessage ("</unpack>");
+                        }
+                        m.set(c);
                     }
-                    m.set(c);
+                } catch (ISOException e) {
+                    System.out.println("error unpacking field "+i);
+                    e.printStackTrace(System.out);
+                    evt.addMessage (e);
+                    throw e;
                 }
             }
             if (bmap != null && bmap.get(65) && fld.length > 128 &&
@@ -245,19 +252,25 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
                     ((ISOComponent) m.getChildren().get 
                         (new Integer(65))).getValue();
                 for (int i=1; i<64; i++) {
-                    if (bmap == null || bmap.get(i)) {
-                        ISOComponent c = fld[i+128].createComponent(i);
-                        consumed += fld[i+128].unpack (c, b, consumed);
-                        if (logger != null) {
-                            evt.addMessage ("<unpack fld=\"" + i+128
-                                +"\" packager=\""
-                                +fld[i+128].getClass().getName()+ "\">");
-                            evt.addMessage ("  <value>" 
-                                +c.getValue().toString()
-                                + "</value>");
-                            evt.addMessage ("</unpack>");
+                    try {
+                        if (bmap == null || bmap.get(i)) {
+                            ISOComponent c = fld[i+128].createComponent(i);
+                            consumed += fld[i+128].unpack (c, b, consumed);
+                            if (logger != null) {
+                                evt.addMessage ("<unpack fld=\"" + i+128
+                                    +"\" packager=\""
+                                    +fld[i+128].getClass().getName()+ "\">");
+                                evt.addMessage ("  <value>" 
+                                    +c.getValue().toString()
+                                    + "</value>");
+                                evt.addMessage ("</unpack>");
+                            }
+                            m.set(c);
                         }
-                        m.set(c);
+                    } catch (ISOException e) {
+                        System.out.println("error unpacking field "+i);
+                        e.printStackTrace(System.out);
+                        throw e;
                     }
                 }
             }
@@ -272,6 +285,7 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
             evt.addMessage (e);
             throw e;
         } catch (Exception e) {
+            e.printStackTrace();
             evt.addMessage (e);
             throw new ISOException (e);
         } finally {
