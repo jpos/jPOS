@@ -68,7 +68,7 @@ import org.jpos.core.ConfigurationException;
  */
 public class DailyTask 
 	extends SimpleLogSource 
-	implements Runnable, ReConfigurable
+	implements Runnable, ReConfigurable, DailyTaskMBean
 {
     Configuration cfg;
     Thread thisThread = null;
@@ -117,6 +117,10 @@ public class DailyTask
 	}
     }
 
+    public void forceRun () {
+        pool.execute (task);
+    }
+
     protected void waitUntilStartTime() {
 	Date when = getWhen();
 	for (;;) {
@@ -141,7 +145,7 @@ public class DailyTask
 	} catch (InterruptedException e) { }
     }
 
-    protected Date getWhen() {
+    public Date getWhen() {
 	String s = cfg.get ("start")+":00:00";
         int hh = Integer.parseInt(s.substring (0, 2));
         int mm = Integer.parseInt(s.substring (3, 5));
