@@ -67,7 +67,7 @@
     <ant dir="${source}/example" target="${target}" inheritAll="false"/>
   </target>
 
-  <target name="do-all" depends="do-jpos,do-misc,do-example,do-jetty">
+  <target name="do-all" depends="get-required, do-jpos,do-misc,do-example,do-jetty">
   </target>
 
   <target name="javadocs">
@@ -85,7 +85,7 @@
   </target>
 
   <target name="get-required">
-   <get src="file:../jpos/dist/jpos-1.4.6.jar" dest="lib/jpos-1.4.6.jar" />
+   <get src="file:../jpos/dist/jpos-1.4.7.jar" dest="lib/jpos-1.4.7.jar" />
    <get src="file:../q2/dist/q2.jar" dest="lib/q2.jar" />
   </target>
 
