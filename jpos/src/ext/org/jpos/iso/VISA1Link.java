@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.2  1999/11/25 17:01:09  apr
+ * Added getModem() method
+ *
  * Revision 1.1  1999/11/24 18:08:52  apr
  * Added VISA 1 Support
  *
@@ -75,6 +78,9 @@ public class VISA1Link implements LogProducer, Runnable
 	this.packager = packager;
 	setDefaults();
     }
+    public Modem getModem () {
+	return mdm;
+    }
     private void setDefaults() {
 	this.timeout  = 60000;
 	this.waitENQ  = true;
@@ -100,6 +106,9 @@ public class VISA1Link implements LogProducer, Runnable
      */
     public void setTimeout (long timeout) {
 	this.timeout = timeout;
+    }
+    public long getTimeout () {
+	return timeout;
     }
 
     private byte calcLRC (byte[] b) {
@@ -144,6 +153,7 @@ public class VISA1Link implements LogProducer, Runnable
     {
 	String buf;
 	byte[] response = null;
+	long timeout = this.timeout;
 	long start   = System.currentTimeMillis();
 	long expire  = start + timeout;
 	int state    = waitENQ ? 0 : 1;
@@ -174,8 +184,10 @@ public class VISA1Link implements LogProducer, Runnable
 		    break;
 	    }
 	}
-	if (mdm.isConnected() && response == null)
-	    v24.send (EOT);
+	if (mdm.isConnected() && response == null) {
+	    // v24.send (EOT);
+	    evt.addMessage ("<eot/>");
+	}
 	evt.addMessage ("<rx>"+(System.currentTimeMillis() - start)+"</rx>");
 	Logger.log (evt);
 	return response;
@@ -199,7 +211,7 @@ public class VISA1Link implements LogProducer, Runnable
 	if (m != null) {
 	    m.setPackager (packager);
 	    byte[] response = request (m.pack());
-	    response = "APROBADO 12313150 POSITIVO".getBytes();
+	    // response = "APROBADO 12313150 POSITIVO".getBytes();
 	    if (r != null) {
 		ISOMsg resp = (ISOMsg) m.clone();
 		resp.set (new ISOField (0, "0110"));
