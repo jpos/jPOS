@@ -3,6 +3,14 @@ package uy.com.cs.jpos.iso;
 import java.io.*;
 import java.util.*;
 
+/*
+ * $Log$
+ * Revision 1.7  1999/10/07 16:21:24  apr
+ * Bugfix provided by georgem@tvinet.com to prevent race condition on
+ * getResponse()
+ *
+ */
+
 /**
  * link together a whole transaction, the requesting ISOMsg with the
  * corresponding response in a form suitable to be queued to an
