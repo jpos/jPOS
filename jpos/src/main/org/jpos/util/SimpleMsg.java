@@ -91,7 +91,7 @@ import  java.io.PrintStream;
         }
 
         /**
-         * dumps a Parameter
+         * dumps message
          * @param p a PrintStream usually supplied by Logger
          * @param indent indention string, usually suppiled by Logger
          * @see org.jpos.util.Loggeable
