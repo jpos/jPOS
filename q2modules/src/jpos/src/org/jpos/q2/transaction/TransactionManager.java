@@ -32,6 +32,7 @@ public class TransactionManager
     Space sp;
     Space psp;
     String queue;
+    String tailLock;
     List participants;
     long head, tail;
     public static final String  HEAD       = "$HEAD";
@@ -51,6 +52,7 @@ public class TransactionManager
         psp  = SpaceFactory.getSpace (cfg.get ("persistent-space"));
         tail = initCounter (TAIL, cfg.getLong ("initial-tail", 0));
         head = Math.max (initCounter (HEAD, tail), tail);
+        tailLock = TAILLOCK + "." + Integer.toString (this.hashCode());
 
         initTailLock ();
         initParticipants (getPersist());
@@ -253,11 +255,11 @@ public class TransactionManager
         }
     }
     private void initTailLock () {
-        SpaceUtil.wipe (sp, TAILLOCK);
-        sp.out (TAILLOCK, TAILLOCK);
+        SpaceUtil.wipe (sp, tailLock);
+        sp.out (tailLock, TAILLOCK);
     }
     private void checkTail () {
-        Object lock = sp.inp (TAILLOCK);
+        Object lock = sp.inp (tailLock);
         if (lock == null)   // another thread is checking tail
             return;
 
@@ -265,7 +267,7 @@ public class TransactionManager
             tail++;
         }
         syncTail ();
-        sp.out (TAILLOCK, lock);
+        sp.out (tailLock, lock);
     }
     private boolean tailDone () {
         String stateKey = getKey (STATE, tail);
