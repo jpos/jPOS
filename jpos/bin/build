@@ -18,4 +18,8 @@ JAVA=$JAVA_HOME/bin/java
 # CLASSPATH=`echo lib/*.jar | tr ' ' ':'`:$CLASSPATH
 CLASSPATH=lib/ant.jar:lib/commons-logging.jar:lib/crimson.jar:lib/jaxp.jar:$JAVA_HOME/lib/tools.jar
 
-$JAVA -classpath $CLASSPATH org.apache.tools.ant.Main "$@" -buildfile src/build.xml
+if [ -z $1 ] ; then
+   ARG="-projecthelp"
+fi
+
+$JAVA -classpath $CLASSPATH org.apache.tools.ant.Main "$@" $ARG -buildfile src/build.xml
