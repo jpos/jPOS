@@ -76,6 +76,17 @@ public class BASE1Header {
 		byte[] d = ISOUtil.str2bcd(src, true);
 		System.arraycopy(d, 0, header, 8, 3);
 	}
+	public byte[] getSource() {
+		byte[] b = new byte[3];
+		System.arraycopy(header, 8, b, 0, 3);
+		return b;
+	}
+	public byte[] getDestination() {
+		byte[] b = new byte[3];
+		System.arraycopy(header, 5, b, 0, 3);
+		return b;
+	}
+
 	public void swapDirection() {
 		byte[] source = new byte[3];
 		System.arraycopy(header, 8, source, 0, 3);
