@@ -690,4 +690,14 @@ public abstract class BaseChannel extends Observable
     public byte[] getHeader () {
 	return null;
     }
+    /**
+     * @return ISOChannel instance with given name.
+     * @throws NameRegistrar.NotFoundException;
+     * @see NameRegistrar
+     */
+    public static ISOChannel getChannel (String name)
+	throws NameRegistrar.NotFoundException
+    {
+	return (ISOChannel) NameRegistrar.get ("channel."+name);
+    }
 }
