@@ -51,8 +51,9 @@ package org.jpos.iso;
 
 /**
  * <pre>
- * EBCDIC version of IF_LLCHAR
- * Uses a 2 EBCDIC byte length field
+ * Uses a 2 EBCDIC byte length field (right-justified with leading 0)
+ * and packed data as BCD. 2 BCD digits per byte and adding the value hex('F')
+ * for padding if length is odd.
  * </pre>
  * @author julien.moebs@paybox.net
  * @version $Id$
@@ -61,15 +62,15 @@ package org.jpos.iso;
  */
 
 
-public class IFEB_LLLCHAR extends ISOFieldPackager {
-    public IFEB_LLLCHAR() {
+public class IFEB_LLNUM extends ISOFieldPackager {
+    public IFEB_LLNUM () {
         super();
     }
     /**
      * @param len - field len
      * @param description symbolic descrption
      */
-    public IFEB_LLLCHAR(int len, String description) {
+    public IFEB_LLNUM (int len, String description) {
         super(len, description);
     }
     /**
@@ -82,17 +83,10 @@ public class IFEB_LLLCHAR extends ISOFieldPackager {
         boolean odd = false;
         int len;
         String s = (String) c.getValue();
-        
-        
-        
+ 
         if ((len=s.length()) > getLength() || len>99)   // paranoia settings
             throw new ISOException(
             "invalid len "+len +" packing LLEBCHAR field "+(Integer) c.getKey());
-        
-        
-        //System.out.println("String s = (String) c.getValue(); "+s);
-        
-        
         
         // if odd length
         if ( (len%2)==1 ) {
@@ -102,30 +96,24 @@ public class IFEB_LLLCHAR extends ISOFieldPackager {
             odd = false;
             len = len/2;
         }
-        
-        //System.out.println("len= "+ len +" s.length()= "+len);
-        
-        String fieldLength = ISOUtil.zeropad(Integer.toString(len), 3);
+
+        String fieldLength = ISOUtil.zeropad(Integer.toString(len), 2);
         
         byte [] EBCDIClength = ISOUtil.asciiToEbcdic(fieldLength);
 
         // bcd stuff
         byte[] bcd = ISOUtil.str2bcd(s, false);
+        
         if(odd)
             bcd[len-1] = (byte) (bcd[len-1] | 0xf);
-        
 
-        //System.out.println("bcd2str "+ISOUtil.bcd2str(bcd, 0, bcd.length*2, false) );
-        
-        byte[] b   = new byte[bcd.length + 3];
+        byte[] b   = new byte[bcd.length + 2];
         byte[] l   = ISOUtil.str2bcd(Integer.toString(len), true);
         
         b[0] = EBCDIClength[0];
         b[1] = EBCDIClength[1];
-        b[1] = EBCDIClength[3];
-        System.arraycopy(bcd, 0, b, 3, bcd.length);
-        
-        
+        System.arraycopy(bcd, 0, b, 2, bcd.length);
+
         return b;
     }
     /**
@@ -138,40 +126,21 @@ public class IFEB_LLLCHAR extends ISOFieldPackager {
     public int unpack(ISOComponent c, byte[] b, int offset)
     throws ISOException {
         boolean pad = false;
-        
-        
-        int len = ((b[offset] & 0x0f) * 100)  + ((b[offset+1] & 0x0f) * 10) + (b[offset+2] & 0x0f);
-        
+        int len = ((b[offset] & 0x0f) * 10)  + (b[offset+1] & 0x0f);
         int tempLen = len*2;
 
-        //System.out.println("len "+ len +"len*2 "+tempLen);
-        
-        
         // odd handling
-        byte testByte = b[ (offset+3+len-1) ];
-        
-        byte [] b8 = { (byte) testByte, (byte) (testByte | 0xf0)};
-        
-        //System.out.println("test" + ISOUtil.hexString(b8));
-        //System.out.println( (((testByte | 0xf0))== 0xff) );
-        
-        if( (testByte | 0xf0)== 0xff) {
-            // odd length
+        byte lastByte = b[ (offset+2+len-1) ];
+
+        if((lastByte & 0x0f) == 0x0f)
             tempLen--;
-        }
         
-        
-        // bcd line
-        //System.out.println("ISOUtil.bcd2str(b, offset+2, len, pad) "+ISOUtil.bcd2str(b, offset+2, tempLen, pad));
-        
-        c.setValue(ISOUtil.bcd2str(b, offset+3, tempLen, pad));
-        
-        //c.setValue(ISOUtil.ebcdicToAscii(b, offset+2, len));
-        
-        return len+3;
+        c.setValue(ISOUtil.bcd2str(b, offset+2, tempLen, pad));
+
+        return len+2;
     }
     
     public int getMaxPackedLength() {
-        return getLength()+3;
+        return getLength()+2;
     }
 }

@@ -15,7 +15,7 @@ bmp42: length 13 to 16
 	<isofield id="1" length="8" name="Bitmap" class="org.jpos.iso.IFB_BITMAP"/>
 
         <!--Could encounter problem with this field format -> perhaps IFE_NUMERIC-->
-	<isofield id="2" length="19" name="Primary Account number" class="org.jpos.iso.IFEB_LLCHAR"/>
+	<isofield id="2" length="19" name="Primary Account number" class="org.jpos.iso.IFEB_LLNUM"/>
 	<isofield id="3" length="6" name="Processing Code" class="org.jpos.iso.IFB_NUMERIC"/>
 	<isofield id="4" length="12" name="Amount, Transaction" class="org.jpos.iso.IFB_NUMERIC"/>
 	<isofield id="5" length="12" name="Amount, Reconciliation" class="org.jpos.iso.IFA_NUMERIC"/>
@@ -48,11 +48,11 @@ bmp42: length 13 to 16
 	<isofield id="30" length="24" name="Amounts, original" class="org.jpos.iso.IFA_NUMERIC"/>
 	<isofield id="31" length="99" name="Acquirer reference data" class="org.jpos.iso.IFA_LLCHAR"/>
 
-        <isofield id="32" length="11" name="Acquirer institution identification code" class="org.jpos.iso.IFEB_LLCHAR"/>
+        <isofield id="32" length="11" name="Acquirer institution identification code" class="org.jpos.iso.IFEB_LLNUM"/>
 	
         <isofield id="33" length="11" name="Forwarding institution identification code" class="org.jpos.iso.IFA_LLNUM"/>
 	<isofield id="34" length="28" name="Primary account number, extended" class="org.jpos.iso.IFA_LLCHAR"/>
-	<isofield id="35" length="37" name="Track 2 data" class="org.jpos.iso.IFEB_LLCHAR"/>
+	<isofield id="35" length="37" name="Track 2 data" class="org.jpos.iso.IFEB_LLNUM"/>
 	<isofield id="36" length="104" name="Track 3 data" class="org.jpos.iso.IFA_LLLCHAR"/>
 	
         <!-- Not sure about the 2 next fiels format -> IFE_CHAR -->
