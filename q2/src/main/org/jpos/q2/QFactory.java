@@ -53,7 +53,11 @@ package org.jpos.q2;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
-import java.util.*;
+import java.util.List;
+import java.util.Iterator;
+import java.util.Properties;
+import java.util.ResourceBundle;
+import java.util.MissingResourceException;
 import java.net.MalformedURLException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -81,11 +85,13 @@ import org.jpos.util.LogSource;
 public class QFactory {
     ObjectName loaderName;
     Q2 q2;
+    ResourceBundle classMapping;
 
     public QFactory (ObjectName loaderName, Q2 q2) {
         super ();
         this.loaderName = loaderName;
         this.q2  = q2;
+        classMapping = ResourceBundle.getBundle(this.getClass().getName());
     }
 
     public Object instantiate (Q2 server, Element e) 
@@ -94,6 +100,14 @@ public class QFactory {
                InstanceNotFoundException
     {
         String clazz  = e.getAttributeValue ("class");
+        if (clazz == null) {
+            try {
+                clazz = classMapping.getString (e.getName());
+            } catch (MissingResourceException ex) {
+                // no class attribute, no mapping
+                // let MBeanServer do the yelling
+            }
+        }
         MBeanServer mserver = server.getMBeanServer();
         getExtraPath (server.getLoader (), e);
         return mserver.instantiate (clazz, loaderName);
