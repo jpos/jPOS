@@ -189,7 +189,6 @@ public class ISOMsg extends ISOComponent
         return maxField;
     }
     private void recalcMaxField() {
-        ISOComponent c;
         maxField = 0;
         for (Enumeration e = fields.keys(); e.hasMoreElements(); ) {
             Object obj = e.nextElement();
@@ -438,7 +437,7 @@ public class ISOMsg extends ISOComponent
             m.fields = (Hashtable) fields.clone();
             if (header != null)
                 m.header = (ISOHeader) header.clone();
-            return (Object) m;
+            return m;
         } catch (CloneNotSupportedException e) {
             throw new InternalError();
         }
@@ -462,7 +461,7 @@ public class ISOMsg extends ISOComponent
                     }
                 }
             }
-            return (Object) m;
+            return m;
         } catch (CloneNotSupportedException e) {
             throw new InternalError();
         }
@@ -646,7 +645,7 @@ public class ISOMsg extends ISOComponent
     protected void readDirection (ObjectInput in) 
         throws IOException, ClassNotFoundException
     {
-        direction = (int) in.readByte();
+        direction = in.readByte();
     }
  
     public void writeExternal (ObjectOutput out) throws IOException {
@@ -682,7 +681,6 @@ public class ISOMsg extends ISOComponent
         in.readByte();  // ignore version for now
         fieldNumber = in.readShort();
         byte fieldType;
-        int fldno;
         ISOComponent c;
         try {
             while ((fieldType = in.readByte()) != 'E') {
