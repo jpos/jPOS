@@ -347,11 +347,11 @@ public class PersistentSpace implements LocalSpace // PersistentSpaceMBean {
         return defaultSpace;
     }
     public static final LocalSpace getSpace (String spaceName) {
-        String key = "jpos:space/"+spaceName;
-        Object obj = getSpace().rdp (key);
-        Space sp   = getSpace();
+        String key = "jpos:pSpace/"+spaceName;
+        Space sp   = TransientSpace.getSpace();
+        Object obj = sp.rdp (key);
         if (obj == null) {
-            synchronized (TransientSpace.class) {
+            synchronized (PersistentSpace.class) {
                 obj = sp.rdp (key);
                 if (obj == null) {
                     obj = new PersistentSpace ();
