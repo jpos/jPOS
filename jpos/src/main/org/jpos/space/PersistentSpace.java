@@ -101,10 +101,9 @@ public class PersistentSpace implements LocalSpace // PersistentSpaceMBean {
             }
         }
     }
-    public LeasedReference out (Object id, Object value, long timeout) {
+    public void out (Object id, Object value, long timeout) {
         LeasedReference ref = new LeasedReference (value, timeout);
         out (id, ref);
-        return ref;
     }
     public synchronized int size (Object key) {
         Data data  = (Data) map.get (key);
