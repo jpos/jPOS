@@ -73,7 +73,7 @@ import org.jpos.core.ConfigurationException;
  * </ul>
  * scanning for incoming requests (of varying priorities)
  * on the request directory and processing them by means of
- * DirPoll.Processor.
+ * DirPoll.Processor or DirPoll.FileProcessor
  * 
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
  * @since jPOS 1.2.7
@@ -92,7 +92,7 @@ public class DirPoll extends SimpleLogSource
     private int currentPriority;
     private String basePath;
     private ThreadPool pool;
-    private Processor processor;
+    private Object processor;
     private Configuration cfg;
 
     //------------------------------------ Constructor/setters/getters, etc.
@@ -124,7 +124,7 @@ public class DirPoll extends SimpleLogSource
     public long getPollInterval() {
         return pollInterval;
     }
-    public void setProcessor (Processor processor) {
+    public void setProcessor (Object processor) {
 	this.processor = processor;
     }
     /**
@@ -266,6 +266,13 @@ public class DirPoll extends SimpleLogSource
 	public byte[] process(String name, byte[] request) 
 	    throws DirPollException;
     }
+    public interface FileProcessor {
+	/**
+	 * @param name request File
+         * @exception should something go wrong
+	 */
+	public void process (File name) throws DirPollException;
+    }
     public class ProcessorRunner implements Runnable {
 	File request;
 	LogEvent logEvent;
@@ -282,18 +289,19 @@ public class DirPoll extends SimpleLogSource
 		if (processor == null) 
 		    throw new DirPollException 
 			("null processor - nothing to do");
-
-		byte[] resp = processor.process (
-		    request.getName(), readRequest (request)
-		);
-		
-		if (resp != null) 
-		    writeResponse (request.getName(), resp);
+                else if (processor instanceof Processor) {
+                    byte[] resp = ((Processor) processor).process (
+                        request.getName(), readRequest (request)
+                    );
+                    if (resp != null) 
+                        writeResponse (request.getName(), resp);
+                } else if (processor instanceof FileProcessor) 
+                    ((FileProcessor) processor).process (request);
 
 		if (!request.delete ())
 		    throw new DirPollException 
-			("error: can't unlink request");
-		
+			("error: can't unlink request " + request.getName());
+
 	    } catch (Throwable e) {
 		logEvent = evt;
 		evt.addMessage (e);
@@ -304,7 +312,7 @@ public class DirPoll extends SimpleLogSource
 		    evt.addMessage (_e);
 		}
 	    } finally {
-		if (logEvent != null)
+		if (logEvent != null) 
 		    Logger.log (logEvent);
 	    }
 	}
