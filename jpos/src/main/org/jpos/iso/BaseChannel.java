@@ -483,11 +483,10 @@ public abstract class BaseChannel extends Observable
 			"receive length " +len + " seems extrange");
 	    }
 	    m.setPackager (getDynamicPackager(b));
-	    if (b.length > 0)  // Ignore NULL messages
-		m.unpack (b);
-
 	    if (header != null && header.length > 0)
 		m.setHeader(header);
+	    if (b.length > 0)  // Ignore NULL messages
+		m.unpack (b);
 	    m.setDirection(ISOMsg.INCOMING);
 	    m = applyIncomingFilters (m, evt);
 	    m.setDirection(ISOMsg.INCOMING);
