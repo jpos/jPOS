@@ -72,6 +72,7 @@ import org.jpos.util.Logger;
  * @see ISOPackager
  * @see ISOBasePackager
  * @see ISOComponent
+ * @deprecated use IFB_LLLTLVBINARY and TLVField.java instead
  */
 public class TLVPackager extends ISOBasePackager {
    private static final boolean pad = false;

@@ -68,6 +68,7 @@ import org.jpos.util.Logger;
  * @see ISOPackager
  * @see ISOBasePackager
  * @see ISOComponent
+ * @deprecated use IFB_LLLTLVBINARY and TLVField.java instead
  *
  * This packager is used by TLVPackager to package subfields
  * such as field 55.
