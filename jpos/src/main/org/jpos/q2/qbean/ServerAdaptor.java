@@ -118,6 +118,7 @@ public class ServerAdaptor
 
         server = new ISOServer (port, (ServerChannel) channel, pool);
         server.setLogger (log.getLogger(), getName() + ".server");
+        getFactory().setConfiguration (server, getPersist());
         addListeners ();
         new Thread (server).start();
     }
