@@ -12,6 +12,9 @@ import java.util.*;
 
 /*
  * $Log$
+ * Revision 1.16  1999/12/11 17:23:35  apr
+ * BugFix: pan/exp separator = in bcd2str()
+ *
  * Revision 1.15  1999/11/24 18:15:49  apr
  * Added dumpString used in VISA1 logs
  *
@@ -255,6 +258,8 @@ public class ISOUtil {
             int shift = ((i & 1) == 1 ? 0 : 4);
             char c = Character.forDigit (
                 ((b[offset+(i>>1)] >> shift) & 0x0F), 16);
+	    if (c == 'd')
+		c = '=';
             d.append (Character.toUpperCase (c));
         }
         return d.toString();
