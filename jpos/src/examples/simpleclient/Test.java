@@ -7,7 +7,7 @@ import java.io.IOException;
 import org.jpos.iso.ISOMsg;
 import org.jpos.iso.ISOField;
 import org.jpos.iso.ISOChannel;
-import org.jpos.iso.RawChannel;
+import org.jpos.iso.ISOFactory;
 import org.jpos.iso.ISOPackager;
 import org.jpos.iso.ISOUtil;
 import org.jpos.iso.ISODate;
@@ -23,51 +23,20 @@ import org.jpos.core.VolatileSequencer;
 import org.jpos.core.SimpleConfiguration;
 
 public class Test extends SimpleLogProducer {
-    public static final String CFG_PORT     = "simpleserver.port";
-    public static final String CFG_CHANNEL  = "simpleserver.channel";
-    public static final String CFG_PACKAGER = "simpleserver.packager";
-    public static final String CFG_HEADER   = "simpleserver.header";
-
     private ISOChannel channel;
     private Sequencer seq;
 
-    public Test (Configuration cfg, Logger logger, String realm) {
+    public Test (Configuration cfg, Logger logger, String realm) 
+	throws ISOException, IOException
+    {
 	super();
 	setLogger (logger, realm);
-	channel = createChannel (cfg);
+	channel = ISOFactory.createChannel 
+	    (cfg, "simpleclient", logger, realm);
 	seq     = new VolatileSequencer();
+	channel.connect();
     }
 
-    private ISOChannel createChannel (Configuration cfg) {
-	String channelName  = cfg.get (CFG_CHANNEL);
-	String packagerName = cfg.get (CFG_PACKAGER);
-	String header       = cfg.get (CFG_HEADER);
-	int    port         = cfg.getInt (CFG_PORT);
-        ISOChannel channel  = null;
-        try {
-            Class c = Class.forName(channelName);
-            Class p = Class.forName(packagerName);
-            if (c != null && p != null) {
-		ISOPackager packager = (ISOPackager) p.newInstance();
-                channel = (ISOChannel) c.newInstance();
-		channel.setHost ("localhost", port);
-                channel.setPackager(packager);
-		channel.setLogger (logger, realm + ".channel");
-		if (channel instanceof RawChannel && header != null) 
-		    ((RawChannel)channel).setTPDU (
-			ISOUtil.str2bcd(header, false)
-		    );
-		channel.connect();
-            }
-        } catch (Exception ex) {
-	    LogEvent evt = new LogEvent (this, "createChannel");
-	    evt.addMessage ("<channel>"+channelName+"</channel>");
-	    evt.addMessage ("<packager>"+packagerName+"</packager>");
-	    evt.addMessage (ex);
-	    Logger.log (evt);
-        }
-        return channel;
-    }
     public void send (String mti) {
 	try {
 	    Date d = new Date();
@@ -105,14 +74,14 @@ public class Test extends SimpleLogProducer {
 	String cfgFile    = System.getProperties().getProperty("jpos.config");
         try {
 	    Configuration cfg = new SimpleConfiguration (cfgFile);
-	    int port          = Integer.parseInt(cfg.get (CFG_PORT));
-
 	    Test t = new Test (cfg, logger, "Test");
 	    t.send ("0100");
 	    t.send ("0101");
 	    t.send ("0200");
 	    t.send ("0800");
 	    System.out.println ("[terminating]");
+	} catch (ISOException e) {
+	    e.printStackTrace();
 	} catch (IOException e) {
 	    e.printStackTrace();
 	} 
