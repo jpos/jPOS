@@ -9,28 +9,10 @@ import org.jpos.iso.*;
  *
  * @author apr@cs.com.uy
  * @version $Id$
+ * @deprecated use Base1* stuff instead
  * @see ISOPackager
  * @see ISOBasePackager
  * @see ISOComponent
- */
-
-/*
- * $Log$
- * Revision 1.1  2000/04/16 22:12:33  apr
- * New packagers location org.jpos.iso.packager
- *
- * Revision 1.6  2000/03/01 14:44:45  apr
- * Changed package name to org.jpos
- *
- * Revision 1.5  1999/11/18 23:40:52  apr
- * field 44 ASCII --> EBCDIC
- *
- * Revision 1.4  1999/09/04 22:01:32  apr
- * Minor BugFixes/packager changes
- *
- * Revision 1.3  1999/08/06 13:54:22  apr
- * Added inner field 127 support
- *
  */
 
 public class VAPVIPPackager extends ISOBasePackager {

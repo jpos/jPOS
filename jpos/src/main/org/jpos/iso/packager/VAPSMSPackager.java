@@ -9,6 +9,7 @@ import org.jpos.iso.*;
  *
  * @author apr@cs.com.uy
  * @version $Id$
+ * @deprecated use Base1* stuff instead
  * @see ISOPackager
  * @see ISOBasePackager
  * @see ISOComponent
