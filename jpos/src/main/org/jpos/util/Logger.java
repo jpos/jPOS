@@ -99,7 +99,8 @@ public class Logger implements Runnable {
             l.out (evt);
     }
     public void out (LogEvent evt) {
-        sp.out (this, evt);
+        if (hasListeners())
+            sp.out (this, evt);
     }
     /**
      * associates this Logger with a name using NameRegistrar
