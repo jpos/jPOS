@@ -122,7 +122,7 @@ public class Logger implements Runnable {
      * @return logger instance with given name. Creates one if necessary
      * @see NameRegistrar
      */
-    public static Logger getLogger (String name) {
+    public synchronized static Logger getLogger (String name) {
 	Logger l;
 	try {
 	    l = (Logger) NameRegistrar.get ("logger."+name);
