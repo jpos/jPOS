@@ -12,9 +12,9 @@ import java.util.*;
  * @see ISOMUX#setISORequestListener
  */
 public interface ISORequestListener {
-	/**
-	 * @param	m	the unmatched request
-	 */
-	public void process(ISOMsg m);
-	public void addObserver(Observer o);
+    /**
+     * @param   m   the unmatched request
+     */
+    public void process(ISOMsg m);
+    public void addObserver(Observer o);
 }

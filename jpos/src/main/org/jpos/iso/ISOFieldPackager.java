@@ -37,47 +37,47 @@ package uy.com.cs.jpos.iso;
  * @see IF_ECHAR
  */
 public abstract class ISOFieldPackager {
-	private int len;
-	private String description;
-	/**
-	 * @param len - field Len
-	 * @param description - details
-	 */
-	public ISOFieldPackager(int len, String description) {
-		this.len = len;
-		this.description = description;
-	}
-	public String getDescription() {
-		return description;
-	}
-	/**
-	 * @deprecated Use getLength() instead
-	 */
-	public int getLen() {
-		return getLength();
-	}
-	public int getLength() {
-		return len;
-	}
-	public abstract int getMaxPackedLength();
+    private int len;
+    private String description;
+    /**
+     * @param len - field Len
+     * @param description - details
+     */
+    public ISOFieldPackager(int len, String description) {
+        this.len = len;
+        this.description = description;
+    }
+    public String getDescription() {
+        return description;
+    }
+    /**
+     * @deprecated Use getLength() instead
+     */
+    public int getLen() {
+        return getLength();
+    }
+    public int getLength() {
+        return len;
+    }
+    public abstract int getMaxPackedLength();
 
-	public ISOComponent createComponent(int fieldNumber) {
-		return new ISOField (fieldNumber);
-	}
-	/**
-	 * @param c - a component
-	 * @return packed component
-	 * @exception ISOException
-	 */
-	public abstract byte[] pack (ISOComponent c) throws ISOException;
+    public ISOComponent createComponent(int fieldNumber) {
+        return new ISOField (fieldNumber);
+    }
+    /**
+     * @param c - a component
+     * @return packed component
+     * @exception ISOException
+     */
+    public abstract byte[] pack (ISOComponent c) throws ISOException;
 
-	/**
-	 * @param c - the Component to unpack
-	 * @param b - binary image
-	 * @param offset - starting offset within the binary image
-	 * @return consumed bytes
-	 * @exception ISOException
-	 */
-	public abstract int unpack (ISOComponent c, byte[] b, int offset)
-		throws ISOException;
+    /**
+     * @param c - the Component to unpack
+     * @param b - binary image
+     * @param offset - starting offset within the binary image
+     * @return consumed bytes
+     * @exception ISOException
+     */
+    public abstract int unpack (ISOComponent c, byte[] b, int offset)
+        throws ISOException;
 }

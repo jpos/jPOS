@@ -11,40 +11,40 @@ import java.util.*;
  * @see ISOBitMapPackager
  */
 public class IFA_BITMAP extends ISOBitMapPackager {
-	/**
-	 * @param len - field len
-	 * @param description symbolic descrption
-	 */
-	public IFA_BITMAP(int len, String description) {
-		super(len, description);
-	}
-	/**
-	 * @param c - a component
-	 * @return packed component
-	 * @exception ISOException
-	 */
-	public byte[] pack (ISOComponent c) throws ISOException {
-		byte[] b = ISOUtil.bitSet2byte ((BitSet) c.getValue());
-		return ISOUtil.hexString(b).getBytes();
-	}
+    /**
+     * @param len - field len
+     * @param description symbolic descrption
+     */
+    public IFA_BITMAP(int len, String description) {
+        super(len, description);
+    }
+    /**
+     * @param c - a component
+     * @return packed component
+     * @exception ISOException
+     */
+    public byte[] pack (ISOComponent c) throws ISOException {
+        byte[] b = ISOUtil.bitSet2byte ((BitSet) c.getValue());
+        return ISOUtil.hexString(b).getBytes();
+    }
 
-	public int getMaxPackedLength() {
-		return getLength() >> 2;
-	}
-	/**
-	 * @param c - the Component to unpack
-	 * @param b - binary image
-	 * @param offset - starting offset within the binary image
-	 * @return consumed bytes
-	 * @exception ISOException
-	 */
-	public int unpack (ISOComponent c, byte[] b, int offset)
-		throws ISOException
-	{
-		int len;
-		BitSet bmap = ISOUtil.hex2BitSet (b, offset, true);
-		c.setValue(bmap);
-		len = ((len=bmap.size()) > 128) ? 128 : len;
-		return (len >> 2);
-	}
+    public int getMaxPackedLength() {
+        return getLength() >> 2;
+    }
+    /**
+     * @param c - the Component to unpack
+     * @param b - binary image
+     * @param offset - starting offset within the binary image
+     * @return consumed bytes
+     * @exception ISOException
+     */
+    public int unpack (ISOComponent c, byte[] b, int offset)
+        throws ISOException
+    {
+        int len;
+        BitSet bmap = ISOUtil.hex2BitSet (b, offset, true);
+        c.setValue(bmap);
+        len = ((len=bmap.size()) > 128) ? 128 : len;
+        return (len >> 2);
+    }
 }

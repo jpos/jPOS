@@ -15,67 +15,67 @@ import java.util.*;
  * @see ISOComponent
  */
 public class ISOBinaryField extends ISOComponent implements Cloneable {
-	protected int fieldNumber;
-	protected byte[] value;
+    protected int fieldNumber;
+    protected byte[] value;
 
-	/**
-	 * @param n - the FieldNumber
-	 */
-	public ISOBinaryField(int n) {
-		fieldNumber = n;
-	}
-	/**
-	 * @param n - fieldNumber
-	 * @param v - fieldValue
-	 */
-	public ISOBinaryField(int n, byte[] v) {
-		fieldNumber = n;
-		value = v;
-	}
-	/**
-	 * not available on Leaf - always throw ISOException
-	 * @exception ISOException
-	 */
-	public byte[] pack() throws ISOException {
-		throw new ISOException ("Not available on Leaf");
-	}
-	/**
-	 * not available on Leaf - always throw ISOException
-	 * @exception ISOException
-	 */
-	public int unpack(byte[] b) throws ISOException {
-		throw new ISOException ("Not available on Leaf");
-	}
-	/**
-	 * @return Object representing this field number
-	 */
-	public Object getKey() {
-		return new Integer(fieldNumber);
-	}
-	/**
-	 * @return Object representing this field value
-	 */
-	public Object getValue() {
-		return value;
-	}
-	/**
-	 * @param obj - Object representing this field value
-	 * @exception ISOException
-	 */
-	public void setValue(Object obj) throws ISOException {
-		value = (byte[]) obj;
-	}
-	/**
-	 * dump this field to PrintStream. The output is sorta
-	 * XML, intended to be easily parsed.
-	 * @param p - print stream
-	 * @param indent - optional indent string
-	 */
-	public void dump (PrintStream p, String indent) {
-		p.println (indent +"<fld binary id=\"" 
-			+fieldNumber +"\" value=\"" +this.toString() +"\"/>");
-	}
-	public String toString() {
-		return ISOUtil.hexString(value);
-	}
+    /**
+     * @param n - the FieldNumber
+     */
+    public ISOBinaryField(int n) {
+        fieldNumber = n;
+    }
+    /**
+     * @param n - fieldNumber
+     * @param v - fieldValue
+     */
+    public ISOBinaryField(int n, byte[] v) {
+        fieldNumber = n;
+        value = v;
+    }
+    /**
+     * not available on Leaf - always throw ISOException
+     * @exception ISOException
+     */
+    public byte[] pack() throws ISOException {
+        throw new ISOException ("Not available on Leaf");
+    }
+    /**
+     * not available on Leaf - always throw ISOException
+     * @exception ISOException
+     */
+    public int unpack(byte[] b) throws ISOException {
+        throw new ISOException ("Not available on Leaf");
+    }
+    /**
+     * @return Object representing this field number
+     */
+    public Object getKey() {
+        return new Integer(fieldNumber);
+    }
+    /**
+     * @return Object representing this field value
+     */
+    public Object getValue() {
+        return value;
+    }
+    /**
+     * @param obj - Object representing this field value
+     * @exception ISOException
+     */
+    public void setValue(Object obj) throws ISOException {
+        value = (byte[]) obj;
+    }
+    /**
+     * dump this field to PrintStream. The output is sorta
+     * XML, intended to be easily parsed.
+     * @param p - print stream
+     * @param indent - optional indent string
+     */
+    public void dump (PrintStream p, String indent) {
+        p.println (indent +"<fld binary id=\"" 
+            +fieldNumber +"\" value=\"" +this.toString() +"\"/>");
+    }
+    public String toString() {
+        return ISOUtil.hexString(value);
+    }
 }

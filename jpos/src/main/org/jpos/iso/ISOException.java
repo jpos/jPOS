@@ -8,12 +8,12 @@ package uy.com.cs.jpos.iso;
  */
 public
 class ISOException extends Exception {
-	/**
-	 * Constructs an <code>ISOException</code> with no detail message. 
-	 */
-	public ISOException() {
-		super();
-	}
+    /**
+     * Constructs an <code>ISOException</code> with no detail message. 
+     */
+    public ISOException() {
+        super();
+    }
 
     /**
      * Constructs an <code>ISOException</code> with the specified detail 
@@ -21,7 +21,7 @@ class ISOException extends Exception {
      *
      * @param   s   the detail message.
      */
-	public ISOException(String s) {
-		super(s);
-	}
+    public ISOException(String s) {
+        super(s);
+    }
 }

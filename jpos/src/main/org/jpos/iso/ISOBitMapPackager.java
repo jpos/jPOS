@@ -12,7 +12,7 @@ package uy.com.cs.jpos.iso;
  * @see ISOFieldPackager
  */
 public abstract class ISOBitMapPackager extends ISOFieldPackager {
-	public ISOBitMapPackager(int len, String description) {
-		super(len, description);
-	}
+    public ISOBitMapPackager(int len, String description) {
+        super(len, description);
+    }
 }
