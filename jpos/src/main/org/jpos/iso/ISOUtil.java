@@ -396,6 +396,7 @@ public class ISOUtil {
                     case '\025': d.append ("{NAK}");  break;
                     case '\026': d.append ("{SYN}");  break;
                     case '\034': d.append ("{FS}");  break;
+                    case '\036': d.append ("{RS}");  break;
                     default:
                         char hi = Character.forDigit ((b[i] >> 4) & 0x0F, 16);
                         char lo = Character.forDigit (b[i] & 0x0F, 16);
