@@ -117,6 +117,9 @@
     <available property="activation.present"
            classpathref="ext.classpath"
           classname="javax.activation.DataSource" />
+    <available property="opencard.present"
+           classpathref="ext.classpath"
+              classname="opencard.opt.util.TLV" />
   </target>
 
   <target name="ext.check.jsse" depends="ext.check" if="jnet.present">
@@ -166,6 +169,15 @@
     </javac>
   </target>
 
+  <target name="ext.opencard" depends="ext.check" if="opencard.present" >
+    <javac srcdir="${ext}" destdir="${classes}"
+        includes="**/TLV*Packager.java"
+        debug="${debug}"
+        deprecation="${deprecation}" >
+        <classpath refid="ext.classpath" />
+    </javac>
+  </target>
+
   <target name="ext.mail" depends="ext.check.mail" if="mail.present" >
     <javac srcdir="${ext}" destdir="${classes}"
         includes="**/OperatorLogListener.java"
@@ -176,7 +188,7 @@
   </target>
 
   <target name="ext" 
-       depends="ext.sun-util, ext.comm, ext.jsse, ext.jce, ext.mail">
+       depends="ext.sun-util, ext.comm, ext.jsse, ext.jce, ext.mail, ext.opencard">
     <javac srcdir="${ext}" destdir="${classes}"
         includes="**/apps/qsp/**"
         debug="${debug}"
