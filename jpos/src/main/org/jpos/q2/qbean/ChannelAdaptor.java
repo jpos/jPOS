@@ -91,11 +91,11 @@ public class ChannelAdaptor
     long delay;
     public ChannelAdaptor () {
         super ();
-        sp = TransientSpace.getSpace ();
     }
     public void initChannel () 
         throws Q2ConfigurationException, ConfigurationException 
     {
+        sp = TransientSpace.getSpace ();
         Element persist = getPersist ();
         Element e = persist.getChild ("channel");
         if (e == null)
@@ -107,7 +107,7 @@ public class ChannelAdaptor
         String s = persist.getChildTextTrim ("reconnect-delay");
         delay    = s != null ? Long.parseLong (s) : 10000; // reasonable default
 
-        channel = newChannel (e);
+        channel = newChannel (e, getFactory());
         ready   = channel.toString() + ".ready";
     }
     public void startService () {
@@ -178,12 +178,11 @@ public class ChannelAdaptor
         return out;
     }
 
-    private ISOChannel newChannel (Element e) 
+    public ISOChannel newChannel (Element e, QFactory f) 
 	throws Q2ConfigurationException
     {
         String channelName  = e.getAttributeValue ("class");
         String packagerName = e.getAttributeValue ("packager");
-        QFactory f = getFactory ();
 
         ISOChannel channel   = (ISOChannel) f.newInstance (channelName);
 	ISOPackager packager = null;
@@ -195,15 +194,14 @@ public class ChannelAdaptor
         f.setConfiguration (channel, e);
 
         if (channel instanceof FilteredChannel) {
-            addFilters ((FilteredChannel) channel, e);
+            addFilters ((FilteredChannel) channel, e, f);
         }
         return channel;
     }
 
-    private void addFilters (FilteredChannel channel, Element e) 
+    private void addFilters (FilteredChannel channel, Element e, QFactory fact) 
 	throws Q2ConfigurationException
     {
-        QFactory fact = getFactory ();
         Iterator iter = e.getChildren ("filter").iterator();
         while (iter.hasNext()) {
             Element f = (Element) iter.next();
