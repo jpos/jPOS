@@ -48,7 +48,7 @@ Main targets:
     </echo>
   </target>
 
-  <target name="prepare" depends="splash">
+  <target name="prepare">
     <mkdir dir="${buildsrc}"/>
     <mkdir dir="${build}/test"/>
     <mkdir dir="${htdocs}"/>
@@ -260,7 +260,7 @@ Main targets:
     </java>
   </target>
 
-  <target name="jar" depends="main" description="Build jpos.jar">
+  <target name="jar" depends="splash, main" description="Build jpos.jar">
     <delete file="${dist}/${archive}.jar" />
     <copy file="${source}/etc/MANIFEST.MF" tofile="${classes}/MANIFEST.MF" />
     <replace file="${classes}/MANIFEST.MF" 
@@ -384,39 +384,30 @@ Main targets:
   <target name="aspects" description="Precompile aspects" 
     depends="copy-src, generate">
 
-   <mkdir dir="${build}/aop"/>
-   <copy todir="${buildsrc}">
-    <fileset dir="${source}/aop">
-     <include name="**/*.java"/>
-    </fileset>
-   </copy>
-   <taskdef name="ajc"
-     classname="org.aspectj.tools.ant.taskdefs.Ajc" >
-     <classpath>
-       <pathelement location="ext/aspectj-ant.jar"/>
-       <pathelement location="ext/aspectjtools.jar"/>
-     </classpath>
-    </taskdef>
-    <ajc srcdir="${buildsrc}" destdir="${classes}"
-        preprocess="false"
-        workingdir="build/aop"
-        debug="${debug}"
-        X="lint"
-        deprecation="${deprecation}" >
-        <classpath refid="ext.classpath" />
-    </ajc>
-    <!-- uncomment this if you set preprocess to "true"
     <copy todir="${buildsrc}">
-     <fileset dir="${build}/aop">
-      <include name="**/*.java"/>
-     </fileset>
+      <fileset dir="${source}/aop">
+        <include name="**/*.java"/>
+      </fileset>
     </copy>
-    -->
-   </target>
 
-   <target name="splash">
-    <splash imageurl="file:src/doc/images/jpos_l.jpg" 
-            showduration="0"/>
-   </target>
+    <taskdef 
+        resource="org/aspectj/tools/ant/taskdefs/aspectjTaskdefs.properties">
+      <classpath>
+        <pathelement location="ext/aspectjtools.jar"/>
+      </classpath>
+    </taskdef>
+
+    <iajc sourceRoots="${buildsrc}" destdir="${classes}"
+       debug="${debug}"
+       deprecation="${deprecation}" >
+       <classpath refid="ext.classpath" />
+    </iajc>
+
+  </target>
+
+  <target name="splash">
+   <splash imageurl="file:src/doc/images/jpos_l.jpg" 
+           showduration="0"/>
+  </target>
 </project>
 
