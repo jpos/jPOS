@@ -23,4 +23,5 @@
 <!ATTLIST isofieldpackager token    CDATA        #IMPLIED>
 <!ATTLIST isofieldpackager pad      (true|false) #IMPLIED>
 <!ATTLIST isofieldpackager packager NMTOKEN      #REQUIRED>
+<!ATTLIST isofieldpackager emitBitmap (true|false) #IMPLIED>
 
