@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.2  1999/12/21 13:54:33  apr
+ * BugFix: get intValue()
+ *
  * Revision 1.1  1999/12/21 12:15:09  apr
  * Added ReliableSequencer
  *
@@ -71,7 +74,7 @@ public class ReliableSequencer
 	} catch (IOException e) {
 	    e.printStackTrace();
 	}
-	return i;
+	return I.intValue();
     }
     /**
      * @param counterName
