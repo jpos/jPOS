@@ -111,11 +111,11 @@ public class TLVSubFieldPackager extends ISOBasePackager
             TLV tlv=null;
 
             for (int i =0; i<fld.length; i++) {
-                ISOField f = (ISOField) tab.get (new Integer(i));
+                ISOBinaryField f = (ISOBinaryField) tab.get (new Integer(i));
 
                 if (f != null) {
                     if(tlv==null) {
-                        tlv = 
+                        tlv =
                             new TLV(t0,new TLV (
                               new Tag  (tg[i]),fld[i].pack(f))
                             );
