@@ -6,6 +6,7 @@
   <property name="source" value="src" />
   <property name="main" value="${source}/main" />
   <property name="ext" value="${source}/ext" />
+  <property name="ext.includes" value="" />
   <property name="build" value="build" />
   <property name="classes" value="${build}/classes" />
   <property name="examples"  value="${source}/examples" />
@@ -32,7 +33,7 @@
         Available targets:
         clean        Cleans ${build} and ${dist} directories
         main         Builds main ${project} packages
-        ext          extended ${project} classes (see ext/README)
+        ext          extended (optional) ${project} classes (see ext/README)
         cvs          Clean and update CVS tree for ${project}
         doc          Create project documentation (including javadoc)
         examples     Build examples
@@ -100,8 +101,84 @@
     </javac>
   </target>
 
-  <target name="ext" depends="main">
+  <target name="ext.check" depends="main">
+    <available property="sun-util.present"
+           classpathref="ext.classpath"
+              classname="com.sun.jini.reliableLog.ReliableLog" />
+    <available property="comm.present"
+           classpathref="ext.classpath"
+              classname="javax.comm.SerialPort" />
+    <available property="jnet.present"
+           classpathref="ext.classpath"
+          classname="javax.net.ServerSocketFactory" />
+    <available property="jce.present"
+           classpathref="ext.classpath"
+          classname="javax.crypto.SecretKey" />
+    <available property="activation.present"
+           classpathref="ext.classpath"
+          classname="javax.activation.DataSource" />
+  </target>
+
+  <target name="ext.check.jsse" depends="ext.check" if="jnet.present">
+    <available property="jsse.present"
+           classpathref="ext.classpath"
+          classname="javax.net.ssl.SSLSocket" />
+  </target>
+  <target name="ext.check.mail" depends="ext.check" if="activation.present">
+    <available property="mail.present"
+           classpathref="ext.classpath"
+          classname="javax.mail.Address" />
+  </target>
+
+  <target name="ext.sun-util" depends="ext.check" if="sun-util.present">
     <javac srcdir="${ext}" destdir="${classes}"
+        includes="**/ReliableSequencer.java"
+        debug="${debug}"
+        deprecation="${deprecation}" >
+        <classpath refid="ext.classpath" />
+    </javac>
+  </target>
+
+  <target name="ext.comm" depends="ext.check" if="comm.present">
+    <javac srcdir="${ext}" destdir="${classes}"
+        includes="**/VISA1Link.java, **/V24.java, **/*Modem.java"
+        debug="${debug}"
+        deprecation="${deprecation}" >
+        <classpath refid="ext.classpath" />
+    </javac>
+  </target>
+
+  <target name="ext.jsse" depends="ext.check.jsse" if="jsse.present" >
+    <javac srcdir="${ext}" destdir="${classes}"
+        includes="**/SunJSSESocketFactory.java"
+        debug="${debug}"
+        deprecation="${deprecation}" >
+        <classpath refid="ext.classpath" />
+    </javac>
+  </target>
+
+  <target name="ext.jce" depends="ext.check" if="jce.present" >
+    <javac srcdir="${ext}" destdir="${classes}"
+        includes="**/CryptoPackager.java"
+        debug="${debug}"
+        deprecation="${deprecation}" >
+        <classpath refid="ext.classpath" />
+    </javac>
+  </target>
+
+  <target name="ext.mail" depends="ext.check.mail" if="mail.present" >
+    <javac srcdir="${ext}" destdir="${classes}"
+        includes="**/OperatorLogListener.java"
+        debug="${debug}"
+        deprecation="${deprecation}" >
+        <classpath refid="ext.classpath" />
+    </javac>
+  </target>
+
+  <target name="ext" 
+       depends="ext.sun-util, ext.comm, ext.jsse, ext.jce, ext.mail">
+    <javac srcdir="${ext}" destdir="${classes}"
+        includes="**/apps/qsp/**"
         debug="${debug}"
         deprecation="${deprecation}" >
         <classpath refid="ext.classpath" />
