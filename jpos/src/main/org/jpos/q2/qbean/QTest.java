@@ -16,6 +16,7 @@ import org.jpos.util.Logger;
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
  * @author <a href="mailto:taherkordy@dpi2.dpi.net.ir">Alireza Taherkordi</a>
  * @version $Revision$ $Date$
+ * @jmx:mbean description="Test QBean"
  */
 public class QTest extends QBeanSupport implements Runnable, QTestMBean {
     long tickInterval = 1000;
@@ -24,18 +25,30 @@ public class QTest extends QBeanSupport implements Runnable, QTestMBean {
         super();
         log.info ("constructor");
     }
+    /**
+     * @jmx:managed-operation description="QBean init"
+     */
     public void init () {
         log.info ("init");
         super.init ();
     }
+    /**
+     * @jmx:managed-operation description="QBean start"
+     */
     public void start() {
         log.info ("start");
         super.start ();
     }
+    /**
+     * @jmx:managed-operation description="QBean stop"
+     */
     public void stop () {
         log.info ("stop");
         super.stop ();
     }
+    /**
+     * @jmx:managed-operation description="QBean destroy"
+     */
     public void destroy () {
         log.info ("destroy");
         log = null;
@@ -53,6 +66,10 @@ public class QTest extends QBeanSupport implements Runnable, QTestMBean {
         log.info ("setName " + name);
         super.setName (name);
     }
+
+    /**
+     * @jmx:managed-attribute description="Tick Interval"
+     */
     public void setTickInterval (long tickInterval) {
         this.tickInterval = tickInterval;
         setModified (true);
