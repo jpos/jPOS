@@ -56,17 +56,11 @@ import java.io.IOException;
 import java.io.ByteArrayOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.OutputStreamWriter;
-import java.net.URL;
-import java.net.MalformedURLException;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.Date;
 import java.util.TreeMap;
-import java.util.Set;
 import java.util.Iterator;
-import java.util.Arrays;
-import javax.management.Attribute;
 import javax.management.ObjectName;
 import javax.management.ObjectInstance;
 import javax.management.NotCompliantMBeanException;
@@ -74,7 +68,6 @@ import javax.management.MBeanRegistrationException;
 import javax.management.MalformedObjectNameException;
 import javax.management.InstanceAlreadyExistsException;
 import javax.management.MBeanServer;
-import javax.management.MBeanException;
 import javax.management.MBeanServerFactory;
 
 import javax.crypto.Cipher;
@@ -92,11 +85,8 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.PosixParser;
-import org.apache.commons.cli.ParseException;
-
 import org.jpos.util.Log;
 import org.jpos.util.Logger;
-import org.jpos.util.LogEvent;
 import org.jpos.util.SimpleLogListener;
 import org.jpos.iso.ISOUtil;
 import org.jpos.iso.ISOException;
@@ -104,6 +94,7 @@ import org.jpos.iso.ISOException;
 /**
  * @author <a href="mailto:taherkordy@dpi2.dpi.net.ir">Alireza Taherkordi</a>
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
+ * @author <a href="mailto:alwynschoeman@yahoo.com">Alwyn Schoeman</a>
  * @version $Revision$ $Date$
  */
 public class Q2 implements FileFilter {
@@ -143,7 +134,18 @@ public class Q2 implements FileFilter {
                NotCompliantMBeanException,
                MBeanRegistrationException
     {
-        server  = MBeanServerFactory.createMBeanServer (JMX_NAME);
+        /*
+         * The following code determines whether a MBeanServer exists already.
+         * If so then the first one in the list is used.  I have not yet find a way to
+         * interrogate the server for information other than MBeans so to pick a
+         * specific one would be difficult.
+         */
+        ArrayList mbeanServerList = MBeanServerFactory.findMBeanServer(null);
+        if (mbeanServerList.size() == 0) {
+            server  = MBeanServerFactory.createMBeanServer (JMX_NAME);
+        } else {
+            server = (MBeanServer) mbeanServerList.get(0);
+        }
         ObjectName loaderName = new ObjectName (Q2_CLASS_LOADER);
         loader = new QClassLoader (server, libDir, loaderName);
         server.registerMBean (loader, loaderName);
