@@ -2,5 +2,3 @@ activation.jar
 mail.jar
 sun-util.jar
 comm.jar
-xalan*.jar
-xerces*.jar
