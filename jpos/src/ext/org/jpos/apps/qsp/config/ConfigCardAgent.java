@@ -6,13 +6,13 @@ import org.jpos.util.Logger;
 import org.jpos.util.LogEvent;
 import org.jpos.util.LogSource;
 import org.jpos.util.Loggeable;
-import org.jpos.util.NameRegistrar;
 import org.jpos.core.SimpleConfiguration;
 import org.jpos.core.Configurable;
 import org.jpos.core.ReConfigurable;
 import org.jpos.core.ConfigurationException;
 import org.jpos.core.CardAgent;
 import org.jpos.core.CardAgentLookup;
+import org.jpos.core.CardAgentNotFoundException;
 
 import org.jpos.apps.qsp.QSP;
 import org.jpos.apps.qsp.QSPReConfigurator;
@@ -26,7 +26,6 @@ import org.w3c.dom.NodeList;
  * @version $Revision$ $Date$
  */
 public class ConfigCardAgent implements QSPReConfigurator {
-    public static final String NAMEREGISTRAR_PREFIX = "qsp.agent.";
     public void config (QSP qsp, Node node) throws ConfigurationException
     {
 	String className = 
@@ -62,14 +61,14 @@ public class ConfigCardAgent implements QSPReConfigurator {
     }
     public void reconfig (QSP qsp, Node node) throws ConfigurationException
     {
-	String name = node.getAttributes().getNamedItem ("name").getNodeValue();
-	LogEvent evt = new LogEvent (qsp, "re-config-task", name);
+	String className = 
+	    node.getAttributes().getNamedItem ("class").getNodeValue();
+	LogEvent evt = new LogEvent (qsp, "re-config-task", className);
 	try {
-	    CardAgent agent = 
-		(CardAgent) NameRegistrar.get (NAMEREGISTRAR_PREFIX + name);
+	    CardAgent agent = CardAgentLookup.getAgent (className);
 	    if (agent instanceof ReConfigurable) 
 		configureAgent ((Configurable) agent, node, evt);
-	} catch (NameRegistrar.NotFoundException e) {
+	} catch (CardAgentNotFoundException e) {
 	    evt.addMessage ("<card-agent-not-found/>");
 	}
 	Logger.log (evt);

@@ -30,10 +30,11 @@ public class QSP implements ErrorHandler, LogSource {
     File configFile;
     long lastModified;
     static ControlPanel controlPanel = null;
-    public static final int MONITOR_CONFIG_INTERVAL = 30000;
+    long monitorConfigInterval = 60 * 1000;
 
     public static String[] SUPPORTED_TAGS = 
 	{ "logger",
+	  "qsp-config",
 	  "log-listener",
 	  "persistent-engine",
 	  "sequencer",
@@ -49,8 +50,8 @@ public class QSP implements ErrorHandler, LogSource {
 
     public QSP () {
 	super();
-	setLogger (new Logger(), "qsp");
-	logger.setName ("qsp");
+	// setLogger (new Logger(), "qsp");
+	// logger.setName ("qsp");
     }
     public void setConfig (Document config) {
 	this.config = config;
@@ -58,6 +59,9 @@ public class QSP implements ErrorHandler, LogSource {
     public void setConfigFile (File f) {
 	this.configFile = f;
 	this.lastModified = f.lastModified();
+    }
+    public void setMonitorConfigInterval (long l) {
+	monitorConfigInterval = l;
     }
     public File getConfigFile () {
 	return configFile;
@@ -116,7 +120,7 @@ public class QSP implements ErrorHandler, LogSource {
 	long l;
 	while (lastModified == (l=configFile.lastModified()))
 	    try {
-		Thread.sleep (MONITOR_CONFIG_INTERVAL);
+		Thread.sleep (monitorConfigInterval);
 	    } catch (InterruptedException e) { }
 	lastModified = l;
 	return true;
@@ -141,7 +145,7 @@ public class QSP implements ErrorHandler, LogSource {
 	    if (controlPanel != null)
 		controlPanel.showUp();
 
-	    if (qsp.getLogger() != null)
+	    if (qsp.getLogger() != null) 
 		new SystemMonitor (3600000, qsp.getLogger(), "monitor");
 		    
 	    while (qsp.monitorConfigFile ()) {

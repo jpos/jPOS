@@ -4,6 +4,9 @@
 <!ELEMENT qsp-config (logger*,mux*,task*,server*,
                       control-panel*,sequencer*,card-agent*,
 		      persistent-engine*)*>
+<!ATTLIST qsp-config logger IDREF #IMPLIED>
+<!ATTLIST qsp-config realm  CDATA #IMPLIED>
+<!ATTLIST qsp-config reload CDATA #IMPLIED>
 
 <!-- logger -->
 <!ELEMENT logger (log-listener*)>
@@ -40,10 +43,10 @@
 
 <!-- task -->
 <!ELEMENT task (property)*>
-<!ATTLIST task name ID #REQUIRED>
 <!ATTLIST task class CDATA #REQUIRED>
 <!ATTLIST task logger IDREF #IMPLIED>
 <!ATTLIST task realm CDATA #IMPLIED>
+<!ATTLIST task name ID #IMPLIED>
 
 <!-- property -->
 <!ELEMENT property EMPTY>

@@ -30,7 +30,8 @@ public class ConfigTask implements QSPReConfigurator {
     {
 	String className = 
 	    node.getAttributes().getNamedItem ("class").getNodeValue();
-	String name = node.getAttributes().getNamedItem ("name").getNodeValue();
+	Node nameNode = node.getAttributes().getNamedItem ("name");
+	String name   = nameNode != null ? nameNode.getNodeValue() : null;
 	LogEvent evt = new LogEvent (qsp, "config-task", className);
         try {
             Class c = Class.forName(className);
@@ -44,7 +45,8 @@ public class ConfigTask implements QSPReConfigurator {
 	    if (task instanceof Configurable)
 		configureTask ((Configurable) task, node, evt);
 
-	    NameRegistrar.register (NAMEREGISTRAR_PREFIX+name, task);
+	    if (name != null)
+		NameRegistrar.register (NAMEREGISTRAR_PREFIX+name, task);
 	    Thread thread = new Thread(task);
 	    thread.setName ("qsp-task-"+name);
 	    thread.start();
@@ -59,7 +61,11 @@ public class ConfigTask implements QSPReConfigurator {
     }
     public void reconfig (QSP qsp, Node node) throws ConfigurationException
     {
-	String name = node.getAttributes().getNamedItem ("name").getNodeValue();
+	Node nameNode = node.getAttributes().getNamedItem ("name");
+	if (nameNode == null)
+	    return; // nothing to do
+
+	String name   = nameNode.getNodeValue();
 	LogEvent evt = new LogEvent (qsp, "re-config-task", name);
 	try {
 	    Object task = NameRegistrar.get (NAMEREGISTRAR_PREFIX + name);
