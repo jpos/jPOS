@@ -1,0 +1,20 @@
+<ui width="600" height="400" 
+    full-screen="false" undecorated="false" close="true">
+ <caption>Hello jPOS UI</caption>
+ <components>
+   <border-layout>
+    <north>
+     <label font="helvetica-normal-22">Hello jPOS UI</label>
+    </north>
+    <center>
+     <html editable="false" follow-links="true" scrollable="true">
+      http://jpos.org
+     </html>
+    </center>
+    <south>
+     <label font="arial-italic-8">Copyright (c) 2003 - jPOS.org</label>
+    </south>
+   </border-layout>
+  </components>
+</ui>
+
