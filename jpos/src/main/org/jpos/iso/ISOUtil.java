@@ -49,6 +49,7 @@
 
 package org.jpos.iso;
 
+import java.util.Arrays;
 import java.util.BitSet;
 import java.util.StringTokenizer;
 
@@ -291,6 +292,22 @@ public class ISOUtil {
     public static byte[] str2bcd(String s, boolean padLeft) {
         int len = s.length();
         byte[] d = new byte[ (len+1) >> 1 ];
+        int start = (((len & 1) == 1) && padLeft) ? 1 : 0;
+        for (int i=start; i < len+start; i++) 
+            d [i >> 1] |= (s.charAt(i-start)-'0') << ((i & 1) == 1 ? 0 : 4);
+        return d;
+    }
+    /**
+     * converts to BCD
+     * @param s - the number
+     * @param padLeft - flag indicating left/right padding
+     * @param fill - fill value
+     * @return BCD representation of the number
+     */
+    public static byte[] str2bcd(String s, boolean padLeft, byte fill) {
+        int len = s.length();
+        byte[] d = new byte[ (len+1) >> 1 ];
+        Arrays.fill (d, fill);
         int start = (((len & 1) == 1) && padLeft) ? 1 : 0;
         for (int i=start; i < len+start; i++) 
             d [i >> 1] |= (s.charAt(i-start)-'0') << ((i & 1) == 1 ? 0 : 4);
