@@ -1,6 +1,7 @@
 $Id$
 
 -- 1.4.7 --
+Added JDBMSpace template based in/rd
 New ISOFieldPackager implementation (based on interpreters, padders and prefixers)
 Added BSHLogListener 
 Track1 support in CardHolder
