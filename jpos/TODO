@@ -1,8 +1,10 @@
 $Id$
 
 [ ] checkin Base1Packager stuff
-[ ] Get Rid of LogProducer (should be named LogSource)
-[ ] ISOChannel should be an Interface
 [ ] Use ThreadPool on ISOMUX
 [ ] ISOServer
+
+Done: jpos-1.2.2
+[v] ISOChannel should be an Interface
+[v] Get Rid of LogProducer (should be named LogSource)
 
