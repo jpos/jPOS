@@ -91,6 +91,7 @@ public class ISOServer extends Observable
     String name;
     protected Logger logger;
     protected String realm;
+    protected String realmChannel;
     protected ISOServerSocketFactory socketFactory = null; 
     public static final int CONNECT      = 0;
     public static final int SIZEOF_CNT   = 1;
@@ -284,7 +285,7 @@ public class ISOServer extends Observable
 			channel.setPackager (clientPackager);
 			if (channel instanceof LogSource) {
 			    ((LogSource)channel) .
-				setLogger (getLogger(), getRealm()+".channel");
+				setLogger (getLogger(), realmChannel);
 			}
 			if (clientSideChannel instanceof BaseChannel) {
 			    ((BaseChannel)channel).setHeader (
@@ -365,6 +366,7 @@ public class ISOServer extends Observable
     public void setLogger (Logger logger, String realm) {
 	this.logger = logger;
 	this.realm  = realm;
+        this.realmChannel = realm + ".channel";
     }
     public String getRealm () {
 	return realm;
