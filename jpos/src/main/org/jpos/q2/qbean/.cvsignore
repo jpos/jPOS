@@ -3,3 +3,4 @@ ChannelAdaptorMBean*.java
 QMUXMBean*.java
 NameRegistrarInspectorMBean*.java
 ServerAdaptorMBean*.java
+SpaceProxyAdaptorMBean*.java
