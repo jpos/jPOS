@@ -134,7 +134,7 @@ public class TransactionManager
     public long getHead () {
         return head;
     }
-    private void commit 
+    protected void commit 
         (long id, Serializable context, List members, boolean recover) 
     {
         Iterator iter = members.iterator();
@@ -145,7 +145,7 @@ public class TransactionManager
             commit (p, id, context);
         }
     }
-    private void abort 
+    protected void abort 
         (long id, Serializable context, List members, boolean recover) 
     {
         Iterator iter = members.iterator();
@@ -156,7 +156,7 @@ public class TransactionManager
             abort (p, id, context);
         }
     }
-    private int prepareForAbort
+    protected int prepareForAbort
         (TransactionParticipant p, long id, Serializable context) 
     {
         try {
@@ -167,7 +167,7 @@ public class TransactionManager
         }
         return ABORTED;
     }
-    private int prepare 
+    protected int prepare 
         (TransactionParticipant p, long id, Serializable context) 
     {
         try {
@@ -177,7 +177,7 @@ public class TransactionManager
         }
         return ABORTED;
     }
-    private void commit 
+    protected void commit 
         (TransactionParticipant p, long id, Serializable context) 
     {
         try {
@@ -186,7 +186,7 @@ public class TransactionManager
             getLog().warn ("COMMIT: " + Long.toString (id), t);
         }
     }
-    private void abort 
+    protected void abort 
         (TransactionParticipant p, long id, Serializable context) 
     {
         try {
@@ -195,7 +195,7 @@ public class TransactionManager
             getLog().warn ("ABORT: " + Long.toString (id), t);
         }
     }
-    private int prepare (long id, Serializable context, List members) {
+    protected int prepare (long id, Serializable context, List members) {
         boolean abort = false;
         Iterator iter = getParticipants (DEFAULT_GROUP).iterator();
         for (int i=0; iter.hasNext (); i++) {
@@ -236,13 +236,13 @@ public class TransactionManager
         }
         return members.size() == 0 ? NO_JOIN : (abort ? ABORTED : PREPARED);
     }
-    private List getParticipants (String groupName) {
+    protected List getParticipants (String groupName) {
         List participants = (List) groups.get (groupName);
         if (participants == null)
             participants = new ArrayList();
         return participants;
     }
-    private List getParticipants (long id) {
+    protected List getParticipants (long id) {
         List participants = getParticipants (DEFAULT_GROUP);
         String key = getKey(GROUPS, id);
         String grp = null;
@@ -251,7 +251,7 @@ public class TransactionManager
         }
         return participants;
     }
-    private void initParticipants (Element config) 
+    protected void initParticipants (Element config) 
         throws Q2ConfigurationException
     {
         groups.put (DEFAULT_GROUP,  initGroup (config));
@@ -269,7 +269,7 @@ public class TransactionManager
             groups.put (name, initGroup (e));
         }
     }
-    private ArrayList initGroup (Element e) 
+    protected ArrayList initGroup (Element e) 
         throws Q2ConfigurationException
     {
         ArrayList group = new ArrayList ();
@@ -279,7 +279,7 @@ public class TransactionManager
         }
         return group;
     }
-    private TransactionParticipant createParticipant (Element e) 
+    protected TransactionParticipant createParticipant (Element e) 
         throws Q2ConfigurationException
     {
         QFactory factory = getFactory();
@@ -290,12 +290,12 @@ public class TransactionManager
         factory.setConfiguration (participant, e);
         return participant;
     }
-    private String getKey (String prefix, long id) {
+    protected String getKey (String prefix, long id) {
         StringBuffer sb = new StringBuffer (prefix);
         sb.append (Long.toString (id));
         return sb.toString ();
     }
-    private long initCounter (String name, long defValue) {
+    protected long initCounter (String name, long defValue) {
         Long L = (Long) psp.rdp (name);
         if (L == null) {
             L = new Long (defValue);
@@ -303,19 +303,19 @@ public class TransactionManager
         }
         return L.longValue();
     }
-    private void commitOff (Space sp) {
+    protected void commitOff (Space sp) {
         if (sp instanceof JDBMSpace) {
             ((JDBMSpace) sp).setAutoCommit (false);
         }
     }
-    private void commitOn (Space sp) {
+    protected void commitOn (Space sp) {
         if (sp instanceof JDBMSpace) {
             JDBMSpace jsp = (JDBMSpace) sp;
             jsp.commit ();
             jsp.setAutoCommit (true);
         }
     }
-    private void syncTail () {
+    protected void syncTail () {
         synchronized (psp) {
             commitOff (psp);
             psp.inp (TAIL);
@@ -323,11 +323,11 @@ public class TransactionManager
             commitOn (psp);
         }
     }
-    private void initTailLock () {
+    protected void initTailLock () {
         SpaceUtil.wipe (sp, tailLock);
         sp.out (tailLock, TAILLOCK);
     }
-    private void checkTail () {
+    protected void checkTail () {
         Object lock = sp.inp (tailLock);
         if (lock == null)   // another thread is checking tail
             return;
@@ -338,7 +338,7 @@ public class TransactionManager
         syncTail ();
         sp.out (tailLock, lock);
     }
-    private boolean tailDone () {
+    protected boolean tailDone () {
         String stateKey = getKey (STATE, tail);
         Integer state = (Integer) psp.rdp (stateKey);
         if (DONE.equals (psp.rdp (stateKey))) {
@@ -347,7 +347,7 @@ public class TransactionManager
         }
         return false;
     }
-    private long nextId () {
+    protected long nextId () {
         long h;
         synchronized (psp) {
             commitOff (psp);
@@ -358,10 +358,10 @@ public class TransactionManager
         }
         return h;
     }
-    private void snapshot (long id, Serializable context) {
+    protected void snapshot (long id, Serializable context) {
         snapshot (id, context, null);
     }
-    private void snapshot (long id, Serializable context, Integer status) {
+    protected void snapshot (long id, Serializable context, Integer status) {
         String contextKey = getKey (CONTEXT, id);
         synchronized (psp) {
             commitOff (psp);
@@ -379,7 +379,7 @@ public class TransactionManager
             commitOn (psp);
         }
     }
-    private void setState (long id, Integer state) {
+    protected void setState (long id, Integer state) {
         String stateKey  = getKey (STATE, id);
         synchronized (psp) {
             commitOff (psp);
@@ -390,11 +390,11 @@ public class TransactionManager
             commitOn (psp);
         }
     }
-    private void addGroup (long id, String groupName) {
+    protected void addGroup (long id, String groupName) {
         if (groupName != null)
             psp.out (getKey (GROUPS, id), groupName);
     }
-    private void purge (long id) {
+    protected void purge (long id) {
         String stateKey   = getKey (STATE, id);
         String contextKey = getKey (CONTEXT, id);
         String groupsKey  = getKey (GROUPS, id);
@@ -409,7 +409,7 @@ public class TransactionManager
             commitOn (psp);
         }
     }
-    private void recover () {
+    protected void recover () {
         if (tail < head) {
             getLog().info ("recover - tail=" +tail+", head="+head);
         }
@@ -418,7 +418,7 @@ public class TransactionManager
         }
         syncTail ();
     }
-    private void recover (long id) {
+    protected void recover (long id) {
         LogEvent evt = getLog().createLogEvent ("recover");
         evt.addMessage ("<id>" + id + "</id>");
         try {
