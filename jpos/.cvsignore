@@ -5,3 +5,4 @@ cfg
 deploy
 .project
 .classpath
+.externalToolBuilders
