@@ -384,7 +384,8 @@ public abstract class BaseChannel extends Observable
      * incoming messages.
      */
     protected ISOHeader getDynamicHeader (byte[] image) {
-    	return new BaseHeader (image);
+    	return image != null ? 
+            new BaseHeader (image) : null;
     }
     protected void sendMessageLength(int len) throws IOException { }
     protected void sendMessageHeader(ISOMsg m, int len) throws IOException { }
@@ -472,8 +473,10 @@ public abstract class BaseChannel extends Observable
 		int hLen = getHeaderLength();
 
 		if (len == -1) {
-		    header = new byte [hLen];
-		    serverIn.readFully(header,0,hLen);
+                    if (hLen > 0) {
+		        header = new byte [hLen];
+		        serverIn.readFully(header,0,hLen);
+                    }
 		    b = streamReceive();
 		}
 		else if (len > 10 && len <= 4096) {
