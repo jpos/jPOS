@@ -1,0 +1,5 @@
+<server class="org.jpos.q2.qbean.ServerAdaptor" logger="Q2" name="ExampleServer">
+  <attr name="port" type="java.lang.Integer">9000</attr>
+  <attr name="channel">org.jpos.iso.channel.ASCIIChannel</attr>
+  <attr name="packager">org.jpos.iso.packager.ISO87APackager</attr>
+</server>
