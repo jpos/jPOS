@@ -18,7 +18,7 @@ import org.jpos.iso.ISOFilter.VetoException;
  * @version $Revision$ $Date$
  */
 
-public interface ISOChannel {
+public interface ISOChannel extends ISOSource {
     public static final int CONNECT      = 0;
     public static final int TX           = 1;
     public static final int RX           = 2;
@@ -60,16 +60,6 @@ public interface ISOChannel {
      * @exception ISOException
      */
     public ISOMsg receive() throws IOException, ISOException;
-
-    /**
-     * sends an ISOMsg
-     * @param m the Message to be sent
-     * @exception IOException
-     * @exception ISOException
-     * @exception ISOFilter.VetoException;
-     */
-    public void send (ISOMsg m) 
-	throws IOException, ISOException, VetoException;
 
     /**
      * @param b - usable state
