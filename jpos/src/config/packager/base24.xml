@@ -641,7 +641,7 @@
       class="org.jpos.iso.IFA_LLLCHAR"/>
   <isofield
       id="127"
-      length="200"
+      length="99"
       name="BASE24-POS User Data"
       class="org.jpos.iso.IFA_LLCHAR"/>
   <isofield
