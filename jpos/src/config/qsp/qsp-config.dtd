@@ -48,6 +48,7 @@
 <!ATTLIST mux logger IDREF #IMPLIED>
 <!ATTLIST mux realm CDATA #IMPLIED>
 <!ATTLIST mux connect (yes|no) 'yes'>
+<!ATTLIST mux class NMTOKEN #IMPLIED>
 
 <!-- task -->
 <!ELEMENT task (property)*>

@@ -88,7 +88,19 @@ public class ConfigMux implements QSPReConfigurator {
 	Logger logger = ConfigLogger.getLogger (node);
 	String realm  = ConfigLogger.getRealm (node);
 	ISOChannel channel = ConfigChannel.getChildChannel (node);
-	ISOMUX mux = new ISOMUX (channel, logger, realm);
+	ISOMUX mux = null;
+        try{
+            if(node.getAttributes().getNamedItem("class")==null) 
+                mux = new ISOMUX (channel, logger, realm);
+            else{ 
+                Class muxClass = Class.forName(node.getAttributes().getNamedItem("class").getNodeValue());
+                Class[] argTypes = {ISOChannel.class, Logger.class, String.class};
+                Object[] args = {channel, logger, realm};
+                mux = (ISOMUX)muxClass.getConstructor(argTypes).newInstance(args);
+            }
+        }catch(Exception e){
+            throw new ConfigurationException("error trying to construct ISOMUX", e);
+        }
 	boolean connect = node.getAttributes()
 			.getNamedItem("connect").getNodeValue().equals("yes");
 	evt.addMessage ("MUX "+name+"/"+channel.getName());
