@@ -151,4 +151,11 @@ public class X92Packager extends ISOBasePackager {
     protected boolean emitBitMap () {
 	return true;
     }
+
+    /**
+     * @return 64 for ANSI X9.2
+     */
+    protected int getMaxValidField() {
+        return 64;
+    }
 }
