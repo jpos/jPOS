@@ -42,6 +42,7 @@ for demonstration, proof of concept, debugging, test, etc.
 This is the case of:
 
    - xmlpacking (pack/unpack to/from XML file)
+   - xsltfilter (demo XSL Transformations)
    - channelfilter (test ISOChannel's filters [see ISOFilter])
    - isoserver: similar to simpleserver, uses ISOServer component
 
