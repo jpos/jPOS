@@ -72,6 +72,7 @@ import jdbm.helper.FastIterator;
  * JDBM based persistent space implementation
  *
  * @author Alejandro Revilla
+ * @author Kris Leite
  * @version $Revision$ $Date$
  * @since 1.4.7
  */
@@ -228,12 +229,14 @@ public class JDBMSpace implements Space {
                     head = new Head ();
                     head.first = dataRefRecId;
                     head.last  = dataRefRecId;
+                    head.count = 1;
                 } else {
                     long previousLast = head.last;
                     Ref lastRef   = 
                         (Ref) recman.fetch (previousLast, refSerializer);
                     lastRef.next      = dataRefRecId;
                     head.last         = dataRefRecId;
+                    head.count++;
                     recman.update (previousLast, lastRef, refSerializer);
                 }
                 htree.put (key, head);
@@ -350,6 +353,18 @@ public class JDBMSpace implements Space {
         }
         return obj;
     }
+    /**
+     * @return aproximately queue size
+     */
+    public long size (Object key) {
+        try {
+            Head head = (Head) htree.get (key);
+            return (head != null) ? head.count : 0;
+        } catch (IOException e) {
+            throw new SpaceError (e);
+        }
+    }
+
     private void purge (Object key) throws IOException {
         Head head = (Head) htree.get (key);
         Ref ref, previousRef = null;
@@ -359,6 +374,7 @@ public class JDBMSpace implements Space {
                 if (r.isExpired ()) {
                     recman.delete (r.recid);
                     recman.delete (recid);
+                    head.count--;
                     if (previousRef == null) {
                         head.first = r.next;
                     } else {
@@ -422,11 +438,13 @@ public class JDBMSpace implements Space {
                     recman.delete (r.recid);
                     recman.delete (recid);
                     recid = r.next;
+                    head.count--;
                 } else  {
                     ref = r;
                     if (remove) {
                         recman.delete (recid);
                         recid = ref.next;
+                        head.count--;
                     }
                     break;
                 }
@@ -445,7 +463,8 @@ public class JDBMSpace implements Space {
     static class Head implements Externalizable {
         public long first;
         public long last;
-        static final long serialVersionUID = 1L;
+        public long count;
+        static final long serialVersionUID = 2L;
 
         public Head () {
             super ();
@@ -455,10 +474,12 @@ public class JDBMSpace implements Space {
         public void writeExternal (ObjectOutput out) throws IOException {
             out.writeLong (first);
             out.writeLong (last);
+            out.writeLong (count);
         }
         public void readExternal (ObjectInput in) throws IOException {
             first = in.readLong ();
             last  = in.readLong ();
+            count = in.readLong ();
         }
         public String toString() {
             return getClass().getName() 
