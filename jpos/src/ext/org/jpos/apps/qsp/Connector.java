@@ -167,6 +167,7 @@ public class Connector
 		"connector-request-listener");
 	    try {
 		ISOMsg c = (ISOMsg) m.clone();
+                c.setHeader (m.getHeader());
 		evt.addMessage (c);
 		if (destMux != null) {
 		    if (timeout > 0) {
