@@ -284,6 +284,9 @@ public abstract class BaseChannel extends Observable
 	this.timeout = timeout;
 	applyTimeout();
     }
+    public int getTimeout () {
+        return timeout;
+    }
     protected void applyTimeout () throws SocketException {
 	if (timeout != 0 && socket != null) 
 	    socket.setSoTimeout (timeout);
@@ -468,6 +471,9 @@ public abstract class BaseChannel extends Observable
 	    throw e;
 	} catch (EOFException e) {
 	    evt.addMessage ("<peer-disconnect/>");
+	    throw e;
+	} catch (InterruptedIOException e) {
+	    evt.addMessage ("<io-timeout/>");
 	    throw e;
 	} catch (IOException e) { 
 	    if (usable) 
@@ -658,12 +664,12 @@ public abstract class BaseChannel extends Observable
 		throw new ConfigurationException 
 		    ("invalid port for host '"+h+"'");
 	    setHost (h, port);
-	    try {
-		setTimeout (cfg.getInt ("timeout"));
-	    } catch (SocketException e) {
-		throw new ConfigurationException (e);
-	    }
-	}
+        }
+        try {
+            setTimeout (cfg.getInt ("timeout"));
+        } catch (SocketException e) {
+            throw new ConfigurationException (e);
+        }
     }
     public Collection getIncomingFilters() {
 	return incomingFilters;

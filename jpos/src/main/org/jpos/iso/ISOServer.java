@@ -51,6 +51,7 @@ package org.jpos.iso;
 
 import java.io.IOException;
 import java.io.EOFException;
+import java.io.InterruptedIOException;
 import java.util.Vector;
 import java.util.Iterator;
 import java.util.Observer;
@@ -125,6 +126,10 @@ public class ISOServer extends Observable
 			    break;
                 }
 	    } catch (EOFException e) {
+            } catch (InterruptedIOException e) {
+                try {
+                    channel.disconnect();
+                } catch (IOException ex) { }
             } catch (Exception e) { 
 		Logger.log (new LogEvent (this, "SessionError", e));
             } 
@@ -168,14 +173,17 @@ public class ISOServer extends Observable
 			channel = (ServerChannel) 
 			    clientSideChannelClass.newInstance();
 			channel.setPackager (clientPackager);
-			if (clientSideChannel instanceof BaseChannel)
-			    ((BaseChannel)channel).setHeader (
-				((BaseChannel)clientSideChannel).getHeader());
-			setFilters (channel);
 			if (channel instanceof LogSource) {
 			    ((LogSource)channel) .
 				setLogger (getLogger(), getRealm()+".channel");
 			}
+			if (clientSideChannel instanceof BaseChannel) {
+			    ((BaseChannel)channel).setHeader (
+				((BaseChannel)clientSideChannel).getHeader());
+			    ((BaseChannel)channel).setTimeout (
+				((BaseChannel)clientSideChannel).getTimeout());
+                        }
+			setFilters (channel);
 			if (channel instanceof Observable)
 			    ((Observable)channel).addObserver (this);
 			channel.accept (serverSocket);
