@@ -96,8 +96,12 @@ public class ThreadPool extends ThreadGroup implements LogSource, Loggeable, Con
                         synchronized (this) {
                             currentJob = job;
                         }
-                        ((Runnable) job).run();
-                        setName (name + "-idle");
+                        try {
+                            ((Runnable) job).run();
+                            setName (name + "-idle");
+                        } catch (Throwable t) {
+                            setName (name + "-idle-"+t.getMessage());
+                        }
                         synchronized (this) {
                             currentJob = null;
                         }
