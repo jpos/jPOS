@@ -51,11 +51,11 @@ public class ConfigCardAgent implements QSPReConfigurator {
 
 	    CardAgentLookup.add (agent);
         } catch (ClassNotFoundException e) {
-	    throw new ConfigurationException ("config-task:"+className, e);
+	    throw new ConfigurationException ("config-agent:"+className, e);
         } catch (InstantiationException e) {
-	    throw new ConfigurationException ("config-task:"+className, e);
+	    throw new ConfigurationException ("config-agent:"+className, e);
         } catch (IllegalAccessException e) {
-	    throw new ConfigurationException ("config-task:"+className, e);
+	    throw new ConfigurationException ("config-agent:"+className, e);
 	}
 	Logger.log (evt);
     }
@@ -63,7 +63,7 @@ public class ConfigCardAgent implements QSPReConfigurator {
     {
 	String className = 
 	    node.getAttributes().getNamedItem ("class").getNodeValue();
-	LogEvent evt = new LogEvent (qsp, "re-config-task", className);
+	LogEvent evt = new LogEvent (qsp, "re-config-agent", className);
 	try {
 	    CardAgent agent = CardAgentLookup.getAgent (className);
 	    if (agent instanceof ReConfigurable) 
