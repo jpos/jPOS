@@ -25,4 +25,5 @@ org/jpos/space/LeasedReference.class
 org/jpos/space/RemoteSpace.class
 org/jpos/space/TransientSpace*.class
 org/jpos/space/SpaceFactory.class
-org/jpos/space/JDBMSpace.class
+org/jpos/space/JDBMSpace*.class
+org/jpos/space/SpaceError.class
