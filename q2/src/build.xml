@@ -210,7 +210,7 @@
     <copy     file="${dist}/${project}.jar"
             tofile="${rbin}/${project}.jar" />
     <copy    todir="${rbin}/bin" >
-      <fileset dir="bin" includes="q2,q2.bat" />
+      <fileset dir="bin" includes="q2,q2.bat,cp.bat" />
     </copy>
     <copy    todir="${rlib}" >
       <fileset dir="${lib}" includes="mx4j*,jdom*,jpos*,commons-cli*" />
