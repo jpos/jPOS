@@ -1,6 +1,7 @@
 package simplemux;
 
 import org.jpos.iso.ISOMsg;
+import org.jpos.iso.ISOSource;
 import org.jpos.iso.ISORequestListener;
 import org.jpos.util.Logger;
 import org.jpos.util.LogSource;
@@ -20,11 +21,12 @@ public class DummyRequestListener extends Observable implements ISORequestListen
     public DummyRequestListener (LogSource logSource) {
 	this.logSource = logSource;
     }
-    public void process (ISOMsg m) {
+    public boolean process (ISOSource source, ISOMsg m) {
 	setChanged();
 	notifyObservers();
 	Logger.log (
 	    new LogEvent (logSource, "dummy-request-listener", m)
 	);
+	return true;
     }
 }
