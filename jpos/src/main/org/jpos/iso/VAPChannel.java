@@ -45,6 +45,6 @@ public class VAPChannel extends ISOChannel {
 		if (serverIn.read(b,0,4) != 4)
 			throw new ISOException("error reading message length");
 		// return (int) (b[0] << 24) | (b[1] << 16) | (b[2] << 8) | b[3];
-		return (int) (b[0] << 8) | (b[1]);
+		return ((((int)b[0])&0xFF) << 8) | (((int)b[1])&0xFF);
 	}
 }
