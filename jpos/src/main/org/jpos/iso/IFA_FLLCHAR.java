@@ -59,6 +59,9 @@ package org.jpos.iso;
  * @see IFA_LLCHAR
  */
 public class IFA_FLLCHAR extends ISOFieldPackager {
+    public IFA_FLLCHAR() {
+	super();
+    }
     /**
      * @param len - field len
      * @param description symbolic descrption

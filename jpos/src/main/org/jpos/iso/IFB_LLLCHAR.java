@@ -57,6 +57,9 @@ package org.jpos.iso;
  * @see ISOComponent
  */
 public class IFB_LLLCHAR extends ISOFieldPackager {
+    public IFB_LLLCHAR() {
+    	super();
+    }
     /**
      * @param len - field len
      * @param description symbolic descrption

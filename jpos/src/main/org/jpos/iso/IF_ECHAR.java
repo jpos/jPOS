@@ -59,6 +59,9 @@ package org.jpos.iso;
  * @deprecated Use IFE_CHAR instead
  */
 public class IF_ECHAR extends ISOFieldPackager {
+    public IF_ECHAR() {
+	super();
+    }
     /**
      * @param len - field len
      * @param description symbolic descrption

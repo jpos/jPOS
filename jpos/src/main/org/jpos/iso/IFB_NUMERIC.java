@@ -57,7 +57,9 @@ package org.jpos.iso;
  * @see ISOComponent
  */
 public class IFB_NUMERIC extends ISOFieldPackager {
-    private boolean pad;
+    public IFB_NUMERIC() {
+	super();
+    }
     /**
      * @param len - field len
      * @param description symbolic descrption

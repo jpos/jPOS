@@ -61,6 +61,9 @@ package org.jpos.iso;
  * @see ISOFieldPackager
  */
 public abstract class ISOBitMapPackager extends ISOFieldPackager {
+    public ISOBitMapPackager() {
+	super();
+    }
     public ISOBitMapPackager(int len, String description) {
         super(len, description);
     }

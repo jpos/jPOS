@@ -58,6 +58,9 @@ package org.jpos.iso;
  * @see ISOComponent
  */
 public class IFE_CHAR extends ISOFieldPackager {
+    public IFE_CHAR() {
+	super();
+    }
     /**
      * @param len - field len
      * @param description symbolic descrption

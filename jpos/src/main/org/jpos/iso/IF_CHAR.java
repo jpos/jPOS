@@ -50,13 +50,16 @@
 package org.jpos.iso;
 
 /**
- * ISOFieldPackager CHARACTERS (ASCII & BINARY)
+ * ISOFieldPackager CHARACTERS (ASCII and BINARY)
  *
  * @author apr@cs.com.uy
  * @version $Id$
  * @see ISOComponent
  */
 public class IF_CHAR extends ISOFieldPackager {
+    public IF_CHAR() {
+	super();
+    }
     /**
      * @param len - field len
      * @param description symbolic descrption

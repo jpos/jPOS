@@ -57,6 +57,9 @@ package org.jpos.iso;
  * @see ISOComponent
  */
 public class IFA_BINARY extends ISOFieldPackager {
+    public IFA_BINARY() {
+	super();
+    }
     /**
      * @param len - field len
      * @param description symbolic descrption

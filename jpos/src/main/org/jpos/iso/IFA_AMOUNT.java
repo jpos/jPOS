@@ -57,6 +57,9 @@ package org.jpos.iso;
  * @see ISOFieldPackager
  */
 public class IFA_AMOUNT extends ISOFieldPackager {
+    public IFA_AMOUNT() {
+	super();
+    }
     /**
      * @param len - field len
      * @param description symbolic descrption

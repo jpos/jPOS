@@ -59,7 +59,9 @@ package org.jpos.iso;
  * @see ISOComponent
  */
 public class IFB_LLHNUM extends ISOFieldPackager {
-    private boolean pad;
+    public IFB_LLHNUM() {
+	super();
+    }
     /**
      * @param len - field len
      * @param description symbolic descrption

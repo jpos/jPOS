@@ -60,6 +60,9 @@ import java.util.*;
  * @see ISOBitMapPackager
  */
 public class X92_BITMAP extends ISOBitMapPackager {
+    public X92_BITMAP() {
+    	super();
+    }
     /**
      * @param len - field len
      * @param description symbolic descrption

@@ -62,6 +62,10 @@ package org.jpos.iso;
  */
 public class IFE_NUMERIC extends ISOFieldPackager 
 {
+    public IFE_NUMERIC()
+    {
+	super();
+    }
     /**
      * @param len - field len
      * @param description symbolic descrption

@@ -60,6 +60,9 @@ import java.util.*;
  * @see ISOBitMapPackager
  */
 public class IFB_BITMAP extends ISOBitMapPackager {
+    public IFB_BITMAP() {
+	super();
+    }
     /**
      * @param len - field len
      * @param description symbolic descrption

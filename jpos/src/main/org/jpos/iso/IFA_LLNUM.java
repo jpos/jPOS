@@ -57,6 +57,9 @@ package org.jpos.iso;
  * @see ISOComponent
  */
 public class IFA_LLNUM extends ISOFieldPackager {
+    public IFA_LLNUM() {
+	super();
+    }
     /**
      * @param len - field len
      * @param description symbolic descrption
