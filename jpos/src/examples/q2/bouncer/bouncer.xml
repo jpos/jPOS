@@ -13,7 +13,7 @@
   </filter>
  </channel>
 
- <request-listener class="bouncer.Bouncer" logger="Q2" realm="bouncer" />
+ <request-listener class="q2.bouncer.Bouncer" logger="Q2" realm="bouncer" />
 
  <property name="allow" value="127.0.0.1" />
 

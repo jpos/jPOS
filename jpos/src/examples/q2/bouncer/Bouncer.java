@@ -1,4 +1,4 @@
-package bouncer;
+package q2.bouncer;
 
 import org.jpos.iso.*;
 import org.jpos.util.*;
