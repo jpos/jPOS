@@ -4,7 +4,7 @@ import java.util.Properties;
 
 import org.jpos.util.Logger;
 import org.jpos.util.LogEvent;
-import org.jpos.util.LogProducer;
+import org.jpos.util.LogSource;
 import org.jpos.core.SimpleConfiguration;
 import org.jpos.core.ConfigurationException;
 
@@ -29,8 +29,8 @@ public class ConfigTask implements QSPConfigurator {
         try {
             Class c = Class.forName(className);
 	    Runnable task = (Runnable ) c.newInstance();
-	    if (task instanceof LogProducer) {
-		((LogProducer)task).setLogger (
+	    if (task instanceof LogSource) {
+		((LogSource)task).setLogger (
 		    ConfigLogger.getLogger (node),
 		    ConfigLogger.getRealm (node)
 		);

@@ -13,7 +13,7 @@
  <mux name="acme.mux" logger="qsp" realm="acme">
   <channel name="acme.channel" 
           class="org.jpos.iso.channel.ASCIIChannel" 
-          packager="org.jpos.iso.ISO87APackager"
+          packager="org.jpos.iso.packager.ISO87APackager"
           host="localhost" port="8000"
           logger="qsp" realm="acme"
 	  connect="no" >

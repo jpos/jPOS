@@ -5,18 +5,21 @@ import java.util.*;
 import org.jpos.util.Logger;
 import org.jpos.util.LogEvent;
 import org.jpos.util.Loggeable;
-import org.jpos.util.LogProducer;
+import org.jpos.util.LogSource;
 
 /*
  * $Log$
+ * Revision 1.11  2000/04/16 23:53:08  apr
+ * LogProducer renamed to LogSource
+ *
  * Revision 1.10  2000/03/01 14:44:45  apr
  * Changed package name to org.jpos
  *
  * Revision 1.9  2000/01/11 01:24:48  apr
  * moved non ISO-8583 related classes from jpos.iso to jpos.util package
- * (AntiHog LeasedLineModem LogEvent LogListener LogProducer
+ * (AntiHog LeasedLineModem LogEvent LogListener LogSource
  *  Loggeable Logger Modem RotateLogListener SimpleAntiHog SimpleDialupModem
- *  SimpleLogListener SimpleLogProducer SystemMonitor V24)
+ *  SimpleLogListener SimpleLogSource SystemMonitor V24)
  *
  * Revision 1.8  1999/10/10 15:52:29  apr
  * Added ISORequest.isTransmitted() support
@@ -40,7 +43,7 @@ import org.jpos.util.LogProducer;
  * @see ISOMUX
  * @serial
  */
-public class ISORequest implements LogProducer, Loggeable {
+public class ISORequest implements LogSource, Loggeable {
     private ISOMsg request, response;
     private long requestTime, txTime, responseTime;
     private boolean expired;

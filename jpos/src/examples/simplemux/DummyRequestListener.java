@@ -3,7 +3,7 @@ package simplemux;
 import org.jpos.iso.ISOMsg;
 import org.jpos.iso.ISORequestListener;
 import org.jpos.util.Logger;
-import org.jpos.util.LogProducer;
+import org.jpos.util.LogSource;
 import org.jpos.util.LogEvent;
 import java.util.Observable;
 
@@ -16,8 +16,8 @@ import java.util.Observable;
  */
 public class DummyRequestListener extends Observable implements ISORequestListener
 {
-    LogProducer logSource;
-    public DummyRequestListener (LogProducer logSource) {
+    LogSource logSource;
+    public DummyRequestListener (LogSource logSource) {
 	this.logSource = logSource;
     }
     public void process (ISOMsg m) {

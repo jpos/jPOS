@@ -1,12 +1,12 @@
 package org.jpos.iso;
-import org.jpos.util.LogProducer;
+import org.jpos.util.LogSource;
 
 /**
  * @author apr@cs.com.uy
  * @version $Id$
  * @see ISOComponent
  */
-public interface ISOPackager extends LogProducer {
+public interface ISOPackager extends LogSource {
     /**
      * @param   m   the Component to pack
      * @return      Message image

@@ -9,7 +9,7 @@ import org.jpos.iso.ISOPackager;
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISORequest;
 import org.jpos.iso.packager.XMLPackager;
-import org.jpos.util.SimpleLogProducer;
+import org.jpos.util.SimpleLogSource;
 import org.jpos.util.NameRegistrar;
 import org.jpos.util.Logger;
 import org.jpos.util.LogEvent;
@@ -22,7 +22,7 @@ import org.jpos.apps.qsp.QSPConfigurable;
  * @version $Revision$ $Date$
  */
 public class Sender 
-    extends SimpleLogProducer
+    extends SimpleLogSource
     implements Runnable, QSPConfigurable
 {
     ISOMUX mux;

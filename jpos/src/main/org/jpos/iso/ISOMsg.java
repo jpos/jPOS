@@ -3,11 +3,14 @@ package org.jpos.iso;
 import java.io.*;
 import java.util.*;
 import org.jpos.util.Loggeable;
-import org.jpos.util.LogProducer;
+import org.jpos.util.LogSource;
 import org.jpos.iso.packager.XMLPackager;
 
 /*
  * $Log$
+ * Revision 1.25  2000/04/16 23:53:08  apr
+ * LogProducer renamed to LogSource
+ *
  * Revision 1.24  2000/04/16 22:12:01  apr
  * Moved packager implementations to org.jpos.iso.packager
  *
@@ -39,9 +42,9 @@ import org.jpos.iso.packager.XMLPackager;
  *
  * Revision 1.15  2000/01/11 01:24:47  apr
  * moved non ISO-8583 related classes from jpos.iso to jpos.util package
- * (AntiHog LeasedLineModem LogEvent LogListener LogProducer
+ * (AntiHog LeasedLineModem LogEvent LogListener LogSource
  *  Loggeable Logger Modem RotateLogListener SimpleAntiHog SimpleDialupModem
- *  SimpleLogListener SimpleLogProducer SystemMonitor V24)
+ *  SimpleLogListener SimpleLogSource SystemMonitor V24)
  *
  * Revision 1.14  1999/10/01 10:54:08  apr
  * Added merge method

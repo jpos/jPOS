@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.9  2000/04/16 23:53:06  apr
+ * LogProducer renamed to LogSource
+ *
  * Revision 1.8  2000/03/02 12:31:01  apr
  * Get rid of javadoc warnings - done
  *
@@ -14,9 +17,9 @@
  *
  * Revision 1.4  2000/01/11 01:24:39  apr
  * moved non ISO-8583 related classes from jpos.iso to jpos.util package
- * (AntiHog LeasedLineModem LogEvent LogListener LogProducer
+ * (AntiHog LeasedLineModem LogEvent LogListener LogSource
  *  Loggeable Logger Modem RotateLogListener SimpleAntiHog SimpleDialupModem
- *  SimpleLogListener SimpleLogProducer SystemMonitor V24)
+ *  SimpleLogListener SimpleLogSource SystemMonitor V24)
  *
  * Revision 1.3  1999/12/14 00:46:03  apr
  * Added purchasePlan/numberOfPayments support

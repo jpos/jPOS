@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.9  2000/04/16 23:53:03  apr
+ * LogProducer renamed to LogSource
+ *
  * Revision 1.8  2000/03/22 22:45:38  apr
  * Removed init delay
  *
@@ -23,9 +26,9 @@
  *
  * Revision 1.1  2000/01/11 01:25:01  apr
  * moved non ISO-8583 related classes from jpos.iso to jpos.util package
- * (AntiHog LeasedLineModem LogEvent LogListener LogProducer
+ * (AntiHog LeasedLineModem LogEvent LogListener LogSource
  *  Loggeable Logger Modem RotateLogListener SimpleAntiHog SimpleDialupModem
- *  SimpleLogListener SimpleLogProducer SystemMonitor V24)
+ *  SimpleLogListener SimpleLogSource SystemMonitor V24)
  *
  * Revision 1.1  1999/11/24 18:08:56  apr
  * Added VISA 1 Support

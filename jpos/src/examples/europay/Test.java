@@ -6,7 +6,7 @@ import java.util.Date;
 import java.io.PrintStream;
 import org.jpos.util.Logger;
 import org.jpos.util.LogEvent;
-import org.jpos.util.SimpleLogProducer;
+import org.jpos.util.SimpleLogSource;
 import org.jpos.util.SimpleLogListener;
 
 import org.jpos.iso.ISOMsg;
@@ -15,9 +15,9 @@ import org.jpos.iso.ISODate;
 import org.jpos.iso.ISOField;
 import org.jpos.iso.ISOPackager;
 import org.jpos.iso.ISOException;
-import org.jpos.iso.EuroPackager;
+import org.jpos.iso.packager.EuroPackager;
 
-public class Test extends SimpleLogProducer {
+public class Test extends SimpleLogSource {
     public Test (Logger logger, String realm) {
 	setLogger (logger, realm);
     }

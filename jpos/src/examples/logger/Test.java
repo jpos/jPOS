@@ -7,10 +7,10 @@ import org.jpos.iso.ISOException;
 import org.jpos.util.Logger;
 import org.jpos.util.LogEvent;
 import org.jpos.util.Loggeable;
-import org.jpos.util.SimpleLogProducer;
+import org.jpos.util.SimpleLogSource;
 import org.jpos.util.SimpleLogListener;
 
-public class Test extends SimpleLogProducer implements Loggeable {
+public class Test extends SimpleLogSource implements Loggeable {
     public Test (Logger logger, String realm) {
 	setLogger (logger, realm);
     }

@@ -9,7 +9,7 @@ import java.util.*;
  * @version $Id$
  * @see Logger
  */
-public class SystemMonitor implements Runnable, LogProducer, Loggeable
+public class SystemMonitor implements Runnable, LogSource, Loggeable
 {
     private Logger logger = null;
     private String realm  = null;

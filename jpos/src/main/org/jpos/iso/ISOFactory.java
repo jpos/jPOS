@@ -5,7 +5,7 @@ import org.jpos.core.Configuration;
 import java.io.IOException;
 import org.jpos.iso.ISOUtil;
 import org.jpos.util.Logger;
-import org.jpos.util.LogProducer;
+import org.jpos.util.LogSource;
 import org.jpos.core.Configuration;
 import org.jpos.iso.channel.*;
 import org.jpos.util.NameRegistrar;
@@ -65,8 +65,8 @@ public class ISOFactory {
 		if (host != null && channel instanceof ClientChannel)
 		    ((ClientChannel)channel).setHost (host, port);
                 channel.setPackager(packager);
-		if (logger != null && (channel instanceof LogProducer))
-		    ((LogProducer) channel) .
+		if (logger != null && (channel instanceof LogSource))
+		    ((LogSource) channel) .
 			setLogger (logger, realm + ".channel");
 		if (header != null) {
 		    if (channel instanceof RawChannel) 

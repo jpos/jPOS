@@ -3,7 +3,7 @@ package org.jpos.apps.qsp;
 import java.io.IOException;
 
 import org.jpos.util.Logger;
-import org.jpos.util.LogProducer;
+import org.jpos.util.LogSource;
 import org.jpos.util.LogEvent;
 import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
@@ -28,7 +28,7 @@ import org.jpos.util.NameRegistrar.NotFoundException;
  * @see org.jpos.iso.ISORequestListener;
  */
 public class Connector 
-    implements ISORequestListener, LogProducer, Configurable
+    implements ISORequestListener, LogSource, Configurable
 {
     Logger logger;
     String realm;

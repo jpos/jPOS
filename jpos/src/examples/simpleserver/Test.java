@@ -10,15 +10,15 @@ import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOFactory;
 import org.jpos.iso.ISOPackager;
 import org.jpos.iso.ISOUtil;
-import org.jpos.util.LogProducer;
+import org.jpos.util.LogSource;
 import org.jpos.util.LogEvent;
 import org.jpos.util.SimpleLogListener;
 import org.jpos.util.Logger;
-import org.jpos.util.LogProducer;
+import org.jpos.util.LogSource;
 import org.jpos.core.Configuration;
 import org.jpos.core.SimpleConfiguration;
 
-public class Test implements Runnable, LogProducer {
+public class Test implements Runnable, LogSource {
     Logger logger;
     String realm;
     public static final String CFG_PORT = "simpleserver.port";
@@ -39,7 +39,7 @@ public class Test implements Runnable, LogProducer {
     public Logger getLogger() {
 	return logger;
     }
-    protected class Session implements Runnable, LogProducer {
+    protected class Session implements Runnable, LogSource {
         ServerChannel channel;
         protected Session(ServerChannel channel) {
             this.channel = channel;

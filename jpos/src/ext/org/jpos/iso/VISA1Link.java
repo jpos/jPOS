@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.19  2000/04/16 23:53:02  apr
+ * LogProducer renamed to LogSource
+ *
  * Revision 1.18  2000/04/16 23:17:15  victor
  * Added imports (org.jpos.iso.packager.*)
  *
@@ -29,9 +32,9 @@
  *
  * Revision 1.9  2000/01/11 01:24:55  apr
  * moved non ISO-8583 related classes from jpos.iso to jpos.util package
- * (AntiHog LeasedLineModem LogEvent LogListener LogProducer
+ * (AntiHog LeasedLineModem LogEvent LogListener LogSource
  *  Loggeable Logger Modem RotateLogListener SimpleAntiHog SimpleDialupModem
- *  SimpleLogListener SimpleLogProducer SystemMonitor V24)
+ *  SimpleLogListener SimpleLogSource SystemMonitor V24)
  *
  * Revision 1.8  1999/12/20 20:14:14  apr
  * Added VISA1ResponseFilter support
@@ -79,7 +82,7 @@ import org.jpos.iso.packager.*;
  * @see Modem
  * @see <a href="http://www.frii.com/~jarvi/rxtx/">CommAPI</a>
  */
-public class VISA1Link implements LogProducer, Runnable
+public class VISA1Link implements LogSource, Runnable
 {
     Logger logger;
     String realm;

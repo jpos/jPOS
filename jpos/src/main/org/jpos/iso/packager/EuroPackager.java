@@ -5,7 +5,7 @@ import org.jpos.iso.*;
 
 import org.jpos.util.Logger;
 import org.jpos.util.LogEvent;
-import org.jpos.util.SimpleLogProducer;
+import org.jpos.util.SimpleLogSource;
 
 /**
  * EuroPay packager
@@ -163,7 +163,7 @@ public class EuroPackager extends ISOBasePackager {
 	f48Packager.setLogger (logger, realm + ".field-48");
     }
 
-    protected class Euro48Packager extends SimpleLogProducer
+    protected class Euro48Packager extends SimpleLogSource
             implements ISOPackager
     { 
         // EuroPay refers to the message subfields as 

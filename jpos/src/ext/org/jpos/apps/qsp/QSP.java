@@ -14,7 +14,7 @@ import org.jpos.util.SimpleLogListener;
 import org.jpos.util.SystemMonitor;
 import org.jpos.util.Logger;
 import org.jpos.util.LogEvent;
-import org.jpos.util.LogProducer;
+import org.jpos.util.LogSource;
 import org.jpos.core.ConfigurationException;
 
 /**
@@ -23,7 +23,7 @@ import org.jpos.core.ConfigurationException;
  * @see <a href="http://www.cebik.com/qsig.html">QSP</a>
  */
 
-public class QSP implements ErrorHandler, LogProducer {
+public class QSP implements ErrorHandler, LogSource {
     Document config;
     Logger logger;
     String realm;

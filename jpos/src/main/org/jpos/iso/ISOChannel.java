@@ -7,7 +7,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import org.jpos.util.Logger;
 import org.jpos.util.LogEvent;
-import org.jpos.util.LogProducer;
+import org.jpos.util.LogSource;
 import org.jpos.util.NameRegistrar;
 import org.jpos.iso.ISOFilter.VetoException;
 

@@ -3,7 +3,7 @@ package org.jpos.iso.packager;
 import java.util.*;
 import org.jpos.util.Logger;
 import org.jpos.util.LogEvent;
-import org.jpos.util.SimpleLogProducer;
+import org.jpos.util.SimpleLogSource;
 import org.jpos.iso.*;
 
 /**
@@ -14,7 +14,7 @@ import org.jpos.iso.*;
  * @see ISOComponent
  */
 public class VISA1Packager 
-    extends SimpleLogProducer implements ISOPackager, VISA1ResponseFilter
+    extends SimpleLogSource implements ISOPackager, VISA1ResponseFilter
 {
     public static final byte[] FS = { (byte)'\034' };
     int[] sequence;

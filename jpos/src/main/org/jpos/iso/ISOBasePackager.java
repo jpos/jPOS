@@ -2,11 +2,14 @@ package org.jpos.iso;
 
 import java.util.*;
 import org.jpos.util.Logger;
-import org.jpos.util.LogProducer;
+import org.jpos.util.LogSource;
 import org.jpos.util.LogEvent;
 
 /*
  * $Log$
+ * Revision 1.25  2000/04/16 23:53:08  apr
+ * LogProducer renamed to LogSource
+ *
  * Revision 1.24  2000/03/29 13:08:23  apr
  * tertiary bitmaps unpack bugfix + a few fld.length protections
  *
@@ -28,9 +31,9 @@ import org.jpos.util.LogEvent;
  *
  * Revision 1.18  2000/01/11 01:24:44  apr
  * moved non ISO-8583 related classes from jpos.iso to jpos.util package
- * (AntiHog LeasedLineModem LogEvent LogListener LogProducer
+ * (AntiHog LeasedLineModem LogEvent LogListener LogSource
  *  Loggeable Logger Modem RotateLogListener SimpleAntiHog SimpleDialupModem
- *  SimpleLogListener SimpleLogProducer SystemMonitor V24)
+ *  SimpleLogListener SimpleLogSource SystemMonitor V24)
  *
  * Revision 1.17  1999/11/24 18:16:43  apr
  * minor doc changes
@@ -58,7 +61,7 @@ import org.jpos.util.LogEvent;
  * @see ISO87APackager
  * @see ISO87BPackager
  */
-public abstract class ISOBasePackager implements ISOPackager, LogProducer {
+public abstract class ISOBasePackager implements ISOPackager, LogSource {
     protected ISOFieldPackager[] fld;
 
     protected Logger logger = null;

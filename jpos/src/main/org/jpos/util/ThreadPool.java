@@ -4,6 +4,9 @@ package org.jpos.util;
  * $Id$
  *
  * $Log$
+ * Revision 1.5  2000/04/16 23:53:14  apr
+ * LogProducer renamed to LogSource
+ *
  * Revision 1.4  2000/03/01 14:44:45  apr
  * Changed package name to org.jpos
  *
@@ -27,7 +30,7 @@ import org.jpos.util.BlockingQueue.Closed;
  * @since 1.1
  * @author apr@cs.com.uy
  */
-public class ThreadPool extends ThreadGroup implements LogProducer, Loggeable 
+public class ThreadPool extends ThreadGroup implements LogSource, Loggeable 
 {
     private static int poolNumber=0;
     private static int threadNumber=0;

@@ -11,7 +11,7 @@ import org.jpos.core.ConfigurationException;
 import org.jpos.iso.ISOMUX;
 import org.jpos.util.Logger;
 import org.jpos.util.LogEvent;
-import org.jpos.util.LogProducer;
+import org.jpos.util.LogSource;
 import org.jpos.util.NameRegistrar.NotFoundException;
 
 import org.jpos.apps.qsp.QSP;

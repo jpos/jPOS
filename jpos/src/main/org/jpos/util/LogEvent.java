@@ -7,6 +7,9 @@ import java.sql.SQLException;
 
 /*
  * $Log$
+ * Revision 1.4  2000/04/16 23:53:14  apr
+ * LogProducer renamed to LogSource
+ *
  * Revision 1.3  2000/03/02 12:31:10  apr
  * Get rid of javadoc warnings - done
  *
@@ -15,9 +18,9 @@ import java.sql.SQLException;
  *
  * Revision 1.1  2000/01/11 01:24:57  apr
  * moved non ISO-8583 related classes from jpos.iso to jpos.util package
- * (AntiHog LeasedLineModem LogEvent LogListener LogProducer
+ * (AntiHog LeasedLineModem LogEvent LogListener LogSource
  *  Loggeable Logger Modem RotateLogListener SimpleAntiHog SimpleDialupModem
- *  SimpleLogListener SimpleLogProducer SystemMonitor V24)
+ *  SimpleLogListener SimpleLogSource SystemMonitor V24)
  *
  * Revision 1.4  1999/11/24 18:04:39  apr
  * minor DOC changes
@@ -39,7 +42,7 @@ public class LogEvent extends EventObject {
    /**
     * @serial
     */
-    LogProducer source;
+    LogSource source;
    /**
     * @serial
     */
@@ -49,13 +52,13 @@ public class LogEvent extends EventObject {
     */
     public Vector payLoad;
     
-    public LogEvent (LogProducer source, String tag) {
+    public LogEvent (LogSource source, String tag) {
 	super (source);
 	this.source  = source;
 	this.tag     = tag;
 	this.payLoad = new Vector();
     }
-    public LogEvent (LogProducer source, String tag, Object msg) {
+    public LogEvent (LogSource source, String tag, Object msg) {
 	super (source);
 	this.source  = source;
 	this.tag     = tag;

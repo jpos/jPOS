@@ -3,7 +3,7 @@ package org.jpos.iso.packager;
 import java.io.*;
 import java.util.*;
 import org.jpos.util.Logger;
-import org.jpos.util.LogProducer;
+import org.jpos.util.LogSource;
 import org.jpos.util.LogEvent;
 import org.xml.sax.*;
 import org.xml.sax.helpers.*;
@@ -11,6 +11,9 @@ import org.jpos.iso.*;
 
 /*
  * $Log$
+ * Revision 1.2  2000/04/16 23:53:11  apr
+ * LogProducer renamed to LogSource
+ *
  * Revision 1.1  2000/04/16 22:12:33  apr
  * New packagers location org.jpos.iso.packager
  *
@@ -30,7 +33,7 @@ import org.jpos.iso.*;
  * @see ISOPackager
  */
 public class XMLPackager extends HandlerBase
-                         implements ISOPackager, LogProducer
+                         implements ISOPackager, LogSource
 {
     protected Logger logger = null;
     protected String realm = null;

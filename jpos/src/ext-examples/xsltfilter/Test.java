@@ -15,18 +15,18 @@ import org.jpos.iso.ISOUtil;
 import org.jpos.iso.ISODate;
 import org.jpos.iso.ISOException;
 import org.jpos.iso.filter.XSLTFilter;
-import org.jpos.util.LogProducer;
+import org.jpos.util.LogSource;
 import org.jpos.util.LogEvent;
 import org.jpos.util.SimpleLogListener;
 import org.jpos.util.Logger;
-import org.jpos.util.SimpleLogProducer;
+import org.jpos.util.SimpleLogSource;
 import org.jpos.core.Configuration;
 import org.jpos.core.Sequencer;
 import org.jpos.core.VolatileSequencer;
 import org.jpos.core.SimpleConfiguration;
 import org.xml.sax.SAXException;
 
-public class Test extends SimpleLogProducer {
+public class Test extends SimpleLogSource {
     private FilteredChannel channel;
     private Sequencer seq;
     private static final String COUNTERNAME = "test.counter";

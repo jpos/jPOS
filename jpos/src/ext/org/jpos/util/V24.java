@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.6  2000/04/16 23:53:03  apr
+ * LogProducer renamed to LogSource
+ *
  * Revision 1.5  2000/03/20 19:24:13  apr
  * Testing ISOGetty ... minor bugfixes/timings in answer()/hangup()/reset()
  *
@@ -14,9 +17,9 @@
  *
  * Revision 1.1  2000/01/11 01:25:02  apr
  * moved non ISO-8583 related classes from jpos.iso to jpos.util package
- * (AntiHog LeasedLineModem LogEvent LogListener LogProducer
+ * (AntiHog LeasedLineModem LogEvent LogListener LogSource
  *  Loggeable Logger Modem RotateLogListener SimpleAntiHog SimpleDialupModem
- *  SimpleLogListener SimpleLogProducer SystemMonitor V24)
+ *  SimpleLogListener SimpleLogSource SystemMonitor V24)
  *
  * Revision 1.4  1999/12/17 14:58:30  apr
  * RXTX dataavailable workaround
@@ -46,7 +49,7 @@ import org.jpos.iso.ISOUtil;
  * @version $Id$
  * @see <a href="http://www.frii.com/~jarvi/rxtx/">CommAPI</a>
  */
-public class V24 implements SerialPortEventListener, LogProducer 
+public class V24 implements SerialPortEventListener, LogSource 
 {
     Logger logger;
     String realm;
@@ -184,7 +187,7 @@ public class V24 implements SerialPortEventListener, LogProducer
     /**
      * @param logger current logger
      * @param realm  logger realm
-     * @see org.jpos.iso.LogProducer
+     * @see org.jpos.iso.LogSource
      */
     public void setLogger (Logger logger, String realm) {
 	this.logger = logger;
@@ -192,7 +195,7 @@ public class V24 implements SerialPortEventListener, LogProducer
     }
     /**
      * @return current log realm
-     * @see org.jpos.iso.LogProducer
+     * @see org.jpos.iso.LogSource
      */
     public String getRealm () {
 	return realm;

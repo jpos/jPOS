@@ -1,13 +1,16 @@
 /*
  * $Log$
+ * Revision 1.5  2000/04/16 23:53:01  apr
+ * LogProducer renamed to LogSource
+ *
  * Revision 1.4  2000/03/01 14:44:38  apr
  * Changed package name to org.jpos
  *
  * Revision 1.3  2000/01/11 01:24:40  apr
  * moved non ISO-8583 related classes from jpos.iso to jpos.util package
- * (AntiHog LeasedLineModem LogEvent LogListener LogProducer
+ * (AntiHog LeasedLineModem LogEvent LogListener LogSource
  *  Loggeable Logger Modem RotateLogListener SimpleAntiHog SimpleDialupModem
- *  SimpleLogListener SimpleLogProducer SystemMonitor V24)
+ *  SimpleLogListener SimpleLogSource SystemMonitor V24)
  *
  * Revision 1.2  1999/12/21 13:54:33  apr
  * BugFix: get intValue()

@@ -13,11 +13,11 @@ import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOFactory;
 import org.jpos.iso.ISOPackager;
 import org.jpos.iso.ISOUtil;
-import org.jpos.util.LogProducer;
+import org.jpos.util.LogSource;
 import org.jpos.util.LogEvent;
 import org.jpos.util.SimpleLogListener;
 import org.jpos.util.Logger;
-import org.jpos.util.LogProducer;
+import org.jpos.util.LogSource;
 import org.jpos.core.Configuration;
 import org.jpos.core.SimpleConfiguration;
 import org.jpos.util.ThreadPool;
@@ -27,7 +27,7 @@ import org.jpos.util.ThreadPool;
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
  * @version $Revision$ $Date$
  */
-public class Test implements Runnable, LogProducer {
+public class Test implements Runnable, LogSource {
     Logger logger;
     String realm;
     ThreadPool pool;
@@ -56,7 +56,7 @@ public class Test implements Runnable, LogProducer {
     public Logger getLogger() {
 	return logger;
     }
-    protected class Session implements Runnable, LogProducer {
+    protected class Session implements Runnable, LogSource {
         ISOChannel channel;
         protected Session(ISOChannel channel) {
             this.channel = channel;

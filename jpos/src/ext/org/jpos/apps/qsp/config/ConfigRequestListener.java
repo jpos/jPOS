@@ -3,7 +3,7 @@ package org.jpos.apps.qsp.config;
 import java.util.Properties;
 import org.jpos.util.NameRegistrar;
 import org.jpos.util.Logger;
-import org.jpos.util.LogProducer;
+import org.jpos.util.LogSource;
 import org.jpos.util.LogEvent;
 import org.jpos.iso.ISOMUX;
 import org.jpos.iso.ISORequestListener;
@@ -49,8 +49,8 @@ public class ConfigRequestListener implements QSPConfigurator {
 	    (ISORequestListener) ConfigUtil.newInstance (className);
 	evt.addMessage ("<request-listener class=\""+className+"\"/>");
 	try {
-	    if (listener instanceof LogProducer) {
-		((LogProducer)listener).setLogger (
+	    if (listener instanceof LogSource) {
+		((LogSource)listener).setLogger (
 		    ConfigLogger.getLogger (node),
 		    ConfigLogger.getRealm (node)
 		);

@@ -6,7 +6,7 @@ import java.util.Date;
 import java.io.PrintStream;
 import org.jpos.util.Logger;
 import org.jpos.util.LogEvent;
-import org.jpos.util.SimpleLogProducer;
+import org.jpos.util.SimpleLogSource;
 import org.jpos.util.SimpleLogListener;
 
 import org.jpos.iso.ISOMsg;
@@ -15,7 +15,7 @@ import org.jpos.iso.ISODate;
 import org.jpos.iso.ISOField;
 import org.jpos.iso.ISOException;
 
-public class Test extends SimpleLogProducer {
+public class Test extends SimpleLogSource {
     int[] mask  = { 0, 3, 7 };
     int[] mask1 = { 0, 3, 7, 41, 42 };
 

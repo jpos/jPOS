@@ -6,7 +6,7 @@ import java.lang.*;
 import java.util.*;
 import org.jpos.util.Logger;
 import org.jpos.util.LogEvent;
-import org.jpos.util.LogProducer;
+import org.jpos.util.LogSource;
 import org.jpos.util.NameRegistrar;
 
 /**
@@ -20,7 +20,7 @@ import org.jpos.util.NameRegistrar;
  * @see ISORequestListener
  */
 
-public class ISOMUX implements Runnable, LogProducer {
+public class ISOMUX implements Runnable, LogSource {
     private ISOChannel channel;
     private Thread rx = null, tx = null;
     private Vector txQueue;
@@ -155,7 +155,7 @@ public class ISOMUX implements Runnable, LogProducer {
         return cnt;
     }
 
-    private class Receiver implements Runnable, LogProducer {
+    private class Receiver implements Runnable, LogSource {
         Runnable parent;
         protected Receiver(Runnable p) {
             parent = p;
