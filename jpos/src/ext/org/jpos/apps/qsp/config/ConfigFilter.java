@@ -5,6 +5,7 @@ import org.jpos.util.Logger;
 import org.jpos.util.LogEvent;
 import org.jpos.iso.ISOChannel;
 import org.jpos.iso.ISOFilter;
+import org.jpos.iso.ISOException;
 import org.jpos.core.SimpleConfiguration;
 import org.jpos.core.Configurable;
 
@@ -39,12 +40,17 @@ public class ConfigFilter implements QSPConfigurator {
 	String direction = attr.getNamedItem ("direction").getNodeValue();
 
 	ISOFilter filter = (ISOFilter) ConfigUtil.newInstance (className);
-	if (filter instanceof Configurable)
-	    ((Configurable)filter).setConfiguration (
-		new SimpleConfiguration (
-		    ConfigUtil.addProperties (node, null, evt)
-		    )
-	    );
+	if (filter instanceof Configurable) {
+	    try {
+		((Configurable)filter).setConfiguration (
+		    new SimpleConfiguration (
+			ConfigUtil.addProperties (node, null, evt)
+			)
+		);
+	    } catch (ISOException e) {
+		throw new ConfigurationException (e);
+	    }
+	}
 	
 	if (direction.equals ("incoming"))
 	    channel.addIncomingFilter (filter);
