@@ -12,7 +12,7 @@ import org.jpos.util.LogEvent;
 import org.jpos.util.LogSource;
 import org.jpos.util.NameRegistrar;
 import org.jpos.iso.ISOFilter.VetoException;
-import org.jpos.core.Configurable;
+import org.jpos.core.ReConfigurable;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
 
@@ -47,7 +47,7 @@ import org.jpos.core.ConfigurationException;
  */
 public abstract class BaseChannel extends Observable 
     implements FilteredChannel, ClientChannel, ServerChannel, 
-	       LogSource, Configurable
+	       LogSource, ReConfigurable
 {
     private Socket socket;
     private String host;
