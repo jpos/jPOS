@@ -1,6 +1,7 @@
 $Id$
 
 -- 1.4.7 --
+Added ISOUtil.hexdump (byte[], int, int);
 Bugfix in IFEB_LLNUM.unpack (ISOComponent, InputStream)
 Added TinySpace, org.jpos.space.Request
 CardSelector, added remove(CardBrand) method

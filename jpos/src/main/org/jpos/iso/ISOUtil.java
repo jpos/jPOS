@@ -1025,18 +1025,28 @@ public class ISOUtil {
             return e.getMessage();
         }
     }
+
     /**
      * @param b a byte[] buffer
      * @return hexdump
      */
     public static String hexdump (byte[] b) {
+        return hexdump (b, 0, b.length);
+    }
+    /**
+     * @param b a byte[] buffer
+     * @param offset starting offset
+     * @param len the Length
+     * @return hexdump
+     */
+    public static String hexdump (byte[] b, int offset, int len) {
         StringBuffer sb    = new StringBuffer ();
         StringBuffer hex   = new StringBuffer ();
         StringBuffer ascii = new StringBuffer ();
         String sep         = "  ";
         String lineSep     = System.getProperty ("line.separator");
 
-        for (int i=0; i<b.length; i++) {
+        for (int i=offset; i<len; i++) {
             char hi = Character.forDigit ((b[i] >> 4) & 0x0F, 16);
             char lo = Character.forDigit (b[i] & 0x0F, 16);
             hex.append (Character.toUpperCase(hi));
