@@ -14,6 +14,7 @@
     <property name="lib" value="lib" />
     <property name="doc" value="${source}/doc" />
     <property name="etc" value="${source}/etc" />
+    <property name="htdocs" value="${build}/htdocs" />
 
     <property file="${etc}/VERSION" />
     <property name="classpath" value="${classpath}:${classes}" />
@@ -49,6 +50,7 @@
 
   <target name="prepare">
     <mkdir dir="${build}"/>
+    <mkdir dir="${htdocs}"/>
     <mkdir dir="${classes}"/>
     <mkdir dir="${classes.examples}"/>
     <mkdir dir="${dist}"/>
@@ -129,49 +131,49 @@
   </target>
 
   <target name="javadoc" depends="main">
-    <mkdir   dir="${build}/doc" />
-    <mkdir   dir="${build}/doc/images" />
-    <deltree dir="${build}/doc/javadoc" />
-    <mkdir   dir="${build}/doc/javadoc" />
-    <copydir src="${doc}/images"  dest="${build}/doc/images" />
+    <mkdir   dir="${htdocs}/doc" />
+    <mkdir   dir="${htdocs}/doc/images" />
+    <deltree dir="${htdocs}/doc/javadoc" />
+    <mkdir   dir="${htdocs}/doc/javadoc" />
+    <copydir src="${doc}/images"  dest="${htdocs}/doc/images" />
     <javadoc sourcepath="${main}"
-	destdir="${build}/doc/javadoc" dir="."
+	destdir="${htdocs}/doc/javadoc" dir="."
         windowtitle="jPOS ${version} API Documentation" 
         doctitle="jPOS ${version} API Documentation" 
         header="jPOS ${version} API Documentation" 
 	footer="CompuService Srl."
 	public="true" noindex="true" author="true" 
 	overview="${doc}/javadoc/Overview.html"
-        packagenames="org.jpos.util, org.jpos.iso.*, org.jpos.core.*"
+        packagenames="org.jpos.util, org.jpos.iso.*, org.jpos.core.*, org.jpos.tpl.*"
     />
   </target>
 
   <target name="extdoc" depends="ext">
-    <mkdir   dir="${build}/doc" />
-    <deltree dir="${build}/doc/javadoc" />
-    <mkdir   dir="${build}/doc/javadoc" />
-    <mkdir   dir="${build}/doc/javadoc/images" />
-    <deltree dir="${build}/doc/tmp" />
-    <mkdir   dir="${build}/doc/tmp" />
-    <copydir src="${main}" dest="${build}/doc/tmp" />
-    <copydir src="${ext}"  dest="${build}/doc/tmp" />
-    <copydir src="${doc}/images"  dest="${build}/doc/images" />
-    <javadoc sourcepath="${build}/doc/tmp"
-	destdir="${build}/doc/javadoc" dir="."
+    <mkdir   dir="${htdocs}/doc" />
+    <deltree dir="${htdocs}/doc/javadoc" />
+    <mkdir   dir="${htdocs}/doc/javadoc" />
+    <mkdir   dir="${htdocs}/doc/javadoc/images" />
+    <deltree dir="${htdocs}/doc/tmp" />
+    <mkdir   dir="${htdocs}/doc/tmp" />
+    <copydir src="${main}" dest="${htdocs}/doc/tmp" />
+    <copydir src="${ext}"  dest="${htdocs}/doc/tmp" />
+    <copydir src="${doc}/images"  dest="${htdocs}/doc/images" />
+    <javadoc sourcepath="${htdocs}/doc/tmp"
+	destdir="${htdocs}/doc/javadoc" dir="."
         windowtitle="jPOS ${version} API Documentation" 
         doctitle="jPOS ${version} API Documentation" 
         header="jPOS ${version} API Documentation" 
 	footer="CompuService Srl."
 	public="true" noindex="true" author="true" 
 	overview="${doc}/javadoc/Overview.html"
-        packagenames="org.jpos.util, org.jpos.iso.*, org.jpos.core.*"
+        packagenames="org.jpos.util, org.jpos.iso.*, org.jpos.core.*, org.jpos.tpl.*"
     />
-    <deltree dir="${build}/doc/tmp" />
+    <deltree dir="${htdocs}/doc/tmp" />
   </target>
 
   <target name="doc" depends="extdoc">
     <mkdir   dir="${build}/doc" />
-    <copydir src="${doc}"  dest="${build}/doc" includes="*.html" />
+    <copydir src="${doc}"  dest="${htdocs}/doc" includes="*.html" />
   </target>
 
   <target name="source" depends="prepare">
