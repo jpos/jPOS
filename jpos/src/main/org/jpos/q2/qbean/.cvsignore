@@ -1,6 +1,0 @@
-QTestMBean*.java 
-ChannelAdaptorMBean*.java
-QMUXMBean*.java
-NameRegistrarInspectorMBean*.java
-QServerMBean*.java
-SpaceProxyAdaptorMBean*.java
