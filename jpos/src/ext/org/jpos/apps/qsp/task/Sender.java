@@ -52,8 +52,12 @@ package org.jpos.apps.qsp.task;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Date;
 import org.jpos.iso.ISOMsg;
+import org.jpos.iso.ISOField;
 import org.jpos.iso.ISOMUX;
+import org.jpos.iso.ISODate;
+import org.jpos.iso.ISOUtil;
 import org.jpos.iso.ISOPackager;
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISORequest;
@@ -63,6 +67,8 @@ import org.jpos.util.NameRegistrar;
 import org.jpos.util.Logger;
 import org.jpos.util.LogEvent;
 import org.jpos.core.Configuration;
+import org.jpos.core.Sequencer;
+import org.jpos.core.VolatileSequencer;
 import org.jpos.core.Configurable;
 import org.jpos.core.ReConfigurable;
 import org.jpos.core.ConfigurationException;
@@ -83,6 +89,8 @@ public class Sender
     Logger logger;
     String realm;
     ISOPackager packager;
+    Sequencer seq;
+    Configuration cfg;
 
     public Sender() {
 	super();
@@ -91,6 +99,7 @@ public class Sender
     public void setConfiguration (Configuration cfg) 
 	throws ConfigurationException
     {
+        this.cfg = cfg;
 	try {
 	    mux = ISOMUX.getMUX (cfg.get ("mux"));
 	    message = new File (cfg.get ("message"));
@@ -98,11 +107,41 @@ public class Sender
 	    waitForResponse = cfg.getInt  ("wait-for-response");
 	    delay           = cfg.getLong ("delay");
 	    packager        = new XMLPackager();
+
+            String seqName  = cfg.get ("sequencer", null);
+            if (seqName != null) {
+                seq = (Sequencer) NameRegistrar.get (
+                    "sequencer."+cfg.get("sequencer")
+                );
+            } else if (seq == null) {
+                seq = new VolatileSequencer();
+            }
 	} catch (NameRegistrar.NotFoundException e) {
 	    throw new ConfigurationException (e);
 	} catch (ISOException e) {
 	    throw new ConfigurationException (e);
 	}
+    }
+
+    private void applyProps (ISOMsg m) throws ISOException {
+        for (int i=0; i<128; i++) {
+            if (m.hasField(i)) {
+                String value = (String) m.getValue(i);
+                if (value.equals ("$date") )
+                    m.set (new ISOField (i, ISODate.getDateTime(new Date())));
+                else if (value.charAt (0) == '$')
+                    m.set (new ISOField (i,
+                      ISOUtil.zeropad (
+                        Integer.toString(seq.get (value.substring(1))),6)
+                      )
+                    );
+                else if (value.charAt (0) == '=') {
+                    String p = cfg.get (value.substring(1), null);
+                    if (p != null)
+                        m.set (new ISOField (i, p));
+                }
+            }
+        }
     }
 
     public void run () {
@@ -111,7 +150,7 @@ public class Sender
 		Thread.sleep (initialDelay);
 	    } catch (InterruptedException e) { }
 
-	for (;;) {
+	do {
 	    LogEvent evt = new LogEvent (this, "sender-run");
 	    try {
 		sendOne (evt);
@@ -124,7 +163,7 @@ public class Sender
 		try {
 		    Thread.sleep (delay);
 		} catch (InterruptedException e) { }
-	}
+	} while (!cfg.getBoolean ("one-shot"));
     }
 
     private void sendOne(LogEvent evt) throws IOException {
@@ -135,6 +174,7 @@ public class Sender
 	    ISOMsg m = new ISOMsg ();
 	    m.setPackager (packager);
 	    m.unpack (b);
+            applyProps (m);
 	    evt.addMessage (m);
 	    ISORequest req = new ISORequest (m);
 	    mux.queue (req);
