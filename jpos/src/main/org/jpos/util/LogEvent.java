@@ -119,6 +119,16 @@ public class LogEvent extends EventObject {
 		    ((Throwable)o).printStackTrace (p);
 		    p.println (newIndent + "</exception>");
 		}
+                else if (o instanceof Object[]) {
+                    Object [] oa = (Object[]) o;
+                    p.print (newIndent + "[");
+                    for (int j=0; j<oa.length; j++) {
+                        if (j>0)
+                            p.print (",");
+                        p.print (oa[j].toString());
+                    }
+                    p.println ("]");
+                }
 		else
 		    p.println (newIndent + o.toString());
 	    }
