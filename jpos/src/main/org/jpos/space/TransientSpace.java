@@ -290,5 +290,9 @@ public class TransientSpace implements Space, TransientSpaceMBean {
         Object o = inp (key);
         return (o != null) ? o.toString() : "null";
     }
+    public int size (Object key) {
+        Data data  = (Data) map.get (key);
+        return data == null ? 0 : data.size ();
+    }
 }
 

@@ -204,7 +204,8 @@ public class PersistentSpace implements Space // PersistentSpaceMBean
                 stored.add(file[i].getAbsolutePath ());
                 if (cacheSize > data.size()) {
                     Object value = readValue (file[i].getAbsolutePath ());
-                    data.add (value);
+                    if (value != null)
+                        data.add (value);
                 }
             }
         }
@@ -374,6 +375,10 @@ public class PersistentSpace implements Space // PersistentSpaceMBean
     public String read (String key) {
         Object o = inp (key);
         return (o != null) ? o.toString() : "null";
+    }
+    public int size (Object key) {
+        Data data  = (Data) map.get (key);
+        return data == null ? 0 : data.size ();
     }
 }
 
