@@ -55,6 +55,10 @@
     <ant dir="${source}/jpos" target="${target}" inheritAll="false"/>
   </target>
 
+  <target name="do-jetty">
+    <ant dir="${source}/jetty" target="${target}" inheritAll="false"/>
+  </target>
+
   <target name="do-misc">
     <ant dir="${source}/misc" target="${target}" inheritAll="false"/>
   </target>
@@ -63,7 +67,7 @@
     <ant dir="${source}/example" target="${target}" inheritAll="false"/>
   </target>
 
-  <target name="do-all" depends="do-jpos,do-misc,do-example">
+  <target name="do-all" depends="do-jpos,do-misc,do-example,do-jetty">
   </target>
 
   <target name="javadocs">
