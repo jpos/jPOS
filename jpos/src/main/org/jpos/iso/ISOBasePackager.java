@@ -102,11 +102,12 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
 	    Vector v = new Vector();
 	    Hashtable fields = m.getChildren();
 	    int len = 0;
+            int first = getFirstField();
 
-	    // MTI (field 0)
 	    c = (ISOComponent) fields.get (new Integer (0));
 	    byte[] b;
-	    if (c instanceof ISOField) {
+
+            if (first > 0) {
 		b = fld[0].pack(c);
 		len += b.length;
 		v.addElement (b);
@@ -125,7 +126,7 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
 	    // else we are packing an ANSI X9.2 message, first field is 1
 	    int tmpMaxField=Math.min (m.getMaxField(), 128);
 
-	    for (int i=getFirstField(); i<=tmpMaxField; i++) {
+	    for (int i=first; i<=tmpMaxField; i++) {
 		if ((c=(ISOComponent) fields.get (new Integer (i))) != null)
 		{
 		    try {
