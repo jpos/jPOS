@@ -121,9 +121,11 @@ public class Q2 implements FileFilter {
     private boolean shutdown;
     private boolean shuttingDown;
     private Thread q2Thread;
+    private String[] args;
 
     public Q2 (String[] args) {
         super();
+        this.args = args;
         parseCmdLine (args);
         this.libDir     = new File (deployDir, "lib");
         this.dirMap     = new TreeMap ();
@@ -187,7 +189,9 @@ public class Q2 implements FileFilter {
     public QFactory getFactory () {
         return factory;
     }
-
+    public String[] getCommandLineArgs() {
+        return args;
+    }
     public boolean accept (File f) {
         return f.getName().endsWith (".xml");
     }
