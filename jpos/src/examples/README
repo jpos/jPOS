@@ -27,5 +27,7 @@ We recommend that you read them in the following order:
 
    - simpleclient: demonstrates connection with simpleserver
 
-    
+   - simplemux: runs between simpleserver and simpleclient
+     multiplexing messages
+
     
