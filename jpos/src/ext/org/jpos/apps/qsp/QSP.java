@@ -11,6 +11,7 @@ import org.w3c.dom.NamedNodeMap;
 import org.xml.sax.ErrorHandler;
 
 import org.jpos.util.SimpleLogListener;
+import org.jpos.util.SystemMonitor;
 import org.jpos.util.Logger;
 import org.jpos.util.LogEvent;
 import org.jpos.util.LogProducer;
@@ -82,6 +83,8 @@ public class QSP implements ErrorHandler, LogProducer {
 	    qsp.configure ("log-listener");
 	    qsp.configure ("channel");
 	    qsp.configure ("mux");
+	    qsp.configure ("task");
+	    new SystemMonitor (3600000, qsp.getLogger(), "monitor");
 	} catch (IOException e) {
 	    Logger.log (new LogEvent (qsp, "error", e));
 	    System.out.println (e);

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Id$ -->
 
-<!ELEMENT qsp-config (logger*,mux*)>
+<!ELEMENT qsp-config (logger*,mux*,task*)>
 
 <!-- logger -->
 <!ELEMENT logger (log-listener*)>
@@ -33,4 +33,15 @@
 <!ATTLIST mux name ID #REQUIRED>
 <!ATTLIST mux logger IDREF #IMPLIED>
 <!ATTLIST mux realm CDATA #IMPLIED>
+
+<!-- task -->
+<!ELEMENT task (property)*>
+<!ATTLIST task class CDATA #REQUIRED>
+<!ATTLIST task logger IDREF #IMPLIED>
+<!ATTLIST task realm CDATA #IMPLIED>
+
+<!-- property -->
+<!ELEMENT property EMPTY>
+<!ATTLIST property name CDATA #REQUIRED>
+<!ATTLIST property value CDATA #REQUIRED>
 

@@ -10,10 +10,18 @@
  <mux name="acme.mux" logger="qsp" realm="acme">
   <channel name="acme.channel" 
           class="org.jpos.iso.ASCIIChannel" 
-          packager="org.jpos.iso.ISO87BPackager"
+          packager="org.jpos.iso.ISO87APackager"
           host="localhost" port="8000"
           logger="qsp" realm="acme"
 	  connect="no" >
   </channel>
  </mux>
+
+ <task class="org.jpos.apps.qsp.task.Sender" logger="qsp" realm="acme-sender">
+  <property name="mux" value="acme.mux" />
+  <property name="message" value="src/ext/org/jpos/apps/qsp/msg/0800.xml" />
+  <property name="wait-for-response" value="15000" />
+  <property name="initial-delay" value="1000" />
+  <property name="delay" value="60000" />
+ </task>
 </qsp-config>
