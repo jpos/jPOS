@@ -54,11 +54,9 @@ import  org.jpos.core.Configuration;
 import  org.jpos.core.ConfigurationException;
 import  org.jpos.util.NameRegistrar;
 import  org.jpos.util.Logger;
-import  org.jpos.util.Loggeable;
 import  org.jpos.util.LogSource;
 import  org.jpos.util.LogEvent;
-import  org.jpos.iso.ISOUtil;
-import  java.io.PrintStream;
+import  org.jpos.util.SimpleMsg;
 
 
 /**
@@ -133,73 +131,17 @@ public class BaseSMAdapter
         return  (SMAdapter)NameRegistrar.get("s-m-adapter." + name);
     }
 
-    class Msg
-            implements Loggeable {
-        String tagName;
-        String msgName;
-        Object msgContent;
-
-        public Msg (String tagName, String msgName, Object msgContent) {
-            this.tagName = tagName;
-            this.msgName = msgName;
-            this.msgContent = msgContent;
-        }
-
-        public Msg (String tagName, String msgName, byte[] msgContent) {
-            this(tagName, msgName, ISOUtil.hexString(msgContent));
-        }
-
-        public Msg (String tagName, String msgName, boolean msgContent) {
-            this(tagName, msgName, new Boolean(msgContent));
-        }
-
-        public Msg (String tagName, String msgName, short msgContent) {
-            this(tagName, msgName, new Short(msgContent));
-        }
-
-        public Msg (String tagName, String msgName, int msgContent) {
-            this(tagName, msgName, new Integer(msgContent));
-        }
-
-        public Msg (String tagName, String msgName, long msgContent) {
-            this(tagName, msgName, new Long(msgContent));
-        }
-
-        /**
-         * dumps a Parameter
-         * @param p a PrintStream usually supplied by Logger
-         * @param indent indention string, usually suppiled by Logger
-         * @see org.jpos.util.Loggeable
-         */
-        public void dump (PrintStream p, String indent) {
-            String inner = indent + "  ";
-            p.print(indent + "<" + tagName);
-            p.print(" name=\"" + msgName + "\"");
-            p.println(">");
-            if (msgContent instanceof Msg[]) {
-                // dump sub messages
-                for (int i = 0; i < ((Msg[])msgContent).length; i++)
-                    ((Msg[])msgContent)[i].dump(p, inner);
-            }
-            else if (msgContent instanceof Loggeable)
-                ((Loggeable)msgContent).dump(p, inner);
-            else
-                p.println(inner + msgContent.toString());
-            p.println(indent + "</" + tagName + ">");
-        }
-    }
-
     public SecureDESKey generateKey (short keyLength, String keyType) throws SMException {
-        Msg[] cmdParameters =  {
-            new Msg("parameter", "Key Length", keyLength), new Msg("parameter",
+        SimpleMsg[] cmdParameters =  {
+            new SimpleMsg("parameter", "Key Length", keyLength), new SimpleMsg("parameter",
                     "Key Type", keyType)
         };
         LogEvent evt = new LogEvent(this, "s-m-operation");
-        evt.addMessage(new Msg("command", "Generate Key", cmdParameters));
+        evt.addMessage(new SimpleMsg("command", "Generate Key", cmdParameters));
         SecureDESKey result = null;
         try {
             result = generateKeyImpl(keyLength, keyType);
-            evt.addMessage(new Msg("result", "Generated Key", result));
+            evt.addMessage(new SimpleMsg("result", "Generated Key", result));
         } catch (Exception e) {
             evt.addMessage(e);
             throw  e instanceof SMException ? (SMException) e : new SMException(e);
@@ -211,17 +153,17 @@ public class BaseSMAdapter
 
     public SecureDESKey importKey (short keyLength, String keyType, byte[] encryptedKey,
             SecureDESKey kek, boolean checkParity) throws SMException {
-        Msg[] cmdParameters =  {
-            new Msg("parameter", "Key Length", keyLength), new Msg("parameter",
-                    "Key Type", keyType), new Msg("parameter", "Encrypted Key",
-                    encryptedKey), new Msg("parameter", "Key-Encrypting Key", kek), new Msg("parameter", "Check Parity", checkParity)
+        SimpleMsg[] cmdParameters =  {
+            new SimpleMsg("parameter", "Key Length", keyLength), new SimpleMsg("parameter",
+                    "Key Type", keyType), new SimpleMsg("parameter", "Encrypted Key",
+                    encryptedKey), new SimpleMsg("parameter", "Key-Encrypting Key", kek), new SimpleMsg("parameter", "Check Parity", checkParity)
         };
         LogEvent evt = new LogEvent(this, "s-m-operation");
-        evt.addMessage(new Msg("command", "Import Key", cmdParameters));
+        evt.addMessage(new SimpleMsg("command", "Import Key", cmdParameters));
         SecureDESKey result = null;
         try {
             result = importKeyImpl(keyLength, keyType, encryptedKey, kek, checkParity);
-            evt.addMessage(new Msg("result", "Imported Key", result));
+            evt.addMessage(new SimpleMsg("result", "Imported Key", result));
         } catch (Exception e) {
             evt.addMessage(e);
             throw  e instanceof SMException ? (SMException) e : new SMException(e);
@@ -232,16 +174,16 @@ public class BaseSMAdapter
     }
 
     public byte[] exportKey (SecureDESKey key, SecureDESKey kek) throws SMException {
-        Msg[] cmdParameters =  {
-            new Msg("parameter", "Key", key), new Msg("parameter", "Key-Encrypting Key",
+        SimpleMsg[] cmdParameters =  {
+            new SimpleMsg("parameter", "Key", key), new SimpleMsg("parameter", "Key-Encrypting Key",
                     kek),
         };
         LogEvent evt = new LogEvent(this, "s-m-operation");
-        evt.addMessage(new Msg("command", "Export Key", cmdParameters));
+        evt.addMessage(new SimpleMsg("command", "Export Key", cmdParameters));
         byte[] result = null;
         try {
             result = exportKeyImpl(key, kek);
-            evt.addMessage(new Msg("result", "Exported Key", result));
+            evt.addMessage(new SimpleMsg("result", "Exported Key", result));
         } catch (Exception e) {
             evt.addMessage(e);
             throw  e instanceof SMException ? (SMException) e : new SMException(e);
@@ -253,16 +195,16 @@ public class BaseSMAdapter
 
     public EncryptedPIN encryptPIN (String pin, String accountNumber) throws SMException {
         accountNumber = EncryptedPIN.extractAccountNumberPart(accountNumber);
-        Msg[] cmdParameters =  {
-            new Msg("parameter", "clear pin", pin), new Msg("parameter", "account number",
+        SimpleMsg[] cmdParameters =  {
+            new SimpleMsg("parameter", "clear pin", pin), new SimpleMsg("parameter", "account number",
                     accountNumber)
         };
         LogEvent evt = new LogEvent(this, "s-m-operation");
-        evt.addMessage(new Msg("command", "Encrypt Clear PIN", cmdParameters));
+        evt.addMessage(new SimpleMsg("command", "Encrypt Clear PIN", cmdParameters));
         EncryptedPIN result = null;
         try {
             result = encryptPINImpl(pin, accountNumber);
-            evt.addMessage(new Msg("result", "PIN under LMK", result));
+            evt.addMessage(new SimpleMsg("result", "PIN under LMK", result));
         } catch (Exception e) {
             evt.addMessage(e);
             throw  e instanceof SMException ? (SMException) e : new SMException(e);
@@ -273,15 +215,15 @@ public class BaseSMAdapter
     }
 
     public String decryptPIN (EncryptedPIN pinUnderLmk) throws SMException {
-        Msg[] cmdParameters =  {
-            new Msg("parameter", "PIN under LMK", pinUnderLmk),
+        SimpleMsg[] cmdParameters =  {
+            new SimpleMsg("parameter", "PIN under LMK", pinUnderLmk),
         };
         LogEvent evt = new LogEvent(this, "s-m-operation");
-        evt.addMessage(new Msg("command", "Decrypt PIN", cmdParameters));
+        evt.addMessage(new SimpleMsg("command", "Decrypt PIN", cmdParameters));
         String result = null;
         try {
             result = decryptPINImpl(pinUnderLmk);
-            evt.addMessage(new Msg("result", "clear PIN", result));
+            evt.addMessage(new SimpleMsg("result", "clear PIN", result));
         } catch (Exception e) {
             evt.addMessage(e);
             throw  e instanceof SMException ? (SMException) e : new SMException(e);
@@ -292,16 +234,16 @@ public class BaseSMAdapter
     }
 
     public EncryptedPIN importPIN (EncryptedPIN pinUnderKd1, SecureDESKey kd1) throws SMException {
-        Msg[] cmdParameters =  {
-            new Msg("parameter", "PIN under Data Key 1", pinUnderKd1), new Msg("parameter",
+        SimpleMsg[] cmdParameters =  {
+            new SimpleMsg("parameter", "PIN under Data Key 1", pinUnderKd1), new SimpleMsg("parameter",
                     "Data Key 1", kd1),
         };
         LogEvent evt = new LogEvent(this, "s-m-operation");
-        evt.addMessage(new Msg("command", "Import PIN", cmdParameters));
+        evt.addMessage(new SimpleMsg("command", "Import PIN", cmdParameters));
         EncryptedPIN result = null;
         try {
             result = importPINImpl(pinUnderKd1, kd1);
-            evt.addMessage(new Msg("result", "PIN under LMK", result));
+            evt.addMessage(new SimpleMsg("result", "PIN under LMK", result));
         } catch (Exception e) {
             evt.addMessage(e);
             throw  e instanceof SMException ? (SMException) e : new SMException(e);
@@ -313,18 +255,18 @@ public class BaseSMAdapter
 
     public EncryptedPIN translatePIN (EncryptedPIN pinUnderKd1, SecureDESKey kd1,
             SecureDESKey kd2, byte destinationPINBlockFormat) throws SMException {
-        Msg[] cmdParameters =  {
-            new Msg("parameter", "PIN under Data Key 1", pinUnderKd1), new Msg("parameter",
-                    "Data Key 1", kd1), new Msg("parameter", "Data Key 2", kd2),
-                    new Msg("parameter", "Destination PIN Block Format", destinationPINBlockFormat)
+        SimpleMsg[] cmdParameters =  {
+            new SimpleMsg("parameter", "PIN under Data Key 1", pinUnderKd1), new SimpleMsg("parameter",
+                    "Data Key 1", kd1), new SimpleMsg("parameter", "Data Key 2", kd2),
+                    new SimpleMsg("parameter", "Destination PIN Block Format", destinationPINBlockFormat)
         };
         LogEvent evt = new LogEvent(this, "s-m-operation");
-        evt.addMessage(new Msg("command", "Translate PIN from Data Key 1 to Data Key 2",
+        evt.addMessage(new SimpleMsg("command", "Translate PIN from Data Key 1 to Data Key 2",
                 cmdParameters));
         EncryptedPIN result = null;
         try {
             result = translatePINImpl(pinUnderKd1, kd1, kd2, destinationPINBlockFormat);
-            evt.addMessage(new Msg("result", "PIN under Data Key 2", result));
+            evt.addMessage(new SimpleMsg("result", "PIN under Data Key 2", result));
         } catch (Exception e) {
             evt.addMessage(e);
             throw  e instanceof SMException ? (SMException) e : new SMException(e);
@@ -336,17 +278,17 @@ public class BaseSMAdapter
 
     public EncryptedPIN importPIN (EncryptedPIN pinUnderDuk, KeySerialNumber ksn,
             SecureDESKey bdk) throws SMException {
-        Msg[] cmdParameters =  {
-            new Msg("parameter", "PIN under Derived Unique Key", pinUnderDuk), new Msg("parameter",
-                    "Key Serial Number", ksn), new Msg("parameter", "Base Derivation Key",
+        SimpleMsg[] cmdParameters =  {
+            new SimpleMsg("parameter", "PIN under Derived Unique Key", pinUnderDuk), new SimpleMsg("parameter",
+                    "Key Serial Number", ksn), new SimpleMsg("parameter", "Base Derivation Key",
                     bdk)
         };
         LogEvent evt = new LogEvent(this, "s-m-operation");
-        evt.addMessage(new Msg("command", "Import PIN", cmdParameters));
+        evt.addMessage(new SimpleMsg("command", "Import PIN", cmdParameters));
         EncryptedPIN result = null;
         try {
             result = importPINImpl(pinUnderDuk, ksn, bdk);
-            evt.addMessage(new Msg("result", "PIN under LMK", result));
+            evt.addMessage(new SimpleMsg("result", "PIN under LMK", result));
         } catch (Exception e) {
             evt.addMessage(e);
             throw  e instanceof SMException ? (SMException) e : new SMException(e);
@@ -358,18 +300,18 @@ public class BaseSMAdapter
 
     public EncryptedPIN translatePIN (EncryptedPIN pinUnderDuk, KeySerialNumber ksn,
             SecureDESKey bdk, SecureDESKey kd2, byte destinationPINBlockFormat) throws SMException {
-        Msg[] cmdParameters =  {
-            new Msg("parameter", "PIN under Derived Unique Key", pinUnderDuk), new Msg("parameter",
-                    "Key Serial Number", ksn), new Msg("parameter", "Base Derivation Key",
-                    bdk), new Msg("parameter", "Data Key 2", kd2), new Msg("parameter",
+        SimpleMsg[] cmdParameters =  {
+            new SimpleMsg("parameter", "PIN under Derived Unique Key", pinUnderDuk), new SimpleMsg("parameter",
+                    "Key Serial Number", ksn), new SimpleMsg("parameter", "Base Derivation Key",
+                    bdk), new SimpleMsg("parameter", "Data Key 2", kd2), new SimpleMsg("parameter",
                     "Destination PIN Block Format", destinationPINBlockFormat)
         };
         LogEvent evt = new LogEvent(this, "s-m-operation");
-        evt.addMessage(new Msg("command", "Translate PIN", cmdParameters));
+        evt.addMessage(new SimpleMsg("command", "Translate PIN", cmdParameters));
         EncryptedPIN result = null;
         try {
             result = translatePINImpl(pinUnderDuk, ksn, bdk, kd2, destinationPINBlockFormat);
-            evt.addMessage(new Msg("result", "PIN under Data Key 2", result));
+            evt.addMessage(new SimpleMsg("result", "PIN under Data Key 2", result));
         } catch (Exception e) {
             evt.addMessage(e);
             throw  e instanceof SMException ? (SMException) e : new SMException(e);
@@ -380,17 +322,17 @@ public class BaseSMAdapter
     }
 
     public EncryptedPIN exportPIN (EncryptedPIN pinUnderLmk, SecureDESKey kd2, byte destinationPINBlockFormat) throws SMException {
-        Msg[] cmdParameters =  {
-            new Msg("parameter", "PIN under LMK", pinUnderLmk), new Msg("parameter",
-                    "Data Key 2", kd2), new Msg("parameter", "Destination PIN Block Format",
+        SimpleMsg[] cmdParameters =  {
+            new SimpleMsg("parameter", "PIN under LMK", pinUnderLmk), new SimpleMsg("parameter",
+                    "Data Key 2", kd2), new SimpleMsg("parameter", "Destination PIN Block Format",
                     destinationPINBlockFormat)
         };
         LogEvent evt = new LogEvent(this, "s-m-operation");
-        evt.addMessage(new Msg("command", "Export PIN", cmdParameters));
+        evt.addMessage(new SimpleMsg("command", "Export PIN", cmdParameters));
         EncryptedPIN result = null;
         try {
             result = exportPINImpl(pinUnderLmk, kd2, destinationPINBlockFormat);
-            evt.addMessage(new Msg("result", "PIN under Data Key 2", result));
+            evt.addMessage(new SimpleMsg("result", "PIN under Data Key 2", result));
         } catch (Exception e) {
             evt.addMessage(e);
             throw  e instanceof SMException ? (SMException) e : new SMException(e);
@@ -401,16 +343,16 @@ public class BaseSMAdapter
     }
 
     public byte[] generateCBC_MAC (byte[] data, SecureDESKey kd) throws SMException {
-        Msg[] cmdParameters =  {
-            new Msg("parameter", "data", data), new Msg("parameter", "data key",
+        SimpleMsg[] cmdParameters =  {
+            new SimpleMsg("parameter", "data", data), new SimpleMsg("parameter", "data key",
                     kd),
         };
         LogEvent evt = new LogEvent(this, "s-m-operation");
-        evt.addMessage(new Msg("command", "Generate CBC-MAC", cmdParameters));
+        evt.addMessage(new SimpleMsg("command", "Generate CBC-MAC", cmdParameters));
         byte[] result = null;
         try {
             result = generateCBC_MACImpl(data, kd);
-            evt.addMessage(new Msg("result", "CBC-MAC", result));
+            evt.addMessage(new SimpleMsg("result", "CBC-MAC", result));
         } catch (Exception e) {
             evt.addMessage(e);
             throw  e instanceof SMException ? (SMException) e : new SMException(e);
