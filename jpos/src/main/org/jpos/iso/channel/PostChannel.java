@@ -61,8 +61,8 @@ public class PostChannel extends BaseChannel {
     }
     protected int getMessageLength() throws IOException, ISOException {
         byte[] b = new byte[2];
-        if (serverIn.read(b,0,2) != 2) return 0;
-            //throw new ISOException("error reading message length");
+        if (serverIn.read(b,0,2) != 2)
+            throw new EOFException("error reading message length");
         return (int) (
             ((((int)b[0])&0xFF) << 8) | 
             (((int)b[1])&0xFF));
