@@ -16,7 +16,6 @@ package org.jpos.iso.channel;
 import java.io.IOException;
 
 import org.jpos.iso.FilteredBase;
-import org.jpos.iso.ISOClientSocketFactory;
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOMsg;
 import org.jpos.iso.ISOPackager;
@@ -49,10 +48,6 @@ public class LoopbackChannel extends FilteredBase implements LogSource {
         // N/A
     }
     
-    public void setSocketFactory (ISOClientSocketFactory sFac) {
-        // N/A
-    }
-
     public void connect () {
         cnt[CONNECT]++;
         usable = true;

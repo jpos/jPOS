@@ -40,9 +40,6 @@ public class ChannelPool implements ISOChannel, LogSource, Configurable {
     public void setPackager(ISOPackager p) {
         // nothing to do
     }
-    public void setSocketFactory (ISOClientSocketFactory sFac) {
-        // also nothing to do, I think...
-    }
     public synchronized void connect () throws IOException {
         IOException ioe = null;
         current = null;

@@ -89,9 +89,5 @@ public interface ISOChannel extends ISOSource {
     */
     public ISOPackager getPackager();
     
-    /**
-     * @param factory a Socket Factory
-     */
-    public void setSocketFactory (ISOClientSocketFactory factory);
 }
 
