@@ -49,6 +49,7 @@
 
 package org.jpos.space;
 
+import java.util.Set;
 import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -155,6 +156,9 @@ public class SpaceProxy extends SimpleLogSource
         } catch (NamingException e) {
             Logger.log (new LogEvent (this, "configuration", e));
         }
+    }
+    public Set getKeySet () {
+        return sp.getKeySet ();
     }
 }
 
