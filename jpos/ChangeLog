@@ -1,5 +1,7 @@
 $Id$
 
+-- 1.4.2 -- Released May 2002 (tagged: v1_4_2)
+
 -- 1.4.1 --
 Added IFA_LCHAR (contributed by Kris Leite)
 New SubConfiguration class contributed by Andres Alcarraz
