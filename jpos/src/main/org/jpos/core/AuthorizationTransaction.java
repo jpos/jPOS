@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.3  1999/12/14 00:46:03  apr
+ * Added purchasePlan/numberOfPayments support
+ *
  * Revision 1.2  1999/11/26 12:16:43  apr
  * CVS devel snapshot
  *
@@ -19,7 +22,7 @@ package uy.com.cs.jpos.core;
 import java.io.*;
 import java.math.*;
 import java.util.*;
-
+import uy.com.cs.jpos.iso.Loggeable;
 
 /**
  * @author apr@cs.com.uy
@@ -30,12 +33,17 @@ import java.util.*;
  * @see CardAgentLookup
  * @see CardHolder
  */
-public class AuthorizationTransaction implements CardTransaction {
+public class AuthorizationTransaction
+    implements CardTransaction, Loggeable
+{
     public CardHolder cardHolder;
     public BigDecimal amount;
     public Integer currency;
     public String rrn;
     public String terminal;
+    public String purchasePlan;
+    public byte numberOfPayments;
+
     private String action;
 
     public AuthorizationTransaction() {
@@ -44,6 +52,8 @@ public class AuthorizationTransaction implements CardTransaction {
 	rrn        = null;
 	terminal   = null;
 	currency   = null;
+	purchasePlan = null;
+	numberOfPayments = 1;
 	action     = "authorize";
     }
     public void setCardHolder (CardHolder cardHolder) {
@@ -84,5 +94,31 @@ public class AuthorizationTransaction implements CardTransaction {
     }
     public String getAction() {
 	return action;
+    }
+    public void setPurchasePlan(String purchasePlan) {
+	this.purchasePlan = purchasePlan;
+    }
+    public String getPurchasePlan () {
+	return purchasePlan;
+    }
+    public void setNumberOfPayments(int n) {
+	this.numberOfPayments = (byte) n;
+    }
+    public int getNumberOfPayments() {
+	return (int) numberOfPayments;
+    }
+    public void dump (PrintStream p, String indent) {
+	String inner = indent + "  ";
+	p.println (indent + "<AuthorizationTransaction>");
+	p.println (inner  + "<action>" + action + "</action>");
+	getCardHolder().dump (p, inner);
+	p.println (inner  + "<amount>"      + amount      + "</amount>");
+	p.println (inner  + "<currency>"    + currency     + "</currency>");
+	p.println (inner  + "<terminal>"    + terminal     + "</terminal>");
+	p.println (inner  + "<purchasePlan>"+ purchasePlan + "</purchasePlan>");
+	p.println (inner  + "<numberOfPayments>" + numberOfPayments + 
+			   "</numberOfPayments>"
+	);
+	p.println (indent + "</AuthorizationTransaction>");
     }
 }
