@@ -30,7 +30,11 @@ We recommend that you read them in the following order:
    - simplemux: runs between simpleserver and simpleclient
      multiplexing messages
 
-
+You don't need to deal with GUI stuff in order to setup your
+desired interchange but anyway you may try
+    
+    - simplegui: sends messages to simpleserver with a nice GUI
+      
 Misc examples:
    
    We use examples source tree to create simple applications used

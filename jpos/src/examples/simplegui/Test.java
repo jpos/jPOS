@@ -12,10 +12,15 @@ import org.jpos.iso.channel.ASCIIChannel;
 import org.jpos.iso.packager.ISO87APackager;
 import org.jpos.core.Sequencer;
 import org.jpos.core.VolatileSequencer;
+import org.jpos.util.Logger;
+import org.jpos.util.LogSource;
+import org.jpos.util.SimpleLogListener;
+import org.jpos.util.SystemMonitor;
 
 public class Test extends JPanel implements Runnable {
     static JFrame frame;
     ISOMUX mux;
+    ISOChannel channel;
 
     public Test () {
         super();
@@ -24,10 +29,16 @@ public class Test extends JPanel implements Runnable {
     }
 
     private ISOChannelPanel createChannelPanel() {
-	ISOChannel channel = 
+	Logger logger = new Logger();
+	logger.addListener (new SimpleLogListener (System.out));
+
+	channel = 
 	    new ASCIIChannel("localhost", 8000, new ISO87APackager());
 	mux = new ISOMUX (channel);
-        new Thread(mux).start();
+	((LogSource)channel).setLogger (logger, "channel");
+	mux.setLogger (logger, "mux");
+        Thread t = new Thread(mux);
+	t.start();
 	return new ISOChannelPanel (channel, "localhost:8000");
     }
 
@@ -82,9 +93,12 @@ public class Test extends JPanel implements Runnable {
 		m.set (new ISOField(13,ISODate.getDate(d))); 
 		m.set (new ISOField(41, "00000001"));
 		m.set (new ISOField(70, "301"));
-		ISORequest req = new ISORequest (m);
-		mux.queue (req);
-		req.getResponse (10000);
+		if (!channel.isConnected())
+		    channel.connect();
+		channel.send (m);
+		// ISORequest req = new ISORequest (m);
+		// mux.queue (req);
+		// req.getResponse (10000);
 	    } catch (Exception e) {
 		e.printStackTrace();
 	    }
