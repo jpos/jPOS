@@ -153,7 +153,7 @@ public class KeySerialNumber
      */
     public void dump (PrintStream p, String indent) {
         String inner = indent + "  ";
-        p.print(indent + "<key-serial-number>");
+        p.println(indent + "<key-serial-number>");
         p.println(inner + "<base-key-id>" + getBaseKeyID() + "</base-key-id>");
         p.println(inner + "<device-id>" + getDeviceID() + "</device-id>");
         p.println(inner + "<transaction-counter>" + getTransactionCounter() + "</transaction-counter");
