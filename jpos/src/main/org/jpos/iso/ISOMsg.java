@@ -58,6 +58,9 @@ import org.jpos.iso.packager.ISO93BPackager;
 
 /*
  * $Log$
+ * Revision 1.30  2000/12/06 18:40:07  apr
+ * Added hasFields method
+ *
  * Revision 1.29  2000/11/21 14:55:13  apr
  * preliminary Externalizable support
  *
@@ -360,12 +363,23 @@ public class ISOMsg extends ISOComponent
         return getComponent(fldno).getValue();
     }
     /**
-     * Check if a given field is valid
+     * Check if a given field is present
      * @param fldno the Field Number
      * @return boolean indicating the existence of the field
      */
     public boolean hasField(int fldno) {
         return fields.get(new Integer(fldno)) != null;
+    }
+    /**
+     * Check if all fields are present
+     * @param fields an array of fields to check for presence
+     * @return true if all fields are present
+     */
+    public boolean hasFields (int[] fields) {
+	for (int i=0; i<=fields.length; i++) 
+            if (!hasField (fields[i]))
+                return false;
+        return true;
     }
     /**
      * Don't call setValue on an ISOMsg. You'll sure get
