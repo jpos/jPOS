@@ -13,20 +13,18 @@
 <!ATTLIST log-listener name  CDATA #IMPLIED>
 
 <!-- channel -->
-<!ELEMENT channel (filter*)>
+<!ELEMENT channel (property*, filter*)*>
 <!ATTLIST channel name ID #REQUIRED>
 <!ATTLIST channel class CDATA #REQUIRED>
 <!ATTLIST channel packager CDATA #REQUIRED>
-<!ATTLIST channel type (client|server) 'client'>
+<!ATTLIST channel type (client|server) #REQUIRED>
 <!ATTLIST channel connect (yes|no) 'no'>
-<!ATTLIST channel host CDATA #IMPLIED>
-<!ATTLIST channel port CDATA #IMPLIED>
 <!ATTLIST channel logger IDREF #IMPLIED>
 <!ATTLIST channel realm CDATA #IMPLIED>
 <!ATTLIST channel header CDATA #IMPLIED>
 
 <!-- filter -->
-<!ELEMENT filter (property*)>
+<!ELEMENT filter (property)*>
 <!ATTLIST filter class CDATA #REQUIRED>
 <!ATTLIST filter direction (incoming|outgoing|both) 'both'>
 

@@ -9,6 +9,7 @@ import org.jpos.util.Logger;
 import org.jpos.util.LogEvent;
 import org.jpos.util.NameRegistrar;
 import org.jpos.core.SimpleConfiguration;
+import org.jpos.core.Configurable;
 import org.jpos.core.ConfigurationException;
 
 import org.jpos.apps.qsp.QSP;
@@ -56,6 +57,15 @@ public class ConfigChannel implements QSPConfigurator {
 	try {
 	    ISOChannel channel = 
 		ISOFactory.newChannel (cfg, name, logger, realm);
+
+	    if (channel instanceof Configurable) {
+		((Configurable)channel).setConfiguration (
+		    new SimpleConfiguration (
+			ConfigUtil.addProperties (node, null, evt)
+		    )
+		);
+	    }
+
 	    boolean connect = 
 		node.getAttributes() 
 		    .getNamedItem("connect").getNodeValue().equals("yes");

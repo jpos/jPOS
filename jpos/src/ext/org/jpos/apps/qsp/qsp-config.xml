@@ -14,9 +14,12 @@
   <channel name="acme.channel" 
           class="org.jpos.iso.channel.ASCIIChannel" 
           packager="org.jpos.iso.packager.ISO87APackager"
-          host="localhost" port="8000"
-          logger="qsp" realm="acme"
+          type="client" logger="qsp" realm="acme"
 	  connect="no" >
+
+   <property name="host" value="localhost" />
+   <property name="port" value="8000" />
+
    <filter class="org.jpos.iso.filter.XSLTFilter" direction="outgoing">
     <property name="xsltfile" 
               value="src/ext/org/jpos/apps/qsp/msg/outgoing.xsl" />
