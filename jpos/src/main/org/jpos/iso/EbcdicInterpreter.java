@@ -39,8 +39,6 @@
 
 package org.jpos.iso;
 
-import org.jpos.iso.ISOUtil;
-
 /**
  * Implements EBCDIC Interpreter. Strings are converted to and from EBCDIC
  * bytes.
