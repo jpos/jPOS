@@ -61,12 +61,17 @@ public class ISOFactory {
 	if (host != null && channel instanceof ClientChannel)
 	    ((ClientChannel)channel).setHost (host, port);
 	if (header != null) {
-		if (channel instanceof RawChannel) 
+	    if (channel instanceof RawChannel) {
 		((RawChannel)channel).setTPDU (
 		    ISOUtil.str2bcd(header, false)
 		);
-	    else if (channel instanceof BASE24Channel) {
+	    } else if (channel instanceof BASE24Channel) {
 		((BASE24Channel)channel).setHeader (header.getBytes());
+	    } else if (channel instanceof PADChannel) {
+		((PADChannel)channel).setHeader (
+		    ISOUtil.hex2byte
+			(header.getBytes(), 0, header.getBytes().length)
+		);
 	    }
 	}
         return channel;
