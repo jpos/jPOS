@@ -301,7 +301,7 @@ public class ISOCurrency
             int decimals=c.getDecimals();
             double m=1; if(decimals>0) for(int x=1;x<=decimals;x++) m*=10;
             amount*=m;
-            z=ISOUtil.zeropad(Long.toString((long)amount),12);
+            z=ISOUtil.zeropad(Long.toString(Math.round (amount)),12);
         }
         catch(Exception e)
         {
