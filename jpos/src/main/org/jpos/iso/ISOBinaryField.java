@@ -34,6 +34,18 @@ public class ISOBinaryField extends ISOComponent implements Cloneable {
         value = v;
     }
     /**
+     * @param n - fieldNumber
+     * @param v - fieldValue
+     * @param offset - starting offset
+     * @param len    - field length
+     */
+    public ISOBinaryField(int n, byte[] v, int offset, int len) {
+	byte[] b = new byte[len];
+	System.arraycopy (v, offset, b, 0, len);
+        fieldNumber = n;
+        value = b;
+    }
+    /**
      * not available on Leaf - always throw ISOException
      * @exception ISOException
      */
