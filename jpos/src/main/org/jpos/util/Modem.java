@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.3  2000/03/14 00:02:52  apr
+ * new answer method
+ *
  * Revision 1.2  2000/03/01 14:44:45  apr
  * Changed package name to org.jpos
  *
@@ -21,5 +24,6 @@ import java.io.*;
 public interface Modem {
     public void dial (String number, long aproxTimeout) throws IOException;
     public void hangup () throws IOException;
+    public void answer () throws IOException;
     public boolean isConnected();
 }
