@@ -127,6 +127,7 @@ Main targets:
      <include name="**/security/jceadapter/**"          if="jce.present"     />
 
      <include name="**/TLV*Packager.java"           if="opencard.present"    />
+     <include name="**/ui/factory/SwiXMLFactory.java" if="swixml.present"    />
   </patternset>
 
   <target name="copy-src" depends="prepare, ext.check.mail, ext.check.jsse">
@@ -237,6 +238,9 @@ Main targets:
     <available property="bsh.present"
            classpathref="ext.classpath"
               classname="bsh.Interpreter" />
+    <available property="swixml.present"
+           classpathref="ext.classpath"
+              classname="org.swixml.SwingEngine" />
   </target>
   <target name="ext.check.mail" depends="ext.check" if="activation.present">
     <available property="mail.present"
