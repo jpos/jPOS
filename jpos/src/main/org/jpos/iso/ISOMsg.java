@@ -268,14 +268,13 @@ public class ISOMsg extends ISOComponent
      * @exception ISOException
      */
     public void recalcBitMap () throws ISOException {
-        ISOComponent c;
         if (!dirty)
             return;
 
 	if (getMaxField() > 128) {
 	    BitSet bmap=new BitSet(64);
 	    for (int i=1; i<=64; i++)
-		if((c=(ISOComponent) fields.get(new Integer (i+128))) != null) 
+		if(((ISOComponent) fields.get(new Integer (i+128))) != null) 
 		    bmap.set (i);
 	    set (new ISOBitMap (65, bmap));
 	}
@@ -284,7 +283,7 @@ public class ISOMsg extends ISOComponent
 		int tmpMaxField=maxField > 128 ? 128 : maxField;
 
         for (int i=1; i<=tmpMaxField; i++)
-            if ((c = (ISOComponent) fields.get (new Integer (i))) != null) 
+            if (((ISOComponent) fields.get (new Integer (i))) != null) 
                 bmap.set (i);
         set (new ISOBitMap (-1, bmap));
 		
