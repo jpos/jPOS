@@ -9,6 +9,9 @@
 
 /*
  * $Log$
+ * Revision 1.6  2000/04/14 18:27:42  apr
+ * ISORequestListener may not be Observable
+ *
  * Revision 1.5  2000/03/01 14:44:45  apr
  * Changed package name to org.jpos
  *
@@ -58,7 +61,8 @@ public class ISORequestListenerPanel extends JPanel implements Observer {
         setBorder(BorderFactory.createRaisedBevelBorder());
         log = new DefaultListModel();
         add(createPanel());
-        requestListener.addObserver(this);
+	if (requestListener instanceof Observable)
+	    ((Observable)requestListener).addObserver(this);
     }
     public final String getSymbolicName() {
         return symbolicName;
