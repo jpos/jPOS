@@ -73,7 +73,7 @@ import org.jpos.util.Profiler;
 public class SpaceMUX extends SimpleLogSource
        implements MUX, ReConfigurable, SpaceListener
 {
-    Space sp;
+    LocalSpace sp;
     Configuration cfg;
     String to, from, unhandled;
     public SpaceMUX () {

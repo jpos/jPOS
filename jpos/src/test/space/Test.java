@@ -6,14 +6,14 @@
     import org.jpos.space.*;
 
     public class Test extends TestCase implements SpaceListener {
-        Space sp;
+        LocalSpace sp;
         String rx;
 
         public Test (String name) {
             super (name);
             sp = getSpace ();
         }
-        public Space getSpace () {
+        public LocalSpace getSpace () {
             return new TransientSpace ();
         }
         public void testSimpleOut() throws Exception {

@@ -13,7 +13,7 @@ public class TestPersistent extends Test {
         super (name);
         prof = new Profiler();
     }
-    public Space getSpace () {
+    public LocalSpace getSpace () {
         return new PersistentSpace ();
     }
     public void testOut () throws Exception {

@@ -58,6 +58,7 @@ import org.jpos.q2.QBeanSupport;
 import org.jpos.q2.Q2ConfigurationException;
 import org.jdom.Element;
 import org.jpos.space.Space;
+import org.jpos.space.LocalSpace;
 import org.jpos.space.SpaceListener;
 import org.jpos.space.TransientSpace;
 
@@ -78,7 +79,7 @@ public class QMUX
     extends QBeanSupport
     implements SpaceListener, MUX, QMUXMBean
 {
-    Space sp;
+    LocalSpace sp;
     String in, out, unhandled;
     List listeners;
     public QMUX () {

@@ -68,7 +68,7 @@ import org.jpos.util.NameRegistrar;
  */
 public class Connector implements ReConfigurable, SpaceListener
 {
-    Space sp;
+    LocalSpace sp;
     Configuration cfg;
     String from, to;
     public Connector () {

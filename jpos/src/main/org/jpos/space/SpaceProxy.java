@@ -74,7 +74,7 @@ import org.jpos.util.LogEvent;
 public class SpaceProxy extends SimpleLogSource 
     implements RemoteSpace, ReConfigurable 
 {
-    Space sp;
+    LocalSpace sp;
     Configuration cfg;
     public SpaceProxy () throws RemoteException {
         super();
