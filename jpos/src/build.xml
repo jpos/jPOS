@@ -122,11 +122,12 @@
     <copydir src="${doc}"  dest="${build}/doc" includes="*.html" />
   </target>
 
-  <target name="source">
+  <target name="source" depends="prepare">
     <deltree dir="${build}/src" />
     <mkdir   dir="${build}/src" />
-    <copydir src="${source}/main"  dest="${build}/src" excludes="CVS/*" />
+    <copydir src="${source}/main" dest="${build}/src" excludes="CVS/*" />
     <copydir src="${source}/ext"  dest="${build}/src" excludes="CVS/*" />
+    <fixcrlf srcdir="${build}/src" includes="*" />
   </target>
 
   <target name="tarball" depends="jar, doc, source">
