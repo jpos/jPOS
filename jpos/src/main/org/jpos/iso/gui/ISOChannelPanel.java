@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.8  2000/04/24 01:55:38  apr
+ * clone logged message
+ *
  * Revision 1.7  2000/04/16 21:08:28  apr
  * ISOChannel is now an interface.
  * Channel implementation moved to org.jpos.iso.channel package
@@ -68,7 +71,7 @@ public class ISOChannelPanel extends JPanel implements Observer {
         log = new DefaultListModel();
         add(createCountersPanel());
         meter.setConnected(channel.isConnected());
-	if (channel instanceof Observable)
+	if (channel instanceof Observable) 
 	    ((Observable)channel).addObserver(this);
     }
     /**
@@ -106,7 +109,7 @@ public class ISOChannelPanel extends JPanel implements Observer {
                     meter.setValue(imti, mti);
 
                 // log.insertElementAt(m,0);
-                log.addElement(m);
+                log.addElement((ISOMsg)m.clone());
                 if (log.getSize() > LOG_CAPACITY) 
                     log.remove(0);
 
