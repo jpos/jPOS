@@ -194,19 +194,28 @@ public class ISOUtil {
         (byte)0xDC, (byte)0x8D, (byte)0x8E, (byte)0xDF 
     };
     public static String ebcdicToAscii(byte[] e) {
-        byte[] a = new byte[e.length];
-        for (int i=0; i<e.length; i++)
-            a[i] = EBCDIC2ASCII[((int)e[i])&0xFF];
-        return new String(a);
+        return new String (
+            ebcdicToAsciiBytes (e, 0, e.length)
+        );
     }
     public static String ebcdicToAscii(byte[] e, int offset, int len) {
+        return new String (
+            ebcdicToAsciiBytes (e, offset, len)
+        );
+    }
+    public static byte[] ebcdicToAsciiBytes (byte[] e) {
+        return ebcdicToAsciiBytes (e, 0, e.length);
+    }
+    public static byte[] ebcdicToAsciiBytes(byte[] e, int offset, int len) {
         byte[] a = new byte[len];
         for (int i=0; i<len; i++)
             a[i] = EBCDIC2ASCII[((int)e[offset+i])&0xFF];
-        return new String(a);
+        return a;
     }
     public static byte[] asciiToEbcdic(String s) {
-        byte[] a = s.getBytes();
+        return asciiToEbcdic (s.getBytes());
+    }
+    public static byte[] asciiToEbcdic(byte[] a) {
         byte[] e = new byte[a.length];
         for (int i=0; i<a.length; i++) 
             e[i] = ASCII2EBCDIC[((int)a[i])&0xFF];
