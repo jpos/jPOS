@@ -186,7 +186,8 @@ public class ISOMUX implements Runnable, LogProducer {
                     } catch (Exception e) {
 			if (!terminate) {
 			    channel.setUsable(false);
-			    Logger.log (new LogEvent (this, "muxreceiver", e));
+			    if (!(e instanceof EOFException))
+				Logger.log (new LogEvent (this, "muxreceiver", e));
 			    synchronized(parent) {
 				parent.notify();
 			    }
@@ -270,8 +271,12 @@ public class ISOMUX implements Runnable, LogProducer {
                         this.wait();
 		    }
                 }
-            }
-            catch (Exception e) {
+            } catch (ConnectException e) {
+		Logger.log (new LogEvent (this, "connection-refused",
+		    channel.getHost()+":"+channel.getPort()
+		    )
+		);
+	    } catch (Exception e) {
 		Logger.log (new LogEvent (this, "mux", e));
             }
         }

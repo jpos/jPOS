@@ -2,6 +2,7 @@ package org.jpos.iso;
 
 import java.io.*;
 import java.util.*;
+import java.net.ConnectException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import org.jpos.util.Logger;
@@ -35,6 +36,9 @@ import org.jpos.util.LogProducer;
 
 /*
  * $Log$
+ * Revision 1.28  2000/03/22 11:52:16  apr
+ * Handle EOFException and ConnectException with shorter log messages
+ *
  * Revision 1.27  2000/03/20 22:38:14  apr
  * Handle Peer disconnection, suggested by Gabriel Moreno
  * <gabrielm@itcsoluciones.com>
@@ -108,6 +112,18 @@ public abstract class ISOChannel extends Observable implements LogProducer {
     public void setHost(String host, int port) {
         this.host = host;
         this.port = port;
+    }
+    /**
+     * @return hostname (may be null)
+     */
+    public String getHost() {
+	return host;
+    }
+    /**
+     * @return port number
+     */
+    public int getPort() {
+	return port;
     }
     /**
      * set Packager for channel
@@ -210,6 +226,10 @@ public abstract class ISOChannel extends Observable implements LogProducer {
 		connect(new Socket (host, port));
 	    }
 	    Logger.log (evt);
+	} catch (ConnectException e) {
+	    Logger.log (new LogEvent (this, "connection-refused",
+		getHost()+":"+getPort())
+	    );
 	} catch (IOException e) {
 	    evt.addMessage (e);
 	    Logger.log (evt);
