@@ -142,7 +142,10 @@ public class ProtectedLogListener implements LogListener, Configurable
         }
     }
     private void checkHidden (ISOMsg m) throws ISOException {
-        for (int i=0; i<wipeFields.length; i++)
-            m.set (new ISOField (wipeFields[i], "[WIPED]"));
+        for (int i=0; i<wipeFields.length; i++) {
+            int f = wipeFields[i];
+            if (m.hasField (f))
+                m.set (new ISOField (f, "[WIPED]"));
+        }
     }
 }
