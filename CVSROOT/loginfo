@@ -25,5 +25,6 @@
 # or
 #DEFAULT (echo ""; id; echo %{sVv}; date; cat) >> $CVSROOT/CVSROOT/commitlog
 CVSROOT $CVSROOT/CVSROOT/syncmail %{sVv} apr@users.sourceforge.net
+jpos    $CVSROOT/CVSROOT/syncmail %{sVv} apr@users.sourceforge.net
 DEFAULT $CVSROOT/CVSROOT/syncmail %{sVv} apr@users.sourceforge.net
 
