@@ -57,6 +57,7 @@ import org.jpos.util.LogSource;
 import org.jpos.util.NameRegistrar;
 import org.jpos.core.SimpleConfiguration;
 import org.jpos.core.Configurable;
+import org.jpos.core.Stopable;
 import org.jpos.core.ReConfigurable;
 import org.jpos.core.ConfigurationException;
 
@@ -100,6 +101,16 @@ public class ConfigTask implements QSPReConfigurator {
 	        Thread thread = new Thread ((Runnable) task);
 	        thread.setName ("qsp-task-"+name);
 	        thread.start();
+            }
+
+            if (task instanceof Stopable) {
+                try {
+                    Runtime.getRuntime().addShutdownHook (
+                        new Shutdown((Stopable) task, NAMEREGISTRAR_PREFIX+name)
+                    );
+                } catch (Exception e) {
+                    evt.addMessage (e.toString ());
+                }
             }
         } catch (ClassNotFoundException e) {
 	    throw new ConfigurationException ("config-task:"+className, e);
