@@ -1,6 +1,7 @@
 $Id$
 
 -- 1.3.5 --
+Added static launch(String) method to QSP
 Added PackagerWrapper and CryptoPackager
 Preliminary jUnit support (ant's "test" target)
 Changed build.xml (conditionally build ext module if jars are available)

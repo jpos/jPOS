@@ -196,6 +196,15 @@ public class QSP implements ErrorHandler, LogSource {
             }
         }
     }
+    /**
+     * Launches QSP
+     * @param configFile XML based QSP config file
+     */
+    public static void launch (String configFile) {
+        String args[] = new String[1];
+        args[0] = configFile;
+        main (args);
+    }
     public static void main (String args[]) {
 	if (args.length != 1) {
 	    System.out.println ("Usage: org.jpos.apps.qsp.QSP <configfile>");
@@ -203,7 +212,6 @@ public class QSP implements ErrorHandler, LogSource {
 	}
 	DOMParser parser = new DOMParser();
 	QSP qsp = new QSP();
-	// qsp.getLogger().addListener (new SimpleLogListener(System.out));
 	try {
 	    qsp.setConfigFile (new File (args[0]));
 	    parser.setFeature("http://xml.org/sax/features/validation", true);
