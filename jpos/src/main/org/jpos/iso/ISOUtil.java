@@ -731,6 +731,20 @@ public class ISOUtil {
         System.arraycopy(array, 0, trimmedArray, 0, length);
         return  trimmedArray;
     }
+
+    /**
+     * Concatenates two byte arrays (array1 and array2)
+     * @param array1
+     * @param array2
+     * @return the concatenated array
+     */
+    public static byte[] concat (byte[] array1, byte[] array2) {
+        byte[] concatArray = new byte[array1.length + array2.length];
+        System.arraycopy(array1, 0, concatArray, 0, array1.length);
+        System.arraycopy(array2, 0, concatArray, array1.length, array2.length);
+        return  concatArray;
+    }
+
     /**
      * Concatenates two byte arrays (array1 and array2)
      * @param array1
