@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.5  2000/03/15 12:53:02  apr
+ * WatchCD off/on in answer method
+ *
  * Revision 1.4  2000/03/14 12:58:49  apr
  * Autoanswer with ATS0=1 instead of RING+ATA
  *
@@ -102,6 +105,7 @@ public class SimpleDialupModem implements Modem {
 	return v24.isConnected();
     }
     public void answer () throws IOException {
+	v24.setWatchCD (false);
 	v24.setAutoFlushReceiver(false);
 	if (!checkAT())
 	    throw new IOException ("unable to initialize modem (0)");
@@ -114,5 +118,6 @@ public class SimpleDialupModem implements Modem {
 	    Thread.sleep (1000);
 	} catch (InterruptedException e) { }
 	v24.setAutoFlushReceiver(false);
+	v24.setWatchCD (true);
     }
 }
