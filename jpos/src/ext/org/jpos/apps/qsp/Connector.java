@@ -77,7 +77,7 @@ import org.jpos.util.NameRegistrar.NotFoundException;
  *
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
  * @version $Revision$ $Date$
- * @see org.jpos.iso.ISORequestListener;
+ * @see org.jpos.iso.ISORequestListener
  */
 public class Connector 
     implements ISORequestListener, LogSource, Configurable
