@@ -79,7 +79,7 @@ public class IFA_LLBINARY extends ISOFieldPackager {
         if ( (len=b.length) > getLength() || len>99)
             throw new ISOException (
                 "invalid len "+len 
-                +" packing LLLCHAR field "+(Integer) c.getKey()
+                +" packing field "+(Integer) c.getKey()
             );
         byte[] nb=new byte[len+2];
         nb=ISOUtil.strpad(ISOUtil.zeropad(Integer.toString(len), 2),len+2).getBytes();
