@@ -5,7 +5,7 @@
 
 -->
 
-<!DOCTYPE qsp-config SYSTEM "../dtd/qsp-config.dtd"> 
+<!DOCTYPE qsp-config SYSTEM "../../../config/qsp/qsp-config.dtd"> 
 <qsp-config logger="qsp" realm="qsp" reload="10000">
 
  <logger name="qsp">

@@ -21,7 +21,7 @@
 
 -->
 
-<!DOCTYPE qsp-config SYSTEM "../dtd/qsp-config.dtd"> 
+<!DOCTYPE qsp-config SYSTEM "../../../config/qsp/qsp-config.dtd"> 
 <qsp-config logger="qsp" realm="qsp" reload="5000">
  <logger name="qsp">
     <log-listener class="org.jpos.util.ProtectedLogListener">
