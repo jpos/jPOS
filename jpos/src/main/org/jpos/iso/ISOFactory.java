@@ -75,11 +75,11 @@ public class ISOFactory {
 		}
             }
         } catch (ClassNotFoundException e) {
-	    throw new ISOException ("newChannel", e);
+	    throw new ISOException ("newChannel:"+prefix, e);
         } catch (InstantiationException e) {
-	    throw new ISOException ("newChannel", e);
+	    throw new ISOException ("newChannel:"+prefix, e);
         } catch (IllegalAccessException e) {
-	    throw new ISOException ("newChannel", e);
+	    throw new ISOException ("newChannel:"+prefix, e);
 	}
         return channel;
     }
