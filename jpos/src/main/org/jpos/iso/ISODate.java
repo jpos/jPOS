@@ -261,5 +261,31 @@ public class ISODate {
     public static String getExpirationDate(Date d, TimeZone timeZone) {
         return formatDate (d, "yyMM", timeZone);
     }
+
+    /**
+     * @param d date object to be formatted
+     * @return date in YDDD format suitable for bit 31 or 37
+     * depending on interchange
+     */
+    public static String getJulianDate(Date d) {
+      String day = formatDate(d, "DDD", TimeZone.getDefault());
+      String year = formatDate(d, "yy", TimeZone.getDefault());
+      year = year.substring(1);
+      return year + day;
+    }
+
+    /**
+     * @param d date object to be formatted
+     * @param timeZone for GMT for example, use TimeZone.getTimeZone("GMT")
+     * and for Uruguay use TimeZone.getTimeZone("GMT-03:00")
+     * @return date in YDDD format suitable for bit 31 or 37
+     * depending on interchange
+     */
+    public static String getJulianDate(Date d, TimeZone timeZone) {
+      String day = formatDate(d, "DDD", timeZone);
+      String year = formatDate(d, "yy", timeZone);
+      year = year.substring(1);
+      return year + day;
+    }
 }
 
