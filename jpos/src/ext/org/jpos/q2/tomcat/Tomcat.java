@@ -3,6 +3,15 @@ package org.jpos.q2.tomcat;
 import org.jpos.q2.QBeanSupport;
 
 /**
+ * QBean for starting and stopping Tomcat.
+ *
+ * <pre>
+ * Example xml:
+ *   &lt;tomcat class="org.jpos.q2.tomcat.Tomcat"&gt;
+ *     &lt;attr name="startScript"&gt;YOUR PATH TO TOMCAT/bin/startup.sh&lt;/attr&gt;
+ *     &lt;attr name="shutdownScript"&gt;YOUR PATH TO TOMCAT/bin/shutdown.sh&lt;/attr&gt;
+ *   &lt;/tomcat&gt;
+ * </pre>
  * @author Alwyn Schoeman
  * @version $Revision$ $Date$
  * @jmx:mbean description="Tomcat QBean" extends="org.jpos.q2.QBeanSupportMBean"
