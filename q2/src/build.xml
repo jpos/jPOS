@@ -28,6 +28,12 @@
     <mkdir dir="deploy/lib"/>
   </target>
 
+  <target name="ext-check">
+    <available property="bsh.present"
+           classpathref="lib.classpath"
+              classname="bsh.Interpreter" />
+  </target>
+
   <target name="clean" description="Remove build and dist directories">
     <delete dir="${build}"/>
     <delete dir="${dist}"/>
@@ -54,6 +60,7 @@
   <target name="copy-src" depends="prepare">
    <copy todir="${buildsrc}">
     <fileset dir="${main}">
+     <exclude name="**/qbean/BSH.java" unless="bsh.present" />
      <include name="**/*.java"/>
     </fileset>
    </copy>
@@ -108,7 +115,7 @@
     </jmxdoclet>
   </target>
 
-  <target name="main" depends="copy-src, generate"
+  <target name="main" depends="ext-check, copy-src, generate"
     description="Compiles classes">
 
     <copy todir="${classes}">
