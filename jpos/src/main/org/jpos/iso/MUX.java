@@ -63,5 +63,10 @@ public interface MUX {
      * @throws ISOException
      */
     public ISOMsg request (ISOMsg m, long timeout) throws ISOException;
+
+    /**
+     * @return true if connected
+     */
+    public boolean isConnected();
 }
 
