@@ -95,6 +95,7 @@ public class ISOServer extends Observable
     public static final int CONNECT      = 0;
     public static final int SIZEOF_CNT   = 1;
     private int[] cnt;
+    private String[] allow;
     protected Configuration cfg;
     private boolean shutdown = false;
     private ServerSocket serverSocket;
@@ -196,19 +197,15 @@ public class ISOServer extends Observable
         public void checkPermission (Socket socket, LogEvent evt) 
             throws ISOException 
         {
-            if (cfg != null) {
+            if (allow.length > 0) {
                 String ip = socket.getInetAddress().getHostAddress ();
-
-                String[] allow = cfg.getAll ("allow");
-                if (allow.length > 0) {
-                    for (int i=0; i<allow.length; i++) {
-                        if (ip.equals (allow[i])) {
-                            evt.addMessage ("access granted, ip=" + ip);
-                            return;
-                        }
+                for (int i=0; i<allow.length; i++) {
+                    if (ip.equals (allow[i])) {
+                        evt.addMessage ("access granted, ip=" + ip);
+                        return;
                     }
-                    throw new ISOException ("access denied, ip=" + ip);
                 }
+                throw new ISOException ("access denied, ip=" + ip);
             }
         }
     }
@@ -427,6 +424,7 @@ public class ISOServer extends Observable
     }
     public void setConfiguration (Configuration cfg) {
         this.cfg = cfg;
+        allow = cfg.getAll ("allow");
     }
 }
 
