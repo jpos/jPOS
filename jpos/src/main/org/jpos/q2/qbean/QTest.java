@@ -7,8 +7,8 @@ import org.jpos.q2.Q2;
 import org.jpos.q2.QBean;
 import org.jpos.q2.QBeanSupport;
 
+import org.jpos.util.Log;
 import org.jpos.util.Logger;
-import org.jpos.util.SimpleLogSource;
 
 /**
  * Sample QBean
@@ -18,10 +18,10 @@ import org.jpos.util.SimpleLogSource;
  * @version $Revision$ $Date$
  */
 public class QTest extends QBeanSupport implements Runnable {
-    SimpleLogSource log;
+    Log log;
     public QTest () {
         super();
-        log = new SimpleLogSource (Logger.getLogger (Q2.LOGGER_NAME), "QTest");
+        log = Log.getLog (Q2.LOGGER_NAME, "QTest");
         log.info ("constructor");
     }
     public void init () {
