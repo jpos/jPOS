@@ -233,6 +233,15 @@ public class ISOUtil {
         return d.toString();
     }
 
+   /**
+    * trim String (if not null)
+    * @param s String to trim
+    * @return String (may be null)
+    */
+    public static String trim (String s) {
+        return s != null ? s.trim() : null;
+    }
+
     /**
      * left pad with '0'
      * @param s - original string
