@@ -50,6 +50,28 @@ public class ISODate {
 		return d;
 	}
 	/**
+	 * converts a string in DD/MM/YY HH:MM:SS format to a Date object
+	 * Warning: return null on invalid dates (prints Exception to console)
+	 *
+	 * @return parsed Date
+	 */
+	public static Date parseDateTime(String s) {
+		Date d = null;
+		SimpleDateFormat df =
+			(SimpleDateFormat) DateFormat.getDateTimeInstance(
+				DateFormat.SHORT, DateFormat.MEDIUM, Locale.UK);
+
+		// ##FIXME##
+		df.setTimeZone (new SimpleTimeZone(-3 * 60*60*1000, "AGT"));
+		try {
+			d = df.parse (s);
+		} catch (java.text.ParseException e) {
+			System.out.println (e);
+			System.out.println ("invalid date/time "+s);
+		}
+		return d;
+	}
+	/**
 	 * @return date in MMddHHmmss format suitable for FIeld 7
 	 */
 	public static String getDateTime (Date d) {
