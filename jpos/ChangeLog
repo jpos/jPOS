@@ -1,6 +1,7 @@
 $Id$
 
 -- 1.4.5 --
+Security: new 'allow' property in ISOServer (checks peer IP)
 Added: packager/nyceiso8583.xml (contributed by Henry Chan <q8e192@yahoo.com>)
 QSP: new thread-pool tag
 ISOMeter, new scroll and refresh attributes (contributed by Kris Leite)
