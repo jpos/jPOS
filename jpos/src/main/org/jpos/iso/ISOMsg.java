@@ -144,9 +144,11 @@ public class ISOMsg extends ISOComponent
     private void recalcMaxField() {
         ISOComponent c;
         maxField = 0;
-        for (int i=1; i<=192; i++)
-            if ((c = (ISOComponent) fields.get (new Integer (i))) != null)
-                maxField = i;
+        for (Enumeration e = fields.keys(); e.hasMoreElements(); ) {
+            Object obj = e.nextElement();
+            if (obj instanceof Integer) 
+                maxField = Math.max (maxField, ((Integer)obj).intValue());
+        }
         maxFieldDirty = false;
     }
     /**
@@ -498,11 +500,11 @@ public class ISOMsg extends ISOComponent
     }
 
     public void writeExternal (ObjectOutput out) throws IOException {
-        int max = getMaxField();
         out.writeByte (0);  // reserved for future expansion (version id)
         out.writeShort (fieldNumber);
-        for (int i=0; i<=max; i++) {
-            ISOComponent c = getComponent (i);
+
+        for (Enumeration e = fields.elements(); e.hasMoreElements(); ) {
+            ISOComponent c = (ISOComponent) e.nextElement();
             if (c instanceof ISOMsg) {
                 out.writeByte ('M');
                 ((Externalizable) c).writeExternal (out);
