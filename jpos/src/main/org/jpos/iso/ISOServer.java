@@ -126,6 +126,10 @@ public class ISOServer extends Observable
 			    break;
                 }
 	    } catch (EOFException e) {
+		Logger.log (new LogEvent (this, "SessionWarning", "<eof/>"));
+                try {
+                    channel.disconnect();
+                } catch (IOException ex) { }
             } catch (InterruptedIOException e) {
                 try {
                     channel.disconnect();
