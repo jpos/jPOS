@@ -118,7 +118,7 @@
 	footer="CompuService Srl."
 	public="true" noindex="true" author="true" 
 	overview="${doc}/javadoc/Overview.html"
-        packagenames="org.jpos.util, org.jpos.iso, org.jpos.core.*"
+        packagenames="org.jpos.util, org.jpos.iso.*, org.jpos.core.*, org.jpos.apps.*"
     />
   </target>
 
@@ -132,7 +132,7 @@
     <copydir src="${main}" dest="${build}/doc/tmp" />
     <copydir src="${ext}"  dest="${build}/doc/tmp" />
     <copydir src="${doc}/images"  dest="${build}/doc/images" />
-    <javadoc sourcepath="${main}"
+    <javadoc sourcepath="${build}/doc/tmp"
 	destdir="${build}/doc/javadoc" dir="."
         windowtitle="jPOS ${version} API Documentation" 
         doctitle="jPOS ${version} API Documentation" 
@@ -140,7 +140,7 @@
 	footer="CompuService Srl."
 	public="true" noindex="true" author="true" 
 	overview="${doc}/javadoc/Overview.html"
-        packagenames="org.jpos.util, org.jpos.iso, org.jpos.core.*"
+        packagenames="org.jpos.util, org.jpos.iso.*, org.jpos.core.*, org.jpos.apps.*"
     />
     <deltree dir="${build}/doc/tmp" />
   </target>
