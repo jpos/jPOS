@@ -466,7 +466,7 @@ public class ISOUtil {
     /**
      * @param   b       source byte array
      * @param   offset  starting offset
-     * @param   len     number of bytes in destination (procesa len*2 de source)
+     * @param   len     number of bytes in destination (processes len*2)
      * @return  byte[len]
      */
     public static byte[] hex2byte (byte[] b, int offset, int len) {
