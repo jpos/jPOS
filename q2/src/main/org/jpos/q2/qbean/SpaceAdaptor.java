@@ -58,7 +58,6 @@ import org.jpos.q2.QBeanSupport;
 import org.jpos.space.Space;
 import org.jpos.space.SpaceFactory;
 import org.jpos.space.LocalSpace;
-import org.jpos.space.TransientSpace;
 
 /**
  * Space Adaptor
