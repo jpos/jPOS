@@ -57,6 +57,7 @@ import org.jpos.util.SimpleLogSource;
 import org.jpos.util.Logger;
 import org.jpos.util.LogEvent;
 import org.jpos.space.Space;
+import org.jpos.space.SpaceFactory;
 import org.jpos.space.TransientSpace;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
@@ -96,8 +97,8 @@ public class ChannelAdaptor
     public void initChannel () 
         throws Q2ConfigurationException, ConfigurationException 
     {
-        sp = TransientSpace.getSpace ();
         Element persist = getPersist ();
+        sp = grabSpace (persist.getChild ("space")); 
         Element e = persist.getChild ("channel");
         if (e == null)
             throw new Q2ConfigurationException ("channel element missing");
@@ -330,5 +331,9 @@ public class ChannelAdaptor
         } catch (NumberFormatException e) { }
         return port;
     }
+    private Space grabSpace (Element e) {
+        return SpaceFactory.getSpace (e != null ? e.getText() : "");
+    }
+
 }
 
