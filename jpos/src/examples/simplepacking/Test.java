@@ -34,7 +34,7 @@ public class Test extends SimpleLogSource {
 	m.setPackager (packager);                     // 3) assign packager
 	try {
 	    // 4) populate ISOMsg
-	    m.set (new ISOField (0,  "0800"));
+	    m.set (new ISOField (0,  "1800"));
 	    m.set (new ISOField (3,  "000000"));
 	    m.set (new ISOField (11, "000001"));
 	    m.set (new ISOField (7,  ISODate.getDateTime(d)));
