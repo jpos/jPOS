@@ -69,6 +69,7 @@ public class AllTests {
         logger.addListener (new Log4JListener());
         TestSuite suite = new TestSuite("jPOS Tests");
         suite.addTestSuite (packagers.Test.class);
+        suite.addTest (iso.ISOTests.suite());
         suite.addTestSuite (jceadapter.Test.class);
         suite.addTestSuite (space.Test.class);
         suite.addTestSuite (space.TestPersistent.class);
