@@ -82,7 +82,7 @@ public class PersistentSpace implements LocalSpace // PersistentSpaceMBean {
         map = new HashMap ();
     }
     public synchronized void setCacheSize (int cacheSize) {
-        this.cacheSize = cacheSize;
+        PersistentSpace.cacheSize = cacheSize;
     }
     public void out (Object key, Object value) {
         List listeners;
