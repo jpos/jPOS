@@ -20,7 +20,7 @@ import org.jpos.util.NameRegistrar;
  * @see ISORequestListener
  */
 
-public class ISOMUX implements Runnable, LogSource {
+public class ISOMUX implements Runnable, ISOSource, LogSource {
     private ISOChannel channel;
     private Thread rx = null, tx = null;
     private Vector txQueue;
@@ -28,6 +28,7 @@ public class ISOMUX implements Runnable, LogSource {
     private int traceNumberField = 11;
     private volatile boolean terminate = false;
     private String name;
+    private ISOMUX muxInstance;
 
     protected Logger logger = null;
     protected String realm = null;
@@ -53,6 +54,7 @@ public class ISOMUX implements Runnable, LogSource {
     public ISOMUX (ISOChannel c) {
 	super();
 	initMUX(c);
+	muxInstance = this;
     }
     /**
      * @param c a connected or unconnected ISOChannel
@@ -180,7 +182,7 @@ public class ISOMUX implements Runnable, LogSource {
                         }
                         else {
                             if (requestListener != null) {
-                                requestListener.process(d);
+                                requestListener.process(muxInstance, d);
                                 cnt[RX_FORWARDED]++;
                             }
                             else 
