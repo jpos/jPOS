@@ -267,6 +267,7 @@ public class ChannelAdaptor
                     if (running()) {
                         getLog().warn ("channel-receiver-"+out, e);
                         disconnect ();
+                        ISOUtil.sleep (1000);
                         sp.out (in, new Object()); // wake-up Sender
                     }
                 }
