@@ -165,7 +165,6 @@ public abstract class ISOChannel extends Observable {
 		cnt[TX]++;
 		setChanged();
 		notifyObservers(m);
-		System.out.println ("Notifying Observers");
 	}
 	/**
 	 * Waits and receive an ISOMsg over the TCP/IP session
