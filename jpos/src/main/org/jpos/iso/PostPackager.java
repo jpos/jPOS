@@ -1,9 +1,13 @@
 package uy.com.cs.jpos.iso;
 
 import java.util.*;
+import uy.com.cs.jpos.util.Logger;
 
 /*
  * $Log$
+ * Revision 1.5  2000/02/28 11:11:37  apr
+ * Added inner ISOMsg logging
+ *
  * Revision 1.4  2000/02/27 14:28:05  apr
  * PostPackager compatible with new jPOS ISOMsgFieldPackager
  * Support for new Postillion version [Victor]
@@ -26,6 +30,7 @@ import java.util.*;
 
 public class PostPackager extends ISOBasePackager {
     private static final boolean pad = false;
+    protected PostPrivatePackager p127 = new PostPrivatePackager();
     protected ISOFieldPackager fld[] = {
             new IFA_NUMERIC (  4, "MESSAGE TYPE INDICATOR"),
             new IFB_BITMAP  (  8, "BIT MAP"),
@@ -156,7 +161,7 @@ public class PostPackager extends ISOBasePackager {
             new IFA_LLLCHAR (999, "RESERVED PRIVATE USE"),
             new ISOMsgFieldPackager(
                 new IFA_LLLBINARY   (999, "RESERVED PRIVATE USE"),
-                new PostPrivatePackager()
+		p127
             ),
             new IFA_LLLCHAR (999, "MAC 2")
         };
@@ -200,5 +205,9 @@ public class PostPackager extends ISOBasePackager {
     public PostPackager() {
         super();
         setFieldPackager(fld);
+    }
+    public void setLogger (Logger logger, String realm) {
+	super.setLogger (logger, realm);
+	p127.setLogger (logger, realm + ".PostPrivatePackager");
     }
 }
