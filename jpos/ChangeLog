@@ -1,5 +1,9 @@
 $Id$
 
+-- 1.4.1 --
+
+-- 1.4.0 -- Released Feb 2002 (tagged: v1_4_0)
+
 -- 1.3.9 --
 Added MacroFilter (useful to set sequencers, date, etc.)
 Added SAFChannel (reliable Store and forward)
