@@ -167,9 +167,9 @@ public class Q2 implements FileFilter {
             QEntry qentry   = (QEntry) entry.getValue ();
             long deployed   = qentry.getDeployed ();
             if (deployed == 0) {
-                ObjectInstance instance = deploy (f);
-                qentry.setInstance (instance);
-                startList.add (instance);
+                deploy (f);
+                if (qentry.isQBean ())
+                    startList.add (qentry.getInstance());
                 qentry.setDeployed (f.lastModified ());
             } else if (deployed != f.lastModified ()) {
                 undeploy (f);
@@ -189,9 +189,11 @@ public class Q2 implements FileFilter {
             Map.Entry entry = (Map.Entry) iter.next();
             File   f        = (File)   entry.getKey ();
             QEntry qentry   = (QEntry) entry.getValue ();
-            ObjectName name = qentry.getObjectName ();
-            if (getState (name) == QBean.STARTED && isModified (name)) {
-                qentry.setDeployed (persist (f, name));
+            if (qentry.isQBean() && qentry.isQPersist()) {
+                ObjectName name = qentry.getObjectName ();
+                if (getState (name) == QBean.STARTED && isModified (name)) {
+                    qentry.setDeployed (persist (f, name));
+                }
             }
         }
     }
@@ -246,9 +248,9 @@ public class Q2 implements FileFilter {
     private void undeploy (File f) {
         QEntry qentry = (QEntry) dirMap.get (f);
         try {
+            Object obj      = qentry.getObject ();
             ObjectName name = qentry.getObjectName ();
-            if (name != null)
-                factory.destroyQBean (this, name);
+            factory.destroyQBean (this, name, obj);
 
             if (log != null)
                 log.info ("undeploy:" + f.getName());
@@ -262,20 +264,24 @@ public class Q2 implements FileFilter {
             dirMap.put (f, new QEntry ());
     }
 
-    private ObjectInstance deploy (File f) {
+    private void deploy (File f) {
         try {
             if (log != null)
                 log.info ("deploy:" + f.getName());
+            QEntry qentry = (QEntry) dirMap.get (f);
             SAXBuilder builder = new SAXBuilder ();
             Document doc = builder.build (f);
+
+            Object obj = factory.instantiate (this, doc.getRootElement ());
+            qentry.setObject (obj);
+
             ObjectInstance instance = factory.createQBean (
-                this, doc.getRootElement()
+                this, doc.getRootElement(), obj
             );
-            return instance;
+            qentry.setInstance (instance);
         } catch (Exception e) {
             getLog().warn ("deploy", e);
         } 
-        return null;
     }
 
     private void start (ObjectInstance instance) {
@@ -324,6 +330,7 @@ public class Q2 implements FileFilter {
     public class QEntry {
         long deployed;
         ObjectInstance instance;
+        Object obj;
         public QEntry () {
             super();
         }
@@ -346,6 +353,18 @@ public class Q2 implements FileFilter {
         }
         public ObjectName getObjectName () {
             return instance != null ? instance.getObjectName () : null;
+        }
+        public void setObject (Object obj) {
+            this.obj = obj;
+        }
+        public Object getObject () {
+            return obj;
+        }
+        public boolean isQBean () {
+            return obj instanceof QBean;
+        }
+        public boolean isQPersist () {
+            return obj instanceof QPersist;
         }
     }
 }

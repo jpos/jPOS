@@ -86,7 +86,19 @@ public class QFactory {
         this.loaderName = loaderName;
         this.q2  = q2;
     }
-    public ObjectInstance createQBean (Q2 server, Element e) 
+
+    public Object instantiate (Q2 server, Element e) 
+        throws ReflectionException,
+               MBeanException,
+               InstanceNotFoundException
+    {
+        String clazz  = e.getAttributeValue ("class");
+        MBeanServer mserver = server.getMBeanServer();
+        getExtraPath (server.getLoader (), e);
+        return mserver.instantiate (clazz, loaderName);
+    }
+
+    public ObjectInstance createQBean (Q2 server, Element e, Object obj) 
         throws ClassNotFoundException, 
                InstantiationException,
                IllegalAccessException,
@@ -101,7 +113,6 @@ public class QFactory {
                ReflectionException,
                Q2ConfigurationException
     {
-        String clazz  = e.getAttributeValue ("class");
         String name   = e.getAttributeValue ("name");
         if (name == null)
             name = e.getName ();
@@ -110,18 +121,16 @@ public class QFactory {
         ObjectName objectName = new ObjectName (Q2.QBEAN_NAME + name);
         MBeanServer mserver = server.getMBeanServer();
 
-        getExtraPath (server.getLoader (), e);
-
-        ObjectInstance instance = mserver.createMBean (
-            clazz, objectName, loaderName
+        ObjectInstance instance = mserver.registerMBean (
+            obj, objectName 
         );
         setAttribute (mserver, objectName, "Name", name);
         setAttribute (mserver, objectName, "Logger", logger);
         setAttribute (mserver, objectName, "Server", server);
         setAttribute (mserver, objectName, "Persist", e);
         configureQBean(mserver,objectName,e);
-        mserver.invoke (objectName, "init",  null, null);
-
+        if (obj instanceof QBean) 
+            mserver.invoke (objectName, "init",  null, null);
         return instance;
     }
 
@@ -175,8 +184,7 @@ public class QFactory {
         mserver.invoke (objectName, "start",  null, null);
     }
 
-
-    public void destroyQBean (Q2 server, ObjectName objectName)
+    public void destroyQBean (Q2 server, ObjectName objectName, Object obj)
         throws ClassNotFoundException, 
                InstantiationException,
                IllegalAccessException,
@@ -191,11 +199,12 @@ public class QFactory {
                ReflectionException
     {
         MBeanServer mserver = server.getMBeanServer();
-        mserver.invoke (objectName, "stop",  null, null);
-        mserver.invoke (objectName, "destroy",  null, null);
+        if (obj instanceof QBean) {
+            mserver.invoke (objectName, "stop",  null, null);
+            mserver.invoke (objectName, "destroy",  null, null);
+        }
         mserver.unregisterMBean (objectName);
     }
-
 
     public void configureQBean(MBeanServer server, ObjectName objectName, Element e)
         throws Q2ConfigurationException
