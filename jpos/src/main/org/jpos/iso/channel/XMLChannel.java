@@ -65,6 +65,8 @@ public class XMLChannel extends BaseChannel {
 	StringBuffer sb = new StringBuffer();
 	while (reader != null) {
 	    String s = reader.readLine();
+	    if (s == null)
+		throw new EOFException();
 	    sb.append (s);
 	    if (s.indexOf ("</" + XMLPackager.ISOMSG_TAG + ">") == 0)
 		break;
