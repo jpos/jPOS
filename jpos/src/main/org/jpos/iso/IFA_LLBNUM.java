@@ -118,18 +118,4 @@ public class IFA_LLBNUM extends ISOFieldPackager {
     public int getMaxPackedLength() {
         return 1 + ((getLength()+1) >> 1);
     }
-
-
-    protected byte[] readBytes (InputStream in, int l) throws IOException {
-        byte[] b = new byte [l];
-        int n = 0;
-        while (n < l) {
-            int count = in.read(b, n, l - n);
-            if (count < 0)
-                throw new EOFException();
-            n += count;
-        }
-        return b;
-    }
-
 }
