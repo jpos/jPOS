@@ -35,6 +35,9 @@ install here (or anywhere within your CLASSPATH) these optional files:
   - BeanShell (used by org.jpos.iso.filter.BSHFilter)
     see http://www.beanshell.org
 
+  - SwiXML (used by org.jpos.ui.factory.SwiXMLFactory)
+    see http://www.swixml.org
+
 In order to build jPOS' aspects you need:
 
   - aspectj-ant.jar
