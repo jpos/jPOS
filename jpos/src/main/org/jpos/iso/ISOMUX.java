@@ -19,6 +19,14 @@ import java.util.*;
  * @see ISOException
  * @see ISORequestListener
  */
+
+/*
+ * $Log$
+ * Revision 1.20  1999/09/25 13:39:05  apr
+ * Added terminate() support as suggested by Vincent.Greene@amo.com
+ *
+ */
+
 public class ISOMUX implements Runnable, LogProducer {
     private ISOChannel channel;
     private Thread rx;
