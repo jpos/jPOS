@@ -64,8 +64,8 @@ public class RawChannel extends ISOChannel {
         this.TPDU = TPDU;
     }
     protected void sendMessageLength(int len) throws IOException {
-        if (TPDU != null)
-            len += TPDU.length;
+        // if (TPDU != null)
+        //     len += TPDU.length;
         serverOut.write (len >> 24);
         serverOut.write (len >> 16);
         serverOut.write (len >> 8);
@@ -81,8 +81,8 @@ public class RawChannel extends ISOChannel {
             ((((int)b[2])&0xFF) << 8) | 
             (((int)b[3])&0xFF));
     }
-    protected void sendMessageHeader(ISOMsg m) throws IOException { 
-        if (TPDU != null)
+    protected void sendMessageHeader(ISOMsg m, int len) throws IOException { 
+        if (TPDU != null) 
             serverOut.write(TPDU);
     }
     protected int getHeaderLength() { 
