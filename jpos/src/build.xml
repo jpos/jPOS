@@ -191,7 +191,8 @@ Main targets:
       <srcfiles dir="${buildsrc}" includes="org/jpos/q2/qbean/RMIAdaptor.java" />
       <srcfiles dir="${buildsrc}" includes="org/jpos/q2/qbean/Naming.java" />
       <srcfiles dir="${buildsrc}" includes="org/jpos/q2/qbean/DirPollAdaptor.java" />
-      <srcfiles dir="${buildsrc}" includes="org/jpos/jms/JMSQ*.java" />
+      <srcfiles dir="${buildsrc}" includes="org/jpos/jms/JMSQSender.java" />
+      <srcfiles dir="${buildsrc}" includes="org/jpos/jms/JMSQReceiver.java" />
       <srcfiles dir="${buildsrc}" includes="org/jpos/jms/SpaceConnector.java" />
       <mapper type="glob" from="*.java" to="*MBean.java"/>
     </uptodate>
@@ -218,7 +219,8 @@ Main targets:
         <include name="org/jpos/q2/qbean/RMIAdaptor.java" />
         <include name="org/jpos/q2/qbean/Naming.java" />
         <include name="org/jpos/q2/qbean/DirPollAdaptor.java" />
-        <include name="org/jpos/jms/JMSQ*.java" />
+        <include name="org/jpos/jms/JMSQSender.java" />
+        <include name="org/jpos/jms/JMSQReceiver.java" />
         <include name="org/jpos/jms/SpaceConnector.java" />
       </fileset>
       <mbeaninterface/>
