@@ -127,6 +127,16 @@ public class ThreadPool extends ThreadGroup implements LogSource, Loggeable, Con
         this.maxPoolSize = maxPoolSize;
         init (poolSize);
     }
+    /**
+     * @param name pool name
+     * @param poolSize starting pool size
+     * @param maxPoolSize maximum number of threads on this pool
+     */
+    public ThreadPool (int poolSize, int maxPoolSize, String name) {
+        super (name + "-" + poolNumber++);
+        this.maxPoolSize = maxPoolSize;
+        init (poolSize);
+    }
     
     private void init(int poolSize){
         while (activeCount() < Math.min (poolSize, maxPoolSize))
