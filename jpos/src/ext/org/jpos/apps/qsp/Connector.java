@@ -88,12 +88,14 @@ public class Connector
     ISOChannel destChannel;
     int timeout = 0;
     boolean bounce = false;
-    ThreadPool pool;
+    static ThreadPool pool;
+    static {
+        pool = new ThreadPool (1, 100);
+    }
     public Connector () {
 	super();
 	destMux = null;
 	destChannel = null;
-	pool = new ThreadPool (1, 100);
     }
     public void setLogger (Logger logger, String realm) {
 	this.logger = logger;
