@@ -150,6 +150,7 @@ public class Q2 implements FileFilter {
         ObjectName loaderName = new ObjectName (Q2_CLASS_LOADER);
         try {
             loader = new QClassLoader (server, libDir, loaderName);
+            server.registerMBean (loader, loaderName);
             loader = loader.scan();
         } catch (Throwable t) {
             log.error ("initial-scan", t);
