@@ -2,7 +2,8 @@
 <!-- $Id$ -->
 
 <!ELEMENT qsp-config (logger*,mux*,task*,server*,
-                      control-panel*,sequencer*,card-agent*)*>
+                      control-panel*,sequencer*,card-agent*,
+		      persistent-engine*)*>
 
 <!-- logger -->
 <!ELEMENT logger (log-listener*)>
@@ -84,4 +85,11 @@
 <!ATTLIST card-agent class CDATA #REQUIRED>
 <!ATTLIST card-agent logger IDREF #IMPLIED>
 <!ATTLIST card-agent realm CDATA #IMPLIED>
+<!ATTLIST card-agent persistent-engine CDATA #IMPLIED>
+
+<!-- persistent-engine -->
+<!ELEMENT persistent-engine (property)*>
+<!ATTLIST persistent-engine name ID #REQUIRED>
+<!ATTLIST persistent-engine logger IDREF #IMPLIED>
+<!ATTLIST persistent-engine realm CDATA #IMPLIED>
 
