@@ -533,12 +533,18 @@ public abstract class BaseChannel extends Observable
 	    evt.addMessage (e);
 	    throw e;
 	} catch (EOFException e) {
+            if (socket != null)
+                socket.close ();
 	    evt.addMessage ("<peer-disconnect/>");
 	    throw e;
 	} catch (InterruptedIOException e) {
+            if (socket != null)
+                socket.close ();
 	    evt.addMessage ("<io-timeout/>");
 	    throw e;
 	} catch (IOException e) { 
+            if (socket != null)
+                socket.close ();
 	    if (usable) 
 		evt.addMessage (e);
 	    throw e;
