@@ -78,4 +78,29 @@ public class SimpleLogSource implements LogSource {
     public Logger getLogger() {
 	return logger;
     }
+    public void info (String detail) {
+        Logger.log (new LogEvent (this, "info", detail));
+    }
+    public void info (String detail, Object obj) {
+        LogEvent evt = new LogEvent (this, "info", detail);
+        evt.addMessage (obj);
+        Logger.log (evt);
+    }
+    public void warning (String detail) {
+        Logger.log (new LogEvent (this, "warning", detail));
+    }
+    public void warning (String detail, Object obj) {
+        LogEvent evt = new LogEvent (this, "warning", detail);
+        evt.addMessage (obj);
+        Logger.log (evt);
+    }
+    public void error (String detail) {
+        Logger.log (new LogEvent (this, "error", detail));
+    }
+    public void error (String detail, Object obj) {
+        LogEvent evt = new LogEvent (this, "error", detail);
+        evt.addMessage (obj);
+        Logger.log (evt);
+    }
 }
+
