@@ -27,7 +27,7 @@
     <log-listener class="org.jpos.util.SimpleLogListener"/>
     <log-listener class="org.jpos.util.RotateLogListener">
       <property name="file" value="/tmp/qsp.log" />
-      <property name="window" value="60" />
+      <property name="window" value="86400" />
       <property name="copies" value="10" />
     </log-listener>
  </logger>
@@ -44,10 +44,13 @@
  </sequencer>
 
  <mux name="dummyclient.mux" 
-    logger="qsp" realm="dummyclient.mux" connect="yes">
+    logger="qsp" realm="dummyclient.mux" connect="no">
   <channel name="dummyclient.channel" 
           class="org.jpos.iso.channel.ASCIIChannel" 
-          packager="org.jpos.iso.packager.ISO87APackager"
+          packager="org.jpos.iso.packager.ConfigurablePackager"
+	  packager-config="src/config/packager/iso87ascii.xml"
+	  packager-logger="qsp" 
+	  packager-realm="packager"
           type="client" logger="qsp" realm="dummyclient.channel"
 	  connect="no" >
 
