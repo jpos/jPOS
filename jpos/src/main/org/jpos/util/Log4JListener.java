@@ -51,8 +51,12 @@ package org.jpos.util;
 
 import java.io.*;
 import java.util.*;
+import org.jpos.core.Configuration;
+import org.jpos.core.ReConfigurable;
+import org.jpos.core.ConfigurationException;
 
 import org.apache.log4j.*;
+import org.apache.log4j.xml.*;
 
 /**
  * @author Eoin P. FLood</a>
@@ -68,7 +72,7 @@ import org.apache.log4j.*;
  * be changed by calling <code>setPriority</code>
  */
 
-public class Log4JListener implements LogListener 
+public class Log4JListener implements LogListener, ReConfigurable
 {
     private Priority _priority;
 
@@ -92,6 +96,23 @@ public class Log4JListener implements LogListener
 
     public void close() 
     {
+    }
+
+    /**
+     * Expects the following properties:
+     * <ul>
+     *  <li>config   - Configuration file path
+     *  <li>priority - Log4J priority (debug, info, warn, error)
+     *  <li>watch    - interval (in ms) to monitor XML config file for changes 
+     * </ul>
+     */
+    public void setConfiguration (Configuration cfg) 
+        throws ConfigurationException
+    {
+        DOMConfigurator.configureAndWatch (
+            cfg.get ("config"), cfg.getLong ("watch")
+        );
+        setPriority (cfg.get ("priority"));
     }
 
     public synchronized void log (LogEvent ev) 
