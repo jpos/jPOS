@@ -141,7 +141,7 @@ public class ISO87APackager extends ISOBasePackager {
 			new IFA_LLLCHAR	(999, "RESERVED PRIVATE USE"),
 			new IFA_LLLCHAR	(999, "RESERVED PRIVATE USE"),
 			new IFA_LLLCHAR	(999, "RESERVED PRIVATE USE"),
-			new IFA_BINARY	(  8, "MAC 2")
+			new IFA_LLLCHAR (999, "MAC 2")
 		};
 	public ISO87APackager() {
 		super();
