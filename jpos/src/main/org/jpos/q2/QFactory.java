@@ -269,17 +269,14 @@ public class QFactory {
         return tmp.toString();
     }
 
-    public Object newInstance (String className)
+    public Object newInstance (String clazz)
 	throws Q2ConfigurationException
     {
         try {
-            return Class.forName(className).newInstance();
-        } catch (ClassNotFoundException e) {
-	    throw new Q2ConfigurationException (className, e);
-        } catch (InstantiationException e) {
-	    throw new Q2ConfigurationException (className, e);
-        } catch (IllegalAccessException e) {
-	    throw new Q2ConfigurationException (className, e);
+            MBeanServer mserver = q2.getMBeanServer();
+            return mserver.instantiate (clazz, loaderName);
+        } catch (Exception e) {
+	    throw new Q2ConfigurationException (clazz, e);
 	}
     }
 
