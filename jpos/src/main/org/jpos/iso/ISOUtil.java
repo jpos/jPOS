@@ -476,6 +476,13 @@ public class ISOUtil {
         }
         return d;
     }
+    /**
+     * @param s source string (with Hex representation)
+     * @return byte array
+     */
+    public static byte[] hex2byte (String s) {
+        return hex2byte (s.getBytes(), 0, s.length() >> 1);
+    }
 
     /**
      * format double value
