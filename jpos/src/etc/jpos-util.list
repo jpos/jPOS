@@ -1,4 +1,5 @@
 org/jpos/core/Configurable.class
+org/jpos/core/XmlConfigurable.class
 org/jpos/core/ReConfigurable.class
 org/jpos/core/Configuration.class
 org/jpos/core/ConfigurationException.class
