@@ -1,8 +1,10 @@
 $Id$
 
 [ ] Use ThreadPool on ISOMUX
-[ ] Handle filters on Configurable ISOChannel
 [ ] IF_MTI Stuff (as suggested by Arun Kumar U <bksys@vsnl.com>)
+
+Done: jpos-1.2.4
+[v] Handle filters on Configurable ISOChannel
 
 Done: jpos-1.2.3
 [v] ISOServer
