@@ -107,6 +107,7 @@ public class Q2 implements FileFilter {
     private QClassLoader loader;
     private Log log;
     private boolean shutdown;
+    private boolean shuttingDown;
     private Thread q2Thread;
 
     public Q2 (String dir) {
@@ -144,9 +145,11 @@ public class Q2 implements FileFilter {
         }
         q2Thread = null;
         undeploy ();
+        if (!shuttingDown)
+            System.exit (0);
     }
     public void shutdown () {
-        System.exit (0);
+        shutdown = true;
     }
     public QClassLoader getLoader () {
         return loader;
@@ -207,6 +210,7 @@ public class Q2 implements FileFilter {
         Runtime.getRuntime().addShutdownHook (
             new Thread () {
                 public void run () {
+                    shuttingDown = true;
                     shutdown = true;
                     log.info ("shutting down");
                     if (q2Thread != null) {
