@@ -85,40 +85,34 @@ public class EuroSubFieldPackager extends ISOBasePackager
 
     public byte[] pack (ISOComponent c) throws ISOException
     {
-    try
-    {
-    	System.out.println ("ESFP - pack");
-	int len;
-	Hashtable tab = c.getChildren();
-	StringBuffer sb = new StringBuffer();
-
-	// Handle first Required IF_CHAR field
-	ISOField f0 = (ISOField) tab.get (new Integer(0));
-	String s = (String) f0.getValue();
-	sb.append (s);
-	System.out.println ("fld.length="+fld.length);
-	for (int i =1; i<fld.length; i++) 
+	try
 	{
-	    ISOField f = (ISOField) tab.get (new Integer(i));
-	    if (f != null) 
+	    int len;
+	    Hashtable tab = c.getChildren();
+	    StringBuffer sb = new StringBuffer();
+
+	    // Handle first Required IF_CHAR field
+	    ISOField f0 = (ISOField) tab.get (new Integer(0));
+	    String s = (String) f0.getValue();
+	    sb.append (s);
+	    for (int i =1; i<fld.length; i++) 
 	    {
-	    	System.out.println ("f["+ i +"] != null");
-		sb.append (new String(fld[i].pack(f)));
+		ISOField f = (ISOField) tab.get (new Integer(i));
+		if (f != null) 
+		{
+		    sb.append (new String(fld[i].pack(f)));
+		}
 	    }
+	    return sb.toString().getBytes();
 	}
-	System.out.println ("packed48["+sb+"]");
-	return sb.toString().getBytes();
-    }
-    catch (Exception ex)
-    {
-    	System.out.println ("caught " +ex);
-	throw new ISOException (ex);
-    }
+	catch (Exception ex)
+	{
+	    throw new ISOException (ex);
+	}
     }
 
     public int unpack (ISOComponent m, byte[] b) throws ISOException
     {
-    	System.out.println ("ESFP - unpack");
 	LogEvent evt = new LogEvent (this, "unpack");
 	// Unpack the IF_CHAR field
 	int consumed = 0;
