@@ -78,6 +78,11 @@
   <target name="ext-examples" depends="ext">
     <javac srcdir="${ext-examples}" destdir="${classes.examples}"
            classpath="${classpath}" debug="on" deprecation="${deprecation}" />
+
+    <!-- QSP stuff -->
+    <mkdir dir="${ext-examples}/qsp/dtd" />
+    <copyfile src="${ext}/org/jpos/apps/qsp/qsp-config.dtd"
+	      dest="${ext-examples}/qsp/dtd/qsp-config.dtd" />
   </target>
 
   <target name="mod-uruguay" depends="ext">
