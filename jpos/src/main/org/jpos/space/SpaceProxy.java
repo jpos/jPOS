@@ -1,52 +1,9 @@
 /*
- * Copyright (c) 2000 jPOS.org.  All rights reserved.
+ * Copyright (c) 2004 jPOS.org 
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
+ * See terms of license at http://jpos.org/license.html
  *
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- *
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in
- *    the documentation and/or other materials provided with the
- *    distribution.
- *
- * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:
- *    "This product includes software developed by the jPOS project 
- *    (http://www.jpos.org/)". Alternately, this acknowledgment may 
- *    appear in the software itself, if and wherever such third-party 
- *    acknowledgments normally appear.
- *
- * 4. The names "jPOS" and "jPOS.org" must not be used to endorse 
- *    or promote products derived from this software without prior 
- *    written permission. For written permission, please contact 
- *    license@jpos.org.
- *
- * 5. Products derived from this software may not be called "jPOS",
- *    nor may "jPOS" appear in their name, without prior written
- *    permission of the jPOS project.
- *
- * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
- * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  
- * IN NO EVENT SHALL THE JPOS PROJECT OR ITS CONTRIBUTORS BE LIABLE FOR 
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL 
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS 
- * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) 
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, 
- * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING 
- * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
- * POSSIBILITY OF SUCH DAMAGE.
- * ====================================================================
- *
- * This software consists of voluntary contributions made by many
- * individuals on behalf of the jPOS Project.  For more
- * information please see <http://www.jpos.org/>.
  */
-
 package org.jpos.space;
 
 import java.io.Serializable;
@@ -55,28 +12,30 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.ExportException;
 import java.rmi.server.UnicastRemoteObject;
+import java.rmi.server.RemoteRef;
+import java.rmi.server.RemoteStub;
+import java.rmi.server.RemoteObject;
 import java.util.Set;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import org.jpos.core.Configuration;
+import org.jpos.core.ConfigurationException;
 import org.jpos.core.ReConfigurable;
-import org.jpos.util.LogEvent;
-import org.jpos.util.Logger;
-import org.jpos.util.SimpleLogSource;
 
 /**
  * RMI Space Proxy 
  * @author Alejandro Revilla
+ * @author Niclas Hedhman
  * @version $Revision$ $Date$
- * @since 2.0
+ * @since 1.4.9
  */
-public class SpaceProxy extends SimpleLogSource 
-    implements RemoteSpace, ReConfigurable 
-{
+public class SpaceProxy implements RemoteSpace, ReConfigurable {
     Space sp;
     Configuration cfg;
+    private RemoteRef ref;
+    private RemoteStub stub;
     public SpaceProxy () throws RemoteException {
         super();
         sp = TransientSpace.getSpace ();
@@ -95,7 +54,8 @@ public class SpaceProxy extends SimpleLogSource
         } catch (ExportException e) {
             // registry already exists
         }
-        UnicastRemoteObject.exportObject (this);
+        stub = UnicastRemoteObject.exportObject (this);
+        ref  = stub.getRef();
     }
 
     public void out (Serializable key, Serializable value) 
@@ -149,13 +109,14 @@ public class SpaceProxy extends SimpleLogSource
         }
     }
     public void setConfiguration (Configuration cfg) 
+        throws ConfigurationException
     {
         this.cfg = cfg;
         try {
             InitialContext ctx = new InitialContext ();
-            ctx.rebind (cfg.get ("name"), this);
+            ctx.rebind (cfg.get ("name"), stub);
         } catch (NamingException e) {
-            Logger.log (new LogEvent (this, "configuration", e));
+            throw new ConfigurationException (e);
         }
     }
     public Set getKeySet () {
@@ -163,6 +124,32 @@ public class SpaceProxy extends SimpleLogSource
             return ((LocalSpace)sp).getKeySet ();
         else
             return null;
+    }
+    public String toString() {
+        if (ref == null)
+            return getClass().getName() + "[<unexported>]";
+        else
+            return getClass().getName() + "[" + ref.remoteToString() + "]";
+    }
+    public int hashCode() {
+        if (ref == null )
+            return super.hashCode();
+        else
+            return ref.remoteHashCode();
+    }
+    public boolean equals (Object obj) {
+        if (obj instanceof RemoteObject) {
+            if (ref == null) {
+                return obj == this;
+            } else {
+                RemoteRef otherRef = ((RemoteObject)obj).getRef();
+                return ref.remoteEquals (otherRef);
+            }
+        } else if (obj != null) {
+            return obj.equals (this);
+        } else {
+            return false;
+        }
     }
 }
 
