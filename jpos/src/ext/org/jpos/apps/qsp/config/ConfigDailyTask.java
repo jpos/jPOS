@@ -70,6 +70,8 @@ import org.jpos.apps.qsp.task.DailyTask;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import javax.management.NotCompliantMBeanException;
+
 /**
  * Configure User defined Tasks
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
@@ -99,19 +101,23 @@ public class ConfigDailyTask implements QSPReConfigurator {
 	    );
 	    configureTask (controller, node, evt);
 
-	    if (name != null)
+	    if (name != null) {
 		NameRegistrar.register (NAMEREGISTRAR_PREFIX+name, controller);
+                try {
+                    qsp.registerMBean (controller, "type=dailytask,name="+name);
+                } catch (NotCompliantMBeanException e) {
+                    // ignoring, use may or may not implement MBean
+                    evt.addMessage (e.getMessage());
+                } 
+            }
 	    Thread thread = new Thread(controller);
 	    thread.setName ("qsp-daily-task-"+name);
 	    thread.start();
-        } catch (ClassNotFoundException e) {
-	    throw new ConfigurationException ("config-task:"+className, e);
-        } catch (InstantiationException e) {
-	    throw new ConfigurationException ("config-task:"+className, e);
-        } catch (IllegalAccessException e) {
-	    throw new ConfigurationException ("config-task:"+className, e);
-	}
-	Logger.log (evt);
+        } catch (Exception e) {
+	    throw new ConfigurationException ("config-daily-task:"+className,e);
+        } finally {
+	    Logger.log (evt);
+        }
     }
     public void reconfig (QSP qsp, Node node) throws ConfigurationException
     {
