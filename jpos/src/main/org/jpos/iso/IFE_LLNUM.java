@@ -56,6 +56,7 @@ package org.jpos.iso;
  * </pre>
  * based on Eoin's IFE_LLCHAR
  * @author apr@cs.com.uy
+ * @author Jonathan.O'Connor@xcom.de
  * @version $Id$
  * @see ISOFieldPackager
  * @see ISOComponent
@@ -86,13 +87,13 @@ public class IFE_LLNUM extends ISOFieldPackager
                 "invalid len "+len +" packing LLNUM field "+(Integer) c.getKey()
             );
 
-        byte[] bcd = ISOUtil.str2bcd (s, pad);
-        byte[] b   = new byte[bcd.length + 2];
+        byte[] ebcdic = ISOUtil.asciiToEbcdic( s );
+        byte[] b   = new byte[ebcdic.length + 2];
         byte[] l   = ISOUtil.asciiToEbcdic(
             ISOUtil.zeropad (Integer.toString (len), 2)
         );
         System.arraycopy(l, 0, b, 0, l.length);
-        System.arraycopy(bcd, 0, b, 2, bcd.length);
+        System.arraycopy(ebcdic, 0, b, 2, ebcdic.length);
         return b;
     }
     /**
@@ -103,11 +104,11 @@ public class IFE_LLNUM extends ISOFieldPackager
     * @exception ISOException
     */
     public int unpack (ISOComponent c, byte[] b, int offset)
-	throws ISOException
+        throws ISOException
     {
-        int len = Integer.parseInt (ISOUtil.ebcdicToAscii(b, 0, 2));
-        c.setValue (ISOUtil.bcd2str (b, offset+2, len, pad));
-        return 2 + (++len >> 1);
+        int len = Integer.parseInt (ISOUtil.ebcdicToAscii(b, offset, 2));
+        c.setValue (ISOUtil.ebcdicToAscii(b, offset + 2, len));
+        return 2 + len;
     }
 
     public int getMaxPackedLength() {
