@@ -226,11 +226,14 @@ public class PersistentSpace implements LocalSpace // PersistentSpaceMBean {
                       new FileInputStream (f)));
                 value = fin.readObject ();
             } catch (Exception e) { 
+                throw new SpaceError (e);
             } finally {
                 if (fin != null)
                     try {
                         fin.close();
-                    } catch (Exception e) { }
+                    } catch (Exception e) { 
+                        throw new SpaceError (e);
+                    }
             }
             return value;
         }
@@ -258,11 +261,14 @@ public class PersistentSpace implements LocalSpace // PersistentSpaceMBean {
                 fout.flush();
                 fos.getFD().sync();
             } catch (Exception e) {
+                throw new SpaceError (e);
             } finally {
                 if (fos != null)
                     try {
                         fos.close();
-                    } catch (Exception e) { };
+                    } catch (Exception e) { 
+                        throw new SpaceError (e);
+                    };
             }
             stored.add(f.getAbsolutePath());
             /* fill cache */
