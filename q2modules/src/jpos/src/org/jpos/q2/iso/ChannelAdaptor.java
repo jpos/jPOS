@@ -236,7 +236,8 @@ public class ChannelAdaptor
                     if (o instanceof ISOMsg)
                         channel.send ((ISOMsg) o);
                 } catch (Exception e) { 
-                    getLog().warn ("channel-sender-"+in, e);
+                    getLog().warn ("channel-sender-"+in, e.getMessage ());
+                    disconnect ();
                     ISOUtil.sleep (1000);
                 }
             }
