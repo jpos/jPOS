@@ -75,12 +75,30 @@ import org.jpos.core.SimpleConfiguration;
 import org.jpos.core.ConfigurationException;
 import org.jpos.apps.qsp.config.ConfigTask;
 
+import com.sun.management.jmx.Trace;
+// import javax.management.Attribute;
+import javax.management.ObjectName;
+import javax.management.MBeanServer;
+import javax.management.MBeanServerFactory;
+// import javax.management.MBeanInfo;
+// import javax.management.MBeanAttributeInfo;
+// import javax.management.MBeanConstructorInfo;
+// import javax.management.MBeanOperationInfo;
+// import javax.management.MBeanNotificationInfo;
+// import javax.management.MBeanParameterInfo;
+
+import javax.management.MBeanException;
+import javax.management.ReflectionException;
+import javax.management.MBeanRegistrationException;
+import javax.management.MalformedObjectNameException;
+import javax.management.InstanceAlreadyExistsException;
+
 /**
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
  * @version $Revision$ $Date$
  * @see <a href="http://www.cebik.com/qsig.html">QSP</a>
  */
-public class QSP implements ErrorHandler, LogSource, Runnable {
+public class QSP implements ErrorHandler, LogSource, Runnable, QSPMBean {
     public static final String NAMEREGISTRAR_PREFIX = "qsp.";
     public static final String DEFAULT_NAME = "default";
     Document config;
@@ -96,6 +114,9 @@ public class QSP implements ErrorHandler, LogSource, Runnable {
     String[] extendedTags;
     String[] supportedTags;
     boolean validation;
+    protected MBeanServer server = null;
+    protected long startTime;
+    protected boolean newConfigFile;
 
     public static String[] SUPPORTED_TAGS = 
 	{ "logger",
@@ -122,6 +143,7 @@ public class QSP implements ErrorHandler, LogSource, Runnable {
         supportedTags = SUPPORTED_TAGS;
         extendedTags = new String[0];
         validation = true;
+        startTime = System.currentTimeMillis();
     }
     /**
      * @param configFile XML based QSP config file
@@ -141,14 +163,28 @@ public class QSP implements ErrorHandler, LogSource, Runnable {
             this.extendedTags = extendedTags;
         this.validation = validation;
     }
-    public void setValidation (boolean validation) {
-        this.validation = validation;
+    public long getElapsed () {
+        return System.currentTimeMillis() - startTime;
+    }
+    public MBeanServer getMBeanServer () throws Exception {
+        if (server == null)
+            createMBeanServer();
+        return server;
+    }
+    public void setSupportedTags (String[] supportedTags) {
+        this.supportedTags = supportedTags;
     }
     public String[] getSupportedTags () {
         return supportedTags;
     }
+    public void setExtendedTags (String[] extendedTags) {
+        this.extendedTags = extendedTags;
+    }
     public String[] getExtendedTags () {
         return extendedTags;
+    }
+    public void setValidation (boolean validation) {
+        this.validation = validation;
     }
     public boolean getValidation() {
         return validation;
@@ -159,15 +195,27 @@ public class QSP implements ErrorHandler, LogSource, Runnable {
     public void setConfig (Document config) {
 	this.config = config;
     }
-    public void setConfigFile (File f) {
-	this.configFile = f;
-	this.lastModified = f.lastModified();
+    public void setConfigFile (String f) throws IOException {
+        File newFile = new File (f);
+        if (!newFile.equals (configFile)) {
+            if (this.configFile != null) {
+                this.newConfigFile = true;
+                Logger.log (new LogEvent (this, "set-config-file", f));
+            }
+            this.configFile = newFile;
+            this.lastModified = configFile.lastModified();
+            Thread.currentThread().interrupt ();
+        }
     }
     public void setMonitorConfigInterval (long l) {
 	monitorConfigInterval = l;
+        Thread.currentThread().interrupt ();
     }
-    public File getConfigFile () {
-	return configFile;
+    public long getMonitorConfigInterval () {
+        return monitorConfigInterval;
+    }
+    public String getConfigFile () {
+	return configFile.toString ();
     }
     public Collection getReConfigurables() {
 	return reconfigurables;
@@ -192,7 +240,6 @@ public class QSP implements ErrorHandler, LogSource, Runnable {
 	Logger.log (new LogEvent (this, "error", e));
 	throw e;
     }
-
     public void fatalError (SAXParseException e) throws SAXException {
 	Logger.log (new LogEvent (this, "fatalError", e));
 	throw e;
@@ -225,14 +272,51 @@ public class QSP implements ErrorHandler, LogSource, Runnable {
 		    (this, nodes.item(i));
 	}
     }
+    protected void configure () throws ConfigurationException {
+        LogEvent evt = new LogEvent (this, "configure");
+        String[] st = getSupportedTags ();
+        for (int i=0; i<st.length; i++) {
+            evt.addMessage (st [i]);
+            configure (st [i]);
+        }
+        evt.addMessage ("-extended tags-");
+
+        st = getExtendedTags ();
+        for (int i=0; i<st.length; i++) {
+            evt.addMessage (st [i]);
+            configure (st [i]);
+        }
+        Logger.log (evt);
+    }
     private boolean monitorConfigFile () {
 	long l;
-	while (lastModified == (l=configFile.lastModified()))
-	    try {
-		Thread.sleep (monitorConfigInterval);
-	    } catch (InterruptedException e) { }
-	lastModified = l;
-	return lastModified != 0;
+        while (lastModified == (l=configFile.lastModified())) {
+            if (newConfigFile) {
+                Logger.log (new LogEvent (this, "new-config-detected"));
+                return true;
+            }
+            try {
+                Thread.sleep (monitorConfigInterval);
+            } catch (InterruptedException e) { 
+                Logger.log (
+                    new LogEvent (this, "sleep-interrupted")
+                );
+                return true;
+            }
+        }
+	return (lastModified = l) != 0;
+    }
+    public void killVM () {
+        Logger.log (new LogEvent (this, "kill-vm"));
+        Thread killer = new Thread() {
+            public void run() {
+                try {
+                    Thread.sleep (1000);
+                } catch (InterruptedException e) { }
+                System.exit (0);
+            }
+        };
+        killer.start ();
     }
     public static void shutdownMuxes() {
         Iterator iter = NameRegistrar.getMap().values().iterator();
@@ -254,13 +338,21 @@ public class QSP implements ErrorHandler, LogSource, Runnable {
             (cfg != null) ? cfg.get (propName) : null;
     }
     public void run () {
-        while (monitorConfigFile ()) {
+        while (newConfigFile || monitorConfigFile ()) {
             try {
-                parser.parse (getConfigFile().getPath());
+                parser.parse (configFile.getPath());
                 setConfig (parser.getDocument());
-                Iterator iter = getReConfigurables().iterator();
-                while (iter.hasNext())
-                    reconfigure ((String) iter.next());
+                if (newConfigFile) {
+                    Logger.log (
+                        new LogEvent (this, "new-config-file", configFile)
+                    );
+                    configure();
+                    newConfigFile = false;
+                } else {
+                    Iterator iter = getReConfigurables().iterator();
+                    while (iter.hasNext())
+                        reconfigure ((String) iter.next());
+                }
             } catch (Exception e) {
                 Logger.log (new LogEvent (this, "QSP", e));
                 try {
@@ -296,7 +388,6 @@ public class QSP implements ErrorHandler, LogSource, Runnable {
         }
         return cfg;
     }
-
     /**
      * Launches QSP
      * @param configFile XML based QSP config file
@@ -310,24 +401,18 @@ public class QSP implements ErrorHandler, LogSource, Runnable {
         String[] extendedTags, boolean validation)
     {
 	DOMParser parser = new DOMParser();
-	QSP qsp = new QSP (supportedTags, extendedTags, validation);
-        qsp.setParser (parser);
+        QSP qsp = new QSP (supportedTags, extendedTags, validation);
 	try {
-	    qsp.setConfigFile (new File (configFile));
+            qsp.setParser (parser);
+	    qsp.setConfigFile (configFile);
 	    parser.setFeature(
                 "http://xml.org/sax/features/validation", 
                 qsp.getValidation()
             );
 	    parser.setErrorHandler (qsp);
-	    parser.parse (qsp.getConfigFile().getPath());
+	    parser.parse (qsp.configFile.getPath());
 	    qsp.setConfig (parser.getDocument());
-            String[] st = qsp.getSupportedTags ();
-	    for (int i=0; i<st.length; i++)
-		qsp.configure (st [i]);
-
-            st = qsp.getExtendedTags ();
-	    for (int i=0; i<st.length; i++)
-		qsp.configure (st [i]);
+            qsp.configure ();
 
 	    if (controlPanel != null)
 		controlPanel.showUp();
@@ -336,13 +421,7 @@ public class QSP implements ErrorHandler, LogSource, Runnable {
 		new SystemMonitor (3600000, qsp.getLogger(), "monitor");
 
             (new Thread (qsp)).start();
-	} catch (IOException e) {
-	    Logger.log (new LogEvent (qsp, "error", e));
-	    System.out.println (e);
-	} catch (SAXException e) {
-	    Logger.log (new LogEvent (qsp, "error", e));
-	    System.out.println (e);
-	} catch (ConfigurationException e) {
+	} catch (Exception e) {
 	    Logger.log (new LogEvent (qsp, "error", e));
 	    System.out.println (e);
 	}
@@ -359,6 +438,23 @@ public class QSP implements ErrorHandler, LogSource, Runnable {
             ConfigTask.NAMEREGISTRAR_PREFIX+name
         );
     }
+
+    protected void createMBeanServer () throws Exception {
+        Trace.parseTraceProperties ();
+        String domain = cfg.get ("jmx.domain", "QSP");
+        server = MBeanServerFactory.createMBeanServer(domain);
+        ObjectName mbeanObjectName = new ObjectName(domain + ":type=QSP");
+        server.registerMBean (this, mbeanObjectName);
+    }
+
+    public void registerMBean (Object bean, String type) throws Exception {
+        MBeanServer server = getMBeanServer();
+        ObjectName name = new ObjectName (
+            server.getDefaultDomain() + ":" + type 
+        );
+        server.registerMBean (bean, name);
+    }
+
     /**
      * Launches QSP with default values for supportedTags and validation
      * @param configFile XML based QSP config file
