@@ -15,5 +15,7 @@
 
  <request-listener class="bouncer.Bouncer" logger="Q2" realm="bouncer" />
 
+ <property name="allow" value="127.0.0.1" />
+
 </server>
 
