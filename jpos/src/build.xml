@@ -145,7 +145,7 @@
     <jar jarfile="${dist}/${archive}.jar" 
          basedir="${classes}"
          manifest="${classes}/MANIFEST.MF" 
-	 includes="LICENSE,README,CHANGELOG,org/**" />
+	 includes="LICENSE,README,org/**" />
   </target>
 
   <target name="qsp" depends="ext">
@@ -156,12 +156,11 @@
              token="$$VERSION$$" value="${version}"/>
     <copy file="${source}/etc/LICENSE" tofile="${classes}/LICENSE" />
     <copy file="${source}/etc/README"  tofile="${classes}/README" />
-    <copy file="${source}/etc/CHANGELOG" tofile="${classes}/CHANGELOG" />
 
     <jar jarfile="${dist}/${qsp-archive}.jar" 
          basedir="${classes}"
          manifest="${classes}/MANIFEST.MF" 
-	 includes="LICENSE,README,CHANGELOG,org/**" />
+	 includes="LICENSE,README,org/**" />
   </target>
 
   <target name="cvs" depends="clean">
