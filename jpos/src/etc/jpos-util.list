@@ -19,6 +19,7 @@ org/jpos/iso/ISOException.class
 org/jpos/iso/ISOUtil.class
 org/jpos/space/Space.class
 org/jpos/space/SpaceProxy*.class
+org/jpos/space/SpaceListener.class
 org/jpos/space/LocalSpace.class
 org/jpos/space/LeasedReference.class
 org/jpos/space/RemoteSpace.class
