@@ -315,7 +315,7 @@ public abstract class BaseChannel extends Observable
         return timeout;
     }
     protected void applyTimeout () throws SocketException {
-	if (timeout != 0 && socket != null) 
+	if (timeout >= 0 && socket != null) 
 	    socket.setSoTimeout (timeout);
     }
     /**
