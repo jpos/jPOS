@@ -1,6 +1,9 @@
 
 /*
  * $Log$
+ * Revision 1.5  2000/09/01 16:34:53  apr
+ * Accept "yes" as "true" response for getBoolean
+ *
  * Revision 1.4  2000/03/01 14:44:38  apr
  * Changed package name to org.jpos
  *
@@ -58,7 +61,7 @@ public class SimpleConfiguration implements Configuration {
     }
     public boolean getBoolean (String name) {
 	String v = get (name, "false").trim();
-	return v.equalsIgnoreCase("true");
+	return v.equalsIgnoreCase("true") || v.equalsIgnoreCase("yes");
     }
     synchronized public void load(String filename) 
 	throws FileNotFoundException, IOException
