@@ -58,7 +58,7 @@ package org.jpos.q2;
  *
  * @see QPersist
  */
- public interface QBean extends QPersist {
+public interface QBean {
 
     int STOPPED   = 1;
     int STOPPING  = 2;
