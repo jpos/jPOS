@@ -71,6 +71,7 @@ import org.jpos.util.LogSource;
 import org.jpos.q2.QBeanSupport;
 import org.jpos.q2.QFactory;
 import org.jpos.q2.Q2ConfigurationException;
+import org.jpos.util.NameRegistrar;
 
 import org.jdom.Element;
 
@@ -128,7 +129,9 @@ public class ChannelAdaptor
             getLog().warn ("error disconnecting from remote host", e);
         }
     }
-
+    public void destroyService () {
+        NameRegistrar.unregister ("channel." + getName ());
+    }
 
     /**
      * @jmx:managed-attribute description="set reconnect delay"
