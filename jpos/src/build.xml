@@ -115,7 +115,7 @@ Main targets:
      <include name="**/JepUtil.java"                    if="jep.present"     />
      <include name="**/filter/CalculateFilter.java"     if="jep.present"     />
      <include name="**/filter/SQLFilter.java"           if="jep.present"     />
-     <include name="**/filter/BSHFilter.java"           if="bsh.present"     />
+     <include name="**/bsh/*.java"                      if="bsh.present"     />
 
      <include name="**/VISA1Link.java"                  if="comm.present"    />
      <include name="**/V24.java"                        if="comm.present"    />
