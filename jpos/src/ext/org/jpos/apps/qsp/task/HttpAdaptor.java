@@ -66,13 +66,17 @@ import java.io.IOException;
 /**
  * @author <a href="mailto:taherkordy@dpi2.dpi.net.ir">Alireza Taherkordi</a>
  *
- * &lt;task name="HttpAdaptor" class="org.jpos.apps.qsp.task.HttpAdaptorTask"
+ * &lt;task name="HttpAdaptor" class="org.jpos.apps.qsp.task.HttpAdaptor"
  *     logger="qsp" realm="Http-Adaptor"&gt;
+ *  &lt;property name="host" value="localhost" /&gt;
  *  &lt;property name="port" value="8082" /&gt;
  *  &lt;property name="user" value="jpos" /&gt;
  *  &lt;property name="password" value="jpos" /&gt;
  *  &lt;property name="processor" value="mx4j.adaptor.http.XSLTProcessor" /&gt;
  * &lt;/task>
+ *
+ * set host property to "localhost" if you want to can't access the server 
+ * from another computer,This is good for security reasons.
  *
  */
 public class HttpAdaptor implements LogSource, Configurable, Runnable
@@ -106,6 +110,10 @@ public class HttpAdaptor implements LogSource, Configurable, Runnable
                 "HttpAdaptor:name=HttpAdaptor,port=" + port
             );
             adaptor.setPort (port);
+
+            String host = cfg.get ("host", "0.0.0.0");
+            adaptor.setHost(host);
+
             String user = cfg.get ("user", null);
             if (user != null) {
                 adaptor.addAuthorization(user,cfg.get ("password", ""));
