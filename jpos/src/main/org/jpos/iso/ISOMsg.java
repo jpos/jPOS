@@ -23,6 +23,7 @@ public class ISOMsg extends ISOComponent implements Cloneable {
 	protected boolean dirty, maxFieldDirty;
 	protected int direction;
 	protected byte[] header;
+	protected int fieldNumber = -1;
 	public static int INCOMING = 1;
 	public static int OUTGOING = 2;
 
@@ -33,6 +34,10 @@ public class ISOMsg extends ISOComponent implements Cloneable {
 		maxFieldDirty=true;
 		direction = 0;
 		header = null;
+	}
+	public ISOMsg (int fieldNumber) {
+		this();
+		this.fieldNumber = fieldNumber;
 	}
 	/**
 	 * Sets the direction information related to this message
@@ -264,5 +269,10 @@ public class ISOMsg extends ISOComponent implements Cloneable {
 			}
 		} catch (ISOException e) { }
 		return s.toString();
+	}
+	public Object getKey() throws ISOException {
+		if (fieldNumber != -1)
+			return new Integer(fieldNumber);
+		throw new ISOException ("This is not a subField");
 	}
 }

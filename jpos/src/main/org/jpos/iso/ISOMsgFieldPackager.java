@@ -1,14 +1,13 @@
 package uy.com.cs.jpos.iso;
 
 /**
- * ISOMsgFieldPackager is a packager associated with
- * an ISOMsgField. As oposed to a standard ISOField, an
- * ISOMsgField allows compound ISOMsg (an ISOMsg within
- * anotherone).
+ * ISOMsgFieldPackager is a packager able to pack compound ISOMsgs
+ * (one message inside another one, and so on...)
  *
  * @author apr@cs.com.uy
  * @version $Id$
- * @see ISOMsgField
+ * @see PostPackager
+ * @see PostPrivatePackager
  */
 public class ISOMsgFieldPackager extends ISOFieldPackager {
 	protected ISOPackager msgPackager;
@@ -31,14 +30,9 @@ public class ISOMsgFieldPackager extends ISOFieldPackager {
 	 * @exception ISOException
 	 */
 	public byte[] pack (ISOComponent c) throws ISOException {
-		if (!(c instanceof ISOMsgField)) 
-			throw new ISOException(
-				"ISOMsgFieldPackager: can't pack non ISOMsgField");
-
-		ISOMsg m = (ISOMsg) ((ISOMsgField) c).getValue();
+		ISOMsg m = (ISOMsg) c;
 		m.recalcBitMap();
-		ISOBinaryField f = new ISOBinaryField(0);
-		f.setValue(msgPackager.pack(m));
+		ISOBinaryField f = new ISOBinaryField(0, msgPackager.pack(m));
 		return fieldPackager.pack(f);
 	}
 
@@ -52,18 +46,14 @@ public class ISOMsgFieldPackager extends ISOFieldPackager {
 	public int unpack (ISOComponent c, byte[] b, int offset)
 		throws ISOException
 	{
-		if (!(c instanceof ISOMsgField)) 
-			throw new ISOException(
-				"ISOMsgFieldPackager: can't unpack non ISOMsgField");
-
 		ISOBinaryField f = new ISOBinaryField(0);
 		int consumed = fieldPackager.unpack(f, b, offset);
-		msgPackager.unpack((ISOMsg) c.getValue(), (byte[]) f.getValue());
+		msgPackager.unpack((ISOMsg) c, (byte[]) f.getValue());
 		return consumed;
 	}
 	public ISOComponent createComponent(int fieldNumber) {
-		ISOMsg m = new ISOMsg();
+		ISOMsg m = new ISOMsg(fieldNumber);
 		m.setPackager(msgPackager);
-		return new ISOMsgField (fieldNumber, m);
+		return m;
 	}
 }

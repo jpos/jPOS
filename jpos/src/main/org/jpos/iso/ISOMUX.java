@@ -60,6 +60,12 @@ public class ISOMUX implements Runnable {
 	public void setTraceNumberField(int traceNumberField) {
 		this.traceNumberField = traceNumberField;
 	}
+	/**
+	 * @return the underlying ISOChannel
+	 */
+	public ISOChannel getISOChannel() {
+		return channel;
+	}
    /**
     * set an ISORequestListener for unmatched messages
     * @param rl a request listener object

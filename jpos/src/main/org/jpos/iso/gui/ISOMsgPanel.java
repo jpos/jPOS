@@ -1,0 +1,130 @@
+/**
+ * ISOMsgPanel
+ * Swing based GUI to ISOMsg
+ * @author apr@cs.com.uy
+ * @see uy.com.cs.jpos.iso.ISOMsg
+ */
+
+/*
+ * $Log$
+ * Revision 1.1  1999/05/18 12:02:59  apr
+ * Added GUI package
+ *
+ */
+
+package uy.com.cs.jpos.iso.gui;
+
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+import javax.swing.event.*;
+import javax.swing.table.*;
+import java.util.*;
+
+import uy.com.cs.jpos.iso.*;
+
+/**
+ * Called from ISOChannelPanel when you click on it's ISOMeter.<br>
+ * It enable field and header visualization by means of visual
+ * components such as JTable
+ *
+ * @see ISOChannelPanel
+ * @see ISORequestListenerPanel
+ */
+
+public class ISOMsgPanel extends JPanel {
+	ISOMsg m;
+	Vector validFields;
+	public ISOMsgPanel(ISOMsg m) {
+		super();
+		this.m = m;
+		setLayout(new BorderLayout());
+		setBorder(BorderFactory.createRaisedBevelBorder());
+		setValidFields();
+		add(createISOMsgTable(), BorderLayout.CENTER);
+		add(createISOMsgDumpPanel(), BorderLayout.SOUTH);
+	}
+	private void setValidFields() {
+		validFields = new Vector();
+		for (int i=0; i<128; i++)
+			if (m.hasField(i))
+				validFields.addElement(new Integer(i));
+	}
+	private JComponent createISOMsgTable() {
+		TableModel dataModel = new AbstractTableModel() {
+			public int getColumnCount() {
+				return 3;
+			}
+			public int getRowCount() {
+				return validFields.size();
+			}
+			public String getColumnName(int columnIndex) {
+				switch (columnIndex) {
+					case 0 :
+						return "#";
+					case 1 :
+						return "Content";
+					case 2 :
+						return "Description";
+					default:
+						return "";
+				}
+			}
+			public Object getValueAt(int row, int col) {
+				switch (col) {
+					case 0 :
+						return ((Integer)validFields.elementAt(row));
+					case 1 :
+						try {
+							int index =
+							((Integer)validFields.elementAt(row)).intValue();
+
+							Object obj = m.getValue(index);
+							if (obj instanceof String) 
+								return obj.toString();
+							else if (obj instanceof byte[])
+								return ISOUtil.hexString((byte[]) obj);
+						} catch (ISOException e) { }	
+						break;
+					case 2 :
+						int i=((Integer)validFields.elementAt(row)).intValue();
+						ISOPackager p = m.getPackager();
+						return p.getFieldDescription(m,i);
+				}
+				return "<???>";
+			}
+		};
+		JTable table = new JTable(dataModel);
+		table.getColumnModel().getColumn(0).setPreferredWidth(10);
+		table.setPreferredScrollableViewportSize(
+			new Dimension (500,table.getRowCount()*table.getRowHeight()));
+		JScrollPane scrollpane = new JScrollPane(table);
+		return scrollpane;
+	}
+	JComponent createISOMsgDumpPanel() {
+		JPanel p = new JPanel();
+		JTextArea t = new JTextArea(3,20);
+
+		p.setLayout(new BorderLayout());
+		p.setBackground(Color.white);
+		p.setBorder(BorderFactory.createLoweredBevelBorder());
+		p.add(new JLabel("Dump", SwingConstants.LEFT),
+			BorderLayout.NORTH);
+		t.setFont(new Font ("Helvetica", Font.PLAIN, 8));
+		t.setLineWrap(true);
+		try {
+			StringBuffer buf = new StringBuffer();
+			if (m.getHeader() != null) 
+				buf.append("--[Header]--\n" 
+					+ISOUtil.hexString(m.getHeader()) + "\n--[Msg]--\n");
+	        byte[] b = m.pack();
+			buf.append (ISOUtil.hexString(b));
+			t.setText(buf.toString());
+		} catch (ISOException e) {
+			t.setText(e.toString());
+			t.setForeground(Color.red);
+		}
+		p.add(t, BorderLayout.CENTER);
+		return p;
+	}
+}
