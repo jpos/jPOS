@@ -131,8 +131,11 @@ public class LogEvent extends EventObject {
                     }
                     p.println ("]");
                 }
-		else
+		else if (o != null) {
 		    p.println (newIndent + o.toString());
+                } else {
+		    p.println (newIndent + "null");
+                }
 	    }
 	    p.println (indent + "</" + tag + ">");
 	}
