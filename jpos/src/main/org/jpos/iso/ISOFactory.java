@@ -84,7 +84,6 @@ public class ISOFactory {
         return channel;
     }
 
-
     /**
      * Creates an ISOChannel based on Configuration property [prefix].packager
      *
@@ -118,5 +117,25 @@ public class ISOFactory {
 	    throw new ISOException ("newPackager", e);
 	}
         return packager;
+    }
+
+    /**
+     * Create an ISOChannel and builds an ISOMUX around it.
+     * @see ISOFactory#newChannel
+     * @see org.jpos.util.Configuration
+     * @see ISOChannel
+     *
+     * @param cfg Configuration Object
+     * @param prefix propertyPrefix
+     * @param logger optional logger (may be null)
+     * @param realm  optional realm  (may be null if logger is null)
+     * @exception ISOException catches all possible exceptions into one
+     */
+    public static ISOMUX newMUX
+	(Configuration cfg, String prefix, Logger logger, String realm)
+	throws ISOException
+    {
+	ISOChannel channel = newChannel (cfg, prefix, logger, realm);
+	return new ISOMUX (channel, logger, realm + ".mux");
     }
 }
