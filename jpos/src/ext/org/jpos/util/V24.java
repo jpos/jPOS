@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.4  2000/03/14 00:01:12  apr
+ * isConnected(): remove debugging code
+ *
  * Revision 1.3  2000/03/01 14:44:45  apr
  * Changed package name to org.jpos
  *
@@ -229,8 +232,8 @@ public class V24 implements SerialPortEventListener, LogProducer
      * @return connection status
      */
     public boolean isConnected() {
-	// return port.isDSR() && port.isCD();
-	return port.isDSR();
+	return port.isDSR() && port.isCD();
+	// return port.isDSR();
     }
     /**
      * flush receiver and dump discarded characters thru Logger
@@ -299,7 +302,7 @@ public class V24 implements SerialPortEventListener, LogProducer
 	byte[] b = s.getBytes();
 	send (b);
 	flushTransmitter ();
-	Logger.log (new LogEvent (this, "send", ISOUtil.dumpString(b)));
+	Logger.log (new LogEvent (this, "send-and-flush", ISOUtil.dumpString(b)));
     }
     /**
      * @param b buffer
