@@ -106,9 +106,9 @@ public class GenericValidatingPackager extends GenericPackager implements ISOVal
         int maxField = 0;
 
         // First find the largest field number in the Hashtable
-        for (Enumeration enum=tab.keys(); enum.hasMoreElements(); )
+        for (Enumeration e=tab.keys(); e.hasMoreElements(); )
         {
-            int n = ((Integer)enum.nextElement()).intValue();
+            int n = ((Integer)e.nextElement()).intValue();
             if (n > maxField) maxField = n;
         }
 
@@ -116,9 +116,9 @@ public class GenericValidatingPackager extends GenericPackager implements ISOVal
         ISOFieldPackager fld[] = new ISOFieldPackager[maxField+1];
 
         // Populate it
-        for (Enumeration enum=tab.keys(); enum.hasMoreElements(); )
+        for (Enumeration e=tab.keys(); e.hasMoreElements(); )
         {
-            Integer key = (Integer) enum.nextElement();
+            Integer key = (Integer) e.nextElement();
             fld[key.intValue()] = (ISOFieldPackager)tab.get(key);
         }
         return fld;
@@ -346,15 +346,15 @@ onto the stack.
         private ISOFieldPackager[] makeFieldPackArray(Hashtable tab){
             int maxField = 0;
             // First find the largest field number in the Hashtable
-            for (Enumeration enum=tab.keys(); enum.hasMoreElements(); ){
-                int n = ((Integer)enum.nextElement()).intValue();
+            for (Enumeration e=tab.keys(); e.hasMoreElements(); ){
+                int n = ((Integer)e.nextElement()).intValue();
                 if (n > maxField) maxField = n;
             }
             // Create the array
             ISOFieldPackager fld[] = new ISOFieldPackager[maxField+1];
             // Populate it
-            for (Enumeration enum=tab.keys(); enum.hasMoreElements(); ){
-                Integer key = (Integer) enum.nextElement();
+            for (Enumeration e=tab.keys(); e.hasMoreElements(); ){
+                Integer key = (Integer) e.nextElement();
                 fld[key.intValue()] = (ISOFieldPackager)tab.get(key);
             }
             return fld;
@@ -439,8 +439,8 @@ onto the stack.
             ISOFieldValidator fvlds[] = new ISOFieldValidator[tab.keySet().size()];
             // Populate it
             int ind = 0;
-            for (Enumeration enum=tab.keys(); enum.hasMoreElements(); ){
-                Integer key = (Integer) enum.nextElement();
+            for (Enumeration e=tab.keys(); e.hasMoreElements(); ){
+                Integer key = (Integer) e.nextElement();
                 if ( key.intValue() != VALIDATOR_INDEX ){
                     fvlds[ind] = (ISOFieldValidator)tab.get(key);
                     ind ++;

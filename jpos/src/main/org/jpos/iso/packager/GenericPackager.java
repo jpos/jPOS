@@ -368,9 +368,9 @@ public class GenericPackager
             int maxField = 0;
 
             // First find the largest field number in the Hashtable
-            for (Enumeration enum=tab.keys(); enum.hasMoreElements(); )
+            for (Enumeration e=tab.keys(); e.hasMoreElements(); )
             {
-                int n = ((Integer)enum.nextElement()).intValue();
+                int n = ((Integer)e.nextElement()).intValue();
                 if (n > maxField) maxField = n;
             }
 
@@ -378,9 +378,9 @@ public class GenericPackager
             ISOFieldPackager fld[] = new ISOFieldPackager[maxField+1];
 
             // Populate it
-            for (Enumeration enum=tab.keys(); enum.hasMoreElements(); )
+            for (Enumeration e=tab.keys(); e.hasMoreElements(); )
             {
-                Integer key = (Integer) enum.nextElement();
+                Integer key = (Integer) e.nextElement();
                 fld[key.intValue()] = (ISOFieldPackager)tab.get(key);
             }
             return fld;
