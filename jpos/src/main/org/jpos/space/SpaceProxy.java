@@ -75,16 +75,16 @@ import org.jpos.util.SimpleLogSource;
 public class SpaceProxy extends SimpleLogSource 
     implements RemoteSpace, ReConfigurable 
 {
-    LocalSpace sp;
+    Space sp;
     Configuration cfg;
     public SpaceProxy () throws RemoteException {
         super();
         sp = TransientSpace.getSpace ();
         startService ();
     }
-    public SpaceProxy (String spaceName) throws RemoteException {
+    public SpaceProxy (String spaceUri) throws RemoteException {
         super ();
-        sp = TransientSpace.getSpace (spaceName);
+        sp = SpaceFactory.getSpace (spaceUri);
         startService ();
     }
 
@@ -159,7 +159,10 @@ public class SpaceProxy extends SimpleLogSource
         }
     }
     public Set getKeySet () {
-        return sp.getKeySet ();
+        if (sp instanceof LocalSpace) 
+            return ((LocalSpace)sp).getKeySet ();
+        else
+            return null;
     }
 }
 
