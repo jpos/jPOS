@@ -81,7 +81,7 @@ public class BaseHeader implements ISOHeader {
 
     public int unpack (byte[] header) {
 	this.header = header;
-	return header.length;
+	return header != null ? header.length : 0;
     }
 
     public int getLength () {
