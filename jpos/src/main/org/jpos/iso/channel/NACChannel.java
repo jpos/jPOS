@@ -64,8 +64,6 @@ public class NACChannel extends BaseChannel {
         this.TPDU = TPDU;
     }
     protected void sendMessageLength(int len) throws IOException {
-        if (TPDU != null)
-	    len += TPDU.length;
         serverOut.write (len >> 8);
         serverOut.write (len);
     }
