@@ -616,7 +616,6 @@ public abstract class BaseChannel extends Observable
 	    }
 	}
     }
-
     public Collection getIncomingFilters() {
 	return incomingFilters;
     }
@@ -628,5 +627,10 @@ public abstract class BaseChannel extends Observable
     }
     public void setOutgoingFilters (Collection filters) {
 	outgoingFilters = new Vector (filters);
+    }
+    public void setHeader (byte[] header) { }
+    public void setHeader (String header) { }
+    public byte[] getHeader () {
+	return null;
     }
 }
