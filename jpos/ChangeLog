@@ -1,6 +1,7 @@
 $Id$
 
 -- 1.3.9 --
+Added MacroFilter (useful to set sequencers, date, etc.)
 Added SAFChannel (reliable Store and forward)
 Sender task now support $date and $sequencer, sequencer property and one-shot.
 Added preliminary JMX support
