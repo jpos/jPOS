@@ -14,7 +14,7 @@ if [ -z "$JAVA_HOME" ] ; then
 fi
 JAVA=$JAVA_HOME/bin/java
 
-CLASSPATH=`echo lib/*.jar ext/*.jar | tr ' ' ':'`:$CLASSPATH
+CLASSPATH=`echo ext/*.jar lib/*.jar | tr ' ' ':'`:$CLASSPATH
 CLASSPATH=$JAVA_HOME/lib/tools.jar:$CLASSPATH
 
 $JAVA -classpath $CLASSPATH -Dant.home=lib org.apache.tools.ant.Main "$@" -buildfile src/build.xml
