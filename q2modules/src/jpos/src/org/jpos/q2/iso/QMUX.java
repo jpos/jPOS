@@ -58,6 +58,7 @@ import org.jpos.q2.QBeanSupport;
 import org.jpos.q2.Q2ConfigurationException;
 import org.jdom.Element;
 import org.jpos.space.Space;
+import org.jpos.space.SpaceFactory;
 import org.jpos.space.LocalSpace;
 import org.jpos.space.SpaceListener;
 import org.jpos.space.TransientSpace;
@@ -86,11 +87,11 @@ public class QMUX
     List listeners;
     public QMUX () {
         super ();
-        sp = TransientSpace.getSpace ();
         listeners = new ArrayList ();
     }
     public void initService () throws Q2ConfigurationException {
         Element e = getPersist ();
+        sp        = grabSpace (e.getChild ("space")); 
         in        = e.getChildTextTrim ("in");
         out       = e.getChildTextTrim ("out");
         addListeners ();
@@ -235,6 +236,16 @@ public class QMUX
         }
         if (unhandled != null)
             sp.out (unhandled, m, 120000);
+    }
+    private LocalSpace grabSpace (Element e) 
+        throws Q2ConfigurationException
+    {
+        String uri = e != null ? e.getText() : "";
+        Space sp = SpaceFactory.getSpace (uri);
+        if (sp instanceof LocalSpace) {
+            return (LocalSpace) sp;
+        }
+        throw new Q2ConfigurationException ("Invalid space " + uri);
     }
 }
 
