@@ -58,7 +58,7 @@ public class TransactionManager
             throw new Q2ConfigurationException ("queue property not specified");
         sp   = SpaceFactory.getSpace (cfg.get ("space"));
         psp  = SpaceFactory.getSpace (cfg.get ("persistent-space"));
-        tail = initCounter (TAIL, cfg.getLong ("initial-tail", 0));
+        tail = initCounter (TAIL, cfg.getLong ("initial-tail", 1));
         head = Math.max (initCounter (HEAD, tail), tail);
         tailLock = TAILLOCK + "." + Integer.toString (this.hashCode());
         initTailLock ();
