@@ -21,7 +21,7 @@
   <property file="${etc}/VERSION" />
   <property name="classpath" value="${classpath}:${classes}" />
   <property name="deprecation" value="false" />
-  <property name="debug" value="off" />
+  <property name="debug" value="on" />
   <property name="project" value="jpos" />
   <property name="archive" value="${project}-${version}" />
   <property name="qsp-archive" value="qsp-${version}" />
@@ -56,6 +56,7 @@
     <mkdir dir="${classes}"/>
     <mkdir dir="${classes.examples}"/>
     <mkdir dir="${dist}"/>
+    <mkdir dir="log"/>
   </target>
 
   <target name="clean">
