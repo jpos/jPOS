@@ -183,5 +183,8 @@ public class SpaceMUX extends SimpleLogSource
     {
         return (MUX) NameRegistrar.get ("mux."+name);
     }
+    public boolean isConnected () {
+        return true;
+    }
 }
 
