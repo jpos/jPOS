@@ -142,17 +142,16 @@ public class Console {
             if (commandName != null) {
                 try {
                     short keyLength = (short)Integer.parseInt(commandParams[0]);
-                    String keyType = commandParams[1].toUpperCase();
                     if (commandName.toUpperCase().compareTo("GC") == 0) {
                         String clearKeyComponenetHexString = sm.generateClearKeyComponent(keyLength);
                     }
                     else if (commandName.toUpperCase().compareTo("FK") == 0) {
                         SecureDESKey KEYunderLMK = sm.formKEYfromThreeClearComponents(keyLength,
-                                keyType, commandParams[2], commandParams[3], commandParams[4]);
+                                commandParams[1].toUpperCase(), commandParams[2], commandParams[3], commandParams[4]);
                     }
                     else if (commandName.toUpperCase().compareTo("CK") == 0) {
                         SecureDESKey KEYunderLMK = sm.generateKeyCheckValue(keyLength,
-                                keyType, commandParams[2]);
+                                commandParams[1].toUpperCase(), commandParams[2]);
                     }
                     else {
                         System.err.println("Unknown command: " + commandName);
