@@ -51,13 +51,15 @@ package org.jpos.util;
 
 import java.util.Map;
 import java.util.Hashtable;
+import java.util.Iterator;
+import java.io.PrintStream;
 
 /**
  * Allow runtime binding of jPOS's components (ISOChannels, Logger, MUXes, etc)
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
  * @version $Revision$ $Date$
  */
-public class NameRegistrar {
+public class NameRegistrar implements Loggeable {
     private static NameRegistrar instance = null;
     private Map registrar;
 
@@ -80,7 +82,7 @@ public class NameRegistrar {
     /**
      * @return singleton instance
      */
-    private static NameRegistrar getInstance() {
+    public static NameRegistrar getInstance() {
         if (instance == null) {
             synchronized (NameRegistrar.class) {
                 if (instance == null) 
@@ -112,6 +114,22 @@ public class NameRegistrar {
 	if (obj == null)
 	    throw new NotFoundException (key);
 	return obj;
+    }
+
+    public void dump (PrintStream p, String indent) {
+	String inner = indent + "  ";
+        p.println (indent + "<name-registrar>");
+        Iterator iter = registrar.entrySet().iterator();
+        while (iter.hasNext()) {
+            Map.Entry entry = (Map.Entry) iter.next ();
+            p.println (inner + 
+                "<name>" + entry.getKey().toString() + "</name>"
+            );
+            p.println (inner + 
+                "<class>" + entry.getValue().getClass().getName()+ "</class>"
+            );
+        }
+        p.println (indent + "</name-registrar>");
     }
 }
 
