@@ -78,6 +78,12 @@ import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 import org.jdom.output.XMLOutputter;
 
+import org.jpos.util.Logger;
+import org.jpos.util.LogSource;
+import org.jpos.util.LogEvent;
+import org.jpos.util.SimpleLogSource;
+import org.jpos.util.SimpleLogListener;
+
 /**
  * @author <a href="mailto:taherkordy@dpi2.dpi.net.ir">Alireza Taherkordi</a>
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
@@ -86,13 +92,19 @@ import org.jdom.output.XMLOutputter;
 public class Q2 implements FileFilter {
     public static final String DEFAULT_DEPLOY_DIR  = "deploy";
     public static final String JMX_NAME            = "Q2";
+    public static final String LOGGER_NAME         = "Q2";
     public static final String QBEAN_NAME          = "Q2:type=qbean,service=";
     public static final String Q2_CLASS_LOADER     = "Q2:type=system,service=loader";
+
+    public static final int SCAN_INTERVAL = 2500;
+
     private MBeanServer server;
     private File deployDir, libDir;
     private Map dirMap;
     private QFactory factory;
     private QClassLoader loader;
+    private Logger logger;
+    private SimpleLogSource logSource;
 
     public Q2 (String dir) {
         super();
@@ -100,6 +112,10 @@ public class Q2 implements FileFilter {
         this.libDir     = new File (deployDir, "lib");
         this.dirMap     = new HashMap ();
         deployDir.mkdirs ();
+
+        logger = Logger.getLogger (LOGGER_NAME);
+        logger.addListener (new SimpleLogListener (System.out));
+        logSource = new SimpleLogSource (logger, LOGGER_NAME);
     }
 
     public void start () 
@@ -119,15 +135,19 @@ public class Q2 implements FileFilter {
                 scan ();
                 deploy ();
                 checkModified ();
-                Thread.sleep (1000);
+                relax (SCAN_INTERVAL);
             } catch (Exception e) {
-                e.printStackTrace ();
+                error ("start", e);
+                relax ();
             }
         }
     }
 
     public QClassLoader getLoader () {
         return loader;
+    }
+    public QFactory getFactory () {
+        return factory;
     }
 
     public boolean accept (File f) {
@@ -188,7 +208,7 @@ public class Q2 implements FileFilter {
                     (Integer) server.getAttribute (name, "State")
                 ).intValue();
             } catch (Exception e) {
-                e.printStackTrace();
+                warning ("getState", e);
             }
         }
         return status;
@@ -222,7 +242,7 @@ public class Q2 implements FileFilter {
                 deployed = f.lastModified ();
             }
         } catch (Exception ex) {
-            ex.printStackTrace();
+            warning ("persist", ex);
         }
         return deployed;
     }
@@ -234,7 +254,7 @@ public class Q2 implements FileFilter {
             if (name != null)
                 factory.destroyQBean (this, name);
         } catch (Exception e) {
-            e.printStackTrace ();
+            warning ("undeploy", e);
         }
     }
 
@@ -249,7 +269,7 @@ public class Q2 implements FileFilter {
             Document doc = builder.build (f);
             return factory.createQBean (this, doc.getRootElement());
         } catch (Exception e) {
-            e.printStackTrace ();
+            warning ("deploy", e);
         }
         return null;
     }
@@ -258,7 +278,7 @@ public class Q2 implements FileFilter {
         try {
             factory.startQBean (this, instance.getObjectName());
         } catch (Exception e) {
-            e.printStackTrace ();
+            warning ("start", e);
         }
     }
 
@@ -296,6 +316,32 @@ public class Q2 implements FileFilter {
         public ObjectName getObjectName () {
             return instance != null ? instance.getObjectName () : null;
         }
+    }
+    public void info (String detail) {
+        logSource.info (detail);
+    }
+    public void info (String detail, Object obj) {
+        logSource.info (detail, obj);
+    }
+    public void warning (String detail) {
+        logSource.warning (detail);
+    }
+    public void warning (String detail, Object obj) {
+        logSource.warning (detail, obj);
+    }
+    public void error (String detail) {
+        logSource.error (detail);
+    }
+    public void error (String detail, Object obj) {
+        logSource.error (detail, obj);
+    }
+    public void relax (long sleep) {
+        try {
+            Thread.sleep (sleep);
+        } catch (InterruptedException e) { }
+    }
+    public void relax () {
+        relax (1000);
     }
 }
 
