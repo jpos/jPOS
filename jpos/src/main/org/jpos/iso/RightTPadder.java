@@ -68,7 +68,7 @@ public class RightTPadder extends RightPadder
     }
 
     /**
-	 * @see xcom.traxbahn.util.messages.iso.Padder#pad(java.lang.String, int,
+	 * @see org.jpos.iso.Padder#pad(java.lang.String, int,
 	 *      char)
 	 */
     public String pad(String data, int maxLength) throws ISOException
@@ -79,24 +79,6 @@ public class RightTPadder extends RightPadder
         } else
         {
             return super.pad(data, maxLength);
-        }
-    }
-
-    /**
-	 * (non-Javadoc)
-	 * 
-	 * @see xcom.traxbahn.util.messages.iso.Padder#padBinary(byte[], int, byte)
-	 */
-    public byte[] padBinary(byte[] data, int maxLength) throws ISOException
-    {
-        if (data.length > maxLength)
-        {
-            byte[] padded = new byte[maxLength];
-            System.arraycopy(data, 0, padded, 0, maxLength);
-            return padded;
-        } else
-        {
-            return super.padBinary(data, maxLength);
         }
     }
 }

@@ -52,8 +52,7 @@ public class NullPadder implements Padder
     public static final NullPadder INSTANCE = new NullPadder();
 
     /**
-	 * @see xcom.traxbahn.util.messages.iso.Padder#pad(java.lang.String, int,
-	 *      char)
+	 * @see org.jpos.iso.Padder#pad(java.lang.String, int, char)
 	 */
     public String pad(String data, int maxLength)
     {
@@ -63,30 +62,9 @@ public class NullPadder implements Padder
     /**
 	 * (non-Javadoc)
 	 * 
-	 * @see xcom.traxbahn.util.messages.iso.Padder#unpad(java.lang.String,
-	 *      char)
+	 * @see org.jpos.iso.Padder#unpad(java.lang.String, char)
 	 */
     public String unpad(String paddedData)
-    {
-        return paddedData;
-    }
-
-    /**
-	 * (non-Javadoc)
-	 * 
-	 * @see xcom.traxbahn.util.messages.iso.Padder#padBinary(byte[], int, byte)
-	 */
-    public byte[] padBinary(byte[] data, int maxLength)
-    {
-        return data;
-    }
-
-    /**
-	 * (non-Javadoc)
-	 * 
-	 * @see xcom.traxbahn.util.messages.iso.Padder#unpadBinary(byte[], byte)
-	 */
-    public byte[] unpadBinary(byte[] paddedData)
     {
         return paddedData;
     }

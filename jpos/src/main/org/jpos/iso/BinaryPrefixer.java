@@ -68,7 +68,7 @@ public class BinaryPrefixer implements Prefixer
     /*
 	 * (non-Javadoc)
 	 * 
-	 * @see xcom.traxbahn.util.messages.iso.Prefixer#encodeLength(int, byte[])
+	 * @see org.jpos.iso.Prefixer#encodeLength(int, byte[])
 	 */
     public void encodeLength(int length, byte[] b)
     {
@@ -81,7 +81,7 @@ public class BinaryPrefixer implements Prefixer
     /*
 	 * (non-Javadoc)
 	 * 
-	 * @see xcom.traxbahn.util.messages.iso.Prefixer#decodeLength(byte[], int)
+	 * @see org.jpos.iso.Prefixer#decodeLength(byte[], int)
 	 */
     public int decodeLength(byte[] b, int offset)
     {
@@ -96,7 +96,7 @@ public class BinaryPrefixer implements Prefixer
     /*
 	 * (non-Javadoc)
 	 * 
-	 * @see xcom.traxbahn.util.messages.iso.Prefixer#getLengthInBytes()
+	 * @see org.jpos.iso.Prefixer#getLengthInBytes()
 	 */
     public int getPackedLength()
     {

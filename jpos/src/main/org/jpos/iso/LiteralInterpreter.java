@@ -53,7 +53,7 @@ public class LiteralInterpreter implements Interpreter
     /**
 	 * (non-Javadoc)
 	 * 
-	 * @see xcom.traxbahn.util.messages.iso.Interpreter#interpret(java.lang.String)
+	 * @see org.jpos.iso.Interpreter#interpret(java.lang.String)
 	 */
     public void interpret(String data, byte[] b, int offset)
     {
@@ -64,7 +64,7 @@ public class LiteralInterpreter implements Interpreter
     /**
 	 * (non-Javadoc)
 	 * 
-	 * @see xcom.traxbahn.util.messages.iso.Interpreter#uninterpret(byte[])
+	 * @see org.jpos.iso.Interpreter#uninterpret(byte[])
 	 */
     public String uninterpret(byte[] rawData, int offset, int length)
     {
@@ -74,7 +74,7 @@ public class LiteralInterpreter implements Interpreter
     /**
 	 * (non-Javadoc)
 	 * 
-	 * @see xcom.traxbahn.util.messages.iso.Interpreter#getPackedLength(int)
+	 * @see org.jpos.iso.Interpreter#getPackedLength(int)
 	 */
     public int getPackedLength(int nDataUnits)
     {

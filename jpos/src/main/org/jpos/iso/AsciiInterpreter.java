@@ -49,6 +49,8 @@
 
 package org.jpos.iso;
 
+import java.io.UnsupportedEncodingException;
+
 
 /**
  * Implements ASCII Interpreter. Strings are converted to and from ASCII bytes.
@@ -65,28 +67,42 @@ public class AsciiInterpreter implements Interpreter
     /**
 	 * (non-Javadoc)
 	 * 
-	 * @see xcom.traxbahn.util.messages.iso.Interpreter#interpret(java.lang.String)
+	 * @see org.jpos.iso.Interpreter#interpret(java.lang.String)
 	 */
     public void interpret(String data, byte[] b, int offset)
     {
-        // The getBytes call is deprecated but I still want to use this.
-        data.getBytes(0, data.length(), b, offset);
+        try
+        {
+            byte[] bytes = data.getBytes("ISO-8859-1");
+            System.arraycopy(bytes, 0, b, offset, bytes.length);
+        } catch (UnsupportedEncodingException e)
+        {
+            // This should never happen, because ISO-8859-1 is one of the standard
+            // character sets that all JVMs must support.
+            data.getBytes(0, data.length(), b, offset);
+        }
     }
 
     /**
 	 * (non-Javadoc)
 	 * 
-	 * @see xcom.traxbahn.util.messages.iso.Interpreter#uninterpret(byte[])
+	 * @see org.jpos.iso.Interpreter#uninterpret(byte[])
 	 */
     public String uninterpret(byte[] rawData, int offset, int length)
     {
-        return new String(rawData, offset, length);
+        try
+        {
+            return new String(rawData, offset, length, "ISO-8859-1");
+        } catch (UnsupportedEncodingException e)
+        {
+            return new String(rawData, offset, length);
+        }
     }
 
     /**
 	 * (non-Javadoc)
 	 * 
-	 * @see xcom.traxbahn.util.messages.iso.Interpreter#getPackedLength(int)
+	 * @see org.jpos.iso.Interpreter#getPackedLength(int)
 	 */
     public int getPackedLength(int nDataUnits)
     {

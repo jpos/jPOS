@@ -99,7 +99,7 @@ public class AsciiHexInterpreter implements BinaryInterpreter
     /**
      * Returns double nBytes because the hex representation of 1 byte needs 2 hex digits.
      * 
-     * @see xcom.traxbahn.util.messages.iso.BinaryInterpreter#getPackedLength(int)
+     * @see org.jpos.iso.BinaryInterpreter#getPackedLength(int)
      */
     public int getPackedLength(int nBytes)
     {

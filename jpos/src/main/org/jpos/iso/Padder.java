@@ -69,25 +69,4 @@ public interface Padder
 	 * @return The unpadded string.
 	 */
     String unpad(String paddedData) throws ISOException;
-
-    /**
-	 * Returns a padded byte array upto a maximum length. If the data is longer
-	 * than maxLength, then the data is truncated.
-	 * 
-	 * @param data
-	 *            The byte array to pad.
-	 * @param maxLength
-	 *            The maximum length of the padded byte array.
-	 * @return A padded byte array.
-	 */
-    byte[] padBinary(byte[] data, int maxLength) throws ISOException;
-
-    /**
-	 * Removes the padding from a padded byte array.
-	 * 
-	 * @param paddedData
-	 *            The byte array to unpad.
-	 * @return The unpadded byte array.
-	 */
-    byte[] unpadBinary(byte[] paddedData) throws ISOException;
 }

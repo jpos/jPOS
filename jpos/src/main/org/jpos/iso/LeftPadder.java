@@ -56,12 +56,6 @@ public class LeftPadder implements Padder
 	 */
     public static final LeftPadder ZERO_PADDER = new LeftPadder('0');
 
-    /**
-	 * It is safe to return a zero byte array from multiple threads, as it is
-	 * immutable.
-	 */
-    private static final byte[] ZERO_BYTES = new byte[0];
-
     private char pad;
 
     /**
@@ -77,8 +71,7 @@ public class LeftPadder implements Padder
     }
 
     /**
-	 * @see xcom.traxbahn.util.messages.iso.Padder#pad(java.lang.String, int,
-	 *      char)
+	 * @see org.jpos.iso.Padder#pad(java.lang.String, int, char)
 	 */
     public String pad(String data, int maxLength) throws ISOException
     {
@@ -101,8 +94,7 @@ public class LeftPadder implements Padder
     /**
 	 * (non-Javadoc)
 	 * 
-	 * @see xcom.traxbahn.util.messages.iso.Padder#unpad(java.lang.String,
-	 *      char)
+	 * @see org.jpos.iso.Padder#unpad(java.lang.String, char)
 	 */
     public String unpad(String paddedData)
     {
@@ -117,50 +109,5 @@ public class LeftPadder implements Padder
             i++;
         }
         return "";
-    }
-
-    /**
-	 * (non-Javadoc)
-	 * 
-	 * @see xcom.traxbahn.util.messages.iso.Padder#padBinary(byte[], int, byte)
-	 */
-    public byte[] padBinary(byte[] data, int maxLength) throws ISOException
-    {
-        byte[] padded = new byte[maxLength];
-        int len = data.length;
-        if (len > maxLength)
-        {
-            throw new ISOException("Data is too long. Max = " + maxLength);
-        } else
-        {
-            for (int i = maxLength - len; i > 0; i--)
-            {
-                padded[i - 1] = (byte) pad;
-            }
-            System.arraycopy(data, 0, padded, maxLength - len, len);
-        }
-        return padded;
-    }
-
-    /**
-	 * (non-Javadoc)
-	 * 
-	 * @see xcom.traxbahn.util.messages.iso.Padder#unpadBinary(byte[], byte)
-	 */
-    public byte[] unpadBinary(byte[] paddedData)
-    {
-        int i = 0;
-        int len = paddedData.length;
-        while (i < len)
-        {
-            if (paddedData[i] != pad)
-            {
-                byte[] unpadded = new byte[len - i];
-                System.arraycopy(paddedData, i, unpadded, 0, len - i);
-                return unpadded;
-            }
-            i++;
-        }
-        return ZERO_BYTES;
     }
 }
