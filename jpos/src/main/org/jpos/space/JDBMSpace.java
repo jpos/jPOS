@@ -93,7 +93,7 @@ public class JDBMSpace implements Space {
         this.name = name;
         try {
             Properties props = new Properties();
-            props.put (RecordManagerOptions.CACHE_SIZE, "100");
+            props.put (RecordManagerOptions.CACHE_SIZE, "512");
             recman = RecordManagerFactory.createRecordManager (filename, props);
             long recid = recman.getNamedObject ("space");
             if (recid != 0) {
