@@ -74,13 +74,14 @@ public class Test extends SimpleLogSource {
     private ISOMsg createMessage(int[] mask) throws ISOException 
     {
 	Date d = new Date();
-	ISOMsg m = new ISOMsg();
-	m.set (new ISOField (0,  "0800"));
+	ISOMsg m = new ISOMsg("0800");
 	m.set (new ISOField (3,  "000000"));
 	m.set (new ISOField (7,  ISODate.getDateTime(d)));
-	m.set (new ISOField (11, "000001"));
-	m.set (new ISOField (12, ISODate.getTime(d)));
-	m.set (new ISOField (13, ISODate.getDate(d)));
+
+        // alternate way of setting fields
+	m.set (11, "000001");
+	m.set (12, ISODate.getTime(d));
+	m.set (13, ISODate.getDate(d));
 	return mask == null ? m : (ISOMsg) m.clone(mask);
     }
     public void test() {
