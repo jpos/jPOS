@@ -46,6 +46,9 @@ public class Test extends TestCase {
     public Test (String name) {
         super (name);
     }
+    public void testPostPackager () throws Exception {
+        doTest (new PostPackager(), "post", "post");
+    }
     public void testISO87APackager() throws Exception {
         doTest (new ISO87APackager(), "ISO87", "ISO87APackager");
     }
@@ -88,8 +91,9 @@ public class Test extends TestCase {
     private void doTest (ISOPackager packager, String msg, String img)
         throws Exception
     {
-        // packager.setLogger (AllTests.getLogger(), msg);
-
+        // Logger logger = new Logger();
+        // logger.addListener (new SimpleLogListener (System.out));
+        // packager.setLogger (logger, msg + "-m");
 
         ISOMsg m = getMsg (msg);
         m.setPackager (packager);
@@ -99,22 +103,20 @@ public class Test extends TestCase {
 
         assertTrue (Arrays.equals (out.toByteArray(), p));
 
-        // writeImage (img, p);
+        writeImage (img, p);
 
         byte[] b = getImage (img);
         assertTrue (Arrays.equals (b, p));
 
         ISOMsg m1 = new ISOMsg ();
+        // packager.setLogger (logger, msg + "-m1");
         m1.setPackager (packager);
         m1.unpack (b);
         assertTrue (Arrays.equals (b, m1.pack()));
 
-
         ISOMsg m2 = new ISOMsg ();
         m2.setPackager (packager);
-        // Logger logger = new Logger();
-        // logger.addListener (new SimpleLogListener (System.out));
-        // packager.setLogger (logger, msg);
+        // packager.setLogger (logger, msg + "-m2");
         m2.unpack (new ByteArrayInputStream (out.toByteArray()));
         assertTrue (Arrays.equals (b, m2.pack()));
     }
