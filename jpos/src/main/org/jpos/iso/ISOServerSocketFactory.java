@@ -67,9 +67,10 @@ public interface ISOServerSocketFactory {
     * an anonymous port).
     * @param  port the port number
     * @return the server socket on the specified port
-    * @exception IOException if an I/O error occurs during server socket
+    * @exception IOException should an I/O error occur
+    * @exception ISOException on any other error
     * creation
     */
     public ServerSocket createServerSocket(int port)
-        throws IOException;
+        throws IOException, ISOException;
 }

@@ -67,8 +67,9 @@ public interface ISOClientSocketFactory {
     * @param  host   the host name
     * @param  port   the port number
     * @return a socket connected to the specified host and port.
-    * @exception IOException if an I/O error occurs during socket creation
+    * @exception IOException should an I/O error occur
+    * @exception ISOException on any other error
     */
     public Socket createSocket(String host, int port)
-        throws IOException;
+        throws IOException, ISOException;
 }
