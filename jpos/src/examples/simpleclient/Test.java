@@ -67,6 +67,9 @@ public class Test extends SimpleLogProducer {
 	    Logger.log (new LogEvent (this, "send", e));
 	}
     }
+    public void disconnect () throws IOException {
+	channel.disconnect();
+    }
     public static void main (String args[]) {
 	Logger logger = new Logger();
 	logger.addListener (new SimpleLogListener (System.out));
@@ -79,7 +82,7 @@ public class Test extends SimpleLogProducer {
 	    t.send ("0101");
 	    t.send ("0200");
 	    t.send ("0800");
-	    System.out.println ("[terminating]");
+	    t.disconnect();
 	} catch (ISOException e) {
 	    e.printStackTrace();
 	} catch (IOException e) {
