@@ -168,7 +168,7 @@ public class QBeanSupport implements QBean, QPersist, QBeanSupportMBean {
         return state;
     }
     public String getStateAsString () {
-        return stateString[state];
+        return state >= 0 ? stateString[state] : "Unknown";
     }
     public void setState (int state) {
         this.state = state;
