@@ -101,7 +101,8 @@ public class RotateLogListener extends SimpleLogListener
         openLogFile ();
         Timer timer = DefaultTimer.getTimer();
         if (sleepTime != 0) {
-            timer.schedule (rotate = new Rotate(), sleepTime, sleepTime);
+            timer.schedule (rotate = new Rotate(), 
+                    this.sleepTime, this.sleepTime);
         }
     }
 
