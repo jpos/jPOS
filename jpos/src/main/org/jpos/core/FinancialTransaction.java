@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.2  2000/01/23 16:12:10  apr
+ * CVS devel sync
+ *
  * Revision 1.1  2000/01/20 23:02:46  apr
  * Adding FinancialTransaction support - CVS sync
  *
@@ -29,9 +32,14 @@ public class FinancialTransaction extends AuthorizationTransaction
     public FinancialTransaction() {
 	super();
     }
-    public FinancialTransaction(BatchManager batchManager, String action) {
+    public FinancialTransaction
+	(BatchManager batchManager, String action, String rrn) 
+	throws IOException
+    {
 	setBatchManager (batchManager);
 	setAction (action);
+	setRRN (rrn);
+	batchManager.fetch (this);
     }
     public void setBatchManager (BatchManager batchManager) {
 	this.batchManager = batchManager;
