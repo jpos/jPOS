@@ -32,6 +32,9 @@ import java.net.Socket;
 
 /*
  * $Log$
+ * Revision 1.23  1999/09/25 13:36:54  apr
+ * Added terminate() support as suggested by Vincent.Greene@amo.com
+ *
  * Revision 1.22  1999/09/11 22:21:21  apr
  * Added getPackager() member function
  *
@@ -308,7 +311,8 @@ public abstract class ISOChannel extends Observable implements LogProducer {
 	    evt.addMessage (e);
 	    throw e;
 	} catch (IOException e) { 
-	    evt.addMessage (e);
+	    if (usable) 
+		evt.addMessage (e);
 	    throw e;
 	} finally {
 	    Logger.log (evt);

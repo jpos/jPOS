@@ -25,6 +25,7 @@ public class ISOMUX implements Runnable, LogProducer {
     private Vector txQueue;
     private Hashtable rxQueue;
     private int traceNumberField = 11;
+    private volatile boolean terminate = false;
 
     protected Logger logger = null;
     protected String realm = null;
@@ -143,7 +144,7 @@ public class ISOMUX implements Runnable, LogProducer {
             parent = p;
         }
         public void run() {
-            for (;;) {
+            while (!terminate) {
                 if (channel.isConnected()) {
                     try {
                         ISOMsg d = channel.receive();
@@ -168,24 +169,14 @@ public class ISOMUX implements Runnable, LogProducer {
                             else 
                                 cnt[RX_UNKNOWN]++;
                         }
-                    } catch (ISOException e) {
-                        channel.setUsable(false);
-			Logger.log (new LogEvent (this, "muxreceiver", e));;
-                        synchronized(parent) {
-                            parent.notify();
-                        }
-                    } catch (IOException e) {
-                        channel.setUsable(false);
-			Logger.log (new LogEvent (this, "muxreceiver", e));
-                        synchronized(parent) {
-                            parent.notify();
-                        }
                     } catch (Exception e) {
-                        channel.setUsable(false);
-			Logger.log (new LogEvent (this, "muxreceiver", e));
-                        synchronized(parent) {
-                            parent.notify();
-                        }
+			if (!terminate) {
+			    channel.setUsable(false);
+			    Logger.log (new LogEvent (this, "muxreceiver", e));
+			    synchronized(parent) {
+				parent.notify();
+			    }
+			}
                     }
                 }
                 else {
@@ -198,11 +189,9 @@ public class ISOMUX implements Runnable, LogProducer {
                     }
                 }
             }
+	    Logger.log (new LogEvent (this, "muxreceiver", "terminate"));
         }
-	public void setLogger (Logger logger, String realm) {
-	    this.logger = logger;
-	    this.realm  = realm;
-	}
+	public void setLogger (Logger logger, String realm) { }
 	public String getRealm () {
 	    return realm;
 	}
@@ -229,7 +218,7 @@ public class ISOMUX implements Runnable, LogProducer {
     public void run () {
         rx.start();
 	boolean firstTime = true;
-        for (;;) {
+        while (!terminate) {
             try {
                 if (channel.isConnected()) {
                     doTransmit();
@@ -250,30 +239,31 @@ public class ISOMUX implements Runnable, LogProducer {
                         this.wait();
                 }
             }
-            catch (UnknownHostException e) { 
-		Logger.log (new LogEvent (this, "mux", e));
-            }
-            catch (ConnectException e) { 
-		Logger.log (new LogEvent (this, "mux", e));
-            }
-            catch (java.net.SocketException e) { 
-		Logger.log (new LogEvent (this, "mux", e));
-            }
-            catch (IOException e) {
-		Logger.log (new LogEvent (this, "mux", e));
-                channel.setUsable(false);
-            }
-            catch (InterruptedException e) {
-		Logger.log (new LogEvent (this, "mux", e));
-            }
-            catch (ISOException e) {
+            catch (Exception e) {
 		Logger.log (new LogEvent (this, "mux", e));
             }
         }
+	synchronized(rx) {
+	    rx.notify();
+	}
+	try {
+	    rx.join ();
+	} catch (InterruptedException e) { }
+	Logger.log (new LogEvent (this, "mux", "terminate"));
     }
     public void queue(ISORequest r) {
         synchronized(this) {
             txQueue.addElement(r);
+            this.notify();
+        }
+    }
+    public void terminate() {
+	Logger.log (new LogEvent (this, "mux", "terminate request received"));
+	terminate = true;
+	try {
+	    channel.disconnect();
+	} catch (IOException e) { }
+        synchronized(this) {
             this.notify();
         }
     }
