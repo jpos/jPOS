@@ -67,6 +67,7 @@ import bsh.Interpreter;
 public class BSHRequestListener extends Log 
     implements ISORequestListener, ReConfigurable 
 {
+    protected static final String MTI_MACRO = "$mti";
     Configuration cfg;
     public BSHRequestListener () {
         super();
@@ -84,19 +85,30 @@ public class BSHRequestListener extends Log
     }
 
     public boolean process (ISOSource source, ISOMsg m) {
-        try {
+        try{
             String mti = m.getMTI ();
             String[] bshSource = cfg.getAll ("source");
             for (int i=0; i<bshSource.length; i++) {
-                Interpreter bsh = new Interpreter ();
-                bsh.set ("source", source);
-                bsh.set ("message", m);
-                bsh.set ("log", this);
-                bsh.set ("cfg", cfg);
-                bsh.source (bshSource[i].replaceFirst ("\\$mti", mti));
+                try {
+                    Interpreter bsh = new Interpreter ();
+                    bsh.set ("source", source);
+                    bsh.set ("message", m);
+                    bsh.set ("log", this);
+                    bsh.set ("cfg", cfg);
+                    //replace $mti with the actual value in script file name
+                    int idx = bshSource[i].indexOf(MTI_MACRO);
+                    String script;
+                    if(idx >= 0) 
+                        script = bshSource[i].substring(0, idx) + mti + bshSource[i].substring(idx + MTI_MACRO.length());
+                    else 
+                        script = bshSource[i];
+                    bsh.source (script);
+                } catch (Exception e) {
+                    warn (e);
+                }
             }
-        } catch (Exception e) {
-            warn (e);
+        }catch (Exception e){
+            warn(e);
         }
         return true;
     }
