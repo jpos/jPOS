@@ -1,12 +1,12 @@
 $Id$
 
+[ ] ISOMUX disconnect/connect when acting as server.
 [ ] LockManager Shared locks. 
     SimpleLockManager Configurable and NameRegistrar support
 [ ] Use ThreadPool on ISOMUX
 [ ] IF_MTI Stuff (as suggested by Arun Kumar U <bksys@vsnl.com>)
 [ ] Write SSLChannel
 [ ] Docos (DocBook?)
-[ ] XMLPackager, move to SAX2
 [ ] QSP, move to DOM2
 [ ] move config to new Ant
 
