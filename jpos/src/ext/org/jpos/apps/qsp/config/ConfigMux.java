@@ -55,6 +55,8 @@ import org.jpos.iso.ISOChannel;
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISORequestListener;
 import org.jpos.core.Configurable;
+import org.jpos.core.Configuration;
+import org.jpos.core.ReConfigurable;
 import org.jpos.core.SimpleConfiguration;
 import org.jpos.core.ConfigurationException;
 import org.jpos.iso.ISOMUX;
@@ -90,6 +92,12 @@ public class ConfigMux implements QSPReConfigurator {
 	evt.addMessage ("MUX "+name+"/"+channel.getName());
 	mux.setName (name);
 	mux.setConnect (connect);
+        if (mux instanceof Configurable) {
+            Configuration cfg = new SimpleConfiguration (
+                ConfigUtil.addProperties (node, new Properties(), evt)
+            );
+            ((Configurable)mux).setConfiguration (cfg);
+        }
 	new Thread (mux).start();
 	Logger.log (evt);
     }
@@ -104,6 +112,13 @@ public class ConfigMux implements QSPReConfigurator {
 	    mux.setLogger (ConfigLogger.getLogger (node),
 			   ConfigLogger.getRealm (node));
 	    mux.setConnect (connect);
+
+	    if (mux instanceof ReConfigurable) {
+	        Configuration cfg = new SimpleConfiguration (
+		    ConfigUtil.addProperties (node, new Properties(), evt)
+	        );
+		((Configurable)mux).setConfiguration (cfg);
+	    }
 	} catch (NotFoundException e) {
 	    evt.addMessage (e);
 	    throw new ConfigurationException (e);
