@@ -57,8 +57,11 @@ public class ISOTests
         suite.addTest(new TestSuite(LiteralInterpreterTest.class));
         suite.addTest(new TestSuite(AsciiPrefixerTest.class));
         suite.addTest(new TestSuite(EbcdicPrefixerTest.class));
+        suite.addTest(new TestSuite(AsciiHexInterpreterTest.class));
+        
         suite.addTest(new TestSuite(IF_CHARTest.class));
         suite.addTest(new TestSuite(IFA_AMOUNTTest.class));
+        suite.addTest(new TestSuite(IFA_BINARYTest.class));
         suite.addTest(new TestSuite(IFA_LLBNUMTest.class));
         suite.addTest(new TestSuite(IFA_LCHARTest.class));
         suite.addTest(new TestSuite(IFA_LLCHARTest.class));
