@@ -185,8 +185,9 @@ public class ConfigUtil {
 	    Object[] param = new Object[1];
 	    param[0] = p;
 	    method.invoke (obj, param);
-	} catch (java.lang.NoSuchMethodException e) { 
-	} catch (java.lang.IllegalAccessException e) {
+	} catch (NoSuchMethodException e) { 
+	} catch (NullPointerException e) {
+	} catch (IllegalAccessException e) {
 	} catch (InvocationTargetException e) {
 	    throw new ConfigurationException (
 		obj.getClass().getName() + "." + m + "("+p.toString()+")" ,
