@@ -6,6 +6,7 @@ import org.jpos.util.Logger;
 import org.jpos.util.LogEvent;
 import org.jpos.util.LogSource;
 import org.jpos.util.Loggeable;
+import org.jpos.util.NameRegistrar;
 import org.jpos.core.SimpleConfiguration;
 import org.jpos.core.Configurable;
 import org.jpos.core.ConfigurationException;
@@ -42,6 +43,11 @@ public class ConfigSequencer implements QSPConfigurator {
 
 	    if (seq instanceof Loggeable)
 		evt.addMessage (seq);
+
+	    NameRegistrar.register ("sequencer."+ 
+		node.getAttributes().getNamedItem ("name").getNodeValue(),
+		seq
+	    );
 
         } catch (ClassNotFoundException e) {
 	    throw new ConfigurationException ("config-task:"+className, e);
