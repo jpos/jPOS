@@ -114,7 +114,6 @@ Main targets:
      <include name="**/SAFChannel*.java"                if="sun-util.present"/>
      <include name="**/apps/jetty/**"                   if="jetty.present"   />
      <include name="**/q2/jetty/**"                     if="jetty.present"   />
-     <include name="**/q2/tomcat/**" />
 
      <include name="**/JepUtil.java"                    if="jep.present"     />
      <include name="**/filter/CalculateFilter.java"     if="jep.present"     />
@@ -188,7 +187,6 @@ Main targets:
       <srcfiles dir="${buildsrc}" 
            includes="org/jpos/q2/qbean/NameRegistrarInspector.java" />
       <srcfiles dir="${buildsrc}" includes="org/jpos/q2/jetty/Jetty.java" />
-      <srcfiles dir="${buildsrc}" includes="org/jpos/q2/tomcat/Tomcat.java" />
       <srcfiles dir="${buildsrc}" includes="org/jpos/q2/qbean/RMIAdaptor.java" />
       <srcfiles dir="${buildsrc}" includes="org/jpos/q2/qbean/Naming.java" />
       <srcfiles dir="${buildsrc}" includes="org/jpos/q2/qbean/DirPollAdaptor.java" />
@@ -213,7 +211,6 @@ Main targets:
         <include name="org/jpos/q2/qbean/SpaceAdaptor.java" />
         <include name="org/jpos/q2/qbean/NameRegistrarInspector.java" />
         <include name="org/jpos/q2/jetty/Jetty.java" />
-        <include name="org/jpos/q2/tomcat/Tomcat.java" />
         <include name="org/jpos/q2/qbean/RMIAdaptor.java" />
         <include name="org/jpos/q2/qbean/Naming.java" />
         <include name="org/jpos/q2/qbean/DirPollAdaptor.java" />
