@@ -67,5 +67,7 @@ public interface QBeanSupportMBean {
     public Q2 getServer ();
     public void setPersist (Element e);
     public Element getPersist ();
+    public void setName (String name);
+    public String getName ();
 }
 

@@ -60,6 +60,7 @@ public class QBeanSupport implements QBean, QPersist, QBeanSupportMBean {
     int state;
     Q2 server;
     boolean modified;
+    String name;
 
     public QBeanSupport () {
         super();
@@ -69,6 +70,12 @@ public class QBeanSupport implements QBean, QPersist, QBeanSupportMBean {
     }
     public Q2 getServer () {
         return server;
+    }
+    public void setName (String name) {
+        this.name = name;
+    }
+    public String getName () {
+        return name;
     }
     public void init () {
         try {
