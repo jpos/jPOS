@@ -77,7 +77,7 @@ import java.lang.reflect.*;
  *
  * @author Bharavi
  * @version 1.0
- * @see org.jpos.iso.ISORequestListener;
+ * @see org.jpos.iso.ISORequestListener
  */
 public class EJBConnector
     implements EJBConnectorMBean,ISORequestListener, LogSource, Configurable
