@@ -48,7 +48,7 @@ Main targets:
     </echo>
   </target>
 
-  <target name="prepare">
+  <target name="prepare" depends="splash">
     <mkdir dir="${buildsrc}"/>
     <mkdir dir="${build}/test"/>
     <mkdir dir="${htdocs}"/>
@@ -412,6 +412,11 @@ Main targets:
      </fileset>
     </copy>
     -->
+   </target>
+
+   <target name="splash">
+    <splash imageurl="file:src/doc/images/jpos_l.jpg" 
+            showduration="0"/>
    </target>
 </project>
 
