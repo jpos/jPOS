@@ -4,9 +4,13 @@ import java.io.*;
 import java.util.*;
 import org.jpos.util.Loggeable;
 import org.jpos.util.LogProducer;
+import org.jpos.iso.packager.XMLPackager;
 
 /*
  * $Log$
+ * Revision 1.24  2000/04/16 22:12:01  apr
+ * Moved packager implementations to org.jpos.iso.packager
+ *
  * Revision 1.23  2000/03/29 12:58:03  apr
  * change Victor's tabs to 8 spaces - no other change
  *

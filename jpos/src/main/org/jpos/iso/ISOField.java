@@ -2,9 +2,13 @@ package org.jpos.iso;
 
 import java.io.*;
 import java.util.*;
+import org.jpos.iso.packager.XMLPackager;
 
 /*
  * $Log$
+ * Revision 1.12  2000/04/16 22:12:01  apr
+ * Moved packager implementations to org.jpos.iso.packager
+ *
  * Revision 1.11  2000/04/07 01:07:17  apr
  * Added setFieldNumber() method
  *

@@ -2,6 +2,7 @@ package org.jpos.iso;
 
 import java.io.*;
 import java.util.*;
+import org.jpos.iso.packager.XMLPackager;
 
 /**
  * implements <b>Leaf</b> for binary fields
