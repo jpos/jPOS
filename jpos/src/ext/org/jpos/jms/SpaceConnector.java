@@ -119,22 +119,20 @@ public class SpaceConnector extends QBeanSupport implements SpaceListener,SpaceC
                 byte[] tempBuf = new byte[byteBufSize];
                 try {
                     bm.reset ();
-                    log.info ("BM reset");
                     int numRead = bm.readBytes (tempBuf, byteBufSize);
-                    log.info ("Read "+numRead+" bytes");
                     while (numRead != -1) {
                         if (numRead < byteBufSize)
                             ISOUtil.trim (tempBuf, numRead);
                         totalBuf = ISOUtil.concat (totalBuf,0,totalBuf.length,tempBuf,0,numRead);
-                        log.info ("Total buf now="+ISOUtil.hexString (totalBuf));
                         numRead = bm.readBytes (tempBuf, byteBufSize);
-                        log.info ("Read "+numRead+" bytes");
                     }
                 } catch (JMSException e) {
                     log.error ("Could not extract byte array, dropping", e);
                 }
                 log.info ("TotalByteBuf="+ISOUtil.hexString (totalBuf));
                 space.out (toKey, totalBuf);
+            } else {
+                log.warn ("Received unsupported message type");
             }
     }
 
@@ -188,6 +186,22 @@ public class SpaceConnector extends QBeanSupport implements SpaceListener,SpaceC
      */
     public String getSpace () {
         return spaceName;
+    }
+
+    /**
+     * @jmx:managed-attribute description="Byte Buffer Size"
+     */
+    public void setByteBufSize (int bufSize) {
+        byteBufSize = bufSize;
+        setAttr (getAttrs(), "byteBufSize", new Integer (byteBufSize));
+        setModified (true);
+    }
+
+    /**
+     * @jmx:managed-attribute description="Byte Buffer Size"
+     */
+    public int getByteBufSize () {
+        return byteBufSize;
     }
 }
 
