@@ -125,7 +125,7 @@ public class QMUX
         String key = getKey (m);
         String req = key + ".req";
         sp.out (req, m);
-        sp.out (out, m);
+        sp.out (out, m, timeout-1);
 
         ISOMsg resp = (ISOMsg) sp.in (key, timeout);
 
