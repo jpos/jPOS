@@ -54,6 +54,10 @@ import java.util.*;
 import org.jpos.util.Logger;
 import org.jpos.util.LogSource;
 import org.jpos.util.LogEvent;
+import org.jpos.core.Configurable;
+import org.jpos.core.Configuration;
+import org.jpos.core.ReConfigurable;
+import org.jpos.core.ConfigurationException;
 import org.jpos.iso.*;
 
 /**
@@ -62,11 +66,13 @@ import org.jpos.iso.*;
  * @version $Revision$ $Date$
  * @see ISOPackager
  */
-public abstract class PackagerWrapper implements ISOPackager, LogSource
+public abstract class PackagerWrapper 
+    implements ISOPackager, LogSource, ReConfigurable
 {
     protected Logger logger = null;
     protected String realm = null;
     protected ISOPackager standardPackager = null;
+    protected Configuration cfg;
 
     public PackagerWrapper() {
         super();
@@ -91,12 +97,37 @@ public abstract class PackagerWrapper implements ISOPackager, LogSource
     public void setLogger (Logger logger, String realm) {
         this.logger = logger;
         this.realm  = realm;
+        if (standardPackager instanceof LogSource)
+            ((LogSource) standardPackager).setLogger (logger, realm);
     }
     public String getRealm () {
         return realm;
     }
     public Logger getLogger() {
         return logger;
+    }
+    /**
+     * requires <code>inner-packager</code> property
+     * @param cfg Configuration object
+     * @throws ConfigurationException
+     */
+    public void setConfiguration (Configuration cfg) 
+        throws ConfigurationException
+    {
+        this.cfg = cfg;
+        String packagerName = cfg.get ("inner-packager");
+        try {
+            Class p = Class.forName(packagerName);
+            setPackager ((ISOPackager) p.newInstance());
+            if (standardPackager instanceof Configurable)
+                ((Configurable)standardPackager).setConfiguration (cfg);
+        } catch (ClassNotFoundException e) {
+            throw new ConfigurationException ("Invalid inner-packager", e);
+        } catch (InstantiationException e) {
+            throw new ConfigurationException ("Invalid inner-packager", e);
+        } catch (IllegalAccessException e) {
+            throw new ConfigurationException ("Invalid inner-packager", e);
+        }
     }
 }
 
