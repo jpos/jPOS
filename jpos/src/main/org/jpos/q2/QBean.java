@@ -60,15 +60,17 @@ package org.jpos.q2;
  */
  public interface QBean extends QPersist {
 
-    int STOPPED  = 0;
-    int STOPPING = 1;
-    int STARTING = 2;
-    int STARTED  = 3;
-    int FAILED  = 4;
-    int DESTROYED = 5;
+    int STOPPED   = 1;
+    int STOPPING  = 2;
+    int STARTING  = 3;
+    int STARTED   = 4;
+    int FAILED    = 5;
+    int DESTROYED = 6;
 
-    void setServer (Q2 server);
-    Q2 getServer ();
+    /**
+     * init the service
+     */
+    void init ();
 
     /**
      * start the service
@@ -90,3 +92,4 @@ package org.jpos.q2;
      */
     int getState ();
 }
+
