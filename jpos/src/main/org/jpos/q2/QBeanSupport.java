@@ -186,6 +186,10 @@ public class QBeanSupport implements QBean, QPersist, QBeanSupportMBean {
 
     protected Element createElement (String name, Class mbeanClass) {
         Element e = new Element (name);
+        Element classPath = persist != null ?
+            persist.getChild ("classpath") : null;
+        if (classPath != null)
+            e.addContent (classPath);
         e.setAttribute ("class", getClass().getName());
         if (!e.getName().equals (getName ()))
             e.setAttribute ("name", getName());
