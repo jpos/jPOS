@@ -45,5 +45,5 @@ This is the case of:
    - xsltfilter (demo XSL Transformations)
    - channelfilter (test ISOChannel's filters [see ISOFilter])
    - isoserver: similar to simpleserver, uses ISOServer component
-
+   - dirpoll: test org.jpos.util.DirPoll functionality
 
