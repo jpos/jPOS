@@ -79,7 +79,7 @@ public class IFB_LLHFBINARY extends ISOFieldPackager {
         int len = ((byte[]) c.getValue()).length;
         if (len > getLength() || len>255) {
             throw new ISOException (
-                "invalid len "+len +" packing field "+(Integer) c.getKey()
+                "invalid len "+len +" packing field "+ c.getKey()
             );
         }
         byte[] b = new byte[getLength() + 1];
@@ -96,18 +96,18 @@ public class IFB_LLHFBINARY extends ISOFieldPackager {
     */
     public int unpack (ISOComponent c, byte[] b, int offset) throws ISOException
     {
-        int len = (int) b[offset] & 0xFF;
+        int len = b[offset] & 0xFF;
         byte[] value = new byte[len];
         System.arraycopy(b, ++offset, value, 0, len);
-        c.setValue ((Object) value);
+        c.setValue (value);
         return getLength()+1;
     }
     public void unpack (ISOComponent c, InputStream in) 
         throws IOException, ISOException
     {
         byte[] b = readBytes (in, 1);
-        int len = (int) b[0] & 0xFF;
-        c.setValue ((Object) readBytes (in, len));
+        int len = b[0] & 0xFF;
+        c.setValue (readBytes (in, len));
         in.skip (getLength () - len);
     }
     public ISOComponent createComponent(int fieldNumber) {
