@@ -68,12 +68,15 @@ public class QTest extends QBeanSupport implements Runnable, QTestMBean {
     }
 
     /**
-     * @jmx:managed-attribute description="Tick Interval"
+     * @jmx:managed-attribute description="set Tick Interval"
      */
     public void setTickInterval (long tickInterval) {
         this.tickInterval = tickInterval;
         setModified (true);
     }
+    /**
+     * @jmx:managed-attribute description="get Tick Interval"
+     */
     public long getTickInterval () {
         return tickInterval;
     }
