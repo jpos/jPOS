@@ -76,16 +76,11 @@ import org.jpos.core.ConfigurationException;
 import org.jpos.apps.qsp.config.ConfigTask;
 
 import com.sun.management.jmx.Trace;
-// import javax.management.Attribute;
 import javax.management.ObjectName;
 import javax.management.MBeanServer;
 import javax.management.MBeanServerFactory;
-// import javax.management.MBeanInfo;
-// import javax.management.MBeanAttributeInfo;
-// import javax.management.MBeanConstructorInfo;
-// import javax.management.MBeanOperationInfo;
-// import javax.management.MBeanNotificationInfo;
-// import javax.management.MBeanParameterInfo;
+import javax.management.NotCompliantMBeanException;
+import javax.management.InstanceAlreadyExistsException;
 
 import javax.management.MBeanException;
 import javax.management.ReflectionException;
@@ -166,7 +161,13 @@ public class QSP implements ErrorHandler, LogSource, Runnable, QSPMBean {
     public long getElapsed () {
         return System.currentTimeMillis() - startTime;
     }
-    public MBeanServer getMBeanServer () throws Exception {
+    public MBeanServer getMBeanServer () 
+        throws IOException, MalformedObjectNameException,
+        InstanceAlreadyExistsException, 
+        MBeanRegistrationException,
+        NotCompliantMBeanException,
+        MalformedObjectNameException
+    {
         if (server == null)
             createMBeanServer();
         return server;
@@ -439,7 +440,13 @@ public class QSP implements ErrorHandler, LogSource, Runnable, QSPMBean {
         );
     }
 
-    protected void createMBeanServer () throws Exception {
+    protected void createMBeanServer () 
+        throws IOException, MalformedObjectNameException,
+        InstanceAlreadyExistsException, 
+        MBeanRegistrationException,
+        MalformedObjectNameException,
+        NotCompliantMBeanException
+    {
         Trace.parseTraceProperties ();
         String domain = cfg.get ("jmx.domain", "QSP");
         server = MBeanServerFactory.createMBeanServer(domain);
@@ -447,7 +454,13 @@ public class QSP implements ErrorHandler, LogSource, Runnable, QSPMBean {
         server.registerMBean (this, mbeanObjectName);
     }
 
-    public void registerMBean (Object bean, String type) throws Exception {
+    public void registerMBean (Object bean, String type) 
+        throws IOException, NotCompliantMBeanException,
+               InstanceAlreadyExistsException,
+               InstanceAlreadyExistsException, 
+               MalformedObjectNameException,
+               MBeanRegistrationException
+    {
         MBeanServer server = getMBeanServer();
         ObjectName name = new ObjectName (
             server.getDefaultDomain() + ":" + type 
