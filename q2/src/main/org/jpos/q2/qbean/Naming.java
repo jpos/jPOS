@@ -58,7 +58,6 @@ import org.jpos.util.Logger;
 
 import javax.management.*;
 
-import mx4j.adaptor.rmi.jrmp.JRMPAdaptor;
 import mx4j.tools.naming.NamingService;
 
 /**
