@@ -118,6 +118,7 @@ public abstract class BaseChannel extends Observable
 
     protected Logger logger = null;
     protected String realm = null;
+    protected byte[] header = null;
 
     /**
      * constructor shared by server and client
@@ -400,13 +401,20 @@ public abstract class BaseChannel extends Observable
             new BaseHeader (image) : null;
     }
     protected void sendMessageLength(int len) throws IOException { }
-    protected void sendMessageHeader(ISOMsg m, int len) throws IOException { }
+    protected void sendMessageHeader(ISOMsg m, int len) throws IOException { 
+	if (m.getHeader() != null)
+            serverOut.write(m.getHeader());
+        else if (header != null) 
+            serverOut.write(header);
+    }
     protected void sendMessageTrailler(ISOMsg m, int len) throws IOException { }
     protected void getMessageTrailler() throws IOException { }
     protected int getMessageLength() throws IOException, ISOException {
         return -1;
     }
-    protected int getHeaderLength()         { return 0; }
+    protected int getHeaderLength() { 
+        return header != null ? header.length : 0;
+    }
     protected int getHeaderLength(byte[] b) { return 0; }
     protected byte[] streamReceive() throws IOException {
         return new byte[0];
@@ -753,10 +761,14 @@ public abstract class BaseChannel extends Observable
     public void setOutgoingFilters (Collection filters) {
 	outgoingFilters = new Vector (filters);
     }
-    public void setHeader (byte[] header) { }
-    public void setHeader (String header) { }
+    public void setHeader (byte[] header) {
+	this.header = header;
+    }
+    public void setHeader (String header) {
+	setHeader (header.getBytes());
+    }
     public byte[] getHeader () {
-	return null;
+	return header;
     }
     /**
      * @return ISOChannel instance with given name.
