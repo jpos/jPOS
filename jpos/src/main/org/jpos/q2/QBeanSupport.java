@@ -76,7 +76,8 @@ public class QBeanSupport implements QBean, QPersist, QBeanSupportMBean {
         return server;
     }
     public void setName (String name) {
-        this.name = name;
+        if (this.name == null) 
+            this.name = name;
         log.setRealm (name);
     }
     public void setLogger (String loggerName) {
