@@ -1,6 +1,9 @@
 $Id$
 
 -- 1.4.9 -- 
+Bugfix in ISOUtil ebcdic tables
+Enhanced support for SSL in ChannelAdaptor and QServer
+Added IFB_LLLHCHAR
 
 -- 1.4.8 -- released Oct 2004 (tagged: v1_4_8)
 
