@@ -67,7 +67,7 @@ import org.jpos.util.NameRegistrar;
  * Examples:
  *
  * <pre>
- *   // default unnamed space
+ *   // default unnamed space (tspace:default)
  *   Space sp = SpaceFactory.getSpace (); 
  *
  *   // transient space named "test"
@@ -85,6 +85,7 @@ import org.jpos.util.NameRegistrar;
  *
  */
 public class SpaceFactory {
+    public static final String TSPACE     = "tspace";
     public static final String TRANSIENT  = "transient";
     public static final String PERSISTENT = "persistent";
     public static final String SPACELET   = "spacelet";
@@ -95,7 +96,7 @@ public class SpaceFactory {
      * @return the default TransientSpace
      */
     public static Space getSpace () {
-        return getSpace (TRANSIENT, DEFAULT, null);
+        return getSpace (TSPACE, DEFAULT, null);
     }
 
     /**
@@ -114,11 +115,11 @@ public class SpaceFactory {
         StringTokenizer st = new StringTokenizer (spaceUri, ":");
         int count = st.countTokens();
         if (count == 0) {
-            scheme = TRANSIENT;
+            scheme = TSPACE;
             name   = DEFAULT;
         }
         else if (count == 1) {
-            scheme = TRANSIENT;
+            scheme = TSPACE;
             name   = st.nextToken ();
         }
         else {
@@ -152,7 +153,9 @@ public class SpaceFactory {
     private static Space createSpace (String scheme, String name, String param)
     {
         Space sp = null;
-        if (TRANSIENT.equals (scheme)) {
+        if (TSPACE.equals (scheme)) {
+            sp = new TSpace ();
+        } else if (TRANSIENT.equals (scheme)) {
             sp = TransientSpace.getSpace (name);
         } else if (PERSISTENT.equals (scheme)) {
             sp = PersistentSpace.getSpace (name);
