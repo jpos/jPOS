@@ -1,0 +1,72 @@
+<ui width="600" height="400" 
+    full-screen="false" undecorated="false" close="exit">
+ <caption>Tree and Split pane</caption>
+
+ <components>
+  <vsplit divider="300">
+   <top>
+    <hsplit>
+     <left>
+       <tree width="126" height="281">jPOS
+        <node>
+         Channels
+         <node>Acquirer A</node>
+         <node>Acquirer B</node>
+         <node>Acquirer C</node>
+        </node>
+        <node>
+         MUXes
+         <node>Acquirer A</node>
+         <node>Acquirer B</node>
+         <node>Acquirer C</node>
+        </node>
+        <node>
+         Servers
+         <node>Acquirer A</node>
+         <node>Acquirer B</node>
+         <node>Acquirer C</node>
+        </node>
+       </tree>
+     </left>
+     <right>
+      <tabbed-pane>
+       <pane title="Embedded Html">
+        <text type="text/html">
+         <![CDATA[
+          <h1>Embbedded HTML</h1>
+          ]]>
+        </text>
+       </pane>
+       <pane title="jPOS.org">
+        <html editable="false" follow-links="true" scrollable="true">
+          http://jpos.org
+        </html>
+       </pane>
+       <pane title="Redirect Test">
+        <panel id="RedirectTest">
+         <text>Click the button</text>
+         <button command="redir-test RedirectTest" action="redirect">Next</button>
+        </panel>
+       </pane>
+      </tabbed-pane>
+     </right>
+    </hsplit>
+   </top>
+   <bottom>
+    <log-listener scrollable="true" logger="Test" font="fixed-normal-12" 
+         max-events="50" max-lines="500" />
+   </bottom>
+  </vsplit>
+ </components>
+ <action class="org.jpos.ui.action.Redirect" id="redirect" />
+
+ <redir-test>
+    <label>I am the redir test 1</label>
+    <button command="redir-test2 RedirectTest" action="redirect">Next</button>
+ </redir-test>
+ 
+ <redir-test2>
+    <label>I am the redir test 2</label>
+    <button command="redir-test RedirectTest" action="redirect">Back</button>
+ </redir-test2>
+</ui>
