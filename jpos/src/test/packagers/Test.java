@@ -60,6 +60,20 @@ public class Test extends TestCase {
         doTest (new GenericPackager ("src/config/packager/iso87binary.xml"),
             "ISO87", "ISO87BPackager");
     }
+    public void testISO93APackager() throws Exception {
+        doTest (new ISO93APackager(), "ISO93", "ISO93APackager");
+    }
+    public void testISO93BPackager() throws Exception {
+        doTest (new ISO93BPackager(), "ISO93", "ISO93BPackager");
+    }
+    public void testGeneric93ascii() throws Exception {
+        doTest (new GenericPackager ("src/config/packager/iso93ascii.xml"),
+            "ISO93", "ISO93APackager");
+    }
+    public void testGeneric93binary() throws Exception {
+        doTest (new GenericPackager ("src/config/packager/iso93binary.xml"),
+            "ISO93", "ISO93BPackager");
+    }
     private void doTest (ISOPackager packager, String msg, String img)
         throws Exception
     {
