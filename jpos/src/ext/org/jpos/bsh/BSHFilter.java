@@ -83,9 +83,9 @@ public class BSHFilter implements ISOFilter, ReConfigurable {
     public ISOMsg filter (ISOChannel channel, ISOMsg m, LogEvent evt) 
         throws VetoException
     {
-        try {
-            String[] source = cfg.getAll ("source");
-            for (int i=0; i<source.length; i++) {
+        String[] source = cfg.getAll ("source");
+        for (int i=0; i<source.length; i++) {
+            try {
                 Interpreter bsh = new Interpreter ();
                 bsh.set ("channel", channel);
                 bsh.set ("message", m);
@@ -94,10 +94,11 @@ public class BSHFilter implements ISOFilter, ReConfigurable {
                 bsh.source (source[i]);
 
                 m = (ISOMsg) bsh.get ("message");
+            }catch (Exception e) {
+                if(e instanceof VetoException) throw (VetoException)e;
+                else evt.addMessage (e);
+                //throw new VetoException (e);
             }
-        } catch (Exception e) {
-            evt.addMessage (e);
-            throw new VetoException (e);
         }
         return m;
     }
