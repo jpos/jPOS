@@ -49,15 +49,23 @@
 
 package org.jpos.q2.qbean;
 
+import java.util.Iterator;
+import java.util.List;
+import java.util.ArrayList;
+
+import org.jpos.q2.QFactory;
 import org.jpos.q2.QBeanSupport;
+import org.jpos.q2.Q2ConfigurationException;
 import org.jdom.Element;
 import org.jpos.space.Space;
 import org.jpos.space.SpaceListener;
 import org.jpos.space.TransientSpace;
 
 import org.jpos.iso.MUX;
+import org.jpos.iso.ISOSource;
 import org.jpos.iso.ISOMsg;
 import org.jpos.iso.ISOUtil;
+import org.jpos.iso.ISORequestListener;
 import org.jpos.iso.ISOException;
 import org.jpos.util.NameRegistrar;
 
@@ -72,14 +80,17 @@ public class QMUX
 {
     Space sp;
     String in, out, unhandled;
+    List listeners;
     public QMUX () {
         super ();
         sp = TransientSpace.getSpace ();
+        listeners = new ArrayList ();
     }
-    public void initService () {
+    public void initService () throws Q2ConfigurationException {
         Element e = getPersist ();
         in        = e.getChildTextTrim ("in");
         out       = e.getChildTextTrim ("out");
+        addListeners ();
         unhandled = e.getChildTextTrim ("unhandled");
     }
     public void startService () {
@@ -123,8 +134,7 @@ public class QMUX
             } catch (ISOException e) { 
                 getLog().warn ("notify", e);
             }
-            if (unhandled != null)
-                sp.out (unhandled, m, 120000);
+            processUnhandled (m);
         }
     }
 
@@ -177,6 +187,36 @@ public class QMUX
      */
     public String getUnhandledQueue () {
         return unhandled;
+    }
+    private void addListeners () 
+	throws Q2ConfigurationException
+    {
+        QFactory factory = getFactory ();
+        Iterator iter = getPersist().getChildren (
+            "request-listener"
+        ).iterator();
+        while (iter.hasNext()) {
+            Element l = (Element) iter.next();
+            ISORequestListener listener = (ISORequestListener) 
+                factory.newInstance (l.getAttributeValue ("class"));
+            factory.setLogger        (listener, l);
+            factory.setConfiguration (listener, l);
+            addISORequestListener (listener);
+        }
+    }
+    public void addISORequestListener(ISORequestListener l) {
+	listeners.add (l);
+    }
+    protected void processUnhandled (ISOMsg m) {
+        ISOSource source = m.getSource ();
+        if (source != null) {
+            Iterator iter = listeners.iterator();
+            while (iter.hasNext())
+                if (((ISORequestListener)iter.next()).process (source, m))
+                    return;
+        }
+        if (unhandled != null)
+            sp.out (unhandled, m, 120000);
     }
 }
 
