@@ -58,6 +58,7 @@ import org.jpos.iso.ISOException;
 import org.jpos.iso.ISORequestListener;
 import org.jpos.iso.gui.ISOChannelPanel;
 import org.jpos.core.Configurable;
+import org.jpos.core.ReConfigurable;
 import org.jpos.core.SimpleConfiguration;
 import org.jpos.core.ConfigurationException;
 import org.jpos.iso.ISOServer;
@@ -68,7 +69,7 @@ import org.jpos.util.ThreadPool;
 import org.jpos.util.NameRegistrar.NotFoundException;
 
 import org.jpos.apps.qsp.QSP;
-import org.jpos.apps.qsp.QSPConfigurator;
+import org.jpos.apps.qsp.QSPReConfigurator;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -79,7 +80,7 @@ import org.w3c.dom.NamedNodeMap;
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
  * @version $Revision$ $Date$
  */
-public class ConfigServer implements QSPConfigurator {
+public class ConfigServer implements QSPReConfigurator {
     public void config (QSP qsp, Node node) throws ConfigurationException
     {
 	ThreadPool pool = null;
@@ -107,6 +108,10 @@ public class ConfigServer implements QSPConfigurator {
 	evt.addMessage ("Server "+name+"/"+channel.getName()+"/"+port);
 	server.setName (name);
 	server.setLogger (logger, realm);
+        if (server instanceof Configurable) 
+	    ((Configurable)server).setConfiguration (
+                new SimpleConfiguration (ConfigUtil.addProperties (node, null, evt))
+            );
 	JPanel panel = ConfigControlPanel.getPanel (node);
 	if (panel != null) {
 	    ISOChannelPanel icp = new ISOChannelPanel (name);
@@ -140,5 +145,14 @@ public class ConfigServer implements QSPConfigurator {
 		return ISOServer.getServer (n.getNodeValue());
 	    } catch (NotFoundException e) { }
 	return null;
+    }
+    public void reconfig (QSP qsp, Node node) throws ConfigurationException {
+        ISOServer server = getServer (node);
+	LogEvent evt = new LogEvent (qsp, "re-config-server");
+        if (server instanceof ReConfigurable) 
+	    ((ReConfigurable)server).setConfiguration (
+                new SimpleConfiguration (ConfigUtil.addProperties (node, null, evt))
+            );
+        Logger.log (evt);
     }
 }
