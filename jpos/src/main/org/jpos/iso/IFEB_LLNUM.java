@@ -49,6 +49,9 @@
 
 package org.jpos.iso;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 /**
  * Uses a 2 EBCDIC byte length field.
  *
@@ -58,6 +61,7 @@ package org.jpos.iso;
  * for padding if length is odd.
  *
  * @author julien.moebs@paybox.net
+ * @author doronf@xor-t.com
  * @version $Id$
  * @see ISOFieldPackager
  * @see ISOComponent
@@ -136,6 +140,22 @@ public class IFEB_LLNUM extends ISOFieldPackager {
         c.setValue(ISOUtil.bcd2str(b, offset+2, tempLen, pad));
 
         return len+2;
+    }
+
+    /*
+     * code contributed by doronf@xor-t.com
+     */
+    public void unpack (ISOComponent c, InputStream in) 
+        throws IOException, ISOException
+    {
+        byte[] b = readBytes (in, 2);
+        int len = 
+            (100 * ((((b[0] >> 4) & 0x0F) > 0x09 ? 0 : 
+            ((b[0] >> 4) & 0x0F)) * 10 + (b[0] & 0x0F)) 
+           +(((b[1] >> 4) & 0x0F) > 0x09 ? 0 : 
+              ((b[1] >> 4) & 0x0F)) * 10 + (b[1] & 0x0F)
+            );
+        c.setValue (ISOUtil.bcd2str (readBytes (in, len), 0, 2*len, pad));
     }
     
     public int getMaxPackedLength() {
