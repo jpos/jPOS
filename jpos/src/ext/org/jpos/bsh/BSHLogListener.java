@@ -130,7 +130,7 @@ public class BSHLogListener implements org.jpos.util.LogListener, org.jpos.core.
                         bsh.set("event", ret);
                         bsh.set("cfg", cfg);
                         bsh.eval(new java.io.FileReader(f));
-                        ret = (LogEvent)bsh.getVariable("event");
+                        ret = (LogEvent)bsh.get("event");
                     }
                 }catch(Exception e){
                     ret.addMessage(e);
