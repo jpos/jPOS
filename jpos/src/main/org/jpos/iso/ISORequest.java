@@ -70,13 +70,15 @@ public class ISORequest implements LogProducer, Loggeable {
      */
     public ISOMsg getResponse(int timeout) {
         synchronized (this) {
-            try {
-                if (timeout > 0)
-                    wait(timeout);
-                else
-                    wait();
-            } catch (InterruptedException e) { }
-            setExpired (response == null);
+	    if (response == null) {
+		try {
+		    if (timeout > 0)
+			wait(timeout);
+		    else
+			wait();
+		} catch (InterruptedException e) { }
+	    }
+	    setExpired (response == null);
         }
 	Logger.log (new LogEvent (this, "ISORequest", this));
         return response;
