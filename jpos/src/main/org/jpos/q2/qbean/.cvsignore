@@ -2,3 +2,4 @@ QTestMBean*.java
 ChannelAdaptorMBean*.java
 QMUXMBean*.java
 NameRegistrarInspectorMBean*.java
+ServerAdaptorMBean*.java
