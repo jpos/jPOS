@@ -1,5 +1,9 @@
 $Id$
 
+-- 1.4.3 --
+GenericPackager now support reading config file from XML InputStream 
+             (code contributed by Matías Salvador <mhs@sisa.com.ar>)
+
 -- 1.4.2 -- Released May 2002 (tagged: v1_4_2)
 
 -- 1.4.1 --
