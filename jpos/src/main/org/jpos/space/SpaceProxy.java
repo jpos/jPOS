@@ -58,7 +58,6 @@ import java.rmi.server.ExportException;
 import java.rmi.registry.LocateRegistry;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import org.jpos.core.Stopable;
 import org.jpos.util.SimpleLogSource;
 import org.jpos.core.ReConfigurable;
 import org.jpos.core.Configuration;
