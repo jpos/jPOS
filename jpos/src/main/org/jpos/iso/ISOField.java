@@ -3,6 +3,13 @@ package uy.com.cs.jpos.iso;
 import java.io.*;
 import java.util.*;
 
+/*
+ * $Log$
+ * Revision 1.4  1999/10/01 19:20:27  apr
+ * Added String.intern() in order to minimize memory usage
+ *
+ */
+
 /**
  * implements <b>Leaf</b> for standard fields
  *
@@ -30,7 +37,7 @@ public class ISOField extends ISOComponent implements Cloneable {
      */
     public ISOField (int n, String v) {
         fieldNumber = n;
-        value = v;
+        value = v.intern();
     }
     /**
      * not available on Leaf - always throw ISOException
@@ -63,7 +70,7 @@ public class ISOField extends ISOComponent implements Cloneable {
      * @exception ISOException
      */
     public void setValue(Object obj) throws ISOException {
-        value = (String) obj;
+        value = ((String) obj).intern();
     }
     /**
      * dump this field to PrintStream. The output is sorta
