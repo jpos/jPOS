@@ -200,6 +200,8 @@ public class ISOMUX implements Runnable, LogProducer {
             }
         }
 	public void setLogger (Logger logger, String realm) {
+	    this.logger = logger;
+	    this.realm  = realm;
 	}
 	public String getRealm () {
 	    return realm;
