@@ -1,6 +1,8 @@
 $Id$
 
 -- 1.4.1 --
+new ISOMsg.unset (int []) method
+MacroFilter now accepts "valid" and "unset" config properties
 new WebServer task (integrates Jetty with QSP)
 new TLVPackager 
 new EJBConnector (and EJBConnectorMBean)
