@@ -58,6 +58,7 @@ import java.rmi.RemoteException;
 import java.util.Properties;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Arrays;
 import java.util.HashMap;
 
 import jdbm.RecordManager;
@@ -66,6 +67,7 @@ import jdbm.RecordManagerOptions;
 import jdbm.helper.FastIterator;
 import jdbm.htree.HTree;
 import jdbm.helper.Serializer;
+import jdbm.helper.DefaultSerializer;
 import jdbm.helper.FastIterator;
 
 /**
@@ -257,6 +259,9 @@ public class JDBMSpace implements Space {
      */
     public synchronized Object rdp (Object key) {
         try {
+            if (key instanceof Template) 
+                return getObject ((Template) key, false);
+
             Object obj = null;
             Ref ref = getFirst (key, false);
             if (ref != null) 
@@ -277,6 +282,9 @@ public class JDBMSpace implements Space {
      */
     public synchronized Object inp (Object key) {
         try {
+            if (key instanceof Template) 
+                return getObject ((Template) key, true);
+
             Object obj = null;
             Ref ref = getFirst (key, true);
             if (ref != null) {
@@ -426,7 +434,7 @@ public class JDBMSpace implements Space {
             throw new SpaceError (e);
         }
     }
-
+    
     private Ref getFirst (Object key, boolean remove) throws IOException {
         Head head = (Head) htree.get (key);
         Ref ref = null;
@@ -459,6 +467,67 @@ public class JDBMSpace implements Space {
             }
         }
         return ref;
+    }
+    private void unlinkRef
+        (long recid, Head head, Ref r, Ref previousRef, long previousRecId) 
+        throws IOException
+    {
+        recman.delete (r.recid);
+        recman.delete (recid);
+        head.count--;
+        if (previousRef == null)
+            head.first = r.next;
+        else {
+            previousRef.next = r.next;
+            recman.update (
+                previousRecId, previousRef, refSerializer
+            );
+        }
+    }
+    private Object getObject (Template tmpl, boolean remove) 
+        throws IOException 
+    {
+        Object obj = null;
+        Object key = tmpl.getKey();
+        Head head = (Head) htree.get (key);
+        Ref ref, previousRef = null;
+        long previousRecId = 0;
+        int unlinkCount = 0;
+        if (head != null) {
+            for (long recid = head.first; recid >= 0; ) {
+                Ref r = (Ref) recman.fetch (recid, refSerializer);
+                if (r.isExpired ()) {
+                    unlinkRef (recid, head, r, previousRef, previousRecId);
+                    unlinkCount++;
+                } else  {
+                    Object o = recman.fetch (r.recid);
+                    if (o != null) {
+                        if (tmpl.equals (o)) {
+                            obj = o;
+                            if (remove) {
+                                unlinkRef (
+                                    recid, head, r, previousRef, previousRecId
+                                );
+                                unlinkCount++;
+                            }
+                            break;
+                        }
+                    }
+                    previousRef = r;
+                    previousRecId = recid;
+                }
+                recid = r.next;
+            } 
+            if (unlinkCount > 0) {
+                if (head.first == -1)  {
+                    htree.remove (key);
+                }
+                else {
+                    htree.put (key, head);
+                }
+            }
+        }
+        return obj;
     }
     static class Head implements Externalizable {
         public long first;
