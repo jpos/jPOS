@@ -215,7 +215,7 @@ public class ISOServer extends Observable
 		setOutgoingFilters (clientOutgoingFilters);
 	if (clientIncomingFilters != null)
 	    ((FilteredChannel)channel) .
-		setIncomingFilters (clientOutgoingFilters);
+		setIncomingFilters (clientIncomingFilters);
     }
     private void relax() {
 	try {
