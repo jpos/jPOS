@@ -58,6 +58,7 @@ import org.jpos.core.SimpleConfiguration;
 import org.jpos.core.ConfigurationException;
 
 import org.jpos.q2.QBeanSupport;
+import org.jdom.Element;
 
 import javax.management.ObjectName;
 
@@ -80,10 +81,11 @@ import java.io.IOException;
  * set host property to "localhost" if you want to can't access the server 
  * from another computer,This is good for security reasons.
  *
+ * @version $Revision$ $Date$
  */
 public class HttpAdaptor 
     extends QBeanSupport 
-    implements LogSource, Configurable, Runnable
+    implements LogSource, Configurable
 {
     Configuration cfg;
     Logger logger;
@@ -143,13 +145,21 @@ public class HttpAdaptor
             throw new ConfigurationException (e);
         }
     }
-    public void run () {
+    public void initService()
+    {
         try {
             setConfiguration (new SimpleConfiguration ());
-            adaptor.start ();
         } catch (Exception e) {
             e.printStackTrace ();
         }
     }
+    public void startService () throws Exception{
+        adaptor.start ();
+    }
+
+    public void stopService () throws Exception{
+        adaptor.stop();
+    }
+
 }
 

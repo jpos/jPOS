@@ -6,6 +6,13 @@ import org.jpos.iso.ISOUtil;
 import org.jpos.q2.QBean;
 import org.jpos.q2.QBeanSupport;
 
+/**
+ * Sample QBean
+ *
+ * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
+ * @author <a href="mailto:taherkordy@dpi2.dpi.net.ir">Alireza Taherkordi</a>
+ * @version $Revision$ $Date$
+ */
 public class QTest extends QBeanSupport implements Runnable {
     public QTest () {
         super();
@@ -36,7 +43,7 @@ public class QTest extends QBeanSupport implements Runnable {
     }
     public void run () {
         int tickCount = 0;
-        while (getState() == QBean.STARTED) {
+        while (running ()) {
             System.out.println ("QTest: tick " + this.hashCode());
             if (tickCount++ % 10 == 0) {
                 super.getPersist ().addContent (
@@ -47,6 +54,9 @@ public class QTest extends QBeanSupport implements Runnable {
             ISOUtil.sleep (1000);
         }
         setState (QBean.STOPPED);
+    }
+    public void startService() {
+        new Thread(this).start();
     }
 }
 

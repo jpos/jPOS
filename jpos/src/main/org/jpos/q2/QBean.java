@@ -55,18 +55,18 @@ package org.jpos.q2;
  *
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
  * @author <a href="mailto:taherkordy@dpi2.dpi.net.ir">Alireza Taherkordi</a>
- *
+ * @version $Revision$ $Date$
  * @see QPersist
  */
 public interface QBean {
 
     // State
-    int STOPPED            = 1;
-    int STOPPING           = 2;
-    int STARTING           = 3;
-    int STARTED            = 4;
-    int FAILED             = 5;
-    int DESTROYED          = 6;
+    int STOPPED            = 0;
+    int STOPPING           = 1;
+    int STARTING           = 2;
+    int STARTED            = 3;
+    int FAILED             = 4;
+    int DESTROYED          = 5;
 
     /**
      * init the service

@@ -49,16 +49,15 @@
 package org.jpos.q2;
 
 import org.jdom.Element;
-import org.jpos.iso.ISOUtil;
 
 /**
  * @author <a href="mailto:taherkordy@dpi2.dpi.net.ir">Alireza Taherkordi</a>
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
+ * @version $Revision$ $Date$
  */
 public class QBeanSupport implements QBean, QPersist, QBeanSupportMBean {
     Element persist;
     int state;
-    long flags;
     Q2 server;
     boolean modified;
 
@@ -71,30 +70,62 @@ public class QBeanSupport implements QBean, QPersist, QBeanSupportMBean {
     public Q2 getServer () {
         return server;
     }
+    public void init () {
+        try {
+            initService();
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }
+    }
     public void start() {
+        if (state != QBean.DESTROYED && 
+            state != QBean.STOPPED   && 
+            state != QBean.FAILED)
+           return;
+
+        this.state = QBean.STARTING;
+
+        try {
+           startService();
+        } catch (Throwable t) {
+           state = QBean.FAILED;
+           t.printStackTrace();
+           return;
+        }
         state = QBean.STARTED;
-        if (this instanceof Runnable) 
-            new Thread ((Runnable) this).start();
     }
     public void stop () {
+        if (state != QBean.STARTED)
+           return;
         state = QBean.STOPPING;
+        try {
+           stopService();
+        } catch (Throwable t) {
+           state = QBean.FAILED;
+           t.printStackTrace();
+           return;
+        }
+        state = QBean.STOPPED;
     }
-    public void destroy () { 
+    public void destroy () {
+        if (state == QBean.DESTROYED)
+           return;
+        if (state != QBean.STOPPED)
+           stop();
+
+        try {
+           destroyService();
+        }
+        catch (Throwable t) {
+           t.printStackTrace();
+        }
+        state = QBean.DESTROYED;
     }
     public int getState () {
         return state;
     }
     public void setState (int state) {
         this.state = state;
-    }
-    public long getFlags () {
-        return flags;
-    }
-    public void setFlags (long flags) {
-        this.flags = flags;
-    }
-    public void init () {
-        this.state = QBean.STARTING;
     }
     public void setPersist (Element persist) {
         this.persist = persist ;
@@ -106,8 +137,15 @@ public class QBeanSupport implements QBean, QPersist, QBeanSupportMBean {
     public synchronized void setModified (boolean modified) {
         this.modified = modified;
     }
-    public boolean isModified () {
+    public synchronized boolean isModified () {
         return modified;
     }
+    protected boolean running () {
+        return state == QBean.STARTING || state == QBean.STARTED;
+    }
+    protected void initService()    throws Exception {}
+    protected void startService()   throws Exception {}
+    protected void stopService()    throws Exception {}
+    protected void destroyService() throws Exception {}
 }
 

@@ -57,6 +57,7 @@ import org.jdom.Element;
  *
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
  * @author <a href="mailto:taherkordy@dpi2.dpi.net.ir">Alireza Taherkordi</a>
+ * @version $Revision$ $Date$
  *
  */
 public interface QPersist {

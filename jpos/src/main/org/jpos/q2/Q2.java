@@ -78,6 +78,7 @@ import org.jdom.output.XMLOutputter;
 /**
  * @author <a href="mailto:taherkordy@dpi2.dpi.net.ir">Alireza Taherkordi</a>
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
+ * @version $Revision$ $Date$
  */
 public class Q2 implements FileFilter {
     public static final String DEFAULT_DEPLOY_DIR  = "deploy";

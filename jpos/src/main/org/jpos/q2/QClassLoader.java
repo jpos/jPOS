@@ -64,6 +64,13 @@ import javax.management.InstanceAlreadyExistsException;
 import javax.management.InstanceNotFoundException;
 import javax.management.NotCompliantMBeanException;
 
+/**
+ * Q2 Class Loader (scans deploy/lib directory for new jars)
+ *
+ * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
+ * @author <a href="mailto:taherkordy@dpi2.dpi.net.ir">Alireza Taherkordi</a>
+ * @version $Revision$ $Date$
+ */
 public class QClassLoader 
     extends URLClassLoader 
     implements QClassLoaderMBean, FileFilter {

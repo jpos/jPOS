@@ -54,6 +54,7 @@ import org.jpos.iso.ISOUtil;
 /**
  * @author <a href="mailto:taherkordy@dpi2.dpi.net.ir">Alireza Taherkordi</a>
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
+ * @version $Revision$ $Date$
  */
 public interface QBeanSupportMBean {
     public void init ();
