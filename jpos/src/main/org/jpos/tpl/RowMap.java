@@ -62,7 +62,7 @@ import org.jpos.iso.ISODate;
  * @version $Id$
  */
 public class RowMap {
-    Map map;
+    protected Map map;
     public RowMap () {
 	map = new Hashtable();
     }
