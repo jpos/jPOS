@@ -95,7 +95,7 @@ public class RawChannel extends BaseChannel {
 
     /**
      * New QSP compatible signature (see QSP's ConfigChannel)
-     * @param header Strnig as seen by QSP
+     * @param header String as seen by QSP
      */
     public void setHeader (String header) {
 	setTPDU (ISOUtil.str2bcd(header, false));
