@@ -27,7 +27,7 @@ public class TestTSpace extends TestCase implements SpaceListener {
         sp.out ("TestExp", "ABC", 50);
         assertEquals ("ABC", sp.rdp ("TestExp"));
         try {
-            Thread.sleep (50);
+            Thread.sleep (60);
         } catch (InterruptedException e) { }
         assertNull ("ABC", sp.rdp ("TestExp"));
     }
@@ -76,7 +76,7 @@ public class TestTSpace extends TestCase implements SpaceListener {
         sp.out ("TestExp", "XYZ", 50);
         assertEquals ("ABC", sp.rdp ("TestExp"));
         try {
-            Thread.sleep (50);
+            Thread.sleep (60);
         } catch (InterruptedException e) { }
 
         assertEquals ("TestExp", sp.getKeysAsString());
@@ -143,7 +143,7 @@ public class TestTSpace extends TestCase implements SpaceListener {
         sp.out ("Test", "OLD");
         assertEquals (notifiedValue, "OLD");
         try {
-            Thread.sleep (500);
+            Thread.sleep (600);
         } catch (InterruptedException e) { }
         sp.out ("Test", "NEW");
         assertEquals (notifiedValue, "OLD");  // still OLD
