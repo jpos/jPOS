@@ -49,8 +49,11 @@
 
 /*
  * $Log$
- * Revision 1.11  2002/07/15 01:03:43  apr
- * Bugfix: flush the read buffer (reported by Kris Leite)
+ * Revision 1.12  2002/08/06 14:26:29  apr
+ * backport from jPOS_2_0 branch
+ *
+ * Revision 1.10.2.1  2002/07/15 01:04:54  apr
+ * Bugfix: flush the read buffer in reset (reported by Kris Leite)
  *
  * Revision 1.10  2000/11/02 12:09:17  apr
  * Added license to every source file

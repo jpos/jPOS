@@ -49,6 +49,9 @@
 
 package org.jpos.iso;
 
+import java.io.InputStream;
+import java.io.IOException;
+
 /**
  * ISOFieldPackager ASCII variable len BINARY
  *
@@ -106,6 +109,12 @@ public class IFA_LLLBINARY extends ISOFieldPackager {
         return new ISOBinaryField (fieldNumber);
     }
     public int getMaxPackedLength() {
-        return getLength() + 3;
+        return (getLength() << 1) + 3;
+    }
+    public void unpack (ISOComponent c, InputStream in) 
+        throws IOException, ISOException
+    {
+        int len = Integer.parseInt(new String(readBytes (in, 3)));
+        c.setValue (readBytes (in, len));
     }
 }

@@ -49,6 +49,10 @@
 
 package org.jpos.iso;
 
+import java.io.InputStream;
+import java.io.IOException;
+
+
 /**
  * ISOFieldPackager Binary LL Hex NUM
  * Almost the same as IFB_LLNUM but len is encoded as a binary
@@ -104,6 +108,13 @@ public class IFB_LLHNUM extends ISOFieldPackager {
         int len = (int) b[offset] & 0xFF;
         c.setValue (ISOUtil.bcd2str (b, offset+1, len, pad));
         return 1 + (++len >> 1);
+    }
+    public void unpack (ISOComponent c, InputStream in) 
+        throws IOException, ISOException
+    {
+        byte[] b = readBytes (in, 1);
+        int len = (int) b[0] & 0xFF;
+        c.setValue (ISOUtil.bcd2str (readBytes (in, (len+1) >> 1), 0, len, pad));
     }
     public int getMaxPackedLength() {
         return 1 + ((getLength()+1) >> 1);

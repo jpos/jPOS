@@ -111,17 +111,25 @@ public class XMLChannel extends BaseChannel {
      * @exception IOException
      */
     protected byte[] streamReceive() throws IOException {
-	StringBuffer sb = new StringBuffer();
-	while (reader != null) {
-	    String s = reader.readLine();
-	    if (s == null)
-		throw new EOFException();
-	    sb.append (s);
-	    if (s.indexOf ("</" + XMLPackager.ISOMSG_TAG + ">") == 0)
-		break;
-	}
-	return sb.toString().getBytes();
+        int sp = 0;
+        StringBuffer sb = new StringBuffer();
+        while (reader != null) {
+            String s = reader.readLine();
+            if (s == null)
+                throw new EOFException();
+            sb.append (s);
+            if (s.indexOf ("<" + XMLPackager.ISOMSG_TAG) >= 0)
+                sp++;
+            if (s.indexOf ("</" + XMLPackager.ISOMSG_TAG + ">") >= 0)
+            {
+                if (--sp <= 0)
+                    break;
+            }
+        }
+        return sb.toString().getBytes();
     }
+
+
     protected int getHeaderLength() { 
         // XML Channel does not support header
 	return 0; 

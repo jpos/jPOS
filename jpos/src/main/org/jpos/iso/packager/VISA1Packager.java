@@ -49,6 +49,8 @@
 
 package org.jpos.iso.packager;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 import org.jpos.util.Logger;
 import org.jpos.util.LogEvent;
@@ -194,6 +196,9 @@ public class VISA1Packager
 	    }
 	}
 	return b.length;
+    }
+    public void unpack (ISOComponent m, InputStream in) throws ISOException {
+        throw new ISOException ("not implemented");
     }
     public String getFieldDescription(ISOComponent m, int fldNumber)
     {

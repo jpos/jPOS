@@ -49,6 +49,11 @@
 
 package org.jpos.iso;
 
+import java.io.InputStream;
+import java.io.ObjectOutput;
+import java.io.IOException;
+import java.io.EOFException;
+
 /**
  * base class for the various IF*.java Field Packagers
  * Implements "FlyWeight" pattern
@@ -113,13 +118,6 @@ public abstract class ISOFieldPackager {
     public void setDescription(String description) {
     	this.description = description;
     }
-
-    /**
-     * @deprecated Use getLength() instead
-     */
-    public int getLen() {
-        return getLength();
-    }
     public int getLength() {
         return len;
     }
@@ -152,4 +150,39 @@ public abstract class ISOFieldPackager {
      */
     public abstract int unpack (ISOComponent c, byte[] b, int offset)
         throws ISOException;
+
+    /**
+     * @param c  - the Component to unpack
+     * @param in - input stream
+     * @exception ISOException
+     */
+    public void unpack (ISOComponent c, InputStream in) 
+        throws IOException, ISOException
+    {
+        unpack (c, readBytes (in, getMaxPackedLength ()), 0);
+    }
+    /**
+     * @param c   - the Component to unpack
+     * @param out - output stream
+     * @exception ISOException
+     * @exception IOException
+     */
+    public void pack (ISOComponent c, ObjectOutput out) 
+        throws IOException, ISOException
+    {
+        out.write (pack (c));
+    }
+
+    protected byte[] readBytes (InputStream in, int l) throws IOException {
+        byte[] b = new byte [l];
+        int n = 0;
+        while (n < l) {
+            int count = in.read(b, n, l - n);
+            if (count < 0)
+                throw new EOFException();
+            n += count;
+        }
+        return b;
+    }
 }
+

@@ -145,4 +145,8 @@ public abstract class ISOComponent implements Cloneable {
     public abstract byte[] pack() throws ISOException;
     public abstract int unpack(byte[] b) throws ISOException;
     public abstract void dump (PrintStream p, String indent);
+    public void pack (OutputStream out) throws IOException, ISOException {
+        out.write (pack ());
+    }
+    public abstract void unpack (InputStream in) throws IOException, ISOException;
 }

@@ -48,6 +48,8 @@
  */
 
 package org.jpos.iso;
+import java.io.InputStream;
+import java.io.IOException;
 
 /**
  * <pre>
@@ -110,7 +112,12 @@ public class IFE_LLNUM extends ISOFieldPackager
         c.setValue (ISOUtil.ebcdicToAscii(b, offset + 2, len));
         return 2 + len;
     }
-
+    public void unpack (ISOComponent c, InputStream in) 
+        throws IOException, ISOException
+    {
+        int len = Integer.parseInt (ISOUtil.ebcdicToAscii(readBytes (in, 2)));
+	c.setValue(ISOUtil.ebcdicToAscii(readBytes (in, len)));
+    }
     public int getMaxPackedLength() {
 	return getLength()+2;
     }

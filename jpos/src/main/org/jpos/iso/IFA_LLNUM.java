@@ -49,6 +49,9 @@
 
 package org.jpos.iso;
 
+import java.io.InputStream;
+import java.io.IOException;
+
 /**
  * ISOFieldPackager ASCII variable len NUMERIC
  *
@@ -99,5 +102,11 @@ public class IFA_LLNUM extends ISOFieldPackager {
     }
     public int getMaxPackedLength() {
         return getLength() + 2;
+    }
+    public void unpack (ISOComponent c, InputStream in) 
+        throws IOException, ISOException
+    {
+        int len = Integer.parseInt(new String(readBytes (in, 2)));
+        c.setValue (new String (readBytes (in, len)));
     }
 }

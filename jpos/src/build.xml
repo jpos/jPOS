@@ -93,12 +93,24 @@
       <pathelement location="${build}/classes"/>
   </path>
 
+  <fileset dir="${main}" >
+    <patternset id="rmic.classes" >
+      <include name="org/jpos/space/SpaceProxy.class"/>
+    </patternset>
+  </fileset>
+
   <target name="main" depends="prepare">
     <javac srcdir="${main}" destdir="${classes}"
         debug="${debug}"
         deprecation="${deprecation}" >
         <classpath refid="main.classpath" />
     </javac>
+    <rmic base="${classes}" stubVersion="1.2">
+       <classpath  refid="main.classpath" />
+       <patternset refid="rmic.classes" />
+    </rmic>
+    <copy file="${source}/etc/jndi.properties" 
+        tofile="${classes}/jndi.properties" />
   </target>
 
   <target name="ext.check" depends="main">

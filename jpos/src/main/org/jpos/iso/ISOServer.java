@@ -57,6 +57,7 @@ import java.util.Iterator;
 import java.util.Observer;
 import java.util.Observable;
 import java.util.Collection;
+import java.net.Socket;
 import java.net.ServerSocket;
 import org.jpos.util.LogSource;
 import org.jpos.util.Logger;
@@ -117,11 +118,17 @@ public class ISOServer extends Observable
 
     protected class Session implements Runnable, LogSource {
         ServerChannel channel;
+        String realm;
         protected Session(ServerChannel channel) {
             this.channel = channel;
+            realm = ISOServer.this.getRealm() + ".session";
         }
         public void run() {
-	    Logger.log (new LogEvent (this, "SessionStart"));
+            if (channel instanceof BaseChannel) {
+                Socket socket = ((BaseChannel)channel).getSocket ();
+                realm = realm + socket.getInetAddress();
+            }
+            Logger.log (new LogEvent (this, "session-start"));
             try {
                 for (;;) {
                     ISOMsg m = channel.receive();
@@ -132,7 +139,7 @@ public class ISOServer extends Observable
 			    break;
                 }
 	    } catch (EOFException e) {
-		Logger.log (new LogEvent (this, "SessionWarning", "<eof/>"));
+		Logger.log (new LogEvent (this, "session-warning", "<eof/>"));
                 try {
                     channel.disconnect();
                 } catch (IOException ex) { }
@@ -141,7 +148,7 @@ public class ISOServer extends Observable
                     channel.disconnect();
                 } catch (IOException ex) { }
             } catch (Exception e) { 
-                LogEvent evt = new LogEvent (this, "SessionError", e);
+                LogEvent evt = new LogEvent (this, "session-error", e);
                 try {
                     channel.disconnect();
                 } catch (IOException ex) { 
@@ -149,12 +156,12 @@ public class ISOServer extends Observable
                 }
                 Logger.log (evt);
             } 
-	    Logger.log (new LogEvent (this, "SessionEnd"));
+	    Logger.log (new LogEvent (this, "session-end"));
         }
 	public void setLogger (Logger logger, String realm) { 
 	}
 	public String getRealm () {
-	    return ISOServer.this.getRealm() + ".session";
+	    return realm;
 	}
 	public Logger getLogger() {
 	    return ISOServer.this.getLogger();

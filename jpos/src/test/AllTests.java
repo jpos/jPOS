@@ -68,6 +68,7 @@ public class AllTests {
         TestSuite suite = new TestSuite("jPOS Tests");
         suite.addTestSuite (packagers.Test.class);
         suite.addTestSuite (jceadapter.Test.class);
+        suite.addTestSuite (space.Test.class);
         return suite;
     }
     public static Logger getLogger() {

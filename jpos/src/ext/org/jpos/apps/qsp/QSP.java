@@ -74,6 +74,7 @@ import org.jpos.core.Configuration;
 import org.jpos.core.SimpleConfiguration;
 import org.jpos.core.ConfigurationException;
 import org.jpos.apps.qsp.config.ConfigTask;
+import org.jpos.space.TransientSpace;
 
 import com.sun.management.jmx.Trace;
 import javax.management.ObjectName;
@@ -117,11 +118,12 @@ public class QSP implements ErrorHandler, LogSource, Runnable, QSPMBean {
 	{ "logger",
 	  "qsp-config",
 	  "log-listener",
+          "object",
           "connection-pool",
 	  "persistent-engine",
 	  "sequencer",
-      "s-m-adapter",
-      "secure-key-store",
+          "s-m-adapter",
+          "secure-key-store",
 	  "control-panel",
 	  "channel",
 	  "filter",
@@ -422,7 +424,9 @@ public class QSP implements ErrorHandler, LogSource, Runnable, QSPMBean {
 	    parser.parse (qsp.configFile.getPath());
 	    qsp.setConfig (parser.getDocument());
             qsp.configure ();
-
+                qsp.registerMBean (
+                TransientSpace.getSpace (), "type=space,name=default"
+            );
 	    if (controlPanel != null)
 		controlPanel.showUp();
 
@@ -433,7 +437,7 @@ public class QSP implements ErrorHandler, LogSource, Runnable, QSPMBean {
             new Thread (group, qsp).start();
 	} catch (Exception e) {
 	    Logger.log (new LogEvent (qsp, "error", e));
-	    System.out.println (e);
+            e.printStackTrace ();
 	}
     }
     /**

@@ -160,6 +160,38 @@ public class XMLPackager extends DefaultHandler
 	}
     }
 
+    public synchronized void unpack (ISOComponent c, InputStream in) 
+	throws ISOException, IOException
+    {
+	LogEvent evt = new LogEvent (this, "unpack");
+	try {
+	    if (!(c instanceof ISOMsg))
+		throw new ISOException 
+		    ("Can't call packager on non Composite");
+
+	    while (!stk.empty())    // purge from possible previous error
+		stk.pop();
+
+	    reader.parse (new InputSource (in));
+	    if (stk.empty())
+		throw new ISOException ("error parsing");
+
+	    ISOMsg m = (ISOMsg) c;
+	    m.merge ((ISOMsg) stk.pop());
+
+	    if (logger != null)	
+		evt.addMessage (m);
+	} catch (ISOException e) {
+	    evt.addMessage (e);
+	    throw e;
+	} catch (SAXException e) {
+	    evt.addMessage (e);
+	    throw new ISOException (e.toString());
+	} finally {
+	    Logger.log (evt);
+	}
+    }
+
     public void startElement 
         (String ns, String name, String qName, Attributes atts)
         throws SAXException

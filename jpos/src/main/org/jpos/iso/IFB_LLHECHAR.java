@@ -48,6 +48,9 @@
  */
 
 package org.jpos.iso;
+import java.io.InputStream;
+import java.io.IOException;
+
 
 /**
  * ISOFieldPackager Binary Hex EBCDIC LLCHAR
@@ -103,6 +106,13 @@ public class IFB_LLHECHAR extends ISOFieldPackager {
         int len = Math.min ((int) b[offset] & 0xFF, getLength());
         c.setValue(ISOUtil.ebcdicToAscii(b, ++offset, len));
         return ++len;
+    }
+    public void unpack (ISOComponent c, InputStream in) 
+        throws IOException, ISOException
+    {
+        byte[] b = readBytes (in, 1);
+        int len = Math.min ((int) b[0] & 0xFF, getLength());
+        c.setValue (ISOUtil.ebcdicToAscii(readBytes (in, len)));
     }
     public int getMaxPackedLength() {
         return getLength() + 1;

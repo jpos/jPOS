@@ -48,6 +48,8 @@
  */
 
 package org.jpos.iso;
+import java.io.InputStream;
+import java.io.IOException;
 
 /**
  * <pre>
@@ -100,13 +102,20 @@ public class IFE_LLCHAR extends ISOFieldPackager
     public int unpack (ISOComponent c, byte[] b, int offset)
 	throws ISOException
     {
-    	int len = ((b[offset] & 0x0f) * 10)  + (b[offset+1] & 0x0f);
+        int len = Integer.parseInt (ISOUtil.ebcdicToAscii(b, offset, 2));
 	c.setValue(ISOUtil.ebcdicToAscii(b, offset+2, len));
 	return len+2;
     }
-
     public int getMaxPackedLength() 
     {
 	return getLength()+2;
     }
+
+    public void unpack (ISOComponent c, InputStream in) 
+        throws IOException, ISOException
+    {
+        int len = Integer.parseInt (ISOUtil.ebcdicToAscii(readBytes (in, 2)));
+	c.setValue(ISOUtil.ebcdicToAscii(readBytes (in, len)));
+    }
 }
+

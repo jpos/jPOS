@@ -277,6 +277,8 @@ public class GenericPackager
 		String name = atts.getValue("name");
 		String size = atts.getValue("length");
 		String pad  = atts.getValue("pad");
+                // Modified for using IF_TBASE
+		String token = atts.getValue("token");
 
 		if (localName.equals("isopackager"))
 		{
@@ -305,6 +307,10 @@ public class GenericPackager
 		    f.setDescription(name);
 		    f.setLength(Integer.parseInt(size));
 		    f.setPad(new Boolean(pad).booleanValue());
+		    // Modified for using IF_TBASE
+                    if( f instanceof IF_TBASE){
+                      ((IF_TBASE)f).setToken( token );
+                    }
 		    fieldStack.push(f);
 
 		    ISOBasePackager p;
@@ -327,7 +333,10 @@ public class GenericPackager
 		    f.setDescription(name);
 		    f.setLength(Integer.parseInt(size));
 		    f.setPad(new Boolean(pad).booleanValue());
-
+                    // Modified for using IF_TBASE
+                    if( f instanceof IF_TBASE){
+                      ((IF_TBASE)f).setToken( token );
+                    }
 		    // Insert this new isofield into the Hashtable
 		    // on the top of the stack using the fieldID as the key
 		    Hashtable ht = (Hashtable) fieldStack.peek();

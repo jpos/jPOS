@@ -50,6 +50,8 @@
 package org.jpos.iso;
 
 import java.util.*;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * ASCII packaged Bitmap
@@ -98,5 +100,15 @@ public class IFA_BITMAP extends ISOBitMapPackager {
         c.setValue(bmap);
         len = (bmap.get(1) == true) ? 128 : 64; /* changed by Hani */
         return (len >> 2);
+    }
+    public void unpack (ISOComponent c, InputStream in) 
+        throws IOException, ISOException
+    {
+        BitSet bmap = ISOUtil.hex2BitSet (new BitSet (64), readBytes (in, 16), 0);
+        if (getLength() > 8 && bmap.get (1)) {
+            ISOUtil.hex2BitSet (bmap, readBytes (in, 16), 64);
+        }
+        c.setValue(bmap);
+
     }
 }

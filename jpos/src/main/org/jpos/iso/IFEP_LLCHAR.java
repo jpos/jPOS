@@ -48,6 +48,8 @@
  */
 
 package org.jpos.iso;
+import java.io.InputStream;
+import java.io.IOException;
 
 /*
  * vim:set ts=8 sw=4:
@@ -121,6 +123,20 @@ public class IFEP_LLCHAR extends ISOFieldPackager {
         c.setValue (new String (b, offset+4, len-2));
         return len + 2;
     }
+    public void unpack (ISOComponent c, InputStream in) 
+        throws IOException, ISOException
+    {
+
+	if (!(c instanceof ISOField))
+	    throw new ISOException 
+		(c.getClass().getName() + " is not an ISOField");
+
+        int len   = Integer.parseInt(new String(readBytes (in, 2)));
+        int fldno = Integer.parseInt(new String(readBytes (in, 2)));
+	((ISOField)c).setFieldNumber (fldno);
+        c.setValue (new String (readBytes (in, len-2)));
+    }
+
     public int getMaxPackedLength() {
         return getLength() + 2;
     }

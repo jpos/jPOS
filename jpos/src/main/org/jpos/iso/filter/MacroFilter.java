@@ -128,9 +128,12 @@ public class MacroFilter implements ISOFilter, ReConfigurable {
     private void applyProps (ISOMsg m) throws ISOException {
         int maxField = m.getMaxField ();
         for (int i=0; i<maxField; i++) {
-            if (m.hasField(i)) {
-                String value = (String) m.getValue(i);
-                if (value.length() == 0)
+            Object o = null;
+            if (m.hasField (i))
+                o = m.getValue (i);
+            if (o instanceof String) {
+                String value = (String) o;
+                if (value.length () == 0)
                     continue;
                 if (value.equalsIgnoreCase ("$date") )
                     m.set (new ISOField (i, ISODate.getDateTime(new Date())));

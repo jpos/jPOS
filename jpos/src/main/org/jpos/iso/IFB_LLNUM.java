@@ -48,6 +48,8 @@
  */
 
 package org.jpos.iso;
+import java.io.InputStream;
+import java.io.IOException;
 
 /**
  * ISOFieldPackager Binary LLNUM
@@ -103,6 +105,13 @@ public class IFB_LLNUM extends ISOFieldPackager {
         int len = ((b[offset] >> 4) & 0x0F) * 10 + (b[offset] & 0x0F);
         c.setValue (ISOUtil.bcd2str (b, offset+1, len, pad));
         return 1 + (++len >> 1);
+    }
+    public void unpack (ISOComponent c, InputStream in) 
+        throws IOException, ISOException
+    {
+        byte[] b = readBytes (in, 1);
+        int len = ((b[0] >> 4) & 0x0F) * 10 + (b[0] & 0x0F);
+        c.setValue (ISOUtil.bcd2str (readBytes (in, (len+1) >> 1), 0, len, pad));
     }
     public int getMaxPackedLength() {
         return 1 + ((getLength()+1) >> 1);

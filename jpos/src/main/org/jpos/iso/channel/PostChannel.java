@@ -115,13 +115,13 @@ public class PostChannel extends BaseChannel {
             ((((int)b[0])&0xFF) << 8) | 
             (((int)b[1])&0xFF));
     }
-    /**
-     * @param header Hex representation of header
-     */
+   /**
+    *      * @param header Hex representation of header
+    */
     public void setHeader (String header) {
-	super.setHeader (
-	    ISOUtil.hex2byte (header.getBytes(), 0, header.length() / 2)
-	);
+        super.setHeader (
+            ISOUtil.hex2byte (header.getBytes(), 0, header.length() / 2)
+        );
     }
 }
 

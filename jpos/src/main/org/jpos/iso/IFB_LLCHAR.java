@@ -48,6 +48,8 @@
  */
 
 package org.jpos.iso;
+import java.io.InputStream;
+import java.io.IOException;
 
 /**
  * ISOFieldPackager Binary LLCHAR
@@ -103,5 +105,12 @@ public class IFB_LLCHAR extends ISOFieldPackager {
     }
     public int getMaxPackedLength() {
         return getLength() + 1;
+    }
+    public void unpack (ISOComponent c, InputStream in) 
+        throws IOException, ISOException
+    {
+        byte[] b = readBytes (in, 1);
+        int len = ((b[0] >> 4) & 0x0F) * 10 + (b[0] & 0x0F);
+        c.setValue (new String (readBytes (in, len)));
     }
 }

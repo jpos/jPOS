@@ -1,6 +1,14 @@
 $Id$
 
 -- 1.4.3 --
+QSP New <object> tag
+New org.jpos.space package and supporting classes
+New MUX and Channel interfaces
+New Stream based pack/unpack
+New stream based approach to PADChannel
+New ChannelPool
+Bugfix: MacroFilter problem with nested ISOMsgs
+XMLChannel: Better handling of message boundary
 New BlockingQueue.dequeue (timeout) method
 GenericPackager now support reading config file from XML InputStream 
              (code contributed by Matías Salvador <mhs@sisa.com.ar>)

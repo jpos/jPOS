@@ -47,71 +47,23 @@
  * information please see <http://www.jpos.org/>.
  */
 
-package org.jpos.util;
 
-/*
- * $Log$
- * Revision 1.4  2000/11/02 12:09:18  apr
- * Added license to every source file
- *
- * Revision 1.3  2000/04/16 23:53:14  apr
- * LogProducer renamed to LogSource
- *
- * Revision 1.2  2000/03/01 14:44:45  apr
- * Changed package name to org.jpos
- *
- * Revision 1.1  2000/01/11 01:25:00  apr
- * moved non ISO-8583 related classes from jpos.iso to jpos.util package
- * (AntiHog LeasedLineModem LogEvent LogListener LogSource
- *  Loggeable Logger Modem RotateLogListener SimpleAntiHog SimpleDialupModem
- *  SimpleLogListener SimpleLogSource SystemMonitor V24)
- *
- * Revision 1.1  1999/12/03 13:47:25  apr
- * Added SimpleAntiHog - AntiHog is now an interface
- *
- */
+package org.jpos.space;
 
 /**
- * prevents Logger from hogging JVM in case of repeated events
- * @since jPOS 1.1
- * @author apr@cs.com.uy
- * @version $Id$
- * @see AntiHog
+ * @author Alejandro Revilla
+ * @version $Revision$ $Date$
+ * @since 2.0
+ * @see Space
  */
-public class SimpleAntiHog implements AntiHog {
-    private long window;
-    private int  max;
-    long last;
-    int  cnt;
-    public static final int PENALTY_UNIT = 20;
-
+public interface SpaceListener {
     /**
-     * @param window time window in milliseconds
-     * @param max maximun number of calls within window
+     * <p>Called by Space implementation whenever an object 
+     * with the given key is being placed in the Space.</p>
+     *
+     * @param key   Object's key
+     * @param value Object's value
      */
-    public SimpleAntiHog (long window, int max) {
-        super();
-        this.window = window;
-        this.max    = max;
-        this.last   = 0;
-        this.cnt    = 0;
-    }
-    private boolean check () {
-        long now = System.currentTimeMillis();
-        if ((now - window) > last)
-            cnt = 0;
-
-        last = now;
-        return (cnt++ > max);
-    }
-    public int nice () {
-	int penalty = 0;
-        if (check()) {
-	    penalty = cnt * PENALTY_UNIT;
-            try {
-                Thread.sleep (penalty);
-            } catch (InterruptedException e) { }
-        }
-	return penalty;
-    }
+    public void notify (Object key, Object value);
 }
+

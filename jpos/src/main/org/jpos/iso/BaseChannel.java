@@ -104,7 +104,7 @@ public abstract class BaseChannel extends Observable
     private Socket socket;
     private String host;
     private int port, timeout;
-    private boolean usable;
+    protected boolean usable;
     private String name;
     // private int serverPort = -1;
     protected DataInputStream serverIn;
@@ -114,7 +114,7 @@ public abstract class BaseChannel extends Observable
     protected Vector incomingFilters, outgoingFilters;
     protected ISOClientSocketFactory socketFactory = null;
 
-    private int[] cnt;
+    protected int[] cnt;
 
     protected Logger logger = null;
     protected String realm = null;

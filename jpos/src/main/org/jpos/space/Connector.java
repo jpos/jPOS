@@ -47,43 +47,55 @@
  * information please see <http://www.jpos.org/>.
  */
 
-package org.jpos.util;
+package org.jpos.space;
 
-/*
- * $Log$
- * Revision 1.4  2000/11/02 12:09:18  apr
- * Added license to every source file
- *
- * Revision 1.3  2000/04/16 23:53:14  apr
- * LogProducer renamed to LogSource
- *
- * Revision 1.2  2000/03/01 14:44:45  apr
- * Changed package name to org.jpos
- *
- * Revision 1.1  2000/01/11 01:24:56  apr
- * moved non ISO-8583 related classes from jpos.iso to jpos.util package
- * (AntiHog LeasedLineModem LogEvent LogListener LogSource
- *  Loggeable Logger Modem RotateLogListener SimpleAntiHog SimpleDialupModem
- *  SimpleLogListener SimpleLogSource SystemMonitor V24)
- *
- * Revision 1.2  1999/12/03 13:47:23  apr
- * Added SimpleAntiHog - AntiHog is now an interface
- *
- * Revision 1.1  1999/12/01 18:19:36  apr
- * Added AntiHog support
- *
- */
+import java.io.IOException;
+import org.jpos.iso.ISOMsg;
+import org.jpos.iso.ISOUtil;
+import org.jpos.space.Space;
+import org.jpos.space.TransientSpace;
+import org.jpos.core.Configuration;
+import org.jpos.core.ConfigurationException;
+import org.jpos.core.ReConfigurable;
+import org.jpos.iso.ISOChannel;
+import org.jpos.iso.ISOException;
+import org.jpos.util.NameRegistrar;
 
 /**
- * prevents Logger from hogging JVM in case of repeated events
- * @since jPOS 1.1
- * @author apr@cs.com.uy
- * @version $Id$
- * @see Logger
+ * @author Alejandro Revilla
+ * @version $Revision$ $Date$
+ * @since 2.0
  */
-public interface AntiHog {
-    /*
-     * @return penalty in milliseconds
-     */
-    public int nice ();
+public class Connector implements ReConfigurable, SpaceListener
+{
+    Space sp;
+    Configuration cfg;
+    String from, to;
+    public Connector () {
+        super ();
+        sp = TransientSpace.getSpace ();
+    }
+    public Connector (String from, String to) {
+        this ();
+        this.from = from;
+        this.to   = to;
+        sp.addListener (from, this);
+    }
+    public void setConfiguration (Configuration cfg) 
+    {
+        if (this.cfg != null) 
+            sp.removeListener (from, this);
+
+        this.cfg = cfg;
+        from   = cfg.get ("from");
+        to     = cfg.get ("to");
+
+        sp.addListener (from, this);
+    }
+    public void notify (Object key, Object value) {
+        Object o = sp.inp (key);
+        if (o != null)
+            sp.out (to, o);
+    }
 }
+

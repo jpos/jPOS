@@ -49,6 +49,9 @@
 
 package org.jpos.iso;
 
+import java.io.InputStream;
+import java.io.IOException;
+
 /**
  * ISOFieldPackager ASCII variable len padded (fixed) NUMERIC
  * (suitable to use in ANSI X9.2 interchanges.
@@ -102,5 +105,15 @@ public class IFA_FLLNUM extends ISOFieldPackager {
     }
     public int getMaxPackedLength() {
         return getLength() + 2;
+    }
+    public void unpack (ISOComponent c, InputStream in) 
+        throws IOException, ISOException
+    {
+        int len = Integer.parseInt(new String(readBytes (in, 2)));
+        if (len > getLength ())
+            throw new ISOException ("Invalid len " + len);
+
+        c.setValue (new String (readBytes (in, len)));
+        in.skip (getLength () - len);
     }
 }

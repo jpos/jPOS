@@ -128,6 +128,13 @@ public class ISOBinaryField
         throw new ISOException ("Not available on Leaf");
     }
     /**
+     * not available on Leaf - always throw ISOException
+     * @exception ISOException
+     */
+    public void unpack(InputStream in) throws ISOException {
+        throw new ISOException ("Not available on Leaf");
+    }
+    /**
      * @return Object representing this field number
      */
     public Object getKey() {

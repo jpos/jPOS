@@ -311,6 +311,11 @@ public class ISOMsg extends ISOComponent
             return packager.unpack(this, b);
         }
     }
+    public void unpack (InputStream in) throws IOException, ISOException {
+        synchronized (this) {
+            packager.unpack(this, in);
+        }
+    }
     /**
      * dump the message to a PrintStream. The output is sorta
      * XML, intended to be easily parsed.

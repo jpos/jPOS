@@ -48,6 +48,9 @@
  */
 
 package org.jpos.iso;
+import java.io.InputStream;
+import java.io.IOException;
+
 
 /**
  * ISOFieldPackager Binary Hex LLBINARY
@@ -100,6 +103,13 @@ public class IFB_LLHBINARY extends ISOFieldPackager {
         System.arraycopy(b, ++offset, value, 0, len);
         c.setValue ((Object) value);
         return ++len;
+    }
+    public void unpack (ISOComponent c, InputStream in) 
+        throws IOException, ISOException
+    {
+        byte[] b = readBytes (in, 1);
+        int len = (int) b[0] & 0xFF;
+        c.setValue ((Object) readBytes (in, len));
     }
     public ISOComponent createComponent(int fieldNumber) {
         return new ISOBinaryField (fieldNumber);

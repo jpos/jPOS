@@ -48,6 +48,8 @@
  */
 
 package org.jpos.iso;
+import java.io.InputStream;
+import java.io.IOException;
 
 /**
  * ISOFieldPackager ASCII variable len CHAR
@@ -100,5 +102,11 @@ public class IFA_LLLLCHAR extends ISOFieldPackager {
     }
     public int getMaxPackedLength() {
         return getLength() + 4;
+    }
+    public void unpack (ISOComponent c, InputStream in) 
+        throws IOException, ISOException
+    {
+        int len = Integer.parseInt(new String(readBytes (in, 4)));
+        c.setValue (new String (readBytes (in, len)));
     }
 }

@@ -49,6 +49,9 @@
 
 package org.jpos.iso;
 
+import java.io.InputStream;
+import java.io.IOException;
+import java.io.EOFException;
 import java.util.*;
 import org.jpos.util.Logger;
 import org.jpos.util.LogSource;
@@ -265,6 +268,88 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
 	} catch (ISOException e) {
 	    evt.addMessage (e);
 	    throw e;
+        } catch (Exception e) {
+	    evt.addMessage (e);
+            throw new ISOException (e);
+	} finally {
+	    Logger.log (evt);
+	}
+    }
+
+    public void unpack (ISOComponent m, InputStream in) 
+        throws IOException, ISOException 
+    {
+	LogEvent evt = new LogEvent (this, "unpack");
+	try {
+	    if (m.getComposite() != m) 
+		throw new ISOException ("Can't call packager on non Composite");
+
+	    if (!(fld[0] instanceof ISOMsgFieldPackager) &&
+                !(fld[0] instanceof ISOBitMapPackager))
+            {
+                ISOComponent mti = fld[0].createComponent(0);
+		fld[0].unpack(mti, in);
+		m.set (mti);
+	    }
+	    BitSet bmap = null;
+	    int maxField = fld.length;
+	    if (emitBitMap()) {
+		ISOBitMap bitmap = new ISOBitMap (-1);
+		getBitMapfieldPackager().unpack(bitmap, in);
+		bmap = (BitSet) bitmap.getValue();
+		if (logger != null)
+		    evt.addMessage ("<bitmap>"+bmap.toString()+"</bitmap>");
+		m.set (bitmap);
+		maxField = Math.min(maxField, bmap.size());
+	    }
+		
+	    for (int i=getFirstField(); i<maxField; i++) {
+		if ((bmap == null || bmap.get(i)) && fld[i] != null) {
+		    ISOComponent c = fld[i].createComponent(i);
+		    fld[i].unpack (c, in);
+		    if (logger != null) {
+			evt.addMessage ("<unpack fld=\"" + i 
+			    +"\" packager=\""
+			    +fld[i].getClass().getName()+ "\">");
+			if (c.getValue() instanceof ISOMsg)
+			    evt.addMessage (c.getValue());
+			else
+			    evt.addMessage ("  <value>" 
+				+c.getValue().toString()
+				+ "</value>");
+			evt.addMessage ("</unpack>");
+		    }
+		    m.set(c);
+		}
+	    }
+	    if (bmap != null && bmap.get(65) && fld.length > 128 &&
+		fld[65] instanceof ISOBitMapPackager)
+	    {
+		bmap= (BitSet) 
+		    ((ISOComponent) m.getChildren().get 
+			(new Integer(65))).getValue();
+		for (int i=1; i<64; i++) {
+		    if (bmap == null || bmap.get(i)) {
+			ISOComponent c = fld[i+128].createComponent(i);
+			fld[i+128].unpack (c, in);
+			if (logger != null) {
+			    evt.addMessage ("<unpack fld=\"" + i+128
+				+"\" packager=\""
+				+fld[i+128].getClass().getName()+ "\">");
+			    evt.addMessage ("  <value>" 
+				+c.getValue().toString()
+				+ "</value>");
+			    evt.addMessage ("</unpack>");
+			}
+			m.set(c);
+		    }
+		}
+	    }
+	} catch (ISOException e) {
+	    evt.addMessage (e);
+	    throw e;
+        } catch (EOFException e) {
+            throw e;
         } catch (Exception e) {
 	    evt.addMessage (e);
             throw new ISOException (e);

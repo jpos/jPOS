@@ -441,9 +441,26 @@ public class ISOUtil {
     }
 
     /**
+     * Converts a binary representation of a Bitmap field
+     * into a Java BitSet
+     * @param bmap - BitSet
+     * @param b - hex representation
+     * @param bitOffset - (i.e. 0 for primary bitmap, 64 for secondary)
+     * @return java BitSet object
+     */
+    public static BitSet byte2BitSet (BitSet bmap, byte[] b, int bitOffset)
+    {
+        int len = b.length << 3;
+        for (int i=0; i<len; i++) 
+            if (((b[i >> 3]) & (0x80 >> (i % 8))) > 0)
+                bmap.set(bitOffset + i + 1);
+        return bmap;
+    }
+
+    /**
      * Converts an ASCII representation of a Bitmap field
      * into a Java BitSet
-     * @param b - binary representation
+     * @param b - hex representation
      * @param offset - staring offset
      * @param bitZeroMeansExtended - true for ISO-8583
      * @return java BitSet object
@@ -459,6 +476,25 @@ public class ISOUtil {
             int digit = Character.digit((char)b[offset + (i >> 2)], 16);
             if ((digit & (0x08 >> (i%4))) > 0)
                 bmap.set(i+1);
+        }
+        return bmap;
+    }
+
+    /**
+     * Converts an ASCII representation of a Bitmap field
+     * into a Java BitSet
+     * @param bmap - BitSet
+     * @param b - hex representation
+     * @param bitOffset - (i.e. 0 for primary bitmap, 64 for secondary)
+     * @return java BitSet object
+     */
+    public static BitSet hex2BitSet (BitSet bmap, byte[] b, int bitOffset)
+    {
+        int len = b.length << 2;
+        for (int i=0; i<len; i++) {
+            int digit = Character.digit((char)b[i >> 2], 16);
+            if ((digit & (0x08 >> (i%4))) > 0)
+                bmap.set (bitOffset + i + 1);
         }
         return bmap;
     }
@@ -659,4 +695,19 @@ public class ISOUtil {
         System.arraycopy(array2, beginIndex2, concatArray, length1, length2);
         return  concatArray;
     }
+    /**	
+     * Causes the currently executing thread to sleep (temporarily cease 
+     * execution) for the specified number of milliseconds. The thread 
+     * does not lose ownership of any monitors.
+     *
+     * This is the same as Thread.sleep () without throwing InterruptedException
+     *
+     * @param      millis   the length of time to sleep in milliseconds.
+     */
+    public static void sleep (long millis) {
+        try {
+            Thread.sleep (millis);
+        } catch (InterruptedException e) { }
+    }
 }
+

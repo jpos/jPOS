@@ -54,13 +54,13 @@ import java.util.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
+import org.jpos.util.Logger;
+import org.jpos.util.LogEvent;
 import org.jpos.iso.*;
 import org.jpos.iso.packager.XMLPackager;
 
 /**
  * Implements an ISOChannel suitable to be used to connect to an X.25 PAD. 
- * It waits a limited amount of time to decide when a packet is ready
- * to be unpacked.
  *
  * @author  <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
  * @version $Id$
@@ -106,51 +106,53 @@ public class PADChannel extends BaseChannel {
     public PADChannel (ISOPackager p, ServerSocket serverSocket) 
         throws IOException
     {
-        super(p, serverSocket);
+        super (p, serverSocket);
     }
-    /**
-     * @return a byte array with the received message
-     * @exception IOException
-     */
-    protected byte[] streamReceive() throws IOException {
-	int c, k=0, len = 1;
-	Vector v = new Vector();
-
-	c = serverIn.read();
-	if (c == -1)
-	    throw new EOFException ("connection closed");
-	byte[] b = new byte[1];
-	b[0] = (byte) c;
-	v.addElement (b);
-
-	// Wait for packets until timeout
-	while ((c = serverIn.available()) > 0) {
-	    b = new byte[c];
-	    if (serverIn.read (b) != c)
-		throw new EOFException ("connection closed");
-	    v.addElement (b);
-	    len += c;
-	    try {
-		Thread.sleep (50);
-	    } catch (InterruptedException e) { }
+    public ISOMsg receive() throws IOException, ISOException {
+        byte[] header = null;
+        ISOMsg m = new ISOMsg ();
+        m.setPackager (packager);
+        int hLen = getHeaderLength();
+	LogEvent evt = new LogEvent (this, "receive");
+	try {
+            synchronized (serverIn) {
+                if (hLen > 0) {
+                    header = new byte [hLen];
+                    serverIn.readFully(header);
+                }
+                m.unpack (serverIn);
+            }
+            m.setHeader (header);
+            m.setDirection(ISOMsg.INCOMING);
+            m = applyIncomingFilters (m, evt);
+            m.setDirection(ISOMsg.INCOMING);
+            evt.addMessage (m);
+            cnt[RX]++;
+            setChanged();
+            notifyObservers(m);
+	} catch (ISOException e) {
+	    evt.addMessage (e);
+	    throw e;
+	} catch (EOFException e) {
+	    evt.addMessage ("<peer-disconnect/>");
+	    throw e;
+	} catch (InterruptedIOException e) {
+	    evt.addMessage ("<io-timeout/>");
+	    throw e;
+	} catch (IOException e) { 
+	    if (usable) 
+		evt.addMessage (e);
+	    throw e;
+	} catch (Exception e) { 
+            evt.addMessage (e);
+	    throw new ISOException ("unexpected exception", e);
+	} finally {
+	    Logger.log (evt);
 	}
+        Logger.log (evt);
+        return m;
+    }
 
-	byte[] d = new byte[len];
-	for (int i=0; i<v.size(); i++) {
-	    b = (byte[]) v.elementAt(i);
-	    System.arraycopy (b, 0, d, k, b.length);
-	    k += b.length;
-	}
-	return d;
-    }
-    protected void connect (Socket socket) throws IOException {
-	super.connect (socket);
-	reader = new BufferedReader (new InputStreamReader (serverIn));
-    }
-    public void disconnect () throws IOException {
-	super.disconnect ();
-	reader = null;
-    }
     /**
      * @param header Hex representation of header
      */

@@ -49,6 +49,8 @@
 
 package org.jpos.iso;
 import org.jpos.util.LogSource;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * @author apr@cs.com.uy
@@ -70,6 +72,8 @@ public interface ISOPackager extends LogSource {
      * @exception ISOException
      */
     public int unpack (ISOComponent m, byte[] b) throws ISOException;
+
+    public void unpack (ISOComponent m, InputStream in) throws IOException, ISOException;
 
     /**
      * @param   m   the Container (i.e. an ISOMsg)

@@ -100,6 +100,10 @@ public class CryptoPackager extends PackagerWrapper
     {
         return standardPackager.unpack(c,decrypt(b));
     }
+    public int unpack (ISOComponent c, InputStream in) throws ISOException
+    {
+        throw new ISOException ("not implemented");
+    }
     
     private byte[] encrypt(byte[] data) throws ISOException
     {

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Id$ -->
 
-<!ELEMENT qsp-config (logger*,mux*,task*,daily-task*,server*,
+<!ELEMENT qsp-config (logger*,mux*,object*,task*,daily-task*,server*,
                       control-panel*,sequencer*,card-agent*,channel*,
 		      persistent-engine*, connection-pool*, dir-poll*,
                       s-m-adapter*, secure-key-store*,
@@ -49,6 +49,14 @@
 <!ATTLIST mux realm CDATA #IMPLIED>
 <!ATTLIST mux connect (yes|no) 'yes'>
 <!ATTLIST mux class NMTOKEN #IMPLIED>
+
+<!-- object -->
+<!ELEMENT object (property)*>
+<!ATTLIST object class NMTOKEN #REQUIRED>
+<!ATTLIST object logger IDREF #IMPLIED>
+<!ATTLIST object realm CDATA #IMPLIED>
+<!ATTLIST object name ID #IMPLIED>
+<!ATTLIST object connection-pool IDREF #IMPLIED>
 
 <!-- task -->
 <!ELEMENT task (property)*>

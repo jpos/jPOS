@@ -48,6 +48,8 @@
  */
 
 package org.jpos.iso;
+import java.io.InputStream;
+import java.io.IOException;
 
 /**
  * ISOFieldPackager Binary LLLBINARY
@@ -110,5 +112,13 @@ public class IFB_LLLBINARY extends ISOFieldPackager {
     }
     public int getMaxPackedLength() {
         return getLength() + 2;
+    }
+    public void unpack (ISOComponent c, InputStream in) 
+        throws IOException, ISOException
+    {
+        byte[] b = readBytes (in, 2);
+        int len = (b[0] & 0x0F) * 100;
+        len += (((b[1] >> 4) & 0x0F) * 10) + (b[1] & 0x0F);
+        c.setValue ((Object) readBytes (in, len));
     }
 }

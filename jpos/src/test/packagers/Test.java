@@ -4,6 +4,7 @@ import junit.framework.*;
 import java.io.*;
 import java.util.*;
 import org.jpos.iso.*;
+import org.jpos.util.*;
 import org.jpos.iso.packager.*;
 
 /**
@@ -89,18 +90,33 @@ public class Test extends TestCase {
     {
         // packager.setLogger (AllTests.getLogger(), msg);
 
+
         ISOMsg m = getMsg (msg);
         m.setPackager (packager);
         byte[] p = m.pack();
+        ByteArrayOutputStream out = new ByteArrayOutputStream ();
+        m.pack (out);
+
+        assertTrue (Arrays.equals (out.toByteArray(), p));
+
         // writeImage (img, p);
 
         byte[] b = getImage (img);
         assertTrue (Arrays.equals (b, p));
 
-        ISOMsg m1 = new ISOMsg();
+        ISOMsg m1 = new ISOMsg ();
         m1.setPackager (packager);
         m1.unpack (b);
         assertTrue (Arrays.equals (b, m1.pack()));
+
+
+        ISOMsg m2 = new ISOMsg ();
+        m2.setPackager (packager);
+        // Logger logger = new Logger();
+        // logger.addListener (new SimpleLogListener (System.out));
+        // packager.setLogger (logger, msg);
+        m2.unpack (new ByteArrayInputStream (out.toByteArray()));
+        assertTrue (Arrays.equals (b, m2.pack()));
     }
 }
 

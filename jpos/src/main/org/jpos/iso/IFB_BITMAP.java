@@ -50,6 +50,8 @@
 package org.jpos.iso;
 
 import java.util.*;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * ISOFieldPackager Binary Bitmap
@@ -93,6 +95,15 @@ public class IFB_BITMAP extends ISOBitMapPackager {
         c.setValue(bmap);
         len = (bmap.get(1) == true) ? 128 : 64; /* changed by Hani */
         return (len >> 3);
+    }
+    public void unpack (ISOComponent c, InputStream in) 
+        throws IOException, ISOException
+    {
+        BitSet bmap = ISOUtil.byte2BitSet (new BitSet (64), readBytes (in, 8), 0);
+        if (getLength() > 8 && bmap.get (1)) {
+            ISOUtil.byte2BitSet (bmap, readBytes (in, 8), 64); 
+        }
+        c.setValue(bmap);
     }
     public int getMaxPackedLength() {
         return getLength() >> 3;
