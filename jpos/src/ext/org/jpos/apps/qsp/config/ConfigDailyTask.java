@@ -6,14 +6,17 @@ import org.jpos.util.Logger;
 import org.jpos.util.LogEvent;
 import org.jpos.util.LogSource;
 import org.jpos.util.NameRegistrar;
+import org.jpos.util.ThreadPool;
 import org.jpos.core.SimpleConfiguration;
 import org.jpos.core.Configurable;
 import org.jpos.core.ReConfigurable;
+import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
 
 import org.jpos.apps.qsp.QSP;
 import org.jpos.apps.qsp.QSPConfigurator;
 import org.jpos.apps.qsp.QSPReConfigurator;
+import org.jpos.apps.qsp.task.DailyTask;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -23,31 +26,34 @@ import org.w3c.dom.NodeList;
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
  * @version $Revision$ $Date$
  */
-public class ConfigTask implements QSPReConfigurator {
-    public static final String NAMEREGISTRAR_PREFIX = "qsp.task.";
+public class ConfigDailyTask implements QSPReConfigurator {
+    public static final String NAMEREGISTRAR_PREFIX = "qsp.daily.task.";
 
     public void config (QSP qsp, Node node) throws ConfigurationException
     {
 	String className = 
 	    node.getAttributes().getNamedItem ("class").getNodeValue();
-	String name   = getValue (node, "name");
-	LogEvent evt  = new LogEvent (qsp, "config-task", className);
+	LogEvent evt    = new LogEvent (qsp, "config-daily-task", className);
+	String name     = getValue (node, "name");
+	String poolSize = getValue (node, "poolsize");
+	ThreadPool pool = (poolSize != null)  ?
+	    new ThreadPool (1, Integer.parseInt (poolSize)) : null;
+
         try {
             Class c = Class.forName(className);
 	    Runnable task = (Runnable) c.newInstance();
-	    if (task instanceof LogSource) {
-		((LogSource)task).setLogger (
-		    ConfigLogger.getLogger (node),
-		    ConfigLogger.getRealm (node)
-		);
-	    }
-	    if (task instanceof Configurable)
-		configureTask ((Configurable) task, node, evt);
+	    DailyTask controller = new DailyTask (task, pool);
+
+	    controller.setLogger (
+		ConfigLogger.getLogger (node),
+		ConfigLogger.getRealm (node) + ".daily-task." 
+	    );
+	    configureTask (controller, node, evt);
 
 	    if (name != null)
-		NameRegistrar.register (NAMEREGISTRAR_PREFIX+name, task);
-	    Thread thread = new Thread(task);
-	    thread.setName ("qsp-task-"+name);
+		NameRegistrar.register (NAMEREGISTRAR_PREFIX+name, controller);
+	    Thread thread = new Thread(controller);
+	    thread.setName ("qsp-daily-task-"+name);
 	    thread.start();
         } catch (ClassNotFoundException e) {
 	    throw new ConfigurationException ("config-task:"+className, e);
@@ -66,9 +72,9 @@ public class ConfigTask implements QSPReConfigurator {
 
 	LogEvent evt = new LogEvent (qsp, "re-config-task", name);
 	try {
-	    Object task = NameRegistrar.get (NAMEREGISTRAR_PREFIX + name);
-	    if (task instanceof ReConfigurable) 
-		configureTask ((Configurable) task, node, evt);
+	    DailyTask controller = (DailyTask) 
+		NameRegistrar.get (NAMEREGISTRAR_PREFIX + name);
+	    configureTask (controller, node, evt);
 	} catch (NameRegistrar.NotFoundException e) {
 	    evt.addMessage ("<task-not-found/>");
 	}
@@ -77,8 +83,15 @@ public class ConfigTask implements QSPReConfigurator {
     private void configureTask (Configurable task, Node node, LogEvent evt)
 	throws ConfigurationException
     {
-	task.setConfiguration (new SimpleConfiguration (
-	    ConfigUtil.addProperties (node, null, evt)
+	Properties props = new Properties();
+	String start = getValue (node, "start");
+	if (start == null)
+	    throw new ConfigurationException ("Attribute 'start' no found");
+
+	props.put ("start", start);
+	task.setConfiguration (
+	    new SimpleConfiguration (
+		ConfigUtil.addProperties (node, props, evt)
 	    )
 	);
     }

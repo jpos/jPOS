@@ -50,14 +50,13 @@ public class QSP implements ErrorHandler, LogSource {
 	  "request-listener",
 	  "card-agent",
 	  "dir-poll",
-	  "task" 
+	  "task",
+	  "daily-task"
 	};
 
     public QSP () {
 	super();
 	reconfigurables = new ArrayList();
-	// setLogger (new Logger(), "qsp");
-	// logger.setName ("qsp");
     }
     public void setConfig (Document config) {
 	this.config = config;
