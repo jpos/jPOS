@@ -75,7 +75,7 @@ import org.jpos.core.ConfigurationException;
  * @version $Revision$ $Date$
  */
 public class ISOServer extends Observable 
-    implements LogSource, Runnable, Observer
+    implements LogSource, Runnable, Observer, ISOServerMBean
 {
     int port;
     ISOChannel clientSideChannel;
@@ -88,6 +88,9 @@ public class ISOServer extends Observable
     protected Logger logger;
     protected String realm;
     protected ISOServerSocketFactory socketFactory = null; 
+    public static final int CONNECT      = 0;
+    public static final int SIZEOF_CNT   = 1;
+    private int[] cnt;
 
    /**
     * @param port port to listen
@@ -109,6 +112,7 @@ public class ISOServer extends Observable
 	    new ThreadPool (1, DEFAULT_MAX_THREADS) : pool;
 	listeners = new Vector();
 	name = "";
+        cnt = new int[SIZEOF_CNT];
     }
 
     protected class Session implements Runnable, LogSource {
@@ -203,6 +207,7 @@ public class ISOServer extends Observable
 			if (channel instanceof Observable)
 			    ((Observable)channel).addObserver (this);
 			channel.accept (serverSocket);
+                        cnt[CONNECT]++;
 			pool.execute (new Session(channel));
 		    } catch (IOException e) {
 			Logger.log (new LogEvent (this, "iso-server", e));
@@ -291,6 +296,35 @@ public class ISOServer extends Observable
     */
     public void setSocketFactory(ISOServerSocketFactory socketFactory) {
         this.socketFactory = socketFactory;
+    }
+    public int getPort () {
+        return port;
+    }
+    public void resetCounters () {
+        cnt = new int[SIZEOF_CNT];
+    }
+    /**
+     * @return number of connections accepted by this server
+     */
+    public int getConnectionCount () {
+        return cnt[CONNECT];
+    }
+
+    // ThreadPoolMBean implementation (delegate calls to pool)
+    public int getJobCount () {
+        return pool.getJobCount();
+    }
+    public int getPoolSize () {
+        return pool.getPoolSize();
+    }
+    public int getMaxPoolSize () {
+        return pool.getMaxPoolSize();
+    }
+    public int getIdleCount() {
+        return pool.getIdleCount();
+    }
+    public int getPendingCount () {
+        return pool.getPendingCount();
     }
 }
 

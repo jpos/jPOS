@@ -114,6 +114,11 @@ public class ConfigServer implements QSPConfigurator {
 	    server.addObserver (icp);
 	}
 	new Thread (server).start();
+        try {
+            qsp.registerMBean (server, "type=server,name="+name);
+        } catch (Exception e) {
+            evt.addMessage (e.getMessage());
+        } 
 	Logger.log (evt);
     }
     public static ISOServer getServer (Node node) {
