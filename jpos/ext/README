@@ -1,7 +1,7 @@
 $Id$
 
-In order to build 'ext' module you will have to install here
-(or anywhere within your CLASSPATH) the following files:
+In order to compile classes under the 'ext' module you will have to 
+install here (or anywhere within your CLASSPATH) these optional files:
 
   - activation.jar and mail.jar (javax.mail available from sun)
     used by OperatorLogListener
@@ -31,6 +31,9 @@ In order to build 'ext' module you will have to install here
 
   - jep.jar (used by CalculateFilter and SQLFilter)
     see http://sf.net/projects/jep
+
+  - BeanShell (used by org.jpos.iso.filter.BSHFilter)
+    see http://www.beanshell.org
 
 In order to build jPOS' aspects you need:
 
