@@ -35,6 +35,10 @@ import uy.com.cs.jpos.util.LogProducer;
 
 /*
  * $Log$
+ * Revision 1.25  2000/01/23 16:07:30  apr
+ * BugFix: BASE24Channel was not handling Headers
+ * (reported by Mike Trank <mike@netcomsa.com>)
+ *
  * Revision 1.24  2000/01/11 01:24:44  apr
  * moved non ISO-8583 related classes from jpos.iso to jpos.util package
  * (AntiHog LeasedLineModem LogEvent LogListener LogProducer
@@ -287,8 +291,11 @@ public abstract class ISOChannel extends Observable implements LogProducer {
             int len  = getMessageLength();
             int hLen = getHeaderLength();
 
-            if (len == -1) 
+            if (len == -1) {
+		header = new byte [hLen];
+		serverIn.readFully(header,0,hLen);
 		b = streamReceive();
+	    }
             else if (len > 10 && len <= 4096) {
 		int l;
 		if (hLen > 0) {

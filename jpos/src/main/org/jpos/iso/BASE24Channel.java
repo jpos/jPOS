@@ -21,6 +21,7 @@ import java.net.SocketException;
  * @see ISOChannel
  */
 public class BASE24Channel extends ISOChannel {
+    protected byte[] header;
     /**
      * Public constructor (used by Class.forName("...").newInstance())
      */
@@ -82,7 +83,7 @@ public class BASE24Channel extends ISOChannel {
                 break;
             else if (c == -1)
                 throw new IOException("connection closed");
-            buf[i] = (byte) c;
+	    buf[i] = (byte) c;
         }
         if (i == 4096)
             throw new IOException("packet too long");
@@ -90,5 +91,17 @@ public class BASE24Channel extends ISOChannel {
         byte[] d = new byte[i];
         System.arraycopy(buf, 0, d, 0, i);
         return d;
+    }
+    protected void sendMessageHeader(ISOMsg m, int len) throws IOException { 
+	if (m.getHeader() != null)
+            serverOut.write(m.getHeader());
+        else if (header != null) 
+            serverOut.write(header);
+    }
+    protected int getHeaderLength() { 
+        return header != null ? header.length : 0;
+    }
+    public void setHeader (byte[] header) {
+	this.header = header;
     }
 }
