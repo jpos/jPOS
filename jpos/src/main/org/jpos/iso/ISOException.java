@@ -64,10 +64,10 @@ public class ISOException extends Exception implements Loggeable {
 	    if (nested instanceof ISOException) 
 		((ISOException)nested).dump (p, inner);
 	    else {
-		p.println (inner + "<nested-exception>"
-		                 +nested.getMessage()
-		                 + "</nested-exception>"
-			  );
+		p.println (inner + "<nested-exception>");
+		p.print   (inner);
+		nested.printStackTrace (p);
+		p.println (inner + "</nested-exception>");
 	    }
 	}
 	p.print (inner);
