@@ -65,8 +65,12 @@ public class UI extends QBeanSupport implements UIObjectFactory {
     public UI () {
         super();
     }
-    public void startService () throws JDOMException {
-        ui = new org.jpos.ui.UI (getPersist ());
+    public void startService () throws Exception {
+        Element config = getPersist ();
+        String provider = 
+            config.getAttributeValue ("provider", "org.jpos.ui.UI");
+        ui = (org.jpos.ui.UI) getFactory().newInstance (provider);
+        ui.setConfig (config);
         ui.setLog (getLog ());
         ui.setObjectFactory (this);
         ui.configure ();
