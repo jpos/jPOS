@@ -49,6 +49,9 @@
 
 /*
  * $Log$
+ * Revision 1.8  2003/10/13 10:46:15  apr
+ * tabs expanded to spaces
+ *
  * Revision 1.7  2003/05/16 04:07:35  alwyns
  * Import cleanups.
  *
@@ -97,31 +100,31 @@ public class CardAgentLookup {
      * no external instantiation - thank you
      */
     private CardAgentLookup () {
-	agents = new ArrayList();
+        agents = new ArrayList();
     }
     /**
      * register an Agent (at the end of the list)
      * @param agent Agent to add
      */
     synchronized public static void add (CardAgent agent) {
-	instance.agents.add (agent);
+        instance.agents.add (agent);
     }
     /**
      * remove all ocurrences of agent
      * @param agent Agent to remove
      */
     synchronized public static void remove (CardAgent agent) {
-	ArrayList a = instance.agents;
-	int i;
-	while ( (i=a.indexOf(agent)) >= 0)
-	    a.remove(i);
+        ArrayList a = instance.agents;
+        int i;
+        while ( (i=a.indexOf(agent)) >= 0)
+            a.remove(i);
     }
     /**
      * @return all available agents
      */
     synchronized public static CardAgent[] getAgents() {
-	ArrayList a = instance.agents;
-	return (CardAgent[]) a.toArray(new CardAgent[a.size()]);
+        ArrayList a = instance.agents;
+        return (CardAgent[]) a.toArray(new CardAgent[a.size()]);
     }
 
     /**
@@ -130,14 +133,14 @@ public class CardAgentLookup {
      * @return suitable array of agents
      */
     synchronized public static CardAgent[] getAgents (CardTransaction t) {
-	ArrayList l = new ArrayList();
-	Iterator i = instance.agents.iterator();
-	while (i.hasNext()) {
-	    CardAgent a = (CardAgent) i.next();
-	    if (a.canHandle (t)) 
-		l.add (a);
-	}
-	return (CardAgent[]) l.toArray(new CardAgent[l.size()]);
+        ArrayList l = new ArrayList();
+        Iterator i = instance.agents.iterator();
+        while (i.hasNext()) {
+            CardAgent a = (CardAgent) i.next();
+            if (a.canHandle (t)) 
+                l.add (a);
+        }
+        return (CardAgent[]) l.toArray(new CardAgent[l.size()]);
     }
     /**
      * locate an agent giving its class Name
@@ -146,15 +149,15 @@ public class CardAgentLookup {
      * @exception CardAgentNotFoundException
      */
     synchronized public static CardAgent getAgent (String name)
-	throws CardAgentNotFoundException
+        throws CardAgentNotFoundException
     {
-	Iterator i = instance.agents.iterator();
-	while (i.hasNext()) {
-	    CardAgent a = (CardAgent) i.next();
-	    if ( (a.getClass().getName()).endsWith (name) ) 
-		return a;
-	}
-	throw new CardAgentNotFoundException (name);
+        Iterator i = instance.agents.iterator();
+        while (i.hasNext()) {
+            CardAgent a = (CardAgent) i.next();
+            if ( (a.getClass().getName()).endsWith (name) ) 
+                return a;
+        }
+        throw new CardAgentNotFoundException (name);
     }
     /**
      * locate an agent giving its unique agent ID
@@ -163,15 +166,15 @@ public class CardAgentLookup {
      * @exception CardAgentNotFoundException
      */
     synchronized public static CardAgent getAgent (int id)
-	throws CardAgentNotFoundException
+        throws CardAgentNotFoundException
     {
-	Iterator i = instance.agents.iterator();
-	while (i.hasNext()) {
-	    CardAgent a = (CardAgent) i.next();
-	    if (a.getID() == id)
-		return a;
-	}
-	throw new CardAgentNotFoundException (Integer.toString(id));
+        Iterator i = instance.agents.iterator();
+        while (i.hasNext()) {
+            CardAgent a = (CardAgent) i.next();
+            if (a.getID() == id)
+                return a;
+        }
+        throw new CardAgentNotFoundException (Integer.toString(id));
     }
 
     /**
@@ -181,15 +184,15 @@ public class CardAgentLookup {
      * @exception CardAgentNotFoundException
      */
     synchronized public static CardAgent getAgent (byte[] b)
-	throws CardAgentNotFoundException
+        throws CardAgentNotFoundException
     {
-	try {
-	    ByteArrayInputStream i = new ByteArrayInputStream (b);
-	    ObjectInputStream o    = new ObjectInputStream (i);
-	    int id = o.readInt();
-	    return getAgent (id);
-	} catch (Exception e) { }
-	throw new CardAgentNotFoundException ();
+        try {
+            ByteArrayInputStream i = new ByteArrayInputStream (b);
+            ObjectInputStream o    = new ObjectInputStream (i);
+            int id = o.readInt();
+            return getAgent (id);
+        } catch (Exception e) { }
+        throw new CardAgentNotFoundException ();
     }
 
     /**
@@ -199,15 +202,15 @@ public class CardAgentLookup {
      * @exception CardAgentNotFoundException
      */
     synchronized public static CardAgent getAgent (Class t)
-	throws CardAgentNotFoundException
+        throws CardAgentNotFoundException
     {
-	Iterator i = instance.agents.iterator();
-	while (i.hasNext()) {
-	    CardAgent a = (CardAgent) i.next();
-	    if (a.getClass() == t)
-		return a;
-	}
-	throw new CardAgentNotFoundException (t.getName());
+        Iterator i = instance.agents.iterator();
+        while (i.hasNext()) {
+            CardAgent a = (CardAgent) i.next();
+            if (a.getClass() == t)
+                return a;
+        }
+        throw new CardAgentNotFoundException (t.getName());
     }
     /**
      * locate an agent able to process a given CardTransaction
@@ -216,14 +219,14 @@ public class CardAgentLookup {
      * @exception CardAgentNotFoundException
      */
     synchronized public static CardAgent getAgent (CardTransaction t)
-	throws CardAgentNotFoundException
+        throws CardAgentNotFoundException
     {
-	Iterator i = instance.agents.iterator();
-	while (i.hasNext()) {
-	    CardAgent a = (CardAgent) i.next();
-	    if (a.canHandle (t)) 
-		return a;
-	}
-	throw new CardAgentNotFoundException ();
+        Iterator i = instance.agents.iterator();
+        while (i.hasNext()) {
+            CardAgent a = (CardAgent) i.next();
+            if (a.canHandle (t)) 
+                return a;
+        }
+        throw new CardAgentNotFoundException ();
     }
 }

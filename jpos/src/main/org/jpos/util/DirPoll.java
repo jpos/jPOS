@@ -106,9 +106,9 @@ public class DirPoll extends SimpleLogSource
     public DirPoll () {
         prio = new Vector();
         setPollInterval(1000);
-	setPath (".");
-	pool = null;
-	cfg = null;
+        setPath (".");
+        pool = null;
+        cfg = null;
     }
     public synchronized void setPath(String base) {
         this.basePath = base;
@@ -146,7 +146,7 @@ public class DirPoll extends SimpleLogSource
         return pollInterval;
     }
     public void setProcessor (Object processor) {
-	this.processor = processor;
+        this.processor = processor;
     }
     /**
      * DirPool is not really Configurable, it uses QSPConfig instead
@@ -155,16 +155,16 @@ public class DirPoll extends SimpleLogSource
      * @param cfg Configuration object 
      */
     public void setConfiguration (Configuration cfg) 
-	throws ConfigurationException
+        throws ConfigurationException
     {
-	if (processor != null) {
-	    if ( (processor instanceof ReConfigurable) ||
-	         ((cfg == null) && (processor instanceof Configurable)) )
-	    {
-		((Configurable) processor).setConfiguration (cfg);
-	    }
-	}
-	this.cfg = cfg;
+        if (processor != null) {
+            if ( (processor instanceof ReConfigurable) ||
+                 ((cfg == null) && (processor instanceof Configurable)) )
+            {
+                ((Configurable) processor).setConfiguration (cfg);
+            }
+        }
+        this.cfg = cfg;
 
         setRequestDir  (cfg.get ("request.dir",  "request"));
         setResponseDir (cfg.get ("response.dir", "response"));
@@ -177,20 +177,20 @@ public class DirPoll extends SimpleLogSource
      * @param priorities blank separated list of extensions
      */
     public void setPriorities (String priorities) {
-	StringTokenizer st = new StringTokenizer (priorities);
-	Vector v = new Vector();
-	while (st.hasMoreTokens()) {
-	    String ext = st.nextToken();
-	    v.addElement (ext.equals ("*") ? "" : ext);
-	}
-	if (v.size() == 0)
-	    v.addElement ("");
-	synchronized (this) {
-	    prio = v;
-	}
+        StringTokenizer st = new StringTokenizer (priorities);
+        Vector v = new Vector();
+        while (st.hasMoreTokens()) {
+            String ext = st.nextToken();
+            v.addElement (ext.equals ("*") ? "" : ext);
+        }
+        if (v.size() == 0)
+            v.addElement ("");
+        synchronized (this) {
+            prio = v;
+        }
     }
     public synchronized void setThreadPool (ThreadPool pool) {
-	this.pool = pool;
+        this.pool = pool;
     }
     //--------------------------------------- FilenameFilter implementation
     public boolean accept(File dir, String name) {
@@ -205,28 +205,28 @@ public class DirPoll extends SimpleLogSource
     //--------------------------------------------- Runnable implementation
 
     public void run() { 
-	Thread.currentThread().setName ("DirPoll-"+basePath);
+        Thread.currentThread().setName ("DirPoll-"+basePath);
         if (prio.size() == 0)
             addPriority("");
         while (!shutdown) {
             try {
-		File f;
-		synchronized (this) {
-		    f = scan();
-		}
+                File f;
+                synchronized (this) {
+                    f = scan();
+                }
                 if (f != null) {
-		    getPool().execute (new ProcessorRunner (f));
+                    getPool().execute (new ProcessorRunner (f));
                     Thread.yield(); // be nice
                 }
                 else
                     Thread.sleep(pollInterval);
             } catch (InterruptedException e) { 
-	    } catch (Throwable e) {
-		Logger.log (new LogEvent (this, "dirpoll", e));
-		try {
-		    Thread.sleep(pollInterval * 10);	// anti hog
-		} catch (InterruptedException ex) { }
-	    }
+            } catch (Throwable e) {
+                Logger.log (new LogEvent (this, "dirpoll", e));
+                try {
+                    Thread.sleep(pollInterval * 10);    // anti hog
+                } catch (InterruptedException ex) { }
+            }
         }   
     }
     public void destroy () {
@@ -248,14 +248,14 @@ public class DirPoll extends SimpleLogSource
 
     //----------------------------------------------------- private helpers
     private byte[] readRequest (File f) throws IOException {
-	byte[] b = new byte[(int) f.length()];
-	FileInputStream in = new FileInputStream(f);
-	in.read(b);
-	in.close();
-	return b;
+        byte[] b = new byte[(int) f.length()];
+        FileInputStream in = new FileInputStream(f);
+        in.read(b);
+        in.close();
+        return b;
     }
     private void writeResponse (String requestName, byte[] b) 
-	throws IOException
+        throws IOException
     {
         if (responseSuffix != null) {
             int pos = requestName.lastIndexOf ('.');
@@ -264,10 +264,10 @@ public class DirPoll extends SimpleLogSource
         }
 
         File tmp = new File(tmpDir, requestName);
-	FileOutputStream out = new FileOutputStream(tmp);
-	out.write(b);
-	out.close();
-	moveTo (tmp, responseDir);
+        FileOutputStream out = new FileOutputStream(tmp);
+        out.write(b);
+        out.close();
+        moveTo (tmp, responseDir);
     }
 
     private File moveTo(File f, File dir) throws IOException {
@@ -289,44 +289,44 @@ public class DirPoll extends SimpleLogSource
     }
 
     private synchronized ThreadPool getPool() {
-	if (pool == null)
-	    pool = new ThreadPool (1, 10);
-	return pool;
+        if (pool == null)
+            pool = new ThreadPool (1, 10);
+        return pool;
     }
 
     // ------------------------------------------------ inner interfaces
     public interface Processor {
-	/**
-	 * @param name request name
-	 * @param request request image
-	 * @return response (or null)
-	 */
-	public byte[] process(String name, byte[] request) 
-	    throws DirPollException;
+        /**
+         * @param name request name
+         * @param request request image
+         * @return response (or null)
+         */
+        public byte[] process(String name, byte[] request) 
+            throws DirPollException;
     }
     public interface FileProcessor {
-	/**
-	 * @param name request File
+        /**
+         * @param name request File
          * @exception should something go wrong
-	 */
-	public void process (File name) throws DirPollException;
+         */
+        public void process (File name) throws DirPollException;
     }
     public class ProcessorRunner implements Runnable {
-	File request;
-	LogEvent logEvent;
-	public ProcessorRunner (File request) throws IOException {
-	    this.request = moveTo (request, runDir);
-	    this.logEvent = null;
-	}
-	public void run() {
-	    LogEvent evt = 
-		new LogEvent (
-		    (LogSource) DirPoll.this, "dirpoll", request.getName()
-		);
-	    try {
-		if (processor == null) 
-		    throw new DirPollException 
-			("null processor - nothing to do");
+        File request;
+        LogEvent logEvent;
+        public ProcessorRunner (File request) throws IOException {
+            this.request = moveTo (request, runDir);
+            this.logEvent = null;
+        }
+        public void run() {
+            LogEvent evt = 
+                new LogEvent (
+                    (LogSource) DirPoll.this, "dirpoll", request.getName()
+                );
+            try {
+                if (processor == null) 
+                    throw new DirPollException 
+                        ("null processor - nothing to do");
                 else if (processor instanceof Processor) {
                     byte[] resp = ((Processor) processor).process (
                         request.getName(), readRequest (request)
@@ -336,37 +336,37 @@ public class DirPoll extends SimpleLogSource
                 } else if (processor instanceof FileProcessor) 
                     ((FileProcessor) processor).process (request);
 
-		if (!request.delete ())
-		    throw new DirPollException 
-			("error: can't unlink request " + request.getName());
+                if (!request.delete ())
+                    throw new DirPollException 
+                        ("error: can't unlink request " + request.getName());
 
-	    } catch (Throwable e) {
-		logEvent = evt;
-		evt.addMessage (e);
-		try {
-		    moveTo (request, badDir);
-		} catch (IOException _e) {
-		    evt.addMessage ("Can't move to "+badDir.getPath());
-		    evt.addMessage (_e);
-		}
-	    } finally {
-		if (logEvent != null) 
-		    Logger.log (logEvent);
-	    }
-	}
+            } catch (Throwable e) {
+                logEvent = evt;
+                evt.addMessage (e);
+                try {
+                    moveTo (request, badDir);
+                } catch (IOException _e) {
+                    evt.addMessage ("Can't move to "+badDir.getPath());
+                    evt.addMessage (_e);
+                }
+            } finally {
+                if (logEvent != null) 
+                    Logger.log (logEvent);
+            }
+        }
     }
     public static class DirPollException extends ISOException {
-	public DirPollException () {
-	    super();
-	}
-	public DirPollException (String detail) {
-	    super(detail);
-	}
-	public DirPollException (Exception nested) {
-	    super(nested);
-	}
-	public DirPollException (String detail, Exception nested) {
-	    super(detail, nested);
-	}
+        public DirPollException () {
+            super();
+        }
+        public DirPollException (String detail) {
+            super(detail);
+        }
+        public DirPollException (Exception nested) {
+            super(nested);
+        }
+        public DirPollException (String detail, Exception nested) {
+            super(detail, nested);
+        }
     }
 }

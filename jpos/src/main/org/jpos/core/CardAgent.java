@@ -84,7 +84,7 @@ public interface CardAgent {
      * @exception CardAgentException
      */
     public CardTransactionResponse process (CardTransaction t) 
-	throws CardAgentException;
+        throws CardAgentException;
 
     /**
      * @return property prefix used in configuration

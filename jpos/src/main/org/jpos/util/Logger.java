@@ -74,9 +74,9 @@ public class Logger {
     Vector listeners;
 
     public Logger () {
-	super();
-	listeners = new Vector ();
-	name = "";
+        super();
+        listeners = new Vector ();
+        name = "";
     }
     public void addListener (LogListener l) {
         synchronized (listeners) {
@@ -116,14 +116,14 @@ public class Logger {
      * @see NameRegistrar
      */
     public void setName (String name) {
-	this.name = name;
-	NameRegistrar.register ("logger."+name, this);
+        this.name = name;
+        NameRegistrar.register ("logger."+name, this);
     }
     /**
      * destroy logger
      */
     public void destroy () {
-	NameRegistrar.unregister ("logger."+name);
+        NameRegistrar.unregister ("logger."+name);
         removeAllListeners ();
     }
     /**
@@ -131,20 +131,20 @@ public class Logger {
      * @see NameRegistrar
      */
     public synchronized static Logger getLogger (String name) {
-	Logger l;
-	try {
-	    l = (Logger) NameRegistrar.get ("logger."+name);
-	} catch (NameRegistrar.NotFoundException e) {
-	    l = new Logger();
-	    l.setName (name);
-	}
-	return l;
+        Logger l;
+        try {
+            l = (Logger) NameRegistrar.get ("logger."+name);
+        } catch (NameRegistrar.NotFoundException e) {
+            l = new Logger();
+            l.setName (name);
+        }
+        return l;
     }
     /**
      * @return this logger's name ("" if no name was set)
      */
     public String getName() {
-	return this.name;
+        return this.name;
     }
     /**
      * Used by heavy used methods to avoid LogEvent creation 

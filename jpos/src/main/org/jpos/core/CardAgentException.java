@@ -57,18 +57,18 @@ import org.jpos.iso.ISOException;
  */
 public class CardAgentException extends ISOException {
     public CardAgentException () {
-	super();
+        super();
     }
     public CardAgentException (String s) {
-	super(s);
+        super(s);
     }
     public CardAgentException (Exception e) {
-	super(e);
+        super(e);
     }
     public CardAgentException (String s, Exception e) {
-	super(s, e);
+        super(s, e);
     }
     protected String getTagName() {
-	return "card-agent-exception";
+        return "card-agent-exception";
     }
 }

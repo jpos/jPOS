@@ -49,6 +49,9 @@
 
 /*
  * $Log$
+ * Revision 1.7  2003/10/13 10:46:15  apr
+ * tabs expanded to spaces
+ *
  * Revision 1.6  2003/05/16 04:07:35  alwyns
  * Import cleanups.
  *
@@ -92,20 +95,20 @@ public class CardSelector {
     static CardSelector defaultInstance;
 
     public class Entry {
-	CardBrand card;
-	int low;
-	int high;
-	public Entry (CardBrand card, int low, int high) {
-	    this.card = card;
-	    this.low  = low;
-	    this.high = high;
-	}
+        CardBrand card;
+        int low;
+        int high;
+        public Entry (CardBrand card, int low, int high) {
+            this.card = card;
+            this.low  = low;
+            this.high = high;
+        }
     }
     public CardSelector() {
-	list = new Vector();
+        list = new Vector();
     }
     public CardSelector (List list) {
-	this.list=list;
+        this.list=list;
     }
     /**
      * @param card CardBrand
@@ -113,36 +116,36 @@ public class CardSelector {
      * @param high BIN
      */
     public void add (CardBrand card, int low, int high) {
-	list.add (new Entry (card, low, high));
+        list.add (new Entry (card, low, high));
     }
     /**
      * @param card CardBrand
      * @param bin
      */
     public void add (CardBrand card, int bin) {
-	list.add (new Entry (card, bin, bin));
+        list.add (new Entry (card, bin, bin));
     }
     public static void setDefault (CardSelector def) {
-	defaultInstance = def;
+        defaultInstance = def;
     }
     public static CardSelector getDefault () {
-	if (defaultInstance == null)
-	    defaultInstance = new CardSelector();
-	return defaultInstance;
+        if (defaultInstance == null)
+            defaultInstance = new CardSelector();
+        return defaultInstance;
     }
     public CardBrand getCardBrand(String bin) 
-	throws UnknownCardException
+        throws UnknownCardException
     {
-	try {
-	    int b = Integer.parseInt (bin);
-	    Iterator i = list.iterator();
-	    while (i.hasNext()) {
-		Entry e = (Entry) i.next();
-		if ((b >= e.low) && (b <= e.high)) 
-		    return e.card;
-	    }
-	} catch (NumberFormatException x) { }
-	throw new UnknownCardException (bin);
+        try {
+            int b = Integer.parseInt (bin);
+            Iterator i = list.iterator();
+            while (i.hasNext()) {
+                Entry e = (Entry) i.next();
+                if ((b >= e.low) && (b <= e.high)) 
+                    return e.card;
+            }
+        } catch (NumberFormatException x) { }
+        throw new UnknownCardException (bin);
 
     }
 }

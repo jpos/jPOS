@@ -49,6 +49,9 @@
 
 /*
  * $Log$
+ * Revision 1.12  2003/10/13 10:46:15  apr
+ * tabs expanded to spaces
+ *
  * Revision 1.11  2003/05/16 04:07:35  alwyns
  * Import cleanups.
  *
@@ -153,95 +156,95 @@ public class AuthorizationTransaction
     private transient CardTransactionResponse response;
 
     public AuthorizationTransaction() {
-	cardHolder = null;
-	amount     = null;
-	rrn        = null;
-	terminal   = null;
-	currency   = null;
-	purchasePlan = null;
-	numberOfPayments = 1;
-	action     = "authorize";
+        cardHolder = null;
+        amount     = null;
+        rrn        = null;
+        terminal   = null;
+        currency   = null;
+        purchasePlan = null;
+        numberOfPayments = 1;
+        action     = "authorize";
     }
     public void setCardHolder (CardHolder cardHolder) {
-	this.cardHolder = cardHolder;
+        this.cardHolder = cardHolder;
     }
     public CardHolder getCardHolder() {
-	return cardHolder;
+        return cardHolder;
     }
     public void setAmount (BigDecimal amount) {
-	this.amount = amount;
+        this.amount = amount;
     }
     public BigDecimal getAmount() {
-	return amount;
+        return amount;
     }
     public void setCurrency (Integer currency) {
-	this.currency = currency;
+        this.currency = currency;
     }
     public void setCurrency (int m) {
-	this.currency = new Integer (m);
+        this.currency = new Integer (m);
     }
     public Integer getCurrency() {
-	return currency;
+        return currency;
     }
     public void setRRN (String rrn) {
-	this.rrn = rrn;
+        this.rrn = rrn;
     }
     public String getRRN() {
-	return rrn;
+        return rrn;
     }
     public void setTerminal (String terminal) {
-	this.terminal = terminal;
+        this.terminal = terminal;
     }
     public String getTerminal () {
-	return terminal;
+        return terminal;
     }
     public void setAction (String action) {
-	this.action = action;
+        this.action = action;
     }
     public void setArgs (String[] args) {
-	this.args = args;
+        this.args = args;
     }
     public String getAction() {
-	return action;
+        return action;
     }
     public String[] getArgs() {
-	return args;
+        return args;
     }
     public void setPurchasePlan(String purchasePlan) {
-	this.purchasePlan = purchasePlan;
+        this.purchasePlan = purchasePlan;
     }
     public String getPurchasePlan () {
-	return purchasePlan;
+        return purchasePlan;
     }
     public void setNumberOfPayments(int n) {
-	this.numberOfPayments = (byte) n;
+        this.numberOfPayments = (byte) n;
     }
     public int getNumberOfPayments() {
-	return (int) numberOfPayments;
+        return (int) numberOfPayments;
     }
     public void dump (PrintStream p, String indent) {
-	String inner = indent + "  ";
-	p.println (indent + "<" + getTagName() + ">");
-	p.println (inner  + "<action>" + action + "</action>");
-	getCardHolder().dump (p, inner);
-	p.println (inner  + "<amount>"      + amount      + "</amount>");
-	p.println (inner  + "<currency>"    + currency     + "</currency>");
-	p.println (inner  + "<terminal>"    + terminal     + "</terminal>");
-	p.println (inner  + "<purchasePlan>"+ purchasePlan + "</purchasePlan>");
-	p.println (inner  + "<numberOfPayments>" + numberOfPayments + 
-			   "</numberOfPayments>"
-	);
-	if (response != null && response instanceof Loggeable)
-	    ((Loggeable)response).dump (p, inner);
-	p.println (indent + "</" + getTagName() + ">");
+        String inner = indent + "  ";
+        p.println (indent + "<" + getTagName() + ">");
+        p.println (inner  + "<action>" + action + "</action>");
+        getCardHolder().dump (p, inner);
+        p.println (inner  + "<amount>"      + amount      + "</amount>");
+        p.println (inner  + "<currency>"    + currency     + "</currency>");
+        p.println (inner  + "<terminal>"    + terminal     + "</terminal>");
+        p.println (inner  + "<purchasePlan>"+ purchasePlan + "</purchasePlan>");
+        p.println (inner  + "<numberOfPayments>" + numberOfPayments + 
+                           "</numberOfPayments>"
+        );
+        if (response != null && response instanceof Loggeable)
+            ((Loggeable)response).dump (p, inner);
+        p.println (indent + "</" + getTagName() + ">");
     }
     protected String getTagName() {
-	return "AuthorizationTransaction";
+        return "AuthorizationTransaction";
     }
     public void setResponse (CardTransactionResponse response) {
-	this.response = response;
+        this.response = response;
     }
     public CardTransactionResponse getResponse () {
-	return response;
+        return response;
     }
 }

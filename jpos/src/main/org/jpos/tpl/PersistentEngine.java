@@ -79,19 +79,19 @@ public class PersistentEngine implements LogSource, Configurable {
      * @throws ConfigurationException
      */
     public PersistentEngine (Configuration cfg, Logger logger, String realm) 
-	throws ConfigurationException
+        throws ConfigurationException
     {
         super();
-	this.cfg = cfg;
-	this.logger = logger;
-	this.realm  = realm;
-	initEngine ();
+        this.cfg = cfg;
+        this.logger = logger;
+        this.realm  = realm;
+        initEngine ();
     }
     /**
      * no args constructor
      */
     public PersistentEngine () {
-	super();
+        super();
     }
     /**
      * Implements Configurable
@@ -99,43 +99,43 @@ public class PersistentEngine implements LogSource, Configurable {
      * @throws ConfigurationException
      */
     public void setConfiguration (Configuration cfg)
-	throws ConfigurationException
+        throws ConfigurationException
     {
-	this.cfg = cfg;
-	initEngine();
+        this.cfg = cfg;
+        initEngine();
     }
     private void initEngine () throws ConfigurationException {
-	initJDBC();
+        initJDBC();
     }
     private void initJDBC() throws ConfigurationException {
         try {
             Class.forName(cfg.get("jdbc.driver")).newInstance();
         } catch (Exception e) {
-	    throw new ConfigurationException (e);
+            throw new ConfigurationException (e);
         }
     }
     public synchronized Connection getConnection() {
-	for (;;) {
-	    try {
-		String url  = cfg.get ("jdbc.url");
-		String user = cfg.get ("jdbc.user");
-		String pass = cfg.get ("jdbc.password");
-		return DriverManager.getConnection(url,user,pass);
-	    } catch (SQLException e) {
-		Logger.log (new LogEvent(this, "sql-connection", e));
-		try {
-		    Thread.sleep (2000);
-		} catch (InterruptedException ex) { }
-	    }
-	}
+        for (;;) {
+            try {
+                String url  = cfg.get ("jdbc.url");
+                String user = cfg.get ("jdbc.user");
+                String pass = cfg.get ("jdbc.password");
+                return DriverManager.getConnection(url,user,pass);
+            } catch (SQLException e) {
+                Logger.log (new LogEvent(this, "sql-connection", e));
+                try {
+                    Thread.sleep (2000);
+                } catch (InterruptedException ex) { }
+            }
+        }
     }
     public void releaseConnection (Connection conn) {
-	// Connection pooling hook
-	try {
-	    conn.close();
-	} catch (SQLException e) {
-	    Logger.log (new LogEvent(this, "sql-release-connection", e));
-	}
+        // Connection pooling hook
+        try {
+            conn.close();
+        } catch (SQLException e) {
+            Logger.log (new LogEvent(this, "sql-release-connection", e));
+        }
     }
     public void setLogger (Logger logger, String realm) {
         this.logger = logger;
@@ -153,16 +153,16 @@ public class PersistentEngine implements LogSource, Configurable {
      * @throws NoPeerException
      */
     public PersistentPeer getPeer (Object obj) throws NoPeerException {
-	if (obj instanceof PersistentPeer) 
-	    return (PersistentPeer) obj;
-	else {
-	    try {
-		Class c = Class.forName (obj.getClass().getName()+"Peer");
-		return (PersistentPeer) c.newInstance();
-	    } catch (Exception e) {
-		throw new NoPeerException (e.toString());
-	    }
-	}
+        if (obj instanceof PersistentPeer) 
+            return (PersistentPeer) obj;
+        else {
+            try {
+                Class c = Class.forName (obj.getClass().getName()+"Peer");
+                return (PersistentPeer) c.newInstance();
+            } catch (Exception e) {
+                throw new NoPeerException (e.toString());
+            }
+        }
     }
     /**
      * Execute SQL Update
@@ -170,12 +170,12 @@ public class PersistentEngine implements LogSource, Configurable {
      * @exception SQLException
      */
     public void executeUpdate (String sql) throws SQLException {
-	Connection conn = getConnection();
-	try {
-	    executeUpdate (sql, conn);
-	} finally {
-	    releaseConnection (conn);
-	}
+        Connection conn = getConnection();
+        try {
+            executeUpdate (sql, conn);
+        } finally {
+            releaseConnection (conn);
+        }
     }
     /**
      * Execute SQL Update
@@ -184,18 +184,18 @@ public class PersistentEngine implements LogSource, Configurable {
      * @exception SQLException
      */
     public void executeUpdate (String sql, Connection conn) 
-	throws SQLException
+        throws SQLException
     {
-	Statement s = null;
-	try {
-	    s = conn.createStatement();
-	    if (logger != null && logger.hasListeners()) 
-		Logger.log (new LogEvent (this, "sql-update", sql));
-	    s.executeUpdate (sql);
-	} finally {
-	    if (s != null)
-		s.close();
-	}
+        Statement s = null;
+        try {
+            s = conn.createStatement();
+            if (logger != null && logger.hasListeners()) 
+                Logger.log (new LogEvent (this, "sql-update", sql));
+            s.executeUpdate (sql);
+        } finally {
+            if (s != null)
+                s.close();
+        }
     }
 
     /**
@@ -206,10 +206,10 @@ public class PersistentEngine implements LogSource, Configurable {
      * @exception SQLException
      */
     public ResultSet executeQuery (String sql, Connection conn) 
-	throws SQLException
+        throws SQLException
     {
-	Statement s = null;
-	ResultSet rs;
+        Statement s = null;
+        ResultSet rs;
         s = conn.createStatement();
         if (logger != null && logger.hasListeners()) 
             Logger.log (new LogEvent (this, "sql-query", sql));
@@ -223,11 +223,11 @@ public class PersistentEngine implements LogSource, Configurable {
      * @throws SQLException
      */
     public void create (Object o) 
-	throws NoPeerException, SQLException
+        throws NoPeerException, SQLException
     {
-	PersistentPeer peer = getPeer(o);
-	peer.setPersistentEngine (this);
-	peer.create (o);
+        PersistentPeer peer = getPeer(o);
+        peer.setPersistentEngine (this);
+        peer.create (o);
     }
     /**
      * load object from persistent storage
@@ -236,11 +236,11 @@ public class PersistentEngine implements LogSource, Configurable {
      * @throws SQLException
      */
     public void load (Object o) 
-	throws NoPeerException, SQLException, NotFoundException
+        throws NoPeerException, SQLException, NotFoundException
     {
-	PersistentPeer peer = getPeer(o);
-	peer.setPersistentEngine (this);
-	peer.load (o);
+        PersistentPeer peer = getPeer(o);
+        peer.setPersistentEngine (this);
+        peer.load (o);
     }
     /**
      * remove object from persistent storage
@@ -249,11 +249,11 @@ public class PersistentEngine implements LogSource, Configurable {
      * @throws SQLException
      */
     public void remove (Object o) 
-	throws NoPeerException, SQLException, NotFoundException
+        throws NoPeerException, SQLException, NotFoundException
     {
-	PersistentPeer peer = getPeer(o);
-	peer.setPersistentEngine (this);
-	peer.remove (o);
+        PersistentPeer peer = getPeer(o);
+        peer.setPersistentEngine (this);
+        peer.remove (o);
     }
     /**
      * update object to persistent storage
@@ -262,21 +262,21 @@ public class PersistentEngine implements LogSource, Configurable {
      * @throws SQLException
      */
     public void update (Object o) 
-	throws NoPeerException, SQLException, NotFoundException
+        throws NoPeerException, SQLException, NotFoundException
     {
-	PersistentPeer peer = getPeer(o);
-	peer.setPersistentEngine (this);
-	peer.update(o);
+        PersistentPeer peer = getPeer(o);
+        peer.setPersistentEngine (this);
+        peer.update(o);
     }
 
     public long getOID (Connection conn) throws SQLException {
-	String sql = "SELECT last_insert_id()";
-	ResultSet rs = executeQuery (sql, conn);
+        String sql = "SELECT last_insert_id()";
+        ResultSet rs = executeQuery (sql, conn);
         if (rs.isBeforeFirst()) 
             rs.next();
-	long oid = rs.getLong (1);
-	rs.close();
-	return oid;
+        long oid = rs.getLong (1);
+        rs.close();
+        return oid;
     }
 }
 

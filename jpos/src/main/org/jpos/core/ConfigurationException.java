@@ -59,15 +59,15 @@ import org.jpos.iso.ISOException;
  */
 public class ConfigurationException extends ISOException {
     public ConfigurationException () {
-	super();
+        super();
     }
     public ConfigurationException (String detail) {
-	super (detail);
+        super (detail);
     }
     public ConfigurationException (Exception nested) {
-	super (nested);
+        super (nested);
     }
     public ConfigurationException (String detail, Exception nested) {
-	super (detail, nested);
+        super (detail, nested);
     }
 }

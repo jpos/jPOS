@@ -75,52 +75,52 @@ public class LogEvent extends EventObject {
     public Vector payLoad;
     
     public LogEvent (LogSource source, String tag) {
-	super (source);
-	this.source  = source;
-	this.tag     = tag;
-	this.payLoad = new Vector();
+        super (source);
+        this.source  = source;
+        this.tag     = tag;
+        this.payLoad = new Vector();
     }
     public LogEvent (LogSource source, String tag, Object msg) {
-	super (source);
-	this.source  = source;
-	this.tag     = tag;
-	this.payLoad = new Vector(1);
-	addMessage(msg);
+        super (source);
+        this.source  = source;
+        this.tag     = tag;
+        this.payLoad = new Vector(1);
+        addMessage(msg);
     }
     public void addMessage (Object msg) {
-	this.payLoad.addElement(msg);
+        this.payLoad.addElement(msg);
     }
     public void addMessage (String tagname, String message) {
-	this.payLoad.addElement("<"+tagname+">"+message+"</"+tagname+">");
+        this.payLoad.addElement("<"+tagname+">"+message+"</"+tagname+">");
     }
     public void dump (PrintStream p, String indent) {
-	if (payLoad.size() == 0) 
-	    p.println (indent + "<" + tag + "/>");
-	else {
-	    p.println (indent + "<" + tag + ">");
-	    String newIndent = indent + "  ";
-	    Iterator i = payLoad.iterator();
-	    while (i.hasNext()) {
-		Object o = i.next();
-		if (o instanceof Loggeable) 
-		    ((Loggeable)o).dump (p, newIndent);
-		else if (o instanceof SQLException) {
-		    SQLException e = (SQLException) o;
-		    p.println (newIndent + "<SQLException>"
-				+e.getMessage() + "</SQLException>");
-		    p.println (newIndent + "<SQLState>"
-				+e.getSQLState() + "</SQLState>");
-		    p.println (newIndent + "<VendorError>"
-				+e.getErrorCode() + "</VendorError>");
-		    ((Throwable)o).printStackTrace (p);
-		}
-		else if (o instanceof Throwable) {
-		    p.println (newIndent + "<exception name=\""
-			+ ((Throwable)o).getMessage() + "\">");
-		    p.print (newIndent);
-		    ((Throwable)o).printStackTrace (p);
-		    p.println (newIndent + "</exception>");
-		}
+        if (payLoad.size() == 0) 
+            p.println (indent + "<" + tag + "/>");
+        else {
+            p.println (indent + "<" + tag + ">");
+            String newIndent = indent + "  ";
+            Iterator i = payLoad.iterator();
+            while (i.hasNext()) {
+                Object o = i.next();
+                if (o instanceof Loggeable) 
+                    ((Loggeable)o).dump (p, newIndent);
+                else if (o instanceof SQLException) {
+                    SQLException e = (SQLException) o;
+                    p.println (newIndent + "<SQLException>"
+                                +e.getMessage() + "</SQLException>");
+                    p.println (newIndent + "<SQLState>"
+                                +e.getSQLState() + "</SQLState>");
+                    p.println (newIndent + "<VendorError>"
+                                +e.getErrorCode() + "</VendorError>");
+                    ((Throwable)o).printStackTrace (p);
+                }
+                else if (o instanceof Throwable) {
+                    p.println (newIndent + "<exception name=\""
+                        + ((Throwable)o).getMessage() + "\">");
+                    p.print (newIndent);
+                    ((Throwable)o).printStackTrace (p);
+                    p.println (newIndent + "</exception>");
+                }
                 else if (o instanceof Object[]) {
                     Object [] oa = (Object[]) o;
                     p.print (newIndent + "[");
@@ -131,17 +131,17 @@ public class LogEvent extends EventObject {
                     }
                     p.println ("]");
                 }
-		else if (o != null) {
-		    p.println (newIndent + o.toString());
+                else if (o != null) {
+                    p.println (newIndent + o.toString());
                 } else {
-		    p.println (newIndent + "null");
+                    p.println (newIndent + "null");
                 }
-	    }
-	    p.println (indent + "</" + tag + ">");
-	}
+            }
+            p.println (indent + "</" + tag + ">");
+        }
     }
     public String getRealm() {
-	return source.getRealm();
+        return source.getRealm();
     }
     public Vector getPayLoad() {
         return payLoad;

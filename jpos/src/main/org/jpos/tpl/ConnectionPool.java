@@ -327,9 +327,9 @@ public class ConnectionPool implements Runnable, LogSource, Configurable {
      * @see NameRegistrar
      */
     public static ConnectionPool getConnectionPool (String name)
-	throws NameRegistrar.NotFoundException
+        throws NameRegistrar.NotFoundException
     {
-	return (ConnectionPool) NameRegistrar.get ("connection.pool."+name);
+        return (ConnectionPool) NameRegistrar.get ("connection.pool."+name);
     }
 
 }

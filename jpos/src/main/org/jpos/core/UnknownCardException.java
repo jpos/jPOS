@@ -49,6 +49,9 @@
 
 /*
  * $Log$
+ * Revision 1.4  2003/10/13 10:46:15  apr
+ * tabs expanded to spaces
+ *
  * Revision 1.3  2000/11/02 12:09:18  apr
  * Added license to every source file
  *
@@ -75,9 +78,9 @@ package org.jpos.core;
  */
 public class UnknownCardException extends Exception {
     public UnknownCardException () {
-	super();
+        super();
     }
     public UnknownCardException (String s) {
-	super(s);
+        super(s);
     }
 }

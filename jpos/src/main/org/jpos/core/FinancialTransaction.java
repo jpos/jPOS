@@ -49,6 +49,9 @@
 
 /*
  * $Log$
+ * Revision 1.7  2003/10/13 10:46:15  apr
+ * tabs expanded to spaces
+ *
  * Revision 1.6  2003/05/16 04:07:35  alwyns
  * Import cleanups.
  *
@@ -84,12 +87,12 @@ package org.jpos.core;
 public class FinancialTransaction extends AuthorizationTransaction
 {
     public FinancialTransaction() {
-	super();
+        super();
     }
     public FinancialTransaction (String action) {
-	setAction (action);
+        setAction (action);
     }
     protected String getTagName() {
-	return "FinancialTransaction";
+        return "FinancialTransaction";
     }
 }

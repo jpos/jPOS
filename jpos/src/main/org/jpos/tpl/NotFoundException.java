@@ -55,9 +55,9 @@ package org.jpos.tpl;
  */
 public class NotFoundException extends Exception {
     public NotFoundException () {
-	super();
+        super();
     }
     public NotFoundException (String detail) {
-	super(detail);
+        super(detail);
     }
 }

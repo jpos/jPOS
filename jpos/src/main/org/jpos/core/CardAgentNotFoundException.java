@@ -49,6 +49,9 @@
 
 /*
  * $Log$
+ * Revision 1.6  2003/10/13 10:46:15  apr
+ * tabs expanded to spaces
+ *
  * Revision 1.5  2000/11/02 12:09:18  apr
  * Added license to every source file
  *
@@ -75,9 +78,9 @@ package org.jpos.core;
  */
 public class CardAgentNotFoundException extends Exception {
     public CardAgentNotFoundException () {
-	super();
+        super();
     }
     public CardAgentNotFoundException (String s) {
-	super(s);
+        super(s);
     }
 }

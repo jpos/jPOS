@@ -49,6 +49,9 @@
 
 /*
  * $Log$
+ * Revision 1.10  2003/10/13 10:46:15  apr
+ * tabs expanded to spaces
+ *
  * Revision 1.9  2003/05/16 04:07:35  alwyns
  * Import cleanups.
  *
@@ -133,75 +136,75 @@ public class ThinResponse implements CardTransactionResponse, Loggeable {
     public boolean approved;
 
     public ThinResponse(CardTransactionResponse c) {
-	super();
-	code          = c.getAutCode();
-	message       = c.getMessage();
-	autNumber     = c.getAutNumber();
-	authoritative = c.isAuthoritative();
-	canContinue   = c.canContinue();
-	approved      = c.isApproved();
+        super();
+        code          = c.getAutCode();
+        message       = c.getMessage();
+        autNumber     = c.getAutNumber();
+        authoritative = c.isAuthoritative();
+        canContinue   = c.canContinue();
+        approved      = c.isApproved();
     }
     public ThinResponse () {
-	super();
+        super();
     }
     public byte[] getImage() throws CardAgentException {
-	return null;
+        return null;
     }
     public void setAutCode (String code) {
-	this.code = code;
+        this.code = code;
     }
     public String  getAutCode() {
-	return code;
+        return code;
     }
     public void setMessage (String message) {
-	this.message = message;
+        this.message = message;
     }
     public String  getMessage() {
-	return message;
+        return message;
     }
     public void setAutNumber (String autNumber) {
-	this.autNumber = autNumber;
+        this.autNumber = autNumber;
     }
     public String  getAutNumber() {
-	return autNumber;
+        return autNumber;
     }
     public void setApproved (boolean approved) {
-	this.approved = approved;
+        this.approved = approved;
     }
     public boolean isApproved() {
-	return approved;
+        return approved;
     }
     public void setContinue (boolean canContinue) {
-	this.canContinue = canContinue;
+        this.canContinue = canContinue;
     }
     public boolean canContinue() {
-	return canContinue;
+        return canContinue;
     }
     public void setAuthoritative (boolean authoritative) {
-	this.authoritative = authoritative;
+        this.authoritative = authoritative;
     }
     public boolean isAuthoritative() {
-	return authoritative;
+        return authoritative;
     }
     public void dump (PrintStream p, String indent) {
-	String inner = indent + "  ";
-	p.print (indent + "<thin-response");
-	if (isApproved())
-	    p.print (" approved=\"true\"");
-	if (canContinue())
-	    p.print (" can-continue=\"true\"");
-	if (isAuthoritative())
-	    p.print (" authoritative=\"true\"");
-	p.println (">");
+        String inner = indent + "  ";
+        p.print (indent + "<thin-response");
+        if (isApproved())
+            p.print (" approved=\"true\"");
+        if (canContinue())
+            p.print (" can-continue=\"true\"");
+        if (isAuthoritative())
+            p.print (" authoritative=\"true\"");
+        p.println (">");
 
-	p.println (inner  + "<aut-code>"+getAutCode()+"</aut-code>");
-	String autNumber = getAutNumber();
-	if (autNumber != null)
-	    p.println (inner  + "<aut-number>"+autNumber+"</aut-number>");
-	p.println (inner  + "<aut-message>"+getMessage()+"</aut-message>");
-	p.println (indent + "</thin-response>");
+        p.println (inner  + "<aut-code>"+getAutCode()+"</aut-code>");
+        String autNumber = getAutNumber();
+        if (autNumber != null)
+            p.println (inner  + "<aut-number>"+autNumber+"</aut-number>");
+        p.println (inner  + "<aut-message>"+getMessage()+"</aut-message>");
+        p.println (indent + "</thin-response>");
     }
     public String getBatchName () {
-	return null;
+        return null;
     }
 }

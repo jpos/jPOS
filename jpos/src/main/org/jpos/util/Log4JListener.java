@@ -80,7 +80,7 @@ public class Log4JListener implements LogListener, ReConfigurable
      */
     public Log4JListener ()
     {
-    	setLevel (Level.DEBUG_INT);
+        setLevel (Level.DEBUG_INT);
     }
 
     public void setLevel (int level) {

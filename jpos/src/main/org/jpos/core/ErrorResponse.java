@@ -49,6 +49,9 @@
 
 /*
  * $Log$
+ * Revision 1.10  2003/10/13 10:46:15  apr
+ * tabs expanded to spaces
+ *
  * Revision 1.9  2003/05/16 04:07:35  alwyns
  * Import cleanups.
  *
@@ -114,83 +117,83 @@ public class ErrorResponse implements CardTransactionResponse, Loggeable {
     boolean canContinue   = false;
 
     public ErrorResponse() {
-	super();
+        super();
     }
     public ErrorResponse (String code, String message) {
-	super();
-	this.code = code;
-	this.message = message;
+        super();
+        this.code = code;
+        this.message = message;
     }
     public ErrorResponse 
-	(String code, String message, boolean authoritative, 
-	boolean canContinue)
+        (String code, String message, boolean authoritative, 
+        boolean canContinue)
     {
-	super();
-	this.code = code;
-	this.message = message;
-	this.authoritative = authoritative;
-	this.canContinue   = canContinue;
+        super();
+        this.code = code;
+        this.message = message;
+        this.authoritative = authoritative;
+        this.canContinue   = canContinue;
     }
     public byte[] getImage() throws CardAgentException {
-	return null;
+        return null;
     }
     public String  getAutCode() {
-	return code;
+        return code;
     }
     public String  getMessage() {
-	return message;
+        return message;
     }
     public String  getAutNumber() {
-	return null;
+        return null;
     }
     public boolean isApproved() {
-	return false;
+        return false;
     }
     public boolean canContinue() {
-	return canContinue;
+        return canContinue;
     }
     public boolean isAuthoritative() {
-	return authoritative;
+        return authoritative;
     }
     public void setAuthoritative (boolean authoritative) {
-	this.authoritative = authoritative;
+        this.authoritative = authoritative;
     }
     public void setContinue (boolean canContinue) {
-	this.canContinue = canContinue;
+        this.canContinue = canContinue;
     }
     public void setAutCode (String code) {
-	this.code = code;
+        this.code = code;
     }
     public void setMessage (String message) {
-	this.message = message;
+        this.message = message;
     }
     public void setAutCode (String code, String message) {
-	this.code = code;
-	this.message = message;
+        this.code = code;
+        this.message = message;
     }
     public String getBatchName () {
-	return null;
+        return null;
     }
 
     public void dump (PrintStream p, String indent) {
-	String inner = indent + "  ";
-	p.print (indent + "<error-response");
-	if (isApproved())
-	    p.print (" approved=\"true\"");
-	if (canContinue())
-	    p.print (" can-continue=\"true\"");
-	if (isAuthoritative())
-	    p.print (" authoritative=\"true\"");
-	p.println (">");
+        String inner = indent + "  ";
+        p.print (indent + "<error-response");
+        if (isApproved())
+            p.print (" approved=\"true\"");
+        if (canContinue())
+            p.print (" can-continue=\"true\"");
+        if (isAuthoritative())
+            p.print (" authoritative=\"true\"");
+        p.println (">");
 
-	p.println (inner  + "<aut-code>"+getAutCode()+"</aut-code>");
-	String autNumber = getAutNumber();
-	if (autNumber != null)
-	    p.println (inner  + "<aut-number>"+autNumber+"</aut-number>");
-	String message = getMessage();
-	if (message != null)
-	    p.println (inner  + "<aut-message>"+message+"</aut-message>");
+        p.println (inner  + "<aut-code>"+getAutCode()+"</aut-code>");
+        String autNumber = getAutNumber();
+        if (autNumber != null)
+            p.println (inner  + "<aut-number>"+autNumber+"</aut-number>");
+        String message = getMessage();
+        if (message != null)
+            p.println (inner  + "<aut-message>"+message+"</aut-message>");
 
-	p.println (indent + "</error-response>");
+        p.println (indent + "</error-response>");
     }
 }

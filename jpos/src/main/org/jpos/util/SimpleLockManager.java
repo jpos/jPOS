@@ -51,6 +51,9 @@ package org.jpos.util;
 
 /*
  * $Log$
+ * Revision 1.6  2003/10/13 10:46:16  apr
+ * tabs expanded to spaces
+ *
  * Revision 1.5  2003/05/16 04:11:04  alwyns
  * Import cleanups.
  *
@@ -81,69 +84,69 @@ public class SimpleLockManager implements LockManager {
     Map locks;
 
     public SimpleLockManager () {
-	locks = new Hashtable();
+        locks = new Hashtable();
     }
 
     public class SimpleTicket implements Ticket {
-	String resourceName;
-	long expiration;
-	public SimpleTicket (String resourceName, long duration) {
-	    this.resourceName = resourceName;
-	    this.expiration = System.currentTimeMillis() + duration;
-	}
-	public boolean renew (long duration) {
-	    if (!isExpired()) {
-		this.expiration = System.currentTimeMillis() + duration;
-		return true;
-	    }
-	    return false;
-	}
-	public long getExpiration() {
-	    return expiration;
-	}
-	public boolean isExpired() {
-	    return System.currentTimeMillis() > expiration;
-	}
-	public String getResourceName () {
-	    return resourceName;
-	}
-	public void cancel() {
-	    expiration = 0;
-	    locks.remove (resourceName);
-	    synchronized (this) {
-		notify();
-	    }
-	}
-	public String toString() {
-	    return super.toString() 
-		+ "[" + resourceName + "/" +isExpired() + "/"
-		+ (expiration - System.currentTimeMillis()) + "ms left]";
-	}
+        String resourceName;
+        long expiration;
+        public SimpleTicket (String resourceName, long duration) {
+            this.resourceName = resourceName;
+            this.expiration = System.currentTimeMillis() + duration;
+        }
+        public boolean renew (long duration) {
+            if (!isExpired()) {
+                this.expiration = System.currentTimeMillis() + duration;
+                return true;
+            }
+            return false;
+        }
+        public long getExpiration() {
+            return expiration;
+        }
+        public boolean isExpired() {
+            return System.currentTimeMillis() > expiration;
+        }
+        public String getResourceName () {
+            return resourceName;
+        }
+        public void cancel() {
+            expiration = 0;
+            locks.remove (resourceName);
+            synchronized (this) {
+                notify();
+            }
+        }
+        public String toString() {
+            return super.toString() 
+                + "[" + resourceName + "/" +isExpired() + "/"
+                + (expiration - System.currentTimeMillis()) + "ms left]";
+        }
     }
     public Ticket lock (String resourceName, long duration, long wait)
     {
-	long maxWait = System.currentTimeMillis() + wait;
+        long maxWait = System.currentTimeMillis() + wait;
 
-	while (System.currentTimeMillis() < maxWait) {
-	    Ticket t = null;
-	    synchronized (this) {
-		t = (Ticket) locks.get (resourceName);
-		if (t == null) {
-		    t = new SimpleTicket (resourceName, duration);
-		    locks.put (resourceName, t);
-		    return t;
-		} 
-		else if (t.isExpired()) {
-		    t.cancel();
-		    continue;
-		}
-	    }
-	    synchronized (t) {
-		try {
-		    t.wait (Math.min (1000, wait));
-		} catch (InterruptedException e) { }
-	    }
-	}
-	return null;
+        while (System.currentTimeMillis() < maxWait) {
+            Ticket t = null;
+            synchronized (this) {
+                t = (Ticket) locks.get (resourceName);
+                if (t == null) {
+                    t = new SimpleTicket (resourceName, duration);
+                    locks.put (resourceName, t);
+                    return t;
+                } 
+                else if (t.isExpired()) {
+                    t.cancel();
+                    continue;
+                }
+            }
+            synchronized (t) {
+                try {
+                    t.wait (Math.min (1000, wait));
+                } catch (InterruptedException e) { }
+            }
+        }
+        return null;
     }
 }

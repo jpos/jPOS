@@ -66,7 +66,7 @@ public class LeasedReference extends TimerTask {
     private LeasedReference () { }
 
     public LeasedReference (Object referent, long duration) {
-	super ();
+        super ();
         this.referent = referent;
         this.expiration = System.currentTimeMillis() + duration;
         timer.schedule (this, duration);

@@ -62,28 +62,28 @@ public class BlockingQueue {
     private int consumers = 0;
 
     public static class Closed extends RuntimeException {
-	public Closed() {
-	    super ("queue closed");
-	}
+        public Closed() {
+            super ("queue closed");
+        }
     }
 
     public synchronized void enqueue (Object o) throws Closed {
-	if (closed)
-	    throw new Closed();
-	queue.addLast (o);
-	notify();
+        if (closed)
+            throw new Closed();
+        queue.addLast (o);
+        notify();
     }
     public synchronized void requeue (Object o) throws Closed {
-	if (closed)
-	    throw new Closed();
-	queue.addFirst (o);
-	notify();
+        if (closed)
+            throw new Closed();
+        queue.addFirst (o);
+        notify();
     }
 
     public synchronized Object dequeue()
-	throws InterruptedException, Closed
+        throws InterruptedException, Closed
     {
-	consumers++;
+        consumers++;
         try {
             while (queue.size() == 0) {
                 wait();
@@ -91,18 +91,18 @@ public class BlockingQueue {
                     throw new Closed();
             }
         } finally {
-	    consumers--;
+            consumers--;
         }
-	return queue.removeFirst();
+        return queue.removeFirst();
     }
 
     public synchronized Object dequeue (long timeout)
-	throws InterruptedException, Closed
+        throws InterruptedException, Closed
     {
         if (timeout == 0)
             return dequeue ();
 
-	consumers++;
+        consumers++;
         long maxTime = System.currentTimeMillis() + timeout;
         try {
             while (queue.size() == 0 && System.currentTimeMillis() < maxTime) {
@@ -111,22 +111,22 @@ public class BlockingQueue {
                     throw new Closed();
             }
         } finally {
-	    consumers--;
+            consumers--;
         }
-	return queue.size() > 0 ? queue.removeFirst() : null;
+        return queue.size() > 0 ? queue.removeFirst() : null;
     }
     public synchronized void close() {
-	closed = true;
-	notifyAll();
+        closed = true;
+        notifyAll();
     }
     public synchronized int consumerCount() {
-	return consumers;
+        return consumers;
     }
     public synchronized boolean ready() {
-	return !closed;
+        return !closed;
     }
     public synchronized int pending() {
-	return queue.size();
+        return queue.size();
     }
     public LinkedList getQueue () {
         return queue;

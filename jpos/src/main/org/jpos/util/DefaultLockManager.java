@@ -51,6 +51,9 @@ package org.jpos.util;
 
 /*
  * $Log$
+ * Revision 1.4  2003/10/13 10:46:16  apr
+ * tabs expanded to spaces
+ *
  * Revision 1.3  2000/11/02 12:09:18  apr
  * Added license to every source file
  *
@@ -73,12 +76,12 @@ public class DefaultLockManager {
     private static LockManager instance;
     private DefaultLockManager() { }
     public static synchronized LockManager getInstance() {
-	if (instance == null)
-	    instance = new SimpleLockManager();
-	return instance;
+        if (instance == null)
+            instance = new SimpleLockManager();
+        return instance;
     }
     public static void setLockManager (LockManager mgr) {
-	instance = mgr;
+        instance = mgr;
     }
 }
 

@@ -64,20 +64,20 @@ public class NameRegistrar implements Loggeable {
     private Map registrar;
 
     public static class NotFoundException extends Exception {
-	public NotFoundException() {
-	    super();
-	}
-	public NotFoundException(String detail) {
-	    super(detail);
-	}
+        public NotFoundException() {
+            super();
+        }
+        public NotFoundException(String detail) {
+            super(detail);
+        }
     }
 
     private NameRegistrar() {
-	super();
-	registrar = new Hashtable();
+        super();
+        registrar = new Hashtable();
     }
     public static Map getMap() {
-	return getInstance().registrar;
+        return getInstance().registrar;
     }
     /**
      * @return singleton instance
@@ -91,27 +91,27 @@ public class NameRegistrar implements Loggeable {
      * @param value - value to be associated with the specified key
      */
     public static void register (String key, Object value) {
-	getMap().put (key, value);
+        getMap().put (key, value);
     }
     /**
      * @param key key whose mapping is to be removed from registrar.
      */
     public static void unregister (String key) {
-	getMap().remove (key);
+        getMap().remove (key);
     }
     /**
      * @param key key whose associated value is to be returned.
      * @throws NotFoundException if key not present in registrar
      */
     public static Object get (String key) throws NotFoundException {
-	Object obj = getMap().get(key);
-	if (obj == null)
-	    throw new NotFoundException (key);
-	return obj;
+        Object obj = getMap().get(key);
+        if (obj == null)
+            throw new NotFoundException (key);
+        return obj;
     }
 
     public void dump (PrintStream p, String indent) {
-	String inner = indent + "  ";
+        String inner = indent + "  ";
         p.println (indent + "<name-registrar>");
         Iterator iter = registrar.entrySet().iterator();
         while (iter.hasNext()) {

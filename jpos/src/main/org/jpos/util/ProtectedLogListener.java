@@ -98,7 +98,7 @@ public class ProtectedLogListener implements LogListener, Configurable
     Configuration cfg   = null;
 
     public ProtectedLogListener () {
-	super();
+        super();
     }
 
    /**
@@ -112,7 +112,7 @@ public class ProtectedLogListener implements LogListener, Configurable
     * @throws ConfigurationException
     */
     public void setConfiguration (Configuration cfg)
-	throws ConfigurationException
+        throws ConfigurationException
     {
         this.cfg = cfg;
         protectFields = ISOUtil.toIntArray (cfg.get ("protect", ""));

@@ -62,5 +62,5 @@ public interface Configurable {
     * @throws ConfigurationException
     */
     public void setConfiguration (Configuration cfg)
-	throws ConfigurationException;
+        throws ConfigurationException;
 }

@@ -92,7 +92,7 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
      * creates an empty CardHolder
      */
     public CardHolder() {
-	super();
+        super();
     }
 
     /**
@@ -101,10 +101,10 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
      * @exception InvalidCardException
      */
     public CardHolder (String track2) 
-	throws InvalidCardException
+        throws InvalidCardException
     {
-	super();
-	parseTrack2 (track2);
+        super();
+        parseTrack2 (track2);
     }
 
     /**
@@ -113,11 +113,11 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
      * @exception InvalidCardException
      */
     public CardHolder (String pan, String exp) 
-	throws InvalidCardException
+        throws InvalidCardException
     {
-	super();
-	setPAN (pan);
-	setEXP (exp);
+        super();
+        setPAN (pan);
+        setEXP (exp);
     }
 
     /**
@@ -150,31 +150,31 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
      * @exception InvalidCardException
      */
     public void parseTrack2 (String s) 
-	throws InvalidCardException
+        throws InvalidCardException
     {
         int separatorIndex = s.indexOf(TRACK2_SEPARATOR);
         if ((separatorIndex > 0) && (s.length() > separatorIndex+4)) {
             pan = s.substring(0, separatorIndex);
             exp = s.substring(separatorIndex+1, separatorIndex+1+4);
-	    trailler = s.substring(separatorIndex+1+4);
+            trailler = s.substring(separatorIndex+1+4);
         } else 
-	    throw new InvalidCardException (s);
+            throw new InvalidCardException (s);
     }
 
     /**
      * @return reconstructed track2 or null
      */
     public String getTrack2() {
-	if (hasTrack2())
-	    return pan + TRACK2_SEPARATOR + exp + trailler;
-	else
-	    return null;
+        if (hasTrack2())
+            return pan + TRACK2_SEPARATOR + exp + trailler;
+        else
+            return null;
     }
     /**
      * @return true if we have a (may be valid) track2
      */
     public boolean hasTrack2() {
-	return (pan != null && exp != null && trailler != null);
+        return (pan != null && exp != null && trailler != null);
     }
 
     /**
@@ -182,32 +182,32 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
      * @param securityCode
      */
     public void setSecurityCode(String securityCode) {
-	this.securityCode = securityCode;
+        this.securityCode = securityCode;
     }
     /**
      * @return securityCode (or null)
      */
     public String getSecurityCode() {
-	return securityCode;
+        return securityCode;
     }
     /**
      * @return true if we have a security code
      */
     public boolean hasSecurityCode() {
-	return securityCode != null;
+        return securityCode != null;
     }
     /**
      * @return trailler (may be null)
      */
     public String getTrailler() {
-	return trailler;
+        return trailler;
     }
     /**
      * Set Trailler (used by OR-mapping stuff)
      * @param trailler
      */
     public void setTrailler (String trailler) {
-	this.trailler = trailler;
+        this.trailler = trailler;
     }
 
     /**
@@ -216,18 +216,18 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
      * @exception InvalidCardException
      */
     public void setPAN (String pan) 
-	throws InvalidCardException
+        throws InvalidCardException
     { 
-	if (pan.length() < MINPANLEN)
-	    throw new InvalidCardException (pan);
-	this.pan = pan;
+        if (pan.length() < MINPANLEN)
+            throw new InvalidCardException (pan);
+        this.pan = pan;
     }
 
     /**
      * @return Primary Account Number
      */
     public String getPAN () { 
-	return pan;
+        return pan;
     }
 
     /**
@@ -235,7 +235,7 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
      * @return bank issuer number
      */
     public String getBIN () { 
-	return pan.substring(0, BINLEN);
+        return pan.substring(0, BINLEN);
     }
 
     /**
@@ -244,11 +244,11 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
      * @exception InvalidCardException
      */
     public void setEXP (String exp) 
-	throws InvalidCardException
+        throws InvalidCardException
     { 
-	if (exp.length() != 4)
-	    throw new InvalidCardException (pan+"/"+exp);
-	this.exp = exp;
+        if (exp.length() != 4)
+            throw new InvalidCardException (pan+"/"+exp);
+        this.exp = exp;
     }
 
     /**
@@ -256,7 +256,7 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
      * @return card expiration date
      */
     public String getEXP () { 
-	return exp;
+        return exp;
     }
 
     /**
@@ -264,8 +264,8 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
      * @return true if card is expired (or invalid exp)
      */
     public boolean isExpired () {
-	if (exp == null || exp.length() != 4)
-	    return true;
+        if (exp == null || exp.length() != 4)
+            return true;
         String now = ISODate.formatDate(new java.util.Date(), "yyyyMM");
         try {
             int mm = Integer.parseInt(exp.substring(2));
@@ -309,18 +309,18 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
      */
     public void dump (PrintStream p, String indent) {
         p.print (indent + "<CardHolder");
-	if (hasTrack2())
-	    p.print (" trk2=\"true\"");
+        if (hasTrack2())
+            p.print (" trk2=\"true\"");
 
-	if (hasSecurityCode())
-	    p.print (" sec=\"true\"");
+        if (hasSecurityCode())
+            p.print (" sec=\"true\"");
 
-	if (isExpired())
-	    p.print (" expired=\"true\"");
+        if (isExpired())
+            p.print (" expired=\"true\"");
 
         p.println (">");
-	p.println (indent + "  " + "<pan>" +pan +"</pan>");
-	p.println (indent + "  " + "<exp>" +exp +"</exp>");
+        p.println (indent + "  " + "<pan>" +pan +"</pan>");
+        p.println (indent + "  " + "<exp>" +exp +"</exp>");
         p.println (indent + "</CardHolder>");
     }
 
@@ -328,9 +328,9 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
      * @return ServiceCode (if available) or a String with three blanks
      */
     public String getServiceCode () {
-	return (trailler != null && trailler.length() >= 3) ?
-	    trailler.substring (0, 3) :
-	    "   ";
+        return (trailler != null && trailler.length() >= 3) ?
+            trailler.substring (0, 3) :
+            "   ";
     }
     public boolean seemsManualEntry() {
         return trailler == null ? true : (trailler.trim().length() == 0);
@@ -343,13 +343,13 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
      * @return true if pan and exp matches
      */
     public boolean equals(Object obj) {
-	if ((obj != null) && (obj instanceof CardHolder)) {
-	    CardHolder ch = (CardHolder) obj;
-	    if ( (pan != null) && (ch.pan != null) &&
-	         (exp != null) && (ch.exp != null) &&
-		 pan.equals (ch.pan) && exp.equals (ch.exp))
-		return true;
-	}
-	return false;
+        if ((obj != null) && (obj instanceof CardHolder)) {
+            CardHolder ch = (CardHolder) obj;
+            if ( (pan != null) && (ch.pan != null) &&
+                 (exp != null) && (ch.exp != null) &&
+                 pan.equals (ch.pan) && exp.equals (ch.exp))
+                return true;
+        }
+        return false;
     }
 }

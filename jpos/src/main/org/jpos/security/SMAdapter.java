@@ -163,8 +163,8 @@ public interface SMAdapter {
     public static final byte FORMAT02 = (byte)02;
 
     /**
-	 * PIN Block Format 03 is the Diabold Pin Block format.
-	 */
+         * PIN Block Format 03 is the Diabold Pin Block format.
+         */
     public static final byte FORMAT03 = (byte)03;
 
     /**

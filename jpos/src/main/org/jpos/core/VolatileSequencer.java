@@ -63,7 +63,7 @@ import java.util.Map;
 public class VolatileSequencer implements Sequencer, VolatileSequencerMBean {
     private Map map;
     public VolatileSequencer () {
-	map = new HashMap();
+        map = new HashMap();
     }
     /**
      * @param counterName
@@ -71,20 +71,20 @@ public class VolatileSequencer implements Sequencer, VolatileSequencerMBean {
      * @return counterName's value + add
      */
     synchronized public int get (String counterName, int add) {
-	int i = 0;
-	Integer I = (Integer) map.get (counterName);
-	if (I != null)
-	    i = I.intValue();
-	i += add;
-	map.put (counterName, new Integer (i));
-	return i;
+        int i = 0;
+        Integer I = (Integer) map.get (counterName);
+        if (I != null)
+            i = I.intValue();
+        i += add;
+        map.put (counterName, new Integer (i));
+        return i;
     }
     /**
      * @param counterName
      * @return counterName's value + 1
      */
     public int get (String counterName) {
-	return get (counterName, 1);
+        return get (counterName, 1);
     }
     /**
      * @param counterName
@@ -92,12 +92,12 @@ public class VolatileSequencer implements Sequencer, VolatileSequencerMBean {
      * @return oldValue
      */
     synchronized public int set (String counterName, int newValue) {
-	int oldValue = 0;
-	Integer I = (Integer) map.get (counterName);
-	if (I != null)
-	    oldValue = I.intValue();
-	map.put (counterName, new Integer (newValue));
-	return oldValue;
+        int oldValue = 0;
+        Integer I = (Integer) map.get (counterName);
+        if (I != null)
+            oldValue = I.intValue();
+        map.put (counterName, new Integer (newValue));
+        return oldValue;
     }
     public String[] getCounterNames () {
         Object[] o = map.keySet().toArray();

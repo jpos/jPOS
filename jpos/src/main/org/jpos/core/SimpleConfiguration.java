@@ -65,16 +65,16 @@ public class SimpleConfiguration implements Configuration {
     private Properties props;
 
     public SimpleConfiguration () {
-	props = new Properties();
+        props = new Properties();
     }
     public SimpleConfiguration (Properties props) {
-	this.props = props;
+        this.props = props;
     }
     public SimpleConfiguration (String filename) 
-	throws FileNotFoundException, IOException
+        throws FileNotFoundException, IOException
     {
-	props = new Properties();
-	load (filename);
+        props = new Properties();
+        load (filename);
     }
     synchronized public String get (String name, String def) {
         Object obj = props.get (name);
@@ -98,7 +98,7 @@ public class SimpleConfiguration implements Configuration {
         return ret;
     }
     synchronized public String get (String name) {
-	return get (name, "");
+        return get (name, "");
     }
     synchronized public int getInt (String name) {
         return Integer.parseInt(props.getProperty(name, "0").trim());
@@ -116,26 +116,26 @@ public class SimpleConfiguration implements Configuration {
     }
     synchronized public double getDouble(String name) {
         return Double.valueOf(
-	    props.getProperty(name,"0.00").trim()).doubleValue();
+            props.getProperty(name,"0.00").trim()).doubleValue();
     }
     synchronized public double getDouble(String name, double def) {
         return Double.valueOf(
-	    props.getProperty(name,Double.toString(def)).trim()).doubleValue();
+            props.getProperty(name,Double.toString(def)).trim()).doubleValue();
     }
     public boolean getBoolean (String name) {
-	String v = get (name, "false").trim();
-	return v.equalsIgnoreCase("true") || v.equalsIgnoreCase("yes");
+        String v = get (name, "false").trim();
+        return v.equalsIgnoreCase("true") || v.equalsIgnoreCase("yes");
     }
     public boolean getBoolean (String name, boolean def) {
-	String v = get (name);
-	return v.length() == 0 ? def :
+        String v = get (name);
+        return v.length() == 0 ? def :
             (v.equalsIgnoreCase("true") || v.equalsIgnoreCase("yes"));
     }
     synchronized public void load(String filename) 
-	throws FileNotFoundException, IOException
+        throws FileNotFoundException, IOException
     {
-	FileInputStream fis = new FileInputStream(filename);
-	props.load(new BufferedInputStream(fis));
+        FileInputStream fis = new FileInputStream(filename);
+        props.load(new BufferedInputStream(fis));
         fis.close();
     }
 }

@@ -49,6 +49,9 @@
 
 /*
  * $Log$
+ * Revision 1.6  2003/10/13 10:46:15  apr
+ * tabs expanded to spaces
+ *
  * Revision 1.5  2003/05/16 04:07:35  alwyns
  * Import cleanups.
  *
@@ -83,27 +86,27 @@ public class CardBrand {
      * @param name Card brand's name
      */
     public CardBrand (String name) {
-	this.name = name;
-	this.productName = null;
+        this.name = name;
+        this.productName = null;
     }
     /**
      * @param name Card brand's name
      * @param productName Card's product name (i.e. vanity name)
      */
     public CardBrand (String name, String productName) {
-	this.name = name;
-	this.productName = productName;
+        this.name = name;
+        this.productName = productName;
     }
     public String toString() {
-	return name + (productName != null ? "/" + productName : "");
+        return name + (productName != null ? "/" + productName : "");
     }
     public String getName() {
-	return name;
+        return name;
     }
     public String getProduct() {
-	return productName != null ? productName : "";
+        return productName != null ? productName : "";
     }
     public boolean equals (Object obj) {
-	return obj != null ? toString().equals(obj.toString()) : false;
+        return obj != null ? toString().equals(obj.toString()) : false;
     }
 }

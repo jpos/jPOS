@@ -164,14 +164,14 @@ public class SpaceMUX extends SimpleLogSource
      * @see NameRegistrar
      */
     public void setName (String name) {
-	this.name = name;
-	NameRegistrar.register ("mux."+name, this);
+        this.name = name;
+        NameRegistrar.register ("mux."+name, this);
     }
     /**
      * @return this ISOMUX's name ("" if no name was set)
      */
     public String getName() {
-	return this.name;
+        return this.name;
     }
     /**
      * @return MUX instance with given name.
@@ -179,9 +179,9 @@ public class SpaceMUX extends SimpleLogSource
      * @see NameRegistrar
      */
     public static MUX getMUX (String name)
-	throws NameRegistrar.NotFoundException
+        throws NameRegistrar.NotFoundException
     {
-	return (MUX) NameRegistrar.get ("mux."+name);
+        return (MUX) NameRegistrar.get ("mux."+name);
     }
 }
 

@@ -75,43 +75,43 @@ public class ThreadPool extends ThreadGroup implements LogSource, Loggeable, Con
     private int jobs = 0;
     public static final int DEFAULT_MAX_THREADS = 100;
     public interface Supervised {
-	public boolean expired ();
+        public boolean expired ();
     }
 
     private class PooledThread extends Thread {
-	Object currentJob = null;
+        Object currentJob = null;
 
-	public PooledThread() {
-	    super ((ThreadGroup) ThreadPool.this, 
-		"PooledThread-" + (threadNumber++));
-	    setDaemon(true);
-	}
-	public void run () {
-	    String name = getName();
-	    try {
-		while (pool.ready()) {
-		    Object job = pool.dequeue();
-		    if (job instanceof Runnable) {
-			setName (name + "-running");
-			synchronized (this) {
-			    currentJob = job;
-			}
-			((Runnable) job).run();
-			setName (name + "-idle");
-			synchronized (this) {
-			    currentJob = null;
-			}
-		    }
-		}
-	    } catch (InterruptedException e) {
-	    } catch (Closed e) {
-	    }
-	}
-	public synchronized void supervise () {
-	    if (currentJob != null && currentJob instanceof Supervised) 
-		if ( ((Supervised)currentJob).expired() )
-		    this.interrupt();
-	}
+        public PooledThread() {
+            super ((ThreadGroup) ThreadPool.this, 
+                "PooledThread-" + (threadNumber++));
+            setDaemon(true);
+        }
+        public void run () {
+            String name = getName();
+            try {
+                while (pool.ready()) {
+                    Object job = pool.dequeue();
+                    if (job instanceof Runnable) {
+                        setName (name + "-running");
+                        synchronized (this) {
+                            currentJob = job;
+                        }
+                        ((Runnable) job).run();
+                        setName (name + "-idle");
+                        synchronized (this) {
+                            currentJob = null;
+                        }
+                    }
+                }
+            } catch (InterruptedException e) {
+            } catch (Closed e) {
+            }
+        }
+        public synchronized void supervise () {
+            if (currentJob != null && currentJob instanceof Supervised) 
+                if ( ((Supervised)currentJob).expired() )
+                    this.interrupt();
+        }
     }
 
     /**
@@ -119,49 +119,49 @@ public class ThreadPool extends ThreadGroup implements LogSource, Loggeable, Con
      * @param maxPoolSize maximum number of threads on this pool
      */
     public ThreadPool (int poolSize, int maxPoolSize) {
-	super ("ThreadPool-" + poolNumber++);
-	this.maxPoolSize = maxPoolSize;
+        super ("ThreadPool-" + poolNumber++);
+        this.maxPoolSize = maxPoolSize;
         init (poolSize);
     }
     
     private void init(int poolSize){
-      	while (activeCount() < Math.min (poolSize, maxPoolSize))
-	    new PooledThread().start();
+        while (activeCount() < Math.min (poolSize, maxPoolSize))
+            new PooledThread().start();
     }
     /**
      * Default constructor for ThreadPool
      */
     public ThreadPool () {
-	this(1, DEFAULT_MAX_THREADS);
+        this(1, DEFAULT_MAX_THREADS);
     }
     public void close () {
-	pool.close();
+        pool.close();
     }
     public synchronized void execute (Runnable action) throws Closed
     {
-	if (!pool.ready())
-	    throw new Closed();
+        if (!pool.ready())
+            throw new Closed();
 
-	if (++jobs % 100 == 0 || pool.consumerCount() <= 0)
-	    supervise();
+        if (++jobs % 100 == 0 || pool.consumerCount() <= 0)
+            supervise();
 
-	synchronized (pool) {
-	    if (activeCount() < maxPoolSize && pool.consumerCount() <= 0)
-		new PooledThread().start();
-	}
-	pool.enqueue (action);
+        synchronized (pool) {
+            if (activeCount() < maxPoolSize && pool.consumerCount() <= 0)
+                new PooledThread().start();
+        }
+        pool.enqueue (action);
     }
     public void dump (PrintStream p, String indent) {
-	String inner = indent + "  ";
-	p.println (indent + "<thread-pool name=\""+getName()+"\">");
-	if (!pool.ready())
-	    p.println (inner  + "<closed/>");
-	p.println (inner  + "<jobs>" +jobs+"</jobs>");
-	p.println (inner  + "<size>" +activeCount()+"</size>");
-	p.println (inner  + "<max>"  +maxPoolSize+"</max>");
-	p.println (inner  + "<idle>"  + pool.consumerCount() +"</idle>");
-	p.println (inner  + "<pending>"  +pool.pending()+"</pending>");
-	p.println (indent + "</thread-pool>");
+        String inner = indent + "  ";
+        p.println (indent + "<thread-pool name=\""+getName()+"\">");
+        if (!pool.ready())
+            p.println (inner  + "<closed/>");
+        p.println (inner  + "<jobs>" +jobs+"</jobs>");
+        p.println (inner  + "<size>" +activeCount()+"</size>");
+        p.println (inner  + "<max>"  +maxPoolSize+"</max>");
+        p.println (inner  + "<idle>"  + pool.consumerCount() +"</idle>");
+        p.println (inner  + "<pending>"  +pool.pending()+"</pending>");
+        p.println (indent + "</thread-pool>");
     }
 
     /**
@@ -203,22 +203,22 @@ public class ThreadPool extends ThreadGroup implements LogSource, Loggeable, Con
     }
 
     public void supervise () {
-	Thread[] t = new Thread[maxPoolSize];
-	int cnt = enumerate (t);
-	for (int i=0; i<cnt; i++) 
-	    if (t[i] instanceof PooledThread)
-		((PooledThread) t[i]).supervise();
+        Thread[] t = new Thread[maxPoolSize];
+        int cnt = enumerate (t);
+        for (int i=0; i<cnt; i++) 
+            if (t[i] instanceof PooledThread)
+                ((PooledThread) t[i]).supervise();
     }
 
     public void setLogger (Logger logger, String realm) {
-	this.logger = logger;
-	this.realm  = realm;
+        this.logger = logger;
+        this.realm  = realm;
     }
     public String getRealm () {
-	return realm;
+        return realm;
     }
     public Logger getLogger() {
-	return logger;
+        return logger;
     }
     
    /** 

@@ -61,10 +61,10 @@ package org.jpos.space;
  */
 public class SpaceError extends Error {
     public SpaceError() {
-	super();
+        super();
     }
     public SpaceError(String message) {
-	super(message);
+        super(message);
     }
     public SpaceError(String message, Throwable cause) {
         super(message, cause);

@@ -68,23 +68,23 @@ public class Log implements LogSource {
     public static final String FATAL   = "fatal";
 
     public Log () {
-	super();
+        super();
     }
     public static Log getLog (String logName, String realm) {
         return new Log (Logger.getLogger (logName), realm);
     }
     public Log (Logger logger, String realm) {
-	setLogger (logger, realm);
+        setLogger (logger, realm);
     }
     public void setLogger (Logger logger, String realm) {
-	this.logger = logger;
-	this.realm  = realm;
+        this.logger = logger;
+        this.realm  = realm;
     }
     public String getRealm () {
-	return realm;
+        return realm;
     }
     public Logger getLogger() {
-	return logger;
+        return logger;
     }
     public void setLogger (Logger logger) {
         this.logger = logger;

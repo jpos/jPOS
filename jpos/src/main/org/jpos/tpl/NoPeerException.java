@@ -55,6 +55,6 @@ package org.jpos.tpl;
  */
 public class NoPeerException extends Exception {
     public NoPeerException (String detail) {
-	super(detail);
+        super(detail);
     }
 }
