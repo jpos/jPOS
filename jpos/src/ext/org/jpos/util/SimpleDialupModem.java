@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.8  2000/03/22 22:45:38  apr
+ * Removed init delay
+ *
  * Revision 1.7  2000/03/22 20:44:41  apr
  * Playing with modem init
  *
@@ -114,9 +117,6 @@ public class SimpleDialupModem implements Modem {
 	if (!checkAT())
 	    throw new IOException ("unable to initialize modem (0)");
 	v24.send ("ATB0E0Q1S0=1\r");
-	try {
-	    Thread.sleep (2000);
-	} catch (InterruptedException e) { }
 	v24.setAutoFlushReceiver(true);
 	lastInit = System.currentTimeMillis();
     }
