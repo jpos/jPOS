@@ -42,10 +42,10 @@ public class Test extends SimpleLogProducer {
 
 	seq.set (COUNTERNAME, (int) (System.currentTimeMillis() % 1000000));
 	channel.addIncomingFilter (
-	    new XSLTFilter (cfg.get ("xsltfilter.incoming"))
+	    new XSLTFilter (cfg.get ("xsltfilter.incoming"), true)
 	);
 	channel.addOutgoingFilter (
-	    new XSLTFilter (cfg.get ("xsltfilter.outgoing"))
+	    new XSLTFilter (cfg.get ("xsltfilter.outgoing"), true)
 	);
 	channel.connect();
     }
@@ -99,10 +99,11 @@ public class Test extends SimpleLogProducer {
 	    Configuration cfg = new SimpleConfiguration (cfgFile);
 	    Test t = new Test (cfg, logger, "Test", cfgPrefix);
 	    for (int i=0; i<n; i++) {
-		t.send ("0100");
-		t.send ("0101");
-		t.send ("0200");
 		t.send ("0800");
+		try {
+		    if (i<n)
+			Thread.sleep (1000); // time to play with XSLT file
+		} catch (InterruptedException e) { }
 	    }
 	    t.disconnect();
 	} catch (ISOException e) {
