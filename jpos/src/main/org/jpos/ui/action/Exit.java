@@ -17,7 +17,11 @@ public class Exit implements ActionListener, UIAware {
     }
     public void actionPerformed (ActionEvent ev) {
         ui.dispose ();
-        System.exit (0);
+        new Thread() {
+            public void run() {
+                System.exit (0);
+            }
+        }.start();
     }
 }
 
