@@ -1,5 +1,7 @@
 $Id$
 
+[ ] LockManager Shared locks. 
+    SimpleLockManager Configurable and NameRegistrar support
 [ ] Use ThreadPool on ISOMUX
 [ ] IF_MTI Stuff (as suggested by Arun Kumar U <bksys@vsnl.com>)
 
