@@ -85,6 +85,7 @@ public class BSHRequestListener extends Log
 
     public boolean process (ISOSource source, ISOMsg m) {
         try {
+            String mti = m.getMTI ();
             String[] bshSource = cfg.getAll ("source");
             for (int i=0; i<bshSource.length; i++) {
                 Interpreter bsh = new Interpreter ();
@@ -92,7 +93,7 @@ public class BSHRequestListener extends Log
                 bsh.set ("message", m);
                 bsh.set ("log", this);
                 bsh.set ("cfg", cfg);
-                bsh.source (bshSource[i]);
+                bsh.source (bshSource[i].replaceFirst ("\\$mti", mti));
             }
         } catch (Exception e) {
             warn (e);
