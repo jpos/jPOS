@@ -195,7 +195,7 @@ public class QBeanSupport
     public synchronized boolean isModified () {
         return modified;
     }
-    protected boolean running () {
+    public boolean running () {
         return state == QBean.STARTING || state == QBean.STARTED;
     }
     protected void initService()    throws Exception {}
