@@ -9,7 +9,7 @@ import java.net.SocketException;
 /**
  * Implements an ISOChannel able to exchange messages with
  * ACI's BASE24 over an X.25 link.<br>
- * An instance of this class exchange messages by means of an
+ * An instance of this class exchanges messages by means of an
  * intermediate 'port server' as described in the
  * <a href="API_users_guide.html#LowLevelAdapters">API Users Guide</a>
  * @author apr@cs.com.uy

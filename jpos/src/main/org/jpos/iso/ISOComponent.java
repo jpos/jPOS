@@ -72,7 +72,7 @@ public abstract class ISOComponent implements Cloneable {
 		return 0;
 	}
 	/**
-	 * dummy behaveour - return 0 elements Hashtable
+	 * dummy behaviour - return 0 elements Hashtable
 	 * @return children (in this case 0 children)
 	 */
 	public Hashtable getChildren() {
