@@ -54,9 +54,13 @@ import java.util.*;
 import org.jpos.util.Loggeable;
 import org.jpos.util.LogSource;
 import org.jpos.iso.packager.XMLPackager;
+import org.jpos.iso.packager.ISO93BPackager;
 
 /*
  * $Log$
+ * Revision 1.29  2000/11/21 14:55:13  apr
+ * preliminary Externalizable support
+ *
  * Revision 1.28  2000/11/02 12:09:18  apr
  * Added license to every source file
  *
@@ -118,7 +122,9 @@ import org.jpos.iso.packager.XMLPackager;
  * @see ISOComponent
  * @see ISOField
  */
-public class ISOMsg extends ISOComponent implements Cloneable, Loggeable {
+public class ISOMsg extends ISOComponent 
+    implements Cloneable, Loggeable, Externalizable
+{
     protected Hashtable fields;
     protected int maxField;
     protected ISOPackager packager;
@@ -128,6 +134,7 @@ public class ISOMsg extends ISOComponent implements Cloneable, Loggeable {
     protected int fieldNumber = -1;
     public static final int INCOMING = 1;
     public static final int OUTGOING = 2;
+    protected static ISOPackager internalPackager = null;
 
     public ISOMsg () {
         fields = new Hashtable ();
@@ -281,8 +288,10 @@ public class ISOMsg extends ISOComponent implements Cloneable, Loggeable {
      * @exception ISOException
      */
     public byte[] pack() throws ISOException {
-        recalcBitMap();
-        return packager.pack(this);
+        synchronized (this) {
+            recalcBitMap();
+            return packager.pack(this);
+        }
     }
     /**
      * unpack a message
@@ -291,7 +300,9 @@ public class ISOMsg extends ISOComponent implements Cloneable, Loggeable {
      * @exception ISOException
      */
     public int unpack(byte[] b) throws ISOException {
-        return packager.unpack(this, b);
+        synchronized (this) {
+            return packager.unpack(this, b);
+        }
     }
     /**
      * dump the message to a PrintStream. The output is sorta
@@ -515,4 +526,38 @@ public class ISOMsg extends ISOComponent implements Cloneable, Loggeable {
 	    )
 	);
     }
+
+    public void writeExternal (ObjectOutput out) throws IOException {
+        try {
+            ISOPackager p = new ISO93BPackager();
+            byte[] b;
+            synchronized (this) {
+                recalcBitMap();
+                b = getInternalPackager().pack(this);
+            }
+            out.writeObject (b);
+        } catch (ISOException e) {
+            throw new IOException (e.getMessage());
+        }
+    }
+    public void readExternal  (ObjectInput in) 
+        throws IOException, ClassNotFoundException
+    {
+        byte[] b = (byte[]) in.readObject();
+        try {
+            synchronized (this) {
+                getInternalPackager().unpack(this, b);
+            }
+        } catch (ISOException e) {
+            throw new IOException (e.getMessage());
+        }
+    }
+    protected ISOPackager getInternalPackager() {
+        synchronized (ISOMsg.class) {
+            if (internalPackager == null)
+                internalPackager = new ISO93BPackager();
+        }
+        return internalPackager;
+    }
 }
+
