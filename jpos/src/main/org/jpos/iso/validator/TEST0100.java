@@ -57,6 +57,7 @@ import org.jpos.iso.ISOMsg;
 import org.jpos.iso.ISOVError;
 import org.jpos.iso.ISOVMsg;
 import org.jpos.util.LogEvent;
+import org.jpos.util.Logger;
 
 /**
  * ONLY TEST PURPOSE.
@@ -104,7 +105,7 @@ public class TEST0100 extends ISOBaseValidator {
             } catch ( ISOVException ex ) {
                 throw ex;
             } finally {
-                logger.log( evt );
+                Logger.log( evt );
             }
         } else return m;
     }

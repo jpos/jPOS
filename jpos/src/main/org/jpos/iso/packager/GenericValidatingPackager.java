@@ -69,6 +69,7 @@ import org.jpos.iso.ISOMsgFieldValidator;
 import org.jpos.iso.ISOValidator;
 import org.jpos.iso.validator.ISOVException;
 import org.jpos.util.LogEvent;
+import org.jpos.util.Logger;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -203,7 +204,7 @@ public class GenericValidatingPackager extends GenericPackager implements ISOVal
             return m;
         }
         finally {
-            logger.log( evt );
+            Logger.log( evt );
         }
     }
 

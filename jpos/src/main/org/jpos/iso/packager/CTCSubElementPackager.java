@@ -143,7 +143,7 @@ public class CTCSubElementPackager extends ISOBaseValidatingPackager {
             evt.addMessage( ex );
             throw ex;
         } finally {
-            logger.log( evt );
+            Logger.log( evt );
         }
     }
 

@@ -139,7 +139,7 @@ public class CTCSubFieldPackager extends ISOBaseValidatingPackager {
             evt.addMessage( ex );
             throw ex;
         } finally {
-            logger.log( evt );
+            Logger.log( evt );
         }
     }
 }

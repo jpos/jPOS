@@ -55,6 +55,7 @@ import org.jpos.iso.ISOMsg;
 import org.jpos.iso.ISOVError;
 import org.jpos.iso.ISOVMsg;
 import org.jpos.util.LogEvent;
+import org.jpos.util.Logger;
 
 /**
  * VALIDATES FIELD INTERDEPENDENCY. IF FIELD 0 ENDS WITH 1 THEN
@@ -117,7 +118,7 @@ public class MSGTEST02 extends ISOBaseValidator {
         } catch ( ISOVException ex ) {
             throw ex;
         } finally {
-            logger.log( evt );
+            Logger.log( evt );
         }
     }
 }
