@@ -136,7 +136,10 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
                 if ((c=(ISOComponent) fields.get (new Integer (i))) != null)
                 {
                     try {
-                        b = fld[i].pack(c);
+                        ISOFieldPackager fp = fld[i];
+                        if (fp == null)
+                            throw new ISOException ("null field packager");
+                        b = fp.pack(c);
                         len += b.length;
                         v.addElement (b);
                     } catch (ISOException e) {
