@@ -9,11 +9,6 @@
         renderedClass="org.jpos.util.LogEvent"
         renderingClass="org.jpos.log4j.LogEventRenderer" />
 
-    <root>
-        <priority value="debug" />
-        <appender-ref ref="Debug"/>
-        <appender-ref ref="STDOUT" />
-    </root>
 
     <appender name="STDOUT" class="org.apache.log4j.ConsoleAppender">
         <!--param name="threshold" value="info" /-->
@@ -32,5 +27,10 @@
         </layout>       
     </appender>
 
+    <root>
+        <priority value="debug" />
+        <appender-ref ref="Debug"/>
+        <appender-ref ref="STDOUT" />
+    </root>
 </log4j:configuration>
 
