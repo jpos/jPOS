@@ -1,6 +1,7 @@
 $Id$
 
 -- 1.4.1 --
+new LogChannel/LogPackager can be used to reprocess jPOS's log files
 Bugfix: AWT blocker activation interrupted (JDK1.4+QSP+GUI)
 Bugfix: jmxri.jar added to jpos.jar's manifest
 
