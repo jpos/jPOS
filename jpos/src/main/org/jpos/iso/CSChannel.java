@@ -38,6 +38,17 @@ public class CSChannel extends ISOChannel {
 		super(p);
 	}
 	/**
+	 * constructs a server ISOChannel associated with a Server Socket
+	 * @param p     an ISOPackager
+	 * @exception IOException
+	 * @see ISOPackager
+	 */
+	public CSChannel (ISOPackager p, ServerSocket serverSocket) 
+		throws IOException
+	{
+		super(p, serverSocket);
+	}
+	/**
 	 * @param len the packed Message len
 	 * @exception IOException
 	 */

@@ -32,6 +32,7 @@ public abstract class ISOChannel extends Observable {
 	protected DataInputStream serverIn;
 	protected DataOutputStream serverOut;
 	protected ISOPackager packager;
+	protected ServerSocket serverSocket = null;
 
 	public static final int CONNECT      = 0;
 	public static final int TX           = 1;
@@ -72,6 +73,21 @@ public abstract class ISOChannel extends Observable {
 		this.host = null;
 		this.port = 0;
 		this.packager = p;
+	}
+	/**
+	 * constructs a server ISOChannel associated with a Server Socket
+	 * @param p     an ISOPackager
+	 * @exception IOException
+	 * @see ISOPackager
+	 */
+	public ISOChannel (ISOPackager p, ServerSocket serverSocket) 
+		throws IOException 
+	{
+		this();
+		this.host = null;
+		this.port = 0;
+		this.packager = p;
+		this.serverSocket = serverSocket;
 	}
 	/**
 	 * reset stat info
@@ -118,7 +134,10 @@ public abstract class ISOChannel extends Observable {
 	 */
     public void connect () throws IOException {
 		System.out.println ("ISOChannel connect "+host +":" +port);
-		connect(new Socket (host, port));
+		if (serverSocket != null)
+			accept(serverSocket);
+		else
+			connect(new Socket (host, port));
 	}
 	/**
 	 * Accepts connection 
