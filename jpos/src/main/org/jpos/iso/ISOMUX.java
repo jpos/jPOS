@@ -7,12 +7,13 @@ import java.util.*;
 import org.jpos.util.Logger;
 import org.jpos.util.LogEvent;
 import org.jpos.util.LogProducer;
+import org.jpos.util.NameRegistrar;
 
 /**
  * Should run in it's own thread. Starts another Receiver thread
  *
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
- * @version $Revission: $ $Date$
+ * @version $Revision$ $Date$
  * @see ISORequest
  * @see ISOChannel
  * @see ISOException
@@ -26,6 +27,7 @@ public class ISOMUX implements Runnable, LogProducer {
     private Hashtable rxQueue;
     private int traceNumberField = 11;
     private volatile boolean terminate = false;
+    private String name;
 
     protected Logger logger = null;
     protected String realm = null;
@@ -70,6 +72,7 @@ public class ISOMUX implements Runnable, LogProducer {
         cnt = new int[SIZEOF_CNT];
         requestListener = null;
         rx = new Thread (new Receiver(this));
+	name = "";
     }
     /**
      * allow changes to default value 11 (used in ANSI X9.2 messages)
@@ -368,5 +371,30 @@ public class ISOMUX implements Runnable, LogProducer {
     }
     public boolean isTerminating() {
 	return terminate;
+    }
+    /**
+     * associates this ISOMUX with a name using NameRegistrar
+     * @param name name to register
+     * @see NameRegistrar
+     */
+    public void setName (String name) {
+	this.name = name;
+	NameRegistrar.register ("mux."+name, this);
+    }
+    /**
+     * @return ISOMUX instance with given name.
+     * @throws NameRegistrar.NotFoundException;
+     * @see NameRegistrar
+     */
+    public static ISOMUX getMUX (String name)
+	throws NameRegistrar.NotFoundException
+    {
+	return (ISOMUX) NameRegistrar.get ("mux."+name);
+    }
+    /**
+     * @return this ISOMUX's name ("" if no name was set)
+     */
+    public String getName() {
+	return this.name;
     }
 }

@@ -8,6 +8,7 @@ import java.net.Socket;
 import org.jpos.util.Logger;
 import org.jpos.util.LogEvent;
 import org.jpos.util.LogProducer;
+import org.jpos.util.NameRegistrar;
 
 /**
  * ISOChannel is an abstract class that provides functionality that
@@ -24,8 +25,8 @@ import org.jpos.util.LogProducer;
  * probably setup ISOChannelPanel to be a LogListener insteado
  * of being an Observer in future releases.
  * 
- * @author apr@cs.com.uy
- * @version $Id$
+ * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
+ * @version $Revision$ $Date$
  * @see ISOMsg
  * @see ISOMUX
  * @see ISOException
@@ -34,41 +35,12 @@ import org.jpos.util.LogProducer;
  *
  */
 
-/*
- * $Log$
- * Revision 1.28  2000/03/22 11:52:16  apr
- * Handle EOFException and ConnectException with shorter log messages
- *
- * Revision 1.27  2000/03/20 22:38:14  apr
- * Handle Peer disconnection, suggested by Gabriel Moreno
- * <gabrielm@itcsoluciones.com>
- *
- * Revision 1.26  2000/03/01 14:44:45  apr
- * Changed package name to org.jpos
- *
- * Revision 1.25  2000/01/23 16:07:30  apr
- * BugFix: BASE24Channel was not handling Headers
- * (reported by Mike Trank <mike@netcomsa.com>)
- *
- * Revision 1.24  2000/01/11 01:24:44  apr
- * moved non ISO-8583 related classes from jpos.iso to jpos.util package
- * (AntiHog LeasedLineModem LogEvent LogListener LogProducer
- *  Loggeable Logger Modem RotateLogListener SimpleAntiHog SimpleDialupModem
- *  SimpleLogListener SimpleLogProducer SystemMonitor V24)
- *
- * Revision 1.23  1999/09/25 13:36:54  apr
- * Added terminate() support as suggested by Vincent.Greene@amo.com
- *
- * Revision 1.22  1999/09/11 22:21:21  apr
- * Added getPackager() member function
- *
- */
-
 public abstract class ISOChannel extends Observable implements LogProducer {
     private Socket socket;
     private String host;
     private int port;
     private boolean usable;
+    private String name;
     protected DataInputStream serverIn;
     protected DataOutputStream serverOut;
     protected ISOPackager packager;
@@ -90,6 +62,7 @@ public abstract class ISOChannel extends Observable implements LogProducer {
      */
     public ISOChannel () {
         cnt = new int[SIZEOF_CNT];
+	name = "";
     }
 
     /**
@@ -103,6 +76,7 @@ public abstract class ISOChannel extends Observable implements LogProducer {
         this();
         setHost(host, port);
         setPackager(p);
+	name = "";
     }
     /**
      * initialize an ISOChannel
@@ -152,6 +126,7 @@ public abstract class ISOChannel extends Observable implements LogProducer {
         this.host = null;
         this.port = 0;
         this.packager = p;
+	name = "";
     }
     /**
      * constructs a server ISOChannel associated with a Server Socket
@@ -168,6 +143,7 @@ public abstract class ISOChannel extends Observable implements LogProducer {
         this.port = 0;
         this.packager = p;
         this.serverSocket = serverSocket;
+	name = "";
     }
     /**
      * reset stat info
@@ -418,5 +394,30 @@ public abstract class ISOChannel extends Observable implements LogProducer {
     }
     public Logger getLogger() {
 	return logger;
+    }
+    /**
+     * associates this ISOChannel with a name using NameRegistrar
+     * @param name name to register
+     * @see NameRegistrar
+     */
+    public void setName (String name) {
+	this.name = name;
+	NameRegistrar.register ("channel."+name, this);
+    }
+    /**
+     * @return ISOChannel instance with given name.
+     * @throws NameRegistrar.NotFoundException;
+     * @see NameRegistrar
+     */
+    public static ISOChannel getChannel (String name)
+	throws NameRegistrar.NotFoundException
+    {
+	return (ISOChannel) NameRegistrar.get ("channel."+name);
+    }
+    /**
+     * @return this ISOChannel's name ("" if no name was set)
+     */
+    public String getName() {
+	return this.name;
     }
 }
