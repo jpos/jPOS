@@ -1,6 +1,8 @@
 $Id$
 
 -- 1.4.7 --
+New ISOFieldPackager implementation (based on interpreters, padders and prefixers)
+Added BSHLogListener 
 Track1 support in CardHolder
 Added SpaceUtil
 Added SpaceFactory(spaceUri), SpaceInterceptors
