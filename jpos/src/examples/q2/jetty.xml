@@ -1,0 +1,4 @@
+<jetty class="org.jpos.q2.jetty.Jetty">
+ <attr name="config">cfg/jetty.xml</attr>
+</jetty>
+
