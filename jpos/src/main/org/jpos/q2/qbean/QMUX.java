@@ -76,7 +76,7 @@ import org.jpos.util.NameRegistrar;
  */
 public class QMUX 
     extends QBeanSupport
-    implements SpaceListener, MUX
+    implements SpaceListener, MUX, QMUXMBean
 {
     Space sp;
     String in, out, unhandled;
