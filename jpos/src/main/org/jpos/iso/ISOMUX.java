@@ -55,6 +55,7 @@ import java.lang.*;
 import java.util.*;
 import org.jpos.util.Logger;
 import org.jpos.util.LogEvent;
+import org.jpos.util.Loggeable;
 import org.jpos.util.LogSource;
 import org.jpos.util.NameRegistrar;
 import org.jpos.core.Configuration;
@@ -71,7 +72,9 @@ import org.jpos.core.ReConfigurable;
  * @see ISORequestListener
  */
 
-public class ISOMUX implements Runnable, ISOSource, LogSource, ReConfigurable {
+public class ISOMUX implements Runnable, ISOSource, LogSource, 
+                               ReConfigurable, Loggeable
+{
     private ISOChannel channel;
     private Thread rx = null, tx = null;
     private Vector txQueue;
@@ -222,7 +225,10 @@ public class ISOMUX implements Runnable, ISOSource, LogSource, ReConfigurable {
             parent = p;
         }
         public void run() {
+            int i = 0;
             while (!terminate || !rxQueue.isEmpty() || !txQueue.isEmpty()) {
+                if (i++ % 1000 == 0)
+                    Logger.log (new LogEvent (this, "mux", this));
                 if (channel.isConnected()) {
                     try {
                         ISOMsg d = channel.receive();
@@ -399,8 +405,11 @@ public class ISOMUX implements Runnable, ISOSource, LogSource, ReConfigurable {
     }
 
     private void terminate(boolean hard) {
-	Logger.log (new LogEvent (this, "mux", 
-            "<terminate type=\"" + (hard ? "hard" : "soft") +"\"/>"));
+        LogEvent evt = new LogEvent (this, "mux", 
+            "<terminate type=\"" + (hard ? "hard" : "soft") +"\"/>");
+        evt.addMessage (this);
+        Logger.log (evt);
+
 	terminate = true;
         synchronized(this) {
             if (hard) {
@@ -498,5 +507,11 @@ public class ISOMUX implements Runnable, ISOSource, LogSource, ReConfigurable {
      */
     public boolean getConnect() {
 	return doConnect;
+    }
+    public void dump (PrintStream p, String indent) {
+        p.println (indent + "<mux-stats connected=\"" + 
+            channel.isConnected() + "\">");
+        showCounters (p);
+        p.println (indent + "</mux-stats>");
     }
 }
