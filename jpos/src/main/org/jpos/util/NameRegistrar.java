@@ -74,7 +74,7 @@ public class NameRegistrar {
 	super();
 	registrar = new Hashtable();
     }
-    private static Map getMap() {
+    public static Map getMap() {
 	return getInstance().registrar;
     }
     /**
