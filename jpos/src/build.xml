@@ -16,7 +16,7 @@
 
     <property file="${etc}/VERSION" />
     <property name="classpath" value="${classpath}:${classes}" />
-    <property name="deprecation" value="true" />
+    <property name="deprecation" value="false" />
     <property name="debug" value="off" />
     <property name="archive" value="${project}-${version}" />
 
