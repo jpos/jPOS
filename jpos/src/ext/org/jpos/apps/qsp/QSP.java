@@ -76,7 +76,7 @@ import org.jpos.core.ConfigurationException;
 import org.jpos.apps.qsp.config.ConfigTask;
 import org.jpos.space.TransientSpace;
 
-import com.sun.management.jmx.Trace;
+// import com.sun.management.jmx.Trace;
 import javax.management.ObjectName;
 import javax.management.MBeanServer;
 import javax.management.MBeanServerFactory;
@@ -461,7 +461,7 @@ public class QSP implements ErrorHandler, LogSource, Runnable, QSPMBean {
         MalformedObjectNameException,
         NotCompliantMBeanException
     {
-        Trace.parseTraceProperties ();
+        // Trace.parseTraceProperties ();
         String domain = cfg.get ("jmx.domain", "QSP");
         server = MBeanServerFactory.createMBeanServer(domain);
         ObjectName mbeanObjectName = new ObjectName(domain + ":type=QSP");

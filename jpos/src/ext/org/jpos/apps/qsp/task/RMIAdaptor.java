@@ -51,28 +51,45 @@ package org.jpos.apps.qsp.task;
 
 import org.jpos.util.Logger;
 import org.jpos.util.LogEvent;
-import org.jpos.util.SimpleLogSource;
+import org.jpos.util.LogSource;
+import org.jpos.util.NameRegistrar;
 import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
 import org.jpos.apps.qsp.QSP;
 
-import com.sun.jdmk.comm.AuthInfo;
-import com.sun.jdmk.comm.HtmlAdaptorServer;
-import javax.management.ObjectName;
+import javax.management.*;
+import javax.naming.NamingException;
 
-public class HtmlAdaptor 
-    extends SimpleLogSource 
-    implements Configurable, Runnable
-{
+import mx4j.adaptor.http.HttpAdaptor;
+import mx4j.adaptor.http.ProcessorMBean;
+import mx4j.adaptor.rmi.jrmp.JRMPAdaptor;
+import mx4j.adaptor.rmi.jrmp.JRMPAdaptorMBean;
+import mx4j.tools.naming.NamingService;
+import mx4j.util.StandardMBeanProxy;
+
+import java.io.IOException;
+import java.rmi.RemoteException;
+
+/**
+ * @author <a href="mailto:taherkordy@dpi2.dpi.net.ir">Alireza Taherkordi</a>
+ *
+ * <pre>
+ * &lt;task name="RMIAdaptor" class="org.jpos.apps.qsp.task.RMIAdaptor"
+ *     logger="qsp" realm="RMI-Adaptor"&gt;
+ *  &lt;property name="jndi-name" value="jrmp" /&gt;
+ * &lt;/task&gt;
+ * </pre>
+ */
+public class RMIAdaptor implements LogSource, Configurable, Runnable {
     Configuration cfg;
     Logger logger;
     String realm;
-    HtmlAdaptorServer server;
+    JRMPAdaptor adaptor;
 
-    public HtmlAdaptor() {
+    public RMIAdaptor() {
         super();
-        server = new HtmlAdaptorServer();
+        adaptor = new JRMPAdaptor();
     }
     public void setLogger (Logger logger, String realm) {
         this.logger = logger;
@@ -89,25 +106,30 @@ public class HtmlAdaptor
     {
         this.cfg = cfg;
         try {
-            int port = cfg.getInt ("port", 8082);
             ObjectName name = new ObjectName(
-                "Adaptor:name=html,port=" + port
-            );
-            server.setPort (port);
-            String user = cfg.get ("user", null);
-            if (user != null) {
-                server.addUserAuthenticationInfo (
-                    new AuthInfo (user, cfg.get ("password", ""))
-                );
-            }
-            QSP.getInstance().getMBeanServer().registerMBean (server, name);
+                "RMIAdaptor:name=RMIAdaptor,protocol=JRMP");
+            QSP.getInstance().getMBeanServer().registerMBean (adaptor, name);
+
+            // Set the JNDI name with which will be registered
+            String jndiName = cfg.get ("jndi-name", "jrmp");
+            adaptor.setJNDIName(jndiName);
+
             Logger.log (new LogEvent (this, "register", name.toString()));
         } catch (Exception e) {
             throw new ConfigurationException (e);
         }
     }
     public void run () {
-        server.start ();
+        try {
+            adaptor.start();
+        } catch (RemoteException e) {
+            Logger.log (new LogEvent (this, "start", e.getMessage()));
+        } catch (NamingException e) {
+            Logger.log (new LogEvent (this, "start", e.getMessage()));
+        } catch (JMException e) {
+            Logger.log (new LogEvent (this, "start", e.getMessage()));
+        }
+
     }
 }
 

@@ -232,8 +232,16 @@
     </javac>
   </target>
 
+  <target name="qsp-support" depends="prepare" description="copy support files">
+   <copy todir="${classes}">
+    <fileset dir="${ext}">
+     <include name="**/*.xml"/>
+    </fileset>
+   </copy>
+  </target>
+
   <target name="ext" 
-       depends="ext.sun-util, ext.comm, ext.jsse, ext.jce, ext.mail, ext.opencard, ext.jetty, ext.jceadapter, ext.jep">
+       depends="ext.sun-util, ext.comm, ext.jsse, ext.jce, ext.mail, ext.opencard, ext.jetty, ext.jceadapter, ext.jep, qsp-support">
     <javac srcdir="${ext}" destdir="${classes}"
         includes="**/apps/qsp/**"
         debug="${debug}"
