@@ -12,6 +12,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.io.Serializable;
 
 /**
  * Tiny Space implementation
@@ -20,7 +21,7 @@ import java.util.Set;
  * @version $Revision$ $Date$
  * @since 1.4.7
  */
-public class TinySpace implements Space {
+public class TinySpace implements Space, Serializable {
     protected Map map = new HashMap ();
 
     public TinySpace () {
