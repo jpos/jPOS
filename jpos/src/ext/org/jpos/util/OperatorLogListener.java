@@ -49,6 +49,12 @@
 
 /*
  * $Log$
+ * Revision 1.5  2002/12/04 01:32:43  apr
+ * Different filenames in multiparts.
+ * End filenames with ".txt" so dumb mailers that doesn't
+ * understand text/plain mimetype give you a chance to open the
+ * attachment without saving it to disk.
+ *
  * Revision 1.4  2000/11/02 12:09:17  apr
  * Added license to every source file
  *
@@ -120,11 +126,9 @@ public class OperatorLogListener
 	Thread.currentThread().setName ("OperatorLogListener");
 	int delay = cfg.getInt ("jpos.operator.delay");
 	try {
+            ISOUtil.sleep (2500);   // initial delay
 	    for (;;) {
 		try {
-		    if (delay > 0)
-			Thread.sleep (delay);
-
 		    LogEvent ev[] = new LogEvent[1];
 		    if (queue.pending() > 0) {
 			ev = new LogEvent [queue.pending()];
@@ -133,6 +137,8 @@ public class OperatorLogListener
 		    } else 
 			ev[0] = (LogEvent) queue.dequeue();
 		    sendMail (ev);
+		    if (delay > 0)
+			Thread.sleep (delay);
 		} catch (InterruptedException e) { }
 	    }
 	} catch (BlockingQueue.Closed e) { }
@@ -142,7 +148,7 @@ public class OperatorLogListener
 	String to      = cfg.get ("jpos.operator.to");
 	String subject = cfg.get ("jpos.operator.subject.prefix");
 	if (ev.length > 1) 
-	    subject = subject + " (multiple)";
+	    subject = subject + ev.length + " events";
 	else
 	    subject = subject + ev[0].getRealm() + " - " +ev[0].tag;
 
@@ -172,7 +178,7 @@ public class OperatorLogListener
 		// create and fill the first message part
 		MimeBodyPart mbp = new MimeBodyPart();
 		mbp.setText(buf.toString());
-		mbp.setFileName (ev[i].tag);
+		mbp.setFileName (ev[i].tag + "_" + i + ".txt");
 		mp.addBodyPart(mbp);
 	    }
 	    msg.setContent(mp);
