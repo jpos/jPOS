@@ -1,6 +1,7 @@
 $Id$
 
 -- 1.4.3 --
+SQLFilter and CalculateFilter contributed by Zhiyu Tang
 QSP New <object> tag
 New org.jpos.space package and supporting classes
 New MUX and Channel interfaces

@@ -32,3 +32,6 @@ In order to build 'ext' module you will have to install here
 
   - jetty.jar (used by WebServer task)
 
+  - jep.jar (used by CalculateFilter and SQLFilter)
+    see http://sf.net/projects/jep
+

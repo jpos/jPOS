@@ -59,6 +59,8 @@ import org.jpos.iso.ISOException;
 import org.jpos.core.SimpleConfiguration;
 import org.jpos.core.Configurable;
 import org.jpos.core.ConfigurationException;
+//Add for calculate filter, Zhiyu Tang
+import org.jpos.core.NodeConfigurable;
 
 import org.jpos.apps.qsp.QSP;
 import org.jpos.apps.qsp.QSPConfigurator;
@@ -106,7 +108,16 @@ public class ConfigFilter implements QSPConfigurator {
 		throw new ConfigurationException (e);
 	    }
 	}
-	
+	 //Add for calculate filter, Zhiyu Tang
+	if( filter instanceof NodeConfigurable ){
+		try {
+		((NodeConfigurable)filter).setConfiguration (
+		   	node
+		);
+	    } catch (ISOException e) {
+		throw new ConfigurationException (e);
+	    }
+	}
 	if (direction.equals ("incoming"))
 	    channel.addIncomingFilter (filter);
 	else if (direction.equals ("outgoing"))

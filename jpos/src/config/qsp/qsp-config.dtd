@@ -38,9 +38,21 @@
 <!ATTLIST channel socket-factory  CDATA #IMPLIED>
 
 <!-- filter -->
-<!ELEMENT filter (property)*>
+<!ELEMENT filter (property*,calculate*,SQL*)*>
+<!ATTLIST filter name ID #REQUIRED>
 <!ATTLIST filter class NMTOKEN #REQUIRED>
 <!ATTLIST filter direction (incoming|outgoing|both) 'both'>
+
+<!-- SQL -->
+<!ELEMENT SQL EMPTY>
+<!ATTLIST SQL switch CDATA #REQUIRED>
+<!ATTLIST SQL statement CDATA #REQUIRED>
+
+<!-- calculate -->
+<!ELEMENT calculate EMPTY>
+<!ATTLIST calculate switch  CDATA #REQUIRED>
+<!ATTLIST calculate field CDATA #REQUIRED>
+<!ATTLIST calculate statement CDATA #REQUIRED>
 
 <!-- mux -->
 <!ELEMENT mux (property*,channel,request-listener*)*>
