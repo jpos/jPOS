@@ -79,9 +79,6 @@ public class AsciiPrefixer implements Prefixer
     /** The number of digits allowed to express the length */
     private int nDigits;
     
-    /** Used in the encoding algorithm */
-    private static int[] POWERS_OF_10 = {1, 1, 10, 100, 1000, 10000, 100000, 1000000, 10000000}; 
-
     public AsciiPrefixer(int nDigits)
     {
         this.nDigits = nDigits;
@@ -92,12 +89,18 @@ public class AsciiPrefixer implements Prefixer
 	 * 
 	 * @see xcom.traxbahn.util.messages.iso.Prefixer#encodeLength(int, byte[])
 	 */
-    public void encodeLength(int length, byte[] b)
+    public void encodeLength(int length, byte[] b) throws ISOException
     {
-        for (int i = nDigits, j = 0; i > 0; i--, j++)
+        int n = length;
+        // Write the string backwards - I don't know why I didn't see this at first.
+        for (int i = nDigits - 1; i >= 0; i--)
         {
-            b[j] = (byte)(length / POWERS_OF_10[i] + '0');
-            length %= POWERS_OF_10[i];
+            b[i] = (byte)(n % 10 + '0');
+            n /= 10;
+        }
+        if (n != 0)
+        {
+            throw new ISOException("invalid len "+ length + ". Prefixing digits = " + nDigits);
         }
     }
 

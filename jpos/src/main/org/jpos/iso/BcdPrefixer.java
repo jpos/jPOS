@@ -39,8 +39,6 @@
 
 package org.jpos.iso;
 
-import org.jpos.iso.ISOException;
-
 /**
  * BcdPrefixer constructs a prefix storing the length in BCD.
  * 
@@ -75,9 +73,6 @@ public class BcdPrefixer implements Prefixer
      */
     public static final BcdPrefixer LLLLL = new BcdPrefixer(5);
 
-    private static final Padder PADDER = LeftPadder.ZERO_PADDER;
-    private static final Interpreter INTERPRETER = BCDInterpreter.LEFT_PADDED;
-
     /** The number of digits allowed to express the length */
     private int nDigits;
 
@@ -91,14 +86,13 @@ public class BcdPrefixer implements Prefixer
 	 * 
 	 * @see xcom.traxbahn.util.messages.iso.Prefixer#encodeLength(int, byte[])
 	 */
-    public void encodeLength(int length, byte[] b) throws ISOException
+    public void encodeLength(int length, byte[] b)
     {
-        String sLen = Integer.toString(length);
-        if (sLen.length() > nDigits)
-        {
-            throw new ISOException("Length " + sLen + " too long for length field size:" + nDigits);
+        for (int i = getPackedLength() - 1; i >= 0; i--) {
+            int twoDigits = length % 100;
+            length /= 100;
+            b[i] = (byte)(((twoDigits / 10) << 4) + twoDigits % 10);
         }
-        INTERPRETER.interpret(PADDER.pad(sLen, (nDigits + 1) & ~1), b, 0);
     }
 
     /*

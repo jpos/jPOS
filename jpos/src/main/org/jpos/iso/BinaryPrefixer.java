@@ -39,41 +39,30 @@
 
 package org.jpos.iso;
 
-
 /**
- * EbcdicPrefixer constructs a prefix for EBCDIC messages.
+ * BinaryPrefixer constructs a prefix storing the length in binary.
  * 
  * @author joconnor
  * @version $Revision$ $Date$
  */
-public class EbcdicPrefixer implements Prefixer
+public class BinaryPrefixer implements Prefixer
 {
     /**
-     * A length prefixer for upto 99 chars. The length is encoded with 2 EBCDIC
-     * chars representing 2 decimal digits.
-     */
-    public static final EbcdicPrefixer LL = new EbcdicPrefixer(2);
-    /**
-     * A length prefixer for upto 999 chars. The length is encoded with 3 EBCDIC
-     * chars representing 3 decimal digits.
-     */
-    public static final EbcdicPrefixer LLL = new EbcdicPrefixer(3);
-    /**
-     * A length prefixer for upto 9999 chars. The length is encoded with 4
-     * EBCDIC chars representing 4 decimal digits.
-     */
-    public static final EbcdicPrefixer LLLL = new EbcdicPrefixer(4);
+	 * A length prefixer for upto 255 chars. The length is encoded with 1 unsigned byte.
+	 */
+    public static final BinaryPrefixer B = new BinaryPrefixer(1);
 
-    private static byte[] EBCDIC_DIGITS = {(byte)0xF0, (byte)0xF1, (byte)0xF2,
-        (byte)0xF3, (byte)0xF4, (byte)0xF5, (byte)0xF6, (byte)0xF7, (byte)0xF8, 
-        (byte)0xF9}; 
+    /**
+     * A length prefixer for upto 65535 chars. The length is encoded with 2 unsigned bytes.
+     */
+    public static final BinaryPrefixer BB = new BinaryPrefixer(2);
 
     /** The number of digits allowed to express the length */
-    private int nDigits;
+    private int nBytes;
 
-    public EbcdicPrefixer(int nDigits)
+    public BinaryPrefixer(int nBytes)
     {
-        this.nDigits = nDigits;
+        this.nBytes = nBytes;
     }
 
     /*
@@ -83,10 +72,9 @@ public class EbcdicPrefixer implements Prefixer
 	 */
     public void encodeLength(int length, byte[] b)
     {
-        for (int i = nDigits - 1; i >= 0; i--)
-        {
-            b[i] = EBCDIC_DIGITS[length % 10];
-            length /= 10;
+        for (int i = nBytes - 1; i >= 0; i--) {
+            b[i] = (byte)(length & 0xFF);
+            length >>= 8;
         }
     }
 
@@ -98,9 +86,9 @@ public class EbcdicPrefixer implements Prefixer
     public int decodeLength(byte[] b, int offset)
     {
         int len = 0;
-        for (int i = 0; i < nDigits; i++)
+        for (int i = 0; i < nBytes; i++)
         {
-            len = len * 10 + (b[offset + i] & 0x0F);
+            len = 256 * len + (b[offset + i] & 0xFF);
         }
         return len;
     }
@@ -112,7 +100,6 @@ public class EbcdicPrefixer implements Prefixer
 	 */
     public int getPackedLength()
     {
-        return nDigits;
+        return nBytes;
     }
-
 }
