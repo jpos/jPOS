@@ -32,6 +32,9 @@
     <available property="bsh.present"
            classpathref="lib.classpath"
               classname="bsh.Interpreter" />
+    <available property="jython.present"
+           classpathref="lib.classpath"
+              classname="org.python.util.PythonInterpreter" />
   </target>
 
   <target name="clean" description="Remove build and dist directories">
@@ -61,6 +64,7 @@
    <copy todir="${buildsrc}">
     <fileset dir="${main}">
      <exclude name="**/qbean/BSH.java" unless="bsh.present" />
+     <exclude name="**/qbean/Jython.java" unless="jython.present" />
      <exclude name="**/qbean/SpaceLet.java" unless="bsh.present" /> 
      <include name="**/*.java"/>
     </fileset>
@@ -112,7 +116,7 @@
         <include name="org/jpos/q2/qbean/SpaceAdaptor.java" />
       </fileset>
       <mbeaninterface/>
-      <!-- mx4jdescription / -->
+      <mx4jdescription/>
     </jmxdoclet>
   </target>
 
