@@ -78,7 +78,7 @@ public class HttpAdaptor
     Element persist;
     int state;
     Q2 server;
-    String name, loggerName;
+    String name, loggerName, user, password;
     boolean modified;
     ObjectName processorName;
     Log log;
@@ -99,6 +99,15 @@ public class HttpAdaptor
     }
     public String getName () {
         return name;
+    }
+    public void setUser (String user) {
+        this.user = user;
+    }
+    public String getUser () {
+        return user;
+    }
+    public void setPassword (String password) {
+        this.password = password;
     }
     public void setLogger (String loggerName) {
         this.loggerName = loggerName;
@@ -121,6 +130,10 @@ public class HttpAdaptor
             mx4j.adaptor.http.XSLTProcessor processorMBean = new mx4j.adaptor.http.XSLTProcessor();
             getServer().getMBeanServer().registerMBean(processorMBean,processorName);
             setProcessorName(processorName);
+            if (user != null && password != null) {
+                addAuthorization(user, password);
+                setAuthenticationMethod ("basic");
+            }
             state = QBean.STOPPED;
         } catch (Exception e) {
             if (log != null)
@@ -215,6 +228,10 @@ public class HttpAdaptor
             createAttr (
                 "port", Integer.toString (getPort()), "java.lang.Integer")
         );
+        if (user != null && password != null) {
+            e.addContent (createAttr ("user", user));
+            e.addContent (createAttr ("password", password));
+        }
         return (persist = e);
     }
     public synchronized void setModified (boolean modified) {

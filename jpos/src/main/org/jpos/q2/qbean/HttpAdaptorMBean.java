@@ -57,4 +57,7 @@ import org.jpos.q2.QBeanSupportMBean;
 public interface HttpAdaptorMBean
         extends mx4j.adaptor.http.HttpAdaptorMBean,QBeanSupportMBean
 {
+    public void setUser (String user);
+    public String getUser ();
+    public void setPassword (String password);
 }
