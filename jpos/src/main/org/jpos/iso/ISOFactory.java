@@ -19,6 +19,8 @@ import org.jpos.util.NameRegistrar;
  *
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a> 
  * @version $Revision$ $Date$
+ * @deprecated This whole class will be deprecated, use QSP application instead
+ *
  */
 public class ISOFactory {
     /**
