@@ -8,6 +8,7 @@ package org.jpos.q2.iso;
 
 import java.util.Iterator;
 
+import org.jpos.util.LogSource;
 import org.jpos.util.ThreadPool;
 import org.jpos.util.NameRegistrar;
 import org.jpos.iso.ISOServer;
@@ -80,9 +81,12 @@ public class QServer
         server.setName (getName ());
         if (socketFactoryString != null) {
             ISOServerSocketFactory sFac = (ISOServerSocketFactory) getFactory().newInstance(socketFactoryString);
+            if (sFac != null && sFac instanceof LogSource) {
+                ((LogSource) sFac).setLogger(log.getLogger(),getName() + ".socket-factory");
+            }
             server.setSocketFactory(sFac);
         }
-        getFactory().setConfiguration (server, getPersist());
+        getFactory().setConfiguration (server, getPersist());     
         addListeners ();
         new Thread (server).start();
     }
