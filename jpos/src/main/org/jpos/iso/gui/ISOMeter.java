@@ -155,6 +155,9 @@ public class ISOMeter extends JComponent implements Runnable {
      * Refresh panel in millseconds
      */
     int refreshPanel = 50;
+
+    private Image imb;
+    private Graphics imbCopy;
     
     public ISOMeter(ISOChannelPanel parent) {
         super();
@@ -279,16 +282,22 @@ public class ISOMeter extends JComponent implements Runnable {
             continueScroll--;
     }
     public void plot() {
-        if (im == null) {
+       if (im == null) {
             im = createImage(width, height);
             img = im.getGraphics ();
+            img.setColor (Color.black);
+            img.fillRoundRect (0, 0, width, height, 10, 10);
+            img.clipRect (0, 0, width, height);
+            plotGrid();
+
+            /* save a copy of the image */
+            imb = createImage(width, height);
+            imbCopy = imb.getGraphics ();
+            imbCopy.drawImage (im, 0, 0, this);
         }
-        img.setColor (Color.black);
-        img.fillRoundRect (0, 0, width, height, 10, 10);
-        img.clipRect (0, 0, width, height);
+        img.drawImage (imb, 0, 0, this);
         if (continueScroll > 0)
             scroll();
-        plotGrid();
         plotText(positiveText, lastPositive++, 3, mass-3);
         plotText(negativeText, lastNegative++, 3, height-3);
         plotCounters(positiveCounter, negativeCounter);
