@@ -381,5 +381,22 @@
     <zip zipfile="${dist}/${archive}.zip" basedir="${build}"
          includes="${archive}/** src/** doc/**" />
   </target>
+
+  <target name="info" description="Echoes system properties">
+    <echo message="java.vm.info=${java.vm.info}" />
+    <echo message="java.vm.name=${java.vm.name}" />
+    <echo message="java.vm.vendor=${java.vm.vendor}" />
+    <echo message="java.vm.version=${java.vm.version}" />
+    <echo message="os.arch=${os.arch}" />
+    <echo message="os.name=${os.name}" />
+    <echo message="os.version=${os.version}" />
+    <echo message="java.home=${java.home}" />
+    <echo message="java.class.path=${java.class.path}" />
+    <echo message="build.compiler=${build.compiler}" />
+    <echo message="file.encoding=${file.encoding}" />
+    <echo message="user.home=${user.home}" />
+    <echo message="user.language=${user.language}" />
+  </target>
+
 </project>
 
