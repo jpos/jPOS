@@ -62,7 +62,7 @@ import org.jpos.iso.*;
  * by Victor A. Salaman (salaman@teknos.com) .<br>
  * An instance of this class exchanges messages by means of an
  * intermediate 'port server' as described in the
- * <a href="/doc/javadoc/overview-summary.html.html">Overview</a> page.
+ * <a href="/doc/javadoc/overview-summary.html">Overview</a> page.
  * @author apr@cs.com.uy
  * @author salaman@teknos.com
  *
