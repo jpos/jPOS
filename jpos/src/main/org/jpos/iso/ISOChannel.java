@@ -111,20 +111,17 @@ public interface ISOChannel extends ISOSource {
     public ISOMsg receive() throws IOException, ISOException;
 
     /**
+     * sends an ISOMsg over the TCP/IP session
+     * @param m the Message to be sent
+     * @exception IOException
+     * @exception ISOException
+     */
+    public void send (ISOMsg m) throws IOException, ISOException;
+
+    /**
      * @param b - usable state
      */
     public void setUsable(boolean b);
-
-    /**
-     * get this channel counters (TX/RX/CONNECT)
-     * @return counters
-     */
-    public int[] getCounters();
-
-    /**
-     * reset counters
-     */
-    public void resetCounters();
 
     /**
      * associates this ISOChannel with a name on NameRegistrar

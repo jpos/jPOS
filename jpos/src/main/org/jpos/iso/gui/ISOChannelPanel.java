@@ -49,6 +49,10 @@
 
 /*
  * $Log$
+ * Revision 1.11  2001/10/17 17:06:20  apr
+ * Removed a few methods from ISOChannel that belongs to BaseChannel
+ * (more to be removed soon)
+ *
  * Revision 1.10  2000/11/02 12:09:18  apr
  * Added license to every source file
  *
@@ -173,8 +177,8 @@ public class ISOChannelPanel extends JPanel implements Observer {
             }
             meter.setValue(ISOMeter.mass);
         }
-	if (o instanceof ISOChannel) {
-	    ISOChannel c = (ISOChannel) o;
+	if (o instanceof BaseChannel) {
+	    BaseChannel c = (BaseChannel) o;
 	    meter.setConnected(c.isConnected());
 	    int cnt[] = c.getCounters();
 	    try {
