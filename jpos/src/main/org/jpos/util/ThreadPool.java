@@ -4,6 +4,9 @@ package org.jpos.util;
  * $Id$
  *
  * $Log$
+ * Revision 1.6  2000/04/19 19:16:04  apr
+ * Removed debugging (main())
+ *
  * Revision 1.5  2000/04/16 23:53:14  apr
  * LogProducer renamed to LogSource
  *
@@ -137,36 +140,5 @@ public class ThreadPool extends ThreadGroup implements LogSource, Loggeable
     }
     public Logger getLogger() {
 	return logger;
-    }
-    public static void main (String args[]) {
-	ThreadPool p = new ThreadPool (100, 2000);
-	Logger l = new Logger();
-	l.addListener (new SimpleLogListener (System.out));
-	p.setLogger (l, "ThreadPool");
-	LogEvent evt = new LogEvent (p, "ThreadPoolStatus", p);
-	new SystemMonitor (60000, l, "monitor");
-
-	for (int i=0; i<5000; i++) {
-	    p.execute (
-		new Runnable() {
-		    public void run() {
-			System.out.print (".");
-			try {
-			    Thread.sleep (100);
-			} catch (InterruptedException e) { 
-			    System.out.println ("Got Interruption");
-			}
-		    }
-		}
-	    );
-	    Thread.yield();
-	}
-	for (;;) {
-	    try {
-		Thread.sleep (10000);
-	    } catch (InterruptedException e) { }
-	    Logger.log (evt);
-	}
-	// p.close();
     }
 }
