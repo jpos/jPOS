@@ -49,6 +49,8 @@
 
 package org.jpos.bsh;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
 import org.jpos.core.ReConfigurable;
@@ -68,6 +70,8 @@ public class BSHRequestListener extends Log
     implements ISORequestListener, ReConfigurable 
 {
     protected static final String MTI_MACRO = "$mti";
+    protected HashSet whitelist;
+    protected String[] bshSource;
     Configuration cfg;
     public BSHRequestListener () {
         super();
@@ -75,6 +79,7 @@ public class BSHRequestListener extends Log
    /**
     * @param cfg
     * <ul>
+    *  <li>whitelist - supported message types (example: "1100,1220")
     *  <li>source - BSH script(s) to run (can be more than one)
     * </ul>
     */
@@ -82,12 +87,17 @@ public class BSHRequestListener extends Log
         throws ConfigurationException
     {
         this.cfg = cfg;
+        bshSource = cfg.getAll ("source");
+        String[] mti = cfg.get ("whitelist", "*").split(",");
+        whitelist = new HashSet( Arrays.asList(mti) );
     }
 
     public boolean process (ISOSource source, ISOMsg m) {
         try{
             String mti = m.getMTI ();
-            String[] bshSource = cfg.getAll ("source");
+            if (!whitelist.contains(mti) && !whitelist.contains("*"))
+                mti = "unsupported";
+
             for (int i=0; i<bshSource.length; i++) {
                 try {
                     Interpreter bsh = new Interpreter ();
@@ -95,13 +105,18 @@ public class BSHRequestListener extends Log
                     bsh.set ("message", m);
                     bsh.set ("log", this);
                     bsh.set ("cfg", cfg);
-                    //replace $mti with the actual value in script file name
+
                     int idx = bshSource[i].indexOf(MTI_MACRO);
                     String script;
-                    if(idx >= 0) 
-                        script = bshSource[i].substring(0, idx) + mti + bshSource[i].substring(idx + MTI_MACRO.length());
-                    else 
+
+                    if (idx >= 0) {
+                        // replace $mti with the actual value in script file name
+                        script = bshSource[i].substring(0, idx) + mti +
+                            bshSource[i].substring(idx + MTI_MACRO.length());
+                    } else {
                         script = bshSource[i];
+                    }
+
                     bsh.source (script);
                 } catch (Exception e) {
                     warn (e);
@@ -109,6 +124,7 @@ public class BSHRequestListener extends Log
             }
         }catch (Exception e){
             warn(e);
+            return false;
         }
         return true;
     }
