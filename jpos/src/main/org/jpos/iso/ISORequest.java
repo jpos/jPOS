@@ -58,6 +58,9 @@ import org.jpos.util.LogSource;
 
 /*
  * $Log$
+ * Revision 1.13  2003/05/16 00:28:27  apr
+ * Added long getResponseTime() (suggested by Kris - good idea!)
+ *
  * Revision 1.12  2000/11/02 12:09:18  apr
  * Added license to every source file
  *
@@ -212,4 +215,11 @@ public class ISORequest implements LogSource, Loggeable {
     public Logger getLogger() {
 	return logger;
     }
+    /**
+     * @return time in milliseconds of how long it took to get a Response
+     */
+    public long getResponseTime () {
+        return (responseTime-requestTime);
+    }
 }
+
