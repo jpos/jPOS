@@ -51,7 +51,11 @@ package org.jpos.iso;
 
 
 /**
+ * IF_NOP acts as a filler for unused elements of a message packager.
+ * Packing or unpacking with this packager throws an ISOException.
+ * 
  * @author apr@cs.com.uy & dflc@cs.com.uy
+ * @author jonathan.oconnor@xcom.de
  * @version $Id$
  * @see ISOComponent
  * @see IFA_LLNUM
@@ -70,7 +74,7 @@ public class IF_NOP extends ISOFieldPackager {
      * @exception ISOException
      */
     public byte[] pack (ISOComponent c) throws ISOException {
-        return null;
+        throw new ISOException("IF_NOP: Packager should not pack field " + c.getKey());
     }
     /**
      * @param c - the Component to unpack
@@ -78,8 +82,8 @@ public class IF_NOP extends ISOFieldPackager {
      * @param offset - starting offset within the binary image
      * @return consumed bytes
      */
-    public int unpack (ISOComponent c, byte[] b, int offset) {
-        return 0;
+    public int unpack (ISOComponent c, byte[] b, int offset) throws ISOException {
+        throw new ISOException("IF_NOP: Packager should not unpack field " + c.getKey());
     }
     public int getMaxPackedLength() {
         return 0;
