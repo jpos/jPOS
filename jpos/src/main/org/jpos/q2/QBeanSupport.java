@@ -74,6 +74,7 @@ public class QBeanSupport implements QBean, QPersist, QBeanSupportMBean {
     public QBeanSupport () {
         super();
         setLogger (Q2.LOGGER_NAME);
+        state = -1;
     }
     public void setServer (Q2 server) {
         this.server = server;
@@ -102,11 +103,14 @@ public class QBeanSupport implements QBean, QPersist, QBeanSupportMBean {
         return name;
     }
     public void init () {
-        setModified (false);
-        try {
-            initService();
-        } catch (Throwable t) {
-            log.warn ("init", t);
+        if (state == -1) {
+            setModified (false);
+            try {
+                initService();
+                state = QBean.STOPPED;
+            } catch (Throwable t) {
+                log.warn ("init", t);
+            }
         }
     }
     public void start() {
