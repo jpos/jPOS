@@ -37,6 +37,7 @@
         doc          Create project documentation (including javadoc)
         examples     Build examples
         ext-examples Build extended examples (requires ext)
+        test         Test jPOS using jUnit
         jar          Generates ${archive}.jar
         qsp          Generates ${archive}.jar containing QSP application
         tarball      Generates distro tarball
@@ -46,6 +47,7 @@
 
   <target name="prepare">
     <mkdir dir="${build}"/>
+    <mkdir dir="${build}/test"/>
     <mkdir dir="${htdocs}"/>
     <mkdir dir="${classes}"/>
     <mkdir dir="${classes.examples}"/>
@@ -74,6 +76,19 @@
       <fileset dir="${extlib}">
           <include name="*.jar"/>
       </fileset>
+      <pathelement location="${build}/classes"/>
+  </path>
+
+  <path id="test.classpath">
+      <pathelement path="${classpath}"/>
+      <fileset dir="${lib}">
+          <include name="*.jar" />
+          <exclude name="crimson.jar" />
+      </fileset>
+      <fileset dir="${extlib}">
+          <include name="*.jar"/>
+      </fileset>
+      <pathelement location="${build}/test"/>
       <pathelement location="${build}/classes"/>
   </path>
 
@@ -111,6 +126,22 @@
     <mkdir dir="${ext-examples}/qsp/dtd" />
     <copy file="${ext}/org/jpos/apps/qsp/qsp-config.dtd"
         tofile="${ext-examples}/qsp/dtd/qsp-config.dtd" />
+  </target>
+
+  <target name="compile.test" depends="ext">
+    <javac srcdir="${source}/test"
+           destdir="${build}/test"
+           debug="${debug}" deprecation="${deprecation}">
+      <classpath refid="test.classpath" />
+    </javac>
+  </target>
+
+  <target name="test" depends="compile.test">
+    <java classname="junit.textui.TestRunner" fork="yes">
+      <classpath refid="test.classpath" />
+      <arg value="AllTests" />
+      <jvmarg value="-Dlog4j.config=src/test/cfg/log4j.xml" />
+    </java>
   </target>
 
   <target name="jar" depends="main">
