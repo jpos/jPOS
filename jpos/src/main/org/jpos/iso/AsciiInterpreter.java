@@ -49,8 +49,6 @@
 
 package org.jpos.iso;
 
-import java.io.UnsupportedEncodingException;
-
 
 /**
  * Implements ASCII Interpreter. Strings are converted to and from ASCII bytes.
@@ -71,15 +69,9 @@ public class AsciiInterpreter implements Interpreter
 	 */
     public void interpret(String data, byte[] b, int offset)
     {
-        try
+        for (int i = data.length() - 1; i >= 0; i--)
         {
-            byte[] bytes = data.getBytes("ISO-8859-1");
-            System.arraycopy(bytes, 0, b, offset, bytes.length);
-        } catch (UnsupportedEncodingException e)
-        {
-            // This should never happen, because ISO-8859-1 is one of the standard
-            // character sets that all JVMs must support.
-            data.getBytes(0, data.length(), b, offset);
+            b[offset + i] = (byte) data.charAt(i);
         }
     }
 
@@ -90,13 +82,12 @@ public class AsciiInterpreter implements Interpreter
 	 */
     public String uninterpret(byte[] rawData, int offset, int length)
     {
-        try
+        char[] ret = new char[length];
+        for (int i = 0; i < length; i++)
         {
-            return new String(rawData, offset, length, "ISO-8859-1");
-        } catch (UnsupportedEncodingException e)
-        {
-            return new String(rawData, offset, length);
+            ret[i] = (char)rawData[offset + i];
         }
+        return new String(ret);
     }
 
     /**
