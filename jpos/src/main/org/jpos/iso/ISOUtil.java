@@ -1108,5 +1108,32 @@ public class ISOUtil {
         }
         return sb.toString();
     }
+    /**
+     * pads a string with 'F's (useful for pinoffset management)
+     * @param s an [hex]string
+     * @param len desired length
+     * @return string right padded with 'F's
+     */
+    public static String strpadf (String s, int len) {
+        StringBuffer d = new StringBuffer(s);
+        while (d.length() < len)
+            d.append('F');
+        return d.toString();
+    }
+    /**
+     * reverse the effect of strpadf
+     * @param s F padded string
+     * @return trimmed string
+     */
+    public static String trimf (String s) {
+        int l = s.length();
+        if (s == null || l == 0)
+            return s;
+        while (--l >= 0) {
+            if (s.charAt (l) != 'F')
+                break;
+        }
+        return l == 0 ? "" : s.substring (0, l+1);
+    }
 }
 
