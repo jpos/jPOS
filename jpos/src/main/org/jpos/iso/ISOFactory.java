@@ -18,7 +18,7 @@ import org.jpos.core.Configuration;
  */
 public class ISOFactory {
     /**
-     * Builds a client or server ISOChannel based on Configuration properties:
+     * Creates a client or server ISOChannel based on Configuration properties:
      * <br>
      * If [prefix].host is available createChannel will create an unconnected
      * client ISOChannel.
@@ -43,7 +43,7 @@ public class ISOFactory {
      * @param realm  optional realm  (may be null if logger is null)
      * @exception ISOException catches all possible exceptions into one
      */
-    public static ISOChannel createChannel
+    public static ISOChannel newChannel
 	(Configuration cfg, String prefix, Logger logger, String realm)
 	throws ISOException
     {
@@ -82,5 +82,41 @@ public class ISOFactory {
 	    throw new ISOException ("createClientChannel", e);
 	}
         return channel;
+    }
+
+
+    /**
+     * Creates an ISOChannel based on Configuration property [prefix].packager
+     *
+     * @see org.jpos.util.Configuration
+     * @see ISOPackager
+     *
+     * @param cfg Configuration Object
+     * @param prefix propertyPrefix
+     * @param logger optional logger (may be null)
+     * @param realm  optional realm  (may be null if logger is null)
+     * @exception ISOException catches all possible exceptions into one
+     */
+    public static ISOPackager newPackager
+	(Configuration cfg, String prefix, Logger logger, String realm)
+	throws ISOException
+    {
+	ISOPackager packager = null;
+	String packagerName = cfg.get    (prefix + ".packager");
+        try {
+            Class p = Class.forName(packagerName);
+            if (p != null) {
+		packager = (ISOPackager) p.newInstance();
+		if (logger != null)
+		    packager.setLogger (logger, realm + ".packager");
+            }
+        } catch (ClassNotFoundException e) {
+	    throw new ISOException ("createClientChannel", e);
+        } catch (InstantiationException e) {
+	    throw new ISOException ("createClientChannel", e);
+        } catch (IllegalAccessException e) {
+	    throw new ISOException ("createClientChannel", e);
+	}
+        return packager;
     }
 }
