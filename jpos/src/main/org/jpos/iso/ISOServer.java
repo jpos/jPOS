@@ -243,7 +243,8 @@ public class ISOServer extends Observable
     }
     private void shutdownServer () {
         try {
-            serverSocket.close ();
+            if (serverSocket != null)
+                serverSocket.close ();
         } catch (IOException e) {
             Logger.log (new LogEvent (this, "shutdown", e));
         }
