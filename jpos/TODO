@@ -1,9 +1,12 @@
 $Id$
 
-[ ] checkin Base1Packager stuff
 [ ] Use ThreadPool on ISOMUX
-[ ] ISOServer
 [ ] Handle filters on Configurable ISOChannel
+[ ] IF_MTI Stuff (as suggested by Arun Kumar U <bksys@vsnl.com>)
+
+Done: jpos-1.2.3
+[v] ISOServer
+[v] checkin Base1Packager stuff
 
 Done: jpos-1.2.2
 [v] ISOChannel should be an Interface
