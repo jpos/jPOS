@@ -434,6 +434,21 @@ public class JDBMSpace implements Space {
             throw new SpaceError (e);
         }
     }
+    public String getKeys () {
+        StringBuffer sb = new StringBuffer();
+        try {
+            FastIterator iter = htree.keys ();
+            Object obj;
+            while ( (obj = iter.next()) != null) {
+                if (sb.length() > 0)
+                    sb.append (' ');
+                sb.append (obj.toString());
+            }
+        } catch (IOException e) {
+            throw new SpaceError (e);
+        }
+        return sb.toString();
+    }
     
     private Ref getFirst (Object key, boolean remove) throws IOException {
         Head head = (Head) htree.get (key);
