@@ -63,7 +63,7 @@ import org.jpos.core.ReConfigurable;
 import org.jpos.core.ConfigurationException;
 
 /**
- * DirPoll operates on a set of directories
+ * DirPoll operates on a set of directories which defaults to
  * <ul>
  *  <li>request
  *  <li>response
@@ -91,6 +91,7 @@ public class DirPoll extends SimpleLogSource
     private Vector prio;
     private int currentPriority;
     private String basePath;
+    private String responseSuffix;
     private ThreadPool pool;
     private Object processor;
     private Configuration cfg;
@@ -118,8 +119,26 @@ public class DirPoll extends SimpleLogSource
     public String getPath() {
         return basePath;
     }
+    public void setRequestDir (String dir) {
+        requestDir = new File (basePath, dir);
+    }
+    public void setResponseDir (String dir) {
+        responseDir = new File (basePath, dir);
+    }
+    public void setTmpDir (String dir) {
+        tmpDir = new File (basePath, dir);
+    }
+    public void setBadDir (String dir) {
+        badDir = new File (basePath, dir);
+    }
+    public void setRunDir (String dir) {
+        runDir = new File (basePath, dir);
+    }
     public void setPollInterval(long pollInterval) {
         this.pollInterval = pollInterval;
+    }
+    public void setResponseSuffix (String suffix) {
+        this.responseSuffix = suffix;
     }
     public long getPollInterval() {
         return pollInterval;
@@ -144,6 +163,13 @@ public class DirPoll extends SimpleLogSource
 	    }
 	}
 	this.cfg = cfg;
+
+        setRequestDir  (cfg.get ("request.dir",  "request"));
+        setResponseDir (cfg.get ("response.dir", "response"));
+        setTmpDir      (cfg.get ("tmp.dir",      "tmp"));
+        setRunDir      (cfg.get ("run.dir",      "run"));
+        setBadDir      (cfg.get ("bad.dir",      "bad"));
+        setResponseSuffix (cfg.get ("response.suffix", null));
     }
     /**
      * @param priorities blank separated list of extensions
@@ -226,6 +252,12 @@ public class DirPoll extends SimpleLogSource
     private void writeResponse (String requestName, byte[] b) 
 	throws IOException
     {
+        if (responseSuffix != null) {
+            int pos = requestName.lastIndexOf ('.');
+            if (pos > 0)
+                requestName = requestName.substring (0, pos) + responseSuffix;
+        }
+
         File tmp = new File(tmpDir, requestName);
 	FileOutputStream out = new FileOutputStream(tmp);
 	out.write(b);
