@@ -51,6 +51,8 @@ public class Test implements Runnable, LogProducer {
                     ISOMsg m = channel.receive();
 		    m.setResponseMTI();
                     m.set (new ISOField(39, "00"));
+		    if (testMux)
+			Thread.sleep (10);  // simulate server delay
                     channel.send(m);
 		    if (testMux && m.getMTI().equals ("0810")) {
 			// on 'testMux' mode we originate an unexpected
