@@ -2,18 +2,11 @@ package uy.com.cs.jpos.iso;
 
 import java.util.*;
 
-/**
- * provides base functionality for the actual packagers
- *
- * @author apr@cs.com.uy
- * @version $Id$
- * @see ISO87APackager
- * @see ISO87BPackager
- */
-
-
 /*
  * $Log$
+ * Revision 1.17  1999/11/24 18:16:43  apr
+ * minor doc changes
+ *
  * Revision 1.16  1999/09/30 12:01:13  apr
  * Added emitBitMap() and getFirstField() to fix broken X92Packager
  * after pack()/unpack() changes (reported by dflc@cs.com.uy)
@@ -29,6 +22,14 @@ import java.util.*;
  *
  */
 
+/**
+ * provides base functionality for the actual packagers
+ *
+ * @author apr@cs.com.uy
+ * @version $Id$
+ * @see ISO87APackager
+ * @see ISO87BPackager
+ */
 public abstract class ISOBasePackager implements ISOPackager, LogProducer {
     protected ISOFieldPackager[] fld;
 
