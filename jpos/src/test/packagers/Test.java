@@ -5,7 +5,6 @@ import java.io.*;
 import java.util.*;
 import org.jpos.iso.*;
 import org.jpos.iso.packager.*;
-import AllTests;
 
 /**
  * Simple 'HelloWorld' like TestCase
