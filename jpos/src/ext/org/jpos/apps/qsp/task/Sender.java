@@ -14,8 +14,8 @@ import org.jpos.util.NameRegistrar;
 import org.jpos.util.Logger;
 import org.jpos.util.LogEvent;
 import org.jpos.core.Configuration;
+import org.jpos.core.ConfigurationException;
 import org.jpos.apps.qsp.QSPConfigurable;
-import org.jpos.apps.qsp.QSPConfigurator.ConfigurationException;
 
 /**
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
