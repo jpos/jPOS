@@ -645,7 +645,7 @@ public class JCESecurityModule extends BaseSMAdapter {
                 lmkData = ISOUtil.hex2byte(lmkProps.getProperty("LMK0x0" +
                         Integer.toHexString(i)));
                 // provider-independent method
-                LMK[i] = new SecretKeySpec(lmkData, jceHandler.ALG_TRIPLE_DES);
+                LMK[i] = new SecretKeySpec(lmkData, JCEHandler.ALG_TRIPLE_DES);
             }
         } catch (Exception e) {
             throw  new SMException("Can't read Local Master Keys from file: " +
