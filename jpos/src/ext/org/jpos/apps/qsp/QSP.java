@@ -91,6 +91,7 @@ public class QSP implements ErrorHandler, LogSource {
 	{ "logger",
 	  "qsp-config",
 	  "log-listener",
+          "connection-pool",
 	  "persistent-engine",
 	  "sequencer",
 	  "control-panel",
