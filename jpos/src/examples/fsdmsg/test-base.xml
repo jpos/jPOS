@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema>
+ <field id="class"       type="A"   length="1" />
+ <field id="subclass"    type="AFS" length="1"  key="true" />
+</schema>
+
