@@ -78,12 +78,15 @@ import org.jdom.Element;
  * @author Alejandro Revilla
  * @version $Revision$ $Date$
  */
-public class ChannelAdaptor extends QBeanSupport
+public class ChannelAdaptor 
+    extends QBeanSupport
+    implements ChannelAdaptorMBean
 {
     Space sp;
     Configuration cfg;
     ISOChannel channel;
     String in, out, ready;
+    long delay;
     public ChannelAdaptor () {
         super ();
         sp = TransientSpace.getSpace ();
@@ -99,6 +102,10 @@ public class ChannelAdaptor extends QBeanSupport
 
         in      = persist.getChildTextTrim ("in");
         out     = persist.getChildTextTrim ("out");
+
+        String s = persist.getChildTextTrim ("reconnect-delay");
+        delay    = s != null ? Long.parseLong (s) : 10000; // reasonable default
+
         channel = newChannel (e);
         ready   = channel.toString() + ".ready";
     }
@@ -117,6 +124,28 @@ public class ChannelAdaptor extends QBeanSupport
         } catch (Exception e) {
             getLog().warn ("error disconnecting from remote host", e);
         }
+    }
+
+    public void setReconnectDelay (long delay) {
+        this.delay = delay;
+    }
+    public long getReconnectDelay () {
+        return delay;
+    }
+    public void setInQueue (String in) {
+        String old = this.in;
+        this.in = in;
+        if (old != null)
+            sp.out (old, new Object());
+    }
+    public String getInQueue () {
+        return in;
+    }
+    public void setOutQueue (String out) {
+        this.out = out;
+    }
+    public String getOutQueue () {
+        return out;
     }
 
     private ISOChannel newChannel (Element e) 
@@ -172,7 +201,6 @@ public class ChannelAdaptor extends QBeanSupport
                 try {
                     checkConnection ();
                     Object o = sp.in (in);
-                    System.out.println ("Message received from "+in);
                     if (o instanceof ISOMsg)
                         channel.send ((ISOMsg) o);
                 } catch (Exception e) { 
@@ -192,7 +220,6 @@ public class ChannelAdaptor extends QBeanSupport
                 try {
                     sp.rd (ready);
                     ISOMsg m = channel.receive ();
-                    System.out.println ("Placing message in "+out);
                     sp.out (out, m);
                 } catch (Exception e) { 
                     if (running()) {
@@ -210,13 +237,13 @@ public class ChannelAdaptor extends QBeanSupport
                     ;
                 channel.connect ();
                 if (!channel.isConnected ())
-                    ISOUtil.sleep (5000);
+                    ISOUtil.sleep (delay);
             }
             if (running())
                 sp.out (ready, new Object ());
         } catch (IOException e) {
             getLog().warn ("check-connection", e);
-            ISOUtil.sleep (5000);
+            ISOUtil.sleep (delay);
         }
     }
     protected void disconnect () {
