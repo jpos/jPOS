@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.11  2000/06/21 21:34:00  apr
+ * Added PersistentEngine get/set
+ *
  * Revision 1.10  2000/05/24 12:22:26  apr
  * Added no-arg constructor (required by QSP)
  *
@@ -46,6 +49,7 @@ import java.lang.reflect.*;
 import org.jpos.iso.*;
 import org.jpos.iso.packager.*;
 import org.jpos.util.*;
+import org.jpos.tpl.PersistentEngine;
 
 /**
  * @author apr@cs.com.uy
@@ -58,6 +62,7 @@ public abstract class CardAgentBase implements CardAgent, LogSource {
     protected String realm;
     protected Logger logger;
     protected ISOPackager imagePackager;
+    protected PersistentEngine engine;
 
     /**
      * no args constructor
@@ -164,4 +169,11 @@ public abstract class CardAgentBase implements CardAgent, LogSource {
     }
     public abstract CardTransactionResponse getResponse (byte[] b) 
 	throws CardAgentException;
+
+    public void setPersistentEngine (PersistentEngine engine) {
+	this.engine = engine;
+    }
+    public PersistentEngine getPersistentEngine() {
+	return engine;
+    }
 }
