@@ -1,8 +1,9 @@
-<QReceiver class="org.jpos.jms.JMSQSender" logger="Q2" name="TestJSMQSender">
+<QSender class="org.jpos.jms.JMSQSender" logger="Q2" name="TestJMSQSender">
     <attr name="connectionFactory">ConnectionFactory</attr>
     <attr name="queueName">queue/A</attr>
     <!--attr name="username">xxxx</attr-->
     <!--attr name="password">xxxx</attr-->
     <attr name="space">default</attr>
     <attr name="spaceKey">receivertest</attr>
-</QReceiver>
+    <attr name="jmsRetryInterval" type="java.lang.Long">15000</attr>
+</QSender>
