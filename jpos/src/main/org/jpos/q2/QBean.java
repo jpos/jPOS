@@ -60,12 +60,13 @@ package org.jpos.q2;
  */
 public interface QBean {
 
-    int STOPPED   = 1;
-    int STOPPING  = 2;
-    int STARTING  = 3;
-    int STARTED   = 4;
-    int FAILED    = 5;
-    int DESTROYED = 6;
+    // State
+    int STOPPED            = 1;
+    int STOPPING           = 2;
+    int STARTING           = 3;
+    int STARTED            = 4;
+    int FAILED             = 5;
+    int DESTROYED          = 6;
 
     /**
      * init the service
@@ -88,7 +89,7 @@ public interface QBean {
     void destroy ();
 
     /**
-     * return state of the service(starting/started/stopping/stopped/destroyed)
+     * @return state (STARTING, STARTED, FAILED, DESTROYED ...)
      */
     int getState ();
 }

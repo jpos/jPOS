@@ -60,7 +60,7 @@ public interface QBeanSupportMBean {
     public void start();
     public void stop ();
     public void destroy ();
-    public int getState ();
+    public int  getState ();
     public boolean isModified ();
     public void setServer (Q2 server);
     public Q2 getServer ();

@@ -1,6 +1,7 @@
 package org.jpos.q2.qbean;
 
 import org.jdom.Element;
+import org.jdom.Comment;
 import org.jpos.iso.ISOUtil;
 import org.jpos.q2.QBean;
 import org.jpos.q2.QBeanSupport;
@@ -34,8 +35,15 @@ public class QTest extends QBeanSupport implements Runnable {
         return super.getPersist ();
     }
     public void run () {
+        int tickCount = 0;
         while (getState() == QBean.STARTED) {
             System.out.println ("QTest: tick " + this.hashCode());
+            if (tickCount++ % 10 == 0) {
+                super.getPersist ().addContent (
+                    new Comment (" tickCount = " + (tickCount-1) + " ")
+                );
+                setModified (true);
+            }
             ISOUtil.sleep (1000);
         }
         setState (QBean.STOPPED);

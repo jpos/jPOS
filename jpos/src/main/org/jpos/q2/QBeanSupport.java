@@ -58,7 +58,9 @@ import org.jpos.iso.ISOUtil;
 public class QBeanSupport implements QBean, QPersist, QBeanSupportMBean {
     Element persist;
     int state;
+    long flags;
     Q2 server;
+    boolean modified;
 
     public QBeanSupport () {
         super();
@@ -85,17 +87,27 @@ public class QBeanSupport implements QBean, QPersist, QBeanSupportMBean {
     public void setState (int state) {
         this.state = state;
     }
+    public long getFlags () {
+        return flags;
+    }
+    public void setFlags (long flags) {
+        this.flags = flags;
+    }
     public void init () {
         this.state = QBean.STARTING;
     }
-    public void setPersist (Element config) {
+    public void setPersist (Element persist) {
         this.persist = persist ;
     }
-    public Element getPersist () {
+    public synchronized Element getPersist () {
+        setModified (false);
         return persist;
     }
+    public synchronized void setModified (boolean modified) {
+        this.modified = modified;
+    }
     public boolean isModified () {
-        return false;
+        return modified;
     }
 }
 

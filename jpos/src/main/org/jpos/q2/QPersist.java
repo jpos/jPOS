@@ -61,6 +61,6 @@ import org.jdom.Element;
  */
 public interface QPersist {
     public Element getPersist ();
-    boolean isModified ();
+    public boolean isModified ();
 }
 

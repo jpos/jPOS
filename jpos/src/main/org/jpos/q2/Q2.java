@@ -51,6 +51,7 @@ package org.jpos.q2;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileWriter;
 import java.net.URL;
 import java.net.MalformedURLException;
 import java.util.Map;
@@ -100,6 +101,7 @@ public class Q2 implements FileFilter {
             try {
                 scan ();
                 deploy ();
+                checkModified ();
                 Thread.sleep (1000);
             } catch (Exception e) {
                 e.printStackTrace ();
@@ -131,6 +133,66 @@ public class Q2 implements FileFilter {
                 iter.remove ();
             }
         }
+    }
+
+    private void checkModified () {
+        Iterator iter = dirMap.entrySet().iterator();
+        while (iter.hasNext()) {
+            Map.Entry entry = (Map.Entry) iter.next();
+            File   f        = (File)   entry.getKey ();
+            QEntry qentry   = (QEntry) entry.getValue ();
+            ObjectName name = qentry.getObjectName ();
+            if (getState (name) == QBean.STARTED && isModified (name)) {
+                qentry.setDeployed (persist (f, name));
+            }
+        }
+    }
+
+    private int getState (ObjectName name) {
+        int status = -1;
+        if (name != null) {
+            try {
+                status = (
+                    (Integer) server.getAttribute (name, "State")
+                ).intValue();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return status;
+    }
+    private boolean isModified (ObjectName name) {
+        boolean modified = false;
+        if (name != null) {
+            try {
+                modified = (
+                    (Boolean) server.getAttribute (name, "Modified")
+                ).booleanValue();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return modified;
+    }
+    private long persist (File f, ObjectName name) {
+        long deployed = f.lastModified ();
+        try {
+            Element e = (Element) server.getAttribute (name, "Persist");
+            if (e != null) {
+                XMLOutputter out = new XMLOutputter (" ", true);
+                Document doc = new Document ();
+                doc.setRootElement (e);
+                File tmp = new File (f.getAbsolutePath () + ".tmp");
+                FileWriter writer = new FileWriter (tmp);
+                out.output (doc, writer);
+                writer.close ();
+                tmp.renameTo (f);
+                deployed = f.lastModified ();
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return deployed;
     }
 
     private void undeploy (File f) {
