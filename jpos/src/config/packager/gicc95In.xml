@@ -29,7 +29,7 @@ bmp42: length 13 to 16
 	<isofield id="13" length="4" name="Date, Effective" class="org.jpos.iso.IFB_NUMERIC"/>
 	<isofield id="14" length="4" name="Date, Expiration" class="org.jpos.iso.IFB_NUMERIC"/>
 	<isofield id="15" length="6" name="Date, Settlement" class="org.jpos.iso.IFB_NUMERIC"/>
-	<isofield id="13" length="4" name="Date, Conversion" class="org.jpos.iso.IFB_NUMERIC"/>
+	<isofield id="16" length="4" name="Date, Conversion" class="org.jpos.iso.IFB_NUMERIC"/>
 	<isofield id="17" length="4" name="Date, Capture" class="org.jpos.iso.IFB_NUMERIC"/>
 	<isofield id="18" length="4" name="Merchant type" class="org.jpos.iso.IFB_NUMERIC"/>
 	<isofield id="19" length="3" name="Country code, Acquiring institution" class="org.jpos.iso.IFA_NUMERIC"/>
