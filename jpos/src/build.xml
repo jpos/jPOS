@@ -181,6 +181,8 @@ Main targets:
       <srcfiles dir="${buildsrc}" 
            includes="org/jpos/q2/qbean/SpaceProxyAdaptor.java" />
       <srcfiles dir="${buildsrc}" 
+           includes="org/jpos/q2/qbean/SpaceAdaptor.java" />
+      <srcfiles dir="${buildsrc}" 
            includes="org/jpos/q2/qbean/NameRegistrarInspector.java" />
       <srcfiles dir="${buildsrc}" includes="org/jpos/q2/jetty/Jetty.java" />
       <srcfiles dir="${buildsrc}" includes="org/jpos/q2/qbean/RMIAdaptor.java" />
@@ -202,6 +204,7 @@ Main targets:
         <include name="org/jpos/q2/qbean/ChannelAdaptor.java" />
         <include name="org/jpos/q2/qbean/QServer.java" />
         <include name="org/jpos/q2/qbean/SpaceProxyAdaptor.java" />
+        <include name="org/jpos/q2/qbean/SpaceAdaptor.java" />
         <include name="org/jpos/q2/qbean/NameRegistrarInspector.java" />
         <include name="org/jpos/q2/jetty/Jetty.java" />
         <include name="org/jpos/q2/qbean/RMIAdaptor.java" />
