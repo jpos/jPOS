@@ -75,7 +75,7 @@ public class SimpleDialupModem implements Modem {
 	"NO DIALTONE\r",
 	"BUSY\r",
 	"NO ANSWER\r",
-	"NO DIAL TONE",
+	"NO DIAL TONE\r",
     };
     
     public SimpleDialupModem (V24 v24) {
