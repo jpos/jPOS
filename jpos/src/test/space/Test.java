@@ -30,7 +30,8 @@
 
         public void testRenewReference () throws Exception {
             final String KEY = "TestRenew";
-            LeasedReference ref = sp.out (KEY, "TEST", 100);
+            LeasedReference ref = new LeasedReference ("TEST", 100);
+            sp.out (KEY, ref);
             assertTrue (sp.rdp (KEY) != null);
             ref.renew (200);
             assertTrue (sp.rdp (KEY) != null);

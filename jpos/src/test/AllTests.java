@@ -72,6 +72,7 @@ public class AllTests {
         suite.addTestSuite (jceadapter.Test.class);
         suite.addTestSuite (space.Test.class);
         suite.addTestSuite (space.TestPersistent.class);
+        suite.addTestSuite (space.TestJDBM.class);
         suite.addTestSuite (misc.ISOCurrencyTest.class);
         return suite;
     }
