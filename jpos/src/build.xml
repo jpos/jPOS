@@ -1,0 +1,80 @@
+<project name="jPOS" default="main" basedir=".">
+  <target name="init">
+    <property name="project" value="jpos" />
+    <property name="source" value="src" />
+    <property name="main" value="${source}/main" />
+    <property name="ext"  value="${source}/ext" />
+    <property name="build" value="build" />
+    <property name="classes" value="${build}/classes" />
+    <property name="dist" value="dist" />
+    <property name="lib" value="lib" />
+    <property name="doc" value="${source}/doc" />
+    <property name="etc" value="${source}/etc" />
+
+    <property file="${etc}/VERSION" />
+    <property name="classpath" value="${classpath}:${classes}" />
+    <property name="deprecation" value="true" />
+    <property name="debug" value="off" />
+    <property name="archive" value="${project}-${version}" />
+  </target>
+
+  <target name="targets">
+    <echo message="ANT build for ${project} ${version}"/>
+    <echo message="Available targets:"/>
+    <echo message="  clean   Cleans ${build} and ${dist} directories" />
+    <echo message="  main    Builds main ${project} packages" />
+    <echo message="  ext     Builds extended ${project} classes" />
+  </target>
+
+  <target name="prepare">
+    <mkdir dir="${build}"/>
+    <mkdir dir="${classes}"/>
+    <mkdir dir="${dist}"/>
+  </target>
+
+  <target name="clean">
+    <deltree dir="${build}"/>
+    <deltree dir="${dist}"/>
+  </target>
+
+
+  <!-- Build all the sources with debug and deprecation -->
+  <target name="main" depends="prepare">
+    <javac srcdir="${main}" destdir="${classes}"
+           classpath="${classpath}" debug="on" deprecation="${deprecation}" />
+  </target>
+
+  <target name="ext" depends="main">
+    <javac srcdir="${ext}" destdir="${classes}"
+           classpath="${classpath}" debug="on" deprecation="${deprecation}" />
+  </target>
+
+  <target name="jar" depends="main,ext">
+    <delete file="${dist}/${archive}.jar" />
+    <copyfile src="${source}/etc/MANIFEST.MF" dest="${classes}/MANIFEST.MF" />
+    <replace file="${classes}/MANIFEST.MF" 
+             token="$$VERSION$$" value="${version}"/>
+    <copyfile src="${source}/etc/LICENSE" dest="${classes}/LICENSE" />
+    <copyfile src="${source}/etc/README" dest="${classes}/README" />
+    <copyfile src="${source}/etc/CHANGELOG" dest="${classes}/CHANGELOG" />
+
+    <jar jarfile="${dist}/${archive}.jar" 
+         basedir="${classes}"
+         manifest="${classes}/MANIFEST.MF" 
+	 includes="LICENSE,README,CHANGELOG,org/**" />
+  </target>
+
+  <target name="cvs" depends="clean">
+    <cvs cvsRoot=":pserver:anon@csdev.cs.com.uy:/cvs/${project}"
+         dest="." package="${project}" />
+  </target>
+
+  <target name="javadoc" depends="prepare,main,ext">
+    <mkdir   dir="${build}/doc" />
+    <deltree dir="${build}/doc/javadoc" />
+    <mkdir   dir="${build}/doc/javadoc" />
+    <javadoc sourcepath="${main}" destdir="${build}/doc/javadoc" dir="."
+        doctitle="jPOS" public="true" noindex="true" author="true"
+           packagenames="org.jpos.util, org.jpos.iso, org.jpos.core.*" />
+  </target>
+</project>
