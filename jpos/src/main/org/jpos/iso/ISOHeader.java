@@ -49,11 +49,13 @@
 
 package org.jpos.iso;
 
+import java.io.Serializable;
+
 /**
  * @author Eoin.Flood@orbiscom.com
  */
 
-public interface ISOHeader extends Cloneable
+public interface ISOHeader extends Cloneable,Serializable
 {
     /**
      * Return this header as byte array.
