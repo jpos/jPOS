@@ -126,23 +126,31 @@ public class ChannelAdaptor
         }
     }
 
-    public void setReconnectDelay (long delay) {
+    public synchronized void setReconnectDelay (long delay) {
+        getPersist().getChild ("reconnect-delay") 
+            .setText (Long.toString (delay));
         this.delay = delay;
+        setModified (true);
     }
     public long getReconnectDelay () {
         return delay;
     }
-    public void setInQueue (String in) {
+    public synchronized void setInQueue (String in) {
         String old = this.in;
         this.in = in;
         if (old != null)
             sp.out (old, new Object());
+
+        getPersist().getChild("in").setText (in);
+        setModified (true);
     }
     public String getInQueue () {
         return in;
     }
-    public void setOutQueue (String out) {
+    public synchronized void setOutQueue (String out) {
         this.out = out;
+        getPersist().getChild("out").setText (out);
+        setModified (true);
     }
     public String getOutQueue () {
         return out;
