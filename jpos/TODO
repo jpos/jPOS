@@ -5,10 +5,11 @@ $Id$
     SimpleLockManager Configurable and NameRegistrar support
 [ ] Use ThreadPool on ISOMUX
 [ ] IF_MTI Stuff (as suggested by Arun Kumar U <bksys@vsnl.com>)
-[ ] Write SSLChannel
 [ ] Docos (DocBook?)
 [ ] QSP, move to DOM2
-[ ] move config to new Ant
+
+Done: jpos-1.3.4
+[v] Write SSLChannel
 
 Done: jpos-1.2.4
 [v] Handle filters on Configurable ISOChannel
