@@ -12,6 +12,9 @@ Currently the required jars are:
 
    mail.jar and activation.jar (available from Sun)
    sun-util.jar (from Jini1.1 distro)
+   comm.jar   (available from Sun)
+   xalan.jar  (http://xml.apache.org)
+   xerces.jar (http://xml.apache.org)
 
 'ext' module implements just 'ReliableSequencer' and 'OperatorLogListener'
 at the moment but the idea is that 'ext' module will contains classes
