@@ -73,6 +73,9 @@ public class ISOBinaryField extends ISOComponent implements Cloneable {
 	 */
 	public void dump (PrintStream p, String indent) {
 		p.println (indent +"<fld binary id=\"" 
-			+fieldNumber +"\" value=\"" +ISOUtil.hexString(value) +"\"/>");
+			+fieldNumber +"\" value=\"" +this.toString() +"\"/>");
+	}
+	public String toString() {
+		return ISOUtil.hexString(value);
 	}
 }

@@ -173,9 +173,11 @@ public abstract class ISOChannel extends Observable {
 	 * @exception ISOException
 	 */
 	public ISOMsg receive() throws IOException, ISOException {
-		byte[] b;
+		byte[] b, header=null;
 		int len  = getMessageLength();
 		int hLen = getHeaderLength();
+
+		System.out.println("len=" +len +", hLen=" +hLen);
 
 		if (len == -1) 
 			b = streamReceive();
@@ -183,11 +185,13 @@ public abstract class ISOChannel extends Observable {
 			int l;
 			if (hLen > 0) {
 				// ignore message header (TPDU)
-				b = new byte [hLen];
-				serverIn.readFully(b,0,hLen);
+				System.out.println ("Reading frame header "+hLen);
+				header = new byte [hLen];
+				serverIn.readFully(header,0,hLen);
 				len -= hLen;
 			}
 			b = new byte[len];
+			System.out.println ("Reading message "+len);
 			serverIn.readFully(b,0,len);
 			System.out.println (
 			 	"--[unpack]--\n"+ ISOUtil.hexString(b) + "\n--[end]--");
@@ -200,6 +204,7 @@ public abstract class ISOChannel extends Observable {
 		if (b.length > 0)	// Ignore NULL messages (i.e. VAP/X.25 sync, etc.)
 			m.unpack (b);
 
+		m.setHeader(header);
 		m.setDirection(ISOMsg.INCOMING);
 		cnt[RX]++;
 		setChanged();

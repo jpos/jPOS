@@ -22,6 +22,7 @@ public class ISOMsg extends ISOComponent implements Cloneable {
 	protected ISOPackager packager;
 	protected boolean dirty;
 	protected int direction;
+	protected byte[] header;
 	public static int INCOMING = 1;
 	public static int OUTGOING = 2;
 
@@ -30,6 +31,7 @@ public class ISOMsg extends ISOComponent implements Cloneable {
 		maxField = -1;
 		dirty = true;
 		direction = 0;
+		header = null;
 	}
 	/**
 	 * Sets the direction information related to this message
@@ -38,6 +40,20 @@ public class ISOMsg extends ISOComponent implements Cloneable {
 	public void setDirection(int direction) {
 		this.direction = direction;
 	}
+	/**
+	 * Sets an optional message header image
+	 * @param b header image
+	 */
+	 public void setHeader(byte[] b) {
+	 	header = b;
+	 }
+	/**
+	 * get optional message header image
+	 * @return message header image (may be null)
+	 */
+	 public byte[] getHeader() {
+	 	return header;
+	 }
 	/**
 	 * @return the direction (ISOMsg.INCOMING or ISOMsg.OUTGOING)
 	 * @see ISOChannel
