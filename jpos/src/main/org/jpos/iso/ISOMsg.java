@@ -7,6 +7,10 @@ import org.jpos.util.LogProducer;
 
 /*
  * $Log$
+ * Revision 1.18  2000/03/05 01:23:42  apr
+ * Changed XMLdump to lowercase
+ * Fixed bug in merge (we were not merging last field in an ISOMsg)
+ *
  * Revision 1.17  2000/03/04 00:37:53  apr
  * Show fieldNumber on inner message dumps
  *
@@ -216,23 +220,23 @@ public class ISOMsg extends ISOComponent implements Cloneable, Loggeable {
      */
     public void dump (PrintStream p, String indent) {
         ISOComponent c;
-	p.print (indent + "<ISOMsg");
+	p.print (indent + "<isomsg");
 	switch (direction) {
 	    case INCOMING:
-		p.print (" dir=\"IN\"");
+		p.print (" direction=\"incoming\"");
 		break;
 	    case OUTGOING:
-		p.print (" dir=\"OUT\"");
+		p.print (" direction=\"outgoing\"");
 		break;
 	}
 	if (fieldNumber != -1)
-	    p.print (" fld=\""+fieldNumber +"\"");
+	    p.print (" fieldid=\""+fieldNumber +"\"");
 	p.println (">");
 	String newIndent = indent + "  ";
         for (int i=0; i<=maxField; i++)
             if ((c = (ISOComponent) fields.get (new Integer (i))) != null)
                 c.dump (p, newIndent);
-        p.println (indent + "</ISOMsg>");
+        p.println (indent + "</isomsg>");
     }
     /**
      * get the component associated with the given field number
@@ -310,7 +314,7 @@ public class ISOMsg extends ISOComponent implements Cloneable, Loggeable {
      * @param m ISOMsg to merge
      */
     public void merge (ISOMsg m) {
-	for (int i=0; i<m.getMaxField(); i++) 
+	for (int i=0; i<=m.getMaxField(); i++) 
 	    try {
 		if (m.hasField(i))
 		    set (m.getComponent(i));
