@@ -72,7 +72,7 @@ public class RotateLogListener extends SimpleLogListener
     long sleepTime;
     long maxSize;
     int  msgCount;
-    public static final int CHECK_INTERVAL = 0;
+    public static final int CHECK_INTERVAL = 100;
 
     /**
      * @param name base log filename
