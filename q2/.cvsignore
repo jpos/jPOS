@@ -2,3 +2,6 @@ build
 deploy
 dist
 log
+eclipsebuild
+.classpath
+.project
