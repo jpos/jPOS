@@ -59,33 +59,6 @@ import java.util.*;
  * @see ISOComponent
  */
 
-/*
- * $Log$
- * Revision 1.20  2000/11/02 12:09:18  apr
- * Added license to every source file
- *
- * Revision 1.19  2000/04/06 12:31:03  apr
- * XML normalize
- *
- * Revision 1.18  2000/03/01 14:44:45  apr
- * Changed package name to org.jpos
- *
- * Revision 1.17  1999/12/15 13:04:13  apr
- * BugFix: bad FS definition
- *
- * Revision 1.16  1999/12/11 17:23:35  apr
- * BugFix: pan/exp separator = in bcd2str()
- *
- * Revision 1.15  1999/11/24 18:15:49  apr
- * Added dumpString used in VISA1 logs
- *
- * Revision 1.14  1999/11/18 23:36:38  apr
- * Added dumpString
- *
- * Revision 1.13  1999/09/20 12:43:14  apr
- * @return in strpad fixed (reported by georgem@tvinet.com)
- *
- */
 public class ISOUtil {
     private static byte[] EBCDIC2ASCII = new byte[] {
         (byte)0x00, (byte)0x01, (byte)0x02, (byte)0x03, 
@@ -578,5 +551,30 @@ public class ISOUtil {
      */
     public static String normalize (String s) {
 	return normalize (s, true);
+    }
+    /**
+     * Protects PAN Or Track2 (suitable for logs)
+     * <per>
+     * 40000101010001 is converted to 400001____0001
+     * 40000101010001=020128375 is converted to 400001____0001=0201_____
+     * @param s string to be protected 
+     * @return 'protected' String
+     */
+    public static String protect (String s) {
+        StringBuffer sb = new StringBuffer();
+        int len   = s.length();
+        int clear = 6;
+        int lastFourIndex = s.indexOf ('=') - 4;
+        if (lastFourIndex < 0)
+            lastFourIndex = len - 4;
+
+        for (int i=0; i<len; i++) {
+            if (s.charAt(i) == '=')
+                clear = 5;
+            else if (i == lastFourIndex)
+                clear = 4;
+            sb.append (clear-- > 0 ? s.charAt(i) : '_');
+        }
+        return sb.toString();
     }
 }
