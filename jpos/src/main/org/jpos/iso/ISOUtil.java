@@ -52,6 +52,7 @@ package org.jpos.iso;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.StringTokenizer;
+import java.io.UnsupportedEncodingException;
 
 /**
  * varios functions needed to pack/unpack ISO-8583 fields
@@ -197,14 +198,22 @@ public class ISOUtil {
         (byte)0xDC, (byte)0x8D, (byte)0x8E, (byte)0xDF
     };
     public static String ebcdicToAscii(byte[] e) {
-        return new String (
-            ebcdicToAsciiBytes (e, 0, e.length)
-        );
+        try {
+            return new String (
+                ebcdicToAsciiBytes (e, 0, e.length), "UTF-8"
+            );
+        } catch (UnsupportedEncodingException ex) {
+            return ex.toString(); // should never happen
+        }
     }
     public static String ebcdicToAscii(byte[] e, int offset, int len) {
-        return new String (
-            ebcdicToAsciiBytes (e, offset, len)
-        );
+        try {
+            return new String (
+                ebcdicToAsciiBytes (e, offset, len), "UTF-8"
+            );
+        } catch (UnsupportedEncodingException ex) {
+            return ex.toString(); // should never happen
+        }
     }
     public static byte[] ebcdicToAsciiBytes (byte[] e) {
         return ebcdicToAsciiBytes (e, 0, e.length);
