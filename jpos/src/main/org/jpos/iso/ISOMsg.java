@@ -74,8 +74,7 @@ public class ISOMsg extends ISOComponent
     protected ISOPackager packager;
     protected boolean dirty, maxFieldDirty;
     protected int direction;
-    //protected byte[] header;
-	protected ISOHeader header;
+    protected ISOHeader header;
     protected int fieldNumber = -1;
     public static final int INCOMING = 1;
     public static final int OUTGOING = 2;
@@ -408,6 +407,8 @@ public class ISOMsg extends ISOComponent
         try {
             ISOMsg m = (ISOMsg) super.clone();
             m.fields = (Hashtable) fields.clone();
+	    if (header != null)
+		m.header = (ISOHeader) header.clone();
             return (Object) m;
         } catch (CloneNotSupportedException e) {
             throw new InternalError();
