@@ -47,7 +47,7 @@
  * information please see <http://www.jpos.org/>.
  */
 
-/* $Id: */
+/* $Id$ */
 
 package xmlpacking;
 
