@@ -3,32 +3,6 @@ package org.jpos.iso;
 import java.util.*;
 import org.jpos.iso.ISOUtil;
 
-class Currency
-{
-    String alphacode;
-    int isocode;
-    int numdecimals;
-        
-    Currency(String alphacode, int isocode, int numdecimals)
-    {
-        this.alphacode=alphacode;
-        this.isocode=isocode;
-        this.numdecimals=numdecimals;
-    }
-    public int getDecimals()
-    {
-        return numdecimals;
-    }
-    public int getIsoCode()
-    {
-        return isocode;
-    }
-    public String getAlphaCode()
-    {
-        return alphacode;
-    }
-}
-
 /**
  * ISO Currency Conversion package 
  * @author salaman@teknos.com
@@ -487,6 +461,11 @@ public class ISOCurrency
             throw new IllegalArgumentException("Failed getIsoCodeFromAlphaCode");
         }
         return  isocode;
+    }
+
+    public static Currency getCurrency (int code) throws ISOException {
+	return (Currency) 
+	    currencies.get (ISOUtil.zeropad (Integer.toString (code), 3));
     }
 
     static public void main(String[] args)
