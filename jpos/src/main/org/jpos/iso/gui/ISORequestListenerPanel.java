@@ -58,6 +58,9 @@
 
 /*
  * $Log$
+ * Revision 1.8  2003/05/16 04:15:18  alwyns
+ * Import cleanups.
+ *
  * Revision 1.7  2000/11/02 12:09:18  apr
  * Added license to every source file
  *
@@ -83,14 +86,28 @@
 
 package org.jpos.iso.gui;
 
-import java.util.Observer;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Insets;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.Observable;
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
-import javax.swing.event.*;
+import java.util.Observer;
 
-import org.jpos.iso.*;
+import javax.swing.BorderFactory;
+import javax.swing.DefaultListModel;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.ListModel;
+
+import org.jpos.iso.ISOException;
+import org.jpos.iso.ISOMsg;
+import org.jpos.iso.ISORequestListener;
 
 public class ISORequestListenerPanel extends JPanel implements Observer {
     /**

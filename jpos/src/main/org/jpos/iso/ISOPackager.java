@@ -48,9 +48,10 @@
  */
 
 package org.jpos.iso;
-import org.jpos.util.LogSource;
 import java.io.IOException;
 import java.io.InputStream;
+
+import org.jpos.util.LogSource;
 
 /**
  * @author apr@cs.com.uy

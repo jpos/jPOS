@@ -49,12 +49,12 @@
 
 package org.jpos.iso.filter;
 
+import org.jpos.core.Configuration;
+import org.jpos.core.ReConfigurable;
+import org.jpos.iso.ISOChannel;
 import org.jpos.iso.ISOFilter;
 import org.jpos.iso.ISOMsg;
-import org.jpos.iso.ISOChannel;
 import org.jpos.util.LogEvent;
-import org.jpos.core.ReConfigurable;
-import org.jpos.core.Configuration;
 
 
 /**

@@ -51,6 +51,9 @@ package org.jpos.util;
 
 /*
  * $Log$
+ * Revision 1.5  2003/05/16 04:11:04  alwyns
+ * Import cleanups.
+ *
  * Revision 1.4  2000/11/02 12:09:18  apr
  * Added license to every source file
  *
@@ -71,12 +74,8 @@ package org.jpos.util;
  * @version $Id$
  */
 
-import java.lang.Math;
-import java.util.Map;
-import java.util.List;
 import java.util.Hashtable;
-import java.util.Vector;
-import org.jpos.util.LockManager.Ticket;
+import java.util.Map;
 
 public class SimpleLockManager implements LockManager {
     Map locks;

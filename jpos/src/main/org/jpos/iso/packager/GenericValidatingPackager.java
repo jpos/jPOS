@@ -49,33 +49,32 @@
 
 package org.jpos.iso.packager;
 
-import java.util.Hashtable;
-import java.util.Stack;
 import java.util.Enumeration;
-import java.util.Vector;
+import java.util.Hashtable;
 import java.util.Properties;
-import org.xml.sax.SAXException;
-import org.xml.sax.Attributes;
-import org.xml.sax.SAXParseException;
-import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.XMLReaderFactory;
-import org.xml.sax.helpers.DefaultHandler;
+import java.util.Stack;
+import java.util.Vector;
+
+import org.jpos.core.ConfigurationException;
 import org.jpos.core.SimpleConfiguration;
-import org.jpos.iso.ISOValidator;
+import org.jpos.iso.ISOBasePackager;
+import org.jpos.iso.ISOBaseValidator;
+import org.jpos.iso.ISOComponent;
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOFieldPackager;
-import org.jpos.iso.ISOBaseValidator;
 import org.jpos.iso.ISOFieldValidator;
-import org.jpos.iso.ISOComponent;
-import org.jpos.iso.ISOBasePackager;
+import org.jpos.iso.ISOMsg;
 import org.jpos.iso.ISOMsgFieldPackager;
 import org.jpos.iso.ISOMsgFieldValidator;
-import org.jpos.iso.ISOMsg;
-import org.jpos.util.LogEvent;
-import org.jpos.core.Configuration;
-import org.jpos.core.ReConfigurable;
-import org.jpos.core.ConfigurationException;
+import org.jpos.iso.ISOValidator;
 import org.jpos.iso.validator.ISOVException;
+import org.jpos.util.LogEvent;
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.DefaultHandler;
+import org.xml.sax.helpers.XMLReaderFactory;
 
 
 /**

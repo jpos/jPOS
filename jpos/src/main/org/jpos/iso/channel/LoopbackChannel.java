@@ -56,17 +56,17 @@ package org.jpos.iso.channel;
  */
 
 import java.io.IOException;
-import org.jpos.iso.ISOMsg;
-import org.jpos.iso.ISOChannel;
-import org.jpos.iso.ISOPackager;
-import org.jpos.iso.ISOException;
+
 import org.jpos.iso.FilteredBase;
-import org.jpos.util.NameRegistrar;
+import org.jpos.iso.ISOException;
+import org.jpos.iso.ISOMsg;
+import org.jpos.iso.ISOPackager;
+import org.jpos.iso.ISOFilter.VetoException;
 import org.jpos.util.BlockingQueue;
-import org.jpos.util.Logger;
 import org.jpos.util.LogEvent;
 import org.jpos.util.LogSource;
-import org.jpos.iso.ISOFilter.VetoException;
+import org.jpos.util.Logger;
+import org.jpos.util.NameRegistrar;
 
 public class LoopbackChannel extends FilteredBase implements LogSource {
     boolean usable = true;

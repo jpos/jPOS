@@ -49,9 +49,9 @@
 
 package  org.jpos.security;
 
-import  java.io.PrintStream;
-import  java.io.Serializable;
-import  org.jpos.iso.ISOUtil;
+import java.io.PrintStream;
+
+import org.jpos.iso.ISOUtil;
 
 /**
  * <p>

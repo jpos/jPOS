@@ -49,17 +49,8 @@
 
 package org.jpos.space;
 
-import java.io.IOException;
-import org.jpos.iso.ISOMsg;
-import org.jpos.iso.ISOUtil;
-import org.jpos.space.Space;
-import org.jpos.space.TransientSpace;
 import org.jpos.core.Configuration;
-import org.jpos.core.ConfigurationException;
 import org.jpos.core.ReConfigurable;
-import org.jpos.iso.ISOChannel;
-import org.jpos.iso.ISOException;
-import org.jpos.util.NameRegistrar;
 
 /**
  * @author Alejandro Revilla

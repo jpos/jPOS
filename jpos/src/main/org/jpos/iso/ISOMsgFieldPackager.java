@@ -50,8 +50,8 @@
 package org.jpos.iso;
 
 
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * ISOMsgFieldPackager is a packager able to pack compound ISOMsgs

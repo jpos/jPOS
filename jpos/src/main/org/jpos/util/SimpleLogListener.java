@@ -49,8 +49,8 @@
 
 package org.jpos.util;
 
-import java.io.*;
-import java.util.*;
+import java.io.PrintStream;
+import java.util.Date;
 
 /**
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>

@@ -49,10 +49,10 @@
 
 package org.jpos.util;
 
-import java.util.Map;
+import java.io.PrintStream;
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.io.PrintStream;
+import java.util.Map;
 
 /**
  * Allow runtime binding of jPOS's components (ISOChannels, Logger, MUXes, etc)

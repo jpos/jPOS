@@ -49,7 +49,6 @@
 
 package org.jpos.space;
 
-import java.util.Set;
 
 /**
  * <p><b>Space</b> uses concepts described in the Linda Coordination Language 

@@ -50,6 +50,9 @@
 
 /*
  * $Log$
+ * Revision 1.4  2003/05/16 04:07:35  alwyns
+ * Import cleanups.
+ *
  * Revision 1.3  2000/11/02 12:09:18  apr
  * Added license to every source file
  *
@@ -63,8 +66,6 @@
 
 package org.jpos.core;
 
-import java.io.*;
-import java.util.*;
 
 /**
  * @author apr@cs.com.uy

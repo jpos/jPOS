@@ -49,10 +49,14 @@
 
 package org.jpos.iso.packager;
 
-import java.util.*;
+import java.util.Hashtable;
 
-import org.jpos.iso.*;
-import org.jpos.util.*;
+import org.jpos.iso.ISOBasePackager;
+import org.jpos.iso.ISOComponent;
+import org.jpos.iso.ISOException;
+import org.jpos.iso.ISOField;
+import org.jpos.util.LogEvent;
+import org.jpos.util.Logger;
 
 /**
  * EuroPay SubField packager

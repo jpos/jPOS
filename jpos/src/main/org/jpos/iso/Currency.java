@@ -49,8 +49,6 @@
 
 package org.jpos.iso;
 
-import java.util.*;
-import org.jpos.iso.ISOUtil;
 
 /**
  * ISO Currency Conversion package 

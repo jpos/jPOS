@@ -48,7 +48,6 @@
  */
 
 package org.jpos.iso;
-import java.io.IOException;
 
 public interface ISOMUXMBean {
     public boolean isConnected();

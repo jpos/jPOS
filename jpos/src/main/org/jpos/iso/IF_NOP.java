@@ -49,7 +49,6 @@
 
 package org.jpos.iso;
 
-import org.jpos.iso.*;
 
 /**
  * @author apr@cs.com.uy & dflc@cs.com.uy

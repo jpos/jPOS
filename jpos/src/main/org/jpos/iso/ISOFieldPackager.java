@@ -49,10 +49,10 @@
 
 package org.jpos.iso;
 
+import java.io.EOFException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectOutput;
-import java.io.IOException;
-import java.io.EOFException;
 
 /**
  * base class for the various IF*.java Field Packagers

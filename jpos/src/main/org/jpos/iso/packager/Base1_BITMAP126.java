@@ -49,8 +49,12 @@
 
 package org.jpos.iso.packager;
 
-import org.jpos.iso.*;
-import java.util.*;
+import java.util.BitSet;
+
+import org.jpos.iso.ISOBitMapPackager;
+import org.jpos.iso.ISOComponent;
+import org.jpos.iso.ISOException;
+import org.jpos.iso.ISOUtil;
 
 /**
  * ISOFieldPackager Binary Bitmap

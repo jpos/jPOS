@@ -49,20 +49,27 @@
 
 package org.jpos.iso.packager;
 
-import java.io.*;
-import java.util.*;
+import java.io.InputStream;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Stack;
 
-import org.xml.sax.*;
-import org.xml.sax.helpers.XMLReaderFactory;
-import org.xml.sax.helpers.DefaultHandler;
-
-
-import org.jpos.iso.*;
-import org.jpos.util.*;
 import org.jpos.core.Configuration;
-import org.jpos.core.ReConfigurable;
 import org.jpos.core.ConfigurationException;
-import org.jpos.iso.packager.*;
+import org.jpos.core.ReConfigurable;
+import org.jpos.iso.IF_TBASE;
+import org.jpos.iso.ISOBasePackager;
+import org.jpos.iso.ISOException;
+import org.jpos.iso.ISOFieldPackager;
+import org.jpos.iso.ISOMsgFieldPackager;
+import org.jpos.util.Logger;
+import org.xml.sax.Attributes;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.DefaultHandler;
+import org.xml.sax.helpers.XMLReaderFactory;
 /**
  * <pre>
  * GenericPackager uses an XML config file to describe the layout of an ISOMessage

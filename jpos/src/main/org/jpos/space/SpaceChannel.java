@@ -49,13 +49,10 @@
 
 package org.jpos.space;
 
-import org.jpos.iso.ISOMsg;
-import org.jpos.iso.Channel;
-import org.jpos.space.Space;
-import org.jpos.space.TransientSpace;
 import org.jpos.core.Configuration;
-import org.jpos.core.ConfigurationException;
 import org.jpos.core.ReConfigurable;
+import org.jpos.iso.Channel;
+import org.jpos.iso.ISOMsg;
 
 /**
  * Space based Channel implementation

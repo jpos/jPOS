@@ -49,16 +49,15 @@
 
 package org.jpos.iso.packager;
 
-import java.io.*;
-import java.util.*;
-import org.jpos.util.Logger;
-import org.jpos.util.LogSource;
-import org.jpos.util.LogEvent;
 import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
-import org.jpos.core.ReConfigurable;
 import org.jpos.core.ConfigurationException;
-import org.jpos.iso.*;
+import org.jpos.core.ReConfigurable;
+import org.jpos.iso.ISOComponent;
+import org.jpos.iso.ISOException;
+import org.jpos.iso.ISOPackager;
+import org.jpos.util.LogSource;
+import org.jpos.util.Logger;
 
 /**
  * Wrapper on standard packager

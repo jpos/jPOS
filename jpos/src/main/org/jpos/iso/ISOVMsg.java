@@ -49,8 +49,8 @@
 
 package org.jpos.iso;
 
-import java.util.ListIterator;
 import java.util.LinkedList;
+import java.util.ListIterator;
 
 /**
  * Wrapper class resulting from process of validating an ISOMsg

@@ -49,19 +49,21 @@
 
 package org.jpos.space;
 
-import java.io.*;
-import java.util.Set;
-import java.util.Map;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FilenameFilter;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.lang.reflect.Field;
-
-import org.jpos.space.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Persistent Space implementation

@@ -49,11 +49,9 @@
 
 package org.jpos.iso;
 
-import org.jpos.iso.ISOComponent;
-import org.jpos.iso.ISOException;
-import org.jpos.iso.validator.ISOVException;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
+import org.jpos.iso.validator.ISOVException;
 
 /**
  * Validator for ASCII numeric fields. By default radix is 10.

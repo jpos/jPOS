@@ -49,7 +49,7 @@
 
 package org.jpos.iso;
 
-import java.util.*;
+import java.util.BitSet;
 
 /**
  * ASCII packaged Bitmap

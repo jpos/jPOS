@@ -49,12 +49,13 @@
 
 package org.jpos.iso;
 
-import java.util.Vector;
-import java.util.Observable;
 import java.util.Collection;
 import java.util.Iterator;
-import org.jpos.util.LogEvent;
+import java.util.Observable;
+import java.util.Vector;
+
 import org.jpos.iso.ISOFilter.VetoException;
+import org.jpos.util.LogEvent;
 
 /**
  * Filtered Channel Base

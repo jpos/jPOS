@@ -49,9 +49,9 @@
 
 package org.jpos.iso;
 
-import java.util.*;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.BitSet;
 
 /**
  * ISOFieldPackager Binary Bitmap

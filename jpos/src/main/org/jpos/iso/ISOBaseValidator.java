@@ -49,15 +49,11 @@
 
 package org.jpos.iso;
 
-import org.jpos.core.ReConfigurable;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
-import org.jpos.iso.ISOException;
-import org.jpos.iso.validator.ISOVException;
+import org.jpos.core.ReConfigurable;
 import org.jpos.util.LogSource;
-import org.jpos.util.LogEvent;
 import org.jpos.util.Logger;
-import java.util.Hashtable;
 
 /**
  * Base Validator class for jPOS composed ISOComponents (ISOMsg).

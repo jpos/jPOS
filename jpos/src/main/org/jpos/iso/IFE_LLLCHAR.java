@@ -48,8 +48,8 @@
  */
 
 package org.jpos.iso;
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * EBCDIC version of IF_LLLCHAR

@@ -49,6 +49,9 @@
 
 /*
  * $Log$
+ * Revision 1.6  2003/05/16 04:11:04  alwyns
+ * Import cleanups.
+ *
  * Revision 1.5  2000/11/02 12:09:18  apr
  * Added license to every source file
  *
@@ -74,7 +77,7 @@
 
 package org.jpos.util;
 
-import java.io.*;
+import java.io.IOException;
 
 public interface Modem {
     public void dial (String number, long aproxTimeout) throws IOException;

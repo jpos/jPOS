@@ -49,6 +49,9 @@
 
 /*
  * $Log$
+ * Revision 1.7  2003/05/16 04:07:35  alwyns
+ * Import cleanups.
+ *
  * Revision 1.6  2000/11/02 12:09:18  apr
  * Added license to every source file
  *
@@ -71,9 +74,10 @@
 
 package org.jpos.core;
 
-import java.io.*;
-import java.util.*;
-import java.lang.reflect.*;
+import java.io.ByteArrayInputStream;
+import java.io.ObjectInputStream;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 
 /**

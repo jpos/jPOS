@@ -49,7 +49,7 @@
 
 package org.jpos.iso.header;
 
-import org.jpos.iso.*;
+import org.jpos.iso.ISOUtil;
 
 /*
  * BASE1 Header

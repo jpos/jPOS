@@ -50,17 +50,18 @@
 package org.jpos.util;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.util.StringTokenizer;
 import java.util.Vector;
-import org.jpos.iso.ISOException;
-import org.jpos.core.Configuration;
+
 import org.jpos.core.Configurable;
-import org.jpos.core.ReConfigurable;
+import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
+import org.jpos.core.ReConfigurable;
+import org.jpos.iso.ISOException;
 
 /**
  * DirPoll operates on a set of directories which defaults to

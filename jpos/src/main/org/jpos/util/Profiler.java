@@ -50,11 +50,9 @@
 package org.jpos.util;
 
 import java.io.PrintStream;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.ArrayList;
-import org.jpos.util.Loggeable;
+import java.util.Collection;
+import java.util.Iterator;
 
 /**
  * Simple Profiler

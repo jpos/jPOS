@@ -49,16 +49,13 @@
 
 package org.jpos.core;
 
-import org.jpos.core.Configuration;
-import org.jpos.core.Configurable;
-import org.jpos.core.ConfigurationException;
 
 /**
  * SubConfiguration objects lets childs objects access attributes
  * in its parent object with a given prefix, for example "child.".
  * Child objects can access properties with their prefix removed.
  *
- * @author <a href="mailto:alcarraz@iie.edu.uy">Andrés Alcarraz</a>
+ * @author <a href="mailto:alcarraz@iie.edu.uy">Andr?s Alcarraz</a>
  * @version $Id$
  */
 public class SubConfiguration implements Configuration{

@@ -49,8 +49,8 @@
 
 package org.jpos.core;
 
-import java.io.*;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author apr@cs.com.uy

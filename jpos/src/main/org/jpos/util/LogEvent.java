@@ -49,9 +49,11 @@
 
 package org.jpos.util;
 
-import java.io.*;
-import java.util.*;
+import java.io.PrintStream;
 import java.sql.SQLException;
+import java.util.EventObject;
+import java.util.Iterator;
+import java.util.Vector;
 
 /**
  * @author apr@cs.com.uy

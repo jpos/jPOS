@@ -50,8 +50,7 @@
 package org.jpos.util;
 
 
-import java.io.*;
-import java.util.*;
+import java.util.EventListener;
 
 /**
  * @author apr@cs.com.uy

@@ -49,8 +49,13 @@
 
 package org.jpos.iso;
 
-import java.io.*;
-import java.util.*;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.PrintStream;
+
 import org.jpos.iso.packager.XMLPackager;
 
 /**

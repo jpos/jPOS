@@ -49,10 +49,9 @@
 
 package org.jpos.iso;
 
-import java.util.Hashtable;
 import org.jpos.core.Configuration;
-import org.jpos.core.ReConfigurable;
 import org.jpos.core.ConfigurationException;
+import org.jpos.core.ReConfigurable;
 import org.jpos.iso.validator.ISOVException;
 
 /**

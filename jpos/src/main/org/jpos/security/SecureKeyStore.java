@@ -49,7 +49,7 @@
 
 package  org.jpos.security;
 
-import  org.jpos.iso.ISOException;
+import org.jpos.iso.ISOException;
 
 
 /**

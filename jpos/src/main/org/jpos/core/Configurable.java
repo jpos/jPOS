@@ -49,9 +49,6 @@
 
 package org.jpos.core;
 
-import java.io.*;
-import java.util.*;
-import org.jpos.iso.ISOException;
 
 /**
  * Object is Configurable

@@ -49,10 +49,14 @@
 
 package org.jpos.iso.packager;
 
-import org.jpos.iso.validator.*;
-import org.jpos.iso.*;
-import org.jpos.util.*;
 import java.util.Hashtable;
+
+import org.jpos.iso.ISOComponent;
+import org.jpos.iso.ISOException;
+import org.jpos.iso.ISOField;
+import org.jpos.iso.validator.ISOVException;
+import org.jpos.util.LogEvent;
+import org.jpos.util.Logger;
 
 /**
  * Tester validating packager for subfields in field 48.

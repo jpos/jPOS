@@ -49,14 +49,20 @@
 
 package org.jpos.iso;
 
-import java.io.*;
-import java.util.*;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.PrintStream;
 import java.lang.ref.WeakReference;
-import org.jpos.util.Loggeable;
-import org.jpos.util.LogSource;
-import org.jpos.iso.packager.XMLPackager;
-import org.jpos.iso.packager.ISO93BPackager;
+import java.util.BitSet;
+import java.util.Enumeration;
+import java.util.Hashtable;
+
 import org.jpos.iso.header.BaseHeader;
+import org.jpos.iso.packager.XMLPackager;
+import org.jpos.util.Loggeable;
 
 /**
  * implements <b>Composite</b>

@@ -49,8 +49,18 @@
 
 package org.jpos.iso.packager;
 
-import java.util.*;
-import org.jpos.iso.*;
+import org.jpos.iso.IFB_AMOUNT;
+import org.jpos.iso.IFB_BINARY;
+import org.jpos.iso.IFB_BITMAP;
+import org.jpos.iso.IFB_LLBINARY;
+import org.jpos.iso.IFB_LLCHAR;
+import org.jpos.iso.IFB_LLLBINARY;
+import org.jpos.iso.IFB_LLLCHAR;
+import org.jpos.iso.IFB_LLNUM;
+import org.jpos.iso.IFB_NUMERIC;
+import org.jpos.iso.IF_CHAR;
+import org.jpos.iso.ISOBasePackager;
+import org.jpos.iso.ISOFieldPackager;
 
 /**
  * ISO 8583 v1993 Binary Packager<br>

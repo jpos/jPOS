@@ -48,8 +48,9 @@
  */
 
 package  org.jpos.util;
-import  org.jpos.iso.ISOUtil;
-import  java.io.PrintStream;
+import java.io.PrintStream;
+
+import org.jpos.iso.ISOUtil;
 
 /**
  * <p>

@@ -49,8 +49,7 @@
 
 package org.jpos.util;
 
-import java.io.*;
-import java.util.*;
+import java.io.PrintStream;
 
 /**
  * Periodically dumps Thread and memory usage

@@ -49,9 +49,19 @@
 
 package org.jpos.iso.packager;
 
-import org.jpos.iso.*;
-import org.jpos.util.*;
-import java.util.*;
+import java.util.BitSet;
+import java.util.Hashtable;
+import java.util.Vector;
+
+import org.jpos.iso.ISOBasePackager;
+import org.jpos.iso.ISOBitMap;
+import org.jpos.iso.ISOBitMapPackager;
+import org.jpos.iso.ISOComponent;
+import org.jpos.iso.ISOException;
+import org.jpos.iso.ISOFieldPackager;
+import org.jpos.iso.ISOUtil;
+import org.jpos.util.LogEvent;
+import org.jpos.util.Logger;
 
 /**
  * ISO 8583 v1987 BINARY Packager 

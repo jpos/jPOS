@@ -49,13 +49,14 @@
 
 package org.jpos.util;
 
-import java.io.*;
-import org.jpos.core.Configuration;
-import org.jpos.core.ReConfigurable;
-import org.jpos.core.ConfigurationException;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 
 import org.apache.log4j.Level;
-import org.apache.log4j.xml.*;
+import org.apache.log4j.xml.DOMConfigurator;
+import org.jpos.core.Configuration;
+import org.jpos.core.ConfigurationException;
+import org.jpos.core.ReConfigurable;
 
 /**
  * @author Eoin P. FLood</a>

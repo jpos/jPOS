@@ -49,7 +49,8 @@
 
 package org.jpos.iso;
 
-import java.util.*;
+import java.util.BitSet;
+import java.util.StringTokenizer;
 
 /**
  * varios functions needed to pack/unpack ISO-8583 fields

@@ -49,8 +49,8 @@
 
 package org.jpos.iso;
 
-import java.util.*;
-import org.jpos.iso.ISOUtil;
+import java.util.Hashtable;
+import java.util.StringTokenizer;
 
 /**
  * ISO Currency Conversion package 

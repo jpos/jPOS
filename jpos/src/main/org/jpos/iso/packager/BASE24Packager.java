@@ -49,8 +49,17 @@
 
 package org.jpos.iso.packager;
 
-import java.util.*;
-import org.jpos.iso.*;
+import org.jpos.iso.IFA_AMOUNT;
+import org.jpos.iso.IFA_BINARY;
+import org.jpos.iso.IFA_BITMAP;
+import org.jpos.iso.IFA_LLCHAR;
+import org.jpos.iso.IFA_LLLCHAR;
+import org.jpos.iso.IFA_LLLNUM;
+import org.jpos.iso.IFA_LLNUM;
+import org.jpos.iso.IFA_NUMERIC;
+import org.jpos.iso.IF_CHAR;
+import org.jpos.iso.ISOBasePackager;
+import org.jpos.iso.ISOFieldPackager;
 
 /**
  * BASE24 Packager made from ISO 8583 v1987 ASCII Packager

@@ -49,13 +49,13 @@
 
 package org.jpos.util;
 
+import java.io.PrintStream;
+import java.util.Date;
+import java.util.Hashtable;
+
 import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
-
-import java.util.Hashtable;
-import java.util.Date;
-import java.io.PrintStream;
 
 
 /**

@@ -49,20 +49,24 @@
 
 package org.jpos.iso.filter;
 
-import java.io.*;
-import org.jpos.iso.*;
-import org.jpos.iso.packager.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 
-import org.jpos.util.LogEvent;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+
 import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
-import org.jpos.iso.ISOFilter.VetoException;
-
-import javax.xml.transform.*;
-import javax.xml.transform.sax.*;
-import javax.xml.transform.dom.*;
-import javax.xml.transform.stream.*;
+import org.jpos.iso.ISOChannel;
+import org.jpos.iso.ISOException;
+import org.jpos.iso.ISOFilter;
+import org.jpos.iso.ISOMsg;
+import org.jpos.iso.packager.XMLPackager;
+import org.jpos.util.LogEvent;
 
 /**
  * Implements ISOFilter by means of XSL-Transformations

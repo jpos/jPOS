@@ -49,16 +49,17 @@
 
 package org.jpos.tpl;
 
-import org.jpos.core.Configuration;
-import org.jpos.core.Configurable;
-import org.jpos.core.ConfigurationException;
-import org.jpos.util.Logger;
-import org.jpos.util.LogSource;
-import org.jpos.util.LogEvent;
-import org.jpos.util.NameRegistrar;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.Vector;
 
-import java.sql.*;
-import java.util.*;
+import org.jpos.core.Configurable;
+import org.jpos.core.Configuration;
+import org.jpos.core.ConfigurationException;
+import org.jpos.util.LogSource;
+import org.jpos.util.Logger;
+import org.jpos.util.NameRegistrar;
 
 /** A class for preallocating, recycling, and managing
  *  JDBC connections.

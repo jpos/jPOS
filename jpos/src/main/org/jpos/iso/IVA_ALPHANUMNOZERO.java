@@ -49,8 +49,6 @@
 
 package org.jpos.iso;
 
-import org.jpos.iso.ISOFieldValidator;
-import org.jpos.iso.ISOException;
 import org.jpos.iso.validator.ISOVException;
 
 /**

@@ -49,7 +49,7 @@
 
 package org.jpos.util;
 
-import java.util.*;
+import java.util.Timer;
 
 /**
  * Timer accesor singleton

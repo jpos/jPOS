@@ -49,8 +49,12 @@
 
 package org.jpos.core;
 
-import java.io.*;
-import java.util.*;
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.List;
+import java.util.Properties;
 
 /**
  * @author apr@cs.com.uy

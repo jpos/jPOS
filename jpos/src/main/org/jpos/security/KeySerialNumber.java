@@ -49,9 +49,10 @@
 
 package  org.jpos.security;
 
-import  org.jpos.util.Loggeable;
-import  java.io.PrintStream;
-import  java.io.Serializable;
+import java.io.PrintStream;
+import java.io.Serializable;
+
+import org.jpos.util.Loggeable;
 
 
 /**

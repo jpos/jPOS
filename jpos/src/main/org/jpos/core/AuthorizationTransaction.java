@@ -49,6 +49,9 @@
 
 /*
  * $Log$
+ * Revision 1.11  2003/05/16 04:07:35  alwyns
+ * Import cleanups.
+ *
  * Revision 1.10  2000/11/02 12:09:18  apr
  * Added license to every source file
  *
@@ -92,9 +95,9 @@
 
 package org.jpos.core;
 
-import java.io.*;
-import java.math.*;
-import java.util.*;
+import java.io.PrintStream;
+import java.math.BigDecimal;
+
 import org.jpos.util.Loggeable;
 
 /**

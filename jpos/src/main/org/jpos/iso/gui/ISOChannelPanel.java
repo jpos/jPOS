@@ -49,6 +49,9 @@
 
 /*
  * $Log$
+ * Revision 1.12  2003/05/16 04:15:17  alwyns
+ * Import cleanups.
+ *
  * Revision 1.11  2001/10/17 17:06:20  apr
  * Removed a few methods from ISOChannel that belongs to BaseChannel
  * (more to be removed soon)
@@ -98,14 +101,23 @@ package org.jpos.iso.gui;
  * @see ISOMsgPanel
  * @serial
  */
-import java.util.Observer;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.Insets;
 import java.util.Observable;
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
-import javax.swing.event.*;
+import java.util.Observer;
 
-import org.jpos.iso.*;
+import javax.swing.BorderFactory;
+import javax.swing.DefaultListModel;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.ListModel;
+
+import org.jpos.iso.BaseChannel;
+import org.jpos.iso.ISOChannel;
+import org.jpos.iso.ISOException;
+import org.jpos.iso.ISOMsg;
+import org.jpos.iso.ISOUtil;
 
 public class ISOChannelPanel extends JPanel implements Observer {
     /**

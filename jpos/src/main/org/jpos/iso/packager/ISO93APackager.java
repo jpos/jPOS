@@ -49,8 +49,18 @@
 
 package org.jpos.iso.packager;
 
-import java.util.*;
-import org.jpos.iso.*;
+import org.jpos.iso.IFA_AMOUNT;
+import org.jpos.iso.IFA_BINARY;
+import org.jpos.iso.IFA_BITMAP;
+import org.jpos.iso.IFA_LLBINARY;
+import org.jpos.iso.IFA_LLCHAR;
+import org.jpos.iso.IFA_LLLBINARY;
+import org.jpos.iso.IFA_LLLCHAR;
+import org.jpos.iso.IFA_LLNUM;
+import org.jpos.iso.IFA_NUMERIC;
+import org.jpos.iso.IF_CHAR;
+import org.jpos.iso.ISOBasePackager;
+import org.jpos.iso.ISOFieldPackager;
 
 /**
  * ISO 8583 v1993 ASCII Packager<br>

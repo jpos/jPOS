@@ -49,12 +49,27 @@
 
 package org.jpos.iso.packager;
 
-import java.util.*;
+import org.jpos.iso.IFA_AMOUNT;
+import org.jpos.iso.IFA_BINARY;
+import org.jpos.iso.IFA_LLCHAR;
+import org.jpos.iso.IFA_LLLBINARY;
+import org.jpos.iso.IFA_LLLCHAR;
+import org.jpos.iso.IFA_LLLLCHAR;
+import org.jpos.iso.IFA_LLLLLCHAR;
+import org.jpos.iso.IFA_LLNUM;
+import org.jpos.iso.IFA_NUMERIC;
+import org.jpos.iso.IFB_BITMAP;
+import org.jpos.iso.IF_CHAR;
+import org.jpos.iso.ISOBasePackager;
+import org.jpos.iso.ISOFieldPackager;
+import org.jpos.iso.ISOMsgFieldPackager;
 import org.jpos.util.Logger;
-import org.jpos.iso.*;
 
 /*
  * $Log$
+ * Revision 1.4  2003/05/16 04:15:14  alwyns
+ * Import cleanups.
+ *
  * Revision 1.3  2001/01/13 19:26:09  victor
  * changed bitmap size to 16
  *

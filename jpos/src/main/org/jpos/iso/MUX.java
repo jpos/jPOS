@@ -49,7 +49,6 @@
 
 package org.jpos.iso;
 
-import org.jpos.iso.ISOMsg;
 
 /**
  * MUX interface

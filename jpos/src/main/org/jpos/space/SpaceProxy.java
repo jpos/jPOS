@@ -49,20 +49,22 @@
 
 package org.jpos.space;
 
-import java.util.Set;
 import java.io.Serializable;
 import java.rmi.RemoteException;
-import java.rmi.server.UnicastRemoteObject;
+import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.ExportException;
-import java.rmi.registry.LocateRegistry;
+import java.rmi.server.UnicastRemoteObject;
+import java.util.Set;
+
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import org.jpos.util.SimpleLogSource;
-import org.jpos.core.ReConfigurable;
+
 import org.jpos.core.Configuration;
-import org.jpos.util.Logger;
+import org.jpos.core.ReConfigurable;
 import org.jpos.util.LogEvent;
+import org.jpos.util.Logger;
+import org.jpos.util.SimpleLogSource;
 
 /**
  * RMI Space Proxy 

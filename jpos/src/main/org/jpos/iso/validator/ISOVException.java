@@ -49,8 +49,8 @@
 
 package org.jpos.iso.validator;
 
-import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOComponent;
+import org.jpos.iso.ISOException;
 
 /**
  * This type of exception is raised while validating jPOS ISOComponents.

@@ -49,9 +49,6 @@
 
 package org.jpos.core;
 
-import java.io.*;
-import java.util.*;
-import org.jpos.iso.ISOException;
 import org.w3c.dom.Node;
 
 /**

@@ -50,6 +50,7 @@
 package org.jpos.util;
 
 import java.io.PrintStream;
+
 import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;

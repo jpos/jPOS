@@ -49,7 +49,6 @@
 
 package org.jpos.tpl;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**

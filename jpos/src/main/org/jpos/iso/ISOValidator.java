@@ -49,7 +49,6 @@
 
 package org.jpos.iso;
 
-import org.jpos.iso.ISOException;
 
 /**
  * Validates a jPOS ISOComponent. These kind of validations are

@@ -49,15 +49,18 @@
 
 package org.jpos.tpl;
 
-import java.io.*;
-import java.sql.*;
-import org.jpos.iso.ISOUtil;
-import org.jpos.util.Logger;
-import org.jpos.util.LogSource;
-import org.jpos.util.LogEvent;
-import org.jpos.core.Configuration;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
 import org.jpos.core.Configurable;
+import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
+import org.jpos.util.LogEvent;
+import org.jpos.util.LogSource;
+import org.jpos.util.Logger;
 
 /**
  * DataSource implementation used by PersistentPeer implementations

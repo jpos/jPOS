@@ -49,8 +49,15 @@
 
 package org.jpos.iso.packager;
 
-import java.util.*;
-import org.jpos.iso.*;
+import org.jpos.iso.IFA_BINARY;
+import org.jpos.iso.IFA_FLLCHAR;
+import org.jpos.iso.IFA_FLLNUM;
+import org.jpos.iso.IFA_LLLCHAR;
+import org.jpos.iso.IFA_NUMERIC;
+import org.jpos.iso.IF_CHAR;
+import org.jpos.iso.ISOBasePackager;
+import org.jpos.iso.ISOFieldPackager;
+import org.jpos.iso.X92_BITMAP;
 
 /**
  * ANSI X9.2 Packager

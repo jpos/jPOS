@@ -49,7 +49,7 @@
 
 package org.jpos.util;
 
-import java.io.*;
+import java.io.PrintStream;
 
 /**
  * @author apr@cs.com.uy

@@ -49,16 +49,19 @@
 
 package org.jpos.iso.channel;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
 import java.net.ServerSocket;
-import java.net.Socket;
-import org.jpos.iso.*;
-import org.jpos.util.Logger;
-import org.jpos.util.LogEvent;
+
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
+import org.jpos.iso.BaseChannel;
+import org.jpos.iso.ISOException;
+import org.jpos.iso.ISOHeader;
+import org.jpos.iso.ISOMsg;
+import org.jpos.iso.ISOPackager;
 import org.jpos.iso.header.BASE1Header;
+import org.jpos.util.LogEvent;
+import org.jpos.util.Logger;
 
 /**
  * ISOChannel implementation - VISA's VAP framing

@@ -49,13 +49,15 @@
 
 package org.jpos.iso.channel;
 
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.EOFException;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.SocketException;
-import org.jpos.iso.*;
-import org.jpos.iso.packager.XMLPackager;
+
+import org.jpos.iso.BaseChannel;
+import org.jpos.iso.ISOPackager;
 
 /**
  * Extracts &lt;isomsg&gt; blocks from standard jPOS log
