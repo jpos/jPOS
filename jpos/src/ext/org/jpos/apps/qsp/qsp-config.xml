@@ -1,0 +1,10 @@
+<?xml version="1.0" ?>
+<!DOCTYPE qsp-config SYSTEM "qsp-config.dtd"> 
+<qsp-config>
+ <logger name="qsp">
+    <log-listener name="simple" type="simple" />
+    <log-listener name="rotate" type="rotate" 
+         filename="/tmp/qsp.log" window="86400" copies="10" />
+    />
+ </logger>
+</qsp-config>

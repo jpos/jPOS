@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id$ -->
+
+<!ELEMENT qsp-config (logger*)>
+
+<!-- logger -->
+<!ELEMENT logger (log-listener*)>
+<!ATTLIST logger name ID #REQUIRED>
+
+<!-- log-listener -->
+<!ELEMENT log-listener EMPTY>
+<!ATTLIST log-listener type (simple|rotate) #REQUIRED>
+<!ATTLIST log-listener name CDATA #IMPLIED>
+<!ATTLIST log-listener filename CDATA #IMPLIED>
+<!ATTLIST log-listener window   CDATA #IMPLIED>
+<!ATTLIST log-listener copies   CDATA #IMPLIED>
+
+
