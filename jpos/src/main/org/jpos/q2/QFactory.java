@@ -282,8 +282,22 @@ public class QFactory {
                 } catch (Exception ex) {
                     throw new Q2ConfigurationException (file, ex);
                 }
-            else if (name != null && value != null)
-                props.put (name, value);
+            else if (name != null && value != null) {
+                Object obj = props.get (name);
+                if (obj instanceof String[]) {
+                    String[] mobj = (String[]) obj;
+                    String[] m = new String[mobj.length + 1];
+                    System.arraycopy(mobj,0,m,0,mobj.length);
+                    m[mobj.length] = value;
+                    props.put (name, m);
+                } else if (obj instanceof String) {
+                    String[] m = new String[2];
+                    m[0] = (String) obj;
+                    m[1] = value;
+                    props.put (name, m);
+                } else
+                    props.put (name, value);
+            }
         }
         return new SimpleConfiguration (props);
     }
