@@ -123,7 +123,11 @@ public class XMLChannel extends BaseChannel {
 	return sb.toString().getBytes();
     }
     protected int getHeaderLength() { 
+        // XML Channel does not support header
 	return 0; 
+    }
+    protected void sendMessageHeader(ISOMsg m, int len) {
+        // XML Channel does not support header
     }
     protected void connect (Socket socket) throws IOException {
 	super.connect (socket);

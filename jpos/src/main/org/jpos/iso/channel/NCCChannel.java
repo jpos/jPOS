@@ -68,8 +68,6 @@ import org.jpos.util.*;
  * @see ISOChannel
  */
 public class NCCChannel extends BaseChannel {
-    byte[] TPDU;
-
     /**
      * Public constructor 
      */
@@ -86,7 +84,7 @@ public class NCCChannel extends BaseChannel {
      */
     public NCCChannel (String host, int port, ISOPackager p, byte[] TPDU) {
         super(host, port, p);
-        this.TPDU = TPDU;
+        this.header = TPDU;
     }
     /**
      * Construct server ISOChannel
@@ -97,7 +95,7 @@ public class NCCChannel extends BaseChannel {
      */
     public NCCChannel (ISOPackager p, byte[] TPDU) throws IOException {
         super(p);
-        this.TPDU = TPDU;
+        this.header = TPDU;
     }
     /**
      * constructs server ISOChannel associated with a Server Socket
@@ -111,7 +109,7 @@ public class NCCChannel extends BaseChannel {
         throws IOException
     {
         super(p, serverSocket);
-        this.TPDU = TPDU;
+        this.header = TPDU;
     }
     protected void sendMessageLength(int len) throws IOException {
         try {
@@ -144,24 +142,16 @@ public class NCCChannel extends BaseChannel {
             }
         }
         else
-            h = TPDU;
+            h = header ;
         if (h != null) 
             serverOut.write(h);
-    }
-    protected int getHeaderLength() { 
-        return TPDU != null ? TPDU.length : 0;
-    }
-    public void setHeader (byte[] TPDU) {
-	this.TPDU = TPDU;
     }
     /**
      * New QSP compatible signature (see QSP's ConfigChannel)
      * @param header String as seen by QSP
      */
     public void setHeader (String header) {
-	setHeader (ISOUtil.str2bcd(header, false));
-    }
-    public byte[] getHeader () {
-	return TPDU;
+	super.setHeader (ISOUtil.str2bcd(header, false));
     }
 }
+

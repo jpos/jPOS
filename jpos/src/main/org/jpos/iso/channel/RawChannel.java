@@ -68,8 +68,6 @@ import org.jpos.iso.*;
  * @see ISOChannel
  */
 public class RawChannel extends BaseChannel {
-    byte[] TPDU;
-
     /**
      * Public constructor (used by Class.forName("...").newInstance())
      */
@@ -78,44 +76,42 @@ public class RawChannel extends BaseChannel {
     }
     /**
      * Construct client ISOChannel
-     * @param host  server TCP Address
-     * @param port  server port number
-     * @param p     an ISOPackager
-     * @param TPDU  an optional raw header (i.e. TPDU)
+     * @param host   server TCP Address
+     * @param port   server port number
+     * @param p      an ISOPackager
+     * @param header an optional raw header (i.e. TPDU)
      * @see ISOPackager
      */
-    public RawChannel (String host, int port, ISOPackager p, byte[] TPDU) {
+    public RawChannel (String host, int port, ISOPackager p, byte[] header) {
         super(host, port, p);
-        this.TPDU = TPDU;
+        this.header = header;
     }
     /**
      * Construct server ISOChannel
-     * @param p     an ISOPackager
-     * @param TPDU  an optional raw header (i.e. TPDU)
+     * @param p      an ISOPackager
+     * @param header an optional raw header (i.e. TPDU)
      * @exception IOException
      * @see ISOPackager
      */
-    public RawChannel (ISOPackager p, byte[] TPDU) throws IOException {
+    public RawChannel (ISOPackager p, byte[] header) throws IOException {
         super(p);
-        this.TPDU = TPDU;
+        this.header = header;
     }
     /**
      * constructs a server ISOChannel associated with a Server Socket
-     * @param p     an ISOPackager
-     * @param TPDU  an optional raw header (i.e. TPDU)
+     * @param p      an ISOPackager
+     * @param header an optional raw header (i.e. TPDU)
      * @param serverSocket where to accept a connection
      * @exception IOException
      * @see ISOPackager
      */
-    public RawChannel (ISOPackager p, byte[] TPDU, ServerSocket serverSocket) 
+    public RawChannel (ISOPackager p, byte[] header, ServerSocket serverSocket) 
         throws IOException
     {
         super(p, serverSocket);
-        this.TPDU = TPDU;
+        this.header = header;
     }
     protected void sendMessageLength(int len) throws IOException {
-        // if (TPDU != null)
-        //     len += TPDU.length;
         serverOut.write (len >> 24);
         serverOut.write (len >> 16);
         serverOut.write (len >> 8);
@@ -130,24 +126,11 @@ public class RawChannel extends BaseChannel {
             ((((int)b[2])&0xFF) << 8) | 
             (((int)b[3])&0xFF));
     }
-    protected void sendMessageHeader(ISOMsg m, int len) throws IOException { 
-        if (TPDU != null) 
-            serverOut.write(TPDU);
-    }
-    protected int getHeaderLength() { 
-        return TPDU != null ? TPDU.length : 0;
-    }
-    public void setHeader (byte[] TPDU) {
-	this.TPDU = TPDU;
-    }
     /**
      * New QSP compatible signature (see QSP's ConfigChannel)
      * @param header String as seen by QSP
      */
     public void setHeader (String header) {
-	setHeader (ISOUtil.str2bcd(header, false));
-    }
-    public byte[] getHeader() {
-	return TPDU;
+	super.setHeader (ISOUtil.str2bcd(header, false));
     }
 }

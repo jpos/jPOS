@@ -71,7 +71,6 @@ import org.jpos.iso.packager.XMLPackager;
  */
 public class PADChannel extends BaseChannel {
     BufferedReader reader = null;
-    protected byte[] header;
     /**
      * No-args constructor
      */
@@ -152,25 +151,12 @@ public class PADChannel extends BaseChannel {
 	super.disconnect ();
 	reader = null;
     }
-    protected int getHeaderLength() { 
-        return header != null ? header.length : 0;
-    }
-    public void setHeader (byte[] header) {
-	this.header = header;
-    }
     /**
      * @param header Hex representation of header
      */
     public void setHeader (String header) {
-	setHeader (
+	super.setHeader (
 	    ISOUtil.hex2byte (header.getBytes(), 0, header.length() / 2)
 	);
-    }
-    public byte[] getHeader () {
-	return header;
-    }
-    protected void sendMessageHeader(ISOMsg m, int len) throws IOException { 
-        if (header != null) 
-            serverOut.write(header);
     }
 }

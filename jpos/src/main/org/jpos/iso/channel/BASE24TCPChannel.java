@@ -75,7 +75,6 @@ import org.jpos.util.*;
  */
 
 public class BASE24TCPChannel extends BaseChannel {
-    protected byte[] header;
     /**
      * Public constructor (used by Class.forName("...").newInstance())
      */
@@ -120,24 +119,6 @@ public class BASE24TCPChannel extends BaseChannel {
      */
     protected void sendMessageTrailler(ISOMsg m, int len) throws IOException {
         serverOut.write (3);
-    }
-    protected void sendMessageHeader(ISOMsg m, int len) throws IOException { 
-	if (m.getHeader() != null)
-            serverOut.write(m.getHeader());
-        else if (header != null) 
-            serverOut.write(header);
-    }
-    protected int getHeaderLength() { 
-        return header != null ? header.length : 0;
-    }
-    public void setHeader (byte[] header) {
-	this.header = header;
-    }
-    public void setHeader (String header) {
-	setHeader (header.getBytes());
-    }
-    public byte[] getHeader () {
-	return header;
     }
     protected void sendMessageLength(int len) throws IOException {
         len++;  // one byte trailler
