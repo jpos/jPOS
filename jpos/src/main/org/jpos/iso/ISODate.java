@@ -66,6 +66,40 @@ public class ISODate {
         } catch (java.text.ParseException e) { }
         return d;
     }
+
+    /**
+     * try to find out suitable date given MMDDhhmmss format<br>
+     * (difficult thing being finding out appropiate year)
+     * @param d date formated as MMDDhhmmss, typical field 13 + field 12
+     * @return Date
+     */
+    public static Date parseISODate (String d) {
+	int MM = Integer.parseInt(d.substring (0, 2))-1;
+	int DD = Integer.parseInt(d.substring (2, 4));
+	int hh = Integer.parseInt(d.substring (4, 6));
+	int mm = Integer.parseInt(d.substring (6, 8));
+	int ss = Integer.parseInt(d.substring (8,10));
+
+	Date now = new Date();
+	Calendar cal = new GregorianCalendar();
+
+	cal.setTime (now);
+	cal.set (Calendar.MONTH, MM);
+	cal.set (Calendar.DATE, DD);
+	cal.set (Calendar.HOUR_OF_DAY, hh);
+	cal.set (Calendar.MINUTE, mm);
+	cal.set (Calendar.SECOND, ss);
+
+	Date thisYear = cal.getTime();
+	cal.set (Calendar.YEAR, cal.get (Calendar.YEAR)-1);
+	Date previousYear = cal.getTime();
+
+	if (Math.abs (now.getTime() - previousYear.getTime()) <
+	    Math.abs (now.getTime() - thisYear.getTime()) )
+	    thisYear = previousYear;
+	return thisYear;
+    }
+
     /**
      * @return date in MMddHHmmss format suitable for FIeld 7
      */
