@@ -170,7 +170,8 @@ public class DirPoll extends SimpleLogSource
             ((String) prio.elementAt(currentPriority)) : null;
         if (ext != null && !name.endsWith(ext))
             return false;
-        return (new File(dir, name)).isFile();
+        File f = new File (dir, name);
+        return f.isFile() && (f.length() > 0);
     }
 
     //--------------------------------------------- Runnable implementation
