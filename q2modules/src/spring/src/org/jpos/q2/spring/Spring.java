@@ -7,7 +7,7 @@
 package org.jpos.q2.spring;
 
 import org.jpos.q2.QBeanSupport;
-import org.jpos.q2.Q2ConfigurationException;
+import org.jpos.core.ConfigurationException;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 import org.springframework.context.ApplicationContext;
 import org.jpos.util.NameRegistrar;
@@ -19,12 +19,14 @@ import org.jpos.util.NameRegistrar;
  */
 public class Spring extends QBeanSupport implements SpringMBean {
     ApplicationContext context;
-    String config;
+    String[] configFiles;
 
-    public void initService () throws Q2ConfigurationException {
-        if (config == null)
-            throw new Q2ConfigurationException ("config property not specified");
-        context = new FileSystemXmlApplicationContext( config.split(",") );
+    public void initService () throws ConfigurationException {
+        configFiles = cfg.getAll( "config" ); 
+        if ( configFiles.length < 1 )
+            throw new ConfigurationException ("config property not specified");
+
+        context = new FileSystemXmlApplicationContext( configFiles );
     }
 
     public void startService () {
@@ -39,21 +41,15 @@ public class Spring extends QBeanSupport implements SpringMBean {
      * Returns the Spring ApplicationContext
      */
     public ApplicationContext getContext () {
-	return context;
+	    return context;
     }
 
     /**
      * @jmx:managed-attribute description="Configuration Files"
      */
-    public void setConfig (String config) {
-        this.config = config;
+    public String[] getConfig () {
+        return configFiles;
     }
 
-    /**
-     * @jmx:managed-attribute description="Configuration Files"
-     */
-    public String getConfig () {
-        return config;
-    }
 }
 
