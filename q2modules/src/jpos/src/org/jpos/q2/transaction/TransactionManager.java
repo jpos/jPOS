@@ -7,7 +7,9 @@
 package org.jpos.q2.transaction;
 
 import java.io.Serializable;
+import java.util.Map;
 import java.util.List;
+import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.Iterator;
 import org.jdom.Element;
@@ -22,6 +24,7 @@ import org.jpos.util.Logger;
 import org.jpos.util.LogEvent;
 import org.jpos.transaction.TransactionConstants;
 import org.jpos.transaction.TransactionParticipant;
+import org.jpos.transaction.GroupSelector;
 import org.jpos.transaction.AbortParticipant;
 import org.jpos.transaction.ContextRecovery;
 
@@ -33,16 +36,19 @@ public class TransactionManager
     Space psp;
     String queue;
     String tailLock;
-    List participants;
+    Map groups;
     long head, tail;
     public static final String  HEAD       = "$HEAD";
     public static final String  TAIL       = "$TAIL";
     public static final String  CONTEXT    = "$CONTEXT.";
     public static final String  STATE      = "$STATE.";
+    public static final String  GROUPS     = "$GROUPS.";
     public static final String  TAILLOCK   = "$TAILLOCK";
     public static final Integer PREPARING  = new Integer (0);
     public static final Integer COMMITTING = new Integer (1);
     public static final Integer DONE       = new Integer (2);
+    public static final String  DEFAULT_GROUP = "";
+    public static final long    MAX_PARTICIPANTS = 1000;  // loop prevention
 
     public void initService () throws Q2ConfigurationException {
         queue = cfg.get ("queue", null);
@@ -53,8 +59,9 @@ public class TransactionManager
         tail = initCounter (TAIL, cfg.getLong ("initial-tail", 0));
         head = Math.max (initCounter (HEAD, tail), tail);
         tailLock = TAILLOCK + "." + Integer.toString (this.hashCode());
-
         initTailLock ();
+
+        groups = new HashMap();
         initParticipants (getPersist());
     }
     public void startService () {
@@ -69,7 +76,7 @@ public class TransactionManager
     public void stopService () {
         long sessions = cfg.getLong ("sessions", 1);
         for (int i=0; i<sessions; i++)
-            sp.out (queue, this);
+            sp.out (queue, this, 60*1000);
     }
     public void run () {
         long id;
@@ -183,9 +190,15 @@ public class TransactionManager
     }
     private int prepare (long id, Serializable context, List members) {
         boolean abort = false;
-        Iterator iter = participants.iterator();
-        while (iter.hasNext ()) {
+        Iterator iter = getParticipants (DEFAULT_GROUP).iterator();
+        for (int i=0; iter.hasNext (); i++) {
             int action = 0;
+            if (i > MAX_PARTICIPANTS) {
+                getLog().warn (
+                    "loop detected - transaction " +id + " aborted."
+                );
+                return ABORTED;
+            }
             TransactionParticipant p = (TransactionParticipant) iter.next();
             if (abort) {
                 action = prepareForAbort (p, id, context);
@@ -196,27 +209,70 @@ public class TransactionManager
             if ((action & READONLY) == 0) {
                 snapshot (id, context);
             }
-            if ((action & NO_JOIN) == 0) 
+            if ((action & NO_JOIN) == 0) {
                 members.add (p);
+            }
+            if (p instanceof GroupSelector) {
+                String groupName = ((GroupSelector)p).select (id, context);
+                if (groupName != null) {
+                    addGroup (id, groupName);
+                    iter = getParticipants(groupName).iterator();
+                    continue;
+                }
+            }
         }
         return members.size() == 0 ? NO_JOIN : (abort ? ABORTED : PREPARED);
+    }
+    private List getParticipants (String groupName) {
+        List participants = (List) groups.get (groupName);
+        if (participants == null)
+            participants = new ArrayList();
+        return participants;
+    }
+    private List getParticipants (long id) {
+        List participants = getParticipants (DEFAULT_GROUP);
+        String key = getKey(GROUPS, id);
+        String grp = null;
+        while ( (grp = (String) psp.inp (key)) != null) {
+            participants.addAll (getParticipants (grp));
+        }
+        return participants;
     }
     private void initParticipants (Element config) 
         throws Q2ConfigurationException
     {
-        participants = new ArrayList ();
-        Iterator iter = config.getChildren ("participant").iterator();
+        groups.put (DEFAULT_GROUP,  initGroup (config));
+        Iterator iter = config.getChildren ("group").iterator();
         while (iter.hasNext()) {
-            participants.add (createParticipant ((Element) iter.next()));
+            Element e = (Element) iter.next();
+            String name = e.getAttributeValue ("name");
+            if (name == null) 
+                throw new Q2ConfigurationException ("missing group name");
+            if (groups.get (name) != null) {
+                throw new Q2ConfigurationException (
+                    "Group '" + name + "' already defined"
+                );
+            }
+            groups.put (name, initGroup (e));
         }
+    }
+    private ArrayList initGroup (Element e) 
+        throws Q2ConfigurationException
+    {
+        ArrayList group = new ArrayList ();
+        Iterator iter = e.getChildren ("participant").iterator();
+        while (iter.hasNext()) {
+            group.add (createParticipant ((Element) iter.next()));
+        }
+        return group;
     }
     private TransactionParticipant createParticipant (Element e) 
         throws Q2ConfigurationException
     {
         QFactory factory = getFactory();
-        TransactionParticipant participant = (TransactionParticipant)
-            factory.newInstance (e.getAttributeValue ("class"));
-
+        TransactionParticipant participant = (TransactionParticipant) 
+            factory.newInstance (e.getAttributeValue ("class")
+        );
         factory.setLogger (participant, e);
         factory.setConfiguration (participant, e);
         return participant;
@@ -321,14 +377,21 @@ public class TransactionManager
             commitOn (psp);
         }
     }
+    private void addGroup (long id, String groupName) {
+        if (groupName != null)
+            psp.out (getKey (GROUPS, id), groupName);
+    }
     private void purge (long id) {
         String stateKey   = getKey (STATE, id);
         String contextKey = getKey (CONTEXT, id);
+        String groupsKey  = getKey (GROUPS, id);
         synchronized (psp) {
             commitOff (psp);
             while (psp.inp (stateKey) != null)
                 ;
             while (psp.inp (contextKey) != null)
+                ;
+            while (psp.inp (groupsKey) != null)
                 ;
             commitOn (psp);
         }
@@ -360,15 +423,14 @@ public class TransactionManager
 
             if (DONE.equals (state)) {
                 evt.addMessage ("<done/>");
-                purge (id);
-                return; 
             } else if (COMMITTING.equals (state)) {
                 evt.addMessage ("<commit/>");
-                commit (id, context, participants, true);
+                commit (id, context, getParticipants (id), true);
             } else if (PREPARING.equals (state)) {
                 evt.addMessage ("<abort/>");
-                abort (id, context, participants, true);
+                abort (id, context, getParticipants (id), true);
             }
+            purge (id);
         } finally {
             Logger.log (evt);
         }
