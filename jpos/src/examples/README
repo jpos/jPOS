@@ -6,7 +6,7 @@ In order to run the examples you have to
 (from your base jPOS installation directory)
 
    bin/build examples
-   example <example-name> (i.e. example hello)
+   bin/example <example-name> (i.e. example hello)
 
 We recommend that you read them in the following order:
 
