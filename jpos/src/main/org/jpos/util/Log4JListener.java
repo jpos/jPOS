@@ -113,7 +113,10 @@ public class Log4JListener implements LogListener, ReConfigurable
     }
 
     public synchronized LogEvent log (LogEvent ev) {
-        org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger (ev.getRealm());
+
+        org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger (
+            ev.getRealm().replace('/', ':')
+        );
         if (logger.isEnabledFor ( _level)) {
             ByteArrayOutputStream w = new ByteArrayOutputStream ();
             PrintStream p = new PrintStream (w);
@@ -123,3 +126,4 @@ public class Log4JListener implements LogListener, ReConfigurable
         return ev;
     }
 }
+
