@@ -148,8 +148,12 @@ public class Q2 implements FileFilter {
             server = (MBeanServer) mbeanServerList.get(0);
         }
         ObjectName loaderName = new ObjectName (Q2_CLASS_LOADER);
-        loader = new QClassLoader (server, libDir, loaderName);
-        server.registerMBean (loader, loaderName);
+        try {
+            loader = new QClassLoader (server, libDir, loaderName);
+            loader = loader.scan();
+        } catch (Throwable t) {
+            log.error ("initial-scan", t);
+        }
         factory = new QFactory (loaderName, this);
         initSystemLogger ();
         addShutdownHook ();
