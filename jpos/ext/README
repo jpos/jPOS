@@ -33,13 +33,6 @@ In order to build 'ext' module you will have to install here
   - jep.jar (used by CalculateFilter and SQLFilter)
     see http://sf.net/projects/jep
 
-  - jms.jar (used by Q2 JMS Sender and Receiver services)
-    see http://java.sun.com/products/jms
-
-  - stcjms.jar (Used by Q2 Egate JMS Sender and Receiver services)
-    The jar is on the Egate development CD's. If you do not know what Egate is,
-    do not bother.
-
 In order to build jPOS' aspects you need:
 
   - aspectj-ant.jar
