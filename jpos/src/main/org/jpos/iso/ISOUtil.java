@@ -991,5 +991,65 @@ public class ISOUtil {
     public static int parseInt (byte[] bArray) throws NumberFormatException {
         return parseInt (bArray,10);
     }
+    private static String hexOffset (int i) {
+        i = (i>>4) << 4;
+        int w = i > 0xFFFF ? 8 : 4;
+        try {
+            return zeropad (Integer.toString (i, 16), w);
+        } catch (ISOException e) {
+            // should not happen
+            return e.getMessage();
+        }
+    }
+    /**
+     * @param b a byte[] buffer
+     * @return hexdump
+     */
+    public static String hexdump (byte[] b) {
+        StringBuffer sb    = new StringBuffer ();
+        StringBuffer hex   = new StringBuffer ();
+        StringBuffer ascii = new StringBuffer ();
+        String sep         = "  ";
+        String lineSep     = System.getProperty ("line.separator");
+
+        for (int i=0; i<b.length; i++) {
+            char hi = Character.forDigit ((b[i] >> 4) & 0x0F, 16);
+            char lo = Character.forDigit (b[i] & 0x0F, 16);
+            hex.append (Character.toUpperCase(hi));
+            hex.append (Character.toUpperCase(lo));
+            hex.append (' ');
+            char c = (char) b[i];
+            ascii.append ((c >= 32 && c < 127) ? c : '.');
+
+            int j = i % 16;
+            switch (j) {
+                case 7 :
+                    hex.append (' ');
+                    break;
+                case 15 :
+                    sb.append (hexOffset (i));
+                    sb.append (sep);
+                    sb.append (hex.toString());
+                    sb.append (' ');
+                    sb.append (ascii.toString());
+                    sb.append (lineSep);
+                    hex   = new StringBuffer ();
+                    ascii = new StringBuffer ();
+                    break;
+            }
+        }
+        if (hex.length() > 0) {
+            while (hex.length () < 52)
+                hex.append (' ');
+
+            sb.append (hexOffset (b.length));
+            sb.append (sep);
+            sb.append (hex.toString());
+            sb.append (' ');
+            sb.append (ascii.toString());
+            sb.append (lineSep);
+        }
+        return sb.toString();
+    }
 }
 
