@@ -58,6 +58,9 @@ import org.jpos.iso.packager.ISO93BPackager;
 
 /*
  * $Log$
+ * Revision 1.32  2000/12/24 12:14:07  apr
+ * Added handy getString(fldno) method (tired of casting getValue)
+ *
  * Revision 1.31  2000/12/06 20:21:42  apr
  * Stupid bug :blush: :-)
  *
@@ -364,6 +367,22 @@ public class ISOMsg extends ISOComponent
      */
     public Object getValue(int fldno) throws ISOException {
         return getComponent(fldno).getValue();
+    }
+    /**
+     * Return the String value associated with the given ISOField number
+     * @param fldno the Field Number
+     * @return field's String value
+     */
+    public String getString (int fldno) {
+        String s = null;
+        try {
+            Object obj = getValue(fldno);
+            if (obj instanceof String)
+                s = (String) obj;
+        } catch (ISOException e) {
+            // ignore ISOException - return null
+        }
+        return s;
     }
     /**
      * Check if a given field is present
