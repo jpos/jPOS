@@ -1,6 +1,7 @@
 $Id$
 
 -- 1.4.7 --
+Added SpaceFactory(spaceUri)
 Added FSDMsg (Field Separator Delimited Message)
 Bugfix: IFB_LLLHECHAR wrong maxlength
 Added helper ISOUtil.hexdump (String)
