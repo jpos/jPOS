@@ -87,6 +87,7 @@ import org.jpos.util.NameRegistrar;
 public class SpaceFactory {
     public static final String TRANSIENT  = "transient";
     public static final String PERSISTENT = "persistent";
+    public static final String SPACELET   = "spacelet";
     public static final String JDBM       = "jdbm";
     public static final String DEFAULT    = "default";
 
@@ -136,6 +137,9 @@ public class SpaceFactory {
             try {
                 sp = (Space) NameRegistrar.get (uri);
             } catch (NameRegistrar.NotFoundException e) {
+                if (SPACELET.equals (scheme))
+                    throw new SpaceError (uri + " not found.");
+
                 sp = createSpace (scheme, name, param);
                 NameRegistrar.register (uri, sp);
             }
