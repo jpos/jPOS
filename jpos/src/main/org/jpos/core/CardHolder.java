@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.3  1999/11/26 12:16:46  apr
+ * CVS devel snapshot
+ *
  * Revision 1.2  1999/09/26 22:31:57  apr
  * CVS sync
  *
@@ -194,6 +197,26 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
         } catch (NumberFormatException e) { }
         return true;
     }
+    public boolean isValidCRC () {
+        return isValidCRC(this.pan);
+    }
+    public static boolean isValidCRC (String p) {
+        int i, crc;
+
+        int odd = p.length() % 2;
+        
+        for (i=crc=0; i<p.length(); i++) {
+            char c = p.charAt(i);
+            if (!Character.isDigit (c))
+                return false;
+            c = (char) (c - '0');
+            if (i % 2 == odd)
+                crc+=(c*2) >= 10 ? ((c*2)-9) : (c*2);        
+            else
+                crc+=c;
+        }
+        return crc % 10 == 0;
+    }
 
     /**
      * dumps CardHolder basic information<br>
@@ -219,4 +242,5 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
 	p.println (indent + "  " + "<exp>" +exp +"</exp>");
         p.println (indent + "</CardHolder>");
     }
+
 }

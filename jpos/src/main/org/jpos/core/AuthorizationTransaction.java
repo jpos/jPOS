@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.2  1999/11/26 12:16:43  apr
+ * CVS devel snapshot
+ *
  * Revision 1.1  1999/10/08 12:53:55  apr
  * Devel intermediate version - CVS sync
  *
@@ -33,10 +36,7 @@ public class AuthorizationTransaction implements CardTransaction {
     public Integer currency;
     public String rrn;
     public String terminal;
-    public String autCode;
-    public String autNumber;
-    public String errorMessage;
-    public byte[] image;
+    private String action;
 
     public AuthorizationTransaction() {
 	cardHolder = null;
@@ -44,7 +44,7 @@ public class AuthorizationTransaction implements CardTransaction {
 	rrn        = null;
 	terminal   = null;
 	currency   = null;
-	image      = null;
+	action     = "authorize";
     }
     public void setCardHolder (CardHolder cardHolder) {
 	this.cardHolder = cardHolder;
@@ -61,6 +61,9 @@ public class AuthorizationTransaction implements CardTransaction {
     public void setCurrency (Integer currency) {
 	this.currency = currency;
     }
+    public void setCurrency (int m) {
+	this.currency = new Integer (m);
+    }
     public Integer getCurrency() {
 	return currency;
     }
@@ -76,31 +79,10 @@ public class AuthorizationTransaction implements CardTransaction {
     public String getTerminal () {
 	return terminal;
     }
-    public void setImage (byte[] b) {
-	image = b;
-    }
-    public byte[] getImage () {
-	return image;
+    public void setAction (String action) {
+	this.action = action;
     }
     public String getAction() {
-	return "authorize";
-    }
-    public String getAutCode() {
-	return autCode;
-    }
-    public void setAutCode(String autCode) {
-	this.autCode = autCode;
-    }
-    public String getAutNumber() {
-	return autNumber;
-    }
-    public void setAutNumber(String autNumber) {
-	this.autNumber = autNumber;
-    }
-    public void setErrorMessage (String errorMessage) {
-	this.errorMessage = errorMessage;
-    }
-    public String getErrorMessage () {
-	return errorMessage;
+	return action;
     }
 }

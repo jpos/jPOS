@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.3  1999/11/26 12:16:49  apr
+ * CVS devel snapshot
+ *
  * Revision 1.2  1999/11/11 10:18:48  apr
  * added get(name,name), getInt(name), getLong(name) and getDouble(name)
  *
@@ -27,4 +30,5 @@ public interface Configuration {
     public int getInt       (String propertyName);
     public long getLong     (String propertyName);
     public double getDouble (String propertyName);
+    public boolean getBoolean (String propertyName);
 }

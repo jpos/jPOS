@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.3  1999/11/26 12:16:45  apr
+ * CVS devel snapshot
+ *
  * Revision 1.2  1999/09/26 22:31:56  apr
  * CVS sync
  *
@@ -57,6 +60,23 @@ public class CardAgentLookup {
     synchronized public static CardAgent[] getAgents() {
 	ArrayList a = instance.agents;
 	return (CardAgent[]) a.toArray(new CardAgent[a.size()]);
+    }
+
+    /**
+     * locate agent able to process a given CardTransaction
+     * @param t CardTransaction holding an Operation to be performed
+     * @return suitable array of agents
+     * @exception CardAgentNotFoundException
+     */
+    synchronized public static CardAgent[] getAgents (CardTransaction t) {
+	ArrayList l = new ArrayList();
+	Iterator i = instance.agents.iterator();
+	while (i.hasNext()) {
+	    CardAgent a = (CardAgent) i.next();
+	    if (a.canHandle (t)) 
+		l.add (a);
+	}
+	return (CardAgent[]) l.toArray(new CardAgent[l.size()]);
     }
     /**
      * locate an agent giving its class Name

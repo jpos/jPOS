@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.4  1999/11/26 12:16:44  apr
+ * CVS devel snapshot
+ *
  * Revision 1.3  1999/10/08 12:53:56  apr
  * Devel intermediate version - CVS sync
  *
@@ -32,48 +35,39 @@ public interface CardAgent {
     public int getID();
 
     /**
-     * @param t Generic CardTransaction
+     * @return Configuration instance
+     */
+    public Configuration getConfiguration();
+
+    /**
+     * @param t CardTransaction
      * @return true if agent is able to handle this transaction
      */
     public boolean canHandle (CardTransaction t);
 
     /**
-     * Factory Method pattern - create a specialized CardTransaction
-     * based on a generic one
-     * @param t Generic CardTransaction
-     * @return specialized CardTransaction
-    public CardTransaction promote (CardTransaction t);
+     * create a CardTransactionResponse based on a previously
+     * serialized image
+     * @param b agent generated image
+     * @return CardTransactionResponse
+     * @exception CardAgentException
      */
-
-    /**
-     * create a CardTransaction based on a previously serialized image
-     * @param b transaction image
-     * @return CardTransaction
-     * @exception IOException
-     * @exception ClassNotFoundException
-    public CardTransaction create (byte[] b)
-	throws IOException, ClassNotFoundException;
-     */
-
-    /**
-     * provides a [signed] [encripted] serialized image of a given
-     * previously promoted and processed transaction 
-     * (suitable to be saved on persistent storage)
-     * @param t specific CardTransaction
-     * @return a serialized image of this transaction
-     * @exception IOException if problems arise during serialization
-     * @exception CardAgentException if not ready for Serialization
-    public byte[] getImage(CardTransaction t)
-	throws IOException, CardAgentException;
-     */
-
+    public CardTransactionResponse getResponse (byte[] b) 
+	throws CardAgentException;
 
     /**
      * Process the transaction
      * @param t previously promoted CardTransaction
+     * @return CardTransactionInfo object associated with this transaction
      * @exception CardAgentException
      */
-    public void process (CardTransaction t) throws CardAgentException;
+    public CardTransactionResponse process (CardTransaction t) 
+	throws CardAgentException;
+
+    /**
+     * @return property prefix used in configuration
+     */
+    public String getPropertyPrefix();
 
     /**
      * Process a batch of previously completed transactions (close batch)

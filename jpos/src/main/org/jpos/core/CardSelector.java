@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.3  1999/11/26 12:16:47  apr
+ * CVS devel snapshot
+ *
  * Revision 1.2  1999/11/24 20:27:30  apr
  * Added overloaded add(card,bin) method
  *
@@ -75,7 +78,7 @@ public class CardSelector {
 	    Iterator i = list.iterator();
 	    while (i.hasNext()) {
 		Entry e = (Entry) i.next();
-		if ((b >= e.low) && (b <= e.high))
+		if ((b >= e.low) && (b <= e.high)) 
 		    return e.card;
 	    }
 	} catch (NumberFormatException x) { }
