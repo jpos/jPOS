@@ -56,6 +56,7 @@ import java.util.*;
  *
  * @author apr@cs.com.uy
  * @author Hani S. Kirollos
+ * @author Alwyn Schoeman
  * @version $Id$
  * @see ISOComponent
  */
@@ -825,7 +826,7 @@ public class ISOUtil {
      * used in pack routines. The result is always in the
      * extended format: (16 bytes of length)
      * <br><br>
-     * @param b - the BitSet
+     * @param b the BitSet
      * @return binary representation
      */
     public static byte[] bitSet2extendedByte ( BitSet b ){
@@ -836,6 +837,96 @@ public class ISOUtil {
                 d[i >> 3] |= (0x80 >> (i % 8));
         d[0] |= 0x80;
         return d;
+    }
+
+    /**
+     * Converts a String to an integer of base radix.
+     * <br><br>
+     * String constraints are:
+     * <li>Number must be less than 10 digits</li>
+     * <li>Number must be positive</li>
+     * @param s String representation of number
+     * @param radix Number base to use
+     * @return integer value of number
+     * @throws NumberFormatException
+     */
+    public static int parseInt (String s, int radix) throws NumberFormatException {
+        int length = s.length();
+        if (length > 9)
+            throw new NumberFormatException ("Number can have maximum 9 digits");
+        int result = 0;
+        int index = 0;
+        int digit = Character.digit (s.charAt(index++), radix);
+        if (digit == -1)
+            throw new NumberFormatException ("String contains non-digit");
+        result = digit;
+        while (index < length) {
+            result *= radix;
+            digit = Character.digit (s.charAt(index++), radix);
+            if (digit == -1)
+                throw new NumberFormatException ("String contains non-digit");
+            result += digit;
+        }
+        return result;
+    }
+
+    /**
+     * Converts a String to an integer of radix 10.
+     * <br><br>
+     * String constraints are:
+     * <li>Number must be less than 10 digits</li>
+     * <li>Number must be positive</li>
+     * @param s String representation of number
+     * @return integer value of number
+     * @throws NumberFormatException
+     */
+    public static int parseInt (String s) throws NumberFormatException {
+        return parseInt (s, 10);
+    }
+
+    /**
+     * Converts a character array to an integer of base radix.
+     * <br><br>
+     * Array constraints are:
+     * <li>Number must be less than 10 digits</li>
+     * <li>Number must be positive</li>
+     * @param cArray Character Array representation of number
+     * @param radix Number base to use
+     * @return integer value of number
+     * @throws NumberFormatException
+     */
+    public static int parseInt (char[] cArray, int radix) throws NumberFormatException {
+        int length = cArray.length;
+        if (length > 9)
+            throw new NumberFormatException ("Number can have maximum 9 digits");
+        int result = 0;
+        int index = 0;
+        int digit = Character.digit(cArray[index++], radix);
+        if (digit == -1)
+            throw new NumberFormatException ("Char array contains non-digit");
+        result = digit;
+        while (index < length) {
+            result *= radix;
+            digit = Character.digit(cArray[index++],radix);
+            if (digit == -1)
+                throw new NumberFormatException ("Char array contains non-digit");
+            result += digit;
+        }
+        return result;
+    }
+
+    /**
+     * Converts a character array to an integer of radix 10.
+     * <br><br>
+     * Array constraints are:
+     * <li>Number must be less than 10 digits</li>
+     * <li>Number must be positive</li>
+     * @param cArray Character Array representation of number
+     * @return integer value of number
+     * @throws NumberFormatException
+     */
+    public static int parseInt (char[] cArray) throws NumberFormatException {
+        return parseInt (cArray,10);
     }
 }
 
