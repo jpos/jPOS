@@ -136,11 +136,9 @@ public class JTreeFactory implements UIFactory {
 
             map.put (node, action);
         }
-        if (e.hasChildren ()) {
-            Iterator iter = e.getChildren().iterator();
-            while (iter.hasNext()) {
-                node.add (getNode ((Element) iter.next (), map));
-            }
+        Iterator iter = e.getChildren().iterator();
+        while (iter.hasNext()) {
+            node.add (getNode ((Element) iter.next (), map));
         }
         return node;
     }
