@@ -291,17 +291,21 @@ public class ISOMUX implements Runnable, ISOSource, LogSource,
                         cnt[RX]++;
                         String k = getKey(d);
                         ISORequest r = (ISORequest) rxQueue.get(k);
+                        boolean forward = true;
                         if (r != null) {
                             rxQueue.remove(k);
-                            if (r.isExpired()) {
-                                if ((++cnt[RX_EXPIRED]) % 10 == 0)
-                                    purgeRxQueue();
-                            }
-                            else {
-                                r.setResponse(d);
+                            synchronized (r) {
+                                if (r.isExpired()) {
+                                    if ((++cnt[RX_EXPIRED]) % 10 == 0)
+                                        purgeRxQueue();
+                                }
+                                else {
+                                    r.setResponse(d);
+                                    forward = false;
+                                }
                             }
                         }
-                        else {
+                        if (forward) {
                             if (requestListener != null) {
                                 requestListener.process(muxInstance, d);
                                 cnt[RX_FORWARDED]++;
