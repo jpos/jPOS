@@ -72,8 +72,11 @@ public class ISOBinaryField extends ISOComponent implements Cloneable {
      * @param indent - optional indent string
      */
     public void dump (PrintStream p, String indent) {
-        p.println (indent +"<fld binary id=\"" 
-            +fieldNumber +"\" value=\"" +this.toString() +"\"/>");
+        p.println (indent +"<"+XMLPackager.ISOFIELD_TAG + " " +
+	    XMLPackager.ID_ATTR +"=\"" +fieldNumber +"\" "+
+	    XMLPackager.VALUE_ATTR +"=\"" +this.toString() + "\" " +
+	    XMLPackager.TYPE_ATTR +"=\"" + XMLPackager.TYPE_BINARY + "\"/>"
+	);
     }
     public String toString() {
         return ISOUtil.hexString(value);

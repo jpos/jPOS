@@ -5,6 +5,9 @@ import java.util.*;
 
 /*
  * $Log$
+ * Revision 1.7  2000/03/05 01:56:41  apr
+ * Take XML tag and attributes names from constants in XMLPackager
+ *
  * Revision 1.6  2000/03/01 14:44:45  apr
  * Changed package name to org.jpos
  *
@@ -88,7 +91,9 @@ public class ISOField extends ISOComponent implements Cloneable {
      * @param indent - optional indent string
      */
     public void dump (PrintStream p, String indent) {
-        p.println (indent +"<fld id=\"" 
-            +fieldNumber +"\" value=\"" +value +"\"/>");
+        p.println (indent +"<"+XMLPackager.ISOFIELD_TAG + " " +
+	    XMLPackager.ID_ATTR +"=\"" +fieldNumber +"\" "+
+	    XMLPackager.VALUE_ATTR
+	    +"=\"" +value +"\"/>");
     }
 }
