@@ -75,12 +75,14 @@ public class Logger implements Runnable {
     String name;
     Vector listeners;
     Space sp;
+    boolean isDestroyed;
 
     public Logger () {
 	super();
 	listeners = new Vector ();
 	name = "";
         sp  = TransientSpace.getSpace ();
+        isDestroyed = false;
         new Thread (this).start ();
     }
     public void addListener (LogListener l) {
@@ -93,13 +95,18 @@ public class Logger implements Runnable {
             listeners.remove (l);
         }
     }
+    public void removeAllListeners () {
+        synchronized (listeners) {
+            listeners.clear ();
+        }
+    }
     public static void log (LogEvent evt) {
         Logger l = ((LogSource) evt.getSource()).getLogger ();
         if (l != null) 
             l.out (evt);
     }
     public void out (LogEvent evt) {
-        if (hasListeners())
+        if (hasListeners() && !isDestroyed)
             sp.out (this, evt);
     }
     /**
@@ -140,9 +147,18 @@ public class Logger implements Runnable {
             return listeners.size() > 0;
         }
     }
+    public void destroy () {
+        synchronized (listeners) {
+            isDestroyed = true;
+            // purge ...
+            while (sp.inp (this) != null) 
+                ;
+            sp.out (this, new Object()); // unblock run (waiting for sp.in())
+        }
+    }
     public void run () {
         Thread.currentThread().setName ("logger");
-        for (;;) {
+        while (!isDestroyed) {
             Object obj = sp.in (this);
             if (obj instanceof LogEvent) {
                 LogEvent evt = (LogEvent) obj;
