@@ -172,6 +172,9 @@ public class ISOServer extends Observable
             } catch (SocketException e) {
                 if (!shutdown) 
                     Logger.log (new LogEvent (this, "session-warning", e));
+                try {
+                    channel.disconnect();
+                } catch (IOException ex) { }
             } catch (InterruptedIOException e) {
                 try {
                     channel.disconnect();
