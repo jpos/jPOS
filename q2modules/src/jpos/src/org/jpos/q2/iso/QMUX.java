@@ -82,7 +82,7 @@ public class QMUX
     implements SpaceListener, MUX, QMUXMBean
 {
     LocalSpace sp;
-    String in, out, unhandled, ready;
+    protected String in, out, unhandled, ready;
     String spaceName;
     List listeners;
     public QMUX () {
