@@ -205,12 +205,14 @@ public class QSP implements ErrorHandler, LogSource, Runnable, QSPMBean {
             }
             this.configFile = newFile;
             this.lastModified = configFile.lastModified();
-            Thread.currentThread().interrupt ();
+            // this is causing problems on JDK1.4's AWT (when using panels)
+            // Thread.currentThread().interrupt ();
         }
     }
     public void setMonitorConfigInterval (long l) {
 	monitorConfigInterval = l;
-        Thread.currentThread().interrupt ();
+        // this is causing problems on JDK1.4's AWT (when using panels)
+        // Thread.currentThread().interrupt ();
     }
     public long getMonitorConfigInterval () {
         return monitorConfigInterval;
