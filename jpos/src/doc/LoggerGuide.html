@@ -13,32 +13,34 @@ customization and on the fly configuration of events that need to be logged.
 Key <b><i>j</i>POS's</b> classes such as 
 <i>ISOChannel, ISOMUX, ISORequest, ISOBasePackager, etc.</i>
 implements
-<a href="javadoc/org/jpos/iso/LogProducer.html">LogProducer</a> interface
+<a href="javadoc/org/jpos/util/LogSource.html">LogSource</a> interface
 and generates
-<a href="javadoc/org/jpos/iso/LogEvent.html">LogEvents</a>.
+<a href="javadoc/org/jpos/util/LogEvent.html">LogEvents</a>.
 
 <p>
-A <a href="javadoc/org/jpos/iso/LogProducer.html">LogProducer</a>
+A <a href="javadoc/org/jpos/util/LogSource.html">LogSource</a>
 is a simple class that holds a reference
-to a <a href="javadoc/org/jpos/iso/Logger.html">Logger</a> and
+to a <a href="javadoc/org/jpos/util/Logger.html">Logger</a> and
 is properly initialized with a named <b>realm</b> by your
 application.
 
 <p>
-<a href="javadoc/org/jpos/iso/LogProducer.html">LogListeners</a>
+<a href="javadoc/org/jpos/util/LogSource.html">LogListeners</a>
 registers its interests on receiving 
-<a href="javadoc/org/jpos/iso/LogEvent.html">LogEvents</a>
+<a href="javadoc/org/jpos/util/LogEvent.html">LogEvents</a>
 by calling
-<a href="javadoc/org/jpos/iso/Logger.html#addListener(org.jpos.util.LogListener)">Logger's addListener</a>
+<a href="javadoc/org/jpos/util/Logger.html#addListener(org.jpos.util.LogListener)">Logger's addListener</a>
 
 <p>
 <b><i>j</i>POS</b> provides a couple of simple 
-<a href="javadoc/org/jpos/iso/LogProducer.html">LogListeners</a>
+<a href="javadoc/org/jpos/util/LogSource.html">LogListeners</a>
 such as
-<a href="javadoc/org/jpos/iso/SimpleLogListener.html">SimpleLogListener</a>
-and
-<a href="javadoc/org/jpos/iso/RotateLogListener.html">RotateLogListener</a>
+<a href="javadoc/org/jpos/util/SimpleLogListener.html">SimpleLogListener</a>,
+<a href="javadoc/org/jpos/util/RotateLogListener.html">RotateLogListener</a>
 that are ready to use by your application. 
+and
+<a href="javadoc/org/jpos/util/OperatorLogListener.html">OperatorLogListener</a>
+that e-mails batched selected groups of LogEvents to a predefined Operator.
 
 <p>
 Despite the provided helper classes, the Logger subsystem can
@@ -170,11 +172,11 @@ public class LogTest implements Runnable {
 &lt;/log&gt;
 &lt;log realm="localhost.channel" at="Mon Sep 06 14:29:35 NDT 1999"&gt;
   &lt;send&gt;
-    &lt;ISOMsg dir="OUT"&gt;
-      &lt;fld id="0" value="0800"/&gt;
-      &lt;fld id="11" value="000001"/&gt;
-      &lt;fld id="41" value="29110001"/&gt;
-    &lt;/ISOMsg&gt;
+    &lt;isomsg direction="outgoing"&gt;
+      &lt;field id="0" value="0800"/&gt;
+      &lt;field id="11" value="000001"/&gt;
+      &lt;field id="41" value="29110001"/&gt;
+    &lt;/isomsg&gt;
   &lt;/send&gt;
 &lt;/log&gt;
 &lt;log realm="localhost.channel.packager" at="Mon Sep 06 14:29:35 NDT 1999"&gt;
@@ -184,49 +186,49 @@ public class LogTest implements Runnable {
 &lt;/log&gt;
 &lt;log realm="localhost.channel" at="Mon Sep 06 14:29:35 NDT 1999"&gt;
   &lt;receive&gt;
-    &lt;ISOMsg dir="IN"&gt;
-      &lt;fld id="0" value="0800"/&gt;
-      &lt;fld id="11" value="000001"/&gt;
-      &lt;fld id="41" value="29110001"/&gt;
-    &lt;/ISOMsg&gt;
+    &lt;isomsg direction="incoming"&gt;
+      &lt;field id="0" value="0800"/&gt;
+      &lt;field id="11" value="000001"/&gt;
+      &lt;field id="41" value="29110001"/&gt;
+    &lt;/isomsg&gt;
   &lt;/receive&gt;
 &lt;/log&gt;
 &lt;log realm="isorequest" at="Mon Sep 06 14:29:35 NDT 1999"&gt;
-  &lt;ISORequest&gt;
+  &lt;isorequest&gt;
     &lt;request&gt;
-      &lt;ISOMsg dir="OUT"&gt;
-        &lt;fld id="0" value="0800"/&gt;
-        &lt;fld id="11" value="000001"/&gt;
-        &lt;fld id="41" value="29110001"/&gt;
+      &lt;isomsg direction="outgoing"&gt;
+        &lt;field id="0" value="0800"/&gt;
+        &lt;field id="11" value="000001"/&gt;
+        &lt;field id="41" value="29110001"/&gt;
       &lt;/ISOMsg&gt;
     &lt;/request&gt;
     &lt;response elapsed="37"&gt;
-      &lt;ISOMsg dir="IN"&gt;
-        &lt;fld id="0" value="0800"/&gt;
-        &lt;fld id="11" value="000001"/&gt;
-        &lt;fld id="41" value="29110001"/&gt;
-      &lt;/ISOMsg&gt;
+      &lt;isomsg direction="incoming"&gt;
+        &lt;field id="0" value="0800"/&gt;
+        &lt;field id="11" value="000001"/&gt;
+        &lt;field id="41" value="29110001"/&gt;
+      &lt;/isomsg&gt;
     &lt;/response&gt;
-  &lt;/ISORequest&gt;
+  &lt;/isorequest&gt;
 &lt;/log&gt;
 </pre>
 
-<h3>Being a LogProducer</h3>
+<h3>Being a LogSource</h3>
 To use <b><i>j</i>POS's</b> Logger subsystem within your
 application you must implement
-<a href="javadoc/org/jpos/iso/LogProducer.html">LogProducer</a> 
+<a href="javadoc/org/jpos/util/LogSource.html">LogSource</a> 
 and fire
-<a href="javadoc/org/jpos/iso/LogEvent.html">LogEvents</a>.
+<a href="javadoc/org/jpos/util/LogEvent.html">LogEvents</a>.
 
 <p>
-A good place to start is by looking at LogProducer classes
+A good place to start is by looking at LogSource classes
 such as ISORequest.
 
 <h3>Being Loggeable</h3>
 LogEvents can carry multiple Objects. Those Objects can be
 of any type, their 'toString()' method will be called, but
 there are special cases. If your Object is
-<a href="javadoc/org/jpos/iso/Loggeable.html">Loggeable</a>
+<a href="javadoc/org/jpos/util/Loggeable.html">Loggeable</a>
 it's dump() method will be called instead and
 if it is an instance of Throwable it will be appropiately tagged
 as so.
@@ -239,8 +241,8 @@ to extend the Logger subsystem to produce SAX events.
 
 <h3>SystemMonitor</h3>
 New 
-<a href="javadoc/org/jpos/iso/SystemMonitor.html">SystemMonitor</a>
-class is a Loggeable LogProducer that
+<a href="javadoc/org/jpos/util/SystemMonitor.html">SystemMonitor</a>
+class is a Loggeable LogSource that
 periodically generate LogEvents and show a few JVM
 stats such as Thread and Memory Usage. We recommend
 to launch a SystemMonitor in your application it
