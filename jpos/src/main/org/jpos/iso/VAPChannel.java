@@ -52,8 +52,10 @@ public class VAPChannel extends ISOChannel {
 		while (l == 0) {
 			serverIn.readFully(b,0,4);
 			l = ((((int)b[0])&0xFF) << 8) | (((int)b[1])&0xFF);
-			if (l == 0)
-				System.out.println ("VAP Poll received");
+			if (l == 0) {
+				serverOut.write(b);
+				System.out.println ("VAP Poll received (and answered)");
+			}
 		}
 		return l;
 	}
