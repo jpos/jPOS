@@ -103,6 +103,7 @@ public abstract class BaseChannel extends Observable
     private int port, timeout;
     private boolean usable;
     private String name;
+    private int serverPort = -1;
     protected DataInputStream serverIn;
     protected DataOutputStream serverOut;
     protected ISOPackager packager;
@@ -332,7 +333,12 @@ public abstract class BaseChannel extends Observable
      * @exception IOException
      */
     public void accept(ServerSocket s) throws IOException {
+        if (serverPort > 0)
+            s = new ServerSocket (serverPort);
+        else
+            serverPort = s.getLocalPort();
         connect(s.accept());
+        s.close();
     }
 
     /**
