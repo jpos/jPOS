@@ -570,16 +570,30 @@ public class ISOUtil {
         int lastFourIndex = -1;
         if (clear > 0) {
             lastFourIndex = s.indexOf ('=') - 4;
-            if (lastFourIndex < 0)
-                lastFourIndex = len - 4;
+            if (lastFourIndex < 0) {
+                lastFourIndex = s.indexOf ('^') - 4;
+                if (lastFourIndex < 0) 
+                    lastFourIndex = len - 4;
+            }
         }
         for (int i=0; i<len; i++) {
             if (s.charAt(i) == '=')
                 clear = 5;
+            else if (s.charAt(i) == '^') {
+                lastFourIndex = 0;
+                clear = len - i;
+            }
             else if (i == lastFourIndex)
                 clear = 4;
             sb.append (clear-- > 0 ? s.charAt(i) : '_');
         }
-        return normalize(sb.toString());
+        return sb.toString();
+    }
+    public static int[] toIntArray(String s) {
+        StringTokenizer st = new StringTokenizer (s);
+        int[] array = new int [st.countTokens()];
+        for (int i=0; st.hasMoreTokens(); i++) 
+            array[i] = Integer.parseInt (st.nextToken());
+        return array;
     }
 }
