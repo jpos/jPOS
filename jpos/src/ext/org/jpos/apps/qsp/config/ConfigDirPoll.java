@@ -158,6 +158,11 @@ public class ConfigDirPoll implements QSPReConfigurator {
 	);
 	dp.setPollInterval (getPollInterval (node, evt));
 	dp.setPriorities (getPriorities (node, evt)); 
+	dp.setConfiguration (
+            new SimpleConfiguration (
+		ConfigUtil.addProperties (node, null, evt)
+	    )
+	);
 
 	String className = ConfigUtil.getAttribute (node, "processor", null);
 	Object processor = ConfigUtil.newInstance (className);
