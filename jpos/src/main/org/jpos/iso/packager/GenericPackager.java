@@ -92,7 +92,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
  *     length="[field length]"
  *     class="[org.jpos.iso.IF_*]"
  *     packager="[org.jpos.iso.packager.*]"&gt;
- *	
+ *      
  *     &lt;isofield 
  *         id="[subfield id]"
  *         name="[subfield name]"
@@ -123,7 +123,7 @@ public class GenericPackager
 
     public GenericPackager() throws ISOException
     {
-	super();
+        super();
     }
 
     /** 
@@ -133,8 +133,8 @@ public class GenericPackager
      */
     public GenericPackager(String filename) throws ISOException
     {
-    	this();
-    	readFile(filename);
+        this();
+        readFile(filename);
     }
 
     /** 
@@ -144,8 +144,8 @@ public class GenericPackager
      */
     public GenericPackager(InputStream input) throws ISOException
     {
-    	this();
-    	readFile(input);
+        this();
+        readFile(input);
     }
 
     /**
@@ -160,36 +160,36 @@ public class GenericPackager
      * @param cfg Configuration
      */
     public void setConfiguration (Configuration cfg) 
-	throws ConfigurationException
+        throws ConfigurationException
     {
-    	try
-	{
-	    String loggerName = cfg.get("packager-logger");
-	    if (loggerName != null)
-		setLogger(Logger.getLogger (loggerName), 
-			   cfg.get ("packager-realm"));
+        try
+        {
+            String loggerName = cfg.get("packager-logger");
+            if (loggerName != null)
+                setLogger(Logger.getLogger (loggerName), 
+                           cfg.get ("packager-realm"));
 
-	    readFile(cfg.get("packager-config"));
-	} 
-	catch (ISOException e) 
-	{
-	    throw new ConfigurationException(e);
-	}
+            readFile(cfg.get("packager-config"));
+        } 
+        catch (ISOException e) 
+        {
+            throw new ConfigurationException(e);
+        }
     }
 
     protected int getMaxValidField()
     {
-	return maxValidField;
+        return maxValidField;
     }
 
     protected boolean emitBitMap()
     {
-    	return emitBitmap;
+        return emitBitmap;
     }
 
     protected ISOFieldPackager getBitMapfieldPackager()
     {
-    	return fld[bitmapField];
+        return fld[bitmapField];
     }
 
     /**
@@ -203,12 +203,12 @@ public class GenericPackager
      */
     public void readFile(String filename) throws ISOException
     {
-	try {
-	    createXMLReader().parse(filename);	
-	} 
-	catch (Exception e) {
-	    throw new ISOException(e);
-	}
+        try {
+            createXMLReader().parse(filename);  
+        } 
+        catch (Exception e) {
+            throw new ISOException(e);
+        }
     }
 
     /**
@@ -222,12 +222,12 @@ public class GenericPackager
      */
     public void readFile(InputStream input) throws ISOException
     {
-	try {
-	    createXMLReader().parse(new InputSource(input));
-	} 
-	catch (Exception e) {
-	    throw new ISOException(e);
-	}
+        try {
+            createXMLReader().parse(new InputSource(input));
+        } 
+        catch (Exception e) {
+            throw new ISOException(e);
+        }
     }
 
     private XMLReader createXMLReader () throws SAXException {
@@ -245,191 +245,191 @@ public class GenericPackager
 
     private void setGenericPackagerParams (Attributes atts)
     {
-	String maxField  = atts.getValue("maxValidField");
-	String emitBmap  = atts.getValue("emitBitmap");
-	String bmapfield = atts.getValue("bitmapField");
+        String maxField  = atts.getValue("maxValidField");
+        String emitBmap  = atts.getValue("emitBitmap");
+        String bmapfield = atts.getValue("bitmapField");
 
-	if (maxField != null)
-	    maxValidField = Integer.parseInt(maxField);	
+        if (maxField != null)
+            maxValidField = Integer.parseInt(maxField); 
 
-	if (emitBmap != null)
-	    emitBitmap = Boolean.valueOf(emitBmap).booleanValue();
+        if (emitBmap != null)
+            emitBitmap = Boolean.valueOf(emitBmap).booleanValue();
 
-	if (bmapfield != null)
-	    bitmapField = Integer.parseInt(bmapfield);
+        if (bmapfield != null)
+            bitmapField = Integer.parseInt(bmapfield);
     }
 
 
     public class GenericContentHandler extends DefaultHandler
     {
-	private Stack fieldStack;
+        private Stack fieldStack;
 
-	public void startDocument()
-	{
-	    fieldStack = new Stack();
-	}
+        public void startDocument()
+        {
+            fieldStack = new Stack();
+        }
 
-	public void endDocument() throws SAXException
-	{
-	    if (!fieldStack.isEmpty())
-	    {
-		throw new SAXException ("Format error in XML Field Description File");
-	    }
-	}
+        public void endDocument() throws SAXException
+        {
+            if (!fieldStack.isEmpty())
+            {
+                throw new SAXException ("Format error in XML Field Description File");
+            }
+        }
 
-	public void startElement(String namespaceURI, String localName, String qName, Attributes atts)
-		throws SAXException
-	{
-	    try
-	    {
-		String id   = atts.getValue("id");
-		String type = atts.getValue("class");
-		String name = atts.getValue("name");
-		String size = atts.getValue("length");
-		String pad  = atts.getValue("pad");
+        public void startElement(String namespaceURI, String localName, String qName, Attributes atts)
+                throws SAXException
+        {
+            try
+            {
+                String id   = atts.getValue("id");
+                String type = atts.getValue("class");
+                String name = atts.getValue("name");
+                String size = atts.getValue("length");
+                String pad  = atts.getValue("pad");
                 // Modified for using IF_TBASE
-		String token = atts.getValue("token");
+                String token = atts.getValue("token");
 
-		if (localName.equals("isopackager"))
-		{
-		    // Stick a new Hashtable on stack to collect the fields
-		    fieldStack.push(new Hashtable());
+                if (localName.equals("isopackager"))
+                {
+                    // Stick a new Hashtable on stack to collect the fields
+                    fieldStack.push(new Hashtable());
 
-		    setGenericPackagerParams (atts);
-		}
+                    setGenericPackagerParams (atts);
+                }
 
-		if (localName.equals("isofieldpackager"))
-		{
-		    /*
-		    For a isofield packager node push the following fields
-		    onto the stack.
-		    1) an Integer indicating the field ID
-		    2) an instance of the specified ISOFieldPackager class
-		    3) an instance of the specified ISOBasePackager (msgPackager) class
-		    4) a Hashtable to collect the subfields
-		    */
-		    String packager = atts.getValue("packager");
+                if (localName.equals("isofieldpackager"))
+                {
+                    /*
+                    For a isofield packager node push the following fields
+                    onto the stack.
+                    1) an Integer indicating the field ID
+                    2) an instance of the specified ISOFieldPackager class
+                    3) an instance of the specified ISOBasePackager (msgPackager) class
+                    4) a Hashtable to collect the subfields
+                    */
+                    String packager = atts.getValue("packager");
 
-		    fieldStack.push(new Integer(id));
+                    fieldStack.push(new Integer(id));
 
-		    ISOFieldPackager f;
-		    f = (ISOFieldPackager) Class.forName(type).newInstance();	
-		    f.setDescription(name);
-		    f.setLength(Integer.parseInt(size));
-		    f.setPad(new Boolean(pad).booleanValue());
-		    // Modified for using IF_TBASE
-                    if( f instanceof IF_TBASE){
-                      ((IF_TBASE)f).setToken( token );
-                    }
-		    fieldStack.push(f);
-
-		    ISOBasePackager p;
-		    p = (ISOBasePackager) Class.forName(packager).newInstance();
-		    if (p instanceof GenericPackager)
-		    {
-		    	GenericPackager gp = (GenericPackager) p;
-		    	gp.setGenericPackagerParams (atts);
-		    }
-		    fieldStack.push(p);
-
-		    fieldStack.push(new Hashtable());
-		}
-
-		if (localName.equals("isofield"))
-		{
-		    Class c = Class.forName(type);
-		    ISOFieldPackager f;
-		    f = (ISOFieldPackager) c.newInstance();	
-		    f.setDescription(name);
-		    f.setLength(Integer.parseInt(size));
-		    f.setPad(new Boolean(pad).booleanValue());
+                    ISOFieldPackager f;
+                    f = (ISOFieldPackager) Class.forName(type).newInstance();   
+                    f.setDescription(name);
+                    f.setLength(Integer.parseInt(size));
+                    f.setPad(new Boolean(pad).booleanValue());
                     // Modified for using IF_TBASE
                     if( f instanceof IF_TBASE){
                       ((IF_TBASE)f).setToken( token );
                     }
-		    // Insert this new isofield into the Hashtable
-		    // on the top of the stack using the fieldID as the key
-		    Hashtable ht = (Hashtable) fieldStack.peek();
-		    ht.put(new Integer(id), f);
-		}
-	    }
-	    catch (Exception ex)
-	    {
-		throw new SAXException(ex);
-	    }
-	}
+                    fieldStack.push(f);
 
-	/**
-	 * Convert the ISOFieldPackagers in the Hashtable
-	 * to an array of ISOFieldPackagers
-	 */
-	private ISOFieldPackager[] makeFieldArray(Hashtable tab)
-	{
-	    int maxField = 0;
+                    ISOBasePackager p;
+                    p = (ISOBasePackager) Class.forName(packager).newInstance();
+                    if (p instanceof GenericPackager)
+                    {
+                        GenericPackager gp = (GenericPackager) p;
+                        gp.setGenericPackagerParams (atts);
+                    }
+                    fieldStack.push(p);
 
-	    // First find the largest field number in the Hashtable
-	    for (Enumeration enum=tab.keys(); enum.hasMoreElements(); )
-	    {
-		int n = ((Integer)enum.nextElement()).intValue();
-		if (n > maxField) maxField = n;
-	    }
+                    fieldStack.push(new Hashtable());
+                }
 
-	    // Create the array
-	    ISOFieldPackager fld[] = new ISOFieldPackager[maxField+1];
+                if (localName.equals("isofield"))
+                {
+                    Class c = Class.forName(type);
+                    ISOFieldPackager f;
+                    f = (ISOFieldPackager) c.newInstance();     
+                    f.setDescription(name);
+                    f.setLength(Integer.parseInt(size));
+                    f.setPad(new Boolean(pad).booleanValue());
+                    // Modified for using IF_TBASE
+                    if( f instanceof IF_TBASE){
+                      ((IF_TBASE)f).setToken( token );
+                    }
+                    // Insert this new isofield into the Hashtable
+                    // on the top of the stack using the fieldID as the key
+                    Hashtable ht = (Hashtable) fieldStack.peek();
+                    ht.put(new Integer(id), f);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new SAXException(ex);
+            }
+        }
 
-	    // Populate it
-	    for (Enumeration enum=tab.keys(); enum.hasMoreElements(); )
-	    {
-		Integer key = (Integer) enum.nextElement();
-		fld[key.intValue()] = (ISOFieldPackager)tab.get(key);
-	    }
-	    return fld;
-	}
+        /**
+         * Convert the ISOFieldPackagers in the Hashtable
+         * to an array of ISOFieldPackagers
+         */
+        private ISOFieldPackager[] makeFieldArray(Hashtable tab)
+        {
+            int maxField = 0;
 
-	public void endElement(String namespaceURI, String localName, String qName)
-	{
-	    if (localName.equals("isopackager"))
-	    {
-		Hashtable tab  = (Hashtable)fieldStack.pop();
+            // First find the largest field number in the Hashtable
+            for (Enumeration enum=tab.keys(); enum.hasMoreElements(); )
+            {
+                int n = ((Integer)enum.nextElement()).intValue();
+                if (n > maxField) maxField = n;
+            }
 
-		setFieldPackager(makeFieldArray(tab));
-	    }
+            // Create the array
+            ISOFieldPackager fld[] = new ISOFieldPackager[maxField+1];
 
-	    if (localName.equals("isofieldpackager"))
-	    {
-		// Pop the 4 entries off the stack in the correct order
-		Hashtable tab = (Hashtable)fieldStack.pop();
+            // Populate it
+            for (Enumeration enum=tab.keys(); enum.hasMoreElements(); )
+            {
+                Integer key = (Integer) enum.nextElement();
+                fld[key.intValue()] = (ISOFieldPackager)tab.get(key);
+            }
+            return fld;
+        }
 
-		ISOBasePackager msgPackager = (ISOBasePackager) fieldStack.pop();
-		msgPackager.setFieldPackager (makeFieldArray(tab));
-		msgPackager.setLogger (getLogger(), "Generic Packager");
+        public void endElement(String namespaceURI, String localName, String qName)
+        {
+            if (localName.equals("isopackager"))
+            {
+                Hashtable tab  = (Hashtable)fieldStack.pop();
 
-		ISOFieldPackager fieldPackager = (ISOFieldPackager) fieldStack.pop();
+                setFieldPackager(makeFieldArray(tab));
+            }
 
-		Integer fno = (Integer) fieldStack.pop();
+            if (localName.equals("isofieldpackager"))
+            {
+                // Pop the 4 entries off the stack in the correct order
+                Hashtable tab = (Hashtable)fieldStack.pop();
 
-		// Create the ISOMsgField packager with the retrieved msg and field Packagers
-		ISOMsgFieldPackager mfp = 
-		    new ISOMsgFieldPackager(fieldPackager, msgPackager);
+                ISOBasePackager msgPackager = (ISOBasePackager) fieldStack.pop();
+                msgPackager.setFieldPackager (makeFieldArray(tab));
+                msgPackager.setLogger (getLogger(), "Generic Packager");
 
-		// Add the newly created ISOMsgField packager to the
-		// lower level field stack
+                ISOFieldPackager fieldPackager = (ISOFieldPackager) fieldStack.pop();
 
-		tab=(Hashtable)fieldStack.peek();
-		tab.put(fno, mfp);
-	    }
-	}
+                Integer fno = (Integer) fieldStack.pop();
 
-	// ErrorHandler Methods
-	public void error (SAXParseException ex) throws SAXException
-	{
-	    throw ex;
-	}
+                // Create the ISOMsgField packager with the retrieved msg and field Packagers
+                ISOMsgFieldPackager mfp = 
+                    new ISOMsgFieldPackager(fieldPackager, msgPackager);
 
-	public void fatalError (SAXParseException ex) throws SAXException
-	{
-	    throw ex;
-	}
+                // Add the newly created ISOMsgField packager to the
+                // lower level field stack
+
+                tab=(Hashtable)fieldStack.peek();
+                tab.put(fno, mfp);
+            }
+        }
+
+        // ErrorHandler Methods
+        public void error (SAXParseException ex) throws SAXException
+        {
+            throw ex;
+        }
+
+        public void fatalError (SAXParseException ex) throws SAXException
+        {
+            throw ex;
+        }
     }
 }
 

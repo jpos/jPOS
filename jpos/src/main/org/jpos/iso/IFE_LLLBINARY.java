@@ -64,7 +64,7 @@ public class IFE_LLLBINARY extends ISOFieldPackager
 {
     public IFE_LLLBINARY()
     {
-	super();
+        super();
     }
     /**
     * @param len - field len
@@ -72,7 +72,7 @@ public class IFE_LLLBINARY extends ISOFieldPackager
     */
     public IFE_LLLBINARY(int len, String description) 
     {
-	super(len, description);
+        super(len, description);
     }
     /**
     * @param c - a component
@@ -88,9 +88,9 @@ public class IFE_LLLBINARY extends ISOFieldPackager
                 "invalid len "+len +" packing field "+ (Integer) c.getKey()
             );
 
-	String s = new String (v);
-	String l = ISOUtil.zeropad(Integer.toString(len), 3);
-	return ISOUtil.asciiToEbcdic(l + s);
+        String s = new String (v);
+        String l = ISOUtil.zeropad(Integer.toString(len), 3);
+        return ISOUtil.asciiToEbcdic(l + s);
     }
     /**
     * @param c - the Component to unpack
@@ -100,15 +100,15 @@ public class IFE_LLLBINARY extends ISOFieldPackager
     * @exception ISOException
     */
     public int unpack(ISOComponent c, byte[] b, int offset)
-	throws ISOException
+        throws ISOException
     {
         int len = Integer.parseInt (ISOUtil.ebcdicToAscii(b, offset, 3));
-	c.setValue(ISOUtil.ebcdicToAsciiBytes(b, offset+3, len));
-	return len+3;
+        c.setValue(ISOUtil.ebcdicToAsciiBytes(b, offset+3, len));
+        return len+3;
     }
     public int getMaxPackedLength() 
     {
-	return getLength()+3;
+        return getLength()+3;
     }
     public ISOComponent createComponent(int fieldNumber) {
         return new ISOBinaryField (fieldNumber);
@@ -117,6 +117,6 @@ public class IFE_LLLBINARY extends ISOFieldPackager
         throws IOException, ISOException
     {
         int len = Integer.parseInt (ISOUtil.ebcdicToAscii(readBytes (in, 3)));
-	c.setValue(ISOUtil.ebcdicToAscii(readBytes (in, len)));
+        c.setValue(ISOUtil.ebcdicToAscii(readBytes (in, len)));
     }
 }

@@ -103,8 +103,8 @@ public class ISOMsgFieldPackager extends ISOFieldPackager {
     {
         ISOBinaryField f = new ISOBinaryField(0);
         int consumed = fieldPackager.unpack(f, b, offset);
-	if (c instanceof ISOMsg) 
-	    msgPackager.unpack((ISOMsg) c, (byte[]) f.getValue());
+        if (c instanceof ISOMsg) 
+            msgPackager.unpack((ISOMsg) c, (byte[]) f.getValue());
         return consumed;
     }
 
@@ -119,7 +119,7 @@ public class ISOMsgFieldPackager extends ISOFieldPackager {
         ISOBinaryField f = new ISOBinaryField(0);
         fieldPackager.unpack (f, in);
         if (c instanceof ISOMsg) {
-	    msgPackager.unpack((ISOMsg) c, (byte[]) f.getValue());
+            msgPackager.unpack((ISOMsg) c, (byte[]) f.getValue());
         }
     }
 

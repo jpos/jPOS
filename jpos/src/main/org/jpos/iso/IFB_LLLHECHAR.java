@@ -61,7 +61,7 @@ import java.io.InputStream;
  */
 public class IFB_LLLHECHAR extends ISOFieldPackager {
     public IFB_LLLHECHAR() {
-    	super();
+        super();
     }
     /**
      * @param len - field len

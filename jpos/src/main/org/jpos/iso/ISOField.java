@@ -132,16 +132,16 @@ public class ISOField
      * @exception ISOException
      */
     public void setValue(Object obj) throws ISOException {
-	if (obj instanceof String)
-	    value = ((String) obj).intern();
-	else
-	    value = (String) obj;
+        if (obj instanceof String)
+            value = ((String) obj).intern();
+        else
+            value = (String) obj;
     }
     /**
      * @return byte[] representing this field
      */
     public byte[] getBytes() {
-	return value.getBytes();
+        return value.getBytes();
     }
     /**
      * dump this field to PrintStream. The output is sorta
@@ -151,9 +151,9 @@ public class ISOField
      */
     public void dump (PrintStream p, String indent) {
         p.println (indent +"<"+XMLPackager.ISOFIELD_TAG + " " +
-	    XMLPackager.ID_ATTR +"=\"" +fieldNumber +"\" "+
-	    XMLPackager.VALUE_ATTR
-	    +"=\"" +ISOUtil.normalize (value) +"\"/>");
+            XMLPackager.ID_ATTR +"=\"" +fieldNumber +"\" "+
+            XMLPackager.VALUE_ATTR
+            +"=\"" +ISOUtil.normalize (value) +"\"/>");
     }
     /**
      * changes this Component field number<br>
@@ -162,7 +162,7 @@ public class ISOField
      * @param fieldNumber new field number
      */
     public void setFieldNumber (int fieldNumber) {
-	this.fieldNumber = fieldNumber;
+        this.fieldNumber = fieldNumber;
     }
     public void writeExternal (ObjectOutput out) throws IOException {
         out.writeShort (fieldNumber);

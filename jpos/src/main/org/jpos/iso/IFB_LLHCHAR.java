@@ -63,7 +63,7 @@ import java.io.InputStream;
  */
 public class IFB_LLHCHAR extends ISOFieldPackager {
     public IFB_LLHCHAR() {
-	super();
+        super();
     }
     /**
      * @param len - field len

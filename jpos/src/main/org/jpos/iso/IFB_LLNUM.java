@@ -60,7 +60,7 @@ import java.io.InputStream;
  */
 public class IFB_LLNUM extends ISOFieldPackager {
     public IFB_LLNUM() {
-	super();
+        super();
     }
     /**
      * @param len - field len

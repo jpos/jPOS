@@ -104,8 +104,8 @@ public class ISOBinaryField
      * @param len    - field length
      */
     public ISOBinaryField(int n, byte[] v, int offset, int len) {
-	byte[] b = new byte[len];
-	System.arraycopy (v, offset, b, 0, len);
+        byte[] b = new byte[len];
+        System.arraycopy (v, offset, b, 0, len);
         fieldNumber = n;
         value = b;
     }
@@ -116,7 +116,7 @@ public class ISOBinaryField
      * @param fieldNumber new field number
      */
     public void setFieldNumber (int fieldNumber) {
-	this.fieldNumber = fieldNumber;
+        this.fieldNumber = fieldNumber;
     }
     /**
      * not available on Leaf - always throw ISOException
@@ -165,7 +165,7 @@ public class ISOBinaryField
      * @return byte[] representing this field
      */
     public byte[] getBytes() {
-	return value;
+        return value;
     }
     /**
      * dump this field to PrintStream. The output is sorta
@@ -175,10 +175,10 @@ public class ISOBinaryField
      */
     public void dump (PrintStream p, String indent) {
         p.println (indent +"<"+XMLPackager.ISOFIELD_TAG + " " +
-	    XMLPackager.ID_ATTR +"=\"" +fieldNumber +"\" "+
-	    XMLPackager.VALUE_ATTR +"=\"" +this.toString() + "\" " +
-	    XMLPackager.TYPE_ATTR +"=\"" + XMLPackager.TYPE_BINARY + "\"/>"
-	);
+            XMLPackager.ID_ATTR +"=\"" +fieldNumber +"\" "+
+            XMLPackager.VALUE_ATTR +"=\"" +this.toString() + "\" " +
+            XMLPackager.TYPE_ATTR +"=\"" + XMLPackager.TYPE_BINARY + "\"/>"
+        );
     }
     public String toString() {
         return ISOUtil.hexString(value);

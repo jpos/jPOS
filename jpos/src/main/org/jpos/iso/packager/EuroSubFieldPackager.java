@@ -76,7 +76,7 @@ public class EuroSubFieldPackager extends ISOBasePackager
      */
     public EuroSubFieldPackager()
     {
-	super();
+        super();
     }
 
     /**
@@ -84,44 +84,44 @@ public class EuroSubFieldPackager extends ISOBasePackager
      */
     protected boolean emitBitMap()
     {
-	return false;
+        return false;
     }
 
     public byte[] pack (ISOComponent c) throws ISOException
     {
-	try
-	{
-	    int len;
-	    Hashtable tab = c.getChildren();
-	    StringBuffer sb = new StringBuffer();
+        try
+        {
+            int len;
+            Hashtable tab = c.getChildren();
+            StringBuffer sb = new StringBuffer();
 
-	    // Handle first IF_CHAR field
-	    ISOField f0 = (ISOField) tab.get (new Integer(0));
+            // Handle first IF_CHAR field
+            ISOField f0 = (ISOField) tab.get (new Integer(0));
             if (f0 != null) {
-	        String s = (String) f0.getValue();
-	        sb.append (s);
+                String s = (String) f0.getValue();
+                sb.append (s);
             }
-	    for (int i =1; i<fld.length; i++) 
-	    {
-		Object obj = tab.get (new Integer(i));
-		if (obj instanceof ISOField) {
+            for (int i =1; i<fld.length; i++) 
+            {
+                Object obj = tab.get (new Integer(i));
+                if (obj instanceof ISOField) {
                     ISOField f = (ISOField) obj;
-		    sb.append (new String(fld[i].pack(f)));
-		} 
-	    }
-	    return sb.toString().getBytes();
-	}
-	catch (Exception ex)
-	{
-	    throw new ISOException (ex);
-	}
+                    sb.append (new String(fld[i].pack(f)));
+                } 
+            }
+            return sb.toString().getBytes();
+        }
+        catch (Exception ex)
+        {
+            throw new ISOException (ex);
+        }
     }
 
     public int unpack (ISOComponent m, byte[] b) throws ISOException
     {
-	LogEvent evt = new LogEvent (this, "unpack");
-	// Unpack the IF_CHAR field
-	int consumed = 0;
+        LogEvent evt = new LogEvent (this, "unpack");
+        // Unpack the IF_CHAR field
+        int consumed = 0;
         ISOComponent c;
         if (fld[0] != null) {
             c = fld[0].createComponent(0);
@@ -129,27 +129,27 @@ public class EuroSubFieldPackager extends ISOBasePackager
             m.set(c);
         }
 
-	// Now unpack the IFEP_LLCHAR fields
-	for (int i=1; consumed < b.length ; i++) 
-	{
+        // Now unpack the IFEP_LLCHAR fields
+        for (int i=1; consumed < b.length ; i++) 
+        {
             if (fld[i] == null)
                 continue;
-	    c = fld[i].createComponent(i);
-	    consumed += fld[i].unpack (c, b, consumed);
-	    if (logger != null) 
-	    {
-		evt.addMessage ("<unpack fld=\"" + i 
-		    +"\" packager=\""
-		    +fld[i].getClass().getName()+ "\">");
-		    evt.addMessage ("  <value>" 
-		    +c.getValue().toString()
-		    + "</value>");
-		evt.addMessage ("</unpack>");
-	    }
-	    m.set(c);
-	}
-	Logger.log (evt);
-	return consumed;
+            c = fld[i].createComponent(i);
+            consumed += fld[i].unpack (c, b, consumed);
+            if (logger != null) 
+            {
+                evt.addMessage ("<unpack fld=\"" + i 
+                    +"\" packager=\""
+                    +fld[i].getClass().getName()+ "\">");
+                    evt.addMessage ("  <value>" 
+                    +c.getValue().toString()
+                    + "</value>");
+                evt.addMessage ("</unpack>");
+            }
+            m.set(c);
+        }
+        Logger.log (evt);
+        return consumed;
     }
 }
 

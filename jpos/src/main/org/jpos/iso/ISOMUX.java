@@ -111,8 +111,8 @@ public class ISOMUX implements Runnable, ISOSource, LogSource, MUX,
      * @param c a connected or unconnected ISOChannel
      */
     public ISOMUX (ISOChannel c) {
-	super();
-	initMUX(c);
+        super();
+        initMUX(c);
     }
     /**
      * @param c a connected or unconnected ISOChannel
@@ -120,15 +120,15 @@ public class ISOMUX implements Runnable, ISOSource, LogSource, MUX,
      * @param realm  logger's realm
      */
     public ISOMUX (ISOChannel c, Logger logger, String realm) {
-	super();
-	setLogger (logger, realm);
-	initMUX (c);
+        super();
+        setLogger (logger, realm);
+        initMUX (c);
     }
     public void setConfiguration (Configuration cfg) {
         setTraceNumberField (cfg.getInt ("tracenofield"));
     }
     private void initMUX (ISOChannel c) {
-	doConnect = true;
+        doConnect = true;
         channel = c;
         rx = null;
         txQueue = new Vector();
@@ -136,8 +136,8 @@ public class ISOMUX implements Runnable, ISOSource, LogSource, MUX,
         cnt = new int[SIZEOF_CNT];
         requestListener = null;
         rx = new Thread (new Receiver(this));
-	name = "";
-	muxInstance = this;
+        name = "";
+        muxInstance = this;
     }
     /**
      * allow changes to default value 11 (used in ANSI X9.2 messages)
@@ -318,14 +318,14 @@ public class ISOMUX implements Runnable, ISOSource, LogSource, MUX,
                                 cnt[RX_UNKNOWN]++;
                         }
                     } catch (Exception e) {
-			if (!terminate) {
-			    channel.setUsable(false);
-			    if (!(e instanceof EOFException))
-				Logger.log (new LogEvent (this, "muxreceiver", e));
-			    synchronized(parent) {
-				parent.notify();
-			    }
-			}
+                        if (!terminate) {
+                            channel.setUsable(false);
+                            if (!(e instanceof EOFException))
+                                Logger.log (new LogEvent (this, "muxreceiver", e));
+                            synchronized(parent) {
+                                parent.notify();
+                            }
+                        }
                     }
                 }
                 else {
@@ -334,47 +334,47 @@ public class ISOMUX implements Runnable, ISOSource, LogSource, MUX,
                             rx.wait();
                         }
                     } catch (InterruptedException e) { 
-			Logger.log (new LogEvent (this, "muxreceiver", e));
+                        Logger.log (new LogEvent (this, "muxreceiver", e));
                     }
                 }
             }
-	    Logger.log (new LogEvent (this, "muxreceiver", "terminate"));
+            Logger.log (new LogEvent (this, "muxreceiver", "terminate"));
         }
-	public void setLogger (Logger logger, String realm) { }
-	public String getRealm () {
-	    return realm;
-	}
-	public Logger getLogger() {
-	    return logger;
-	}
+        public void setLogger (Logger logger, String realm) { }
+        public String getRealm () {
+            return realm;
+        }
+        public Logger getLogger() {
+            return logger;
+        }
     }
 
     private void doTransmit() throws ISOException, IOException {
         while (txQueue.size() > 0) {
-	    Object o = txQueue.firstElement();
-	    ISOMsg m = null;
+            Object o = txQueue.firstElement();
+            ISOMsg m = null;
 
-	    if (o instanceof ISORequest) {
-		ISORequest r = (ISORequest) o;
-		if (r.isExpired()) 
-		    cnt[TX_EXPIRED]++;
-		else {
-		    m = r.getRequest();
-		    rxQueue.put (getKey(m), r);
-		    r.setTransmitted ();
+            if (o instanceof ISORequest) {
+                ISORequest r = (ISORequest) o;
+                if (r.isExpired()) 
+                    cnt[TX_EXPIRED]++;
+                else {
+                    m = r.getRequest();
+                    rxQueue.put (getKey(m), r);
+                    r.setTransmitted ();
                     synchronized(rx) {
                         rx.notify(); // required by ChannelPool
                     }
-		}
-	    } else if (o instanceof ISOMsg) {
-		m = (ISOMsg) o;
-	    }
-	    if (m != null) {
+                }
+            } else if (o instanceof ISOMsg) {
+                m = (ISOMsg) o;
+            }
+            if (m != null) {
                 try {
                     channel.send(m);
                     cnt[TX]++;
                 } catch (ISOException e) {
-		    Logger.log (new LogEvent (this, "error", e));
+                    Logger.log (new LogEvent (this, "error", e));
                 }
             }
             txQueue.removeElement(o);
@@ -383,96 +383,96 @@ public class ISOMUX implements Runnable, ISOSource, LogSource, MUX,
     }
     public void run () {
         tx = Thread.currentThread();
-	                                        // OS/400 V4R4 JVM 
-	rx.setPriority (rx.getPriority()+1);    // Thread problem
-					        // (Vincent.Greene@amo.com)
+                                                // OS/400 V4R4 JVM 
+        rx.setPriority (rx.getPriority()+1);    // Thread problem
+                                                // (Vincent.Greene@amo.com)
         rx.start();
-	boolean firstTime = true;
+        boolean firstTime = true;
         while (!terminate || !txQueue.isEmpty()) {
             try {
                 if (channel.isConnected()) {
                     doTransmit();
                 }
                 else if (doConnect) {
-		    if (firstTime) {
-			firstTime = !firstTime;
-			channel.connect();
-		    }
-		    else {
-			Thread.sleep(5000);
-			channel.reconnect();
-		    }
+                    if (firstTime) {
+                        firstTime = !firstTime;
+                        channel.connect();
+                    }
+                    else {
+                        Thread.sleep(5000);
+                        channel.reconnect();
+                    }
                     cnt[CONNECT]++;
                     synchronized(rx) {
                         rx.notify();
                     }
                 } else {
-		    // nothing to do ...
-		    try {
-			Thread.sleep (5000);
-		    } catch (InterruptedException ex) { }
-		}
+                    // nothing to do ...
+                    try {
+                        Thread.sleep (5000);
+                    } catch (InterruptedException ex) { }
+                }
                 synchronized(this) {
                     if (!terminate && 
-			 channel.isConnected() && 
-			 txQueue.size() == 0)
-		    {
+                         channel.isConnected() && 
+                         txQueue.size() == 0)
+                    {
                         this.wait();
-		    }
+                    }
                 }
             } catch (ConnectException e) {
-		if (channel instanceof ClientChannel) {
-		    ClientChannel cc = (ClientChannel) channel;
-		    Logger.log (new LogEvent (this, "connection-refused", 
-			cc.getHost()+":"+cc.getPort())
-		    );
-		}
-		try {
-		    Thread.sleep (1000);
-		} catch (InterruptedException ex) { }
-	    } catch (Exception e) {
-		Logger.log (new LogEvent (this, "mux", e));
-		try {
-		    Thread.sleep (1000);
-		} catch (InterruptedException ex) { }
+                if (channel instanceof ClientChannel) {
+                    ClientChannel cc = (ClientChannel) channel;
+                    Logger.log (new LogEvent (this, "connection-refused", 
+                        cc.getHost()+":"+cc.getPort())
+                    );
+                }
+                try {
+                    Thread.sleep (1000);
+                } catch (InterruptedException ex) { }
+            } catch (Exception e) {
+                Logger.log (new LogEvent (this, "mux", e));
+                try {
+                    Thread.sleep (1000);
+                } catch (InterruptedException ex) { }
             }
         }
-	// Wait for the receive queue to empty out before shutting down
-	while (!rxQueue.isEmpty()) {
-	    try {
-		Thread.sleep(5000); // Wait for the receive queue to clear.
-		purgeRxQueue();	    // get rid of expired stuff
-	    } catch (InterruptedException e) {
-		break;
-	    }
-	}
-	// By closing the channel, we force the receive thread to terminate
-	try {
-	    channel.disconnect();
-	} catch (IOException e) { }
+        // Wait for the receive queue to empty out before shutting down
+        while (!rxQueue.isEmpty()) {
+            try {
+                Thread.sleep(5000); // Wait for the receive queue to clear.
+                purgeRxQueue();     // get rid of expired stuff
+            } catch (InterruptedException e) {
+                break;
+            }
+        }
+        // By closing the channel, we force the receive thread to terminate
+        try {
+            channel.disconnect();
+        } catch (IOException e) { }
 
-	synchronized(rx) {
-	    rx.notify();
-	}
-	try {
-	    rx.join ();
-	} catch (InterruptedException e) { }
-	Logger.log (new LogEvent (this, "mux", "terminate"));
+        synchronized(rx) {
+            rx.notify();
+        }
+        try {
+            rx.join ();
+        } catch (InterruptedException e) { }
+        Logger.log (new LogEvent (this, "mux", "terminate"));
     }
     /**
      * queue an ISORequest
      */
     synchronized public void queue(ISORequest r) {
-	txQueue.addElement(r);
-	this.notify();
+        txQueue.addElement(r);
+        this.notify();
     }
     /**
      * send a message over channel, usually a
      * response from an ISORequestListener
      */
     synchronized public void send(ISOMsg m) {
-	txQueue.addElement(m);
-	this.notify();
+        txQueue.addElement(m);
+        this.notify();
     }
 
     private void terminate(boolean hard) {
@@ -481,7 +481,7 @@ public class ISOMUX implements Runnable, ISOSource, LogSource, MUX,
         evt.addMessage (this);
         Logger.log (evt);
 
-	terminate = true;
+        terminate = true;
         synchronized(this) {
             if (hard) {
                 txQueue.removeAllElements();
@@ -510,24 +510,24 @@ public class ISOMUX implements Runnable, ISOSource, LogSource, MUX,
      * terminate MUX (soft terminate, wait forever if necessary)
      */
     public void terminate() {
-	terminate(0);
+        terminate(0);
     }
 
     public boolean isConnected() {
         return channel.isConnected();
     }
     public void setLogger (Logger logger, String realm) {
-	this.logger = logger;
-	this.realm  = realm;
+        this.logger = logger;
+        this.realm  = realm;
     }
     public String getRealm () {
-	return realm;
+        return realm;
     }
     public Logger getLogger() {
-	return logger;
+        return logger;
     }
     public boolean isTerminating() {
-	return terminate;
+        return terminate;
     }
     /**
      * associates this ISOMUX with a name using NameRegistrar
@@ -535,8 +535,8 @@ public class ISOMUX implements Runnable, ISOSource, LogSource, MUX,
      * @see NameRegistrar
      */
     public void setName (String name) {
-	this.name = name;
-	NameRegistrar.register ("mux."+name, this);
+        this.name = name;
+        NameRegistrar.register ("mux."+name, this);
     }
     /**
      * @return ISOMUX instance with given name.
@@ -544,15 +544,15 @@ public class ISOMUX implements Runnable, ISOSource, LogSource, MUX,
      * @see NameRegistrar
      */
     public static ISOMUX getMUX (String name)
-	throws NameRegistrar.NotFoundException
+        throws NameRegistrar.NotFoundException
     {
-	return (ISOMUX) NameRegistrar.get ("mux."+name);
+        return (ISOMUX) NameRegistrar.get ("mux."+name);
     }
     /**
      * @return this ISOMUX's name ("" if no name was set)
      */
     public String getName() {
-	return this.name;
+        return this.name;
     }
     /**
      * ISOMUXs usually calls connect() on the underlying ISOChannel<br>
@@ -560,24 +560,24 @@ public class ISOMUX implements Runnable, ISOSource, LogSource, MUX,
      * @param connect false to prevent connection (default true)
      */
     public void setConnect (boolean connect) {
-	this.doConnect = connect;
-	if (!connect && isConnected()) {
-	    channel.setUsable(false);
-	    try {
-		channel.disconnect();
-	    } catch (IOException e) { 
-		Logger.log (new LogEvent(this, "set-connect", e));
-	    }
-    	    synchronized(this) {
-		this.notify();
-	    }
-	}
+        this.doConnect = connect;
+        if (!connect && isConnected()) {
+            channel.setUsable(false);
+            try {
+                channel.disconnect();
+            } catch (IOException e) { 
+                Logger.log (new LogEvent(this, "set-connect", e));
+            }
+            synchronized(this) {
+                this.notify();
+            }
+        }
     }
     /**
      * @return connect flag value
      */
     public boolean getConnect() {
-	return doConnect;
+        return doConnect;
     }
     public void dump (PrintStream p, String indent) {
         p.println (indent + "<mux-stats connected=\"" + 

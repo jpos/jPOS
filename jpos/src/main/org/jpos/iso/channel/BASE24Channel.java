@@ -135,7 +135,7 @@ public class BASE24Channel extends BaseChannel {
                 break;
             else if (c == -1)
                 throw new EOFException("connection closed");
-	    buf[i] = (byte) c;
+            buf[i] = (byte) c;
         }
         if (i == 4096)
             throw new IOException("packet too long");

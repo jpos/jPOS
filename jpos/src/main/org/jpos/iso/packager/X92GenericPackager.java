@@ -64,10 +64,10 @@ public class X92GenericPackager extends GenericPackager {
         new X92_BITMAP (16, "X9.2 BIT MAP");
 
     public X92GenericPackager() throws ISOException {
-	super();
+        super();
     }
     public X92GenericPackager(String filename) throws ISOException {
-	super(filename);
+        super(filename);
     }
     /**
      * @return Bitmap's ISOFieldPackager
@@ -82,7 +82,7 @@ public class X92GenericPackager extends GenericPackager {
      * @return true
      */
     protected boolean emitBitMap () {
-	return true;
+        return true;
     }
     /**
      * @return 64 for ANSI X9.2

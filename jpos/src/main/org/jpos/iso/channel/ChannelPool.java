@@ -141,24 +141,24 @@ public class ChannelPool implements ISOChannel, LogSource, Configurable {
         this.usable = b;
     }
     public void setName (String name) {
-	this.name = name;
-	NameRegistrar.register ("channel."+name, this);
+        this.name = name;
+        NameRegistrar.register ("channel."+name, this);
     }
     public String getName() {
-	return this.name;
+        return this.name;
     }
     public ISOPackager getPackager () {
         return (ISOPackager) null;
     }
     public void setLogger (Logger logger, String realm) {
-	this.logger = logger;
-	this.realm  = realm;
+        this.logger = logger;
+        this.realm  = realm;
     }
     public String getRealm () {
-	return realm;
+        return realm;
     }
     public Logger getLogger() {
-	return logger;
+        return logger;
     }
     public synchronized void setConfiguration (Configuration cfg) 
         throws ConfigurationException

@@ -78,7 +78,7 @@ public class MacroFilter implements ISOFilter, ReConfigurable {
     int[] unsetFields  = new int[0];
     int[] validFields  = new int[0];
     public MacroFilter () {
-	super();
+        super();
     }
    /**
     * @param cfg
@@ -123,7 +123,7 @@ public class MacroFilter implements ISOFilter, ReConfigurable {
             evt.addMessage (e);
             throw new VetoException (e);
         }
-	return m;
+        return m;
     }
     private void applyProps (ISOMsg m) throws ISOException {
         int maxField = m.getMaxField ();

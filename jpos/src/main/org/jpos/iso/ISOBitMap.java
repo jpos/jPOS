@@ -88,7 +88,7 @@ public class ISOBitMap extends ISOComponent implements Cloneable {
      * @param fieldNumber new field number
      */
     public void setFieldNumber (int fieldNumber) {
-	this.fieldNumber = fieldNumber;
+        this.fieldNumber = fieldNumber;
     }
     /**
      * not available on Leaf - always throw ISOException
@@ -138,9 +138,9 @@ public class ISOBitMap extends ISOComponent implements Cloneable {
      */
     public void dump (PrintStream p, String indent) {
         p.println (indent +"<"+XMLPackager.ISOFIELD_TAG + " " +
-	    XMLPackager.ID_ATTR +"=\""+XMLPackager.TYPE_BITMAP+"\" "+
-	    XMLPackager.VALUE_ATTR +"=\"" +value+"\" "+
-	    XMLPackager.TYPE_ATTR +"=\"" + XMLPackager.TYPE_BITMAP+ "\"/>"
-	);
+            XMLPackager.ID_ATTR +"=\""+XMLPackager.TYPE_BITMAP+"\" "+
+            XMLPackager.VALUE_ATTR +"=\"" +value+"\" "+
+            XMLPackager.TYPE_ATTR +"=\"" + XMLPackager.TYPE_BITMAP+ "\"/>"
+        );
     }
 }

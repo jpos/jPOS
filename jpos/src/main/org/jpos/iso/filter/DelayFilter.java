@@ -65,15 +65,15 @@ import org.jpos.util.LogEvent;
 public class DelayFilter implements ISOFilter, ReConfigurable {
     int delay;
     public DelayFilter() {
-	super();
-	delay = 0;
+        super();
+        delay = 0;
     }
    /**
     * @param delay desired delay, expressed in milliseconds
     */
     public DelayFilter(int delay) {
-	super();
-	this.delay = delay;
+        super();
+        this.delay = delay;
     }
    /**
     * @param cfg
@@ -82,18 +82,18 @@ public class DelayFilter implements ISOFilter, ReConfigurable {
     * </ul>
     */
     public void setConfiguration (Configuration cfg) {
-	delay = cfg.getInt ("delay");
+        delay = cfg.getInt ("delay");
     }
 
     public ISOMsg filter (ISOChannel channel, ISOMsg m, LogEvent evt) 
     {
-	evt.addMessage ("<delay-filter delay=\""+delay+"\"/>");
-	if (delay > 0) {
-	    try {
-		Thread.sleep (delay);
-	    } catch (InterruptedException e) { }
-	}
-	return m;
+        evt.addMessage ("<delay-filter delay=\""+delay+"\"/>");
+        if (delay > 0) {
+            try {
+                Thread.sleep (delay);
+            } catch (InterruptedException e) { }
+        }
+        return m;
     }
 }
 

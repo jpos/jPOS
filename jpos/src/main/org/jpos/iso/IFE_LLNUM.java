@@ -65,14 +65,14 @@ import java.io.InputStream;
 public class IFE_LLNUM extends ISOFieldPackager 
 {
     public IFE_LLNUM () {
-	super();
+        super();
     }
     /**
     * @param len - field len
     * @param description symbolic descrption
     */
     public IFE_LLNUM (int len, String description) {
-	super (len, description);
+        super (len, description);
     }
     /**
     * @param c - a component
@@ -115,9 +115,9 @@ public class IFE_LLNUM extends ISOFieldPackager
         throws IOException, ISOException
     {
         int len = Integer.parseInt (ISOUtil.ebcdicToAscii(readBytes (in, 2)));
-	c.setValue(ISOUtil.ebcdicToAscii(readBytes (in, len)));
+        c.setValue(ISOUtil.ebcdicToAscii(readBytes (in, len)));
     }
     public int getMaxPackedLength() {
-	return getLength()+2;
+        return getLength()+2;
     }
 }

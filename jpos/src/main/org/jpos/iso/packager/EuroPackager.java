@@ -125,9 +125,9 @@ public class EuroPackager extends ISOBasePackager {
     /*046*/ new IFA_LLLCHAR (999, "ADITIONAL DATA - ISO"),
     /*047*/ new IFA_LLLCHAR (999, "ADITIONAL DATA - NATIONAL"),
     /*048*/ new ISOMsgFieldPackager(
-		new IFA_LLLBINARY (999, "EUROPAY FIELD 48"),
-		f48Packager
-	    ),
+                new IFA_LLLBINARY (999, "EUROPAY FIELD 48"),
+                f48Packager
+            ),
     /*049*/ new IF_CHAR     (  3, "CURRENCY CODE, TRANSACTION"),
     /*050*/ new IF_CHAR     (  3, "CURRENCY CODE, SETTLEMENT"),
     /*051*/ new IF_CHAR     (  3, "CURRENCY CODE, CARDHOLDER BILLING"   ),
@@ -211,14 +211,14 @@ public class EuroPackager extends ISOBasePackager {
     };
 
     public EuroPackager () {
-	super();
+        super();
         setFieldPackager(this.fld);
     }
 
     public void setLogger (Logger logger, String realm) {
-	this.logger = logger;
-	this.realm  = realm;
-	f48Packager.setLogger (logger, realm + ".field-48");
+        this.logger = logger;
+        this.realm  = realm;
+        f48Packager.setLogger (logger, realm + ".field-48");
     }
 
     protected class Euro48Packager extends EuroSubFieldPackager
@@ -226,11 +226,11 @@ public class EuroPackager extends ISOBasePackager {
         // EuroPay refers to the message subfields as 
         // Private Data Subelements (PDS)
         private ISOFieldPackager fld48[] = 
-	{
-	    new IF_CHAR     (4,  "PLACEHOLDER"),
-	    new IFEP_LLCHAR  (18, "Field 48 - PDS01"),
-	    new IFEP_LLCHAR  (4,  "Field 48 - PDS02"),
-	    new IFEP_LLCHAR  (4,  "Field 48 - PDS03"),
+        {
+            new IF_CHAR     (4,  "PLACEHOLDER"),
+            new IFEP_LLCHAR  (18, "Field 48 - PDS01"),
+            new IFEP_LLCHAR  (4,  "Field 48 - PDS02"),
+            new IFEP_LLCHAR  (4,  "Field 48 - PDS03"),
             new IFEP_LLCHAR  (4,  "Field 48 - PDS04"),
             new IFEP_LLCHAR  (98, "Field 48 - PDS05"),
             new IFEP_LLCHAR  (4,  "Field 48 - PDS06"),

@@ -71,7 +71,7 @@ import java.io.InputStream;
  */
 public class IFEP_LLCHAR extends ISOFieldPackager {
     public IFEP_LLCHAR() {
-	super();
+        super();
     }
     /**
      * @param len - field len
@@ -92,14 +92,14 @@ public class IFEP_LLCHAR extends ISOFieldPackager {
         if ((len=s.length()) > getLength() || len>97)   // paranoia settings
             throw new ISOException (
                 "invalid len "+len +" packing LLEPCHAR field "
-		+(Integer) c.getKey()
+                +(Integer) c.getKey()
             );
 
         return (
-	    ISOUtil.zeropad(Integer.toString(len+2), 2) 
-	   +ISOUtil.zeropad(((Integer) c.getKey()).toString(), 2) 
-	   +s
-	).getBytes();
+            ISOUtil.zeropad(Integer.toString(len+2), 2) 
+           +ISOUtil.zeropad(((Integer) c.getKey()).toString(), 2) 
+           +s
+        ).getBytes();
     }
 
     /**
@@ -113,13 +113,13 @@ public class IFEP_LLCHAR extends ISOFieldPackager {
         throws ISOException
     {
         int len = Integer.parseInt(new String(b, offset, 2));
-	if (!(c instanceof ISOField))
-	    throw new ISOException 
-		(c.getClass().getName() + " is not an ISOField");
+        if (!(c instanceof ISOField))
+            throw new ISOException 
+                (c.getClass().getName() + " is not an ISOField");
 
-	((ISOField)c).setFieldNumber (
-	    Integer.parseInt(new String(b, offset+2, 2))
-	);
+        ((ISOField)c).setFieldNumber (
+            Integer.parseInt(new String(b, offset+2, 2))
+        );
         c.setValue (new String (b, offset+4, len-2));
         return len + 2;
     }
@@ -127,13 +127,13 @@ public class IFEP_LLCHAR extends ISOFieldPackager {
         throws IOException, ISOException
     {
 
-	if (!(c instanceof ISOField))
-	    throw new ISOException 
-		(c.getClass().getName() + " is not an ISOField");
+        if (!(c instanceof ISOField))
+            throw new ISOException 
+                (c.getClass().getName() + " is not an ISOField");
 
         int len   = Integer.parseInt(new String(readBytes (in, 2)));
         int fldno = Integer.parseInt(new String(readBytes (in, 2)));
-	((ISOField)c).setFieldNumber (fldno);
+        ((ISOField)c).setFieldNumber (fldno);
         c.setValue (new String (readBytes (in, len-2)));
     }
 

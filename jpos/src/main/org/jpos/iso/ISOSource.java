@@ -68,6 +68,6 @@ public interface ISOSource {
      * @exception ISOFilter.VetoException;
      */
     public void send (ISOMsg m) 
-	throws IOException, ISOException, VetoException;
+        throws IOException, ISOException, VetoException;
 }
 

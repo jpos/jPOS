@@ -63,7 +63,7 @@ import java.util.BitSet;
  */
 public class IFA_BITMAP extends ISOBitMapPackager {
     public IFA_BITMAP() {
-	super();
+        super();
     }
     /**
      * @param len - field len

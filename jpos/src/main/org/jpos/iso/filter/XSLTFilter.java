@@ -85,11 +85,11 @@ public class XSLTFilter implements ISOFilter, Configurable {
      * @throws ISOException
      */
     public XSLTFilter () throws ISOException {
-	super();
-	packager    = new XMLPackager();
+        super();
+        packager    = new XMLPackager();
         tfactory    = TransformerFactory.newInstance();
         transformer = null;
-	reread      = true;
+        reread      = true;
     }
 
     /**
@@ -98,13 +98,13 @@ public class XSLTFilter implements ISOFilter, Configurable {
      * @throws ISOException
      */
     public XSLTFilter (String xsltfile, boolean reread) 
-	throws ISOException
+        throws ISOException
     {
         this();
         try {
-	    this.xsltfile    = xsltfile;
-	    this.reread      = reread;
-	    this.transformer = 
+            this.xsltfile    = xsltfile;
+            this.reread      = reread;
+            this.transformer = 
                 tfactory.newTransformer(new StreamSource(xsltfile));
         } catch (TransformerConfigurationException e) {
             throw new ISOException (e);
@@ -123,17 +123,17 @@ public class XSLTFilter implements ISOFilter, Configurable {
     * @param cfg new ConfigurationFile
     */
     public void setConfiguration (Configuration cfg) 
-	throws ConfigurationException
+        throws ConfigurationException
     {
-	try {
-	    transformer = tfactory.newTransformer(
+        try {
+            transformer = tfactory.newTransformer(
                 new StreamSource(cfg.get("xsltfile"))
             );
-	    String s = cfg.get ("reread");
-	    reread   =  (s == null || s.equals ("no"));
-	} catch (Exception e) {
-	    throw new ConfigurationException (e);
-	}
+            String s = cfg.get ("reread");
+            reread   =  (s == null || s.equals ("no"));
+        } catch (Exception e) {
+            throw new ConfigurationException (e);
+        }
     }
 
     /**
@@ -144,24 +144,24 @@ public class XSLTFilter implements ISOFilter, Configurable {
      * @throws VetoException
      */
     public ISOMsg filter (ISOChannel channel, ISOMsg m, LogEvent evt) 
-	throws VetoException
+        throws VetoException
     {
-	try {
-	    m.setPackager (packager);
-	    ByteArrayOutputStream os = new ByteArrayOutputStream();
+        try {
+            m.setPackager (packager);
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
 
-	    if (reread || transformer == null)
-		transformer = tfactory.newTransformer(
+            if (reread || transformer == null)
+                transformer = tfactory.newTransformer(
                     new StreamSource(xsltfile)
                 );
-	    transformer.transform (
+            transformer.transform (
                 new StreamSource(new ByteArrayInputStream (m.pack())),
                 new StreamResult(os)
             );
-	    m.unpack (os.toByteArray());
-	} catch (Exception e) {
-	    throw new VetoException(e);
-	}
-	return m;
+            m.unpack (os.toByteArray());
+        } catch (Exception e) {
+            throw new VetoException(e);
+        }
+        return m;
     }
 }

@@ -61,7 +61,7 @@ import java.util.BitSet;
  */
 public class X92_BITMAP extends ISOBitMapPackager {
     public X92_BITMAP() {
-    	super();
+        super();
     }
     /**
      * @param len - field len

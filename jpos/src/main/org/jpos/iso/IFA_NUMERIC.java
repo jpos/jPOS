@@ -58,7 +58,7 @@ package org.jpos.iso;
  */
 public class IFA_NUMERIC extends ISOFieldPackager {
     public IFA_NUMERIC() {
-	super();
+        super();
     }
     /**
      * @param len - field len

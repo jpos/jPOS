@@ -67,6 +67,9 @@ import org.jpos.util.Logger;
 
 /*
  * $Log$
+ * Revision 1.5  2003/10/13 10:34:16  apr
+ * Tabs expanded to 8 spaces
+ *
  * Revision 1.4  2003/05/16 04:15:14  alwyns
  * Import cleanups.
  *
@@ -238,53 +241,53 @@ public class PostPackager extends ISOBasePackager {
             new IFA_LLLCHAR (999, "RESERVED PRIVATE USE"),
             new ISOMsgFieldPackager(
                 new IFA_LLLBINARY   (999, "RESERVED PRIVATE USE"),
-		p127
+                p127
             ),
             new IFA_LLLCHAR (999, "MAC 2")
         };
-   	protected class PostPrivatePackager extends ISOBasePackager
-	{ 
-		protected ISOFieldPackager fld127[] = 
-		{
-			new IF_CHAR		(0,   "PLACEHOLDER"),
-			new IFB_BITMAP	(8,	  "BITMAP"),
-			new IFA_LLCHAR  (32,  "SWITCH KEY"),
-		    new IF_CHAR     (48,  "ROUTING INFORMATION"),
-		    new IF_CHAR     (22,  "POS DATA"),
-		    new IF_CHAR     (73,  "SERVICE STATION DATA"),
-		    new IFA_NUMERIC (2,   "AUTHORIZATION PROFILE"),
-		    new IFA_LLCHAR  (50,  "CHECK DATA"),
-		    new IFA_LLLCHAR (128, "RETENTION DATA"),
-		    new IFA_LLLCHAR (255, "ADDITIONAL NODE DATA"),
-		    new IFA_NUMERIC (3,   "CVV2"),
-		    new IFA_LLCHAR  (32,  "ORIGINAL KEY"),
-		    new IFA_LLCHAR  (25,  "TERMINAL OWNDER"),
-		    new IF_CHAR     (17,  "POS GEOGRAPHIC DATA"),
-		    new IF_CHAR     (8,   "SPONSOR BANK"),
-		    new IFA_LLCHAR  (29,  "AVS REQUEST"),
-		    new IF_CHAR     (1,   "AVS RESPONSE"),
-		    new IFA_LLCHAR  (50,  "CARDHOLDER INFORMATION"),
-		    new IFA_LLCHAR  (50,  "VALIDATION DATA"),
-		    new IF_CHAR     (45,  "BANK DETAILS"), 
-		    new IFA_NUMERIC (8,   "AUTHORIZER DATE SETTLEMENT"), 
-		    new IFA_LLCHAR  (12,  "RECORD IDENTIFICATION"), 
-		    new IFA_LLLLLCHAR  (99999,  "STRUCTURED DATA"), 
-		    new IF_CHAR     (253,  "PAYEE NAME AND ADDRESS"), 
-		    new IFA_LLCHAR  (28,  "PAYER ACCOUNT INFORMATION"), 
-		    new IFA_LLLLCHAR(8000,  "ICC DATA")
-		};  
+        protected class PostPrivatePackager extends ISOBasePackager
+        { 
+                protected ISOFieldPackager fld127[] = 
+                {
+                        new IF_CHAR             (0,   "PLACEHOLDER"),
+                        new IFB_BITMAP  (8,       "BITMAP"),
+                        new IFA_LLCHAR  (32,  "SWITCH KEY"),
+                    new IF_CHAR     (48,  "ROUTING INFORMATION"),
+                    new IF_CHAR     (22,  "POS DATA"),
+                    new IF_CHAR     (73,  "SERVICE STATION DATA"),
+                    new IFA_NUMERIC (2,   "AUTHORIZATION PROFILE"),
+                    new IFA_LLCHAR  (50,  "CHECK DATA"),
+                    new IFA_LLLCHAR (128, "RETENTION DATA"),
+                    new IFA_LLLCHAR (255, "ADDITIONAL NODE DATA"),
+                    new IFA_NUMERIC (3,   "CVV2"),
+                    new IFA_LLCHAR  (32,  "ORIGINAL KEY"),
+                    new IFA_LLCHAR  (25,  "TERMINAL OWNDER"),
+                    new IF_CHAR     (17,  "POS GEOGRAPHIC DATA"),
+                    new IF_CHAR     (8,   "SPONSOR BANK"),
+                    new IFA_LLCHAR  (29,  "AVS REQUEST"),
+                    new IF_CHAR     (1,   "AVS RESPONSE"),
+                    new IFA_LLCHAR  (50,  "CARDHOLDER INFORMATION"),
+                    new IFA_LLCHAR  (50,  "VALIDATION DATA"),
+                    new IF_CHAR     (45,  "BANK DETAILS"), 
+                    new IFA_NUMERIC (8,   "AUTHORIZER DATE SETTLEMENT"), 
+                    new IFA_LLCHAR  (12,  "RECORD IDENTIFICATION"), 
+                    new IFA_LLLLLCHAR  (99999,  "STRUCTURED DATA"), 
+                    new IF_CHAR     (253,  "PAYEE NAME AND ADDRESS"), 
+                    new IFA_LLCHAR  (28,  "PAYER ACCOUNT INFORMATION"), 
+                    new IFA_LLLLCHAR(8000,  "ICC DATA")
+                };  
 
-	protected PostPrivatePackager()
-	{   super();
-	    setFieldPackager(fld127);
-	}
+        protected PostPrivatePackager()
+        {   super();
+            setFieldPackager(fld127);
+        }
     }
     public PostPackager() {
         super();
         setFieldPackager(fld);
     }
     public void setLogger (Logger logger, String realm) {
-	super.setLogger (logger, realm);
-	p127.setLogger (logger, realm + ".PostPrivatePackager");
+        super.setLogger (logger, realm);
+        p127.setLogger (logger, realm + ".PostPrivatePackager");
     }
 }

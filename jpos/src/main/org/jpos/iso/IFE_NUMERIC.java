@@ -63,7 +63,7 @@ public class IFE_NUMERIC extends ISOFieldPackager
 {
     public IFE_NUMERIC()
     {
-	super();
+        super();
     }
     /**
      * @param len - field len

@@ -59,7 +59,7 @@ package org.jpos.iso;
 
 public class IFB_BINARY extends ISOFieldPackager {
     public IFB_BINARY() {
-	super();
+        super();
     }
     /**
      * @param len - field len

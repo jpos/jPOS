@@ -119,63 +119,63 @@ public class X25Channel extends BaseChannel {
      * @exception IOException
      */
     protected byte[] streamReceive() throws IOException {
-	int c, k=0, len = 1;
-	Vector v = new Vector();
+        int c, k=0, len = 1;
+        Vector v = new Vector();
 
-	c = serverIn.read();
-	if (c == -1)
-	    throw new EOFException ("connection closed");
-	byte[] b = new byte[1];
-	b[0] = (byte) c;
-	v.addElement (b);
+        c = serverIn.read();
+        if (c == -1)
+            throw new EOFException ("connection closed");
+        byte[] b = new byte[1];
+        b[0] = (byte) c;
+        v.addElement (b);
 
-	// Wait for packets until timeout
-	while ((c = serverIn.available()) > 0) {
-	    b = new byte[c];
-	    if (serverIn.read (b) != c)
-		throw new EOFException ("connection closed");
-	    v.addElement (b);
-	    len += c;
-	    try {
-		Thread.sleep (50);
-	    } catch (InterruptedException e) { }
-	}
+        // Wait for packets until timeout
+        while ((c = serverIn.available()) > 0) {
+            b = new byte[c];
+            if (serverIn.read (b) != c)
+                throw new EOFException ("connection closed");
+            v.addElement (b);
+            len += c;
+            try {
+                Thread.sleep (50);
+            } catch (InterruptedException e) { }
+        }
 
-	byte[] d = new byte[len];
-	for (int i=0; i<v.size(); i++) {
-	    b = (byte[]) v.elementAt(i);
-	    System.arraycopy (b, 0, d, k, b.length);
-	    k += b.length;
-	}
-	return d;
+        byte[] d = new byte[len];
+        for (int i=0; i<v.size(); i++) {
+            b = (byte[]) v.elementAt(i);
+            System.arraycopy (b, 0, d, k, b.length);
+            k += b.length;
+        }
+        return d;
     }
     protected void connect (Socket socket) throws IOException {
-	super.connect (socket);
-	reader = new BufferedReader (new InputStreamReader (serverIn));
+        super.connect (socket);
+        reader = new BufferedReader (new InputStreamReader (serverIn));
     }
     public void disconnect () throws IOException {
-	super.disconnect ();
-	reader = null;
+        super.disconnect ();
+        reader = null;
     }
     protected int getHeaderLength() { 
         return header != null ? header.length : 0;
     }
     public void setHeader (byte[] header) {
-	this.header = header;
+        this.header = header;
     }
     /**
      * @param header Hex representation of header
      */
     public void setHeader (String header) {
-	setHeader (
-	    ISOUtil.hex2byte (header.getBytes(), 0, header.getBytes().length / 2)
-	);
+        setHeader (
+            ISOUtil.hex2byte (header.getBytes(), 0, header.getBytes().length / 2)
+        );
     }
     public byte[] getHeader () {
-	return header;
+        return header;
     }
     protected void sendMessageHeader(ISOMsg m, int len) throws IOException { 
-	if (m.getHeader() != null)
+        if (m.getHeader() != null)
             serverOut.write(m.getHeader());
         else if (header != null) 
             serverOut.write(header);

@@ -60,18 +60,18 @@ import org.jpos.util.LogEvent;
  */
 public interface ISOFilter {
     public class VetoException extends ISOException {
-	public VetoException () {
-	    super();
-	}
-	public VetoException (String detail) {
-	    super(detail);
-	}
-	public VetoException (Exception nested) {
-	    super(nested);
-	}
-	public VetoException (String detail, Exception nested) {
-	    super(detail, nested);
-	}
+        public VetoException () {
+            super();
+        }
+        public VetoException (String detail) {
+            super(detail);
+        }
+        public VetoException (Exception nested) {
+            super(nested);
+        }
+        public VetoException (String detail, Exception nested) {
+            super(detail, nested);
+        }
     }
     /**
      * @param channel current ISOChannel instance
@@ -81,5 +81,5 @@ public interface ISOFilter {
      * @throws VetoException
      */
     public ISOMsg filter (ISOChannel channel, ISOMsg m, LogEvent evt) 
-	throws VetoException;
+        throws VetoException;
 }

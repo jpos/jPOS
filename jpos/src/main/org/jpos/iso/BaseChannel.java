@@ -108,7 +108,7 @@ import org.jpos.util.NameRegistrar;
  */
 public abstract class BaseChannel extends Observable 
     implements FilteredChannel, ClientChannel, ServerChannel, 
-	       LogSource, ReConfigurable, BaseChannelMBean
+               LogSource, ReConfigurable, BaseChannelMBean
 {
     private Socket socket;
     private String host;
@@ -134,11 +134,11 @@ public abstract class BaseChannel extends Observable
      * ISOChannels (which have different signatures)
      */
     public BaseChannel () {
-	super();
+        super();
         cnt = new int[SIZEOF_CNT];
-	name = "";
-	incomingFilters = new Vector();
-	outgoingFilters = new Vector();
+        name = "";
+        incomingFilters = new Vector();
+        outgoingFilters = new Vector();
         setHost (null, 0);
     }
 
@@ -205,13 +205,13 @@ public abstract class BaseChannel extends Observable
      * @return hostname (may be null)
      */
     public String getHost() {
-	return host;
+        return host;
     }
     /**
      * @return port number
      */
     public int getPort() {
-	return port;
+        return port;
     }
     /**
      * set Packager for channel
@@ -226,7 +226,7 @@ public abstract class BaseChannel extends Observable
      * @return current packager
      */
     public ISOPackager getPackager() {
-	return packager;
+        return packager;
     }
 
     /**
@@ -234,9 +234,9 @@ public abstract class BaseChannel extends Observable
      * @param serverSocket where to accept a connection
      */
     public void setServerSocket (ServerSocket sock) {
-	setHost (null, 0);
-	this.serverSocket = sock;
-	name = "";
+        setHost (null, 0);
+        this.serverSocket = sock;
+        name = "";
     }
 
     /**
@@ -264,10 +264,10 @@ public abstract class BaseChannel extends Observable
      * @exception IOException
      */
     protected void connect (Socket socket) 
-	throws IOException, SocketException
+        throws IOException, SocketException
     {
         this.socket = socket;
-	applyTimeout();
+        applyTimeout();
 
         serverIn = new DataInputStream (
             new BufferedInputStream (socket.getInputStream ())
@@ -301,13 +301,13 @@ public abstract class BaseChannel extends Observable
      * @return current socket
      */
     public Socket getSocket() {
-	return socket;
+        return socket;
     }
     /**
      * @return current serverSocket
      */
     public ServerSocket getServerSocket() {
-	return serverSocket;
+        return serverSocket;
     }
 
     /** 
@@ -317,43 +317,43 @@ public abstract class BaseChannel extends Observable
      * @throws SocketException
      */
     public void setTimeout (int timeout) throws SocketException {
-	this.timeout = timeout;
-	applyTimeout();
+        this.timeout = timeout;
+        applyTimeout();
     }
     public int getTimeout () {
         return timeout;
     }
     protected void applyTimeout () throws SocketException {
-	if (timeout >= 0 && socket != null) 
-	    socket.setSoTimeout (timeout);
+        if (timeout >= 0 && socket != null) 
+            socket.setSoTimeout (timeout);
     }
     /**
      * Connects client ISOChannel to server
      * @exception IOException
      */
     public void connect () throws IOException {
-	LogEvent evt = new LogEvent (this, "connect");
-	try {
+        LogEvent evt = new LogEvent (this, "connect");
+        try {
             if (serverSocket != null) {
-		accept(serverSocket);
-		evt.addMessage ("local port "+serverSocket.getLocalPort()
-		    +" remote host "+socket.getInetAddress());
-	    }
-	    else {
-		evt.addMessage (host+":"+port);
-		connect(newSocket ());
-	    }
-	    applyTimeout();
-	    Logger.log (evt);
-	} catch (ConnectException e) {
-	    Logger.log (new LogEvent (this, "connection-refused",
-		getHost()+":"+getPort())
-	    );
-	} catch (IOException e) {
-	    evt.addMessage (e.getMessage ());
-	    Logger.log (evt);
-	    throw e;
-	}
+                accept(serverSocket);
+                evt.addMessage ("local port "+serverSocket.getLocalPort()
+                    +" remote host "+socket.getInetAddress());
+            }
+            else {
+                evt.addMessage (host+":"+port);
+                connect(newSocket ());
+            }
+            applyTimeout();
+            Logger.log (evt);
+        } catch (ConnectException e) {
+            Logger.log (new LogEvent (this, "connection-refused",
+                getHost()+":"+getPort())
+            );
+        } catch (IOException e) {
+            evt.addMessage (e.getMessage ());
+            Logger.log (evt);
+            throw e;
+        }
     }
 
     /**
@@ -378,7 +378,7 @@ public abstract class BaseChannel extends Observable
      * flag as unusable in order to force a reconnection)
      */
     public void setUsable(boolean b) {
-	Logger.log (new LogEvent (this, "usable", new Boolean (b)));
+        Logger.log (new LogEvent (this, "usable", new Boolean (b)));
         usable = b;
     }
    /**
@@ -388,7 +388,7 @@ public abstract class BaseChannel extends Observable
     * @return ISOPackager
     */
     protected ISOPackager getDynamicPackager (ISOMsg m) {
-	return packager;
+        return packager;
     }
 
    /**
@@ -398,7 +398,7 @@ public abstract class BaseChannel extends Observable
     * @return ISOPackager
     */
     protected ISOPackager getDynamicPackager (byte[] image) {
-	return packager;
+        return packager;
     }
 
     /** 
@@ -406,12 +406,12 @@ public abstract class BaseChannel extends Observable
      * incoming messages.
      */
     protected ISOHeader getDynamicHeader (byte[] image) {
-    	return image != null ? 
+        return image != null ? 
             new BaseHeader (image) : null;
     }
     protected void sendMessageLength(int len) throws IOException { }
     protected void sendMessageHeader(ISOMsg m, int len) throws IOException { 
-	if (m.getHeader() != null)
+        if (m.getHeader() != null)
             serverOut.write(m.getHeader());
         else if (header != null) 
             serverOut.write(header);
@@ -441,43 +441,43 @@ public abstract class BaseChannel extends Observable
      * @exception ISOFilter.VetoException;
      */
     public void send (ISOMsg m) 
-	throws IOException, ISOException, VetoException
+        throws IOException, ISOException, VetoException
     {
-	LogEvent evt = new LogEvent (this, "send");
-	evt.addMessage (m);
-	try {
-	    if (!isConnected())
-		throw new ISOException ("unconnected ISOChannel");
-	    m.setDirection(ISOMsg.OUTGOING);
-	    m = applyOutgoingFilters (m, evt);
-	    m.setDirection(ISOMsg.OUTGOING); // filter may have drop this info
-	    m.setPackager (getDynamicPackager(m));
-	    byte[] b = m.pack();
-	    synchronized (serverOut) {
-		sendMessageLength(b.length + getHeaderLength());
-		sendMessageHeader(m, b.length);
+        LogEvent evt = new LogEvent (this, "send");
+        evt.addMessage (m);
+        try {
+            if (!isConnected())
+                throw new ISOException ("unconnected ISOChannel");
+            m.setDirection(ISOMsg.OUTGOING);
+            m = applyOutgoingFilters (m, evt);
+            m.setDirection(ISOMsg.OUTGOING); // filter may have drop this info
+            m.setPackager (getDynamicPackager(m));
+            byte[] b = m.pack();
+            synchronized (serverOut) {
+                sendMessageLength(b.length + getHeaderLength());
+                sendMessageHeader(m, b.length);
                 sendMessage (b, 0, b.length);
-		sendMessageTrailler(m, b.length);
-		serverOut.flush ();
-	    }
-	    cnt[TX]++;
-	    setChanged();
-	    notifyObservers(m);
-	} catch (VetoException e) {
-	    evt.addMessage (e);
-	    throw e;
-	} catch (ISOException e) {
-	    evt.addMessage (e);
-	    throw e;
-	} catch (IOException e) {
-	    evt.addMessage (e);
-	    throw e;
-	} catch (Exception e) {
-	    evt.addMessage (e);
-	    throw new ISOException ("unexpected exception", e);
-	} finally {
-	    Logger.log (evt);
-	}
+                sendMessageTrailler(m, b.length);
+                serverOut.flush ();
+            }
+            cnt[TX]++;
+            setChanged();
+            notifyObservers(m);
+        } catch (VetoException e) {
+            evt.addMessage (e);
+            throw e;
+        } catch (ISOException e) {
+            evt.addMessage (e);
+            throw e;
+        } catch (IOException e) {
+            evt.addMessage (e);
+            throw e;
+        } catch (Exception e) {
+            evt.addMessage (e);
+            throw new ISOException ("unexpected exception", e);
+        } finally {
+            Logger.log (evt);
+        }
     }
     protected boolean isRejected(byte[] b) {
         // VAP Header support - see VAPChannel
@@ -491,80 +491,80 @@ public abstract class BaseChannel extends Observable
      */
     public ISOMsg receive() throws IOException, ISOException {
         byte[] b, header=null;
-	LogEvent evt = new LogEvent (this, "receive");
-	ISOMsg m = new ISOMsg();
+        LogEvent evt = new LogEvent (this, "receive");
+        ISOMsg m = new ISOMsg();
         m.setSource (this);
-	try {
-	    if (!isConnected())
-		throw new ISOException ("unconnected ISOChannel");
+        try {
+            if (!isConnected())
+                throw new ISOException ("unconnected ISOChannel");
 
-	    synchronized (serverIn) {
-		int len  = getMessageLength();
-		int hLen = getHeaderLength();
+            synchronized (serverIn) {
+                int len  = getMessageLength();
+                int hLen = getHeaderLength();
 
-		if (len == -1) {
+                if (len == -1) {
                     if (hLen > 0) {
-		        header = new byte [hLen];
-		        serverIn.readFully(header,0,hLen);
+                        header = new byte [hLen];
+                        serverIn.readFully(header,0,hLen);
                     }
-		    b = streamReceive();
-		}
-		else if (len > 10 && len <= 4096) {
-		    int l;
-		    if (hLen > 0) {
-			// ignore message header (TPDU)
-			header = new byte [hLen];
-			serverIn.readFully(header,0,hLen);
-			if (isRejected(header))
-			    throw new ISOException 
-				("Unhandled Rejected Message");
-			len -= hLen;
-		    }
-		    b = new byte[len];
-		    serverIn.readFully(b,0,len);
+                    b = streamReceive();
+                }
+                else if (len > 10 && len <= 4096) {
+                    int l;
+                    if (hLen > 0) {
+                        // ignore message header (TPDU)
+                        header = new byte [hLen];
+                        serverIn.readFully(header,0,hLen);
+                        if (isRejected(header))
+                            throw new ISOException 
+                                ("Unhandled Rejected Message");
+                        len -= hLen;
+                    }
+                    b = new byte[len];
+                    serverIn.readFully(b,0,len);
                     getMessageTrailler();
-		}
-		else
-		    throw new ISOException(
-			"receive length " +len + " seems strange");
-	    }
-	    m.setPackager (getDynamicPackager(b));
-	    m.setHeader (getDynamicHeader(header));
-	    if (b.length > 0)  // Ignore NULL messages
-		m.unpack (b);
-	    m.setDirection(ISOMsg.INCOMING);
-	    m = applyIncomingFilters (m, evt);
-	    m.setDirection(ISOMsg.INCOMING);
-	    evt.addMessage (m);
-	    cnt[RX]++;
-	    setChanged();
-	    notifyObservers(m);
-	} catch (ISOException e) {
-	    evt.addMessage (e);
-	    throw e;
-	} catch (EOFException e) {
-            if (socket != null)
-                socket.close ();
-	    evt.addMessage ("<peer-disconnect/>");
-	    throw e;
-	} catch (InterruptedIOException e) {
-            if (socket != null)
-                socket.close ();
-	    evt.addMessage ("<io-timeout/>");
-	    throw e;
-	} catch (IOException e) { 
-            if (socket != null)
-                socket.close ();
-	    if (usable) 
-		evt.addMessage (e);
-	    throw e;
-	} catch (Exception e) { 
+                }
+                else
+                    throw new ISOException(
+                        "receive length " +len + " seems strange");
+            }
+            m.setPackager (getDynamicPackager(b));
+            m.setHeader (getDynamicHeader(header));
+            if (b.length > 0)  // Ignore NULL messages
+                m.unpack (b);
+            m.setDirection(ISOMsg.INCOMING);
+            m = applyIncomingFilters (m, evt);
+            m.setDirection(ISOMsg.INCOMING);
+            evt.addMessage (m);
+            cnt[RX]++;
+            setChanged();
+            notifyObservers(m);
+        } catch (ISOException e) {
             evt.addMessage (e);
-	    throw new ISOException ("unexpected exception", e);
-	} finally {
-	    Logger.log (evt);
-	}
-	return m;
+            throw e;
+        } catch (EOFException e) {
+            if (socket != null)
+                socket.close ();
+            evt.addMessage ("<peer-disconnect/>");
+            throw e;
+        } catch (InterruptedIOException e) {
+            if (socket != null)
+                socket.close ();
+            evt.addMessage ("<io-timeout/>");
+            throw e;
+        } catch (IOException e) { 
+            if (socket != null)
+                socket.close ();
+            if (usable) 
+                evt.addMessage (e);
+            throw e;
+        } catch (Exception e) { 
+            evt.addMessage (e);
+            throw new ISOException ("unexpected exception", e);
+        } finally {
+            Logger.log (evt);
+        }
+        return m;
     }
     /**
      * Low level receive
@@ -580,21 +580,21 @@ public abstract class BaseChannel extends Observable
      * @exception IOException
      */
     public void disconnect () throws IOException {
-	LogEvent evt = new LogEvent (this, "disconnect");
+        LogEvent evt = new LogEvent (this, "disconnect");
         if (serverSocket != null) 
-	    evt.addMessage ("local port "+serverSocket.getLocalPort()
-		+" remote host "+serverSocket.getInetAddress());
-	else
-	    evt.addMessage (host+":"+port);
-	try {
-	    usable = false;
-	    setChanged();
-	    notifyObservers();
+            evt.addMessage ("local port "+serverSocket.getLocalPort()
+                +" remote host "+serverSocket.getInetAddress());
+        else
+            evt.addMessage (host+":"+port);
+        try {
+            usable = false;
+            setChanged();
+            notifyObservers();
             if (serverIn != null) {
                 try {
                     serverIn.close();
                 } catch (IOException ex) { evt.addMessage (ex); }
-	        serverIn  = null;
+                serverIn  = null;
             }
             if (serverOut != null) {
                 try {
@@ -602,14 +602,14 @@ public abstract class BaseChannel extends Observable
                 } catch (IOException ex) { evt.addMessage (ex); }
                 serverOut = null;
             }
-	    if (socket != null)
-		socket.close ();
-	    Logger.log (evt);
-	} catch (IOException e) {
-	    evt.addMessage (e);
-	    Logger.log (evt);
-	    throw e;
-	}
+            if (socket != null)
+                socket.close ();
+            Logger.log (evt);
+        } catch (IOException e) {
+            evt.addMessage (e);
+            Logger.log (evt);
+            throw e;
+        }
         socket = null;
     }   
     /**
@@ -621,14 +621,14 @@ public abstract class BaseChannel extends Observable
         connect();
     }
     public void setLogger (Logger logger, String realm) {
-	this.logger = logger;
-	this.realm  = realm;
+        this.logger = logger;
+        this.realm  = realm;
     }
     public String getRealm () {
-	return realm;
+        return realm;
     }
     public Logger getLogger() {
-	return logger;
+        return logger;
     }
     /**
      * associates this ISOChannel with a name using NameRegistrar
@@ -636,103 +636,103 @@ public abstract class BaseChannel extends Observable
      * @see NameRegistrar
      */
     public void setName (String name) {
-	this.name = name;
-	NameRegistrar.register ("channel."+name, this);
+        this.name = name;
+        NameRegistrar.register ("channel."+name, this);
     }
     /**
      * @return this ISOChannel's name ("" if no name was set)
      */
     public String getName() {
-	return this.name;
+        return this.name;
     }
     /**
      * @param filter filter to add
      * @param direction ISOMsg.INCOMING, ISOMsg.OUTGOING, 0 for both
      */
     public void addFilter (ISOFilter filter, int direction) {
-	switch (direction) {
-	    case ISOMsg.INCOMING :
-		incomingFilters.add (filter);
-		break;
-	    case ISOMsg.OUTGOING :
-		outgoingFilters.add (filter);
-		break;
-	    case 0 :
-		incomingFilters.add (filter);
-		outgoingFilters.add (filter);
-		break;
-	}
+        switch (direction) {
+            case ISOMsg.INCOMING :
+                incomingFilters.add (filter);
+                break;
+            case ISOMsg.OUTGOING :
+                outgoingFilters.add (filter);
+                break;
+            case 0 :
+                incomingFilters.add (filter);
+                outgoingFilters.add (filter);
+                break;
+        }
     }
     /**
      * @param filter incoming filter to add
      */
     public void addIncomingFilter (ISOFilter filter) {
-	addFilter (filter, ISOMsg.INCOMING);
+        addFilter (filter, ISOMsg.INCOMING);
     }
     /**
      * @param filter outgoing filter to add
      */
     public void addOutgoingFilter (ISOFilter filter) {
-	addFilter (filter, ISOMsg.OUTGOING);
+        addFilter (filter, ISOMsg.OUTGOING);
     }
 
     /**
      * @param filter filter to add (both directions, incoming/outgoing)
      */
     public void addFilter (ISOFilter filter) {
-	addFilter (filter, 0);
+        addFilter (filter, 0);
     }
     /**
      * @param filter filter to remove
      * @param direction ISOMsg.INCOMING, ISOMsg.OUTGOING, 0 for both
      */
     public void removeFilter (ISOFilter filter, int direction) {
-	switch (direction) {
-	    case ISOMsg.INCOMING :
-		incomingFilters.remove (filter);
-		break;
-	    case ISOMsg.OUTGOING :
-		outgoingFilters.remove (filter);
-		break;
-	    case 0 :
-		incomingFilters.remove (filter);
-		outgoingFilters.remove (filter);
-		break;
-	}
+        switch (direction) {
+            case ISOMsg.INCOMING :
+                incomingFilters.remove (filter);
+                break;
+            case ISOMsg.OUTGOING :
+                outgoingFilters.remove (filter);
+                break;
+            case 0 :
+                incomingFilters.remove (filter);
+                outgoingFilters.remove (filter);
+                break;
+        }
     }
     /**
      * @param filter filter to remove (both directions)
      */
     public void removeFilter (ISOFilter filter) {
-	removeFilter (filter, 0);
+        removeFilter (filter, 0);
     }
     /**
      * @param filter incoming filter to remove
      */
     public void removeIncomingFilter (ISOFilter filter) {
-	removeFilter (filter, ISOMsg.INCOMING);
+        removeFilter (filter, ISOMsg.INCOMING);
     }
     /**
      * @param filter outgoing filter to remove
      */
     public void removeOutgoingFilter (ISOFilter filter) {
-	removeFilter (filter, ISOMsg.OUTGOING);
+        removeFilter (filter, ISOMsg.OUTGOING);
     }
     protected ISOMsg applyOutgoingFilters (ISOMsg m, LogEvent evt) 
-	throws VetoException
+        throws VetoException
     {
-	Iterator iter  = outgoingFilters.iterator();
-	while (iter.hasNext())
-	    m = ((ISOFilter) iter.next()).filter (this, m, evt);
-	return m;
+        Iterator iter  = outgoingFilters.iterator();
+        while (iter.hasNext())
+            m = ((ISOFilter) iter.next()).filter (this, m, evt);
+        return m;
     }
     protected ISOMsg applyIncomingFilters (ISOMsg m, LogEvent evt) 
-	throws VetoException
+        throws VetoException
     {
-	Iterator iter  = incomingFilters.iterator();
-	while (iter.hasNext())
-	    m = ((ISOFilter) iter.next()).filter (this, m, evt);
-	return m;
+        Iterator iter  = incomingFilters.iterator();
+        while (iter.hasNext())
+            m = ((ISOFilter) iter.next()).filter (this, m, evt);
+        return m;
     }
    /**
     * Implements Configurable<br>
@@ -747,15 +747,15 @@ public abstract class BaseChannel extends Observable
     * @throws ConfigurationException
     */
     public void setConfiguration (Configuration cfg)
-	throws ConfigurationException 
+        throws ConfigurationException 
     {
-	String h    = cfg.get    ("host");
-	int port    = cfg.getInt ("port");
-	if (h != null && h.length() > 0) {
-	    if (port == 0)
-		throw new ConfigurationException 
-		    ("invalid port for host '"+h+"'");
-	    setHost (h, port);
+        String h    = cfg.get    ("host");
+        int port    = cfg.getInt ("port");
+        if (h != null && h.length() > 0) {
+            if (port == 0)
+                throw new ConfigurationException 
+                    ("invalid port for host '"+h+"'");
+            setHost (h, port);
         }
         if (socketFactory != this && socketFactory instanceof Configurable)
             ((Configurable)socketFactory).setConfiguration (cfg);
@@ -766,25 +766,25 @@ public abstract class BaseChannel extends Observable
         }
     }
     public Collection getIncomingFilters() {
-	return incomingFilters;
+        return incomingFilters;
     }
     public Collection getOutgoingFilters() {
-	return outgoingFilters;
+        return outgoingFilters;
     }
     public void setIncomingFilters (Collection filters) {
-	incomingFilters = new Vector (filters);
+        incomingFilters = new Vector (filters);
     }
     public void setOutgoingFilters (Collection filters) {
-	outgoingFilters = new Vector (filters);
+        outgoingFilters = new Vector (filters);
     }
     public void setHeader (byte[] header) {
-	this.header = header;
+        this.header = header;
     }
     public void setHeader (String header) {
-	setHeader (header.getBytes());
+        setHeader (header.getBytes());
     }
     public byte[] getHeader () {
-	return header;
+        return header;
     }
     /**
      * @return ISOChannel instance with given name.
@@ -792,9 +792,9 @@ public abstract class BaseChannel extends Observable
      * @see NameRegistrar
      */
     public static ISOChannel getChannel (String name)
-	throws NameRegistrar.NotFoundException
+        throws NameRegistrar.NotFoundException
     {
-	return (ISOChannel) NameRegistrar.get ("channel."+name);
+        return (ISOChannel) NameRegistrar.get ("channel."+name);
     }
    /**
     * Gets the ISOClientSocketFactory (may be null)

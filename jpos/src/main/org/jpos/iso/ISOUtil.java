@@ -330,8 +330,8 @@ public class ISOUtil {
             int shift = ((i & 1) == 1 ? 0 : 4);
             char c = Character.forDigit (
                 ((b[offset+(i>>1)] >> shift) & 0x0F), 16);
-	    if (c == 'd')
-		c = '=';
+            if (c == 'd')
+                c = '=';
             d.append (Character.toUpperCase (c));
         }
         return d.toString();
@@ -360,37 +360,37 @@ public class ISOUtil {
     public static String dumpString(byte[] b) {
         StringBuffer d = new StringBuffer(b.length * 2);
         for (int i=0; i<b.length; i++) {
-	    char c = (char) b[i];
-	    if (Character.isISOControl (c)) {
-		// TODO: complete list of control characters,
-		// use a String[] instead of this weird switch
-		switch (c) {
-		    case '\r'  : d.append ("{CR}");   break;
-		    case '\n'  : d.append ("{LF}");   break;
-		    case '\000': d.append ("{NULL}"); break;
-		    case '\001': d.append ("{SOH}");  break;
-		    case '\002': d.append ("{STX}");  break;
-		    case '\003': d.append ("{ETX}");  break;
-		    case '\004': d.append ("{EOT}");  break;
-		    case '\005': d.append ("{ENQ}");  break;
-		    case '\006': d.append ("{ACK}");  break;
-		    case '\007': d.append ("{BEL}");  break;
-		    case '\020': d.append ("{DLE}");  break;
-		    case '\025': d.append ("{NAK}");  break;
-		    case '\026': d.append ("{SYN}");  break;
-		    case '\034': d.append ("{FS}");  break;
-		    default:
-			char hi = Character.forDigit ((b[i] >> 4) & 0x0F, 16);
-			char lo = Character.forDigit (b[i] & 0x0F, 16);
-			d.append('[');
-			d.append(Character.toUpperCase(hi));
-			d.append(Character.toUpperCase(lo));
-			d.append(']');
-			break;
-		}
-	    }
-	    else
-		d.append (c);
+            char c = (char) b[i];
+            if (Character.isISOControl (c)) {
+                // TODO: complete list of control characters,
+                // use a String[] instead of this weird switch
+                switch (c) {
+                    case '\r'  : d.append ("{CR}");   break;
+                    case '\n'  : d.append ("{LF}");   break;
+                    case '\000': d.append ("{NULL}"); break;
+                    case '\001': d.append ("{SOH}");  break;
+                    case '\002': d.append ("{STX}");  break;
+                    case '\003': d.append ("{ETX}");  break;
+                    case '\004': d.append ("{EOT}");  break;
+                    case '\005': d.append ("{ENQ}");  break;
+                    case '\006': d.append ("{ACK}");  break;
+                    case '\007': d.append ("{BEL}");  break;
+                    case '\020': d.append ("{DLE}");  break;
+                    case '\025': d.append ("{NAK}");  break;
+                    case '\026': d.append ("{SYN}");  break;
+                    case '\034': d.append ("{FS}");  break;
+                    default:
+                        char hi = Character.forDigit ((b[i] >> 4) & 0x0F, 16);
+                        char lo = Character.forDigit (b[i] & 0x0F, 16);
+                        d.append('[');
+                        d.append(Character.toUpperCase(hi));
+                        d.append(Character.toUpperCase(lo));
+                        d.append(']');
+                        break;
+                }
+            }
+            else
+                d.append (c);
 
         }
         return d.toString();
@@ -630,7 +630,7 @@ public class ISOUtil {
      * @return normalized string suitable for XML Output
      */
     public static String normalize (String s) {
-	return normalize (s, true);
+        return normalize (s, true);
     }
     /**
      * Protects PAN, Track2, CVC (suitable for logs).
@@ -724,7 +724,7 @@ public class ISOUtil {
         System.arraycopy(array2, beginIndex2, concatArray, length1, length2);
         return  concatArray;
     }
-    /**	
+    /** 
      * Causes the currently executing thread to sleep (temporarily cease 
      * execution) for the specified number of milliseconds. The thread 
      * does not lose ownership of any monitors.

@@ -67,11 +67,11 @@ import java.util.TimeZone;
  * @see ISOUtil
  */
 public class ISODate {
-	/**
-	 * Formats a date object, using the default time zone for this host
-	 * @param d date object to be formatted
-	 * @param pattern to be used for formatting
-	 */
+        /**
+         * Formats a date object, using the default time zone for this host
+         * @param d date object to be formatted
+         * @param pattern to be used for formatting
+         */
     public static String formatDate (Date d, String pattern) {
         return formatDate(d, pattern, TimeZone.getDefault());
     }
@@ -154,30 +154,30 @@ public class ISODate {
      * @return Date
      */
     public static Date parseISODate (String d) {
-	int MM = Integer.parseInt(d.substring (0, 2))-1;
-	int DD = Integer.parseInt(d.substring (2, 4));
-	int hh = Integer.parseInt(d.substring (4, 6));
-	int mm = Integer.parseInt(d.substring (6, 8));
-	int ss = Integer.parseInt(d.substring (8,10));
+        int MM = Integer.parseInt(d.substring (0, 2))-1;
+        int DD = Integer.parseInt(d.substring (2, 4));
+        int hh = Integer.parseInt(d.substring (4, 6));
+        int mm = Integer.parseInt(d.substring (6, 8));
+        int ss = Integer.parseInt(d.substring (8,10));
 
-	Date now = new Date();
-	Calendar cal = new GregorianCalendar();
+        Date now = new Date();
+        Calendar cal = new GregorianCalendar();
 
-	cal.setTime (now);
-	cal.set (Calendar.MONTH, MM);
-	cal.set (Calendar.DATE, DD);
-	cal.set (Calendar.HOUR_OF_DAY, hh);
-	cal.set (Calendar.MINUTE, mm);
-	cal.set (Calendar.SECOND, ss);
+        cal.setTime (now);
+        cal.set (Calendar.MONTH, MM);
+        cal.set (Calendar.DATE, DD);
+        cal.set (Calendar.HOUR_OF_DAY, hh);
+        cal.set (Calendar.MINUTE, mm);
+        cal.set (Calendar.SECOND, ss);
 
-	Date thisYear = cal.getTime();
-	cal.set (Calendar.YEAR, cal.get (Calendar.YEAR)-1);
-	Date previousYear = cal.getTime();
+        Date thisYear = cal.getTime();
+        cal.set (Calendar.YEAR, cal.get (Calendar.YEAR)-1);
+        Date previousYear = cal.getTime();
 
-	if (Math.abs (now.getTime() - previousYear.getTime()) <
-	    Math.abs (now.getTime() - thisYear.getTime()) )
-	    thisYear = previousYear;
-	return thisYear;
+        if (Math.abs (now.getTime() - previousYear.getTime()) <
+            Math.abs (now.getTime() - thisYear.getTime()) )
+            thisYear = previousYear;
+        return thisYear;
     }
 
     /**
@@ -186,8 +186,8 @@ public class ISODate {
     public static String getDateTime (Date d) {
         return formatDate (d, "MMddHHmmss");
     }
-	/**
-	 * @param d date object to be formatted
+        /**
+         * @param d date object to be formatted
      * @param timeZone for GMT for example, use TimeZone.getTimeZone("GMT")
      *        and for Uruguay use TimeZone.getTimeZone("GMT-03:00")
      * @return date in MMddHHmmss format suitable for FIeld 7
@@ -202,7 +202,7 @@ public class ISODate {
         return formatDate (d, "HHmmss");
     }
     /**
-	 * @param d date object to be formatted
+         * @param d date object to be formatted
      * @param timeZone for GMT for example, use TimeZone.getTimeZone("GMT")
      *        and for Uruguay use TimeZone.getTimeZone("GMT-03:00")
      * @return date in HHmmss format - suitable for field 12
@@ -217,7 +217,7 @@ public class ISODate {
         return formatDate (d, "MMdd");
     }
     /**
-	 * @param d date object to be formatted
+         * @param d date object to be formatted
      * @param timeZone for GMT for example, use TimeZone.getTimeZone("GMT")
      *        and for Uruguay use TimeZone.getTimeZone("GMT-03:00")
      * @return date in MMdd format - suitable for field 13
@@ -232,7 +232,7 @@ public class ISODate {
         return formatDate (d, "yyMMdd");
     }
     /**
-	 * @param d date object to be formatted
+         * @param d date object to be formatted
      * @param timeZone for GMT for example, use TimeZone.getTimeZone("GMT")
      *        and for Uruguay use TimeZone.getTimeZone("GMT-03:00")
      * @return date in yyMMdd format - suitable for ANSI field 8
@@ -253,7 +253,7 @@ public class ISODate {
         return formatDate (d, "yyMM");
     }
     /**
-	 * @param d date object to be formatted
+         * @param d date object to be formatted
      * @param timeZone for GMT for example, use TimeZone.getTimeZone("GMT")
      *        and for Uruguay use TimeZone.getTimeZone("GMT-03:00")
      * @return date in yyMM format - suitable for field 14

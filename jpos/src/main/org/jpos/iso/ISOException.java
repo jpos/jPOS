@@ -88,8 +88,8 @@ public class ISOException extends Exception implements Loggeable {
      * @param nested another exception
      */
     public ISOException (Exception nested) {
-	super(nested.toString());
-	this.nested = nested;
+        super(nested.toString());
+        this.nested = nested;
     }
 
     /**
@@ -99,42 +99,42 @@ public class ISOException extends Exception implements Loggeable {
      * @param nested another exception
      */
     public ISOException (String s, Exception nested) {
-	super(s);
-	this.nested = nested;
+        super(s);
+        this.nested = nested;
     }
 
     /**
      * @return nested exception (may be null)
      */
     public Exception getNested() {
-	return nested;
+        return nested;
     }
 
     protected String getTagName() {
-	return "iso-exception";
+        return "iso-exception";
     }
     public void dump (PrintStream p, String indent) {
-	String inner = indent + "  ";
-	p.println (indent + "<"+getTagName()+">");
-	p.println (inner  + getMessage());
-	if (nested != null) {
-	    if (nested instanceof ISOException) 
-		((ISOException)nested).dump (p, inner);
-	    else {
-		p.println (inner + "<nested-exception>");
-		p.print   (inner);
-		nested.printStackTrace (p);
-		p.println (inner + "</nested-exception>");
-	    }
-	}
-	p.print (inner);
-	printStackTrace (p);
-	p.println (indent + "</"+getTagName()+">");
+        String inner = indent + "  ";
+        p.println (indent + "<"+getTagName()+">");
+        p.println (inner  + getMessage());
+        if (nested != null) {
+            if (nested instanceof ISOException) 
+                ((ISOException)nested).dump (p, inner);
+            else {
+                p.println (inner + "<nested-exception>");
+                p.print   (inner);
+                nested.printStackTrace (p);
+                p.println (inner + "</nested-exception>");
+            }
+        }
+        p.print (inner);
+        printStackTrace (p);
+        p.println (indent + "</"+getTagName()+">");
     }
     public String toString() {
-	StringBuffer buf = new StringBuffer (super.toString());
-	if (nested != null)
-	    buf.append (" (" + nested.toString() +")");
-	return buf.toString();
+        StringBuffer buf = new StringBuffer (super.toString());
+        if (nested != null)
+            buf.append (" (" + nested.toString() +")");
+        return buf.toString();
     }
 }

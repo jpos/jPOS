@@ -346,8 +346,8 @@ public class ISOCurrency
     }
 
     public static Currency getCurrency (int code) throws ISOException {
-	return (Currency) 
-	    currencies.get (ISOUtil.zeropad (Integer.toString (code), 3));
+        return (Currency) 
+            currencies.get (ISOUtil.zeropad (Integer.toString (code), 3));
     }
 
 /*
@@ -360,7 +360,7 @@ public class ISOCurrency
             String curr=(String)d[0];
             double amount=((Double)d[1]).doubleValue();
             System.out.println("Cych: "
-		+cychamount+" , CURR="+curr+" , AMOUNT="+amount);
+                +cychamount+" , CURR="+curr+" , AMOUNT="+amount);
             String isocurr=getIsoCodeFromAlphaCode(curr);
             String a1=convertToIsoMsg(amount,isocurr);
             double d2=convertFromIsoMsg(a1,isocurr);

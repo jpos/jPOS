@@ -58,7 +58,7 @@ package org.jpos.iso;
  */
 public class IF_TCHAR extends IF_TBASE {
     public IF_TCHAR() {
-	super();
+        super();
     }
     /**
      * @param len - field len

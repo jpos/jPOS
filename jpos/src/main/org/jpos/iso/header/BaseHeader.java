@@ -65,14 +65,14 @@ public class BaseHeader implements ISOHeader {
      */
     public BaseHeader()
     {
-    	header = null;
+        header = null;
     }
 
     /**
      * Create a new Header from a byte array.
      */
     public BaseHeader (byte[] header) {
-	unpack(header);
+        unpack(header);
     }
 
     /** 
@@ -80,27 +80,27 @@ public class BaseHeader implements ISOHeader {
      */
     public Object clone() 
     {
-    	try {
-	    BaseHeader h = (BaseHeader) super.clone();
-	    if (this.header != null)
-		h.header = (byte[]) this.header.clone();
-	    return h;
-	} catch (CloneNotSupportedException e) {
-	    throw new InternalError();
-	}
+        try {
+            BaseHeader h = (BaseHeader) super.clone();
+            if (this.header != null)
+                h.header = (byte[]) this.header.clone();
+            return h;
+        } catch (CloneNotSupportedException e) {
+            throw new InternalError();
+        }
     }
 
     public byte[] pack() {
-	return header;
+        return header;
     }
 
     public int unpack (byte[] header) {
-	this.header = header;
-	return header != null ? header.length : 0;
+        this.header = header;
+        return header != null ? header.length : 0;
     }
 
     public int getLength () {
-    	return header != null ? header.length : 0;
+        return header != null ? header.length : 0;
     }
 
     public void setDestination(String dst) {}

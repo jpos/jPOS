@@ -58,7 +58,7 @@ package org.jpos.iso;
  */
 public class IFB_AMOUNT extends ISOFieldPackager {
     public IFB_AMOUNT() {
-	super();
+        super();
     }
     /**
      * @param len - field len

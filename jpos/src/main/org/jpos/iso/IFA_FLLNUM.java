@@ -62,7 +62,7 @@ import java.io.InputStream;
  */
 public class IFA_FLLNUM extends ISOFieldPackager {
     public IFA_FLLNUM() {
-	super();
+        super();
     }
     /**
      * @param len - field len

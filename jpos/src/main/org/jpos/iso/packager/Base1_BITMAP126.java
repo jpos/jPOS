@@ -68,7 +68,7 @@ public class Base1_BITMAP126 extends ISOBitMapPackager
 {
     public Base1_BITMAP126()
     {
-	super();
+        super();
     }
     /**
     * @param len - field len

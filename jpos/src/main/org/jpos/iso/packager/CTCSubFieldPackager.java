@@ -75,7 +75,7 @@ public class CTCSubFieldPackager extends ISOBaseValidatingPackager {
     }
 
     public byte[] pack ( ISOComponent c ) throws ISOException {
-        try	{
+        try     {
             int len;
             Hashtable tab = c.getChildren();
             StringBuffer sb = new StringBuffer();
@@ -98,7 +98,7 @@ public class CTCSubFieldPackager extends ISOBaseValidatingPackager {
         for ( int i=0; consumed < b.length ; i++ ) {
             ISOComponent c = fld[i].createComponent( i );
             consumed += fld[i].unpack ( c, b, consumed );
-            if ( logger != null )	{
+            if ( logger != null )       {
                 evt.addMessage ("<unpack fld=\"" + i
                                 +"\" packager=\""
                                 +fld[i].getClass().getName()+ "\">");

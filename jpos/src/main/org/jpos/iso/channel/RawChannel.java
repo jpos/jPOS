@@ -133,6 +133,6 @@ public class RawChannel extends BaseChannel {
      * @param header String as seen by QSP
      */
     public void setHeader (String header) {
-	super.setHeader (ISOUtil.str2bcd(header, false));
+        super.setHeader (ISOUtil.str2bcd(header, false));
     }
 }

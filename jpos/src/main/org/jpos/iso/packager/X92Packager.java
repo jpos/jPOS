@@ -156,7 +156,7 @@ public class X92Packager extends ISOBasePackager {
      * @return true
      */
     protected boolean emitBitMap () {
-	return true;
+        return true;
     }
 
     /**

@@ -61,7 +61,7 @@ import java.io.InputStream;
  */
 public class IFA_LLLCHAR extends ISOFieldPackager {
     public IFA_LLLCHAR() {
-	super();
+        super();
     }
     /**
      * @param len - field len

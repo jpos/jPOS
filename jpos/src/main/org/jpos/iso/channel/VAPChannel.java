@@ -79,8 +79,8 @@ public class VAPChannel extends BaseChannel {
      */
     public VAPChannel () {
         super();
-	srcid = "000000";
-	dstid = "000000";
+        srcid = "000000";
+        dstid = "000000";
     }
     /**
      * Construct client ISOChannel
@@ -120,7 +120,7 @@ public class VAPChannel extends BaseChannel {
      * The default header for VAPChannel is BASE1Header
      */
     protected ISOHeader getDynamicHeader (byte[] image) {
-    	return new BASE1Header (image);
+        return new BASE1Header (image);
     }
 
     protected void sendMessageLength(int len) throws IOException {
@@ -138,8 +138,8 @@ public class VAPChannel extends BaseChannel {
         throws IOException
     {
         ISOHeader h = (m.getHeader() != null) ?
-		m.getISOHeader() :
-		new BASE1Header (srcid, dstid);
+                m.getISOHeader() :
+                new BASE1Header (srcid, dstid);
 
         if (h instanceof BASE1Header)
             ((BASE1Header)h).setLen(len);
@@ -156,7 +156,7 @@ public class VAPChannel extends BaseChannel {
             if (l == 0) {
                 serverOut.write(b);
                 serverOut.flush();
-		Logger.log (new LogEvent (this, "poll"));
+                Logger.log (new LogEvent (this, "poll"));
             }
         }
         return l;
@@ -165,7 +165,7 @@ public class VAPChannel extends BaseChannel {
     protected int getHeaderLength() {
         return BASE1Header.LENGTH;
     }
-	
+        
     protected boolean isRejected(byte[] b) {
         BASE1Header h = new BASE1Header(b);
         return h.isRejected() || (h.getHLen() != BASE1Header.LENGTH);
@@ -193,10 +193,10 @@ public class VAPChannel extends BaseChannel {
     }
 
     public void setConfiguration (Configuration cfg)
-	throws ConfigurationException 
+        throws ConfigurationException 
     {
-	srcid = cfg.get ("srcid", "000000");
-	dstid = cfg.get ("dstid", "000000");
-	super.setConfiguration (cfg);
+        srcid = cfg.get ("srcid", "000000");
+        dstid = cfg.get ("dstid", "000000");
+        super.setConfiguration (cfg);
     }
 }

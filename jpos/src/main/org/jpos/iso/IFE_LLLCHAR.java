@@ -64,7 +64,7 @@ public class IFE_LLLCHAR extends ISOFieldPackager
 {
     public IFE_LLLCHAR()
     {
-	super();
+        super();
     }
     /**
     * @param len - field len
@@ -72,7 +72,7 @@ public class IFE_LLLCHAR extends ISOFieldPackager
     */
     public IFE_LLLCHAR(int len, String description) 
     {
-	super(len, description);
+        super(len, description);
     }
     /**
     * @param c - a component
@@ -81,15 +81,15 @@ public class IFE_LLLCHAR extends ISOFieldPackager
     */
     public byte[] pack(ISOComponent c) throws ISOException 
     {
-	int len;
-	String s = (String) c.getValue();
-	if ((len=s.length()) > getLength() || len>999)   // paranoia settings
+        int len;
+        String s = (String) c.getValue();
+        if ((len=s.length()) > getLength() || len>999)   // paranoia settings
             throw new ISOException (
                 "invalid len "+len +" packing LLLECHAR field "+(Integer) c.getKey());
 
-	String l = ISOUtil.zeropad(Integer.toString(len), 3);
+        String l = ISOUtil.zeropad(Integer.toString(len), 3);
 
-	return ISOUtil.asciiToEbcdic(l + s);
+        return ISOUtil.asciiToEbcdic(l + s);
     }
     /**
     * @param c - the Component to unpack
@@ -99,20 +99,20 @@ public class IFE_LLLCHAR extends ISOFieldPackager
     * @exception ISOException
     */
     public int unpack(ISOComponent c, byte[] b, int offset)
-	throws ISOException
+        throws ISOException
     {
         int len = Integer.parseInt (ISOUtil.ebcdicToAscii(b, offset, 3));
-	c.setValue(ISOUtil.ebcdicToAscii(b, offset+3, len));
-	return len+3;
+        c.setValue(ISOUtil.ebcdicToAscii(b, offset+3, len));
+        return len+3;
     }
     public int getMaxPackedLength() 
     {
-	return getLength()+3;
+        return getLength()+3;
     }
     public void unpack (ISOComponent c, InputStream in) 
         throws IOException, ISOException
     {
         int len = Integer.parseInt (ISOUtil.ebcdicToAscii(readBytes (in, 3)));
-	c.setValue(ISOUtil.ebcdicToAscii(readBytes (in, len)));
+        c.setValue(ISOUtil.ebcdicToAscii(readBytes (in, len)));
     }
 }

@@ -59,7 +59,7 @@ package org.jpos.iso;
  */
 public class IFE_CHAR extends ISOFieldPackager {
     public IFE_CHAR() {
-	super();
+        super();
     }
     /**
      * @param len - field len

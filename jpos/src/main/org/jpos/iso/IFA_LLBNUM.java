@@ -62,7 +62,7 @@ import java.io.IOException;
  */
 public class IFA_LLBNUM extends ISOFieldPackager {
     public IFA_LLBNUM () {
-	super();
+        super();
     }
     /**
      * @param len - field len

@@ -58,7 +58,7 @@ package org.jpos.iso;
  */
 public class IF_CHAR extends ISOFieldPackager {
     public IF_CHAR() {
-	super();
+        super();
     }
     /**
      * @param len - field len

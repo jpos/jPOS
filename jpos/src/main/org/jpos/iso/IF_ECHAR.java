@@ -60,7 +60,7 @@ package org.jpos.iso;
  */
 public class IF_ECHAR extends ISOFieldPackager {
     public IF_ECHAR() {
-	super();
+        super();
     }
     /**
      * @param len - field len

@@ -136,7 +136,7 @@ public class CSChannel extends BaseChannel {
     }
     protected int getHeaderLength() { 
         // CS Channel does not support header
-	return 0; 
+        return 0; 
     }
     protected void sendMessageHeader(ISOMsg m, int len) {
         // CS Channel does not support header

@@ -73,7 +73,7 @@ public class BASE1Header extends BaseHeader {
     public static final int LENGTH = 22;
 
     public BASE1Header() {
-	this("000000", "000000");
+        this("000000", "000000");
     }
     public BASE1Header(String source, String destination) {
         super();
@@ -88,9 +88,9 @@ public class BASE1Header extends BaseHeader {
         super (header);
     }
     public int unpack (byte[] header) {
-    	this.header = new byte[LENGTH];
-	System.arraycopy (header, 0, this.header, 0, LENGTH);
-	return LENGTH;
+        this.header = new byte[LENGTH];
+        System.arraycopy (header, 0, this.header, 0, LENGTH);
+        return LENGTH;
     }
     public int getHLen() {
         return (int) (header[0] & 0xFF);
@@ -130,18 +130,18 @@ public class BASE1Header extends BaseHeader {
         System.arraycopy(d, 0, header, 8, 3);
     }
     public String getSource() {
-	return ISOUtil.bcd2str (this.header, 8, 6, false);
+        return ISOUtil.bcd2str (this.header, 8, 6, false);
     }
     public String getDestination() {
-	return ISOUtil.bcd2str (this.header, 5, 6, false);
+        return ISOUtil.bcd2str (this.header, 5, 6, false);
     }
     public void swapDirection() {
-	if (header != null && header.length >= LENGTH) {
-	    byte[] source = new byte[3];
-	    System.arraycopy(header, 8, source, 0, 3);
-	    System.arraycopy(header, 5, header, 8, 3);
-	    System.arraycopy(source, 0, header, 5, 3);
-	}
+        if (header != null && header.length >= LENGTH) {
+            byte[] source = new byte[3];
+            System.arraycopy(header, 8, source, 0, 3);
+            System.arraycopy(header, 5, header, 8, 3);
+            System.arraycopy(source, 0, header, 5, 3);
+        }
     }
     public boolean isRejected() {
         return (header[16] & 0x80) == 0x80;

@@ -59,6 +59,9 @@ import org.jpos.util.Logger;
 
 /*
  * $Log$
+ * Revision 1.15  2003/10/13 10:34:15  apr
+ * Tabs expanded to 8 spaces
+ *
  * Revision 1.14  2003/05/16 04:14:05  alwyns
  * Import cleanups.
  *
@@ -117,7 +120,7 @@ public class ISORequest implements LogSource, Loggeable {
         request = m;
         Date d = new Date();
         requestTime = d.getTime();
-	txTime = 0;
+        txTime = 0;
         expired = false;
     }
     /**
@@ -152,15 +155,15 @@ public class ISORequest implements LogSource, Loggeable {
      * MUX calls setTransmitted when chances are really good
      */
     public void setTransmitted () {
-	txTime = System.currentTimeMillis();
+        txTime = System.currentTimeMillis();
     }
     /**
      * @return true if this request was actually sent thru channel
      */
     public boolean isTransmitted() {
-	return txTime != 0;
+        return txTime != 0;
     }
-	
+        
     /**
      * wait for a response to arrive. 
      * ISOMUX will notify this object when the response message is ready.
@@ -170,31 +173,31 @@ public class ISORequest implements LogSource, Loggeable {
      */
     public ISOMsg getResponse(int timeout) {
         synchronized (this) {
-	    if (response == null) {
-		try {
-		    if (timeout > 0)
-			wait(timeout);
-		    else
-			wait();
-		} catch (InterruptedException e) { }
-	    }
-	    setExpired (response == null);
+            if (response == null) {
+                try {
+                    if (timeout > 0)
+                        wait(timeout);
+                    else
+                        wait();
+                } catch (InterruptedException e) { }
+            }
+            setExpired (response == null);
         }
-	Logger.log (new LogEvent (this, "ISORequest", this));
+        Logger.log (new LogEvent (this, "ISORequest", this));
         return response;
     }
     public void dump (PrintStream p, String indent) {
-	String newIndent = indent + "  ";
-	p.println (indent + "<request" +
-	    (expired ? " expired=\"true\">" : ">"));
-	request.dump (p, newIndent);
-	p.println (indent + "</request>");
-	if (response != null) {
-	    p.println (indent + "<response elapsed=\""
-		+(responseTime-requestTime)+ "\">");
-	    response.dump (p, newIndent);
-	    p.println (indent + "</response>");
-	}
+        String newIndent = indent + "  ";
+        p.println (indent + "<request" +
+            (expired ? " expired=\"true\">" : ">"));
+        request.dump (p, newIndent);
+        p.println (indent + "</request>");
+        if (response != null) {
+            p.println (indent + "<response elapsed=\""
+                +(responseTime-requestTime)+ "\">");
+            response.dump (p, newIndent);
+            p.println (indent + "</response>");
+        }
     }
 
     /**
@@ -210,14 +213,14 @@ public class ISORequest implements LogSource, Loggeable {
         }
     }
     public void setLogger (Logger logger, String realm) {
-	this.logger = logger;
-	this.realm  = realm;
+        this.logger = logger;
+        this.realm  = realm;
     }
     public String getRealm () {
-	return realm;
+        return realm;
     }
     public Logger getLogger() {
-	return logger;
+        return logger;
     }
     /**
      * @return time in milliseconds of how long it took to get a Response

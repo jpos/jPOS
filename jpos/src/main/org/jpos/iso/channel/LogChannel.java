@@ -110,30 +110,30 @@ public class LogChannel extends BaseChannel {
      * @exception IOException
      */
     protected byte[] streamReceive() throws IOException {
-	StringBuffer sb = new StringBuffer();
+        StringBuffer sb = new StringBuffer();
         boolean inMsg = false;
-	while (reader != null) {
-	    String s = reader.readLine();
+        while (reader != null) {
+            String s = reader.readLine();
             if (s.indexOf ("<isomsg") >= 0)
                 inMsg = true;
-	    if (s == null)
-		throw new EOFException();
+            if (s == null)
+                throw new EOFException();
             if (inMsg) 
                 sb.append (s);
-	    if (s.indexOf ("</isomsg>") >= 0)
-		break;
-	}
-	return sb.toString().getBytes();
+            if (s.indexOf ("</isomsg>") >= 0)
+                break;
+        }
+        return sb.toString().getBytes();
     }
     protected int getHeaderLength() { 
-	return 0; 
+        return 0; 
     }
     protected void connect (Socket socket) throws IOException {
-	super.connect (socket);
-	reader = new BufferedReader (new InputStreamReader (serverIn));
+        super.connect (socket);
+        reader = new BufferedReader (new InputStreamReader (serverIn));
     }
     public void disconnect () throws IOException {
-	super.disconnect ();
-	reader = null;
+        super.disconnect ();
+        reader = null;
     }
 }
