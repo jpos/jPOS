@@ -60,10 +60,12 @@ import java.util.Date;
  */
 public class SimpleLogListener implements LogListener {
     PrintStream p;
+    private Date d;
 
     public SimpleLogListener () {
         super();
         p = System.out;
+        d = new Date();
     }
     public SimpleLogListener (PrintStream p) {
         super();
@@ -80,7 +82,7 @@ public class SimpleLogListener implements LogListener {
     }
     public synchronized LogEvent log (LogEvent ev) {
         if (p != null) {
-            Date d = new Date();
+            d.setTime (System.currentTimeMillis ());
             p.println (
                 "<log realm=\"" +ev.getRealm()+ "\" at=\""+d.toString()
                 +"." + d.getTime() % 1000 + "\">"
@@ -92,3 +94,4 @@ public class SimpleLogListener implements LogListener {
         return ev;
     }
 }
+
