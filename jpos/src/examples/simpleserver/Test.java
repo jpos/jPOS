@@ -1,6 +1,7 @@
 package simpleserver;
 
 import java.io.IOException;
+import java.io.EOFException;
 import java.net.ServerSocket;
 import org.jpos.iso.ISOMsg;
 import org.jpos.iso.ISOField;
@@ -50,6 +51,7 @@ public class Test implements Runnable, LogProducer {
                     m.set (new ISOField(39, "00"));
                     channel.send(m);
                 }
+	    } catch (EOFException e) {
             } catch (Exception e) { 
 		Logger.log (new LogEvent (this, "SessionError", e));
             } 
