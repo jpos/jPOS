@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.2  1999/12/17 18:05:21  apr
+ * BugFix: setAuthoritative param
+ *
  * Revision 1.1  1999/11/26 12:16:51  apr
  * CVS devel snapshot
  *
@@ -80,7 +83,7 @@ public class ThinResponse implements CardTransactionResponse {
 	return canContinue;
     }
     public void setAuthoritative (boolean authoritative) {
-	this.authoritative = true;
+	this.authoritative = authoritative;
     }
     public boolean isAuthoritative() {
 	return authoritative;
