@@ -22,6 +22,7 @@ import java.util.*;
  * @see AntiHog
  */
 public class Logger {
+    String name;
     Vector listeners;
     AntiHog antiHog;
 
@@ -29,6 +30,7 @@ public class Logger {
 	super();
 	listeners = new Vector ();
 	antiHog   = null;
+	name = "";
     }
     public void addListener (LogListener l) {
 	listeners.add (l);
@@ -61,6 +63,7 @@ public class Logger {
      * @see NameRegistrar
      */
     public void setName (String name) {
+	this.name = name;
 	NameRegistrar.register ("logger."+name, this);
     }
     /**
@@ -76,5 +79,11 @@ public class Logger {
 	    l.setName (name);
 	}
 	return l;
+    }
+    /**
+     * @return this logger's name ("" if no name was set)
+     */
+    public String getName() {
+	return this.name;
     }
 }
