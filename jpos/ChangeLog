@@ -1,5 +1,9 @@
 $Id$
 
+-- 1.4.7 --
+
+-- 1.4.6 -- released Jul 2003 (tagged: v1_4_6)
+
 -- 1.4.5 --
 Removed Q2 and related modules.
 Added PersistentSpace
