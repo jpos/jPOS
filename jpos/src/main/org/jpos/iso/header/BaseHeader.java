@@ -75,6 +75,21 @@ public class BaseHeader implements ISOHeader {
 	unpack(header);
     }
 
+    /** 
+     * Clone this Header.
+     */
+    public Object clone() 
+    {
+    	try {
+	    BaseHeader h = (BaseHeader) super.clone();
+	    if (this.header != null)
+		h.header = (byte[]) this.header.clone();
+	    return h;
+	} catch (CloneNotSupportedException e) {
+	    throw new InternalError();
+	}
+    }
+
     public byte[] pack() {
 	return header;
     }
