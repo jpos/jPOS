@@ -48,8 +48,6 @@
  */
 
 package org.jpos.iso;
-import java.io.IOException;
-import java.io.InputStream;
 
 
 /**
@@ -59,62 +57,28 @@ import java.io.InputStream;
  * @version $Id$
  * @see ISOComponent
  */
-public class IFB_LLHBINARY extends ISOFieldPackager {
+public class IFB_LLHBINARY extends ISOBinaryFieldPackager {
     public IFB_LLHBINARY() {
-        super();
+        super(LiteralBinaryInterpreter.INSTANCE, BinaryPrefixer.B);
     }
     /**
      * @param len - field len
      * @param description symbolic descrption
      */
     public IFB_LLHBINARY (int len, String description) {
-        super(len, description);
+        super(len, description, LiteralBinaryInterpreter.INSTANCE, BinaryPrefixer.B);
+        if (len > 255)
+        {
+            throw new IllegalArgumentException("Length " + len + " too long for " + this.getClass().getName());
+        }
     }
-    /**
-     * @param c - a component
-     * @return packed component
-     * @exception ISOException
-     */
-    public byte[] pack (ISOComponent c) throws ISOException {
-        int len = ((byte[]) c.getValue()).length;
-    
-        if (len > getLength() || len>255)    // paranoia settings
-            throw new ISOException (
-                "invalid len "+len +" packing field "+(Integer) c.getKey()
-            );
 
-        byte[] b = new byte[len + 1];
-        b[0] = (byte) len;
-        System.arraycopy(c.getValue(), 0, b, 1, len);
-        return b;
-    }
-    /**
-     * @param c - the Component to unpack
-     * @param b - binary image
-     * @param offset - starting offset within the binary image
-     * @return consumed bytes
-     * @exception ISOException
-     */
-    public int unpack (ISOComponent c, byte[] b, int offset)
-        throws ISOException
+    public void setLength(int len)
     {
-        int len = (int) b[offset] & 0xFF;
-        byte[] value = new byte[len];
-        System.arraycopy(b, ++offset, value, 0, len);
-        c.setValue ((Object) value);
-        return ++len;
-    }
-    public void unpack (ISOComponent c, InputStream in) 
-        throws IOException, ISOException
-    {
-        byte[] b = readBytes (in, 1);
-        int len = (int) b[0] & 0xFF;
-        c.setValue ((Object) readBytes (in, len));
-    }
-    public ISOComponent createComponent(int fieldNumber) {
-        return new ISOBinaryField (fieldNumber);
-    }
-    public int getMaxPackedLength() {
-        return getLength() + 1;
+        if (len > 255)
+        {
+            throw new IllegalArgumentException("Length " + len + " too long for " + this.getClass().getName());
+        }
+        super.setLength(len);
     }
 }
