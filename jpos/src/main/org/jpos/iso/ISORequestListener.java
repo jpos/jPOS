@@ -11,7 +11,10 @@ package org.jpos.iso;
  */
 public interface ISORequestListener {
     /**
-     * @param   m   the unmatched request
+     * @param  source source where you optionally can reply
+     * @param  m   the unmatched request
+     * @returns true if request was handled by this listener
      */
-    public void process(ISOMsg m);
+    public boolean process (ISOSource source, ISOMsg m);
 }
+
