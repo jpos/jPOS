@@ -163,13 +163,12 @@ public class RotateLogListener extends SimpleLogListener
 	throws IOException
     {
 	setPrintStream (null);
+        closeLogFile ();
 	super.close();
 	f.close();
 	for (int i=maxCopies; i>0; ) {
 	    File dest   = new File (logName + "." + i);
 	    File source = new File (logName + ((--i > 0) ? ("." + i) : ""));
-            if (i == 0)
-                closeLogFile ();
 	    dest.delete();
 	    source.renameTo(dest);
 	}
