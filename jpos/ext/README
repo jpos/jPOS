@@ -24,8 +24,6 @@ In order to build 'ext' module you will have to install here
   - sunjce_provider.jar or bcprov.jar (http://www.bouncycastle.org)
     (needed by org.jpos.security.jceadapter)
 
-  - jmxtools.jar (required by QSP's HTML adaptor)
-
   - ejb.jar (required by QSP's EJBConnector)
 
   - base-opt.jar (see www.opencard.org - required by TLVPackager)
