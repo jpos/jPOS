@@ -144,10 +144,11 @@ public class QFactory {
         setAttribute (mserver, objectName, "Server", server);
         setAttribute (mserver, objectName, "Persist", e);
         configureQBean(mserver,objectName,e);
+        setConfiguration (obj, e);  // handle legacy (QSP v1) Configurables 
+
         if (obj instanceof QBean) 
             mserver.invoke (objectName, "init",  null, null);
 
-        setConfiguration (obj, e);  // handle legacy (QSP v1) Configurables 
         return instance;
     }
 
