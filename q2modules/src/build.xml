@@ -14,7 +14,6 @@
   </target>
 
   <target name="jars" description="Build all modules">
-    <delete dir="dist"/>
     <mkdir dir="dist"/>
     <antcall target="do-all">
       <param name="target" value="jars"/>
