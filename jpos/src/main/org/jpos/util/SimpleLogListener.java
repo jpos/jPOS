@@ -80,9 +80,11 @@ public class SimpleLogListener implements LogListener {
     }
     public synchronized void log (LogEvent ev) {
 	if (p != null) {
-	    p.println (
-		"<log realm=\"" +ev.getRealm()+ "\" at=\""+(new Date())+"\">"
-	    );
+            Date d = new Date();
+            p.println (
+                "<log realm=\"" +ev.getRealm()+ "\" at=\""+d.toString()
+                +"." + d.getTime() % 1000 + "\">"
+            );
 	    ev.dump (p, "  ");
 	    p.println ("</log>");
 	    p.flush();
