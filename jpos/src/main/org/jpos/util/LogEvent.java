@@ -7,6 +7,10 @@ import java.sql.SQLException;
 
 /*
  * $Log$
+ * Revision 1.5  2000/04/17 11:19:45  apr
+ * BugFix: ending tag in addMessage(String,String) -
+ * Thanks to Arun Kumar U <bksys@vsnl.com> !
+ *
  * Revision 1.4  2000/04/16 23:53:14  apr
  * LogProducer renamed to LogSource
  *
@@ -69,7 +73,7 @@ public class LogEvent extends EventObject {
 	this.payLoad.addElement(msg);
     }
     public void addMessage (String tagname, String message) {
-	this.payLoad.addElement ("<"+tagname+">"+message+"<"+tagname+"/>");
+	this.payLoad.addElement("<"+tagname+">"+message+"</"+tagname+">");
     }
     public void dump (PrintStream p, String indent) {
 	if (payLoad.size() == 0) 
