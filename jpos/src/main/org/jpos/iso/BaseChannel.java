@@ -3,8 +3,10 @@ package org.jpos.iso;
 import java.io.*;
 import java.util.*;
 import java.net.ConnectException;
+import java.net.UnknownHostException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import org.jpos.util.Logger;
 import org.jpos.util.LogEvent;
 import org.jpos.util.LogSource;
@@ -49,7 +51,7 @@ public abstract class BaseChannel extends Observable
 {
     private Socket socket;
     private String host;
-    private int port;
+    private int port, timeout;
     private boolean usable;
     private String name;
     protected DataInputStream serverIn;
@@ -189,8 +191,11 @@ public abstract class BaseChannel extends Observable
      * @param socket a Socket (client or server)
      * @exception IOException
      */
-    protected void connect (Socket socket) throws IOException {
+    protected void connect (Socket socket) 
+	throws IOException, SocketException
+    {
         this.socket = socket;
+	applyTimeout();
 
         serverIn = new DataInputStream (
             new BufferedInputStream (socket.getInputStream ())
@@ -203,7 +208,37 @@ public abstract class BaseChannel extends Observable
         setChanged();
         notifyObservers();
     }
-
+    /**
+     * factory method pattern (as suggested by Vincent.Greene@amo.com)
+     * @param host hostname
+     * @param port portnumber
+     * @throws UnknownHostException
+     * @throws IOException
+     */
+    protected Socket newSocket(String host, int port) 
+	throws UnknownHostException, IOException {
+	return new Socket(host, port);
+    }
+    /**
+     * @return current socket
+     */
+    public Socket getSocket() {
+	return socket;
+    }
+    /** 
+     * sets socket timeout (as suggested by 
+     * Leonard Thomas <leonard@rhinosystemsinc.com>)
+     * @param timeout in milliseconds
+     * @throws SocketException
+     */
+    public void setTimeout (int timeout) throws SocketException {
+	this.timeout = timeout;
+	applyTimeout();
+    }
+    protected void applyTimeout () throws SocketException {
+	if (timeout != 0 && socket != null) 
+	    socket.setSoTimeout (timeout);
+    }
     /**
      * Connects client ISOChannel to server
      * @exception IOException
@@ -218,8 +253,9 @@ public abstract class BaseChannel extends Observable
 	    }
 	    else {
 		evt.addMessage (host+":"+port);
-		connect(new Socket (host, port));
+		connect(newSocket (host, port));
 	    }
+	    applyTimeout();
 	    Logger.log (evt);
 	} catch (ConnectException e) {
 	    Logger.log (new LogEvent (this, "connection-refused",
@@ -565,13 +601,18 @@ public abstract class BaseChannel extends Observable
     public void setConfiguration (Configuration cfg)
 	throws ConfigurationException 
     {
-	String h = cfg.get    ("host");
-	int port = cfg.getInt ("port");
+	String h    = cfg.get    ("host");
+	int port    = cfg.getInt ("port");
 	if (h != null && h.length() > 0) {
 	    if (port == 0)
 		throw new ConfigurationException 
 		    ("invalid port for host '"+h+"'");
 	    setHost (h, port);
+	    try {
+		setTimeout (cfg.getInt ("timeout"));
+	    } catch (SocketException e) {
+		throw new ConfigurationException (e);
+	    }
 	}
     }
 
