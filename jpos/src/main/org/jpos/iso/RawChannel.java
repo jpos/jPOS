@@ -88,4 +88,7 @@ public class RawChannel extends ISOChannel {
     protected int getHeaderLength() { 
         return TPDU != null ? TPDU.length : 0;
     }
+    public void setTPDU (byte[] TPDU) {
+	this.TPDU = TPDU;
+    }
 }
