@@ -1,6 +1,9 @@
 $Id$
 
 -- 1.3.7 --
+moved BASE1Header from org.jpos.iso to org.jpos.iso.header.
+added org.jpos.iso.ISOHeader and org.jpos.iso.header package 
+VAPChannel now uses org.jpos.iso.header stuff
 
 -- 1.3.6 -- Released Sep 2001 (tagged: v1_3_6)
 
