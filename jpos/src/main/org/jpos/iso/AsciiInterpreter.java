@@ -49,7 +49,6 @@
 
 package org.jpos.iso;
 
-import java.io.UnsupportedEncodingException;
 
 /**
  * Implements ASCII Interpreter. Strings are converted to and from ASCII bytes.
