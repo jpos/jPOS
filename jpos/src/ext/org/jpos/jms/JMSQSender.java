@@ -83,6 +83,13 @@ public class JMSQSender extends QBeanSupport implements JMSQSenderMBean,SpaceLis
     private int jmsState = STOPPED;
     private long jmsRetryInterval = 5000;
 
+    private class ExcListener implements ExceptionListener {
+        public void onException (JMSException exception) {
+            log.error (exception);
+            restart ();
+        }
+    }
+
     public JMSQSender () {
         super ();
     }
@@ -99,6 +106,7 @@ public class JMSQSender extends QBeanSupport implements JMSQSenderMBean,SpaceLis
             connect2JMS ();
             listen2Space ();
             jmsState = STARTED;
+            log.info ("JMS connection established");
         } catch (Exception e) {
             log.warn ("JMS connection problems! Misconfigured? Retrying anyway", e);
             new Thread (this).start ();
@@ -144,6 +152,8 @@ public class JMSQSender extends QBeanSupport implements JMSQSenderMBean,SpaceLis
             queueConnection = Utilities.getQueueConnection (queueConnectionFactory);
         else
             queueConnection = Utilities.getQueueConnection (queueConnectionFactory, username, password);
+        ExcListener el = new ExcListener ();
+        queueConnection.setExceptionListener (el);
         queue = Utilities.getQueue (queueName);
         queueSession = queueConnection.createQueueSession (false, Session.AUTO_ACKNOWLEDGE);
         sender = queueSession.createSender (queue);
@@ -154,8 +164,14 @@ public class JMSQSender extends QBeanSupport implements JMSQSenderMBean,SpaceLis
         log.info ("disconnectJMS");
         try {
             queueConnection.stop ();
+        } catch (JMSException e) { }
+        try {
             sender.close ();
+        } catch (JMSException e) { }
+        try {
             queueSession.close ();
+        } catch (JMSException e) { }
+        try {
             queueConnection.close ();
         } catch (JMSException e) {
             log.error (e);
