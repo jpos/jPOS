@@ -24,7 +24,6 @@ import org.jpos.iso.ISOFilter;
 import org.jpos.iso.FilteredChannel;
 import org.jpos.q2.QBeanSupport;
 import org.jpos.q2.QFactory;
-import org.jpos.q2.Q2ConfigurationException;
 import org.jpos.util.LogSource;
 import org.jpos.util.NameRegistrar;
 
@@ -48,14 +47,12 @@ public class ChannelAdaptor
     public ChannelAdaptor () {
         super ();
     }
-    public void initChannel () 
-        throws Q2ConfigurationException, ConfigurationException 
-    {
+    public void initChannel () throws ConfigurationException {
         Element persist = getPersist ();
         sp = grabSpace (persist.getChild ("space")); 
         Element e = persist.getChild ("channel");
         if (e == null)
-            throw new Q2ConfigurationException ("channel element missing");
+            throw new ConfigurationException ("channel element missing");
 
         in      = persist.getChildTextTrim ("in");
         out     = persist.getChildTextTrim ("out");
@@ -188,7 +185,7 @@ public class ChannelAdaptor
     }
 
     public ISOChannel newChannel (Element e, QFactory f) 
-        throws Q2ConfigurationException
+        throws ConfigurationException
     {
         String channelName  = e.getAttributeValue ("class");
         String packagerName = e.getAttributeValue ("packager");
@@ -213,7 +210,7 @@ public class ChannelAdaptor
     }
 
     private void addFilters (FilteredChannel channel, Element e, QFactory fact) 
-        throws Q2ConfigurationException
+        throws ConfigurationException
     {
         Iterator iter = e.getChildren ("filter").iterator();
         while (iter.hasNext()) {

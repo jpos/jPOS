@@ -54,7 +54,6 @@ import org.jdom.Element;
 
 import org.jpos.q2.QFactory;
 import org.jpos.q2.QBeanSupport;
-import org.jpos.q2.Q2ConfigurationException;
 import org.jpos.core.Configurable;
 import org.jpos.core.ConfigurationException;
 import org.jpos.core.SimpleConfiguration;
@@ -69,7 +68,7 @@ public class LoggerAdaptor extends QBeanSupport {
     protected void initService () {
         logger = Logger.getLogger (getName());
     }
-    protected void startService () throws Q2ConfigurationException {
+    protected void startService () throws ConfigurationException {
         logger.removeAllListeners ();
         Iterator iter = getPersist ().getChildren ("log-listener").iterator();
         while (iter.hasNext()) 
@@ -86,7 +85,7 @@ public class LoggerAdaptor extends QBeanSupport {
         // logger.destroy ();
     }
     private void addListener (Element e) 
-        throws Q2ConfigurationException
+        throws ConfigurationException
     {
         QFactory factory = getServer().getFactory();
         String clazz  = e.getAttributeValue ("class");
@@ -97,7 +96,7 @@ public class LoggerAdaptor extends QBeanSupport {
                     factory.getConfiguration (e)
                 );
             } catch (ConfigurationException ex) {
-                throw new Q2ConfigurationException (ex);
+                throw new ConfigurationException (ex);
             }
         }
         

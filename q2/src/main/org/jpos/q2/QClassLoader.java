@@ -68,7 +68,7 @@ public class QClassLoader
                MBeanRegistrationException
     
     {
-        if (!isModified ())
+        if (!isModified ()) 
             return this;
         QClassLoader loader;
         if (server.isRegistered (loaderName)) {

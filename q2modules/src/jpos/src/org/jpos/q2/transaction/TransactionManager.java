@@ -21,7 +21,7 @@ import org.jpos.space.SpaceFactory;
 import org.jpos.space.SpaceUtil;
 import org.jpos.q2.QFactory;
 import org.jpos.q2.QBeanSupport;
-import org.jpos.q2.Q2ConfigurationException;
+import org.jpos.core.ConfigurationException;
 import org.jpos.util.Logger;
 import org.jpos.util.LogEvent;
 import org.jpos.transaction.TransactionConstants;
@@ -53,10 +53,10 @@ public class TransactionManager
     public static final long    MAX_PARTICIPANTS = 1000;  // loop prevention
     public static final long    GC_PERIOD  = 5*60*1000;
 
-    public void initService () throws Q2ConfigurationException {
+    public void initService () throws ConfigurationException {
         queue = cfg.get ("queue", null);
         if (queue == null)
-            throw new Q2ConfigurationException ("queue property not specified");
+            throw new ConfigurationException ("queue property not specified");
         sp   = SpaceFactory.getSpace (cfg.get ("space"));
         psp  = SpaceFactory.getSpace (cfg.get ("persistent-space"));
         tail = initCounter (TAIL, cfg.getLong ("initial-tail", 1));
@@ -253,7 +253,7 @@ public class TransactionManager
         return participants;
     }
     protected void initParticipants (Element config) 
-        throws Q2ConfigurationException
+        throws ConfigurationException
     {
         groups.put (DEFAULT_GROUP,  initGroup (config));
         Iterator iter = config.getChildren ("group").iterator();
@@ -261,9 +261,9 @@ public class TransactionManager
             Element e = (Element) iter.next();
             String name = e.getAttributeValue ("name");
             if (name == null) 
-                throw new Q2ConfigurationException ("missing group name");
+                throw new ConfigurationException ("missing group name");
             if (groups.get (name) != null) {
-                throw new Q2ConfigurationException (
+                throw new ConfigurationException (
                     "Group '" + name + "' already defined"
                 );
             }
@@ -271,7 +271,7 @@ public class TransactionManager
         }
     }
     protected ArrayList initGroup (Element e) 
-        throws Q2ConfigurationException
+        throws ConfigurationException
     {
         ArrayList group = new ArrayList ();
         Iterator iter = e.getChildren ("participant").iterator();
@@ -281,7 +281,7 @@ public class TransactionManager
         return group;
     }
     protected TransactionParticipant createParticipant (Element e) 
-        throws Q2ConfigurationException
+        throws ConfigurationException
     {
         QFactory factory = getFactory();
         TransactionParticipant participant = (TransactionParticipant) 

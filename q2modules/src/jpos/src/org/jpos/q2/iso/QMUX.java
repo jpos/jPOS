@@ -55,7 +55,7 @@ import java.util.ArrayList;
 
 import org.jpos.q2.QFactory;
 import org.jpos.q2.QBeanSupport;
-import org.jpos.q2.Q2ConfigurationException;
+import org.jpos.core.ConfigurationException;
 import org.jdom.Element;
 import org.jpos.space.Space;
 import org.jpos.space.SpaceFactory;
@@ -89,7 +89,7 @@ public class QMUX
         super ();
         listeners = new ArrayList ();
     }
-    public void initService () throws Q2ConfigurationException {
+    public void initService () throws ConfigurationException {
         Element e = getPersist ();
         sp        = grabSpace (e.getChild ("space")); 
         in        = e.getChildTextTrim ("in");
@@ -209,7 +209,7 @@ public class QMUX
         return unhandled;
     }
     private void addListeners () 
-        throws Q2ConfigurationException
+        throws ConfigurationException
     {
         QFactory factory = getFactory ();
         Iterator iter = getPersist().getChildren (
@@ -239,14 +239,14 @@ public class QMUX
             sp.out (unhandled, m, 120000);
     }
     private LocalSpace grabSpace (Element e) 
-        throws Q2ConfigurationException
+        throws ConfigurationException
     {
         String uri = e != null ? e.getText() : "";
         Space sp = SpaceFactory.getSpace (uri);
         if (sp instanceof LocalSpace) {
             return (LocalSpace) sp;
         }
-        throw new Q2ConfigurationException ("Invalid space " + uri);
+        throw new ConfigurationException ("Invalid space " + uri);
     }
     public boolean isConnected() {
         if (ready != null) 

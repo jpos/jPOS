@@ -58,7 +58,7 @@ import bsh.Interpreter;
 import bsh.EvalError;
 import org.jdom.Element;
 import org.jpos.q2.QBeanSupport;
-import org.jpos.q2.Q2ConfigurationException;
+import org.jpos.core.ConfigurationException;
 import org.jpos.space.Space;
 import org.jpos.space.SpaceError;
 import org.jpos.space.SpaceFactory;
@@ -71,7 +71,7 @@ public class SpaceLet extends QBeanSupport implements Space {
     String inScript, inSource;
     String rdScript, rdSource;
 
-    public void initService() throws Q2ConfigurationException {
+    public void initService() throws ConfigurationException {
         Element config = getPersist ();
         grabSpace (config.getChild ("space"));
         initSpace (config.getChild ("init"));
@@ -235,7 +235,7 @@ public class SpaceLet extends QBeanSupport implements Space {
             }
         }.start ();
     }
-    private void initSpace (Element e) throws Q2ConfigurationException {
+    private void initSpace (Element e) throws ConfigurationException {
         if (e == null)
             return;
 
@@ -246,7 +246,7 @@ public class SpaceLet extends QBeanSupport implements Space {
                 e.getAttributeValue ("source")
             );
         } catch (Throwable t) {
-            throw new Q2ConfigurationException (t);
+            throw new ConfigurationException (t);
         }
     }
     private Interpreter initInterpreter () throws EvalError {

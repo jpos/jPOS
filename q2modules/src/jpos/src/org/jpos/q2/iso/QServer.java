@@ -20,7 +20,7 @@ import org.jpos.iso.ServerChannel;
 
 import org.jpos.q2.QFactory;
 import org.jpos.q2.QBeanSupport;
-import org.jpos.q2.Q2ConfigurationException;
+import org.jpos.core.ConfigurationException;
 
 import org.jdom.Element;
 /**
@@ -48,27 +48,27 @@ public class QServer
         super ();
     }
 
-    private void newChannel () throws Q2ConfigurationException {
+    private void newChannel () throws ConfigurationException {
         Element persist = getPersist ();
         Element e = persist.getChild ("channel");
         if (e == null)
-            throw new Q2ConfigurationException ("channel element missing");
+            throw new ConfigurationException ("channel element missing");
 
         ChannelAdaptor adaptor = new ChannelAdaptor ();
         channel = adaptor.newChannel (e, getFactory ());
     }
 
     private void initServer () 
-        throws Q2ConfigurationException
+        throws ConfigurationException
     {
         if (port == 0)
-            throw new Q2ConfigurationException ("Port value not set");
+            throw new ConfigurationException ("Port value not set");
         newChannel();
         if (channel == null)
-            throw new Q2ConfigurationException ("ISO Channel is null");
+            throw new ConfigurationException ("ISO Channel is null");
 
         if (!(channel instanceof ServerChannel)) {
-            throw new Q2ConfigurationException (channelString + 
+            throw new ConfigurationException (channelString + 
                   "does not implement ServerChannel");
         }
 
@@ -193,7 +193,7 @@ public class QServer
         return socketFactoryString;
     }    
     private void addListeners () 
-        throws Q2ConfigurationException
+        throws ConfigurationException
     {
         QFactory factory = getFactory ();
         Iterator iter = getPersist().getChildren (

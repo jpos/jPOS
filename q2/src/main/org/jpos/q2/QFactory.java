@@ -65,6 +65,7 @@ import javax.management.*;
 
 import org.jdom.Element;
 import org.jpos.core.Configurable;
+import org.jpos.core.XmlConfigurable;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
 import org.jpos.core.SimpleConfiguration;
@@ -120,7 +121,7 @@ public class QFactory {
                NotCompliantMBeanException,
                InvalidAttributeValueException,
                ReflectionException,
-               Q2ConfigurationException
+               ConfigurationException
     {
         String name   = e.getAttributeValue ("name");
         if (name == null)
@@ -221,7 +222,7 @@ public class QFactory {
     }
 
     public void configureQBean(MBeanServer server, ObjectName objectName, Element e)
-        throws Q2ConfigurationException
+        throws ConfigurationException
     {
         try {
             AttributeList attributeList = getAttributeList(e);
@@ -229,12 +230,12 @@ public class QFactory {
             while (attributes.hasNext())
                 server.setAttribute(objectName,(Attribute)attributes.next());
         } catch (Exception e1) {
-            throw new Q2ConfigurationException(e1);
+            throw new ConfigurationException(e1);
         }
 
     }
     public AttributeList getAttributeList(Element e)
-        throws Q2ConfigurationException
+        throws ConfigurationException
     {
         AttributeList attributeList = new AttributeList();
         List childs = e.getChildren("attr");
@@ -256,10 +257,10 @@ public class QFactory {
      * int, long and boolean are converted to their wrappers.
      * @return The created object.
      * @param childElement Dom Element with the definition of the object.
-     * @throws Q2ConfigurationException If an exception is found trying to create the object.
+     * @throws ConfigurationException If an exception is found trying to create the object.
      */    
     protected Object getObject(Element childElement) 
-        throws Q2ConfigurationException
+        throws ConfigurationException
     {
         String type = childElement.getAttributeValue("type","java.lang.String");
         if ("int".equals (type))
@@ -280,7 +281,7 @@ public class QFactory {
                 return attributeType.getConstructor(parameterTypes).newInstance(parameterValues);
             }
         } catch (Exception e1) {
-            throw new Q2ConfigurationException(e1);
+            throw new ConfigurationException(e1);
         }
         
     }
@@ -295,11 +296,11 @@ public class QFactory {
      * </PRE>
      * @param type
      * @param e
-     * @throws Q2ConfigurationException
+     * @throws ConfigurationException
      * @return
      */    
     protected Collection getCollection(Class type, Element e) 
-        throws Q2ConfigurationException
+        throws ConfigurationException
     {
         try{
             Collection col = (Collection)type.newInstance();
@@ -307,7 +308,7 @@ public class QFactory {
             while(childs.hasNext()) col.add(getObject((Element)childs.next()));
             return col;
         }catch(Exception e1){
-            throw new Q2ConfigurationException(e1);
+            throw new ConfigurationException(e1);
         }
     }
     /**
@@ -323,18 +324,18 @@ public class QFactory {
     }
 
     public Object newInstance (String clazz)
-        throws Q2ConfigurationException
+        throws ConfigurationException
     {
         try {
             MBeanServer mserver = q2.getMBeanServer();
             return mserver.instantiate (clazz, loaderName);
         } catch (Exception e) {
-            throw new Q2ConfigurationException (clazz, e);
+            throw new ConfigurationException (clazz, e);
         }
     }
 
     public Configuration getConfiguration (Element e) 
-        throws Q2ConfigurationException
+        throws ConfigurationException
     {
         Properties props = new Properties ();
         Iterator iter = e.getChildren ("property").iterator();
@@ -347,7 +348,7 @@ public class QFactory {
                 try {
                     props.load (new FileInputStream (new File (file)));
                 } catch (Exception ex) {
-                    throw new Q2ConfigurationException (file, ex);
+                    throw new ConfigurationException (file, ex);
                 }
             else if (name != null && value != null) {
                 Object obj = props.get (name);
@@ -381,15 +382,15 @@ public class QFactory {
         }
     }
     public void setConfiguration (Object obj, Element e) 
-        throws Q2ConfigurationException 
+        throws ConfigurationException 
     {
         try {
             if (obj instanceof Configurable)
                 ((Configurable)obj).setConfiguration (getConfiguration (e));
-            if (obj instanceof Q2Configurable)
-                ((Q2Configurable)obj).setConfiguration(e);
+            if (obj instanceof XmlConfigurable)
+                ((XmlConfigurable)obj).setConfiguration(e);
         } catch (ConfigurationException ex) {
-            throw new Q2ConfigurationException (ex);
+            throw new ConfigurationException (ex);
         }
     }
    /**
@@ -398,10 +399,10 @@ public class QFactory {
     * @param obj the object
     * @param m method to invoke
     * @param p parameter
-    * @throws Q2ConfigurationException if method happens to throw an exception
+    * @throws ConfigurationException if method happens to throw an exception
     */
     public static void invoke (Object obj, String m, Object p) 
-        throws Q2ConfigurationException 
+        throws ConfigurationException 
     {
         invoke (obj, m, p, p != null ? p.getClass() : null);
     }
@@ -412,10 +413,10 @@ public class QFactory {
     * @param m method to invoke
     * @param p parameter
     * @param pc parameter class
-    * @throws Q2ConfigurationException if method happens to throw an exception
+    * @throws ConfigurationException if method happens to throw an exception
     */
     public static void invoke (Object obj, String m, Object p, Class pc) 
-        throws Q2ConfigurationException 
+        throws ConfigurationException 
     {
         try {
             Class[] paramTemplate = { pc };
@@ -427,7 +428,7 @@ public class QFactory {
         } catch (NullPointerException e) {
         } catch (IllegalAccessException e) {
         } catch (InvocationTargetException e) {
-            throw new Q2ConfigurationException (
+            throw new ConfigurationException (
                 obj.getClass().getName() + "." + m + "("+p.toString()+")" ,
                 ((Exception) e.getTargetException())
             );
