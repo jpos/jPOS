@@ -1,5 +1,8 @@
 package org.jpos.apps.qsp.config;
 
+import java.io.IOException;
+import java.io.FileInputStream;
+import java.io.BufferedInputStream;
 import java.util.Properties;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -65,14 +68,21 @@ public class ConfigUtil {
 	NodeList childs = node.getChildNodes();
 	for (int i=0; i<childs.getLength(); i++) {
 	    Node n = childs.item(i);
+
 	    if (n.getNodeName().equals ("property")) {
-		String name  = 
-		    n.getAttributes().getNamedItem ("name").getNodeValue();
-		String value = 
-		    n.getAttributes().getNamedItem ("value").getNodeValue();
-		props.put (name, value);
-		if (evt != null)
-		    evt.addMessage (name + "=" + value);
+		Node file = 
+		    n.getAttributes().getNamedItem ("file");
+		if (file != null) 
+		    addFileProperties (props, file.getNodeValue(), evt);
+		else {
+		    String name  = 
+			n.getAttributes().getNamedItem ("name").getNodeValue();
+		    String value = 
+			n.getAttributes().getNamedItem ("value").getNodeValue();
+		    props.put (name, value);
+		    if (evt != null)
+			evt.addMessage (name + "=" + value);
+		}
 	    }
 	}
 	return props;
@@ -94,6 +104,29 @@ public class ConfigUtil {
 	    throw new ConfigurationException (className, e);
         } catch (IllegalAccessException e) {
 	    throw new ConfigurationException (className, e);
+	}
+    }
+    private static void addFileProperties 
+	(Properties props, String filename, LogEvent evt)
+    {
+	FileInputStream fis = null;
+	evt.addMessage ("<!-- reading properties from "+filename+ " -->");
+	try {
+	    props.load(
+		new BufferedInputStream(
+		    fis = new FileInputStream (filename)
+		)
+	    );
+	} catch (Exception e) {
+	    evt.addMessage (e);
+	} finally {
+	    if (fis != null) {
+		try { 
+		    fis.close(); 
+		} catch (IOException ex) { 
+		    evt.addMessage (ex);
+		}
+	    }
 	}
     }
 }

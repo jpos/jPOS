@@ -44,8 +44,9 @@
 
 <!-- property -->
 <!ELEMENT property EMPTY>
-<!ATTLIST property name CDATA #REQUIRED>
-<!ATTLIST property value CDATA #REQUIRED>
+<!ATTLIST property name  CDATA #IMPLIED>
+<!ATTLIST property value CDATA #IMPLIED>
+<!ATTLIST property file  CDATA #IMPLIED>
 
 <!-- request-listener -->
 <!ELEMENT request-listener (property)*>
