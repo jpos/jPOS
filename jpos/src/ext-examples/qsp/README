@@ -30,3 +30,9 @@ in the following order: (have a look at */README files)
    - dummyserver
    - dummyclient
 
+--[ update 07/31/2000 ]--
+
+There's a new example called dummydirpoll that shows how
+to configure a DirPoll node within QSP configuration.
+(see org.jpos.util.DirPoll class for details)
+
