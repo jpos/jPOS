@@ -7,6 +7,9 @@ import org.jpos.util.LogEvent;
 
 /*
  * $Log$
+ * Revision 1.24  2000/03/29 13:08:23  apr
+ * tertiary bitmaps unpack bugfix + a few fld.length protections
+ *
  * Revision 1.23  2000/03/29 08:28:39  victor
  * Added support for tertiary bitmap
  *
@@ -111,10 +114,8 @@ public abstract class ISOBasePackager implements ISOPackager, LogProducer {
 	    // if Field 1 is a BitMap then we are packing an
 	    // ISO-8583 message so next field is fld#2.
 	    // else we are packing an ANSI X9.2 message, first field is 1
-		int tmpMaxField=m.getMaxField();
+	    int tmpMaxField=Math.min (m.getMaxField(), 128);
 
-		tmpMaxField=tmpMaxField > 128 ? 128 : tmpMaxField;
-		
 	    for (int i=getFirstField(); i<=tmpMaxField; i++) {
 		if ((c = (ISOComponent) fields.get (new Integer (i))) != null) {
 		    try {
@@ -129,22 +130,23 @@ public abstract class ISOBasePackager implements ISOPackager, LogProducer {
 		}
 	    }
 	
-		if(m.getMaxField()>128)
-		{
-			for (int i=1; i<=64; i++) {
-			if ((c = (ISOComponent) fields.get (new Integer (i+128))) != null) {
-				try {
-				b = fld[i+128].pack(c);
-				len += b.length;
-				v.addElement (b);
-				} catch (Exception e) {
-				evt.addMessage ("error packing field "+i+128);
-				evt.addMessage (c);
-				evt.addMessage (e);
-				}
+	    if(m.getMaxField()>128 && fld.length > 128) {
+		for (int i=1; i<=64; i++) {
+		    if ((c = (ISOComponent) 
+			fields.get (new Integer (i+128))) != null)
+		    {
+			try {
+			    b = fld[i+128].pack(c);
+			    len += b.length;
+			    v.addElement (b);
+			} catch (Exception e) {
+			    evt.addMessage ("error packing field "+(i+128));
+			    evt.addMessage (c);
+			    evt.addMessage (e);
 			}
-			}
+		    }
 		}
+	    }
 
 	    int k = 0;
 	    byte[] d = new byte[len];
@@ -195,45 +197,45 @@ public abstract class ISOBasePackager implements ISOPackager, LogProducer {
 		maxField = bmap.size();
 	    }
 		
-		for (int i=getFirstField(); i<maxField; i++) {
+	    for (int i=getFirstField(); i<maxField; i++) {
 		if (bmap == null || bmap.get(i)) {
 		    ISOComponent c = fld[i].createComponent(i);
 		    consumed += fld[i].unpack (c, b, consumed);
 		    if (logger != null) {
 			evt.addMessage ("<unpack fld=\"" + i 
-					+"\" packager=\""
-					+fld[i].getClass().getName()+ "\">");
+			    +"\" packager=\""
+			    +fld[i].getClass().getName()+ "\">");
 			evt.addMessage ("  <value>" 
-					+c.getValue().toString()
-					+ "</value>");
+			    +c.getValue().toString()
+			    + "</value>");
 			evt.addMessage ("</unpack>");
 		    }
 		    m.set(c);
 		}
 	    }
-		if(fld[65]!=null)
-		{
-			bitmap = new ISOBitMap(65);
-			bmap=(BitSet)bitmap.getValue();
-			for (int i=1; i<64; i++) {
-			if (bmap == null || bmap.get(i)) {
-				ISOComponent c = fld[i+128].createComponent(i);
-				consumed += fld[i+128].unpack (c, b, consumed);
-				if (logger != null) {
-				evt.addMessage ("<unpack fld=\"" + i+128
-						+"\" packager=\""
-						+fld[i+128].getClass().getName()+ "\">");
-				evt.addMessage ("  <value>" 
-						+c.getValue().toString()
-						+ "</value>");
-				evt.addMessage ("</unpack>");
-				}
-				m.set(c);
+	    if (bmap.get(65) && 
+		fld[65] instanceof ISOBitMapPackager && fld.length > 128)
+	    {
+		bmap= (BitSet) 
+		    ((ISOComponent) m.getChildren().get 
+			(new Integer(65))).getValue();
+		for (int i=1; i<64; i++) {
+		    if (bmap == null || bmap.get(i)) {
+			ISOComponent c = fld[i+128].createComponent(i);
+			consumed += fld[i+128].unpack (c, b, consumed);
+			if (logger != null) {
+			    evt.addMessage ("<unpack fld=\"" + i+128
+				+"\" packager=\""
+				+fld[i+128].getClass().getName()+ "\">");
+			    evt.addMessage ("  <value>" 
+				+c.getValue().toString()
+				+ "</value>");
+			    evt.addMessage ("</unpack>");
 			}
-	    }
-			
-			
+			m.set(c);
+		    }
 		}
+	    }
 
 	    if (b.length != consumed) {
 		evt.addMessage (
