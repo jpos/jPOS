@@ -53,7 +53,7 @@ import java.io.IOException;
 
 import javax.management.ObjectName;
 
-import mx4j.adaptor.http.ProcessorMBean;
+import mx4j.tools.adaptor.http.ProcessorMBean;
 
 import org.jpos.apps.qsp.QSP;
 import org.jpos.core.Configurable;
@@ -72,7 +72,7 @@ import org.jpos.util.Logger;
  *  &lt;property name="port" value="8082" /&gt;
  *  &lt;property name="user" value="jpos" /&gt;
  *  &lt;property name="password" value="jpos" /&gt;
- *  &lt;property name="processor" value="mx4j.adaptor.http.XSLTProcessor" /&gt;
+ *  &lt;property name="processor" value="mx4j.adapter.http.XSLTProcessor" /&gt;
  * &lt;/task>
  *
  * set host property to "localhost" if you want to can't access the server 
@@ -84,11 +84,11 @@ public class HttpAdaptor implements LogSource, Configurable, Runnable
     Configuration cfg;
     Logger logger;
     String realm;
-    mx4j.adaptor.http.HttpAdaptor adaptor;
+    mx4j.tools.adaptor.http.HttpAdaptor adaptor;
 
     public HttpAdaptor () {
         super();
-        adaptor = new mx4j.adaptor.http.HttpAdaptor();
+        adaptor = new mx4j.tools.adaptor.http.HttpAdaptor();
     }
     public void setLogger (Logger logger, String realm) {
         this.logger = logger;
@@ -129,8 +129,8 @@ public class HttpAdaptor implements LogSource, Configurable, Runnable
                 adaptor.setProcessorName(processorName);
             }
             else{
-                ObjectName processorName = new ObjectName("HttpAdaptor:name=mx4j.adaptor.http.XSLTProcessor");
-                mx4j.adaptor.http.XSLTProcessor processorMBean = new mx4j.adaptor.http.XSLTProcessor();
+                ObjectName processorName = new ObjectName("HttpAdaptor:name=mx4j.tools.adaptor.http.XSLTProcessor");
+                mx4j.tools.adaptor.http.XSLTProcessor processorMBean = new mx4j.tools.adaptor.http.XSLTProcessor();
                 QSP.getInstance().getMBeanServer().registerMBean(processorMBean,processorName);
                 adaptor.setProcessorName(processorName);
             }
