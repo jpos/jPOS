@@ -83,7 +83,8 @@ import org.jdom.output.XMLOutputter;
 public class Q2 implements FileFilter {
     public static final String DEFAULT_DEPLOY_DIR  = "deploy";
     public static final String JMX_NAME            = "Q2";
-    public static final String Q2_CLASS_LOADER     = "Q2:service=loader";
+    public static final String QBEAN_NAME          = "Q2:type=qbean,service=";
+    public static final String Q2_CLASS_LOADER     =  QBEAN_NAME + "loader";
     private MBeanServer server;
     private File deployDir, libDir;
     private Map dirMap;

@@ -93,9 +93,9 @@ public class QFactory {
         String clazz  = e.getAttributeValue ("class");
         String name   = e.getAttributeValue ("name");
         if (name == null)
-            name = "service=unknown";
+            name = "unknown-" + Long.toString (System.currentTimeMillis ());
 
-        ObjectName objectName = new ObjectName (Q2.JMX_NAME + ":" + name);
+        ObjectName objectName = new ObjectName (Q2.QBEAN_NAME + name);
         MBeanServer mserver = server.getMBeanServer();
 
         getExtraPath (server.getLoader (), e);
