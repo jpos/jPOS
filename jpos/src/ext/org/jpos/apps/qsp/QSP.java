@@ -77,7 +77,7 @@ import org.jpos.core.ConfigurationException;
  * @version $Revision$ $Date$
  * @see <a href="http://www.cebik.com/qsig.html">QSP</a>
  */
-public class QSP implements ErrorHandler, LogSource {
+public class QSP implements ErrorHandler, LogSource, Runnable {
     Document config;
     Logger logger;
     String realm;
@@ -86,6 +86,7 @@ public class QSP implements ErrorHandler, LogSource {
     static ControlPanel controlPanel = null;
     long monitorConfigInterval = 60 * 1000;
     Collection reconfigurables;
+    DOMParser parser;
 
     public static String[] SUPPORTED_TAGS = 
 	{ "logger",
@@ -109,6 +110,9 @@ public class QSP implements ErrorHandler, LogSource {
     public QSP () {
 	super();
 	reconfigurables = new ArrayList();
+    }
+    public void setParser (DOMParser parser) {
+        this.parser     = parser;
     }
     public void setConfig (Document config) {
 	this.config = config;
@@ -197,29 +201,36 @@ public class QSP implements ErrorHandler, LogSource {
             }
         }
     }
+    public void run () {
+        while (monitorConfigFile ()) {
+            try {
+                parser.parse (getConfigFile().getPath());
+                setConfig (parser.getDocument());
+                Iterator iter = getReConfigurables().iterator();
+                while (iter.hasNext())
+                    reconfigure ((String) iter.next());
+            } catch (Exception e) {
+                Logger.log (new LogEvent (this, "QSP", e));
+                try {
+                    Thread.sleep (1000);
+                } catch (InterruptedException ie) { }
+            }
+        }
+        Logger.log (new LogEvent (this, "shutdown-start"));
+        shutdownMuxes ();
+        Logger.log (new LogEvent (this, "shutdown"));
+        System.exit (0);
+    }
     /**
      * Launches QSP
      * @param configFile XML based QSP config file
      */
     public static void launch (String configFile) {
-        final String args[] = new String[1];
-        args[0] = configFile;
-        Thread t = new Thread() {
-            public void run() {
-                main (args);
-            }
-        };
-        t.start();
-    }
-    public static void main (String args[]) {
-	if (args.length != 1) {
-	    System.out.println ("Usage: org.jpos.apps.qsp.QSP <configfile>");
-	    System.exit (1);
-	}
 	DOMParser parser = new DOMParser();
-	QSP qsp = new QSP();
+	QSP qsp = new QSP ();
+        qsp.setParser (parser);
 	try {
-	    qsp.setConfigFile (new File (args[0]));
+	    qsp.setConfigFile (new File (configFile));
 	    parser.setFeature("http://xml.org/sax/features/validation", true);
 	    parser.setErrorHandler (qsp);
 	    parser.parse (qsp.getConfigFile().getPath());
@@ -232,18 +243,8 @@ public class QSP implements ErrorHandler, LogSource {
 
 	    if (qsp.getLogger() != null) 
 		new SystemMonitor (3600000, qsp.getLogger(), "monitor");
-		    
-	    while (qsp.monitorConfigFile ()) {
-		parser.parse (qsp.getConfigFile().getPath());
-		qsp.setConfig (parser.getDocument());
-		Iterator iter = qsp.getReConfigurables().iterator();
-		while (iter.hasNext())
-		    qsp.reconfigure ((String) iter.next());
-	    }
-	    Logger.log (new LogEvent (qsp, "shutdown-start"));
-            shutdownMuxes ();
-	    Logger.log (new LogEvent (qsp, "shutdown"));
-            System.exit (0);
+
+            (new Thread (qsp)).start();
 	} catch (IOException e) {
 	    Logger.log (new LogEvent (qsp, "error", e));
 	    System.out.println (e);
@@ -254,5 +255,12 @@ public class QSP implements ErrorHandler, LogSource {
 	    Logger.log (new LogEvent (qsp, "error", e));
 	    System.out.println (e);
 	}
+    }
+    public static void main (String args[]) {
+	if (args.length != 1) {
+	    System.out.println ("Usage: org.jpos.apps.qsp.QSP <configfile>");
+	    System.exit (1);
+	}
+        launch (args[0]);
     }
 }
