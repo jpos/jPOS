@@ -90,7 +90,7 @@ public class ConfigTask implements QSPReConfigurator {
 		    ConfigLogger.getRealm (node)
 		);
 	    }
-	    if (task instanceof Configurable)
+	    if (task instanceof Configurable) 
 		configureTask ((Configurable) task, node, evt);
 
 	    if (name != null)
@@ -126,8 +126,12 @@ public class ConfigTask implements QSPReConfigurator {
     private void configureTask (Configurable task, Node node, LogEvent evt)
 	throws ConfigurationException
     {
+        String [] attributeNames = {  "connection-pool" };
+        Properties props = ConfigUtil.addAttributes (
+            node, attributeNames, null, evt
+        );
 	task.setConfiguration (new SimpleConfiguration (
-	    ConfigUtil.addProperties (node, null, evt)
+	    ConfigUtil.addProperties (node, props, evt)
 	    )
 	);
     }
