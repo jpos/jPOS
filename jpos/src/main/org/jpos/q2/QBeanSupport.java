@@ -52,6 +52,7 @@ import org.jdom.Element;
 import org.jpos.util.Log;
 import org.jpos.util.Logger;
 
+import java.util.Iterator;
 import java.lang.reflect.Method;
 import java.beans.BeanInfo;
 import java.beans.Introspector;
@@ -227,6 +228,28 @@ public class QBeanSupport implements QBean, QPersist, QBeanSupportMBean {
             attr.setAttribute ("type", type);
         attr.setText (value);
         e.addContent (attr);
+    }
+    protected Iterator getProperties (String parent) {
+        return getPersist().getChild (parent).
+               getChildren ("property").iterator();
+    }
+    protected void setProperty (Iterator props, String name, String value) {
+        while (props.hasNext()) {
+            Element e = (Element) props.next();
+            if (name.equals (e.getAttributeValue ("name"))) {
+                e.setAttribute ("value", value);
+                break;
+            }
+        }
+    }
+    protected String getProperty (Iterator props, String name) {
+        while (props.hasNext()) {
+            Element e = (Element) props.next();
+            if (name.equals (e.getAttributeValue ("name"))) {
+                return e.getAttributeValue ("value");
+            }
+        }
+        return null;
     }
 }
 
