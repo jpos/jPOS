@@ -54,78 +54,6 @@ import org.jpos.util.Logger;
 import org.jpos.util.LogSource;
 import org.jpos.util.LogEvent;
 
-/*
- * $Log$
- * Revision 1.31  2000/12/06 12:27:48  eoin
- * Changed setFieldPackager to public access
- * so that GenericPackager can call it.
- *
- * Revision 1.30  2000/11/02 12:09:18  apr
- * Added license to every source file
- *
- * Revision 1.29  2000/10/16 16:04:16  apr
- * handle cases where field 0 is bitmap
- * (required by Jonathan_Easterling@s2systems.com
- * Base1Packager inner fields)
- *
- * Revision 1.28  2000/05/04 13:30:32  apr
- * Bugfix to problem reported by Arun Kumar U <bksys@vsnl.com>
- * Handle situations where inner message 'MTI' (aka field 0) is not an
- * ISOField but an ISOMsg (same goes for Bitmap, field 1).
- *
- * Revision 1.27  2000/05/03 12:31:38  apr
- * Bugfix: Math.min while getting bmap.size()
- * (thanks to Arun Kumar U <bksys@vsnl.com> observations!)
- *
- * Revision 1.26  2000/04/26 12:33:19  apr
- * javadoc warnings ...
- *
- * Revision 1.25  2000/04/16 23:53:08  apr
- * LogProducer renamed to LogSource
- *
- * Revision 1.24  2000/03/29 13:08:23  apr
- * tertiary bitmaps unpack bugfix + a few fld.length protections
- *
- * Revision 1.23  2000/03/29 08:28:39  victor
- * Added support for tertiary bitmap
- *
- * Revision 1.22  2000/03/01 14:44:45  apr
- * Changed package name to org.jpos
- *
- * Revision 1.21  2000/02/28 10:46:40  apr
- * BugFix: changed (String)_--> toString() on unpack (logging) [Victor Salaman]
- *
- * Revision 1.20  2000/01/30 23:31:00  apr
- * Added debuging to unpack() method
- *
- * Revision 1.19  2000/01/23 16:07:30  apr
- * BugFix: BASE24Channel was not handling Headers
- * (reported by Mike Trank <mike@netcomsa.com>)
- *
- * Revision 1.18  2000/01/11 01:24:44  apr
- * moved non ISO-8583 related classes from jpos.iso to jpos.util package
- * (AntiHog LeasedLineModem LogEvent LogListener LogSource
- *  Loggeable Logger Modem RotateLogListener SimpleAntiHog SimpleDialupModem
- *  SimpleLogListener SimpleLogSource SystemMonitor V24)
- *
- * Revision 1.17  1999/11/24 18:16:43  apr
- * minor doc changes
- *
- * Revision 1.16  1999/09/30 12:01:13  apr
- * Added emitBitMap() and getFirstField() to fix broken X92Packager
- * after pack()/unpack() changes (reported by dflc@cs.com.uy)
- *
- * Revision 1.15  1999/09/25 13:35:07  apr
- * pack ignore field exceptions, log event and continue with next field
- *
- * Revision 1.14  1999/09/06 17:20:06  apr
- * Added Logger SubSystem
- *
- * Revision 1.13  1999/08/06 13:55:46  apr
- * Added support for Bitmap-less ISOMsgs (usually nested messages)
- *
- */
-
 /**
  * provides base functionality for the actual packagers
  *
@@ -334,6 +262,9 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
 	} catch (ISOException e) {
 	    evt.addMessage (e);
 	    throw e;
+        } catch (Exception e) {
+	    evt.addMessage (e);
+            throw new ISOException (e);
 	} finally {
 	    Logger.log (evt);
 	}
