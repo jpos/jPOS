@@ -1,52 +1,9 @@
 /*
- * Copyright (c) 2000 jPOS.org.  All rights reserved.
+ * Copyright (c) 2004 jPOS.org 
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
+ * See terms of license at http://jpos.org/license.html
  *
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- *
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in
- *    the documentation and/or other materials provided with the
- *    distribution.
- *
- * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:
- *    "This product includes software developed by the jPOS project 
- *    (http://www.jpos.org/)". Alternately, this acknowledgment may 
- *    appear in the software itself, if and wherever such third-party 
- *    acknowledgments normally appear.
- *
- * 4. The names "jPOS" and "jPOS.org" must not be used to endorse 
- *    or promote products derived from this software without prior 
- *    written permission. For written permission, please contact 
- *    license@jpos.org.
- *
- * 5. Products derived from this software may not be called "jPOS",
- *    nor may "jPOS" appear in their name, without prior written
- *    permission of the jPOS project.
- *
- * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
- * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  
- * IN NO EVENT SHALL THE JPOS PROJECT OR ITS CONTRIBUTORS BE LIABLE FOR 
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL 
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS 
- * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) 
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, 
- * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING 
- * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
- * POSSIBILITY OF SUCH DAMAGE.
- * ====================================================================
- *
- * This software consists of voluntary contributions made by many
- * individuals on behalf of the jPOS Project.  For more
- * information please see <http://www.jpos.org/>.
  */
-
 package org.jpos.space;
 
 import java.io.IOException;
@@ -60,6 +17,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.TimerTask;
 
 import jdbm.RecordManager;
 import jdbm.RecordManagerFactory;
@@ -70,6 +28,8 @@ import jdbm.helper.Serializer;
 import jdbm.helper.DefaultSerializer;
 import jdbm.helper.FastIterator;
 
+import org.jpos.util.DefaultTimer;
+
 /**
  * JDBM based persistent space implementation
  *
@@ -78,13 +38,14 @@ import jdbm.helper.FastIterator;
  * @version $Revision$ $Date$
  * @since 1.4.7
  */
-public class JDBMSpace implements Space {
+public class JDBMSpace extends TimerTask implements Space {
     protected HTree htree;
     protected RecordManager recman;
     protected static Serializer refSerializer = new Ref ();
     protected static Map spaceRegistrar = new HashMap ();
     protected boolean autoCommit = true;
     protected String name;
+    public static final long GCDELAY = 5*60*1000;
 
     /**
      * protected constructor. 
@@ -108,6 +69,7 @@ public class JDBMSpace implements Space {
         } catch (IOException e) {
             throw new SpaceError (e);
         }
+        DefaultTimer.getTimer().schedule (this, GCDELAY, GCDELAY);
     }
     /**
      * @return reference to default JDBMSpace
@@ -405,6 +367,9 @@ public class JDBMSpace implements Space {
             }
         }
     }
+    public void run () {
+        gc();
+    }
     /**
      * garbage collector.
      * removes expired entries
@@ -418,7 +383,7 @@ public class JDBMSpace implements Space {
                 // avoid concurrent gc
                 if (rdp (GCKEY) != null) 
                     return;
-                out (GCKEY, new Object (), TIMEOUT);  
+                out (GCKEY, new Boolean (true), TIMEOUT);  
             }
             FastIterator iter = htree.keys ();
 
