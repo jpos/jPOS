@@ -7,6 +7,9 @@ import uy.com.cs.jpos.util.LogEvent;
 
 /*
  * $Log$
+ * Revision 1.21  2000/02/28 10:46:40  apr
+ * BugFix: changed (String)_--> toString() on unpack (logging) [Victor Salaman]
+ *
  * Revision 1.20  2000/01/30 23:31:00  apr
  * Added debuging to unpack() method
  *
@@ -172,7 +175,7 @@ public abstract class ISOBasePackager implements ISOPackager, LogProducer {
 					+"\" packager=\""
 					+fld[i].getClass().getName()+ "\">");
 			evt.addMessage ("  <value>" 
-					+(String) c.getValue()
+					+c.getValue().toString()
 					+ "</value>");
 			evt.addMessage ("</unpack>");
 		    }
