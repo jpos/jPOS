@@ -67,9 +67,8 @@ package org.jpos.q2;
     int FAILED  = 4;
     int DESTROYED = 5;
 
-    //void setServer (Q2 server);
-    //Q2 getServer ();
-
+    void setServer (Q2 server);
+    Q2 getServer ();
 
     /**
      * start the service
