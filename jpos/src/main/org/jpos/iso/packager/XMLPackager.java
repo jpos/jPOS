@@ -11,6 +11,9 @@ import org.jpos.iso.*;
 
 /*
  * $Log$
+ * Revision 1.3  2000/05/03 16:15:37  apr
+ * Added TYPE_BITMAP (future support of bitmap logging)
+ *
  * Revision 1.2  2000/04/16 23:53:11  apr
  * LogProducer renamed to LogSource
  *
@@ -48,6 +51,7 @@ public class XMLPackager extends HandlerBase
     public static final String VALUE_ATTR    = "value";
     public static final String TYPE_ATTR     = "type";
     public static final String TYPE_BINARY   = "binary";
+    public static final String TYPE_BITMAP   = "bitmap";
 
     public XMLPackager() throws ISOException {
 	super();
@@ -131,8 +135,11 @@ public class XMLPackager extends HandlerBase
 	int fieldNumber = -1;
 	try {
 	    String id       = atts.getValue(ID_ATTR);
-	    if (id != null)
-		fieldNumber = Integer.parseInt (id);
+	    if (id != null) {
+		try {
+		    fieldNumber = Integer.parseInt (id);
+		} catch (NumberFormatException ex) { }
+	    }
 	    if (name.equals (ISOMSG_TAG)) {
 		if (fieldNumber >= 0) {
 		    if (stk.empty())
