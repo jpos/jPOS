@@ -168,9 +168,9 @@ public class RotateLogListener extends SimpleLogListener
     public synchronized void logRotate ()
         throws IOException
     {
+        super.close ();
         setPrintStream (null);
         closeLogFile ();
-        super.close();
         for (int i=maxCopies; i>0; ) {
             File dest   = new File (logName + "." + i);
             File source = new File (logName + ((--i > 0) ? ("." + i) : ""));
