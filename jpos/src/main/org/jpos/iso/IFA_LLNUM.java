@@ -46,6 +46,6 @@ public class IFA_LLNUM extends ISOFieldPackager {
         return len + 2;
     }
     public int getMaxPackedLength() {
-        return getLength() + 3;
+        return getLength() + 2;
     }
 }
