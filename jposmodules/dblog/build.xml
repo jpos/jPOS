@@ -49,7 +49,7 @@ targets:
   </target>
 
   <target name="get-required">
-    <get src="file:../../jpos/dist/jpos-1.4.7.jar" dest="lib/jpos-1.4.7.jar" />
+    <get src="file:../../jpos/dist/jpos-1.4.8.jar" dest="lib/jpos-1.4.8.jar" />
   </target>
 
   <path id="lib.classpath">
