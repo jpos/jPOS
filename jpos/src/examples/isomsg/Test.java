@@ -131,6 +131,25 @@ public class Test extends SimpleLogSource {
 	}
 	Logger.log (evt);
     }
+    public void testRenumber() {
+	LogEvent evt = new LogEvent (this, "TestRenumber");
+	try {
+	    ISOMsg m      = createMessage(null);
+	    ISOMsg inner  = new ISOMsg (127); // goes at outter field 127
+	    inner.set (new ISOField (0,"001"));
+	    inner.set (new ISOField (2,"002"));
+	    inner.set (new ISOField (3,"003"));
+	    m.set (inner);
+	    evt.addMessage (m);
+            Logger.log (evt);
+
+            m.move (127, 126);
+            evt.addMessage ("Field 127 renumbered to 126");
+	} catch (ISOException ex) {
+	    evt.addMessage (ex);
+	}
+	Logger.log (evt);
+    }
     public static void main (String args[]) {
 	Logger logger = new Logger();
 	logger.addListener (new SimpleLogListener (System.out));
@@ -138,5 +157,6 @@ public class Test extends SimpleLogSource {
 	Test t = new Test (logger, "Test");
 	t.test();
 	t.testNested();
+	t.testRenumber();
     }
 }
