@@ -34,20 +34,20 @@ public class Request extends TinySpace {
     }
 
     public Object getResponse () {
-        return in (RESPONSE);
+        return rd (RESPONSE);
     }
     public Object getResponse (long timeout) {
-        return in (RESPONSE, timeout);
+        return rd (RESPONSE, timeout);
     }
     public void setResponse (Object o) {
         out (RESPONSE, o);
     }
 
     public Object getRequest () {
-        return in (REQUEST);
+        return rd (REQUEST);
     }
     public Object getRequest (long timeout) {
-        return in (REQUEST, timeout);
+        return rd (REQUEST, timeout);
     }
 
     public void addError (Object o) {
