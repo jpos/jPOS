@@ -152,7 +152,7 @@ public class MD5Filter implements ISOFilter, ReConfigurable {
 		    );
 		if (!Arrays.equals (digest, rxDigest)) {
 		    evt.addMessage (m);
-		    evt.addMessage ("MAC  spected: "
+		    evt.addMessage ("MAC expected: "
 			+ISOUtil.hexString (digest));
 		    evt.addMessage ("MAC received: "
 			+ISOUtil.hexString (rxDigest));
