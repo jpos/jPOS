@@ -132,7 +132,7 @@
 
   <target name="ext.sun-util" depends="ext.check" if="sun-util.present">
     <javac srcdir="${ext}" destdir="${classes}"
-        includes="**/ReliableSequencer.java"
+        includes="**/ReliableSequencer.java,**/SAFChannel*.java"
         debug="${debug}"
         deprecation="${deprecation}" >
         <classpath refid="ext.classpath" />
