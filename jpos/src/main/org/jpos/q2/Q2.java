@@ -58,7 +58,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Iterator;
 import java.util.Arrays;
 import javax.management.Attribute;
@@ -81,7 +81,6 @@ import org.jdom.output.XMLOutputter;
 import org.jpos.util.Log;
 import org.jpos.util.Logger;
 import org.jpos.util.LogEvent;
-import org.jpos.util.SimpleLogSource;
 import org.jpos.util.SimpleLogListener;
 
 /**
@@ -94,6 +93,7 @@ public class Q2 implements FileFilter {
     public static final String JMX_NAME            = "Q2";
     public static final String LOGGER_NAME         = "Q2";
     public static final String REALM               = "Q2.system"; 
+    public static final String LOGGER_CONFIG       = "00_logger.xml";
     public static final String QBEAN_NAME          = "Q2:type=qbean,service=";
     public static final String Q2_CLASS_LOADER     = "Q2:type=system,service=loader";
 
@@ -110,14 +110,9 @@ public class Q2 implements FileFilter {
         super();
         this.deployDir  = new File (dir);
         this.libDir     = new File (deployDir, "lib");
-        this.dirMap     = new HashMap ();
+        this.dirMap     = new LinkedHashMap ();
         deployDir.mkdirs ();
-
-        Logger logger = Logger.getLogger (LOGGER_NAME);
-        logger.addListener (new SimpleLogListener (System.err));
-        log = new Log (logger, REALM);
     }
-
     public void start () 
         throws MalformedObjectNameException,
                InstanceAlreadyExistsException,
@@ -127,8 +122,9 @@ public class Q2 implements FileFilter {
         server  = MBeanServerFactory.createMBeanServer (JMX_NAME);
         ObjectName loaderName = new ObjectName (Q2_CLASS_LOADER);
         loader = new QClassLoader (server, libDir, loaderName);
-	server.registerMBean (loader, loaderName);//new
-        factory = new QFactory (loaderName, log);
+	server.registerMBean (loader, loaderName);
+        factory = new QFactory (loaderName, this);
+        initSystemLogger ();
         for (;;) {
             try {
                 loader = loader.scan ();
@@ -253,8 +249,11 @@ public class Q2 implements FileFilter {
             ObjectName name = qentry.getObjectName ();
             if (name != null)
                 factory.destroyQBean (this, name);
+
+            if (log != null)
+                log.info ("undeploy:" + f.getName());
         } catch (Exception e) {
-            log.warn ("undeploy", e);
+            getLog().warn ("undeploy", e);
         }
     }
 
@@ -265,12 +264,17 @@ public class Q2 implements FileFilter {
 
     private ObjectInstance deploy (File f) {
         try {
+            if (log != null)
+                log.info ("deploy:" + f.getName());
             SAXBuilder builder = new SAXBuilder ();
             Document doc = builder.build (f);
-            return factory.createQBean (this, doc.getRootElement());
+            ObjectInstance instance = factory.createQBean (
+                this, doc.getRootElement()
+            );
+            return instance;
         } catch (Exception e) {
-            log.warn ("deploy", e);
-        }
+            getLog().warn ("deploy", e);
+        } 
         return null;
     }
 
@@ -278,14 +282,41 @@ public class Q2 implements FileFilter {
         try {
             factory.startQBean (this, instance.getObjectName());
         } catch (Exception e) {
-            log.warn ("start", e);
+            getLog().warn ("start", e);
         }
     }
-
+    public void relax (long sleep) {
+        try {
+            Thread.sleep (sleep);
+        } catch (InterruptedException e) { }
+    }
+    public void relax () {
+        relax (1000);
+    }
+    private void initSystemLogger () {
+        File loggerConfig = new File (deployDir, LOGGER_CONFIG);
+        if (loggerConfig.canRead()) {
+            try {
+                register (loggerConfig);
+                deploy ();
+            } catch (Exception e) {
+                getLog().warn ("init-system-logger", e);
+            }
+        }
+        getLog().info ("Q2 started, deployDir="+deployDir.getAbsolutePath());
+    }
+    public Log getLog () {
+        if (log == null) {
+            Logger logger = Logger.getLogger (LOGGER_NAME);
+            if (!logger.hasListeners())
+                logger.addListener (new SimpleLogListener (System.out));
+            log = new Log (logger, REALM);
+        }
+        return log;
+    }
     public MBeanServer getMBeanServer () {
         return server;
     }
-
     public static void main (String[] args) throws Exception {
         new Q2 (args.length > 0 ? args[0] : DEFAULT_DEPLOY_DIR).start ();
     }
@@ -316,14 +347,6 @@ public class Q2 implements FileFilter {
         public ObjectName getObjectName () {
             return instance != null ? instance.getObjectName () : null;
         }
-    }
-    public void relax (long sleep) {
-        try {
-            Thread.sleep (sleep);
-        } catch (InterruptedException e) { }
-    }
-    public void relax () {
-        relax (1000);
     }
 }
 

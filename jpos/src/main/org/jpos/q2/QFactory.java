@@ -75,12 +75,12 @@ import org.jpos.util.Log;
  */
 public class QFactory {
     ObjectName loaderName;
-    Log log;
+    Q2 q2;
 
-    public QFactory (ObjectName loaderName, Log log) {
+    public QFactory (ObjectName loaderName, Q2 q2) {
         super ();
         this.loaderName = loaderName;
-        this.log = log;
+        this.q2  = q2;
     }
     public ObjectInstance createQBean (Q2 server, Element e) 
         throws ClassNotFoundException, 
@@ -99,8 +99,7 @@ public class QFactory {
     {
         String clazz  = e.getAttributeValue ("class");
         String name   = e.getAttributeValue ("name");
-        String loggerName = e.getAttributeValue ("logger");
-        String realm      = e.getAttributeValue ("realm");
+        String logger = e.getAttributeValue ("logger");
         if (name == null)
             name = "unknown-" + Long.toString (System.currentTimeMillis ());
 
@@ -113,12 +112,7 @@ public class QFactory {
             clazz, objectName, loaderName
         );
         setAttribute (mserver, objectName, "Name", name);
-        if (loggerName != null) {
-            setAttribute (mserver, objectName, "Realm", 
-                realm == null ? name : realm
-            );
-            setAttribute (mserver, objectName, "LoggerName", loggerName);
-        }
+        setAttribute (mserver, objectName, "Logger", logger);
         setAttribute (mserver, objectName, "Server", server);
         setAttribute (mserver, objectName, "Persist", e);
         configureQBean(mserver,objectName,e);
@@ -136,7 +130,7 @@ public class QFactory {
                 try {
                     loader.addURL (u.getTextTrim ());
                 } catch (MalformedURLException ex) {
-                    log.warn (u.getTextTrim(), ex);
+                    q2.getLog().warn (u.getTextTrim(), ex);
                 }
             }
         }
@@ -199,7 +193,7 @@ public class QFactory {
     }
 
 
-    public void configureQBean(MBeanServer server, ObjectName objectName,Element e)
+    public void configureQBean(MBeanServer server, ObjectName objectName, Element e)
         throws Q2ConfigurationException
     {
         try {

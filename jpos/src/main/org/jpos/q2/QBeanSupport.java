@@ -79,7 +79,7 @@ public class QBeanSupport implements QBean, QPersist, QBeanSupportMBean {
         this.name = name;
         log.setRealm (name);
     }
-    public void setLoggerName (String loggerName) {
+    public void setLogger (String loggerName) {
         log = new Log (Logger.getLogger (loggerName), getName ());
     }
     public Log getLog () {

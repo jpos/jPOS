@@ -94,7 +94,7 @@ public class HttpAdaptor
     public String getName () {
         return name;
     }
-    public void setLoggerName (String loggerName) {
+    public void setLogger (String loggerName) {
         log = new Log (Logger.getLogger (loggerName), getName ());
     }
     public void init ()
