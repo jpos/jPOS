@@ -88,10 +88,12 @@ public class BASE1Header {
     }
 
     public void swapDirection() {
-        byte[] source = new byte[3];
-        System.arraycopy(header, 8, source, 0, 3);
-        System.arraycopy(header, 5, header, 8, 3);
-        System.arraycopy(source, 0, header, 5, 3);
+	if (header != null && header.length >= LENGTH) {
+	    byte[] source = new byte[3];
+	    System.arraycopy(header, 8, source, 0, 3);
+	    System.arraycopy(header, 5, header, 8, 3);
+	    System.arraycopy(source, 0, header, 5, 3);
+	}
     }
     public boolean isRejected() {
         return (header[16] & 0x80) == 0x80;
