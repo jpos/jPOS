@@ -7,6 +7,9 @@
 
 /*
  * $Log$
+ * Revision 1.2  1999/07/27 12:14:16  apr
+ * slow down ISOMeter (avoid hogging CPU on slow machines)
+ *
  * Revision 1.1  1999/05/18 12:02:59  apr
  * Added GUI package
  *
@@ -64,7 +67,7 @@ public class ISOMeter extends JComponent implements ActionListener {
 			}
 		};
 		addMouseListener(mouseListener);
-		ti = new Timer(50, this);
+		ti = new Timer(1000, this);
 	}
 
 	public void showLogList() {
