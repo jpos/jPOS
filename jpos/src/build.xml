@@ -134,6 +134,7 @@ Main targets:
    <copy todir="${buildsrc}">
     <fileset dir="${main}">
      <include name="**/*.java"/>
+     <include name="**/*.properties"/>
     </fileset>
     <fileset dir="${ext}">
      <patternset refid="ext-sources" />
@@ -201,6 +202,8 @@ Main targets:
     </rmic>
     <copy file="${source}/etc/jndi.properties" 
         tofile="${classes}/jndi.properties" />
+    <copy file="${buildsrc}/org/jpos/ui/UI.properties" 
+        tofile="${classes}/org/jpos/ui/UI.properties" />
   </target>
 
   <target name="ext.check">
