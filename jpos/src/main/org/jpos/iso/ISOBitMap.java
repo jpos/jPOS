@@ -2,6 +2,7 @@ package org.jpos.iso;
 
 import java.io.*;
 import java.util.*;
+import org.jpos.iso.packager.XMLPackager;
 
 /**
  * implements <b>Leaf</b> for Bitmap field
@@ -69,7 +70,10 @@ public class ISOBitMap extends ISOComponent implements Cloneable {
      * @param indent - optional indent string
      */
     public void dump (PrintStream p, String indent) {
-        p.println (indent +"<fld id=\"" 
-            +fieldNumber +"\" value=\"" +value +"\"/>");
+        p.println (indent +"<"+XMLPackager.ISOFIELD_TAG + " " +
+	    XMLPackager.ID_ATTR +"=\""+XMLPackager.TYPE_BITMAP+"\" "+
+	    XMLPackager.VALUE_ATTR +"=\"" +value+"\" "+
+	    XMLPackager.TYPE_ATTR +"=\"" + XMLPackager.TYPE_BITMAP+ "\"/>"
+	);
     }
 }
