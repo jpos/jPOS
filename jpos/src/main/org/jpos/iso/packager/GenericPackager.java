@@ -98,12 +98,9 @@ import org.jpos.iso.packager.*;
  */
 public class GenericPackager extends ISOBasePackager
 {
-    private Stack fieldStack;
-
     public GenericPackager() throws ISOException
     {
 	super();
-	fieldStack = null;
     }
 
     /** 
@@ -145,6 +142,8 @@ public class GenericPackager extends ISOBasePackager
 
     private class GenericContentHandler extends DefaultHandler
     {
+	private Stack fieldStack;
+
 	public void startDocument()
 	{
 	    fieldStack = new Stack();
