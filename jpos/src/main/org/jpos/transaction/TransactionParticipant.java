@@ -18,7 +18,7 @@ public interface TransactionParticipant extends TransactionConstants {
      * Called by TransactionManager in preparation for a transaction
      * @param id the Transaction identifier
      * @param context transaction context
-     * @return PREPARED or ABORTED (| NO_JOIN | CONTINUE | READONLY)
+     * @return PREPARED or ABORTED (| NO_JOIN | READONLY)
      */
     public int  prepare (long id, Serializable context);
 

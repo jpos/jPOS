@@ -14,11 +14,6 @@ public interface TransactionConstants {
     public static final int PREPARED = 1;
 
     /**
-     * Transaction manager should continue calling other participants
-     */
-    public static final int CONTINUE = 0x20;
-
-    /**
      * This participant does not join the transaction
      */
     public static final int NO_JOIN  = 0x40;
