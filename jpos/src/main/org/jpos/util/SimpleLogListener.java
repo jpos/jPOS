@@ -68,7 +68,7 @@ public class SimpleLogListener implements LogListener {
         d = new Date();
     }
     public SimpleLogListener (PrintStream p) {
-        super();
+        this ();
         setPrintStream (p);
     }
     public synchronized void setPrintStream (PrintStream p) {
