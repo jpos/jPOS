@@ -99,9 +99,9 @@ public class QFactory {
     {
         String clazz  = e.getAttributeValue ("class");
         String name   = e.getAttributeValue ("name");
-        String logger = e.getAttributeValue ("logger");
         if (name == null)
-            name = "unknown-" + Long.toString (System.currentTimeMillis ());
+            name = e.getName ();
+        String logger = e.getAttributeValue ("logger");
 
         ObjectName objectName = new ObjectName (Q2.QBEAN_NAME + name);
         MBeanServer mserver = server.getMBeanServer();
@@ -218,6 +218,13 @@ public class QFactory {
             String name = childElement.getAttributeValue("name");
             name = getAttributeName(name);
             String type = childElement.getAttributeValue("type","java.lang.String");
+            if ("int".equals (type))
+                type = "java.lang.Integer";
+            else if ("long".equals (type))
+                type = "java.lang.Long";
+            else if ("boolean".equals (type))
+                type = "java.lang.Boolean";
+
             String value = childElement.getText();
             try {
                 Class attributeType = Class.forName(type);
