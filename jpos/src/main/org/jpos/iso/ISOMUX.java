@@ -73,7 +73,7 @@ import org.jpos.core.ReConfigurable;
  */
 
 public class ISOMUX implements Runnable, ISOSource, LogSource, 
-                               ReConfigurable, Loggeable
+                               ReConfigurable, Loggeable, ISOMUXMBean
 {
     private ISOChannel channel;
     private Thread rx = null, tx = null;
@@ -218,7 +218,63 @@ public class ISOMUX implements Runnable, ISOSource, LogSource,
         cnt[RX_PENDING] = rxQueue.size();
         return cnt;
     }
-
+    public void resetCounters () {
+        cnt = new int[SIZEOF_CNT];
+    }
+    /**
+     * @return number of re-connections on the underlying channel
+     */
+    public int getConnectionCount () {
+        return cnt[CONNECT];
+    }
+    /**
+     * @return number of transmitted messages
+     */
+    public int getTransmitCount () {
+        return cnt[TX];
+    }
+    /**
+     * @return number of expired messages
+     */
+    public int getExpiredCount () {
+        return cnt[TX_EXPIRED];
+    }
+    /**
+     * @return number of messages waiting to be transmited
+     */
+    public int getTransmitPendingCount () {
+        return txQueue.size();
+    }
+    /**
+     * @return number of received messages
+     */
+    public int getReceiveCount () {
+        return cnt[RX];
+    }
+    /**
+     * @return number of unanswered messages
+     */
+    public int getReceiveExpiredCount () {
+        return cnt[RX_EXPIRED];
+    }
+    /**
+     * @return number of messages waiting for response
+     */
+    public int getReceivePendingCount () {
+        return rxQueue.size();
+    }
+    /**
+     * @return number of unknown messages received
+     */
+    public int getUnknownCount () {
+        return cnt[RX_UNKNOWN];
+    }
+    /**
+     * @return number of forwarded messages received
+     */
+    public int getForwardedCount () {
+        return cnt[RX_FORWARDED];
+    }
     private class Receiver implements Runnable, LogSource {
         Runnable parent;
         protected Receiver(Runnable p) {
