@@ -107,6 +107,7 @@ public class Q2 implements FileFilter {
         server  = MBeanServerFactory.createMBeanServer (JMX_NAME);
         ObjectName loaderName = new ObjectName (Q2_CLASS_LOADER);
         loader = new QClassLoader (server, libDir, loaderName);
+	server.registerMBean (loader, loaderName);//new
         factory = new QFactory (loaderName);
         for (;;) {
             try {
