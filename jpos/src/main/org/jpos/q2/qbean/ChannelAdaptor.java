@@ -77,6 +77,8 @@ import org.jdom.Element;
 /**
  * @author Alejandro Revilla
  * @version $Revision$ $Date$
+ * @jmx:mbean description="ISOChannel wrapper" 
+ *                extends="org.jpos.q2.QBeanSupportMBean"
  */
 public class ChannelAdaptor 
     extends QBeanSupport
@@ -126,15 +128,26 @@ public class ChannelAdaptor
         }
     }
 
+
+    /**
+     * @jmx:managed-attribute description="set reconnect delay"
+     */
     public synchronized void setReconnectDelay (long delay) {
         getPersist().getChild ("reconnect-delay") 
             .setText (Long.toString (delay));
         this.delay = delay;
         setModified (true);
     }
+    /**
+     * @jmx:managed-attribute description="get reconnect delay"
+     */
     public long getReconnectDelay () {
         return delay;
     }
+
+    /**
+     * @jmx:managed-attribute description="input queue"
+     */
     public synchronized void setInQueue (String in) {
         String old = this.in;
         this.in = in;
@@ -144,14 +157,23 @@ public class ChannelAdaptor
         getPersist().getChild("in").setText (in);
         setModified (true);
     }
+    /**
+     * @jmx:managed-attribute description="input queue"
+     */
     public String getInQueue () {
         return in;
     }
+    /**
+     * @jmx:managed-attribute description="output queue"
+     */
     public synchronized void setOutQueue (String out) {
         this.out = out;
         getPersist().getChild("out").setText (out);
         setModified (true);
     }
+    /**
+     * @jmx:managed-attribute description="output queue"
+     */
     public String getOutQueue () {
         return out;
     }
@@ -263,19 +285,31 @@ public class ChannelAdaptor
             getLog().warn ("disconnect", e);
         }
     }
+    /**
+     * @jmx:managed-attribute description="remote host address"
+     */
     public synchronized void setHost (String host) {
         setProperty (getProperties ("channel"), "host", host);
         setModified (true);
     }
+    /**
+     * @jmx:managed-attribute description="remote host address"
+     */
     public String getHost () {
         return getProperty (getProperties ("channel"), "host");
     }
+    /**
+     * @jmx:managed-attribute description="remote port"
+     */
     public synchronized void setPort (int port) {
         setProperty (
             getProperties ("channel"), "port", Integer.toString (port)
         );
         setModified (true);
     }
+    /**
+     * @jmx:managed-attribute description="remote port"
+     */
     public int getPort () {
         int port = 0;
         try {

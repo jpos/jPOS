@@ -1,2 +1,2 @@
-QTestMBean.java 
-QTestMBeanDescription.java
+QTestMBean*.java 
+ChannelAdaptorMBean*.java
