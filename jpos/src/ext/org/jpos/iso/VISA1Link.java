@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.13  2000/03/15 01:18:31  apr
+ * Debugging ISOGetty
+ *
  * Revision 1.12  2000/03/14 12:58:09  apr
  * don't stop on DLE
  *
@@ -152,7 +155,7 @@ public class VISA1Link implements LogProducer, Runnable
 	return chk;
     }
 
-    private void sendPacket (byte[] b, LogEvent evt) throws IOException {
+    public void sendPacket (byte[] b, LogEvent evt) throws IOException {
 	// avoid multiple calls to v24.send() in order to show
 	// the whole frame within one LogEvent
 	byte[] frame = new byte [b.length + 3];
@@ -246,6 +249,22 @@ public class VISA1Link implements LogProducer, Runnable
 	    evt.addMessage (e);
 	}
 	return request;
+    }
+    public boolean sendResponse (byte[] b, long timeout, LogEvent evt) {
+	boolean rc = false;
+	try {
+	    long expired = System.currentTimeMillis() + timeout;
+	    int i = 0;
+	    while (!rc && System.currentTimeMillis() < expired) {
+		sendPacket (b, evt);
+		String buf = v24.readUntil ("\006\025", timeout, true);
+		if (buf != null && buf.endsWith ("\006")) 
+		    rc = true;
+	    }
+	} catch (IOException e) { 
+	    evt.addMessage (e);
+	}
+	return rc;
     }
 
     private void doTransceive () throws IOException, ISOException
