@@ -82,6 +82,9 @@ public class RowMap {
 	map.put (name, d == null ? "null" : 
 	    "'" + ISODate.formatDate (d, "yyyy-MM-dd HH:mm:ss") + "'");
     }
+    public Map getMap() {
+        return map;
+    }
     public String getInsertSql (String tableName) {
 	StringBuffer columns = new StringBuffer();
 	StringBuffer values  = new StringBuffer();
