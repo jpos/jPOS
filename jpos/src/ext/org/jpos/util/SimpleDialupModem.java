@@ -49,6 +49,9 @@
 
 /*
  * $Log$
+ * Revision 1.11  2002/07/15 01:03:43  apr
+ * Bugfix: flush the read buffer (reported by Kris Leite)
+ *
  * Revision 1.10  2000/11/02 12:09:17  apr
  * Added license to every source file
  *
@@ -129,6 +132,7 @@ public class SimpleDialupModem implements Modem {
     private void reset() throws IOException {
 	try {
 	    v24.send ("AT\r"); Thread.sleep (250);
+            v24.flushAndLog ();
 	    if (v24.waitfor ("ATE1Q0V1H0\r", resultCodes, 1000) == 0) 
 		return;
 	    v24.dtr (false);     Thread.sleep (1000);
