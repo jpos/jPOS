@@ -134,7 +134,7 @@ public class ASCIIChannel extends BaseChannel {
                     serverOut.flush();
                 }
             } catch (NumberFormatException e) { 
-                throw new ISOException ("Invalid header len "+new String(b));
+                throw new ISOException ("Invalid message length "+new String(b));
             }
         }
         return l;
