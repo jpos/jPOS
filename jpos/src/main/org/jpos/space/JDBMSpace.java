@@ -412,12 +412,15 @@ public class JDBMSpace implements Space {
     public void gc () {
         final String GCKEY = "GC$" + Integer.toString (hashCode());
         final long TIMEOUT = 24 * 3600 * 1000;
+        Object obj;
         try {
+            synchronized (this) {
+                // avoid concurrent gc
+                if (rdp (GCKEY) != null) 
+                    return;
+                out (GCKEY, new Object (), TIMEOUT);  
+            }
             FastIterator iter = htree.keys ();
-            Object obj = new Boolean (true);
-
-            // avoid ConcurrentModificationException in Head
-            out (GCKEY, obj, TIMEOUT);  
 
             while ( (obj = iter.next()) != null) {
                 out (GCKEY, obj, TIMEOUT);
