@@ -5,12 +5,15 @@ import java.util.Properties;
 import org.jpos.util.Logger;
 import org.jpos.util.LogEvent;
 import org.jpos.util.LogSource;
+import org.jpos.util.NameRegistrar;
 import org.jpos.core.SimpleConfiguration;
 import org.jpos.core.Configurable;
+import org.jpos.core.ReConfigurable;
 import org.jpos.core.ConfigurationException;
 
 import org.jpos.apps.qsp.QSP;
 import org.jpos.apps.qsp.QSPConfigurator;
+import org.jpos.apps.qsp.QSPReConfigurator;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -20,11 +23,14 @@ import org.w3c.dom.NodeList;
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
  * @version $Revision$ $Date$
  */
-public class ConfigTask implements QSPConfigurator {
+public class ConfigTask implements QSPReConfigurator {
+    public static final String NAMEREGISTRAR_PREFIX = "qsp.task.";
+
     public void config (QSP qsp, Node node) throws ConfigurationException
     {
 	String className = 
 	    node.getAttributes().getNamedItem ("class").getNodeValue();
+	String name = node.getAttributes().getNamedItem ("name").getNodeValue();
 	LogEvent evt = new LogEvent (qsp, "config-task", className);
         try {
             Class c = Class.forName(className);
@@ -38,8 +44,9 @@ public class ConfigTask implements QSPConfigurator {
 	    if (task instanceof Configurable)
 		configureTask ((Configurable) task, node, evt);
 
+	    NameRegistrar.register (NAMEREGISTRAR_PREFIX+name, task);
 	    Thread thread = new Thread(task);
-	    thread.setName ("qsp-task");
+	    thread.setName ("qsp-task-"+name);
 	    thread.start();
         } catch (ClassNotFoundException e) {
 	    throw new ConfigurationException ("config-task:"+className, e);
@@ -47,6 +54,19 @@ public class ConfigTask implements QSPConfigurator {
 	    throw new ConfigurationException ("config-task:"+className, e);
         } catch (IllegalAccessException e) {
 	    throw new ConfigurationException ("config-task:"+className, e);
+	}
+	Logger.log (evt);
+    }
+    public void reconfig (QSP qsp, Node node) throws ConfigurationException
+    {
+	String name = node.getAttributes().getNamedItem ("name").getNodeValue();
+	LogEvent evt = new LogEvent (qsp, "re-config-task", name);
+	try {
+	    Object task = NameRegistrar.get (NAMEREGISTRAR_PREFIX + name);
+	    if (task instanceof ReConfigurable) 
+		configureTask ((Configurable) task, node, evt);
+	} catch (NameRegistrar.NotFoundException e) {
+	    evt.addMessage ("<task-not-found/>");
 	}
 	Logger.log (evt);
     }

@@ -1,5 +1,6 @@
 package org.jpos.apps.qsp;
 
+import java.io.File;
 import java.io.IOException;
 import org.apache.xerces.parsers.*;
 import org.xml.sax.SAXException;
@@ -22,12 +23,29 @@ import org.jpos.core.ConfigurationException;
  * @version $Revision$ $Date$
  * @see <a href="http://www.cebik.com/qsig.html">QSP</a>
  */
-
 public class QSP implements ErrorHandler, LogSource {
     Document config;
     Logger logger;
     String realm;
+    File configFile;
+    long lastModified;
     static ControlPanel controlPanel = null;
+    public static final int MONITOR_CONFIG_INTERVAL = 30000;
+
+    public static String[] SUPPORTED_TAGS = 
+	{ "logger",
+	  "log-listener",
+	  "persistent-engine",
+	  "sequencer",
+	  "control-panel",
+	  "channel",
+	  "filter",
+	  "mux",
+	  "server",
+	  "request-listener",
+	  "card-agent",
+	  "task" 
+	};
 
     public QSP () {
 	super();
@@ -36,6 +54,13 @@ public class QSP implements ErrorHandler, LogSource {
     }
     public void setConfig (Document config) {
 	this.config = config;
+    }
+    public void setConfigFile (File f) {
+	this.configFile = f;
+	this.lastModified = f.lastModified();
+    }
+    public File getConfigFile () {
+	return configFile;
     }
     public ControlPanel initControlPanel (int rows, int cols) {
 	if (controlPanel == null) {
@@ -78,35 +103,53 @@ public class QSP implements ErrorHandler, LogSource {
 	for (int i=0; i<nodes.getLength(); i++) 
 	    configurator.config (this, nodes.item(i));
     }
+    public void reconfigure (String tagname) throws ConfigurationException {
+	QSPConfigurator configurator = QSPConfiguratorFactory.create (tagname);
+	if (configurator instanceof QSPReConfigurator) {
+	    NodeList nodes = config.getElementsByTagName (tagname);
+	    for (int i=0; i<nodes.getLength(); i++) 
+		((QSPReConfigurator)configurator).reconfig 
+		    (this, nodes.item(i));
+	}
+    }
+    private boolean monitorConfigFile () {
+	long l;
+	while (lastModified == (l=configFile.lastModified()))
+	    try {
+		Thread.sleep (MONITOR_CONFIG_INTERVAL);
+	    } catch (InterruptedException e) { }
+	lastModified = l;
+	return true;
+    }
     public static void main (String args[]) {
 	if (args.length != 1) {
 	    System.out.println ("Usage: org.jpos.apps.qsp.QSP <configfile>");
 	    System.exit (1);
 	}
-    
 	DOMParser parser = new DOMParser();
 	QSP qsp = new QSP();
 	// qsp.getLogger().addListener (new SimpleLogListener(System.out));
 	try {
+	    qsp.setConfigFile (new File (args[0]));
 	    parser.setFeature("http://xml.org/sax/features/validation", true);
 	    parser.setErrorHandler (qsp);
-	    parser.parse (args[0]);
+	    parser.parse (qsp.getConfigFile().getPath());
 	    qsp.setConfig (parser.getDocument());
-	    qsp.configure ("logger");
-	    qsp.configure ("log-listener");
-	    qsp.configure ("persistent-engine");
-	    qsp.configure ("sequencer");
-	    qsp.configure ("control-panel");
-	    qsp.configure ("channel");
-	    qsp.configure ("filter");
-	    qsp.configure ("mux");
-	    qsp.configure ("server");
-	    qsp.configure ("request-listener");
-	    qsp.configure ("card-agent");
-	    qsp.configure ("task");
+	    for (int i=0; i<SUPPORTED_TAGS.length; i++)
+		qsp.configure (SUPPORTED_TAGS[i]);
+
 	    if (controlPanel != null)
 		controlPanel.showUp();
-	    new SystemMonitor (3600000, qsp.getLogger(), "monitor");
+
+	    if (qsp.getLogger() != null)
+		new SystemMonitor (3600000, qsp.getLogger(), "monitor");
+		    
+	    while (qsp.monitorConfigFile ()) {
+		parser.parse (qsp.getConfigFile().getPath());
+		qsp.setConfig (parser.getDocument());
+		for (int i=0; i<SUPPORTED_TAGS.length; i++)
+		    qsp.reconfigure (SUPPORTED_TAGS[i]);
+	    }
 	} catch (IOException e) {
 	    Logger.log (new LogEvent (qsp, "error", e));
 	    System.out.println (e);

@@ -15,6 +15,7 @@ import org.jpos.util.Logger;
 import org.jpos.util.LogEvent;
 import org.jpos.core.Configuration;
 import org.jpos.core.Configurable;
+import org.jpos.core.ReConfigurable;
 import org.jpos.core.ConfigurationException;
 
 /**
@@ -23,7 +24,7 @@ import org.jpos.core.ConfigurationException;
  */
 public class Sender 
     extends SimpleLogSource
-    implements Runnable, Configurable
+    implements Runnable, ReConfigurable
 {
     ISOMUX mux;
     File message;

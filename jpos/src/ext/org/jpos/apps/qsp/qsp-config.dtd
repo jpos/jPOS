@@ -40,6 +40,7 @@
 
 <!-- task -->
 <!ELEMENT task (property)*>
+<!ATTLIST task name ID #REQUIRED>
 <!ATTLIST task class CDATA #REQUIRED>
 <!ATTLIST task logger IDREF #IMPLIED>
 <!ATTLIST task realm CDATA #IMPLIED>
