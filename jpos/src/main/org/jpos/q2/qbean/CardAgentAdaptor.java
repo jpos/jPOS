@@ -61,10 +61,14 @@ public class CardAgentAdaptor extends TaskAdaptor {
     public CardAgentAdaptor () {
         super ();
     }
-    protected void initService () throws Exception {
-    }
     protected void startService () throws Exception {
-        CardAgentLookup.add ((CardAgent) getObject ());
+        System.out.println ("-------> starting "+getName());
+        if (getObject() == null) 
+            System.out.println ("---------------------> Houston, getObject() is null");
+        else {
+            System.out.println ("---------------------> getObject OK");
+            CardAgentLookup.add ((CardAgent) getObject ());
+        }
     }
     protected void stopService () throws Exception {
         CardAgentLookup.remove ((CardAgent) getObject ());
