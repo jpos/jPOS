@@ -123,7 +123,8 @@ public class XMLPackager extends DefaultHandler
             ISOMsg m = (ISOMsg) c;
             byte[] b;
             synchronized (this) {
-                c.dump (p, "");
+                m.setDirection(0);  // avoid "direction=xxxxxx" in XML msg
+                m.dump (p, "");
                 b = out.toByteArray();
                 out.reset();
             }
