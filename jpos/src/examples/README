@@ -12,7 +12,11 @@ In order to run the examples you have to
 
 We recommend that you read them in the following order:
 
-   - logger : jPOS extensively uses the logger subsystem.
+   - logger: jPOS extensively uses the logger subsystem.
      You are also welcome to use it outside jPOS in your own 
      applications as well.
+
+   - simplepacking: shows how to pack and unpack an ISOMsg;
+     provides instructions on how to extend ISOPackagers
+     and ISOFieldPackagers
 

@@ -1,0 +1,144 @@
+$Id$
+
+So you need to pack and unpack ISO-8583 messages ...
+
+The good news is that after running this 'simplepack' example
+you will be packing and unpacking ISO-8583 messages.
+
+The bad news... packing and unpacking ISO-8583 messages
+is just a little part of your financial interchange 
+requirements. There are many other things such as message
+transmission, message framing, low level wire protocols, 
+higher level business logic, transaction batches, 
+reconcilliation, etc. that you will have to take care
+about.
+
+A. Packing
+----------
+
+   1) Create an ISOPackager instance (can be reused within application)
+
+   2) Create and populate an ISOMsg instance
+
+   3) Assign previously created ISOPackager to ISOMsg
+
+   4) Call pack() on your ISOMsg instance and you'll get
+      a byte[] with your packed ISO-8583 message
+
+B. Unpacking
+------------
+
+   1) Create an ISOPackager instance (can be reused within application)
+
+   2) Create a new ISOMsg instance
+
+   3) Call unpack(byte[]) on your ISOMsg instance giving a previously
+      packed ISO-8583 image as a parameter.
+
+   4) Your ISOMsg instance gets populated and you can work with it.
+      (setting/unsetting fields, merging, cloning, etc. See 'isomsg'
+      example)
+
+Message Packagers (ISOPackager) and Field Packager (ISOFieldPackager)
+---------------------------------------------------------------------
+
+   There are many out-of-the-box easy-to-extend ISOPackagers
+available on jPOS distribution. They are located at
+org.jpos.iso package.
+
+As for jPOS v1.2 we have:
+
+   --[ standard packagers ]--
+   ISO87APackager : ISO8583 version 1987 ASCII Packager
+   ISO87BPackager : ISO8583 version 1987 Binary packager
+   X92Packager    : ANSI X9.2
+
+   --[ customized contributed packagers ]--
+   BASE24Packager : BASE24 Packager (trademark of ACI)
+   PostPackager   : Postillion Packager (trademark of Mosaic Software)
+   VAPSMSPackager : VISA's VAP SMS Packager
+   VAPVIPPackager : VISA's VAP VIP Packager
+   VISA1Packager  : VISA1 to ISO-8583 Adapter
+
+All of them implements ISOPackager so you can easily
+
+      ISOPackager packager = new ISO87APackager();
+
+Have a look now at any ISOPackager implementation (such as
+ISO87APackager) available at org.jpos.iso.ISO87APackager.java.
+
+You'll find something like this:
+
+    protected ISOFieldPackager fld[] = {
+            new IFA_NUMERIC (  4, "MESSAGE TYPE INDICATOR"),
+            new IFA_BITMAP  ( 16, "BIT MAP"),
+            new IFA_LLNUM   ( 19, "PAN - PRIMARY ACCOUNT NUMBER"),
+            new IFA_NUMERIC (  6, "PROCESSING CODE"),
+            new IFA_NUMERIC ( 12, "AMOUNT, TRANSACTION"),
+	    ....
+	    ....
+
+You will find an ISOFieldPackager array that describe how to
+pack and unpack every possible ISO-8583 message field.
+
+You should _double check_ that information toward the specification
+given by your acquirer/financial interchange counterpart.
+
+The naming convention used for ISOFieldPackager implementations
+is "similar" to what you'll see in your interchange documents.
+
+They start with "IF" (that stands for Iso Fieldpackager).
+
+For example:
+
+  IF_CHAR is a fixed length character field
+  IFA_NUMERIC is a fixed length numeric field
+  IFB_NUMERIC is a fixed length numeric field packed as BCD
+
+We use IFA_* and IFB_ for ASCII fields and BCD or what we
+internally call "Binary" fields.
+
+ISO87BPackager uses IFB* field packagers while ISO87APackager
+uses IFA* field packager.
+
+Then it comes the LL, LLL, LLLL fields (see ISO-8583 specs for
+details).
+
+As for jPOS v1.2 we have:
+
+IFA_AMOUNT      IFA_LLNUM       IFB_LLHFBINARY
+IFA_BINARY      IFA_NUMERIC     IFB_LLHNUM
+IFA_BITMAP      IFB_AMOUNT      IFB_LLLBINARY
+IFA_FLLCHAR     IFB_BINARY      IFB_LLLCHAR
+IFA_FLLNUM      IFB_BITMAP      IFB_LLLNUM
+IFA_LLCHAR      IFB_CHAR        IFB_LLNUM
+IFA_LLLBINARY   IFB_LLBINARY    IFB_NUMERIC
+IFA_LLLCHAR     IFB_LLCHAR      IF_CHAR
+IFA_LLLLCHAR    IFB_LLHBINARY   IF_ECHAR
+IFA_LLLLLCHAR   IFB_LLHCHAR     IF_NOP
+IFA_LLLNUM      IFB_LLHECHAR
+
+Special cases are:
+
+  IF_NOP  : it is a No Operation field. It is usefull when mapping
+            ISO-8583 messages to legacy systems with fixed length
+            structures.
+
+  IF?_*E* : converts to/from EBCDIC
+
+  IF?_*H* : weird name for weird packaging. Specifies variable length
+            of LL* messages in BCD instead of BINARY or ASCII.
+	    I'm yet to find out why I've choosed "H" as a name,
+	    kinda "Hexadecimal" but it is not hexadecimal, it's BCD
+	    (will be deprecated in favor of a better name).
+
+Packaging nested Messages 
+-------------------------
+
+jPOS can handle nested ISO-8583 messages. 
+
+In order to pack a nested message you'll have to use
+ISOMsgFieldPackager in your outter message
+(have a look at PostPackager.java or VIPVAPPackager.java)
+
+
