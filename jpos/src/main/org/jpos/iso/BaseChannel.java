@@ -405,7 +405,8 @@ public abstract class BaseChannel extends Observable
 	    if (b.length > 0)  // Ignore NULL messages
 		m.unpack (b);
 
-	    m.setHeader(header);
+	    if (header != null && header.length > 0)
+		m.setHeader(header);
 	    m.setDirection(ISOMsg.INCOMING);
 	    m = applyIncomingFilters (m, evt);
 	    m.setDirection(ISOMsg.INCOMING);
