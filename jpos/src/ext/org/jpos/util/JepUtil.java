@@ -53,6 +53,7 @@ import java.text.DecimalFormat;
 
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOMsg;
+import org.nfunk.jep.JEP;
 
 
 /**

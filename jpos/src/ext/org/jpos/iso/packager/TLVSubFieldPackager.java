@@ -51,7 +51,8 @@ package org.jpos.iso.packager;
 
 import java.util.Hashtable;
 
-import javax.swing.text.html.HTML.Tag;
+import opencard.opt.util.TLV;
+import opencard.opt.util.Tag;
 
 import org.jpos.iso.ISOBasePackager;
 import org.jpos.iso.ISOBinaryField;

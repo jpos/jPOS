@@ -81,8 +81,9 @@ import org.jpos.util.Loggeable;
 import org.jpos.util.Logger;
 import org.jpos.util.NameRegistrar;
 
-import sun.rmi.log.LogHandler;
-import sun.rmi.log.ReliableLog;
+import com.sun.jini.reliableLog.LogException;
+import com.sun.jini.reliableLog.LogHandler;
+import com.sun.jini.reliableLog.ReliableLog;
 
 /**
  * Store & Forward channel

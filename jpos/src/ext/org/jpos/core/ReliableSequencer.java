@@ -49,6 +49,9 @@
 
 /*
  * $Log$
+ * Revision 1.10  2003/05/16 07:14:32  alwyns
+ * Import cleanups. Should work as expected now.
+ *
  * Revision 1.9  2003/05/16 04:25:35  alwyns
  * Import cleanups.
  *
@@ -96,8 +99,9 @@ import java.util.Map;
 
 import org.jpos.util.Loggeable;
 
-import sun.rmi.log.LogHandler;
-import sun.rmi.log.ReliableLog;
+import com.sun.jini.reliableLog.LogException;
+import com.sun.jini.reliableLog.LogHandler;
+import com.sun.jini.reliableLog.ReliableLog;
 
 /**
  * @author apr@cs.com.uy

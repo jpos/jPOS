@@ -49,6 +49,9 @@
 
 /*
  * $Log$
+ * Revision 1.7  2003/05/16 07:14:30  alwyns
+ * Import cleanups. Should work as expected now.
+ *
  * Revision 1.6  2002/12/04 11:34:12  apr
  * Oops: missing import
  *
@@ -78,7 +81,6 @@ import java.io.*;
 import java.util.*;
 import javax.mail.*;
 import javax.mail.internet.*;
-import javax.activation.*;
 import org.jpos.iso.ISOUtil;
 import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
