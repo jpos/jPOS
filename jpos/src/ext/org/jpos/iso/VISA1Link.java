@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.7  1999/12/17 14:58:31  apr
+ * RXTX dataavailable workaround
+ *
  * Revision 1.6  1999/12/16 23:31:49  apr
  * CVS snapshot
  *
@@ -242,11 +245,13 @@ public class VISA1Link implements LogProducer, Runnable
 	for (;;) {
 	    try {
 		for (;;) {
+		    v24.setAutoFlushReceiver (true);
 		    while (txQueue.size() == 0 || !mdm.isConnected()) {
 			synchronized(this) {
-			    this.wait (10000);
+			    this.wait (1000);
 			}
 		    }
+		    v24.setAutoFlushReceiver (false);
 		    doTransceive ();
 		}
 	    } catch (InterruptedException e) { 
