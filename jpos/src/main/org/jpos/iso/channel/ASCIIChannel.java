@@ -137,4 +137,8 @@ public class ASCIIChannel extends BaseChannel {
         }
         return l;
     }
+    protected void sendMessageHeader(ISOMsg m, int len) throws IOException { 
+	if (m.getHeader() != null)
+            serverOut.write(m.getHeader());
+    }
 }
