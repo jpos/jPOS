@@ -21,6 +21,7 @@ import org.jpos.util.NameRegistrar;
  * @version $Revision$ $Date$
  * @deprecated This whole class will be deprecated, use QSP application instead
  *
+ * @deprecated Use QSP instead
  */
 public class ISOFactory {
     /**
@@ -72,7 +73,7 @@ public class ISOFactory {
 	    ((ClientChannel)channel).setHost (host, port);
 	if (header != null) {
 	    if (channel instanceof RawChannel) {
-		((RawChannel)channel).setTPDU (
+		((RawChannel)channel).setHeader (
 		    ISOUtil.str2bcd(header, false)
 		);
 	    } else if (channel instanceof BASE24Channel) {
