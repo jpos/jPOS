@@ -93,7 +93,6 @@ public class JMSQSender extends QBeanSupport implements JMSQSenderMBean,SpaceLis
             throw new Q2ConfigurationException ("Space Name or Key not specified");
         try {
             space = TransientSpace.getSpace (spaceName);
-            space.addListener (spaceKey, this);
             queueConnectionFactory = Utilities.getQueueConnectionFactory (connectionFactory);
             if (username == null)
                 queueConnection = Utilities.getQueueConnection (queueConnectionFactory);
@@ -103,6 +102,7 @@ public class JMSQSender extends QBeanSupport implements JMSQSenderMBean,SpaceLis
             queueSession = queueConnection.createQueueSession (false, Session.AUTO_ACKNOWLEDGE);
             sender = queueSession.createSender (queue);
             queueConnection.start ();
+            listen2Space ();
         } catch (Exception e) {
             throw new Q2ConfigurationException ("Config failure", e);
         }
@@ -110,7 +110,7 @@ public class JMSQSender extends QBeanSupport implements JMSQSenderMBean,SpaceLis
 
     protected void stopService () {
         try {
-            space.removeListener (spaceKey, this);
+            deaf2Space ();
             queueConnection.stop ();
             sender.close ();
             sender = null;
@@ -131,6 +131,14 @@ public class JMSQSender extends QBeanSupport implements JMSQSenderMBean,SpaceLis
             } catch (JMSException e) {
                 log.error (e);
             }
+    }
+
+    private void listen2Space() {
+        space.addListener (spaceKey, this);
+    }
+
+    private void deaf2Space() {
+        space.removeListener (spaceKey, this);
     }
 
     /**
