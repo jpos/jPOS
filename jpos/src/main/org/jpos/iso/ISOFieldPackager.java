@@ -88,6 +88,17 @@ package org.jpos.iso;
 public abstract class ISOFieldPackager {
     private int len;
     private String description;
+    protected boolean pad;
+
+    /**
+     * Default Constructor
+     */
+    public ISOFieldPackager()
+    {
+    	this.len = -1;
+	this.description = null;
+    }
+
     /**
      * @param len - field Len
      * @param description - details
@@ -99,6 +110,10 @@ public abstract class ISOFieldPackager {
     public String getDescription() {
         return description;
     }
+    public void setDescription(String description) {
+    	this.description = description;
+    }
+
     /**
      * @deprecated Use getLength() instead
      */
@@ -108,6 +123,14 @@ public abstract class ISOFieldPackager {
     public int getLength() {
         return len;
     }
+    public void setLength(int len) {
+    	this.len = len;
+    }
+
+    public void setPad(boolean pad) {
+    	this.pad = pad;
+    }
+
     public abstract int getMaxPackedLength();
 
     public ISOComponent createComponent(int fieldNumber) {
