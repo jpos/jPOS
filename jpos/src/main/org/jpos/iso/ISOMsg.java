@@ -58,6 +58,9 @@ import org.jpos.iso.packager.ISO93BPackager;
 
 /*
  * $Log$
+ * Revision 1.34  2001/02/08 16:45:29  apr
+ * Added serialVersionUID
+ *
  * Revision 1.33  2001/02/04 22:38:31  apr
  * Optimization: writeExternal was creating unused internal package instance
  *
@@ -147,6 +150,7 @@ public class ISOMsg extends ISOComponent
     public static final int INCOMING = 1;
     public static final int OUTGOING = 2;
     protected static ISOPackager internalPackager = null;
+    private static final long serialVersionUID = 4306251831901413975L;
 
     public ISOMsg () {
         fields = new Hashtable ();
