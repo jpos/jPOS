@@ -17,24 +17,28 @@ import java.util.*;
  * @see ISORequest
  * @see ISOChannel
  * @see ISOException
+ * @see ISORequestListener
  */
 public class ISOMUX implements Runnable {
 	private ISOChannel channel;
 	private Thread rx;
 	private Vector txQueue;
-	private Hashtable rxQueue;
-
-	public static final int CONNECT    = 0;
-	public static final int TX         = 1;
-	public static final int RX         = 2;
-	public static final int TX_EXPIRED = 3;
-	public static final int RX_EXPIRED = 4;
-	public static final int TX_PENDING = 5;
-	public static final int RX_PENDING = 6;
-	public static final int RX_UNKNOWN = 7;
-	public static final int SIZEOF_CNT = 8;
+ 	private Hashtable rxQueue;
+ 
+	public static final int CONNECT      = 0;
+	public static final int TX           = 1;
+	public static final int RX           = 2;
+	public static final int TX_EXPIRED   = 3;
+	public static final int RX_EXPIRED   = 4;
+	public static final int TX_PENDING   = 5;
+	public static final int RX_PENDING   = 6;
+	public static final int RX_UNKNOWN   = 7;
+	public static final int RX_FORWARDED = 8;
+	public static final int SIZEOF_CNT   = 9;
 
 	private int[] cnt;
+
+	private ISORequestListener requestListener;
 
 	/**
 	 * @param c a connected or unconnected ISOChannel
@@ -45,7 +49,23 @@ public class ISOMUX implements Runnable {
 		txQueue = new Vector();
 		rxQueue = new Hashtable();
 		cnt = new int[SIZEOF_CNT];
+		requestListener = null;
 		rx = new Thread (new Receiver(this));
+	}
+   /**
+    * set an ISORequestListener for unmatched messages
+    * @param rl a request listener object
+	* @see ISORequestListener
+	*/
+	public void setISORequestListener(ISORequestListener rl) {
+		requestListener = rl;
+	}
+   /**
+    * remove possible ISORequestListener 
+	* @see ISORequestListener
+	*/
+	public void removeISORequestListener() {
+		requestListener = null;
 	}
 
 	/**
@@ -79,14 +99,15 @@ public class ISOMUX implements Runnable {
 	 */
 	public void showCounters(PrintStream p) {
 		int[] c = getCounters();
-		p.println("           Conexiones: " + c[CONNECT]);
-		p.println("Mensajes transmitidos: " + c[TX]);
-		p.println("         tx expirados: " + c[TX_EXPIRED]);
-		p.println("        tx pendientes: " + c[TX_PENDING]);
-		p.println("   Mensajes recibidos: " + c[RX]);
-		p.println("         rx expirados: " + c[RX_EXPIRED]);
-		p.println("        rx pendientes: " + c[RX_PENDING]);
-		p.println("    rx no reconocidos: " + c[RX_UNKNOWN]);
+		p.println("           Connections: " + c[CONNECT]);
+		p.println("           TX messages: " + c[TX]);
+		p.println("            TX expired: " + c[TX_EXPIRED]);
+		p.println("            TX pending: " + c[TX_PENDING]);
+		p.println("           RX messages: " + c[RX]);
+		p.println("            RX expired: " + c[RX_EXPIRED]);
+		p.println("            RX pending: " + c[RX_PENDING]);
+		p.println("          RX unmatched: " + c[RX_UNKNOWN]);
+		p.println("          RX forwarded: " + c[RX_FORWARDED]);
 	}
 
 	/**
@@ -110,7 +131,7 @@ public class ISOMUX implements Runnable {
 					try {
 						ISOMsg d = channel.receive();
 						cnt[RX]++;
-						// d.dump (System.out, "<--- ");
+						d.dump (System.out, "<--- ");
 						String k = getKey(d);
 						ISORequest r = (ISORequest) rxQueue.get(k);
 						if (r != null) {
@@ -123,8 +144,14 @@ public class ISOMUX implements Runnable {
 								r.setResponse(d);
 							}
 						}
-						else 
-							cnt[RX_UNKNOWN]++;
+						else {
+							if (requestListener != null) {
+								requestListener.process(d);
+								cnt[RX_FORWARDED]++;
+							}
+							else 
+								cnt[RX_UNKNOWN]++;
+						}
 					} catch (ISOException e) {
 						channel.setUsable(false);
 						System.out.println("Receiver ISOException");
@@ -190,19 +217,19 @@ public class ISOMUX implements Runnable {
 				}
 			}
 			catch (UnknownHostException e) { 
-			 	// System.out.println(e);
+			 	System.out.println(e);
 				try {
 					Thread.sleep(50000);
 				} catch (InterruptedException ie) { }
 			}
 			catch (ConnectException e) { 
-			 	// System.out.println(e);
+			 	System.out.println(e);
 				try {
 					Thread.sleep(50000);
 				} catch (InterruptedException ie) { }
 			}
 			catch (java.net.SocketException e) { 
-			 	// System.out.println(e);
+			 	System.out.println(e);
 				try {
 					Thread.sleep(50000);
 				} catch (InterruptedException ie) { }
