@@ -143,7 +143,7 @@ public class ISOMsg extends ISOComponent
      * @return message header image (may be null)
      */
     public byte[] getHeader() {
-        return header.pack();
+    	return (header != null) ? header.pack() : null;
     } 
 
     /**
