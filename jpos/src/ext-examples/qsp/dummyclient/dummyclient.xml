@@ -22,7 +22,7 @@
 -->
 
 <!DOCTYPE qsp-config SYSTEM "../dtd/qsp-config.dtd"> 
-<qsp-config>
+<qsp-config logger="qsp" realm="qsp" reload="60000">
  <logger name="qsp">
     <log-listener class="org.jpos.util.SimpleLogListener"/>
     <log-listener class="org.jpos.util.RotateLogListener">
