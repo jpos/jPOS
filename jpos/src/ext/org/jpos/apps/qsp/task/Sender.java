@@ -53,6 +53,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Date;
+import java.util.TimeZone;
 import org.jpos.iso.ISOMsg;
 import org.jpos.iso.ISOField;
 import org.jpos.iso.ISOMUX;
@@ -74,6 +75,7 @@ import org.jpos.core.ReConfigurable;
 import org.jpos.core.ConfigurationException;
 
 /**
+ * Reference implementation of a user task
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
  * @version $Revision$ $Date$
  */
@@ -131,8 +133,12 @@ public class Sender
         for (int i=0; i<128; i++) {
             if (m.hasField(i)) {
                 String value = (String) m.getValue(i);
-                if (value.equals ("$date") )
+                if (value.equalsIgnoreCase ("$date") )
                     m.set (new ISOField (i, ISODate.getDateTime(new Date())));
+                else if ((value.toLowerCase().startsWith ("$date") ) && (value.indexOf("GMT") > 0)) {
+                    String zoneID = value.substring(value.indexOf("GMT"));
+                    m.set (new ISOField (i, ISODate.getDateTime(new Date(), TimeZone.getTimeZone(zoneID))));
+                }                    
                 else if (value.charAt (0) == '$')
                     m.set (new ISOField (i,
                       ISOUtil.zeropad (

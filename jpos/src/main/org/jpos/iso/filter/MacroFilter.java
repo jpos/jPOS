@@ -50,6 +50,7 @@
 package org.jpos.iso.filter;
 
 import java.util.Date;
+import java.util.TimeZone;
 import org.jpos.iso.ISOFilter;
 import org.jpos.iso.ISOFilter.VetoException;
 import org.jpos.iso.ISOException;
@@ -67,9 +68,9 @@ import org.jpos.core.Sequencer;
 import org.jpos.core.VolatileSequencer;
 
 /**
- * DelayFilter can be used in order to
- * slow down an ISOChannel. Usefull while
- * debugging an application or simulating a server
+ * MacroFilter useful to set sequencers, date, unset iso fields, etc.
+ * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
+ * @version $Revision$ $Date$
  */
 public class MacroFilter implements ISOFilter, ReConfigurable {
     Sequencer seq;
@@ -131,6 +132,10 @@ public class MacroFilter implements ISOFilter, ReConfigurable {
                 String value = (String) m.getValue(i);
                 if (value.equalsIgnoreCase ("$date") )
                     m.set (new ISOField (i, ISODate.getDateTime(new Date())));
+                else if ((value.toLowerCase().startsWith ("$date") ) && (value.indexOf("GMT") > 0)) {
+                    String zoneID = value.substring(value.indexOf("GMT"));
+                    m.set (new ISOField (i, ISODate.getDateTime(new Date(), TimeZone.getTimeZone(zoneID))));
+                }                    
                 else if (value.charAt (0) == '#')
                     m.set (new ISOField (i,
                       ISOUtil.zeropad (
