@@ -1,4 +1,5 @@
 <project name="jPOS" default="targets" basedir=".">
+  <property name="build.compiler" value="classic" />
   <target name="init">
     <property name="project" value="jpos" />
     <property name="source" value="src" />
