@@ -74,8 +74,13 @@ public abstract class ISOBasePackager implements ISOPackager {
 			if (bmap.get(i)) {
 				ISOComponent c = fld[i].createComponent(i);
 				consumed += fld[i].unpack (c, b, consumed);
-				System.out.println (i + ":" + consumed + ":"+(String)
-					  c.getValue() + ":");
+				if (c instanceof ISOField) {
+					System.out.println (i + ":" + consumed + ":"+(String)
+						  c.getValue() + ":");
+				}
+				else {
+					System.out.println (i + ":" + consumed + "<BINARY>");
+				}
 				m.set(c);
 			}
 		}
