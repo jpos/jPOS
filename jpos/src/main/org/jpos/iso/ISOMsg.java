@@ -58,6 +58,9 @@ import org.jpos.iso.packager.ISO93BPackager;
 
 /*
  * $Log$
+ * Revision 1.35  2001/02/09 21:04:03  apr
+ * readExternal/writeExternal now catches Exception instead of just ISOException.
+ *
  * Revision 1.34  2001/02/08 16:45:29  apr
  * Added serialVersionUID
  *
@@ -578,7 +581,7 @@ public class ISOMsg extends ISOComponent
                 b = getInternalPackager().pack(this);
             }
             out.writeObject (b);
-        } catch (ISOException e) {
+        } catch (Exception e) {
             throw new IOException (e.getMessage());
         }
     }
@@ -590,7 +593,7 @@ public class ISOMsg extends ISOComponent
             synchronized (this) {
                 getInternalPackager().unpack(this, b);
             }
-        } catch (ISOException e) {
+        } catch (Exception e) {
             throw new IOException (e.getMessage());
         }
     }
