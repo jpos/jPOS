@@ -2,7 +2,7 @@
 <!-- $Id$ -->
 
 <!ELEMENT qsp-config (logger*,mux*,task*,daily-task*,server*,
-                      control-panel*,sequencer*,card-agent*,
+                      control-panel*,sequencer*,card-agent*,channel*,
 		      persistent-engine*, connection-pool*, dir-poll*,
                       property*)*>
 <!ATTLIST qsp-config logger IDREF #IMPLIED>
