@@ -1,0 +1,20 @@
+$Id$
+
+build examples and copy bouncer.xml to Q2's deploy directory, 
+then telnet to port 9000 and try the following message:
+
+<isomsg>
+ <field id="0" value="0800" />
+ <field id="3" value="000000" />
+ <field id="7" value="$date" />
+ <field id="32" value="$srcid" />
+ <field id="11" value="#trace" />
+ <field id="41" value="29110000" />
+ <field id="60" value="jPOS 1.4.5" />
+ <field id="70" value="301" />
+</isomsg>
+
+please note that response will be delayed 500ms, and MacroFilter
+will expand $date, $srcid, etc.
+
+
