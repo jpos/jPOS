@@ -110,6 +110,15 @@ public class ConfigChannel implements QSPReConfigurator {
 	    channel = createChannel (name, node, evt);
 	    channel.setName (name);
 	}
+        // WORK IN PROGRESS 
+        // try {
+            // if (channel instanceof BaseChannel)
+            //    qsp.registerMBean (
+            //        (BaseChannel) channel, "type=channel,name="+name
+            //    );
+        // } catch (Exception e) {
+        //    throw new ConfigurationException (e);
+        // }
 	Logger.log (evt);
     }
     public void reconfig (QSP qsp, Node node) throws ConfigurationException
