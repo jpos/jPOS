@@ -93,19 +93,19 @@ public abstract class ISOBasePackager implements ISOPackager {
 				ISOComponent c = fld[i].createComponent(i);
 				consumed += fld[i].unpack (c, b, consumed);
 				if (c instanceof ISOField) {
-					System.out.println (i + ":" + consumed + ":"+(String)
-						  c.getValue() + ":");
+					// System.out.println (i + ":" + consumed + ":"+(String)
+					//	  c.getValue() + ":");
 				}
 				else {
-					System.out.println (i + ":" + consumed + "<BINARY>");
+					// System.out.println (i + ":" + consumed + "<BINARY>");
 				}
 				m.set(c);
 			}
 		}
 		if (b.length != consumed) {
-			System.out.println (
-				"Warning: unpack len=" +b.length +" consumed=" +consumed
-			);
+			// System.out.println (
+			//	"Warning: unpack len=" +b.length +" consumed=" +consumed
+			// );
 			// throw new ISOException (
 			//	"unpack error len=" +b.length +" consumed=" +consumed
 			// );

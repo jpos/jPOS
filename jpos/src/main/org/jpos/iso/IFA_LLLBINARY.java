@@ -44,10 +44,7 @@ public class IFA_LLLBINARY extends ISOFieldPackager {
 	public int unpack (ISOComponent c, byte[] b, int offset)
 		throws ISOException
 	{
-		System.out.println ("DEBUG offset=" +offset
-		   +"string=" +new String(b, offset, 3));		
 		int len = Integer.parseInt(new String(b, offset, 3));		
-		System.out.println ("DEBUG len=" +len);
 		byte[] value = new byte[len];
 	    System.arraycopy(b, offset+3, value, 0, len);
 		c.setValue ((Object) value);

@@ -7,6 +7,10 @@
 
 /*
  * $Log$
+ * Revision 1.2  1999/07/08 13:44:10  apr
+ * Added acquirer support
+ * Removed 'System.outs'
+ *
  * Revision 1.1  1999/05/18 12:02:58  apr
  * Added GUI package
  *
@@ -46,6 +50,21 @@ public class ISOChannelPanel extends JPanel implements Observer {
 		meter.setConnected(channel.isConnected());
 		channel.addObserver(this);
 	}
+	/**
+	 * Unconnected constructor allows for instantiation of
+	 * ISOChannelPanel without associated ISOChannel
+	 * (that can be attached later)
+	 */
+	public ISOChannelPanel (String symbolicName) {
+		super();
+		this.symbolicName = symbolicName;
+		setLayout(new FlowLayout());
+		setBorder(BorderFactory.createRaisedBevelBorder());
+		log = new DefaultListModel();
+		add(createCountersPanel());
+		meter.setConnected(false);
+	}
+
 	public final String getSymbolicName() {
 		return symbolicName;
 	}

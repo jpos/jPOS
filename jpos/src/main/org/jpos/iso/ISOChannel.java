@@ -151,7 +151,6 @@ public abstract class ISOChannel extends Observable {
 	 * @exception IOException
 	 */
     public void connect () throws IOException {
-		System.out.println ("ISOChannel connect "+host +":" +port);
 		if (serverSocket != null)
 			accept(serverSocket);
 		else
@@ -192,8 +191,8 @@ public abstract class ISOChannel extends Observable {
 	public void send (ISOMsg m) throws IOException, ISOException {
 		m.setPackager (packager);
 		byte[] b = m.pack();
-		System.out.println (
-			"--[pack]--\n"+ ISOUtil.hexString(b) + "\n--[end]--");
+		// System.out.println (
+		//	"--[pack]--\n"+ ISOUtil.hexString(b) + "\n--[end]--");
 		sendMessageLength(b.length + getHeaderLength());
 		sendMessageHeader(m, b.length);
 		serverOut.write(b, 0, b.length);
@@ -220,8 +219,6 @@ public abstract class ISOChannel extends Observable {
 		int len  = getMessageLength();
 		int hLen = getHeaderLength();
 
-		System.out.println("len=" +len +", hLen=" +hLen);
-
 		if (len == -1) 
 			b = streamReceive();
 		else if (len > 10 && len <= 4096) {
@@ -235,10 +232,9 @@ public abstract class ISOChannel extends Observable {
 				len -= hLen;
 			}
 			b = new byte[len];
-			System.out.println ("Reading message "+len);
 			serverIn.readFully(b,0,len);
-			System.out.println (
-			 	"--[unpack]--\n"+ ISOUtil.hexString(b) + "\n--[end]--");
+			// System.out.println (
+			//	"--[unpack]--\n"+ ISOUtil.hexString(b) + "\n--[end]--");
 		}
 		else
 			throw new ISOException("receive length " +len + " seems extrange");
