@@ -63,8 +63,8 @@ import org.jpos.ui.UIFactory;
  * creates a tabbed pane
  * i.e:
  * <pre>
- *  &lt;tabbed-pane&gt;
- *   &lt;pane title="xxx"&gt;
+ *  &lt;tabbed-pane font="xxx"&gt;
+ *   &lt;pane title="xxx" icon="optional/icon/file.jpg"&gt;
  *   ...
  *   ...
  *   &lt;/pane&gt;
@@ -79,6 +79,10 @@ public class JTabbedPaneFactory implements UIFactory {
         this.ui    = ui;
         JTabbedPane p = new JTabbedPane ();
 
+        String font = e.getAttributeValue ("font");
+        if (font != null) 
+            p.setFont (Font.decode (font));
+
         Iterator iter = e.getChildren ("pane").iterator();
         while (iter.hasNext()) {
             add (p, (Element) iter.next ());
@@ -87,8 +91,13 @@ public class JTabbedPaneFactory implements UIFactory {
     }
 
     private void add (JTabbedPane p, Element e) {
-        if (e != null)
-            p.add (e.getAttributeValue ("title"), ui.create (e));
+        if (e != null) {
+            Icon icon = null;
+            String iconFile = e.getAttributeValue ("icon");
+            if (iconFile != null)
+                icon = new ImageIcon (iconFile);
+            p.addTab (e.getAttributeValue ("title"), icon, ui.create (e));
+        }
     }
 }
 
