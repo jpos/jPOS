@@ -10,6 +10,9 @@ import org.xml.sax.helpers.*;
 
 /*
  * $Log$
+ * Revision 1.2  2000/04/08 23:55:12  apr
+ * read sax.parser property
+ *
  * Revision 1.1  2000/03/05 02:16:37  apr
  * Added XMLPackager
  *
@@ -45,7 +48,11 @@ public class XMLPackager extends HandlerBase
 	p   = new PrintStream(out);
 	stk = new Stack();
 	try {
-	    parser = ParserFactory.makeParser();
+	    parser = ParserFactory.makeParser(
+		System.getProperty(
+		  "sax.parser", "org.apache.xerces.parsers.SAXParser"
+		)
+	    );
 	    parser.setDocumentHandler (this);
 	} catch (Exception e) {
 	    throw new ISOException (e.toString());
