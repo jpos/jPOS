@@ -147,6 +147,9 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
             } else {
                 throw new InvalidCardException("required fields not present");
             }
+            if (m.hasField(45)) {
+                setTrack1((String) m.getValue(45));
+            }
         } catch (ISOException e) {
             throw new InvalidCardException();
         }
