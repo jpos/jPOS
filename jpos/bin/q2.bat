@@ -1,6 +1,6 @@
 @echo off
 set JAVA=%JAVA_HOME%\bin\java
-set CP=%CLASSPATH%;./build/classes
+set CP=%CLASSPATH%;./build/classes;./build/examples
 for %%i in (lib\*.jar) do call bin\cp.bat %%i
 for %%i in (ext\*.jar) do call bin\cp.bat %%i
 set CP=%CP%;%JAVA_HOME%\lib\tools.jar
