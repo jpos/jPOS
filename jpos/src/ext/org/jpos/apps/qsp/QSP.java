@@ -297,10 +297,15 @@ public class QSP implements ErrorHandler, LogSource, Runnable, QSPMBean {
                 return true;
             }
             try {
+                Thread.interrupted ();  // clear interrupt flag
                 Thread.sleep (monitorConfigInterval);
             } catch (InterruptedException e) { 
                 Logger.log (
-                    new LogEvent (this, "sleep-interrupted")
+                    new LogEvent (this, "sleep-interrupted", 
+                        Long.toString (monitorConfigInterval) + "/" +
+                        Long.toString (l) + "/" + 
+                        Long.toString (lastModified)
+                    )
                 );
                 return true;
             }
