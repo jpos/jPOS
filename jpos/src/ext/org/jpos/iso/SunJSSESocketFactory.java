@@ -201,11 +201,11 @@ public class SunJSSESocketFactory
     //We can make use of 
     //PASSWORD_PROPERTY="jpos.ssl.password";
     //KEYPASSWORD_PROPERTY="jpos.ssl.keypassword";
-    private String getPassword()
+    protected String getPassword()
     {
         return "password";
     }
-    private String getKeyPassword()
+    protected String getKeyPassword()
     {
         return "password";
     }
