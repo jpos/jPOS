@@ -122,10 +122,38 @@ public class Utilities {
      * @throws      javax.jms.JMSException (or other exception)
      */
     public static Queue getQueue (String name, QueueSession session) 
-        throws Exception {
+        throws Exception 
+    {
         return session.createQueue (name);
     }
-
+    /**
+     * Creates and returns a non-authenticated QueueConnection.
+     *
+     * @param factory   QueueConnectionFactory used
+     * @return      a QueueConnection object
+     * @throws      javax.jms.JMSException (or other exception)
+     */
+    public static QueueConnection getQueueConnection (QueueConnectionFactory factory) 
+        throws Exception 
+    {
+        return factory.createQueueConnection ();
+    }
+    /** Creates and returns authenticated QueueConnection.
+     *
+     * @param factory   QueueConnectionFactory used
+     * @param username  username for authentication
+     * @param password  password for authentication
+     *
+     * @return      a QueueConnection object
+     * @throws      javax.jms.JMSException (or other exception)
+     */
+    public static QueueConnection getQueueConnection (QueueConnectionFactory factory,
+                                                        String username,
+                                                        String password)
+        throws Exception
+    {
+        return factory.createQueueConnection (username, password);
+    }
     /**
      * Returns a Topic object.
      *
