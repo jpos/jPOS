@@ -10,7 +10,7 @@ In order to build 'ext' module you will have to install here
     used by ReliableSequencer
 
   - CommAPI (comm.jar) file and a CommAPI provider such as RXTX
-    (http://www.rxtx.com) for Linux or Sun's CommAPI implementation
+    (http://www.rxtx.org) for Linux or Sun's CommAPI implementation
     for Windows.
     used by V24, LeasedLineModem, SimpleDialupModem.java and
     VISA1Link at the moment.
