@@ -96,6 +96,7 @@ public class Test extends SimpleLogSource {
 		t.send ("0100");
 		t.send ("0101");
 		t.send ("0200");
+		t.send ("0220");
 		t.send ("0800");
 	    }
 	    t.disconnect();
