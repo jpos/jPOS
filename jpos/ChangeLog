@@ -1,6 +1,7 @@
 $Id$
 
 -- 1.4.1 --
+New SubConfiguration class contributed by Andres Alcarraz
 BaseChannel honours header
 Sender and MacroFilter added support for specifying timezone in the $date
 Added org.jpos.security package, examples, unit tests
