@@ -300,7 +300,7 @@ public class FSDMsg implements Loggeable {
         while (iter.hasNext()) {
             String fieldName = (String) iter.next();
             Element inner = new Element (fieldName);
-            inner.addContent ((String) map.get (fieldName));
+            inner.addContent (ISOUtil.normalize ((String) map.get (fieldName)));
             e.addContent (inner);
         }
         return e;
