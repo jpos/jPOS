@@ -1,6 +1,7 @@
 $Id$
 
 -- 1.4.1 --
+Added org.jpos.security package, examples, unit tests
 QSP Sender task is now an MBean
 new ISOMsg.unset (int []) method
 MacroFilter now accepts "valid" and "unset" config properties
