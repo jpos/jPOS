@@ -28,7 +28,7 @@ public class ConfigChannel implements QSPConfigurator {
 	LogEvent evt = new LogEvent (qsp, "config-channel");
 	String name = node.getAttributes().getNamedItem ("name").getNodeValue();
 	try {
-	    channel = ISOChannel.getChannel (name);
+	    channel = ISOFactory.getChannel (name);
 	} catch (NameRegistrar.NotFoundException e) {
 	    channel = createChannel (name, node, evt);
 	    channel.setName (name);
@@ -76,7 +76,7 @@ public class ConfigChannel implements QSPConfigurator {
 	Node n = node.getAttributes().getNamedItem ("name");
 	if (n != null)
 	    try {
-		return ISOChannel.getChannel (n.getNodeValue());
+		return ISOFactory.getChannel (n.getNodeValue());
 	    } catch (NameRegistrar.NotFoundException e) { }
 	return null;
     }

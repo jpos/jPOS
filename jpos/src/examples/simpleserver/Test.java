@@ -5,7 +5,7 @@ import java.io.EOFException;
 import java.net.ServerSocket;
 import org.jpos.iso.ISOMsg;
 import org.jpos.iso.ISOField;
-import org.jpos.iso.ISOChannel;
+import org.jpos.iso.ServerChannel;
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOFactory;
 import org.jpos.iso.ISOPackager;
@@ -40,8 +40,8 @@ public class Test implements Runnable, LogProducer {
 	return logger;
     }
     protected class Session implements Runnable, LogProducer {
-        ISOChannel channel;
-        protected Session(ISOChannel channel) {
+        ServerChannel channel;
+        protected Session(ServerChannel channel) {
             this.channel = channel;
         }
         public void run() {
@@ -77,7 +77,7 @@ public class Test implements Runnable, LogProducer {
     }
 
     public void run() {
-        ISOChannel  channel;
+        ServerChannel  channel;
 	String cfgFile    = System.getProperties().getProperty("jpos.config");
         try {
 	    Configuration cfg = new SimpleConfiguration (cfgFile);
@@ -87,7 +87,7 @@ public class Test implements Runnable, LogProducer {
 	       new LogEvent (this, "message", "listening on port "+port)
 	    );
             for (;;) {
-		channel = ISOFactory.newChannel 
+		channel = (ServerChannel) ISOFactory.newChannel 
 		    (cfg, "simpleserver", logger, realm);
                 channel.accept(serverSocket);
                 Thread t = new Thread (new Session(channel));

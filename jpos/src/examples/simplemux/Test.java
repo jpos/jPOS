@@ -6,6 +6,7 @@ import java.net.ServerSocket;
 import org.jpos.iso.ISOMsg;
 import org.jpos.iso.ISOField;
 import org.jpos.iso.ISOChannel;
+import org.jpos.iso.ServerChannel;
 import org.jpos.iso.ISOMUX;
 import org.jpos.iso.ISORequest;
 import org.jpos.iso.ISOException;
@@ -87,7 +88,7 @@ public class Test implements Runnable, LogProducer {
     }
 
     public void run() {
-        ISOChannel  channel;
+        ServerChannel  channel;
         try {
 	    int port          = cfg.getInt (CFG_PORT);
             ServerSocket serverSocket = new ServerSocket(port);
@@ -95,7 +96,7 @@ public class Test implements Runnable, LogProducer {
 	       new LogEvent (this, "message", "listening on port "+port)
 	    );
             for (;;) {
-		channel = ISOFactory.newChannel 
+		channel = (ServerChannel) ISOFactory.newChannel 
 		    (cfg, "simplemux.clientside", logger, realm);
                 channel.accept(serverSocket);
 		pool.execute (new Session (channel));

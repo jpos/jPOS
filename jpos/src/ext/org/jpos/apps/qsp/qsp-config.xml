@@ -5,14 +5,14 @@
     <log-listener class="org.jpos.util.SimpleLogListener"/>
     <log-listener class="org.jpos.util.RotateLogListener">
       <property name="file" value="/tmp/qsp.log" />
-      <property name="window" value="86400" />
+      <property name="window" value="60" />
       <property name="copies" value="10" />
     </log-listener>
  </logger>
 
  <mux name="acme.mux" logger="qsp" realm="acme">
   <channel name="acme.channel" 
-          class="org.jpos.iso.ASCIIChannel" 
+          class="org.jpos.iso.channel.ASCIIChannel" 
           packager="org.jpos.iso.ISO87APackager"
           host="localhost" port="8000"
           logger="qsp" realm="acme"

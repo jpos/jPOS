@@ -8,6 +8,7 @@ import org.jpos.iso.ISOMsg;
 import org.jpos.iso.ISOField;
 import org.jpos.iso.ISOChannel;
 import org.jpos.iso.ISOFilter;
+import org.jpos.iso.FilteredChannel;
 import org.jpos.iso.ISOFilter.VetoException;
 import org.jpos.iso.ISOFactory;
 import org.jpos.iso.ISOPackager;
@@ -39,7 +40,8 @@ public class Test extends SimpleLogProducer implements ISOFilter {
 	seq     = new VolatileSequencer();
 
 	seq.set (COUNTERNAME, (int) (System.currentTimeMillis() % 1000000));
-	channel.addFilter (this);
+	if (channel instanceof FilteredChannel)
+	    ((FilteredChannel)channel).addFilter (this);
 	channel.connect();
     }
 

@@ -6,8 +6,8 @@ import java.util.Date;
 import java.io.IOException;
 import org.jpos.iso.ISOMsg;
 import org.jpos.iso.ISOField;
-import org.jpos.iso.ISOChannel;
 import org.jpos.iso.ISOFilter;
+import org.jpos.iso.FilteredChannel;
 import org.jpos.iso.ISOFilter.VetoException;
 import org.jpos.iso.ISOFactory;
 import org.jpos.iso.ISOPackager;
@@ -27,7 +27,7 @@ import org.jpos.core.SimpleConfiguration;
 import org.xml.sax.SAXException;
 
 public class Test extends SimpleLogProducer {
-    private ISOChannel channel;
+    private FilteredChannel channel;
     private Sequencer seq;
     private static final String COUNTERNAME = "test.counter";
 
@@ -37,7 +37,8 @@ public class Test extends SimpleLogProducer {
     {
 	super();
 	setLogger (logger, realm);
-	channel = ISOFactory.newChannel (cfg, cfgPrefix, logger, realm);
+	channel = (FilteredChannel) 
+	    ISOFactory.newChannel (cfg, cfgPrefix, logger, realm);
 	seq     = new VolatileSequencer();
 
 	seq.set (COUNTERNAME, (int) (System.currentTimeMillis() % 1000000));

@@ -4,6 +4,7 @@ import org.jpos.util.NameRegistrar;
 import org.jpos.util.Logger;
 import org.jpos.util.LogEvent;
 import org.jpos.iso.ISOChannel;
+import org.jpos.iso.FilteredChannel;
 import org.jpos.iso.ISOFilter;
 import org.jpos.iso.ISOException;
 import org.jpos.core.SimpleConfiguration;
@@ -32,9 +33,13 @@ public class ConfigFilter implements QSPConfigurator {
 	if ( (parent  = node.getParentNode()) == null)
 	    throw new ConfigurationException ("orphan filter");
 
-	ISOChannel channel = ConfigChannel.getChannel (parent);
-	if (channel == null) 
+	ISOChannel c = ConfigChannel.getChannel (parent);
+	if (c == null) 
 	    throw new ConfigurationException ("null parent channel");
+	if (!(c instanceof FilteredChannel))
+	    throw new ConfigurationException ("not a filtered channel");
+
+	FilteredChannel channel = (FilteredChannel) c;
 
 	NamedNodeMap attr = node.getAttributes();
 	String className = attr.getNamedItem ("class").getNodeValue();
