@@ -79,6 +79,7 @@ public class QServer
 {
     private int port = 0;
     private int maxSessions = 100;
+    private int minSessions = 1;
     private String channelString, packagerString;
     private ISOChannel channel = null;
     private ISOPackager packager = null;
@@ -113,7 +114,7 @@ public class QServer
         }
 
         ThreadPool pool = null;
-        pool = new ThreadPool (1,maxSessions);
+        pool = new ThreadPool (minSessions ,maxSessions);
         pool.setLogger (log.getLogger(), getName() + ".pool");
 
         server = new ISOServer (port, (ServerChannel) channel, pool);
@@ -190,12 +191,25 @@ public class QServer
         setAttr (getAttrs (), "maxSessions", new Integer (maxSessions));
         setModified (true);
     }
-
     /**
      * @jmx:managed-attribute description="Maximum Nr. of Sessions"
      */
     public int getMaxSessions () {
         return maxSessions;
+    }
+    /**
+     * @jmx:managed-attribute description="Minimum Nr. of Sessions"
+     */
+    public synchronized void setMinSessions (int minSessions) {
+        this.minSessions = minSessions;
+        setAttr (getAttrs (), "minSessions", new Integer (minSessions));
+        setModified (true);
+    }
+    /**
+     * @jmx:managed-attribute description="Minimum Nr. of Sessions"
+     */
+    public int getMinSessions () {
+        return minSessions;
     }
     private void addListeners () 
 	throws Q2ConfigurationException
