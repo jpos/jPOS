@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.18  2000/04/16 23:17:15  victor
+ * Added imports (org.jpos.iso.packager.*)
+ *
  * Revision 1.17  2000/03/23 15:48:59  apr
  * Reverse 1.16 patch (do hangup on EOT)
  *
@@ -62,6 +65,7 @@ import java.io.*;
 import java.util.*;
 import javax.comm.*;
 import org.jpos.util.*;
+import org.jpos.iso.packager.*;
 
 /**
  * Implements client-side VISA-1 Link protocol operating in a

@@ -8,7 +8,7 @@ import org.jpos.iso.ISOMUX;
 import org.jpos.iso.ISOPackager;
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISORequest;
-import org.jpos.iso.XMLPackager;
+import org.jpos.iso.packager.XMLPackager;
 import org.jpos.util.SimpleLogProducer;
 import org.jpos.util.NameRegistrar;
 import org.jpos.util.Logger;

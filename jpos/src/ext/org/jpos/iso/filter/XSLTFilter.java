@@ -2,6 +2,7 @@ package org.jpos.iso.filter;
 
 import java.io.*;
 import org.jpos.iso.*;
+import org.jpos.iso.packager.*;
 import org.xml.sax.SAXException;
 import org.apache.xalan.xpath.XPathException;
 import org.apache.xalan.xslt.XSLTProcessorFactory;
