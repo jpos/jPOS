@@ -55,6 +55,7 @@ import java.io.OutputStream;
 import java.io.ObjectOutputStream;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.util.Date;
@@ -136,7 +137,7 @@ public class SAFChannel extends LogHandler
 	return usable;
     }
 
-    public void send (ISOMsg m)
+    public synchronized void send (ISOMsg m)
 	throws IOException,ISOException, VetoException
     {
 	if (!isConnected())
@@ -146,10 +147,26 @@ public class SAFChannel extends LogHandler
         m = applyFilters (outgoingFilters, m, evt);
         m.setDirection(ISOMsg.INCOMING);
         logUpdate (new LogEntry (LogEntry.QUEUE, m));
-	queue.enqueue (m);
+        queue.enqueue (m);
 	cnt[TX]++;
 	Logger.log (evt);
     }
+
+    /* ---------------------------------------------------------------
+    
+    Future expansion, we may want to store messages in an external
+    file, should our in-memory queue grows beyond a high water mark 
+
+    private void addMessage (String f, ISOMsg m) throws IOException {
+        FileOutputStream fos = new FileOutputStream (f, true);
+        ObjectOutputStream out = new ObjectOutputStream (fos);
+        out.writeObject (m);
+        out.flush();
+        fos.getFD().sync();
+        out.close();
+    }
+
+    ---------------------------------------------------------------- */
 
     public ISOMsg receive() throws ISOException {
         throw new ISOException ("can not receive from SAFChannel");
@@ -347,9 +364,15 @@ public class SAFChannel extends LogHandler
                 }
                 mux = ISOMUX.getMUX (cfg.get ("destination-mux"));
                 if (mux != null && mux.isConnected ()) {
-                    ISOMsg msg = (ISOMsg) queue.dequeue ();
-
-                    ISOMsg m = (ISOMsg) msg.clone();
+                    Object obj = queue.dequeue();
+                    if (obj instanceof String) {
+                        System.out.println (
+                            "Should read file: "+obj.toString()
+                        );
+                        continue;
+                    }
+                    ISOMsg msg = (ISOMsg) obj;
+                    ISOMsg m   = (ISOMsg) msg.clone();
                     m.setDirection(ISOMsg.OUTGOING);
                     m = applyFilters (outgoingFilters, m, null);
                     m.setDirection(ISOMsg.OUTGOING);
@@ -364,7 +387,7 @@ public class SAFChannel extends LogHandler
                     ISOMsg resp = req.getResponse (
                         cfg.getInt ("timeout", 60000)
                     );
-                    if (resp != null) 
+                    if (isValidResponse (resp, m))
                         logUpdate (new LogEntry (LogEntry.DEQUEUE, null));
                     else
                         queue.requeue (msg);
@@ -373,17 +396,30 @@ public class SAFChannel extends LogHandler
                         Thread.sleep (delay);
                 }
             } catch (NameRegistrar.NotFoundException e) {
-                try {
-                    Thread.sleep (1000);
-                } catch (InterruptedException ie) { }
-            } catch (Exception e) { }
+                relax ();
+            } catch (Exception e) { 
+                Logger.log (new LogEvent (this, "run", e));
+                relax ();
+            }
         }
+    }
+    private void relax () {
+        try {
+            Thread.sleep (1000);
+        } catch (InterruptedException ie) { }
+    }
+    /**
+     * @param resp response
+     * @param formerReq former request message
+     */
+    protected boolean isValidResponse (ISOMsg resp, ISOMsg formerReq) {
+        return resp != null;
     }
     public static class LogEntry implements Serializable, Loggeable {
         public static final int QUEUE   = 0;
         public static final int REQUEUE = 1;
         public static final int DEQUEUE = 2;
-        private static final long serialVersionUID=956797214006808278L;
+        private static final long serialVersionUID=1;
 
         public int op;
 	public Object value;
