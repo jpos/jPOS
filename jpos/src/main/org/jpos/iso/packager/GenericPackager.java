@@ -69,7 +69,8 @@ import org.jpos.iso.packager.*;
  *         id="[field id]"
  *         name="[field name]"
  *         length="[max field length]"
- *         type="[org.jpos.iso.IF_*]"&gt;
+ *         class="[org.jpos.iso.IF_*]"
+ *         pad="true|false"&gt;  
  *     &lt;/isofield&gt;
  *     ...
  * &lt;/isopackager&gt;
@@ -79,13 +80,15 @@ import org.jpos.iso.packager.*;
  *     id="[field id]"
  *     name="[field name]"
  *     length="[field length]"
- *     type="[org.jpos.iso.IF_*]"
+ *     class="[org.jpos.iso.IF_*]"
  *     packager="[org.jpos.iso.packager.*]"&gt;
  *	
- *     &lt;isofield id="[subfield id]"
+ *     &lt;isofield 
+ *         id="[subfield id]"
  *         name="[subfield name]"
  *         length="[max subfield length]"
- *         type="[org.jpos.iso.IF_*]"&gt;
+ *         class="[org.jpos.iso.IF_*]"
+ *         pad="true|false"&gt;
  *     &lt;/isofield&gt;
  *         ...
  * &lt;/isofieldpackager&gt;
@@ -130,7 +133,12 @@ public class GenericPackager extends ISOBasePackager
 	    XMLReader reader = XMLReaderFactory.createXMLReader(
 		    System.getProperty( "sax.parser", 
 		    "org.apache.xerces.parsers.SAXParser"));
-	    reader.setContentHandler(new GenericContentHandler());
+
+	    reader.setFeature ("http://xml.org/sax/features/validation", true);
+	    GenericContentHandler handler = new GenericContentHandler();
+	    reader.setContentHandler(handler);
+	    reader.setErrorHandler(handler);
+
 	    reader.parse(new InputSource(filename));	
 	} 
 	catch (Exception e) 
@@ -163,7 +171,7 @@ public class GenericPackager extends ISOBasePackager
 	    try
 	    {
 		String id   = atts.getValue("id");
-		String type = atts.getValue("type");
+		String type = atts.getValue("class");
 		String name = atts.getValue("name");
 		String size = atts.getValue("length");
 		String pad  = atts.getValue("pad");
@@ -281,6 +289,17 @@ public class GenericPackager extends ISOBasePackager
 		tab=(Hashtable)fieldStack.peek();
 		tab.put(fno, mfp);
 	    }
+	}
+
+	// ErrorHandler Methods
+	public void error (SAXParseException ex) throws SAXException
+	{
+	    throw ex;
+	}
+
+	public void fatalError (SAXParseException ex) throws SAXException
+	{
+	    throw ex;
 	}
     }
 }

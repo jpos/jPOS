@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!ELEMENT isopackager (isofield+,isofieldpackager*)*>
+
+<!-- isofield -->
+<!ELEMENT isofield EMPTY>
+<!ATTLIST isofield id     CDATA        #REQUIRED>
+<!ATTLIST isofield length CDATA        #REQUIRED>
+<!ATTLIST isofield name   CDATA        #REQUIRED>
+<!ATTLIST isofield class  NMTOKEN      #REQUIRED>
+<!ATTLIST isofield pad    (true|false) #IMPLIED>
+
+<!-- isofieldpackager -->
+<!ELEMENT isofieldpackager (isofield+,isofieldpackager*)*>
+<!ATTLIST isofieldpackager id       CDATA   #REQUIRED>
+<!ATTLIST isofieldpackager name     CDATA   #REQUIRED>
+<!ATTLIST isofieldpackager length   CDATA   #REQUIRED>
+<!ATTLIST isofieldpackager class    NMTOKEN #REQUIRED>
+<!ATTLIST isofieldpackager packager NMTOKEN #REQUIRED>
+
