@@ -164,6 +164,9 @@ public class QBeanSupport implements QBean, QPersist, QBeanSupportMBean {
         }
         state = QBean.DESTROYED;
     }
+    public void shutdownQ2 () {
+        getServer().shutdown ();
+    }
     public int getState () {
         return state;
     }
