@@ -7,6 +7,10 @@ import org.jpos.util.LogProducer;
 
 /*
  * $Log$
+ * Revision 1.20  2000/03/09 02:34:32  apr
+ * New methods isRequest, isResponse, isRetransmission, setMTI, getMTI and
+ * setResponseMTI
+ *
  * Revision 1.19  2000/03/05 02:16:37  apr
  * Added XMLPackager
  *
@@ -358,5 +362,70 @@ public class ISOMsg extends ISOComponent implements Cloneable, Loggeable {
     }
     public Object getValue() {
         return this;
+    }
+    /**
+     * @return true on inner messages
+     */
+    public boolean isInner() {
+	return fieldNumber > -1;
+    }
+    /**
+     * @param mti new MTI
+     * @exception ISOException if message is inner message
+     */
+    public void setMTI (String mti) throws ISOException {
+	if (isInner())
+	    throw new ISOException ("can't setMTI on inner message");
+	set (new ISOField (0, mti));
+    }
+    /**
+     * @return current MTI
+     * @exception ISOException on inner message or MTI not set
+     */
+    public String getMTI() throws ISOException {
+	if (isInner())
+	    throw new ISOException ("can't getMTI on inner message");
+	else if (!hasField(0))
+	    throw new ISOException ("MTI not available");
+	return (String) getValue(0);
+    }
+    /**
+     * @return true if message "seems to be" a request
+     * @exception ISOException on MTI not set
+     */
+    public boolean isRequest() throws ISOException {
+	return Character.getNumericValue(getMTI().charAt (2))%2 == 0;
+    }
+    /**
+     * @return true if message "seems not to be" a request
+     * @exception ISOException on MTI not set
+     */
+    public boolean isResponse() throws ISOException {
+	return !isRequest();
+    }
+    /**
+     * @return true if message is Retransmission
+     * @exception ISOException on MTI not set
+     */
+    public boolean isRetransmission() throws ISOException {
+	return getMTI().charAt(3) == '1';
+    }
+    /**
+     * sets an appropiate response MTI<br>
+     * i.e. 0110 becomes 0120<br>
+     * i.e. 0111 becomes 0120<br>
+     * i.e. 1201 becomes 1210<br>
+     * @exception ISOException on MTI not set or it is not a request
+     */
+    public void setResponseMTI() throws ISOException {
+	if (!isRequest())
+	    throw new ISOException ("not a request - can't set response MTI");
+
+	String mti = getMTI();
+	set (new ISOField (0,
+	    mti.substring(0,2)
+		+(Character.getNumericValue(getMTI().charAt (2))+1) + "0"
+	    )
+	);
     }
 }
