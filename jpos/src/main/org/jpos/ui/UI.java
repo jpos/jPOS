@@ -78,7 +78,7 @@ import javax.swing.border.EmptyBorder;
  */
 public class UI implements UIFactory, UIObjectFactory {
     JFrame mainFrame;
-    Map registrar;
+    Map registrar, mapping;
     Element config;
     UIObjectFactory objFactory;
 
@@ -96,6 +96,7 @@ public class UI implements UIFactory, UIObjectFactory {
     public UI (Element config) {
         super ();
         registrar = new HashMap ();
+        mapping = new HashMap ();
         setObjectFactory (this);
         setConfig (config);
     }
@@ -127,7 +128,7 @@ public class UI implements UIFactory, UIObjectFactory {
      *
      * @return UI component registrar
      */
-    public Map getMap () {
+    public Map getRegistrar () {
         return registrar;
     }
     /**
@@ -208,6 +209,7 @@ public class UI implements UIFactory, UIObjectFactory {
 
     protected void configure (Element ui) throws JDOMException {
         setLookAndFeel (ui);
+        createMappings (ui);
         createObjects (ui, "object");
         createObjects (ui, "action");
         if (!"ui".equals (ui.getName())) {
@@ -375,7 +377,10 @@ public class UI implements UIFactory, UIObjectFactory {
         JComponent component;
         UIFactory factory = null;
         String clazz = e.getAttributeValue ("class");
+        if (clazz == null) 
+            clazz = (String) mapping.get (e.getName());
         if (clazz == null) {
+
             try {
                 clazz = classMapping.getString (e.getName());
             } catch (MissingResourceException ex) {
@@ -457,6 +462,19 @@ public class UI implements UIFactory, UIObjectFactory {
                     ((UIAware) obj).setUI (this, ee);
                 }
                 put (obj, ee);
+            } catch (Exception ex) {
+                warn (ex);
+            }
+        }
+    }
+    private void createMappings (Element e) {
+        Iterator iter = e.getChildren ("mapping").iterator ();
+        while (iter.hasNext()) {
+            try {
+                Element ee = (Element) iter.next ();
+                String name  = ee.getAttributeValue ("name");
+                String clazz = ee.getAttributeValue ("factory");
+                mapping.put (name, clazz);
             } catch (Exception ex) {
                 warn (ex);
             }
