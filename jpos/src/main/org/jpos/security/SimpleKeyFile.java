@@ -127,6 +127,7 @@ public class SimpleKeyFile
     public synchronized SecureKey getKey (String alias) throws SecureKeyStoreException {
         SecureKey secureKey = null;
         LogEvent evt = new LogEvent(this, "get-key");
+        evt.addMessage("alias", alias);
         try {
             load();
             String keyClassName = getProperty(alias, "class");
@@ -152,6 +153,7 @@ public class SimpleKeyFile
 
     public synchronized void setKey (String alias, SecureKey secureKey) throws SecureKeyStoreException {
         LogEvent evt = new LogEvent(this, "set-key");
+        evt.addMessage("alias", alias);
         evt.addMessage(secureKey);
         try {
             if (!(secureKey instanceof SecureDESKey))
