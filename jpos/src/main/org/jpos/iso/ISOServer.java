@@ -295,7 +295,7 @@ public class ISOServer extends Observable
 			setFilters (channel);
 			if (channel instanceof Observable)
 			    ((Observable)channel).addObserver (this);
-                        while (pool.getIdleCount() <= 0)
+                        while (pool.getAvailableCount() <= 0)
                             ISOUtil.sleep (10);
 			channel.accept (serverSocket);
                         if ((cnt[CONNECT]++) % 100 == 0)
