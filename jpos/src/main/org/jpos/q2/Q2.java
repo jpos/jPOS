@@ -145,7 +145,9 @@ public class Q2 implements FileFilter {
         q2Thread = null;
         undeploy ();
     }
-
+    public void shutdown () {
+        System.exit (0);
+    }
     public QClassLoader getLoader () {
         return loader;
     }
