@@ -14,6 +14,7 @@ import org.apache.xalan.xpath.XString;
 import org.jpos.util.LogEvent;
 import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
+import org.jpos.core.ConfigurationException;
 import org.jpos.iso.ISOFilter.VetoException;
 
 /**
@@ -63,13 +64,15 @@ public class XSLTFilter implements ISOFilter, Configurable {
     * </ul>
     * @param cfg new ConfigurationFile
     */
-    public void setConfiguration (Configuration cfg) throws ISOException {
+    public void setConfiguration (Configuration cfg) 
+	throws ConfigurationException
+    {
 	try {
 	    xslt     = new XSLTInputSource(cfg.get("xsltfile"));
 	    String s = cfg.get ("reread");
 	    reread   =  (s == null || s.equals ("no"));
 	} catch (Exception e) {
-	    throw new ISOException (e);
+	    throw new ConfigurationException (e);
 	}
     }
 
