@@ -52,12 +52,16 @@ package org.jpos.iso.header;
 
 import org.jpos.iso.ISOHeader;
 
+/**
+ * @author <a href="mailto:Eoin.Flood@orbiscom.com">Eoin Flood</a>
+ * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
+ */
 public class BaseHeader implements ISOHeader {
-    private byte[] header;
+    protected byte[] header;
 
     /**
      * Default Constructor.
-     * Used bu Class.forName.newInstance(...);
+     * Used by Class.forName.newInstance(...);
      */
     public BaseHeader()
     {

@@ -69,9 +69,8 @@ import org.jpos.iso.*;
  * </pre>
  *
  */
-public class BASE1Header implements ISOHeader {
+public class BASE1Header extends BaseHeader {
     public static final int LENGTH = 22;
-    private byte[] header;
 
     public BASE1Header(String source, String destination) {
         super();
@@ -83,27 +82,16 @@ public class BASE1Header implements ISOHeader {
         setDestination(destination);
     }
     public BASE1Header(byte[] header) {
-        this.header = header;
+        super (header);
     }
-    public byte[] pack() {
-        return header;
-    }
-
     public int unpack (byte[] header) {
     	this.header = new byte[LENGTH];
 	System.arraycopy (header, 0, this.header, 0, LENGTH);
 	return LENGTH;
     }
-
     public int getHLen() {
         return (int) (header[0] & 0xFF);
     }
-
-    public int getLength() {
-    	return (header != null) ? header.length : 0;
-    }
-    	
-
     public void setHFormat(int hformat) {
         header[1] = (byte) hformat;
     }
@@ -139,18 +127,11 @@ public class BASE1Header implements ISOHeader {
         System.arraycopy(d, 0, header, 8, 3);
     }
     public String getSource() {
-        //byte[] b = new byte[3];
-        //System.arraycopy(header, 8, b, 0, 3);
-        //return b;
 	return ISOUtil.bcd2str (this.header, 8, 3, false);
     }
     public String getDestination() {
-        //byte[] b = new byte[3];
-        //System.arraycopy(header, 5, b, 0, 3);
-        //return b;
 	return ISOUtil.bcd2str (this.header, 5, 3, false);
     }
-
     public void swapDirection() {
 	if (header != null && header.length >= LENGTH) {
 	    byte[] source = new byte[3];
