@@ -14,7 +14,7 @@ import java.util.*;
 public class VISA1Packager 
     extends SimpleLogProducer implements ISOPackager
 {
-    public static final byte[] FS = { (byte)'\014' };
+    public static final byte[] FS = { (byte)'\034' };
     int[] sequence;
     int respField;
     String badResultCode;
