@@ -2,5 +2,9 @@ $Id$
 
 -- 1.3.3 --
 new Externalizable strategy on ISOMsg.
+new class org.jpos.util.DefaultTimer()
+RotateLogListener uses DefaultTimer (instead of its own Thread)
+RotateLogListener accepts new 'maxSize' parameter.
 new method ISOUtil.protect();
-
+Added ProtectedLogListener
+LogEvent added getPayLoad() (required by ProtectedLogListener
