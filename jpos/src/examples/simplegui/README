@@ -1,0 +1,10 @@
+# $Id$
+
+simplegui example demonstrate the use of ISOChannelPanel.
+
+It will fire a 0800 message every 10 seconds to localhost:8000,
+you have to run ./example simpleserver on another session.
+
+You can click on the moving panel to get a message listing and
+on any message to show it fields and image dump.
+
