@@ -1,6 +1,7 @@
 $Id$
 
 -- 1.3.7 --
+Added static QSP.getTask (name);
 QSP allows custom tags
 Configuration now allow multiple properties with the same name.
 New helper method in Configuration.
