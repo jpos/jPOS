@@ -3,8 +3,6 @@ package uy.com.cs.jpos.iso;
 import java.util.*;
 
 /**
- * ISO 8583 v1987 ASCII Packager
- *
  * @author apr@cs.com.uy
  * @version $Id$
  * @see ISOPackager
@@ -12,19 +10,20 @@ import java.util.*;
  * @see ISOComponent
  */
 public class VISA1Packager 
-    extends SimpleLogProducer implements ISOPackager
+    extends SimpleLogProducer implements ISOPackager, VISA1ResponseFilter
 {
     public static final byte[] FS = { (byte)'\034' };
     int[] sequence;
     int respField;
     String badResultCode;
     String okPattern;
+    VISA1ResponseFilter filter;
 
     /**
      * @param sequence array of fields that go to VISA1 request
      * @param respField where to put response
      * @param badResultCode (i.e. "05")
-     * @param okPattern (i.e. "AUT. ######")
+     * @param okPattern (i.e. "AUT. ")
      */
     public VISA1Packager 
 	(int[] sequence, int respField, String badResultCode, String okPattern)
@@ -34,6 +33,10 @@ public class VISA1Packager
 	this.respField     = respField;
 	this.badResultCode = badResultCode;
 	this.okPattern     = okPattern;
+	setVISA1ResponseFilter (this);
+    }
+    public void setVISA1ResponseFilter (VISA1ResponseFilter filter) {
+	this.filter = filter;
     }
     protected int handleSpecialField35 (ISOMsg m, Vector v) 
 	throws ISOException
@@ -109,7 +112,7 @@ public class VISA1Packager
 	}
     }
 
-    protected String guessAutNumber (String s) {
+    public String guessAutNumber (String s) {
         StringBuffer buf = new StringBuffer();
         for (int i=0; i<s.length(); i++)
             if (Character.isDigit(s.charAt(i))) 
@@ -131,7 +134,7 @@ public class VISA1Packager
 	m.set (new ISOField (respField, response));
 	m.set (new ISOField (39, badResultCode));
 	if (response.startsWith (okPattern)) {
-	    String autNumber = guessAutNumber (response);
+	    String autNumber = filter.guessAutNumber (response);
 	    if (autNumber != null) {
 		m.set (new ISOField (39, "00"));
 		m.set (new ISOField (38, autNumber));

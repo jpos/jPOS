@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.8  1999/12/20 20:14:14  apr
+ * Added VISA1ResponseFilter support
+ *
  * Revision 1.7  1999/12/17 14:58:31  apr
  * RXTX dataavailable workaround
  *
@@ -163,17 +166,15 @@ public class VISA1Link implements LogProducer, Runnable
 	return payload.getBytes();
     }
 
-    synchronized public byte[] request (byte[] request) 
+    synchronized public byte[] request (byte[] request, LogEvent evt) 
 	throws IOException
     {
-	Logger.log (new LogEvent (this, "[enteredRequest]"));
 	String buf;
 	byte[] response = null;
 	long timeout = this.timeout;
 	long start   = System.currentTimeMillis();
 	long expire  = start + timeout;
 	int state    = waitENQ ? 0 : 1;
-	LogEvent evt = new LogEvent (this, "request");
 	v24.flushReceiver();
 	while ( (timeout = (expire - System.currentTimeMillis())) > 0
 			&& response == null && mdm.isConnected()) 
@@ -206,8 +207,6 @@ public class VISA1Link implements LogProducer, Runnable
 	    evt.addMessage ("<eot/>");
 	}
 	evt.addMessage ("<rx>"+(System.currentTimeMillis() - start)+"</rx>");
-	Logger.log (evt);
-	Logger.log (new LogEvent (this, "[endedRequest]"));
 	return response;
     }
 
@@ -216,6 +215,8 @@ public class VISA1Link implements LogProducer, Runnable
 	Object o = txQueue.firstElement();
 	ISOMsg m = null;
 	ISORequest r = null;
+
+	LogEvent evt = new LogEvent (this, "VISA1Link.doTransceive");
 
     	if (o instanceof ISORequest) {
 	    r = (ISORequest) o;
@@ -227,16 +228,21 @@ public class VISA1Link implements LogProducer, Runnable
 	    m = (ISOMsg) o;
 	}
 	if (m != null) {
+	    evt.addMessage (m);
 	    m.setPackager (packager);
-	    byte[] response = request (m.pack());
-	    // response = "APROBADO 12313150 POSITIVO".getBytes();
+	    byte[] response = request (m.pack(), evt);
 	    if (r != null) {
 		ISOMsg resp = (ISOMsg) m.clone();
+		resp.setDirection (ISOMsg.INCOMING);
 		resp.set (new ISOField (0, "0110"));
-		resp.unpack (response);
+		resp.set (new ISOField (39, "05"));
+		if (response != null)
+		    resp.unpack (response);
+		evt.addMessage (resp);
 		r.setResponse (resp);
 	    }
 	}
+	Logger.log (evt);
 	txQueue.removeElement(o);
 	txQueue.trimToSize();
     }
