@@ -1,6 +1,8 @@
 $Id$
 
 -- 1.4.7 --
+Added setSocketFactory(ISOClientSocketFactory) to ISOChannel. All classes who implement
+	ISOChannel will need to add this method.
 Made SunJSSESocketFactory configurable. Can specify keystore and clientauth now in Q2.
 SunJSSESocketFactory client authentication added.
 Upgrade to JDom beta 10
