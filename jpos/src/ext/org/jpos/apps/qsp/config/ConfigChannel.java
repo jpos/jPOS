@@ -187,6 +187,16 @@ public class ConfigChannel implements QSPReConfigurator {
 		((Configurable)channel).setConfiguration (cfg);
 	    }
 	    ISOPackager p = channel.getPackager();
+
+            if (p instanceof LogSource) {
+                String pl = props.getProperty ("packager-logger", null);
+                if (pl != null) 
+                    ((LogSource)p).setLogger (
+                        Logger.getLogger (pl), 
+                        props.getProperty ("packager-realm", realm+".packager")
+                    );
+            }
+
 	    if (p instanceof Configurable) {
 		((Configurable)p).setConfiguration (cfg);
 	    }
