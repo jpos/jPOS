@@ -26,6 +26,8 @@
  * facility. Licensee represents and warrants that it will not use or
  * redistribute the Software for such purposes.
  */
+package org.jpos.jms;
+
 import javax.naming.*;
 import javax.jms.*;
 
