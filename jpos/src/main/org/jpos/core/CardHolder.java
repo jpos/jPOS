@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.11  2000/10/23 10:43:17  apr
+ * Added seemsManualEntry() method
+ *
  * Revision 1.10  2000/07/22 20:29:17  apr
  * Added equals method
  *
@@ -291,6 +294,9 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
 	return (trailler != null && trailler.length() >= 3) ?
 	    trailler.substring (0, 3) :
 	    "   ";
+    }
+    public boolean seemsManualEntry() {
+        return trailler == null ? true : (trailler.trim().length() == 0);
     }
 
     /**
