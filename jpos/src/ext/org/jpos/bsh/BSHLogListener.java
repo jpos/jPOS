@@ -46,7 +46,12 @@
  * individuals on behalf of the jPOS Project.  For more
  * information please see <http://www.jpos.org/>.
  */
-
+/*
+ * $Log$
+ * Revision 1.4  2003/11/05 19:03:29  alcarraz
+ * Fixed a bug when replacing macros in the source file names.
+ *
+ */
 package org.jpos.bsh;
 
 import bsh.EvalError;
@@ -122,18 +127,21 @@ public class BSHLogListener implements org.jpos.util.LogListener, org.jpos.core.
     protected static String[] replace(String[] src, String[] patterns, String[] to){
         String[] ret = new String[src.length];
         for(int i=0; i<src.length; i++){
-            StringBuffer buff = new StringBuffer(src[i]);
-            for(int j=src[i].indexOf('$'); j>=0 && j<src[i].length()-1; j=src[i].indexOf('$',j)){
-                String start = src[i].substring(j+1);
+            StringBuffer buff = new StringBuffer(2*src[i].length());
+            int begin=0,end=0;
+            //begin is the position of the next pattern, end is the end of the last pattern
+            while ((begin = src[i].indexOf('$',end))>=0 && begin<src[i].length()){
+                buff.append(src[i].substring(end, begin));
                 boolean patternFound = false;
                 for(int k=0; k<patterns.length && !patternFound ; k++){
-                    if(patternFound = start.startsWith(patterns[k])) {
-                        buff.replace(j, j + patterns[k].length() + 1, to[k]);
-                        j+=patterns[k].length() + 1;
+                    if(patternFound = (src[i].indexOf(patterns[k], begin) == begin+1)){
+                        buff.append(to[k]);
+                        end = begin + patterns[k].length() + 1;
                     }
                 }
-                if(!patternFound) j++;
+                if(!patternFound) end = begin + 1;
             }
+            buff.append(src[i].substring(end));
             //if(buff.length()==0) ret[i] = src[i];
             ret[i] = buff.toString();
         }
@@ -146,20 +154,20 @@ public class BSHLogListener implements org.jpos.util.LogListener, org.jpos.core.
             String[] sources = replace(cfg.getAll("source"), patterns, new String[] {ev.tag, ev.getRealm()});
             for(int i=0; i<sources.length && ret != null; i++){
                 try{
-                    File f = new File(sources[i]);
-                    if(f.exists() && f.canRead() && f.isFile()){
-                        //if(f.lastModified())
-                        processed = true;
-                        Interpreter bsh = new Interpreter();
-                        bsh.set("event", ret);
-                        bsh.set("cfg", cfg);
-                        if(!cfg.getBoolean("preload-scripts"))
+                    Interpreter bsh = new Interpreter();
+                    bsh.set("event", ret);
+                    bsh.set("cfg", cfg);
+                    if(!cfg.getBoolean("preload-scripts")){
+                        File f = new File(sources[i]);
+                        if(f.exists() && f.canRead() && f.isFile()){
+                            //if(f.lastModified())
+                            processed = true;
                             bsh.eval(new java.io.FileReader(f));
-                        else
-                            eval(bsh, f, sources[i]);
-                        ret = (LogEvent)bsh.get("event");
-                    }else if(cfg.getBoolean("preload-scripts")) 
-                        scripts.remove(sources[i]);
+                        }
+                    }else{
+                        processed = eval(bsh, sources[i]);
+                    }
+                    ret = (LogEvent)bsh.get("event");
                 }catch(Exception e){
                     ret.addMessage(e);
                 }
@@ -180,15 +188,27 @@ public class BSHLogListener implements org.jpos.util.LogListener, org.jpos.core.
         return buf.toString();
     }
     
-    protected void eval(Interpreter bsh, File f, String source) throws EvalError, IOException{
+    protected boolean eval(Interpreter bsh, String source) throws EvalError, IOException{
         ScriptInfo info = (ScriptInfo)scripts.get(source);
         if(info == null) scripts.put(source, info=new ScriptInfo());
         String code;
-        if(info.getLastModified() != f.lastModified()) {
-            info.setLastModified(f.lastModified());
-            info.setCode(loadCode(f));
+        if(System.currentTimeMillis() > info.getLastCheck() + cfg.getLong("reload")){
+            File f = new File (source);
+            info.setLastCheck(System.currentTimeMillis());
+            if(f.exists() && f.canRead() && f.isFile()){
+                if(info.getLastModified() != f.lastModified()) {
+                    info.setLastModified(f.lastModified());
+                    info.setCode(loadCode(f));
+                }
+            }else{
+                info.setCode("");
+            }
         }
-        bsh.eval(new StringReader(info.getCode()));
+        if(!"".equals(info.getCode())) {
+            bsh.eval(new StringReader(info.getCode()));
+            return true;
+        }else return false;
+        
     }
     protected ScriptInfo getScriptInfo(String filename){
         return (ScriptInfo)scripts.get(filename);
@@ -199,6 +219,7 @@ public class BSHLogListener implements org.jpos.util.LogListener, org.jpos.core.
     protected class ScriptInfo{
         String code;
         long lastModified;
+        long lastCheck;
         public ScriptInfo(){
         }
         public ScriptInfo(String code, long lastModified){
@@ -236,6 +257,22 @@ public class BSHLogListener implements org.jpos.util.LogListener, org.jpos.core.
          */
         public void setLastModified(long lastModified) {
             this.lastModified = lastModified;
+        }
+        
+        /** Getter for property lastCheck.
+         * @return Value of property lastCheck.
+         *
+         */
+        public long getLastCheck() {
+            return lastCheck;
+        }
+        
+        /** Setter for property lastCheck.
+         * @param lastCheck New value of property lastCheck.
+         *
+         */
+        public void setLastCheck(long lastCheck) {
+            this.lastCheck = lastCheck;
         }
         
     }
