@@ -8,6 +8,7 @@
   &properties;
 
   <target name="dist" description="Build distribution">
+    <mkdir dir="dist"/>
     <antcall target="do-all">
       <param name="target" value="dist"/>
     </antcall>
