@@ -271,7 +271,8 @@ public abstract class ISOChannel extends Observable implements LogProducer {
 	    if (!isConnected())
 		throw new ISOException ("unconnected ISOChannel");
 	    m.setDirection(ISOMsg.OUTGOING);
-	    applyOutgoingFilters (m, evt);
+	    m = applyOutgoingFilters (m, evt);
+	    m.setDirection(ISOMsg.OUTGOING); // filter may have drop this info
 	    m.setPackager (packager);
 	    byte[] b = m.pack();
 	    sendMessageLength(b.length + getHeaderLength());
@@ -344,7 +345,8 @@ public abstract class ISOChannel extends Observable implements LogProducer {
 
 	    m.setHeader(header);
 	    m.setDirection(ISOMsg.INCOMING);
-	    applyIncomingFilters (m, evt);
+	    m = applyIncomingFilters (m, evt);
+	    m.setDirection(ISOMsg.INCOMING);
 	    evt.addMessage (m);
 	    cnt[RX]++;
 	    setChanged();
@@ -492,18 +494,20 @@ public abstract class ISOChannel extends Observable implements LogProducer {
     public void removeFilter (ISOFilter filter) {
 	removeFilter (filter, 0);
     }
-    protected void applyOutgoingFilters (ISOMsg m, LogEvent evt) 
+    protected ISOMsg applyOutgoingFilters (ISOMsg m, LogEvent evt) 
 	throws VetoException
     {
 	Iterator iter  = outgoingFilters.iterator();
 	while (iter.hasNext())
-	    ((ISOFilter) iter.next()).filter (this, m, evt);
+	    m = ((ISOFilter) iter.next()).filter (this, m, evt);
+	return m;
     }
-    protected void applyIncomingFilters (ISOMsg m, LogEvent evt) 
+    protected ISOMsg applyIncomingFilters (ISOMsg m, LogEvent evt) 
 	throws VetoException
     {
 	Iterator iter  = incomingFilters.iterator();
 	while (iter.hasNext())
-	    ((ISOFilter) iter.next()).filter (this, m, evt);
+	    m = ((ISOFilter) iter.next()).filter (this, m, evt);
+	return m;
     }
 }
