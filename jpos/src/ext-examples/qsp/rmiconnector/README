@@ -1,0 +1,6 @@
+$Id$
+
+- from jpos home directory run:
+
+     example qsp.rmiconnector
+
