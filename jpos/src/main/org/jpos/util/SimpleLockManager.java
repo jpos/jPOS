@@ -2,6 +2,9 @@ package uy.com.cs.jpos.util;
 
 /*
  * $Log$
+ * Revision 1.2  2000/02/03 00:41:55  apr
+ * .
+ *
  * Revision 1.1  2000/01/30 23:32:53  apr
  * pre-Alpha - CVS sync
  *
@@ -15,8 +18,9 @@ package uy.com.cs.jpos.util;
 
 import java.lang.Math;
 import java.util.Map;
-import java.util.Map;
+import java.util.List;
 import java.util.Hashtable;
+import java.util.Vector;
 import uy.com.cs.jpos.util.LockManager.Ticket;
 
 public class SimpleLockManager implements LockManager {
@@ -46,6 +50,9 @@ public class SimpleLockManager implements LockManager {
 	public boolean isExpired() {
 	    return System.currentTimeMillis() > expiration;
 	}
+	public String getResourceName () {
+	    return resourceName;
+	}
 	public void cancel() {
 	    expiration = 0;
 	    locks.remove (resourceName);
@@ -59,26 +66,28 @@ public class SimpleLockManager implements LockManager {
 		+ (expiration - System.currentTimeMillis()) + "ms left]";
 	}
     }
-    public synchronized Ticket lock (String resourceName, long duration, 
-                       long wait)
+    public Ticket lock (String resourceName, long duration, long wait)
     {
 	long maxWait = System.currentTimeMillis() + wait;
 
 	while (System.currentTimeMillis() < maxWait) {
-	    Ticket t = (Ticket) locks.get (resourceName);
-	    if (t == null) {
-		t = new SimpleTicket (resourceName, duration);
-		locks.put (resourceName, t);
-		return t;
-	    } 
-	    else if (t.isExpired())
-		t.cancel();
-	    else {
-		synchronized (t) {
-		    try {
-			t.wait (Math.min (1000, wait));
-		    } catch (InterruptedException e) { }
+	    Ticket t = null;
+	    synchronized (this) {
+		t = (Ticket) locks.get (resourceName);
+		if (t == null) {
+		    t = new SimpleTicket (resourceName, duration);
+		    locks.put (resourceName, t);
+		    return t;
+		} 
+		else if (t.isExpired()) {
+		    t.cancel();
+		    continue;
 		}
+	    }
+	    synchronized (t) {
+		try {
+		    t.wait (Math.min (1000, wait));
+		} catch (InterruptedException e) { }
 	    }
 	}
 	return null;
