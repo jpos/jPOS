@@ -6,4 +6,6 @@
     <attr name="space">default</attr>
     <attr name="spaceKey">receivertest</attr>
     <attr name="jmsRetryInterval" type="java.lang.Long">15000</attr>
+    <!--attr name="mustUnpack" type="java.lang.Boolean">false</attr -->
+    <!--attr name="byteBufSize" type="java.lang.Integer">200</attr -->
 </QReceiver>
