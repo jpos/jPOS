@@ -6,6 +6,9 @@ import java.util.LinkedList;
  * $Id$
  *
  * $Log$
+ * Revision 1.3  2000/02/02 00:07:27  apr
+ * sync sync sync
+ *
  * Revision 1.2  2000/02/02 00:06:27  apr
  * CVS sync
  *
@@ -24,7 +27,7 @@ public class BlockingQueue {
     private boolean closed = false;
     private int consumers = 0;
 
-    public static class Closed extends Exception {
+    public static class Closed extends RuntimeException {
 	public Closed() {
 	    super ("queue closed");
 	}
