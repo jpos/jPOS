@@ -74,7 +74,7 @@ public class ISOMUX implements Runnable {
 	 * @return		key (default terminal(41) + tracenumber(11))
 	 */
 	protected String getKey(ISOMsg m) throws ISOException {
-		return    ISOUtil.zeropad((String) m.getValue(41),8) 
+		return (m.hasField(41)?ISOUtil.zeropad((String)m.getValue(41),8) : "")
 				+ ISOUtil.zeropad((String) m.getValue(11),6);
 	}
 
