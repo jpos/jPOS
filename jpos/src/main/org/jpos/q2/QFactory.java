@@ -56,6 +56,7 @@ import java.io.FileInputStream;
 import java.util.*;
 import java.net.MalformedURLException;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import javax.management.*;
 
 import org.jdom.Element;
@@ -335,6 +336,47 @@ public class QFactory {
         } catch (ConfigurationException ex) {
             throw new Q2ConfigurationException (ex);
         }
+    }
+   /**
+    * Try to invoke a method (usually a setter) on the given object
+    * silently ignoring if method does not exist
+    * @param obj the object
+    * @param m method to invoke
+    * @param p parameter
+    * @throws Q2ConfigurationException if method happens to throw an exception
+    */
+    public static void invoke (Object obj, String m, Object p) 
+	throws Q2ConfigurationException 
+    {
+        invoke (obj, m, p, p != null ? p.getClass() : null);
+    }
+   /**
+    * Try to invoke a method (usually a setter) on the given object
+    * silently ignoring if method does not exist
+    * @param obj the object
+    * @param m method to invoke
+    * @param p parameter
+    * @param pc parameter class
+    * @throws Q2ConfigurationException if method happens to throw an exception
+    */
+    public static void invoke (Object obj, String m, Object p, Class pc) 
+	throws Q2ConfigurationException 
+    {
+	try {
+	    Class[] paramTemplate = { pc };
+	    Method method = obj.getClass().getMethod(m, paramTemplate);
+	    Object[] param = new Object[1];
+	    param[0] = p;
+	    method.invoke (obj, param);
+	} catch (NoSuchMethodException e) { 
+	} catch (NullPointerException e) {
+	} catch (IllegalAccessException e) {
+	} catch (InvocationTargetException e) {
+	    throw new Q2ConfigurationException (
+		obj.getClass().getName() + "." + m + "("+p.toString()+")" ,
+		((Exception) e.getTargetException())
+	    );
+	}
     }
 }
 
