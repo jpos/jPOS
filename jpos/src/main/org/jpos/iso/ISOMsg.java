@@ -193,7 +193,6 @@ public class ISOMsg extends ISOComponent
     /**
      * Set a field within this message
      * @param c - a component
-     * @exception ISOException
      */
     public void set (ISOComponent c) throws ISOException {
         Integer i = (Integer) c.getKey();
@@ -491,6 +490,24 @@ public class ISOMsg extends ISOComponent
 	    throw new ISOException ("can't setMTI on inner message");
 	set (new ISOField (0, mti));
     }
+    /**
+     * moves a field (renumber)
+     * @param oldFieldNumber old field number
+     * @param newFieldNumber new field number
+     * @throws ISOException
+     */
+    public void move (int oldFieldNumber, int newFieldNumber) 
+        throws ISOException
+    {
+        ISOComponent c = getComponent (oldFieldNumber);
+        unset (oldFieldNumber);
+        if (c != null) {
+            c.setFieldNumber (newFieldNumber);
+            set (c);
+        } else
+            unset (newFieldNumber);
+    }
+
     /**
      * @return current MTI
      * @exception ISOException on inner message or MTI not set
