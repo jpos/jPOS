@@ -59,6 +59,7 @@
 <!ATTLIST server logger IDREF #IMPLIED>
 <!ATTLIST server realm CDATA #IMPLIED>
 <!ATTLIST server maxSessions CDATA #IMPLIED>
+<!ATTLIST server panel IDREF #IMPLIED>
 
 <!-- control-panel -->
 <!ELEMENT control-panel (panel)*>

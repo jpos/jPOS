@@ -29,11 +29,13 @@
     <log-listener class="org.jpos.util.SimpleLogListener"/>
  </logger>
 
- <control-panel rows="1" cols="1">
+ <control-panel rows="2" cols="1">
+  <panel name="client.channel" />
   <panel name="loopback.channel" />
  </control-panel>
 
- <server name="server" logger="qsp" realm="server" port="8000">
+ <server name="server" logger="qsp" realm="server" port="8000"
+    panel="client.channel" >
   <channel name="client-side-channel" 
           class="org.jpos.iso.channel.ASCIIChannel" 
           packager="org.jpos.iso.packager.ISO87APackager"
