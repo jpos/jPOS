@@ -228,7 +228,7 @@ public abstract class BaseChannel extends Observable
         this.socket = socket;
         applyTimeout();
         setLogger(getLogger(), getOriginalRealm() + 
-            "_" + socket.getInetAddress() + ":" + socket.getPort()
+            "." + socket.getInetAddress() + ":" + socket.getPort()
         );
         serverIn = new DataInputStream (
             new BufferedInputStream (socket.getInputStream ())
