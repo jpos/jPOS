@@ -118,7 +118,7 @@
 	footer="CompuService Srl."
 	public="true" noindex="true" author="true" 
 	overview="${doc}/javadoc/Overview.html"
-        packagenames="org.jpos.util, org.jpos.iso.*, org.jpos.core.*, org.jpos.apps.*"
+        packagenames="org.jpos.util, org.jpos.iso.*, org.jpos.core.*"
     />
   </target>
 
@@ -140,7 +140,7 @@
 	footer="CompuService Srl."
 	public="true" noindex="true" author="true" 
 	overview="${doc}/javadoc/Overview.html"
-        packagenames="org.jpos.util, org.jpos.iso.*, org.jpos.core.*, org.jpos.apps.*"
+        packagenames="org.jpos.util, org.jpos.iso.*, org.jpos.core.*"
     />
     <deltree dir="${build}/doc/tmp" />
   </target>
