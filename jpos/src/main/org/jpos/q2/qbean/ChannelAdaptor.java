@@ -199,6 +199,7 @@ public class ChannelAdaptor
         if (channel instanceof FilteredChannel) {
             addFilters ((FilteredChannel) channel, e, f);
         }
+        channel.setName (getName ());
         return channel;
     }
 
