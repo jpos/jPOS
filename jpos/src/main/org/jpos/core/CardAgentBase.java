@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.8  2000/04/16 22:41:07  victor
+ * added packager.* import
+ *
  * Revision 1.7  2000/03/01 14:44:38  apr
  * Changed package name to org.jpos
  *
@@ -35,6 +38,7 @@ import java.math.*;
 import java.lang.reflect.*;
 
 import org.jpos.iso.*;
+import org.jpos.iso.packager.*;
 import org.jpos.util.*;
 
 /**

@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.5  2000/04/16 22:41:08  victor
+ * added packager.* import
+ *
  * Revision 1.4  2000/03/02 12:31:01  apr
  * Get rid of javadoc warnings - done
  *
@@ -19,6 +22,7 @@ package org.jpos.core;
 import java.io.*;
 import java.util.*;
 import org.jpos.iso.*;
+import org.jpos.iso.packager.*;
 import org.jpos.core.*;
 
 /**
