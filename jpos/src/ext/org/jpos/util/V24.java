@@ -49,6 +49,10 @@
 
 /*
  * $Log$
+ * Revision 1.9  2001/05/11 00:04:40  apr
+ * Workaround - we don't check for DSR on,
+ * isDSR fails on several installations (see RXTX).
+ *
  * Revision 1.8  2000/11/02 12:09:17  apr
  * Added license to every source file
  *
@@ -295,7 +299,8 @@ public class V24 implements SerialPortEventListener, LogSource
      * @return connection status
      */
     public boolean isConnected() {
-	return port.isDSR() && port.isCD();
+	// return port.isDSR() && port.isCD();
+	return port.isCD();
 	// return port.isDSR();
     }
     /**
@@ -394,7 +399,8 @@ public class V24 implements SerialPortEventListener, LogSource
 		    if (sleep > 0) {
 			try {
 			    wait (sleep);
-			    if (!port.isDSR() || (watchCD && !port.isCD())) 
+			    // if (!port.isDSR() || (watchCD && !port.isCD())) 
+			    if ((watchCD && !port.isCD())) 
 				throw new IOException ("DSR/CD off");
 			} catch (InterruptedException e) { }
 		    }
@@ -441,7 +447,8 @@ public class V24 implements SerialPortEventListener, LogSource
 		    if (sleep > 0) {
 			try {
 			    wait (sleep);
-			    if (!port.isDSR() || (watchCD && !port.isCD())) 
+			    // if (!port.isDSR() || (watchCD && !port.isCD())) 
+			    if ((watchCD && !port.isCD())) 
 				throw new IOException ("DSR/CD off");
 			} catch (InterruptedException e) { }
 		    }
@@ -587,7 +594,8 @@ public class V24 implements SerialPortEventListener, LogSource
 	throws IOException, PortInUseException
     {
 	port   = (SerialPort) portId.open (realm, 2000);
-	if (!port.isDSR() || !port.isCD())
+	// if (!port.isDSR() || !port.isCD())
+	if (!port.isCD())
 	    lostCD = System.currentTimeMillis();
 	try {
 	    port.addEventListener (this);
