@@ -73,17 +73,17 @@ import org.jpos.util.NameRegistrar.NotFoundException;
 public class Connector 
     implements ISORequestListener, LogSource, Configurable
 {
-    Logger logger;
-    String realm;
-    MUX destMux;
-    Channel destChannel;
-    int timeout = 0;
-    static ThreadPool pool;
+    private Logger logger;
+    private String realm;
+    protected String muxName;
+    protected String channelName;
+    protected int timeout = 0;
+    protected static ThreadPool pool;
+    
     public Connector () {
         super();
-        destMux = null;
-        destChannel = null;
     }
+    
     public void setLogger (Logger logger, String realm) {
         this.logger = logger;
         this.realm  = realm;
@@ -111,18 +111,13 @@ public class Connector
         timeout = cfg.getInt ("timeout");
         if (pool == null)
             pool    = new ThreadPool (1, cfg.getInt ("poolsize", 10));
-        String muxName     = cfg.get ("destination-mux", null);
-        String channelName = cfg.get ("destination-channel", null);
-        try {
-            if (muxName != null)
-                destMux = (MUX) NameRegistrar.get (muxName);
-            else if (channelName != null)
-                destChannel = (Channel) NameRegistrar.get (channelName);
-        } catch (NotFoundException e) {
-            throw new ConfigurationException (e);
+        muxName     = cfg.get ("destination-mux", null);
+        channelName = cfg.get ("destination-channel", null);
+        if (muxName == null && channelName == null) {
+            throw new ConfigurationException("Neither destination mux nor channel were specified.");
         }
     }
-
+    
     protected class Process implements Runnable {
         ISOSource source;
         ISOMsg m;
@@ -137,19 +132,23 @@ public class Connector
             try {
                 ISOMsg c = (ISOMsg) m.clone();
                 evt.addMessage (c);
-                if (destMux != null) {
+                if (muxName != null) {
+                    MUX destMux = (MUX) NameRegistrar.get (muxName);
                     ISOMsg response = destMux.request (c, timeout);
                     if (response != null) {
                         response.setHeader (c.getISOHeader()); 
                         source.send(response);
                     }
-                } else if (destChannel != null) {
+                } else if (channelName != null) {
+                    Channel destChannel = (Channel) NameRegistrar.get (channelName);
                     destChannel.send (c);
                 }
             } catch (ISOException e) {
                 evt.addMessage (e);
             } catch (IOException e) {
                 evt.addMessage (e);
+            } catch (NotFoundException e) {
+                evt.addMessage(e);
             }
             Logger.log (evt);
         }
