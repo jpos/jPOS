@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.2  1999/11/24 20:27:30  apr
+ * Added overloaded add(card,bin) method
+ *
  * Revision 1.1  1999/10/08 12:53:58  apr
  * Devel intermediate version - CVS sync
  *
@@ -48,6 +51,13 @@ public class CardSelector {
      */
     public void add (CardBrand card, int low, int high) {
 	list.add (new Entry (card, low, high));
+    }
+    /**
+     * @param card CardBrand
+     * @param bin
+     */
+    public void add (CardBrand card, int bin) {
+	list.add (new Entry (card, bin, bin));
     }
     public static void setDefault (CardSelector def) {
 	defaultInstance = def;
