@@ -272,6 +272,8 @@ public class PersistentEngine implements LogSource, Configurable {
     public long getOID (Connection conn) throws SQLException {
 	String sql = "SELECT last_insert_id()";
 	ResultSet rs = executeQuery (sql, conn);
+        if (rs.isBeforeFirst()) 
+            rs.next();
 	long oid = rs.getLong (1);
 	rs.close();
 	return oid;
