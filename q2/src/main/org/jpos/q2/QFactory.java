@@ -61,6 +61,7 @@ import java.util.MissingResourceException;
 import java.net.MalformedURLException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Collection;
 import javax.management.*;
 
 import org.jdom.Element;
@@ -250,29 +251,72 @@ public class QFactory {
             Element  childElement = (Element)childsIterator.next();
             String name = childElement.getAttributeValue("name");
             name = getAttributeName(name);
-            String type = childElement.getAttributeValue("type","java.lang.String");
-            if ("int".equals (type))
-                type = "java.lang.Integer";
-            else if ("long".equals (type))
-                type = "java.lang.Long";
-            else if ("boolean".equals (type))
-                type = "java.lang.Boolean";
-
-            String value = childElement.getText();
-            try {
-                Class attributeType = Class.forName(type);
-                Class[] parameterTypes = {"".getClass()};
-                Object[] parameterValues = {value};
-                Object obj = attributeType.getConstructor(parameterTypes).newInstance(parameterValues);
-                Attribute attr =  new Attribute(name,obj);
-                attributeList.add(attr);
-            } catch (Exception e1) {
-                throw new Q2ConfigurationException(e1);
-            }
+            Attribute attr =  new Attribute(name,getObject(childElement));
+            attributeList.add(attr);
         }
         return attributeList;
     }
 
+    /** creates an object from a definition element.
+     * The element may have an attribute called type indicating the type of the object
+     * to create, if this attribute is not present java.lang.String is assumed.
+     * int, long and boolean are converted to their wrappers.
+     * @return The created object.
+     * @param childElement Dom Element with the definition of the object.
+     * @throws Q2ConfigurationException If an exception is found trying to create the object.
+     */    
+    protected Object getObject(Element childElement) 
+        throws Q2ConfigurationException
+    {
+        String type = childElement.getAttributeValue("type","java.lang.String");
+        if ("int".equals (type))
+            type = "java.lang.Integer";
+        else if ("long".equals (type))
+            type = "java.lang.Long";
+        else if ("boolean".equals (type))
+            type = "java.lang.Boolean";
+       
+        String value = childElement.getText();
+        try {
+            Class attributeType = Class.forName(type);
+            if(Collection.class.isAssignableFrom(attributeType))
+                return getCollection(attributeType, childElement);
+            else{
+                Class[] parameterTypes = {"".getClass()};
+                Object[] parameterValues = {value};
+                return attributeType.getConstructor(parameterTypes).newInstance(parameterValues);
+            }
+        } catch (Exception e1) {
+            throw new Q2ConfigurationException(e1);
+        }
+        
+    }
+    
+    
+    /** Creats a collection from a definition element with the format.
+     * <PRE>
+     *    <{attr|item} type="...">
+     *        <item [type="..."]>...</item>
+     *        ...
+     *    </attr>
+     * </PRE>
+     * @param type
+     * @param e
+     * @throws Q2ConfigurationException
+     * @return
+     */    
+    protected Collection getCollection(Class type, Element e) 
+        throws Q2ConfigurationException
+    {
+        try{
+            Collection col = (Collection)type.newInstance();
+            Iterator childs = e.getChildren("item").iterator();
+            while(childs.hasNext()) col.add(getObject((Element)childs.next()));
+            return col;
+        }catch(Exception e1){
+            throw new Q2ConfigurationException(e1);
+        }
+    }
     /**
      * sets the first character of the string to the upper case
      * @param name
