@@ -80,7 +80,7 @@ import org.jpos.core.ConfigurationException;
  * @version $Revision$ $Date$
  */
 public class DirPoll extends SimpleLogSource 
-    implements Runnable, FilenameFilter, ReConfigurable
+    implements Runnable, FilenameFilter, ReConfigurable, Destroyable
 {
     private long pollInterval;
     private File requestDir;
@@ -95,6 +95,7 @@ public class DirPoll extends SimpleLogSource
     private ThreadPool pool;
     private Object processor;
     private Configuration cfg;
+    private boolean shutdown;
 
     //------------------------------------ Constructor/setters/getters, etc.
     /**
@@ -206,7 +207,7 @@ public class DirPoll extends SimpleLogSource
 	Thread.currentThread().setName ("DirPoll-"+basePath);
         if (prio.size() == 0)
             addPriority("");
-        for (;;) {
+        while (!shutdown) {
             try {
 		File f;
 		synchronized (this) {
@@ -226,6 +227,9 @@ public class DirPoll extends SimpleLogSource
 		} catch (InterruptedException ex) { }
 	    }
         }   
+    }
+    public void destroy () {
+        shutdown = true;
     }
 
     //----------------------------------------------------- public helpers
