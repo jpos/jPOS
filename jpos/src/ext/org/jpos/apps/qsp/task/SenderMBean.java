@@ -49,7 +49,6 @@
 
 package org.jpos.apps.qsp.task;
 
-import org.jpos.iso.ISOMsg;
 
 /**
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>

@@ -49,27 +49,21 @@
 
 package org.jpos.apps.qsp.task;
 
-import org.jpos.util.Logger;
-import org.jpos.util.LogEvent;
-import org.jpos.util.LogSource;
-import org.jpos.util.NameRegistrar;
+import java.rmi.RemoteException;
+
+import javax.management.JMException;
+import javax.management.ObjectName;
+import javax.naming.NamingException;
+
+import mx4j.adaptor.rmi.jrmp.JRMPAdaptor;
+
+import org.jpos.apps.qsp.QSP;
 import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
-import org.jpos.apps.qsp.QSP;
-
-import javax.management.*;
-import javax.naming.NamingException;
-
-import mx4j.adaptor.http.HttpAdaptor;
-import mx4j.adaptor.http.ProcessorMBean;
-import mx4j.adaptor.rmi.jrmp.JRMPAdaptor;
-import mx4j.adaptor.rmi.jrmp.JRMPAdaptorMBean;
-import mx4j.tools.naming.NamingService;
-import mx4j.util.StandardMBeanProxy;
-
-import java.io.IOException;
-import java.rmi.RemoteException;
+import org.jpos.util.LogEvent;
+import org.jpos.util.LogSource;
+import org.jpos.util.Logger;
 
 /**
  * @author <a href="mailto:taherkordy@dpi2.dpi.net.ir">Alireza Taherkordi</a>

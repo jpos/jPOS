@@ -48,23 +48,16 @@
  */
 
 package org.jpos.iso.filter;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
+import org.jpos.core.ConfigurationException;
+import org.jpos.core.NodeConfigurable;
+import org.jpos.iso.ISOChannel;
+import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOFilter;
 import org.jpos.iso.ISOMsg;
-import org.jpos.iso.ISOUtil;
-import org.jpos.iso.ISOChannel;
-import org.jpos.iso.ISOComponent;
-import org.jpos.iso.ISOException;
-import org.jpos.iso.ISOBinaryField;
-import org.jpos.util.LogEvent;
-import org.jpos.core.ReConfigurable;
-import org.jpos.core.Configuration;
-import org.jpos.core.ConfigurationException;
-import org.jpos.iso.ISOFilter.VetoException;
 import org.jpos.util.JepUtil;
-import org.jpos.core.NodeConfigurable;
+import org.jpos.util.LogEvent;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  * Using JEP to compute expressions

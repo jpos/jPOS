@@ -49,20 +49,17 @@
 
 package org.jpos.apps.qsp.config;
 
-import java.io.IOException;
-
 import java.util.Properties;
-import org.jpos.util.NameRegistrar;
-import org.jpos.util.Logger;
-import org.jpos.util.LogEvent;
-import org.jpos.util.LogListener;
-import org.jpos.core.Configurable;
-import org.jpos.core.ConfigurationException;
-import org.jpos.core.SimpleConfiguration;
 
 import org.jpos.apps.qsp.QSP;
 import org.jpos.apps.qsp.QSPConfigurator;
-
+import org.jpos.core.Configurable;
+import org.jpos.core.ConfigurationException;
+import org.jpos.core.SimpleConfiguration;
+import org.jpos.util.LogEvent;
+import org.jpos.util.LogListener;
+import org.jpos.util.Logger;
+import org.jpos.util.NameRegistrar;
 import org.w3c.dom.Node;
 
 /**

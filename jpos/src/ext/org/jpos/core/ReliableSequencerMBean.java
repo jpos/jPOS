@@ -49,8 +49,6 @@
 
 package org.jpos.core;
 
-import java.io.*;
-import java.util.*;
 
 /**
  * @author apr@cs.com.uy

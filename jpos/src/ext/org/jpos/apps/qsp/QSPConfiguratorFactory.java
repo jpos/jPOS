@@ -50,6 +50,7 @@
 package org.jpos.apps.qsp;
 
 import java.util.StringTokenizer;
+
 import org.jpos.core.ConfigurationException;
 
 /**

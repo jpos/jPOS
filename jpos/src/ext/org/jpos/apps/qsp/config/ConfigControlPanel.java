@@ -49,19 +49,14 @@
 
 package org.jpos.apps.qsp.config;
 
-import org.jpos.util.Logger;
-import org.jpos.util.LogEvent;
-import org.jpos.util.NameRegistrar;
-import org.jpos.core.ConfigurationException;
+import javax.swing.JPanel;
 
 import org.jpos.apps.qsp.QSP;
 import org.jpos.apps.qsp.QSPConfigurator;
-import org.jpos.apps.qsp.ControlPanel;
-
+import org.jpos.core.ConfigurationException;
+import org.jpos.util.NameRegistrar;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
-import javax.swing.*;
 
 
 /**

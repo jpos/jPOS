@@ -49,11 +49,10 @@
 
 package org.jpos.util;
 
-import org.nfunk.jep.JEP;
-import org.jpos.util.Loggeable;
-import org.jpos.iso.ISOMsg;
-import org.jpos.iso.ISOException;
 import java.text.DecimalFormat;
+
+import org.jpos.iso.ISOException;
+import org.jpos.iso.ISOMsg;
 
 
 /**

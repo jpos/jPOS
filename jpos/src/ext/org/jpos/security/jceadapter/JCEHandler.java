@@ -49,13 +49,17 @@
 
 package  org.jpos.security.jceadapter;
 
-import  javax.crypto.*;
-import  javax.crypto.spec.*;
-import  java.security.*;
-import  java.security.spec.*;
-import  org.jpos.security.Util;
-import  org.jpos.security.SMAdapter;
-import  org.jpos.iso.ISOUtil;
+import java.security.Key;
+import java.security.Provider;
+import java.security.Security;
+
+import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
+import javax.crypto.spec.SecretKeySpec;
+
+import org.jpos.iso.ISOUtil;
+import org.jpos.security.SMAdapter;
+import org.jpos.security.Util;
 
 
 /**

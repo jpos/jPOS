@@ -49,28 +49,29 @@
 
 package  org.jpos.security.jceadapter;
 
-import  org.jpos.security.*;
-import  javax.crypto.*;
-import  javax.crypto.spec.*;
-import  java.security.*;
-import  java.security.spec.*;
-import  java.util.Hashtable;
-import  java.util.Properties;
-import  java.io.File;
-import  java.io.FileInputStream;
-import  java.io.FileOutputStream;
-import  java.io.FileNotFoundException;
-import  java.io.IOException;
-import  org.jpos.util.Logger;
-import  org.jpos.util.SimpleLogSource;
-import  org.jpos.util.LogEvent;
-import  org.jpos.util.SimpleMsg;
-import  org.jpos.util.SimpleLogListener;
-import  org.jpos.core.Configuration;
-import  org.jpos.core.Configurable;
-import  org.jpos.core.SimpleConfiguration;
-import  org.jpos.core.ConfigurationException;
-import  org.jpos.iso.ISOUtil;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.security.Key;
+import java.security.Provider;
+import java.security.Security;
+import java.util.Hashtable;
+import java.util.Properties;
+
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
+
+import org.jpos.core.Configuration;
+import org.jpos.core.ConfigurationException;
+import org.jpos.iso.ISOUtil;
+import org.jpos.security.BaseSMAdapter;
+import org.jpos.security.EncryptedPIN;
+import org.jpos.security.SMAdapter;
+import org.jpos.security.SMException;
+import org.jpos.security.SecureDESKey;
+import org.jpos.util.LogEvent;
+import org.jpos.util.Logger;
+import org.jpos.util.SimpleMsg;
 
 
 /**

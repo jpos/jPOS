@@ -49,18 +49,19 @@
 
 package org.jpos.apps.qsp.task;
 
-import java.util.Date;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
-import org.jpos.util.Logger;
+
+import org.jpos.core.Configurable;
+import org.jpos.core.Configuration;
+import org.jpos.core.ConfigurationException;
+import org.jpos.core.ReConfigurable;
 import org.jpos.util.LogEvent;
 import org.jpos.util.LogSource;
+import org.jpos.util.Logger;
 import org.jpos.util.SimpleLogSource;
 import org.jpos.util.ThreadPool;
-import org.jpos.core.Configuration;
-import org.jpos.core.Configurable;
-import org.jpos.core.ReConfigurable;
-import org.jpos.core.ConfigurationException;
 
 /**
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>

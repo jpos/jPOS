@@ -49,8 +49,8 @@
 
 package org.jpos.util;
 
-import java.io.*;
-import javax.comm.*;
+import java.io.IOException;
+
 import org.jpos.iso.ISOUtil;
 
 /**

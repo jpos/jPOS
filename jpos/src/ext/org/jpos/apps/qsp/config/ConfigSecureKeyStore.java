@@ -49,21 +49,20 @@
 
 package  org.jpos.apps.qsp.config;
 
-import  java.util.Properties;
-import  org.jpos.util.Logger;
-import  org.jpos.util.LogEvent;
-import  org.jpos.util.LogSource;
-import  org.jpos.util.Loggeable;
-import  org.jpos.util.NameRegistrar;
-import  org.jpos.core.SimpleConfiguration;
-import  org.jpos.core.Configurable;
-import  org.jpos.core.ConfigurationException;
-import  org.jpos.security.SecureKeyStore;
-import  org.jpos.apps.qsp.QSP;
-import  org.jpos.apps.qsp.QSPConfigurator;
-import  org.w3c.dom.Node;
-import  org.w3c.dom.NodeList;
-import  javax.management.NotCompliantMBeanException;
+import javax.management.NotCompliantMBeanException;
+
+import org.jpos.apps.qsp.QSP;
+import org.jpos.apps.qsp.QSPConfigurator;
+import org.jpos.core.Configurable;
+import org.jpos.core.ConfigurationException;
+import org.jpos.core.SimpleConfiguration;
+import org.jpos.security.SecureKeyStore;
+import org.jpos.util.LogEvent;
+import org.jpos.util.LogSource;
+import org.jpos.util.Loggeable;
+import org.jpos.util.Logger;
+import org.jpos.util.NameRegistrar;
+import org.w3c.dom.Node;
 
 
 /**

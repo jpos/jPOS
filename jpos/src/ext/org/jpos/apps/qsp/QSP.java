@@ -51,43 +51,35 @@ package org.jpos.apps.qsp;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.ArrayList;
 import java.util.Collection;
-import org.apache.xerces.parsers.*;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.NamedNodeMap;
-import org.xml.sax.ErrorHandler;
+import java.util.Iterator;
 
-import org.jpos.iso.ISOMUX;
-import org.jpos.util.SimpleLogListener;
-import org.jpos.util.SystemMonitor;
-import org.jpos.util.Logger;
-import org.jpos.util.LogEvent;
-import org.jpos.util.LogSource;
-import org.jpos.util.NameRegistrar;
-import org.jpos.core.Configuration;
-import org.jpos.core.SimpleConfiguration;
-import org.jpos.core.ConfigurationException;
-import org.jpos.apps.qsp.config.ConfigTask;
-import org.jpos.space.TransientSpace;
-
-// import com.sun.management.jmx.Trace;
-import javax.management.ObjectName;
+import javax.management.InstanceAlreadyExistsException;
+import javax.management.MBeanRegistrationException;
 import javax.management.MBeanServer;
 import javax.management.MBeanServerFactory;
-import javax.management.NotCompliantMBeanException;
-import javax.management.InstanceAlreadyExistsException;
-
-import javax.management.MBeanException;
-import javax.management.ReflectionException;
-import javax.management.MBeanRegistrationException;
 import javax.management.MalformedObjectNameException;
-import javax.management.InstanceAlreadyExistsException;
+import javax.management.NotCompliantMBeanException;
+import javax.management.ObjectName;
+
+import org.apache.xerces.parsers.DOMParser;
+import org.jpos.apps.qsp.config.ConfigTask;
+import org.jpos.core.Configuration;
+import org.jpos.core.ConfigurationException;
+import org.jpos.core.SimpleConfiguration;
+import org.jpos.iso.ISOMUX;
+import org.jpos.space.TransientSpace;
+import org.jpos.util.LogEvent;
+import org.jpos.util.LogSource;
+import org.jpos.util.Logger;
+import org.jpos.util.NameRegistrar;
+import org.jpos.util.SystemMonitor;
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 /**
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>

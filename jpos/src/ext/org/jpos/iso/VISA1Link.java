@@ -49,11 +49,14 @@
 
 package org.jpos.iso;
 
-import java.io.*;
-import java.util.*;
-import javax.comm.*;
-import org.jpos.util.*;
-import org.jpos.iso.packager.*;
+import java.io.IOException;
+import java.util.Vector;
+
+import org.jpos.util.LogEvent;
+import org.jpos.util.LogSource;
+import org.jpos.util.Logger;
+import org.jpos.util.Modem;
+import org.jpos.util.V24;
 
 /**
  * Implements client-side VISA-1 Link protocol operating in a

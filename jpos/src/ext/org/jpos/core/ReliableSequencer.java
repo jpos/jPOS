@@ -49,6 +49,9 @@
 
 /*
  * $Log$
+ * Revision 1.9  2003/05/16 04:25:35  alwyns
+ * Import cleanups.
+ *
  * Revision 1.8  2002/01/14 15:48:26  apr
  * JMX support
  *
@@ -80,12 +83,21 @@
 
 package org.jpos.core;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
 import org.jpos.util.Loggeable;
-import com.sun.jini.reliableLog.ReliableLog;
-import com.sun.jini.reliableLog.LogException;
-import com.sun.jini.reliableLog.LogHandler;
+
+import sun.rmi.log.LogHandler;
+import sun.rmi.log.ReliableLog;
 
 /**
  * @author apr@cs.com.uy

@@ -54,7 +54,7 @@ package  org.jpos.security.jceadapter;
  * @author Hani Samuel Kirollos
  * @version $Revision$ $Date$
  */
-import  org.jpos.security.SMException;
+import org.jpos.security.SMException;
 
 
 public class JCEHandlerException extends SMException {

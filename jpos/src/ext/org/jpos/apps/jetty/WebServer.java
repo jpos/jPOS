@@ -1,12 +1,8 @@
 package org.jpos.apps.jetty;
 
-import org.jpos.util.Logger;
-import org.jpos.util.LogSource;
-import org.jpos.util.LogEvent;
-import org.jpos.util.SimpleLogSource;
 import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
-import org.jpos.core.ConfigurationException;
+import org.jpos.util.SimpleLogSource;
 
 /**
  * WebServer is a QSP task that can be used to launch Jetty

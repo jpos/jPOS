@@ -49,9 +49,8 @@
 
 package org.jpos.apps.qsp;
 
-import org.w3c.dom.Node;
-import org.jpos.iso.ISOException;
 import org.jpos.core.ConfigurationException;
+import org.w3c.dom.Node;
 
 /**
  * reconfigures a previously configured component

@@ -49,26 +49,23 @@
 
 package org.jpos.apps.qsp;
 
-import org.jpos.util.ThreadPool;
-import org.jpos.util.Logger;
-import org.jpos.util.LogSource;
-import org.jpos.util.LogEvent;
 import java.io.IOException;
+import java.lang.reflect.Method;
+import java.util.Properties;
+
+import javax.naming.InitialContext;
 
 import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
-import org.jpos.iso.ISOMsg;
-import org.jpos.iso.ISOUtil;
-import org.jpos.iso.ISOSource;
 import org.jpos.iso.ISOException;
+import org.jpos.iso.ISOMsg;
 import org.jpos.iso.ISORequestListener;
-import org.jpos.util.NameRegistrar.NotFoundException;
-
-import javax.ejb.*;
-import javax.naming.*;
-import java.util.*;
-import java.lang.reflect.*;
+import org.jpos.iso.ISOSource;
+import org.jpos.util.LogEvent;
+import org.jpos.util.LogSource;
+import org.jpos.util.Logger;
+import org.jpos.util.ThreadPool;
 
 /**
  * QSP EJBConnector implements ISORequestListener

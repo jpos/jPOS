@@ -49,26 +49,18 @@
 
 package org.jpos.apps.qsp.config;
 
-import java.util.Properties;
 import javax.management.NotCompliantMBeanException;
-
-import org.jpos.util.Logger;
-import org.jpos.util.LogEvent;
-import org.jpos.util.LogSource;
-import org.jpos.util.Loggeable;
-import org.jpos.util.NameRegistrar;
-import org.jpos.util.NameRegistrar.NotFoundException;
-import org.jpos.core.SimpleConfiguration;
-import org.jpos.core.Configurable;
-import org.jpos.core.ConfigurationException;
-import org.jpos.util.ThreadPool;
 
 import org.jpos.apps.qsp.QSP;
 import org.jpos.apps.qsp.QSPConfigurator;
-
+import org.jpos.core.ConfigurationException;
+import org.jpos.util.LogEvent;
+import org.jpos.util.Logger;
+import org.jpos.util.NameRegistrar;
+import org.jpos.util.ThreadPool;
+import org.jpos.util.NameRegistrar.NotFoundException;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 /**
  * Configure ThreadPool

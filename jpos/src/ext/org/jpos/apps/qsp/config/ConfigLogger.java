@@ -49,13 +49,11 @@
 
 package org.jpos.apps.qsp.config;
 
-import org.jpos.util.Logger;
-import org.jpos.util.LogEvent;
-import org.jpos.core.ConfigurationException;
-
 import org.jpos.apps.qsp.QSP;
 import org.jpos.apps.qsp.QSPConfigurator;
-
+import org.jpos.core.ConfigurationException;
+import org.jpos.util.LogEvent;
+import org.jpos.util.Logger;
 import org.w3c.dom.Node;
 
 /**

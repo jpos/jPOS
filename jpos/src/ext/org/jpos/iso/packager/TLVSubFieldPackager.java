@@ -49,12 +49,16 @@
 
 package org.jpos.iso.packager;
 
-import java.util.*;
+import java.util.Hashtable;
 
-import org.jpos.iso.*;
-import org.jpos.util.*;
-import opencard.opt.util.Tag;
-import opencard.opt.util.TLV;
+import javax.swing.text.html.HTML.Tag;
+
+import org.jpos.iso.ISOBasePackager;
+import org.jpos.iso.ISOBinaryField;
+import org.jpos.iso.ISOComponent;
+import org.jpos.iso.ISOException;
+import org.jpos.util.LogEvent;
+import org.jpos.util.Logger;
 
 /**
  * ICC TLV SubField packager

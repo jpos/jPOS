@@ -49,9 +49,12 @@
 
 package org.jpos.util;
 
-import java.io.*;
-import java.util.*;
-import javax.comm.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Enumeration;
+import java.util.TooManyListenersException;
+
 import org.jpos.iso.ISOUtil;
 
 /**

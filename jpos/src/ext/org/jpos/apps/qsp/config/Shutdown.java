@@ -49,11 +49,11 @@
 
 package org.jpos.apps.qsp.config;
 
-import org.jpos.util.NameRegistrar;
 import org.jpos.core.Stopable;
-import org.jpos.util.Logger;
 import org.jpos.util.LogEvent;
 import org.jpos.util.LogSource;
+import org.jpos.util.Logger;
+import org.jpos.util.NameRegistrar;
 
 /**
  * Used by QSP to add ShutdownHooks (on JDK > 1.3) on Stopable tasks

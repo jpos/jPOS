@@ -49,12 +49,14 @@
 
 package  org.jpos.security.jceadapter;
 
-import  org.jpos.util.Logger;
-import  org.jpos.util.SimpleLogListener;
-import  org.jpos.core.SimpleConfiguration;
-import  org.jpos.core.ConfigurationException;
-import  java.util.Properties;
-import  org.jpos.security.*;
+import java.util.Properties;
+
+import org.jpos.core.ConfigurationException;
+import org.jpos.core.SimpleConfiguration;
+import org.jpos.security.SMException;
+import org.jpos.security.SecureDESKey;
+import org.jpos.util.Logger;
+import org.jpos.util.SimpleLogListener;
 
 
 /**

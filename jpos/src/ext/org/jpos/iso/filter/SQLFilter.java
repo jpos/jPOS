@@ -48,24 +48,23 @@
  */
 
 package org.jpos.iso.filter;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+import org.jpos.core.Configurable;
+import org.jpos.core.Configuration;
+import org.jpos.core.ConfigurationException;
+import org.jpos.core.NodeConfigurable;
+import org.jpos.iso.ISOChannel;
+import org.jpos.iso.ISOException;
+import org.jpos.iso.ISOFilter;
+import org.jpos.iso.ISOMsg;
+import org.jpos.tpl.ConnectionPool;
+import org.jpos.util.JepUtil;
+import org.jpos.util.LogEvent;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
-import java.sql.*;
-import org.jpos.iso.ISOFilter;
-import org.jpos.iso.ISOFilter.VetoException;
-import org.jpos.iso.ISOException;
-import org.jpos.iso.ISOMsg;
-import org.jpos.iso.ISOField;
-import org.jpos.iso.ISOChannel;
-import org.jpos.util.LogEvent;
-import org.jpos.util.JepUtil;
-
-import org.jpos.core.Configuration;
-import org.jpos.core.Configurable;
-import org.jpos.core.NodeConfigurable;
-import org.jpos.core.ConfigurationException;
-import org.jpos.tpl.*;
 
 /**
  * SQLFilter useful to execute sql statement.

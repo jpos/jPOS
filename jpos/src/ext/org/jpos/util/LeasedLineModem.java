@@ -49,6 +49,9 @@
 
 /*
  * $Log$
+ * Revision 1.6  2003/05/16 04:26:22  alwyns
+ * Import cleanups.
+ *
  * Revision 1.5  2000/11/02 12:09:17  apr
  * Added license to every source file
  *
@@ -74,8 +77,7 @@
 
 package org.jpos.util;
 
-import java.io.*;
-import javax.comm.*;
+import java.io.IOException;
 
 public class LeasedLineModem implements Modem {
     V24 v24;
