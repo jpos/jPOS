@@ -56,6 +56,10 @@
 
 /*
  * $Log$
+ * Revision 1.9  2002/09/23 11:38:46  apr
+ * Added setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE) to avoid memory leak
+ * (patch provided by Kris Leite <kleite@imcsoftware.com> - Thanks!)
+ *
  * Revision 1.8  2000/11/02 12:09:18  apr
  * Added license to every source file
  *
@@ -193,6 +197,7 @@ public class ISOMeter extends JComponent implements Runnable {
     public void showLogList() {
         JFrame f = new JFrame(parent.getSymbolicName());
         f.getContentPane().add(createLogList());
+        f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         f.validate();
         f.pack();
         f.setSize(200,250);
@@ -212,6 +217,7 @@ public class ISOMeter extends JComponent implements Runnable {
                         parent.getSymbolicName()+":"+m.toString());
                     ISOMsgPanel p = new ISOMsgPanel(m);
                     f.getContentPane().add(p);
+                    f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                     f.pack();
                     f.show();
                 }
