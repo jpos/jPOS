@@ -1,6 +1,7 @@
 $Id$
 
 -- 1.4.9 -- 
+Added BSHTransactionParticipant and BSHGroupSelector
 Added XmlConfigurable to jpos-util.jar 
 Q2Configurable replaced by org.jpos.core.XmlConfigurable
 Q2ConfigurationException replaced by ConfigurationException
