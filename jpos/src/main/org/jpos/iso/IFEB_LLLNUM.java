@@ -146,11 +146,6 @@ public class IFEB_LLLNUM extends ISOFieldPackager {
         // odd handling
         byte testByte = b[ (offset+3+len-1) ];
         
-        byte [] b8 = { testByte, (byte) (testByte | 0xf0)};
-        
-        //System.out.println("test" + ISOUtil.hexString(b8));
-        //System.out.println( (((testByte | 0xf0))== 0xff) );
-        
         if( (testByte | 0xf0)== 0xff) {
             // odd length
             tempLen--;
