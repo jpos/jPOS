@@ -64,6 +64,7 @@ import  java.io.IOException;
 import  org.jpos.util.Logger;
 import  org.jpos.util.SimpleLogSource;
 import  org.jpos.util.LogEvent;
+import  org.jpos.util.SimpleMsg;
 import  org.jpos.util.SimpleLogListener;
 import  org.jpos.core.Configuration;
 import  org.jpos.core.Configurable;
@@ -248,13 +249,18 @@ public class JCESecurityModule extends BaseSMAdapter {
      * @throws SMException
      */
     String generateClearKeyComponent (short keyLength) throws SMException {
-        String clearKeyComponenetHexString = null;
-        LogEvent evt = new LogEvent(this, "generateClearKeyComponent");
+        String clearKeyComponenetHexString;
+        SimpleMsg[] cmdParameters =  {
+            new SimpleMsg("parameter", "Key Length", keyLength)
+        };
+        LogEvent evt = new LogEvent(this, "s-m-operation");
+        evt.addMessage(new SimpleMsg("command", "Generate Clear Key Component", cmdParameters));
+        
         try {
             Key clearKey = jceHandler.generateDESKey(keyLength);
             byte[] clearKeyData = jceHandler.extractDESKeyMaterial(keyLength, clearKey);
             clearKeyComponenetHexString = ISOUtil.hexString(clearKeyData);
-            evt.addMessage("clearKeyComponenetHexString", clearKeyComponenetHexString);
+            evt.addMessage(new SimpleMsg("result", "Generated Clear Key Componenet", clearKeyComponenetHexString));
         } catch (JCEHandlerException e) {
             evt.addMessage(e);
             throw  e;
@@ -276,14 +282,20 @@ public class JCESecurityModule extends BaseSMAdapter {
      */
     SecureDESKey generateKeyCheckValue (short keyLength, String keyType, String KEYunderLMKHexString) throws SMException {
         SecureDESKey secureDESKey = null;
-        byte[] keyCheckValue = null;
-        LogEvent evt = new LogEvent(this, "generateKeyCheckValue");
+        byte[] keyCheckValue;
+        SimpleMsg[] cmdParameters =  {
+            new SimpleMsg("parameter", "Key Length", keyLength),
+            new SimpleMsg("parameter", "Key Type", keyType),
+            new SimpleMsg("parameter", "Key under LMK", KEYunderLMKHexString),
+        };
+        LogEvent evt = new LogEvent(this, "s-m-operation");
+        evt.addMessage(new SimpleMsg("command", "Generate Key Check Value", cmdParameters));
         try {
             secureDESKey = new SecureDESKey(keyLength, keyType,
                 KEYunderLMKHexString, "");
             keyCheckValue = calculateKeyCheckValue(decryptFromLMK(secureDESKey));
             secureDESKey.setKeyCheckValue(keyCheckValue);
-            evt.addMessage(secureDESKey);
+            evt.addMessage(new SimpleMsg("result", "Key with Check Value", secureDESKey));
         } catch (JCEHandlerException e) {
             evt.addMessage(e);
             throw  e;
@@ -306,8 +318,16 @@ public class JCESecurityModule extends BaseSMAdapter {
      */
     SecureDESKey formKEYfromThreeClearComponents (short keyLength, String keyType,
             String clearComponent1HexString, String clearComponent2HexString, String clearComponent3HexString) throws SMException {
-        SecureDESKey secureDESKey = null;
-        LogEvent evt = new LogEvent(this, "formKEYfromThreeClearComponents");
+        SecureDESKey secureDESKey;
+        SimpleMsg[] cmdParameters =  {
+            new SimpleMsg("parameter", "Key Length", keyLength),
+            new SimpleMsg("parameter", "Key Type", keyType),
+            new SimpleMsg("parameter", "Clear Componenent 1", clearComponent1HexString),
+            new SimpleMsg("parameter", "Clear Componenent 2", clearComponent2HexString),
+            new SimpleMsg("parameter", "Clear Componenent 3", clearComponent3HexString)
+        };
+        LogEvent evt = new LogEvent(this, "s-m-operation");
+        evt.addMessage(new SimpleMsg("command", "Form Key from Three Clear Components", cmdParameters));
         try {
             byte[] clearComponent1 = ISOUtil.hex2byte(clearComponent1HexString);
             byte[] clearComponent2 = ISOUtil.hex2byte(clearComponent2HexString);
@@ -317,7 +337,7 @@ public class JCESecurityModule extends BaseSMAdapter {
             Key clearKey = null;
             clearKey = jceHandler.formDESKey(keyLength, clearKeyBytes);
             secureDESKey = encryptToLMK(keyLength, keyType, clearKey);
-            evt.addMessage(secureDESKey);
+            evt.addMessage(new SimpleMsg("result", "Formed Key", secureDESKey));
         } catch (JCEHandlerException e) {
             evt.addMessage(e);
             throw  e;
