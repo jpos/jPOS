@@ -74,8 +74,7 @@ public class RawChannel extends BaseChannel {
     }
     protected int getMessageLength() throws IOException, ISOException {
         byte[] b = new byte[4];
-        if (serverIn.read(b,0,4) != 4)
-            throw new ISOException("error reading message length");
+        serverIn.readFully(b,0,4);
         return (int) (
             ((((int)b[0])&0xFF) << 24) | 
             ((((int)b[1])&0xFF) << 16) | 
