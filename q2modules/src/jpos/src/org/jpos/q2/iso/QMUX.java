@@ -160,6 +160,7 @@ public class QMUX
 
     protected String getKey (ISOMsg m) throws ISOException {
         return out + "." +
+            m.getMTI().substring(0,2) + 
            (m.hasField(41)?ISOUtil.zeropad((String)m.getValue(41),16) : "")
            + (m.hasField (11) ?
                 ISOUtil.zeropad((String) m.getValue(11),6) :
