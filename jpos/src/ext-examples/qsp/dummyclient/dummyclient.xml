@@ -54,13 +54,17 @@
    <property name="host" value="localhost" />
    <property name="port" value="8000" />
 
-   <filter class="org.jpos.iso.filter.XSLTFilter" direction="outgoing">
+   <!-- filter class="org.jpos.iso.filter.XSLTFilter" direction="outgoing">
     <property name="xsltfile" 
               value="src/ext-examples/qsp/dummyclient/outgoing.xsl" />
     <property name="reread" value="yes" />
-   </filter>
+   </filter -->
    <filter class="org.jpos.iso.filter.DelayFilter" direction="incoming">
     <property name="delay" value="1000" />
+   </filter>
+   <filter class="org.jpos.iso.filter.MD5Filter" direction="both">
+    <property name="key" value="AnyKey" />
+    <property name="fields" value="0 7 11 37 41" />
    </filter>
   </channel>
  </mux>
