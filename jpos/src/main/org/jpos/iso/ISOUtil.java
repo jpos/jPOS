@@ -559,7 +559,6 @@ public class ISOUtil {
      * "40000101010001=020128375" is converted to "400001____0001=0201_____"
      * "123" is converted to "___"
      * </pre>
-     * @see IF_PROTECTED
      * @param s string to be protected 
      * @return 'protected' String
      */
