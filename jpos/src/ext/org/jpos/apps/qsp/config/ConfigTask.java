@@ -68,6 +68,8 @@ import org.jpos.apps.qsp.QSPReConfigurator;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import javax.management.NotCompliantMBeanException;
+
 /**
  * Configure User defined Tasks
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
@@ -94,8 +96,15 @@ public class ConfigTask implements QSPReConfigurator {
 	    if (task instanceof Configurable) 
 		configureTask ((Configurable) task, node, evt);
 
-	    if (name != null)
+	    if (name != null) {
 		NameRegistrar.register (NAMEREGISTRAR_PREFIX+name, task);
+                try {
+                    qsp.registerMBean (task, "type=task,name="+name);
+                } catch (NotCompliantMBeanException e) {
+                    // ignoring, use may or may not implement MBean
+                    evt.addMessage (e.getMessage());
+                } 
+            }
 
             if (task instanceof Runnable) {
 	        Thread thread = new Thread ((Runnable) task);
@@ -112,14 +121,11 @@ public class ConfigTask implements QSPReConfigurator {
                     evt.addMessage (e.toString ());
                 }
             }
-        } catch (ClassNotFoundException e) {
+        } catch (Exception e) {
 	    throw new ConfigurationException ("config-task:"+className, e);
-        } catch (InstantiationException e) {
-	    throw new ConfigurationException ("config-task:"+className, e);
-        } catch (IllegalAccessException e) {
-	    throw new ConfigurationException ("config-task:"+className, e);
-	}
-	Logger.log (evt);
+        } finally {
+	    Logger.log (evt);
+        }
     }
     public void reconfig (QSP qsp, Node node) throws ConfigurationException
     {

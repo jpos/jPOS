@@ -73,6 +73,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.NamedNodeMap;
 
+import javax.management.NotCompliantMBeanException;
+
 /**
  * Configure mux
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
@@ -99,7 +101,16 @@ public class ConfigMux implements QSPReConfigurator {
             ((Configurable)mux).setConfiguration (cfg);
         }
 	new Thread (mux).start();
-	Logger.log (evt);
+        try {
+            qsp.registerMBean (mux, "type=mux,name="+name);
+        } catch (NotCompliantMBeanException e) {
+            evt.addMessage (e.getMessage());
+        } catch (Exception e) {
+            evt.addMessage (e);
+            throw new ConfigurationException (e);
+        } finally {
+	    Logger.log (evt);
+        }
     }
     public void reconfig (QSP qsp, Node node) throws ConfigurationException
     {

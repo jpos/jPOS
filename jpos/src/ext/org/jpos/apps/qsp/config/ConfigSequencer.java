@@ -67,6 +67,8 @@ import org.jpos.apps.qsp.QSPConfigurator;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import javax.management.NotCompliantMBeanException;
+
 /**
  * Configure sequencer
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
@@ -93,18 +95,15 @@ public class ConfigSequencer implements QSPConfigurator {
 	    if (seq instanceof Loggeable)
 		evt.addMessage (seq);
 
-	    NameRegistrar.register ("sequencer."+ 
-		node.getAttributes().getNamedItem ("name").getNodeValue(),
-		seq
-	    );
-
-        } catch (ClassNotFoundException e) {
-	    throw new ConfigurationException ("config-task:"+className, e);
-        } catch (InstantiationException e) {
-	    throw new ConfigurationException ("config-task:"+className, e);
-        } catch (IllegalAccessException e) {
-	    throw new ConfigurationException ("config-task:"+className, e);
-	}
+            String name = node.getAttributes().
+                               getNamedItem("name").getNodeValue();
+	    NameRegistrar.register ("sequencer."+ name, seq);
+            qsp.registerMBean (seq, "type=sequencer,name="+name);
+        } catch (NotCompliantMBeanException e) {
+            evt.addMessage (e.getMessage());
+        } catch (Exception e) {
+	    throw new ConfigurationException ("config-sequencer:"+className, e);
+        }
 	Logger.log (evt);
     }
     private void configureSequencer (Configurable seq, Node node, LogEvent evt)
