@@ -255,4 +255,7 @@ public class HttpAdaptor
         setModified (true);
         super.setPort (port);
     }
+    public void shutdownQ2 () {
+        getServer().shutdown ();
+    }
 }
