@@ -27,6 +27,7 @@ public class ISOServer extends Observable
     implements LogSource, Runnable, Observer
 {
     int port;
+    ISOChannel clientSideChannel;
     Class clientSideChannelClass;
     ISOPackager clientPackager;
     Collection clientOutgoingFilters, clientIncomingFilters, listeners;
@@ -44,6 +45,7 @@ public class ISOServer extends Observable
     public ISOServer(int port, ServerChannel clientSide, ThreadPool pool) {
 	super();
 	this.port = port;
+	this.clientSideChannel = clientSide;
 	this.clientSideChannelClass = clientSide.getClass();
 	this.clientPackager = clientSide.getPackager();
 	if (clientSide instanceof FilteredChannel) {
@@ -117,6 +119,9 @@ public class ISOServer extends Observable
 			channel = (ServerChannel) 
 			    clientSideChannelClass.newInstance();
 			channel.setPackager (clientPackager);
+			if (clientSideChannel instanceof BaseChannel)
+			    ((BaseChannel)channel).setHeader (
+				((BaseChannel)clientSideChannel).getHeader());
 			setFilters (channel);
 			if (channel instanceof LogSource) {
 			    ((LogSource)channel) .
