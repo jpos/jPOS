@@ -61,6 +61,7 @@ import org.jpos.util.LogEvent;
 import org.jpos.util.LogSource;
 import org.jpos.util.NameRegistrar;
 import org.jpos.iso.ISOFilter.VetoException;
+import org.jpos.core.Configurable;
 import org.jpos.core.ReConfigurable;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
@@ -96,7 +97,7 @@ import org.jpos.core.ConfigurationException;
  */
 public abstract class BaseChannel extends Observable 
     implements FilteredChannel, ClientChannel, ServerChannel, 
-	       LogSource, ReConfigurable
+	       LogSource, ReConfigurable, ISOClientSocketFactory
 {
     private Socket socket;
     private String host;
@@ -109,6 +110,7 @@ public abstract class BaseChannel extends Observable
     protected ISOPackager packager;
     protected ServerSocket serverSocket = null;
     protected Vector incomingFilters, outgoingFilters;
+    protected ISOClientSocketFactory socketFactory = this;
 
     private int[] cnt;
 
@@ -256,12 +258,11 @@ public abstract class BaseChannel extends Observable
     }
     /**
      * factory method pattern (as suggested by Vincent.Greene@amo.com)
-     * @throws UnknownHostException
      * @throws IOException
      */
-    protected Socket newSocket() 
-	throws UnknownHostException, IOException {
-	return new Socket(host, port);
+    protected Socket newSocket() throws IOException 
+    {
+	return socketFactory.createSocket (host, port);
     }
     /**
      * @return current socket
@@ -373,6 +374,11 @@ public abstract class BaseChannel extends Observable
     protected byte[] streamReceive() throws IOException {
         return new byte[0];
     }
+    protected void sendMessage (byte[] b, int offset, int len) 
+        throws IOException
+    {
+        serverOut.write(b, 0, b.length);
+    }
     /**
      * sends an ISOMsg over the TCP/IP session
      * @param m the Message to be sent
@@ -396,7 +402,7 @@ public abstract class BaseChannel extends Observable
 	    synchronized (serverOut) {
 		sendMessageLength(b.length + getHeaderLength());
 		sendMessageHeader(m, b.length);
-		serverOut.write(b, 0, b.length);
+                sendMessage (b, 0, b.length);
 		sendMessageTrailler(m, b.length);
 		serverOut.flush ();
 	    }
@@ -684,6 +690,8 @@ public abstract class BaseChannel extends Observable
 		    ("invalid port for host '"+h+"'");
 	    setHost (h, port);
         }
+        if (socketFactory != this && socketFactory instanceof Configurable)
+            ((Configurable)socketFactory).setConfiguration (cfg);
         try {
             setTimeout (cfg.getInt ("timeout"));
         } catch (SocketException e) {
@@ -716,5 +724,23 @@ public abstract class BaseChannel extends Observable
 	throws NameRegistrar.NotFoundException
     {
 	return (ISOChannel) NameRegistrar.get ("channel."+name);
+    }
+    public ISOClientSocketFactory getSocketFactory() {
+        return socketFactory;
+    }
+    public void setSocketFactory(ISOClientSocketFactory socketFactory) {
+        this.socketFactory = socketFactory;
+    }
+
+    // ISOSocketFactory implementation
+    public Socket createSocket(String host, int port)
+        throws IOException
+    {
+	return new Socket(host, port);
+    }
+    public ServerSocket createServerSocket(int port)
+        throws IOException
+    {
+        return new ServerSocket (port);
     }
 }
