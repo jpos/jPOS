@@ -76,6 +76,18 @@ public class SunJSSESocketFactory
         this.keyPassword=keyPassword;  
     }
 
+    public void setServerName(String serverName){
+        this.serverName=serverName;  
+    }
+
+    public void setClientAuthNeeded(boolean clientAuthNeeded){
+        this.clientAuthNeeded=clientAuthNeeded;  
+    }
+
+    public void setServerAuthNeeded(boolean serverAuthNeeded){
+        this.serverAuthNeeded=serverAuthNeeded;  
+    }
+
     static
     {
         Security.addProvider(new com.sun.net.ssl.internal.ssl.Provider()); 
@@ -262,18 +274,30 @@ public class SunJSSESocketFactory
         return dn.substring(0, i);
     }
 
-    //Have custom hooks get passwords
-    //You really neede to modify these two implementations
-    //We can make use of 
-    //PASSWORD_PROPERTY="jpos.ssl.password";
-    //KEYPASSWORD_PROPERTY="jpos.ssl.keypassword";
-    protected String getPassword()
-    {
-        return "password";
+    public String getKeyStore() {
+        return keyStore;
     }
-    protected String getKeyPassword()
-    {
-        return "password";
+
+    // Have custom hooks get passwords
+    // You really need to modify these two implementations
+    protected String getPassword() {
+        return System.getProperty("jpos.ssl.storepass", "password");
+    }
+
+    protected String getKeyPassword() {
+        return System.getProperty("jpos.ssl.keypass", "password");
+    }
+
+    public String getServerName() {
+        return serverName;
+    }
+
+    public boolean getClientAuthNeeded() {
+        return clientAuthNeeded;
+    }
+
+    public boolean getServerAuthNeeded() {
+        return serverAuthNeeded;
     }
 
     /**
