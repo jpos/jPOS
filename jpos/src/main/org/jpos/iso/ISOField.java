@@ -5,6 +5,9 @@ import java.util.*;
 
 /*
  * $Log$
+ * Revision 1.5  1999/11/18 23:33:41  apr
+ * Bugfix to bug introduced on 1.4 with setValue and intern() when obj == null
+ *
  * Revision 1.4  1999/10/01 19:20:27  apr
  * Added String.intern() in order to minimize memory usage
  *
@@ -70,7 +73,10 @@ public class ISOField extends ISOComponent implements Cloneable {
      * @exception ISOException
      */
     public void setValue(Object obj) throws ISOException {
-        value = ((String) obj).intern();
+	if (obj instanceof String)
+	    value = ((String) obj).intern();
+	else
+	    value = (String) obj;
     }
     /**
      * dump this field to PrintStream. The output is sorta
