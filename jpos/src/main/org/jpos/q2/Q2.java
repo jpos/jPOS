@@ -93,7 +93,7 @@ public class Q2 implements FileFilter {
     public static final String DEFAULT_DEPLOY_DIR  = "deploy";
     public static final String JMX_NAME            = "Q2";
     public static final String LOGGER_NAME         = "Q2";
-    public static final String REALM               = "Q2$SYSTEM"; // a la VMS
+    public static final String REALM               = "Q2.system"; 
     public static final String QBEAN_NAME          = "Q2:type=qbean,service=";
     public static final String Q2_CLASS_LOADER     = "Q2:type=system,service=loader";
 
