@@ -120,7 +120,7 @@ public class ThreadPool extends ThreadGroup implements LogSource, Loggeable, Con
     public ThreadPool (int poolSize, int maxPoolSize) {
 	super ("ThreadPool-" + poolNumber++);
 	this.maxPoolSize = maxPoolSize;
-        init(poolSize);
+        init (poolSize);
     }
     
     private void init(int poolSize){
@@ -152,7 +152,7 @@ public class ThreadPool extends ThreadGroup implements LogSource, Loggeable, Con
     }
     public void dump (PrintStream p, String indent) {
 	String inner = indent + "  ";
-	p.println (indent + "<ThreadPool name=\""+getName()+"\">");
+	p.println (indent + "<thread-pool name=\""+getName()+"\">");
 	if (!pool.ready())
 	    p.println (inner  + "<closed/>");
 	p.println (inner  + "<jobs>" +jobs+"</jobs>");
@@ -160,7 +160,7 @@ public class ThreadPool extends ThreadGroup implements LogSource, Loggeable, Con
 	p.println (inner  + "<max>"  +maxPoolSize+"</max>");
 	p.println (inner  + "<idle>"  + pool.consumerCount() +"</idle>");
 	p.println (inner  + "<pending>"  +pool.pending()+"</pending>");
-	p.println (indent + "</ThreadPool>");
+	p.println (indent + "</thread-pool>");
     }
 
     /**
@@ -218,8 +218,8 @@ public class ThreadPool extends ThreadGroup implements LogSource, Loggeable, Con
     * @throws ConfigurationException
     */
     public void setConfiguration(Configuration cfg) throws ConfigurationException {
-        maxPoolSize = cfg.getInt("max-threads", DEFAULT_MAX_THREADS);
-        init(cfg.getInt("initial-threads"));
+        maxPoolSize = cfg.getInt("max-size", DEFAULT_MAX_THREADS);
+        init (cfg.getInt("initial-size"));
     }
     
     /** 
