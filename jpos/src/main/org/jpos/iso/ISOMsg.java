@@ -8,6 +8,9 @@ import org.jpos.iso.packager.XMLPackager;
 
 /*
  * $Log$
+ * Revision 1.26  2000/05/03 16:18:56  apr
+ * commented out bitmaps in logs
+ *
  * Revision 1.25  2000/04/16 23:53:08  apr
  * LogProducer renamed to LogSource
  *
@@ -263,9 +266,19 @@ public class ISOMsg extends ISOComponent implements Cloneable, Loggeable {
 	    p.print (" "+XMLPackager.ID_ATTR +"=\""+fieldNumber +"\"");
 	p.println (">");
 	String newIndent = indent + "  ";
-        for (int i=0; i<=maxField; i++)
+        for (int i=0; i<=maxField; i++) {
             if ((c = (ISOComponent) fields.get (new Integer (i))) != null)
                 c.dump (p, newIndent);
+	    //
+	    // Uncomment to include bitmaps within logs
+	    // 
+	    // if (i == 0) {
+	    //  if ((c = (ISOComponent) fields.get (new Integer (-1))) != null)
+	    //    c.dump (p, newIndent);
+	    // }
+	    //
+	}
+
         p.println (indent + "</" + XMLPackager.ISOMSG_TAG+">");
     }
     /**
