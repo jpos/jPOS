@@ -1,4 +1,4 @@
-/* $Id: */
+/* $Id$ */
 
 package simplepacking;
 
@@ -15,7 +15,7 @@ import org.jpos.iso.ISODate;
 import org.jpos.iso.ISOField;
 import org.jpos.iso.ISOPackager;
 import org.jpos.iso.ISOException;
-import org.jpos.iso.packager.ISO87BPackager;
+import org.jpos.iso.packager.ISO93BPackager;
 
 public class Test extends SimpleLogSource {
     public Test (Logger logger, String realm) {
@@ -25,7 +25,7 @@ public class Test extends SimpleLogSource {
 	LogEvent evt = new LogEvent (this, "SimpleMessage");
 	Date d = new Date();
 
-	ISOPackager packager = new ISO87BPackager();  // 1) Create packager
+	ISOPackager packager = new ISO93BPackager();  // 1) Create packager
 	// uncomment the following line to debug packager
 	// packager.setLogger (getLogger(), "Packager");
 
