@@ -275,7 +275,7 @@ public class ChannelAdaptor
             if (!channel.isConnected ())
                 ISOUtil.sleep (delay);
         }
-        if (running()) 
+        if (running() && (sp.rdp (ready) == null))
             sp.out (ready, new Object ());
     }
     protected void disconnect () {
