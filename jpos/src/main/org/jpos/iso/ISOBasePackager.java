@@ -110,7 +110,7 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
 	    c = (ISOComponent) fields.get (new Integer (0));
 	    byte[] b;
 
-            if (first > 0) {
+            if (first > 0 && c != null) {
 		b = fld[0].pack(c);
 		len += b.length;
 		v.addElement (b);
