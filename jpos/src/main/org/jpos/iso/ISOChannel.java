@@ -15,6 +15,9 @@
 
 /*
  * $Log$
+ * Revision 1.2  1998/11/28 16:25:53  apr
+ * *** empty log message ***
+ *
  * Revision 1.1  1998/11/09 23:40:23  apr
  * *** empty log message ***
  *
@@ -46,7 +49,7 @@ public abstract class ISOChannel {
 	}
     public void connect () throws IOException {
        	socket =  new Socket (host, port);
-        serverIn = new DataInputStream (
+		serverIn = new DataInputStream (
 			new BufferedInputStream (socket.getInputStream ())
 		);
 		serverOut = new DataOutputStream(

@@ -10,6 +10,9 @@
 
 /*
  * $Log$
+ * Revision 1.2  1998/11/28 16:25:54  apr
+ * *** empty log message ***
+ *
  * Revision 1.1  1998/11/09 23:40:27  apr
  * *** empty log message ***
  *
@@ -182,10 +185,16 @@ public class ISOMUX implements Runnable {
 						this.wait();
 				}
 			}
-			catch (ConnectException e) { 
-			 	System.out.println(e);
+			catch (UnknownHostException e) { 
+			 	// System.out.println(e);
 				try {
-					Thread.sleep(1000);
+					Thread.sleep(60000);
+				} catch (InterruptedException ie) { }
+			}
+			catch (ConnectException e) { 
+			 	// System.out.println(e);
+				try {
+					Thread.sleep(10000);
 				} catch (InterruptedException ie) { }
 			}
 			catch (IOException e) {
