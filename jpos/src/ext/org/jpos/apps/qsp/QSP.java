@@ -2,6 +2,9 @@ package org.jpos.apps.qsp;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.Collection;
 import org.apache.xerces.parsers.*;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -31,6 +34,7 @@ public class QSP implements ErrorHandler, LogSource {
     long lastModified;
     static ControlPanel controlPanel = null;
     long monitorConfigInterval = 60 * 1000;
+    Collection reconfigurables;
 
     public static String[] SUPPORTED_TAGS = 
 	{ "logger",
@@ -50,6 +54,7 @@ public class QSP implements ErrorHandler, LogSource {
 
     public QSP () {
 	super();
+	reconfigurables = new ArrayList();
 	// setLogger (new Logger(), "qsp");
 	// logger.setName ("qsp");
     }
@@ -65,6 +70,9 @@ public class QSP implements ErrorHandler, LogSource {
     }
     public File getConfigFile () {
 	return configFile;
+    }
+    public Collection getReConfigurables() {
+	return reconfigurables;
     }
     public ControlPanel initControlPanel (int rows, int cols) {
 	if (controlPanel == null) {
@@ -104,8 +112,11 @@ public class QSP implements ErrorHandler, LogSource {
     public void configure (String tagname) throws ConfigurationException {
 	QSPConfigurator configurator = QSPConfiguratorFactory.create (tagname);
 	NodeList nodes = config.getElementsByTagName (tagname);
-	for (int i=0; i<nodes.getLength(); i++) 
+	if (configurator instanceof QSPReConfigurator && nodes.getLength()>0)
+	    reconfigurables.add (tagname);
+	for (int i=0; i<nodes.getLength(); i++) {
 	    configurator.config (this, nodes.item(i));
+	}
     }
     public void reconfigure (String tagname) throws ConfigurationException {
 	QSPConfigurator configurator = QSPConfiguratorFactory.create (tagname);
@@ -151,8 +162,9 @@ public class QSP implements ErrorHandler, LogSource {
 	    while (qsp.monitorConfigFile ()) {
 		parser.parse (qsp.getConfigFile().getPath());
 		qsp.setConfig (parser.getDocument());
-		for (int i=0; i<SUPPORTED_TAGS.length; i++)
-		    qsp.reconfigure (SUPPORTED_TAGS[i]);
+		Iterator iter = qsp.getReConfigurables().iterator();
+		while (iter.hasNext())
+		    qsp.reconfigure ((String) iter.next());
 	    }
 	} catch (IOException e) {
 	    Logger.log (new LogEvent (qsp, "error", e));
