@@ -106,7 +106,6 @@ public class ISOMUX implements Runnable, ISOSource, LogSource, ReConfigurable {
     public ISOMUX (ISOChannel c) {
 	super();
 	initMUX(c);
-	muxInstance = this;
     }
     /**
      * @param c a connected or unconnected ISOChannel
@@ -131,6 +130,7 @@ public class ISOMUX implements Runnable, ISOSource, LogSource, ReConfigurable {
         requestListener = null;
         rx = new Thread (new Receiver(this));
 	name = "";
+	muxInstance = this;
     }
     /**
      * allow changes to default value 11 (used in ANSI X9.2 messages)
