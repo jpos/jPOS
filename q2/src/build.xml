@@ -172,7 +172,7 @@
     <fixcrlf srcdir="${build}/src" includes="*" />
   </target>
 
-  <target name="release" depends="clean, jar, javadoc" 
+  <target name="release" depends="clean, jar, javadoc, source" 
            description="Create a tarball composed of R2R Q2">
     <property name="rbin" value="${build}/${archive}" />
     <property name="rlib" value="${rbin}/lib" />
@@ -205,6 +205,9 @@
     <copy    todir="${rbin}/javadoc" >
       <fileset dir="${javadoc}" includes="**" />
     </copy>
+    <copy    todir="${rbin}/src" >
+      <fileset dir="${build}/src" includes="**" />
+    </copy>
 
     <tar compression="gzip"
          destfile="${dist}/${archive}.tgz" defaultexcludes="true"> 	  
@@ -234,8 +237,8 @@
             tofile="${bin}/LICENSE" />
     <copy     file="ChangeLog"
             tofile="${bin}/ChangeLog" />
-    <copy     file="${dist}/${archive}.jar"
-            tofile="${bin}/${archive}.jar" />
+    <copy     file="${dist}/${project}.jar"
+            tofile="${bin}/${project}.jar" />
 
     <tar includes="${archive}/** src/** javadoc/**" basedir="${build}"
          tarfile="${dist}/${archive}.tar" defaultexcludes="true" />	  
