@@ -50,21 +50,24 @@ public class ISOFactory {
 	(Configuration cfg, String prefix, Logger logger, String realm)
 	throws ISOException
     {
-	String channelName  = cfg.get    (prefix + ".channel");
-	String packagerName = cfg.get    (prefix + ".packager");
-	String header       = cfg.get    (prefix + ".header");
-	String host         = cfg.get    (prefix + ".host");
+	String channelName  = cfg.get    (prefix + ".channel", null);
+	String packagerName = cfg.get    (prefix + ".packager", null);
+	String header       = cfg.get    (prefix + ".header", null);
+	String host         = cfg.get    (prefix + ".host", null);
 	int    port         = cfg.getInt (prefix + ".port");
         ISOChannel channel  = null;
+	ISOPackager packager= null;
         try {
             Class c = Class.forName(channelName);
-            Class p = Class.forName(packagerName);
-            if (c != null && p != null) {
-		ISOPackager packager = (ISOPackager) p.newInstance();
+            if (c != null) {
                 channel = (ISOChannel) c.newInstance();
+		if (packagerName != null) {
+		    Class p = Class.forName(packagerName);
+		    packager = (ISOPackager) p.newInstance();
+		    channel.setPackager(packager);
+		}
 		if (host != null && channel instanceof ClientChannel)
 		    ((ClientChannel)channel).setHost (host, port);
-                channel.setPackager(packager);
 		if (logger != null && (channel instanceof LogSource))
 		    ((LogSource) channel) .
 			setLogger (logger, realm + ".channel");
