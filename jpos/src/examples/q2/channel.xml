@@ -1,0 +1,17 @@
+<channel-adaptor class="org.jpos.q2.qbean.ChannelAdaptor" logger="Q2">
+  <!-- ISOChannel configuration -->
+
+  <channel class="org.jpos.iso.channel.XMLChannel" logger="Q2"
+    packager="org.jpos.iso.packager.XMLPackager">
+    <property name="host" value="127.0.0.1" />
+    <property name="port" value="8000" />
+    <filter class="org.jpos.iso.filter.DelayFilter" direction="outgoing">
+     <property name="delay" value="1000" />
+    </filter>
+  </channel>
+
+  <in>channel-in</in>
+  <out>channel-out</out>
+
+</channel-adaptor>
+
