@@ -16,6 +16,10 @@
     <property name="deprecation" value="true" />
     <property name="debug" value="off" />
     <property name="archive" value="${project}-${version}" />
+
+    <!-- External propietary modules -->
+    <property name="mod-uruguay"  value="${source}/mod-uruguay" />
+
   </target>
 
   <target name="targets">
@@ -55,6 +59,11 @@
 
   <target name="ext" depends="main">
     <javac srcdir="${ext}" destdir="${classes}"
+           classpath="${classpath}" debug="on" deprecation="${deprecation}" />
+  </target>
+
+  <target name="mod-uruguay" depends="main">
+    <javac srcdir="${mod-uruguay}" destdir="${classes}"
            classpath="${classpath}" debug="on" deprecation="${deprecation}" />
   </target>
 
