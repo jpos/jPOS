@@ -65,11 +65,15 @@ import java.lang.reflect.Field;
  * @author Alejandro Revilla
  * @version $Revision$ $Date$
  * @since 2.0
+ * @jmx:mbean description "TransientSpace"
  */
 public class TransientSpace implements LocalSpace, TransientSpaceMBean {
     protected Map map;
     static LocalSpace defaultSpace = null;
 
+    /**
+     * @jmx:managed-constructor description="Default Constructor"
+     */
     public TransientSpace () {
         super();
         map = new HashMap ();
@@ -263,6 +267,10 @@ public class TransientSpace implements LocalSpace, TransientSpaceMBean {
         } 
         return (LocalSpace) obj;
     }
+    /**
+     * @return set of keys present in the Space
+     * @jmx:managed-attribute description="Keys in Space"
+     */
     public Set getKeySet () {
         Set keySet;
         synchronized (this) {
@@ -283,9 +291,26 @@ public class TransientSpace implements LocalSpace, TransientSpaceMBean {
         }
         return sb.toString ();
     }
+
+    /**
+     * same as Space.out (key,value)
+     * @param key Key
+     * @param value value
+     * @jmx:managed-operation description="Write value to key"
+     * @jmx:managed-operation-parameter position="0" name="key" description="Space Key"
+     * @jmx:managed-operation-parameter position="1" name="value" description="Value to write"
+     */
     public void write (String key, String value) {
         out (key, value);
     }
+
+    /**
+     * same as Space.rd (key)
+     * @param key Key
+     * @return value.toString()
+     * @jmx:managed-operation description="Read value from key"
+     * @jmx:managed-operation-parameter position="0" name="key" description="Space Key"
+     */
     public String read (String key) {
         Object o = inp (key);
         return (o != null) ? o.toString() : "null";
