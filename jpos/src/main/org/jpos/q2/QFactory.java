@@ -56,11 +56,21 @@ import java.util.Map;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.net.MalformedURLException;
 import javax.management.Attribute;
 import javax.management.ObjectName;
+import javax.management.ObjectInstance;
 import javax.management.MBeanServer;
 import javax.management.MBeanException;
 import javax.management.MBeanServerFactory;
+import javax.management.MBeanRegistrationException;
+import javax.management.MalformedObjectNameException;
+import javax.management.InstanceAlreadyExistsException;
+import javax.management.InstanceNotFoundException;
+import javax.management.NotCompliantMBeanException;
+import javax.management.ReflectionException;
+import javax.management.AttributeNotFoundException;
+import javax.management.InvalidAttributeValueException;
 
 import org.jdom.Element;
 import org.jdom.Document;
@@ -73,28 +83,76 @@ import org.jdom.output.XMLOutputter;
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
  */
 public class QFactory {
-    public static QBean createQBean (Q2 server, Element e) 
+    public ObjectInstance createQBean (Q2 server, Element e) 
         throws ClassNotFoundException, 
                InstantiationException,
-               IllegalAccessException
+               IllegalAccessException,
+               MalformedObjectNameException,
+               MalformedURLException,
+               InstanceAlreadyExistsException,
+               MBeanRegistrationException,
+               InstanceNotFoundException,
+               MBeanException,
+               NotCompliantMBeanException,
+               InvalidAttributeValueException,
+               ReflectionException
     {
-        QBean qbean = null;
-        String className = e.getAttributeValue ("class");
+        String clazz  = e.getAttributeValue ("class");
+        String name   = e.getAttributeValue ("name");
+        if (name == null)
+            name = "service=unknown";
 
-        Class c = Class.forName (className);
+        ObjectName objectName = new ObjectName (Q2.JMX_NAME + ":" + name);
+        MBeanServer mserver = server.getMBeanServer();
 
-        Object obj = c.newInstance ();
-        if (obj instanceof QBean) {
-            qbean = (QBean) obj;
-            initQBean (server, qbean, e);
-        }
-        return qbean;
+        ObjectInstance instance = mserver.createMBean (
+            clazz, objectName, null
+        );
+
+        setAttribute (mserver, objectName, "Server", server);
+        setAttribute (mserver, objectName, "ConfigElement", e);
+
+        mserver.invoke (objectName, "init",  null, null);
+        mserver.invoke (objectName, "start", null, null);
+
+        return instance;
     }
 
-    public static void initQBean (Q2 server, QBean q, Element e) {
-        q.setServer (server);
-        q.init (e);
-        q.start ();
-   }
+    public void setAttribute 
+        (MBeanServer server, ObjectName objectName, 
+         String attribute, Object value)
+        throws InstanceNotFoundException,
+               MBeanException,
+               InvalidAttributeValueException,
+               ReflectionException
+    {
+        try {
+            server.setAttribute (
+                objectName, new Attribute (attribute, value)
+            );
+        } catch (AttributeNotFoundException ex) {
+            // okay to fail
+        }
+    }
+
+    public void destroyQBean (Q2 server, ObjectName objectName) 
+        throws ClassNotFoundException, 
+               InstantiationException,
+               IllegalAccessException,
+               MalformedObjectNameException,
+               MalformedURLException,
+               InstanceAlreadyExistsException,
+               MBeanRegistrationException,
+               InstanceNotFoundException,
+               MBeanException,
+               NotCompliantMBeanException,
+               InvalidAttributeValueException,
+               ReflectionException
+    {
+        MBeanServer mserver = server.getMBeanServer();
+        mserver.invoke (objectName, "stop",  null, null);
+        mserver.invoke (objectName, "destroy",  null, null);
+        mserver.unregisterMBean (objectName);
+    }
 }
 
