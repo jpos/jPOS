@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.5  2000/03/20 19:24:13  apr
+ * Testing ISOGetty ... minor bugfixes/timings in answer()/hangup()/reset()
+ *
  * Revision 1.4  2000/03/14 00:01:12  apr
  * isConnected(): remove debugging code
  *
@@ -216,12 +219,14 @@ public class V24 implements SerialPortEventListener, LogProducer
 	    );
 	}
 	else {
-	    Logger.log (
-		new LogEvent (this, "goodnews",
-		    portId.getName() 
-		    + " recovered CD after "
-		    + elapsed (lostCD))
-	    );
+	    if (lostCD != 0) {
+		Logger.log (
+		    new LogEvent (this, "goodnews",
+			portId.getName() 
+			+ " recovered CD after "
+			+ elapsed (lostCD))
+		);
+	    }
 	    lostCD = 0;
 	    synchronized (this) {
 		this.notify();
@@ -292,7 +297,16 @@ public class V24 implements SerialPortEventListener, LogProducer
      * @throws IOException
      */
     public void flushTransmitter () throws IOException {
-	os.flush ();
+	boolean retry = true;
+	while (retry) {
+	    try {
+		os.flush ();
+		retry = false;
+	    } catch (IOException e) {
+		Thread.yield();
+		retry = true;
+	    }
+	}
     }
     /**
      * @param s content to be sent (performs flush after sending)
@@ -346,6 +360,7 @@ public class V24 implements SerialPortEventListener, LogProducer
 	StringBuffer buf = new StringBuffer();
 	timeout = Math.abs (timeout);
 	long max = System.currentTimeMillis() + timeout;
+	setAutoFlushReceiver(false);
 	for (;;) {
 	    if (System.currentTimeMillis() > max) {
 		evt.addMessage ("<timeout>"+timeout+"</timeout>");

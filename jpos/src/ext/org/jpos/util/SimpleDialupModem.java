@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.6  2000/03/20 19:24:13  apr
+ * Testing ISOGetty ... minor bugfixes/timings in answer()/hangup()/reset()
+ *
  * Revision 1.5  2000/03/15 12:53:02  apr
  * WatchCD off/on in answer method
  *
@@ -37,6 +40,9 @@ import javax.comm.*;
 public class SimpleDialupModem implements Modem {
     V24 v24;
     String dialPrefix = "DT";
+    long lastInit = 0;
+    public static final int REINIT_MODEM = 2*60*1000;
+
     public final String[] resultCodes = {
 	"OK\r",
 	"CONNECT\r",
@@ -57,7 +63,7 @@ public class SimpleDialupModem implements Modem {
 	this.dialPrefix = dialPrefix;
     }
     private boolean checkAT() throws IOException {
-	return v24.waitfor ("AT\r", resultCodes, 10000) == 0;
+	return v24.waitfor ("ATE1Q0V1\r", resultCodes, 10000) == 0;
     }
     private void reset() throws IOException {
 	try {
@@ -96,28 +102,44 @@ public class SimpleDialupModem implements Modem {
 	    } catch (InterruptedException e) { }
 	}
     }
-    public void hangup () throws IOException {
-	reset();
-	if (v24.isConnected())
-	    throw new IOException ("Could not hangup");
-    }
     public boolean isConnected() {
 	return v24.isConnected();
     }
-    public void answer () throws IOException {
+    public void initForAnswer () throws IOException {
 	v24.setWatchCD (false);
 	v24.setAutoFlushReceiver(false);
 	if (!checkAT())
 	    throw new IOException ("unable to initialize modem (0)");
-	if (v24.waitfor ("ATB0V1Q0S0=1\r", resultCodes, 10000) != 0)
-	    throw new IOException ("unable to initialize modem (1)");
-	if (v24.waitfor ("CONNECT", 10*60*1000) != 0)
-	    throw new IOException ("NO CALLS so far - reinitializing");
-	v24.setAutoFlushReceiver(true);
+	v24.send ("ATB0E0Q1S0=1\r");
 	try {
 	    Thread.sleep (1000);
 	} catch (InterruptedException e) { }
-	v24.setAutoFlushReceiver(false);
+	v24.setAutoFlushReceiver(true);
+	lastInit = System.currentTimeMillis();
+    }
+    public void answer () throws IOException {
+	v24.dtr (true);
+	if (!v24.isConnected()) 
+	    initForAnswer();
+	while (!v24.isConnected()) {
+	    if ((System.currentTimeMillis() - lastInit ) > REINIT_MODEM)
+		initForAnswer();
+	    try {
+		Thread.sleep (1000);
+	    } catch (InterruptedException e) { }
+	}
 	v24.setWatchCD (true);
+    }
+    public void hangup () throws IOException {
+	v24.dtr (false);
+	try {
+	    Thread.sleep (1000);
+	} catch (InterruptedException e) { }
+	v24.dtr (true);
+	if (v24.isConnected()) {
+	    reset();
+	    if (v24.isConnected()) 
+		throw new IOException ("Can't hangup");
+	}
     }
 }
