@@ -1,4 +1,3 @@
 $Id$
 
-[v] get rid of javadoc Warnings
-[v] add index.html to packages
+[ ] Configuration-driven ISOChannelFactory
