@@ -131,7 +131,6 @@ public class QFactory {
         String name   = e.getAttributeValue ("name");
         if (name == null)
             name = e.getName ();
-        String logger = e.getAttributeValue ("logger");
 
         ObjectName objectName = new ObjectName (Q2.QBEAN_NAME + name);
         MBeanServer mserver = server.getMBeanServer();
@@ -140,7 +139,9 @@ public class QFactory {
             obj, objectName 
         );
         setAttribute (mserver, objectName, "Name", name);
-        setAttribute (mserver, objectName, "Logger", logger);
+        String logger = e.getAttributeValue ("logger");
+        if (logger != null)
+            setAttribute (mserver, objectName, "Logger", logger);
         setAttribute (mserver, objectName, "Server", server);
         setAttribute (mserver, objectName, "Persist", e);
         configureQBean(mserver,objectName,e);
