@@ -1,0 +1,20 @@
+<server class="org.jpos.q2.qbean.ServerAdaptor"
+       logger="Q2" name="JMSISOServer">
+
+    <attr name="port" type="java.lang.Integer">7000</attr>
+
+    <channel class="org.jpos.iso.channel.XMLChannel"
+        logger="Q2" packager="org.jpos.iso.packager.XMLPackager">
+    </channel>
+
+    <request-listener class="org.jpos.jms.ISOJMSQConnector" logger="Q2" realm="JMSConnector">
+        <property name="connectionFactory" value="ConnectionFactory" />
+        <property name="sendQueue" value="queue/testQueue" />
+        <property name="receiveQueue" value="queue/testQueue" />
+        <property name="senders" value="3" />
+        <property name="maxSenders" value="10" />
+    </request-listener>
+
+    <property name="allow" value="127.0.0.1" />
+
+</server>
