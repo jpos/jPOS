@@ -2,6 +2,8 @@
 
 # $Id$
 
+cd `dirname $0`/..
+
 if [ -z "$JAVA_HOME" ] ; then
   JAVA=`which java`
   if [ -z "$JAVA" ] ; then
