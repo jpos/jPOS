@@ -30,6 +30,7 @@
     <echo message="  extdoc  Create main+ext javadoc docuemtation" />
     <echo message="  doc     Create full documentation (including extdoc)" />
     <echo message="  jar     Generates ${archive}.jar" />
+    <echo message="  tarball Generates distro tarball" />
     <echo message=
       "  extdoc  Create javadoc documentation for main+ext modules" />
   </target>
@@ -77,7 +78,7 @@
          dest="." package="${project}" />
   </target>
 
-  <target name="javadoc" depends="prepare,main">
+  <target name="javadoc" depends="main">
     <mkdir   dir="${build}/doc" />
     <mkdir   dir="${build}/doc/images" />
     <deltree dir="${build}/doc/javadoc" />
@@ -94,7 +95,7 @@
         packagenames="org.jpos.util, org.jpos.iso, org.jpos.core.*" />
   </target>
 
-  <target name="extdoc" depends="prepare,main">
+  <target name="extdoc" depends="ext">
     <mkdir   dir="${build}/doc" />
     <deltree dir="${build}/doc/javadoc" />
     <mkdir   dir="${build}/doc/javadoc" />
@@ -120,4 +121,36 @@
     <mkdir   dir="${build}/doc" />
     <copydir src="${doc}"  dest="${build}/doc" includes="*.html" />
   </target>
+
+  <target name="source">
+    <deltree dir="${build}/src" />
+    <mkdir   dir="${build}/src" />
+    <copydir src="${source}/main"  dest="${build}/src" excludes="CVS/*" />
+    <copydir src="${source}/ext"  dest="${build}/src" excludes="CVS/*" />
+  </target>
+
+  <target name="tarball" depends="jar, doc, source">
+    <property name="bin" value="${build}/${archive}" />
+    <delete   file="${dist}/${archive}.tgz" />
+    <delete   file="${dist}/${archive}.zip" />
+    <deltree  dir="${bin}" />
+    <mkdir    dir="${bin}" />
+    <copyfile src="${etc}/README"
+              dest="${bin}/README" />
+    <copyfile src="${etc}/LICENSE"
+              dest="${bin}/LICENSE" />
+    <copyfile src="${etc}/CHANGELOG"
+              dest="${bin}/CHANGELOG" />
+    <copyfile src="${dist}/${archive}.jar"
+              dest="${bin}/${archive}.jar" />
+
+    <tar includes="${archive}/** src/** doc/**" basedir="${build}"
+         tarfile="${dist}/${archive}.tar" defaultexcludes="true" />	  
+    <gzip src="${dist}/${archive}.tar" zipfile="${dist}/${archive}.tgz"/>
+    <delete file="${dist}/${archive}.tar" />
+
+    <zip zipfile="${dist}/${archive}.zip" basedir="${build}"
+         includes="${archive}/** src/** doc/**" />
+  </target>
 </project>
+
