@@ -62,7 +62,7 @@
  <task class="org.jpos.apps.qsp.task.Sender" 
     logger="qsp" realm="sender" name="sender">
   <property name="mux" value="dummyclient.mux" />
-  <property name="message" value="src/ext-examples/qsp/dummyclient/0200.xml" />
+  <property name="message" value="src/ext-examples/qsp/dummyclient/0800.xml" />
   <property name="wait-for-response" value="15000" />
   <property name="initial-delay" value="1000" />
   <property name="delay" value="10000" />
