@@ -71,6 +71,19 @@ public class IFB_LLHNUM extends ISOStringFieldPackager {
                 pad ? BCDInterpreter.LEFT_PADDED : BCDInterpreter.RIGHT_PADDED,
                 BinaryPrefixer.B);
         this.pad = pad;
+        if (len > 255)
+        {
+            throw new IllegalArgumentException("Length " + len + " too long for " + this.getClass().getName());
+        }
+    }
+
+    public void setLength(int len)
+    {
+        if (len > 255)
+        {
+            throw new IllegalArgumentException("Length " + len + " too long for " + this.getClass().getName());
+        }
+        super.setLength(len);
     }
     
     public void setPad(boolean pad) {
