@@ -17,7 +17,9 @@ import org.jpos.util.Logger;
  * @author <a href="mailto:taherkordy@dpi2.dpi.net.ir">Alireza Taherkordi</a>
  * @version $Revision$ $Date$
  */
-public class QTest extends QBeanSupport implements Runnable {
+public class QTest extends QBeanSupport implements Runnable, QTestMBean {
+    long tickInterval = 1000;
+
     public QTest () {
         super();
         log.info ("constructor");
@@ -43,24 +45,25 @@ public class QTest extends QBeanSupport implements Runnable {
         super.setPersist (e);
     }
     public Element getPersist () {
+        setModified (false);
         log.info ("getPersist");
-        return super.getPersist ();
+        return createElement ("qtest", QTestMBean.class);
     }
     public void setName (String name) {
         log.info ("setName " + name);
         super.setName (name);
     }
+    public void setTickInterval (long tickInterval) {
+        this.tickInterval = tickInterval;
+        setModified (true);
+    }
+    public long getTickInterval () {
+        return tickInterval;
+    }
     public void run () {
-        int tickCount = 0;
-        while (running ()) {
+        for (int tickCount=0; running (); tickCount++) {
             log.info ("tick " + tickCount);
-            if (tickCount++ % 10 == 0) {
-                super.getPersist ().addContent (
-                    new Comment (" tickCount = " + (tickCount-1) + " ")
-                );
-                setModified (true);
-            }
-            ISOUtil.sleep (1000);
+            ISOUtil.sleep (tickInterval);
         }
         setState (QBean.STOPPED);
     }
