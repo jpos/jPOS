@@ -163,7 +163,9 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
     public void parseTrack2 (String s) 
         throws InvalidCardException
     {
-        int separatorIndex = s.indexOf(TRACK2_SEPARATOR);
+        if (s == null)
+            throw new InvalidCardException ("null track2 data");
+        int separatorIndex = s.replace ('D','=').indexOf(TRACK2_SEPARATOR);
         if ((separatorIndex > 0) && (s.length() > separatorIndex+4)) {
             pan = s.substring(0, separatorIndex);
             exp = s.substring(separatorIndex+1, separatorIndex+1+4);
