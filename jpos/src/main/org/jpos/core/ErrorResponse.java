@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.2  1999/12/20 10:46:26  apr
+ * Added setAuthoritative
+ *
  * Revision 1.1  1999/11/26 12:16:49  apr
  * CVS devel snapshot
  *
@@ -61,6 +64,9 @@ public class ErrorResponse implements CardTransactionResponse {
     }
     public boolean isAuthoritative() {
 	return authoritative;
+    }
+    public void setAuthoritative (boolean authoritative) {
+	this.authoritative = authoritative;
     }
     public void setContinue (boolean canContinue) {
 	this.canContinue = canContinue;
