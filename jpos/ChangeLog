@@ -1,6 +1,9 @@
 $Id$
 
 -- 1.4.7 --
+BaseHeader implements Loggeable
+ISOMsg.dump dumps header
+BaseChannel.receive hexdumps header and binary image on ISOException
 Added org.jpos.transaction package
 Added ISOUtil.hexdump (byte[], int, int);
 Bugfix in IFEB_LLNUM.unpack (ISOComponent, InputStream)
