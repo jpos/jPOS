@@ -67,18 +67,12 @@ public class IFB_LLBINARY extends ISOBinaryFieldPackager {
      */
     public IFB_LLBINARY (int len, String description) {
         super(len, description, LiteralBinaryInterpreter.INSTANCE, BcdPrefixer.LL);
-        if (len > 99)
-        {
-            throw new IllegalArgumentException("Length " + len + " too long for " + this.getClass().getName());
-        }
+        checkLength(len, 99);
     }
 
     public void setLength(int len)
     {
-        if (len > 99)
-        {
-            throw new IllegalArgumentException("Length " + len + " too long for " + this.getClass().getName());
-        }
+        checkLength(len, 99);
         super.setLength(len);
     }
 }

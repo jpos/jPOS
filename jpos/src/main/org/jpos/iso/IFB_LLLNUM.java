@@ -70,18 +70,12 @@ public class IFB_LLLNUM extends ISOStringFieldPackager {
         super(len, description, NullPadder.INSTANCE,
                 isLeftPadded ? BCDInterpreter.LEFT_PADDED : BCDInterpreter.RIGHT_PADDED,
                 BcdPrefixer.LLL);
-        if (len > 999)
-        {
-            throw new IllegalArgumentException("Length " + len + " too long for " + this.getClass().getName());
-        }
+        checkLength(len, 999);
     }
 
     public void setLength(int len)
     {
-        if (len > 999)
-        {
-            throw new IllegalArgumentException("Length " + len + " too long for " + this.getClass().getName());
-        }
+        checkLength(len, 999);
         super.setLength(len);
     }
 

@@ -66,18 +66,12 @@ public class IFB_LLLHBINARY extends ISOBinaryFieldPackager {
      */
     public IFB_LLLHBINARY (int len, String description) {
         super(len, description, LiteralBinaryInterpreter.INSTANCE, BinaryPrefixer.BB);
-        if (len > 999)
-        {
-            throw new IllegalArgumentException("Length " + len + " too long for " + this.getClass().getName());
-        }
+        checkLength(len, 999);
     }
 
     public void setLength(int len)
     {
-        if (len > 999)
-        {
-            throw new IllegalArgumentException("Length " + len + " too long for " + this.getClass().getName());
-        }
+        checkLength(len, 999);
         super.setLength(len);
     }
 }

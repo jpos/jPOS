@@ -233,4 +233,21 @@ public class ISOAmountFieldPackager extends ISOFieldPackager
             throw new ISOException(makeExceptionMessage(c, "unpacking"), e);
         }
     }
+
+    /**
+     * Checks the length of the data against the maximum, and throws an IllegalArgumentException.
+     * This is designed to be called from field Packager constructors and the setLength()
+     * method.
+     * @param len The length of the data for this field packager.
+     * @param maxLength The maximum length allowed for this type of field packager.
+     *          This depends on the prefixer that is used.
+     * @throws IllegalArgumentException If len > maxLength.
+     */
+    protected void checkLength(int len, int maxLength) throws IllegalArgumentException
+    {
+        if (len > maxLength)
+        {
+            throw new IllegalArgumentException("Length " + len + " too long for " + getClass().getName());
+        }
+    }
 }
