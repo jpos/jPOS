@@ -121,7 +121,7 @@ public class GenericPackager
 
     /** 
      * Create a GenericPackager with the field descriptions 
-     * from an XMLfile
+     * from an XML File
      * @param filename The XML field description file
      */
     public GenericPackager(String filename) throws ISOException
@@ -130,6 +130,16 @@ public class GenericPackager
     	readFile(filename);
     }
 
+    /** 
+     * Create a GenericPackager with the field descriptions 
+     * from an XML InputStream
+     * @param input The XML field description InputStream
+     */
+    public GenericPackager(InputStream input) throws ISOException
+    {
+    	this();
+    	readFile(input);
+    }
 
     /**
      * <pre>
@@ -183,25 +193,45 @@ public class GenericPackager
      */
     public void readFile(String filename) throws ISOException
     {
-	try 
-	{
-	    XMLReader reader = XMLReaderFactory.createXMLReader(
-		    System.getProperty( "sax.parser", 
-		    "org.apache.xerces.parsers.SAXParser"));
-
-	    reader.setFeature ("http://xml.org/sax/features/validation", true);
-	    GenericContentHandler handler = new GenericContentHandler();
-	    reader.setContentHandler(handler);
-	    reader.setErrorHandler(handler);
-
-	    reader.parse(filename);	
+	try {
+	    createXMLReader().parse(filename);	
 	} 
-	catch (Exception e) 
-	{
-	    e.printStackTrace();
+	catch (Exception e) {
 	    throw new ISOException(e);
 	}
     }
+
+    /**
+     * Parse the field descriptions from an XML InputStream.
+     *
+     * <pre>
+     * Uses the sax parser specified by the system property 'sax.parser'
+     * The default parser is org.apache.xerces.parsers.SAXParser 
+     * </pre>
+     * @param input The XML field description InputStream
+     */
+    public void readFile(InputStream input) throws ISOException
+    {
+	try {
+	    createXMLReader().parse(new InputSource(input));
+	} 
+	catch (Exception e) {
+	    throw new ISOException(e);
+	}
+    }
+
+    private XMLReader createXMLReader () throws SAXException {
+        XMLReader reader = XMLReaderFactory.createXMLReader(
+                System.getProperty( "sax.parser", 
+                "org.apache.xerces.parsers.SAXParser"));
+
+        reader.setFeature ("http://xml.org/sax/features/validation", true);
+        GenericContentHandler handler = new GenericContentHandler();
+        reader.setContentHandler(handler);
+        reader.setErrorHandler(handler);
+        return reader;
+    }
+
 
     private void setGenericPackagerParams (Attributes atts)
     {
