@@ -317,7 +317,7 @@ public class ISOMUX implements Runnable, ISOSource, LogSource, MUX,
                             else 
                                 cnt[RX_UNKNOWN]++;
                         }
-                    } catch (Exception e) {
+                    } catch (Throwable e) {
                         if (!terminate) {
                             channel.setUsable(false);
                             if (!(e instanceof EOFException))
