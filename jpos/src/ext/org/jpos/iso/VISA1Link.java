@@ -169,7 +169,7 @@ public class VISA1Link implements LogSource, Runnable
 	frame[b.length+2] = calcLRC (b);
 	v24.send (frame);
 	v24.flushTransmitter();
-	evt.addMessage ("<send>"+ISOUtil.hexString(frame)+"</send>");
+	evt.addMessage ("<send>"+ISOUtil.dumpString(frame)+"</send>");
     }
 
     private byte[] receivePacket (long timeout, LogEvent evt) 
@@ -244,9 +244,9 @@ public class VISA1Link implements LogSource, Runnable
 	    long expired = System.currentTimeMillis() + timeout;
 	    int i = 0;
 	    while (System.currentTimeMillis() < expired) {
-		if (i++ % 5 == 0)
+		// if (i++ % 5 == 0)
 		    v24.send (ENQ);
-		String buf = v24.readUntil ("\002\004", 5*1000, true);
+		String buf = v24.readUntil ("\002\004", 1000, true);
 		if (buf.endsWith ("\002")) {
 		    request = receivePacket (10*1000, evt);
 		    v24.send (request == null ? NAK : ACK);
