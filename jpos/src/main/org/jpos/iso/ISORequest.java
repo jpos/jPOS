@@ -13,6 +13,7 @@ import java.util.*;
  * @see ISOException
  * @see ISOChannel
  * @see ISOMUX
+ * @serial
  */
 public class ISORequest {
 	private ISOMsg request, response;
