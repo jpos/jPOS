@@ -55,6 +55,7 @@ import java.util.*;
  * varios functions needed to pack/unpack ISO-8583 fields
  *
  * @author apr@cs.com.uy
+ * @author Hani S. Kirollos
  * @version $Id$
  * @see ISOComponent
  */
@@ -609,5 +610,53 @@ public class ISOUtil {
         for (int i=0; st.hasMoreTokens(); i++) 
             array[i] = Integer.parseInt (st.nextToken());
         return array;
+    }
+    /**
+     * Bitwise XOR between corresponding bytes
+     * @param op1 byteArray1
+     * @param op2 byteArray2
+     * @return an array of length = the smallest between op1 and op2
+     */
+    public static byte[] xor (byte[] op1, byte[] op2) {
+        byte[] result = null;
+        // Use the smallest array
+        if (op2.length > op1.length) {
+            result = new byte[op1.length];
+        }
+        else {
+            result = new byte[op2.length];
+        }
+        for (int i = 0; i < result.length; i++) {
+            result[i] = (byte)(op1[i] ^ op2[i]);
+        }
+        return  result;
+    }
+    /**
+     * Trims a byte[] to a certain length
+     * @param array the byte[] to be trimmed
+     * @param length the wanted length
+     * @return the trimmed byte[]
+     */
+    public static byte[] trim (byte[] array, int length) {
+        byte[] trimmedArray = new byte[length];
+        System.arraycopy(array, 0, trimmedArray, 0, length);
+        return  trimmedArray;
+    }
+    /**
+     * Concatenates two byte arrays (array1 and array2)
+     * @param array1
+     * @param beginIndex1
+     * @param length1
+     * @param array2
+     * @param beginIndex2
+     * @param length2
+     * @return the concatenated array
+     */
+    public static byte[] concat (byte[] array1, int beginIndex1, int length1, byte[] array2,
+            int beginIndex2, int length2) {
+        byte[] concatArray = new byte[length1 + length2];
+        System.arraycopy(array1, beginIndex1, concatArray, 0, length1);
+        System.arraycopy(array2, beginIndex2, concatArray, length1, length2);
+        return  concatArray;
     }
 }
