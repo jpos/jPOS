@@ -171,6 +171,14 @@ public class VAPChannel extends BaseChannel {
         return h.isRejected() || (h.getHLen() != BASE1Header.LENGTH);
     }
 
+    protected boolean shouldIgnore (byte[] b) {
+        if (b != null) {
+            BASE1Header h = new BASE1Header(b);
+            return h.getFormat() > 2;
+        }
+        return false;
+    }
+
     /**
      * sends an ISOMsg over the TCP/IP session.
      *

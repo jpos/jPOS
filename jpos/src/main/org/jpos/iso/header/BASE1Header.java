@@ -98,6 +98,9 @@ public class BASE1Header extends BaseHeader {
     public void setHFormat(int hformat) {
         header[1] = (byte) hformat;
     }
+    public int getFormat() {
+        return (int) (header[2] & 0xFF);
+    }
     public void setRtCtl(int i) {
         header[11] = (byte) i;
     }

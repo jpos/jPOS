@@ -441,6 +441,10 @@ public abstract class BaseChannel extends Observable
         // VAP Header support - see VAPChannel
         return false;
     }
+    protected boolean shouldIgnore (byte[] b) {
+        // VAP Header support - see VAPChannel
+        return false;
+    }
     protected ISOMsg createMsg () {
         return new ISOMsg();
     }
@@ -492,7 +496,7 @@ public abstract class BaseChannel extends Observable
             }
             m.setPackager (getDynamicPackager(b));
             m.setHeader (getDynamicHeader(header));
-            if (b.length > 0)  // Ignore NULL messages
+            if (b.length > 0 && !shouldIgnore (header))  // Ignore NULL messages
                 m.unpack (b);
             m.setDirection(ISOMsg.INCOMING);
             m = applyIncomingFilters (m, header, b, evt);
