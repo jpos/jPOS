@@ -3,6 +3,13 @@ package uy.com.cs.jpos.iso;
 import java.io.*;
 import java.util.*;
 
+/*
+ * $Log$
+ * Revision 1.14  1999/10/01 10:54:08  apr
+ * Added merge method
+ *
+ */
+
 /**
  * implements <b>Composite</b>
  * whithin a <b>Composite pattern</b>
@@ -277,6 +284,23 @@ public class ISOMsg extends ISOComponent implements Cloneable, Loggeable {
         } catch (CloneNotSupportedException e) {
             throw new InternalError();
         }
+    }
+
+    /**
+     * add all fields present on received parameter to this ISOMsg<br>
+     * please note that received fields take precedence over 
+     * existing ones (simplifying card agent message creation 
+     * and template handling)
+     * @param m ISOMsg to merge
+     */
+    public void merge (ISOMsg m) {
+	for (int i=0; i<m.getMaxField(); i++) 
+	    try {
+		if (m.hasField(i))
+		    set (m.getComponent(i));
+	    } catch (ISOException e) {
+		// should never happen 
+	    }
     }
 
     /**
