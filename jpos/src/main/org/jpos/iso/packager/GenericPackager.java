@@ -59,6 +59,9 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import org.jpos.iso.*;
 import org.jpos.util.*;
+import org.jpos.core.Configuration;
+import org.jpos.core.ReConfigurable;
+import org.jpos.core.ConfigurationException;
 import org.jpos.iso.packager.*;
 /**
  * <pre>
@@ -93,14 +96,24 @@ import org.jpos.iso.packager.*;
  *         ...
  * &lt;/isofieldpackager&gt;
  *
+ * The optional attributes maxValidField, bitmapField and emitBitmap
+ * are allowed on the isopackager node.
+ *
  * </pre>
  * @author Eoin Flood
  * @version $Revision$ $Date$
  * @see ISOPackager
  * @see ISOBasePackager
  */
-public class GenericPackager extends ISOBasePackager
+public class GenericPackager 
+    extends ISOBasePackager implements ReConfigurable
 {
+   /* Values copied from ISOBasePackager
+      These can be changes using attributes on the isopackager node */ 
+    private int maxValidField=128;
+    private boolean emitBitmap=true;
+    private int bitmapField=1;
+
     public GenericPackager() throws ISOException
     {
 	super();
@@ -113,8 +126,50 @@ public class GenericPackager extends ISOBasePackager
      */
     public GenericPackager(String filename) throws ISOException
     {
-	this();
-	readFile(filename);
+    	this();
+    	readFile(filename);
+    }
+
+
+    /**
+     * <pre>
+     *  packager-config
+     *  packager-logger
+     *  packager-realm
+     * </pre>
+     * @param cfg Configuration
+     */
+    public void setConfiguration (Configuration cfg) 
+	throws ConfigurationException
+    {
+    	try
+	{
+	    String loggerName = cfg.get("packager-logger");
+	    if (loggerName != null)
+		setLogger(Logger.getLogger (loggerName), 
+			   cfg.get ("packager-realm"));
+
+	    readFile(cfg.get("packager-config"));
+	} 
+	catch (ISOException e) 
+	{
+	    throw new ConfigurationException(e);
+	}
+    }
+
+    protected int getMaxValidField()
+    {
+	return maxValidField;
+    }
+
+    protected boolean emitBitMap()
+    {
+    	return emitBitmap;
+    }
+
+    protected ISOFieldPackager getBitMapfieldPackager()
+    {
+    	return fld[bitmapField];
     }
 
     /**
@@ -139,7 +194,7 @@ public class GenericPackager extends ISOBasePackager
 	    reader.setContentHandler(handler);
 	    reader.setErrorHandler(handler);
 
-	    reader.parse(new InputSource(filename));	
+	    reader.parse(filename);	
 	} 
 	catch (Exception e) 
 	{
@@ -148,7 +203,24 @@ public class GenericPackager extends ISOBasePackager
 	}
     }
 
-    private class GenericContentHandler extends DefaultHandler
+    private void setGenericPackagerParams (Attributes atts)
+    {
+	String maxField  = atts.getValue("maxValidField");
+	String emitBmap  = atts.getValue("emitBitmap");
+	String bmapfield = atts.getValue("bitmapField");
+
+	if (maxField != null)
+	    maxValidField = Integer.parseInt(maxField);	
+
+	if (emitBmap != null)
+	    emitBitmap = Boolean.valueOf(emitBmap).booleanValue();
+
+	if (bmapfield != null)
+	    bitmapField = Integer.parseInt(bmapfield);
+    }
+
+
+    public class GenericContentHandler extends DefaultHandler
     {
 	private Stack fieldStack;
 
@@ -180,6 +252,8 @@ public class GenericPackager extends ISOBasePackager
 		{
 		    // Stick a new Hashtable on stack to collect the fields
 		    fieldStack.push(new Hashtable());
+
+		    setGenericPackagerParams (atts);
 		}
 
 		if (localName.equals("isofieldpackager"))
@@ -200,10 +274,16 @@ public class GenericPackager extends ISOBasePackager
 		    f = (ISOFieldPackager) Class.forName(type).newInstance();	
 		    f.setDescription(name);
 		    f.setLength(Integer.parseInt(size));
+		    f.setPad(new Boolean(pad).booleanValue());
 		    fieldStack.push(f);
 
 		    ISOBasePackager p;
 		    p = (ISOBasePackager) Class.forName(packager).newInstance();
+		    if (p instanceof GenericPackager)
+		    {
+		    	GenericPackager gp = (GenericPackager) p;
+		    	gp.setGenericPackagerParams (atts);
+		    }
 		    fieldStack.push(p);
 
 		    fieldStack.push(new Hashtable());
