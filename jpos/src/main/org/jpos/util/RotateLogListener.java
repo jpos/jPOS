@@ -64,45 +64,58 @@ import org.jpos.core.ConfigurationException;
  */
 
 public class RotateLogListener extends SimpleLogListener 
-    implements Runnable, Configurable
+    implements Configurable
 {
     FileOutputStream f;
     String logName;
     int maxCopies;
-    int sleepTime;
+    long sleepTime;
+    long maxSize;
+    int  msgCount;
+    public static final int CHECK_INTERVAL = 0;
 
     /**
      * @param name base log filename
-     * @param t switch logs every t seconds
+     * @param sleepTime switch logs every t seconds
      * @param maxCopies number of old logs
+     * @param maxSize in bytes 
      */
-    public RotateLogListener (String logName, int t, int maxCopies) 
+
+    public RotateLogListener 
+        (String logName, int sleepTime, int maxCopies, long maxSize) 
 	throws IOException
     {
 	super();
 	this.logName   = logName;
 	this.maxCopies = maxCopies;
-	this.sleepTime = t;
+	this.sleepTime = sleepTime * 1000;
+        this.maxSize   = maxSize;
 	f = null;
 	openLogFile ();
-	if (t != 0) 
-	    (new Thread(this)).start();
+        Timer timer = DefaultTimer.getTimer();
+	if (sleepTime != 0) 
+            timer.schedule (new Rotate(), sleepTime, sleepTime);
     }
+
+    public RotateLogListener 
+        (String logName, int sleepTime, int maxCopies) 
+	throws IOException
+    {
+        this (logName, sleepTime, maxCopies, 100*1024*1024); // safe maxSize
+    }
+
     public RotateLogListener () {
 	super();
-	logName = null;
-	maxCopies = 0;
-	sleepTime = 0;
-	f = null;
     }
 
    /**
     * Configure this RotateLogListener<br>
     * Properties:<br>
     * <ul>
-    *  <li>file     base log filename
-    *  <li>[window] in seconds (default 0 - never rotate)
-    *  <li>[count]  number of copies (default 0 == single copy)
+    *  <li>file      base log filename
+    *  <li>[window]  in seconds (default 0 - never rotate)
+    *  <li>[count]   number of copies (default 0 == single copy)
+    *  <li>[maxsize] max log size in bytes (aprox)
     * </ul>
     * @param cfg Configuration 
     * @throws ConfigurationException
@@ -110,18 +123,31 @@ public class RotateLogListener extends SimpleLogListener
     public void setConfiguration (Configuration cfg)
 	throws ConfigurationException
     {
-	maxCopies = cfg.getInt ("copies");
-	sleepTime = cfg.getInt ("window");
-	logName   = cfg.get ("file");
+	maxCopies = cfg.getInt  ("copies");
+	sleepTime = cfg.getInt  ("window") * 1000;
+	logName   = cfg.get     ("file");
+        maxSize   = cfg.getLong ("maxsize");
+
 	try {
-	    openLogFile();
+            openLogFile();
 	} catch (IOException e) {
 	    throw new ConfigurationException (e);
 	}
+        Timer timer = DefaultTimer.getTimer();
 	if (sleepTime != 0) 
-	    (new Thread(this)).start();
+            timer.schedule (new Rotate(), sleepTime, sleepTime);
     }
-    private void openLogFile() throws IOException {
+    public synchronized void log (LogEvent ev) {
+        if (msgCount++ > CHECK_INTERVAL) {
+            checkSize();
+            msgCount = 0;
+        }
+        
+        super.log (ev);
+    }
+    private synchronized void openLogFile() throws IOException {
+        if (f != null)
+            f.close();
 	f = new FileOutputStream (logName, true);
 	setPrintStream (new PrintStream(f));
     }
@@ -139,15 +165,32 @@ public class RotateLogListener extends SimpleLogListener
 	}
 	openLogFile();
     }
-    public void run () {
-	for (;;) {
-	    try {
-		Thread.sleep (sleepTime * 1000);
-		logRotate();
-	    } catch (InterruptedException e) { 
-	    } catch (IOException e) {
-		e.printStackTrace (System.err);
-	    }
-	}
+    protected void logDebug (String msg) {
+        if (p != null) {
+            p.println ("<log realm=\"rotate-log-listener\" at=\""+new Date().toString() +"\">");
+            p.println ("   "+msg);
+            p.println ("</log-debug>");
+        }
+    }
+    private void checkSize() {
+        File logFile = new File (logName);
+        if (logFile.length() > maxSize) {
+            try {
+                logDebug ("maxSize ("+maxSize+") threshold reached");
+                logRotate();
+            } catch (IOException e) {
+                e.printStackTrace (System.err);
+            }
+        }
+    }
+    public class Rotate extends TimerTask {
+        public void run() {
+            try {
+                logDebug ("time exceeded - log rotated");
+                logRotate();
+            } catch (IOException e) {
+                e.printStackTrace (System.err);
+            }
+        }
     }
 }
