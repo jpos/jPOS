@@ -341,7 +341,7 @@ public class QSP implements ErrorHandler, LogSource, Runnable {
     public static Object getTask (String name)
 	throws NameRegistrar.NotFoundException
     {
-	return (ISOMUX) NameRegistrar.get (
+	return NameRegistrar.get (
             ConfigTask.NAMEREGISTRAR_PREFIX+name
         );
     }
