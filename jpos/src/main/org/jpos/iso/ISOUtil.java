@@ -12,6 +12,9 @@ import java.util.*;
 
 /*
  * $Log$
+ * Revision 1.19  2000/04/06 12:31:03  apr
+ * XML normalize
+ *
  * Revision 1.18  2000/03/01 14:44:45  apr
  * Changed package name to org.jpos
  *
@@ -459,7 +462,7 @@ public class ISOUtil {
         }
         return prefix + "." + suffix;
     }
-    /*
+    /**
      * prepare long value used as amount for display
      * (implicit 2 decimals)
      * @param l value
@@ -474,5 +477,54 @@ public class ISOUtil {
         StringBuffer s = new StringBuffer(padleft (buf, len-1, ' ') );
         s.insert(len-3, '.');
         return s.toString();
+    }
+
+    /**
+     * XML normalizer
+     * @param s source String
+     * @param canonical true if we want to normalize \r and \n as well
+     * @return normalized string suitable for XML Output
+     */
+    public static String normalize (String s, boolean canonical) {
+        StringBuffer str = new StringBuffer();
+
+        int len = (s != null) ? s.length() : 0;
+        for (int i = 0; i < len; i++) {
+            char ch = s.charAt(i);
+            switch (ch) {
+                case '<': 
+                    str.append("&lt;");
+                    break;
+                case '>': 
+                    str.append("&gt;");
+                    break;
+                case '&': 
+                    str.append("&amp;");
+                    break;
+                case '"': 
+                    str.append("&quot;");
+                    break;
+                case '\r':
+                case '\n': 
+                    if (canonical) {
+                        str.append("&#");
+                        str.append(Integer.toString(ch));
+                        str.append(';');
+                        break;
+                    }
+                    // else, default append char
+                default: 
+                    str.append(ch);
+            }
+        }
+        return (str.toString());
+    }
+    /**
+     * XML normalizer (default canonical)
+     * @param s source String
+     * @return normalized string suitable for XML Output
+     */
+    public static String normalize (String s) {
+	return normalize (s, true);
     }
 }

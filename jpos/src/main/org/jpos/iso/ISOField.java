@@ -5,6 +5,9 @@ import java.util.*;
 
 /*
  * $Log$
+ * Revision 1.9  2000/04/06 12:31:03  apr
+ * XML normalize
+ *
  * Revision 1.8  2000/03/20 21:56:39  apr
  * DocBugFix: broken links to API_users_guide
  *
@@ -93,6 +96,6 @@ public class ISOField extends ISOComponent implements Cloneable {
         p.println (indent +"<"+XMLPackager.ISOFIELD_TAG + " " +
 	    XMLPackager.ID_ATTR +"=\"" +fieldNumber +"\" "+
 	    XMLPackager.VALUE_ATTR
-	    +"=\"" +value +"\"/>");
+	    +"=\"" +ISOUtil.normalize (value) +"\"/>");
     }
 }
