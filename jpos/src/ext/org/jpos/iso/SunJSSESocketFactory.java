@@ -94,23 +94,20 @@ public class SunJSSESocketFactory
             sslc.init( kma, tma, SecureRandom.getInstance( "SHA1PRNG" ) ); 
        
             return sslc;
+        } catch(Exception e) {
+            throw new ISOException (e);
+        } finally { 
+            password=null;
+            keyPassword=null;
+        }
     }
-    catch(Exception e)
-    {
-        throw new ISOException (e);
-    }
-    finally
-    { 
-        password=null;
-        keyPassword=null;
-    }
-   }
-  /**
-    * Create a socket factory
-    * @return the socket factory
-    * @exception ISOException if an error occurs during server socket
-    * creation
-    */
+
+    /**
+     * Create a socket factory
+     * @return the socket factory
+     * @exception ISOException if an error occurs during server socket
+     * creation
+     */
     protected SSLServerSocketFactory createServerSocketFactory() 
         throws ISOException
     {
@@ -118,12 +115,12 @@ public class SunJSSESocketFactory
         return sslc.getServerSocketFactory();
     }
         
-   /**
-    * Create a socket factory
-    * @return the socket factory
-    * @exception ISOException if an error occurs during server socket
-    * creation
-    */
+    /**
+     * Create a socket factory
+     * @return the socket factory
+     * @exception ISOException if an error occurs during server socket
+     * creation
+     */
     protected SSLSocketFactory createSocketFactory() 
         throws ISOException
     {
@@ -149,21 +146,22 @@ public class SunJSSESocketFactory
         return socket;
     }
     
-   /**
-    * Create a client socket connected to the specified host and port.
-    * @param  host   the host name
-    * @param  port   the port number
-    * @return a socket connected to the specified host and port.
-    * @exception IOException if an I/O error occurs during socket creation
-    * @exception ISOException should any other error occurs
-    */
+    /**
+     * Create a client socket connected to the specified host and port.
+     * @param  host   the host name
+     * @param  port   the port number
+     * @return a socket connected to the specified host and port.
+     * @exception IOException if an I/O error occurs during socket creation
+     * @exception ISOException should any other error occurs
+     */
     public Socket createSocket(String host, int port) 
         throws IOException, ISOException
     {
         if(socketFactory==null) socketFactory=createSocketFactory();
         return socketFactory.createSocket(host,port);
     }
-        //Have custom hooks get passwords
+
+    //Have custom hooks get passwords
     //You really neede to modify these two implementations
     //We can make use of 
     //PASSWORD_PROPERTY="jpos.ssl.password";
@@ -172,6 +170,7 @@ public class SunJSSESocketFactory
     {
         return "password";
     }
+
     protected String getKeyPassword()
     {
         return "password";
