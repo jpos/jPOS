@@ -61,6 +61,7 @@ import org.jpos.iso.ISOException;
 import org.jpos.core.SimpleConfiguration;
 import org.jpos.core.ConfigurationException;
 import org.jpos.core.Configurable;
+import org.jpos.core.NodeConfigurable;
 
 import org.jpos.apps.qsp.QSP;
 import org.jpos.apps.qsp.QSPConfigurator;
@@ -118,6 +119,15 @@ public class ConfigRequestListener implements QSPConfigurator {
 		);
 		evt.addMessage ("<log-source/>");
 	    }
+	    
+	    if (listener instanceof NodeConfigurable) {
+		evt.addMessage ("<NodeConfigurable>");
+		((NodeConfigurable)listener).setConfiguration (
+		    node
+		);
+		evt.addMessage ("</NodeConfigurable>");
+	    }
+	    
 	    if (listener instanceof Configurable) {
 		evt.addMessage ("<configurable>");
 		Properties props = ConfigUtil.addProperties (node, null, evt);

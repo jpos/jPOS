@@ -1,6 +1,7 @@
 $Id$
 
 -- 1.4.3 --
+New org.jpos.apps.qsp.Router class 
 SQLFilter and CalculateFilter contributed by Zhiyu Tang
 QSP New <object> tag
 New org.jpos.space package and supporting classes

@@ -54,6 +54,14 @@
 <!ATTLIST calculate field CDATA #REQUIRED>
 <!ATTLIST calculate statement CDATA #REQUIRED>
 
+<!-- router -->
+<!ELEMENT router EMPTY>
+<!ATTLIST router switch CDATA #REQUIRED>
+<!ATTLIST router type CDATA #REQUIRED>
+<!ATTLIST router destination IDREF #REQUIRED>
+<!ATTLIST router timeout CDATA #IMPLIED>
+<!ATTLIST router bounce CDATA #IMPLIED>
+
 <!-- mux -->
 <!ELEMENT mux (property*,channel,request-listener*)*>
 <!ATTLIST mux name ID #REQUIRED>
@@ -85,7 +93,7 @@
 <!ATTLIST property file  CDATA #IMPLIED>
 
 <!-- request-listener -->
-<!ELEMENT request-listener (property)*>
+<!ELEMENT request-listener (property*,router*)*>
 <!ATTLIST request-listener class NMTOKEN #REQUIRED>
 <!ATTLIST request-listener logger IDREF #IMPLIED>
 <!ATTLIST request-listener realm CDATA #IMPLIED>
