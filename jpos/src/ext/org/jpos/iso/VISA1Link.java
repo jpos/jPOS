@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.17  2000/03/23 15:48:59  apr
+ * Reverse 1.16 patch (do hangup on EOT)
+ *
  * Revision 1.16  2000/03/22 19:01:42  apr
  * Do not drop connection on EOT
  *
@@ -246,13 +249,14 @@ public class VISA1Link implements LogProducer, Runnable
 	    while (System.currentTimeMillis() < expired) {
 		if (i++ % 5 == 0)
 		    v24.send (ENQ);
-		String buf = v24.readUntil ("\002", 5*1000, true);
+		String buf = v24.readUntil ("\002\004", 5*1000, true);
 		if (buf.endsWith ("\002")) {
 		    request = receivePacket (10*1000, evt);
 		    v24.send (request == null ? NAK : ACK);
 		    if (request != null)
 			break;
-		} 
+		} else if (buf.endsWith ("\004"))
+		    mdm.hangup();
 	    }
 	} catch (IOException e) { 
 	    evt.addMessage (e);
