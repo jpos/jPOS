@@ -263,7 +263,8 @@ public class ISOServer extends Observable
         Iterator iter = channels.iterator();
         while (iter.hasNext()) {
             WeakReference ref = (WeakReference) iter.next();
-            if (ref.get () == null)
+            ISOChannel c = (ISOChannel) ref.get ();
+            if (c == null || (!c.isConnected()))
                 iter.remove ();
         }
     }
