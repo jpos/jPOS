@@ -1,0 +1,5 @@
+$Id$
+
+Please have a look at examples/channelfilter example first.
+You'll need Xalan/Xerces, have a look at ext/README.
+
