@@ -74,10 +74,7 @@ public class TaskAdaptor extends QBeanSupport {
         QFactory factory = getServer().getFactory();
         Element e = getPersist ();
         task = factory.newInstance (e.getChildTextTrim ("class"));
-        if (task instanceof LogSource) 
-           ((LogSource)task).setLogger (
-                getLog().getLogger(), getLog().getRealm ()
-           );
+        factory.setLogger (task, e);
     }
     protected void startService () throws Exception {
         if (task instanceof Configurable) {
