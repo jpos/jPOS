@@ -66,6 +66,7 @@ import jdbm.RecordManagerOptions;
 import jdbm.helper.FastIterator;
 import jdbm.htree.HTree;
 import jdbm.helper.Serializer;
+import jdbm.helper.FastIterator;
 
 /**
  * JDBM based persistent space implementation
@@ -348,6 +349,66 @@ public class JDBMSpace implements Space {
             } catch (InterruptedException e) { }
         }
         return obj;
+    }
+    private void purge (Object key) throws IOException {
+        Head head = (Head) htree.get (key);
+        Ref ref, previousRef = null;
+        if (head != null) {
+            for (long recid = head.first; recid >= 0; ) {
+                Ref r = (Ref) recman.fetch (recid, refSerializer);
+                if (r.isExpired ()) {
+                    recman.delete (r.recid);
+                    recman.delete (recid);
+                    if (previousRef == null) {
+                        head.first = r.next;
+                    } else {
+                        previousRef.next = r.next;
+                        recman.update (
+                            head.last, previousRef, refSerializer
+                        );
+                    }
+                } else {
+                    previousRef   = r;
+                    head.last     = recid;
+                }
+                recid = r.next;
+            }
+            if (head.first == -1)  {
+                htree.remove (key);
+            }
+            else {
+                htree.put (key, head);
+            }
+        }
+    }
+    /**
+     * garbage collector.
+     * removes expired entries
+     */
+    public void gc () {
+        final String GCKEY = "GC$" + Integer.toString (hashCode());
+        final long TIMEOUT = 24 * 3600 * 1000;
+        try {
+            FastIterator iter = htree.keys ();
+            Object obj = new Boolean (true);
+
+            // avoid ConcurrentModificationException in Head
+            out (GCKEY, obj, TIMEOUT);  
+
+            while ( (obj = iter.next()) != null) {
+                out (GCKEY, obj, TIMEOUT);
+                Thread.yield ();
+            }
+            while ( (obj = inp (GCKEY)) != null) {
+                synchronized (this) {
+                    purge (obj);
+                    recman.commit ();
+                }
+                Thread.yield ();
+            }    
+        } catch (IOException e) {
+            throw new SpaceError (e);
+        }
     }
 
     private Ref getFirst (Object key, boolean remove) throws IOException {
