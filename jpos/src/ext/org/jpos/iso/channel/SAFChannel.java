@@ -58,6 +58,8 @@ import java.io.ObjectInputStream;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.util.Date;
+import java.util.Vector;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import org.jpos.iso.ISOMsg;
@@ -68,7 +70,7 @@ import org.jpos.iso.ISORequest;
 import org.jpos.iso.ISOChannel;
 import org.jpos.iso.ISOPackager;
 import org.jpos.iso.ISOException;
-import org.jpos.iso.FilteredBase;
+import org.jpos.iso.FilteredChannel;
 import org.jpos.iso.ISOMUX;
 import org.jpos.core.Sequencer;
 import org.jpos.core.VolatileSequencer;
@@ -77,9 +79,11 @@ import org.jpos.util.BlockingQueue;
 import org.jpos.util.Logger;
 import org.jpos.util.LogEvent;
 import org.jpos.util.LogSource;
+import org.jpos.util.Loggeable;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
 import org.jpos.core.ReConfigurable;
+import org.jpos.iso.ISOFilter;
 import org.jpos.iso.ISOFilter.VetoException;
 import com.sun.jini.reliableLog.ReliableLog;
 import com.sun.jini.reliableLog.LogException;
@@ -87,13 +91,17 @@ import com.sun.jini.reliableLog.LogHandler;
 
 /**
  * Store & Forward channel
+ * Incoming filters are processed at 'store' time while Outgoing
+ * filters are processed at 'forward' time.
+ *
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
  * @version $Revision$ $Date$
  * @since 1.3.9
+ * @see FilteredChannel
  */
 public class SAFChannel extends LogHandler
     implements ISOChannel, LogSource, ReConfigurable, 
-               Runnable, SAFChannelMBean
+               Runnable, SAFChannelMBean, FilteredChannel
 {
     boolean usable = false;
     private int[] cnt;
@@ -104,22 +112,19 @@ public class SAFChannel extends LogHandler
     Configuration cfg;
     ReliableLog log;
     ISOMUX mux;
-    Sequencer seq;
+    boolean debug = false;
+    Vector outgoingFilters, incomingFilters;
 
     public SAFChannel () {
 	super();
         cnt = new int[SIZEOF_CNT];
 	queue = new BlockingQueue();
+	outgoingFilters = new Vector();
+	incomingFilters = new Vector();
         new Thread (this).start ();
     }
 
-   /**
-    * setPackager is optional on LoopbackChannel, it is
-    * used for debugging/formating purposes only
-    */
-    public void setPackager(ISOPackager packager) {
-	// N/A
-    }
+    public void setPackager(ISOPackager packager) { }
 
     public void connect () { }
 
@@ -136,8 +141,11 @@ public class SAFChannel extends LogHandler
     {
 	if (!isConnected())
 	    throw new ISOException ("unconnected ISOChannel retry later");
+        m.setDirection(ISOMsg.INCOMING);
 	LogEvent evt = new LogEvent (this, "saf-send", m);
-        log.update (new LogEntry (LogEntry.QUEUE, m));
+        m = applyFilters (outgoingFilters, m, evt);
+        m.setDirection(ISOMsg.INCOMING);
+        logUpdate (new LogEntry (LogEntry.QUEUE, m));
 	queue.enqueue (m);
 	cnt[TX]++;
 	Logger.log (evt);
@@ -163,7 +171,6 @@ public class SAFChannel extends LogHandler
     public ISOPackager getPackager() {
 	return null;
     }
-
     public void resetCounters() {
         cnt = new int[SIZEOF_CNT];
     }
@@ -178,41 +185,43 @@ public class SAFChannel extends LogHandler
 	return logger;
     }
     /**
-     * @param cfg containing <code>logdir, flag-retransmissions, timeout, destination-mux, delay, sequencer</code> properties
-     * 
+     * @param cfg 
+     * <ul>
+     *  <li>logdir - reliable log directory
+     *  <li>flag-retransmissions - ditto (i.e. sends 0221 instead of 0220)
+     *  <li>destination-mux - ditto
+     *  <li>timeout - time in millis to wait for a response
+     *  <li>delay   - inter-message delay
+     *  <li>debug   - true/false
+     * </ul>
      */
     public void setConfiguration (Configuration cfg) 
         throws ConfigurationException
     {
+        debug = cfg.getBoolean ("debug") && (getLogger() != null);
         if (this.cfg == null) {
 	    try {
-                ReliableLog log = new ReliableLog (cfg.get("logdir"), this);
+                ReliableLog log = 
+                    new ReliableLog (cfg.get("logdir",null), this);
                 log.recover();
                 log.snapshot();
                 setReliableLog (log);
-                // dumpList ();
-                String seqName  = cfg.get ("sequencer", null);
-                if (seqName != null) {
-                    seq = (Sequencer) NameRegistrar.get (
-                        "sequencer."+cfg.get("sequencer")
-                    );
-                } else if (seq == null) {
-                    seq = new VolatileSequencer();
-                }
+                if (debug)
+                    dumpList ();
                 setUsable (true);
 	    } catch (IOException e) {
 	        throw new ConfigurationException (e);
-	    } catch (NameRegistrar.NotFoundException e) {
-	        throw new ConfigurationException (e);
-            }
+	    } 
         }
         this.cfg = cfg;
     }
 
     public void dumpList () {
+        LogEvent evt = new LogEvent (this, "saf-dump-list");
         Iterator iter = queue.getQueue().iterator();
         while (iter.hasNext()) 
-            ((ISOMsg)iter.next()).dump (System.out, "   LIST>");
+            evt.addMessage (iter.next());
+        Logger.log (evt);
     }
 
     public void exportQueue (String fileName) throws IOException {
@@ -225,6 +234,12 @@ public class SAFChannel extends LogHandler
                 ((ISOMsg)iter.next()).dump (p, "");
             fos.flush ();
         }
+    }
+
+    private void logUpdate (LogEntry entry) throws IOException {
+        if (debug) 
+            Logger.log (new LogEvent (this, "saf-update", entry));
+        log.update (entry);
     }
 
     /**
@@ -256,19 +271,73 @@ public class SAFChannel extends LogHandler
         switch (entry.op) {
             case LogEntry.QUEUE:
                 list.addLast (entry.value);
-                // ((ISOMsg)entry.value).dump (System.out, "  QUEUE>");
+                if (debug)
+                    ((ISOMsg)entry.value).dump (System.out, "  QUEUE>");
                 break;
             case LogEntry.REQUEUE:
                 list.removeFirst();
                 list.addFirst (entry.value);
-                // ((ISOMsg)entry.value).dump (System.out, "REQUEUE>");
+                if (debug)
+                    ((ISOMsg)entry.value).dump (System.out, "REQUEUE>");
                 break;
             case LogEntry.DEQUEUE:
-                // System.out.println ("DEQUEUE>");
+                if (debug)
+                    System.out.println ("DEQUEUE>");
                 list.removeFirst ();
                 break;
         }
     }
+
+    /**
+     * @param filter incoming filter
+     */
+    public void addIncomingFilter (ISOFilter filter) {
+        incomingFilters.add (filter);
+    }
+    /**
+     * @param filter outgoing filter to add
+     */
+    public void addOutgoingFilter (ISOFilter filter) {
+        outgoingFilters.add (filter);
+    }
+    public void addFilter (ISOFilter filter) {
+        incomingFilters.add (filter);
+        outgoingFilters.add (filter);
+    }
+    public void removeFilter (ISOFilter filter) {
+        incomingFilters.remove (filter);
+        outgoingFilters.remove (filter);
+    }
+    public void removeIncomingFilter (ISOFilter filter) {
+        incomingFilters.remove (filter);
+    }
+    public void removeOutgoingFilter (ISOFilter filter) {
+        outgoingFilters.remove (filter);
+    }
+    public Collection getIncomingFilters() {
+	return incomingFilters;
+    }
+    public Collection getOutgoingFilters() {
+	return outgoingFilters;
+    }
+    public void setIncomingFilters (Collection filters) {
+	incomingFilters = new Vector (filters);
+    }
+    public void setOutgoingFilters (Collection filters) {
+	outgoingFilters = new Vector (filters);
+    }
+    protected ISOMsg applyFilters (Collection filters, ISOMsg m, LogEvent evt) 
+	throws VetoException
+    {
+	Iterator iter  = outgoingFilters.iterator();
+	while (iter.hasNext()) {
+	    m.setDirection(ISOMsg.OUTGOING);
+	    m = ((ISOFilter) iter.next()).filter (this, m, evt);
+	}
+	m.setDirection(ISOMsg.OUTGOING);
+	return m;
+    }
+
     public void run () {
         for (;;) {
             try {
@@ -279,20 +348,24 @@ public class SAFChannel extends LogHandler
                 mux = ISOMUX.getMUX (cfg.get ("destination-mux"));
                 if (mux != null && mux.isConnected ()) {
                     ISOMsg msg = (ISOMsg) queue.dequeue ();
-                    ISORequest req = new ISORequest (applyProps (msg));
+
+                    ISOMsg m = (ISOMsg) msg.clone();
+                    m.setDirection(ISOMsg.OUTGOING);
+                    m = applyFilters (outgoingFilters, m, null);
+                    m.setDirection(ISOMsg.OUTGOING);
+                    ISORequest req = new ISORequest (m);
                     if (cfg.getBoolean ("flag-retransmissions", false) && 
                         !msg.isRetransmission())
                     {                        
-                        ISOMsg m = (ISOMsg) msg.clone ();
-                        m.setRetransmissionMTI();
-                        log.update (new LogEntry (LogEntry.REQUEUE, m));
+                        msg.setRetransmissionMTI();
+                        logUpdate (new LogEntry (LogEntry.REQUEUE, msg));
                     }
                     mux.queue (req);
                     ISOMsg resp = req.getResponse (
                         cfg.getInt ("timeout", 60000)
                     );
                     if (resp != null) 
-                        log.update (new LogEntry (LogEntry.DEQUEUE, null));
+                        logUpdate (new LogEntry (LogEntry.DEQUEUE, null));
                     else
                         queue.requeue (msg);
                     long delay = cfg.getLong ("delay");
@@ -306,7 +379,7 @@ public class SAFChannel extends LogHandler
             } catch (Exception e) { }
         }
     }
-    public static class LogEntry implements Serializable {
+    public static class LogEntry implements Serializable, Loggeable {
         public static final int QUEUE   = 0;
         public static final int REQUEUE = 1;
         public static final int DEQUEUE = 2;
@@ -318,47 +391,27 @@ public class SAFChannel extends LogHandler
             super();
             this.op = op;
 	    this.value = value;
-            // dump ();
         }
-        public void dump () {
+        public void dump (PrintStream p, String indent) {
+            String inner = indent + "  ";
+            String tag = null;
             switch (op) {
                 case LogEntry.QUEUE:
-                    ((ISOMsg)value).dump (System.out, "  queue>");
+                    tag = "queue";
                     break;
                 case LogEntry.REQUEUE:
-                    ((ISOMsg)value).dump (System.out, "requeue>");
+                    tag = "requeue";
                     break;
                 case LogEntry.DEQUEUE:
-                    System.out.println ("dequeue>");
+                    tag = "dequeue";
                     break;
             }
-	}
-    }
-    private ISOMsg applyProps (ISOMsg m) throws ISOException {
-        ISOMsg msg=null;
-        for (int i=0; i<128; i++) {
-            if (m.hasField(i)) {
-                String value = (String) m.getValue(i);
-                if (msg == null && 
-                    (value.charAt(0) == '$' || value.charAt(0) == '='))
-                    msg = (ISOMsg) m.clone();
-
-                if (value.equals ("$date") )
-                    msg.set (new ISOField (i, ISODate.getDateTime(new Date())));
-                else if (value.charAt (0) == '$')
-                    msg.set (new ISOField (i,
-                      ISOUtil.zeropad (
-                        Integer.toString(seq.get (value.substring(1))),6)
-                      )
-                    );
-                else if (value.charAt (0) == '=') {
-                    String p = cfg.get (value.substring(1), null);
-                    if (p != null)
-                        msg.set (new ISOField (i, p));
-                }
+            if (tag != null) {
+                p.println (indent + "<" + tag + ">");
+                ((ISOMsg)value).dump (p, inner);
+                p.println (indent + "</" + tag + ">");
             }
-        }
-        return msg == null ? m : msg;
+	}
     }
     public int getPendingCount() {
         return queue.pending ();
