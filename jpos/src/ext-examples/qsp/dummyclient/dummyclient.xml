@@ -28,6 +28,7 @@
       <property name="protect" value="2 35 45 55" />
       <property name="wipe"    value="48" />
     </log-listener>
+    <!-- 
     <log-listener class="org.jpos.util.SimpleLogListener"/>
     <log-listener class="org.jpos.util.RotateLogListener">
       <property name="file" value="/tmp/qsp.log" />
@@ -35,14 +36,13 @@
       <property name="copies" value="5" />
       <property name="maxsize" value="1000000" />
     </log-listener>
-  <!--
+    -->
     <log-listener class="org.jpos.util.Log4JListener">
       <property name="config" 
                value="src/ext-examples/qsp/dummyclient/log4j.xml" />
       <property name="priority" value="info" />
       <property name="watch" value="5000" />
     </log-listener>
-   -->
  </logger>
 
  <!-- sequencer name="test" 
@@ -65,6 +65,7 @@
 	  packager-logger="qsp" 
 	  packager-realm="packager"
           type="client" logger="qsp" realm="dummyclient.channel"
+          socket-factory="org.jpos.iso.SunJSSESocketFactory"
 	  connect="no" >
 
    <property name="host" value="localhost" />

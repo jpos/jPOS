@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+
+<log4j:configuration>
+	<renderer
+		renderedClass="org.jpos.iso.ISOMsg"
+		renderingClass="org.jpos.log4j.ISOMsgRenderer">
+	</renderer>
+
+	<root>
+		<priority value="debug" />
+		<appender-ref ref="Debug"/>
+		<appender-ref ref="STDOUT" />
+	</root>
+
+	<category name="org.jpos.iso.channel">
+		<priority value="debug" />
+		<appender-ref ref="Comms" />
+	</category>
+
+	<category name="dummyclient.channel">
+		<priority value="debug" />
+		<appender-ref ref="Debug"/>
+		<appender-ref ref="Comms" />
+	</category>
+
+	<category name="org.jpos.iso.packager">
+		<priority value="debug" />
+		<appender-ref ref="Debug" />
+	</category>
+
+	<appender name="STDOUT" class="org.apache.log4j.ConsoleAppender">
+		<!--param name="threshold" value="info" /-->
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern"
+				value="%d %-5p [%t] %c (%F:%L) -\n%m\n"/>
+		</layout>	    
+	</appender>
+
+	<appender name="Comms" class="org.apache.log4j.FileAppender">
+		<param name="File"   value="log/comms.log" />
+		<param name="Append" value="false" />	    	
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%t %-5p %c{2}\n%m\n"/>
+		</layout>	    
+	</appender>
+
+	<appender name="Debug" class="org.apache.log4j.FileAppender">
+		<param name="File"   value="log/debug.log" />
+		<param name="Append" value="false" />	    	
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%t %-5p %c{2}\n%m\n"/>
+		</layout>	    
+	</appender>
+
+</log4j:configuration>
+
