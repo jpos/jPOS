@@ -6,3 +6,4 @@ deploy
 .project
 .classpath
 .externalToolBuilders
+eclipsebuild
