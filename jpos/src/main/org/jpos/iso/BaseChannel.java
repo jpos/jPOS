@@ -125,6 +125,7 @@ public abstract class BaseChannel extends Observable
 	name = "";
 	incomingFilters = new Vector();
 	outgoingFilters = new Vector();
+        setHost (null, 0);
     }
 
     /**
@@ -139,6 +140,32 @@ public abstract class BaseChannel extends Observable
         setHost(host, port);
         setPackager(p);
     }
+    /**
+     * constructs a server ISOChannel
+     * @param p     an ISOPackager
+     * @exception IOException
+     * @see ISOPackager
+     */
+    public BaseChannel (ISOPackager p) throws IOException {
+        this();
+        setPackager (p);
+    }
+
+    /**
+     * constructs a server ISOChannel associated with a Server Socket
+     * @param p     an ISOPackager
+     * @param serverSocket where to accept a connection
+     * @exception IOException
+     * @see ISOPackager
+     */
+    public BaseChannel (ISOPackager p, ServerSocket serverSocket) 
+        throws IOException 
+    {
+        this();
+        setPackager (p);
+        setServerSocket (serverSocket);
+    }
+
     /**
      * initialize an ISOChannel
      * @param host  server TCP Address
@@ -174,37 +201,6 @@ public abstract class BaseChannel extends Observable
      */
     public ISOPackager getPackager() {
 	return packager;
-    }
-
-    /**
-     * constructs a server ISOChannel
-     * @param p     an ISOPackager
-     * @exception IOException
-     * @see ISOPackager
-     */
-    public BaseChannel (ISOPackager p) throws IOException {
-        this();
-        this.host = null;
-        this.port = 0;
-        this.packager = p;
-	name = "";
-    }
-    /**
-     * constructs a server ISOChannel associated with a Server Socket
-     * @param p     an ISOPackager
-     * @param serverSocket where to accept a connection
-     * @exception IOException
-     * @see ISOPackager
-     */
-    public BaseChannel (ISOPackager p, ServerSocket serverSocket) 
-        throws IOException 
-    {
-        this();
-        this.host = null;
-        this.port = 0;
-        this.packager = p;
-        this.serverSocket = serverSocket;
-	name = "";
     }
 
     /**
