@@ -22,7 +22,7 @@ public class ISODate {
         // The following line shoulb be commented out on any supported
         // country (i.e. the US)
         //
-        df.setTimeZone (new SimpleTimeZone(-3 * 60*60*1000, "AGT"));
+        // df.setTimeZone (new SimpleTimeZone(-3 * 60*60*1000, "AGT"));
 
         df.applyPattern (pattern);
         return df.format (d);
@@ -123,6 +123,9 @@ public class ISODate {
      */
     public static String getANSIDate(Date d) {
         return formatDate (d, "yyMMdd");
+    }
+    public static String getEuropeanDate(Date d) {
+        return formatDate (d, "ddMMyy");
     }
     /**
      * @return date in yyMM format - suitable for field 14
