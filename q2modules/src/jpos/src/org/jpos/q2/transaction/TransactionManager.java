@@ -22,6 +22,7 @@ import org.jpos.util.Logger;
 import org.jpos.util.LogEvent;
 import org.jpos.transaction.TransactionConstants;
 import org.jpos.transaction.TransactionParticipant;
+import org.jpos.transaction.AbortParticipant;
 import org.jpos.transaction.ContextRecovery;
 
 public class TransactionManager 
@@ -139,6 +140,17 @@ public class TransactionManager
             abort (p, id, context);
         }
     }
+    private int prepareForAbort
+        (TransactionParticipant p, long id, Serializable context) 
+    {
+        try {
+            if (p instanceof AbortParticipant)
+                return ((AbortParticipant)p).prepareForAbort (id, context);
+        } catch (Throwable t) {
+            getLog().warn ("PREPARE-FOR-ABORT: " + Long.toString (id), t);
+        }
+        return ABORTED;
+    }
     private int prepare 
         (TransactionParticipant p, long id, Serializable context) 
     {
@@ -171,25 +183,19 @@ public class TransactionManager
         boolean abort = false;
         Iterator iter = participants.iterator();
         while (iter.hasNext ()) {
+            int action = 0;
             TransactionParticipant p = (TransactionParticipant) iter.next();
-            int action = prepare (p, id, context);
-
+            if (abort) {
+                action = prepareForAbort (p, id, context);
+            } else {
+                action = prepare (p, id, context);
+                abort  = (action & PREPARED) == ABORTED;
+            }
             if ((action & READONLY) == 0) {
                 snapshot (id, context);
             }
-
             if ((action & NO_JOIN) == 0) 
                 members.add (p);
-
-            switch (action & PREPARED) {
-                case ABORTED:
-                    if ((action & CONTINUE) == CONTINUE)
-                        abort = true;
-                    else
-                        return ABORTED;
-                case PREPARED:
-                    break;
-            }
         }
         return members.size() == 0 ? NO_JOIN : (abort ? ABORTED : PREPARED);
     }
