@@ -53,21 +53,10 @@ public class ConfigTask implements QSPConfigurator {
     private void configureTask (QSPConfigurable task, Node node, LogEvent evt)
 	throws ConfigurationException
     {
-	Properties props = new Properties();
-
-	NodeList childs = node.getChildNodes();
-	for (int i=0; i<childs.getLength(); i++) {
-	    Node n = childs.item(i);
-	    if (n.getNodeName().equals ("property")) {
-		String name  = 
-		    n.getAttributes().getNamedItem ("name").getNodeValue();
-		String value = 
-		    n.getAttributes().getNamedItem ("value").getNodeValue();
-		props.put (name, value);
-		evt.addMessage (name + "=" + value);
-	    }
-	}
-	task.config (new SimpleConfiguration (props));
+	task.config (new SimpleConfiguration (
+	    ConfigUtil.addProperties (node, null, evt)
+	    )
+	);
     }
 }
 

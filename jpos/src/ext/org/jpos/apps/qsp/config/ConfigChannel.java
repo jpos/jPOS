@@ -39,13 +39,15 @@ public class ConfigChannel implements QSPConfigurator {
     private ISOChannel createChannel (String name, Node node, LogEvent evt)
 	throws ConfigurationException
     {
-	Properties props = new Properties();
+	String [][] names = { { name + ".channel",  "class"    },
+	                      { name + ".packager", "packager" },
+			      { name + ".header",   "header"   },
+			      { name + ".host",     "host"     },
+			      { name + ".port",     "port"     }
+			    };
 
-	addProperty (name + ".channel",  "class",    props, node, evt);
-	addProperty (name + ".packager", "packager", props, node, evt);
-	addProperty (name + ".header",   "header",   props, node, evt);
-	addProperty (name + ".host",     "host",     props, node, evt);
-	addProperty (name + ".port",     "port",     props, node, evt);
+	Properties props = ConfigUtil.addAttributesProperties 
+	    (node, names, null, evt);
 
 	SimpleConfiguration cfg = new SimpleConfiguration (props);
 	Logger logger = ConfigLogger.getLogger (node);
@@ -68,17 +70,6 @@ public class ConfigChannel implements QSPConfigurator {
 	} catch (ISOException e) {
 	    throw new ConfigurationException ("error creating channel", e);
 	} 
-    }
-
-    private void addProperty (String propertyName, String nodeName,
-			 Properties props, Node node, LogEvent evt)
-    {
-	Node n = node.getAttributes().getNamedItem (nodeName);
-	if (n != null) {
-	    String value = n.getNodeValue();
-	    props.put (propertyName, value);
-	    evt.addMessage (propertyName+"="+value);
-	}
     }
 
     public static ISOChannel getChannel (Node node) {
