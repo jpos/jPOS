@@ -53,6 +53,7 @@ import org.jpos.iso.IFB_AMOUNT;
 import org.jpos.iso.IFB_BINARY;
 import org.jpos.iso.IFB_BITMAP;
 import org.jpos.iso.IFB_LLCHAR;
+import org.jpos.iso.IFB_LLHCHAR;
 import org.jpos.iso.IFB_LLHBINARY;
 import org.jpos.iso.IFB_LLHECHAR;
 import org.jpos.iso.IFB_LLHNUM;
@@ -123,7 +124,7 @@ public class Base1Packager extends ISOBasePackager
 /*042*/ new IFE_CHAR    ( 15, "CARD ACCEPTOR IDENTIFICATION CODE" ),
 /*043*/ new IFE_CHAR    ( 40, "CARD ACCEPTOR NAME/LOCATION"),
 /*044*/ new IFB_LLHECHAR( 25, "ADITIONAL RESPONSE DATA"),
-/*045*/ new IFB_LLHCHAR ( 76, "TRACK 1 DATA"),
+/*045*/ new IFB_LLHECHAR( 76, "TRACK 1 DATA"),
 /*046*/ new IFB_LLCHAR  ( 99, "ADITIONAL DATA - ISO"),
 /*047*/ new IFB_LLCHAR  ( 99, "ADITIONAL DATA - NATIONAL"),
 /*048*/ new IFB_LLHBINARY ( 99, "ADITIONAL DATA - PRIVATE"),
