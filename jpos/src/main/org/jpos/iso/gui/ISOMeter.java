@@ -7,6 +7,9 @@
 
 /*
  * $Log$
+ * Revision 1.7  2000/04/22 02:39:49  apr
+ * Back to 20 updates per second
+ *
  * Revision 1.6  2000/03/01 14:44:45  apr
  * Changed package name to org.jpos
  *
@@ -250,7 +253,7 @@ public class ISOMeter extends JComponent implements Runnable {
 	for (;;) {
 	    repaint();
 	    try { 
-		Thread.sleep(500);
+		Thread.sleep(50);
 	    } catch (InterruptedException e) { }
 	}
     }
