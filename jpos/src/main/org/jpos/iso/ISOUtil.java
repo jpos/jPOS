@@ -637,7 +637,7 @@ public class ISOUtil {
                     }
                     // else, default append char
                 default: 
-                    if (Character.isLetterOrDigit (ch))
+                    if (ch >= 0x20 && ch <= 0x7F)
                         str.append(ch);
                     else {
                         str.append("&#");
