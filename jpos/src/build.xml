@@ -66,7 +66,6 @@ Main targets:
   </target>
 
   <path id="ext.classpath">
-      <pathelement path="${classpath}"/>
       <fileset dir="${lib}">
           <include name="*.jar"/>
       </fileset>
@@ -74,10 +73,10 @@ Main targets:
           <include name="*.jar"/>
       </fileset>
       <pathelement location="${build}/classes"/>
+      <pathelement path="${classpath}"/>
   </path>
 
   <path id="test.classpath">
-      <pathelement path="${classpath}"/>
       <fileset dir="${lib}">
           <include name="*.jar" />
           <exclude name="crimson.jar" />
@@ -86,6 +85,7 @@ Main targets:
           <include name="*.jar"/>
       </fileset>
       <pathelement location="${build}/classes"/>
+      <pathelement path="${classpath}"/>
   </path>
 
   <path id="xdoclet.classpath">
