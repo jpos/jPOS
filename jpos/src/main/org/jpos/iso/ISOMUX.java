@@ -22,6 +22,10 @@ import java.util.*;
 
 /*
  * $Log$
+ * Revision 1.21  1999/09/30 10:33:20  apr
+ * Check for txQueue and rxQueue to become empty when terminating
+ * (Vincent.Greene@amo.com)
+ *
  * Revision 1.20  1999/09/25 13:39:05  apr
  * Added terminate() support as suggested by Vincent.Greene@amo.com
  *
@@ -152,7 +156,7 @@ public class ISOMUX implements Runnable, LogProducer {
             parent = p;
         }
         public void run() {
-            while (!terminate) {
+            while (!terminate || !rxQueue.isEmpty() || !txQueue.isEmpty()) {
                 if (channel.isConnected()) {
                     try {
                         ISOMsg d = channel.receive();
@@ -210,23 +214,35 @@ public class ISOMUX implements Runnable, LogProducer {
 
     private void doTransmit() throws ISOException, IOException {
         while (txQueue.size() > 0) {
-            ISORequest r = (ISORequest) txQueue.firstElement();
-            if (r.isExpired()) 
-                cnt[TX_EXPIRED]++;
-            else {
-                ISOMsg m = r.getRequest();
-                rxQueue.put (getKey(m), r);
+	    Object o = txQueue.firstElement();
+	    ISOMsg m = null;
+
+	    if (o instanceof ISORequest) {
+		ISORequest r = (ISORequest) o;
+		if (r.isExpired()) 
+		    cnt[TX_EXPIRED]++;
+		else {
+		    m = r.getRequest();
+		    rxQueue.put (getKey(m), r);
+		}
+	    } else if (o instanceof ISOMsg) {
+		m = (ISOMsg) o;
+	    }
+	    if (m != null) {
                 channel.send(m);
                 cnt[TX]++;
             }
-            txQueue.removeElement(r);
+            txQueue.removeElement(o);
             txQueue.trimToSize();
         }
     }
     public void run () {
+	                                        // OS/400 V4R4 JVM 
+	// rx.setPriority (rx.getPriority()+1); // Thread problem
+					        // (Vincent.Greene@amo.com)
         rx.start();
 	boolean firstTime = true;
-        while (!terminate) {
+        while (!terminate || !txQueue.isEmpty()) {
             try {
                 if (channel.isConnected()) {
                     doTransmit();
@@ -243,14 +259,32 @@ public class ISOMUX implements Runnable, LogProducer {
                     }
                 }
                 synchronized(this) {
-                    if (channel.isConnected() && txQueue.size() == 0)
+                    if (!terminate && 
+			 channel.isConnected() && 
+			 txQueue.size() == 0)
+		    {
                         this.wait();
+		    }
                 }
             }
             catch (Exception e) {
 		Logger.log (new LogEvent (this, "mux", e));
             }
         }
+	// Wait for the receive queue to empty out before shutting down
+	while (!rxQueue.isEmpty()) {
+	    try {
+		Thread.sleep(5000); // Wait for the receive queue to clear.
+		purgeRxQueue();	    // get rid of expired stuff
+	    } catch (InterruptedException e) {
+		break;
+	    }
+	}
+	// By closing the channel, we force the receive thread to terminate
+	try {
+	    channel.disconnect();
+	} catch (IOException e) { }
+
 	synchronized(rx) {
 	    rx.notify();
 	}
@@ -259,18 +293,24 @@ public class ISOMUX implements Runnable, LogProducer {
 	} catch (InterruptedException e) { }
 	Logger.log (new LogEvent (this, "mux", "terminate"));
     }
-    public void queue(ISORequest r) {
-        synchronized(this) {
-            txQueue.addElement(r);
-            this.notify();
-        }
+    /**
+     * queue an ISORequest
+     */
+    synchronized public void queue(ISORequest r) {
+	txQueue.addElement(r);
+	this.notify();
+    }
+    /**
+     * send a message over channel, usually a
+     * response from an ISORequestListener
+     */
+    synchronized public void send(ISOMsg m) {
+	txQueue.addElement(m);
+	this.notify();
     }
     public void terminate() {
 	Logger.log (new LogEvent (this, "mux", "terminate request received"));
 	terminate = true;
-	try {
-	    channel.disconnect();
-	} catch (IOException e) { }
         synchronized(this) {
             this.notify();
         }
