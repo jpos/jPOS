@@ -7,6 +7,9 @@ import uy.com.cs.jpos.util.LogEvent;
 
 /*
  * $Log$
+ * Revision 1.20  2000/01/30 23:31:00  apr
+ * Added debuging to unpack() method
+ *
  * Revision 1.19  2000/01/23 16:07:30  apr
  * BugFix: BASE24Channel was not handling Headers
  * (reported by Mike Trank <mike@netcomsa.com>)
@@ -120,7 +123,7 @@ public abstract class ISOBasePackager implements ISOPackager, LogProducer {
 		    d[k++] = b[j];
 	    }
 	    if (logger != null)	 // save a few CPU cycle if no logger available
-		evt.addMessage (ISOUtil.dumpString (d));
+		evt.addMessage (ISOUtil.hexString (d));
 	    return d;
 	} catch (ISOException e) {
 	    evt.addMessage (e);
@@ -142,7 +145,7 @@ public abstract class ISOBasePackager implements ISOPackager, LogProducer {
 	    if (m.getComposite() != m) 
 		throw new ISOException ("Can't call packager on non Composite");
 	    if (logger != null)	 // save a few CPU cycle if no logger available
-		evt.addMessage (ISOUtil.dumpString (b));
+		evt.addMessage (ISOUtil.hexString (b));
 
 	    int consumed;
 	    ISOField mti     = new ISOField (0);
@@ -155,6 +158,8 @@ public abstract class ISOBasePackager implements ISOPackager, LogProducer {
 	    if (emitBitMap()) {
 		consumed += getBitMapfieldPackager().unpack(bitmap,b,consumed);
 		bmap = (BitSet) bitmap.getValue();
+		if (logger != null)
+		    evt.addMessage ("<bitmap>"+bmap.toString()+"</bitmap>");
 		m.set (bitmap);
 		maxField = bmap.size();
 	    }
@@ -162,6 +167,15 @@ public abstract class ISOBasePackager implements ISOPackager, LogProducer {
 		if (bmap == null || bmap.get(i)) {
 		    ISOComponent c = fld[i].createComponent(i);
 		    consumed += fld[i].unpack (c, b, consumed);
+		    if (logger != null) {
+			evt.addMessage ("<unpack fld=\"" + i 
+					+"\" packager=\""
+					+fld[i].getClass().getName()+ "\">");
+			evt.addMessage ("  <value>" 
+					+(String) c.getValue()
+					+ "</value>");
+			evt.addMessage ("</unpack>");
+		    }
 		    m.set(c);
 		}
 	    }
