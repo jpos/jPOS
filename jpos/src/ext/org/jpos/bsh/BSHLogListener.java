@@ -48,6 +48,9 @@
  */
 /*
  * $Log$
+ * Revision 1.5  2003/11/26 21:37:17  alcarraz
+ * added support to  save variables of the script between runs
+ *
  * Revision 1.4  2003/11/05 19:03:29  alcarraz
  * Fixed a bug when replacing macros in the source file names.
  *
@@ -56,6 +59,7 @@ package org.jpos.bsh;
 
 import bsh.EvalError;
 import bsh.Interpreter;
+import bsh.NameSpace;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -94,7 +98,7 @@ import org.jpos.util.LogEvent;
  * you change what is processed in real time, if you put a file called
  * tag_SystemMonitor_realm_monitor.bsh it will be executed whenever the system
  * monitor is run.<BR>
- * If you want to filter an event so that the remaining log listeners doesn't see
+ * If you want to filter an event so that the remaining log listeners don't see
  * it, you have to set event = null in your script.<br>
  * <table border=1 color="black">
  * <caption>Other Configuration Options: </caption>
@@ -110,6 +114,14 @@ import org.jpos.util.LogEvent;
  * loaded once, and kept in memory, being realoaded only if they are touched. This
  * is good when you have lots of RAM memory but ou have troubles with
  * speed</TD></TR>
+ * <TR><TD> save-name-space     </TD><TD>boolean    </TD><TD>If true the namespace
+ * of the script instance will be saved so that in the next event you can access
+ * them from the script, by default it's off, this property is overriden if the
+ * script exposes a boolean variable named saveNameSpace</TD></TR>
+ * <TR><TD> reload              </TD><TD>long       </TD><TD>this property is used
+ * if the preload-script property is true, is the time in milliseconds between
+ * updates in the script, during this time BSHLogListener will not check if the
+ * script source was modified or deleted on disk </TD></TR>
  * </TABLE>
  */
 public class BSHLogListener implements org.jpos.util.LogListener, org.jpos.core.Configurable {
@@ -155,25 +167,49 @@ public class BSHLogListener implements org.jpos.util.LogListener, org.jpos.core.
             for(int i=0; i<sources.length && ret != null; i++){
                 try{
                     Interpreter bsh = new Interpreter();
+                    BSHLogListener.ScriptInfo info = getScriptInfo(sources[i]);
+                    NameSpace ns = (info!=null)?info.getNameSpace():null;
+                    if(ns!=null) bsh.setNameSpace(ns);
                     bsh.set("event", ret);
                     bsh.set("cfg", cfg);
+                    File f = new File(sources[i]);
                     if(!cfg.getBoolean("preload-scripts")){
-                        File f = new File(sources[i]);
                         if(f.exists() && f.canRead() && f.isFile()){
                             //if(f.lastModified())
                             processed = true;
                             bsh.eval(new java.io.FileReader(f));
                         }
                     }else{
-                        processed = eval(bsh, sources[i]);
+                        if(info == null) scripts.put(sources[i], info=new ScriptInfo());
+                        String code;
+                        if(System.currentTimeMillis() > info.getLastCheck() + cfg.getLong("reload")){
+                            info.setLastCheck(System.currentTimeMillis());
+                            if(f.exists() && f.canRead() && f.isFile()){
+                                if(info.getLastModified() != f.lastModified()) {
+                                    info.setLastModified(f.lastModified());
+                                    info.setCode(loadCode(f));
+                                }
+                            }else{
+                                info.setCode(null);
+                            }
+                        }
+                        if(processed=(info.getCode() != null))
+                            bsh.eval(new StringReader(info.getCode()));
+                        else scripts.remove(sources[i]);
                     }
                     ret = (LogEvent)bsh.get("event");
+                    Object saveNS = bsh.get("saveNameSpace");
+                    boolean saveNameSpace = 
+                        (saveNS instanceof Boolean)?((Boolean)saveNS).booleanValue():cfg.getBoolean("save-name-space");
+                    if(saveNameSpace) {
+                        if(info!=null) info.setNameSpace(bsh.getNameSpace());
+                        else scripts.put(sources[i], new ScriptInfo(bsh.getNameSpace()));
+                    }else if (info!=null) info.setNameSpace(null);
                 }catch(Exception e){
                     ret.addMessage(e);
                 }
             }
-            if(!processed && cfg.getBoolean("filter-by-default")) return null;
-            return ret;
+            return (!processed && cfg.getBoolean("filter-by-default"))?null:ret;
         }catch(Exception e){
             ret.addMessage(e);
             return ret;
@@ -188,28 +224,6 @@ public class BSHLogListener implements org.jpos.util.LogListener, org.jpos.core.
         return buf.toString();
     }
     
-    protected boolean eval(Interpreter bsh, String source) throws EvalError, IOException{
-        ScriptInfo info = (ScriptInfo)scripts.get(source);
-        if(info == null) scripts.put(source, info=new ScriptInfo());
-        String code;
-        if(System.currentTimeMillis() > info.getLastCheck() + cfg.getLong("reload")){
-            File f = new File (source);
-            info.setLastCheck(System.currentTimeMillis());
-            if(f.exists() && f.canRead() && f.isFile()){
-                if(info.getLastModified() != f.lastModified()) {
-                    info.setLastModified(f.lastModified());
-                    info.setCode(loadCode(f));
-                }
-            }else{
-                info.setCode("");
-            }
-        }
-        if(!"".equals(info.getCode())) {
-            bsh.eval(new StringReader(info.getCode()));
-            return true;
-        }else return false;
-        
-    }
     protected ScriptInfo getScriptInfo(String filename){
         return (ScriptInfo)scripts.get(filename);
     }
@@ -220,8 +234,14 @@ public class BSHLogListener implements org.jpos.util.LogListener, org.jpos.core.
         String code;
         long lastModified;
         long lastCheck;
+        NameSpace nameSpace;
+        
         public ScriptInfo(){
         }
+        public ScriptInfo(NameSpace ns){
+            nameSpace = ns;
+        }
+        
         public ScriptInfo(String code, long lastModified){
             setCode(code);
             setLastModified(lastModified);
@@ -273,6 +293,22 @@ public class BSHLogListener implements org.jpos.util.LogListener, org.jpos.core.
          */
         public void setLastCheck(long lastCheck) {
             this.lastCheck = lastCheck;
+        }
+        
+        /** Getter for property nameSpace.
+         * @return Value of property nameSpace.
+         *
+         */
+        public NameSpace getNameSpace() {
+            return nameSpace;
+        }
+        
+        /** Setter for property nameSpace.
+         * @param nameSpace New value of property nameSpace.
+         *
+         */
+        public void setNameSpace(NameSpace nameSpace) {
+            this.nameSpace = nameSpace;
         }
         
     }
