@@ -168,9 +168,10 @@ public class ISOMUX implements Runnable, ISOSource, LogSource, ReConfigurable {
      * @return      key (default terminal(41) + tracenumber(11))
      */
     protected String getKey(ISOMsg m) throws ISOException {
-        System.out.println ("--------> "+traceNumberField);
         return (m.hasField(41)?ISOUtil.zeropad((String)m.getValue(41),16) : "")
-                + ISOUtil.zeropad((String) m.getValue(traceNumberField),6);
+           + (m.hasField (traceNumberField) ?
+                ISOUtil.zeropad((String) m.getValue(traceNumberField),6) :
+                Long.toString (System.currentTimeMillis()));
     }
 
     /**
