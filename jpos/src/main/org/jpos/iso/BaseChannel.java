@@ -378,6 +378,7 @@ public abstract class BaseChannel extends Observable
 		int len  = getMessageLength();
 		int hLen = getHeaderLength();
 
+		if (len == 0) throw new EOFException();
 		if (len == -1) {
 		    header = new byte [hLen];
 		    serverIn.readFully(header,0,hLen);
