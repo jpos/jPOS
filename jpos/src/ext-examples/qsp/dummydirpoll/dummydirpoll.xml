@@ -14,7 +14,7 @@
     <log-listener class="org.jpos.util.SimpleLogListener"/>
  </logger>
 
- <dir-poll path="/tmp/dirpoll2" create="yes" name="test"
+ <dir-poll path="/tmp/dirpoll" create="yes" name="test"
 	  logger="qsp" realm="dirpoll"
 	  poolsize="10" 
 	  interval="1000"
