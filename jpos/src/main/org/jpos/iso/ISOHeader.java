@@ -99,5 +99,10 @@ public interface ISOHeader extends Cloneable
      * (if they exist).
      */
     public void swapDirection();
+
+    /**
+     * Allow object to be cloned.
+     */
+    public Object clone();
 }
 
