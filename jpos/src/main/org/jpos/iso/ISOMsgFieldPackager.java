@@ -49,6 +49,10 @@
 
 package org.jpos.iso;
 
+
+import java.io.InputStream;
+import java.io.IOException;
+
 /**
  * ISOMsgFieldPackager is a packager able to pack compound ISOMsgs
  * (one message inside another one, and so on...)
@@ -103,6 +107,22 @@ public class ISOMsgFieldPackager extends ISOFieldPackager {
 	    msgPackager.unpack((ISOMsg) c, (byte[]) f.getValue());
         return consumed;
     }
+
+    /**
+     * @param c  - the Component to unpack
+     * @param in - input stream
+     * @exception ISOException
+     */
+    public void unpack (ISOComponent c, InputStream in) 
+        throws IOException, ISOException
+    {
+        ISOBinaryField f = new ISOBinaryField(0);
+        fieldPackager.unpack (f, in);
+        if (c instanceof ISOMsg) {
+	    msgPackager.unpack((ISOMsg) c, (byte[]) f.getValue());
+        }
+    }
+
     public ISOComponent createComponent(int fieldNumber) {
         ISOMsg m = new ISOMsg(fieldNumber);
         m.setPackager(msgPackager);
