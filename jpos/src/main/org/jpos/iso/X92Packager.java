@@ -82,9 +82,6 @@ public class X92Packager extends ISOBasePackager {
             new IFA_BINARY(      0, "UNUSED"                                ),
             new IFA_BINARY(      0, "UNUSED"                                )
         };
-        
-        //  new IF_CHAR(       385, "ADDITIONAL DATA"                       ),
-        //  new IFA_LLLCHAR(   382, "ADDITIONAL DATA"                       ),
             
     public X92Packager() {
         super();
