@@ -121,8 +121,9 @@ public class ChannelAdaptor
     }
     public void stopService () {
         try {
-            disconnect();
             sp.out (in, new Object());
+            if (channel.isConnected())
+                disconnect();
         } catch (Exception e) {
             getLog().warn ("error disconnecting from remote host", e);
         }
@@ -261,7 +262,7 @@ public class ChannelAdaptor
             }
         }
     }
-    protected synchronized void checkConnection () {
+    protected void checkConnection () {
         try {
             while (running() && !channel.isConnected ()) {
                 while (sp.inp (ready) != null)
@@ -277,7 +278,7 @@ public class ChannelAdaptor
             ISOUtil.sleep (delay);
         }
     }
-    protected synchronized void disconnect () {
+    protected void disconnect () {
         try {
             while (sp.inp (ready) != null)
                 ;
