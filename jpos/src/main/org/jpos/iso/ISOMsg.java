@@ -79,6 +79,9 @@ public class ISOMsg extends ISOComponent
     public static final int OUTGOING = 2;
     private static final long serialVersionUID = 4306251831901413975L;
 
+    /**
+     * Creates an ISOMsg
+     */
     public ISOMsg () {
         fields = new Hashtable ();
         maxField = -1;
@@ -87,9 +90,24 @@ public class ISOMsg extends ISOComponent
         direction = 0;
         header = null;
     }
+    /**
+     * Creates an inner ISOMsg
+     */
     public ISOMsg (int fieldNumber) {
         this();
         this.fieldNumber = fieldNumber;
+    }
+    /**
+     * Creates an ISOMsg with given mti
+     * @param mti Msg's MTI
+     */
+    public ISOMsg (String mti) {
+        this();
+        try {
+	    setMTI (mti);
+        } catch (ISOException e) {
+            // should never happen
+        }
     }
     /**
      * Sets the direction information related to this message
