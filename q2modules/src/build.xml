@@ -1,0 +1,84 @@
+<?xml version="1.0"?>
+<!DOCTYPE project [
+  <!ENTITY properties SYSTEM "file:properties.xml">
+]>
+
+
+<project name="q2modules" default="dist" basedir="..">
+  &properties;
+
+  <target name="dist" description="Build distribution">
+    <antcall target="do-all">
+      <param name="target" value="dist"/>
+    </antcall>
+  </target>
+
+  <target name="jars" description="Build all modules">
+    <delete dir="dist"/>
+    <mkdir dir="dist"/>
+    <antcall target="do-all">
+      <param name="target" value="jars"/>
+    </antcall>
+  </target>
+
+  <target name="doc" description="Generate javadoc">
+    <delete dir="build"/>
+    <mkdir dir="build"/>
+    <mkdir dir="build/javadoc"/>
+    <mkdir dir="build/src"/>
+    <antcall target="do-all">
+      <param name="target" value="copy-src2master"/>
+    </antcall>
+    <antcall target="javadocs"/>
+  </target>
+
+  <target name="test" description="Run tests">
+    <antcall target="do-all">
+      <param name="target" value="test"/>
+    </antcall>
+  </target>
+
+  <target name="noop">
+    <antcall target="do-all">
+      <param name="target" value="noop"/>
+    </antcall>
+  </target>
+
+  <target name="clean" description="Remove build and dist directories">
+    <antcall target="do-all">
+      <param name="target" value="clean"/>
+    </antcall>
+    <delete dir="dist"/>
+    <delete dir="build"/>
+  </target>
+
+  <target name="do-jpos">
+    <ant dir="${source}/jpos" target="${target}" inheritAll="false"/>
+  </target>
+
+  <target name="do-misc">
+    <ant dir="${source}/misc" target="${target}" inheritAll="false"/>
+  </target>
+
+  <target name="do-example">
+    <ant dir="${source}/example" target="${target}" inheritAll="false"/>
+  </target>
+
+  <target name="do-all" depends="do-jpos,do-misc,do-example">
+  </target>
+
+  <target name="javadocs">
+    <javadoc sourcepath="build/src"
+      destdir="build/javadoc"
+      windowtitle="Q2 Modules API Documentation"
+      doctitle="Q2 Modules API Documentation"
+      header="Q2 Modules API Documentation"
+      footer="jPOS.org"
+      public="true"
+      noindex="true"
+      author="true"
+      packagenames="org.jpos.*"
+    />
+  </target>
+
+</project>
