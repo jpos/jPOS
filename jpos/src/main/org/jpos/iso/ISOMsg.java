@@ -56,81 +56,6 @@ import org.jpos.util.LogSource;
 import org.jpos.iso.packager.XMLPackager;
 import org.jpos.iso.packager.ISO93BPackager;
 
-/*
- * $Log$
- * Revision 1.35  2001/02/09 21:04:03  apr
- * readExternal/writeExternal now catches Exception instead of just ISOException.
- *
- * Revision 1.34  2001/02/08 16:45:29  apr
- * Added serialVersionUID
- *
- * Revision 1.33  2001/02/04 22:38:31  apr
- * Optimization: writeExternal was creating unused internal package instance
- *
- * Revision 1.32  2000/12/24 12:14:07  apr
- * Added handy getString(fldno) method (tired of casting getValue)
- *
- * Revision 1.31  2000/12/06 20:21:42  apr
- * Stupid bug :blush: :-)
- *
- * Revision 1.30  2000/12/06 18:40:07  apr
- * Added hasFields method
- *
- * Revision 1.29  2000/11/21 14:55:13  apr
- * preliminary Externalizable support
- *
- * Revision 1.28  2000/11/02 12:09:18  apr
- * Added license to every source file
- *
- * Revision 1.27  2000/09/09 10:58:39  apr
- * unset now silently ignores if field does not exist
- *
- * Revision 1.26  2000/05/03 16:18:56  apr
- * commented out bitmaps in logs
- *
- * Revision 1.25  2000/04/16 23:53:08  apr
- * LogProducer renamed to LogSource
- *
- * Revision 1.24  2000/04/16 22:12:01  apr
- * Moved packager implementations to org.jpos.iso.packager
- *
- * Revision 1.23  2000/03/29 12:58:03  apr
- * change Victor's tabs to 8 spaces - no other change
- *
- * Revision 1.22  2000/03/29 08:28:39  victor
- * Added support for tertiary bitmap
- *
- * Revision 1.21  2000/03/20 21:56:39  apr
- * DocBugFix: broken links to API_users_guide
- *
- * Revision 1.20  2000/03/09 02:34:32  apr
- * New methods isRequest, isResponse, isRetransmission, setMTI, getMTI and
- * setResponseMTI
- *
- * Revision 1.19  2000/03/05 02:16:37  apr
- * Added XMLPackager
- *
- * Revision 1.18  2000/03/05 01:23:42  apr
- * Changed XMLdump to lowercase
- * Fixed bug in merge (we were not merging last field in an ISOMsg)
- *
- * Revision 1.17  2000/03/04 00:37:53  apr
- * Show fieldNumber on inner message dumps
- *
- * Revision 1.16  2000/03/01 14:44:45  apr
- * Changed package name to org.jpos
- *
- * Revision 1.15  2000/01/11 01:24:47  apr
- * moved non ISO-8583 related classes from jpos.iso to jpos.util package
- * (AntiHog LeasedLineModem LogEvent LogListener LogSource
- *  Loggeable Logger Modem RotateLogListener SimpleAntiHog SimpleDialupModem
- *  SimpleLogListener SimpleLogSource SystemMonitor V24)
- *
- * Revision 1.14  1999/10/01 10:54:08  apr
- * Added merge method
- *
- */
-
 /**
  * implements <b>Composite</b>
  * whithin a <b>Composite pattern</b>
@@ -152,7 +77,6 @@ public class ISOMsg extends ISOComponent
     protected int fieldNumber = -1;
     public static final int INCOMING = 1;
     public static final int OUTGOING = 2;
-    protected static ISOPackager internalPackager = null;
     private static final long serialVersionUID = 4306251831901413975L;
 
     public ISOMsg () {
@@ -574,35 +498,57 @@ public class ISOMsg extends ISOComponent
     }
 
     public void writeExternal (ObjectOutput out) throws IOException {
-        try {
-            byte[] b;
-            synchronized (this) {
-                recalcBitMap();
-                b = getInternalPackager().pack(this);
+        int max = getMaxField();
+        out.writeByte (0);  // reserved for future expansion (version id)
+        out.writeShort (fieldNumber);
+        for (int i=0; i<=max; i++) {
+            ISOComponent c = getComponent (i);
+            if (c instanceof ISOMsg) {
+                out.writeByte ('M');
+                ((Externalizable) c).writeExternal (out);
             }
-            out.writeObject (b);
-        } catch (Exception e) {
-            throw new IOException (e.getMessage());
+            else if (c instanceof ISOBinaryField) {
+                out.writeByte ('B');
+                ((Externalizable) c).writeExternal (out);
+            }
+            else if (c instanceof ISOField) {
+                out.writeByte ('F');
+                ((Externalizable) c).writeExternal (out);
+            }
         }
+        out.writeByte ('E');
     }
+
     public void readExternal  (ObjectInput in) 
         throws IOException, ClassNotFoundException
     {
-        byte[] b = (byte[]) in.readObject();
+        in.readByte();  // ignore version for now
+        fieldNumber = in.readShort();
+        byte fieldType;
+        int fldno;
+        ISOComponent c;
         try {
-            synchronized (this) {
-                getInternalPackager().unpack(this, b);
+            while ((fieldType = in.readByte()) != 'E') {
+                switch (fieldType) {
+                    case 'F':
+                        c = new ISOField ();
+                        break;
+                    case 'B':
+                        c = new ISOBinaryField ();
+                        break;
+                    case 'M':
+                        c = new ISOMsg ();
+                        break;
+                    default:
+                        throw new IOException ("malformed ISOMsg");
+                }
+                ((Externalizable)c).readExternal (in);
+                set (c);
             }
-        } catch (Exception e) {
+        }
+        catch (ISOException e) {
             throw new IOException (e.getMessage());
         }
-    }
-    protected ISOPackager getInternalPackager() {
-        synchronized (ISOMsg.class) {
-            if (internalPackager == null)
-                internalPackager = new ISO93BPackager();
-        }
-        return internalPackager;
     }
 }
 
