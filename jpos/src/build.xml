@@ -113,7 +113,8 @@
 
   <target name="xdoclet-uptodate" depends="prepare">
     <uptodate property="xdoclet-generate">
-      <srcfiles dir="${main}" includes="org/jpos/q2/QClassLoader.java"/>
+      <srcfiles dir="${main}" includes="org/jpos/q2/QClassLoader.java" />
+      <srcfiles dir="${main}" includes="org/jpos/q2/qbean/QTest.java" />
       <mapper type="glob" from="*.java" to="*MBean.java"/>
     </uptodate>
   </target>
@@ -126,6 +127,7 @@
     <jmxdoclet destdir="${main}" force="yes">
       <fileset dir="${main}">
         <include name="org/jpos/q2/QClassLoader.java" />
+        <include name="org/jpos/q2/qbean/QTest.java" />
       </fileset>
       <mbeaninterface/>
       <mx4jdescription/>
