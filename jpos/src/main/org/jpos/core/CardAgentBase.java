@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.2  1999/12/06 01:19:08  apr
+ * CVS snapshot
+ *
  * Revision 1.1  1999/11/26 12:16:45  apr
  * CVS devel snapshot
  *
@@ -14,7 +17,6 @@ import java.math.*;
 import java.lang.reflect.*;
 
 import uy.com.cs.jpos.iso.*;
-import uy.com.cs.jpos.core.*;
 
 /**
  * @author apr@cs.com.uy
@@ -24,8 +26,8 @@ import uy.com.cs.jpos.core.*;
 public abstract class CardAgentBase implements CardAgent, LogProducer {
     protected Sequencer seq;
     protected Configuration cfg;
-    String realm;
-    Logger logger;
+    protected String realm;
+    protected Logger logger;
     protected ISOPackager imagePackager;
 
     /**
@@ -104,7 +106,7 @@ public abstract class CardAgentBase implements CardAgent, LogProducer {
 	    param[0] = t;
 	    return (CardTransactionResponse) method.invoke (this, param);
 	} catch (Exception e) { 
-	    e.printStackTrace();
+	    Logger.log (new LogEvent (this, "process", e));
 	    throw new CardAgentException (e);
 	} 
     }
