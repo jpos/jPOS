@@ -19,12 +19,15 @@ import java.util.*;
  * @see ISOException
  * @see ISORequestListener
  */
-public class ISOMUX implements Runnable {
+public class ISOMUX implements Runnable, LogProducer {
     private ISOChannel channel;
     private Thread rx;
     private Vector txQueue;
     private Hashtable rxQueue;
     private int traceNumberField = 11;
+
+    protected Logger logger = null;
+    protected String realm = null;
  
     public static final int CONNECT      = 0;
     public static final int TX           = 1;
@@ -134,7 +137,7 @@ public class ISOMUX implements Runnable {
         return cnt;
     }
 
-    private class Receiver implements Runnable {
+    private class Receiver implements Runnable, LogProducer {
         Runnable parent;
         protected Receiver(Runnable p) {
             parent = p;
@@ -145,7 +148,6 @@ public class ISOMUX implements Runnable {
                     try {
                         ISOMsg d = channel.receive();
                         cnt[RX]++;
-                        d.dump (System.out, "<--- ");
                         String k = getKey(d);
                         ISORequest r = (ISORequest) rxQueue.get(k);
                         if (r != null) {
@@ -168,22 +170,19 @@ public class ISOMUX implements Runnable {
                         }
                     } catch (ISOException e) {
                         channel.setUsable(false);
-                        System.out.println("Receiver ISOException");
-                        e.printStackTrace();
+			Logger.log (new LogEvent (this, "muxreceiver", e));;
                         synchronized(parent) {
                             parent.notify();
                         }
                     } catch (IOException e) {
                         channel.setUsable(false);
-                        System.out.println("Receiver IOException");
-                        e.printStackTrace();
+			Logger.log (new LogEvent (this, "muxreceiver", e));
                         synchronized(parent) {
                             parent.notify();
                         }
                     } catch (Exception e) {
                         channel.setUsable(false);
-                        System.out.println("Receiver Exception");
-                        e.printStackTrace();
+			Logger.log (new LogEvent (this, "muxreceiver", e));
                         synchronized(parent) {
                             parent.notify();
                         }
@@ -195,11 +194,19 @@ public class ISOMUX implements Runnable {
                             rx.wait();
                         }
                     } catch (InterruptedException e) { 
-                        System.out.println ("Receiver was interrupted");
+			Logger.log (new LogEvent (this, "muxreceiver", e));
                     }
                 }
             }
         }
+	public void setLogger (Logger logger, String realm) {
+	}
+	public String getRealm () {
+	    return realm;
+	}
+	public Logger getLogger() {
+	    return logger;
+	}
     }
 
     private void doTransmit() throws ISOException, IOException {
@@ -211,7 +218,6 @@ public class ISOMUX implements Runnable {
                 ISOMsg m = r.getRequest();
                 rxQueue.put (getKey(m), r);
                 channel.send(m);
-                m.dump (System.out, "---> ");
                 cnt[TX]++;
             }
             txQueue.removeElement(r);
@@ -220,13 +226,17 @@ public class ISOMUX implements Runnable {
     }
     public void run () {
         rx.start();
+	boolean firstTime = true;
         for (;;) {
             try {
                 if (channel.isConnected()) {
                     doTransmit();
                 }
                 else {
-                    Thread.sleep(5000);
+		    if (firstTime)
+			firstTime = !firstTime;
+		    else
+			Thread.sleep(5000);
                     channel.reconnect();
                     cnt[CONNECT]++;
                     synchronized(rx) {
@@ -239,23 +249,23 @@ public class ISOMUX implements Runnable {
                 }
             }
             catch (UnknownHostException e) { 
-                System.out.println(e);
+		Logger.log (new LogEvent (this, "mux", e));
             }
             catch (ConnectException e) { 
-                System.out.println(e);
+		Logger.log (new LogEvent (this, "mux", e));
             }
             catch (java.net.SocketException e) { 
-                System.out.println(e);
+		Logger.log (new LogEvent (this, "mux", e));
             }
             catch (IOException e) {
-                e.printStackTrace();
+		Logger.log (new LogEvent (this, "mux", e));
                 channel.setUsable(false);
             }
             catch (InterruptedException e) {
-                System.out.println("ISOMUX interrupted");
+		Logger.log (new LogEvent (this, "mux", e));
             }
             catch (ISOException e) {
-                e.printStackTrace();
+		Logger.log (new LogEvent (this, "mux", e));
             }
         }
     }
@@ -267,5 +277,15 @@ public class ISOMUX implements Runnable {
     }
     public boolean isConnected() {
         return channel.isConnected();
+    }
+    public void setLogger (Logger logger, String realm) {
+	this.logger = logger;
+	this.realm  = realm;
+    }
+    public String getRealm () {
+	return realm;
+    }
+    public Logger getLogger() {
+	return logger;
     }
 }

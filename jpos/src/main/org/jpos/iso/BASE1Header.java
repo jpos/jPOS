@@ -2,7 +2,7 @@ package uy.com.cs.jpos.iso;
 
 import uy.com.cs.jpos.iso.*;
 
-/**
+/*
  * BASE1 Header
  * <pre>
  *   0 hlen;         Fld  1: Header Length        1B      (Byte     0)

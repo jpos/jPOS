@@ -5,7 +5,7 @@ package uy.com.cs.jpos.iso;
  * @version $Id$
  * @see ISOComponent
  */
-public interface ISOPackager {
+public interface ISOPackager extends LogProducer {
     /**
      * @param   m   the Component to pack
      * @return      Message image

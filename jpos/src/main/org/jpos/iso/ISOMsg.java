@@ -16,7 +16,7 @@ import java.util.*;
  * @see ISOComponent
  * @see ISOField
  */
-public class ISOMsg extends ISOComponent implements Cloneable {
+public class ISOMsg extends ISOComponent implements Cloneable, Loggeable {
     protected Hashtable fields;
     protected int maxField;
     protected ISOPackager packager;
@@ -24,8 +24,8 @@ public class ISOMsg extends ISOComponent implements Cloneable {
     protected int direction;
     protected byte[] header;
     protected int fieldNumber = -1;
-    public static int INCOMING = 1;
-    public static int OUTGOING = 2;
+    public static final int INCOMING = 1;
+    public static final int OUTGOING = 2;
 
     public ISOMsg () {
         fields = new Hashtable ();
@@ -195,10 +195,20 @@ public class ISOMsg extends ISOComponent implements Cloneable {
      */
     public void dump (PrintStream p, String indent) {
         ISOComponent c;
-        p.println (indent + "<ISOMsg>");
+	p.print (indent + "<ISOMsg");
+	switch (direction) {
+	    case INCOMING:
+		p.print (" dir=\"IN\"");
+		break;
+	    case OUTGOING:
+		p.print (" dir=\"OUT\"");
+		break;
+	}
+	p.println (">");
+	String newIndent = indent + "  ";
         for (int i=0; i<=maxField; i++)
             if ((c = (ISOComponent) fields.get (new Integer (i))) != null)
-                c.dump (p, indent + " ");
+                c.dump (p, newIndent);
         p.println (indent + "</ISOMsg>");
     }
     /**

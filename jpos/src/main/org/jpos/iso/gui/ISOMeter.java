@@ -7,6 +7,9 @@
 
 /*
  * $Log$
+ * Revision 1.4  1999/09/06 17:20:20  apr
+ * Added Logger SubSystem
+ *
  * Revision 1.3  1999/08/06 11:40:11  apr
  * expand -4
  *
@@ -26,26 +29,73 @@ import javax.swing.*;
 import uy.com.cs.jpos.iso.*;
 
 public class ISOMeter extends JComponent implements ActionListener {
+    /**
+     * @serial
+     */
     Color color = new Color (255, 255, 255);
+    /**
+     * @serial
+     */
     Image im;
+    /**
+     * @serial
+     */
     Graphics img;
+    /**
+     * @serial
+     */
     Font fontBig, fontSmall;
-    String positiveText, negativeText;
+    /**
+     * @serial
+     */
+    String positiveText;
+    /**
+     * @serial
+     */
+    String negativeText;
+    /**
+     * @serial
+     */
     Timer ti;
     /**
      * handle ISOMeter's counters outside of this class in order
      * to reduce 'int' to 'String' conversions.
+     * @serial
      */
-    String positiveCounter, negativeCounter;
-    int lastPositive, lastNegative;
+    String positiveCounter;
+    /**
+     * @serial
+     */
+    String negativeCounter;
+    /**
+     * @serial
+     */
+    int lastPositive;
+    /**
+     * @serial
+     */
+    int lastNegative;
+    /**
+     * @serial
+     */
     boolean connected;
+    /**
+     * @serial
+     */
     ISOChannelPanel parent;
 
     final static int width    = 200;
     final static int height   = 60;
     final static int mass     = height/2;
 
-    int[] yPoints, xPoints;
+    /**
+     * @serial
+     */
+    int[] yPoints;
+    /**
+     * @serial
+     */
+    int[] xPoints;
     
     public ISOMeter(ISOChannelPanel parent) {
         super();

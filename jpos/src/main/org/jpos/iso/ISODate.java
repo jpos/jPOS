@@ -31,7 +31,7 @@ public class ISODate {
      * converts a string in DD/MM/YY format to a Date object
      * Warning: return null on invalid dates (prints Exception to console)
      *
-     * @return parsed Date
+     * @return parsed Date (or null)
      */
     public static Date parse(String s) {
         Date d = null;
@@ -44,8 +44,6 @@ public class ISODate {
         try {
             d = df.parse (s);
         } catch (java.text.ParseException e) {
-            System.out.println (e);
-            System.out.println ("invalid date "+s);
         }
         return d;
     }
@@ -53,7 +51,7 @@ public class ISODate {
      * converts a string in DD/MM/YY HH:MM:SS format to a Date object
      * Warning: return null on invalid dates (prints Exception to console)
      *
-     * @return parsed Date
+     * @return parsed Date (or null)
      */
     public static Date parseDateTime(String s) {
         Date d = null;
@@ -65,10 +63,7 @@ public class ISODate {
         df.setTimeZone (new SimpleTimeZone(-3 * 60*60*1000, "AGT"));
         try {
             d = df.parse (s);
-        } catch (java.text.ParseException e) {
-            System.out.println (e);
-            System.out.println ("invalid date/time "+s);
-        }
+        } catch (java.text.ParseException e) { }
         return d;
     }
     /**

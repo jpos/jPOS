@@ -82,7 +82,7 @@ public class VAPChannel extends ISOChannel {
             if (l == 0) {
                 serverOut.write(b);
                 serverOut.flush();
-                System.out.println ("VAP Poll received (and answered)");
+		Logger.log (new LogEvent (this, "poll"));
             }
         }
         return l;

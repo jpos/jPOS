@@ -7,6 +7,9 @@
 
 /*
  * $Log$
+ * Revision 1.5  1999/09/06 17:20:21  apr
+ * Added Logger SubSystem
+ *
  * Revision 1.4  1999/08/06 13:52:08  apr
  * Added getValueAdjusting() check to avoid inner ISOMsgs showing twice
  *
@@ -42,7 +45,13 @@ import uy.com.cs.jpos.iso.*;
  */
 
 public class ISOMsgPanel extends JPanel {
+    /**
+     * @serial
+     */
     ISOMsg m;
+    /**
+     * @serial
+     */
     Vector validFields;
     public ISOMsgPanel(ISOMsg m, boolean withDump) {
         super();

@@ -14,13 +14,19 @@ import java.util.*;
 
 /*
  * $Log$
+ * Revision 1.14  1999/09/06 17:20:06  apr
+ * Added Logger SubSystem
+ *
  * Revision 1.13  1999/08/06 13:55:46  apr
  * Added support for Bitmap-less ISOMsgs (usually nested messages)
  *
  */
 
-public abstract class ISOBasePackager implements ISOPackager {
+public abstract class ISOBasePackager implements ISOPackager, LogProducer {
     protected ISOFieldPackager[] fld;
+
+    protected Logger logger = null;
+    protected String realm = null;
 
     protected void setFieldPackager (ISOFieldPackager[] fld) {
         this.fld = fld;
@@ -31,50 +37,58 @@ public abstract class ISOBasePackager implements ISOPackager {
      * @exception ISOException
      */
     public byte[] pack (ISOComponent m) throws ISOException {
-        if (m.getComposite() != m) 
-            throw new ISOException ("Can't call packager on non Composite");
+	LogEvent evt = new LogEvent (this, "pack");
+	try {
+	    if (m.getComposite() != m) 
+		throw new ISOException ("Can't call packager on non Composite");
 
-        ISOComponent c;
-        Vector v = new Vector();
-        Hashtable fields = m.getChildren();
-        int len = 0;
+	    ISOComponent c;
+	    Vector v = new Vector();
+	    Hashtable fields = m.getChildren();
+	    int len = 0;
 
-        // MTI (field 0)
-        c = (ISOComponent) fields.get (new Integer (0));
-        byte[] b = fld[0].pack(c);
-        len += b.length;
-        v.addElement (b);
+	    // MTI (field 0)
+	    c = (ISOComponent) fields.get (new Integer (0));
+	    byte[] b = fld[0].pack(c);
+	    len += b.length;
+	    v.addElement (b);
 
-        boolean hasBitMap = (fld[1] instanceof ISOBitMapPackager);
+	    boolean hasBitMap = (fld[1] instanceof ISOBitMapPackager);
 
-        if (hasBitMap) {
-            // BITMAP (-1 in HashTable)
-            c = (ISOComponent) fields.get (new Integer (-1));
-            b = getBitMapfieldPackager().pack(c);
-            len += b.length;
-            v.addElement (b);
-        }
+	    if (hasBitMap) {
+		// BITMAP (-1 in HashTable)
+		c = (ISOComponent) fields.get (new Integer (-1));
+		b = getBitMapfieldPackager().pack(c);
+		len += b.length;
+		v.addElement (b);
+	    }
 
-        // if Field 1 is a BitMap then we are packing an
-        // ISO-8583 message so next field is fld#2.
-        // else we are packing an ANSI X9.2 message, first field is 1
-        for (int i=hasBitMap ? 2 : 1;
-            i<=m.getMaxField(); i++)
-        {
-            if ((c = (ISOComponent) fields.get (new Integer (i))) != null) {
-                b = fld[i].pack(c);
-                len += b.length;
-                v.addElement (b);
-            }
-        }
-        int k = 0;
-        byte[] d = new byte[len];
-        for (int i=0; i<v.size(); i++) {
-            b = (byte[]) v.elementAt(i);
-            for (int j=0; j<b.length; j++)
-                d[k++] = b[j];
-        }
-        return d;
+	    // if Field 1 is a BitMap then we are packing an
+	    // ISO-8583 message so next field is fld#2.
+	    // else we are packing an ANSI X9.2 message, first field is 1
+	    for (int i=hasBitMap ? 2 : 1; i<=m.getMaxField(); i++) {
+		if ((c = (ISOComponent) fields.get (new Integer (i))) != null) {
+		    b = fld[i].pack(c);
+		    len += b.length;
+		    v.addElement (b);
+		}
+	    }
+	    int k = 0;
+	    byte[] d = new byte[len];
+	    for (int i=0; i<v.size(); i++) {
+		b = (byte[]) v.elementAt(i);
+		for (int j=0; j<b.length; j++)
+		    d[k++] = b[j];
+	    }
+	    if (logger != null)	 // save a few CPU cycle if no logger available
+		evt.addMessage (ISOUtil.hexString (d));
+	    return d;
+	} catch (ISOException e) {
+	    evt.addMessage (e);
+	    throw e;
+	} finally {
+	    Logger.log(evt);
+	}
     }
 
     /**
@@ -84,52 +98,58 @@ public abstract class ISOBasePackager implements ISOPackager {
      * @exception ISOException
      */
     public int unpack (ISOComponent m, byte[] b) throws ISOException {
-        if (m.getComposite() != m) 
-            throw new ISOException ("Can't call packager on non Composite");
+	LogEvent evt = new LogEvent (this, "unpack");
+	try {
+	    if (m.getComposite() != m) 
+		throw new ISOException ("Can't call packager on non Composite");
+	    if (logger != null)	 // save a few CPU cycle if no logger available
+		evt.addMessage (ISOUtil.hexString (b));
 
-        int consumed;
-        ISOField mti     = new ISOField (0);
-        ISOBitMap bitmap = new ISOBitMap (-1);
-        consumed  = fld[0].unpack(mti, b, 0);
-        m.set (mti);
+	    int consumed;
+	    ISOField mti     = new ISOField (0);
+	    ISOBitMap bitmap = new ISOBitMap (-1);
+	    consumed  = fld[0].unpack(mti, b, 0);
+	    m.set (mti);
 
-        if (fld[1] instanceof ISOBitMapPackager) {
-            consumed += getBitMapfieldPackager().unpack(bitmap, b, consumed);
-            BitSet bmap = (BitSet) bitmap.getValue();
-            m.set (bitmap);
-            for (int i=2; i<bmap.size(); i++) {
-                if (bmap.get(i)) {
-                    ISOComponent c = fld[i].createComponent(i);
-                    consumed += fld[i].unpack (c, b, consumed);
-                    m.set(c);
-                }
-            }
-        }
-        else {
-            for (int i=1; i<fld.length; i++) {
-                ISOComponent c = fld[i].createComponent(i);
-                consumed += fld[i].unpack (c, b, consumed);
-                m.set(c);
-            }
-        }
-        if (b.length != consumed) {
-            // System.out.println (
-            //  "Warning: unpack len=" +b.length +" consumed=" +consumed
-            // );
-            // throw new ISOException (
-            //  "unpack error len=" +b.length +" consumed=" +consumed
-            // );
-        }
-        return consumed;
+	    if (fld[1] instanceof ISOBitMapPackager) {
+		consumed +=
+		    getBitMapfieldPackager().unpack(bitmap, b, consumed);
+		BitSet bmap = (BitSet) bitmap.getValue();
+		m.set (bitmap);
+		for (int i=2; i<bmap.size(); i++) {
+		    if (bmap.get(i)) {
+			ISOComponent c = fld[i].createComponent(i);
+			consumed += fld[i].unpack (c, b, consumed);
+			m.set(c);
+		    }
+		}
+	    }
+	    else {
+		for (int i=1; i<fld.length; i++) {
+		    ISOComponent c = fld[i].createComponent(i);
+		    consumed += fld[i].unpack (c, b, consumed);
+		    m.set(c);
+		}
+	    }
+	    if (b.length != consumed) {
+		evt.addMessage (
+		    "WARNING: unpack len=" +b.length +" consumed=" +consumed
+		);
+	    }
+	    return consumed;
+	} catch (ISOException e) {
+	    evt.addMessage (e);
+	    throw e;
+	} finally {
+	    Logger.log (evt);
+	}
     }
     /**
      * @param   m   the Container (i.e. an ISOMsg)
      * @param   fldNumber the Field Number
      * @return  Field Description
-     * @exception ISOException
      */
-    public String getFieldDescription(ISOComponent m, int fldNumber)
-    {
+    public String getFieldDescription(ISOComponent m, int fldNumber) {
         return fld[fldNumber].getDescription();
     }
     /**
@@ -143,5 +163,15 @@ public abstract class ISOBasePackager implements ISOPackager {
      */
     protected ISOFieldPackager getBitMapfieldPackager() {
         return fld[1];
+    }
+    public void setLogger (Logger logger, String realm) {
+	this.logger = logger;
+	this.realm  = realm;
+    }
+    public String getRealm () {
+	return realm;
+    }
+    public Logger getLogger() {
+	return logger;
     }
 }

@@ -1,12 +1,8 @@
-/**
- * ISOMsgPanel
- * Swing based GUI to ISOMsg
- * @author apr@cs.com.uy
- * @see uy.com.cs.jpos.iso.ISOMsg
- */
-
 /*
  * $Log$
+ * Revision 1.5  1999/09/06 17:20:19  apr
+ * Added Logger SubSystem
+ *
  * Revision 1.4  1999/08/06 11:40:10  apr
  * expand -4
  *
@@ -30,6 +26,7 @@ package uy.com.cs.jpos.iso.gui;
  * 'Oscilloscope' style clickeable window.
  * @see ISOMeter
  * @see ISOMsgPanel
+ * @serial
  */
 import java.util.Observer;
 import java.util.Observable;
@@ -41,8 +38,17 @@ import javax.swing.event.*;
 import uy.com.cs.jpos.iso.*;
 
 public class ISOChannelPanel extends JPanel implements Observer {
+    /**
+     * @serial
+     */
     ISOMeter meter;
+    /**
+     * @serial
+     */
     DefaultListModel log;
+    /**
+     * @serial
+     */
     String symbolicName;
     public static final int LOG_CAPACITY = 250;
 

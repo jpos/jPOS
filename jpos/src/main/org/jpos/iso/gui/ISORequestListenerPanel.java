@@ -9,6 +9,9 @@
 
 /*
  * $Log$
+ * Revision 1.4  1999/09/06 17:20:22  apr
+ * Added Logger SubSystem
+ *
  * Revision 1.3  1999/08/06 11:40:12  apr
  * expand -4
  *
@@ -32,7 +35,13 @@ import javax.swing.event.*;
 import uy.com.cs.jpos.iso.*;
 
 public class ISORequestListenerPanel extends JPanel implements Observer {
+    /**
+     * @serial
+     */
     DefaultListModel log;
+    /**
+     * @serial
+     */
     String symbolicName;
     public static final int LOG_CAPACITY = 250;
 

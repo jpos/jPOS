@@ -8,23 +8,28 @@ import java.net.Socket;
 /**
  * ISOChannel is an abstract class that provides functionality that
  * allows the transmision and reception of ISO 8583 Messages
- * over a TCP/IP session.<br>
- *
+ * over a TCP/IP session.
+ * <p>
  * It is not thread-safe, ISOMUX takes care of the
  * synchronization details
- *
- * @see ISOMUX
- *
+ * <p>
+ * ISOChannel is Observable in order to suport GUI components
+ * such as ISOChannelPanel.
+ * <br>
+ * It now support the new Logger architecture so we will
+ * probably setup ISOChannelPanel to be a LogListener insteado
+ * of being an Observer in future releases.
+ * 
  * @author apr@cs.com.uy
  * @version $Id$
  * @see ISOMsg
  * @see ISOMUX
  * @see ISOException
  * @see CSChannel
- * @see Internetworking_with_TCP/IP_ISBN_0-13-474321-0
+ * @see Logger
  *
  */
-public abstract class ISOChannel extends Observable {
+public abstract class ISOChannel extends Observable implements LogProducer {
     private Socket socket;
     private String host;
     private int port;
@@ -40,6 +45,9 @@ public abstract class ISOChannel extends Observable {
     public static final int SIZEOF_CNT   = 3;
 
     private int[] cnt;
+
+    protected Logger logger = null;
+    protected String realm = null;
 
     /**
      * constructor shared by server and client
@@ -146,16 +154,31 @@ public abstract class ISOChannel extends Observable {
         setChanged();
         notifyObservers();
     }
+
     /**
      * Connects client ISOChannel to server
      * @exception IOException
      */
     public void connect () throws IOException {
-        if (serverSocket != null)
-            accept(serverSocket);
-        else
-            connect(new Socket (host, port));
+	LogEvent evt = new LogEvent (this, "connect");
+	try {
+            if (serverSocket != null) {
+		evt.addMessage ("local port "+serverSocket.getLocalPort()
+		    +" remote host "+serverSocket.getInetAddress());
+		accept(serverSocket);
+	    }
+	    else {
+		evt.addMessage (host+":"+port);
+		connect(new Socket (host, port));
+	    }
+	    Logger.log (evt);
+	} catch (IOException e) {
+	    evt.addMessage (e);
+	    Logger.log (evt);
+	    throw e;
+	}
     }
+
     /**
      * Accepts connection 
      * @exception IOException
@@ -169,6 +192,7 @@ public abstract class ISOChannel extends Observable {
      * flag as unusable in order to force a reconnection)
      */
     public void setUsable(boolean b) {
+	Logger.log (new LogEvent (this, "usable", new Boolean (b)));
         usable = b;
     }
     protected void sendMessageLength(int len) throws IOException { }
@@ -189,21 +213,31 @@ public abstract class ISOChannel extends Observable {
      * @exception ISOException
      */
     public void send (ISOMsg m) throws IOException, ISOException {
-        m.setPackager (packager);
-        byte[] b = m.pack();
-        System.out.println (
-           "--[pack]--\n"+ ISOUtil.hexString(b) + "\n--[end]--");
-
-        sendMessageLength(b.length + getHeaderLength());
-        sendMessageHeader(m, b.length);
-        serverOut.write(b, 0, b.length);
-        sendMessageTrailler(m, b.length);
-        serverOut.flush ();
-
-        m.setDirection(ISOMsg.OUTGOING);
-        cnt[TX]++;
-        setChanged();
-        notifyObservers(m);
+	LogEvent evt = new LogEvent (this, "send");
+	evt.addMessage (m);
+	try {
+	    if (!isConnected())
+		throw new ISOException ("unconnected ISOChannel");
+	    m.setPackager (packager);
+	    byte[] b = m.pack();
+	    sendMessageLength(b.length + getHeaderLength());
+	    sendMessageHeader(m, b.length);
+	    serverOut.write(b, 0, b.length);
+	    sendMessageTrailler(m, b.length);
+	    serverOut.flush ();
+	    m.setDirection(ISOMsg.OUTGOING);
+	    cnt[TX]++;
+	    setChanged();
+	    notifyObservers(m);
+	} catch (ISOException e) {
+	    evt.addMessage (e);
+	    throw e;
+	} catch (IOException e) {
+	    evt.addMessage (e);
+	    throw e;
+	} finally {
+	    Logger.log (evt);
+	}
     }
     protected boolean isRejected(byte[] b) {
         // VAP Header support - see VAPChannel
@@ -217,40 +251,54 @@ public abstract class ISOChannel extends Observable {
      */
     public ISOMsg receive() throws IOException, ISOException {
         byte[] b, header=null;
-        int len  = getMessageLength();
-        int hLen = getHeaderLength();
+	LogEvent evt = new LogEvent (this, "receive");
+	ISOMsg m = new ISOMsg();
+	try {
+	    if (!isConnected())
+		throw new ISOException ("unconnected ISOChannel");
 
-        if (len == -1) 
-            b = streamReceive();
-        else if (len > 10 && len <= 4096) {
-            int l;
-            if (hLen > 0) {
-                // ignore message header (TPDU)
-                header = new byte [hLen];
-                serverIn.readFully(header,0,hLen);
-                if (isRejected(header))
-                    throw new ISOException ("Unhandled Rejected Message");
-                len -= hLen;
-            }
-            b = new byte[len];
-            serverIn.readFully(b,0,len);
-            // System.out.println (
-            //  "--[unpack]--\n"+ ISOUtil.hexString(b) + "\n--[end]--");
-        }
-        else
-            throw new ISOException("receive length " +len + " seems extrange");
+            int len  = getMessageLength();
+            int hLen = getHeaderLength();
 
-        ISOMsg m = new ISOMsg();
-        m.setPackager (packager);
-        if (b.length > 0)   // Ignore NULL messages (i.e. VAP/X.25 sync, etc.)
-            m.unpack (b);
+            if (len == -1) 
+		b = streamReceive();
+            else if (len > 10 && len <= 4096) {
+		int l;
+		if (hLen > 0) {
+		    // ignore message header (TPDU)
+		    header = new byte [hLen];
+		    serverIn.readFully(header,0,hLen);
+		    if (isRejected(header))
+			throw new ISOException ("Unhandled Rejected Message");
+		    len -= hLen;
+		}
+		b = new byte[len];
+		serverIn.readFully(b,0,len);
+	    }
+	    else
+		throw new ISOException(
+		    "receive length " +len + " seems extrange");
 
-        m.setHeader(header);
-        m.setDirection(ISOMsg.INCOMING);
-        cnt[RX]++;
-        setChanged();
-        notifyObservers(m);
-        return m;
+	    m.setPackager (packager);
+	    if (b.length > 0)  // Ignore NULL messages
+		m.unpack (b);
+
+	    m.setHeader(header);
+	    m.setDirection(ISOMsg.INCOMING);
+	    evt.addMessage (m);
+	    cnt[RX]++;
+	    setChanged();
+	    notifyObservers(m);
+	} catch (ISOException e) {
+	    evt.addMessage (e);
+	    throw e;
+	} catch (IOException e) { 
+	    evt.addMessage (e);
+	    throw e;
+	} finally {
+	    Logger.log (evt);
+	}
+	return m;
     }
     /**
      * Low level receive
@@ -266,14 +314,27 @@ public abstract class ISOChannel extends Observable {
      * @exception IOException
      */
     public void disconnect () throws IOException {
-        usable = false;
-        setChanged();
-        notifyObservers();
-        serverIn  = null;
-        serverOut = null;
-        if (socket != null)
-            socket.close ();
-        socket = null;
+	LogEvent evt = new LogEvent (this, "disconnect");
+        if (serverSocket != null) 
+	    evt.addMessage ("local port "+serverSocket.getLocalPort()
+		+" remote host "+serverSocket.getInetAddress());
+	else
+	    evt.addMessage (host+":"+port);
+	try {
+	    usable = false;
+	    setChanged();
+	    notifyObservers();
+	    serverIn  = null;
+	    serverOut = null;
+	    if (socket != null)
+		socket.close ();
+	    socket = null;
+	    Logger.log (evt);
+	} catch (IOException e) {
+	    evt.addMessage (e);
+	    Logger.log (evt);
+	    throw e;
+	}
     }   
     /**
      * Issues a disconnect followed by a connect
@@ -282,5 +343,15 @@ public abstract class ISOChannel extends Observable {
     public void reconnect() throws IOException {
         disconnect();
         connect();
+    }
+    public void setLogger (Logger logger, String realm) {
+	this.logger = logger;
+	this.realm  = realm;
+    }
+    public String getRealm () {
+	return realm;
+    }
+    public Logger getLogger() {
+	return logger;
     }
 }

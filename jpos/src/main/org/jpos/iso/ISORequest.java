@@ -1,5 +1,6 @@
 package uy.com.cs.jpos.iso;
 
+import java.io.*;
 import java.util.*;
 
 /**
@@ -15,10 +16,12 @@ import java.util.*;
  * @see ISOMUX
  * @serial
  */
-public class ISORequest {
+public class ISORequest implements LogProducer, Loggeable {
     private ISOMsg request, response;
     private long requestTime, responseTime;
     private boolean expired;
+    private Logger logger = null;
+    private String realm = null;
 
     /**
      * creates an ISORequest suitable to be queued to an ISOMUX
@@ -75,7 +78,21 @@ public class ISORequest {
             } catch (InterruptedException e) { }
             setExpired (response == null);
         }
+	Logger.log (new LogEvent (this, "ISORequest", this));
         return response;
+    }
+    public void dump (PrintStream p, String indent) {
+	String newIndent = indent + "  ";
+	p.println (indent + "<request" +
+	    (expired ? " expired=\"true\">" : ">"));
+	request.dump (p, newIndent);
+	p.println (indent + "</request>");
+	if (response != null) {
+	    p.println (indent + "<response elapsed=\""
+		+(responseTime-requestTime)+ "\">");
+	    response.dump (p, newIndent);
+	    p.println (indent + "</response>");
+	}
     }
 
     /**
@@ -89,5 +106,15 @@ public class ISORequest {
             response = m;
             this.notify();
         }
+    }
+    public void setLogger (Logger logger, String realm) {
+	this.logger = logger;
+	this.realm  = realm;
+    }
+    public String getRealm () {
+	return realm;
+    }
+    public Logger getLogger() {
+	return logger;
     }
 }
