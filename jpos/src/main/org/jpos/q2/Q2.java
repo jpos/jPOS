@@ -59,6 +59,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.Set;
 import java.util.Iterator;
 import java.util.Arrays;
 import javax.management.Attribute;
@@ -105,6 +106,8 @@ public class Q2 implements FileFilter {
     private QFactory factory;
     private QClassLoader loader;
     private Log log;
+    private boolean shutdown;
+    private Thread q2Thread;
 
     public Q2 (String dir) {
         super();
@@ -125,7 +128,9 @@ public class Q2 implements FileFilter {
 	server.registerMBean (loader, loaderName);
         factory = new QFactory (loaderName, this);
         initSystemLogger ();
-        for (;;) {
+        addShutdownHook ();
+        q2Thread = Thread.currentThread ();
+        while (!shutdown) {
             try {
                 loader = loader.scan ();
                 scan ();
@@ -137,6 +142,9 @@ public class Q2 implements FileFilter {
                 relax ();
             }
         }
+        q2Thread = null;
+        log.info ("shutting down");
+        undeploy ();
     }
 
     public QClassLoader getLoader () {
@@ -181,6 +189,32 @@ public class Q2 implements FileFilter {
         while (iter.hasNext ()) {
             start ((ObjectInstance) iter.next ());
         }
+    }
+
+    private void undeploy () {
+        Object[] set = dirMap.entrySet().toArray ();
+        int l = set.length;
+
+        while (l-- > 0) {
+            Map.Entry entry = (Map.Entry) set[l];
+            File   f  = (File) entry.getKey ();
+            undeploy (f);
+        }
+    }
+
+    private void addShutdownHook () {
+        Runtime.getRuntime().addShutdownHook (
+            new Thread () {
+                public void run () {
+                    shutdown = true;
+                    if (q2Thread != null) {
+                        try {
+                            q2Thread.join ();
+                        } catch (InterruptedException e) { }
+                    }
+                }
+            }
+        );
     }
 
     private void checkModified () {
