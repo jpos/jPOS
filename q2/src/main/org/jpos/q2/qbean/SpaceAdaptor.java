@@ -56,6 +56,7 @@ import javax.management.ObjectName;
 import org.jpos.q2.Q2;
 import org.jpos.q2.QBeanSupport;
 import org.jpos.space.Space;
+import org.jpos.space.SpaceFactory;
 import org.jpos.space.LocalSpace;
 import org.jpos.space.TransientSpace;
 
@@ -82,9 +83,9 @@ public class SpaceAdaptor
 
     protected void startService () throws Exception {
         if (spaceName == null) 
-            sp = TransientSpace.getSpace ();
+            sp = SpaceFactory.getSpace ();
         else 
-            sp = TransientSpace.getSpace (spaceName);
+            sp = SpaceFactory.getSpace (spaceName);
 
         objectName = new ObjectName (Q2.QBEAN_NAME + 
             getName() + ",space=" +
@@ -123,4 +124,3 @@ public class SpaceAdaptor
     }
 }
 
-   
