@@ -93,7 +93,7 @@ public class IFMC_LLCHAR extends ISOFieldPackager {
 
         return (
 	    ISOUtil.zeropad(((Integer) c.getKey()).toString(), 2) 
-	   +ISOUtil.zeropad(Integer.toString(len+2), 2) 
+	   +ISOUtil.zeropad(Integer.toString(len), 2) 
 	   +s
 	).getBytes();
     }
