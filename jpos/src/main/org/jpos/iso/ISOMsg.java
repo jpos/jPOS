@@ -58,6 +58,9 @@ import org.jpos.iso.packager.ISO93BPackager;
 
 /*
  * $Log$
+ * Revision 1.31  2000/12/06 20:21:42  apr
+ * Stupid bug :blush: :-)
+ *
  * Revision 1.30  2000/12/06 18:40:07  apr
  * Added hasFields method
  *
@@ -376,7 +379,7 @@ public class ISOMsg extends ISOComponent
      * @return true if all fields are present
      */
     public boolean hasFields (int[] fields) {
-	for (int i=0; i<=fields.length; i++) 
+	for (int i=0; i<fields.length; i++) 
             if (!hasField (fields[i]))
                 return false;
         return true;
