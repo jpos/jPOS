@@ -126,7 +126,7 @@
       <classpath refid="xdoclet.classpath"/>
     </taskdef>
 
-    <jmxdoclet destdir="${main}" force="yes">
+    <jmxdoclet destdir="${main}" force="yes" verbose="false">
       <fileset dir="${main}">
         <include name="org/jpos/q2/QClassLoader.java" />
         <include name="org/jpos/q2/qbean/QTest.java" />
