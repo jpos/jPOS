@@ -1,6 +1,5 @@
 $Revision$
 
+Added TransactionManager
 ChannelAdaptor and QMUX now accepts <space> element
 
--- 0.1.0 --
-Initial version as moved out of jPOS.
