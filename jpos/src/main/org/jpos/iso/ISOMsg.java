@@ -58,6 +58,9 @@ import org.jpos.iso.packager.ISO93BPackager;
 
 /*
  * $Log$
+ * Revision 1.33  2001/02/04 22:38:31  apr
+ * Optimization: writeExternal was creating unused internal package instance
+ *
  * Revision 1.32  2000/12/24 12:14:07  apr
  * Added handy getString(fldno) method (tired of casting getValue)
  *
@@ -565,7 +568,6 @@ public class ISOMsg extends ISOComponent
 
     public void writeExternal (ObjectOutput out) throws IOException {
         try {
-            ISOPackager p = new ISO93BPackager();
             byte[] b;
             synchronized (this) {
                 recalcBitMap();
