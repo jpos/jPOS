@@ -64,6 +64,9 @@ import com.sun.net.ssl.TrustManagerFactory;
 import com.sun.net.ssl.internal.ssl.Provider;
 import java.io.FileInputStream; 
 import java.io.File;
+import org.jpos.util.Logger;
+import org.jpos.util.LogEvent;
+import org.jpos.util.SimpleLogSource;
 
 /**
  * <code>SunJSSESocketFactory</code> is used by BaseChannel and ISOServer
@@ -73,7 +76,9 @@ import java.io.File;
  * @author  Bharavi Gade
  * @since   1.3.3
  */
-public class SunJSSESocketFactory implements ISOServerSocketFactory,ISOClientSocketFactory
+public class SunJSSESocketFactory 
+        extends SimpleLogSource 
+        implements ISOServerSocketFactory,ISOClientSocketFactory
 { 
 
     private SSLContext sslc=null;
@@ -106,8 +111,7 @@ public class SunJSSESocketFactory implements ISOServerSocketFactory,ISOClientSoc
      * @return the SSLContext
      * @returns null if exception occurrs
      */
-    private SSLContext getSSLContext(){
-
+    private SSLContext getSSLContext() throws ISOException {
         if(password==null)  password=getPassword();
         if(keyPassword ==null)  keyPassword=getKeyPassword();
         if(keyStore==null)keyStore=System.getProperty("user.home")+File.separator+".keystore";
@@ -128,7 +132,7 @@ public class SunJSSESocketFactory implements ISOServerSocketFactory,ISOClientSoc
     }
     catch(Exception e)
     {
-           return null;
+        throw new ISOException (e);
     }
     finally
     { 
@@ -139,10 +143,11 @@ public class SunJSSESocketFactory implements ISOServerSocketFactory,ISOClientSoc
   /**
     * Create a socket factory
     * @return the socket factory
-    * @exception IOException if an I/O error occurs during server socket
+    * @exception ISOException if an error occurs during server socket
     * creation
     */
-    protected SSLServerSocketFactory createServerSocketFactory() //throws Exception
+    protected SSLServerSocketFactory createServerSocketFactory() 
+        throws ISOException
     {
         if(sslc==null) sslc=getSSLContext();
         return sslc.getServerSocketFactory();
@@ -151,10 +156,11 @@ public class SunJSSESocketFactory implements ISOServerSocketFactory,ISOClientSoc
    /**
     * Create a socket factory
     * @return the socket factory
-    * @exception IOException if an I/O error occurs during server socket
+    * @exception ISOException if an error occurs during server socket
     * creation
     */
-    protected SSLSocketFactory createSocketFactory() //throws Exception
+    protected SSLSocketFactory createSocketFactory() 
+        throws ISOException
     {
         if(sslc==null) sslc=getSSLContext();
         return sslc.getSocketFactory();
@@ -165,10 +171,12 @@ public class SunJSSESocketFactory implements ISOServerSocketFactory,ISOClientSoc
     * an anonymous port).
     * @param  port the port number
     * @return the server socket on the specified port
-    * @exception IOException if an I/O error occurs during server socket
+    * @exception IOException should an I/O error occurs during 
+    * @exception ISOException should an error occurs during 
     * creation
     */
-    public ServerSocket createServerSocket(int port) throws IOException
+    public ServerSocket createServerSocket(int port) 
+        throws IOException, ISOException
     {
         if(serverFactory==null) serverFactory=createServerSocketFactory();
         return serverFactory.createServerSocket(port);
@@ -180,8 +188,10 @@ public class SunJSSESocketFactory implements ISOServerSocketFactory,ISOClientSoc
     * @param  port   the port number
     * @return a socket connected to the specified host and port.
     * @exception IOException if an I/O error occurs during socket creation
+    * @exception ISOException should any other error occurs
     */
-    public Socket createSocket(String host, int port) throws IOException
+    public Socket createSocket(String host, int port) 
+        throws IOException, ISOException
     {
         if(socketFactory==null) socketFactory=createSocketFactory();
         return socketFactory.createSocket(host,port);
@@ -199,6 +209,4 @@ public class SunJSSESocketFactory implements ISOServerSocketFactory,ISOClientSoc
     {
         return "password";
     }
-    
-    
 }
