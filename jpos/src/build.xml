@@ -126,7 +126,8 @@ Main targets:
      <include name="**/V24.java"                        if="comm.present"    />
      <include name="**/*Modem.java"                     if="comm.present"    />
 
-     <include name="**/SunJSSESocketFactory.java"       if="jsse.present"    />
+     <!-- include name="**/SunJSSESocketFactory.java"       if="jsse.present"    / -->
+     <include name="**/SunJSSESocketFactory.java"       if="jdk1.4.present"    />
      <include name="**/CryptoPackager.java"             if="jce.present"     />
      <include name="**/security/jceadapter/**"          if="jce.present"     />
 
@@ -266,6 +267,9 @@ Main targets:
     <available property="ejb.present"
            classpathref="ext.classpath"
           classname="javax.ejb.SessionBean" />
+    <available property="jdk1.4.present"
+           classpathref="ext.classpath"
+          classname="java.util.LinkedHashMap" />
   </target>
   <target name="ext.check.mail" depends="ext.check" if="activation.present">
     <available property="mail.present"

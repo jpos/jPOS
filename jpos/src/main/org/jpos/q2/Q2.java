@@ -58,7 +58,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Date;
-import java.util.LinkedHashMap;
+import java.util.TreeMap;
 import java.util.Set;
 import java.util.Iterator;
 import java.util.Arrays;
@@ -113,7 +113,7 @@ public class Q2 implements FileFilter {
         super();
         this.deployDir  = new File (dir);
         this.libDir     = new File (deployDir, "lib");
-        this.dirMap     = new LinkedHashMap ();
+        this.dirMap     = new TreeMap ();
         deployDir.mkdirs ();
     }
     public void start () 
@@ -159,7 +159,7 @@ public class Q2 implements FileFilter {
 
     private void scan () {
         File file[] = deployDir.listFiles (this);
-        Arrays.sort (file);
+        // Arrays.sort (file); --apr not required - we use TreeMap
         for (int i=0; i<file.length; i++) {
             register (file[i]);
         }

@@ -54,16 +54,23 @@ package org.jpos.q2;
  * @version $Revision$ $Date$
  */
 public class Q2ConfigurationException extends Exception {
+    Throwable cause;
     public Q2ConfigurationException () {
 	super();
     }
     public Q2ConfigurationException (String detail) {
 	super (detail);
     }
-    public Q2ConfigurationException (Exception nested) {
-	super (nested);
+    public Q2ConfigurationException (Exception cause) {
+        super (cause.toString ());
+        this.cause = cause;
     }
-    public Q2ConfigurationException (String detail, Exception nested) {
-	super (detail, nested);
+    public Q2ConfigurationException (String detail, Exception cause) {
+        super (detail);
+        this.cause = cause;
+    }
+    public Throwable getCause () {
+        return cause;
     }
 }
+
