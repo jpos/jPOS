@@ -255,12 +255,13 @@ public class ChannelAdaptor
                     if (running()) {
                         getLog().warn ("channel-receiver-"+out, e);
                         disconnect ();
+                        sp.out (in, new Object()); // wake-up Sender
                     }
                 }
             }
         }
     }
-    protected void checkConnection () {
+    protected synchronized void checkConnection () {
         try {
             while (running() && !channel.isConnected ()) {
                 while (sp.inp (ready) != null)
@@ -276,7 +277,7 @@ public class ChannelAdaptor
             ISOUtil.sleep (delay);
         }
     }
-    protected void disconnect () {
+    protected synchronized void disconnect () {
         try {
             while (sp.inp (ready) != null)
                 ;
