@@ -47,73 +47,6 @@
  * information please see <http://www.jpos.org/>.
  */
 
-/*
- * $Log$
- * Revision 1.20  2000/11/02 12:09:17  apr
- * Added license to every source file
- *
- * Revision 1.19  2000/04/16 23:53:02  apr
- * LogProducer renamed to LogSource
- *
- * Revision 1.18  2000/04/16 23:17:15  victor
- * Added imports (org.jpos.iso.packager.*)
- *
- * Revision 1.17  2000/03/23 15:48:59  apr
- * Reverse 1.16 patch (do hangup on EOT)
- *
- * Revision 1.16  2000/03/22 19:01:42  apr
- * Do not drop connection on EOT
- *
- * Revision 1.15  2000/03/20 19:25:36  apr
- * Testing ISOGetty (mod-uruguay
- *
- * Revision 1.14  2000/03/15 12:55:15  apr
- * Changed dumpString to hexString
- *
- * Revision 1.13  2000/03/15 01:18:31  apr
- * Debugging ISOGetty
- *
- * Revision 1.12  2000/03/14 12:58:09  apr
- * don't stop on DLE
- *
- * Revision 1.11  2000/03/14 00:02:45  apr
- * new public method receiveRequest
- *
- * Revision 1.10  2000/03/01 14:44:45  apr
- * Changed package name to org.jpos
- *
- * Revision 1.9  2000/01/11 01:24:55  apr
- * moved non ISO-8583 related classes from jpos.iso to jpos.util package
- * (AntiHog LeasedLineModem LogEvent LogListener LogSource
- *  Loggeable Logger Modem RotateLogListener SimpleAntiHog SimpleDialupModem
- *  SimpleLogListener SimpleLogSource SystemMonitor V24)
- *
- * Revision 1.8  1999/12/20 20:14:14  apr
- * Added VISA1ResponseFilter support
- *
- * Revision 1.7  1999/12/17 14:58:31  apr
- * RXTX dataavailable workaround
- *
- * Revision 1.6  1999/12/16 23:31:49  apr
- * CVS snapshot
- *
- * Revision 1.5  1999/12/15 16:11:12  apr
- * Testing ...
- *
- * Revision 1.4  1999/12/15 16:07:37  apr
- * Protection against negative timeouts on readUntil
- *
- * Revision 1.3  1999/12/14 21:56:54  apr
- * VISA1 links seems to work better when LRC is calculated correctly :blush:
- *
- * Revision 1.2  1999/11/25 17:01:09  apr
- * Added getModem() method
- *
- * Revision 1.1  1999/11/24 18:08:52  apr
- * Added VISA 1 Support
- *
- */
-
 package org.jpos.iso;
 
 import java.io.*;
@@ -300,7 +233,12 @@ public class VISA1Link implements LogSource, Runnable
 	return response;
     }
 
-    public byte[] receiveRequest(long timeout, LogEvent evt) {
+    /**
+     * @param timeout in millis
+     * @param evt an optional LogEvent
+     * @return VISA-1 packet
+     */
+    public byte[] receiveRequest (long timeout, LogEvent evt) {
 	byte[] request = null;
 	try {
 	    long expired = System.currentTimeMillis() + timeout;
