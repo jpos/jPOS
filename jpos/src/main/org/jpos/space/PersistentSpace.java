@@ -69,10 +69,10 @@ import org.jpos.space.*;
  * @version $Revision$ $Date$
  * @since 2.0
  */
-public class PersistentSpace implements Space // PersistentSpaceMBean 
+public class PersistentSpace implements LocalSpace // PersistentSpaceMBean 
 {
     protected Map map;
-    static Space defaultSpace = null;
+    static LocalSpace defaultSpace = null;
     static int cacheSize = 16;
 
     public PersistentSpace() {
@@ -325,7 +325,7 @@ public class PersistentSpace implements Space // PersistentSpaceMBean
             return listeners;
         }
     }
-    public static final Space getSpace () {
+    public static final LocalSpace getSpace () {
         if (defaultSpace == null) {
             synchronized (PersistentSpace.class) {
                 if (defaultSpace == null)
@@ -334,7 +334,7 @@ public class PersistentSpace implements Space // PersistentSpaceMBean
         }
         return defaultSpace;
     }
-    public static final Space getSpace (String spaceName) {
+    public static final LocalSpace getSpace (String spaceName) {
         String key = "jpos:space/"+spaceName;
         Object obj = getSpace().rdp (key);
         Space sp   = getSpace();
@@ -347,7 +347,7 @@ public class PersistentSpace implements Space // PersistentSpaceMBean
                 }
             }
         } 
-        return (Space) obj;
+        return (LocalSpace) obj;
     }
     public Set getKeySet () {
         Set keySet;

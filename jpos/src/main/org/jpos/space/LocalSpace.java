@@ -52,83 +52,43 @@ package org.jpos.space;
 import java.util.Set;
 
 /**
- * <p><b>Space</b> uses concepts described in the Linda Coordination Language 
- * that eases the implementation of other jPOS components (such as 
- * Channels, Muxes, etc.), but it is not by any means an attempt to provide
- * a full implementation.</p>
- *
- * <p>jPOS's Space is basically a Map where each entry is a LinkedList 
- * of values that can be used as a BlockingQueue</p>
- *
- * <p>One can place entries on a queue by calling Space.out, take them
- * by calling Space.in and read (without taking) by calling Space.rd</p>
- *
- * @author Alejandro Revilla
+ * @author Kris, Bharavi, Alejandro
  * @version $Revision$ $Date$
- * @since 2.0
- * @see LeasedReference
- * @see TransientSpace
- * @see <a href="http://www.cs.yale.edu/Linda/linda-lang.html">The Linda Coordination Language</a>
  */
-
-public interface Space {
-
+public interface LocalSpace extends Space {
     /**
-     * Write a new entry into the Space
+     * Write a new leased entry into the Space. Entry will remain valid
+     * for a limited amount of time.
+     * @see LeasedReference
      * @param key Entry's key
      * @param value Object value
+     * @param timeout entry valid time
+     * @return a LeasedReference that can be used to extend original timeout
      */
-    public void   out (Object key, Object value);
+    public LeasedReference out (Object key, Object value, long timeout);
 
     /**
-     * Take an entry from the space, waiting forever until one exists.
+     * add a SpaceListener associated with a given key
      * @param key Entry's key
-     * @return value
+     * @param listener a SpaceListener
      */
-    public Object in  (Object key);
+    public void addListener    (Object key, SpaceListener listener);
 
     /**
-     * Read an entry from the space, waiting forever until one exists.
+     * removes a SpaceListener associated with a given key
      * @param key Entry's key
-     * @return value
+     * @param listener the SpaceListener
      */
-    public Object rd  (Object key);
+    public void removeListener (Object key, SpaceListener listener);
 
     /**
-     * Take an entry from the space, waiting a limited amount of time
-     * until one exists.
-     * @param key Entry's key
-     * @param timeout millis to wait
-     * @return value or null
+     * @return Set containing all keys in Space
      */
-    public Object in  (Object key, long timeout);
-
+    public Set getKeySet ();
 
     /**
-     * Read an entry from the space, waiting a limited amount of time
-     * until one exists.
-     * @param key Entry's key
-     * @param timeout millis to wait
-     * @return value or null
+     * @return number of entries in a given key
      */
-    public Object rd  (Object key, long timeout);
-
-
-    /**
-     * In probe takes an entry from the space if one exists, 
-     * return null otherwise.
-     * @param key Entry's key
-     * @return value or null
-     */
-    public Object inp (Object key);
-
-
-    /**
-     * Read probe reads an entry from the space if one exists, 
-     * return null otherwise.
-     * @param key Entry's key
-     * @return value or null
-     */
-    public Object rdp (Object key);
+    public int size (Object key);
 }
 

@@ -66,9 +66,9 @@ import java.lang.reflect.Field;
  * @version $Revision$ $Date$
  * @since 2.0
  */
-public class TransientSpace implements Space, TransientSpaceMBean {
+public class TransientSpace implements LocalSpace, TransientSpaceMBean {
     protected Map map;
-    static Space defaultSpace = null;
+    static LocalSpace defaultSpace = null;
 
     public TransientSpace () {
         super();
@@ -239,7 +239,7 @@ public class TransientSpace implements Space, TransientSpaceMBean {
             return listeners;
         }
     }
-    public static final Space getSpace () {
+    public static final LocalSpace getSpace () {
         if (defaultSpace == null) {
             synchronized (TransientSpace.class) {
                 if (defaultSpace == null)
@@ -248,7 +248,7 @@ public class TransientSpace implements Space, TransientSpaceMBean {
         }
         return defaultSpace;
     }
-    public static final Space getSpace (String spaceName) {
+    public static final LocalSpace getSpace (String spaceName) {
         String key = "jpos:space/"+spaceName;
         Object obj = getSpace().rdp (key);
         Space sp   = getSpace();
@@ -261,7 +261,7 @@ public class TransientSpace implements Space, TransientSpaceMBean {
                 }
             }
         } 
-        return (Space) obj;
+        return (LocalSpace) obj;
     }
     public Set getKeySet () {
         Set keySet;
