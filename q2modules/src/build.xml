@@ -60,6 +60,10 @@
     <ant dir="${source}/jetty" target="${target}" inheritAll="false"/>
   </target>
 
+  <target name="do-spring">
+    <ant dir="${source}/spring" target="${target}" inheritAll="false"/>
+  </target>
+
   <target name="do-misc">
     <ant dir="${source}/misc" target="${target}" inheritAll="false"/>
   </target>
@@ -68,7 +72,7 @@
     <ant dir="${source}/example" target="${target}" inheritAll="false"/>
   </target>
 
-  <target name="do-all" depends="get-required, do-jpos,do-misc,do-example,do-jetty">
+  <target name="do-all" depends="get-required, do-jpos,do-misc,do-example,do-jetty,do-spring">
   </target>
 
   <target name="javadocs">
