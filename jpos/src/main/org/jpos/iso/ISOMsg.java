@@ -134,17 +134,21 @@ public class ISOMsg extends ISOComponent implements Cloneable {
 		if (!dirty)
 			return;
 
+		int offset = packager.getFieldOffset();
 		ISOComponent c;
         BitSet bmap = new BitSet (getMaxField() > 64 ? 128 : 64);
 		for (int i=0; i<=maxField; i++)
 			if ((c = (ISOComponent) fields.get (new Integer (i))) != null)
 				if (i > 1)
-					bmap.set (i);
+					bmap.set (i + offset);
 
-        if (getMaxField() > 64)
-            bmap.set(0);
-		else
-			bmap.clear(0);
+		// ANSI X.92 (offset != 0) do not support fields beyond #64
+		if (offset == 0) {
+			if (getMaxField() > 64)
+				bmap.set(0);
+			else
+				bmap.clear(0);
+		}
 
 		set (new ISOBitMap (1, bmap));
 		dirty = false;

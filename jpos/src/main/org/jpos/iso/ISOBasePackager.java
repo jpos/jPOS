@@ -61,7 +61,7 @@ public abstract class ISOBasePackager implements ISOPackager {
 		if (m.getComposite() != m) 
 			throw new ISOException ("Can't call packager on non Composite");
 
-		int consumed;
+		int consumed, offset;
 		ISOField mti     = new ISOField (0);
 		ISOBitMap bitmap = new ISOBitMap (1);
 		consumed  = fld[0].unpack(mti, b, 0);
@@ -69,9 +69,10 @@ public abstract class ISOBasePackager implements ISOPackager {
 		BitSet bmap = (BitSet) bitmap.getValue();
 		m.set (mti);
 		m.set (bitmap);
+		offset = getFieldOffset();
 
 		for (int i=2; i<=bmap.size(); i++) {
-			if (bmap.get(i)) {
+			if (bmap.get(i + offset)) {
 				ISOComponent c = fld[i].createComponent(i);
 				consumed += fld[i].unpack (c, b, consumed);
 				if (c instanceof ISOField) {
@@ -103,5 +104,13 @@ public abstract class ISOBasePackager implements ISOPackager {
 	public String getFieldDescription(ISOComponent m, int fldNumber)
 	{
 		return fld[fldNumber].getDescription();
+	}
+	/**
+	 * ANSI X9.2 treats field number 2 (PAN) as number 1 on bitmap
+	 * @return appropiate offset for BitSet.set
+	 * @see ISOMsg#recalcBitMap
+	 */
+	 public int getFieldOffset() {
+	 	return 0;
 	}
 }

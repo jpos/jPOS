@@ -117,6 +117,7 @@ public abstract class ISOChannel extends Observable {
 	 * @exception IOException
 	 */
     public void connect () throws IOException {
+		System.out.println ("ISOChannel connect "+host +":" +port);
 		connect(new Socket (host, port));
 	}
 	/**
@@ -136,7 +137,7 @@ public abstract class ISOChannel extends Observable {
 	}
 	protected void sendMessageLength(int len) throws IOException { }
 	protected void sendMessageHeader(ISOMsg m, int len) throws IOException { }
-	protected void sendMessageTrailer(ISOMsg m, int len) throws IOException { }
+	protected void sendMessageTrailler(ISOMsg m, int len) throws IOException { }
 	protected int getMessageLength() throws IOException, ISOException {
 		return -1;
 	}
@@ -158,7 +159,7 @@ public abstract class ISOChannel extends Observable {
 		sendMessageLength(b.length + getHeaderLength());
 		sendMessageHeader(m, b.length);
 		serverOut.write(b, 0, b.length);
-		sendMessageTrailer(m, b.length);
+		sendMessageTrailler(m, b.length);
 		serverOut.flush ();
 
 		m.setDirection(ISOMsg.OUTGOING);

@@ -27,4 +27,11 @@ public interface ISOPackager {
 	 * @return	Field Description
 	 */
 	public String getFieldDescription(ISOComponent m, int fldNumber);
+	
+	/**
+	 * ANSI X9.2 treats field number 2 (PAN) as number 1 on bitmap
+	 * @return appropiate offset for BitSet.set
+	 * @see ISOMsg#recalcBitMap
+	 */
+	 public int getFieldOffset();
 }

@@ -72,4 +72,23 @@ public class VAPChannel extends ISOChannel {
 	protected int getHeaderLength() {
 		return BASE1Header.LENGTH;
 	}
+	/**
+	 * sends an ISOMsg over the TCP/IP session<br>
+	 * swap source/destination addresses in BASE1Header if
+	 * a reply message is detected.<br>
+	 * Sending an incoming message is seen as a reply.
+	 *
+	 * @param m the Message to be sent
+	 * @exception IOException
+	 * @exception ISOException
+	 * @see ISOChannel#send
+	 */
+	public void send (ISOMsg m) throws IOException, ISOException
+	{
+		if (m.isIncoming()) {
+			BASE1Header h = new BASE1Header(m.getHeader());
+			h.swapDirection();
+		}
+		super.send(m);
+	}
 }

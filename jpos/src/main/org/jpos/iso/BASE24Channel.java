@@ -42,9 +42,10 @@ public class BASE24Channel extends ISOChannel {
 	}
 	/**
 	 * @param m	the Message to send (in this case it is unused)
+	 * @param len	message len (ignored)
 	 * @exception IOException
 	 */
-	protected void sendMessageTrailer(ISOMsg m) throws IOException {
+	protected void sendMessageTrailler(ISOMsg m, int len) throws IOException {
 		serverOut.write (3);
 	}
 	/**
