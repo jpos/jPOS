@@ -274,6 +274,13 @@ public abstract class BaseChannel extends Observable
     public Socket getSocket() {
 	return socket;
     }
+    /**
+     * @return current serverSocket
+     */
+    public ServerSocket getServerSocket() {
+	return serverSocket;
+    }
+
     /** 
      * sets socket timeout (as suggested by 
      * Leonard Thomas <leonard@rhinosystemsinc.com>)
