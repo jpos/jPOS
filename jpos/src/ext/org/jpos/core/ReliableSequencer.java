@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.6  2000/05/23 16:41:12  apr
+ * now Configurable (required by QSP)
+ *
  * Revision 1.5  2000/04/16 23:53:01  apr
  * LogProducer renamed to LogSource
  *
@@ -41,12 +44,12 @@ import com.sun.jini.reliableLog.LogHandler;
  */
 public class ReliableSequencer 
     extends LogHandler 
-    implements Sequencer, Loggeable
+    implements Sequencer, Loggeable, Configurable
 {
     private Map map;
     private ReliableLog log;
     public static final int MAXLOGSIZE = 200000;
-    private ReliableSequencer () {
+    public ReliableSequencer () {
 	map = new HashMap();
 	log = null;
     }
@@ -63,6 +66,22 @@ public class ReliableSequencer
 	log.snapshot();
 	seq.setReliableLog (log);
 	return seq;
+    }
+
+    /**
+     * @param cfg containing <code>logdir</code> property
+     */
+    public void setConfiguration (Configuration cfg) 
+	throws ConfigurationException
+    {
+	try {
+	    ReliableLog log = new ReliableLog (cfg.get("logdir"), this);
+	    log.recover();
+	    log.snapshot();
+	    setReliableLog (log);
+	} catch (IOException e) {
+	    throw new ConfigurationException (e);
+	}
     }
 
     /**
@@ -156,7 +175,7 @@ public class ReliableSequencer
     
     public void dump (PrintStream p, String indent) {
 	String inner = indent + "  ";
-	p.println (indent + "<ReliableSequencer>");
+	p.println (indent + "<reliable-sequencer>");
 	Iterator i = map.entrySet().iterator();
 	while (i.hasNext()) {
 	    Map.Entry e = (Map.Entry) i.next();
@@ -165,7 +184,7 @@ public class ReliableSequencer
 	    );
 	}
 
-	p.println (indent + "</ReliableSequencer>");
+	p.println (indent + "</reliable-sequencer>");
     }
 
     public static int usage () {
