@@ -49,9 +49,9 @@ For demonstration purposes we will use ThreadPool for client
 connections as well as ISORequestListener's short-lived Threads;
 
 When simpleserver is started with switch '-testmux' it will
-originate 0800s messages every minute. These messages that
-doesn't match any previously sent request are handled by
-ISORequestListener. In our example ISORequestListener
+originate 0800s messages (every time it receives one). 
+These messages that doesn't match any previously sent request 
+are handled by ISORequestListener. In our example ISORequestListener
 will just send back a dummy reply, in a real life application
 it would forward message to another ISOChannel, ISOMUX or
 any given program.
