@@ -25,6 +25,7 @@
 
     <!-- External propietary modules -->
     <property name="mod-uruguay"  value="${source}/mod-uruguay" />
+    <property name="mod-jordan"  value="${source}/mod-jordan" />
 
   </target>
 
@@ -88,6 +89,10 @@
 
   <target name="mod-uruguay" depends="ext">
     <javac srcdir="${mod-uruguay}" destdir="${classes}"
+           classpath="${classpath}" debug="on" deprecation="${deprecation}" />
+  </target>
+  <target name="mod-jordan" depends="ext">
+    <javac srcdir="${mod-jordan}" destdir="${classes}"
            classpath="${classpath}" debug="on" deprecation="${deprecation}" />
   </target>
 
