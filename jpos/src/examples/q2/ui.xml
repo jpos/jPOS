@@ -1,0 +1,53 @@
+<?xml version="1.0" ?>
+
+<!-- $Id: -->
+
+<ui class="org.jpos.q2.ui.UI" name="UI" width="300" height="300">
+ <caption>Q2 Sample UI</caption>
+ <menubar id="MAIN">
+  <menu id="File" accesskey="f">
+   <menuitem id="Open"  accesskey="O"/>
+   <menuitem id="Edit"  accesskey="E"/>
+   <menuseparator />
+   <menuitem id="Close" accesskey="C"/>
+  </menu>
+  <menu id="Buttons" accesskey="b">
+   <button-group>
+    <radio-button id="Button A" selected="false" accesskey="A" />
+    <radio-button id="Button B" selected="true"  accesskey="B" />
+    <radio-button id="Button C" selected="false" accesskey="C" />
+   </button-group>
+   <menuseparator />
+   <check-box id="CheckBox D" state="true" />
+   <check-box id="CheckBox E" />
+   <check-box id="CheckBox F" />
+   <check-box id="CheckBox G" />
+   <menu id="More Buttons">
+    <check-box id="CheckBox A1" state="true" />
+    <check-box id="CheckBox B1" />
+    <check-box id="CheckBox C1" />
+    <check-box id="CheckBox D1" />
+    <menuseparator />
+    <check-box id="CheckBox D1" state="true" />
+    <check-box id="CheckBox E1" />
+    <check-box id="CheckBox F1" />
+    <check-box id="CheckBox G1" />
+    <menu id="Yet More Buttons">
+     <check-box id="CheckBox A2" state="true" />
+     <check-box id="CheckBox B3" />
+     <check-box id="CheckBox C4" />
+     <check-box id="CheckBox D5" />
+     <menuseparator />
+     <check-box id="CheckBox D6" state="true" />
+     <check-box id="CheckBox E7" />
+     <check-box id="CheckBox F8" />
+     <check-box id="CheckBox G9" />
+    </menu>
+   </menu>
+  </menu>
+  <menu id="Help" accesskey="h">
+   <menuitem id="About" 
+      accesskey="A" icon="http://www.jpos.org/images/mate_s.jpg" />
+  </menu>
+ </menubar>
+</ui>
