@@ -168,16 +168,6 @@ public class Connector
 		"connector-request-listener");
 	    try {
 		ISOMsg c = (ISOMsg) m.clone();
-                // clone header
-                byte[] h = m.getHeader();
-                if (h != null) {
-                    byte[] t = new byte[h.length];
-                    System.arraycopy (h, 0, t, 0, h.length);
-                    h = t;
-                    evt.addMessage (
-                        "<header>" + ISOUtil.hexString (h) +"</header>");
-                }
-                c.setHeader (m.getHeader());
 		evt.addMessage (c);
 		if (destMux != null) {
 		    if (timeout > 0) {
@@ -192,7 +182,7 @@ public class Connector
 			if (response != null) {
 			    evt.addMessage ("<got-response/>");
 			    evt.addMessage (response);
-                            response.setHeader (h); 
+                            response.setHeader (c.getISOHeader()); 
 			    source.send(response);
 			} else {
 			    processNullResponse (source, m, evt);
@@ -203,7 +193,6 @@ public class Connector
 		    }
 		} else if (destChannel != null) {
 		    evt.addMessage ("<sent-to-channel/>");
-                    c.setHeader (h);
 		    destChannel.send (c);
 		}
 	    } catch (ISOException e) {
