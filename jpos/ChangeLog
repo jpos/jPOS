@@ -1,6 +1,7 @@
 $Id$
 
 -- 1.3.7 --
+QSP qsp-config accepts name and property*
 QSP <task>: name attribute is added as a property to configuration object.
 QSP <task>: added support for non-Runnable tasks.
 bugfix: NullPointer in Header serialization (reported by Bharavi).
