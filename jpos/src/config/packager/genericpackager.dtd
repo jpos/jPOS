@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!ELEMENT isopackager (isofield+,isofieldpackager*)*>
+<!ATTLIST isopackager maxValidField CDATA        #IMPLIED>
+<!ATTLIST isopackager bitmapField   CDATA        #IMPLIED>
+<!ATTLIST isopackager emitBitmap    (true|false) #IMPLIED>
 
 <!-- isofield -->
 <!ELEMENT isofield EMPTY>
@@ -12,9 +15,10 @@
 
 <!-- isofieldpackager -->
 <!ELEMENT isofieldpackager (isofield+,isofieldpackager*)*>
-<!ATTLIST isofieldpackager id       CDATA   #REQUIRED>
-<!ATTLIST isofieldpackager name     CDATA   #REQUIRED>
-<!ATTLIST isofieldpackager length   CDATA   #REQUIRED>
-<!ATTLIST isofieldpackager class    NMTOKEN #REQUIRED>
-<!ATTLIST isofieldpackager packager NMTOKEN #REQUIRED>
+<!ATTLIST isofieldpackager id       CDATA        #REQUIRED>
+<!ATTLIST isofieldpackager name     CDATA        #REQUIRED>
+<!ATTLIST isofieldpackager length   CDATA        #REQUIRED>
+<!ATTLIST isofieldpackager class    NMTOKEN      #REQUIRED>
+<!ATTLIST isofieldpackager pad      (true|false) #IMPLIED>
+<!ATTLIST isofieldpackager packager NMTOKEN      #REQUIRED>
 
