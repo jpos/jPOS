@@ -321,6 +321,15 @@ Main targets:
 	 includes="LICENSE,README,org/**" />
   </target>
 
+  <target name="jpos-util" depends="main" description="Build jpos-util.jar">
+    <delete file="${dist}/jpos-util.jar" />
+    <copy file="${source}/etc/LICENSE" tofile="${classes}/LICENSE" />
+    <jar jarfile="${dist}/jpos-util.jar"
+         basedir="${classes}"
+         manifest="${classes}/MANIFEST.MF" 
+         includesfile="${etc}/jpos-util.list" />
+  </target>
+
   <target name="q2" depends="main">
     <delete file="${dist}/${q2.archive}.jar" />
     <copy file="${source}/etc/MANIFEST.Q2" tofile="${classes}/MANIFEST.Q2" />
