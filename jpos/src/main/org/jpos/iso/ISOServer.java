@@ -70,7 +70,8 @@ import org.jpos.core.ConfigurationException;
 
 /**
  * Accept ServerChannel sessions and forwards them to ISORequestListeners
- * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
+ * @author Alejandro P. Revilla
+ * @author Bharavi Gade
  * @version $Revision$ $Date$
  */
 public class ISOServer extends Observable 
@@ -86,6 +87,7 @@ public class ISOServer extends Observable
     String name;
     protected Logger logger;
     protected String realm;
+    protected ISOServerSocketFactory socketFactory = null; 
 
    /**
     * @param port port to listen
@@ -172,7 +174,11 @@ public class ISOServer extends Observable
         ServerChannel  channel;
 	for (;;) {
 	    try {
-		ServerSocket serverSocket = new ServerSocket(port);
+		ServerSocket serverSocket = 
+                    socketFactory != null ?
+                        socketFactory.createServerSocket(port) :
+                        (new ServerSocket (port));
+                
 		Logger.log (new LogEvent (this, "iso-server", 
 		    "listening on port "+port));
 		for (;;) {
@@ -265,6 +271,23 @@ public class ISOServer extends Observable
     public void update(Observable o, Object arg) {
 	setChanged ();
 	notifyObservers (arg);
+    }
+   /**
+    * Gets the ISOClientSocketFactory (may be null)
+    * @see     ISOClientSocketFactory
+    * @since 1.3.3
+    */
+    public ISOServerSocketFactory getSocketFactory() {
+        return socketFactory;
+    }
+   /**
+    * Sets the specified Socket Factory to create sockets
+    * @param         socketFactory the ISOClientSocketFactory
+    * @see           ISOClientSocketFactory
+    * @since 1.3.3
+    */
+    public void setSocketFactory(ISOServerSocketFactory socketFactory) {
+        this.socketFactory = socketFactory;
     }
 }
 

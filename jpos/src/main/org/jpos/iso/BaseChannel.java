@@ -86,7 +86,8 @@ import org.jpos.core.ConfigurationException;
  * probably setup ISOChannelPanel to be a LogListener insteado
  * of being an Observer in future releases.
  * 
- * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
+ * @author Alejandro P. Revilla
+ * @author Bharavi Gade
  * @version $Revision$ $Date$
  * @see ISOMsg
  * @see ISOMUX
@@ -97,7 +98,7 @@ import org.jpos.core.ConfigurationException;
  */
 public abstract class BaseChannel extends Observable 
     implements FilteredChannel, ClientChannel, ServerChannel, 
-	       LogSource, ReConfigurable, ISOClientSocketFactory
+	       LogSource, ReConfigurable
 {
     private Socket socket;
     private String host;
@@ -110,7 +111,7 @@ public abstract class BaseChannel extends Observable
     protected ISOPackager packager;
     protected ServerSocket serverSocket = null;
     protected Vector incomingFilters, outgoingFilters;
-    protected ISOClientSocketFactory socketFactory = this;
+    protected ISOClientSocketFactory socketFactory = null;
 
     private int[] cnt;
 
@@ -256,13 +257,18 @@ public abstract class BaseChannel extends Observable
         setChanged();
         notifyObservers();
     }
+
     /**
      * factory method pattern (as suggested by Vincent.Greene@amo.com)
      * @throws IOException
+     * Use Socket factory if exists. If it is missing create a normal socket
+     * @see ISOClientSocketFactory
      */
-    protected Socket newSocket() throws IOException 
-    {
-	return socketFactory.createSocket (host, port);
+    protected Socket newSocket() throws IOException {
+        if (socketFactory != null)
+            return socketFactory.createSocket (host, port);
+        else
+            return new Socket(host,port);
     }
     /**
      * @return current socket
@@ -729,22 +735,21 @@ public abstract class BaseChannel extends Observable
     {
 	return (ISOChannel) NameRegistrar.get ("channel."+name);
     }
+   /**
+    * Gets the ISOClientSocketFactory (may be null)
+    * @see     ISOClientSocketFactory
+    * @since 1.3.3
+    */
     public ISOClientSocketFactory getSocketFactory() {
         return socketFactory;
     }
+   /**
+    * Sets the specified Socket Factory to create sockets
+    * @param         socketFactory the ISOClientSocketFactory
+    * @see           ISOClientSocketFactory
+    * @since 1.3.3
+    */
     public void setSocketFactory(ISOClientSocketFactory socketFactory) {
         this.socketFactory = socketFactory;
-    }
-
-    // ISOSocketFactory implementation
-    public Socket createSocket(String host, int port)
-        throws IOException
-    {
-	return new Socket(host, port);
-    }
-    public ServerSocket createServerSocket(int port)
-        throws IOException
-    {
-        return new ServerSocket (port);
     }
 }
