@@ -111,6 +111,12 @@
   <target name="main" depends="copy-src, generate"
     description="Compiles classes">
 
+    <copy todir="${classes}">
+     <fileset dir="${source}/main">
+      <include name="**/*.properties" />
+     </fileset>
+    </copy>
+
     <javac srcdir="${buildsrc}" destdir="${classes}"
         debug="${debug}"
         deprecation="${deprecation}" >
@@ -126,12 +132,6 @@
     <copy file="${source}/etc/LICENSE" tofile="${classes}/LICENSE" />
     <copy file="${source}/etc/README"  tofile="${classes}/README" />
     <copy file="ChangeLog" tofile="${classes}/ChangeLog" />
-    <copy todir="${classes}">
-     <fileset dir="${source}/main">
-      <include name="**/*.properties" />
-     </fileset>
-    </copy>
-
     <jar jarfile="${dist}/${project}.jar" 
          basedir="${classes}"
          manifest="${classes}/MANIFEST.Q2" 
