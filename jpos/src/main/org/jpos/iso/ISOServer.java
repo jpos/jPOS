@@ -57,7 +57,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.Stack;
 import java.util.Iterator;
 import java.util.Observable;
 import java.util.Observer;
@@ -100,7 +100,7 @@ public class ISOServer extends Observable
     protected Configuration cfg;
     private boolean shutdown = false;
     private ServerSocket serverSocket;
-    private Collection channels;
+    private Stack channels;
 
    /**
     * @param port port to listen
@@ -122,8 +122,12 @@ public class ISOServer extends Observable
             new ThreadPool (1, DEFAULT_MAX_THREADS) : pool;
         listeners = new Vector();
         name = "";
-        channels = new HashSet ();
+        channels = new Stack();
         cnt = new int[SIZEOF_CNT];
+    }
+
+    protected Session createSession (ServerChannel channel) {
+        return new Session (channel);
     }
 
     protected class Session implements Runnable, LogSource {
@@ -305,8 +309,10 @@ public class ISOServer extends Observable
                         channel.accept (serverSocket);
                         if ((cnt[CONNECT]++) % 100 == 0)
                             purgeChannels ();
-                        channels.add (new WeakReference (channel));
-                        pool.execute (new Session(channel));
+                        channels.push (new WeakReference (channel));
+                        setChanged ();
+                        notifyObservers (channel);
+                        pool.execute (createSession(channel));
                     } catch (SocketException e) {
                         if (!shutdown)
                             Logger.log (new LogEvent (this, "iso-server", e));
@@ -427,6 +433,17 @@ public class ISOServer extends Observable
     }
     public int getPendingCount () {
         return pool.getPendingCount();
+    }
+    /**
+     * @return most recently connected ISOChannel or null
+     */
+    public ISOChannel getLastConnectedISOChannel () {
+        if (!channels.empty()) {
+            WeakReference ref = (WeakReference) channels.peek ();
+            if (ref != null)
+                return (ISOChannel) ref.get ();
+        } 
+        return null;
     }
     public void setConfiguration (Configuration cfg) {
         this.cfg = cfg;
