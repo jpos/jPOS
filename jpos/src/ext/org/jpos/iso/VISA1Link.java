@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.4  1999/12/15 16:07:37  apr
+ * Protection against negative timeouts on readUntil
+ *
  * Revision 1.3  1999/12/14 21:56:54  apr
  * VISA1 links seems to work better when LRC is calculated correctly :blush:
  *
@@ -151,7 +154,7 @@ public class VISA1Link implements LogProducer, Runnable
 	return payload.getBytes();
     }
 
-    public byte[] request (byte[] request) 
+    synchronized public byte[] request (byte[] request) 
 	throws IOException
     {
 	String buf;
@@ -166,6 +169,7 @@ public class VISA1Link implements LogProducer, Runnable
 			&& response == null && mdm.isConnected()) 
 	{
 	    long elapsed = System.currentTimeMillis() - start;
+	    System.out.println ("-------------> state:" + state);
 	    switch (state) {
 		case 0:
 		    evt.addMessage ("<enq>" + elapsed + "</enq>");
@@ -175,10 +179,16 @@ public class VISA1Link implements LogProducer, Runnable
 		    break;
 		case 1:
 		    evt.addMessage ("<tx>" + elapsed + "</tx>");
+		    System.out.println ("[Transmiting]");
 		    sendPacket (request, evt);
+		    System.out.println (
+			"[waiting for ACK or NAK] timeout="+timeout);
 		    buf = v24.readUntil ("\006\025", timeout, true);
-		    if (buf.endsWith ("\006"))
+		    System.out.println ("[end readUntil]");
+		    if (buf.endsWith ("\006")) {
+			System.out.println ("[Got ACK]");
 			state++;
+		    }
 		    break;
 		case 2:
 		    evt.addMessage ("<rx>" + elapsed + "</rx>");
