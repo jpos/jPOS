@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Id$ -->
 
-<!ELEMENT qsp-config (logger*,mux*,task*,server*,control-panel*,sequencer*)*>
+<!ELEMENT qsp-config (logger*,mux*,task*,server*,
+                      control-panel*,sequencer*,card-agent*)*>
 
 <!-- logger -->
 <!ELEMENT logger (log-listener*)>
@@ -76,4 +77,10 @@
 <!ATTLIST sequencer class CDATA #REQUIRED>
 <!ATTLIST sequencer logger IDREF #IMPLIED>
 <!ATTLIST sequencer realm CDATA #IMPLIED>
+
+<!-- card-agent -->
+<!ELEMENT card-agent (property)*>
+<!ATTLIST card-agent class CDATA #REQUIRED>
+<!ATTLIST card-agent logger IDREF #IMPLIED>
+<!ATTLIST card-agent realm CDATA #IMPLIED>
 

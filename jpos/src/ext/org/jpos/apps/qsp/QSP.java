@@ -101,6 +101,7 @@ public class QSP implements ErrorHandler, LogSource {
 	    qsp.configure ("mux");
 	    qsp.configure ("server");
 	    qsp.configure ("request-listener");
+	    qsp.configure ("card-agent");
 	    qsp.configure ("task");
 	    if (controlPanel != null)
 		controlPanel.showUp();
