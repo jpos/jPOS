@@ -101,7 +101,7 @@
 	 includes="LICENSE,README,CHANGELOG,org/**" />
   </target>
 
-  <target name="qsp" depends="main">
+  <target name="qsp" depends="ext">
     <delete file="${dist}/${qsp-archive}.jar" />
     <copyfile src="${source}/etc/MANIFEST-QSP.MF" 
               dest="${classes}/MANIFEST.MF" />
