@@ -1,5 +1,9 @@
 /*
  * $Log$
+ * Revision 1.7  2000/04/16 21:08:28  apr
+ * ISOChannel is now an interface.
+ * Channel implementation moved to org.jpos.iso.channel package
+ *
  * Revision 1.6  2000/03/01 14:44:45  apr
  * Changed package name to org.jpos
  *
@@ -55,8 +59,8 @@ public class ISOChannelPanel extends JPanel implements Observer {
     String symbolicName;
     public static final int LOG_CAPACITY = 250;
 
-    public ISOChannelPanel
-        (ISOChannel channel, String symbolicName) {
+    public ISOChannelPanel (ISOChannel channel, String symbolicName)
+    {
         super();
         this.symbolicName = symbolicName;
         setLayout(new FlowLayout());
@@ -64,7 +68,8 @@ public class ISOChannelPanel extends JPanel implements Observer {
         log = new DefaultListModel();
         add(createCountersPanel());
         meter.setConnected(channel.isConnected());
-        channel.addObserver(this);
+	if (channel instanceof Observable)
+	    ((Observable)channel).addObserver(this);
     }
     /**
      * Unconnected constructor allows for instantiation of

@@ -1,9 +1,10 @@
-package org.jpos.iso;
+package org.jpos.iso.channel;
 
 import java.io.*;
 import java.util.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import org.jpos.iso.*;
 import org.jpos.util.Logger;
 import org.jpos.util.LogEvent;
 
@@ -16,7 +17,7 @@ import org.jpos.util.LogEvent;
  * @see ISOException
  * @see ISOChannel
  */
-public class VAPChannel extends ISOChannel {
+public class VAPChannel extends BaseChannel {
     /**
      * Public constructor (used by Class.forName("...").newInstance())
      */

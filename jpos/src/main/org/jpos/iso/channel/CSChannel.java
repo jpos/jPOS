@@ -1,26 +1,28 @@
-package org.jpos.iso;
+package org.jpos.iso.channel;
 
 import java.io.*;
 import java.util.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import org.jpos.iso.*;
 
 /**
- * ISOChannel implementation - Postilion Channel
- * Send packet len (2 bytes network byte order MSB/LSB) followed by
- * raw data. 
+ * ISOChannel implementation - CS standard Channel<br>
+ * We at <a href="http://www.cs.com.uy">CS</a>, have used
+ * the so called ISOChannels for a long time. This class
+ * talks with our legacy C++ based systems.<br>
  *
- * @author salaman@teknos.com
- * @version Id: PostChannel.java,v 1.0 1999/05/14 19:00:00 may Exp 
+ * @author apr@cs.com.uy
+ * @version $Id$
  * @see ISOMsg
  * @see ISOException
  * @see ISOChannel
  */
-public class PostChannel extends ISOChannel {
+public class CSChannel extends BaseChannel {
     /**
      * Public constructor (used by Class.forName("...").newInstance())
      */
-    public PostChannel () {
+    public CSChannel () {
         super();
     }
     /**
@@ -30,7 +32,7 @@ public class PostChannel extends ISOChannel {
      * @param p     an ISOPackager
      * @see ISOPackager
      */
-    public PostChannel (String host, int port, ISOPackager p) {
+    public CSChannel (String host, int port, ISOPackager p) {
         super(host, port, p);
     }
     /**
@@ -39,7 +41,7 @@ public class PostChannel extends ISOChannel {
      * @exception IOException
      * @see ISOPackager
      */
-    public PostChannel (ISOPackager p) throws IOException {
+    public CSChannel (ISOPackager p) throws IOException {
         super(p);
     }
     /**
@@ -49,21 +51,36 @@ public class PostChannel extends ISOChannel {
      * @exception IOException
      * @see ISOPackager
      */
-    public PostChannel (ISOPackager p, ServerSocket serverSocket) 
+    public CSChannel (ISOPackager p, ServerSocket serverSocket) 
         throws IOException
     {
         super(p, serverSocket);
     }
+    /**
+     * @param len the packed Message len
+     * @exception IOException
+     */
     protected void sendMessageLength(int len) throws IOException {
         serverOut.write (len >> 8);
         serverOut.write (len);
+        serverOut.write (0);
+        serverOut.write (0);
     }
+    /**
+     * @return the Message len
+     * @exception IOException, ISOException
+     */
     protected int getMessageLength() throws IOException, ISOException {
-        byte[] b = new byte[2];
-        if (serverIn.read(b,0,2) != 2)
-            throw new ISOException("error reading message length");
-        return (int) (
-            ((((int)b[0])&0xFF) << 8) | 
-            (((int)b[1])&0xFF));
+        int l = 0;
+        byte[] b = new byte[4];
+        while (l == 0) {
+            serverIn.readFully(b,0,4);
+            l = ((((int)b[0])&0xFF) << 8) | (((int)b[1])&0xFF);
+            if (l == 0) {
+                serverOut.write(b);
+                serverOut.flush();
+            }
+        }
+        return l;
     }
 }

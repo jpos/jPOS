@@ -5,7 +5,10 @@ import org.jpos.core.Configuration;
 import java.io.IOException;
 import org.jpos.iso.ISOUtil;
 import org.jpos.util.Logger;
+import org.jpos.util.LogProducer;
 import org.jpos.core.Configuration;
+import org.jpos.iso.channel.*;
+import org.jpos.util.NameRegistrar;
 
 /**
  * <b><i>j</i>POS</b> applications usually constructs
@@ -59,11 +62,12 @@ public class ISOFactory {
             if (c != null && p != null) {
 		ISOPackager packager = (ISOPackager) p.newInstance();
                 channel = (ISOChannel) c.newInstance();
-		if (host != null)
-		    channel.setHost (host, port);
+		if (host != null && channel instanceof ClientChannel)
+		    ((ClientChannel)channel).setHost (host, port);
                 channel.setPackager(packager);
-		if (logger != null)
-		    channel.setLogger (logger, realm + ".channel");
+		if (logger != null && (channel instanceof LogProducer))
+		    ((LogProducer) channel) .
+			setLogger (logger, realm + ".channel");
 		if (header != null) {
 		    if (channel instanceof RawChannel) 
 			((RawChannel)channel).setTPDU (
@@ -143,5 +147,16 @@ public class ISOFactory {
 	t.setDaemon (true);
 	t.start();
 	return mux;
+    }
+
+    /**
+     * @return ISOChannel instance with given name.
+     * @throws NameRegistrar.NotFoundException;
+     * @see NameRegistrar
+     */
+    public static ISOChannel getChannel (String name)
+	throws NameRegistrar.NotFoundException
+    {
+	return (ISOChannel) NameRegistrar.get ("channel."+name);
     }
 }

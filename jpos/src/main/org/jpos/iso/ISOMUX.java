@@ -278,10 +278,12 @@ public class ISOMUX implements Runnable, LogProducer {
 		    }
                 }
             } catch (ConnectException e) {
-		Logger.log (new LogEvent (this, "connection-refused",
-		    channel.getHost()+":"+channel.getPort()
-		    )
-		);
+		if (channel instanceof ClientChannel) {
+		    ClientChannel cc = (ClientChannel) channel;
+		    Logger.log (new LogEvent (this, "connection-refused", 
+			cc.getHost()+":"+cc.getPort())
+		    );
+		}
 	    } catch (Exception e) {
 		Logger.log (new LogEvent (this, "mux", e));
             }

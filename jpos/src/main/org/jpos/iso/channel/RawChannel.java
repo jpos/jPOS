@@ -1,9 +1,10 @@
-package org.jpos.iso;
+package org.jpos.iso.channel;
 
 import java.io.*;
 import java.util.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import org.jpos.iso.*;
 
 /**
  * ISOChannel implementation - RAW Channel
@@ -17,7 +18,7 @@ import java.net.Socket;
  * @see ISOException
  * @see ISOChannel
  */
-public class RawChannel extends ISOChannel {
+public class RawChannel extends BaseChannel {
     byte[] TPDU;
 
     /**

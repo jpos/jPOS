@@ -1,9 +1,10 @@
-package org.jpos.iso;
+package org.jpos.iso.channel;
 
 import java.io.*;
 import java.util.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import org.jpos.iso.*;
 
 /**
  * ISOChannel implementation suitable for OASIS Ltd &copy; hosts<br>
@@ -15,7 +16,7 @@ import java.net.Socket;
  * @see ISOException
  * @see ISOChannel
  */
-public class ASCIIChannel extends ISOChannel {
+public class ASCIIChannel extends BaseChannel {
     /**
      * Public constructor (used by Class.forName("...").newInstance())
      */

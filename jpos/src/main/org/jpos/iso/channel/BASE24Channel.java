@@ -1,10 +1,11 @@
-package org.jpos.iso;
+package org.jpos.iso.channel;
 
 import java.io.*;
 import java.util.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
+import org.jpos.iso.*;
 
 /**
  * Implements an ISOChannel able to exchange messages with
@@ -20,7 +21,7 @@ import java.net.SocketException;
  * @see ISOException
  * @see ISOChannel
  */
-public class BASE24Channel extends ISOChannel {
+public class BASE24Channel extends BaseChannel {
     protected byte[] header;
     /**
      * Public constructor (used by Class.forName("...").newInstance())
