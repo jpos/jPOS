@@ -121,9 +121,8 @@ public class IFEB_LLLNUM extends ISOFieldPackager {
         
         b[0] = EBCDIClength[0];
         b[1] = EBCDIClength[1];
-        b[1] = EBCDIClength[3];
+        b[2] = EBCDIClength[2];
         System.arraycopy(bcd, 0, b, 3, bcd.length);
-        
         
         return b;
     }
