@@ -726,13 +726,18 @@ public abstract class BaseChannel extends Observable
             m = ((ISOFilter) iter.next()).filter (this, m, evt);
         return m;
     }
+    protected ISOMsg applyIncomingFilters (ISOMsg m, LogEvent evt) 
+        throws VetoException 
+    {
+        return applyIncomingFilters (m, null, null, evt);
+    }
     protected ISOMsg applyIncomingFilters (ISOMsg m, byte[] header, byte[] image, LogEvent evt) 
         throws VetoException
     {
         Iterator iter  = incomingFilters.iterator();
         while (iter.hasNext()) {
             ISOFilter f = (ISOFilter) iter.next ();
-            if (f instanceof RawIncomingFilter)
+            if (image != null && (f instanceof RawIncomingFilter))
                 m = ((RawIncomingFilter)f).filter (this, m, header, image, evt);
             else
                 m = f.filter (this, m, evt);
