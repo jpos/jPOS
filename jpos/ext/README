@@ -25,3 +25,6 @@ In order to build 'ext' module you will have to install here
   - ejb.jar (required by QSP's EJBConnector)
 
   - base-opt.jar (see www.opencard.org - required by TLVPackager)
+
+  - jetty.jar (used by WebServer task)
+
