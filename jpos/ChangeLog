@@ -14,5 +14,7 @@ Added BaseChannel.getServerSocket().
 ISOBasePackager.unpack rethrows ISOException (should an Exception occur).
 ISOBinaryField.setValue accepts either byte[] or String.
 ISOMsgFieldPackager.pack allow components other than ISOMsg to be passed in.
-
+BaseChannel.newSocket changed signature (no args now).
+BaseChannel.accept now closes listening socket.
+ISOMsg new set(fldno,String) and set(fldno,byte[]) helper methods.
 
