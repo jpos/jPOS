@@ -143,7 +143,6 @@ public class Q2 implements FileFilter {
             }
         }
         q2Thread = null;
-        log.info ("shutting down");
         undeploy ();
     }
 
@@ -207,6 +206,7 @@ public class Q2 implements FileFilter {
             new Thread () {
                 public void run () {
                     shutdown = true;
+                    log.info ("shutting down");
                     if (q2Thread != null) {
                         try {
                             q2Thread.join ();
