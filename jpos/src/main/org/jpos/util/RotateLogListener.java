@@ -179,7 +179,7 @@ public class RotateLogListener extends SimpleLogListener
 	}
 	openLogFile();
     }
-    protected void logDebug (String msg) {
+    protected synchronized void logDebug (String msg) {
         if (p != null) {
             p.println ("<log realm=\"rotate-log-listener\" at=\""+new Date().toString() +"\">");
             p.println ("   "+msg);
