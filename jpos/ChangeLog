@@ -3,4 +3,5 @@ $Id$
 -- 1.3.3 --
 optimization: writeExternal was creating unused internal package instance.
 bugfix: ISOServer was not setting incoming filters on accepted connections.
+BaseChannel: close input/output streams on disconnect to avoid "broken pipes".
 
