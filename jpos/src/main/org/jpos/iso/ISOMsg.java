@@ -573,9 +573,12 @@ public class ISOMsg extends ISOComponent
 	);
     }
     protected void writeHeader (ObjectOutput out) throws IOException {
-        out.writeByte ('H');
-        out.writeShort (header.getLength());
-        out.write (header.pack());
+        int len = header.getLength();
+        if (len > 0) {
+            out.writeByte ('H');
+            out.writeShort (len);
+            out.write (header.pack());
+        }
     }
     protected void readHeader (ObjectInput in) 
         throws IOException, ClassNotFoundException
