@@ -111,6 +111,8 @@ public class QFactory {
         ObjectName objectName = new ObjectName (Q2.JMX_NAME + ":" + name);
         MBeanServer mserver = server.getMBeanServer();
 
+        getExtraPath (server.getLoader (), e);
+
         ObjectInstance instance = mserver.createMBean (
             clazz, objectName, loaderName
         );
@@ -122,6 +124,21 @@ public class QFactory {
         mserver.invoke (objectName, "start", null, null);
 
         return instance;
+    }
+
+    public void getExtraPath (QClassLoader loader, Element e) {
+        Element classpathElement = e.getChild ("classpath");
+        if (classpathElement != null) {
+            Iterator iter = classpathElement.getChildren ("url").iterator();
+            while (iter.hasNext ()) {
+                Element u = (Element) iter.next ();
+                try {
+                    loader.addURL (u.getTextTrim ());
+                } catch (MalformedURLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
     }
 
     public void setAttribute 

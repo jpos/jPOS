@@ -87,6 +87,7 @@ public class Q2 implements FileFilter {
     private File deployDir, libDir;
     private Map dirMap;
     private QFactory factory;
+    private QClassLoader loader;
 
     public Q2 (String dir) {
         super();
@@ -104,7 +105,7 @@ public class Q2 implements FileFilter {
     {
         server  = MBeanServerFactory.createMBeanServer (JMX_NAME);
         ObjectName loaderName = new ObjectName (Q2_CLASS_LOADER);
-        QClassLoader loader = new QClassLoader (server, libDir, loaderName);
+        loader = new QClassLoader (server, libDir, loaderName);
         factory = new QFactory (loaderName);
         for (;;) {
             try {
@@ -117,6 +118,10 @@ public class Q2 implements FileFilter {
                 e.printStackTrace ();
             }
         }
+    }
+
+    public QClassLoader getLoader () {
+        return loader;
     }
 
     public boolean accept (File f) {
