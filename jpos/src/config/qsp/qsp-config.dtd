@@ -39,7 +39,7 @@
 
 <!-- filter -->
 <!ELEMENT filter (property*,calculate*,SQL*)*>
-<!ATTLIST filter name ID #REQUIRED>
+<!ATTLIST filter name ID #IMPLIED>
 <!ATTLIST filter class NMTOKEN #REQUIRED>
 <!ATTLIST filter direction (incoming|outgoing|both) 'both'>
 
