@@ -135,8 +135,8 @@ public abstract class ISOChannel extends Observable {
 		usable = b;
 	}
 	protected void sendMessageLength(int len) throws IOException { }
-	protected void sendMessageHeader(ISOMsg m) throws IOException { }
-	protected void sendMessageTrailer(ISOMsg m) throws IOException { }
+	protected void sendMessageHeader(ISOMsg m, int len) throws IOException { }
+	protected void sendMessageTrailer(ISOMsg m, int len) throws IOException { }
 	protected int getMessageLength() throws IOException, ISOException {
 		return -1;
 	}
@@ -156,9 +156,9 @@ public abstract class ISOChannel extends Observable {
 		System.out.println (
 			"--[pack]--\n"+ ISOUtil.hexString(b) + "\n--[end]--");
 		sendMessageLength(b.length);
-		sendMessageHeader(m);
+		sendMessageHeader(m, b.length);
 		serverOut.write(b, 0, b.length);
-		sendMessageTrailer(m);
+		sendMessageTrailer(m, b.length);
 		serverOut.flush ();
 
 		m.setDirection(ISOMsg.OUTGOING);
