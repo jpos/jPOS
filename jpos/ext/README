@@ -19,6 +19,9 @@ In order to build 'ext' module you will have to install here
     SunJSSESocketFactory)
 
   - jce.jar (1.2.1+) required by CryptoPackager
+  
+  - sunjce_provider.jar or bcprov.jar (http://www.bouncycastle.org)
+    (needed by JCESecurityModule)
 
   - jmxtools.jar (required by QSP's HTML adaptor)
 
