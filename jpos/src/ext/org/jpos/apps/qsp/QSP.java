@@ -91,6 +91,9 @@ public class QSP implements ErrorHandler, LogSource, Runnable {
     Collection reconfigurables;
     DOMParser parser;
     Configuration cfg;
+    String[] extendedTags;
+    String[] supportedTags;
+    boolean validation;
 
     public static String[] SUPPORTED_TAGS = 
 	{ "logger",
@@ -114,6 +117,39 @@ public class QSP implements ErrorHandler, LogSource, Runnable {
     public QSP () {
 	super();
 	reconfigurables = new ArrayList();
+        supportedTags = SUPPORTED_TAGS;
+        extendedTags = new String[0];
+        validation = true;
+    }
+    /**
+     * @param configFile XML based QSP config file
+     * @param supportedTags array of supported tags (default if null)
+     * @param extendedTags array of extended tags (none if null)
+     * @param validation true to validate XML file
+     */
+    public QSP (    
+        String[] supportedTags, 
+        String[] extendedTags, 
+        boolean validation)
+    {
+	this();
+        if (supportedTags != null)
+            this.supportedTags = supportedTags;
+        if (extendedTags != null)
+            this.extendedTags = extendedTags;
+        this.validation = validation;
+    }
+    public void setValidation (boolean validation) {
+        this.validation = validation;
+    }
+    public String[] getSupportedTags () {
+        return supportedTags;
+    }
+    public String[] getExtendedTags () {
+        return extendedTags;
+    }
+    public boolean getValidation() {
+        return validation;
     }
     public void setParser (DOMParser parser) {
         this.parser     = parser;
@@ -249,19 +285,34 @@ public class QSP implements ErrorHandler, LogSource, Runnable {
     /**
      * Launches QSP
      * @param configFile XML based QSP config file
+     * @param supportedTags array of supported tags
+     * @param extendedTags array of extended tags
+     * @param validation true to validate XML file
      */
-    public static void launch (String configFile) {
+    public static void launch (
+        String configFile, 
+        String[] supportedTags, 
+        String[] extendedTags, boolean validation)
+    {
 	DOMParser parser = new DOMParser();
-	QSP qsp = new QSP ();
+	QSP qsp = new QSP (supportedTags, extendedTags, validation);
         qsp.setParser (parser);
 	try {
 	    qsp.setConfigFile (new File (configFile));
-	    parser.setFeature("http://xml.org/sax/features/validation", true);
+	    parser.setFeature(
+                "http://xml.org/sax/features/validation", 
+                qsp.getValidation()
+            );
 	    parser.setErrorHandler (qsp);
 	    parser.parse (qsp.getConfigFile().getPath());
 	    qsp.setConfig (parser.getDocument());
-	    for (int i=0; i<SUPPORTED_TAGS.length; i++)
-		qsp.configure (SUPPORTED_TAGS[i]);
+            String[] st = qsp.getSupportedTags ();
+	    for (int i=0; i<st.length; i++)
+		qsp.configure (st [i]);
+
+            st = qsp.getExtendedTags ();
+	    for (int i=0; i<st.length; i++)
+		qsp.configure (st [i]);
 
 	    if (controlPanel != null)
 		controlPanel.showUp();
@@ -280,6 +331,13 @@ public class QSP implements ErrorHandler, LogSource, Runnable {
 	    Logger.log (new LogEvent (qsp, "error", e));
 	    System.out.println (e);
 	}
+    }
+    /**
+     * Launches QSP with default values for supportedTags and validation
+     * @param configFile XML based QSP config file
+     */
+    public static void launch (String configFile) {
+        launch (configFile, SUPPORTED_TAGS, new String[0], true);
     }
     public static void main (String args[]) {
 	if (args.length != 1) {

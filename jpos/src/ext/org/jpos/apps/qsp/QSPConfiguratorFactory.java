@@ -49,6 +49,7 @@
 
 package org.jpos.apps.qsp;
 
+import java.util.StringTokenizer;
 import org.jpos.core.ConfigurationException;
 
 /**
@@ -68,7 +69,7 @@ public class QSPConfiguratorFactory {
     public static QSPConfigurator create (String tagName) 
 	throws ConfigurationException
     {
-	String className= PACKAGEPREFIX + toClassName (tagName);
+	String className = toClassName (tagName);
 	try {
             Class c = Class.forName(className);
 	    return (QSPConfigurator) c.newInstance();
@@ -78,8 +79,17 @@ public class QSPConfiguratorFactory {
     }
     private static String toClassName (String s) {
 	boolean capitalize = true;
+        StringTokenizer st = new StringTokenizer (s, ":");
+        String packagePrefix;
+       
+        if (st.countTokens () == 2) {
+            packagePrefix = st.nextToken();
+            s = st.nextToken();
+        } else
+            packagePrefix = PACKAGEPREFIX;
+            
 	s = s.toLowerCase();
-	StringBuffer sb = new StringBuffer();
+	StringBuffer sb = new StringBuffer(packagePrefix);
 	for (int i=0; i<s.length(); i++) {
 	    char c = s.charAt(i);
 	    if (c == '-') {
