@@ -120,6 +120,8 @@ public class QSP implements ErrorHandler, LogSource, Runnable, QSPMBean {
           "connection-pool",
 	  "persistent-engine",
 	  "sequencer",
+      "s-m-adapter",
+      "secure-key-store",
 	  "control-panel",
 	  "channel",
 	  "filter",
