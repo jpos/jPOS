@@ -17,6 +17,7 @@ public class PerformanceTest
     {
         if (args.length == 0) {
             performPackAll();
+            performUnpackAll();
         } else if (args.length < 3)
         {
             System.out.println("Usage: PackagerClass Length fieldData");
