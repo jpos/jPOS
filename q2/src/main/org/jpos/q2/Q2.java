@@ -162,8 +162,8 @@ public class Q2 implements FileFilter {
                 deploy ();
                 checkModified ();
                 relax (SCAN_INTERVAL);
-            } catch (Exception e) {
-                log.error ("start", e);
+            } catch (Throwable t) {
+                log.error ("start", t);
                 relax ();
             }
         }
