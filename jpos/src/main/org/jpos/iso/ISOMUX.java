@@ -253,4 +253,7 @@ public class ISOMUX implements Runnable {
 			this.notify();
 		}
 	}
+	public boolean isConnected() {
+		return channel.isConnected();
+	}
 }
