@@ -424,6 +424,17 @@ public class ISOMUX implements Runnable, ISOSource, LogSource {
      */
     public void setConnect (boolean connect) {
 	this.doConnect = connect;
+	if (!connect && isConnected()) {
+	    channel.setUsable(false);
+	    try {
+		channel.disconnect();
+	    } catch (IOException e) { 
+		Logger.log (new LogEvent(this, "set-connect", e));
+	    }
+    	    synchronized(this) {
+		this.notify();
+	    }
+	}
     }
     /**
      * @return connect flag value
