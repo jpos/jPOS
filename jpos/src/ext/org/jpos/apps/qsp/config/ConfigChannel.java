@@ -86,6 +86,9 @@ public class ConfigChannel implements QSPReConfigurator {
     private String [] attributeNames = {  
 		    "class",
 		    "packager",
+		    "packager-config",
+		    "packager-logger",
+		    "packager-realm",
 	   	    "header",
 		    "host",
 		    "port",
@@ -133,6 +136,10 @@ public class ConfigChannel implements QSPReConfigurator {
 	    if (channel instanceof ReConfigurable) {
 		((Configurable)channel).setConfiguration (cfg);
 	    }
+	    ISOPackager p = channel.getPackager();
+	    if (p instanceof ReConfigurable) {
+		((Configurable)p).setConfiguration (cfg);
+	    }
 	    if (Arrays.equals (previousDigest, digest)) {
 		evt.addMessage ("<unchanged/>");
 		return;
@@ -175,6 +182,10 @@ public class ConfigChannel implements QSPReConfigurator {
 	    );
 	    if (channel instanceof Configurable) {
 		((Configurable)channel).setConfiguration (cfg);
+	    }
+	    ISOPackager p = channel.getPackager();
+	    if (p instanceof Configurable) {
+		((Configurable)p).setConfiguration (cfg);
 	    }
 
 	    if (cfg.get ("timeout", null) != null)
@@ -223,7 +234,7 @@ public class ConfigChannel implements QSPReConfigurator {
 		}
 		if (logger != null && (channel instanceof LogSource))
 		    ((LogSource) channel) .
-			setLogger (logger, realm + ".channel");
+			setLogger (logger, realm);
             }
         } catch (ClassNotFoundException e) {
 	    throw new ConfigurationException ("newChannel:"+channelName, e);
