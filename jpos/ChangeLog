@@ -1,6 +1,7 @@
 $Id$
 
 -- 1.4.3 --
+New BlockingQueue.dequeue (timeout) method
 GenericPackager now support reading config file from XML InputStream 
              (code contributed by Matías Salvador <mhs@sisa.com.ar>)
 QSP's <mux> tag now support new "class" attribute
