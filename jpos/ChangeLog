@@ -1,5 +1,7 @@
 $Id$
 
+-- 1.4.8 -- released Oct 2004 (tagged: v1_4_8)
+
 -- 1.4.7 --
 Added ExceptionLogFilter
 Added setSocketFactory(ISOClientSocketFactory) to ISOChannel. All classes who implement
