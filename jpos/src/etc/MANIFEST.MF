@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Specification-Title: jPOS
+Specification-Vendor: CompuService Srl.
+Specification-Version: $VERSION$
+Implementation-Title: jPOS
+Implementation-Vendor: CompuService Srl.
+Implementation-Version: $VERSION$
+Class-path: 
+
+Name: org/jpos
+Sealed: true
+
+

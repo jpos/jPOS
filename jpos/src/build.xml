@@ -1,4 +1,4 @@
-<project name="jPOS" default="main" basedir=".">
+<project name="jPOS" default="targets" basedir=".">
   <target name="init">
     <property name="project" value="jpos" />
     <property name="source" value="src" />
@@ -23,7 +23,15 @@
     <echo message="Available targets:"/>
     <echo message="  clean   Cleans ${build} and ${dist} directories" />
     <echo message="  main    Builds main ${project} packages" />
-    <echo message="  ext     Builds extended ${project} classes" />
+    <echo message=
+	"  ext     Builds extended ${project} classes (see ext/README)" />
+    <echo message="  cvs     Clean and update CVS tree for ${project}" />
+    <echo message="  javadoc Create javadoc documentation for main module" />
+    <echo message="  extdoc  Create main+ext javadoc docuemtation" />
+    <echo message="  doc     Create full documentation (including extdoc)" />
+    <echo message="  jar     Generates ${archive}.jar" />
+    <echo message=
+      "  extdoc  Create javadoc documentation for main+ext modules" />
   </target>
 
   <target name="prepare">
@@ -49,7 +57,7 @@
            classpath="${classpath}" debug="on" deprecation="${deprecation}" />
   </target>
 
-  <target name="jar" depends="main,ext">
+  <target name="jar" depends="main">
     <delete file="${dist}/${archive}.jar" />
     <copyfile src="${source}/etc/MANIFEST.MF" dest="${classes}/MANIFEST.MF" />
     <replace file="${classes}/MANIFEST.MF" 
@@ -69,12 +77,47 @@
          dest="." package="${project}" />
   </target>
 
-  <target name="javadoc" depends="prepare,main,ext">
+  <target name="javadoc" depends="prepare,main">
+    <mkdir   dir="${build}/doc" />
+    <mkdir   dir="${build}/doc/images" />
+    <deltree dir="${build}/doc/javadoc" />
+    <mkdir   dir="${build}/doc/javadoc" />
+    <copydir src="${doc}/images"  dest="${build}/doc/images" />
+    <javadoc sourcepath="${main}"
+	destdir="${build}/doc/javadoc" dir="."
+        windowtitle="jPOS ${version} API Documentation" 
+        doctitle="jPOS ${version} API Documentation" 
+        header="jPOS ${version} API Documentation" 
+	footer="CompuService Srl."
+	public="true" noindex="true" author="true" 
+	overview="${doc}/javadoc/Overview.html"
+        packagenames="org.jpos.util, org.jpos.iso, org.jpos.core.*" />
+  </target>
+
+  <target name="extdoc" depends="prepare,main">
     <mkdir   dir="${build}/doc" />
     <deltree dir="${build}/doc/javadoc" />
     <mkdir   dir="${build}/doc/javadoc" />
-    <javadoc sourcepath="${main}" destdir="${build}/doc/javadoc" dir="."
-        doctitle="jPOS" public="true" noindex="true" author="true"
-           packagenames="org.jpos.util, org.jpos.iso, org.jpos.core.*" />
+    <mkdir   dir="${build}/doc/javadoc/images" />
+    <deltree dir="${build}/doc/tmp" />
+    <mkdir   dir="${build}/doc/tmp" />
+    <copydir src="${main}" dest="${build}/doc/tmp" />
+    <copydir src="${ext}"  dest="${build}/doc/tmp" />
+    <copydir src="${doc}/images"  dest="${build}/doc/images" />
+    <javadoc sourcepath="${main}"
+	destdir="${build}/doc/javadoc" dir="."
+        windowtitle="jPOS ${version} API Documentation" 
+        doctitle="jPOS ${version} API Documentation" 
+        header="jPOS ${version} API Documentation" 
+	footer="CompuService Srl."
+	public="true" noindex="true" author="true" 
+	overview="${doc}/javadoc/Overview.html"
+        packagenames="org.jpos.util, org.jpos.iso, org.jpos.core.*" />
+    <deltree dir="${build}/doc/tmp" />
+  </target>
+
+  <target name="doc" depends="extdoc">
+    <mkdir   dir="${build}/doc" />
+    <copydir src="${doc}"  dest="${build}/doc" includes="*.html" />
   </target>
 </project>
