@@ -2,6 +2,7 @@ $Id$
 
 -- 1.4.5 --
 Added: packager/nyceiso8583.xml (contributed by Henry Chan <q8e192@yahoo.com>)
+QSP: new thread-pool tag
 
 -- 1.4.4 -- released Sep 2002 (tagged: v1_4_4)
 
