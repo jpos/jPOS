@@ -103,7 +103,7 @@
 <!ATTLIST request-listener realm CDATA #IMPLIED>
 
 <!-- server  -->
-<!ELEMENT server (channel,request-listener*)*>
+<!ELEMENT server (property*,channel,request-listener*)*>
 <!ATTLIST server name ID #REQUIRED>
 <!ATTLIST server port CDATA #REQUIRED>
 <!ATTLIST server logger IDREF #IMPLIED>
