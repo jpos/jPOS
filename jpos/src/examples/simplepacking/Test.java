@@ -13,6 +13,7 @@ import org.jpos.iso.ISOMsg;
 import org.jpos.iso.ISOUtil;
 import org.jpos.iso.ISODate;
 import org.jpos.iso.ISOField;
+import org.jpos.iso.ISOBinaryField;
 import org.jpos.iso.ISOPackager;
 import org.jpos.iso.ISOException;
 import org.jpos.iso.packager.ISO93BPackager;
@@ -26,8 +27,8 @@ public class Test extends SimpleLogSource {
 	Date d = new Date();
 
 	ISOPackager packager = new ISO93BPackager();  // 1) Create packager
-	// uncomment the following line to debug packager
-	// packager.setLogger (getLogger(), "Packager");
+	// comment the following line if you don't want to debug packager
+	packager.setLogger (getLogger(), "Packager");
 
 	ISOMsg m = new ISOMsg();                      // 2) create ISOMsg
 
@@ -40,6 +41,7 @@ public class Test extends SimpleLogSource {
 	    m.set (new ISOField (7,  ISODate.getDateTime(d)));
 	    m.set (new ISOField (12, ISODate.getTime(d)));
 	    m.set (new ISOField (13, ISODate.getDate(d)));
+	    m.set (new ISOBinaryField (128, "AAAAAAAA".getBytes()));
 	    byte[] b = m.pack();                      // 5) packit
 
 	    evt.addMessage (m);
