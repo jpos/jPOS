@@ -1,5 +1,8 @@
 $Id$
 
+-- 1.4.5 --
+Added: packager/nyceiso8583.xml (contributed by Henry Chan <q8e192@yahoo.com>)
+
 -- 1.4.4 -- released Sep 2002 (tagged: v1_4_4)
 
 -- 1.4.3 --
