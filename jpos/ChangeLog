@@ -1,6 +1,7 @@
 $Id$
 
 -- 1.4.7 --
+Added Padder, Interpreter and Prefixer interfaces for easy implementation of field Packagers.
 Added JDBMSpace template based in/rd
 New ISOFieldPackager implementation (based on interpreters, padders and prefixers)
 Added BSHLogListener 
