@@ -278,7 +278,7 @@ public class ISOServer extends Observable
                 
 		Logger.log (new LogEvent (this, "iso-server", 
 		    "listening on port "+port));
-		for (;;) {
+		while (!shutdown) {
 		    try {
 			channel = (ServerChannel) 
 			    clientSideChannelClass.newInstance();
