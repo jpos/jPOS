@@ -24,3 +24,5 @@ main loop (sending ISOMsgs to server).
 
 You will use this optional arguments when running 'simplemux' example.
 
+-loopback switch will use a LoopbackChannel (see jpos/src/etc/jpos.cfg)
+
