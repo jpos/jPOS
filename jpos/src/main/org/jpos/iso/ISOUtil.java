@@ -929,5 +929,50 @@ public class ISOUtil {
     public static int parseInt (char[] cArray) throws NumberFormatException {
         return parseInt (cArray,10);
     }
+
+    /**
+     * Converts a byte array to an integer of base radix.
+     * <br><br>
+     * Array constraints are:
+     * <li>Number must be less than 10 digits</li>
+     * <li>Number must be positive</li>
+     * @param bArray Byte Array representation of number
+     * @param radix Number base to use
+     * @return integer value of number
+     * @throws NumberFormatException
+     */
+    public static int parseInt (byte[] bArray, int radix) throws NumberFormatException {
+        int length = bArray.length;
+        if (length > 9)
+            throw new NumberFormatException ("Number can have maximum 9 digits");
+        int result = 0;
+        int index = 0;
+        int digit = Character.digit((char)bArray[index++], radix);
+        if (digit == -1)
+            throw new NumberFormatException ("Byte array contains non-digit");
+        result = digit;
+        while (index < length) {
+            result *= radix;
+            digit = Character.digit((char)bArray[index++],radix);
+            if (digit == -1)
+                throw new NumberFormatException ("Byte array contains non-digit");
+            result += digit;
+        }
+        return result;
+    }
+
+    /**
+     * Converts a byte array to an integer of radix 10.
+     * <br><br>
+     * Array constraints are:
+     * <li>Number must be less than 10 digits</li>
+     * <li>Number must be positive</li>
+     * @param bArray Byte Array representation of number
+     * @return integer value of number
+     * @throws NumberFormatException
+     */
+    public static int parseInt (byte[] bArray) throws NumberFormatException {
+        return parseInt (bArray,10);
+    }
 }
 
