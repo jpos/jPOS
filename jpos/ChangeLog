@@ -17,4 +17,6 @@ ISOMsgFieldPackager.pack allow components other than ISOMsg to be passed in.
 BaseChannel.newSocket changed signature (no args now).
 BaseChannel.accept now closes listening socket.
 ISOMsg set(fldno,String), set(fldno,byte[]) and new constructor ISOMsg(mti).
+Changes to BaseChannel and ISOServer to support SocketFactories
+Added SunJsseSocketFactory contributed by Bharavi Gade.
 
