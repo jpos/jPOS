@@ -49,8 +49,6 @@
 
 package org.jpos.iso;
 
-import java.io.IOException;
-import java.io.InputStream;
 
 
 /**
@@ -62,61 +60,22 @@ import java.io.InputStream;
  * @see ISOComponent
  * @see IFA_LLCHAR
  */
-public class IFA_FLLCHAR extends ISOFieldPackager {
+public class IFA_FLLCHAR extends ISOFilledStringFieldPackager {
     public IFA_FLLCHAR() {
-        super();
+        super(RightPadder.SPACE_PADDER, AsciiInterpreter.INSTANCE, AsciiPrefixer.LL);
     }
     /**
      * @param len - field len
      * @param description symbolic descrption
      */
     public IFA_FLLCHAR (int len, String description) {
-        super(len, description);
-    }
-    /**
-     * @param c - a component
-     * @return packed component
-     * @exception ISOException
-     */
-    public byte[] pack (ISOComponent c) throws ISOException {
-        int len;
-        String s = (String) c.getValue();
-    
-        if ((len=s.length()) > getLength() || len>99)   // paranoia settings
-            throw new ISOException (
-                "invalid len "+len +" packing FLLCHAR field "+(Integer) c.getKey()
-            );
-
-        s = ISOUtil.strpad(s, getLength());
-        return (ISOUtil.zeropad(Integer.toString(len), 2) + s).getBytes();
-    }
-    public int getMaxPackedLength() {
-        return getLength() + 2;
+        super(len, description, RightTPadder.SPACE_PADDER, AsciiInterpreter.INSTANCE, AsciiPrefixer.LL);
+        checkLength(len, 99);
     }
 
-    /**
-     * @param c - the Component to unpack
-     * @param b - binary image
-     * @param offset - starting offset within the binary image
-     * @return consumed bytes
-     * @exception ISOException
-     */
-    public int unpack (ISOComponent c, byte[] b, int offset)
-        throws ISOException
+    public void setLength(int len)
     {
-        int len = Integer.parseInt(new String(b, offset, 2));
-        c.setValue (new String (b, offset+2, len));
-        return getLength() + 2;
-    }
-
-    public void unpack (ISOComponent c, InputStream in) 
-        throws IOException, ISOException
-    {
-        int len = Integer.parseInt(new String(readBytes (in, 2)));
-        if (len > getLength ())
-            throw new ISOException ("Invalid len " + len);
-
-        c.setValue (new String (readBytes (in, len)));
-        in.skip (getLength () - len);
+        checkLength(len, 99);
+        super.setLength(len);
     }
 }
