@@ -55,6 +55,7 @@ import org.jpos.util.Loggeable;
 import org.jpos.util.LogSource;
 import org.jpos.iso.packager.XMLPackager;
 import org.jpos.iso.packager.ISO93BPackager;
+import org.jpos.iso.header.BaseHeader;
 
 /**
  * implements <b>Composite</b>
@@ -73,7 +74,8 @@ public class ISOMsg extends ISOComponent
     protected ISOPackager packager;
     protected boolean dirty, maxFieldDirty;
     protected int direction;
-    protected byte[] header;
+    //protected byte[] header;
+	protected ISOHeader header;
     protected int fieldNumber = -1;
     public static final int INCOMING = 1;
     public static final int OUTGOING = 2;
@@ -129,16 +131,27 @@ public class ISOMsg extends ISOComponent
      * Sets an optional message header image
      * @param b header image
      */
-     public void setHeader(byte[] b) {
-        header = b;
-     }
+    public void setHeader(byte[] b) {
+        header = new BaseHeader (b);
+    }
+
+    public void setHeader (ISOHeader header) {
+    	this.header = header;
+    }
     /**
      * get optional message header image
      * @return message header image (may be null)
      */
-     public byte[] getHeader() {
-        return header;
-     }
+    public byte[] getHeader() {
+        return header.pack();
+    } 
+
+    /**
+     * Return this messages ISOHeader
+     */
+    public ISOHeader getISOHeader() {
+    	return header;
+    }
     /**
      * @return the direction (ISOMsg.INCOMING or ISOMsg.OUTGOING)
      * @see ISOChannel
@@ -560,8 +573,8 @@ public class ISOMsg extends ISOComponent
     }
     protected void writeHeader (ObjectOutput out) throws IOException {
         out.writeByte ('H');
-        out.writeShort (header.length);
-        out.write (header);
+        out.writeShort (header.getLength());
+        out.write (header.pack());
     }
     protected void readHeader (ObjectInput in) 
         throws IOException, ClassNotFoundException
