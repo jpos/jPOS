@@ -328,10 +328,7 @@ public class TransactionManager
         sp.out (tailLock, TAILLOCK);
     }
     protected void checkTail () {
-        Object lock = sp.inp (tailLock);
-        if (lock == null)   // another thread is checking tail
-            return;
-
+        Object lock = sp.in (tailLock);
         while (tailDone()) {
             tail++;
         }
