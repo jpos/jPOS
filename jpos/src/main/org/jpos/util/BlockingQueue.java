@@ -84,12 +84,15 @@ public class BlockingQueue {
 	throws InterruptedException, Closed
     {
 	consumers++;
-	while (queue.size() == 0) {
-	    wait();
-	    if (closed)
-		throw new Closed();
-	}
-	consumers--;
+        try {
+            while (queue.size() == 0) {
+                wait();
+                if (closed)
+                    throw new Closed();
+            }
+        } finally {
+	    consumers--;
+        }
 	return queue.removeFirst();
     }
 
@@ -101,12 +104,15 @@ public class BlockingQueue {
 
 	consumers++;
         long maxTime = System.currentTimeMillis() + timeout;
-	while (queue.size() == 0 && System.currentTimeMillis() < maxTime) {
-	    wait (timeout);
-	    if (closed)
-		throw new Closed();
-	}
-	consumers--;
+        try {
+            while (queue.size() == 0 && System.currentTimeMillis() < maxTime) {
+                wait (timeout);
+                if (closed)
+                    throw new Closed();
+            }
+        } finally {
+	    consumers--;
+        }
 	return queue.size() > 0 ? queue.removeFirst() : null;
     }
     public synchronized void close() {
