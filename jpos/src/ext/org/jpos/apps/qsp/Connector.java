@@ -80,6 +80,19 @@ public class Connector
 	}
     }
 
+    /**
+     * hook used to optional bounce an unanswered messages 
+     * to its source channel
+     * @param s message source
+     * @param m unanswered message
+     * @exception ISOException
+     */
+    protected void processNullResponse (ISOSource s, ISOMsg m, LogEvent evt) 
+	throws ISOException
+    {
+	evt.addMessage ("<null-response/>");
+    }
+
     protected class Process implements Runnable {
 	ISOSource source;
 	ISOMsg m;
@@ -105,7 +118,7 @@ public class Connector
 			    evt.addMessage (response);
 			    source.send(response);
 			} else {
-			    evt.addMessage ("<null-response/>");
+			    processNullResponse (source, m, evt);
 			}
 		    } else {
 			evt.addMessage ("<sent-through-mux/>");
