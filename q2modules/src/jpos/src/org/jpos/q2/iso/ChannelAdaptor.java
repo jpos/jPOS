@@ -269,13 +269,8 @@ public class ChannelAdaptor
                     if (running()) {
                         getLog().warn ("channel-receiver-"+out, e);
                         disconnect ();
-                        sp.inp (ready); // soft-clean of the ready flag
-                        while (running() && 
-                               sp.rdp (reconnect) != null)
-                        {
-                            ISOUtil.sleep(1000);
-                        }
                         sp.out (in, new Object()); // wake-up Sender
+                        ISOUtil.sleep(1000);
                         sp.out (reconnect, new Object(), delay);
                     }
                 }
@@ -283,6 +278,11 @@ public class ChannelAdaptor
         }
     }
     protected void checkConnection () {
+        while (running() && 
+                sp.rdp (reconnect) != null)
+        {
+            ISOUtil.sleep(1000);
+        }
         while (running() && !channel.isConnected ()) {
             while (sp.inp (ready) != null)
                 ;
