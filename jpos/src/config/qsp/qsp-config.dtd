@@ -4,6 +4,7 @@
 <!ELEMENT qsp-config (logger*,mux*,task*,daily-task*,server*,
                       control-panel*,sequencer*,card-agent*,channel*,
 		      persistent-engine*, connection-pool*, dir-poll*,
+                      s-m-adapter*, secure-key-store*,
                       property*)*>
 <!ATTLIST qsp-config logger IDREF #IMPLIED>
 <!ATTLIST qsp-config realm  CDATA #IMPLIED>
@@ -132,4 +133,18 @@
 <!ATTLIST daily-task name ID #IMPLIED>
 <!ATTLIST daily-task start CDATA #REQUIRED>
 <!ATTLIST daily-task poolsize CDATA #IMPLIED>
+
+<!-- s-m-adapter -->
+<!ELEMENT s-m-adapter (property)*>
+<!ATTLIST s-m-adapter class NMTOKEN #REQUIRED>
+<!ATTLIST s-m-adapter logger IDREF #IMPLIED>
+<!ATTLIST s-m-adapter realm CDATA #IMPLIED>
+<!ATTLIST s-m-adapter name ID #IMPLIED>
+
+<!-- secure-key-store -->
+<!ELEMENT secure-key-store (property)*>
+<!ATTLIST secure-key-store class NMTOKEN #REQUIRED>
+<!ATTLIST secure-key-store logger IDREF #IMPLIED>
+<!ATTLIST secure-key-store realm CDATA #IMPLIED>
+<!ATTLIST secure-key-store name ID #IMPLIED>
 
