@@ -386,6 +386,8 @@ public class QFactory {
         try {
             if (obj instanceof Configurable)
                 ((Configurable)obj).setConfiguration (getConfiguration (e));
+            if (obj instanceof Q2Configurable)
+                ((Q2Configurable)obj).setConfiguration(e);
         } catch (ConfigurationException ex) {
             throw new Q2ConfigurationException (ex);
         }
