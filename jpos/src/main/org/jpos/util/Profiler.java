@@ -77,9 +77,15 @@ public class Profiler implements Loggeable {
      * mark checkpoint
      * @param detail checkpoint information
      */
-    public void checkPoint (String detail) {
+    public synchronized void checkPoint (String detail) {
         long now = System.currentTimeMillis();
-        events.add (detail + " [" + Long.toString (now - parcial) + "]");
+        StringBuffer sb = new StringBuffer (detail);
+        sb.append (" [");
+        sb.append (Long.toString (now - parcial));
+        sb.append ('/');
+        sb.append (Long.toString (now - start));
+        sb.append (']');
+        events.add (sb.toString());
         parcial = now;
     }
     /**
