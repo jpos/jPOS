@@ -89,5 +89,11 @@ public class ISODate {
 	public static String getDate(Date d) {
 		return formatDate (d, "MMdd");
 	}
+	/**
+	 * @return date in yyMMdd format - suitable for ANSI field 8
+	 */
+	public static String getANSIDate(Date d) {
+		return formatDate (d, "yyMMdd");
+	}
 }
 
