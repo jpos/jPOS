@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!DOCTYPE project [
+  <!ENTITY properties SYSTEM "file:../properties.xml">
+  <!ENTITY commontargets SYSTEM "file:../commontargets.xml">
+]>
+
+<project name="q2mod_spring" default="dist" basedir=".">
+  &properties;
+  <property name="mbeans" value="MBeans.list"/>
+  <property name="project" value="q2mod_spring"/>
+  &commontargets;
+
+  <target name="dist" depends="clean,jars" description="Builds distribution">
+  </target>
+  <target name="ext-check">
+     <available property="spring.present" 
+                classpathref="lib.classpath" 
+                classname="org.springframework.context.ApplicationContext" />
+  </target>
+
+
+  <target name="jars" depends="ext-check" description="Build everything if we have Spring libs" if="spring.present">
+	<antcall target="build-jars"/>
+  </target>
+
+  <target name="build-jars" depends="copy-src,generate,compile,jar" description="jars are here, build it"> 
+  </target>
+
+  <target name="test" depends="jars" description="Run tests">
+  </target>
+
+
+</project>
