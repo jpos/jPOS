@@ -67,7 +67,7 @@ public class ConfigRequestListener implements QSPConfigurator {
 		    ConfigLogger.getLogger (node),
 		    ConfigLogger.getRealm (node)
 		);
-		evt.addMessage ("<log-producer/>");
+		evt.addMessage ("<log-source/>");
 	    }
 	    if (listener instanceof Configurable) {
 		evt.addMessage ("<configurable>");
