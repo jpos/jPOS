@@ -54,6 +54,8 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.management.ObjectName;
 import org.jpos.util.LogSource;
+import org.jpos.core.Configurable;
+import org.jpos.core.Configuration;
 import org.jpos.q2.Q2;
 import org.jpos.q2.QFactory;
 import org.jpos.q2.QBeanSupport;
@@ -91,9 +93,8 @@ public class DirPollAdaptor
         if (priorities != null) 
             dirPoll.setPriorities (priorities);
         dirPoll.setLogger (getLog().getLogger(), getLog().getRealm ());
-        dirPoll.setConfiguration (
-            factory.getConfiguration (getPersist())
-        );
+        Configuration cfg = factory.getConfiguration (getPersist());
+        dirPoll.setConfiguration (cfg);
         dirPoll.createDirs ();
         Object dpp = factory.newInstance (getProcessor());
         if (dpp instanceof LogSource) {
@@ -101,6 +102,9 @@ public class DirPollAdaptor
                 getLog().getLogger(), getLog().getRealm ()
             );
             dirPoll.setProcessor (dpp);
+        }
+        if (dpp instanceof Configurable) {
+            ((Configurable) dpp).setConfiguration (cfg);
         }
     }
     protected void startService () throws Exception {
