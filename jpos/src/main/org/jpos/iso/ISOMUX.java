@@ -383,9 +383,13 @@ public class ISOMUX implements Runnable, ISOSource, LogSource, MUX,
     }
     public void run () {
         tx = Thread.currentThread();
+
+        int rxPriority = rx.getPriority();      // Bug#995787
+        if (rxPriority < Thread.MAX_PRIORITY) {
                                                 // OS/400 V4R4 JVM 
-        rx.setPriority (rx.getPriority()+1);    // Thread problem
+            rx.setPriority (rxPriority+1);      // Thread problem
                                                 // (Vincent.Greene@amo.com)
+        }
         rx.start();
         boolean firstTime = true;
         while (!terminate || !txQueue.isEmpty()) {
