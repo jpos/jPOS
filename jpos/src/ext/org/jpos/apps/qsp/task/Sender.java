@@ -131,7 +131,7 @@ public class Sender
 
     private void applyProps (ISOMsg m) throws ISOException {
         for (int i=0; i<128; i++) {
-            if (m.hasField(i)) {
+            if (m.hasField(i) && m.getValue(i) instanceof String) {
                 String value = (String) m.getValue(i);
                 if (value.equalsIgnoreCase ("$date") )
                     m.set (new ISOField (i, ISODate.getDateTime(new Date())));
