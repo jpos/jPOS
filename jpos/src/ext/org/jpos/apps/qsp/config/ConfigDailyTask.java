@@ -46,7 +46,7 @@ public class ConfigDailyTask implements QSPReConfigurator {
 
 	    controller.setLogger (
 		ConfigLogger.getLogger (node),
-		ConfigLogger.getRealm (node) + ".daily-task." 
+		ConfigLogger.getRealm (node) + ".daily-task" 
 	    );
 	    configureTask (controller, node, evt);
 
