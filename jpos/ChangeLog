@@ -1,6 +1,7 @@
 $Id$
 
 -- 1.4.1 --
+new TLVPackager 
 new EJBConnector (and EJBConnectorMBean)
 new LogChannel/LogPackager can be used to reprocess jPOS's log files
 Bugfix: AWT blocker activation interrupted (JDK1.4+QSP+GUI)
