@@ -42,6 +42,9 @@ public class ConfigCardAgent implements QSPConfigurator {
 	    if (agent instanceof Configurable)
 		configureAgent ((Configurable) agent, node, evt);
 
+	    agent.setPersistentEngine 
+		(ConfigPersistentEngine.getPersistentEngine (node));
+
 	    if (agent instanceof Loggeable)
 		evt.addMessage (agent);
 
