@@ -6,10 +6,10 @@ import java.util.Vector;
 import java.util.Iterator;
 import java.util.Collection;
 import java.net.ServerSocket;
-import org.jpos.util.SimpleLogSource;
+import org.jpos.util.LogSource;
 import org.jpos.util.Logger;
 import org.jpos.util.LogEvent;
-import org.jpos.util.LogSource;
+import org.jpos.util.Logger;
 import org.jpos.util.ThreadPool;
 import org.jpos.util.NameRegistrar;
 import org.jpos.core.Configurable;
@@ -21,7 +21,7 @@ import org.jpos.core.ConfigurationException;
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
  * @version $Revision$ $Date$
  */
-public class ISOServer extends SimpleLogSource implements Runnable {
+public class ISOServer implements LogSource, Runnable {
     int port;
     Class clientSideChannelClass;
     ISOPackager clientPackager;
@@ -29,6 +29,8 @@ public class ISOServer extends SimpleLogSource implements Runnable {
     ThreadPool pool;
     public static final int DEFAULT_MAX_THREADS = 100;
     String name;
+    protected Logger logger;
+    protected String realm;
 
    /**
     * @param port port to listen
@@ -175,6 +177,16 @@ public class ISOServer extends SimpleLogSource implements Runnable {
      */
     public String getName() {
 	return this.name;
+    }
+    public void setLogger (Logger logger, String realm) {
+	this.logger = logger;
+	this.realm  = realm;
+    }
+    public String getRealm () {
+	return realm;
+    }
+    public Logger getLogger() {
+	return logger;
     }
 }
 
