@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.11  2000/03/14 00:02:45  apr
+ * new public method receiveRequest
+ *
  * Revision 1.10  2000/03/01 14:44:45  apr
  * Changed package name to org.jpos
  *
@@ -173,7 +176,7 @@ public class VISA1Link implements LogProducer, Runnable
 	    if (c != 1 || lrc != receivedLrc[0])
 		payload = null;
 	}
-	return payload.getBytes();
+	return payload != null ? payload.getBytes() : null;
     }
 
     synchronized public byte[] request (byte[] request, LogEvent evt) 
@@ -218,6 +221,23 @@ public class VISA1Link implements LogProducer, Runnable
 	}
 	evt.addMessage ("<rx>"+(System.currentTimeMillis() - start)+"</rx>");
 	return response;
+    }
+
+    public byte[] receiveRequest(long timeout, LogEvent evt) {
+	byte[] request = null;
+	try {
+	    long expired = System.currentTimeMillis() + timeout;
+	    while (System.currentTimeMillis() < expired) {
+		v24.send (ENQ);
+		request = receivePacket (5*1000, evt);
+		v24.send (request == null ? NAK : ACK);
+		if (request != null)
+		    break;
+	    }
+	} catch (IOException e) { 
+	    evt.addMessage (e);
+	}
+	return request;
     }
 
     private void doTransceive () throws IOException, ISOException
