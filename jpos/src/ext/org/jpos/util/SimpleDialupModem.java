@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.7  2000/03/22 20:44:41  apr
+ * Playing with modem init
+ *
  * Revision 1.6  2000/03/20 19:24:13  apr
  * Testing ISOGetty ... minor bugfixes/timings in answer()/hangup()/reset()
  *
@@ -112,7 +115,7 @@ public class SimpleDialupModem implements Modem {
 	    throw new IOException ("unable to initialize modem (0)");
 	v24.send ("ATB0E0Q1S0=1\r");
 	try {
-	    Thread.sleep (1000);
+	    Thread.sleep (2000);
 	} catch (InterruptedException e) { }
 	v24.setAutoFlushReceiver(true);
 	lastInit = System.currentTimeMillis();
