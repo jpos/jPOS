@@ -9,4 +9,8 @@ public interface ChannelAdaptorMBean extends QBeanSupportMBean {
     public String getInQueue ();
     public void setOutQueue (String out);
     public String getOutQueue ();
+    public void setHost (String host);
+    public String getHost ();
+    public void setPort (int port);
+    public int getPort ();
 }

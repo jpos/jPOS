@@ -91,8 +91,7 @@ public class ChannelAdaptor
         super ();
         sp = TransientSpace.getSpace ();
     }
-
-    public void initService () 
+    public void initChannel () 
         throws Q2ConfigurationException, ConfigurationException 
     {
         Element persist = getPersist ();
@@ -111,10 +110,11 @@ public class ChannelAdaptor
     }
     public void startService () {
         try {
+            initChannel ();
             new Thread (new Sender ()).start ();
             new Thread (new Receiver ()).start ();
         } catch (Exception e) {
-            getLog().warn ("error connecting to remote host", e);
+            getLog().warn ("error starting service", e);
         }
     }
     public void stopService () {
@@ -262,6 +262,28 @@ public class ChannelAdaptor
         } catch (IOException e) {
             getLog().warn ("disconnect", e);
         }
+    }
+    public synchronized void setHost (String host) {
+        setProperty (getProperties ("channel"), "host", host);
+        setModified (true);
+    }
+    public String getHost () {
+        return getProperty (getProperties ("channel"), "host");
+    }
+    public synchronized void setPort (int port) {
+        setProperty (
+            getProperties ("channel"), "port", Integer.toString (port)
+        );
+        setModified (true);
+    }
+    public int getPort () {
+        int port = 0;
+        try {
+            port = Integer.parseInt (
+                getProperty (getProperties ("channel"), "port")
+            );
+        } catch (NumberFormatException e) { }
+        return port;
     }
 }
 
