@@ -1,6 +1,8 @@
 $Id$
 
 -- 1.4.5 --
+New application: Q2
+Replaced JMXRI by MX4J, new HTTPAdaptor, JNDIAdaptor and RMIAdaptor
 Security: new 'allow' property in ISOServer (checks peer IP)
 Added: packager/nyceiso8583.xml (contributed by Henry Chan <q8e192@yahoo.com>)
 QSP: new thread-pool tag
