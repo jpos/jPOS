@@ -24,6 +24,7 @@ if [ -z $1 ] ; then
   exit;
 fi
 $JAVA -cp $CLASSPATH -Djpos.config=src/etc/jpos.cfg \
+	-Djava.compiler=NONE \
 	-Dsax.parser=org.apache.xerces.parsers.SAXParser \
 	$1.Test $2 $3 $4 $5
 
