@@ -6,10 +6,10 @@ import org.jpos.util.Logger;
 import org.jpos.util.LogEvent;
 import org.jpos.util.LogSource;
 import org.jpos.core.SimpleConfiguration;
+import org.jpos.core.Configurable;
 import org.jpos.core.ConfigurationException;
 
 import org.jpos.apps.qsp.QSP;
-import org.jpos.apps.qsp.QSPConfigurable;
 import org.jpos.apps.qsp.QSPConfigurator;
 
 import org.w3c.dom.Node;
@@ -35,8 +35,8 @@ public class ConfigTask implements QSPConfigurator {
 		    ConfigLogger.getRealm (node)
 		);
 	    }
-	    if (task instanceof QSPConfigurable)
-		configureTask ((QSPConfigurable) task, node, evt);
+	    if (task instanceof Configurable)
+		configureTask ((Configurable) task, node, evt);
 
 	    Thread thread = new Thread(task);
 	    thread.setName ("qsp-task");
@@ -50,10 +50,10 @@ public class ConfigTask implements QSPConfigurator {
 	}
 	Logger.log (evt);
     }
-    private void configureTask (QSPConfigurable task, Node node, LogEvent evt)
+    private void configureTask (Configurable task, Node node, LogEvent evt)
 	throws ConfigurationException
     {
-	task.config (new SimpleConfiguration (
+	task.setConfiguration (new SimpleConfiguration (
 	    ConfigUtil.addProperties (node, null, evt)
 	    )
 	);

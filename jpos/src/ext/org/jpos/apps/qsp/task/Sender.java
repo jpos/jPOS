@@ -14,8 +14,8 @@ import org.jpos.util.NameRegistrar;
 import org.jpos.util.Logger;
 import org.jpos.util.LogEvent;
 import org.jpos.core.Configuration;
+import org.jpos.core.Configurable;
 import org.jpos.core.ConfigurationException;
-import org.jpos.apps.qsp.QSPConfigurable;
 
 /**
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
@@ -23,7 +23,7 @@ import org.jpos.apps.qsp.QSPConfigurable;
  */
 public class Sender 
     extends SimpleLogSource
-    implements Runnable, QSPConfigurable
+    implements Runnable, Configurable
 {
     ISOMUX mux;
     File message;
@@ -38,7 +38,7 @@ public class Sender
 	super();
     }
 
-    public void config (Configuration cfg) 
+    public void setConfiguration (Configuration cfg) 
 	throws ConfigurationException
     {
 	try {
