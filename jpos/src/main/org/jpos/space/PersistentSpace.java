@@ -89,8 +89,8 @@ public class PersistentSpace implements LocalSpace // PersistentSpaceMBean {
             if (data == null) 
                 map.put (key, (data = new Data (key)));
             data.add (value);
-            this.notifyAll ();
             listeners = data.getListeners();
+            this.notifyAll ();
         }
         if (listeners != null) {
             Iterator iter = listeners.iterator();
@@ -104,7 +104,7 @@ public class PersistentSpace implements LocalSpace // PersistentSpaceMBean {
         out (id, ref);
         return ref;
     }
-    public int size (Object key) {
+    public synchronized int size (Object key) {
         Data data  = (Data) map.get (key);
         if (data == null)
             map.put (key, (data = new Data (key)));
@@ -198,18 +198,22 @@ public class PersistentSpace implements LocalSpace // PersistentSpaceMBean {
             dir.mkdirs ();
             FilenameFilter filter = new FilenameFilter() {
                 public boolean accept(File f, String name) {
-                    return name.toUpperCase().startsWith("SPA");
+                    return name.toUpperCase().startsWith("S");
                 }
             };
             File file[] = dir.listFiles (filter);
             Arrays.sort (file);
             for (int i=0; file.length > i; i++) {
-                stored.add(file[i].getAbsolutePath ());
                 if (cacheSize > data.size()) {
                     Object value = readValue (file[i].getAbsolutePath ());
-                    if (value != null)
+                    if (value == null) {
+                        (new File (file[i].getAbsolutePath ())).delete ();
+                    } else {
+                        stored.add(file[i].getAbsolutePath ());
                         data.add (value);
-                }
+                    }
+                } else
+                    stored.add(file[i].getAbsolutePath ());
             }
         }
         private Object readValue (String f) {
@@ -220,57 +224,62 @@ public class PersistentSpace implements LocalSpace // PersistentSpaceMBean {
                       new BufferedInputStream (
                       new FileInputStream (f)));
                 value = fin.readObject ();
-            } catch (IOException e) { 
-            } catch (ClassNotFoundException e) {
+            } catch (Exception e) { 
             } finally {
-                try {
-                    fin.close();
-                } catch (IOException e) { }
+                if (fin != null)
+                    try {
+                        fin.close();
+                    } catch (Exception e) { }
             }
             return value;
         }
+        
+        protected File createTempFile (String prefex, File dir) {
+            long t = System.currentTimeMillis();
+            File f = null;
+            do {
+                String fn = prefex + Long.toHexString(t);
+                t = t + 1;
+                f = new File (dir, fn);
+            } while (f.exists());
+            return f;
+        }
+        
         protected void add (Object value) {
             File f = null;
             FileOutputStream fos = null;
             try {
-                f = File.createTempFile("SPA","",dir);
+                f = createTempFile ("S", dir);
                 fos = new FileOutputStream (f);
                 ObjectOutputStream fout = new ObjectOutputStream (
                                           new BufferedOutputStream (fos));
                 fout.writeObject (value);
                 fout.flush();
                 fos.getFD().sync();
-            } catch (IOException e) {
+            } catch (Exception e) {
             } finally {
-                try {
-                    fos.close();
-                } catch (IOException e) { };
+                if (fos != null)
+                    try {
+                        fos.close();
+                    } catch (Exception e) { };
             }
             stored.add(f.getAbsolutePath());
             /* fill cache */
-            while (cacheSize > data.size ()) {
-                if (data.size () > size ()) break;
-                if ((data.size() + 1) == size ()) {
+            if (cacheSize > data.size ())
+                if ((data.size() + 1) == stored.size ())
                     data.add (value);
-                    break;
-                } else {
-                    Object obj = readValue ((String) stored.get (data.size () + 1));
-                    data.add (obj);
-                }
-            }
         }
         protected Object get (Object value) {
             Object obj = null;
             while (size() > 0) {
                 obj = getFirst();
-                if (obj instanceof LeasedReference) {
+                if (obj instanceof LeasedReference)
                     obj = ((LeasedReference)obj).get ();
-                    if (obj == null) {
-                        data.removeFirst ();
-                        File f = new File ((String) stored.removeFirst ());
-                        f.delete ();
-                        continue;
-                    }
+                if (obj == null) {
+                    data.removeFirst ();
+                    File f = new File ((String) stored.removeFirst ());
+                    f.delete ();
+                    continue;
                 }
                 break;
             }
@@ -280,7 +289,7 @@ public class PersistentSpace implements LocalSpace // PersistentSpaceMBean {
             Object object = null;
             if (data.size() > 0) {
                 object = data.getFirst ();
-            } else if (size() > 0) {
+            } else if (stored.size() > 0) {
                 object = readValue ((String) stored.getFirst ());
             }
             return object;
