@@ -3,8 +3,16 @@
 <qsp-config>
  <logger name="qsp">
     <log-listener name="simple" type="simple" />
-    <log-listener name="rotate" type="rotate" 
+    <!--log-listener name="rotate" type="rotate" 
          filename="/tmp/qsp.log" window="86400" copies="10" />
-    />
+    / -->
  </logger>
+
+ <channel name="acme" 
+          class="org.jpos.iso.ISO87BChannel" 
+          packager="org.jpos.iso.ISO87BPackager"
+          host="server.acme.com" port="8000"
+          logger="qsp" realm="acme.channel">
+ </channel>
+
 </qsp-config>

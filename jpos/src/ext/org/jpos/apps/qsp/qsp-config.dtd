@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Id$ -->
 
-<!ELEMENT qsp-config (logger*)>
+<!ELEMENT qsp-config (logger*,channel*)>
 
 <!-- logger -->
 <!ELEMENT logger (log-listener*)>
@@ -14,5 +14,16 @@
 <!ATTLIST log-listener filename CDATA #IMPLIED>
 <!ATTLIST log-listener window   CDATA #IMPLIED>
 <!ATTLIST log-listener copies   CDATA #IMPLIED>
+
+<!-- channel -->
+<!ELEMENT channel (#PCDATA)>
+<!ATTLIST channel name ID #REQUIRED>
+<!ATTLIST channel class CDATA #IMPLIED>
+<!ATTLIST channel packager CDATA #IMPLIED>
+<!ATTLIST channel type (client|server) 'client'>
+<!ATTLIST channel host CDATA #IMPLIED>
+<!ATTLIST channel port CDATA #IMPLIED>
+<!ATTLIST channel logger IDREF #IMPLIED>
+<!ATTLIST channel realm CDATA #IMPLIED>
 
 
