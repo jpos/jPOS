@@ -480,7 +480,7 @@ public class JCESecurityModule extends BaseSMAdapter {
                     byte[] block2ByteArray = ISOUtil.hex2byte(block2);
                     // get Block1
                     byte[] block1ByteArray = ISOUtil.xor(pinBlock, block2ByteArray);
-                    pinLength = block1ByteArray[0];
+                    pinLength = Math.abs (block1ByteArray[0]);
                     if (pinLength > MAX_PIN_LENGTH)
                         throw  new SMException("PIN Block Error");
                     // get pin
