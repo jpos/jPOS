@@ -75,7 +75,7 @@ public class SpaceMUX extends SimpleLogSource
 {
     LocalSpace sp;
     Configuration cfg;
-    String to, from, unhandled;
+    String to, from, unhandled, name;
     public SpaceMUX () {
         super ();
         sp = TransientSpace.getSpace ();
@@ -160,6 +160,31 @@ public class SpaceMUX extends SimpleLogSource
         if (value == null)
             throw new ConfigurationException ("null property "+prop);
         return value;
+    }
+    /**
+     * associates this MUX with a name using NameRegistrar
+     * @param name name to register
+     * @see NameRegistrar
+     */
+    public void setName (String name) {
+	this.name = name;
+	NameRegistrar.register ("mux."+name, this);
+    }
+    /**
+     * @return this ISOMUX's name ("" if no name was set)
+     */
+    public String getName() {
+	return this.name;
+    }
+    /**
+     * @return MUX instance with given name.
+     * @throws NameRegistrar.NotFoundException;
+     * @see NameRegistrar
+     */
+    public static MUX getMUX (String name)
+	throws NameRegistrar.NotFoundException
+    {
+	return (MUX) NameRegistrar.get ("mux."+name);
     }
 }
 
