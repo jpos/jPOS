@@ -9,6 +9,13 @@ import java.util.*;
  * @version $Id$
  * @see ISOComponent
  */
+
+/*
+ * $Log$
+ * Revision 1.13  1999/09/20 12:43:14  apr
+ * @return in strpad fixed (reported by georgem@tvinet.com)
+ *
+ */
 public class ISOUtil {
     private static byte[] EBCDIC2ASCII = new byte[] {
         (byte)0x00, (byte)0x01, (byte)0x02, (byte)0x03, 
@@ -197,7 +204,7 @@ public class ISOUtil {
      * pads to the right
      * @param s - original string
      * @param len - desired len
-     * @return zero padded string
+     * @return space padded string
      */
     public static String strpad(String s, int len) {
         StringBuffer d = new StringBuffer(s);
