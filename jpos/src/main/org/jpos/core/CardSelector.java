@@ -47,31 +47,6 @@
  * information please see <http://www.jpos.org/>.
  */
 
-/*
- * $Log$
- * Revision 1.7  2003/10/13 10:46:15  apr
- * tabs expanded to spaces
- *
- * Revision 1.6  2003/05/16 04:07:35  alwyns
- * Import cleanups.
- *
- * Revision 1.5  2000/11/02 12:09:18  apr
- * Added license to every source file
- *
- * Revision 1.4  2000/03/01 14:44:38  apr
- * Changed package name to org.jpos
- *
- * Revision 1.3  1999/11/26 12:16:47  apr
- * CVS devel snapshot
- *
- * Revision 1.2  1999/11/24 20:27:30  apr
- * Added overloaded add(card,bin) method
- *
- * Revision 1.1  1999/10/08 12:53:58  apr
- * Devel intermediate version - CVS sync
- *
- */
-
 package org.jpos.core;
 
 import java.util.Iterator;
@@ -147,5 +122,13 @@ public class CardSelector {
         } catch (NumberFormatException x) { }
         throw new UnknownCardException (bin);
 
+    }
+    public void remove (CardBrand card) {
+        Iterator i = list.iterator();
+        while (i.hasNext()) {
+            Entry e = (Entry) i.next();
+            if (e.card == card)
+                i.remove ();
+        }
     }
 }
