@@ -54,6 +54,7 @@ import  org.jpos.util.LogSource;
 import  org.jpos.util.SimpleLogListener;
 import  org.jpos.security.SecureKeyStore;
 import  org.jpos.security.SimpleKeyFile;
+import  org.jpos.security.SecureKey;
 import  org.jpos.security.SecureDESKey;
 import  org.jpos.security.SMAdapter;
 import  org.jpos.iso.ISOUtil;
@@ -71,7 +72,7 @@ public class Test {
         try {
             Logger logger = new Logger();
             logger.addListener(new SimpleLogListener(System.out));
-            // SimpleKeyFile creates "src/examples/securekeystore/keyfile"
+            // SimpleKeyFile creates "build/examples/securekeystore/keyfile"
             // automatically if it does not exist.
             SecureKeyStore ks = new SimpleKeyFile("build/examples/securekeystore/keyfile");
             if (ks instanceof LogSource)
@@ -89,8 +90,13 @@ public class Test {
             pinKek = null;
             pinKey = null;
             // retrieve from key store
-            pinKek = (SecureDESKey)ks.getKey("mastercard.pin-kek");
-            pinKey = (SecureDESKey)ks.getKey("mastercard.pin-key");
+            SecureKey secureKey;
+            secureKey = ks.getKey("mastercard.pin-kek");
+            if (secureKey instanceof SecureDESKey)
+            	pinKek = (SecureDESKey) secureKey;
+            secureKey = ks.getKey("mastercard.pin-key");
+            if (secureKey instanceof SecureDESKey)
+            	pinKey = (SecureDESKey)secureKey;
         } catch (Exception e) {
             e.printStackTrace();
         }
