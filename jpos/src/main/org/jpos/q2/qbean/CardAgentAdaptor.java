@@ -48,8 +48,11 @@
  */
 package org.jpos.q2.qbean;
 
+import org.jdom.Element;
+import org.jpos.q2.QFactory;
 import org.jpos.core.CardAgent;
 import org.jpos.core.CardAgentLookup;
+import org.jpos.core.Configurable;
 
 /**
  * Task Adaptor
@@ -62,13 +65,15 @@ public class CardAgentAdaptor extends TaskAdaptor {
         super ();
     }
     protected void startService () throws Exception {
-        System.out.println ("-------> starting "+getName());
-        if (getObject() == null) 
-            System.out.println ("---------------------> Houston, getObject() is null");
-        else {
-            System.out.println ("---------------------> getObject OK");
-            CardAgentLookup.add ((CardAgent) getObject ());
+        Object obj = getObject();
+        if (obj instanceof Configurable) {
+            QFactory factory = getServer().getFactory();
+            Element e = getPersist ();
+            ((Configurable)obj).setConfiguration (
+                factory.getConfiguration (e)
+            );
         }
+        CardAgentLookup.add ((CardAgent) getObject ());
     }
     protected void stopService () throws Exception {
         CardAgentLookup.remove ((CardAgent) getObject ());
