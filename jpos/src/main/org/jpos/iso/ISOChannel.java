@@ -463,6 +463,18 @@ public abstract class ISOChannel extends Observable implements LogProducer {
 		break;
 	}
     }
+    /**
+     * @param filter incoming filter to add
+     */
+    public void addIncomingFilter (ISOFilter filter) {
+	addFilter (filter, ISOMsg.INCOMING);
+    }
+    /**
+     * @param filter outgoing filter to add
+     */
+    public void addOutgoingFilter (ISOFilter filter) {
+	addFilter (filter, ISOMsg.OUTGOING);
+    }
 
     /**
      * @param filter filter to add (both directions, incoming/outgoing)
@@ -493,6 +505,18 @@ public abstract class ISOChannel extends Observable implements LogProducer {
      */
     public void removeFilter (ISOFilter filter) {
 	removeFilter (filter, 0);
+    }
+    /**
+     * @param filter incoming filter to remove
+     */
+    public void removeIncomingFilter (ISOFilter filter) {
+	removeFilter (filter, ISOMsg.INCOMING);
+    }
+    /**
+     * @param filter outgoing filter to remove
+     */
+    public void removeOutgoingFilter (ISOFilter filter) {
+	removeFilter (filter, ISOMsg.OUTGOING);
     }
     protected ISOMsg applyOutgoingFilters (ISOMsg m, LogEvent evt) 
 	throws VetoException
