@@ -212,7 +212,7 @@ public class ISOUtil {
     public static byte[] ebcdicToAsciiBytes(byte[] e, int offset, int len) {
         byte[] a = new byte[len];
         for (int i=0; i<len; i++)
-            a[i] = EBCDIC2ASCII[((int)e[offset+i])&0xFF];
+            a[i] = EBCDIC2ASCII[e[offset+i]&0xFF];
         return a;
     }
     public static byte[] asciiToEbcdic(String s) {
@@ -221,7 +221,7 @@ public class ISOUtil {
     public static byte[] asciiToEbcdic(byte[] a) {
         byte[] e = new byte[a.length];
         for (int i=0; i<a.length; i++) 
-            e[i] = ASCII2EBCDIC[((int)a[i])&0xFF];
+            e[i] = ASCII2EBCDIC[a[i]&0xFF];
         return e;
     }
     public static void asciiToEbcdic(String s, byte[] e, int offset) {
