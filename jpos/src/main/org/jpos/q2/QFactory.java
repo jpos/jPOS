@@ -52,25 +52,10 @@ package org.jpos.q2;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.util.Map;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
+import java.util.*;
 import java.net.MalformedURLException;
-import javax.management.Attribute;
-import javax.management.ObjectName;
-import javax.management.ObjectInstance;
-import javax.management.MBeanServer;
-import javax.management.MBeanException;
-import javax.management.MBeanServerFactory;
-import javax.management.MBeanRegistrationException;
-import javax.management.MalformedObjectNameException;
-import javax.management.InstanceAlreadyExistsException;
-import javax.management.InstanceNotFoundException;
-import javax.management.NotCompliantMBeanException;
-import javax.management.ReflectionException;
-import javax.management.AttributeNotFoundException;
-import javax.management.InvalidAttributeValueException;
+import java.lang.reflect.InvocationTargetException;
+import javax.management.*;
 
 import org.jdom.Element;
 import org.jdom.Document;
@@ -102,7 +87,8 @@ public class QFactory {
                MBeanException,
                NotCompliantMBeanException,
                InvalidAttributeValueException,
-               ReflectionException
+               ReflectionException,
+               Q2ConfigurationException
     {
         String clazz  = e.getAttributeValue ("class");
         String name   = e.getAttributeValue ("name");
@@ -120,6 +106,7 @@ public class QFactory {
 
         setAttribute (mserver, objectName, "Server", server);
         setAttribute (mserver, objectName, "Persist", e);
+        configureQBean(mserver,objectName,e);
 
         mserver.invoke (objectName, "init",  null, null);
         mserver.invoke (objectName, "start", null, null);
@@ -159,7 +146,7 @@ public class QFactory {
         }
     }
 
-    public void destroyQBean (Q2 server, ObjectName objectName) 
+    public void destroyQBean (Q2 server, ObjectName objectName)
         throws ClassNotFoundException, 
                InstantiationException,
                IllegalAccessException,
@@ -178,5 +165,60 @@ public class QFactory {
         mserver.invoke (objectName, "destroy",  null, null);
         mserver.unregisterMBean (objectName);
     }
+
+
+    public void configureQBean(MBeanServer server, ObjectName objectName,Element e)
+        throws Q2ConfigurationException
+    {
+        try {
+            AttributeList attributeList = getAttributeList(e);
+            Iterator attributes = attributeList.iterator();
+            while (attributes.hasNext())
+                server.setAttribute(objectName,(Attribute)attributes.next());
+        } catch (Exception e1) {
+            throw new Q2ConfigurationException(e1);
+        }
+
+    }
+    public AttributeList getAttributeList(Element e)
+        throws Q2ConfigurationException
+    {
+        AttributeList attributeList = new AttributeList();
+        List childs = e.getChildren("attr");
+        Iterator childsIterator = childs.iterator();
+        while (childsIterator.hasNext())
+        {
+            Element  childElement = (Element)childsIterator.next();
+            String name = childElement.getAttributeValue("name");
+            name = getAttributeName(name);
+            String type = childElement.getAttributeValue("type","java.lang.String");
+            String value = childElement.getText();
+            try {
+                Class attributeType = Class.forName(type);
+                Class[] parameterTypes = {"".getClass()};
+                Object[] parameterValues = {value};
+                Object obj = attributeType.getConstructor(parameterTypes).newInstance(parameterValues);
+                Attribute attr =  new Attribute(name,obj);
+                attributeList.add(attr);
+            } catch (Exception e1) {
+                throw new Q2ConfigurationException(e1);
+            }
+        }
+        return attributeList;
+    }
+
+    /**
+     * sets the first character of the string to the upper case
+     * @param name
+     * @return
+     */
+    public static String getAttributeName(String name)
+    {
+        StringBuffer tmp = new StringBuffer(name);
+        tmp.setCharAt(0,name.toUpperCase().charAt(0)) ;
+        return tmp.toString();
+    }
+
+
 }
 
