@@ -1,6 +1,25 @@
 $Id$
+(Source code users, refer to jpos/src/ext-examples/qsp/README)
+----------------------------------------------------------------------------
+Welcome to QSP, first jPOS based application.
 
-Have a look at jpos/src/ext-examples/qsp/README,
-visit http://www.jpos.org and join jpos-dev@onelist.com
-if you plan to use QSP.
+QSP is just a bootstrapper of jPOS components, it reads an
+XML configuration file and start jPOS components for you.
+
+for details on available jPOS components you should refer 
+to http://www.jpos.org.
+
+Installation instructions:
+
+- Get a copy of xalan.jar and xerces.jar (http://xml.apache.org)
+  and install them under your current directory
+
+To run dummyserver example:
+
+  java -jar qsp.jar dummyserver/dummyserver.xml 
+
+To run dummyclient example:
+
+  java -jar qsp.jar dummyclient/dummyclient.xml 
+
 
