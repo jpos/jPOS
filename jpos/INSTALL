@@ -21,13 +21,13 @@ at the moment but the idea is that 'ext' module will contains classes
 that fit within org.jpos package structure _but_ requires some kind
 of external non-distributable jar file.
 
-Running build (build.sh on Unix, build.bat on Windows) will show
+Running build (bin/build on Unix, build.bat on Windows) will show
 the available targets:
 
 Examples:
 
-   build main javadoc : builds main and javadoc on a Windows machine
-   ./build.sh ext doc : builds main, ext, extdoc and doc
+   bin/build main javadoc : builds main and javadoc on a Windows machine
+   bin/build ext doc : builds main, ext, extdoc and doc
 
 This is work in progress, feel free to ask. We run a developers
 mailing list at jpos-dev@onelist.com (jpos-dev-subscribe@onelist.com)
