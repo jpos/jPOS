@@ -54,6 +54,7 @@
     <mkdir dir="${classes.examples}"/>
     <mkdir dir="${dist}"/>
     <mkdir dir="log"/>
+    <mkdir dir="deploy/lib"/>
   </target>
 
   <target name="clean">
