@@ -1,7 +1,0 @@
-org/jpos/q2/iso/ChannelAdaptor.java
-org/jpos/q2/iso/DirPollAdaptor.java
-org/jpos/q2/iso/QMUX.java
-org/jpos/q2/iso/QServer.java
-org/jpos/q2/security/SMAdaptor.java
-org/jpos/q2/security/KeyStoreAdaptor.java
-
