@@ -12,6 +12,14 @@ import java.util.*;
  * @see ISOBasePackager
  * @see ISOComponent
  */
+
+/*
+ * $Log$
+ * Revision 1.3  1999/08/06 13:54:22  apr
+ * Added inner field 127 support
+ *
+ */
+
 public class VAPVIPPackager extends ISOBasePackager {
     private static final boolean pad = true;
     protected ISOFieldPackager fld[] = {
@@ -143,11 +151,13 @@ public class VAPVIPPackager extends ISOBasePackager {
             new IFB_LLCHAR  ( 99, "SUPPORTING INFORMATION"),
             new IFB_LLCHAR  ( 99, "RESERVED PRIVATE USE"),
             new ISOMsgFieldPackager(
-                new IFB_LLHCHAR (255, "FILE RECORD(S) ACTION/DATA"),
-                new VAPVIPPackager()
+                new IFB_LLHBINARY (255, "FILE RECORD(S) ACTION/DATA"),
+                new F127Packager()
             ),
             new IFB_BINARY  (  8, "MAC 2")
         };
+
+    protected class F127Packager extends ISOBasePackager {
         protected ISOFieldPackager fld127[] = {
             new IF_ECHAR    (1,   "FILE UPDATE COD"),
             new IFB_LLHNUM  (19,  "ACCOUNT NUMBER", true),
@@ -157,6 +167,12 @@ public class VAPVIPPackager extends ISOBasePackager {
             new IFB_NUMERIC (2,   "ALGORITHM IDENTIFIER", true),
             new IFB_NUMERIC (20,  "SECURITY DATA", true)
         };
+        protected F127Packager () {
+            super();
+            setFieldPackager(fld127);
+        }
+    }
+
     public VAPVIPPackager() {
         super();
         setFieldPackager(fld);
