@@ -8,8 +8,9 @@ import java.util.*;
  * @author apr@cs.com.uy
  * @version $Id$
  * @see ISOComponent
+ * @see ISOBitMapPackager
  */
-public class IFA_BITMAP extends ISOFieldPackager {
+public class IFA_BITMAP extends ISOBitMapPackager {
 	/**
 	 * @param len - field len
 	 * @param description symbolic descrption
@@ -36,7 +37,7 @@ public class IFA_BITMAP extends ISOFieldPackager {
 	public int unpack (ISOComponent c, byte[] b, int offset)
 		throws ISOException
 	{
-		BitSet bmap = ISOUtil.hex2BitSet (b, offset);
+		BitSet bmap = ISOUtil.hex2BitSet (b, offset, true);
 		c.setValue(bmap);
 		return (bmap.size() >> 2);
 	}

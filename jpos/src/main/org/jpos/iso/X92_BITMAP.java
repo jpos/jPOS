@@ -3,19 +3,19 @@ package uy.com.cs.jpos.iso;
 import java.util.*;
 
 /**
- * ISOFieldPackager Binary Bitmap
+ * ASCII packaged Bitmap
  *
  * @author apr@cs.com.uy
  * @version $Id$
  * @see ISOComponent
  * @see ISOBitMapPackager
  */
-public class IFB_BITMAP extends ISOBitMapPackager {
+public class X92_BITMAP extends ISOBitMapPackager {
 	/**
 	 * @param len - field len
 	 * @param description symbolic descrption
 	 */
-	public IFB_BITMAP(int len, String description) {
+	public X92_BITMAP(int len, String description) {
 		super(len, description);
 	}
 	/**
@@ -24,7 +24,8 @@ public class IFB_BITMAP extends ISOBitMapPackager {
 	 * @exception ISOException
 	 */
 	public byte[] pack (ISOComponent c) throws ISOException {
-		return ISOUtil.bitSet2byte ((BitSet) c.getValue());
+		byte[] b = ISOUtil.bitSet2byte ((BitSet) c.getValue());
+		return ISOUtil.hexString(b).getBytes();
 	}
 	/**
 	 * @param c - the Component to unpack
@@ -36,8 +37,8 @@ public class IFB_BITMAP extends ISOBitMapPackager {
 	public int unpack (ISOComponent c, byte[] b, int offset)
 		throws ISOException
 	{
-		BitSet bmap = ISOUtil.byte2BitSet (b, offset, true);
+		BitSet bmap = ISOUtil.hex2BitSet (b, offset, false);
 		c.setValue(bmap);
-		return (bmap.size() >> 3);
+		return (bmap.size() >> 2);
 	}
 }

@@ -12,9 +12,11 @@ import java.util.*;
  * @see ISOComponent
  */
 public class X92Packager extends ISOBasePackager {
+	protected ISOFieldPackager bitMapPackager = 
+		new X92_BITMAP (16, "X9.2 BIT MAP");
+
 	protected ISOFieldPackager fld[] = {
 			new IFA_NUMERIC(	 4, "MESSAGE TYPE"							),
-			new IFA_BITMAP ( 	16, "BIT MAP"								),
 			new IFA_FLLNUM (	19, "PAN - PRIMARY ACCOUNT NUMBER"			),
 			new IFA_NUMERIC(	 6, "PROCESSING CODE"						),
 			new IFA_NUMERIC(	12, "AMOUNT, TRANSACTION"					),
@@ -83,11 +85,9 @@ public class X92Packager extends ISOBasePackager {
 		setFieldPackager(fld);
 	}
 	/**
-	 * ANSI X9.2 treats field number 2 (PAN) as number 1 on bitmap
-	 * @return appropiate offset for BitSet.set
-	 * @see ISOMsg#recalcBitMap
+	 * @return suitable ISOFieldPackager for Bitmap
 	 */
-	 public int getFieldOffset() {
-	 	return -1;
+	protected ISOFieldPackager getBitMapfieldPackager() {
+		return bitMapPackager;
 	}
 }

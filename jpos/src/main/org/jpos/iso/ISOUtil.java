@@ -274,7 +274,8 @@ public class ISOUtil {
 	 * @param b - the BitSet
 	 * @return binary representation
 	 */
-	public static byte[] bitSet2byte (BitSet b) {
+	public static byte[] bitSet2byte (BitSet b)
+	{
 		int len = (b.size() >> 3) << 3;
 		byte[] d = new byte[len >> 3];
 		for (int i=0; i<len; i++) 
@@ -290,10 +291,15 @@ public class ISOUtil {
 	 * into a Java BitSet
 	 * @param b - binary representation
 	 * @param offset - staring offset
+	 * @param bitZeroMeansExtended - true for ISO-8583
 	 * @return java BitSet object
 	 */
-	public static BitSet byte2BitSet (byte[] b, int offset) {
-		int len = (b[offset] & 0x80) == 0x80 ? 128 : 64;
+	public static BitSet byte2BitSet 
+		(byte[] b, int offset, boolean bitZeroMeansExtended)
+	{
+		int len = bitZeroMeansExtended ?
+			((b[offset] & 0x80) == 0x80 ? 128 : 64) : 64;
+
 		BitSet bmap = new BitSet (len);
 		for (int i=0; i<len; i++) 
 			if (((b[offset + (i >> 3)]) & (0x80 >> (i % 8))) > 0)
@@ -306,10 +312,15 @@ public class ISOUtil {
 	 * into a Java BitSet
 	 * @param b - binary representation
 	 * @param offset - staring offset
+	 * @param bitZeroMeansExtended - true for ISO-8583
 	 * @return java BitSet object
 	 */
-	public static BitSet hex2BitSet (byte[] b, int offset) {
-		int len = (Character.digit((char)b[offset],16) & 0x08) == 8 ? 128 : 64;
+	public static BitSet hex2BitSet 
+		(byte[] b, int offset, boolean bitZeroMeansExtended)
+	{
+		int len = bitZeroMeansExtended ?
+		  ((Character.digit((char)b[offset],16) & 0x08) == 8 ? 128 : 64) :
+		  64;
 		BitSet bmap = new BitSet (len);
 		for (int i=0; i<len; i++) {
 			int digit = Character.digit((char)b[offset + (i >> 2)], 16);

@@ -41,7 +41,12 @@ public class IFA_LLLCHAR extends ISOFieldPackager {
 	public int unpack (ISOComponent c, byte[] b, int offset)
 		throws ISOException
 	{
+		System.out.println ("DEBUG offset=" +offset
+		   +"string=" +new String(b, offset, 3));
+
 		int len = Integer.parseInt(new String(b, offset, 3));
+
+		System.out.println ("DEBUG len=" +len);
 		c.setValue (new String (b, offset+3, len));
 		return len + 3;
 	}

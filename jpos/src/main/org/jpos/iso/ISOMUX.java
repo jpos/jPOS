@@ -24,6 +24,7 @@ public class ISOMUX implements Runnable {
 	private Thread rx;
 	private Vector txQueue;
  	private Hashtable rxQueue;
+	private int traceNumberField = 11;
  
 	public static final int CONNECT      = 0;
 	public static final int TX           = 1;
@@ -52,6 +53,13 @@ public class ISOMUX implements Runnable {
 		requestListener = null;
 		rx = new Thread (new Receiver(this));
 	}
+	/**
+	 * allow changes to default value 11 (used in ANSI X9.2 messages)
+	 * @param traceNumberField new traceNumberField
+	 */  
+	public void setTraceNumberField(int traceNumberField) {
+		this.traceNumberField = traceNumberField;
+	}
    /**
     * set an ISORequestListener for unmatched messages
     * @param rl a request listener object
@@ -75,7 +83,7 @@ public class ISOMUX implements Runnable {
 	 */
 	protected String getKey(ISOMsg m) throws ISOException {
 		return (m.hasField(41)?ISOUtil.zeropad((String)m.getValue(41),8) : "")
-				+ ISOUtil.zeropad((String) m.getValue(11),6);
+				+ ISOUtil.zeropad((String) m.getValue(traceNumberField),6);
 	}
 
 	/**

@@ -20,7 +20,7 @@ public class ISOMsg extends ISOComponent implements Cloneable {
 	protected Hashtable fields;
 	protected int maxField;
 	protected ISOPackager packager;
-	protected boolean dirty;
+	protected boolean dirty, maxFieldDirty;
 	protected int direction;
 	protected byte[] header;
 	public static int INCOMING = 1;
@@ -30,6 +30,7 @@ public class ISOMsg extends ISOComponent implements Cloneable {
 		fields = new Hashtable ();
 		maxField = -1;
 		dirty = true;
+		maxFieldDirty=true;
 		direction = 0;
 		header = null;
 	}
@@ -79,7 +80,17 @@ public class ISOMsg extends ISOComponent implements Cloneable {
 	 * @return the max field number associated with this message
 	 */
 	public int getMaxField() {
+		if (maxFieldDirty)
+			recalcMaxField();
 		return maxField;
+	}
+	private void recalcMaxField() {
+		ISOComponent c;
+		maxField = 0;
+		for (int i=1; i<=128; i++)
+			if ((c = (ISOComponent) fields.get (new Integer (i))) != null)
+				maxField = i;
+		maxFieldDirty = false;
 	}
 	/**
 	 * @param p - a peer packager
@@ -115,6 +126,7 @@ public class ISOMsg extends ISOComponent implements Cloneable {
 		if (c == null)
 			throw new ISOException ("Field " +fldno +" not found. unset failed");
 		dirty = true;
+		maxFieldDirty = true;
 	}
 	/**
 	 * In order to interchange <b>Composites</b> and <b>Leafs</b> we use
@@ -134,23 +146,12 @@ public class ISOMsg extends ISOComponent implements Cloneable {
 		if (!dirty)
 			return;
 
-		int offset = packager.getFieldOffset();
 		ISOComponent c;
         BitSet bmap = new BitSet (getMaxField() > 64 ? 128 : 64);
-		for (int i=0; i<=maxField; i++)
+		for (int i=1; i<=maxField; i++)
 			if ((c = (ISOComponent) fields.get (new Integer (i))) != null)
-				if (i > 1)
-					bmap.set (i + offset);
-
-		// ANSI X.92 (offset != 0) do not support fields beyond #64
-		if (offset == 0) {
-			if (getMaxField() > 64)
-				bmap.set(0);
-			else
-				bmap.clear(0);
-		}
-
-		set (new ISOBitMap (1, bmap));
+				bmap.set (i);
+		set (new ISOBitMap (-1, bmap));
 		dirty = false;
 	}
 	/**

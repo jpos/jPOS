@@ -30,21 +30,38 @@ public abstract class ISOBasePackager implements ISOPackager {
 		Hashtable fields = m.getChildren();
 		int len = 0;
 
-        for (int i=0; i<=m.getMaxField(); i++) {
+		// MTI (field 0)
+        c = (ISOComponent) fields.get (new Integer (0));
+		byte[] b = fld[0].pack(c);
+		len += b.length;
+		v.addElement (b);
+
+		// BITMAP (-1 in HashTable)
+        c = (ISOComponent) fields.get (new Integer (-1));
+		b = getBitMapfieldPackager().pack(c);
+		len += b.length;
+		v.addElement (b);
+
+		// if Field 1 is a BitMap then we are packing an
+		// ISO-8583 message so next field is fld#2.
+		// else we are packing an ANSI X9.2 message, first field is 1
+        for (int i=(fld[1] instanceof ISOBitMapPackager) ? 2 : 1;
+			i<=m.getMaxField(); i++)
+		{
             if ((c = (ISOComponent) fields.get (new Integer (i))) != null) {
-				byte[] b = fld[i].pack(c);
+				b = fld[i].pack(c);
 				len += b.length;
                 v.addElement (b);
             }
 		}
         for (int i=0; i<v.size(); i++) {
-			byte[] b = (byte[]) v.elementAt(i);
+			b = (byte[]) v.elementAt(i);
             String s = ISOUtil.hexString (b);
         }
 		int k = 0;
 		byte[] d = new byte[len];
         for (int i=0; i<v.size(); i++) {
-			byte[] b = (byte[]) v.elementAt(i);
+			b = (byte[]) v.elementAt(i);
 			for (int j=0; j<b.length; j++)
 				d[k++] = b[j];
 		}
@@ -61,18 +78,22 @@ public abstract class ISOBasePackager implements ISOPackager {
 		if (m.getComposite() != m) 
 			throw new ISOException ("Can't call packager on non Composite");
 
-		int consumed, offset;
+		int consumed;
 		ISOField mti     = new ISOField (0);
-		ISOBitMap bitmap = new ISOBitMap (1);
+		ISOBitMap bitmap = new ISOBitMap (-1);
 		consumed  = fld[0].unpack(mti, b, 0);
-		consumed += fld[1].unpack(bitmap, b, consumed);
+		consumed += getBitMapfieldPackager().unpack(bitmap, b, consumed);
 		BitSet bmap = (BitSet) bitmap.getValue();
 		m.set (mti);
 		m.set (bitmap);
-		offset = getFieldOffset();
 
-		for (int i=2; i<=bmap.size(); i++) {
-			if (bmap.get(i + offset)) {
+		// if Field 1 is a BitMap then we are packing an
+		// ISO-8583 message so next field is fld#2.
+		// else we are packing an ANSI X9.2 message, first field is 1
+        for (int i=(fld[1] instanceof ISOBitMapPackager) ? 2 : 1;
+			i<=bmap.size(); i++)
+		{
+			if (bmap.get(i)) {
 				ISOComponent c = fld[i].createComponent(i);
 				consumed += fld[i].unpack (c, b, consumed);
 				if (c instanceof ISOField) {
@@ -106,11 +127,15 @@ public abstract class ISOBasePackager implements ISOPackager {
 		return fld[fldNumber].getDescription();
 	}
 	/**
-	 * ANSI X9.2 treats field number 2 (PAN) as number 1 on bitmap
-	 * @return appropiate offset for BitSet.set
-	 * @see ISOMsg#recalcBitMap
+	 * @return 128 for ISO-8583, should return 64 for ANSI X9.2
 	 */
-	 public int getFieldOffset() {
-	 	return 0;
+	protected int getMaxValidField() {
+		return 128;
+	}
+	/**
+	 * @return suitable ISOFieldPackager for Bitmap
+	 */
+	protected ISOFieldPackager getBitMapfieldPackager() {
+		return fld[1];
 	}
 }
