@@ -16,7 +16,7 @@ import org.jpos.util.Logger;
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
  * @author <a href="mailto:taherkordy@dpi2.dpi.net.ir">Alireza Taherkordi</a>
  * @version $Revision$ $Date$
- * @jmx:mbean description="Test QBean"
+ * @jmx:mbean description="Test QBean" extends="org.jpos.q2.QBeanSupportMBean"
  */
 public class QTest extends QBeanSupport implements Runnable, QTestMBean {
     long tickInterval = 1000;
