@@ -91,6 +91,7 @@
     <copyfile src="${source}/etc/LICENSE" dest="${classes}/LICENSE" />
     <copyfile src="${source}/etc/README" dest="${classes}/README" />
     <copyfile src="${source}/etc/CHANGELOG" dest="${classes}/CHANGELOG" />
+    <copyfile src="${source}/etc/jpos.cfg" dest="${classes}/jpos.cfg" />
 
     <jar jarfile="${dist}/${archive}.jar" 
          basedir="${classes}"
