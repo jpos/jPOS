@@ -22,10 +22,5 @@ JAVA=$JAVA_HOME/bin/java
 CLASSPATH=build/classes:lib/xerces_1_2_3.jar:lib/xalan_2_0_0.jar:lib/log4j.jar 
 CLASSPATH=`echo ext/*.jar | tr ' ' ':'`:$CLASSPATH
 
-if [ -z $1 ] ; then
-  echo "Usage: console <params>";
-  exit;
-fi
-
 $JAVA -cp $CLASSPATH org.jpos.security.jceadapter.Console $*
 
