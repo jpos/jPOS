@@ -79,21 +79,8 @@ public class LoggerAdaptor extends QBeanSupport {
         logger.removeAllListeners ();
     }
     protected void destroyService() {
-        //
-        // we don't remove Logger, because other components might have
-        // references to it, we just remove its listeners, so later it
-        // can be re-created.
-        //
-        logger.removeAllListeners ();
-        
-        // Should you want to really destroy it, this would be the
-        // required code:
-        // 
-        // logger.destroy ();
-        // NameRegistrar.unregister ("logger." + getName());
-        // 
+        logger.destroy ();
     }
-
     private void addListener (Element e) 
         throws Q2ConfigurationException
     {
