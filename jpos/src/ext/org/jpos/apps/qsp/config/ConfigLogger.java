@@ -30,4 +30,18 @@ public class ConfigLogger implements QSPConfigurator {
 	// +" seems to have "+listeners.getLength() + " listeners."
 	// );
     }
+   /**
+    * @return Logger for this node or null
+    */
+    public static Logger getLogger (Node node) {
+	Node n = node.getAttributes().getNamedItem ("logger");
+	return (n != null) ? Logger.getLogger (n.getNodeValue()) : null;
+    }
+   /**
+    * @return realm for this node (or "")
+    */
+    public static String getRealm(Node node) {
+	Node n = node.getAttributes().getNamedItem ("realm");
+	return (n != null) ? n.getNodeValue() : "";
+    }
 }

@@ -80,6 +80,8 @@ public class QSP implements ErrorHandler, LogProducer {
 	    qsp.setConfig (parser.getDocument());
 	    qsp.configure ("logger");
 	    qsp.configure ("log-listener");
+	    qsp.configure ("channel");
+	    qsp.configure ("mux");
 	} catch (IOException e) {
 	    Logger.log (new LogEvent (qsp, "error", e));
 	    System.out.println (e);

@@ -3,16 +3,17 @@
 <qsp-config>
  <logger name="qsp">
     <log-listener name="simple" type="simple" />
-    <!--log-listener name="rotate" type="rotate" 
-         filename="/tmp/qsp.log" window="86400" copies="10" />
-    / -->
+    <!-- log-listener name="rotate" type="rotate" 
+         filename="/tmp/qsp.log" window="86400" copies="10" / -->
  </logger>
 
- <channel name="acme" 
-          class="org.jpos.iso.ISO87BChannel" 
+ <mux name="acme.mux" logger="qsp" realm="acme">
+  <channel name="acme.channel" 
+          class="org.jpos.iso.ASCIIChannel" 
           packager="org.jpos.iso.ISO87BPackager"
-          host="server.acme.com" port="8000"
-          logger="qsp" realm="acme.channel">
- </channel>
-
+          host="localhost" port="8000"
+          logger="qsp" realm="acme"
+	  connect="no" >
+  </channel>
+ </mux>
 </qsp-config>

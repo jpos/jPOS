@@ -1,0 +1,92 @@
+package org.jpos.apps.qsp.config;
+
+import java.io.IOException;
+import java.util.Properties;
+import org.jpos.iso.ISOChannel;
+import org.jpos.iso.ISOFactory;
+import org.jpos.iso.ISOException;
+import org.jpos.util.Logger;
+import org.jpos.util.LogEvent;
+import org.jpos.util.NameRegistrar;
+import org.jpos.core.SimpleConfiguration;
+
+import org.jpos.apps.qsp.QSP;
+import org.jpos.apps.qsp.QSPConfigurator;
+import org.jpos.apps.qsp.QSPConfigurator.ConfigurationException;
+
+import org.w3c.dom.Node;
+
+/**
+ * Configure logger
+ * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
+ * @version $Revision$ $Date$
+ */
+public class ConfigChannel implements QSPConfigurator {
+    public void config (QSP qsp, Node node) throws ConfigurationException
+    {
+	ISOChannel channel;
+	LogEvent evt = new LogEvent (qsp, "config-channel");
+	String name = node.getAttributes().getNamedItem ("name").getNodeValue();
+	try {
+	    channel = ISOChannel.getChannel (name);
+	} catch (NameRegistrar.NotFoundException e) {
+	    channel = createChannel (name, node, evt);
+	    channel.setName (name);
+	}
+	Logger.log (evt);
+    }
+
+    private ISOChannel createChannel (String name, Node node, LogEvent evt)
+	throws ConfigurationException
+    {
+	Properties props = new Properties();
+
+	addProperty (name + ".channel",  "class",    props, node, evt);
+	addProperty (name + ".packager", "packager", props, node, evt);
+	addProperty (name + ".header",   "header",   props, node, evt);
+	addProperty (name + ".host",     "host",     props, node, evt);
+	addProperty (name + ".port",     "port",     props, node, evt);
+
+	SimpleConfiguration cfg = new SimpleConfiguration (props);
+	Logger logger = ConfigLogger.getLogger (node);
+	String realm  = ConfigLogger.getRealm  (node);
+
+	try {
+	    ISOChannel channel = 
+		ISOFactory.newChannel (cfg, name, logger, realm);
+	    boolean connect = 
+		node.getAttributes() 
+		    .getNamedItem("connect").getNodeValue().equals("yes");
+	    if (connect) {
+		try {
+		    channel.connect();
+		} catch (IOException e) {
+		    evt.addMessage (e);
+		}
+	    }
+	    return channel;
+	} catch (ISOException e) {
+	    throw new ConfigurationException ("error creating channel", e);
+	} 
+    }
+
+    private void addProperty (String propertyName, String nodeName,
+			 Properties props, Node node, LogEvent evt)
+    {
+	Node n = node.getAttributes().getNamedItem (nodeName);
+	if (n != null) {
+	    String value = n.getNodeValue();
+	    props.put (propertyName, value);
+	    evt.addMessage (propertyName+"="+value);
+	}
+    }
+
+    public static ISOChannel getChannel (Node node) {
+	Node n = node.getAttributes().getNamedItem ("name");
+	if (n != null)
+	    try {
+		return ISOChannel.getChannel (n.getNodeValue());
+	    } catch (NameRegistrar.NotFoundException e) { }
+	return null;
+    }
+}
