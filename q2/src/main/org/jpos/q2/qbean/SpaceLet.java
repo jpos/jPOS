@@ -98,6 +98,10 @@ public class SpaceLet extends QBeanSupport implements Space {
     }
     public void startService() {
         NameRegistrar.register (uri, this);
+
+        Iterator iter = getPersist().getChildren("run").iterator();
+        while (iter.hasNext ()) 
+            launch ((Element) iter.next ());
     }
     public void stopService() {
         NameRegistrar.unregister (uri);
@@ -216,21 +220,44 @@ public class SpaceLet extends QBeanSupport implements Space {
     private String getScript (Element e) {
         return (e == null) ? null : e.getText();
     }
+    private void launch (Element e) {
+        // final Interpreter bsh = initInterpreter ();
+        final String script = e.getText();
+        final String source = e.getAttributeValue ("source");
+
+        new Thread () {
+            public void run () {
+                try {
+                    eval (initInterpreter(), script, source);
+                } catch (Throwable t) {
+                    getLog().warn (t);
+                }
+            }
+        }.start ();
+    }
     private void initSpace (Element e) throws Q2ConfigurationException {
         if (e == null)
             return;
 
         try {
-            Interpreter bsh = new Interpreter ();
-            bsh.set ("sp", sp);
-            bsh.eval (e.getText ());
+            eval (
+                initInterpreter(), 
+                e.getText(), 
+                e.getAttributeValue ("source")
+            );
         } catch (Throwable t) {
             throw new Q2ConfigurationException (t);
         }
     }
-    private Interpreter initInterpreter (Object key) throws EvalError {
+    private Interpreter initInterpreter () throws EvalError {
         Interpreter bsh = new Interpreter ();
         bsh.set ("sp", sp);
+        bsh.set ("spacelet", this); 
+        bsh.set ("log", getLog());
+        return bsh;
+    }
+    private Interpreter initInterpreter (Object key) throws EvalError {
+        Interpreter bsh = initInterpreter ();
         bsh.set ("key", key);
         return bsh;
     }
