@@ -32,6 +32,12 @@
     </log-listener>
  </logger>
 
+ <sequencer name="test" 
+	    class="org.jpos.core.ReliableSequencer"
+	    logger="qsp" realm="test.sequencer" >
+  <property name="logdir" value="/tmp/test-sequencer" />
+ </sequencer>
+
  <mux name="dummyclient.mux" logger="qsp" realm="dummyclient.mux">
   <channel name="dummyclient.channel" 
           class="org.jpos.iso.channel.ASCIIChannel" 
