@@ -1,6 +1,7 @@
 $Id$
 
 -- 1.4.7 --
+Added TinySpace, org.jpos.space.Request
 CardSelector, added remove(CardBrand) method
 CardBrand, added handBack object
 Added Padder, Interpreter and Prefixer interfaces for easy implementation of field Packagers.
