@@ -95,9 +95,9 @@ public class IFB_AMOUNT extends ISOFieldPackager {
         String d = (new String(b, offset, 1)) 
                     +ISOUtil.bcd2str (b, offset+1, getLength()-1, pad);
         c.setValue(d);
-        return 1 + ((getLength()+1) >> 1);
+        return 1 + ((getLength()) >> 1);
     }
     public int getMaxPackedLength() {
-        return 1 + ((getLength()+1) >> 1);
+        return 1 + ((getLength()) >> 1);
     }
 }
