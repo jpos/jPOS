@@ -78,7 +78,9 @@ public class X92Packager extends ISOBasePackager {
 			new IFA_NUMERIC(	15, "PREAUTHORIZATION"						),
 			new IFA_LLLCHAR(   382, "ADDITIONAL DATA"						),
 			new IFA_BINARY(		 0, "UNUSED"								),
-			new IFA_FLLCHAR(	39, "TRACK II DATA"							)
+			new IFA_FLLCHAR(	39, "TRACK II DATA"							),
+			new IFA_BINARY(		 0, "UNUSED"								),
+			new IFA_BINARY(		 0, "UNUSED"								)
 		};
 	public X92Packager() {
 		super();

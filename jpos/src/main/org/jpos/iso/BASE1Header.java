@@ -39,6 +39,9 @@ public class BASE1Header {
 	public byte[] getBytes() {
 		return header;
 	}
+	public int getHLen() {
+		return (int) (header[0] & 0xFF);
+	}
 	public void setHFormat(int hformat) {
 		header[1] = (byte) hformat;
 	}
@@ -79,4 +82,11 @@ public class BASE1Header {
 		System.arraycopy(header, 5, header, 8, 3);
 		System.arraycopy(source, 0, header, 5, 3);
 	}
+	public boolean isRejected() {
+		return (header[16] & 0x80) == 0x80;
+	}
+	// first bit of fld 13 of header == 1 && len >=26
+	// indica un nuevo header de 22 (Pagina 4-2 Vol-1 VIP System
+	// Technical Reference General Requirements
 };
+

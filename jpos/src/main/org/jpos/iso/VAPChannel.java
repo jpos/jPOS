@@ -72,6 +72,11 @@ public class VAPChannel extends ISOChannel {
 	protected int getHeaderLength() {
 		return BASE1Header.LENGTH;
 	}
+	protected boolean isRejected(byte[] b) {
+		BASE1Header h = new BASE1Header(b);
+		return h.isRejected() || (h.getHLen() != BASE1Header.LENGTH);
+	}
+
 	/**
 	 * sends an ISOMsg over the TCP/IP session<br>
 	 * swap source/destination addresses in BASE1Header if

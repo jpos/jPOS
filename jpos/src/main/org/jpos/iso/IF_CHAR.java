@@ -21,7 +21,10 @@ public class IF_CHAR extends ISOFieldPackager {
 	 * @exception ISOException
 	 */
 	public byte[] pack (ISOComponent c) throws ISOException {
-		return (ISOUtil.strpad ((String) c.getValue(), getLen())).getBytes();
+		String s = (String) c.getValue();
+		if (s.length() > getLen()) 
+			s = s.substring(0, getLen());
+		return (ISOUtil.strpad (s, getLen())).getBytes();
 	}
 	/**
 	 * @param c - the Component to unpack

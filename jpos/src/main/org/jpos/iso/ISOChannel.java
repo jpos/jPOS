@@ -141,7 +141,8 @@ public abstract class ISOChannel extends Observable {
 	protected int getMessageLength() throws IOException, ISOException {
 		return -1;
 	}
-	protected int getHeaderLength() { return 0; }
+	protected int getHeaderLength() 		{ return 0; }
+	protected int getHeaderLength(byte[] b) { return 0; }
 	protected byte[] streamReceive() throws IOException {
 		return new byte[0];
 	}
@@ -167,6 +168,10 @@ public abstract class ISOChannel extends Observable {
 		setChanged();
 		notifyObservers(m);
 	}
+	protected boolean isRejected(byte[] b) {
+		// VAP Header support - see VAPChannel
+		return false;
+	}
 	/**
 	 * Waits and receive an ISOMsg over the TCP/IP session
 	 * @return the Message received
@@ -186,9 +191,10 @@ public abstract class ISOChannel extends Observable {
 			int l;
 			if (hLen > 0) {
 				// ignore message header (TPDU)
-				System.out.println ("Reading frame header "+hLen);
 				header = new byte [hLen];
 				serverIn.readFully(header,0,hLen);
+				if (isRejected(header))
+					throw new ISOException ("Unhandled Rejected Message");
 				len -= hLen;
 			}
 			b = new byte[len];
