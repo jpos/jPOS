@@ -168,7 +168,7 @@ public class X25Channel extends BaseChannel {
      */
     public void setHeader (String header) {
 	setHeader (
-	    ISOUtil.hex2byte (header.getBytes(), 0, header.getBytes().length)
+	    ISOUtil.hex2byte (header.getBytes(), 0, header.getBytes().length / 2)
 	);
     }
     public byte[] getHeader () {
