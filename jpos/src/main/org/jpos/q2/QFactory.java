@@ -132,6 +132,9 @@ public class QFactory {
         configureQBean(mserver,objectName,e);
         if (obj instanceof QBean) 
             mserver.invoke (objectName, "init",  null, null);
+        else 
+            setConfiguration (obj, e);  // handle legacy (QSP v1) Configurables 
+
         return instance;
     }
 
