@@ -78,6 +78,9 @@ public class SimpleLogSource implements LogSource {
     public Logger getLogger() {
 	return logger;
     }
+    public void setRealm (String realm) {
+        this.realm = realm;
+    }
     public void info (String detail) {
         Logger.log (new LogEvent (this, "info", detail));
     }
