@@ -72,7 +72,7 @@ import org.jpos.core.ReConfigurable;
  * @see ISORequestListener
  */
 
-public class ISOMUX implements Runnable, ISOSource, LogSource, 
+public class ISOMUX implements Runnable, ISOSource, LogSource, MUX,
                                ReConfigurable, Loggeable, ISOMUXMBean
 {
     private ISOChannel channel;
@@ -576,5 +576,9 @@ public class ISOMUX implements Runnable, ISOSource, LogSource,
             channel.isConnected() + "\">");
         showCounters (p);
         p.println (indent + "</mux-stats>");
+    }
+    public ISOMsg request (ISOMsg m, long timeout) throws ISOException {
+        ISORequest req = new ISORequest (m);
+        return req.getResponse ((int) timeout);
     }
 }
