@@ -14,8 +14,8 @@
   <property name="deprecation" value="false"/>
   
   <path id="xdoclet.classpath">
-    <pathelement location="${masterlib}/xjavadoc.jar"/>
-    <pathelement location="${masterlib}/xdoclet.jar"/>
+    <pathelement location="${masterlib}/xjavadoc-1.0.2.jar"/>
+    <pathelement location="${masterlib}/xdoclet-1.2.jar"/>
     <pathelement location="${masterlib}/xdoclet-jmx-module-1.2.jar"/>
     <pathelement location="${masterlib}/xdoclet-mx4j-module-1.2.jar"/>
   </path>
