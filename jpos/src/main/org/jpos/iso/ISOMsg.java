@@ -238,6 +238,14 @@ public class ISOMsg extends ISOComponent
 	    dirty = maxFieldDirty = true;
     }
     /**
+     * Unsets several fields at once
+     * @param flds - array of fields to be unset from this ISOMsg
+     */
+    public void unset (int[] flds) {
+        for (int i=0; i<flds.length; i++)
+            unset (flds[i]);
+    }
+    /**
      * In order to interchange <b>Composites</b> and <b>Leafs</b> we use
      * getComposite(). A <b>Composite component</b> returns itself and
      * a Leaf returns null.
