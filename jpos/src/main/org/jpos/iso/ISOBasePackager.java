@@ -194,7 +194,7 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
 	    if (!(fld[0] instanceof ISOMsgFieldPackager) &&
                 !(fld[0] instanceof ISOBitMapPackager))
             {
-		ISOComponent mti     = new ISOField (0);
+                ISOComponent mti = fld[0].createComponent(0);
 		consumed  = fld[0].unpack(mti, b, 0);
 		m.set (mti);
 	    }
