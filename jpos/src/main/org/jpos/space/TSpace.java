@@ -238,11 +238,9 @@ public class TSpace extends TimerTask implements LocalSpace {
         return obj;
     }
     private TSpace getSL() {
-        if (sl == null) {
-            synchronized (this) {
-                if (sl == null)
-                    sl = new TSpace();
-            }
+        synchronized (this) {
+            if (sl == null)
+                sl = new TSpace();
         }
         return sl;
     }
