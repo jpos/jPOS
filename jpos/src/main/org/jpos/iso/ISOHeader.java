@@ -53,7 +53,7 @@ package org.jpos.iso;
  * @author Eoin.Flood@orbiscom.com
  */
 
-public interface ISOHeader
+public interface ISOHeader extends Cloneable
 {
     /**
      * Return this header as byte array.
