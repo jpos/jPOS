@@ -49,6 +49,8 @@
 
 package org.jpos.space;
 
+import java.util.Set;
+
 /**
  * <p><b>Space</b> uses concepts described in the Linda Coordination Language 
  * that eases the implementation of other jPOS components (such as 
@@ -154,5 +156,10 @@ public interface Space {
      * @param listener the SpaceListener
      */
     public void removeListener (Object key, SpaceListener listener);
+
+    /**
+     * return Set containing all keys in Space
+     */
+    public Set getKeySet ();
 }
 
