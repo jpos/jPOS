@@ -137,7 +137,7 @@ public class PersistentEngine implements LogSource, Configurable {
 	Statement s = null;
 	try {
 	    s = conn.createStatement();
-	    if (logger.hasListeners()) 
+	    if (logger != null && logger.hasListeners()) 
 		Logger.log (new LogEvent (this, "sql-update", sql));
 	    s.executeUpdate (sql);
 	} finally {
@@ -167,7 +167,7 @@ public class PersistentEngine implements LogSource, Configurable {
 	ResultSet rs;
 	try {
 	    s = conn.createStatement();
-	    if (logger.hasListeners()) 
+	    if (logger != null && logger.hasListeners()) 
 		Logger.log (new LogEvent (this, "sql-query", sql));
 	    rs = s.executeQuery (sql);
 	} finally {
