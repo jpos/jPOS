@@ -50,6 +50,7 @@ package org.jpos.q2.qbean;
 
 import org.jpos.q2.Q2;
 import org.jpos.q2.QBean;
+import org.jpos.q2.QPersist;
 import org.jdom.Element;
 import org.jpos.util.Log;
 import org.jpos.util.Logger;
@@ -72,12 +73,12 @@ import javax.management.*;
  */
 public class HttpAdaptor
             extends mx4j.adaptor.http.HttpAdaptor
-        implements  HttpAdaptorMBean , QBean
+        implements  HttpAdaptorMBean , QBean, QPersist
 {
     Element persist;
     int state;
     Q2 server;
-    String name, loggerRealm;
+    String name, loggerName;
     boolean modified;
     ObjectName processorName;
     Log log;
@@ -94,12 +95,15 @@ public class HttpAdaptor
     }
     public void setName (String name) {
         this.name = name;
+        setModified (true);
     }
     public String getName () {
         return name;
     }
     public void setLogger (String loggerName) {
+        this.loggerName = loggerName;
         log = new Log (Logger.getLogger (loggerName), getName ());
+        setModified (true);
     }
 
     public String getLogger () 
@@ -112,6 +116,7 @@ public class HttpAdaptor
         if (state != -1)
             return;
         try {
+            setModified (false);
             processorName = new ObjectName("MX4J:name=mx4j.adaptor.http.XSLTProcessor");
             mx4j.adaptor.http.XSLTProcessor processorMBean = new mx4j.adaptor.http.XSLTProcessor();
             getServer().getMBeanServer().registerMBean(processorMBean,processorName);
@@ -180,9 +185,37 @@ public class HttpAdaptor
     public void setPersist (Element persist) {
         this.persist = persist ;
     }
+
+    private Element createAttr (String name, String value, String type) {
+        Element e = new Element ("attr");
+        e.setAttribute ("name", name);
+        if (type != null)
+            e.setAttribute ("type", type);
+        e.setText (value);
+        return e;
+    }
+    private Element createAttr (String name, String value) {
+        return createAttr (name, value, null);
+    }
     public synchronized Element getPersist () {
         setModified (false);
-        return persist;
+        Element e = new Element (persist.getName());
+        Element classPath = persist.getChild ("classpath");
+        if (classPath != null)
+            e.addContent (classPath);
+        e.setAttribute ("class", getClass().getName());
+        if (!e.getName().equals (getName ()))
+            e.setAttribute ("name", getName());
+        if (loggerName != null)
+            e.setAttribute ("logger", loggerName);
+        e.addContent (
+            createAttr ("host", getHost())
+        );
+        e.addContent (
+            createAttr (
+                "port", Integer.toString (getPort()), "java.lang.Integer")
+        );
+        return (persist = e);
     }
     public synchronized void setModified (boolean modified) {
         this.modified = modified;
@@ -192,5 +225,13 @@ public class HttpAdaptor
     }
     protected boolean running () {
         return state == QBean.STARTING || state == QBean.STARTED;
+    }
+    public void setHost (String host) {
+        setModified (true);
+        super.setHost (host);
+    }
+    public void setPort (int port) {
+        setModified (true);
+        super.setPort (port);
     }
 }
