@@ -1,6 +1,8 @@
 $Id$
 
 -- 1.4.7 --
+Made SunJSSESocketFactory configurable. Can specify keystore and clientauth now in Q2.
+SunJSSESocketFactory client authentication added.
 Upgrade to JDom beta 10
 LogEvent now handle JDom Elements
 added org.jpos.transaction.GroupSelector
@@ -72,7 +74,7 @@ Bugfix: MacroFilter problem with nested ISOMsgs
 XMLChannel: Better handling of message boundary
 New BlockingQueue.dequeue (timeout) method
 GenericPackager now support reading config file from XML InputStream 
-             (code contributed by Matías Salvador <mhs@sisa.com.ar>)
+             (code contributed by Mat?as Salvador <mhs@sisa.com.ar>)
 QSP's <mux> tag now support new "class" attribute
              (code contributed by Andres Alcarraz <aalcarraz@cabal.com.uy>)
 
@@ -119,9 +121,9 @@ bugfix: NullPointer in Header serialization (reported by Bharavi).
 ConnectionPool QSP example (added by Rajal)
 bugfix: XMLPackager - problem with inner messages (added unittest)
 bugfix: ProtectedLogListener setting alien wiped fields
-        (Thanks Søren Hilmer <sh@itplus.dk>).
+        (Thanks S?ren Hilmer <sh@itplus.dk>).
 bugfix: ISOBaseHeader.unpack, use factory method for MTI too
-        (Thanks Søren Hilmer <sh@itplus.dk>).
+        (Thanks S?ren Hilmer <sh@itplus.dk>).
 moved BASE1Header from org.jpos.iso to org.jpos.iso.header.
 added org.jpos.iso.ISOHeader and org.jpos.iso.header package .
 VAPChannel now uses org.jpos.iso.header stuff.
