@@ -1,6 +1,7 @@
 $Id$
 
 -- 1.4.1 --
+Sender and MacroFilter added support for specifying timezone in the $date
 Added org.jpos.security package, examples, unit tests
 QSP Sender task is now an MBean
 new ISOMsg.unset (int []) method
