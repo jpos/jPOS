@@ -7,6 +7,9 @@ import org.jpos.util.LogProducer;
 
 /*
  * $Log$
+ * Revision 1.17  2000/03/04 00:37:53  apr
+ * Show fieldNumber on inner message dumps
+ *
  * Revision 1.16  2000/03/01 14:44:45  apr
  * Changed package name to org.jpos
  *
@@ -222,6 +225,8 @@ public class ISOMsg extends ISOComponent implements Cloneable, Loggeable {
 		p.print (" dir=\"OUT\"");
 		break;
 	}
+	if (fieldNumber != -1)
+	    p.print (" fld=\""+fieldNumber +"\"");
 	p.println (">");
 	String newIndent = indent + "  ";
         for (int i=0; i<=maxField; i++)
