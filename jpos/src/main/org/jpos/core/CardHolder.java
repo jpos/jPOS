@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.4  1999/12/11 18:06:45  apr
+ * Added getServiceCode() method
+ *
  * Revision 1.3  1999/11/26 12:16:46  apr
  * CVS devel snapshot
  *
@@ -243,4 +246,12 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
         p.println (indent + "</CardHolder>");
     }
 
+    /**
+     * @return ServiceCode (if available) or a String with three blanks
+     */
+    public String getServiceCode () {
+	return (trailler != null && trailler.length() >= 3) ?
+	    trailler.substring (0, 3) :
+	    "   ";
+    }
 }
