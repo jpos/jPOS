@@ -183,7 +183,7 @@ public class RotateLogListener extends SimpleLogListener
         if (p != null) {
             p.println ("<log realm=\"rotate-log-listener\" at=\""+new Date().toString() +"\">");
             p.println ("   "+msg);
-            p.println ("</log-debug>");
+            p.println ("</log>");
         }
     }
     private void checkSize() {
