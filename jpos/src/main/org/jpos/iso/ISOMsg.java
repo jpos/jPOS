@@ -7,6 +7,9 @@ import org.jpos.util.LogProducer;
 
 /*
  * $Log$
+ * Revision 1.19  2000/03/05 02:16:37  apr
+ * Added XMLPackager
+ *
  * Revision 1.18  2000/03/05 01:23:42  apr
  * Changed XMLdump to lowercase
  * Fixed bug in merge (we were not merging last field in an ISOMsg)
@@ -220,7 +223,7 @@ public class ISOMsg extends ISOComponent implements Cloneable, Loggeable {
      */
     public void dump (PrintStream p, String indent) {
         ISOComponent c;
-	p.print (indent + "<isomsg");
+	p.print (indent + "<" + XMLPackager.ISOMSG_TAG);
 	switch (direction) {
 	    case INCOMING:
 		p.print (" direction=\"incoming\"");
@@ -230,13 +233,13 @@ public class ISOMsg extends ISOComponent implements Cloneable, Loggeable {
 		break;
 	}
 	if (fieldNumber != -1)
-	    p.print (" fieldid=\""+fieldNumber +"\"");
+	    p.print (" "+XMLPackager.ID_ATTR +"=\""+fieldNumber +"\"");
 	p.println (">");
 	String newIndent = indent + "  ";
         for (int i=0; i<=maxField; i++)
             if ((c = (ISOComponent) fields.get (new Integer (i))) != null)
                 c.dump (p, newIndent);
-        p.println (indent + "</isomsg>");
+        p.println (indent + "</" + XMLPackager.ISOMSG_TAG+">");
     }
     /**
      * get the component associated with the given field number
