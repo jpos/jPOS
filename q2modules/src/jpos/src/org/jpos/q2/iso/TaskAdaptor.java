@@ -78,11 +78,7 @@ public class TaskAdaptor extends QBeanSupport {
     }
     protected void startService () throws Exception {
         if (task instanceof Configurable) {
-            Element e = getPersist ();
-            QFactory factory = getServer().getFactory();
-            ((Configurable)task).setConfiguration (
-                factory.getConfiguration (e)
-            );
+            getServer().getFactory().setConfiguration(task, getPersist());
         }
         NameRegistrar.register (getName (), task);
         if (task instanceof Runnable) {
