@@ -253,11 +253,12 @@ public class ISOCurrency
         put("XPF", "953", 0);
         put("YDD", "720", 2);//???
         put("YER", "886", 2);
-        put("YUN", "890", 0);//???
+        put("YUN", "890", 2); // Yugoslav dina
         put("ZAR", "710", 2);
         put("ZMK", "894", 2);
         put("ZRN", "180", 2);
         put("ZWD", "716", 2);
+        put("CSD", "891", 2);
     }
 
     /** 
