@@ -70,6 +70,7 @@ import javax.management.NotCompliantMBeanException;
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
  * @author <a href="mailto:taherkordy@dpi2.dpi.net.ir">Alireza Taherkordi</a>
  * @version $Revision$ $Date$
+ * @jmx:mbean description="Q2 Class Loader"
  */
 public class QClassLoader 
     extends URLClassLoader 
@@ -88,6 +89,10 @@ public class QClassLoader
         this.server     = server;
     }
 
+    /**
+     * @jmx:managed-operation description=""
+     * @jmx:managed-operation-parameter name="url" position="0" description=""
+     */
     public void addURL (String url) throws MalformedURLException {
         addURL (new URL (url));
     }
