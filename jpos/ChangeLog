@@ -1,6 +1,7 @@
 $Id$
 
 -- 1.4.1 --
+Added IFA_LCHAR (contributed by Kris Leite)
 New SubConfiguration class contributed by Andres Alcarraz
 BaseChannel honours header
 Sender and MacroFilter added support for specifying timezone in the $date
