@@ -498,10 +498,36 @@ public class ISOMsg extends ISOComponent
 	    )
 	);
     }
-
+    protected void writeHeader (ObjectOutput out) throws IOException {
+        out.writeByte ('H');
+        out.writeShort (header.length);
+        out.write (header);
+    }
+    protected void readHeader (ObjectInput in) 
+        throws IOException, ClassNotFoundException
+    {
+        byte[] b = new byte[in.readShort()];
+        in.readFully (b);
+        setHeader (b);
+    }
+    protected void writeDirection (ObjectOutput out) throws IOException {
+        out.writeByte ('D');
+        out.writeByte (direction);
+    }
+    protected void readDirection (ObjectInput in) 
+        throws IOException, ClassNotFoundException
+    {
+        direction = (int) in.readByte();
+    }
+ 
     public void writeExternal (ObjectOutput out) throws IOException {
         out.writeByte (0);  // reserved for future expansion (version id)
         out.writeShort (fieldNumber);
+
+        if (header != null) 
+            writeHeader (out);
+        if (direction > 0)
+            writeDirection (out);
 
         for (Enumeration e = fields.elements(); e.hasMoreElements(); ) {
             ISOComponent c = (ISOComponent) e.nextElement();
@@ -531,6 +557,7 @@ public class ISOMsg extends ISOComponent
         ISOComponent c;
         try {
             while ((fieldType = in.readByte()) != 'E') {
+                c = null;
                 switch (fieldType) {
                     case 'F':
                         c = new ISOField ();
@@ -541,11 +568,19 @@ public class ISOMsg extends ISOComponent
                     case 'M':
                         c = new ISOMsg ();
                         break;
+                    case 'H':
+                        readHeader (in);
+                        break;
+                    case 'D':
+                        readDirection (in);
+                        break;
                     default:
                         throw new IOException ("malformed ISOMsg");
                 }
-                ((Externalizable)c).readExternal (in);
-                set (c);
+                if (c != null) {
+                    ((Externalizable)c).readExternal (in);
+                    set (c);
+                }
             }
         }
         catch (ISOException e) {
