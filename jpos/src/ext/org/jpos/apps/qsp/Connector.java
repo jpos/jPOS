@@ -63,8 +63,8 @@ import org.jpos.iso.ISOMUX;
 import org.jpos.iso.ISOField;
 import org.jpos.iso.ISOChannel;
 import org.jpos.iso.ISOSource;
-import org.jpos.iso.ISOFactory;
 import org.jpos.iso.ISORequest;
+import org.jpos.iso.BaseChannel;
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISORequestListener;
 import org.jpos.util.NameRegistrar.NotFoundException;
@@ -126,7 +126,7 @@ public class Connector
 	    if (muxName != null)
 		destMux = ISOMUX.getMUX (muxName);
 	    else if (channelName != null)
-		destChannel = ISOFactory.getChannel (channelName);
+		destChannel = BaseChannel.getChannel (channelName);
 	} catch (NotFoundException e) {
 	    throw new ConfigurationException (e);
 	}
