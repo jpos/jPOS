@@ -7,6 +7,9 @@ import java.sql.SQLException;
 
 /*
  * $Log$
+ * Revision 1.6  2000/08/09 12:10:02  apr
+ * Dump stacktrace on SQLExceptions
+ *
  * Revision 1.5  2000/04/17 11:19:45  apr
  * BugFix: ending tag in addMessage(String,String) -
  * Thanks to Arun Kumar U <bksys@vsnl.com> !
@@ -94,6 +97,7 @@ public class LogEvent extends EventObject {
 				+e.getSQLState() + "</SQLState>");
 		    p.println (newIndent + "<VendorError>"
 				+e.getErrorCode() + "</VendorError>");
+		    ((Throwable)o).printStackTrace (p);
 		}
 		else if (o instanceof Throwable) {
 		    p.println (newIndent + "<exception name=\""
