@@ -60,6 +60,7 @@ import java.io.PrintStream;
  * <p>
  * Cryptographic Service Message (CSM for short): A message for transporting keys or
  * related information used to control a keying relationship.
+ * It is typically the contents of ISOField(123).
  * For more information refer to ANSI X9.17: Financial Institution Key Mangement
  * (Wholesale).
  * </p>
