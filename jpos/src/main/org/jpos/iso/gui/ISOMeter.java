@@ -47,45 +47,6 @@
  * information please see <http://www.jpos.org/>.
  */
 
-/**
- * ISOMsgPanel
- * Swing based GUI to ISOMsg
- * @author apr@cs.com.uy
- * @see org.jpos.iso.ISOMsg
- */
-
-/*
- * $Log$
- * Revision 1.9  2002/09/23 11:38:46  apr
- * Added setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE) to avoid memory leak
- * (patch provided by Kris Leite <kleite@imcsoftware.com> - Thanks!)
- *
- * Revision 1.8  2000/11/02 12:09:18  apr
- * Added license to every source file
- *
- * Revision 1.7  2000/04/22 02:39:49  apr
- * Back to 20 updates per second
- *
- * Revision 1.6  2000/03/01 14:44:45  apr
- * Changed package name to org.jpos
- *
- * Revision 1.5  1999/09/19 21:39:29  apr
- * Changed from Timer based to Thread based timing (again)
- *
- * Revision 1.4  1999/09/06 17:20:20  apr
- * Added Logger SubSystem
- *
- * Revision 1.3  1999/08/06 11:40:11  apr
- * expand -4
- *
- * Revision 1.2  1999/07/27 12:14:16  apr
- * slow down ISOMeter (avoid hogging CPU on slow machines)
- *
- * Revision 1.1  1999/05/18 12:02:59  apr
- * Added GUI package
- *
- */
-
 package org.jpos.iso.gui;
 
 import java.awt.*;
@@ -93,6 +54,13 @@ import java.awt.event.*;
 import javax.swing.*;
 import org.jpos.iso.*;
 
+/**
+ * ISOMsgPanel
+ * Swing based GUI to ISOMsg
+ * @author apr@cs.com.uy
+ * @author Kris Leite <kleite at imcsoftware.com>
+ * @see org.jpos.iso.ISOMsg
+ */
 public class ISOMeter extends JComponent implements Runnable {
     /**
      * @serial
@@ -161,6 +129,18 @@ public class ISOMeter extends JComponent implements Runnable {
      * @serial
      */
     int[] xPoints;
+    /**
+     * counter to keep the scrolling active
+     */
+    int continueScroll;
+    /**
+     * used to determine if to scroll mark to end of graph
+     */
+    boolean scroll = true;
+    /**
+     * Refresh panel in millseconds
+     */
+    int refreshPanel = 50;
     
     public ISOMeter(ISOChannelPanel parent) {
         super();
@@ -200,7 +180,7 @@ public class ISOMeter extends JComponent implements Runnable {
         f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         f.validate();
         f.pack();
-        f.setSize(200,250);
+        f.setSize(width,width+50);
         f.show();
     }
 
@@ -234,10 +214,24 @@ public class ISOMeter extends JComponent implements Runnable {
     public void setValue(int val) {
         int y = mass - (val*height/2000);
         yPoints[width-1] = y;
+        continueScroll = width;
         scroll();
     }
 
+    public void setScroll (boolean scroll) {
+        this.scroll = scroll;
+    }
+    public void setRefresh (int refreshPanel) {
+        if (refreshPanel > 0)
+            this.refreshPanel = refreshPanel;
+    }
     public void setConnected(boolean connected) {
+        if (this.connected != connected)
+            if (!scroll)
+                if (connected)
+                    continueScroll = width;
+                else
+                    continueScroll = 1;
         this.connected = connected;
     }
     public void setPositiveCounter(String s) {
@@ -267,6 +261,8 @@ public class ISOMeter extends JComponent implements Runnable {
     private void scroll() {
         for (int i=0; i<width-1; i++) 
             yPoints[i] = yPoints[i+1];
+        if (continueScroll > 0)
+            continueScroll--;
     }
     public void plot() {
         if (im == null) {
@@ -276,7 +272,8 @@ public class ISOMeter extends JComponent implements Runnable {
         img.setColor (Color.black);
         img.fillRoundRect (0, 0, width, height, 10, 10);
         img.clipRect (0, 0, width, height);
-        scroll();
+        if (continueScroll > 0)
+            scroll();
         plotGrid();
         plotText(positiveText, lastPositive++, 3, mass-3);
         plotText(negativeText, lastNegative++, 3, height-3);
@@ -309,9 +306,10 @@ public class ISOMeter extends JComponent implements Runnable {
     }
     public void run () {
 	for (;;) {
-	    repaint();
+            if (continueScroll > 0)
+                repaint();
 	    try { 
-		Thread.sleep(50);
+		Thread.sleep(refreshPanel);
 	    } catch (InterruptedException e) { }
 	}
     }
