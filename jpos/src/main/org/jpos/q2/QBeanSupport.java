@@ -49,6 +49,8 @@
 package org.jpos.q2;
 
 import org.jdom.Element;
+import org.jpos.util.Log;
+import org.jpos.util.Logger;
 
 /**
  * @author <a href="mailto:taherkordy@dpi2.dpi.net.ir">Alireza Taherkordi</a>
@@ -61,9 +63,11 @@ public class QBeanSupport implements QBean, QPersist, QBeanSupportMBean {
     Q2 server;
     boolean modified;
     String name;
+    protected Log log;
 
     public QBeanSupport () {
         super();
+        log = Log.getLog (Q2.LOGGER_NAME, getClass().getName());
     }
     public void setServer (Q2 server) {
         this.server = server;
@@ -73,6 +77,13 @@ public class QBeanSupport implements QBean, QPersist, QBeanSupportMBean {
     }
     public void setName (String name) {
         this.name = name;
+        log.setRealm (name);
+    }
+    public void setLoggerName (String loggerName) {
+        log = new Log (Logger.getLogger (loggerName), getName ());
+    }
+    public Log getLog () {
+        return log;
     }
     public String getName () {
         return name;

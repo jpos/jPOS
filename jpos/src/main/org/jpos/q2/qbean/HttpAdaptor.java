@@ -51,6 +51,8 @@ package org.jpos.q2.qbean;
 import org.jpos.q2.Q2;
 import org.jpos.q2.QBean;
 import org.jdom.Element;
+import org.jpos.util.Log;
+import org.jpos.util.Logger;
 
 import javax.management.*;
 
@@ -75,9 +77,10 @@ public class HttpAdaptor
     Element persist;
     int state;
     Q2 server;
-    String name;
+    String name, loggerRealm;
     boolean modified;
     ObjectName processorName;
+    Log log;
 
     public void setServer (Q2 server) {
         this.server = server;
@@ -90,6 +93,9 @@ public class HttpAdaptor
     }
     public String getName () {
         return name;
+    }
+    public void setLoggerName (String loggerName) {
+        log = new Log (Logger.getLogger (loggerName), getName ());
     }
     public void init ()
     {

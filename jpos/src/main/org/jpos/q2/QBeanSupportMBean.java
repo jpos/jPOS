@@ -69,5 +69,6 @@ public interface QBeanSupportMBean {
     public Element getPersist ();
     public void setName (String name);
     public String getName ();
+    public void setLoggerName (String name);
 }
 

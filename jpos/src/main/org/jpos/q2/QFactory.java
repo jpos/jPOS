@@ -99,6 +99,8 @@ public class QFactory {
     {
         String clazz  = e.getAttributeValue ("class");
         String name   = e.getAttributeValue ("name");
+        String loggerName = e.getAttributeValue ("logger");
+        String realm      = e.getAttributeValue ("realm");
         if (name == null)
             name = "unknown-" + Long.toString (System.currentTimeMillis ());
 
@@ -110,10 +112,15 @@ public class QFactory {
         ObjectInstance instance = mserver.createMBean (
             clazz, objectName, loaderName
         );
-
+        setAttribute (mserver, objectName, "Name", name);
+        if (loggerName != null) {
+            setAttribute (mserver, objectName, "Realm", 
+                realm == null ? name : realm
+            );
+            setAttribute (mserver, objectName, "LoggerName", loggerName);
+        }
         setAttribute (mserver, objectName, "Server", server);
         setAttribute (mserver, objectName, "Persist", e);
-        setAttribute (mserver, objectName, "Name", name);
         configureQBean(mserver,objectName,e);
         mserver.invoke (objectName, "init",  null, null);
 

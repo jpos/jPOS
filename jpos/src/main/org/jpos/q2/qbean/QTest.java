@@ -18,10 +18,8 @@ import org.jpos.util.Logger;
  * @version $Revision$ $Date$
  */
 public class QTest extends QBeanSupport implements Runnable {
-    Log log;
     public QTest () {
         super();
-        log = Log.getLog (Q2.LOGGER_NAME, "QTest");
         log.info ("constructor");
     }
     public void init () {
@@ -48,6 +46,10 @@ public class QTest extends QBeanSupport implements Runnable {
         log.info ("getPersist");
         return super.getPersist ();
     }
+    public void setName (String name) {
+        log.info ("setName " + name);
+        super.setName (name);
+    }
     public void run () {
         int tickCount = 0;
         while (running ()) {
@@ -64,10 +66,6 @@ public class QTest extends QBeanSupport implements Runnable {
     }
     public void startService() {
         new Thread(this).start();
-    }
-    public void setName (String name) {
-        log.setRealm ("QTest:" + name);
-        super.setName (name);
     }
 }
 
