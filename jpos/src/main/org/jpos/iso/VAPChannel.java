@@ -41,10 +41,16 @@ public class VAPChannel extends ISOChannel {
 		serverOut.write (0);
 	}
 	protected int getMessageLength() throws IOException, ISOException {
+		int l = 0;
 		byte[] b = new byte[4];
-		if (serverIn.read(b,0,4) != 4)
-			throw new ISOException("error reading message length");
-		// return (int) (b[0] << 24) | (b[1] << 16) | (b[2] << 8) | b[3];
-		return ((((int)b[0])&0xFF) << 8) | (((int)b[1])&0xFF);
+		// ignore VAP polls (0 message length)
+		while (l == 0) {
+			serverIn.readFully(b,0,4);
+			l = ((((int)b[0])&0xFF) << 8) | (((int)b[1])&0xFF);
+			if (l == 0)
+				System.out.println ("VAP Poll received");
+		}
+		return l;
 	}
+	protected int getHeaderLength() { return 22; }
 }

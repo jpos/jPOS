@@ -176,6 +176,7 @@ public abstract class ISOChannel extends Observable {
 		byte[] b;
 		int len  = getMessageLength();
 		int hLen = getHeaderLength();
+
 		if (len == -1) 
 			b = streamReceive();
 		else if (len > 10 && len <= 4096) {
@@ -183,14 +184,12 @@ public abstract class ISOChannel extends Observable {
 			if (hLen > 0) {
 				// ignore message header (TPDU)
 				b = new byte [hLen];
-				serverIn.read(b,0,hLen);
+				serverIn.readFully(b,0,hLen);
 				len -= hLen;
 			}
 			b = new byte[len];
-			if ((l=serverIn.read(b,0,len)) != len)
-				throw new ISOException(
-					"receive error. expected " +len + " received " +l);
-			 System.out.println (
+			serverIn.readFully(b,0,len);
+			System.out.println (
 			 	"--[unpack]--\n"+ ISOUtil.hexString(b) + "\n--[end]--");
 		}
 		else
