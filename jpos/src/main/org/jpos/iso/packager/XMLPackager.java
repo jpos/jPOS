@@ -58,31 +58,6 @@ import org.xml.sax.*;
 import org.xml.sax.helpers.*;
 import org.jpos.iso.*;
 
-/*
- * $Log$
- * Revision 1.5  2001/01/29 23:58:30  apr
- * SAX --> SAX2
- *
- * Revision 1.4  2000/11/02 12:09:18  apr
- * Added license to every source file
- *
- * Revision 1.3  2000/05/03 16:15:37  apr
- * Added TYPE_BITMAP (future support of bitmap logging)
- *
- * Revision 1.2  2000/04/16 23:53:11  apr
- * LogProducer renamed to LogSource
- *
- * Revision 1.1  2000/04/16 22:12:33  apr
- * New packagers location org.jpos.iso.packager
- *
- * Revision 1.2  2000/04/08 23:55:12  apr
- * read sax.parser property
- *
- * Revision 1.1  2000/03/05 02:16:37  apr
- * Added XMLPackager
- *
- */
-
 /**
  * packs/unpacks ISOMsgs into XML representation
  *
@@ -223,15 +198,20 @@ public class XMLPackager extends DefaultHandler
 			)
 		    );
 		}
-		else
+		else {
 		    m.set (new ISOField (fieldNumber, value));
+                }
+                
 	    }
 	} catch (ISOException e) {
 	    throw new SAXException 
 		("ISOException unpacking "+fieldNumber);
 	}
     }
-    public void endElement (String name) throws SAXException {
+
+    public void endElement (String ns, String name, String qname) 
+        throws SAXException
+    {
 	if (name.equals (ISOMSG_TAG)) {
 	    ISOMsg m = (ISOMsg) stk.pop();
 	    if (stk.empty())
