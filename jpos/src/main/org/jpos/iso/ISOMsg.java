@@ -379,12 +379,14 @@ public class ISOMsg extends ISOComponent
      */
     public String getString (int fldno) {
         String s = null;
-        try {
-            Object obj = getValue(fldno);
-            if (obj instanceof String)
-                s = (String) obj;
-        } catch (ISOException e) {
-            // ignore ISOException - return null
+        if (hasField (fldno)) {
+            try {
+                Object obj = getValue(fldno);
+                if (obj instanceof String)
+                    s = (String) obj;
+            } catch (ISOException e) {
+                // ignore ISOException - return null
+            }
         }
         return s;
     }
