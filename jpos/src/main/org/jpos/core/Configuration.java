@@ -60,12 +60,12 @@ package org.jpos.core;
  */
 public interface Configuration {
     public String get       (String propertyName);
+    public String[] getAll  (String propertyName);
     /**
      * @param propertyName  ditto
      * @param propertyValue ditto
      * @return all properties with a given name (or a zero length string)
      */
-    public String[] getAll  (String propertyName);
     public String get       (String propertyName, String defaultValue);
     public int getInt       (String propertyName);
     public int getInt       (String propertyName, int defaultValue);
@@ -75,4 +75,10 @@ public interface Configuration {
     public double getDouble (String propertyName, double defaultValue);
     public boolean getBoolean (String propertyName);
     public boolean getBoolean (String propertyName, boolean defaultValue);
+    /**
+     * @param name the Property name
+     * @param value typically a String, but could be a String[] too
+     */
+    public void put (String name, Object value);
 }
+

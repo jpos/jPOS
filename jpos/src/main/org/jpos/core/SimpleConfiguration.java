@@ -138,4 +138,7 @@ public class SimpleConfiguration implements Configuration {
         props.load(new BufferedInputStream(fis));
         fis.close();
     }
+    synchronized public void put (String name, Object value) {
+        props.put (name, value);
+    }
 }
