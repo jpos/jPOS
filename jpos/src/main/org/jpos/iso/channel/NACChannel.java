@@ -124,7 +124,19 @@ public class NACChannel extends BaseChannel {
             (((int)b[1])&0xFF));
     }
     protected void sendMessageHeader(ISOMsg m, int len) throws IOException { 
-        if (TPDU != null) 
+        byte[] h = m.getHeader();
+        if (h != null) {
+            if (m.isIncoming() && h.length == 5) {
+                // swap src/dest address
+                byte[] tmp = new byte[2];
+                System.arraycopy (h,   1, tmp, 0, 2);
+                System.arraycopy (h,   3,   h, 1, 2);
+                System.arraycopy (tmp, 0,   h, 3, 2);
+            }
+        }
+        else
+            h = TPDU;
+        if (h != null) 
             serverOut.write(TPDU);
     }
     protected int getHeaderLength() { 
