@@ -63,7 +63,7 @@ import org.jpos.space.TransientSpace;
  * @jmx:mbean description="JMS Q Receiver"
  *      extends="org.jpos.q2.QBeanSupportMBean"
  */
-public class JMSQReceiver extends QBeanSupport implements JMSQReceiverMBean {
+public class JMSQReceiver extends QBeanSupport implements JMSQReceiverMBean,Runnable {
     private QueueConnectionFactory queueConnectionFactory = null;
     private QueueConnection queueConnection = null;
     private Queue queue = null;
@@ -128,6 +128,9 @@ public class JMSQReceiver extends QBeanSupport implements JMSQReceiverMBean {
         }
     }
 
+    public void run () {
+    }
+
     /**
      * @jmx:managed-attribute description="Queue Connection Factory"
      */
@@ -138,8 +141,10 @@ public class JMSQReceiver extends QBeanSupport implements JMSQReceiverMBean {
     /**
      * @jmx:managed-attribute description="Queue Connection Factory"
      */
-    public void setConnectionFactory (String connectionFactory) {
+    public synchronized void setConnectionFactory (String connectionFactory) {
         this.connectionFactory = connectionFactory;
+        setAttr (getAttrs(), "connectionFactory", connectionFactory);
+        setModified (true);
     }
 
     /**
@@ -152,33 +157,39 @@ public class JMSQReceiver extends QBeanSupport implements JMSQReceiverMBean {
     /**
      * @jmx:managed-attribute description="Queue Name"
      */
-    public void setQueueName (String queueName) {
+    public synchronized void setQueueName (String queueName) {
         this.queueName = queueName;
+        setAttr (getAttrs(), "queueName", queueName);
+        setModified (true);
     }
 
     /**
-     * @jmx:managed-attribute description="Username"
+     * @jmx:managed-attribute description="JMS Username"
      */
     public String getUsername () {
         return username;
     }
 
     /**
-     * @jmx:managed-attribute description="Username"
+     * @jmx:managed-attribute description="JMS Username"
      */
-    public void setUsername (String username) {
+    public synchronized void setUsername (String username) {
         this.username = username;
+        setAttr (getAttrs(), "username", username);
+        setModified (true);
     }
 
     /**
-     * @jmx:managed-attribute description="Password"
+     * @jmx:managed-attribute description="JMS Password"
      */
-    public void setPassword (String password) {
+    public synchronized void setPassword (String password) {
         this.password = password;
+        setAttr (getAttrs(), "password", password);
+        setModified (true);
     }
 
     /**
-     * @jmx:managed-attribute description="Password"
+     * @jmx:managed-attribute description="JMS Password"
      */
     public String getPassword () {
         return password;
@@ -194,15 +205,19 @@ public class JMSQReceiver extends QBeanSupport implements JMSQReceiverMBean {
     /**
      * @jmx:managed-attribute description="Out Space"
      */
-    public void setSpace (String spaceName) {
+    public synchronized void setSpace (String spaceName) {
         this.spaceName = spaceName;
+        setAttr (getAttrs(), "space", spaceName);
+        setModified (true);
     }
 
     /**
      * @jmx:managed-attribute description="Space Key"
      */
-    public void setSpaceKey (String spaceKey) {
+    public synchronized void setSpaceKey (String spaceKey) {
         this.spaceKey = spaceKey;
+        setAttr (getAttrs(), "spaceKey", spaceKey);
+        setModified (true);
     }
 
     /**
