@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.EOFException;
 import java.util.Vector;
 import java.util.Iterator;
+import java.util.Observer;
+import java.util.Observable;
 import java.util.Collection;
 import java.net.ServerSocket;
 import org.jpos.util.LogSource;
@@ -21,7 +23,9 @@ import org.jpos.core.ConfigurationException;
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
  * @version $Revision$ $Date$
  */
-public class ISOServer implements LogSource, Runnable {
+public class ISOServer extends Observable 
+    implements LogSource, Runnable, Observer
+{
     int port;
     Class clientSideChannelClass;
     ISOPackager clientPackager;
@@ -119,6 +123,8 @@ public class ISOServer implements LogSource, Runnable {
 			    ((LogSource)channel) .
 				setLogger (getLogger(), getRealm()+".channel");
 			}
+			if (channel instanceof Observable)
+			    ((Observable)channel).addObserver (this);
 			channel.accept (serverSocket);
 			pool.execute (new Session(channel));
 		    } catch (IOException e) {
@@ -187,6 +193,10 @@ public class ISOServer implements LogSource, Runnable {
     }
     public Logger getLogger() {
 	return logger;
+    }
+    public void update(Observable o, Object arg) {
+	setChanged ();
+	notifyObservers (arg);
     }
 }
 
