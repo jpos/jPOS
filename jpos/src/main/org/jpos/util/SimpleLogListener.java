@@ -3,12 +3,18 @@ package org.jpos.util;
 import java.io.*;
 import java.util.*;
 
+/**
+ * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
+ * @version $Revision$ $Date$
+ * @see Configurable
+ * @since jPOS 1.2
+ */
 public class SimpleLogListener implements LogListener {
     PrintStream p;
 
     public SimpleLogListener () {
 	super();
-	p = null;
+	p = System.out;
     }
     public SimpleLogListener (PrintStream p) {
 	super();
