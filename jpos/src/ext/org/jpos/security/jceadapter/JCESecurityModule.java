@@ -439,6 +439,16 @@ public class JCESecurityModule extends BaseSMAdapter {
                 }
                 ;
                 break;
+            case FORMAT03: 
+                {
+                    if(pin.length() < 4 || pin.length() > 12) 
+                        throw new SMException("Unsupported PIN Length: " + 
+                                pin.length());
+                    pinBlock = ISOUtil.hex2byte (
+                        pin + "FFFFFFFFFFFFFFFF".substring(pin.length(),16)
+                    );
+                }
+                break;
             default:
                 throw  new SMException("Unsupported PIN format: " + pinBlockFormat);
         }
@@ -482,6 +492,26 @@ public class JCESecurityModule extends BaseSMAdapter {
                     while (--i >= 0)
                         if (pad.charAt(i) != 'F')
                             throw new SMException("PIN Block Error");
+                }
+                break;
+            case FORMAT03: 
+                {
+                    String block1 = ISOUtil.hexString(pinBlock);
+                    int len = block1.indexOf('F');
+                    if(len == -1) len = 12;
+                    int i = block1.length();
+                    pin = block1.substring(0, len);
+
+                    while(--i >= len) 
+                        if(block1.charAt(i) != 'F') 
+                            throw new SMException("PIN Block Error");
+                    while(--i >= 0) 
+                        if(pin.charAt(i) >= 'A') 
+                            throw new SMException("PIN Block Error");
+
+                    if(pin.length() < 4 || pin.length() > 12) 
+                        throw new SMException("Unsupported PIN Length: " + 
+                                pin.length());
                 }
                 break;
             default:
