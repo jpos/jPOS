@@ -65,8 +65,11 @@
 	  packager-logger="qsp" 
 	  packager-realm="packager"
           type="client" logger="qsp" realm="dummyclient.channel"
-          socket-factory="org.jpos.iso.SunJSSESocketFactory"
 	  connect="no" >
+
+   <!--  add 
+         socket-factory="org.jpos.iso.SunJSSESocketFactory"
+         to test SSL stuff -->
 
    <property name="host" value="localhost" />
    <property name="port" value="8000" />
