@@ -20,6 +20,7 @@ import org.w3c.dom.NamedNodeMap;
  * Configure filter
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
  * @version $Revision$ $Date$
+ * @see org.jpos.iso.ISOFilter
  */
 public class ConfigFilter implements QSPConfigurator {
     public void config (QSP qsp, Node node) throws ConfigurationException
