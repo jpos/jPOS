@@ -70,6 +70,7 @@ import org.jpos.util.Logger;
 import org.jpos.util.LogEvent;
 import org.jpos.util.LogSource;
 import org.jpos.util.NameRegistrar;
+import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
 
 /**
@@ -78,6 +79,8 @@ import org.jpos.core.ConfigurationException;
  * @see <a href="http://www.cebik.com/qsig.html">QSP</a>
  */
 public class QSP implements ErrorHandler, LogSource, Runnable {
+    public static final String NAMEREGISTRAR_PREFIX = "qsp.";
+    public static final String DEFAULT_NAME = "default";
     Document config;
     Logger logger;
     String realm;
@@ -87,6 +90,7 @@ public class QSP implements ErrorHandler, LogSource, Runnable {
     long monitorConfigInterval = 60 * 1000;
     Collection reconfigurables;
     DOMParser parser;
+    Configuration cfg;
 
     public static String[] SUPPORTED_TAGS = 
 	{ "logger",
@@ -201,6 +205,16 @@ public class QSP implements ErrorHandler, LogSource, Runnable {
             }
         }
     }
+    public void setConfiguration (Configuration cfg) {
+        this.cfg = cfg;
+    }
+    public Configuration getConfiguration () {
+        return cfg;
+    }
+    public String get (String propName) {
+        return
+            (cfg != null) ? cfg.get (propName) : null;
+    }
     public void run () {
         while (monitorConfigFile ()) {
             try {
@@ -221,6 +235,17 @@ public class QSP implements ErrorHandler, LogSource, Runnable {
         Logger.log (new LogEvent (this, "shutdown"));
         System.exit (0);
     }
+    public static QSP getInstance (String name) 
+        throws NameRegistrar.NotFoundException
+    {
+        return (QSP) NameRegistrar.get (NAMEREGISTRAR_PREFIX + name);
+    }
+    public static QSP getInstance () 
+        throws NameRegistrar.NotFoundException
+    {
+        return getInstance (DEFAULT_NAME);
+    }
+
     /**
      * Launches QSP
      * @param configFile XML based QSP config file

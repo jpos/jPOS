@@ -3,10 +3,12 @@
 
 <!ELEMENT qsp-config (logger*,mux*,task*,daily-task*,server*,
                       control-panel*,sequencer*,card-agent*,
-		      persistent-engine*, connection-pool*, dir-poll*)*>
+		      persistent-engine*, connection-pool*, dir-poll*,
+                      property*)*>
 <!ATTLIST qsp-config logger IDREF #IMPLIED>
 <!ATTLIST qsp-config realm  CDATA #IMPLIED>
 <!ATTLIST qsp-config reload CDATA #IMPLIED>
+<!ATTLIST qsp-config name   CDATA #IMPLIED>
 
 <!-- logger -->
 <!ELEMENT logger (log-listener*)>
