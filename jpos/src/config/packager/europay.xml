@@ -11,7 +11,7 @@
       class="org.jpos.iso.IFA_NUMERIC"/>
   <isofield
       id="1"
-      length="8"
+      length="16"
       name="BIT MAP"
       class="org.jpos.iso.IFB_BITMAP"/>
   <isofield
