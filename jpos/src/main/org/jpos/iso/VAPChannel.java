@@ -20,19 +20,24 @@ public class VAPChannel extends ISOChannel {
 	 * @param host	server TCP Address
 	 * @param port  server port number
 	 * @param p     an ISOPackager (should be ISO87BPackager)
+	 * @param hlen  the header len
 	 * @see ISO87BPackager
 	 */
-	public VAPChannel (String host, int port, ISOPackager p) {
+	private int headerLen = 0;
+	public VAPChannel (String host, int port, ISOPackager p, int hLen) {
 		super(host, port, p);
+		this.headerLen = hLen;
 	}
 	/**
 	 * Construct server ISOChannel
 	 * @param p     an ISOPackager (should be ISO87BPackager)
+	 * @param hlen  the header len
 	 * @exception IOException
 	 * @see ISO87BPackager
 	 */
-	public VAPChannel (ISOPackager p) throws IOException {
+	public VAPChannel (ISOPackager p, int hLen) throws IOException {
 		super(p);
+		this.headerLen = hLen;
 	}
 	protected void sendMessageLength(int len) throws IOException {
 		serverOut.write (len >> 8);
@@ -52,5 +57,5 @@ public class VAPChannel extends ISOChannel {
 		}
 		return l;
 	}
-	protected int getHeaderLength() { return 22; }
+	protected int getHeaderLength() { return headerLen; }
 }
