@@ -32,6 +32,7 @@
 <!ATTLIST channel packager-config CDATA #IMPLIED>
 <!ATTLIST channel packager-logger CDATA #IMPLIED>
 <!ATTLIST channel packager-realm  CDATA #IMPLIED>
+<!ATTLIST channel socket-factory  CDATA #IMPLIED>
 
 <!-- filter -->
 <!ELEMENT filter (property)*>
