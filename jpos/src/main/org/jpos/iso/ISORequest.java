@@ -5,6 +5,9 @@ import java.util.*;
 
 /*
  * $Log$
+ * Revision 1.8  1999/10/10 15:52:29  apr
+ * Added ISORequest.isTransmitted() support
+ *
  * Revision 1.7  1999/10/07 16:21:24  apr
  * Bugfix provided by georgem@tvinet.com to prevent race condition on
  * getResponse()
@@ -26,7 +29,7 @@ import java.util.*;
  */
 public class ISORequest implements LogProducer, Loggeable {
     private ISOMsg request, response;
-    private long requestTime, responseTime;
+    private long requestTime, txTime, responseTime;
     private boolean expired;
     private Logger logger = null;
     private String realm = null;
@@ -39,6 +42,7 @@ public class ISORequest implements LogProducer, Loggeable {
         request = m;
         Date d = new Date();
         requestTime = d.getTime();
+	txTime = 0;
         expired = false;
     }
     /**
@@ -69,6 +73,19 @@ public class ISORequest implements LogProducer, Loggeable {
     public ISOMsg getRequest() {
         return request;
     }
+    /**
+     * MUX calls setTransmitted when chances are really good
+     */
+    public void setTransmitted () {
+	txTime = System.currentTimeMillis();
+    }
+    /**
+     * @return true if this request was actually sent thru channel
+     */
+    public boolean isTransmitted() {
+	return txTime != 0;
+    }
+	
     /**
      * wait for a response to arrive. 
      * ISOMUX will notify this object when the response message is ready.

@@ -22,6 +22,9 @@ import java.util.*;
 
 /*
  * $Log$
+ * Revision 1.23  1999/10/10 15:52:29  apr
+ * Added ISORequest.isTransmitted() support
+ *
  * Revision 1.22  1999/09/30 22:52:54  apr
  * terminate() now receives an optional param with timeout
  * Added isTerminating() member function
@@ -228,6 +231,7 @@ public class ISOMUX implements Runnable, LogProducer {
 		else {
 		    m = r.getRequest();
 		    rxQueue.put (getKey(m), r);
+		    r.setTransmitted ();
 		}
 	    } else if (o instanceof ISOMsg) {
 		m = (ISOMsg) o;
