@@ -19,6 +19,7 @@
     <property name="deprecation" value="false" />
     <property name="debug" value="off" />
     <property name="archive" value="${project}-${version}" />
+    <property name="qsp-archive" value="qsp-${version}" />
 
     <!-- External propietary modules -->
     <property name="mod-uruguay"  value="${source}/mod-uruguay" />
@@ -39,6 +40,7 @@
     <echo message="  examples Build examples" />
     <echo message="  ext-examples Build extended examples (requires ext)" />
     <echo message="  jar      Generates ${archive}.jar" />
+    <echo message="  qsp      Generates ${qsp-archive}.jar" />
     <echo message="  tarball  Generates distro tarball" />
     <echo message=
       "  extdoc  Create javadoc documentation for main+ext modules" />
@@ -94,6 +96,22 @@
     <copyfile src="${source}/etc/jpos.cfg" dest="${classes}/jpos.cfg" />
 
     <jar jarfile="${dist}/${archive}.jar" 
+         basedir="${classes}"
+         manifest="${classes}/MANIFEST.MF" 
+	 includes="LICENSE,README,CHANGELOG,org/**" />
+  </target>
+
+  <target name="qsp" depends="main">
+    <delete file="${dist}/${qsp-archive}.jar" />
+    <copyfile src="${source}/etc/MANIFEST-QSP.MF" 
+              dest="${classes}/MANIFEST.MF" />
+    <replace file="${classes}/MANIFEST.MF" 
+             token="$$VERSION$$" value="${version}"/>
+    <copyfile src="${source}/etc/LICENSE" dest="${classes}/LICENSE" />
+    <copyfile src="${source}/etc/README" dest="${classes}/README" />
+    <copyfile src="${source}/etc/CHANGELOG" dest="${classes}/CHANGELOG" />
+
+    <jar jarfile="${dist}/${qsp-archive}.jar" 
          basedir="${classes}"
          manifest="${classes}/MANIFEST.MF" 
 	 includes="LICENSE,README,CHANGELOG,org/**" />
