@@ -130,10 +130,10 @@ public class BASE1Header extends BaseHeader {
         System.arraycopy(d, 0, header, 8, 3);
     }
     public String getSource() {
-	return ISOUtil.bcd2str (this.header, 8, 3, false);
+	return ISOUtil.bcd2str (this.header, 8, 6, false);
     }
     public String getDestination() {
-	return ISOUtil.bcd2str (this.header, 5, 3, false);
+	return ISOUtil.bcd2str (this.header, 5, 6, false);
     }
     public void swapDirection() {
 	if (header != null && header.length >= LENGTH) {
