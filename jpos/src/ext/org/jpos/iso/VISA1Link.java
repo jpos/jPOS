@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.3  1999/12/14 21:56:54  apr
+ * VISA1 links seems to work better when LRC is calculated correctly :blush:
+ *
  * Revision 1.2  1999/11/25 17:01:09  apr
  * Added getModem() method
  *
@@ -112,7 +115,7 @@ public class VISA1Link implements LogProducer, Runnable
     }
 
     private byte calcLRC (byte[] b) {
-	byte chk = STX;
+	byte chk = ETX;
 	for(int i=0; i<b.length; i++)
 	    chk ^= b[i];
 	return chk;
