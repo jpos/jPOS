@@ -146,7 +146,7 @@ public class ConfigTask implements QSPReConfigurator {
     private void configureTask (Configurable task, Node node, LogEvent evt)
 	throws ConfigurationException
     {
-        String [] attributeNames = {  "name", "connection-pool" };
+        String [] attributeNames = { "name", "connection-pool", "thread-pool" };
         Properties props = ConfigUtil.addAttributes (
             node, attributeNames, null, evt
         );
