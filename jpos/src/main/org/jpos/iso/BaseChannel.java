@@ -248,6 +248,24 @@ public abstract class BaseChannel extends Observable
 	Logger.log (new LogEvent (this, "usable", new Boolean (b)));
         usable = b;
     }
+   /**
+    * allow subclasses to override default packager
+    * on outgoing messages
+    * @param m outgoing ISOMsg
+    * @return ISOPackager
+    */
+    protected ISOPackager getDynamicPackager (ISOMsg m) {
+	return packager;
+    }
+   /**
+    * allow subclasses to override default packager
+    * on outgoing messages
+    * @param image incoming message image
+    * @return ISOPackager
+    */
+    protected ISOPackager getDynamicPackager (byte[] image) {
+	return packager;
+    }
     protected void sendMessageLength(int len) throws IOException { }
     protected void sendMessageHeader(ISOMsg m, int len) throws IOException { }
     protected void sendMessageTrailler(ISOMsg m, int len) throws IOException { }
@@ -277,7 +295,7 @@ public abstract class BaseChannel extends Observable
 	    m.setDirection(ISOMsg.OUTGOING);
 	    m = applyOutgoingFilters (m, evt);
 	    m.setDirection(ISOMsg.OUTGOING); // filter may have drop this info
-	    m.setPackager (packager);
+	    m.setPackager (getDynamicPackager(m));
 	    byte[] b = m.pack();
 	    synchronized (serverOut) {
 		sendMessageLength(b.length + getHeaderLength());
@@ -347,7 +365,7 @@ public abstract class BaseChannel extends Observable
 		    throw new ISOException(
 			"receive length " +len + " seems extrange");
 	    }
-	    m.setPackager (packager);
+	    m.setPackager (getDynamicPackager(b));
 	    if (b.length > 0)  // Ignore NULL messages
 		m.unpack (b);
 
