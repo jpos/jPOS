@@ -9,7 +9,9 @@ import java.util.StringTokenizer;
 import java.util.Vector;
 import org.jpos.iso.ISOException;
 import org.jpos.core.Configuration;
+import org.jpos.core.Configurable;
 import org.jpos.core.ReConfigurable;
+import org.jpos.core.ConfigurationException;
 
 /**
  * DirPoll operates on a set of directories
@@ -42,6 +44,7 @@ public class DirPoll extends SimpleLogSource
     private String basePath;
     private ThreadPool pool;
     private Processor processor;
+    private Configuration cfg;
 
     //------------------------------------ Constructor/setters/getters, etc.
     /**
@@ -52,7 +55,8 @@ public class DirPoll extends SimpleLogSource
         prio = new Vector();
         setPollInterval(1000);
 	setPath (".");
-	pool = new ThreadPool (1,10);
+	pool = null;
+	cfg = null;
     }
     public synchronized void setPath(String base) {
         this.basePath = base;
@@ -75,24 +79,41 @@ public class DirPoll extends SimpleLogSource
 	this.processor = processor;
     }
     /**
-     * Recognized properties:
-     * <ul>
-     *  <li>basepath
-     *  <li>poll
-     *  <li>priority (i.e ".A .B .C")
-     * </ul>
+     * DirPool is not really Configurable, it uses QSPConfig instead
+     * but anyway it receives Configuration and ReConfiguration requests
+     * and pass along them to the underlying processor.
      * @param cfg Configuration object 
      */
-    public void setConfiguration (Configuration cfg) {
-	setPath (cfg.get ("basepath"));
-	setPollInterval (cfg.getLong ("poll"));
-	StringTokenizer st = new StringTokenizer (cfg.get ("priority"));
+    public void setConfiguration (Configuration cfg) 
+	throws ConfigurationException
+    {
+	if (processor != null) {
+	    if ( (processor instanceof ReConfigurable) ||
+	         ((cfg == null) && (processor instanceof Configurable)) )
+	    {
+		((Configurable) processor).setConfiguration (cfg);
+	    }
+	}
+	this.cfg = cfg;
+    }
+    /**
+     * @param priorities blank separated list of extensions
+     */
+    public void setPriorities (String priorities) {
+	StringTokenizer st = new StringTokenizer (priorities);
 	Vector v = new Vector();
-	while (st.hasMoreTokens())
-	    v.addElement (st.nextToken());
+	while (st.hasMoreTokens()) {
+	    String ext = st.nextToken();
+	    v.addElement (ext.equals ("*") ? "" : ext);
+	}
+	if (v.size() == 0)
+	    v.addElement ("");
 	synchronized (this) {
 	    prio = v;
 	}
+    }
+    public synchronized void setThreadPool (ThreadPool pool) {
+	this.pool = pool;
     }
     //--------------------------------------- FilenameFilter implementation
     public boolean accept(File dir, String name) {
@@ -116,14 +137,17 @@ public class DirPoll extends SimpleLogSource
 		    f = scan();
 		}
                 if (f != null) {
-		    pool.execute (new ProcessorRunner (f));
+		    getPool().execute (new ProcessorRunner (f));
                     Thread.yield(); // be nice
                 }
                 else
                     Thread.sleep(pollInterval);
             } catch (InterruptedException e) { 
-	    } catch (IOException e) {
+	    } catch (Throwable e) {
 		Logger.log (new LogEvent (this, "dirpoll", e));
+		try {
+		    Thread.sleep(pollInterval * 10);	// anti hog
+		} catch (InterruptedException ex) { }
 	    }
         }   
     }
@@ -171,10 +195,16 @@ public class DirPoll extends SimpleLogSource
             currentPriority < prio.size(); currentPriority++)
         {
             String files[] = requestDir.list(this);
-            if (files.length > 0)
+            if (files != null && files.length > 0)
                 return new File(requestDir, files[0]);
         }
         return null;
+    }
+
+    private synchronized ThreadPool getPool() {
+	if (pool == null)
+	    pool = new ThreadPool (1, 10);
+	return pool;
     }
 
     // ------------------------------------------------ inner interfaces
