@@ -257,7 +257,7 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
                 for (int i=1; i<64; i++) {
                     try {
                         if (bmap == null || bmap.get(i)) {
-                            ISOComponent c = fld[i+128].createComponent(i);
+                            ISOComponent c = fld[i+128].createComponent(i+128);
                             consumed += fld[i+128].unpack (c, b, consumed);
                             if (logger != null) {
                                 evt.addMessage ("<unpack fld=\"" + i+128
