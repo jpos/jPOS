@@ -117,6 +117,7 @@
       <srcfiles dir="${main}" includes="org/jpos/q2/qbean/QTest.java" />
       <srcfiles dir="${main}" includes="org/jpos/q2/qbean/QMUX.java" />
       <srcfiles dir="${main}" includes="org/jpos/q2/qbean/ChannelAdaptor.java" />
+      <srcfiles dir="${main}" includes="org/jpos/q2/qbean/NameRegistrarInspector.java" />
       <mapper type="glob" from="*.java" to="*MBean.java"/>
     </uptodate>
   </target>
@@ -132,6 +133,7 @@
         <include name="org/jpos/q2/qbean/QTest.java" />
         <include name="org/jpos/q2/qbean/QMUX.java" />
         <include name="org/jpos/q2/qbean/ChannelAdaptor.java" />
+        <include name="org/jpos/q2/qbean/NameRegistrarInspector.java" />
       </fileset>
       <mbeaninterface/>
       <mx4jdescription/>
@@ -177,6 +179,12 @@
     <available property="jep.present"
            classpathref="ext.classpath"
               classname="org.nfunk.jep.JEP" />
+    <available property="jms.present"
+        classpathref="ext.classpath"
+            classname="javax.jms.Queue" />
+    <available property="egatejms.present"
+        classpathref="ext.classpath"
+            classname="com.seebeyond.jms.client.STCQueueConnectionFactory" />
   </target>
 
   <target name="ext.check.jsse" depends="ext.check" if="jnet.present">
@@ -216,6 +224,24 @@
         <classpath refid="ext.classpath" />
     </javac>
   </target>
+
+    <target name="ext.jms" depends="ext.check" if="jms.present">
+        <javac srcdir="${ext}" destdir="${classes}"
+            includes="org/jpos/jms/*.java org/jpos/jms/qbean/*"
+            debug="${debug}"
+            deprecation="${deprecation}" >
+            <classpath refid="ext.classpath" />
+        </javac>
+    </target>
+
+    <target name="ext.egatejms" depends="ext.check, ext.jms" if="egatejms.present">
+        <javac srcdir="${ext}" destdir="${classes}"
+            includes="org/jpos/jms/egate/*.java org/jpos/jms/egate/qbean/*"
+            debug="${debug}"
+            deprecation="${deprecation}" >
+            <classpath refid="ext.classpath" />
+        </javac>
+    </target>
 
   <target name="ext.comm" depends="ext.check" if="comm.present">
     <javac srcdir="${ext}" destdir="${classes}"
@@ -280,7 +306,8 @@
   </target>
 
   <target name="ext" 
-       depends="ext.sun-util, ext.comm, ext.jsse, ext.jce, ext.mail, ext.opencard, ext.jetty, ext.jceadapter, ext.jep, qsp-support">
+       depends="ext.sun-util, ext.comm, ext.jsse, ext.jce, ext.mail, ext.opencard, ext.jetty, ext.jceadapter, ext.jep, 
+       ext.jms, ext.egatejms, qsp-support">
     <javac srcdir="${ext}" destdir="${classes}"
         includes="**/apps/qsp/**"
         debug="${debug}"
