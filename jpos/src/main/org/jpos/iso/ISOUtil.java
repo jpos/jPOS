@@ -718,7 +718,6 @@ public class ISOUtil {
     public static String zeroUnPad( String s ) {
         return unPadLeft(s, '0');
     }
-
     /**
      * Right unPad with ' '
      * @param s - original string
@@ -761,14 +760,13 @@ public class ISOUtil {
         s = s.trim();
         int fill = 0, end = s.length();
         while ( (fill < end) && (s.charAt(fill) == c) ) fill ++;
-        return ( fill < end ) ? 
-            s.substring( fill, end ) : s.substring( fill-1, end );
+        return ( fill < end )? s.substring( fill, end ): s.substring( fill-1, end );
     }
 
     /**
      * Return true if the string is zero-filled.
      * ( 0 char filled )
-    **/
+     **/
     public static boolean isZero( String s ) {
         int i = 0, len = s.length();
         while ( i < len && ( s.charAt( i ) == '0' ) ){
@@ -787,14 +785,15 @@ public class ISOUtil {
 
     /**
      * Return true if the string is alphanum
-     * {letter digit (.) (_) (-) ( ) }
+     * {letter digit (.) (_) (-) ( ) (?) }
      * <br><br>
-    **/
+     **/
     public static boolean isAlphaNumeric ( String s ) {
         int i = 0, len = s.length();
         while ( i < len && ( Character.isLetterOrDigit( s.charAt( i ) ) ||
-            s.charAt( i ) == ' ' || s.charAt( i ) == '.' ||
-            s.charAt( i ) == '-' || s.charAt( i ) == '_' ) ){
+                             s.charAt( i ) == ' ' || s.charAt( i ) == '.' ||
+                             s.charAt( i ) == '-' || s.charAt( i ) == '_' )
+                             || s.charAt( i ) == '?' ){
             i++;
         }
         return ( i >= len );
@@ -804,7 +803,7 @@ public class ISOUtil {
      * Return true if the string represent a number
      * in the specified radix.
      * <br><br>
-    **/
+     **/
     public static boolean isNumeric ( String s, int radix ) {
         int i = 0, len = s.length();
         while ( i < len && Character.digit( s.charAt( i ), radix ) > -1  ){
