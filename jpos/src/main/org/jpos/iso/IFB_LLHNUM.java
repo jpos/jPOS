@@ -49,10 +49,6 @@
 
 package org.jpos.iso;
 
-import java.io.IOException;
-import java.io.InputStream;
-
-
 /**
  * ISOFieldPackager Binary LL Hex NUM
  * Almost the same as IFB_LLNUM but len is encoded as a binary
@@ -62,61 +58,23 @@ import java.io.InputStream;
  * @version $Id$
  * @see ISOComponent
  */
-public class IFB_LLHNUM extends ISOFieldPackager {
+public class IFB_LLHNUM extends ISOStringFieldPackager {
     public IFB_LLHNUM() {
-        super();
+        super(NullPadder.INSTANCE, BCDInterpreter.RIGHT_PADDED, BinaryPrefixer.B);
     }
     /**
      * @param len - field len
      * @param description symbolic descrption
      */
     public IFB_LLHNUM(int len, String description, boolean pad) {
-        super(len, description);
+        super(len, description, NullPadder.INSTANCE,
+                pad ? BCDInterpreter.LEFT_PADDED : BCDInterpreter.RIGHT_PADDED,
+                BinaryPrefixer.B);
         this.pad = pad;
     }
-    /**
-     * @param c - a component
-     * @return packed component
-     * @exception ISOException
-     */
-    public byte[] pack (ISOComponent c) throws ISOException {
-        int len;
-        String s = (String) c.getValue();
     
-        if ((len=s.length()) > getLength() || len>255)   // paranoia settings
-            throw new ISOException (
-                "invalid len "+len +" packing LLHNUM field "+(Integer) c.getKey()
-            );
-
-        byte[] bcd = ISOUtil.str2bcd (s, pad);
-        byte[] b   = new byte[bcd.length + 1];
-        b[0] = (byte) len;
-        System.arraycopy(bcd, 0, b, 1, bcd.length);
-        return b;
-    }
-
-    /**
-     * @param c - the Component to unpack
-     * @param b - binary image
-     * @param offset - starting offset within the binary image
-     * @return consumed bytes
-     * @exception ISOException
-     */
-    public int unpack (ISOComponent c, byte[] b, int offset)
-        throws ISOException
-    {
-        int len = (int) b[offset] & 0xFF;
-        c.setValue (ISOUtil.bcd2str (b, offset+1, len, pad));
-        return 1 + (++len >> 1);
-    }
-    public void unpack (ISOComponent c, InputStream in) 
-        throws IOException, ISOException
-    {
-        byte[] b = readBytes (in, 1);
-        int len = (int) b[0] & 0xFF;
-        c.setValue (ISOUtil.bcd2str (readBytes (in, (len+1) >> 1), 0, len, pad));
-    }
-    public int getMaxPackedLength() {
-        return 1 + ((getLength()+1) >> 1);
+    public void setPad(boolean pad) {
+        this.pad = pad;
+        setInterpreter(pad ? BCDInterpreter.LEFT_PADDED : BCDInterpreter.RIGHT_PADDED);
     }
 }

@@ -77,7 +77,6 @@ public class IFEB_LLLNUM extends ISOFieldPackager {
      * @exception ISOException
      */
     public byte[] pack(ISOComponent c) throws ISOException {
-        boolean pad = true;     // left zero pad
         boolean odd = false;
         int len;
         String s = (String) c.getValue();
@@ -86,7 +85,7 @@ public class IFEB_LLLNUM extends ISOFieldPackager {
         
         if ((len=s.length()) > getLength() || len>99)   // paranoia settings
             throw new ISOException(
-            "invalid len "+len +" packing LLEBCHAR field "+(Integer) c.getKey());
+            "invalid len "+len +" packing LLEBCHAR field " + c.getKey());
         
         
         //System.out.println("String s = (String) c.getValue(); "+s);
@@ -117,7 +116,6 @@ public class IFEB_LLLNUM extends ISOFieldPackager {
         //System.out.println("bcd2str "+ISOUtil.bcd2str(bcd, 0, bcd.length*2, false) );
         
         byte[] b   = new byte[bcd.length + 3];
-        byte[] l   = ISOUtil.str2bcd(Integer.toString(len), true);
         
         b[0] = EBCDIClength[0];
         b[1] = EBCDIClength[1];
@@ -148,7 +146,7 @@ public class IFEB_LLLNUM extends ISOFieldPackager {
         // odd handling
         byte testByte = b[ (offset+3+len-1) ];
         
-        byte [] b8 = { (byte) testByte, (byte) (testByte | 0xf0)};
+        byte [] b8 = { testByte, (byte) (testByte | 0xf0)};
         
         //System.out.println("test" + ISOUtil.hexString(b8));
         //System.out.println( (((testByte | 0xf0))== 0xff) );
