@@ -229,37 +229,37 @@
       id="37"
       length="12"
       name="RETRIEVAL REFERENCE NUMBER"
-      class="org.jpos.iso.IF_ECHAR"/>
+      class="org.jpos.iso.IFE_CHAR"/>
   <isofield
       id="38"
       length="6"
       name="AUTHORIZATION IDENTIFICATION RESPONSE"
-      class="org.jpos.iso.IF_ECHAR"/>
+      class="org.jpos.iso.IFE_CHAR"/>
   <isofield
       id="39"
       length="2"
       name="RESPONSE CODE"
-      class="org.jpos.iso.IF_ECHAR"/>
+      class="org.jpos.iso.IFE_CHAR"/>
   <isofield
       id="40"
       length="3"
       name="SERVICE RESTRICTION CODE"
-      class="org.jpos.iso.IF_ECHAR"/>
+      class="org.jpos.iso.IFE_CHAR"/>
   <isofield
       id="41"
       length="8"
       name="CARD ACCEPTOR TERMINAL IDENTIFICACION"
-      class="org.jpos.iso.IF_ECHAR"/>
+      class="org.jpos.iso.IFE_CHAR"/>
   <isofield
       id="42"
       length="15"
       name="CARD ACCEPTOR IDENTIFICATION CODE"
-      class="org.jpos.iso.IF_ECHAR"/>
+      class="org.jpos.iso.IFE_CHAR"/>
   <isofield
       id="43"
       length="40"
       name="CARD ACCEPTOR NAME/LOCATION"
-      class="org.jpos.iso.IF_ECHAR"/>
+      class="org.jpos.iso.IFE_CHAR"/>
   <isofield
       id="44"
       length="25"
@@ -274,12 +274,12 @@
       id="46"
       length="99"
       name="ADITIONAL DATA - ISO"
-      class="org.jpos.iso.IFB_LLCHAR"/>
+      class="org.jpos.iso.IFB_LLHCHAR"/>
   <isofield
       id="47"
       length="99"
       name="ADITIONAL DATA - NATIONAL"
-      class="org.jpos.iso.IFB_LLCHAR"/>
+      class="org.jpos.iso.IFB_LLHCHAR"/>
   <isofield
       id="48"
       length="99"
@@ -328,17 +328,17 @@
       id="56"
       length="99"
       name="RESERVED ISO"
-      class="org.jpos.iso.IFB_LLCHAR"/>
+      class="org.jpos.iso.IFB_LLHCHAR"/>
   <isofield
       id="57"
       length="99"
       name="RESERVED NATIONAL"
-      class="org.jpos.iso.IFB_LLCHAR"/>
+      class="org.jpos.iso.IFB_LLHCHAR"/>
   <isofield
       id="58"
       length="99"
       name="RESERVED NATIONAL"
-      class="org.jpos.iso.IFB_LLCHAR"/>
+      class="org.jpos.iso.IFB_LLHCHAR"/>
   <isofield
       id="59"
       length="14"
@@ -529,27 +529,27 @@
       id="91"
       length="1"
       name="FILE UPDATE CODE"
-      class="org.jpos.iso.IF_ECHAR"/>
+      class="org.jpos.iso.IFE_CHAR"/>
   <isofield
       id="92"
       length="2"
       name="FILE SECURITY CODE"
-      class="org.jpos.iso.IF_ECHAR"/>
+      class="org.jpos.iso.IFE_CHAR"/>
   <isofield
       id="93"
       length="5"
       name="RESPONSE INDICATOR"
-      class="org.jpos.iso.IF_ECHAR"/>
+      class="org.jpos.iso.IFE_CHAR"/>
   <isofield
       id="94"
       length="7"
       name="SERVICE INDICATOR"
-      class="org.jpos.iso.IF_ECHAR"/>
+      class="org.jpos.iso.IFE_CHAR"/>
   <isofield
       id="95"
       length="42"
       name="REPLACEMENT AMOUNTS"
-      class="org.jpos.iso.IF_ECHAR"/>
+      class="org.jpos.iso.IFE_CHAR"/>
   <isofield
       id="96"
       length="8"
@@ -565,7 +565,7 @@
       id="98"
       length="25"
       name="PAYEE"
-      class="org.jpos.iso.IF_ECHAR"/>
+      class="org.jpos.iso.IFE_CHAR"/>
   <isofield
       id="99"
       length="11"
@@ -587,82 +587,82 @@
       id="102"
       length="28"
       name="ACCOUNT IDENTIFICATION 1"
-      class="org.jpos.iso.IFB_LLCHAR"/>
+      class="org.jpos.iso.IFB_LLHCHAR"/>
   <isofield
       id="103"
       length="28"
       name="ACCOUNT IDENTIFICATION 2"
-      class="org.jpos.iso.IFB_LLCHAR"/>
+      class="org.jpos.iso.IFB_LLHCHAR"/>
   <isofield
       id="104"
       length="99"
       name="TRANSACTION DESCRIPTION"
-      class="org.jpos.iso.IFB_LLCHAR"/>
+      class="org.jpos.iso.IFB_LLHCHAR"/>
   <isofield
       id="105"
       length="99"
       name="RESERVED ISO USE"
-      class="org.jpos.iso.IFB_LLCHAR"/>
+      class="org.jpos.iso.IFB_LLHCHAR"/>
   <isofield
       id="106"
       length="99"
       name="RESERVED ISO USE"
-      class="org.jpos.iso.IFB_LLCHAR"/>
+      class="org.jpos.iso.IFB_LLHCHAR"/>
   <isofield
       id="107"
       length="99"
       name="RESERVED ISO USE"
-      class="org.jpos.iso.IFB_LLCHAR"/>
+      class="org.jpos.iso.IFB_LLHCHAR"/>
   <isofield
       id="108"
       length="99"
       name="RESERVED ISO USE"
-      class="org.jpos.iso.IFB_LLCHAR"/>
+      class="org.jpos.iso.IFB_LLHCHAR"/>
   <isofield
       id="109"
       length="99"
       name="RESERVED ISO USE"
-      class="org.jpos.iso.IFB_LLCHAR"/>
+      class="org.jpos.iso.IFB_LLHCHAR"/>
   <isofield
       id="110"
       length="99"
       name="RESERVED ISO USE"
-      class="org.jpos.iso.IFB_LLCHAR"/>
+      class="org.jpos.iso.IFB_LLHCHAR"/>
   <isofield
       id="111"
       length="99"
       name="RESERVED ISO USE"
-      class="org.jpos.iso.IFB_LLCHAR"/>
+      class="org.jpos.iso.IFB_LLHCHAR"/>
   <isofield
       id="112"
       length="99"
       name="RESERVED NATIONAL USE"
-      class="org.jpos.iso.IFB_LLCHAR"/>
+      class="org.jpos.iso.IFB_LLHCHAR"/>
   <isofield
       id="113"
       length="99"
       name="RESERVED NATIONAL USE"
-      class="org.jpos.iso.IFB_LLCHAR"/>
+      class="org.jpos.iso.IFB_LLHCHAR"/>
   <isofield
       id="114"
       length="99"
       name="RESERVED NATIONAL USE"
-      class="org.jpos.iso.IFB_LLCHAR"/>
+      class="org.jpos.iso.IFB_LLHCHAR"/>
   <isofield
       id="115"
       length="24"
       name="ADDITIONAL TRACE DATA 1"
-      class="org.jpos.iso.IFB_LLCHAR"/>
+      class="org.jpos.iso.IFB_LLHCHAR"/>
   <isofield
       id="116"
       length="99"
       name="RESERVED NATIONAL USE"
-      class="org.jpos.iso.IFB_LLCHAR"/>
+      class="org.jpos.iso.IFB_LLHCHAR"/>
   <isofield
       id="117"
       length="99"
       name="RESERVED NATIONAL USE"
-      class="org.jpos.iso.IFB_LLCHAR"/>
+      class="org.jpos.iso.IFB_LLHCHAR"/>
   <isofield
       id="118"
       length="99"
@@ -672,7 +672,7 @@
       id="119"
       length="99"
       name="RESERVED NATIONAL USE"
-      class="org.jpos.iso.IFB_LLCHAR"/>
+      class="org.jpos.iso.IFB_LLHCHAR"/>
   <isofield
       id="120"
       length="4"
@@ -683,27 +683,27 @@
       id="121"
       length="11"
       name="ISSUING INSTITUTION IDENT CODE"
-      class="org.jpos.iso.IFB_LLCHAR"/>
+      class="org.jpos.iso.IFB_LLHCHAR"/>
   <isofield
       id="122"
       length="13"
       name="REMAINING OPEN-TO-USE"
-      class="org.jpos.iso.IFB_LLCHAR"/>
+      class="org.jpos.iso.IFB_LLHCHAR"/>
   <isofield
       id="123"
       length="29"
       name="ADDRESS VERIFICATION DATA"
-      class="org.jpos.iso.IFB_LLCHAR"/>
+      class="org.jpos.iso.IFB_LLHECHAR"/>
   <isofield
       id="124"
       length="99"
       name="FREE-FORM TEXT-JAPAN"
-      class="org.jpos.iso.IFB_LLCHAR"/>
+      class="org.jpos.iso.IFB_LLHBINARY"/>
   <isofield
       id="125"
       length="99"
       name="SUPPORTING INFORMATION"
-      class="org.jpos.iso.IFB_LLCHAR"/>
+      class="org.jpos.iso.IFB_LLHCHAR"/>
 
   <isofieldpackager
       id="126"  
@@ -720,27 +720,27 @@
           id="1"
           length="25"
           name="Customer Name"
-          class="org.jpos.iso.IF_ECHAR"/>
+          class="org.jpos.iso.IFE_CHAR"/>
       <isofield
           id="2"
           length="57"
           name="Customer Address"
-          class="org.jpos.iso.IF_ECHAR"/>
+          class="org.jpos.iso.IFE_CHAR"/>
       <isofield
           id="3"
           length="57"
           name="Biller Address"
-          class="org.jpos.iso.IF_ECHAR"/>
+          class="org.jpos.iso.IFE_CHAR"/>
       <isofield
           id="4"
           length="18"
           name="Biller Telephone Number"
-          class="org.jpos.iso.IF_ECHAR"/>
+          class="org.jpos.iso.IFE_CHAR"/>
       <isofield
           id="5"
           length="6"
           name="Process By Date"
-          class="org.jpos.iso.IF_ECHAR"/>
+          class="org.jpos.iso.IFE_CHAR"/>
       <isofield
           id="6"
           length="17"
@@ -769,7 +769,7 @@
           id="10"
           length="6"
           name="CVV2 Request Data"
-          class="org.jpos.iso.IF_ECHAR"/>
+          class="org.jpos.iso.IFE_CHAR"/>
   </isofieldpackager>
 
   <isofieldpackager
@@ -782,7 +782,7 @@
           id="0"
           length="1"
           name="FILE UPDATE COD"
-          class="org.jpos.iso.IF_ECHAR"/>
+          class="org.jpos.iso.IFE_CHAR"/>
       <isofield
           id="1"
           length="19"
@@ -799,12 +799,12 @@
           id="3"
           length="2"
           name="ACTION CODE"
-          class="org.jpos.iso.IF_ECHAR"/>
+          class="org.jpos.iso.IFE_CHAR"/>
       <isofield
           id="4"
           length="9"
           name="REGION CODING"
-          class="org.jpos.iso.IF_ECHAR"/>
+          class="org.jpos.iso.IFE_CHAR"/>
       <isofield
           id="5"
           length="4"
