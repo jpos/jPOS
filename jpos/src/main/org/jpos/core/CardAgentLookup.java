@@ -1,10 +1,8 @@
-/**
- * @author apr@cs.com.uy
- * @version $Id$
- */
-
 /*
  * $Log$
+ * Revision 1.2  1999/09/26 22:31:56  apr
+ * CVS sync
+ *
  * Revision 1.1  1999/09/26 19:54:04  apr
  * jPOS core 0.0.1 - setting up artifacts
  *
@@ -18,8 +16,11 @@ import java.lang.reflect.*;
 
 
 /**
- * CardAgentLookup is a singleton in charge
- * of registering and further locating Agents
+ * @author apr@cs.com.uy
+ * @version $Id$
+ * @since jPOS 1.1
+ *
+ * Singleton in charge of registering and further locating Agents
  * @see CardAgent
  * @see CardTransaction
  */
@@ -34,7 +35,7 @@ public class CardAgentLookup {
 	agents = new ArrayList();
     }
     /**
-     * add an Agent at the end of the list
+     * register an Agent (at the end of the list)
      * @param agent Agent to add
      */
     synchronized public static void add (CardAgent agent) {
@@ -111,7 +112,7 @@ public class CardAgentLookup {
     }
 
     /**
-     * locate an agent of a given its class
+     * locate an agent of a given class
      * @param class 
      * @return given agent
      * @exception CardAgentNotFoundException
@@ -141,35 +142,6 @@ public class CardAgentLookup {
 	    CardAgent a = (CardAgent) i.next();
 	    if (a.canHandle (t)) 
 		return a;
-	}
-	throw new CardAgentNotFoundException ();
-    }
-    synchronized public static CardAgent invoke (CardTransaction t)
-	throws CardAgentNotFoundException
-    {
-	Iterator i = instance.agents.iterator();
-	while (i.hasNext()) {
-	    CardAgent a = (CardAgent) i.next();
-	    try {
-		Class[] param = { CardTransaction.class };
-		Method m = a.getClass().getMethod("pay", param);
-		if (a.canHandle (t)) {
-		    System.out.println ("Trying to invoke ...");
-		    param = new Class[1];
-		    Object[] p = new Object[1];
-		    p[0] = t;
-		    m.invoke (a, p);
-		    return a;
-		}
-	    } catch (NoSuchMethodException e) { 
-		e.printStackTrace();
-	    } catch (SecurityException e) { 
-		e.printStackTrace();
-	    } catch (java.lang.reflect.InvocationTargetException e) {
-		e.printStackTrace();
-	    } catch (java.lang.IllegalAccessException e) {
-		e.printStackTrace();
-	    }
 	}
 	throw new CardAgentNotFoundException ();
     }

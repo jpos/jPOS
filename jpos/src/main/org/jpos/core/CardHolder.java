@@ -1,10 +1,8 @@
-/**
- * @author apr@cs.com.uy
- * @version $Id$
- */
-
 /*
  * $Log$
+ * Revision 1.2  1999/09/26 22:31:57  apr
+ * CVS sync
+ *
  * Revision 1.1  1999/09/26 19:54:05  apr
  * jPOS core 0.0.1 - setting up artifacts
  *
@@ -15,14 +13,33 @@ import java.io.*;
 import uy.com.cs.jpos.iso.ISODate;
 import uy.com.cs.jpos.iso.Loggeable;
 
+/**
+ * @author apr@cs.com.uy
+ * @version $Id$
+ * @since jPOS 1.1
+ *
+ * represents a CardHolder
+ */
 public class CardHolder implements Cloneable, Serializable, Loggeable {
-    public static final char TRACK2_SEPARATOR = '=';
-    public static final int  BINLEN           =  6;
-    public static final int  MINPANLEN        = 10;
+    private static final char TRACK2_SEPARATOR = '=';
+    private static final int  BINLEN           =  6;
+    private static final int  MINPANLEN        = 10;
+    /**
+     * Primary Account Number
+     */
     protected String pan;
+    /**
+     * Expiration date (YYMM)
+     */
     protected String exp;
+    /**
+     * Track2 trailler
+     */
     protected String trailler;
-    protected String securityCode;	// CVC, CVV, Locale ID, wse
+    /**
+     * Optional security code (CVC, CVV, Locale ID, wse)
+     */
+    protected String securityCode;
 
     /**
      * creates an empty CardHolder
@@ -130,6 +147,7 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
     }
 
     /**
+     * Get Bank Issuer Number
      * @return bank issuer number
      */
     public String getBIN () { 
@@ -137,6 +155,7 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
     }
 
     /**
+     * Set Expiration Date
      * @param exp card expiration date
      * @exception InvalidCardException
      */
@@ -149,6 +168,7 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
     }
 
     /**
+     * Get Expiration Date
      * @return card expiration date
      */
     public String getEXP () { 

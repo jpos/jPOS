@@ -1,10 +1,11 @@
 /**
- * @author apr@cs.com.uy
- * @version $Id$
  */
 
 /*
  * $Log$
+ * Revision 1.2  1999/09/26 22:31:58  apr
+ * CVS sync
+ *
  * Revision 1.1  1999/09/26 19:54:06  apr
  * jPOS core 0.0.1 - setting up artifacts
  *
@@ -17,15 +18,20 @@ import java.util.*;
 
 
 /**
- * Application should create a template CardTransaction (possibly
- * by creating an instance of GenericCardTransaction), find a
- * suitable agent and use that agent as a Factory to create a
- * specialized CardTransaction suitable for that agent
- * <br>
+ * @author apr@cs.com.uy
+ * @version $Id$
+ * @since jPOS 1.1
+ *
+ * Application should create a template CardTransaction 
+ * (i.e. an instance of GenericCardTransaction), find a
+ * suitable agent (by means of CardAgentLookup singleton) 
+ * and use that agent factory method <b>promote</b>
+ * in order to create a specialized CardTransaction.
+ * <p>
  * Although a CardTransaction can hold any number of predefined 
  * properties or none at all (that's defined by the agent in use)
- * we define here a few handy constants for well known properties
- * <br>
+ * we define here a few handy constants for well known input/output
+ * properties
  *
  * @see CardAgent
  * @see CardAgentLookup
@@ -33,13 +39,14 @@ import java.util.*;
  */
 public interface CardTransaction {
     /**
-     * a CardHolder Object involved in this CardTransaction
+     * a CardHolder Object 
+     * @see CardHolder
      */
     public static final String CARDHOLDER = "card";
 
     /**
      * Unique Retrieval Reference Number for this transaction
-     * (from the point of view of high level application)
+     * (from high level application point of view)
      */
     public static final String RRN        = "rrn";
 
@@ -89,8 +96,8 @@ public interface CardTransaction {
     public static final String AUT_NUMBER  = "autnumber";
 
     /**
-     * Authorization Message
-     * (short - suitable for POS, usually 18 chars)
+     * Authorization Message<br>
+     * (short - suitable for POS, usually less than 18 chars)
      */
     public static final String AUT_SHORT_MESSAGE = "autmsg";
 
@@ -111,19 +118,18 @@ public interface CardTransaction {
     public boolean isAproved();
 
     /**
-     * Transaction requires operator attention 
+     * Transaction requires operator attention<br>
      * (i.e. having an operator call an authorization centre)
      * but still can evolve to a Completed transaction.<br>
-     * undefined if transaction isCompleted().
      *
-     * @return true if transaction can proceed 
+     * @return true if transaction can proceed (N/A if already completed)
      */
     public boolean canContinue();
 
     /**
      * dump transaction
      * @param p a PrintStream
-     * @param indent how much to indent
+     * @param indent how much to indent output
      */
     public void dump (PrintStream p, String indent);
 }
