@@ -59,6 +59,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import javax.management.Attribute;
 import javax.management.ObjectName;
+import javax.management.ObjectInstance;
 import javax.management.NotCompliantMBeanException;
 import javax.management.MBeanRegistrationException;
 import javax.management.MalformedObjectNameException;
@@ -78,19 +79,23 @@ import org.jdom.output.XMLOutputter;
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
  */
 public class Q2 implements FileFilter {
-    public static final String DEFAULT_DEPLOY_DIR = "deploy";
+    public static final String DEFAULT_DEPLOY_DIR  = "deploy";
+    public static final String JMX_NAME            = "Q2";
     private MBeanServer server;
     private File deployDir;
     private Map dirMap;
+    private QFactory factory;
 
     public Q2 (String dir) {
         super();
         this.deployDir = new File (dir);
-        this.dirMap = new HashMap ();
+        this.dirMap    = new HashMap ();
+        this.factory   = new QFactory ();
     }
 
     public void start () {
-        server = MBeanServerFactory.createMBeanServer("Q2");
+        server = MBeanServerFactory.createMBeanServer (JMX_NAME);
+        deployDir.mkdirs ();
         for (;;) {
             try {
                 scan ();
@@ -106,7 +111,6 @@ public class Q2 implements FileFilter {
     }
 
     private void scan () {
-    //TODO Check for existance of deployment directory
         File file[] = deployDir.listFiles (this);
         for (int i=0; i<file.length; i++) 
             register (file[i]);
@@ -116,11 +120,12 @@ public class Q2 implements FileFilter {
         Iterator iter = dirMap.entrySet().iterator();
         while (iter.hasNext()) {
             Map.Entry entry = (Map.Entry) iter.next();
-            File   f = (File)   entry.getKey ();
-            long deployed = ((Long) entry.getValue ()).longValue ();
+            File   f        = (File)   entry.getKey ();
+            QEntry qentry   = (QEntry) entry.getValue ();
+            long deployed   = qentry.getDeployed ();
             if (deployed == 0) {
-                deploy (f);
-                entry.setValue (new Long (f.lastModified ()));
+                qentry.setInstance (deploy (f));
+                qentry.setDeployed (f.lastModified ());
             } else if (deployed != f.lastModified ()) {
                 undeploy (f);
                 iter.remove ();
@@ -128,19 +133,12 @@ public class Q2 implements FileFilter {
         }
     }
 
-    private ObjectName getObjectName (File f) 
-        throws MalformedObjectNameException,
-               MalformedURLException
-    {
-        return new ObjectName ("q2:url=" + f.toURL());
-    }
-
     private void undeploy (File f) {
+        QEntry qentry = (QEntry) dirMap.get (f);
         try {
-            ObjectName name = getObjectName (f);
-            server.invoke (name, "stop", null, null);
-            server.invoke (name, "destroy", null, null);
-            server.unregisterMBean (name);
+            ObjectName name = qentry.getObjectName ();
+            if (name != null)
+                factory.destroyQBean (this, name);
         } catch (Exception e) {
             e.printStackTrace ();
         }
@@ -148,32 +146,54 @@ public class Q2 implements FileFilter {
 
     private void register (File f) {
         if (dirMap.get (f) == null)
-            dirMap.put (f, new Long (0));
+            dirMap.put (f, new QEntry ());
     }
 
-    private QBean deploy (File f) {
-        QBean qbean = null;
+    private ObjectInstance deploy (File f) {
         try {
             SAXBuilder builder = new SAXBuilder ();
             Document doc = builder.build (f);
-            qbean = deploy (f, doc.getRootElement ());
-            server.registerMBean (qbean, getObjectName (f));
+            return factory.createQBean (this, doc.getRootElement());
         } catch (Exception e) {
             e.printStackTrace ();
         }
-        return qbean;
+        return null;
     }
 
-    private QBean deploy (File f, Element e) throws Exception {
-        return QFactory.createQBean (this, e);
-    }
-    
     public MBeanServer getMBeanServer () {
         return server;
     }
 
     public static void main (String[] args) {
         new Q2 (args.length > 0 ? args[0] : DEFAULT_DEPLOY_DIR).start ();
+    }
+
+    public class QEntry {
+        long deployed;
+        ObjectInstance instance;
+        public QEntry () {
+            super();
+        }
+        public QEntry (long deployed, ObjectInstance instance) {
+            super();
+            this.deployed = deployed;
+            this.instance = instance;
+        }
+        public long getDeployed () {
+            return deployed;
+        }
+        public void setDeployed (long deployed) {
+            this.deployed = deployed;
+        }
+        public void setInstance (ObjectInstance instance) {
+            this.instance = instance;
+        }
+        public ObjectInstance getInstance () {
+            return instance;
+        }
+        public ObjectName getObjectName () {
+            return instance != null ? instance.getObjectName () : null;
+        }
     }
 }
 

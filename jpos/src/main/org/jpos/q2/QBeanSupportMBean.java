@@ -56,10 +56,15 @@ import org.jpos.iso.ISOUtil;
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
  */
 public interface QBeanSupportMBean {
+    public void init ();
     public void start();
     public void stop ();
     public void destroy ();
     public int getState ();
     public boolean isModified ();
+    public void setServer (Q2 server);
+    public Q2 getServer ();
+    public void setConfigElement (Element e);
+    public Element getConfigElement ();
 }
 
