@@ -49,10 +49,15 @@
 package org.jpos.ui.factory;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.*;
+import javax.swing.event.*;
 import javax.swing.border.*;
 import java.util.Iterator;
 import org.jdom.Element;
+import java.util.List;
+import java.util.ArrayList;
 
 import org.jpos.ui.UI;
 import org.jpos.ui.UIFactory;
@@ -64,7 +69,8 @@ import org.jpos.ui.UIFactory;
  * i.e:
  * <pre>
  *  &lt;tabbed-pane font="xxx"&gt;
- *   &lt;pane title="xxx" icon="optional/icon/file.jpg"&gt;
+ *   &lt;pane title="xxx" icon="optional/icon/file.jpg"
+ *            action="yyy" command="zzz"&gt;
  *   ...
  *   ...
  *   &lt;/pane&gt;
@@ -72,12 +78,14 @@ import org.jpos.ui.UIFactory;
  * </pre>
  * @see org.jpos.ui.UIFactory
  */
-public class JTabbedPaneFactory implements UIFactory {
+public class JTabbedPaneFactory implements UIFactory, ChangeListener {
     UI ui;
+    List actions = new ArrayList();
+    JTabbedPane p;
 
     public JComponent create (UI ui, Element e) {
         this.ui    = ui;
-        JTabbedPane p = new JTabbedPane ();
+        p = new JTabbedPane ();
 
         String font = e.getAttributeValue ("font");
         if (font != null) 
@@ -87,6 +95,7 @@ public class JTabbedPaneFactory implements UIFactory {
         while (iter.hasNext()) {
             add (p, (Element) iter.next ());
         }
+        p.addChangeListener(this);
         return p;
     }
 
@@ -97,6 +106,25 @@ public class JTabbedPaneFactory implements UIFactory {
             if (iconFile != null)
                 icon = new ImageIcon (iconFile);
             p.addTab (e.getAttributeValue ("title"), icon, ui.create (e));
+
+            String action[] = new String[2];
+            action[0]=e.getAttributeValue ("command");
+            action[1]=e.getAttributeValue ("action");
+            actions.add(action);
+        }
+    }
+
+    public void stateChanged (ChangeEvent e) {
+        try {
+            String action[] = new String[2];
+            action = (String[]) actions.get(p.getSelectedIndex());
+            Object al = ui.get (action[1]);
+            if (al instanceof ActionListener) {
+                ActionEvent ae = new ActionEvent(this,0,action[0]);
+                ((ActionListener) al).actionPerformed(ae);
+            }
+        } catch (Exception f) {
+            f.printStackTrace();
         }
     }
 }
