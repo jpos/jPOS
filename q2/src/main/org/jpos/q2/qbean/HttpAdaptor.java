@@ -6,9 +6,12 @@
  */
 package org.jpos.q2.qbean;
 
+import java.net.URL;
+
 import org.jpos.q2.Q2;
 import org.jpos.q2.QBean;
 import org.jpos.q2.QBeanSupport;
+import org.jpos.q2.QClassLoader;
 import org.jpos.q2.QPersist;
 import org.jdom.Element;
 import org.jpos.util.Log;
@@ -215,5 +218,19 @@ public class HttpAdaptor
     }
     public void shutdownQ2 () {
         getServer().shutdown ();
+    }
+    /**
+     * Not implemented.
+     * @see org.jpos.q2.QBeanSupportMBean#getLoaderURLS()
+     */
+    public URL[] getLoaderURLS() {
+        return null;
+    }
+    /**
+     * Not implemented.
+     * @see org.jpos.q2.QBeanSupportMBean#getLoader()
+     */
+    public QClassLoader getLoader() {
+        return null;
     }
 }
