@@ -51,27 +51,6 @@ package org.jpos.util;
 
 import java.util.LinkedList;
 
-/*
- * $Id$
- *
- * $Log$
- * Revision 1.5  2000/11/02 12:09:18  apr
- * Added license to every source file
- *
- * Revision 1.4  2000/03/01 14:44:45  apr
- * Changed package name to org.jpos
- *
- * Revision 1.3  2000/02/02 00:07:27  apr
- * sync sync sync
- *
- * Revision 1.2  2000/02/02 00:06:27  apr
- * CVS sync
- *
- * Revision 1.1  2000/01/11 17:16:51  apr
- * Added ThreadPool support
- *
- */
-
 /**
  * implements a blocking queue 
  * @see ThreadPool
@@ -92,6 +71,12 @@ public class BlockingQueue {
 	if (closed)
 	    throw new Closed();
 	queue.addLast (o);
+	notify();
+    }
+    public synchronized void requeue (Object o) throws Closed {
+	if (closed)
+	    throw new Closed();
+	queue.addFirst (o);
 	notify();
     }
 
@@ -120,4 +105,11 @@ public class BlockingQueue {
     public synchronized int pending() {
 	return queue.size();
     }
+    public LinkedList getQueue () {
+        return queue;
+    }
+    public void setQueue (LinkedList queue) {
+        this.queue = queue;
+    }
 }
+
