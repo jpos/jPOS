@@ -50,12 +50,11 @@
 package org.jpos.util;
 
 import java.io.*;
-import java.util.*;
 import org.jpos.core.Configuration;
 import org.jpos.core.ReConfigurable;
 import org.jpos.core.ConfigurationException;
 
-import org.apache.log4j.*;
+import org.apache.log4j.Level;
 import org.apache.log4j.xml.*;
 
 /**
@@ -67,31 +66,28 @@ import org.apache.log4j.xml.*;
  *
  * This class acts as a simple bridge between jPOS's logging system
  * and log4j.
- * The jPOS <code>realm</code> is used as the log4j <code>Category</code>
- * and messages are by default logged with the DEBUG priority. This can
- * be changed by calling <code>setPriority</code>
+ * The jPOS <code>realm</code> is used as the log4j <code>Logger</code>
+ * and messages are by default logged with the DEBUG level. This can
+ * be changed by calling <code>setLevel</code>
  */
 
 public class Log4JListener implements LogListener, ReConfigurable
 {
-    private Priority _priority;
-
+    private Level _level;
     /** 
-     * Create a new Log4JLisener with DEBUG priority.
+     * Create a new Log4JListener with DEBUG level.
      */
     public Log4JListener ()
     {
-    	setPriority (Priority.DEBUG_INT);
+    	setLevel (Level.DEBUG_INT);
     }
 
-    public void setPriority (int priority)
-    {
-    	_priority = Priority.toPriority (priority);
+    public void setLevel (int level) {
+        _level = Level.toLevel (level);
     }
 
-    public void setPriority (String priority)
-    {
-    	_priority = Priority.toPriority (priority);
+    public void setLevel (String level) {
+        _level = Level.toLevel (level);
     }
 
     public void close() 
@@ -112,18 +108,16 @@ public class Log4JListener implements LogListener, ReConfigurable
         DOMConfigurator.configureAndWatch (
             cfg.get ("config"), cfg.getLong ("watch")
         );
-        setPriority (cfg.get ("priority"));
+        setLevel (cfg.get ("priority"));
     }
 
-    public synchronized void log (LogEvent ev) 
-    {
-	Category cat = Category.getInstance(ev.getRealm());
-    	if (cat.isEnabledFor(_priority))
-	{
-	    ByteArrayOutputStream w = new ByteArrayOutputStream();
-	    PrintStream p = new PrintStream (w);
-	    ev.dump (p, "");
-	    cat.log (_priority, w.toString());
-	}
+    public synchronized void log (LogEvent ev) {
+        org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger (ev.getRealm());
+        if (logger.isEnabledFor ( _level)) {
+            ByteArrayOutputStream w = new ByteArrayOutputStream ();
+            PrintStream p = new PrintStream (w);
+            ev.dump (p, "");
+            logger.log (_level, w.toString());
+        }
     }
 }
