@@ -1,6 +1,7 @@
 $Id$
 
 -- 1.4.7 --
+Bugfix: handle ISOException in ISOMUX.doTransmit
 Added ISOBasePackager.setFieldPackager (int, ISOFieldPackager)
 Added JDBMSpace
 Added Space.out (key,value,timeout) method
