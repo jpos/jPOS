@@ -109,7 +109,8 @@ public class Connector
         throws ConfigurationException
     {
         timeout = cfg.getInt ("timeout");
-        pool    = new ThreadPool (1, cfg.getInt ("poolsize", 100));
+        if (pool == null)
+            pool    = new ThreadPool (1, cfg.getInt ("poolsize", 10));
         String muxName     = cfg.get ("destination-mux", null);
         String channelName = cfg.get ("destination-channel", null);
         try {
