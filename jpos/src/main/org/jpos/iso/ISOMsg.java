@@ -227,7 +227,10 @@ public class ISOMsg extends ISOComponent
     * @param value field value
     */
     public void set (int fldno, String value) throws ISOException {
-        set (new ISOField (fldno, value));
+        if (value != null)
+            set (new ISOField (fldno, value));
+        else
+            unset (fldno);
     }
    /**
     * Creates an ISOBinaryField associated with fldno within this ISOMsg
@@ -235,7 +238,10 @@ public class ISOMsg extends ISOComponent
     * @param value field value
     */
     public void set (int fldno, byte[] value) throws ISOException {
-        set (new ISOBinaryField (fldno, value));
+        if (value != null)
+            set (new ISOBinaryField (fldno, value));
+        else
+            unset (fldno);
     }
     /**
      * Unset a field if it exists, otherwise ignore.
