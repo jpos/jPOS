@@ -205,6 +205,12 @@ public class ISOUtil {
             d.append(' ');
         return d.toString();
     }
+	public static String zeropadRight (String s, int len) {
+        StringBuffer d = new StringBuffer(s);
+        while (d.length() < len)
+            d.append('0');
+        return d.toString();
+    }
     /**
      * converts to BCD
      * @param s - the number
@@ -234,7 +240,9 @@ public class ISOUtil {
         int start = (((len & 1) == 1) && padLeft) ? 1 : 0;
         for (int i=start; i < len+start; i++) {
             int shift = ((i & 1) == 1 ? 0 : 4);
-            d.append ((b[offset+(i>>1)] >> shift) & 0x0F);
+            char c = Character.forDigit (
+                ((b[offset+(i>>1)] >> shift) & 0x0F), 16);
+            d.append (Character.toUpperCase (c));
         }
         return d.toString();
     }

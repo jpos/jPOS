@@ -180,6 +180,13 @@ public class ISOMUX implements Runnable {
                         synchronized(parent) {
                             parent.notify();
                         }
+                    } catch (Exception e) {
+                        channel.setUsable(false);
+                        System.out.println("Receiver Exception");
+                        e.printStackTrace();
+                        synchronized(parent) {
+                            parent.notify();
+                        }
                     }
                 }
                 else {

@@ -15,6 +15,9 @@ import java.util.*;
 
 /*
  * $Log$
+ * Revision 1.4  1999/09/04 22:01:32  apr
+ * Minor BugFixes/packager changes
+ *
  * Revision 1.3  1999/08/06 13:54:22  apr
  * Added inner field 127 support
  *
@@ -71,7 +74,7 @@ public class VAPVIPPackager extends ISOBasePackager {
             new IFB_LLCHAR  ( 76, "TRACK 1 DATA"),
             new IFB_LLCHAR  ( 99, "ADITIONAL DATA - ISO"),
             new IFB_LLCHAR  ( 99, "ADITIONAL DATA - NATIONAL"),
-            new IFB_LLHECHAR( 99, "ADITIONAL DATA - PRIVATE"),
+            new IFB_LLHBINARY ( 99, "ADITIONAL DATA - PRIVATE"),
             new IFB_NUMERIC (  3, "CURRENCY CODE, TRANSACTION", true),
             new IFB_NUMERIC (  3, "CURRENCY CODE, SETTLEMENT", true),
             new IFB_NUMERIC (  3, "CURRENCY CODE, CARDHOLDER BILLING", true),
@@ -124,7 +127,7 @@ public class VAPVIPPackager extends ISOBasePackager {
             new IF_ECHAR    ( 25, "PAYEE"),
             new IFB_LLHNUM  ( 11, "SETTLEMENT INSTITUTION IDENT CODE", pad),
             new IFB_LLHNUM  ( 11, "RECEIVING INSTITUTION IDENT CODE", pad),
-            new IFB_LLCHAR  ( 17, "FILE NAME"),
+            new IFB_LLHECHAR( 17, "FILE NAME"),
             new IFB_LLCHAR  ( 28, "ACCOUNT IDENTIFICATION 1"),
             new IFB_LLCHAR  ( 28, "ACCOUNT IDENTIFICATION 2"),
             new IFB_LLCHAR  (100, "TRANSACTION DESCRIPTION"),
@@ -164,8 +167,7 @@ public class VAPVIPPackager extends ISOBasePackager {
             new IFB_NUMERIC (4,   "PURGE DATE", true),
             new IF_ECHAR    (2,   "ACTION CODE"),
             new IF_ECHAR    (9,   "REGION CODING"),
-            new IFB_NUMERIC (2,   "ALGORITHM IDENTIFIER", true),
-            new IFB_NUMERIC (20,  "SECURITY DATA", true)
+            new IFB_NUMERIC (4,   "FILLER", true),
         };
         protected F127Packager () {
             super();
