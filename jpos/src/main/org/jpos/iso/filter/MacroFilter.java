@@ -74,6 +74,8 @@ import org.jpos.core.VolatileSequencer;
 public class MacroFilter implements ISOFilter, ReConfigurable {
     Sequencer seq;
     Configuration cfg;
+    int[] unsetFields  = new int[0];
+    int[] validFields  = new int[0];
     public MacroFilter () {
 	super();
     }
@@ -81,6 +83,10 @@ public class MacroFilter implements ISOFilter, ReConfigurable {
     * @param cfg
     * <ul>
     *  <li>sequencer - a sequencer used to store counters
+    *  <li>unset - space delimited list of fields to be unset 
+    *  <li>valid - space delimited list of valid fields 
+    *  <li>comma delimited list of fields to be unset when applying filter
+    *  <li>xzy - property named "xyz"
     * </ul>
     */
     public void setConfiguration (Configuration cfg) 
@@ -89,6 +95,8 @@ public class MacroFilter implements ISOFilter, ReConfigurable {
         this.cfg = cfg;
         try {
             String seqName  = cfg.get ("sequencer", null);
+            unsetFields     = ISOUtil.toIntArray (cfg.get ("unset", ""));
+            validFields     = ISOUtil.toIntArray (cfg.get ("valid", ""));
             if (seqName != null) {
                 seq = (Sequencer) NameRegistrar.get (
                     "sequencer."+cfg.get("sequencer")
@@ -106,6 +114,10 @@ public class MacroFilter implements ISOFilter, ReConfigurable {
     {
         try {
             applyProps (m);
+            if (validFields.length > 0) 
+                m = (ISOMsg) m.clone (validFields);
+            if (unsetFields.length > 0)
+                m.unset (unsetFields);
         } catch (ISOException e) {
             evt.addMessage (e);
             throw new VetoException (e);
