@@ -47,53 +47,6 @@
  * information please see <http://www.jpos.org/>.
  */
 
-/*
- * $Log$
- * Revision 1.9  2001/05/11 00:04:40  apr
- * Workaround - we don't check for DSR on,
- * isDSR fails on several installations (see RXTX).
- *
- * Revision 1.8  2000/11/02 12:09:17  apr
- * Added license to every source file
- *
- * Revision 1.7  2000/04/26 12:33:09  apr
- * javadoc warnings ...
- *
- * Revision 1.6  2000/04/16 23:53:03  apr
- * LogProducer renamed to LogSource
- *
- * Revision 1.5  2000/03/20 19:24:13  apr
- * Testing ISOGetty ... minor bugfixes/timings in answer()/hangup()/reset()
- *
- * Revision 1.4  2000/03/14 00:01:12  apr
- * isConnected(): remove debugging code
- *
- * Revision 1.3  2000/03/01 14:44:45  apr
- * Changed package name to org.jpos
- *
- * Revision 1.2  2000/01/17 18:26:06  apr
- * Supervise every 100 executions
- *
- * Revision 1.1  2000/01/11 01:25:02  apr
- * moved non ISO-8583 related classes from jpos.iso to jpos.util package
- * (AntiHog LeasedLineModem LogEvent LogListener LogSource
- *  Loggeable Logger Modem RotateLogListener SimpleAntiHog SimpleDialupModem
- *  SimpleLogListener SimpleLogSource SystemMonitor V24)
- *
- * Revision 1.4  1999/12/17 14:58:30  apr
- * RXTX dataavailable workaround
- *
- * Revision 1.3  1999/12/15 16:07:36  apr
- * Protection against negative timeouts on readUntil
- *
- * Revision 1.2  1999/12/15 15:09:07  apr
- * debugging to readUntil ...
- *
- * Revision 1.1  1999/11/24 18:10:49  apr
- * VISA 1 support helper class
- *
- */
-
 package org.jpos.util;
 
 import java.io.*;
@@ -314,6 +267,8 @@ public class V24 implements SerialPortEventListener, LogSource
 		char c = (char) is.read();
 		if (buf.length() < 1000) // paranoia check - ignore garbage
 		    buf.append (c);
+                else 
+                    throw new IOException ("excessive garbage");
 	    }
 	    try {
 		// avoid multiple log events. Wait for possibly
