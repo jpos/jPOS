@@ -4,9 +4,13 @@ import java.io.IOException;
 import java.io.FileInputStream;
 import java.io.BufferedInputStream;
 import java.util.Properties;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.lang.reflect.Method;
+import java.lang.reflect.InvocationTargetException;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
+import org.jpos.iso.ISOUtil;
 import org.jpos.util.LogEvent;
 import org.jpos.core.ConfigurationException;
 
@@ -16,6 +20,7 @@ import org.jpos.core.ConfigurationException;
  * @version $Revision$ $Date$
  */
 public class ConfigUtil {
+    public static String DIGEST_PROPERTY = "digest";
    /**
     * @param propertyName property name
     * @param attributeName attribute name
@@ -23,16 +28,18 @@ public class ConfigUtil {
     * @param node   context node
     * @param evt    optional LogEvent (can be null)
     */
-    public static void addProperty (String propertyName, String attributeName,
-	Properties props, Node node, LogEvent evt)
+    public static String addProperty 
+	(String name, Properties props, Node node, LogEvent evt)
     {
-	Node n = node.getAttributes().getNamedItem (attributeName);
+	String value = null;
+	Node n = node.getAttributes().getNamedItem (name);
 	if (n != null) {
-	    String value = n.getNodeValue();
-	    props.put (propertyName, value);
+	    value = n.getNodeValue();
+	    props.put (name, value);
 	    if (evt != null)
-		evt.addMessage (propertyName+"="+value);
+		evt.addMessage (name+"="+value);
 	}
+	return value;
     }
 
    /**
@@ -42,14 +49,28 @@ public class ConfigUtil {
     * @param evt    optional LogEvent (can be null)
     * @return [possibly created] props
     */
-    public static Properties addAttributesProperties (
-	Node node, String[][] names, Properties props, LogEvent evt)
+    public static Properties addAttributes (
+	Node node, String[] names, Properties props, LogEvent evt)
+	throws ConfigurationException
     {
 	if (props == null)
 	    props = new Properties();
-	for (int i=0; i<names.length; i++)
-	    addProperty (names[i][0], names[i][1], props, node, evt);
 
+	try {
+	    MessageDigest md = MessageDigest.getInstance("MD5");
+	    for (int i=0; i<names.length; i++) {
+		String value = addProperty (names[i], props, node, evt);
+		if (value != null) {
+		    md.update (names[i].getBytes());
+		    md.update (value.getBytes());
+		}
+	    }
+	    byte[] digest = md.digest();
+	    evt.addMessage ("digest " + ISOUtil.hexString (digest));
+	    props.put (DIGEST_PROPERTY, digest);
+	} catch (NoSuchAlgorithmException e) {
+	    throw new ConfigurationException (e);
+	}
 	return props;
     }
 
@@ -145,6 +166,32 @@ public class ConfigUtil {
 		    evt.addMessage (ex);
 		}
 	    }
+	}
+    }
+   /**
+    * Tries to invoke a method (usually a setter) on the given object
+    * silently ignoring if method does not exist
+    * @param obj the object
+    * @param m method to invoke
+    * @param p parameter
+    * @throws ConfigurationException if method happens to throw an exception
+    */
+    public static void invoke (Object obj, String m, Object p) 
+	throws ConfigurationException 
+    {
+	try {
+	    Class[] paramTemplate = { p.getClass() };
+	    Method method = obj.getClass().getMethod(m, paramTemplate);
+	    Object[] param = new Object[1];
+	    param[0] = p;
+	    method.invoke (obj, param);
+	} catch (java.lang.NoSuchMethodException e) { 
+	} catch (java.lang.IllegalAccessException e) {
+	} catch (InvocationTargetException e) {
+	    throw new ConfigurationException (
+		obj.getClass().getName() + "." + m + "("+p.toString()+")" ,
+		((Exception) e.getTargetException())
+	    );
 	}
     }
 }
