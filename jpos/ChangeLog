@@ -1,6 +1,8 @@
 $Id$
 
 -- 1.4.1 --
+Bugfix: AWT blocker activation interrupted (JDK1.4+QSP+GUI)
+Bugfix: jmxri.jar added to jpos.jar's manifest
 
 -- 1.4.0 -- Released Feb 2002 (tagged: v1_4_0)
 
