@@ -3,8 +3,12 @@ package org.jpos.q2.qbean;
 import org.jdom.Element;
 import org.jdom.Comment;
 import org.jpos.iso.ISOUtil;
+import org.jpos.q2.Q2;
 import org.jpos.q2.QBean;
 import org.jpos.q2.QBeanSupport;
+
+import org.jpos.util.Logger;
+import org.jpos.util.SimpleLogSource;
 
 /**
  * Sample QBean
@@ -14,37 +18,40 @@ import org.jpos.q2.QBeanSupport;
  * @version $Revision$ $Date$
  */
 public class QTest extends QBeanSupport implements Runnable {
+    SimpleLogSource log;
     public QTest () {
         super();
-        System.out.println ("QTest: constructor");
+        log = new SimpleLogSource (Logger.getLogger (Q2.LOGGER_NAME), "QTest");
+        log.info ("constructor");
     }
     public void init () {
-        System.out.println ("QTest: init");
+        log.info ("init");
         super.init ();
     }
     public void start() {
-        System.out.println ("QTest: start");
+        log.info ("start");
         super.start ();
     }
     public void stop () {
-        System.out.println ("QTest: stop");
+        log.info ("stop");
         super.stop ();
     }
     public void destroy () {
-        System.out.println ("QTest: destroy");
+        log.info ("destroy");
+        log = null;
     }
     public void setPersist (Element e) {
-        System.out.println ("QTest: setPersist");
+        log.info ("setPersist");
         super.setPersist (e);
     }
     public Element getPersist () {
-        System.out.println ("QTest: getPersist");
+        log.info ("getPersist");
         return super.getPersist ();
     }
     public void run () {
         int tickCount = 0;
         while (running ()) {
-            System.out.println ("QTest: tick " + this.hashCode());
+            log.info ("tick " + tickCount);
             if (tickCount++ % 10 == 0) {
                 super.getPersist ().addContent (
                     new Comment (" tickCount = " + (tickCount-1) + " ")
@@ -57,6 +64,10 @@ public class QTest extends QBeanSupport implements Runnable {
     }
     public void startService() {
         new Thread(this).start();
+    }
+    public void setName (String name) {
+        log.setRealm ("QTest:" + name);
+        super.setName (name);
     }
 }
 
