@@ -52,8 +52,8 @@ package org.jpos.jms;
 import javax.jms.*;
 import org.jpos.q2.QBeanSupport;
 import org.jpos.q2.Q2ConfigurationException;
-import org.jpos.space.LocalSpace;
-import org.jpos.util.NameRegistrar;
+import org.jpos.space.Space;
+import org.jpos.space.TransientSpace;
 
 /**
  * Asynchronous JMS Queue Receiver forwarding data to a LocalSpace.
@@ -77,7 +77,7 @@ public class JMSQReceiver extends QBeanSupport implements JMSQReceiverMBean {
     private String spaceName = null;
     private String spaceKey = null;
 
-    private LocalSpace space = null;
+    private Space space = null;
 
     private class MsgListener implements MessageListener {
         public void onMessage (Message message) {
@@ -97,7 +97,7 @@ public class JMSQReceiver extends QBeanSupport implements JMSQReceiverMBean {
         if ((spaceName == null) || (spaceKey == null))
             throw new Q2ConfigurationException ("Space Name or Key not specified");
         try {
-            space = (LocalSpace) (NameRegistrar.getInstance ()).get (spaceName);
+            space = TransientSpace.getSpace (spaceName);
             queueConnectionFactory = Utilities.getQueueConnectionFactory (connectionFactory);
             if (username == null)
                 queueConnection = Utilities.getQueueConnection (queueConnectionFactory);
