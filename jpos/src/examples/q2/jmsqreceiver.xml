@@ -1,0 +1,8 @@
+<QReceiver class="org.jpos.jms.JMSQReceiver" logger="Q2" name="TestJSMQReceiver">
+    <attr name="connectionFactory">ConnectionFactory</attr>
+    <attr name="queueName">queue/testQueue</attr>
+    <!--attr name="username">xxxx</attr-->
+    <!--attr name="password">xxxx</attr-->
+    <attr name="space">default</attr>
+    <attr name="spaceKey">receivertest</attr>
+</QReceiver>
