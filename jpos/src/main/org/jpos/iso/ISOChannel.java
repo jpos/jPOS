@@ -9,6 +9,7 @@ import org.jpos.util.Logger;
 import org.jpos.util.LogEvent;
 import org.jpos.util.LogProducer;
 import org.jpos.util.NameRegistrar;
+import org.jpos.iso.ISOFilter.VetoException;
 
 /**
  * ISOChannel is an abstract class that provides functionality that
@@ -45,6 +46,7 @@ public abstract class ISOChannel extends Observable implements LogProducer {
     protected DataOutputStream serverOut;
     protected ISOPackager packager;
     protected ServerSocket serverSocket = null;
+    protected Vector incomingFilters, outgoingFilters;
 
     public static final int CONNECT      = 0;
     public static final int TX           = 1;
@@ -61,8 +63,11 @@ public abstract class ISOChannel extends Observable implements LogProducer {
      * ISOChannels (which have different signatures)
      */
     public ISOChannel () {
+	super();
         cnt = new int[SIZEOF_CNT];
 	name = "";
+	incomingFilters = new Vector();
+	outgoingFilters = new Vector();
     }
 
     /**
@@ -76,7 +81,6 @@ public abstract class ISOChannel extends Observable implements LogProducer {
         this();
         setHost(host, port);
         setPackager(p);
-	name = "";
     }
     /**
      * initialize an ISOChannel
@@ -245,13 +249,18 @@ public abstract class ISOChannel extends Observable implements LogProducer {
      * @param m the Message to be sent
      * @exception IOException
      * @exception ISOException
+     * @exception ISOFilter.VetoException;
      */
-    public void send (ISOMsg m) throws IOException, ISOException {
+    public void send (ISOMsg m) 
+	throws IOException, ISOException, VetoException
+    {
 	LogEvent evt = new LogEvent (this, "send");
 	evt.addMessage (m);
 	try {
 	    if (!isConnected())
 		throw new ISOException ("unconnected ISOChannel");
+	    m.setDirection(ISOMsg.OUTGOING);
+	    applyOutgoingFilters (m, evt);
 	    m.setPackager (packager);
 	    byte[] b = m.pack();
 	    sendMessageLength(b.length + getHeaderLength());
@@ -259,10 +268,12 @@ public abstract class ISOChannel extends Observable implements LogProducer {
 	    serverOut.write(b, 0, b.length);
 	    sendMessageTrailler(m, b.length);
 	    serverOut.flush ();
-	    m.setDirection(ISOMsg.OUTGOING);
 	    cnt[TX]++;
 	    setChanged();
 	    notifyObservers(m);
+	} catch (VetoException e) {
+	    evt.addMessage (e);
+	    throw e;
 	} catch (ISOException e) {
 	    evt.addMessage (e);
 	    throw e;
@@ -322,6 +333,7 @@ public abstract class ISOChannel extends Observable implements LogProducer {
 
 	    m.setHeader(header);
 	    m.setDirection(ISOMsg.INCOMING);
+	    applyIncomingFilters (m, evt);
 	    evt.addMessage (m);
 	    cnt[RX]++;
 	    setChanged();
@@ -419,5 +431,68 @@ public abstract class ISOChannel extends Observable implements LogProducer {
      */
     public String getName() {
 	return this.name;
+    }
+    /**
+     * @param filter filter to add
+     * @param direction ISOMsg.INCOMING, ISOMsg.OUTGOING, 0 for both
+     */
+    public void addFilter (ISOFilter filter, int direction) {
+	switch (direction) {
+	    case ISOMsg.INCOMING :
+		incomingFilters.add (filter);
+		break;
+	    case ISOMsg.OUTGOING :
+		outgoingFilters.add (filter);
+		break;
+	    case 0 :
+		incomingFilters.add (filter);
+		outgoingFilters.add (filter);
+		break;
+	}
+    }
+
+    /**
+     * @param filter filter to add (both directions, incoming/outgoing)
+     */
+    public void addFilter (ISOFilter filter) {
+	addFilter (filter, 0);
+    }
+    /**
+     * @param filter filter to remove
+     * @param direction ISOMsg.INCOMING, ISOMsg.OUTGOING, 0 for both
+     */
+    public void removeFilter (ISOFilter filter, int direction) {
+	switch (direction) {
+	    case ISOMsg.INCOMING :
+		incomingFilters.remove (filter);
+		break;
+	    case ISOMsg.OUTGOING :
+		outgoingFilters.remove (filter);
+		break;
+	    case 0 :
+		incomingFilters.remove (filter);
+		outgoingFilters.remove (filter);
+		break;
+	}
+    }
+    /**
+     * @param filter filter to remove (both directions)
+     */
+    public void removeFilter (ISOFilter filter) {
+	removeFilter (filter, 0);
+    }
+    protected void applyOutgoingFilters (ISOMsg m, LogEvent evt) 
+	throws VetoException
+    {
+	Iterator iter  = outgoingFilters.iterator();
+	while (iter.hasNext())
+	    ((ISOFilter) iter.next()).filter (this, m, evt);
+    }
+    protected void applyIncomingFilters (ISOMsg m, LogEvent evt) 
+	throws VetoException
+    {
+	Iterator iter  = incomingFilters.iterator();
+	while (iter.hasNext())
+	    ((ISOFilter) iter.next()).filter (this, m, evt);
     }
 }
