@@ -61,7 +61,7 @@ import org.jpos.ui.UIFactory;
  * Creates a JButton
  * i.e:
  * <pre>
- *  &lt;label id="xx" action="yyy" command="zzz"&gt;MyButton&lt;/button&gt;
+ *  &lt;button id="xx" action="yyy" command="zzz"&gt;MyButton&lt;/button&gt;
  * </pre>
  * @see org.jpos.ui.UIFactory
  */
