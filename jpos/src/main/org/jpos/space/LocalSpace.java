@@ -64,6 +64,16 @@ public interface LocalSpace extends Space {
     public void addListener    (Object key, SpaceListener listener);
 
     /**
+     * add a SpaceListener associated with a given key for a given 
+     * period of time.
+     * <b>Warning: not supported by all space implementations.</b>
+     * @param key Entry's key
+     * @param listener a SpaceListener
+     * @param timeout 
+     */
+    public void addListener (Object key, SpaceListener listener, long timeout);
+
+    /**
      * removes a SpaceListener associated with a given key
      * @param key Entry's key
      * @param listener the SpaceListener
