@@ -1,5 +1,5 @@
 
-<isomsg direction="outgoing">
+<isomsg>
  <field id="0" value="0100"/>
  <field id="2" value="4000000000000000"/>
  <field id="3" value="000000"/>

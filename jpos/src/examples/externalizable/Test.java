@@ -69,6 +69,8 @@ public class Test extends SimpleLogSource {
         ISOMsg m = new ISOMsg ();
         m.setPackager (new XMLPackager());
         m.unpack (b);
+        m.setHeader ("ISO".getBytes());
+        m.setDirection (ISOMsg.INCOMING);
         return m;
     }
     public byte[] getImage (ISOMsg m) throws IOException {
