@@ -1,6 +1,8 @@
 $Id$
 
 -- 1.4.7 --
+LogListener.log now returns a [possibly null] LogEvent
+New package org.jpos.ui
 Added org.jpos.bsh (BSHFilter, BSHRequestListener)
 New method ISOUtil.str2bcd (String s, boolean padLeft, byte fill)
 Bugfix: NPE in ISOServer.checkPermission when used standalone
