@@ -4,7 +4,7 @@
 <!ELEMENT qsp-config (logger*,mux*,object*,task*,daily-task*,server*,
                       control-panel*,sequencer*,card-agent*,channel*,
 		      persistent-engine*, connection-pool*, dir-poll*,
-                      s-m-adapter*, secure-key-store*,
+                      s-m-adapter*, secure-key-store*, thread-pool*,
                       property*)*>
 <!ATTLIST qsp-config logger IDREF #IMPLIED>
 <!ATTLIST qsp-config realm  CDATA #IMPLIED>
@@ -77,6 +77,7 @@
 <!ATTLIST object realm CDATA #IMPLIED>
 <!ATTLIST object name ID #IMPLIED>
 <!ATTLIST object connection-pool IDREF #IMPLIED>
+<!ATTLIST object thread-pool IDREF #IMPLIED>
 
 <!-- task -->
 <!ELEMENT task (property)*>
@@ -85,6 +86,7 @@
 <!ATTLIST task realm CDATA #IMPLIED>
 <!ATTLIST task name ID #IMPLIED>
 <!ATTLIST task connection-pool IDREF #IMPLIED>
+<!ATTLIST task thread-pool IDREF #IMPLIED>
 
 <!-- property -->
 <!ELEMENT property EMPTY>
@@ -142,6 +144,14 @@
 <!ATTLIST connection-pool name ID #REQUIRED>
 <!ATTLIST connection-pool logger IDREF #IMPLIED>
 <!ATTLIST connection-pool realm CDATA #IMPLIED>
+
+<!-- thread-pool -->
+<!ELEMENT thread-pool (property)*>
+<!ATTLIST thread-pool name ID #REQUIRED>
+<!ATTLIST thread-pool logger IDREF #IMPLIED>
+<!ATTLIST thread-pool realm CDATA #IMPLIED>
+<!ATTLIST thread-pool max-size NMTOKEN '100'>
+<!ATTLIST thread-pool initial-size NMTOKEN '1'>
 
 <!-- directory-poll -->
 <!ELEMENT dir-poll (property)*>
