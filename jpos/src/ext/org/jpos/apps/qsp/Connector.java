@@ -121,8 +121,8 @@ public class Connector
     {
 	timeout = cfg.getInt ("timeout");
 	bounce  = cfg.getBoolean ("bounce");
-	String muxName     = cfg.get ("destination-mux");
-	String channelName = cfg.get ("destination-channel");
+	String muxName     = cfg.get ("destination-mux", null);
+	String channelName = cfg.get ("destination-channel", null);
 	try {
 	    if (muxName != null)
 		destMux = ISOMUX.getMUX (muxName);
