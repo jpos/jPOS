@@ -53,6 +53,7 @@ import java.rmi.RemoteException;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.management.ObjectName;
+import org.jpos.util.LogSource;
 import org.jpos.q2.Q2;
 import org.jpos.q2.QFactory;
 import org.jpos.q2.QBeanSupport;
@@ -94,7 +95,13 @@ public class DirPollAdaptor
             factory.getConfiguration (getPersist())
         );
         dirPoll.createDirs ();
-        dirPoll.setProcessor (factory.newInstance (getProcessor()));
+        Object dpp = factory.newInstance (getProcessor());
+        if (dpp instanceof LogSource) {
+            ((LogSource) dpp).setLogger (
+                getLog().getLogger(), getLog().getRealm ()
+            );
+            dirPoll.setProcessor (dpp);
+        }
     }
     protected void startService () throws Exception {
         new Thread (dirPoll).start ();
