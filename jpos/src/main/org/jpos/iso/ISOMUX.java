@@ -196,10 +196,10 @@ public class ISOMUX implements Runnable {
 				cnt[TX_EXPIRED]++;
 			else {
 				ISOMsg m = r.getRequest();
+				rxQueue.put (getKey(m), r);
 				channel.send(m);
 				m.dump (System.out, "---> ");
 				cnt[TX]++;
-				rxQueue.put (getKey(m), r);
 			}
 			txQueue.removeElement(r);
 			txQueue.trimToSize();
