@@ -51,6 +51,9 @@ package org.jpos.q2;
 import org.jdom.Element;
 import org.jpos.util.Log;
 import org.jpos.util.Logger;
+import org.jpos.core.Configurable;
+import org.jpos.core.Configuration;
+import org.jpos.core.ConfigurationException;
 
 import java.util.Iterator;
 import java.lang.reflect.Method;
@@ -64,13 +67,16 @@ import java.beans.PropertyDescriptor;
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
  * @version $Revision$ $Date$
  */
-public class QBeanSupport implements QBean, QPersist, QBeanSupportMBean {
+public class QBeanSupport 
+    implements QBean, QPersist, QBeanSupportMBean, Configurable 
+{
     Element persist;
     int state;
     Q2 server;
     boolean modified;
     String name;
     protected Log log;
+    protected Configuration cfg;
     public static final String stateString[] = {
         "Stopped", "Stopping", "Starting", "Started", "Failed", "Destroyed"
     };
@@ -276,6 +282,14 @@ public class QBeanSupport implements QBean, QPersist, QBeanSupportMBean {
             }
         }
         return null;
+    }
+    public void setConfiguration (Configuration cfg)
+        throws ConfigurationException
+    {
+        this.cfg = cfg;
+    }
+    public Configuration getConfiguration () {
+        return cfg;
     }
 }
 
