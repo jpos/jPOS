@@ -1073,7 +1073,7 @@ public class ISOUtil {
             }
         }
         if (hex.length() > 0) {
-            while (hex.length () < 52)
+            while (hex.length () < 49)
                 hex.append (' ');
 
             sb.append (hexOffset (b.length));
