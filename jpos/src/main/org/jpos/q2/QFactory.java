@@ -257,7 +257,7 @@ public class QFactory {
     /**
      * sets the first character of the string to the upper case
      * @param name
-     * @return
+     * @return attribute name
      */
     public String getAttributeName(String name)
     {
