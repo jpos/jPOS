@@ -68,7 +68,7 @@ public class EuroPackager extends ISOBasePackager {
     protected ISOPackager f48Packager = new Euro48Packager();
     protected ISOFieldPackager fld[] = {
     /*000*/ new IFA_NUMERIC (  4, "MESSAGE TYPE INDICATOR"),
-    /*001*/ new IFB_BITMAP  (  8, "BIT MAP"),
+    /*001*/ new IFB_BITMAP  ( 16, "BIT MAP"),
     /*002*/ new IFA_LLNUM   ( 19, "PAN - PRIMARY ACCOUNT NUMBER"),
     /*003*/ new IFA_NUMERIC (  6, "PROCESSING CODE"),
     /*004*/ new IFA_NUMERIC ( 12, "AMOUNT, TRANSACTION"),
