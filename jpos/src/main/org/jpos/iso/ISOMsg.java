@@ -578,7 +578,7 @@ public class ISOMsg extends ISOComponent
      */
     public void setRetransmissionMTI() throws ISOException {
 	if (!isRequest())
-	    throw new ISOException ("not a request - can't set response MTI");
+	    throw new ISOException ("not a request");
 
 	set (new ISOField (0, getMTI().substring(0,3) + "1"));
     }
