@@ -82,6 +82,9 @@ public class QBeanSupport implements QBean, QPersist, QBeanSupportMBean {
     public Q2 getServer () {
         return server;
     }
+    public QFactory getFactory () {
+        return getServer().getFactory ();
+    }
     public void setName (String name) {
         if (this.name == null) 
             this.name = name;
