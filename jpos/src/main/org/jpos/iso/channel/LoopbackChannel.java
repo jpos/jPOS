@@ -148,8 +148,8 @@ public class LoopbackChannel extends FilteredBase implements LogSource {
 	}
     }
 
-    public void setUsable(boolean b) {
-	this.usable = usable;
+    public void setUsable(boolean usable) {
+        this.usable = usable;
         setChanged();
         notifyObservers();
     }
