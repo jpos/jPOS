@@ -172,6 +172,7 @@ Main targets:
 
   <target name="xdoclet-uptodate" depends="copy-src">
     <uptodate property="xdoclet-generate">
+      <srcfiles dir="${buildsrc}" includes="org/jpos/space/TransientSpace.java" />
       <srcfiles dir="${buildsrc}" includes="org/jpos/q2/QClassLoader.java" />
       <srcfiles dir="${buildsrc}" includes="org/jpos/q2/qbean/QTest.java" />
       <srcfiles dir="${buildsrc}" includes="org/jpos/q2/qbean/QExec.java" />
@@ -202,6 +203,7 @@ Main targets:
 
     <jmxdoclet destdir="${buildsrc}" force="yes" verbose="false">
       <fileset dir="${buildsrc}">
+        <include name="org/jpos/space/TransientSpace.java" />
         <include name="org/jpos/q2/QClassLoader.java" />
         <include name="org/jpos/q2/qbean/QTest.java" />
         <include name="org/jpos/q2/qbean/QExec.java" />
