@@ -57,6 +57,7 @@ import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
 import org.jpos.apps.qsp.QSP;
 
+import com.sun.jdmk.comm.AuthInfo;
 import com.sun.jdmk.comm.HtmlAdaptorServer;
 import javax.management.ObjectName;
 
@@ -93,6 +94,12 @@ public class HtmlAdaptor
                 "Adaptor:name=html,port=" + port
             );
             server.setPort (port);
+            String user = cfg.get ("user", null);
+            if (user != null) {
+                server.addUserAuthenticationInfo (
+                    new AuthInfo (user, cfg.get ("password", ""))
+                );
+            }
             QSP.getInstance().getMBeanServer().registerMBean (server, name);
             Logger.log (new LogEvent (this, "register", name.toString()));
         } catch (Exception e) {
