@@ -25,6 +25,7 @@
 <!ATTLIST channel packager CDATA #IMPLIED>
 <!ATTLIST channel panel IDREF #IMPLIED>
 <!ATTLIST channel type (client|server) #IMPLIED>
+<!ATTLIST channel timeout CDATA #IMPLIED>
 
 <!-- filter -->
 <!ELEMENT filter (property)*>

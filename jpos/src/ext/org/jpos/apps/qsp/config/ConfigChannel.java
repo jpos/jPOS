@@ -48,7 +48,8 @@ public class ConfigChannel implements QSPConfigurator {
 	                      { name + ".packager", "packager" },
 			      { name + ".header",   "header"   },
 			      { name + ".host",     "host"     },
-			      { name + ".port",     "port"     }
+			      { name + ".port",     "port"     },
+			      { name + ".timeout",  "timeout"  }
 			    };
 
 	Properties props = ConfigUtil.addAttributesProperties 
