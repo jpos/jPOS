@@ -44,7 +44,7 @@
  </sequencer>
 
  <mux name="dummyclient.mux" 
-    logger="qsp" realm="dummyclient.mux" connect="no">
+    logger="qsp" realm="dummyclient.mux" connect="yes">
   <channel name="dummyclient.channel" 
           class="org.jpos.iso.channel.ASCIIChannel" 
           packager="org.jpos.iso.packager.ConfigurablePackager"
