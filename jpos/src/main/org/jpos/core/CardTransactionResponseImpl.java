@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.2  2000/01/30 23:33:50  apr
+ * CVS sync/backup - intermediate version
+ *
  * Revision 1.1  1999/11/26 12:16:48  apr
  * CVS devel snapshot
  *
@@ -98,6 +101,7 @@ public class CardTransactionResponseImpl implements CardTransactionResponse
 	    ByteArrayOutputStream b = new ByteArrayOutputStream();
 	    ObjectOutputStream o = new ObjectOutputStream (b);
 	    o.writeInt(agent.getID());
+	    o.writeInt(0);		// version
 	    o.writeInt(flags);
 	    o.writeInt(msg.length);
 	    for (int i=0; i<msg.length; i++) {
@@ -125,6 +129,7 @@ public class CardTransactionResponseImpl implements CardTransactionResponse
 	    int agentId = o.readInt();
 	    if (agentId != agent.getID())
 		throw new CardAgentException ("unknogn agent "+agentId);
+	    o.readInt();	// version
 	    flags = o.readInt();
 	    int msgCount = o.readInt();
 	    msg = new ISOMsg[msgCount];
@@ -188,4 +193,15 @@ public class CardTransactionResponseImpl implements CardTransactionResponse
     public boolean isAuthoritative() {
 	return (flags & AUTHORITATIVE) != 0;
     }
+    public boolean isFinancial() {
+        return (flags & FINANCIAL ) != 0;
+    }
+    public String getBatchName () {
+        try {
+            if (isApproved() && isFinancial() && msg[0].hasField(41))
+                return (String) msg[0].getValue(41) + ".current";
+        } catch (ISOException e) { }
+        return null;
+    }
+
 }

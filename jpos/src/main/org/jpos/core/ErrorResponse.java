@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.4  2000/01/30 23:33:51  apr
+ * CVS sync/backup - intermediate version
+ *
  * Revision 1.3  2000/01/20 23:02:46  apr
  * Adding FinancialTransaction support - CVS sync
  *
@@ -84,6 +87,9 @@ public class ErrorResponse implements CardTransactionResponse, Loggeable {
     public void setAutCode (String code, String message) {
 	this.code = code;
 	this.message = message;
+    }
+    public String getBatchName () {
+	return null;
     }
     public void dump (PrintStream p, String indent) {
 	String inner = indent + "  ";

@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.4  2000/01/30 23:33:51  apr
+ * CVS sync/backup - intermediate version
+ *
  * Revision 1.3  2000/01/20 23:02:47  apr
  * Adding FinancialTransaction support - CVS sync
  *
@@ -109,5 +112,8 @@ public class ThinResponse implements CardTransactionResponse, Loggeable {
 	    p.println (inner  + "<autNumber>"+autNumber+"</autNumber>");
 	p.println (inner  + "<msg>"+getMessage()+"</msg>");
 	p.println (indent + "</ThinResponse>");
+    }
+    public String getBatchName () {
+	return null;
     }
 }

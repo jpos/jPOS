@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.5  2000/01/30 23:33:49  apr
+ * CVS sync/backup - intermediate version
+ *
  * Revision 1.4  1999/11/26 12:16:44  apr
  * CVS devel snapshot
  *
@@ -62,6 +65,9 @@ public interface CardAgent {
      * @exception CardAgentException
      */
     public CardTransactionResponse process (CardTransaction t) 
+	throws CardAgentException;
+
+    public CardTransactionResponse cancel  (byte[] image) 
 	throws CardAgentException;
 
     /**

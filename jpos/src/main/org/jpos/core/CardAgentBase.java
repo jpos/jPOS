@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.5  2000/01/30 23:33:50  apr
+ * CVS sync/backup - intermediate version
+ *
  * Revision 1.4  2000/01/20 23:02:45  apr
  * Adding FinancialTransaction support - CVS sync
  *
@@ -122,6 +125,9 @@ public abstract class CardAgentBase implements CardAgent, LogProducer {
 	    throw new CardAgentException (e);
 	} 
     }
+
+    // public abstract CardTransactionResponse cancel  (byte[] image) 
+//	throws CardAgentException;
 
     public abstract CardTransactionResponse getResponse (byte[] b) 
 	throws CardAgentException;
