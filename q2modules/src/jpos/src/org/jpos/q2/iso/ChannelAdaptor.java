@@ -140,6 +140,37 @@ public class ChannelAdaptor
         getPersist().getChild("out").setText (out);
         setModified (true);
     }
+
+    /**
+     * Queue a message to be transmitted by this adaptor
+     * @param m message to send
+     */
+    public void send (ISOMsg m) {
+        sp.out (in, m);
+    }
+    /**
+     * Queue a message to be transmitted by this adaptor
+     * @param m message to send
+     * @param timeout 
+     */
+    public void send (ISOMsg m, long timeout) {
+        sp.out (in, m, timeout);
+    }
+
+    /**
+     * Receive message
+     * @param timeout time to wait for an incoming message
+     */
+    public ISOMsg receive (long timeout) {
+        return (ISOMsg) sp.in (out, timeout);
+    }
+    /**
+     * @return true if channel is connected
+     */
+    public boolean isConnected () {
+        return sp.rdp (ready) != null;
+    }
+
     /**
      * @jmx:managed-attribute description="output queue"
      */
