@@ -75,6 +75,7 @@ public class HttpAdaptor
     Element persist;
     int state;
     Q2 server;
+    String name;
     boolean modified;
     ObjectName processorName;
 
@@ -84,8 +85,12 @@ public class HttpAdaptor
     public Q2 getServer () {
         return server;
     }
-
-
+    public void setName (String name) {
+        this.name = name;
+    }
+    public String getName () {
+        return name;
+    }
     public void init ()
     {
         try {
