@@ -1,6 +1,8 @@
 $Id$
 
 -- 1.4.7 --
+Added JDBMSpace
+Added Space.out (key,value,timeout) method
 New ISO93BTLVPackager/TLVField, etc.
 LogListener.log now returns a [possibly null] LogEvent
 New package org.jpos.ui
