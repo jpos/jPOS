@@ -6,6 +6,8 @@
     <property name="ext"  value="${source}/ext" />
     <property name="build" value="build" />
     <property name="classes" value="${build}/classes" />
+    <property name="examples"  value="${source}/examples" />
+    <property name="classes.examples"  value="${build}/examples" />
     <property name="dist" value="dist" />
     <property name="lib" value="lib" />
     <property name="doc" value="${source}/doc" />
@@ -25,16 +27,17 @@
   <target name="targets">
     <echo message="ANT build for ${project} ${version}"/>
     <echo message="Available targets:"/>
-    <echo message="  clean   Cleans ${build} and ${dist} directories" />
-    <echo message="  main    Builds main ${project} packages" />
+    <echo message="  clean    Cleans ${build} and ${dist} directories" />
+    <echo message="  main     Builds main ${project} packages" />
     <echo message=
 	"  ext     Builds extended ${project} classes (see ext/README)" />
-    <echo message="  cvs     Clean and update CVS tree for ${project}" />
-    <echo message="  javadoc Create javadoc documentation for main module" />
-    <echo message="  extdoc  Create main+ext javadoc docuemtation" />
-    <echo message="  doc     Create full documentation (including extdoc)" />
-    <echo message="  jar     Generates ${archive}.jar" />
-    <echo message="  tarball Generates distro tarball" />
+    <echo message="  cvs      Clean and update CVS tree for ${project}" />
+    <echo message="  javadoc  Create javadoc documentation for main module" />
+    <echo message="  extdoc   Create main+ext javadoc docuemtation" />
+    <echo message="  doc      Create full documentation (including extdoc)" />
+    <echo message="  examples Build examples" />
+    <echo message="  jar      Generates ${archive}.jar" />
+    <echo message="  tarball  Generates distro tarball" />
     <echo message=
       "  extdoc  Create javadoc documentation for main+ext modules" />
   </target>
@@ -42,6 +45,7 @@
   <target name="prepare">
     <mkdir dir="${build}"/>
     <mkdir dir="${classes}"/>
+    <mkdir dir="${classes.examples}"/>
     <mkdir dir="${dist}"/>
   </target>
 
@@ -59,6 +63,11 @@
 
   <target name="ext" depends="main">
     <javac srcdir="${ext}" destdir="${classes}"
+           classpath="${classpath}" debug="on" deprecation="${deprecation}" />
+  </target>
+
+  <target name="examples" depends="main">
+    <javac srcdir="${examples}" destdir="${classes.examples}"
            classpath="${classpath}" debug="on" deprecation="${deprecation}" />
   </target>
 
@@ -138,6 +147,8 @@
     <mkdir   dir="${build}/src" />
     <copydir src="${source}/main" dest="${build}/src" excludes="CVS/*" />
     <copydir src="${source}/ext"  dest="${build}/src" excludes="CVS/*" />
+    <copydir src="${source}/examples"  
+             dest="${build}/src/examples" excludes="CVS/*" />
     <fixcrlf srcdir="${build}/src" includes="*" />
   </target>
 
