@@ -30,4 +30,13 @@ We recommend that you read them in the following order:
    - simplemux: runs between simpleserver and simpleclient
      multiplexing messages
 
-    
+Misc examples:
+   
+   We use examples source tree to create simple applications used
+for demonstration, proof of concept, debugging, test, etc. 
+This is the case of:
+
+   - xmlpacking (pack/unpack to/from XML file)
+   - channelfilter (test ISOChannel's filters [see ISOFilter])
+
+
