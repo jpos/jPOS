@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.8  2000/07/19 00:51:23  apr
+ * removed cancel method
+ *
  * Revision 1.7  2000/06/21 20:43:36  apr
  * Added PersistentEngine support
  *
@@ -72,9 +75,6 @@ public interface CardAgent {
      * @exception CardAgentException
      */
     public CardTransactionResponse process (CardTransaction t) 
-	throws CardAgentException;
-
-    public CardTransactionResponse cancel  (byte[] image) 
 	throws CardAgentException;
 
     /**
