@@ -1,8 +1,0 @@
-For information on how to use the Database Logger please see the pdf document
-in doc/
-
-Note:  to run the Test.java example program use the dblog-example binary in
-the bin/ directory after you have edited Test.java and built a new
-jpos-dblog.jar file with the location and information in your JDBC
-Configuration file.  For information related to this paragraph please read the
-doc noted above.
