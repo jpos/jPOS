@@ -58,6 +58,7 @@ import org.jpos.util.Logger;
 import org.jpos.util.LogEvent;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
+import org.jpos.iso.header.BASE1Header;
 
 /**
  * ISOChannel implementation - VISA's VAP framing
@@ -125,12 +126,12 @@ public class VAPChannel extends BaseChannel {
     protected void sendMessageHeader(ISOMsg m, int len) 
         throws IOException
     {
-        BASE1Header h = (m.getHeader() != null) ?
-	    new BASE1Header (m.getHeader()) :
-	    new BASE1Header (srcid, dstid);
+        ISOHeader h = (m.getHeader() != null) ?
+		m.getISOHeader() :
+		new BASE1Header (srcid, dstid);
 
-        h.setLen(len);
-        serverOut.write(h.getBytes());
+        //h.setLen(len);
+        serverOut.write(h.pack());
     }
     protected int getMessageLength() throws IOException, ISOException {
         int l = 0;
@@ -147,9 +148,11 @@ public class VAPChannel extends BaseChannel {
         }
         return l;
     }
+
     protected int getHeaderLength() {
         return BASE1Header.LENGTH;
     }
+	
     protected boolean isRejected(byte[] b) {
         BASE1Header h = new BASE1Header(b);
         return h.isRejected() || (h.getHLen() != BASE1Header.LENGTH);
