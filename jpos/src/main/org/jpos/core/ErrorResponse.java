@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.7  2000/08/26 21:50:06  apr
+ * Changed dump
+ *
  * Revision 1.6  2000/03/02 12:31:01  apr
  * Get rid of javadoc warnings - done
  *
@@ -113,22 +116,26 @@ public class ErrorResponse implements CardTransactionResponse, Loggeable {
     public String getBatchName () {
 	return null;
     }
+
     public void dump (PrintStream p, String indent) {
 	String inner = indent + "  ";
-	p.print (indent + "<ErrorResponse");
+	p.print (indent + "<error-response");
 	if (isApproved())
-	    p.print (" APPROVED");
+	    p.print (" approved=\"true\"");
 	if (canContinue())
-	    p.print (" CANCONTINUE");
+	    p.print (" can-continue=\"true\"");
 	if (isAuthoritative())
-	    p.print (" AUTHORITATIVE");
+	    p.print (" authoritative=\"true\"");
 	p.println (">");
 
-	p.println (inner  + "<autCode>"+getAutCode()+"</autCode>");
+	p.println (inner  + "<aut-code>"+getAutCode()+"</aut-code>");
 	String autNumber = getAutNumber();
 	if (autNumber != null)
-	    p.println (inner  + "<autNumber>"+autNumber+"</autNumber>");
-	p.println (inner  + "<msg>"+getMessage()+"</msg>");
-	p.println (indent + "</ErrorResponse>");
+	    p.println (inner  + "<aut-number>"+autNumber+"</aut-number>");
+	String message = getMessage();
+	if (message != null)
+	    p.println (inner  + "<aut-message>"+message+"</aut-message>");
+
+	p.println (indent + "</error-response>");
     }
 }
