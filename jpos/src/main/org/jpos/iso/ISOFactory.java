@@ -120,7 +120,8 @@ public class ISOFactory {
     }
 
     /**
-     * Create an ISOChannel and builds an ISOMUX around it.
+     * Create an ISOChannel, builds an ISOMUX around it and start it in
+     * a newly created daemon Thread.
      * @see ISOFactory#newChannel
      * @see org.jpos.util.Configuration
      * @see ISOChannel
@@ -136,6 +137,11 @@ public class ISOFactory {
 	throws ISOException
     {
 	ISOChannel channel = newChannel (cfg, prefix, logger, realm);
-	return new ISOMUX (channel, logger, realm + ".mux");
+	ISOMUX mux = new ISOMUX (channel, logger, realm + ".mux");
+	Thread t = new Thread (mux);
+	t.setName (realm + ".mux");
+	t.setDaemon (true);
+	t.start();
+	return mux;
     }
 }
