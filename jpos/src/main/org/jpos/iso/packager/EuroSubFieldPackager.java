@@ -91,17 +91,19 @@ public class EuroSubFieldPackager extends ISOBasePackager
 	    Hashtable tab = c.getChildren();
 	    StringBuffer sb = new StringBuffer();
 
-	    // Handle first Required IF_CHAR field
+	    // Handle first IF_CHAR field
 	    ISOField f0 = (ISOField) tab.get (new Integer(0));
-	    String s = (String) f0.getValue();
-	    sb.append (s);
+            if (f0 != null) {
+	        String s = (String) f0.getValue();
+	        sb.append (s);
+            }
 	    for (int i =1; i<fld.length; i++) 
 	    {
-		ISOField f = (ISOField) tab.get (new Integer(i));
-		if (f != null) 
-		{
+		Object obj = tab.get (new Integer(i));
+		if (obj instanceof ISOField) {
+                    ISOField f = (ISOField) obj;
 		    sb.append (new String(fld[i].pack(f)));
-		}
+		} 
 	    }
 	    return sb.toString().getBytes();
 	}
@@ -116,13 +118,18 @@ public class EuroSubFieldPackager extends ISOBasePackager
 	LogEvent evt = new LogEvent (this, "unpack");
 	// Unpack the IF_CHAR field
 	int consumed = 0;
-	ISOComponent c = fld[0].createComponent(0);
-	consumed += fld[0].unpack (c, b, consumed);
-	m.set(c);
+        ISOComponent c;
+        if (fld[0] != null) {
+            c = fld[0].createComponent(0);
+            consumed += fld[0].unpack (c, b, consumed);
+            m.set(c);
+        }
 
 	// Now unpack the IFEP_LLCHAR fields
 	for (int i=1; consumed < b.length ; i++) 
 	{
+            if (fld[i] == null)
+                continue;
 	    c = fld[i].createComponent(i);
 	    consumed += fld[i].unpack (c, b, consumed);
 	    if (logger != null) 
