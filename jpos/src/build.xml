@@ -26,7 +26,6 @@
   <property name="debug" value="on" />
   <property name="project" value="jpos" />
   <property name="archive" value="${project}-${version}" />
-  <property name="q2.archive" value="q2-${version}" />
 
 
   <target name="targets">
@@ -119,9 +118,6 @@ Main targets:
      <include name="**/filter/CalculateFilter.java"     if="jep.present"     />
      <include name="**/filter/SQLFilter.java"           if="jep.present"     />
 
-     <include name="**/jms/**/*.java"                   if="jms.present"     />
-     <include name="**/egate/**/*.java"            if="egatejms.present"     />
-
      <include name="**/VISA1Link.java"                  if="comm.present"    />
      <include name="**/V24.java"                        if="comm.present"    />
      <include name="**/*Modem.java"                     if="comm.present"    />
@@ -173,27 +169,7 @@ Main targets:
   <target name="xdoclet-uptodate" depends="copy-src">
     <uptodate property="xdoclet-generate">
       <srcfiles dir="${buildsrc}" includes="org/jpos/space/TransientSpace.java" />
-      <srcfiles dir="${buildsrc}" includes="org/jpos/q2/QClassLoader.java" />
-      <srcfiles dir="${buildsrc}" includes="org/jpos/q2/qbean/QTest.java" />
-      <srcfiles dir="${buildsrc}" includes="org/jpos/q2/qbean/QExec.java" />
-      <srcfiles dir="${buildsrc}" includes="org/jpos/q2/qbean/QMUX.java" />
-      <srcfiles dir="${buildsrc}" 
-           includes="org/jpos/q2/qbean/ChannelAdaptor.java" />
-      <srcfiles dir="${buildsrc}" 
-           includes="org/jpos/q2/qbean/QServer.java" />
-      <srcfiles dir="${buildsrc}" 
-           includes="org/jpos/q2/qbean/SpaceProxyAdaptor.java" />
-      <srcfiles dir="${buildsrc}" 
-           includes="org/jpos/q2/qbean/SpaceAdaptor.java" />
-      <srcfiles dir="${buildsrc}" 
-           includes="org/jpos/q2/qbean/NameRegistrarInspector.java" />
       <srcfiles dir="${buildsrc}" includes="org/jpos/q2/jetty/Jetty.java" />
-      <srcfiles dir="${buildsrc}" includes="org/jpos/q2/qbean/RMIAdaptor.java" />
-      <srcfiles dir="${buildsrc}" includes="org/jpos/q2/qbean/Naming.java" />
-      <srcfiles dir="${buildsrc}" includes="org/jpos/q2/qbean/DirPollAdaptor.java" />
-      <srcfiles dir="${buildsrc}" includes="org/jpos/jms/JMSQSender.java" />
-      <srcfiles dir="${buildsrc}" includes="org/jpos/jms/JMSQReceiver.java" />
-      <srcfiles dir="${buildsrc}" includes="org/jpos/jms/SpaceConnector.java" />
       <mapper type="glob" from="*.java" to="*MBean.java"/>
     </uptodate>
   </target>
@@ -206,22 +182,7 @@ Main targets:
     <jmxdoclet destdir="${buildsrc}" force="yes" verbose="false">
       <fileset dir="${buildsrc}">
         <include name="org/jpos/space/TransientSpace.java" />
-        <include name="org/jpos/q2/QClassLoader.java" />
-        <include name="org/jpos/q2/qbean/QTest.java" />
-        <include name="org/jpos/q2/qbean/QExec.java" />
-        <include name="org/jpos/q2/qbean/QMUX.java" />
-        <include name="org/jpos/q2/qbean/ChannelAdaptor.java" />
-        <include name="org/jpos/q2/qbean/QServer.java" />
-        <include name="org/jpos/q2/qbean/SpaceProxyAdaptor.java" />
-        <include name="org/jpos/q2/qbean/SpaceAdaptor.java" />
-        <include name="org/jpos/q2/qbean/NameRegistrarInspector.java" />
         <include name="org/jpos/q2/jetty/Jetty.java" />
-        <include name="org/jpos/q2/qbean/RMIAdaptor.java" />
-        <include name="org/jpos/q2/qbean/Naming.java" />
-        <include name="org/jpos/q2/qbean/DirPollAdaptor.java" />
-        <include name="org/jpos/jms/JMSQSender.java" />
-        <include name="org/jpos/jms/JMSQReceiver.java" />
-        <include name="org/jpos/jms/SpaceConnector.java" />
       </fileset>
       <mbeaninterface/>
       <mx4jdescription/>
@@ -267,12 +228,6 @@ Main targets:
     <available property="jep.present"
            classpathref="ext.classpath"
               classname="org.nfunk.jep.JEP" />
-    <available property="jms.present"
-        classpathref="ext.classpath"
-            classname="javax.jms.Queue" />
-    <available property="egatejms.present"
-        classpathref="ext.classpath"
-            classname="com.seebeyond.jms.client.STCQueueConnectionFactory" />
     <available property="activation.present"
            classpathref="ext.classpath"
           classname="javax.activation.DataSource" />
@@ -320,7 +275,7 @@ Main targets:
     <jar jarfile="${dist}/${archive}.jar" 
          basedir="${classes}"
          manifest="${classes}/MANIFEST.MF" 
-	 includes="LICENSE,README,org/**" />
+    includes="LICENSE,README,org/**" />
   </target>
 
   <target name="jpos-util" depends="main" description="Build jpos-util.jar">
@@ -331,21 +286,6 @@ Main targets:
          basedir="${classes}"
          manifest="${classes}/MANIFEST.MF" 
          includesfile="${etc}/jpos-util.list" />
-  </target>
-
-  <target name="q2" depends="main">
-    <delete file="${dist}/${q2.archive}.jar" />
-    <copy file="${source}/etc/MANIFEST.Q2" tofile="${classes}/MANIFEST.Q2" />
-    <replace file="${classes}/MANIFEST.Q2" 
-             token="$$VERSION$$" value="${version}"/>
-    <copy file="${source}/etc/LICENSE" tofile="${classes}/LICENSE" />
-    <copy file="${source}/etc/README"  tofile="${classes}/README" />
-    <copy file="ChangeLog" tofile="${classes}/ChangeLog" />
-
-    <jar jarfile="${dist}/${q2.archive}.jar" 
-         basedir="${classes}"
-         manifest="${classes}/MANIFEST.Q2" 
-	 includes="LICENSE,README,org/**" />
   </target>
 
   <target name="cvs" depends="clean">
