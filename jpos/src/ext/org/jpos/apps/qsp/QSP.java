@@ -202,9 +202,14 @@ public class QSP implements ErrorHandler, LogSource {
      * @param configFile XML based QSP config file
      */
     public static void launch (String configFile) {
-        String args[] = new String[1];
+        final String args[] = new String[1];
         args[0] = configFile;
-        main (args);
+        Thread t = new Thread() {
+            public void run() {
+                main (args);
+            }
+        };
+        t.start();
     }
     public static void main (String args[]) {
 	if (args.length != 1) {
