@@ -91,7 +91,7 @@ public class IFB_BITMAP extends ISOBitMapPackager {
         int len;
         BitSet bmap = ISOUtil.byte2BitSet (b, offset, getLength() > 8);
         c.setValue(bmap);
-        len = ((len=bmap.size()) > 128) ? 128 : len;
+        len = (bmap.get(1) == true) ? 128 : 64; /* changed by Hani */
         return (len >> 3);
     }
     public int getMaxPackedLength() {
