@@ -22,6 +22,7 @@ import org.jpos.util.Logger;
 import org.jpos.util.LogEvent;
 import org.jpos.transaction.TransactionConstants;
 import org.jpos.transaction.TransactionParticipant;
+import org.jpos.transaction.ContextRecovery;
 
 public class TransactionManager 
     extends QBeanSupport 
@@ -91,10 +92,10 @@ public class TransactionManager
                 switch (action) {
                     case PREPARED:
                         setState (id, COMMITTING);
-                        commit (id, context, members);
+                        commit (id, context, members, false);
                         break;
                     case ABORTED:
-                        abort (id, context, members);
+                        abort (id, context, members, false);
                         break;
                     case NO_JOIN:
                         break;
@@ -116,16 +117,26 @@ public class TransactionManager
     public long getHead () {
         return head;
     }
-    private void commit (long id, Serializable context, List members) {
+    private void commit 
+        (long id, Serializable context, List members, boolean recover) 
+    {
         Iterator iter = members.iterator();
         while (iter.hasNext ()) {
-            commit ((TransactionParticipant) iter.next(), id, context);
+            TransactionParticipant p = (TransactionParticipant) iter.next();
+            if (recover && p instanceof ContextRecovery)
+                context = ((ContextRecovery) p).recover (id, context, true);
+            commit (p, id, context);
         }
     }
-    private void abort (long id, Serializable context, List members) {
+    private void abort 
+        (long id, Serializable context, List members, boolean recover) 
+    {
         Iterator iter = members.iterator();
         while (iter.hasNext ()) {
-            abort ((TransactionParticipant) iter.next(), id, context);
+            TransactionParticipant p = (TransactionParticipant) iter.next();
+            if (recover && p instanceof ContextRecovery)
+                context = ((ContextRecovery) p).recover (id, context, false);
+            abort (p, id, context);
         }
     }
     private int prepare 
@@ -345,10 +356,10 @@ public class TransactionManager
                 return; 
             } else if (COMMITTING.equals (state)) {
                 evt.addMessage ("<commit/>");
-                commit (id, context, participants);
+                commit (id, context, participants, true);
             } else if (PREPARING.equals (state)) {
                 evt.addMessage ("<abort/>");
-                abort (id, context, participants);
+                abort (id, context, participants, true);
             }
         } finally {
             Logger.log (evt);
