@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.10  2000/05/24 12:22:26  apr
+ * Added no-arg constructor (required by QSP)
+ *
  * Revision 1.9  2000/04/16 23:53:06  apr
  * LogProducer renamed to LogSource
  *
@@ -57,6 +60,15 @@ public abstract class CardAgentBase implements CardAgent, LogSource {
     protected ISOPackager imagePackager;
 
     /**
+     * no args constructor
+     */
+    public CardAgentBase () {
+	setLogger (logger, realm);
+	populateSelector();
+	imagePackager = new ISO87BPackager();	// default, can be changed
+    }
+
+    /**
      * @param cfg Configuration provider
      * @param seq Sequencer provider
      * @param logger Logger
@@ -75,6 +87,12 @@ public abstract class CardAgentBase implements CardAgent, LogSource {
     protected abstract void populateSelector();
     public abstract String getPropertyPrefix();
 
+    public void setSequencer (Sequencer seq) {
+	this.seq = seq;
+    }
+    public Sequencer getSequencer () {
+	return seq;
+    }
     public void setLogger (Logger logger, String realm) {
 	this.logger = logger;
 	this.realm  = realm;
