@@ -118,6 +118,7 @@
       <srcfiles dir="${main}" includes="org/jpos/q2/qbean/QMUX.java" />
       <srcfiles dir="${main}" includes="org/jpos/q2/qbean/ChannelAdaptor.java" />
       <srcfiles dir="${main}" includes="org/jpos/q2/qbean/ServerAdaptor.java" />
+      <srcfiles dir="${main}" includes="org/jpos/q2/qbean/SpaceProxyAdaptor.java" />
       <srcfiles dir="${main}" includes="org/jpos/q2/qbean/NameRegistrarInspector.java" />
       <mapper type="glob" from="*.java" to="*MBean.java"/>
     </uptodate>
@@ -135,6 +136,7 @@
         <include name="org/jpos/q2/qbean/QMUX.java" />
         <include name="org/jpos/q2/qbean/ChannelAdaptor.java" />
         <include name="org/jpos/q2/qbean/ServerAdaptor.java" />
+        <include name="org/jpos/q2/qbean/SpaceProxyAdaptor.java" />
         <include name="org/jpos/q2/qbean/NameRegistrarInspector.java" />
       </fileset>
       <mbeaninterface/>
