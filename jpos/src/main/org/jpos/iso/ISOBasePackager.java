@@ -376,6 +376,15 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
         return fld[fldNumber];
     }
     /**
+     * @param   fldNumber the Field Number
+     * @param   fieldPackager the Field Packager
+     */
+    public void setFieldPackager 
+        (int fldNumber, ISOFieldPackager fieldPackager) 
+    {
+        fld[fldNumber] = fieldPackager;
+    }
+    /**
      * @return 128 for ISO-8583, should return 64 for ANSI X9.2
      */
     protected int getMaxValidField() {
