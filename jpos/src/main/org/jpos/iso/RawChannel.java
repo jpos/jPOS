@@ -21,6 +21,7 @@ public class RawChannel extends ISOChannel {
 	byte[] TPDU;
 
 	/**
+	 * Construct client ISOChannel
 	 * @param host	server TCP Address
 	 * @param port  server port number
 	 * @param p     an ISOPackager
@@ -29,6 +30,17 @@ public class RawChannel extends ISOChannel {
 	 */
 	public RawChannel (String host, int port, ISOPackager p, byte[] TPDU) {
 		super(host, port, p);
+		this.TPDU = TPDU;
+	}
+	/**
+	 * Construct server ISOChannel
+	 * @param p     an ISOPackager
+	 * @param TPDU  an optional raw header (i.e. TPDU)
+	 * @exception IOException
+	 * @see ISOPackager
+	 */
+	public RawChannel (ISOPackager p, byte[] TPDU) throws IOException {
+		super(p);
 		this.TPDU = TPDU;
 	}
 	protected void sendMessageLength(int len) throws IOException {

@@ -34,6 +34,7 @@ public abstract class ISOChannel {
 	protected ISOPackager packager;
 
 	/**
+	 * constructs a client ISOChannel
 	 * @param host	server TCP Address
 	 * @param port  server port number
 	 * @param p     an ISOPackager
@@ -45,17 +46,30 @@ public abstract class ISOChannel {
 		this.packager = p;
 	}
 	/**
+	 * constructs a server ISOChannel
+	 * @param p     an ISOPackager
+	 * @exception IOException
+	 * @see ISOPackager
+	 */
+	public ISOChannel (ISOPackager p) throws IOException {
+		this.host = null;
+		this.port = 0;
+		this.packager = p;
+	}
+	/**
 	 * @return the connection state
 	 */
 	public boolean isConnected() {
 		return socket != null && usable;
 	}
 	/**
-	 * Actually connects to the server
+	 * setup I/O Streams from socket
+	 * @param socket a Socket (client or server)
 	 * @exception IOException
 	 */
-    public void connect () throws IOException {
-       	socket =  new Socket (host, port);
+    protected void connect (Socket socket) throws IOException {
+		this.socket = socket;
+
 		serverIn = new DataInputStream (
 			new BufferedInputStream (socket.getInputStream ())
 		);
@@ -64,6 +78,21 @@ public abstract class ISOChannel {
 		);
 		usable = true;
     }
+	/**
+	 * Connects client ISOChannel to server
+	 * @exception IOException
+	 */
+    public void connect () throws IOException {
+		connect(new Socket (host, port));
+	}
+	/**
+	 * Accepts connection 
+	 * @exception IOException
+	 */
+    public void accept(ServerSocket s) throws IOException {
+		connect(s.accept());
+	}
+
 	/**
 	 * @param b - new Usable state (used by ISOMUX internals to
 	 * flag as unusable in order to force a reconnection)

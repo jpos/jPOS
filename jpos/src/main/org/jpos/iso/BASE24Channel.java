@@ -22,6 +22,7 @@ import java.net.SocketException;
  */
 public class BASE24Channel extends ISOChannel {
 	/**
+	 * Construct client ISOChannel
 	 * @param host	server TCP Address
 	 * @param port  server port number
 	 * @param p     an ISOPackager
@@ -29,6 +30,15 @@ public class BASE24Channel extends ISOChannel {
 	 */
 	public BASE24Channel (String host, int port, ISOPackager p) {
 		super(host, port, p);
+	}
+	/**
+	 * Construct server ISOChannel
+	 * @param p     an ISOPackager
+	 * @see ISOPackager
+	 * @exception IOException
+	 */
+	public BASE24Channel (ISOPackager p) throws IOException {
+		super(p);
 	}
 	/**
 	 * @param m	the Message to send (in this case it is unused)

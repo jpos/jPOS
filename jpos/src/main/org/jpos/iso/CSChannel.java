@@ -19,6 +19,7 @@ import java.net.Socket;
  */
 public class CSChannel extends ISOChannel {
 	/**
+	 * Construct client ISOChannel
 	 * @param host	server TCP Address
 	 * @param port  server port number
 	 * @param p     an ISOPackager
@@ -26,6 +27,15 @@ public class CSChannel extends ISOChannel {
 	 */
 	public CSChannel (String host, int port, ISOPackager p) {
 		super(host, port, p);
+	}
+	/**
+	 * Construct server ISOChannel
+	 * @param p     an ISOPackager
+	 * @exception IOException
+	 * @see ISOPackager
+	 */
+	public CSChannel (ISOPackager p) throws IOException {
+		super(p);
 	}
 	/**
 	 * @param len the packed Message len

@@ -16,6 +16,7 @@ import java.net.Socket;
  */
 public class VAPChannel extends ISOChannel {
 	/**
+	 * Construct client ISOChannel
 	 * @param host	server TCP Address
 	 * @param port  server port number
 	 * @param p     an ISOPackager (should be ISO87BPackager)
@@ -23,6 +24,15 @@ public class VAPChannel extends ISOChannel {
 	 */
 	public VAPChannel (String host, int port, ISOPackager p) {
 		super(host, port, p);
+	}
+	/**
+	 * Construct server ISOChannel
+	 * @param p     an ISOPackager (should be ISO87BPackager)
+	 * @exception IOException
+	 * @see ISO87BPackager
+	 */
+	public VAPChannel (ISOPackager p) throws IOException {
+		super(p);
 	}
 	protected void sendMessageLength(int len) throws IOException {
 		serverOut.write (len >> 8);
