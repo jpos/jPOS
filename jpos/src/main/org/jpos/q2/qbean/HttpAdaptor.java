@@ -82,6 +82,10 @@ public class HttpAdaptor
     ObjectName processorName;
     Log log;
 
+    public HttpAdaptor () {
+        super();
+        state = -1;
+    }
     public void setServer (Q2 server) {
         this.server = server;
     }
@@ -105,13 +109,17 @@ public class HttpAdaptor
 
     public void init ()
     {
+        if (state != -1)
+            return;
         try {
             processorName = new ObjectName("MX4J:name=mx4j.adaptor.http.XSLTProcessor");
             mx4j.adaptor.http.XSLTProcessor processorMBean = new mx4j.adaptor.http.XSLTProcessor();
             getServer().getMBeanServer().registerMBean(processorMBean,processorName);
             setProcessorName(processorName);
+            state = QBean.STOPPED;
         } catch (Exception e) {
-            e.printStackTrace(System.out);
+            if (log != null)
+                log.warn ("init", e);
         }
 
     }
@@ -157,7 +165,8 @@ public class HttpAdaptor
         try {
             getServer().getMBeanServer().unregisterMBean(processorName);
         } catch (Exception e) {
-            e.printStackTrace(System.out);
+            if (log != null)
+                log.warn ("destroy", e);
         }
 
         state = QBean.DESTROYED;
