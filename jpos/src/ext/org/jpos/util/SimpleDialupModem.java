@@ -47,56 +47,11 @@
  * information please see <http://www.jpos.org/>.
  */
 
-/*
- * $Log$
- * Revision 1.12  2002/08/06 14:26:29  apr
- * backport from jPOS_2_0 branch
- *
- * Revision 1.10.2.1  2002/07/15 01:04:54  apr
- * Bugfix: flush the read buffer in reset (reported by Kris Leite)
- *
- * Revision 1.10  2000/11/02 12:09:17  apr
- * Added license to every source file
- *
- * Revision 1.9  2000/04/16 23:53:03  apr
- * LogProducer renamed to LogSource
- *
- * Revision 1.8  2000/03/22 22:45:38  apr
- * Removed init delay
- *
- * Revision 1.7  2000/03/22 20:44:41  apr
- * Playing with modem init
- *
- * Revision 1.6  2000/03/20 19:24:13  apr
- * Testing ISOGetty ... minor bugfixes/timings in answer()/hangup()/reset()
- *
- * Revision 1.5  2000/03/15 12:53:02  apr
- * WatchCD off/on in answer method
- *
- * Revision 1.4  2000/03/14 12:58:49  apr
- * Autoanswer with ATS0=1 instead of RING+ATA
- *
- * Revision 1.3  2000/03/14 00:00:12  apr
- * Added answer method
- *
- * Revision 1.2  2000/03/01 14:44:45  apr
- * Changed package name to org.jpos
- *
- * Revision 1.1  2000/01/11 01:25:01  apr
- * moved non ISO-8583 related classes from jpos.iso to jpos.util package
- * (AntiHog LeasedLineModem LogEvent LogListener LogSource
- *  Loggeable Logger Modem RotateLogListener SimpleAntiHog SimpleDialupModem
- *  SimpleLogListener SimpleLogSource SystemMonitor V24)
- *
- * Revision 1.1  1999/11/24 18:08:56  apr
- * Added VISA 1 Support
- *
- */
-
 package org.jpos.util;
 
 import java.io.*;
 import javax.comm.*;
+import org.jpos.iso.ISOUtil;
 
 /**
  * Implements DialupModem
@@ -196,15 +151,15 @@ public class SimpleDialupModem implements Modem {
 	v24.setWatchCD (true);
     }
     public void hangup () throws IOException {
-	v24.dtr (false);
-	try {
-	    Thread.sleep (1000);
-	} catch (InterruptedException e) { }
-	v24.dtr (true);
+	v24.dtr (false); ISOUtil.sleep (5000);
+        v24.dtr (true);  ISOUtil.sleep (1500);
 	if (v24.isConnected()) {
-	    reset();
-	    if (v24.isConnected()) 
-		throw new IOException ("Can't hangup");
+            v24.setWatchCD (false);
+            reset ();
+            ISOUtil.sleep (500);
 	}
+        if (v24.isConnected()) 
+            throw new IOException ("Can't hangup");
     }
 }
+
