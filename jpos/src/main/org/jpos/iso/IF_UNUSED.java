@@ -51,17 +51,21 @@ package org.jpos.iso;
 
 
 /**
- * @author apr@cs.com.uy & dflc@cs.com.uy
+ * IF_UNUSED acts as a filler for unused elements of a message packager.
+ * Packing or unpacking with this packager throws an ISOException.
+ * Use IF_NOP if you don't want an exception thrown.
+ * 
+ * @author jonathan.oconnor@xcom.de
  * @version $Id$
  * @see ISOComponent
- * @see IFA_LLNUM
+ * @see IF_NOP
  */
-public class IF_NOP extends ISOFieldPackager {
+public class IF_UNUSED extends ISOFieldPackager {
     /**
      * @param len - field len
      * @param description symbolic descrption
      */
-    public IF_NOP () {
+    public IF_UNUSED () {
         super(0, "<dummy>");
     }
     /**
@@ -69,8 +73,8 @@ public class IF_NOP extends ISOFieldPackager {
      * @return packed component
      * @exception ISOException
      */
-    public byte[] pack (ISOComponent c) {
-        return null;
+    public byte[] pack (ISOComponent c) throws ISOException {
+        throw new ISOException("IF_UNUSED: Packager should not pack field " + c.getKey());
     }
     /**
      * @param c - the Component to unpack
@@ -78,8 +82,8 @@ public class IF_NOP extends ISOFieldPackager {
      * @param offset - starting offset within the binary image
      * @return consumed bytes
      */
-    public int unpack (ISOComponent c, byte[] b, int offset) {
-        return 0;
+    public int unpack (ISOComponent c, byte[] b, int offset) throws ISOException {
+        throw new ISOException("IF_UNUSED: Packager should not unpack field " + c.getKey());
     }
     public int getMaxPackedLength() {
         return 0;
