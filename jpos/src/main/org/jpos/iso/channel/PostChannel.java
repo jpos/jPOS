@@ -115,4 +115,7 @@ public class PostChannel extends BaseChannel {
             ((((int)b[0])&0xFF) << 8) | 
             (((int)b[1])&0xFF));
     }
+    public void setHeader (String header) {
+	super.setHeader (ISOUtil.str2bcd(header, false));
+    }
 }
