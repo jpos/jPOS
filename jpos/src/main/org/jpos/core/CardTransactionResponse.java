@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.2  2000/01/20 23:02:45  apr
+ * Adding FinancialTransaction support - CVS sync
+ *
  * Revision 1.1  1999/11/26 12:16:48  apr
  * CVS devel snapshot
  *
@@ -21,7 +24,7 @@ import java.util.*;
 public interface CardTransactionResponse extends Serializable {
     /**
      * provides a [signed] [encripted] serialized image of a given
-     * previously promoted and processed transaction 
+     * previously processed transaction 
      * (suitable to be saved on persistent storage)
      * @return a serialized image of this transaction
      */

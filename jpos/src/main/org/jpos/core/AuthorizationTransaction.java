@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.5  2000/01/20 23:02:44  apr
+ * Adding FinancialTransaction support - CVS sync
+ *
  * Revision 1.4  2000/01/11 01:24:39  apr
  * moved non ISO-8583 related classes from jpos.iso to jpos.util package
  * (AntiHog LeasedLineModem LogEvent LogListener LogProducer
@@ -50,7 +53,7 @@ public class AuthorizationTransaction
     public String purchasePlan;
     public byte numberOfPayments;
 
-    private String action;
+    protected String action;
 
     public AuthorizationTransaction() {
 	cardHolder = null;
@@ -113,9 +116,7 @@ public class AuthorizationTransaction
     public int getNumberOfPayments() {
 	return (int) numberOfPayments;
     }
-    public void dump (PrintStream p, String indent) {
-	String inner = indent + "  ";
-	p.println (indent + "<AuthorizationTransaction>");
+    protected void dump0 (PrintStream p, String inner) {
 	p.println (inner  + "<action>" + action + "</action>");
 	getCardHolder().dump (p, inner);
 	p.println (inner  + "<amount>"      + amount      + "</amount>");
@@ -125,6 +126,11 @@ public class AuthorizationTransaction
 	p.println (inner  + "<numberOfPayments>" + numberOfPayments + 
 			   "</numberOfPayments>"
 	);
+    }
+    public void dump (PrintStream p, String indent) {
+	String inner = indent + "  ";
+	p.println (indent + "<AuthorizationTransaction>");
+	dump0 (p, indent + "  ");
 	p.println (indent + "</AuthorizationTransaction>");
     }
 }

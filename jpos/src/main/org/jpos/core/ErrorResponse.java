@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.3  2000/01/20 23:02:46  apr
+ * Adding FinancialTransaction support - CVS sync
+ *
  * Revision 1.2  1999/12/20 10:46:26  apr
  * Added setAuthoritative
  *
@@ -12,6 +15,7 @@ package uy.com.cs.jpos.core;
 
 import java.io.*;
 import java.util.*;
+import uy.com.cs.jpos.util.Loggeable;
 
 /**
  * @author apr@cs.com.uy
@@ -20,7 +24,7 @@ import java.util.*;
  *
  * @see CardTransaction, CardTransactionResponse
  */
-public class ErrorResponse implements CardTransactionResponse {
+public class ErrorResponse implements CardTransactionResponse, Loggeable {
     String code;
     String message;
     boolean authoritative = true;
@@ -80,5 +84,23 @@ public class ErrorResponse implements CardTransactionResponse {
     public void setAutCode (String code, String message) {
 	this.code = code;
 	this.message = message;
+    }
+    public void dump (PrintStream p, String indent) {
+	String inner = indent + "  ";
+	p.print (indent + "<ErrorResponse");
+	if (isApproved())
+	    p.print (" APPROVED");
+	if (canContinue())
+	    p.print (" CANCONTINUE");
+	if (isAuthoritative())
+	    p.print (" AUTHORITATIVE");
+	p.println (">");
+
+	p.println (inner  + "<autCode>"+getAutCode()+"</autCode>");
+	String autNumber = getAutNumber();
+	if (autNumber != null)
+	    p.println (inner  + "<autNumber>"+autNumber+"</autNumber>");
+	p.println (inner  + "<msg>"+getMessage()+"</msg>");
+	p.println (indent + "</ErrorResponse>");
     }
 }

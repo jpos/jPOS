@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.4  2000/01/20 23:02:45  apr
+ * Adding FinancialTransaction support - CVS sync
+ *
  * Revision 1.3  2000/01/11 01:24:39  apr
  * moved non ISO-8583 related classes from jpos.iso to jpos.util package
  * (AntiHog LeasedLineModem LogEvent LogListener LogProducer
@@ -112,6 +115,8 @@ public abstract class CardAgentBase implements CardAgent, LogProducer {
 	    Object[] param = new Object[1];
 	    param[0] = t;
 	    return (CardTransactionResponse) method.invoke (this, param);
+	} catch (InvocationTargetException e) {
+	    throw new CardAgentException ((Exception) e.getTargetException());
 	} catch (Exception e) { 
 	    Logger.log (new LogEvent (this, "process", e));
 	    throw new CardAgentException (e);

@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.3  2000/01/20 23:02:47  apr
+ * Adding FinancialTransaction support - CVS sync
+ *
  * Revision 1.2  1999/12/17 18:05:21  apr
  * BugFix: setAuthoritative param
  *
@@ -12,6 +15,7 @@ package uy.com.cs.jpos.core;
 
 import java.io.*;
 import java.util.*;
+import uy.com.cs.jpos.util.Loggeable;
 
 /**
  * @author apr@cs.com.uy
@@ -29,7 +33,7 @@ import java.util.*;
  * (suitable for remote POS systems using a proxy to connect
  * to jPOS Agents)
  */
-public class ThinResponse implements CardTransactionResponse {
+public class ThinResponse implements CardTransactionResponse, Loggeable {
     public String code;
     public String message;
     public String autNumber;
@@ -87,5 +91,23 @@ public class ThinResponse implements CardTransactionResponse {
     }
     public boolean isAuthoritative() {
 	return authoritative;
+    }
+    public void dump (PrintStream p, String indent) {
+	String inner = indent + "  ";
+	p.print (indent + "<ThinResponse");
+	if (isApproved())
+	    p.print (" APPROVED");
+	if (canContinue())
+	    p.print (" CANCONTINUE");
+	if (isAuthoritative())
+	    p.print (" AUTHORITATIVE");
+	p.println (">");
+
+	p.println (inner  + "<autCode>"+getAutCode()+"</autCode>");
+	String autNumber = getAutNumber();
+	if (autNumber != null)
+	    p.println (inner  + "<autNumber>"+autNumber+"</autNumber>");
+	p.println (inner  + "<msg>"+getMessage()+"</msg>");
+	p.println (indent + "</ThinResponse>");
     }
 }
