@@ -57,8 +57,11 @@ import java.util.Iterator;
 import java.util.Observer;
 import java.util.Observable;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Random;
+import java.lang.ref.WeakReference;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.ServerSocket;
 import org.jpos.util.LogSource;
 import org.jpos.util.Logger;
@@ -94,6 +97,9 @@ public class ISOServer extends Observable
     public static final int SIZEOF_CNT   = 1;
     private int[] cnt;
     protected Configuration cfg;
+    private boolean shutdown = false;
+    private ServerSocket serverSocket;
+    private Collection channels;
 
    /**
     * @param port port to listen
@@ -115,6 +121,7 @@ public class ISOServer extends Observable
 	    new ThreadPool (1, DEFAULT_MAX_THREADS) : pool;
 	listeners = new Vector();
 	name = "";
+        channels = new HashSet ();
         cnt = new int[SIZEOF_CNT];
     }
 
@@ -161,6 +168,9 @@ public class ISOServer extends Observable
                 try {
                     channel.disconnect();
                 } catch (IOException ex) { }
+	    } catch (SocketException e) {
+                if (!shutdown) 
+		    Logger.log (new LogEvent (this, "session-warning", e));
             } catch (InterruptedIOException e) {
                 try {
                     channel.disconnect();
@@ -219,13 +229,52 @@ public class ISOServer extends Observable
     public void removeISORequestListener(ISORequestListener l) {
 	listeners.remove (l);
     }
+    /**
+     * Shutdown this server
+     */
+    public void shutdown () {
+        shutdown = true;
+        new Thread () {
+            public void run () {
+                shutdownServer ();
+                shutdownChannels ();
+            }
+        }.start();
+    }
+    private void shutdownServer () {
+        try {
+            serverSocket.close ();
+        } catch (IOException e) {
+            Logger.log (new LogEvent (this, "shutdown", e));
+        }
+    }
+    private void shutdownChannels () {
+        Iterator iter = channels.iterator();
+        while (iter.hasNext()) {
+            ISOChannel c = (ISOChannel) ((WeakReference) iter.next()).get ();
+            if (c != null) {
+                try {
+                    c.disconnect ();
+                } catch (IOException e) {
+                    Logger.log (new LogEvent (this, "shutdown", e));
+                }
+            }
+        }
+    }
+    private void purgeChannels () {
+        Iterator iter = channels.iterator();
+        while (iter.hasNext()) {
+            WeakReference ref = (WeakReference) iter.next();
+            if (ref.get () == null)
+                iter.remove ();
+        }
+    }
 
     public void run() {
         ServerChannel  channel;
-	for (;;) {
+	while  (!shutdown) {
 	    try {
-		ServerSocket serverSocket = 
-                    socketFactory != null ?
+		serverSocket = socketFactory != null ?
                         socketFactory.createServerSocket(port) :
                         (new ServerSocket (port));
                 
@@ -250,8 +299,13 @@ public class ISOServer extends Observable
 			if (channel instanceof Observable)
 			    ((Observable)channel).addObserver (this);
 			channel.accept (serverSocket);
-                        cnt[CONNECT]++;
+                        if ((cnt[CONNECT]++) % 100 == 0)
+                            purgeChannels ();
+                        channels.add (new WeakReference (channel));
 			pool.execute (new Session(channel));
+                    } catch (SocketException e) {
+                        if (!shutdown)
+			    Logger.log (new LogEvent (this, "iso-server", e));
 		    } catch (IOException e) {
 			Logger.log (new LogEvent (this, "iso-server", e));
 			relax();
