@@ -112,6 +112,14 @@ public class VAPChannel extends BaseChannel {
     {
         super(p, serverSocket);
     }
+
+    /**
+     * The default header for VAPChannel is BASE1Header
+     */
+    protected ISOHeader getDynamicHeader (byte[] image) {
+    	return new BASE1Header (image);
+    }
+
     protected void sendMessageLength(int len) throws IOException {
         serverOut.write (len >> 8);
         serverOut.write (len);

@@ -65,6 +65,7 @@ import org.jpos.core.Configurable;
 import org.jpos.core.ReConfigurable;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
+import org.jpos.iso.header.BaseHeader;
 
 /*
  * BaseChannel was ISOChannel. Now ISOChannel is an interface
@@ -367,6 +368,7 @@ public abstract class BaseChannel extends Observable
     protected ISOPackager getDynamicPackager (ISOMsg m) {
 	return packager;
     }
+
    /**
     * allow subclasses to override default packager
     * on outgoing messages
@@ -375,6 +377,14 @@ public abstract class BaseChannel extends Observable
     */
     protected ISOPackager getDynamicPackager (byte[] image) {
 	return packager;
+    }
+
+    /** 
+     * Allow subclasses to override the Default header on
+     * incoming messages.
+     */
+    protected ISOHeader getDynamicHeader (byte[] image) {
+    	return new BaseHeader (image);
     }
     protected void sendMessageLength(int len) throws IOException { }
     protected void sendMessageHeader(ISOMsg m, int len) throws IOException { }
@@ -486,8 +496,7 @@ public abstract class BaseChannel extends Observable
 			"receive length " +len + " seems extrange");
 	    }
 	    m.setPackager (getDynamicPackager(b));
-	    if (header != null && header.length > 0)
-		m.setHeader(header);
+	    m.setHeader (getDynamicHeader(header));
 	    if (b.length > 0)  // Ignore NULL messages
 		m.unpack (b);
 	    m.setDirection(ISOMsg.INCOMING);
