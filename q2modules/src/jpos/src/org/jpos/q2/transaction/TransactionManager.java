@@ -39,7 +39,7 @@ public class TransactionManager
     String queue;
     String tailLock;
     Map groups;
-    long head, tail;
+    long head, tail, lastGC;
     public static final String  HEAD       = "$HEAD";
     public static final String  TAIL       = "$TAIL";
     public static final String  CONTEXT    = "$CONTEXT.";
@@ -51,6 +51,7 @@ public class TransactionManager
     public static final Integer DONE       = new Integer (2);
     public static final String  DEFAULT_GROUP = "";
     public static final long    MAX_PARTICIPANTS = 1000;  // loop prevention
+    public static final long    GC_PERIOD  = 5*60*1000;
 
     public void initService () throws Q2ConfigurationException {
         queue = cfg.get ("queue", null);
@@ -308,6 +309,15 @@ public class TransactionManager
             ((JDBMSpace) sp).setAutoCommit (false);
         }
     }
+    protected void gc (Space sp) {
+        if (sp instanceof JDBMSpace) {
+            long now = System.currentTimeMillis();
+            if ((now - lastGC) > GC_PERIOD) {
+                lastGC = now;
+                ((JDBMSpace) sp).gc ();
+            }
+        }
+    }
     protected void commitOn (Space sp) {
         if (sp instanceof JDBMSpace) {
             JDBMSpace jsp = (JDBMSpace) sp;
@@ -336,6 +346,7 @@ public class TransactionManager
             tail++;
         }
         syncTail ();
+        gc (psp);
         sp.out (tailLock, lock);
     }
     protected boolean tailDone () {
