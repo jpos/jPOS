@@ -99,6 +99,7 @@ public class ISOTests
         suite.addTest(new TestSuite(IFE_LLLCHARTest.class));
         suite.addTest(new TestSuite(IFE_LLNUMTest.class));
         suite.addTest(new TestSuite(IFE_NUMERICTest.class));
+        suite.addTest(new TestSuite(IFB_LLLHCHARTest.class));
         //suite.addTest(new TestSuite(IFEB_LLLNUMTest.class));
         //suite.addTest(new TestSuite(IFEB_LLNUMTest.class));
         //suite.addTest(new TestSuite(IFEP_LLCHARTest.class));
