@@ -60,6 +60,9 @@ import org.jpos.iso.*;
 
 /*
  * $Log$
+ * Revision 1.5  2001/01/29 23:58:30  apr
+ * SAX --> SAX2
+ *
  * Revision 1.4  2000/11/02 12:09:18  apr
  * Added license to every source file
  *
@@ -87,14 +90,14 @@ import org.jpos.iso.*;
  * @version $Id$
  * @see ISOPackager
  */
-public class XMLPackager extends HandlerBase
+public class XMLPackager extends DefaultHandler
                          implements ISOPackager, LogSource
 {
     protected Logger logger = null;
     protected String realm = null;
     private ByteArrayOutputStream out;
     private PrintStream p;
-    private Parser parser = null;
+    private XMLReader reader = null;
     private Stack stk;
 
     public static final String ISOMSG_TAG    = "isomsg";
@@ -111,12 +114,13 @@ public class XMLPackager extends HandlerBase
 	p   = new PrintStream(out);
 	stk = new Stack();
 	try {
-	    parser = ParserFactory.makeParser(
-		System.getProperty(
-		  "sax.parser", "org.apache.xerces.parsers.SAXParser"
-		)
-	    );
-	    parser.setDocumentHandler (this);
+            reader = XMLReaderFactory.createXMLReader(
+                System.getProperty( "sax.parser",
+                                    "org.apache.xerces.parsers.SAXParser")
+            );
+            reader.setFeature ("http://xml.org/sax/features/validation",false);
+            reader.setContentHandler(this);
+            reader.setErrorHandler(this);
 	} catch (Exception e) {
 	    throw new ISOException (e.toString());
 	}
@@ -157,7 +161,7 @@ public class XMLPackager extends HandlerBase
 		stk.pop();
 
 	    InputSource src = new InputSource (new ByteArrayInputStream(b));
-	    parser.parse (src);
+	    reader.parse (src);
 	    if (stk.empty())
 		throw new ISOException ("error parsing");
 
@@ -181,7 +185,8 @@ public class XMLPackager extends HandlerBase
 	}
     }
 
-    public void startElement (String name, AttributeList atts)
+    public void startElement 
+        (String ns, String name, String qName, Attributes atts)
         throws SAXException
     {
 	int fieldNumber = -1;
