@@ -7,6 +7,9 @@
 
 /*
  * $Log$
+ * Revision 1.2  1999/05/18 14:50:10  apr
+ * Show ISOMsg fields in new frame
+ *
  * Revision 1.1  1999/05/18 12:02:59  apr
  * Added GUI package
  *
@@ -35,18 +38,22 @@ import uy.com.cs.jpos.iso.*;
 public class ISOMsgPanel extends JPanel {
 	ISOMsg m;
 	Vector validFields;
-	public ISOMsgPanel(ISOMsg m) {
+	public ISOMsgPanel(ISOMsg m, boolean withDump) {
 		super();
 		this.m = m;
 		setLayout(new BorderLayout());
 		setBorder(BorderFactory.createRaisedBevelBorder());
 		setValidFields();
 		add(createISOMsgTable(), BorderLayout.CENTER);
-		add(createISOMsgDumpPanel(), BorderLayout.SOUTH);
+		if (withDump)
+			add(createISOMsgDumpPanel(), BorderLayout.SOUTH);
+	}
+	public ISOMsgPanel(ISOMsg m) {
+		this(m, true);
 	}
 	private void setValidFields() {
 		validFields = new Vector();
-		for (int i=0; i<128; i++)
+		for (int i=0; i<=128; i++)
 			if (m.hasField(i))
 				validFields.addElement(new Integer(i));
 	}
@@ -84,7 +91,11 @@ public class ISOMsgPanel extends JPanel {
 								return obj.toString();
 							else if (obj instanceof byte[])
 								return ISOUtil.hexString((byte[]) obj);
-						} catch (ISOException e) { }	
+							else if (obj instanceof ISOMsg)
+								return "<ISOMsg>";
+						} catch (ISOException e) {
+							e.printStackTrace();
+						}	
 						break;
 					case 2 :
 						int i=((Integer)validFields.elementAt(row)).intValue();
@@ -98,6 +109,35 @@ public class ISOMsgPanel extends JPanel {
 		table.getColumnModel().getColumn(0).setPreferredWidth(10);
 		table.setPreferredScrollableViewportSize(
 			new Dimension (500,table.getRowCount()*table.getRowHeight()));
+		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+		ListSelectionModel rowSM = table.getSelectionModel();
+		rowSM.addListSelectionListener(new ListSelectionListener() {
+			public void valueChanged(ListSelectionEvent e) {
+				ListSelectionModel lsm =
+					(ListSelectionModel)e.getSource();
+				if (!lsm.isSelectionEmpty()) {
+					int selectedRow = lsm.getMinSelectionIndex();
+					try {
+						int index = ((Integer)
+							validFields.elementAt(selectedRow)).intValue();
+
+						Object obj = m.getValue(index);
+						if (obj instanceof ISOMsg) {
+							ISOMsg sm = (ISOMsg) obj;
+							JFrame f = new JFrame("ISOMsg field "+index);
+							ISOMsgPanel p = new ISOMsgPanel(sm, false);
+							f.getContentPane().add(p);
+							f.pack();
+							f.show();
+						}
+					} catch (ISOException ex) {
+						ex.printStackTrace();
+					}	
+				}
+			}
+		});
+
 		JScrollPane scrollpane = new JScrollPane(table);
 		return scrollpane;
 	}
