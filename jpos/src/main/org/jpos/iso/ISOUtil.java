@@ -224,6 +224,11 @@ public class ISOUtil {
             e[i] = ASCII2EBCDIC[((int)a[i])&0xFF];
         return e;
     }
+    public static void asciiToEbcdic(String s, byte[] e, int offset) {
+        int len = s.length();
+        for (int i=0; i<len; i++)
+            e[offset + i] = ASCII2EBCDIC[s.charAt(i)&0xFF];
+    }
 
     /**
      * pad to the left
