@@ -1,6 +1,7 @@
 $Id$
 
 -- 1.4.9 -- 
+Changed sendMessageTrailler signature in order to make packed image available.
 Added interface ReadableConfiguration
 Added Configuration.put
 JDBMSpace and TSpace performs automatic gc by means of a Timer task

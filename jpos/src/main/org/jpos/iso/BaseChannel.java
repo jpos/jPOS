@@ -377,7 +377,9 @@ public abstract class BaseChannel extends Observable
         else if (header != null) 
             serverOut.write(header);
     }
-    protected void sendMessageTrailler(ISOMsg m, int len) throws IOException { }
+    protected void sendMessageTrailler(ISOMsg m, byte[] b) throws IOException 
+    {
+    }
     protected void getMessageTrailler() throws IOException { }
     protected int getMessageLength() throws IOException, ISOException {
         return -1;
@@ -418,7 +420,7 @@ public abstract class BaseChannel extends Observable
                 sendMessageLength(b.length + getHeaderLength());
                 sendMessageHeader(m, b.length);
                 sendMessage (b, 0, b.length);
-                sendMessageTrailler(m, b.length);
+                sendMessageTrailler(m, b);
                 serverOut.flush ();
             }
             cnt[TX]++;
