@@ -1,26 +1,32 @@
 $Id$
 
-Starting at release 1.2 jPOS drops GNUmake support and builds 
-using Ant (http://jakarta.apache.org).
+QUICK INSTRUCTIONS:
+------------------
 
+  1) cd to jPOS's base directory 
+  2) call bin/build jar javadoc
+
+ABOUT OPTIONAL MODULES
+----------------------
 We currently distribute 2 modules: 'main' and 'ext'.
 
 While 'main' module's classes are self contained, 'ext' module
-requires external classes (to be installed at jpos/ext directory,
-see ext/README)
+requires external classes (to be installed in 'ext' directory,
+see ext/README). If you need additional features you can consider
+installing some or all these jars and building a new jpos.jar using 
+the procedure mentioned above.
 
-Running build (bin/build on Unix, build.bat on Windows) will show
-the available targets:
+RUNNING THE EXAMPLES
+--------------------
+Have a look at src/examples/README for instructions about compiling
+and playing with jPOS examples.
 
-Examples:
+There's an "ext-examples" module that depends on some libraries
+provided by the "ext" module.
 
-   bin/build main javadoc : builds main and javadoc on a Windows machine
-   bin/build ext doc : builds main, ext, extdoc and doc
-
-(Windows users should chdir to jPOS's home directory and execute
- start bin/build)
-
-This is work in progress, feel free to ask. Join our user's
+FURTHER QUESTIONS
+-----------------
+This is work in progress, feel free to ask. join our user's
 mailing list at http://yahoogroups.com/group/jpos-dev
 
 --The jPOS Team
