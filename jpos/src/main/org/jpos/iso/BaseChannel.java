@@ -490,7 +490,8 @@ public abstract class BaseChannel extends Observable
      * @exception ISOException
      */
     public ISOMsg receive() throws IOException, ISOException {
-        byte[] b, header=null;
+        byte[] b=null;
+        byte[] header=null;
         LogEvent evt = new LogEvent (this, "receive");
         ISOMsg m = new ISOMsg();
         m.setSource (this);
@@ -541,6 +542,14 @@ public abstract class BaseChannel extends Observable
             notifyObservers(m);
         } catch (ISOException e) {
             evt.addMessage (e);
+            if (header != null) {
+                evt.addMessage ("--- header ---");
+                evt.addMessage (ISOUtil.hexdump (header));
+            }
+            if (b != null) {
+                evt.addMessage ("--- data ---");
+                evt.addMessage (ISOUtil.hexdump (b));
+            }
             throw e;
         } catch (EOFException e) {
             if (socket != null)
