@@ -29,6 +29,7 @@ public class ISOMUX implements Runnable, ISOSource, LogSource {
     private volatile boolean terminate = false;
     private String name;
     private ISOMUX muxInstance;
+    private boolean doConnect;
 
     protected Logger logger = null;
     protected String realm = null;
@@ -67,6 +68,7 @@ public class ISOMUX implements Runnable, ISOSource, LogSource {
 	initMUX (c);
     }
     private void initMUX (ISOChannel c) {
+	doConnect = true;
         channel = c;
         rx = null;
         txQueue = new Vector();
@@ -257,7 +259,7 @@ public class ISOMUX implements Runnable, ISOSource, LogSource {
                 if (channel.isConnected()) {
                     doTransmit();
                 }
-                else {
+                else if (doConnect) {
 		    if (firstTime) {
 			firstTime = !firstTime;
 			channel.connect();
@@ -270,7 +272,12 @@ public class ISOMUX implements Runnable, ISOSource, LogSource {
                     synchronized(rx) {
                         rx.notify();
                     }
-                }
+                } else {
+		    // nothing to do ...
+		    try {
+			Thread.sleep (5000);
+		    } catch (InterruptedException ex) { }
+		}
                 synchronized(this) {
                     if (!terminate && 
 			 channel.isConnected() && 
@@ -286,8 +293,14 @@ public class ISOMUX implements Runnable, ISOSource, LogSource {
 			cc.getHost()+":"+cc.getPort())
 		    );
 		}
+		try {
+		    Thread.sleep (1000);
+		} catch (InterruptedException ex) { }
 	    } catch (Exception e) {
 		Logger.log (new LogEvent (this, "mux", e));
+		try {
+		    Thread.sleep (1000);
+		} catch (InterruptedException ex) { }
             }
         }
 	// Wait for the receive queue to empty out before shutting down
@@ -403,5 +416,19 @@ public class ISOMUX implements Runnable, ISOSource, LogSource {
      */
     public String getName() {
 	return this.name;
+    }
+    /**
+     * ISOMUXs usually calls connect() on the underlying ISOChannel<br>
+     * You can prevent this behaveour by passing a false value.
+     * @param connect false to prevent connection (default true)
+     */
+    public void setConnect (boolean connect) {
+	this.doConnect = connect;
+    }
+    /**
+     * @return connect flag value
+     */
+    public boolean getConnect() {
+	return doConnect;
     }
 }
