@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.10  2000/07/22 20:29:17  apr
+ * Added equals method
+ *
  * Revision 1.9  2000/06/20 11:05:17  apr
  * Added set/get Trailler
  *
@@ -288,5 +291,22 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
 	return (trailler != null && trailler.length() >= 3) ?
 	    trailler.substring (0, 3) :
 	    "   ";
+    }
+
+    /**
+     * compares two cardholder object<br>
+     * based on PAN and EXP
+     * @param obj a CardHolder instance
+     * @return true if pan and exp matches
+     */
+    public boolean equals(Object obj) {
+	if ((obj != null) && (obj instanceof CardHolder)) {
+	    CardHolder ch = (CardHolder) obj;
+	    if ( (pan != null) && (ch.pan != null) &&
+	         (exp != null) && (ch.exp != null) &&
+		 pan.equals (ch.pan) && exp.equals (ch.exp))
+		return true;
+	}
+	return false;
     }
 }
