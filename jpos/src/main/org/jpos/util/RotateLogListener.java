@@ -2,29 +2,26 @@ package org.jpos.util;
 
 import java.io.*;
 import java.util.*;
+import org.jpos.core.Configurable;
+import org.jpos.core.Configuration;
+import org.jpos.core.ConfigurationException;
 
-/*
- * $Log$
- * Revision 1.2  2000/03/01 14:44:45  apr
- * Changed package name to org.jpos
- *
- * Revision 1.1  2000/01/11 01:24:59  apr
- * moved non ISO-8583 related classes from jpos.iso to jpos.util package
- * (AntiHog LeasedLineModem LogEvent LogListener LogProducer
- *  Loggeable Logger Modem RotateLogListener SimpleAntiHog SimpleDialupModem
- *  SimpleLogListener SimpleLogProducer SystemMonitor V24)
- *
- * Revision 1.2  1999/11/18 23:31:39  apr
- * Changed rotate time from milliseconds to seconds
- *
+/**
+ * Rotates logs
+ * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
+ * @version $Revision$ $Date$
+ * @see Configurable
+ * @since jPOS 1.2
  */
+
 public class RotateLogListener extends SimpleLogListener 
-    implements Runnable
+    implements Runnable, Configurable
 {
     FileOutputStream f;
     String logName;
     int maxCopies;
     int sleepTime;
+
     /**
      * @param name base log filename
      * @param t switch logs every t seconds
@@ -40,6 +37,39 @@ public class RotateLogListener extends SimpleLogListener
 	f = null;
 	openLogFile ();
 	if (t != 0) 
+	    (new Thread(this)).start();
+    }
+    public RotateLogListener () {
+	super();
+	logName = null;
+	maxCopies = 0;
+	sleepTime = 0;
+	f = null;
+    }
+
+   /**
+    * Configure this RotateLogListener<br>
+    * Properties:<br>
+    * <ul>
+    *  <li>file     base log filename
+    *  <li>[window] in seconds (default 0 - never rotate)
+    *  <li>[count]  number of copies (default 0 == single copy)
+    * </ul>
+    * @param cfg Configuration 
+    * @throws ConfigurationException
+    */
+    public void setConfiguration (Configuration cfg)
+	throws ConfigurationException
+    {
+	maxCopies = cfg.getInt ("copies");
+	sleepTime = cfg.getInt ("window");
+	logName   = cfg.get ("file");
+	try {
+	    openLogFile();
+	} catch (IOException e) {
+	    throw new ConfigurationException (e);
+	}
+	if (sleepTime != 0) 
 	    (new Thread(this)).start();
     }
     private void openLogFile() throws IOException {
