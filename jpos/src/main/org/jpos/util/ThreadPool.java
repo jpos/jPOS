@@ -55,12 +55,13 @@ import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
 import org.jpos.util.BlockingQueue.Closed;
 
+
+
 /**
  * Implements a ThreadPool with the ability to run simple Runnable
  * tasks as well as Jobs (supervised Runnable tasks)
  * @since 1.1
  * @author apr@cs.com.uy
- * @author <a href=mailto:alcarraz@fing.edu.uy>Andr&eacute;s Alcarraz</a>
  */
 public class ThreadPool extends ThreadGroup implements LogSource, Loggeable, Configurable, ThreadPoolMBean
 {
@@ -212,13 +213,23 @@ public class ThreadPool extends ThreadGroup implements LogSource, Loggeable, Con
 	return logger;
     }
     
-    /** @param cfg Configuration object
-     * @throws ConfigurationException
-     *
-     */
+   /** 
+    * @param cfg Configuration object
+    * @throws ConfigurationException
+    */
     public void setConfiguration(Configuration cfg) throws ConfigurationException {
         maxPoolSize = cfg.getInt("max-threads", DEFAULT_MAX_THREADS);
         init(cfg.getInt("initial-threads"));
     }
     
+    /** 
+     * Retrieves a thread pool from NameRegistrar given its name, unique identifier.
+     *
+     * @param name Name of the thread pool to retrieve, must be the same as the name property of the thread-pool tag in the QSP config file
+     * @throws NotFoundException thrown when there is not a thread-pool registered under this name.
+     * @return returns the retrieved instance of thread pool
+     */    
+    public static ThreadPool getThreadPool(java.lang.String name) throws org.jpos.util.NameRegistrar.NotFoundException {
+        return (ThreadPool)NameRegistrar.get("thread.pool." + name);
+    }
 }
