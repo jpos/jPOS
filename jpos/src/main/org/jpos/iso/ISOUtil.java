@@ -637,7 +637,13 @@ public class ISOUtil {
                     }
                     // else, default append char
                 default: 
-                    str.append(ch);
+                    if (Character.isLetterOrDigit (ch))
+                        str.append(ch);
+                    else {
+                        str.append("&#");
+                        str.append(Integer.toString(ch));
+                        str.append(';');
+                    }
             }
         }
         return (str.toString());
