@@ -56,7 +56,7 @@ import org.jpos.iso.ISOUtil;
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
  */
 public class QBeanSupport implements QBean, QPersist, QBeanSupportMBean {
-    Element configElement;
+    Element persist;
     int state;
     Q2 server;
 
@@ -88,21 +88,14 @@ public class QBeanSupport implements QBean, QPersist, QBeanSupportMBean {
     public void init () {
         this.state = QBean.STARTING;
     }
-    public void setConfigElement (Element config) {
-        this.configElement = configElement;
+    public void setPersist (Element config) {
+        this.persist = persist ;
     }
-    public Element getConfigElement () {
-        return configElement;
+    public Element getPersist () {
+        return persist;
     }
     public boolean isModified () {
         return false;
-    }
-    public void setName (String name) {
-        System.out.println ("called setName: " + name);
-    }
-    public String getName () {
-        System.out.println ("getName called");
-        return null;
     }
 }
 

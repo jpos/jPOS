@@ -60,11 +60,7 @@ import org.jdom.Element;
  *
  */
 public interface QPersist {
-
-    public void setConfigElement (Element e);
-
-    public Element getConfigElement ();
-
+    public Element getPersist ();
     boolean isModified ();
-
 }
+

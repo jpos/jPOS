@@ -110,7 +110,7 @@ public class QFactory {
         );
 
         setAttribute (mserver, objectName, "Server", server);
-        setAttribute (mserver, objectName, "ConfigElement", e);
+        setAttribute (mserver, objectName, "Persist", e);
 
         mserver.invoke (objectName, "init",  null, null);
         mserver.invoke (objectName, "start", null, null);

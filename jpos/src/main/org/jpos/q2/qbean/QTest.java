@@ -25,13 +25,13 @@ public class QTest extends QBeanSupport implements Runnable {
     public void destroy () {
         System.out.println ("QTest: destroy");
     }
-    public void setConfigElement (Element e) {
-        System.out.println ("QTest: setConfigElement");
-        super.setConfigElement (e);
+    public void setPersist (Element e) {
+        System.out.println ("QTest: setPersist");
+        super.setPersist (e);
     }
-    public Element getConfigElement () {
-        System.out.println ("QTest: getConfigElement");
-        return super.getConfigElement ();
+    public Element getPersist () {
+        System.out.println ("QTest: getPersist");
+        return super.getPersist ();
     }
     public void run () {
         while (getState() == QBean.STARTED) {

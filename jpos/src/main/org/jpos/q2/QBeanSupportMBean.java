@@ -64,7 +64,7 @@ public interface QBeanSupportMBean {
     public boolean isModified ();
     public void setServer (Q2 server);
     public Q2 getServer ();
-    public void setConfigElement (Element e);
-    public Element getConfigElement ();
+    public void setPersist (Element e);
+    public Element getPersist ();
 }
 
