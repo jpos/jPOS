@@ -69,7 +69,7 @@ import org.jpos.space.*;
  * @version $Revision$ $Date$
  * @since 2.0
  */
-public class PersistentSpace implements LocalSpace // PersistentSpaceMBean 
+public class PersistentSpace implements LocalSpace // PersistentSpaceMBean {
 {
     protected Map map;
     static LocalSpace defaultSpace = null;
@@ -82,20 +82,12 @@ public class PersistentSpace implements LocalSpace // PersistentSpaceMBean
     public synchronized void setCacheSize (int cacheSize) {
         this.cacheSize = cacheSize;
     }
-    private Data initData (Object key) {
-        Data data = null;
-        String dir = "space";
-        if (key instanceof String)
-              dir = dir + "/" + key;
-        map.put (key, (data = new Data (dir)));
-        return data;
-    }
     public void out (Object key, Object value) {
         List listeners;
         synchronized (this) {
             Data data = (Data) map.get (key);
             if (data == null) 
-                data = initData (key);
+                map.put (key, (data = new Data (key)));
             data.add (value);
             this.notifyAll ();
             listeners = data.getListeners();
@@ -112,16 +104,22 @@ public class PersistentSpace implements LocalSpace // PersistentSpaceMBean
         out (id, ref);
         return ref;
     }
+    public int size (Object key) {
+        Data data  = (Data) map.get (key);
+        if (data == null)
+            map.put (key, (data = new Data (key)));
+        return data.size ();
+    }
     public synchronized Object rdp (Object key) {
         Data data  = (Data) map.get (key);
         if (data == null)
-            data = initData (key);
+            map.put (key, (data = new Data (key)));
         return data.get (key);
     }
     public synchronized Object inp (Object key) {
         Data data  = (Data) map.get (key);
         if (data == null)
-            data = initData (key);
+            map.put (key, (data = new Data (key)));
         return data.remove ();
     }
     public synchronized Object in (Object key) {
@@ -171,7 +169,7 @@ public class PersistentSpace implements LocalSpace // PersistentSpaceMBean
     public synchronized void addListener    (Object key, SpaceListener listener) {
         Data data = (Data) map.get (key);
         if (data == null)
-            data = initData (key);
+             map.put (key, (data = new Data (key)));
         data.addListener (listener);
     }
     public synchronized void removeListener (Object key, SpaceListener listener) {
@@ -186,12 +184,17 @@ public class PersistentSpace implements LocalSpace // PersistentSpaceMBean
         LinkedList listeners;
         File dir;
 
-        protected Data (String store) {
+        protected Data (Object name) {
             super();
             data = new LinkedList ();
             stored = new LinkedList ();
             listeners = null;
-            dir = new File (store);
+            String n = "space" + File.separatorChar;
+                if (name instanceof String)
+                    n += name;
+                else
+                    n += "H" + Integer.toString(name.hashCode());
+            dir = new File (n);
             dir.mkdirs ();
             FilenameFilter filter = new FilenameFilter() {
                 public boolean accept(File f, String name) {
@@ -369,18 +372,13 @@ public class PersistentSpace implements LocalSpace // PersistentSpaceMBean
         }
         return sb.toString ();
     }
+
     public void write (String key, String value) {
         out (key, value);
     }
+
     public String read (String key) {
         Object o = inp (key);
         return (o != null) ? o.toString() : "null";
     }
-    public int size (Object key) {
-        Data data  = (Data) map.get (key);
-        if (data == null)
-            data = initData (key);
-        return data.size ();
-    }
 }
-
