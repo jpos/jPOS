@@ -1,4 +1,4 @@
-package org.jpos.ui.action;
+package org.jpos.bsh.action;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -8,10 +8,10 @@ import org.jpos.ui.UI;
 import org.jpos.ui.UIAware;
 import org.jdom.Element;
 
-public class BSH implements ActionListener, UIAware {
+public class BSHAction implements ActionListener, UIAware {
     public UI ui;
 
-    public BSH() {
+    public BSHAction () {
         super();
     }
 
@@ -28,5 +28,5 @@ public class BSH implements ActionListener, UIAware {
             e.printStackTrace();
         }
     }
-
 }
+
