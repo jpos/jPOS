@@ -85,10 +85,6 @@ public class Test implements ISORequestListener {
 
 	    ISOChannel clientSideChannel = new ASCIIChannel 
 		(new ISO87APackager()); // see jpos.cfg
-	    ISOChannel serverSideChannel = new LoopbackChannel();
-	    if (serverSideChannel instanceof LogSource) 
-		((LogSource)serverSideChannel).
-		    setLogger (logger, "iso-server.server-side");
 
 	    ThreadPool pool = new ThreadPool (5, 30);
 	    pool.setLogger (logger, "iso-server-pool");
