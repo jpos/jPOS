@@ -83,7 +83,7 @@ public class ConfigTask implements QSPReConfigurator {
 	LogEvent evt  = new LogEvent (qsp, "config-task", className);
         try {
             Class c = Class.forName(className);
-	    Runnable task = (Runnable) c.newInstance();
+	    Object task = c.newInstance();
 	    if (task instanceof LogSource) {
 		((LogSource)task).setLogger (
 		    ConfigLogger.getLogger (node),
@@ -95,8 +95,9 @@ public class ConfigTask implements QSPReConfigurator {
 
 	    if (name != null)
 		NameRegistrar.register (NAMEREGISTRAR_PREFIX+name, task);
+
             if (task instanceof Runnable) {
-	        Thread thread = new Thread(task);
+	        Thread thread = new Thread ((Runnable) task);
 	        thread.setName ("qsp-task-"+name);
 	        thread.start();
             }
