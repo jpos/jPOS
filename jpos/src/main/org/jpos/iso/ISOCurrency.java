@@ -232,7 +232,8 @@ public class ISOCurrency
         put("TND", "788", 3);
         put("TOP", "776", 2);
         put("TPE", "626", 0);
-        put("TRL", "792", 2);
+        put("TRL", "792", 2); 
+        put("TRY", "949", 2); // since 1 January 2005 New Turkish Lira replaces Turkish Lira (TRL)]
         put("TTD", "780", 2);
         put("TWD", "901", 2);
         put("TZS", "834", 2);
