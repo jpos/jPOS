@@ -90,14 +90,20 @@ public class UI implements UIFactory, UIObjectFactory {
         classMapping = ResourceBundle.getBundle(UI.class.getName());
     }
     /**
-     * Creates a new UI object
-     * @param config configuration element
+     * Create a new UI object
      */
-    public UI (Element config) {
+    public UI () {
         super ();
         registrar = new HashMap ();
         mapping = new HashMap ();
         setObjectFactory (this);
+    }
+    /**
+     * Creates a new UI object
+     * @param config configuration element
+     */
+    public UI (Element config) {
+        this ();
         setConfig (config);
     }
     /**
@@ -121,6 +127,9 @@ public class UI implements UIFactory, UIObjectFactory {
      */
     public void setLog (Log log) {
         this.log = log;
+    }
+    public Log getLog () {
+        return log;
     }
     /**
      * UI uses a map to hold references to its components
@@ -411,6 +420,10 @@ public class UI implements UIFactory, UIObjectFactory {
             }
             put (component, e);
 
+            Element script = e.getChild ("script");
+            if (script != null) 
+                component = doScript (component, script);
+
             if ("true".equals (e.getAttributeValue ("scrollable")))
                 component = new JScrollPane (component);
         } catch (Exception ex) {
@@ -419,6 +432,9 @@ public class UI implements UIFactory, UIObjectFactory {
             warn (ex);
             component = new JLabel ("Error instantiating class " + clazz);
         }
+        return component;
+    }
+    protected JComponent doScript (JComponent component, Element e) {
         return component;
     }
     private void setSize (JComponent c, Element e) {
@@ -485,7 +501,7 @@ public class UI implements UIFactory, UIObjectFactory {
             }
         }
     }
-    private void warn (Object obj) {
+    protected void warn (Object obj) {
         if (log != null)
             log.warn (obj);
     }
