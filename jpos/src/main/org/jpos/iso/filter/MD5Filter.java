@@ -58,7 +58,17 @@ public class MD5Filter implements ISOFilter, ReConfigurable {
 
 	fields = f;
     }
-
+    public void setFields (int[] fields) {
+	this.fields = fields;
+    }
+    /**
+     * factory method
+     * @param m current ISOMsg
+     * @return key fields associated with this ISOMsg
+     */
+    public int[] getFields (ISOMsg m) {
+	return fields;
+    }
     public ISOMsg filter (ISOChannel channel, ISOMsg m, LogEvent evt) 
 	throws VetoException
     {
@@ -67,8 +77,9 @@ public class MD5Filter implements ISOFilter, ReConfigurable {
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");
 	    md.update (getKey());
-	    for (int i=0; i<fields.length; i++) {
-		int fld = fields[i];
+	    int[] f = getFields (m);
+	    for (int i=0; i<f.length; i++) {
+		int fld = f[i];
 		if (m.hasField (fld)) {
 		    ISOComponent c = m.getComponent (fld);
 		    if (c instanceof ISOBinaryField)
@@ -99,6 +110,8 @@ public class MD5Filter implements ISOFilter, ReConfigurable {
 			+ISOUtil.hexString (rxDigest));
 		    throw new VetoException ("invalid MAC");
 		}
+		m.unset  (64);
+		m.unset (128);
 	    }
         } catch (NoSuchAlgorithmException e) {
 	    throw new VetoException (e);
