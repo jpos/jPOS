@@ -1,5 +1,6 @@
 package packagers;
 
+import iso.TestUtils;
 import junit.framework.*;
 import java.io.*;
 import java.util.*;
@@ -106,19 +107,19 @@ public class Test extends TestCase {
         writeImage (img, p);
 
         byte[] b = getImage (img);
-        assertTrue (Arrays.equals (b, p));
+        TestUtils.assertEquals(b, p);
 
         ISOMsg m1 = new ISOMsg ();
         // packager.setLogger (logger, msg + "-m1");
         m1.setPackager (packager);
         m1.unpack (b);
-        assertTrue (Arrays.equals (b, m1.pack()));
+        TestUtils.assertEquals(b, m1.pack());
 
         ISOMsg m2 = new ISOMsg ();
         m2.setPackager (packager);
         // packager.setLogger (logger, msg + "-m2");
         m2.unpack (new ByteArrayInputStream (out.toByteArray()));
-        assertTrue (Arrays.equals (b, m2.pack()));
+        TestUtils.assertEquals(b, m2.pack());
     }
 }
 
