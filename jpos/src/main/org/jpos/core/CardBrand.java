@@ -47,30 +47,7 @@
  * information please see <http://www.jpos.org/>.
  */
 
-/*
- * $Log$
- * Revision 1.6  2003/10/13 10:46:15  apr
- * tabs expanded to spaces
- *
- * Revision 1.5  2003/05/16 04:07:35  alwyns
- * Import cleanups.
- *
- * Revision 1.4  2000/11/02 12:09:18  apr
- * Added license to every source file
- *
- * Revision 1.3  2000/06/22 12:17:42  apr
- * Added equals method
- *
- * Revision 1.2  2000/03/01 14:44:38  apr
- * Changed package name to org.jpos
- *
- * Revision 1.1  1999/10/08 12:53:57  apr
- * Devel intermediate version - CVS sync
- *
- */
-
 package org.jpos.core;
-
 
 /**
  * @author apr@cs.com.uy
@@ -81,6 +58,7 @@ package org.jpos.core;
  */
 public class CardBrand {
     String name, productName;
+    Object handBack;
 
     /**
      * @param name Card brand's name
@@ -97,6 +75,12 @@ public class CardBrand {
         this.name = name;
         this.productName = productName;
     }
+    public void setHandBack (Object handBack) {
+        this.handBack = handBack;
+    }
+    public Object getHandBack () {
+        return handBack;
+    }
     public String toString() {
         return name + (productName != null ? "/" + productName : "");
     }
@@ -110,3 +94,4 @@ public class CardBrand {
         return obj != null ? toString().equals(obj.toString()) : false;
     }
 }
+
