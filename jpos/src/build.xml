@@ -135,6 +135,9 @@
     <available property="jetty.present"
            classpathref="ext.classpath"
               classname="org.mortbay.jetty.Server" />
+    <available property="jep.present"
+           classpathref="ext.classpath"
+              classname="org.nfunk.jep.JEP" />
   </target>
 
   <target name="ext.check.jsse" depends="ext.check" if="jnet.present">
@@ -160,6 +163,15 @@
   <target name="ext.jetty" depends="ext.check" if="jetty.present">
     <javac srcdir="${ext}" destdir="${classes}"
         includes="**/apps/jetty/**"
+        debug="${debug}"
+        deprecation="${deprecation}" >
+        <classpath refid="ext.classpath" />
+    </javac>
+  </target>
+
+  <target name="ext.jep" depends="ext.check" if="jep.present">
+    <javac srcdir="${ext}" destdir="${classes}"
+        includes="org/jpos/util/JepUtil.java org/jpos/iso/filter/*"
         debug="${debug}"
         deprecation="${deprecation}" >
         <classpath refid="ext.classpath" />
@@ -221,7 +233,7 @@
   </target>
 
   <target name="ext" 
-       depends="ext.sun-util, ext.comm, ext.jsse, ext.jce, ext.mail, ext.opencard, ext.jetty, ext.jceadapter">
+       depends="ext.sun-util, ext.comm, ext.jsse, ext.jce, ext.mail, ext.opencard, ext.jetty, ext.jceadapter, ext.jep">
     <javac srcdir="${ext}" destdir="${classes}"
         includes="**/apps/qsp/**"
         debug="${debug}"
