@@ -27,6 +27,7 @@ public class QSP implements ErrorHandler, LogSource {
     Document config;
     Logger logger;
     String realm;
+    static ControlPanel controlPanel = null;
 
     public QSP () {
 	super();
@@ -36,7 +37,18 @@ public class QSP implements ErrorHandler, LogSource {
     public void setConfig (Document config) {
 	this.config = config;
     }
-
+    public ControlPanel initControlPanel (int rows, int cols) {
+	if (controlPanel == null) {
+	    synchronized (QSP.class) {
+		if (controlPanel == null) 
+		    controlPanel = new ControlPanel (this, rows, cols);
+	    }
+	}
+	return controlPanel;
+    }
+    public ControlPanel getControlPanel (){
+	return controlPanel;
+    }
     public void warning (SAXParseException e) throws SAXException {
 	Logger.log (new LogEvent (this, "warning", e));
 	throw e;
@@ -82,12 +94,15 @@ public class QSP implements ErrorHandler, LogSource {
 	    qsp.setConfig (parser.getDocument());
 	    qsp.configure ("logger");
 	    qsp.configure ("log-listener");
+	    qsp.configure ("control-panel");
 	    qsp.configure ("channel");
 	    qsp.configure ("filter");
 	    qsp.configure ("mux");
 	    qsp.configure ("server");
 	    qsp.configure ("request-listener");
 	    qsp.configure ("task");
+	    if (controlPanel != null)
+		controlPanel.showUp();
 	    new SystemMonitor (3600000, qsp.getLogger(), "monitor");
 	} catch (IOException e) {
 	    Logger.log (new LogEvent (qsp, "error", e));

@@ -29,6 +29,10 @@
     <log-listener class="org.jpos.util.SimpleLogListener"/>
  </logger>
 
+ <control-panel rows="1" cols="1">
+  <panel name="loopback.channel" />
+ </control-panel>
+
  <server name="server" logger="qsp" realm="server" port="8000">
   <channel name="client-side-channel" 
           class="org.jpos.iso.channel.ASCIIChannel" 
@@ -45,10 +49,11 @@
  <mux name="mux" logger="qsp" realm="mux">
   <channel name="server-side-channel" 
           class="org.jpos.iso.channel.LoopbackChannel" 
-          logger="qsp" realm="acme" >
-   <filter class="org.jpos.iso.filter.XSLTFilter" direction="outgoing">
+          logger="qsp" realm="acme" 
+	  panel="loopback.channel" >
+   <filter class="org.jpos.iso.filter.XSLTFilter" direction="incoming">
     <property name="xsltfile" 
-              value="src/ext/org/jpos/apps/qsp/msg/dummy-outgoing.xsl" />
+              value="src/ext/org/jpos/apps/qsp/msg/dummy-incoming.xsl" />
     <property name="reread" value="yes" />
    </filter>
   </channel>

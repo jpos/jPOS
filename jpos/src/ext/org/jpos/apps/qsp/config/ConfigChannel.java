@@ -2,9 +2,12 @@ package org.jpos.apps.qsp.config;
 
 import java.io.IOException;
 import java.util.Properties;
+import javax.swing.JPanel;
+
 import org.jpos.iso.ISOChannel;
 import org.jpos.iso.ISOFactory;
 import org.jpos.iso.ISOException;
+import org.jpos.iso.gui.ISOChannelPanel;
 import org.jpos.util.Logger;
 import org.jpos.util.LogEvent;
 import org.jpos.util.NameRegistrar;
@@ -77,6 +80,11 @@ public class ConfigChannel implements QSPConfigurator {
 		    evt.addMessage (e);
 		}
 	    }
+
+	    JPanel panel = ConfigControlPanel.getPanel (node);
+	    if (panel != null) 
+		panel.add (new ISOChannelPanel (channel, name));
+
 	    return channel;
 	} catch (ISOException e) {
 	    throw new ConfigurationException ("error creating channel", e);

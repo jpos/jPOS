@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Id$ -->
 
-<!ELEMENT qsp-config (logger*,mux*,task*,server*)*>
+<!ELEMENT qsp-config (logger*,mux*,task*,server*,control-panel*)*>
 
 <!-- logger -->
 <!ELEMENT logger (log-listener*)>
@@ -21,6 +21,7 @@
 <!ATTLIST channel realm CDATA #IMPLIED>
 <!ATTLIST channel header CDATA #IMPLIED>
 <!ATTLIST channel packager CDATA #IMPLIED>
+<!ATTLIST channel panel IDREF #IMPLIED>
 <!ATTLIST channel type (client|server) #IMPLIED>
 
 <!-- filter -->
@@ -58,4 +59,13 @@
 <!ATTLIST server logger IDREF #IMPLIED>
 <!ATTLIST server realm CDATA #IMPLIED>
 <!ATTLIST server maxSessions CDATA #IMPLIED>
+
+<!-- control-panel -->
+<!ELEMENT control-panel (panel)*>
+<!ATTLIST control-panel rows CDATA #REQUIRED>
+<!ATTLIST control-panel cols CDATA #REQUIRED>
+
+<!-- panel -->
+<!ELEMENT panel EMPTY>
+<!ATTLIST panel name ID #REQUIRED>
 
