@@ -85,6 +85,7 @@ public abstract class BaseChannel extends Observable
 
     protected Logger logger = null;
     protected String realm = null;
+    protected String originalRealm = null;
     protected byte[] header = null;
 
     /**
@@ -226,7 +227,7 @@ public abstract class BaseChannel extends Observable
     {
         this.socket = socket;
         applyTimeout();
-        setLogger(getLogger(), getRealm() + 
+        setLogger(getLogger(), getOriginalRealm() + 
             "/" + socket.getInetAddress() + ":" + socket.getPort()
         );
         serverIn = new DataInputStream (
@@ -240,7 +241,6 @@ public abstract class BaseChannel extends Observable
         setChanged();
         notifyObservers();
     }
-
     /**
      * factory method pattern (as suggested by Vincent.Greene@amo.com)
      * @throws IOException
@@ -606,12 +606,18 @@ public abstract class BaseChannel extends Observable
     public void setLogger (Logger logger, String realm) {
         this.logger = logger;
         this.realm  = realm;
+        if (originalRealm == null)
+            originalRealm = realm;
     }
     public String getRealm () {
         return realm;
     }
     public Logger getLogger() {
         return logger;
+    }
+    public String getOriginalRealm() {
+        return originalRealm == null ? 
+            this.getClass().getName() : originalRealm;
     }
     /**
      * associates this ISOChannel with a name using NameRegistrar
