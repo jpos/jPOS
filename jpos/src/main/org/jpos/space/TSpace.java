@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.HashMap;
+import java.util.TimerTask;
+import org.jpos.util.DefaultTimer;
 
 /**
  * TSpace implementation
@@ -19,13 +21,15 @@ import java.util.HashMap;
  * @version $Revision$ $Date$
  * @since !.4.9
  */
-public class TSpace implements LocalSpace {
+public class TSpace extends TimerTask implements LocalSpace {
     protected Map entries;
     protected TSpace sl;    // space listeners
+    public static final long GCDELAY = 60*1000;
 
     public TSpace () {
         super();
         entries = new HashMap ();
+        DefaultTimer.getTimer().schedule (this, GCDELAY, GCDELAY);
     }
     public synchronized void out (Object key, Object value) {
         getList (key).add (value);
@@ -98,6 +102,9 @@ public class TSpace implements LocalSpace {
             } catch (InterruptedException e) { }
         }
         return obj;
+    }
+    public void run () {
+        gc();
     }
     public void gc () {
         Object[] keys;
