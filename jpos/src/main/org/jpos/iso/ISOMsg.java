@@ -175,6 +175,22 @@ public class ISOMsg extends ISOComponent
             maxField = i.intValue();
         dirty = true;
     }
+   /**
+    * Creates an ISOField associated with fldno within this ISOMsg
+    * @param fldno field number
+    * @param value field value
+    */
+    public void set (int fldno, String value) throws ISOException {
+        set (new ISOField (fldno, value));
+    }
+   /**
+    * Creates an ISOBinaryField associated with fldno within this ISOMsg
+    * @param fldno field number
+    * @param value field value
+    */
+    public void set (int fldno, byte[] value) throws ISOException {
+        set (new ISOBinaryField (fldno, value));
+    }
     /**
      * Unset a field if it exists, otherwise ignore.
      * @param fldno - the field number
