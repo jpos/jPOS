@@ -1,6 +1,9 @@
 
 /*
  * $Log$
+ * Revision 1.2  1999/11/11 10:18:49  apr
+ * added get(name,name), getInt(name), getLong(name) and getDouble(name)
+ *
  * Revision 1.1  1999/09/26 22:32:01  apr
  * CVS sync
  *
@@ -33,6 +36,19 @@ public class SimpleConfiguration implements Configuration {
     }
     synchronized public String get (String name) {
 	return props.getProperty (name, "");
+    }
+    synchronized public String get (String name, String def) {
+	return props.getProperty (name, def);
+    }
+    synchronized public int getInt (String name) {
+        return Integer.parseInt(props.getProperty(name, "0").trim());
+    }
+    synchronized public long getLong (String name) {
+        return Long.parseLong(props.getProperty(name, "0").trim());
+    }
+    synchronized public double getDouble(String name) {
+        return Double.valueOf(
+	    props.getProperty(name,"0.00").trim()).doubleValue();
     }
     synchronized public void load(String filename) 
 	throws FileNotFoundException, IOException
