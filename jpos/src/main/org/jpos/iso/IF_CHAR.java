@@ -22,9 +22,9 @@ public class IF_CHAR extends ISOFieldPackager {
 	 */
 	public byte[] pack (ISOComponent c) throws ISOException {
 		String s = (String) c.getValue();
-		if (s.length() > getLen()) 
-			s = s.substring(0, getLen());
-		return (ISOUtil.strpad (s, getLen())).getBytes();
+		if (s.length() > getLength()) 
+			s = s.substring(0, getLength());
+		return (ISOUtil.strpad (s, getLength())).getBytes();
 	}
 	/**
 	 * @param c - the Component to unpack
@@ -36,8 +36,8 @@ public class IF_CHAR extends ISOFieldPackager {
 	public int unpack (ISOComponent c, byte[] b, int offset)
 		throws ISOException
 	{
-		c.setValue(new String(b, offset, getLen()));
-		return getLen();
+		c.setValue(new String(b, offset, getLength()));
+		return getLength();
 	}
 	public int getMaxPackedLength() {
 		return getLength();

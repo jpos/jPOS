@@ -27,6 +27,10 @@ public class IFA_BITMAP extends ISOBitMapPackager {
 		byte[] b = ISOUtil.bitSet2byte ((BitSet) c.getValue());
 		return ISOUtil.hexString(b).getBytes();
 	}
+
+	public int getMaxPackedLength() {
+		return getLength() >> 2;
+	}
 	/**
 	 * @param c - the Component to unpack
 	 * @param b - binary image

@@ -27,7 +27,7 @@ public class IFB_LLLNUM extends ISOFieldPackager {
 		int len;
 		String s = (String) c.getValue();
 	
-		if ((len=s.length()) > getLen() || len>999)	// paranoia settings
+		if ((len=s.length()) > getLength() || len>999)	// paranoia settings
 			throw new ISOException (
 				"invalid len "+len +" packing LLNUM field "+(Integer) c.getKey()
 			);
@@ -55,5 +55,8 @@ public class IFB_LLLNUM extends ISOFieldPackager {
 		len += (((b[offset] >> 4) & 0x0F) * 10) + (b[offset] & 0x0F);
 		c.setValue (ISOUtil.bcd2str (b, offset+1, len, pad));
 		return 2 + (++len >> 1);
+	}
+	public int getMaxPackedLength() {
+		return 2 + ((getLength()+1) >> 1);
 	}
 }

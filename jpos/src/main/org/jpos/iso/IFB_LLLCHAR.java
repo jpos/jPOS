@@ -24,7 +24,7 @@ public class IFB_LLLCHAR extends ISOFieldPackager {
 		int len;
 		String s = (String) c.getValue();
 	
-		if ((len=s.length()) > getLen() || len>999)	// paranoia settings
+		if ((len=s.length()) > getLength() || len>999)	// paranoia settings
 			throw new ISOException (
 				"invalid len "+len +" packing field "+(Integer) c.getKey()
 			);
@@ -51,5 +51,8 @@ public class IFB_LLLCHAR extends ISOFieldPackager {
 		len += (((b[offset] >> 4) & 0x0F) * 10) + (b[offset] & 0x0F);
 		c.setValue(new String(b, ++offset, len));
 		return len+2;
+	}
+	public int getMaxPackedLength() {
+		return getLength()+2;
 	}
 }

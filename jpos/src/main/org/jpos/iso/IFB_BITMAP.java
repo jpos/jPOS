@@ -42,4 +42,7 @@ public class IFB_BITMAP extends ISOBitMapPackager {
 		len = ((len=bmap.size()) > 128) ? 128 : len;
 		return (len >> 3);
 	}
+	public int getMaxPackedLength() {
+		return getLength() >> 3;
+	}
 }

@@ -21,7 +21,7 @@ public class IFA_NUMERIC extends ISOFieldPackager {
 	 * @exception ISOException
 	 */
 	public byte[] pack (ISOComponent c) throws ISOException {
-		String s = ISOUtil.zeropad ((String) c.getValue(), getLen());
+		String s = ISOUtil.zeropad ((String) c.getValue(), getLength());
 		return s.getBytes();
 	}
 	/**
@@ -34,7 +34,10 @@ public class IFA_NUMERIC extends ISOFieldPackager {
 	public int unpack (ISOComponent c, byte[] b, int offset)
 		throws ISOException
 	{
-		c.setValue(new String(b, offset, getLen()));
-		return getLen();
+		c.setValue(new String(b, offset, getLength()));
+		return getLength();
+	}
+	public int getMaxPackedLength() {
+		return getLength();
 	}
 }

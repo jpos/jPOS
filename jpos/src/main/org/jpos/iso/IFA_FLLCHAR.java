@@ -26,13 +26,16 @@ public class IFA_FLLCHAR extends ISOFieldPackager {
 		int len;
 		String s = (String) c.getValue();
 	
-		if ((len=s.length()) > getLen() || len>99)	// paranoia settings
+		if ((len=s.length()) > getLength() || len>99)	// paranoia settings
 			throw new ISOException (
 				"invalid len "+len +" packing FLLCHAR field "+(Integer) c.getKey()
 			);
 
-		s = ISOUtil.strpad(s, getLen());
-		return (ISOUtil.zeropad(Integer.toString(getLen()), 2) + s).getBytes();
+		s = ISOUtil.strpad(s, getLength());
+		return (ISOUtil.zeropad(Integer.toString(getLength()), 2) + s).getBytes();
+	}
+	public int getMaxPackedLength() {
+		return getLength() + 2;
 	}
 
 	/**
@@ -47,6 +50,6 @@ public class IFA_FLLCHAR extends ISOFieldPackager {
 	{
 		int len = Integer.parseInt(new String(b, offset, 2));
 		c.setValue (new String (b, offset+2, len));
-		return getLen() + 2;
+		return getLength() + 2;
 	}
 }

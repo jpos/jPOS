@@ -41,4 +41,7 @@ public class X92_BITMAP extends ISOBitMapPackager {
 		c.setValue(bmap);
 		return (bmap.size() >> 2);
 	}
+	public int getMaxPackedLength() {
+		return getLength() >> 2;
+	}
 }

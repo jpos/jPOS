@@ -22,7 +22,7 @@ public class IF_ECHAR extends ISOFieldPackager {
 	 * @exception ISOException
 	 */
 	public byte[] pack (ISOComponent c) throws ISOException {
-		String s = (ISOUtil.strpad ((String) c.getValue(), getLen()));
+		String s = (ISOUtil.strpad ((String) c.getValue(), getLength()));
 		return ISOUtil.asciiToEbcdic(s);
 	}
 	/**
@@ -35,7 +35,10 @@ public class IF_ECHAR extends ISOFieldPackager {
 	public int unpack (ISOComponent c, byte[] b, int offset)
 		throws ISOException
 	{
-		c.setValue(ISOUtil.ebcdicToAscii(b, offset, getLen()));
-		return getLen();
+		c.setValue(ISOUtil.ebcdicToAscii(b, offset, getLength()));
+		return getLength();
+	}
+	public int getMaxPackedLength() {
+		return getLength();
 	}
 }

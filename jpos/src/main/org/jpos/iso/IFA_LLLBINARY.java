@@ -24,7 +24,7 @@ public class IFA_LLLBINARY extends ISOFieldPackager {
 		int len;
 		byte[] b = (byte[]) c.getValue();
 	
-		if ( (len=b.length) > getLen() || len>999)
+		if ( (len=b.length) > getLength() || len>999)
 			throw new ISOException (
 				"invalid len "+len 
 				+" packing LLLCHAR field "+(Integer) c.getKey()
@@ -55,5 +55,8 @@ public class IFA_LLLBINARY extends ISOFieldPackager {
 	}
 	public ISOComponent createComponent(int fieldNumber) {
 		return new ISOBinaryField (fieldNumber);
+	}
+	public int getMaxPackedLength() {
+		return getLength() + 3;
 	}
 }

@@ -23,7 +23,7 @@ public class IFB_NUMERIC extends ISOFieldPackager {
 	 * @exception ISOException
 	 */
 	public byte[] pack (ISOComponent c) throws ISOException {
-		String s = ISOUtil.zeropad ((String) c.getValue(), getLen());
+		String s = ISOUtil.zeropad ((String) c.getValue(), getLength());
 		return ISOUtil.str2bcd (s, pad);
 	}
 	/**
@@ -36,7 +36,10 @@ public class IFB_NUMERIC extends ISOFieldPackager {
 	public int unpack (ISOComponent c, byte[] b, int offset)
 		throws ISOException
 	{
-		c.setValue (ISOUtil.bcd2str (b, offset, getLen(), pad));
-		return ((getLen()+1) >> 1);
+		c.setValue (ISOUtil.bcd2str (b, offset, getLength(), pad));
+		return ((getLength()+1) >> 1);
+	}
+	public int getMaxPackedLength() {
+		return (getLength()+1) >> 1;
 	}
 }

@@ -23,7 +23,10 @@ public class IFA_AMOUNT extends ISOFieldPackager {
 	public byte[] pack (ISOComponent c) throws ISOException {
 		String s = (String) c.getValue();
 		return (s.substring(0,1) 
-				+ISOUtil.zeropad(s.substring(1),getLen()-1)).getBytes();
+				+ISOUtil.zeropad(s.substring(1),getLength()-1)).getBytes();
+	}
+	public int getMaxPackedLength() {
+		return getLength();
 	}
 	/**
 	 * @param c - the Component to unpack
@@ -35,7 +38,7 @@ public class IFA_AMOUNT extends ISOFieldPackager {
 	public int unpack (ISOComponent c, byte[] b, int offset)
 		throws ISOException
 	{
-		c.setValue(new String(b, offset, getLen()));
-		return getLen();
+		c.setValue(new String(b, offset, getLength()));
+		return getLength();
 	}
 }

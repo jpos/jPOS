@@ -20,7 +20,7 @@ public class ISOMsgFieldPackager extends ISOFieldPackager {
 			ISOFieldPackager fieldPackager,
 			ISOPackager msgPackager)
 	{
-		super(fieldPackager.getLen(), fieldPackager.getDescription());
+		super(fieldPackager.getLength(), fieldPackager.getDescription());
 		this.msgPackager = msgPackager;
 		this.fieldPackager = fieldPackager;
 	}
@@ -55,5 +55,8 @@ public class ISOMsgFieldPackager extends ISOFieldPackager {
 		ISOMsg m = new ISOMsg(fieldNumber);
 		m.setPackager(msgPackager);
 		return m;
+	}
+	public int getMaxPackedLength() {
+		return fieldPackager.getLength();
 	}
 }

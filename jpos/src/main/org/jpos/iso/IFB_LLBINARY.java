@@ -23,7 +23,7 @@ public class IFB_LLBINARY extends ISOFieldPackager {
 	public byte[] pack (ISOComponent c) throws ISOException {
 		int len = ((byte[]) c.getValue()).length;
 	
-		if (len > getLen() || len>99)	// paranoia settings
+		if (len > getLength() || len>99)	// paranoia settings
 			throw new ISOException (
 				"invalid len "+len +" packing field "+(Integer) c.getKey()
 			);
@@ -52,5 +52,8 @@ public class IFB_LLBINARY extends ISOFieldPackager {
 	}
 	public ISOComponent createComponent(int fieldNumber) {
 		return new ISOBinaryField (fieldNumber);
+	}
+	public int getMaxPackedLength() {
+		return getLength()+1;
 	}
 }

@@ -22,12 +22,15 @@ public class IFA_BINARY extends ISOFieldPackager {
 	 */
 	public byte[] pack (ISOComponent c) throws ISOException {
 		byte[] b = (byte[]) c.getValue();
-		if (b.length != getLen()) 
+		if (b.length != getLength()) 
 			throw new ISOException (
 				"invalid len "+b.length +" packing field "+(Integer) c.getKey()
-				+" expected "+getLen()
+				+" expected "+getLength()
 			);
 		return ISOUtil.hexString( (byte[]) c.getValue() ).getBytes();
+	}
+	public int getMaxPackedLength() {
+		return getLength() << 1;
 	}
 	/**
 	 * @param c - the Component to unpack
@@ -39,8 +42,8 @@ public class IFA_BINARY extends ISOFieldPackager {
 	public int unpack (ISOComponent c, byte[] b, int offset)
 		throws ISOException
 	{
-		c.setValue (ISOUtil.hex2byte(b, offset, getLen()));
-		return getLen() << 1;
+		c.setValue (ISOUtil.hex2byte(b, offset, getLength()));
+		return getLength() << 1;
 	}
 	/**
 	 * component factory

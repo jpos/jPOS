@@ -23,10 +23,10 @@ public class IFB_BINARY extends ISOFieldPackager {
 	 */
 	public byte[] pack (ISOComponent c) throws ISOException {
 		byte[] b = (byte[]) c.getValue();
-		if (b.length != getLen()) 
+		if (b.length != getLength()) 
 			throw new ISOException (
 				"invalid len "+b.length +" packing field "+(Integer) c.getKey()
-				+" expected "+getLen()
+				+" expected "+getLength()
 			);
 		return (byte[]) c.getValue();
 	}
@@ -40,12 +40,15 @@ public class IFB_BINARY extends ISOFieldPackager {
 	public int unpack (ISOComponent c, byte[] b, int offset)
 		throws ISOException
 	{
-		byte[] value = new byte[getLen()];
-	    System.arraycopy(b, offset, value, 0, getLen());
+		byte[] value = new byte[getLength()];
+	    System.arraycopy(b, offset, value, 0, getLength());
 		c.setValue ((Object) value);
-		return getLen();
+		return getLength();
 	}
 	public ISOComponent createComponent(int fieldNumber) {
 		return new ISOBinaryField (fieldNumber);
+	}
+	public int getMaxPackedLength() {
+		return getLength();
 	}
 }

@@ -24,7 +24,7 @@ public class IFB_AMOUNT extends ISOFieldPackager {
 	 */
 	public byte[] pack (ISOComponent c) throws ISOException {
 		String s = (String) c.getValue();
-		String amnt = ISOUtil.zeropad(s.substring(1),getLen()-1);
+		String amnt = ISOUtil.zeropad(s.substring(1),getLength()-1);
 		byte[] bcd = ISOUtil.str2bcd (amnt, pad);
 		byte[] b   = new byte[bcd.length + 1];
 		b[0] = (byte) s.charAt(0);
@@ -42,8 +42,11 @@ public class IFB_AMOUNT extends ISOFieldPackager {
 		throws ISOException
 	{
 		String d = (new String(b, offset, 1)) 
-					+ISOUtil.bcd2str (b, offset+1, getLen()-1, pad);
+					+ISOUtil.bcd2str (b, offset+1, getLength()-1, pad);
 		c.setValue(d);
-		return 1 + ((getLen()+1) >> 1);
+		return 1 + ((getLength()+1) >> 1);
+	}
+	public int getMaxPackedLength() {
+		return 1 + ((getLength()+1) >> 1);
 	}
 }
