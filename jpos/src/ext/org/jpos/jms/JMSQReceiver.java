@@ -110,7 +110,7 @@ public class JMSQReceiver extends QBeanSupport implements JMSQReceiverMBean {
             receiver.setMessageListener (ml);
             queueConnection.start ();
         } catch (Exception e) {
-            throw new Q2ConfigurationException ("Config failure");
+            throw new Q2ConfigurationException ("Config failure", e);
         }
     }
 
@@ -166,7 +166,7 @@ public class JMSQReceiver extends QBeanSupport implements JMSQReceiverMBean {
     /**
      * @jmx:managed-attribute description="Username"
      */
-    public void setUserName (String username) {
+    public void setUsername (String username) {
         this.username = username;
     }
 
