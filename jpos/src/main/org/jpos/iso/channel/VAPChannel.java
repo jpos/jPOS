@@ -54,6 +54,7 @@ import java.net.ServerSocket;
 
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
+import org.jpos.iso.ISOChannel;
 import org.jpos.iso.BaseChannel;
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOHeader;
@@ -87,7 +88,6 @@ public class VAPChannel extends BaseChannel {
      * @param host  server TCP Address
      * @param port  server port number
      * @param p     an ISOPackager (should be ISO87BPackager)
-     * @param hlen  the header len
      * @see org.jpos.iso.packager.ISO87BPackager
      */
     public VAPChannel (String host, int port, ISOPackager p) {
@@ -96,7 +96,6 @@ public class VAPChannel extends BaseChannel {
     /**
      * Construct server ISOChannel
      * @param p     an ISOPackager (should be ISO87BPackager)
-     * @param hlen  the header len
      * @exception IOException
      * @see org.jpos.iso.packager.ISO87BPackager
      */
@@ -120,9 +119,56 @@ public class VAPChannel extends BaseChannel {
      * The default header for VAPChannel is BASE1Header
      */
     protected ISOHeader getDynamicHeader (byte[] image) {
-        return new BASE1Header (image);
+        return new BASE1Header(image);
     }
+	
+    /**
+     * This method reads in a Base 1 Header.
+     *
+     * @param hLen
+     * @return
+     * @throws IOException
+     */
+    protected byte[] readHeader(int hLen)
+        throws IOException {
+        // Read the first byte of the header (header length)
+        int b = serverIn.read();
+        int bytesRead = b;
 
+        if (b != -1)
+        {
+            // Create am array to read the header into
+            byte bytes[] = new byte[b];
+            // Stick the first byte in
+            bytes[0] = (byte) b;
+            // and read the rest of the header
+            serverIn.readFully(bytes, 1, b - 1);
+
+            // Is there another header following on
+            if ((bytes[1] & 0x80) == 0x80)
+            {
+                b = serverIn.read();
+                bytesRead += b;
+
+                // Create an array big enough for both headers
+                byte tmp[] = new byte[bytesRead];
+				
+                // Copy in the original
+                System.arraycopy(bytes, 0, tmp, 0, bytes.length);
+
+                // And this one
+                tmp[bytes.length] = (byte) b;
+                serverIn.readFully(tmp, bytes.length + 1, b - 1);
+                bytes = tmp;
+            }
+            return bytes;
+        }
+        else
+        {
+            throw new IOException("Error reading header");
+        }
+    }
+	
     protected void sendMessageLength(int len) throws IOException {
         serverOut.write (len >> 8);
         serverOut.write (len);

@@ -66,6 +66,9 @@ import org.jpos.iso.ISOUtil;
  *  17 batchNbr;     Fld 10: Batch Number        1B       (Byte    17)
  *  18 reserved[3];  Fld 11: Reserved            3B       (Byte 18-20)
  *  21 userInfo;     Fld 12: User Info           1B       (Byte    21)
+ *  The following fields are only presend in a reject message
+ *  22 bitmap;       Fld 13: Bitmap              2B       (Byte 22-23)
+ *  24 rejectdata;   Fld 14: Reject Data Group   2B       (Byte 24-25)
  * </pre>
  *
  */
@@ -85,12 +88,12 @@ public class BASE1Header extends BaseHeader {
         setDestination(destination);
     }
     public BASE1Header(byte[] header) {
-        super (header);
+        super(header);
     }
-    public int unpack (byte[] header) {
-        this.header = new byte[LENGTH];
-        System.arraycopy (header, 0, this.header, 0, LENGTH);
-        return LENGTH;
+    public int unpack(byte[] header) {
+        this.header = new byte[header.length];
+        System.arraycopy(header, 0, this.header, 0, header.length);
+        return header.length;
     }
     public int getHLen() {
         return (int) (header[0] & 0xFF);
@@ -120,7 +123,7 @@ public class BASE1Header extends BaseHeader {
         header[2] = (byte) format;
     }
     public void setLen(int len) {
-        len += LENGTH;
+        len += header.length;
         header[3]  = (byte) ((len >> 8) & 0xff);
         header[4]  = (byte) (len        & 0xff);
     }
@@ -147,10 +150,18 @@ public class BASE1Header extends BaseHeader {
         }
     }
     public boolean isRejected() {
-        return (header[16] & 0x80) == 0x80;
+        // Header length must be 26 or gerater
+        // And header field 13 bit 1 must be 1 (field 13 starts at byte 22)
+        return (getLength() >= 26) && ((header[22] & 0x80) == 0x80);
     }
-    // first bit of fld 13 of header == 1 && len >=26
-    // indica un nuevo header de 22 (Pagina 4-2 Vol-1 VIP System
-    // Technical Reference General Requirements
-};
+	
+    /**
+     * Gets the BASE 1 Reject Code.
+     * 
+     * @return If the message is a reject return the Reject Code Otherwise return "" 
+     */ 
+    public String getRejectCode() {
+        return isRejected() ? ISOUtil.bcd2str (this.header, 24, 4, false) : "";
+    }
+}
 
