@@ -58,6 +58,6 @@ public interface QSPMBean {
     public void   setConfigFile (String fileName) throws IOException;
     public void   setMonitorConfigInterval (long l);
     public long   getMonitorConfigInterval ();
-    public void   killVM ();
+    public void   shutdown ();
 }
 

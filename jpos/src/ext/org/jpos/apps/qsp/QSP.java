@@ -307,17 +307,16 @@ public class QSP implements ErrorHandler, LogSource, Runnable, QSPMBean {
         }
 	return (lastModified = l) != 0;
     }
-    public void killVM () {
-        Logger.log (new LogEvent (this, "kill-vm"));
-        Thread killer = new Thread() {
+    public void shutdown () {
+        Logger.log (new LogEvent (this, "shutdown"));
+        new Thread() {
             public void run() {
                 try {
                     Thread.sleep (1000);
                 } catch (InterruptedException e) { }
                 System.exit (0);
             }
-        };
-        killer.start ();
+        }.start ();
     }
     public static void shutdownMuxes() {
         Iterator iter = NameRegistrar.getMap().values().iterator();
