@@ -254,12 +254,15 @@ public class ISOMsg extends ISOComponent implements Cloneable {
 		try {
 			ISOMsg m = (ISOMsg) super.clone();
 			m.fields = new Hashtable();
-			for (int i=0; i<fields.length; i++) 
-				try {
-					m.set (getComponent(i));
-				} catch (ISOException e) { 
-					// it should never happen
+			for (int i=0; i<fields.length; i++) {
+				if (hasField(fields[i])) {
+					try {
+						m.set (getComponent(fields[i]));
+					} catch (ISOException e) { 
+						// it should never happen
+					}
 				}
+			}
 			return (Object) m;
 		} catch (CloneNotSupportedException e) {
 			throw new InternalError();
