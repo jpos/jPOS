@@ -50,6 +50,7 @@ package org.jpos.q2.qbean;
 
 import org.jpos.q2.Q2;
 import org.jpos.q2.QBean;
+import org.jpos.q2.QBeanSupport;
 import org.jpos.q2.QPersist;
 import org.jdom.Element;
 import org.jpos.util.Log;
@@ -191,6 +192,9 @@ public class HttpAdaptor
     }
     public int getState () {
         return state;
+    }
+    public String getStateAsString () {
+        return QBeanSupport.stateString[state];
     }
     public void setState (int state) {
         this.state = state;
