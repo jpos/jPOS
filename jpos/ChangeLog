@@ -3,7 +3,7 @@ $Id$
 -- 1.3.3 --
 new Externalizable strategy on ISOMsg.
 new class org.jpos.util.DefaultTimer().
-RotateLogListener uses DefaultTimer (instead of its own Thread).
+RotateLogListener uses DefaultTimer (instead of its own Thread requires JDK1.3).
 RotateLogListener accepts new 'maxSize' parameter.
 new method ISOUtil.protect();
 Added ProtectedLogListener.
@@ -17,6 +17,9 @@ ISOMsgFieldPackager.pack allow components other than ISOMsg to be passed in.
 BaseChannel.newSocket changed signature (no args now).
 BaseChannel.accept now closes listening socket.
 ISOMsg set(fldno,String), set(fldno,byte[]) and new constructor ISOMsg(mti).
+New classes ISOServerFactory and ISOClientFactory
+BaseChannel new easy to override sendMessage (encryption hook).
+BaseChannel uses ISOClientFactory (SSL hook).
 Changes to BaseChannel and ISOServer to support SocketFactories
 Added SunJsseSocketFactory contributed by Bharavi Gade.
 
