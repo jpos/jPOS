@@ -266,7 +266,7 @@
       class="org.jpos.iso.IF_CHAR"/>
   <isofield
       id="52"
-      length="16"
+      length="8"
       name="PIN DATA"
       class="org.jpos.iso.IFA_BINARY"/>
   <isofield
