@@ -264,7 +264,7 @@ public abstract class BaseChannel extends Observable
             new BufferedInputStream (socket.getInputStream ())
         );
         serverOut = new DataOutputStream(
-            new BufferedOutputStream(socket.getOutputStream())
+            new BufferedOutputStream(socket.getOutputStream(), 2048)
         );
         usable = true;
         cnt[CONNECT]++;
