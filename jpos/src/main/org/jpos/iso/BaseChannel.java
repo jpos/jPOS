@@ -189,7 +189,7 @@ public abstract class BaseChannel extends Observable
 
     /**
      * Associates this ISOChannel with a server socket
-     * @param serverSocket where to accept a connection
+     * @param sock where to accept a connection
      */
     public void setServerSocket (ServerSocket sock) {
         setHost (null, 0);
@@ -448,6 +448,18 @@ public abstract class BaseChannel extends Observable
     protected ISOMsg createMsg () {
         return new ISOMsg();
     }
+	
+    /**
+     * Reads in a message header.
+     *
+     * @param hLen The Length og the reader to read
+     * @return The header bytes that were read in
+     */
+    protected byte[] readHeader(int hLen) throws IOException {
+        byte[] header = new byte[hLen];
+        serverIn.readFully(header, 0, hLen);
+        return header;
+    }
     /**
      * Waits and receive an ISOMsg over the TCP/IP session
      * @return the Message received
@@ -470,24 +482,19 @@ public abstract class BaseChannel extends Observable
 
                 if (len == -1) {
                     if (hLen > 0) {
-                        header = new byte [hLen];
-                        serverIn.readFully(header,0,hLen);
+                        header = readHeader(hLen);
                     }
                     b = streamReceive();
                 }
                 else if (len > 10 && len <= 4096) {
-                    int l;
                     if (hLen > 0) {
                         // ignore message header (TPDU)
-                        header = new byte [hLen];
-                        serverIn.readFully(header,0,hLen);
-                        if (isRejected(header))
-                            throw new ISOException 
-                                ("Unhandled Rejected Message");
-                        len -= hLen;
+                        // Note header length is not necessarily equal to hLen (see VAPChannel)
+                        header = readHeader(hLen);
+                        len -= header.length;
                     }
                     b = new byte[len];
-                    serverIn.readFully(b,0,len);
+                    serverIn.readFully(b, 0, len);
                     getMessageTrailler();
                 }
                 else
