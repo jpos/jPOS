@@ -95,11 +95,12 @@ public class IF_TCHAR extends IF_TBASE {
     public int unpack (ISOComponent c, byte[] b, int offset)
         throws ISOException
     {
-    	String s = new String(b);
-    	int end = s.indexOf( getToken() );
-        c.setValue( s.substring( offset , end ));
-        setLength( end - offset);
-        return getLength() + getToken().length();
+        String s = new String( b  );
+        int newoffset = s.indexOf( getToken() , offset );
+        c.setValue( s.substring( offset - 1 , newoffset ));
+        int len = newoffset - offset + 1;
+        setLength( len );
+        return len + getToken().length();
     }
 
     public int getMaxPackedLength() {
