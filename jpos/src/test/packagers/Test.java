@@ -74,6 +74,14 @@ public class Test extends TestCase {
         doTest (new GenericPackager ("src/config/packager/iso93binary.xml"),
             "ISO93", "ISO93BPackager");
     }
+    public void testF64Binary() throws Exception {
+        doTest (new GenericPackager ("src/config/packager/iso87binary.xml"),
+            "ISO87-Field64", "ISO87B-Field64");
+    }
+    public void testF64ascii() throws Exception {
+        doTest (new GenericPackager ("src/config/packager/iso87ascii.xml"),
+            "ISO87-Field64", "ISO87A-Field64");
+    }
     private void doTest (ISOPackager packager, String msg, String img)
         throws Exception
     {
