@@ -69,5 +69,10 @@ public interface ISOSource {
      */
     public void send (ISOMsg m) 
         throws IOException, ISOException, VetoException;
+
+    /**
+     * @return true if source is connected and usable
+     */
+    public boolean isConnected();
 }
 
