@@ -72,11 +72,29 @@ public class SimpleConfiguration implements Configuration {
 	props = new Properties();
 	load (filename);
     }
-    synchronized public String get (String name) {
-	return props.getProperty (name, "");
-    }
     synchronized public String get (String name, String def) {
-	return props.getProperty (name, def);
+        Object obj = props.get (name);
+        if (obj instanceof List) {
+            List l = (List) obj;
+            obj = (l.size() > 0) ? l.get(0) : null;
+        }
+        return (obj instanceof String) ? ((String) obj) : def;
+    }
+    synchronized public String[] getAll (String name) {
+        String[] ret;
+        Object obj = props.get (name);
+        if (obj instanceof String[]) {
+            ret = (String[]) obj;
+        } else if (obj instanceof String) {
+            ret = new String[1];
+            ret[0] = (String) obj;
+        } else
+            ret = new String[0];
+
+        return ret;
+    }
+    synchronized public String get (String name) {
+	return get (name, "");
     }
     synchronized public int getInt (String name) {
         return Integer.parseInt(props.getProperty(name, "0").trim());
@@ -106,10 +124,8 @@ public class SimpleConfiguration implements Configuration {
     }
     public boolean getBoolean (String name, boolean def) {
 	String v = get (name);
-        if (v != null)
-            v = v.trim();
-	return v == null ? def :
-            v.equalsIgnoreCase("true") || v.equalsIgnoreCase("yes");
+	return v.length() == 0 ? def :
+            (v.equalsIgnoreCase("true") || v.equalsIgnoreCase("yes"));
     }
     synchronized public void load(String filename) 
 	throws FileNotFoundException, IOException
