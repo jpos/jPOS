@@ -82,6 +82,13 @@ public class JMSQReceiver extends QBeanSupport implements JMSQReceiverMBean,Runn
     private int jmsState = STOPPED;
     private long jmsRetryInterval = 5000;
 
+    private class ExcListener implements ExceptionListener {
+        public void onException (JMSException exception) {
+            log.error (exception);
+            restart ();
+        }
+    }
+
     private class MsgListener implements MessageListener {
         public void onMessage (Message message) {
             space.out (spaceKey, message);
@@ -121,6 +128,8 @@ public class JMSQReceiver extends QBeanSupport implements JMSQReceiverMBean,Runn
             queueConnection = Utilities.getQueueConnection (queueConnectionFactory);
         else
             queueConnection = Utilities.getQueueConnection (queueConnectionFactory, username, password);
+        ExcListener el = new ExcListener ();
+        queueConnection.setExceptionListener (el);
         queue = Utilities.getQueue (queueName);
         queueSession = queueConnection.createQueueSession (false, Session.AUTO_ACKNOWLEDGE);
         receiver = queueSession.createReceiver (queue);
@@ -133,8 +142,14 @@ public class JMSQReceiver extends QBeanSupport implements JMSQReceiverMBean,Runn
         log.info ("disconnectJMS");
         try {
             queueConnection.stop ();
+        } catch (JMSException e) { }
+        try {
             receiver.close ();
+        } catch (JMSException e) { }
+        try {
             queueSession.close ();
+        } catch (JMSException e) { }
+        try {
             queueConnection.close ();
         } catch (JMSException e) {
             log.error (e);
@@ -142,6 +157,7 @@ public class JMSQReceiver extends QBeanSupport implements JMSQReceiverMBean,Runn
             receiver = null;
             queueSession = null;
             queueConnection = null;
+            jmsState = STOPPED;
         }
     }
 
@@ -184,6 +200,8 @@ public class JMSQReceiver extends QBeanSupport implements JMSQReceiverMBean,Runn
         this.connectionFactory = connectionFactory;
         setAttr (getAttrs(), "connectionFactory", connectionFactory);
         setModified (true);
+        if (jmsState == STARTED)
+            restart ();
     }
 
     /**
@@ -200,6 +218,8 @@ public class JMSQReceiver extends QBeanSupport implements JMSQReceiverMBean,Runn
         this.queueName = queueName;
         setAttr (getAttrs(), "queueName", queueName);
         setModified (true);
+        if (jmsState == STARTED)
+            restart ();
     }
 
     /**
@@ -216,6 +236,8 @@ public class JMSQReceiver extends QBeanSupport implements JMSQReceiverMBean,Runn
         this.username = username;
         setAttr (getAttrs(), "username", username);
         setModified (true);
+        if (jmsState == STARTED)
+            restart ();
     }
 
     /**
@@ -225,6 +247,8 @@ public class JMSQReceiver extends QBeanSupport implements JMSQReceiverMBean,Runn
         this.password = password;
         setAttr (getAttrs(), "password", password);
         setModified (true);
+        if (jmsState == STARTED)
+            restart ();
     }
 
     /**
@@ -248,6 +272,7 @@ public class JMSQReceiver extends QBeanSupport implements JMSQReceiverMBean,Runn
         this.spaceName = spaceName;
         setAttr (getAttrs(), "space", spaceName);
         setModified (true);
+        space = TransientSpace.getSpace (spaceName);
     }
 
     /**
