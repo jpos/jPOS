@@ -236,6 +236,7 @@ public class ISOMUX implements Runnable {
 			}
 			catch (IOException e) {
 				e.printStackTrace();
+				channel.setUsable(false);
 				// delay after IO exception
 				try { Thread.sleep(1000); } catch (InterruptedException ie) { }
 			}
