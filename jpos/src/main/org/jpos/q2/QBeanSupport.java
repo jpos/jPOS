@@ -193,20 +193,23 @@ public class QBeanSupport implements QBean, QPersist, QBeanSupportMBean {
             BeanInfo info = Introspector.getBeanInfo (mbeanClass);
             PropertyDescriptor[] desc = info.getPropertyDescriptors();
             for (int i=0; i<desc.length; i++) {
-                Method read = desc[i].getReadMethod();
-                Object obj  = read.invoke (this, new Object[] { } );
-                String type = read.getReturnType().getName();
-                if ("java.lang.String".equals (type))
-                    type = null;
+                if (desc[i].getWriteMethod() != null) {
+                    Method read = desc[i].getReadMethod();
+                    Object obj  = read.invoke (this, new Object[] { } );
+                    String type = read.getReturnType().getName();
+                    if ("java.lang.String".equals (type))
+                        type = null;
 
-                addAttr (e, desc[i].getName(), obj.toString(), type);
+                    addAttr (e, desc[i].getName(), obj, type);
+                }
             }
         } catch (Exception ex) {
             log.warn ("get-persist", ex);
         } 
         return e;
     }
-    protected void addAttr (Element e, String name, String value, String type) {
+    protected void addAttr (Element e, String name, Object obj, String type) {
+        String value = obj == null ? "null" : obj.toString();
         Element attr = new Element ("attr");
         attr.setAttribute ("name", name);
         if (type != null)
