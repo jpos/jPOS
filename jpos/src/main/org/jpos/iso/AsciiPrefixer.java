@@ -73,6 +73,12 @@ public class AsciiPrefixer implements Prefixer
      */
     public static final AsciiPrefixer LLLLL = new AsciiPrefixer(5);
 
+    /**
+     * A length prefixer for upto 999999 chars. The length is encoded with 6
+     * ASCII chars representing 6 decimal digits.
+     */
+    public static final AsciiPrefixer LLLLLL = new AsciiPrefixer(6);
+
     //private static final LeftPadder PADDER = LeftPadder.ZERO_PADDER;
     //private static final AsciiInterpreter INTERPRETER = AsciiInterpreter.INSTANCE;
 
