@@ -12,6 +12,9 @@ import java.util.*;
 
 /*
  * $Log$
+ * Revision 1.17  1999/12/15 13:04:13  apr
+ * BugFix: bad FS definition
+ *
  * Revision 1.16  1999/12/11 17:23:35  apr
  * BugFix: pan/exp separator = in bcd2str()
  *
@@ -303,10 +306,10 @@ public class ISOUtil {
 		    case '\005': d.append ("{ENQ}");  break;
 		    case '\006': d.append ("{ACK}");  break;
 		    case '\007': d.append ("{BEL}");  break;
-		    case '\014': d.append ("{FS}");  break;
 		    case '\020': d.append ("{DLE}");  break;
 		    case '\025': d.append ("{NAK}");  break;
 		    case '\026': d.append ("{SYN}");  break;
+		    case '\034': d.append ("{FS}");  break;
 		    default:
 			char hi = Character.forDigit ((b[i] >> 4) & 0x0F, 16);
 			char lo = Character.forDigit (b[i] & 0x0F, 16);
