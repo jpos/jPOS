@@ -1,6 +1,7 @@
 $Id$
 
 -- 1.3.7 --
+QSP allows custom tags
 Configuration now allow multiple properties with the same name.
 New helper method in Configuration.
 QSP qsp-config accepts name and property*.
