@@ -49,6 +49,7 @@
 
 package org.jpos.space;
 
+import java.util.Set;
 import java.util.Map;
 import java.util.LinkedHashMap;
 import java.util.HashSet;
@@ -261,6 +262,13 @@ public class TransientSpace implements Space, TransientSpaceMBean {
             }
         } 
         return (Space) obj;
+    }
+    public Set getKeySet () {
+        Set keySet;
+        synchronized (this) {
+            keySet = map.keySet();
+        }
+        return keySet;
     }
     public String getKeys () {
         StringBuffer sb = new StringBuffer ();
