@@ -72,6 +72,7 @@ import org.jpos.util.LogSource;
 import org.jpos.util.NameRegistrar;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
+import org.jpos.apps.qsp.config.ConfigTask;
 
 /**
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
@@ -331,6 +332,18 @@ public class QSP implements ErrorHandler, LogSource, Runnable {
 	    Logger.log (new LogEvent (qsp, "error", e));
 	    System.out.println (e);
 	}
+    }
+    /**
+     * @return task instance with given name.
+     * @throws NameRegistrar.NotFoundException;
+     * @see NameRegistrar
+     */
+    public static Object getTask (String name)
+	throws NameRegistrar.NotFoundException
+    {
+	return (ISOMUX) NameRegistrar.get (
+            ConfigTask.NAMEREGISTRAR_PREFIX+name
+        );
     }
     /**
      * Launches QSP with default values for supportedTags and validation
