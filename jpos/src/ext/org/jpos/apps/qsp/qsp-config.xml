@@ -37,11 +37,20 @@
  </mux>
 
  <task class="org.jpos.apps.qsp.task.Sender" logger="qsp" realm="acme-sender">
-  <property name="mux" value="acme.mux" />
+  <property name="mux" value="loopback.mux" />
   <property name="message" value="src/ext/org/jpos/apps/qsp/msg/0800.xml" />
   <property name="wait-for-response" value="15000" />
   <property name="initial-delay" value="1000" />
   <property name="delay" value="10000" />
  </task>
+
+ <!-- Test LoopbackChannel -->
+ <mux name="loopback.mux" logger="qsp" realm="loopback">
+  <channel name="loopback.channel" 
+          class="org.jpos.iso.channel.LoopbackChannel" 
+          logger="qsp" realm="loopback.channel"
+	  connect="no">
+  </channel>
+ </mux>
 
 </qsp-config>

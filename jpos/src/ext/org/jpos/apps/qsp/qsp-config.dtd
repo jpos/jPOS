@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Id$ -->
 
-<!ELEMENT qsp-config (logger*,mux*,task*)>
+<!ELEMENT qsp-config (logger*,mux*,task*)*>
 
 <!-- logger -->
 <!ELEMENT logger (log-listener*)>
@@ -16,12 +16,12 @@
 <!ELEMENT channel (property*, filter*)*>
 <!ATTLIST channel name ID #REQUIRED>
 <!ATTLIST channel class CDATA #REQUIRED>
-<!ATTLIST channel packager CDATA #REQUIRED>
-<!ATTLIST channel type (client|server) #REQUIRED>
 <!ATTLIST channel connect (yes|no) 'no'>
 <!ATTLIST channel logger IDREF #IMPLIED>
 <!ATTLIST channel realm CDATA #IMPLIED>
 <!ATTLIST channel header CDATA #IMPLIED>
+<!ATTLIST channel packager CDATA #IMPLIED>
+<!ATTLIST channel type (client|server) #IMPLIED>
 
 <!-- filter -->
 <!ELEMENT filter (property)*>
@@ -29,7 +29,7 @@
 <!ATTLIST filter direction (incoming|outgoing|both) 'both'>
 
 <!-- mux -->
-<!ELEMENT mux (channel,request-listener)>
+<!ELEMENT mux (channel,request-listener*)>
 <!ATTLIST mux name ID #REQUIRED>
 <!ATTLIST mux logger IDREF #IMPLIED>
 <!ATTLIST mux realm CDATA #IMPLIED>
