@@ -49,6 +49,13 @@
 
 /*
  * $Log$
+ * Revision 1.8  2003/05/21 17:57:34  apr
+ * Supports multiple destinations:
+ *
+ *   "jpos.operator.to"
+ *   "jpos.operator.cc"
+ *   "jpos.operator.bcc"
+ *
  * Revision 1.7  2003/05/16 07:14:30  alwyns
  * Import cleanups. Should work as expected now.
  *
@@ -151,7 +158,9 @@ public class OperatorLogListener
     }
     private void sendMail (LogEvent[] ev) {
 	String from    = cfg.get ("jpos.operator.from", "jpos-logger");
-	String to      = cfg.get ("jpos.operator.to");
+	String[] to    = cfg.getAll ("jpos.operator.to");
+	String[] cc    = cfg.getAll ("jpos.operator.cc");
+	String[] bcc   = cfg.getAll ("jpos.operator.bcc");
 	String subject = cfg.get ("jpos.operator.subject.prefix");
 	if (ev.length > 1) 
 	    subject = subject + ev.length + " events";
@@ -169,9 +178,14 @@ public class OperatorLogListener
 	try {
 	    // create a message
 	    MimeMessage msg = new MimeMessage(session);
-	    msg.setFrom(new InternetAddress(from));
-	    InternetAddress[] address = {new InternetAddress(to)};
-	    msg.setRecipients(Message.RecipientType.TO, address);
+	    msg.setFrom (new InternetAddress(from));
+
+	    InternetAddress[] address = new InternetAddress[to.length];
+            for (int i=0; i<to.length; i++) 
+                address[i] = new InternetAddress (to[i]);
+	    msg.setRecipients (Message.RecipientType.TO, getAddress (to));
+	    msg.setRecipients (Message.RecipientType.CC, getAddress (cc));
+	    msg.setRecipients (Message.RecipientType.BCC, getAddress (bcc));
 	    msg.setSubject(subject);
 	    Multipart mp = new MimeMultipart();
 
@@ -201,6 +215,12 @@ public class OperatorLogListener
     private boolean checkOperatorTag(LogEvent ev) {
 	String tags = cfg.get ("jpos.operator.tags");
 	return tags.indexOf (ev.tag) >= 0;
+    }
+    private InternetAddress[] getAddress (String[] s) throws AddressException {
+        InternetAddress[] address = new InternetAddress[s.length];
+        for (int i=0; i<s.length; i++) 
+            address[i] = new InternetAddress (s[i]);
+        return address;
     }
     public synchronized void log (LogEvent ev) {
 	if (checkOperatorTag(ev))
