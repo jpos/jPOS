@@ -35,6 +35,10 @@ import org.jpos.util.LogProducer;
 
 /*
  * $Log$
+ * Revision 1.27  2000/03/20 22:38:14  apr
+ * Handle Peer disconnection, suggested by Gabriel Moreno
+ * <gabrielm@itcsoluciones.com>
+ *
  * Revision 1.26  2000/03/01 14:44:45  apr
  * Changed package name to org.jpos
  *
@@ -328,6 +332,9 @@ public abstract class ISOChannel extends Observable implements LogProducer {
 	    notifyObservers(m);
 	} catch (ISOException e) {
 	    evt.addMessage (e);
+	    throw e;
+	} catch (EOFException e) {
+	    evt.addMessage ("<peer-disconnect/>");
 	    throw e;
 	} catch (IOException e) { 
 	    if (usable) 
