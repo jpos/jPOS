@@ -71,6 +71,7 @@ import org.jpos.util.LogEvent;
 import org.jpos.util.LogSource;
 import org.jpos.util.NameRegistrar;
 import org.jpos.core.Configuration;
+import org.jpos.core.SimpleConfiguration;
 import org.jpos.core.ConfigurationException;
 import org.jpos.apps.qsp.config.ConfigTask;
 
@@ -281,6 +282,19 @@ public class QSP implements ErrorHandler, LogSource, Runnable {
         throws NameRegistrar.NotFoundException
     {
         return getInstance (DEFAULT_NAME);
+    }
+
+    /**
+     * @return QSP's config instance (global properties)
+     */
+    public static Configuration getGlobalConfiguration () {
+        Configuration cfg;
+        try {
+            cfg = getInstance().getConfiguration();
+        } catch (NameRegistrar.NotFoundException e) {
+            cfg = new SimpleConfiguration();
+        }
+        return cfg;
     }
 
     /**
