@@ -133,10 +133,11 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
 			b = fld[i].pack(c);
 			len += b.length;
 			v.addElement (b);
-		    } catch (Exception e) {
+		    } catch (ISOException e) {
 			evt.addMessage ("error packing field "+i);
 			evt.addMessage (c);
 			evt.addMessage (e);
+                        throw e;
 		    }
 		}
 	    }
@@ -150,10 +151,11 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
 			    b = fld[i+128].pack(c);
 			    len += b.length;
 			    v.addElement (b);
-			} catch (Exception e) {
+			} catch (ISOException e) {
 			    evt.addMessage ("error packing field "+(i+128));
 			    evt.addMessage (c);
 			    evt.addMessage (e);
+                            throw e;
 			}
 		    }
 		}
