@@ -95,9 +95,11 @@ public class ConfigTask implements QSPReConfigurator {
 
 	    if (name != null)
 		NameRegistrar.register (NAMEREGISTRAR_PREFIX+name, task);
-	    Thread thread = new Thread(task);
-	    thread.setName ("qsp-task-"+name);
-	    thread.start();
+            if (task instanceof Runnable) {
+	        Thread thread = new Thread(task);
+	        thread.setName ("qsp-task-"+name);
+	        thread.start();
+            }
         } catch (ClassNotFoundException e) {
 	    throw new ConfigurationException ("config-task:"+className, e);
         } catch (InstantiationException e) {
@@ -126,7 +128,7 @@ public class ConfigTask implements QSPReConfigurator {
     private void configureTask (Configurable task, Node node, LogEvent evt)
 	throws ConfigurationException
     {
-        String [] attributeNames = {  "connection-pool" };
+        String [] attributeNames = {  "name", "connection-pool" };
         Properties props = ConfigUtil.addAttributes (
             node, attributeNames, null, evt
         );
