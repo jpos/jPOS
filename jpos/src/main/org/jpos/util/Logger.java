@@ -19,7 +19,6 @@ import java.util.*;
  * @see Loggeable
  * @see SimpleLogListener
  * @see RotateLogListener
- * @see OperatorLogListener
  * @see AntiHog
  */
 public class Logger {
