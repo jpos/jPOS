@@ -137,7 +137,7 @@ public class LogEvent extends EventObject {
                 else if (o instanceof Element) {
                     p.println ("");
                     p.println (newIndent + "<![CDATA[");
-                    XMLOutputter out = new XMLOutputter (newIndent, true);
+                    XMLOutputter out = new XMLOutputter (" ", true);
                     try {
                         out.output ((Element) o, p);
                     } catch (IOException ex) {
