@@ -15,14 +15,14 @@
  *
  * 3. The end-user documentation included with the redistribution,
  *    if any, must include the following acknowledgment:
- *    "This product includes software developed by the jPOS project 
- *    (http://www.jpos.org/)". Alternately, this acknowledgment may 
- *    appear in the software itself, if and wherever such third-party 
+ *    "This product includes software developed by the jPOS project
+ *    (http://www.jpos.org/)". Alternately, this acknowledgment may
+ *    appear in the software itself, if and wherever such third-party
  *    acknowledgments normally appear.
  *
- * 4. The names "jPOS" and "jPOS.org" must not be used to endorse 
- *    or promote products derived from this software without prior 
- *    written permission. For written permission, please contact 
+ * 4. The names "jPOS" and "jPOS.org" must not be used to endorse
+ *    or promote products derived from this software without prior
+ *    written permission. For written permission, please contact
  *    license@jpos.org.
  *
  * 5. Products derived from this software may not be called "jPOS",
@@ -31,14 +31,14 @@
  *
  * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  
- * IN NO EVENT SHALL THE JPOS PROJECT OR ITS CONTRIBUTORS BE LIABLE FOR 
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL 
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS 
- * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) 
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, 
- * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING 
- * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE JPOS PROJECT OR ITS CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+ * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+ * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  * ====================================================================
  *
@@ -53,7 +53,7 @@ package  org.jpos.security;
 /**
  * A class that implements the SecurityModuleAdapter interface would act as an
  * adapter to the real security module device (by communicating with it using
- * its proprietary protocol). 
+ * its proprietary protocol).
  *
  * But application programmers will be communicating
  * with the security module using this simple interface.
@@ -84,8 +84,8 @@ public interface SMAdapter {
     /**
      * ZPK: Zone PIN Key.
      *
-     * is a DES (or Triple-DES) data-encrypting key which is distributed 
-     * automatically and is used to encrypt PINs for transfer between 
+     * is a DES (or Triple-DES) data-encrypting key which is distributed
+     * automatically and is used to encrypt PINs for transfer between
      * communicating parties (e.g. between acquirers and issuers).
      */
     public static final String TYPE_ZPK = "ZPK";
@@ -93,9 +93,9 @@ public interface SMAdapter {
     /**
      * TMK: Terminal Master Key.
      *
-     * is a  DES (or Triple-DES) key-encrypting key which is distributed 
-     * manually, or automatically under a previously installed TMK. It is 
-     * used to distribute data-encrypting keys, whithin a local network, 
+     * is a  DES (or Triple-DES) key-encrypting key which is distributed
+     * manually, or automatically under a previously installed TMK. It is
+     * used to distribute data-encrypting keys, whithin a local network,
      * to an ATM or POS terminal or similar.
      */
     public static final String TYPE_TMK = "TMK";
@@ -103,8 +103,8 @@ public interface SMAdapter {
     /**
      * TPK: Terminal PIN Key.
      *
-     * is a  DES (or Triple-DES) data-encrypting key which is used 
-     * to encrypt PINs for transmission, within a local network, 
+     * is a  DES (or Triple-DES) data-encrypting key which is used
+     * to encrypt PINs for transmission, within a local network,
      * between the terminal and the terminal data acquirer.
      */
     public static final String TYPE_TPK = "TPK";
@@ -113,16 +113,16 @@ public interface SMAdapter {
      * TAK: Terminal Authentication Key.
      *
      * is a  DES (or Triple-DES) data-encrypting key which is used to
-     * generate and verify a Message Authentication Code (MAC) when data 
-     * is transmitted, within a local network, between the terminal and 
+     * generate and verify a Message Authentication Code (MAC) when data
+     * is transmitted, within a local network, between the terminal and
      * the terminal data acquirer.
      */
     public static final String TYPE_TAK = "TAK";
 
     /**
      * PVK: PIN Verification Key.
-     * is a  DES (or Triple-DES) data-encrypting key which is used to 
-     * generate and verify PIN verification data and thus verify the 
+     * is a  DES (or Triple-DES) data-encrypting key which is used to
+     * generate and verify PIN verification data and thus verify the
      * authenticity of a PIN.
      */
     public static final String TYPE_PVK = "PVK";
@@ -136,7 +136,7 @@ public interface SMAdapter {
 
     /**
      * BDK: Base Derivation Key.
-     * is a  Triple-DES key-encryption key used to derive transaction 
+     * is a  Triple-DES key-encryption key used to derive transaction
      * keys in DUKPT (see ANSI X9.24)
      */
     public static final String TYPE_BDK = "BDK";
@@ -144,9 +144,9 @@ public interface SMAdapter {
     /**
      * ZAK: Zone Authentication Key.
      *
-     * a  DES (or Triple-DES) data-encrypting key that is distributed 
-     * automatically, and is used to generate and verify a Message 
-     * Authentication Code (MAC) when data is transmitted between 
+     * a  DES (or Triple-DES) data-encrypting key that is distributed
+     * automatically, and is used to generate and verify a Message
+     * Authentication Code (MAC) when data is transmitted between
      * communicating parties (e.g. between acquirers and issuers)
      */
     public static final String TYPE_ZAK = "ZAK";
@@ -163,7 +163,12 @@ public interface SMAdapter {
     public static final byte FORMAT02 = (byte)02;
 
     /**
-     * PIN Block Format 04 is the PIN block format adopted 
+	 * PIN Block Format 03 is the Diabold Pin Block format.
+	 */
+    public static final byte FORMAT03 = (byte)03;
+
+    /**
+     * PIN Block Format 04 is the PIN block format adopted
      * by the PLUS network.
      */
     public static final byte FORMAT04 = (byte)04;
@@ -175,16 +180,16 @@ public interface SMAdapter {
     /**
      * Proprietary PIN Block format.
      *
-     * Most Security Modules use a proprietary PIN Block format 
-     * when encrypting the PIN under the LMK of the Security Module 
+     * Most Security Modules use a proprietary PIN Block format
+     * when encrypting the PIN under the LMK of the Security Module
      * hence this format (FORMAT00).
      *
      * <p>
-     * This is not a standard format, every Security Module would 
+     * This is not a standard format, every Security Module would
      * interpret FORMAT00 differently.
      *
-     * So, no interchange would accept PIN Blocks from other interchanges 
-     * using this format. It is useful only when working with PIN's inside 
+     * So, no interchange would accept PIN Blocks from other interchanges
+     * using this format. It is useful only when working with PIN's inside
      * your own interchange.
      * </p>
      */
@@ -203,7 +208,7 @@ public interface SMAdapter {
 
 
     /**
-     * Imports a key from encryption under a KEK (Key-Encrypting Key) 
+     * Imports a key from encryption under a KEK (Key-Encrypting Key)
      * to protection under the security module.
      *
      * @param keyLength bit length of the key to be imported (LENGTH_DES, LENGTH_DES3_2KEY...etc)
@@ -249,7 +254,7 @@ public interface SMAdapter {
     public String decryptPIN (EncryptedPIN pinUnderLmk) throws SMException;
 
     /**
-     * Imports a PIN from encryption under KD (Data Key) 
+     * Imports a PIN from encryption under KD (Data Key)
      * to encryption under LMK.
      *
      * @param pinUnderKd1 the encrypted PIN
@@ -277,7 +282,7 @@ public interface SMAdapter {
 
 
     /**
-     * Imports a PIN from encryption under a transaction key to encryption 
+     * Imports a PIN from encryption under a transaction key to encryption
      * under LMK.
      *
      * The transaction key is derived from the Key Serial Number and the Base Derivation Key using DUKPT (Derived Unique Key per Transaction). See ANSI X9.24 for more information.
@@ -293,7 +298,7 @@ public interface SMAdapter {
 
 
     /**
-     * Translates a PIN from encryption under a transaction key to 
+     * Translates a PIN from encryption under a transaction key to
      * encryption under a KD (Data Key).
      *
      * The transaction key is derived from the Key Serial Number and the Base Derivation Key using DUKPT (Derived Unique Key per Transaction). See ANSI X9.24 for more information.
@@ -311,7 +316,7 @@ public interface SMAdapter {
 
 
     /**
-     * Exports a PIN from encryption under LMK to encryption under a KD 
+     * Exports a PIN from encryption under LMK to encryption under a KD
      * (Data Key).
      *
      * @param pinUnderLmk pin encrypted under LMK
@@ -325,7 +330,7 @@ public interface SMAdapter {
 
 
     /**
-     * Generates CBC-MAC (Cipher Block Chaining Message Authentication Code) 
+     * Generates CBC-MAC (Cipher Block Chaining Message Authentication Code)
      * for some data.
      *
      * @param data the data to be MACed
