@@ -147,6 +147,8 @@ public class XMLChannel extends BaseChannel {
     }
     public void disconnect () throws IOException {
 	super.disconnect ();
+        if (reader != null)
+            reader.close ();
 	reader = null;
     }
 }
