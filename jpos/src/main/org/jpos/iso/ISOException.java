@@ -50,6 +50,7 @@
 package org.jpos.iso;
 
 import java.io.PrintStream;
+import java.io.PrintWriter;
 
 import org.jpos.util.Loggeable;
 
@@ -136,5 +137,29 @@ public class ISOException extends Exception implements Loggeable {
         if (nested != null)
             buf.append (" (" + nested.toString() +")");
         return buf.toString();
+    }
+
+    public void printStackTrace() {
+        super.printStackTrace();
+        if (nested != null) {
+            System.err.print("Nested:");
+            nested.printStackTrace();
+        }
+    }
+
+    public void printStackTrace(PrintStream ps) {
+        super.printStackTrace(ps);
+        if (nested != null) {
+            ps.print("Nested:");
+            nested.printStackTrace(ps);
+        }
+    }
+
+    public void printStackTrace(PrintWriter pw) {
+        super.printStackTrace(pw);
+        if (nested != null) {
+            pw.print("Nested:");
+            nested.printStackTrace(pw);
+        }
     }
 }
