@@ -38,7 +38,7 @@
   <jmxdoclet destdir="${buildsrc}" force="yes" verbose="false">
     <fileset dir="${buildsrc}" includesfile="${mbeans}"/>
     <mbeaninterface/>
-    <mx4jdescription/>
+    <!-- mx4jdescription/ -->
   </jmxdoclet>
 </target>
 

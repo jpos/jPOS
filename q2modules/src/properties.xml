@@ -16,8 +16,8 @@
   <path id="xdoclet.classpath">
     <pathelement location="${masterlib}/xjavadoc.jar"/>
     <pathelement location="${masterlib}/xdoclet.jar"/>
-    <pathelement location="${masterlib}/xdoclet-jmx-module.jar"/>
-    <pathelement location="${masterlib}/xdoclet-mx4j-module.jar"/>
+    <pathelement location="${masterlib}/xdoclet-jmx-module-1.2.jar"/>
+    <pathelement location="${masterlib}/xdoclet-mx4j-module-1.2.jar"/>
   </path>
 
   <path id="lib.classpath">
