@@ -2,21 +2,28 @@ package org.jpos.apps.qsp.config;
 
 import java.io.IOException;
 import java.util.Properties;
+import java.util.Arrays;
 import javax.swing.JPanel;
 
 import org.jpos.iso.ISOChannel;
-import org.jpos.iso.ISOFactory;
+import org.jpos.iso.ClientChannel;
+import org.jpos.iso.ISOPackager;
 import org.jpos.iso.ISOException;
+import org.jpos.iso.ISOUtil;
 import org.jpos.iso.gui.ISOChannelPanel;
 import org.jpos.util.Logger;
 import org.jpos.util.LogEvent;
+import org.jpos.util.LogSource;
 import org.jpos.util.NameRegistrar;
+import org.jpos.core.Configuration;
 import org.jpos.core.SimpleConfiguration;
 import org.jpos.core.Configurable;
+import org.jpos.core.ReConfigurable;
 import org.jpos.core.ConfigurationException;
 
 import org.jpos.apps.qsp.QSP;
 import org.jpos.apps.qsp.QSPConfigurator;
+import org.jpos.apps.qsp.QSPReConfigurator;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -26,55 +33,109 @@ import org.w3c.dom.NodeList;
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
  * @version $Revision$ $Date$
  */
-public class ConfigChannel implements QSPConfigurator {
+public class ConfigChannel implements QSPReConfigurator {
+    private String [] attributeNames = {  
+		    "class",
+		    "packager",
+	   	    "header",
+		    "host",
+		    "port",
+		    "timeout",
+		    "name"  // used here to update digest
+		};
+
     public void config (QSP qsp, Node node) throws ConfigurationException
     {
 	ISOChannel channel;
 	LogEvent evt = new LogEvent (qsp, "config-channel");
 	String name = node.getAttributes().getNamedItem ("name").getNodeValue();
 	try {
-	    channel = ISOFactory.getChannel (name);
+	    channel = getChannel (name);
 	} catch (NameRegistrar.NotFoundException e) {
 	    channel = createChannel (name, node, evt);
 	    channel.setName (name);
 	}
 	Logger.log (evt);
     }
+    public void reconfig (QSP qsp, Node node) throws ConfigurationException
+    {
+	String name = node.getAttributes().getNamedItem ("name").getNodeValue();
+	LogEvent evt = new LogEvent (qsp, "re-config-channel", name);
+	try {
+	    ISOChannel channel = getChannel (name);
+
+	    byte[] digest = (byte[])NameRegistrar.get (name + ".digest");
+	    byte[] previousDigest = new byte [digest.length];
+	    System.arraycopy (digest, 0, previousDigest, 0, digest.length);
+	    Properties props = ConfigUtil.addAttributes (
+		node, attributeNames, null, evt
+	    );
+	    digest = (byte[]) props.get (ConfigUtil.DIGEST_PROPERTY);
+	    NameRegistrar.register (name + ".digest", digest);
+
+	    if (channel instanceof LogSource)
+		((LogSource)channel).setLogger (
+		    ConfigLogger.getLogger (node),
+		    ConfigLogger.getRealm  (node)
+		);
+	    Configuration cfg = new SimpleConfiguration (
+		ConfigUtil.addProperties (node, props, evt)
+	    );
+	    if (channel instanceof ReConfigurable) {
+		((Configurable)channel).setConfiguration (cfg);
+	    }
+	    if (Arrays.equals (previousDigest, digest)) {
+		evt.addMessage ("<unchanged/>");
+		return;
+	    }
+	    evt.addMessage ("<modified/>");
+
+	    if (cfg.get ("timeout", null) != null)
+		ConfigUtil.invoke (
+		    channel, "setTimeout", new Integer(cfg.getInt ("timeout"))
+		);
+
+	    ConfigUtil.invoke (channel, "setHeader", cfg.get ("header", null));
+	} catch (NameRegistrar.NotFoundException e) {
+	    evt.addMessage (e);
+	} finally {
+	    Logger.log (evt);
+	}
+    }
 
     private ISOChannel createChannel (String name, Node node, LogEvent evt)
 	throws ConfigurationException
     {
-	String [][] names = { { name + ".channel",  "class"    },
-	                      { name + ".packager", "packager" },
-			      { name + ".header",   "header"   },
-			      { name + ".host",     "host"     },
-			      { name + ".port",     "port"     },
-			      { name + ".timeout",  "timeout"  }
-			    };
+	Properties props = ConfigUtil.addAttributes
+	    (node, attributeNames, null, evt);
 
-	Properties props = ConfigUtil.addAttributesProperties 
-	    (node, names, null, evt);
+	NameRegistrar.register 
+	    (name + ".digest", props.get (ConfigUtil. DIGEST_PROPERTY));
 
-	SimpleConfiguration cfg = new SimpleConfiguration (props);
 	Logger logger = ConfigLogger.getLogger (node);
 	String realm  = ConfigLogger.getRealm  (node);
 
 	try {
-	    ISOChannel channel = 
-		ISOFactory.newChannel (cfg, name, logger, realm);
-
+	    ISOChannel channel = newChannel (
+		props.getProperty ("class"),
+		props.getProperty ("packager"), 
+		logger, realm
+	    );
+	    Configuration cfg = new SimpleConfiguration (
+		ConfigUtil.addProperties (node, props, evt)
+	    );
 	    if (channel instanceof Configurable) {
-		((Configurable)channel).setConfiguration (
-		    new SimpleConfiguration (
-			ConfigUtil.addProperties (node, null, evt)
-		    )
-		);
+		((Configurable)channel).setConfiguration (cfg);
 	    }
 
-	    boolean connect = 
-		node.getAttributes() 
-		    .getNamedItem("connect").getNodeValue().equals("yes");
-	    if (connect) {
+	    if (cfg.get ("timeout", null) != null)
+		ConfigUtil.invoke (
+		    channel, "setTimeout", new Integer(cfg.getInt ("timeout"))
+		);
+
+	    ConfigUtil.invoke (channel, "setHeader", cfg.get ("header", null));
+
+	    if (cfg.get ("connect").equals ("yes")) {
 		try {
 		    channel.connect();
 		} catch (IOException e) {
@@ -87,20 +148,57 @@ public class ConfigChannel implements QSPConfigurator {
 		panel.add (new ISOChannelPanel (channel, name));
 
 	    return channel;
+	} catch (ConfigurationException e) {
+	    throw e;
 	} catch (ISOException e) {
 	    throw new ConfigurationException ("error creating channel", e);
-	} 
+	} catch (NullPointerException e) {
+	    throw new ConfigurationException ("error creating channel", e);
+	}
     }
 
+    private ISOChannel newChannel
+	(String channelName, String packagerName, Logger logger, String realm)
+	throws ConfigurationException
+    {
+        ISOChannel channel  = null;
+	ISOPackager packager= null;
+        try {
+            Class c = Class.forName(channelName);
+            if (c != null) {
+                channel = (ISOChannel) c.newInstance();
+		if (packagerName != null) {
+		    Class p = Class.forName(packagerName);
+		    packager = (ISOPackager) p.newInstance();
+		    channel.setPackager(packager);
+		}
+		if (logger != null && (channel instanceof LogSource))
+		    ((LogSource) channel) .
+			setLogger (logger, realm + ".channel");
+            }
+        } catch (ClassNotFoundException e) {
+	    throw new ConfigurationException ("newChannel:"+channelName, e);
+        } catch (InstantiationException e) {
+	    throw new ConfigurationException ("newChannel:"+channelName, e);
+        } catch (IllegalAccessException e) {
+	    throw new ConfigurationException ("newChannel:"+channelName, e);
+	}
+        return channel;
+    }
+
+    public static ISOChannel getChannel (String name)
+	throws NameRegistrar.NotFoundException
+    {
+	return (ISOChannel) NameRegistrar.get ("channel."+name);
+    }
     public static ISOChannel getChannel (Node node) {
 	Node n = node.getAttributes().getNamedItem ("name");
 	if (n != null)
 	    try {
-		return ISOFactory.getChannel (n.getNodeValue());
+		return ConfigChannel.getChannel (n.getNodeValue());
 	    } catch (NameRegistrar.NotFoundException e) { }
 	return null;
     }
-
     public static ISOChannel getChildChannel (Node node) 
 	throws ConfigurationException
     {
@@ -113,8 +211,7 @@ public class ConfigChannel implements QSPConfigurator {
 	}
 
 	if (channel == null)
-	    throw new ConfigurationException
-	       ("invalid mux - could not find channel");
+	    throw new ConfigurationException ("could not find channel");
 
 	return channel;
     }
