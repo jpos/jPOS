@@ -162,11 +162,12 @@ public class ConfigDirPoll implements QSPReConfigurator {
 	String className = ConfigUtil.getAttribute (node, "processor", null);
 	Object processor = ConfigUtil.newInstance (className);
 
-	if (!(processor instanceof DirPoll.Processor))
+	if (!(processor instanceof DirPoll.Processor) &&
+            !(processor instanceof DirPoll.FileProcessor))
 	    throw new ConfigurationException (
 		"invalid class "+className
-		+" does not implement DirPoll.Processor");
-	dp.setProcessor ((DirPoll.Processor) processor);
+		+" does not implement DirPoll.[File]Processor");
+	dp.setProcessor (processor);
 	evt.addMessage ("<processor>"+className+"</processor>");
 	if (ConfigUtil.getAttribute (node, "create", "no").equals ("yes")) {
 	    evt.addMessage ("<create-dirs/>");
