@@ -26,8 +26,10 @@ public class IFA_LLLCHAR extends ISOFieldPackager {
 	
 		if ((len=s.length()) > getLen() || len>999)	// paranoia settings
 			throw new ISOException (
-				"invalid len "+len +" packing LLLCHAR field "+(Integer) c.getKey()
-			);
+			"invalid len "+len +" packing LLLCHAR field "+(Integer) c.getKey()); 
+		System.out.println ("DEBUG len=" +
+		          	ISOUtil.zeropad(Integer.toString(len), 3)+
+					"string=" +s);
 
 		return (ISOUtil.zeropad(Integer.toString(len), 3) + s).getBytes();
 	}
