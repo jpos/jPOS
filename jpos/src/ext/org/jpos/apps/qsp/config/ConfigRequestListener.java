@@ -6,6 +6,7 @@ import org.jpos.util.Logger;
 import org.jpos.util.LogSource;
 import org.jpos.util.LogEvent;
 import org.jpos.iso.ISOMUX;
+import org.jpos.iso.ISOServer;
 import org.jpos.iso.ISORequestListener;
 import org.jpos.iso.ISOException;
 import org.jpos.core.SimpleConfiguration;
@@ -28,19 +29,31 @@ public class ConfigRequestListener implements QSPConfigurator {
     public void config (QSP qsp, Node node) throws ConfigurationException
     {
 	LogEvent evt = new LogEvent (qsp, "config-request-listener");
-	Node parent;
+	try {
+	    Node parent;
+	    // Find parent MUX
+	    if ( (parent  = node.getParentNode()) == null)
+		throw new ConfigurationException ("orphan request listener");
 
-	// Find parent MUX
-	if ( (parent  = node.getParentNode()) == null)
-	    throw new ConfigurationException ("orphan request listener");
+	    Object obj = null;
+	    if (parent.getNodeName().equals ("mux")) 
+		obj = ConfigMux.getMUX (parent);
+	    else if (parent.getNodeName().equals ("server"))
+		obj = ConfigServer.getServer (parent);
 
-	ISOMUX mux = ConfigMux.getMUX (parent);
-	if (mux== null) 
-	    throw new ConfigurationException ("null parent channel");
-	addRequestListener (mux, node, evt);
-	Logger.log (evt);
+	    if (obj == null) {
+		ConfigurationException e = 
+		    new ConfigurationException ("null parent");
+		evt.addMessage (e);
+		throw e;
+	    }
+	    addRequestListener (obj, node, evt);
+	} finally {
+	    Logger.log (evt);
+	}
     }
-    private void addRequestListener (ISOMUX mux, Node node, LogEvent evt) 
+
+    private void addRequestListener (Object obj, Node node, LogEvent evt) 
 	throws ConfigurationException
     {
 	NamedNodeMap attr = node.getAttributes();
@@ -57,15 +70,23 @@ public class ConfigRequestListener implements QSPConfigurator {
 		evt.addMessage ("<log-producer/>");
 	    }
 	    if (listener instanceof Configurable) {
+		evt.addMessage ("<configurable>");
 		Properties props = ConfigUtil.addProperties (node, null, evt);
-		props.put ("source-mux", mux.getName());
-
 		((Configurable)listener).setConfiguration (
 		    new SimpleConfiguration (props)
 		);
-		evt.addMessage ("<configurable/>");
+		evt.addMessage ("</configurable>");
 	    }
-	    mux.setISORequestListener (listener);
+	    if (obj instanceof ISOMUX) {
+		((ISOMUX)obj).setISORequestListener (listener);
+		evt.addMessage ("<parent type=\"mux\" name=\""+
+		    ((ISOMUX)obj).getName() + "\"/>");
+	    }
+	    else if (obj instanceof ISOServer) {
+		((ISOServer)obj).addISORequestListener (listener);
+		evt.addMessage ("<parent type=\"server\" name=\""+
+		    ((ISOServer)obj).getName() + "\"/>");
+	    }
 	} catch (ISOException e) {
 	    throw new ConfigurationException (e);
 	}

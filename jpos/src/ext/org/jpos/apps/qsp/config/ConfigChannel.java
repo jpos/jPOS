@@ -16,6 +16,7 @@ import org.jpos.apps.qsp.QSP;
 import org.jpos.apps.qsp.QSPConfigurator;
 
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  * Configure logger
@@ -89,5 +90,23 @@ public class ConfigChannel implements QSPConfigurator {
 		return ISOFactory.getChannel (n.getNodeValue());
 	    } catch (NameRegistrar.NotFoundException e) { }
 	return null;
+    }
+
+    public static ISOChannel getChildChannel (Node node) 
+	throws ConfigurationException
+    {
+	ISOChannel channel = null;
+	NodeList childs = node.getChildNodes();
+	for (int i=0; i<childs.getLength() && channel == null; i++) {
+	    Node n = childs.item(i);
+	    if (n.getNodeName().equals ("channel"))
+		channel = ConfigChannel.getChannel (n);
+	}
+
+	if (channel == null)
+	    throw new ConfigurationException
+	       ("invalid mux - could not find channel");
+
+	return channel;
     }
 }
