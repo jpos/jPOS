@@ -227,8 +227,8 @@ public class ISOMUX implements Runnable, ISOSource, LogSource,
         public void run() {
             int i = 0;
             while (!terminate || !rxQueue.isEmpty() || !txQueue.isEmpty()) {
-                if (i++ % 1000 == 0)
-                    Logger.log (new LogEvent (this, "mux", this));
+                if (i++ % 250 == 1) 
+                    Logger.log (new LogEvent (this, "mux", parent));
                 if (channel.isConnected()) {
                     try {
                         ISOMsg d = channel.receive();
