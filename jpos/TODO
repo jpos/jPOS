@@ -3,6 +3,7 @@ $Id$
 [ ] checkin Base1Packager stuff
 [ ] Use ThreadPool on ISOMUX
 [ ] ISOServer
+[ ] Handle filters on Configurable ISOChannel
 
 Done: jpos-1.2.2
 [v] ISOChannel should be an Interface
