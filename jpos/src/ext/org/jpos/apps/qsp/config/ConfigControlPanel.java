@@ -16,7 +16,7 @@ import javax.swing.*;
 
 
 /**
- * Configure logger
+ * Configure control panel
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
  * @version $Revision$ $Date$
  */

@@ -26,7 +26,7 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.NamedNodeMap;
 
 /**
- * Configure logger
+ * Configure server 
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
  * @version $Revision$ $Date$
  */
