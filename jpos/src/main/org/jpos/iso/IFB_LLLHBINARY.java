@@ -102,7 +102,7 @@ public class IFB_LLLHBINARY extends ISOFieldPackager {
         int len = ((int) b[offset++] & 0xFF) << 8;
         len |= ((int) b[offset++] & 0xFF);
         byte[] value = new byte[len];
-        System.arraycopy(b, offset+1, value, 0, len);
+        System.arraycopy(b, offset, value, 0, len);
         c.setValue ((Object) value);
         return len+2;
     }
