@@ -4,6 +4,9 @@ import java.io.*;
 import java.util.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import uy.com.cs.jpos.util.Logger;
+import uy.com.cs.jpos.util.LogEvent;
+import uy.com.cs.jpos.util.LogProducer;
 
 /**
  * ISOChannel is an abstract class that provides functionality that
@@ -32,6 +35,12 @@ import java.net.Socket;
 
 /*
  * $Log$
+ * Revision 1.24  2000/01/11 01:24:44  apr
+ * moved non ISO-8583 related classes from jpos.iso to jpos.util package
+ * (AntiHog LeasedLineModem LogEvent LogListener LogProducer
+ *  Loggeable Logger Modem RotateLogListener SimpleAntiHog SimpleDialupModem
+ *  SimpleLogListener SimpleLogProducer SystemMonitor V24)
+ *
  * Revision 1.23  1999/09/25 13:36:54  apr
  * Added terminate() support as suggested by Vincent.Greene@amo.com
  *

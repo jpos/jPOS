@@ -4,6 +4,9 @@ import java.io.*;
 import java.net.*;
 import java.lang.*;
 import java.util.*;
+import uy.com.cs.jpos.util.Logger;
+import uy.com.cs.jpos.util.LogEvent;
+import uy.com.cs.jpos.util.LogProducer;
 
 /**
  * Should run in it's own thread. Starts another Receiver thread
@@ -22,6 +25,12 @@ import java.util.*;
 
 /*
  * $Log$
+ * Revision 1.24  2000/01/11 01:24:46  apr
+ * moved non ISO-8583 related classes from jpos.iso to jpos.util package
+ * (AntiHog LeasedLineModem LogEvent LogListener LogProducer
+ *  Loggeable Logger Modem RotateLogListener SimpleAntiHog SimpleDialupModem
+ *  SimpleLogListener SimpleLogProducer SystemMonitor V24)
+ *
  * Revision 1.23  1999/10/10 15:52:29  apr
  * Added ISORequest.isTransmitted() support
  *

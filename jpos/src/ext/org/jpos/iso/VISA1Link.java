@@ -1,5 +1,11 @@
 /*
  * $Log$
+ * Revision 1.9  2000/01/11 01:24:55  apr
+ * moved non ISO-8583 related classes from jpos.iso to jpos.util package
+ * (AntiHog LeasedLineModem LogEvent LogListener LogProducer
+ *  Loggeable Logger Modem RotateLogListener SimpleAntiHog SimpleDialupModem
+ *  SimpleLogListener SimpleLogProducer SystemMonitor V24)
+ *
  * Revision 1.8  1999/12/20 20:14:14  apr
  * Added VISA1ResponseFilter support
  *
@@ -31,6 +37,7 @@ package uy.com.cs.jpos.iso;
 import java.io.*;
 import java.util.*;
 import javax.comm.*;
+import uy.com.cs.jpos.util.*;
 
 /**
  * Implements client-side VISA-1 Link protocol operating in a

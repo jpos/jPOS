@@ -1,6 +1,9 @@
 package uy.com.cs.jpos.iso;
 
 import java.util.*;
+import uy.com.cs.jpos.util.Logger;
+import uy.com.cs.jpos.util.LogEvent;
+import uy.com.cs.jpos.util.SimpleLogProducer;
 
 /**
  * @author apr@cs.com.uy

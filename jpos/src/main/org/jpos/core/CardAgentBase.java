@@ -1,5 +1,11 @@
 /*
  * $Log$
+ * Revision 1.3  2000/01/11 01:24:39  apr
+ * moved non ISO-8583 related classes from jpos.iso to jpos.util package
+ * (AntiHog LeasedLineModem LogEvent LogListener LogProducer
+ *  Loggeable Logger Modem RotateLogListener SimpleAntiHog SimpleDialupModem
+ *  SimpleLogListener SimpleLogProducer SystemMonitor V24)
+ *
  * Revision 1.2  1999/12/06 01:19:08  apr
  * CVS snapshot
  *
@@ -17,6 +23,7 @@ import java.math.*;
 import java.lang.reflect.*;
 
 import uy.com.cs.jpos.iso.*;
+import uy.com.cs.jpos.util.*;
 
 /**
  * @author apr@cs.com.uy

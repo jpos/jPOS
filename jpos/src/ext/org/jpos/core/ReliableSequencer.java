@@ -1,5 +1,11 @@
 /*
  * $Log$
+ * Revision 1.3  2000/01/11 01:24:40  apr
+ * moved non ISO-8583 related classes from jpos.iso to jpos.util package
+ * (AntiHog LeasedLineModem LogEvent LogListener LogProducer
+ *  Loggeable Logger Modem RotateLogListener SimpleAntiHog SimpleDialupModem
+ *  SimpleLogListener SimpleLogProducer SystemMonitor V24)
+ *
  * Revision 1.2  1999/12/21 13:54:33  apr
  * BugFix: get intValue()
  *
@@ -12,7 +18,7 @@ package uy.com.cs.jpos.core;
 
 import java.io.*;
 import java.util.*;
-import uy.com.cs.jpos.iso.Loggeable;
+import uy.com.cs.jpos.util.Loggeable;
 import com.sun.jini.reliableLog.ReliableLog;
 import com.sun.jini.reliableLog.LogException;
 import com.sun.jini.reliableLog.LogHandler;

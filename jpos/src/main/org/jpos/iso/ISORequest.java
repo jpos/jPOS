@@ -2,9 +2,19 @@ package uy.com.cs.jpos.iso;
 
 import java.io.*;
 import java.util.*;
+import uy.com.cs.jpos.util.Logger;
+import uy.com.cs.jpos.util.LogEvent;
+import uy.com.cs.jpos.util.Loggeable;
+import uy.com.cs.jpos.util.LogProducer;
 
 /*
  * $Log$
+ * Revision 1.9  2000/01/11 01:24:48  apr
+ * moved non ISO-8583 related classes from jpos.iso to jpos.util package
+ * (AntiHog LeasedLineModem LogEvent LogListener LogProducer
+ *  Loggeable Logger Modem RotateLogListener SimpleAntiHog SimpleDialupModem
+ *  SimpleLogListener SimpleLogProducer SystemMonitor V24)
+ *
  * Revision 1.8  1999/10/10 15:52:29  apr
  * Added ISORequest.isTransmitted() support
  *
