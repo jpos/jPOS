@@ -408,8 +408,7 @@ public class ISOUtil {
      */
     public static byte[] bitSet2byte (BitSet b)
     {
-        int len = (b.size() >> 3) << 3;
-        len = (len > 128) ? 128: len;
+        int len = (b.length() > 65) ? 128 : 64;
         byte[] d = new byte[len >> 3];
         for (int i=0; i<len; i++) 
             if (b.get(i+1)) 
