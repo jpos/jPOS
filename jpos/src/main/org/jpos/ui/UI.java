@@ -258,8 +258,13 @@ public class UI implements UIFactory, UIObjectFactory {
         JOptionPane.setRootFrame (mainFrame);
 
         mainFrame.getContentPane().setLayout(new BorderLayout());
-        if ("false".equals (ui.getAttributeValue ("close")))
+
+        String close = ui.getAttributeValue ("close");
+
+        if ("false".equals (close))
             mainFrame.setDefaultCloseOperation (JFrame.DO_NOTHING_ON_CLOSE);
+        else if ("exit".equals (close))
+            mainFrame.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
 
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         mainFrame.setSize(getDimension (ui, screenSize));
