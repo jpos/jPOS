@@ -378,7 +378,9 @@ public class PersistentSpace implements Space // PersistentSpaceMBean
     }
     public int size (Object key) {
         Data data  = (Data) map.get (key);
-        return data == null ? 0 : data.size ();
+        if (data == null)
+            data = initData (key);
+        return data.size ();
     }
 }
 
