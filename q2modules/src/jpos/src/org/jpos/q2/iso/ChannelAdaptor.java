@@ -50,6 +50,7 @@
 package org.jpos.q2.iso;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.Iterator;
 import org.jpos.iso.ISOMsg;
 import org.jpos.iso.ISOUtil;
@@ -91,10 +92,8 @@ public class ChannelAdaptor
     ISOChannel channel;
     String in, out, ready, reconnect;
     long delay;
-    long count;
     public ChannelAdaptor () {
         super ();
-        count = 0L;
     }
     public void initChannel () 
         throws Q2ConfigurationException, ConfigurationException 
@@ -290,7 +289,6 @@ public class ChannelAdaptor
                 ;
             try {
                 channel.connect ();
-                count++;
             } catch (IOException e) {
                 getLog().warn ("check-connection", e.getMessage ());
             }
@@ -298,7 +296,7 @@ public class ChannelAdaptor
                 ISOUtil.sleep (delay);
         }
         if (running() && (sp.rdp (ready) == null))
-            sp.out (ready, new Long (count));
+            sp.out (ready, new Date());
     }
     protected synchronized void disconnect () {
         try {
