@@ -25,4 +25,5 @@
 <!ATTLIST isofieldpackager packager NMTOKEN      #REQUIRED>
 <!ATTLIST isofieldpackager emitBitmap (true|false) #IMPLIED>
 <!ATTLIST isofieldpackager maxValidField CDATA        #IMPLIED>
+<!ATTLIST isofieldpackager bitmapField CDATA        #IMPLIED>
 
