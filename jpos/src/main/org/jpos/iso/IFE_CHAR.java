@@ -7,14 +7,13 @@ package org.jpos.iso;
  * @version $Id$
  * @see IF_CHAR
  * @see ISOComponent
- * @deprecated Use IFE_CHAR instead
  */
-public class IF_ECHAR extends ISOFieldPackager {
+public class IFE_CHAR extends ISOFieldPackager {
     /**
      * @param len - field len
      * @param description symbolic descrption
      */
-    public IF_ECHAR(int len, String description) {
+    public IFE_CHAR(int len, String description) {
         super(len, description);
     }
     /**
