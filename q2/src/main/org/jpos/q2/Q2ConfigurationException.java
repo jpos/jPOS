@@ -61,11 +61,11 @@ public class Q2ConfigurationException extends Exception {
     public Q2ConfigurationException (String detail) {
         super (detail);
     }
-    public Q2ConfigurationException (Exception cause) {
+    public Q2ConfigurationException (Throwable cause) {
         super (cause.toString ());
         this.cause = cause;
     }
-    public Q2ConfigurationException (String detail, Exception cause) {
+    public Q2ConfigurationException (String detail, Throwable cause) {
         super (detail);
         this.cause = cause;
     }
