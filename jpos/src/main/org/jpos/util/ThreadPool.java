@@ -189,6 +189,13 @@ public class ThreadPool extends ThreadGroup implements LogSource, Loggeable, Con
         return pool.consumerCount ();
     }
     /**
+     * @return max number of available threads
+     */
+    public int getAvailableCount () {
+        return getMaxPoolSize() - getPoolSize() + getIdleCount();
+    }
+
+    /**
      * @return number of Pending jobs
      */
     public int getPendingCount () {
