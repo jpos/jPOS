@@ -21,11 +21,43 @@ public class ISOMsg extends ISOComponent implements Cloneable {
 	protected int maxField;
 	protected ISOPackager packager;
 	protected boolean dirty;
+	protected int direction;
+	public static int INCOMING = 1;
+	public static int OUTGOING = 2;
 
 	public ISOMsg () {
 		fields = new Hashtable ();
 		maxField = -1;
 		dirty = true;
+		direction = 0;
+	}
+	/**
+	 * Sets the direction information related to this message
+	 * @param direction can be either ISOMsg.INCOMING or ISOMsg.OUTGOING
+	 */
+	public void setDirection(int direction) {
+		this.direction = direction;
+	}
+	/**
+	 * @return the direction (ISOMsg.INCOMING or ISOMsg.OUTGOING)
+	 * @see ISOChannel
+	 */
+	public int getDirection() {
+		return direction;
+	}
+	/**
+	 * @return true if this message is an incoming message
+	 * @see ISOChannel
+	 */
+	public boolean isIncoming() {
+		return direction == INCOMING;
+	}
+	/**
+	 * @return true if this message is an outgoing message
+	 * @see ISOChannel
+	 */
+	public boolean isOutgoing() {
+		return direction == OUTGOING;
 	}
 	/**
 	 * @return the max field number associated with this message
@@ -184,5 +216,31 @@ public class ISOMsg extends ISOComponent implements Cloneable {
 		} catch (CloneNotSupportedException e) {
 			throw new InternalError();
 		}
+	}
+
+	/**
+	 * @return a string suitable for a log
+	 */
+	public String toString() {
+		StringBuffer s = new StringBuffer();
+		if (isIncoming())
+			s.append("<-- ");
+		else if (isOutgoing())
+			s.append("--> ");
+		else
+			s.append("    ");
+
+		try {
+			s.append((String) getValue(0));
+			if (hasField(11)) {
+				s.append(' ');
+				s.append((String) getValue(11));
+			}
+			if (hasField(41)) {
+				s.append(' ');
+				s.append((String) getValue(41));
+			}
+		} catch (ISOException e) { }
+		return s.toString();
 	}
 }

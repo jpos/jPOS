@@ -219,19 +219,19 @@ public class ISOMUX implements Runnable {
 			catch (UnknownHostException e) { 
 			 	System.out.println(e);
 				try {
-					Thread.sleep(50000);
+					Thread.sleep(5000);
 				} catch (InterruptedException ie) { }
 			}
 			catch (ConnectException e) { 
 			 	System.out.println(e);
 				try {
-					Thread.sleep(50000);
+					Thread.sleep(5000);
 				} catch (InterruptedException ie) { }
 			}
 			catch (java.net.SocketException e) { 
 			 	System.out.println(e);
 				try {
-					Thread.sleep(50000);
+					Thread.sleep(5000);
 				} catch (InterruptedException ie) { }
 			}
 			catch (IOException e) {
