@@ -51,6 +51,8 @@ package org.jpos.apps.qsp.config;
 
 import org.jpos.util.Logger;
 import org.jpos.util.LogEvent;
+import org.jpos.util.NameRegistrar;
+import org.jpos.core.SimpleConfiguration;
 import org.jpos.core.ConfigurationException;
 
 import org.jpos.apps.qsp.QSP;
@@ -75,8 +77,19 @@ public class ConfigQspConfig implements QSPReConfigurator {
 	    qsp.setMonitorConfigInterval (
 		Long.parseLong (reloadNode.getNodeValue())
 	    );
+	String name  = getValue (node, "name", QSP.DEFAULT_NAME);
+        NameRegistrar.register (QSP.NAMEREGISTRAR_PREFIX+name, qsp);
+        qsp.setConfiguration (
+            new SimpleConfiguration (
+                ConfigUtil.addProperties (node)
+            )
+        );
     }
     public void reconfig (QSP qsp, Node node) throws ConfigurationException {
 	config (qsp, node);
+    }
+    private String getValue (Node node, String tagName, String def) {
+	Node n = node.getAttributes().getNamedItem (tagName);
+	return n != null ? n.getNodeValue() : def;
     }
 }
