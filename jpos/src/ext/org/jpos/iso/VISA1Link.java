@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.14  2000/03/15 12:55:15  apr
+ * Changed dumpString to hexString
+ *
  * Revision 1.13  2000/03/15 01:18:31  apr
  * Debugging ISOGetty
  *
@@ -165,7 +168,7 @@ public class VISA1Link implements LogProducer, Runnable
 	frame[b.length+2] = calcLRC (b);
 	v24.send (frame);
 	v24.flushTransmitter();
-	evt.addMessage ("<send>"+ISOUtil.dumpString(frame)+"</send>");
+	evt.addMessage ("<send>"+ISOUtil.hexString(frame)+"</send>");
     }
 
     private byte[] receivePacket (long timeout, LogEvent evt) 
@@ -371,7 +374,7 @@ public class VISA1Link implements LogProducer, Runnable
 	    m.set (new ISOField (49, "858"));
 	    m.dump (System.out, "--->");
 	    m.setPackager (packager);
-	    System.out.println ("dump:" +ISOUtil.dumpString (m.pack()));
+	    System.out.println ("dump:" +ISOUtil.hexString (m.pack()));
 	    ISORequest r = new ISORequest (m);
 	    link.queue (r);
 	    ISOMsg resp = r.getResponse (60000);
