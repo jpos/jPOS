@@ -1,50 +1,53 @@
-<project name="jPOS" default="targets" basedir=".">
-  <property name="build.compiler" value="classic" />
-  <target name="init">
-    <property name="project" value="jpos" />
-    <property name="source" value="src" />
-    <property name="main" value="${source}/main" />
-    <property name="ext"  value="${source}/ext" />
-    <property name="build" value="build" />
-    <property name="classes" value="${build}/classes" />
-    <property name="examples"  value="${source}/examples" />
-    <property name="ext-examples"  value="${source}/ext-examples" />
-    <property name="classes.examples"  value="${build}/examples" />
-    <property name="dist" value="dist" />
-    <property name="lib" value="lib" />
-    <property name="doc" value="${source}/doc" />
-    <property name="etc" value="${source}/etc" />
-    <property name="htdocs" value="${build}/htdocs" />
+<?xml version="1.0"?> 
 
-    <property file="${etc}/VERSION" />
-    <property name="classpath" value="${classpath}:${classes}" />
-    <property name="deprecation" value="false" />
-    <property name="debug" value="off" />
-    <property name="archive" value="${project}-${version}" />
-    <property name="qsp-archive" value="qsp-${version}" />
+<!-- $Id$ -->
 
-    <!-- External propietary modules -->
-    <property name="mod-uruguay"  value="${source}/mod-uruguay" />
-    <property name="mod-jordan"  value="${source}/mod-jordan" />
+<project name="jPOS" default="targets" basedir="..">
+  <property name="source" value="src" />
+  <property name="main" value="${source}/main" />
+  <property name="ext" value="${source}/ext" />
+  <property name="build" value="build" />
+  <property name="classes" value="${build}/classes" />
+  <property name="examples"  value="${source}/examples" />
+  <property name="ext-examples"  value="${source}/ext-examples" />
+  <property name="classes.examples"  value="${build}/examples" />
+  <property name="dist" value="dist" />
+  <property name="lib" value="lib" />
+  <property name="extlib" value="ext" />
+  <property name="doc" value="${source}/doc" />
+  <property name="etc" value="${source}/etc" />
+  <property name="htdocs" value="${build}/htdocs" />
 
-  </target>
+  <property file="${etc}/VERSION" />
+  <property name="classpath" value="${classpath}:${classes}" />
+  <property name="deprecation" value="false" />
+  <property name="debug" value="off" />
+  <property name="project" value="jpos" />
+  <property name="archive" value="${project}-${version}" />
+  <property name="qsp-archive" value="qsp-${version}" />
+
+  <property name="mod-uruguay"  value="${source}/mod-uruguay" />
+  <property name="mod-jordan"  value="${source}/mod-jordan" />
 
   <target name="targets">
-    <echo message="ANT build for ${project} ${version}"/>
-    <echo message="Available targets:"/>
-    <echo message="  clean    Cleans ${build} and ${dist} directories" />
-    <echo message="  main     Builds main ${project} packages" />
-    <echo message=
-	"   ext     Builds extended ${project} classes (see ext/README)" />
-    <echo message="  cvs      Clean and update CVS tree for ${project}" />
-    <echo message="  javadoc  Create javadoc documentation for main module" />
-    <echo message="  extdoc   Create main+ext javadoc docuemtation" />
-    <echo message="  doc      Create full documentation (including extdoc)" />
-    <echo message="  examples Build examples" />
-    <echo message="  ext-examples Build extended examples (requires ext)" />
-    <echo message="  jar      Generates ${archive}.jar" />
-    <echo message="  qsp      Generates ${qsp-archive}.jar" />
-    <echo message="  tarball  Generates distro tarball" />
+    <echo>
+
+        ANT build for ${project} ${version}
+        Available targets:
+        clean        Cleans ${build} and ${dist} directories
+        main         Builds main ${project} packages
+        ext          extended ${project} classes (see ext/README)
+        cvs          Clean and update CVS tree for ${project}
+        javadoc      Create javadoc documentation for main module
+        extdoc       Create main+ext javadoc docuemtation
+        doc          Create full documentation (including extdoc)
+        examples     Build examples
+        ext-examples Build extended examples (requires ext)
+        jar          Generates ${archive}.jar
+        qsp          Generates ${qsp-archive}.jar
+        tarball      Generates distro tarball
+
+    </echo>
   </target>
 
   <target name="prepare">
@@ -56,55 +59,87 @@
   </target>
 
   <target name="clean">
-    <deltree dir="${build}"/>
-    <deltree dir="${dist}"/>
+    <delete dir="${build}"/>
+    <delete dir="${dist}"/>
   </target>
 
+  <path id="main.classpath">
+      <pathelement path="${classpath}"/>
+      <fileset dir="${lib}">
+          <include name="*.jar"/>
+      </fileset>
+      <pathelement location="${build}/classes"/>
+  </path>
 
-  <!-- Build all the sources with debug and deprecation -->
+  <path id="ext.classpath">
+      <pathelement path="${classpath}"/>
+      <fileset dir="${lib}">
+          <include name="*.jar"/>
+      </fileset>
+      <fileset dir="${extlib}">
+          <include name="*.jar"/>
+      </fileset>
+      <pathelement location="${build}/classes"/>
+  </path>
+
   <target name="main" depends="prepare">
     <javac srcdir="${main}" destdir="${classes}"
-           classpath="${classpath}" debug="on" deprecation="${deprecation}" />
+        debug="${debug}"
+        deprecation="${deprecation}" >
+        <classpath refid="main.classpath" />
+    </javac>
   </target>
 
   <target name="ext" depends="main">
     <javac srcdir="${ext}" destdir="${classes}"
-           classpath="${classpath}" debug="on" deprecation="${deprecation}" />
+        debug="${debug}"
+        deprecation="${deprecation}" >
+        <classpath refid="ext.classpath" />
+    </javac>
   </target>
 
   <target name="examples" depends="main">
     <javac srcdir="${examples}" destdir="${classes.examples}"
-           classpath="${classpath}" debug="on" deprecation="${deprecation}" />
+           classpath="${classpath}" debug="on" 
+           deprecation="${deprecation}">
+        <classpath refid="main.classpath" />
+    </javac>
   </target>
 
   <target name="ext-examples" depends="ext">
     <javac srcdir="${ext-examples}" destdir="${classes.examples}"
-           classpath="${classpath}" debug="on" deprecation="${deprecation}" />
+           classpath="${classpath}" debug="on" deprecation="${deprecation}">
+        <classpath refid="ext.classpath" />
+    </javac>
 
     <!-- QSP stuff -->
     <mkdir dir="${ext-examples}/qsp/dtd" />
-    <copyfile src="${ext}/org/jpos/apps/qsp/qsp-config.dtd"
-	      dest="${ext-examples}/qsp/dtd/qsp-config.dtd" />
+    <copy file="${ext}/org/jpos/apps/qsp/qsp-config.dtd"
+        tofile="${ext-examples}/qsp/dtd/qsp-config.dtd" />
   </target>
 
   <target name="mod-uruguay" depends="ext">
     <javac srcdir="${mod-uruguay}" destdir="${classes}"
-           classpath="${classpath}" debug="on" deprecation="${deprecation}" />
+           classpath="${classpath}" debug="on" deprecation="${deprecation}">
+        <classpath refid="ext.classpath" />
+    </javac>
   </target>
   <target name="mod-jordan" depends="ext">
     <javac srcdir="${mod-jordan}" destdir="${classes}"
-           classpath="${classpath}" debug="on" deprecation="${deprecation}" />
+           classpath="${classpath}" debug="on" deprecation="${deprecation}">
+        <classpath refid="ext.classpath" />
+    </javac>
   </target>
 
   <target name="jar" depends="main">
     <delete file="${dist}/${archive}.jar" />
-    <copyfile src="${source}/etc/MANIFEST.MF" dest="${classes}/MANIFEST.MF" />
+    <copy file="${source}/etc/MANIFEST.MF" tofile="${classes}/MANIFEST.MF" />
     <replace file="${classes}/MANIFEST.MF" 
              token="$$VERSION$$" value="${version}"/>
-    <copyfile src="${source}/etc/LICENSE" dest="${classes}/LICENSE" />
-    <copyfile src="${source}/etc/README" dest="${classes}/README" />
-    <copyfile src="${source}/etc/CHANGELOG" dest="${classes}/CHANGELOG" />
-    <copyfile src="${source}/etc/jpos.cfg" dest="${classes}/jpos.cfg" />
+    <copy file="${source}/etc/LICENSE" tofile="${classes}/LICENSE" />
+    <copy file="${source}/etc/README"  tofile="${classes}/README" />
+    <copy file="ChangeLog" tofile="${classes}/ChangeLog" />
+    <copy file="${source}/etc/jpos.cfg"  tofile="${classes}/jpos.cfg" />
 
     <jar jarfile="${dist}/${archive}.jar" 
          basedir="${classes}"
@@ -114,13 +149,13 @@
 
   <target name="qsp" depends="ext">
     <delete file="${dist}/${qsp-archive}.jar" />
-    <copyfile src="${source}/etc/MANIFEST-QSP.MF" 
-              dest="${classes}/MANIFEST.MF" />
+    <copy file="${source}/etc/MANIFEST-QSP.MF" 
+        tofile="${classes}/MANIFEST.MF" />
     <replace file="${classes}/MANIFEST.MF" 
              token="$$VERSION$$" value="${version}"/>
-    <copyfile src="${source}/etc/LICENSE" dest="${classes}/LICENSE" />
-    <copyfile src="${source}/etc/README" dest="${classes}/README" />
-    <copyfile src="${source}/etc/CHANGELOG" dest="${classes}/CHANGELOG" />
+    <copy file="${source}/etc/LICENSE" tofile="${classes}/LICENSE" />
+    <copy file="${source}/etc/README"  tofile="${classes}/README" />
+    <copy file="${source}/etc/CHANGELOG" tofile="${classes}/CHANGELOG" />
 
     <jar jarfile="${dist}/${qsp-archive}.jar" 
          basedir="${classes}"
@@ -136,11 +171,13 @@
   <target name="javadoc" depends="main">
     <mkdir   dir="${htdocs}/doc" />
     <mkdir   dir="${htdocs}/doc/images" />
-    <deltree dir="${htdocs}/doc/javadoc" />
+    <delete  dir="${htdocs}/doc/javadoc" />
     <mkdir   dir="${htdocs}/doc/javadoc" />
-    <copydir src="${doc}/images"  dest="${htdocs}/doc/images" />
+    <copy  todir="${htdocs}/doc/images">
+        <fileset dir="${doc}/images" />
+    </copy>
     <javadoc sourcepath="${main}"
-	destdir="${htdocs}/doc/javadoc" dir="."
+	destdir="${htdocs}/doc/javadoc" 
         windowtitle="jPOS ${version} API Documentation" 
         doctitle="jPOS ${version} API Documentation" 
         header="jPOS ${version} API Documentation" 
@@ -156,36 +193,60 @@
     <deltree dir="${htdocs}/doc/javadoc" />
     <mkdir   dir="${htdocs}/doc/javadoc" />
     <mkdir   dir="${htdocs}/doc/javadoc/images" />
-    <deltree dir="${htdocs}/doc/tmp" />
+    <delete  dir="${htdocs}/doc/tmp" />
     <mkdir   dir="${htdocs}/doc/tmp" />
-    <copydir src="${main}" dest="${htdocs}/doc/tmp" />
-    <copydir src="${ext}"  dest="${htdocs}/doc/tmp" />
-    <copydir src="${doc}/images"  dest="${htdocs}/doc/images" />
+    <copy  todir="${htdocs}/doc/tmp">
+        <fileset dir="${main}" />
+        <fileset dir="${ext}" />
+    </copy>
+    <copy  todir="${htdocs}/doc/images">
+        <fileset dir="${doc}/images" />
+    </copy>
     <javadoc sourcepath="${htdocs}/doc/tmp"
-	destdir="${htdocs}/doc/javadoc" dir="."
+	destdir="${htdocs}/doc/javadoc"
         windowtitle="jPOS ${version} API Documentation" 
         doctitle="jPOS ${version} API Documentation" 
         header="jPOS ${version} API Documentation" 
 	footer="CompuService Srl."
 	public="true" noindex="true" author="true" 
+        classpathref="ext.classpath"
 	overview="${doc}/javadoc/Overview.html"
         packagenames="org.jpos.util, org.jpos.iso.*, org.jpos.core.*, org.jpos.tpl.*"
     />
-    <deltree dir="${htdocs}/doc/tmp" />
+    <delete dir="${htdocs}/doc/tmp" />
   </target>
 
   <target name="doc" depends="extdoc">
     <mkdir   dir="${build}/doc" />
-    <copydir src="${doc}"  dest="${htdocs}/doc" includes="*.html" />
+    <copy  todir="${htdocs}/doc">
+        <fileset dir="${doc}">
+          <patternset>
+            <include name="*.html" />
+          </patternset>
+        </fileset>
+    </copy>
   </target>
 
   <target name="source" depends="prepare">
-    <deltree dir="${build}/src" />
+    <delete  dir="${build}/src" />
     <mkdir   dir="${build}/src" />
-    <copydir src="${source}/main" dest="${build}/src" excludes="CVS/*" />
-    <copydir src="${source}/ext"  dest="${build}/src" excludes="CVS/*" />
-    <copydir src="${source}/examples"  
-             dest="${build}/src/examples" excludes="CVS/*" />
+    <copy  todir="${build}/src">
+        <fileset dir="${main}">
+          <patternset>
+            <exclude name="CVS/*" />
+          </patternset>
+        </fileset>
+        <fileset dir="${ext}">
+          <patternset>
+            <exclude name="CVS/*" />
+          </patternset>
+        </fileset>
+        <fileset dir="${examples}">
+          <patternset>
+            <exclude name="CVS/*" />
+          </patternset>
+        </fileset>
+    </copy>
     <fixcrlf srcdir="${build}/src" includes="*" />
   </target>
 
@@ -193,16 +254,16 @@
     <property name="bin" value="${build}/${archive}" />
     <delete   file="${dist}/${archive}.tgz" />
     <delete   file="${dist}/${archive}.zip" />
-    <deltree  dir="${bin}" />
-    <mkdir    dir="${bin}" />
-    <copyfile src="${etc}/README"
-              dest="${bin}/README" />
-    <copyfile src="${etc}/LICENSE"
-              dest="${bin}/LICENSE" />
-    <copyfile src="${etc}/CHANGELOG"
-              dest="${bin}/CHANGELOG" />
-    <copyfile src="${dist}/${archive}.jar"
-              dest="${bin}/${archive}.jar" />
+    <delete    dir="${bin}" />
+    <mkdir     dir="${bin}" />
+    <copy     file="${etc}/README"
+            tofile="${bin}/README" />
+    <copy     file="${etc}/LICENSE"
+            tofile="${bin}/LICENSE" />
+    <copy     file="ChangeLog"
+            tofile="${bin}/ChangeLog" />
+    <copy     file="${dist}/${archive}.jar"
+            tofile="${bin}/${archive}.jar" />
 
     <tar includes="${archive}/** src/** doc/**" basedir="${build}"
          tarfile="${dist}/${archive}.tar" defaultexcludes="true" />	  

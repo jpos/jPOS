@@ -8,3 +8,5 @@ RotateLogListener accepts new 'maxSize' parameter.
 new method ISOUtil.protect();
 Added ProtectedLogListener
 LogEvent added getPayLoad() (required by ProtectedLogListener
+updated build and jars (Ant 1.4 - crimson, jaxp)
+
