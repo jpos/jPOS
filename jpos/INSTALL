@@ -6,20 +6,8 @@ using Ant (http://jakarta.apache.org).
 We currently distribute 2 modules: 'main' and 'ext'.
 
 While 'main' module's classes are self contained, 'ext' module
-requires external classes (to be installed at jpos/ext directory)
-
-Currently the required jars are:
-
-   mail.jar and activation.jar (available from Sun)
-   sun-util.jar (from Jini1.1 distro)
-   comm.jar   (available from Sun)
-   xalan.jar  (http://xml.apache.org)
-   xerces.jar (http://xml.apache.org)
-
-'ext' module implements just 'ReliableSequencer' and 'OperatorLogListener'
-at the moment but the idea is that 'ext' module will contains classes
-that fit within org.jpos package structure _but_ requires some kind
-of external non-distributable jar file.
+requires external classes (to be installed at jpos/ext directory,
+see ext/README)
 
 Running build (bin/build on Unix, build.bat on Windows) will show
 the available targets:
@@ -29,8 +17,11 @@ Examples:
    bin/build main javadoc : builds main and javadoc on a Windows machine
    bin/build ext doc : builds main, ext, extdoc and doc
 
-This is work in progress, feel free to ask. We run a developers
-mailing list at jpos-dev@onelist.com (jpos-dev-subscribe@onelist.com)
+(Windows users should chdir to jPOS's home directory and execute
+ start bin/build)
+
+This is work in progress, feel free to ask. Join our user's
+mailing list at http://yahoogroups.com/group/jpos-dev
 
 --The jPOS Team
 
