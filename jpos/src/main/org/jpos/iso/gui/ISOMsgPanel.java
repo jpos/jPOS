@@ -7,6 +7,9 @@
 
 /*
  * $Log$
+ * Revision 1.4  1999/08/06 13:52:08  apr
+ * Added getValueAdjusting() check to avoid inner ISOMsgs showing twice
+ *
  * Revision 1.3  1999/08/06 11:40:12  apr
  * expand -4
  *
@@ -117,6 +120,9 @@ public class ISOMsgPanel extends JPanel {
         ListSelectionModel rowSM = table.getSelectionModel();
         rowSM.addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent e) {
+                if (e.getValueIsAdjusting())
+                    return;
+
                 ListSelectionModel lsm =
                     (ListSelectionModel)e.getSource();
                 if (!lsm.isSelectionEmpty()) {
