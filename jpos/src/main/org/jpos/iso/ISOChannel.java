@@ -24,7 +24,7 @@ import java.net.Socket;
  * @see Internetworking_with_TCP/IP_ISBN_0-13-474321-0
  *
  */
-public abstract class ISOChannel {
+public abstract class ISOChannel extends Observable {
 	private Socket socket;
 	private String host;
 	private int port;
@@ -32,6 +32,21 @@ public abstract class ISOChannel {
 	protected DataInputStream serverIn;
 	protected DataOutputStream serverOut;
 	protected ISOPackager packager;
+
+	public static final int CONNECT      = 0;
+	public static final int TX           = 1;
+	public static final int RX           = 2;
+	public static final int SIZEOF_CNT   = 3;
+
+	private int[] cnt;
+
+	/**
+	 * protected constructor shared by server and client
+	 * ISOChannels (which have different signatures)
+	 */
+	protected ISOChannel () {
+		cnt = new int[SIZEOF_CNT];
+	}
 
 	/**
 	 * constructs a client ISOChannel
@@ -41,6 +56,7 @@ public abstract class ISOChannel {
 	 * @see ISOPackager
 	 */
 	public ISOChannel (String host, int port, ISOPackager p) {
+		this();
 		this.host = host;
 		this.port = port;
 		this.packager = p;
@@ -52,9 +68,24 @@ public abstract class ISOChannel {
 	 * @see ISOPackager
 	 */
 	public ISOChannel (ISOPackager p) throws IOException {
+		this();
 		this.host = null;
 		this.port = 0;
 		this.packager = p;
+	}
+	/**
+	 * reset stat info
+	 */
+	public void resetCounters() {
+		for (int i=0; i<SIZEOF_CNT; i++)
+			cnt[i] = 0;
+	}
+	/**
+	 * get the counters in order to pretty print them
+	 * or for stats purposes
+	 */
+	public int[] getCounters() {
+		return cnt;
 	}
 	/**
 	 * @return the connection state
@@ -77,6 +108,9 @@ public abstract class ISOChannel {
 			new BufferedOutputStream(socket.getOutputStream())
 		);
 		usable = true;
+		cnt[CONNECT]++;
+		setChanged();
+		notifyObservers();
     }
 	/**
 	 * Connects client ISOChannel to server
@@ -126,6 +160,12 @@ public abstract class ISOChannel {
 		serverOut.write(b, 0, b.length);
 		sendMessageTrailer(m);
 		serverOut.flush ();
+
+		m.setDirection(ISOMsg.OUTGOING);
+		cnt[TX]++;
+		setChanged();
+		notifyObservers(m);
+		System.out.println ("Notifying Observers");
 	}
 	/**
 	 * Waits and receive an ISOMsg over the TCP/IP session
@@ -161,6 +201,11 @@ public abstract class ISOChannel {
 		m.setPackager (packager);
 		if (b.length > 0)	// Ignore NULL messages (i.e. VAP/X.25 sync, etc.)
 			m.unpack (b);
+
+		m.setDirection(ISOMsg.INCOMING);
+		cnt[RX]++;
+		setChanged();
+		notifyObservers(m);
 		return m;
 	}
 	/**
@@ -178,6 +223,8 @@ public abstract class ISOChannel {
 	 */
 	public void disconnect () throws IOException {
 		usable = false;
+		setChanged();
+		notifyObservers();
 		serverIn  = null;
 		serverOut = null;
 		if (socket != null)
