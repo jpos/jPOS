@@ -3,7 +3,7 @@
 
 <!ELEMENT qsp-config (logger*,mux*,task*,server*,
                       control-panel*,sequencer*,card-agent*,
-		      persistent-engine*)*>
+		      persistent-engine*, dir-poll*)*>
 <!ATTLIST qsp-config logger IDREF #IMPLIED>
 <!ATTLIST qsp-config realm  CDATA #IMPLIED>
 <!ATTLIST qsp-config reload CDATA #IMPLIED>
@@ -97,4 +97,16 @@
 <!ATTLIST persistent-engine name ID #REQUIRED>
 <!ATTLIST persistent-engine logger IDREF #IMPLIED>
 <!ATTLIST persistent-engine realm CDATA #IMPLIED>
+
+<!-- directory-poll -->
+<!ELEMENT dir-poll (property)*>
+<!ATTLIST dir-poll name ID #IMPLIED>
+<!ATTLIST dir-poll path CDATA #REQUIRED>
+<!ATTLIST dir-poll create (yes|no) 'no'>
+<!ATTLIST dir-poll poolsize CDATA #IMPLIED>
+<!ATTLIST dir-poll interval CDATA #IMPLIED>
+<!ATTLIST dir-poll priorities CDATA #IMPLIED>
+<!ATTLIST dir-poll processor CDATA #REQUIRED>
+<!ATTLIST dir-poll logger IDREF #IMPLIED>
+<!ATTLIST dir-poll realm  CDATA #IMPLIED>
 

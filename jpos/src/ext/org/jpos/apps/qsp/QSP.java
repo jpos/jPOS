@@ -49,6 +49,7 @@ public class QSP implements ErrorHandler, LogSource {
 	  "server",
 	  "request-listener",
 	  "card-agent",
+	  "dir-poll",
 	  "task" 
 	};
 

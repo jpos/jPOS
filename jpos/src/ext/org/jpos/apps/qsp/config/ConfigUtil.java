@@ -106,6 +106,24 @@ public class ConfigUtil {
 	    throw new ConfigurationException (className, e);
 	}
     }
+
+    public static int getAttributeAsInt (Node node, String name, int defValue) {
+	int i = defValue;
+	Node n = node.getAttributes().getNamedItem (name);
+	if (n != null)
+	    i = Integer.parseInt (n.getNodeValue());
+	return i;
+    }
+    public static String getAttribute (Node node, String name, String defValue) 
+    {
+	String s = defValue;
+	Node n = node.getAttributes().getNamedItem (name);
+	if (n != null)
+	    s = n.getNodeValue();
+	return s;
+    }
+
+    //--------------------------------------------------------private helpers
     private static void addFileProperties 
 	(Properties props, String filename, LogEvent evt)
     {
