@@ -14,13 +14,13 @@
 
 <!-- log-listener -->
 <!ELEMENT log-listener (property*)>
-<!ATTLIST log-listener class CDATA #REQUIRED>
+<!ATTLIST log-listener class NMTOKEN #REQUIRED>
 <!ATTLIST log-listener name  CDATA #IMPLIED>
 
 <!-- channel -->
 <!ELEMENT channel (property*, filter*)*>
 <!ATTLIST channel name ID #REQUIRED>
-<!ATTLIST channel class CDATA #REQUIRED>
+<!ATTLIST channel class NMTOKEN #REQUIRED>
 <!ATTLIST channel connect (yes|no) 'no'>
 <!ATTLIST channel logger IDREF #IMPLIED>
 <!ATTLIST channel realm CDATA #IMPLIED>
@@ -32,7 +32,7 @@
 
 <!-- filter -->
 <!ELEMENT filter (property)*>
-<!ATTLIST filter class CDATA #REQUIRED>
+<!ATTLIST filter class NMTOKEN #REQUIRED>
 <!ATTLIST filter direction (incoming|outgoing|both) 'both'>
 
 <!-- mux -->
@@ -44,7 +44,7 @@
 
 <!-- task -->
 <!ELEMENT task (property)*>
-<!ATTLIST task class CDATA #REQUIRED>
+<!ATTLIST task class NMTOKEN #REQUIRED>
 <!ATTLIST task logger IDREF #IMPLIED>
 <!ATTLIST task realm CDATA #IMPLIED>
 <!ATTLIST task name ID #IMPLIED>
@@ -57,7 +57,7 @@
 
 <!-- request-listener -->
 <!ELEMENT request-listener (property)*>
-<!ATTLIST request-listener class CDATA #REQUIRED>
+<!ATTLIST request-listener class NMTOKEN #REQUIRED>
 <!ATTLIST request-listener logger IDREF #IMPLIED>
 <!ATTLIST request-listener realm CDATA #IMPLIED>
 
@@ -82,13 +82,13 @@
 <!-- sequencer -->
 <!ELEMENT sequencer (property)*>
 <!ATTLIST sequencer name ID #REQUIRED>
-<!ATTLIST sequencer class CDATA #REQUIRED>
+<!ATTLIST sequencer class NMTOKEN #REQUIRED>
 <!ATTLIST sequencer logger IDREF #IMPLIED>
 <!ATTLIST sequencer realm CDATA #IMPLIED>
 
 <!-- card-agent -->
 <!ELEMENT card-agent (property)*>
-<!ATTLIST card-agent class CDATA #REQUIRED>
+<!ATTLIST card-agent class NMTOKEN #REQUIRED>
 <!ATTLIST card-agent logger IDREF #IMPLIED>
 <!ATTLIST card-agent realm CDATA #IMPLIED>
 <!ATTLIST card-agent persistent-engine CDATA #IMPLIED>
@@ -113,7 +113,7 @@
 
 <!-- daily-task -->
 <!ELEMENT daily-task (property)*>
-<!ATTLIST daily-task class CDATA #REQUIRED>
+<!ATTLIST daily-task class NMTOKEN #REQUIRED>
 <!ATTLIST daily-task logger IDREF #IMPLIED>
 <!ATTLIST daily-task realm CDATA #IMPLIED>
 <!ATTLIST daily-task name ID #IMPLIED>
