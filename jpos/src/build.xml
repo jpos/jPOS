@@ -111,8 +111,6 @@ Main targets:
      <include name="**/OperatorLogListener.java"        if="mail.present"    />
      <include name="**/ReliableSequencer*.java"         if="sun-util.present"/>
      <include name="**/SAFChannel*.java"                if="sun-util.present"/>
-     <include name="**/apps/jetty/**"                   if="jetty.present"   />
-     <include name="**/q2/jetty/**"                     if="jetty.present"   />
 
      <include name="**/JepUtil.java"                    if="jep.present"     />
      <include name="**/filter/CalculateFilter.java"     if="jep.present"     />
@@ -169,7 +167,6 @@ Main targets:
   <target name="xdoclet-uptodate" depends="copy-src">
     <uptodate property="xdoclet-generate">
       <srcfiles dir="${buildsrc}" includes="org/jpos/space/TransientSpace.java" />
-      <srcfiles dir="${buildsrc}" includes="org/jpos/q2/jetty/Jetty.java" />
       <mapper type="glob" from="*.java" to="*MBean.java"/>
     </uptodate>
   </target>
@@ -182,7 +179,6 @@ Main targets:
     <jmxdoclet destdir="${buildsrc}" force="yes" verbose="false">
       <fileset dir="${buildsrc}">
         <include name="org/jpos/space/TransientSpace.java" />
-        <include name="org/jpos/q2/jetty/Jetty.java" />
       </fileset>
       <mbeaninterface/>
       <mx4jdescription/>
@@ -222,9 +218,6 @@ Main targets:
     <available property="opencard.present"
            classpathref="ext.classpath"
               classname="opencard.opt.util.TLV" />
-    <available property="jetty.present"
-           classpathref="ext.classpath"
-              classname="org.mortbay.jetty.Server" />
     <available property="jep.present"
            classpathref="ext.classpath"
               classname="org.nfunk.jep.JEP" />
