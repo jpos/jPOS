@@ -49,26 +49,63 @@
 
 package org.jpos.iso;
 
+import java.io.UnsupportedEncodingException;
+
 /**
- * The IF_CHAR packager pads to the right with spaces, truncating data that is too long.
- * It uses a literal interpreter and has no length prefix.
- *
- * @author jonathan.oconnor@xcom.de
- * @author apr@cs.com.uy
- * @version $Id$
- * @see ISOComponent
+ * Implements ASCII Interpreter. Strings are converted to and from ASCII bytes.
+ * This uses the US-ASCII encoding which all JVMs must support.
+ * 
+ * @author joconnor
+ * @version $Revision$ $Date$
  */
-public class IF_CHAR extends ISOBaseFieldPackager {
-    /** Used for the GenericPackager. */
-    public IF_CHAR() {
-        super(0, null, DT_STRING, LiteralInterpreter.INSTANCE, RightTPadder.SPACE_PADDER, NullPrefixer.INSTANCE);
+public class AsciiInterpreter implements Interpreter
+{
+    /** An instance of this Interpreter. Only one needed for the whole system */
+    public static final AsciiInterpreter INSTANCE = new AsciiInterpreter();
+
+    /**
+	 * (non-Javadoc)
+	 * 
+	 * @see xcom.traxbahn.util.messages.iso.Interpreter#interpret(java.lang.String)
+	 */
+    public void interpret(String data, byte[] b, int offset)
+    {
+        byte[] raw;
+        try
+        {
+            raw = data.getBytes("US-ASCII");
+        } catch (UnsupportedEncodingException e)
+        {
+            System.out.println("US-ASCII not recognised as char set");
+            raw = data.getBytes();
+        }
+        System.arraycopy(raw, 0, b, offset, raw.length);
     }
 
     /**
-     * @param len - field len
-     * @param description symbolic descrption
-     */
-    public IF_CHAR(int len, String description) {
-        super(len, description, DT_STRING, LiteralInterpreter.INSTANCE, RightTPadder.SPACE_PADDER, NullPrefixer.INSTANCE);
+	 * (non-Javadoc)
+	 * 
+	 * @see xcom.traxbahn.util.messages.iso.Interpreter#uninterpret(byte[])
+	 */
+    public String uninterpret(byte[] rawData, int offset, int length)
+    {
+        try
+        {
+            return new String(rawData, offset, length, "US-ASCII");
+        } catch (UnsupportedEncodingException e)
+        {
+            System.out.println("US-ASCII not recognised as char set");
+            return new String(rawData, offset, length);
+        }
+    }
+
+    /**
+	 * (non-Javadoc)
+	 * 
+	 * @see xcom.traxbahn.util.messages.iso.Interpreter#getPackedLength(int)
+	 */
+    public int getPackedLength(int nDataUnits)
+    {
+        return nDataUnits;
     }
 }

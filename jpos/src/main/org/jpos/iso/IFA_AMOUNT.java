@@ -56,41 +56,15 @@ package org.jpos.iso;
  * @version $Id$
  * @see ISOFieldPackager
  */
-public class IFA_AMOUNT extends ISOFieldPackager {
+public class IFA_AMOUNT extends ISOBaseFieldPackager {
     public IFA_AMOUNT() {
-        super();
+        super(0, null, DT_AMOUNT, AsciiInterpreter.INSTANCE, RightPadder.SPACE_PADDER, NullPrefixer.INSTANCE);
     }
     /**
      * @param len - field len
      * @param description symbolic descrption
      */
     public IFA_AMOUNT(int len, String description) {
-        super(len, description);
-    }
-    /**
-     * @param c - a component
-     * @return packed component
-     * @exception ISOException
-     */
-    public byte[] pack (ISOComponent c) throws ISOException {
-        String s = (String) c.getValue();
-        return (s.substring(0,1) 
-                +ISOUtil.zeropad(s.substring(1),getLength()-1)).getBytes();
-    }
-    public int getMaxPackedLength() {
-        return getLength();
-    }
-    /**
-     * @param c - the Component to unpack
-     * @param b - binary image
-     * @param offset - starting offset within the binary image
-     * @return consumed bytes
-     * @exception ISOException
-     */
-    public int unpack (ISOComponent c, byte[] b, int offset)
-        throws ISOException
-    {
-        c.setValue(new String(b, offset, getLength()));
-        return getLength();
+        super(len, description, DT_AMOUNT, AsciiInterpreter.INSTANCE, RightPadder.SPACE_PADDER, NullPrefixer.INSTANCE);
     }
 }
