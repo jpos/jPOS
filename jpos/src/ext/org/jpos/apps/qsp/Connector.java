@@ -81,14 +81,15 @@ public class Connector
     }
 
     /**
-     * hook used to optional bounce an unanswered messages 
+     * hook used to optional bounce an unanswered message 
      * to its source channel
      * @param s message source
      * @param m unanswered message
      * @exception ISOException
+     * @exception IOException
      */
     protected void processNullResponse (ISOSource s, ISOMsg m, LogEvent evt) 
-	throws ISOException
+	throws ISOException, IOException
     {
 	evt.addMessage ("<null-response/>");
     }
