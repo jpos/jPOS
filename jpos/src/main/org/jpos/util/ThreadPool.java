@@ -49,36 +49,6 @@
 
 package org.jpos.util;
 
-/*
- * $Id$
- *
- * $Log$
- * Revision 1.8  2001/11/06 23:24:21  apr
- * Added public int getIdleCount() method
- *
- * Revision 1.7  2000/11/02 12:09:18  apr
- * Added license to every source file
- *
- * Revision 1.6  2000/04/19 19:16:04  apr
- * Removed debugging (main())
- *
- * Revision 1.5  2000/04/16 23:53:14  apr
- * LogProducer renamed to LogSource
- *
- * Revision 1.4  2000/03/01 14:44:45  apr
- * Changed package name to org.jpos
- *
- * Revision 1.3  2000/02/02 00:06:28  apr
- * CVS sync
- *
- * Revision 1.2  2000/01/17 18:26:06  apr
- * Supervise every 100 executions
- *
- * Revision 1.1  2000/01/11 17:16:52  apr
- * Added ThreadPool support
- *
- */
-
 import java.io.PrintStream;
 import org.jpos.util.BlockingQueue.Closed;
 
@@ -178,6 +148,37 @@ public class ThreadPool extends ThreadGroup implements LogSource, Loggeable
 	p.println (indent + "</ThreadPool>");
     }
 
+    /**
+     * @return number of jobs processed by this pool
+     */
+    public int getJobCount () {
+        return jobs;
+    }
+    /**
+     * @return number of active threads
+     */
+    public int getPoolSize () {
+        return activeCount();
+    }
+    /**
+     * @return max number of active threads allowed
+     */
+    public int getMaxPoolSize () {
+        return maxPoolSize;
+    }
+    /**
+     * @return number of idle threads
+     */
+    public int getIdleCount () {
+        return pool.consumerCount ();
+    }
+    /**
+     * @return number of Pending jobs
+     */
+    public int getPendingCount () {
+        return pool.pending ();
+    }
+
     public void supervise () {
 	Thread[] t = new Thread[maxPoolSize];
 	int cnt = enumerate (t);
@@ -195,8 +196,5 @@ public class ThreadPool extends ThreadGroup implements LogSource, Loggeable
     }
     public Logger getLogger() {
 	return logger;
-    }
-    public int getIdleCount () {
-        return pool.consumerCount ();
     }
 }
