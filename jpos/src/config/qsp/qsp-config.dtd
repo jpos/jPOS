@@ -36,6 +36,8 @@
 <!ATTLIST channel packager-logger CDATA #IMPLIED>
 <!ATTLIST channel packager-realm  CDATA #IMPLIED>
 <!ATTLIST channel socket-factory  CDATA #IMPLIED>
+<!ATTLIST channel scroll (yes|no) 'no'>
+<!ATTLIST channel refresh CDATA #IMPLIED>
 
 <!-- filter -->
 <!ELEMENT filter (property*,calculate*,SQL*)*>
@@ -108,6 +110,8 @@
 <!ATTLIST server realm CDATA #IMPLIED>
 <!ATTLIST server maxSessions CDATA #IMPLIED>
 <!ATTLIST server panel IDREF #IMPLIED>
+<!ATTLIST server scroll (yes|no) 'no'>
+<!ATTLIST server refresh CDATA #IMPLIED>
 
 <!-- control-panel -->
 <!ELEMENT control-panel (panel)*>
