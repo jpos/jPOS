@@ -38,6 +38,8 @@ public class Test extends SimpleLogProducer {
 	    m.set (new ISOField (7,  ISODate.getDateTime(d)));
 	    m.set (new ISOField (12, ISODate.getTime(d)));
 	    m.set (new ISOField (13, ISODate.getDate(d)));
+	    m.set 
+		(new ISOField (48, "Less than '<' and greater than '>'"));
 	    m.set (new ISOBinaryField (127, "BINARY FIELD".getBytes()));
 
 	    // add inner message
