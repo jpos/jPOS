@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.6  2000/02/01 12:50:35  apr
+ * Added dummy cancel
+ *
  * Revision 1.5  2000/01/30 23:33:50  apr
  * CVS sync/backup - intermediate version
  *
@@ -126,9 +129,11 @@ public abstract class CardAgentBase implements CardAgent, LogProducer {
 	} 
     }
 
-    // public abstract CardTransactionResponse cancel  (byte[] image) 
-//	throws CardAgentException;
-
+    public CardTransactionResponse cancel  (byte[] image) 
+	throws CardAgentException
+    {
+	throw new CardAgentException ("not implemented");
+    }
     public abstract CardTransactionResponse getResponse (byte[] b) 
 	throws CardAgentException;
 }
