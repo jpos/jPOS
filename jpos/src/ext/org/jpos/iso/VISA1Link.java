@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.5  1999/12/15 16:11:12  apr
+ * Testing ...
+ *
  * Revision 1.4  1999/12/15 16:07:37  apr
  * Protection against negative timeouts on readUntil
  *
@@ -183,10 +186,10 @@ public class VISA1Link implements LogProducer, Runnable
 		    sendPacket (request, evt);
 		    System.out.println (
 			"[waiting for ACK or NAK] timeout="+timeout);
-		    buf = v24.readUntil ("\006\025", timeout, true);
+		    buf = v24.readUntil ("\002\025", timeout, true);
 		    System.out.println ("[end readUntil]");
-		    if (buf.endsWith ("\006")) {
-			System.out.println ("[Got ACK]");
+		    if (buf.endsWith ("\002")) {
+			System.out.println ("[Got STX]");
 			state++;
 		    }
 		    break;
