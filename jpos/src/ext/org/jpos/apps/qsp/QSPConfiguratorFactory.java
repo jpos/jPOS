@@ -1,6 +1,6 @@
 package org.jpos.apps.qsp;
 
-import org.jpos.apps.qsp.QSPConfigurator.ConfigurationException;
+import org.jpos.core.ConfigurationException;
 
 /**
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>

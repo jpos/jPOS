@@ -2,6 +2,7 @@ package org.jpos.apps.qsp;
 
 import org.w3c.dom.Node;
 import org.jpos.core.Configuration;
+import org.jpos.core.ConfigurationException;
 
 /**
  * QSP Tasks may want to implement QSPConfigurable if they are to
@@ -11,5 +12,5 @@ import org.jpos.core.Configuration;
  */
 public interface QSPConfigurable {
     public void config (Configuration cfg) 
-	throws QSPConfigurator.ConfigurationException;
+	throws ConfigurationException;
 }

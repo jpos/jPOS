@@ -8,12 +8,9 @@
 <!ATTLIST logger name ID #REQUIRED>
 
 <!-- log-listener -->
-<!ELEMENT log-listener EMPTY>
-<!ATTLIST log-listener type (simple|rotate) #REQUIRED>
-<!ATTLIST log-listener name CDATA #IMPLIED>
-<!ATTLIST log-listener filename CDATA #IMPLIED>
-<!ATTLIST log-listener window   CDATA #IMPLIED>
-<!ATTLIST log-listener copies   CDATA #IMPLIED>
+<!ELEMENT log-listener (property*)>
+<!ATTLIST log-listener class CDATA #REQUIRED>
+<!ATTLIST log-listener name  CDATA #IMPLIED>
 
 <!-- channel -->
 <!ELEMENT channel (filter*)>

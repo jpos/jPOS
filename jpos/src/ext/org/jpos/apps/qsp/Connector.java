@@ -7,6 +7,7 @@ import org.jpos.util.LogProducer;
 import org.jpos.util.LogEvent;
 import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
+import org.jpos.core.ConfigurationException;
 import org.jpos.iso.ISOMsg;
 import org.jpos.iso.ISOMUX;
 import org.jpos.iso.ISOField;
@@ -59,7 +60,9 @@ public class Connector
     * </ul>
     * @param cfg Configuration
     */
-    public void setConfiguration (Configuration cfg) throws ISOException {
+    public void setConfiguration (Configuration cfg)
+	throws ConfigurationException
+    {
 	timeout = cfg.getInt ("timeout");
 	String muxName     = cfg.get ("destination-mux");
 	String channelName = cfg.get ("destination-channel");
@@ -70,7 +73,7 @@ public class Connector
 		destChannel = ISOChannel.getChannel (channelName);
 	    mux = ISOMUX.getMUX (cfg.get ("source-mux"));
 	} catch (NotFoundException e) {
-	    throw new ISOException (e);
+	    throw new ConfigurationException (e);
 	}
     }
     public void process(ISOMsg m) {

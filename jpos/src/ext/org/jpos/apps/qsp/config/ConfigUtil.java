@@ -5,8 +5,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import org.jpos.util.LogEvent;
-
-import org.jpos.apps.qsp.QSPConfigurator.ConfigurationException;
+import org.jpos.core.ConfigurationException;
 
 /**
  * Config Helper methods

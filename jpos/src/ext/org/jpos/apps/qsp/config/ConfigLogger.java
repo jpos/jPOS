@@ -2,10 +2,10 @@ package org.jpos.apps.qsp.config;
 
 import org.jpos.util.Logger;
 import org.jpos.util.LogEvent;
+import org.jpos.core.ConfigurationException;
 
 import org.jpos.apps.qsp.QSP;
 import org.jpos.apps.qsp.QSPConfigurator;
-import org.jpos.apps.qsp.QSPConfigurator.ConfigurationException;
 
 import org.w3c.dom.Node;
 
@@ -22,13 +22,6 @@ public class ConfigLogger implements QSPConfigurator {
 	Logger.log (
 	    new LogEvent (qsp, "config-logger", name)
 	);
-
-	// NodeList listeners = node.getChildNodes().getElementsByTagName 
-	//  ("listener");
-	//System.out.println (
-	//  "Logger "+node.getAttributes().getNamedItem ("name")
-	// +" seems to have "+listeners.getLength() + " listeners."
-	// );
     }
    /**
     * @return Logger for this node or null

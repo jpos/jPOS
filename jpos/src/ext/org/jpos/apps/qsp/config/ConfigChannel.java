@@ -9,10 +9,10 @@ import org.jpos.util.Logger;
 import org.jpos.util.LogEvent;
 import org.jpos.util.NameRegistrar;
 import org.jpos.core.SimpleConfiguration;
+import org.jpos.core.ConfigurationException;
 
 import org.jpos.apps.qsp.QSP;
 import org.jpos.apps.qsp.QSPConfigurator;
-import org.jpos.apps.qsp.QSPConfigurator.ConfigurationException;
 
 import org.w3c.dom.Node;
 

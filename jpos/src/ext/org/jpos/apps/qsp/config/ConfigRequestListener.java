@@ -9,11 +9,11 @@ import org.jpos.iso.ISOMUX;
 import org.jpos.iso.ISORequestListener;
 import org.jpos.iso.ISOException;
 import org.jpos.core.SimpleConfiguration;
+import org.jpos.core.ConfigurationException;
 import org.jpos.core.Configurable;
 
 import org.jpos.apps.qsp.QSP;
 import org.jpos.apps.qsp.QSPConfigurator;
-import org.jpos.apps.qsp.QSPConfigurator.ConfigurationException;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.NamedNodeMap;

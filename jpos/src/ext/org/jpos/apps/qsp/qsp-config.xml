@@ -2,9 +2,12 @@
 <!DOCTYPE qsp-config SYSTEM "qsp-config.dtd"> 
 <qsp-config>
  <logger name="qsp">
-    <log-listener name="simple" type="simple" />
-    <!-- log-listener name="rotate" type="rotate" 
-         filename="/tmp/qsp.log" window="86400" copies="10" / -->
+    <log-listener class="org.jpos.util.SimpleLogListener"/>
+    <log-listener class="org.jpos.util.RotateLogListener">
+      <property name="file" value="/tmp/qsp.log" />
+      <property name="window" value="86400" />
+      <property name="copies" value="10" />
+    </log-listener>
  </logger>
 
  <mux name="acme.mux" logger="qsp" realm="acme">
@@ -23,11 +26,11 @@
     <property name="delay" value="1000" />
    </filter>
   </channel>
-  <!--request-listener class="org.jpos.apps.qsp.Connector"
+  <request-listener class="org.jpos.apps.qsp.Connector"
     logger="qsp" realm="acme.mux.request.listener">
     <property name="destination-mux" value="acme.mux" />
     <property name="timeout" value="15000" />
-  </request-listener -->
+  </request-listener>
  </mux>
 
  <task class="org.jpos.apps.qsp.task.Sender" logger="qsp" realm="acme-sender">

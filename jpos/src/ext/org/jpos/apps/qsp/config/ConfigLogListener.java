@@ -2,16 +2,17 @@ package org.jpos.apps.qsp.config;
 
 import java.io.IOException;
 
+import java.util.Properties;
 import org.jpos.util.NameRegistrar;
 import org.jpos.util.Logger;
 import org.jpos.util.LogEvent;
 import org.jpos.util.LogListener;
-import org.jpos.util.SimpleLogListener;
-import org.jpos.util.RotateLogListener;
+import org.jpos.core.Configurable;
+import org.jpos.core.ConfigurationException;
+import org.jpos.core.SimpleConfiguration;
 
 import org.jpos.apps.qsp.QSP;
 import org.jpos.apps.qsp.QSPConfigurator;
-import org.jpos.apps.qsp.QSPConfigurator.ConfigurationException;
 
 import org.w3c.dom.Node;
 
@@ -68,47 +69,19 @@ public class ConfigLogListener implements QSPConfigurator {
     private LogListener createLogListener (Node node, LogEvent evt) 
 	throws ConfigurationException 
     {
-	LogListener listener = null;
-	String type=node.getAttributes().getNamedItem ("type").getNodeValue();
+	String className =
+	    node.getAttributes().getNamedItem ("class").getNodeValue();
+	LogListener listener =
+	    (LogListener) ConfigUtil.newInstance (className);
 
-	if (type.equals ("simple")) {
-	    listener = new SimpleLogListener (System.out);
-	    evt.addMessage ("SimpleLogListener created");
-	} else if (type.equals ("rotate")) 
-	    listener = createRotateLogListener (node, evt);
-	return listener;
-    }
-
-    private LogListener createRotateLogListener (Node node, LogEvent evt) 
-	throws ConfigurationException 
-    {
-	Node filenameNode = node.getAttributes().getNamedItem ("filename");
-	Node windowNode   = node.getAttributes().getNamedItem ("window");
-	Node copiesNode   = node.getAttributes().getNamedItem ("copies");
-
-	if (filenameNode == null)
-	    throw new ConfigurationException 
-		("rotate log-listener needs filename attribute");
-
-	String filename = filenameNode.getNodeValue();
-	int window = windowNode != null ?
-	    Integer.parseInt (windowNode.getNodeValue()) :
-	    DEFAULT_WINDOW;
-
-	int copies = copiesNode != null ?
-	    Integer.parseInt (copiesNode.getNodeValue()) :
-	    DEFAULT_COPIES;
-
-	evt.addMessage ("RorateLogListener created,");
-	evt.addMessage ("filename=\""+filename +"\"");
-	evt.addMessage ("window="+window);
-	evt.addMessage ("copies="+copies);
-
-	try {
-	    return new RotateLogListener (filename, window, copies);
-	} catch (IOException e) {
-	    throw new ConfigurationException 
-		("error creating RotateLogListener", e);
+	evt.addMessage ("<log-listener class=\""+className+"\"/>");
+	if (listener instanceof Configurable) {
+	    Properties props = ConfigUtil.addProperties (node, null, evt);
+	    ((Configurable)listener).setConfiguration (
+		new SimpleConfiguration (props)
+	    );
+	    evt.addMessage ("<configurable/>");
 	}
+	return listener;
     }
 }

@@ -15,8 +15,7 @@ import org.jpos.util.SystemMonitor;
 import org.jpos.util.Logger;
 import org.jpos.util.LogEvent;
 import org.jpos.util.LogProducer;
-import org.jpos.apps.qsp.QSPConfigurator.ConfigurationException;
-
+import org.jpos.core.ConfigurationException;
 
 /**
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
