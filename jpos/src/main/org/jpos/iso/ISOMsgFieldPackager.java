@@ -7,7 +7,6 @@ package uy.com.cs.jpos.iso;
  * @author apr@cs.com.uy
  * @version $Id$
  * @see PostPackager
- * @see PostPrivatePackager
  */
 public class ISOMsgFieldPackager extends ISOFieldPackager {
     protected ISOPackager msgPackager;
