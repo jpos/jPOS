@@ -111,7 +111,7 @@
         <include name="org/jpos/q2/qbean/SpaceAdaptor.java" />
       </fileset>
       <mbeaninterface/>
-      <mx4jdescription/>
+      <!-- mx4jdescription / -->
     </jmxdoclet>
   </target>
 
