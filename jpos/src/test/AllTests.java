@@ -53,6 +53,8 @@ import org.apache.log4j.*;
 import org.apache.log4j.xml.*;
 import org.jpos.util.*;
 
+import org.jpos.util.Logger;
+
 /*
  * @author Alejandro P. Revilla
  * @version $Revision$ $Date$
