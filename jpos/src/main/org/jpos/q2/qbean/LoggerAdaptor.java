@@ -79,7 +79,11 @@ public class LoggerAdaptor extends QBeanSupport {
         logger.removeAllListeners ();
     }
     protected void destroyService() {
-        logger.destroy ();
+        // we don't destroy (that would unregister the logger from the
+        // NameRegistrar) because other components might have references
+        // to this logger.
+        //
+        // logger.destroy ();
     }
     private void addListener (Element e) 
         throws Q2ConfigurationException
