@@ -51,6 +51,7 @@ package org.jpos.iso;
 
 import java.io.*;
 import java.util.*;
+import java.lang.ref.WeakReference;
 import org.jpos.util.Loggeable;
 import org.jpos.util.LogSource;
 import org.jpos.iso.packager.XMLPackager;
@@ -79,6 +80,7 @@ public class ISOMsg extends ISOComponent
     public static final int INCOMING = 1;
     public static final int OUTGOING = 2;
     private static final long serialVersionUID = 4306251831901413975L;
+    private WeakReference sourceRef;
 
     /**
      * Creates an ISOMsg
@@ -698,6 +700,20 @@ public class ISOMsg extends ISOComponent
         catch (ISOException e) {
             throw new IOException (e.getMessage());
         }
+    }
+    /**
+     * Let this ISOMsg object hold a weak reference to an ISOSource
+     * (usually used to carry a reference to the incoming ISOChannel)
+     * @param source an ISOSource
+     */
+    public void setSource (ISOSource source) {
+        this.sourceRef = new WeakReference (source);
+    }
+    /**
+     * @return an ISOSource or null
+     */
+    public ISOSource getSource () {
+        return (sourceRef != null) ? (ISOSource) sourceRef.get () : null;
     }
 }
 

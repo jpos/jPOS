@@ -484,6 +484,7 @@ public abstract class BaseChannel extends Observable
         byte[] b, header=null;
 	LogEvent evt = new LogEvent (this, "receive");
 	ISOMsg m = new ISOMsg();
+        m.setSource (this);
 	try {
 	    if (!isConnected())
 		throw new ISOException ("unconnected ISOChannel");

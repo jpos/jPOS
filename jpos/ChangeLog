@@ -1,6 +1,7 @@
 $Id$
 
 -- 1.4.5 --
+Added ISOMsg setSource/getSource
 Support for ISOValidators (contributed by Jose Eduardo Leon)
 New application: Q2
 Replaced JMXRI by MX4J, new HTTPAdaptor, JNDIAdaptor and RMIAdaptor
