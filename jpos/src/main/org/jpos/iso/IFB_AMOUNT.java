@@ -57,8 +57,11 @@ package org.jpos.iso;
  * @see ISOComponent
  */
 public class IFB_AMOUNT extends ISOFieldPackager {
+    private BCDInterpreter interpreter;
+    
     public IFB_AMOUNT() {
         super();
+        interpreter = BCDInterpreter.LEFT_PADDED;
     }
     /**
      * @param len - field len
@@ -67,7 +70,15 @@ public class IFB_AMOUNT extends ISOFieldPackager {
     public IFB_AMOUNT(int len, String description, boolean pad) {
         super(len, description);
         this.pad = pad;
+        interpreter = pad ? BCDInterpreter.LEFT_PADDED : BCDInterpreter.RIGHT_PADDED;
     }
+    
+    public void setPad(boolean pad)
+    {
+        this.pad = pad;
+        interpreter = pad ? BCDInterpreter.LEFT_PADDED : BCDInterpreter.RIGHT_PADDED;
+    }
+
     /**
      * @param c - a component
      * @return packed component
@@ -75,11 +86,10 @@ public class IFB_AMOUNT extends ISOFieldPackager {
      */
     public byte[] pack (ISOComponent c) throws ISOException {
         String s = (String) c.getValue();
-        String amnt = ISOUtil.zeropad(s.substring(1),getLength()-1);
-        byte[] bcd = ISOUtil.str2bcd (amnt, pad);
-        byte[] b   = new byte[bcd.length + 1];
+        String amount = ISOUtil.zeropad(s.substring(1), getLength()-1);
+        byte[] b   = new byte[1 + (getLength() >> 1)];
         b[0] = (byte) s.charAt(0);
-        System.arraycopy(bcd, 0, b, 1, bcd.length);
+        interpreter.interpret(amount, b, 1);
         return b;
     }
     /**
@@ -93,7 +103,7 @@ public class IFB_AMOUNT extends ISOFieldPackager {
         throws ISOException
     {
         String d = (new String(b, offset, 1)) 
-                    +ISOUtil.bcd2str (b, offset+1, getLength()-1, pad);
+                    + interpreter.uninterpret(b, offset + 1, getLength() - 1);
         c.setValue(d);
         return 1 + ((getLength()) >> 1);
     }
