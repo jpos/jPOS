@@ -60,7 +60,7 @@ import javax.management.*;
  * @author <a href="mailto:taherkordy@dpi2.dpi.net.ir">Alireza Taherkordi</a>
  *
  * <http-adaptor class="org.jpos.q2.qbean.HttpAdaptor"
- *                       name="service=http-adaptor" >
+ *                       name="http-adaptor" >
  *  <attr name="host">localhost</attr>
  *  <attr name="port" type="java.lang.Integer">8082</attr>
  * </http-adaptor>
@@ -97,6 +97,12 @@ public class HttpAdaptor
     public void setLogger (String loggerName) {
         log = new Log (Logger.getLogger (loggerName), getName ());
     }
+
+    public String getLogger () 
+    {
+    	return log.getLogger().getName();
+    }
+
     public void init ()
     {
         try {

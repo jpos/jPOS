@@ -67,7 +67,7 @@ public class QBeanSupport implements QBean, QPersist, QBeanSupportMBean {
 
     public QBeanSupport () {
         super();
-        log = Log.getLog (Q2.LOGGER_NAME, getClass().getName());
+        setLogger (Q2.LOGGER_NAME);
     }
     public void setServer (Q2 server) {
         this.server = server;
@@ -80,7 +80,13 @@ public class QBeanSupport implements QBean, QPersist, QBeanSupportMBean {
         log.setRealm (name);
     }
     public void setLogger (String loggerName) {
-        log = new Log (Logger.getLogger (loggerName), getName ());
+        log = Log.getLog (loggerName, getClass().getName());
+        System.out.println (getClass().getName() + " setLogger: "+loggerName + " getLogger:" +getLogger());
+
+    }
+
+    public String getLogger () {
+    	return log.getLogger().getName();
     }
     public Log getLog () {
         return log;
