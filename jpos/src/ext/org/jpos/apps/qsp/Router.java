@@ -82,7 +82,7 @@ import org.jpos.util.NameRegistrar.NotFoundException;
  *
  * @author <a href="mailto:tzymail@163.com">Zhiyu Tang</a>
  * @version $Revision$ $Date$
- * @see org.jpos.iso.ISORequestListener, org.jpos.util.JepUtil
+ * @see org.jpos.iso.ISORequestListener
  */
 public class Router
     implements ISORequestListener, LogSource, NodeConfigurable
@@ -95,7 +95,6 @@ public class Router
   Hashtable dest = null;
   boolean[] bounce = null;
   int condNum;
-  JepUtil jeputil;
 
   ThreadPool pool;
 
@@ -103,7 +102,6 @@ public class Router
     super();
     pool = new ThreadPool (1, 100);
     dest = new Hashtable();
-    jeputil = new JepUtil();
   }
 
   public void setLogger (Logger logger, String realm) {
@@ -203,7 +201,7 @@ public class Router
   }
 
 
-  private int getDestination( LogEvent evt , ISOMsg m )
+  private int getDestination( LogEvent evt , ISOMsg m  , JepUtil jeputil)
       throws ISOException
   {
     for( int i = 0 ; i < condNum ; i++ )
@@ -217,19 +215,22 @@ public class Router
   protected class Process implements Runnable {
     ISOSource source;
     ISOMsg m;
+    JepUtil jeputil;
 
     Process (ISOSource source, ISOMsg m) {
       super();
       this.source = source;
       this.m = m;
+      jeputil = new JepUtil();
     }
+    
     public void run (){
       LogEvent evt = new LogEvent ( Router.this,
 		"Router");
       try {
 	ISOMsg c = (ISOMsg) m.clone();
 	evt.addMessage (c);
-	int direction = getDestination( evt, c );
+	int direction = getDestination( evt, c , jeputil );
         if( direction == -1 ) return;
 	String key = String.valueOf( direction );
 	Object destobj = dest.get(key);
