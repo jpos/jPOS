@@ -94,13 +94,45 @@
       <pathelement location="${build}/classes"/>
   </path>
 
+  <path id="xdoclet.classpath">
+    <pathelement location="${lib}/xjavadoc.jar"/>
+    <pathelement location="${lib}/xdoclet.jar"/>
+    <pathelement location="${lib}/xdoclet-jmx-module.jar"/>
+    <pathelement location="${lib}/xdoclet-mx4j-module.jar"/>
+
+    <pathelement location="${lib}/log4j.jar"/>
+    <pathelement location="${lib}/ant.jar"/>
+  </path>
+
+
   <fileset dir="${main}" >
     <patternset id="rmic.classes" >
       <include name="org/jpos/space/SpaceProxy.class"/>
     </patternset>
   </fileset>
 
-  <target name="main" depends="prepare">
+  <target name="xdoclet-uptodate" depends="prepare">
+    <uptodate property="xdoclet-generate">
+      <srcfiles dir="${main}" includes="org/jpos/q2/QClassLoader.java"/>
+      <mapper type="glob" from="*.java" to="*MBean.java"/>
+    </uptodate>
+  </target>
+
+  <target name="generate" depends="xdoclet-uptodate" unless="xdoclet-generate">
+    <taskdef name="jmxdoclet" classname="xdoclet.modules.jmx.JMXDocletTask">
+      <classpath refid="xdoclet.classpath"/>
+    </taskdef>
+
+    <jmxdoclet destdir="${main}" force="yes">
+      <fileset dir="${main}">
+        <include name="org/jpos/q2/QClassLoader.java" />
+      </fileset>
+      <mbeaninterface/>
+      <mx4jdescription/>
+    </jmxdoclet>
+  </target>
+
+  <target name="main" depends="prepare, generate">
     <javac srcdir="${main}" destdir="${classes}"
         debug="${debug}"
         deprecation="${deprecation}" >
