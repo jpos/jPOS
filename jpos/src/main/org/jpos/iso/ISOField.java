@@ -53,41 +53,6 @@ import java.io.*;
 import java.util.*;
 import org.jpos.iso.packager.XMLPackager;
 
-/*
- * $Log$
- * Revision 1.13  2000/11/02 12:09:18  apr
- * Added license to every source file
- *
- * Revision 1.12  2000/04/16 22:12:01  apr
- * Moved packager implementations to org.jpos.iso.packager
- *
- * Revision 1.11  2000/04/07 01:07:17  apr
- * Added setFieldNumber() method
- *
- * Revision 1.10  2000/04/06 16:45:19  apr
- * Added getBytes() when possible as suggested
- * by Eoin Flood <eoin.flood@orbiscom.com>
- *
- * Revision 1.9  2000/04/06 12:31:03  apr
- * XML normalize
- *
- * Revision 1.8  2000/03/20 21:56:39  apr
- * DocBugFix: broken links to API_users_guide
- *
- * Revision 1.7  2000/03/05 01:56:41  apr
- * Take XML tag and attributes names from constants in XMLPackager
- *
- * Revision 1.6  2000/03/01 14:44:45  apr
- * Changed package name to org.jpos
- *
- * Revision 1.5  1999/11/18 23:33:41  apr
- * Bugfix to bug introduced on 1.4 with setValue and intern() when obj == null
- *
- * Revision 1.4  1999/10/01 19:20:27  apr
- * Added String.intern() in order to minimize memory usage
- *
- */
-
 /**
  * implements <b>Leaf</b> for standard fields
  *
@@ -95,9 +60,20 @@ import org.jpos.iso.packager.XMLPackager;
  * @version $Id$
  * @see ISOComponent
  */
-public class ISOField extends ISOComponent implements Cloneable {
+public class ISOField 
+    extends ISOComponent 
+    implements Cloneable, Externalizable
+{
     protected int fieldNumber;
     protected String value;
+
+    /**
+     * No args constructor 
+     * <font size="-1">(required by Externalizable support on ISOMsg)</font>
+     */
+    public ISOField () {
+        fieldNumber = -1;
+    }
 
     /**
      * @param n - the FieldNumber
@@ -175,5 +151,15 @@ public class ISOField extends ISOComponent implements Cloneable {
      */
     public void setFieldNumber (int fieldNumber) {
 	this.fieldNumber = fieldNumber;
+    }
+    public void writeExternal (ObjectOutput out) throws IOException {
+        out.writeShort (fieldNumber);
+        out.writeUTF (value);
+    }
+    public void readExternal  (ObjectInput in) 
+        throws IOException, ClassNotFoundException
+    {
+        fieldNumber = in.readShort ();
+        value       = in.readUTF();
     }
 }

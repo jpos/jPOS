@@ -64,10 +64,20 @@ import org.jpos.iso.packager.XMLPackager;
  * @version $Id$
  * @see ISOComponent
  */
-public class ISOBinaryField extends ISOComponent implements Cloneable {
+public class ISOBinaryField 
+    extends ISOComponent 
+    implements Cloneable, Externalizable
+{
     protected int fieldNumber;
     protected byte[] value;
 
+    /**
+     * No args constructor 
+     * <font size="-1">(required by Externalizable support on ISOMsg)</font>
+     */
+    public ISOBinaryField () {
+        fieldNumber = -1;
+    }
     /**
      * @param n - the FieldNumber
      */
@@ -148,5 +158,17 @@ public class ISOBinaryField extends ISOComponent implements Cloneable {
     }
     public String toString() {
         return ISOUtil.hexString(value);
+    }
+    public void writeExternal (ObjectOutput out) throws IOException {
+        out.writeShort (fieldNumber);
+        out.writeShort (value.length);
+        out.write (value);
+    }
+    public void readExternal  (ObjectInput in) 
+        throws IOException, ClassNotFoundException
+    {
+        fieldNumber = in.readShort ();
+        value = new byte[in.readShort()];
+        in.readFully (value);
     }
 }
