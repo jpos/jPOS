@@ -112,6 +112,7 @@
 <!ATTLIST server panel IDREF #IMPLIED>
 <!ATTLIST server scroll (yes|no) 'no'>
 <!ATTLIST server refresh CDATA #IMPLIED>
+<!ATTLIST server thread-pool IDREF #IMPLIED>
 
 <!-- control-panel -->
 <!ELEMENT control-panel (panel)*>
