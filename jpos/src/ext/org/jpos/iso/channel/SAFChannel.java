@@ -369,6 +369,11 @@ public class SAFChannel extends LogHandler
                 mux = ISOMUX.getMUX (cfg.get ("destination-mux"));
                 if (mux != null && mux.isConnected ()) {
                     ISOMsg msg = (ISOMsg) queue.dequeue();
+                    if (isExpired (msg)) {
+                        logUpdate (new LogEntry (LogEntry.DEQUEUE, null));
+                        Thread.yield(); // easy baby ...
+                        continue;
+                    }
                     ISOMsg m   = (ISOMsg) msg.clone();
                     m.setDirection(ISOMsg.OUTGOING);
                     m = applyFilters (outgoingFilters, m, null);
@@ -392,6 +397,7 @@ public class SAFChannel extends LogHandler
                         mux.send (m);
                         logUpdate (new LogEntry (LogEntry.DEQUEUE, null));
                     }
+
                     long delay = cfg.getLong ("delay");
                     if (delay > 0)
                         Thread.sleep (delay);
@@ -412,9 +418,17 @@ public class SAFChannel extends LogHandler
     /**
      * @param resp response
      * @param formerReq former request message
+     * @return true if response is valid and message can be dequeued
      */
     protected boolean isValidResponse (ISOMsg resp, ISOMsg formerReq) {
         return resp != null;
+    }
+    /**
+     * @param request
+     * @return true if message is expired and have to be discarded
+     */
+    protected boolean isExpired (ISOMsg m) {
+        return false;
     }
     public static class LogEntry implements Serializable, Loggeable {
         public static final int QUEUE   = 0;
