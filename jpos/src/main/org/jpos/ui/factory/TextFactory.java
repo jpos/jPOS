@@ -60,7 +60,7 @@ import org.jpos.ui.UIFactory;
 /**
  * @author Alejandro Revilla
  *
- * Creates a JLabel
+ * Creates a text editor
  * i.e:
  * <pre>
  *  &lt;text editable="true" id="xxx"&gt;
