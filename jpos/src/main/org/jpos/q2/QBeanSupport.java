@@ -71,7 +71,10 @@ public class QBeanSupport implements QBean, QPersist, QBeanSupportMBean {
     boolean modified;
     String name;
     protected Log log;
-
+    public static final String stateString[] = {
+        "Stopped", "Stopping", "Starting", "Started", "Failed", "Destroyed"
+    };
+        
     public QBeanSupport () {
         super();
         setLogger (Q2.LOGGER_NAME);
@@ -163,6 +166,9 @@ public class QBeanSupport implements QBean, QPersist, QBeanSupportMBean {
     }
     public int getState () {
         return state;
+    }
+    public String getStateAsString () {
+        return stateString[state];
     }
     public void setState (int state) {
         this.state = state;

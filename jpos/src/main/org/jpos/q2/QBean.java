@@ -92,5 +92,10 @@ public interface QBean {
      * @return state (STARTING, STARTED, FAILED, DESTROYED ...)
      */
     int getState ();
+
+    /**
+     * @return state (STARTING, STARTED, FAILED, DESTROYED ...)
+     */
+    String getStateAsString ();
 }
 
