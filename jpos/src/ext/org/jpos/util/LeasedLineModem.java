@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.3  2000/03/14 00:00:12  apr
+ * Added answer method
+ *
  * Revision 1.2  2000/03/01 14:44:45  apr
  * Changed package name to org.jpos
  *
@@ -29,6 +32,9 @@ public class LeasedLineModem implements Modem {
     
     public void dial (String phoneNumber, long aproxTimeout) 
 	throws IOException
+    {
+    }
+    public void answer () throws IOException
     {
     }
     public void hangup () throws IOException {

@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.3  2000/03/14 00:00:12  apr
+ * Added answer method
+ *
  * Revision 1.2  2000/03/01 14:44:45  apr
  * Changed package name to org.jpos
  *
@@ -19,9 +22,16 @@ package org.jpos.util;
 import java.io.*;
 import javax.comm.*;
 
+/**
+ * Implements DialupModem
+ *
+ * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
+ * @version $Revision$ $Date$
+ */
 public class SimpleDialupModem implements Modem {
     V24 v24;
     String dialPrefix = "DT";
+    String answerCommand = "ATA\r";
     public final String[] resultCodes = {
 	"OK\r",
 	"CONNECT\r",
@@ -41,10 +51,12 @@ public class SimpleDialupModem implements Modem {
     public void setDialPrefix (String dialPrefix) {
 	this.dialPrefix = dialPrefix;
     }
-    private boolean checkAT() throws IOException {
-	return v24.waitfor ("AT\r", resultCodes, 1000) == 0;
+    public void setAnswerCommand (String answerCommand) {
+	this.answerCommand = answerCommand + "\r";
     }
-
+    private boolean checkAT() throws IOException {
+	return v24.waitfor ("AT\r", resultCodes, 10000) == 0;
+    }
     private void reset() throws IOException {
 	try {
 	    v24.send ("AT\r"); Thread.sleep (250);
@@ -89,5 +101,18 @@ public class SimpleDialupModem implements Modem {
     }
     public boolean isConnected() {
 	return v24.isConnected();
+    }
+    public void answer () throws IOException {
+	v24.setAutoFlushReceiver(false);
+	if (!checkAT())
+	    throw new IOException ("unable to initialize modem (0)");
+	if (v24.waitfor ("ATV1Q0S0=0H0\r", resultCodes, 10000) != 0)
+	    throw new IOException ("unable to initialize modem (1)");
+	if (v24.waitfor ("RING", 10*60*1000) != 0)
+	    throw new IOException ("10 minutes Idle - reinitializing");
+	v24.flushReceiver();
+	if (v24.waitfor (answerCommand, "CONNECT", 20*1000) != 0)
+	    throw new IOException ("NO CARRIER Answering");
+	v24.setAutoFlushReceiver(true);
     }
 }
