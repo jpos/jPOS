@@ -78,6 +78,7 @@ import org.jdom.Element;
 import org.jdom.Document;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
+import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 
 import org.apache.commons.cli.Options;
@@ -293,8 +294,9 @@ public class Q2 implements FileFilter {
         try {
             Element e = (Element) server.getAttribute (name, "Persist");
             if (e != null) {
-                XMLOutputter out = new XMLOutputter (" ", true);
+                XMLOutputter out = new XMLOutputter (Format.getPrettyFormat());
                 Document doc = new Document ();
+                e.detach();
                 doc.setRootElement (e);
                 File tmp = new File (f.getAbsolutePath () + ".tmp");
                 FileWriter writer = new FileWriter (tmp);
@@ -439,9 +441,9 @@ public class Q2 implements FileFilter {
     private void deployElement (Element e, int i, boolean encrypt) 
         throws ISOException, IOException, GeneralSecurityException
     {
-        e = ((Element) e.clone ()).detach ();
+        e = ((Element) e.clone ());
 
-        XMLOutputter out = new XMLOutputter (" ", true);
+        XMLOutputter out = new XMLOutputter (Format.getPrettyFormat());
         Document doc = new Document ();
         doc.setRootElement (e);
         File f = new File (deployDir, e.getName ());
@@ -471,7 +473,7 @@ public class Q2 implements FileFilter {
     {
         ByteArrayOutputStream os = new ByteArrayOutputStream ();
         OutputStreamWriter writer = new OutputStreamWriter (os);
-        XMLOutputter out = new XMLOutputter (" ", true);
+        XMLOutputter out = new XMLOutputter (Format.getPrettyFormat());
         out.output (doc, writer);
         writer.close ();
 
