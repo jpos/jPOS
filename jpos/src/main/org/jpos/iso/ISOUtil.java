@@ -12,6 +12,9 @@ import java.util.*;
 
 /*
  * $Log$
+ * Revision 1.15  1999/11/24 18:15:49  apr
+ * Added dumpString used in VISA1 logs
+ *
  * Revision 1.14  1999/11/18 23:36:38  apr
  * Added dumpString
  *
@@ -295,6 +298,7 @@ public class ISOUtil {
 		    case '\005': d.append ("{ENQ}");  break;
 		    case '\006': d.append ("{ACK}");  break;
 		    case '\007': d.append ("{BEL}");  break;
+		    case '\014': d.append ("{FS}");  break;
 		    case '\020': d.append ("{DLE}");  break;
 		    case '\025': d.append ("{NAK}");  break;
 		    case '\026': d.append ("{SYN}");  break;
