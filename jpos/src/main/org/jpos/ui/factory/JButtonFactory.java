@@ -48,6 +48,7 @@
  */
 package org.jpos.ui.factory;
 
+import java.awt.Font;
 import javax.swing.*;
 import javax.swing.border.*;
 import org.jdom.Element;
@@ -69,6 +70,9 @@ public class JButtonFactory implements UIFactory {
         JButton button = new JButton (e.getText());
         button.setHorizontalAlignment(JLabel.CENTER);
         button.setBorder(new EmptyBorder(3, 3, 3, 3));
+        String font = e.getAttributeValue ("font");
+        if (font != null) 
+            button.setFont (Font.decode (font));
         return button;
     }
 }
