@@ -73,7 +73,7 @@ public class Test extends SimpleLogProducer {
 	    ISOMsg inner  = new ISOMsg (127); // goes at outter field 127
 	    inner.set (new ISOField (0,"001"));
 	    inner.set (new ISOField (2,"002"));
-	    inner.set (new ISOField (2,"003"));
+	    inner.set (new ISOField (3,"003"));
 	    m.set (inner);
 	    evt.addMessage (m);
 	} catch (ISOException ex) {
