@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.3  2000/06/22 12:17:42  apr
+ * Added equals method
+ *
  * Revision 1.2  2000/03/01 14:44:38  apr
  * Changed package name to org.jpos
  *
@@ -45,5 +48,8 @@ public class CardBrand {
     }
     public String getProduct() {
 	return productName != null ? productName : "";
+    }
+    public boolean equals (Object obj) {
+	return obj != null ? toString().equals(obj.toString()) : false;
     }
 }
