@@ -220,7 +220,11 @@ public class SAFChannel extends LogHandler
 	    try {
                 ReliableLog log = 
                     new ReliableLog (cfg.get("logdir",null), this);
-                log.recover();
+                try {
+                    log.recover();
+                } catch (LogException le) {
+                    Logger.log (new LogEvent (this, "recover", le));
+                }
                 log.snapshot();
                 setReliableLog (log);
                 if (debug)
@@ -369,21 +373,25 @@ public class SAFChannel extends LogHandler
                     m.setDirection(ISOMsg.OUTGOING);
                     m = applyFilters (outgoingFilters, m, null);
                     m.setDirection(ISOMsg.OUTGOING);
-                    ISORequest req = new ISORequest (m);
                     if (cfg.getBoolean ("flag-retransmissions", false) && 
                         !msg.isRetransmission())
                     {                        
                         msg.setRetransmissionMTI();
                         logUpdate (new LogEntry (LogEntry.REQUEUE, msg));
                     }
-                    mux.queue (req);
-                    ISOMsg resp = req.getResponse (
-                        cfg.getInt ("timeout", 60000)
-                    );
-                    if (isValidResponse (resp, m))
+                    int timeout = cfg.getInt ("timeout", 60000);
+                    if (timeout > 0) {
+                        ISORequest req = new ISORequest (m);
+                        mux.queue (req);
+                        ISOMsg resp = req.getResponse (timeout);
+                        if (isValidResponse (resp, m))
+                            logUpdate (new LogEntry (LogEntry.DEQUEUE, null));
+                        else
+                            queue.requeue (msg);
+                    } else {
+                        mux.send (m);
                         logUpdate (new LogEntry (LogEntry.DEQUEUE, null));
-                    else
-                        queue.requeue (msg);
+                    }
                     long delay = cfg.getLong ("delay");
                     if (delay > 0)
                         Thread.sleep (delay);
