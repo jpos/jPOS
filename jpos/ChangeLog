@@ -1,6 +1,7 @@
 $Id$
 
 -- 1.4.7 --
+Track1 support in CardHolder
 Added SpaceUtil
 Added SpaceFactory(spaceUri), SpaceInterceptors
 Added FSDMsg (Field Separator Delimited Message)
