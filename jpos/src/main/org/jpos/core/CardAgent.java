@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.7  2000/06/21 20:43:36  apr
+ * Added PersistentEngine support
+ *
  * Revision 1.6  2000/03/01 14:44:38  apr
  * Changed package name to org.jpos
  *
@@ -24,6 +27,7 @@ package org.jpos.core;
 
 import java.io.*;
 import java.util.*;
+import org.jpos.tpl.PersistentEngine;
 
 /**
  * @author apr@cs.com.uy
@@ -85,4 +89,15 @@ public interface CardAgent {
      * @exception CardAgentException
     public List processBatch (List l) throws CardAgentException;
      */
+
+    /**
+     * Set PersistentEngine associated with this CardAgent
+     * @param engine a PersistentEngine instance
+     */
+    public void setPersistentEngine (PersistentEngine engine);
+    /**
+     * @return PersistentEngine instance
+     */
+    public PersistentEngine getPersistentEngine ();
+
 }
