@@ -69,6 +69,7 @@ public class AllTests {
         suite.addTestSuite (packagers.Test.class);
         suite.addTestSuite (jceadapter.Test.class);
         suite.addTestSuite (space.Test.class);
+        suite.addTestSuite (space.TestPersistent.class);
         return suite;
     }
     public static Logger getLogger() {

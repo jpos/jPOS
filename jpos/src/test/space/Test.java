@@ -11,9 +11,11 @@
 
         public Test (String name) {
             super (name);
-            sp = new TransientSpace ();
+            sp = getSpace ();
         }
-
+        public Space getSpace () {
+            return new TransientSpace ();
+        }
         public void testSimpleOut() throws Exception {
             Object o = new Boolean (true);
 
