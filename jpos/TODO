@@ -1,2 +1,8 @@
 $Id$
 
+[ ] checkin Base1Packager stuff
+[ ] Get Rid of LogProducer (should be named LogSource)
+[ ] ISOChannel should be an Interface
+[ ] Use ThreadPool on ISOMUX
+[ ] ISOServer
+
