@@ -58,6 +58,7 @@ import org.jpos.ui.*;
 import org.jpos.util.Log;
 import org.jpos.util.Logger;
 import org.jpos.util.SimpleLogListener;
+import org.jpos.bsh.BSHUI;
 
 public class Test {
     public static int usage () {
@@ -70,11 +71,12 @@ public class Test {
         Logger logger= Logger.getLogger ("Test");
         logger.addListener (new SimpleLogListener (System.out));
         Document doc = read (new File ("src/examples/ui/" + args[0]));
-        UI ui = new UI (doc.getRootElement ());
+        UI ui = new BSHUI ();   // test BSH based scripts
+        ui.setConfig (doc.getRootElement ());
         ui.setLog (new Log (logger, "examples-ui"));
         ui.configure();
         Log log = new Log (logger, "test");
-        for (int i=0; i<100; i++)
+        for (int i=0; i<10; i++)
             log.info ("Test message " + i);
     }
 

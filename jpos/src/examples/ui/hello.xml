@@ -12,7 +12,9 @@
  <components>
    <border-layout>
     <north>
-     <label font="helvetica-normal-22">Hello jPOS UI</label>
+     <label font="helvetica-normal-22">Hello jPOS UI<script>
+      ((JLabel) component).setForeground (Color.RED);
+     </script></label>
     </north>
     <center>
      <html editable="false" follow-links="true" scrollable="true">
