@@ -66,6 +66,12 @@ public class ISOBinaryField extends ISOComponent implements Cloneable {
         value = (byte[]) obj;
     }
     /**
+     * @return byte[] representing this field
+     */
+    public byte[] getBytes() {
+	return value;
+    }
+    /**
      * dump this field to PrintStream. The output is sorta
      * XML, intended to be easily parsed.
      * @param p - print stream

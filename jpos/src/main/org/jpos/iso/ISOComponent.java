@@ -64,6 +64,14 @@ public abstract class ISOComponent implements Cloneable {
         throw new ISOException ("N/A in Composite");
     }
     /**
+     * get Value as bytes (when possible)
+     * @return byte[] representing this field
+     * @exception ISOException
+     */
+    public byte[] getBytes() throws ISOException {
+        throw new ISOException ("N/A in Composite");
+    }
+    /**
      * a Composite must override this function
      * @return the max field number associated with this message
      */

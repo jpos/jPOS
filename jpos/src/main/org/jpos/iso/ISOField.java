@@ -5,6 +5,10 @@ import java.util.*;
 
 /*
  * $Log$
+ * Revision 1.10  2000/04/06 16:45:19  apr
+ * Added getBytes() when possible as suggested
+ * by Eoin Flood <eoin.flood@orbiscom.com>
+ *
  * Revision 1.9  2000/04/06 12:31:03  apr
  * XML normalize
  *
@@ -85,6 +89,12 @@ public class ISOField extends ISOComponent implements Cloneable {
 	    value = ((String) obj).intern();
 	else
 	    value = (String) obj;
+    }
+    /**
+     * @return byte[] representing this field
+     */
+    public byte[] getBytes() {
+	return value.getBytes();
     }
     /**
      * dump this field to PrintStream. The output is sorta
