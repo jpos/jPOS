@@ -32,5 +32,11 @@ public class TestPersistent extends Test {
         prof.checkPoint (" read " + Integer.toString (i) + " entries");
         prof.dump (System.out, " ");
     }
+    public void testLeasedReference () throws Exception {
+        // not supported by PersistentSpace
+    }
+    public void testRenewReference () throws Exception {
+        // not supported by PersistentSpace
+    }
 }
 
