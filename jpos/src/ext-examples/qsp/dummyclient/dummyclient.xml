@@ -32,10 +32,15 @@
     </log-listener>
  </logger>
 
- <sequencer name="test" 
+ <!-- sequencer name="test" 
 	    class="org.jpos.core.ReliableSequencer"
 	    logger="qsp" realm="test.sequencer" >
   <property name="logdir" value="/tmp/test-sequencer" />
+ </sequencer -->
+
+ <sequencer name="test" 
+	    class="org.jpos.core.VolatileSequencer"
+	    logger="qsp" realm="test.sequencer" >
  </sequencer>
 
  <mux name="dummyclient.mux" logger="qsp" realm="dummyclient.mux">
