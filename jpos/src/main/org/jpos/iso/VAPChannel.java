@@ -16,6 +16,12 @@ import java.net.Socket;
  */
 public class VAPChannel extends ISOChannel {
 	/**
+	 * Public constructor (used by Class.forName("...").newInstance())
+	 */
+	public VAPChannel () {
+		super();
+	}
+	/**
 	 * Construct client ISOChannel
 	 * @param host	server TCP Address
 	 * @param port  server port number

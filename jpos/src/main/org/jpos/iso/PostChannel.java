@@ -18,6 +18,12 @@ import java.net.Socket;
  */
 public class PostChannel extends ISOChannel {
 	/**
+	 * Public constructor (used by Class.forName("...").newInstance())
+	 */
+	public PostChannel () {
+		super();
+	}
+	/**
 	 * Construct client ISOChannel
 	 * @param host	server TCP Address
 	 * @param port  server port number

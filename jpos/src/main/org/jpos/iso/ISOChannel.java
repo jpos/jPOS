@@ -42,10 +42,10 @@ public abstract class ISOChannel extends Observable {
 	private int[] cnt;
 
 	/**
-	 * protected constructor shared by server and client
+	 * constructor shared by server and client
 	 * ISOChannels (which have different signatures)
 	 */
-	protected ISOChannel () {
+	public ISOChannel () {
 		cnt = new int[SIZEOF_CNT];
 	}
 
@@ -58,10 +58,27 @@ public abstract class ISOChannel extends Observable {
 	 */
 	public ISOChannel (String host, int port, ISOPackager p) {
 		this();
+		setHost(host, port);
+		setPackager(p);
+	}
+	/**
+	 * initialize an ISOChannel
+	 * @param host	server TCP Address
+	 * @param port  server port number
+	 */
+	public void setHost(String host, int port) {
 		this.host = host;
 		this.port = port;
+	}
+	/**
+	 * set Packager for channel
+	 * @param p     an ISOPackager
+	 * @see ISOPackager
+	 */
+	public void setPackager(ISOPackager p) {
 		this.packager = p;
 	}
+
 	/**
 	 * constructs a server ISOChannel
 	 * @param p     an ISOPackager

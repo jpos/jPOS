@@ -17,6 +17,12 @@ import java.net.Socket;
  */
 public class ASCIIChannel extends ISOChannel {
 	/**
+	 * Public constructor (used by Class.forName("...").newInstance())
+	 */
+	public ASCIIChannel () {
+		super();
+	}
+	/**
 	 * Construct client ISOChannel
 	 * @param host	server TCP Address
 	 * @param port  server port number

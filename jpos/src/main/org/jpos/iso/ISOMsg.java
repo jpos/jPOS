@@ -275,4 +275,7 @@ public class ISOMsg extends ISOComponent implements Cloneable {
 			return new Integer(fieldNumber);
 		throw new ISOException ("This is not a subField");
 	}
+	public Object getValue() {
+		return this;
+	}
 }

@@ -21,6 +21,12 @@ public class RawChannel extends ISOChannel {
 	byte[] TPDU;
 
 	/**
+	 * Public constructor (used by Class.forName("...").newInstance())
+	 */
+	public RawChannel () {
+		super();
+	}
+	/**
 	 * Construct client ISOChannel
 	 * @param host	server TCP Address
 	 * @param port  server port number

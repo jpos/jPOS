@@ -22,6 +22,12 @@ import java.net.SocketException;
  */
 public class BASE24Channel extends ISOChannel {
 	/**
+	 * Public constructor (used by Class.forName("...").newInstance())
+	 */
+	public BASE24Channel () {
+		super();
+	}
+	/**
 	 * Construct client ISOChannel
 	 * @param host	server TCP Address
 	 * @param port  server port number
