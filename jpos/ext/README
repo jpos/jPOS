@@ -28,8 +28,6 @@ In order to build 'ext' module you will have to install here
 
   - base-opt.jar (see www.opencard.org - required by TLVPackager)
 
-  - jetty.jar (used by QSP's WebServer and Q2's Jetty QBean)
-
   - jep.jar (used by CalculateFilter and SQLFilter)
     see http://sf.net/projects/jep
 
