@@ -8,6 +8,7 @@
   <property name="ext" value="${source}/ext" />
   <property name="ext.includes" value="" />
   <property name="build" value="build" />
+  <property name="buildsrc" value="${build}/src" />
   <property name="classes" value="${build}/classes" />
   <property name="examples"  value="${source}/examples" />
   <property name="ext-examples"  value="${source}/ext-examples" />
@@ -27,29 +28,27 @@
   <property name="archive" value="${project}-${version}" />
   <property name="q2.archive" value="q2-${version}" />
 
+
   <target name="targets">
     <echo>
 
-        ANT build for ${project} ${version}
-        Available targets:
-        clean        Cleans ${build} and ${dist} directories
-        main         Builds main ${project} packages
-        ext          extended (optional) ${project} classes (see ext/README)
-        cvs          Clean and update CVS tree for ${project}
-        doc          Create project documentation (including javadoc)
-        examples     Build examples
-        ext-examples Build extended examples (requires ext)
-        test         Test jPOS using jUnit
-        jar          Generates ${archive}.jar
-        qsp          Generates ${archive}.jar containing QSP application
-        q2           Generates ${q2.archive}.jar containing Q2 application
-        tarball      Generates distro tarball
+ANT build for jPOS ${version}
+
+Main targets:
+
+ clean         Remove build and dist directories
+ examples      build examples
+ ext-examples  build extended examples
+ info          Echoes system properties
+ jar           Build jpos.jar
+ javadoc       Generate javadoc
+ main          Compiles classes
 
     </echo>
   </target>
 
   <target name="prepare">
-    <mkdir dir="${build}"/>
+    <mkdir dir="${buildsrc}"/>
     <mkdir dir="${build}/test"/>
     <mkdir dir="${htdocs}"/>
     <mkdir dir="${classes}"/>
@@ -59,18 +58,10 @@
     <mkdir dir="deploy/lib"/>
   </target>
 
-  <target name="clean">
+  <target name="clean" description="Remove build and dist directories">
     <delete dir="${build}"/>
     <delete dir="${dist}"/>
   </target>
-
-  <path id="main.classpath">
-      <pathelement path="${classpath}"/>
-      <fileset dir="${lib}">
-          <include name="*.jar"/>
-      </fileset>
-      <pathelement location="${build}/classes"/>
-  </path>
 
   <path id="ext.classpath">
       <pathelement path="${classpath}"/>
@@ -106,23 +97,83 @@
     <pathelement location="${lib}/ant.jar"/>
   </path>
 
-
   <fileset dir="${main}" >
     <patternset id="rmic.classes" >
       <include name="org/jpos/space/SpaceProxy.class"/>
     </patternset>
   </fileset>
 
-  <target name="xdoclet-uptodate" depends="prepare">
+  <patternset id="ext-sources">
+     <include name="**/*.xml" />
+     <include name="**/org/jpos/apps/qsp/**/*.java" />
+     <exclude name="**/qsp/EJBConnector.java"           unless="ejb.present" />
+     <exclude name="**/qsp/Router.java"                 unless="jep.present" />
+     <include name="**/OperatorLogListener.java"        if="mail.present"    />
+     <include name="**/ReliableSequencer*.java"         if="sun-util.present"/>
+     <include name="**/SAFChannel*.java"                if="sun-util.present"/>
+     <include name="**/apps/jetty/**"                   if="jetty.present"   />
+     <include name="**/q2/jetty/**"                     if="jetty.present"   />
+
+     <include name="**/JepUtil.java"                    if="jep.present"     />
+     <include name="**/filter/CalculateFilter.java"     if="jep.present"     />
+     <include name="**/filter/SQLFilter.java"           if="jep.present"     />
+
+     <include name="**/jms/**/*.java"                   if="jms.present"     />
+     <include name="**/egate/**/*.java"            if="egatejms.present"     />
+
+     <include name="**/VISA1Link.java"                  if="comm.present"    />
+     <include name="**/V24.java"                        if="comm.present"    />
+     <include name="**/*Modem.java"                     if="comm.present"    />
+
+     <include name="**/SunJSSESocketFactory.java"       if="jsse.present"    />
+     <include name="**/CryptoPackager.java"             if="jce.present"     />
+     <include name="**/security/jceadapter/**"          if="jce.present"     />
+
+     <include name="**/TLV*Packager.java"           if="opencard.present"    />
+  </patternset>
+
+  <target name="copy-src" depends="prepare, ext.check.mail, ext.check.jsse">
+
+   <copy todir="${buildsrc}">
+    <fileset dir="${main}">
+     <include name="**/*.java"/>
+    </fileset>
+    <fileset dir="${ext}">
+     <patternset refid="ext-sources" />
+    </fileset>
+   </copy>
+  </target>
+
+  <target name="copy-examples" depends="copy-src">
+   <copy todir="${buildsrc}">
+    <fileset dir="${examples}">
+     <include name="**/*.java"/>
+    </fileset>
+   </copy>
+  </target>
+
+  <target name="copy-ext-examples" depends="copy-src">
+   <copy todir="${buildsrc}">
+    <fileset dir="${ext-examples}">
+     <include name="**/*.java"/>
+    </fileset>
+   </copy>
+  </target>
+
+  <target name="xdoclet-uptodate" depends="copy-src">
     <uptodate property="xdoclet-generate">
-      <srcfiles dir="${main}" includes="org/jpos/q2/QClassLoader.java" />
-      <srcfiles dir="${main}" includes="org/jpos/q2/qbean/QTest.java" />
-      <srcfiles dir="${main}" includes="org/jpos/q2/qbean/QMUX.java" />
-      <srcfiles dir="${main}" includes="org/jpos/q2/qbean/ChannelAdaptor.java" />
-      <srcfiles dir="${main}" includes="org/jpos/q2/qbean/QServer.java" />
-      <srcfiles dir="${main}" includes="org/jpos/q2/qbean/SpaceProxyAdaptor.java" />
-      <srcfiles dir="${main}" includes="org/jpos/q2/qbean/NameRegistrarInspector.java" />
-      <srcfiles dir="${ext}" includes="org/jpos/q2/jetty/Jetty.java" />
+      <srcfiles dir="${buildsrc}" includes="org/jpos/q2/QClassLoader.java" />
+      <srcfiles dir="${buildsrc}" includes="org/jpos/q2/qbean/QTest.java" />
+      <srcfiles dir="${buildsrc}" includes="org/jpos/q2/qbean/QMUX.java" />
+      <srcfiles dir="${buildsrc}" 
+           includes="org/jpos/q2/qbean/ChannelAdaptor.java" />
+      <srcfiles dir="${buildsrc}" 
+           includes="org/jpos/q2/qbean/QServer.java" />
+      <srcfiles dir="${buildsrc}" 
+           includes="org/jpos/q2/qbean/SpaceProxyAdaptor.java" />
+      <srcfiles dir="${buildsrc}" 
+           includes="org/jpos/q2/qbean/NameRegistrarInspector.java" />
+      <srcfiles dir="${buildsrc}" includes="org/jpos/q2/jetty/Jetty.java" />
       <mapper type="glob" from="*.java" to="*MBean.java"/>
     </uptodate>
   </target>
@@ -132,8 +183,8 @@
       <classpath refid="xdoclet.classpath"/>
     </taskdef>
 
-    <jmxdoclet destdir="${main}" force="yes" verbose="false">
-      <fileset dir="${main}">
+    <jmxdoclet destdir="${buildsrc}" force="yes" verbose="false">
+      <fileset dir="${buildsrc}">
         <include name="org/jpos/q2/QClassLoader.java" />
         <include name="org/jpos/q2/qbean/QTest.java" />
         <include name="org/jpos/q2/qbean/QMUX.java" />
@@ -141,12 +192,6 @@
         <include name="org/jpos/q2/qbean/QServer.java" />
         <include name="org/jpos/q2/qbean/SpaceProxyAdaptor.java" />
         <include name="org/jpos/q2/qbean/NameRegistrarInspector.java" />
-      </fileset>
-      <mbeaninterface/>
-      <mx4jdescription/>
-    </jmxdoclet>
-    <jmxdoclet destdir="${ext}" force="yes" verbose="false">
-      <fileset dir="${ext}">
         <include name="org/jpos/q2/jetty/Jetty.java" />
       </fileset>
       <mbeaninterface/>
@@ -154,21 +199,41 @@
     </jmxdoclet>
   </target>
 
-  <target name="main" depends="prepare, generate">
-    <javac srcdir="${main}" destdir="${classes}"
+  <target name="main" depends="copy-src, generate"
+    description="Compiles classes">
+
+    <!-- 
+    <mkdir dir="${build}/aop" />
+    <taskdef name="ajc"
+      classname="org.aspectj.tools.ant.taskdefs.Ajc" >
+      <classpath>
+        <pathelement location="lib/aspectj-ant.jar"/>
+        <pathelement location="lib/aspectjtools.jar"/>
+      </classpath>
+     </taskdef>
+    <ajc srcdir="${main}" destdir="${classes}"
+        workingdir="${build}/tmp"
+        preprocess="false"
         debug="${debug}"
         deprecation="${deprecation}" >
-        <classpath refid="main.classpath" />
+        <classpath refid="ext.classpath" />
+    </ajc>
+    -->
+
+    <javac srcdir="${buildsrc}" destdir="${classes}"
+        debug="${debug}"
+        deprecation="${deprecation}" >
+        <classpath refid="ext.classpath" />
     </javac>
     <rmic base="${classes}" stubVersion="1.2">
-       <classpath  refid="main.classpath" />
+       <classpath  refid="ext.classpath" />
        <patternset refid="rmic.classes" />
     </rmic>
     <copy file="${source}/etc/jndi.properties" 
         tofile="${classes}/jndi.properties" />
   </target>
 
-  <target name="ext.check" depends="main">
+  <target name="ext.check">
     <available property="sun-util.present"
            classpathref="ext.classpath"
               classname="com.sun.jini.reliableLog.ReliableLog" />
@@ -181,9 +246,6 @@
     <available property="jce.present"
            classpathref="ext.classpath"
           classname="javax.crypto.SecretKey" />
-    <available property="activation.present"
-           classpathref="ext.classpath"
-          classname="javax.activation.DataSource" />
     <available property="opencard.present"
            classpathref="ext.classpath"
               classname="opencard.opt.util.TLV" />
@@ -199,158 +261,31 @@
     <available property="egatejms.present"
         classpathref="ext.classpath"
             classname="com.seebeyond.jms.client.STCQueueConnectionFactory" />
-  </target>
-
-  <target name="ext.check.jsse" depends="ext.check" if="jnet.present">
-    <available property="jsse.present"
+    <available property="activation.present"
            classpathref="ext.classpath"
-          classname="javax.net.ssl.SSLSocket" />
+          classname="javax.activation.DataSource" />
+    <available property="ejb.present"
+           classpathref="ext.classpath"
+          classname="javax.ejb.SessionBean" />
   </target>
   <target name="ext.check.mail" depends="ext.check" if="activation.present">
     <available property="mail.present"
            classpathref="ext.classpath"
           classname="javax.mail.Address" />
   </target>
-
-  <target name="ext.sun-util" depends="ext.check" if="sun-util.present">
-    <javac srcdir="${ext}" destdir="${classes}"
-        includes="**/ReliableSequencer.java,**/SAFChannel*.java"
-        debug="${debug}"
-        deprecation="${deprecation}" >
-        <classpath refid="ext.classpath" />
-    </javac>
+  <target name="ext.check.jsse" depends="ext.check" if="jnet.present">
+    <available property="jsse.present"
+           classpathref="ext.classpath"
+          classname="javax.net.ssl.SSLSocket" />
   </target>
 
-  <target name="ext.jetty" depends="ext.check" if="jetty.present">
-    <javac srcdir="${ext}" destdir="${classes}"
-        includes="**/apps/jetty/**,**/q2/jetty/**"
-        debug="${debug}"
-        deprecation="${deprecation}" >
-        <classpath refid="ext.classpath" />
-    </javac>
-  </target>
+  <target name="examples" depends="copy-examples, main" 
+     description="build examples" />
 
-  <target name="ext.jep" depends="ext.check" if="jep.present">
-    <javac srcdir="${ext}" destdir="${classes}"
-        includes="org/jpos/util/JepUtil.java org/jpos/iso/filter/*"
-        debug="${debug}"
-        deprecation="${deprecation}" >
-        <classpath refid="ext.classpath" />
-    </javac>
-  </target>
+  <target name="ext-examples" depends="copy-ext-examples, main" 
+     description="build extended examples" />
 
-    <target name="ext.jms" depends="ext.check" if="jms.present">
-        <javac srcdir="${ext}" destdir="${classes}"
-            includes="org/jpos/jms/*.java org/jpos/jms/qbean/*"
-            debug="${debug}"
-            deprecation="${deprecation}" >
-            <classpath refid="ext.classpath" />
-        </javac>
-    </target>
-
-    <target name="ext.egatejms" depends="ext.check, ext.jms" if="egatejms.present">
-        <javac srcdir="${ext}" destdir="${classes}"
-            includes="org/jpos/jms/egate/*.java org/jpos/jms/egate/qbean/*"
-            debug="${debug}"
-            deprecation="${deprecation}" >
-            <classpath refid="ext.classpath" />
-        </javac>
-    </target>
-
-  <target name="ext.comm" depends="ext.check" if="comm.present">
-    <javac srcdir="${ext}" destdir="${classes}"
-        includes="**/VISA1Link.java, **/V24.java, **/*Modem.java"
-        debug="${debug}"
-        deprecation="${deprecation}" >
-        <classpath refid="ext.classpath" />
-    </javac>
-  </target>
-
-  <target name="ext.jsse" depends="ext.check.jsse" if="jsse.present" >
-    <javac srcdir="${ext}" destdir="${classes}"
-        includes="**/SunJSSESocketFactory.java"
-        debug="${debug}"
-        deprecation="${deprecation}" >
-        <classpath refid="ext.classpath" />
-    </javac>
-  </target>
-
-  <target name="ext.jce" depends="ext.check" if="jce.present" >
-    <javac srcdir="${ext}" destdir="${classes}"
-        includes="**/CryptoPackager.java"
-        debug="${debug}"
-        deprecation="${deprecation}" >
-        <classpath refid="ext.classpath" />
-    </javac>
-  </target>
-
-  <target name="ext.opencard" depends="ext.check" if="opencard.present" >
-    <javac srcdir="${ext}" destdir="${classes}"
-        includes="**/TLV*Packager.java"
-        debug="${debug}"
-        deprecation="${deprecation}" >
-        <classpath refid="ext.classpath" />
-    </javac>
-  </target>
-
-  <target name="ext.mail" depends="ext.check.mail" if="mail.present" >
-    <javac srcdir="${ext}" destdir="${classes}"
-        includes="**/OperatorLogListener.java"
-        debug="${debug}"
-        deprecation="${deprecation}" >
-        <classpath refid="ext.classpath" />
-    </javac>
-  </target>
-
-  <target name="ext.jceadapter" depends="ext.check" if="jce.present">
-    <javac srcdir="${ext}" destdir="${classes}"
-        includes="**/security/jceadapter/**"
-        debug="${debug}"
-        deprecation="${deprecation}" >
-        <classpath refid="ext.classpath" />
-    </javac>
-  </target>
-
-  <target name="qsp-support" depends="prepare" description="copy support files">
-   <copy todir="${classes}">
-    <fileset dir="${ext}">
-     <include name="**/*.xml"/>
-    </fileset>
-   </copy>
-  </target>
-
-  <target name="ext" 
-       depends="ext.sun-util, ext.comm, ext.jsse, ext.jce, ext.mail, ext.opencard, ext.jetty, ext.jceadapter, ext.jep, 
-       ext.jms, ext.egatejms, qsp-support">
-    <javac srcdir="${ext}" destdir="${classes}"
-        includes="**/apps/qsp/**"
-        debug="${debug}"
-        deprecation="${deprecation}" >
-        <classpath refid="ext.classpath" />
-    </javac>
-  </target>
-
-  <target name="examples" depends="main">
-    <javac srcdir="${examples}" destdir="${classes.examples}"
-           classpath="${classpath}" debug="on" 
-           deprecation="${deprecation}">
-        <classpath refid="main.classpath" />
-    </javac>
-  </target>
-
-  <target name="ext-examples" depends="ext">
-    <javac srcdir="${ext-examples}" destdir="${classes.examples}"
-           classpath="${classpath}" debug="on" deprecation="${deprecation}">
-        <classpath refid="ext.classpath" />
-    </javac>
-
-    <!-- QSP stuff -->
-    <mkdir dir="${ext-examples}/qsp/dtd" />
-    <copy file="${source}/config/qsp/qsp-config.dtd"
-        tofile="${ext-examples}/qsp/dtd/qsp-config.dtd" />
-  </target>
-
-  <target name="compile.test" depends="ext">
+  <target name="compile.test" depends="main">
     <javac srcdir="${source}/test"
            destdir="${build}/test"
            debug="${debug}" deprecation="${deprecation}">
@@ -366,7 +301,7 @@
     </java>
   </target>
 
-  <target name="jar" depends="main">
+  <target name="jar" depends="main" description="Build jpos.jar">
     <delete file="${dist}/${archive}.jar" />
     <copy file="${source}/etc/MANIFEST.MF" tofile="${classes}/MANIFEST.MF" />
     <replace file="${classes}/MANIFEST.MF" 
@@ -396,33 +331,25 @@
 	 includes="LICENSE,README,org/**" />
   </target>
 
-  <target name="qsp" depends="ext, jar" />
-
   <target name="cvs" depends="clean">
     <cvs cvsRoot=":pserver:anonymous@cvs.jpos.sourceforge.net:/cvsroot/jpos"
          dest="." package="${project}" />
   </target>
 
-  <target name="javadoc" depends="prepare">
+  <target name="javadoc" depends="main" description="Generate javadoc">
     <mkdir   dir="${htdocs}/doc" />
     <delete  dir="${htdocs}/doc/javadoc" />
     <mkdir   dir="${htdocs}/doc/javadoc" />
     <mkdir   dir="${htdocs}/doc/javadoc/images" />
-    <delete  dir="${htdocs}/doc/tmp" />
-    <mkdir   dir="${htdocs}/doc/tmp" />
-    <copy  todir="${htdocs}/doc/tmp">
-        <fileset dir="${main}" />
-        <fileset dir="${ext}" />
-    </copy>
     <copy  todir="${htdocs}/doc/images">
         <fileset dir="${doc}/images" />
     </copy>
-    <javadoc sourcepath="${htdocs}/doc/tmp"
+    <javadoc sourcepath="${buildsrc}"
 	destdir="${htdocs}/doc/javadoc"
         windowtitle="jPOS ${version} API Documentation" 
         doctitle="jPOS ${version} API Documentation" 
         header="jPOS ${version} API Documentation" 
-	footer="CompuService Srl."
+	footer="jPOS.org"
 	public="true" noindex="true" author="true" 
         classpathref="ext.classpath"
 	overview="${doc}/javadoc/Overview.html"
@@ -460,7 +387,7 @@
     <fixcrlf srcdir="${build}/src" includes="*" />
   </target>
 
-  <target name="tarball" depends="ext, jar, doc, source">
+  <target name="tarball" depends="clean, jar, doc, source">
     <property name="bin" value="${build}/${archive}" />
     <delete   file="${dist}/${archive}.tgz" />
     <delete   file="${dist}/${archive}.zip" />
