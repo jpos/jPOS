@@ -1,0 +1,23 @@
+#! /bin/sh
+
+# $Id$
+
+cd `dirname $0`/..
+
+if [ -z "$JAVA_HOME" ] ; then
+  JAVA=`which java`
+  if [ -z "$JAVA" ] ; then
+    echo "Cannot find 'java'. check your PATH."
+    exit 1
+  fi
+  JAVA_BIN=`dirname $JAVA`
+  JAVA_HOME=$JAVA_BIN/..
+fi
+
+JAVA=$JAVA_HOME/bin/java
+
+CLASSPATH=q2.jar:build/classes:build/examples
+CLASSPATH=`echo lib/*.jar | tr ' ' ':'`:$CLASSPATH
+
+$JAVA -cp $CLASSPATH org.jpos.q2.Q2 $*
+
