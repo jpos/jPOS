@@ -1,0 +1,8 @@
+$Id$
+
+In order to build 'ext' module you will have to install here
+the following files:
+
+    activation.jar and mail.jar (javax.mail)
+    sun-util.jar (available as part of Jini 1.1 distribution)
+
