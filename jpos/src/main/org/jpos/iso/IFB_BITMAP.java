@@ -37,7 +37,7 @@ public class IFB_BITMAP extends ISOBitMapPackager {
         throws ISOException
     {
         int len;
-        BitSet bmap = ISOUtil.byte2BitSet (b, offset, true);
+        BitSet bmap = ISOUtil.byte2BitSet (b, offset, getLength() > 8);
         c.setValue(bmap);
         len = ((len=bmap.size()) > 128) ? 128 : len;
         return (len >> 3);

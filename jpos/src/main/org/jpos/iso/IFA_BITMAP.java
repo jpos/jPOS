@@ -42,7 +42,7 @@ public class IFA_BITMAP extends ISOBitMapPackager {
         throws ISOException
     {
         int len;
-        BitSet bmap = ISOUtil.hex2BitSet (b, offset, true);
+        BitSet bmap = ISOUtil.hex2BitSet (b, offset, getLength() > 8);
         c.setValue(bmap);
         len = ((len=bmap.size()) > 128) ? 128 : len;
         return (len >> 2);
