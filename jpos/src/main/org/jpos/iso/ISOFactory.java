@@ -20,7 +20,7 @@ public class ISOFactory {
     /**
      * Creates a client or server ISOChannel based on Configuration properties:
      * <br>
-     * If [prefix].host is available createChannel will create an unconnected
+     * If [prefix].host is available newChannel will create an unconnected
      * client ISOChannel.
      * <br>
      * If [prefix].host is not available (null) it will create an unconnected
@@ -75,11 +75,11 @@ public class ISOFactory {
 		}
             }
         } catch (ClassNotFoundException e) {
-	    throw new ISOException ("createClientChannel", e);
+	    throw new ISOException ("newChannel", e);
         } catch (InstantiationException e) {
-	    throw new ISOException ("createClientChannel", e);
+	    throw new ISOException ("newChannel", e);
         } catch (IllegalAccessException e) {
-	    throw new ISOException ("createClientChannel", e);
+	    throw new ISOException ("newChannel", e);
 	}
         return channel;
     }
@@ -111,11 +111,11 @@ public class ISOFactory {
 		    packager.setLogger (logger, realm + ".packager");
             }
         } catch (ClassNotFoundException e) {
-	    throw new ISOException ("createClientChannel", e);
+	    throw new ISOException ("newPackager", e);
         } catch (InstantiationException e) {
-	    throw new ISOException ("createClientChannel", e);
+	    throw new ISOException ("newPackager", e);
         } catch (IllegalAccessException e) {
-	    throw new ISOException ("createClientChannel", e);
+	    throw new ISOException ("newPackager", e);
 	}
         return packager;
     }
