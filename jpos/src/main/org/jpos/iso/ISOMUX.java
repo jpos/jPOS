@@ -205,6 +205,7 @@ public class ISOMUX implements Runnable {
 					doTransmit();
 				}
 				else {
+					Thread.sleep(5000);
 					channel.reconnect();
 					cnt[CONNECT]++;
 					synchronized(rx) {
@@ -218,27 +219,16 @@ public class ISOMUX implements Runnable {
 			}
 			catch (UnknownHostException e) { 
 			 	System.out.println(e);
-				try {
-					Thread.sleep(5000);
-				} catch (InterruptedException ie) { }
 			}
 			catch (ConnectException e) { 
 			 	System.out.println(e);
-				try {
-					Thread.sleep(5000);
-				} catch (InterruptedException ie) { }
 			}
 			catch (java.net.SocketException e) { 
 			 	System.out.println(e);
-				try {
-					Thread.sleep(5000);
-				} catch (InterruptedException ie) { }
 			}
 			catch (IOException e) {
 				e.printStackTrace();
 				channel.setUsable(false);
-				// delay after IO exception
-				try { Thread.sleep(1000); } catch (InterruptedException ie) { }
 			}
 			catch (InterruptedException e) {
 				System.out.println("ISOMUX interrupted");
