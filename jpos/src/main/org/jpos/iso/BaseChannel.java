@@ -99,7 +99,7 @@ import org.jpos.iso.header.BaseHeader;
  */
 public abstract class BaseChannel extends Observable 
     implements FilteredChannel, ClientChannel, ServerChannel, 
-	       LogSource, ReConfigurable
+	       LogSource, ReConfigurable, BaseChannelMBean
 {
     private Socket socket;
     private String host;
