@@ -1,6 +1,11 @@
 $Id$
 
 -- 1.3.5 --
+New renumber test in examples/isomsg
+Added ISOMsg.move (old,new) method.
+Added setFieldNumber to ISOComponent in order to effectively renumber 
+a component. --thanks Eoin!
+BaseChannel setHeader before unpack (unpack can access header) --thanks Eoin!
 Bugfix: extended bitmap was generated/expected when MAC present --thanks Hani!
 Added ConnectionPool support (tpl and QSP) --thanks Rajal!
 Added static launch(String) method to QSP
