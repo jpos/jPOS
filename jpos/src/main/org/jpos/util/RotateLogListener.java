@@ -146,13 +146,13 @@ public class RotateLogListener extends SimpleLogListener
 	if (sleepTime != 0) 
             timer.schedule (rotate = new Rotate(), sleepTime, sleepTime);
     }
-    public synchronized void log (LogEvent ev) {
+    public synchronized LogEvent log (LogEvent ev) {
         if (msgCount++ > CHECK_INTERVAL) {
             checkSize();
             msgCount = 0;
         }
         
-        super.log (ev);
+        return super.log (ev);
     }
     private synchronized void openLogFile() throws IOException {
         if (f != null)

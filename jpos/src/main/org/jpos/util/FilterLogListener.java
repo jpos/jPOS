@@ -142,7 +142,7 @@ public class FilterLogListener implements LogListener,Configurable
         return ( I.intValue() >= J.intValue() );
     }
 
-    public synchronized void log(LogEvent ev) {
+    public synchronized LogEvent log(LogEvent ev) {
         if (p != null) {
             if (permitLogging(ev.tag))
             {
@@ -156,5 +156,6 @@ public class FilterLogListener implements LogListener,Configurable
                 p.flush();
             }
         }
+        return ev;
     }
 }

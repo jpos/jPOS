@@ -112,7 +112,7 @@ public class Log4JListener implements LogListener, ReConfigurable
         setLevel (cfg.get ("priority"));
     }
 
-    public synchronized void log (LogEvent ev) {
+    public synchronized LogEvent log (LogEvent ev) {
         org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger (ev.getRealm());
         if (logger.isEnabledFor ( _level)) {
             ByteArrayOutputStream w = new ByteArrayOutputStream ();
@@ -120,5 +120,6 @@ public class Log4JListener implements LogListener, ReConfigurable
             ev.dump (p, "");
             logger.log (_level, w.toString());
         }
+        return ev;
     }
 }

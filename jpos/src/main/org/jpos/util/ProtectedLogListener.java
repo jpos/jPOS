@@ -118,7 +118,7 @@ public class ProtectedLogListener implements LogListener, Configurable
         protectFields = ISOUtil.toIntArray (cfg.get ("protect", ""));
         wipeFields    = ISOUtil.toIntArray (cfg.get ("wipe", ""));
     }
-    public synchronized void log (LogEvent ev) {
+    public synchronized LogEvent log (LogEvent ev) {
         Vector payLoad = ev.getPayLoad();
         int size = payLoad.size();
         for (int i=0; i<size; i++) {
@@ -134,6 +134,7 @@ public class ProtectedLogListener implements LogListener, Configurable
                 payLoad.setElementAt (m, i);
             }
         }
+        return ev;
     }
     private void checkProtected (ISOMsg m) throws ISOException {
         for (int i=0; i<protectFields.length; i++) {

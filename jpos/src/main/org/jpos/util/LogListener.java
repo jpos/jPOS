@@ -57,6 +57,6 @@ import java.util.EventListener;
  * @version $Id$
  */
 public interface LogListener extends EventListener {
-    public void log (LogEvent ev);
+    public LogEvent log (LogEvent ev);
 }
 

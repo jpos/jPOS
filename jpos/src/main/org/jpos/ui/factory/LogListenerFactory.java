@@ -138,10 +138,10 @@ public class LogListenerFactory implements UIFactory {
                 }
             }
         }
-        public void log (LogEvent evt) {
+        public LogEvent log (LogEvent evt) {
             if (ui.isDestroyed ()) {
                 SwingUtilities.invokeLater (this);
-                return;
+                return evt;
             }
             ByteArrayOutputStream str = new ByteArrayOutputStream();
             PrintStream ps = new PrintStream (str);
@@ -151,6 +151,7 @@ public class LogListenerFactory implements UIFactory {
             if ((++cnt % maxEvents) == 0) {
                 SwingUtilities.invokeLater (this);
             }
+            return evt;
         }
     }
 }

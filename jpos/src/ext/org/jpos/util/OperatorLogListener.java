@@ -49,6 +49,9 @@
 
 /*
  * $Log$
+ * Revision 1.9  2003/09/03 00:22:14  apr
+ * New LogListener interface returns [possibly null] LogEvent
+ *
  * Revision 1.8  2003/05/21 17:57:34  apr
  * Supports multiple destinations:
  *
@@ -222,9 +225,10 @@ public class OperatorLogListener
             address[i] = new InternetAddress (s[i]);
         return address;
     }
-    public synchronized void log (LogEvent ev) {
+    public synchronized LogEvent log (LogEvent ev) {
 	if (checkOperatorTag(ev))
 	    queue.enqueue (ev);
+        return ev;
     }
     private void assertProperty (String propName) throws ConfigurationException
     {

@@ -78,7 +78,7 @@ public class SimpleLogListener implements LogListener {
 	    p = null;
 	}
     }
-    public synchronized void log (LogEvent ev) {
+    public synchronized LogEvent log (LogEvent ev) {
 	if (p != null) {
             Date d = new Date();
             p.println (
@@ -89,5 +89,6 @@ public class SimpleLogListener implements LogListener {
 	    p.println ("</log>");
 	    p.flush();
 	}
+        return ev;
     }
 }

@@ -105,8 +105,8 @@ public class Logger {
         if (l != null && l.hasListeners ()) {
             synchronized (l.listeners) {
                 Iterator i = l.listeners.iterator();
-                while (i.hasNext()) 
-                    ((LogListener) i.next()).log (evt);
+                while (i.hasNext() && evt != null) 
+                    evt = ((LogListener) i.next()).log (evt);
             }
         }
     }
