@@ -208,7 +208,8 @@ public class UI implements UIFactory, UIObjectFactory {
 
     protected void configure (Element ui) throws JDOMException {
         setLookAndFeel (ui);
-        createObjects (ui);
+        createObjects (ui, "object");
+        createObjects (ui, "action");
         if (!"ui".equals (ui.getName())) {
             ui = ui.getChild ("ui");
         }
@@ -445,8 +446,8 @@ public class UI implements UIFactory, UIObjectFactory {
         }
         return component;
     }
-    private void createObjects (Element e) {
-        Iterator iter = e.getChildren ("object").iterator ();
+    private void createObjects (Element e, String name) {
+        Iterator iter = e.getChildren (name).iterator ();
         while (iter.hasNext()) {
             try {
                 Element ee = (Element) iter.next ();
