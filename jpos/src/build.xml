@@ -89,12 +89,13 @@ Main targets:
   </path>
 
   <path id="xdoclet.classpath">
-    <pathelement location="${lib}/xjavadoc.jar"/>
-    <pathelement location="${lib}/xdoclet.jar"/>
-    <pathelement location="${lib}/xdoclet-jmx-module.jar"/>
-    <pathelement location="${lib}/xdoclet-mx4j-module.jar"/>
+    <pathelement location="${lib}/commons-logging.jar"/>
+    <pathelement location="${lib}/xjavadoc-1.0.2"/>
+    <pathelement location="${lib}/xdoclet-1.2.jar"/>
+    <pathelement location="${lib}/xdoclet-jmx-module-1.2.jar"/>
+    <pathelement location="${lib}/xdoclet-mx4j-module-1.2.jar"/>
 
-    <pathelement location="${lib}/log4j.jar"/>
+    <!-- pathelement location="${lib}/log4j.jar"/ -->
     <pathelement location="${lib}/ant.jar"/>
   </path>
 
@@ -189,7 +190,7 @@ Main targets:
         <include name="org/jpos/space/TransientSpace.java" />
       </fileset>
       <mbeaninterface/>
-      <mx4jdescription/>
+      <!-- mx4jdescription/ -->
     </jmxdoclet>
   </target>
 
