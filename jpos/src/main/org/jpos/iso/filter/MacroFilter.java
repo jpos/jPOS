@@ -130,6 +130,8 @@ public class MacroFilter implements ISOFilter, ReConfigurable {
         for (int i=0; i<maxField; i++) {
             if (m.hasField(i)) {
                 String value = (String) m.getValue(i);
+                if (value.length() == 0)
+                    continue;
                 if (value.equalsIgnoreCase ("$date") )
                     m.set (new ISOField (i, ISODate.getDateTime(new Date())));
                 else if ((value.toLowerCase().startsWith ("$date") ) && (value.indexOf("GMT") > 0)) {
