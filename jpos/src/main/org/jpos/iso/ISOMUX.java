@@ -57,6 +57,8 @@ import org.jpos.util.Logger;
 import org.jpos.util.LogEvent;
 import org.jpos.util.LogSource;
 import org.jpos.util.NameRegistrar;
+import org.jpos.core.Configuration;
+import org.jpos.core.ReConfigurable;
 
 /**
  * Should run in it's own thread. Starts another Receiver thread
@@ -69,7 +71,7 @@ import org.jpos.util.NameRegistrar;
  * @see ISORequestListener
  */
 
-public class ISOMUX implements Runnable, ISOSource, LogSource {
+public class ISOMUX implements Runnable, ISOSource, LogSource, ReConfigurable {
     private ISOChannel channel;
     private Thread rx = null, tx = null;
     private Vector txQueue;
@@ -116,6 +118,9 @@ public class ISOMUX implements Runnable, ISOSource, LogSource {
 	setLogger (logger, realm);
 	initMUX (c);
     }
+    public void setConfiguration (Configuration cfg) {
+        setTraceNumberField (cfg.getInt ("tracenofield"));
+    }
     private void initMUX (ISOChannel c) {
 	doConnect = true;
         channel = c;
@@ -132,7 +137,8 @@ public class ISOMUX implements Runnable, ISOSource, LogSource {
      * @param traceNumberField new traceNumberField
      */  
     public void setTraceNumberField(int traceNumberField) {
-        this.traceNumberField = traceNumberField;
+        if (traceNumberField > 0) 
+            this.traceNumberField = traceNumberField;
     }
     /**
      * @return the underlying ISOChannel
@@ -162,6 +168,7 @@ public class ISOMUX implements Runnable, ISOSource, LogSource {
      * @return      key (default terminal(41) + tracenumber(11))
      */
     protected String getKey(ISOMsg m) throws ISOException {
+        System.out.println ("--------> "+traceNumberField);
         return (m.hasField(41)?ISOUtil.zeropad((String)m.getValue(41),16) : "")
                 + ISOUtil.zeropad((String) m.getValue(traceNumberField),6);
     }
