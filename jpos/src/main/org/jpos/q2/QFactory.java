@@ -64,9 +64,13 @@ import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 import org.jdom.output.XMLOutputter;
 
+import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
+import org.jpos.core.ConfigurationException;
 import org.jpos.core.SimpleConfiguration;
 import org.jpos.util.Log;
+import org.jpos.util.Logger;
+import org.jpos.util.LogSource;
 
 /**
  * @author <a href="mailto:taherkordy@dpi2.dpi.net.ir">Alireza Taherkordi</a>
@@ -300,6 +304,28 @@ public class QFactory {
             }
         }
         return new SimpleConfiguration (props);
+    }
+    public void setLogger (Object obj, Element e) {
+        if (obj instanceof LogSource) {
+            String loggerName = e.getAttributeValue ("logger");
+            if (loggerName != null) {
+                String realm = e.getAttributeValue ("realm");
+                if (realm == null)
+                    realm = e.getName();
+                Logger logger = Logger.getLogger (loggerName);
+                ((LogSource)obj).setLogger (logger, realm);
+            }
+        }
+    }
+    public void setConfiguration (Object obj, Element e) 
+	throws Q2ConfigurationException 
+    {
+        try {
+            if (obj instanceof Configurable)
+                ((Configurable)obj).setConfiguration (getConfiguration (e));
+        } catch (ConfigurationException ex) {
+            throw new Q2ConfigurationException (ex);
+        }
     }
 }
 
