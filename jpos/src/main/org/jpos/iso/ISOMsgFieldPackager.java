@@ -6,7 +6,7 @@ package org.jpos.iso;
  *
  * @author apr@cs.com.uy
  * @version $Id$
- * @see PostPackager
+ * @see org.jpos.iso.packager.PostPackager
  */
 public class ISOMsgFieldPackager extends ISOFieldPackager {
     protected ISOPackager msgPackager;

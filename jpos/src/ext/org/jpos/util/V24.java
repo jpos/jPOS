@@ -1,5 +1,8 @@
 /*
  * $Log$
+ * Revision 1.7  2000/04/26 12:33:09  apr
+ * javadoc warnings ...
+ *
  * Revision 1.6  2000/04/16 23:53:03  apr
  * LogProducer renamed to LogSource
  *
@@ -116,7 +119,7 @@ public class V24 implements SerialPortEventListener, LogSource
 	return port;
     }
     /**
-     * @param 
+     * @param watchCD true to monitor 
      */
     public void setWatchCD (boolean watchCD) {
 	this.watchCD = watchCD;
@@ -187,7 +190,7 @@ public class V24 implements SerialPortEventListener, LogSource
     /**
      * @param logger current logger
      * @param realm  logger realm
-     * @see org.jpos.iso.LogSource
+     * @see LogSource
      */
     public void setLogger (Logger logger, String realm) {
 	this.logger = logger;
@@ -195,7 +198,7 @@ public class V24 implements SerialPortEventListener, LogSource
     }
     /**
      * @return current log realm
-     * @see org.jpos.iso.LogSource
+     * @see LogSource
      */
     public String getRealm () {
 	return realm;

@@ -37,7 +37,7 @@ public class ISOFactory {
      *  <li>[prefix].host
      * </ul>
      *
-     * @see org.jpos.util.Configuration
+     * @see org.jpos.core.Configuration
      * @see ISOChannel
      *
      * @param cfg Configuration Object
@@ -114,7 +114,7 @@ public class ISOFactory {
     /**
      * Creates an ISOChannel based on Configuration property [prefix].packager
      *
-     * @see org.jpos.util.Configuration
+     * @see org.jpos.core.Configuration
      * @see ISOPackager
      *
      * @param cfg Configuration Object
@@ -150,7 +150,7 @@ public class ISOFactory {
      * Create an ISOChannel, builds an ISOMUX around it and start it in
      * a newly created daemon Thread.
      * @see ISOFactory#newChannel
-     * @see org.jpos.util.Configuration
+     * @see org.jpos.core.Configuration
      * @see ISOChannel
      *
      * @param cfg Configuration Object

@@ -7,6 +7,9 @@ import org.jpos.util.LogEvent;
 
 /*
  * $Log$
+ * Revision 1.26  2000/04/26 12:33:19  apr
+ * javadoc warnings ...
+ *
  * Revision 1.25  2000/04/16 23:53:08  apr
  * LogProducer renamed to LogSource
  *
@@ -58,8 +61,8 @@ import org.jpos.util.LogEvent;
  *
  * @author apr@cs.com.uy
  * @version $Id$
- * @see ISO87APackager
- * @see ISO87BPackager
+ * @see org.jpos.iso.packager.ISO87APackager
+ * @see org.jpos.iso.packager.ISO87BPackager
  */
 public abstract class ISOBasePackager implements ISOPackager, LogSource {
     protected ISOFieldPackager[] fld;

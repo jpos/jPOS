@@ -39,7 +39,7 @@ import org.jpos.core.ConfigurationException;
  * @see ISOMsg
  * @see ISOMUX
  * @see ISOException
- * @see CSChannel
+ * @see org.jpos.iso.channel.CSChannel
  * @see Logger
  *
  */

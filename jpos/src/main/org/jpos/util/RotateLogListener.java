@@ -10,7 +10,7 @@ import org.jpos.core.ConfigurationException;
  * Rotates logs
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
  * @version $Revision$ $Date$
- * @see Configurable
+ * @see org.jpos.core.Configurable
  * @since jPOS 1.2
  */
 

@@ -40,7 +40,6 @@ public class ISOServer extends Observable
     * @param port port to listen
     * @param clientSide client side ISOChannel (where we accept connections)
     * @param pool ThreadPool (created if null)
-    * @see ChannelConnector
     */
     public ISOServer(int port, ServerChannel clientSide, ThreadPool pool) {
 	super();

@@ -50,7 +50,6 @@ public class LoopbackChannel extends FilteredBase implements LogSource {
 
     /**
      * disconnects ISOChannel
-     * @exception IOException
      */
     public void disconnect () {
 	usable = false;

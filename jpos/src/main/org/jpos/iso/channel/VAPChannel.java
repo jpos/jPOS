@@ -30,7 +30,7 @@ public class VAPChannel extends BaseChannel {
      * @param port  server port number
      * @param p     an ISOPackager (should be ISO87BPackager)
      * @param hlen  the header len
-     * @see ISO87BPackager
+     * @see org.jpos.iso.packager.ISO87BPackager
      */
     public VAPChannel (String host, int port, ISOPackager p) {
         super(host, port, p);
@@ -40,7 +40,7 @@ public class VAPChannel extends BaseChannel {
      * @param p     an ISOPackager (should be ISO87BPackager)
      * @param hlen  the header len
      * @exception IOException
-     * @see ISO87BPackager
+     * @see org.jpos.iso.packager.ISO87BPackager
      */
     public VAPChannel (ISOPackager p) throws IOException {
         super(p);
