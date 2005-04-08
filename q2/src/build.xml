@@ -121,7 +121,12 @@
     </jmxdoclet>
   </target>
 
-  <target name="main" depends="ext-check, copy-src, generate"
+  <target name="get-jars">
+   <get src="http://www.beanshell.org/bsh-2.0b2.jar" 
+       usetimestamp="true" verbose="true" dest="lib/bsh-2.0b2.jar"/>
+  </target>
+
+  <target name="main" depends="get-jars, ext-check, copy-src, generate"
     description="Compiles classes">
 
     <copy todir="${classes}">
