@@ -197,6 +197,13 @@ public class ISOUtil {
         (byte)0x70, (byte)0xDD, (byte)0xDE, (byte)0xDB, 
         (byte)0xDC, (byte)0x8D, (byte)0x8E, (byte)0xDF
     };
+    public static final byte STX = 0x02;
+    public static final byte FS  = 0x1C;
+    public static final byte US  = 0x1F;
+    public static final byte RS  = 0x1D;
+    public static final byte GS  = 0x1E;
+    public static final byte ETX = 0x03;
+
     public static String ebcdicToAscii(byte[] e) {
         try {
             return new String (
@@ -516,7 +523,7 @@ public class ISOUtil {
      * Converts an ASCII representation of a Bitmap field
      * into a Java BitSet
      * @param b - hex representation
-     * @param offset - staring offset
+     * @param offset - starting offset
      * @param bitZeroMeansExtended - true for ISO-8583
      * @return java BitSet object
      */
@@ -729,6 +736,17 @@ public class ISOUtil {
         }
         return  result;
     }
+    /**
+     * Bitwise XOR between corresponding byte arrays represented in hex
+     * @param op1 hexstring 1
+     * @param op2 hexstring 2
+     * @return an array of length = the smallest between op1 and op2
+     */
+    public static String hexor (String op1, String op2) {
+        byte[] xor = xor (hex2byte (op1), hex2byte (op2));
+        return hexString (xor);
+    }
+
     /**
      * Trims a byte[] to a certain length
      * @param array the byte[] to be trimmed
