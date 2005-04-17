@@ -142,7 +142,7 @@ public class ISOServer extends Observable
                 try {
                     channel.disconnect();
                 } catch (IOException ex) { }
-            } catch (Exception e) { 
+            } catch (Throwable e) { 
                 LogEvent evt = new LogEvent (this, "session-error", e);
                 try {
                     channel.disconnect();
@@ -263,8 +263,17 @@ public class ISOServer extends Observable
                         setFilters (channel);
                         if (channel instanceof Observable)
                             ((Observable)channel).addObserver (this);
-                        while (pool.getAvailableCount() <= 0)
-                            ISOUtil.sleep (10);
+                        for (int i=0; pool.getAvailableCount() <= 0; i++) {
+                            ISOUtil.sleep (250);
+                            if (i % 240 == 0) {
+                                LogEvent evt = new LogEvent (this, "warn");
+                                evt.addMessage (
+                                    "pool exahusted " + serverSocket.toString()
+                                );
+                                evt.addMessage (pool);
+                                Logger.log (evt);
+                            }
+                        }
                         channel.accept (serverSocket);
                         if ((cnt[CONNECT]++) % 100 == 0)
                             purgeChannels ();
