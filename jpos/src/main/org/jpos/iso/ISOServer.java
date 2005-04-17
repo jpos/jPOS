@@ -129,28 +129,19 @@ public class ISOServer extends Observable
                 }
             } catch (EOFException e) {
                 Logger.log (new LogEvent (this, "session-warning", "<eof/>"));
-                try {
-                    channel.disconnect();
-                } catch (IOException ex) { }
             } catch (SocketException e) {
                 if (!shutdown) 
                     Logger.log (new LogEvent (this, "session-warning", e));
-                try {
-                    channel.disconnect();
-                } catch (IOException ex) { }
             } catch (InterruptedIOException e) {
-                try {
-                    channel.disconnect();
-                } catch (IOException ex) { }
+                // nothing to log
             } catch (Throwable e) { 
-                LogEvent evt = new LogEvent (this, "session-error", e);
-                try {
-                    channel.disconnect();
-                } catch (IOException ex) { 
-                    evt.addMessage (ex);
-                }
-                Logger.log (evt);
+                Logger.log (new LogEvent (this, "session-error", e));
             } 
+            try {
+                channel.disconnect();
+            } catch (IOException ex) { 
+                Logger.log (new LogEvent (this, "session-error", ex));
+            }
             Logger.log (new LogEvent (this, "session-end"));
         }
         public void setLogger (Logger logger, String realm) { 
