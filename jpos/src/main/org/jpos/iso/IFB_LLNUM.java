@@ -86,9 +86,10 @@ public class IFB_LLNUM extends ISOStringFieldPackager {
     }
 
     /** Must override ISOFieldPackager method to set the Interpreter correctly */
-    public void setPadded(boolean pad)
+    public void setPad (boolean pad)
     {
         setInterpreter(pad ? BCDInterpreter.LEFT_PADDED : BCDInterpreter.RIGHT_PADDED);
         this.pad = pad;
     }
 }
+
