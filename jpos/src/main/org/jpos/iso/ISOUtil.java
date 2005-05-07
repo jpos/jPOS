@@ -207,7 +207,7 @@ public class ISOUtil {
     public static String ebcdicToAscii(byte[] e) {
         try {
             return new String (
-                ebcdicToAsciiBytes (e, 0, e.length), "UTF-8"
+                ebcdicToAsciiBytes (e, 0, e.length), "ISO8859_1"
             );
         } catch (UnsupportedEncodingException ex) {
             return ex.toString(); // should never happen
@@ -216,7 +216,7 @@ public class ISOUtil {
     public static String ebcdicToAscii(byte[] e, int offset, int len) {
         try {
             return new String (
-                ebcdicToAsciiBytes (e, offset, len), "UTF-8"
+                ebcdicToAsciiBytes (e, offset, len), "ISO8859_1"
             );
         } catch (UnsupportedEncodingException ex) {
             return ex.toString(); // should never happen
