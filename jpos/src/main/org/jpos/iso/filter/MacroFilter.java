@@ -127,7 +127,7 @@ public class MacroFilter implements ISOFilter, ReConfigurable {
     }
     private void applyProps (ISOMsg m) throws ISOException {
         int maxField = m.getMaxField ();
-        for (int i=0; i<maxField; i++) {
+        for (int i=0; i<=maxField; i++) {
             Object o = null;
             if (m.hasField (i))
                 o = m.getValue (i);
