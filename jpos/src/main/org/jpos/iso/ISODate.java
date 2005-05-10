@@ -178,6 +178,7 @@ public class ISODate {
         cal.set (Calendar.HOUR_OF_DAY, hh);
         cal.set (Calendar.MINUTE, mm);
         cal.set (Calendar.SECOND, ss);
+        cal.set (Calendar.MILLISECOND, 0);
 
         if (YY != 0) {
             cal.set (Calendar.YEAR, YY);
