@@ -1,6 +1,7 @@
 $Id$
 
 -- 1.4.9 -- 
+#423 - ISODate.parseISODate - force milliseconds down to zero.
 Changed sendMessageTrailler signature in order to make packed image available.
 Added interface ReadableConfiguration
 Added Configuration.put
