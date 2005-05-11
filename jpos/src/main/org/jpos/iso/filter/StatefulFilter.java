@@ -1,4 +1,11 @@
 /*
+ * Copyright (c) 2005 jPOS.org
+ *
+ * See terms of license at http://jpos.org/license.html
+ *
+ */
+
+/*
  * StateFulFilter.java
  *
  * Created on 29 de diciembre de 2004, 11:09
@@ -21,7 +28,7 @@ import org.jpos.util.LogEvent;
  * Filter that maintains some fields of arriving messages in one direction and put
  * that fields in the message going in the oposite direction that is the answer,
  * based on a key formed by some fields.
- * @author <a href="mailto:alcarraz@cabal.com.uy">Andr&eacute;s Alcarraz </a>
+ * @author <a href="mailto:aalcarraz@cabal.com.uy">Andr&eacute;s Alcarraz </a>
  */
 public class StatefulFilter implements ISOFilter, Configurable{
     
