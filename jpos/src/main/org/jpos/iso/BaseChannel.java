@@ -498,7 +498,7 @@ public abstract class BaseChannel extends Observable
                     }
                     b = streamReceive();
                 }
-                else if (len > 0 && len <= 4096) {
+                else if (len > 0 && len <= 10000) {
                     if (hLen > 0) {
                         // ignore message header (TPDU)
                         // Note header length is not necessarily equal to hLen (see VAPChannel)
