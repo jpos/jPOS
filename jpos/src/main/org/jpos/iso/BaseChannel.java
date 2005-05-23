@@ -596,8 +596,10 @@ public abstract class BaseChannel extends Observable
                 } catch (IOException ex) { evt.addMessage (ex); }
                 serverOut = null;
             }
-            if (socket != null)
+            if (socket != null) {
+                socket.setSoLinger (true, 0);
                 socket.close ();
+            }
             Logger.log (evt);
         } catch (IOException e) {
             evt.addMessage (e);
