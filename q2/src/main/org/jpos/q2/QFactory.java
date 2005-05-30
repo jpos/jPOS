@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000 jPOS.org.  All rights reserved.
+ * Copyright (c) 2005 jPOS.org.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -129,7 +129,9 @@ public class QFactory {
 
         ObjectName objectName = new ObjectName (Q2.QBEAN_NAME + name);
         MBeanServer mserver = server.getMBeanServer();
-        if(mserver.isRegistered(objectName)) mserver.unregisterMBean(objectName);
+        if(mserver.isRegistered(objectName)) {
+            throw new InstanceAlreadyExistsException (name+" has already been deployed in another file.");
+        }
         ObjectInstance instance = mserver.registerMBean (
             obj, objectName 
         );

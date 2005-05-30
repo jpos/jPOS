@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000 jPOS.org.  All rights reserved.
+ * Copyright (c) 2005 jPOS.org.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -207,16 +207,22 @@ public class Q2 implements FileFilter {
     private void deploy () {
         List startList = new ArrayList ();
         Iterator iter = dirMap.entrySet().iterator();
+        try {
         while (iter.hasNext()) {
             Map.Entry entry = (Map.Entry) iter.next();
             File   f        = (File)   entry.getKey ();
             QEntry qentry   = (QEntry) entry.getValue ();
             long deployed   = qentry.getDeployed ();
             if (deployed == 0) {
-                deploy (f);
-                if (qentry.isQBean ())
-                    startList.add (qentry.getInstance());
-                qentry.setDeployed (f.lastModified ());
+       			if (deploy (f)) {
+       				if (qentry.isQBean ())
+       					startList.add (qentry.getInstance());
+                    qentry.setDeployed (f.lastModified ());
+       			}
+       			else {
+       				// deploy failed, clean up.
+       				iter.remove();
+       			}
             } else if (deployed != f.lastModified ()) {
                 undeploy (f);
                 iter.remove ();
@@ -226,6 +232,10 @@ public class Q2 implements FileFilter {
         iter = startList.iterator();
         while (iter.hasNext ()) {
             start ((ObjectInstance) iter.next ());
+        }
+        }
+        catch (Exception e){
+        	log.warn ("deploy", e);
         }
     }
 
@@ -342,7 +352,7 @@ public class Q2 implements FileFilter {
             dirMap.put (f, new QEntry ());
     }
 
-    private void deploy (File f) {
+    private boolean deploy (File f) {
         try {
             if (log != null)
                 log.info ("deploy:" + f.getName());
@@ -357,9 +367,29 @@ public class Q2 implements FileFilter {
                 this, doc.getRootElement(), obj
             );
             qentry.setInstance (instance);
-        } catch (Exception e) {
-            getLog().warn ("deploy", e);
         } 
+        catch (InstanceAlreadyExistsException e) {
+           /*
+            * Ok, the file we tried to deploy, holds an object
+            *  that already has been deployed.
+            *  
+            * Rename it out of the way.
+            * 
+            */
+            File rename = new File(f.getAbsolutePath()+".dup");
+            while (rename.exists()){
+                rename = new File(rename.getAbsolutePath()+".dup");
+            }
+            f.renameTo(rename);
+            getLog().warn ("deploy", e);
+            return false;
+        }
+        catch (Exception e) {
+            getLog().warn ("deploy", e);
+            // This will also save deploy error repeats...
+            return false;
+        } 
+        return true ;
     }
 
     private void start (ObjectInstance instance) {
