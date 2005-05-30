@@ -49,6 +49,10 @@
 
 /*
  * $Log$
+ * Revision 1.14  2005/05/30 01:52:15  apr
+ * If message is not flagged as incoming, assume outgoing (even if not
+ * explicit tagged as outgoing)
+ *
  * Revision 1.13  2003/10/13 10:30:22  apr
  * tabs expanded to 8 spaces
  *
@@ -179,7 +183,7 @@ public class ISOChannelPanel extends JPanel implements Observer {
                 int imti   = Integer.parseInt(mti);
                 if (m.isIncoming())
                     meter.setValue(-imti, mti);
-                else if (m.isOutgoing())
+                else 
                     meter.setValue(imti, mti);
 
                 // log.insertElementAt(m,0);
