@@ -135,17 +135,23 @@ public class QFactory {
         ObjectInstance instance = mserver.registerMBean (
             obj, objectName 
         );
-        setAttribute (mserver, objectName, "Name", name);
-        String logger = e.getAttributeValue ("logger");
-        if (logger != null)
-            setAttribute (mserver, objectName, "Logger", logger);
-        setAttribute (mserver, objectName, "Server", server);
-        setAttribute (mserver, objectName, "Persist", e);
-        configureQBean(mserver,objectName,e);
-        setConfiguration (obj, e);  // handle legacy (QSP v1) Configurables 
+        try {
+            setAttribute (mserver, objectName, "Name", name);
+            String logger = e.getAttributeValue ("logger");
+            if (logger != null)
+                setAttribute (mserver, objectName, "Logger", logger);
+            setAttribute (mserver, objectName, "Server", server);
+            setAttribute (mserver, objectName, "Persist", e);
+            configureQBean(mserver,objectName,e);
+            setConfiguration (obj, e);  // handle legacy (QSP v1) Configurables 
 
-        if (obj instanceof QBean) 
-            mserver.invoke (objectName, "init",  null, null);
+            if (obj instanceof QBean) 
+                mserver.invoke (objectName, "init",  null, null);
+        }
+        catch (ConfigurationException ce) {
+            mserver.unregisterMBean(objectName);
+            throw ce;
+        }
 
         return instance;
     }

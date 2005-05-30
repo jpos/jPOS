@@ -107,10 +107,12 @@ public class Q2 implements FileFilter {
     public static final String LOGGER_CONFIG       = "00_logger.xml";
     public static final String QBEAN_NAME          = "Q2:type=qbean,service=";
     public static final String Q2_CLASS_LOADER     = "Q2:type=system,service=loader";
+    public static final String DUPLICATE_EXTENSION = "DUP";
+    public static final String ERROR_EXTENSION     = "BAD";
 
-    public static final String PROTECTED_QBEAN     = "protected-qbean";
-    public static final int SCAN_INTERVAL = 2500;
-    public static final long SHUTDOWN_TIMEOUT      = 60000;
+    public static final String PROTECTED_QBEAN        = "protected-qbean";
+    public static final int SCAN_INTERVAL             = 2500;
+    public static final long SHUTDOWN_TIMEOUT         = 60000;
 
     private MBeanServer server;
     private File deployDir, libDir;
@@ -214,15 +216,14 @@ public class Q2 implements FileFilter {
             QEntry qentry   = (QEntry) entry.getValue ();
             long deployed   = qentry.getDeployed ();
             if (deployed == 0) {
-       			if (deploy (f)) {
-       				if (qentry.isQBean ())
-       					startList.add (qentry.getInstance());
-                    qentry.setDeployed (f.lastModified ());
-       			}
-       			else {
-       				// deploy failed, clean up.
-       				iter.remove();
-       			}
+                if (deploy (f)) {
+                   if (qentry.isQBean ())
+                       startList.add (qentry.getInstance());
+                       qentry.setDeployed (f.lastModified ());
+               } else {
+                   // deploy failed, clean up.
+                   iter.remove();
+               }
             } else if (deployed != f.lastModified ()) {
                 undeploy (f);
                 iter.remove ();
@@ -235,7 +236,7 @@ public class Q2 implements FileFilter {
         }
         }
         catch (Exception e){
-        	log.warn ("deploy", e);
+            log.warn ("deploy", e);
         }
     }
 
@@ -376,16 +377,13 @@ public class Q2 implements FileFilter {
             * Rename it out of the way.
             * 
             */
-            File rename = new File(f.getAbsolutePath()+".dup");
-            while (rename.exists()){
-                rename = new File(rename.getAbsolutePath()+".dup");
-            }
-            f.renameTo(rename);
+            tidyFileAway(f,DUPLICATE_EXTENSION);
             getLog().warn ("deploy", e);
             return false;
         }
         catch (Exception e) {
             getLog().warn ("deploy", e);
+            tidyFileAway(f,ERROR_EXTENSION);
             // This will also save deploy error repeats...
             return false;
         } 
@@ -548,6 +546,15 @@ public class Q2 implements FileFilter {
             }
         }
         return doc;
+    }
+    
+    private void tidyFileAway (File f, String extension) {
+        File rename = new File(f.getAbsolutePath()+"."+extension);
+        while (rename.exists()){
+            rename = new File(rename.getAbsolutePath()+"."+extension);
+        }
+        getLog().warn("Tidying "+f.getAbsolutePath()+" out of the way, by adding ."+extension,"It will be called: "+rename.getAbsolutePath()+" see log above for detail of problem.");
+        f.renameTo(rename);
     }
 
     public static void main (String[] args) throws Exception {
