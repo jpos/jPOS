@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE isopackager SYSTEM "genericpackager.dtd">
 
+<!--
+  field 52 (PIN DATA): IFA_BINARY replaced by IFB_BINARY
+  field 127 (RESERVED PRIVATE USE): IFA_LLLBINARY replaced by IFA_LLLLLLBINARY
+  See:
+  http://groups-beta.google.com/group/jpos-users/browse_thread/thread/e60807e917c8c170/e29a681592d63a2b#e29a681592d63a2b
+-->
 <isopackager>
   <isofield
       id="0"
