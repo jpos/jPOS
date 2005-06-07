@@ -16,7 +16,7 @@ fi
 
 JAVA=$JAVA_HOME/bin/java
 
-CLASSPATH=build/classes:lib/jdom.jar:lib/xerces_1_2_3.jar:lib/xalan_2_0_0.jar:lib/log4j.jar:lib/mx4j-jmx.jar:lib/mx4j-tools.jar:lib/mx4j-impl.jar
+CLASSPATH=build/classes:lib/jdom.jar:lib/xercesImpl-2.6.2.jar:lib/xalan_2_0_0.jar:lib/log4j.jar:lib/mx4j-jmx.jar:lib/mx4j-tools.jar:lib/mx4j-impl.jar
 CLASSPATH=`echo ext/*.jar | tr ' ' ':'`:$CLASSPATH
 
 if [ -z $1 ] ; then
@@ -25,7 +25,6 @@ if [ -z $1 ] ; then
 fi
 
 $JAVA -cp $CLASSPATH \
-	-Djava.compiler=NONE \
 	-Dsax.parser=org.apache.xerces.parsers.SAXParser \
 	$1.Test $2 $3 $4 $5
 

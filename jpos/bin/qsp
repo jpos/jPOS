@@ -16,7 +16,7 @@ fi
 
 JAVA=$JAVA_HOME/bin/java
 
-CLASSPATH=build/classes:build/examples:lib/xerces_1_2_3.jar:lib/xalan_2_0_0.jar:lib/log4j.jar:lib/mx4j-jmx.jar:lib/mx4j-tools.jar
+CLASSPATH=build/classes:build/examples:lib/xercesImpl-2.6.2.jar:lib/xalan_2_0_0.jar:lib/log4j.jar:lib/mx4j-jmx.jar:lib/mx4j-tools.jar:lib/mx4j-impl.jar:lib/jdom.jar
 CLASSPATH=`echo ext/*.jar | tr ' ' ':'`:$CLASSPATH
 
 $JAVA -cp $CLASSPATH org.jpos.apps.qsp.QSP $*
