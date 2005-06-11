@@ -197,7 +197,9 @@ public class Q2 implements FileFilter {
     public boolean accept (File f) {
         return f.getName().endsWith (".xml");
     }
-
+    public File getDeployDir () {
+        return deployDir;
+    }
     private void scan () {
         File file[] = deployDir.listFiles (this);
         // Arrays.sort (file); --apr not required - we use TreeMap
