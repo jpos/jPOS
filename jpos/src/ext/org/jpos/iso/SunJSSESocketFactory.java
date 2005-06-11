@@ -14,6 +14,7 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.security.GeneralSecurityException;
 import java.security.KeyStore;
 import java.security.SecureRandom;
 import java.security.Security;
@@ -31,6 +32,7 @@ import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
+import javax.net.ssl.X509TrustManager;
 
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
@@ -93,6 +95,30 @@ public class SunJSSESocketFactory
         Security.addProvider(new com.sun.net.ssl.internal.ssl.Provider()); 
     }
        
+    private TrustManager[] getTrustManagers(KeyStore ks)
+        throws GeneralSecurityException {
+        if (serverAuthNeeded) {
+            TrustManagerFactory tm = TrustManagerFactory.getInstance("SunX509" );
+            tm.init( ks ); 
+            return tm.getTrustManagers(); 
+        } else {
+            // Create a trust manager that does not validate certificate chains
+            return new TrustManager[]{
+                new X509TrustManager() {
+                    public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                        return new java.security.cert.X509Certificate[] {};
+                    }
+                    public void checkClientTrusted(
+                        java.security.cert.X509Certificate[] certs, String authType) {
+                    }
+                    public void checkServerTrusted(
+                        java.security.cert.X509Certificate[] certs, String authType) {
+                    }
+                }
+            };
+        }
+    }
+
     /**
      * Create a SSLSocket Context
      * @return the SSLContext
@@ -110,10 +136,8 @@ public class SunJSSESocketFactory
             ks.load( new FileInputStream( new File( keyStore) ),password.toCharArray());
             KeyManagerFactory km = KeyManagerFactory.getInstance( "SunX509"); 
             km.init( ks, keyPassword.toCharArray() );
-            KeyManager[] kma = km.getKeyManagers();                        
-            TrustManagerFactory tm = TrustManagerFactory.getInstance("SunX509" );
-            tm.init( ks ); 
-            TrustManager[] tma = tm.getTrustManagers(); 
+            KeyManager[] kma = km.getKeyManagers();
+            TrustManager[] tma = getTrustManagers( ks );
             SSLContext sslc = SSLContext.getInstance( "SSL" ); 
             sslc.init( kma, tma, SecureRandom.getInstance( "SHA1PRNG" ) ); 
        
