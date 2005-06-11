@@ -210,30 +210,29 @@ public class Q2 implements FileFilter {
         List startList = new ArrayList ();
         Iterator iter = dirMap.entrySet().iterator();
         try {
-        while (iter.hasNext()) {
-            Map.Entry entry = (Map.Entry) iter.next();
-            File   f        = (File)   entry.getKey ();
-            QEntry qentry   = (QEntry) entry.getValue ();
-            long deployed   = qentry.getDeployed ();
-            if (deployed == 0) {
-                if (deploy (f)) {
-                   if (qentry.isQBean ())
-                       startList.add (qentry.getInstance());
-                       qentry.setDeployed (f.lastModified ());
-               } else {
-                   // deploy failed, clean up.
-                   iter.remove();
-               }
-            } else if (deployed != f.lastModified ()) {
-                undeploy (f);
-                iter.remove ();
+            while (iter.hasNext()) {
+                Map.Entry entry = (Map.Entry) iter.next();
+                File   f        = (File)   entry.getKey ();
+                QEntry qentry   = (QEntry) entry.getValue ();
+                long deployed   = qentry.getDeployed ();
+                if (deployed == 0) {
+                    if (deploy (f)) {
+                        if (qentry.isQBean ())
+                            startList.add (qentry.getInstance());
+                        qentry.setDeployed (f.lastModified ());
+                    } else {
+                        // deploy failed, clean up.
+                        iter.remove();
+                    }
+                } else if (deployed != f.lastModified ()) {
+                    undeploy (f);
+                    iter.remove ();
+                }
             }
-        }
-
-        iter = startList.iterator();
-        while (iter.hasNext ()) {
-            start ((ObjectInstance) iter.next ());
-        }
+            iter = startList.iterator();
+            while (iter.hasNext ()) {
+                start ((ObjectInstance) iter.next ());
+            }
         }
         catch (Exception e){
             log.warn ("deploy", e);
