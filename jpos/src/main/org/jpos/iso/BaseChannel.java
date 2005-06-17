@@ -597,7 +597,11 @@ public abstract class BaseChannel extends Observable
                 serverOut = null;
             }
             if (socket != null) {
-                socket.setSoLinger (true, 0);
+                try {
+                    socket.setSoLinger (true, 0);
+                } catch (SocketException e) {
+                    // safe to ignore - can be closed already
+                }
                 socket.close ();
             }
             Logger.log (evt);
