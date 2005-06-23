@@ -49,19 +49,13 @@
 
 package org.jpos.util;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FilenameFilter;
-import java.io.IOException;
-import java.util.StringTokenizer;
-import java.util.Vector;
+import java.io.*;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
-import org.jpos.core.Configurable;
-import org.jpos.core.Configuration;
-import org.jpos.core.ConfigurationException;
-import org.jpos.core.ReConfigurable;
+import org.jpos.core.*;
 import org.jpos.iso.ISOException;
+import org.jpos.util.*;
 
 /**
  * DirPoll operates on a set of directories which defaults to
@@ -71,12 +65,14 @@ import org.jpos.iso.ISOException;
  *  <li>tmp
  *  <li>run
  *  <li>bad
+ *  <li>archive
  * </ul>
  * scanning for incoming requests (of varying priorities)
  * on the request directory and processing them by means of
  * DirPoll.Processor or DirPoll.FileProcessor
  * 
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
+ * @author <a href="mailto:mmilliss@moneyswitch.net">Matthew Milliss</a>
  * @since jPOS 1.2.7
  * @version $Revision$ $Date$
  */
@@ -89,6 +85,7 @@ public class DirPoll extends SimpleLogSource
     private File tmpDir;
     private File badDir;
     private File runDir;
+    private File archiveDir;
     private Vector prio;
     private int currentPriority;
     private String basePath;
@@ -97,6 +94,10 @@ public class DirPoll extends SimpleLogSource
     private Object processor;
     private Configuration cfg;
     private boolean shutdown;
+    private boolean shouldArchive;
+    private boolean shouldTimestampArchive;
+    private String archiveDateFormat;
+    
 
     //------------------------------------ Constructor/setters/getters, etc.
     /**
@@ -117,6 +118,16 @@ public class DirPoll extends SimpleLogSource
         tmpDir      = new File(base, "tmp");
         badDir      = new File(base, "bad");
         runDir      = new File(base, "run");
+        archiveDir  = new File(base, "archive");
+    }
+    public void setShouldTimestampArchive(boolean shouldTimestampArchive) {
+        this.shouldTimestampArchive = shouldTimestampArchive;
+    }
+    public void setArchiveDateFormat(String dateFormat) {
+        this.archiveDateFormat = dateFormat;
+    }
+    public void setShouldArchive(boolean shouldArchive) {
+        this.shouldArchive = shouldArchive;
     }
     public String getPath() {
         return basePath;
@@ -135,6 +146,9 @@ public class DirPoll extends SimpleLogSource
     }
     public void setRunDir (String dir) {
         runDir = new File (basePath, dir);
+    }
+    public void setArchiveDir (String dir) {
+        archiveDir = new File (basePath, dir);
     }
     public void setPollInterval(long pollInterval) {
         this.pollInterval = pollInterval;
@@ -171,6 +185,7 @@ public class DirPoll extends SimpleLogSource
         setTmpDir      (cfg.get ("tmp.dir",      "tmp"));
         setRunDir      (cfg.get ("run.dir",      "run"));
         setBadDir      (cfg.get ("bad.dir",      "bad"));
+        setArchiveDir  (cfg.get ("archive.dir",  "archive"));
         setResponseSuffix (cfg.get ("response.suffix", null));
     }
     /**
@@ -241,6 +256,7 @@ public class DirPoll extends SimpleLogSource
         tmpDir.mkdirs();
         badDir.mkdirs();
         runDir.mkdirs();
+        archiveDir.mkdirs();
     }
     public void addPriority(String fileExtension) {
         prio.addElement (fileExtension);
@@ -277,6 +293,15 @@ public class DirPoll extends SimpleLogSource
         return destination;
     }
 
+    private void archive(File f) throws IOException {
+        String archiveFilename = f.getName();
+        if (shouldTimestampArchive)
+            archiveFilename = f.getName() + "." + new SimpleDateFormat(archiveDateFormat).format(new Date());
+        File destination = new File(archiveDir, archiveFilename);
+        if (!f.renameTo(destination))
+            throw new IOException("Unable to archive " + "'" + f.getName() + "'");
+    }
+    
     private File scan() {
         for (currentPriority=0; 
             currentPriority < prio.size(); currentPriority++)
@@ -336,9 +361,13 @@ public class DirPoll extends SimpleLogSource
                 } else if (processor instanceof FileProcessor) 
                     ((FileProcessor) processor).process (request);
 
-                if (!request.delete ())
-                    throw new DirPollException 
-                        ("error: can't unlink request " + request.getName());
+                if (shouldArchive) {
+                    archive(request);
+                } else {
+                    if (!request.delete ())
+                        throw new DirPollException 
+                            ("error: can't unlink request " + request.getName());                    
+                }
 
             } catch (Throwable e) {
                 logEvent = evt;
