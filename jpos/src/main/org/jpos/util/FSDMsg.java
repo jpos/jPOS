@@ -54,6 +54,7 @@ import java.io.PrintStream;
 import java.io.IOException;
 import java.io.EOFException;
 import java.io.ByteArrayInputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.MalformedURLException;
 import java.util.Map;
@@ -62,6 +63,7 @@ import java.util.LinkedHashMap;
 import org.jdom.Element;
 import org.jdom.Document;
 import org.jdom.input.SAXBuilder;
+import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 import org.jdom.JDOMException;
 import org.jpos.space.Space;
@@ -165,6 +167,16 @@ public class FSDMsg implements Loggeable {
                 if (defValue != null)
                     value = defValue;
                 break;
+            case 'B':
+                try {
+                    value = new String (
+                        ISOUtil.hex2byte (value.substring (0, length << 1)),
+                        "ISO8859_1"
+                    );
+                } catch (UnsupportedEncodingException e) {
+                    // ISO8859_1 is supported
+                }
+                break;
         }
         return (type.endsWith ("FS")) ? value.trim() : value;
     }
@@ -205,7 +217,9 @@ public class FSDMsg implements Loggeable {
             int length   = Integer.parseInt (elem.getAttributeValue ("length"));
             String type  = elem.getAttributeValue ("type").toUpperCase();
             boolean key  = "true".equals (elem.getAttributeValue ("key"));
-            String value = readField (is, id, length, type.endsWith ("FS"));
+            String value = readField (
+                is, id, length, type.endsWith ("FS"), "B".equals (type)
+            );
 
             if (key)
                 keyOff = keyOff + value;
@@ -248,10 +262,12 @@ public class FSDMsg implements Loggeable {
         return sb.toString ();
     }
     protected String readField 
-        (InputStream is, String fieldName, int len, boolean fs) 
+        (InputStream is, String fieldName, int len, boolean fs, boolean binary) 
         throws IOException
     {
         String fieldValue = read (is, len, fs);
+        if (binary)
+            fieldValue = ISOUtil.hexString (fieldValue.getBytes ("ISO8859_1"));
         map.put (fieldName, fieldValue);
         // System.out.println (fieldName + ":" + fieldValue);
         return fieldValue;
@@ -334,7 +350,7 @@ public class FSDMsg implements Loggeable {
     }
     public void dump (PrintStream p, String indent) {
         try {
-            XMLOutputter out = new XMLOutputter (" ", true);
+            XMLOutputter out = new XMLOutputter (Format.getPrettyFormat());
             out.output (toXML(), p);
         } catch (IOException e) {
             e.printStackTrace (p);

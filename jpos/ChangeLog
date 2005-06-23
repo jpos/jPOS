@@ -1,6 +1,7 @@
 $Id$
 
 -- 1.4.9 -- 
+FSDMsg supports 'B' type (Binary data)
 DirPoll - ability to archive processed requests
 BaseChannel.disconnect - set SO_LINGER to zero
 #423 - ISODate.parseISODate - force milliseconds down to zero.
