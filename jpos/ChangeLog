@@ -1,6 +1,7 @@
 $Id$
 
 -- 1.4.9 -- 
+DirPoll - ability to archive processed requests
 BaseChannel.disconnect - set SO_LINGER to zero
 #423 - ISODate.parseISODate - force milliseconds down to zero.
 Changed sendMessageTrailler signature in order to make packed image available.
