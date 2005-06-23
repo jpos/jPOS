@@ -70,6 +70,7 @@ public class AllTests {
         TestSuite suite = new TestSuite("jPOS Tests");
         suite.addTestSuite (packagers.Test.class);
         suite.addTest (iso.ISOTests.suite());
+        suite.addTestSuite (dirpoll.DirPollTest.class);
         suite.addTestSuite (jceadapter.Test.class);
         suite.addTestSuite (space.TestTSpace.class);
         suite.addTestSuite (space.Test.class);
