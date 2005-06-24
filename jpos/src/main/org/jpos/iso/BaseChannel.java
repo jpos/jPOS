@@ -252,8 +252,18 @@ public abstract class BaseChannel extends Observable
         try {
             if (socketFactory != null)
                 return socketFactory.createSocket (host, port);
-            else
-                return new Socket(host,port);
+            else {
+                if (timeout > 0) {
+                    Socket s = new Socket();
+                    s.connect (
+                        new InetSocketAddress (host, port),
+                        timeout
+                    );
+                    return s;
+                } else {
+                    return new Socket(host,port);
+                }
+            }
         } catch (ISOException e) {
             throw new IOException (e.getMessage());
         }
