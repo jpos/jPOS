@@ -51,6 +51,7 @@ package org.jpos.util;
 
 import java.io.IOException;
 import java.io.PrintStream;
+import java.io.ByteArrayOutputStream;
 import java.sql.SQLException;
 import java.util.EventObject;
 import java.util.Iterator;
@@ -63,7 +64,7 @@ import org.jdom.output.XMLOutputter;
  * @version $Id$
  * @serial
  */
-public class LogEvent extends EventObject {
+public class LogEvent {
    /**
     * @serial
     */
@@ -77,14 +78,31 @@ public class LogEvent extends EventObject {
     */
     public Vector payLoad;
     
+    public LogEvent () {
+        super();
+        this.tag = "info";
+        this.payLoad = new Vector(1);
+    }
+    public LogEvent (String tag) {
+        super();
+        this.tag = tag;
+        this.payLoad = new Vector(1);
+    }
+    public LogEvent (String tag, Object msg) {
+        super();
+        this.source  = source;
+        this.tag     = tag;
+        this.payLoad = new Vector(1);
+        addMessage(msg);
+    }
     public LogEvent (LogSource source, String tag) {
-        super (source);
+        super ();
         this.source  = source;
         this.tag     = tag;
         this.payLoad = new Vector();
     }
     public LogEvent (LogSource source, String tag, Object msg) {
-        super (source);
+        super ();
         this.source  = source;
         this.tag     = tag;
         this.payLoad = new Vector(1);
@@ -95,6 +113,18 @@ public class LogEvent extends EventObject {
     }
     public void addMessage (String tagname, String message) {
         this.payLoad.addElement("<"+tagname+">"+message+"</"+tagname+">");
+    }
+    /**
+     * @return log source (may be null)
+     */
+    public LogSource getSource() {
+        return source;
+    }
+    /**
+     * @param source a LogSource
+     */
+    public void setSource(LogSource source) {
+        this.source = source;
     }
     public void dump (PrintStream p, String indent) {
         if (payLoad.size() == 0) 
@@ -160,6 +190,12 @@ public class LogEvent extends EventObject {
     }
     public Vector getPayLoad() {
         return payLoad;
+    }
+    public String toString() {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream p = new PrintStream (baos);
+        dump (p, "");
+        return baos.toString();
     }
 }
 

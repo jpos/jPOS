@@ -83,11 +83,7 @@ public class LogEventRenderer implements ObjectRenderer
     {
         if (o instanceof LogEvent)
         {
-            ByteArrayOutputStream str = new ByteArrayOutputStream();
-            PrintStream ps = new PrintStream (str);
-            LogEvent evt = (LogEvent) o;
-            evt.dump (ps, "");
-            return "\n" + str.toString();
+            return "\n" + ((LogEvent) o).toString();
         }
         else
             return "ERROR: LogEventRenderer can only render LogEvent objects";

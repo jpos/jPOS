@@ -1,6 +1,7 @@
 $Id$
 
 -- 1.4.9 -- 
+LogEvent new constructors (no need for LogSource), added toString()
 FSDMsg supports 'B' type (Binary data)
 DirPoll - ability to archive processed requests
 BaseChannel.disconnect - set SO_LINGER to zero

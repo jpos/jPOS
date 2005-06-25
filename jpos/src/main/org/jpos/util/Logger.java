@@ -101,7 +101,10 @@ public class Logger {
         }
     }
     public static void log (LogEvent evt) {
-        Logger l = ((LogSource) evt.getSource()).getLogger ();
+        Logger l = null;
+        LogSource source = evt.getSource();
+        if (source != null)
+            l = source.getLogger();
         if (l != null && l.hasListeners ()) {
             synchronized (l.listeners) {
                 Iterator i = l.listeners.iterator();
