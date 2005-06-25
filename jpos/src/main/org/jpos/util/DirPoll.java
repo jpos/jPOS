@@ -187,6 +187,10 @@ public class DirPoll extends SimpleLogSource
         setBadDir      (cfg.get ("bad.dir",      "bad"));
         setArchiveDir  (cfg.get ("archive.dir",  "archive"));
         setResponseSuffix (cfg.get ("response.suffix", null));
+        setShouldArchive (cfg.getBoolean ("archive", false));
+        setArchiveDateFormat (
+            cfg.get ("archive.dateformat", "yyyyMMddHHmmss")
+        );
     }
     /**
      * @param priorities blank separated list of extensions
