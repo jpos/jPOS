@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.TimerTask;
+import java.util.ConcurrentModificationException;
 
 import jdbm.RecordManager;
 import jdbm.RecordManagerFactory;
@@ -387,9 +388,13 @@ public class JDBMSpace extends TimerTask implements Space {
             }
             FastIterator iter = htree.keys ();
 
-            while ( (obj = iter.next()) != null) {
-                out (GCKEY, obj, TIMEOUT);
-                Thread.yield ();
+            try {
+                while ( (obj = iter.next()) != null) {
+                    out (GCKEY, obj, TIMEOUT);
+                    Thread.yield ();
+                }
+            } catch (ConcurrentModificationException e) {
+                // ignore, we may have better luck on next try
             }
             while ( (obj = inp (GCKEY)) != null) {
                 synchronized (this) {
