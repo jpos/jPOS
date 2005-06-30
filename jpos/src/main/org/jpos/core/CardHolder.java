@@ -150,6 +150,9 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
             if (m.hasField(45)) {
                 setTrack1((String) m.getValue(45));
             }
+            if (m.hasField(55)) {
+                setSecurityCode (m.getString(55));
+            }
         } catch (ISOException e) {
             throw new InvalidCardException();
         }
