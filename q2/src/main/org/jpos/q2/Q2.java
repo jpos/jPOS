@@ -67,6 +67,7 @@ import javax.management.NotCompliantMBeanException;
 import javax.management.MBeanRegistrationException;
 import javax.management.MalformedObjectNameException;
 import javax.management.InstanceAlreadyExistsException;
+import javax.management.InstanceNotFoundException;
 import javax.management.MBeanServer;
 import javax.management.MBeanServerFactory;
 
@@ -178,6 +179,11 @@ public class Q2 implements FileFilter {
         }
         q2Thread = null;
         undeploy ();
+        try {
+            server.unregisterMBean (loaderName);
+        } catch (InstanceNotFoundException e) {
+            log.error (e);
+        }
         if (!shuttingDown)
             System.exit (0);
     }
