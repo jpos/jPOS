@@ -207,6 +207,7 @@ public class ISOCurrency
         put("PYG", "600", 0);
         put("QAR", "634", 2);
         put("ROL", "642", 2);
+        put("RON", "964", 2);
         put("RUB", "643", 2);
         put("RUR", "810", 2);
         put("RWF", "646", 0);
