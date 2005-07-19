@@ -384,7 +384,8 @@ public class ISOMsg extends ISOComponent
      * @return the field Object
      */
     public Object getValue(int fldno) throws ISOException {
-        return getComponent(fldno).getValue();
+        ISOComponent c = getComponent(fldno);
+        return c != null ? c.getValue() : null;
     }
     /**
      * Return the String value associated with the given ISOField number
