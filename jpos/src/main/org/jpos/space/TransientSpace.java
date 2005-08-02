@@ -300,14 +300,14 @@ public class TransientSpace implements LocalSpace, TransientSpaceMBean {
     }
 
     /**
-     * same as Space.rd (key)
+     * same as (String) Space.rdp (key)
      * @param key Key
      * @return value.toString()
      * @jmx:managed-operation description="Read value from key"
      * @jmx:managed-operation-parameter position="0" name="key" description="Space Key"
      */
     public String read (String key) {
-        Object o = inp (key);
+        Object o = rdp (key);
         return (o != null) ? o.toString() : "null";
     }
     public int size (Object key) {
