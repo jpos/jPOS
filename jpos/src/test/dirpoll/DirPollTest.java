@@ -60,6 +60,7 @@ public class DirPollTest extends TestCase {
         FileOutputStream fileOutputStream = new FileOutputStream(testIncomingFile);
         fileOutputStream.write(new String("test").getBytes());
         fileOutputStream.flush();
+        fileOutputStream.close();
         assertTrue(testIncomingFile.exists());
         
         while(!fileProcessed) {            
@@ -78,6 +79,7 @@ public class DirPollTest extends TestCase {
         FileOutputStream fileOutputStream = new FileOutputStream(testIncomingFile);
         fileOutputStream.write(new String("test").getBytes());
         fileOutputStream.flush();
+        fileOutputStream.close();
         assertTrue(testIncomingFile.exists());
         
         while(!fileProcessed) {            
@@ -98,6 +100,7 @@ public class DirPollTest extends TestCase {
         FileOutputStream fileOutputStream = new FileOutputStream(testIncomingFile);
         fileOutputStream.write(new String("test").getBytes());
         fileOutputStream.flush();
+        fileOutputStream.close();
         assertTrue(testIncomingFile.exists());
         
         while(!fileProcessed) {            
