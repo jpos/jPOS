@@ -125,6 +125,7 @@ public class Q2 implements FileFilter {
     private boolean shuttingDown;
     private Thread q2Thread;
     private String[] args;
+    private boolean hasSystemLogger;
 
     public Q2 (String[] args) {
         super();
@@ -415,6 +416,7 @@ public class Q2 implements FileFilter {
     private void initSystemLogger () {
         File loggerConfig = new File (deployDir, LOGGER_CONFIG);
         if (loggerConfig.canRead()) {
+            hasSystemLogger = true;
             try {
                 register (loggerConfig);
                 deploy ();
@@ -427,7 +429,7 @@ public class Q2 implements FileFilter {
     public Log getLog () {
         if (log == null) {
             Logger logger = Logger.getLogger (LOGGER_NAME);
-            if (!logger.hasListeners())
+            if (!hasSystemLogger && !logger.hasListeners())
                 logger.addListener (new SimpleLogListener (System.out));
             log = new Log (logger, REALM);
         }
