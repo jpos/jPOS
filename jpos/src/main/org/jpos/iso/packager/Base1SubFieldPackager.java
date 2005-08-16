@@ -123,7 +123,7 @@ public class Base1SubFieldPackager extends ISOBasePackager
                 m.set (bitmap);
                 maxField = bmap.size();
             }
-            for (int i=getFirstField(); i<maxField; i++) 
+            for (int i=getFirstField(); i<maxField && consumed < b.length; i++) 
             {
                 if (bmap == null || bmap.get(i)) 
                 {
