@@ -191,6 +191,7 @@ public class DirPoll extends SimpleLogSource
         setArchiveDateFormat (
             cfg.get ("archive.dateformat", "yyyyMMddHHmmss")
         );
+        setShouldTimestampArchive (cfg.getBoolean ("archive.timestamp", false));
     }
     /**
      * @param priorities blank separated list of extensions
