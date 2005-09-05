@@ -73,6 +73,7 @@ public abstract class BaseChannel extends Observable
     private String host;
     private int port, timeout;
     protected boolean usable;
+    protected boolean overrideHeader;
     private String name;
     // private int serverPort = -1;
     protected DataInputStream serverIn;
@@ -383,7 +384,7 @@ public abstract class BaseChannel extends Observable
     }
     protected void sendMessageLength(int len) throws IOException { }
     protected void sendMessageHeader(ISOMsg m, int len) throws IOException { 
-        if (m.getHeader() != null)
+        if (!overrideHeader && m.getHeader() != null)
             serverOut.write(m.getHeader());
         else if (header != null) 
             serverOut.write(header);
@@ -784,6 +785,7 @@ public abstract class BaseChannel extends Observable
                     ("invalid port for host '"+h+"'");
             setHost (h, port);
         }
+        overrideHeader = cfg.getBoolean ("override-header", false);
         if (socketFactory != this && socketFactory instanceof Configurable)
             ((Configurable)socketFactory).setConfiguration (cfg);
         try {
