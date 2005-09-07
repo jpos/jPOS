@@ -263,7 +263,7 @@
   <isofield
       id="44"
       length="25"
-      name="ADITIONAL RESPONSE DATA"
+      name="ADDITIONAL RESPONSE DATA"
       class="org.jpos.iso.IFB_LLHECHAR"/>
   <isofield
       id="45"
@@ -273,17 +273,17 @@
   <isofield
       id="46"
       length="99"
-      name="ADITIONAL DATA - ISO"
+      name="ADDITIONAL DATA - ISO"
       class="org.jpos.iso.IFB_LLHCHAR"/>
   <isofield
       id="47"
       length="99"
-      name="ADITIONAL DATA - NATIONAL"
+      name="ADDITIONAL DATA - NATIONAL"
       class="org.jpos.iso.IFB_LLHCHAR"/>
   <isofield
       id="48"
       length="99"
-      name="ADITIONAL DATA - PRIVATE"
+      name="ADDITIONAL DATA - PRIVATE"
       class="org.jpos.iso.IFB_LLHBINARY"/>
   <isofield
       id="49"
