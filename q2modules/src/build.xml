@@ -90,7 +90,10 @@
   </target>
 
   <target name="get-required">
-   <get src="file:../jpos/dist/jpos-1.4.9.jar" dest="lib/jpos-1.4.9.jar" />
+   <delete file="lib/jpos-1.4.7.jar" />
+   <delete file="lib/jpos-1.4.8.jar" />
+   <delete file="lib/jpos-1.4.9.jar" />
+   <get src="file:../jpos/dist/jpos-1.5.0.jar" dest="lib/jpos-1.5.0.jar" />
    <get src="file:../q2/dist/q2.jar" dest="lib/q2.jar" />
   </target>
 
