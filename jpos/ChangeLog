@@ -1,5 +1,7 @@
 $Id$
 
+-- 1.5.0 -- released Sep 2005 (tagged: v1_5_0)
+
 -- 1.4.9 -- 
 Added HEXChannel
 LogEvent new constructors (no need for LogSource), added toString()
