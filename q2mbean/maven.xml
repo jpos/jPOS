@@ -1,5 +1,0 @@
-<project>
-  <preGoal name="java:compile">
-    <attainGoal name="xdoclet:jmxdoclet"/>
-  </preGoal>
-</project>

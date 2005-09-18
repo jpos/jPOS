@@ -1,5 +1,0 @@
-INSTRUCTIONS:
-
-    1) cd to this file's location if you are not already there.
-    2) call bin/build dblog javadoc
-    3) READ the pdf in doc/
