@@ -66,7 +66,7 @@ public class DefaultTimer {
         if (defaultTimer == null) {
             synchronized (DefaultTimer.class) {
                 if (defaultTimer == null) 
-                    defaultTimer = new Timer();
+                    defaultTimer = new Timer(true);
             }
         }
         return defaultTimer;
