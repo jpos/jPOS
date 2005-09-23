@@ -67,7 +67,7 @@ import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 import org.jdom.JDOMException;
 import org.jpos.space.Space;
-import org.jpos.space.TransientSpace;
+import org.jpos.space.SpaceFactory;
 import org.jpos.iso.ISOUtil;
 import org.jpos.util.Loggeable;
 import org.jpos.iso.ISOException;
@@ -334,7 +334,7 @@ public class FSDMsg implements Loggeable {
         sb.append (".xml");
         String uri = sb.toString ();
 
-        Space sp = TransientSpace.getSpace();
+        Space sp = SpaceFactory.getSpace();
         Element schema = (Element) sp.rdp (uri);
         if (schema == null) {
             synchronized (FSDMsg.class) {
