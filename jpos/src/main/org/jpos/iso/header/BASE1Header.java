@@ -91,8 +91,7 @@ public class BASE1Header extends BaseHeader {
         super(header);
     }
     public int unpack(byte[] header) {
-        this.header = new byte[header.length];
-        System.arraycopy(header, 0, this.header, 0, header.length);
+        this.header = header;
         return header.length;
     }
     public int getHLen() {
