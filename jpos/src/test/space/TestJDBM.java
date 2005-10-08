@@ -15,13 +15,13 @@ public class TestJDBM extends TestCase {
     }
     public void testSimpleOut() throws Exception {
         Object o = new Boolean (true);
-        sp.out ("Key1", o);
-        Object o1 = sp.in ("Key1");
+        sp.out ("testSimpleOut_Key", o);
+        Object o1 = sp.in ("testSimpleOut_Key");
         assertTrue (o.equals (o1));
     }
     public void testOutRdpInpRdp() throws Exception {
         Object o = new Boolean (true);
-        String k = "key";
+        String k = "testOutRdpInpRdp_Key";
         sp.out (k, o);
         assertTrue (o.equals (sp.rdp (k)));
         assertTrue (o.equals (sp.rd  (k)));
@@ -34,14 +34,14 @@ public class TestJDBM extends TestCase {
         String s = "The quick brown fox jumped over the lazy dog";
         Profiler prof = new Profiler ();
         for (int i=0; i<COUNT; i++) {
-            sp.out ("Key" + Integer.toString (i), s);
+            sp.out ("testMultiKeyLoad_Key" + Integer.toString (i), s);
             if (i % 100 == 0)
                 prof.checkPoint ("out " + i);
         }
         prof.dump (System.out, "MultiKeyLoad out >");
         prof = new Profiler ();
         for (int i=0; i<COUNT; i++) {
-            assertTrue (s.equals (sp.in ("Key" + Integer.toString (i))));
+            assertTrue (s.equals (sp.in ("testMultiKeyLoad_Key" + Integer.toString (i))));
             if (i % 100 == 0)
                 prof.checkPoint ("in " + i);
         }
@@ -53,7 +53,7 @@ public class TestJDBM extends TestCase {
         synchronized (sp) {
             sp.setAutoCommit (false);
             for (int i=0; i<COUNT; i++) {
-                sp.out ("Key" + Integer.toString (i), s);
+                sp.out ("testNoAutoCommit_Key" + Integer.toString (i), s);
                 if (i % 100 == 0)
                     prof.checkPoint ("out " + i);
             }
@@ -67,7 +67,7 @@ public class TestJDBM extends TestCase {
         synchronized (sp) {
             sp.setAutoCommit (false);
             for (int i=0; i<COUNT; i++) {
-                assertTrue (s.equals (sp.in ("Key" + Integer.toString (i))));
+                assertTrue (s.equals (sp.in ("testNoAutoCommit_Key" + Integer.toString (i))));
                 if (i % 100 == 0)
                     prof.checkPoint ("in " + i);
             }
@@ -80,7 +80,7 @@ public class TestJDBM extends TestCase {
     }
     public void testSingleKeyLoad() throws Exception {
         String s = "The quick brown fox jumped over the lazy dog";
-        String k = "SingleKey";
+        String k = "testSingleKeyLoad_Key";
         Profiler prof = new Profiler ();
         for (int i=0; i<COUNT; i++) {
             sp.out (k, s);
@@ -98,7 +98,7 @@ public class TestJDBM extends TestCase {
         assertTrue (sp.rdp (k) == null);
     }
     public void testTemplate () throws Exception {
-        String key = "TemplateTest";
+        String key = "TemplateTest_Key";
         sp.out (key, "Value 1");
         sp.out (key, "Value 2");
         sp.out (key, "Value 3");

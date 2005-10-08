@@ -19,8 +19,8 @@
         public void testSimpleOut() throws Exception {
             Object o = new Boolean (true);
 
-            sp.out ("Key1", o);
-            Object o1 = sp.in ("Key1");
+            sp.out ("testSimpleOut_Key", o);
+            Object o1 = sp.in ("testSimpleOut_Key");
 
             assertTrue (o.equals (o1));
         }
@@ -29,7 +29,7 @@
         }
 
         public void testRenewReference () throws Exception {
-            final String KEY = "TestRenew";
+            final String KEY = "TestRenew_Key";
             LeasedReference ref = new LeasedReference ("TEST", 100);
             sp.out (KEY, ref);
             assertTrue (sp.rdp (KEY) != null);
@@ -44,24 +44,24 @@
         public void testLeasedReference () throws Exception {
             Object o = new Boolean (true);
 
-            sp.out ("Key1", new LeasedReference (o, 100));
-            Object o1 = sp.in ("Key1");
+            sp.out ("testLeasedReference_Key", new LeasedReference (o, 100));
+            Object o1 = sp.in ("testLeasedReference_Key");
             assertTrue (o.equals (o1));
 
-            sp.out ("Key1", new LeasedReference (o, 100));
-            o1 = sp.rdp ("Key1");
+            sp.out ("testLeasedReference_Key", new LeasedReference (o, 100));
+            o1 = sp.rdp ("testLeasedReference_Key");
             assertTrue (o1 != null);
             Thread.sleep (50);
-            o1 = sp.rdp ("Key1");
+            o1 = sp.rdp ("testLeasedReference_Key");
             assertTrue (o1 != null);
             Thread.sleep (200);
-            o1 = sp.rdp ("Key1");
+            o1 = sp.rdp ("testLeasedReference_Key");
             assertTrue (o1 == null);
         }
         public void testListener () throws Exception {
-            sp.addListener ("Key2", this);
-            sp.out ("Key2", "Test");
-            assertTrue (sp.inp ("Key2") == null);
+            sp.addListener ("testListener_Key", this);
+            sp.out ("testListener_Key", "Test");
+            assertTrue (sp.inp ("testListener_Key") == null);
             assertTrue ("Test".equals (rx));
         }
         public void testDefaultSpace () throws Exception {
