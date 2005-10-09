@@ -72,8 +72,8 @@ public class ChannelAdaptor
             ((FactoryChannel)channel).setSocketFactory(sFac);
         }
         ready   = getName() + ".ready";
-
         reconnect = getName() + ".reconnect";
+        NameRegistrar.register (getName(), this);
     }
     public void startService () {
         try {
@@ -94,6 +94,7 @@ public class ChannelAdaptor
         }
     }
     public void destroyService () {
+        NameRegistrar.unregister (getName ());
         NameRegistrar.unregister ("channel." + getName ());
     }
 
