@@ -94,7 +94,7 @@ public class IFB_BITMAP extends ISOBitMapPackager {
         BitSet bmap = ISOUtil.byte2BitSet (b, offset, getLength() > 8);
         c.setValue(bmap);
         len = (bmap.get(1) == true) ? 128 : 64; /* changed by Hani */
-        return (len >> 3);
+        return (Math.min (getLength(), len >> 3));
     }
     public void unpack (ISOComponent c, InputStream in) 
         throws IOException, ISOException
