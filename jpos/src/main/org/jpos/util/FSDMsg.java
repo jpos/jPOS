@@ -249,7 +249,7 @@ public class FSDMsg implements Loggeable {
         for (int i=0; i<len; i++) {
             if (is.read (b) < 0)
                 throw new EOFException ();
-            if (b[0] == FS) {
+            if (fs && b[0] == FS) {
                 fs = false;
                 break;
             }
@@ -269,7 +269,7 @@ public class FSDMsg implements Loggeable {
         if (binary)
             fieldValue = ISOUtil.hexString (fieldValue.getBytes ("ISO8859_1"));
         map.put (fieldName, fieldValue);
-        // System.out.println (fieldName + ":" + fieldValue);
+        // System.out.println (fieldName + ":" + fieldValue + " " + fs + "," + binary);
         return fieldValue;
     }
     public void set (String name, String value) {
