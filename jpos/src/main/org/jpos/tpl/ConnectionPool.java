@@ -190,7 +190,7 @@ public class ConnectionPool implements Runnable, LogSource, Configurable {
 
             if ((totalConnections() < maxConnections) && !connectionPending) {
                 makeBackgroundConnection();
-            } else if (!waitIfBusy) {
+            } else if (!waitIfBusy && !connectionPending) {
                 throw new SQLException("Connection limit reached");
             }
             // Wait for either a new connection to be established
