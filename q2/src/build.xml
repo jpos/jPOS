@@ -98,6 +98,7 @@
       <srcfiles dir="${buildsrc}" includes="org/jpos/q2/qbean/NameRegistrarInspector.java" />
       <srcfiles dir="${buildsrc}" includes="org/jpos/q2/qbean/SpaceProxyAdaptor.java" />
       <srcfiles dir="${buildsrc}" includes="org/jpos/q2/qbean/SpaceAdaptor.java" />
+      <srcfiles dir="${buildsrc}" includes="org/jpos/q2/qbean/SystemMonitor.java" />
       <mapper type="glob" from="*.java" to="*MBean.java"/>
     </uptodate>
   </target>
@@ -115,6 +116,7 @@
         <include name="org/jpos/q2/qbean/NameRegistrarInspector.java" />
         <include name="org/jpos/q2/qbean/SpaceProxyAdaptor.java" />
         <include name="org/jpos/q2/qbean/SpaceAdaptor.java" />
+        <include name="org/jpos/q2/qbean/SystemMonitor.java" />
       </fileset>
       <mbeaninterface/>
       <mx4jdescription/>
