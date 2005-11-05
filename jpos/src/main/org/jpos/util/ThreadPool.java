@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000 jPOS.org.  All rights reserved.
+ * Copyright (c) 2005 jPOS.org.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -134,12 +134,12 @@ public class ThreadPool extends ThreadGroup implements LogSource, Loggeable, Con
      */
     public ThreadPool (int poolSize, int maxPoolSize, String name) {
         super (name + "-" + poolNumber++);
-        this.maxPoolSize = maxPoolSize;
+        this.maxPoolSize = maxPoolSize > 0 ? maxPoolSize : DEFAULT_MAX_THREADS ;
         init (poolSize);
     }
     
     private void init(int poolSize){
-        while (activeCount() < Math.min (poolSize, maxPoolSize))
+        while (activeCount() < Math.min (poolSize > 0 ? poolSize : 1, maxPoolSize))
             new PooledThread().start();
     }
     /**
@@ -156,7 +156,7 @@ public class ThreadPool extends ThreadGroup implements LogSource, Loggeable, Con
         if (!pool.ready())
             throw new Closed();
 
-        if (++jobs % 100 == 0 || pool.consumerCount() <= 0)
+        if (++jobs % this.maxPoolSize == 0 || pool.consumerCount() <= 0)
             supervise();
 
         synchronized (pool) {
