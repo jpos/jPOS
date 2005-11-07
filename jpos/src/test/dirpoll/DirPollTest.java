@@ -31,7 +31,6 @@ public class DirPollTest extends TestCase {
         dirPoll.setPath(BASE_PATH);
         dirPoll.setProcessor(new DirPoll.FileProcessor() {
             public void process(File name) throws DirPollException { 
-                System.out.println ("File processed " + name.toString());
                 fileProcessed = true;
             }
         });
@@ -66,7 +65,6 @@ public class DirPollTest extends TestCase {
         while(!fileProcessed) {            
             Thread.yield();
         }
-        System.out.println ("");
         Thread.sleep(200);
         File archiveDirectory = new File(ARCHIVE_DIR);        
         assertEquals(1, archiveDirectory.listFiles().length);
