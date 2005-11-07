@@ -69,14 +69,19 @@ import org.jpos.util.NameRegistrar;
 public class SystemMonitor extends QBeanSupport implements Runnable,
         SystemMonitorMBean, Loggeable {
 
-    private long sleepTime = 30000;
+    private long sleepTime = 60 * 60 * 1000;
 
     private long delay = 0;
+
+    private boolean detailRequired = false;
+
+    private Thread me = null;
 
     public void startService() {
         try {
             log.info("Starting SystemMonitor");
-            new Thread(this).start();
+            me = new Thread(this);
+            me.start();
         } catch (Exception e) {
             log.warn("error starting service", e);
         }
@@ -84,6 +89,8 @@ public class SystemMonitor extends QBeanSupport implements Runnable,
 
     public void stopService() {
         log.info("Stopping SystemMonitor");
+        if (me != null)
+            me.interrupt();
     }
 
     /**
@@ -92,6 +99,8 @@ public class SystemMonitor extends QBeanSupport implements Runnable,
     public synchronized void setSleepTime(long sleepTime) {
         this.sleepTime = sleepTime;
         setModified(true);
+        if (me != null)
+            me.interrupt();
     }
 
     /**
@@ -99,6 +108,23 @@ public class SystemMonitor extends QBeanSupport implements Runnable,
      */
     public synchronized long getSleepTime() {
         return sleepTime;
+    }
+
+    /**
+     * @jmx:managed-attribute description="Detail required?"
+     */
+    public synchronized void setDetailRequired(boolean detail) {
+        this.detailRequired = detail;
+        setModified(true);
+        if (me != null)
+            me.interrupt();
+    }
+
+    /**
+     * @jmx:managed-attribute description="Detail required?"
+     */
+    public synchronized boolean getDetailRequired() {
+        return detailRequired;
     }
 
     void dumpThreads(ThreadGroup g, PrintStream p, String indent) {
@@ -141,7 +167,7 @@ public class SystemMonitor extends QBeanSupport implements Runnable,
         p.println(newIndent + "    threads=" + Thread.activeCount());
         showThreadGroup(Thread.currentThread().getThreadGroup(), p, newIndent);
         p.println(indent + "</threads>");
-        NameRegistrar.getInstance().dump(p, indent);
+        NameRegistrar.getInstance().dump(p, indent, detailRequired);
     }
 
 }
