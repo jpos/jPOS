@@ -91,9 +91,11 @@ public class BSHFilter implements ISOFilter, ReConfigurable {
                 bsh.set ("message", m);
                 bsh.set ("evt", evt);
                 bsh.set ("cfg", cfg);
-                bsh.source (source[i]);
-
-                m = (ISOMsg) bsh.get ("message");
+                Object r = bsh.source (source[i]);
+                if (r instanceof ISOMsg)
+                    m = (ISOMsg) r;
+                else
+                    m = (ISOMsg) bsh.get ("message");
             }catch (Exception e) {
                 if(e instanceof VetoException) throw (VetoException)e;
                 else evt.addMessage (e);
