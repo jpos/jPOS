@@ -6,6 +6,7 @@
  */
 package org.jpos.space;
 
+import java.io.PrintStream;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.Set;
 import java.util.HashMap;
 import java.util.TimerTask;
 import org.jpos.util.DefaultTimer;
+import org.jpos.util.Loggeable;
 
 /**
  * TSpace implementation
@@ -21,7 +23,7 @@ import org.jpos.util.DefaultTimer;
  * @version $Revision$ $Date$
  * @since !.4.9
  */
-public class TSpace extends TimerTask implements LocalSpace {
+public class TSpace extends TimerTask implements LocalSpace, Loggeable {
     protected Map entries;
     protected TSpace sl;    // space listeners
     public static final long GCDELAY = 60*1000;
@@ -163,6 +165,20 @@ public class TSpace extends TimerTask implements LocalSpace {
             sb.append (keys[i]);
         }
         return sb.toString();
+    }
+    public void dump(PrintStream p, String indent) {
+        Object[] keys;
+        synchronized (this) {
+            keys = entries.keySet().toArray();
+        }
+        if (keys.length >1){
+            for (int i=0; i<keys.length; i++) {
+                if (i > 0)
+                    p.println(indent+"<key>"+keys[i]+"</key>");
+            }
+            p.println(indent+"<keycount>"+(keys.length-1)+"</keycount>");
+        }
+
     }
     public void notifyListeners (Object key, Object value) {
         Object[] listeners = null;
