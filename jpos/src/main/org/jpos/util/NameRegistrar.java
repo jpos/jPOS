@@ -111,6 +111,9 @@ public class NameRegistrar implements Loggeable {
     }
 
     public void dump (PrintStream p, String indent) {
+        dump(p,indent,false);
+    }
+    public void dump (PrintStream p, String indent, boolean detail) {
         String inner = indent + "  ";
         p.println (indent + "<name-registrar>");
         Iterator iter = registrar.entrySet().iterator();
@@ -119,9 +122,15 @@ public class NameRegistrar implements Loggeable {
             p.println (inner + 
                 "<name>" + entry.getKey().toString() + "</name>"
             );
+            Object obj = entry.getValue();
             p.println (inner + 
-                "<class>" + entry.getValue().getClass().getName()+ "</class>"
+                "<class>" + obj.getClass().getName()+ "</class>"
             );
+            if ((detail == true) && (obj instanceof Loggeable)) {
+                p.println(inner + "  <detail>");
+                ((Loggeable)obj).dump(p, inner+"    ");
+                p.println(inner + "  </detail>");
+            }
         }
         p.println (indent + "</name-registrar>");
     }
