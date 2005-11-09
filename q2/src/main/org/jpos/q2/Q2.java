@@ -126,6 +126,7 @@ public class Q2 implements FileFilter {
     private Thread q2Thread;
     private String[] args;
     private boolean hasSystemLogger;
+    private boolean exit;
 
     public Q2 (String[] args) {
         super();
@@ -185,7 +186,7 @@ public class Q2 implements FileFilter {
         } catch (InstanceNotFoundException e) {
             log.error (e);
         }
-        if (!shuttingDown)
+        if (exit && !shuttingDown)
             System.exit (0);
     }
     public void shutdown () {
@@ -566,10 +567,17 @@ public class Q2 implements FileFilter {
         f.renameTo(rename);
     }
 
-    public static void main (String[] args) throws Exception {
-        new Q2 (args).start ();
+    private void setExit (boolean exit) {
+        this.exit = exit;
     }
-
+    private boolean isExit () {
+        return exit;
+    }
+    public static void main (String[] args) throws Exception {
+        Q2 q2 = new Q2(args);
+        q2.setExit (true);
+        q2.start();
+    }
     public class QEntry {
         long deployed;
         ObjectInstance instance;
