@@ -9,6 +9,8 @@ import org.jdom.Element;
 
 public class Exit implements ActionListener, UIAware {
     public UI ui;
+    public int exitCode = 0;
+
     public Exit () {
         super();
     }
@@ -17,9 +19,12 @@ public class Exit implements ActionListener, UIAware {
     }
     public void actionPerformed (ActionEvent ev) {
         ui.dispose ();
+        try {
+            exitCode = Integer.parseInt(ev.getActionCommand());
+        } catch (Exception e) { }
         new Thread() {
             public void run() {
-                System.exit (0);
+                System.exit (exitCode);
             }
         }.start();
     }
