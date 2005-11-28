@@ -413,7 +413,7 @@ public abstract class BaseChannel extends Observable
     protected void sendMessage (byte[] b, int offset, int len) 
         throws IOException
     {
-        serverOut.write(b, 0, b.length);
+        serverOut.write(b, offset, len);
     }
     /**
      * sends an ISOMsg over the TCP/IP session
