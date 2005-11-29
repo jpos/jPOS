@@ -97,10 +97,14 @@ public class QMUX
         ready     = e.getChildTextTrim ("ready");
         addListeners ();
         unhandled = e.getChildTextTrim ("unhandled");
-    }
-    public void startService () {
         sp.addListener (in, this);
         NameRegistrar.register ("mux."+getName (), this);
+    }
+    public void startService () {
+        if (getState() == STOPPED) {
+            sp.addListener (in, this);
+            NameRegistrar.register ("mux."+getName (), this);
+        }
     }
     public void stopService () {
         NameRegistrar.unregister ("mux."+getName ());
