@@ -1144,14 +1144,17 @@ public class ISOUtil {
      * @return trimmed string
      */
     public static String trimf (String s) {
-        int l = s.length();
-        if (s == null || l == 0)
-            return s;
-        while (--l >= 0) {
-            if (s.charAt (l) != 'F')
-                break;
+        if (s != null) {
+            int l = s.length();
+            if (l > 0) {
+                while (--l >= 0) {
+                    if (s.charAt (l) != 'F')
+                        break;
+                }
+                s = l == 0 ? "" : s.substring (0, l+1);
+            }
         }
-        return l == 0 ? "" : s.substring (0, l+1);
+        return s;
     }
 }
 
