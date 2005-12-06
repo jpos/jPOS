@@ -70,7 +70,7 @@ public class IF_NOP extends ISOFieldPackager {
      * @exception ISOException
      */
     public byte[] pack (ISOComponent c) {
-        return null;
+        return new byte[0];
     }
     /**
      * @param c - the Component to unpack
