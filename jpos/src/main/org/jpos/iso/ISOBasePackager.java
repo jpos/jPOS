@@ -54,7 +54,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.BitSet;
 import java.util.Hashtable;
-import java.util.Vector;
+import java.util.ArrayList;
 
 import org.jpos.util.LogEvent;
 import org.jpos.util.LogSource;
@@ -105,7 +105,7 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
                 throw new ISOException ("Can't call packager on non Composite");
 
             ISOComponent c;
-            Vector v = new Vector();
+            ArrayList v = new ArrayList(128);
             Hashtable fields = m.getChildren();
             int len = 0;
             int first = getFirstField();
@@ -116,7 +116,7 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
             if (first > 0 && c != null) {
                 b = fld[0].pack(c);
                 len += b.length;
-                v.addElement (b);
+                v.add (b);
             }
 
             if (emitBitMap()) {
@@ -124,7 +124,7 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
                 c = (ISOComponent) fields.get (new Integer (-1));
                 b = getBitMapfieldPackager().pack(c);
                 len += b.length;
-                v.addElement (b);
+                v.add (b);
             }
 
             // if Field 1 is a BitMap then we are packing an
@@ -141,7 +141,7 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
                             throw new ISOException ("null field packager");
                         b = fp.pack(c);
                         len += b.length;
-                        v.addElement (b);
+                        v.add (b);
                     } catch (ISOException e) {
                         evt.addMessage ("error packing field "+i);
                         evt.addMessage (c);
@@ -159,7 +159,7 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
                         try {
                             b = fld[i+128].pack(c);
                             len += b.length;
-                            v.addElement (b);
+                            v.add (b);
                         } catch (ISOException e) {
                             evt.addMessage ("error packing field "+(i+128));
                             evt.addMessage (c);
@@ -173,7 +173,7 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
             int k = 0;
             byte[] d = new byte[len];
             for (int i=0; i<v.size(); i++) {
-                b = (byte[]) v.elementAt(i);
+                b = (byte[]) v.get(i);
                 for (int j=0; j<b.length; j++)
                     d[k++] = b[j];
             }
