@@ -49,6 +49,7 @@
 
 package org.jpos.iso.packager;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
 
 import org.jpos.iso.ISOBasePackager;
@@ -87,29 +88,36 @@ public class EuroSubFieldPackager extends ISOBasePackager
         return false;
     }
 
-    public byte[] pack (ISOComponent c) throws ISOException
-    {
-        try
-        {
-            int len;
+    public byte[] pack (ISOComponent c) throws ISOException {
+        try {
+            int len =0;
             Hashtable tab = c.getChildren();
-            StringBuffer sb = new StringBuffer();
+            ArrayList l = new ArrayList();
 
             // Handle first IF_CHAR field
             ISOField f0 = (ISOField) tab.get (new Integer(0));
             if (f0 != null) {
                 String s = (String) f0.getValue();
-                sb.append (s);
+                len += s.length();
+                l.add (s.getBytes());
             }
-            for (int i =1; i<fld.length; i++) 
-            {
+            for (int i =1; i<fld.length; i++) {
                 Object obj = tab.get (new Integer(i));
                 if (obj instanceof ISOField) {
                     ISOField f = (ISOField) obj;
-                    sb.append (new String(fld[i].pack(f)));
+                    byte[] b = fld[i].pack(f);
+                    len += b.length;
+                    l.add (b);
                 } 
             }
-            return sb.toString().getBytes();
+            int k=0;
+            byte[] d = new byte[len];
+            for (int i=0; i<l.size(); i++) {
+                byte[] b = (byte[]) l.get(i);
+                for (int j=0; j<b.length; j++)
+                    d[k++] = b[j];
+            }
+            return d;
         }
         catch (Exception ex)
         {
