@@ -780,6 +780,11 @@
           length="8000"
           name="ICC DATA"
           class="org.jpos.iso.IFA_LLLLCHAR"/>
+      <isofield
+          id="26"
+          length="20"
+          name="ORIGINAL NODE"
+          class="org.jpos.iso.IFA_LLCHAR" />
   </isofieldpackager>
 
   <isofield
