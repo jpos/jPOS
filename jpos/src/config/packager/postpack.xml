@@ -272,7 +272,7 @@
       id="52"
       length="8"
       name="PIN DATA"
-      class="org.jpos.iso.IFA_BINARY"/>
+      class="org.jpos.iso.IFB_BINARY"/>
   <isofield
       id="53"
       length="16"
@@ -784,7 +784,7 @@
           id="26"
           length="20"
           name="ORIGINAL NODE"
-          class="org.jpos.iso.IFA_LLCHAR" />
+          class="org.jpos.iso.IFA_LLCHAR"/>
   </isofieldpackager>
 
   <isofield
@@ -792,5 +792,5 @@
       length="999"
       name="MAC 2"
       class="org.jpos.iso.IFA_LLLCHAR"/>
-
 </isopackager>
+

@@ -51,8 +51,9 @@ package org.jpos.iso.packager;
 
 import org.jpos.iso.IFA_AMOUNT;
 import org.jpos.iso.IFA_BINARY;
+import org.jpos.iso.IFB_BINARY;
 import org.jpos.iso.IFA_LLCHAR;
-import org.jpos.iso.IFA_LLLBINARY;
+import org.jpos.iso.IFA_LLLLLLBINARY;
 import org.jpos.iso.IFA_LLLCHAR;
 import org.jpos.iso.IFA_LLLLCHAR;
 import org.jpos.iso.IFA_LLLLLCHAR;
@@ -67,6 +68,9 @@ import org.jpos.util.Logger;
 
 /*
  * $Log$
+ * Revision 1.6  2005/12/19 22:47:50  apr
+ * Applied changes suggested by Mladen in http://groups-beta.google.com/group/jpos-users/browse_thread/thread/e60807e917c8c170/e29a681592d63a2b#e29a681592d63a2b and confirmed by Murtuza and Jeff
+ *
  * Revision 1.5  2003/10/13 10:34:16  apr
  * Tabs expanded to 8 spaces
  *
@@ -164,7 +168,7 @@ public class PostPackager extends ISOBasePackager {
             new IF_CHAR     (  3, "CURRENCY CODE, TRANSACTION"),
             new IF_CHAR     (  3, "CURRENCY CODE, SETTLEMENT"),
             new IF_CHAR     (  3, "CURRENCY CODE, CARDHOLDER BILLING"   ),
-            new IFA_BINARY  (  8, "PIN DATA"   ),
+            new IFB_BINARY  (  8, "PIN DATA"   ),
             new IFA_NUMERIC ( 16, "SECURITY RELATED CONTROL INFORMATION"),
             new IFA_LLLCHAR (120, "ADDITIONAL AMOUNTS"),
             new IFA_LLLCHAR (999, "RESERVED ISO"),
@@ -240,7 +244,7 @@ public class PostPackager extends ISOBasePackager {
             new IFA_LLLCHAR (999, "RESERVED PRIVATE USE"),
             new IFA_LLLCHAR (999, "RESERVED PRIVATE USE"),
             new ISOMsgFieldPackager(
-                new IFA_LLLBINARY   (999, "RESERVED PRIVATE USE"),
+                new IFA_LLLLLLBINARY (999, "RESERVED PRIVATE USE"),
                 p127
             ),
             new IFA_LLLCHAR (999, "MAC 2")
