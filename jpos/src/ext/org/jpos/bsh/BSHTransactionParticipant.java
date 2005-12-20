@@ -148,6 +148,7 @@ public class BSHTransactionParticipant extends SimpleLogSource
         params.put("context", context);
         params.put("id", new Long(id));
         params.put("evt", evt);
+        params.put("self", this);
         return m.execute(params, resultName);
     }
 }
