@@ -18,6 +18,7 @@ import java.util.Map;
 import org.jdom.Element;
 import org.jpos.core.XmlConfigurable;
 import org.jpos.core.ConfigurationException;
+import org.jpos.transaction.AbortParticipant;
 import org.jpos.transaction.TransactionParticipant;
 import org.jpos.util.Log;
 import org.jpos.util.LogEvent;
@@ -41,14 +42,20 @@ import org.jpos.util.SimpleLogSource;
  * @see BSHMethod
  * @author  AMarques
  */
-public class BSHTransactionParticipant extends SimpleLogSource implements TransactionParticipant, XmlConfigurable {
+public class BSHTransactionParticipant extends SimpleLogSource 
+    implements TransactionParticipant, AbortParticipant, XmlConfigurable 
+{
     
     protected BSHMethod prepareMethod;
+    protected BSHMethod prepareForAbortMethod;
     protected BSHMethod commitMethod;
     protected BSHMethod abortMethod;
+
+    boolean trace;
     
     /** Creates a new instance of BSHTransactionParticipant */
     public BSHTransactionParticipant() {
+        super();
     }
     
     public void abort(long id, java.io.Serializable context) {
@@ -62,7 +69,8 @@ public class BSHTransactionParticipant extends SimpleLogSource implements Transa
         } else {
             defaultAbort(id, context, ev);
         }
-        Logger.log(ev);
+        if (trace)
+            Logger.log(ev);
     }
     
     protected void defaultAbort(long id, Serializable context, LogEvent ev) {}
@@ -78,7 +86,8 @@ public class BSHTransactionParticipant extends SimpleLogSource implements Transa
         } else {
             defaultCommit(id, context, ev);
         }
-        Logger.log(ev);
+        if (trace)
+            Logger.log(ev);
     }
     
     protected void defaultCommit(long id, Serializable context, LogEvent ev) {}
@@ -96,7 +105,24 @@ public class BSHTransactionParticipant extends SimpleLogSource implements Transa
             result = defaultPrepare(id, context, ev);
         }
         ev.addMessage("result", Integer.toBinaryString(result));
-        Logger.log(ev);
+        if (trace)
+            Logger.log(ev);
+        return result;
+    }
+
+    public int prepareForAbort(long id, java.io.Serializable context) {
+        LogEvent ev = new LogEvent(this, "prepare-for-abort");
+        int result = ABORTED | READONLY;
+        if (prepareForAbortMethod != null) {
+            try {
+                result = ((Integer) executeMethod(prepareForAbortMethod, id, context, ev, "result")).intValue();
+            } catch (Exception ex) {
+                ev.addMessage(ex);
+            }
+        } 
+        ev.addMessage("result", Integer.toBinaryString(result));
+        if (trace)
+            Logger.log(ev);
         return result;
     }
     
@@ -107,8 +133,10 @@ public class BSHTransactionParticipant extends SimpleLogSource implements Transa
     public void setConfiguration(Element e) throws ConfigurationException {
 	try {
             prepareMethod = BSHMethod.createBshMethod(e.getChild("prepare"));
+            prepareForAbortMethod = BSHMethod.createBshMethod(e.getChild("prepare-for-abort"));
             commitMethod = BSHMethod.createBshMethod(e.getChild("commit"));
             abortMethod = BSHMethod.createBshMethod(e.getChild("abort"));
+            trace = "yes".equals (e.getAttributeValue ("trace"));
         } catch (Exception ex) {
             throw new ConfigurationException(ex.getMessage(), ex);
         }
@@ -122,5 +150,5 @@ public class BSHTransactionParticipant extends SimpleLogSource implements Transa
         params.put("evt", evt);
         return m.execute(params, resultName);
     }
-          
 }
+
