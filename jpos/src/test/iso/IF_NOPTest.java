@@ -51,7 +51,7 @@ public class IF_NOPTest extends TestCase
     {
         ISOField field = new ISOField(12, "ABCD");
         IF_NOP packager = new IF_NOP();
-        assertNull(packager.pack(field));
+        assertTrue(packager.pack(field).length == 0);
     }
 
     public void testUnpack() throws Exception
