@@ -224,7 +224,13 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
                 
             for (int i=getFirstField(); i<maxField; i++) {
                 try {
-                    if ((bmap == null || bmap.get(i)) && fld[i] != null) {
+                    if (bmap == null && fld[i] == null)
+                        continue;
+
+                    if (bmap == null || bmap.get(i)) {
+                        if (fld[i] == null)
+                            throw new ISOException ("field package '" + i + "' is null");
+
                         ISOComponent c = fld[i].createComponent(i);
                         consumed += fld[i].unpack (c, b, consumed);
                         if (logger != null) {
@@ -324,7 +330,13 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
             }
                 
             for (int i=getFirstField(); i<maxField; i++) {
-                if ((bmap == null || bmap.get(i)) && fld[i] != null) {
+                if (bmap == null && fld[i] == null)
+                    continue;
+
+                if (bmap == null || bmap.get(i)) {
+                    if (fld[i] == null)
+                        throw new ISOException ("field package '" + i + "' is null");
+
                     ISOComponent c = fld[i].createComponent(i);
                     fld[i].unpack (c, in);
                     if (logger != null) {
