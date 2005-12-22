@@ -334,4 +334,8 @@ public class SunJSSESocketFactory
         serverAuthNeeded = cfg.getBoolean("serverauth");
         serverName = cfg.get("servername");
     }
+    public Configuration getConfiguration() {
+        return cfg;
+    }
 }
+
