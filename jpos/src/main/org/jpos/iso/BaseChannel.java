@@ -15,6 +15,7 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.net.ConnectException;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.InetSocketAddress;
 import java.net.Socket;
@@ -70,8 +71,8 @@ public abstract class BaseChannel extends Observable
                LogSource, ReConfigurable, BaseChannelMBean
 {
     private Socket socket;
-    private String host;
-    private int port, timeout;
+    private String host, localIface;
+    private int port, timeout, localPort;
     protected boolean usable;
     protected boolean overrideHeader;
     private String name;
@@ -150,6 +151,18 @@ public abstract class BaseChannel extends Observable
         this.host = host;
         this.port = port;
     }
+    
+    /**
+     * initialize an ISOChannel
+     * @param host  server TCP Address
+     * @param port  server port number
+     */
+    public void setLocalAddress (String iface, int port) {
+        this.localIface = iface;
+        this.localPort = port;
+    }
+    
+
     /**
      * @param host to connect (client ISOChannel)
      */
@@ -262,8 +275,13 @@ public abstract class BaseChannel extends Observable
                         timeout
                     );
                     return s;
-                } else {
+                } else if (localIface == null && localPort == 0){
                     return new Socket(host,port);
+                } else {
+                    InetAddress addr = (localIface == null) ?
+                        InetAddress.getLocalHost() : 
+                        InetAddress.getByName(localIface);
+                    return new Socket(host, port, addr, localPort);
                 }
             }
         } catch (ISOException e) {
@@ -768,6 +786,8 @@ public abstract class BaseChannel extends Observable
     * <ul>
     * <li>host - destination host (if ClientChannel)
     * <li>port - port number      (if ClientChannel)
+    * <li>local-iface - local interfase to use (if ClientChannel)
+    * <li>local-port - local port to bind (if ClientChannel)
     * </ul>
     * (host not present indicates a ServerChannel)
     *
@@ -784,6 +804,7 @@ public abstract class BaseChannel extends Observable
                 throw new ConfigurationException 
                     ("invalid port for host '"+h+"'");
             setHost (h, port);
+            setLocalAddress (cfg.get("local-iface"),cfg.getInt("local-port"));
         }
         overrideHeader = cfg.getBoolean ("override-header", false);
         if (socketFactory != this && socketFactory instanceof Configurable)
