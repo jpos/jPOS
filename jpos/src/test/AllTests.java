@@ -77,8 +77,9 @@ public class AllTests {
         suite.addTestSuite (space.TestPersistent.class);
         suite.addTestSuite (space.TestJDBM.class);
         suite.addTestSuite (space.TestTiny.class);
-        suite.addTestSuite (misc.ISOCurrencyTest.class);
         suite.addTestSuite (tlv.TestTLVMsg.class);
+        suite.addTestSuite (misc.ISOCurrencyTest.class);
+        suite.addTestSuite (misc.ISODateTest.class);
         return suite;
     }
     public static Logger getLogger() {

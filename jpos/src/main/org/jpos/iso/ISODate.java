@@ -67,11 +67,12 @@ import java.util.TimeZone;
  * @see ISOUtil
  */
 public class ISODate {
-        /**
-         * Formats a date object, using the default time zone for this host
-         * @param d date object to be formatted
-         * @param pattern to be used for formatting
-         */
+    public static final long ONE_YEAR = 365*86400*1000;
+   /**
+    * Formats a date object, using the default time zone for this host
+    * @param d date object to be formatted
+    * @param pattern to be used for formatting
+    */
     public static String formatDate (Date d, String pattern) {
         return formatDate(d, pattern, TimeZone.getDefault());
     }
@@ -151,9 +152,21 @@ public class ISODate {
      * try to find out suitable date given [YY[YY]]MMDDhhmmss format<br>
      * (difficult thing being finding out appropiate year)
      * @param d date formated as [YY[YY]]MMDDhhmmss, typical field 13 + field 12
+     * @param currentTime currentTime in millis
      * @return Date
      */
     public static Date parseISODate (String d) {
+        return parseISODate (d, System.currentTimeMillis());
+    }
+
+    /**
+     * try to find out suitable date given [YY[YY]]MMDDhhmmss format<br>
+     * (difficult thing being finding out appropiate year)
+     * @param d date formated as [YY[YY]]MMDDhhmmss, typical field 13 + field 12
+     * @param currentTime currentTime in millis
+     * @return Date
+     */
+    public static Date parseISODate (String d, long currentTime) {
         int YY = 0;
         if (d.length() == 14) {
             YY = Integer.parseInt(d.substring (0, 4));
@@ -170,7 +183,7 @@ public class ISODate {
         int ss = Integer.parseInt(d.substring (8,10));
 
         Calendar cal = new GregorianCalendar();
-        Date now = new Date();
+        Date now = new Date(currentTime);
 
         cal.setTime (now);
         cal.set (Calendar.MONTH, MM);
@@ -188,10 +201,17 @@ public class ISODate {
             Date thisYear = cal.getTime();
             cal.set (Calendar.YEAR, cal.get (Calendar.YEAR)-1);
             Date previousYear = cal.getTime();
-
+            cal.set (Calendar.YEAR, cal.get (Calendar.YEAR)+2);
+            Date nextYear = cal.getTime();
             if (Math.abs (now.getTime() - previousYear.getTime()) <
-                Math.abs (now.getTime() - thisYear.getTime()) )
+                Math.abs (now.getTime() - thisYear.getTime())) 
+            {
                 thisYear = previousYear;
+            } else if (Math.abs (now.getTime() - thisYear.getTime()) >
+                       Math.abs (now.getTime() - nextYear.getTime()))
+            {
+                thisYear = nextYear;
+            }
             return thisYear;
         }
     }
