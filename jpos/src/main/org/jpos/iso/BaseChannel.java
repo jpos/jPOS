@@ -804,7 +804,7 @@ public abstract class BaseChannel extends Observable
                 throw new ConfigurationException 
                     ("invalid port for host '"+h+"'");
             setHost (h, port);
-            setLocalAddress (cfg.get("local-iface"),cfg.getInt("local-port"));
+            setLocalAddress (cfg.get("local-iface", null),cfg.getInt("local-port"));
         }
         overrideHeader = cfg.getBoolean ("override-header", false);
         if (socketFactory != this && socketFactory instanceof Configurable)
