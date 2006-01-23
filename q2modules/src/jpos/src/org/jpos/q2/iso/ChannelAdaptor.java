@@ -246,6 +246,8 @@ public class ChannelAdaptor
                     Object o = sp.in (in, delay);
                     if (o instanceof ISOMsg)
                         channel.send ((ISOMsg) o);
+                } catch (ISOFilter.VetoException e) { 
+                    getLog().warn ("channel-sender-"+in, e.getMessage ());
                 } catch (Exception e) { 
                     getLog().warn ("channel-sender-"+in, e.getMessage ());
                     disconnect ();
