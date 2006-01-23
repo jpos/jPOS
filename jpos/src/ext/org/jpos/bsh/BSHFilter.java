@@ -40,7 +40,6 @@
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING 
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
  * POSSIBILITY OF SUCH DAMAGE.
- * ====================================================================
  *
  * This software consists of voluntary contributions made by many
  * individuals on behalf of the jPOS Project.  For more
@@ -49,6 +48,7 @@
 
 package org.jpos.bsh;
 
+import bsh.TargetError;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
 import org.jpos.core.ReConfigurable;
@@ -96,6 +96,9 @@ public class BSHFilter implements ISOFilter, ReConfigurable {
                     m = (ISOMsg) r;
                 else
                     m = (ISOMsg) bsh.get ("message");
+            }catch (TargetError e){
+               if(e.getTarget() instanceof VetoException)
+                   throw (VetoException)e.getTarget();
             }catch (Exception e) {
                 if(e instanceof VetoException) throw (VetoException)e;
                 else evt.addMessage (e);
