@@ -31,7 +31,23 @@ public class TLVList {
      * @param buf - raw message
      */
     public void unpack(byte[] buf) throws ISOException {
-        ByteBuffer buffer=ByteBuffer.wrap(buf);
+        unpack(ByteBuffer.wrap(buf));
+    }
+    
+    /**
+     * unpack a message from an offset
+     * @param buf - raw message
+     * @param offset - offset into buffer to start.
+     */
+    public void unpack(byte[] buf, int offset) throws ISOException {
+        unpack(ByteBuffer.wrap(buf,offset,buf.length-offset));
+    }
+    
+    /**
+     * unpack a message from a ByteBuffer
+     * @param buffer - a byte buffer
+     */
+    public void unpack(ByteBuffer buffer) throws ISOException {
         TLVMsg currentNode;
         while (hasNext(buffer)) {    
             currentNode = getTLVMsg(buffer);
