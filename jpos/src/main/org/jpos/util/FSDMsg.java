@@ -348,19 +348,28 @@ public class FSDMsg implements Loggeable {
         } 
         return schema;
     }
-    public void dump (PrintStream p, String indent) {
-        try {
-            XMLOutputter out = new XMLOutputter (Format.getPrettyFormat());
-            out.output (toXML(), p);
-        } catch (IOException e) {
-            e.printStackTrace (p);
-        }
-    }
     /**
      * @return message's Map
      */
     public Map getMap () {
         return map;
+    }
+    public void dump (PrintStream p, String indent) {
+        String inner = indent + "  ";
+        p.println (indent + "<fsdmsg schema='" + basePath + baseSchema  + "'>");
+        if (header != null) {
+            append (p, "header", getHexHeader(), inner);
+        }
+        Iterator iter = map.keySet().iterator();
+        while (iter.hasNext()) {
+            String f = (String) iter.next();
+            String v = ((String) map.get (f));
+            append (p, f, v, inner);
+        }
+        p.println (indent + "</fsdmsg>");
+    }
+    private void append (PrintStream p, String f, String v, String indent) {
+        p.println (indent + f + ": '" + v + "'");
     }
 }
 
