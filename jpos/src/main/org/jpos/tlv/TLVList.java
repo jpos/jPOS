@@ -6,7 +6,9 @@
  */
 package org.jpos.tlv;
 import java.nio.ByteBuffer;
+import java.util.Enumeration;
 import java.util.Vector;
+
 import org.jpos.iso.ISOException;
 
 /**
@@ -31,23 +33,27 @@ public class TLVList {
      * @param buf - raw message
      */
     public void unpack(byte[] buf) throws ISOException {
-        unpack(ByteBuffer.wrap(buf));
+        ByteBuffer buffer=ByteBuffer.wrap(buf);
+        TLVMsg currentNode;
+        while (hasNext(buffer)) {    
+            currentNode = getTLVMsg(buffer);
+            append(currentNode);
+        }
     }
     
     /**
-     * unpack a message from an offset
+     * return an enumeration of the Vector of tags.
+     */
+    public Enumeration elements() {
+        return tags.elements();
+    }
+    
+    /**
+     * unpack a message with a starting offset
      * @param buf - raw message
-     * @param offset - offset into buffer to start.
      */
     public void unpack(byte[] buf, int offset) throws ISOException {
-        unpack(ByteBuffer.wrap(buf,offset,buf.length-offset));
-    }
-    
-    /**
-     * unpack a message from a ByteBuffer
-     * @param buffer - a byte buffer
-     */
-    public void unpack(ByteBuffer buffer) throws ISOException {
+        ByteBuffer buffer=ByteBuffer.wrap(buf,offset,buf.length-offset);
         TLVMsg currentNode;
         while (hasNext(buffer)) {    
             currentNode = getTLVMsg(buffer);
@@ -217,7 +223,7 @@ public class TLVList {
      */
     private int getTAG(ByteBuffer buffer) {
         int b;
-        int tag = 0x0000;
+        int tag = 0x000000;
         b = buffer.get() & 0xff;
         // Skip padding chars
         if (b == 0xFF || b == 0x00) {
@@ -232,7 +238,7 @@ public class TLVList {
             do {
                 tag <<= 8;
                 b = buffer.get();
-                 tag |= b;
+                tag |= b & 0xFF;
                 
             } while ((b & 0x80) == 0x80);
         }
@@ -248,14 +254,14 @@ public class TLVList {
         int count = 0;
         byte b;
         b = buffer.get();
-        count = b;
+        count = b & 0xFF;
         if ((count & 0x80) == 0x80) {
             // check first byte for more bytes to follow
             count -= 0x80;
             for (length = 0; count > 0; count--) {
                 length <<= 8;
                 b = buffer.get();
-                length |= b;
+                length |= b & 0xFF;
             }
         } else {
             length = count;
