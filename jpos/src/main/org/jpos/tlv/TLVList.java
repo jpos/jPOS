@@ -36,8 +36,10 @@ public class TLVList {
         ByteBuffer buffer=ByteBuffer.wrap(buf);
         TLVMsg currentNode;
         while (hasNext(buffer)) {    
-            currentNode = getTLVMsg(buffer);
-            append(currentNode);
+            currentNode = getTLVMsg(buffer);    // null is returned if no tag found (trailing padding)
+            if (currentNode != null) {
+                append(currentNode);
+            }
         }
     }
     
@@ -194,19 +196,29 @@ public class TLVList {
      *@return TLVMsg 
      */
     private TLVMsg getTLVMsg(ByteBuffer buffer) throws ISOException {
-        int tag = getTAG(buffer);
-        byte[] arrValue=null;
-        //Get Length
-        int length = getValueLength(buffer);
-        if(length >buffer.remaining()) throw new ISOException("BAD FORMAT");
+        int tag = getTAG(buffer);  // tag = 0 if tag not found
+        if (tag !=0) {
+            byte[] arrValue=null;
+            // Get Length if buffer remains!
+            if (!buffer.hasRemaining()) {
+                throw new ISOException("BAD TLV FORMAT - tag ("+Integer.toHexString(tag)+") without length or value");
+            }
+            else {
+                int length = getValueLength(buffer);
+               if(length >buffer.remaining()) throw new ISOException("BAD TLV FORMAT - tag ("+Integer.toHexString(tag)+") length ("+length+") exceeds available data.");
         
-        if(length>0) {
-            arrValue= new byte[length];
-            buffer.get(arrValue);
-        }
+                if(length>0) {
+                    arrValue= new byte[length];
+                    buffer.get(arrValue);
+                }
     
-        TLVMsg tlv = new TLVMsg(tag, arrValue);
-        return tlv;
+                TLVMsg tlv = new TLVMsg(tag, arrValue);
+                return tlv;
+            }
+        }
+        else {
+            return null;
+        }
     }
    
     /*
