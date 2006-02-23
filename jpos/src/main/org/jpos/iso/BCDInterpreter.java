@@ -84,9 +84,8 @@ public class BCDInterpreter implements Interpreter
     public void interpret(String data, byte[] b, int offset)
     {
         ISOUtil.str2bcd(data, leftPadded, b, offset);
-        if (fPadded && !leftPadded) {
+        if (fPadded && !leftPadded && data.length()%2 == 1)
             b[b.length-1] |= (byte)(b[b.length-1] << 4) == 0 ? 0x0F : 0x00;
-        }
     }
 
     /**
