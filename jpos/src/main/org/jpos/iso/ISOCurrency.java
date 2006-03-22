@@ -58,8 +58,8 @@ import java.util.StringTokenizer;
  * @author Jonathan.O'Connor@xcom.de
  * @version $Id$
  * @see http://www.evertype.com/standards/iso4217/iso4217-en.html
+ *      http://www.iso.org/iso/en/prods-services/popstds/currencycodeslist.html
  */
-
 public class ISOCurrency
 {
     private static Hashtable currencies;
