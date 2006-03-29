@@ -56,6 +56,9 @@
 
 /*
  * $Log$
+ * Revision 1.10  2006/03/29 20:32:22  marklsalter
+ * Ask the message to be displayed for the highest field, rather than assume 128.
+ *
  * Revision 1.9  2003/05/16 04:15:19  alwyns
  * Import cleanups.
  *
@@ -145,7 +148,7 @@ public class ISOMsgPanel extends JPanel {
     }
     private void setValidFields() {
         validFields = new Vector();
-        for (int i=0; i<=128; i++)
+        for (int i=0; i<=m.getMaxField(); i++)
             if (m.hasField(i))
                 validFields.addElement(new Integer(i));
     }
