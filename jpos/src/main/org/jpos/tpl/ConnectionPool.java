@@ -59,6 +59,7 @@ import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
 import org.jpos.util.LogSource;
 import org.jpos.util.Logger;
+import org.jpos.util.LogEvent;
 import org.jpos.util.NameRegistrar;
 
 /** A class for preallocating, recycling, and managing
@@ -222,16 +223,26 @@ public class ConnectionPool implements Runnable, LogSource, Configurable {
     }
 
     public void run() {
-        try {
-            Connection connection = makeNewConnection();
-            synchronized(this) {
-                availableConnections.addElement(connection);
-                connectionPending = false;
-                notifyAll();
+        Connection connection = null;
+        while (connection == null) {
+            try {
+                connection = makeNewConnection();
+                synchronized(this) {
+                    availableConnections.addElement(connection);
+                    connectionPending = false;
+                    notifyAll();
+                }
+            } catch(Exception e) { // SQLException or OutOfMemory
+                LogEvent evt = new LogEvent (this, "error");
+                evt.addMessage ("An error occurred while trying to make a background connection");
+                evt.addMessage (e);
+                Logger.log (evt);
+                try {
+                    Thread.sleep (3000); // don't get too crazy about retrying
+                } catch (InterruptedException ie) {
+                    // this one, we don't care.
+                }
             }
-        } catch(Exception e) { // SQLException or OutOfMemory
-            // Give up on new connection and wait for existing one
-            // to free up.
         }
     }
 
