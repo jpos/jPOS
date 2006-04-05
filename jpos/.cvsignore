@@ -1,8 +1,0 @@
-dist
-build
-log
-cfg
-deploy
-.project
-.classpath
-.externalToolBuilders
