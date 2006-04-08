@@ -110,6 +110,7 @@ public class Q2 implements FileFilter {
     public static final String Q2_CLASS_LOADER     = "Q2:type=system,service=loader";
     public static final String DUPLICATE_EXTENSION = "DUP";
     public static final String ERROR_EXTENSION     = "BAD";
+    public static final String ENV_EXTENSION       = "ENV";
 
     public static final String PROTECTED_QBEAN        = "protected-qbean";
     public static final int SCAN_INTERVAL             = 2500;
@@ -396,6 +397,12 @@ public class Q2 implements FileFilter {
             // This will also save deploy error repeats...
             return false;
         } 
+        catch (Error e) {
+            getLog().warn ("deploy", e);
+            tidyFileAway(f,ENV_EXTENSION);
+            // This will also save deploy error repeats...
+            return false;
+        }
         return true ;
     }
 
