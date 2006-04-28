@@ -197,7 +197,7 @@ public class GenericPackager
      *
      * <pre>
      * Uses the sax parser specified by the system property 'sax.parser'
-     * The default parser is org.apache.xerces.parsers.SAXParser 
+     * The default parser is org.apache.crimson.parser.XMLReaderImpl
      * </pre>
      * @param filename The XML field description file
      */
@@ -216,7 +216,7 @@ public class GenericPackager
      *
      * <pre>
      * Uses the sax parser specified by the system property 'sax.parser'
-     * The default parser is org.apache.xerces.parsers.SAXParser 
+     * The default parser is org.apache.crimson.parser.XMLReaderImpl
      * </pre>
      * @param input The XML field description InputStream
      */
@@ -233,7 +233,7 @@ public class GenericPackager
     private XMLReader createXMLReader () throws SAXException {
         XMLReader reader = XMLReaderFactory.createXMLReader(
                 System.getProperty( "sax.parser", 
-                "org.apache.xerces.parsers.SAXParser"));
+                "org.apache.crimson.parser.XMLReaderImpl"));
 
         reader.setFeature ("http://xml.org/sax/features/validation", true);
         GenericContentHandler handler = new GenericContentHandler();
