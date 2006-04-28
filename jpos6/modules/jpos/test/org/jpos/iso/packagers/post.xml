@@ -1,0 +1,15 @@
+<isomsg>
+ <field id="0" value="0620"/>
+ <field id="3" value="000000"/>
+ <field id="7" value="1117003616"/>
+ <field id="11" value="375204"/>
+ <field id="12" value="003616"/>
+ <field id="13" value="1117"/>
+ <field id="41" value="ATM00002"/>
+ <isomsg id="127">
+  <field id="2" value="SWITCH_KEY"/>
+  <field id="25" value="ICC_DATA"/>
+ </isomsg>
+</isomsg>
+
+
