@@ -1,0 +1,332 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE isopackager SYSTEM "genericpackager.dtd">
+
+<!-- ANSI X9.2 field descriptions for GenericPackager -->
+
+<isopackager>
+  <isofield
+      id="0"
+      length="4"
+      name="MESSAGE TYPE"
+      class="org.jpos.iso.IFA_NUMERIC"/>
+  <isofield
+      id="1"
+      length="19"
+      name="PAN - PRIMARY ACCOUNT NUMBER"
+      class="org.jpos.iso.IFA_FLLNUM"/>
+  <isofield
+      id="2"
+      length="6"
+      name="PROCESSING CODE"
+      class="org.jpos.iso.IFA_NUMERIC"/>
+  <isofield
+      id="3"
+      length="12"
+      name="AMOUNT, TRANSACTION"
+      class="org.jpos.iso.IFA_NUMERIC"/>
+  <isofield
+      id="4"
+      length="12"
+      name="AMOUNT, SETTLEMENT"
+      class="org.jpos.iso.IFA_NUMERIC"/>
+  <isofield
+      id="5"
+      length="12"
+      name="AMOUNT, CARDHOLDER BILLING"
+      class="org.jpos.iso.IFA_NUMERIC"/>
+  <isofield
+      id="6"
+      length="6"
+      name="ACQUIRING INSTITUTION TRACE NUMBER"
+      class="org.jpos.iso.IFA_NUMERIC"/>
+  <isofield
+      id="7"
+      length="6"
+      name="TRANSACTION DATE"
+      class="org.jpos.iso.IFA_NUMERIC"/>
+  <isofield
+      id="8"
+      length="6"
+      name="ACQUIRING INSTITUTION POST DATE"
+      class="org.jpos.iso.IFA_NUMERIC"/>
+  <isofield
+      id="9"
+      length="6"
+      name="RESP ACQUIRING INSTITUTION POST DATE"
+      class="org.jpos.iso.IFA_NUMERIC"/>
+  <isofield
+      id="10"
+      length="6"
+      name="TRANSACTION TIME"
+      class="org.jpos.iso.IFA_NUMERIC"/>
+  <isofield
+      id="11"
+      length="29"
+      name="ADDRESS VERIFICATION"
+      class="org.jpos.iso.IFA_NUMERIC"/>
+  <isofield
+      id="12"
+      length="1"
+      name="ADDRESS VERIFICATION STATE"
+      class="org.jpos.iso.IFA_NUMERIC"/>
+  <isofield
+      id="13"
+      length="10"
+      name="ACQUIRING INSTITUTION IDENT CODE"
+      class="org.jpos.iso.IFA_NUMERIC"/>
+  <isofield
+      id="14"
+      length="10"
+      name="CARD ACCEPTOR IDENTIFICATION NUMBER"
+      class="org.jpos.iso.IFA_NUMERIC"/>
+  <isofield
+      id="15"
+      length="3"
+      name="TERMINAL COUNTRY CODE"
+      class="org.jpos.iso.IFA_NUMERIC"/>
+  <isofield
+      id="16"
+      length="0"
+      name="UNUSED"
+      class="org.jpos.iso.IFA_BINARY"/>
+  <isofield
+      id="17"
+      length="0"
+      name="UNUSED"
+      class="org.jpos.iso.IFA_BINARY"/>
+  <isofield
+      id="18"
+      length="0"
+      name="UNUSED"
+      class="org.jpos.iso.IFA_BINARY"/>
+  <isofield
+      id="19"
+      length="10"
+      name="ISSUER INSTITUTION IDENT NUMBER"
+      class="org.jpos.iso.IFA_NUMERIC"/>
+  <isofield
+      id="20"
+      length="2"
+      name="REVERSAL CODE"
+      class="org.jpos.iso.IFA_NUMERIC"/>
+  <isofield
+      id="21"
+      length="0"
+      name="UNUSED"
+      class="org.jpos.iso.IFA_BINARY"/>
+  <isofield
+      id="22"
+      length="0"
+      name="UNUSED"
+      class="org.jpos.iso.IFA_BINARY"/>
+  <isofield
+      id="23"
+      length="14"
+      name="GROSS DEBITS, AMOUNT"
+      class="org.jpos.iso.IFA_NUMERIC"/>
+  <isofield
+      id="24"
+      length="10"
+      name="GROSS DEBITS, COUNT"
+      class="org.jpos.iso.IFA_NUMERIC"/>
+  <isofield
+      id="25"
+      length="14"
+      name="GROSS CREDITS, AMOUNT"
+      class="org.jpos.iso.IFA_NUMERIC"/>
+  <isofield
+      id="26"
+      length="10"
+      name="GROSS CREDITS, COUNT"
+      class="org.jpos.iso.IFA_NUMERIC"/>
+  <isofield
+      id="27"
+      length="14"
+      name="REVERSAL GROSS DEBITS, AMOUNT"
+      class="org.jpos.iso.IFA_NUMERIC"/>
+  <isofield
+      id="28"
+      length="10"
+      name="REVERSAL GROSS DEBITS, COUNT"
+      class="org.jpos.iso.IFA_NUMERIC"/>
+  <isofield
+      id="29"
+      length="14"
+      name="REVERSAL GROSS CREDITS, AMOUNT"
+      class="org.jpos.iso.IFA_NUMERIC"/>
+  <isofield
+      id="30"
+      length="10"
+      name="REVERSAL GROSS CREDITS, COUNT"
+      class="org.jpos.iso.IFA_NUMERIC"/>
+  <isofield
+      id="31"
+      length="2"
+      name="TRANSACTION SPECIFICATION"
+      class="org.jpos.iso.IFA_NUMERIC"/>
+  <isofield
+      id="32"
+      length="3"
+      name="NETWORK MANAGEMENT INFORMATION CODE"
+      class="org.jpos.iso.IFA_NUMERIC"/>
+  <isofield
+      id="33"
+      length="12"
+      name="RESPONSE CODE"
+      class="org.jpos.iso.IFA_NUMERIC"/>
+  <isofield
+      id="34"
+      length="25"
+      name="TERMINAL OWNER"
+      class="org.jpos.iso.IF_CHAR"/>
+  <isofield
+      id="35"
+      length="15"
+      name="TERMINAL CITY/STATE"
+      class="org.jpos.iso.IF_CHAR"/>
+  <isofield
+      id="36"
+      length="6"
+      name="ORIGINAL DATA [ACQ POST DATE]"
+      class="org.jpos.iso.IFA_NUMERIC"/>
+  <isofield
+      id="37"
+      length="6"
+      name="ISSUER TRACE NUMBER"
+      class="org.jpos.iso.IFA_NUMERIC"/>
+  <isofield
+      id="38"
+      length="0"
+      name="UNUSED"
+      class="org.jpos.iso.IFA_BINARY"/>
+  <isofield
+      id="39"
+      length="8"
+      name="PIN"
+      class="org.jpos.iso.IFA_BINARY"/>
+  <isofield
+      id="40"
+      length="8"
+      name="PASSWORD"
+      class="org.jpos.iso.IF_CHAR"/>
+  <isofield
+      id="41"
+      length="0"
+      name="UNUSED"
+      class="org.jpos.iso.IFA_BINARY"/>
+  <isofield
+      id="42"
+      length="0"
+      name="UNUSED"
+      class="org.jpos.iso.IFA_BINARY"/>
+  <isofield
+      id="43"
+      length="0"
+      name="UNUSED"
+      class="org.jpos.iso.IFA_BINARY"/>
+  <isofield
+      id="44"
+      length="0"
+      name="UNUSED"
+      class="org.jpos.iso.IFA_BINARY"/>
+  <isofield
+      id="45"
+      length="0"
+      name="UNUSED"
+      class="org.jpos.iso.IFA_BINARY"/>
+  <isofield
+      id="46"
+      length="0"
+      name="UNUSED"
+      class="org.jpos.iso.IFA_BINARY"/>
+  <isofield
+      id="47"
+      length="0"
+      name="UNUSED"
+      class="org.jpos.iso.IFA_BINARY"/>
+  <isofield
+      id="48"
+      length="0"
+      name="UNUSED"
+      class="org.jpos.iso.IFA_BINARY"/>
+  <isofield
+      id="49"
+      length="0"
+      name="UNUSED"
+      class="org.jpos.iso.IFA_BINARY"/>
+  <isofield
+      id="50"
+      length="8"
+      name="APROVAL CODE"
+      class="org.jpos.iso.IFA_NUMERIC"/>
+  <isofield
+      id="51"
+      length="25"
+      name="POST INFO"
+      class="org.jpos.iso.IFA_NUMERIC"/>
+  <isofield
+      id="52"
+      length="30"
+      name="ISO ORIGINAL DATA"
+      class="org.jpos.iso.IFA_NUMERIC"/>
+  <isofield
+      id="53"
+      length="19"
+      name="SHARING"
+      class="org.jpos.iso.IFA_NUMERIC"/>
+  <isofield
+      id="54"
+      length="51"
+      name="TERMINAL INFORMATION"
+      class="org.jpos.iso.IFA_NUMERIC"/>
+  <isofield
+      id="55"
+      length="2"
+      name="PIN SIZE"
+      class="org.jpos.iso.IFA_NUMERIC"/>
+  <isofield
+      id="56"
+      length="16"
+      name="OPTIONS"
+      class="org.jpos.iso.IFA_NUMERIC"/>
+  <isofield
+      id="57"
+      length="6"
+      name="ISSUER POST DATE"
+      class="org.jpos.iso.IFA_NUMERIC"/>
+  <isofield
+      id="58"
+      length="38"
+      name="SOURCE/TARGET ACCOUNT NUMBERS"
+      class="org.jpos.iso.IFA_NUMERIC"/>
+  <isofield
+      id="59"
+      length="15"
+      name="PREAUTHORIZATION"
+      class="org.jpos.iso.IFA_NUMERIC"/>
+  <isofield
+      id="60"
+      length="382"
+      name="ADDITIONAL DATA"
+      class="org.jpos.iso.IFA_LLLCHAR"/>
+  <isofield
+      id="61"
+      length="0"
+      name="UNUSED"
+      class="org.jpos.iso.IFA_BINARY"/>
+  <isofield
+      id="62"
+      length="39"
+      name="TRACK II DATA"
+      class="org.jpos.iso.IFA_FLLCHAR"/>
+  <isofield
+      id="63"
+      length="0"
+      name="UNUSED"
+      class="org.jpos.iso.IFA_BINARY"/>
+  <isofield
+      id="64"
+      length="0"
+      name="UNUSED"
+      class="org.jpos.iso.IFA_BINARY"/>
+</isopackager>
