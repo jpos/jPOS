@@ -1,0 +1,17 @@
+<html>
+  <body>
+	<p>Key management, MAC, PIN encryption related classes.</p>
+	<p>Allows for the realization of the ANSI X9.17 and the ANSI X9.24.</p>
+	<p>It relies on a security module for performing the required cryptographic operations, so you do not need any knowledge about the Java<font size=-1><sup>TM</sup></font> Cryptography Architecture (JCA) or the Java<font size=-1><sup>TM</sup></font> Cryptography Extension (JCE) to use jPOS Security.
+	</p>
+	<p>
+	The term "Security Module" is so generic, it ranges from the big "Host Security Module" devices (HSMs) used by Interchanges and Hosts to the tiny smart card based TRSMs (Tamper Resistant Security Modules) that reside in Encrypting PIN Entry Devices (PEDs). There are also software based security modules like <a href="jceadapter/JCESecurityModule.html">JCESecurityModule</a> provided with jPOS security.
+	</p>
+	<p>
+	You will need a Security Module adapter for your specific security module to be able to use it with jPOS Security. The provided "JCE Security Module" does not need a separate adapter, it plugs automatically in jPOS. Implementing Adapters for other security modules (like Thales Host Security Modules) should be straight forward (just by extending <a href="BaseSMAdapter.html">BaseSMAdapter</a> and implementing your Security Module's proprietary protocol)</p>
+	<p>
+	Note: The terms "Security Module" (used in ANSI X9.24) and "Cryptographic Module" (used ANSI X9.17) are synonyms.
+	We will be using the term "Security Module" (SM for short).
+	</p>
+  </body>
+</html>
