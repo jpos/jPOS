@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!-- $Id$ -->
+<isomsg>
+  <field id="0"  value="0800" />
+  <field id="2"  value="1234567890123456789" />
+  <field id="3"  value="000000" />
+  <field id="4"  value="000000000100" />
+  <field id="5"  value="000000000200" />
+  <field id="6"  value="000000000300" />
+  <field id="7"  value="0611191024" />
+  <field id="8"  value="12345678" />
+  <field id="9"  value="12345678" />
+  <field id="10" value="12345678" />
+  <field id="11" value="000001" />
+  <field id="12" value="010203" />
+  <field id="13" value="0611" />
+  <field id="14" value="1001" />
+  <field id="15" value="0112" />
+  <field id="16" value="0112" />
+  <field id="17" value="0611" />
+  <field id="18" value="1234" />
+  <field id="19" value="858" />
+  <field id="20" value="032" />
+  <field id="21" value="400" />
+  <field id="22" value="000" />
+  <field id="23" value="001" />
+  <field id="24" value="003" />
+  <field id="25" value="00" />
+  <field id="26" value="01" />
+  <field id="27" value="1" />
+  <field id="28" value="000000100" />
+  <field id="29" value="000000200" />
+  <field id="30" value="000000300" />
+  <field id="31" value="000000400" />
+  <field id="32" value="123456" />
+  <field id="33" value="654321" />
+  <field id="34" value="ABCDEFGHIJKLMNOPQRSTUVWXYZ01" />
+  <field id="35" value="1234567890123456=12345678901234567890"  />
+  <field id="36" value="THE QUICK BROWN FOX JUMPED OVER THE LAZY DOG" />
+  <field id="37" value="123456789ABC" />
+  <field id="38" value="123456" />
+  <field id="39" value="00" />
+  <field id="40" value="ABC" />
+  <field id="41" value="0001ABCD" />
+  <field id="42" value="123456789012345" />
+  <field id="43" value="JPOS CARD ACCEPTOR / WWW.JPOS.ORG       " />
+  <field id="44" value="jPOSjPOSjPOSjPOSjPOSjPOS" />
+  <field id="45" value="JPOSJPOSJPOSJPOSJPOSJPOS" />
+  <field id="46" value="ADDITIONAL DATA - ISO" />
+  <field id="47" value="ADDITIONAL DATA - NATIONAL" />
+  <field id="48" value="ADDITIONAL DATA - PRIVATE" />
+  <field id="49" value="032" />
+  <field id="50" value="032" />
+  <field id="51" value="032" />
+  <field id="52" value="0001020304050607" type="binary" />
+  <field id="53" value="1234567890123456" />
+  <field id="54" value="000000001000000000002000" />
+  <field id="55" value="ABCD" />
+  <field id="56" value="EFGH" />
+  <field id="57" value="IJKL" />
+  <field id="58" value="MNOP" />
+  <field id="59" value="QRST" />
+  <field id="60" value="UVWX" />
+  <field id="61" value="YZ01" />
+  <field id="62" value="A002" />
+  <field id="63" value="ABCDDCBA" />
+  <field id="64" value="CAFEBABECAFEBABE" type="binary" />
+</isomsg>
+
