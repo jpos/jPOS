@@ -7,7 +7,6 @@
 
 package org.jpos.iso.packagers;
 
-import iso.TestUtils;
 import junit.framework.*;
 import java.io.*;
 import java.util.*;
@@ -20,9 +19,9 @@ import org.jpos.iso.packager.*;
  * used to play with jUnit and to verify
  * build/junit system is running OK.
  */
-public class Test extends TestCase {
+public class PackagerTestCase extends TestCase {
     private XMLPackager xmlPackager;
-    public static final String PREFIX = "modules/jpos/test/org/jpos/iso/packagers/";
+    public static final String PREFIX = "../modules/jpos/test/org/jpos/iso/packagers/";
 
     private ISOMsg getMsg (String message) throws Exception {
         FileInputStream fis = new FileInputStream (PREFIX + message + ".xml");
@@ -51,7 +50,7 @@ public class Test extends TestCase {
     public void setUp () throws Exception {
         xmlPackager = new XMLPackager();
     }
-    public Test (String name) {
+    public PackagerTestCase (String name) {
         super (name);
     }
     public void testPostPackager () throws Exception {
@@ -64,11 +63,11 @@ public class Test extends TestCase {
         doTest (new ISO87BPackager(), "ISO87", "ISO87BPackager");
     }
     public void testGeneric87ascii() throws Exception {
-        doTest (new GenericPackager ("src/config/packager/iso87ascii.xml"),
+        doTest (new GenericPackager ("../cfg/packager/iso87ascii.xml"),
             "ISO87", "ISO87APackager");
     }
     public void testGeneric87binary() throws Exception {
-        doTest (new GenericPackager ("src/config/packager/iso87binary.xml"),
+        doTest (new GenericPackager ("../cfg/packager/iso87binary.xml"),
             "ISO87", "ISO87BPackager");
     }
     public void testISO93APackager() throws Exception {
@@ -78,19 +77,19 @@ public class Test extends TestCase {
         doTest (new ISO93BPackager(), "ISO93", "ISO93BPackager");
     }
     public void testGeneric93ascii() throws Exception {
-        doTest (new GenericPackager ("src/config/packager/iso93ascii.xml"),
+        doTest (new GenericPackager ("../cfg/packager/iso93ascii.xml"),
             "ISO93", "ISO93APackager");
     }
     public void testGeneric93binary() throws Exception {
-        doTest (new GenericPackager ("src/config/packager/iso93binary.xml"),
+        doTest (new GenericPackager ("../cfg/packager/iso93binary.xml"),
             "ISO93", "ISO93BPackager");
     }
     public void testF64Binary() throws Exception {
-        doTest (new GenericPackager ("src/config/packager/iso87binary.xml"),
+        doTest (new GenericPackager ("../cfg/packager/iso87binary.xml"),
             "ISO87-Field64", "ISO87B-Field64");
     }
     public void testF64ascii() throws Exception {
-        doTest (new GenericPackager ("src/config/packager/iso87ascii.xml"),
+        doTest (new GenericPackager ("../cfg/packager/iso87ascii.xml"),
             "ISO87-Field64", "ISO87A-Field64");
     }
     public void testXMLPackager () throws Exception {
