@@ -27,8 +27,6 @@
     <property name="modules.ignore.list" value="${modules.dir}/ignore.list" />
     <property name="classes.dir" value="${build.dir}/classes"/>
     <property name="test-classes.dir" value="${build.dir}/test-classes"/>
-    <property name="main.dir" value="${src.dir}/main"/>
-    <property name="etc.dir" value="${src.dir}/etc"/>
     <property name="deprecation" value="true"  />
     <property name="nowarn" value="true"  />
     <property name="debug" value="on"/>
@@ -126,15 +124,6 @@
     <target name="compile" depends="modules, main, jar" 
         description="compile all" />
 
-    <target name="copy-src" depends="prepare">
-      <copy todir="${build.src}">
-        <fileset dir="${main.dir}">
-          <include name="**/*.java"/>
-          <include name="**/*.properties"/>
-        </fileset>
-      </copy>
-    </target>
-
     <target name="modules" depends="prepare, copy-lib">
       <filter filtersfile="${filter.properties}" />
       <copy todir="${build.modules}" flatten="false" filtering="false">
@@ -187,12 +176,12 @@
       </copy>
       <antcall target="support" />
       <subant target="prepare">
-        <fileset dir="${build.modules}" excludesfile="${modules.ignore.list}">
+        <fileset dir="${modules.dir}" excludesfile="${modules.ignore.list}">
           <include name="**/build.xml"/>
         </fileset>
       </subant>
       <subant>
-        <fileset dir="${build.modules}" excludesfile="${modules.ignore.list}">
+        <fileset dir="${modules.dir}" excludesfile="${modules.ignore.list}">
           <include name="**/build.xml"/>
         </fileset>
       </subant>
