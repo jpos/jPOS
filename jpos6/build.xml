@@ -152,7 +152,7 @@
           <include name="**/deploy/lib/*.jar"/>
         </fileset>
       </copy>
-      <copy todir="${build.dir}">
+      <copy todir="${build.dir}" filtering="true">
         <mapper type="regexp" from="^\w*[/|\\](.*)" to="\1" />
         <fileset dir="${build.modules}" excludesfile="${modules.ignore.list}">
           <include name="**/*.java"/>
