@@ -100,7 +100,7 @@ import org.jpos.iso.ISOException;
  * @version $Revision$ $Date$
  */
 public class Q2 implements FileFilter {
-    public static final String Q2_VERSION          = "XX_Q2_VERSION_XX";
+    public static final String Q2_VERSION          = "@version@";
     public static final String DEFAULT_DEPLOY_DIR  = "deploy";
     public static final String JMX_NAME            = "Q2";
     public static final String LOGGER_NAME         = "Q2";
@@ -451,7 +451,7 @@ public class Q2 implements FileFilter {
         CommandLineParser parser = new PosixParser ();
 
         Options options = new Options ();
-        options.addOption ("v","version", false, "Version of Q2");
+        options.addOption ("v","version", false, "Q2's version");
         options.addOption ("d","deploydir", true, "Deployment directory");
         options.addOption ("h","help", false, "Usage information");
         options.addOption ("c","config", true, "Configuration bundle");
