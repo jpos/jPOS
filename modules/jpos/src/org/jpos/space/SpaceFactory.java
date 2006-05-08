@@ -153,13 +153,9 @@ public class SpaceFactory {
     private static Space createSpace (String scheme, String name, String param)
     {
         Space sp = null;
-        if (TSPACE.equals (scheme)) {
-            sp = new TSpace ();
-        } else if (TRANSIENT.equals (scheme)) {
-            sp = TransientSpace.getSpace (name);
-        } else if (PERSISTENT.equals (scheme)) {
-            sp = PersistentSpace.getSpace (name);
-        } else if (JDBM.equals (scheme)) {
+        if (TSPACE.equals (scheme) || TRANSIENT.equals (scheme)) {
+            sp = new TSpace();
+        } else if (JDBM.equals (scheme) || PERSISTENT.equals (scheme)) {
             if (param != null)
                 sp = JDBMSpace.getSpace (name, param);
             else 
