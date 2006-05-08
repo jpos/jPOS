@@ -61,7 +61,6 @@ import org.jpos.space.Space;
 import org.jpos.space.SpaceFactory;
 import org.jpos.space.LocalSpace;
 import org.jpos.space.SpaceListener;
-import org.jpos.space.TransientSpace;
 
 import org.jpos.iso.MUX;
 import org.jpos.iso.ISOSource;
