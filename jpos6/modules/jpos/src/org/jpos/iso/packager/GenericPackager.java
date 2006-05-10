@@ -70,6 +70,8 @@ import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
+
+
 /**
  * <pre>
  * GenericPackager uses an XML config file to describe the layout of an ISOMessage
@@ -232,8 +234,9 @@ public class GenericPackager
 
     private XMLReader createXMLReader () throws SAXException {
         XMLReader reader = XMLReaderFactory.createXMLReader(
-                System.getProperty( "sax.parser", 
-                "org.apache.crimson.parser.XMLReaderImpl"));
+//                System.getProperty( "sax.parser", 
+//                "org.apache.xerces.parsers.SAXParser"));
+        );
 
         reader.setFeature ("http://xml.org/sax/features/validation", true);
         GenericContentHandler handler = new GenericContentHandler();
