@@ -104,10 +104,7 @@ public class XMLPackager extends DefaultHandler
         p   = new PrintStream(out);
         stk = new Stack();
         try {
-            reader = XMLReaderFactory.createXMLReader(
-                System.getProperty( "sax.parser",
-                                    "org.apache.crimson.parser.XMLReaderImpl")
-            );
+            reader = XMLReaderFactory.createXMLReader();
             reader.setFeature ("http://xml.org/sax/features/validation",false);
             reader.setContentHandler(this);
             reader.setErrorHandler(this);
