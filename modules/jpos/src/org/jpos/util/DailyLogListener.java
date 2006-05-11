@@ -43,13 +43,15 @@ public class DailyLogListener extends RotateLogListener{
     private static final int DEF_WIN = 24*3600;
     private static final long DEF_MAXSIZE = -1;
     private static final String DEF_DATE_FMT = "-yyyy-MM-dd";
-    private static final int GZIP = 0;
-    private static final int ZIP = 1;
-    private static final int DEF_COMPRESSION = GZIP;
+    private static final int NONE = 0;
+    private static final int GZIP = 1;
+    private static final int ZIP = 2;
+    private static final int DEF_COMPRESSION = NONE;
     private static final int DEF_BUFFER_SIZE = 128*1024;//128 KB
-    private static final String[] DEF_COMPRESSED_SUFFIX= {".gz",".zip"};
+    private static final String[] DEF_COMPRESSED_SUFFIX= {"",".gz",".zip"};
     private static final Map COMPRESSION_FORMATS = new Hashtable();
     static {
+        COMPRESSION_FORMATS.put("none", new Integer(NONE));
         COMPRESSION_FORMATS.put("gzip", new Integer(GZIP));
         COMPRESSION_FORMATS.put("zip", new Integer(ZIP));
     }
@@ -60,13 +62,12 @@ public class DailyLogListener extends RotateLogListener{
     }
 
     public void setConfiguration(Configuration cfg) throws ConfigurationException {
-        //super.setConfiguration(cfg);
         String suffix = cfg.get("suffix", DEF_SUFFIX), prefix = cfg.get("prefix");
         setSuffix(suffix);
         setPrefix(prefix);
         Integer formatObj = 
                 (Integer)COMPRESSION_FORMATS
-                .get(cfg.get("compression-format","gzip").toLowerCase());
+                .get(cfg.get("compression-format","none").toLowerCase());
         int compressionFormat = (formatObj == null) ? 0 : formatObj.intValue();
         setCompressionFormat(compressionFormat);
         setCompressedSuffix(cfg.get("compressed-suffix", 
@@ -139,15 +140,13 @@ public class DailyLogListener extends RotateLogListener{
         String newName = getPrefix()+getLastDate();
         int i=0;
         File dest = new File (newName+suffix), source = new File(logName);
-        while (dest.exists()) {
+        while (dest.exists()) 
             dest  = new File (newName + "." + ++i + suffix);
-        } 
         source.renameTo(dest);
         setLastDate(getDateFmt().format(new Date()));
         openLogFile();
-        getCompressorThread(dest).start();
+        compress(dest);
     }
-
     /**
      * Holds value of property suffix.
      */
@@ -276,6 +275,7 @@ public class DailyLogListener extends RotateLogListener{
 
     /**
      *  Hook method that creates a thread to compress the file f.
+     * @returns a thread to compress the file and null if it is not necesary
      */
     protected Thread getCompressorThread(File f){
         return new Thread(new Compressor(f));
@@ -404,6 +404,17 @@ public class DailyLogListener extends RotateLogListener{
         if (maxSize>0 )
             super.checkSize();
     }
+
+    /** 
+     * Hook method to optionally compress the file
+     */
+    protected void compress(File logFile) {
+        if (getCompressionFormat() != NONE){
+            Thread t = getCompressorThread(logFile);
+            if (t != null)
+                t.start();
+        }
+}
 
     
 
