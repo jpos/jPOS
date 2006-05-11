@@ -209,7 +209,7 @@ public class SimpleKeyFile
         String value = props.getProperty(key);
         if (value == null)
             throw  new SecureKeyStoreException("Key can't be retrieved. Can't get property: " + key);
-        return  value;
+        return value.trim();
     }
 
     public void setProperty (String alias, String subName, String value) {
