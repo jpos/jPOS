@@ -225,11 +225,25 @@ public class ISOMsg extends ISOComponent
     * @param fldno field number
     * @param value field value
     */
-    public void set (int fldno, String value) throws ISOException {
-        if (value != null)
-            set (new ISOField (fldno, value));
+    public void set(int fldno, String value) throws ISOException {
+        if (value != null) {
+            if (packager == null) {
+                // No packager is available, we can't tell what the field
+                // might be, so treat as a String!
+                set(new ISOField(fldno, value));
+            }
+            else {
+                // This ISOMsg has a packager, so use it
+                Object obj = ((ISOBasePackager) packager).getFieldPackager(fldno);
+                if (obj instanceof ISOBinaryFieldPackager) {
+                    set(new ISOBinaryField(fldno, ISOUtil.hex2byte(value)));
+                } else {
+                    set(new ISOField(fldno, value));
+                }
+            }
+        }
         else
-            unset (fldno);
+            unset(fldno);
     }
    /**
     * Creates an ISOBinaryField associated with fldno within this ISOMsg
@@ -636,6 +650,7 @@ public class ISOMsg extends ISOComponent
             out.write (header.pack());
         }
     }
+    
     protected void readHeader (ObjectInput in) 
         throws IOException, ClassNotFoundException
     {
@@ -643,6 +658,26 @@ public class ISOMsg extends ISOComponent
         in.readFully (b);
         setHeader (b);
     }
+    protected void writePackager(ObjectOutput out) throws IOException {
+        out.writeByte('P');
+        String pclass = ((Class) packager.getClass()).getName();
+        byte[] b = pclass.getBytes();
+        out.writeShort(b.length);
+        out.write(b);
+    }
+    protected void readPackager(ObjectInput in) throws IOException,
+    ClassNotFoundException {
+        byte[] b = new byte[in.readShort()];
+        in.readFully(b);
+        try {
+            Class mypClass = Class.forName(new String(b));
+            ISOPackager myp = (ISOPackager) mypClass.newInstance();
+            setPackager(myp);
+        } catch (Exception e) {
+            setPackager(null);
+        }
+
+}
     protected void writeDirection (ObjectOutput out) throws IOException {
         out.writeByte ('D');
         out.writeByte (direction);
@@ -659,6 +694,8 @@ public class ISOMsg extends ISOComponent
 
         if (header != null) 
             writeHeader (out);
+        if (packager != null)
+            writePackager(out);
         if (direction > 0)
             writeDirection (out);
 
@@ -702,6 +739,9 @@ public class ISOMsg extends ISOComponent
                         break;
                     case 'H':
                         readHeader (in);
+                        break;
+                    case 'P':
+                        readPackager(in);
                         break;
                     case 'D':
                         readDirection (in);
