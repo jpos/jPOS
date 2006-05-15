@@ -188,7 +188,7 @@ public class ISOServer extends Observable
      */
     public void shutdown () {
         shutdown = true;
-        new Thread () {
+        new Thread ("ISOServer-shutdown") {
             public void run () {
                 shutdownServer ();
                 shutdownChannels ();

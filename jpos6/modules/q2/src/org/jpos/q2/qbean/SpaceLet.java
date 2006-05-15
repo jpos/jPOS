@@ -128,6 +128,28 @@ public class SpaceLet extends QBeanSupport implements Space {
             throw new SpaceError (t);
         }
     }
+    public void outSingle (Object key, Object value) {
+        try {
+            Interpreter bsh = initInterpreter (key, value);
+            synchronized (sp) {
+                if (!eval (bsh, outScript, outSource))
+                    sp.outSingle (key, value);
+            }
+        } catch (Throwable t) {
+            throw new SpaceError (t);
+        }
+    }
+    public void outSingle (Object key, Object value, long timeout) {
+        try {
+            Interpreter bsh = initInterpreter (key, value, timeout);
+            synchronized (sp) {
+                if (!eval (bsh, outScript, outSource))
+                    sp.outSingle (key, value, timeout);
+            }
+        } catch (Throwable t) {
+            throw new SpaceError (t);
+        }
+    }
     public Object in  (Object key) {
         try {
             Interpreter bsh = initInterpreter (key);
@@ -225,7 +247,7 @@ public class SpaceLet extends QBeanSupport implements Space {
         final String script = e.getText();
         final String source = e.getAttributeValue ("source");
 
-        new Thread () {
+        new Thread ("SpaceLet-launch") {
             public void run () {
                 try {
                     eval (initInterpreter(), script, source);

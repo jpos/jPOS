@@ -80,7 +80,7 @@ public class SystemMonitor extends QBeanSupport implements Runnable,
     public void startService() {
         try {
             log.info("Starting SystemMonitor");
-            me = new Thread(this);
+            me = new Thread(this,"SystemMonitor");
             me.start();
         } catch (Exception e) {
             log.warn("error starting service", e);

@@ -86,8 +86,7 @@ public class SystemMonitor implements Runnable, LogSource, Loggeable
         if (thread != null)
             thread.interrupt();
         else if (sleepTime > 0) {
-            thread = new Thread(this);
-            thread.setName ("SystemMonitor");
+            thread = new Thread(this,"SystemMonitor");
             thread.setPriority (Thread.MIN_PRIORITY);
             thread.start();
         }

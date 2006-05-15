@@ -185,7 +185,7 @@ public class ISOMeter extends JComponent implements Runnable {
     }
 
     public void start() {
-        Thread t = new Thread (this);
+        Thread t = new Thread (this,"ISOMeter");
         t.setPriority (Thread.NORM_PRIORITY-1);
         t.setName ("ISOMeter");
         t.start();
