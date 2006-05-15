@@ -278,7 +278,7 @@ public class DailyLogListener extends RotateLogListener{
      * @returns a thread to compress the file and null if it is not necesary
      */
     protected Thread getCompressorThread(File f){
-        return new Thread(new Compressor(f));
+        return new Thread(new Compressor(f),"DailyLogListener-Compressor");
     }
     
     /**

@@ -263,7 +263,7 @@ public class Q2 implements FileFilter {
 
     private void addShutdownHook () {
         Runtime.getRuntime().addShutdownHook (
-            new Thread () {
+            new Thread ("Q2-ShutdownHook") {
                 public void run () {
                     shuttingDown = true;
                     shutdown = true;

@@ -135,7 +135,7 @@ public class ISOMUX implements Runnable, ISOSource, LogSource, MUX,
         rxQueue = new Hashtable();
         cnt = new int[SIZEOF_CNT];
         requestListener = null;
-        rx = new Thread (new Receiver(this));
+        rx = new Thread (new Receiver(this),"ISOMUX-Receiver");
         name = "";
         muxInstance = this;
     }

@@ -27,7 +27,7 @@ public class BSH extends QBeanSupport implements Runnable {
         bcm.setClassLoader(getServer().getLoader());
     }
     public void startService() {
-        new Thread (this).start ();
+        new Thread (this,"BSH-Service").start ();
     }
     public void run () {
         Element config = getPersist();
