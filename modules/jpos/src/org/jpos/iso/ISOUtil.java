@@ -1117,7 +1117,7 @@ public class ISOUtil {
             while (hex.length () < 49)
                 hex.append (' ');
 
-            sb.append (hexOffset (b.length));
+            sb.append (hexOffset (len));
             sb.append (sep);
             sb.append (hex.toString());
             sb.append (' ');
