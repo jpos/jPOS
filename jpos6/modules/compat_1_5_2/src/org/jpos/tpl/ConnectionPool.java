@@ -215,7 +215,7 @@ public class ConnectionPool implements Runnable, LogSource, Configurable {
     private void makeBackgroundConnection() {
         connectionPending = true;
         try {
-            Thread connectThread = new Thread(this);
+            Thread connectThread = new Thread(this,"ConnectionPool-connect");
             connectThread.start();
         } catch(OutOfMemoryError oome) {
         // Give up on new connection
