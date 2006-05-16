@@ -48,9 +48,12 @@
  */
 package org.jpos.bsh;
 
-import org.jpos.ui.UI;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+
 import org.jdom.Element;
-import javax.swing.*;
+import org.jpos.ui.UI;
+
 import bsh.Interpreter;
 
 /**

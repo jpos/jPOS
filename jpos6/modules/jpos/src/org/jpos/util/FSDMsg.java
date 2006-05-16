@@ -49,28 +49,25 @@
 
 package org.jpos.util;
 
+import java.io.ByteArrayInputStream;
+import java.io.EOFException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
-import java.io.IOException;
-import java.io.EOFException;
-import java.io.ByteArrayInputStream;
 import java.io.UnsupportedEncodingException;
-import java.net.URL;
 import java.net.MalformedURLException;
-import java.util.Map;
+import java.net.URL;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.Map;
+
 import org.jdom.Element;
-import org.jdom.Document;
-import org.jdom.input.SAXBuilder;
-import org.jdom.output.Format;
-import org.jdom.output.XMLOutputter;
 import org.jdom.JDOMException;
+import org.jdom.input.SAXBuilder;
+import org.jpos.iso.ISOException;
+import org.jpos.iso.ISOUtil;
 import org.jpos.space.Space;
 import org.jpos.space.SpaceFactory;
-import org.jpos.iso.ISOUtil;
-import org.jpos.util.Loggeable;
-import org.jpos.iso.ISOException;
 
 /**
  * General purpose, Field Separator delimited message

@@ -67,6 +67,8 @@ import java.util.ListIterator;
  */
 public class ISOVField extends ISOField implements ISOVErrorList {
 
+    private static final long serialVersionUID = -2503711799295775875L;
+
     /**
      * Creates the vfield.
      * @param Source original field instance.

@@ -66,6 +66,8 @@ import org.jpos.util.Loggeable;
  */
 public class KeySerialNumber
         implements Serializable, Loggeable {
+
+    private static final long serialVersionUID = -8388775376202253082L;
     /**
      * baseKeyID a HexString representing the BaseKeyID (also called KeySet ID)
      */

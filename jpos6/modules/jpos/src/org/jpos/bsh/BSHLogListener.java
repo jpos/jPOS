@@ -60,17 +60,18 @@
  */
 package org.jpos.bsh;
 
-import bsh.EvalError;
-import bsh.Interpreter;
-import bsh.NameSpace;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Hashtable;
 import java.util.Map;
+
 import org.jpos.core.Configuration;
 import org.jpos.util.LogEvent;
+
+import bsh.Interpreter;
+import bsh.NameSpace;
 
 /** This is a log listener that reads its actions from Bean Shell scripts.
  * You can define many scripts, and the order in wich they are called, also you
@@ -184,7 +185,6 @@ public class BSHLogListener implements org.jpos.util.LogListener, org.jpos.core.
                         }
                     }else{
                         if(info == null) scripts.put(sources[i], info=new ScriptInfo());
-                        String code;
                         if(System.currentTimeMillis() > info.getLastCheck() + cfg.getLong("reload")){
                             info.setLastCheck(System.currentTimeMillis());
                             if(f.exists() && f.canRead() && f.isFile()){

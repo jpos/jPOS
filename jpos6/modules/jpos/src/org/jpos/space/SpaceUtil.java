@@ -49,8 +49,8 @@
 
 package org.jpos.space;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Space related helper methods

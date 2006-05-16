@@ -57,6 +57,8 @@ import org.jpos.iso.ISOException;
  * @version $Revision$ $Date$
  */
 public class SMException extends ISOException {
+
+    private static final long serialVersionUID = 6419380899728561889L;
     Exception nested = null;
 
     public SMException () {

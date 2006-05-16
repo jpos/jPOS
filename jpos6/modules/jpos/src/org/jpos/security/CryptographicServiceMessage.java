@@ -90,6 +90,8 @@ public class CryptographicServiceMessage implements Loggeable {
     public static final String TAG_ERF = "ERF";
 
     public static class ParsingException extends Exception {
+
+        private static final long serialVersionUID = 6984718759445061L;
         public ParsingException() {
             super();
         }

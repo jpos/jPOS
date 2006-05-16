@@ -48,8 +48,8 @@
  */
 
 package org.jpos.iso;
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Length is represented in ASCII (as in IFA_LL*)

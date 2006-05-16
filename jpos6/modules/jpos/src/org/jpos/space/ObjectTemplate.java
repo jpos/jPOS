@@ -6,10 +6,6 @@
  */
 package org.jpos.space;
 
-import java.util.Arrays;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.io.Serializable;
 
 public class ObjectTemplate implements Template {
     Object key;

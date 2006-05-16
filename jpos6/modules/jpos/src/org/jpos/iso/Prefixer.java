@@ -39,7 +39,6 @@
 
 package org.jpos.iso;
 
-import org.jpos.iso.ISOException;
 
 /**
  * This interface is used to encode and decode length prefixes.

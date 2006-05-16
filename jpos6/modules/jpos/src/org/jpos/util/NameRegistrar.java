@@ -64,6 +64,8 @@ public class NameRegistrar implements Loggeable {
     private Map registrar;
 
     public static class NotFoundException extends Exception {
+
+        private static final long serialVersionUID = 8744022794646381475L;
         public NotFoundException() {
             super();
         }

@@ -49,9 +49,11 @@
 
 package org.jpos.ui.factory;
 
-import java.awt.*;
-import javax.swing.*;
-import javax.swing.border.*;
+import java.awt.BorderLayout;
+
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+
 import org.jdom.Element;
 import org.jpos.ui.UI;
 import org.jpos.ui.UIFactory;

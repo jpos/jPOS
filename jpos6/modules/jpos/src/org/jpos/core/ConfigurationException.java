@@ -58,6 +58,8 @@ import org.jpos.iso.ISOException;
  * @since jPOS 1.2
  */
 public class ConfigurationException extends ISOException {
+
+    private static final long serialVersionUID = -5605240786314946532L;
     public ConfigurationException () {
         super();
     }

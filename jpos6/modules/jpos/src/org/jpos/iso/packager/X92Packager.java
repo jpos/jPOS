@@ -56,7 +56,9 @@ import org.jpos.iso.IFA_LLLCHAR;
 import org.jpos.iso.IFA_NUMERIC;
 import org.jpos.iso.IF_CHAR;
 import org.jpos.iso.ISOBasePackager;
+import org.jpos.iso.ISOComponent;
 import org.jpos.iso.ISOFieldPackager;
+import org.jpos.iso.ISOPackager;
 import org.jpos.iso.X92_BITMAP;
 
 /**

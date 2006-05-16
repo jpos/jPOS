@@ -48,17 +48,10 @@
  */
 package org.jpos.q2.qbean;
 
-import org.jpos.q2.Q2;
-import org.jpos.q2.QBean;
-import org.jpos.q2.QPersist;
-import org.jpos.q2.QBeanSupport;
-import org.jdom.Element;
-import org.jpos.util.Log;
-import org.jpos.util.Logger;
-
-import javax.management.*;
-
 import mx4j.tools.naming.NamingService;
+
+import org.jdom.Element;
+import org.jpos.q2.QBeanSupport;
 
 /**
  * @author <a href="mailto:taherkordy@dpi2.dpi.net.ir">Alireza Taherkordi</a>

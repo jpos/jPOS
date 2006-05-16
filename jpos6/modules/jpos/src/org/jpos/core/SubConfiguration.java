@@ -137,8 +137,6 @@ public class SubConfiguration implements Configuration{
      */
     public Object getObject (String propertyName) throws ConfigurationException{
         try{
-            Class[] paramTypes = {};
-            Object[] params = {};
             Object ret = 
                 Class.forName (get (propertyName)).newInstance();
             if(ret instanceof Configurable) 

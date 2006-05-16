@@ -51,8 +51,9 @@
 package org.jpos.iso.header;
 
 import java.io.PrintStream;
-import org.jpos.iso.ISOUtil;
+
 import org.jpos.iso.ISOHeader;
+import org.jpos.iso.ISOUtil;
 import org.jpos.util.Loggeable;
 
 /**
@@ -60,6 +61,10 @@ import org.jpos.util.Loggeable;
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
  */
 public class BaseHeader implements ISOHeader, Loggeable {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 8674535007934468935L;
     protected byte[] header;
 
     /**

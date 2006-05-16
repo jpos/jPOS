@@ -9,8 +9,6 @@ package org.jpos.iso;
 
 import junit.framework.TestCase;
 
-import org.jpos.iso.AsciiPrefixer;
-
 /**
  * Tests the ASCII length Prefixer.
  * @author jonathan.oconnor@xcom

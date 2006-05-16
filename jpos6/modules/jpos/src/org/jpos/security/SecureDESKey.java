@@ -75,6 +75,8 @@ import org.jpos.iso.ISOUtil;
  * @see SMAdapter
  */
 public class SecureDESKey extends SecureKey {
+
+    private static final long serialVersionUID = -9145281998779008306L;
     /**
      * The keyCheckValue allows identifying which clear key does this
      * secure key represent.<br>

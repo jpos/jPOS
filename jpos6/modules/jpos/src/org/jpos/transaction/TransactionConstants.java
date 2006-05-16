@@ -7,7 +7,6 @@
 
 package org.jpos.transaction;
 
-import java.io.Serializable;
 
 public interface TransactionConstants {
     public static final int ABORTED  = 0;

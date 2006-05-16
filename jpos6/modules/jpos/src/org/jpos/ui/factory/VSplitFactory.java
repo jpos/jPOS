@@ -48,9 +48,9 @@
  */
 package org.jpos.ui.factory;
 
-import java.awt.*;
-import javax.swing.*;
-import javax.swing.border.*;
+import javax.swing.JComponent;
+import javax.swing.JSplitPane;
+
 import org.jdom.Element;
 import org.jpos.ui.UI;
 import org.jpos.ui.UIFactory;

@@ -49,10 +49,10 @@
 
 package org.jpos.iso;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.StringTokenizer;
-import java.io.UnsupportedEncodingException;
 
 /**
  * varios functions needed to pack/unpack ISO-8583 fields

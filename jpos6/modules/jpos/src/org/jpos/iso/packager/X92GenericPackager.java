@@ -50,6 +50,7 @@
 package org.jpos.iso.packager;
 
 import java.io.InputStream;
+
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOFieldPackager;
 import org.jpos.iso.X92_BITMAP;

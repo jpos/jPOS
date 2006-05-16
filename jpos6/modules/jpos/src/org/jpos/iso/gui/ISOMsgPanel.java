@@ -125,6 +125,8 @@ import org.jpos.iso.ISOUtil;
  * @see ISORequestListenerPanel
  */
 public class ISOMsgPanel extends JPanel {
+
+    private static final long serialVersionUID = 7779880613544725704L;
     /**
      * @serial
      */
@@ -154,6 +156,8 @@ public class ISOMsgPanel extends JPanel {
     }
     private JComponent createISOMsgTable() {
         TableModel dataModel = new AbstractTableModel() {
+
+            private static final long serialVersionUID = 8917029825751856951L;
             public int getColumnCount() {
                 return 3;
             }

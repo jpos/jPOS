@@ -14,11 +14,11 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.Collection;
-import java.util.Stack;
 import java.util.Iterator;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Random;
+import java.util.Stack;
 import java.util.Vector;
 
 import org.jpos.core.Configurable;

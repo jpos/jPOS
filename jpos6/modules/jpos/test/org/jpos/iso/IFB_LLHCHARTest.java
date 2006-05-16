@@ -9,9 +9,6 @@ package org.jpos.iso;
 
 import junit.framework.TestCase;
 
-import org.jpos.iso.ISOField;
-import org.jpos.iso.IFB_LLHCHAR;
-
 /**
  * @author joconnor
  */

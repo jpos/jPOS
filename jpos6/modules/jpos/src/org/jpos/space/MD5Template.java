@@ -49,13 +49,15 @@
 
 package org.jpos.space;
 
-import java.util.Arrays;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.io.Serializable;
+import java.security.MessageDigest;
+import java.util.Arrays;
+
 import jdbm.helper.DefaultSerializer;
 
 public class MD5Template implements Template, Serializable  {
+
+    private static final long serialVersionUID = -1204861759575740048L;
     byte[] digest;
     Object key;
 

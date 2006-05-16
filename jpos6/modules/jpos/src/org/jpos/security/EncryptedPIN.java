@@ -88,6 +88,8 @@ import org.jpos.util.Loggeable;
  */
 public class EncryptedPIN
         implements Serializable, Loggeable {
+
+    private static final long serialVersionUID = -9117335317030664867L;
     /**
      * Account Number (the 12 right-most digits of the account number excluding the check digit)
      */

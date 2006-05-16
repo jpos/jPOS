@@ -48,11 +48,15 @@
  */
 package org.jpos.ui.factory;
 
-import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.text.html.*;
+import javax.swing.JComponent;
+import javax.swing.JEditorPane;
+import javax.swing.JLabel;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
+import javax.swing.text.html.HTMLDocument;
+import javax.swing.text.html.HTMLFrameHyperlinkEvent;
+
 import org.jdom.Element;
-import java.net.URL;
 import org.jpos.ui.UI;
 import org.jpos.ui.UIFactory;
 

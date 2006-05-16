@@ -69,6 +69,8 @@ public class ISOField
     extends ISOComponent 
     implements Cloneable, Externalizable
 {
+
+    private static final long serialVersionUID = -4053616930139887829L;
     protected int fieldNumber;
     protected String value;
 

@@ -108,11 +108,12 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListModel;
 
-import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOMsg;
 import org.jpos.iso.ISORequestListener;
 
 public class ISORequestListenerPanel extends JPanel implements Observer {
+
+    private static final long serialVersionUID = -1786048717180010741L;
     /**
      * @serial
      */
@@ -144,21 +145,19 @@ public class ISORequestListenerPanel extends JPanel implements Observer {
     }
 
     public void update(Observable o, Object arg) {
-        ISORequestListener l = (ISORequestListener) o;
         if (arg != null && arg instanceof ISOMsg) {
             ISOMsg m = (ISOMsg) arg;
-            try {
-                String mti = (String) m.getValue(0);
-                int imti   = Integer.parseInt(mti);
-                log.addElement(m);
-                if (log.getSize() > LOG_CAPACITY) 
-                    log.remove(0);
-            } catch (ISOException e) { }
+            log.addElement(m);
+            if (log.getSize() > LOG_CAPACITY) 
+                log.remove(0);
         }
     }
 
     private JPanel createPanel() {
         JPanel A = new JPanel() {
+
+            private static final long serialVersionUID = -6042644671679973897L;
+
             public Insets getInsets() {
                 return new Insets(10,10,10,10);
             }

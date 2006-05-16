@@ -9,8 +9,6 @@ package org.jpos.iso;
 
 import junit.framework.TestCase;
 
-import org.jpos.iso.AsciiHexInterpreter;
-
 
 /**
  * @author joconnor

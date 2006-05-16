@@ -62,6 +62,9 @@ public class BlockingQueue {
     private int consumers = 0;
 
     public static class Closed extends RuntimeException {
+
+        private static final long serialVersionUID = 3404885702116373450L;
+
         public Closed() {
             super ("queue closed");
         }

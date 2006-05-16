@@ -49,15 +49,14 @@
 package org.jpos.q2.qbean;
 
 import java.util.Set;
-import java.rmi.RemoteException;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
+
 import javax.management.ObjectName;
+
 import org.jpos.q2.Q2;
 import org.jpos.q2.QBeanSupport;
+import org.jpos.space.LocalSpace;
 import org.jpos.space.Space;
 import org.jpos.space.SpaceFactory;
-import org.jpos.space.LocalSpace;
 
 /**
  * Space Adaptor

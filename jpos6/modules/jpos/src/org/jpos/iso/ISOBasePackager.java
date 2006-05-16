@@ -52,9 +52,9 @@ package org.jpos.iso;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Hashtable;
-import java.util.ArrayList;
 
 import org.jpos.util.LogEvent;
 import org.jpos.util.LogSource;

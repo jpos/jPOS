@@ -50,13 +50,12 @@
 package org.jpos.core;
 import java.io.PrintStream;
 import java.io.Serializable;
+import java.util.StringTokenizer;
 
 import org.jpos.iso.ISODate;
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOMsg;
 import org.jpos.util.Loggeable;
-
-import java.util.StringTokenizer;
 
 /**
  * @author apr@cs.com.uy
@@ -66,6 +65,8 @@ import java.util.StringTokenizer;
  * represents a CardHolder
  */
 public class CardHolder implements Cloneable, Serializable, Loggeable {
+
+    private static final long serialVersionUID = 7449770625551878435L;
     private static final String TRACK1_SEPARATOR = "^";
     private static final char TRACK2_SEPARATOR = '=';
     private static final int  BINLEN           =  6;
