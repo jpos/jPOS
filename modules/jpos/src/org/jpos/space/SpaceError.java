@@ -60,6 +60,8 @@ package org.jpos.space;
  * @since 1.4.7
  */
 public class SpaceError extends Error {
+
+    private static final long serialVersionUID = 2478239452513511965L;
     public SpaceError() {
         super();
     }

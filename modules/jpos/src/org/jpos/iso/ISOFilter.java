@@ -60,6 +60,8 @@ import org.jpos.util.LogEvent;
  */
 public interface ISOFilter {
     public class VetoException extends ISOException {
+
+        private static final long serialVersionUID = -4640160572663583113L;
         public VetoException () {
             super();
         }

@@ -50,6 +50,7 @@
 package org.jpos.space;
 
 import java.util.StringTokenizer;
+
 import org.jpos.util.NameRegistrar;
 
 /**
@@ -107,7 +108,6 @@ public class SpaceFactory {
         if (spaceUri == null)
             return getSpace ();
 
-        Space sp = null;
         String scheme = null;
         String name   = null;
         String param  = null;

@@ -50,21 +50,21 @@
 package org.jpos.ui.factory;
 
 import java.awt.Font;
-import javax.swing.*;
-import javax.swing.text.*;
-import javax.swing.border.*;
-import org.jdom.Element;
-
-import java.io.PrintStream;
 import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 
-import org.jpos.util.Logger;
-import org.jpos.util.LogEvent;
-import org.jpos.util.LogListener;
-import org.jpos.util.NameRegistrar;
+import javax.swing.JComponent;
+import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
+import javax.swing.text.BadLocationException;
 
+import org.jdom.Element;
 import org.jpos.ui.UI;
 import org.jpos.ui.UIFactory;
+import org.jpos.util.LogEvent;
+import org.jpos.util.LogListener;
+import org.jpos.util.Logger;
+import org.jpos.util.NameRegistrar;
 
 /**
  * @author Alejandro Revilla
@@ -127,7 +127,6 @@ public class LogListenerFactory implements UIFactory {
                 text.setText ("");
                 return;
             }
-            String s = text.getText ();
             int lc = text.getLineCount ();
             if (lc > maxLines) {
                 try {

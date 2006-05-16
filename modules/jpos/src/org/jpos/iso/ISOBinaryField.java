@@ -73,6 +73,8 @@ public class ISOBinaryField
     extends ISOComponent 
     implements Cloneable, Externalizable
 {
+
+    private static final long serialVersionUID = 7702505828876640372L;
     protected int fieldNumber;
     protected byte[] value;
 

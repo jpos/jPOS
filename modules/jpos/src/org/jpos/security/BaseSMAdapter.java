@@ -57,6 +57,7 @@ import org.jpos.util.LogSource;
 import org.jpos.util.Logger;
 import org.jpos.util.NameRegistrar;
 import org.jpos.util.SimpleMsg;
+import org.jpos.util.NameRegistrar.NotFoundException;
 
 
 /**

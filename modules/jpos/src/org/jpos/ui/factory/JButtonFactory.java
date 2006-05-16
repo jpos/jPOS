@@ -49,8 +49,12 @@
 package org.jpos.ui.factory;
 
 import java.awt.Font;
-import javax.swing.*;
-import javax.swing.border.*;
+
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.border.EmptyBorder;
+
 import org.jdom.Element;
 import org.jpos.ui.UI;
 import org.jpos.ui.UIFactory;

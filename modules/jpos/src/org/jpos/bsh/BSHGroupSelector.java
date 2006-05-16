@@ -7,9 +7,9 @@
 package org.jpos.bsh;
 
 import java.io.Serializable;
+
 import org.jpos.core.ConfigurationException;
 import org.jpos.transaction.GroupSelector;
-import org.jpos.util.Log;
 import org.jpos.util.LogEvent;
 import org.jpos.util.Logger;
 

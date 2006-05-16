@@ -49,49 +49,48 @@
 
 package org.jpos.q2;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.ByteArrayOutputStream;
-import java.io.ByteArrayInputStream;
 import java.io.OutputStreamWriter;
-import java.util.List;
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.Iterator;
-import javax.management.ObjectName;
-import javax.management.ObjectInstance;
-import javax.management.NotCompliantMBeanException;
-import javax.management.MBeanRegistrationException;
-import javax.management.MalformedObjectNameException;
-import javax.management.InstanceAlreadyExistsException;
-import javax.management.InstanceNotFoundException;
-import javax.management.MBeanServer;
-import javax.management.MBeanServerFactory;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
-import java.security.GeneralSecurityException;
+import javax.management.InstanceAlreadyExistsException;
+import javax.management.InstanceNotFoundException;
+import javax.management.MBeanRegistrationException;
+import javax.management.MBeanServer;
+import javax.management.MBeanServerFactory;
+import javax.management.MalformedObjectNameException;
+import javax.management.NotCompliantMBeanException;
+import javax.management.ObjectInstance;
+import javax.management.ObjectName;
 
-import org.jdom.Element;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.PosixParser;
 import org.jdom.Document;
+import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
-
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.PosixParser;
+import org.jpos.iso.ISOException;
+import org.jpos.iso.ISOUtil;
 import org.jpos.util.Log;
 import org.jpos.util.Logger;
 import org.jpos.util.SimpleLogListener;
-import org.jpos.iso.ISOUtil;
-import org.jpos.iso.ISOException;
 
 /**
  * @author <a href="mailto:taherkordy@dpi2.dpi.net.ir">Alireza Taherkordi</a>
@@ -501,7 +500,6 @@ public class Q2 implements FileFilter {
         XMLOutputter out = new XMLOutputter (Format.getPrettyFormat());
         Document doc = new Document ();
         doc.setRootElement (e);
-        File f = new File (deployDir, e.getName ());
         File qbean = new File (
             deployDir, ISOUtil.zeropad (Integer.toString (i),3) + "_" 
             + e.getName () + ".xml"
@@ -576,9 +574,6 @@ public class Q2 implements FileFilter {
 
     private void setExit (boolean exit) {
         this.exit = exit;
-    }
-    private boolean isExit () {
-        return exit;
     }
     public static void main (String[] args) throws Exception {
         Q2 q2 = new Q2(args);

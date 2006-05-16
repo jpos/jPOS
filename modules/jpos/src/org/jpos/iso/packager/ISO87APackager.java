@@ -58,7 +58,9 @@ import org.jpos.iso.IFA_LLNUM;
 import org.jpos.iso.IFA_NUMERIC;
 import org.jpos.iso.IF_CHAR;
 import org.jpos.iso.ISOBasePackager;
+import org.jpos.iso.ISOComponent;
 import org.jpos.iso.ISOFieldPackager;
+import org.jpos.iso.ISOPackager;
 
 /**
  * ISO 8583 v1987 ASCII Packager

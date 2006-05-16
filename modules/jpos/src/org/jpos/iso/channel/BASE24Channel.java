@@ -55,6 +55,8 @@ import java.net.ServerSocket;
 import java.net.SocketException;
 
 import org.jpos.iso.BaseChannel;
+import org.jpos.iso.ISOChannel;
+import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOMsg;
 import org.jpos.iso.ISOPackager;
 

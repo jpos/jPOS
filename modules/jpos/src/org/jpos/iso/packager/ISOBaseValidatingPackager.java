@@ -84,9 +84,6 @@ public class ISOBaseValidatingPackager extends ISOBasePackager implements ISOVal
         try {
             ISOComponent c;
             Hashtable fields = ((ISOMsg)m).getChildren();
-            int len = 0;
-            int first = 0;
-            byte[] b;
             /** Field  validations **/
             for (int i=0; i<fldVld.length; i++) {
                 if ( fldVld[i] != null && (c=(ISOComponent) fields.get (new Integer ( ((ISOFieldValidator)fldVld[i]).getFieldId() ))) != null ){

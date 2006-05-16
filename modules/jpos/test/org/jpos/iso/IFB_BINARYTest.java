@@ -9,9 +9,6 @@ package org.jpos.iso;
 
 import junit.framework.TestCase;
 
-import org.jpos.iso.IFB_BINARY;
-import org.jpos.iso.ISOBinaryField;
-
 /**
  * @author joconnor
  */

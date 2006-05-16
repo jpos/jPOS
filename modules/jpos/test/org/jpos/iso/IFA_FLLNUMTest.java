@@ -9,9 +9,6 @@ package org.jpos.iso;
 
 import junit.framework.TestCase;
 
-import org.jpos.iso.IFA_FLLNUM;
-import org.jpos.iso.ISOField;
-
 /**
  * @author joconnor
  */

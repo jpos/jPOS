@@ -7,18 +7,18 @@
 
 package org.jpos.q2;
 
-import org.jdom.Element;
-import org.jpos.util.Log;
-import org.jpos.core.Configurable;
-import org.jpos.core.Configuration;
-import org.jpos.core.ConfigurationException;
-
-import java.util.Iterator;
-import java.lang.reflect.Method;
-import java.net.URL;
 import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.lang.reflect.Method;
+import java.net.URL;
+import java.util.Iterator;
+
+import org.jdom.Element;
+import org.jpos.core.Configurable;
+import org.jpos.core.Configuration;
+import org.jpos.core.ConfigurationException;
+import org.jpos.util.Log;
 
 /**
  * @author <a href="mailto:taherkordy@dpi2.dpi.net.ir">Alireza Taherkordi</a>

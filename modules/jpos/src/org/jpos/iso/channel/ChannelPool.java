@@ -15,7 +15,6 @@ import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
 import org.jpos.iso.ISOChannel;
-import org.jpos.iso.ISOClientSocketFactory;
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOMsg;
 import org.jpos.iso.ISOPackager;
@@ -41,7 +40,6 @@ public class ChannelPool implements ISOChannel, LogSource, Configurable {
         // nothing to do
     }
     public synchronized void connect () throws IOException {
-        IOException ioe = null;
         current = null;
         LogEvent evt = new LogEvent (this, "connect");
         evt.addMessage ("pool-size=" + Integer.toString (pool.size()));

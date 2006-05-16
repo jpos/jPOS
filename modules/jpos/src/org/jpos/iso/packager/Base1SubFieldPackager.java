@@ -59,6 +59,7 @@ import org.jpos.iso.ISOBitMapPackager;
 import org.jpos.iso.ISOComponent;
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOFieldPackager;
+import org.jpos.iso.ISOPackager;
 import org.jpos.iso.ISOUtil;
 import org.jpos.util.LogEvent;
 import org.jpos.util.Logger;

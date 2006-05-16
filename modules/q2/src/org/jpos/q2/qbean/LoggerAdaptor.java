@@ -50,17 +50,14 @@
 package org.jpos.q2.qbean;
 
 import java.util.Iterator;
-import org.jdom.Element;
 
-import org.jpos.q2.QFactory;
-import org.jpos.q2.QBeanSupport;
+import org.jdom.Element;
 import org.jpos.core.Configurable;
 import org.jpos.core.ConfigurationException;
-import org.jpos.core.SimpleConfiguration;
-
-import org.jpos.util.Logger;
+import org.jpos.q2.QBeanSupport;
+import org.jpos.q2.QFactory;
 import org.jpos.util.LogListener;
-import org.jpos.util.NameRegistrar;
+import org.jpos.util.Logger;
 
 public class LoggerAdaptor extends QBeanSupport {
     Logger logger;

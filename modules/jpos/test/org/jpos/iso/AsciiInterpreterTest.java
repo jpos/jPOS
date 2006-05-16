@@ -9,9 +9,6 @@ package org.jpos.iso;
 
 import junit.framework.TestCase;
 
-import org.jpos.iso.AsciiInterpreter;
-import org.jpos.iso.Interpreter;
-
 
 /**
  * @author joconnor

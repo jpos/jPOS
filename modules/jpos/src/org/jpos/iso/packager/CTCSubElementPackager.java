@@ -77,7 +77,6 @@ public class CTCSubElementPackager extends ISOBaseValidatingPackager {
 
     public byte[] pack ( ISOComponent c ) throws ISOException {
         try     {
-            int len;
             Hashtable tab = c.getChildren();
             StringBuffer sb = new StringBuffer();
             for ( int i = 0; i < fld.length; i++ ) {

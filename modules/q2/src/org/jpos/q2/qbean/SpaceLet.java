@@ -48,21 +48,20 @@
  */
 package org.jpos.q2.qbean;
 
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.io.IOException;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Iterator;
 
-import bsh.Interpreter;
-import bsh.EvalError;
 import org.jdom.Element;
-import org.jpos.q2.QBeanSupport;
 import org.jpos.core.ConfigurationException;
+import org.jpos.q2.QBeanSupport;
 import org.jpos.space.Space;
 import org.jpos.space.SpaceError;
 import org.jpos.space.SpaceFactory;
 import org.jpos.util.NameRegistrar;
+
+import bsh.EvalError;
+import bsh.Interpreter;
 
 public class SpaceLet extends QBeanSupport implements Space {
     Space sp;
@@ -128,28 +127,7 @@ public class SpaceLet extends QBeanSupport implements Space {
             throw new SpaceError (t);
         }
     }
-    public void outSingle (Object key, Object value) {
-        try {
-            Interpreter bsh = initInterpreter (key, value);
-            synchronized (sp) {
-                if (!eval (bsh, outScript, outSource))
-                    sp.outSingle (key, value);
-            }
-        } catch (Throwable t) {
-            throw new SpaceError (t);
-        }
-    }
-    public void outSingle (Object key, Object value, long timeout) {
-        try {
-            Interpreter bsh = initInterpreter (key, value, timeout);
-            synchronized (sp) {
-                if (!eval (bsh, outScript, outSource))
-                    sp.outSingle (key, value, timeout);
-            }
-        } catch (Throwable t) {
-            throw new SpaceError (t);
-        }
-    }
+
     public Object in  (Object key) {
         try {
             Interpreter bsh = initInterpreter (key);

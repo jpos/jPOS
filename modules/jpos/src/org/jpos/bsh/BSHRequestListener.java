@@ -51,14 +51,15 @@ package org.jpos.bsh;
 
 import java.util.Arrays;
 import java.util.HashSet;
+
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
 import org.jpos.core.ReConfigurable;
-import org.jpos.iso.ISOChannel;
-import org.jpos.iso.ISORequestListener;
 import org.jpos.iso.ISOMsg;
+import org.jpos.iso.ISORequestListener;
 import org.jpos.iso.ISOSource;
 import org.jpos.util.Log;
+
 import bsh.Interpreter;
 
 /**

@@ -62,6 +62,7 @@ import org.jpos.iso.ISOBasePackager;
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOFieldPackager;
 import org.jpos.iso.ISOMsgFieldPackager;
+import org.jpos.iso.ISOPackager;
 import org.jpos.util.Logger;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;

@@ -64,6 +64,7 @@ import org.jpos.iso.ISOException;
  */
 public class ISOVException extends ISOException {
 
+    private static final long serialVersionUID = 8609716526640071611L;
     public ISOVException( String Description ) {
         super( Description );
     }

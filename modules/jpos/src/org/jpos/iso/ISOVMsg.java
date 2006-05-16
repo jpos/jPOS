@@ -67,6 +67,8 @@ import java.util.ListIterator;
  */
 public class ISOVMsg extends ISOMsg implements ISOVErrorList {
 
+    private static final long serialVersionUID = 443461124206801037L;
+
     /**
      * Copy properties from parent.
      * @param Source original instance.

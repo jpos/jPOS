@@ -49,10 +49,10 @@
 
 package org.jpos.ui.factory;
 
-import javax.swing.*;
-import javax.swing.border.*;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+
 import org.jdom.Element;
-import java.util.Iterator;
 import org.jpos.ui.UI;
 import org.jpos.ui.UIFactory;
 

@@ -1,9 +1,8 @@
 package org.jpos.space;
 
-import junit.framework.*;
-import java.io.*;
-import java.util.*;
-import org.jpos.util.*;
+import junit.framework.TestCase;
+
+import org.jpos.util.Profiler;
 
 public class JDBMSpaceTestCase extends TestCase {
     public static final int COUNT = 1000;

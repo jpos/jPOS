@@ -76,6 +76,8 @@ import org.jpos.iso.ISOMsg;
  * @see org.jpos.iso.ISOMsg
  */
 public class ISOMeter extends JComponent implements Runnable {
+
+    private static final long serialVersionUID = -1770533267122111538L;
     /**
      * @serial
      */

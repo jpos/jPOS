@@ -50,9 +50,8 @@
 package org.jpos.q2.qbean;
 
 import java.io.PrintStream;
+
 import org.jpos.q2.QBeanSupport;
-import org.jpos.util.LogEvent;
-import org.jpos.util.LogSource;
 import org.jpos.util.Loggeable;
 import org.jpos.util.Logger;
 import org.jpos.util.NameRegistrar;

@@ -6,13 +6,13 @@
  */
 package org.jpos.util;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.io.ByteArrayOutputStream;
 import java.sql.SQLException;
-import java.util.EventObject;
 import java.util.Iterator;
 import java.util.Vector;
+
 import org.jdom.Element;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
@@ -48,7 +48,6 @@ public class LogEvent {
     }
     public LogEvent (String tag, Object msg) {
         super();
-        this.source  = source;
         this.tag     = tag;
         this.payLoad = new Vector(1);
         addMessage(msg);

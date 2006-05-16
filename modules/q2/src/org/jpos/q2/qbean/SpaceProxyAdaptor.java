@@ -48,13 +48,13 @@
  */
 package org.jpos.q2.qbean;
 
-import java.util.Set;
 import java.rmi.RemoteException;
+import java.util.Set;
+
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import org.jpos.q2.QBeanSupport;
-
 import org.jpos.space.SpaceProxy;
 
 /**

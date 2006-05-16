@@ -127,6 +127,8 @@ import org.jpos.iso.ISOMsg;
 import org.jpos.iso.ISOUtil;
 
 public class ISOChannelPanel extends JPanel implements Observer {
+
+    private static final long serialVersionUID = -8069489863639386589L;
     /**
      * @serial
      */
@@ -214,6 +216,9 @@ public class ISOChannelPanel extends JPanel implements Observer {
 
     private JPanel createCountersPanel() {
         JPanel A = new JPanel() {
+
+            private static final long serialVersionUID = 1175437215105556679L;
+
             public Insets getInsets() {
                 return new Insets(10,10,10,10);
             }

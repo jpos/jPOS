@@ -60,6 +60,7 @@ import org.jpos.iso.IFB_BITMAP;
 import org.jpos.iso.IFEP_LLCHAR;
 import org.jpos.iso.IF_CHAR;
 import org.jpos.iso.ISOBasePackager;
+import org.jpos.iso.ISOComponent;
 import org.jpos.iso.ISOFieldPackager;
 import org.jpos.iso.ISOMsgFieldPackager;
 import org.jpos.iso.ISOPackager;

@@ -71,6 +71,8 @@ public interface SecureKeyStore {
 
     public static class SecureKeyStoreException extends ISOException {
 
+        private static final long serialVersionUID = 1976885367352075834L;
+
         public SecureKeyStoreException () {
             super();
         }

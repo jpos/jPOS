@@ -73,6 +73,8 @@ import org.jpos.iso.ISOUtil;
  *
  */
 public class BASE1Header extends BaseHeader {
+
+    private static final long serialVersionUID = 6466427524726021374L;
     public static final int LENGTH = 22;
 
     public BASE1Header() {

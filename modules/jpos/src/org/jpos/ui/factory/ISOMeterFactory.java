@@ -49,16 +49,15 @@
 
 package org.jpos.ui.factory;
 
-import java.util.Observer;
 import java.util.Observable;
-import javax.swing.*;
-import javax.swing.border.*;
-import org.jdom.Element;
 
-import org.jpos.iso.*;
-import org.jpos.iso.gui.*;
-import org.jpos.iso.packager.*;
-import org.jpos.iso.channel.*;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+
+import org.jdom.Element;
+import org.jpos.iso.ISOChannel;
+import org.jpos.iso.gui.ISOChannelPanel;
+import org.jpos.iso.gui.ISOMeter;
 import org.jpos.ui.UI;
 import org.jpos.ui.UIFactory;
 import org.jpos.util.NameRegistrar;

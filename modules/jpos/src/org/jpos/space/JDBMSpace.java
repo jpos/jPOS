@@ -6,28 +6,22 @@
  */
 package org.jpos.space;
 
-import java.io.IOException;
-import java.io.Serializable;
 import java.io.Externalizable;
+import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.rmi.RemoteException;
-import java.util.Properties;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.TimerTask;
 import java.util.ConcurrentModificationException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+import java.util.TimerTask;
 
 import jdbm.RecordManager;
 import jdbm.RecordManagerFactory;
 import jdbm.RecordManagerOptions;
 import jdbm.helper.FastIterator;
-import jdbm.htree.HTree;
 import jdbm.helper.Serializer;
-import jdbm.helper.DefaultSerializer;
-import jdbm.helper.FastIterator;
+import jdbm.htree.HTree;
 
 import org.jpos.util.DefaultTimer;
 
@@ -338,7 +332,7 @@ public class JDBMSpace extends TimerTask implements Space {
 
     private void purge (Object key) throws IOException {
         Head head = (Head) htree.get (key);
-        Ref ref, previousRef = null;
+        Ref previousRef = null;
         if (head != null) {
             for (long recid = head.first; recid >= 0; ) {
                 Ref r = (Ref) recman.fetch (recid, refSerializer);
@@ -478,7 +472,7 @@ public class JDBMSpace extends TimerTask implements Space {
         Object obj = null;
         Object key = tmpl.getKey();
         Head head = (Head) htree.get (key);
-        Ref ref, previousRef = null;
+        Ref previousRef = null;
         long previousRecId = 0;
         int unlinkCount = 0;
         if (head != null) {

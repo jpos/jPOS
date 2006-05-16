@@ -52,6 +52,7 @@ package org.jpos.iso.packager;
 import java.io.InputStream;
 import java.util.Vector;
 
+import org.jpos.iso.ISOBasePackager;
 import org.jpos.iso.ISOComponent;
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOField;

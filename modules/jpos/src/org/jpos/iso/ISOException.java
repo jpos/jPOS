@@ -61,6 +61,8 @@ import org.jpos.util.Loggeable;
  * @version $Revision$ $Date$
  */
 public class ISOException extends Exception implements Loggeable {
+
+    private static final long serialVersionUID = -777216335204861186L;
     /**
      * @serial
      */

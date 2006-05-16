@@ -55,6 +55,7 @@ import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
 import org.jpos.util.BlockingQueue.Closed;
+import org.jpos.util.NameRegistrar.NotFoundException;
 
 
 

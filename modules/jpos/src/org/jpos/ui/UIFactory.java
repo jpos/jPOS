@@ -50,6 +50,7 @@
 package org.jpos.ui;
 
 import javax.swing.JComponent;
+
 import org.jdom.Element;
 
 /**

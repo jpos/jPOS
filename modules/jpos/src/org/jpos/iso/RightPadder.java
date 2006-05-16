@@ -39,7 +39,6 @@
 
 package org.jpos.iso;
 
-import org.jpos.iso.ISOException;
 
 /**
  * Implements the Padder interface for padding strings and byte arrays on the

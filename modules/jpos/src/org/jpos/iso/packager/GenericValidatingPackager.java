@@ -173,9 +173,6 @@ public class GenericValidatingPackager extends GenericPackager implements ISOVal
         try {
             ISOComponent c;
             Hashtable fields = ((ISOMsg)m).getChildren();
-            int len = 0;
-            int first = 0;
-            byte[] b;
             /** Field  validations **/
             for (int i=0; i < fvlds.length; i++) {
                 if ( fvlds[i] != null && (c=(ISOComponent) fields.get (new Integer ( ((ISOFieldValidator)fvlds[i]).getFieldId() ))) != null ){
@@ -437,7 +434,6 @@ onto the stack.
         }
 
         ISOFieldValidator[] makeFieldValidatorArray ( Hashtable tab ){
-            int maxField = 0;
             // Create the array
             ISOFieldValidator fvlds[] = new ISOFieldValidator[tab.keySet().size()];
             // Populate it

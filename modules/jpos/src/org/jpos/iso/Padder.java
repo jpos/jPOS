@@ -39,7 +39,6 @@
 
 package org.jpos.iso;
 
-import org.jpos.iso.ISOException;
 
 /**
  * An interface for padding and unpadding strings and byte arrays.
