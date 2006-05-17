@@ -104,10 +104,7 @@ public class XMLPackager extends DefaultHandler
         p   = new PrintStream(out);
         stk = new Stack();
         try {
-            reader = XMLReaderFactory.createXMLReader();
-            reader.setFeature ("http://xml.org/sax/features/validation",false);
-            reader.setContentHandler(this);
-            reader.setErrorHandler(this);
+            reader = createXMLReader();
         } catch (Exception e) {
             throw new ISOException (e.toString());
         }
@@ -276,6 +273,23 @@ public class XMLPackager extends DefaultHandler
     }
     public Logger getLogger() {
         return logger;
+    }
+    private XMLReader createXMLReader () throws SAXException {
+        XMLReader reader = null;
+        try {
+            reader = XMLReaderFactory.createXMLReader();
+        } catch (SAXException e) {
+            reader = XMLReaderFactory.createXMLReader (
+                System.getProperty( 
+                    "org.xml.sax.driver", 
+                    "org.apache.crimson.parser.XMLReaderImpl"
+                )
+            );
+        }
+        reader.setFeature ("http://xml.org/sax/features/validation",false);
+        reader.setContentHandler(this);
+        reader.setErrorHandler(this);
+        return reader;
     }
 }
 
