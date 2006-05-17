@@ -234,19 +234,23 @@ public class GenericPackager
     }
 
     private XMLReader createXMLReader () throws SAXException {
-        XMLReader reader = XMLReaderFactory.createXMLReader(
-//                System.getProperty( "sax.parser", 
-//                "org.apache.xerces.parsers.SAXParser"));
-        );
-
+        XMLReader reader = null;
+        try {
+            reader = XMLReaderFactory.createXMLReader();
+        } catch (SAXException e) {
+            reader = XMLReaderFactory.createXMLReader (
+                System.getProperty( 
+                    "org.xml.sax.driver", 
+                    "org.apache.crimson.parser.XMLReaderImpl"
+                )
+            );
+        }
         reader.setFeature ("http://xml.org/sax/features/validation", true);
         GenericContentHandler handler = new GenericContentHandler();
         reader.setContentHandler(handler);
         reader.setErrorHandler(handler);
         return reader;
     }
-
-
     private void setGenericPackagerParams (Attributes atts)
     {
         String maxField  = atts.getValue("maxValidField");
