@@ -156,8 +156,7 @@
         <mapper type="regexp" from="^\w*[/|\\](.*)" to="\1" />
         <fileset dir="${build.modules}" excludesfile="${modules.ignore.list}">
           <include name="**/*.java"/>
-          <include name="**/*.hbm.xml"/>
-          <include name="**/*.cfg.xml"/>
+          <include name="**/*.xml"/>
           <include name="**/*.properties"/>
           <include name="**/cfg/**"/>
           <exclude name="**/cfg/_*" />
