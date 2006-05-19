@@ -191,8 +191,11 @@ public class Q2 implements FileFilter {
     }
     public void shutdown () {
         shutdown = true;
-        if (q2Thread != null)
+        if (q2Thread != null) {
+            log.info ("shutting down");
             q2Thread.interrupt ();
+        }
+        q2Thread = null;
     }
     public QClassLoader getLoader () {
         return loader;
@@ -267,8 +270,8 @@ public class Q2 implements FileFilter {
                 public void run () {
                     shuttingDown = true;
                     shutdown = true;
-                    log.info ("shutting down");
                     if (q2Thread != null) {
+                        log.info ("shutting down (hook)");
                         try {
                             q2Thread.join (SHUTDOWN_TIMEOUT);
                         } catch (InterruptedException e) { }
