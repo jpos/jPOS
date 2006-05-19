@@ -4,7 +4,7 @@
  * See terms of license at http://jpos.org/license.html
  *
  */
-package org.jpos.q2.transaction;
+package org.jpos.transaction;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -24,11 +24,6 @@ import org.jpos.q2.QBeanSupport;
 import org.jpos.core.ConfigurationException;
 import org.jpos.util.Logger;
 import org.jpos.util.LogEvent;
-import org.jpos.transaction.TransactionConstants;
-import org.jpos.transaction.TransactionParticipant;
-import org.jpos.transaction.GroupSelector;
-import org.jpos.transaction.AbortParticipant;
-import org.jpos.transaction.ContextRecovery;
 
 public class TransactionManager 
     extends QBeanSupport 
