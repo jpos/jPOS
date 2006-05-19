@@ -1,0 +1,8 @@
+<txnmgr-test class="org.jpos.transaction.TransactionManager" logger="Q2">
+ <property name="queue"            value="TXNMGRTEST" />
+ <property name="sessions"         value="4" />
+ <property name="persistent-space" value="jdbm:txnmgrtest" />
+
+ <participant class="org.jpos.transaction.participant.Debug" logger="Q2" />
+</txnmgr-test>
+
