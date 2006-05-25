@@ -49,21 +49,13 @@
 
 package org.jpos.util;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FilenameFilter;
-import java.io.IOException;
+import java.io.*;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.StringTokenizer;
-import java.util.Vector;
+import java.util.*;
 
-import org.jpos.core.Configurable;
-import org.jpos.core.Configuration;
-import org.jpos.core.ConfigurationException;
-import org.jpos.core.ReConfigurable;
+import org.jpos.core.*;
 import org.jpos.iso.ISOException;
+import org.jpos.util.*;
 
 /**
  * DirPoll operates on a set of directories which defaults to
@@ -102,6 +94,7 @@ public class DirPoll extends SimpleLogSource
     private Object processor;
     private Configuration cfg;
     private boolean shutdown;
+    private boolean paused = false;
     private boolean shouldArchive;
     private boolean shouldTimestampArchive;
     private String archiveDateFormat;
@@ -188,7 +181,7 @@ public class DirPoll extends SimpleLogSource
         }
         this.cfg = cfg;
 
-        setRequestDir  (this.cfg.get ("request.dir",  "request"));
+        setRequestDir  (cfg.get ("request.dir",  "request"));
         setResponseDir (cfg.get ("response.dir", "response"));
         setTmpDir      (cfg.get ("tmp.dir",      "tmp"));
         setRunDir      (cfg.get ("run.dir",      "run"));
@@ -237,6 +230,16 @@ public class DirPoll extends SimpleLogSource
         if (prio.size() == 0)
             addPriority("");
         while (!shutdown) {
+            synchronized (this) {
+                if (paused) {
+                    try {
+                        wait();
+                        paused = false;
+                    } catch (InterruptedException e) {
+                    }
+                }
+            }
+
             try {
                 File f;
                 synchronized (this) {
@@ -306,13 +309,13 @@ public class DirPoll extends SimpleLogSource
         return destination;
     }
 
-    private void archive(File f) throws IOException {
-        String archiveFilename = f.getName();
+    private void store(File f, File destinationDirectory) throws IOException {
+        String storedFilename = f.getName();
         if (shouldTimestampArchive)
-            archiveFilename = f.getName() + "." + new SimpleDateFormat(archiveDateFormat).format(new Date());
-        File destination = new File(archiveDir, archiveFilename);
+            storedFilename = f.getName() + "." + new SimpleDateFormat(archiveDateFormat).format(new Date());
+        File destination = new File(destinationDirectory, storedFilename);
         if (!f.renameTo(destination))
-            throw new IOException("Unable to archive " + "'" + f.getName() + "'");
+            throw new IOException("Unable to archive " + "'" + f.getName() + "' in directory " + destinationDirectory);
     }
     
     private File scan() {
@@ -375,7 +378,7 @@ public class DirPoll extends SimpleLogSource
                     ((FileProcessor) processor).process (request);
 
                 if (shouldArchive) {
-                    archive(request);
+                    store(request, archiveDir);
                 } else {
                     if (!request.delete ())
                         throw new DirPollException 
@@ -386,7 +389,7 @@ public class DirPoll extends SimpleLogSource
                 logEvent = evt;
                 evt.addMessage (e);
                 try {
-                    moveTo (request, badDir);
+                    store (request, badDir);
                 } catch (IOException _e) {
                     evt.addMessage ("Can't move to "+badDir.getPath());
                     evt.addMessage (_e);
@@ -398,8 +401,6 @@ public class DirPoll extends SimpleLogSource
         }
     }
     public static class DirPollException extends ISOException {
-
-        private static final long serialVersionUID = -578783870958446453L;
         public DirPollException () {
             super();
         }
@@ -411,6 +412,33 @@ public class DirPoll extends SimpleLogSource
         }
         public DirPollException (String detail, Exception nested) {
             super(detail, nested);
+        }
+    }
+    
+    public void pause() {
+        synchronized (this) {
+            if (!paused) {
+                paused = true;
+                // Wake up the run() method from sleeping and tell it to pause
+                notify();
+            }
+        }
+    }
+
+    public void unpause() {
+        synchronized (this) {
+            if (paused) {
+                paused = false;
+                // Wake up the wait()ing thread from being paused
+                notify();
+                // The run() method will reset the paused flag
+            }
+        }
+    }
+    
+    public boolean isPaused() {
+        synchronized (this) {
+            return paused;
         }
     }
 }
