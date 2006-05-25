@@ -63,6 +63,7 @@ public class SunJSSESocketFactory
     private String serverName;
     private boolean clientAuthNeeded=false;
     private boolean serverAuthNeeded=false;
+    private String[] enabledCipherSuites;
 
     private Configuration cfg;
 
@@ -190,7 +191,11 @@ public class SunJSSESocketFactory
     {
         if(serverFactory==null) serverFactory=createServerSocketFactory();
         ServerSocket socket = serverFactory.createServerSocket(port);
-        ((SSLServerSocket) socket).setNeedClientAuth(clientAuthNeeded);
+        SSLServerSocket serverSocket = (SSLServerSocket) socket;
+        serverSocket.setNeedClientAuth(clientAuthNeeded);
+        if (enabledCipherSuites != null && enabledCipherSuites.length > 0) {
+            serverSocket.setEnabledCipherSuites(enabledCipherSuites);
+        }
         return socket;
     }
     
@@ -323,6 +328,15 @@ public class SunJSSESocketFactory
     public boolean getServerAuthNeeded() {
         return serverAuthNeeded;
     }
+    
+    public void setEnabledCipherSuites(String[] enabledCipherSuites) {
+        this.enabledCipherSuites = enabledCipherSuites;
+    }
+
+    public String[] getEnabledCipherSuites() {
+        return enabledCipherSuites;
+    }
+
 
     /**
      * @see org.jpos.core.Configurable#setConfiguration(org.jpos.core.Configuration)
@@ -333,6 +347,9 @@ public class SunJSSESocketFactory
         clientAuthNeeded = cfg.getBoolean("clientauth");
         serverAuthNeeded = cfg.getBoolean("serverauth");
         serverName = cfg.get("servername");
+        password = cfg.get("storepassword");
+        keyPassword = cfg.get("keypassword");
+        enabledCipherSuites = cfg.getAll("addEnabledCipherSuite");
     }
     public Configuration getConfiguration() {
         return cfg;
