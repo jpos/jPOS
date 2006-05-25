@@ -87,6 +87,7 @@ public class QServer
             server.setSocketFactory(sFac);
         }
         getFactory().setConfiguration (server, getPersist());     
+        addServerSocketFactory();
         addListeners ();
         new Thread (server).start();
     }
@@ -192,6 +193,22 @@ public class QServer
     public String getSocketFactory() {
         return socketFactoryString;
     }    
+
+    private void addServerSocketFactory () throws ConfigurationException {
+        QFactory factory = getFactory ();
+        Element persist = getPersist ();
+        
+        Element serverSocketFactoryElement = persist.getChild ("server-socket-factory");
+        
+        if (serverSocketFactoryElement != null) {
+            ISOServerSocketFactory serverSocketFactory = (ISOServerSocketFactory) factory.newInstance (serverSocketFactoryElement.getAttributeValue ("class"));
+            factory.setLogger        (serverSocketFactory, serverSocketFactoryElement);
+            factory.setConfiguration (serverSocketFactory, serverSocketFactoryElement);
+            server.setSocketFactory(serverSocketFactory);
+        }
+            
+    }
+    
     private void addListeners () 
         throws ConfigurationException
     {
