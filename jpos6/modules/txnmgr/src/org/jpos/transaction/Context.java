@@ -133,7 +133,7 @@ public class Context implements Externalizable, Loggeable {
         Iterator iter = map.entrySet().iterator();
         while (iter.hasNext()) {
             Map.Entry entry = (Map.Entry) iter.next ();
-            if (pmap.containsKey(entry.getKey())) 
+            if (pmap != null && pmap.containsKey(entry.getKey())) 
                 p.print (indent + "<entry key='" + entry.getKey().toString() + "' p='true'>"); 
             else
                 p.print (indent + "<entry key='" + entry.getKey().toString() + "'>"); 
