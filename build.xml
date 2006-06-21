@@ -158,6 +158,7 @@
           <include name="**/*.java"/>
           <include name="**/*.xml"/>
           <include name="**/*.properties"/>
+          <include name="**/*.cfg"/>
           <include name="**/cfg/**"/>
           <exclude name="**/cfg/_*" />
         </fileset>
