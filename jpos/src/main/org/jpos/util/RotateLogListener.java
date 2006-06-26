@@ -155,13 +155,13 @@ public class RotateLogListener extends SimpleLogListener
         
         return super.log (ev);
     }
-    private synchronized void openLogFile() throws IOException {
+    protected synchronized void openLogFile() throws IOException {
         if (f != null)
             f.close();
         f = new FileOutputStream (logName, true);
         setPrintStream (new PrintStream(f));
     }
-    private synchronized void closeLogFile() throws IOException {
+    protected synchronized void closeLogFile() throws IOException {
         if (f != null)
             f.close();
         f = null;
@@ -187,7 +187,7 @@ public class RotateLogListener extends SimpleLogListener
             p.println ("</log>");
         }
     }
-    private void checkSize() {
+    protected void checkSize() {
         File logFile = new File (logName);
         if (logFile.length() > maxSize) {
             try {
