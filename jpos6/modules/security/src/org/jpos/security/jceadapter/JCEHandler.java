@@ -163,7 +163,7 @@ public class JCEHandler {
      * @return encoded key material
      * @throws JCEHandlerException
      */
-    byte[] extractDESKeyMaterial (short keyLength, Key clearDESKey) throws JCEHandlerException {
+    protected byte[] extractDESKeyMaterial (short keyLength, Key clearDESKey) throws JCEHandlerException {
         byte[] clearKeyBytes = null;
         String keyAlg = clearDESKey.getAlgorithm();
         String keyFormat = clearDESKey.getFormat();
@@ -209,7 +209,7 @@ public class JCEHandler {
      * @return clear key
      * @throws JCEHandlerException
      */
-    Key formDESKey (short keyLength, byte[] clearKeyBytes) throws JCEHandlerException {
+    protected Key formDESKey (short keyLength, byte[] clearKeyBytes) throws JCEHandlerException {
         Key key = null;
         switch (keyLength) {
             case SMAdapter.LENGTH_DES:
