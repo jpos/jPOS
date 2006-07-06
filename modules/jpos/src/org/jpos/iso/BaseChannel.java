@@ -617,6 +617,15 @@ public abstract class BaseChannel extends Observable
             usable = false;
             setChanged();
             notifyObservers();
+            if (socket != null) {
+                try {
+                    socket.setSoLinger (true, 0);
+                } catch (SocketException e) {
+                    // safe to ignore - can be closed already
+                    e.printStackTrace();
+                }
+                socket.close ();
+            }
             if (serverIn != null) {
                 try {
                     serverIn.close();
@@ -629,15 +638,6 @@ public abstract class BaseChannel extends Observable
                 } catch (IOException ex) { evt.addMessage (ex); }
                 serverOut = null;
             }
-            if (socket != null) {
-                try {
-                    socket.setSoLinger (true, 0);
-                } catch (SocketException e) {
-                    // safe to ignore - can be closed already
-                }
-                socket.close ();
-            }
-            Logger.log (evt);
         } catch (IOException e) {
             evt.addMessage (e);
             Logger.log (evt);
