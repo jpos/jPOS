@@ -120,12 +120,17 @@ public class ISOServer extends Observable
             }
             try {
                 for (;;) {
-                    ISOMsg m = channel.receive();
-                    Iterator iter = listeners.iterator();
-                    while (iter.hasNext())
-                        if (((ISORequestListener)iter.next()).process
-                            (channel, m)) 
-                            break;
+                    try {
+                        ISOMsg m = channel.receive();
+                        Iterator iter = listeners.iterator();
+                        while (iter.hasNext())
+                            if (((ISORequestListener)iter.next()).process
+                                (channel, m)) 
+                                break;
+                    } 
+                    catch (ISOFilter.VetoException e) {
+                        Logger.log (new LogEvent (this, "VetoException", e.getMessage()));
+                    }
                 }
             } catch (EOFException e) {
                 Logger.log (new LogEvent (this, "session-warning", "<eof/>"));
