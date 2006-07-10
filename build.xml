@@ -1,5 +1,6 @@
 <!-- $Id: build.xml 333 2006-04-24 12:11:53Z apr $ -->
-<project name="jPOS" default="compile" basedir=".">
+<project name="jPOS" default="compile" basedir="."
+    xmlns:cs="antlib:com.puppycrawl.tools.checkstyle">
     <!-- Give user a chance to override without editing this file -->
     <property file="${user.home}/.ant.properties"/>
     <property file="custom.properties"/>
@@ -339,6 +340,13 @@ Sealed: false</concat>
         fork="true"
         dir="${build.dir}">
      </java>
+  </target>
+
+  <target name="checkstyle" depends="modules">
+   <cs:checkstyle config="checkstyle.xml">
+    <fileset dir="${build.src}" includes="**/*.java"/>
+    <formatter type="plain"/>
+   </cs:checkstyle>
   </target>
 </project>
 
