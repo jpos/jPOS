@@ -54,6 +54,7 @@ import java.io.PrintStream;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.xml.DOMConfigurator;
+import org.apache.log4j.helpers.FileWatchdog;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
 import org.jpos.core.ReConfigurable;
@@ -106,9 +107,15 @@ public class Log4JListener implements LogListener, ReConfigurable
     public void setConfiguration (Configuration cfg) 
         throws ConfigurationException
     {
-        DOMConfigurator.configureAndWatch (
-            cfg.get ("config"), cfg.getLong ("watch")
-        );
+        String config = cfg.get ("config");
+        long watch =  cfg.getLong ("watch");
+
+        if (watch == 0)
+            watch = FileWatchdog.DEFAULT_DELAY;
+
+        if ( (config!=null) && (!config.trim().equals("")) )
+            DOMConfigurator.configureAndWatch (config, watch);
+
         setLevel (cfg.get ("priority"));
     }
 
