@@ -211,13 +211,12 @@ public class TSpace extends TimerTask implements LocalSpace, Loggeable {
         List l = (List) entries.get (key);
         while (obj == null && l != null && l.size() > 0) {
             obj = l.get(0);
-            if (obj instanceof Expirable) {
+            if (obj instanceof Expirable) 
                 obj = ((Expirable) obj).getValue();
-                if (obj == null) {
-                    l.remove (0);
-                    if (l.size() == 0) {
-                        entries.remove (key);
-                    }
+            if (obj == null) {
+                l.remove (0);
+                if (l.size() == 0) {
+                    entries.remove (key);
                 }
             }
         }
