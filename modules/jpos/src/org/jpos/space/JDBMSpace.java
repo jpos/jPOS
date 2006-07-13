@@ -174,6 +174,8 @@ public class JDBMSpace extends TimerTask implements Space {
      * @param timeout entry timeout in millis
      */
     public void out (Object key, Object value, long timeout) {
+        if (key == null || value == null)
+            throw new NullPointerException ("key=" + key + ", value=" + value);
         try {
             synchronized (this) {
                 long recid = recman.insert (value);
