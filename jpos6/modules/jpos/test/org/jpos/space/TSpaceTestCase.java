@@ -24,9 +24,14 @@ public class TSpaceTestCase extends TestCase implements SpaceListener {
         assertNull (sp.inp ("Test"));
     }
     public void testNullEntry() {
-        sp.out ("testNull", null);
-        assertNull ("Verify null entry (rdp)", sp.rdp ("testNull"));
-        assertNull ("Verify null entry (inp)", sp.inp ("testNull"));
+        try {
+            sp.out ("testNull", null);
+        } catch (NullPointerException e) {
+            assertNull ("Verify null entry (rdp)", sp.rdp ("testNull"));
+            assertNull ("Verify null entry (inp)", sp.inp ("testNull"));
+            return;
+        }
+        fail ("NullPointerException should have been called");
     }
     public void testExpiration () {
         sp.out ("testExpiration_Key", "ABC", 50);

@@ -35,12 +35,16 @@ public class TSpace extends TimerTask implements LocalSpace, Loggeable {
         DefaultTimer.getTimer().schedule (this, GCDELAY, GCDELAY);
     }
     public synchronized void out (Object key, Object value) {
+        if (key == null || value == null)
+            throw new NullPointerException ("key=" + key + ", value=" + value);
         getList (key).add (value);
         this.notifyAll ();
         if (sl != null)
             notifyListeners(key, value);
     }
     public void out (Object key, Object value, long timeout) {
+        if (key == null || value == null)
+            throw new NullPointerException ("key=" + key + ", value=" + value);
         if (timeout > 0) {
             value   = new Expirable (value, 
                System.currentTimeMillis() + timeout);
