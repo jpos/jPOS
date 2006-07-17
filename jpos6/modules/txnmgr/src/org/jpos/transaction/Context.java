@@ -50,6 +50,10 @@ public class Context implements Externalizable, Loggeable {
     public Object get (Object key) {
         return getMap().get (key);
     }
+    public Object get (Object key, Object defValue) {
+        Object obj = getMap().get (key);
+        return obj != null ? obj : defValue;
+    }
     /**
      * Transient remove
      */
@@ -59,6 +63,9 @@ public class Context implements Externalizable, Loggeable {
     }
     public String getString (Object key) {
         return (String) getMap().get (key);
+    }
+    public String getString (Object key, Object defValue) {
+        return (String) get (key, defValue);
     }
     public void dump (PrintStream p, String indent) {
         String inner = indent + "  ";
