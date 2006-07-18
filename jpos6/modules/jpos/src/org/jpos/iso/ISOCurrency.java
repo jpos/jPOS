@@ -88,6 +88,7 @@ public class ISOCurrency
         put("AUD", "036", 2);   // Australian Dollar
         put("AWG", "533", 0);   // Aruban Guilder
         put("AZM", "031", 0);   // Azerbaijan Manat
+        put("AZN", "944", 2);   // AZERBAIJAN Azerbaijanian Manat
         put("BBD", "052", 2);   // Barbados Dollar
         put("BDT", "050", 2);   // Bangladesh Taka
         put("BEF", "056", 0);   // Belgian Franc
