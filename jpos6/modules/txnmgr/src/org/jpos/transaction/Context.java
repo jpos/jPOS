@@ -21,11 +21,16 @@ import org.jdom.Element;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 import org.jpos.util.Loggeable;
+import org.jpos.util.LogEvent;
+import org.jpos.util.Profiler;
 import org.jpos.iso.ISOUtil;
 
 public class Context implements Externalizable, Loggeable {
     private transient Map map; // transient map
     private Map pmap;          // persistent (serializable) map
+
+    public static String LOGEVT = "LOGEVT";
+    public static String PROFILER = "PROFILER";
 
     public Context () {
         super ();
@@ -172,6 +177,55 @@ public class Context implements Externalizable, Loggeable {
             }
             p.println ("</entry>");
         }
+    }
+    /**
+     * return a LogEvent used to store trace information
+     * about this transaction.
+     * If there's no LogEvent there, it creates one.
+     * @return LogEvent
+     */
+    public LogEvent getLogEvent () {
+        LogEvent evt = (LogEvent) get (LOGEVT);
+        if (evt == null) {
+            synchronized (this) {
+                evt = (LogEvent) get (LOGEVT);
+                if (evt == null) {
+                    evt = new LogEvent ("log");
+                    put (LOGEVT, evt);
+                }
+            }
+        }
+        return evt;
+    }
+    /**
+     * return (or creates) a Profiler object
+     * @return Profiler object
+     */
+    public Profiler getProfiler () {
+        Profiler prof = (Profiler) get (PROFILER);
+        if (prof == null) {
+            synchronized (this) {
+                prof = (Profiler) get (PROFILER);
+                if (prof == null) {
+                    prof = new Profiler();
+                    put (PROFILER, prof);
+                }
+            }
+        }
+        return prof;
+    }
+    /**
+     * adds a trace message
+     * @msg trace information
+     */
+    public void log (Object msg) {
+        getLogEvent().addMessage (msg);
+    }
+    /**
+     * add a checkpoint to the profiler
+     */
+    public void checkPoint (String detail) {
+        getProfiler().checkPoint (detail);
     }
     static final long serialVersionUID = 6056487212221438338L;
 }
