@@ -9,8 +9,6 @@ package org.jpos.iso;
 
 import java.io.IOException;
 
-import org.jpos.util.NameRegistrar;
-
 /**
  * allows the transmision and reception of ISO 8583 Messages
  *
