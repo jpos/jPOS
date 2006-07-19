@@ -227,7 +227,7 @@ public class ISOMsg extends ISOComponent
     */
     public void set(int fldno, String value) throws ISOException {
         if (value != null) {
-            if (packager == null) {
+            if (!(packager instanceof ISOBasePackager)) {
                 // No packager is available, we can't tell what the field
                 // might be, so treat as a String!
                 set(new ISOField(fldno, value));
