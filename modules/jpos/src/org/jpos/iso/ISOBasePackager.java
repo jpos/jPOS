@@ -239,10 +239,16 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
                                 +fld[i].getClass().getName()+ "\">");
                             if (c.getValue() instanceof ISOMsg)
                                 evt.addMessage (c.getValue());
-                            else
+                            else if (c.getValue() instanceof ISOBinaryField) {
+                                evt.addMessage ("  <value type='binary'>" 
+                                    +ISOUtil.hexString((byte[]) c.getValue())
+                                    + "</value>");
+                            }
+                            else {
                                 evt.addMessage ("  <value>" 
                                     +c.getValue().toString()
                                     + "</value>");
+                            }
                             evt.addMessage ("</unpack>");
                         }
                         m.set(c);
