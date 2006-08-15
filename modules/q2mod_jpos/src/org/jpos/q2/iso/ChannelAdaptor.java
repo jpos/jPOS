@@ -87,7 +87,7 @@ public class ChannelAdaptor
     public void stopService () {
         try {
             sp.out (in, new Object());
-            if (channel.isConnected())
+            if (channel != null && channel.isConnected())
                 disconnect();
         } catch (Exception e) {
             getLog().warn ("error disconnecting from remote host", e);
