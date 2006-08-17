@@ -21,6 +21,7 @@ import org.jpos.space.SpaceFactory;
 import org.jpos.space.SpaceUtil;
 import org.jpos.q2.QFactory;
 import org.jpos.q2.QBeanSupport;
+import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
 import org.jpos.util.Logger;
 import org.jpos.util.LogEvent;
@@ -34,6 +35,7 @@ public class TransactionManager
     String queue;
     String tailLock;
     Map groups;
+    boolean debug;
     long head, tail, lastGC;
     public static final String  HEAD       = "$HEAD";
     public static final String  TAIL       = "$TAIL";
@@ -68,6 +70,7 @@ public class TransactionManager
         for (int i=0; i<sessions; i++) {
             Thread t = new Thread (this);
             t.setName (getName() + "-" + i);
+            t.setDaemon (false);
             t.start ();
         }
     }
@@ -82,6 +85,7 @@ public class TransactionManager
     }
     public void run () {
         long id;
+        LogEvent evt = null;
         String threadName = Thread.currentThread().getName();
         getLog().info (threadName + " start");
         while (running()) {
@@ -97,10 +101,12 @@ public class TransactionManager
                     continue;
                 }
                 id = nextId ();
+                if (debug)
+                    evt = getLog().createLogEvent ("debug", "id=" + Long.toString(id));
                 List members = new ArrayList ();
                 Serializable context = (Serializable) obj;
                 snapshot (id, context, PREPARING);
-                int action = prepare (id, context, members);
+                int action = prepare (id, context, members, evt);
                 switch (action) {
                     case PREPARED:
                         setState (id, COMMITTING);
@@ -117,17 +123,30 @@ public class TransactionManager
                     checkTail ();
                 }
             } catch (Throwable t) {
-                getLog().fatal (t); // should never happen
-            } 
+                if (evt == null)
+                    getLog().fatal (t); // should never happen
+                else
+                    evt.addMessage (t);
+            } finally {
+                if (evt != null) {
+                    Logger.log (evt);
+                    evt = null;
+                }
+            }
         }
         getLog().info (threadName + " stop");
     }
-
     public long getTail () {
         return tail;
     }
     public long getHead () {
         return head;
+    }
+    public void setConfiguration (Configuration cfg) 
+        throws ConfigurationException 
+    {
+        super.setConfiguration (cfg);
+        debug = cfg.getBoolean ("debug");
     }
     protected void commit 
         (long id, Serializable context, List members, boolean recover) 
@@ -190,7 +209,7 @@ public class TransactionManager
             getLog().warn ("ABORT: " + Long.toString (id), t);
         }
     }
-    protected int prepare (long id, Serializable context, List members) {
+    protected int prepare (long id, Serializable context, List members, LogEvent evt) {
         boolean abort = false;
         Iterator iter = getParticipants (DEFAULT_GROUP).iterator();
         for (int i=0; iter.hasNext (); i++) {
@@ -204,9 +223,18 @@ public class TransactionManager
             TransactionParticipant p = (TransactionParticipant) iter.next();
             if (abort) {
                 action = prepareForAbort (p, id, context);
+                if (evt != null)
+                    evt.addMessage ("prepareForAbort: " + p.getClass().getName());
             } else {
                 action = prepare (p, id, context);
                 abort  = (action & PREPARED) == ABORTED;
+                if (evt != null) {
+                    evt.addMessage ("prepare: " 
+                            + p.getClass().getName() 
+                            + (abort ? " ABORTED" : "")
+                            + ((action & READONLY) == READONLY ? " READONLY" : "")
+                            + ((action & NO_JOIN) == READONLY ? " NO_JOIN" : ""));
+                }
             }
             if ((action & READONLY) == 0) {
                 snapshot (id, context);
@@ -216,6 +244,8 @@ public class TransactionManager
             }
             if (p instanceof GroupSelector) {
                 String groupName = ((GroupSelector)p).select (id, context);
+                if (evt != null) 
+                    evt.addMessage ("---groupName: " + groupName);
                 if (groupName != null) {
                     StringTokenizer st = new StringTokenizer (groupName, " ,");
                     List participants = new ArrayList();
@@ -224,6 +254,9 @@ public class TransactionManager
                         addGroup (id, grp);
                         participants.addAll (getParticipants (grp));
                     }
+                    while (iter.hasNext())
+                        participants.add (iter.next());
+
                     iter = participants.iterator();
                     continue;
                 }
@@ -418,7 +451,7 @@ public class TransactionManager
             String contextKey = getKey (CONTEXT, id);
             Integer state = (Integer) psp.rdp (stateKey);
             if (state == null) {
-                evt.addMessage ("<unknown/>");
+                evt.addMessage ("unknown stateKey " + stateKey);
                 SpaceUtil.wipe (psp, contextKey);   // just in case ...
                 return;
             }
