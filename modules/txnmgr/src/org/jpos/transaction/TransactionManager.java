@@ -52,7 +52,7 @@ public class TransactionManager
         if (queue == null)
             throw new ConfigurationException ("queue property not specified");
         sp   = SpaceFactory.getSpace (cfg.get ("space"));
-        psp  = SpaceFactory.getSpace (cfg.get ("persistent-space"));
+        psp  = SpaceFactory.getSpace (cfg.get ("persistent-space", this.toString()));
         tail = initCounter (TAIL, cfg.getLong ("initial-tail", 1));
         head = Math.max (initCounter (HEAD, tail), tail);
         tailLock = TAILLOCK + "." + Integer.toString (this.hashCode());
