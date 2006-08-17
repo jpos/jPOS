@@ -30,7 +30,6 @@ public class TransactionManagerTestCase extends TestCase {
                 }
             }
         }.start();
-        Thread.sleep (5000); // let the thing start
     }
     public void testSimpleTransaction() {
         Context ctx = new Context();
@@ -39,6 +38,7 @@ public class TransactionManagerTestCase extends TestCase {
         sp.out (QUEUE, ctx);
     }
     public void tearDown() throws Exception {
+        Thread.sleep (5000); // let the thing run
         q2.shutdown();
     }
 }

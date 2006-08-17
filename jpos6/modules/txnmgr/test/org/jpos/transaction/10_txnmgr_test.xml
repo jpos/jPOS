@@ -2,7 +2,33 @@
  <property name="queue"            value="TXNMGRTEST" />
  <property name="sessions"         value="4" />
  <property name="persistent-space" value="jdbm:txnmgrtest" />
+ <property name="debug"            value="true" />
 
+ <participant class="org.jpos.transaction.participant.Trace" logger="Q2">
+  <property name="trace" value="pre-switch" />
+ </participant>
+ <participant class="org.jpos.transaction.SwitchParticipant" logger="Q2">
+  <property name="switch" value="GroupA GroupB" />
+ </participant>
+ <participant class="org.jpos.transaction.SwitchParticipant" logger="Q2">
+  <property name="switch" value="GroupC" />
+ </participant>
  <participant class="org.jpos.transaction.participant.Debug" logger="Q2" />
+
+ <group name="GroupA">
+  <participant class="org.jpos.transaction.participant.Trace" logger="Q2">
+   <property name="trace" value="inGroupA" />
+  </participant>
+ </group>
+ <group name="GroupB">
+  <participant class="org.jpos.transaction.participant.Trace" logger="Q2">
+   <property name="trace" value="inGroupB" />
+  </participant>
+ </group>
+ <group name="GroupC">
+  <participant class="org.jpos.transaction.participant.Trace" logger="Q2">
+   <property name="trace" value="inGroupC" />
+  </participant>
+ </group>
 </txnmgr-test>
 
