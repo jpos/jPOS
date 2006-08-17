@@ -622,7 +622,7 @@ public abstract class BaseChannel extends Observable
                     socket.setSoLinger (true, 0);
                 } catch (SocketException e) {
                     // safe to ignore - can be closed already
-                    e.printStackTrace();
+                    // e.printStackTrace();
                 }
                 socket.close ();
             }
