@@ -88,6 +88,7 @@ public class TransactionManager
         LogEvent evt = null;
         String threadName = Thread.currentThread().getName();
         getLog().info (threadName + " start");
+        long startTime = 0L;
         while (running()) {
             try {
                 Object obj = sp.in (queue);
@@ -101,8 +102,10 @@ public class TransactionManager
                     continue;
                 }
                 id = nextId ();
-                if (debug)
+                if (debug) {
                     evt = getLog().createLogEvent ("debug", "id=" + Long.toString(id));
+                    startTime = System.currentTimeMillis();
+                }
                 List members = new ArrayList ();
                 Serializable context = (Serializable) obj;
                 snapshot (id, context, PREPARING);
@@ -110,10 +113,10 @@ public class TransactionManager
                 switch (action) {
                     case PREPARED:
                         setState (id, COMMITTING);
-                        commit (id, context, members, false);
+                        commit (id, context, members, false, evt);
                         break;
                     case ABORTED:
-                        abort (id, context, members, false);
+                        abort (id, context, members, false, evt);
                         break;
                     case NO_JOIN:
                         break;
@@ -129,6 +132,9 @@ public class TransactionManager
                     evt.addMessage (t);
             } finally {
                 if (evt != null) {
+                    evt.addMessage ("elapsed time: " 
+                        + (System.currentTimeMillis() - startTime) + "ms"
+                    );
                     Logger.log (evt);
                     evt = null;
                 }
@@ -149,25 +155,35 @@ public class TransactionManager
         debug = cfg.getBoolean ("debug");
     }
     protected void commit 
-        (long id, Serializable context, List members, boolean recover) 
+        (long id, Serializable context, List members, boolean recover, LogEvent evt) 
     {
         Iterator iter = members.iterator();
         while (iter.hasNext ()) {
             TransactionParticipant p = (TransactionParticipant) iter.next();
-            if (recover && p instanceof ContextRecovery)
+            if (recover && p instanceof ContextRecovery) {
                 context = ((ContextRecovery) p).recover (id, context, true);
+                if (evt != null)
+                    evt.addMessage ("commit-recover: " + p.getClass().getName());
+            }
             commit (p, id, context);
+            if (evt != null)
+                evt.addMessage ("commit: " + p.getClass().getName());
         }
     }
     protected void abort 
-        (long id, Serializable context, List members, boolean recover) 
+        (long id, Serializable context, List members, boolean recover, LogEvent evt) 
     {
         Iterator iter = members.iterator();
         while (iter.hasNext ()) {
             TransactionParticipant p = (TransactionParticipant) iter.next();
-            if (recover && p instanceof ContextRecovery)
+            if (recover && p instanceof ContextRecovery) {
                 context = ((ContextRecovery) p).recover (id, context, false);
+                if (evt != null)
+                    evt.addMessage ("abort-recover: " + p.getClass().getName());
+            }
             abort (p, id, context);
+            if (evt != null)
+                evt.addMessage ("abort: " + p.getClass().getName());
         }
     }
     protected int prepareForAbort
@@ -462,11 +478,9 @@ public class TransactionManager
             if (DONE.equals (state)) {
                 evt.addMessage ("<done/>");
             } else if (COMMITTING.equals (state)) {
-                evt.addMessage ("<commit/>");
-                commit (id, context, getParticipants (id), true);
+                commit (id, context, getParticipants (id), true, evt);
             } else if (PREPARING.equals (state)) {
-                evt.addMessage ("<abort/>");
-                abort (id, context, getParticipants (id), true);
+                abort (id, context, getParticipants (id), true, evt);
             }
             purge (id);
         } finally {
