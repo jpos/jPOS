@@ -103,7 +103,10 @@ public class TransactionManager
                 }
                 id = nextId ();
                 if (debug) {
-                    evt = getLog().createLogEvent ("debug", "id=" + Long.toString(id));
+                    evt = getLog().createLogEvent ("debug",
+                        Thread.currentThread().getName() 
+                        + ":" + Long.toString(id)
+                    );
                     startTime = System.currentTimeMillis();
                 }
                 List members = new ArrayList ();
@@ -163,11 +166,11 @@ public class TransactionManager
             if (recover && p instanceof ContextRecovery) {
                 context = ((ContextRecovery) p).recover (id, context, true);
                 if (evt != null)
-                    evt.addMessage ("commit-recover: " + p.getClass().getName());
+                    evt.addMessage (" commit-recover: " + p.getClass().getName());
             }
             commit (p, id, context);
             if (evt != null)
-                evt.addMessage ("commit: " + p.getClass().getName());
+                evt.addMessage ("         commit: " + p.getClass().getName());
         }
     }
     protected void abort 
@@ -179,11 +182,11 @@ public class TransactionManager
             if (recover && p instanceof ContextRecovery) {
                 context = ((ContextRecovery) p).recover (id, context, false);
                 if (evt != null)
-                    evt.addMessage ("abort-recover: " + p.getClass().getName());
+                    evt.addMessage ("  abort-recover: " + p.getClass().getName());
             }
             abort (p, id, context);
             if (evt != null)
-                evt.addMessage ("abort: " + p.getClass().getName());
+                evt.addMessage ("          abort: " + p.getClass().getName());
         }
     }
     protected int prepareForAbort
@@ -245,7 +248,7 @@ public class TransactionManager
                 action = prepare (p, id, context);
                 abort  = (action & PREPARED) == ABORTED;
                 if (evt != null) {
-                    evt.addMessage ("prepare: " 
+                    evt.addMessage ("        prepare: " 
                             + p.getClass().getName() 
                             + (abort ? " ABORTED" : "")
                             + ((action & READONLY) == READONLY ? " READONLY" : "")
@@ -261,7 +264,7 @@ public class TransactionManager
             if (p instanceof GroupSelector) {
                 String groupName = ((GroupSelector)p).select (id, context);
                 if (evt != null) 
-                    evt.addMessage ("---groupName: " + groupName);
+                    evt.addMessage ("  groupSelector: " + groupName);
                 if (groupName != null) {
                     StringTokenizer st = new StringTokenizer (groupName, " ,");
                     List participants = new ArrayList();
