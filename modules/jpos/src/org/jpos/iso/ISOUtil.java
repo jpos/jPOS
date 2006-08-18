@@ -698,7 +698,7 @@ public class ISOUtil {
         }
         for (int i=0; i<len; i++) {
             if (s.charAt(i) == '=')
-                clear = 5;
+                clear = 1;  // use clear=5 to keep the expiration date
             else if (s.charAt(i) == '^') {
                 lastFourIndex = 0;
                 clear = len - i;
