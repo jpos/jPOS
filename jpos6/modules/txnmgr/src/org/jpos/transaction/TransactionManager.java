@@ -37,12 +37,16 @@ public class TransactionManager
     Map groups;
     boolean debug;
     long head, tail, lastGC;
+    long retryInterval = 5000L;
+    RetryTask retryTask = null;
     public static final String  HEAD       = "$HEAD";
     public static final String  TAIL       = "$TAIL";
     public static final String  CONTEXT    = "$CONTEXT.";
     public static final String  STATE      = "$STATE.";
     public static final String  GROUPS     = "$GROUPS.";
     public static final String  TAILLOCK   = "$TAILLOCK";
+    public static final String  RETRY_QUEUE = "$RETRY_QUEUE";
+    public static final String  LAST_RETRY = "$LAST_RETRY";
     public static final Integer PREPARING  = new Integer (0);
     public static final Integer COMMITTING = new Integer (1);
     public static final Integer DONE       = new Integer (2);
@@ -121,6 +125,10 @@ public class TransactionManager
                     case ABORTED:
                         abort (id, context, members, false, evt);
                         break;
+                    case RETRY:
+                        psp.out (RETRY_QUEUE, context);
+                        checkRetryTask();
+                        break;
                     case NO_JOIN:
                         break;
                 }
@@ -156,6 +164,7 @@ public class TransactionManager
     {
         super.setConfiguration (cfg);
         debug = cfg.getBoolean ("debug");
+        retryInterval = cfg.getLong ("retry-interval", retryInterval);
     }
     protected void commit 
         (long id, Serializable context, List members, boolean recover, LogEvent evt) 
@@ -230,6 +239,7 @@ public class TransactionManager
     }
     protected int prepare (long id, Serializable context, List members, LogEvent evt) {
         boolean abort = false;
+        boolean retry = false;
         Iterator iter = getParticipants (DEFAULT_GROUP).iterator();
         for (int i=0; iter.hasNext (); i++) {
             int action = 0;
@@ -247,10 +257,12 @@ public class TransactionManager
             } else {
                 action = prepare (p, id, context);
                 abort  = (action & PREPARED) == ABORTED;
+                retry  = (action & RETRY) == RETRY;
                 if (evt != null) {
                     evt.addMessage ("        prepare: " 
                             + p.getClass().getName() 
                             + (abort ? " ABORTED" : "")
+                            + (retry ? " RETRY" : "")
                             + ((action & READONLY) == READONLY ? " READONLY" : "")
                             + ((action & NO_JOIN) == READONLY ? " NO_JOIN" : ""));
                 }
@@ -281,7 +293,8 @@ public class TransactionManager
                 }
             }
         }
-        return members.size() == 0 ? NO_JOIN : (abort ? ABORTED : PREPARED);
+        return members.size() == 0 ? NO_JOIN : 
+            (abort ? (retry ? RETRY : ABORTED) : PREPARED);
     }
     protected List getParticipants (String groupName) {
         List participants = (List) groups.get (groupName);
@@ -488,6 +501,24 @@ public class TransactionManager
             purge (id);
         } finally {
             Logger.log (evt);
+        }
+    }
+    protected synchronized void checkRetryTask () {
+        if (retryTask == null) {
+            retryTask = new RetryTask();
+            new Thread(retryTask).start();
+        }
+    }
+    public class RetryTask implements Runnable {
+        public void run() {
+            Thread.currentThread().setName (getName()+"retry-task");
+            while (running()) {
+                for (Object context; (context = psp.inp (RETRY_QUEUE)) != null;) 
+                    sp.out (queue, context);
+                try {
+                    Thread.sleep (retryInterval);
+                } catch (InterruptedException e) { } 
+            }
         }
     }
 }

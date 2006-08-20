@@ -3,10 +3,13 @@
  <property name="sessions"         value="4" />
  <property name="persistent-space" value="jdbm:txnmgrtest" />
  <property name="debug"            value="true" />
+ <property name="retry-interval"   value="250" />
 
  <participant class="org.jpos.transaction.participant.Trace" logger="Q2">
   <property name="trace" value="pre-switch" />
  </participant>
+ <participant class="org.jpos.transaction.TestRetryParticipant" logger="Q2" />
+
  <participant class="org.jpos.transaction.SwitchParticipant" logger="Q2">
   <property name="switch" value="GroupA GroupB" />
  </participant>
