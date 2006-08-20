@@ -37,6 +37,11 @@ public class TransactionManagerTestCase extends TestCase {
         ctx.put ("persistent", "jumped over the lazy dog", true);
         sp.out (QUEUE, ctx);
     }
+    public void testRetryTransaction() {
+        Context ctx = new Context();
+        ctx.put ("RETRY", new Integer(10), true);
+        sp.out (QUEUE, ctx);
+    }
     public void tearDown() throws Exception {
         Thread.sleep (5000); // let the thing run
         q2.shutdown();
