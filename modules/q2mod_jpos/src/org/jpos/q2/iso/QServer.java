@@ -100,7 +100,8 @@ public class QServer
     }
     public void stopService () {
         NameRegistrar.unregister ("server." + getName());
-        server.shutdown ();
+        if (server != null)
+            server.shutdown ();
     }
 
     /**
