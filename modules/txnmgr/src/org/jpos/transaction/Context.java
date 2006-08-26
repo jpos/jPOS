@@ -99,7 +99,7 @@ public class Context implements Externalizable, Loggeable {
     }
     public void writeExternal (ObjectOutput out) throws IOException {
         out.writeByte (0);  // reserved for future expansion (version id)
-        Set s = pmap.entrySet();
+        Set s = getPMap().entrySet();
         out.writeInt (s.size());
         Iterator iter = s.iterator();
         while (iter.hasNext()) {
