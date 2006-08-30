@@ -6,7 +6,7 @@
 <!ATTLIST isopackager emitBitmap    (true|false) #IMPLIED>
 
 <!-- isofield -->
-<!ELEMENT isofield EMPTY>
+<!ELEMENT isofield (#PCDATA)>
 <!ATTLIST isofield id     CDATA        #REQUIRED>
 <!ATTLIST isofield length CDATA        #REQUIRED>
 <!ATTLIST isofield name   CDATA        #REQUIRED>
