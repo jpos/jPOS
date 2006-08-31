@@ -146,7 +146,7 @@ public class ISOMsgPanel extends JPanel {
             add(createISOMsgDumpPanel(), BorderLayout.SOUTH);
     }
     public ISOMsgPanel(ISOMsg m) {
-        this(m, true);
+        this(m, false);
     }
     private void setValidFields() {
         validFields = new Vector();

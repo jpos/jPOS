@@ -47,57 +47,6 @@
  * information please see <http://www.jpos.org/>.
  */
 
-/*
- * $Log$
- * Revision 1.14  2005/05/30 01:52:15  apr
- * If message is not flagged as incoming, assume outgoing (even if not
- * explicit tagged as outgoing)
- *
- * Revision 1.13  2003/10/13 10:30:22  apr
- * tabs expanded to 8 spaces
- *
- * Revision 1.12  2003/05/16 04:15:17  alwyns
- * Import cleanups.
- *
- * Revision 1.11  2001/10/17 17:06:20  apr
- * Removed a few methods from ISOChannel that belongs to BaseChannel
- * (more to be removed soon)
- *
- * Revision 1.10  2000/11/02 12:09:18  apr
- * Added license to every source file
- *
- * Revision 1.9  2000/04/26 00:47:47  apr
- * Temporary workaround allows ISOChannelPanel to Observe ISOServer as well
- * as ISOChannel
- *
- * Revision 1.8  2000/04/24 01:55:38  apr
- * clone logged message
- *
- * Revision 1.7  2000/04/16 21:08:28  apr
- * ISOChannel is now an interface.
- * Channel implementation moved to org.jpos.iso.channel package
- *
- * Revision 1.6  2000/03/01 14:44:45  apr
- * Changed package name to org.jpos
- *
- * Revision 1.5  1999/09/06 17:20:19  apr
- * Added Logger SubSystem
- *
- * Revision 1.4  1999/08/06 11:40:10  apr
- * expand -4
- *
- * Revision 1.3  1999/07/29 15:55:03  apr
- * Added LOG_CAPACITY checks
- *
- * Revision 1.2  1999/07/08 13:44:10  apr
- * Added acquirer support
- * Removed 'System.outs'
- *
- * Revision 1.1  1999/05/18 12:02:58  apr
- * Added GUI package
- *
- */
-
 package org.jpos.iso.gui;
 
 /**
@@ -127,7 +76,6 @@ import org.jpos.iso.ISOMsg;
 import org.jpos.iso.ISOUtil;
 
 public class ISOChannelPanel extends JPanel implements Observer {
-
     private static final long serialVersionUID = -8069489863639386589L;
     /**
      * @serial
@@ -141,6 +89,10 @@ public class ISOChannelPanel extends JPanel implements Observer {
      * @serial
      */
     String symbolicName;
+
+    private int[] protectFields = null;
+    private int[] wipeFields    = null;
+
     public static final int LOG_CAPACITY = 250;
 
     public ISOChannelPanel (ISOChannel channel, String symbolicName)
@@ -189,7 +141,7 @@ public class ISOChannelPanel extends JPanel implements Observer {
                     meter.setValue(imti, mti);
 
                 // log.insertElementAt(m,0);
-                log.addElement((ISOMsg)m.clone());
+                log.addElement(getProtectedClone (m));
                 if (log.getSize() > LOG_CAPACITY) 
                     log.remove(0);
 
@@ -213,7 +165,15 @@ public class ISOChannelPanel extends JPanel implements Observer {
         } else 
             meter.setConnected(true);
     }
-
+    public ISOMeter getISOMeter() {
+        return meter;
+    }
+    public void setProtectFields (int[] fields) {
+        protectFields = fields;
+    }
+    public void setWipeFields (int[] fields) {
+        wipeFields    = fields;
+    }
     private JPanel createCountersPanel() {
         JPanel A = new JPanel() {
 
@@ -234,7 +194,27 @@ public class ISOChannelPanel extends JPanel implements Observer {
         meter.start();
         return A;
     }
-    public ISOMeter getISOMeter() {
-        return meter;
+    private ISOMsg getProtectedClone (ISOMsg m) throws ISOException {
+        ISOMsg pm = (ISOMsg) m.clone ();
+        if (protectFields != null)
+            checkProtected(pm);
+        if (wipeFields != null)
+            checkHidden (pm);
+        return pm;
+    }
+    private void checkProtected (ISOMsg m) throws ISOException {
+        for (int i=0; i<protectFields.length; i++) {
+            int f = protectFields[i];
+            if (m.hasField (f))
+                m.set (f, ISOUtil.protect (m.getString(f)));
+        }
+    }
+    private void checkHidden (ISOMsg m) throws ISOException {
+        for (int i=0; i<wipeFields.length; i++) {
+            int f = wipeFields[i];
+            if (m.hasField (f))
+                m.set (f, "[WIPED]");
+        }
     }
 }
+

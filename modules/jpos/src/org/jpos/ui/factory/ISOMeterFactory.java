@@ -55,6 +55,7 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 
 import org.jdom.Element;
+import org.jpos.iso.ISOUtil;
 import org.jpos.iso.ISOChannel;
 import org.jpos.iso.gui.ISOChannelPanel;
 import org.jpos.iso.gui.ISOMeter;
@@ -89,6 +90,14 @@ public class ISOMeterFactory implements UIFactory {
             ISOMeter meter = icp.getISOMeter ();
             if ("false".equals (e.getAttributeValue ("scroll")))
                 meter.setScroll (false);
+
+            String protect = e.getAttributeValue ("protect");
+            if (protect != null)
+                icp.setProtectFields (ISOUtil.toIntArray (protect));
+            String wipe = e.getAttributeValue ("wipe");
+            if (wipe != null)
+                icp.setWipeFields (ISOUtil.toIntArray (wipe));
+
             String refresh = e.getAttributeValue ("refresh");
             if (refresh != null)
                 meter.setRefresh (Integer.parseInt (refresh));
