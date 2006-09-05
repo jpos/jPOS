@@ -51,7 +51,7 @@ public class DatabaseLogger {
     cp = getConnectionPool(cfg);
     this.lh = new LogHandler();
     this.dh = new DetailHandler();
-    this.detailBits[0] = "none";
+    this.detailBits = new String[] { "none" };
     this.updateTimestamp();
   }
 
