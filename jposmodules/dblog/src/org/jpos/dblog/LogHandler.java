@@ -14,7 +14,8 @@ import java.sql.*;
  */
 
 public class LogHandler extends JposMessageLogDao {
-  private static String sql = "SELECT max(detailId) FROM jposMessageDetail";
+  // private static String sql = "SELECT max(detailId) FROM jposMessageDetail";
+  private static String sql = "SELECT max(msgId) FROM jposMessageLog";
   private static PreparedStatement stmt = null;
 
   public LogHandler() {
