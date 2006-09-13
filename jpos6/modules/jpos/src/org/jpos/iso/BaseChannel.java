@@ -482,6 +482,13 @@ public abstract class BaseChannel extends Observable
             Logger.log (evt);
         }
     }
+    /**
+     * Sends a high-level keep-alive message (zero length)
+     * @exception IOException
+     */
+    public void sendKeepAlive () throws IOException {
+        sendMessageLength(0);
+    }
     protected boolean isRejected(byte[] b) {
         // VAP Header support - see VAPChannel
         return false;
