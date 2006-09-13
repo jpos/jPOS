@@ -17,6 +17,7 @@ import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
 import org.jpos.iso.FactoryChannel;
 import org.jpos.iso.Channel;
+import org.jpos.iso.BaseChannel;
 import org.jpos.iso.ISOChannel;
 import org.jpos.iso.ISOClientSocketFactory;
 import org.jpos.iso.ISOPackager;
@@ -44,6 +45,7 @@ public class ChannelAdaptor
     ISOChannel channel;
     String in, out, ready, reconnect;
     long delay;
+    boolean keepAlive = false;
     public ChannelAdaptor () {
         super ();
     }
@@ -59,8 +61,9 @@ public class ChannelAdaptor
 
         String s = persist.getChildTextTrim ("reconnect-delay");
         delay    = s != null ? Long.parseLong (s) : 10000; // reasonable default
-
         channel = newChannel (e, getFactory());
+
+        keepAlive = "yes".equalsIgnoreCase (persist.getChildTextTrim ("keep-alive"));
         
         String socketFactoryString = getSocketFactory();
         if (socketFactoryString != null && channel instanceof FactoryChannel) {
@@ -246,6 +249,11 @@ public class ChannelAdaptor
                     Object o = sp.in (in, delay);
                     if (o instanceof ISOMsg)
                         channel.send ((ISOMsg) o);
+                    else if (keepAlive && channel.isConnected()) {
+                        if (channel instanceof BaseChannel) {
+                            ((BaseChannel)channel).sendKeepAlive();
+                        }
+                    }
                 } catch (ISOFilter.VetoException e) { 
                     getLog().warn ("channel-sender-"+in, e.getMessage ());
                 } catch (Exception e) { 
