@@ -152,6 +152,8 @@ public class FSDMsg implements Loggeable {
             value = defValue == null ? "" : defValue;
 
         type   = type.toUpperCase ();
+        if (value.length() > length)
+            value = value.substring(0, length);
 
         switch (type.charAt (0)) {
             case 'N':
