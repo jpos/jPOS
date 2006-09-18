@@ -1,0 +1,65 @@
+package org.jpos.iso;
+
+import java.util.Arrays;
+
+import junit.framework.TestCase;
+
+/**
+ * @author: Nigel Smith (nsmith at moneyswitch.net)
+ */
+public class SignedEbcdicNumberInterpreterTest extends TestCase {
+
+    private SignedEbcdicNumberInterpreter signedEbcdicNumberInterpreter;
+    
+    protected void setUp() throws Exception {
+        signedEbcdicNumberInterpreter = new SignedEbcdicNumberInterpreter();
+    }
+    
+    public void testUninterpretNegative() throws Exception {
+        byte[] rawData = new byte[] { (byte) 0x34, (byte) 0x56, (byte) 0x78, (byte) 0xf1, (byte) 0xf3, (byte) 0xf5, (byte) 0xf7, (byte) 0xf8, (byte) 0xd6, (byte) 0x12, (byte) 0x9a };
+        int offset = 3;
+        int length = 6;
+        String expectedString = "-135786";
+        
+        assertEquals(expectedString, signedEbcdicNumberInterpreter.uninterpret(rawData, offset, length));
+    }
+
+    public void testUninterpretPositive() throws Exception {
+        byte[] rawData = new byte[] { (byte) 0x34, (byte) 0x56, (byte) 0x78, (byte) 0xf1, (byte) 0xf3, (byte) 0xf5, (byte) 0xf7, (byte) 0xf8, (byte) 0xc6, (byte) 0x12, (byte) 0x9a };
+        int offset = 3;
+        int length = 6;
+        String expectedString = "135786";
+        
+        assertEquals(expectedString, signedEbcdicNumberInterpreter.uninterpret(rawData, offset, length));
+    }
+    
+    public void testUninterpretUnsigned() throws Exception {
+        byte[] rawData = new byte[] { (byte) 0x34, (byte) 0x56, (byte) 0x78, (byte) 0xf1, (byte) 0xf3, (byte) 0xf5, (byte) 0xf7, (byte) 0xf8, (byte) 0xf6, (byte) 0x12, (byte) 0x9a };
+        int offset = 3;
+        int length = 6;
+        String expectedString = "135786";
+        
+        assertEquals(expectedString, signedEbcdicNumberInterpreter.uninterpret(rawData, offset, length));
+    }
+    
+    public void testInterpretNegative() throws Exception {
+        byte[] expectedRawData = new byte[] { (byte) 0x34, (byte) 0x56, (byte) 0x78, (byte) 0xf1, (byte) 0xf3, (byte) 0xf5, (byte) 0xf7, (byte) 0xf8, (byte) 0xd6, (byte) 0x12, (byte) 0x9a };
+        byte[] rawData = new byte[] { (byte) 0x34, (byte) 0x56, (byte) 0x78, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x12, (byte) 0x9a };
+        int offset = 3;
+        String string = "-135786";
+        
+        signedEbcdicNumberInterpreter.interpret(string, rawData, offset);
+        assertTrue("Expected " + ISOUtil.hexdump(expectedRawData) + " but was " + ISOUtil.hexdump(rawData), Arrays.equals(expectedRawData, rawData));
+    }
+    
+    public void testInterpretPositive() throws Exception {
+        byte[] expectedRawData = new byte[] { (byte) 0x34, (byte) 0x56, (byte) 0x78, (byte) 0xf1, (byte) 0xf3, (byte) 0xf5, (byte) 0xf7, (byte) 0xf8, (byte) 0xf6, (byte) 0x12, (byte) 0x9a };
+        byte[] rawData = new byte[] { (byte) 0x34, (byte) 0x56, (byte) 0x78, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x12, (byte) 0x9a };
+        int offset = 3;
+        String string = "135786";
+        
+        signedEbcdicNumberInterpreter.interpret(string, rawData, offset);
+        assertTrue("Expected " + ISOUtil.hexdump(expectedRawData) + " but was " + ISOUtil.hexdump(rawData), Arrays.equals(expectedRawData, rawData));
+    }
+}
+
