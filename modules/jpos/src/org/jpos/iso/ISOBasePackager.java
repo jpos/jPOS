@@ -221,15 +221,16 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
                 m.set (bitmap);
                 maxField = Math.min(maxField, bmap.size());
             }
-                
             for (int i=getFirstField(); i<maxField; i++) {
                 try {
                     if (bmap == null && fld[i] == null)
                         continue;
+                    if (maxField > 128 && i==65)
+                        continue;   // ignore extended bitmap
 
                     if (bmap == null || bmap.get(i)) {
                         if (fld[i] == null)
-                            throw new ISOException ("field package '" + i + "' is null");
+                            throw new ISOException ("field packager '" + i + "' is null");
 
                         ISOComponent c = fld[i].createComponent(i);
                         consumed += fld[i].unpack (c, b, consumed);
@@ -246,7 +247,7 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
                             }
                             else {
                                 evt.addMessage ("  <value>" 
-                                    +c.getValue().toString()
+                                    +c.getValue()
                                     + "</value>");
                             }
                             evt.addMessage ("</unpack>");
@@ -260,36 +261,6 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
                     throw e;
                 }
             }
-            if (bmap != null && bmap.get(65) && fld.length > 128 &&
-                fld[65] instanceof ISOBitMapPackager)
-            {
-                bmap= (BitSet) 
-                    ((ISOComponent) m.getChildren().get 
-                        (new Integer(65))).getValue();
-                for (int i=1; i<64; i++) {
-                    try {
-                        if (bmap == null || bmap.get(i)) {
-                            ISOComponent c = fld[i+128].createComponent(i+128);
-                            consumed += fld[i+128].unpack (c, b, consumed);
-                            if (logger != null) {
-                                evt.addMessage ("<unpack fld=\"" + i+128
-                                    +"\" packager=\""
-                                    +fld[i+128].getClass().getName()+ "\">");
-                                evt.addMessage ("  <value>" 
-                                    +c.getValue().toString()
-                                    + "</value>");
-                                evt.addMessage ("</unpack>");
-                            }
-                            m.set(c);
-                        }
-                    } catch (ISOException e) {
-                        System.out.println("error unpacking field "+i);
-                        e.printStackTrace(System.out);
-                        throw e;
-                    }
-                }
-            }
-
             if (b.length != consumed) {
                 evt.addMessage (
                     "WARNING: unpack len=" +b.length +" consumed=" +consumed
@@ -307,7 +278,6 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
             Logger.log (evt);
         }
     }
-
     public void unpack (ISOComponent m, InputStream in) 
         throws IOException, ISOException 
     {
@@ -341,7 +311,7 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
 
                 if (bmap == null || bmap.get(i)) {
                     if (fld[i] == null)
-                        throw new ISOException ("field package '" + i + "' is null");
+                        throw new ISOException ("field packager '" + i + "' is null");
 
                     ISOComponent c = fld[i].createComponent(i);
                     fld[i].unpack (c, in);

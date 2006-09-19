@@ -471,13 +471,15 @@ public class ISOUtil {
      */
     public static byte[] bitSet2byte (BitSet b)
     {
-        int len = (b.length() > 65) ? 128 : 64;
+        int len = (((b.length()+62)>>6)<<6);
         byte[] d = new byte[len >> 3];
         for (int i=0; i<len; i++) 
             if (b.get(i+1)) 
                 d[i >> 3] |= (0x80 >> (i % 8));
         if (len>64)
             d[0] |= 0x80;
+        if (len>128)
+            d[8] |= 0x80;
         return d;
     }
 
@@ -494,7 +496,30 @@ public class ISOUtil {
     {
         int len = bitZeroMeansExtended ?
             ((b[offset] & 0x80) == 0x80 ? 128 : 64) : 64;
+        BitSet bmap = new BitSet (len);
+        for (int i=0; i<len; i++) 
+            if (((b[offset + (i >> 3)]) & (0x80 >> (i % 8))) > 0)
+                bmap.set(i+1);
+        return bmap;
+    }
+    /**
+     * Converts a binary representation of a Bitmap field
+     * into a Java BitSet
+     * @param b - binary representation
+     * @param offset - staring offset
+     * @param maxBits - max number of bits (supports 64,128 or 192)
+     * @return java BitSet object
+     */
+    public static BitSet byte2BitSet (byte[] b, int offset, int maxBits) {
+        int len = maxBits > 64 ?
+            ((b[offset] & 0x80) == 0x80 ? 128 : 64) : 64;
 
+        if (maxBits > 128 && 
+            b.length > offset+8 && 
+            (b[offset+8] & 0x80) == 0x80)
+        {
+            len = 192;
+        } 
         BitSet bmap = new BitSet (len);
         for (int i=0; i<len; i++) 
             if (((b[offset + (i >> 3)]) & (0x80 >> (i % 8))) > 0)
@@ -538,6 +563,30 @@ public class ISOUtil {
             int digit = Character.digit((char)b[offset + (i >> 2)], 16);
             if ((digit & (0x08 >> (i%4))) > 0)
                 bmap.set(i+1);
+        }
+        return bmap;
+    }
+
+    /**
+     * Converts an ASCII representation of a Bitmap field
+     * into a Java BitSet
+     * @param b - hex representation
+     * @param offset - starting offset
+     * @param maxBits - max number of bits (supports 64,128 or 192)
+     * @return java BitSet object
+     */
+    public static BitSet hex2BitSet (byte[] b, int offset, int maxBits) {
+        int len = maxBits > 64?
+          ((Character.digit((char)b[offset],16) & 0x08) == 8 ? 128 : 64) :
+          64;
+        BitSet bmap = new BitSet (len);
+        for (int i=0; i<len; i++) {
+            int digit = Character.digit((char)b[offset + (i >> 2)], 16);
+            if ((digit & (0x08 >> (i%4))) > 0) {
+                bmap.set(i+1);
+                if (i==65 && maxBits > 128)
+                    len = 192;
+            }
         }
         return bmap;
     }
