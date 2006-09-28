@@ -213,11 +213,17 @@ public class Q2 implements FileFilter {
         return deployDir;
     }
     private void scan () {
-        File file[] = deployDir.listFiles (this);
-        // Arrays.sort (file); --apr not required - we use TreeMap
-        for (int i=0; i<file.length; i++) {
-            register (file[i]);
-        }
+        
+            File file[] = deployDir.listFiles (this);
+            // Arrays.sort (file); --apr not required - we use TreeMap
+            if (file == null) {
+                // Shutting down might be best, how to trigger from within?
+                throw new Error("Deploy directory \""+deployDir.getAbsolutePath()+"\" is not available");
+            } else {
+                for (int i=0; i<file.length; i++) {
+                    register (file[i]);
+                }
+            }
     }
 
     private void deploy () {
