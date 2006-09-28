@@ -52,6 +52,7 @@ package org.jpos.q2.iso;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.StringTokenizer;
 
 import org.jpos.q2.QFactory;
 import org.jpos.q2.QBeanSupport;
@@ -81,7 +82,8 @@ public class QMUX
     implements SpaceListener, MUX, QMUXMBean
 {
     LocalSpace sp;
-    protected String in, out, unhandled, ready;
+    protected String in, out, unhandled;
+    protected String[] ready;
     String spaceName;
     List listeners;
     public QMUX () {
@@ -93,7 +95,7 @@ public class QMUX
         sp        = grabSpace (e.getChild ("space")); 
         in        = e.getChildTextTrim ("in");
         out       = e.getChildTextTrim ("out");
-        ready     = e.getChildTextTrim ("ready");
+        ready     = toStringArray(e.getChildTextTrim ("ready"));
         addListeners ();
         unhandled = e.getChildTextTrim ("unhandled");
         sp.addListener (in, this);
@@ -253,10 +255,24 @@ public class QMUX
         throw new ConfigurationException ("Invalid space " + uri);
     }
     public boolean isConnected() {
-        if (ready != null) 
-            return sp.rdp (ready) != null;
+        if (ready != null) {
+            for (int i=0; i<ready.length; i++)
+                if (sp.rdp (ready[i]) != null)
+                    return true;
+            return false;
+        }
         else
             return true;
+    }
+    private String[] toStringArray (String s) {
+        String[] ready = null;
+        if (s != null && s.length() > 0) {
+            StringTokenizer st = new StringTokenizer (s);
+            ready = new String[st.countTokens()];
+            for (int i=0; st.hasMoreTokens(); i++)
+                ready[i] = st.nextToken();
+        }
+        return ready;
     }
 }
 
