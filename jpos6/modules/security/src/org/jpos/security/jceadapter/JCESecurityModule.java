@@ -425,6 +425,12 @@ public class JCESecurityModule extends BaseSMAdapter {
                         case 6:
                             block1 = "06" + pin + "FFFFFFFF";
                             break;
+                        case 7:
+                            block1 = "07" + pin + "FFFFFFF";
+                            break;
+                        case 8:
+                            block1 = "08" + pin + "FFFFFF";
+                            break;
                         default:
                             throw  new SMException("Unsupported PIN Length: " +
                                     pin.length());
