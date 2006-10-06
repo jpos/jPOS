@@ -252,7 +252,7 @@ public class TransactionManager
             TransactionParticipant p = (TransactionParticipant) iter.next();
             if (abort) {
                 action = prepareForAbort (p, id, context);
-                if (evt != null)
+                if (evt != null && (p instanceof AbortParticipant))
                     evt.addMessage ("prepareForAbort: " + p.getClass().getName());
             } else {
                 action = prepare (p, id, context);
@@ -274,7 +274,15 @@ public class TransactionManager
                 members.add (p);
             }
             if (p instanceof GroupSelector) {
-                String groupName = ((GroupSelector)p).select (id, context);
+                String groupName = null;
+                try {
+                    groupName = ((GroupSelector)p).select (id, context);
+                } catch (Exception e) {
+                    if (evt != null) 
+                        evt.addMessage ("  groupSelector " + p + " - " + e.getMessage());
+                    else 
+                        getLog().error (" groupSelector: " + p + " - " + e.getMessage());
+                }
                 if (evt != null) 
                     evt.addMessage ("  groupSelector: " + groupName);
                 if (groupName != null) {
