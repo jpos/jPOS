@@ -186,6 +186,9 @@ public class OneShotChannelAdaptor
             throws ConfigurationException
         {
             String channelName  = e.getAttributeValue ("class");
+            if (channelName == null)
+                throw new ConfigurationException ("class attribute missing from channel element.");
+            
             String packagerName = e.getAttributeValue ("packager");
 
             ISOChannel channel   = (ISOChannel) f.newInstance (channelName);
