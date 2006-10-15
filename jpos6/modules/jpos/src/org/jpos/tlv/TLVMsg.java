@@ -6,7 +6,6 @@
  */
 package org.jpos.tlv;
 
-import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOUtil;
 
 /**
@@ -66,7 +65,7 @@ public class TLVMsg {
     /*
      * @return tag + length + value of the TLV Message
      */
-    public byte[] getTLV() throws ISOException {
+    public byte[] getTLV() {
         String hexVal = Integer.toHexString(tag);
         byte[] bTag = ISOUtil.hex2byte(hexVal);
         byte[] bLen = getL();

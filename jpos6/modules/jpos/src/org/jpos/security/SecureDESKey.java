@@ -51,7 +51,6 @@ package  org.jpos.security;
 
 import java.io.PrintStream;
 
-import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOUtil;
 
 /**
@@ -112,7 +111,7 @@ public class SecureDESKey extends SecureKey {
      * @param keyCheckValueHexString key check value represented as HexString instead of byte[]
      */
     public SecureDESKey (short keyLength, String keyType, String keyHexString,
-            String keyCheckValueHexString) throws ISOException {
+            String keyCheckValueHexString) {
         this(keyLength, keyType, ISOUtil.hex2byte(keyHexString), ISOUtil.hex2byte(keyCheckValueHexString));
     }
 
