@@ -52,7 +52,6 @@ package  org.jpos.security;
 import java.io.PrintStream;
 import java.io.Serializable;
 
-import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOUtil;
 import org.jpos.util.Loggeable;
 
@@ -128,7 +127,7 @@ public class EncryptedPIN
      * @param pinBlockFormat
      * @param accountNumber (also functions correctly, if the complete account number with the check digit is passed)
      */
-    public EncryptedPIN (String pinBlockHexString, byte pinBlockFormat, String accountNumber) throws ISOException {
+    public EncryptedPIN (String pinBlockHexString, byte pinBlockFormat, String accountNumber) {
         this(ISOUtil.hex2byte(pinBlockHexString), pinBlockFormat, accountNumber);
     }
 

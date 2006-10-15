@@ -63,7 +63,6 @@ import javax.crypto.spec.SecretKeySpec;
 
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
-import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOUtil;
 import org.jpos.security.BaseSMAdapter;
 import org.jpos.security.EncryptedPIN;
@@ -168,7 +167,7 @@ public class JCESecurityModule extends BaseSMAdapter {
         return  exportedKey;
     }
 
-    public EncryptedPIN encryptPINImpl (String pin, String accountNumber) throws ISOException {
+    public EncryptedPIN encryptPINImpl (String pin, String accountNumber) throws SMException {
         EncryptedPIN encryptedPIN = null;
         byte[] clearPINBlock = calculatePINBlock(pin, FORMAT00, accountNumber);
         // Encrypt
@@ -177,7 +176,7 @@ public class JCESecurityModule extends BaseSMAdapter {
         return  encryptedPIN;
     }
 
-    public String decryptPINImpl (EncryptedPIN pinUnderLmk) throws ISOException {
+    public String decryptPINImpl (EncryptedPIN pinUnderLmk) throws SMException {
         String pin = null;
         byte[] clearPINBlock = jceHandler.decryptData(pinUnderLmk.getPINBlock(),
                 getLMK(PINLMKIndex));
@@ -185,7 +184,7 @@ public class JCESecurityModule extends BaseSMAdapter {
         return  pin;
     }
 
-    public EncryptedPIN importPINImpl (EncryptedPIN pinUnderKd1, SecureDESKey kd1) throws ISOException {
+    public EncryptedPIN importPINImpl (EncryptedPIN pinUnderKd1, SecureDESKey kd1) throws SMException {
         EncryptedPIN pinUnderLmk = null;
         // read inputs
         String accountNumber = pinUnderKd1.getAccountNumber();
@@ -207,7 +206,7 @@ public class JCESecurityModule extends BaseSMAdapter {
     }
 
     public EncryptedPIN exportPINImpl (EncryptedPIN pinUnderLmk, SecureDESKey kd2,
-            byte destinationPINBlockFormat) throws ISOException {
+            byte destinationPINBlockFormat) throws SMException {
         EncryptedPIN exportedPIN = null;
         String accountNumber = pinUnderLmk.getAccountNumber();
         // process
@@ -226,7 +225,7 @@ public class JCESecurityModule extends BaseSMAdapter {
     }
 
     public EncryptedPIN translatePINImpl (EncryptedPIN pinUnderKd1, SecureDESKey kd1,
-            SecureDESKey kd2, byte destinationPINBlockFormat) throws ISOException {
+            SecureDESKey kd2, byte destinationPINBlockFormat) throws SMException {
         EncryptedPIN translatedPIN = null;
         String accountNumber = pinUnderKd1.getAccountNumber();
         // get clear PIN
@@ -280,9 +279,9 @@ public class JCESecurityModule extends BaseSMAdapter {
      * @param keyType
      * @param KEYunderLMKHexString
      * @return SecureDESKey object with its check value set
-     * @throws ISOException 
+     * @throws SMException
      */
-    SecureDESKey generateKeyCheckValue (short keyLength, String keyType, String KEYunderLMKHexString) throws ISOException {
+    SecureDESKey generateKeyCheckValue (short keyLength, String keyType, String KEYunderLMKHexString) throws SMException {
         SecureDESKey secureDESKey = null;
         byte[] keyCheckValue;
         SimpleMsg[] cmdParameters =  {
@@ -316,10 +315,10 @@ public class JCESecurityModule extends BaseSMAdapter {
      * @param clearComponent2HexString HexString containing the second component
      * @param clearComponent3HexString HexString containing the second component
      * @return forms an SecureDESKey from two clear components
-     * @throws ISOException 
+     * @throws SMException
      */
     SecureDESKey formKEYfromThreeClearComponents (short keyLength, String keyType,
-            String clearComponent1HexString, String clearComponent2HexString, String clearComponent3HexString) throws ISOException {
+            String clearComponent1HexString, String clearComponent2HexString, String clearComponent3HexString) throws SMException {
         SecureDESKey secureDESKey;
         SimpleMsg[] cmdParameters =  {
             new SimpleMsg("parameter", "Key Length", keyLength),
@@ -399,10 +398,10 @@ public class JCESecurityModule extends BaseSMAdapter {
      * @param pinBlockFormat
      * @param accountNumber (the 12 right-most digits of the account number excluding the check digit)
      * @return The clear PIN Block
-     * @throws ISOException 
+     * @throws SMException
      *
      */
-    private byte[] calculatePINBlock (String pin, byte pinBlockFormat, String accountNumber) throws ISOException {
+    private byte[] calculatePINBlock (String pin, byte pinBlockFormat, String accountNumber) throws SMException {
         byte[] pinBlock = null;
         if (pin.length() > MAX_PIN_LENGTH)
             throw  new SMException("Invalid PIN length: " + pin.length());
@@ -470,9 +469,9 @@ public class JCESecurityModule extends BaseSMAdapter {
      * @param pinBlockFormat
      * @param accountNumber
      * @return the pin
-     * @throws ISOException 
+     * @throws SMException
      */
-    private String calculatePIN (byte[] pinBlock, byte pinBlockFormat, String accountNumber) throws ISOException {
+    private String calculatePIN (byte[] pinBlock, byte pinBlockFormat, String accountNumber) throws SMException {
         String pin = null;
         int pinLength;
         if (accountNumber.length() != 12)
