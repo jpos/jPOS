@@ -52,6 +52,7 @@ package  org.jpos.security;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
 import org.jpos.core.ReConfigurable;
+import org.jpos.iso.ISOException;
 import org.jpos.util.LogEvent;
 import org.jpos.util.LogSource;
 import org.jpos.util.Logger;
@@ -405,8 +406,9 @@ public class BaseSMAdapter
      * @param accountNumber
      * @return encrypted PIN under LMK
      * @throws SMException
+     * @throws ISOException 
      */
-    protected EncryptedPIN encryptPINImpl (String pin, String accountNumber) throws SMException {
+    protected EncryptedPIN encryptPINImpl (String pin, String accountNumber) throws SMException, ISOException {
         throw  new SMException("Operation not supported in: " + this.getClass().getName());
     }
 
@@ -415,8 +417,9 @@ public class BaseSMAdapter
      * @param pinUnderLmk
      * @return clear pin as entered by card holder
      * @throws SMException
+     * @throws ISOException 
      */
-    protected String decryptPINImpl (EncryptedPIN pinUnderLmk) throws SMException {
+    protected String decryptPINImpl (EncryptedPIN pinUnderLmk) throws SMException, ISOException {
         throw  new SMException("Operation not supported in: " + this.getClass().getName());
     }
 
@@ -426,8 +429,9 @@ public class BaseSMAdapter
      * @param kd1
      * @return imported pin
      * @throws SMException
+     * @throws ISOException 
      */
-    protected EncryptedPIN importPINImpl (EncryptedPIN pinUnderKd1, SecureDESKey kd1) throws SMException {
+    protected EncryptedPIN importPINImpl (EncryptedPIN pinUnderKd1, SecureDESKey kd1) throws SMException, ISOException {
         throw  new SMException("Operation not supported in: " + this.getClass().getName());
     }
 
@@ -439,9 +443,10 @@ public class BaseSMAdapter
      * @param destinationPINBlockFormat
      * @return translated pin
      * @throws SMException
+     * @throws ISOException 
      */
     protected EncryptedPIN translatePINImpl (EncryptedPIN pinUnderKd1, SecureDESKey kd1,
-            SecureDESKey kd2, byte destinationPINBlockFormat) throws SMException {
+            SecureDESKey kd2, byte destinationPINBlockFormat) throws SMException, ISOException {
         throw  new SMException("Operation not supported in: " + this.getClass().getName());
     }
 
@@ -480,9 +485,10 @@ public class BaseSMAdapter
      * @param destinationPINBlockFormat
      * @return exported pin
      * @throws SMException
+     * @throws ISOException 
      */
     protected EncryptedPIN exportPINImpl (EncryptedPIN pinUnderLmk, SecureDESKey kd2,
-            byte destinationPINBlockFormat) throws SMException {
+            byte destinationPINBlockFormat) throws SMException, ISOException {
         throw  new SMException("Operation not supported in: " + this.getClass().getName());
     }
 
