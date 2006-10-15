@@ -628,11 +628,11 @@ public class ISOUtil {
      * @param s source string (with Hex representation)
      * @return byte array
      */
-    public static byte[] hex2byte (String s) throws ISOException {
+    public static byte[] hex2byte (String s) {
         if (s.length() % 2 == 0) {
             return hex2byte (s.getBytes(), 0, s.length() >> 1);
         } else {
-            throw new ISOException("Uneven number("+s.length()+") of hex digits passed to hex2byte.");
+            throw new RuntimeException("Uneven number("+s.length()+") of hex digits passed to hex2byte.");
         }
     }
 
