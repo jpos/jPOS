@@ -555,7 +555,7 @@ public class Q2 implements FileFilter {
     }
 
     protected Document decrypt (Document doc) 
-        throws GeneralSecurityException, IOException, JDOMException
+        throws GeneralSecurityException, IOException, JDOMException, ISOException
     {
         Element root = doc.getRootElement ();
         if (PROTECTED_QBEAN.equals (root.getName ())) {

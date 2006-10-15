@@ -175,7 +175,7 @@ public class TLVList {
      * pack the TLV message (BER-TLV Encoding)
      * @return the packed message
      */
-    public byte[] pack() {
+    public byte[] pack() throws ISOException {
         int i = 0;
         TLVMsg tlv;
         ByteBuffer buffer=ByteBuffer.allocate(400);

@@ -628,8 +628,12 @@ public class ISOUtil {
      * @param s source string (with Hex representation)
      * @return byte array
      */
-    public static byte[] hex2byte (String s) {
-        return hex2byte (s.getBytes(), 0, s.length() >> 1);
+    public static byte[] hex2byte (String s) throws ISOException {
+        if (s.length() % 2 == 0) {
+            return hex2byte (s.getBytes(), 0, s.length() >> 1);
+        } else {
+            throw new ISOException("Uneven number("+s.length()+") of hex digits passed to hex2byte.");
+        }
     }
 
     /**
@@ -791,7 +795,7 @@ public class ISOUtil {
      * @param op2 hexstring 2
      * @return an array of length = the smallest between op1 and op2
      */
-    public static String hexor (String op1, String op2) {
+    public static String hexor (String op1, String op2) throws ISOException {
         byte[] xor = xor (hex2byte (op1), hex2byte (op2));
         return hexString (xor);
     }
