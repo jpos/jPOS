@@ -596,7 +596,7 @@ public class Q2 implements FileFilter {
         q2.setExit (true);
         q2.start();
     }
-    public class QEntry {
+    public static class QEntry {
         long deployed;
         ObjectInstance instance;
         Object obj;
