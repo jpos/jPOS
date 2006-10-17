@@ -134,14 +134,15 @@ public class SunJSSESocketFactory
 
         try{
             KeyStore ks = KeyStore.getInstance( "JKS" );
-            ks.load( new FileInputStream( new File( keyStore) ),password.toCharArray());
+            FileInputStream fis = new FileInputStream (new File (keyStore));
+            ks.load(fis,password.toCharArray());
+            fis.close();
             KeyManagerFactory km = KeyManagerFactory.getInstance( "SunX509"); 
             km.init( ks, keyPassword.toCharArray() );
             KeyManager[] kma = km.getKeyManagers();
             TrustManager[] tma = getTrustManagers( ks );
             SSLContext sslc = SSLContext.getInstance( "SSL" ); 
             sslc.init( kma, tma, SecureRandom.getInstance( "SHA1PRNG" ) ); 
-       
             return sslc;
         } catch(Exception e) {
             throw new ISOException (e);
