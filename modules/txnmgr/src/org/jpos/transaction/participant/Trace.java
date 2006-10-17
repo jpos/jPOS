@@ -34,7 +34,7 @@ public class Trace implements AbortParticipant, Configurable {
         return PREPARED | READONLY;
     }
     public void setConfiguration (Configuration cfg) {
-        this.trace = cfg.get ("trace", this.getClass().getName().toString());
+        this.trace = cfg.get ("trace", this.getClass().getName());
     }
 }
 
