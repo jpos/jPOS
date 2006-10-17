@@ -41,7 +41,6 @@ public class ChannelAdaptor
     implements ChannelAdaptorMBean, Channel
 {
     Space sp;
-    Configuration cfg;
     ISOChannel channel;
     String in, out, ready, reconnect;
     long delay;
