@@ -401,7 +401,7 @@ public class ISOMsg extends ISOComponent
             try {
                 Object obj = getValue(fldno);
                 if (obj instanceof String)
-                    s = new String ((String) obj);
+                    s = (String) obj;
                 else if (obj instanceof byte[])
                     s = ISOUtil.hexString ((byte[]) obj);
             } catch (ISOException e) {
