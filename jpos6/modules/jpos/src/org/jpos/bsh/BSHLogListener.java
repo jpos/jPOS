@@ -225,6 +225,7 @@ public class BSHLogListener implements org.jpos.util.LogListener, org.jpos.core.
         char[] content = new char[(int)f.length()];
         int l;
         while((l=r.read(content))!=-1) buf.append(content,0,l);
+        r.close();
         return buf.toString();
     }
     
