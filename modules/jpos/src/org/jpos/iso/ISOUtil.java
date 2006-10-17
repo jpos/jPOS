@@ -65,7 +65,7 @@ import java.util.StringTokenizer;
  */
 
 public class ISOUtil {
-    public static byte[] EBCDIC2ASCII = new byte[] {
+    public static final byte[] EBCDIC2ASCII = new byte[] {
         (byte)0x0,  (byte)0x1,  (byte)0x2,  (byte)0x3, 
         (byte)0x9C, (byte)0x9,  (byte)0x86, (byte)0x7F, 
         (byte)0x97, (byte)0x8D, (byte)0x8E, (byte)0xB, 
@@ -131,7 +131,7 @@ public class ISOUtil {
         (byte)0x38, (byte)0x39, (byte)0xB3, (byte)0xDB, 
         (byte)0xDC, (byte)0xD9, (byte)0xDA, (byte)0x9F
     };
-    public static byte[] ASCII2EBCDIC = new byte[] {
+    public static final byte[] ASCII2EBCDIC = new byte[] {
         (byte)0x0,  (byte)0x1,  (byte)0x2,  (byte)0x3, 
         (byte)0x37, (byte)0x2D, (byte)0x2E, (byte)0x2F, 
         (byte)0x16, (byte)0x5,  (byte)0x15, (byte)0xB, 
