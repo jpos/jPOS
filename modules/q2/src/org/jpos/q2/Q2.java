@@ -154,9 +154,15 @@ public class Q2 implements FileFilter {
         } else {
             server = (MBeanServer) mbeanServerList.get(0);
         }
-        ObjectName loaderName = new ObjectName (Q2_CLASS_LOADER);
+        final ObjectName loaderName = new ObjectName (Q2_CLASS_LOADER);
         try {
-            loader = new QClassLoader (server, libDir, loaderName);
+            loader = (QClassLoader) java.security.AccessController.doPrivileged(
+                new java.security.PrivilegedAction() {
+                    public Object run() {
+                        return new QClassLoader (server, libDir, loaderName);
+                    }
+                }
+            );
             server.registerMBean (loader, loaderName);
             loader = loader.scan();
         } catch (Throwable t) {
