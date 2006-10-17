@@ -795,7 +795,7 @@ public class ISOUtil {
      * @param op2 hexstring 2
      * @return an array of length = the smallest between op1 and op2
      */
-    public static String hexor (String op1, String op2) throws ISOException {
+    public static String hexor (String op1, String op2) {
         byte[] xor = xor (hex2byte (op1), hex2byte (op2));
         return hexString (xor);
     }
