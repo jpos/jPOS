@@ -264,7 +264,7 @@ public class TransactionManager
                             + (abort ? " ABORTED" : "")
                             + (retry ? " RETRY" : "")
                             + ((action & READONLY) == READONLY ? " READONLY" : "")
-                            + ((action & NO_JOIN) == READONLY ? " NO_JOIN" : ""));
+                            + ((action & NO_JOIN) == NO_JOIN ? " NO_JOIN" : ""));
                 }
             }
             if ((action & READONLY) == 0) {
