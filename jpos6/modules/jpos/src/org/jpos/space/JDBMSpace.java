@@ -36,8 +36,8 @@ import org.jpos.util.DefaultTimer;
 public class JDBMSpace extends TimerTask implements Space {
     protected HTree htree;
     protected RecordManager recman;
-    protected static Serializer refSerializer = new Ref ();
-    protected static Map spaceRegistrar = new HashMap ();
+    protected static final Serializer refSerializer = new Ref ();
+    protected static final Map spaceRegistrar = new HashMap ();
     protected boolean autoCommit = true;
     protected String name;
     public static final long GCDELAY = 5*60*1000;
