@@ -380,7 +380,7 @@ public class JDBMSpace extends TimerTask implements Space {
                 // avoid concurrent gc
                 if (rdp (GCKEY) != null) 
                     return;
-                out (GCKEY, new Boolean (true), TIMEOUT);  
+                out (GCKEY, Boolean.TRUE, TIMEOUT);  
             }
             FastIterator iter = htree.keys ();
 
