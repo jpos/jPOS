@@ -577,18 +577,20 @@ public abstract class BaseChannel extends Observable
             }
             throw e;
         } catch (EOFException e) {
-            if (socket != null)
-                socket.close ();
+            closeSocket();
             evt.addMessage ("<peer-disconnect/>");
             throw e;
+        } catch (SocketException e) {
+            closeSocket();
+            if (usable)
+                evt.addMessage ("<peer-disconnect>" + e.getMessage() + "</peer-disconnect>");
+            throw e;
         } catch (InterruptedIOException e) {
-            if (socket != null)
-                socket.close ();
+            closeSocket();
             evt.addMessage ("<io-timeout/>");
             throw e;
         } catch (IOException e) { 
-            if (socket != null)
-                socket.close ();
+            closeSocket();
             if (usable) 
                 evt.addMessage (e);
             throw e;
@@ -625,15 +627,7 @@ public abstract class BaseChannel extends Observable
             usable = false;
             setChanged();
             notifyObservers();
-            if (socket != null) {
-                try {
-                    socket.setSoLinger (true, 0);
-                } catch (SocketException e) {
-                    // safe to ignore - can be closed already
-                    // e.printStackTrace();
-                }
-                socket.close ();
-            }
+            closeSocket();
             if (serverIn != null) {
                 try {
                     serverIn.close();
@@ -874,4 +868,17 @@ public abstract class BaseChannel extends Observable
     public void setSocketFactory(ISOClientSocketFactory socketFactory) {
         this.socketFactory = socketFactory;
     }
+    private void closeSocket() throws IOException {
+        if (socket != null) {
+            try {
+                socket.setSoLinger (true, 0);
+            } catch (SocketException e) {
+                // safe to ignore - can be closed already
+                // e.printStackTrace();
+            }
+            socket.close ();
+            socket = null;
+        }
+    }
 }
+
