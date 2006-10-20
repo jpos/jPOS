@@ -133,10 +133,10 @@ public class ISOServer extends Observable
                     }
                 }
             } catch (EOFException e) {
-                Logger.log (new LogEvent (this, "session-warning", "<eof/>"));
+                // Logger.log (new LogEvent (this, "session-warning", "<eof/>"));
             } catch (SocketException e) {
-                if (!shutdown) 
-                    Logger.log (new LogEvent (this, "session-warning", e));
+                // if (!shutdown) 
+                //     Logger.log (new LogEvent (this, "session-warning", e));
             } catch (InterruptedIOException e) {
                 // nothing to log
             } catch (Throwable e) { 
