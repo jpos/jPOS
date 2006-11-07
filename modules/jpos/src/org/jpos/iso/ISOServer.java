@@ -10,6 +10,8 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.lang.ref.WeakReference;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
@@ -56,6 +58,8 @@ public class ISOServer extends Observable
     public static final int SIZEOF_CNT   = 1;
     private int[] cnt;
     private String[] allow;
+    private InetAddress bindAddr;
+    private int backlog;
     protected Configuration cfg;
     private boolean shutdown = false;
     private ServerSocket serverSocket;
@@ -238,10 +242,12 @@ public class ISOServer extends Observable
             try {
                 serverSocket = socketFactory != null ?
                         socketFactory.createServerSocket(port) :
-                        (new ServerSocket (port));
+                        (new ServerSocket (port, backlog, bindAddr));
                 
                 Logger.log (new LogEvent (this, "iso-server", 
-                    "listening on port "+port));
+                    "listening on " + (bindAddr != null ? bindAddr + ":" : "port ") + port
+                    + (backlog > 0 ? " backlog="+backlog : "")
+                ));
                 while (!shutdown) {
                     try {
                         channel = (ServerChannel) 
@@ -413,6 +419,15 @@ public class ISOServer extends Observable
     public void setConfiguration (Configuration cfg) throws ConfigurationException {
         this.cfg = cfg;
         allow = cfg.getAll ("allow");
+        backlog = cfg.getInt ("backlog", 0);
+        String ip = cfg.get ("bind-address", null);
+        if (ip != null) {
+            try {
+                bindAddr = InetAddress.getByName (ip);
+            } catch (UnknownHostException e) {
+                throw new ConfigurationException ("Invalid bind-address " + ip, e);
+            }
+        }
         if (socketFactory != this && socketFactory instanceof Configurable) {
             ((Configurable)socketFactory).setConfiguration (cfg);
         }
