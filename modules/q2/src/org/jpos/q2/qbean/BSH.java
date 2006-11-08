@@ -15,7 +15,7 @@ import bsh.Interpreter;
 import bsh.UtilEvalError;
 
 public class BSH extends QBeanSupport implements Runnable {
-    Interpreter bsh;
+    protected Interpreter bsh;
     public void initService() {
         bsh = new Interpreter ();
         BshClassManager bcm = bsh.getClassManager();
@@ -27,7 +27,7 @@ public class BSH extends QBeanSupport implements Runnable {
         bcm.setClassLoader(getServer().getLoader());
     }
     public void startService() {
-        new Thread (this,"BSH-Service").start ();
+        new Thread (this, "BSH-" + getName()).start ();
     }
     public void run () {
         Element config = getPersist();
