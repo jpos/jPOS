@@ -209,6 +209,8 @@ public class ISOServer extends Observable
         try {
             if (serverSocket != null)
                 serverSocket.close ();
+            if (pool != null)
+                pool.close();
         } catch (IOException e) {
             Logger.log (new LogEvent (this, "shutdown", e));
         }
