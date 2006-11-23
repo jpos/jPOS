@@ -207,6 +207,8 @@ public class FSDMsg implements Loggeable {
                 } else {
                     value = ISOUtil.strpad (value, length);
                 }
+                if (value.length() > length)
+                    value = value.substring(0,length);
                 break;
             case 'K':
                 if (defValue != null)
