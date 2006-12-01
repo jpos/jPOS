@@ -646,7 +646,7 @@
 
   <isofieldpackager
       id="127"  
-      length="999"
+      length="999999"
       name="RESERVED PRIVATE USE"
       class="org.jpos.iso.IFA_LLLLLLBINARY"
       packager="org.jpos.iso.packager.GenericSubFieldPackager">
