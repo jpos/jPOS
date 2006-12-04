@@ -93,13 +93,19 @@ public class NameRegistrar implements Loggeable {
      * @param value - value to be associated with the specified key
      */
     public static void register (String key, Object value) {
-        getMap().put (key, value);
+        Map map = getMap();
+        synchronized (map) {
+            map.put (key, value);
+        }
     }
     /**
      * @param key key whose mapping is to be removed from registrar.
      */
     public static void unregister (String key) {
-        getMap().remove (key);
+        Map map = getMap();
+        synchronized (map) {
+            map.remove (key);
+        }
     }
     /**
      * @param key key whose associated value is to be returned.
@@ -118,20 +124,22 @@ public class NameRegistrar implements Loggeable {
     public void dump (PrintStream p, String indent, boolean detail) {
         String inner = indent + "  ";
         p.println (indent + "<name-registrar>");
-        Iterator iter = registrar.entrySet().iterator();
-        while (iter.hasNext()) {
-            Map.Entry entry = (Map.Entry) iter.next ();
-            p.println (inner + 
-                "<name>" + entry.getKey().toString() + "</name>"
-            );
-            Object obj = entry.getValue();
-            p.println (inner + 
-                "<class>" + obj.getClass().getName()+ "</class>"
-            );
-            if ((detail == true) && (obj instanceof Loggeable)) {
-                p.println(inner + "  <detail>");
-                ((Loggeable)obj).dump(p, inner+"    ");
-                p.println(inner + "  </detail>");
+        synchronized (registrar) {
+            Iterator iter = registrar.entrySet().iterator();
+            while (iter.hasNext()) {
+                Map.Entry entry = (Map.Entry) iter.next ();
+                p.println (inner + 
+                    "<name>" + entry.getKey().toString() + "</name>"
+                );
+                Object obj = entry.getValue();
+                p.println (inner + 
+                    "<class>" + obj.getClass().getName()+ "</class>"
+                );
+                if ((detail == true) && (obj instanceof Loggeable)) {
+                    p.println(inner + "  <detail>");
+                    ((Loggeable)obj).dump(p, inner+"    ");
+                    p.println(inner + "  </detail>");
+                }
             }
         }
         p.println (indent + "</name-registrar>");
