@@ -53,6 +53,7 @@ import java.util.BitSet;
 import java.util.Hashtable;
 import java.util.Vector;
 
+import org.jpos.iso.ISOField;
 import org.jpos.iso.ISOBitMap;
 import org.jpos.iso.ISOComponent;
 import org.jpos.iso.ISOException;
@@ -161,8 +162,10 @@ public class GenericSubFieldPackager extends GenericPackager
 
             for (int i=getFirstField(); i<=m.getMaxField(); i++) 
             {
-                if ((c = (ISOComponent) fields.get (new Integer (i))) != null) 
-                {
+                c = (ISOComponent) fields.get (new Integer (i));
+                if (c == null && !emitBitMap())
+                    c = new ISOField (i, "");
+                if (c != null) {
                     try 
                     {
                         b = fld[i].pack(c);
