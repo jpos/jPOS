@@ -85,6 +85,7 @@ public class QMUX
     protected String in, out, unhandled;
     protected String[] ready;
     String spaceName;
+    int[] key;
     List listeners;
     public QMUX () {
         super ();
@@ -95,6 +96,7 @@ public class QMUX
         sp        = grabSpace (e.getChild ("space")); 
         in        = e.getChildTextTrim ("in");
         out       = e.getChildTextTrim ("out");
+        key       = toIntArray(e.getChildTextTrim ("key"));
         ready     = toStringArray(e.getChildTextTrim ("ready"));
         addListeners ();
         unhandled = e.getChildTextTrim ("unhandled");
@@ -164,12 +166,20 @@ public class QMUX
     }
 
     protected String getKey (ISOMsg m) throws ISOException {
-        return out + "." +
-            m.getMTI().substring(0,2) + 
-           (m.hasField(41)?ISOUtil.zeropad((String)m.getValue(41),16) : "")
-           + (m.hasField (11) ?
-                ISOUtil.zeropad((String) m.getValue(11),6) :
-                Long.toString (System.currentTimeMillis()));
+        StringBuffer sb = new StringBuffer (out);
+        sb.append ('.');
+        sb.append (m.getMTI().substring(0,2));
+        for (int i=0; i<key.length; i++) {
+            int f = key[i];
+            String v = m.getString(f);
+            if (v != null) {
+                if (f == 41) {
+                    v = ISOUtil.zeropad (v, 16); // BIC ANSI to ISO hack
+                }
+                sb.append (v);
+            }
+        }
+        return sb.toString();
     }
     /**
      * @jmx:managed-attribute description="input queue"
@@ -273,6 +283,22 @@ public class QMUX
                 ready[i] = st.nextToken();
         }
         return ready;
+    }
+    private int[] toIntArray (String s) 
+        throws ConfigurationException
+    {
+        if (s == null || s.length() == 0)
+            s = "41, 11";
+        try {
+            int[] k = null;
+            StringTokenizer st = new StringTokenizer (s, ", ");
+            k = new int[st.countTokens()];
+            for (int i=0; st.hasMoreTokens(); i++)
+                k[i] = Integer.parseInt(st.nextToken());
+            return k;
+        } catch (NumberFormatException e) {
+            throw new ConfigurationException (e);
+        }
     }
 }
 
