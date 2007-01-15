@@ -49,6 +49,8 @@
 
 package org.jpos.iso;
 
+import java.io.UnsupportedEncodingException;
+
 /**
  * ISOFieldPackager CHARACTERS (ASCII and BINARY)
  * deal fields terminated by special token
@@ -95,12 +97,16 @@ public class IF_TCHAR extends IF_TBASE {
     public int unpack (ISOComponent c, byte[] b, int offset)
         throws ISOException
     {
-        String s = new String( b  );
-        int newoffset = s.indexOf( getToken() , offset );
-        c.setValue( s.substring( offset - 1 , newoffset ));
-        int len = newoffset - offset + 1;
-        setLength( len );
-        return len + getToken().length();
+        try {
+            String s = new String(b, "ISO8859_1");
+            int newoffset = s.indexOf( getToken() , offset );
+            c.setValue( s.substring(offset, newoffset ));
+            int len = newoffset - offset;
+            setLength( len );
+            return len + getToken().length();
+        } catch (UnsupportedEncodingException e) {
+            throw new ISOException (e);
+        }
     }
 
     public int getMaxPackedLength() {
