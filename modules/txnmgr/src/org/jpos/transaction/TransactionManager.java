@@ -355,6 +355,7 @@ public class TransactionManager
             factory.newInstance (e.getAttributeValue ("class")
         );
         factory.setLogger (participant, e);
+        factory.invoke (participant, "setTransactionManager", this);
         factory.setConfiguration (participant, e);
         return participant;
     }
