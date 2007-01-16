@@ -28,7 +28,7 @@
     <property name="modules.ignore.list" value="${modules.dir}/ignore.list" />
     <property name="classes.dir" value="${build.dir}/classes"/>
     <property name="test-classes.dir" value="${build.dir}/test-classes"/>
-    <property name="deprecation" value="true"  />
+    <property name="deprecation" value="false"  />
     <property name="nowarn" value="true"  />
     <property name="debug" value="on"/>
 
@@ -117,6 +117,7 @@
     <target name="main" depends="prepare, copy-lib, copy-bin, manifest">
         <javac srcdir="${build.src}" destdir="${classes.dir}"
             debug="${debug}" nowarn="${nowarn}"
+            target="1.4" source="1.4"
             deprecation="${deprecation}">
             <classpath refid="main.classpath"/>
         </javac>
@@ -305,6 +306,7 @@ Sealed: false</concat>
       <mkdir dir="${test-classes.dir}"/>
       <javac srcdir="${build.test}" destdir="${test-classes.dir}"
          debug="${debug}" nowarn="${nowarn}"
+         target="1.4" source="1.4"
          deprecation="${deprecation}">
          <classpath refid="main.classpath" />
       </javac>
