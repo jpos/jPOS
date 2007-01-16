@@ -19,7 +19,6 @@ public class TransactionManagerTestCase extends TestCase {
     public static String QUEUE = "TXNMGRTEST";
 
     public void setUp () throws Exception {
-        System.out.println ("******** setup ***********");
         sp = SpaceFactory.getSpace();
         q2 = new Q2(new String[] { "-d", "../test/org/jpos/transaction" });
         new Thread() {
