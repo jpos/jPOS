@@ -44,8 +44,7 @@ public class TransactionManagerTestCase extends TestCase {
     }
     public void tearDown() throws Exception {
         Thread.sleep (3000); // let the thing run
-        q2.shutdown();
-        Thread.sleep (3000); // let the thing actually shutdown
+        q2.shutdown(true);
     }
 }
 

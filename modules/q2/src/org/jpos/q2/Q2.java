@@ -166,7 +166,10 @@ public class Q2 implements FileFilter {
             server.registerMBean (loader, loaderName);
             loader = loader.scan();
         } catch (Throwable t) {
-            log.error ("initial-scan", t);
+            if (log != null)
+                log.error ("initial-scan", t);
+            else
+                t.printStackTrace();
         }
         factory = new QFactory (loaderName, this);
         initSystemLogger ();
@@ -196,12 +199,24 @@ public class Q2 implements FileFilter {
             System.exit (0);
     }
     public void shutdown () {
+        shutdown(false);
+    }
+    public void shutdown (boolean join) {
         shutdown = true;
         if (q2Thread != null) {
             log.info ("shutting down");
             q2Thread.interrupt ();
+            if (join) {
+                try {
+                    q2Thread.join();
+                    log.info ("shutdown done");
+                } catch (InterruptedException e) {
+                    log.warn (e);
+                }
+            }
         }
         q2Thread = null;
+
     }
     public QClassLoader getLoader () {
         return loader;
