@@ -19,6 +19,7 @@ public class TransactionManagerTestCase extends TestCase {
     public static String QUEUE = "TXNMGRTEST";
 
     public void setUp () throws Exception {
+        System.out.println ("******** setup ***********");
         sp = SpaceFactory.getSpace();
         q2 = new Q2(new String[] { "-d", "../test/org/jpos/transaction" });
         new Thread() {
@@ -43,8 +44,9 @@ public class TransactionManagerTestCase extends TestCase {
         sp.out (QUEUE, ctx);
     }
     public void tearDown() throws Exception {
-        Thread.sleep (5000); // let the thing run
+        Thread.sleep (3000); // let the thing run
         q2.shutdown();
+        Thread.sleep (3000); // let the thing actually shutdown
     }
 }
 
