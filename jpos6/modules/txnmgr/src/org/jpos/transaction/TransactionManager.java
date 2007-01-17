@@ -347,7 +347,7 @@ public class TransactionManager
         }
         return group;
     }
-    protected TransactionParticipant createParticipant (Element e) 
+    public TransactionParticipant createParticipant (Element e) 
         throws ConfigurationException
     {
         QFactory factory = getFactory();
