@@ -73,6 +73,7 @@ public abstract class BaseChannel extends Observable
     private Socket socket;
     private String host, localIface;
     private int port, timeout, localPort;
+    private boolean keepAlive;
     protected boolean usable;
     protected boolean overrideHeader;
     private String name;
@@ -335,6 +336,8 @@ public abstract class BaseChannel extends Observable
                 connect(newSocket ());
             }
             applyTimeout();
+            if (socket != null)
+                socket.setKeepAlive (keepAlive);
             Logger.log (evt);
         } catch (ConnectException e) {
             Logger.log (new LogEvent (this, "connection-refused",
@@ -812,6 +815,7 @@ public abstract class BaseChannel extends Observable
             setLocalAddress (cfg.get("local-iface", null),cfg.getInt("local-port"));
         }
         overrideHeader = cfg.getBoolean ("override-header", false);
+        keepAlive = cfg.getBoolean ("keep-alive", false);
         if (socketFactory != this && socketFactory instanceof Configurable)
             ((Configurable)socketFactory).setConfiguration (cfg);
         try {
