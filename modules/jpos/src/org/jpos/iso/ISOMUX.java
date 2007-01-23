@@ -501,6 +501,8 @@ public class ISOMUX implements Runnable, ISOSource, LogSource, MUX,
      */
     public void terminate (int wait) {
         terminate(false);
+        tx.interrupt();
+        rx.interrupt();
         try {
             tx.join(wait);
             if (tx.isAlive()) {
