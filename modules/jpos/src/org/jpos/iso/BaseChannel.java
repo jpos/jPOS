@@ -405,7 +405,7 @@ public abstract class BaseChannel extends Observable
     }
     protected void sendMessageLength(int len) throws IOException { }
     protected void sendMessageHeader(ISOMsg m, int len) throws IOException { 
-        if (!overrideHeader && m.getHeader() != null)
+        if (!isOverrideHeader() && m.getHeader() != null)
             serverOut.write(m.getHeader());
         else if (header != null) 
             serverOut.write(header);
@@ -814,7 +814,7 @@ public abstract class BaseChannel extends Observable
             setHost (h, port);
             setLocalAddress (cfg.get("local-iface", null),cfg.getInt("local-port"));
         }
-        overrideHeader = cfg.getBoolean ("override-header", false);
+        setOverrideHeader(cfg.getBoolean ("override-header", false));
         keepAlive = cfg.getBoolean ("keep-alive", false);
         if (socketFactory != this && socketFactory instanceof Configurable)
             ((Configurable)socketFactory).setConfiguration (cfg);
@@ -844,6 +844,12 @@ public abstract class BaseChannel extends Observable
     }
     public byte[] getHeader () {
         return header;
+    }
+    public void setOverrideHeader (boolean overrideHeader) {
+        this.overrideHeader = overrideHeader;
+    }
+    public boolean isOverrideHeader () {
+        return overrideHeader;
     }
     /**
      * @return ISOChannel instance with given name.
