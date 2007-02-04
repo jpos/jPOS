@@ -700,19 +700,21 @@ public class ISOUtil {
                 case '\n': 
                     if (canonical) {
                         str.append("&#");
-                        str.append(Integer.toString(ch));
+                        str.append(Integer.toString((int) (ch & 0xFF)));
                         str.append(';');
                         break;
                     }
                     // else, default append char
                 default: 
-                    if (ch >= 0x20 && ch <= 0x7F)
-                        str.append(ch);
-                    else {
+                    if (ch < 0x20) {
                         str.append("&#");
-                        str.append(Integer.toString(ch));
+                        str.append(Integer.toString((int) (ch & 0xFF)));
                         str.append(';');
                     }
+                    else if (ch > 0xff00) {
+                        str.append((char) (ch & 0xFF));
+                    } else
+                        str.append(ch);
             }
         }
         return (str.toString());
