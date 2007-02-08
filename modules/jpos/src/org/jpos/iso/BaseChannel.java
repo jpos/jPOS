@@ -431,6 +431,15 @@ public abstract class BaseChannel extends Observable
         return header != null ? header.length : 0;
     }
     protected int getHeaderLength(byte[] b) { return 0; }
+
+    protected int getHeaderLength(ISOMsg m) {                                   
+        if (!overrideHeader && m.getHeader() != null)                           
+            return m.getHeader().length;                                        
+        else if (header != null)                                                
+            return header.length;                                               
+        return 0;                                                               
+    }                                                                           
+
     protected byte[] streamReceive() throws IOException {
         return new byte[0];
     }
@@ -460,7 +469,7 @@ public abstract class BaseChannel extends Observable
             m.setPackager (getDynamicPackager(m));
             byte[] b = m.pack();
             synchronized (serverOut) {
-                sendMessageLength(b.length + getHeaderLength());
+                sendMessageLength(b.length + getHeaderLength(m));
                 sendMessageHeader(m, b.length);
                 sendMessage (b, 0, b.length);
                 sendMessageTrailler(m, b);
