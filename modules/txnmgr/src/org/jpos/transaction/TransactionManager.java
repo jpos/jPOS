@@ -35,6 +35,7 @@ public class TransactionManager
     String queue;
     String tailLock;
     Map groups;
+    Thread[] threads;
     boolean debug;
     long head, tail, lastGC;
     long retryInterval = 5000L;
@@ -70,12 +71,14 @@ public class TransactionManager
     public void startService () {
         NameRegistrar.register (getName (), this);
         recover ();
-        long sessions = cfg.getLong ("sessions", 1);
+        int sessions = cfg.getInt ("sessions", 1);
+        threads = new Thread[sessions];
         for (int i=0; i<sessions; i++) {
             Thread t = new Thread (this);
             t.setName (getName() + "-" + i);
             t.setDaemon (false);
             t.start ();
+            threads[i] = t;
         }
     }
     public void stopService () {
@@ -83,6 +86,15 @@ public class TransactionManager
         long sessions = cfg.getLong ("sessions", 1);
         for (int i=0; i<sessions; i++)
             sp.out (queue, this, 60*1000);
+        for (int i=0; i<sessions; i++) {
+            try {
+                threads[i].join (300*1000);
+            } catch (InterruptedException e) {
+                getLog().warn ("Session " +i +" does not response - attempting to interrupt");
+                threads[i].interrupt();
+            }
+            threads[i] = null;
+        }
     }
     public void queue (Serializable context) {
         sp.out (queue, context);
