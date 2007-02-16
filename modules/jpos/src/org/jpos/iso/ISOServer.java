@@ -252,6 +252,30 @@ public class ISOServer extends Observable
                 ));
                 while (!shutdown) {
                     try {
+                        if (pool.getAvailableCount() <= 0) {
+                            try {
+                                serverSocket.close();
+                            } catch (IOException e){
+                                Logger.log (new LogEvent (this, "iso-server", e));
+                                relax();
+                            }
+                            
+                            for (int i=0; pool.getAvailableCount() <= 0; i++) {
+                                ISOUtil.sleep (250);
+                                if (i % 240 == 0) {
+                                    LogEvent evt = new LogEvent (this, "warn");
+                                    evt.addMessage (
+                                        "pool exhausted " + serverSocket.toString()
+                                    );
+                                    evt.addMessage (pool);
+                                    Logger.log (evt);
+                                }
+                            }
+            
+                            serverSocket = socketFactory != null ?
+                                socketFactory.createServerSocket(port) :
+                                (new ServerSocket (port, backlog, bindAddr));
+                        }
                         channel = (ServerChannel) 
                             clientSideChannelClass.newInstance();
                         channel.setPackager (clientPackager);
@@ -268,17 +292,6 @@ public class ISOServer extends Observable
                         setFilters (channel);
                         if (channel instanceof Observable)
                             ((Observable)channel).addObserver (this);
-                        for (int i=0; pool.getAvailableCount() <= 0; i++) {
-                            ISOUtil.sleep (250);
-                            if (i % 240 == 0) {
-                                LogEvent evt = new LogEvent (this, "warn");
-                                evt.addMessage (
-                                    "pool exahusted " + serverSocket.toString()
-                                );
-                                evt.addMessage (pool);
-                                Logger.log (evt);
-                            }
-                        }
                         channel.accept (serverSocket);
                         if ((cnt[CONNECT]++) % 100 == 0)
                             purgeChannels ();

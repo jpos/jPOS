@@ -70,6 +70,8 @@ public class ThreadPool extends ThreadGroup implements LogSource, Loggeable, Con
     private static int poolNumber=0;
     private static int threadNumber=0;
     private int maxPoolSize = 1;
+    private int available;
+    private int running = 0;
     private BlockingQueue pool = new BlockingQueue();
     private Logger logger;
     private String realm;
@@ -105,6 +107,7 @@ public class ThreadPool extends ThreadGroup implements LogSource, Loggeable, Con
                         }
                         synchronized (this) {
                             currentJob = null;
+                            available++;
                         }
                     }
                 }
@@ -125,7 +128,8 @@ public class ThreadPool extends ThreadGroup implements LogSource, Loggeable, Con
      */
     public ThreadPool (int poolSize, int maxPoolSize) {
         super ("ThreadPool-" + poolNumber++);
-        this.maxPoolSize = maxPoolSize;
+        this.maxPoolSize = maxPoolSize > 0 ? maxPoolSize : DEFAULT_MAX_THREADS ;
+        this.available = this.maxPoolSize;
         init (poolSize);
     }
     /**
@@ -136,12 +140,15 @@ public class ThreadPool extends ThreadGroup implements LogSource, Loggeable, Con
     public ThreadPool (int poolSize, int maxPoolSize, String name) {
         super (name + "-" + poolNumber++);
         this.maxPoolSize = maxPoolSize > 0 ? maxPoolSize : DEFAULT_MAX_THREADS ;
+        this.available = this.maxPoolSize;
         init (poolSize);
     }
     
     private void init(int poolSize){
-        while (activeCount() < Math.min (poolSize > 0 ? poolSize : 1, maxPoolSize))
+        while (running < Math.min (poolSize > 0 ? poolSize : 1, maxPoolSize)) {
+            running++;
             new PooledThread().start();
+        }
     }
     /**
      * Default constructor for ThreadPool
@@ -161,9 +168,12 @@ public class ThreadPool extends ThreadGroup implements LogSource, Loggeable, Con
             supervise();
 
         synchronized (pool) {
-            if (activeCount() < maxPoolSize && pool.consumerCount() <= 0)
-                new PooledThread().start();
-        }
+        	if (running < maxPoolSize && pool.consumerCount() <= 0) {
+            	new PooledThread().start();
+	            running++;
+    	    }
+    	}
+        available--;
         pool.enqueue (action);
     }
     public void dump (PrintStream p, String indent) {
@@ -172,8 +182,9 @@ public class ThreadPool extends ThreadGroup implements LogSource, Loggeable, Con
         if (!pool.ready())
             p.println (inner  + "<closed/>");
         p.println (inner  + "<jobs>" +jobs+"</jobs>");
-        p.println (inner  + "<size>" +activeCount()+"</size>");
+        p.println (inner  + "<size>" +available+"</size>");
         p.println (inner  + "<max>"  +maxPoolSize+"</max>");
+        p.println (inner  + "<active>" + running +"</active>");
         p.println (inner  + "<idle>"  + pool.consumerCount() +"</idle>");
         p.println (inner  + "<pending>"  +pool.pending()+"</pending>");
         p.println (indent + "</thread-pool>");
@@ -189,7 +200,7 @@ public class ThreadPool extends ThreadGroup implements LogSource, Loggeable, Con
      * @return number of active threads
      */
     public int getPoolSize () {
-        return activeCount();
+        return available;
     }
     /**
      * @return max number of active threads allowed
@@ -204,10 +215,10 @@ public class ThreadPool extends ThreadGroup implements LogSource, Loggeable, Con
         return pool.consumerCount ();
     }
     /**
-     * @return max number of available threads
+     * @return number of available threads
      */
-    public int getAvailableCount () {
-        return getMaxPoolSize() - getPoolSize() + getIdleCount();
+    synchronized public int getAvailableCount () {
+        return available;
     }
 
     /**
