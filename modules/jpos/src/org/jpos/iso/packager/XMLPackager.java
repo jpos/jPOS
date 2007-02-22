@@ -63,6 +63,7 @@ import org.jpos.iso.ISOField;
 import org.jpos.iso.ISOMsg;
 import org.jpos.iso.ISOPackager;
 import org.jpos.iso.ISOUtil;
+import org.jpos.iso.header.BaseHeader;
 import org.jpos.util.LogEvent;
 import org.jpos.util.LogSource;
 import org.jpos.util.Logger;
@@ -97,6 +98,7 @@ public class XMLPackager extends DefaultHandler
     public static final String TYPE_ATTR     = "type";
     public static final String TYPE_BINARY   = "binary";
     public static final String TYPE_BITMAP   = "bitmap";
+    public static final String HEADER_TAG    = "header";
 
     public XMLPackager() throws ISOException {
         super();
@@ -151,7 +153,9 @@ public class XMLPackager extends DefaultHandler
                 throw new ISOException ("error parsing");
 
             ISOMsg m = (ISOMsg) c;
-            m.merge ((ISOMsg) stk.pop());
+            ISOMsg m1 = (ISOMsg) stk.pop();
+            m.merge (m1);
+            m.setHeader (m1.getHeader());
 
             if (logger != null) 
                 evt.addMessage (m);
@@ -244,13 +248,21 @@ public class XMLPackager extends DefaultHandler
                     m.set (new ISOField (fieldNumber, value));
                 }
                 
+            } else if (HEADER_TAG.equals (name)) {
+                stk.push (new BaseHeader());
             }
         } catch (ISOException e) {
             throw new SAXException 
                 ("ISOException unpacking "+fieldNumber);
         }
     }
-
+    public void characters (char ch[], int start, int length) {
+        if (stk.peek() instanceof BaseHeader) {
+            ((BaseHeader)stk.peek()).unpack (
+                ISOUtil.hex2byte (new String(ch,start,length))
+            );
+        }
+    }
     public void endElement (String ns, String name, String qname) 
         throws SAXException
     {
@@ -258,6 +270,10 @@ public class XMLPackager extends DefaultHandler
             ISOMsg m = (ISOMsg) stk.pop();
             if (stk.empty())
                 stk.push (m); // push outter message
+        } else if (HEADER_TAG.equals (name)) {
+            BaseHeader h = (BaseHeader) stk.pop();
+            ISOMsg m = (ISOMsg) stk.peek ();
+            m.setHeader (h);
         }
     }
 
