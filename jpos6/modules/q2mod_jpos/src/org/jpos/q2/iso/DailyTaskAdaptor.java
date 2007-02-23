@@ -92,6 +92,7 @@ public class DailyTaskAdaptor extends QBeanSupport implements Runnable {
                 long sleepTime = when.getTime() - now.getTime();
                 if (sleepTime <= 0) {
                     ISOUtil.sleep(1000);
+                    when = getWhen(); // refresh, just in case (daylight change)
                     continue;
                 }
                 getLog().info ("sleeping",
