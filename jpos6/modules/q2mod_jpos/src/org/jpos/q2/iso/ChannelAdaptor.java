@@ -277,10 +277,10 @@ public class ChannelAdaptor
                 } catch (Exception e) { 
                     if (running()) {
                         getLog().warn ("channel-receiver-"+out, e);
+                        sp.out (reconnect, new Object(), delay);
                         disconnect ();
                         sp.out (in, new Object()); // wake-up Sender
                         ISOUtil.sleep(1000);
-                        sp.out (reconnect, new Object(), delay);
                     }
                 }
             }
