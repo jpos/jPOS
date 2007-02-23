@@ -90,6 +90,10 @@ public class DailyTaskAdaptor extends QBeanSupport implements Runnable {
             Date now = new GregorianCalendar().getTime();
             if (now.before (when)) {
                 long sleepTime = when.getTime() - now.getTime();
+                if (sleepTime <= 0) {
+                    ISOUtil.sleep(1000);
+                    continue;
+                }
                 getLog().info ("sleeping",
                     (sleepTime/1000) + " secs until " + when.toString()
                 );
