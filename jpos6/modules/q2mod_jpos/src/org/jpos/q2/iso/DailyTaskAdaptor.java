@@ -85,23 +85,25 @@ public class DailyTaskAdaptor extends QBeanSupport implements Runnable {
         return when;
     }
     protected void waitUntilStartTime() {
+        Date when = getWhen();
         while (running()) {
-            Date when = getWhen();
             Date now = new GregorianCalendar().getTime();
-            long sleepTime = when.getTime() - now.getTime();
-            if (sleepTime <= 0) {
-                ISOUtil.sleep(1000);
-                when = getWhen(); // refresh, just in case (daylight change)
-                continue;
-            }
-            getLog().info ("sleeping",
-                (sleepTime/1000) + " secs until " + when.toString()
-            );
-            try {
-                Thread.sleep (sleepTime);
-            } catch (InterruptedException e) { 
-                when = getWhen();
-            }
+            if (now.before (when)) {
+                long sleepTime = when.getTime() - now.getTime();
+                if (sleepTime <= 0) {
+                    ISOUtil.sleep(1000);
+                    continue;
+                }
+                getLog().info ("sleeping",
+                    (sleepTime/1000) + " secs until " + when.toString()
+                );
+                try {
+                    Thread.sleep (sleepTime);
+                } catch (InterruptedException e) { 
+                    when = getWhen();
+                }
+            } else
+                break;
         }
     }
 }
