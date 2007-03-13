@@ -86,6 +86,7 @@ public class QMUX
     protected String[] ready;
     String spaceName;
     int[] key;
+    String ignorerc;
     List listeners;
     public QMUX () {
         super ();
@@ -96,6 +97,7 @@ public class QMUX
         sp        = grabSpace (e.getChild ("space")); 
         in        = e.getChildTextTrim ("in");
         out       = e.getChildTextTrim ("out");
+        ignorerc  = e.getChildTextTrim ("ignore-rc");
         key       = toIntArray(e.getChildTextTrim ("key"));
         ready     = toStringArray(e.getChildTextTrim ("ready"));
         addListeners ();
@@ -139,8 +141,15 @@ public class QMUX
         else
             sp.out (out, m);
 
-        ISOMsg resp = (ISOMsg) sp.in (key, timeout);
+        ISOMsg resp = null;
 
+        for (;;) {
+            resp = (ISOMsg) sp.rd (key, timeout);
+            if (shouldIgnore (resp)) 
+                continue;
+            sp.inp (key);
+            break;
+        } 
         if (resp == null && sp.inp (req) == null) {
             // possible race condition, retry for a few extra seconds
             resp = (ISOMsg) sp.in (key, 10000);
@@ -299,6 +308,14 @@ public class QMUX
         } catch (NumberFormatException e) {
             throw new ConfigurationException (e);
         }
+    }
+    private boolean shouldIgnore (ISOMsg m) {
+        if (m != null && ignorerc != null 
+            && ignorerc.length() > 0 && m.hasField(39))
+        {
+            return ignorerc.indexOf(m.getString(39)) >= 0;
+        }
+        return false;
     }
 }
 
