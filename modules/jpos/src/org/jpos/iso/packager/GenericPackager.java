@@ -123,6 +123,7 @@ public class GenericPackager
     private int maxValidField=128;
     private boolean emitBitmap=true;
     private int bitmapField=1;
+    private String firstField = null;
 
     public GenericPackager() throws ISOException
     {
@@ -256,6 +257,7 @@ public class GenericPackager
         String maxField  = atts.getValue("maxValidField");
         String emitBmap  = atts.getValue("emitBitmap");
         String bmapfield = atts.getValue("bitmapField");
+        firstField = atts.getValue("firstField");
 
         if (maxField != null)
             maxValidField = Integer.parseInt(maxField); 
@@ -265,6 +267,11 @@ public class GenericPackager
 
         if (bmapfield != null)
             bitmapField = Integer.parseInt(bmapfield);
+
+        if (firstField != null)
+            Integer.parseInt (firstField);  // attempt to parse just to
+                                            // force an exception if the
+                                            // data is not correct.
     }
 
 
@@ -438,6 +445,11 @@ public class GenericPackager
         {
             throw ex;
         }
+    }
+    protected int getFirstField() {
+        if (firstField != null)
+            return Integer.parseInt (firstField);
+        else return super.getFirstField();
     }
 }
 
