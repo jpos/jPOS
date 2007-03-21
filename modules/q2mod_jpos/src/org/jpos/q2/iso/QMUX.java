@@ -252,6 +252,9 @@ public class QMUX
     public void addISORequestListener(ISORequestListener l) {
         listeners.add (l);
     }
+    public boolean removeISORequestListener(ISORequestListener l) {
+    	return listeners.remove(l);
+    }
     protected void processUnhandled (ISOMsg m) {
         ISOSource source = m.getSource ();
         if (source != null) {
