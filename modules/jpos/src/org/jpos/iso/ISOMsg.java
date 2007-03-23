@@ -504,17 +504,15 @@ public class ISOMsg extends ISOComponent
         else
             s.append("    ");
 
-        try {
-            s.append((String) getValue(0));
-            if (hasField(11)) {
-                s.append(' ');
-                s.append((String) getValue(11));
-            }
-            if (hasField(41)) {
-                s.append(' ');
-                s.append((String) getValue(41));
-            }
-        } catch (ISOException e) { }
+        s.append(getString(0));
+        if (hasField(11)) {
+            s.append(' ');
+            s.append(getString(11));
+        }
+        if (hasField(41)) {
+            s.append(' ');
+            s.append(getString(41));
+        }
         return s.toString();
     }
     public Object getKey() throws ISOException {
