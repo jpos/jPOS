@@ -67,12 +67,12 @@ public class IFB_LLLHECHAR extends ISOStringFieldPackager {
      */
     public IFB_LLLHECHAR (int len, String description) {
         super(len, description, NullPadder.INSTANCE, EbcdicInterpreter.INSTANCE, BinaryPrefixer.BB);
-        checkLength(len, 999);
+        checkLength(len, 65535);
     }
 
     public void setLength(int len)
     {
-        checkLength(len, 999);
+        checkLength(len, 65535);
         super.setLength(len);
     }
 }

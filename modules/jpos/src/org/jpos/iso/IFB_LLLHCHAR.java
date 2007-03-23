@@ -24,12 +24,12 @@ public class IFB_LLLHCHAR extends ISOStringFieldPackager {
      */
     public IFB_LLLHCHAR(int len, String description) {
         super(len, description, NullPadder.INSTANCE, AsciiInterpreter.INSTANCE, BinaryPrefixer.BB);
-        checkLength(len, 999);
+        checkLength(len, 65535);
     }
 
     public void setLength(int len)
     {
-        checkLength(len, 999);
+        checkLength(len, 65535);
         super.setLength(len);
     }
 }

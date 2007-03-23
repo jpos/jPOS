@@ -27,8 +27,8 @@ public class IFB_LLLHCHARTest extends TestCase
     {
         try
         {
-            new IFB_LLLHCHAR(1000, "Too long for this");
-            fail("1000 is too long and should have thrown an exception");
+            new IFB_LLLHCHAR(65536, "Too long for this");
+            fail("65536 is too long and should have thrown an exception");
         } catch (Exception ignored)
         {
         }
