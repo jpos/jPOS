@@ -66,12 +66,12 @@ public class IFB_LLLHBINARY extends ISOBinaryFieldPackager {
      */
     public IFB_LLLHBINARY (int len, String description) {
         super(len, description, LiteralBinaryInterpreter.INSTANCE, BinaryPrefixer.BB);
-        checkLength(len, 999);
+        checkLength(len, 65535);
     }
 
     public void setLength(int len)
     {
-        checkLength(len, 999);
+        checkLength(len, 65535);
         super.setLength(len);
     }
 }
