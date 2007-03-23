@@ -84,9 +84,9 @@ public class QMUX
     LocalSpace sp;
     protected String in, out, unhandled;
     protected String[] ready;
-    String spaceName;
-    int[] key;
-    String ignorerc;
+    protected String spaceName;
+    protected int[] key;
+    protected String ignorerc;
     List listeners;
     public QMUX () {
         super ();
