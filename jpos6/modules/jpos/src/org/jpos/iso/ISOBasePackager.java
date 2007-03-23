@@ -203,8 +203,7 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
                 evt.addMessage (ISOUtil.hexString (b));
 
             int consumed = 0;
-            if (!(fld[0] instanceof ISOMsgFieldPackager) &&
-                !(fld[0] instanceof ISOBitMapPackager))
+            if (!(fld[0] instanceof ISOBitMapPackager))
             {
                 ISOComponent mti = fld[0].createComponent(0);
                 consumed  = fld[0].unpack(mti, b, 0);
