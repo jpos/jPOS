@@ -73,6 +73,7 @@ public abstract class BaseChannel extends Observable
     private Socket socket;
     private String host, localIface;
     private int port, timeout, localPort;
+    private int maxPacketLength;
     private boolean keepAlive;
     protected boolean usable;
     protected boolean overrideHeader;
@@ -551,7 +552,7 @@ public abstract class BaseChannel extends Observable
                     }
                     b = streamReceive();
                 }
-                else if (len > 0 && len <= 10000) {
+                else if (len > 0 && len <= maxPacketLength) {
                     if (hLen > 0) {
                         // ignore message header (TPDU)
                         // Note header length is not necessarily equal to hLen (see VAPChannel)
@@ -816,6 +817,7 @@ public abstract class BaseChannel extends Observable
     {
         String h    = cfg.get    ("host");
         int port    = cfg.getInt ("port");
+        maxPacketLength = cfg.getInt ("max-packet-length", 100000);
         if (h != null && h.length() > 0) {
             if (port == 0)
                 throw new ConfigurationException 
