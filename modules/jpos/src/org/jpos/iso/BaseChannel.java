@@ -73,7 +73,7 @@ public abstract class BaseChannel extends Observable
     private Socket socket;
     private String host, localIface;
     private int port, timeout, localPort;
-    private int maxPacketLength;
+    private int maxPacketLength = 100000;
     private boolean keepAlive;
     protected boolean usable;
     protected boolean overrideHeader;
@@ -552,7 +552,7 @@ public abstract class BaseChannel extends Observable
                     }
                     b = streamReceive();
                 }
-                else if (len > 0 && len <= maxPacketLength) {
+                else if (len > 0 && len <= getMaxPacketLength()) {
                     if (hLen > 0) {
                         // ignore message header (TPDU)
                         // Note header length is not necessarily equal to hLen (see VAPChannel)
@@ -565,7 +565,7 @@ public abstract class BaseChannel extends Observable
                 }
                 else
                     throw new ISOException(
-                        "receive length " +len + " seems strange");
+                        "receive length " +len + " seems strange - maxPacketLength = " + getMaxPacketLength());
             }
             m.setPackager (getDynamicPackager(b));
             m.setHeader (getDynamicHeader(header));
@@ -888,6 +888,12 @@ public abstract class BaseChannel extends Observable
     */
     public void setSocketFactory(ISOClientSocketFactory socketFactory) {
         this.socketFactory = socketFactory;
+    }
+    public int getMaxPacketLength() {
+        return maxPacketLength;
+    }
+    public void setMaxPacketLength(int maxPacketLength) {
+        this.maxPacketLength = maxPacketLength;
     }
     private void closeSocket() throws IOException {
         if (socket != null) {
