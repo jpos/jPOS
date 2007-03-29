@@ -284,10 +284,11 @@ public class ISOServer extends Observable
                                 setLogger (getLogger(), realmChannel);
                         }
                         if (clientSideChannel instanceof BaseChannel) {
-                            ((BaseChannel)channel).setHeader (
-                                ((BaseChannel)clientSideChannel).getHeader());
-                            ((BaseChannel)channel).setTimeout (
-                                ((BaseChannel)clientSideChannel).getTimeout());
+                            BaseChannel csc = (BaseChannel) clientSideChannel;
+                            BaseChannel c = (BaseChannel) channel;
+                            c.setHeader (csc.getHeader());
+                            c.setTimeout (csc.getTimeout());
+                            c.setMaxPacketLength (csc.getMaxPacketLength());
                         }
                         setFilters (channel);
                         if (channel instanceof Observable)
