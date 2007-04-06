@@ -25,12 +25,13 @@ import org.jpos.util.LogEvent;
 import org.jpos.util.Profiler;
 import org.jpos.iso.ISOUtil;
 
-public class Context implements Externalizable, Loggeable {
+public class Context implements Externalizable, Loggeable, Pausable {
     private transient Map map; // transient map
     private Map pmap;          // persistent (serializable) map
 
     public static String LOGEVT = "LOGEVT";
     public static String PROFILER = "PROFILER";
+    public static String PAUSED_TRANSACTION = ":paused_transaction";
 
     public Context () {
         super ();
@@ -226,6 +227,13 @@ public class Context implements Externalizable, Loggeable {
      */
     public void checkPoint (String detail) {
         getProfiler().checkPoint (detail);
+    }
+    public void setPausedTransaction (PausedTransaction p) {
+        put (PAUSED_TRANSACTION, p);
+    }
+    public PausedTransaction getPausedTransaction() {
+        return (PausedTransaction) get (PAUSED_TRANSACTION);
+
     }
     static final long serialVersionUID = 6056487212221438338L;
 }

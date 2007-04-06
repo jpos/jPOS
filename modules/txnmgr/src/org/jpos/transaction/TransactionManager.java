@@ -39,6 +39,7 @@ public class TransactionManager
     boolean debug;
     long head, tail, lastGC;
     long retryInterval = 5000L;
+    long pauseTimeout  = 300*60*1000L;  // five minutes
     RetryTask retryTask = null;
     public static final String  HEAD       = "$HEAD";
     public static final String  TAIL       = "$TAIL";
@@ -62,7 +63,6 @@ public class TransactionManager
         psp  = SpaceFactory.getSpace (cfg.get ("persistent-space", this.toString()));
         tail = initCounter (TAIL, cfg.getLong ("initial-tail", 1));
         head = Math.max (initCounter (HEAD, tail), tail);
-        tailLock = TAILLOCK + "." + Integer.toString (this.hashCode());
         initTailLock ();
 
         groups = new HashMap();
@@ -100,7 +100,11 @@ public class TransactionManager
         sp.out (queue, context);
     }
     public void run () {
-        long id;
+        long id = 0;
+        List members = null;
+        Iterator iter = null;
+        PausedTransaction pt;
+        boolean abort = false;
         LogEvent evt = null;
         String threadName = Thread.currentThread().getName();
         getLog().info (threadName + " start");
@@ -117,19 +121,37 @@ public class TransactionManager
                     );
                     continue;
                 }
-                id = nextId ();
+                if (obj instanceof Pausable) {
+                    pt = ((Pausable)obj).getPausedTransaction();
+                    if (pt != null) {
+                        id      = pt.id();
+                        members = pt.members();
+                        iter    = pt.iterator();
+                        abort   = pt.isAborting();
+                    }
+                } else 
+                    pt = null;
+
+                if (pt == null) {
+                    abort = false;
+                    id = nextId ();
+                    members = new ArrayList ();
+                    iter = getParticipants (DEFAULT_GROUP).iterator();
+                }
                 if (debug) {
                     evt = getLog().createLogEvent ("debug",
                         Thread.currentThread().getName() 
-                        + ":" + Long.toString(id)
+                        + ":" + Long.toString(id) +
+                        (pt != null ? " [resuming]" : "")
                     );
                     startTime = System.currentTimeMillis();
                 }
-                List members = new ArrayList ();
                 Serializable context = (Serializable) obj;
                 snapshot (id, context, PREPARING);
-                int action = prepare (id, context, members, evt);
+                int action = prepare (id, context, members, iter, abort, evt);
                 switch (action) {
+                    case PAUSE:
+                        break;
                     case PREPARED:
                         setState (id, COMMITTING);
                         commit (id, context, members, false, evt);
@@ -177,6 +199,7 @@ public class TransactionManager
         super.setConfiguration (cfg);
         debug = cfg.getBoolean ("debug");
         retryInterval = cfg.getLong ("retry-interval", retryInterval);
+        pauseTimeout  = cfg.getLong ("pause-timeout", pauseTimeout);
     }
     protected void commit 
         (long id, Serializable context, List members, boolean recover, LogEvent evt) 
@@ -249,10 +272,9 @@ public class TransactionManager
             getLog().warn ("ABORT: " + Long.toString (id), t);
         }
     }
-    protected int prepare (long id, Serializable context, List members, LogEvent evt) {
-        boolean abort = false;
+    protected int prepare (long id, Serializable context, List members, Iterator iter, boolean abort, LogEvent evt) {
         boolean retry = false;
-        Iterator iter = getParticipants (DEFAULT_GROUP).iterator();
+        boolean pause = false;
         for (int i=0; iter.hasNext (); i++) {
             int action = 0;
             if (i > MAX_PARTICIPANTS) {
@@ -270,11 +292,13 @@ public class TransactionManager
                 action = prepare (p, id, context);
                 abort  = (action & PREPARED) == ABORTED;
                 retry  = (action & RETRY) == RETRY;
+                pause  = (action & PAUSE) == PAUSE;
                 if (evt != null) {
                     evt.addMessage ("        prepare: " 
                             + p.getClass().getName() 
                             + (abort ? " ABORTED" : "")
                             + (retry ? " RETRY" : "")
+                            + (pause ? " PAUSE" : "")
                             + ((action & READONLY) == READONLY ? " READONLY" : "")
                             + ((action & NO_JOIN) == NO_JOIN ? " NO_JOIN" : ""));
                 }
@@ -311,6 +335,16 @@ public class TransactionManager
                     iter = participants.iterator();
                     continue;
                 }
+            }
+            if (pause) {
+                if (context instanceof Pausable) {
+                    ((Pausable)context).setPausedTransaction (
+                        new PausedTransaction (id, members, iter, abort)
+                    );
+                } else {
+                    throw new RuntimeException ("Unable to PAUSE transaction - Context is not Pausable");
+                }
+                return PAUSE;
             }
         }
         return members.size() == 0 ? NO_JOIN : 
@@ -405,6 +439,7 @@ public class TransactionManager
         }
     }
     protected void initTailLock () {
+        tailLock = TAILLOCK + "." + Integer.toString (this.hashCode());
         SpaceUtil.wipe (sp, tailLock);
         sp.out (tailLock, TAILLOCK);
     }

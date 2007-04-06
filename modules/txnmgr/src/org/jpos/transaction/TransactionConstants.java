@@ -12,6 +12,7 @@ public interface TransactionConstants {
     public static final int ABORTED  = 0;
     public static final int PREPARED = 1;
     public static final int RETRY    = 2;
+    public static final int PAUSE    = 4;
 
     /**
      * This participant does not join the transaction

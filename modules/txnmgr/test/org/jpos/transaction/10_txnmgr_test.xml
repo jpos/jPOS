@@ -6,10 +6,20 @@
  <property name="retry-interval"   value="250" />
 
  <participant class="org.jpos.transaction.participant.Trace" logger="Q2">
-  <property name="trace" value="pre-switch" />
+  <property name="trace" value="pre-retry" />
  </participant>
  <participant class="org.jpos.transaction.TestRetryParticipant" logger="Q2" />
+ <participant class="org.jpos.transaction.participant.Trace" logger="Q2">
+  <property name="trace" value="post-retry" />
+ </participant>
+ <participant class="org.jpos.transaction.TestPauseParticipant" logger="Q2" />
+ <participant class="org.jpos.transaction.participant.Trace" logger="Q2">
+  <property name="trace" value="post-pause" />
+ </participant>
 
+ <participant class="org.jpos.transaction.participant.Trace" logger="Q2">
+  <property name="trace" value="pre-switch" />
+ </participant>
  <participant class="org.jpos.transaction.SwitchParticipant" logger="Q2">
   <property name="switch" value="GroupA GroupB" />
  </participant>
