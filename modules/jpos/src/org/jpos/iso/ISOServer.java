@@ -240,8 +240,8 @@ public class ISOServer extends Observable
 
     public void run() {
         ServerChannel  channel;
-        while  (!shutdown) {
-            try {
+        serverLoop : while  (!shutdown) {
+                try {
                 serverSocket = socketFactory != null ?
                         socketFactory.createServerSocket(port) :
                         (new ServerSocket (port, backlog, bindAddr));
@@ -262,6 +262,7 @@ public class ISOServer extends Observable
                             
                             for (int i=0; pool.getAvailableCount() <= 0; i++) {
                                 ISOUtil.sleep (250);
+                                if (shutdown) break serverLoop;
                                 if (i % 240 == 0) {
                                     LogEvent evt = new LogEvent (this, "warn");
                                     evt.addMessage (
