@@ -90,6 +90,19 @@ public class SpaceUtil {
         while (sp.inp (key) != null)
             ;
     }
+    public static void wipeAndOut  (Space sp, Object key, Object value) {
+        synchronized (sp) {
+            wipe (sp, key);
+            sp.out (key, value);
+        }
+    }
+    public static void wipeAndOut  (Space sp, Object key, Object value, long timeout) 
+    {
+        synchronized (sp) {
+            wipe (sp, key);
+            sp.out (key, value, timeout);
+        }
+    }
     public static long nextLong (Space sp, Object key) {
         long l = 0L;
         synchronized (sp) {
