@@ -220,25 +220,58 @@
       </chmod>
     </target>
 
-    <target name="zip" depends="jar, javadoc" 
+    <target name="zip" depends="clean, jar" 
         description="create zip distribution">
+     <copy todir="${build.dir}"> 
+       <fileset dir=".">
+         <include name="LICENSE"/>
+         <include name="COPYRIGHT"/>
+         <include name="build.xml"/>
+         <include name="build.properties"/>
+       </fileset>
+     </copy>
+     <chmod perm="ug+x">
+       <fileset dir="${build.bin}">
+        <include name="q2" />
+        <include name="bsh" />
+        <include name="*.sh" />
+       </fileset>
+     </chmod>
      <zip zipfile="${dist.dir}/${archive}.zip" basedir="${build.dir}"
           includes="**/*"> 
           <exclude name="classes/**" />
           <exclude name="doc/**" />
           <exclude name="src/**" />
+          <exclude name="test/**" />
           <exclude name="tmpdoc/**" />
+          <exclude name="jpos.jar" />
      </zip>
-     <zip zipfile="${dist.dir}/${archive}-doc.zip" basedir="${build.doc}"
-          includes="**/*" excludes="classes" /> 
     </target>
 
-    <target name="tgz" depends="jar, javadoc" description="create tgz distribution">
+    <target name="tgz" depends="clean, jar" description="create tgz distribution">
+     <copy todir="${build.dir}"> 
+       <fileset dir=".">
+         <include name="LICENSE"/>
+         <include name="COPYRIGHT"/>
+         <include name="build.xml"/>
+         <include name="build.properties"/>
+       </fileset>
+     </copy>
+     <chmod perm="ug+x">
+       <fileset dir="${build.bin}">
+        <include name="q2" />
+        <include name="bsh" />
+        <include name="*.sh" />
+       </fileset>
+     </chmod>
      <tar tarfile="${dist.dir}/${archive}.tar" basedir="${build.dir}"
           includes="**/*"> 
-        <exclude name="classes/**" />
-        <exclude name="doc/**" />
-        <exclude name="src/**" />
+          <exclude name="classes/**" />
+          <exclude name="doc/**" />
+          <exclude name="src/**" />
+          <exclude name="test/**" />
+          <exclude name="tmpdoc/**" />
+          <exclude name="jpos.jar" />
      </tar>
      <gzip src="${dist.dir}/${archive}.tar"
      zipfile="${dist.dir}/${archive}.tgz"/>
