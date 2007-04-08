@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Specification-Title: q2mod_jpos 
+Specification-Vendor: jPOS.org
+Specification-Version: $VERSION$
+Implementation-Title: q2mod_jpos
+Implementation-Vendor: jPOS.org
+Implementation-Version: $VERSION$
+Sealed: false

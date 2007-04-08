@@ -1,0 +1,9 @@
+build: please read ./lib/README
+
+deploy:
+
+  <jetty class="org.jpos.q2.jetty.Jetty">
+   <attr name="config">path/to/your/jetty.xml</attr>
+  </jetty>
+
+

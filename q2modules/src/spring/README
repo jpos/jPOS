@@ -1,0 +1,14 @@
+build: please read ./lib/README
+
+deploy:
+
+  <spring-context class="org.jpos.q2.spring.Spring">
+   <attr name="config">path/to/your/application_context.xml</attr>
+  </spring-context>
+
+The path is relative to the root of the current JVM
+
+Keep in mind the JARs you will need at runtime vary
+greatly depending on the features of Spring in which you
+intend to use. Please take a look at the readme.txt file
+in the Spring /lib folder for details.
