@@ -1,5 +1,0 @@
-$Revision$
-
-Added TransactionManager
-ChannelAdaptor and QMUX now accepts <space> element
-

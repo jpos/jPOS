@@ -1,8 +1,0 @@
-Manifest-Version: 1.0
-Specification-Title: q2mod_spring
-Specification-Vendor: jPOS.org
-Specification-Version: $VERSION$
-Implementation-Title: q2mod_sping
-Implementation-Vendor: jPOS.org
-Implementation-Version: $VERSION$
-Sealed: false
