@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<logger name="Q2" class="org.jpos.q2.qbean.LoggerAdaptor">
+  <log-listener class="org.jpos.util.SimpleLogListener" />
+  <!-- log-listener class="org.jpos.util.RotateLogListener">
+    <property name="file" value="log/q2.log" />
+    <property name="window" value="86400" />
+    <property name="copies" value="10" />
+  </log-listener -->
+  <!-- log-listener class="org.jpos.util.OperatorLogListener">
+   <property name="jpos.operator.from" value="jpos-logger@jpos.org"       />
+   <property name="jpos.operator.to"             value="apr@jpos.org"     />
+   <property name="jpos.operator.subject.prefix" value="[jPOS] "          />
+   <property name="jpos.operator.tags"    value="error warn operator"     />
+   <property name="jpos.operator.delay"          value="10000"            />
+   <property name="jpos.mail.smtp.host"          value="fw.jpos.org"      />
+  </log-listener -->
+</logger>
+

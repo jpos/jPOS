@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<naming class="org.jpos.q2.qbean.Naming" name="service=Naming">
+ <attr name="port" type="int">1099</attr>
+</naming>
+

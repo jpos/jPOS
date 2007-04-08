@@ -1,0 +1,11 @@
+$Revision$
+
+-- 1.0.1 --
+Q2 now detects an existing MBeanServer and uses it if exists.
+Updated Ant to 1.5.4, please upgrade your systems.
+Added SpaceLets
+Added BSH QBean
+
+-- 1.0 --
+Imported from QDEV
+
