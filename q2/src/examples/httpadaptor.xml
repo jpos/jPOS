@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<http-adaptor class="org.jpos.q2.qbean.HttpAdaptor"
-                        name="http-adaptor" >
-   <attr name="host">localhost</attr>
-   <attr name="port" type="java.lang.Integer">8082</attr>
-</http-adaptor>
-
