@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Specification-Title: jPOS
+Specification-Vendor: jPOS.org
+Specification-Version: $VERSION$
+Implementation-Title: jPOS
+Implementation-Vendor: jPOS.org
+Implementation-Version: $VERSION$
+Class-path: jdom.jar mx4j-jmx.jar mx4j-tools.jar mx4j-impl.jar xalan_2_0_0.jar xerces_1_2_3.jar classes/
+Main-Class: org.jpos.apps.qsp.QSP
+Sealed: false
+

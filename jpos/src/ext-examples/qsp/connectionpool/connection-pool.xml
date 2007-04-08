@@ -1,0 +1,30 @@
+<?xml version="1.0" ?>
+<!--
+
+  This QSP config creates a DB connection pool and makes it available to a task
+
+-->
+
+<!DOCTYPE qsp-config SYSTEM "../../../config/qsp/qsp-config.dtd"> 
+<qsp-config logger="qsp" realm="qsp" reload="10000">
+
+ <logger name="qsp">
+    <log-listener class="org.jpos.util.SimpleLogListener"/>
+ </logger>
+
+  <connection-pool name="mydb" logger="qsp" realm="connection-pool">
+    <property name="jdbc.driver" value="sun.jdbc.odbc.JdbcOdbcDriver" />
+    <property name="jdbc.url" value="jdbc:odbc:myDSN" />
+    <property name="jdbc.user" value="sa" />
+    <property name="jdbc.password" value="" />
+    <property name="initial-connections" value="1" />
+    <property name="max-connections" value="2" />
+    <property name="wait-if-busy" value="false" />
+  </connection-pool>
+
+  <task class="qsp.connectionpool.Test" connection-pool="mydb"
+	 logger="qsp" realm="mytask" name="mytask">
+     <property name="property1" value="value1"  />
+  </task>
+
+</qsp-config>

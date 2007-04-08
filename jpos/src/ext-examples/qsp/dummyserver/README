@@ -1,0 +1,11 @@
+$Id$
+
+- Have a look a dummyserver.xml QSP configuration file
+- from jpos home directory run:
+
+     example qsp dummyserver/dummyserver.xml (./example.sh on U*ix machines)
+
+- on another session fire simpleclient example
+
+     example simpleclient
+

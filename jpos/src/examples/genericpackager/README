@@ -1,0 +1,10 @@
+$Id$
+
+This example is used as a Testbed for GenericPackager development.
+
+Run with the following command:
+
+$ bin/example genericpackager \
+    src/config/packager/base1.xml \
+    src/examples/genericpackager/visamsg.dat
+

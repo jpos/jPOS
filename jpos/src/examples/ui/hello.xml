@@ -1,0 +1,32 @@
+<ui width="600" height="400" 
+    full-screen="false" undecorated="false" close="true">
+ <caption>Hello jPOS UI</caption>
+ <menubar id="MAIN">
+  <menu id="File" accesskey="f">
+   <menuitem id="Open"  accesskey="O" action="debug" command="Open" />
+   <menuitem id="Edit"  accesskey="E" action="debug" command="Edit" />
+   <menuseparator />
+   <menuitem id="Quit"  accesskey="Q" action="exit" />
+  </menu>
+ </menubar>
+ <components>
+   <border-layout>
+    <north>
+     <label font="helvetica-normal-22">Hello jPOS UI<script>
+      ((JLabel) component).setForeground (Color.RED);
+     </script></label>
+    </north>
+    <center>
+     <html editable="false" follow-links="true" scrollable="true">
+      http://jpos.org
+     </html>
+    </center>
+    <south>
+     <label font="arial-italic-8">Copyright (c) 2003 - jPOS.org</label>
+    </south>
+   </border-layout>
+  </components>
+  <action class="org.jpos.ui.action.Exit"  id="exit" />
+  <action class="org.jpos.ui.action.Debug" id="debug" />
+</ui>
+

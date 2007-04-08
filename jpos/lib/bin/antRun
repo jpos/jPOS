@@ -1,0 +1,13 @@
+#! /bin/sh
+
+# Args: DIR command
+cd $1
+CMD=$2
+shift
+shift
+
+if test -f $CMD.sh; then
+  CMD="sh $CMD.sh"
+fi
+
+echo $CMD $@ | sh

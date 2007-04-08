@@ -1,0 +1,16 @@
+$Id$
+
+ISOMsg is the most intensively used class within jPOS's iso package.
+
+It's a Composite in terms of the "Composite pattern"; a container
+that can hold ISOFields of many kinds as well as other [nested] ISOMsgs.
+
+This example shows how to create an ISOMsg, populate it, clone it,
+set/unset fields on clone, merge it, etc.
+
+Remember you don't have to deal with bitmaps, ISOPackager takes
+care of that dirty task.
+
+It's supposed to be self explained so have a look at Test.java.
+
+

@@ -1,0 +1,143 @@
+/*
+ * Copyright (c) 2000 jPOS.org.  All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in
+ *    the documentation and/or other materials provided with the
+ *    distribution.
+ *
+ * 3. The end-user documentation included with the redistribution,
+ *    if any, must include the following acknowledgment:
+ *    "This product includes software developed by the jPOS project
+ *    (http://www.jpos.org/)". Alternately, this acknowledgment may
+ *    appear in the software itself, if and wherever such third-party
+ *    acknowledgments normally appear.
+ *
+ * 4. The names "jPOS" and "jPOS.org" must not be used to endorse
+ *    or promote products derived from this software without prior
+ *    written permission. For written permission, please contact
+ *    license@jpos.org.
+ *
+ * 5. Products derived from this software may not be called "jPOS",
+ *    nor may "jPOS" appear in their name, without prior written
+ *    permission of the jPOS project.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
+ * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE JPOS PROJECT OR ITS CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+ * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+ * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ * ====================================================================
+ *
+ * This software consists of voluntary contributions made by many
+ * individuals on behalf of the jPOS Project.  For more
+ * information please see <http://www.jpos.org/>.
+ */
+
+package org.jpos.iso.filter;
+import org.jpos.core.ConfigurationException;
+import org.jpos.core.NodeConfigurable;
+import org.jpos.iso.ISOChannel;
+import org.jpos.iso.ISOException;
+import org.jpos.iso.ISOFilter;
+import org.jpos.iso.ISOMsg;
+import org.jpos.util.JepUtil;
+import org.jpos.util.LogEvent;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+/**
+ * Using JEP to compute expressions
+ *
+ * @author <a href="mailto:tzymail@163.com">Zhiyu Tang
+ * @version $Revision$ $Date$
+ * @see org.jpos.iso.ISOFilter
+ */
+public class CalculateFilter
+    implements ISOFilter,NodeConfigurable
+{
+    String condition[];
+    String field[];
+    String statement[];
+    int condNum;
+    JepUtil jeputil;
+
+    public CalculateFilter () {
+        super();
+        condition = null;
+        statement = null;
+        field = null;
+        condNum = 0;
+        jeputil = new JepUtil();
+    }
+
+
+   public void setConfiguration (Node node)
+        throws ConfigurationException
+    {
+        NodeList nodes = node.getChildNodes();
+        condNum = nodes.getLength();
+        int i, j = 0;
+        for( i=0 ; i < condNum; i++ )
+        {
+            if (nodes.item(i).getNodeName().equals ("calculate"))
+            j++;
+        }
+
+        condition = new String[j];
+        field = new String[j];
+        statement = new String[j];
+        j = 0;
+        for( i=0 ; i < condNum; i++ )
+        {
+            if (nodes.item(i).getNodeName().equals ("calculate")) {
+                condition[j] = nodes.item(i).getAttributes().getNamedItem ("switch").getNodeValue();
+                field[j] = nodes.item(i).getAttributes().getNamedItem ("field").getNodeValue();
+                statement[j] = nodes.item(i).getAttributes().getNamedItem ("statement").getNodeValue();
+                j++;
+           }
+        }
+        condNum = j;
+    }
+
+   private void calculateStatement( LogEvent evt , ISOMsg m )
+        throws ISOException
+    {
+        int i = 0;
+        for( i = 0 ; i < condNum ; i++ )
+        {
+
+            if( jeputil.getResultBoolean( m , condition[i] ) )
+             {
+              String valueString = jeputil.getResult( m , statement[i] );
+              evt.addMessage( "<calculate field=\""+field[i]+"\" value=\""+valueString+"\"/>" );
+              m.set( Integer.valueOf( field[i]).intValue() , valueString );
+             }
+        }
+    }
+
+    public ISOMsg filter (ISOChannel channel, ISOMsg m, LogEvent evt)
+        throws VetoException
+    {
+        try {
+          calculateStatement( evt , m );
+        } catch (ISOException e) {
+           evt.addMessage (e);
+          throw new VetoException (e);
+        }
+        return m;
+    }
+}

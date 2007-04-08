@@ -1,0 +1,24 @@
+$Id$
+(Source code users, refer to jpos/src/ext-examples/qsp/README)
+----------------------------------------------------------------------------
+Welcome to QSP, first jPOS based application.
+
+QSP is just a bootstrapper of jPOS components, it reads an
+XML configuration file and start jPOS components for you.
+
+for details on available jPOS components you should refer 
+to http://www.jpos.org.
+
+In order to test your installation have a look at QSP sample 
+configurations on src/ext-examples/qsp directories, and the run:
+
+
+dummyserver example:
+
+  java -jar qsp.jar src/ext-examples/qsp/dummyserver/dummyserver.xml 
+
+dummyclient example:
+
+  java -jar qsp.jar src/ext-examples/qsp/dummyclient/dummyclient.xml 
+
+

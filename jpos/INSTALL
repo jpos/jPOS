@@ -1,0 +1,35 @@
+$Id$
+
+QUICK INSTRUCTIONS:
+------------------
+
+  1) cd to jPOS's base directory 
+  2) call bin/build jar javadoc
+
+ABOUT OPTIONAL MODULES
+----------------------
+We currently distribute 2 modules: 'main' and 'ext'.
+
+While 'main' module's classes are self contained, 'ext' module
+requires external classes (to be installed in 'ext' directory,
+see ext/README). If you need additional features you can consider
+installing some or all these jars and building a new jpos.jar using 
+the procedure mentioned above.
+
+RUNNING THE EXAMPLES
+--------------------
+Have a look at src/examples/README for instructions about compiling
+and playing with jPOS examples.
+
+There's an "ext-examples" module that depends on some libraries
+provided by the "ext" module.
+
+FURTHER QUESTIONS
+-----------------
+If you have further questions, you are welcome to join
+the user's mailing list (http://groups.google.com/group/jpos-users),
+browse its archives and ask your question. Please make sure to
+check our FAQ first (http://jpos.org/wiki/FAQ).
+
+--The jPOS Team
+

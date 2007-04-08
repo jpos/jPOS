@@ -1,0 +1,6 @@
+$Id$
+
+Please have a look at ../dummyserver/README, start dummyserver
+QSP example and then run this one
+(example qsp dummyclient/dummyclient.xml).
+

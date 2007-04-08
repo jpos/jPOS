@@ -1,0 +1,53 @@
+$Id$
+
+In order to compile classes under the 'ext' module you will have to 
+install here (or anywhere within your CLASSPATH) these optional files:
+
+  - activation.jar and mail.jar (javax.mail available from sun)
+    used by OperatorLogListener
+
+  - sun-util.jar (available as part of Jini 1.1 distribution)
+    used by ReliableSequencer
+
+  - CommAPI (comm.jar) file and a CommAPI provider such as RXTX
+    (http://www.rxtx.org) for Linux or Sun's CommAPI implementation
+    for Windows.
+    used by V24, LeasedLineModem, SimpleDialupModem.java and
+    VISA1Link at the moment.
+    Debian users can just apt-get install lib-rxtx-java.
+ 
+  - jsse.jar and jnet.jar from Sun's JSSE distro (required by
+    SunJSSESocketFactory)
+
+  - jce.jar (1.2.1+) required by CryptoPackager and 
+    org.jpos.security.jceadapter
+  
+  - sunjce_provider.jar or bcprov.jar (http://www.bouncycastle.org)
+    (needed by org.jpos.security.jceadapter)
+
+  - ejb.jar (required by QSP's EJBConnector)
+
+  - base-opt.jar (see www.opencard.org - required by TLVPackager 
+    deprecated see TLVField/ISO93BTLVPackager instead)
+
+  - optf.jar required by TLVField/ISO93BTLVPackager
+    (see www.globalplatform.org)
+
+  - jep.jar (used by CalculateFilter and SQLFilter)
+    see http://sf.net/projects/jep
+
+  - BeanShell (used by org.jpos.iso.filter.BSHFilter)
+    see http://www.beanshell.org
+
+  - SwiXML (used by org.jpos.ui.factory.SwiXMLFactory)
+    see http://www.swixml.org
+
+In order to build jPOS' aspects you need:
+
+  - aspectj-ant.jar
+  - aspectjrt.jar
+  - aspectjtools.jar 
+
+  see http://www.eclipse.org/aspectj/
+
+

@@ -1,0 +1,26 @@
+
+<isomsg>
+ <field id="0" value="0100"/>
+ <field id="2" value="4000000000000000"/>
+ <field id="3" value="000000"/>
+ <field id="4" value="000000021341"/>
+ <field id="7" value="0223121919"/>
+ <field id="11" value="000681"/>
+ <field id="14" value="0207"/>
+ <field id="18" value="5251"/>
+ <field id="19" value="858"/>
+ <field id="22" value="9020"/>
+ <field id="25" value="00"/>
+ <field id="32" value="123456"/>
+ <field id="35" value="4000000000000000=02070000000000000000"/>
+ <field id="37" value="105412000681"/>
+ <field id="41" value="12345678"/>
+ <field id="42" value="1231231231231"/>
+ <field id="49" value="840"/>
+ <field id="60" value="72" type="binary"/>
+ <isomsg id="126">
+    <field id="1" value="1" />
+    <field id="2" value="2" />
+ </isomsg>
+</isomsg>
+

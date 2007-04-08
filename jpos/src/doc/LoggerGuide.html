@@ -1,0 +1,255 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html><head><title>Logger Guide</title>
+<body bgcolor="#FFFFFF">
+<div align="center">
+	<img src="images/jPOS.gif"><br>
+</div>
+<hr>
+<b><i>j</i>POS</b> typical installations includes <em>7x24</em>
+operation. The extensible <em>Logger</em> subsystem allows easy 
+customization and on the fly configuration of events that need to be logged.
+
+<p>
+Key <b><i>j</i>POS's</b> classes such as 
+<i>ISOChannel, ISOMUX, ISORequest, ISOBasePackager, etc.</i>
+implements
+<a href="javadoc/org/jpos/util/LogSource.html">LogSource</a> interface
+and generates
+<a href="javadoc/org/jpos/util/LogEvent.html">LogEvents</a>.
+
+<p>
+A <a href="javadoc/org/jpos/util/LogSource.html">LogSource</a>
+is a simple class that holds a reference
+to a <a href="javadoc/org/jpos/util/Logger.html">Logger</a> and
+is properly initialized with a named <b>realm</b> by your
+application.
+
+<p>
+<a href="javadoc/org/jpos/util/LogSource.html">LogListeners</a>
+registers its interests on receiving 
+<a href="javadoc/org/jpos/util/LogEvent.html">LogEvents</a>
+by calling
+<a href="javadoc/org/jpos/util/Logger.html#addListener(org.jpos.util.LogListener)">Logger's addListener</a>
+
+<p>
+<b><i>j</i>POS</b> provides a couple of simple 
+<a href="javadoc/org/jpos/util/LogSource.html">LogListeners</a>
+such as
+<a href="javadoc/org/jpos/util/SimpleLogListener.html">SimpleLogListener</a>,
+<a href="javadoc/org/jpos/util/RotateLogListener.html">RotateLogListener</a>
+that are ready to use by your application. 
+and
+<a href="javadoc/org/jpos/util/OperatorLogListener.html">OperatorLogListener</a>
+that e-mails batched selected groups of LogEvents to a predefined Operator.
+
+<p>
+Despite the provided helper classes, the Logger subsystem can
+be extended to Log just particular events or to take specific
+actions depending on the event received, such as sending eMail or
+pager alerts on i.e. ISOChannel disconects.
+
+<h3>Sample LogTest program</h3>
+<pre>
+package uy.com.cs.jpos.sample;
+
+import java.io.*;
+import java.util.*;
+import uy.com.cs.jpos.iso.*;
+
+public class LogTest implements Runnable {
+    ISOChannel channel;
+    ISOMUX mux;
+    Logger logger;
+    public void setupLogger() {
+	// create a Logger object
+	logger = new Logger();
+	try {
+	    // add a Simple listener that dumps log events to System.out
+	    logger.addListener(new SimpleLogListener (System.out));
+	    // add yet another Listener; this one will create
+	    // files on your /tmp directory 
+	    logger.addListener(new RotateLogListener
+		("/tmp/jpos.log", 3600*1000, 5));
+	} catch (IOException e) {
+	    e.printStackTrace();
+	}
+    }
+    public void setupMUX () {
+	ISOPackager p = new ISO87APackager();
+	// We want to log Packager events (there's no need to..)
+	// so we attach a Logger to the packager. We set an
+	// appropiate realm name (that should make sense
+	// to your application and a human operator)
+	p.setLogger (logger, "localhost.channel.packager");
+
+	//
+	// Create an ISOChannel. This one will connect
+	// to your ECHO service (you're using Unix, aren't you? :-)
+	//
+	channel = new ASCIIChannel ("localhost", 7, p);
+	
+	// assign a logger and an apropiate realm to your
+	// channel.
+	channel.setLogger (logger, "localhost.channel");
+
+	// create an ISOMUX with appropiate logger and realm
+	mux = new ISOMUX (channel);
+	mux.setLogger (logger, "localhost.mux");
+
+	// start your MUX
+	Thread t = new Thread (mux);
+	t.start();
+    }
+    public void run () {
+	// Send an ISORequest every 10 seconds
+	for (;;) {
+	    ISOMsg m = new ISOMsg();
+	    try {
+		m.set (new ISOField (0, "0800"));
+		m.set (new ISOField (11, "000001"));
+		m.set (new ISOField (41, "29110001"));
+		ISORequest rq = new ISORequest (m);
+		//
+		// New to this release is the fact that you
+		// can asign a Logger to your ISORequest. this
+		// will send a single log event with your
+		// request and it's response, as well as
+		// the elapsed time or an indication of
+		// expiration
+		//
+		rq.setLogger (logger, "isorequest");
+		mux.queue (rq);
+		ISOMsg r = rq.getResponse (10000);
+		Thread.sleep (10000);
+	    } catch (ISOException e) { 
+	    } catch (InterruptedException e) { }
+	}
+    }
+    public static void main (String args[]) {
+	LogTest l = new LogTest();
+	l.setupLogger();
+	l.setupMUX ();
+	// Launch a SystemMonitor
+	new SystemMonitor (60000, l.logger, "monitor");
+	(new Thread(l)).start();
+    }
+}
+</pre>
+
+<h3>Output from LogTest</h3>
+
+<pre>
+&lt;log realm="localhost.channel" at="Mon Sep 06 14:29:35 NDT 1999"&gt;
+  &lt;disconnect&gt;
+    localhost:7
+  &lt;/disconnect&gt;
+&lt;/log&gt;
+&lt;log realm="localhost.channel" at="Mon Sep 06 14:29:35 NDT 1999"&gt;
+  &lt;connect&gt;
+    localhost:7
+  &lt;/connect&gt;
+&lt;/log&gt;
+&lt;log realm="monitor" at="Mon Sep 06 14:29:35 NDT 1999"&gt;
+  &lt;SystemMonitor&gt;
+       freeMemory=274344
+      totalMemory=273304
+          threads=6
+            Thread[Signal dispatcher,5,system]
+            Thread[Reference Handler,10,system]
+            Thread[Finalizer,8,system]
+            Thread[Thread-0,5,main]
+            Thread[Thread-1,5,main]
+            Thread[Thread-2,5,main]
+            Thread[Thread-3,5,main]
+            Thread[Thread-4,5,main]
+            Thread[Thread-5,5,main]
+  &lt;/SystemMonitor&gt;
+&lt;/log&gt;
+&lt;log realm="localhost.channel.packager" at="Mon Sep 06 14:29:35 NDT 1999"&gt;
+  &lt;pack&gt;
+    30383030303032303030303030303830303030303030303030313239313130303031
+  &lt;/pack&gt;
+&lt;/log&gt;
+&lt;log realm="localhost.channel" at="Mon Sep 06 14:29:35 NDT 1999"&gt;
+  &lt;send&gt;
+    &lt;isomsg direction="outgoing"&gt;
+      &lt;field id="0" value="0800"/&gt;
+      &lt;field id="11" value="000001"/&gt;
+      &lt;field id="41" value="29110001"/&gt;
+    &lt;/isomsg&gt;
+  &lt;/send&gt;
+&lt;/log&gt;
+&lt;log realm="localhost.channel.packager" at="Mon Sep 06 14:29:35 NDT 1999"&gt;
+  &lt;unpack&gt;
+    30383030303032303030303030303830303030303030303030313239313130303031
+  &lt;/unpack&gt;
+&lt;/log&gt;
+&lt;log realm="localhost.channel" at="Mon Sep 06 14:29:35 NDT 1999"&gt;
+  &lt;receive&gt;
+    &lt;isomsg direction="incoming"&gt;
+      &lt;field id="0" value="0800"/&gt;
+      &lt;field id="11" value="000001"/&gt;
+      &lt;field id="41" value="29110001"/&gt;
+    &lt;/isomsg&gt;
+  &lt;/receive&gt;
+&lt;/log&gt;
+&lt;log realm="isorequest" at="Mon Sep 06 14:29:35 NDT 1999"&gt;
+  &lt;isorequest&gt;
+    &lt;request&gt;
+      &lt;isomsg direction="outgoing"&gt;
+        &lt;field id="0" value="0800"/&gt;
+        &lt;field id="11" value="000001"/&gt;
+        &lt;field id="41" value="29110001"/&gt;
+      &lt;/ISOMsg&gt;
+    &lt;/request&gt;
+    &lt;response elapsed="37"&gt;
+      &lt;isomsg direction="incoming"&gt;
+        &lt;field id="0" value="0800"/&gt;
+        &lt;field id="11" value="000001"/&gt;
+        &lt;field id="41" value="29110001"/&gt;
+      &lt;/isomsg&gt;
+    &lt;/response&gt;
+  &lt;/isorequest&gt;
+&lt;/log&gt;
+</pre>
+
+<h3>Being a LogSource</h3>
+To use <b><i>j</i>POS's</b> Logger subsystem within your
+application you must implement
+<a href="javadoc/org/jpos/util/LogSource.html">LogSource</a> 
+and fire
+<a href="javadoc/org/jpos/util/LogEvent.html">LogEvents</a>.
+
+<p>
+A good place to start is by looking at LogSource classes
+such as ISORequest.
+
+<h3>Being Loggeable</h3>
+LogEvents can carry multiple Objects. Those Objects can be
+of any type, their 'toString()' method will be called, but
+there are special cases. If your Object is
+<a href="javadoc/org/jpos/util/Loggeable.html">Loggeable</a>
+it's dump() method will be called instead and
+if it is an instance of Throwable it will be appropiately tagged
+as so.
+
+<h3>Why XML output?</h3>
+We want <b><i>j</i>POS's</b> logs and journals to be
+easily postprocessed or on the fly pretty printed.
+XML provides that functionality. It should be easy
+to extend the Logger subsystem to produce SAX events.
+
+<h3>SystemMonitor</h3>
+New 
+<a href="javadoc/org/jpos/util/SystemMonitor.html">SystemMonitor</a>
+class is a Loggeable LogSource that
+periodically generate LogEvents and show a few JVM
+stats such as Thread and Memory Usage. We recommend
+to launch a SystemMonitor in your application it
+can assist you when debugging long running
+applications.
+
+<p><font size="-1"><center>$Id$</center></font>
+</body>
+</html>
+

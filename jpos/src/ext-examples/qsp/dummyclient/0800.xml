@@ -1,0 +1,19 @@
+<?xml version="1.0" ?>
+<!-- 
+     $Id: 
+     Sample 0800 message used by task/Sender 
+-->
+
+<isomsg>
+ <field id="0" value="0800" />
+ <field id="2" value="4000000000000001" />
+ <field id="3" value="000000" />
+ <field id="11" value="000001" />
+ <field id="35" value="4000000000000100000001=0203" />
+ <field id="45" value="4000000000000100000001^POS, J POS^0201" />
+ <field id="41" value="00000001" />
+ <field id="48" value="01001" />
+ <field id="55" value="123" />
+ <field id="70" value="301" />
+</isomsg>
+

@@ -1,0 +1,24 @@
+$Id$
+
+isoserver is similar to simpleserver but uses ISOServer
+class instead of handling sessions itself.
+
+It demonstrate the use of ChannelConnectors, Filters 
+and LoopbackChannel as well.
+
+
+-------+     +---------+                 +--------+
+Server |<--->|ISOServer|---------------->|Loopback|
+Socket |<--->|         |<-\   [Reply]    |Channel |
+-------+     +---------+   \--[Filter]---|        |
+                                         +--------+
+
+This example is hardcoded for port 8000, ASCIIChannel and ISO87APackager,
+this should match src/etc/jpos.cfg's simpleclient config if you are to
+test it from simpleclient example.
+
+It may seems confusing the fact that ISOServer receives a 'ServerChannel'
+on its client side. Client side channel will implement the protocol required
+to talk with remove clients, but it is still a ServerChannel, we are on
+the server side of that connection.
+

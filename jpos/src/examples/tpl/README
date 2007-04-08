@@ -1,0 +1,20 @@
+$Id$
+
+This is a simple testbed for TPL debugging.
+
+TPL is a minimalistic thin layer on top of JDBC intended to
+be used in situations where you cannot afford a better solution
+such as an EJB container.
+
+In order to run it you have to create the following table:
+
+CONNECT test;              <--- or your preferred database (see test.cfg)
+
+CREATE TABLE nf (
+    pan CHAR(19) NOT NULL,
+    INDEX pan (pan)
+);
+
+We will be using TPL until we find an OpenSource, 
+really thin and fast solution (such as a JSR012 JDO provider).
+

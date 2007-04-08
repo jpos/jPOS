@@ -1,0 +1,31 @@
+#! /bin/sh
+
+# $Id$
+
+cd `dirname $0`/..
+
+if [ -z "$JAVA_HOME" ] ; then
+  JAVA=`which java`
+  if [ -z "$JAVA" ] ; then
+    echo "Cannot find 'java'. check your PATH."
+    exit 1
+  fi
+  JAVA_BIN=`dirname $JAVA`
+  JAVA_HOME=$JAVA_BIN/..
+fi
+
+JAVA=$JAVA_HOME/bin/java
+
+CLASSPATH=build/classes:lib/jdom.jar:lib/xercesImpl-2.6.2.jar:lib/xalan_2_0_0.jar:lib/log4j.jar:lib/mx4j-jmx.jar:lib/mx4j-tools.jar:lib/mx4j-impl.jar
+CLASSPATH=`echo ext/*.jar | tr ' ' ':'`:$CLASSPATH
+
+if [ -z $1 ] ; then
+  echo "Usage: example <package>";
+  exit;
+fi
+
+$JAVA -cp $CLASSPATH \
+	-Dsax.parser=org.apache.xerces.parsers.SAXParser \
+	$1.Test $2 $3 $4 $5
+
+

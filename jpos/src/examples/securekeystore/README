@@ -1,0 +1,7 @@
+This is a simple demo for org.jpos.security.SecureKeyStore
+
+SecureKeyStore allows for storing and retrieving objects of type org.jpos.SecureKey. This allows for multiple threads to be sharing the same set of keys. This is typically needed when one task is responsible for the key exchange, while the other makes use of the exchanged keys. You would typically be having a single SecureKeyStore in your system, holding the keys of all the channels (interfaces) of your interchange.
+
+A typical SecureKeyStore implementation would store the Secure Keys in some persistent storage (a file or a database).
+
+This demo uses org.jpos.security.SimpleKeyFile as an implementation of SecureKeyStore. SimpleKeyFile relies on java.util.Properties to store the keys persistently in a properties file. SimpleKeyFile doesn't lock the keys file, so the keys can be manually edited even while the system is running. And every time a key is needed SimpleKeyFile re-reads the key file again, so that manually added changes would be sensed.

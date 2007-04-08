@@ -1,0 +1,32 @@
+<ui width="600" height="400" 
+    full-screen="false" undecorated="false" close="true">
+ <caption>Redirect Test</caption>
+ <components>
+   <border-layout>
+    <north>
+     <label font="helvetica-normal-22">Redirect Test</label>
+    </north>
+    <center>
+     <panel id="RedirectTest">
+      <button command="redir-test RedirectTest" action="redirect">Redirect Test</button>
+     </panel>
+    </center>
+    <south>
+     <label font="arial-italic-8">Copyright (c) 2003 - jPOS.org</label>
+    </south>
+   </border-layout>
+  </components>
+  <action class="org.jpos.ui.action.Redirect" id="redirect" />
+
+  <redir-test>
+    <label>I am the redir test 1</label>
+    <button command="redir-test2 RedirectTest" action="redirect">Next</button>
+  </redir-test>
+
+  <redir-test2>
+    <label>I am the redir test 2</label>
+    <button command="redir-test RedirectTest" action="redirect">Back</button>
+ </redir-test2>
+
+</ui>
+

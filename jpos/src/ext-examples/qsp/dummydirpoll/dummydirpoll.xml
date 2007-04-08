@@ -1,0 +1,24 @@
+<?xml version="1.0" ?>
+<!--
+
+  $Id$
+
+  This QSP config starts a Logger and a DirPoll Component
+
+-->
+
+<!DOCTYPE qsp-config SYSTEM "../../../config/qsp/qsp-config.dtd"> 
+<qsp-config logger="qsp" realm="qsp" reload="10000">
+
+ <logger name="qsp">
+    <log-listener class="org.jpos.util.SimpleLogListener"/>
+ </logger>
+
+ <dir-poll path="/tmp/dirpoll" create="yes" name="test"
+	  logger="qsp" realm="dirpoll"
+	  poolsize="10" 
+	  interval="1000"
+	  priorities=".A .B .C *" 
+	  processor="qsp.dummydirpoll.DummyProcessor" />
+
+</qsp-config>

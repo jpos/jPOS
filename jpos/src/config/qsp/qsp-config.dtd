@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id$ -->
+
+<!ELEMENT qsp-config (logger*,mux*,object*,task*,daily-task*,server*,
+                      control-panel*,sequencer*,card-agent*,channel*,
+		      persistent-engine*, connection-pool*, dir-poll*,
+                      s-m-adapter*, secure-key-store*, thread-pool*,
+                      property*)*>
+<!ATTLIST qsp-config logger IDREF #IMPLIED>
+<!ATTLIST qsp-config realm  CDATA #IMPLIED>
+<!ATTLIST qsp-config reload CDATA #IMPLIED>
+<!ATTLIST qsp-config name   CDATA #IMPLIED>
+
+<!-- logger -->
+<!ELEMENT logger (log-listener*)>
+<!ATTLIST logger name ID #REQUIRED>
+
+<!-- log-listener -->
+<!ELEMENT log-listener (property*)>
+<!ATTLIST log-listener class NMTOKEN #REQUIRED>
+<!ATTLIST log-listener name  CDATA #IMPLIED>
+
+<!-- channel -->
+<!ELEMENT channel (property*, filter*)*>
+<!ATTLIST channel name ID #REQUIRED>
+<!ATTLIST channel class NMTOKEN #REQUIRED>
+<!ATTLIST channel connect (yes|no) 'no'>
+<!ATTLIST channel logger IDREF #IMPLIED>
+<!ATTLIST channel realm CDATA #IMPLIED>
+<!ATTLIST channel header CDATA #IMPLIED>
+<!ATTLIST channel packager CDATA #IMPLIED>
+<!ATTLIST channel panel IDREF #IMPLIED>
+<!ATTLIST channel type (client|server) #IMPLIED>
+<!ATTLIST channel timeout CDATA #IMPLIED>
+<!ATTLIST channel packager-config CDATA #IMPLIED>
+<!ATTLIST channel packager-logger CDATA #IMPLIED>
+<!ATTLIST channel packager-realm  CDATA #IMPLIED>
+<!ATTLIST channel socket-factory  CDATA #IMPLIED>
+<!ATTLIST channel scroll (yes|no) 'no'>
+<!ATTLIST channel refresh CDATA #IMPLIED>
+
+<!-- filter -->
+<!ELEMENT filter (property*,calculate*,SQL*)*>
+<!ATTLIST filter name ID #IMPLIED>
+<!ATTLIST filter class NMTOKEN #REQUIRED>
+<!ATTLIST filter direction (incoming|outgoing|both) 'both'>
+
+<!-- SQL -->
+<!ELEMENT SQL EMPTY>
+<!ATTLIST SQL switch CDATA #REQUIRED>
+<!ATTLIST SQL statement CDATA #REQUIRED>
+
+<!-- calculate -->
+<!ELEMENT calculate EMPTY>
+<!ATTLIST calculate switch  CDATA #REQUIRED>
+<!ATTLIST calculate field CDATA #REQUIRED>
+<!ATTLIST calculate statement CDATA #REQUIRED>
+
+<!-- router -->
+<!ELEMENT router EMPTY>
+<!ATTLIST router switch CDATA #REQUIRED>
+<!ATTLIST router type CDATA #REQUIRED>
+<!ATTLIST router destination IDREF #REQUIRED>
+<!ATTLIST router timeout CDATA #IMPLIED>
+<!ATTLIST router bounce CDATA #IMPLIED>
+
+<!-- mux -->
+<!ELEMENT mux (property*,channel,request-listener*)*>
+<!ATTLIST mux name ID #REQUIRED>
+<!ATTLIST mux logger IDREF #IMPLIED>
+<!ATTLIST mux realm CDATA #IMPLIED>
+<!ATTLIST mux connect (yes|no) 'yes'>
+<!ATTLIST mux class NMTOKEN #IMPLIED>
+
+<!-- object -->
+<!ELEMENT object (property)*>
+<!ATTLIST object class NMTOKEN #REQUIRED>
+<!ATTLIST object logger IDREF #IMPLIED>
+<!ATTLIST object realm CDATA #IMPLIED>
+<!ATTLIST object name ID #IMPLIED>
+<!ATTLIST object connection-pool IDREF #IMPLIED>
+<!ATTLIST object thread-pool IDREF #IMPLIED>
+
+<!-- task -->
+<!ELEMENT task (property)*>
+<!ATTLIST task class NMTOKEN #REQUIRED>
+<!ATTLIST task logger IDREF #IMPLIED>
+<!ATTLIST task realm CDATA #IMPLIED>
+<!ATTLIST task name ID #IMPLIED>
+<!ATTLIST task connection-pool IDREF #IMPLIED>
+<!ATTLIST task thread-pool IDREF #IMPLIED>
+
+<!-- property -->
+<!ELEMENT property EMPTY>
+<!ATTLIST property name  CDATA #REQUIRED>
+<!ATTLIST property value CDATA #IMPLIED>
+<!ATTLIST property file  CDATA #IMPLIED>
+
+<!-- request-listener -->
+<!ELEMENT request-listener (property*,router*)*>
+<!ATTLIST request-listener class NMTOKEN #REQUIRED>
+<!ATTLIST request-listener logger IDREF #IMPLIED>
+<!ATTLIST request-listener realm CDATA #IMPLIED>
+
+<!-- server  -->
+<!ELEMENT server (property*,channel,request-listener*)*>
+<!ATTLIST server name ID #REQUIRED>
+<!ATTLIST server port CDATA #REQUIRED>
+<!ATTLIST server logger IDREF #IMPLIED>
+<!ATTLIST server realm CDATA #IMPLIED>
+<!ATTLIST server maxSessions CDATA #IMPLIED>
+<!ATTLIST server panel IDREF #IMPLIED>
+<!ATTLIST server scroll (yes|no) 'no'>
+<!ATTLIST server refresh CDATA #IMPLIED>
+<!ATTLIST server thread-pool IDREF #IMPLIED>
+
+<!-- control-panel -->
+<!ELEMENT control-panel (panel)*>
+<!ATTLIST control-panel rows CDATA #REQUIRED>
+<!ATTLIST control-panel cols CDATA #REQUIRED>
+
+<!-- panel -->
+<!ELEMENT panel EMPTY>
+<!ATTLIST panel name ID #REQUIRED>
+
+<!-- sequencer -->
+<!ELEMENT sequencer (property)*>
+<!ATTLIST sequencer name ID #REQUIRED>
+<!ATTLIST sequencer class NMTOKEN #REQUIRED>
+<!ATTLIST sequencer logger IDREF #IMPLIED>
+<!ATTLIST sequencer realm CDATA #IMPLIED>
+
+<!-- card-agent -->
+<!ELEMENT card-agent (property)*>
+<!ATTLIST card-agent class NMTOKEN #REQUIRED>
+<!ATTLIST card-agent logger IDREF #IMPLIED>
+<!ATTLIST card-agent realm CDATA #IMPLIED>
+<!ATTLIST card-agent persistent-engine CDATA #IMPLIED>
+
+<!-- persistent-engine -->
+<!ELEMENT persistent-engine (property)*>
+<!ATTLIST persistent-engine name ID #REQUIRED>
+<!ATTLIST persistent-engine logger IDREF #IMPLIED>
+<!ATTLIST persistent-engine realm CDATA #IMPLIED>
+<!ATTLIST persistent-engine class NMTOKEN #IMPLIED>
+
+<!-- connection-pool -->
+<!ELEMENT connection-pool (property)*>
+<!ATTLIST connection-pool name ID #REQUIRED>
+<!ATTLIST connection-pool logger IDREF #IMPLIED>
+<!ATTLIST connection-pool realm CDATA #IMPLIED>
+
+<!-- thread-pool -->
+<!ELEMENT thread-pool (property)*>
+<!ATTLIST thread-pool name ID #REQUIRED>
+<!ATTLIST thread-pool logger IDREF #IMPLIED>
+<!ATTLIST thread-pool realm CDATA #IMPLIED>
+<!ATTLIST thread-pool max-size NMTOKEN '100'>
+<!ATTLIST thread-pool initial-size NMTOKEN '1'>
+
+<!-- directory-poll -->
+<!ELEMENT dir-poll (property)*>
+<!ATTLIST dir-poll name ID #IMPLIED>
+<!ATTLIST dir-poll path CDATA #REQUIRED>
+<!ATTLIST dir-poll create (yes|no) 'no'>
+<!ATTLIST dir-poll poolsize CDATA #IMPLIED>
+<!ATTLIST dir-poll interval CDATA #IMPLIED>
+<!ATTLIST dir-poll priorities CDATA #IMPLIED>
+<!ATTLIST dir-poll processor CDATA #REQUIRED>
+<!ATTLIST dir-poll logger IDREF #IMPLIED>
+<!ATTLIST dir-poll realm  CDATA #IMPLIED>
+
+<!-- daily-task -->
+<!ELEMENT daily-task (property)*>
+<!ATTLIST daily-task class NMTOKEN #REQUIRED>
+<!ATTLIST daily-task logger IDREF #IMPLIED>
+<!ATTLIST daily-task realm CDATA #IMPLIED>
+<!ATTLIST daily-task name ID #IMPLIED>
+<!ATTLIST daily-task start CDATA #REQUIRED>
+<!ATTLIST daily-task poolsize CDATA #IMPLIED>
+
+<!-- s-m-adapter -->
+<!ELEMENT s-m-adapter (property)*>
+<!ATTLIST s-m-adapter class NMTOKEN #REQUIRED>
+<!ATTLIST s-m-adapter logger IDREF #IMPLIED>
+<!ATTLIST s-m-adapter realm CDATA #IMPLIED>
+<!ATTLIST s-m-adapter name ID #IMPLIED>
+
+<!-- secure-key-store -->
+<!ELEMENT secure-key-store (property)*>
+<!ATTLIST secure-key-store class NMTOKEN #REQUIRED>
+<!ATTLIST secure-key-store logger IDREF #IMPLIED>
+<!ATTLIST secure-key-store realm CDATA #IMPLIED>
+<!ATTLIST secure-key-store name ID #IMPLIED>
+

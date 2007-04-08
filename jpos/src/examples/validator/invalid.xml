@@ -1,0 +1,29 @@
+<?xml version="1.0" ?>
+<!--
+     $Id:
+     Sample message used by Validator
+-->
+
+<isomsg>
+  <field id="0" value="0100"/>
+  <field id="2" value="98877v///???_____65AB"/>
+  <field id="3" value="65"/>
+  <field id="4" value="18000"/>
+  <field id="11" value="7671AB8787876"/>
+  <field id="14" value="0912"/>
+  <field id="22" value="9889760022"/>
+  <field id="32" value="877665"/>
+  <field id="33" value="988776"/>
+  <field id="34" value="7676ABC87ABC"/>
+  <field id="37" value="87"/>
+  <isomsg id="48">
+    <isomsg id="0">
+      <field id="0" value="04"/>
+    </isomsg>
+    <isomsg id="1">
+      <field id="0" value="09099998z81"/>
+      <field id="1" value="9a118c888n2222222228"/>
+    </isomsg>
+  </isomsg>
+  <field id="49" value="9872"/>
+</isomsg>
