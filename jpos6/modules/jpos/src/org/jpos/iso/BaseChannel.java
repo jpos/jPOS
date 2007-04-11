@@ -434,11 +434,8 @@ public abstract class BaseChannel extends Observable
     protected int getHeaderLength(byte[] b) { return 0; }
 
     protected int getHeaderLength(ISOMsg m) {                                   
-        if (!overrideHeader && m.getHeader() != null)                           
-            return m.getHeader().length;                                        
-        else if (header != null)                                                
-            return header.length;                                               
-        return 0;                                                               
+        return (!overrideHeader && m.getHeader() != null) ?
+            m.getHeader().length : getHeaderLength();
     }                                                                           
 
     protected byte[] streamReceive() throws IOException {
