@@ -10,7 +10,7 @@
     <!-- Name of project and version, used to create filenames -->
     <property name="Name" value="jPOS" />
     <property name="name" value="jpos" />
-    <property name="archive" value="${name}-${version}" />
+    <property name="archive" value="${name}-${version}-r${revision}" />
 
     <property name="lib.dir" value="lib"/>
     <property name="bin.dir" value="bin"/>
@@ -69,6 +69,13 @@
       <mkdir dir="${classes.dir}"/>
       <mkdir dir="${dist.dir}" />
       <mkdir dir="${build.dir}/log"/>
+      <chmod perm="ug+x">
+        <fileset dir="${bin.dir}">
+         <include name="q2" />
+         <include name="bsh" />
+         <include name="*.sh" />
+        </fileset>
+      </chmod>
     </target>
 
     <target name="jar" depends="modules, support, main"
@@ -224,6 +231,7 @@
         description="create zip distribution">
      <copy todir="${build.dir}"> 
        <fileset dir=".">
+         <include name="README"/>
          <include name="LICENSE"/>
          <include name="COPYRIGHT"/>
          <include name="build.xml"/>
@@ -244,39 +252,13 @@
           <exclude name="src/**" />
           <exclude name="test/**" />
           <exclude name="tmpdoc/**" />
+          <exclude name="webapps/**" />
+          <exclude name="log/**" />
+          <exclude name="bin/release" />
           <exclude name="jpos.jar" />
      </zip>
     </target>
 
-    <target name="tgz" depends="clean, jar" description="create tgz distribution">
-     <copy todir="${build.dir}"> 
-       <fileset dir=".">
-         <include name="LICENSE"/>
-         <include name="COPYRIGHT"/>
-         <include name="build.xml"/>
-         <include name="build.properties"/>
-       </fileset>
-     </copy>
-     <chmod perm="ug+x">
-       <fileset dir="${build.bin}">
-        <include name="q2" />
-        <include name="bsh" />
-        <include name="*.sh" />
-       </fileset>
-     </chmod>
-     <tar tarfile="${dist.dir}/${archive}.tar" basedir="${build.dir}"
-          includes="**/*"> 
-          <exclude name="classes/**" />
-          <exclude name="doc/**" />
-          <exclude name="src/**" />
-          <exclude name="test/**" />
-          <exclude name="tmpdoc/**" />
-          <exclude name="jpos.jar" />
-     </tar>
-     <gzip src="${dist.dir}/${archive}.tar"
-     zipfile="${dist.dir}/${archive}.tgz"/>
-     <delete file="${dist.dir}/${archive}.tar" />
-    </target>
     <target name="support" depends="prepare">
         <filter filtersfile="${filter.properties}" />
         <copy todir="${classes.dir}" flatten="false" overwrite="true" filtering="true">
@@ -315,9 +297,7 @@ Sealed: false</concat>
       </fileset>
      </subant>
     </target>
-    <target name="dist" depends="compile, zip, modules-dist">
-     <description>Build distribution</description>
-    </target>
+    <target name="dist" depends="zip" description='Builds source distribution' />
 
     <target name="javadoc" depends="modules, compile" 
         description="generate javadocs">
