@@ -34,7 +34,7 @@ public class AllTests
         suite.addTest(new TestSuite(IF_UNUSEDTest.class));
         suite.addTest(new TestSuite(IFA_AMOUNTTest.class));
         suite.addTest(new TestSuite(IFA_BINARYTest.class));
-        suite.addTest(new TestSuite(IFA_BITMAPTest.class));
+//        suite.addTest(new TestSuite(IFA_BITMAPTest.class));
         suite.addTest(new TestSuite(IFA_FLLCHARTest.class));
         suite.addTest(new TestSuite(IFA_FLLNUMTest.class));
         suite.addTest(new TestSuite(IFA_LCHARTest.class));
@@ -50,7 +50,7 @@ public class AllTests
         suite.addTest(new TestSuite(IFA_NUMERICTest.class));
         suite.addTest(new TestSuite(IFB_AMOUNTTest.class));
         suite.addTest(new TestSuite(IFB_BINARYTest.class));
-        suite.addTest(new TestSuite(IFB_BITMAPTest.class));
+//        suite.addTest(new TestSuite(IFB_BITMAPTest.class));
         suite.addTest(new TestSuite(IFB_LLBINARYTest.class));
         suite.addTest(new TestSuite(IFB_LLCHARTest.class));
         suite.addTest(new TestSuite(IFB_LLHBINARYTest.class));
