@@ -1,0 +1,6 @@
+In order to build jPOS, you need a recent version of Jakarta Ant installed (1.6.5 or higher).
+
+After unzipping your jPOS distribution, call "ant run" in order to build and start the jPOS server.
+
+Visit http://jpos.org/resources for further information.
+
