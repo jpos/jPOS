@@ -16,6 +16,7 @@ import java.util.StringTokenizer;
 import org.jpos.util.NameRegistrar;
 import org.jdom.Element;
 import org.jpos.space.Space;
+import org.jpos.space.LocalSpace;
 import org.jpos.space.JDBMSpace;
 import org.jpos.space.SpaceFactory;
 import org.jpos.space.SpaceUtil;
@@ -404,6 +405,11 @@ public class TransactionManager
         factory.invoke (participant, "setTransactionManager", this);
         factory.setConfiguration (participant, e);
         return participant;
+    }
+    public int getOutstandingTransactions() {
+        if (sp instanceof LocalSpace)
+            return ((LocalSpace)sp).size("queue");
+        return -1;
     }
     protected String getKey (String prefix, long id) {
         StringBuffer sb = new StringBuffer (prefix);
