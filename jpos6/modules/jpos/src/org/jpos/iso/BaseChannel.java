@@ -422,7 +422,7 @@ public abstract class BaseChannel extends Observable
         sendMessageTrailler (m, b.length);
     }
     protected void getMessageTrailler() throws IOException { }
-    protected void getMessage (byte[] b, int offset, int len) throws IOException { 
+    protected void getMessage (byte[] b, int offset, int len) throws IOException, ISOException { 
         serverIn.readFully(b, offset, len);
     }
     protected int getMessageLength() throws IOException, ISOException {

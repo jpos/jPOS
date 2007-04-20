@@ -94,9 +94,17 @@ public class GZIPChannel extends BaseChannel {
         gzip.write(b, offset, len);
         gzip.finish();
     }
-    protected void getMessage (byte[] b, int offset, int len) throws IOException { 
+    protected void getMessage (byte[] b, int offset, int len) throws IOException, ISOException { 
+    	int total = 0;
         GZIPInputStream gzip = new GZIPInputStream(serverIn);
-        gzip.read (b, offset, len);
+        while (total < len) {
+        	int nread = gzip.read (b, offset, len - total);
+        	if (nread == -1) {
+        		throw new ISOException("End of compressed stream reached before all data was read"); 
+        	}
+        	total += nread;
+        	offset += nread;
+        }
     }
 }
 
