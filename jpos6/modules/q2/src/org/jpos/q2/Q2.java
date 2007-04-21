@@ -188,13 +188,13 @@ public class Q2 implements FileFilter {
                 relax ();
             }
         }
-        q2Thread = null;
         undeploy ();
         try {
             server.unregisterMBean (loaderName);
         } catch (InstanceNotFoundException e) {
             log.error (e);
         }
+		q2Thread = null;
         if (exit && !shuttingDown)
             System.exit (0);
     }
