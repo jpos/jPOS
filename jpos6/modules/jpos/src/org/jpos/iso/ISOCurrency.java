@@ -187,6 +187,9 @@ public class ISOCurrency
         return (Currency) 
             currencies.get (ISOUtil.zeropad (Integer.toString (code), 3));
     }
+    public static Currency getCurrency (String code) throws ISOException {
+        return (Currency) currencies.get (ISOUtil.zeropad (code, 3));
+    }
 
 /*
     static public void main(String[] args)
