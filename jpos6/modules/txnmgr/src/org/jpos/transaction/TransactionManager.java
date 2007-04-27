@@ -481,10 +481,6 @@ public class TransactionManager
         snapshot (id, context, null);
     }
     protected void snapshot (long id, Serializable context, Integer status) {
-        if (!(psp instanceof JDBMSpace)) {
-            // no sense taking a snapshot if space is not persistent
-            return;
-        }
         String contextKey = getKey (CONTEXT, id);
         synchronized (psp) {
             commitOff (psp);
