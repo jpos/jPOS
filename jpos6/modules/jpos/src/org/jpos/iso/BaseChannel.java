@@ -508,8 +508,14 @@ public abstract class BaseChannel extends Observable
         // VAP Header support - see VAPChannel
         return false;
     }
+    /**
+     * support old factory method name for backward compatibility
+     */
     protected ISOMsg createMsg () {
-        return new ISOMsg();
+        return createISOMsg();
+    }
+    protected ISOMsg createISOMsg () {
+        return packager.createISOMsg ();
     }
 	
     /**
@@ -533,7 +539,8 @@ public abstract class BaseChannel extends Observable
         byte[] b=null;
         byte[] header=null;
         LogEvent evt = new LogEvent (this, "receive");
-        ISOMsg m = createMsg ();
+        ISOMsg m = createMsg ();  // call createMsg instead of createISOMsg for 
+                                  // backward compatibility
         m.setSource (this);
         try {
             if (!isConnected())
