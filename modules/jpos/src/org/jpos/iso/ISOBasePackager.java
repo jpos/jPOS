@@ -388,6 +388,9 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
     {
         fld[fldNumber] = fieldPackager;
     }
+    public ISOMsg createISOMsg () {
+        return new ISOMsg();
+    }
     /**
      * @return 128 for ISO-8583, should return 64 for ANSI X9.2
      */

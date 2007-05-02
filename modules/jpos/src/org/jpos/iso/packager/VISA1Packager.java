@@ -211,4 +211,7 @@ public class VISA1Packager
     {
         return "VISA 1 fld "+fldNumber;
     }
+    public ISOMsg createISOMsg() {
+        return new ISOMsg();
+    }
 }

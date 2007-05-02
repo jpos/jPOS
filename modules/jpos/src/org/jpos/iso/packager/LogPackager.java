@@ -280,5 +280,8 @@ public class LogPackager extends DefaultHandler
     public Logger getLogger() {
         return logger;
     }
+    public ISOMsg createISOMsg() {
+        return new ISOMsg();
+    }
 }
 

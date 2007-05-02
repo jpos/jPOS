@@ -290,6 +290,9 @@ public class XMLPackager extends DefaultHandler
     public Logger getLogger() {
         return logger;
     }
+    public ISOMsg createISOMsg () {
+        return new ISOMsg();
+    }
     private XMLReader createXMLReader () throws SAXException {
         XMLReader reader = null;
         try {

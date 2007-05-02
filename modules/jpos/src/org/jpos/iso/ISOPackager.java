@@ -82,4 +82,10 @@ public interface ISOPackager extends LogSource {
      * @return  Field Description
      */
     public String getFieldDescription(ISOComponent m, int fldNumber);
+
+    /**
+     * @return an ISOMsg
+     */
+    public ISOMsg createISOMsg ();
 }
+
