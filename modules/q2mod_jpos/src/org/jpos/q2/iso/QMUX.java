@@ -182,9 +182,10 @@ public class QMUX
             int f = key[i];
             String v = m.getString(f);
             if (v != null) {
-                if (f == 41) {
+                if (f == 41) 
                     v = ISOUtil.zeropad (v.trim(), 16); // BIC ANSI to ISO hack
-                }
+                else if (f == 11) 
+                    v = ISOUtil.zeropad (v.trim(), 6); 
                 sb.append (v);
             }
         }
