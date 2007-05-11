@@ -647,10 +647,11 @@ public class ISOUtil {
         String suffix = Integer.toString (
             (int) ((Math.round(d * 100f)) % 100) );
         try {
-            prefix = ISOUtil.padleft(prefix,len-3,' ');
+            if (len > 3)
+                prefix = ISOUtil.padleft(prefix,len-3,' ');
             suffix = ISOUtil.zeropad(suffix, 2);
         } catch (ISOException e) {
-            e.printStackTrace();
+            // should not happen
         }
         return prefix + "." + suffix;
     }
