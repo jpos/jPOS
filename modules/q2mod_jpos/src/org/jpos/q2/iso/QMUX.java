@@ -183,7 +183,7 @@ public class QMUX
             String v = m.getString(f);
             if (v != null) {
                 if (f == 41) {
-                    v = ISOUtil.zeropad (v, 16); // BIC ANSI to ISO hack
+                    v = ISOUtil.zeropad (v.trim(), 16); // BIC ANSI to ISO hack
                 }
                 sb.append (v);
             }
