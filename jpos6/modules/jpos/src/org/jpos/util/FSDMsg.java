@@ -114,7 +114,12 @@ public class FSDMsg implements Loggeable {
         setSeparator("RS", RS);
         
     }
-    
+    public String getBasePath() {
+        return basePath;
+    }
+    public String getBaseSchema() {
+        return baseSchema;
+    }
    
     /*
      * add a new or override an existing separator type/char pair.
