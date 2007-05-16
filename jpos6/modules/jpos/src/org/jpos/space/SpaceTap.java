@@ -50,6 +50,8 @@ public class SpaceTap implements SpaceListener {
         this.key = key;
         this.tapKey = tapKey;
         this.tapTimeout = tapTimeout;
+        if (key.equals (tapKey))
+            throw new IllegalArgumentException ("possible deadlock - key equals tap-key");
         ssp.addListener (key, this);
     }
     public void notify (Object key, Object value) {
