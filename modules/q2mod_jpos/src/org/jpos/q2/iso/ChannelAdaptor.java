@@ -81,7 +81,8 @@ public class ChannelAdaptor
         try {
             initChannel ();
             new Thread (new Sender ()).start ();
-            new Thread (new Receiver ()).start ();
+            if (!"yes".equalsIgnoreCase (getPersist().getChildTextTrim ("write-only"))) // fixes #426
+                new Thread (new Receiver ()).start ();
         } catch (Exception e) {
             getLog().warn ("error starting service", e);
         }
