@@ -123,7 +123,6 @@ public class TSpace extends TimerTask implements LocalSpace, Loggeable {
             Thread.yield ();
         }
         if (sl != null) {
-            sl.gc();
             synchronized (this) {
                 if (sl != null && sl.isEmpty())
                     sl = null;
