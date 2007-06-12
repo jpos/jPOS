@@ -168,7 +168,7 @@ public class TransactionManager
                         break;
                 }
                 snapshot (id, null, DONE);
-                if (id == tail) {
+                if (action != PAUSE && id == tail) {
                     checkTail ();
                 }
             } catch (Throwable t) {
