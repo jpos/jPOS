@@ -167,9 +167,11 @@ public class TransactionManager
                     case NO_JOIN:
                         break;
                 }
-                snapshot (id, null, DONE);
-                if (action != PAUSE && id == tail) {
-                    checkTail ();
+                if (action != PAUSE) {
+                    snapshot (id, null, DONE);
+                    if (id == tail) {
+                        checkTail ();
+                    }
                 }
             } catch (Throwable t) {
                 if (evt == null)
