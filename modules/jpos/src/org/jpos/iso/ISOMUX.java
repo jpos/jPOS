@@ -596,4 +596,11 @@ public class ISOMUX implements Runnable, ISOSource, LogSource, MUX,
         queue (req);
         return req.getResponse ((int) timeout);
     }
+    public void request (ISOMsg m, long timeout, ISOResponseListener r) 
+        throws ISOException 
+    {
+        throw new ISOException ("Not implemented");
+
+    }
 }
+

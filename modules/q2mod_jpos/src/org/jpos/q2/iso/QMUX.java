@@ -68,6 +68,7 @@ import org.jpos.iso.ISOSource;
 import org.jpos.iso.ISOMsg;
 import org.jpos.iso.ISOUtil;
 import org.jpos.iso.ISORequestListener;
+import org.jpos.iso.ISOResponseListener;
 import org.jpos.iso.ISOException;
 import org.jpos.util.NameRegistrar;
 import org.jpos.util.NameRegistrar.NotFoundException;
@@ -236,6 +237,11 @@ public class QMUX
      */
     public String getUnhandledQueue () {
         return unhandled;
+    }
+    public void request (ISOMsg m, long timeout, ISOResponseListener r)
+        throws ISOException 
+    {
+        throw new ISOException ("Not implemented yet");
     }
     private void addListeners () 
         throws ConfigurationException
