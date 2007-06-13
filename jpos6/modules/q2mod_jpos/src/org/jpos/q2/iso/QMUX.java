@@ -220,6 +220,9 @@ public class QMUX
     public String getOutQueue () {
         return out;
     }
+    public Space getSpace() {
+        return sp;
+    }
     /**
      * @jmx:managed-attribute description="unhandled queue"
      */
