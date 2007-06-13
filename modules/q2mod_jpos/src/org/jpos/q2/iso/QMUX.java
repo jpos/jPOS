@@ -81,7 +81,7 @@ public class QMUX
     extends QBeanSupport
     implements SpaceListener, MUX, QMUXMBean
 {
-    LocalSpace sp;
+    protected LocalSpace sp;
     protected String in, out, unhandled;
     protected String[] ready;
     protected String spaceName;
