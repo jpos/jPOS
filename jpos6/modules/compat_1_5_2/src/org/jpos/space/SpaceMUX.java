@@ -56,6 +56,7 @@ import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOMsg;
 import org.jpos.iso.ISOUtil;
 import org.jpos.iso.MUX;
+import org.jpos.iso.ISOResponseListener;
 import org.jpos.util.LogEvent;
 import org.jpos.util.Logger;
 import org.jpos.util.NameRegistrar;
@@ -186,5 +187,12 @@ public class SpaceMUX extends SimpleLogSource
     public boolean isConnected () {
         return true;
     }
+    public void request (ISOMsg m, long timeout, ISOResponseListener r) 
+        throws ISOException 
+    {
+        throw new ISOException ("Not implemented");
+
+    }
+
 }
 

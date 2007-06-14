@@ -11,6 +11,7 @@ import java.util.StringTokenizer;
 import org.jdom.Element;
 import org.jpos.iso.ISOMsg;
 import org.jpos.iso.ISOException;
+import org.jpos.iso.ISOResponseListener;
 import org.jpos.iso.MUX;
 import org.jpos.iso.ISOUtil;
 import org.jpos.util.NameRegistrar;
@@ -99,5 +100,12 @@ public class MUXPool extends QBeanSupport implements MUX {
         }
         return ss;
     }
+    public void request (ISOMsg m, long timeout, ISOResponseListener r) 
+        throws ISOException 
+    {
+        throw new ISOException ("Not implemented");
+
+    }
+
 }
 
