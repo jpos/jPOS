@@ -126,14 +126,13 @@ public class TransactionManager
                 }
                 if (obj instanceof Pausable) {
                     Pausable pausable = (Pausable) obj;
-                    synchronized (obj) {
-                        pt = pausable.getPausedTransaction();
-                        if (pt != null) {
-                            id      = pt.id();
-                            members = pt.members();
-                            iter    = pt.iterator();
-                            abort   = pt.isAborting();
-                        }
+                    pt = pausable.getPausedTransaction();
+                    if (pt != null) {
+                        pt.cancelExpirationMonitor();
+                        id      = pt.id();
+                        members = pt.members();
+                        iter    = pt.iterator();
+                        abort   = pt.isAborting();
                     }
                 } else 
                     pt = null;
@@ -348,15 +347,16 @@ public class TransactionManager
             if (pause) {
                 if (context instanceof Pausable) {
                     Pausable pausable = (Pausable) context;
+                    TimerTask expirationMonitor = new PausedMonitor (pausable);
                     pausable.setPausedTransaction (
-                        new PausedTransaction (this, id, members, iter, abort)
+                        new PausedTransaction (this, id, members, iter, abort, expirationMonitor)
                     );
                     long t = pausable.getTimeout();
                     if (t == 0) 
                         t = pauseTimeout;
                     if (t > 0) {
                         DefaultTimer.getTimer().schedule (
-                            new PausedMonitor(pausable), t
+                            expirationMonitor, t
                         );
                     }
                 } else {
@@ -598,6 +598,7 @@ public class TransactionManager
             this.context = context;
         }
         public void run() {
+            cancel();
             context.getPausedTransaction().forceAbort();
             context.resume();
         }
