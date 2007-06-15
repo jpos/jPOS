@@ -17,10 +17,14 @@ public class PausedTransaction implements Loggeable {
     private List members;
     private Iterator iter;
     private boolean aborting;
+    private TransactionManager txnmgr;
+    private boolean resumed;
     public PausedTransaction (
+            TransactionManager txnmgr,
             long id, List members, Iterator iter, boolean aborting) 
     {
         super();
+        this.txnmgr = txnmgr;
         this.id = id;
         this.members = members;
         this.iter = iter;
@@ -42,6 +46,18 @@ public class PausedTransaction implements Loggeable {
     }
     public boolean isAborting() {
         return aborting;
+    }
+    public void forceAbort() {
+        this.aborting = true;
+    }
+    public TransactionManager getTransactionManager() {
+        return txnmgr;
+    }
+    public void setResumed (boolean resumed) {
+        this.resumed = resumed;
+    }
+    public boolean isResumed() {
+        return resumed;
     }
 }
 

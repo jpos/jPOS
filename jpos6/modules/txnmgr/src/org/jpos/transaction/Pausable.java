@@ -10,5 +10,8 @@ package org.jpos.transaction;
 public interface Pausable {
     public void setPausedTransaction (PausedTransaction p);
     public PausedTransaction getPausedTransaction();
+    public long getTimeout();
+    public void setTimeout (long timeout);
+    public void resume();
 }
 
