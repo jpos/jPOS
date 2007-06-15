@@ -10,6 +10,7 @@ package org.jpos.transaction;
 import java.io.PrintStream;
 import java.util.List;
 import java.util.Iterator;
+import java.util.TimerTask;
 import org.jpos.util.Loggeable;
 
 public class PausedTransaction implements Loggeable {
@@ -19,9 +20,10 @@ public class PausedTransaction implements Loggeable {
     private boolean aborting;
     private TransactionManager txnmgr;
     private boolean resumed;
+    private TimerTask expirationMonitor;
     public PausedTransaction (
             TransactionManager txnmgr,
-            long id, List members, Iterator iter, boolean aborting) 
+            long id, List members, Iterator iter, boolean aborting, TimerTask expirationMonitor) 
     {
         super();
         this.txnmgr = txnmgr;
@@ -29,6 +31,7 @@ public class PausedTransaction implements Loggeable {
         this.members = members;
         this.iter = iter;
         this.aborting = aborting;
+        this.expirationMonitor = expirationMonitor;
     }
     public long id() {
         return id;
@@ -58,6 +61,10 @@ public class PausedTransaction implements Loggeable {
     }
     public boolean isResumed() {
         return resumed;
+    }
+    public synchronized void cancelExpirationMonitor() {
+        if (expirationMonitor != null)
+            expirationMonitor.cancel();
     }
 }
 
