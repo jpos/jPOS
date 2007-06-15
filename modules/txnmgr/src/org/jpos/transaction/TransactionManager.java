@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.TimerTask;
 import java.util.StringTokenizer;
 import org.jpos.util.NameRegistrar;
 import org.jdom.Element;
@@ -26,6 +27,7 @@ import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
 import org.jpos.util.Logger;
 import org.jpos.util.LogEvent;
+import org.jpos.util.DefaultTimer;
 
 public class TransactionManager 
     extends QBeanSupport 
@@ -123,12 +125,15 @@ public class TransactionManager
                     continue;
                 }
                 if (obj instanceof Pausable) {
-                    pt = ((Pausable)obj).getPausedTransaction();
-                    if (pt != null) {
-                        id      = pt.id();
-                        members = pt.members();
-                        iter    = pt.iterator();
-                        abort   = pt.isAborting();
+                    Pausable pausable = (Pausable) obj;
+                    synchronized (obj) {
+                        pt = pausable.getPausedTransaction();
+                        if (pt != null) {
+                            id      = pt.id();
+                            members = pt.members();
+                            iter    = pt.iterator();
+                            abort   = pt.isAborting();
+                        }
                     }
                 } else 
                     pt = null;
@@ -167,7 +172,7 @@ public class TransactionManager
                     case NO_JOIN:
                         break;
                 }
-                if (action != PAUSE) {
+                if ((action & PAUSE) == 0) {
                     snapshot (id, null, DONE);
                     if (id == tail) {
                         checkTail ();
@@ -183,6 +188,7 @@ public class TransactionManager
                     evt.addMessage ("elapsed time: " 
                         + (System.currentTimeMillis() - startTime) + "ms"
                     );
+                    evt.addMessage ("head=" + head + ", tail=" + tail);
                     Logger.log (evt);
                     evt = null;
                 }
@@ -341,9 +347,18 @@ public class TransactionManager
             }
             if (pause) {
                 if (context instanceof Pausable) {
-                    ((Pausable)context).setPausedTransaction (
-                        new PausedTransaction (id, members, iter, abort)
+                    Pausable pausable = (Pausable) context;
+                    pausable.setPausedTransaction (
+                        new PausedTransaction (this, id, members, iter, abort)
                     );
+                    long t = pausable.getTimeout();
+                    if (t == 0) 
+                        t = pauseTimeout;
+                    if (t > 0) {
+                        DefaultTimer.getTimer().schedule (
+                            new PausedMonitor(pausable), t
+                        );
+                    }
                 } else {
                     throw new RuntimeException ("Unable to PAUSE transaction - Context is not Pausable");
                 }
@@ -454,6 +469,9 @@ public class TransactionManager
     protected void checkTail () {
         Object lock = sp.in (tailLock);
         while (tailDone()) {
+            if (debug) {
+                getLog().debug ("tailDone " + tail);
+            }
             tail++;
         }
         syncTail ();
@@ -571,6 +589,17 @@ public class TransactionManager
         if (retryTask == null) {
             retryTask = new RetryTask();
             new Thread(retryTask).start();
+        }
+    }
+    public class PausedMonitor extends TimerTask {
+        Pausable context;
+        public PausedMonitor (Pausable context) {
+            super();
+            this.context = context;
+        }
+        public void run() {
+            context.getPausedTransaction().forceAbort();
+            context.resume();
         }
     }
     public class RetryTask implements Runnable {

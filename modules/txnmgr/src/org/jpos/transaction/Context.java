@@ -28,6 +28,8 @@ import org.jpos.iso.ISOUtil;
 public class Context implements Externalizable, Loggeable, Pausable {
     private transient Map map; // transient map
     private Map pmap;          // persistent (serializable) map
+    private long timeout;
+    private int resuming=0;
 
     public static String LOGEVT = "LOGEVT";
     public static String PROFILER = "PROFILER";
@@ -234,6 +236,19 @@ public class Context implements Externalizable, Loggeable, Pausable {
     public PausedTransaction getPausedTransaction() {
         return (PausedTransaction) get (PAUSED_TRANSACTION);
 
+    }
+    public void setTimeout (long timeout) {
+        this.timeout = timeout;
+    }
+    public long getTimeout () {
+        return timeout;
+    }
+    public synchronized void resume() {
+        PausedTransaction pt = getPausedTransaction();
+        if (pt != null && !pt.isResumed()) {
+            pt.setResumed (true);
+            pt.getTransactionManager().queue(this);
+        }
     }
     static final long serialVersionUID = 6056487212221438338L;
 }
