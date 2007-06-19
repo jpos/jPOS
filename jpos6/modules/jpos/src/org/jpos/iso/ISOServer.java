@@ -20,7 +20,8 @@ import java.util.Iterator;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Random;
-import java.util.Stack;
+import java.util.Map;
+import java.util.HashMap;
 import java.util.Vector;
 
 import org.jpos.core.Configurable;
@@ -49,6 +50,7 @@ public class ISOServer extends Observable
     Collection clientOutgoingFilters, clientIncomingFilters, listeners;
     ThreadPool pool;
     public static final int DEFAULT_MAX_THREADS = 100;
+    public static final String LAST = ":last";
     String name;
     protected Logger logger;
     protected String realm;
@@ -63,7 +65,7 @@ public class ISOServer extends Observable
     protected Configuration cfg;
     private boolean shutdown = false;
     private ServerSocket serverSocket;
-    private Stack channels;
+    private Map channels;
 
    /**
     * @param port port to listen
@@ -85,7 +87,7 @@ public class ISOServer extends Observable
             new ThreadPool (1, DEFAULT_MAX_THREADS) : pool;
         listeners = new Vector();
         name = "";
-        channels = new Stack();
+        channels = new HashMap();
         cnt = new int[SIZEOF_CNT];
     }
 
@@ -216,7 +218,7 @@ public class ISOServer extends Observable
         }
     }
     private void shutdownChannels () {
-        Iterator iter = channels.iterator();
+        Iterator iter = channels.entrySet().iterator();
         while (iter.hasNext()) {
             ISOChannel c = (ISOChannel) ((WeakReference) iter.next()).get ();
             if (c != null) {
@@ -229,7 +231,7 @@ public class ISOServer extends Observable
         }
     }
     private void purgeChannels () {
-        Iterator iter = channels.iterator();
+        Iterator iter = channels.entrySet().iterator();
         while (iter.hasNext()) {
             WeakReference ref = (WeakReference) iter.next();
             ISOChannel c = (ISOChannel) ref.get ();
@@ -297,7 +299,9 @@ public class ISOServer extends Observable
                         channel.accept (serverSocket);
                         if ((cnt[CONNECT]++) % 100 == 0)
                             purgeChannels ();
-                        channels.push (new WeakReference (channel));
+                        WeakReference wr = new WeakReference (channel);
+                        channels.put (channel.getName(), wr);
+                        channels.put (LAST, wr);
                         setChanged ();
                         notifyObservers (channel);
                         pool.execute (createSession(channel));
@@ -426,11 +430,15 @@ public class ISOServer extends Observable
      * @return most recently connected ISOChannel or null
      */
     public ISOChannel getLastConnectedISOChannel () {
-        if (!channels.empty()) {
-            WeakReference ref = (WeakReference) channels.peek ();
-            if (ref != null)
-                return (ISOChannel) ref.get ();
-        } 
+        return getISOChannel (LAST);
+    }
+    /**
+     * @return ISOChannel under the given name
+     */
+    public ISOChannel getISOChannel (String name) {
+        WeakReference ref = (WeakReference) channels.get (name);
+        if (ref != null)
+            return (ISOChannel) ref.get ();
         return null;
     }
     public void setConfiguration (Configuration cfg) throws ConfigurationException {
