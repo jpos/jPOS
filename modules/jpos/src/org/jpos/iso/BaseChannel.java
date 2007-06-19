@@ -361,7 +361,9 @@ public abstract class BaseChannel extends Observable
         // else
         //     serverPort = s.getLocalPort();
 
-        connect(s.accept());
+        Socket ss = s.accept();
+        this.name = ss.getInetAddress().getHostAddress()+":"+ss.getPort();
+        connect(ss);
 
         // Warning - closing here breaks ISOServer, we need an
         // accept that keep ServerSocket open.
