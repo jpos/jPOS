@@ -220,7 +220,9 @@ public class ISOServer extends Observable
     private void shutdownChannels () {
         Iterator iter = channels.entrySet().iterator();
         while (iter.hasNext()) {
-            ISOChannel c = (ISOChannel) ((WeakReference) iter.next()).get ();
+            Map.Entry entry = (Map.Entry) iter.next();
+            WeakReference ref = (WeakReference) entry.getValue();
+            ISOChannel c = (ISOChannel) ref.get ();
             if (c != null) {
                 try {
                     c.disconnect ();
@@ -233,7 +235,8 @@ public class ISOServer extends Observable
     private void purgeChannels () {
         Iterator iter = channels.entrySet().iterator();
         while (iter.hasNext()) {
-            WeakReference ref = (WeakReference) iter.next();
+            Map.Entry entry = (Map.Entry) iter.next();
+            WeakReference ref = (WeakReference) entry.getValue();
             ISOChannel c = (ISOChannel) ref.get ();
             if (c == null || (!c.isConnected()))
                 iter.remove ();
