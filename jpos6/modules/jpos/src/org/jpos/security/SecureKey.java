@@ -104,6 +104,11 @@ public abstract class SecureKey
     protected String keyType;
 
     /**
+     * Optional key name
+     */
+    protected String keyName;
+
+    /**
      * Sets the secure key bytes
      * @param keyBytes byte[] representing the secured key bytes
      */
@@ -153,7 +158,19 @@ public abstract class SecureKey
     public String getKeyType () {
         return  this.keyType;
     }
+
+    /**
+     * optional key name
+     */
+    public String getKeyName() {
+        return this.keyName;
+    }
+    /**
+     * optional key name
+     * @param keyName string
+     */
+    public void setKeyName (String keyName) {
+        this.keyName = keyName;
+    }
 }
-
-
 
