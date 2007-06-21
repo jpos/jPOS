@@ -148,6 +148,9 @@ public class SecureDESKey extends SecureKey {
         p.print(indent + "<secure-des-key");
         p.print(" length=\"" + getKeyLength() + "\"");
         p.print(" type=\"" + keyType + "\"");
+        if (keyName != null)
+            p.print(" name=\"" + keyName + "\"");
+
         p.println(">");
         p.println(inner + "<data>" + ISOUtil.hexString(getKeyBytes()) + "</data>");
         p.println(inner + "<check-value>" + ISOUtil.hexString(getKeyCheckValue()) + "</check-value>");
