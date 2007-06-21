@@ -34,4 +34,7 @@ public interface ChannelAdaptorMBean extends org.jpos.q2.QBeanSupportMBean {
 
   java.lang.String getSocketFactory() ;
 
+  public void resetCounters ();
+  public String getCountersAsString ();
 }
+

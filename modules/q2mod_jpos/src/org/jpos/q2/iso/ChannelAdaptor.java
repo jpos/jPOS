@@ -45,8 +45,10 @@ public class ChannelAdaptor
     String in, out, ready, reconnect;
     long delay;
     boolean keepAlive = false;
+    int rx, tx, connects;
     public ChannelAdaptor () {
         super ();
+        resetCounters();
     }
     public void initChannel () throws ConfigurationException {
         Element persist = getPersist ();
@@ -247,8 +249,10 @@ public class ChannelAdaptor
                 try {
                     checkConnection ();
                     Object o = sp.in (in, delay);
-                    if (o instanceof ISOMsg)
+                    if (o instanceof ISOMsg) {
                         channel.send ((ISOMsg) o);
+                        tx++;
+                    }
                     else if (keepAlive && channel.isConnected()) {
                         if (channel instanceof BaseChannel) {
                             ((BaseChannel)channel).sendKeepAlive();
@@ -274,6 +278,7 @@ public class ChannelAdaptor
                 try {
                     sp.rd (ready);
                     ISOMsg m = channel.receive ();
+                    rx++;
                     sp.out (out, m);
                 } catch (Exception e) { 
                     if (running()) {
@@ -303,6 +308,8 @@ public class ChannelAdaptor
             }
             if (!channel.isConnected ())
                 ISOUtil.sleep (delay);
+            else
+                connects++;
         }
         if (running() && (sp.rdp (ready) == null))
             sp.out (ready, new Date());
@@ -357,7 +364,17 @@ public class ChannelAdaptor
         setProperty(getProperties("channel"), "socketFactory", sFac);
         setModified(true);
     }
-    
+
+    public void resetCounters () {
+        rx = tx = connects = 0;
+    }
+    public String getCountersAsString () {
+        StringBuffer sb = new StringBuffer();
+        append (sb, "rx=", rx);
+        append (sb, ", tx=", tx);
+        append (sb, ", connects=", connects);
+        return sb.toString();
+    }
     /**
      * @jmx:managed-attribute description="socket factory" 
      */
@@ -368,6 +385,12 @@ public class ChannelAdaptor
     private Space grabSpace (Element e) {
         return SpaceFactory.getSpace (e != null ? e.getText() : "");
     }
+
+    private void append (StringBuffer sb, String name, int value) {
+        sb.append (name);
+        sb.append (value);
+    }
+    
 
 }
 
