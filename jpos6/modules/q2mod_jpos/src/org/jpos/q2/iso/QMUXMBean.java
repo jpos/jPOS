@@ -22,4 +22,6 @@ public interface QMUXMBean extends org.jpos.q2.QBeanSupportMBean {
 
   java.lang.String getUnhandledQueue() ;
 
+  public void resetCounters ();
+  public String getCountersAsString ();
 }

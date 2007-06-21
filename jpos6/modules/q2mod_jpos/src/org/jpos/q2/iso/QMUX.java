@@ -89,6 +89,7 @@ public class QMUX
     protected int[] key;
     protected String ignorerc;
     List listeners;
+    int rx, tx, rxExpired, txExpired, rxPending, rxUnhandled, rxForwarded;
     public QMUX () {
         super ();
         listeners = new ArrayList ();
@@ -137,23 +138,38 @@ public class QMUX
         String key = getKey (m);
         String req = key + ".req";
         sp.out (req, m);
+        m.setDirection(0);
         if (timeout > 0)
             sp.out (out, m, timeout);
         else
             sp.out (out, m);
 
         ISOMsg resp = null;
+        try {
+            synchronized (this) { tx++; rxPending++; }
 
-        for (;;) {
-            resp = (ISOMsg) sp.rd (key, timeout);
-            if (shouldIgnore (resp)) 
-                continue;
-            sp.inp (key);
-            break;
-        } 
-        if (resp == null && sp.inp (req) == null) {
-            // possible race condition, retry for a few extra seconds
-            resp = (ISOMsg) sp.in (key, 10000);
+            for (;;) {
+                resp = (ISOMsg) sp.rd (key, timeout);
+                if (shouldIgnore (resp)) 
+                    continue;
+                sp.inp (key);
+                break;
+            } 
+            if (resp == null && sp.inp (req) == null) {
+                // possible race condition, retry for a few extra seconds
+                resp = (ISOMsg) sp.in (key, 10000);
+            }
+            synchronized (this) {
+                if (resp != null) 
+                    rx++;
+                else {
+                    rxExpired++;
+                    if (m.getDirection() != ISOMsg.OUTGOING)
+                        txExpired++;
+                }
+            }
+        } finally {
+            synchronized (this) { rxPending--; }
         }
         return resp;
     }
@@ -265,16 +281,35 @@ public class QMUX
     public boolean removeISORequestListener(ISORequestListener l) {
     	return listeners.remove(l);
     }
+    public synchronized void resetCounters() {
+        rx = tx = rxExpired = txExpired = rxPending = rxUnhandled = rxForwarded = 0;
+    }
+    public String getCountersAsString () {
+        StringBuffer sb = new StringBuffer();
+        append (sb, "rx=", rx);
+        append (sb, ", tx=", tx);
+        append (sb, ", rx_expired=", rxExpired);
+        append (sb, ", tx_expired=", txExpired);
+        append (sb, ", tx_pending=", sp.size(out));
+        append (sb, ", rx_pending=", rxPending);
+        append (sb, ", rx_unhandled=", rxUnhandled);
+        append (sb, ", rx_forwarded=", rxForwarded);
+        return sb.toString();
+    }
     protected void processUnhandled (ISOMsg m) {
         ISOSource source = m.getSource ();
         if (source != null) {
             Iterator iter = listeners.iterator();
+            if (iter.hasNext())
+                synchronized (this) { rxForwarded++; }
             while (iter.hasNext())
                 if (((ISORequestListener)iter.next()).process (source, m))
                     return;
         }
-        if (unhandled != null)
+        if (unhandled != null) {
+            synchronized (this) { rxUnhandled++; }
             sp.out (unhandled, m, 120000);
+        }
     }
     private LocalSpace grabSpace (Element e) 
         throws ConfigurationException
@@ -329,6 +364,10 @@ public class QMUX
             return ignorerc.indexOf(m.getString(39)) >= 0;
         }
         return false;
+    }
+    private void append (StringBuffer sb, String name, int value) {
+        sb.append (name);
+        sb.append (value);
     }
 }
 
