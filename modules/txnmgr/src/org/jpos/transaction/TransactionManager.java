@@ -71,7 +71,7 @@ public class TransactionManager
         groups = new HashMap();
         initParticipants (getPersist());
     }
-    public void startService () {
+    public void startService () throws Exception {
         NameRegistrar.register (getName (), this);
         recover ();
         int sessions = cfg.getInt ("sessions", 1);
@@ -84,7 +84,7 @@ public class TransactionManager
             threads[i] = t;
         }
     }
-    public void stopService () {
+    public void stopService () throws Exception {
         NameRegistrar.unregister (getName ());
         long sessions = cfg.getLong ("sessions", 1);
         for (int i=0; i<sessions; i++)
