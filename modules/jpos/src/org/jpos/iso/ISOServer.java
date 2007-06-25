@@ -460,5 +460,35 @@ public class ISOServer extends Observable
             ((Configurable)socketFactory).setConfiguration (cfg);
         }
     }
+    public String getISOChannelNames () {
+        StringBuffer sb = new StringBuffer ();
+        Iterator iter = channels.entrySet().iterator();
+        for (int i=0; iter.hasNext(); i++) {
+            Map.Entry entry = (Map.Entry) iter.next();
+            WeakReference ref = (WeakReference) entry.getValue();
+            ISOChannel c = (ISOChannel) ref.get ();
+            if (c != null && !LAST.equals (entry.getKey())) {
+                if (i > 0)
+                    sb.append (' ');
+                sb.append (entry.getKey());
+            }
+        }
+        return sb.toString();
+    }
+    public String getCountersAsString (String isoChannelName) {
+        ISOChannel channel = getISOChannel(isoChannelName);
+        StringBuffer sb = new StringBuffer();
+        if (channel instanceof BaseChannel) {
+            int[] counters = ((BaseChannel)channel).getCounters();
+            append (sb, "rx=", counters[ISOChannel.RX]);
+            append (sb, ", tx=", counters[ISOChannel.TX]);
+            append (sb, ", connects=", counters[ISOChannel.CONNECT]);
+        }
+        return sb.toString();
+    }
+    private void append (StringBuffer sb, String name, int value) {
+        sb.append (name);
+        sb.append (value);
+    }
 }
 

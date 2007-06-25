@@ -55,5 +55,7 @@ public interface ISOServerMBean extends ThreadPoolMBean {
     public int getPort ();
     public void resetCounters ();
     public int getConnectionCount ();
+    public String getISOChannelNames();
+    public String getCountersAsString (String isoChannelName);
 }
 
