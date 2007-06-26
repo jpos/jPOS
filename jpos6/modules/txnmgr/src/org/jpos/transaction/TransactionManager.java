@@ -432,7 +432,7 @@ public class TransactionManager
     }
     public int getOutstandingTransactions() {
         if (sp instanceof LocalSpace)
-            return ((LocalSpace)sp).size("queue");
+            return ((LocalSpace)sp).size(queue);
         return -1;
     }
     protected String getKey (String prefix, long id) {
