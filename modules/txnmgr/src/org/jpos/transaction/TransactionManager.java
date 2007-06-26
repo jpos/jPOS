@@ -39,6 +39,7 @@ public class TransactionManager
     String tailLock;
     Map groups;
     Thread[] threads;
+    int activeSessions;
     boolean debug;
     long head, tail, lastGC;
     long retryInterval = 5000L;
@@ -112,6 +113,9 @@ public class TransactionManager
         String threadName = Thread.currentThread().getName();
         getLog().info (threadName + " start");
         long startTime = 0L;
+        synchronized (this) {
+            activeSessions++;
+        }
         while (running()) {
             try {
                 Object obj = sp.in (queue);
@@ -194,6 +198,9 @@ public class TransactionManager
             }
         }
         getLog().info (threadName + " stop");
+        synchronized (this) {
+            activeSessions--;
+        }
     }
     public long getTail () {
         return tail;
@@ -620,6 +627,9 @@ public class TransactionManager
     }
     public boolean getDebug() {
         return debug;
+    }
+    public int getActiveSessions() {
+        return activeSessions;
     }
 }
 
