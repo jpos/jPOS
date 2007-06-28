@@ -198,11 +198,12 @@ public class QServer
     public String getISOChannelNames() {
         return server.getISOChannelNames();
     }
+    public String getCountersAsString () {
+        return server.getCountersAsString ();
+    }
     public String getCountersAsString (String isoChannelName) {
         return server.getCountersAsString (isoChannelName);
     }
-
-
     private void addServerSocketFactory () throws ConfigurationException {
         QFactory factory = getFactory ();
         Element persist = getPersist ();

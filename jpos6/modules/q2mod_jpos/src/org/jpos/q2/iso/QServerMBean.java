@@ -34,5 +34,6 @@ public interface QServerMBean extends org.jpos.q2.QBeanSupportMBean {
 
   java.lang.String getSocketFactory() ;
   String getISOChannelNames();
+  String getCountersAsString ();
   String getCountersAsString (String isoChannelName);
 }
