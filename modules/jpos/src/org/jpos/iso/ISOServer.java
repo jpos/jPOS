@@ -475,6 +475,29 @@ public class ISOServer extends Observable
         }
         return sb.toString();
     }
+    public String getCountersAsString () {
+        StringBuffer sb = new StringBuffer ();
+        Iterator iter = channels.entrySet().iterator();
+        int[] cnt = new int[2];
+        int connectedChannels = 0;
+        for (int i=0; iter.hasNext(); i++) {
+            Map.Entry entry = (Map.Entry) iter.next();
+            WeakReference ref = (WeakReference) entry.getValue();
+            ISOChannel c = (ISOChannel) ref.get ();
+            if (c != null && !LAST.equals (entry.getKey()) && c.isConnected()) {
+                connectedChannels++;
+                if (c instanceof BaseChannel) {
+                    int[] cc = ((BaseChannel)c).getCounters();
+                    cnt[0] += cc[ISOChannel.RX];
+                    cnt[1] += cc[ISOChannel.TX];
+                }
+            }
+        }
+        sb.append ("connected="+connectedChannels);
+        sb.append (", rx=" + Integer.toString(cnt[0]));
+        sb.append (", tx=" + Integer.toString(cnt[1]));
+        return sb.toString();
+    }
     public String getCountersAsString (String isoChannelName) {
         ISOChannel channel = getISOChannel(isoChannelName);
         StringBuffer sb = new StringBuffer();
