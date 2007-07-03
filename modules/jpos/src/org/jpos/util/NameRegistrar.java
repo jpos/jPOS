@@ -128,17 +128,13 @@ public class NameRegistrar implements Loggeable {
             Iterator iter = registrar.entrySet().iterator();
             while (iter.hasNext()) {
                 Map.Entry entry = (Map.Entry) iter.next ();
-                p.println (inner + 
-                    "<name>" + entry.getKey().toString() + "</name>"
-                );
                 Object obj = entry.getValue();
                 p.println (inner + 
-                    "<class>" + obj.getClass().getName()+ "</class>"
+                    entry.getKey().toString() + ": " +
+                    obj.getClass().getName()
                 );
                 if ((detail == true) && (obj instanceof Loggeable)) {
-                    p.println(inner + "  <detail>");
-                    ((Loggeable)obj).dump(p, inner+"    ");
-                    p.println(inner + "  </detail>");
+                    ((Loggeable)obj).dump(p, inner+"  ");
                 }
             }
         }

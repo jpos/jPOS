@@ -49,6 +49,8 @@
 
 package org.jpos.q2.iso;
 
+import java.io.PrintStream;
+
 import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
@@ -70,6 +72,7 @@ import org.jpos.iso.ISOUtil;
 import org.jpos.iso.ISORequestListener;
 import org.jpos.iso.ISOResponseListener;
 import org.jpos.iso.ISOException;
+import org.jpos.util.Loggeable;
 import org.jpos.util.NameRegistrar;
 import org.jpos.util.NameRegistrar.NotFoundException;
 
@@ -80,7 +83,7 @@ import org.jpos.util.NameRegistrar.NotFoundException;
  */
 public class QMUX 
     extends QBeanSupport
-    implements SpaceListener, MUX, QMUXMBean
+    implements SpaceListener, MUX, QMUXMBean, Loggeable
 {
     protected LocalSpace sp;
     protected String in, out, unhandled;
@@ -294,6 +297,8 @@ public class QMUX
         append (sb, ", rx_pending=", rxPending);
         append (sb, ", rx_unhandled=", rxUnhandled);
         append (sb, ", rx_forwarded=", rxForwarded);
+        sb.append (", connected=");
+        sb.append (Boolean.toString(isConnected()));
         return sb.toString();
     }
     protected void processUnhandled (ISOMsg m) {
@@ -330,6 +335,9 @@ public class QMUX
         }
         else
             return true;
+    }
+    public void dump (PrintStream p, String indent) {
+        p.println (indent + getCountersAsString());
     }
     private String[] toStringArray (String s) {
         String[] ready = null;

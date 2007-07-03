@@ -7,6 +7,7 @@
 package org.jpos.q2.iso;
 
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.Date;
 import java.util.Iterator;
 import org.jpos.iso.ISOMsg;
@@ -26,6 +27,7 @@ import org.jpos.iso.FilteredChannel;
 import org.jpos.q2.QBeanSupport;
 import org.jpos.q2.QFactory;
 import org.jpos.util.LogSource;
+import org.jpos.util.Loggeable;
 import org.jpos.util.NameRegistrar;
 
 import org.jdom.Element;
@@ -38,7 +40,7 @@ import org.jdom.Element;
  */
 public class ChannelAdaptor 
     extends QBeanSupport
-    implements ChannelAdaptorMBean, Channel
+    implements ChannelAdaptorMBean, Channel, Loggeable
 {
     Space sp;
     ISOChannel channel;
@@ -381,7 +383,9 @@ public class ChannelAdaptor
     public String getSocketFactory() {
         return getProperty(getProperties ("channel"), "socketFactory");
     }
-    
+    public void dump (PrintStream p, String indent) {
+        p.println (indent + getCountersAsString());
+    }
     private Space grabSpace (Element e) {
         return SpaceFactory.getSpace (e != null ? e.getText() : "");
     }
@@ -390,7 +394,5 @@ public class ChannelAdaptor
         sb.append (name);
         sb.append (value);
     }
-    
-
 }
 
