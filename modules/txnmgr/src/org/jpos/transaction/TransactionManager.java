@@ -103,6 +103,15 @@ public class TransactionManager
     public void queue (Serializable context) {
         sp.out (queue, context);
     }
+    public String getQueueName() {
+        return queue;
+    }
+    public Space getSpace() {
+        return this.sp;
+    }
+    public Space getPersistentSpace() {
+        return this.psp;
+    }
     public void run () {
         long id = 0;
         List members = null;
