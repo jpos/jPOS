@@ -286,11 +286,11 @@ public class QMUX
     }
     public String getCountersAsString () {
         StringBuffer sb = new StringBuffer();
-        append (sb, "rx=", rx);
-        append (sb, ", tx=", tx);
-        append (sb, ", rx_expired=", rxExpired);
+        append (sb, "tx=", tx);
+        append (sb, ", rx=", rx);
         append (sb, ", tx_expired=", txExpired);
         append (sb, ", tx_pending=", sp.size(out));
+        append (sb, ", rx_expired=", rxExpired);
         append (sb, ", rx_pending=", rxPending);
         append (sb, ", rx_unhandled=", rxUnhandled);
         append (sb, ", rx_forwarded=", rxForwarded);
