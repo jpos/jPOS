@@ -6,6 +6,7 @@
  */
 package org.jpos.iso;
 
+import java.io.PrintStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InterruptedIOException;
@@ -30,6 +31,7 @@ import org.jpos.core.ConfigurationException;
 import org.jpos.core.ReConfigurable;
 import org.jpos.util.LogEvent;
 import org.jpos.util.LogSource;
+import org.jpos.util.Loggeable;
 import org.jpos.util.Logger;
 import org.jpos.util.NameRegistrar;
 import org.jpos.util.ThreadPool;
@@ -41,7 +43,8 @@ import org.jpos.util.ThreadPool;
  * @version $Revision$ $Date$
  */
 public class ISOServer extends Observable 
-    implements LogSource, Runnable, Observer, ISOServerMBean, ReConfigurable
+    implements LogSource, Runnable, Observer, ISOServerMBean, ReConfigurable,
+    Loggeable
 {
     int port;
     ISOChannel clientSideChannel;
@@ -508,6 +511,29 @@ public class ISOServer extends Observable
             append (sb, ", connects=", counters[ISOChannel.CONNECT]);
         }
         return sb.toString();
+    }
+    public void dump (PrintStream p, String indent) {
+        p.println (indent + getCountersAsString());
+        Iterator iter = channels.entrySet().iterator();
+        String inner = indent + "  ";
+        for (int i=0; iter.hasNext(); i++) {
+            Map.Entry entry = (Map.Entry) iter.next();
+            WeakReference ref = (WeakReference) entry.getValue();
+            ISOChannel c = (ISOChannel) ref.get ();
+            if (c != null && !LAST.equals (entry.getKey()) && c.isConnected()) {
+                if (c instanceof BaseChannel) {
+                    StringBuffer sb = new StringBuffer ();
+                    int[] cc = ((BaseChannel)c).getCounters();
+                    sb.append (inner);
+                    sb.append (entry.getKey());
+                    sb.append (": rx=");
+                    sb.append (Integer.toString (cc[ISOChannel.RX]));
+                    sb.append (", tx=");
+                    sb.append (Integer.toString (cc[ISOChannel.TX]));
+                    p.println (sb.toString());
+                }
+            }
+        }
     }
     private void append (StringBuffer sb, String name, int value) {
         sb.append (name);
