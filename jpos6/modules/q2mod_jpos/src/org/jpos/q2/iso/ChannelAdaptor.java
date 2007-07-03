@@ -370,8 +370,8 @@ public class ChannelAdaptor
     }
     public String getCountersAsString () {
         StringBuffer sb = new StringBuffer();
-        append (sb, "rx=", rx);
-        append (sb, ", tx=", tx);
+        append (sb, "tx=", tx);
+        append (sb, ", rx=", rx);
         append (sb, ", connects=", connects);
         return sb.toString();
     }
