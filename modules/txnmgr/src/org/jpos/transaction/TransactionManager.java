@@ -88,11 +88,12 @@ public class TransactionManager
     public void stopService () throws Exception {
         NameRegistrar.unregister (getName ());
         long sessions = cfg.getLong ("sessions", 1);
-        for (int i=0; i<sessions; i++)
+        for (int i=0; i<sessions; i++) {
             sp.out (queue, this, 60*1000);
+        }
         for (int i=0; i<sessions; i++) {
             try {
-                threads[i].join (300*1000);
+                threads[i].join (60*1000);
             } catch (InterruptedException e) {
                 getLog().warn ("Session " +i +" does not response - attempting to interrupt");
                 threads[i].interrupt();
@@ -122,7 +123,7 @@ public class TransactionManager
         String threadName = Thread.currentThread().getName();
         getLog().info (threadName + " start");
         long startTime = 0L;
-        synchronized (this) {
+        synchronized (HEAD) { 
             activeSessions++;
         }
         while (running()) {
@@ -207,9 +208,10 @@ public class TransactionManager
             }
         }
         getLog().info (threadName + " stop");
-        synchronized (this) {
+        synchronized (HEAD) {
             activeSessions--;
         }
+        getLog().info ("stop " + Thread.currentThread() + ", active sessions=" + activeSessions);
     }
     public long getTail () {
         return tail;
