@@ -1,0 +1,5 @@
+<mux class="org.jpos.q2.iso.QMUX" logger="Q2" name="mux">
+ <in>receive</in>
+ <out>send</out>
+</mux>
+

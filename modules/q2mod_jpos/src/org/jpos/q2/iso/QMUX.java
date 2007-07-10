@@ -53,6 +53,7 @@ import java.io.PrintStream;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.TimerTask;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
@@ -73,6 +74,7 @@ import org.jpos.iso.ISORequestListener;
 import org.jpos.iso.ISOResponseListener;
 import org.jpos.iso.ISOException;
 import org.jpos.util.Loggeable;
+import org.jpos.util.DefaultTimer;
 import org.jpos.util.NameRegistrar;
 import org.jpos.util.NameRegistrar.NotFoundException;
 
@@ -183,8 +185,14 @@ public class QMUX
             try {
                 String key = getKey (m);
                 String req = key + ".req";
-                if (sp.inp (req) != null) {
-                    sp.out (key, m);
+                Object r = sp.inp (req);
+                if (r != null) {
+                    if (r instanceof AsyncRequest) {
+                        AsyncRequest ar = (AsyncRequest) r;
+                        ar.responseReceived (m);
+                    } else {
+                        sp.out (key, m);
+                    }
                     return;
                 }
             } catch (ISOException e) { 
@@ -257,10 +265,18 @@ public class QMUX
     public String getUnhandledQueue () {
         return unhandled;
     }
-    public void request (ISOMsg m, long timeout, ISOResponseListener r)
+    public void request (ISOMsg m, long timeout, ISOResponseListener rl)
         throws ISOException 
     {
-        throw new ISOException ("Not implemented yet");
+        String key = getKey (m);
+        String req = key + ".req";
+        m.setDirection(0);
+        AsyncRequest ar = new AsyncRequest (rl);
+        if (timeout > 0)
+            DefaultTimer.getTimer().schedule (ar, timeout);
+
+        sp.out (req, ar, timeout);
+        sp.out (out, m, timeout);
     }
     private void addListeners () 
         throws ConfigurationException
@@ -376,6 +392,32 @@ public class QMUX
     private void append (StringBuffer sb, String name, int value) {
         sb.append (name);
         sb.append (value);
+    }
+    public class AsyncRequest extends TimerTask {
+        ISOResponseListener rl;
+        public AsyncRequest (ISOResponseListener rl) {
+            super();
+            this.rl = rl;
+        }
+        public void responseReceived (ISOMsg response) {
+            ISOResponseListener _rl;
+            synchronized (this) {
+                _rl = rl;
+                rl = null;
+            }
+            if (_rl != null)
+                _rl.responseReceived (response);
+        }
+        public void run() {
+            cancel();
+            ISOResponseListener _rl;
+            synchronized (this) {
+                _rl = rl;
+                rl = null;
+            }
+            if (_rl != null)
+                _rl.expired();
+        }
     }
 }
 
