@@ -187,12 +187,10 @@ public class SpaceMUX extends SimpleLogSource
     public boolean isConnected () {
         return true;
     }
-    public void request (ISOMsg m, long timeout, ISOResponseListener r) 
+    public void request (ISOMsg m, long timeout, ISOResponseListener r, Object handBack) 
         throws ISOException 
     {
         throw new ISOException ("Not implemented");
-
     }
-
 }
 

@@ -25,6 +25,7 @@ public class QMUXTestCase extends TestCase implements ISOResponseListener {
     MUX mux;
     boolean expiredCalled;
     ISOMsg responseMsg;
+    Object receivedHandback;
 
     public void setUp () throws Exception {
         sp = SpaceFactory.getSpace();
@@ -42,9 +43,10 @@ public class QMUXTestCase extends TestCase implements ISOResponseListener {
         Thread.sleep (1000L);
         mux = (MUX) NameRegistrar.get ("mux.mux");
         assertNotNull ("MUX not found", mux);
+        receivedHandback = null;
     }
     public void testExpiredMessage() throws Exception {
-        mux.request (createMsg("000001"), 500L, this);
+        mux.request (createMsg("000001"), 500L, this, "Handback One");
         assertFalse ("expired called too fast", expiredCalled);
         assertNotNull ("Space doesn't contain message key", 
             sp.rdp ("send.080000000029110001000001.req")
@@ -54,9 +56,10 @@ public class QMUXTestCase extends TestCase implements ISOResponseListener {
         assertNull ("Cleanup failed, Space still contains message key", 
             sp.rdp ("send.080000000029110001000001.req")
         );
+        assertEquals ("Handback One not received", "Handback One", receivedHandback);
     }
     public void testAnsweredMessage() throws Exception {
-        mux.request (createMsg("000002"), 500L, this);
+        mux.request (createMsg("000002"), 500L, this, "Handback Two");
         assertFalse ("expired called too fast", expiredCalled);
         ISOMsg m = (ISOMsg) sp.in ("send", 500L);
         assertNotNull ("Message not received by pseudo-channel", m);
@@ -72,6 +75,7 @@ public class QMUXTestCase extends TestCase implements ISOResponseListener {
         assertNull ("Cleanup failed, Space still contains message key", 
             sp.rdp ("send.080000000029110001000002.req")
         );
+        assertEquals ("Handback Two not received", "Handback Two", receivedHandback);
     }
     public void tearDown() throws Exception {
         Thread.sleep (1500); // let the thing run
@@ -83,12 +87,13 @@ public class QMUXTestCase extends TestCase implements ISOResponseListener {
         m.set (41, "29110001"); // our favourite test terminal
         return m;
     }
-    public void responseReceived (ISOMsg m) {
+    public void responseReceived (ISOMsg m, Object handBack) {
         responseMsg = m;
+        receivedHandback = handBack;
     }
-    public void expired () {
+    public void expired (Object handBack) {
         expiredCalled=true;
+        receivedHandback = handBack;
     }
 }
-
 

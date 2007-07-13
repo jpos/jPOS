@@ -188,8 +188,7 @@ public class QMUX
                 Object r = sp.inp (req);
                 if (r != null) {
                     if (r instanceof AsyncRequest) {
-                        AsyncRequest ar = (AsyncRequest) r;
-                        ar.responseReceived (m);
+                        ((AsyncRequest) r).responseReceived (m);
                     } else {
                         sp.out (key, m);
                     }
@@ -265,13 +264,13 @@ public class QMUX
     public String getUnhandledQueue () {
         return unhandled;
     }
-    public void request (ISOMsg m, long timeout, ISOResponseListener rl)
+    public void request (ISOMsg m, long timeout, ISOResponseListener rl, Object handBack)
         throws ISOException 
     {
         String key = getKey (m);
         String req = key + ".req";
         m.setDirection(0);
-        AsyncRequest ar = new AsyncRequest (rl);
+        AsyncRequest ar = new AsyncRequest (rl, handBack);
         if (timeout > 0)
             DefaultTimer.getTimer().schedule (ar, timeout);
 
@@ -395,9 +394,11 @@ public class QMUX
     }
     public class AsyncRequest extends TimerTask {
         ISOResponseListener rl;
-        public AsyncRequest (ISOResponseListener rl) {
+        Object handBack;
+        public AsyncRequest (ISOResponseListener rl, Object handBack) {
             super();
             this.rl = rl;
+            this.handBack = handBack;
         }
         public void responseReceived (ISOMsg response) {
             ISOResponseListener _rl;
@@ -406,7 +407,7 @@ public class QMUX
                 rl = null;
             }
             if (_rl != null)
-                _rl.responseReceived (response);
+                _rl.responseReceived (response, handBack);
         }
         public void run() {
             cancel();
@@ -416,7 +417,7 @@ public class QMUX
                 rl = null;
             }
             if (_rl != null)
-                _rl.expired();
+                _rl.expired(handBack);
         }
     }
 }

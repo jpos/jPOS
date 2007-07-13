@@ -100,12 +100,10 @@ public class MUXPool extends QBeanSupport implements MUX {
         }
         return ss;
     }
-    public void request (ISOMsg m, long timeout, ISOResponseListener r) 
+    public void request (ISOMsg m, long timeout, ISOResponseListener r, Object handBack) 
         throws ISOException 
     {
         throw new ISOException ("Not implemented");
-
     }
-
 }
 

@@ -8,7 +8,7 @@
 package org.jpos.iso;
 
 public interface ISOResponseListener {
-    void responseReceived (ISOMsg resp);
-    void expired ();
+    void responseReceived (ISOMsg resp, Object handBack);
+    void expired (Object handBack);
 }
 
