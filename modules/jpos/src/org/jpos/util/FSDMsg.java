@@ -394,6 +394,10 @@ public class FSDMsg implements Loggeable {
     public String get (String fieldName) {
         return (String) fields.get (fieldName);
     }
+    public String get (String fieldName, String def) {
+        String s = (String) fields.get (fieldName);
+        return s != null ? s : def;
+    }
     public void copy (String fieldName, FSDMsg msg) {
         fields.put (fieldName, msg.get (fieldName));
     }
@@ -403,6 +407,13 @@ public class FSDMsg implements Loggeable {
     }
     public int getInt (String name) {
         int i = 0;
+        try {
+            i = Integer.parseInt (get (name));
+        } catch (Exception e) { }
+        return i;
+    }
+    public int getInt (String name, int def) {
+        int i = def;
         try {
             i = Integer.parseInt (get (name));
         } catch (Exception e) { }
