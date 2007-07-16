@@ -80,6 +80,7 @@ import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.PosixParser;
+import org.apache.commons.cli.MissingArgumentException;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
@@ -127,6 +128,7 @@ public class Q2 implements FileFilter {
     private String[] args;
     private boolean hasSystemLogger;
     private boolean exit;
+    private long startTime;
 
     public Q2 (String[] args) {
         super();
@@ -135,6 +137,7 @@ public class Q2 implements FileFilter {
         this.libDir     = new File (deployDir, "lib");
         this.dirMap     = new TreeMap ();
         deployDir.mkdirs ();
+        startTime = System.currentTimeMillis();
     }
     public void start () 
         throws MalformedObjectNameException,
@@ -200,6 +203,9 @@ public class Q2 implements FileFilter {
     }
     public void shutdown () {
         shutdown(false);
+    }
+    public boolean running() {
+        return !shutdown;
     }
     public void shutdown (boolean join) {
         shutdown = true;
@@ -476,7 +482,9 @@ public class Q2 implements FileFilter {
     public MBeanServer getMBeanServer () {
         return server;
     }
-
+    public long getUptime() {
+        return System.currentTimeMillis() - startTime;
+    }
     private void parseCmdLine (String[] args) {
         CommandLineParser parser = new PosixParser ();
 
@@ -486,6 +494,7 @@ public class Q2 implements FileFilter {
         options.addOption ("h","help", false, "Usage information");
         options.addOption ("c","config", true, "Configuration bundle");
         options.addOption ("e","encrypt", true, "Encrypt configuration bundle");
+        options.addOption ("i","cli", false, "Command Line Interface");
 
         try {
             CommandLine line = parser.parse (options, args);
@@ -498,6 +507,9 @@ public class Q2 implements FileFilter {
                 helpFormatter.printHelp ("Q2", options);
                 System.exit (0);
             } 
+            if (line.hasOption ("i")) 
+                new CLI(this);
+
             String dir = DEFAULT_DEPLOY_DIR;
             if (line.hasOption ("d")) {
                 dir = line.getOptionValue ("d");
@@ -507,6 +519,9 @@ public class Q2 implements FileFilter {
                 deployBundle (new File (line.getOptionValue ("c")), false);
             if (line.hasOption ("e"))
                 deployBundle (new File (line.getOptionValue ("e")), true);
+        } catch (MissingArgumentException e) {
+            System.out.println ("ERROR: " + e.getMessage());
+            System.exit (1);
         } catch (Exception e) {
             e.printStackTrace ();
             System.exit (1);
