@@ -1,0 +1,6 @@
+Usage: tail [log-name] [log-name] [log-name] ...
+
+ The tail command without arguments provides a list of registered loggers
+
+ type 'q' to quit.
+ 
