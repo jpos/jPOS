@@ -1,0 +1,8 @@
+Usage: shownr [-a] [object-name]
+
+If the -a is provided as a first argument, shownr 
+will dump the details of a registered Loggeable 
+object.
+
+If no object-name is specified, shownr will dump the
+whole content of the NameRegistrar.
