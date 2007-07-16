@@ -32,9 +32,10 @@
     <property name="nowarn" value="true"  />
     <property name="debug" value="on"/>
 
-    <patternset id="hbm.support.files">
+    <patternset id="support.files">
         <include name="**/*.hbm.xml"/>
         <include name="**/*.cfg.xml"/>
+        <include name="**/*.man"/>
         <include name="**/*.properties"/>
     </patternset>
 
@@ -168,6 +169,7 @@
           <include name="**/*.xml"/>
           <include name="**/*.properties"/>
           <include name="**/*.cfg"/>
+          <include name="**/*.man"/>
           <include name="**/cfg/**"/>
           <exclude name="**/cfg/_*" />
         </fileset>
@@ -263,11 +265,15 @@
         <filter filtersfile="${filter.properties}" />
         <copy todir="${classes.dir}" flatten="false" overwrite="true" filtering="true">
             <fileset dir="${build.src}">
-                <patternset refid="hbm.support.files"/>
+                <patternset refid="support.files"/>
             </fileset>
             <fileset dir="${build.cfg}">
                 <include name="hibernate.cfg.xml"/>
                 <include name="*.properties"/>
+            </fileset>
+            <fileset dir=".">
+                <include name="LICENSE"/>
+                <include name="COPYRIGHT"/>
             </fileset>
         </copy>
     </target>
