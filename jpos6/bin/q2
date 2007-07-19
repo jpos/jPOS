@@ -3,5 +3,5 @@
 cd `dirname $0`/../build || exit 1
 java -server \
     -Dcom.sun.management.jmxremote \
-    -jar jpos.jar $*
+    -jar jpos.jar "$*"
 
