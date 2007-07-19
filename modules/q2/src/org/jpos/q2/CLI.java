@@ -25,33 +25,41 @@ public class CLI extends Thread
     ConsoleReader reader;
     PrintStream out;
     Completor completor;
+    String line = null;
+    boolean keepRunning = false;
 
     private CLI() { }
 
-    public CLI (Q2 q2) throws IOException {
+    public CLI (Q2 q2, String line, boolean keepRunning) throws IOException {
         super();
         this.q2 = q2;
         reader = new ConsoleReader();
         reader.setBellEnabled(true);
         out = System.out;
+        this.line = line;
+        this.keepRunning = keepRunning;
         initCompletors();
         setName ("Q2-CLI");
-        start();
     }
 
     public void run() {
-        String line;
         try {
             while (q2.running()) {
-                reader.addCompletor(completor);
-                line = reader.readLine("q2> ");
-                reader.removeCompletor(completor);
+                if (line == null) {
+                    reader.addCompletor(completor);
+                    line = reader.readLine("q2> ");
+                    reader.removeCompletor(completor);
+                }
                 if (line != null) {
                     StringTokenizer st = new StringTokenizer (line, ";");
                     while (st.hasMoreTokens()) {
-                        execCommand (st.nextToken());
+                        String n = st.nextToken();
+                        execCommand (n);
                     }
+                    line = null;
                 }
+                if (!keepRunning)
+                    break;
             }
         } catch (IOException e) {
             e.printStackTrace (out);
