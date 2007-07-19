@@ -129,6 +129,7 @@ public class Q2 implements FileFilter {
     private boolean hasSystemLogger;
     private boolean exit;
     private long startTime;
+    private CLI cli;
 
     public Q2 (String[] args) {
         super();
@@ -179,6 +180,8 @@ public class Q2 implements FileFilter {
         addShutdownHook ();
         q2Thread = Thread.currentThread ();
         q2Thread.setContextClassLoader (loader);
+        if (cli != null)
+            cli.start();
         while (!shutdown) {
             try {
                 loader = loader.scan ();
@@ -492,9 +495,10 @@ public class Q2 implements FileFilter {
         options.addOption ("v","version", false, "Q2's version");
         options.addOption ("d","deploydir", true, "Deployment directory");
         options.addOption ("h","help", false, "Usage information");
-        options.addOption ("c","config", true, "Configuration bundle");
+        options.addOption ("C","config", true, "Configuration bundle");
         options.addOption ("e","encrypt", true, "Encrypt configuration bundle");
         options.addOption ("i","cli", false, "Command Line Interface");
+        options.addOption ("c","command", true, "Command to execute");
 
         try {
             CommandLine line = parser.parse (options, args);
@@ -507,16 +511,18 @@ public class Q2 implements FileFilter {
                 helpFormatter.printHelp ("Q2", options);
                 System.exit (0);
             } 
-            if (line.hasOption ("i")) 
-                new CLI(this);
+            if (line.hasOption ("c")) {
+                cli = new CLI(this, line.getOptionValue("c"), line.hasOption("i"));
+            } else if (line.hasOption ("i")) 
+                cli = new CLI(this, null, true);
 
             String dir = DEFAULT_DEPLOY_DIR;
             if (line.hasOption ("d")) {
                 dir = line.getOptionValue ("d");
             }
             this.deployDir  = new File (dir);
-            if (line.hasOption ("c"))
-                deployBundle (new File (line.getOptionValue ("c")), false);
+            if (line.hasOption ("C"))
+                deployBundle (new File (line.getOptionValue ("C")), false);
             if (line.hasOption ("e"))
                 deployBundle (new File (line.getOptionValue ("e")), true);
         } catch (MissingArgumentException e) {
