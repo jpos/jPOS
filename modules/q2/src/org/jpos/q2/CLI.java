@@ -12,6 +12,7 @@ import java.io.PrintStream;
 import java.util.List;
 import java.util.LinkedList;
 import java.util.StringTokenizer;
+import org.jpos.iso.ISOUtil;
 import jline.ConsoleReader;
 import jline.Completor;
 import jline.ClassNameCompletor;
@@ -113,7 +114,7 @@ public class CLI extends Thread
                 Object cmd = q2.getFactory().newInstance (className);
                 if (cmd instanceof Command) {
                     try {
-                        args[0] = line; // full line
+                        args[0] = ISOUtil.unPadLeft(line, ' '); // full line
                         ((Command) cmd).exec (this, args);
                     } catch (Exception ex) {
                         ex.printStackTrace (out);
