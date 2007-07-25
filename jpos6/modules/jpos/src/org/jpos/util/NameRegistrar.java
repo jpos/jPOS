@@ -123,7 +123,7 @@ public class NameRegistrar implements Loggeable {
     }
     public void dump (PrintStream p, String indent, boolean detail) {
         String inner = indent + "  ";
-        p.println (indent + "<name-registrar>");
+        p.println (indent + "--- name-registrar ---");
         synchronized (registrar) {
             Iterator iter = registrar.entrySet().iterator();
             while (iter.hasNext()) {
@@ -138,7 +138,6 @@ public class NameRegistrar implements Loggeable {
                 }
             }
         }
-        p.println (indent + "</name-registrar>");
     }
 }
 
