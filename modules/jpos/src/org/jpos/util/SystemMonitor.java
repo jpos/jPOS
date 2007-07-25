@@ -127,16 +127,16 @@ public class SystemMonitor implements Runnable, LogSource, Loggeable
     public void dump (PrintStream p, String indent) {
         String newIndent = indent + "  ";
         Runtime r = Runtime.getRuntime();
-        p.println (indent + "<memory>");
+        p.println (indent + "--- memory ---");
         p.println (newIndent+" freeMemory="+r.freeMemory());
         p.println (newIndent+"totalMemory="+r.totalMemory());
         p.println (newIndent+"inUseMemory="+(r.totalMemory()-r.freeMemory()));
-        p.println (indent + "</memory>");
-        p.println (indent + "<threads>");
+        p.println ("");
+        p.println (indent + "--- threads ---");
         p.println (newIndent+"      delay="+delay+" ms");
         p.println (newIndent+"    threads="+Thread.activeCount());
         showThreadGroup (Thread.currentThread().getThreadGroup(), p, newIndent);
-        p.println (indent + "</threads>");
+        p.println ("");
         NameRegistrar.getInstance().dump (p, indent);
     }
     public void setLogger (Logger logger, String realm) {
