@@ -97,6 +97,34 @@ public class SimpleConfiguration implements Configuration {
 
         return ret;
     }
+    synchronized public int[] getInts (String name) {
+        String[] ss = getAll (name);
+        int[] ii = new int[ss.length];
+        for (int i=0; i<ss.length; i++)
+            ii[i] = Integer.parseInt(ss[i].trim());
+        return ii;
+    }
+    synchronized public long[] getLongs (String name) {
+        String[] ss = getAll (name);
+        long[] ll = new long[ss.length];
+        for (int i=0; i<ss.length; i++)
+            ll[i] = Long.parseLong(ss[i].trim());
+        return ll;
+    }
+    synchronized public double[] getDoubles (String name) {
+        String[] ss = getAll (name);
+        double[] dd = new double[ss.length];
+        for (int i=0; i<ss.length; i++)
+            dd[i] = Double.valueOf(ss[i].trim());
+        return dd;
+    }
+    synchronized public boolean[] getBooleans (String name) {
+        String[] ss = getAll (name);
+        boolean[] bb = new boolean[ss.length];
+        for (int i=0; i<ss.length; i++)
+            bb[i] = ss[i].equalsIgnoreCase("true") || ss[i].equalsIgnoreCase("yes");
+        return bb;
+    }
     synchronized public String get (String name) {
         return get (name, "");
     }
