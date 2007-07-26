@@ -99,6 +99,18 @@ public class SubConfiguration implements Configuration{
     public String[] getAll(String propertyName){
         return cfg.getAll(prefix + propertyName);
     }
+    public int[] getInts (String propertyName) {
+        return cfg.getInts (prefix + propertyName);
+    }
+    public long[] getLongs (String propertyName) {
+        return cfg.getLongs (prefix + propertyName);
+    }
+    public double[] getDoubles (String propertyName) {
+        return cfg.getDoubles (prefix + propertyName);
+    }
+    public boolean[] getBooleans (String propertyName) {
+        return cfg.getBooleans(prefix + propertyName);
+    }
     public String get(String propertyName, String defaultValue){
         return cfg.get(prefix + propertyName, defaultValue);
     }
