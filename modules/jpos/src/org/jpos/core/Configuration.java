@@ -66,6 +66,10 @@ public interface Configuration {
      * @return all properties with a given name (or a zero length string)
      */
     public String[] getAll  (String propertyName);
+    public int[] getInts  (String propertyName);
+    public long[] getLongs (String propertyName);
+    public double[] getDoubles (String propertyName);
+    public boolean[] getBooleans (String propertyName);
     public String get       (String propertyName, String defaultValue);
     public int getInt       (String propertyName);
     public int getInt       (String propertyName, int defaultValue);
