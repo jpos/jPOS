@@ -8,11 +8,11 @@
 package org.jpos.util;
 
 /**
- * TrafficControl can be used to limit the throughput 
+ * ThroughputControl can be used to limit the throughput 
  * of a system to a maximum number of transactions in 
  * a given period of time.
  */
-public class TrafficControl {
+public class ThroughputControl {
     private int[] period;
     private int[] max;
     private int[] cnt;
@@ -23,7 +23,7 @@ public class TrafficControl {
      * @param maxTransactions ditto
      * @param periodInMillis ditto
      */
-    public TrafficControl (int maxTransactions, int periodInMillis) {
+    public ThroughputControl (int maxTransactions, int periodInMillis) {
         this (new int[] { maxTransactions },
               new int[] { periodInMillis });
     }
@@ -31,7 +31,7 @@ public class TrafficControl {
      * @param maxTransactions ditto
      * @param periodInMillis ditto
      */
-    public TrafficControl (int[] maxTransactions, int[] periodInMillis) {
+    public ThroughputControl (int[] maxTransactions, int[] periodInMillis) {
         super();
         int l = maxTransactions.length;
         period = new int[l];

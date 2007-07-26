@@ -3,9 +3,9 @@ package org.jpos.util;
 import junit.framework.*;
 
 
-public class TrafficControlTestCase extends TestCase {
+public class ThroughputControlTestCase extends TestCase {
     public void testSingleThread () throws Exception {
-        TrafficControl tc = new TrafficControl (2, 1000);
+        ThroughputControl tc = new ThroughputControl (2, 1000);
         long start = System.currentTimeMillis();
         tc.control(); 
         assertTrue (
@@ -29,7 +29,7 @@ public class TrafficControlTestCase extends TestCase {
         );
     }
     public void testFifty () throws Exception {
-        TrafficControl tc = new TrafficControl (10, 1000);
+        ThroughputControl tc = new ThroughputControl (10, 1000);
         long start = System.currentTimeMillis();
         for (int i=0; i<50; i++)
             tc.control();
@@ -45,7 +45,7 @@ public class TrafficControlTestCase extends TestCase {
         );
     }
     public void testDualPeriod () throws Exception {
-        TrafficControl tc = new TrafficControl (
+        ThroughputControl tc = new ThroughputControl (
             new int[] { 100, 150 }, 
             new int[] { 1000, 5000 }
         );
@@ -68,7 +68,7 @@ public class TrafficControlTestCase extends TestCase {
         );
     }
     public void testMultiThread() throws Exception {
-        final TrafficControl tc = new TrafficControl (2, 1000);
+        final ThroughputControl tc = new ThroughputControl (2, 1000);
         long start = System.currentTimeMillis();
         Thread[] t = new Thread[10];
         for (int i=0; i<10; i++) {
