@@ -115,7 +115,7 @@ public class SimpleConfiguration implements Configuration {
         String[] ss = getAll (name);
         double[] dd = new double[ss.length];
         for (int i=0; i<ss.length; i++)
-            dd[i] = Double.valueOf(ss[i].trim());
+            dd[i] = Double.valueOf(ss[i].trim()).doubleValue();
         return dd;
     }
     synchronized public boolean[] getBooleans (String name) {
