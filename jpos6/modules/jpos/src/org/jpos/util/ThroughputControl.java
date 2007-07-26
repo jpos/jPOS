@@ -50,14 +50,19 @@ public class ThroughputControl {
     /**
      * control should be called on every transaction.
      * it may sleep for a while in order to control the system throughput
+     * 
+     * @return aprox sleep time or zero if no sleep
      */
-    public void control() {
+    public long control() {
+        boolean delayed = false;
+        long init = System.currentTimeMillis();
         for (int i=0; i<cnt.length; i++) {
             synchronized (this) {
                 cnt[i]++;
             }
             do {
                 if (cnt[i] > max[i]) {
+                    delayed = true;
                     try { 
                         Thread.sleep (sleep[i]); 
                     } catch (InterruptedException e) { }
@@ -73,6 +78,7 @@ public class ThroughputControl {
                 }
             } while (cnt[i] > max[i]);
         }
+        return delayed ? (System.currentTimeMillis() - init) : 0L;
     }
 }
 
