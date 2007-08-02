@@ -411,6 +411,26 @@ public class ISOMsg extends ISOComponent
         return s;
     }
     /**
+     * Return the byte[] value associated with the given ISOField number
+     * @param fldno the Field Number
+     * @return field's byte[] value
+     */
+    public byte[] getBytes (int fldno) {
+        byte[] b = null;
+        if (hasField (fldno)) {
+            try {
+                Object obj = getValue(fldno);
+                if (obj instanceof String)
+                    b = ((String) obj).getBytes();
+                else if (obj instanceof byte[])
+                    b = ((byte[]) obj);
+            } catch (ISOException e) {
+                // ignore ISOException - return null
+            }
+        }
+        return b;
+    }
+    /**
      * Check if a given field is present
      * @param fldno the Field Number
      * @return boolean indicating the existence of the field
