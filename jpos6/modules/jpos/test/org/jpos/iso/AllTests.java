@@ -74,6 +74,7 @@ public class AllTests
         suite.addTest(new TestSuite(IFE_AMOUNTTest.class));
         suite.addTest(new TestSuite(IFB_LLLHCHARTest.class));
         suite.addTest(new TestSuite(SignedEbcdicNumberInterpreterTest.class));
+        suite.addTest(new TestSuite(ISOMsgTest.class));
         //suite.addTest(new TestSuite(IFEB_LLLNUMTest.class));
         //suite.addTest(new TestSuite(IFEB_LLNUMTest.class));
         //suite.addTest(new TestSuite(IFEP_LLCHARTest.class));
