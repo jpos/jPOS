@@ -87,12 +87,15 @@ public class QMUX
     extends QBeanSupport
     implements SpaceListener, MUX, QMUXMBean, Loggeable
 {
+    final String nomap = "0123456789";
     protected LocalSpace sp;
     protected String in, out, unhandled;
     protected String[] ready;
     protected String spaceName;
     protected int[] key;
     protected String ignorerc;
+    protected String[] mtiMapping = new String[] { nomap, nomap, "0022456789", nomap };
+
     List listeners;
     int rx, tx, rxExpired, txExpired, rxPending, rxUnhandled, rxForwarded;
     public QMUX () {
@@ -204,7 +207,7 @@ public class QMUX
     protected String getKey (ISOMsg m) throws ISOException {
         StringBuffer sb = new StringBuffer (out);
         sb.append ('.');
-        sb.append (m.getMTI().substring(0,2));
+        sb.append (mapMTI(m.getMTI()));
         for (int i=0; i<key.length; i++) {
             int f = key[i];
             String v = m.getString(f);
@@ -214,6 +217,18 @@ public class QMUX
                 else if (f == 11) 
                     v = ISOUtil.zeropad (v.trim(), 6); 
                 sb.append (v);
+            }
+        }
+        return sb.toString();
+    }
+    private String mapMTI (String mti) {
+        StringBuffer sb = new StringBuffer();
+        if (mti != null && mti.length() == 4) {
+            for (int i=0; i<mti.length(); i++) {
+                char c = mti.charAt (i);
+                if (Character.isDigit(c)) {
+                    sb.append (mtiMapping[i].charAt(c));
+                }
             }
         }
         return sb.toString();
