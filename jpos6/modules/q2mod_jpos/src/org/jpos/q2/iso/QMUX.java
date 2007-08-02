@@ -95,7 +95,6 @@ public class QMUX
     protected int[] key;
     protected String ignorerc;
     protected String[] mtiMapping = new String[] { nomap, nomap, "0022456789", nomap };
-
     List listeners;
     int rx, tx, rxExpired, txExpired, rxPending, rxUnhandled, rxForwarded;
     public QMUX () {
@@ -225,10 +224,9 @@ public class QMUX
         StringBuffer sb = new StringBuffer();
         if (mti != null && mti.length() == 4) {
             for (int i=0; i<mti.length(); i++) {
-                char c = mti.charAt (i);
-                if (Character.isDigit(c)) {
+                int c = mti.charAt (i) - '0';
+                if (c >= 0 && c < 10) 
                     sb.append (mtiMapping[i].charAt(c));
-                }
             }
         }
         return sb.toString();

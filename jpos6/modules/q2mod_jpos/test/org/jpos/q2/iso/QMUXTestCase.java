@@ -49,12 +49,12 @@ public class QMUXTestCase extends TestCase implements ISOResponseListener {
         mux.request (createMsg("000001"), 500L, this, "Handback One");
         assertFalse ("expired called too fast", expiredCalled);
         assertNotNull ("Space doesn't contain message key", 
-            sp.rdp ("send.080000000029110001000001.req")
+            sp.rdp ("send.08000000000029110001000001.req")
         );
         Thread.sleep (1000L);
         assertTrue ("expired has not been called after 1 second", expiredCalled);
         assertNull ("Cleanup failed, Space still contains message key", 
-            sp.rdp ("send.080000000029110001000001.req")
+            sp.rdp ("send.08000000000029110001000001.req")
         );
         assertEquals ("Handback One not received", "Handback One", receivedHandback);
     }
@@ -64,7 +64,7 @@ public class QMUXTestCase extends TestCase implements ISOResponseListener {
         ISOMsg m = (ISOMsg) sp.in ("send", 500L);
         assertNotNull ("Message not received by pseudo-channel", m);
         assertNotNull ("Space doesn't contain message key", 
-            sp.rdp ("send.080000000029110001000002.req")
+            sp.rdp ("send.08000000000029110001000002.req")
         );
         m.setResponseMTI();
         sp.out ("receive", m);
@@ -73,7 +73,7 @@ public class QMUXTestCase extends TestCase implements ISOResponseListener {
         Thread.sleep (1000L);
         assertFalse ("Response received but expired was called", expiredCalled);
         assertNull ("Cleanup failed, Space still contains message key", 
-            sp.rdp ("send.080000000029110001000002.req")
+            sp.rdp ("send.08000000000029110001000002.req")
         );
         assertEquals ("Handback Two not received", "Handback Two", receivedHandback);
     }
