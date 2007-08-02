@@ -7,7 +7,7 @@ public class ThroughputControlTestCase extends TestCase {
     public void testSingleThread () throws Exception {
         ThroughputControl tc = new ThroughputControl (2, 1000);
         long start = System.currentTimeMillis();
-        tc.control(); 
+        assertTrue ("Control should return 0L", tc.control() == 0L);
         assertTrue (
             "Elapsed time should be less than one second", 
             System.currentTimeMillis() - start < 1000L
