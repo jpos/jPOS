@@ -130,6 +130,7 @@ public class Q2 implements FileFilter {
     private boolean exit;
     private long startTime;
     private CLI cli;
+    private boolean recursive;
 
     public Q2 (String[] args) {
         super();
@@ -237,13 +238,14 @@ public class Q2 implements FileFilter {
         return args;
     }
     public boolean accept (File f) {
-        return f.getName().endsWith (".xml");
+        return f.canRead() && 
+            (f.getName().endsWith (".xml") || 
+             (recursive && f.isDirectory() && !"lib".equalsIgnoreCase (f.getName())));
     }
     public File getDeployDir () {
         return deployDir;
     }
     private void scan () {
-        
             File file[] = deployDir.listFiles (this);
             // Arrays.sort (file); --apr not required - we use TreeMap
             if (file == null) {
@@ -385,27 +387,31 @@ public class Q2 implements FileFilter {
         QEntry qentry = (QEntry) dirMap.get (f);
         try {
             if (log != null)
-                log.trace ("undeploying:" + f.getName());
+                log.trace ("undeploying:" + f.getCanonicalPath());
 
             Object obj      = qentry.getObject ();
             ObjectName name = qentry.getObjectName ();
             factory.destroyQBean (this, name, obj);
             if (log != null)
-                log.info ("undeployed:" + f.getName());
+                log.info ("undeployed:" + f.getCanonicalPath());
         } catch (Exception e) {
             getLog().warn ("undeploy", e);
         }
     }
 
     private void register (File f) {
-        if (dirMap.get (f) == null)
+        if (f.isDirectory()) {
+            File file[] = f.listFiles (this);
+            for (int i=0; i<file.length; i++)
+                register (file[i]);
+        } else if (dirMap.get (f) == null)
             dirMap.put (f, new QEntry ());
     }
 
     private boolean deploy (File f) {
         try {
             if (log != null)
-                log.info ("deploy:" + f.getName());
+                log.info ("deploy:" + f.getCanonicalPath());
             QEntry qentry = (QEntry) dirMap.get (f);
             SAXBuilder builder = new SAXBuilder ();
             Document doc = decrypt (builder.build (f));
@@ -494,6 +500,7 @@ public class Q2 implements FileFilter {
         Options options = new Options ();
         options.addOption ("v","version", false, "Q2's version");
         options.addOption ("d","deploydir", true, "Deployment directory");
+        options.addOption ("r","recursive", false, "Deploy subdirectories recursively");
         options.addOption ("h","help", false, "Usage information");
         options.addOption ("C","config", true, "Configuration bundle");
         options.addOption ("e","encrypt", true, "Encrypt configuration bundle");
@@ -520,6 +527,7 @@ public class Q2 implements FileFilter {
             if (line.hasOption ("d")) {
                 dir = line.getOptionValue ("d");
             }
+            recursive = line.hasOption ("r");
             this.deployDir  = new File (dir);
             if (line.hasOption ("C"))
                 deployBundle (new File (line.getOptionValue ("C")), false);
