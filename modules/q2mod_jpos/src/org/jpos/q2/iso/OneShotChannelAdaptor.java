@@ -40,6 +40,7 @@ import org.jdom.Element;
  *     ...<br>
  *   &lt;/channel&gt;<br>
  *   &lt;max-connections&gt;5&lt;/max-connections&gt;<br>
+ *   &lt;max-connect-attempts&gt;15&lt;/max-connect-attempts&gt;<br>
  *   &lt;in&gt;send&lt;/in&gt;<br>
  *   &lt;out&gt;receive&lt;/out&gt;<br>
  * &lt;/client&gt;<br>
@@ -59,6 +60,7 @@ public class OneShotChannelAdaptor
     String in, out;
     long delay;
     int maxConnections;
+    int maxConnectAttempts;
     public OneShotChannelAdaptor () {
         super ();
     }
@@ -76,6 +78,8 @@ public class OneShotChannelAdaptor
 
         String s = persist.getChildTextTrim ("max-connections");
         maxConnections = (s!=null) ? Integer.parseInt(s) : 1;  // reasonable default
+        s = persist.getChildTextTrim ("max-connect-attempts");
+        maxConnectAttempts = (s!=null) ? Integer.parseInt(s) : 15;  // reasonable default
     }
     public void startService () {
         try {
@@ -149,13 +153,20 @@ public class OneShotChannelAdaptor
                 try {
                     Object o = sp.in (in, delay);
                     if (o instanceof ISOMsg) {
-                        channel.reconnect();
-                        channel.send ((ISOMsg) o);
-                        ISOMsg m = channel.receive();
-                        channel.disconnect();
-                        sp.out (out, m);
+                        for (int i=0; !channel.isConnected() 
+                                && i<maxConnectAttempts; i++) 
+                        {
+                            channel.reconnect();
+                            if (!channel.isConnected())
+                                ISOUtil.sleep (1000L);
+                        }
+                        if (channel.isConnected()) {
+                            channel.send ((ISOMsg) o);
+                            ISOMsg m = channel.receive();
+                            channel.disconnect();
+                            sp.out (out, m);
+                        }
                     }
-
                 } catch (Exception e) { 
                     getLog().warn ("channel-worker-"+id, e.getMessage ());
                     ISOUtil.sleep (1000);
