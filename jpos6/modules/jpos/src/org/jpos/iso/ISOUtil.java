@@ -889,7 +889,7 @@ public class ISOUtil {
             return (new Character( c )).toString();
         else if ( (s.trim().length() == 0) )
             return s;
-        s = s.trim();
+        // s = s.trim();
         int end = s.length();
         while ( ( 0 < end) && (s.charAt(end-1) == c) ) end --;
         return ( 0 < end )? s.substring( 0, end ): s.substring( 0, 1 );
@@ -907,7 +907,7 @@ public class ISOUtil {
             return (new Character( c )).toString();
         else if ( (s.trim().length() == 0) )
             return s;
-        s = s.trim();
+        // s = s.trim();
         int fill = 0, end = s.length();
         while ( (fill < end) && (s.charAt(fill) == c) ) fill ++;
         return ( fill < end )? s.substring( fill, end ): s.substring( fill-1, end );
