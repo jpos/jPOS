@@ -878,37 +878,29 @@ public class ISOUtil {
     }
 
     /**
-     * Unpad from right. In case the string to be returned
-     * is empty, the result is c
+     * Unpad from right. 
      * @param s - original string
      * @param c - padding char
      * @return unPadded string.
      */
     public static String unPadRight(String s, char c) {
-        if ( (s.trim().length() == 0) && (c == ' ') )
-            return (new Character( c )).toString();
-        else if ( (s.trim().length() == 0) )
-            return s;
-        // s = s.trim();
         int end = s.length();
+        if (end == 0)
+            return s;
         while ( ( 0 < end) && (s.charAt(end-1) == c) ) end --;
         return ( 0 < end )? s.substring( 0, end ): s.substring( 0, 1 );
     }
 
     /**
-     * Unpad from left. In case the string to be returned
-     * is empty, the result is c
+     * Unpad from left. 
      * @param s - original string
      * @param c - padding char
      * @return unPadded string.
      */
     public static String unPadLeft(String s, char c) {
-        if ( (s.trim().length() == 0) && (c == ' ') )
-            return (new Character( c )).toString();
-        else if ( (s.trim().length() == 0) )
-            return s;
-        // s = s.trim();
         int fill = 0, end = s.length();
+        if (end == 0)
+            return s;
         while ( (fill < end) && (s.charAt(fill) == c) ) fill ++;
         return ( fill < end )? s.substring( fill, end ): s.substring( fill-1, end );
     }
