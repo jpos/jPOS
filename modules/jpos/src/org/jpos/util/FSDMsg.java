@@ -82,6 +82,7 @@ public class FSDMsg implements Loggeable {
     public static char US = '\037';
     public static char RS = '\035';
     public static char GS = '\036';
+    public static char EOF = '\000';
     
     Map fields;
     Map separators;
@@ -112,7 +113,7 @@ public class FSDMsg implements Loggeable {
         setSeparator("US", US);
         setSeparator("GS", GS);
         setSeparator("RS", RS);
-        
+        setSeparator("EOF", EOF);
     }
     public String getBasePath() {
         return basePath;
@@ -233,7 +234,7 @@ public class FSDMsg implements Loggeable {
                 }
                 break;
         }
-        return (isSeparated(type)) ? value.trim() : value;
+        return (isSeparated(type)) ? ISOUtil.blankUnPad(value) : value;
     }
     
     private boolean isSeparated(String type) {
@@ -265,9 +266,8 @@ public class FSDMsg implements Loggeable {
     
     private String getSeparatorType(String type) {
         if (type.length() > 2) {
-            return type.substring(type.length()-2);
+            return type.substring(1);
         }
-        
         return null;
     }
     
@@ -295,7 +295,9 @@ public class FSDMsg implements Loggeable {
             sb.append (value);
             
             if (isSeparated(type)) {
-                sb.append(getSeparator(type));
+                char c = getSeparator(type);
+                if (c > 0)
+                    sb.append(c);
             }
             if (key) 
                 keyOff = keyOff + value;
@@ -347,20 +349,26 @@ public class FSDMsg implements Loggeable {
         byte[] b = new byte[1];
         boolean expectSeparator = isSeparated(type);
         boolean separated = expectSeparator;
-        
+
         for (int i=0; i<len; i++) {
-            if (is.read (b) < 0)
-                throw new EOFException ();
-            
+            if (is.read (b) < 0) {
+                if (!type.endsWith("EOF"))
+                    throw new EOFException ();
+                else {
+                    separated = false;
+                    break;
+                }
+            }
             if (expectSeparator && (b[0] == getSeparator(type))) {
                 separated = false;
                 break;
             }
             sb.append ((char) (b[0] & 0xff));
         }
-        if (separated) {
-            if (is.read (b) < 0)
+        if (separated && !type.endsWith("EOF")) {
+            if (is.read (b) < 0) {
                 throw new EOFException ();
+            }
         }
         return sb.toString ();
     }
@@ -459,7 +467,7 @@ public class FSDMsg implements Loggeable {
                     if (f.exists()) {
                         schema = builder.build (url).getRootElement ();
                     } else {
-                        throw new RuntimeException("File("+uri+") determined by key definition must exists");
+                        throw new RuntimeException(f.getCanonicalPath().toString() + " not found");
                     }
                 }
                 sp.out (uri, schema);

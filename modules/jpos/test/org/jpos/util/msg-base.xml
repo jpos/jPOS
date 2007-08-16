@@ -1,0 +1,5 @@
+<schema id='fsdmsg-test'>
+ <field id="testafs" type="AFS"    length="6" />
+ <field id="finalfield" type="AEOF"   length="10" />
+</schema>
+
