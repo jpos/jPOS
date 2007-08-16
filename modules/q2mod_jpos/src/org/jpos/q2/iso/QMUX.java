@@ -414,6 +414,7 @@ public class QMUX
             this.handBack = handBack;
         }
         public void responseReceived (ISOMsg response) {
+            cancel();
             ISOResponseListener _rl;
             synchronized (this) {
                 _rl = rl;
