@@ -104,6 +104,9 @@ public class TransactionManager
     public void queue (Serializable context) {
         sp.out (queue, context);
     }
+    public void push (Serializable context) {
+        sp.push (queue, context);
+    }
     public String getQueueName() {
         return queue;
     }
