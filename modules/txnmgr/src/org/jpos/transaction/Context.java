@@ -247,7 +247,7 @@ public class Context implements Externalizable, Loggeable, Pausable {
         PausedTransaction pt = getPausedTransaction();
         if (pt != null && !pt.isResumed()) {
             pt.setResumed (true);
-            pt.getTransactionManager().queue(this);
+            pt.getTransactionManager().push (this);
         }
     }
     static final long serialVersionUID = 6056487212221438338L;
