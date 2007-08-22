@@ -210,6 +210,45 @@ public class JDBMSpace extends TimerTask implements Space {
             throw new SpaceError (e);
         }
     }
+    public void push (Object key, Object value) {
+        push (key, value, -1);
+    }
+    /**
+     * Write a new entry into the Space at the head of a queue
+     * The entry will timeout after the specified period
+     * @param key Entry's key
+     * @param value Object value
+     * @param timeout entry timeout in millis
+     */
+    public void push (Object key, Object value, long timeout) {
+        if (key == null || value == null)
+            throw new NullPointerException ("key=" + key + ", value=" + value);
+        try {
+            synchronized (this) {
+                long recid = recman.insert (value);
+                long expiration = timeout == -1 ? Long.MAX_VALUE :
+                    (System.currentTimeMillis() + timeout);
+                Ref dataRef = new Ref (recid, expiration);
+
+                Head head = (Head) htree.get (key);
+                if (head == null) {
+                    head = new Head ();
+                    head.first = head.last = recman.insert (dataRef, refSerializer);
+                } else {
+                    dataRef.next = head.first;
+                    head.first   = recman.insert (dataRef, refSerializer);
+                }
+                head.count++;
+                htree.put (key, head);
+                if (autoCommit) {
+                    recman.commit ();
+                    this.notifyAll ();
+                }
+            }
+        } catch (IOException e) {
+            throw new SpaceError (e);
+        }
+    }
     /**
      * Read probe reads an entry from the space if one exists, 
      * return null otherwise.

@@ -314,5 +314,11 @@ public class TransientSpace implements LocalSpace, TransientSpaceMBean {
         Data data  = (Data) map.get (key);
         return data == null ? 0 : data.size ();
     }
+    public void push (Object id, Object value) {
+        throw new SpaceError ("Unsupported operation");
+    }
+    public void push (Object id, Object value, long timeout) {
+        throw new SpaceError ("Unsupported operation");
+    }
 }
 

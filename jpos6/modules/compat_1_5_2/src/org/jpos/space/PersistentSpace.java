@@ -396,4 +396,10 @@ public class PersistentSpace implements LocalSpace // PersistentSpaceMBean {
         Object o = inp (key);
         return (o != null) ? o.toString() : "null";
     }
+    public void push (Object id, Object value) {
+        throw new SpaceError ("Unsupported operation");
+    }
+    public void push (Object id, Object value, long timeout) {
+        throw new SpaceError ("Unsupported operation");
+    }
 }

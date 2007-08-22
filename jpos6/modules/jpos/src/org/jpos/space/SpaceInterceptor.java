@@ -67,6 +67,12 @@ public class SpaceInterceptor implements Space {
     public void out (Object key, Object value, long timeout) {
         sp.out (key, value, timeout);
     }
+    public void push (Object key, Object value) {
+        sp.push (key, value);
+    }
+    public void push (Object key, Object value, long timeout) {
+        sp.push (key, value, timeout);
+    }
     public Object in  (Object key) {
         return sp.in (key);
     }

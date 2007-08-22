@@ -115,6 +115,12 @@ public class TinySpace implements Space, Serializable {
         }
         return obj;
     }
+    public void push (Object id, Object value) {
+        throw new SpaceError ("Unsupported operation");
+    }
+    public void push (Object id, Object value, long timeout) {
+        throw new SpaceError ("Unsupported operation");
+    }
     protected static final class Data {
         LinkedList data;
 

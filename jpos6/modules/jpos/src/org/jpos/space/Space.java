@@ -137,5 +137,20 @@ public interface Space {
      * @return value or null
      */
     public Object rdp (Object key);
+
+    /**
+     * Write a new entry at the head of a queue.
+     * @param key Entry's key
+     * @param value Object value
+     */
+    public void push (Object key, Object value);
+
+    /**
+     * Write a new entry at the head of the queue with a timeout value
+     * @param key Entry's key
+     * @param value Object value
+     * @param timeout timeout value
+     */
+    public void push (Object key, Object value, long timeout);
 }
 

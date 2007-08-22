@@ -203,6 +203,28 @@ public class TSpace extends TimerTask implements LocalSpace, Loggeable {
             }
         }
     }
+    public synchronized void push (Object key, Object value) {
+        if (key == null || value == null)
+            throw new NullPointerException ("key=" + key + ", value=" + value);
+        getList (key).add (0, value);
+        this.notifyAll ();
+        if (sl != null)
+            notifyListeners(key, value);
+    }
+    public void push (Object key, Object value, long timeout) {
+        if (key == null || value == null)
+            throw new NullPointerException ("key=" + key + ", value=" + value);
+        if (timeout > 0) {
+            value   = new Expirable (value, 
+               System.currentTimeMillis() + timeout);
+        }
+        synchronized (this) {
+            getList (key).add (0, value);
+            this.notifyAll ();
+        }
+        if (sl != null)
+            notifyListeners(key, value);
+    }
     private List getList (Object key) {
         List l = (List) entries.get (key);
         if (l == null) 
