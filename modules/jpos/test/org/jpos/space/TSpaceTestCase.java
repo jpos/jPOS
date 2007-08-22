@@ -160,6 +160,19 @@ public class TSpaceTestCase extends TestCase implements SpaceListener {
         assertEquals (sp.inp ("TestDelayNotify_Key"), "OLD");
         assertEquals (sp.inp ("TestDelayNotify_Key"), "NEW");
     }
+    public void testPush() {
+        sp.push ("PUSH", "ONE");
+        sp.push ("PUSH", "TWO");
+        sp.push ("PUSH", "THREE");
+        sp.out  ("PUSH", "FOUR");
+
+        assertEquals ("THREE", sp.rdp ("PUSH"));
+        assertEquals ("THREE", sp.inp ("PUSH"));
+        assertEquals ("TWO", sp.inp ("PUSH"));
+        assertEquals ("ONE", sp.inp ("PUSH"));
+        assertEquals ("FOUR", sp.inp ("PUSH"));
+        assertNull (sp.rdp ("PUSH"));
+    }
     public void notify (Object key, Object value) {
         this.notifiedValue = value;
     }

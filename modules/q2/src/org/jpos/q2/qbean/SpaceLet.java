@@ -67,6 +67,7 @@ public class SpaceLet extends QBeanSupport implements Space {
     Space sp;
     String uri;
     String outScript, outSource;
+    String pushScript, pushSource;
     String inScript, inSource;
     String rdScript, rdSource;
 
@@ -84,6 +85,11 @@ public class SpaceLet extends QBeanSupport implements Space {
         outScript = getScript (e);
         if (e != null)
             outSource = e.getAttributeValue ("source");
+
+        e = config.getChild ("push");
+        pushScript = getScript (e);
+        if (e != null)
+            pushSource = e.getAttributeValue ("source");
 
         e = config.getChild ("in");
         inScript = getScript (e);
@@ -127,6 +133,29 @@ public class SpaceLet extends QBeanSupport implements Space {
             throw new SpaceError (t);
         }
     }
+    public void push (Object key, Object value) {
+        try {
+            Interpreter bsh = initInterpreter (key, value);
+            synchronized (sp) {
+                if (!eval (bsh, pushScript, pushSource))
+                    sp.out (key, value);
+            }
+        } catch (Throwable t) {
+            throw new SpaceError (t);
+        }
+    }
+    public void push (Object key, Object value, long timeout) {
+        try {
+            Interpreter bsh = initInterpreter (key, value, timeout);
+            synchronized (sp) {
+                if (!eval (bsh, pushScript, pushSource))
+                    sp.out (key, value, timeout);
+            }
+        } catch (Throwable t) {
+            throw new SpaceError (t);
+        }
+    }
+
 
     public Object in  (Object key) {
         try {

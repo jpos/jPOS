@@ -108,5 +108,17 @@ public class JDBMSpaceTestCase extends TestCase {
         assertEquals ("Value 1", (String) sp.inp (key));
         assertEquals ("Value 3", (String) sp.inp (key));
     }
+    public void testPush() {
+        sp.push ("PUSH", "ONE");
+        sp.push ("PUSH", "TWO");
+        sp.push ("PUSH", "THREE");
+        sp.out  ("PUSH", "FOUR");
+        assertEquals ("THREE", sp.rdp ("PUSH"));
+        assertEquals ("THREE", sp.inp ("PUSH"));
+        assertEquals ("TWO", sp.inp ("PUSH"));
+        assertEquals ("ONE", sp.inp ("PUSH"));
+        assertEquals ("FOUR", sp.inp ("PUSH"));
+        assertNull (sp.rdp ("PUSH"));
+    }
 }
 
