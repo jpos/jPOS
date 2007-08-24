@@ -50,7 +50,6 @@
 package org.jpos.util;
 
 import java.io.PrintStream;
-import java.util.Date;
 
 /**
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
@@ -60,12 +59,10 @@ import java.util.Date;
  */
 public class SimpleLogListener implements LogListener {
     PrintStream p;
-    private Date d;
 
     public SimpleLogListener () {
         super();
         p = System.out;
-        d = new Date();
     }
     public SimpleLogListener (PrintStream p) {
         this ();
@@ -82,13 +79,7 @@ public class SimpleLogListener implements LogListener {
     }
     public synchronized LogEvent log (LogEvent ev) {
         if (p != null) {
-            d.setTime (System.currentTimeMillis ());
-            p.println (
-                "<log realm=\"" +ev.getRealm()+ "\" at=\""+d.toString()
-                +"." + d.getTime() % 1000 + "\">"
-            );
-            ev.dump (p, "  ");
-            p.println ("</log>");
+            ev.dump (p, "");
             p.flush();
         }
         return ev;
