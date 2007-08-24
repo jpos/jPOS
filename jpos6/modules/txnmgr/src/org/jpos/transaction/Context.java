@@ -136,7 +136,7 @@ public class Context implements Externalizable, Loggeable, Pausable {
     /**
      * @return transient map
      */
-    private synchronized Map getMap() {
+    public synchronized Map getMap() {
         if (map == null)
             map = Collections.synchronizedMap (new LinkedHashMap ());
         return map;
