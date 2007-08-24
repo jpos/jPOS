@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.sql.SQLException;
 import java.util.Iterator;
+import java.util.Date;
 import java.util.Vector;
 
 import org.jdom.Element;
@@ -83,12 +84,29 @@ public class LogEvent {
     public void setSource(LogSource source) {
         this.source = source;
     }
-    public void dump (PrintStream p, String indent) {
-        if (payLoad.size() == 0) 
-            p.println (indent + "<" + tag + "/>");
+    protected String dumpHeader (PrintStream p, String indent) {
+        Date d = new Date();
+        p.println (indent + "<log realm=\"" +getRealm()+ "\" at=\""+d.toString()
+           +"." + d.getTime() % 1000 + "\">"
+        );
+        return indent + "  ";
+    }
+    protected void dumpTrailer (PrintStream p, String indent) {
+        p.println (indent + "</log>");
+    }
+    public void dump (PrintStream p, String outer) {
+        String indent = dumpHeader (p, outer);
+        if (payLoad.size() == 0) {
+            if (tag != null)
+                p.println (indent + "<" + tag + "/>");
+        }
         else {
-            p.println (indent + "<" + tag + ">");
-            String newIndent = indent + "  ";
+            String newIndent;
+            if (tag != null) {
+                p.println (indent + "<" + tag + ">");
+                newIndent = indent + "  ";
+            } else
+                newIndent = "";
             Iterator i = payLoad.iterator();
             while (i.hasNext()) {
                 Object o = i.next();
@@ -140,11 +158,13 @@ public class LogEvent {
                     p.println (newIndent + "null");
                 }
             }
-            p.println (indent + "</" + tag + ">");
+            if (tag != null)
+                p.println (indent + "</" + tag + ">");
         }
+        dumpTrailer (p, outer);
     }
     public String getRealm() {
-        return source.getRealm();
+        return source != null ? source.getRealm() : "";
     }
     public Vector getPayLoad() {
         return payLoad;
