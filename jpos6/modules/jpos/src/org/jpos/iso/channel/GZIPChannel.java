@@ -93,6 +93,7 @@ public class GZIPChannel extends BaseChannel {
         GZIPOutputStream gzip = new GZIPOutputStream(serverOut);
         gzip.write(b, offset, len);
         gzip.finish();
+        gzip.flush();
     }
     protected void getMessage (byte[] b, int offset, int len) throws IOException, ISOException { 
     	int total = 0;
