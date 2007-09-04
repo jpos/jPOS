@@ -30,6 +30,7 @@ public class Context implements Externalizable, Loggeable, Pausable {
     private Map pmap;          // persistent (serializable) map
     private long timeout;
     private int resuming=0;
+    private boolean resumeOnPause = false;
 
     public static String LOGEVT = "LOGEVT";
     public static String PROFILER = "PROFILER";
@@ -232,6 +233,11 @@ public class Context implements Externalizable, Loggeable, Pausable {
     }
     public void setPausedTransaction (PausedTransaction p) {
         put (PAUSED_TRANSACTION, p);
+        synchronized (this) {
+            if (resumeOnPause) {
+                resume();
+            }
+        }
     }
     public PausedTransaction getPausedTransaction() {
         return (PausedTransaction) get (PAUSED_TRANSACTION);
@@ -248,6 +254,8 @@ public class Context implements Externalizable, Loggeable, Pausable {
         if (pt != null && !pt.isResumed()) {
             pt.setResumed (true);
             pt.getTransactionManager().push (this);
+        } else {
+            resumeOnPause = true;
         }
     }
     static final long serialVersionUID = 6056487212221438338L;
