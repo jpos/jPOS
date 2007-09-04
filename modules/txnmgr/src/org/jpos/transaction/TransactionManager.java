@@ -41,6 +41,7 @@ public class TransactionManager
     Thread[] threads;
     int activeSessions;
     boolean debug;
+    boolean doRecover;
     long head, tail, lastGC;
     long retryInterval = 5000L;
     long pauseTimeout  = 300*60*1000L;  // five minutes
@@ -227,6 +228,7 @@ public class TransactionManager
     {
         super.setConfiguration (cfg);
         debug = cfg.getBoolean ("debug");
+        doRecover = cfg.getBoolean ("recover", true);
         retryInterval = cfg.getLong ("retry-interval", retryInterval);
         pauseTimeout  = cfg.getLong ("pause-timeout", pauseTimeout);
     }
@@ -572,12 +574,15 @@ public class TransactionManager
         }
     }
     protected void recover () {
-        if (tail < head) {
-            getLog().info ("recover - tail=" +tail+", head="+head);
-        }
-        while (tail < head) {
-            recover (tail++);
-        }
+        if (doRecover) {
+            if (tail < head) {
+                getLog().info ("recover - tail=" +tail+", head="+head);
+            }
+            while (tail < head) {
+                recover (tail++);
+            }
+        } else
+            tail = head;
         syncTail ();
     }
     protected void recover (long id) {
