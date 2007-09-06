@@ -371,16 +371,21 @@ public class TransactionManager
                 if (context instanceof Pausable) {
                     Pausable pausable = (Pausable) context;
                     TimerTask expirationMonitor = new PausedMonitor (pausable);
-                    pausable.setPausedTransaction (
-                        new PausedTransaction (this, id, members, iter, abort, expirationMonitor)
+                    PausedTransaction pt = new PausedTransaction (
+                        this, id, members, iter, abort, expirationMonitor
                     );
+                    pausable.setPausedTransaction (pt);
                     long t = pausable.getTimeout();
                     if (t == 0) 
                         t = pauseTimeout;
                     if (t > 0) {
-                        DefaultTimer.getTimer().schedule (
-                            expirationMonitor, t
-                        );
+                        synchronized (context) {
+                            if (!pt.isResumed()) {
+                                DefaultTimer.getTimer().schedule (
+                                    expirationMonitor, t
+                                );
+                            }
+                        }
                     }
                 } else {
                     throw new RuntimeException ("Unable to PAUSE transaction - Context is not Pausable");
