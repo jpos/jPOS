@@ -348,8 +348,8 @@ public class SunJSSESocketFactory
         clientAuthNeeded = cfg.getBoolean("clientauth");
         serverAuthNeeded = cfg.getBoolean("serverauth");
         serverName = cfg.get("servername");
-        password = cfg.get("storepassword");
-        keyPassword = cfg.get("keypassword");
+        password = cfg.get("storepassword", null);
+        keyPassword = cfg.get("keypassword", null);
         enabledCipherSuites = cfg.getAll("addEnabledCipherSuite");
     }
     public Configuration getConfiguration() {
