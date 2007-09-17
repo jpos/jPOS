@@ -11,6 +11,7 @@ import java.io.PrintStream;
 import java.util.Date;
 import java.util.Iterator;
 import org.jpos.iso.ISOMsg;
+import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOUtil;
 import org.jpos.space.Space;
 import org.jpos.space.SpaceFactory;
@@ -47,6 +48,7 @@ public class ChannelAdaptor
     String in, out, ready, reconnect;
     long delay;
     boolean keepAlive = false;
+    boolean ignoreISOExceptions = false;
     int rx, tx, connects;
     public ChannelAdaptor () {
         super ();
@@ -67,6 +69,7 @@ public class ChannelAdaptor
         channel = newChannel (e, getFactory());
 
         keepAlive = "yes".equalsIgnoreCase (persist.getChildTextTrim ("keep-alive"));
+        ignoreISOExceptions = "yes".equalsIgnoreCase (persist.getChildTextTrim ("ignore-iso-exceptions"));
         
         String socketFactoryString = getSocketFactory();
         if (socketFactoryString != null && channel instanceof FactoryChannel) {
@@ -262,6 +265,12 @@ public class ChannelAdaptor
                     }
                 } catch (ISOFilter.VetoException e) { 
                     getLog().warn ("channel-sender-"+in, e.getMessage ());
+                } catch (ISOException e) {
+                    getLog().warn ("channel-sender-"+in, e.getMessage ());
+                    if (!ignoreISOExceptions) {
+                        disconnect ();
+                    }
+                    ISOUtil.sleep (1000); // slow down on errors
                 } catch (Exception e) { 
                     getLog().warn ("channel-sender-"+in, e.getMessage ());
                     disconnect ();
@@ -282,6 +291,16 @@ public class ChannelAdaptor
                     ISOMsg m = channel.receive ();
                     rx++;
                     sp.out (out, m);
+                } catch (ISOException e) {
+                    if (running()) {
+                        getLog().warn ("channel-receiver-"+out, e);
+                        if (!ignoreISOExceptions) {
+                            sp.out (reconnect, new Object(), delay);
+                            disconnect ();
+                            sp.out (in, new Object()); // wake-up Sender
+                        }
+                        ISOUtil.sleep(1000);
+                    }
                 } catch (Exception e) { 
                     if (running()) {
                         getLog().warn ("channel-receiver-"+out, e);
