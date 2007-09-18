@@ -287,7 +287,7 @@ public class Q2 implements FileFilter {
             }
         }
         catch (Exception e){
-            log.warn ("deploy", e);
+            log.error ("deploy", e);
         }
     }
 
