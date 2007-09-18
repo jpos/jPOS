@@ -69,6 +69,7 @@ public class ISOServer extends Observable
     private boolean shutdown = false;
     private ServerSocket serverSocket;
     private Map channels;
+    private boolean ignoreISOExceptions;
 
    /**
     * @param port port to listen
@@ -139,6 +140,12 @@ public class ISOServer extends Observable
                     } 
                     catch (ISOFilter.VetoException e) {
                         Logger.log (new LogEvent (this, "VetoException", e.getMessage()));
+                    }
+                    catch (ISOException e) {
+                        if (ignoreISOExceptions) {
+                            Logger.log (new LogEvent (this, "ISOException", e.getMessage()));
+                        } else
+                            throw e;
                     }
                 }
             } catch (EOFException e) {
@@ -451,6 +458,7 @@ public class ISOServer extends Observable
         this.cfg = cfg;
         allow = cfg.getAll ("allow");
         backlog = cfg.getInt ("backlog", 0);
+        ignoreISOExceptions = cfg.getBoolean("ignore-iso-exceptions");
         String ip = cfg.get ("bind-address", null);
         if (ip != null) {
             try {
