@@ -135,9 +135,9 @@ public class ISOField
      */
     public void setValue(Object obj) throws ISOException {
         if (obj instanceof String)
-            value = ((String) obj).intern();
-        else
             value = (String) obj;
+        else
+            value = obj.toString();
     }
     /**
      * @return byte[] representing this field
