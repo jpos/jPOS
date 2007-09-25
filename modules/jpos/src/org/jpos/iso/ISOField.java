@@ -94,7 +94,7 @@ public class ISOField
      */
     public ISOField (int n, String v) {
         fieldNumber = n;
-        value = v.intern();
+        value = v;
     }
     /**
      * not available on Leaf - always throw ISOException
