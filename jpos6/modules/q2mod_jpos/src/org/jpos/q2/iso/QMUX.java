@@ -94,7 +94,7 @@ public class QMUX
     protected String spaceName;
     protected int[] key;
     protected String ignorerc;
-    protected String[] mtiMapping = new String[] { nomap, nomap, "0022456789", nomap };
+    protected String[] mtiMapping = new String[] { nomap, nomap, "0022456789", "0022456789"};
     List listeners;
     int rx, tx, rxExpired, txExpired, rxPending, rxUnhandled, rxForwarded;
     public QMUX () {
