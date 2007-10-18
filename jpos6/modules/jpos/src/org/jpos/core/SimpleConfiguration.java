@@ -76,7 +76,7 @@ public class SimpleConfiguration implements Configuration {
         props = new Properties();
         load (filename);
     }
-    synchronized public String get (String name, String def) {
+    public String get (String name, String def) {
         Object obj = props.get (name);
         if (obj instanceof List) {
             List l = (List) obj;
@@ -84,7 +84,7 @@ public class SimpleConfiguration implements Configuration {
         }
         return (obj instanceof String) ? ((String) obj) : def;
     }
-    synchronized public String[] getAll (String name) {
+    public String[] getAll (String name) {
         String[] ret;
         Object obj = props.get (name);
         if (obj instanceof String[]) {
@@ -97,56 +97,56 @@ public class SimpleConfiguration implements Configuration {
 
         return ret;
     }
-    synchronized public int[] getInts (String name) {
+    public int[] getInts (String name) {
         String[] ss = getAll (name);
         int[] ii = new int[ss.length];
         for (int i=0; i<ss.length; i++)
             ii[i] = Integer.parseInt(ss[i].trim());
         return ii;
     }
-    synchronized public long[] getLongs (String name) {
+    public long[] getLongs (String name) {
         String[] ss = getAll (name);
         long[] ll = new long[ss.length];
         for (int i=0; i<ss.length; i++)
             ll[i] = Long.parseLong(ss[i].trim());
         return ll;
     }
-    synchronized public double[] getDoubles (String name) {
+    public double[] getDoubles (String name) {
         String[] ss = getAll (name);
         double[] dd = new double[ss.length];
         for (int i=0; i<ss.length; i++)
             dd[i] = Double.valueOf(ss[i].trim()).doubleValue();
         return dd;
     }
-    synchronized public boolean[] getBooleans (String name) {
+    public boolean[] getBooleans (String name) {
         String[] ss = getAll (name);
         boolean[] bb = new boolean[ss.length];
         for (int i=0; i<ss.length; i++)
             bb[i] = ss[i].equalsIgnoreCase("true") || ss[i].equalsIgnoreCase("yes");
         return bb;
     }
-    synchronized public String get (String name) {
+    public String get (String name) {
         return get (name, "");
     }
-    synchronized public int getInt (String name) {
+    public int getInt (String name) {
         return Integer.parseInt(props.getProperty(name, "0").trim());
     }
-    synchronized public int getInt (String name, int def) {
+    public int getInt (String name, int def) {
         return Integer.parseInt(
             props.getProperty (name, Integer.toString (def)).trim());
     }
-    synchronized public long getLong (String name) {
+    public long getLong (String name) {
         return Long.parseLong(props.getProperty(name, "0").trim());
     }
-    synchronized public long getLong (String name, long def) {
+    public long getLong (String name, long def) {
         return Long.parseLong (
             props.getProperty (name, Long.toString (def)).trim());
     }
-    synchronized public double getDouble(String name) {
+    public double getDouble(String name) {
         return Double.valueOf(
             props.getProperty(name,"0.00").trim()).doubleValue();
     }
-    synchronized public double getDouble(String name, double def) {
+    public double getDouble(String name, double def) {
         return Double.valueOf(
             props.getProperty(name,Double.toString(def)).trim()).doubleValue();
     }
@@ -159,14 +159,15 @@ public class SimpleConfiguration implements Configuration {
         return v.length() == 0 ? def :
             (v.equalsIgnoreCase("true") || v.equalsIgnoreCase("yes"));
     }
-    synchronized public void load(String filename) 
+    public void load(String filename) 
         throws FileNotFoundException, IOException
     {
         FileInputStream fis = new FileInputStream(filename);
         props.load(new BufferedInputStream(fis));
         fis.close();
     }
-    synchronized public void put (String name, Object value) {
+    public void put (String name, Object value) {
         props.put (name, value);
     }
 }
+
