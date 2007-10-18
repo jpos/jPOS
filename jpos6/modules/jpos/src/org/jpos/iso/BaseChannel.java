@@ -459,12 +459,12 @@ public abstract class BaseChannel extends Observable
         throws IOException, ISOException, VetoException
     {
         LogEvent evt = new LogEvent (this, "send");
-        evt.addMessage (m);
         try {
             if (!isConnected())
                 throw new ISOException ("unconnected ISOChannel");
             m.setDirection(ISOMsg.OUTGOING);
             m = applyOutgoingFilters (m, evt);
+            evt.addMessage (m);
             m.setDirection(ISOMsg.OUTGOING); // filter may have drop this info
             m.setPackager (getDynamicPackager(m));
             byte[] b = m.pack();
@@ -479,6 +479,8 @@ public abstract class BaseChannel extends Observable
             setChanged();
             notifyObservers(m);
         } catch (VetoException e) {
+            //if a filter vets the message it was not added to the event
+            evt.addMessage (m);
             evt.addMessage (e);
             throw e;
         } catch (ISOException e) {
