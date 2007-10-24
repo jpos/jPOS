@@ -175,7 +175,11 @@ public class Context implements Externalizable, Loggeable, Pausable {
                 p.println ("");
                 p.println (ISOUtil.hexdump (b));
             } else if (value != null) {
-                p.print (value.toString ());
+                try {
+                    p.print (value.toString ());
+                } catch (Exception e) {
+                    p.println (e.getMessage());
+                }
             } else {
                 p.print ("nil");
             }
