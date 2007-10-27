@@ -312,7 +312,13 @@ public class Q2 implements FileFilter {
                         log.info ("shutting down (hook)");
                         try {
                             q2Thread.join (SHUTDOWN_TIMEOUT);
-                        } catch (InterruptedException e) { }
+                        } catch (InterruptedException e) { 
+                        } catch (NullPointerException e) {
+                            // on thin Q2 systems where shutdown is very fast, 
+                            // q2Thread can become null between the upper if and
+                            // the actual join. Not a big deal so we ignore the
+                            // exception.
+                        }
                     }
                 }
             }
