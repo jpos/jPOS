@@ -499,9 +499,9 @@ public class TransactionManager
     protected void checkTail () {
         Object lock = sp.in (tailLock);
         while (tailDone()) {
-            if (debug) {
-                getLog().debug ("tailDone " + tail);
-            }
+            // if (debug) {
+            //    getLog().debug ("tailDone " + tail);
+            // }
             tail++;
         }
         syncTail ();
