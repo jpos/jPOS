@@ -214,7 +214,7 @@ public class QMUX
                 if (f == 41) 
                     v = ISOUtil.zeropad (v.trim(), 16); // BIC ANSI to ISO hack
                 else if (f == 11) 
-                    v = ISOUtil.zeropad (v.trim(), 6); 
+                    v = ISOUtil.zeropad (v.trim(), m.getMTI().charAt(0)=='2' ? 12 : 6); 
                 sb.append (v);
             }
         }
@@ -284,9 +284,10 @@ public class QMUX
         String req = key + ".req";
         m.setDirection(0);
         AsyncRequest ar = new AsyncRequest (rl, handBack);
-        if (timeout > 0)
-            DefaultTimer.getTimer().schedule (ar, timeout);
-
+        synchronized (ar) {
+            if (timeout > 0)
+                DefaultTimer.getTimer().schedule (ar, timeout);
+        }
         sp.out (req, ar, timeout);
         sp.out (out, m, timeout);
     }
