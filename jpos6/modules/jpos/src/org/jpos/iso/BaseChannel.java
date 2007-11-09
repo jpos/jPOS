@@ -72,6 +72,8 @@ public abstract class BaseChannel extends Observable
 {
     private Socket socket;
     private String host, localIface;
+    private String[] hosts;
+    int[] ports;
     private int port, timeout, connectTimeout, localPort;
     private int maxPacketLength = 100000;
     private boolean keepAlive;
@@ -266,7 +268,7 @@ public abstract class BaseChannel extends Observable
      * Use Socket factory if exists. If it is missing create a normal socket
      * @see ISOClientSocketFactory
      */
-    protected Socket newSocket() throws IOException {
+    protected Socket newSocket(String host, int port) throws IOException {
         try {
             if (socketFactory != null)
                 return socketFactory.createSocket (host, port);
@@ -290,6 +292,22 @@ public abstract class BaseChannel extends Observable
         } catch (ISOException e) {
             throw new IOException (e.getMessage());
         }
+    }
+    protected Socket newSocket (String[] hosts, int[] ports, LogEvent evt) 
+        throws IOException
+    {
+        Socket s = null;
+        for (int i=0; i<hosts.length; i++) {
+            try {
+                evt.addMessage (hosts[i]+":"+ports[i]);
+                s = newSocket (hosts[i], ports[i]);
+            } catch (IOException e) {
+                evt.addMessage ("  " + e.getMessage());
+            }
+        }
+        if (s == null)
+            throw new IOException ("Unable to connect");
+        return s;
     }
     /**
      * @return current socket
@@ -334,8 +352,7 @@ public abstract class BaseChannel extends Observable
                     +" remote host "+socket.getInetAddress());
             }
             else {
-                evt.addMessage (host+":"+port);
-                connect(newSocket ());
+                connect(newSocket (hosts, ports, evt));
             }
             applyTimeout();
             if (socket != null)
@@ -834,6 +851,19 @@ public abstract class BaseChannel extends Observable
                     ("invalid port for host '"+h+"'");
             setHost (h, port);
             setLocalAddress (cfg.get("local-iface", null),cfg.getInt("local-port"));
+            String[] altHosts = cfg.getAll  ("alternate-host");
+            int[] altPorts = cfg.getInts ("alternate-port");
+            hosts = new String[altHosts.length + 1];
+            ports = new int[altPorts.length + 1];
+            if (hosts.length != ports.length) {
+                throw new ConfigurationException (
+                    "alternate host/port misconfiguration"
+                );
+            }
+            hosts[0] = host;
+            ports[0] = port;
+            System.arraycopy (altHosts, 0, hosts, 1, altHosts.length);
+            System.arraycopy (altPorts, 0, ports, 1, altPorts.length);
         }
         setOverrideHeader(cfg.getBoolean ("override-header", false));
         keepAlive = cfg.getBoolean ("keep-alive", false);
