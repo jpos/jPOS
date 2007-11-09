@@ -75,6 +75,7 @@ public abstract class BaseChannel extends Observable
     private int port, timeout, localPort;
     private int maxPacketLength = 100000;
     private boolean keepAlive;
+    private Configuration cfg;
     protected boolean usable;
     protected boolean overrideHeader;
     private String name;
@@ -823,6 +824,7 @@ public abstract class BaseChannel extends Observable
     public void setConfiguration (Configuration cfg)
         throws ConfigurationException 
     {
+        this.cfg = cfg;
         String h    = cfg.get    ("host");
         int port    = cfg.getInt ("port");
         maxPacketLength = cfg.getInt ("max-packet-length", 100000);
@@ -842,6 +844,9 @@ public abstract class BaseChannel extends Observable
         } catch (SocketException e) {
             throw new ConfigurationException (e);
         }
+    }
+    public Configuration getConfiguration() {
+        return cfg;
     }
     public Collection getIncomingFilters() {
         return incomingFilters;
