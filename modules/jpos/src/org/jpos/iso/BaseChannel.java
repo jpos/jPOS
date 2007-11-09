@@ -72,7 +72,7 @@ public abstract class BaseChannel extends Observable
 {
     private Socket socket;
     private String host, localIface;
-    private int port, timeout, localPort;
+    private int port, timeout, connectTimeout, localPort;
     private int maxPacketLength = 100000;
     private boolean keepAlive;
     private Configuration cfg;
@@ -271,11 +271,11 @@ public abstract class BaseChannel extends Observable
             if (socketFactory != null)
                 return socketFactory.createSocket (host, port);
             else {
-                if (timeout > 0) {
+                if (connectTimeout > 0) {
                     Socket s = new Socket();
                     s.connect (
                         new InetSocketAddress (host, port),
-                        timeout
+                        connectTimeout
                     );
                     return s;
                 } else if (localIface == null && localPort == 0){
@@ -841,6 +841,7 @@ public abstract class BaseChannel extends Observable
             ((Configurable)socketFactory).setConfiguration (cfg);
         try {
             setTimeout (cfg.getInt ("timeout"));
+            connectTimeout = cfg.getInt ("connect-timeout", timeout);
         } catch (SocketException e) {
             throw new ConfigurationException (e);
         }
