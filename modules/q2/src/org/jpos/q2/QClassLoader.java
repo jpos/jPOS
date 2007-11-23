@@ -85,6 +85,8 @@ public class QClassLoader
         QClassLoader loader;
         if (server.isRegistered (loaderName)) {
             server.unregisterMBean (loaderName);
+            System.gc();
+            Thread.yield();
             loader = new QClassLoader (server, libDir, loaderName);
         } else
             loader = this;
@@ -101,6 +103,5 @@ public class QClassLoader
         server.registerMBean (loader, loaderName);
         return loader;
     }
-    
 }
 
