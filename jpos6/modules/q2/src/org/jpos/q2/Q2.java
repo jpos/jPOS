@@ -154,7 +154,15 @@ public class Q2 implements FileFilter {
             cli.start();
         while (!shutdown) {
             try {
+                QClassLoader oldClassLoader = loader;
                 loader = loader.scan ();
+                if (loader != oldClassLoader) {
+                    oldClassLoader = null;
+                    System.gc();  // force a GC
+                    log.info (
+                      "deploy/lib modified - new classloader has been created"
+                    );
+                }
                 scan ();
                 deploy ();
                 checkModified ();
