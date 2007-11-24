@@ -138,7 +138,7 @@ public class Q2 implements FileFilter {
                 }
             );
             server.registerMBean (loader, loaderName);
-            loader = loader.scan();
+            loader = loader.scan(false);
         } catch (Throwable t) {
             if (log != null)
                 log.error ("initial-scan", t);
@@ -154,16 +154,18 @@ public class Q2 implements FileFilter {
             cli.start();
         while (!shutdown) {
             try {
+                boolean forceNewClassLoader = scan ();
                 QClassLoader oldClassLoader = loader;
-                loader = loader.scan ();
+                loader = loader.scan (forceNewClassLoader);
                 if (loader != oldClassLoader) {
                     oldClassLoader = null;
                     System.gc();  // force a GC
                     log.info (
-                      "deploy/lib modified - new classloader has been created"
+                      "new classloader ["
+                      + Integer.toString(loader.hashCode(),16)
+                      + "] has been created"
                     );
                 }
-                scan ();
                 deploy ();
                 checkModified ();
                 relax (SCAN_INTERVAL);
@@ -222,7 +224,8 @@ public class Q2 implements FileFilter {
     public File getDeployDir () {
         return deployDir;
     }
-    private void scan () {
+    private boolean scan () {
+            boolean rc = false;
             File file[] = deployDir.listFiles (this);
             // Arrays.sort (file); --apr not required - we use TreeMap
             if (file == null) {
@@ -230,9 +233,11 @@ public class Q2 implements FileFilter {
                 throw new Error("Deploy directory \""+deployDir.getAbsolutePath()+"\" is not available");
             } else {
                 for (int i=0; i<file.length; i++) {
-                    register (file[i]);
+                    if (register (file[i]))
+                        rc = true;
                 }
             }
+            return rc;
     }
 
     private void deploy () {
@@ -382,13 +387,19 @@ public class Q2 implements FileFilter {
         }
     }
 
-    private void register (File f) {
+    private boolean register (File f) {
+        boolean rc = false;
         if (f.isDirectory()) {
             File file[] = f.listFiles (this);
-            for (int i=0; i<file.length; i++)
-                register (file[i]);
-        } else if (dirMap.get (f) == null)
+            for (int i=0; i<file.length; i++) {
+                if (register (file[i]))
+                    rc = true;
+            }
+        } else if (dirMap.get (f) == null) {
             dirMap.put (f, new QEntry ());
+            rc = true;
+        }
+        return rc;
     }
 
     private boolean deploy (File f) {
