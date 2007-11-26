@@ -72,7 +72,6 @@ public class QClassLoader
     public boolean isModified () {
         return libDir.canRead () && (lastModified != libDir.lastModified());
     }
-
     public QClassLoader scan (boolean forceNewClassLoader) 
         throws InstanceAlreadyExistsException,
                InstanceNotFoundException,
@@ -101,6 +100,9 @@ public class QClassLoader
         loader.lastModified = libDir.lastModified ();
         server.registerMBean (loader, loaderName);
         return loader;
+    }
+    public void forceNewClassLoaderOnNextScan() {
+        this.lastModified = 0L;
     }
 }
 
