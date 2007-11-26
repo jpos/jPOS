@@ -138,10 +138,17 @@ public class QFactory {
 
         return instance;
     }
-
+    public Q2 getQ2() {
+        return q2;
+    }
     public void getExtraPath (QClassLoader loader, Element e) {
         Element classpathElement = e.getChild ("classpath");
         if (classpathElement != null) {
+            try {
+                loader = loader.scan (true);    // force a new classloader
+            } catch (Throwable t) {
+                getQ2().getLog().error(t);
+            }
             Iterator iter = classpathElement.getChildren ("url").iterator();
             while (iter.hasNext ()) {
                 Element u = (Element) iter.next ();
