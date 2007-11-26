@@ -48,9 +48,10 @@ public class QClassLoader
     long lastModified;
 
     public QClassLoader 
-        (MBeanServer server, File libDir, ObjectName loaderName) 
+        (MBeanServer server, File libDir, ObjectName loaderName, 
+         ClassLoader mainClassLoader) 
     {
-        super(new URL[] { }, Thread.currentThread().getContextClassLoader());
+        super(new URL[] { }, mainClassLoader);
         this.loaderName = loaderName;
         this.libDir     = libDir;
         this.server     = server;
@@ -85,7 +86,7 @@ public class QClassLoader
         QClassLoader loader;
         if (server.isRegistered (loaderName)) {
             server.unregisterMBean (loaderName);
-            loader = new QClassLoader (server, libDir, loaderName);
+            loader = new QClassLoader (server, libDir, loaderName, getParent());
         } else
             loader = this;
 

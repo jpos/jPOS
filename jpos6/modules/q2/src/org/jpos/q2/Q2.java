@@ -90,6 +90,7 @@ public class Q2 implements FileFilter {
     private Map dirMap;
     private QFactory factory;
     private QClassLoader loader;
+    private ClassLoader mainClassLoader;
     private Log log;
     private boolean shutdown;
     private boolean shuttingDown;
@@ -109,6 +110,7 @@ public class Q2 implements FileFilter {
         this.dirMap     = new TreeMap ();
         deployDir.mkdirs ();
         startTime = System.currentTimeMillis();
+        mainClassLoader = Thread.currentThread().getContextClassLoader();
     }
     public void start () 
         throws MalformedObjectNameException,
@@ -133,7 +135,7 @@ public class Q2 implements FileFilter {
             loader = (QClassLoader) java.security.AccessController.doPrivileged(
                 new java.security.PrivilegedAction() {
                     public Object run() {
-                        return new QClassLoader (server, libDir, loaderName);
+                        return new QClassLoader (server, libDir, loaderName, mainClassLoader);
                     }
                 }
             );
