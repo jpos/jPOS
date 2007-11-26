@@ -263,6 +263,7 @@ public class Q2 implements FileFilter {
                 } else if (deployed != f.lastModified ()) {
                     undeploy (f);
                     iter.remove ();
+                    loader.forceNewClassLoaderOnNextScan();
                 }
             }
             iter = startList.iterator();
