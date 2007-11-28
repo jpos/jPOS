@@ -22,7 +22,9 @@ import org.jpos.q2.CLI;
 
 public class VERSION implements CLI.Command {
     public void exec (CLI cli, String[] args) {
-        cli.println ("jPOS Q2 " + cli.getQ2().Q2_VERSION);
+        cli.println ("jPOS Q2 " + cli.getQ2().Q2_VERSION 
+            + " (" + cli.getQ2().Q2_REVISION + ")"
+        );
     }
 }
 
