@@ -70,6 +70,8 @@ import org.jpos.util.SimpleLogListener;
  */
 public class Q2 implements FileFilter {
     public static final String Q2_VERSION          = "@version@";
+    public static final String Q2_REVISION         = "@revision@";
+    public static final String Q2_DATE             = "@date@";
     public static final String DEFAULT_DEPLOY_DIR  = "deploy";
     public static final String JMX_NAME            = "Q2";
     public static final String LOGGER_NAME         = "Q2";
@@ -507,7 +509,9 @@ public class Q2 implements FileFilter {
         try {
             CommandLine line = parser.parse (options, args);
             if (line.hasOption ("v")) {
-                System.out.println ("Q2 version: " + Q2_VERSION);
+                System.out.println (
+                    "Q2 version: " +Q2_VERSION + "(" + Q2_REVISION + ")"
+                );
                 System.exit (0);
             } 
             if (line.hasOption ("h")) {
