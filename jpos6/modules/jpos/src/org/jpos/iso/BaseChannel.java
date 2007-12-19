@@ -166,6 +166,8 @@ public abstract class BaseChannel extends Observable
     public void setHost(String host, int port) {
         this.host = host;
         this.port = port;
+        this.hosts = new String[] { host };
+        this.ports = new int[] { port };
     }
     
     /**
