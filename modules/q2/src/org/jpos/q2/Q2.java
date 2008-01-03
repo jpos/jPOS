@@ -68,7 +68,7 @@ import org.jpos.util.SimpleLogListener;
  * @author <a href="mailto:alwynschoeman@yahoo.com">Alwyn Schoeman</a>
  * @version $Revision$ $Date$
  */
-public class Q2 implements FileFilter {
+public class Q2 implements FileFilter, Runnable {
     public static final String Q2_VERSION          = "@version@";
     public static final String Q2_REVISION         = "@revision@";
     public static final String Q2_DATE             = "@date@";
@@ -113,6 +113,16 @@ public class Q2 implements FileFilter {
         deployDir.mkdirs ();
         startTime = System.currentTimeMillis();
         mainClassLoader = Thread.currentThread().getContextClassLoader();
+    }
+    public Q2 () {
+        this (new String[] {} );
+    }
+    public void run() {
+        try {
+            start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     public void start () 
         throws MalformedObjectNameException,
