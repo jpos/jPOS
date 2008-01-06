@@ -314,6 +314,7 @@ public abstract class BaseChannel extends Observable
             try {
                 evt.addMessage (hosts[i]+":"+ports[i]);
                 s = newSocket (hosts[i], ports[i]);
+                break;
             } catch (IOException e) {
                 evt.addMessage ("  " + e.getMessage());
             }
