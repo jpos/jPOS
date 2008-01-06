@@ -42,18 +42,13 @@ public class QMUXTestCase extends TestCase implements ISOResponseListener {
         sp = SpaceFactory.getSpace();
         q2 = new Q2(new String[] { "-d", "../test/org/jpos/q2/iso" });
         expiredCalled=false;
-        new Thread() {
-            public void run() {
-                try {
-                    q2.start();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }.start();
-        Thread.sleep (1000L);
-        mux = (MUX) NameRegistrar.get ("mux.mux");
-        assertNotNull ("MUX not found", mux);
+        new Thread(q2).start();
+        Thread.sleep (2000L);
+        try {
+            mux = (MUX) NameRegistrar.get ("mux.mux");
+        } catch (NameRegistrar.NotFoundException e) { 
+            fail ("MUX not found");
+        }
         receivedHandback = null;
     }
     public void testExpiredMessage() throws Exception {
