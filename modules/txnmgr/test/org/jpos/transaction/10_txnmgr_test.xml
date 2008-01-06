@@ -4,6 +4,7 @@
  <property name="persistent-space" value="jdbm:txnmgrtest" />
  <property name="debug"            value="true" />
  <property name="retry-interval"   value="250" />
+ <property name="pause-timeout"   value="2000" />
 
  <participant class="org.jpos.transaction.participant.Trace" logger="Q2">
   <property name="trace" value="pre-retry" />
