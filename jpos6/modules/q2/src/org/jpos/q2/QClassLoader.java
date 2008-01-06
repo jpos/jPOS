@@ -80,7 +80,7 @@ public class QClassLoader
                MBeanRegistrationException
     
     {
-        if (!isModified () && !forceNewClassLoader)
+        if ((!isModified () && !forceNewClassLoader) || !libDir.canRead())
             return this;
         QClassLoader loader;
         if (server.isRegistered (loaderName)) {
