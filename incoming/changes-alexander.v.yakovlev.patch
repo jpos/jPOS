@@ -1,0 +1,1899 @@
+Index: jpos/cfg/packager/genericpackager.dtd
+===================================================================
+--- jpos/cfg/packager/genericpackager.dtd	(revision 2590)
++++ jpos/cfg/packager/genericpackager.dtd	(working copy)
+@@ -5,6 +5,7 @@
+ <!ATTLIST isopackager bitmapField   CDATA        #IMPLIED>
+ <!ATTLIST isopackager firstField    CDATA        #IMPLIED>
+ <!ATTLIST isopackager emitBitmap    (true|false) #IMPLIED>
++<!ATTLIST isopackager headerLength  CDATA        #IMPLIED>
+ 
+ <!-- isofield -->
+ <!ELEMENT isofield (#PCDATA)>
+@@ -28,4 +29,5 @@
+ <!ATTLIST isofieldpackager maxValidField CDATA        #IMPLIED>
+ <!ATTLIST isofieldpackager bitmapField CDATA        #IMPLIED>
+ <!ATTLIST isofieldpackager firstField  CDATA        #IMPLIED>
++<!ATTLIST isofieldpackager headerLength  CDATA        #IMPLIED>
+ 
+Index: jpos/cfg/packager/iso93ebcdic-custom.xml
+===================================================================
+--- jpos/cfg/packager/iso93ebcdic-custom.xml	(revision 0)
++++ jpos/cfg/packager/iso93ebcdic-custom.xml	(revision 0)
+@@ -0,0 +1,990 @@
++<?xml version="1.0" encoding="UTF-8" standalone="no"?>
++<!DOCTYPE isopackager SYSTEM "genericpackager.dtd">
++
++<!-- ISO 8583:1993 (EBCDIC) field descriptions for GenericPackager -->
++
++<isopackager headerLength="9">
++  <isofield
++      id="0"
++      length="4"
++      name="Message Type Indicator"
++      class="org.jpos.iso.IFE_NUMERIC"/>
++  <isofield
++      id="1"
++      length="16"
++      name="Bitmap"
++      class="org.jpos.iso.IFE_BITMAP"/>
++  <isofield
++      id="2"
++      length="19"
++      name="Primary Account number"
++      class="org.jpos.iso.IFE_LLNUM"/>
++  <isofield
++      id="3"
++      length="6"
++      name="Processing Code"
++      class="org.jpos.iso.IFE_NUMERIC"/>
++  <isofield
++      id="4"
++      length="12"
++      name="Amount, Transaction"
++      class="org.jpos.iso.IFE_NUMERIC"/>
++  <isofield
++      id="5"
++      length="12"
++      name="Amount, Reconciliation"
++      class="org.jpos.iso.IFE_NUMERIC"/>
++  <isofield
++      id="6"
++      length="12"
++      name="Amount, Cardholder billing"
++      class="org.jpos.iso.IFE_NUMERIC"/>
++  <isofield
++      id="7"
++      length="10"
++      name="Date and time, transmission"
++      class="org.jpos.iso.IFE_NUMERIC"/>
++  <isofield
++      id="8"
++      length="8"
++      name="Amount, Cardholder billing fee"
++      class="org.jpos.iso.IFE_NUMERIC"/>
++  <isofield
++      id="9"
++      length="8"
++      name="Conversion rate, Reconciliation"
++      class="org.jpos.iso.IFE_NUMERIC"/>
++  <isofield
++      id="10"
++      length="8"
++      name="Conversion rate, Cardholder billing"
++      class="org.jpos.iso.IFE_NUMERIC"/>
++  <isofield
++      id="11"
++      length="6"
++      name="Systems trace audit number"
++      class="org.jpos.iso.IFE_NUMERIC"/>
++  <isofield
++      id="12"
++      length="12"
++      name="Date and time, Local transaction"
++      class="org.jpos.iso.IFE_NUMERIC"/>
++  <isofield
++      id="13"
++      length="4"
++      name="Date, Effective"
++      class="org.jpos.iso.IFE_NUMERIC"/>
++  <isofield
++      id="14"
++      length="4"
++      name="Date, Expiration"
++      class="org.jpos.iso.IFE_NUMERIC"/>
++  <isofield
++      id="15"
++      length="6"
++      name="Date, Settlement"
++      class="org.jpos.iso.IFE_NUMERIC"/>
++  <isofield
++      id="16"
++      length="4"
++      name="Date, Conversion"
++      class="org.jpos.iso.IFE_NUMERIC"/>
++  <isofield
++      id="17"
++      length="4"
++      name="Date, Capture"
++      class="org.jpos.iso.IFE_NUMERIC"/>
++  <isofield
++      id="18"
++      length="4"
++      name="Merchant type"
++      class="org.jpos.iso.IFE_NUMERIC"/>
++  <isofield
++      id="19"
++      length="3"
++      name="Country code, Acquiring institution"
++      class="org.jpos.iso.IFE_NUMERIC"/>
++  <isofield
++      id="20"
++      length="3"
++      name="Country code, Primary account number"
++      class="org.jpos.iso.IFE_NUMERIC"/>
++  <isofield
++      id="21"
++      length="3"
++      name="Country code, Forwarding institution"
++      class="org.jpos.iso.IFE_NUMERIC"/>
++  <isofield
++      id="22"
++      length="12"
++      name="Point of service data code"
++      class="org.jpos.iso.IFE_CHAR"/>
++  <isofield
++      id="23"
++      length="3"
++      name="Card sequence number"
++      class="org.jpos.iso.IFE_NUMERIC"/>
++  <isofield
++      id="24"
++      length="3"
++      name="Function code"
++      class="org.jpos.iso.IFE_NUMERIC"/>
++  <isofield
++      id="25"
++      length="4"
++      name="Message reason code"
++      class="org.jpos.iso.IFE_NUMERIC"/>
++  <isofield
++      id="26"
++      length="4"
++      name="Card acceptor business code"
++      class="org.jpos.iso.IFE_NUMERIC"/>
++  <isofield
++      id="27"
++      length="1"
++      name="Approval code length"
++      class="org.jpos.iso.IFE_NUMERIC"/>
++  <isofield
++      id="28"
++      length="6"
++      name="Date, Reconciliation"
++      class="org.jpos.iso.IFE_NUMERIC"/>
++  <isofield
++      id="29"
++      length="3"
++      name="Reconciliation indicator"
++      class="org.jpos.iso.IFE_NUMERIC"/>
++  <isofield
++      id="30"
++      length="24"
++      name="Amounts, original"
++      class="org.jpos.iso.IFE_NUMERIC"/>
++  <isofield
++      id="31"
++      length="99"
++      name="Acquirer reference data"
++      class="org.jpos.iso.IFE_LLCHAR"/>
++  <isofield
++      id="32"
++      length="11"
++      name="Acquirer institution identification code"
++      class="org.jpos.iso.IFE_LLNUM"/>
++  <isofield
++      id="33"
++      length="11"
++      name="Forwarding institution identification code"
++      class="org.jpos.iso.IFE_LLNUM"/>
++  <isofield
++      id="34"
++      length="28"
++      name="Primary account number, extended"
++      class="org.jpos.iso.IFE_LLCHAR"/>
++  <isofield
++      id="35"
++      length="37"
++      name="Track 2 data"
++      class="org.jpos.iso.IFE_LLCHAR"/>
++  <isofield
++      id="36"
++      length="104"
++      name="Track 3 data"
++      class="org.jpos.iso.IFE_LLLCHAR"/>
++  <isofield
++      id="37"
++      length="12"
++      name="Retrieval reference number"
++      class="org.jpos.iso.IFE_CHAR"/>
++  <isofield
++      id="38"
++      length="6"
++      name="Approval code"
++      class="org.jpos.iso.IFE_CHAR"/>
++  <isofield
++      id="39"
++      length="3"
++      name="Action code"
++      class="org.jpos.iso.IFE_NUMERIC"/>
++  <isofield
++      id="40"
++      length="3"
++      name="Service code"
++      class="org.jpos.iso.IFE_NUMERIC"/>
++  <isofield
++      id="41"
++      length="8"
++      name="Card acceptor terminal identification"
++      class="org.jpos.iso.IFE_CHAR"/>
++  <isofield
++      id="42"
++      length="15"
++      name="Card acceptor identification code"
++      class="org.jpos.iso.IFE_CHAR"/>
++  <isofield
++      id="43"
++      length="99"
++      name="Card acceptor name/location"
++      class="org.jpos.iso.IFE_LLCHAR"/>
++<isofieldpackager 
++	    id="44"
++	    name="Additional Data" 
++	    length="256" 
++	 	class="org.jpos.iso.IFE_LLLBINARY" 
++	  	packager="org.jpos.iso.packager.GenericPackager"
++	  	maxValidField="16"
++	  	emitBitmap="true"
++	  	bitmapField="0"
++	  	firstField="0" headerLength="1">
++		<isofield 
++		id="0" 
++		length="2" 
++		name="Bitmap" 
++		class="org.jpos.iso.IFE_BITMAP"/>	  	
++		<isofield 
++		id="1" 
++		name="Generic Error" 
++		length="3"
++		class="org.jpos.iso.IFE_CHAR"/>
++		<isofield 
++		id="2" 
++		name="Address Ver Rese" 
++		length="1"
++		class="org.jpos.iso.IFE_CHAR"/>
++		<isofield 
++		id="3" 
++		name="Telecode Ver Res" 
++		length="1"
++		class="org.jpos.iso.IFE_CHAR"/>
++		<isofield 
++		id="4" 
++		name="CVC/CVV Ver Res" 
++		length="1"
++		class="org.jpos.iso.IFE_CHAR"/>
++		<isofield 
++		id="5" 
++		name="CVC2/CVV2 Ver Res" 
++		length="1"
++		class="org.jpos.iso.IFE_CHAR"/>
++		<isofield 
++		id="6"
++		name="Referral Messagee" 
++		length="40"
++		class="org.jpos.iso.IFE_CHAR"/>	
++		<isofield 
++		id="7" 
++		name="Stand-in Indicatore" 
++		length="1"
++		class="org.jpos.iso.IFE_CHAR"/>	
++   </isofieldpackager>
++  <isofield
++      id="45"
++      length="76"
++      name="Track 1 data"
++      class="org.jpos.iso.IFE_LLCHAR"/>
++  <isofield
++      id="46"
++      length="204"
++      name="Amounts, Fees"
++      class="org.jpos.iso.IFE_LLLCHAR"/>
++  <isofield
++      id="47"
++      length="999"
++      name="Additional data - national"
++      class="org.jpos.iso.IFE_LLLCHAR"/>
++<isofieldpackager 
++	    id="48"
++	    name="Additional Data" 
++	    length="256" 
++	 	class="org.jpos.iso.IFE_LLLBINARY" 
++	  	packager="org.jpos.iso.packager.GenericPackager"
++	  	maxValidField="27"
++	  	emitBitmap="true"
++	  	bitmapField="0"
++	  	firstField="0" headerLength="1">
++		<isofield 
++		id="0" 
++		length="4" 
++		name="Bitmap" 
++		class="org.jpos.iso.IFE_BITMAP"/>	  	
++		<isofield 
++		id="1" 
++		name="Telecode" 
++		length="4"
++		class="org.jpos.iso.IFE_CHAR"/>
++		<isofield 
++		id="2" 
++		name="CVC2/CVV2 Value" 
++		length="3"
++		class="org.jpos.iso.IFE_CHAR"/>
++		<isofield 
++		id="3" 
++		name="CVC2/CVV2 Reason Cde" 
++		length="1"
++		class="org.jpos.iso.IFE_CHAR"/>
++		<isofield 
++		id="4" 
++		name="Address Verif Data" 
++		length="53"
++		class="org.jpos.iso.IFE_CHAR"/>
++		<isofield 
++		id="5" 
++		name="CPS/ATM Information" 
++		length="132"
++		class="org.jpos.iso.IFE_CHAR"/>
++		<isofield 
++		id="6" 
++		name="CVV/CVC Result Code" 
++		length="1"
++		class="org.jpos.iso.IFE_CHAR"/>	
++		<isofield 
++		id="7" 
++		name="Ex File Crd Scheme" 
++		length="1"
++		class="org.jpos.iso.IFE_CHAR"/>	
++		<isofield 
++		id="8" 
++		name="Ex File Purge Date" 
++		length="36"
++		class="org.jpos.iso.IFE_CHAR"/>	
++		<isofield 
++		id="9" 
++		name="Ex File Operator ID" 
++		length="2"
++		class="org.jpos.iso.IFE_CHAR"/>	
++		<isofield 
++		id="10" 
++		name="Ex File Action Code" 
++		length="3"
++		class="org.jpos.iso.IFE_CHAR"/>	
++		<isofield 
++		id="11" 
++		name="Ex File Region" 
++		length="6"
++		class="org.jpos.iso.IFE_CHAR"/>	
++		<isofield 
++		id="12" 
++		name="Error Code" 
++		length="6"
++		class="org.jpos.iso.IFE_CHAR"/>	
++		<isofield 
++		id="13" 
++		name="CVV2 Presence Ind" 
++		length="1"
++		class="org.jpos.iso.IFE_CHAR"/>	
++		<isofield 
++		id="14" 
++		name="CVV2 Responce Code" 
++		length="1"
++		class="org.jpos.iso.IFE_CHAR"/>	
++		<isofield 
++		id="15" 
++		name="CVV2 Result" 
++		length="1"
++		class="org.jpos.iso.IFE_CHAR"/>	
++		<isofield 
++		id="16" 
++		name="VIP Amount" 
++		length="12"
++		class="org.jpos.iso.IFE_NUMERIC"/>	
++		<isofield 
++		id="17" 
++		name="VIP Cur Code" 
++		length="3"
++		class="org.jpos.iso.IFE_NUMERIC"/>	
++		<isofield 
++		id="18" 
++		name="Card Programme" 
++		length="3"
++		class="org.jpos.iso.IFE_CHAR"/>	
++		<isofield 
++		id="19" 
++		name="Charge Back Eff Date" 
++		length="36"
++		class="org.jpos.iso.IFE_NUMERIC"/>	
++		<isofield 
++		id="20" 
++		name="Secondary PIN Block" 
++		length="16"
++		class="org.jpos.iso.IFE_CHAR"/>	
++		<isofield 
++		id="21" 
++		name="E-Commerce Ind" 
++		length="2"
++		class="org.jpos.iso.IFE_CHAR"/>	
++		<isofield 
++		id="22" 
++		name="E-Commerce Trn Id" 
++		length="20"
++		class="org.jpos.iso.IFE_CHAR"/>	
++		<isofield 
++		id="23" 
++		name="CAVV Data" 
++		length="20"
++		class="org.jpos.iso.IFE_CHAR"/>	
++		<isofield 
++		id="24" 
++		name="CAVV Results Code" 
++		length="1"
++		class="org.jpos.iso.IFE_CHAR"/>	
++		<isofield 
++		id="25" 
++		name="Security Level Ind" 
++		length="3"
++		class="org.jpos.iso.IFE_CHAR"/>	
++		<isofield 
++		id="26" 
++		name="UCAF Data" 
++		length="32"
++		class="org.jpos.iso.IFE_CHAR"/>	
++		<isofield 
++		id="27" 
++		name="Recurring Trn Ind" 
++		length="1"
++		class="org.jpos.iso.IFE_CHAR"/>							
++   </isofieldpackager>
++  <isofield
++      id="49"
++      length="3"
++      name="Currency code, Transaction"
++      class="org.jpos.iso.IFE_CHAR"/>
++  <isofield
++      id="50"
++      length="3"
++      name="Currency code, Reconciliation"
++      class="org.jpos.iso.IFE_CHAR"/>
++  <isofield
++      id="51"
++      length="3"
++      name="Currency code, Cardholder billing"
++      class="org.jpos.iso.IFE_CHAR"/>
++  <isofield
++      id="52"
++      length="8"
++      name="Personal identification number [PIN] data"
++      class="org.jpos.iso.IFE_BINARY"/>
++  <isofield
++      id="53"
++      length="48"
++      name="Security related control information"
++      class="org.jpos.iso.IFE_LLBINARY"/>
++  <isofield
++      id="54"
++      length="120"
++      name="Amounts, additional"
++      class="org.jpos.iso.IFE_LLLCHAR"/>
++   <isofieldpackager 
++	    id="55"
++	    name="IC card system related data" 
++	    length="256" 
++	 	class="org.jpos.iso.IFE_LLLBINARY" 
++	  	packager="org.jpos.iso.packager.GenericPackager"
++	  	maxValidField="25"
++	  	emitBitmap="true"
++	  	bitmapField="0"
++	  	firstField="0" headerLength="1">
++		<isofield 
++		id="0" 
++		length="4" 
++		name="Bitmap" 
++		class="org.jpos.iso.IFE_BITMAP"/>	  	
++		<isofield 
++		id="1" 
++		name="Authorisation Request Cryptogram (ARQC)" 
++		length="8"
++		class="org.jpos.iso.IFB_BINARY"/>
++		<isofield 
++		id="2" 
++		name="Terminal Capability" 
++		length="3"
++		class="org.jpos.iso.IFB_BINARY"/>
++		<isofield 
++		id="3" 
++		name="Derivation Key Index" 
++		length="1"
++		class="org.jpos.iso.IFB_BINARY"/>
++		<isofield 
++		id="4" 
++		name="Unpredictable Number" 
++		length="4"
++		class="org.jpos.iso.IFB_BINARY"/>
++		<isofield 
++		id="5" 
++		name="Application Transaction Counter" 
++		length="2"
++		class="org.jpos.iso.IFB_BINARY"/>
++		<isofield 
++		id="6" 
++		name="Terminal Verification Results" 
++		length="5"
++		class="org.jpos.iso.IFB_BINARY"/>	
++		<isofield 
++		id="7" 
++		name="Cryptogram Version Number" 
++		length="1"
++		class="org.jpos.iso.IFB_BINARY"/>	
++		<isofield 
++		id="8" 
++		name="Card Verification Results" 
++		length="4"
++		class="org.jpos.iso.IFB_BINARY"/>	
++		<isofield 
++		id="9" 
++		name="Cryptogram Transaction Type" 
++		length="2"
++		class="org.jpos.iso.IFE_NUMERIC"/>	
++		<isofield 
++		id="10" 
++		name="Cryptogram Currency Code" 
++		length="3"
++		class="org.jpos.iso.IFE_NUMERIC"/>	
++		<isofield 
++		id="11" 
++		name="Application Interchange Profile" 
++		length="2"
++		class="org.jpos.iso.IFB_BINARY"/>	
++		<isofield 
++		id="12" 
++		name="Terminal Country Code" 
++		length="3"
++		class="org.jpos.iso.IFE_NUMERIC"/>	
++		<isofield 
++		id="13" 
++		name="Cryptogram Cash-Back Amount" 
++		length="12"
++		class="org.jpos.iso.IFE_NUMERIC"/>	
++		<isofield 
++		id="14" 
++		name="Terminal Serial Number" 
++		length="8"
++		class="org.jpos.iso.IFB_BINARY"/>	
++		<isofield 
++		id="15" 
++		name="Authorisation Response Cryptogram (ARPC" 
++		length="8"
++		class="org.jpos.iso.IFB_BINARY"/>	
++		<isofield 
++		id="16" 
++		name="ARPC Response Code" 
++		length="2"
++		class="org.jpos.iso.IFB_BINARY"/>	
++		<isofield 
++		id="17" 
++		name="Terminal Transaction Date" 
++		length="6"
++		class="org.jpos.iso.IFE_NUMERIC"/>	
++		<isofield 
++		id="18" 
++		name="Cryptogram Amount" 
++		length="12"
++		class="org.jpos.iso.IFE_NUMERIC"/>	
++		<isofield 
++		id="19" 
++		name="CCPS Indicator" 
++		length="1"
++		class="org.jpos.iso.IFE_NUMERIC"/>	
++		<isofield 
++		id="20" 
++		name="Card Authentication Reliability Indicator" 
++		length="1"
++		class="org.jpos.iso.IFE_NUMERIC"/>	
++		<isofield 
++		id="21" 
++		name="Card Authentication Result Code" 
++		length="1"
++		class="org.jpos.iso.IFE_NUMERIC"/>	
++		<isofield 
++		id="22" 
++		name="Issuer Discretionary Data" 
++		length="16"
++		class="org.jpos.iso.IFE_LLBINARY"/>	
++		<isofield 
++		id="23" 
++		name="Issuer Script Results Length" 
++		length="20"
++		class="org.jpos.iso.IFE_LLBINARY"/>	
++		<isofield 
++		id="24" 
++		name="Issuer Script Length" 
++		length="90"
++		class="org.jpos.iso.IFE_LLLBINARY"/>	
++		<isofield 
++		id="25" 
++		name="Plain/Encr Counters" 
++		length="2"
++		class="org.jpos.iso.IFB_BINARY"/>		
++		<isofield 
++		id="26" 
++		name="Issuer Appl Data" 
++		length="32"
++		class="org.jpos.iso.IFE_LLBINARY"/>				
++		<isofield 
++		id="27" 
++		name="Response Code" 
++		length="2"
++		class="org.jpos.iso.IFE_CHAR"/>		
++   </isofieldpackager>
++  <isofield
++      id="56"
++      length="35"
++      name="Original data elements"
++      class="org.jpos.iso.IFE_LLNUM"/>
++  <isofield
++      id="57"
++      length="3"
++      name="Authorization life cycle code"
++      class="org.jpos.iso.IFE_NUMERIC"/>
++  <isofield
++      id="58"
++      length="11"
++      name="Authorizing agent institution Id Code"
++      class="org.jpos.iso.IFE_LLNUM"/>
++  <isofield
++      id="59"
++      length="999"
++      name="Transport data"
++      class="org.jpos.iso.IFE_LLLCHAR"/>
++  <isofield
++      id="60"
++      length="999"
++      name="Reserved for national use"
++      class="org.jpos.iso.IFE_LLLCHAR"/>
++  <isofield
++      id="61"
++      length="999"
++      name="Reserved for national use"
++      class="org.jpos.iso.IFE_LLLCHAR"/>
++  <isofield
++      id="62"
++      length="999"
++      name="Reserved for private use"
++      class="org.jpos.iso.IFE_LLLCHAR"/>
++  <isofield
++      id="63"
++      length="999"
++      name="Reserved for private use"
++      class="org.jpos.iso.IFE_LLLCHAR"/>
++  <isofield
++      id="64"
++      length="8"
++      name="Message authentication code field"
++      class="org.jpos.iso.IFE_BINARY"/>
++  <isofield
++      id="65"
++      length="8"
++      name="Reserved for ISO use"
++      class="org.jpos.iso.IFE_BINARY"/>
++  <isofield
++      id="66"
++      length="204"
++      name="Amounts, original fees"
++      class="org.jpos.iso.IFE_LLLCHAR"/>
++  <isofield
++      id="67"
++      length="2"
++      name="Extended payment data"
++      class="org.jpos.iso.IFE_NUMERIC"/>
++  <isofield
++      id="68"
++      length="3"
++      name="Country code, receiving institution"
++      class="org.jpos.iso.IFE_NUMERIC"/>
++  <isofield
++      id="69"
++      length="3"
++      name="Country code, settlement institution"
++      class="org.jpos.iso.IFE_NUMERIC"/>
++  <isofield
++      id="70"
++      length="3"
++      name="Country code, authorizing agent Inst."
++      class="org.jpos.iso.IFE_NUMERIC"/>
++  <isofield
++      id="71"
++      length="8"
++      name="Message number"
++      class="org.jpos.iso.IFE_NUMERIC"/>
++  <isofield
++      id="72"
++      length="999"
++      name="Data record"
++      class="org.jpos.iso.IFE_LLLCHAR"/>
++  <isofield
++      id="73"
++      length="6"
++      name="Date, action"
++      class="org.jpos.iso.IFE_NUMERIC"/>
++  <isofield
++      id="74"
++      length="10"
++      name="Credits, number"
++      class="org.jpos.iso.IFE_NUMERIC"/>
++  <isofield
++      id="75"
++      length="10"
++      name="Credits, reversal number"
++      class="org.jpos.iso.IFE_NUMERIC"/>
++  <isofield
++      id="76"
++      length="10"
++      name="Debits, number"
++      class="org.jpos.iso.IFE_NUMERIC"/>
++  <isofield
++      id="77"
++      length="10"
++      name="Debits, reversal number"
++      class="org.jpos.iso.IFE_NUMERIC"/>
++  <isofield
++      id="78"
++      length="10"
++      name="Transfer, number"
++      class="org.jpos.iso.IFE_NUMERIC"/>
++  <isofield
++      id="79"
++      length="10"
++      name="Transfer, reversal number"
++      class="org.jpos.iso.IFE_NUMERIC"/>
++  <isofield
++      id="80"
++      length="10"
++      name="Inquiries, number"
++      class="org.jpos.iso.IFE_NUMERIC"/>
++  <isofield
++      id="81"
++      length="10"
++      name="Authorizations, number"
++      class="org.jpos.iso.IFE_NUMERIC"/>
++  <isofield
++      id="82"
++      length="10"
++      name="Inquiries, reversal number"
++      class="org.jpos.iso.IFE_NUMERIC"/>
++  <isofield
++      id="83"
++      length="10"
++      name="Payments, number"
++      class="org.jpos.iso.IFE_NUMERIC"/>
++  <isofield
++      id="84"
++      length="10"
++      name="Payments, reversal number"
++      class="org.jpos.iso.IFE_NUMERIC"/>
++  <isofield
++      id="85"
++      length="10"
++      name="Fee collections, number"
++      class="org.jpos.iso.IFE_NUMERIC"/>
++  <isofield
++      id="86"
++      length="16"
++      name="Credits, amount"
++      class="org.jpos.iso.IFE_NUMERIC"/>
++  <isofield
++      id="87"
++      length="16"
++      name="Credits, reversal amount"
++      class="org.jpos.iso.IFE_NUMERIC"/>
++  <isofield
++      id="88"
++      length="16"
++      name="Debits, amount"
++      class="org.jpos.iso.IFE_NUMERIC"/>
++  <isofield
++      id="89"
++      length="16"
++      name="Debits, reversal amount"
++      class="org.jpos.iso.IFE_NUMERIC"/>
++  <isofield
++      id="90"
++      length="10"
++      name="Authorizations, reversal number"
++      class="org.jpos.iso.IFE_NUMERIC"/>
++  <isofield
++      id="91"
++      length="3"
++      name="Country code, transaction Dest. Inst."
++      class="org.jpos.iso.IFE_NUMERIC"/>
++  <isofield
++      id="92"
++      length="3"
++      name="Country code, transaction Orig. Inst."
++      class="org.jpos.iso.IFE_NUMERIC"/>
++  <isofield
++      id="93"
++      length="11"
++      name="Transaction Dest. Inst. Id code"
++      class="org.jpos.iso.IFE_LLNUM"/>
++  <isofield
++      id="94"
++      length="11"
++      name="Transaction Orig. Inst. Id code"
++      class="org.jpos.iso.IFE_LLNUM"/>
++  <isofield
++      id="95"
++      length="99"
++      name="Card issuer reference data"
++      class="org.jpos.iso.IFE_LLCHAR"/>
++  <isofield
++      id="96"
++      length="999"
++      name="Key management data"
++      class="org.jpos.iso.IFE_LLLBINARY"/>
++  <isofield
++      id="97"
++      length="17"
++      name="Amount, Net reconciliation"
++      class="org.jpos.iso.IFE_AMOUNT"/>
++  <isofield
++      id="98"
++      length="25"
++      name="Payee"
++      class="org.jpos.iso.IFE_CHAR"/>
++  <isofield
++      id="99"
++      length="11"
++      name="Settlement institution Id code"
++      class="org.jpos.iso.IFE_LLCHAR"/>
++  <isofield
++      id="100"
++      length="11"
++      name="Receiving institution Id code"
++      class="org.jpos.iso.IFE_LLNUM"/>
++  <isofield
++      id="101"
++      length="17"
++      name="File name"
++      class="org.jpos.iso.IFE_LLCHAR"/>
++  <isofield
++      id="102"
++      length="28"
++      name="Account identification 1"
++      class="org.jpos.iso.IFE_LLCHAR"/>
++  <isofield
++      id="103"
++      length="28"
++      name="Account identification 2"
++      class="org.jpos.iso.IFE_LLCHAR"/>
++  <isofield
++      id="104"
++      length="100"
++      name="Transaction description"
++      class="org.jpos.iso.IFE_LLLCHAR"/>
++  <isofield
++      id="105"
++      length="16"
++      name="Credits, Chargeback amount"
++      class="org.jpos.iso.IFE_NUMERIC"/>
++  <isofield
++      id="106"
++      length="16"
++      name="Debits, Chargeback amount"
++      class="org.jpos.iso.IFE_NUMERIC"/>
++  <isofield
++      id="107"
++      length="10"
++      name="Credits, Chargeback number"
++      class="org.jpos.iso.IFE_NUMERIC"/>
++  <isofield
++      id="108"
++      length="10"
++      name="Debits, Chargeback number"
++      class="org.jpos.iso.IFE_NUMERIC"/>
++  <isofield
++      id="109"
++      length="84"
++      name="Credits, Fee amounts"
++      class="org.jpos.iso.IFE_LLCHAR"/>
++  <isofield
++      id="110"
++      length="84"
++      name="Debits, Fee amounts"
++      class="org.jpos.iso.IFE_LLCHAR"/>
++  <isofield
++      id="111"
++      length="999"
++      name="Reserved for ISO use"
++      class="org.jpos.iso.IFE_LLLCHAR"/>
++  <isofield
++      id="112"
++      length="999"
++      name="Reserved for ISO use"
++      class="org.jpos.iso.IFE_LLLCHAR"/>
++  <isofield
++      id="113"
++      length="999"
++      name="Reserved for ISO use"
++      class="org.jpos.iso.IFE_LLLCHAR"/>
++  <isofield
++      id="114"
++      length="999"
++      name="Reserved for ISO use"
++      class="org.jpos.iso.IFE_LLLCHAR"/>
++  <isofield
++      id="115"
++      length="999"
++      name="Reserved for ISO use"
++      class="org.jpos.iso.IFE_LLLCHAR"/>
++  <isofield
++      id="116"
++      length="999"
++      name="Reserved for national use"
++      class="org.jpos.iso.IFE_LLLCHAR"/>
++  <isofield
++      id="117"
++      length="999"
++      name="Reserved for national use"
++      class="org.jpos.iso.IFE_LLLCHAR"/>
++  <isofield
++      id="118"
++      length="999"
++      name="Reserved for national use"
++      class="org.jpos.iso.IFE_LLLCHAR"/>
++  <isofield
++      id="119"
++      length="999"
++      name="Reserved for national use"
++      class="org.jpos.iso.IFE_LLLCHAR"/>
++  <isofield
++      id="120"
++      length="999"
++      name="Reserved for national use"
++      class="org.jpos.iso.IFE_LLLCHAR"/>
++  <isofield
++      id="121"
++      length="999"
++      name="Reserved for national use"
++      class="org.jpos.iso.IFE_LLLCHAR"/>
++  <isofield
++      id="122"
++      length="999"
++      name="Reserved for national use"
++      class="org.jpos.iso.IFE_LLLCHAR"/>
++  <isofield
++      id="123"
++      length="999"
++      name="Reserved for private use"
++      class="org.jpos.iso.IFE_LLLCHAR"/>
++  <isofield
++      id="124"
++      length="999"
++      name="Reserved for private use"
++      class="org.jpos.iso.IFE_LLLCHAR"/>
++  <isofield
++      id="125"
++      length="999"
++      name="Reserved for private use"
++      class="org.jpos.iso.IFE_LLLCHAR"/>
++  <isofield
++      id="126"
++      length="999"
++      name="Reserved for private use"
++      class="org.jpos.iso.IFE_LLLCHAR"/>
++  <isofield
++      id="127"
++      length="999"
++      name="Reserved for private use"
++      class="org.jpos.iso.IFE_LLLCHAR"/>
++  <isofield
++      id="128"
++      length="8"
++      name="Message authentication code field"
++      class="org.jpos.iso.IFE_BINARY"/>
++</isopackager>
+Index: jpos/src/org/jpos/iso/EbcdicHexInterpreter.java
+===================================================================
+--- jpos/src/org/jpos/iso/EbcdicHexInterpreter.java	(revision 0)
++++ jpos/src/org/jpos/iso/EbcdicHexInterpreter.java	(revision 0)
+@@ -0,0 +1,111 @@
++/*
++ * Copyright (c) 2000 jPOS.org.  All rights reserved.
++ *
++ * Redistribution and use in source and binary forms, with or without
++ * modification, are permitted provided that the following conditions
++ * are met:
++ *
++ * 1. Redistributions of source code must retain the above copyright
++ *    notice, this list of conditions and the following disclaimer.
++ *
++ * 2. Redistributions in binary form must reproduce the above copyright
++ *    notice, this list of conditions and the following disclaimer in
++ *    the documentation and/or other materials provided with the
++ *    distribution.
++ *
++ * 3. The end-user documentation included with the redistribution,
++ *    if any, must include the following acknowledgment:
++ *    "This product includes software developed by the jPOS project 
++ *    (http://www.jpos.org/)". Alternately, this acknowledgment may 
++ *    appear in the software itself, if and wherever such third-party 
++ *    acknowledgments normally appear.
++ *
++ * 4. The names "jPOS" and "jPOS.org" must not be used to endorse 
++ *    or promote products derived from this software without prior 
++ *    written permission. For written permission, please contact 
++ *    license@jpos.org.
++ *
++ * 5. Products derived from this software may not be called "jPOS",
++ *    nor may "jPOS" appear in their name, without prior written
++ *    permission of the jPOS project.
++ *
++ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
++ * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
++ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  
++ * IN NO EVENT SHALL THE JPOS PROJECT OR ITS CONTRIBUTORS BE LIABLE FOR 
++ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL 
++ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS 
++ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) 
++ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, 
++ * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING 
++ * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
++ * POSSIBILITY OF SUCH DAMAGE.
++ * ====================================================================
++ *
++ * This software consists of voluntary contributions made by many
++ * individuals on behalf of the jPOS Project.  For more
++ * information please see <http://www.jpos.org/>.
++ */
++
++package org.jpos.iso;
++
++/**
++ * Implements Hex Interpreter. The Hex digits are stored in EBCDIC.
++ * 
++ * @author ayakovlev
++ * @version $Revision:$ $Date:$
++ */
++public class EbcdicHexInterpreter implements BinaryInterpreter
++{
++    /** An instance of this Interpreter. Only one needed for the whole system */
++    public static final EbcdicHexInterpreter INSTANCE = new EbcdicHexInterpreter();
++
++    /** 0-15 to EBCDIC hex digit lookup table. */
++    private static final byte[] HEX_EBCDIC = new byte[] {
++              (byte)0xF0, (byte)0xF1, (byte)0xF2, (byte)0xF3, 
++              (byte)0xF4, (byte)0xF5, (byte)0xF6, (byte)0xF7,
++              (byte)0xF8, (byte)0xF9, (byte)0xC1, (byte)0xC2, 
++              (byte)0xC3, (byte)0xC4, (byte)0xC5, (byte)0xC6
++    };
++
++    /**
++     * Converts the binary data into EBCDIC hex digits.
++     * @see org.jpos.iso.BinaryInterpreter#interpret(byte[], byte[], int)
++     */
++    public void interpret(byte[] data, byte[] b, int offset)
++    {
++        for (int i = 0; i < data.length; i++) {
++            b[offset + i * 2] = HEX_EBCDIC[(data[i] & 0xF0) >> 4];
++            b[offset + i * 2 + 1] = HEX_EBCDIC[data[i] & 0x0F];
++        }
++    }
++
++    /**
++     * Converts the EBCDIC hex digits into binary data.
++     * @see org.jpos.iso.BinaryInterpreter#uninterpret(byte[], int, int)
++     */
++    public byte[] uninterpret(byte[] rawData, int offset, int length)
++    {
++        byte[] ret = new byte[length];
++        for (int i = 0; i < length; i++)
++        {
++        	//TODO: what if the data is not EBCDIC? validation is required.
++            byte hi = rawData[offset + i * 2];
++            byte lo = rawData[offset + i * 2 + 1];
++            int h = hi < 0xF0 ? 10 + hi - 0xC0 : hi - 0xF0;
++            int l = lo < 0xF0 ? 10 + lo - 0xC0 : lo - 0xF0;
++            ret[i] = (byte)(h << 4 | l);
++        }
++        return ret;
++    }
++
++    /**
++     * Returns double nBytes because the hex representation of 1 byte needs 2 hex digits.
++     * 
++     * @see org.jpos.iso.BinaryInterpreter#getPackedLength(int)
++     */
++    public int getPackedLength(int nBytes)
++    {
++        return nBytes * 2;
++    }
++}
+\ No newline at end of file
+Index: jpos/src/org/jpos/iso/IFE_BINARY.java
+===================================================================
+--- jpos/src/org/jpos/iso/IFE_BINARY.java	(revision 0)
++++ jpos/src/org/jpos/iso/IFE_BINARY.java	(revision 0)
+@@ -0,0 +1,70 @@
++/*
++ * Copyright (c) 2000 jPOS.org.  All rights reserved.
++ *
++ * Redistribution and use in source and binary forms, with or without
++ * modification, are permitted provided that the following conditions
++ * are met:
++ *
++ * 1. Redistributions of source code must retain the above copyright
++ *    notice, this list of conditions and the following disclaimer.
++ *
++ * 2. Redistributions in binary form must reproduce the above copyright
++ *    notice, this list of conditions and the following disclaimer in
++ *    the documentation and/or other materials provided with the
++ *    distribution.
++ *
++ * 3. The end-user documentation included with the redistribution,
++ *    if any, must include the following acknowledgment:
++ *    "This product includes software developed by the jPOS project 
++ *    (http://www.jpos.org/)". Alternately, this acknowledgment may 
++ *    appear in the software itself, if and wherever such third-party 
++ *    acknowledgments normally appear.
++ *
++ * 4. The names "jPOS" and "jPOS.org" must not be used to endorse 
++ *    or promote products derived from this software without prior 
++ *    written permission. For written permission, please contact 
++ *    license@jpos.org.
++ *
++ * 5. Products derived from this software may not be called "jPOS",
++ *    nor may "jPOS" appear in their name, without prior written
++ *    permission of the jPOS project.
++ *
++ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
++ * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
++ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  
++ * IN NO EVENT SHALL THE JPOS PROJECT OR ITS CONTRIBUTORS BE LIABLE FOR 
++ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL 
++ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS 
++ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) 
++ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, 
++ * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING 
++ * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
++ * POSSIBILITY OF SUCH DAMAGE.
++ * ====================================================================
++ *
++ * This software consists of voluntary contributions made by many
++ * individuals on behalf of the jPOS Project.  For more
++ * information please see <http://www.jpos.org/>.
++ */
++
++package org.jpos.iso;
++
++/**
++ * ISOFieldPackager ASCII Binary
++ *
++ * @author apr@cs.com.uy
++ * @version $Id: IFA_BINARY.java 1799 2003-10-31 00:47:42Z ninki $
++ * @see ISOComponent
++ */
++public class IFE_BINARY extends ISOBinaryFieldPackager {
++    public IFE_BINARY() {
++        super(EbcdicHexInterpreter.INSTANCE, NullPrefixer.INSTANCE);
++    }
++    /**
++     * @param len - field len
++     * @param description symbolic descrption
++     */
++    public IFE_BINARY(int len, String description) {
++        super(len, description, EbcdicHexInterpreter.INSTANCE, NullPrefixer.INSTANCE);
++    }
++}
+Index: jpos/src/org/jpos/iso/IFE_BITMAP.java
+===================================================================
+--- jpos/src/org/jpos/iso/IFE_BITMAP.java	(revision 2590)
++++ jpos/src/org/jpos/iso/IFE_BITMAP.java	(working copy)
+@@ -46,8 +46,41 @@
+      * @exception ISOException
+      */
+     public byte[] pack (ISOComponent c) throws ISOException {
+-        byte[] b = ISOUtil.bitSet2byte ((BitSet) c.getValue());
+-        return ISOUtil.asciiToEbcdic(ISOUtil.hexString(b));
++    	BitSet bitMapValue = (BitSet) c.getValue();
++    	
++    	int maxBytesPossible = getLength();
++    	int maxBitsAllowedPhysically = maxBytesPossible<<3;
++    	
++    	int lastBitOn = bitMapValue.length()-1;    
++                            
++        int actualLastBit=lastBitOn; // takes into consideration 2nd and 3rd bit map flags
++        if (lastBitOn > 128)
++        	if (bitMapValue.get(65))
++        		actualLastBit = 192;
++        	else actualLastBit = 128;
++        else if (lastBitOn > 64)
++        	if (bitMapValue.get(1))
++        		actualLastBit = 128;
++        	else actualLastBit = 64;
++        
++                 
++       	if (actualLastBit > maxBitsAllowedPhysically)
++    			{
++    				throw new ISOException ("Bitmap can only hold bits numbered up to " + maxBitsAllowedPhysically + " in the " + 
++    						getLength() + " bytes available.");
++    			}
++        
++       	int requiredLengthInBytes = (actualLastBit >> 3) + (actualLastBit % 8 > 0 ? 1 : 0);
++       	
++       	int requiredBitMapLengthInBytes;
++       	if (requiredLengthInBytes>4 && requiredLengthInBytes<=8) requiredBitMapLengthInBytes = 8;
++       	else if (requiredLengthInBytes>8 && requiredLengthInBytes<=16) requiredBitMapLengthInBytes = 16;
++       	else if (requiredLengthInBytes>16 && requiredLengthInBytes<=24) requiredBitMapLengthInBytes = 24;
++       	else requiredBitMapLengthInBytes=maxBytesPossible;
++       		     	
++        byte[] b = ISOUtil.bitSet2byte (bitMapValue, requiredBitMapLengthInBytes);
++        return ISOUtil.asciiToEbcdic(ISOUtil.hexString(b).getBytes());
++        
+     }
+     public int getMaxPackedLength() {
+         return getLength() >> 2;
+@@ -62,23 +95,29 @@
+     public int unpack (ISOComponent c, byte[] b, int offset)
+         throws ISOException
+     {
+-        int len;
+-        b = ISOUtil.ebcdicToAsciiBytes (b, offset, getLength() << 2);
+-        BitSet bmap = ISOUtil.hex2BitSet (b, 0, getLength() << 3);
++//    	TODO: calculate bytes to read based on bits 1, 65 on/off in the actual data 
++    	int bytes;
++    	byte [] b1 = ISOUtil.ebcdicToAsciiBytes (b, offset, getLength()*2 );
++    	BitSet bmap = ISOUtil.hex2BitSet (b1, 0, getLength() << 3);
+         c.setValue(bmap);
+-        len = (bmap.get(1) == true) ? 128 : 64; /* changed by Hani */
+-        if (getLength() > 16 && bmap.get(65))
+-            len = 192;
+-        return (len >> 2);
++        bytes = b1.length;;
++        // check for 2nd bit map indicator
++        if ((bytes > 16) && bmap.get(1)==false) { 
++          bytes = 16; 
++        // check for 3rd bit map indicator
++        } else if ((bytes > 32) && bmap.get(65)==false) { 
++          bytes = 32; 
++        } 
++        return bytes;
+     }
+     public void unpack (ISOComponent c, InputStream in) 
+         throws IOException, ISOException
+     {
+-        byte[] b = ISOUtil.ebcdicToAsciiBytes (readBytes (in, 16));
+-        BitSet bmap = ISOUtil.hex2BitSet (new BitSet (64), b, 0);
++    	byte [] b1 = ISOUtil.ebcdicToAsciiBytes (readBytes (in, 16), 0, 16);
++        BitSet bmap = ISOUtil.hex2BitSet (new BitSet (64), b1, 0);
+         if (getLength() > 8 && bmap.get (1)) {
+-            b = ISOUtil.ebcdicToAsciiBytes (readBytes (in, 16));
+-            ISOUtil.hex2BitSet (bmap, b, 64);
++        	byte [] b2 = ISOUtil.ebcdicToAsciiBytes (readBytes (in, 16), 0, 16);        	
++            ISOUtil.hex2BitSet (bmap, b2, 64);
+         }
+         c.setValue(bmap);
+     }
+Index: jpos/src/org/jpos/iso/ISOBasePackager.java
+===================================================================
+--- jpos/src/org/jpos/iso/ISOBasePackager.java	(revision 2590)
++++ jpos/src/org/jpos/iso/ISOBasePackager.java	(working copy)
+@@ -42,7 +42,8 @@
+ 
+     protected Logger logger = null;
+     protected String realm = null;
+-
++    protected int headerLength = 0;
++    
+     public void setFieldPackager (ISOFieldPackager[] fld) {
+         this.fld = fld;
+     }
+@@ -82,6 +83,13 @@
+             c = (ISOComponent) fields.get (new Integer (0));
+             byte[] b;
+ 
++            if (m instanceof ISOMsg && headerLength>0) 
++            {
++            	byte[] h = ((ISOMsg) m).getHeader();
++            	if (h != null) 
++            		len += h.length;
++            }
++            
+             if (first > 0 && c != null) {
+                 b = fld[0].pack(c);
+                 len += b.length;
+@@ -107,7 +115,7 @@
+                     try {
+                         ISOFieldPackager fp = fld[i];
+                         if (fp == null)
+-                            throw new ISOException ("null field packager");
++                            throw new ISOException ("null field "+i+" packager");
+                         b = fp.pack(c);
+                         len += b.length;
+                         v.add (b);
+@@ -141,6 +149,16 @@
+ 
+             int k = 0;
+             byte[] d = new byte[len];
++            
++            // if ISOMsg insert header 
++            if (m instanceof ISOMsg && headerLength>0) 
++            {
++            	byte[] h = ((ISOMsg) m).getHeader();
++            	if (h != null) 
++            		for (int j=0; j<h.length; j++)
++            			d[k++] = h[j];
++            }
++
+             for (int i=0; i<v.size(); i++) {
+                 b = (byte[]) v.get(i);
+                 for (int j=0; j<b.length; j++)
+@@ -172,10 +190,21 @@
+                 evt.addMessage (ISOUtil.hexString (b));
+ 
+             int consumed = 0;
++            
++            // if ISOMsg and headerLength defined 
++            if (m instanceof ISOMsg /*&& ((ISOMsg) m).getHeader()==null*/ && headerLength>0) 
++            {
++            	byte[] h = new byte[headerLength];
++            	for (int i=0; i<headerLength; i++)
++                    h[i] = b[i];
++            	((ISOMsg) m).setHeader(h);
++            	consumed += headerLength;
++            }       
++            
+             if (!(fld[0] instanceof ISOBitMapPackager))
+             {
+                 ISOComponent mti = fld[0].createComponent(0);
+-                consumed  = fld[0].unpack(mti, b, 0);
++                consumed  += fld[0].unpack(mti, b, consumed);
+                 m.set (mti);
+             }
+             BitSet bmap = null;
+@@ -254,6 +283,15 @@
+             if (m.getComposite() != m) 
+                 throw new ISOException ("Can't call packager on non Composite");
+ 
++            // if ISOMsg and headerLength defined 
++            if (m instanceof ISOMsg && ((ISOMsg) m).getHeader()==null && headerLength>0) 
++            {
++            	byte[] h = new byte[headerLength];
++            	in.read(h, 0, headerLength);
++            	((ISOMsg) m).setHeader(h);
++            }            
++            
++            
+             if (!(fld[0] instanceof ISOMsgFieldPackager) &&
+                 !(fld[0] instanceof ISOBitMapPackager))
+             {
+@@ -382,4 +420,12 @@
+     public Logger getLogger() {
+         return logger;
+     }
++    public int getHeaderLength ()
++    {
++    	return headerLength;
++    }
++    public void setHeaderLength(int len)
++    {
++    	headerLength = len;
++    }
+ }
+Index: jpos/src/org/jpos/iso/ISOUtil.java
+===================================================================
+--- jpos/src/org/jpos/iso/ISOUtil.java	(revision 2590)
++++ jpos/src/org/jpos/iso/ISOUtil.java	(working copy)
+@@ -451,6 +451,29 @@
+             d[8] |= 0x80;
+         return d;
+     }
++    
++    /**
++     * converts a BitSet into a binary field
++     * used in pack routines
++     * @param b - the BitSet
++     * @param bytes - number of bytes to return
++     * @return binary representation
++     */    
++    public static byte[] bitSet2byte (BitSet b, int bytes)
++    {
++        int len = bytes * 8;
++        
++        byte[] d = new byte[bytes];
++        for (int i=0; i<len; i++) 
++            if (b.get(i+1)) 
++                d[i >> 3] |= (0x80 >> (i % 8));
++        //TODO: review why 2nd & 3rd bit map flags are set here??? 
++        if (len>64)
++            d[0] |= 0x80;
++        if (len>128)
++            d[8] |= 0x80;
++        return d;
++    }
+ 
+     /**
+      * Converts a binary representation of a Bitmap field
+@@ -541,13 +564,13 @@
+      * into a Java BitSet
+      * @param b - hex representation
+      * @param offset - starting offset
+-     * @param maxBits - max number of bits (supports 64,128 or 192)
++     * @param maxBits - max number of bits (supports 8, 16, 24, 32, 48, 52, 64,.. 128 or 192)
+      * @return java BitSet object
+      */
+     public static BitSet hex2BitSet (byte[] b, int offset, int maxBits) {
+         int len = maxBits > 64?
+           ((Character.digit((char)b[offset],16) & 0x08) == 8 ? 128 : 64) :
+-          64;
++          maxBits;
+         BitSet bmap = new BitSet (len);
+         for (int i=0; i<len; i++) {
+             int digit = Character.digit((char)b[offset + (i >> 2)], 16);
+Index: jpos/src/org/jpos/iso/packager/GenericPackager.java
+===================================================================
+--- jpos/src/org/jpos/iso/packager/GenericPackager.java	(revision 2590)
++++ jpos/src/org/jpos/iso/packager/GenericPackager.java	(working copy)
+@@ -227,6 +227,7 @@
+         String emitBmap  = atts.getValue("emitBitmap");
+         String bmapfield = atts.getValue("bitmapField");
+         firstField = atts.getValue("firstField");
++        String headerLenStr = atts.getValue("headerLength");
+ 
+         if (maxField != null)
+             maxValidField = Integer.parseInt(maxField); 
+@@ -241,6 +242,9 @@
+             Integer.parseInt (firstField);  // attempt to parse just to
+                                             // force an exception if the
+                                             // data is not correct.
++        
++        if (headerLenStr != null)
++        	setHeaderLength(Integer.parseInt(headerLenStr));
+     }
+ 
+ 
+Index: jpos/test/org/jpos/iso/AllTests.java
+===================================================================
+--- jpos/test/org/jpos/iso/AllTests.java	(revision 2590)
++++ jpos/test/org/jpos/iso/AllTests.java	(working copy)
+@@ -91,6 +91,7 @@
+         //suite.addTest(new TestSuite(IFEP_LLCHARTest.class));
+         //suite.addTest(new TestSuite(IFIPM_LLLCHARTest.class));
+         //suite.addTest(new TestSuite(IFMC_LLCHARTest.class));
++        suite.addTest(new TestSuite(IFE_BITMAPTest.class));
+         //$JUnit-END$
+         return suite;
+     }
+Index: jpos/test/org/jpos/iso/IFE_BITMAPTest.java
+===================================================================
+--- jpos/test/org/jpos/iso/IFE_BITMAPTest.java	(revision 0)
++++ jpos/test/org/jpos/iso/IFE_BITMAPTest.java	(revision 0)
+@@ -0,0 +1,328 @@
++/*
++ * Copyright (c) 2006 jPOS.org
++ *
++ * See terms of license at http://jpos.org/license.html
++ *
++ */
++
++package org.jpos.iso;
++
++import java.util.BitSet;
++
++import junit.framework.TestCase;
++
++/**
++ * @author ay
++ */
++public class IFE_BITMAPTest extends TestCase
++{
++    
++	IFE_BITMAP oneByte ;
++    IFE_BITMAP twoBytes ;
++    IFE_BITMAP threeBytes ;
++    IFE_BITMAP fourBytes ;
++    IFE_BITMAP eightBytes ;
++    IFE_BITMAP sixteenBytes ;
++    IFE_BITMAP thirtytwoBytes;
++    IFE_BITMAP fortyeightBytes;
++    byte[] DataWith2ndBitMapBitOn, DataWith2ndBitMapBitOff, thirtytwoByteBitMapIn48Bytes, sixteenByteBitMapIn48Bytes, testbytes, outBytes;
++    String in;
++    
++    public void setUp() {
++    	oneByte = new IFE_BITMAP(1,"1 byte bitmap");
++        twoBytes = new IFE_BITMAP(2,"2 byte bitmap");
++        threeBytes = new IFE_BITMAP(3,"3 byte bitmap");
++        fourBytes = new IFE_BITMAP(4,"4 byte bitmap");
++        eightBytes = new IFE_BITMAP(8,"8 byte bitmap");
++        sixteenBytes = new IFE_BITMAP(16,"16 byte bitmap");
++        thirtytwoBytes = new IFE_BITMAP(32,"32 byte bitmap");
++        fortyeightBytes = new IFE_BITMAP(48,"48 byte bitmap");
++        
++        DataWith2ndBitMapBitOn        = ISOUtil.asciiToEbcdic("8F81431FF12458F17F91421FF12418F18F81421FF12418F1".getBytes());
++        DataWith2ndBitMapBitOff       = ISOUtil.asciiToEbcdic("7F81431FF12458F17F91421FF12418F18F81421FF12418F1".getBytes());
++        thirtytwoByteBitMapIn48Bytes  = ISOUtil.asciiToEbcdic("8F81431FF12458F18F91421FF12418F18F81421FF12418F1".getBytes());
++        sixteenByteBitMapIn48Bytes    = ISOUtil.asciiToEbcdic("7F81431FF12458F17F91421FF12418F18F81421FF12418F1".getBytes());
++        in = ISOUtil.hexdump(DataWith2ndBitMapBitOn);
++
++        
++    }
++
++    public void test01ByteBitmapWithDataWith2ndBitMapBitOn() throws Exception
++    {
++
++        ISOComponent c = new ISOBitMap(1);
++        int consumed = oneByte.unpack(c, DataWith2ndBitMapBitOn,0);
++        assertEquals("1 bytes bitmap: unpack of 1 byte bitmap should consume 2 bytes in characters",2,consumed);
++        assertEquals("1 bytes bitmap: 1 byte bitmap should result in a bitmap holding fields up to 8",8,((BitSet)c.getValue()).length() - 1);
++
++        outBytes = oneByte.pack(c);
++        assertEquals("1 bytes bitmap: pack of 1 byte bitmap must produce a result 2 bytes long",2,outBytes.length);
++        assertEquals("1 bytes bitmap: pack of unpacked value should be the same as original", ISOUtil.hexString(DataWith2ndBitMapBitOn,0,2),ISOUtil.hexString(outBytes));
++    }
++    public void test02ByteBitmapWithDataWith2ndBitMapBitOn() throws Exception
++    {
++
++        ISOComponent c = new ISOBitMap(1);
++        int consumed = twoBytes.unpack(c, DataWith2ndBitMapBitOn,0);
++        assertEquals("2 bytes bitmap: unpack of 2 bytew bitmap should consume 4 bytes in characters",4,consumed);
++        assertEquals("2 bytes bitmap: 2 bytes bitmap should result in a bitmap holding fields up to 16",16,((BitSet)c.getValue()).length() - 1);
++
++        outBytes = twoBytes.pack(c);
++        assertEquals("2 bytes bitmap: pack of 2 byte bitmap must produce a result 4 bytes long",4,outBytes.length);
++        assertEquals("2 bytes bitmap: pack of unpacked value should be the same as original", ISOUtil.hexString(DataWith2ndBitMapBitOn,0,4),ISOUtil.hexString(outBytes));
++        
++        try {
++            outBytes = oneByte.pack(c);
++            fail("2 bytes bitmap: pack of 16 bits bitmap by 1 bytes packager should result in ISOException");
++        } catch (Exception e) {
++            // expected.
++            assertEquals("Bitmap can only hold bits numbered up to 8 in the 1 bytes available.",e.getMessage());
++        }
++    }
++    public void test03ByteBitmapWithDataWith2ndBitMapBitOn() throws Exception
++    {
++
++        ISOComponent c = new ISOBitMap(1);
++        int consumed = threeBytes.unpack(c, DataWith2ndBitMapBitOn,0);
++        assertEquals("3 bytes bitmap: unpack of 3 bytew bitmap should consume 6 bytes in characters",6,consumed);
++        assertEquals("3 bytes bitmap: 3 bytes bitmap should result in a bitmap holding fields up to 24",24,((BitSet)c.getValue()).length() - 1);
++
++        outBytes = threeBytes.pack(c);
++        assertEquals("3 bytes bitmap:pack of 3 byte bitmap must produce a result 6 bytes long",6,outBytes.length);
++        assertEquals("3 bytes bitmap: pack of unpacked value should be the same as original", ISOUtil.hexString(DataWith2ndBitMapBitOn,0,6),ISOUtil.hexString(outBytes));
++        
++        try {
++            outBytes = oneByte.pack(c);
++            fail("3 bytes bitmap: pack of 24 bits bitmap by 1 bytes packager should result in ISOException");
++        } catch (Exception e) {
++            // expected.
++            assertEquals("Bitmap can only hold bits numbered up to 8 in the 1 bytes available.",e.getMessage());
++        }
++        
++        try {
++            outBytes = twoBytes.pack(c);
++            fail("3 bytes bitmap: pack of 24 bits bitmap by 2 bytes packager should result in ISOException");
++        } catch (Exception e) {
++            // expected.
++            assertEquals("Bitmap can only hold bits numbered up to 16 in the 2 bytes available.",e.getMessage());
++        }
++                
++    }    
++    public void test04ByteBitmapWithDataWith2ndBitMapBitOn() throws Exception
++    {
++
++        ISOComponent c = new ISOBitMap(1);
++        int consumed = fourBytes.unpack(c, DataWith2ndBitMapBitOn,0);
++        assertEquals("4 bytes bitmap: unpack of 4 bytes bitmap should consume 8 bytes in characters",8,consumed);
++        assertEquals("4 bytes bitmap: 4 bytes bitmap should result in a bitmap holding fields up to 32",32,((BitSet)c.getValue()).length() - 1);
++
++        outBytes = fourBytes.pack(c);
++        assertEquals("4 bytes bitmap: pack of 4 byte bitmap must produce a result 8 bytes long",8,outBytes.length);
++        assertEquals("4 bytes bitmap: pack of unpacked value should be the same as original", ISOUtil.hexString(DataWith2ndBitMapBitOn,0,8),ISOUtil.hexString(outBytes));
++        
++        try {
++            outBytes = oneByte.pack(c);
++            fail("4 bytes bitmap: pack of 32 bits bitmap by 1 bytes packager should result in ISOException");
++        } catch (Exception e) {
++            // expected.
++            assertEquals("Bitmap can only hold bits numbered up to 8 in the 1 bytes available.",e.getMessage());
++        }
++        
++        try {
++            outBytes = twoBytes.pack(c);
++            fail("4 bytes bitmap: pack of 32 bits bitmap by 2 bytes packager should result in ISOException");
++        } catch (Exception e) {
++            // expected.
++            assertEquals("Bitmap can only hold bits numbered up to 16 in the 2 bytes available.",e.getMessage());
++        }
++        
++        try {
++            outBytes = threeBytes.pack(c);
++            fail("4 bytes bitmap: pack of 32 bits bitmap by 3 bytes packager should result in ISOException");
++        } catch (Exception e) {
++            // expected.
++            assertEquals("Bitmap can only hold bits numbered up to 24 in the 3 bytes available.",e.getMessage());
++        }
++    }
++ 
++    public void test08ByteBitmapWithDataWith2ndBitMapBitOn() throws Exception
++    {
++
++        ISOComponent c = new ISOBitMap(1);
++        int consumed = eightBytes.unpack(c, DataWith2ndBitMapBitOn,0);
++        assertEquals("8 bytes bitmap: unpack of 8 bytes bitmap should consume 16 bytes in characters", 16, consumed);
++        assertEquals("8 bytes bitmap: 8 bytes bitmap should result in a bitmap holding fields up to 64", 64 ,((BitSet)c.getValue()).length() - 1);
++
++        outBytes = eightBytes.pack(c);
++        assertEquals("8 bytes bitmap: pack of 8 bytes bitmap must produce a result 16 bytes long",16,outBytes.length);
++        assertEquals("8 bytes bitmap: pack of upacked value should be the same as original", ISOUtil.hexString(DataWith2ndBitMapBitOn,0,16),ISOUtil.hexString(outBytes));
++        
++        try {
++            outBytes = oneByte.pack(c);
++            fail("8 bytes bitmap: pack of 64 bits bitmap by 1 byte packager should result in ISOException");
++        } catch (Exception e) {
++            // expected.
++            assertEquals("Bitmap can only hold bits numbered up to 8 in the 1 bytes available.",e.getMessage());
++        }
++        
++        try {
++            outBytes = twoBytes.pack(c);
++            fail("8 bytes bitmap: pack of 64 bits bitmap by 2 bytes packager should result in ISOException");
++        } catch (Exception e) {
++            // expected.
++            assertEquals("Bitmap can only hold bits numbered up to 16 in the 2 bytes available.",e.getMessage());
++        }
++        
++        try {
++            outBytes = threeBytes.pack(c);
++            fail("8 bytes bitmap: pack of 64 bits bitmap by 3 bytes packager should result in ISOException");
++        } catch (Exception e) {
++            // expected.
++            assertEquals("Bitmap can only hold bits numbered up to 24 in the 3 bytes available.",e.getMessage());
++        }
++        
++        try {
++            outBytes = fourBytes.pack(c);
++            fail("8 bytes bitmap: pack of 64 bits bitmap by 4 bytes packager should result in ISOException");
++        } catch (Exception e) {
++            // expected.
++            assertEquals("Bitmap can only hold bits numbered up to 32 in the 4 bytes available.",e.getMessage());
++        }
++        
++    }
++    
++    public void test16ByteBitmapWithDataWith2ndBitMapBitOn() throws Exception
++    {
++        ISOComponent c = new ISOBitMap(1);
++        int consumed = sixteenBytes.unpack(c, DataWith2ndBitMapBitOn, 0);
++        assertEquals("16 bytes bitmap: unpack of 8 bytes bitmap should consume 32 bytes in characters", 32, consumed);
++        assertEquals("16 bytes bitmap: 16 bytes bitmap should result in a bitmap holding fields up to 128", 128 ,((BitSet)c.getValue()).length() - 1);
++
++        outBytes = sixteenBytes.pack(c);
++        assertEquals("16 bytes bitmap: pack of 16 bytes bitmap must produce a result 32 bytes long",32,outBytes.length);
++        assertEquals("16 bytes bitmap: pack of upacked value should be the same as original", ISOUtil.hexString(DataWith2ndBitMapBitOn,0,32),ISOUtil.hexString(outBytes));
++        
++        try {
++            outBytes = oneByte.pack(c);
++            fail("16 bytes bitmap: pack of 64 bits bitmap by 1 byte packager should result in ISOException");
++        } catch (Exception e) {
++            // expected.
++            assertEquals("Bitmap can only hold bits numbered up to 8 in the 1 bytes available.",e.getMessage());
++        }
++        
++        try {
++            outBytes = twoBytes.pack(c);
++            fail("16 bytes bitmap: pack of 64 bits bitmap by 2 bytes packager should result in ISOException");
++        } catch (Exception e) {
++            // expected.
++            assertEquals("Bitmap can only hold bits numbered up to 16 in the 2 bytes available.",e.getMessage());
++        }
++        
++        try {
++            outBytes = threeBytes.pack(c);
++            fail("16 bytes bitmap: pack of 64 bits bitmap by 3 bytes packager should result in ISOException");
++        } catch (Exception e) {
++            // expected.
++            assertEquals("Bitmap can only hold bits numbered up to 24 in the 3 bytes available.",e.getMessage());
++        }
++        
++        try {
++            outBytes = fourBytes.pack(c);
++            fail("16 bytes bitmap: pack of 64 bits bitmap by 4 bytes packager should result in ISOException");
++        } catch (Exception e) {
++            // expected.
++            assertEquals("Bitmap can only hold bits numbered up to 32 in the 4 bytes available.",e.getMessage());
++        }
++        try {
++            outBytes = eightBytes.pack(c);
++            fail("16 bytes bitmap: pack of 64 bits bitmap by 4 bytes packager should result in ISOException");
++        } catch (Exception e) {
++            // expected.
++            assertEquals("Bitmap can only hold bits numbered up to 64 in the 8 bytes available.",e.getMessage());
++        }
++    }
++    
++    public void test16ByteBitmapWithDataWith2ndBitMapBitOFF() throws Exception
++    {
++
++        ISOComponent c = new ISOBitMap(1);
++        int consumed = sixteenBytes.unpack(c, DataWith2ndBitMapBitOff,0);
++        assertEquals("16 bytes bitmap with data with 2nd bit map bit off: unpack of 8 bytes bitmap should consume 32 bytes in characters as the 2nd bitmap indicator is off",16,consumed);
++        assertEquals("16 bytes bitmap with data with 2nd bit map bit off: 16 byte bitmap with 2nd bitmap idicator is off should have a maximum field of 64",64,((BitSet)c.getValue()).length() - 1);
++        
++        outBytes = sixteenBytes.pack(c);
++        assertEquals("16 bytes bitmap with data with 2nd bit map bit off: pack of 64 bits bitmap with 16 bytes packager must produce a result 16 bytes long",16,outBytes.length);
++        assertEquals("16 bytes bitmap with data with 2nd bit map bit off: pack of upacked value should be the same as original", ISOUtil.hexString(DataWith2ndBitMapBitOff,0,16),ISOUtil.hexString(outBytes));
++       
++    }
++/*    
++    public void test48ByteBitmap() throws Exception
++    {
++        ISOComponent c = new ISOBitMap(1);
++        int consumed = fortyeightBytes.unpack(c, inBytes,0);
++        assertEquals("All 48 Bytes should be consumed",48,consumed);
++        assertEquals("48 characters can only result in a bitmap holding fields up to 192",192,((BitSet)c.getValue()).length() - 1);
++
++        outBytes = fortyeightBytes.pack(c);
++        assertEquals("Pack of forty eight bytes must produce a result 48 bytes long",48,outBytes.length);
++        assertEquals("48 byte bitmap pack should reflect unpack",ISOUtil.hexString(inBytes,0,48),ISOUtil.hexString(outBytes));
++        
++        try {
++            outBytes = thirtytwoBytes.pack(c);
++            fail("Pack of bitmap with fields outside of 32 byte range should result in ISOException");
++        } catch (Exception e) {
++            // expected.
++            assertEquals("Bitmap can only hold fields numbered up to 128 in the 32 bytes available.",e.getMessage());
++        }
++        
++        try {
++            outBytes = thirtytwoBytes.pack(c);
++            fail("Pack of bitmap with fields outside of 32 byte range should result in ISOException");
++        } catch (Exception e) {
++            // expected.
++            assertEquals("Bitmap can only hold fields numbered up to 128 in the 32 bytes available.",e.getMessage());
++        }
++        
++        try {
++            outBytes = sixteenBytes.pack(c);
++            fail("Pack of bitmap with fields outside of 16 byte range should result in ISOException");
++        } catch (Exception e) {
++            // expected.
++            assertEquals("Bitmap can only hold fields numbered up to 64 in the 16 bytes available.",e.getMessage());
++        }
++        
++        try {
++            outBytes = twoBytes.pack(c);
++            fail("Pack of bitmap with fields outside of 2 byte range should result in ISOException");
++        } catch (Exception e) {
++            // expected.
++            assertEquals("Bitmap can only hold fields numbered up to 8 in the 2 bytes available.",e.getMessage());
++        }
++    }
++    
++    public void test48ByteBitmapWithOnly32BytesUsed() throws Exception
++    {
++
++        ISOComponent c = new ISOBitMap(1);
++        int consumed = fortyeightBytes.unpack(c, thirtytwoByteBitMapIn48Bytes,0);
++        assertEquals("32 bytes should be consumed as the 2nd bitmap indicator is on, 3rd is off ",32,consumed);
++        assertEquals("48 byte bitmap with just 32 bytes used should have a maximum field of ",128,((BitSet)c.getValue()).length() - 1);
++        
++        outBytes = fortyeightBytes.pack(c);
++        assertEquals("48 Byte (32 bytes used) bitmap pack should reflect unpack",ISOUtil.hexString(thirtytwoByteBitMapIn48Bytes,0,32),ISOUtil.hexString(outBytes));
++        
++    }
++    public void test48ByteBitmapWithOnly16BytesUsed() throws Exception
++    {
++
++        ISOComponent c = new ISOBitMap(1);
++        int consumed = fortyeightBytes.unpack(c, sixteenByteBitMapIn48Bytes,0);
++        assertEquals("16 bytes should be consumed as the 2nd bitmap indicator is off",16,consumed);
++        assertEquals("48 byte bitmap with just 16 bytes used should have a maximum field of ",64,((BitSet)c.getValue()).length() - 1);
++        
++        outBytes = fortyeightBytes.pack(c);
++        assertEquals("48 Byte (16 bytes used) bitmap pack should reflect unpack",ISOUtil.hexString(sixteenByteBitMapIn48Bytes,0,16),ISOUtil.hexString(outBytes));
++        
++    } */
++
++}
+Index: jpos/test/org/jpos/iso/packagers/ISO93ebcdic-Custom-Img.bin
+===================================================================
+Cannot display: file marked as a binary type.
+svn:mime-type = application/octet-stream
+
+Property changes on: jpos\test\org\jpos\iso\packagers\ISO93ebcdic-Custom-Img.bin
+___________________________________________________________________
+Name: svn:mime-type
+   + application/octet-stream
+
+Index: jpos/test/org/jpos/iso/packagers/ISO93ebcdic-Custom-XmlMsg.xml
+===================================================================
+--- jpos/test/org/jpos/iso/packagers/ISO93ebcdic-Custom-XmlMsg.xml	(revision 0)
++++ jpos/test/org/jpos/iso/packagers/ISO93ebcdic-Custom-XmlMsg.xml	(revision 0)
+@@ -0,0 +1,42 @@
++<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
++<!-- $Id: $ -->
++<isomsg direction="incoming">
++     <header>F1D9D6E4E3C5D5C5E3</header>
++     <field id="0" value="1100"/>
++     <field id="2" value="5999123430132108"/>
++     <field id="3" value="004000"/>
++     <field id="4" value="000000005980"/>
++     <field id="7" value="1220201024"/>
++     <field id="11" value="287107"/>
++     <field id="12" value="071220201024"/>
++     <field id="14" value="1012"/>
++     <field id="20" value="051"/>
++     <field id="22" value="061001254000"/>
++     <field id="24" value="200"/>
++     <field id="26" value="5411"/>
++     <field id="32" value="999999"/>
++     <field id="37" value="4894        "/>
++     <field id="41" value="12874218"/>
++     <field id="42" value="395308403300   "/>
++     <field id="49" value="840"/>
++     <isomsg id="55">
++	     <header>F1</header>
++	     <field id="1" value="D1402E79E3925440" type="binary"/>
++	     <field id="2" value="E0E080" type="binary"/>
++	     <field id="3" value="45" type="binary"/>
++	     <field id="4" value="23E9BFB6" type="binary"/>
++	     <field id="5" value="0020" type="binary"/>
++    	 <field id="6" value="0000000000" type="binary"/>
++	     <field id="8" value="6789ABCD" type="binary"/>
++    	 <field id="9" value="00"/>
++	     <field id="10" value="000"/>
++    	 <field id="12" value="000"/>
++	     <field id="13" value="000000000000"/>
++    	 <field id="14" value="3132333435363738" type="binary"/>
++	     <field id="17" value="070619"/>
++    	 <field id="18" value="000000000500"/>
++	     <field id="20" value="0"/>
++    	 <field id="22" value="23456789ABCDEF0123456789ABCDEF" type="binary"/>
++	</isomsg>
++</isomsg>
++
+Index: jpos/test/org/jpos/iso/packagers/PackagerTestCase.java
+===================================================================
+--- jpos/test/org/jpos/iso/packagers/PackagerTestCase.java	(revision 2590)
++++ jpos/test/org/jpos/iso/packagers/PackagerTestCase.java	(working copy)
+@@ -106,7 +106,7 @@
+     public void testGeneric93binary() throws Exception {
+         doTest (new GenericPackager ("../cfg/packager/iso93binary.xml"),
+             "ISO93", "ISO93BPackager");
+-    }
++    }        
+     public void testF64Binary() throws Exception {
+         doTest (new GenericPackager ("../cfg/packager/iso87binary.xml"),
+             "ISO87-Field64", "ISO87B-Field64");
+@@ -118,6 +118,11 @@
+     public void testXMLPackager () throws Exception {
+         doTest (xmlPackager, "XMLPackager", "XMLPackager");
+     }
++    
++    public void testGeneric93ebcdic() throws Exception {
++        doTest (new GenericPackager ("../cfg/packager/ISO93ebcdic-custom.xml"),
++            "ISO93ebcdic-Custom-XmlMsg", "ISO93ebcdic-Custom-Img");        
++}    
+     private void doTest (ISOPackager packager, String msg, String img)
+         throws Exception
+     {
