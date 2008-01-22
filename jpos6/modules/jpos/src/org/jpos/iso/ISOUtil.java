@@ -451,6 +451,29 @@ public class ISOUtil {
             d[8] |= 0x80;
         return d;
     }
+    
+    /**
+     * converts a BitSet into a binary field
+     * used in pack routines
+     * @param b - the BitSet
+     * @param bytes - number of bytes to return
+     * @return binary representation
+     */    
+    public static byte[] bitSet2byte (BitSet b, int bytes)
+    {
+        int len = bytes * 8;
+        
+        byte[] d = new byte[bytes];
+        for (int i=0; i<len; i++) 
+            if (b.get(i+1)) 
+                d[i >> 3] |= (0x80 >> (i % 8));
+        //TODO: review why 2nd & 3rd bit map flags are set here??? 
+        if (len>64)
+            d[0] |= 0x80;
+        if (len>128)
+            d[8] |= 0x80;
+        return d;
+    }
 
     /**
      * Converts a binary representation of a Bitmap field
@@ -541,13 +564,13 @@ public class ISOUtil {
      * into a Java BitSet
      * @param b - hex representation
      * @param offset - starting offset
-     * @param maxBits - max number of bits (supports 64,128 or 192)
+     * @param maxBits - max number of bits (supports 8, 16, 24, 32, 48, 52, 64,.. 128 or 192)
      * @return java BitSet object
      */
     public static BitSet hex2BitSet (byte[] b, int offset, int maxBits) {
         int len = maxBits > 64?
           ((Character.digit((char)b[offset],16) & 0x08) == 8 ? 128 : 64) :
-          64;
+          maxBits;
         BitSet bmap = new BitSet (len);
         for (int i=0; i<len; i++) {
             int digit = Character.digit((char)b[offset + (i >> 2)], 16);

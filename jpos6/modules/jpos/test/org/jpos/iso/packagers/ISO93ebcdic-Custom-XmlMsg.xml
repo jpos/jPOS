@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!-- $Id: $ -->
+<isomsg direction="incoming">
+     <header>F1D9D6E4E3C5D5C5E3</header>
+     <field id="0" value="1100"/>
+     <field id="2" value="5999123430132108"/>
+     <field id="3" value="004000"/>
+     <field id="4" value="000000005980"/>
+     <field id="7" value="1220201024"/>
+     <field id="11" value="287107"/>
+     <field id="12" value="071220201024"/>
+     <field id="14" value="1012"/>
+     <field id="20" value="051"/>
+     <field id="22" value="061001254000"/>
+     <field id="24" value="200"/>
+     <field id="26" value="5411"/>
+     <field id="32" value="999999"/>
+     <field id="37" value="4894        "/>
+     <field id="41" value="12874218"/>
+     <field id="42" value="395308403300   "/>
+     <field id="49" value="840"/>
+     <isomsg id="55">
+	     <header>F1</header>
+	     <field id="1" value="D1402E79E3925440" type="binary"/>
+	     <field id="2" value="E0E080" type="binary"/>
+	     <field id="3" value="45" type="binary"/>
+	     <field id="4" value="23E9BFB6" type="binary"/>
+	     <field id="5" value="0020" type="binary"/>
+    	 <field id="6" value="0000000000" type="binary"/>
+	     <field id="8" value="6789ABCD" type="binary"/>
+    	 <field id="9" value="00"/>
+	     <field id="10" value="000"/>
+    	 <field id="12" value="000"/>
+	     <field id="13" value="000000000000"/>
+    	 <field id="14" value="3132333435363738" type="binary"/>
+	     <field id="17" value="070619"/>
+    	 <field id="18" value="000000000500"/>
+	     <field id="20" value="0"/>
+    	 <field id="22" value="23456789ABCDEF0123456789ABCDEF" type="binary"/>
+	</isomsg>
+</isomsg>
+

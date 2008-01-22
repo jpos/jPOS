@@ -227,6 +227,7 @@ public class GenericPackager
         String emitBmap  = atts.getValue("emitBitmap");
         String bmapfield = atts.getValue("bitmapField");
         firstField = atts.getValue("firstField");
+        String headerLenStr = atts.getValue("headerLength");
 
         if (maxField != null)
             maxValidField = Integer.parseInt(maxField); 
@@ -241,6 +242,9 @@ public class GenericPackager
             Integer.parseInt (firstField);  // attempt to parse just to
                                             // force an exception if the
                                             // data is not correct.
+        
+        if (headerLenStr != null)
+        	setHeaderLength(Integer.parseInt(headerLenStr));
     }
 
 
