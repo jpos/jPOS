@@ -91,6 +91,7 @@ public class AllTests
         //suite.addTest(new TestSuite(IFEP_LLCHARTest.class));
         //suite.addTest(new TestSuite(IFIPM_LLLCHARTest.class));
         //suite.addTest(new TestSuite(IFMC_LLCHARTest.class));
+        suite.addTest(new TestSuite(IFE_BITMAPTest.class));
         //$JUnit-END$
         return suite;
     }

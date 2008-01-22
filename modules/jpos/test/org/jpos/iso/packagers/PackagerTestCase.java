@@ -106,7 +106,7 @@ public class PackagerTestCase extends TestCase {
     public void testGeneric93binary() throws Exception {
         doTest (new GenericPackager ("../cfg/packager/iso93binary.xml"),
             "ISO93", "ISO93BPackager");
-    }
+    }        
     public void testF64Binary() throws Exception {
         doTest (new GenericPackager ("../cfg/packager/iso87binary.xml"),
             "ISO87-Field64", "ISO87B-Field64");
@@ -118,6 +118,11 @@ public class PackagerTestCase extends TestCase {
     public void testXMLPackager () throws Exception {
         doTest (xmlPackager, "XMLPackager", "XMLPackager");
     }
+    
+    public void testGeneric93ebcdic() throws Exception {
+        doTest (new GenericPackager ("../cfg/packager/ISO93ebcdic-custom.xml"),
+            "ISO93ebcdic-Custom-XmlMsg", "ISO93ebcdic-Custom-Img");        
+}    
     private void doTest (ISOPackager packager, String msg, String img)
         throws Exception
     {

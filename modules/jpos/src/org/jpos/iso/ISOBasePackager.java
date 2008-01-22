@@ -42,7 +42,8 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
 
     protected Logger logger = null;
     protected String realm = null;
-
+    protected int headerLength = 0;
+    
     public void setFieldPackager (ISOFieldPackager[] fld) {
         this.fld = fld;
     }
@@ -82,6 +83,13 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
             c = (ISOComponent) fields.get (new Integer (0));
             byte[] b;
 
+            if (m instanceof ISOMsg && headerLength>0) 
+            {
+            	byte[] h = ((ISOMsg) m).getHeader();
+            	if (h != null) 
+            		len += h.length;
+            }
+            
             if (first > 0 && c != null) {
                 b = fld[0].pack(c);
                 len += b.length;
@@ -107,7 +115,7 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
                     try {
                         ISOFieldPackager fp = fld[i];
                         if (fp == null)
-                            throw new ISOException ("null field packager");
+                            throw new ISOException ("null field "+i+" packager");
                         b = fp.pack(c);
                         len += b.length;
                         v.add (b);
@@ -141,6 +149,16 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
 
             int k = 0;
             byte[] d = new byte[len];
+            
+            // if ISOMsg insert header 
+            if (m instanceof ISOMsg && headerLength>0) 
+            {
+            	byte[] h = ((ISOMsg) m).getHeader();
+            	if (h != null) 
+            		for (int j=0; j<h.length; j++)
+            			d[k++] = h[j];
+            }
+
             for (int i=0; i<v.size(); i++) {
                 b = (byte[]) v.get(i);
                 for (int j=0; j<b.length; j++)
@@ -172,10 +190,21 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
                 evt.addMessage (ISOUtil.hexString (b));
 
             int consumed = 0;
+            
+            // if ISOMsg and headerLength defined 
+            if (m instanceof ISOMsg /*&& ((ISOMsg) m).getHeader()==null*/ && headerLength>0) 
+            {
+            	byte[] h = new byte[headerLength];
+            	for (int i=0; i<headerLength; i++)
+                    h[i] = b[i];
+            	((ISOMsg) m).setHeader(h);
+            	consumed += headerLength;
+            }       
+            
             if (!(fld[0] instanceof ISOBitMapPackager))
             {
                 ISOComponent mti = fld[0].createComponent(0);
-                consumed  = fld[0].unpack(mti, b, 0);
+                consumed  += fld[0].unpack(mti, b, consumed);
                 m.set (mti);
             }
             BitSet bmap = null;
@@ -254,6 +283,15 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
             if (m.getComposite() != m) 
                 throw new ISOException ("Can't call packager on non Composite");
 
+            // if ISOMsg and headerLength defined 
+            if (m instanceof ISOMsg && ((ISOMsg) m).getHeader()==null && headerLength>0) 
+            {
+            	byte[] h = new byte[headerLength];
+            	in.read(h, 0, headerLength);
+            	((ISOMsg) m).setHeader(h);
+            }            
+            
+            
             if (!(fld[0] instanceof ISOMsgFieldPackager) &&
                 !(fld[0] instanceof ISOBitMapPackager))
             {
@@ -381,5 +419,13 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
     }
     public Logger getLogger() {
         return logger;
+    }
+    public int getHeaderLength ()
+    {
+    	return headerLength;
+    }
+    public void setHeaderLength(int len)
+    {
+    	headerLength = len;
     }
 }

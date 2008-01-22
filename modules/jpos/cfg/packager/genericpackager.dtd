@@ -5,6 +5,7 @@
 <!ATTLIST isopackager bitmapField   CDATA        #IMPLIED>
 <!ATTLIST isopackager firstField    CDATA        #IMPLIED>
 <!ATTLIST isopackager emitBitmap    (true|false) #IMPLIED>
+<!ATTLIST isopackager headerLength  CDATA        #IMPLIED>
 
 <!-- isofield -->
 <!ELEMENT isofield (#PCDATA)>
@@ -28,4 +29,5 @@
 <!ATTLIST isofieldpackager maxValidField CDATA        #IMPLIED>
 <!ATTLIST isofieldpackager bitmapField CDATA        #IMPLIED>
 <!ATTLIST isofieldpackager firstField  CDATA        #IMPLIED>
+<!ATTLIST isofieldpackager headerLength  CDATA        #IMPLIED>
 
