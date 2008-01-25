@@ -186,12 +186,14 @@ public abstract class BaseChannel extends Observable
      */
     public void setHost (String host) {
         this.host = host;
+        this.hosts = new String[] { host };
     }
     /**
      * @param port to connect (client ISOChannel)
      */
     public void setPort (int port) {
         this.port = port;
+        this.ports = new int[] { port };
     }
     /**
      * @return hostname (may be null)
