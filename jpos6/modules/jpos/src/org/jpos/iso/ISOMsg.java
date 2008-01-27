@@ -28,6 +28,7 @@ import java.lang.ref.WeakReference;
 import java.util.BitSet;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.StringTokenizer;
 
 import org.jpos.iso.header.BaseHeader;
 import org.jpos.iso.packager.XMLPackager;
@@ -214,6 +215,51 @@ public class ISOMsg extends ISOComponent
         else
             unset(fldno);
     }
+
+   /**
+    * Creates an ISOField associated with fldno within this ISOMsg
+    * @param fpath dot-separated field path (i.e. 63.2)
+    * @param value field value
+    */
+    public void set (String fpath, String value) throws ISOException {
+        StringTokenizer st = new StringTokenizer (fpath, ".");
+        ISOMsg m = this;
+        for (;;) {
+            int fldno = Integer.parseInt(st.nextToken());
+            if (st.hasMoreTokens()) {
+                Object obj = m.getValue(fldno);
+                if (obj instanceof ISOMsg)
+                    m = (ISOMsg) obj;
+                else
+                    m.set (m = new ISOMsg (fldno));
+            } else {
+                m.set (fldno, value);
+                break;
+            }
+        }
+    }
+   /**
+    * Creates an ISOField associated with fldno within this ISOMsg
+    * @param fpath dot-separated field path (i.e. 63.2)
+    * @param value binary field value
+    */
+    public void set (String fpath, byte[] value) throws ISOException {
+        StringTokenizer st = new StringTokenizer (fpath, ".");
+        ISOMsg m = this;
+        for (;;) {
+            int fldno = Integer.parseInt(st.nextToken());
+            if (st.hasMoreTokens()) {
+                Object obj = m.getValue(fldno);
+                if (obj instanceof ISOMsg)
+                    m = (ISOMsg) obj;
+                else
+                    m.set (m = new ISOMsg (fldno));
+            } else {
+                m.set (fldno, value);
+                break;
+            }
+        }
+    }
    /**
     * Creates an ISOBinaryField associated with fldno within this ISOMsg
     * @param fldno field number
@@ -225,6 +271,8 @@ public class ISOMsg extends ISOComponent
         else
             unset (fldno);
     }
+
+
     /**
      * Unset a field if it exists, otherwise ignore.
      * @param fldno - the field number
@@ -360,6 +408,29 @@ public class ISOMsg extends ISOComponent
         return c != null ? c.getValue() : null;
     }
     /**
+     * Return the object value associated with the given field path
+     * @param fpath field path
+     * @return the field Object (may be null)
+     */
+    public Object getValue (String fpath) throws ISOException {
+        StringTokenizer st = new StringTokenizer (fpath, ".");
+        ISOMsg m = this;
+        Object obj = null;
+        for (;;) {
+            int fldno = Integer.parseInt(st.nextToken());
+            obj = m.getValue (fldno);
+            if (st.hasMoreTokens()) {
+                if (obj instanceof ISOMsg) {
+                    m = (ISOMsg) obj;
+                }
+                else
+                    throw new ISOException ("Invalid path '" + fpath + "'");
+            } else 
+                break;
+        }
+        return obj;
+    }
+    /**
      * Return the String value associated with the given ISOField number
      * @param fldno the Field Number
      * @return field's String value
@@ -380,6 +451,24 @@ public class ISOMsg extends ISOComponent
         return s;
     }
     /**
+     * Return the String value associated with the given field path 
+     * @param fpath field path
+     * @return field's String value (may be null)
+     */
+    public String getString (String fpath) {
+        String s = null;
+        try {
+            Object obj = getValue(fpath);
+            if (obj instanceof String)
+                s = (String) obj;
+            else if (obj instanceof byte[])
+                s = ISOUtil.hexString ((byte[]) obj);
+        } catch (ISOException e) {
+            // ignore ISOException - return null
+        }
+        return s;
+    }
+    /**
      * Return the byte[] value associated with the given ISOField number
      * @param fldno the Field Number
      * @return field's byte[] value
@@ -396,6 +485,24 @@ public class ISOMsg extends ISOComponent
             } catch (ISOException e) {
                 // ignore ISOException - return null
             }
+        }
+        return b;
+    }
+    /**
+     * Return the String value associated with the given field path 
+     * @param fpath field path
+     * @return field's byte[] value (may be null)
+     */
+    public byte[] getBytes (String fpath) {
+        byte[] b = null;
+        try {
+            Object obj = getValue(fpath);
+            if (obj instanceof String)
+                b = ((String) obj).getBytes();
+            else if (obj instanceof byte[])
+                b = ((byte[]) obj);
+        } catch (ISOException e) {
+            // ignore ISOException - return null
         }
         return b;
     }

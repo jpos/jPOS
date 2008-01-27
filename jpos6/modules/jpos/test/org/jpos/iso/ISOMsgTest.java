@@ -29,9 +29,13 @@ public class ISOMsgTest extends TestCase
         ISOMsg m = new ISOMsg("0800");
         m.set (3, "000000");
         m.set (52, "CAFEBABE".getBytes());
+        m.set ("63.2.3", "Field 63.2.3");
+        m.set ("63.2.4", m.getBytes (52));
 
         assertEquals ("000000", m.getString (3));
         assertEquals ("000000", new String(m.getBytes(3)));
         assertEquals ("CAFEBABE", new String(m.getBytes(52)));
+        assertEquals ("Field 63.2.3", m.getString ("63.2.3"));
+        assertEquals ("CAFEBABE", new String(m.getBytes("63.2.4")));
     }
 }
