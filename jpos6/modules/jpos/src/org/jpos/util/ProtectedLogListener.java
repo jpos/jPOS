@@ -62,8 +62,8 @@ import org.jpos.iso.ISOUtil;
  */
 public class ProtectedLogListener implements LogListener, Configurable
 {
-    int[] protectFields = null;
-    int[] wipeFields    = null;
+    String[] protectFields = null;
+    String[] wipeFields    = null;
     Configuration cfg   = null;
 
     public ProtectedLogListener () {
@@ -84,8 +84,8 @@ public class ProtectedLogListener implements LogListener, Configurable
         throws ConfigurationException
     {
         this.cfg = cfg;
-        protectFields = ISOUtil.toIntArray (cfg.get ("protect", ""));
-        wipeFields    = ISOUtil.toIntArray (cfg.get ("wipe", ""));
+        protectFields = ISOUtil.toStringArray (cfg.get ("protect", ""));
+        wipeFields    = ISOUtil.toStringArray (cfg.get ("wipe", ""));
     }
     public synchronized LogEvent log (LogEvent ev) {
         Vector payLoad = ev.getPayLoad();
@@ -107,16 +107,17 @@ public class ProtectedLogListener implements LogListener, Configurable
     }
     private void checkProtected (ISOMsg m) throws ISOException {
         for (int i=0; i<protectFields.length; i++) {
-            int f = protectFields[i];
-            if (m.hasField (f))
-                m.set (new ISOField (f, ISOUtil.protect (m.getString(f))));
+            String f = protectFields[i];
+            String v = m.getString(f);
+            if (v != null) 
+                m.set (f, ISOUtil.protect (v));
         }
     }
     private void checkHidden (ISOMsg m) throws ISOException {
         for (int i=0; i<wipeFields.length; i++) {
-            int f = wipeFields[i];
-            if (m.hasField (f))
-                m.set (new ISOField (f, "[WIPED]"));
+            String f = wipeFields[i];
+            if (m.getValue(f) != null)
+                m.set (f, "[WIPED]");
         }
     }
 }
