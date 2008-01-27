@@ -764,6 +764,13 @@ public class ISOUtil {
             array[i] = Integer.parseInt (st.nextToken());
         return array;
     }
+    public static String[] toStringArray(String s) {
+        StringTokenizer st = new StringTokenizer (s);
+        String[] array = new String [st.countTokens()];
+        for (int i=0; st.hasMoreTokens(); i++) 
+            array[i] = st.nextToken();
+        return array;
+    }
     /**
      * Bitwise XOR between corresponding bytes
      * @param op1 byteArray1
