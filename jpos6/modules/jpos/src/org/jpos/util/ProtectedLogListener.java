@@ -65,6 +65,8 @@ public class ProtectedLogListener implements LogListener, Configurable
     String[] protectFields = null;
     String[] wipeFields    = null;
     Configuration cfg   = null;
+    public static final String WIPED = "[WIPED]";
+    public static final byte[] BINARY_WIPED = ISOUtil.hex2byte ("AA55AA55");
 
     public ProtectedLogListener () {
         super();
@@ -108,16 +110,35 @@ public class ProtectedLogListener implements LogListener, Configurable
     private void checkProtected (ISOMsg m) throws ISOException {
         for (int i=0; i<protectFields.length; i++) {
             String f = protectFields[i];
-            String v = m.getString(f);
-            if (v != null) 
-                m.set (f, ISOUtil.protect (v));
+            Object v = null;
+            try {
+                v = m.getValue (f);
+            } catch (ISOException e) {
+                // ignore error
+            }
+            if (v != null) {
+                if (v instanceof String)
+                    m.set (f, ISOUtil.protect ((String) v));
+                else
+                    m.set (f, BINARY_WIPED);
+            }
         }
     }
     private void checkHidden (ISOMsg m) throws ISOException {
         for (int i=0; i<wipeFields.length; i++) {
             String f = wipeFields[i];
-            if (m.getValue(f) != null)
-                m.set (f, "[WIPED]");
+            Object v = null;
+            try {
+                v = m.getValue (f);
+            } catch (ISOException e) {
+                // ignore error
+            }
+            if (v != null) {
+                if (v instanceof String)
+                    m.set (f, WIPED);
+                else
+                    m.set (f, BINARY_WIPED);
+            }
         }
     }
 }
