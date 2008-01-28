@@ -541,6 +541,12 @@ public class ISOMsg extends ISOComponent
             m.fields = (Hashtable) fields.clone();
             if (header != null)
                 m.header = (ISOHeader) header.clone();
+            for (Enumeration e = fields.keys(); e.hasMoreElements(); ) {
+                Integer k = (Integer) e.nextElement();
+                ISOComponent c = (ISOComponent) m.fields.get (k);
+                if (c instanceof ISOMsg) 
+                    m.fields.put (k, ((ISOMsg)c).clone());
+            }
             return m;
         } catch (CloneNotSupportedException e) {
             throw new InternalError();
