@@ -120,7 +120,7 @@ public class PackagerTestCase extends TestCase {
     }
     
     public void testGeneric93ebcdic() throws Exception {
-        doTest (new GenericPackager ("../cfg/packager/ISO93ebcdic-custom.xml"),
+        doTest (new GenericPackager ("../cfg/packager/iso93ebcdic-custom.xml"),
             "ISO93ebcdic-Custom-XmlMsg", "ISO93ebcdic-Custom-Img");        
 }    
     private void doTest (ISOPackager packager, String msg, String img)
