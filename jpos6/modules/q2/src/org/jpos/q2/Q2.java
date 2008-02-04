@@ -651,6 +651,18 @@ public class Q2 implements FileFilter, Runnable {
         q2.setExit (true);
         q2.start();
     }
+    public String getVersion() {
+        return Q2_VERSION;
+    }
+    public String getRevision() {
+        return Q2_REVISION;
+    }
+    public String getDate() {
+        return Q2_DATE;
+    }
+    public String getRelease() {
+        return getVersion() + getRevision();
+    }
     public static class QEntry {
         long deployed;
         ObjectInstance instance;

@@ -124,6 +124,7 @@ public class SystemMonitor extends QBeanSupport implements Runnable,
     public void dump(PrintStream p, String indent) {
         String newIndent = indent + "  ";
         Runtime r = Runtime.getRuntime();
+        p.println (indent+"<release>"+getServer().getRelease()+"</release>");
         p.println(indent + "<memory>");
         p.println(newIndent + " freeMemory=" + r.freeMemory());
         p.println(newIndent + "totalMemory=" + r.totalMemory());
