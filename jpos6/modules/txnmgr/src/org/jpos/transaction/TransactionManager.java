@@ -97,6 +97,8 @@ public class TransactionManager
             t.start ();
             threads[i] = t;
         }
+        if (psp.rdp (RETRY_QUEUE) != null)
+            checkRetryTask();
     }
     public void stopService () throws Exception {
         NameRegistrar.unregister (getName ());
@@ -652,8 +654,11 @@ public class TransactionManager
         public void run() {
             Thread.currentThread().setName (getName()+"retry-task");
             while (running()) {
-                for (Object context; (context = psp.inp (RETRY_QUEUE)) != null;) 
+                for (Object context; (context = psp.rdp (RETRY_QUEUE)) != null;) 
+                {
                     sp.out (queue, context);
+                    psp.inp (RETRY_QUEUE);
+                }
                 try {
                     Thread.sleep (retryInterval);
                 } catch (InterruptedException e) { } 
