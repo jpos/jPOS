@@ -172,7 +172,7 @@ public class QMUX
         }
     }
 
-    protected String getKey (ISOMsg m) throws ISOException {
+    public String getKey (ISOMsg m) throws ISOException {
         StringBuffer sb = new StringBuffer (out);
         sb.append ('.');
         sb.append (mapMTI(m.getMTI()));
