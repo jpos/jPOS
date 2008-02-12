@@ -504,7 +504,7 @@ public class ISOUtil {
      */
     public static BitSet byte2BitSet (byte[] b, int offset, int maxBits) {
         int len = maxBits > 64 ?
-            ((b[offset] & 0x80) == 0x80 ? 128 : 64) : 64;
+            ((b[offset] & 0x80) == 0x80 ? 128 : 64) : maxBits;
 
         if (maxBits > 128 && 
             b.length > offset+8 && 
