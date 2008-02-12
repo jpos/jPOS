@@ -49,14 +49,18 @@ public class AsciiInterpreter implements Interpreter
 	 * 
 	 * @see org.jpos.iso.Interpreter#uninterpret(byte[])
 	 */
-    public String uninterpret(byte[] rawData, int offset, int length)
-    {
-        char[] ret = new char[length];
-        for (int i = 0; i < length; i++)
-        {
-            ret[i] = (char)rawData[offset + i];
+    public String uninterpret (byte[] rawData, int offset, int length) {
+        byte[] ret = new byte[length];
+        for (int i = 0; i < length; i++) {
+            ret[i] = (byte)rawData[offset + i];
         }
-        return new String(ret);
+        String s = null;
+        try {
+            s = new String(ret, "ISO8859_1");
+        } catch (java.io.UnsupportedEncodingException e) {
+            // ISO8859_1 is a supported encoding.
+        }
+        return s;
     }
 
     /**

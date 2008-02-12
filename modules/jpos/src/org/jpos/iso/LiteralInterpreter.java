@@ -18,6 +18,7 @@
 
 package org.jpos.iso;
 
+
 /**
  * Implements a Literal Interpreter. No conversion is done.
  * 
@@ -45,9 +46,11 @@ public class LiteralInterpreter implements Interpreter
 	 * 
 	 * @see org.jpos.iso.Interpreter#uninterpret(byte[])
 	 */
-    public String uninterpret(byte[] rawData, int offset, int length)
-    {
-        return new String(rawData, offset, length);
+    public String uninterpret(byte[] rawData, int offset, int length) {
+        try {
+            return new String(rawData, offset, length, "ISO8859_1");
+        } catch (java.io.UnsupportedEncodingException e) { }
+        return null;// should never happen, ISO8859_1 is a supported encoding
     }
 
     /**
