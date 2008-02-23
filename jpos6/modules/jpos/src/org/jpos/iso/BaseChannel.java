@@ -612,7 +612,7 @@ public abstract class BaseChannel extends Observable
             m.setPackager (getDynamicPackager(b));
             m.setHeader (getDynamicHeader(header));
             if (b.length > 0 && !shouldIgnore (header))  // Ignore NULL messages
-                m.unpack (b);
+                unpack (m, b);
             m.setDirection(ISOMsg.INCOMING);
             m = applyIncomingFilters (m, header, b, evt);
             m.setDirection(ISOMsg.INCOMING);
@@ -839,6 +839,9 @@ public abstract class BaseChannel extends Observable
                 m = f.filter (this, m, evt);
         }
         return m;
+    }
+    protected void unpack (ISOMsg m, byte[] b) throws ISOException {
+        m.unpack (b);
     }
    /**
     * Implements Configurable<br>
