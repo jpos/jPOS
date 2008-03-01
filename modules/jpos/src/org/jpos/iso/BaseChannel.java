@@ -79,7 +79,7 @@ import org.jpos.util.NameRegistrar;
  */
 public abstract class BaseChannel extends Observable 
     implements FilteredChannel, ClientChannel, ServerChannel, FactoryChannel, 
-               LogSource, ReConfigurable, BaseChannelMBean
+               LogSource, ReConfigurable, BaseChannelMBean, Cloneable
 {
     private Socket socket;
     private String host, localIface;
@@ -969,6 +969,17 @@ public abstract class BaseChannel extends Observable
             socket.close ();
             socket = null;
         }
+    }
+    
+    public Object clone(){
+      try {
+        BaseChannel channel = (BaseChannel)super.clone();
+        channel.cnt = (int[])cnt.clone();
+        return channel;
+      } catch (CloneNotSupportedException e) {
+        throw new InternalError();
+      }
+
     }
 }
 

@@ -60,7 +60,6 @@ public class ISOServer extends Observable
 {
     int port;
     ISOChannel clientSideChannel;
-    Class clientSideChannelClass;
     ISOPackager clientPackager;
     Collection clientOutgoingFilters, clientIncomingFilters, listeners;
     ThreadPool pool;
@@ -92,7 +91,6 @@ public class ISOServer extends Observable
         super();
         this.port = port;
         this.clientSideChannel = clientSide;
-        this.clientSideChannelClass = clientSide.getClass();
         this.clientPackager = clientSide.getPackager();
         if (clientSide instanceof FilteredChannel) {
             FilteredChannel fc = (FilteredChannel) clientSide;
@@ -266,7 +264,7 @@ public class ISOServer extends Observable
     }
 
     public void run() {
-        ServerChannel  channel;
+        ServerChannel  channel = null;
         serverLoop : while  (!shutdown) {
                 try {
                 serverSocket = socketFactory != null ?
@@ -304,23 +302,10 @@ public class ISOServer extends Observable
                                 socketFactory.createServerSocket(port) :
                                 (new ServerSocket (port, backlog, bindAddr));
                         }
-                        channel = (ServerChannel) 
-                            clientSideChannelClass.newInstance();
-                        channel.setPackager (clientPackager);
-                        if (channel instanceof LogSource) {
-                            ((LogSource)channel) .
-                                setLogger (getLogger(), realmChannel);
-                        }
                         if (clientSideChannel instanceof BaseChannel) {
                             BaseChannel csc = (BaseChannel) clientSideChannel;
-                            BaseChannel c = (BaseChannel) channel;
-                            c.setHeader (csc.getHeader());
-                            c.setTimeout (csc.getTimeout());
-                            c.setMaxPacketLength (csc.getMaxPacketLength());
+                            channel = (BaseChannel) csc.clone();
                         }
-                        setFilters (channel);
-                        if (channel instanceof Observable)
-                            ((Observable)channel).addObserver (this);
                         channel.accept (serverSocket);
                         if ((cnt[CONNECT]++) % 100 == 0)
                             purgeChannels ();
@@ -336,12 +321,6 @@ public class ISOServer extends Observable
                     } catch (IOException e) {
                         Logger.log (new LogEvent (this, "iso-server", e));
                         relax();
-                    } catch (InstantiationException e) {
-                        Logger.log (new LogEvent (this, "iso-server", e));
-                        relax();
-                    } catch (IllegalAccessException e) {
-                        Logger.log (new LogEvent (this, "iso-server", e));
-                        relax();
                     }
                 }
             } catch (Throwable e) {
@@ -351,14 +330,6 @@ public class ISOServer extends Observable
         }
     }
 
-    private void setFilters (ISOChannel channel) {
-        if (clientOutgoingFilters != null)
-            ((FilteredChannel)channel) .
-                setOutgoingFilters (clientOutgoingFilters);
-        if (clientIncomingFilters != null)
-            ((FilteredChannel)channel) .
-                setIncomingFilters (clientIncomingFilters);
-    }
     private void relax() {
         try {
             Thread.sleep (5000);
