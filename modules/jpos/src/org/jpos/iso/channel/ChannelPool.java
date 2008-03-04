@@ -34,7 +34,7 @@ import org.jpos.util.LogSource;
 import org.jpos.util.Logger;
 import org.jpos.util.NameRegistrar;
 
-public class ChannelPool implements ISOChannel, LogSource, Configurable {
+public class ChannelPool implements ISOChannel, LogSource, Configurable, Cloneable {
     boolean usable = true;
     String name = "";
     protected Logger logger;
@@ -165,6 +165,14 @@ public class ChannelPool implements ISOChannel, LogSource, Configurable {
             reconnect();
 
         return current;
+    }
+    
+    public Object clone(){
+      try {
+        return (ChannelPool)super.clone();
+      } catch (CloneNotSupportedException e) {
+        throw new InternalError();
+      }
     }
 }
 
