@@ -99,6 +99,11 @@ public interface ISOChannel extends ISOSource {
     * @return current packager
     */
     public ISOPackager getPackager();
+
+   /**
+    * Expose channel clonning interface
+    */
+    public Object clone();
     
 }
 

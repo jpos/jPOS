@@ -264,7 +264,7 @@ public class ISOServer extends Observable
     }
 
     public void run() {
-        ServerChannel  channel = null;
+        ServerChannel  channel;
         serverLoop : while  (!shutdown) {
                 try {
                 serverSocket = socketFactory != null ?
@@ -302,10 +302,7 @@ public class ISOServer extends Observable
                                 socketFactory.createServerSocket(port) :
                                 (new ServerSocket (port, backlog, bindAddr));
                         }
-                        if (clientSideChannel instanceof BaseChannel) {
-                            BaseChannel csc = (BaseChannel) clientSideChannel;
-                            channel = (BaseChannel) csc.clone();
-                        }
+                        channel = (ServerChannel) clientSideChannel.clone();
                         channel.accept (serverSocket);
                         if ((cnt[CONNECT]++) % 100 == 0)
                             purgeChannels ();

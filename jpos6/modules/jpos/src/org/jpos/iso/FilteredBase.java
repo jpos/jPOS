@@ -35,7 +35,7 @@ import org.jpos.util.LogEvent;
  */
 
 public abstract class FilteredBase extends Observable 
-    implements FilteredChannel
+    implements FilteredChannel, Cloneable
 {
     protected Vector incomingFilters, outgoingFilters;
 
@@ -155,6 +155,14 @@ public abstract class FilteredBase extends Observable
     }
     public void setOutgoingFilters (Collection filters) {
         outgoingFilters = new Vector (filters);
+    }
+    
+    public Object clone(){
+      try {
+        return (FilteredBase)super.clone();
+      } catch (CloneNotSupportedException e) {
+        throw new InternalError();
+      }
     }
 }
 
