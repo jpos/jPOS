@@ -182,6 +182,12 @@ public class OneShotChannelAdaptor
                 } catch (Exception e) { 
                     getLog().warn ("channel-worker-"+id, e.getMessage ());
                     ISOUtil.sleep (1000);
+                } finally {
+                    try {
+                        channel.disconnect();
+                    } catch (Exception e) {
+                        getLog().warn ("channel-worker-"+id, e.getMessage ());
+                    }
                 }
             }
         }
