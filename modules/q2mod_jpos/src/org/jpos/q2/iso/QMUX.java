@@ -63,7 +63,7 @@ public class QMUX
     protected String spaceName;
     protected int[] key;
     protected String ignorerc;
-    protected String[] mtiMapping = new String[] { nomap, nomap, "0022456789", "0022456789"};
+    protected String[] mtiMapping = new String[] { nomap, nomap, "0022456789" };
     List listeners;
     int rx, tx, rxExpired, txExpired, rxPending, rxUnhandled, rxForwarded;
     public QMUX () {
@@ -192,7 +192,7 @@ public class QMUX
     private String mapMTI (String mti) {
         StringBuffer sb = new StringBuffer();
         if (mti != null && mti.length() == 4) {
-            for (int i=0; i<mti.length(); i++) {
+            for (int i=0; i<mtiMapping.length; i++) {
                 int c = mti.charAt (i) - '0';
                 if (c >= 0 && c < 10) 
                     sb.append (mtiMapping[i].charAt(c));
