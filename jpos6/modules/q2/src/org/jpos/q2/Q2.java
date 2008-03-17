@@ -194,7 +194,6 @@ public class Q2 implements FileFilter, Runnable {
         } catch (InstanceNotFoundException e) {
             log.error (e);
         }
-		q2Thread = null;
         if (exit && !shuttingDown)
             System.exit (0);
     }
