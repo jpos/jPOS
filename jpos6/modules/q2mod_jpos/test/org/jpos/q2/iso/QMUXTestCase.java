@@ -101,5 +101,22 @@ public class QMUXTestCase extends TestCase implements ISOResponseListener {
         expiredCalled=true;
         receivedHandback = handBack;
     }
+    
+    public void testMTIMapping() throws ISOException{
+        String[] requests  = new String[] {"0100","0101","0400","0401","0420","0800","1100","1800","1804","1820","1820","1200","1220"};
+        String[] responses = new String[] {"0110","0110","0410","0410","0430","0810","1110","1810","1814","1824","1830","1210","1230"};
+                
+        assertEquals("Request/Response string arrays must hold same number of entries",requests.length,responses.length);
+        
+        ISOMsg request = new ISOMsg();
+        ISOMsg response = new ISOMsg();
+        
+        for (int i = 0; i<requests.length;i++) {
+            request.setMTI(requests[i]);
+            response.setMTI(responses[i]);
+            assertEquals(((QMUX)mux).getKey(request),((QMUX)mux).getKey(response));    
+        }
+ 
+    }
 }
 
