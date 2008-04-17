@@ -325,7 +325,7 @@ public class QMUX
         throw new ConfigurationException ("Invalid space " + uri);
     }
     public boolean isConnected() {
-        if (ready != null) {
+        if (ready != null && ready.length > 0) {
             for (int i=0; i<ready.length; i++)
                 if (sp.rdp (ready[i]) != null)
                     return true;
