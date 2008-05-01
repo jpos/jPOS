@@ -257,7 +257,7 @@ public class Q2 implements FileFilter, Runnable {
         List startList = new ArrayList ();
         Iterator iter = dirMap.entrySet().iterator();
         try {
-            while (iter.hasNext()) {
+            while (iter.hasNext() && !shutdown) {
                 Map.Entry entry = (Map.Entry) iter.next();
                 File   f        = (File)   entry.getKey ();
                 QEntry qentry   = (QEntry) entry.getValue ();
