@@ -50,6 +50,9 @@
       <tstamp>
         <format property="subversion" pattern="yyyy.MM.dd.hh.mm.ss"/>
       </tstamp>
+      <tstamp>
+        <format property="date" pattern="yyyy.MM.dd.hh.mm.ss"/>
+      </tstamp>
       <echo 
        message="Build ${Name}-${version}.${subversion}"/>
 
