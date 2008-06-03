@@ -308,6 +308,17 @@ public interface SMAdapter {
      * @throws SMException
      */
     public byte[] generateCBC_MAC (byte[] data, SecureDESKey kd) throws SMException;
+
+    /**
+     * Generates EDE-MAC (Encrypt Decrypt Encrypt Message Message Authentication Code)
+     * for some data.
+     *
+     * @param data the data to be MACed
+     * @param kd the key used for MACing
+     * @return the MAC
+     * @throws SMException
+     */
+    public byte[] generateEDE_MAC (byte[] data, SecureDESKey kd) throws SMException;
 }
 
 

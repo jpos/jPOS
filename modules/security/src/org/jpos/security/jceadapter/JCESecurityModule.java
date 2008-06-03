@@ -21,6 +21,7 @@ package  org.jpos.security.jceadapter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.Provider;
 import java.security.Security;
@@ -98,6 +99,14 @@ public class JCESecurityModule extends BaseSMAdapter {
      *    lmk: Local Master Keys file (The only required parameter)<br>
      *    jce: JCE Provider Class Name, if not provided, it defaults to: com.sun.crypto.provider.SunJCE<br>
      *    rebuildlmk: (true/false), rebuilds the Local Master Keys file with new keys (WARNING: old keys will be erased)<br>
+     *    cbc-mac: Cipher Block Chaining MAC algorithm name for given JCE Provider.<br>
+     *             Default is ISO9797ALG3MACWITHISO7816-4PADDING from BouncyCastle provider (known as Retail-MAC)<br>
+     *             that is suitable for most of interfaces with double length MAC key<br>
+     *             ANSI X9.19 aka ISO/IEC 9797-1 MAC algorithm 3 padding method 2 - ISO7816<br>
+     *    ede-mac: Encrypt Decrypt Encrypt MAC algorithm name for given JCE Provider.<br>
+     *             Default is DESEDEMAC from BouncyCastle provider<br>
+     *             that is suitable for BASE24 with double length MAC key<br>
+     *             ANSI X9.19<br>
      * @throws ConfigurationException
      */
     public void setConfiguration (Configuration cfg) throws ConfigurationException {
@@ -209,6 +218,58 @@ public class JCESecurityModule extends BaseSMAdapter {
         translatedPIN = new EncryptedPIN(translatedPINBlock, destinationPINBlockFormat,
                 accountNumber);
         return  translatedPIN;
+    }
+
+    /**
+     * Generates CBC-MAC (Cipher Block Chaining Message Authentication Code)
+     * for some data.
+     *
+     * @param data the data to be MACed
+     * @param kd the key used for MACing
+     * @return generated CBC-MAC bytes
+     * @throws SMException
+     */
+    protected byte[] generateCBC_MACImpl (byte[] data, SecureDESKey kd) throws SMException {
+        LogEvent evt = new LogEvent(this, "jce-provider-cbc-mac");
+        try {
+          return generateMACImpl(data,kd,cfg.get("cbc-mac","ISO9797ALG3MACWITHISO7816-4PADDING"),evt);
+        } catch (Exception e) {
+          Logger.log(evt);
+          throw  e instanceof SMException ? (SMException)e : new SMException(e);
+        }
+    }
+
+    /**
+     * Generates EDE-MAC (Encrypt Decrypt Encrypt Message Authentication Code)
+     * for some data.
+     *
+     * @param data the data to be MACed
+     * @param kd the key used for MACing
+     * @return generated EDE-MAC bytes
+     * @throws SMException
+     */
+    protected byte[] generateEDE_MACImpl (byte[] data, SecureDESKey kd) throws SMException {
+        LogEvent evt = new LogEvent(this, "jce-provider-ede-mac");
+        try {
+          return generateMACImpl(data,kd,cfg.get("ede-mac","DESEDEMAC"),evt);
+        } catch (Exception e) {
+          Logger.log(evt);
+          throw  e instanceof SMException ? (SMException)e : new SMException(e);
+        }
+    }
+
+    private byte[] generateMACImpl (byte[] data, SecureDESKey kd,
+        String macAlgorithm, LogEvent evt) throws SMException {
+        try {
+          return jceHandler.generateMAC(data,decryptFromLMK(kd),macAlgorithm);
+        } catch (JCEHandlerException e){
+          evt.addMessage(e);
+          if (e.getCause() instanceof InvalidKeyException)
+            throw new SMException(e);
+          else
+            throw new SMException("Unable to load MAC algorithm whose name is: " + macAlgorithm +
+              ". Check that is used correct JCE provider and/or it is proper configured for this module.",e);
+        }
     }
 
     /**
