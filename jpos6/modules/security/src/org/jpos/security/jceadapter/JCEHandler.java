@@ -18,12 +18,16 @@
 
 package  org.jpos.security.jceadapter;
 
+import java.security.InvalidKeyException;
 import java.security.Key;
+import java.security.NoSuchAlgorithmException;
 import java.security.Provider;
 import java.security.Security;
 
+import java.util.Hashtable;
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
+import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.jpos.iso.ISOUtil;
@@ -278,11 +282,100 @@ public class JCEHandler {
     }
 
     /**
+     * Helper method used for create or retrieve MAC algorithm from cache
+     * @param engine object identyifing MAC algorithm
+     * @return Initialized MAC algotithm
+     * @throws org.jpos.security.jceadapter.JCEHandlerException
+     */
+    Mac assignMACEngine(MacEngineKey engine) throws JCEHandlerException {
+        macEngines = macEngines==null?new Hashtable():macEngines;
+        if (macEngines.containsKey(engine)) {
+          return (Mac)macEngines.get(engine);
+        }
+        
+        //Initalize new MAC engine and store them in macEngines cache
+        Mac mac = null;
+        try{
+          mac = Mac.getInstance(engine.getMacAlgorithm(), provider);
+          mac.init(engine.getMacKey());
+        } catch (NoSuchAlgorithmException e) {
+          throw new JCEHandlerException(e);
+        } catch (InvalidKeyException e) {
+          throw new JCEHandlerException(e);
+        }
+        macEngines.put(engine, mac);
+        return mac;
+    }
+
+    /**
+     * Generates MAC (Message Message Authentication Code)
+     * for some data.
+     * @param data the data to be MACed
+     * @param kd the key used for MACing
+     * @param macAlgorithm MAC algorithm name suitable for {@link Mac#getInstance}
+     * @return the MAC
+     * @throws org.jpos.security.jceadapter.JCEHandlerException
+     */
+    public byte[] generateMAC(byte[] data, Key kd, String macAlgorithm) throws JCEHandlerException {
+        Mac mac = assignMACEngine(new MacEngineKey(macAlgorithm,kd));
+        synchronized (mac){
+          mac.reset();
+          return mac.doFinal(data);
+        }
+    }
+
+    /**
      * The JCE provider
      */
     Provider provider = null;
+    Hashtable macEngines = null;
     String desMode = "ECB";
     String desPadding = "NoPadding";
+    
+    /**
+     * Class used for indexing MAC algorithms in cache
+     */
+    protected class MacEngineKey{
+      private String     macAlgorithm;
+      private Key macKey;
+
+      protected MacEngineKey(String macAlgorithm, Key macKey) {
+        this.macAlgorithm = macAlgorithm;
+        this.macKey = macKey;
+      }
+
+      public String getMacAlgorithm() {
+        return macAlgorithm;
+      }
+
+      public Key getMacKey() {
+        return macKey;
+      }
+
+      public boolean equals(Object obj) {
+        if (obj == null) {
+          return false;
+        }
+        if (getClass() != obj.getClass()) {
+          return false;
+        }
+        final MacEngineKey other = (MacEngineKey) obj;
+        if (this.macAlgorithm != other.macAlgorithm && (this.macAlgorithm == null || !this.macAlgorithm.equals(other.macAlgorithm))) {
+          return false;
+        }
+        if (this.macKey != other.macKey && (this.macKey == null || !this.macKey.equals(other.macKey))) {
+          return false;
+        }
+        return true;
+      }
+
+      public int hashCode() {
+        int hash = 5;
+        hash = 67 * hash + (this.macAlgorithm != null ? this.macAlgorithm.hashCode() : 0);
+        hash = 67 * hash + (this.macKey != null ? this.macKey.hashCode() : 0);
+        return hash;
+      }
+    }
 }
 
 

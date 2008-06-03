@@ -332,6 +332,26 @@ public class BaseSMAdapter
         return  result;
     }
 
+    public byte[] generateEDE_MAC (byte[] data, SecureDESKey kd) throws SMException {
+        SimpleMsg[] cmdParameters =  {
+            new SimpleMsg("parameter", "data", data), new SimpleMsg("parameter", "data key",
+                    kd),
+        };
+        LogEvent evt = new LogEvent(this, "s-m-operation");
+        evt.addMessage(new SimpleMsg("command", "Generate EDE-MAC", cmdParameters));
+        byte[] result = null;
+        try {
+            result = generateEDE_MACImpl(data, kd);
+            evt.addMessage(new SimpleMsg("result", "EDE-MAC", result));
+        } catch (Exception e) {
+            evt.addMessage(e);
+            throw  e instanceof SMException ? (SMException) e : new SMException(e);
+        } finally {
+            Logger.log(evt);
+        }
+        return  result;
+    }
+
     /**
      * Your SMAdapter should override this method if it has this functionality
      * @param keyLength
@@ -463,6 +483,17 @@ public class BaseSMAdapter
      * @throws SMException
      */
     protected byte[] generateCBC_MACImpl (byte[] data, SecureDESKey kd) throws SMException {
+        throw  new SMException("Operation not supported in: " + this.getClass().getName());
+    }
+
+    /**
+     * Your SMAdapter should override this method if it has this functionality
+     * @param data
+     * @param kd
+     * @return generated EDE-MAC
+     * @throws SMException
+     */
+    protected byte[] generateEDE_MACImpl (byte[] data, SecureDESKey kd) throws SMException {
         throw  new SMException("Operation not supported in: " + this.getClass().getName());
     }
 }
