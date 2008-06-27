@@ -158,6 +158,11 @@ public class FSDMsg implements Loggeable {
         pack (getSchema (baseSchema), sb);
         return sb.toString ();
     }
+    public byte[] packToBytes () 
+        throws JDOMException, MalformedURLException, IOException, ISOException, UnsupportedEncodingException
+    {
+        return pack().getBytes("ISO8859_1");
+    }
 
     protected String get (String id, String type, int length, String defValue) 
         throws ISOException
