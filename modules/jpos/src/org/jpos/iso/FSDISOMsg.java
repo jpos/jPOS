@@ -41,7 +41,7 @@ public class FSDISOMsg extends ISOMsg {
     }
     public byte[] pack() throws ISOException {
         try {
-            return fsd.pack().getBytes();
+            return fsd.packToBytes();
         } catch (Exception e) {
             throw new ISOException (e);
         }
