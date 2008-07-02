@@ -105,6 +105,7 @@ public class ISOMeter extends JComponent implements Runnable {
     final static int width    = 200;
     final static int height   = 60;
     final static int mass     = height/2;
+    final static int MAX_VALUE = 1000;
 
     /**
      * @serial
@@ -200,6 +201,7 @@ public class ISOMeter extends JComponent implements Runnable {
     }
 
     public void setValue(int val) {
+        val = val > MAX_VALUE ? MAX_VALUE : val;
         int y = mass - (val*height/2000);
         yPoints[width-1] = y;
         continueScroll = width;
