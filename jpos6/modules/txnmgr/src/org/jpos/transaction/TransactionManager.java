@@ -417,13 +417,19 @@ public class TransactionManager
         return participants;
     }
     protected List getParticipants (long id) {
+    	// Use a local copy of participant to avoid adding the 
+        // GROUP participant to the DEFAULT_GROUP
+    	ArrayList participantsChain = new ArrayList();
         List participants = getParticipants (DEFAULT_GROUP);
+        // Add DEFAULT_GROUP participants 
+        participantsChain.addAll(participants);
         String key = getKey(GROUPS, id);
         String grp = null;
+        // now add participants of Group 
         while ( (grp = (String) psp.inp (key)) != null) {
-            participants.addAll (getParticipants (grp));
+            participantsChain.addAll (getParticipants (grp));
         }
-        return participants;
+        return participantsChain;
     }
     protected void initParticipants (Element config) 
         throws ConfigurationException
