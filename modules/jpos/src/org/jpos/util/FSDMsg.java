@@ -455,6 +455,9 @@ public class FSDMsg implements Loggeable {
     public Map getMap () {
         return fields;
     }
+    public void setMap (Map fields) {
+        this.fields = fields;
+    }
     public void dump (PrintStream p, String indent) {
         String inner = indent + "  ";
         p.println (indent + "<fsdmsg schema='" + basePath + baseSchema  + "'>");
