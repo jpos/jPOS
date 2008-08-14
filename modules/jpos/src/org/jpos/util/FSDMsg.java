@@ -220,6 +220,10 @@ public class FSDMsg implements Loggeable {
             if (separators.containsKey(getSeparatorType(type))) {
                 return true;
             } else {
+                if (type.endsWith("DS")) { 
+                    return true;
+                }
+                
                 throw new RuntimeException("FSDMsg.isSeparated(String) found that type of "+type+" is used, but "+getSeparatorType(type)+" has not been defined as a separator!");
             }
         }
@@ -247,7 +251,14 @@ public class FSDMsg implements Loggeable {
     
     private char getSeparator(String type) {
         if (type.length() > 2) {
-            return ((Character)separators.get(getSeparatorType(type))).charValue();
+            if (separators.containsKey(getSeparatorType(type))) {
+                return ((Character)separators.get(getSeparatorType(type))).charValue();
+            } else {
+                if (type.endsWith("DS")) {
+                    // Dummy separator type, return 0 to indicate nothing to add.
+                    return 0;
+                }
+            }
         }
         
         throw new RuntimeException("getSeparator called on for type="+type+" which does not resolve to a known separator.");
