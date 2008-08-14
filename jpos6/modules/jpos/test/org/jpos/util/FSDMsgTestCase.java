@@ -64,6 +64,31 @@ public class FSDMsgTestCase extends TestCase {
             m.pack().getBytes()
         );
     }
+    
+    public void testDummySeparator () throws Exception {
+        FSDMsg m = new FSDMsg ("file:../test/org/jpos/util/msgDS-");
+        
+        String macData = "12345678";
+        m.set ("length", "8");
+        m.set ("vardata", macData);
+        assertEquals("Dummy separator 1","000812345678",m.pack());
+
+        macData = "12345678123456781234567812345678";
+        m.set ("length", "32");
+        m.set ("vardata", macData);
+        assertEquals("Dummy separator long data","003212345678123456781234567812345678",m.pack());
+        
+        m.set ("length", "");
+        m.set ("vardata", "");
+        assertEquals("Dummy separator no data","0000",m.pack());
+        
+        m.set ("length", "40"); // Too long data data will be silently truncated, not sure I like this behaviour!
+        m.set ("vardata", "12345678123456781234567812345678XXXXXXXX");
+        assertEquals("Dummy separator truncated data","004012345678123456781234567812345678",m.pack());
+
+    }
+    
+    
     public void assertEquals (String msg, byte[] b1, byte[] b2) {
         assertTrue (msg, Arrays.equals (b1, b2));
     }
