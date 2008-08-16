@@ -1,5 +1,7 @@
 <schema id='fsdmsg-test'>
  <field id="length" type="N"    length="4" />
- <field id="vardata" type="ADS"   length="32" />
+ <field id="alphavardata" type="ADS"   length="32" />
+ <field id="binaryvardata" type="BDS"   length="32" />
+ <field id="numericvardata" type="NDS"   length="32" />
 </schema>
 

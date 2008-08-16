@@ -197,9 +197,16 @@ public class FSDMsg implements Loggeable {
             case 'B':
                 try {
                     if ((length << 1) >= value.length()) {
-                        value = new String (
-                                ISOUtil.hex2byte (ISOUtil.zeropad(value,length << 1).substring (0, length << 1)),
-                                "ISO8859_1");
+                        if (isSeparated(type)) {
+                            // Convert but do not pad if this field ends with a separator
+                            value = new String (
+                                    ISOUtil.hex2byte (value),
+                                    "ISO8859_1");
+                        } else {
+                            value = new String (
+                                    ISOUtil.hex2byte (ISOUtil.zeropad(value,length << 1).substring (0, length << 1)),
+                                    "ISO8859_1");
+                        }
                     } else {
                         throw new RuntimeException("field content="+value+" is too long to fit in field "+id+" whose length is "+length);
                     }
