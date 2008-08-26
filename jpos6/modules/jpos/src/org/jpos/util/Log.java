@@ -122,10 +122,10 @@ public class Log implements LogSource {
         return createLogEvent (TRACE, detail);
     }
     public LogEvent createDebug() {
-        return createLogEvent (TRACE);
+        return createLogEvent (DEBUG);
     }
     public LogEvent createDebug(Object detail) {
-        return createLogEvent (TRACE, detail);
+        return createLogEvent (DEBUG, detail);
     }
     public LogEvent createInfo () {
         return createLogEvent (INFO);
