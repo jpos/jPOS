@@ -416,7 +416,11 @@ public class JDBMSpace extends TimerTask implements Space {
         }
     }
     public void run () {
-        gc();
+        try {
+            gc();
+        } catch (Exception e) {
+            e.printStackTrace(); // this should never happen
+        }
     }
     /**
      * garbage collector.

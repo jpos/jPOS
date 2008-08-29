@@ -123,7 +123,11 @@ public class TSpace extends TimerTask implements LocalSpace, Loggeable {
         return obj;
     }
     public void run () {
-        gc();
+        try {
+            gc();
+        } catch (Exception e) {
+            e.printStackTrace(); // this should never happen
+        }
     }
     public void gc () {
         Object[] keys;
