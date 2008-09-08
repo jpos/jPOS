@@ -131,6 +131,8 @@ public class SystemMonitor extends QBeanSupport implements Runnable,
         p.println(newIndent + "inUseMemory="
                 + (r.totalMemory() - r.freeMemory()));
         p.println(indent + "</memory>");
+        if (System.getSecurityManager() != null)
+            p.println (indent +"sec.manager=" + System.getSecurityManager());
         p.println(indent + "<threads>");
         p.println(newIndent + "      delay=" + delay + " ms");
         p.println(newIndent + "    threads=" + Thread.activeCount());
