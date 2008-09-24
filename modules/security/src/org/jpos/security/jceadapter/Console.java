@@ -22,6 +22,7 @@ import java.util.Properties;
 
 import org.jpos.core.ConfigurationException;
 import org.jpos.core.SimpleConfiguration;
+import org.jpos.iso.ISOUtil;
 import org.jpos.security.SMException;
 import org.jpos.security.SecureDESKey;
 import org.jpos.util.Logger;
@@ -52,7 +53,7 @@ public class Console {
         Properties cfgProps = new Properties();
         SimpleConfiguration cfg = new SimpleConfiguration(cfgProps);
         String commandName = null;
-        String[] commandParams = new String[7];                 // 7 is Maximum number of paramters for a command
+        String[] commandParams = new String[10];                 // 10 is Maximum number of paramters for a command
         System.out.println("Welcome to JCE Security Module console commander!");
         if (args.length == 0) {
             System.out.println("Usage: Console [-options] command [commandparameters...]");
@@ -72,6 +73,14 @@ public class Console {
             System.out.println("                  Odd parity is be forced before encryption under LMK");
             System.out.println("    CK <keyLength> <keyType> <KEYunderLMK>");
             System.out.println("                  to generate a key check value for a key encrypted under LMK.");
+            System.out.println("    IK <keyLength> <keyType> <KEYunderKEK> ");
+            System.out.println("       <kekLength> <kekType> <KEKunderLMK> <KEKcheckValue>");
+            System.out.println("                  to import a key from encryption under KEK (eg. ZMK,TMK) to encryption under LMK");
+            System.out.println("                  Odd parity is be forced before encryption under LMK");
+            System.out.println("    KE <keyLength> <keyType> <KEYunderLMK> <KEYcheckValue> ");
+            System.out.println("       <kekLength> <kekType> <KEKunderLMK> <KEKcheckValue> ");
+            System.out.println("                  to translate (export) a key from encryption under LMK");
+            System.out.println("                  to encryption under KEK (eg. ZMK,TMK)");
         }
         else {
             int argsCounter = 0;
@@ -123,6 +132,19 @@ public class Console {
                     else if (commandName.toUpperCase().compareTo("CK") == 0) {
                         SecureDESKey KEYunderLMK = sm.generateKeyCheckValue(keyLength,
                                 commandParams[1].toUpperCase(), commandParams[2]);
+                    }
+                    else if (commandName.toUpperCase().compareTo("IK") == 0) {
+                        SecureDESKey KEKunderLMK = new SecureDESKey((short)Integer.parseInt(commandParams[3]),
+                                commandParams[4].toUpperCase(), commandParams[5], commandParams[6]);
+                        sm.importKey(keyLength, commandParams[1].toUpperCase(),
+                                ISOUtil.hex2byte(commandParams[2]), KEKunderLMK, true);
+                    }
+                    else if (commandName.toUpperCase().compareTo("KE") == 0) {
+                        SecureDESKey KEKunderLMK = new SecureDESKey((short)Integer.parseInt(commandParams[4]),
+                                commandParams[5].toUpperCase(), commandParams[6], commandParams[7]);
+                        SecureDESKey KEYunderLMK = new SecureDESKey(keyLength, commandParams[1].toUpperCase(),
+                                commandParams[2], commandParams[3] );
+                        sm.exportKey(KEYunderLMK, KEKunderLMK);
                     }
                     else {
                         System.err.println("Unknown command: " + commandName);
