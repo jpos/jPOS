@@ -66,7 +66,7 @@ public class Console {
             System.out.println("\nWhere command include: ");
             System.out.println("    GC <keyLength>");
             System.out.println("                  to generate a clear key component.");
-            System.out.println("    FK <keyLength> <keyType> <component1> <component2> <component2>");
+            System.out.println("    FK <keyLength> <keyType> <component1> <component2> <component3>");
             System.out.println("                  to form a key from three clear components.");
             System.out.println("                  and returns the key encrypted under LMK");
             System.out.println("                  Odd parity is be forced before encryption under LMK");
@@ -86,7 +86,7 @@ public class Console {
                     (args[argsCounter].toLowerCase().compareTo("-jce") == 0)
                 ) {
                     argsCounter++;
-                    cfgProps.setProperty("jce", args[argsCounter++]);
+                    cfgProps.setProperty("provider", args[argsCounter++]);
                 }
                 if ((argsCounter < args.length) &&
                     (args[argsCounter].toLowerCase().compareTo("-rebuildlmk") == 0)
