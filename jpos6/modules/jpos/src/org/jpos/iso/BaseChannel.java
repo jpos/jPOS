@@ -535,8 +535,11 @@ public abstract class BaseChannel extends Observable
      * @exception IOException
      */
     public void sendKeepAlive () throws IOException {
-        sendMessageLength(0);
-        serverOut.flush ();
+        synchronized (serverOut) {
+            sendMessageLength(0);
+            serverOut.flush ();
+        }
+
     }
     protected boolean isRejected(byte[] b) {
         // VAP Header support - see VAPChannel
