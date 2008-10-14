@@ -624,7 +624,8 @@ public class ISOUtil {
         if (s.length() % 2 == 0) {
             return hex2byte (s.getBytes(), 0, s.length() >> 1);
         } else {
-            throw new RuntimeException("Uneven number("+s.length()+") of hex digits passed to hex2byte.");
+        	// Padding left zero to make it even size #Bug raised by tommy
+        	return hex2byte("0"+s);
         }
     }
 
