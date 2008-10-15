@@ -72,7 +72,15 @@ public class QBeanFactory extends QBeanSupport implements QBeanFactoryMBean {
         while (keys.hasNext()) {
             Element bean = (Element) privateList.get(keys.next());
             String id = bean.getAttributeValue("id");// id and key are same
-            beanMap.remove(id);
+            Object beanInstance=beanMap.remove(id);
+            String stopMethod = bean.getAttributeValue("stop-method");
+            if(beanInstance!=null && stopMethod!=null){
+                try{
+                    getFactory().invoke(beanInstance, stopMethod, null);
+                }catch(Exception e){
+                    log.warn(e);
+                }
+            }
         }
     }
 
@@ -126,6 +134,10 @@ public class QBeanFactory extends QBeanSupport implements QBeanFactoryMBean {
             } else {
                 getFactory().invoke(beanInstance, methodName, pValue);
             }
+        }
+        String startMethod = bean.getAttributeValue("start-method");
+        if(startMethod!=null){
+            getFactory().invoke(beanInstance, startMethod, null);
         }
         if(useCache)//indication for a singleton 
           beanMap.put(id, beanInstance);   
