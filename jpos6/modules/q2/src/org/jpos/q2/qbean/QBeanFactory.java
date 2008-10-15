@@ -1,5 +1,3 @@
-package org.jpos.q2.qbean;
-
 /*
  * jPOS Project [http://jpos.org]
  * Copyright (C) 2000-2008 Alejandro P. Revilla
@@ -17,6 +15,7 @@ package org.jpos.q2.qbean;
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package org.jpos.q2.qbean;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
