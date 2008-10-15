@@ -417,12 +417,18 @@ public class QFactory {
         throws ConfigurationException 
     {
         try {
+            if(p!=null){
             Class[] paramTemplate = { pc };
             Method method = obj.getClass().getMethod(m, paramTemplate);
             Object[] param = new Object[1];
             param[0] = p;
             method.invoke (obj, param);
+            }else{
+                Method method = obj.getClass().getMethod(m,null);
+                method.invoke (obj,null);
+           }
         } catch (NoSuchMethodException e) { 
+            e.printStackTrace();
         } catch (NullPointerException e) {
         } catch (IllegalAccessException e) {
         } catch (InvocationTargetException e) {
