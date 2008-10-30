@@ -121,5 +121,18 @@ public interface Space {
      * @param timeout timeout value
      */
     public void push (Object key, Object value, long timeout);
+
+    /**
+     * @param keys array of keys to check
+     * @return true if one or more keys are available in the space
+     */
+    public boolean existAny (Object[] keys);
+
+    /**
+     * @param keys array of keys to check
+     * @param timeout to wait for any of the entries to become available
+     * @return true if one or more keys are available in the space
+     */
+    public boolean existAny (Object[] keys, long timeout);
 }
 

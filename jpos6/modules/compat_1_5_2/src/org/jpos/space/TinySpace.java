@@ -127,6 +127,27 @@ public class TinySpace implements Space, Serializable {
         }
         return obj;
     }
+    public boolean existAny (Object[] keys) {
+        for (int i=0; i<keys.length; i++) {
+            if (rdp (keys[i]) != null)
+                return true;
+        }
+        return false;
+    }
+    public boolean existAny (Object[] keys, long timeout) {
+        long now = System.currentTimeMillis();
+        long end = now + timeout;
+        while (((now = System.currentTimeMillis()) < end)) {
+            if (existAny (keys))
+                return true;
+            synchronized (this) {
+                try {
+                    wait (end - now);
+                } catch (InterruptedException e) { }
+            }
+        }
+        return false;
+    }
     public void push (Object id, Object value) {
         throw new SpaceError ("Unsupported operation");
     }

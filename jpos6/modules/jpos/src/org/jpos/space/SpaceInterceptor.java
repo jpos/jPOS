@@ -60,5 +60,11 @@ public class SpaceInterceptor implements Space {
     public Object rdp (Object key) {
         return sp.rdp (key);
     }
+    public boolean existAny (Object[] keys) {
+        return sp.existAny (keys);
+    }
+    public boolean existAny (Object[] keys, long timeout) {
+        return sp.existAny (keys, timeout);
+    }
 }
 

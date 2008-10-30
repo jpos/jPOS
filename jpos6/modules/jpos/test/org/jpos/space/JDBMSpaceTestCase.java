@@ -21,6 +21,7 @@ package org.jpos.space;
 import junit.framework.TestCase;
 
 import org.jpos.util.Profiler;
+import org.jpos.iso.ISOUtil;
 
 public class JDBMSpaceTestCase extends TestCase {
     public static final int COUNT = 1000;
@@ -137,6 +138,51 @@ public class JDBMSpaceTestCase extends TestCase {
         assertEquals ("ONE", sp.inp ("PUSH"));
         assertEquals ("FOUR", sp.inp ("PUSH"));
         assertNull (sp.rdp ("PUSH"));
+    }
+    public void testExist() {
+        sp.out ("KEYA", Boolean.TRUE);
+        sp.out ("KEYB", Boolean.TRUE);
+
+        assertTrue (
+            "existAny ([KEYA])",
+            sp.existAny (new String[] { "KEYA" })
+        );
+
+        assertTrue (
+            "existAny ([KEYB])",
+            sp.existAny (new String[] { "KEYB" })
+        );
+        assertTrue (
+            "existAny ([KEYA,KEYB])",
+            sp.existAny (new String[] { "KEYA", "KEYB" })
+        );
+        assertFalse (
+            "existAny ([KEYC,KEYD])",
+            sp.existAny (new String[] { "KEYC", "KEYD" })
+        );
+    }
+    public void testExistWithTimeout() {
+        assertFalse (
+            "existAnyWithTimeout ([KA,KB])",
+            sp.existAny (new String[] { "KA", "KB" })
+        );
+        assertFalse (
+            "existAnyWithTimeout ([KA,KB], delay)",
+            sp.existAny (new String[] { "KA", "KB" }, 1000L)
+        );
+        new Thread() {
+            public void run() {
+                ISOUtil.sleep (1000L);
+                sp.out ("KA", Boolean.TRUE);
+            }
+        }.start();
+        long now = System.currentTimeMillis();
+        assertTrue (
+            "existAnyWithTimeout ([KA,KB], delay)",
+            sp.existAny (new String[] { "KA", "KB" }, 2000L)
+        );
+        long elapsed = System.currentTimeMillis() - now;
+        assertTrue ( "delay was > 1000", elapsed > 900L);
     }
 }
 

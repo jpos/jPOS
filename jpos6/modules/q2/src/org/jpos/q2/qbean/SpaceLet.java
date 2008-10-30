@@ -213,6 +213,12 @@ public class SpaceLet extends QBeanSupport implements Space {
             throw new SpaceError (t);
         }
     }
+    public boolean existAny (Object[] keys) {
+        return sp.existAny (keys);
+    }
+    public boolean existAny (Object[] keys, long timeout) {
+        return sp.existAny (keys, timeout);
+    }
     private void grabSpace (Element e) {
         sp = SpaceFactory.getSpace (e != null ? e.getText() : "");
     }
