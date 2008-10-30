@@ -289,5 +289,11 @@ public class TransientSpace implements LocalSpace, TransientSpaceMBean {
     public void push (Object id, Object value, long timeout) {
         throw new SpaceError ("Unsupported operation");
     }
+    public boolean existAny (Object[] keys) {
+        throw new SpaceError ("Unsupported operation");
+    }
+    public boolean existAny (Object[] keys, long timeout) {
+        throw new SpaceError ("Unsupported operation");
+    }
 }
 

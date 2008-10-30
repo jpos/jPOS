@@ -241,6 +241,27 @@ public class TSpace extends TimerTask implements LocalSpace, Loggeable {
         if (sl != null)
             notifyListeners(key, value);
     }
+    public boolean existAny (Object[] keys) {
+        for (int i=0; i<keys.length; i++) {
+            if (rdp (keys[i]) != null)
+                return true;
+        }
+        return false;
+    }
+    public boolean existAny (Object[] keys, long timeout) {
+        long now = System.currentTimeMillis();
+        long end = now + timeout;
+        while (((now = System.currentTimeMillis()) < end)) {
+            if (existAny (keys))
+                return true;
+            synchronized (this) {
+                try {
+                    wait (end - now);
+                } catch (InterruptedException e) { }
+            }
+        }
+        return false;
+    }
     private List getList (Object key) {
         List l = (List) entries.get (key);
         if (l == null) 
