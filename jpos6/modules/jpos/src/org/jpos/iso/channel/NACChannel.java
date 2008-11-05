@@ -27,6 +27,8 @@ import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOMsg;
 import org.jpos.iso.ISOPackager;
 import org.jpos.iso.ISOUtil;
+import org.jpos.core.Configuration;
+import org.jpos.core.ConfigurationException;
 
 /**
  * Talks with TCP based NACs
@@ -43,6 +45,7 @@ public class NACChannel extends BaseChannel {
     /**
      * Public constructor 
      */
+    boolean tpduSwap = true;
     public NACChannel () {
         super();
     }
@@ -96,7 +99,7 @@ public class NACChannel extends BaseChannel {
     }
     protected void sendMessageHeader(ISOMsg m, int len) throws IOException { 
         byte[] h = m.getHeader();
-        if (h != null) {
+        if (tpduSwap && h != null) {
             if (h.length == 5) {
                 // swap src/dest address
                 byte[] tmp = new byte[2];
@@ -117,4 +120,11 @@ public class NACChannel extends BaseChannel {
     public void setHeader (String header) {
         super.setHeader (ISOUtil.str2bcd(header, false));
     }
+    public void setConfiguration (Configuration cfg) 
+        throws ConfigurationException
+    {
+        super.setConfiguration (cfg);
+        tpduSwap = cfg.getBoolean ("tpdu-swap", true);
+    }
 }
+
