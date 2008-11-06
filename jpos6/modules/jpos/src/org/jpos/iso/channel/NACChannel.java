@@ -99,8 +99,8 @@ public class NACChannel extends BaseChannel {
     }
     protected void sendMessageHeader(ISOMsg m, int len) throws IOException { 
         byte[] h = m.getHeader();
-        if (tpduSwap && h != null) {
-            if (h.length == 5) {
+        if (h != null) {
+            if (tpduSwap && h.length == 5) {
                 // swap src/dest address
                 byte[] tmp = new byte[2];
                 System.arraycopy (h,   1, tmp, 0, 2);
@@ -108,7 +108,7 @@ public class NACChannel extends BaseChannel {
                 System.arraycopy (tmp, 0,   h, 3, 2);
             }
         }
-        else
+        else 
             h = header;
         if (h != null) 
             serverOut.write(h);
