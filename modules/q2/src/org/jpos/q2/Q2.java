@@ -519,7 +519,7 @@ public class Q2 implements FileFilter, Runnable {
             CommandLine line = parser.parse (options, args);
             if (line.hasOption ("v")) {
                 System.out.println (
-                    "Q2 version: " +Q2_VERSION + "(" + Q2_REVISION + ")"
+                    "Q2 version: " +Q2_VERSION + " (" + Q2_REVISION + ")"
                 );
                 System.exit (0);
             } 
