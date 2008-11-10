@@ -107,11 +107,13 @@ public class EuroSubFieldPackager extends ISOBasePackager
             m.set(c);
         }
 
-        // Now unpack the IFEP_LLCHAR fields
-        for (int i=1; consumed < b.length ; i++) 
-        {
+        // Now unpack the fields
+        while (consumed < b.length) {
+            int i = Integer.parseInt(new String(b, consumed, 2));
+
             if (fld[i] == null)
-                continue;
+                throw new ISOException ("Unsupported sub-field " + i + " unpacking field " + m.getKey());
+
             c = fld[i].createComponent(i);
             consumed += fld[i].unpack (c, b, consumed);
             if (logger != null) 
