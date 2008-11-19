@@ -69,6 +69,10 @@ public class ChannelInfoFilter implements ISOFilter, Configurable {
                     (InetSocketAddress) socket.getLocalSocketAddress();
 
                 StringBuilder sb = new StringBuilder();
+                if (channelNameField == socketInfoField) {
+                    sb.append (channel.getName());
+                    sb.append (' ');
+                }
                 sb.append (localAddr.getAddress().getHostAddress());
                 sb.append (':');
                 sb.append (Integer.toString (localAddr.getPort()));
