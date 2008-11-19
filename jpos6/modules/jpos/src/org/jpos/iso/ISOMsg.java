@@ -307,8 +307,10 @@ public class ISOMsg extends ISOComponent
         if (!dirty)
             return;
 
-        BitSet bmap = new BitSet (((getMaxField()+62)>>6)<<6);
-        for (int i=1; i<=maxField; i++)
+        int mf = Math.min (getMaxField(), 192);
+
+        BitSet bmap = new BitSet (((mf+62)>>6)<<6);
+        for (int i=1; i<=mf; i++)
             if (((ISOComponent) fields.get (new Integer (i))) != null) 
                 bmap.set (i);
         set (new ISOBitMap (-1, bmap));
