@@ -303,6 +303,8 @@ public class ISOServer extends Observable
                                 (new ServerSocket (port, backlog, bindAddr));
                         }
                         channel = (ServerChannel) clientSideChannel.clone();
+                        if (channel instanceof Observable)  
+                            ((Observable)channel).addObserver (this);
                         channel.accept (serverSocket);
                         if ((cnt[CONNECT]++) % 100 == 0)
                             purgeChannels ();
