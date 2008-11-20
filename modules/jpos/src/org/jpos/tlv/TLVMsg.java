@@ -79,6 +79,8 @@ public class TLVMsg {
      */
     public byte[] getTLV() {
         String hexVal = Integer.toHexString(tag);
+        // Add a left padding byte if needed as hex2byte expects an even number of hex digits
+        hexVal = (hexVal.length()==1) ? "0"+hexVal : hexVal;
         byte[] bTag = ISOUtil.hex2byte(hexVal);
         byte[] bLen = getL();
         if (value != null) {
