@@ -216,12 +216,14 @@ public class ISOMeter extends JComponent implements Runnable {
             this.refreshPanel = refreshPanel;
     }
     public void setConnected(boolean connected) {
-        if (this.connected != connected)
+        if (this.connected != connected) {
             if (!scroll)
                 if (connected)
                     continueScroll = width;
                 else
                     continueScroll = 1;
+            repaint();
+        }
         this.connected = connected;
     }
     public void setPositiveCounter(String s) {
