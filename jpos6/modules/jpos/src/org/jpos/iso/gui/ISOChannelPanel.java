@@ -29,6 +29,7 @@ package org.jpos.iso.gui;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Insets;
+import javax.swing.SwingUtilities;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -39,6 +40,7 @@ import javax.swing.JPanel;
 import javax.swing.ListModel;
 
 import org.jpos.iso.BaseChannel;
+import org.jpos.iso.ISOServer;
 import org.jpos.iso.ISOChannel;
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOMsg;
@@ -131,6 +133,22 @@ public class ISOChannelPanel extends JPanel implements Observer {
                     ISOUtil.zeropad(Integer.toString(cnt[ISOChannel.RX]), 6)
                 );
             } catch (ISOException e) { }
+        } else if (o instanceof ISOServer) {
+            final ISOServer server = (ISOServer) o;
+            final Runnable updateIt = new Runnable() {
+                public void run() {
+                    ISOUtil.sleep (250L);
+                    int active = server.getActiveConnections();
+                    meter.setConnected(active > 0);
+                    try {
+                        meter.setPositiveCounter(
+                            ISOUtil.zeropad(Integer.toString(active), 6)
+                        );
+                    } catch (ISOException e) { }
+                    meter.repaint();
+                }
+            };
+            SwingUtilities.invokeLater (updateIt);
         } else 
             meter.setConnected(true);
     }
