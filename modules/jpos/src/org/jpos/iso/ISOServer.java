@@ -117,6 +117,8 @@ public class ISOServer extends Observable
             realm = ISOServer.this.getRealm() + ".session";
         }
         public void run() {
+            setChanged ();
+            notifyObservers ();
             if (channel instanceof BaseChannel) {
                 LogEvent ev = new LogEvent (this, "session-start");
                 Socket socket = ((BaseChannel)channel).getSocket ();
@@ -303,17 +305,17 @@ public class ISOServer extends Observable
                                 (new ServerSocket (port, backlog, bindAddr));
                         }
                         channel = (ServerChannel) clientSideChannel.clone();
-                        if (channel instanceof Observable)  
-                            ((Observable)channel).addObserver (this);
                         channel.accept (serverSocket);
                         if ((cnt[CONNECT]++) % 100 == 0)
                             purgeChannels ();
                         WeakReference wr = new WeakReference (channel);
                         channels.put (channel.getName(), wr);
                         channels.put (LAST, wr);
-                        setChanged ();
-                        notifyObservers (channel);
                         pool.execute (createSession(channel));
+                        setChanged ();
+                        notifyObservers (this);
+                        if (channel instanceof Observable)  
+                            ((Observable)channel).addObserver (this);
                     } catch (SocketException e) {
                         if (!shutdown)
                             Logger.log (new LogEvent (this, "iso-server", e));
@@ -420,6 +422,9 @@ public class ISOServer extends Observable
     }
     public int getPendingCount () {
         return pool.getPendingCount();
+    }
+    public int getActiveConnections () {
+        return pool.getActiveCount();
     }
     /**
      * @return most recently connected ISOChannel or null

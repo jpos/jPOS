@@ -274,6 +274,7 @@ public abstract class BaseChannel extends Observable
         );
         usable = true;
         cnt[CONNECT]++;
+        System.out.println ("DEBUG: NOTIFY OBSERVERS " + this + " connected=" + isConnected());
         setChanged();
         notifyObservers();
     }
@@ -374,6 +375,8 @@ public abstract class BaseChannel extends Observable
             if (socket != null)
                 socket.setKeepAlive (keepAlive);
             Logger.log (evt);
+            setChanged();
+            notifyObservers();
         } catch (ConnectException e) {
             Logger.log (new LogEvent (this, "connection-refused",
                 getHost()+":"+getPort())

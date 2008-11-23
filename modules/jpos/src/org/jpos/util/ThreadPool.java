@@ -41,6 +41,7 @@ public class ThreadPool extends ThreadGroup implements LogSource, Loggeable, Con
     private int maxPoolSize = 1;
     private int available;
     private int running = 0;
+    private int active  = 0;
     private BlockingQueue pool = new BlockingQueue();
     private Logger logger;
     private String realm;
@@ -69,6 +70,7 @@ public class ThreadPool extends ThreadGroup implements LogSource, Loggeable, Con
                             currentJob = job;
                         }
                         try {
+                            active++;
                             ((Runnable) job).run();
                             setName (name + "-idle");
                         } catch (Throwable t) {
@@ -77,6 +79,7 @@ public class ThreadPool extends ThreadGroup implements LogSource, Loggeable, Con
                         synchronized (this) {
                             currentJob = null;
                             available++;
+                            active--;
                         }
                     }
                 }
@@ -176,6 +179,12 @@ public class ThreadPool extends ThreadGroup implements LogSource, Loggeable, Con
      */
     public int getMaxPoolSize () {
         return maxPoolSize;
+    }
+    /**
+     * @return number of running threads
+     */
+    public int getActiveCount () {
+        return active;
     }
     /**
      * @return number of idle threads
