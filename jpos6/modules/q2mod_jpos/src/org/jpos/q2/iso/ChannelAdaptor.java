@@ -265,6 +265,8 @@ public class ChannelAdaptor
             while (running ()){
                 try {
                     checkConnection ();
+                    if (!running())
+                        break;
                     Object o = sp.in (in, delay);
                     if (o instanceof ISOMsg) {
                         channel.send ((ISOMsg) o);
