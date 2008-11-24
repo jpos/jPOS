@@ -19,7 +19,7 @@
 package org.jpos.iso;
 
 /**
- * EBCDIC version of IF_LLCHAR
+ * EBCDIC version of IFB_LLLNUM
  * Uses a 2 EBCDIC byte length field
  *
  * @author julien.moebs@paybox.net
