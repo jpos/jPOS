@@ -384,7 +384,7 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
      * @return  Field Packager for this field
      */
     public ISOFieldPackager getFieldPackager (int fldNumber) {
-        return fldNumber < fld.length ? fld[fldNumber] : null;
+        return fld != null && fldNumber < fld.length ? fld[fldNumber] : null;
     }
     /**
      * @param   fldNumber the Field Number
