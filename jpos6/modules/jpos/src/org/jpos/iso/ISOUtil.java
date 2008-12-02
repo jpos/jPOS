@@ -23,6 +23,8 @@ import java.util.Arrays;
 import java.util.BitSet;
 import java.util.StringTokenizer;
 
+import org.jpos.iso.ISOException;
+
 /**
  * varios functions needed to pack/unpack ISO-8583 fields
  *
@@ -233,6 +235,29 @@ public class ISOUtil {
         while (fill-- > 0)
             d.append (c);
         d.append(s);
+        return d.toString();
+    }
+    
+    /**
+     * pad to the right
+     * 
+     * @param s -
+     *            original string
+     * @param len -
+     *            desired len
+     * @param c -
+     *            padding char
+     * @return padded string
+     */
+    public static String padright(String s, int len, char c) throws ISOException {
+        s = s.trim();
+        if (s.length() > len)
+            throw new ISOException("invalid len " + s.length() + "/" + len);
+        StringBuffer d = new StringBuffer(len);
+        int fill = len - s.length();
+        d.append(s);
+        while (fill-- > 0)
+            d.append(c);
         return d.toString();
     }
 
