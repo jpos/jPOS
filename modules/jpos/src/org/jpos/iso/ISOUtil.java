@@ -1229,5 +1229,51 @@ public class ISOUtil {
         }
         return s;
     }
+    
+    /**
+     * return the last n characters of the passed String, left padding where required with 0
+     * 
+     * @param s
+     *            String to take from
+     * @param n nuber of characters to take
+     * 
+     * @return String (may be null)
+     */
+    public static String takeLastN(String s,int n) throws ISOException {
+        if (s.length()>n) {
+            return s.substring(s.length()-n);
+        }
+        else {
+            if (s.length()<n){
+                return zeropad(s,n);                
+            }
+            else {
+                return s;
+            }
+        }
+    }
+    
+    /**
+     * return the first n characters of the passed String, left padding where required with 0
+     * 
+     * @param s
+     *            String to take from
+     * @param n nuber of characters to take
+     * 
+     * @return String (may be null)
+     */
+    public static String takeFirstN(String s,int n) throws ISOException {
+        if (s.length()>n) {
+            return s.substring(0,n);
+        }
+        else {
+            if (s.length()<n){
+                return zeropad(s,n);                
+            }
+            else {
+                return s;
+            }
+        }
+    }
 }
 
