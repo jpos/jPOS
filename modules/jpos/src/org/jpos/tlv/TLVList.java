@@ -22,6 +22,7 @@ import java.util.Enumeration;
 import java.util.Vector;
 
 import org.jpos.iso.ISOException;
+import org.jpos.tlv.TLVMsg;
 
 /**
  * @author bharavi
@@ -291,6 +292,20 @@ public class TLVList {
             length = count;
         }
         return length;
+    }
+    
+    /*
+     *searches the list for a specified tag and returns a hex String
+     * @return hexString  
+     */
+    public String getString(int tag) {
+        TLVMsg msg = find(tag);
+        if (msg != null) {
+            return msg.getStringValue();
+        }
+        else {
+            return null;
+        }
     }
       
      

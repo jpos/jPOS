@@ -148,5 +148,12 @@ public class TLVMsg {
         //}
         return rBytes;
     }
+    
+    /*
+     * @return value 
+     */
+    public String getStringValue() {
+        return new String(ISOUtil.hexString(value));
+    }
 }
 
