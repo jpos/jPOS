@@ -34,6 +34,8 @@ public interface QBeanSupportMBean extends QBean, QPersist {
     public void setName (String name);
     public String getName ();
     public void setLogger (String name);
+    public void setRealm (String realm);
+    public String getRealm ();
     public String getLogger ();
     public void shutdownQ2 ();
     public URL[] getLoaderURLS();
