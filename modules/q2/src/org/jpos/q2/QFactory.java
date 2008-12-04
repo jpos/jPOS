@@ -123,6 +123,9 @@ public class QFactory {
             String logger = e.getAttributeValue ("logger");
             if (logger != null)
                 setAttribute (mserver, objectName, "Logger", logger);
+            String realm = e.getAttributeValue ("realm");
+            if (realm != null)
+                setAttribute (mserver, objectName, "Realm", realm);
             setAttribute (mserver, objectName, "Server", server);
             setAttribute (mserver, objectName, "Persist", e);
             configureQBean(mserver,objectName,e);

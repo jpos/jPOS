@@ -74,6 +74,13 @@ public class QBeanSupport
         log = Log.getLog (loggerName, getClass().getName());
         setModified (true);
     }
+    public void setRealm (String realm) {
+        if (log != null)
+            log.setRealm (realm);
+    }
+    public String getRealm() {
+        return log != null ? log.getRealm() : null;
+    }
 
     public String getLogger () {
         return log.getLogger().getName();
