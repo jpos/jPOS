@@ -274,7 +274,6 @@ public abstract class BaseChannel extends Observable
         );
         usable = true;
         cnt[CONNECT]++;
-        System.out.println ("DEBUG: NOTIFY OBSERVERS " + this + " connected=" + isConnected());
         setChanged();
         notifyObservers();
     }
