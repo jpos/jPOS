@@ -23,6 +23,7 @@ import org.jdom.JDOMException;
 import org.jpos.q2.QBean;
 import org.jpos.q2.QBeanSupport;
 import org.jpos.ui.UIObjectFactory;
+import org.jpos.util.NameRegistrar;
 
 /**
  * @author Alejandro Revilla
@@ -43,9 +44,11 @@ public class UI extends QBeanSupport implements UIObjectFactory {
         ui.setLog (getLog ());
         ui.setObjectFactory (this);
         ui.configure ();
+        NameRegistrar.register (getName(), ui);
     }
 
     public void stopService () {
+        NameRegistrar.unregister (getName());
         if (ui != null) 
             ui.dispose ();
     }
