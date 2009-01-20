@@ -69,7 +69,7 @@ public class EuroSubFieldPackager extends ISOBasePackager
             if (f0 != null) {
                 String s = (String) f0.getValue();
                 len += s.length();
-                l.add (s.getBytes());
+                l.add (fld[0].pack (f0));
             }
             for (int i =1; i<fld.length; i++) {
                 Object obj = tab.get (new Integer(i));
