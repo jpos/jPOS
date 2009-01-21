@@ -204,16 +204,11 @@ public class Context implements Externalizable, Loggeable, Pausable {
      * If there's no LogEvent there, it creates one.
      * @return LogEvent
      */
-    public LogEvent getLogEvent () {
+    synchronized public LogEvent getLogEvent () {
         LogEvent evt = (LogEvent) get (LOGEVT);
         if (evt == null) {
-            synchronized (this) {
-                evt = (LogEvent) get (LOGEVT);
-                if (evt == null) {
-                    evt = new LogEvent ("log");
-                    put (LOGEVT, evt);
-                }
-            }
+            evt = new LogEvent ("log");
+            put (LOGEVT, evt);
         }
         return evt;
     }
@@ -221,16 +216,11 @@ public class Context implements Externalizable, Loggeable, Pausable {
      * return (or creates) a Profiler object
      * @return Profiler object
      */
-    public Profiler getProfiler () {
+    synchronized public Profiler getProfiler () {
         Profiler prof = (Profiler) get (PROFILER);
         if (prof == null) {
-            synchronized (this) {
-                prof = (Profiler) get (PROFILER);
-                if (prof == null) {
-                    prof = new Profiler();
-                    put (PROFILER, prof);
-                }
-            }
+            prof = new Profiler();
+            put (PROFILER, prof);
         }
         return prof;
     }
