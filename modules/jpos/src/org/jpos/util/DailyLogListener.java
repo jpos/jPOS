@@ -120,7 +120,7 @@ public class DailyLogListener extends RotateLogListener{
         if (strDate != null) {
             Date date;
             try {
-                date = new SimpleDateFormat("yyyy-mm-dd").parse(strDate);
+                date = new SimpleDateFormat("yyyy-MM-dd").parse(strDate);
             } catch (ParseException ex) {
                 throw new ConfigurationException("Bad 'first-rotate-date' " +
                         "format, expected (yyyy-MM-dd)", ex);
