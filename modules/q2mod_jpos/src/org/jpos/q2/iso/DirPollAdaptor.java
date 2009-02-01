@@ -18,19 +18,11 @@
 
 package org.jpos.q2.iso;
 
-import java.util.Set;
-import java.rmi.RemoteException;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.management.ObjectName;
-import org.jpos.util.LogSource;
 import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
-import org.jpos.q2.Q2;
-import org.jpos.q2.QFactory;
 import org.jpos.q2.QBeanSupport;
-import org.jpos.util.DirPoll;
-import org.jpos.util.ThreadPool;
+import org.jpos.q2.QFactory;
+import org.jpos.util.*;
 
 /**
  * DirPoll Adaptor
@@ -47,7 +39,7 @@ public class DirPollAdaptor
     String path, priorities, processorClass;
     int poolSize;
     long pollInterval;
-    DirPoll dirPoll;
+    protected DirPoll dirPoll;
     public DirPollAdaptor () {
         super ();
         poolSize = 1;

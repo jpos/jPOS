@@ -24,7 +24,6 @@ import java.util.*;
 
 import org.jpos.core.*;
 import org.jpos.iso.ISOException;
-import org.jpos.util.*;
 
 /**
  * DirPoll operates on a set of directories which defaults to
@@ -131,6 +130,15 @@ public class DirPoll extends SimpleLogSource
     }
     public void setProcessor (Object processor) {
         this.processor = processor;
+    }
+    /**
+     * Return instance implementing {@link FileProcessor} or {@link Processor}
+     * @return
+     * Object - need to be casted to {@link FileProcessor} or {@link Processor}
+     */
+    public Object getProcessor()
+    {
+    	return this.processor;
     }
     /**
      * DirPool is not really Configurable, it uses QSPConfig instead
