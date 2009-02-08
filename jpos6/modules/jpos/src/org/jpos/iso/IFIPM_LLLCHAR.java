@@ -54,9 +54,9 @@ public class IFIPM_LLLCHAR extends ISOFieldPackager {
         int len;
         String s = (String) c.getValue();
     
-        if ((len=s.length()) > getLength() || len>97)   // paranoia settings
+        if ((len=s.length()) > getLength() || len>997)   // paranoia settings
             throw new ISOException (
-                "invalid len "+len +" packing LLMC_CHAR field "
+                "invalid len "+len +" packing LLLMC_CHAR field "
                 +(Integer) c.getKey() + " maxlen=" + getLength()
             );
 
