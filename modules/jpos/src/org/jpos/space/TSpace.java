@@ -262,6 +262,20 @@ public class TSpace extends TimerTask implements LocalSpace, Loggeable {
         }
         return false;
     }
+    /**
+     * unstandard method (required for space replication) - use with care
+     * @return underlying entry map
+     */
+    public Map getEntries () {
+        return entries;
+    }
+    /**
+     * unstandard method (required for space replication) - use with care
+     * @param entries underlying entry map
+     */
+    public void setEntries (Map entries) {
+        this.entries = entries;
+    }
     private List getList (Object key) {
         List l = (List) entries.get (key);
         if (l == null) 
