@@ -966,7 +966,7 @@ public abstract class BaseChannel extends Observable
     private void closeSocket() throws IOException {
         if (socket != null) {
             try {
-                socket.setSoLinger (true, 0);
+                socket.setSoLinger (false, 15);
             } catch (SocketException e) {
                 // safe to ignore - can be closed already
                 // e.printStackTrace();
