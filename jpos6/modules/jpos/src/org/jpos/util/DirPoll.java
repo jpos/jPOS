@@ -18,12 +18,16 @@
 
 package org.jpos.util;
 
+import org.jpos.core.Configurable;
+import org.jpos.core.Configuration;
+import org.jpos.core.ConfigurationException;
+import org.jpos.iso.ISOException;
+
 import java.io.*;
 import java.text.SimpleDateFormat;
-import java.util.*;
-
-import org.jpos.core.*;
-import org.jpos.iso.ISOException;
+import java.util.Date;
+import java.util.StringTokenizer;
+import java.util.Vector;
 
 /**
  * DirPoll operates on a set of directories which defaults to
@@ -45,7 +49,7 @@ import org.jpos.iso.ISOException;
  * @version $Revision$ $Date$
  */
 public class DirPoll extends SimpleLogSource 
-    implements Runnable, FilenameFilter, ReConfigurable, Destroyable
+    implements Runnable, FilenameFilter, Configurable, Destroyable
 {
     private long pollInterval;
     private File requestDir;
@@ -60,25 +64,18 @@ public class DirPoll extends SimpleLogSource
     private String responseSuffix;
     private ThreadPool pool;
     private Object processor;
-    private Configuration cfg;
+
     private boolean shutdown;
     private boolean paused = false;
     private boolean shouldArchive;
     private boolean shouldTimestampArchive;
     private String archiveDateFormat;
-    
 
-    //------------------------------------ Constructor/setters/getters, etc.
-    /**
-     * @param basePath base path of DirPoll tree
-     * @param pool ThreadPoll (may be null)
-     */
     public DirPoll () {
         prio = new Vector();
         setPollInterval(1000);
         setPath (".");
         pool = null;
-        cfg = null;
     }
     public synchronized void setPath(String base) {
         this.basePath = base;
@@ -141,35 +138,31 @@ public class DirPoll extends SimpleLogSource
     	return this.processor;
     }
     /**
-     * DirPool is not really Configurable, it uses QSPConfig instead
-     * but anyway it receives Configuration and ReConfiguration requests
+     * DirPool receives Configuration requests
      * and pass along them to the underlying processor.
-     * @param cfg Configuration object 
+     * @param cfg Configuration object
+     * @throws ConfigurationException on errors
      */
-    public void setConfiguration (Configuration cfg) 
+    public void setConfiguration (Configuration cfg)
         throws ConfigurationException
     {
-        if (processor != null) {
-            if ( (processor instanceof ReConfigurable) ||
-                 ((cfg == null) && (processor instanceof Configurable)) )
-            {
+        if (cfg != null) {
+            if (processor instanceof Configurable) {
                 ((Configurable) processor).setConfiguration (cfg);
             }
+            setRequestDir  (cfg.get ("request.dir",  "request"));
+            setResponseDir (cfg.get ("response.dir", "response"));
+            setTmpDir      (cfg.get ("tmp.dir",      "tmp"));
+            setRunDir      (cfg.get ("run.dir",      "run"));
+            setBadDir      (cfg.get ("bad.dir",      "bad"));
+            setArchiveDir  (cfg.get ("archive.dir",  "archive"));
+            setResponseSuffix (cfg.get ("response.suffix", null));
+            setShouldArchive (cfg.getBoolean ("archive", false));
+            setArchiveDateFormat (
+                cfg.get ("archive.dateformat", "yyyyMMddHHmmss")
+            );
+            setShouldTimestampArchive (cfg.getBoolean ("archive.timestamp", false));
         }
-        this.cfg = cfg;
-
-        setRequestDir  (cfg.get ("request.dir",  "request"));
-        setResponseDir (cfg.get ("response.dir", "response"));
-        setTmpDir      (cfg.get ("tmp.dir",      "tmp"));
-        setRunDir      (cfg.get ("run.dir",      "run"));
-        setBadDir      (cfg.get ("bad.dir",      "bad"));
-        setArchiveDir  (cfg.get ("archive.dir",  "archive"));
-        setResponseSuffix (cfg.get ("response.suffix", null));
-        setShouldArchive (cfg.getBoolean ("archive", false));
-        setArchiveDateFormat (
-            cfg.get ("archive.dateformat", "yyyyMMddHHmmss")
-        );
-        setShouldTimestampArchive (cfg.getBoolean ("archive.timestamp", false));
     }
     /**
      * @param priorities blank separated list of extensions
@@ -325,7 +318,7 @@ public class DirPoll extends SimpleLogSource
     public interface FileProcessor {
         /**
          * @param name request File
-         * @exception should something go wrong
+         * @throws org.jpos.util.DirPoll.DirPollException on errors
          */
         public void process (File name) throws DirPollException;
     }
@@ -339,7 +332,7 @@ public class DirPoll extends SimpleLogSource
         public void run() {
             LogEvent evt = 
                 new LogEvent (
-                    (LogSource) DirPoll.this, "dirpoll", request.getName()
+                    DirPoll.this, "dirpoll", request.getName()
                 );
             try {
                 if (processor == null) 
