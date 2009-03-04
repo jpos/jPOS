@@ -21,16 +21,18 @@ package org.jpos.util;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.Iterator;
 
 /**
  * Simple Profiler
  * @author Alejandro P. Revilla
+ * @author David D. Bergert
  * @version $Id$
  */
 public class Profiler implements Loggeable {
     long start, parcial;
-    Collection events;
+    LinkedHashMap events;
     public Profiler () {
         super();
         reset();
@@ -40,7 +42,7 @@ public class Profiler implements Loggeable {
      */
     public void reset() {
         start = parcial = System.currentTimeMillis();
-        events = new ArrayList();
+        events = new LinkedHashMap();
     }
     /**
      * mark checkpoint
@@ -48,13 +50,11 @@ public class Profiler implements Loggeable {
      */
     public synchronized void checkPoint (String detail) {
         long now = System.currentTimeMillis();
-        StringBuffer sb = new StringBuffer (detail);
-        sb.append (" [");
-        sb.append (Long.toString (now - parcial));
-        sb.append ('/');
-        sb.append (Long.toString (now - start));
-        sb.append (']');
-        events.add (sb.toString());
+        Entry e = new Entry();
+        e.setEventName(detail);
+        e.setDuration(now - parcial);
+        e.setTotalDuration(now - start);
+        events.put (detail, e);
         parcial = now;
     }
     /**
@@ -73,12 +73,51 @@ public class Profiler implements Loggeable {
         String inner = indent + "  ";
         parcial = start;
         checkPoint ("end");
-        Iterator iter = events.iterator();
+        Collection c = events.values();
+        Iterator iter = c.iterator();
         p.println (indent + "<profiler>");
         while (iter.hasNext()) 
-            p.println (inner + (String) iter.next());
-
+            p.println (inner + ((Entry) iter.next()).toString());
         p.println (indent + "</profiler>");
     }
+    public Entry getEntry(String eventName) {
+         return (Entry)events.get(eventName);         
+    }
+    public class Entry  {     
+        String  eventName;
+        long    duration;
+        long    totalDuration;          
+        Entry(){     
+           eventName     = "";
+           duration      = 0L;
+           totalDuration = 0L;        
+        }  
+       public void setEventName (String myEvent) {
+            this.eventName = myEvent;
+        }
+        String getEventName () {
+            return eventName;
+        }    
+        public void setDuration (long myDuration) {
+            this.duration = myDuration;
+        }
+        public long getDuration () {
+            return duration;
+        }    
+        public void setTotalDuration (long myTotalDuration) {
+            this.totalDuration = myTotalDuration;
+        }
+        public long getTotalDuration () {
+            return totalDuration;
+        }    
+        public String toString()  {
+            StringBuffer sb = new StringBuffer (eventName);
+            sb.append (" [");
+            sb.append (duration);
+            sb.append ('/');
+            sb.append (totalDuration);
+            sb.append (']');
+            return sb.toString();
+        }            
+    }
 }
-
