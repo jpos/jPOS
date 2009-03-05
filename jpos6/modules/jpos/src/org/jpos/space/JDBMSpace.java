@@ -49,14 +49,16 @@ public class JDBMSpace extends TimerTask implements Space {
     protected HTree htree;
     protected RecordManager recman;
     protected static final Serializer refSerializer = new Ref ();
-    protected static final Map spaceRegistrar = new HashMap ();
+    protected static final Map<String,Space> spaceRegistrar = new HashMap<String,Space> ();
     protected boolean autoCommit = true;
     protected String name;
     public static final long GCDELAY = 5*60*1000;
 
     /**
-     * protected constructor. 
-     * @see getSpace()
+     * protected constructor.
+     * @param name Space Name
+     * @param filename underlying JDBM filename
+     * @see SpaceFactory().getSpace()
      */
     protected JDBMSpace (String name, String filename) {
         super();
@@ -81,7 +83,7 @@ public class JDBMSpace extends TimerTask implements Space {
     /**
      * @return reference to default JDBMSpace
      */
-    public static final JDBMSpace getSpace () {
+    public static JDBMSpace getSpace () {
         return getSpace ("space");
     }
     /**
@@ -90,7 +92,7 @@ public class JDBMSpace extends TimerTask implements Space {
      * @param name the Space name
      * @return reference to named JDBMSpace
      */
-    public static final JDBMSpace getSpace (String name) {
+    public static JDBMSpace getSpace (String name) {
         return getSpace (name, name);
     }
     /**
@@ -99,7 +101,7 @@ public class JDBMSpace extends TimerTask implements Space {
      * @param filename the storage file name
      * @return reference to named JDBMSpace
      */
-    public synchronized static final JDBMSpace getSpace 
+    public synchronized static JDBMSpace getSpace
         (String name, String filename) 
     {
         JDBMSpace sp = (JDBMSpace) spaceRegistrar.get (name);
@@ -133,7 +135,6 @@ public class JDBMSpace extends TimerTask implements Space {
     }
     /**
      * force commit
-     * @see setAutoCommit(boolean)
      */
     public void commit () {
         try {
@@ -144,8 +145,7 @@ public class JDBMSpace extends TimerTask implements Space {
         }
     }
     /**
-     * force rollback 
-     * @see setAutoCommit(boolean)
+     * force rollback
      */
     public void rollback () {
         try {
@@ -313,7 +313,7 @@ public class JDBMSpace extends TimerTask implements Space {
         while ((obj = inp (key)) == null) {
             try {
                 this.wait ();
-            } catch (InterruptedException e) { }
+            } catch (InterruptedException ignored) { }
         }
         return obj;
     }
@@ -331,7 +331,7 @@ public class JDBMSpace extends TimerTask implements Space {
         {
             try {
                 this.wait (end - now);
-            } catch (InterruptedException e) { }
+            } catch (InterruptedException ignored) { }
         }
         return obj;
     }
@@ -346,7 +346,7 @@ public class JDBMSpace extends TimerTask implements Space {
         while ((obj = rdp (key)) == null) {
             try {
                 this.wait ();
-            } catch (InterruptedException e) { }
+            } catch (InterruptedException ignored) { }
         }
         return obj;
     }
@@ -367,11 +367,12 @@ public class JDBMSpace extends TimerTask implements Space {
         {
             try {
                 this.wait (end - now);
-            } catch (InterruptedException e) { }
+            } catch (InterruptedException ignored) { }
         }
         return obj;
     }
     /**
+     * @param key the Key
      * @return aproximately queue size
      */
     public long size (Object key) {
@@ -383,8 +384,8 @@ public class JDBMSpace extends TimerTask implements Space {
         }
     }
     public boolean existAny (Object[] keys) {
-        for (int i=0; i<keys.length; i++) {
-            if (rdp (keys[i]) != null)
+        for (Object key : keys) {
+            if (rdp(key) != null)
                 return true;
         }
         return false;
@@ -398,7 +399,7 @@ public class JDBMSpace extends TimerTask implements Space {
             synchronized (this) {
                 try {
                     wait (end - now);
-                } catch (InterruptedException e) { }
+                } catch (InterruptedException ignored) { }
             }
         }
         return false;
@@ -666,23 +667,23 @@ public class JDBMSpace extends TimerTask implements Space {
         }
     }
     static void putLong (byte[] b, int off, long val) {
-        b[off+7] = (byte) (val >>>  0);
+        b[off+7] = (byte) (val);
         b[off+6] = (byte) (val >>>  8);
         b[off+5] = (byte) (val >>> 16);
         b[off+4] = (byte) (val >>> 24);
         b[off+3] = (byte) (val >>> 32);
         b[off+2] = (byte) (val >>> 40);
         b[off+1] = (byte) (val >>> 48);
-        b[off+0] = (byte) (val >>> 56);
+        b[off] = (byte) (val >>> 56);
     }
     static long getLong (byte[] b, int off) {
-        return ((b[off+7] & 0xFFL) << 0)  +
-            ((b[off+6] & 0xFFL) << 8)  +
-            ((b[off+5] & 0xFFL) << 16) +
-            ((b[off+4] & 0xFFL) << 24) +
-            ((b[off+3] & 0xFFL) << 32) +
-            ((b[off+2] & 0xFFL) << 40) +
-            ((b[off+1] & 0xFFL) << 48) +
-            ((b[off+0] & 0xFFL) << 56);
+        return (b[off+7] & 0xFFL) +
+               ((b[off+6] & 0xFFL) << 8) +
+               ((b[off+5] & 0xFFL) << 16) +
+               ((b[off+4] & 0xFFL) << 24) +
+               ((b[off+3] & 0xFFL) << 32) +
+               ((b[off+2] & 0xFFL) << 40) +
+               ((b[off+1] & 0xFFL) << 48) +
+               ((b[off] & 0xFFL) << 56);
     }
 }
