@@ -128,7 +128,7 @@
     <target name="main" depends="prepare, copy-lib, copy-bin, manifest">
         <javac srcdir="${build.src}" destdir="${classes.dir}"
             debug="${debug}" nowarn="${nowarn}"
-            target="1.4" source="1.4"
+            target="1.5" source="1.5"
             deprecation="${deprecation}">
             <classpath refid="main.classpath"/>
         </javac>
