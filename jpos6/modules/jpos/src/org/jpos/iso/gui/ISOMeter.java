@@ -18,15 +18,8 @@
 
 package org.jpos.iso.gui;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Image;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.*;
+import java.awt.event.*;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -129,8 +122,7 @@ public class ISOMeter extends JComponent implements Runnable {
     int refreshPanel = 50;
 
     private Image imb;
-    private Graphics imbCopy;
-    
+
     public ISOMeter(ISOChannelPanel parent) {
         super();
         this.parent = parent;
@@ -170,7 +162,6 @@ public class ISOMeter extends JComponent implements Runnable {
         f.validate();
         f.pack();
         f.setSize(width,width+50);
-        f.show();
     }
 
     public JComponent createLogList() {
@@ -188,7 +179,7 @@ public class ISOMeter extends JComponent implements Runnable {
                     f.getContentPane().add(p);
                     f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                     f.pack();
-                    f.show();
+                   // deprecated f.show();
                 }
             }
         };
@@ -201,8 +192,7 @@ public class ISOMeter extends JComponent implements Runnable {
     }
 
     public void setValue(int val) {
-        val = val > MAX_VALUE ? MAX_VALUE : val;
-        int y = mass - (val*height/2000);
+        int y = mass - ((val%1000) * height / 2000);
         yPoints[width-1] = y;
         continueScroll = width;
         scroll();
@@ -251,8 +241,7 @@ public class ISOMeter extends JComponent implements Runnable {
         return new Dimension(width, height);
     }
     private void scroll() {
-        for (int i=0; i<width-1; i++) 
-            yPoints[i] = yPoints[i+1];
+        System.arraycopy(yPoints, 1, yPoints, 0, width - 1);
         if (continueScroll > 0)
             continueScroll--;
     }
@@ -267,7 +256,7 @@ public class ISOMeter extends JComponent implements Runnable {
 
             /* save a copy of the image */
             imb = createImage(width, height);
-            imbCopy = imb.getGraphics ();
+            Graphics imbCopy = imb.getGraphics();
             imbCopy.drawImage (im, 0, 0, this);
         }
         img.drawImage (imb, 0, 0, this);
@@ -303,12 +292,14 @@ public class ISOMeter extends JComponent implements Runnable {
         img.drawString (n, width-45, height-3);
     }
     public void run () {
-        for (;;) {
+        while (isShowing()) {
             if (continueScroll > 0)
                 repaint();
             try { 
                 Thread.sleep(refreshPanel);
-            } catch (InterruptedException e) { }
+            } catch (InterruptedException e) {
+                // OK to ignore
+            }
         }
     }
     public void update (Graphics g) {
