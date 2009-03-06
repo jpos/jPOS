@@ -108,7 +108,7 @@ public class Join
     }
     private int mergeActions (Runner[] runners) {
         boolean prepared = true;
-        boolean readonly = true;;
+        boolean readonly = true;
         boolean no_join = true;
         boolean retry = false;
         for (int i=0; i<runners.length; i++) {
@@ -117,7 +117,7 @@ public class Join
             if (retry)
                 return RETRY; 
            if ((action & PREPARED) == ABORTED)
-               prepared = false;;
+               prepared = false;
            if ((action & READONLY) != READONLY)
                readonly = false;
            if ((action & NO_JOIN) != NO_JOIN)
