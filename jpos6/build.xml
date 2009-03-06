@@ -10,7 +10,7 @@
     <!-- Name of project and version, used to create filenames -->
     <property name="Name" value="jPOS" />
     <property name="name" value="jpos" />
-    <property name="archive" value="${name}-${version}-r${revision}" />
+    <property name="archive" value="${name}-${version}" />
 
     <property name="lib.dir" value="lib"/>
     <property name="bin.dir" value="bin"/>
