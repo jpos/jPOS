@@ -660,7 +660,7 @@ public class Q2 implements FileFilter, Runnable {
         return Q2_DATE;
     }
     public String getRelease() {
-        return getVersion() + getRevision();
+        return getVersion() + " " + getRevision();
     }
     public static class QEntry {
         long deployed;
