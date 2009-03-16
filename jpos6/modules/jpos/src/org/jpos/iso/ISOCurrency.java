@@ -18,169 +18,203 @@
 
 package org.jpos.iso;
 
+import java.io.InputStream;
+import java.io.IOException;
 import java.util.Enumeration;
-import java.util.Hashtable;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.StringTokenizer;
+import java.util.PropertyResourceBundle;
 
 /**
- * ISO Currency Conversion package 
- * @author salaman@teknos.com
+ * ISO Currency Conversion package
+ *
+ * @author vsalaman@gmail.com
  * @author Jonathan.O'Connor@xcom.de
  * @version $Id$
- * @see http://www.evertype.com/standards/iso4217/iso4217-en.html
- *      http://www.iso.org/iso/en/prods-services/popstds/currencycodeslist.html
+ * @see "http://www.evertype.com/standards/iso4217/iso4217-en.html"
+ *      "http://www.iso.org/iso/en/prods-services/popstds/currencycodeslist.html"
  */
 public class ISOCurrency
 {
-    private static Hashtable currencies;
+    private static Map<String, Currency> currencies;
+    private static final Object mutex = new Object();
 
-    /** Should be called like this: put("ALL", "008", 2);
-     * Note: the second parameter is zero padded to three digits
+    // Avoid creation of instances.
+    private ISOCurrency()
+    {
+    }
+
+    static
+    {
+        synchronized (mutex)
+        {
+            currencies = new HashMap<String, Currency>();
+        }
+        addBundle(ISOCurrency.class.getName());
+        loadPropertiesFromClasspath("META-INF/org/jpos/config/ISOCurrency.properties");
+    }
+
+    @SuppressWarnings({"EmptyCatchBlock"})
+    public static void loadPropertiesFromClasspath(String base)
+    {
+        InputStream in=loadResourceAsStream(base);
+        try
+        {
+            if(in!=null)
+            {
+                addBundle(new PropertyResourceBundle(in));
+            }
+        }
+        catch (IOException e)
+        {
+        }
+        finally
+        {
+            if(in!=null)
+            {
+                try
+                {
+                    in.close();
+                }
+                catch (IOException e)
+                {
+                }
+            }
+        }
+    }
+
+    /**
+     * Converts from an ISO Amount (12 digit string) to a double taking in
+     * consideration the number of decimal digits according to currency
+     *
+     * @param isoamount - The ISO amount to be converted (eg. ISOField 4)
+     * @param currency  - The ISO currency to be converted (eg. ISOField 49)
+     * @return result - A double representing the converted field
+     * @throws IllegalArgumentException if we fail to convert the amount
      */
-    private static void put(String alphaCode, String isoCode, int numDecimals) {
+    public static double convertFromIsoMsg(String isoamount, String currency) throws IllegalArgumentException
+    {
+        Currency c = findCurrency(currency);
+        return c.parseAmountFromISOMsg(isoamount);
+    }
+
+    public static void addBundle(ResourceBundle r)
+    {
+        synchronized (mutex)
+        {
+            Enumeration en = r.getKeys();
+            while (en.hasMoreElements())
+            {
+                String alphaCode = (String) en.nextElement();
+                String[] tmp = r.getString(alphaCode).split(" ");
+                String isoCode = tmp[0];
+                int numDecimals = Integer.parseInt(tmp[1]);
+                addCurrency(alphaCode, isoCode, numDecimals);
+            }
+        }
+    }
+
+    public static void addBundle(String bundleName)
+    {
+        ResourceBundle r = ResourceBundle.getBundle(bundleName);
+        addBundle(r);
+    }
+
+    /**
+     * Converts an amount to an ISO Amount taking in consideration
+     * the number of decimal digits according to currency
+     *
+     * @param amount   - The amount to be converted
+     * @param currency - The ISO currency to be converted (eg. ISOField 49)
+     * @return result - An iso amount representing the converted field
+     * @throws IllegalArgumentException if we fail to convert the amount
+     */
+    public static String convertToIsoMsg(double amount, String currency) throws IllegalArgumentException
+    {
+        return findCurrency(currency).formatAmountForISOMsg(amount);
+    }
+
+    public static Object[] decomposeComposedCurrency(String incurr) throws IllegalArgumentException
+    {
+        final String[] strings = incurr.split(" ");
+        if (strings.length != 2)
+        {
+            throw new IllegalArgumentException("Invalid parameter: " + incurr);
+        }
+        return new Object[]{strings[0], Double.valueOf(strings[1])};
+    }
+
+    public static String getIsoCodeFromAlphaCode(String alphacode) throws IllegalArgumentException
+    {
+        try
+        {
+            Currency c = findCurrency(alphacode);
+            return ISOUtil.zeropad(Integer.toString(c.getIsoCode()), 3);
+        }
+        catch (ISOException e)
+        {
+            throw new IllegalArgumentException("Failed getIsoCodeFromAlphaCode/ zeropad failed?", e);
+        }
+    }
+
+    public static Currency getCurrency(int code) throws ISOException
+    {
+        final String isoCode = ISOUtil.zeropad(Integer.toString(code), 3);
+        return findCurrency(isoCode);
+    }
+
+    public static Currency getCurrency(String code) throws ISOException
+    {
+        final String isoCode = ISOUtil.zeropad(code, 3);
+        return findCurrency(isoCode);
+    }
+
+    private static InputStream loadResourceAsStream(String name)
+    {
+        InputStream in = null;
+
+        ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+        if (contextClassLoader != null)
+        {
+            in = contextClassLoader.getResourceAsStream(name);
+        }
+        if (in == null)
+        {
+            in = ISOCurrency.class.getClassLoader().getResourceAsStream(name);
+        }
+        return in;
+    }
+
+    /**
+     * Should be called like this: put("ALL", "008", 2);
+     * Note: the second parameter is zero padded to three digits
+     *
+     * @param alphaCode   An alphabetic code such as USD
+     * @param isoCode     An ISO code such as 840
+     * @param numDecimals the number of implied decimals
+     */
+    private static void addCurrency(String alphaCode, String isoCode, int numDecimals)
+    {
+        // to allow a clean replacement from a more specific resource bundle we
+        // require clearing instead of overriding.
+        if(currencies.containsKey(alphaCode) || currencies.containsKey(isoCode))
+        {
+            currencies.remove(alphaCode);
+            currencies.remove(isoCode);
+        }
         Currency ccy = new Currency(alphaCode, Integer.parseInt(isoCode), numDecimals);
         currencies.put(alphaCode, ccy);
         currencies.put(isoCode, ccy);
     }
 
-    static
+    private static Currency findCurrency(String currency)
     {
-        currencies=new Hashtable();
-
-        ResourceBundle r = ResourceBundle.getBundle(ISOCurrency.class.getName());
-        Enumeration en = r.getKeys();
-
-        // property example:
-        //   DKK=208 2
-        while (en.hasMoreElements()) {
-            String alphaCode  = (String)en.nextElement();
-            String[] tmp = ((String)r.getString(alphaCode)).split(" ");
-            String isoCode = tmp[0];
-            int numDecimals = Integer.parseInt(tmp[1]);
-            put(alphaCode, isoCode, numDecimals);
-        }
-    }
-
-    /** 
-     * Converts from an ISO Amount (12 digit string) to a double taking in 
-     * consideration the number of decimal digits according to currency
-     * 
-     * @param isoamount - The ISO amount to be converted (eg. ISOField 4)
-     * @param currency  - The ISO currency to be converted (eg. ISOField 49)
-     * @return result - A double representing the converted field
-     * @exception IllegalArgumentException
-     */
-    public static double convertFromIsoMsg(String isoamount, String currency) throws IllegalArgumentException
-    {
-        double d=0;                                                                                           
-        try
+        final Currency c = currencies.get(currency.toUpperCase());
+        if (c == null)
         {
-            Currency c=(Currency)currencies.get(currency.toUpperCase());
-            int decimals=c.getDecimals();
-            double m=1; if(decimals>0) for(int x=1;x<=decimals;x++) m*=10;
-            d=new Double(isoamount).doubleValue();
-            d/=m;
+            throw new IllegalArgumentException("Currency with key '" + currency + "' was not found");
         }
-        catch(Exception e)
-        {
-            throw new IllegalArgumentException("Failed convertFromIsoMsg");
-        }
-        return d;
+        return c;
     }
-
-    /** 
-     * Converts an amount to an ISO Amount taking in consideration
-     * the number of decimal digits according to currency
-     * 
-     * @param amount - The amount to be converted 
-     * @param currency  - The ISO currency to be converted (eg. ISOField 49)
-     * @return result - An iso amount representing the converted field
-     * @exception IllegalArgumentException
-     */
-    public static String convertToIsoMsg(double amount,String currency) throws IllegalArgumentException
-    {
-        String z=null;
-        try
-        {
-            Currency c=(Currency)currencies.get(currency.toUpperCase());
-            if(c==null) throw new IllegalArgumentException("Bad currency parameter");
-            int decimals=c.getDecimals();
-            double m=1; if(decimals>0) for(int x=1;x<=decimals;x++) m*=10;
-            amount*=m;
-            z=ISOUtil.zeropad(Long.toString(Math.round (amount)),12);
-        }
-        catch(Exception e)
-        {
-            throw new IllegalArgumentException("Failed convertToIsoMsg");
-        }
-        return z;
-    }
-    
-    public static Object[] decomposeComposedCurrency(String incurr) throws IllegalArgumentException
-    {
-        Object[] outcurr=null;
-        try
-        {   
-            StringTokenizer st=new StringTokenizer(incurr);
-            String curr=st.nextToken();
-            Double amount=new Double(st.nextToken());
-            outcurr=new Object[2];
-            outcurr[0]=curr;
-            outcurr[1]=amount;
-        }
-        catch(Exception e)
-        {   
-            throw new IllegalArgumentException("Failed decompose");
-        }
-        return outcurr;
-    }
-    
-    public static String getIsoCodeFromAlphaCode(String alphacode) throws IllegalArgumentException
-    {
-        String isocode=null;
-        try
-        {
-            Currency c=(Currency)currencies.get(alphacode.toUpperCase());
-            isocode=ISOUtil.zeropad(Integer.toString(c.getIsoCode()),3);
-            if(isocode==null) throw new IllegalArgumentException("AlphaCode not found, or incorrectly specified");
-        }
-        catch(Exception e)
-        {
-            throw new IllegalArgumentException("Failed getIsoCodeFromAlphaCode");
-        }
-        return  isocode;
-    }
-
-    public static Currency getCurrency (int code) throws ISOException {
-        return (Currency) 
-            currencies.get (ISOUtil.zeropad (Integer.toString (code), 3));
-    }
-    public static Currency getCurrency (String code) throws ISOException {
-        return (Currency) currencies.get (ISOUtil.zeropad (code, 3));
-    }
-
-/*
-    static public void main(String[] args)
-    {
-        try
-        {
-            String cychamount="uyu 25049.00";
-            Object[] d=decomposeComposedCurrency(cychamount);
-            String curr=(String)d[0];
-            double amount=((Double)d[1]).doubleValue();
-            System.out.println("Cych: "
-                +cychamount+" , CURR="+curr+" , AMOUNT="+amount);
-            String isocurr=getIsoCodeFromAlphaCode(curr);
-            String a1=convertToIsoMsg(amount,isocurr);
-            double d2=convertFromIsoMsg(a1,isocurr);
-            System.out.println("ISOCUrr: "+a1);
-            System.out.println(amount+"="+d2);
-        }
-        catch(Exception e)
-        {
-            e.printStackTrace();
-        }
-    }
-*/
 }
