@@ -272,10 +272,14 @@ public abstract class BaseChannel extends Observable
         serverOut = new DataOutputStream(
             new BufferedOutputStream(socket.getOutputStream(), 2048)
         );
+        postConnectHook();
         usable = true;
         cnt[CONNECT]++;
         setChanged();
         notifyObservers();
+    }
+    protected void postConnectHook() throws IOException {
+        // do nothing
     }
     /**
      * factory method pattern (as suggested by Vincent.Greene@amo.com)
