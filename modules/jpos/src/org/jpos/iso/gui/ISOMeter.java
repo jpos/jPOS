@@ -292,7 +292,7 @@ public class ISOMeter extends JComponent implements Runnable {
         img.drawString (n, width-45, height-3);
     }
     public void run () {
-        while (isShowing()) {
+        for (;;) {
             if (continueScroll > 0)
                 repaint();
             try { 
