@@ -178,7 +178,7 @@ public class ISOChannelPanel extends JPanel implements Observer {
         JLabel l = new JLabel(symbolicName);
         A.add(l, BorderLayout.NORTH);
         A.add(meter, BorderLayout.CENTER);
-        meter.start();
+        // meter.start(); -- ISOMeter has auto-start now
         return A;
     }
     private ISOMsg getProtectedClone (ISOMsg m) throws ISOException {

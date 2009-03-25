@@ -122,6 +122,7 @@ public class ISOMeter extends JComponent implements Runnable {
     int refreshPanel = 50;
 
     private Image imb;
+    private Thread repaintThread;
 
     public ISOMeter(ISOChannelPanel parent) {
         super();
@@ -148,11 +149,12 @@ public class ISOMeter extends JComponent implements Runnable {
         addMouseListener(mouseListener);
     }
 
-    public void start() {
-        Thread t = new Thread (this,"ISOMeter");
-        t.setPriority (Thread.NORM_PRIORITY-1);
-        t.setName ("ISOMeter");
-        t.start();
+    public synchronized void start() {
+        if (repaintThread == null) {
+            repaintThread = new Thread (this,"ISOMeter");
+            repaintThread.setPriority (Thread.NORM_PRIORITY-1);
+            repaintThread.start();
+        }
     }
 
     public void showLogList() {
@@ -234,6 +236,8 @@ public class ISOMeter extends JComponent implements Runnable {
         }
     }
     public void paint (Graphics g) {
+        if (repaintThread == null)
+            start();
         plot();
         g.drawImage (im, 0, 0, null);
     }
@@ -292,7 +296,7 @@ public class ISOMeter extends JComponent implements Runnable {
         img.drawString (n, width-45, height-3);
     }
     public void run () {
-        for (;;) {
+        while (isShowing()) {
             if (continueScroll > 0)
                 repaint();
             try { 
@@ -301,6 +305,7 @@ public class ISOMeter extends JComponent implements Runnable {
                 // OK to ignore
             }
         }
+        repaintThread = null;
     }
     public void update (Graphics g) {
         paint (g);
