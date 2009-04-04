@@ -49,7 +49,7 @@ public class TransactionManager
     Space psp;
     String queue;
     String tailLock;
-    Map groups;
+    protected Map groups;
     Thread[] threads;
     int activeSessions;
     boolean debug;
