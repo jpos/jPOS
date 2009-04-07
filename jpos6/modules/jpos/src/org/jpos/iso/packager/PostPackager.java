@@ -139,7 +139,7 @@ public class PostPackager extends ISOBasePackager {
             new IF_CHAR     (  3, "CURRENCY CODE, SETTLEMENT"),
             new IF_CHAR     (  3, "CURRENCY CODE, CARDHOLDER BILLING"   ),
             new IFB_BINARY  (  8, "PIN DATA"   ),
-            new IFA_NUMERIC ( 16, "SECURITY RELATED CONTROL INFORMATION"),
+            new IFB_BINARY  ( 48, "SECURITY RELATED CONTROL INFORMATION"),
             new IFA_LLLCHAR (120, "ADDITIONAL AMOUNTS"),
             new IFA_LLLCHAR (999, "RESERVED ISO"),
             new IFA_LLLCHAR (999, "RESERVED ISO"),
