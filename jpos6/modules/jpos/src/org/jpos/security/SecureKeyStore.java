@@ -18,6 +18,7 @@
 
 package  org.jpos.security;
 
+import java.util.Map;
 import org.jpos.iso.ISOException;
 
 
@@ -82,6 +83,14 @@ public interface SecureKeyStore {
      * can't be recovered.
      */
     public void setKey (String alias, SecureKey key) throws SecureKeyStoreException;
+
+    /**
+     * return map of existing keys assiciated with aliases.
+     * @return map of existing keys assiciated with aliases.
+     * @throws if SecureKeyStore is not initialized or if
+     * the operation fails for some other reason.
+     */
+    public Map<String,SecureKey> getKeys() throws SecureKeyStoreException;
 }
 
 

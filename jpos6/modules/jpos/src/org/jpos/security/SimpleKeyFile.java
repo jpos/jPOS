@@ -21,6 +21,8 @@ package  org.jpos.security;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.util.Hashtable;
+import java.util.Map;
 import java.util.Properties;
 
 import org.jpos.core.Configuration;
@@ -185,6 +187,17 @@ public class SimpleKeyFile
         // key here has nothing to do with cryptographic keys
         String key = alias + "." + subName;
         props.setProperty(key, value);
+    }
+
+    public Map<String,SecureKey> getKeys() throws SecureKeyStoreException {
+      Map keys    = new Hashtable();
+      for ( Object k :props.keySet() ){
+        String alias = ((String)k).split("\\.")[0];
+        if ( !keys.containsKey(alias) ){
+          keys.put(alias,getKey(alias));
+        }
+      }
+      return keys;
     }
 }
 
