@@ -21,6 +21,7 @@ package  org.jpos.security;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
 import org.jpos.core.ReConfigurable;
+import org.jpos.iso.ISOUtil;
 import org.jpos.util.LogEvent;
 import org.jpos.util.LogSource;
 import org.jpos.util.Logger;
@@ -112,6 +113,26 @@ public class BaseSMAdapter
         try {
             result = generateKeyImpl(keyLength, keyType);
             evt.addMessage(new SimpleMsg("result", "Generated Key", result));
+        } catch (Exception e) {
+            evt.addMessage(e);
+            throw  e instanceof SMException ? (SMException) e : new SMException(e);
+        } finally {
+            Logger.log(evt);
+        }
+        return  result;
+    }
+
+
+    public byte[] generateKeyCheckValue (SecureDESKey kd) throws SMException {
+        SimpleMsg[] cmdParameters =  {
+            new SimpleMsg("parameter", "Key with untrusted check value", kd)
+        };
+        LogEvent evt = new LogEvent(this, "s-m-operation");
+        evt.addMessage(new SimpleMsg("command", "Generate Key Check Value", cmdParameters));
+        byte[] result = null;
+        try {
+            result = generateKeyCheckValueImpl(kd);
+            evt.addMessage(new SimpleMsg("result", "Generated Key Check Value", ISOUtil.hexString(result)));
         } catch (Exception e) {
             evt.addMessage(e);
             throw  e instanceof SMException ? (SMException) e : new SMException(e);
@@ -352,6 +373,40 @@ public class BaseSMAdapter
         return  result;
     }
 
+    public SecureDESKey translateKeyFromOldLMK (SecureDESKey kd) throws SMException {
+        SimpleMsg[] cmdParameters =  {
+            new SimpleMsg("parameter", "Key under old LMK", kd)
+        };
+        LogEvent evt = new LogEvent(this, "s-m-operation");
+        evt.addMessage(new SimpleMsg("command", "Translate Key from old to new LMK", cmdParameters));
+        SecureDESKey result = null;
+        try {
+            result = translateKeyFromOldLMKImpl(kd);
+            evt.addMessage(new SimpleMsg("result", "Translated Key under new LMK", result));
+        } catch (Exception e) {
+            evt.addMessage(e);
+            throw  e instanceof SMException ? (SMException) e : new SMException(e);
+        } finally {
+            Logger.log(evt);
+        }
+        return  result;
+    }
+
+    public void eraseOldLMK () throws SMException {
+        SimpleMsg[] cmdParameters =  {
+        };
+        LogEvent evt = new LogEvent(this, "s-m-operation");
+        evt.addMessage(new SimpleMsg("command", "Erase the key change storage", cmdParameters));
+        try {
+            eraseOldLMKImpl();
+        } catch (Exception e) {
+            evt.addMessage(e);
+            throw  e instanceof SMException ? (SMException) e : new SMException(e);
+        } finally {
+            Logger.log(evt);
+        }
+    }
+
     /**
      * Your SMAdapter should override this method if it has this functionality
      * @param keyLength
@@ -360,6 +415,16 @@ public class BaseSMAdapter
      * @throws SMException
      */
     protected SecureDESKey generateKeyImpl (short keyLength, String keyType) throws SMException {
+        throw  new SMException("Operation not supported in: " + this.getClass().getName());
+    }
+
+    /**
+     * Your SMAdapter should override this method if it has this functionality
+     * @param key
+     * @return generated Key Check Value
+     * @throws SMException
+     */
+    protected byte[] generateKeyCheckValueImpl (SecureDESKey kd) throws SMException {
         throw  new SMException("Operation not supported in: " + this.getClass().getName());
     }
 
@@ -494,6 +559,30 @@ public class BaseSMAdapter
      * @throws SMException
      */
     protected byte[] generateEDE_MACImpl (byte[] data, SecureDESKey kd) throws SMException {
+        throw  new SMException("Operation not supported in: " + this.getClass().getName());
+    }
+
+    /**
+     * Translate key from encryption under the LMK held in “key change storage”
+     * to encryption under a new LMK.
+     *
+     * @param kd the key encrypted under old LMK
+     * @return key encrypted under the new LMK
+     * @throws SMException if the parity of the imported key is not adjusted AND checkParity = true
+     */
+    public SecureDESKey translateKeyFromOldLMKImpl (SecureDESKey kd) throws SMException {
+        throw  new SMException("Operation not supported in: " + this.getClass().getName());
+    }
+
+    /**
+     * Erase the key change storage area of memory
+     *
+     * It is recommended that this command is used after keys stored
+     * by the Host have been translated from old to new LMKs.
+     *
+     * @throws SMException
+     */
+    public void eraseOldLMKImpl () throws SMException {
         throw  new SMException("Operation not supported in: " + this.getClass().getName());
     }
 }

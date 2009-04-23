@@ -177,6 +177,16 @@ public interface SMAdapter {
 
 
     /**
+     * Generates key check value.<br>
+     * @param key SecureDESKey with untrusted or fake Key Check Value
+     * @return key check value bytes
+     * @throws SMException
+     */
+    public byte[] generateKeyCheckValue (SecureDESKey kd) throws SMException;
+
+
+
+    /**
      * Imports a key from encryption under a KEK (Key-Encrypting Key)
      * to protection under the security module.
      *
@@ -319,6 +329,26 @@ public interface SMAdapter {
      * @throws SMException
      */
     public byte[] generateEDE_MAC (byte[] data, SecureDESKey kd) throws SMException;
+    
+    /**
+     * Translate key from encryption under the LMK held in “key change storage”
+     * to encryption under a new LMK.
+     *
+     * @param kd the key encrypted under old LMK
+     * @return key encrypted under the new LMK
+     * @throws SMException if the parity of the imported key is not adjusted AND checkParity = true
+     */
+    public SecureDESKey translateKeyFromOldLMK (SecureDESKey kd) throws SMException;
+
+    /**
+     * Erase the key change storage area of memory
+     *
+     * It is recommended that this command is used after keys stored
+     * by the Host have been translated from old to new LMKs.
+     *
+     * @throws SMException
+     */
+    public void eraseOldLMK () throws SMException;
 }
 
 
