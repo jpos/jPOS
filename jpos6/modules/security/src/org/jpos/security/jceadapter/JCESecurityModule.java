@@ -303,37 +303,12 @@ public class JCESecurityModule extends BaseSMAdapter {
 
     /**
      * Generates key check value.<br>
-     * Though not confidential, it is used only by Console,
-     * that's why it is package protected.
-     * @param keyLength
-     * @param keyType
-     * @param KEYunderLMKHexString
-     * @return SecureDESKey object with its check value set
+     * @param key SecureDESKey with untrusted or fake Key Check Value
+     * @return generated Key Check Value
      * @throws SMException
      */
-    SecureDESKey generateKeyCheckValue (short keyLength, String keyType, String KEYunderLMKHexString) throws SMException {
-        SecureDESKey secureDESKey = null;
-        byte[] keyCheckValue;
-        SimpleMsg[] cmdParameters =  {
-            new SimpleMsg("parameter", "Key Length", keyLength),
-            new SimpleMsg("parameter", "Key Type", keyType),
-            new SimpleMsg("parameter", "Key under LMK", KEYunderLMKHexString),
-        };
-        LogEvent evt = new LogEvent(this, "s-m-operation");
-        evt.addMessage(new SimpleMsg("command", "Generate Key Check Value", cmdParameters));
-        try {
-            secureDESKey = new SecureDESKey(keyLength, keyType,
-                KEYunderLMKHexString, "");
-            keyCheckValue = calculateKeyCheckValue(decryptFromLMK(secureDESKey));
-            secureDESKey.setKeyCheckValue(keyCheckValue);
-            evt.addMessage(new SimpleMsg("result", "Key with Check Value", secureDESKey));
-        } catch (JCEHandlerException e) {
-            evt.addMessage(e);
-            throw  e;
-        } finally {
-            Logger.log(evt);
-        }
-        return  secureDESKey;
+    protected byte[] generateKeyCheckValueImpl (SecureDESKey secureDESKey) throws SMException {
+        return  calculateKeyCheckValue(decryptFromLMK(secureDESKey));
     }
 
     /**

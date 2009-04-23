@@ -130,8 +130,8 @@ public class Console {
                                 commandParams[1].toUpperCase(), commandParams[2], commandParams[3], commandParams[4]);
                     }
                     else if (commandName.toUpperCase().compareTo("CK") == 0) {
-                        SecureDESKey KEYunderLMK = sm.generateKeyCheckValue(keyLength,
-                                commandParams[1].toUpperCase(), commandParams[2]);
+                        byte[] keyCheckValue = sm.generateKeyCheckValue(
+                                new SecureDESKey(keyLength,commandParams[1].toUpperCase(), commandParams[2],""));
                     }
                     else if (commandName.toUpperCase().compareTo("IK") == 0) {
                         SecureDESKey KEKunderLMK = new SecureDESKey((short)Integer.parseInt(commandParams[3]),
