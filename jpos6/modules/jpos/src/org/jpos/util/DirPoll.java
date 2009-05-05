@@ -70,6 +70,7 @@ public class DirPoll extends SimpleLogSource
     private boolean shouldArchive;
     private boolean shouldTimestampArchive;
     private String archiveDateFormat;
+    private boolean acceptZeroLength = false;
 
     public DirPoll () {
         prio = new Vector();
@@ -94,6 +95,9 @@ public class DirPoll extends SimpleLogSource
     }
     public void setShouldArchive(boolean shouldArchive) {
         this.shouldArchive = shouldArchive;
+    }
+    public void setAcceptZeroLength(boolean acceptZeroLength) {
+        this.acceptZeroLength = acceptZeroLength;
     }
     public String getPath() {
         return basePath;
@@ -158,6 +162,7 @@ public class DirPoll extends SimpleLogSource
             setArchiveDir  (cfg.get ("archive.dir",  "archive"));
             setResponseSuffix (cfg.get ("response.suffix", null));
             setShouldArchive (cfg.getBoolean ("archive", false));
+            setAcceptZeroLength (cfg.getBoolean ("zero-length", false));
             setArchiveDateFormat (
                 cfg.get ("archive.dateformat", "yyyyMMddHHmmss")
             );
@@ -185,14 +190,19 @@ public class DirPoll extends SimpleLogSource
     }
     //--------------------------------------- FilenameFilter implementation
     public boolean accept(File dir, String name) {
+        boolean result;
         String ext = currentPriority >= 0 ? 
             ((String) prio.elementAt(currentPriority)) : null;
         if (ext != null && !name.endsWith(ext))
             return false;
         File f = new File (dir, name);
-        return f.isFile() && (f.length() > 0);
+        if (acceptZeroLength){
+             result = f.isFile();
+        } else {
+             result = f.isFile() && (f.length() > 0);
+        }
+        return result;
     }
-
     //--------------------------------------------- Runnable implementation
 
     public void run() { 
