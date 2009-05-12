@@ -2,6 +2,12 @@
 
 <logger name="Q2" class="org.jpos.q2.qbean.LoggerAdaptor">
   <log-listener class="org.jpos.util.SimpleLogListener" />
+  <log-listener class="org.jpos.util.SysLogListener">
+     <property name="facility" value="21" />
+     <property name="severity" value="5" />
+     <property name="tags" value="audit, syslog" />
+     <property name="prefix" value="[jPOS]" />
+  </log-listener>
 
   <log-listener class="org.jpos.util.DailyLogListener">
     <property name="window" value="86400" /> <!-- optional, default one day -->
