@@ -2,4 +2,4 @@
 cd `dirname $0`/.. || exit 1
 CLASSPATH=build/classes:$CLASSPATH
 CLASSPATH=`echo build/lib/*.jar | tr ' ' ':'`:$CLASSPATH
-exec java -Djava.library.path=/usr/local/BerkeleyDB.4.7/lib/ -cp $CLASSPATH bsh.Interpreter $*
+exec java -cp $CLASSPATH bsh.Interpreter $*
