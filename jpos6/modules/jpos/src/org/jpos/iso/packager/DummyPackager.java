@@ -29,13 +29,13 @@ import org.jpos.iso.ISOComponent;
 
 public class DummyPackager extends Log implements ISOPackager {
     public byte[] pack (ISOComponent m) throws ISOException {
-        throw new ISOException ("N/A");
+        throw new ISOException ("DummyPackager.pack N/A");
     }
     public int unpack (ISOComponent m, byte[] b) throws ISOException {
-        throw new ISOException ("N/A");
+        throw new ISOException ("DummyPackager.unpack N/A");
     }
     public void unpack (ISOComponent m, InputStream in) throws ISOException {
-        throw new ISOException ("N/A");
+        throw new ISOException ("DummyPackager.unpack N/A");
     }
     public String getFieldDescription(ISOComponent m, int fldNumber) {
         return null;
