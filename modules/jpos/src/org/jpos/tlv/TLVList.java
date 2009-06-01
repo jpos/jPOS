@@ -225,7 +225,7 @@ public class TLVList {
                     buffer.get(arrValue);
                 }
     
-                TLVMsg tlv = new TLVMsg(tag, arrValue);
+                TLVMsg tlv = getTLVMsg(tag, arrValue);
                 return tlv;
             }
         }
@@ -234,6 +234,10 @@ public class TLVList {
         }
     }
    
+    protected TLVMsg getTLVMsg(int tag, byte[] arrValue) {
+        return new TLVMsg(tag,arrValue);
+    }
+
     /*
      * Check Existance of next TLV Field
      * @param buffer  ByteBuffer containing TLV data
@@ -274,7 +278,7 @@ public class TLVList {
      * Read length bytes and return the int value
      * @return value length
      */
-    private int getValueLength(ByteBuffer buffer) {
+    protected int getValueLength(ByteBuffer buffer) {
         int length = 0;
         int count = 0;
         byte b;
@@ -307,6 +311,27 @@ public class TLVList {
             return null;
         }
     }
-      
+    
+    /*
+     *searches the list for a specified tag and returns it raw
+     * @return byte[]  
+     */
+    public byte[] getValue(int tag) {
+        TLVMsg msg = find(tag);
+        if (msg != null) {
+            return msg.getValue();
+        }
+        else {
+            return null;
+        }
+    }
+    
+    /*
+     *  searches the list for a specified tag and returns a boolean indicating presence
+     *  @return boolean
+     */
+    public boolean hasTag(int tag) {
+        return (findIndex(tag) > -1);
+    }     
      
 }

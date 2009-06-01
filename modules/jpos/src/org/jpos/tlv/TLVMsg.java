@@ -26,7 +26,7 @@ import org.jpos.iso.ISOUtil;
 public class TLVMsg {
 
     private int tag;
-    private byte[] value;
+    protected byte[] value;
 
     /**
      * empty constructor
