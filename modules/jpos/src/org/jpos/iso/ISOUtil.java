@@ -499,6 +499,45 @@ public class ISOUtil {
             d[8] |= 0x80;
         return d;
     }
+    
+    /*
+     * Convert BitSet to int value.
+     */
+    public static int bitSet2Int(BitSet bs) {
+        int total = 0;
+        int b = bs.length() - 1;
+        if (b > 0) {
+            int value = (int) Math.pow(2,b);
+            for (int i = 0; i <= b; i++) {
+                if (bs.get(i))
+                total += value;
+            value = value >> 1;
+        }
+        }
+        
+        return total;
+    }
+    
+    /*
+     * Convert int value to BitSet.
+     */
+    public static BitSet int2BitSet(int value) {
+        
+        return int2BitSet(value,0);
+    }
+    
+    /*
+     * Convert int value to BitSet.
+     */
+    public static BitSet int2BitSet(int value, int offset) {
+        
+        BitSet bs = new BitSet();
+        
+        String hex = Integer.toHexString(value);
+        hex2BitSet(bs, hex.getBytes(), offset);
+        
+        return bs;
+    }
 
     /**
      * Converts a binary representation of a Bitmap field
