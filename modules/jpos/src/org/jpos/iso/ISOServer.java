@@ -290,7 +290,7 @@ public class ISOServer extends Observable
                             for (int i=0; pool.getAvailableCount() <= 0; i++) {
                                 ISOUtil.sleep (250);
                                 if (shutdown) break serverLoop;
-                                if (i % 240 == 0) {
+                                if (i % 240 == 0 && cfg.getBoolean("pool-exhaustion-warning", true)) {
                                     LogEvent evt = new LogEvent (this, "warn");
                                     evt.addMessage (
                                         "pool exhausted " + serverSocket.toString()
