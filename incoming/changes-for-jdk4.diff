@@ -1,0 +1,345 @@
+Index: org/jpos/security/SecureKey.java
+===================================================================
+--- org/jpos/security/SecureKey.java	(revision 2727)
++++ org/jpos/security/SecureKey.java	(working copy)
+@@ -56,7 +56,10 @@
+  */
+ public abstract class SecureKey
+         implements Serializable, Loggeable {
+-    /**
++
++	private static final long serialVersionUID = -4483855815675387845L;
++	
++	/**
+      * Secure Key Bytes
+      */
+     protected byte[] keyBytes = null;
+Index: org/jpos/security/SimpleKeyFile.java
+===================================================================
+--- org/jpos/security/SimpleKeyFile.java	(revision 2727)
++++ org/jpos/security/SimpleKeyFile.java	(working copy)
+@@ -22,6 +22,7 @@
+ import java.io.FileInputStream;
+ import java.io.FileOutputStream;
+ import java.util.Hashtable;
++import java.util.Iterator;
+ import java.util.Map;
+ import java.util.Properties;
+ 
+@@ -189,10 +190,11 @@
+         props.setProperty(key, value);
+     }
+ 
+-    public Map<String,SecureKey> getKeys() throws SecureKeyStoreException {
++    public Map getKeys() throws SecureKeyStoreException {
+       Map keys    = new Hashtable();
+-      for ( Object k :props.keySet() ){
+-        String alias = ((String)k).split("\\.")[0];
++      for (Iterator it = props.keySet().iterator(); it.hasNext(); ) {
++    	String k = (String) it.next();
++        String alias = k.split("\\.")[0];
+         if ( !keys.containsKey(alias) ){
+           keys.put(alias,getKey(alias));
+         }
+Index: org/jpos/security/SecureKeyStore.java
+===================================================================
+--- org/jpos/security/SecureKeyStore.java	(revision 2727)
++++ org/jpos/security/SecureKeyStore.java	(working copy)
+@@ -90,7 +90,7 @@
+      * @throws if SecureKeyStore is not initialized or if
+      * the operation fails for some other reason.
+      */
+-    public Map<String,SecureKey> getKeys() throws SecureKeyStoreException;
++    public Map getKeys() throws SecureKeyStoreException;
+ }
+ 
+ 
+Index: org/jpos/iso/Currency.java
+===================================================================
+--- org/jpos/iso/Currency.java	(revision 2727)
++++ org/jpos/iso/Currency.java	(working copy)
+@@ -29,7 +29,9 @@
+  */
+ public class Currency implements Serializable
+ {
+-    String alphacode;
++	private static final long serialVersionUID = -8821177453941834484L;
++	
++	String alphacode;
+     int isocode;
+     int numdecimals;
+ 
+@@ -64,16 +66,15 @@
+         }
+         catch (ISOException e)
+         {
+-            throw new IllegalArgumentException("Failed to convert amount",e);
++            throw new IllegalArgumentException("Failed to convert amount");
+         }
+     }
+ 
+     public double parseAmountFromISOMsg(String isoamount)
+     {
+-        return new Double(isoamount)/Math.pow(10, getDecimals());
++        return new Double(isoamount).doubleValue() / Math.pow(10, getDecimals());
+     }
+ 
+-    @Override
+     public String toString()
+     {
+         return "Currency{" +
+Index: org/jpos/iso/packager/DummyPackager.java
+===================================================================
+--- org/jpos/iso/packager/DummyPackager.java	(revision 2727)
++++ org/jpos/iso/packager/DummyPackager.java	(working copy)
+@@ -18,7 +18,6 @@
+ 
+ package org.jpos.iso.packager;
+ 
+-import java.io.IOException;
+ import java.io.InputStream;
+ 
+ import org.jpos.util.Log;
+Index: org/jpos/iso/IFE_AMOUNT.java
+===================================================================
+--- org/jpos/iso/IFE_AMOUNT.java	(revision 2727)
++++ org/jpos/iso/IFE_AMOUNT.java	(working copy)
+@@ -37,7 +37,7 @@
+      * @param description symbolic descrption
+      */
+     public IFE_AMOUNT(int len, String description) {
+-        super(len, description, LeftPadder.ZERO_PADDER, EbcdicInterpreter.INSTANCE.INSTANCE, NullPrefixer.INSTANCE);
++        super(len, description, LeftPadder.ZERO_PADDER, EbcdicInterpreter.INSTANCE, NullPrefixer.INSTANCE);
+     }
+ }
+ 
+Index: org/jpos/iso/ISOCurrency.java
+===================================================================
+--- org/jpos/iso/ISOCurrency.java	(revision 2727)
++++ org/jpos/iso/ISOCurrency.java	(working copy)
+@@ -37,7 +37,7 @@
+  */
+ public class ISOCurrency
+ {
+-    private static Map<String, Currency> currencies;
++    private static Map currencies;
+     private static final Object mutex = new Object();
+ 
+     // Avoid creation of instances.
+@@ -49,13 +49,12 @@
+     {
+         synchronized (mutex)
+         {
+-            currencies = new HashMap<String, Currency>();
++            currencies = new HashMap();
+         }
+         addBundle(ISOCurrency.class.getName());
+         loadPropertiesFromClasspath("META-INF/org/jpos/config/ISOCurrency.properties");
+     }
+ 
+-    @SuppressWarnings({"EmptyCatchBlock"})
+     public static void loadPropertiesFromClasspath(String base)
+     {
+         InputStream in=loadResourceAsStream(base);
+@@ -154,7 +153,7 @@
+         }
+         catch (ISOException e)
+         {
+-            throw new IllegalArgumentException("Failed getIsoCodeFromAlphaCode/ zeropad failed?", e);
++            throw new IllegalArgumentException("Failed getIsoCodeFromAlphaCode/ zeropad failed?");
+         }
+     }
+ 
+@@ -210,7 +209,7 @@
+ 
+     private static Currency findCurrency(String currency)
+     {
+-        final Currency c = currencies.get(currency.toUpperCase());
++        final Currency c = (Currency)currencies.get(currency.toUpperCase());
+         if (c == null)
+         {
+             throw new IllegalArgumentException("Currency with key '" + currency + "' was not found");
+Index: org/jpos/iso/IFMC_LLBINARY.java
+===================================================================
+--- org/jpos/iso/IFMC_LLBINARY.java	(revision 2727)
++++ org/jpos/iso/IFMC_LLBINARY.java	(working copy)
+@@ -19,7 +19,6 @@
+ package org.jpos.iso;
+ import java.io.IOException;
+ import java.io.InputStream;
+-import java.io.UnsupportedEncodingException;
+ 
+ /**
+  * Binary version of IFMC_LLCHAR 
+Index: org/jpos/iso/SunJSSESocketFactory.java
+===================================================================
+--- org/jpos/iso/SunJSSESocketFactory.java	(revision 2727)
++++ org/jpos/iso/SunJSSESocketFactory.java	(working copy)
+@@ -27,6 +27,7 @@
+ import java.net.UnknownHostException;
+ import java.security.GeneralSecurityException;
+ import java.security.KeyStore;
++import java.security.Provider;
+ import java.security.SecureRandom;
+ import java.security.Security;
+ 
+@@ -104,7 +105,11 @@
+ 
+     static
+     {
+-        Security.addProvider(new com.sun.net.ssl.internal.ssl.Provider()); 
++        try {
++			Security.addProvider((Provider)Class.forName("com.sun.net.ssl.internal.ssl.Provider").newInstance());
++		} catch (Exception e) {
++			new RuntimeException(e);
++		} 
+     }
+        
+     private TrustManager[] getTrustManagers(KeyStore ks)
+@@ -258,7 +263,7 @@
+         if (serverName==null || serverName.length()==0) {
+             serverName = session.getPeerHost();
+             try {
+-                InetAddress addr = InetAddress.getByName(serverName);
++                InetAddress.getByName(serverName);
+             } catch (UnknownHostException uhe) {
+                 throw new UnknownHostException("Could not resolve SSL " +
+                                                "server name " + serverName);
+Index: org/jpos/iso/FSDISOMsg.java
+===================================================================
+--- org/jpos/iso/FSDISOMsg.java	(revision 2727)
++++ org/jpos/iso/FSDISOMsg.java	(working copy)
+@@ -22,7 +22,6 @@
+ import java.io.PrintStream;
+ import java.io.ObjectInput;
+ import java.io.ObjectOutput;
+-import java.io.Externalizable;
+ import java.util.Map;
+ import java.util.Iterator;
+ import org.jpos.util.FSDMsg;
+Index: org/jpos/iso/filter/ChannelInfoFilter.java
+===================================================================
+--- org/jpos/iso/filter/ChannelInfoFilter.java	(revision 2727)
++++ org/jpos/iso/filter/ChannelInfoFilter.java	(working copy)
+@@ -68,7 +68,7 @@
+                 InetSocketAddress localAddr = 
+                     (InetSocketAddress) socket.getLocalSocketAddress();
+ 
+-                StringBuilder sb = new StringBuilder();
++                StringBuffer sb = new StringBuffer();
+                 if (channelNameField == socketInfoField) {
+                     sb.append (channel.getName());
+                     sb.append (' ');
+Index: org/jpos/iso/channel/TelnetXMLChannel.java
+===================================================================
+--- org/jpos/iso/channel/TelnetXMLChannel.java	(revision 2727)
++++ org/jpos/iso/channel/TelnetXMLChannel.java	(working copy)
+@@ -129,11 +129,11 @@
+             int isomsgStart = s.indexOf(isomsgStartTag);
+             if (isomsgStart >= 0) {
+                 sp++;
+-                sb.append(s, isomsgStart, s.length() - isomsgStart);
++                sb.append(s.toCharArray(), isomsgStart, s.length() - isomsgStart);
+             } else {
+                 int isomsgEnd = s.indexOf(isomsgEndTag);
+                 if (isomsgEnd >= 0) {
+-                    sb.append(s,0,isomsgEnd + isomsgEndTag.length());
++                    sb.append(s.toCharArray(),0,isomsgEnd + isomsgEndTag.length());
+                     if (--sp <= 0)
+                         break;
+                 } else {
+Index: org/jpos/space/JDBMSpace.java
+===================================================================
+--- org/jpos/space/JDBMSpace.java	(revision 2727)
++++ org/jpos/space/JDBMSpace.java	(working copy)
+@@ -49,7 +49,7 @@
+     protected HTree htree;
+     protected RecordManager recman;
+     protected static final Serializer refSerializer = new Ref ();
+-    protected static final Map<String,Space> spaceRegistrar = new HashMap<String,Space> ();
++    protected static final Map spaceRegistrar = new HashMap();
+     protected boolean autoCommit = true;
+     protected String name;
+     public static final long GCDELAY = 5*60*1000;
+@@ -384,8 +384,8 @@
+         }
+     }
+     public boolean existAny (Object[] keys) {
+-        for (Object key : keys) {
+-            if (rdp(key) != null)
++        for (int i = 0; i < keys.length; i++) {
++            if (rdp(keys[i]) != null)
+                 return true;
+         }
+         return false;
+Index: org/jpos/util/ProtectedLogListener.java
+===================================================================
+--- org/jpos/util/ProtectedLogListener.java	(revision 2727)
++++ org/jpos/util/ProtectedLogListener.java	(working copy)
+@@ -24,7 +24,6 @@
+ import org.jpos.core.Configuration;
+ import org.jpos.core.ConfigurationException;
+ import org.jpos.iso.ISOException;
+-import org.jpos.iso.ISOField;
+ import org.jpos.iso.ISOMsg;
+ import org.jpos.iso.ISOUtil;
+ 
+Index: org/jpos/util/DirPoll.java
+===================================================================
+--- org/jpos/util/DirPoll.java	(revision 2727)
++++ org/jpos/util/DirPoll.java	(working copy)
+@@ -381,7 +381,9 @@
+         }
+     }
+     public static class DirPollException extends ISOException {
+-        public DirPollException () {
++		private static final long serialVersionUID = -5805197975408588019L;
++		
++		public DirPollException () {
+             super();
+         }
+         public DirPollException (String detail) {
+Index: org/jpos/util/Profiler.java
+===================================================================
+--- org/jpos/util/Profiler.java	(revision 2727)
++++ org/jpos/util/Profiler.java	(working copy)
+@@ -19,7 +19,6 @@
+ package org.jpos.util;
+ 
+ import java.io.PrintStream;
+-import java.util.ArrayList;
+ import java.util.Collection;
+ import java.util.LinkedHashMap;
+ import java.util.Iterator;
+Index: org/jpos/util/SysLogListener.java
+===================================================================
+--- org/jpos/util/SysLogListener.java	(revision 2727)
++++ org/jpos/util/SysLogListener.java	(working copy)
+@@ -18,18 +18,14 @@
+ 
+ package org.jpos.util;
+ 
+-import java.util.Date;
+-import java.util.Locale;
+ import java.util.Iterator;
+ import java.io.IOException;
+ import java.net.InetAddress;
+ import java.net.DatagramSocket;
+ import java.net.DatagramPacket;
+-import java.text.SimpleDateFormat;
+ import org.jpos.core.Configurable;
+ import org.jpos.core.Configuration;
+ import org.jpos.core.ConfigurationException;
+-import org.jpos.q2.Q2;
+ 
+ /**
+  * SysLog Listener
+@@ -73,7 +69,7 @@
+             int severity = cfg.getInt (ev.tag + ".severity", defaultSeverity);
+             int priority = (facility<<3) | severity;
+ 
+-            StringBuilder sb = new StringBuilder();
++            StringBuffer sb = new StringBuffer();
+             sb.append ('<');
+             sb.append (Integer.toString(priority));
+             sb.append ('>');
