@@ -40,13 +40,13 @@ package org.jpos.space;
  * @see <a href="http://www.cs.yale.edu/Linda/linda-lang.html">The Linda Coordination Language</a>
  */
 
-public interface Space {
+public interface Space<K,V> {
     /**
      * Write a new entry into the Space
      * @param key Entry's key
      * @param value Object value
      */
-    public void out (Object key, Object value);
+    public void out (K key, V value);
 
     /**
      * Write a new entry into the Space, with an timeout value
@@ -54,21 +54,21 @@ public interface Space {
      * @param value Object value
      * @param timeout timeout value
      */
-    public void out (Object key, Object value, long timeout);
+    public void out (K key, V value, long timeout);
 
     /**
      * Take an entry from the space, waiting forever until one exists.
      * @param key Entry's key
      * @return value
      */
-    public Object in  (Object key);
+    public V in  (Object key);
 
     /**
      * Read an entry from the space, waiting forever until one exists.
      * @param key Entry's key
      * @return value
      */
-    public Object rd  (Object key);
+    public V rd  (Object key);
 
     /**
      * Take an entry from the space, waiting a limited amount of time
@@ -77,7 +77,7 @@ public interface Space {
      * @param timeout millis to wait
      * @return value or null
      */
-    public Object in  (Object key, long timeout);
+    public V in  (Object key, long timeout);
 
 
     /**
@@ -87,7 +87,7 @@ public interface Space {
      * @param timeout millis to wait
      * @return value or null
      */
-    public Object rd  (Object key, long timeout);
+    public V rd  (Object key, long timeout);
 
 
     /**
@@ -96,7 +96,7 @@ public interface Space {
      * @param key Entry's key
      * @return value or null
      */
-    public Object inp (Object key);
+    public V inp (Object key);
 
 
     /**
@@ -105,14 +105,14 @@ public interface Space {
      * @param key Entry's key
      * @return value or null
      */
-    public Object rdp (Object key);
+    public V rdp (Object key);
 
     /**
      * Write a new entry at the head of a queue.
      * @param key Entry's key
      * @param value Object value
      */
-    public void push (Object key, Object value);
+    public void push (K key, V value);
 
     /**
      * Write a new entry at the head of the queue with a timeout value
@@ -120,19 +120,19 @@ public interface Space {
      * @param value Object value
      * @param timeout timeout value
      */
-    public void push (Object key, Object value, long timeout);
+    public void push (K key, V value, long timeout);
 
     /**
      * @param keys array of keys to check
      * @return true if one or more keys are available in the space
      */
-    public boolean existAny (Object[] keys);
+    public boolean existAny (K[] keys);
 
     /**
      * @param keys array of keys to check
      * @param timeout to wait for any of the entries to become available
      * @return true if one or more keys are available in the space
      */
-    public boolean existAny (Object[] keys, long timeout);
+    public boolean existAny (K[] keys, long timeout);
 }
 

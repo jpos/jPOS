@@ -45,7 +45,7 @@ import org.jpos.util.DefaultTimer;
  * @version $Revision$ $Date$
  * @since 1.4.7
  */
-public class JDBMSpace extends TimerTask implements Space {
+public class JDBMSpace<K,V> extends TimerTask implements Space<K,V> {
     protected HTree htree;
     protected RecordManager recman;
     protected static final Serializer refSerializer = new Ref ();
@@ -83,8 +83,8 @@ public class JDBMSpace extends TimerTask implements Space {
     /**
      * @return reference to default JDBMSpace
      */
-    public static JDBMSpace getSpace () {
-        return getSpace ("space");
+    public static JDBMSpace getSpace() {
+        return (JDBMSpace) getSpace ("space");
     }
     /**
      * creates a named JDBMSpace 
@@ -92,8 +92,8 @@ public class JDBMSpace extends TimerTask implements Space {
      * @param name the Space name
      * @return reference to named JDBMSpace
      */
-    public static JDBMSpace getSpace (String name) {
-        return getSpace (name, name);
+    public static JDBMSpace getSpace(String name) {
+        return (JDBMSpace) getSpace(name, name);
     }
     /**
      * creates a named JDBMSpace
@@ -101,8 +101,8 @@ public class JDBMSpace extends TimerTask implements Space {
      * @param filename the storage file name
      * @return reference to named JDBMSpace
      */
-    public synchronized static JDBMSpace getSpace
-        (String name, String filename) 
+    public synchronized static JDBMSpace
+        getSpace (String name, String filename) 
     {
         JDBMSpace sp = (JDBMSpace) spaceRegistrar.get (name);
         if (sp == null) {
@@ -175,7 +175,7 @@ public class JDBMSpace extends TimerTask implements Space {
      * @param key Entry's key
      * @param value Object value
      */
-    public void out (Object key, Object value) {
+    public void out (K key, V value) {
         out (key, value, -1);
     }
     /**
@@ -185,7 +185,7 @@ public class JDBMSpace extends TimerTask implements Space {
      * @param value Object value
      * @param timeout entry timeout in millis
      */
-    public void out (Object key, Object value, long timeout) {
+    public void out (K key, V value, long timeout) {
         if (key == null || value == null)
             throw new NullPointerException ("key=" + key + ", value=" + value);
         try {
@@ -222,7 +222,7 @@ public class JDBMSpace extends TimerTask implements Space {
             throw new SpaceError (e);
         }
     }
-    public void push (Object key, Object value) {
+    public void push (K key, V value) {
         push (key, value, -1);
     }
     /**
@@ -267,10 +267,10 @@ public class JDBMSpace extends TimerTask implements Space {
      * @param key Entry's key
      * @return value or null
      */
-    public synchronized Object rdp (Object key) {
+    public synchronized V rdp (Object key) {
         try {
             if (key instanceof Template) 
-                return getObject ((Template) key, false);
+                return (V) getObject ((Template) key, false);
 
             Object obj = null;
             Ref ref = getFirst (key, false);
@@ -278,7 +278,7 @@ public class JDBMSpace extends TimerTask implements Space {
                 obj = recman.fetch (ref.recid);
             if (autoCommit)
                 recman.commit ();
-            return obj;
+            return (V) obj;
         } catch (IOException e) {
             throw new SpaceError (e);
         }
@@ -290,10 +290,10 @@ public class JDBMSpace extends TimerTask implements Space {
      * @param key Entry's key
      * @return value or null
      */
-    public synchronized Object inp (Object key) {
+    public synchronized V inp (Object key) {
         try {
             if (key instanceof Template) 
-                return getObject ((Template) key, true);
+                return (V) getObject ((Template) key, true);
 
             Object obj = null;
             Ref ref = getFirst (key, true);
@@ -303,26 +303,26 @@ public class JDBMSpace extends TimerTask implements Space {
             }
             if (autoCommit)
                 recman.commit ();
-            return obj;
+            return (V) obj;
         } catch (IOException e) {
             throw new SpaceError (e);
         }
     }
-    public synchronized Object in (Object key) {
+    public synchronized V in (Object key) {
         Object obj;
         while ((obj = inp (key)) == null) {
             try {
                 this.wait ();
             } catch (InterruptedException ignored) { }
         }
-        return obj;
+        return (V) obj;
     }
     /**
      * Take an entry from the space, waiting forever until one exists.
      * @param key Entry's key
      * @return value
      */
-    public synchronized Object in (Object key, long timeout) {
+    public synchronized V in (Object key, long timeout) {
         Object obj;
         long now = System.currentTimeMillis();
         long end = now + timeout;
@@ -333,7 +333,7 @@ public class JDBMSpace extends TimerTask implements Space {
                 this.wait (end - now);
             } catch (InterruptedException ignored) { }
         }
-        return obj;
+        return (V) obj;
     }
 
     /**
@@ -341,14 +341,14 @@ public class JDBMSpace extends TimerTask implements Space {
      * @param key Entry's key
      * @return value
      */
-    public synchronized Object rd  (Object key) {
+    public synchronized V rd  (Object key) {
         Object obj;
         while ((obj = rdp (key)) == null) {
             try {
                 this.wait ();
             } catch (InterruptedException ignored) { }
         }
-        return obj;
+        return (V) obj;
     }
 
     /**
@@ -358,7 +358,7 @@ public class JDBMSpace extends TimerTask implements Space {
      * @param timeout millis to wait
      * @return value or null
      */
-    public synchronized Object rd  (Object key, long timeout) {
+    public synchronized V rd  (Object key, long timeout) {
         Object obj;
         long now = System.currentTimeMillis();
         long end = now + timeout;
@@ -369,7 +369,7 @@ public class JDBMSpace extends TimerTask implements Space {
                 this.wait (end - now);
             } catch (InterruptedException ignored) { }
         }
-        return obj;
+        return (V) obj;
     }
     /**
      * @param key the Key
@@ -456,13 +456,13 @@ public class JDBMSpace extends TimerTask implements Space {
                 // avoid concurrent gc
                 if (rdp (GCKEY) != null) 
                     return;
-                out (GCKEY, Boolean.TRUE, TIMEOUT);  
+                ((Space)this).out (GCKEY, Boolean.TRUE, TIMEOUT);  
             }
             FastIterator iter = htree.keys ();
 
             try {
                 while ( (obj = iter.next()) != null) {
-                    out (GCKEY, obj, TIMEOUT);
+                    ((Space)this).out (GCKEY, obj, TIMEOUT);
                     Thread.yield ();
                 }
             } catch (ConcurrentModificationException e) {
