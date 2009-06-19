@@ -153,6 +153,7 @@
           <include name="*/lib/*.jar"/>
           <include name="*/lib/*.dll"/>
           <include name="*/lib/*.so"/>
+          <include name="*/lib/*.jnilib"/>
         </fileset>
       </copy>
       <copy todir="${build.bin}" flatten="true">
