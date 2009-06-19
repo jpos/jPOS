@@ -24,12 +24,12 @@ import org.jpos.util.Profiler;
 import org.jpos.iso.ISOUtil;
 
 public class TSpaceTestCase extends TestCase implements SpaceListener {
-    TSpace sp;
+    TSpace<String,Object> sp;
     public static final int COUNT = 100000;
     Object notifiedValue = null;
 
     public void setUp () {
-        sp = new TSpace();
+        sp = new TSpace<String,Object>();
     }
     public void testSimpleOut() {
         sp.out ("testSimpleOut_Key", "ABC");

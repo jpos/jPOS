@@ -24,7 +24,7 @@ import java.util.Set;
  * @author Kris, Bharavi, Alejandro
  * @version $Revision$ $Date$
  */
-public interface LocalSpace extends Space {
+public interface LocalSpace<K,V> extends Space<K,V> {
     /**
      * add a SpaceListener associated with a given key
      * @param key Entry's key

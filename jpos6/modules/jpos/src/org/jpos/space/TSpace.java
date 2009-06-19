@@ -36,7 +36,7 @@ import org.jpos.util.Loggeable;
  * @version $Revision$ $Date$
  * @since !.4.9
  */
-public class TSpace extends TimerTask implements LocalSpace, Loggeable {
+public class TSpace<K,V> extends TimerTask implements LocalSpace<K,V>, Loggeable {
     protected Map entries;
     protected TSpace sl;    // space listeners
     public static final long GCDELAY = 60*1000;
@@ -46,7 +46,7 @@ public class TSpace extends TimerTask implements LocalSpace, Loggeable {
         entries = new HashMap ();
         DefaultTimer.getTimer().schedule (this, GCDELAY, GCDELAY);
     }
-    public synchronized void out (Object key, Object value) {
+    public synchronized void out (K key, V value) {
         if (key == null || value == null)
             throw new NullPointerException ("key=" + key + ", value=" + value);
         getList (key).add (value);
@@ -54,40 +54,40 @@ public class TSpace extends TimerTask implements LocalSpace, Loggeable {
         if (sl != null)
             notifyListeners(key, value);
     }
-    public void out (Object key, Object value, long timeout) {
+    public void out (K key, V value, long timeout) {
         if (key == null || value == null)
             throw new NullPointerException ("key=" + key + ", value=" + value);
+        Object v = value;
         if (timeout > 0) {
-            value   = new Expirable (value, 
-               System.currentTimeMillis() + timeout);
+            v = new Expirable (value, System.currentTimeMillis() + timeout);
         }
         synchronized (this) {
-            getList (key).add (value);
+            getList (key).add (v);
             this.notifyAll ();
         }
         if (sl != null)
             notifyListeners(key, value);
     }
-    public synchronized Object rdp (Object key) {
+    public synchronized V rdp (Object key) {
         if (key instanceof Template)
-            return getObject ((Template) key, false);
-        return getHead (key, false);
+            return (V) getObject ((Template) key, false);
+        return (V) getHead (key, false);
     }
-    public synchronized Object inp (Object key) {
+    public synchronized V inp (Object key) {
         if (key instanceof Template)
-            return getObject ((Template) key, true);
-        return getHead (key, true);
+            return (V) getObject ((Template) key, true);
+        return (V) getHead (key, true);
     }
-    public synchronized Object in (Object key) {
+    public synchronized V in (Object key) {
         Object obj;
         while ((obj = inp (key)) == null) {
             try {
                 this.wait ();
             } catch (InterruptedException e) { }
         }
-        return obj;
+        return (V) obj;
     }
-    public synchronized Object in  (Object key, long timeout) {
+    public synchronized V in  (Object key, long timeout) {
         Object obj;
         long now = System.currentTimeMillis();
         long end = now + timeout;
@@ -98,18 +98,18 @@ public class TSpace extends TimerTask implements LocalSpace, Loggeable {
                 this.wait (end - now);
             } catch (InterruptedException e) { }
         }
-        return obj;
+        return (V) obj;
     }
-    public synchronized Object rd  (Object key) {
+    public synchronized V rd  (Object key) {
         Object obj;
         while ((obj = rdp (key)) == null) {
             try {
                 this.wait ();
             } catch (InterruptedException e) { }
         }
-        return obj;
+        return (V) obj;
     }
-    public synchronized Object rd  (Object key, long timeout) {
+    public synchronized V rd  (Object key, long timeout) {
         Object obj;
         long now = System.currentTimeMillis();
         long end = now + timeout;
@@ -120,7 +120,7 @@ public class TSpace extends TimerTask implements LocalSpace, Loggeable {
                 this.wait (end - now);
             } catch (InterruptedException e) { }
         }
-        return obj;
+        return (V) obj;
     }
     public void run () {
         try {
@@ -219,7 +219,7 @@ public class TSpace extends TimerTask implements LocalSpace, Loggeable {
             }
         }
     }
-    public synchronized void push (Object key, Object value) {
+    public synchronized void push (K key, V value) {
         if (key == null || value == null)
             throw new NullPointerException ("key=" + key + ", value=" + value);
         getList (key).add (0, value);
@@ -227,28 +227,28 @@ public class TSpace extends TimerTask implements LocalSpace, Loggeable {
         if (sl != null)
             notifyListeners(key, value);
     }
-    public void push (Object key, Object value, long timeout) {
+    public void push (K key, V value, long timeout) {
         if (key == null || value == null)
             throw new NullPointerException ("key=" + key + ", value=" + value);
+        Object v = value;
         if (timeout > 0) {
-            value   = new Expirable (value, 
-               System.currentTimeMillis() + timeout);
+            v = new Expirable (value, System.currentTimeMillis() + timeout);
         }
         synchronized (this) {
-            getList (key).add (0, value);
+            getList (key).add (0, v);
             this.notifyAll ();
         }
         if (sl != null)
             notifyListeners(key, value);
     }
-    public boolean existAny (Object[] keys) {
+    public boolean existAny (K[] keys) {
         for (int i=0; i<keys.length; i++) {
             if (rdp (keys[i]) != null)
                 return true;
         }
         return false;
     }
-    public boolean existAny (Object[] keys, long timeout) {
+    public boolean existAny (K[] keys, long timeout) {
         long now = System.currentTimeMillis();
         long end = now + timeout;
         while (((now = System.currentTimeMillis()) < end)) {

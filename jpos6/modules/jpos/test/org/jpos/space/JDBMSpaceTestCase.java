@@ -25,9 +25,9 @@ import org.jpos.iso.ISOUtil;
 
 public class JDBMSpaceTestCase extends TestCase {
     public static final int COUNT = 1000;
-    JDBMSpace sp;
+    JDBMSpace<String,Object> sp;
     public void setUp () {
-        sp = JDBMSpace.getSpace ("space-test");
+        sp = (JDBMSpace<String,Object>) JDBMSpace.getSpace ("space-test");
     }
     public void testSimpleOut() throws Exception {
         Object o = new Boolean (true);
