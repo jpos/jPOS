@@ -528,6 +528,12 @@ public class ISOMsg extends ISOComponent
         return true;
     }
     /**
+     * @return true if ISOMsg has at least one field
+     */
+    public boolean hasFields () {
+        return !fields.isEmpty();
+    }
+    /**
      * Don't call setValue on an ISOMsg. You'll sure get
      * an ISOException. It's intended to be used on Leafs
      * @see ISOField
