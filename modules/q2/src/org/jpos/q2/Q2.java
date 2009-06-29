@@ -117,85 +117,89 @@ public class Q2 implements FileFilter, Runnable {
     public Q2 () {
         this (new String[] {} );
     }
-    public void run() {
-        try {
-            start();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public Q2 (String deployDir) {
+        this (new String[] { "-d", deployDir });
     }
-    public void start () 
-        throws MalformedObjectNameException,
-               InstanceAlreadyExistsException,
-               NotCompliantMBeanException,
-               MBeanRegistrationException
-    {
-        /*
-         * The following code determines whether a MBeanServer exists already.
-         * If so then the first one in the list is used.  I have not yet find a way to
-         * interrogate the server for information other than MBeans so to pick a
-         * specific one would be difficult.
-         */
-        ArrayList mbeanServerList = MBeanServerFactory.findMBeanServer(null);
-        if (mbeanServerList.size() == 0) {
-            server  = MBeanServerFactory.createMBeanServer (JMX_NAME);
-        } else {
-            server = (MBeanServer) mbeanServerList.get(0);
-        }
-        final ObjectName loaderName = new ObjectName (Q2_CLASS_LOADER);
+    public void start () {
+        new Thread (this).start();
+    }
+    public void stop () {
+        shutdown (true);
+    }
+    public void run () {
         try {
-            loader = (QClassLoader) java.security.AccessController.doPrivileged(
-                new java.security.PrivilegedAction() {
-                    public Object run() {
-                        return new QClassLoader (server, libDir, loaderName, mainClassLoader);
-                    }
-                }
-            );
-            server.registerMBean (loader, loaderName);
-            loader = loader.scan(false);
-        } catch (Throwable t) {
-            if (log != null)
-                log.error ("initial-scan", t);
-            else
-                t.printStackTrace();
-        }
-        factory = new QFactory (loaderName, this);
-        initSystemLogger ();
-        addShutdownHook ();
-        q2Thread = Thread.currentThread ();
-        q2Thread.setContextClassLoader (loader);
-        if (cli != null)
-            cli.start();
-        while (!shutdown) {
-            try {
-                boolean forceNewClassLoader = scan ();
-                QClassLoader oldClassLoader = loader;
-                loader = loader.scan (forceNewClassLoader);
-                if (loader != oldClassLoader) {
-                    oldClassLoader = null;
-                    System.gc();  // force a GC
-                    log.info (
-                      "new classloader ["
-                      + Integer.toString(loader.hashCode(),16)
-                      + "] has been created"
-                    );
-                }
-                deploy ();
-                checkModified ();
-                relax (SCAN_INTERVAL);
-            } catch (Throwable t) {
-                log.error ("start", t);
-                relax ();
+            /*
+            * The following code determines whether a MBeanServer exists 
+            * already. If so then the first one in the list is used. 
+            * I have not yet find a way to interrogate the server for 
+            * information other than MBeans so to pick a specific one 
+            * would be difficult.
+            */
+            ArrayList mbeanServerList = 
+                MBeanServerFactory.findMBeanServer(null);
+            if (mbeanServerList.size() == 0) {
+                server  = MBeanServerFactory.createMBeanServer (JMX_NAME);
+            } else {
+                server = (MBeanServer) mbeanServerList.get(0);
             }
-        }
-        undeploy ();
-        try {
-            server.unregisterMBean (loaderName);
-        } catch (InstanceNotFoundException e) {
+            final ObjectName loaderName = new ObjectName (Q2_CLASS_LOADER);
+            try {
+                loader = (QClassLoader) java.security.AccessController.doPrivileged(
+                    new java.security.PrivilegedAction() {
+                        public Object run() {
+                            return new QClassLoader (server, libDir, loaderName, mainClassLoader);
+                        }
+                    }
+                );
+                server.registerMBean (loader, loaderName);
+                loader = loader.scan(false);
+            } catch (Throwable t) {
+                if (log != null)
+                    log.error ("initial-scan", t);
+                else
+                    t.printStackTrace();
+            }
+            factory = new QFactory (loaderName, this);
+            initSystemLogger ();
+            addShutdownHook ();
+            q2Thread = Thread.currentThread ();
+            q2Thread.setContextClassLoader (loader);
+            if (cli != null)
+                cli.start();
+            while (!shutdown) {
+                try {
+                    boolean forceNewClassLoader = scan ();
+                    QClassLoader oldClassLoader = loader;
+                    loader = loader.scan (forceNewClassLoader);
+                    if (loader != oldClassLoader) {
+                        oldClassLoader = null;
+                        System.gc();  // force a GC
+                        log.info (
+                        "new classloader ["
+                        + Integer.toString(loader.hashCode(),16)
+                        + "] has been created"
+                        );
+                    }
+                    deploy ();
+                    checkModified ();
+                    relax (SCAN_INTERVAL);
+                } catch (Throwable t) {
+                    log.error ("start", t);
+                    relax ();
+                }
+            }
+            undeploy ();
+            try {
+                server.unregisterMBean (loaderName);
+            } catch (InstanceNotFoundException e) {
+                log.error (e);
+            }
+            if (exit && !shuttingDown)
+                System.exit (0);
+        } catch (Exception e) {
             log.error (e);
+            System.exit (1);
         }
-        if (exit && !shuttingDown)
-            System.exit (0);
     }
     public void shutdown () {
         shutdown(false);
