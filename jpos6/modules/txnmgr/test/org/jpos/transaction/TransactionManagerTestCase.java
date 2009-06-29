@@ -31,16 +31,8 @@ public class TransactionManagerTestCase extends TestCase {
 
     public void setUp () throws Exception {
         sp = SpaceFactory.getSpace();
-        q2 = new Q2(new String[] { "-d", "../test/org/jpos/transaction" });
-        new Thread() {
-            public void run() {
-                try {
-                    q2.start();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }.start();
+        q2 = new Q2("../test/org/jpos/transaction");
+        q2.start();
     }
     public void testSimpleTransaction() {
         Context ctx = new Context();
@@ -55,7 +47,7 @@ public class TransactionManagerTestCase extends TestCase {
     }
     public void tearDown() throws Exception {
         Thread.sleep (3000); // let the thing run
-        q2.shutdown(true);
+        q2.stop();
     }
 }
 
