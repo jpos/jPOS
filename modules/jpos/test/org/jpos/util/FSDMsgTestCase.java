@@ -148,10 +148,16 @@ public class FSDMsgTestCase extends TestCase {
                 "004012345678123456781234567812345678", m.pack());
     
     }
+    public void testClone () throws Exception {
+        FSDMsg m0 = new FSDMsg("file:../test/org/jpos/util/msgDS-");
+        m0.set ("alphavardata", "ABCDE");
+        FSDMsg m1 = (FSDMsg) m0.clone();
+        m1.set ("alphavardata", "12345"); 
+        assertEquals ("Original alphavardata", "ABCDE", m0.get ("alphavardata"));
+        assertEquals ("Cloned alphavardata", "12345", m1.get ("alphavardata"));
 
+    }
     public void assertEquals(String msg, byte[] b1, byte[] b2) {
         assertTrue(msg, Arrays.equals(b1, b2));
     }
-
-    
 }
