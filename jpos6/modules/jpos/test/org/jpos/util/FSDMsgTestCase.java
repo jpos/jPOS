@@ -18,6 +18,7 @@
 
 package org.jpos.util;
 
+import org.jpos.iso.FSDISOMsg;
 import org.jpos.iso.ISOUtil;
 import java.util.Arrays;
 import junit.framework.*;
@@ -156,6 +157,16 @@ public class FSDMsgTestCase extends TestCase {
         assertEquals ("Original alphavardata", "ABCDE", m0.get ("alphavardata"));
         assertEquals ("Cloned alphavardata", "12345", m1.get ("alphavardata"));
 
+    }
+    public void testFSDISOMsgClone () throws Exception {
+        FSDMsg m0 = new FSDMsg("file:../test/org/jpos/util/msgDS-");
+        m0.set ("alphavardata", "ABCDE");
+        FSDISOMsg iso0 = new FSDISOMsg (m0);
+        FSDISOMsg iso1 = (FSDISOMsg) iso0.clone();
+        FSDMsg m1 = iso1.getFSDMsg();
+        m1.set ("alphavardata", "12345"); 
+        assertEquals ("Original alphavardata", "ABCDE", m0.get ("alphavardata"));
+        assertEquals ("Cloned alphavardata", "12345", m1.get ("alphavardata"));
     }
     public void assertEquals(String msg, byte[] b1, byte[] b2) {
         assertTrue(msg, Arrays.equals(b1, b2));

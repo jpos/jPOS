@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.Iterator;
 import org.jpos.util.FSDMsg;
 
-public class FSDISOMsg extends ISOMsg {
+public class FSDISOMsg extends ISOMsg implements Cloneable  {
     FSDMsg fsd;
     public  FSDISOMsg () {
         super();
@@ -87,6 +87,11 @@ public class FSDISOMsg extends ISOMsg {
             Map.Entry entry = (Map.Entry) iter.next();
             fsd.set ((String) entry.getKey(), (String) entry.getValue());
         }
+    }
+    public Object clone() {
+        FSDISOMsg m = (FSDISOMsg) super.clone();
+        m.fsd = (FSDMsg) fsd.clone();
+        return m;
     }
     private static final long serialVersionUID = 1L;
 }
