@@ -44,9 +44,10 @@ import org.jpos.space.SpaceFactory;
  *
  * @author Alejandro Revila
  * @author Mark Salter
+ * @author Dave Bergert
  * @since 1.4.7
  */
-public class FSDMsg implements Loggeable {
+public class FSDMsg implements Loggeable, Cloneable {
     public static char FS = '\034';
     public static char US = '\037';
     public static char RS = '\035';
@@ -495,6 +496,15 @@ public class FSDMsg implements Loggeable {
     }
     public boolean hasField(String fieldName) {
         return fields.containsKey(fieldName);
+    }
+    public Object clone() {
+        try {              
+            FSDMsg m = (FSDMsg) super.clone();
+	    m.fields = (Map) ((LinkedHashMap) fields).clone();
+            return m;
+        } catch (CloneNotSupportedException e) {
+            throw new InternalError();
+        }
     }
 }
 
