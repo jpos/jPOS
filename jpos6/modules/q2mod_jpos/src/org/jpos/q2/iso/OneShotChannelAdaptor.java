@@ -150,10 +150,15 @@ public class OneShotChannelAdaptor
         }
         public void run () {
             Thread.currentThread().setName ("channel-worker-" + id);
+            int[] handbackFields = cfg.getInts ("handback-field");
             while (running ()){
                 try {
                     Object o = sp.in (in, delay);
                     if (o instanceof ISOMsg) {
+                        ISOMsg m = (ISOMsg) o;
+                        ISOMsg handBack = null;
+                        if (handbackFields.length > 0)
+                            handBack = (ISOMsg) m.clone (handbackFields);
                         for (int i=0; !channel.isConnected() 
                                 && i<maxConnectAttempts; i++) 
                         {
@@ -162,9 +167,11 @@ public class OneShotChannelAdaptor
                                 ISOUtil.sleep (1000L);
                         }
                         if (channel.isConnected()) {
-                            channel.send ((ISOMsg) o);
-                            ISOMsg m = channel.receive();
+                            channel.send (m);
+                            m = channel.receive();
                             channel.disconnect();
+                            if (handBack != null)
+                                m.merge (handBack);
                             sp.out (out, m);
                         }
                     }
