@@ -164,6 +164,7 @@ public class ISOMeter extends JComponent implements Runnable {
         f.validate();
         f.pack();
         f.setSize(width,width+50);
+        f.show();
     }
 
     public JComponent createLogList() {
@@ -181,7 +182,7 @@ public class ISOMeter extends JComponent implements Runnable {
                     f.getContentPane().add(p);
                     f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                     f.pack();
-                   // deprecated f.show();
+                    f.show();
                 }
             }
         };
