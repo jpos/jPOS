@@ -18,119 +18,195 @@
 
 package org.jpos.util;
 
+import java.util.Arrays;
+
+import junit.framework.TestCase;
+
 import org.jpos.iso.FSDISOMsg;
 import org.jpos.iso.ISOUtil;
-import java.util.Arrays;
-import junit.framework.*;
 
 public class FSDMsgTestCase extends TestCase {
-    FSDMsg msg;
+    FSDMsg imsg;
+
+    FSDMsg omsg;
 
     public void setUp() throws Exception {
-        msg = new FSDMsg("file:../test/org/jpos/util/msg-");
+        // Eclipse wants:-
+//        imsg = new FSDMsg("file:../jpos6/modules/jpos/test/org/jpos/util/msg-");
+//        omsg = new FSDMsg("file:../jpos6/modules/jpos/test/org/jpos/util/msg-");
+        // Original
+        imsg = new FSDMsg("file:../jpos6/modules/jpos/test/org/jpos/util/msg-");
+        omsg = new FSDMsg("file:../jpos6/modules/jpos/test/org/jpos/util/msg-");
     }
 
     public void testLeadingBlanks() throws Exception {
-        msg.set("testafs", "   123");
-        assertEquals("Leading blanks", ISOUtil.hex2byte("2020203132331C"), msg
+        String value = "   123";
+        String field = "testafs";
+        imsg.set(field, value);
+        assertEquals("Leading blanks", ISOUtil.hex2byte("2020203132331C"), imsg
                 .pack().getBytes());
+
+        omsg.unpack(imsg.pack().getBytes());
+
+        assertEquals(value, omsg.get(field));
     }
 
-    public void testTraillingBlanks() throws Exception {
-        msg.set("testafs", "123   ");
-        assertEquals("Trailing blanks", ISOUtil.hex2byte("3132331C"), msg
-                .pack().getBytes());
+    public void testTraillingBlanksDroppedwithFS() throws Exception {
+        String value = "123   ";
+        String field = "testafs";
+        imsg.set(field, value);
+        assertEquals("3132331C", ISOUtil.hexString(imsg
+                .pack().getBytes()));
+
+        omsg.unpack(imsg.pack().getBytes());
+
+        assertEquals("123", omsg.get(field));
     }
 
-    public void testMixedBlanks() throws Exception {
-        msg.set("testafs", "  123 ");
-        assertEquals("Mixed blanks", ISOUtil.hex2byte("20203132331C"), msg
+    public void testMixedBlanksLeadingArePreserved() throws Exception {
+        String value = "  123 ";
+        String field = "testafs";
+        imsg.set(field, value);
+        assertEquals("Mixed blanks", ISOUtil.hex2byte("20203132331C"), imsg
                 .pack().getBytes());
+
+        omsg.unpack(imsg.pack().getBytes());
+
+        assertEquals("  123", omsg.get(field));
     }
 
     public void testFinalField() throws Exception {
-        msg.set("testafs", "  123 ");
-        msg.set("finalfield", "ABC");
-        assertEquals("Final Field", ISOUtil.hex2byte("20203132331C414243"), msg
-                .pack().getBytes());
+        String value1 = "  123 ";
+        String field1 = "testafs";
+        String value2 = "ABC";
+        String field2 = "finalfield";
+        imsg.set(field1, value1);
+        imsg.set(field2, value2);
+        assertEquals("20203132331C414243",ISOUtil.hexString(imsg.pack().getBytes()));
 
-        FSDMsg m = new FSDMsg("file:../test/org/jpos/util/msg-");
-        m.unpack(ISOUtil.hex2byte("20203132331C414243"));
-        assertEquals("Final Field", ISOUtil.hex2byte("20203132331C414243"), m
-                .pack().getBytes());
+        omsg.unpack(imsg.pack().getBytes());
+        assertEquals("  123", omsg.get(field1));
+        assertEquals(value2, omsg.get(field2));
     }
 
     public void testDummySeparatorAlpha() throws Exception {
-        FSDMsg m = new FSDMsg("file:../test/org/jpos/util/msgDS-");
+    
+        // Eclipse wants:-
+//        FSDMsg imsg = new FSDMsg("file:../jpos6/modules/jpos/test/org/jpos/util/msgDS-");
+//        FSDMsg omsg = new FSDMsg("file:../jpos6/modules/jpos/test/org/jpos/util/msgDS-");
+        // Original
+        FSDMsg imsg = new FSDMsg("file:../test/org/jpos/util/msgDS-");
+        FSDMsg omsg = new FSDMsg("file:../test/org/jpos/util/msgDS-");
         
+
         String macData = "AbCdEfGh";
-        m.set("length", "8");
-        m.set("alphavardata", macData);
-        assertEquals("Dummy separator 1", "0008AbCdEfGh", m.pack());
+        imsg.set("length", "8");
+        imsg.set("alphavardata", macData);
+        assertEquals("0008AbCdEfGh",imsg.pack());
+
+        omsg.unpack(imsg.pack().getBytes());
+
+        assertEquals("0008", omsg.get("length"));
+        assertEquals(macData, omsg.get("alphavardata"));
 
         macData = "AbCdEfGhAbCdEfGhAbCdEfGhAbCdEfGh";
-        m.set("length", "32");
-        m.set("alphavardata", macData);
+        imsg.set("length", "32");
+        imsg.set("alphavardata", macData);
         assertEquals("Dummy separator long data",
-                "0032AbCdEfGhAbCdEfGhAbCdEfGhAbCdEfGh", m.pack());
+                "0032AbCdEfGhAbCdEfGhAbCdEfGhAbCdEfGh", imsg.pack());
 
-        m.set("length", "");
-        m.set("alphavardata", "");
-        assertEquals("Dummy separator no data", "0000", m.pack());
+        omsg.unpack(imsg.pack().getBytes());
 
-        m.set("length", "40"); // Too long data data will be silently truncated,
-                               // not sure I like this behaviour!
-        m.set("alphavardata", "AbCdEfGhAbCdEfGhAbCdEfGhAbCdEfGhXXXXXXXX");
+        assertEquals("0032", omsg.get("length"));
+        assertEquals(macData, omsg.get("alphavardata"));
+
+        imsg.set("length", "");
+        imsg.set("alphavardata", "");
+        assertEquals("Dummy separator no data", "0000", imsg.pack());
+
+        imsg.set("length", "40"); // Too long data data will be silently
+                                  // truncated,
+        // not sure I like this behaviour!
+        imsg.set("alphavardata", "AbCdEfGhAbCdEfGhAbCdEfGhAbCdEfGhXXXXXXXX");
         assertEquals("Dummy separator truncated data",
-                "0040AbCdEfGhAbCdEfGhAbCdEfGhAbCdEfGh", m.pack());
+                "0040AbCdEfGhAbCdEfGhAbCdEfGhAbCdEfGh", imsg.pack());
+
+        omsg.unpack(imsg.pack().getBytes());
+
+        assertEquals("0040", omsg.get("length"));
+        assertEquals("AbCdEfGhAbCdEfGhAbCdEfGhAbCdEfGh", omsg.get("alphavardata"));
 
     }
 
     public void testDummySeparatorBinary() throws Exception {
-        FSDMsg m = new FSDMsg("file:../test/org/jpos/util/msgDS-");
+        // Eclipse wants:-
+//        FSDMsg imsg = new FSDMsg("file:../jpos6/modules/jpos/test/org/jpos/util/DSmsg-");
+//        FSDMsg omsg = new FSDMsg("file:../jpos6/modules/jpos/test/org/jpos/util/DSmsg-");
+        // Original
+        FSDMsg imsg = new FSDMsg("file:../test/org/jpos/util/DSmsg-");
+        FSDMsg omsg = new FSDMsg("file:../test/org/jpos/util/DSmsg-");
         
+
         String macData = "12345678123456781234567812345678";
         String binaryMacData = new String(ISOUtil.hex2byte(macData),
                 "ISO8859_1");
-        m.set("length", "8");
-        m.set("binaryvardata", macData);
-        assertEquals("Dummy separator 1", "0008" + binaryMacData, m.pack());
+        String id = "01";
+        String binaryID = new String(ISOUtil.hex2byte(id),"ISO8859_1");
+        
+        imsg.set("id", id);
+        imsg.set("content", macData);
+                
+        assertEquals(binaryID + binaryMacData, imsg.pack());
+        
+        omsg.unpack(imsg.pack().getBytes());
+
+        assertEquals(id, omsg.get("id"));
+        assertEquals(macData, omsg.get("content"));
 
         macData = "1234567812345678123456781234567812345678123456781234567812345678";
         binaryMacData = new String(ISOUtil.hex2byte(macData), "ISO8859_1");
-        m.set("length", "32");
-        m.set("binaryvardata", macData);
-        assertEquals("Dummy separator long data", "0032" + binaryMacData, m
+        imsg.set("id", id);
+        imsg.set("content", macData);
+        assertEquals("Dummy separator long data", binaryID + binaryMacData, imsg
                 .pack());
 
-        m.set("length", "");
-        m.set("binaryvardata", "");
-        assertEquals("Dummy separator no data", "0000", m.pack());
+        imsg.set("id", id);
+        imsg.set("content", "");
+        assertEquals("Dummy separator no data", binaryID, imsg.pack());
+        
+        omsg.unpack(imsg.pack().getBytes());
 
+        assertEquals(id, omsg.get("id"));
+        assertEquals("", omsg.get("content"));
+        
         try {
-            macData = "123456781234567812345678123456781234567812345678123456781234567812345678XXXXXXXX";
+            macData = "1234567890123456789012345678901234567890123456789012345678901234567890123456789099";
 
             binaryMacData = new String(ISOUtil.hex2byte(macData), "ISO8859_1");
-            m.set("length", "40"); // Too long data data will be silently
-                                   // truncated, not sure I like this behaviour!
-            m.set("binaryvardata", macData);
+            imsg.set("id", id); 
+            imsg.set("content", macData);
 
-            m.pack();
+            imsg.pack();
             fail("Runtime Exception expected as field has overflowed.");
-            
+
         } catch (RuntimeException e) {
             // Expected
         }
 
     }
+
     
     public void testDummySeparatorNumeric() throws Exception {
+        // Eclipse wants:-
+//        FSDMsg m = new FSDMsg("file:../jpos6/modules/jpos/test/org/jpos/util/msgDS-");
+        // Original
         FSDMsg m = new FSDMsg("file:../test/org/jpos/util/msgDS-");
+
     
         String macData = "12345678";
         m.set("length", "8");
         m.set("alphavardata", macData);
-        assertEquals("Dummy separator 1", "000812345678", m.pack());
+        assertEquals("000812345678", m.pack());
     
         macData = "12345678123456781234567812345678";
         m.set("length", "32");
@@ -150,7 +226,11 @@ public class FSDMsgTestCase extends TestCase {
     
     }
     public void testClone () throws Exception {
+        // Eclipse wants:-
+//        FSDMsg m0 = new FSDMsg("file:../jpos6/modules/jpos/test/org/jpos/util/msgDS-");
+        // Original
         FSDMsg m0 = new FSDMsg("file:../test/org/jpos/util/msgDS-");
+        
         m0.set ("alphavardata", "ABCDE");
         FSDMsg m1 = (FSDMsg) m0.clone();
         m1.set ("alphavardata", "12345"); 
@@ -159,7 +239,11 @@ public class FSDMsgTestCase extends TestCase {
 
     }
     public void testFSDISOMsgClone () throws Exception {
+        // Eclipse wants:-
+//        FSDMsg m0 = new FSDMsg("file:../jpos6/modules/jpos/test/org/jpos/util/msgDS-");
+        // Original
         FSDMsg m0 = new FSDMsg("file:../test/org/jpos/util/msgDS-");
+      
         m0.set ("alphavardata", "ABCDE");
         FSDISOMsg iso0 = new FSDISOMsg (m0);
         FSDISOMsg iso1 = (FSDISOMsg) iso0.clone();
