@@ -465,7 +465,7 @@ public class ISOServer extends Observable
             Map.Entry entry = (Map.Entry) iter.next();
             WeakReference ref = (WeakReference) entry.getValue();
             ISOChannel c = (ISOChannel) ref.get ();
-            if (c != null && !LAST.equals (entry.getKey())) {
+            if (c != null && !LAST.equals (entry.getKey()) && c.isConnected()) {
                 if (i > 0)
                     sb.append (' ');
                 sb.append (entry.getKey());
