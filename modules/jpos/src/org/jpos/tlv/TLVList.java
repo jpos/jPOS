@@ -17,17 +17,19 @@
  */
 
 package org.jpos.tlv;
+import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.util.Enumeration;
 import java.util.Vector;
 
 import org.jpos.iso.ISOException;
+import org.jpos.iso.ISOUtil;
 import org.jpos.tlv.TLVMsg;
 
 /**
  * @author bharavi
  */
-public class TLVList {
+public class TLVList implements Serializable {
 
     private Vector tags = new Vector();
     private int tagToFind = 0;
@@ -91,6 +93,15 @@ public class TLVList {
      */
     public void append(int tag, byte[] value) {
         append(new TLVMsg(tag, value));
+    }
+    
+    /**
+     * Append TLVMsg to the TLVList
+     * @param TAG
+     * @param value in hexadecimal character representation
+     */
+    public void append(int tag, String value) {
+        append(new TLVMsg(tag, ISOUtil.hex2byte(value)));
     }
 
     /*
