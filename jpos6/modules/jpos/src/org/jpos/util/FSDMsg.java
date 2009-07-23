@@ -199,22 +199,23 @@ public class FSDMsg implements Loggeable, Cloneable {
                 try {
                     if ((length << 1) >= value.length()) {
                         if (isSeparated(type)) {
-                            // Convert but do not pad if this field ends with a separator
-                            value = new String (
-                                    ISOUtil.hex2byte (value),
-                                    "ISO8859_1");
+                            // Convert but do not pad if this field ends with a
+                            // separator
+                            value = new String(ISOUtil.hex2byte(value), "ISO8859_1");
                         } else {
-                            value = new String (
-                                    ISOUtil.hex2byte (ISOUtil.zeropad(value,length << 1).substring (0, length << 1)),
+                            value = new String(ISOUtil.hex2byte(ISOUtil.zeropad(
+                                    value, length << 1).substring(0, length << 1)),
                                     "ISO8859_1");
                         }
                     } else {
-                        throw new RuntimeException("field content="+value+" is too long to fit in field "+id+" whose length is "+length);
+                        throw new RuntimeException("field content=" + value
+                                + " is too long to fit in field " + id
+                                + " whose length is " + length);
                     }
                 } catch (UnsupportedEncodingException e) {
                     // ISO8859_1 is supported
                 }
-                break;
+            break;
         }
         return (isSeparated(type)) ? ISOUtil.blankUnPad(value) : value;
     }
@@ -236,7 +237,19 @@ public class FSDMsg implements Loggeable, Cloneable {
             }
         }
         return false;
-        
+
+    }
+
+    private boolean isDummySeparator(String type) {
+        /*
+         * if type's last two characters appear in our Map of separators, return
+         * true
+         */
+        if (type.endsWith("DS")) {
+            return true;
+        }
+        return false;
+
     }
     
     private boolean isBinary(String type) {
@@ -292,8 +305,8 @@ public class FSDMsg implements Loggeable, Cloneable {
                 if (c > 0)
                     sb.append(c);
             }
-            if (key) 
-                keyOff = keyOff + value;
+            if (key)
+                keyOff = keyOff + ISOUtil.normalize(value);
         }
         if (keyOff.length() > 0) 
             pack (getSchema (getId (schema) + keyOff), sb);
@@ -316,7 +329,7 @@ public class FSDMsg implements Loggeable, Cloneable {
                 is, id, length, type );
             
             if (key)
-                keyOff = keyOff + value;
+                keyOff = keyOff + ISOUtil.normalize(value);
 
             if ("K".equals(type) && !value.equals (elem.getText()))
                 throw new IllegalArgumentException (
@@ -343,27 +356,42 @@ public class FSDMsg implements Loggeable, Cloneable {
         boolean expectSeparator = isSeparated(type);
         boolean separated = expectSeparator;
 
-        for (int i=0; i<len; i++) {
-            if (is.read (b) < 0) {
-                if (!type.endsWith("EOF"))
-                    throw new EOFException ();
-                else {
+        if (isDummySeparator(type)) {
+            /*
+             * No need to look for a seperator, that is not there! Try and take
+             * len bytes from the is.
+             */
+            for (int i = 0; i < len; i++) {
+                if (is.read(b) < 0) {
+                    break; // end of stream indicates end of field?
+                }
+                sb.append((char) (b[0] & 0xff));
+            }
+        } else {
+
+            for (int i = 0; i < len; i++) {
+                if (is.read(b) < 0) {
+                    if (!type.endsWith("EOF"))
+                        throw new EOFException();
+                    else {
+                        separated = false;
+                        break;
+                    }
+                }
+                if (expectSeparator && (b[0] == getSeparator(type))) {
                     separated = false;
                     break;
                 }
+                sb.append((char) (b[0] & 0xff));
             }
-            if (expectSeparator && (b[0] == getSeparator(type))) {
-                separated = false;
-                break;
-            }
-            sb.append ((char) (b[0] & 0xff));
-        }
-        if (separated && !type.endsWith("EOF")) {
-            if (is.read (b) < 0) {
-                throw new EOFException ();
+
+            if (separated && !type.endsWith("EOF")) {
+                if (is.read(b) < 0) {
+                    throw new EOFException();
+                }
             }
         }
-        return sb.toString ();
+        return sb.toString();
     }
     protected String readField 
         (InputStream is, String fieldName, int len, String type) 
