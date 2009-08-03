@@ -25,12 +25,15 @@ import java.io.FileFilter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.io.StringReader;
+import java.io.InputStream;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.PropertyResourceBundle;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
@@ -66,6 +69,7 @@ import org.jpos.util.SimpleLogListener;
  * @author <a href="mailto:taherkordy@dpi2.dpi.net.ir">Alireza Taherkordi</a>
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
  * @author <a href="mailto:alwynschoeman@yahoo.com">Alwyn Schoeman</a>
+ * @author <a href="mailto:vsalaman@vmantek.com">Victor Salaman</a>
  * @version $Revision$ $Date$
  */
 public class Q2 implements FileFilter, Runnable {
@@ -103,6 +107,7 @@ public class Q2 implements FileFilter, Runnable {
     private long startTime;
     private CLI cli;
     private boolean recursive;
+    ConfigDecorationProvider decorator=null;
 
     public Q2 (String[] args) {
         super();
@@ -166,6 +171,7 @@ public class Q2 implements FileFilter, Runnable {
             q2Thread.setContextClassLoader (loader);
             if (cli != null)
                 cli.start();
+            initConfigDecorator();
             while (!shutdown) {
                 try {
                     boolean forceNewClassLoader = scan ();
@@ -193,6 +199,10 @@ public class Q2 implements FileFilter, Runnable {
                 server.unregisterMBean (loaderName);
             } catch (InstanceNotFoundException e) {
                 log.error (e);
+            }
+            if(decorator!=null)
+            {
+                decorator.uninitialize();
             }
             if (exit && !shuttingDown)
                 System.exit (0);
@@ -426,7 +436,15 @@ public class Q2 implements FileFilter, Runnable {
                 log.info ("deploy:" + f.getCanonicalPath());
             QEntry qentry = (QEntry) dirMap.get (f);
             SAXBuilder builder = new SAXBuilder ();
-            Document doc = decrypt (builder.build (f));
+            Document doc;
+            if(decorator!=null && !f.getName().equals(LOGGER_CONFIG))
+            {
+                doc=decrypt(builder.build(new StringReader(decorator.decorateFile(f))));
+            }
+            else
+            {
+                doc=decrypt(builder.build(f));
+            }
 
             Object obj = factory.instantiate (this, doc.getRootElement ());
             qentry.setObject (obj);
@@ -644,6 +662,46 @@ public class Q2 implements FileFilter, Runnable {
         }
         getLog().warn("Tidying "+f.getAbsolutePath()+" out of the way, by adding ."+extension,"It will be called: "+rename.getAbsolutePath()+" see log above for detail of problem.");
         f.renameTo(rename);
+    }
+
+    private void initConfigDecorator()
+    {
+        InputStream in=Q2.class.getClassLoader().getResourceAsStream("META-INF/org/jpos/config/Q2-decorator.properties");
+        try
+        {
+            if(in!=null)
+            {
+                PropertyResourceBundle bundle=new PropertyResourceBundle(in);
+                String ccdClass=bundle.getString("config-decorator-class");
+                if(log!=null) log.info("Initializing config decoration provider: "+ccdClass);
+                decorator= (ConfigDecorationProvider) Q2.class.getClassLoader().loadClass(ccdClass).newInstance();
+                decorator.initialize(getDeployDir());
+            }
+        }
+        catch (IOException e)
+        {
+        }
+        catch (Exception e)
+        {
+            if(log!=null) log.error(e);
+            else
+            {
+                e.printStackTrace();
+            }
+        }
+        finally
+        {
+            if(in!=null)
+            {
+                try
+                {
+                    in.close();
+                }
+                catch (IOException e)
+                {
+                }
+            }
+        }
     }
 
     private void setExit (boolean exit) {
