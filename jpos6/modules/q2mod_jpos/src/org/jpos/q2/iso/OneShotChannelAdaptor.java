@@ -18,17 +18,23 @@
 
 package org.jpos.q2.iso;
 
-import org.jpos.space.Space;
-import org.jpos.space.SpaceFactory;
-import org.jpos.core.Configuration;
+import org.jdom.Element;
 import org.jpos.core.ConfigurationException;
-import org.jpos.iso.*;
+import org.jpos.iso.Channel;
+import org.jpos.iso.FactoryChannel;
+import org.jpos.iso.FilteredChannel;
+import org.jpos.iso.ISOChannel;
+import org.jpos.iso.ISOClientSocketFactory;
+import org.jpos.iso.ISOFilter;
+import org.jpos.iso.ISOMsg;
+import org.jpos.iso.ISOPackager;
+import org.jpos.iso.ISOUtil;
 import org.jpos.q2.QBeanSupport;
 import org.jpos.q2.QFactory;
+import org.jpos.space.Space;
+import org.jpos.space.SpaceFactory;
 import org.jpos.util.LogSource;
 import org.jpos.util.NameRegistrar;
-
-import org.jdom.Element;
 
 /**
  * OneShotChannelAdaptor connects and disconnects a channel for every message
@@ -56,7 +62,6 @@ public class OneShotChannelAdaptor
     implements OneShotChannelAdaptorMBean, Channel
 {
     Space<String,Object> sp;
-    Configuration cfg;
     String in, out;
     long delay;
     int maxConnections;
