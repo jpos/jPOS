@@ -90,6 +90,11 @@
 	 includes="**" />
     </target>
 
+    <target name="srcjar" depends="modules"
+        description="creates jpos-src.jar for source browsing and debugging in IDEs like Eclipse">
+      <jar jarfile="${build.dir}/${name}-src.jar" basedir="${build.src}" includes="**" />
+    </target>
+
     <target name="unjar" depends="modules, support, main">
       <unjar dest="${classes.dir}">
         <fileset dir="${build.lib}">
