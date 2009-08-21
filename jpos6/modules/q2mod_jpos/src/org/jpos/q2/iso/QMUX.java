@@ -66,6 +66,7 @@ public class QMUX
     protected String[] mtiMapping = new String[] { nomap, nomap, "0022456789" };
     List listeners;
     int rx, tx, rxExpired, txExpired, rxPending, rxUnhandled, rxForwarded;
+    Long lastTxn = 0l;
     public QMUX () {
         super ();
         listeners = new ArrayList ();
@@ -137,8 +138,10 @@ public class QMUX
             }
             synchronized (this) {
                 if (resp != null) 
+                {
                     rx++;
-                else {
+                    lastTxn = System.currentTimeMillis();
+                }else {
                     rxExpired++;
                     if (m.getDirection() != ISOMsg.OUTGOING)
                         txExpired++;
@@ -284,6 +287,7 @@ public class QMUX
     }
     public synchronized void resetCounters() {
         rx = tx = rxExpired = txExpired = rxPending = rxUnhandled = rxForwarded = 0;
+        lastTxn = 0l;
     }
     public String getCountersAsString () {
         StringBuffer sb = new StringBuffer();
@@ -297,6 +301,8 @@ public class QMUX
         append (sb, ", rx_forwarded=", rxForwarded);
         sb.append (", connected=");
         sb.append (Boolean.toString(isConnected()));
+        sb.append (", last=");
+        sb.append (lastTxn);
         return sb.toString();
     }
     protected void processUnhandled (ISOMsg m) {
