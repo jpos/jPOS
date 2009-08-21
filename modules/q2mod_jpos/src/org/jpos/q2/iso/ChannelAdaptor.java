@@ -62,6 +62,7 @@ public class ChannelAdaptor
     boolean keepAlive = false;
     boolean ignoreISOExceptions = false;
     int rx, tx, connects;
+    long lastTxn = 0l;
     public ChannelAdaptor () {
         super ();
         resetCounters();
@@ -304,6 +305,7 @@ public class ChannelAdaptor
                     sp.rd (ready);
                     ISOMsg m = channel.receive ();
                     rx++;
+                    lastTxn = System.currentTimeMillis();
                     sp.out (out, m);
                 } catch (ISOException e) {
                     if (running()) {
@@ -402,12 +404,15 @@ public class ChannelAdaptor
 
     public void resetCounters () {
         rx = tx = connects = 0;
+        lastTxn = 0l;
     }
     public String getCountersAsString () {
         StringBuffer sb = new StringBuffer();
         append (sb, "tx=", tx);
         append (sb, ", rx=", rx);
         append (sb, ", connects=", connects);
+        sb.append (", last=");
+        sb.append(lastTxn);
         return sb.toString();
     }
     /**
