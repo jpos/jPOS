@@ -66,7 +66,7 @@ public class ISOServer extends Observable
     public static final int DEFAULT_MAX_THREADS = 100;
     public static final String LAST = ":last";
     String name;
-    Long lastTxn = 0l;
+    long lastTxn = 0l;
     protected Logger logger;
     protected String realm;
     protected String realmChannel;
@@ -401,7 +401,7 @@ public class ISOServer extends Observable
     }
     public void resetCounters () {
         cnt = new int[SIZEOF_CNT];
-		lastTxn = 0l;
+        lastTxn = 0l;
     }
     /**
      * @return number of connections accepted by this server
