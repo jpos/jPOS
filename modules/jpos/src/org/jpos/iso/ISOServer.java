@@ -66,6 +66,7 @@ public class ISOServer extends Observable
     public static final int DEFAULT_MAX_THREADS = 100;
     public static final String LAST = ":last";
     String name;
+    Long lastTxn = 0l;
     protected Logger logger;
     protected String realm;
     protected String realmChannel;
@@ -144,6 +145,7 @@ public class ISOServer extends Observable
                 for (;;) {
                     try {
                         ISOMsg m = channel.receive();
+                        lastTxn = System.currentTimeMillis();
                         Iterator iter = listeners.iterator();
                         while (iter.hasNext())
                             if (((ISORequestListener)iter.next()).process
@@ -399,6 +401,7 @@ public class ISOServer extends Observable
     }
     public void resetCounters () {
         cnt = new int[SIZEOF_CNT];
+		lastTxn = 0l;
     }
     /**
      * @return number of connections accepted by this server
@@ -491,9 +494,14 @@ public class ISOServer extends Observable
                 }
             }
         }
-        sb.append ("connected="+connectedChannels);
-        sb.append (", rx=" + Integer.toString(cnt[0]));
-        sb.append (", tx=" + Integer.toString(cnt[1]));
+        sb.append ("connected=");
+        sb.append (connectedChannels);
+        sb.append (", rx=");
+        sb.append (Integer.toString(cnt[0]));
+        sb.append (", tx=");
+        sb.append (Integer.toString(cnt[1]));
+        sb.append (", last=");
+        sb.append (lastTxn);
         return sb.toString();
     }
     public String getCountersAsString (String isoChannelName) {
@@ -525,6 +533,8 @@ public class ISOServer extends Observable
                     sb.append (Integer.toString (cc[ISOChannel.RX]));
                     sb.append (", tx=");
                     sb.append (Integer.toString (cc[ISOChannel.TX]));
+                    sb.append (", last=");
+                    sb.append ( lastTxn.toString());
                     p.println (sb.toString());
                 }
             }
