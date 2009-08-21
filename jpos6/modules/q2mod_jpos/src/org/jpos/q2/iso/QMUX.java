@@ -66,7 +66,7 @@ public class QMUX
     protected String[] mtiMapping = new String[] { nomap, nomap, "0022456789" };
     List listeners;
     int rx, tx, rxExpired, txExpired, rxPending, rxUnhandled, rxForwarded;
-    Long lastTxn = 0l;
+    long lastTxn = 0L;
     public QMUX () {
         super ();
         listeners = new ArrayList ();
