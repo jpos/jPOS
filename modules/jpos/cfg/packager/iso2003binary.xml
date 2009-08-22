@@ -518,12 +518,74 @@
       name="Date action"
       pad="false"
       class="org.jpos.iso.IFB_NUMERIC"/>
-  <isofield
+  <isofieldpackager
       id="74"
-      length="156"
+      length="78"
       name="Reconciliation data primary"
-      pad="false"
-      class="org.jpos.iso.IFB_NUMERIC"/>
+      class="org.jpos.iso.IFB_BINARY"
+      emitBitmap="false" firstField="0"
+      packager="org.jpos.iso.packager.GenericSubFieldPackager">
+      <isofield
+          id="0"
+          length="16"
+          name="Credits amount"
+          class="org.jpos.iso.IFB_NUMERIC"/>
+      <isofield
+          id="1"
+          length="10"
+          name="Credits number"
+          class="org.jpos.iso.IFB_NUMERIC"/>
+      <isofield
+          id="2"
+          length="16"
+          name="Credits chargeback amount"
+          class="org.jpos.iso.IFB_NUMERIC"/>
+      <isofield
+          id="3"
+          length="10"
+          name="Credits chargeback number"
+          class="org.jpos.iso.IFB_NUMERIC"/>
+      <isofield
+          id="4"
+          length="16"
+          name="Credits reversal amount"
+          class="org.jpos.iso.IFB_NUMERIC"/>
+      <isofield
+          id="5"
+          length="10"
+          name="Credits reversal number"
+          class="org.jpos.iso.IFB_NUMERIC"/>
+      <isofield
+          id="6"
+          length="16"
+          name="Debits amount"
+          class="org.jpos.iso.IFB_NUMERIC"/>
+      <isofield
+          id="7"
+          length="10"
+          name="Debits number"
+          class="org.jpos.iso.IFB_NUMERIC"/>
+      <isofield
+          id="8"
+          length="16"
+          name="Debits chargeback amount"
+          class="org.jpos.iso.IFB_NUMERIC"/>
+      <isofield
+          id="9"
+          length="10"
+          name="Debits chargeback number"
+          class="org.jpos.iso.IFB_NUMERIC"/>
+      <isofield
+          id="10"
+          length="16"
+          name="Debits reversal amount"
+          class="org.jpos.iso.IFB_NUMERIC"/>
+      <isofield
+          id="11"
+          length="10"
+          name="Debits reversal number"
+          class="org.jpos.iso.IFB_NUMERIC"/>
+  </isofieldpackager>
   <isofield
       id="75"
       length="90"
@@ -642,7 +704,7 @@
       length="21"
       name="Amount, Net reconciliation"
       pad="false"
-      class="org.jpos.iso.IFB_AMOUNT"/>
+      class="org.jpos.iso.IFB_AMOUNT2003"/>
   <isofield
       id="98"
       length="25"
