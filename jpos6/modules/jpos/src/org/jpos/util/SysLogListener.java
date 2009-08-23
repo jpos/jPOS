@@ -18,18 +18,14 @@
 
 package org.jpos.util;
 
-import java.util.Date;
-import java.util.Locale;
 import java.util.Iterator;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.DatagramSocket;
 import java.net.DatagramPacket;
-import java.text.SimpleDateFormat;
 import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
-import org.jpos.q2.Q2;
 
 /**
  * SysLog Listener
