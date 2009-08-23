@@ -534,7 +534,7 @@ public class ISOServer extends Observable
                     sb.append (", tx=");
                     sb.append (Integer.toString (cc[ISOChannel.TX]));
                     sb.append (", last=");
-                    sb.append ( lastTxn.toString());
+                    sb.append (Long.toString(lastTxn));
                     p.println (sb.toString());
                 }
             }
