@@ -127,10 +127,10 @@ public class ISOChannelPanel extends JPanel implements Observer {
             int cnt[] = c.getCounters();
             try {
                 meter.setPositiveCounter(
-                    ISOUtil.zeropad(Integer.toString(cnt[ISOChannel.TX]), 6)
+                    ISOUtil.zeropad(Integer.toString(cnt[ISOChannel.TX % 1000000000]), 9)
                 );
                 meter.setNegativeCounter(
-                    ISOUtil.zeropad(Integer.toString(cnt[ISOChannel.RX]), 6)
+                    ISOUtil.zeropad(Integer.toString(cnt[ISOChannel.RX] % 1000000000), 9)
                 );
             } catch (ISOException e) { }
         } else if (o instanceof ISOServer) {

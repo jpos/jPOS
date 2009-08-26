@@ -293,8 +293,8 @@ public class ISOMeter extends JComponent implements Runnable {
     private void plotCounters(String p, String n) {
         img.setColor(Color.lightGray);
         img.setFont(fontSmall);
-        img.drawString (p, width-45, 13);
-        img.drawString (n, width-45, height-3);
+        img.drawString (p, width-55, 13);
+        img.drawString (n, width-55, height-3);
     }
     public void run () {
         while (isShowing()) {
