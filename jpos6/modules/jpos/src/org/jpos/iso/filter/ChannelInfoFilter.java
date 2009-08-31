@@ -83,7 +83,7 @@ public class ChannelInfoFilter implements ISOFilter, Configurable {
                 m.set (socketInfoField, sb.toString());
             }
         } catch (ISOException e) {
-            evt.addMessage (evt);
+            evt.addMessage (e);
         }
         return m;
     }
