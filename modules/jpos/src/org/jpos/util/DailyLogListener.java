@@ -144,8 +144,8 @@ public class DailyLogListener extends RotateLogListener{
 
     public synchronized  void logRotate() throws IOException {
         super.close ();
-        setPrintStream (null);
         closeLogFile ();
+        setPrintStream (null);
         String suffix = getSuffix() + getCompressedSuffix();
         String newName = getPrefix()+getLastDate();
         int i=0;
