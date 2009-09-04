@@ -35,8 +35,8 @@ public class FSDMsgTestCase extends TestCase {
 //        imsg = new FSDMsg("file:../jpos6/modules/jpos/test/org/jpos/util/msg-");
 //        omsg = new FSDMsg("file:../jpos6/modules/jpos/test/org/jpos/util/msg-");
         // Original
-        imsg = new FSDMsg("file:../jpos6/modules/jpos/test/org/jpos/util/msg-");
-        omsg = new FSDMsg("file:../jpos6/modules/jpos/test/org/jpos/util/msg-");
+        imsg = new FSDMsg("file:../modules/jpos/test/org/jpos/util/msg-");
+        omsg = new FSDMsg("file:../modules/jpos/test/org/jpos/util/msg-");
     }
 
     public void testLeadingBlanks() throws Exception {
