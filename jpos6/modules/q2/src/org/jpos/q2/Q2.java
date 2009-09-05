@@ -524,6 +524,11 @@ public class Q2 implements FileFilter, Runnable {
     public long getUptime() {
         return System.currentTimeMillis() - startTime;
     }
+    public void displayVersion () {
+        System.out.println (
+            "Q2 version: " +Q2_VERSION + " (" + Q2_REVISION + ")"
+        );
+    }
     private void parseCmdLine (String[] args) {
         CommandLineParser parser = new PosixParser ();
 
@@ -540,9 +545,7 @@ public class Q2 implements FileFilter, Runnable {
         try {
             CommandLine line = parser.parse (options, args);
             if (line.hasOption ("v")) {
-                System.out.println (
-                    "Q2 version: " +Q2_VERSION + " (" + Q2_REVISION + ")"
-                );
+                displayVersion();
                 System.exit (0);
             } 
             if (line.hasOption ("h")) {
