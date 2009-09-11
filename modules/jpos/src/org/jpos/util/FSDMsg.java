@@ -53,6 +53,7 @@ public class FSDMsg implements Loggeable, Cloneable {
     public static char RS = '\035';
     public static char GS = '\036';
     public static char EOF = '\000';
+    public static char PIPE = '\u007C';
     
     Map fields;
     Map separators;
@@ -84,6 +85,7 @@ public class FSDMsg implements Loggeable, Cloneable {
         setSeparator("GS", GS);
         setSeparator("RS", RS);
         setSeparator("EOF", EOF);
+        setSeparator("PIPE", PIPE);
     }
     public String getBasePath() {
         return basePath;
