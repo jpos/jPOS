@@ -21,7 +21,6 @@ package org.jpos.iso;
 import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
-import org.jpos.core.ReConfigurable;
 import org.jpos.iso.ISOFilter.VetoException;
 import org.jpos.iso.header.BaseHeader;
 import org.jpos.util.LogEvent;
@@ -60,7 +59,7 @@ import java.util.Vector;
  * @author Bharavi Gade
  * @version $Revision$ $Date$
  * @see ISOMsg
- * @see ISOMUX
+ * @see MUX
  * @see ISOException
  * @see org.jpos.iso.channel.CSChannel
  * @see Logger
@@ -68,7 +67,7 @@ import java.util.Vector;
  */
 public abstract class BaseChannel extends Observable 
     implements FilteredChannel, ClientChannel, ServerChannel, FactoryChannel, 
-               LogSource, ReConfigurable, BaseChannelMBean, Cloneable
+               LogSource, Configurable, BaseChannelMBean, Cloneable
 {
     private Socket socket;
     private String host, localIface;
@@ -124,7 +123,7 @@ public abstract class BaseChannel extends Observable
     /**
      * constructs a server ISOChannel
      * @param p     an ISOPackager
-     * @exception IOException
+     * @exception IOException on error
      * @see ISOPackager
      */
     public BaseChannel (ISOPackager p) throws IOException {
@@ -136,7 +135,7 @@ public abstract class BaseChannel extends Observable
      * constructs a server ISOChannel associated with a Server Socket
      * @param p     an ISOPackager
      * @param serverSocket where to accept a connection
-     * @exception IOException
+     * @exception IOException on error
      * @see ISOPackager
      */
     public BaseChannel (ISOPackager p, ServerSocket serverSocket) 
@@ -161,7 +160,7 @@ public abstract class BaseChannel extends Observable
     
     /**
      * initialize an ISOChannel
-     * @param host  server TCP Address
+     * @param iface server TCP Address
      * @param port  server port number
      */
     public void setLocalAddress (String iface, int port) {
@@ -244,10 +243,10 @@ public abstract class BaseChannel extends Observable
     /**
      * setup I/O Streams from socket
      * @param socket a Socket (client or server)
-     * @exception IOException
+     * @exception IOException on error
      */
     protected void connect (Socket socket) 
-        throws IOException, SocketException
+        throws IOException
     {
         this.socket = socket;
         applyTimeout();
@@ -272,9 +271,13 @@ public abstract class BaseChannel extends Observable
     }
     /**
      * factory method pattern (as suggested by Vincent.Greene@amo.com)
-     * @throws IOException
+     * @param host remote host
+     * @param port remote port
+     * @throws IOException on error
+     *
      * Use Socket factory if exists. If it is missing create a normal socket
      * @see ISOClientSocketFactory
+     * @return newly created socket
      */
     protected Socket newSocket(String host, int port) throws IOException {
         try {
@@ -335,7 +338,7 @@ public abstract class BaseChannel extends Observable
      * sets socket timeout (as suggested by 
      * Leonard Thomas <leonard@rhinosystemsinc.com>)
      * @param timeout in milliseconds
-     * @throws SocketException
+     * @throws SocketException on error
      */
     public void setTimeout (int timeout) throws SocketException {
         this.timeout = timeout;
