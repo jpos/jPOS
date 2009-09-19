@@ -18,24 +18,16 @@
 
 package org.jpos.transaction;
 
-import java.util.Map;
-import java.util.Set;
-import java.util.LinkedHashMap;
-import java.util.Iterator;
-import java.util.Collections;
-import java.io.IOException;
-import java.io.Serializable;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.io.Externalizable;
-import java.io.PrintStream;
 import org.jdom.Element;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
-import org.jpos.util.Loggeable;
-import org.jpos.util.LogEvent;
-import org.jpos.util.Profiler;
 import org.jpos.iso.ISOUtil;
+import org.jpos.util.LogEvent;
+import org.jpos.util.Loggeable;
+import org.jpos.util.Profiler;
+
+import java.io.*;
+import java.util.*;
 
 public class Context implements Externalizable, Loggeable, Pausable {
     private transient Map map; // transient map

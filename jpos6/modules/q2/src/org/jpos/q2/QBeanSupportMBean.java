@@ -18,9 +18,9 @@
 
 package org.jpos.q2;
 
-import java.net.URL;
-
 import org.jdom.Element;
+
+import java.net.URL;
 
 /**
  * @author <a href="mailto:taherkordy@dpi2.dpi.net.ir">Alireza Taherkordi</a>

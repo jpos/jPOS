@@ -18,15 +18,6 @@
 
 package org.jpos.ui.factory;
 
-import java.awt.Font;
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-
-import javax.swing.JComponent;
-import javax.swing.JTextArea;
-import javax.swing.SwingUtilities;
-import javax.swing.text.BadLocationException;
-
 import org.jdom.Element;
 import org.jpos.ui.UI;
 import org.jpos.ui.UIFactory;
@@ -34,6 +25,12 @@ import org.jpos.util.LogEvent;
 import org.jpos.util.LogListener;
 import org.jpos.util.Logger;
 import org.jpos.util.NameRegistrar;
+
+import javax.swing.*;
+import javax.swing.text.BadLocationException;
+import java.awt.*;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 
 /**
  * @author Alejandro Revilla

@@ -18,17 +18,17 @@
 
 package org.jpos.util;
 
+import org.jdom.Element;
+import org.jdom.output.Format;
+import org.jdom.output.XMLOutputter;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.sql.SQLException;
-import java.util.Iterator;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.Vector;
-
-import org.jdom.Element;
-import org.jdom.output.Format;
-import org.jdom.output.XMLOutputter;
 
 /**
  * @author apr@cs.com.uy

@@ -23,8 +23,6 @@ import java.util.Arrays;
 import java.util.BitSet;
 import java.util.StringTokenizer;
 
-import org.jpos.iso.ISOException;
-
 /**
  * varios functions needed to pack/unpack ISO-8583 fields
  *

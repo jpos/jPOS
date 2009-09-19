@@ -18,14 +18,14 @@
 
 package org.jpos.iso;
 
+import org.jpos.util.FSDMsg;
+
 import java.io.IOException;
-import java.io.PrintStream;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.io.Externalizable;
-import java.util.Map;
+import java.io.PrintStream;
 import java.util.Iterator;
-import org.jpos.util.FSDMsg;
+import java.util.Map;
 
 public class FSDISOMsg extends ISOMsg implements Cloneable  {
     FSDMsg fsd;

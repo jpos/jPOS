@@ -18,19 +18,17 @@
 
 package org.jpos.ui.factory;
 
-import java.util.Observable;
-
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-
 import org.jdom.Element;
-import org.jpos.iso.ISOUtil;
 import org.jpos.iso.ISOChannel;
+import org.jpos.iso.ISOUtil;
 import org.jpos.iso.gui.ISOChannelPanel;
 import org.jpos.iso.gui.ISOMeter;
 import org.jpos.ui.UI;
 import org.jpos.ui.UIFactory;
 import org.jpos.util.NameRegistrar;
+
+import javax.swing.*;
+import java.util.Observable;
 
 /**
  * @author Alejandro Revilla

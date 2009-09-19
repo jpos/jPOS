@@ -18,9 +18,9 @@
 
 package org.jpos.iso;
 
-import java.io.IOException;
-
 import org.jpos.iso.ISOFilter.VetoException;
+
+import java.io.IOException;
 
 /**
  * Source for an ISORequest (where to send a reply)

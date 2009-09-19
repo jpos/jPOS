@@ -18,17 +18,13 @@
 
 package org.jpos.iso.gui;
 
-import java.awt.*;
-import java.awt.event.*;
-
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.Timer;
-
 import org.jpos.iso.ISOMsg;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 /**
  * ISOMsgPanel

@@ -18,9 +18,6 @@
 
 package org.jpos.log4j;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-
 import org.apache.log4j.or.ObjectRenderer;
 import org.jpos.util.LogEvent;
     

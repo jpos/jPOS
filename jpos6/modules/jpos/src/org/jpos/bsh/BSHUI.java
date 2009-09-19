@@ -18,13 +18,11 @@
 
 package org.jpos.bsh;
 
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-
+import bsh.Interpreter;
 import org.jdom.Element;
 import org.jpos.ui.UI;
 
-import bsh.Interpreter;
+import javax.swing.*;
 
 /**
  * @author Alejandro Revilla

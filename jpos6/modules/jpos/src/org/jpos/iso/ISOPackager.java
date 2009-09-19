@@ -17,10 +17,11 @@
  */
 
 package org.jpos.iso;
-import java.io.IOException;
-import java.io.InputStream;
 
 import org.jpos.util.LogSource;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * @author apr@cs.com.uy

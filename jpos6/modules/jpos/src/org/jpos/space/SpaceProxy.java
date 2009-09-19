@@ -18,23 +18,18 @@
 
 package org.jpos.space;
 
+import org.jpos.core.Configuration;
+import org.jpos.core.ConfigurationException;
+import org.jpos.core.ReConfigurable;
+
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.rmi.server.ExportException;
-import java.rmi.server.RemoteObject;
-import java.rmi.server.RemoteRef;
-import java.rmi.server.RemoteStub;
-import java.rmi.server.UnicastRemoteObject;
+import java.rmi.server.*;
 import java.util.Set;
-
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-
-import org.jpos.core.Configuration;
-import org.jpos.core.ConfigurationException;
-import org.jpos.core.ReConfigurable;
 
 /**
  * RMI Space Proxy 

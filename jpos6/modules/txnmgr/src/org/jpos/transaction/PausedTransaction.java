@@ -18,11 +18,12 @@
 
 package org.jpos.transaction;
 
-import java.io.PrintStream;
-import java.util.List;
-import java.util.Iterator;
-import java.util.TimerTask;
 import org.jpos.util.Loggeable;
+
+import java.io.PrintStream;
+import java.util.Iterator;
+import java.util.List;
+import java.util.TimerTask;
 
 public class PausedTransaction implements Loggeable {
     private long id;

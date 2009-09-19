@@ -18,11 +18,11 @@
 
 package org.jpos.space;
 
+import jdbm.helper.DefaultSerializer;
+
 import java.io.Serializable;
 import java.security.MessageDigest;
 import java.util.Arrays;
-
-import jdbm.helper.DefaultSerializer;
 
 public class MD5Template implements Template, Serializable  {
 

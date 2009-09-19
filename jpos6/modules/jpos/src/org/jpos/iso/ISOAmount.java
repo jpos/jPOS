@@ -18,14 +18,10 @@
 
 package org.jpos.iso;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintStream;
-import java.io.Externalizable;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.math.BigDecimal;
 import org.jpos.iso.packager.XMLPackager;
+
+import java.io.*;
+import java.math.BigDecimal;
 
 public class ISOAmount 
     extends ISOComponent 

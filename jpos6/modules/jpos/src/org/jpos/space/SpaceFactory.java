@@ -18,9 +18,9 @@
 
 package org.jpos.space;
 
-import java.util.StringTokenizer;
-
 import org.jpos.util.NameRegistrar;
+
+import java.util.StringTokenizer;
 
 /**
  * Creates a space based on a space URI.

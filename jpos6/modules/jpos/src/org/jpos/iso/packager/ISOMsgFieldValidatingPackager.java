@@ -19,12 +19,7 @@
 package org.jpos.iso.packager;
 
 
-import org.jpos.iso.ISOComponent;
-import org.jpos.iso.ISOException;
-import org.jpos.iso.ISOFieldPackager;
-import org.jpos.iso.ISOMsgFieldPackager;
-import org.jpos.iso.ISOPackager;
-import org.jpos.iso.ISOValidator;
+import org.jpos.iso.*;
 
 /**
  * THIS CLASS SHOWS THAT IsoMsgFieldValidator IS NOT NECESSARY. IF WE

@@ -18,9 +18,9 @@
 
 package  org.jpos.security;
 
-import java.io.Serializable;
-
 import org.jpos.util.Loggeable;
+
+import java.io.Serializable;
 
 
 /**

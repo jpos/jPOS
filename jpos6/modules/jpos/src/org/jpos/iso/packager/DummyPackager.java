@@ -18,14 +18,13 @@
 
 package org.jpos.iso.packager;
 
-import java.io.IOException;
-import java.io.InputStream;
-
-import org.jpos.util.Log;
+import org.jpos.iso.ISOComponent;
+import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOMsg;
 import org.jpos.iso.ISOPackager;
-import org.jpos.iso.ISOException;
-import org.jpos.iso.ISOComponent;
+import org.jpos.util.Log;
+
+import java.io.InputStream;
 
 public class DummyPackager extends Log implements ISOPackager {
     public byte[] pack (ISOComponent m) throws ISOException {

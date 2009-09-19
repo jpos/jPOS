@@ -20,11 +20,7 @@ package org.jpos.iso.validator;
 
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
-import org.jpos.iso.ISOBaseValidator;
-import org.jpos.iso.ISOComponent;
-import org.jpos.iso.ISOMsg;
-import org.jpos.iso.ISOVError;
-import org.jpos.iso.ISOVMsg;
+import org.jpos.iso.*;
 import org.jpos.util.LogEvent;
 import org.jpos.util.Logger;
 

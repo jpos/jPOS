@@ -18,10 +18,6 @@
 
 package org.jpos.iso.channel;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Vector;
-
 import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
@@ -33,6 +29,10 @@ import org.jpos.util.LogEvent;
 import org.jpos.util.LogSource;
 import org.jpos.util.Logger;
 import org.jpos.util.NameRegistrar;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Vector;
 
 public class ChannelPool implements ISOChannel, LogSource, Configurable, Cloneable {
     boolean usable = true;

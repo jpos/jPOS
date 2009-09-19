@@ -18,12 +18,11 @@
 
 package org.jpos.q2.qbean;
 
-import org.jdom.Element;
-import org.jpos.q2.QBeanSupport;
-
 import bsh.BshClassManager;
 import bsh.Interpreter;
 import bsh.UtilEvalError;
+import org.jdom.Element;
+import org.jpos.q2.QBeanSupport;
 
 public class BSH extends QBeanSupport implements Runnable {
     protected Interpreter bsh;

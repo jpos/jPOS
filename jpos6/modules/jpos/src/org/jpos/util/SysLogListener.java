@@ -18,14 +18,15 @@
 
 package org.jpos.util;
 
-import java.util.Iterator;
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.DatagramSocket;
-import java.net.DatagramPacket;
 import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
+
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.util.Iterator;
 
 /**
  * SysLog Listener

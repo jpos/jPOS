@@ -18,9 +18,10 @@
 
 package org.jpos.q2.cli;
 
-import java.io.InputStream;
-import java.io.IOException;
 import org.jpos.q2.CLI;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 public class COPYRIGHT implements CLI.Command {
     public void exec (CLI cli, String[] args) throws IOException {

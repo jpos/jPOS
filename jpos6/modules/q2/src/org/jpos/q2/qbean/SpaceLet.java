@@ -18,10 +18,8 @@
 
 package org.jpos.q2.qbean;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.Iterator;
-
+import bsh.EvalError;
+import bsh.Interpreter;
 import org.jdom.Element;
 import org.jpos.core.ConfigurationException;
 import org.jpos.q2.QBeanSupport;
@@ -30,8 +28,9 @@ import org.jpos.space.SpaceError;
 import org.jpos.space.SpaceFactory;
 import org.jpos.util.NameRegistrar;
 
-import bsh.EvalError;
-import bsh.Interpreter;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Iterator;
 
 public class SpaceLet extends QBeanSupport implements Space {
     Space sp;

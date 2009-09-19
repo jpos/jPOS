@@ -17,9 +17,10 @@
  */
 
 package  org.jpos.util;
-import java.io.PrintStream;
 
 import org.jpos.iso.ISOUtil;
+
+import java.io.PrintStream;
 
 /**
  * <p>

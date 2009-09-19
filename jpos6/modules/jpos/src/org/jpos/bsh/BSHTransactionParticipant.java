@@ -18,12 +18,7 @@
 
 package org.jpos.bsh;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-
+import bsh.EvalError;
 import org.jdom.Element;
 import org.jpos.core.ConfigurationException;
 import org.jpos.core.XmlConfigurable;
@@ -33,7 +28,11 @@ import org.jpos.util.LogEvent;
 import org.jpos.util.Logger;
 import org.jpos.util.SimpleLogSource;
 
-import bsh.EvalError;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 /** A TransactionParticipant which´s prepare, commit and abort methods can be 
  *  specified through beanshell scripts. <BR>

@@ -18,15 +18,15 @@
 
 package org.jpos.util;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-
 import org.apache.log4j.Level;
-import org.apache.log4j.xml.DOMConfigurator;
 import org.apache.log4j.helpers.FileWatchdog;
+import org.apache.log4j.xml.DOMConfigurator;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
 import org.jpos.core.ReConfigurable;
+
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 
 /**
  * @author Eoin P. FLood</a>

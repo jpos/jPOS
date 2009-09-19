@@ -18,6 +18,10 @@
 
 package org.jpos.bsh;
 
+import bsh.EvalError;
+import bsh.Interpreter;
+import org.jdom.Element;
+
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -25,11 +29,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-
-import org.jdom.Element;
-
-import bsh.EvalError;
-import bsh.Interpreter;
 
 /** This is a utility class that makes it a bit easier to work with beanshell 
  *  scripts.

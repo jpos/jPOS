@@ -18,21 +18,16 @@
 
 package org.jpos.iso;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.io.PrintStream;
+import org.jpos.iso.header.BaseHeader;
+import org.jpos.iso.packager.XMLPackager;
+import org.jpos.util.Loggeable;
+
+import java.io.*;
 import java.lang.ref.WeakReference;
 import java.util.BitSet;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.StringTokenizer;
-
-import org.jpos.iso.header.BaseHeader;
-import org.jpos.iso.packager.XMLPackager;
-import org.jpos.util.Loggeable;
 
 /**
  * implements <b>Composite</b>

@@ -18,8 +18,6 @@
 
 package org.jpos.space;
 
-import java.io.IOException;
-
 import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
@@ -30,6 +28,8 @@ import org.jpos.util.LogEvent;
 import org.jpos.util.Logger;
 import org.jpos.util.NameRegistrar;
 import org.jpos.util.SimpleLogSource;
+
+import java.io.IOException;
 
 
 /**

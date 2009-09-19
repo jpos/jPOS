@@ -18,10 +18,10 @@
 
 package org.jpos.transaction;
 
-import java.io.Serializable;
-import org.jpos.iso.ISOUtil;
-import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
+import org.jpos.iso.ISOUtil;
+
+import java.io.Serializable;
 
 public class TestPauseParticipant implements TransactionParticipant {
     Configuration cfg;

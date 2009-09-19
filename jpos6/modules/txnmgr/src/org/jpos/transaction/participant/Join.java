@@ -18,20 +18,20 @@
 
 package org.jpos.transaction.participant;
 
-import java.io.Serializable;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Iterator;
-import org.jpos.transaction.Context;
-import org.jpos.transaction.TransactionConstants;
-import org.jpos.transaction.TransactionParticipant;
-import org.jpos.transaction.AbortParticipant;
+import org.jdom.Element;
 import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
 import org.jpos.core.XmlConfigurable;
+import org.jpos.transaction.AbortParticipant;
+import org.jpos.transaction.TransactionConstants;
 import org.jpos.transaction.TransactionManager;
-import org.jdom.Element;
+import org.jpos.transaction.TransactionParticipant;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class Join 
        implements TransactionConstants, AbortParticipant, 

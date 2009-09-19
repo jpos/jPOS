@@ -18,7 +18,6 @@
 
 package org.jpos.q2.cli;
 
-import org.jpos.util.SystemMonitor;
 import org.jpos.q2.CLI;
 
 public class MEM implements CLI.Command {

@@ -19,9 +19,8 @@
 package org.jpos.q2.security;
 
 import org.jdom.Element;
-import org.jpos.q2.Q2;
-import org.jpos.q2.QFactory;
 import org.jpos.q2.QBeanSupport;
+import org.jpos.q2.QFactory;
 import org.jpos.security.SecureKeyStore;
 import org.jpos.util.NameRegistrar;
 

@@ -18,14 +18,13 @@
 
 package org.jpos.q2.qbean;
 
-import java.rmi.RemoteException;
-import java.util.Set;
+import org.jpos.q2.QBeanSupport;
+import org.jpos.space.SpaceProxy;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-
-import org.jpos.q2.QBeanSupport;
-import org.jpos.space.SpaceProxy;
+import java.rmi.RemoteException;
+import java.util.Set;
 
 /**
  * Remote Space Proxy Adaptor.

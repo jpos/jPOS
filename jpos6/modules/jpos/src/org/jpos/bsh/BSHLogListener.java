@@ -18,18 +18,17 @@
 
 package org.jpos.bsh;
 
+import bsh.Interpreter;
+import bsh.NameSpace;
+import org.jpos.core.Configuration;
+import org.jpos.util.LogEvent;
+
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Hashtable;
 import java.util.Map;
-
-import org.jpos.core.Configuration;
-import org.jpos.util.LogEvent;
-
-import bsh.Interpreter;
-import bsh.NameSpace;
 
 /** This is a log listener that reads its actions from Bean Shell scripts.
  * You can define many scripts, and the order in wich they are called, also you

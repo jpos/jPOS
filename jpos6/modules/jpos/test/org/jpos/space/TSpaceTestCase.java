@@ -19,9 +19,8 @@
 package org.jpos.space;
 
 import junit.framework.TestCase;
-
-import org.jpos.util.Profiler;
 import org.jpos.iso.ISOUtil;
+import org.jpos.util.Profiler;
 
 public class TSpaceTestCase extends TestCase implements SpaceListener {
     TSpace<String,Object> sp;

@@ -18,24 +18,19 @@
 
 package org.jpos.space;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.ConcurrentModificationException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
-import java.util.TimerTask;
-
 import jdbm.RecordManager;
 import jdbm.RecordManagerFactory;
 import jdbm.RecordManagerOptions;
 import jdbm.helper.FastIterator;
 import jdbm.helper.Serializer;
 import jdbm.htree.HTree;
-
 import org.jpos.util.DefaultTimer;
+
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.*;
 
 /**
  * JDBM based persistent space implementation

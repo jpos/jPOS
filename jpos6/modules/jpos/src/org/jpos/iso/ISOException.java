@@ -18,10 +18,10 @@
 
 package org.jpos.iso;
 
+import org.jpos.util.Loggeable;
+
 import java.io.PrintStream;
 import java.io.PrintWriter;
-
-import org.jpos.util.Loggeable;
 
 /**
  * Signals that an ISO exception of some sort has occurred. 

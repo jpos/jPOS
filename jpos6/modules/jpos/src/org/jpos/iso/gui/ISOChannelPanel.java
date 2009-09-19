@@ -26,25 +26,13 @@ package org.jpos.iso.gui;
  * @see ISOMsgPanel
  * @serial
  */
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
-import java.awt.Insets;
-import javax.swing.SwingUtilities;
+
+import org.jpos.iso.*;
+
+import javax.swing.*;
+import java.awt.*;
 import java.util.Observable;
 import java.util.Observer;
-
-import javax.swing.BorderFactory;
-import javax.swing.DefaultListModel;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.ListModel;
-
-import org.jpos.iso.BaseChannel;
-import org.jpos.iso.ISOServer;
-import org.jpos.iso.ISOChannel;
-import org.jpos.iso.ISOException;
-import org.jpos.iso.ISOMsg;
-import org.jpos.iso.ISOUtil;
 
 public class ISOChannelPanel extends JPanel implements Observer {
     private static final long serialVersionUID = -8069489863639386589L;

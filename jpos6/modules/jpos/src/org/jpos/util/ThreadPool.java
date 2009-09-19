@@ -18,12 +18,12 @@
 
 package org.jpos.util;
 
-import java.io.PrintStream;
-
 import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
 import org.jpos.util.BlockingQueue.Closed;
+
+import java.io.PrintStream;
 
 /**
  * Implements a ThreadPool with the ability to run simple Runnable

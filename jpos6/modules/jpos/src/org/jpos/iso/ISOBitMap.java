@@ -18,11 +18,11 @@
 
 package org.jpos.iso;
 
+import org.jpos.iso.packager.XMLPackager;
+
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.BitSet;
-
-import org.jpos.iso.packager.XMLPackager;
 
 /**
  * implements <b>Leaf</b> for Bitmap field

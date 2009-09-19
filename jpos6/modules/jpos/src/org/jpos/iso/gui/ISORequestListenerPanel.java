@@ -18,27 +18,16 @@
 
 package org.jpos.iso.gui;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Insets;
+import org.jpos.iso.ISOMsg;
+import org.jpos.iso.ISORequestListener;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Observable;
 import java.util.Observer;
-
-import javax.swing.BorderFactory;
-import javax.swing.DefaultListModel;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.ListModel;
-
-import org.jpos.iso.ISOMsg;
-import org.jpos.iso.ISORequestListener;
 
 public class ISORequestListenerPanel extends JPanel implements Observer {
 

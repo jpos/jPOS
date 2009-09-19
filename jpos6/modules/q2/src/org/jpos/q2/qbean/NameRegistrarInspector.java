@@ -18,9 +18,9 @@
 
 package org.jpos.q2.qbean;
 
-import java.util.Map;
-
 import org.jpos.util.NameRegistrar;
+
+import java.util.Map;
 
 /**
  * Utility service used to query the NameRegistrar via JMX.

@@ -18,13 +18,14 @@
 
 package org.jpos.transaction.participant;
 
-import java.io.Serializable;
 import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
-import org.jpos.transaction.TransactionParticipant;
 import org.jpos.space.Space;
 import org.jpos.space.SpaceFactory;
+import org.jpos.transaction.TransactionParticipant;
+
+import java.io.Serializable;
 
 public class Forward implements TransactionParticipant, Configurable  {
     Space sp;

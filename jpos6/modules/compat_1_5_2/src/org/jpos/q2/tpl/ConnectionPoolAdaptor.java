@@ -18,9 +18,9 @@
 
 package org.jpos.q2.tpl;
 
-import org.jpos.util.NameRegistrar;
-import org.jpos.tpl.ConnectionPool;
 import org.jpos.q2.QBeanSupport;
+import org.jpos.tpl.ConnectionPool;
+import org.jpos.util.NameRegistrar;
 
 /**
  * ConnectionPoolAdaptor

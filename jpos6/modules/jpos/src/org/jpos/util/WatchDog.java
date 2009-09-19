@@ -19,7 +19,6 @@
 package org.jpos.util;
 
 import java.util.TimerTask;
-import org.jpos.util.Log;
 
 
 /**

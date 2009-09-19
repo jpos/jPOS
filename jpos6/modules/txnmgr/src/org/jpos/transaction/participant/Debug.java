@@ -18,12 +18,13 @@
 
 package org.jpos.transaction.participant;
 
-import java.io.Serializable;
-import org.jpos.util.Log;
-import org.jpos.util.Logger;
-import org.jpos.util.LogEvent;
-import org.jpos.transaction.Context;
 import org.jpos.transaction.AbortParticipant;
+import org.jpos.transaction.Context;
+import org.jpos.util.Log;
+import org.jpos.util.LogEvent;
+import org.jpos.util.Logger;
+
+import java.io.Serializable;
 
 public class Debug extends Log implements AbortParticipant {
     public int prepare (long id, Serializable o) {

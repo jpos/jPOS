@@ -18,9 +18,10 @@
 
 package org.jpos.transaction;
 
-import java.io.Serializable;
 import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
+
+import java.io.Serializable;
 
 public class SwitchParticipant implements Configurable, GroupSelector {
     Configuration cfg;
