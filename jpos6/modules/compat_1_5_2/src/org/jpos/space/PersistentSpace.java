@@ -224,12 +224,13 @@ public class PersistentSpace implements LocalSpace // PersistentSpaceMBean {
             } catch (Exception e) {
                 throw new SpaceError (e);
             } finally {
-                if (fos != null)
+                if (fos != null) {
                     try {
                         fos.close();
                     } catch (Exception e) { 
                         throw new SpaceError (e);
-                    };
+                    }
+                }
             }
             stored.add(f.getAbsolutePath());
             /* fill cache */

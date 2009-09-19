@@ -53,7 +53,7 @@ public class ThroughputControl {
         for (int i=0; i<l; i++) {
             this.max[i]    = maxTransactions[i];
             this.period[i] = periodInMillis[i];
-            this.sleep[i]  = Math.min(Math.max (periodInMillis[i]/10, 500L),50L);;
+            this.sleep[i]  = Math.min(Math.max (periodInMillis[i]/10, 500L),50L);
             this.start[i]  = System.currentTimeMillis();
         }
     }

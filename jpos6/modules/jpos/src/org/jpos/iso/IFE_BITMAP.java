@@ -100,7 +100,7 @@ public class IFE_BITMAP extends ISOBitMapPackager {
     	byte [] b1 = ISOUtil.ebcdicToAsciiBytes (b, offset, getLength()*2 );
     	BitSet bmap = ISOUtil.hex2BitSet (b1, 0, getLength() << 3);
         c.setValue(bmap);
-        bytes = b1.length;;
+        bytes = b1.length;
         // check for 2nd bit map indicator
         if ((bytes > 16) && bmap.get(1)==false) { 
           bytes = 16; 
