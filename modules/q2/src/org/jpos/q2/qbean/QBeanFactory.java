@@ -96,11 +96,9 @@ public class QBeanFactory extends QBeanSupport implements QBeanFactoryMBean {
         String singleton = bean.getAttributeValue("singleton");
        try{ 
         if(singleton != null && singleton.equals("false")){// create new instance every time
-            Object beanInstance=newBean(bean,false);
-            return beanInstance;
+            return newBean(bean,false);
         }else{
-            Object beanInstance=newBean(bean,true);
-            return beanInstance; 
+            return newBean(bean,true); 
         }
         }catch(Exception e){
             log.fatal(e);
