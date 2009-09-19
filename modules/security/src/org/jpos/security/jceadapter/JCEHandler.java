@@ -184,7 +184,6 @@ public class JCEHandler {
                 {
                     key = new SecretKeySpec(clearKeyBytes, ALG_DES);
                 }
-                ;
                 break;
             case SMAdapter.LENGTH_DES3_2KEY:
                 {
@@ -244,7 +243,6 @@ public class JCEHandler {
         String transformation;
         if (key.getAlgorithm().startsWith(ALG_DES)) {
             transformation = key.getAlgorithm() + "/" + desMode + "/" + desPadding;
-            ;
         }
         else {
             transformation = key.getAlgorithm();

@@ -298,7 +298,7 @@ public class JCESecurityModule extends BaseSMAdapter {
 
     /**
      * Generates key check value.<br>
-     * @param key SecureDESKey with untrusted or fake Key Check Value
+     * @param secureDESKey SecureDESKey with untrusted or fake Key Check Value
      * @return generated Key Check Value
      * @throws SMException
      */
@@ -444,7 +444,6 @@ public class JCESecurityModule extends BaseSMAdapter {
                     // pinBlock
                     pinBlock = ISOUtil.xor(block1ByteArray, block2ByteArray);
                 }
-                ;
                 break;
             case FORMAT03: 
                 {
