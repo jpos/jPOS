@@ -69,11 +69,9 @@ public class IFEPE_LLCHAR extends ISOFieldPackager {
             throw new ISOException("invalid len " + len
                     + " packing LLEPCHAR field " + (Integer) c.getKey());
 
-        byte[] res = ISOUtil.asciiToEbcdic(ISOUtil.zeropad(((Integer) c
+        return ISOUtil.asciiToEbcdic(ISOUtil.zeropad(((Integer) c
                 .getKey()).toString(), 2)
                 + ISOUtil.zeropad(Integer.toString(len ), 2) + s);
-
-        return res;
     }
 
     /**

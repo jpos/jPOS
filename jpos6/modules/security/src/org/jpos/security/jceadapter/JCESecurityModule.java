@@ -356,8 +356,7 @@ public class JCESecurityModule extends BaseSMAdapter {
      */
     byte[] calculateKeyCheckValue (Key key) throws SMException {
         byte[] encryptedZeroBlock = jceHandler.encryptData(zeroBlock, key);
-        byte[] keyCheckValue = ISOUtil.trim(encryptedZeroBlock, 3);
-        return  keyCheckValue;
+        return ISOUtil.trim(encryptedZeroBlock, 3);
     }
 
     /**

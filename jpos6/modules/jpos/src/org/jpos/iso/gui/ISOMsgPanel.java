@@ -155,8 +155,7 @@ public class ISOMsgPanel extends JPanel {
             }
         });
 
-        JScrollPane scrollpane = new JScrollPane(table);
-        return scrollpane;
+        return new JScrollPane(table);
     }
     JComponent createISOMsgDumpPanel() {
         JPanel p = new JPanel();
