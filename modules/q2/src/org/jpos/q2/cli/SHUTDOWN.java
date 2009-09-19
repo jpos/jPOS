@@ -18,8 +18,9 @@
 
 package org.jpos.q2.cli;
 
-import java.io.IOException;
 import org.jpos.q2.CLI;
+
+import java.io.IOException;
 
 public class SHUTDOWN implements CLI.Command {
     public void exec (CLI cli, String[] args) throws IOException {

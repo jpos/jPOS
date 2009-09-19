@@ -18,14 +18,13 @@
 
 package org.jpos.bsh;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
+import bsh.Interpreter;
 import org.jdom.Element;
 import org.jpos.ui.UI;
 import org.jpos.ui.UIAware;
 
-import bsh.Interpreter;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class BSHAction implements ActionListener, UIAware {
     public UI ui;

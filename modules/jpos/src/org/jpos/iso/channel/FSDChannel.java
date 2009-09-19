@@ -18,15 +18,16 @@
 
 package org.jpos.iso.channel;
 
-import java.io.IOException;
-import org.jpos.iso.ISOMsg;
-import org.jpos.iso.ISOException;
-import org.jpos.util.FSDMsg;
-import org.jpos.util.Logger;
-import org.jpos.util.LogEvent;
-import org.jpos.iso.FSDISOMsg;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
+import org.jpos.iso.FSDISOMsg;
+import org.jpos.iso.ISOException;
+import org.jpos.iso.ISOMsg;
+import org.jpos.util.FSDMsg;
+import org.jpos.util.LogEvent;
+import org.jpos.util.Logger;
+
+import java.io.IOException;
 
 public class FSDChannel extends NACChannel {
     String schema;

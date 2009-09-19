@@ -18,18 +18,15 @@
 
 package org.jpos.q2.iso;
 
-import java.util.Date;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import org.jdom.Element;
-import org.jpos.q2.Q2;
-import org.jpos.q2.QFactory;
-import org.jpos.q2.QBeanSupport;
-import org.jpos.util.Destroyable;
-import org.jpos.util.LogSource;
-import org.jpos.util.NameRegistrar;
 import org.jpos.core.Configurable;
 import org.jpos.iso.ISOUtil;
+import org.jpos.q2.QBeanSupport;
+import org.jpos.q2.QFactory;
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
 /**
  * DailyTask Adaptor

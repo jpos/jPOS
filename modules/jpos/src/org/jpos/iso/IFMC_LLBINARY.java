@@ -17,9 +17,9 @@
  */
 
 package org.jpos.iso;
+
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 
 /**
  * Binary version of IFMC_LLCHAR 

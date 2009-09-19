@@ -18,13 +18,9 @@
 
 package org.jpos.iso;
 
-import java.io.InputStream;
 import java.io.IOException;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.ResourceBundle;
-import java.util.PropertyResourceBundle;
+import java.io.InputStream;
+import java.util.*;
 
 /**
  * ISO Currency Conversion package

@@ -18,19 +18,15 @@
 
 package org.jpos.iso.validator;
 
+import org.jpos.iso.*;
+import org.jpos.util.LogSource;
+import org.jpos.util.Loggeable;
+import org.jpos.util.Logger;
+
 import java.io.PrintStream;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Vector;
-
-import org.jpos.iso.ISOComponent;
-import org.jpos.iso.ISOMsg;
-import org.jpos.iso.ISOVError;
-import org.jpos.iso.ISOVField;
-import org.jpos.iso.ISOVMsg;
-import org.jpos.util.LogSource;
-import org.jpos.util.Loggeable;
-import org.jpos.util.Logger;
 
 /**
  * Parse ISOComponents and put the errors into a list.

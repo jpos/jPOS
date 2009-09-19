@@ -18,16 +18,13 @@
 
 package org.jpos.q2.iso;
 
-import java.util.StringTokenizer;
 import org.jdom.Element;
-import org.jpos.iso.ISOMsg;
-import org.jpos.iso.ISOException;
-import org.jpos.iso.ISOResponseListener;
-import org.jpos.iso.MUX;
-import org.jpos.iso.ISOUtil;
-import org.jpos.util.NameRegistrar;
 import org.jpos.core.ConfigurationException;
+import org.jpos.iso.*;
 import org.jpos.q2.QBeanSupport;
+import org.jpos.util.NameRegistrar;
+
+import java.util.StringTokenizer;
 
 /**
  * @author apr

@@ -18,17 +18,15 @@
 
 package org.jpos.ui.factory;
 
-import javax.swing.JComponent;
-import javax.swing.JEditorPane;
-import javax.swing.JLabel;
+import org.jdom.Element;
+import org.jpos.ui.UI;
+import org.jpos.ui.UIFactory;
+
+import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLFrameHyperlinkEvent;
-
-import org.jdom.Element;
-import org.jpos.ui.UI;
-import org.jpos.ui.UIFactory;
 
 /**
  * @author Alejandro Revilla

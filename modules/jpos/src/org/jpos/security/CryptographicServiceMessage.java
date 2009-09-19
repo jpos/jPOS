@@ -18,13 +18,13 @@
 
 package org.jpos.security;
 
+import org.jpos.util.Loggeable;
+
 import java.io.PrintStream;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.StringTokenizer;
 import java.util.Vector;
-
-import org.jpos.util.Loggeable;
 
 /**
  * Cryptographic Service Message (CSM for short).

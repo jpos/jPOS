@@ -18,12 +18,11 @@
 
 package org.jpos.util;
 
-import java.util.Arrays;
-
 import junit.framework.TestCase;
-
 import org.jpos.iso.FSDISOMsg;
 import org.jpos.iso.ISOUtil;
+
+import java.util.Arrays;
 
 public class FSDMsgTestCase extends TestCase {
     FSDMsg imsg;

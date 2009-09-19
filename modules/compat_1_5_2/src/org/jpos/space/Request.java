@@ -18,13 +18,6 @@
 
 package org.jpos.space;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 /**
  * Request adds to TinySpace a few helper methods suitable for
  * exchanging requests and responses over an outter [Transient|Tiny]Space.

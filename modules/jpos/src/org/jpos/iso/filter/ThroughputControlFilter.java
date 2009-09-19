@@ -18,8 +18,8 @@
 
 package org.jpos.iso.filter;
 
-import org.jpos.core.Configuration;
 import org.jpos.core.Configurable;
+import org.jpos.core.Configuration;
 import org.jpos.iso.ISOChannel;
 import org.jpos.iso.ISOFilter;
 import org.jpos.iso.ISOMsg;

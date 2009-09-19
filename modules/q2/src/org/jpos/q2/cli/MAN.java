@@ -18,8 +18,9 @@
 
 package org.jpos.q2.cli;
 
-import java.io.InputStream;
 import org.jpos.q2.CLI;
+
+import java.io.InputStream;
 
 public class MAN implements CLI.Command {
     public void exec (CLI cli, String[] args) throws Exception {

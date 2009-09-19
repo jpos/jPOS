@@ -18,15 +18,14 @@
 
 package org.jpos.util;
 
-import java.util.Vector;
-
 import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
 import org.jpos.iso.ISOException;
-import org.jpos.iso.ISOField;
 import org.jpos.iso.ISOMsg;
 import org.jpos.iso.ISOUtil;
+
+import java.util.Vector;
 
 /**
  * Protects selected fields from LogEvents.

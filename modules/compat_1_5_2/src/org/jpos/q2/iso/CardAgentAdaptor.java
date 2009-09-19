@@ -19,10 +19,10 @@
 package org.jpos.q2.iso;
 
 import org.jdom.Element;
-import org.jpos.q2.QFactory;
 import org.jpos.core.CardAgent;
 import org.jpos.core.CardAgentLookup;
 import org.jpos.core.Configurable;
+import org.jpos.q2.QFactory;
 
 /**
  * Task Adaptor

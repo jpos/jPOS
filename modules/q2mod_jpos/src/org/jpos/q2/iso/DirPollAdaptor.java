@@ -22,7 +22,9 @@ import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
 import org.jpos.q2.QBeanSupport;
 import org.jpos.q2.QFactory;
-import org.jpos.util.*;
+import org.jpos.util.DirPoll;
+import org.jpos.util.LogSource;
+import org.jpos.util.ThreadPool;
 
 /**
  * DirPoll Adaptor

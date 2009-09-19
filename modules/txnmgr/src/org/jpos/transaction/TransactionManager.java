@@ -18,28 +18,19 @@
 
 package org.jpos.transaction;
 
-import java.io.Serializable;
-import java.util.Map;
-import java.util.List;
-import java.util.HashMap;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.TimerTask;
-import java.util.StringTokenizer;
-import org.jpos.util.NameRegistrar;
 import org.jdom.Element;
-import org.jpos.space.Space;
-import org.jpos.space.LocalSpace;
-import org.jpos.space.JDBMSpace;
-import org.jpos.space.SpaceFactory;
-import org.jpos.space.SpaceUtil;
-import org.jpos.q2.QFactory;
-import org.jpos.q2.QBeanSupport;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
-import org.jpos.util.Logger;
-import org.jpos.util.LogEvent;
+import org.jpos.q2.QBeanSupport;
+import org.jpos.q2.QFactory;
+import org.jpos.space.*;
 import org.jpos.util.DefaultTimer;
+import org.jpos.util.LogEvent;
+import org.jpos.util.Logger;
+import org.jpos.util.NameRegistrar;
+
+import java.io.Serializable;
+import java.util.*;
 
 public class TransactionManager 
     extends QBeanSupport 

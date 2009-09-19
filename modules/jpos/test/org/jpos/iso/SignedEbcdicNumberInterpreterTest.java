@@ -18,9 +18,9 @@
 
 package org.jpos.iso;
 
-import java.util.Arrays;
-
 import junit.framework.TestCase;
+
+import java.util.Arrays;
 
 /**
  * @author: Nigel Smith (nsmith at moneyswitch.net)

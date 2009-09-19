@@ -18,17 +18,14 @@
 
 package org.jpos.iso.filter;
 
-import java.net.Socket;
-import java.net.InetSocketAddress;
 import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
-import org.jpos.iso.ISOChannel;
-import org.jpos.iso.BaseChannel;
-import org.jpos.iso.ISOFilter;
-import org.jpos.iso.ISOMsg;
-import org.jpos.iso.ISOException;
+import org.jpos.iso.*;
 import org.jpos.util.LogEvent;
+
+import java.net.InetSocketAddress;
+import java.net.Socket;
 
 
 /**

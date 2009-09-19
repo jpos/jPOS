@@ -18,23 +18,19 @@
 
 package org.jpos.ui.factory;
 
-import java.awt.Font;
+import org.jdom.Element;
+import org.jpos.ui.UI;
+import org.jpos.ui.UIFactory;
+
+import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JComponent;
-import javax.swing.JTabbedPane;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-
-import org.jdom.Element;
-import org.jpos.ui.UI;
-import org.jpos.ui.UIFactory;
 
 /**
  * @author Alejandro Revilla

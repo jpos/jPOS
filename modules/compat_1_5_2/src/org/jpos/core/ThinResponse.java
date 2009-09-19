@@ -18,9 +18,9 @@
 
 package org.jpos.core;
 
-import java.io.PrintStream;
-
 import org.jpos.util.Loggeable;
+
+import java.io.PrintStream;
 
 /**
  * @author apr@cs.com.uy

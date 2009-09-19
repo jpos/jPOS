@@ -20,7 +20,6 @@ package org.jpos.transaction;
 
 import junit.framework.*;
 import org.jpos.q2.Q2;
-import org.jpos.iso.ISOUtil;
 import org.jpos.space.Space;
 import org.jpos.space.SpaceFactory;
 

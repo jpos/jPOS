@@ -18,9 +18,7 @@
 
 package org.jpos.bsh;
 
-import java.util.Arrays;
-import java.util.HashSet;
-
+import bsh.Interpreter;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
 import org.jpos.core.ReConfigurable;
@@ -29,7 +27,8 @@ import org.jpos.iso.ISORequestListener;
 import org.jpos.iso.ISOSource;
 import org.jpos.util.Log;
 
-import bsh.Interpreter;
+import java.util.Arrays;
+import java.util.HashSet;
 
 /**
  * BSHRequestListener - BeanShell based request listener

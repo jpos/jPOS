@@ -17,14 +17,14 @@
  */
 
 package org.jpos.tlv;
+
+import org.jpos.iso.ISOException;
+import org.jpos.iso.ISOUtil;
+
 import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.util.Enumeration;
 import java.util.Vector;
-
-import org.jpos.iso.ISOException;
-import org.jpos.iso.ISOUtil;
-import org.jpos.tlv.TLVMsg;
 
 /**
  * @author bharavi

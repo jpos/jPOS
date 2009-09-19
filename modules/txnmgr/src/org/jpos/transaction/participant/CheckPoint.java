@@ -18,11 +18,12 @@
 
 package org.jpos.transaction.participant;
 
-import java.io.Serializable;
 import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
 import org.jpos.transaction.Context;
 import org.jpos.transaction.TransactionParticipant;
+
+import java.io.Serializable;
 
 public class CheckPoint implements TransactionParticipant, Configurable  {
     Configuration cfg;

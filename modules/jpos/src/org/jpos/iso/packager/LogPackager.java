@@ -18,20 +18,7 @@
 
 package org.jpos.iso.packager;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintStream;
-import java.util.Stack;
-
-import org.jpos.iso.ISOBinaryField;
-import org.jpos.iso.ISOComponent;
-import org.jpos.iso.ISOException;
-import org.jpos.iso.ISOField;
-import org.jpos.iso.ISOMsg;
-import org.jpos.iso.ISOPackager;
-import org.jpos.iso.ISOUtil;
+import org.jpos.iso.*;
 import org.jpos.util.LogEvent;
 import org.jpos.util.LogSource;
 import org.jpos.util.Logger;
@@ -41,6 +28,9 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
+
+import java.io.*;
+import java.util.Stack;
 
 /**
  * packs/unpacks ISOMsgs from jPOS logs

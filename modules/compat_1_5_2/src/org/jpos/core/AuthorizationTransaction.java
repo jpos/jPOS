@@ -18,10 +18,10 @@
 
 package org.jpos.core;
 
+import org.jpos.util.Loggeable;
+
 import java.io.PrintStream;
 import java.math.BigDecimal;
-
-import org.jpos.util.Loggeable;
 
 /**
  * @author apr@cs.com.uy

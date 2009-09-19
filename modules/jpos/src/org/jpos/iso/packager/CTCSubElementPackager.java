@@ -18,8 +18,6 @@
 
 package org.jpos.iso.packager;
 
-import java.util.Hashtable;
-
 import org.jpos.iso.ISOComponent;
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOMsg;
@@ -27,6 +25,8 @@ import org.jpos.iso.ISOUtil;
 import org.jpos.iso.validator.ISOVException;
 import org.jpos.util.LogEvent;
 import org.jpos.util.Logger;
+
+import java.util.Hashtable;
 
 /**
  * Test validatingPackager for subelements in field 48.

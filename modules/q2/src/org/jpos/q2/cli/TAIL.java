@@ -18,17 +18,17 @@
 
 package org.jpos.q2.cli;
 
-import java.util.Date;
-import java.util.Map;
-import java.util.Iterator;
-import java.io.PrintStream;
 import jline.ANSIBuffer;
+import org.jpos.q2.CLI;
+import org.jpos.util.LogEvent;
+import org.jpos.util.LogListener;
 import org.jpos.util.Logger;
 import org.jpos.util.NameRegistrar;
-import org.jpos.util.LogEvent;
-import org.jpos.util.Logger;
-import org.jpos.util.LogListener;
-import org.jpos.q2.CLI;
+
+import java.io.PrintStream;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.Map;
 
 public class TAIL implements CLI.Command, LogListener {
     PrintStream p;

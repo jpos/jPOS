@@ -18,16 +18,16 @@
 
 package org.jpos.iso;
 
+import org.jpos.util.LogEvent;
+import org.jpos.util.LogSource;
+import org.jpos.util.Logger;
+
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Hashtable;
-
-import org.jpos.util.LogEvent;
-import org.jpos.util.LogSource;
-import org.jpos.util.Logger;
 
 /**
  * provides base functionality for the actual packagers

@@ -18,9 +18,9 @@
 
 package org.jpos.ui;
 
-import javax.swing.JComponent;
-
 import org.jdom.Element;
+
+import javax.swing.*;
 
 /**
  * @author Alejandro Revilla

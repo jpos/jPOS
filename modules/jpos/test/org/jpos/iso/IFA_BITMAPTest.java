@@ -18,9 +18,9 @@
 
 package org.jpos.iso;
 
-import java.util.BitSet;
-
 import junit.framework.TestCase;
+
+import java.util.BitSet;
 
 /**
  * @author joconnor

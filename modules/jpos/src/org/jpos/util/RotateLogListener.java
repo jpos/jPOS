@@ -18,6 +18,10 @@
 
 package org.jpos.util;
 
+import org.jpos.core.Configurable;
+import org.jpos.core.Configuration;
+import org.jpos.core.ConfigurationException;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -25,10 +29,6 @@ import java.io.PrintStream;
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import org.jpos.core.Configurable;
-import org.jpos.core.Configuration;
-import org.jpos.core.ConfigurationException;
 
 /**
  * Rotates logs

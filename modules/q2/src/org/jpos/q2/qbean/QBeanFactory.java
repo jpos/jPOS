@@ -17,15 +17,13 @@
  */
 
 package org.jpos.q2.qbean;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.WeakHashMap;
+
 import org.jdom.Element;
 import org.jpos.core.ConfigurationException;
 import org.jpos.q2.QBeanSupport;
 import org.jpos.util.NameRegistrar;
+
+import java.util.*;
 
 public class QBeanFactory extends QBeanSupport implements QBeanFactoryMBean {
   

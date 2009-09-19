@@ -18,11 +18,11 @@
 
 package org.jpos.iso.header;
 
-import java.io.PrintStream;
-
 import org.jpos.iso.ISOHeader;
 import org.jpos.iso.ISOUtil;
 import org.jpos.util.Loggeable;
+
+import java.io.PrintStream;
 
 /**
  * @author <a href="mailto:Eoin.Flood@orbiscom.com">Eoin Flood</a>

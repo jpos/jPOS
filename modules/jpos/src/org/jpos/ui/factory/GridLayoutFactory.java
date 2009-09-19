@@ -18,16 +18,13 @@
 
 package org.jpos.ui.factory;
 
-import java.awt.GridLayout;
-import java.util.Iterator;
-
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-
 import org.jdom.Element;
 import org.jpos.ui.UI;
 import org.jpos.ui.UIFactory;
+
+import javax.swing.*;
+import java.awt.*;
+import java.util.Iterator;
 
 /**
  * @author Alejandro Revilla

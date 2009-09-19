@@ -18,12 +18,12 @@
 
 package org.jpos.q2.qbean;
 
-import java.io.PrintStream;
-
 import org.jpos.q2.QBeanSupport;
 import org.jpos.util.Loggeable;
 import org.jpos.util.Logger;
 import org.jpos.util.NameRegistrar;
+
+import java.io.PrintStream;
 
 /**
  * Periodically dumps Thread and memory usage

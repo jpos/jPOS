@@ -18,22 +18,16 @@
 
 package org.jpos.iso.filter;
 
+import org.jpos.core.Configuration;
+import org.jpos.core.ConfigurationException;
+import org.jpos.core.ReConfigurable;
+import org.jpos.iso.*;
+import org.jpos.util.LogEvent;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.StringTokenizer;
-
-import org.jpos.core.Configuration;
-import org.jpos.core.ConfigurationException;
-import org.jpos.core.ReConfigurable;
-import org.jpos.iso.ISOBinaryField;
-import org.jpos.iso.ISOChannel;
-import org.jpos.iso.ISOComponent;
-import org.jpos.iso.ISOException;
-import org.jpos.iso.ISOFilter;
-import org.jpos.iso.ISOMsg;
-import org.jpos.iso.ISOUtil;
-import org.jpos.util.LogEvent;
 
 /**
  * Computes an MD5 based Message Authentication Code

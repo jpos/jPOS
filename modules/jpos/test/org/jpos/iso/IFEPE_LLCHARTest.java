@@ -18,7 +18,6 @@
 
 package org.jpos.iso;
 
-import sun.security.action.GetBooleanAction;
 import junit.framework.TestCase;
 
 /**

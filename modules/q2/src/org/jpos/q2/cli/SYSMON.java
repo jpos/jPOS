@@ -18,8 +18,8 @@
 
 package org.jpos.q2.cli;
 
-import org.jpos.util.SystemMonitor;
 import org.jpos.q2.CLI;
+import org.jpos.util.SystemMonitor;
 
 public class SYSMON implements CLI.Command {
     public void exec (CLI cli, String[] args) throws Exception {

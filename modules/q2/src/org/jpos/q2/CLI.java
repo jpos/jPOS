@@ -18,17 +18,14 @@
 
 package org.jpos.q2;
 
+import jline.*;
+import org.jpos.iso.ISOUtil;
+
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.List;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.StringTokenizer;
-import org.jpos.iso.ISOUtil;
-import jline.ConsoleReader;
-import jline.Completor;
-import jline.ClassNameCompletor;
-import jline.SimpleCompletor;
-import jline.ArgumentCompletor;
 
 public class CLI extends Thread 
     implements SimpleCompletor.SimpleCompletorFilter 

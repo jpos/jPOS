@@ -18,12 +18,13 @@
 
 package org.jpos.q2.cli;
 
-import org.jpos.q2.CLI;
-import java.util.Map;
-import java.util.Iterator;
 import org.jpos.iso.ISOUtil;
+import org.jpos.q2.CLI;
 import org.jpos.util.Loggeable;
 import org.jpos.util.NameRegistrar;
+
+import java.util.Iterator;
+import java.util.Map;
 
 public class SHOWNR implements CLI.Command {
     public void exec (CLI cli, String[] args) throws Exception {
