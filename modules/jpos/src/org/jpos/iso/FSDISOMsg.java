@@ -58,8 +58,7 @@ public class FSDISOMsg extends ISOMsg implements Cloneable  {
         return fsd;
     }
     public String getString (int fldno) {
-        String s = fsd.get (Integer.toString(fldno));
-        return s;
+        return fsd.get (Integer.toString(fldno));
     }
     public boolean hasField (int fldno) {
         return getString(fldno) != null;
