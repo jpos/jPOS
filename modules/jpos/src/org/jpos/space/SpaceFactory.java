@@ -60,6 +60,7 @@ public class SpaceFactory {
     public static final String PERSISTENT = "persistent";
     public static final String SPACELET   = "spacelet";
     public static final String JDBM       = "jdbm";
+    public static final String JE         = "je";
     public static final String DEFAULT    = "default";
 
     /**
@@ -129,6 +130,11 @@ public class SpaceFactory {
                 sp = JDBMSpace.getSpace (name, param);
             else 
                 sp = JDBMSpace.getSpace (name);
+        } else if (JE.equals (scheme)) {
+            if (param != null)
+                sp = JESpace.getSpace (name, param);
+            else
+                sp = JESpace.getSpace (name);
         }
         return sp;
     }
