@@ -182,6 +182,7 @@ public class JDBMSpaceTestCase extends TestCase {
         );
         long elapsed = System.currentTimeMillis() - now;
         assertTrue ( "delay was > 1000", elapsed > 900L);
+        assertNotNull ("Entry should not be null", sp.inp ("KA"));
     }
 }
 
