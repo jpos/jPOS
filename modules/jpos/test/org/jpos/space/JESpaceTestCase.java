@@ -155,6 +155,11 @@ public class JESpaceTestCase extends TestCase {
         assertTrue ("delay was > 1000", elapsed > 900L);
         assertNotNull ("Entry should not be null", sp.inp ("KA"));
     }
+    public void testByteArray() throws Exception {
+        String S = "The quick brown fox jumped over the lazy dog";
+        sp.out ("ByteArray", S.getBytes());
+        assertEquals (S, new String ((byte[]) sp.inp ("ByteArray")));
+    }
     public void testGC() throws Exception {
         sp.out ("A", "Entrywithtimeout", 1000L);
         sp.out ("B", "AnotherEntrywithtimeout", 1000L);
