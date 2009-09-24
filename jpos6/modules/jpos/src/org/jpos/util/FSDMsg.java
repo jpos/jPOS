@@ -44,8 +44,8 @@ import java.util.Map;
 public class FSDMsg implements Loggeable, Cloneable {
     public static char FS = '\034';
     public static char US = '\037';
-    public static char RS = '\035';
-    public static char GS = '\036';
+    public static char GS = '\035';
+    public static char RS = '\036';
     public static char EOF = '\000';
     public static char PIPE = '\u007C';
     
