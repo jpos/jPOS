@@ -34,8 +34,51 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * General purpose, Field Separator delimited message
- *
+ * General purpose, Field Separator delimited message.
+ * 
+ * <h1>How to use</h1>
+ * <p>
+ * The message format (or schema) is defined in xml files containing a schema element, with an optional id attribute, and multiple
+ * field elements. A field element is made up of the following attributes:
+ * <dl>
+ * <dt>id</dt>
+ * <dd>The name of the field. This is used in calls to {@link FSDMsg#set(String, String)}. It should be unique amongst the fields in an FSDMsg.</dd>
+ * <dt>length</dt>
+ * <dd>The maximum length of the data allowed in this field. Fixed length fields will be padded to this length. A zero length is allowed, and can
+ * be useful to define extra separator characters in the message.</dd>
+ * <dt>type</dt>
+ * <dd>The type of the included data, including an optional separator for marking the end of the field and the beginning of the next one. The data type
+ * is defined by the first char of the type, and the separator is defined by the following chars. If a field separator is specified, then no
+ * padding is done on values for this field.
+ * </dd>
+ * <dt>key</dt>
+ * <dd>If this optional attribute has a value of "true", then fields from another schema, specified by the value, are appended to this schema.</dd>
+ * </dl>
+ * <p>
+ * Possible types are:
+ * <dl>
+ * <dt>A</dt><dd>Alphanumeric. Padding if any is done with spaces to the right.</dd>
+ * <dt>B</dt><dd>Binary. Padding, if any, is done with zeros to the left.</dd>
+ * <dt>K</dt><dd>Constant. The value is specified by the field content. No padding is done.</dd>
+ * <dt>N</dt><dd>Numeric. Padding, if any, is done with zeros to the left.</dd>
+ * </dl>
+ * </p>
+ * <p>
+ * Supported field separators are:
+ * <dl>
+ * <dt>FS</dt><dd>Field separator using '034' as the separator.</dd>
+ * <dt>US</dt><dd>Field separator using '037' as the separator.</dd>
+ * <dt>GS</dt><dd>Field separator using '035' as the separator.</dd>
+ * <dt>RS</dt><dd>Field separator using '036' as the separator.</dd>
+ * <dt>PIPE</dt><dd>Field separator using '|' as the separator.</dd>
+ * <dt>EOF</dt><dd>End of Field - no separator character is emitted, but also no padding is done.</dd>
+ * </dl>
+ * </p>
+ * <p>
+ * Key fields allow you to specify a tree of possible message formats. The key fields are the fork points of the tree.
+ * Multiple key fields are supported. It is also possible to have more key fields specified in appended schemas.
+ * </p>
+ * 
  * @author Alejandro Revila
  * @author Mark Salter
  * @author Dave Bergert
@@ -57,13 +100,16 @@ public class FSDMsg implements Loggeable, Cloneable {
     byte[] header;
 
     /**
-     * @param basePath   schema path
+     * Creates a FSDMsg with a specific base path for the message format schema.
+     * @param basePath   schema path, for example: "file:src/data/NDC-" looks for a file src/data/NDC-base.xml
      */
     public FSDMsg (String basePath) {
         this (basePath, "base");
     }
     
     /**
+     * Creates a FSDMsg with a specific base path for the message format schema, and a base schema name. For instance,
+     * FSDMsg("file:src/data/NDC-", "root") will look for a file: src/data/NDC-root.xml
      * @param basePath   schema path
      * @param baseSchema schema name
      */
@@ -113,7 +159,7 @@ public class FSDMsg implements Loggeable, Cloneable {
     }
     
     /**
-     * parse message
+     * parse message. If the stream ends before the message is completely read, then the method adds an EOF field.
      *
      * @param is input stream
      *
@@ -130,7 +176,7 @@ public class FSDMsg implements Loggeable, Cloneable {
         }
     }
     /**
-     * parse message
+     * parse message. If the stream ends before the message is completely read, then the method adds an EOF field.
      *
      * @param b message image
      *
