@@ -18,6 +18,21 @@
 
 package org.jpos.util;
 
+import java.io.ByteArrayInputStream;
+import java.io.EOFException;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
@@ -25,13 +40,6 @@ import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOUtil;
 import org.jpos.space.Space;
 import org.jpos.space.SpaceFactory;
-
-import java.io.*;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 /**
  * General purpose, Field Separator delimited message.
@@ -53,6 +61,8 @@ import java.util.Map;
  * </dd>
  * <dt>key</dt>
  * <dd>If this optional attribute has a value of "true", then fields from another schema, specified by the value, are appended to this schema.</dd>
+ * <dt>separator</dt>
+ * <dd>An optional attribute containing the separator for the field. This is the preferred method of specifying the separator. See the list of optional</dd>
  * </dl>
  * <p>
  * Possible types are:
@@ -71,7 +81,9 @@ import java.util.Map;
  * <dt>GS</dt><dd>Field separator using '035' as the separator.</dd>
  * <dt>RS</dt><dd>Field separator using '036' as the separator.</dd>
  * <dt>PIPE</dt><dd>Field separator using '|' as the separator.</dd>
- * <dt>EOF</dt><dd>End of Field - no separator character is emitted, but also no padding is done.</dd>
+ * <dt>EOF</dt><dd>End of File - no separator character is emitted, but also no padding is done. Also if the end of file is reached
+ * parsing a message, then no exception is thrown.</dd>
+ * <dt>DS</dt><dd>A dummy separator. This is similar to EOF, but the message stream must not end before it is allowed.</dd>
  * </dl>
  * </p>
  * <p>
@@ -92,9 +104,11 @@ public class FSDMsg implements Loggeable, Cloneable {
     public static char EOF = '\000';
     public static char PIPE = '\u007C';
     
+    private static final String DUMMY_SEPARATOR = "DS";
+    
     Map fields;
     Map separators;
-    
+
     String baseSchema;
     String basePath;
     byte[] header;
@@ -207,7 +221,7 @@ public class FSDMsg implements Loggeable, Cloneable {
         return pack().getBytes("ISO8859_1");
     }
 
-    protected String get (String id, String type, int length, String defValue) 
+    protected String get (String id, String type, int length, String defValue, String separator) 
         throws ISOException
     {
         String value = (String) fields.get (id);
@@ -218,14 +232,14 @@ public class FSDMsg implements Loggeable, Cloneable {
 
         switch (type.charAt (0)) {
             case 'N':
-                if (isSeparated(type)) {
+                if (isSeparated(separator)) {
                     // Leave value unpadded.
                 } else {
                     value = ISOUtil.zeropad (value, length);
                 }
                 break;
             case 'A':
-                if (isSeparated(type)) {
+                if (isSeparated(separator)) {
                     // Leave value unpadded.
                 } else {
                     value = ISOUtil.strpad (value, length);
@@ -240,7 +254,7 @@ public class FSDMsg implements Loggeable, Cloneable {
             case 'B':
                 try {
                     if ((length << 1) >= value.length()) {
-                        if (isSeparated(type)) {
+                        if (isSeparated(separator)) {
                             // Convert but do not pad if this field ends with a
                             // separator
                             value = new String(ISOUtil.hex2byte(value), "ISO8859_1");
@@ -259,39 +273,31 @@ public class FSDMsg implements Loggeable, Cloneable {
                 }
             break;
         }
-        return (isSeparated(type)) ? ISOUtil.blankUnPad(value) : value;
+        return (isSeparated(separator)) ? ISOUtil.blankUnPad(value) : value;
     }
     
-    private boolean isSeparated(String type) {
+    private boolean isSeparated(String separator) {
         /*
          * if type's last two characters appear in our Map of separators,
          * return true
          */
-        if (type.length() > 2) {
-            if (separators.containsKey(getSeparatorType(type))) {
+        if (separator != null) {
+            if (separators.containsKey (separator)) {
                 return true;
             } else {
-                if (type.endsWith("DS")) { 
+                if (isDummySeparator (separator)) { 
                     return true;
                 }
                 
-                throw new RuntimeException("FSDMsg.isSeparated(String) found that type of "+type+" is used, but "+getSeparatorType(type)+" has not been defined as a separator!");
+                throw new RuntimeException("FSDMsg.isSeparated(String) found that "+separator+" has not been defined as a separator!");
             }
         }
         return false;
 
     }
 
-    private boolean isDummySeparator(String type) {
-        /*
-         * if type's last two characters appear in our Map of separators, return
-         * true
-         */
-        if (type.endsWith("DS")) {
-            return true;
-        }
-        return false;
-
+    private boolean isDummySeparator(String separator) {
+        return DUMMY_SEPARATOR.equals(separator);
     }
     
     private boolean isBinary(String type) {
@@ -312,19 +318,17 @@ public class FSDMsg implements Loggeable, Cloneable {
         return null;
     }
     
-    private char getSeparator(String type) {
-        if (type.length() > 2) {
-            if (separators.containsKey(getSeparatorType(type))) {
-                return ((Character)separators.get(getSeparatorType(type))).charValue();
-            } else {
-                if (type.endsWith("DS")) {
-                    // Dummy separator type, return 0 to indicate nothing to add.
-                    return 0;
-                }
+    private char getSeparator(String separator) {
+        if (separators.containsKey(separator)) {
+            return ((Character)separators.get(separator)).charValue();
+        } else {
+            if (isDummySeparator (separator)) {
+                // Dummy separator type, return 0 to indicate nothing to add.
+                return 0;
             }
         }
         
-        throw new RuntimeException("getSeparator called on for type="+type+" which does not resolve to a known separator.");
+        throw new RuntimeException("getSeparator called on separator="+separator+" which does not resolve to a known separator.");
     }
 
     protected void pack (Element schema, StringBuffer sb) 
@@ -337,21 +341,46 @@ public class FSDMsg implements Loggeable, Cloneable {
             String id    = elem.getAttributeValue ("id");
             int length   = Integer.parseInt (elem.getAttributeValue ("length"));
             String type  = elem.getAttributeValue ("type");
+            // For backward compatibility, look for a separator at the end of the type attribute, if no separator has been defined.
+            String separator = elem.getAttributeValue ("separator");
+            if (type != null && separator == null) {
+            	separator = getSeparatorType (type);
+            }
             boolean key  = "true".equals (elem.getAttributeValue ("key"));
+            Map properties = key ? loadProperties(elem) : Collections.EMPTY_MAP;
             String defValue = elem.getText();
-            String value = get (id, type, length, defValue);
+            String value = get (id, type, length, defValue, separator);
             sb.append (value);
             
-            if (isSeparated(type)) {
-                char c = getSeparator(type);
+            if (isSeparated(separator)) {
+                char c = getSeparator(separator);
                 if (c > 0)
                     sb.append(c);
             }
             if (key)
-                keyOff = keyOff + ISOUtil.normalize(value);
+                keyOff = keyOff + normalizeKeyValue(value, properties);
         }
         if (keyOff.length() > 0) 
             pack (getSchema (getId (schema) + keyOff), sb);
+    }
+
+    private Map loadProperties(Element elem) {
+    	Map props = new HashMap ();
+    	Iterator iter = elem.getChildren ("property").iterator ();
+    	while (iter.hasNext ()) {
+    		Element prop = (Element) iter.next ();
+    		String name = prop.getAttributeValue ("name");
+    		String value = prop.getAttributeValue ("value");
+    		props.put (name, value);
+    	}
+	    return props;
+    }
+
+	private String normalizeKeyValue(String value, Map properties) {
+    	if (properties.containsKey(value)) {
+    		return (String) properties.get(value);
+    	}
+    	return ISOUtil.normalize(value);
     }
 
     protected void unpack (InputStream is, Element schema) 
@@ -366,12 +395,17 @@ public class FSDMsg implements Loggeable, Cloneable {
             String id    = elem.getAttributeValue ("id");
             int length   = Integer.parseInt (elem.getAttributeValue ("length"));
             String type  = elem.getAttributeValue ("type").toUpperCase();
+            String separator = elem.getAttributeValue ("separator");
+            if (type != null && separator == null) {
+            	separator = getSeparatorType (type);
+            }
             boolean key  = "true".equals (elem.getAttributeValue ("key"));
+            Map properties = key ? loadProperties(elem) : Collections.EMPTY_MAP;
             String value = readField (
-                is, id, length, type );
+                is, id, length, type, separator );
             
             if (key)
-                keyOff = keyOff + ISOUtil.normalize(value);
+                keyOff = keyOff + normalizeKeyValue(value, properties);
 
             if ("K".equals(type) && !value.equals (elem.getText()))
                 throw new IllegalArgumentException (
@@ -390,15 +424,15 @@ public class FSDMsg implements Loggeable, Cloneable {
         String s = e.getAttributeValue ("id");
         return s == null ? "" : s;
     }
-    protected String read (InputStream is, int len, String type) 
+    protected String read (InputStream is, int len, String type, String separator) 
         throws IOException 
     {
         StringBuffer sb = new StringBuffer();
         byte[] b = new byte[1];
-        boolean expectSeparator = isSeparated(type);
+        boolean expectSeparator = isSeparated(separator);
         boolean separated = expectSeparator;
 
-        if (isDummySeparator(type)) {
+        if (isDummySeparator(separator)) {
             /*
              * No need to look for a seperator, that is not there! Try and take
              * len bytes from the is.
@@ -413,21 +447,21 @@ public class FSDMsg implements Loggeable, Cloneable {
 
             for (int i = 0; i < len; i++) {
                 if (is.read(b) < 0) {
-                    if (!type.endsWith("EOF"))
+                    if (!"EOF".equals(separator))
                         throw new EOFException();
                     else {
                         separated = false;
                         break;
                     }
                 }
-                if (expectSeparator && (b[0] == getSeparator(type))) {
+                if (expectSeparator && (b[0] == getSeparator(separator))) {
                     separated = false;
                     break;
                 }
                 sb.append((char) (b[0] & 0xff));
             }
 
-            if (separated && !type.endsWith("EOF")) {
+            if (separated && !"EOF".equals(separator)) {
                 if (is.read(b) < 0) {
                     throw new EOFException();
                 }
@@ -436,10 +470,10 @@ public class FSDMsg implements Loggeable, Cloneable {
         return sb.toString();
     }
     protected String readField 
-        (InputStream is, String fieldName, int len, String type) 
+        (InputStream is, String fieldName, int len, String type, String separator) 
         throws IOException
     {
-        String fieldValue = read (is, len, type);
+        String fieldValue = read (is, len, type, separator);
         
         if (isBinary(type))
             fieldValue = ISOUtil.hexString (fieldValue.getBytes ("ISO8859_1"));

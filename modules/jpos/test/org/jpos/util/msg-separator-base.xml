@@ -1,0 +1,5 @@
+<schema id='fsdmsg-separator-test'>
+ <field id="testafs" type="A"    length="1" separator="FS" />
+ <field id="finalfield" type="AEOF"   length="1" />
+</schema>
+

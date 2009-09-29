@@ -13,6 +13,7 @@
     <property name="archive" value="${name}-${version}" />
 
     <property name="lib.dir" value="lib"/>
+    <property name="lib.test.dir" value="${lib.dir}/test"/>
     <property name="bin.dir" value="bin"/>
     <property name="build.src" value="${build.dir}/src"/>
     <property name="build.doc" value="${build.dir}/doc"/>
@@ -336,7 +337,12 @@ Sealed: false</concat>
          debug="${debug}" nowarn="${nowarn}"
          target="1.5" source="1.5"
          deprecation="${deprecation}">
-         <classpath refid="main.classpath" />
+         <classpath>
+         	<path refid="main.classpath" />
+            <fileset dir="${lib.test.dir}">
+                <include name="*.jar"/>
+            </fileset>
+         </classpath>
       </javac>
       <junit printsummary="yes" haltonfailure="yes" showoutput="true" 
            dir="${test-classes.dir}" 
@@ -350,6 +356,9 @@ Sealed: false</concat>
          <fileset dir="${build.lib}">
              <include name="*.jar"/>
          </fileset>
+        <fileset dir="${lib.test.dir}">
+            <include name="*.jar"/>
+        </fileset>
        </classpath>
        <formatter type="plain" />
        <batchtest fork="yes" todir="${build.test}">

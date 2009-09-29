@@ -1,0 +1,4 @@
+<schema id='fsdmsg-properties-test'>
+	<field id="b" type="A" length="1"/>
+</schema>
+
