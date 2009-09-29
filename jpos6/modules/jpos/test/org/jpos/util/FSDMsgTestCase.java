@@ -25,17 +25,17 @@ import org.jpos.iso.ISOUtil;
 import java.util.Arrays;
 
 public class FSDMsgTestCase extends TestCase {
+	// Eclipse wants :-
+	// private static final String SCHEMA_DIR_URL = "file:modules/jpos/test/org/jpos/util/";
+    // Original
+	private static final String SCHEMA_DIR_URL = "file:../modules/jpos/test/org/jpos/util/";
     FSDMsg imsg;
 
     FSDMsg omsg;
 
     public void setUp() throws Exception {
-        // Eclipse wants:-
-//        imsg = new FSDMsg("file:../jpos6/modules/jpos/test/org/jpos/util/msg-");
-//        omsg = new FSDMsg("file:../jpos6/modules/jpos/test/org/jpos/util/msg-");
-        // Original
-        imsg = new FSDMsg("file:../modules/jpos/test/org/jpos/util/msg-");
-        omsg = new FSDMsg("file:../modules/jpos/test/org/jpos/util/msg-");
+        imsg = new FSDMsg(SCHEMA_DIR_URL + "msg-");
+        omsg = new FSDMsg(SCHEMA_DIR_URL + "msg-");
     }
 
     public void testLeadingBlanks() throws Exception {
@@ -89,13 +89,8 @@ public class FSDMsgTestCase extends TestCase {
     }
 
     public void testDummySeparatorAlpha() throws Exception {
-    
-        // Eclipse wants:-
-//        FSDMsg imsg = new FSDMsg("file:../jpos6/modules/jpos/test/org/jpos/util/msgDS-");
-//        FSDMsg omsg = new FSDMsg("file:../jpos6/modules/jpos/test/org/jpos/util/msgDS-");
-        // Original
-        FSDMsg imsg = new FSDMsg("file:../test/org/jpos/util/msgDS-");
-        FSDMsg omsg = new FSDMsg("file:../test/org/jpos/util/msgDS-");
+        FSDMsg imsg = new FSDMsg(SCHEMA_DIR_URL + "msgDS-");
+        FSDMsg omsg = new FSDMsg(SCHEMA_DIR_URL + "msgDS-");
         
 
         String macData = "AbCdEfGh";
@@ -138,12 +133,8 @@ public class FSDMsgTestCase extends TestCase {
     }
 
     public void testDummySeparatorBinary() throws Exception {
-        // Eclipse wants:-
-//        FSDMsg imsg = new FSDMsg("file:../jpos6/modules/jpos/test/org/jpos/util/DSmsg-");
-//        FSDMsg omsg = new FSDMsg("file:../jpos6/modules/jpos/test/org/jpos/util/DSmsg-");
-        // Original
-        FSDMsg imsg = new FSDMsg("file:../test/org/jpos/util/DSmsg-");
-        FSDMsg omsg = new FSDMsg("file:../test/org/jpos/util/DSmsg-");
+        FSDMsg imsg = new FSDMsg(SCHEMA_DIR_URL + "DSmsg-");
+        FSDMsg omsg = new FSDMsg(SCHEMA_DIR_URL + "DSmsg-");
         
 
         String macData = "12345678123456781234567812345678";
@@ -196,10 +187,7 @@ public class FSDMsgTestCase extends TestCase {
 
     
     public void testDummySeparatorNumeric() throws Exception {
-        // Eclipse wants:-
-//        FSDMsg m = new FSDMsg("file:../jpos6/modules/jpos/test/org/jpos/util/msgDS-");
-        // Original
-        FSDMsg m = new FSDMsg("file:../test/org/jpos/util/msgDS-");
+        FSDMsg m = new FSDMsg(SCHEMA_DIR_URL + "msgDS-");
 
     
         String macData = "12345678";
@@ -225,10 +213,7 @@ public class FSDMsgTestCase extends TestCase {
     
     }
     public void testClone () throws Exception {
-        // Eclipse wants:-
-//        FSDMsg m0 = new FSDMsg("file:../jpos6/modules/jpos/test/org/jpos/util/msgDS-");
-        // Original
-        FSDMsg m0 = new FSDMsg("file:../test/org/jpos/util/msgDS-");
+        FSDMsg m0 = new FSDMsg(SCHEMA_DIR_URL + "msgDS-");
         
         m0.set ("alphavardata", "ABCDE");
         FSDMsg m1 = (FSDMsg) m0.clone();
@@ -238,10 +223,7 @@ public class FSDMsgTestCase extends TestCase {
 
     }
     public void testFSDISOMsgClone () throws Exception {
-        // Eclipse wants:-
-//        FSDMsg m0 = new FSDMsg("file:../jpos6/modules/jpos/test/org/jpos/util/msgDS-");
-        // Original
-        FSDMsg m0 = new FSDMsg("file:../test/org/jpos/util/msgDS-");
+        FSDMsg m0 = new FSDMsg(SCHEMA_DIR_URL + "msgDS-");
       
         m0.set ("alphavardata", "ABCDE");
         FSDISOMsg iso0 = new FSDISOMsg (m0);

@@ -1,0 +1,6 @@
+<schema id='a'>
+ <field id="testafs" type="A" length="1" separator="FS" key="true">
+ 	<property name="x" value="xx"/>
+ </field>
+</schema>
+
