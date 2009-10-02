@@ -400,8 +400,11 @@ public class ChannelAdaptor
         append (sb, "tx=", tx);
         append (sb, ", rx=", rx);
         append (sb, ", connects=", connects);
-        sb.append (", last=");
-        sb.append(lastTxn);
+        if (lastTxn > 0) {
+            sb.append (", idle=");
+            sb.append(System.currentTimeMillis() - lastTxn);
+            sb.append ("ms");
+        }
         return sb.toString();
     }
     /**
