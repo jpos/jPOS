@@ -429,6 +429,17 @@ public abstract class BaseChannel extends Observable
     protected ISOPackager getDynamicPackager (byte[] image) {
         return packager;
     }
+    /**
+     * allow subclasses to override default packager
+     * on outgoing messages
+     * @param header message header
+     * @param image incoming message image
+     * @return ISOPackager
+     */
+     protected ISOPackager getDynamicPackager (byte[] header, byte[] image) {
+         return getDynamicPackager(image);
+     }
+
 
     /** 
      * Allow subclasses to override the Default header on
