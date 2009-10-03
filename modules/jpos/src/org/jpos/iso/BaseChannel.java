@@ -83,6 +83,8 @@ public abstract class BaseChannel extends Observable
     // private int serverPort = -1;
     protected DataInputStream serverIn;
     protected DataOutputStream serverOut;
+    protected final Object serverInLock = new Object();
+    protected final Object serverOutLock = new Object();
     protected ISOPackager packager;
     protected ServerSocket serverSocket = null;
     protected Vector incomingFilters, outgoingFilters;
@@ -254,12 +256,16 @@ public abstract class BaseChannel extends Observable
             "/" + socket.getInetAddress().getHostAddress() + ":" 
             + socket.getPort()
         );
-        serverIn = new DataInputStream (
-            new BufferedInputStream (socket.getInputStream ())
-        );
-        serverOut = new DataOutputStream(
-            new BufferedOutputStream(socket.getOutputStream(), 2048)
-        );
+        synchronized (serverInLock) {
+            serverIn = new DataInputStream (
+                new BufferedInputStream (socket.getInputStream ())
+            );
+        }
+        synchronized (serverOutLock) {
+            serverOut = new DataOutputStream(
+                new BufferedOutputStream(socket.getOutputStream(), 2048)
+            );
+        }
         postConnectHook();
         usable = true;
         cnt[CONNECT]++;
@@ -407,7 +413,7 @@ public abstract class BaseChannel extends Observable
      * flag as unusable in order to force a reconnection)
      */
     public void setUsable(boolean b) {
-        Logger.log (new LogEvent (this, "usable", new Boolean (b)));
+        Logger.log (new LogEvent (this, "usable", b));
         usable = b;
     }
    /**
@@ -444,6 +450,8 @@ public abstract class BaseChannel extends Observable
     /** 
      * Allow subclasses to override the Default header on
      * incoming messages.
+     * @param image message image
+     * @return ISOHeader instance
      */
     protected ISOHeader getDynamicHeader (byte[] image) {
         return image != null ? 
@@ -458,10 +466,14 @@ public abstract class BaseChannel extends Observable
     }
     /**
      * @deprecated use sendMessageTrailler(ISOMsg m, byte[] b) instead.
+     * @param m a reference to the ISOMsg
+     * @param len the packed image length
+     * @throws IOException on error
      */
     protected void sendMessageTrailler(ISOMsg m, int len) throws IOException 
     {
     }
+    @SuppressWarnings ("deprecation")
     protected void sendMessageTrailler(ISOMsg m, byte[] b) throws IOException 
     {
         sendMessageTrailler (m, b.length);
@@ -499,7 +511,7 @@ public abstract class BaseChannel extends Observable
      * @exception ISOFilter.VetoException;
      */
     public void send (ISOMsg m) 
-        throws IOException, ISOException, VetoException
+        throws IOException, ISOException
     {
         LogEvent evt = new LogEvent (this, "send");
         try {
@@ -511,7 +523,7 @@ public abstract class BaseChannel extends Observable
             m.setDirection(ISOMsg.OUTGOING); // filter may have drop this info
             m.setPackager (getDynamicPackager(m));
             byte[] b = m.pack();
-            synchronized (serverOut) {
+            synchronized (serverOutLock) {
                 sendMessageLength(b.length + getHeaderLength(m));
                 sendMessageHeader(m, b.length);
                 sendMessage (b, 0, b.length);
@@ -541,10 +553,10 @@ public abstract class BaseChannel extends Observable
     }
     /**
      * Sends a high-level keep-alive message (zero length)
-     * @exception IOException
+     * @throws IOException on exception
      */
     public void sendKeepAlive () throws IOException {
-        synchronized (serverOut) {
+        synchronized (serverOutLock) {
             sendMessageLength(0);
             serverOut.flush ();
         }
@@ -560,6 +572,7 @@ public abstract class BaseChannel extends Observable
     }
     /**
      * support old factory method name for backward compatibility
+     * @return newly created ISOMsg
      */
     protected ISOMsg createMsg () {
         return createISOMsg();
@@ -573,6 +586,7 @@ public abstract class BaseChannel extends Observable
      *
      * @param hLen The Length og the reader to read
      * @return The header bytes that were read in
+     * @throws IOException on error
      */
     protected byte[] readHeader(int hLen) throws IOException {
         byte[] header = new byte[hLen];
@@ -582,8 +596,8 @@ public abstract class BaseChannel extends Observable
     /**
      * Waits and receive an ISOMsg over the TCP/IP session
      * @return the Message received
-     * @exception IOException
-     * @exception ISOException
+     * @throws IOException
+     * @throws ISOException
      */
     public ISOMsg receive() throws IOException, ISOException {
         byte[] b=null;
@@ -596,7 +610,7 @@ public abstract class BaseChannel extends Observable
             if (!isConnected())
                 throw new ISOException ("unconnected ISOChannel");
 
-            synchronized (serverIn) {
+            synchronized (serverInLock) {
                 int len  = getMessageLength();
                 int hLen = getHeaderLength();
 
@@ -673,7 +687,9 @@ public abstract class BaseChannel extends Observable
     /**
      * Low level receive
      * @param b byte array
-     * @exception IOException
+     * @throws IOException on error
+     * @return the total number of bytes read into the buffer,
+     * or -1 if there is no more data because the end of the stream has been reached.
      */
     public int getBytes (byte[] b) throws IOException {
         return serverIn.read (b);
@@ -757,6 +773,7 @@ public abstract class BaseChannel extends Observable
      * @param filter filter to add
      * @param direction ISOMsg.INCOMING, ISOMsg.OUTGOING, 0 for both
      */
+    @SuppressWarnings ("unchecked")
     public void addFilter (ISOFilter filter, int direction) {
         switch (direction) {
             case ISOMsg.INCOMING :
@@ -938,6 +955,7 @@ public abstract class BaseChannel extends Observable
         return overrideHeader;
     }
     /**
+     * @param name the Channel's name (without the "channel." prefix)
      * @return ISOChannel instance with given name.
      * @throws NameRegistrar.NotFoundException;
      * @see NameRegistrar
@@ -950,7 +968,8 @@ public abstract class BaseChannel extends Observable
    /**
     * Gets the ISOClientSocketFactory (may be null)
     * @see     ISOClientSocketFactory
-    * @since 1.3.3
+    * @since 1.3.3    \
+    * @return ISOClientSocketFactory
     */
     public ISOClientSocketFactory getSocketFactory() {
         return socketFactory;
@@ -986,7 +1005,7 @@ public abstract class BaseChannel extends Observable
     public Object clone(){
       try {
         BaseChannel channel = (BaseChannel)super.clone();
-        channel.cnt = (int[])cnt.clone();
+        channel.cnt = cnt.clone();
         return channel;
       } catch (CloneNotSupportedException e) {
         throw new InternalError();
