@@ -635,7 +635,7 @@ public abstract class BaseChannel extends Observable
                     throw new ISOException(
                         "receive length " +len + " seems strange - maxPacketLength = " + getMaxPacketLength());
             }
-            m.setPackager (getDynamicPackager(b));
+            m.setPackager (getDynamicPackager(header, b));
             m.setHeader (getDynamicHeader(header));
             if (b.length > 0 && !shouldIgnore (header))  // Ignore NULL messages
                 unpack (m, b);
