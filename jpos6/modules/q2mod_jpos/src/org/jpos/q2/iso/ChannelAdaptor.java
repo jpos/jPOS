@@ -400,12 +400,29 @@ public class ChannelAdaptor
         append (sb, "tx=", tx);
         append (sb, ", rx=", rx);
         append (sb, ", connects=", connects);
+        sb.append (", last=");
+        sb.append(lastTxn);
         if (lastTxn > 0) {
             sb.append (", idle=");
             sb.append(System.currentTimeMillis() - lastTxn);
             sb.append ("ms");
         }
         return sb.toString();
+    }
+    public int getTXCounter() {
+        return tx;
+    }
+    public int getRXCounter() {
+        return rx;
+    }
+    public int getConnectsCounter () {
+        return connects;
+    }
+    public long getLastTxnTimestampInMillis() {
+        return lastTxn;
+    }
+    public long getIdleTimeInMillis() {
+        return lastTxn > 0L ? System.currentTimeMillis() - lastTxn : -1L;
     }
     /**
      * @jmx:managed-attribute description="socket factory" 
