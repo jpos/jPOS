@@ -52,5 +52,9 @@ public interface ChannelAdaptorMBean extends org.jpos.q2.QBeanSupportMBean {
   public boolean isConnected();
   public void resetCounters ();
   public String getCountersAsString ();
+  public int getTXCounter();
+  public int getRXCounter();
+  public int getConnectsCounter();
+  public long getLastTxnTimestampInMillis();
+  public long getIdleTimeInMillis();
 }
-
