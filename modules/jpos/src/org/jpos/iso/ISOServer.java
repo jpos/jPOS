@@ -462,15 +462,34 @@ public class ISOServer extends Observable
     }
     public String getCountersAsString () {
         StringBuffer sb = new StringBuffer ();
+        int cnt[] = getCounters();
+        sb.append ("connected=");
+        sb.append (Integer.toString(cnt[0]));
+        sb.append (", rx=");
+        sb.append (Integer.toString(cnt[0]));
+        sb.append (", tx=");
+        sb.append (Integer.toString(cnt[1]));
+        sb.append (", last=");
+        sb.append (lastTxn);
+        if (lastTxn > 0) {
+            sb.append (", idle=");
+            sb.append(System.currentTimeMillis() - lastTxn);
+            sb.append ("ms");
+        }
+        return sb.toString();
+    }
+    
+    public int[] getCounters()
+    {
         Iterator iter = channels.entrySet().iterator();
-        int[] cnt = new int[2];
-        int connectedChannels = 0;
+        int[] cnt = new int[3];
+        cnt[2] = 0;
         for (int i=0; iter.hasNext(); i++) {
             Map.Entry entry = (Map.Entry) iter.next();
             WeakReference ref = (WeakReference) entry.getValue();
             ISOChannel c = (ISOChannel) ref.get ();
             if (c != null && !LAST.equals (entry.getKey()) && c.isConnected()) {
-                connectedChannels++;
+                cnt[2]++;
                 if (c instanceof BaseChannel) {
                     int[] cc = ((BaseChannel)c).getCounters();
                     cnt[0] += cc[ISOChannel.RX];
@@ -478,16 +497,28 @@ public class ISOServer extends Observable
                 }
             }
         }
-        sb.append ("connected=");
-        sb.append (connectedChannels);
-        sb.append (", rx=");
-        sb.append (Integer.toString(cnt[0]));
-        sb.append (", tx=");
-        sb.append (Integer.toString(cnt[1]));
-        sb.append (", last=");
-        sb.append (lastTxn);
-        return sb.toString();
+        return cnt;
     }
+    public int getTXCounter() {
+        int cnt[] = getCounters();
+        return cnt[1];
+    }
+    public int getRXCounter() {
+        int cnt[] = getCounters();
+        return cnt[0];
+    }
+    public int getConnections () {
+        int cnt[] = getCounters();
+        return cnt[2];
+    }
+    public long getLastTxnTimestampInMillis() {
+        return lastTxn;
+    }
+    public long getIdleTimeInMillis() {
+        return lastTxn > 0L ? System.currentTimeMillis() - lastTxn : -1L;
+    }
+
+        
     public String getCountersAsString (String isoChannelName) {
         ISOChannel channel = getISOChannel(isoChannelName);
         StringBuffer sb = new StringBuffer();

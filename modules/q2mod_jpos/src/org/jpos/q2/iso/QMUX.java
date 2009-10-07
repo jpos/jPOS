@@ -290,8 +290,28 @@ public class QMUX
         sb.append (Boolean.toString(isConnected()));
         sb.append (", last=");
         sb.append (lastTxn);
+        if (lastTxn > 0) {
+            sb.append (", idle=");
+            sb.append(System.currentTimeMillis() - lastTxn);
+            sb.append ("ms");
+        }
         return sb.toString();
     }
+    
+    public int getTXCounter() {
+        return tx;
+    }
+    public int getRXCounter() {
+        return rx;
+    }
+
+    public long getLastTxnTimestampInMillis() {
+        return lastTxn;
+    }
+    public long getIdleTimeInMillis() {
+        return lastTxn > 0L ? System.currentTimeMillis() - lastTxn : -1L;
+    }
+    
     protected void processUnhandled (ISOMsg m) {
         ISOSource source = m.getSource ();
         if (source != null) {
@@ -398,4 +418,3 @@ public class QMUX
         }
     }
 }
-
