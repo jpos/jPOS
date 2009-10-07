@@ -39,4 +39,8 @@ public interface QMUXMBean extends org.jpos.q2.QBeanSupportMBean {
 
   public void resetCounters ();
   public String getCountersAsString ();
+  public int getTXCounter();
+  public int getRXCounter();
+  public long getLastTxnTimestampInMillis();
+  public long getIdleTimeInMillis();
 }

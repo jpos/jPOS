@@ -26,5 +26,9 @@ public interface ISOServerMBean extends ThreadPoolMBean {
     public int getConnectionCount ();
     public String getISOChannelNames();
     public String getCountersAsString (String isoChannelName);
+    public int getTXCounter();
+    public int getRXCounter();
+    public long getLastTxnTimestampInMillis();
+    public long getIdleTimeInMillis();
 }
 
