@@ -60,7 +60,7 @@ public class NACChannel extends BaseChannel {
      * Construct server ISOChannel
      * @param p     an ISOPackager
      * @param TPDU  an optional raw header (i.e. TPDU)
-     * @exception IOException
+     * @exception IOException on error
      * @see ISOPackager
      */
     public NACChannel (ISOPackager p, byte[] TPDU) throws IOException {
@@ -72,7 +72,7 @@ public class NACChannel extends BaseChannel {
      * @param p     an ISOPackager
      * @param TPDU  an optional raw header (i.e. TPDU)
      * @param serverSocket where to accept a connection
-     * @exception IOException
+     * @exception IOException on error
      * @see ISOPackager
      */
     public NACChannel (ISOPackager p, byte[] TPDU, ServerSocket serverSocket) 
@@ -88,9 +88,7 @@ public class NACChannel extends BaseChannel {
     protected int getMessageLength() throws IOException, ISOException {
         byte[] b = new byte[2];
         serverIn.readFully(b,0,2);
-        return (int) (
-            ((((int)b[0])&0xFF) << 8) | 
-            (((int)b[1])&0xFF));
+        return ((((int)b[0])&0xFF) << 8) | (((int)b[1])&0xFF);
     }
     protected void sendMessageHeader(ISOMsg m, int len) throws IOException { 
         byte[] h = m.getHeader();
