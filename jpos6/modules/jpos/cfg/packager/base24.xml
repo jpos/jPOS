@@ -648,5 +648,5 @@
       id="128"
       length="16"
       name="MAC 2"
-      class="org.jpos.iso.IFA_NUMERIC"/>
+      class="org.jpos.iso.IFA_BINARY"/>
 </isopackager>
