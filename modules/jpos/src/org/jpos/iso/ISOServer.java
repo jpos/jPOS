@@ -43,14 +43,14 @@ public class ISOServer extends Observable
     Loggeable
 {
     int port;
-    ISOChannel clientSideChannel;
+    protected ISOChannel clientSideChannel;
     ISOPackager clientPackager;
-    Collection clientOutgoingFilters, clientIncomingFilters, listeners;
+    protected Collection clientOutgoingFilters, clientIncomingFilters, listeners;
     ThreadPool pool;
     public static final int DEFAULT_MAX_THREADS = 100;
     public static final String LAST = ":last";
     String name;
-    long lastTxn = 0l;
+    protected long lastTxn = 0l;
     protected Logger logger;
     protected String realm;
     protected String realmChannel;
@@ -65,7 +65,7 @@ public class ISOServer extends Observable
     private boolean shutdown = false;
     private ServerSocket serverSocket;
     private Map channels;
-    private boolean ignoreISOExceptions;
+    protected boolean ignoreISOExceptions;
 
    /**
     * @param port port to listen
