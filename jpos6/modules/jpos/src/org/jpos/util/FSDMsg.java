@@ -78,7 +78,7 @@ import org.jpos.space.SpaceFactory;
  * <dl>
  * <dt>FS</dt><dd>Field separator using '034' as the separator.</dd>
  * <dt>US</dt><dd>Field separator using '037' as the separator.</dd>
- * <dt>GS</dt><dd>Field separator using '035' as the separator.</dd>
+ * <dt>GS</dt><dd>Group separator using '035' as the separator.</dd>
  * <dt>RS</dt><dd>Field separator using '036' as the separator.</dd>
  * <dt>PIPE</dt><dd>Field separator using '|' as the separator.</dd>
  * <dt>EOF</dt><dd>End of File - no separator character is emitted, but also no padding is done. Also if the end of file is reached
