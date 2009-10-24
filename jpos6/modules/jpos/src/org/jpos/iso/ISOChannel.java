@@ -86,7 +86,7 @@ public interface ISOChannel extends ISOSource {
     /**
      * associates this ISOChannel with a name on NameRegistrar
      * @param name name to register
-     * @see NameRegistrar
+     * @see org.jpos.util.NameRegistrar
      */
     public void setName (String name);
 
