@@ -349,6 +349,10 @@ public class FSDMsg implements Loggeable, Cloneable {
             boolean key  = "true".equals (elem.getAttributeValue ("key"));
             Map properties = key ? loadProperties(elem) : Collections.EMPTY_MAP;
             String defValue = elem.getText();
+            // If properties were specified, then the defValue contains lots of \n and \t in it. It should just be set to the empty string, or null.
+            if (!properties.isEmpty()) {
+            	defValue = defValue.replace("\n", "").replace("\t", "").replace("\r", "");
+            }
             String value = get (id, type, length, defValue, separator);
             sb.append (value);
             
