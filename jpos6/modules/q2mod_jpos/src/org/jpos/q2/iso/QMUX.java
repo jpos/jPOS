@@ -170,10 +170,17 @@ public class QMUX
             int f = key[i];
             String v = m.getString(f);
             if (v != null) {
-                if (f == 41) 
-                    v = ISOUtil.zeropad (v.trim(), 16); // BIC ANSI to ISO hack
-                else if (f == 11) 
-                    v = ISOUtil.zeropad (v.trim(), m.getMTI().charAt(0)=='2' ? 12 : 6); 
+                switch (f) {
+                    case 11:
+                        String vt = v.trim();
+                        int l = m.getMTI().charAt(0)=='2' ? 12 : 6;
+                        if (vt.length() < l)
+                            v = ISOUtil.zeropad (vt, l);
+                        break;
+                    case 41:
+                        v = ISOUtil.zeropad (v.trim(), 16); // BIC ANSI to ISO hack
+                        break;
+                }
                 sb.append (v);
             }
         }
