@@ -23,7 +23,7 @@ import org.jpos.iso.ISOUtil;
 import org.jpos.util.Profiler;
 
 public class JDBMSpaceTestCase extends TestCase {
-    public static final int COUNT = 1000;
+    public static final int COUNT = 100;
     JDBMSpace<String,Object> sp;
     public void setUp () {
         sp = (JDBMSpace<String,Object>) JDBMSpace.getSpace ("space-test");
