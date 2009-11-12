@@ -83,8 +83,9 @@ public abstract class BaseChannel extends Observable
     // private int serverPort = -1;
     protected DataInputStream serverIn;
     protected DataOutputStream serverOut;
-    protected final Object serverInLock = new Object();
-    protected final Object serverOutLock = new Object();
+    // The lock objects should be final, and never changed, but due to the clone() method, they must be set there.
+    protected Object serverInLock = new Object();
+    protected Object serverOutLock = new Object();
     protected ISOPackager packager;
     protected ServerSocket serverSocket = null;
     protected Vector incomingFilters, outgoingFilters;
@@ -1006,6 +1007,16 @@ public abstract class BaseChannel extends Observable
       try {
         BaseChannel channel = (BaseChannel)super.clone();
         channel.cnt = cnt.clone();
+        // The lock objects must also be cloned, and the DataStreams nullified, as it makes no sense
+        // to use the new lock objects to protect the old DataStreams.
+        // This should be safe as the only code that calls BaseChannel.clone() is ISOServer.run(),
+        // and it immediately calls accept(ServerSocket) which does a connect(), and that sets the stream objects.
+        channel.serverInLock = new Object();
+        channel.serverOutLock = new Object();
+        channel.serverIn = null;
+        channel.serverOut = null;
+        channel.usable = false;
+        channel.socket = null;
         return channel;
       } catch (CloneNotSupportedException e) {
         throw new InternalError();
