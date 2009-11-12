@@ -24,7 +24,7 @@ import org.jpos.util.Profiler;
 import org.jpos.iso.ISOUtil;
 
 public class JESpaceTestCase extends TestCase {
-    public static final int COUNT = 1000;
+    public static final int COUNT = 100;
     JESpace<String,Object> sp;
     public void setUp () {
         sp = (JESpace<String,Object>) 
