@@ -30,30 +30,38 @@ package org.jpos.q2;
 public interface QBean {
 
     // State
-    int STOPPED            = 0;
-    int STOPPING           = 1;
-    int STARTING           = 2;
-    int STARTED            = 3;
-    int FAILED             = 4;
-    int DESTROYED          = 5;
+    public static final int STOPPED    = 0;
+    public static final int STOPPING   = 1;
+    public static final int STARTING   = 2;
+    public static final int STARTED    = 3;
+    public static final int FAILED     = 4;
+    public static final int DESTROYED  = 5;
+
+    public static final String stateString[] = {
+        "Stopped", "Stopping", "Starting", "Started", "Failed", "Destroyed"
+    };
 
     /**
      * init the service
+     * @throws Exception on error
      */
     void init () throws Exception;
 
     /**
      * start the service
+     * @throws Exception on error
      */
     void start () throws Exception;
 
     /**
      * stop the service
+     * @throws Exception on error
      */
     void stop () throws Exception;
 
     /**
      * destroy the service
+     * @throws Exception on error
      */
     void destroy () throws Exception;
 
@@ -67,4 +75,3 @@ public interface QBean {
      */
     String getStateAsString ();
 }
-

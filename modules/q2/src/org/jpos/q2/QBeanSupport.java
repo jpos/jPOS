@@ -46,9 +46,6 @@ public class QBeanSupport
     String name;
     protected Log log;
     protected Configuration cfg;
-    public static final String stateString[] = {
-        "Stopped", "Stopping", "Starting", "Started", "Failed", "Destroyed"
-    };
         
     public QBeanSupport () {
         super();
@@ -201,15 +198,15 @@ public class QBeanSupport
         try {
             BeanInfo info = Introspector.getBeanInfo (mbeanClass);
             PropertyDescriptor[] desc = info.getPropertyDescriptors();
-            for (int i=0; i<desc.length; i++) {
-                if (desc[i].getWriteMethod() != null) {
-                    Method read = desc[i].getReadMethod();
-                    Object obj  = read.invoke (this, new Object[] { } );
+            for (PropertyDescriptor aDesc : desc) {
+                if (aDesc.getWriteMethod() != null) {
+                    Method read = aDesc.getReadMethod();
+                    Object obj = read.invoke(this, new Object[]{});
                     String type = read.getReturnType().getName();
-                    if ("java.lang.String".equals (type))
+                    if ("java.lang.String".equals(type))
                         type = null;
 
-                    addAttr (e, desc[i].getName(), obj, type);
+                    addAttr(e, aDesc.getName(), obj, type);
                 }
             }
         } catch (Exception ex) {
