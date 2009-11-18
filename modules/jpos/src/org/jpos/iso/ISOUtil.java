@@ -693,8 +693,8 @@ public class ISOUtil {
 
     /**
      * format double value
-     * @param amount    the amount
-     * @param fieldLen  the field len
+     * @param d    the amount
+     * @param len  the field len
      * @return a String of fieldLen characters (right justified)
      */
     public static String formatDouble(double d, int len) {
