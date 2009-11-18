@@ -116,10 +116,17 @@ public class ISOField
      * @param indent - optional indent string
      */
     public void dump (PrintStream p, String indent) {
-        p.println (indent +"<"+XMLPackager.ISOFIELD_TAG + " " +
-            XMLPackager.ID_ATTR +"=\"" +fieldNumber +"\" "+
-            XMLPackager.VALUE_ATTR
-            +"=\"" +ISOUtil.normalize (value) +"\"/>");
+        if (value.startsWith("<?xml")) {
+            p.print (indent +"<"+XMLPackager.ISOFIELD_TAG + " " +
+                XMLPackager.ID_ATTR +"=\"" +fieldNumber +"\"><![CDATA[");
+            p.print (value);
+            p.println ("]]></" + XMLPackager.ISOFIELD_TAG + ">");                        
+        } else {
+            p.println (indent +"<"+XMLPackager.ISOFIELD_TAG + " " +
+                XMLPackager.ID_ATTR +"=\"" +fieldNumber +"\" "+
+                XMLPackager.VALUE_ATTR
+                +"=\"" +ISOUtil.normalize (value) +"\"/>");
+        }
     }
     /**
      * changes this Component field number<br>
