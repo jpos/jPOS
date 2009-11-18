@@ -175,7 +175,7 @@ public class XMLPackager extends DefaultHandler
             if (id != null) {
                 try {
                     fieldNumber = Integer.parseInt (id);
-                } catch (NumberFormatException ex) { }
+                } catch (NumberFormatException ignored) { }
             }
             if (name.equals (ISOMSG_TAG)) {
                 if (fieldNumber >= 0) {
@@ -192,21 +192,25 @@ public class XMLPackager extends DefaultHandler
                 ISOMsg m     = (ISOMsg) stk.peek();
                 String value = atts.getValue(VALUE_ATTR);
                 String type  = atts.getValue(TYPE_ATTR);
+                value = value == null ? "" : value;
                 if (id == null || value == null)
-                    throw new SAXException ("invalid field");   
+                    throw new SAXException ("invalid field");
+
+                ISOComponent ic;
                 if (TYPE_BINARY.equals (type)) {
-                    m.set (new ISOBinaryField (
+                    ic = new ISOBinaryField (
                         fieldNumber, 
                             ISOUtil.hex2byte (
                                 value.getBytes(), 0, value.length()/2
                             )
-                        )
-                    );
+                        );
+
                 }
                 else {
-                    m.set (new ISOField (fieldNumber, value));
+                    ic = new ISOField (fieldNumber, value);
                 }
-                
+                m.set (ic);
+                stk.push (ic);
             } else if (HEADER_TAG.equals (name)) {
                 stk.push (new BaseHeader());
             }
@@ -216,8 +220,23 @@ public class XMLPackager extends DefaultHandler
         }
     }
     public void characters (char ch[], int start, int length) {
-        if (stk.peek() instanceof BaseHeader) {
-            ((BaseHeader)stk.peek()).unpack (
+        Object obj = stk.peek();
+        if (obj instanceof ISOField) {
+            ISOField f = (ISOField) obj;
+            if (f.getValue().toString().length() == 0) {
+                try {
+                    f.setValue (new String (ch, start, length));
+                } catch (ISOException e) {
+                    try {
+                        f.setValue (e.getMessage());
+                    } catch (ISOException ignored) {
+                        // giving up
+                    }
+                }
+            }
+        }
+        else if (obj instanceof BaseHeader) {
+            ((BaseHeader)obj).unpack (
                 ISOUtil.hex2byte (new String(ch,start,length))
             );
         }
@@ -229,6 +248,8 @@ public class XMLPackager extends DefaultHandler
             ISOMsg m = (ISOMsg) stk.pop();
             if (stk.empty())
                 stk.push (m); // push outter message
+        } else if (ISOFIELD_TAG.equals (name)) {
+            stk.pop();
         } else if (HEADER_TAG.equals (name)) {
             BaseHeader h = (BaseHeader) stk.pop();
             ISOMsg m = (ISOMsg) stk.peek ();
@@ -253,7 +274,7 @@ public class XMLPackager extends DefaultHandler
         return new ISOMsg();
     }
     private XMLReader createXMLReader () throws SAXException {
-        XMLReader reader = null;
+        XMLReader reader;
         try {
             reader = XMLReaderFactory.createXMLReader();
         } catch (SAXException e) {
