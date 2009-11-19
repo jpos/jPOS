@@ -56,7 +56,7 @@ public class IFMC_LLCHAR extends ISOFieldPackager {
     
         if ((len=s.length()) > getLength() || len>97)   // paranoia settings
             throw new ISOException (
-                "invalid len "+len +" packing LLMC_CHAR field "
+                "invalid len "+len +" packing IFMC_LLCHAR field "
                 +(Integer) c.getKey() + " maxlen=" + getLength()
             );
 

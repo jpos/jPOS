@@ -65,7 +65,7 @@ public class IFA_LLBNUM extends ISOFieldPackager {
         int len = s.length();
         if (len > getLength() || len>99)   // paranoia settings
             throw new ISOException (
-                "invalid len "+len +" packing LLNUMAB field " + c.getKey()
+                "invalid len "+len +" packing IFA_LLBNUM field " + c.getKey()
             );
 
         byte[] b = new byte[3 + (len >> 1)];

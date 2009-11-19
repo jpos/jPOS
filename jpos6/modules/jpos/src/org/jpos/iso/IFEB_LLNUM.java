@@ -58,7 +58,7 @@ public class IFEB_LLNUM extends ISOFieldPackager {
  
         if ((len=s.length()) > getLength() || len>99)   // paranoia settings
             throw new ISOException(
-            "invalid len "+len +" packing LLEBCHAR field "+ c.getKey());
+            "invalid len "+len +" packing IFEB_LLNUM field "+ c.getKey());
         
         // if odd length
         if ( (len%2)==1 ) {

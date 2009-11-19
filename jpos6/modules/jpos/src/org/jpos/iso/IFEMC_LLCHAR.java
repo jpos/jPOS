@@ -42,7 +42,7 @@ public class IFEMC_LLCHAR extends ISOFieldPackager {
     
         if ((len=s.length()) > getLength() || len>97)
             throw new ISOException (
-                "invalid len "+len +" packing ELLMC_CHAR field "
+                "invalid len "+len +" packing IFEMC_LLCHAR field "
                 +(Integer) c.getKey() + " maxlen=" + getLength()
             );
 

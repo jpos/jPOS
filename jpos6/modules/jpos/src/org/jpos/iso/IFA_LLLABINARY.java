@@ -55,7 +55,7 @@ public class IFA_LLLABINARY extends ISOFieldPackager {
         if ( (len=b.length) > getLength() || len>999)
             throw new ISOException (
                 "invalid len "+len 
-                +" packing LLLBINARY field "+ c.getKey()
+                +" packing IFA_LLLABINARY field "+ c.getKey()
             );
         
         byte[] data = ISOUtil.hexString( (byte[]) c.getValue() ).getBytes();
