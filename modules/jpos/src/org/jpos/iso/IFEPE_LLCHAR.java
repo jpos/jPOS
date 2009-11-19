@@ -67,7 +67,7 @@ public class IFEPE_LLCHAR extends ISOFieldPackager {
 
         if ((len = s.length()) > getLength() || len > 97) // paranoia settings
             throw new ISOException("invalid len " + len
-                    + " packing LLEPCHAR field " + (Integer) c.getKey());
+                    + " packing IFEPE_LLCHAR field " + (Integer) c.getKey());
 
         return ISOUtil.asciiToEbcdic(ISOUtil.zeropad(((Integer) c
                 .getKey()).toString(), 2)

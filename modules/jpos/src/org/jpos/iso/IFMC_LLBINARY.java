@@ -38,7 +38,7 @@ public class IFMC_LLBINARY extends ISOFieldPackager {
     
         if ((len=v.length) > getLength() || len>96)   // paranoia settings
             throw new ISOException (
-                "invalid len "+len +" packing LLMC_BINARY field "
+                "invalid len "+len +" packing IFMC_LLBINARY field "
                 +(Integer) c.getKey() + " maxlen=" + getLength()
             );
 

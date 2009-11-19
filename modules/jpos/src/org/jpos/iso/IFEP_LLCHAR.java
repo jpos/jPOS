@@ -60,7 +60,7 @@ public class IFEP_LLCHAR extends ISOFieldPackager {
     
         if ((len=s.length()) > getLength() || len>97)   // paranoia settings
             throw new ISOException (
-                "invalid len "+len +" packing LLEPCHAR field "
+                "invalid len "+len +" packing IFEP_LLCHAR field "
                 +(Integer) c.getKey()
             );
 
