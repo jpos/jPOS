@@ -18,15 +18,20 @@
 
 package org.jpos.iso.channel;
 
-import org.jpos.iso.*;
-import org.jpos.iso.packager.XMLPackager;
-
 import java.io.BufferedReader;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
+
+import org.jpos.iso.BaseChannel;
+import org.jpos.iso.ISOChannel;
+import org.jpos.iso.ISOException;
+import org.jpos.iso.ISOMsg;
+import org.jpos.iso.ISOPackager;
+import org.jpos.iso.ISOUtil;
+import org.jpos.iso.packager.XMLPackager;
 
 /**
  * Implements an ISOChannel able to exchange <b>jPOS generated</b> (or
@@ -101,7 +106,7 @@ public class TelnetXMLChannel extends BaseChannel {
      * @exception IOException
      */
     protected byte[] streamReceive() throws IOException {
-        int sp = 0;
+        int isoDepth = 0;
         StringBuffer sb = new StringBuffer();
         while (reader != null) {
             /*
@@ -122,20 +127,54 @@ public class TelnetXMLChannel extends BaseChannel {
             String s = reader.readLine();
             if (s == null)
                 throw new EOFException();
-            int isomsgStart = s.indexOf(isomsgStartTag);
-            if (isomsgStart >= 0) {
-                sp++;
-                sb.append(s, isomsgStart, s.length() - isomsgStart);
-            } else {
-                int isomsgEnd = s.indexOf(isomsgEndTag);
-                if (isomsgEnd >= 0) {
-                    sb.append(s,0,isomsgEnd + isomsgEndTag.length());
-                    if (--sp <= 0)
-                        break;
+            
+            
+            int isomsgFirstStart = s.indexOf(isomsgStartTag);
+            int isomsgStart = isomsgFirstStart;
+            while (isomsgStart > -1) {
+                isoDepth++;
+                isomsgStart = s.indexOf(isomsgStartTag,isomsgStart + 1);
+            }
+            
+            int isomsgLastEnd = s.lastIndexOf(isomsgEndTag);
+            int isomsgEnd = isomsgLastEnd;
+            while (isomsgEnd > -1) {
+                isoDepth--;
+                isomsgEnd = s.lastIndexOf(isomsgEndTag,isomsgEnd - 1);
+            }
+            
+            if (isomsgFirstStart > -1) {
+                if (isoDepth == 0 & isomsgLastEnd > -1) {
+                    /*
+                     * opened and completed
+                     */
+                    sb.append(s.substring(isomsgStart,isomsgLastEnd+isomsgEndTag.length()+1));
                 } else {
-                    if (sp > 0)
-                        sb.append(s);
+                    /*
+                     * opened, *not* completed
+                     */
+                    sb.append(s.substring(isomsgFirstStart));
                 }
+            } else {
+                if (isoDepth == 0 && isomsgLastEnd > -1) {
+                    /*
+                     * not opened, but completed 
+                     */
+                    sb.append(s.substring(0,isomsgLastEnd+isomsgEndTag.length()));
+                } else {
+                    /*
+                     * Not opened, nor completed, continuing...
+                     */
+                    sb.append (s);
+                }
+                
+            }
+            
+            if (isoDepth == 0 && isomsgLastEnd > -1 ) {
+                /*
+                 * just completed an isomsg - including nested...
+                 */
+                break;
             }
 
         }
