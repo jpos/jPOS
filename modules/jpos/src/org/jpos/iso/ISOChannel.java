@@ -77,6 +77,14 @@ public interface ISOChannel extends ISOSource {
      * @exception ISOException
      */
     public void send (ISOMsg m) throws IOException, ISOException;
+    
+    /**
+     * sends a byte[] over the TCP/IP session
+     * @param b the byte array to be sent
+     * @exception IOException
+     * @exception ISOException
+     */
+    public void send (byte[] b) throws IOException, ISOException;
 
     /**
      * @param b - usable state

@@ -93,6 +93,18 @@ public class LoopbackChannel extends FilteredBase implements LogSource {
         notifyObservers();
         Logger.log (evt);
     }
+    
+    public void send (byte[] b)
+    throws IOException,ISOException, VetoException
+{
+    if (!isConnected())
+        throw new ISOException ("unconnected ISOChannel");
+    LogEvent evt = new LogEvent (this, "loopback-send", b);
+    queue.enqueue (b);
+    cnt[TX]++;
+    notifyObservers();
+    Logger.log (evt);
+}
 
     public ISOMsg receive() throws IOException, ISOException
     {

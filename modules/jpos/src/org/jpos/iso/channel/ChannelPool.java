@@ -105,6 +105,9 @@ public class ChannelPool implements ISOChannel, LogSource, Configurable, Cloneab
     public void send (ISOMsg m) throws IOException, ISOException {
         getCurrent().send (m);
     }
+    public void send (byte[] b) throws IOException, ISOException {
+        getCurrent().send (b);
+    }
     public void setUsable(boolean b) {
         this.usable = b;
     }
