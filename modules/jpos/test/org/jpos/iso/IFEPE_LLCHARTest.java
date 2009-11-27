@@ -58,4 +58,18 @@ public class IFEPE_LLCHARTest extends TestCase
         assertEquals(origin, (String) unpack.getValue());
         assertEquals(92,unpack.fieldNumber);    // Derived from TAG!
     }
+    
+    public void testReversability2() throws Exception
+    {
+        String origin = "P";
+        ISOField f = new ISOField(87, origin);
+        IFEPE_LLCHAR packager = new IFEPE_LLCHAR(87, "Should be P");
+
+        ISOField unpack = new ISOField();
+        byte[] packed = packager.pack(f);
+        int len = packager.unpack(unpack, packed , 0);
+        assertEquals(origin.length()+2+2, len);
+        assertEquals(origin, unpack.getValue());
+        assertEquals(87,unpack.fieldNumber);    // Derived from TAG!
+    }
 }
