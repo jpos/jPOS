@@ -24,8 +24,8 @@ import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
 import org.jpos.core.ReConfigurable;
 import org.jpos.iso.ISOChannel;
-import org.jpos.iso.ISOFilter;
 import org.jpos.iso.ISOMsg;
+import org.jpos.iso.RawIncomingFilter;
 import org.jpos.util.LogEvent;
 
 /**
@@ -33,7 +33,7 @@ import org.jpos.util.LogEvent;
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
  * @version $Revision$ $Date$
  */
-public class BSHFilter implements ISOFilter, ReConfigurable {
+public class BSHFilter implements RawIncomingFilter, ReConfigurable {
     Configuration cfg;
     public BSHFilter () {
         super();
@@ -50,28 +50,36 @@ public class BSHFilter implements ISOFilter, ReConfigurable {
         this.cfg = cfg;
     }
 
-    public ISOMsg filter (ISOChannel channel, ISOMsg m, LogEvent evt) 
+    public ISOMsg filter (ISOChannel channel, ISOMsg m, LogEvent evt) throws VetoException {
+        return filter (channel, m, null, null, evt);
+    }
+
+    public ISOMsg filter (ISOChannel channel, ISOMsg m, byte[] header, byte[] image, LogEvent evt)
         throws VetoException
     {
         String[] source = cfg.getAll ("source");
-        for (int i=0; i<source.length; i++) {
+        for (String aSource : source) {
             try {
-                Interpreter bsh = new Interpreter ();
-                bsh.set ("channel", channel);
-                bsh.set ("message", m);
-                bsh.set ("evt", evt);
-                bsh.set ("cfg", cfg);
-                Object r = bsh.source (source[i]);
+                Interpreter bsh = new Interpreter();
+                bsh.set("channel", channel);
+                bsh.set("message", m);
+                if (header != null)
+                    bsh.set("header", header);
+                if (image != null)
+                    bsh.set("image", image);
+                bsh.set("evt", evt);
+                bsh.set("cfg", cfg);
+                Object r = bsh.source(aSource);
                 if (r instanceof ISOMsg)
                     m = (ISOMsg) r;
                 else
-                    m = (ISOMsg) bsh.get ("message");
-            }catch (TargetError e){
-               if(e.getTarget() instanceof VetoException)
-                   throw (VetoException)e.getTarget();
-            }catch (Exception e) {
-                if(e instanceof VetoException) throw (VetoException)e;
-                else evt.addMessage (e);
+                    m = (ISOMsg) bsh.get("message");
+            } catch (TargetError e) {
+                if (e.getTarget() instanceof VetoException)
+                    throw (VetoException) e.getTarget();
+            } catch (Exception e) {
+                if (e instanceof VetoException) throw (VetoException) e;
+                else evt.addMessage(e);
                 //throw new VetoException (e);
             }
         }
