@@ -1,0 +1,5 @@
+<schema id='fsdmsg-test'>
+ <field id="length" type="S"    length="2" />
+ <field id="rest" type="AEOM"   length="32" />
+</schema>
+

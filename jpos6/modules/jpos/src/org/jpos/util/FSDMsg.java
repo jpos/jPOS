@@ -27,11 +27,14 @@ import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.jdom.Element;
 import org.jdom.JDOMException;
@@ -79,11 +82,12 @@ import org.jpos.space.SpaceFactory;
  * <dt>FS</dt><dd>Field separator using '034' as the separator.</dd>
  * <dt>US</dt><dd>Field separator using '037' as the separator.</dd>
  * <dt>GS</dt><dd>Group separator using '035' as the separator.</dd>
- * <dt>RS</dt><dd>Field separator using '036' as the separator.</dd>
+ * <dt>RS</dt><dd>Row separator using '036' as the separator.</dd>
  * <dt>PIPE</dt><dd>Field separator using '|' as the separator.</dd>
  * <dt>EOF</dt><dd>End of File - no separator character is emitted, but also no padding is done. Also if the end of file is reached
  * parsing a message, then no exception is thrown.</dd>
  * <dt>DS</dt><dd>A dummy separator. This is similar to EOF, but the message stream must not end before it is allowed.</dd>
+ * <dt>EOM</dt><dd>End of message separator. This reads all bytes available in the stream.  
  * </dl>
  * </p>
  * <p>
@@ -103,8 +107,10 @@ public class FSDMsg implements Loggeable, Cloneable {
     public static char RS = '\036';
     public static char EOF = '\000';
     public static char PIPE = '\u007C';
+    public static char EOM = '\000';
     
-    private static final String DUMMY_SEPARATOR = "DS";
+    private static final Set<String> DUMMY_SEPARATORS = new HashSet<String>(Arrays.asList("DS", "EOM"));
+    private static final String EOM_SEPARATOR = "EOM";
     
     Map fields;
     Map separators;
@@ -297,7 +303,7 @@ public class FSDMsg implements Loggeable, Cloneable {
     }
 
     private boolean isDummySeparator(String separator) {
-        return DUMMY_SEPARATOR.equals(separator);
+        return DUMMY_SEPARATORS.contains(separator);
     }
     
     private boolean isBinary(String type) {
@@ -436,7 +442,14 @@ public class FSDMsg implements Loggeable, Cloneable {
         boolean expectSeparator = isSeparated(separator);
         boolean separated = expectSeparator;
 
-        if (isDummySeparator(separator)) {
+        if (EOM_SEPARATOR.equals(separator)) {
+        	// Grab what's left. is.available() should work because it is normally a ByteArrayInputStream
+        	byte[] rest = new byte[is.available()];
+        	is.read(rest, 0, rest.length);
+        	for (int i = 0; i < rest.length; i++) {
+        		sb.append((char) (rest[i] & 0xff));
+        	}
+        } else if (isDummySeparator(separator)) {
             /*
              * No need to look for a seperator, that is not there! Try and take
              * len bytes from the is.
