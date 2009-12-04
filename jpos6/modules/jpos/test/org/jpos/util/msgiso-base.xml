@@ -1,0 +1,7 @@
+<schema id='msgiso'>
+ <field id="0" type="N" length="4" />
+ <field id="3" type="N" length="6" />
+ <field id="11" type="N" length="6" />
+ <field id="70" type="N" length="3" />
+</schema>
+
