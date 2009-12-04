@@ -233,6 +233,25 @@ public class FSDMsgTestCase extends TestCase {
         assertEquals ("Original alphavardata", "ABCDE", m0.get ("alphavardata"));
         assertEquals ("Cloned alphavardata", "12345", m1.get ("alphavardata"));
     }
+    public void testFSDISOMsgPartialCloneAndMerge () throws Exception {
+        FSDMsg m0 = new FSDMsg(SCHEMA_DIR_URL + "msgiso-");
+        m0.set ("0", "0800");
+        m0.set ("11", "000001");
+        m0.set ("41", "29110001");
+        m0.set ("70", "301");
+        FSDISOMsg iso0 = new FSDISOMsg (m0);
+        FSDISOMsg iso1 = (FSDISOMsg) iso0.clone(new int[] { 0, 11, 70 });
+        FSDMsg m1 = iso1.getFSDMsg();
+
+        assertEquals ("m0.0", "0800", m0.get ("0"));
+        assertEquals ("m1.0", "0800", m1.get ("0"));
+        m1.set ("0", "0810");
+        assertEquals ("m0.0", "0800", m0.get ("0"));
+        assertEquals ("m1.0", "0810", m1.get ("0"));
+        assertNull ("m1.41 should be null", m1.get ("41"));
+        iso1.merge (iso0);
+        assertEquals ("m1.41", "29110001", m1.get ("41"));
+    }
     public void assertEquals(String msg, byte[] b1, byte[] b2) {
         assertTrue(msg, Arrays.equals(b1, b2));
     }
