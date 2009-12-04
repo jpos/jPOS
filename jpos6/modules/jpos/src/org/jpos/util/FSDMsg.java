@@ -627,5 +627,11 @@ public class FSDMsg implements Loggeable, Cloneable {
             throw new InternalError();
         }
     }
+    public void merge (FSDMsg m) {
+        Iterator<Map.Entry<String,String>> iter = m.fields.entrySet().iterator();
+        while (iter.hasNext()) {
+             Map.Entry<String,String> entry = iter.next();
+             set (entry.getKey(), entry.getValue());
+        }
+    }
 }
-
