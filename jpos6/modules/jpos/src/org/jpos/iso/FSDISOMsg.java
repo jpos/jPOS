@@ -92,6 +92,25 @@ public class FSDISOMsg extends ISOMsg implements Cloneable  {
         m.fsd = (FSDMsg) fsd.clone();
         return m;
     }
+    public Object clone(int[] fields) {
+        FSDISOMsg m = (FSDISOMsg) super.clone();
+        m.fsd = new FSDMsg(fsd.getBasePath(), fsd.getBaseSchema());
+        for (int i=0; i<fields.length; i++) {
+            String f = Integer.toString(fields[i]);
+            m.fsd.set (f, fsd.get (f));
+        }
+        return m;
+    }
+    public void merge (ISOMsg m) {
+        if (m instanceof FSDISOMsg) {
+            fsd.merge (((FSDISOMsg)m).getFSDMsg());
+        } else {
+            for (int i=0; i<=m.getMaxField(); i++) {
+                if (m.hasField(i))
+                    fsd.set (Integer.toString(i), m.getString(i));
+            }
+        }
+    }
     public void setResponseMTI() {
         try {
             super.setResponseMTI();
