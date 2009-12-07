@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE reference PUBLIC "-//OASIS//DTD DITA Reference//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/reference.dtd">
+<reference id="mailing-lists">
+  <title>Mailing lists</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Forums</indexterm>
+        <indexterm>Mailing lists</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <refbody>
+    <section>
+      <p>At the beginning, we just had one mailing list, <b>jpos-dev</b> which has over 1600
+        members.</p>
+      <p>At some point we decided to split development related stuff from user related support
+        questions and opened a new mailing list, <b>jpos-users</b>, hosted at Google Groups.</p>
+      <p>Although <b>jpos-dev</b> is still available, <b>jpos-users</b> has better and faster search
+        capabilities, so we are discouraging the use of <b>jpos-dev</b> and moving to a single list:
+          <b>jpos-users</b>. </p>
+      <note type="tip"> If you are searching the archives, you probably want to search both of them.
+        If you are posting new comments or questions, we suggest you use the latter. </note>
+      <p> In addition to <b>jpos-dev</b> and <b>jpos-users</b>, we have <b>jpos-commits</b> where we
+        post commit notifications. </p>
+      <table>
+        <title>Mailing list info</title>
+        <tgroup cols="2">
+          <colspec colname="col1" colwidth="1.0*"/>
+          <colspec colname="col2" colwidth="4.61*"/>
+          <thead>
+            <row>
+              <entry>List</entry>
+              <entry>Information</entry>
+            </row>
+          </thead>
+          <tbody>
+            <row>
+              <entry><b>jpos-users</b></entry>
+              <entry>
+                <xref href="http://groups.google.com/group/jpos-users" format="html"/>
+              </entry>
+            </row>
+            <row>
+              <entry><b>jpos-commits</b></entry>
+              <entry>
+                <xref href="http://groups.google.com/group/jpos-commits" format="html"/>
+              </entry>
+            </row>
+            <row>
+              <entry><b>jpos-dev</b></entry>
+              <entry>
+                <xref href="http://www.yahoogroups.com/group/jpos-dev" format="html"/>
+              </entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
+    </section>
+  </refbody>
+</reference>

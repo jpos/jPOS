@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE concept PUBLIC "-//OASIS//DTD DITA Concept//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/concept.dtd">
+<concept id="abstract" xml:lang="en-us">
+  <title>Abstract</title>
+  <shortdesc/>
+  <prolog>
+    <metadata>
+      <keywords>        
+        <indexterm>Abstract</indexterm>
+      </keywords>
+    </metadata>    
+  </prolog>
+  <conbody>
+    <p> jPOS is an ISO-8583 library/framework
+      that can be used to implement financial interchanges, protocol converters, payment gateways,
+      credit card verification clients and servers (merchant/issuer/acquirer roles), etc. </p>
+    <p> jPOS Extended Edition (jPOS-EE) goes one step beyond jPOS by providing a development
+      environment with a continuously growing set of proven, ready-to-deploy components based on
+      jPOS' best practices. </p>
+    <p> This document describes jPOS, jPOS-EE and related projects managed by jPOS.org. </p>
+    <p> Unless otherwise noted, jPOS.org's projects are distributed under the <cite>GNU Affero General Public License</cite>.
+      See <xref href="../shared/license.dita#agpl-license"/>. </p>
+    
+    <note type="attention">
+      <p><b>IMPORTANT NOTICE</b></p>
+      <p>If, for any reason you don't intend to meet your open source obligations, 
+        <b>you will need a commercial license</b> - please <xref href="http://jpos.org/contact?p=license" format="html">contact us</xref>.
+      </p>      
+    </note>
+  </conbody>
+</concept>

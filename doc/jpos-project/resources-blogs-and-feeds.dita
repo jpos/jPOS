@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE reference PUBLIC "-//OASIS//DTD DITA Reference//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/reference.dtd">
+<reference id="blogs-and-feeds">
+  <title>Blogs and Feeds</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Blogs</indexterm>
+        <indexterm>Feeds</indexterm>
+        <indexterm>RSS</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <refbody>
+    <section>
+      <p> We regularly post project related news to the jPOS blog. </p>
+      <p> In addition, there's some activity in Twitter tagged as <b>#jPOS</b>
+      </p>
+      <table>
+        <title>Blogs and Feeds</title>
+        <tgroup cols="3">
+          <colspec colname="col1" colwidth="1.0*"/>
+          <colspec colname="col2" colwidth="2.41*"/>
+          <colspec colname="col2" colwidth="2.63*"/>
+          <thead>
+            <row>
+              <entry>Feed</entry>
+              <entry>URL</entry>
+              <entry>RSS</entry>
+            </row>
+          </thead>
+          <tbody>
+            <row>
+              <entry><b>Blog</b></entry>
+              <entry>
+                <xref href="http://jpos.org/blog" format="html">jpos.org/blog</xref>
+              </entry>
+              <entry>
+                <xref href="http://feeds2.feedburner.com/jpos" format="html"
+                  >feeds2.feedburner.com/jpos</xref>
+              </entry>
+            </row>
+            <row>
+              <entry><b>Commits</b></entry>
+              <entry>
+                <xref href="http://groups.google.com/group/jpos-commits" format="html"
+                  >groups.google.com/group/jpos-commits</xref>
+              </entry>
+              <entry>
+                <xref href="http://feeds2.feedburner.com/jpos-commits" format="html"
+                  >feeds2.feedburner.com/jpos-commits</xref>
+              </entry>
+            </row>
+            <row>
+              <entry><b>Tweets</b></entry>
+              <entry>
+                <xref href="http://search.twitter.com/search?q=jpos" format="html"
+                  >search.twitter.com/search?q=jpos</xref>
+              </entry>
+              <entry>
+                <xref href="http://search.twitter.com/search.atom?q=jpos" format="html"
+                  >search.twitter.com/search.atom?q=jpos</xref>
+              </entry>
+            </row>
+            <row>
+              <entry><b>Commit Tweets</b></entry>
+              <entry>
+                <xref href="http://twitter.com/jposcommits" format="html"
+                  >twitter.com/jposcommits</xref>
+              </entry>
+              <entry>
+                <xref href="http://twitter.com/statuses/user_timeline/69335521.rss" format="html">
+                  twitter.com/statuses/user_timeline/69335521.rss </xref>
+              </entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
+    </section>
+  </refbody>
+</reference>

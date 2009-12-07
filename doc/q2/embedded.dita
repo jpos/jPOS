@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/task.dtd">
+<task id="q2-embedded">
+  <title>Running Q2 in Embedded mode</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Embedded mode</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  
+  <taskbody>
+    <context>
+      <note type="important">
+        While jPOS' Q2 can be embedded in other Java applications, we strongly
+        recommend to run it in <xref href="q2-standalone">standalone mode</xref>.
+        Q2 handles its own MBeanServer and creates several Threads in order
+        to run its services and can have conflicts with some controlled/sandboxed 
+        environments.
+      </note>
+      <p>
+        In order to start Q2 from your application, you just need to:
+      </p>
+    </context>
+    <steps>
+      <step>
+        <cmd>         
+           <tt>import org.jpos.q2.Q2;</tt>
+        </cmd>
+      </step>
+      <step>
+        <cmd>
+          <tt>Q2 q2 = new Q2 ("/path/to/your/deploy/directory);</tt>
+        </cmd>
+      </step>
+      <step>
+        <cmd>
+            <tt>q2.start();</tt>                   
+        </cmd>
+      </step>
+    </steps>
+    <result>
+      As a result, Q2 starts running and monitoring the <tt>deploy</tt> directory.
+      <p>
+        Q2 can be stopped using the command <tt>q2.stop()</tt>.
+      </p>
+    </result>
+  </taskbody>
+</task>

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE concept PUBLIC "-//OASIS//DTD DITA Concept//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/concept.dtd">
+<concept id="directory-structure">
+ <title>jPOS Directory Structure</title>
+ <prolog>
+   <metadata>
+     <keywords>
+       <indexterm>Directory Structure</indexterm>
+     </keywords>
+   </metadata>
+ </prolog>
+ <conbody>
+   <dl>
+     <dlentry>
+       <dt><tt>jpos6</tt></dt>
+       <dd>The root directory</dd>
+     </dlentry>
+     <dlentry>
+       <dt><tt>|-- COPYRIGHT</tt></dt>
+       <dd>Copyright notice</dd>
+     </dlentry>
+     <dlentry>
+       <dt><tt>|-- CREDITS</tt></dt>
+       <dd>Due credit to jPOS contributors</dd>
+     </dlentry>
+     <dlentry>
+       <dt><tt>|-- LICENSE</tt></dt>
+       <dd>License information</dd>
+     </dlentry>
+     <dlentry>
+       <dt><tt>|-- README</tt></dt>
+       <dd>The README file</dd>
+     </dlentry>
+     <dlentry>
+       <dt><tt>|-- bin</tt></dt>
+       <dd>Unix based shell scripts</dd>
+     </dlentry>
+     <dlentry>
+       <dt><tt>|   |-- q2</tt></dt>
+       <dd>Starts Q2 (same as <tt>java -jar jpos.jar</tt>)</dd>
+     </dlentry>
+     <dlentry>
+       <dt><tt>|   |-- bsh</tt></dt>
+       <dd>
+           Starts a BeanShell<fn>Lightweight Scripting for Java - <xref href="http://www.beanshell.org" format="html" /></fn> Interpreter with the jPOS
+           classpath.
+       </dd>
+     </dlentry>
+     <dlentry>
+       <dt><tt>|-- build.xml</tt></dt>
+       <dd>Main Ant tasks configuration</dd>
+     </dlentry>
+     <dlentry>
+       <dt><tt>|-- build.properties</tt></dt>
+       <dd>Additional Ant properties used by <tt>build.xml</tt></dd>
+     </dlentry>
+     <dlentry>
+       <dt><tt>|-- lib</tt></dt>
+       <dd>Support libraries required to build jPOS</dd>
+     </dlentry>
+     <dlentry>
+       <dt><tt>|   |-- bsh-2.0b4.jar</tt></dt>
+       <dd>BeanShell</dd>
+     </dlentry>
+     <dlentry>
+       <dt><tt>|   |-- jdbm-1.0.jar</tt></dt>
+       <dd>JDBM</dd>
+     </dlentry>
+     <dlentry>
+       <dt><tt>|   |-- jdom-1.0.jar</tt></dt>
+       <dd>JDOM</dd>
+     </dlentry>
+     <dlentry>
+       <dt><tt>...</tt></dt>
+       <dd>Additional support libraries</dd>
+     </dlentry>
+     <dlentry>
+       <dt><tt>|-- modules</tt></dt>
+       <dd>Modules directory</dd>
+     </dlentry>
+     <dlentry>
+       <dt><tt>|   |-- include.list</tt></dt>
+       <dd>Optional list of modules to include at compile time</dd>
+     </dlentry>
+     <dlentry>
+       <dt><tt>|   |-- exclude.list</tt></dt>
+       <dd>Optional list of modules to exclude at compile time</dd>
+     </dlentry>
+     <dlentry>
+       <dt><tt>|   |-- jpos</tt></dt>
+       <dd>Main jPOS module</dd>
+     </dlentry>
+     <dlentry>
+       <dt><tt>|   |-- q2</tt></dt>
+       <dd>The Q2 System</dd>
+     </dlentry>
+     <dlentry>
+       <dt><tt>|   |-- q2mod_jpos</tt></dt>
+       <dd>Set of Q2 wrappers for jPOS components (jPOS adapters)</dd>
+     </dlentry>
+     <dlentry>
+       <dt><tt>|   |-- security</tt></dt>
+       <dd>org.jpos.security related classes</dd>
+     </dlentry>
+     <dlentry>
+       <dt><tt>|   |-- txnmgr</tt></dt>
+       <dd>jPOS Transaction Manager</dd>
+     </dlentry>
+     <dlentry>
+       <dt><tt>!   !-- compat_1_5_2</tt></dt>
+       <dd>Compatibility classes from jPOS 1.5.2<fn>To be deprecated</fn></dd>
+     </dlentry>
+   </dl>
+ </conbody>
+</concept>

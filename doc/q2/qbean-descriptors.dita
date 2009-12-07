@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE concept PUBLIC "-//OASIS//DTD DITA Concept//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/concept.dtd">
+<concept id="q2-qbean-descriptor">
+  <title>QBean Descriptors</title>
+  <shortdesc>This section describes the anatomy of a QBean descriptor.</shortdesc>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>QBean Descriptors</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+
+  <conbody>
+    <p>Q2 regularly scans the 'deploy' directory, and eventually its subdirectories, looking for
+      QBean descriptors.</p>
+    <p>Those are simple and flexible XML files with the following requirements:</p>
+    <ul>
+      <li>The outer element has to either have an unique name, or it needs an unique 'name'
+        attribute.</li>
+      <li>Unless the outter element is a well know name defined in the <tt>QFactory.properties</tt>
+        ResourceBundle, a <tt>class</tt> attribute has to be provided in order to specify
+        the QBean implementation classname.</li>
+    </ul>  
+    <codeblock outputclass="xml"><![CDATA[
+<qbean name="mybean" class="org.jpos.test.MyBean" />
+      ]]>
+    </codeblock>
+    <p>
+      In the previous example, an instance of <tt>org.jpos.test.MyBean</tt> would be created
+      and registered with the MBeanServer as well as the NameRegistrar under the name
+      <tt>mybean</tt>.
+    </p>
+    <p>
+      If we omit the 'name' attribute, then the root element name
+      (in this case <tt>qbean</tt>) would be used instead.
+    </p>
+    <note type="attention">
+      Names, either picked from the root element or the 'name' attribute have to
+      be unique accross a Q2 instance.
+    </note>
+    <p>
+      In addition to the <tt>class</tt> and <tt>name</tt> attributes, <b>Q2</b> supports
+      two additional attributes:
+      <ul>
+        <li><tt>logger</tt></li>
+        <li><tt>realm</tt></li>
+      </ul>
+      i.e.:
+    </p>
+    <codeblock outputclass="xml"><![CDATA[
+<qbean name="mybean" class="org.jpos.test.MyBean" logger="Q2" realm="mybean" />
+      ]]>
+    </codeblock>
+    
+    <p>
+      The ResourceBundle <tt>QFactory.properties</tt> provides some handy shortcuts for
+      some well know stock QBeans, namely:
+    </p>
+    <codeblock>
+      shutdown=org.jpos.q2.qbean.Shutdown
+      script=org.jpos.q2.qbean.BSH
+      jython=org.jpos.q2.qbean.Jython
+      spacelet=org.jpos.q2.qbean.SpaceLet
+      sysmon=org.jpos.q2.qbean.SystemMonitor
+      txnmgr=org.jpos.transaction.TransactionManager
+      transaction-manager=org.jpos.transaction.TransactionManager
+      qmux=org.jpos.q2.iso.QMUX
+      channel-adaptor=org.jpos.q2.iso.ChannelAdaptor
+    </codeblock>
+    <p>
+      This allows you to use a configuration like this:
+    </p>
+    <codeblock outputclass="xml"><![CDATA[
+<script name="myscript">
+   ...
+   ...
+</script>      
+]]></codeblock>
+    <p>Without having to specify:</p>
+    <codeblock outputclass="xml"><![CDATA[
+<script name="myscript" class="org.jpos.q2.qbean.BSH">
+   ...
+   ...
+</script>      
+]]></codeblock>
+    <note type="caution">
+      Although you can omit the 'name' attribute, it is good practice to use it,
+      otherwise, you'd have a name conflict on your second descriptor using
+      the same shortcut.
+    </note>
+    <note type="tip">
+      <tt>shutdown</tt> is an useful shortcut, a simple descriptor with a single
+      element called shutdown will initiate a Q2 clean shutdown, stopping all
+      deployed services. Look at <tt>bin/stop</tt> for an example.
+    </note>
+      
+  </conbody>
+</concept>

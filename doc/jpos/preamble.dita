@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/topic.dtd">
+<topic id="jpos-preamble">
+  <title>jPOS</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>jPOS</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+      <p>
+        jPOS is a Java® platform-based, mission-critical, 
+        ISO-8583 based financial transaction library/framework 
+        that can be customized and extended in order to 
+        implement financial interchanges. 
+      </p>
+  </body>
+</topic>
+

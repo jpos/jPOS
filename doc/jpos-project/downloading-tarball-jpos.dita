@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/task.dtd">
+<task id="downloading-tarball-jpos">
+  <title>jPOS via standard download</title>
+  <shortdesc>Instructions to get the latest stable release via standard download</shortdesc>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Download</indexterm>
+        <indexterm>Tarball</indexterm>
+        <indexterm>Distribution</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <taskbody>
+    <context>
+      <p>Use your favorite browser to visit:</p>
+    </context>
+    <steps>
+      <step>
+        <cmd><tt>http://jpos.org/download</tt></cmd>
+      </step>
+      <step>
+        <cmd>After completing the form there, you will be provided with download instructions.</cmd>
+      </step>
+      <step>
+        <cmd>Once you complete your download, unzip/untar your jpos-x.x.x.zip/tgz file into a new
+          directory, open a shell, cd there and,</cmd>
+      </step>
+      <step>
+        <cmd> call <tt>ant clean run</tt> in order to verify your setup </cmd>
+      </step>
+    </steps>
+    <result> You should see output like this: <codeblock><![CDATA[
+        ...
+        ...
+run:
+     [java] <log realm="Q2.system" at="Tue Jul 21 09:41:51 UYT 2009.168">
+     [java]   <info>
+     [java]     Q2 started, deployDir=/opt/svn/jpos6/build/deploy
+     [java]   </info>
+     [java] </log>
+        ...
+        ...
+        
+        ]]>        
+        </codeblock></result>
+  </taskbody>
+</task>
