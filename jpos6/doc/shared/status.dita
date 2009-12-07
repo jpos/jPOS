@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE reference PUBLIC "-//OASIS//DTD DITA Reference//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/reference.dtd">
+<reference id="status" xml:lang="en-us">
+  <title>Status</title>
+  <shortdesc>Status of this document</shortdesc>
+  <refbody>
+   <section>
+     <p>
+       This document is work in progress.
+       At some point, it will replace the 
+       <xref href="http://jpos.org/products/proguide" format="html">jPOS Programmer's Guide</xref>
+       as well as the 
+       <xref href="http://jpos.org/jposee/jPOS-EE.pdf" format="html">jPOS-EE guide</xref>, but
+       there's a long way to go. If you need to use jPOS now, you may consider purchasing the
+       existing documentation, which in addition is part of the program to support jPOS.org 
+       projects.
+     </p>
+     <note type="tip">
+       The latest version of this document can be downloaded at
+       <xref href="http://jpos.org/doc/jPOS-Project-Guide.pdf" format="html" />
+     </note>
+     <note type="note">
+       This is version <ph conref="../shared/conrefs.dita#info/version"/>, 
+       <ph conref="../shared/conrefs.dita#info/revision"/>, 
+       <ph conref="../shared/conrefs.dita#info/date"/>.
+       See <xref href="../shared/revhistory.dita#revhistory" /> for
+       details.
+     </note>
+   </section>
+  </refbody>
+ </reference>

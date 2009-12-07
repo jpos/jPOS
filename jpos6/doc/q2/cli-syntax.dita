@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE reference PUBLIC "-//OASIS//DTD DITA Reference//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/reference.dtd">
+<reference id="q2-cli-syntax">
+  <title>Q2 Command line arguments</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Q2</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <refbody><section>
+      <p><tt>bin/q2 --help</tt> provides the following output:</p>
+    </section>
+    <example>
+      <codeblock><![CDATA[
+
+usage: Q2
+ -c,--command <arg>     Command to execute
+ -C,--config <arg>      Configuration bundle
+ -d,--deploydir <arg>   Deployment directory
+ -e,--encrypt <arg>     Encrypt configuration bundle
+ -h,--help              Usage information
+ -i,--cli               Command Line Interface
+ -r,--recursive         Deploy subdirectories recursively
+ -v,--version           Q2's version
+      
+]]>
+                
+      </codeblock>
+    </example>
+    <section>
+      <p>Q2 uses <tt>commons-cli</tt> which supports POSIX-like as well as GNU long options.</p>
+    </section>
+    <table frame="all">
+      <title>Command Line Arguments</title>
+      <tgroup cols="2">
+        <colspec colnum="1" colname="c1" colwidth="1.0*"/>
+        <colspec colnum="2" colname="c2" colwidth="3.59*"/>
+        <thead>
+          <row>
+            <entry>Argument</entry>
+            <entry>Description</entry>
+          </row>
+        </thead>
+        <tbody>
+          <row>
+            <entry><tt>-c, --command</tt></entry>
+            <entry>A CLI command to execute. 'CLI' is Q2's Command Line Interface</entry>
+          </row>
+          <row>
+            <entry><tt>-C, --config</tt></entry>
+            <entry>Deploy a single file (called a Configuration Bundle) containing a set of QBean
+              descriptors</entry>
+          </row>
+          <row>
+            <entry><tt>-d, --deploydir</tt></entry>
+            <entry>Path to the deploy directory (defaults to 'deploy' in the current working
+              directory)</entry>
+          </row>
+          <row>
+            <entry><tt>-e, --encrypt</tt></entry>
+            <entry>It is possible to encrypt an MBean deployment descriptor in order to protect it
+              from an ocasional lurker</entry>
+          </row>
+          <row>
+            <entry><tt>-h, --help</tt></entry>
+            <entry>dumps help screen</entry>
+          </row>
+          <row>
+            <entry><tt>-i, --cli</tt></entry>
+            <entry>launches interactive command line interface (press 'tab' to see available
+              commands)</entry>
+          </row>
+          <row>
+            <entry><tt>-r, --recursive</tt></entry>
+            <entry>recursively scans for QBean descriptors in the deploy children
+              directories</entry>
+          </row>
+          <row>
+            <entry><tt>-v, --version</tt></entry>
+            <entry>shows current jPOS version and revision</entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </table></refbody>
+</reference>

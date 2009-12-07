@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE concept PUBLIC "-//OASIS//DTD DITA Concept//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/concept.dtd">
+<concept id="module-directory-structure">
+  <title>Module Directory Structure</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Directory Structure (module)</indexterm>
+        <indexterm>Build system</indexterm>
+        <indexterm>Ant</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <conbody>
+    <p> jPOS modules can have zero or more directories using the following naming convention. </p>
+    <dl>
+      <dlentry>
+        <dt>
+          <tt>src</tt>
+        </dt>
+        <dd>The source code for this module</dd>
+      </dlentry>
+      <dlentry>
+        <dt>
+          <tt>lib</tt>
+        </dt>
+        <dd>Supporting libraries (jars and dynamic libraries)</dd>
+      </dlentry>
+      <dlentry>
+        <dt>
+          <tt>deploy</tt>
+        </dt>
+        <dd>QBean descriptors</dd>
+      </dlentry>
+      <dlentry>
+        <dt>
+          <tt>cfg</tt>
+        </dt>
+        <dd>Configuration files</dd>
+      </dlentry>
+      <dlentry>
+        <dt>
+          <tt>webapps</tt>
+        </dt>
+        <dd>exploded WAR</dd>
+      </dlentry>
+      <dlentry>
+        <dt>
+          <tt>test</tt>
+        </dt>
+        <dd>Unit tests</dd>
+      </dlentry>
+    </dl>
+    <p>The jPOS ant-based build subsystem <b>merges</b> these directories off the available modules
+      and <b>flattens</b> them inside the automatically created <b>build</b> directory. </p>
+
+    <p>If we have the files</p>
+    <screen>
+        module/mymoduleA/src/org/jpos/MyClassA.java
+        module/mymoduleA/lib/mydep1.jar
+      </screen>
+    <p>and</p>
+    <screen>
+        module/mymoduleB/src/org/jpos/MyClassB.java
+        module/mymoduleB/lib/mydep2.jar
+      </screen>
+    <p>and we call <tt>ant</tt> in order to build a jPOS (or jPOS-EE) application, as a first step
+        <tt>ant</tt> will copy the files to the <tt>build/src</tt> directory and <tt>build/lib</tt>
+      directory in order to end up with a directory structure like this:</p>
+
+    <screen>
+        build/src/org/jpos/MyClassA.java
+        build/src/org/jpos/MyClassB.java
+        build/lib/mydep1.jar
+        build/lib/mydep2.jar
+      </screen>
+
+    <p> The same goes for other directories such as <tt>cfg</tt>, <tt>deploy</tt>, <tt>webapps</tt>,
+      etc. </p>
+
+    <fig>
+      <title>jPOS build merge process</title>
+      <image href="../images/build_merge_process.png"/>
+    </fig>
+
+    <p>
+      <note>jPOS-EE uses a similar merge process. The main difference is that
+      in jPOS-EE, jPOS core becomes just one pre-compiled module</note>
+    </p>
+    <p>
+      The typical jPOS-EE application has a directory <tt>modules/jpos</tt>
+      with just a <tt>lib</tt> directory containing a precompiled <tt>jpos.jar</tt>
+      along with its supporting jars.
+    </p>
+    <p>
+      As of jPOS-EE r171, the <tt>modules/jpos/lib</tt> directory looks like this:
+    </p>
+    <screen>
+      jposee/trunk/modules/jpos/lib$ ls -l
+      total 2912
+      -rw-r--r--  1 apr  apr    281694 Oct  9  2007 bsh-2.0b4.jar
+      -rw-r--r--  1 apr  apr     36174 Oct  9  2007 commons-cli.jar
+      -rw-r--r--  1 apr  wheel   31731 May 14  2008 cweb-extser-0.1-b2-dev.jar
+      -rw-r--r--  1 apr  apr    207499 Dec  5  2008 jdbm-1.0.jar
+      -rw-r--r--  1 apr  apr    153253 Oct  9  2007 jdom-1.0.jar
+      -rw-r--r--  1 apr  apr     61125 Oct  9  2007 jline-0.9.91.jar
+      -rw-r--r--  1 apr  apr    708947 Sep  9 18:04 jpos.jar      
+    </screen>
+  </conbody>
+</concept>

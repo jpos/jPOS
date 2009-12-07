@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/topic.dtd">
+<topic id="downloading">
+  <title>Downloading</title>
+  <prolog>
+    <metadata>
+      <keywords>        
+        <indexterm>Download</indexterm>
+        <indexterm>Source Control</indexterm>
+        <indexterm>Subversion</indexterm>        
+      </keywords>
+    </metadata>    
+  </prolog>
+  <body>
+    <p>
+      From time to time, we post new jPOS releases at 
+      <xref href="http://jpos.org/download" format="html" />
+      but if you want to stay up to date with jPOS development and you 
+      want to get the latest features and bug fixes, we 
+      <b>strongly suggest</b> you to take the time to install a 
+      Subversion client and get the latest and greatest version from 
+      <xref href="http://sf.net/projects/jpos" format="html" /> and
+      <xref href="http://code.google.com/p/jposee" format="html" />.
+    </p>
+  </body>
+</topic>

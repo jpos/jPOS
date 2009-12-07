@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE reference PUBLIC "-//OASIS//DTD DITA Reference//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/reference.dtd">
+<reference id="ant-targets">
+  <title>Ant Targets</title>
+  <prolog>
+   <metadata>
+     <keywords>
+       <indexterm>Ant Targets</indexterm>
+       <indexterm>Targets</indexterm>
+     </keywords>
+   </metadata>
+  </prolog>
+  <refbody>
+    <section>
+      <p>
+       Calling <tt>ant -projecthelp</tt> provides information 
+       about the available targets:
+      </p>
+      <screen>
+ Buildfile: build.xml
+        
+ Main targets:
+        
+  clean      clean up build and dist directories
+  compile    compile all
+  dist       Builds source distribution
+  jar        creates jpos.jar
+  javadoc    generate javadocs
+  run        invoke jPOS under Ant's JVM
+  singlejar  creates a single jpos.jar including all supporting jars
+  srcjar     creates jpos-src.jar for source browsing and debugging in 
+             IDEs like Eclipse
+  test       perform unit tests
+  zip        create zip distribution
+  Default target: compile
+        
+      </screen>
+      <p>
+       Installed modules can in turn have their own build.xml in 
+       order to perform module-specific tasks at build time.
+      </p>
+    </section>
+  </refbody>
+</reference>

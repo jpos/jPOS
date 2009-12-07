@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE concept PUBLIC "-//OASIS//DTD DITA Concept//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/concept.dtd">
+<concept id="q2-qbean-loggeable">
+  <title>QBean Loggeable</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>QBean Loggeable</indexterm>
+      </keywords>
+      <keywords>
+        <indexterm>Loggeable</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <conbody>
+    <p>
+      if a QBean implements the
+      <xref href="http://www.jpos.org/doc/javadoc/org/jpos/util/Loggeable.html">Loggeable</xref> 
+      interface, and its QBean descriptor has a <tt>logger</tt>
+      attribute, Q2 will take care of calling its <tt>setLogger</tt>
+      method, i.e:
+    </p>
+    <p>
+      <codeblock outputclass="xml"><![CDATA[
+        
+          <qbean name="my-qbean" 
+                class="org.jpos.q2.qbean.Test" 
+               logger="Q2" realm="Test" />
+        ]]></codeblock>
+    </p>
+    <note type="tip"><b>Q2</b> is the default logger name, usually defined in the <tt>00_logger.xml</tt> QBean descriptor.</note>
+  </conbody>
+</concept>

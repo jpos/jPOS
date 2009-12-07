@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/task.dtd">
+<task id="runnin">
+    <title>Running jPOS</title>
+    <shortdesc/>
+    <taskbody>
+        <context>
+            <p>
+              Depending on how you get to use jPOS, you can consider it a Library, 
+              a Framework or an Application. 
+            </p>
+          <p>While using it as a library, running jPOS boils down to running your application,
+          which in turns will use jPOS. </p>
+          <p>
+            When you use it as an Application/Framework what you are actually running 
+            is <b>Q2</b>, jPOS' JMX Micro-Kernel. 
+          </p>
+          <p>Running Q2 is as simple as calling: </p>
+        </context>
+        <steps>
+            <step>
+              <cmd><tt>java -jar jpos.jar</tt></cmd>
+            </step>
+        </steps>
+        <result>
+          <p>
+            Once started, Q2 will produce output like this:
+          </p>           
+          <screen><![CDATA[
+ <log realm="Q2.system" at="Sat Sep 19 19:51:39 UYT 2009.386">
+  <info>
+    Q2 started, deployDir=/opt/jpos/deploy
+  </info>
+ </log>
+]]></screen>
+          
+          <note type="note">
+            You can run Q2 off the "build" directory (for testing purposes) 
+            but you want to move it to another destination 
+            for a production setup.             
+          </note>
+          <p>
+            You may want to investigate the <tt>bin</tt> directory where you'll
+            find a unix shell script -- that you can run in Windows inside Cygwin
+            or you can use as a sample to create your own .BAT file -- called <tt>bin/q2</tt>
+            that can be used to start Q2.
+          </p>
+          <p>
+            In addition, there's an Ant task called "run" that you can use to run 
+            Q2 under Ant's control. See <tt>ant -projecthelp</tt> for details.
+          </p>
+        </result>
+    </taskbody>
+</task>

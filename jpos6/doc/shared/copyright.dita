@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE reference PUBLIC "-//OASIS//DTD DITA Reference//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/reference.dtd">
+<reference id="copyright" xml:lang="en-us">
+  <title>Copyright</title>
+  <shortdesc>jPOS Copyright notice</shortdesc>
+  <refbody>
+   <section>
+     <p>
+       <image href="http://jpos.org/images/jpos_s.jpg"><alt>jPOS logo</alt></image>
+     </p>
+     <p>
+       jPOS Project [http://jpos.org]
+       Copyright (C) 2000-2009 Alejandro P. Revilla
+     </p>
+     
+     <p>
+       This program is free software: you can redistribute it and/or modify
+       it under the terms of the GNU Affero General Public License as
+       published by the Free Software Foundation, either version 3 of the
+       License, or (at your option) any later version.
+     </p>
+     
+     <p>
+       This program is distributed in the hope that it will be useful,
+       but WITHOUT ANY WARRANTY; without even the implied warranty of
+       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+       GNU Affero General Public License for more details.
+     </p>
+     <p>
+       See <xref href="../shared/license.dita#agpl-license" />.
+     </p>
+     
+     <p> All rights reserved. No part of this book may be reproduced in any form or by any
+       electronic or mechanical means, including information storage and retrieval systems, without
+       permission in writing from Alejandro Revilla, except by a reviewer who may quote brief
+       passages in a review. </p>
+
+   </section>
+  </refbody>
+  
+ </reference>

@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/topic.dtd">
+<topic id="downloading">
+  <title>Build System</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Build System</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <body>
+    <p> The <ph conref="../shared/conrefs.dita#info/projectname"/> build system uses <xref
+        href="http://ant.apache.org">Apache's Ant</xref>
+      <fn>Version 1.7.1 or later</fn> to combine multiple modules into a single application. </p>
+  </body>
+</topic>

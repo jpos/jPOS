@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/task.dtd">
+<task id="q2-standalone">
+  <title>Running Q2 in Standalone mode</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>Standalone mode</indexterm>
+        <indexterm>Service, NT</indexterm>
+        <indexterm>NT Service</indexterm>
+        <indexterm>Daemon</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+
+  <taskbody>
+   <context>
+     <p>
+       We recommend using jPOS by launching Q2 in standalone mode.
+       That's the way we use it in our production applications and
+       the way most jPOS mission critical applications operate. 
+     </p>
+     <p>
+       Running Q2 in standalone mode is as simple as calling:
+     </p>
+   </context>
+   <steps>
+     <step>
+       <cmd><tt>java -jar jpos.jar</tt>, or if you are running jPOS-EE</cmd>
+     </step>
+     <step>
+       <cmd><tt>java -jar jpos-ee.jar</tt></cmd>
+     </step>
+   </steps>
+   <result>
+     There's a handy Unix shell script called <tt>bin/q2</tt> that you can use to start
+     Q2, or <tt>bin/start</tt> and <tt>bin/stop</tt> in order to run it as a daemon 
+     service.
+     <p>
+       If you are running in a Windows environment, you can use jPOS-EE's <tt>wrapper</tt>
+       module in order to run as an NT Service.
+     </p>
+   </result>
+  </taskbody>
+</task>
