@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE concept PUBLIC "-//OASIS//DTD DITA Concept//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/concept.dtd">
+<concept id="q2-qbean-optional-attributes">
+  <title>QBean Optional Attributes</title>
+  <prolog>
+    <metadata>
+      <keywords>
+        <indexterm>QBean Optional Attributes</indexterm>
+      </keywords>
+    </metadata>
+  </prolog>
+  <conbody>
+    <p> Before calling its 'init' method, Q2 attempts to push several well known attributes via JMX:
+        <table frame="all">
+        <title>QBean Optional Attributes</title>
+        <tgroup cols="2">
+          <colspec colnum="1" colname="c1" colwidth="1.0*"/>
+          <colspec colnum="2" colname="c2" colwidth="5.12*"/>
+          <thead>
+            <row>
+              <entry>Attribute</entry>
+              <entry>Description</entry>
+            </row>
+          </thead>
+          <tbody>
+            <row>
+              <entry><tt>logger</tt></entry>
+              <entry>
+                If the QBean descriptor has a 'logger' attribute, and the
+                the QBean implementation has a <tt>void setLogger (Logger)</tt>
+                method, then Q2 will set a logger.
+              </entry>
+            </row>
+            <row>
+              <entry><tt>realm</tt></entry>
+              <entry>Same goes for 'realm', if the QBean descriptor has a 'realm' attribute and
+                the QBean implementation has a <tt>void setRealm (String)</tt>
+              method, Q2 will call it and set the appropriate realm.</entry>
+            </row>
+            <row>
+              <entry><tt>server</tt></entry>
+              <entry>
+                Ideally, and in order to honor IoC<fn>Inversion of Control</fn>, 
+                QBean implementations doesn't 
+                need a reference to their server, but just in case we need it, 
+                if the QBean implementation has a <tt>void setServer (Q2 server)</tt>
+                method, Q2 will push a reference to itself.
+              </entry>
+            </row>
+            <row>
+              <entry><tt>persist</tt></entry>
+              <entry>
+                If a QBean implementation has a
+                <tt>void setPersist (Element e)</tt>
+                method, Q2 will push the QBean descriptor represented by an
+                <tt>org.jdom.Element</tt> Object.
+                <note type="note">
+                  The name 'persist' is not a very good choice, it was named after
+                  the fact that this Element object basically represent the persistent
+                  representation of a QBean, including its attributes and properties.
+                  We definitely need a better name for this.
+                </note>                
+              </entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
+    </p>
+  </conbody>
+</concept>
