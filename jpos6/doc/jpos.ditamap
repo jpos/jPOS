@@ -69,6 +69,7 @@
       <topicref href="q2/qbean-lifecycle.dita" />
       <topicref href="q2/qbean-loggeable.dita" />
       <topicref href="q2/qbean-configurable.dita" />
+      <topicref href="q2/qbean-optional-attributes.dita" />
     </chapter>
   </part>
  

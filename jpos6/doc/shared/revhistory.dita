@@ -29,9 +29,14 @@
         <stentry>2009-11-15</stentry>
         <stentry>
           Added
-          <xref href="../q2/qbean-lifecycle.dita#q2-qbean-lifecycle" />         
+          <xref href="../q2/qbean-lifecycle.dita#q2-qbean-lifecycle" />,
+          <xref href="../q2/qbean-loggeable.dita#q2-qbean-loggeable" />,
+          <xref href="../q2/qbean-configurable.dita#q2-qbean-configurable" />
+          and
+          <xref href="../q2/qbean-optional-attributes.dita#q2-qbean-optional-attributes" />.
         </stentry>
       </strow>
     </simpletable>
   </refbody>
 </reference>
+
