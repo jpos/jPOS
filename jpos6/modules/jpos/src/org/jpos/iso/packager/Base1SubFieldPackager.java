@@ -23,8 +23,8 @@ import org.jpos.util.LogEvent;
 import org.jpos.util.Logger;
 
 import java.util.BitSet;
-import java.util.Hashtable;
 import java.util.Vector;
+import java.util.Map;
 
 /**
  * ISO 8583 v1987 BINARY Packager 
@@ -124,14 +124,14 @@ public class Base1SubFieldPackager extends ISOBasePackager
         {
             ISOComponent c;
             Vector v = new Vector();
-            Hashtable fields = m.getChildren();
+            Map fields = m.getChildren();
             int len = 0;
             byte[] b;
 
             if (emitBitMap()) 
             {
                 // BITMAP (-1 in HashTable)
-                c = (ISOComponent) fields.get (new Integer (-1));
+                c = (ISOComponent) fields.get (new Integer(-1));
                 b = getBitMapfieldPackager().pack(c);
                 len += b.length;
                 v.addElement (b);
@@ -139,7 +139,7 @@ public class Base1SubFieldPackager extends ISOBasePackager
 
             for (int i=getFirstField(); i<=m.getMaxField(); i++) 
             {
-                if ((c = (ISOComponent) fields.get (new Integer (i))) != null) 
+                if ((c = (ISOComponent) fields.get (new Integer(i))) != null)
                 {
                     try 
                     {

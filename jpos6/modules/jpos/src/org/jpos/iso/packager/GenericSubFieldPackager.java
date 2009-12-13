@@ -23,8 +23,8 @@ import org.jpos.util.LogEvent;
 import org.jpos.util.Logger;
 
 import java.util.BitSet;
-import java.util.Hashtable;
 import java.util.Vector;
+import java.util.Map;
 
 /**
  * GenericSubFieldPackager
@@ -112,14 +112,14 @@ public class GenericSubFieldPackager extends GenericPackager
         {
             ISOComponent c;
             Vector v = new Vector();
-            Hashtable fields = m.getChildren();
+            Map fields = m.getChildren();
             int len = 0;
             byte[] b;
 
             if (emitBitMap()) 
             {
                 // BITMAP (-1 in HashTable)
-                c = (ISOComponent) fields.get (new Integer (-1));
+                c = (ISOComponent) fields.get (new Integer(-1));
                 b = getBitMapfieldPackager().pack(c);
                 len += b.length;
                 v.addElement (b);
@@ -127,7 +127,7 @@ public class GenericSubFieldPackager extends GenericPackager
 
             for (int i=getFirstField(); i<=m.getMaxField(); i++) 
             {
-                c = (ISOComponent) fields.get (new Integer (i));
+                c = (ISOComponent) fields.get (new Integer(i));
                 if (c == null && !emitBitMap())
                     c = new ISOField (i, "");
                 if (c != null) {

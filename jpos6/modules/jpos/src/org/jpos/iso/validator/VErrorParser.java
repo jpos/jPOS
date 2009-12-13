@@ -27,6 +27,7 @@ import java.io.PrintStream;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Vector;
+import java.util.Map;
 
 /**
  * Parse ISOComponents and put the errors into a list.
@@ -123,7 +124,7 @@ public class VErrorParser implements LogSource, Loggeable  {
                 }
             }
             /** recursively in childs **/
-            Hashtable fields = ((ISOMsg)c).getChildren();
+            Map fields = c.getChildren();
             int max = ((ISOMsg)c).getMaxField();
             for (int i = 0; i <= max ; i++)
                 if ((c=(ISOComponent) fields.get (new Integer (i))) != null )
