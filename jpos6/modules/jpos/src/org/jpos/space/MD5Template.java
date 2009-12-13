@@ -18,14 +18,16 @@
 
 package org.jpos.space;
 
-import jdbm.helper.DefaultSerializer;
-
 import java.io.Serializable;
+import java.io.IOException;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectOutputStream;
 import java.security.MessageDigest;
 import java.util.Arrays;
 
-public class MD5Template implements Template, Serializable  {
+import org.jpos.iso.ISOUtil;
 
+public class MD5Template implements Template, Serializable  {
     private static final long serialVersionUID = -1204861759575740048L;
     byte[] digest;
     Object key;
@@ -40,10 +42,10 @@ public class MD5Template implements Template, Serializable  {
         this.key = key;
         this.digest = digest;
     }
-    public static byte[] digest (Object obj) {
+    public byte[] digest (Object obj) {
         try {
             MessageDigest md = MessageDigest.getInstance ("MD5");
-            return md.digest (DefaultSerializer.INSTANCE.serialize (obj));
+            return md.digest (serialize (obj));
         } catch (Exception e) {
             throw new SpaceError (e);
         }
@@ -54,5 +56,29 @@ public class MD5Template implements Template, Serializable  {
     public Object getKey () {
         return key;
     }
-}
+    public byte[] getDigest () {
+        return digest;
+    }
+    public String getDigestAsString () {
+        return ISOUtil.hexString (digest);
+    }
+    public String toString () {
+        StringBuilder sb = new StringBuilder();
+        sb.append ("key='");
+        sb.append (key);
+        sb.append ("', digest=");
+        sb.append (getDigestAsString ());
+        return sb.toString();        
+    }
+    public static byte[] serialize (Object obj) throws IOException {
+        ByteArrayOutputStream baos;
+        ObjectOutputStream oos;
 
+        baos = new ByteArrayOutputStream();
+        oos = new ObjectOutputStream (baos);
+        oos.writeObject (obj);
+        oos.close();
+
+        return baos.toByteArray();
+    }
+}
