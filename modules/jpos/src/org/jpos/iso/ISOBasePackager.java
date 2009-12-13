@@ -27,7 +27,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.BitSet;
-import java.util.Hashtable;
+import java.util.Map;
 
 /**
  * provides base functionality for the actual packagers
@@ -76,11 +76,11 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
 
             ISOComponent c;
             ArrayList v = new ArrayList(128);
-            Hashtable fields = m.getChildren();
+            Map fields = m.getChildren();
             int len = 0;
             int first = getFirstField();
 
-            c = (ISOComponent) fields.get (new Integer (0));
+            c = (ISOComponent) fields.get (new Integer(0));
             byte[] b;
 
             if (m instanceof ISOMsg && headerLength>0) 
@@ -98,7 +98,7 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
 
             if (emitBitMap()) {
                 // BITMAP (-1 in HashTable)
-                c = (ISOComponent) fields.get (new Integer (-1));
+                c = (ISOComponent) fields.get (new Integer(-1));
                 b = getBitMapfieldPackager().pack(c);
                 len += b.length;
                 v.add (b);
@@ -110,7 +110,7 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
             int tmpMaxField=Math.min (m.getMaxField(), 128);
 
             for (int i=first; i<=tmpMaxField; i++) {
-                if ((c=(ISOComponent) fields.get (new Integer (i))) != null)
+                if ((c=(ISOComponent) fields.get (new Integer(i))) != null)
                 {
                     try {
                         ISOFieldPackager fp = fld[i];
@@ -131,7 +131,7 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
             if(m.getMaxField()>128 && fld.length > 128) {
                 for (int i=1; i<=64; i++) {
                     if ((c = (ISOComponent) 
-                        fields.get (new Integer (i+128))) != null)
+                        fields.get (new Integer(i + 128))) != null)
                     {
                         try {
                             b = fld[i+128].pack(c);

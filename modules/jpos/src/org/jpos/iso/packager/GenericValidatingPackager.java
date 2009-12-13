@@ -128,7 +128,7 @@ public class GenericValidatingPackager extends GenericPackager implements ISOVal
         LogEvent evt = new LogEvent( this, "validate" );
         try {
             ISOComponent c;
-            Hashtable fields = ((ISOMsg)m).getChildren();
+            Map fields = m.getChildren();
             /** Field  validations **/
             for (int i=0; i < fvlds.length; i++) {
                 if ( fvlds[i] != null && (c=(ISOComponent) fields.get (new Integer ( ((ISOFieldValidator)fvlds[i]).getFieldId() ))) != null ){

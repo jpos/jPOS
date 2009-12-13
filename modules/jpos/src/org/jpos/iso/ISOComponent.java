@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.Hashtable;
+import java.util.Map;
 
 /**
  * implements a <b>Component</b>
@@ -103,7 +104,7 @@ public abstract class ISOComponent implements Cloneable {
      * dummy behaviour - return 0 elements Hashtable
      * @return children (in this case 0 children)
      */
-    public Hashtable getChildren() {
+    public Map getChildren() {
         return new Hashtable();
     }
     /**

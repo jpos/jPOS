@@ -24,10 +24,7 @@ import org.jpos.util.Loggeable;
 
 import java.io.*;
 import java.lang.ref.WeakReference;
-import java.util.BitSet;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.StringTokenizer;
+import java.util.*;
 
 /**
  * implements <b>Composite</b>
@@ -41,7 +38,7 @@ import java.util.StringTokenizer;
 public class ISOMsg extends ISOComponent 
     implements Cloneable, Loggeable, Externalizable
 {
-    protected Hashtable fields;
+    protected Map fields;
     protected int maxField;
     protected ISOPackager packager;
     protected boolean dirty, maxFieldDirty;
@@ -57,7 +54,7 @@ public class ISOMsg extends ISOComponent
      * Creates an ISOMsg
      */
     public ISOMsg () {
-        fields = new Hashtable ();
+        fields = new TreeMap();                
         maxField = -1;
         dirty = true;
         maxFieldDirty=true;
@@ -155,9 +152,10 @@ public class ISOMsg extends ISOComponent
     }
     private void recalcMaxField() {
         maxField = 0;
-        for (Enumeration e = fields.keys(); e.hasMoreElements(); ) {
-            Object obj = e.nextElement();
-            if (obj instanceof Integer) 
+        Iterator iter = fields.keySet().iterator();
+        while (iter.hasNext()) {
+            Object obj = iter.next();
+            if (obj instanceof Integer)
                 maxField = Math.max (maxField, ((Integer)obj).intValue());
         }
         maxFieldDirty = false;
@@ -306,7 +304,7 @@ public class ISOMsg extends ISOComponent
 
         BitSet bmap = new BitSet (((mf+62)>>6)<<6);
         for (int i=1; i<=mf; i++)
-            if (((ISOComponent) fields.get (new Integer (i))) != null) 
+            if ((fields.get (new Integer (i))) != null)
                 bmap.set (i);
         set (new ISOBitMap (-1, bmap));
         dirty = false;
@@ -314,8 +312,8 @@ public class ISOMsg extends ISOComponent
     /**
      * clone fields
      */
-    public Hashtable getChildren() {
-        return (Hashtable) fields.clone();
+    public Map getChildren() {
+        return (Map) ((TreeMap)fields).clone();
     }
     /**
      * pack the message with the current packager
@@ -541,11 +539,13 @@ public class ISOMsg extends ISOComponent
     public Object clone() {
         try {
             ISOMsg m = (ISOMsg) super.clone();
-            m.fields = (Hashtable) fields.clone();
+            m.fields = (TreeMap) ((TreeMap) fields).clone();
             if (header != null)
                 m.header = (ISOHeader) header.clone();
-            for (Enumeration e = fields.keys(); e.hasMoreElements(); ) {
-                Integer k = (Integer) e.nextElement();
+
+            Iterator iter = fields.keySet().iterator();
+            while (iter.hasNext()) {
+                Integer k = (Integer) iter.next();
                 ISOComponent c = (ISOComponent) m.fields.get (k);
                 if (c instanceof ISOMsg) 
                     m.fields.put (k, ((ISOMsg)c).clone());
@@ -564,7 +564,7 @@ public class ISOMsg extends ISOComponent
     public Object clone(int[] fields) {
         try {
             ISOMsg m = (ISOMsg) super.clone();
-            m.fields = new Hashtable();
+            m.fields = new HashMap();
             for (int i=0; i<fields.length; i++) {
                 if (hasField(fields[i])) {
                     try {
@@ -791,8 +791,11 @@ public class ISOMsg extends ISOComponent
         if (direction > 0)
             writeDirection (out);
 
-        for (Enumeration e = fields.elements(); e.hasMoreElements(); ) {
-            ISOComponent c = (ISOComponent) e.nextElement();
+        // List keySet = new ArrayList (fields.keySet());
+        // Collections.sort (keySet);
+        Iterator iter = fields.values().iterator();
+        while (iter.hasNext()) {
+            ISOComponent c = (ISOComponent) iter.next();
             if (c instanceof ISOMsg) {
                 out.writeByte ('M');
                 ((Externalizable) c).writeExternal (out);

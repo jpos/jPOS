@@ -26,7 +26,7 @@ import org.jpos.iso.validator.ISOVException;
 import org.jpos.util.LogEvent;
 import org.jpos.util.Logger;
 
-import java.util.Hashtable;
+import java.util.Map;
 
 /**
  * Test validatingPackager for subelements in field 48.
@@ -46,10 +46,10 @@ public class CTCSubElementPackager extends ISOBaseValidatingPackager {
 
     public byte[] pack ( ISOComponent c ) throws ISOException {
         try     {
-            Hashtable tab = c.getChildren();
+            Map tab = c.getChildren();
             StringBuffer sb = new StringBuffer();
             for ( int i = 0; i < fld.length; i++ ) {
-                ISOMsg f = (ISOMsg) tab.get ( new Integer( i ) );
+                ISOMsg f = (ISOMsg) tab.get (new Integer(i));
                 if ( f != null ) {
                     sb.append ( ISOUtil.zeropad( ((Integer)f.getKey()).toString(), 2 ) + new String( fld[i].pack( f ) ) );
                 }
@@ -96,9 +96,9 @@ public class CTCSubElementPackager extends ISOBaseValidatingPackager {
     public ISOComponent validate( ISOComponent c ) throws org.jpos.iso.ISOException {
         LogEvent evt = new LogEvent( this, "validate" );
         try {
-            Hashtable tab = c.getChildren();
+            Map tab = c.getChildren();
             for ( int i = 0; i < fldVld.length; i++ ) {
-                ISOMsg f = (ISOMsg) tab.get ( new Integer( i ) );
+                ISOMsg f = (ISOMsg) tab.get (new Integer(i));
                 if ( f != null )
                     c.set( (ISOMsg)fldVld[i].validate( f ) );
             }

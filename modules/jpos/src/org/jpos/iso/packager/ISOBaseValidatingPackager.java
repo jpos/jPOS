@@ -24,6 +24,7 @@ import org.jpos.util.LogEvent;
 import org.jpos.util.Logger;
 
 import java.util.Hashtable;
+import java.util.Map;
 
 /**
  * Base Packager class envolving validators. It implements
@@ -46,7 +47,7 @@ public class ISOBaseValidatingPackager extends ISOBasePackager implements ISOVal
         LogEvent evt = new LogEvent( this, "validate" );
         try {
             ISOComponent c;
-            Hashtable fields = ((ISOMsg)m).getChildren();
+            Map fields = m.getChildren();
             /** Field  validations **/
             for (int i=0; i<fldVld.length; i++) {
                 if ( fldVld[i] != null && (c=(ISOComponent) fields.get (new Integer ( ((ISOFieldValidator)fldVld[i]).getFieldId() ))) != null ){

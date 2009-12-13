@@ -23,7 +23,7 @@ import org.jpos.util.LogEvent;
 import org.jpos.util.Logger;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
+import java.util.Map;
 
 /**
  * EuroPay SubField packager
@@ -57,7 +57,7 @@ public class EuroSubFieldPackager extends ISOBasePackager
     public byte[] pack (ISOComponent c) throws ISOException {
         try {
             int len =0;
-            Hashtable tab = c.getChildren();
+            Map tab = c.getChildren();
             ArrayList l = new ArrayList();
 
             // Handle first IF_CHAR field
