@@ -50,7 +50,7 @@ public class QMUX
     protected String spaceName;
     protected int[] key;
     protected String ignorerc;
-    protected String[] mtiMapping = new String[] { nomap, nomap, "0022446789" };
+    protected String[] mtiMapping;
     List listeners;
     int rx, tx, rxExpired, txExpired, rxPending, rxUnhandled, rxForwarded;
     long lastTxn = 0L;
@@ -66,6 +66,9 @@ public class QMUX
         ignorerc  = e.getChildTextTrim ("ignore-rc");
         key       = toIntArray(e.getChildTextTrim ("key"));
         ready     = toStringArray(e.getChildTextTrim ("ready"));
+        mtiMapping = toStringArray(e.getChildTextTrim ("mtimapping"));
+        if (mtiMapping.length != 3) 
+            mtiMapping = new String[] { nomap, nomap, "0022446789" };
         addListeners ();
         unhandled = e.getChildTextTrim ("unhandled");
         sp.addListener (in, this);
