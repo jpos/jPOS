@@ -60,7 +60,7 @@ public class BCDInterpreter implements Interpreter
             if (leftPadded)
                 b[offset] |= (byte) 0xF0;
             else
-                b[paddedSize] |= (byte) 0x0F;
+                b[offset+paddedSize] |= (byte) 0x0F;
     }
 
     /**
