@@ -67,7 +67,7 @@ public class QMUX
         key       = toIntArray(e.getChildTextTrim ("key"));
         ready     = toStringArray(e.getChildTextTrim ("ready"));
         mtiMapping = toStringArray(e.getChildTextTrim ("mtimapping"));
-        if (mtiMapping.length != 3) 
+        if (mtiMapping == null || mtiMapping.length != 3) 
             mtiMapping = new String[] { nomap, nomap, "0022446789" };
         addListeners ();
         unhandled = e.getChildTextTrim ("unhandled");
