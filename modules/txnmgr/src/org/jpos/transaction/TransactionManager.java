@@ -38,6 +38,7 @@ public class TransactionManager
 {
     Space sp;
     Space psp;
+    Space isp; // input space
     String queue;
     String tailLock;
     protected Map groups;
@@ -68,6 +69,7 @@ public class TransactionManager
         if (queue == null)
             throw new ConfigurationException ("queue property not specified");
         sp   = SpaceFactory.getSpace (cfg.get ("space"));
+        isp  = SpaceFactory.getSpace (cfg.get ("input-space", cfg.get ("space")));
         psp  = SpaceFactory.getSpace (cfg.get ("persistent-space", this.toString()));
         tail = initCounter (TAIL, cfg.getLong ("initial-tail", 1));
         head = Math.max (initCounter (HEAD, tail), tail);
@@ -95,7 +97,7 @@ public class TransactionManager
         NameRegistrar.unregister (getName ());
         long sessions = cfg.getLong ("sessions", 1);
         for (int i=0; i<sessions; i++) {
-            sp.out (queue, this, 60*1000);
+            isp.out (queue, Boolean.FALSE, 60*1000);
         }
         for (int i=0; i<sessions; i++) {
             try {
@@ -108,19 +110,22 @@ public class TransactionManager
         }
     }
     public void queue (Serializable context) {
-        sp.out (queue, context);
+        isp.out (queue, context);
     }
     public void push (Serializable context) {
-        sp.push (queue, context);
+        isp.push (queue, context);
     }
     public String getQueueName() {
         return queue;
     }
     public Space getSpace() {
-        return this.sp;
+        return sp;
+    }
+    public Space getInputSpace() {
+        return isp;
     }
     public Space getPersistentSpace() {
-        return this.psp;
+        return psp;
     }
     public void run () {
         long id = 0;
@@ -137,8 +142,8 @@ public class TransactionManager
         }
         while (running()) {
             try {
-                Object obj = sp.in (queue);
-                if (obj == this)
+                Object obj = isp.in (queue);
+                if (obj == Boolean.FALSE)
                     continue;   // stopService ``hack''
                 if (!(obj instanceof Serializable)) {
                     getLog().error (
@@ -653,7 +658,7 @@ public class TransactionManager
             while (running()) {
                 for (Object context; (context = psp.rdp (RETRY_QUEUE)) != null;) 
                 {
-                    sp.out (queue, context);
+                    isp.out (queue, context);
                     psp.inp (RETRY_QUEUE);
                 }
                 try {
