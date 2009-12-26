@@ -366,12 +366,17 @@ public class ISOMsg extends ISOComponent
             p.print (" "+XMLPackager.ID_ATTR +"=\""+fieldNumber +"\"");
         p.println (">");
         String newIndent = indent + "  ";
-
+        if (getPackager() != null) {
+           p.println (
+              newIndent
+           + "<!-- " + getPackager().getDescription() + " -->"
+           );
+        }
         if (header instanceof Loggeable)
             ((Loggeable) header).dump (p, newIndent);
 
         for (int i=0; i<=maxField; i++) {
-            if ((c = (ISOComponent) fields.get (new Integer (i))) != null)
+            if ((c = (ISOComponent) fields.get (i)) != null)
                 c.dump (p, newIndent);
             //
             // Uncomment to include bitmaps within logs
@@ -752,7 +757,7 @@ public class ISOMsg extends ISOComponent
     }
     protected void writePackager(ObjectOutput out) throws IOException {
         out.writeByte('P');
-        String pclass = ((Class) packager.getClass()).getName();
+        String pclass = packager.getClass().getName();
         byte[] b = pclass.getBytes();
         out.writeShort(b.length);
         out.write(b);

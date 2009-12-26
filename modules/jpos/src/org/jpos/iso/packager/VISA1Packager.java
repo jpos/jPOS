@@ -173,6 +173,9 @@ public class VISA1Packager
     {
         return "VISA 1 fld "+fldNumber;
     }
+    public String getDescription () {
+        return getClass().getName();
+    }    
     public ISOMsg createISOMsg() {
         return new ISOMsg();
     }

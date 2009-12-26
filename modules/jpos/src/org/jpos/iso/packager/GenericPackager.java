@@ -84,6 +84,7 @@ public class GenericPackager
     private boolean emitBitmap=true;
     private int bitmapField=1;
     private String firstField = null;
+    private String filename;
 
     public GenericPackager() throws ISOException
     {
@@ -98,6 +99,7 @@ public class GenericPackager
     public GenericPackager(String filename) throws ISOException
     {
         this();
+        this.filename = filename;
         readFile(filename);
     }
 
@@ -211,6 +213,16 @@ public class GenericPackager
         reader.setContentHandler(handler);
         reader.setErrorHandler(handler);
         return reader;
+    }
+    public String getDescription () {
+        StringBuilder sb = new StringBuilder();
+        sb.append (super.getDescription());
+        if (filename != null) {
+            sb.append ('[');
+            sb.append (filename);
+            sb.append (']');
+        }
+        return sb.toString();
     }
     private void setGenericPackagerParams (Attributes atts)
     {
