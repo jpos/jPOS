@@ -266,6 +266,9 @@ public class XML2003Packager extends DefaultHandler
     public ISOMsg createISOMsg () {
         return new ISOMsg();
     }
+    public String getDescription () {
+        return getClass().getName();
+    }    
     private void fixup (ISOMsg m, int[] bfields) throws ISOException {
         for (int i=0; i<bfields.length; i++) {
             int f = bfields[i];

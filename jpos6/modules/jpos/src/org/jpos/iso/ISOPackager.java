@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * @author apr@cs.com.uy
+ * @author apr
  * @version $Id$
  * @see ISOComponent
  */
@@ -32,7 +32,7 @@ public interface ISOPackager extends LogSource {
     /**
      * @param   m   the Component to pack
      * @return      Message image
-     * @exception ISOException
+     * @exception ISOException on error
      */
     public byte[] pack (ISOComponent m) throws ISOException;
 
@@ -40,12 +40,17 @@ public interface ISOPackager extends LogSource {
      * @param   m   the Container of this message
      * @param   b   ISO message image
      * @return      consumed bytes
-     * @exception ISOException
+     * @exception ISOException on error
      */
     public int unpack (ISOComponent m, byte[] b) throws ISOException;
 
     public void unpack (ISOComponent m, InputStream in) throws IOException, ISOException;
 
+    /**
+     * @return  Packager's Description
+     */
+    public String getDescription();
+    
     /**
      * @param   m   the Container (i.e. an ISOMsg)
      * @param   fldNumber the Field Number

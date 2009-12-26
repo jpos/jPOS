@@ -80,7 +80,7 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
             int len = 0;
             int first = getFirstField();
 
-            c = (ISOComponent) fields.get (new Integer(0));
+            c = (ISOComponent) fields.get (0);
             byte[] b;
 
             if (m instanceof ISOMsg && headerLength>0) 
@@ -427,5 +427,8 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
     public void setHeaderLength(int len)
     {
     	headerLength = len;
+    }
+    public String getDescription () {
+        return getClass().getName();
     }
 }

@@ -42,5 +42,7 @@ public class DummyPackager extends Log implements ISOPackager {
     public ISOMsg createISOMsg() {
         return new ISOMsg();
     }
+    public String getDescription () {
+        return getClass().getName();
+    }
 }
-

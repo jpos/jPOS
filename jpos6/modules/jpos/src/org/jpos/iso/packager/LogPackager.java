@@ -229,6 +229,9 @@ public class LogPackager extends DefaultHandler
     public String getFieldDescription(ISOComponent m, int fldNumber) {
         return "<notavailable/>";
     }
+    public String getDescription () {
+        return getClass().getName();
+    }    
     public void setLogger (Logger logger, String realm) {
         this.logger = logger;
         this.realm  = realm;

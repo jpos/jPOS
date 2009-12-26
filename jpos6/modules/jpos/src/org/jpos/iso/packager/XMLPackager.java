@@ -273,6 +273,9 @@ public class XMLPackager extends DefaultHandler
     public ISOMsg createISOMsg () {
         return new ISOMsg();
     }
+    public String getDescription () {
+        return getClass().getName();
+    }
     private XMLReader createXMLReader () throws SAXException {
         XMLReader reader;
         try {
