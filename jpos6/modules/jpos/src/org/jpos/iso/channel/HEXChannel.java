@@ -26,20 +26,16 @@ import java.io.IOException;
 import java.net.ServerSocket;
 
 /**
- * Talks with TCP based NCCs
- * Sends [LEN][TPDU][ISOMSG]
- * (len=2 bytes HEX)
+ * Sends a four ASCII hex characters indicating message length (up to 0xffff)
  *
  * @author Mladen Mrkic <mmrkic@arius.co.yu>
+ * @author apr
  * @version $Revision$ $Date$
  * @see ISOMsg
  * @see ISOException
  * @see ISOChannel
  */
 public class HEXChannel extends BaseChannel {
-    /**
-     * Public constructor 
-     */
     public HEXChannel () {
         super();
     }
@@ -81,11 +77,11 @@ public class HEXChannel extends BaseChannel {
         this.header = TPDU;
     }
     protected void sendMessageLength(int len) throws IOException {
+        if (len > 0xFFFF)
+            throw new IOException (len + " exceeds maximum length");
         try {
-            serverOut.write (                                                                                                         
-                ISOUtil.str2bcd (                                                                                                     
-                    ISOUtil.zeropad (Integer.toString (len,16), 4), true
-                )
+            serverOut.write (
+                ISOUtil.zeropad (Integer.toString (len % 0xFFFF,16), 4).getBytes()
             );
         } 
         catch (ISOException e) {
@@ -93,34 +89,9 @@ public class HEXChannel extends BaseChannel {
         }
     }
     protected int getMessageLength() throws IOException, ISOException {
-        byte[] b = new byte[2];
-        serverIn.readFully(b,0,2);
-        return Integer.parseInt (
-            ISOUtil.bcd2str (b, 0, 4, true),16
-        );
-    }
-    protected void sendMessageHeader(ISOMsg m, int len) throws IOException { 
-        byte[] h = m.getHeader();
-        if (h != null) {
-            if (h.length == 5) {
-                // swap src/dest address
-                byte[] tmp = new byte[2];
-                System.arraycopy (h,   1, tmp, 0, 2);
-                System.arraycopy (h,   3,   h, 1, 2);
-                System.arraycopy (tmp, 0,   h, 3, 2);
-            }
-        }
-        else
-            h = header ;
-        if (h != null) 
-            serverOut.write(h);
-    }
-    /**
-     * New QSP compatible signature (see QSP's ConfigChannel)
-     * @param header String as seen by QSP
-     */
-    public void setHeader (String header) {
-        super.setHeader (ISOUtil.str2bcd(header, false));
+        byte[] b = new byte[4];
+        serverIn.readFully(b,0,4);
+        return Integer.parseInt (new String(b),16);
     }
 }
 
