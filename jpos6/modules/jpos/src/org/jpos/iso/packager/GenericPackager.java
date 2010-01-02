@@ -23,6 +23,7 @@ import org.jpos.core.ConfigurationException;
 import org.jpos.core.ReConfigurable;
 import org.jpos.iso.*;
 import org.jpos.util.Logger;
+import org.jpos.util.LogSource;
 import org.xml.sax.*;
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
@@ -134,7 +135,6 @@ public class GenericPackager
             if (loggerName != null)
                 setLogger(Logger.getLogger (loggerName), 
                            cfg.get ("packager-realm"));
-
             readFile(cfg.get("packager-config"));
         } 
         catch (ISOException e) 
@@ -195,7 +195,17 @@ public class GenericPackager
             throw new ISOException(e);
         }
     }
-
+    public void setLogger (Logger logger, String realm) {
+        super.setLogger (logger, realm);
+        for (int i=0; i<fld.length; i++) {
+            if (fld[i] instanceof ISOMsgFieldPackager) {
+                Object o = ((ISOMsgFieldPackager)fld[i]).getISOMsgPackager();
+                if (o instanceof LogSource) {
+                    ((LogSource)o).setLogger (logger, realm + "-fld-" + i);
+                }
+            } 
+        }
+    }
     private XMLReader createXMLReader () throws SAXException {
         XMLReader reader = null;
         try {
@@ -393,11 +403,12 @@ public class GenericPackager
 
                 ISOBasePackager msgPackager = (ISOBasePackager) fieldStack.pop();
                 msgPackager.setFieldPackager (makeFieldArray(tab));
-                msgPackager.setLogger (getLogger(), "Generic Packager");
 
                 ISOFieldPackager fieldPackager = (ISOFieldPackager) fieldStack.pop();
 
                 Integer fno = (Integer) fieldStack.pop();
+
+                msgPackager.setLogger (getLogger(), getRealm() + "-fld-" + fno);
 
                 // Create the ISOMsgField packager with the retrieved msg and field Packagers
                 ISOMsgFieldPackager mfp = 
