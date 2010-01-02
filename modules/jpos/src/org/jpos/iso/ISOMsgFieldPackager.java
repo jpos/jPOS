@@ -22,6 +22,7 @@ package org.jpos.iso;
 import java.io.IOException;
 import java.io.InputStream;
 
+
 /**
  * ISOMsgFieldPackager is a packager able to pack compound ISOMsgs
  * (one message inside another one, and so on...)
@@ -33,6 +34,7 @@ import java.io.InputStream;
 public class ISOMsgFieldPackager extends ISOFieldPackager {
     protected ISOPackager msgPackager;
     protected ISOFieldPackager fieldPackager;
+
     /**
      * @param fieldPackager low level field packager
      * @param msgPackager ISOMsgField default packager
@@ -91,7 +93,6 @@ public class ISOMsgFieldPackager extends ISOFieldPackager {
             msgPackager.unpack((ISOMsg) c, (byte[]) f.getValue());
         }
     }
-
     public ISOComponent createComponent(int fieldNumber) {
         ISOMsg m = new ISOMsg(fieldNumber);
         m.setPackager(msgPackager);
@@ -99,5 +100,11 @@ public class ISOMsgFieldPackager extends ISOFieldPackager {
     }
     public int getMaxPackedLength() {
         return fieldPackager.getLength();
+    }
+    public ISOPackager getISOMsgPackager() {
+        return msgPackager;
+    }
+    public ISOFieldPackager getISOFieldPackager() {
+        return fieldPackager;
     }
 }
