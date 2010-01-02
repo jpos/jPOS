@@ -197,13 +197,15 @@ public class GenericPackager
     }
     public void setLogger (Logger logger, String realm) {
         super.setLogger (logger, realm);
-        for (int i=0; i<fld.length; i++) {
-            if (fld[i] instanceof ISOMsgFieldPackager) {
-                Object o = ((ISOMsgFieldPackager)fld[i]).getISOMsgPackager();
-                if (o instanceof LogSource) {
-                    ((LogSource)o).setLogger (logger, realm + "-fld-" + i);
-                }
-            } 
+        if (fld != null) {
+            for (int i=0; i<fld.length; i++) {
+                if (fld[i] instanceof ISOMsgFieldPackager) {
+                    Object o = ((ISOMsgFieldPackager)fld[i]).getISOMsgPackager();
+                    if (o instanceof LogSource) {
+                        ((LogSource)o).setLogger (logger, realm + "-fld-" + i);
+                    }
+                } 
+            }
         }
     }
     private XMLReader createXMLReader () throws SAXException {
