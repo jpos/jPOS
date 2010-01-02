@@ -1,4 +1,5 @@
 <isomsg>
+  <!-- org.jpos.iso.packager.XMLPackager -->
   <field id="0" value="1100"/>
   <field id="2" value="1234567890123456789"/>
   <field id="3" value="000000"/>
