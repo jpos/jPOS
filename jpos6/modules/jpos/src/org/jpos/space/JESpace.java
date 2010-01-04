@@ -292,7 +292,7 @@ public class JESpace<K,V> extends Log implements Space<K,V> {
         }
         try {
             txn = dbe.beginTransaction (null, null);
-            cursor = sIndex.subIndex((String) key).entities(txn, null);
+            cursor = sIndex.subIndex(key.toString()).entities(txn, null);
             for (Ref ref : cursor) {
                 if (ref.isActive()) {
                     if (tmpl != null && !tmpl.equals (ref.getValue()))
