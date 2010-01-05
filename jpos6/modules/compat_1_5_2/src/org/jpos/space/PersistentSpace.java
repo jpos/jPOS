@@ -123,6 +123,13 @@ public class PersistentSpace implements LocalSpace // PersistentSpaceMBean {
         }
         return obj;
     }
+    public void put (Object key, Object value) {
+        throw new SpaceError ("Unsupported operation");
+    }
+    public void put (Object key, Object value, long timeout) {
+        throw new SpaceError ("Unsupported operation");
+    }
+
     public synchronized void addListener    (Object key, SpaceListener listener) {
         Data data = (Data) map.get (key);
         if (data == null)

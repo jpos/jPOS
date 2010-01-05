@@ -221,6 +221,7 @@ public class TSpace<K,V> extends TimerTask implements LocalSpace<K,V>, Loggeable
         if (sl != null)
             notifyListeners(key, value);
     }
+
     public void push (K key, V value, long timeout) {
         if (key == null || value == null)
             throw new NullPointerException ("key=" + key + ", value=" + value);
@@ -230,6 +231,34 @@ public class TSpace<K,V> extends TimerTask implements LocalSpace<K,V>, Loggeable
         }
         synchronized (this) {
             getList (key).add (0, v);
+            this.notifyAll ();
+        }
+        if (sl != null)
+            notifyListeners(key, value);
+    }
+
+    public synchronized void put (K key, V value) {
+        if (key == null || value == null)
+            throw new NullPointerException ("key=" + key + ", value=" + value);
+
+        List l = new LinkedList();
+        l.add (value);
+        entries.put (key, l);
+        this.notifyAll ();
+        if (sl != null)
+            notifyListeners(key, value);
+    }
+    public void put (K key, V value, long timeout) {
+        if (key == null || value == null)
+            throw new NullPointerException ("key=" + key + ", value=" + value);
+        Object v = value;
+        if (timeout > 0) {
+            v = new Expirable (value, System.currentTimeMillis() + timeout);
+        }
+        synchronized (this) {
+            List l = new LinkedList();
+            l.add (value);
+            entries.put (key, l);
             this.notifyAll ();
         }
         if (sl != null)

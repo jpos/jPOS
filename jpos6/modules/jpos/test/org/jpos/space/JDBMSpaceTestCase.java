@@ -184,5 +184,13 @@ public class JDBMSpaceTestCase extends TestCase {
         assertTrue ( "delay was > 1000", elapsed > 900L);
         assertNotNull ("Entry should not be null", sp.inp ("KA"));
     }
+    public void testPut () {
+       sp.out ("PUT", "ONE");
+       sp.out ("PUT", "TWO");
+       sp.put ("PUT", "ZERO");
+       assertEquals ("ZERO", sp.rdp ("PUT"));
+       assertEquals ("ZERO", sp.inp ("PUT"));
+       assertNull (sp.rdp ("PUT"));
+       }
 }
 

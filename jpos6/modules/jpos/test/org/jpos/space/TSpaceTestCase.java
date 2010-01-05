@@ -191,6 +191,14 @@ public class TSpaceTestCase extends TestCase implements SpaceListener {
         assertEquals ("FOUR", sp.inp ("PUSH"));
         assertNull (sp.rdp ("PUSH"));
     }
+    public void testPut () {
+        sp.out ("PUT", "ONE");
+        sp.out ("PUT", "TWO");
+        sp.put ("PUT", "ZERO");
+        assertEquals ("ZERO", sp.rdp ("PUT"));
+        assertEquals ("ZERO", sp.inp ("PUT"));
+        assertNull (sp.rdp ("PUT"));
+    }
     public void testExist() {
         sp.out ("KEYA", Boolean.TRUE);
         sp.out ("KEYB", Boolean.TRUE);

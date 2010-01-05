@@ -165,5 +165,12 @@ public class JESpaceTestCase extends TestCase {
         sp.out ("B", "AnotherEntrywithtimeout", 1000L);
         sp.gc();
     }
+    public void testPut () {
+        sp.out ("PUT", "ONE");
+        sp.out ("PUT", "TWO");
+        sp.put ("PUT", "ZERO");
+        assertEquals ("ZERO", sp.rdp ("PUT"));
+        assertEquals ("ZERO", sp.inp ("PUT"));
+        assertNull (sp.rdp ("PUT"));
+    }
 }
-
