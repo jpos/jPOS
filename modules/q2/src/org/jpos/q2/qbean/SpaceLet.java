@@ -39,6 +39,7 @@ public class SpaceLet extends QBeanSupport implements Space {
     String pushScript, pushSource;
     String inScript, inSource;
     String rdScript, rdSource;
+    String putScript, putSource;
 
     public void initService() throws ConfigurationException {
         Element config = getPersist ();
@@ -69,6 +70,12 @@ public class SpaceLet extends QBeanSupport implements Space {
         rdScript = getScript (e);
         if (e != null)
             rdSource = e.getAttributeValue ("source");
+
+        e = config.getChild ("put");
+        putScript = getScript (e);
+        if (e != null)
+            putSource = e.getAttributeValue ("source");
+
     }
     public void startService() {
         NameRegistrar.register (uri, this);
@@ -118,6 +125,28 @@ public class SpaceLet extends QBeanSupport implements Space {
             Interpreter bsh = initInterpreter (key, value, timeout);
             synchronized (sp) {
                 if (!eval (bsh, pushScript, pushSource))
+                    sp.out (key, value, timeout);
+            }
+        } catch (Throwable t) {
+            throw new SpaceError (t);
+        }
+    }
+    public void put (Object key, Object value) {
+        try {
+            Interpreter bsh = initInterpreter (key, value);
+            synchronized (sp) {
+                if (!eval (bsh, putScript, putSource))
+                    sp.put (key, value);
+            }
+        } catch (Throwable t) {
+            throw new SpaceError (t);
+        }
+    }
+    public void put (Object key, Object value, long timeout) {
+        try {
+            Interpreter bsh = initInterpreter (key, value, timeout);
+            synchronized (sp) {
+                if (!eval (bsh, putScript, putSource))
                     sp.out (key, value, timeout);
             }
         } catch (Throwable t) {

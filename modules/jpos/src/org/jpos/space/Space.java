@@ -134,5 +134,21 @@ public interface Space<K,V> {
      * @return true if one or more keys are available in the space
      */
     public boolean existAny (K[] keys, long timeout);
-}
 
+    /**
+     * Write a single entry at the head of the queue discarding the other entries
+     * @param key Entry's key
+     * @param value Object value
+
+     */
+    public void put (K key, V value);
+
+    /**
+     * Write a single entry at the head of the queue discarding the other entries, with timeout.
+     * @param key Entry's key
+     * @param value Object value
+     * @param timeout timeout value
+     */
+    public void put (K key, V value, long timeout);
+
+}

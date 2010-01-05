@@ -399,6 +399,16 @@ public class JDBMSpace<K,V> extends TimerTask implements Space<K,V> {
         }
         return false;
     }
+    public synchronized void put (K key, V value, long timeout) {
+        while (inp (key) != null)
+            ;
+        out (key, value, timeout);
+    }
+    public synchronized void put (K key, V value) {
+        while (inp (key) != null)
+            ;
+        out (key, value);
+    }
     private void purge (Object key) throws IOException {
         Head head = (Head) htree.get (key);
         Ref previousRef = null;
