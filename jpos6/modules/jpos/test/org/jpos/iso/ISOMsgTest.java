@@ -49,16 +49,26 @@ public class ISOMsgTest extends TestCase
         m.set("63.2.3","value3");
         m.set("63.2.4","value4");
         
+        /*
+         * Check null processing on set matches existing processing (setting to null same as unset).
+         * 
+         * Please note m.set(fPathString,null) is amiguous and cannot be distinguished from
+         *  m.set(fieldNumberString, byte[]), so take care.
+         */
+        String b = null;
+        m.set("63.2.5",b);  // null
+        m.set("63.2.6",m.getString("99"));  // null as well
+        assertFalse(m.hasField("63.2.5"));
+        assertFalse(m.hasField("63.2.6"));
+                
         assertEquals(true,m.hasField("63.2.3"));
         assertEquals("value3", m.getString("63.2.3"));
         assertEquals(true,m.hasField("63.2.4"));
         assertEquals("value4", m.getString("63.2.4"));
         
-        
-        
         assertFalse(m.hasField("63.2.999"));
         assertFalse(m.hasField("63.2.4.999"));
-        
+                
         m.unset("63.2.3");
         
         assertFalse(m.hasField("63.2.3"));
