@@ -563,7 +563,6 @@ public class ISOMsg extends ISOComponent
     /**
      * Check if a field indicated by a fpath is present
      * @param fpath dot-separated field path (i.e. 63.2)
-     * @param value field value
      */
      public boolean hasField (String fpath) throws ISOException {
          StringTokenizer st = new StringTokenizer (fpath, ".");
@@ -628,7 +627,7 @@ public class ISOMsg extends ISOComponent
     public Object clone(int[] fields) {
         try {
             ISOMsg m = (ISOMsg) super.clone();
-            m.fields = new HashMap();
+            m.fields = new TreeMap();
             for (int i=0; i<fields.length; i++) {
                 if (hasField(fields[i])) {
                     try {
