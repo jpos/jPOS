@@ -47,12 +47,22 @@ public class Profiler implements Loggeable {
      * mark checkpoint
      * @param detail checkpoint information
      */
+    @SuppressWarnings("unchecked")
     public synchronized void checkPoint (String detail) {
         long now = System.currentTimeMillis();
         Entry e = new Entry();
-        e.setEventName(detail);
         e.setDuration(now - parcial);
         e.setTotalDuration(now - start);
+        if (events.containsKey(detail)) {
+            for (int i=1; ;i++) {
+                String d = detail + "-" + i;
+                if (!events.containsKey (d)) {
+                    detail = d;
+                    break;
+                }
+            }
+        }
+        e.setEventName(detail);
         events.put (detail, e);
         parcial = now;
     }
@@ -76,7 +86,7 @@ public class Profiler implements Loggeable {
         Iterator iter = c.iterator();
         p.println (indent + "<profiler>");
         while (iter.hasNext()) 
-            p.println (inner + ((Entry) iter.next()).toString());
+            p.println (inner + iter.next().toString());
         p.println (indent + "</profiler>");
     }
     public Entry getEntry(String eventName) {
