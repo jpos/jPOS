@@ -38,4 +38,36 @@ public class ISOMsgTest extends TestCase
         assertEquals ("Field 63.2.3", m.getString ("63.2.3"));
         assertEquals ("CAFEBABE", new String(m.getBytes("63.2.4")));
     }
+    
+    public void testFPath() throws Exception {
+        ISOMsg m = new ISOMsg("0100");
+        
+        assertFalse(m.hasField("63"));
+        assertFalse(m.hasField("63.2"));
+        assertFalse(m.hasField("63.2.3"));
+        
+        m.set("63.2.3","value3");
+        m.set("63.2.4","value4");
+        
+        assertEquals(true,m.hasField("63.2.3"));
+        assertEquals("value3", m.getString("63.2.3"));
+        assertEquals(true,m.hasField("63.2.4"));
+        assertEquals("value4", m.getString("63.2.4"));
+        
+        
+        
+        assertFalse(m.hasField("63.2.999"));
+        assertFalse(m.hasField("63.2.4.999"));
+        
+        m.unset("63.2.3");
+        
+        assertFalse(m.hasField("63.2.3"));
+        
+        assertEquals(true,m.hasField("63.2"));
+        m.unset("63.2.4");  // Removal of last remaining field triggers removal of immediate parent.
+        assertFalse(m.hasField("63.2"));
+        
+        m.unset("63.2.4.999");  // No problem removing non-existant fields.
+
+    }
 }

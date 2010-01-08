@@ -231,6 +231,8 @@ public class ISOMsg extends ISOComponent
             }
         }
     }
+    
+   
    /**
     * Creates an ISOField associated with fldno within this ISOMsg
     * @param fpath dot-separated field path (i.e. 63.2)
@@ -281,6 +283,39 @@ public class ISOMsg extends ISOComponent
     public void unset (int[] flds) {
         for (int i=0; i<flds.length; i++)
             unset (flds[i]);
+    }
+    /**
+     * Unset a field referenced by a fpath if it exists, otherwise ignore.
+     * @param fpath dot-separated field path (i.e. 63.2)
+     * @throws ISOException 
+    */
+    public void unset (String fpath) throws ISOException {
+        StringTokenizer st = new StringTokenizer (fpath, ".");
+        ISOMsg m = this;
+        ISOMsg lastm = m;
+        int fldno = -1 ;
+        int lastfldno ;
+        for (;;) {
+            lastfldno = fldno;
+            fldno = Integer.parseInt(st.nextToken());
+            if (st.hasMoreTokens()) {
+                Object obj = m.getValue(fldno);
+                if (obj instanceof ISOMsg) {
+                    lastm = m;
+                    m = (ISOMsg) obj;
+                }
+                else {
+                    // No real way of unset further subfield, exit.  Perhaps should be ISOException?
+                    break;
+                }
+            } else {
+                m.unset(fldno);
+                if (m.hasFields() == false  && (lastfldno != -1)) {
+                    lastm.unset(lastfldno);
+                }
+                break;
+            }
+        }
     }
     /**
      * In order to interchange <b>Composites</b> and <b>Leafs</b> we use
@@ -525,6 +560,30 @@ public class ISOMsg extends ISOComponent
                 return false;
         return true;
     }
+    /**
+     * Check if a field indicated by a fpath is present
+     * @param fpath dot-separated field path (i.e. 63.2)
+     * @param value field value
+     */
+     public boolean hasField (String fpath) throws ISOException {
+         StringTokenizer st = new StringTokenizer (fpath, ".");
+         ISOMsg m = this;
+         for (;;) {
+             int fldno = Integer.parseInt(st.nextToken());
+             if (st.hasMoreTokens()) {
+                 Object obj = m.getValue(fldno);
+                 if (obj instanceof ISOMsg) {
+                     m = (ISOMsg) obj;
+                 }
+                 else {
+                     // No real way of checking for further subfields, return false, perhaps should be ISOException?
+                     return false;
+                 }
+             } else {
+                 return m.hasField(fldno);
+             }
+         }
+     }
     /**
      * @return true if ISOMsg has at least one field
      */
