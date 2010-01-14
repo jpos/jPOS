@@ -87,8 +87,7 @@ public class NameRegistrar implements Loggeable {
         return obj;
     }
     /**
-     * @param key key whose associated value is to be returned.
-     * @throws NotFoundException if key not present in registrar
+     * @param key key whose associated value is to be returned, null if not present.
      */
     public static Object getIfExists (String key) {
         return getMap().get(key);
