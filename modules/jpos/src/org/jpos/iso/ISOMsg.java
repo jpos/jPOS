@@ -177,11 +177,14 @@ public class ISOMsg extends ISOComponent
      * @param c - a component
      */
     public void set (ISOComponent c) throws ISOException {
-        Integer i = (Integer) c.getKey();
-        fields.put (i, c);
-        if (i.intValue() > maxField)
-            maxField = i.intValue();
-        dirty = true;
+        if (c != null) {
+            Integer i = (Integer) c.getKey();
+            fields.put (i, c);
+            if (i.intValue() > maxField) {
+                maxField = i.intValue();
+            }
+            dirty = true;
+        }
     }
    /**
     * Creates an ISOField associated with fldno within this ISOMsg
@@ -224,13 +227,54 @@ public class ISOMsg extends ISOComponent
                 if (obj instanceof ISOMsg)
                     m = (ISOMsg) obj;
                 else
-                    m.set (m = new ISOMsg (fldno));
+                    /* 
+                     * we need to go deeper, however, if the value == null then
+                     * there is nothing to do (unset) at the lower levels, so break now and save some processing.
+                     */
+                    if (value == null) {
+                        break;
+                    } else {
+                        // We have a value to set, so adding a level to hold it is sensible.
+                        m.set (m = new ISOMsg (fldno));
+                    }
             } else {
                 m.set (fldno, value);
                 break;
             }
         }
     }
+    
+    /**
+     * Creates an ISOField associated with fldno within this ISOMsg
+     * @param fpath dot-separated field path (i.e. 63.2)
+     * @param component component
+     */
+     public void set (String fpath, ISOComponent c) throws ISOException {
+         StringTokenizer st = new StringTokenizer (fpath, ".");
+         ISOMsg m = this;
+         for (;;) {
+             int fldno = Integer.parseInt(st.nextToken());
+             if (st.hasMoreTokens()) {
+                 Object obj = m.getValue(fldno);
+                 if (obj instanceof ISOMsg)
+                     m = (ISOMsg) obj;
+                 else
+                     /* 
+                      * we need to go deeper, however, if the value == null then
+                      * there is nothing to do (unset) at the lower levels, so break now and save some processing.
+                      */
+                     if (c == null) {
+                         break;
+                     } else {
+                         // We have a value to set, so adding a level to hold it is sensible.
+                         m.set (m = new ISOMsg (fldno));
+                     }
+             } else {
+                 m.set (c);
+                 break;
+             }
+         }
+     }
     
    
    /**
@@ -460,6 +504,29 @@ public class ISOMsg extends ISOComponent
                 }
                 else
                     throw new ISOException ("Invalid path '" + fpath + "'");
+            } else 
+                break;
+        }
+        return obj;
+    }
+    /**
+     * get the component associated with the given field number
+     * @param fpath field path
+     * @return the Component
+     */
+    public ISOComponent getComponent (String fpath) throws ISOException {
+        StringTokenizer st = new StringTokenizer (fpath, ".");
+        ISOMsg m = this;
+        ISOComponent obj = null;
+        for (;;) {
+            int fldno = Integer.parseInt(st.nextToken());
+            obj = m.getComponent(fldno);
+            if (st.hasMoreTokens()) {
+                if (obj instanceof ISOMsg) {
+                    m = (ISOMsg) obj;
+                }
+                else
+                    break; // 'Quick' exit if hierachy is not present.
             } else 
                 break;
         }
