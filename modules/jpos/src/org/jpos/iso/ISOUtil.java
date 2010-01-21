@@ -829,8 +829,7 @@ public class ISOUtil {
         } catch (ISOException e){
             //cannot PAD - should never get here 
         }
-        return s;
-        }        
+        return s;        
     }
     public static int[] toIntArray(String s) {
         StringTokenizer st = new StringTokenizer (s);
