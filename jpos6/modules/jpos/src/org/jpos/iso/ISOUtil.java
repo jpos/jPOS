@@ -818,7 +818,19 @@ public class ISOUtil {
                 clear = 4;
             sb.append (clear-- > 0 ? s.charAt(i) : '_');
         }
-        return sb.toString();
+        s = sb.toString();
+        try {
+        //Addresses Track1 Truncation
+            int charCount = s.replaceAll("[^\\^]", "").length();
+            if (charCount == 2 ) {
+                s = s.substring(0, s.lastIndexOf("^")+1);
+                s = ISOUtil.padright(s, len, '_');
+            }
+        } catch (ISOException e){
+            //cannot PAD - should never get here 
+        }
+        return s;
+        }        
     }
     public static int[] toIntArray(String s) {
         StringTokenizer st = new StringTokenizer (s);
