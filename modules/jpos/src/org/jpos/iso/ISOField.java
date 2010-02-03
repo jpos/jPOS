@@ -107,7 +107,7 @@ public class ISOField
      * @return byte[] representing this field
      */
     public byte[] getBytes() {
-        return value.getBytes();
+        return (value != null) ? value.getBytes() : new byte[] {};
     }
     /**
      * dump this field to PrintStream. The output is sorta
