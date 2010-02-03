@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema>
+ <field id='x'               type='N' length='4' />
+ <field id='message-id'      type='A' length='2' key='true' default-key='default'/>      
+</schema>

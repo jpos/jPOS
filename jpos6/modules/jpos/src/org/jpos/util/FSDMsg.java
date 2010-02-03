@@ -347,6 +347,8 @@ public class FSDMsg implements Loggeable, Cloneable {
             String id    = elem.getAttributeValue ("id");
             int length   = Integer.parseInt (elem.getAttributeValue ("length"));
             String type  = elem.getAttributeValue ("type");
+            String defaultKey = elem.getAttributeValue ("default-key");
+            boolean useDefault  = (defaultKey != null && defaultKey.length() > 0) ? true : false;
             // For backward compatibility, look for a separator at the end of the type attribute, if no separator has been defined.
             String separator = elem.getAttributeValue ("separator");
             if (type != null && separator == null) {
@@ -367,11 +369,28 @@ public class FSDMsg implements Loggeable, Cloneable {
                 if (c > 0)
                     sb.append(c);
             }
-            if (key)
-                keyOff = keyOff + normalizeKeyValue(value, properties);
+            if (key){
+                if (useDefault){
+                    try {
+                        keyOff = "";
+                        keyOff = keyOff + normalizeKeyValue(value, properties);
+                        if (keyOff.length() > 0) 
+                            pack (getSchema (getId (schema) + keyOff), sb);
+                    } catch (RuntimeException re) {
+                        //File not Found use defined Default
+                        keyOff = "";
+                        keyOff = keyOff + normalizeKeyValue(defaultKey, properties);
+                        if (keyOff.length() > 0) 
+                            pack (getSchema (getId (schema) + keyOff), sb);
+                    }
+                } else {
+                    keyOff = keyOff + normalizeKeyValue(value, properties);
+                    if (keyOff.length() > 0) 
+                        pack (getSchema (getId (schema) + keyOff), sb);
+                }
+            }
         }
-        if (keyOff.length() > 0) 
-            pack (getSchema (getId (schema) + keyOff), sb);
+
     }
 
     private Map loadProperties(Element elem) {
@@ -385,20 +404,20 @@ public class FSDMsg implements Loggeable, Cloneable {
     	}
 	    return props;
     }
-
 	private String normalizeKeyValue(String value, Map properties) {
     	if (properties.containsKey(value)) {
     		return (String) properties.get(value);
     	}
     	return ISOUtil.normalize(value);
     }
-
     protected void unpack (InputStream is, Element schema) 
         throws IOException, JDOMException, MalformedURLException  
     
     {
         Iterator iter = schema.getChildren("field").iterator();
         String keyOff = "";
+        String origKeyOff = "";
+        Element e = null;
         while (iter.hasNext()) {
             Element elem = (Element) iter.next();
 
@@ -410,12 +429,11 @@ public class FSDMsg implements Loggeable, Cloneable {
             	separator = getSeparatorType (type);
             }
             boolean key  = "true".equals (elem.getAttributeValue ("key"));
+            String defaultKey = elem.getAttributeValue ("default-key");
+            boolean useDefault  = (defaultKey != null && defaultKey.length() > 0) ? true : false;
             Map properties = key ? loadProperties(elem) : Collections.EMPTY_MAP;
             String value = readField (
                 is, id, length, type, separator );
-            
-            if (key)
-                keyOff = keyOff + normalizeKeyValue(value, properties);
 
             if ("K".equals(type) && !value.equals (elem.getText()))
                 throw new IllegalArgumentException (
@@ -423,6 +441,25 @@ public class FSDMsg implements Loggeable, Cloneable {
                        + " value='"     +value
                        + "' expected='" + elem.getText () + "'"
                 );
+    
+            if (key){
+                if (useDefault){
+                    try {
+                        origKeyOff = keyOff;
+                        keyOff = keyOff + normalizeKeyValue(value, properties);
+                        if (keyOff.length() > 0) {
+                            e = getSchema (getId (schema) + keyOff);
+                        }
+                    } catch (RuntimeException re) {
+                        //File not Found use defined Default
+                        keyOff = origKeyOff;
+                        keyOff = keyOff + normalizeKeyValue(defaultKey, properties);
+                    }
+                } else {
+                    keyOff = keyOff + normalizeKeyValue(value, properties);
+                }
+            }
+                            
         }
         if (keyOff.length() > 0) {
             unpack (is, 

@@ -255,4 +255,32 @@ public class FSDMsgTestCase extends TestCase {
     public void assertEquals(String msg, byte[] b1, byte[] b2) {
         assertTrue(msg, Arrays.equals(b1, b2));
     }
+    
+    
+    public void testFSDMsgDefaultKey () throws Exception {
+        FSDMsg m0 = new FSDMsg(SCHEMA_DIR_URL + "fsd-");
+        FSDMsg m1 = new FSDMsg(SCHEMA_DIR_URL + "fsd-");
+        
+        FSDMsg u0 = new FSDMsg(SCHEMA_DIR_URL + "fsd-");
+        FSDMsg u1 = new FSDMsg(SCHEMA_DIR_URL + "fsd-");
+        
+        m0.set("message-id","03");
+        m0.set("x","X");
+        m0.set("y","WHYWHY03");
+        assertEquals ("Default defined - not used - pack", "000X0300WHYWHY03", m0.pack() );
+
+        m1.set("message-id","99");
+        m1.set("x","X");
+        m1.set("z","DEFAULT");
+        assertEquals ("Default defined - used - pack", "000X99DEFAULT   ", m1.pack() );
+
+        u0.unpack(m0.packToBytes());
+        assertEquals ("Default defined - not used - unpack", "00WHYWHY03", u0.get("y") );
+        
+        u1.unpack(m1.packToBytes());
+        assertEquals ("Default defined - used - unpack", "DEFAULT   ", u1.get("z") );
+
+    }
+    
+    
 }
