@@ -48,7 +48,7 @@ public class ISOAmount
         this.currencyCode = currencyCode;
     }
     public Object getKey() {
-        return new Integer(fieldNumber);
+        return fieldNumber;
     }
     public Object getValue() throws ISOException {
         if (value == null) {
@@ -130,7 +130,11 @@ public class ISOAmount
     }
     public void writeExternal (ObjectOutput out) throws IOException {
         out.writeShort (fieldNumber);
-        out.writeUTF (value);
+        try {
+            out.writeUTF ((String) getValue());
+        } catch (ISOException e) {
+            throw new IOException (e);
+        }
     }
     public void readExternal  (ObjectInput in) 
         throws IOException, ClassNotFoundException

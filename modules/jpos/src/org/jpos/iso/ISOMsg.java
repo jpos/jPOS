@@ -247,7 +247,7 @@ public class ISOMsg extends ISOComponent
     /**
      * Creates an ISOField associated with fldno within this ISOMsg
      * @param fpath dot-separated field path (i.e. 63.2)
-     * @param component component
+     * @param c component
      */
      public void set (String fpath, ISOComponent c) throws ISOException {
          StringTokenizer st = new StringTokenizer (fpath, ".");
@@ -927,22 +927,22 @@ public class ISOMsg extends ISOComponent
         while (iter.hasNext()) {
             ISOComponent c = (ISOComponent) iter.next();
             if (c instanceof ISOMsg) {
-                out.writeByte ('M');
-                ((Externalizable) c).writeExternal (out);
+                writeExternal (out, 'M', c);
             }
             else if (c instanceof ISOBinaryField) {
-                out.writeByte ('B');
-                ((Externalizable) c).writeExternal (out);
+                writeExternal (out, 'B', c);
+            }
+            else if (c instanceof ISOAmount) {
+                writeExternal (out, 'A', c);
             }
             else if (c instanceof ISOField) {
-                out.writeByte ('F');
-                ((Externalizable) c).writeExternal (out);
+                writeExternal (out, 'F', c);
             }
         }
         out.writeByte ('E');
     }
 
-    public void readExternal  (ObjectInput in) 
+    public void readExternal  (ObjectInput in)
         throws IOException, ClassNotFoundException
     {
         in.readByte();  // ignore version for now
@@ -955,6 +955,9 @@ public class ISOMsg extends ISOComponent
                 switch (fieldType) {
                     case 'F':
                         c = new ISOField ();
+                        break;
+                    case 'A':
+                        c = new ISOAmount ();
                         break;
                     case 'B':
                         c = new ISOBinaryField ();
@@ -997,6 +1000,10 @@ public class ISOMsg extends ISOComponent
      */
     public ISOSource getSource () {
         return (sourceRef != null) ? (ISOSource) sourceRef.get () : null;
+    }
+    private void writeExternal (ObjectOutput out, char b, ISOComponent c) throws IOException {
+        out.writeByte (b);
+        ((Externalizable) c).writeExternal (out);
     }
 }
 
