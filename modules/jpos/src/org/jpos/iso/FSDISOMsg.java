@@ -19,11 +19,9 @@
 package org.jpos.iso;
 
 import org.jpos.util.FSDMsg;
+import org.jdom.JDOMException;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.io.PrintStream;
+import java.io.*;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -54,6 +52,16 @@ public class FSDISOMsg extends ISOMsg implements Cloneable  {
             throw new ISOException (e);
         }
     }
+    public void unpack (InputStream in) throws IOException, ISOException {
+        synchronized (this) {
+            try {
+                fsd.unpack(in);
+            } catch (JDOMException e) {
+                throw new ISOException (e);
+            }
+        }
+    }
+
     public FSDMsg getFSDMsg() {
         return fsd;
     }
