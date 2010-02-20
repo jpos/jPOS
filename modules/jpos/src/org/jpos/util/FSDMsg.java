@@ -341,14 +341,13 @@ public class FSDMsg implements Loggeable, Cloneable {
         throws JDOMException, MalformedURLException, IOException, ISOException
     {
         String keyOff = "";
+        String defaultKey = "";
         Iterator iter = schema.getChildren("field").iterator();
         while (iter.hasNext()) {
             Element elem = (Element) iter.next ();
             String id    = elem.getAttributeValue ("id");
             int length   = Integer.parseInt (elem.getAttributeValue ("length"));
             String type  = elem.getAttributeValue ("type");
-            String defaultKey = elem.getAttributeValue ("default-key");
-            boolean useDefault  = (defaultKey != null && defaultKey.length() > 0) ? true : false;
             // For backward compatibility, look for a separator at the end of the type attribute, if no separator has been defined.
             String separator = elem.getAttributeValue ("separator");
             if (type != null && separator == null) {
@@ -369,28 +368,13 @@ public class FSDMsg implements Loggeable, Cloneable {
                 if (c > 0)
                     sb.append(c);
             }
-            if (key){
-                if (useDefault){
-                    try {
-                        keyOff = "";
-                        keyOff = keyOff + normalizeKeyValue(value, properties);
-                        if (keyOff.length() > 0) 
-                            pack (getSchema (getId (schema) + keyOff), sb);
-                    } catch (RuntimeException re) {
-                        //File not Found use defined Default
-                        keyOff = "";
-                        keyOff = keyOff + normalizeKeyValue(defaultKey, properties);
-                        if (keyOff.length() > 0) 
-                            pack (getSchema (getId (schema) + keyOff), sb);
-                    }
-                } else {
-                    keyOff = keyOff + normalizeKeyValue(value, properties);
-                    if (keyOff.length() > 0) 
-                        pack (getSchema (getId (schema) + keyOff), sb);
-                }
+            if (key) {
+                keyOff = keyOff + normalizeKeyValue(value, properties);
+                defaultKey += elem.getAttributeValue ("default-key");
             }
         }
-
+        if (keyOff.length() > 0) 
+            pack (getSchema (getId (schema), keyOff, defaultKey), sb);
     }
 
     private Map loadProperties(Element elem) {
@@ -404,20 +388,21 @@ public class FSDMsg implements Loggeable, Cloneable {
     	}
 	    return props;
     }
+
 	private String normalizeKeyValue(String value, Map properties) {
     	if (properties.containsKey(value)) {
     		return (String) properties.get(value);
     	}
     	return ISOUtil.normalize(value);
     }
+
     protected void unpack (InputStream is, Element schema) 
         throws IOException, JDOMException, MalformedURLException  
     
     {
         Iterator iter = schema.getChildren("field").iterator();
         String keyOff = "";
-        String origKeyOff = "";
-        Element e = null;
+        String defaultKey = "";
         while (iter.hasNext()) {
             Element elem = (Element) iter.next();
 
@@ -429,41 +414,24 @@ public class FSDMsg implements Loggeable, Cloneable {
             	separator = getSeparatorType (type);
             }
             boolean key  = "true".equals (elem.getAttributeValue ("key"));
-            String defaultKey = elem.getAttributeValue ("default-key");
-            boolean useDefault  = (defaultKey != null && defaultKey.length() > 0) ? true : false;
             Map properties = key ? loadProperties(elem) : Collections.EMPTY_MAP;
             String value = readField (
                 is, id, length, type, separator );
-
+            
+            if (key) {
+                keyOff = keyOff + normalizeKeyValue(value, properties);
+                defaultKey += elem.getAttributeValue ("default-key");
+            }
             if ("K".equals(type) && !value.equals (elem.getText()))
                 throw new IllegalArgumentException (
                     "Field "+id 
                        + " value='"     +value
                        + "' expected='" + elem.getText () + "'"
                 );
-    
-            if (key){
-                if (useDefault){
-                    try {
-                        origKeyOff = keyOff;
-                        keyOff = keyOff + normalizeKeyValue(value, properties);
-                        if (keyOff.length() > 0) {
-                            e = getSchema (getId (schema) + keyOff);
-                        }
-                    } catch (RuntimeException re) {
-                        //File not Found use defined Default
-                        keyOff = origKeyOff;
-                        keyOff = keyOff + normalizeKeyValue(defaultKey, properties);
-                    }
-                } else {
-                    keyOff = keyOff + normalizeKeyValue(value, properties);
-                }
-            }
-                            
         }
         if (keyOff.length() > 0) {
             unpack (is, 
-                getSchema (getId (schema) + keyOff)
+                getSchema (getId (schema), keyOff, defaultKey)
             );
         }
     }
@@ -596,36 +564,49 @@ public class FSDMsg implements Loggeable, Cloneable {
         return e;
     }
     protected Element getSchema () 
-        throws JDOMException, MalformedURLException, IOException {
+        throws JDOMException, IOException {
         return getSchema (baseSchema);
     }
     protected Element getSchema (String message) 
-        throws JDOMException, MalformedURLException, IOException {
-        StringBuffer sb = new StringBuffer (basePath);
-        sb.append (message);
+        throws JDOMException, IOException {
+        return getSchema (message, "", null);
+    }
+    protected Element getSchema (String prefix, String suffix, String defSuffix)
+        throws JDOMException, IOException {
+        StringBuilder sb = new StringBuilder (basePath);
+        sb.append (prefix);
+        prefix = sb.toString(); // little hack, we'll reuse later with defSuffix
+        sb.append (suffix);
         sb.append (".xml");
         String uri = sb.toString ();
 
         Space sp = SpaceFactory.getSpace();
         Element schema = (Element) sp.rdp (uri);
         if (schema == null) {
-            synchronized (FSDMsg.class) {
-                schema = (Element) sp.rdp (uri);
-                if (schema == null) {
-                    SAXBuilder builder = new SAXBuilder ();
-                    URL url = new URL (uri);
-                    File f = new File(url.getFile());
-                    if (f.exists()) {
-                        schema = builder.build (url).getRootElement ();
-                    } else {
-                        throw new RuntimeException(f.getCanonicalPath().toString() + " not found");
-                    }
+            SAXBuilder builder = new SAXBuilder ();
+            URL url = new URL (uri);
+            File f = new File(url.getFile());
+            if (f.exists()) {
+                schema = builder.build (url).getRootElement ();
+            } else if (defSuffix != null) {
+                sb = new StringBuilder (prefix);
+                sb.append (defSuffix);
+                sb.append (".xml");
+                url = new URL (sb.toString());
+                f = new File (url.getFile());
+                if (f.exists()) {
+                    schema = builder.build (url).getRootElement ();
                 }
-                sp.out (uri, schema);
             }
-        } 
+            if (schema == null){
+                throw new RuntimeException(f.getCanonicalPath().toString() + " not found");
+            }
+            sp.out (uri, schema);
+        }
         return schema;
     }
+
+
     /**
      * @return message's Map
      */
