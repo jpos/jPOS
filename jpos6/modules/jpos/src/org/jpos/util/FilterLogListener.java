@@ -42,12 +42,12 @@ public class FilterLogListener implements LogListener,Configurable
 
     static{
             levels = new Hashtable();
-            levels.put(Log.TRACE, new Integer(1));
-            levels.put(Log.DEBUG, new Integer(2));
-            levels.put(Log.INFO, new Integer(3));
-            levels.put(Log.WARN, new Integer(4));
-            levels.put(Log.ERROR, new Integer(5));
-            levels.put(Log.FATAL, new Integer(6));
+            levels.put(Log.TRACE, 1);
+            levels.put(Log.DEBUG, 2);
+            levels.put(Log.INFO, 3);
+            levels.put(Log.WARN, 4);
+            levels.put(Log.ERROR, 5);
+            levels.put(Log.FATAL, 6);
     }
 
     private String priority = Log.INFO;
@@ -113,7 +113,7 @@ public class FilterLogListener implements LogListener,Configurable
 
     public synchronized LogEvent log(LogEvent ev) {
         if (p != null) {
-            if (permitLogging(ev.tag))
+            if (permitLogging(ev.getTag()))
             {
                 Date d = new Date();
                 p.println(

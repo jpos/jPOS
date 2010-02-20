@@ -24,8 +24,7 @@ import org.jpos.core.ConfigurationException;
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOMsg;
 import org.jpos.iso.ISOUtil;
-
-import java.util.Vector;
+import java.util.List;
 
 /**
  * Protects selected fields from LogEvents.
@@ -89,10 +88,10 @@ public class ProtectedLogListener implements LogListener, Configurable
         wipeFields    = ISOUtil.toStringArray (cfg.get ("wipe", ""));
     }
     public synchronized LogEvent log (LogEvent ev) {
-        Vector payLoad = ev.getPayLoad();
+        List payLoad = ev.getPayLoad();
         int size = payLoad.size();
         for (int i=0; i<size; i++) {
-            Object obj = payLoad.elementAt (i);
+            Object obj = payLoad.get (i);
             if (obj instanceof ISOMsg) {
                 ISOMsg m = (ISOMsg) ((ISOMsg) obj).clone();
                 try {
@@ -101,7 +100,7 @@ public class ProtectedLogListener implements LogListener, Configurable
                 } catch (ISOException e) { 
                     ev.addMessage (e);
                 }
-                payLoad.setElementAt (m, i);
+                payLoad.set (i, m);
             }
         }
         return ev;

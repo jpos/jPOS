@@ -30,7 +30,7 @@ import java.util.Iterator;
 
 /**
  * SysLog Listener
- * @see http://www.ietf.org/rfc/rfc3164.txt
+ * see www.ietf.org/rfc/rfc3164.txt
  *
  * <pre>
  * &lt;log-listener class="org.jpos.util.SysLogListener"&gt;
@@ -65,9 +65,9 @@ public class SysLogListener implements LogListener, Configurable {
         super();
     }
     public synchronized LogEvent log (LogEvent ev) {
-        if (socket != null && ev.tag != null && tags.indexOf(ev.tag) != -1) {
-            int facility = cfg.getInt (ev.tag + ".facility", defaultFacility);
-            int severity = cfg.getInt (ev.tag + ".severity", defaultSeverity);
+        if (socket != null && ev.getTag() != null && tags.indexOf(ev.getTag()) != -1) {
+            int facility = cfg.getInt (ev.getTag() + ".facility", defaultFacility);
+            int severity = cfg.getInt (ev.getTag() + ".severity", defaultSeverity);
             int priority = (facility<<3) | severity;
 
             StringBuilder sb = new StringBuilder();
@@ -80,9 +80,9 @@ public class SysLogListener implements LogListener, Configurable {
             }
             sb.append (ev.getRealm());
             sb.append (' ');
-            sb.append (ev.tag);
+            sb.append (ev.getTag());
             sb.append (" - ");
-            Iterator iter = ev.payLoad.iterator();
+            Iterator iter = ev.getPayLoad().iterator();
             for (int i=0; iter.hasNext(); i++) {
                 if (i>0)
                     sb.append (' ');
