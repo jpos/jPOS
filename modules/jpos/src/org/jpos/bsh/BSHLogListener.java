@@ -89,7 +89,7 @@ public class BSHLogListener implements org.jpos.util.LogListener, org.jpos.core.
     /**Holds the configuration for this object*/
     protected Configuration cfg;
     protected static final String[] patterns = {"tag", "realm"};
-    protected Map scripts = new Hashtable();
+    protected Map<String,ScriptInfo> scripts = new Hashtable<String,ScriptInfo>();
     /** Creates a new instance of BSHLogListener */
     public BSHLogListener() {
     }
@@ -101,7 +101,7 @@ public class BSHLogListener implements org.jpos.util.LogListener, org.jpos.core.
         String[] ret = new String[src.length];
         for(int i=0; i<src.length; i++){
             StringBuffer buff = new StringBuffer(2*src[i].length());
-            int begin=0,end=0;
+            int begin, end=0;
             //begin is the position of the next pattern, end is the end of the last pattern
             while ((begin = src[i].indexOf('$',end))>=0 && begin<src[i].length()){
                 buff.append(src[i].substring(end, begin));
@@ -124,7 +124,7 @@ public class BSHLogListener implements org.jpos.util.LogListener, org.jpos.core.
         LogEvent ret = ev;
         boolean processed = false;
         try{
-            String[] sources = replace(cfg.getAll("source"), patterns, new String[] {ev.tag, ev.getRealm()});
+            String[] sources = replace(cfg.getAll("source"), patterns, new String[] {ev.getTag(), ev.getRealm()});
             for(int i=0; i<sources.length && ret != null; i++){
                 try{
                     Interpreter bsh = new Interpreter();
@@ -161,7 +161,7 @@ public class BSHLogListener implements org.jpos.util.LogListener, org.jpos.core.
                     ret = (LogEvent)bsh.get("event");
                     Object saveNS = bsh.get("saveNameSpace");
                     boolean saveNameSpace = 
-                        (saveNS instanceof Boolean)?((Boolean)saveNS).booleanValue():cfg.getBoolean("save-name-space");
+                        (saveNS instanceof Boolean)? (Boolean) saveNS :cfg.getBoolean("save-name-space");
                     if(saveNameSpace) {
                         if(info!=null) info.setNameSpace(bsh.getNameSpace());
                         else scripts.put(sources[i], new ScriptInfo(bsh.getNameSpace()));
@@ -187,7 +187,7 @@ public class BSHLogListener implements org.jpos.util.LogListener, org.jpos.core.
     }
     
     protected ScriptInfo getScriptInfo(String filename){
-        return (ScriptInfo)scripts.get(filename);
+        return scripts.get(filename);
     }
     protected void addScriptInfo(String filename, String code, long lastModified){
         scripts.put(filename, new ScriptInfo(code, lastModified));
