@@ -155,6 +155,8 @@ public class QFactory {
             );
         } catch (AttributeNotFoundException ex) {
             // okay to fail
+        } catch (InvalidAttributeValueException ex) {
+            // okay to fail (produced by some application servers instead of AttributeNotFoundException)
         }
     }
 
