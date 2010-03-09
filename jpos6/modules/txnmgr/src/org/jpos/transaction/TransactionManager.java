@@ -654,7 +654,7 @@ public class TransactionManager
     }
     public class RetryTask implements Runnable {
         public void run() {
-            Thread.currentThread().setName (getName()+"retry-task");
+            Thread.currentThread().setName (getName()+"-retry-task");
             while (running()) {
                 for (Object context; (context = psp.rdp (RETRY_QUEUE)) != null;) 
                 {
