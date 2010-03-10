@@ -32,6 +32,7 @@ import org.jpos.util.NameRegistrar;
 import java.io.Serializable;
 import java.util.*;
 
+@SuppressWarnings("unchecked")
 public class TransactionManager 
     extends QBeanSupport 
     implements Runnable, TransactionConstants, TransactionManagerMBean
@@ -58,9 +59,9 @@ public class TransactionManager
     public static final String  TAILLOCK   = "$TAILLOCK";
     public static final String  RETRY_QUEUE = "$RETRY_QUEUE";
     public static final String  LAST_RETRY = "$LAST_RETRY";
-    public static final Integer PREPARING  = new Integer (0);
-    public static final Integer COMMITTING = new Integer (1);
-    public static final Integer DONE       = new Integer (2);
+    public static final Integer PREPARING  = 0;
+    public static final Integer COMMITTING = 1;
+    public static final Integer DONE       = 2;
     public static final String  DEFAULT_GROUP = "";
     public static final long    MAX_PARTICIPANTS = 1000;  // loop prevention
 
@@ -317,7 +318,7 @@ public class TransactionManager
         boolean retry = false;
         boolean pause = false;
         for (int i=0; iter.hasNext (); i++) {
-            int action = 0;
+            int action;
             if (i > MAX_PARTICIPANTS) {
                 getLog().warn (
                     "loop detected - transaction " +id + " aborted."
@@ -420,7 +421,7 @@ public class TransactionManager
         // Add DEFAULT_GROUP participants 
         participantsChain.addAll(participants);
         String key = getKey(GROUPS, id);
-        String grp = null;
+        String grp;
         // now add participants of Group 
         while ( (grp = (String) psp.inp (key)) != null) {
             participantsChain.addAll (getParticipants (grp));
@@ -463,7 +464,7 @@ public class TransactionManager
             factory.newInstance (e.getAttributeValue ("class")
         );
         factory.setLogger (participant, e);
-        factory.invoke (participant, "setTransactionManager", this, TransactionManager.class);
+        QFactory.invoke (participant, "setTransactionManager", this, TransactionManager.class);
         factory.setConfiguration (participant, e);
         return participant;
     }
@@ -482,10 +483,10 @@ public class TransactionManager
     protected long initCounter (String name, long defValue) {
         Long L = (Long) psp.rdp (name);
         if (L == null) {
-            L = new Long (defValue);
+            L = defValue;
             psp.out (name, L);
         }
-        return L.longValue();
+        return L;
     }
     protected void commitOff (Space sp) {
         if (sp instanceof JDBMSpace) {
@@ -503,7 +504,7 @@ public class TransactionManager
         synchronized (psp) {
             commitOff (psp);
             psp.inp (TAIL);
-            psp.out (TAIL, new Long (tail));
+            psp.out (TAIL, tail);
             commitOn (psp);
         }
     }
@@ -525,7 +526,6 @@ public class TransactionManager
     }
     protected boolean tailDone () {
         String stateKey = getKey (STATE, tail);
-        Integer state = (Integer) psp.rdp (stateKey);
         if (DONE.equals (psp.rdp (stateKey))) {
             purge (tail);
             return true;
@@ -538,7 +538,7 @@ public class TransactionManager
             commitOff (psp);
             psp.in  (HEAD);
             h = head;
-            psp.out (HEAD, new Long (++head));
+            psp.out (HEAD, ++head);
             commitOn (psp);
         }
         return h;
@@ -663,7 +663,7 @@ public class TransactionManager
                 }
                 try {
                     Thread.sleep (retryInterval);
-                } catch (InterruptedException e) { } 
+                } catch (InterruptedException ignored) { } 
             }
         }
     }
