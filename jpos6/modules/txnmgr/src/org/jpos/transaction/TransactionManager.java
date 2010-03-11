@@ -47,8 +47,10 @@ public class TransactionManager
     int activeSessions;
     boolean debug;
     boolean doRecover;
+    int maxActiveSessions;
     long head, tail, lastGC;
     long retryInterval = 5000L;
+    long retryTimeout  = 60000L;
     long pauseTimeout  = 300*60*1000L;  // five minutes
     RetryTask retryTask = null;
     public static final String  HEAD       = "$HEAD";
@@ -167,6 +169,18 @@ public class TransactionManager
                     pt = null;
 
                 if (pt == null) {
+                    int running = getRunningSessions();
+                    if (maxActiveSessions > 0 && running >= maxActiveSessions) {
+                        evt = getLog().createLogEvent ("warn",
+                            Thread.currentThread().getName() 
+                            + ": emergency retry, running-sessions=" + running 
+                            + ", max-active-sessions=" + maxActiveSessions
+                        );
+                        evt.addMessage (obj);
+                        psp.out (RETRY_QUEUE, obj, retryTimeout);
+                        checkRetryTask();
+                        continue;
+                    }
                     abort = false;
                     id = nextId ();
                     members = new ArrayList ();
@@ -241,7 +255,9 @@ public class TransactionManager
         debug = cfg.getBoolean ("debug");
         doRecover = cfg.getBoolean ("recover", true);
         retryInterval = cfg.getLong ("retry-interval", retryInterval);
+        retryTimeout  = cfg.getLong ("retry-timeout", retryTimeout);
         pauseTimeout  = cfg.getLong ("pause-timeout", pauseTimeout);
+        maxActiveSessions  = cfg.getInt  ("max-active-sessions", 0);
     }
     protected void commit 
         (long id, Serializable context, List members, boolean recover, LogEvent evt) 
@@ -658,7 +674,7 @@ public class TransactionManager
             while (running()) {
                 for (Object context; (context = psp.rdp (RETRY_QUEUE)) != null;) 
                 {
-                    isp.out (queue, context);
+                    isp.out (queue, context, retryTimeout);
                     psp.inp (RETRY_QUEUE);
                 }
                 try {
@@ -676,5 +692,9 @@ public class TransactionManager
     public int getActiveSessions() {
         return activeSessions;
     }
+    public int getRunningSessions() {
+        return (int) (head - tail);
+    }
+
 }
 
