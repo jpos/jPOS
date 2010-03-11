@@ -30,7 +30,7 @@
     <!--
       almost equals to rotate, except 0 or negatives means no limit 
      (which is the default), in case exceeded the file is compressed, 
-     successive copies will be appended .(count) before the suffix
+     successsive copies will be appended .(count) before the suffix
      unlike rotate older copies have the least numbers
     -->
     <!-- <property name="maxsize" value="-1"/> -->
