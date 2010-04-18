@@ -39,7 +39,11 @@
         <include name="**/*.man"/>
         <include name="**/*.properties"/>
     </patternset>
-
+    <fileset dir="${classes.dir}" >
+        <patternset id="rmic.classes" >
+            <include name="org/jpos/space/SpaceProxy.class"/>
+        </patternset>
+    </fileset>
     <path id="main.classpath">
         <fileset dir="${build.lib}">
             <include name="*.jar"/>
@@ -138,6 +142,10 @@
             deprecation="${deprecation}">
             <classpath refid="main.classpath"/>
         </javac>
+        <rmic base="${classes.dir}" stubVersion="1.2">
+            <classpath  refid="main.classpath" />
+            <patternset refid="rmic.classes" />
+        </rmic>
     </target>
 
     <target name="compile" depends="modules, main, jar" 
