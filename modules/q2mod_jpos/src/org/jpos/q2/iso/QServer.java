@@ -18,16 +18,27 @@
 
 package org.jpos.q2.iso;
 
+import java.util.Iterator;
+
 import org.jdom.Element;
 import org.jpos.core.ConfigurationException;
-import org.jpos.iso.*;
+import org.jpos.iso.ISOChannel;
+import org.jpos.iso.ISOMsg;
+import org.jpos.iso.ISOPackager;
+import org.jpos.iso.ISORequestListener;
+import org.jpos.iso.ISOServer;
+import org.jpos.iso.ISOServerSocketFactory;
+import org.jpos.iso.ISOSource;
+import org.jpos.iso.ServerChannel;
 import org.jpos.q2.QBeanSupport;
 import org.jpos.q2.QFactory;
+import org.jpos.space.LocalSpace;
+import org.jpos.space.Space;
+import org.jpos.space.SpaceFactory;
+import org.jpos.space.SpaceListener;
 import org.jpos.util.LogSource;
 import org.jpos.util.NameRegistrar;
 import org.jpos.util.ThreadPool;
-
-import java.util.Iterator;
 /**
  * ISO Server wrapper.
  *
@@ -39,7 +50,7 @@ import java.util.Iterator;
 
 public class QServer
     extends QBeanSupport
-    implements QServerMBean 
+    implements QServerMBean, SpaceListener, ISORequestListener
 {
     private int port = 0;
     private int maxSessions = 100;
@@ -48,9 +59,17 @@ public class QServer
     private ISOChannel channel = null;
     private ISOPackager packager = null;
     private ISOServer server;
+    protected LocalSpace sp;
+    private String inQueue;
+    private String outQueue;
 
     public QServer () {
         super ();
+    }
+    
+    public void initService() throws ConfigurationException {
+        Element e = getPersist ();
+        sp        = grabSpace (e.getChild ("space")); 
     }
 
     private void newChannel () throws ConfigurationException {
@@ -96,9 +115,40 @@ public class QServer
         addListeners ();
         new Thread (server).start();
     }
+    private void initIn() {
+        Element persist = getPersist();
+        inQueue = persist.getChildText("in");
+        if (inQueue != null) {
+            /*
+             * We have an 'in' queue to monitor for messages we will
+             *  send out through server in our (SpaceListener)notify(Object, Object) method.
+             */
+          
+            sp.addListener(inQueue, this);
+
+        }
+    }
+    private void initOut() {
+        Element persist = getPersist();
+        outQueue = persist.getChildText("out");
+        if (outQueue != null) {
+            /*
+             * We have an 'out' queue to send any messages to that are received
+             * by the our requestListner(this).
+             * 
+             * Note, if additional ISORequestListeners are registered with the server after
+             *  this point, then they won't see anything as our process(ISOSource, ISOMsg)
+             *  always return true.
+             */
+           server.addISORequestListener(this);
+
+        }
+    }
     public void startService () {
         try {
             initServer ();
+            initIn();
+            initOut();
         } catch (Exception e) {
             getLog().warn ("error starting service", e);
         }
@@ -239,6 +289,45 @@ public class QServer
             factory.setConfiguration (listener, l);
             server.addISORequestListener (listener);
         }
+    }
+    
+    private LocalSpace grabSpace (Element e) throws ConfigurationException
+    {
+        String uri = e != null ? e.getText() : "";
+        Space sp = SpaceFactory.getSpace (uri);
+        if (sp instanceof LocalSpace) {
+            return (LocalSpace) sp;
+        }
+        throw new ConfigurationException ("Invalid space " + uri);
+    }
+
+    @Override
+    /*
+     * This method will be invoked through the SpaceListener interface we registered once
+     * we noticed we had an 'in' queue.
+     */
+    public void notify(Object key, Object value) {
+        Object obj = sp.inp (key);
+        if (obj instanceof ISOMsg) {
+            ISOMsg m = (ISOMsg) obj;
+            try {
+                ISOChannel c = server.getLastConnectedISOChannel();
+                c.send(m);
+            } catch (Exception e) { 
+                getLog().warn ("notify", e);
+            }
+        }
+        
+    }
+
+    @Override
+    /*
+     * This method will be invoke through the ISORequestListener interface, *if*
+     * this QServer has an 'out' queue to handle.
+     */
+    public boolean process(ISOSource source, ISOMsg m) {
+        sp.out(outQueue, m);
+        return true;
     }
 
 }
