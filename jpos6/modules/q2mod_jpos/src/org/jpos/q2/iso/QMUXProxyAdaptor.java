@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.jpos.q2.qbean;
+package org.jpos.q2.iso;
 
 import java.rmi.RemoteException;
 
@@ -24,8 +24,6 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import org.jpos.q2.QBeanSupport;
-import org.jpos.q2.iso.QMUX;
-import org.jpos.q2.iso.QMUXProxy;
 import org.jpos.util.NameRegistrar;
 import org.jpos.util.NameRegistrar.NotFoundException;
 
