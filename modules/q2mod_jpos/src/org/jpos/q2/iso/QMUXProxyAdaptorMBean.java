@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.jpos.q2.qbean;
+package org.jpos.q2.iso;
 
 /**
  * MBean interface.

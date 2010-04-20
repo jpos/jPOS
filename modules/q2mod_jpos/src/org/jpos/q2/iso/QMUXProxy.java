@@ -24,7 +24,6 @@ import org.jpos.core.ReConfigurable;
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOMsg;
 import org.jpos.iso.ISOResponseListener;
-import org.jpos.q2.qbean.RemoteQMUX;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;

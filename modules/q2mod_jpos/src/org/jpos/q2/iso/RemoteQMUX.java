@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.jpos.q2.qbean;
+package org.jpos.q2.iso;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -24,7 +24,6 @@ import java.rmi.RemoteException;
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOMsg;
 import org.jpos.iso.ISOResponseListener;
-import org.jpos.q2.iso.QMUX;
 
 /**
  * RMI based QMUX proxy
