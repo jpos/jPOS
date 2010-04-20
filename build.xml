@@ -42,6 +42,7 @@
     <fileset dir="${classes.dir}" >
         <patternset id="rmic.classes" >
             <include name="org/jpos/space/SpaceProxy.class"/>
+        	<include name="org/jpos/q2/iso/QMUXProxy.class"/>
         </patternset>
     </fileset>
     <path id="main.classpath">
