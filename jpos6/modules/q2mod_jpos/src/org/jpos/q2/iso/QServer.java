@@ -26,6 +26,7 @@ import org.jpos.iso.ISOChannel;
 import org.jpos.iso.ISOMsg;
 import org.jpos.iso.ISOPackager;
 import org.jpos.iso.ISORequestListener;
+import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOServer;
 import org.jpos.iso.ISOServerSocketFactory;
 import org.jpos.iso.ISOSource;
@@ -312,6 +313,8 @@ public class QServer
             ISOMsg m = (ISOMsg) obj;
             try {
                 ISOChannel c = server.getLastConnectedISOChannel();
+                if (c == null)
+                    throw new ISOException ("Server has no active connections");
                 c.send(m);
             } catch (Exception e) { 
                 getLog().warn ("notify", e);
