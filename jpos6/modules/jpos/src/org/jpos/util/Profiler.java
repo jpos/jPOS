@@ -30,8 +30,10 @@ import java.util.LinkedHashMap;
  * @version $Id$
  */
 public class Profiler implements Loggeable {
-    long start, parcial;
+    long start, partial;
     LinkedHashMap events;
+    public static final int TO_MILLIS = 1000000;
+
     public Profiler () {
         super();
         reset();
@@ -40,7 +42,7 @@ public class Profiler implements Loggeable {
      * reset timers
      */
     public void reset() {
-        start = parcial = System.currentTimeMillis();
+        start = partial = System.nanoTime();
         events = new LinkedHashMap();
     }
     /**
@@ -49,10 +51,10 @@ public class Profiler implements Loggeable {
      */
     @SuppressWarnings("unchecked")
     public synchronized void checkPoint (String detail) {
-        long now = System.currentTimeMillis();
+        long now = System.nanoTime();
         Entry e = new Entry();
-        e.setDuration(now - parcial);
-        e.setTotalDuration(now - start);
+        e.setDurationInNanos((now - partial));
+        e.setTotalDurationInNanos((now - start));
         if (events.containsKey(detail)) {
             for (int i=1; ;i++) {
                 String d = detail + "-" + i;
@@ -64,24 +66,25 @@ public class Profiler implements Loggeable {
         }
         e.setEventName(detail);
         events.put (detail, e);
-        parcial = now;
+        partial = now;
     }
     /**
      * @return total elapsed time since last reset
      */
     public long getElapsed() {
-        return System.currentTimeMillis() - start;
+        return System.nanoTime() - start;
     }
     /**
      * @return parcial elapsed time since last reset
      */
-    public long getParcial() {
-        return System.currentTimeMillis() - parcial;
+    public long getPartial() {
+        return System.nanoTime() - partial;
     }
     public void dump (PrintStream p, String indent) {
         String inner = indent + "  ";
-        parcial = start;
-        checkPoint ("end");
+        partial = start;
+        if (!events.containsKey("end"))
+            checkPoint ("end");
         Collection c = events.values();
         Iterator iter = c.iterator();
         p.println (indent + "<profiler>");
@@ -92,39 +95,50 @@ public class Profiler implements Loggeable {
     public Entry getEntry(String eventName) {
          return (Entry)events.get(eventName);         
     }
-    public class Entry  {     
+
+    public class Entry  {
         String  eventName;
         long    duration;
         long    totalDuration;          
-        Entry(){     
+        public Entry() {
            eventName     = "";
            duration      = 0L;
            totalDuration = 0L;        
-        }  
-       public void setEventName (String myEvent) {
+        }
+        public void setEventName (String myEvent) {
             this.eventName = myEvent;
         }
-        String getEventName () {
+        public String getEventName () {
             return eventName;
         }    
-        public void setDuration (long myDuration) {
-            this.duration = myDuration;
+        public void setDurationInNanos (long duration) {
+            this.duration = duration;
         }
         public long getDuration () {
+            return duration / TO_MILLIS;
+        }
+        public long getDurationInNanos() {
             return duration;
-        }    
-        public void setTotalDuration (long myTotalDuration) {
-            this.totalDuration = myTotalDuration;
+        }
+        public void setTotalDurationInNanos (long totalDuration) {
+            this.totalDuration = totalDuration;
         }
         public long getTotalDuration () {
+            return totalDuration / TO_MILLIS;
+        }
+        public long getTotalDurationInNanos () {
             return totalDuration;
-        }    
+        }
         public String toString()  {
             StringBuffer sb = new StringBuffer (eventName);
             sb.append (" [");
-            sb.append (duration);
+            sb.append (getDuration());
+            sb.append ('.');
+            sb.append ((duration % TO_MILLIS) / 100000);
             sb.append ('/');
-            sb.append (totalDuration);
+            sb.append (getTotalDuration ());
+            sb.append ('.');
+            sb.append ((totalDuration % TO_MILLIS) / 100000);
             sb.append (']');
             return sb.toString();
         }            
