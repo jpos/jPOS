@@ -268,7 +268,12 @@
         </inspection_tool>
       </profile>
     </profiles>
-    <list size="0" />
+    <list size="4">
+      <item index="0" class="java.lang.String" itemvalue="SERVER PROBLEM" />
+      <item index="1" class="java.lang.String" itemvalue="INFO" />
+      <item index="2" class="java.lang.String" itemvalue="WARNING" />
+      <item index="3" class="java.lang.String" itemvalue="ERROR" />
+    </list>
   </component>
   <component name="IntelliJConfiguration">
     <option name="PROPERTY_FILES">
@@ -583,6 +588,23 @@
     <option name="myReportErrorsAsWarnings" value="true" />
   </component>
   <component name="SvnBranchConfigurationManager">
+    <option name="myConfigurationMap">
+      <map>
+        <entry key="$PROJECT_DIR$">
+          <value>
+            <SvnBranchConfiguration>
+              <option name="branchUrls">
+                <list>
+                  <option value="https://jpos.svn.sourceforge.net/svnroot/jpos/branches" />
+                  <option value="https://jpos.svn.sourceforge.net/svnroot/jpos/tags" />
+                </list>
+              </option>
+              <option name="trunkUrl" value="https://jpos.svn.sourceforge.net/svnroot/jpos/trunk" />
+            </SvnBranchConfiguration>
+          </value>
+        </entry>
+      </map>
+    </option>
     <option name="mySupportsUserInfoFilter" value="true" />
   </component>
   <component name="SvnChangesBrowserSettings">
@@ -677,16 +699,11 @@
   <component name="libraryTable">
     <library name="jpos-common-libs">
       <CLASSES>
-        <root url="jar://$PROJECT_DIR$/lib/test/junit.jar!/" />
-        <root url="jar://$PROJECT_DIR$/lib/log4j-1.2.8.jar!/" />
-        <root url="jar://$PROJECT_DIR$/lib/bsh-2.0b4.jar!/" />
-        <root url="jar://$PROJECT_DIR$/lib/je-3.3.87.jar!/" />
-        <root url="jar://$PROJECT_DIR$/lib/cweb-extser-0.1-b2-dev.jar!/" />
-        <root url="jar://$PROJECT_DIR$/lib/jdom-1.0.jar!/" />
-        <root url="jar://$PROJECT_DIR$/lib/jdbm-1.0.jar!/" />
+        <root url="file://$PROJECT_DIR$/lib" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />
+      <jarDirectory url="file://$PROJECT_DIR$/lib" recursive="false" />
     </library>
     <library name="q2-libs">
       <CLASSES>
