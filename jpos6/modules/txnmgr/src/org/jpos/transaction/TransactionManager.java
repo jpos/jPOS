@@ -24,10 +24,7 @@ import org.jpos.core.ConfigurationException;
 import org.jpos.q2.QBeanSupport;
 import org.jpos.q2.QFactory;
 import org.jpos.space.*;
-import org.jpos.util.DefaultTimer;
-import org.jpos.util.LogEvent;
-import org.jpos.util.Logger;
-import org.jpos.util.NameRegistrar;
+import org.jpos.util.*;
 
 import java.io.Serializable;
 import java.util.*;
@@ -46,6 +43,7 @@ public class TransactionManager
     Thread[] threads;
     int activeSessions;
     boolean debug;
+    boolean profiler;
     boolean doRecover;
     int maxActiveSessions;
     long head, tail, lastGC;
@@ -137,6 +135,7 @@ public class TransactionManager
         PausedTransaction pt;
         boolean abort = false;
         LogEvent evt = null;
+        Profiler prof = null;
         String threadName = Thread.currentThread().getName();
         getLog().info (threadName + " start");
         long startTime = 0L;
@@ -192,20 +191,21 @@ public class TransactionManager
                         + ":" + Long.toString(id) +
                         (pt != null ? " [resuming]" : "")
                     );
+                    prof = new Profiler();
                     startTime = System.currentTimeMillis();
                 }
                 Serializable context = (Serializable) obj;
                 snapshot (id, context, PREPARING);
-                int action = prepare (id, context, members, iter, abort, evt);
+                int action = prepare (id, context, members, iter, abort, evt, prof);
                 switch (action) {
                     case PAUSE:
                         break;
                     case PREPARED:
                         setState (id, COMMITTING);
-                        commit (id, context, members, false, evt);
+                        commit (id, context, members, false, evt, prof);
                         break;
                     case ABORTED:
-                        abort (id, context, members, false, evt);
+                        abort (id, context, members, false, evt, prof);
                         break;
                     case RETRY:
                         psp.out (RETRY_QUEUE, context);
@@ -231,6 +231,8 @@ public class TransactionManager
                         + (System.currentTimeMillis() - startTime) + "ms"
                     );
                     evt.addMessage ("head=" + head + ", tail=" + tail);
+                    if (prof != null)
+                        evt.addMessage (prof);
                     Logger.log (evt);
                     evt = null;
                 }
@@ -253,6 +255,9 @@ public class TransactionManager
     {
         super.setConfiguration (cfg);
         debug = cfg.getBoolean ("debug");
+        profiler = cfg.getBoolean ("profiler", debug); 
+        if (profiler)
+            debug = true; // profiler needs debug
         doRecover = cfg.getBoolean ("recover", true);
         retryInterval = cfg.getLong ("retry-interval", retryInterval);
         retryTimeout  = cfg.getLong ("retry-timeout", retryTimeout);
@@ -260,7 +265,7 @@ public class TransactionManager
         maxActiveSessions  = cfg.getInt  ("max-active-sessions", 0);
     }
     protected void commit 
-        (long id, Serializable context, List members, boolean recover, LogEvent evt) 
+        (long id, Serializable context, List members, boolean recover, LogEvent evt, Profiler prof)
     {
         Iterator iter = members.iterator();
         while (iter.hasNext ()) {
@@ -271,12 +276,15 @@ public class TransactionManager
                     evt.addMessage (" commit-recover: " + p.getClass().getName());
             }
             commit (p, id, context);
-            if (evt != null)
+            if (evt != null) {
                 evt.addMessage ("         commit: " + p.getClass().getName());
+                if (prof != null)
+                    prof.checkPoint (" commit: " + p.getClass().getName());
+            }
         }
     }
     protected void abort 
-        (long id, Serializable context, List members, boolean recover, LogEvent evt) 
+        (long id, Serializable context, List members, boolean recover, LogEvent evt, Profiler prof)
     {
         Iterator iter = members.iterator();
         while (iter.hasNext ()) {
@@ -287,8 +295,11 @@ public class TransactionManager
                     evt.addMessage ("  abort-recover: " + p.getClass().getName());
             }
             abort (p, id, context);
-            if (evt != null)
+            if (evt != null) {
                 evt.addMessage ("          abort: " + p.getClass().getName());
+                if (prof != null)
+                    prof.checkPoint ("  abort: " + p.getClass().getName());
+            }
         }
     }
     protected int prepareForAbort
@@ -330,7 +341,9 @@ public class TransactionManager
             getLog().warn ("ABORT: " + Long.toString (id), t);
         }
     }
-    protected int prepare (long id, Serializable context, List members, Iterator iter, boolean abort, LogEvent evt) {
+    protected int prepare
+        (long id, Serializable context, List members, Iterator iter, boolean abort, LogEvent evt, Profiler prof)
+    {
         boolean retry = false;
         boolean pause = false;
         for (int i=0; iter.hasNext (); i++) {
@@ -352,13 +365,15 @@ public class TransactionManager
                 retry  = (action & RETRY) == RETRY;
                 pause  = (action & PAUSE) == PAUSE;
                 if (evt != null) {
-                    evt.addMessage ("        prepare: " 
+                    evt.addMessage ("        prepare: "
                             + p.getClass().getName() 
                             + (abort ? " ABORTED" : "")
                             + (retry ? " RETRY" : "")
                             + (pause ? " PAUSE" : "")
                             + ((action & READONLY) == READONLY ? " READONLY" : "")
                             + ((action & NO_JOIN) == NO_JOIN ? " NO_JOIN" : ""));
+                    if (prof != null)
+                        prof.checkPoint ("prepare: " + p.getClass().getName());
                 }
             }
             if ((action & READONLY) == 0) {
@@ -624,6 +639,7 @@ public class TransactionManager
     }
     protected void recover (long id) {
         LogEvent evt = getLog().createLogEvent ("recover");
+        Profiler prof = new Profiler();
         evt.addMessage ("<id>" + id + "</id>");
         try {
             String stateKey   = getKey (STATE, id);
@@ -641,12 +657,13 @@ public class TransactionManager
             if (DONE.equals (state)) {
                 evt.addMessage ("<done/>");
             } else if (COMMITTING.equals (state)) {
-                commit (id, context, getParticipants (id), true, evt);
+                commit (id, context, getParticipants (id), true, evt, prof);
             } else if (PREPARING.equals (state)) {
-                abort (id, context, getParticipants (id), true, evt);
+                abort (id, context, getParticipants (id), true, evt, prof);
             }
             purge (id);
         } finally {
+            evt.addMessage (prof);
             Logger.log (evt);
         }
     }
