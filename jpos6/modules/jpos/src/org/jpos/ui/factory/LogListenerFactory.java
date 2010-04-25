@@ -49,6 +49,8 @@ public class LogListenerFactory implements UIFactory {
         String font = e.getAttributeValue ("font");
         if (font != null) 
             textArea.setFont (Font.decode (font));
+        textArea.setBackground(Color.black);
+        textArea.setForeground(Color.white);
         String logId = e.getAttributeValue ("logger", "Q2");
         try {
             int maxEvents = Integer.parseInt (
@@ -93,7 +95,7 @@ public class LogListenerFactory implements UIFactory {
             int lc = text.getLineCount ();
             if (lc > maxLines) {
                 try {
-                    int offset = text.getLineStartOffset (lc - maxLines);
+                    int offset = text.getLineStartOffset (maxLines);
                     text.getDocument ().remove (0, offset);
                 } catch (BadLocationException ex) {
                     text.setText (ex.toString());
@@ -108,7 +110,7 @@ public class LogListenerFactory implements UIFactory {
             ByteArrayOutputStream str = new ByteArrayOutputStream();
             PrintStream ps = new PrintStream (str);
             evt.dump (ps, "");
-            text.append (str.toString());
+            text.insert (str.toString(), 0);
 
             if ((++cnt % maxEvents) == 0) {
                 SwingUtilities.invokeLater (this);
