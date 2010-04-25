@@ -21,10 +21,7 @@ package org.jpos.ui.factory;
 import org.jdom.Element;
 import org.jpos.ui.UI;
 import org.jpos.ui.UIFactory;
-import org.jpos.util.LogEvent;
-import org.jpos.util.LogListener;
-import org.jpos.util.Logger;
-import org.jpos.util.NameRegistrar;
+import org.jpos.util.*;
 
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
@@ -60,7 +57,7 @@ public class LogListenerFactory implements UIFactory {
             int maxLines = Integer.parseInt (
                 e.getAttributeValue ("max-lines", "1000")
             );
-            Logger logger = (Logger) NameRegistrar.get ("logger." + logId);
+            LogProducer logger = (LogProducer) NameRegistrar.get ("logger." + logId);
             logger.addListener (
                 new Listener (logger, ui, textArea, maxEvents, maxLines)
             );
@@ -70,14 +67,14 @@ public class LogListenerFactory implements UIFactory {
         return textArea;
     }
     public class Listener implements LogListener, Runnable {
-        final Logger logger;
+        final LogProducer logger;
         JTextArea text;
         UI ui;
         int cnt;
         int maxEvents;
         int maxLines;
         public Listener 
-            (Logger logger, UI ui, JTextArea text, int maxEvents, int maxLines)
+            (LogProducer logger, UI ui, JTextArea text, int maxEvents, int maxLines)
         {
             super ();
             this.ui = ui;
