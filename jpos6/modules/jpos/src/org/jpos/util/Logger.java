@@ -38,7 +38,7 @@ import java.util.Vector;
  * @see SimpleLogListener
  * @see RotateLogListener
  */
-public class Logger {
+public class Logger implements LogProducer {
     String name;
     Vector listeners;
 
