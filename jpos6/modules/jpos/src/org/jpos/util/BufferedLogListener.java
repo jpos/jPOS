@@ -23,19 +23,20 @@ import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Collections;
 
 public class BufferedLogListener implements LogListener, Configurable, LogProducer {
     int maxSize;
     String name;
     public static final int DEFAULT_SIZE = 100;
-    List<LogListener> listeners = Collections.synchronizedList (new ArrayList<LogListener>());
-    List<LogEvent> events = Collections.synchronizedList (new ArrayList<LogEvent>());
+    List<LogListener> listeners = new ArrayList<LogListener>();
+    final List<LogEvent> events = new ArrayList<LogEvent>();
 
     public LogEvent log(LogEvent ev) {
-        events.add (new FrozenLogEvent (ev));
-        while (events.size() > maxSize)
-            events.remove(0);
+        synchronized (events) {
+            events.add (new FrozenLogEvent (ev));
+            while (events.size() > maxSize)
+                events.remove(0);
+        }
         notifyListeners (ev);
         return ev;
     }
@@ -48,25 +49,33 @@ public class BufferedLogListener implements LogListener, Configurable, LogProduc
             NameRegistrar.register (name, this);
     }
     public void addListener (final LogListener listener) {
-        for (LogEvent ev : events) {
-            listener.log(ev);
+        synchronized (events) {
+            for (LogEvent ev : events) {
+                listener.log(ev);
+            }
+            listeners.add (listener);
         }
-        listeners.add (listener);
     }
     public void removeListener (LogListener listener) {
-        listeners.remove (listener);
+        synchronized (events) {
+            listeners.remove (listener);
+        }
     }
 
     public void removeAllListeners() {
-        listeners.clear();
+        synchronized (events) {
+            listeners.clear();
+        }
     }
 
     public int getMaxSize() {
         return maxSize;
     }
     private void notifyListeners (LogEvent evt) {
-        for (LogListener listener : listeners) {
-            listener.log(evt);
+        synchronized (events) {
+            for (LogListener listener : listeners) {
+                listener.log(evt);
+            }
         }
     }
 }
