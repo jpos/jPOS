@@ -27,6 +27,7 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="jpos-common-libs" level="project" />
     <orderEntry type="library" name="q2-libs" level="project" />
+    <orderEntry type="library" name="junit" level="project" />
   </component>
 </module>
 
