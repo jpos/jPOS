@@ -66,6 +66,6 @@ public class TPS {
         return period / TO_NANOS;
     }
     public String toString() {
-        return Float.toString(floatValue());
+        return String.format ("%.2f", floatValue());
     }
 }
