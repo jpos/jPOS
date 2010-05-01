@@ -40,8 +40,8 @@ public class TPSTestCase extends TestCase {
         for (int i=0; i<1000; i++)
             tps.tick();
         Thread.sleep (1000L);
-        assertTrue("Expected aprox 1000 TPS", tps.intValue() >= 999);
-        assertTrue("Still expecting aprox 1000 TPS on a second call", tps.intValue() >= 999);
+        assertTrue("Expected aprox 1000 TPS but was "+ tps.intValue(), tps.intValue() >= 950);
+        assertTrue("Still expecting aprox 1000 TPS on a second call", tps.intValue() >= 950);
         Thread.sleep (1000L);
         assertEquals(
             "TPS should be zero but it's "+tps.intValue() + " (" + tps.floatValue() + ")",
