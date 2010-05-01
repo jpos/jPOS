@@ -18,54 +18,120 @@
 
 package org.jpos.util;
 
-import java.util.concurrent.Semaphore;
+import java.io.PrintStream;
+import java.util.Timer;
+import java.util.TimerTask;
 
-public class TPS {
+/**
+ * TPS can be used to measure Transactions Per Second (or transactions during other period of time).
+ *
+ * <p>It can operate in two different modes:
+ * <ul>
+ *  <li>Auto update</li>
+ *  <li>Manual update</li>
+ * </ul></p>
+ *
+ * <p>When operating in <b>auto update</b> mode, a Timer is created and the number of transactions (calls to tick())
+ * is automatically calculated for every period. Under this mode, user has to call the
+ * <b>stop()</b> method when this TPS object is no longer needed, otherwise it will keep a Thread
+ * lingering around.</p>
+ *
+ * <p>When operating in <b>manual update</b> mode, user has to call one of its
+ * floatValue() or intValue() method at regular intervals. The returned value will be the average
+ * TPS for the given period since the last call</p>.
+ * 
+ * @author Alejandro Revilla, Jeronimo Paolleti and Thiago Moretto
+ * @since 1.6.7 r2912
+ */
+
+@SuppressWarnings("unused")
+public class TPS implements Loggeable {
     volatile int count;
-    long start;
-    Semaphore sem;
-    static final long TO_NANOS = 1000000L;
-    long period = 1000 * TO_NANOS;
+    volatile long start;
+    static final long FROM_NANOS = 1000000L;
+    long period;
     float tps;
+    Timer timer;
+    boolean autoupdate;
 
     public TPS() {
-        this (1000L);
+        this (1000L, false);
     }
 
     /**
-     * @param periodInMillis ditto
+     *
+     * @param autoupdate
      */
-    public TPS(long periodInMillis) {
-        super();
-        this.period = periodInMillis * TO_NANOS;
-        start = System.nanoTime();
-        sem = new Semaphore(1);
+    public TPS (boolean autoupdate) {
+        this (1000L, autoupdate);
+    }
 
+    /**
+     * @param period in millis
+     */
+    public TPS(final long period, boolean autoupdate) {
+        super();
+        this.period = period;
+        this.autoupdate = autoupdate;
+        start = System.nanoTime() / FROM_NANOS;
+        if (autoupdate) {
+            timer = new Timer();
+            timer.schedule (
+                new TimerTask() {
+                    public void run() {
+                        calcTPS(period);
+                    }
+                }, period, period
+            );
+        }
     }
 
     public void tick() {
         count++;
     }
     public float floatValue() {
-        if (sem.tryAcquire()) {
-            long now = System.nanoTime();
-            long interval = now - start;
-            if (interval > period) {
-                tps = (float) period * count / interval;
-                count = 0;
-                start = now;
-            }
-        }
-        sem.release();
-        return tps;
+        return autoupdate ? tps : calcTPS();
     }
+
     public int intValue() {
-        return Math.round(floatValue()); 
+        return Math.round(floatValue());
     }
-    public long getPeriodInMillis() {
-        return period / TO_NANOS;
+    public long getPeriod() {
+        return period;
+    }
+    public long getElapsed() {
+        return System.nanoTime() - start;
     }
     public String toString() {
         return String.format ("%.2f", floatValue());
+    }
+    synchronized public void stop() {
+        if (timer != null) {
+            timer.cancel();
+            timer = null;
+            autoupdate = false; // can still use it in manual mode
+        }
+    }
+    public void dump(PrintStream p, String indent) {
+        p.println (indent
+            +"<tps"
+            + (autoupdate ? " auto='true'>" : ">")
+            + this.toString()
+            + "</tps>"
+        );
+    }
+    synchronized private float calcTPS(long interval) {
+        tps = (float) period * count / interval;
+        count = 0;
+        return tps;
+    }
+    synchronized private float calcTPS () {
+        long now = System.nanoTime() / FROM_NANOS;
+        long interval = now - start;
+        if (interval >= period) {
+            calcTPS (interval);
+            start = now;
+        }
+        return tps;
     }
 }
