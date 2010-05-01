@@ -21,13 +21,27 @@ package org.jpos.util;
 import junit.framework.TestCase;
 
 public class TPSTestCase extends TestCase {
-    public void testTenTPS() throws Exception {
+    public void test1000TPSAutoUpdate() throws Exception {
+        TPS tps = new TPS(true);
+        for (int i=0; i<1000; i++)
+            tps.tick();
+        Thread.sleep (1100L); // java.util.Timer is not accurate
+        assertEquals("Expected 1000 TPS", 1000, tps.intValue());
+        assertEquals("Still expecting 1000 TPS on a second call", 1000, tps.intValue());
+        Thread.sleep (1000L);
+        assertEquals(
+            "TPS should be zero but it's "+tps.intValue() + " (" + tps.floatValue() + ")",
+            0, tps.intValue()
+        );
+        tps.stop();
+    }
+    public void test1000TPSManualUpdate() throws Exception {
         TPS tps = new TPS();
         for (int i=0; i<1000; i++)
             tps.tick();
         Thread.sleep (1000L);
-        assertEquals("Expected 1000 TPS", 1000, tps.intValue());
-        assertEquals("Still expecting 1000 TPS on a second call", 1000, tps.intValue());
+        assertTrue("Expected aprox 1000 TPS", tps.intValue() >= 999);
+        assertTrue("Still expecting aprox 1000 TPS on a second call", tps.intValue() >= 999);
         Thread.sleep (1000L);
         assertEquals(
             "TPS should be zero but it's "+tps.intValue() + " (" + tps.floatValue() + ")",
