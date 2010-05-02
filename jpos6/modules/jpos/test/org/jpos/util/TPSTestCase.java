@@ -29,10 +29,12 @@ public class TPSTestCase extends TestCase {
         assertEquals("Expected 1000 TPS", 1000, tps.intValue());
         assertEquals("Still expecting 1000 TPS on a second call", 1000, tps.intValue());
         Thread.sleep (1000L);
+        assertTrue ("Average should be aprox 0.5 but it's " + tps.getAvg(), tps.getAvg() >= 0.5);
         assertEquals(
             "TPS should be zero but it's "+tps.intValue() + " (" + tps.floatValue() + ")",
             0, tps.intValue()
         );
+        assertEquals ("Peak has to be 1000", 1000, tps.getPeak());
         tps.stop();
     }
     public void test1000TPSManualUpdate() throws Exception {
