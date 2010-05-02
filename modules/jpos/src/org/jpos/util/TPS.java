@@ -48,9 +48,12 @@ import java.util.TimerTask;
 public class TPS implements Loggeable {
     volatile int count;
     volatile long start;
+    int peak;
+    long peakWhen;
     static final long FROM_NANOS = 1000000L;
     long period;
     float tps;
+    float avg;
     Timer timer;
     boolean autoupdate;
 
@@ -96,6 +99,23 @@ public class TPS implements Loggeable {
     public int intValue() {
         return Math.round(floatValue());
     }
+    public float getAvg () {
+        return avg;
+    }
+    public int getPeak () {
+        return peak;
+    }
+    public long getPeakWhen () {
+        return peakWhen;
+    }
+    /**
+     * resets average and peak
+     */
+    synchronized void reset () {
+        avg = 0f;
+        peak = 0;
+        peakWhen = 0L;
+    }
     public long getPeriod() {
         return period;
     }
@@ -103,7 +123,8 @@ public class TPS implements Loggeable {
         return System.nanoTime() - start;
     }
     public String toString() {
-        return String.format ("%.2f", floatValue());
+        return String.format ("tps=%d, peak=%d, avg=%.2f", intValue(), getPeak(), getAvg());
+
     }
     synchronized public void stop() {
         if (timer != null) {
@@ -122,6 +143,11 @@ public class TPS implements Loggeable {
     }
     synchronized private float calcTPS(long interval) {
         tps = (float) period * count / interval;
+        avg = (avg + tps) / 2;
+        if (tps > peak) {
+            peak = Math.round(tps);
+            peakWhen = System.currentTimeMillis();
+        }
         count = 0;
         return tps;
     }
