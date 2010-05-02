@@ -111,7 +111,7 @@ public class TPS implements Loggeable {
     /**
      * resets average and peak
      */
-    synchronized void reset () {
+    synchronized public void reset () {
         avg = 0f;
         peak = 0;
         peakWhen = 0L;
