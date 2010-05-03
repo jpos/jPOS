@@ -25,13 +25,18 @@ import org.jpos.ui.UI;
 import org.jpos.util.TPS;
 
 import javax.swing.*;
+import javax.swing.event.AncestorEvent;
+import javax.swing.event.AncestorListener;
 import javax.swing.table.TableModel;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-public class TMMonitor extends JPanel implements TransactionStatusListener, SwingConstants
+public class TMMonitor extends JPanel
+        implements TransactionStatusListener, SwingConstants, ActionListener, AncestorListener
 {
     UI ui;
     TransactionManager txnmgr;
@@ -43,6 +48,7 @@ public class TMMonitor extends JPanel implements TransactionStatusListener, Swin
     JLabel tpsPeak = new JLabel("0");
     JLabel inTransit = new JLabel("0");
     JLabel outstanding = new JLabel("0");
+    Timer timer;
 
     static final Font SMALL  = Font.decode ("terminal-plain-8");
     static final Font LARGE  = Font.decode ("terminal-plain-18");
@@ -68,10 +74,10 @@ public class TMMonitor extends JPanel implements TransactionStatusListener, Swin
         table = createTable (model);
         JScrollPane scrollPane = new JScrollPane(table);
 
-
         add(createTPSPanel(), BorderLayout.EAST);
         add(scrollPane, BorderLayout.CENTER);
         tmmgr.addListener(this);
+        addAncestorListener(this);
     }
     public void update(TransactionStatusEvent e) {
         if (ui.isDestroyed()) {
@@ -82,11 +88,6 @@ public class TMMonitor extends JPanel implements TransactionStatusListener, Swin
         model.fireTableRowsUpdated(row, row);
         // table.getSelectionModel().setSelectionInterval(row, row);
         setBackgroundColor (row, color[e.getState().intValue()]);
-        TPS t = txnmgr.getTPS();
-
-        tps.setText (Integer.toString (t.intValue()));
-        tpsAvg.setText (String.format ("%.2f", t.getAvg()));
-        tpsPeak.setText (Integer.toString (t.getPeak()));
         inTransit.setText (Long.toString (txnmgr.getInTransit()));
         outstanding.setText (Long.toString (txnmgr.getOutstandingTransactions()));
     }
@@ -183,7 +184,29 @@ public class TMMonitor extends JPanel implements TransactionStatusListener, Swin
                 return "";
             }
         };
-
     }
 
+    public void actionPerformed(ActionEvent e) {
+        System.out.println ("UPDATE");
+        TPS t = txnmgr.getTPS();
+        tps.setText (Integer.toString (t.intValue()));
+        tpsAvg.setText (String.format ("%.2f", t.getAvg()));
+        tpsPeak.setText (Integer.toString (t.getPeak()));
+    }
+
+    public void ancestorAdded(AncestorEvent event) {
+        if (timer == null) {
+            timer = new Timer (1000, this);
+            timer.start();
+        }
+    }
+
+    public void ancestorRemoved(AncestorEvent event) {
+        if (timer != null) {
+            timer.stop();
+            timer = null;
+        }
+    }
+
+    public void ancestorMoved(AncestorEvent event) { }
 }
