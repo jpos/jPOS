@@ -279,6 +279,20 @@ public class ISOUtil {
     }
 
     /**
+     * zeropads a long without throwing an ISOException (performs modulus operation)
+     *
+     * @param l the long
+     * @param len the length
+     * @return zeropadded value
+     */
+    public static String zeropad(long l, int len) {
+        try {
+            return padleft (Long.toString ((long) (l % Math.pow (10, len))), len, '0');
+        } catch (ISOException ignored) { }
+        return null; // should never happen
+    }
+
+    /**
      * pads to the right
      * @param s - original string
      * @param len - desired len
