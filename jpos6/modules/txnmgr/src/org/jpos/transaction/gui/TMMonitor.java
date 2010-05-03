@@ -187,7 +187,6 @@ public class TMMonitor extends JPanel
     }
 
     public void actionPerformed(ActionEvent e) {
-        System.out.println ("UPDATE");
         TPS t = txnmgr.getTPS();
         tps.setText (Integer.toString (t.intValue()));
         tpsAvg.setText (String.format ("%.2f", t.getAvg()));
