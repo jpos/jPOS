@@ -123,7 +123,7 @@ public class ISOAmount
     public void dump (PrintStream p, String indent) {
         p.println (indent +"<"+XMLPackager.ISOFIELD_TAG + " " 
           +XMLPackager.ID_ATTR +"=\"" +fieldNumber +"\" "
-          +"currency=\"" +Integer.toString(currencyCode)+"\" "
+          +"currency=\"" +ISOUtil.zeropad (currencyCode, 3)+"\" "
           +XMLPackager.TYPE_ATTR +"=\"amount\" "
           +XMLPackager.VALUE_ATTR+"=\"" + amount.toString() +"\"/>"
         );
