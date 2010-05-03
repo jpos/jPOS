@@ -34,23 +34,6 @@ public class TransactionManager
     extends QBeanSupport 
     implements Runnable, TransactionConstants, TransactionManagerMBean
 {
-    Space sp;
-    Space psp;
-    Space isp; // input space
-    String queue;
-    String tailLock;
-    protected Map groups;
-    Thread[] threads;
-    int activeSessions;
-    boolean debug;
-    boolean profiler;
-    boolean doRecover;
-    int maxActiveSessions;
-    long head, tail, lastGC;
-    long retryInterval = 5000L;
-    long retryTimeout  = 60000L;
-    long pauseTimeout  = 300*60*1000L;  // five minutes
-    RetryTask retryTask = null;
     public static final String  HEAD       = "$HEAD";
     public static final String  TAIL       = "$TAIL";
     public static final String  CONTEXT    = "$CONTEXT.";
@@ -58,12 +41,33 @@ public class TransactionManager
     public static final String  GROUPS     = "$GROUPS.";
     public static final String  TAILLOCK   = "$TAILLOCK";
     public static final String  RETRY_QUEUE = "$RETRY_QUEUE";
-    public static final String  LAST_RETRY = "$LAST_RETRY";
     public static final Integer PREPARING  = 0;
     public static final Integer COMMITTING = 1;
     public static final Integer DONE       = 2;
     public static final String  DEFAULT_GROUP = "";
     public static final long    MAX_PARTICIPANTS = 1000;  // loop prevention
+
+    protected Map groups;
+
+    Space sp;
+    Space psp;
+    Space isp; // input space
+    String queue;
+    String tailLock;
+    Thread[] threads;
+    List<TransactionStatusListener> statusListeners = new ArrayList<TransactionStatusListener>();
+    boolean hasStatusListeners;
+    int activeSessions;
+    boolean debug;
+    boolean profiler;
+    boolean doRecover;
+    int maxActiveSessions;
+    long head, tail;
+    long retryInterval = 5000L;
+    long retryTimeout  = 60000L;
+    long pauseTimeout  = 300*60*1000L;  // five minutes
+    RetryTask retryTask = null;
+    TPS tps = new TPS();
 
     public void initService () throws ConfigurationException {
         queue = cfg.get ("queue", null);
@@ -84,6 +88,7 @@ public class TransactionManager
         recover ();
         int sessions = cfg.getInt ("sessions", 1);
         threads = new Thread[sessions];
+        tps.reset();
         for (int i=0; i<sessions; i++) {
             Thread t = new Thread (this);
             t.setName (getName() + "-" + i);
@@ -116,6 +121,7 @@ public class TransactionManager
     public void push (Serializable context) {
         isp.push (queue, context);
     }
+    @SuppressWarnings("unused")
     public String getQueueName() {
         return queue;
     }
@@ -130,6 +136,7 @@ public class TransactionManager
     }
     public void run () {
         long id = 0;
+        int session;
         List members = null;
         Iterator iter = null;
         PausedTransaction pt;
@@ -139,11 +146,17 @@ public class TransactionManager
         String threadName = Thread.currentThread().getName();
         getLog().info (threadName + " start");
         long startTime = 0L;
+        boolean paused;
         synchronized (HEAD) { 
-            activeSessions++;
+            session = activeSessions++;
         }
         while (running()) {
+            Serializable context = null;
+            paused = false;
             try {
+                if (hasStatusListeners)
+                    notifyStatusListeners (session, TransactionStatusEvent.State.READY, id, "", null);
+
                 Object obj = isp.in (queue);
                 if (obj == Boolean.FALSE)
                     continue;   // stopService ``hack''
@@ -154,6 +167,7 @@ public class TransactionManager
                     );
                     continue;
                 }
+                context = (Serializable) obj;
                 if (obj instanceof Pausable) {
                     Pausable pausable = (Pausable) obj;
                     pt = pausable.getPausedTransaction();
@@ -194,18 +208,18 @@ public class TransactionManager
                     prof = new Profiler();
                     startTime = System.currentTimeMillis();
                 }
-                Serializable context = (Serializable) obj;
                 snapshot (id, context, PREPARING);
-                int action = prepare (id, context, members, iter, abort, evt, prof);
+                int action = prepare (session, id, context, members, iter, abort, evt, prof);
                 switch (action) {
                     case PAUSE:
+                        paused = true;
                         break;
                     case PREPARED:
                         setState (id, COMMITTING);
-                        commit (id, context, members, false, evt, prof);
+                        commit (session, id, context, members, false, evt, prof);
                         break;
                     case ABORTED:
-                        abort (id, context, members, false, evt, prof);
+                        abort (session, id, context, members, false, evt, prof);
                         break;
                     case RETRY:
                         psp.out (RETRY_QUEUE, context);
@@ -219,6 +233,7 @@ public class TransactionManager
                     if (id == tail) {
                         checkTail ();
                     }
+                    tps.tick();
                 }
             } catch (Throwable t) {
                 if (evt == null)
@@ -226,11 +241,24 @@ public class TransactionManager
                 else
                     evt.addMessage (t);
             } finally {
+                if (hasStatusListeners) {
+                    notifyStatusListeners (
+                        session,
+                        paused ? TransactionStatusEvent.State.PAUSED : TransactionStatusEvent.State.DONE, 
+                        id, "", context);
+                }
+
                 if (evt != null) {
                     evt.addMessage ("elapsed time: " 
                         + (System.currentTimeMillis() - startTime) + "ms"
                     );
-                    evt.addMessage ("head=" + head + ", tail=" + tail);
+                    evt.addMessage (
+                        "head=" + head
+                       +", tail=" + tail
+                       +", outstanding=" + getOutstandingTransactions()
+                       +", queue=" + ((LocalSpace)sp).size (getQueueName())
+                       +", " + tps.toString()
+                    );
                     if (prof != null)
                         evt.addMessage (prof);
                     Logger.log (evt);
@@ -250,6 +278,9 @@ public class TransactionManager
     public long getHead () {
         return head;
     }
+    public long getInTransit () {
+        return head - tail;
+    }
     public void setConfiguration (Configuration cfg) 
         throws ConfigurationException 
     {
@@ -264,8 +295,23 @@ public class TransactionManager
         pauseTimeout  = cfg.getLong ("pause-timeout", pauseTimeout);
         maxActiveSessions  = cfg.getInt  ("max-active-sessions", 0);
     }
+    public void addListener (TransactionStatusListener l) {
+        synchronized (statusListeners) {
+            statusListeners.add (l);
+            hasStatusListeners = true;
+        }
+    }
+    public void removeListener (TransactionStatusListener l) {
+        synchronized (statusListeners) {
+            statusListeners.remove (l);
+            hasStatusListeners = statusListeners.size() > 0;
+        }
+    }
+    public TPS getTPS() {
+        return tps;
+    }
     protected void commit 
-        (long id, Serializable context, List members, boolean recover, LogEvent evt, Profiler prof)
+        (int session, long id, Serializable context, List members, boolean recover, LogEvent evt, Profiler prof)
     {
         Iterator iter = members.iterator();
         while (iter.hasNext ()) {
@@ -275,6 +321,10 @@ public class TransactionManager
                 if (evt != null)
                     evt.addMessage (" commit-recover: " + p.getClass().getName());
             }
+            if (hasStatusListeners)
+                notifyStatusListeners (
+                    session, TransactionStatusEvent.State.COMMITING, id, p.getClass().getName(), context
+                );
             commit (p, id, context);
             if (evt != null) {
                 evt.addMessage ("         commit: " + p.getClass().getName());
@@ -284,7 +334,7 @@ public class TransactionManager
         }
     }
     protected void abort 
-        (long id, Serializable context, List members, boolean recover, LogEvent evt, Profiler prof)
+        (int session, long id, Serializable context, List members, boolean recover, LogEvent evt, Profiler prof)
     {
         Iterator iter = members.iterator();
         while (iter.hasNext ()) {
@@ -294,6 +344,11 @@ public class TransactionManager
                 if (evt != null)
                     evt.addMessage ("  abort-recover: " + p.getClass().getName());
             }
+            if (hasStatusListeners)
+                notifyStatusListeners (
+                    session, TransactionStatusEvent.State.ABORTING, id, p.getClass().getName(), context
+                );
+
             abort (p, id, context);
             if (evt != null) {
                 evt.addMessage ("          abort: " + p.getClass().getName());
@@ -342,7 +397,7 @@ public class TransactionManager
         }
     }
     protected int prepare
-        (long id, Serializable context, List members, Iterator iter, boolean abort, LogEvent evt, Profiler prof)
+        (int session, long id, Serializable context, List members, Iterator iter, boolean abort, LogEvent evt, Profiler prof)
     {
         boolean retry = false;
         boolean pause = false;
@@ -356,10 +411,18 @@ public class TransactionManager
             }
             TransactionParticipant p = (TransactionParticipant) iter.next();
             if (abort) {
+                if (hasStatusListeners)
+                    notifyStatusListeners (
+                        session, TransactionStatusEvent.State.PREPARING_FOR_ABORT, id, p.getClass().getName(), context
+                    );
                 action = prepareForAbort (p, id, context);
                 if (evt != null && (p instanceof AbortParticipant))
                     evt.addMessage ("prepareForAbort: " + p.getClass().getName());
             } else {
+                if (hasStatusListeners)
+                    notifyStatusListeners (
+                        session, TransactionStatusEvent.State.PREPARING, id, p.getClass().getName(), context
+                    );
                 action = prepare (p, id, context);
                 abort  = (action & PREPARED) == ABORTED;
                 retry  = (action & RETRY) == RETRY;
@@ -631,13 +694,13 @@ public class TransactionManager
                 getLog().info ("recover - tail=" +tail+", head="+head);
             }
             while (tail < head) {
-                recover (tail++);
+                recover (0, tail++);
             }
         } else
             tail = head;
         syncTail ();
     }
-    protected void recover (long id) {
+    protected void recover (int session, long id) {
         LogEvent evt = getLog().createLogEvent ("recover");
         Profiler prof = new Profiler();
         evt.addMessage ("<id>" + id + "</id>");
@@ -657,9 +720,9 @@ public class TransactionManager
             if (DONE.equals (state)) {
                 evt.addMessage ("<done/>");
             } else if (COMMITTING.equals (state)) {
-                commit (id, context, getParticipants (id), true, evt, prof);
+                commit (session, id, context, getParticipants (id), true, evt, prof);
             } else if (PREPARING.equals (state)) {
-                abort (id, context, getParticipants (id), true, evt, prof);
+                abort (session, id, context, getParticipants (id), true, evt, prof);
             }
             purge (id);
         } finally {
@@ -712,6 +775,15 @@ public class TransactionManager
     public int getRunningSessions() {
         return (int) (head - tail);
     }
+    private void notifyStatusListeners
+            (int session, TransactionStatusEvent.State state, long id, String info, Serializable context)
+    {
+        TransactionStatusEvent e = new TransactionStatusEvent(session, state, id, info, context);
+        synchronized (statusListeners) {
+            for (TransactionStatusListener l : statusListeners) {
+                l.update (e);
+            }
+        }
+    }
 
 }
-
