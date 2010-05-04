@@ -135,7 +135,9 @@ public class GenericPackager
             if (loggerName != null)
                 setLogger(Logger.getLogger (loggerName), 
                            cfg.get ("packager-realm"));
-            readFile(cfg.get("packager-config"));
+            readFile(
+                this.filename = cfg.get("packager-config")
+            );
         } 
         catch (ISOException e) 
         {
