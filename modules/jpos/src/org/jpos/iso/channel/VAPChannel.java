@@ -37,15 +37,15 @@ import java.net.ServerSocket;
  * @see ISOException
  * @see ISOChannel
  */
+@SuppressWarnings("unused")
 public class VAPChannel extends BaseChannel {
-    String srcid, dstid;
+    String srcid = "000000";
+    String dstid = "000000";
     /**
      * Public constructor (used by Class.forName("...").newInstance())
      */
     public VAPChannel () {
         super();
-        srcid = "000000";
-        dstid = "000000";
     }
     /**
      * Construct client ISOChannel
