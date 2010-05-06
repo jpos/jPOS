@@ -317,7 +317,7 @@ public class ISOMsg extends ISOComponent
      * @param fldno - the field number
      */
     public void unset (int fldno) {
-        if (fields.remove (new Integer (fldno)) != null)
+        if (fields.remove (fldno) != null)
             dirty = maxFieldDirty = true;
     }
     /**
@@ -383,7 +383,7 @@ public class ISOMsg extends ISOComponent
 
         BitSet bmap = new BitSet (((mf+62)>>6)<<6);
         for (int i=1; i<=mf; i++)
-            if ((fields.get (new Integer (i))) != null)
+            if ((fields.get (i)) != null)
                 bmap.set (i);
         set (new ISOBitMap (-1, bmap));
         dirty = false;
@@ -475,7 +475,7 @@ public class ISOMsg extends ISOComponent
      * @return the Component
      */
     public ISOComponent getComponent(int fldno) {
-        return (ISOComponent) fields.get(new Integer(fldno));
+        return (ISOComponent) fields.get(fldno);
     }
     /**
      * Return the object value associated with the given field number
@@ -494,7 +494,7 @@ public class ISOMsg extends ISOComponent
     public Object getValue (String fpath) throws ISOException {
         StringTokenizer st = new StringTokenizer (fpath, ".");
         ISOMsg m = this;
-        Object obj = null;
+        Object obj;
         for (;;) {
             int fldno = Integer.parseInt(st.nextToken());
             obj = m.getValue (fldno);
@@ -614,7 +614,7 @@ public class ISOMsg extends ISOComponent
      * @return boolean indicating the existence of the field
      */
     public boolean hasField(int fldno) {
-        return fields.get(new Integer(fldno)) != null;
+        return fields.get(fldno) != null;
     }
     /**
      * Check if all fields are present
@@ -752,7 +752,7 @@ public class ISOMsg extends ISOComponent
     }
     public Object getKey() throws ISOException {
         if (fieldNumber != -1)
-            return new Integer(fieldNumber);
+            return fieldNumber;
         throw new ISOException ("This is not a subField");
     }
     public Object getValue() {
