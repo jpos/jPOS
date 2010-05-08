@@ -67,7 +67,7 @@ public class TransactionManager
     long retryTimeout  = 60000L;
     long pauseTimeout  = 300*60*1000L;  // five minutes
     RetryTask retryTask = null;
-    TPS tps = new TPS();
+    TPS tps;
 
     public void initService () throws ConfigurationException {
         queue = cfg.get ("queue", null);
@@ -88,7 +88,9 @@ public class TransactionManager
         recover ();
         int sessions = cfg.getInt ("sessions", 1);
         threads = new Thread[sessions];
-        tps.reset();
+        if (tps != null)
+            tps.stop();
+        tps = new TPS (cfg.getBoolean ("auto-update-tps", true));
         for (int i=0; i<sessions; i++) {
             Thread t = new Thread (this);
             t.setName (getName() + "-" + i);
@@ -114,6 +116,7 @@ public class TransactionManager
             }
             threads[i] = null;
         }
+        tps.stop();
     }
     public void queue (Serializable context) {
         isp.out (queue, context);
@@ -249,17 +252,14 @@ public class TransactionManager
                 }
 
                 if (evt != null) {
-                    evt.addMessage ("elapsed time: " 
-                        + (System.currentTimeMillis() - startTime) + "ms"
-                    );
                     evt.addMessage (
-                        "head=" + head
-                       +", tail=" + tail
-                       +", outstanding=" + getOutstandingTransactions()
-                       +", queue=" + ((LocalSpace)sp).size (getQueueName())
-                       +", " + tps.toString()
+                        String.format ("head=%d, tail=%d, outstanding=%d, %s, elapsed=%dms",
+                            head, tail, getOutstandingTransactions(),
+                            tps.toString(),
+                            (System.currentTimeMillis() - startTime)
+                        )
                     );
-                    if (prof != null)
+                     if (prof != null)
                         evt.addMessage (prof);
                     Logger.log (evt);
                     evt = null;
