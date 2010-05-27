@@ -153,7 +153,7 @@ public class Q2 implements FileFilter, Runnable {
                     QClassLoader oldClassLoader = loader;
                     loader = loader.scan (forceNewClassLoader);
                     if (loader != oldClassLoader) {
-                        oldClassLoader = null;
+                        oldClassLoader = null; // We want't this to be null so it gets GCed.
                         System.gc();  // force a GC
                         log.info (
                         "new classloader ["
