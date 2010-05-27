@@ -71,6 +71,7 @@ public class Q2 implements FileFilter, Runnable {
     private QClassLoader loader;
     private ClassLoader mainClassLoader;
     private Log log;
+    private boolean started;
     private boolean shutdown;
     private boolean shuttingDown;
     private Thread q2Thread;
@@ -105,6 +106,7 @@ public class Q2 implements FileFilter, Runnable {
         shutdown (true);
     }
     public void run () {
+        started = true;
         try {
             /*
             * The following code determines whether a MBeanServer exists 
@@ -188,7 +190,7 @@ public class Q2 implements FileFilter, Runnable {
         shutdown(false);
     }
     public boolean running() {
-        return !shutdown;
+        return started && !shutdown;
     }
     public void shutdown (boolean join) {
         shutdown = true;
@@ -327,9 +329,7 @@ public class Q2 implements FileFilter, Runnable {
         int status = -1;
         if (name != null) {
             try {
-                status = (
-                    (Integer) server.getAttribute (name, "State")
-                ).intValue();
+                status = (Integer) server.getAttribute(name, "State");
             } catch (Exception e) {
                 log.warn ("getState", e);
             }
