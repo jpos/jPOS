@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project relativePaths="false" version="4">
+<project version="4">
   <component name="AntConfiguration">
     <defaultAnt bundledAnt="true" />
     <buildFile url="file://$PROJECT_DIR$/build.xml">
@@ -85,11 +85,9 @@
         </ADDITIONAL_INDENT_OPTIONS>
       </value>
     </option>
-    <option name="USE_PER_PROJECT_SETTINGS" value="false" />
   </component>
   <component name="CompilerConfiguration">
     <option name="DEFAULT_COMPILER" value="Javac" />
-    <option name="DEPLOY_AFTER_MAKE" value="0" />
     <resourceExtensions>
       <entry name=".+\.(properties|xml|html|dtd|tld)" />
       <entry name=".+\.(gif|png|jpeg|jpg)" />
@@ -106,6 +104,7 @@
       <entry name="?*.tld" />
       <entry name="?*.drl" />
     </wildcardResourcePatterns>
+    <annotationProcessing enabled="false" useClasspath="true" />
   </component>
   <component name="CopyrightManager" default="">
     <module2copyright />
@@ -146,26 +145,73 @@
   </component>
   <component name="IdProvider" IDEtalkID="3A4402C0B18BBBE8AD898D09FA270BD7" />
   <component name="InspectionProjectProfileManager">
-    <option name="PROJECT_PROFILE" value="Project Default" />
-    <option name="USE_PROJECT_LEVEL_SETTINGS" value="false" />
-    <scopes />
     <profiles>
       <profile version="1.0" is_locked="false">
         <option name="myName" value="Project Default" />
         <option name="myLocal" value="false" />
-        <inspection_tool class="EmptyCatchBlock" level="WARNING" enabled="false">
+        <inspection_tool class="BadExpressionStatementJS" level="WARNING" enabled="false" />
+        <inspection_tool class="CheckImageSize" level="WARNING" enabled="false" />
+        <inspection_tool class="CheckTagEmptyBody" enabled="false" level="WARNING" enabled_by_default="false" />
+        <inspection_tool class="CloneCallsSuperClone" enabled="false" level="WARNING" enabled_by_default="false" />
+        <inspection_tool class="CloneDeclaresCloneNotSupported" enabled="false" level="WARNING" enabled_by_default="false" />
+        <inspection_tool class="CssNoGenericFontName" level="WARNING" enabled="false" />
+        <inspection_tool class="CssOverwrittenProperties" level="WARNING" enabled="false" />
+        <inspection_tool class="CssUnitlessNumber" level="WARNING" enabled="false" />
+        <inspection_tool class="CssUnknownProperty" level="WARNING" enabled="true">
+          <option name="myCustomPropertiesEnabled" value="true" />
+          <option name="myCustomPropertiesList">
+            <value>
+              <list size="1">
+                <item index="0" class="java.lang.String" itemvalue="text-shadow" />
+              </list>
+            </value>
+          </option>
+        </inspection_tool>
+        <inspection_tool class="Deprecation" enabled="false" level="WARNING" enabled_by_default="false" />
+        <inspection_tool class="ELValidationInJSP" level="WARNING" enabled="false" />
+        <inspection_tool class="EmptyCatchBlock" enabled="false" level="WARNING" enabled_by_default="false">
           <option name="m_includeComments" value="true" />
           <option name="m_ignoreTestCases" value="true" />
           <option name="m_ignoreIgnoreParameter" value="true" />
         </inspection_tool>
-        <inspection_tool class="CloneDeclaresCloneNotSupported" level="WARNING" enabled="false" />
-        <inspection_tool class="CloneCallsSuperClone" level="WARNING" enabled="false" />
-        <inspection_tool class="BadExpressionStatementJS" level="WARNING" enabled="false" />
+        <inspection_tool class="HibernateConfigDomInspection" level="WARNING" enabled="true" />
+        <inspection_tool class="HibernateMappingDatasourceDomInspection" level="WARNING" enabled="true" />
+        <inspection_tool class="HibernateMappingDomInspection" level="ERROR" enabled="false" />
+        <inspection_tool class="HtmlUnknownAttribute" enabled="false" level="WARNING" enabled_by_default="false">
+          <option name="myValues">
+            <value>
+              <list size="5">
+                <item index="0" class="java.lang.String" itemvalue="type" />
+                <item index="1" class="java.lang.String" itemvalue="wmode" />
+                <item index="2" class="java.lang.String" itemvalue="src" />
+                <item index="3" class="java.lang.String" itemvalue="width" />
+                <item index="4" class="java.lang.String" itemvalue="height" />
+              </list>
+            </value>
+          </option>
+          <option name="myCustomValuesEnabled" value="true" />
+        </inspection_tool>
+        <inspection_tool class="HtmlUnknownTag" enabled="true" level="WARNING" enabled_by_default="true">
+          <option name="myValues">
+            <value>
+              <list size="8">
+                <item index="0" class="java.lang.String" itemvalue="embed" />
+                <item index="1" class="java.lang.String" itemvalue="nobr" />
+                <item index="2" class="java.lang.String" itemvalue="noembed" />
+                <item index="3" class="java.lang.String" itemvalue="comment" />
+                <item index="4" class="java.lang.String" itemvalue="script" />
+                <item index="5" class="java.lang.String" itemvalue="tag" />
+                <item index="6" class="java.lang.String" itemvalue="content" />
+                <item index="7" class="java.lang.String" itemvalue="src" />
+              </list>
+            </value>
+          </option>
+          <option name="myCustomValuesEnabled" value="true" />
+        </inspection_tool>
         <inspection_tool class="JSUndeclaredVariable" level="INFO" enabled="false" />
         <inspection_tool class="JSUnresolvedFunction" level="INFO" enabled="false" />
         <inspection_tool class="JSUnresolvedVariable" level="INFO" enabled="false" />
-        <inspection_tool class="Deprecation" level="WARNING" enabled="false" />
-        <inspection_tool class="JavaDoc" level="WARNING" enabled="false">
+        <inspection_tool class="JavaDoc" enabled="false" level="WARNING" enabled_by_default="false">
           <option name="TOP_LEVEL_CLASS_OPTIONS">
             <value>
               <option name="ACCESS_JAVADOC_REQUIRED_FOR" value="none" />
@@ -192,66 +238,17 @@
           </option>
           <option name="IGNORE_DEPRECATED" value="false" />
           <option name="IGNORE_JAVADOC_PERIOD" value="true" />
+          <option name="IGNORE_DUPLICATED_THROWS" value="false" />
           <option name="myAdditionalJavadocTags" value="" />
         </inspection_tool>
-        <inspection_tool class="ELValidationInJSP" level="WARNING" enabled="false" />
-        <inspection_tool class="RequiredAttributes" level="WARNING" enabled="false">
+        <inspection_tool class="JavadocReference" enabled="false" level="ERROR" enabled_by_default="false" />
+        <inspection_tool class="JpaDataSourceORMInspection" level="WARNING" enabled="true" />
+        <inspection_tool class="JpaModelErrorInspection" level="ERROR" enabled="false" />
+        <inspection_tool class="JpaQueryApiInspection" level="ERROR" enabled="false" />
+        <inspection_tool class="RequiredAttributes" enabled="false" level="WARNING" enabled_by_default="false">
           <option name="myAdditionalRequiredHtmlAttributes" value="" />
         </inspection_tool>
-        <inspection_tool class="CssNoGenericFontName" level="WARNING" enabled="false" />
-        <inspection_tool class="CssOverwrittenProperties" level="WARNING" enabled="false" />
-        <inspection_tool class="CssUnitlessNumber" level="WARNING" enabled="false" />
-        <inspection_tool class="JavadocReference" level="ERROR" enabled="false" />
-        <inspection_tool class="HibernateMappingDomInspection" level="ERROR" enabled="false" />
-        <inspection_tool class="JpaQueryApiInspection" level="ERROR" enabled="false" />
-        <inspection_tool class="HibernateMappingDatasourceDomInspection" level="WARNING" enabled="true" />
-        <inspection_tool class="HibernateConfigDomInspection" level="WARNING" enabled="true" />
-        <inspection_tool class="HtmlUnknownAttribute" level="WARNING" enabled="false">
-          <option name="myValues">
-            <value>
-              <list size="5">
-                <item index="0" class="java.lang.String" itemvalue="type" />
-                <item index="1" class="java.lang.String" itemvalue="wmode" />
-                <item index="2" class="java.lang.String" itemvalue="src" />
-                <item index="3" class="java.lang.String" itemvalue="width" />
-                <item index="4" class="java.lang.String" itemvalue="height" />
-              </list>
-            </value>
-          </option>
-          <option name="myCustomValuesEnabled" value="true" />
-        </inspection_tool>
-        <inspection_tool class="CssUnknownProperty" level="WARNING" enabled="true">
-          <option name="myCustomPropertiesEnabled" value="true" />
-          <option name="myCustomPropertiesList">
-            <value>
-              <list size="1">
-                <item index="0" class="java.lang.String" itemvalue="text-shadow" />
-              </list>
-            </value>
-          </option>
-        </inspection_tool>
-        <inspection_tool class="CheckTagEmptyBody" level="WARNING" enabled="false" />
-        <inspection_tool class="JpaDataSourceORMInspection" level="WARNING" enabled="true" />
-        <inspection_tool class="CheckImageSize" level="WARNING" enabled="false" />
-        <inspection_tool class="JpaModelErrorInspection" level="ERROR" enabled="false" />
-        <inspection_tool class="HtmlUnknownTag" level="WARNING" enabled="true">
-          <option name="myValues">
-            <value>
-              <list size="8">
-                <item index="0" class="java.lang.String" itemvalue="embed" />
-                <item index="1" class="java.lang.String" itemvalue="nobr" />
-                <item index="2" class="java.lang.String" itemvalue="noembed" />
-                <item index="3" class="java.lang.String" itemvalue="comment" />
-                <item index="4" class="java.lang.String" itemvalue="script" />
-                <item index="5" class="java.lang.String" itemvalue="tag" />
-                <item index="6" class="java.lang.String" itemvalue="content" />
-                <item index="7" class="java.lang.String" itemvalue="src" />
-              </list>
-            </value>
-          </option>
-          <option name="myCustomValuesEnabled" value="true" />
-        </inspection_tool>
-        <inspection_tool class="UNUSED_SYMBOL" level="WARNING" enabled="true">
+        <inspection_tool class="UNUSED_SYMBOL" enabled="true" level="WARNING" enabled_by_default="true">
           <option name="LOCAL_VARIABLE" value="true" />
           <option name="FIELD" value="true" />
           <option name="METHOD" value="true" />
@@ -268,11 +265,15 @@
         </inspection_tool>
       </profile>
     </profiles>
-    <list size="4">
+    <option name="PROJECT_PROFILE" value="Project Default" />
+    <option name="USE_PROJECT_PROFILE" value="true" />
+    <version value="1.0" />
+    <list size="5">
       <item index="0" class="java.lang.String" itemvalue="SERVER PROBLEM" />
       <item index="1" class="java.lang.String" itemvalue="INFO" />
-      <item index="2" class="java.lang.String" itemvalue="WARNING" />
-      <item index="3" class="java.lang.String" itemvalue="ERROR" />
+      <item index="2" class="java.lang.String" itemvalue="TYPO" />
+      <item index="3" class="java.lang.String" itemvalue="WARNING" />
+      <item index="4" class="java.lang.String" itemvalue="ERROR" />
     </list>
   </component>
   <component name="IntelliJConfiguration">
@@ -535,7 +536,6 @@
   <component name="ProjectDetails">
     <option name="projectName" value="jpos" />
   </component>
-  <component name="ProjectFileVersion" converted="true" />
   <component name="ProjectKey">
     <option name="state" value="https://jpos.svn.sourceforge.net/svnroot/jpos/trunk/jpos6/jpos.ipr" />
   </component>
@@ -593,6 +593,20 @@
         <entry key="$PROJECT_DIR$">
           <value>
             <SvnBranchConfiguration>
+              <option name="branchMap">
+                <map>
+                  <entry key="https://jpos.svn.sourceforge.net/svnroot/jpos/branches">
+                    <value>
+                      <list />
+                    </value>
+                  </entry>
+                  <entry key="https://jpos.svn.sourceforge.net/svnroot/jpos/tags">
+                    <value>
+                      <list />
+                    </value>
+                  </entry>
+                </map>
+              </option>
               <option name="branchUrls">
                 <list>
                   <option value="https://jpos.svn.sourceforge.net/svnroot/jpos/branches" />
