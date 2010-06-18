@@ -65,7 +65,7 @@ public class TransactionManager
     long head, tail;
     long retryInterval = 5000L;
     long retryTimeout  = 60000L;
-    long pauseTimeout  = 300*60*1000L;  // five minutes
+    long pauseTimeout  = 0L;
     RetryTask retryTask = null;
     TPS tps;
 
