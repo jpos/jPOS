@@ -475,15 +475,17 @@ public class TransactionManager
             if (pause) {
                 if (context instanceof Pausable) {
                     Pausable pausable = (Pausable) context;
-                    TimerTask expirationMonitor = new PausedMonitor (pausable);
+                    long t = pausable.getTimeout();
+                    if (t == 0) 
+                        t = pauseTimeout;
+                    TimerTask expirationMonitor = null;
+                    if (t > 0)
+                        expirationMonitor = new PausedMonitor (pausable);
                     PausedTransaction pt = new PausedTransaction (
                         this, id, members, iter, abort, expirationMonitor
                     );
                     pausable.setPausedTransaction (pt);
-                    long t = pausable.getTimeout();
-                    if (t == 0) 
-                        t = pauseTimeout;
-                    if (t > 0) {
+                    if (expirationMonitor != null) {
                         synchronized (context) {
                             if (!pt.isResumed()) {
                                 DefaultTimer.getTimer().schedule (
