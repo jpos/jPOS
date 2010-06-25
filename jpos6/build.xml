@@ -69,6 +69,7 @@
       <mkdir dir="${build.dir}"/>
       <mkdir dir="${build.src}"/>
       <mkdir dir="${build.lib}"/>
+      <mkdir dir="${build.lib}/test"/>
       <mkdir dir="${build.bin}"/>
       <mkdir dir="${build.doc}"/>
       <mkdir dir="${build.cfg}"/>
@@ -232,7 +233,7 @@
     <target name="copy-lib" depends="prepare">
       <copy todir="${build.lib}">
         <fileset dir="${lib.dir}">
-          <include name="*.jar"/>
+          <include name="**/*.jar"/>
         </fileset>
       </copy>
     </target>
