@@ -37,6 +37,7 @@ import java.util.Map;
  * @see org.jpos.iso.packager.ISO87APackager
  * @see org.jpos.iso.packager.ISO87BPackager
  */
+@SuppressWarnings ("unchecked unused")
 public abstract class ISOBasePackager implements ISOPackager, LogSource {
     protected ISOFieldPackager[] fld;
 
@@ -98,7 +99,7 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
 
             if (emitBitMap()) {
                 // BITMAP (-1 in HashTable)
-                c = (ISOComponent) fields.get (new Integer(-1));
+                c = (ISOComponent) fields.get (-1);
                 b = getBitMapfieldPackager().pack(c);
                 len += b.length;
                 v.add (b);
@@ -110,7 +111,7 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
             int tmpMaxField=Math.min (m.getMaxField(), 128);
 
             for (int i=first; i<=tmpMaxField; i++) {
-                if ((c=(ISOComponent) fields.get (new Integer(i))) != null)
+                if ((c=(ISOComponent) fields.get (i)) != null)
                 {
                     try {
                         ISOFieldPackager fp = fld[i];
@@ -131,7 +132,7 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
             if(m.getMaxField()>128 && fld.length > 128) {
                 for (int i=1; i<=64; i++) {
                     if ((c = (ISOComponent) 
-                        fields.get (new Integer(i + 128))) != null)
+                        fields.get (i + 128)) != null)
                     {
                         try {
                             b = fld[i+128].pack(c);
@@ -195,8 +196,7 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
             if (m instanceof ISOMsg /*&& ((ISOMsg) m).getHeader()==null*/ && headerLength>0) 
             {
             	byte[] h = new byte[headerLength];
-            	for (int i=0; i<headerLength; i++)
-                    h[i] = b[i];
+                System.arraycopy(b, 0, h, 0, headerLength);
             	((ISOMsg) m).setHeader(h);
             	consumed += headerLength;
             }       
@@ -339,9 +339,7 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
             if (bmap != null && bmap.get(65) && fld.length > 128 &&
                 fld[65] instanceof ISOBitMapPackager)
             {
-                bmap= (BitSet) 
-                    ((ISOComponent) m.getChildren().get 
-                        (new Integer(65))).getValue();
+                bmap= (BitSet) ((ISOComponent) m.getChildren().get(65)).getValue();
                 for (int i=1; i<64; i++) {
                     if (bmap == null || bmap.get(i)) {
                         ISOComponent c = fld[i+128].createComponent(i);
