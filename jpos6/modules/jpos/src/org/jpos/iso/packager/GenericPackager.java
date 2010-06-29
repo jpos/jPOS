@@ -76,6 +76,8 @@ import java.util.Stack;
  * @see ISOPackager
  * @see ISOBasePackager
  */
+
+@SuppressWarnings("unchecked")
 public class GenericPackager 
     extends ISOBasePackager implements ReConfigurable
 {
@@ -211,7 +213,7 @@ public class GenericPackager
         }
     }
     private XMLReader createXMLReader () throws SAXException {
-        XMLReader reader = null;
+        XMLReader reader;
         try {
             reader = XMLReaderFactory.createXMLReader();
         } catch (SAXException e) {
@@ -250,7 +252,7 @@ public class GenericPackager
             maxValidField = Integer.parseInt(maxField); 
 
         if (emitBmap != null)
-            emitBitmap = Boolean.valueOf(emitBmap).booleanValue();
+            emitBitmap = Boolean.valueOf(emitBmap);
 
         if (bmapfield != null)
             bitmapField = Integer.parseInt(bmapfield);
@@ -321,7 +323,7 @@ public class GenericPackager
                     f = (ISOFieldPackager) Class.forName(type).newInstance();   
                     f.setDescription(name);
                     f.setLength(Integer.parseInt(size));
-                    f.setPad(new Boolean(pad).booleanValue());
+                    f.setPad(Boolean.parseBoolean(pad));
                     // Modified for using IF_TBASE
                     if( f instanceof IF_TBASE){
                       ((IF_TBASE)f).setToken( token );
@@ -347,7 +349,7 @@ public class GenericPackager
                     f = (ISOFieldPackager) c.newInstance();     
                     f.setDescription(name);
                     f.setLength(Integer.parseInt(size));
-                    f.setPad(new Boolean(pad).booleanValue());
+                    f.setPad(Boolean.parseBoolean(pad));
                     // Modified for using IF_TBASE
                     if( f instanceof IF_TBASE){
                       ((IF_TBASE)f).setToken( token );
@@ -375,7 +377,7 @@ public class GenericPackager
             // First find the largest field number in the Hashtable
             for (Enumeration e=tab.keys(); e.hasMoreElements(); )
             {
-                int n = ((Integer)e.nextElement()).intValue();
+                int n = (Integer) e.nextElement();
                 if (n > maxField) maxField = n;
             }
 
@@ -386,7 +388,7 @@ public class GenericPackager
             for (Enumeration e=tab.keys(); e.hasMoreElements(); )
             {
                 Integer key = (Integer) e.nextElement();
-                fld[key.intValue()] = (ISOFieldPackager)tab.get(key);
+                fld[key] = (ISOFieldPackager)tab.get(key);
             }
             return fld;
         }
