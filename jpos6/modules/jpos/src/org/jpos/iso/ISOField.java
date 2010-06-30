@@ -85,7 +85,7 @@ public class ISOField
      * @return Object representing this field number
      */
     public Object getKey() {
-        return new Integer(fieldNumber);
+        return fieldNumber;
     }
     /**
      * @return Object representing this field value
