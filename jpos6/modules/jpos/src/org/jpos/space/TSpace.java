@@ -257,7 +257,7 @@ public class TSpace<K,V> extends TimerTask implements LocalSpace<K,V>, Loggeable
         }
         synchronized (this) {
             List l = new LinkedList();
-            l.add (value);
+            l.add (v);
             entries.put (key, l);
             this.notifyAll ();
         }
