@@ -150,11 +150,13 @@ public class QServer
             initServer ();
             initIn();
             initOut();
+            NameRegistrar.register (getName(), this);
         } catch (Exception e) {
             getLog().warn ("error starting service", e);
         }
     }
     public void stopService () {
+        NameRegistrar.unregister (getName());
         NameRegistrar.unregister ("server." + getName());
         if (server != null)
             server.shutdown ();
