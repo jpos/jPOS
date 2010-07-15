@@ -81,8 +81,10 @@ public class QMUX
         }
     }
     public void stopService () {
-        NameRegistrar.unregister ("mux."+getName ());
         sp.removeListener (in, this);
+    }
+    public void destroyService () {
+        NameRegistrar.unregister ("mux."+getName ());
     }
 
     /**
