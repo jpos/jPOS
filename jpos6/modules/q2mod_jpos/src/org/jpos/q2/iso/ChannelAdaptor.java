@@ -84,6 +84,8 @@ public class ChannelAdaptor
         }
         ready   = getName() + ".ready";
         reconnect = getName() + ".reconnect";
+    }
+    public void initService() {
         NameRegistrar.register (getName(), this);
     }
     public void startService () {
