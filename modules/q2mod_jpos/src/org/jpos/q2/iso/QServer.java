@@ -114,6 +114,7 @@ public class QServer
         getFactory().setConfiguration (server, getPersist());     
         addServerSocketFactory();
         addListeners ();
+        NameRegistrar.register (getName(), this);
         new Thread (server).start();
     }
     private void initIn() {
@@ -150,16 +151,17 @@ public class QServer
             initServer ();
             initIn();
             initOut();
-            NameRegistrar.register (getName(), this);
         } catch (Exception e) {
             getLog().warn ("error starting service", e);
         }
     }
     public void stopService () {
-        NameRegistrar.unregister (getName());
-        NameRegistrar.unregister ("server." + getName());
         if (server != null)
             server.shutdown ();
+    }
+    public void destroyService () {
+        NameRegistrar.unregister (getName());
+        NameRegistrar.unregister ("server." + getName());
     }
 
     /**
