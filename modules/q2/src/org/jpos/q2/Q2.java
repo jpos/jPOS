@@ -420,7 +420,16 @@ public class Q2 implements FileFilter, Runnable {
                 doc=decrypt(builder.build(f));
             }
 
-            Object obj = factory.instantiate (this, doc.getRootElement ());
+            Element rootElement = doc.getRootElement();
+            String iuuid = rootElement.getAttributeValue ("instance");
+            if (iuuid != null) {
+                UUID uuid = UUID.fromString(iuuid);
+                if (!uuid.equals (getInstanceId())) {
+                    deleteFile (f, iuuid);
+                    return false;
+                }
+            }
+            Object obj = factory.instantiate (this, rootElement);
             qentry.setObject (obj);
 
             ObjectInstance instance = factory.createQBean (
@@ -562,11 +571,12 @@ public class Q2 implements FileFilter, Runnable {
         SAXBuilder builder = new SAXBuilder ();
         Document doc = builder.build (bundle);
         Iterator iter = doc.getRootElement().getChildren ().iterator ();
-        for (int i=0; iter.hasNext (); i += 5) {
-            deployElement ((Element) iter.next (), i, encrypt);
+        for (int i=1; iter.hasNext (); i ++) {
+            Element e = (Element) iter.next();
+            deployElement (e, String.format ("%02d_%s.xml",i, e.getName()), encrypt, true);
         }
     }
-    private void deployElement (Element e, int i, boolean encrypt) 
+    private void deployElement (Element e, String fileName, boolean encrypt, boolean isTransient)
         throws ISOException, IOException, GeneralSecurityException
     {
         e = ((Element) e.clone ());
@@ -574,10 +584,11 @@ public class Q2 implements FileFilter, Runnable {
         XMLOutputter out = new XMLOutputter (Format.getPrettyFormat());
         Document doc = new Document ();
         doc.setRootElement (e);
-        File qbean = new File (
-            deployDir, ISOUtil.zeropad (Integer.toString (i),3) + "_" 
-            + e.getName () + ".xml"
-        );
+        File qbean = new File (deployDir, fileName);
+        if (isTransient) {
+            e.setAttribute("instance", getInstanceId().toString());
+            qbean.deleteOnExit();
+        }
         FileWriter writer = new FileWriter (qbean);
         if (encrypt)
             doc = encrypt (doc);
@@ -644,6 +655,11 @@ public class Q2 implements FileFilter, Runnable {
         }
         getLog().warn("Tidying "+f.getAbsolutePath()+" out of the way, by adding ."+extension,"It will be called: "+rename.getAbsolutePath()+" see log above for detail of problem.");
         f.renameTo(rename);
+    }
+
+    private void deleteFile (File f, String iuuid) {
+        f.delete();
+        getLog().info (String.format ("Deleted transient descriptor %s (%s)", f.getAbsolutePath(), iuuid));
     }
 
     private void initConfigDecorator()
