@@ -1337,5 +1337,28 @@ public class ISOUtil {
             }
         }
     }
+    public static String millisToString (long millis) {
+        StringBuilder sb = new StringBuilder();
+        int ms = (int) (millis % 1000);
+        millis /= 1000;
+        int dd = (int) (millis/86400);
+        millis -= (dd * 86400);
+        int hh = (int) (millis/3600);
+        millis -= (hh * 3600);
+        int mm = (int) (millis/60);
+        millis -= (mm * 60);
+        int ss = (int) millis;
+        if (dd > 0) {
+            sb.append (Long.toString(dd));
+            sb.append ("d ");
+        }
+        sb.append (zeropad (hh, 2));
+        sb.append (':');
+        sb.append (zeropad (mm, 2));
+        sb.append (':');
+        sb.append (zeropad (ss, 2));
+        sb.append ('.');
+        sb.append (zeropad (ms, 3));
+        return sb.toString();
+    }
 }
-

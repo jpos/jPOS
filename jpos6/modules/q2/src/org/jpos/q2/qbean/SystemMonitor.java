@@ -18,6 +18,7 @@
 
 package org.jpos.q2.qbean;
 
+import org.jpos.iso.ISOUtil;
 import org.jpos.q2.QBeanSupport;
 import org.jpos.util.Loggeable;
 import org.jpos.util.Logger;
@@ -124,7 +125,9 @@ public class SystemMonitor extends QBeanSupport implements Runnable,
     public void dump(PrintStream p, String indent) {
         String newIndent = indent + "  ";
         Runtime r = Runtime.getRuntime();
-        p.println (indent+"<release>"+getServer().getRelease()+"</release>");
+        p.printf ("%s<release>%s</release>\n", indent, getServer().getVersionString());
+        p.printf ("%s<instance>%s</instance>\n", indent, getServer().getInstanceId().toString());
+        p.printf ("%s<uptime>%s</uptime>\n", indent, ISOUtil.millisToString(getServer().getUptime()));
         p.println(indent + "<memory>");
         p.println(newIndent + " freeMemory=" + r.freeMemory());
         p.println(newIndent + "totalMemory=" + r.totalMemory());
