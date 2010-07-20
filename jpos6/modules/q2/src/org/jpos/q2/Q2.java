@@ -496,9 +496,11 @@ public class Q2 implements FileFilter, Runnable {
         return System.currentTimeMillis() - startTime;
     }
     public void displayVersion () {
-        System.out.println (
-            "Q2 version: " +Q2_VERSION + " (" + Q2_REVISION + ")"
-        );
+        System.out.println (getVersionString());
+    }
+    public String getVersionString() {
+        return String.format ("jPOS %s r%s", getVersion(), getRevision());
+
     }
     private void parseCmdLine (String[] args) {
         CommandLineParser parser = new PosixParser ();
@@ -690,7 +692,7 @@ public class Q2 implements FileFilter, Runnable {
         return Q2_VERSION;
     }
     public String getRevision() {
-        return Q2_REVISION;
+        return Q2_REVISION.split(" ")[1];
     }
     public String getDate() {
         return Q2_DATE;
