@@ -57,7 +57,7 @@
         <format property="subversion" pattern="yyyy.MM.dd.hh.mm.ss"/>
       </tstamp>
       <tstamp>
-        <format property="date" pattern="yyyy.MM.dd.hh.mm.ss"/>
+        <format property="date" pattern="yyyy-MM-dd hh:mm:ss"/>
       </tstamp>
       <echo 
        message="Build ${Name}-${version}.${subversion}"/>
@@ -155,6 +155,7 @@
 
     <target name="modules" depends="prepare, copy-lib">
       <filter filtersfile="${filter.properties}" />
+      <filter token="date" value="${date}" />
       <copy todir="${build.modules}" flatten="false" filtering="false">
         <fileset dir="${modules.dir}" includesfile="${modules.include.list}" />
       </copy>
