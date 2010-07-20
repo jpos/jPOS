@@ -81,16 +81,18 @@ public class Q2 implements FileFilter, Runnable {
     private long startTime;
     private CLI cli;
     private boolean recursive;
-    ConfigDecorationProvider decorator=null;
+    private ConfigDecorationProvider decorator=null;
+    private UUID instanceId;
 
     public Q2 (String[] args) {
         super();
         this.args = args;
-        parseCmdLine (args);
-        this.libDir     = new File (deployDir, "lib");
-        this.dirMap     = new TreeMap ();
-        deployDir.mkdirs ();
         startTime = System.currentTimeMillis();
+        instanceId = UUID.randomUUID();
+        parseCmdLine (args);
+        libDir     = new File (deployDir, "lib");
+        dirMap     = new TreeMap ();
+        deployDir.mkdirs ();
         mainClassLoader = Thread.currentThread().getContextClassLoader();
     }
     public Q2 () {
@@ -107,6 +109,7 @@ public class Q2 implements FileFilter, Runnable {
     }
     public void run () {
         started = true;
+        Thread.currentThread().setName ("Q2-"+getInstanceId().toString());
         try {
             /*
             * The following code determines whether a MBeanServer exists 
@@ -497,6 +500,9 @@ public class Q2 implements FileFilter, Runnable {
     }
     public void displayVersion () {
         System.out.println (getVersionString());
+    }
+    public UUID getInstanceId() {
+        return instanceId;
     }
     public String getVersionString() {
         return String.format ("jPOS %s r%s", getVersion(), getRevision());
