@@ -340,9 +340,7 @@ public class Q2 implements FileFilter, Runnable {
         boolean modified = false;
         if (name != null) {
             try {
-                modified = (
-                    (Boolean) server.getAttribute (name, "Modified")
-                ).booleanValue();
+                modified = (Boolean) server.getAttribute(name, "Modified");
             } catch (Exception e) {
                 // Okay to fail
             }
