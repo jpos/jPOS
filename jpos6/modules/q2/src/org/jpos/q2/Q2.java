@@ -237,8 +237,8 @@ public class Q2 implements FileFilter, Runnable {
                 // Shutting down might be best, how to trigger from within?
                 throw new Error("Deploy directory \""+deployDir.getAbsolutePath()+"\" is not available");
             } else {
-                for (int i=0; i<file.length; i++) {
-                    if (register (file[i]))
+                for (File f : file) {
+                    if (register(f))
                         rc = true;
                 }
             }
