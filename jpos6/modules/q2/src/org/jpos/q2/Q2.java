@@ -576,7 +576,7 @@ public class Q2 implements FileFilter, Runnable {
             deployElement (e, String.format ("%02d_%s.xml",i, e.getName()), encrypt, true);
         }
     }
-    private void deployElement (Element e, String fileName, boolean encrypt, boolean isTransient)
+    public void deployElement (Element e, String fileName, boolean encrypt, boolean isTransient)
         throws ISOException, IOException, GeneralSecurityException
     {
         e = ((Element) e.clone ());
