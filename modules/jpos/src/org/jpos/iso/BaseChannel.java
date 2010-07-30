@@ -1020,7 +1020,8 @@ public abstract class BaseChannel extends Observable
     private void closeSocket() throws IOException {
         if (socket != null) {
             try {
-                socket.setSoLinger (true, 0);
+                socket.setSoLinger (false);
+                socket.shutdownOutput();  // This will force a TCP FIN to be sent.
             } catch (SocketException e) {
                 // safe to ignore - can be closed already
                 // e.printStackTrace();
