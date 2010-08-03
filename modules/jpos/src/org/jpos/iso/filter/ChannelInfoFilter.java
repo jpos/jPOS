@@ -56,13 +56,8 @@ public class ChannelInfoFilter implements ISOFilter, Configurable {
 
     public ISOMsg filter (ISOChannel channel, ISOMsg m, LogEvent evt) {
         try {
-            
-            if (channelNameField > 0){
-                if (m instanceof ISOMsg)
-                    m.set (channelNameField, channel.getName());
-                if (m instanceof FSDISOMsg)
-                    ((FSDISOMsg) m).getFSDMsg().set(Integer.toString(channelNameField), channel.getName());
-            }
+            if (channelNameField > 0)
+                m.set (Integer.toString(channelNameField), channel.getName());
             if (socketInfoField > 0 && channel instanceof BaseChannel) {
                 Socket socket = ((BaseChannel)channel).getSocket();
                 InetSocketAddress remoteAddr = 
@@ -82,10 +77,7 @@ public class ChannelInfoFilter implements ISOFilter, Configurable {
                 sb.append (remoteAddr.getAddress().getHostAddress());
                 sb.append (':');
                 sb.append (Integer.toString (remoteAddr.getPort()));
-                if (m instanceof ISOMsg)
-                    m.set (socketInfoField, sb.toString());
-                if (m instanceof FSDISOMsg)
-                    ((FSDISOMsg) m).getFSDMsg().set(Integer.toString(socketInfoField), sb.toString());
+                m.set (Integer.toString(socketInfoField), sb.toString());
             }
         } catch (ISOException e) {
             evt.addMessage (e);
