@@ -124,6 +124,10 @@ public class FSDISOMsg extends ISOMsg implements Cloneable  {
             super.setResponseMTI();
         } catch (ISOException ignored) { }               
     }
+    public void set (String name, String value) {
+        if (value != null)
+            this.fsd.set (name, value);
+    }   
     private static final long serialVersionUID = 1L;
 }
 
