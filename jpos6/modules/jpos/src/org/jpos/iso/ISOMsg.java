@@ -581,12 +581,11 @@ public class ISOMsg extends ISOComponent
             try {
                 Object obj = getValue(fldno);
                 if (obj instanceof String)
-                    b = ((String) obj).getBytes();
+                    b = ((String) obj).getBytes("ISO8859_1");
                 else if (obj instanceof byte[])
                     b = ((byte[]) obj);
-            } catch (ISOException e) {
-                // ignore ISOException - return null
-            }
+            } catch (ISOException ignored) {
+            } catch (UnsupportedEncodingException ignored) {}
         }
         return b;
     }
@@ -600,12 +599,11 @@ public class ISOMsg extends ISOComponent
         try {
             Object obj = getValue(fpath);
             if (obj instanceof String)
-                b = ((String) obj).getBytes();
+                b = ((String) obj).getBytes("ISO8859_1");
             else if (obj instanceof byte[])
                 b = ((byte[]) obj);
-        } catch (ISOException e) {
-            // ignore ISOException - return null
-        }
+        } catch (ISOException ignored) {
+        } catch (UnsupportedEncodingException ignored) { }
         return b;
     }
     /**
