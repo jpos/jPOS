@@ -20,7 +20,7 @@ package org.jpos.iso;
 
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
-import org.jpos.core.ReConfigurable;
+import org.jpos.core.Configurable;
 import org.jpos.util.LogSource;
 import org.jpos.util.Logger;
 
@@ -33,7 +33,7 @@ import org.jpos.util.Logger;
  * @author Jose Eduardo Leon
  * @version 1.0
  */
-public class ISOBaseValidator implements ISOValidator, LogSource, ReConfigurable {
+public class ISOBaseValidator implements ISOValidator, LogSource, Configurable {
 
     public ISOBaseValidator() {
         super();

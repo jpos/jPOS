@@ -31,7 +31,7 @@ import java.util.TimeZone;
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
  * @version $Revision$ $Date$
  */
-public class MacroFilter implements ISOFilter, ReConfigurable {
+public class MacroFilter implements ISOFilter, Configurable {
     Sequencer seq;
     Configuration cfg;
     int[] unsetFields  = new int[0];

@@ -18,9 +18,9 @@
 
 package  org.jpos.security;
 
+import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
-import org.jpos.core.ReConfigurable;
 import org.jpos.iso.ISOUtil;
 import org.jpos.util.LogEvent;
 import org.jpos.util.LogSource;
@@ -41,7 +41,7 @@ import java.util.Properties;
  * @see java.util.Properties
  */
 public class SimpleKeyFile
-        implements SecureKeyStore, ReConfigurable, LogSource  {
+        implements SecureKeyStore, Configurable, LogSource  {
     Properties props = new Properties();
     File file;
     String header = "Key File";

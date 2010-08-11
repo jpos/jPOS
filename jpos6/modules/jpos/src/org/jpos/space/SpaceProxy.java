@@ -20,7 +20,7 @@ package org.jpos.space;
 
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
-import org.jpos.core.ReConfigurable;
+import org.jpos.core.Configurable;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -38,7 +38,7 @@ import java.util.Set;
  * @version $Revision$ $Date$
  * @since 1.4.9
  */
-public class SpaceProxy implements RemoteSpace, ReConfigurable {
+public class SpaceProxy implements RemoteSpace, Configurable {
     Space sp;
     Configuration cfg;
     private RemoteRef ref;

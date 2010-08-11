@@ -18,9 +18,9 @@
 
 package org.jpos.iso;
 
+import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
-import org.jpos.core.ReConfigurable;
 import org.jpos.util.SimpleLogSource;
 
 import javax.net.ssl.*;
@@ -48,7 +48,7 @@ import java.security.Security;
  */
 public class SunJSSESocketFactory 
         extends SimpleLogSource 
-        implements ISOServerSocketFactory,ISOClientSocketFactory,ReConfigurable
+        implements ISOServerSocketFactory,ISOClientSocketFactory, Configurable
 { 
 
     private SSLContext sslc=null;

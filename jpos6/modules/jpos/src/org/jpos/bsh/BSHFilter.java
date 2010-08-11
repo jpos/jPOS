@@ -20,9 +20,9 @@ package org.jpos.bsh;
 
 import bsh.Interpreter;
 import bsh.TargetError;
+import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
-import org.jpos.core.ReConfigurable;
 import org.jpos.iso.ISOChannel;
 import org.jpos.iso.ISOMsg;
 import org.jpos.iso.RawIncomingFilter;
@@ -33,7 +33,7 @@ import org.jpos.util.LogEvent;
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
  * @version $Revision$ $Date$
  */
-public class BSHFilter implements RawIncomingFilter, ReConfigurable {
+public class BSHFilter implements RawIncomingFilter, Configurable {
     Configuration cfg;
     public BSHFilter () {
         super();

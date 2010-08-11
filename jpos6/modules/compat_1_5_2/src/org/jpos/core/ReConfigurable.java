@@ -24,7 +24,8 @@ package org.jpos.core;
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
  * @version $Revision$ $Date$
  * @since jPOS 1.2
+ * @deprecated use just Configurable
  */
+
 public interface ReConfigurable extends Configurable {
 }
-

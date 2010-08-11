@@ -18,21 +18,17 @@
 
 package org.jpos.q2.iso;
 
+import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
-import org.jpos.core.ReConfigurable;
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOMsg;
 import org.jpos.iso.ISOResponseListener;
 
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.*;
-import java.util.Set;
 
 /**
  * RMI QMUX Proxy
@@ -42,11 +38,8 @@ import java.util.Set;
  * @version $Revision: 2854 $ $Date: 2010-01-02 10:34:31 +0000 (Sat, 02 Jan 2010) $
  * @since 1.4.9
  */
-public class QMUXProxy implements RemoteQMUX, ReConfigurable {
-    
+public class QMUXProxy implements RemoteQMUX, Configurable {
     QMUX qmux;
-
-    Configuration cfg;
     private RemoteRef ref;
     private RemoteStub stub;
     public QMUXProxy (QMUX qmux) throws RemoteException {
@@ -54,8 +47,7 @@ public class QMUXProxy implements RemoteQMUX, ReConfigurable {
         this.qmux = qmux;
         startService ();
     }
-
-    private void startService () throws RemoteException 
+    private void startService () throws RemoteException
     {
         try {
             LocateRegistry.createRegistry (Registry.REGISTRY_PORT);
@@ -65,25 +57,17 @@ public class QMUXProxy implements RemoteQMUX, ReConfigurable {
         stub = UnicastRemoteObject.exportObject (this);
         ref  = stub.getRef();
     }
-
-     @Override
     public boolean isConnected() {
         return qmux.isConnected();
     }
-
-    @Override
     public ISOMsg request(ISOMsg m, long timeout) throws ISOException {
         return qmux.request(m, timeout);
     }
-
-    @Override
     public void request(ISOMsg m, long timeout, ISOResponseListener rl,
             Object handBack) throws ISOException {
         qmux.request(m, timeout, rl, handBack);
         
     }
-
-    @Override
     public void setConfiguration(Configuration cfg)
             throws ConfigurationException {
         qmux.setConfiguration(cfg);

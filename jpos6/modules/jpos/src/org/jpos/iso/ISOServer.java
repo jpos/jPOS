@@ -21,7 +21,6 @@ package org.jpos.iso;
 import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
-import org.jpos.core.ReConfigurable;
 import org.jpos.util.*;
 
 import java.io.EOFException;
@@ -39,7 +38,7 @@ import java.util.*;
  * @version $Revision$ $Date$
  */
 public class ISOServer extends Observable 
-    implements LogSource, Runnable, Observer, ISOServerMBean, ReConfigurable,
+    implements LogSource, Runnable, Observer, ISOServerMBean, Configurable,
     Loggeable
 {
     int port;

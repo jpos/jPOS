@@ -19,9 +19,9 @@
 package org.jpos.bsh;
 
 import bsh.Interpreter;
+import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
-import org.jpos.core.ReConfigurable;
 import org.jpos.iso.ISOMsg;
 import org.jpos.iso.ISORequestListener;
 import org.jpos.iso.ISOSource;
@@ -36,7 +36,7 @@ import java.util.HashSet;
  * @version $Revision$ $Date$
  */
 public class BSHRequestListener extends Log 
-    implements ISORequestListener, ReConfigurable 
+    implements ISORequestListener, Configurable
 {
     protected static final String MTI_MACRO = "$mti";
     protected HashSet whitelist;

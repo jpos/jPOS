@@ -20,7 +20,7 @@ package org.jpos.iso;
 
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
-import org.jpos.core.ReConfigurable;
+import org.jpos.core.Configurable;
 import org.jpos.iso.validator.ISOVException;
 
 /**
@@ -32,7 +32,7 @@ import org.jpos.iso.validator.ISOVException;
  * @author Jose Eduardo Leon
  * @version 1.0
  */
-public class ISOFieldValidator implements ReConfigurable, ISOValidator {
+public class ISOFieldValidator implements Configurable, ISOValidator {
 
     public ISOFieldValidator( ) {
         description = "";
@@ -165,7 +165,7 @@ public class ISOFieldValidator implements ReConfigurable, ISOValidator {
             else
                 f = new ISOVField( f, e );
             if ( breakOnError )
-                throw new ISOVException ( "Error on field " + ((Integer)f.getKey()).intValue(), f );
+                throw new ISOVException ( "Error on field " + (Integer) f.getKey(), f );
         }
         return f;
     }
