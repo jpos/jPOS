@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.jpos.bsh;
+package org.jpos.transaction.participant;
 
 import org.jpos.core.ConfigurationException;
 import org.jpos.transaction.GroupSelector;

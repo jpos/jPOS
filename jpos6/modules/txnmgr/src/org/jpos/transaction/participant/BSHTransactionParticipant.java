@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.jpos.bsh;
+package org.jpos.transaction.participant;
 
 import bsh.EvalError;
 import org.jdom.Element;
