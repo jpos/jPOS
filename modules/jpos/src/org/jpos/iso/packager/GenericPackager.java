@@ -20,7 +20,7 @@ package org.jpos.iso.packager;
 
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
-import org.jpos.core.ReConfigurable;
+import org.jpos.core.Configurable;
 import org.jpos.iso.*;
 import org.jpos.util.Logger;
 import org.jpos.util.LogSource;
@@ -79,7 +79,7 @@ import java.util.Stack;
 
 @SuppressWarnings("unchecked")
 public class GenericPackager 
-    extends ISOBasePackager implements ReConfigurable
+    extends ISOBasePackager implements Configurable
 {
    /* Values copied from ISOBasePackager
       These can be changes using attributes on the isopackager node */ 

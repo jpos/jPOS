@@ -18,9 +18,9 @@
 
 package  org.jpos.security;
 
+import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
-import org.jpos.core.ReConfigurable;
 import org.jpos.iso.ISOUtil;
 import org.jpos.util.*;
 import org.jpos.util.NameRegistrar.NotFoundException;
@@ -37,7 +37,7 @@ import org.jpos.util.NameRegistrar.NotFoundException;
  * @version $Revision$ $Date$
  */
 public class BaseSMAdapter
-        implements SMAdapter, ReConfigurable, LogSource {
+        implements SMAdapter, Configurable, LogSource {
     protected Logger logger = null;
     protected String realm = null;
     protected Configuration cfg;

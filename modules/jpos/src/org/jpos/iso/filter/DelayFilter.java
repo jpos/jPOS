@@ -18,8 +18,8 @@
 
 package org.jpos.iso.filter;
 
+import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
-import org.jpos.core.ReConfigurable;
 import org.jpos.iso.ISOChannel;
 import org.jpos.iso.ISOFilter;
 import org.jpos.iso.ISOMsg;
@@ -31,7 +31,7 @@ import org.jpos.util.LogEvent;
  * slow down an ISOChannel. Usefull while
  * debugging an application or simulating a server
  */
-public class DelayFilter implements ISOFilter, ReConfigurable {
+public class DelayFilter implements ISOFilter, Configurable {
     int delay;
     public DelayFilter() {
         super();

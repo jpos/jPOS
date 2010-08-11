@@ -18,9 +18,9 @@
 
 package org.jpos.iso.filter;
 
+import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
-import org.jpos.core.ReConfigurable;
 import org.jpos.iso.*;
 import org.jpos.util.LogEvent;
 
@@ -39,7 +39,7 @@ import java.util.StringTokenizer;
  * @since 1.2.8
  * @see org.jpos.iso.ISOFilter
  */
-public class MD5Filter implements ISOFilter, ReConfigurable {
+public class MD5Filter implements ISOFilter, Configurable {
     String key;
     int[] fields;
 

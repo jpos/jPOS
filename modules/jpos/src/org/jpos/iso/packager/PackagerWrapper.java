@@ -21,7 +21,6 @@ package org.jpos.iso.packager;
 import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
-import org.jpos.core.ReConfigurable;
 import org.jpos.iso.ISOComponent;
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOPackager;
@@ -35,7 +34,7 @@ import org.jpos.util.Logger;
  * @see ISOPackager
  */
 public abstract class PackagerWrapper 
-    implements ISOPackager, LogSource, ReConfigurable
+    implements ISOPackager, LogSource, Configurable
 {
     protected Logger logger = null;
     protected String realm = null;
