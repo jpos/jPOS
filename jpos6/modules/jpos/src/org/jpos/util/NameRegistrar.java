@@ -108,7 +108,7 @@ public class NameRegistrar implements Loggeable {
                     entry.getKey().toString() + ": " +
                     obj.getClass().getName()
                 );
-                if ((detail == true) && (obj instanceof Loggeable)) {
+                if (detail && obj instanceof Loggeable) {
                     ((Loggeable)obj).dump(p, inner+"  ");
                 }
             }
