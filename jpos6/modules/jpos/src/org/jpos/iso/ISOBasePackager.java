@@ -184,13 +184,14 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
      */
     public int unpack (ISOComponent m, byte[] b) throws ISOException {
         LogEvent evt = new LogEvent (this, "unpack");
+        int consumed = 0;
+
         try {
             if (m.getComposite() != m) 
                 throw new ISOException ("Can't call packager on non Composite");
             if (logger != null)  // save a few CPU cycle if no logger available
                 evt.addMessage (ISOUtil.hexString (b));
 
-            int consumed = 0;
             
             // if ISOMsg and headerLength defined 
             if (m instanceof ISOMsg /*&& ((ISOMsg) m).getHeader()==null*/ && headerLength>0) 
@@ -252,9 +253,15 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
                         m.set(c);
                     }
                 } catch (ISOException e) {
-                    System.out.println("error unpacking field "+i);
-                    e.printStackTrace(System.out);
+                    evt.addMessage (
+                        "error unpacking field " + i + " consumed=" + consumed
+                    );
                     evt.addMessage (e);
+                    // jPOS-3
+                    e = new ISOException (
+                        String.format ("%s(%s) unpacking field=%d, consumed=%d",
+                        e.getMessage(), e.getNested().toString(), i, consumed)
+                    );
                     throw e;
                 }
             }
@@ -268,9 +275,8 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
             evt.addMessage (e);
             throw e;
         } catch (Exception e) {
-            e.printStackTrace();
             evt.addMessage (e);
-            throw new ISOException (e);
+            throw new ISOException (e.getMessage() + " consumed=" + consumed);
         } finally {
             Logger.log (evt);
         }
