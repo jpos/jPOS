@@ -44,6 +44,7 @@ public class QMUX
     implements SpaceListener, MUX, QMUXMBean, Loggeable
 {
     final String nomap = "0123456789";
+    private boolean headerIsKey;
     protected LocalSpace sp;
     protected String in, out, unhandled;
     protected String[] ready;
@@ -171,6 +172,11 @@ public class QMUX
         StringBuffer sb = new StringBuffer (out);
         sb.append ('.');
         sb.append (mapMTI(m.getMTI()));
+        if (headerIsKey && m.getHeader()!=null) {
+            sb.append ('.');
+            sb.append(ISOUtil.hexString(m.getHeader()));
+            sb.append ('.');
+        }
         for (int i=0; i<key.length; i++) {
             int f = key[i];
             String v = m.getString(f);
@@ -377,16 +383,27 @@ public class QMUX
     {
         if (s == null || s.length() == 0)
             s = "41, 11";
-        try {
-            int[] k = null;
-            StringTokenizer st = new StringTokenizer (s, ", ");
-            k = new int[st.countTokens()];
-            for (int i=0; st.hasMoreTokens(); i++)
-                k[i] = Integer.parseInt(st.nextToken());
-            return k;
-        } catch (NumberFormatException e) {
-            throw new ConfigurationException (e);
+
+        StringTokenizer st = new StringTokenizer (s, ", ");
+        List<Integer> l = new ArrayList<Integer>();
+        for (int i=0; st.hasMoreTokens(); i++){
+            String nt = st.nextToken();
+            if ("header".equalsIgnoreCase(nt)) {
+                headerIsKey = true;
+            } else {
+                try {
+                    l.add(Integer.parseInt(nt));
+                } catch (NumberFormatException e) {
+                    throw new ConfigurationException (e);
+                }
+            }
         }
+        int[] k = new int[l.size()];
+        int i=0;
+        for (int f : l) {
+            k[i++] = f;
+        }
+        return k;
     }
     private boolean shouldIgnore (ISOMsg m) {
         if (m != null && ignorerc != null 
