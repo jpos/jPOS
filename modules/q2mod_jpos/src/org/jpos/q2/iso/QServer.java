@@ -306,7 +306,6 @@ public class QServer
         throw new ConfigurationException ("Invalid space " + uri);
     }
 
-    @Override
     /*
      * This method will be invoked through the SpaceListener interface we registered once
      * we noticed we had an 'in' queue.
@@ -327,7 +326,6 @@ public class QServer
         
     }
 
-    @Override
     /*
      * This method will be invoke through the ISORequestListener interface, *if*
      * this QServer has an 'out' queue to handle.
