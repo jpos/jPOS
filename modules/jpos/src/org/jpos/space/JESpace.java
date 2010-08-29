@@ -38,6 +38,7 @@ import com.sleepycat.persist.model.Relationship;
 
 import org.jpos.util.Log;
 import org.jpos.util.DefaultTimer;
+import org.jpos.util.Loggeable;
 
 /**
  * BerkeleyDB Jave Edition based persistent space implementation
@@ -45,7 +46,7 @@ import org.jpos.util.DefaultTimer;
  * @author Alejandro Revilla
  * @since 1.6.5
  */
-public class JESpace<K,V> extends Log implements Space<K,V> {
+public class JESpace<K,V> extends Log implements Space<K,V>, Loggeable {
     Environment dbe = null;
     EntityStore store = null;
     PrimaryIndex<Long, Ref> pIndex = null;
@@ -420,7 +421,52 @@ public class JESpace<K,V> extends Log implements Space<K,V> {
 
         }
     }
+    
+    public void dump(PrintStream p, String indent) {
+        Transaction txn = null;
+        EntityCursor<Ref> cursor = null;
+        int count = 0;
+        try {
+            txn = dbe.beginTransaction (null, null);
+            cursor = sIndex.entities(txn, null);
+            String key = null;
+            int keyCount = 0;
+            for (Ref ref : cursor) {
+                if (ref.getKey().equals(key)) {
+                    keyCount++;
+                } else {
+                    if (key != null) {
+                        dumpKey (p, indent, key, keyCount);
+                        count++;
+                    }
+                    keyCount = 1;
+                    key = ref.getKey().toString();
+                }
+            }
+            if (key != null) {
+                dumpKey (p, indent, key, keyCount);
+                count++;
+            }
+            p.println(indent+"<keycount>"+count+"</keycount>");
+            cursor.close(); cursor = null;
+            txn.commit(); txn = null;
+        } catch (IllegalStateException e) {
+            //Empty Cursor
+            p.println(indent+"<keycount>0</keycount>");
+        } finally {
+            if (cursor != null)
+                cursor.close ();
+            if (txn != null)
+                txn.abort();
+        }
+    }
 
+    private void dumpKey (PrintStream p, String indent, String key, int count) {
+        if (count > 0)
+            p.printf ("%s<key size='%d'>%s</key>\n", indent, count, key);
+        else
+            p.printf ("%s<key>%s</key>\n", indent, key);
+    }
 
     @Entity
     public static class GCRef {
