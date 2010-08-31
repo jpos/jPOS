@@ -44,12 +44,13 @@ public class QMUX
     implements SpaceListener, MUX, QMUXMBean, Loggeable
 {
     final String nomap = "0123456789";
+    final String DEFAULT_KEY = "41, 11";
     private boolean headerIsKey;
     protected LocalSpace sp;
     protected String in, out, unhandled;
     protected String[] ready;
     protected String spaceName;
-    protected int[] key;
+    protected String[] key;
     protected String ignorerc;
     protected String[] mtiMapping;
     List listeners;
@@ -65,7 +66,7 @@ public class QMUX
         in        = e.getChildTextTrim ("in");
         out       = e.getChildTextTrim ("out");
         ignorerc  = e.getChildTextTrim ("ignore-rc");
-        key       = toIntArray(e.getChildTextTrim ("key"));
+        key = toStringArray(e.getChildTextTrim("key"), ", ", DEFAULT_KEY);
         ready     = toStringArray(e.getChildTextTrim ("ready"));
         mtiMapping = toStringArray(e.getChildTextTrim ("mtimapping"));
         if (mtiMapping == null || mtiMapping.length != 3) 
@@ -177,23 +178,22 @@ public class QMUX
             sb.append(ISOUtil.hexString(m.getHeader()));
             sb.append ('.');
         }
-        for (int i=0; i<key.length; i++) {
-            int f = key[i];
+
+        for (int i = 0; i < key.length; i++) {
+            String f = key[i];
             String v = m.getString(f);
             if (v != null) {
-                switch (f) {
-                    case 11:
-                        String vt = v.trim();
-                        int l = m.getMTI().charAt(0)=='2' ? 12 : 6;
-                        if (vt.length() < l)
-                            v = ISOUtil.zeropad (vt, l);
-                        break;
-                    case 41:
-                        v = ISOUtil.zeropad (v.trim(), 16); // BIC ANSI to ISO hack
-                        break;
+                if ("11".equals(f)) {
+                    String vt = v.trim();
+                    int l = m.getMTI().charAt(0) == '2' ? 12 : 6;
+                    if (vt.length() < l)
+                        v = ISOUtil.zeropad(vt, l);
                 }
-                sb.append (v);
+                if ("41".equals(f)) {
+                    v = ISOUtil.zeropad(v.trim(),16); // BIC ANSI to ISO hack
+                }
             }
+            sb.append(v);
         }
         return sb.toString();
     }
@@ -368,15 +368,24 @@ public class QMUX
     public void dump (PrintStream p, String indent) {
         p.println (indent + getCountersAsString());
     }
-    private String[] toStringArray (String s) {
-        String[] ready = null;
+    private String[] toStringArray(String s, String delimiter, String def) {
+        if (s == null)
+            s = def;
+        String[] arr = null;
         if (s != null && s.length() > 0) {
-            StringTokenizer st = new StringTokenizer (s);
-            ready = new String[st.countTokens()];
-            for (int i=0; st.hasMoreTokens(); i++)
-                ready[i] = st.nextToken();
+            StringTokenizer st;
+            if (delimiter != null)
+                st = new StringTokenizer(s, delimiter);
+            else
+                st = new StringTokenizer(s);
+            arr = new String[st.countTokens()];
+            for (int i = 0; st.hasMoreTokens(); i++)
+                arr[i] = st.nextToken();
         }
-        return ready;
+        return arr;
+    }
+    private String[] toStringArray(String s) {
+        return toStringArray(s, null,null);
     }
     private int[] toIntArray (String s) 
         throws ConfigurationException
