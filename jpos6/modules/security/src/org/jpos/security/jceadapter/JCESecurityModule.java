@@ -320,15 +320,8 @@ public class JCESecurityModule extends BaseSMAdapter {
     SecureDESKey formKEYfromThreeClearComponents (short keyLength, String keyType,
             String clearComponent1HexString, String clearComponent2HexString, String clearComponent3HexString) throws SMException {
         SecureDESKey secureDESKey;
-        SimpleMsg[] cmdParameters =  {
-            new SimpleMsg("parameter", "Key Length", keyLength),
-            new SimpleMsg("parameter", "Key Type", keyType),
-            new SimpleMsg("parameter", "Clear Componenent 1", clearComponent1HexString),
-            new SimpleMsg("parameter", "Clear Componenent 2", clearComponent2HexString),
-            new SimpleMsg("parameter", "Clear Componenent 3", clearComponent3HexString)
-        };
         LogEvent evt = new LogEvent(this, "s-m-operation");
-        evt.addMessage(new SimpleMsg("command", "Form Key from Three Clear Components", cmdParameters));
+        
         try {
             byte[] clearComponent1 = ISOUtil.hex2byte(clearComponent1HexString);
             byte[] clearComponent2 = ISOUtil.hex2byte(clearComponent2HexString);
@@ -338,6 +331,14 @@ public class JCESecurityModule extends BaseSMAdapter {
             Key clearKey = null;
             clearKey = jceHandler.formDESKey(keyLength, clearKeyBytes);
             secureDESKey = encryptToLMK(keyLength, keyType, clearKey);
+            SimpleMsg[] cmdParameters =  {
+                new SimpleMsg("parameter", "Key Length", keyLength),
+                new SimpleMsg("parameter", "Key Type", keyType),
+                new SimpleMsg("parameter", "Component 1 Check Value", calculateKeyCheckValue(jceHandler.formDESKey(keyLength, clearComponent1))),
+                new SimpleMsg("parameter", "Component 2 Check Value", calculateKeyCheckValue(jceHandler.formDESKey(keyLength, clearComponent2))),
+                new SimpleMsg("parameter", "Component 3 Check Value", calculateKeyCheckValue(jceHandler.formDESKey(keyLength, clearComponent3)))
+            };                        
+            evt.addMessage(new SimpleMsg("command", "Form Key from Three Clear Components", cmdParameters));            
             evt.addMessage(new SimpleMsg("result", "Formed Key", secureDESKey));
         } catch (JCEHandlerException e) {
             evt.addMessage(e);
