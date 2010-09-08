@@ -50,8 +50,10 @@ public class ChannelAdaptor
     long delay;
     boolean keepAlive = false;
     boolean ignoreISOExceptions = false;
+    boolean writeOnly = false;
     int rx, tx, connects;
     long lastTxn = 0l;
+    long timeout = 0l;
     public ChannelAdaptor () {
         super ();
         resetCounters();
@@ -72,6 +74,9 @@ public class ChannelAdaptor
 
         keepAlive = "yes".equalsIgnoreCase (persist.getChildTextTrim ("keep-alive"));
         ignoreISOExceptions = "yes".equalsIgnoreCase (persist.getChildTextTrim ("ignore-iso-exceptions"));
+        writeOnly = "yes".equalsIgnoreCase (getPersist().getChildTextTrim ("write-only"));
+        String t = persist.getChildTextTrim("timeout");
+        timeout = t != null && t.length() > 0 ? Long.parseLong(t) : 0l;
         
         String socketFactoryString = getSocketFactory();
         if (socketFactoryString != null && channel instanceof FactoryChannel) {
@@ -92,7 +97,7 @@ public class ChannelAdaptor
         try {
             initChannel ();
             new Thread (new Sender ()).start ();
-            if (!"yes".equalsIgnoreCase (getPersist().getChildTextTrim ("write-only"))) // fixes #426
+            if (!writeOnly) // fixes #426 && jPOS-20
                 new Thread (new Receiver ()).start ();
         } catch (Exception e) {
             getLog().warn ("error starting service", e);
@@ -297,7 +302,10 @@ public class ChannelAdaptor
                     ISOMsg m = channel.receive ();
                     rx++;
                     lastTxn = System.currentTimeMillis();
-                    sp.out (out, m);
+                    if (timeout > 0)
+                        sp.out (out, m, timeout);
+                    else
+                        sp.out (out, m);
                 } catch (ISOException e) {
                     if (running()) {
                         getLog().warn ("channel-receiver-"+out, e);
