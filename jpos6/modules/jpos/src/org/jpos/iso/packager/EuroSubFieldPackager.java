@@ -60,17 +60,17 @@ public class EuroSubFieldPackager extends ISOBasePackager
             Map tab = c.getChildren();
             ArrayList l = new ArrayList();
 
-            // Handle first IF_CHAR field
-            ISOField f0 = (ISOField) tab.get (new Integer(0));
+            // Handle first field
+            ISOComponent f0 = (ISOComponent) tab.get (new Integer(0));
             if (f0 != null) {
-                String s = (String) f0.getValue();
-                len += s.length();
-                l.add (fld[0].pack (f0));
+               byte[] b = fld[0].pack(f0);
+               len += b.length;
+               l.add (b);
             }
             for (int i =1; i<fld.length; i++) {
                 Object obj = tab.get (new Integer(i));
-                if (obj instanceof ISOField) {
-                    ISOField f = (ISOField) obj;
+                if (obj instanceof ISOComponent) {
+                    ISOComponent f = (ISOComponent) obj;
                     byte[] b = fld[i].pack(f);
                     len += b.length;
                     l.add (b);
@@ -94,7 +94,7 @@ public class EuroSubFieldPackager extends ISOBasePackager
     public int unpack (ISOComponent m, byte[] b) throws ISOException
     {
         LogEvent evt = new LogEvent (this, "unpack");
-        // Unpack the IF_CHAR field
+        // Unpack first field
         int consumed = 0;
         ISOComponent c;
         if (fld[0] != null) {
