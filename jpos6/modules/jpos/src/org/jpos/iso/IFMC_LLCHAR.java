@@ -29,77 +29,21 @@ package org.jpos.iso;
  * </code>
  *
  * @author Alejandro Revilla
+ * @author Robert Demski
  * @version $Id$
  * @see IFEP_LLCHAR
  */
-public class IFMC_LLCHAR extends ISOFieldPackager {
+public class IFMC_LLCHAR extends ISOTagStringFieldPackager {
     public IFMC_LLCHAR() {
-        super();
+        super(0, null, AsciiPrefixer.LL, NullPadder.INSTANCE,
+                AsciiInterpreter.INSTANCE, AsciiPrefixer.LL);
     }
     /**
      * @param len - field len
      * @param description symbolic descrption
      */
     public IFMC_LLCHAR (int len, String description) {
-        super(len, description);
-    }
-    /**
-     * @param c - a component
-     * @return packed component
-     * @exception ISOException
-     */
-    public byte[] pack (ISOComponent c) throws ISOException {
-        int len;
-        String s = (String) c.getValue();
-    
-        if ((len=s.length()) > getLength() || len>97)   // paranoia settings
-            throw new ISOException (
-                "invalid len "+len +" packing IFMC_LLCHAR field "
-                +(Integer) c.getKey() + " maxlen=" + getLength()
-            );
-
-        return (
-            ISOUtil.zeropad(((Integer) c.getKey()).toString(), 2) 
-           +ISOUtil.zeropad(Integer.toString(len), 2) 
-           +s
-        ).getBytes();
-    }
-
-    /**
-     * @param c - the Component to unpack
-     * @param b - binary image
-     * @param offset - starting offset within the binary image
-     * @return consumed bytes
-     * @exception ISOException
-     */
-    public int unpack (ISOComponent c, byte[] b, int offset)
-        throws ISOException
-    {
-        if (!(c instanceof ISOField))
-            throw new ISOException 
-                (c.getClass().getName() + " is not an ISOField");
-        int len = Integer.parseInt(new String(b, offset+2, 2));
-        ((ISOField)c).setFieldNumber (
-            Integer.parseInt(new String(b, offset, 2))
-        );
-        c.setValue (new String (b, offset+4, len));
-        return len + 4;
-    }
-    public void unpack (ISOComponent c, InputStream in) 
-        throws IOException, ISOException
-    {
-
-        if (!(c instanceof ISOField))
-            throw new ISOException 
-                (c.getClass().getName() + " is not an ISOField");
-
-        int fldno = Integer.parseInt(new String(readBytes (in, 2)));
-        int len   = Integer.parseInt(new String(readBytes (in, 2)));
-        ((ISOField)c).setFieldNumber (fldno);
-        c.setValue (new String (readBytes (in, len)));
-    }
-
-    public int getMaxPackedLength() {
-        return getLength() + 4;
+        super(len, description, AsciiPrefixer.LL, NullPadder.INSTANCE,
+                AsciiInterpreter.INSTANCE, AsciiPrefixer.LL);
     }
 }
