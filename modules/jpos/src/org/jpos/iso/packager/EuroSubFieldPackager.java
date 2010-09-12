@@ -23,7 +23,9 @@ import org.jpos.util.LogEvent;
 import org.jpos.util.Logger;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * EuroPay SubField packager
@@ -37,51 +39,41 @@ import java.util.Map;
  * such as field 48.
  */
 public class EuroSubFieldPackager extends ISOBasePackager
-{ 
-    /** 
-     * Default constructor
-     */
-    public EuroSubFieldPackager()
-    {
-        super();
-    }
+{
+    protected static Prefixer tagPrefixer = AsciiPrefixer.LL;
 
     /**
      * Always return false
      */
+    @Override
     protected boolean emitBitMap()
     {
         return false;
     }
 
+    @Override
     public byte[] pack (ISOComponent c) throws ISOException {
         try {
             int len =0;
             Map tab = c.getChildren();
-            ArrayList l = new ArrayList();
+            List<byte[]> l = new ArrayList();
 
-            // Handle first field
-            ISOComponent f0 = (ISOComponent) tab.get (new Integer(0));
-            if (f0 != null) {
-               byte[] b = fld[0].pack(f0);
-               len += b.length;
-               l.add (b);
-            }
-            for (int i =1; i<fld.length; i++) {
-                Object obj = tab.get (new Integer(i));
-                if (obj instanceof ISOComponent) {
-                    ISOComponent f = (ISOComponent) obj;
+            for (Map.Entry e: (Set<Map.Entry>)tab.entrySet()){
+                Integer i = (Integer)e.getKey();
+                if (fld[i] == null)
+                    throw new ISOException ("Unsupported sub-field " + i + " packing field " + c.getKey());
+                if (e.getValue() instanceof ISOComponent) {
+                    ISOComponent f = (ISOComponent) e.getValue();
                     byte[] b = fld[i].pack(f);
                     len += b.length;
                     l.add (b);
-                } 
+                }
             }
             int k=0;
             byte[] d = new byte[len];
-            for (int i=0; i<l.size(); i++) {
-                byte[] b = (byte[]) l.get(i);
-                for (int j=0; j<b.length; j++)
-                    d[k++] = b[j];
+            for (byte[] b :l) {
+                System.arraycopy(b, 0, d, k, b.length);
+                k =+ b.length;
             }
             return d;
         }
@@ -91,21 +83,17 @@ public class EuroSubFieldPackager extends ISOBasePackager
         }
     }
 
+    @Override
     public int unpack (ISOComponent m, byte[] b) throws ISOException
     {
         LogEvent evt = new LogEvent (this, "unpack");
-        // Unpack first field
         int consumed = 0;
         ISOComponent c;
-        if (fld[0] != null) {
-            c = fld[0].createComponent(0);
-            consumed += fld[0].unpack (c, b, consumed);
-            m.set(c);
-        }
 
-        // Now unpack the fields
+        // Unpack the fields
         while (consumed < b.length) {
-            int i = Integer.parseInt(new String(b, consumed, 2));
+            //Determine current tag
+            int i = consumed==0&&fld[0]!=null?0:tagPrefixer.decodeLength(b, consumed);
 
             if (fld[i] == null)
                 throw new ISOException ("Unsupported sub-field " + i + " unpacking field " + m.getKey());
