@@ -18,17 +18,32 @@
 
 package org.jpos.iso;
 
-public class IFEMC_LLCHAR extends ISOTagStringFieldPackager {
-    public IFEMC_LLCHAR() {
+/**
+ * Similar to Europay format, but instead of LLTT it's TTLLL
+ * <code>
+ * Format TTLLL....
+ * Where 
+ *       TT  is the 2 digit field number (Tag)
+ *       LLL is the 3 digit field length
+ *       ..  is the field content
+ * </code>
+ *
+ * @author Alejandro Revilla
+ * @author Robert Demski
+ * @version $Id: IFMC_LLLCHAR.java 2854 2010-01-02 10:34:31Z apr $
+ * @see IFEP_LLCHAR
+ */
+public class IFMC_LLLCHAR extends ISOTagStringFieldPackager {
+    public IFMC_LLLCHAR() {
         super(0, null, AsciiPrefixer.LL, NullPadder.INSTANCE,
-                EbcdicInterpreter.INSTANCE, AsciiPrefixer.LL);
+                AsciiInterpreter.INSTANCE, AsciiPrefixer.LLL);
     }
     /**
      * @param len - field len
      * @param description symbolic descrption
      */
-    public IFEMC_LLCHAR (int len, String description) {
+    public IFMC_LLLCHAR (int len, String description) {
         super(len, description, AsciiPrefixer.LL, NullPadder.INSTANCE,
-                EbcdicInterpreter.INSTANCE, AsciiPrefixer.LL);
+                AsciiInterpreter.INSTANCE, AsciiPrefixer.LLL);
     }
 }

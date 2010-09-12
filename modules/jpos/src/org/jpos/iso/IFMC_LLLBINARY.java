@@ -19,20 +19,20 @@
 package org.jpos.iso;
 
 /**
- * Binary version of IFMC_LLCHAR
+ * Binary version of IFMC_LLLCHAR
  * 
  * @author Robert Demski
- * @see IFMC_LLCHAR 
+ * @see IFMC_LLLCHAR 
  */
-public class IFMC_LLBINARY extends ISOTagBinaryFieldPackager {
+public class IFMC_LLLBINARY extends ISOTagBinaryFieldPackager {
 
-    public IFMC_LLBINARY() {
+    public IFMC_LLLBINARY() {
         super(0,null, AsciiPrefixer.LL, NullPadder.INSTANCE,
-                LiteralBinaryInterpreter.INSTANCE, AsciiPrefixer.LL);
+                LiteralBinaryInterpreter.INSTANCE, AsciiPrefixer.LLL);
     }
 
-    public IFMC_LLBINARY (int len, String description) {
+    public IFMC_LLLBINARY (int len, String description) {
          super(len, description, AsciiPrefixer.LL, NullPadder.INSTANCE,
-                 LiteralBinaryInterpreter.INSTANCE, AsciiPrefixer.LL);
+                 LiteralBinaryInterpreter.INSTANCE, AsciiPrefixer.LLL);
     }
 }

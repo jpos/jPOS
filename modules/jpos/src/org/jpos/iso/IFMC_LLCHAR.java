@@ -17,8 +17,6 @@
  */
 
 package org.jpos.iso;
-import java.io.IOException;
-import java.io.InputStream;
 
 /**
  * Similar to Europay format, but instead of LLTT it's TTLL
