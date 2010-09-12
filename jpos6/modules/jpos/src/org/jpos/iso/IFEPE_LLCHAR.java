@@ -18,9 +18,6 @@
 
 package org.jpos.iso;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 /*
  * vim:set ts=8 sw=4:
  */
@@ -36,13 +33,15 @@ import java.io.InputStream;
  * 
  * @author <a href="mailto:eoin.flood@orbiscom.com">Eoin Flood</a>
  * @author <a href="mailto:marksalter@talktalk.net">Mark Salter</a>
+ * @author Robert Demski
  * 
  * @version $Id: IFEP_LLCHAR.java 2706 2009-03-05 11:24:43Z apr $
  * @see ISOComponent
  */
-public class IFEPE_LLCHAR extends ISOFieldPackager {
+public class IFEPE_LLCHAR extends ISOTagStringFieldPackager {
     public IFEPE_LLCHAR() {
-        super();
+        super(0, null, EbcdicPrefixer.LL, NullPadder.INSTANCE,
+                EbcdicInterpreter.INSTANCE, EbcdicPrefixer.LL);
     }
 
     /**
@@ -52,83 +51,8 @@ public class IFEPE_LLCHAR extends ISOFieldPackager {
      *            symbolic descrption
      */
     public IFEPE_LLCHAR(int len, String description) {
-        super(len, description);
+        super(len, description, EbcdicPrefixer.LL, NullPadder.INSTANCE,
+                EbcdicInterpreter.INSTANCE, EbcdicPrefixer.LL);
     }
 
-    /**
-     * @param c
-     *            - a component
-     * @return packed component
-     * @exception ISOException
-     */
-    public byte[] pack(ISOComponent c) throws ISOException {
-        int len;
-        String s = (String) c.getValue();
-
-        if ((len = s.length()) > getLength() || len > 97) // paranoia settings
-            throw new ISOException("invalid len " + len
-                    + " packing IFEPE_LLCHAR field " + (Integer) c.getKey());
-
-        return ISOUtil.asciiToEbcdic(ISOUtil.zeropad(((Integer) c
-                .getKey()).toString(), 2)
-                + ISOUtil.zeropad(Integer.toString(len ), 2) + s);
-    }
-
-    /**
-     * @param c
-     *            - the Component to unpack
-     * @param b
-     *            - binary image
-     * @param offset
-     *            - starting offset within the binary image
-     * @return consumed bytes
-     * @exception ISOException
-     */
-    public int unpack(ISOComponent c, byte[] b, int offset) throws ISOException {
-
-        byte[] length = new byte[2];
-        System.arraycopy(b, offset+2, length, 0, 2);
-        int len = Integer.parseInt(new String(ISOUtil.ebcdicToAscii(length)));
-
-        if (!(c instanceof ISOField))
-            throw new ISOException(c.getClass().getName()
-                    + " is not an ISOField");
-
-        String content = ISOUtil.ebcdicToAscii(b, offset + 4, len);
-
-        byte[] fieldId = new byte[2];
-        System.arraycopy(b, offset, fieldId, 0, 2);
-        int fieldNumber = Integer.parseInt(new String(ISOUtil
-                .ebcdicToAscii(fieldId)));
-
-        ((ISOField) c).setFieldNumber(fieldNumber);
-
-        c.setValue(content);
-
-        return len + 2 + 2;
-    }
-
-    public void unpack(ISOComponent c, InputStream in) throws IOException,
-            ISOException {
-
-        if (!(c instanceof ISOField))
-            throw new ISOException(c.getClass().getName()
-                    + " is not an ISOField");
-
-        byte[] fieldId = readBytes(in, 2);
-        int fieldNumber = Integer.parseInt(new String(ISOUtil
-                .ebcdicToAscii(fieldId)));
-
-        byte[] len = readBytes(in, 2);
-        int length = Integer.parseInt(new String(ISOUtil.ebcdicToAscii(len)));
-
-        String content = ISOUtil.ebcdicToAscii(readBytes(in, length));
-
-        ((ISOField) c).setFieldNumber(fieldNumber);
-        c.setValue(content.substring(2));
-    }
-
-    public int getMaxPackedLength() {
-        return getLength() + 2;
-    }
 }
