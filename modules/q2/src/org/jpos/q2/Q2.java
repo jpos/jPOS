@@ -54,6 +54,7 @@ public class Q2 implements FileFilter, Runnable {
     public static final String LOGGER_NAME         = "Q2";
     public static final String REALM               = "Q2.system"; 
     public static final String LOGGER_CONFIG       = "00_logger.xml";
+    public static final String SYSMON_CONFIG       = "99_sysmon.xml";
     public static final String QBEAN_NAME          = "Q2:type=qbean,service=";
     public static final String Q2_CLASS_LOADER     = "Q2:type=system,service=loader";
     public static final String DUPLICATE_EXTENSION = "DUP";
