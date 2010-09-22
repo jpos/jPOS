@@ -410,7 +410,7 @@ public class Q2 implements FileFilter, Runnable {
             if (log != null)
                 log.info ("deploy:" + f.getCanonicalPath());
             QEntry qentry = (QEntry) dirMap.get (f);
-            SAXBuilder builder = new SAXBuilder ();
+            SAXBuilder builder = createSAXBuilder();
             Document doc;
             if(decorator!=null && !f.getName().equals(LOGGER_CONFIG))
             {
@@ -569,7 +569,7 @@ public class Q2 implements FileFilter, Runnable {
         throws JDOMException, IOException, 
                 ISOException, GeneralSecurityException
     {
-        SAXBuilder builder = new SAXBuilder ();
+        SAXBuilder builder = createSAXBuilder();
         Document doc = builder.build (bundle);
         Iterator iter = doc.getRootElement().getChildren ().iterator ();
         for (int i=1; iter.hasNext (); i ++) {
@@ -642,7 +642,7 @@ public class Q2 implements FileFilter, Runnable {
                         ISOUtil.hex2byte (data.getTextTrim()),
                         Cipher.DECRYPT_MODE)
                 );
-                SAXBuilder builder = new SAXBuilder ();
+                SAXBuilder builder = createSAXBuilder();
                 doc = builder.build (is);
             }
         }
@@ -705,6 +705,12 @@ public class Q2 implements FileFilter, Runnable {
 
     private void setExit (boolean exit) {
         this.exit = exit;
+    }
+    private SAXBuilder createSAXBuilder () {
+        SAXBuilder builder = new SAXBuilder ();
+        builder.setFeature("http://xml.org/sax/features/namespaces", true);
+        builder.setFeature("http://apache.org/xml/features/xinclude", true);
+        return builder;
     }
     public static void main (String[] args) throws Exception {
         Q2 q2 = new Q2(args);
