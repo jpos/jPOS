@@ -21,6 +21,7 @@ package  org.jpos.security;
 import org.jpos.iso.ISOUtil;
 
 import java.io.PrintStream;
+import java.util.StringTokenizer;
 
 /**
  * <p>
@@ -52,8 +53,32 @@ public class SecureDESKey extends SecureKey {
      */
     protected byte[] keyCheckValue = null;
 
+    protected Byte variant;
+
+    protected KeyScheme scheme;
+
     public SecureDESKey() {
         super();
+    }
+
+    /**
+     * Constructs an SecureDESKey
+     * @param keyLength e.g. LENGTH_DES, LENGTH_DES3_2KEY, LENGTH_DES3_3KEY
+     * @param keyType
+     * @param variant
+     * @param scheme
+     * @param keyBytes DES Key in the secure proprietary format of your security module
+     * @param keyCheckValue
+     * @see SMAdapter
+     */
+    public SecureDESKey (short keyLength, String keyType, byte variant, KeyScheme scheme, byte[] keyBytes,
+            byte[] keyCheckValue) {
+        setKeyLength(keyLength);
+        setKeyType(keyType);
+        setVariant(variant);
+        setScheme(scheme);
+        setKeyBytes(keyBytes);
+        setKeyCheckValue(keyCheckValue);
     }
 
     /**
@@ -70,6 +95,8 @@ public class SecureDESKey extends SecureKey {
         setKeyType(keyType);
         setKeyBytes(keyBytes);
         setKeyCheckValue(keyCheckValue);
+        getVariant(); //only for set variant with defaults
+        getScheme();  //only set scheme with defaults
     }
 
     /**
@@ -82,6 +109,18 @@ public class SecureDESKey extends SecureKey {
     public SecureDESKey (short keyLength, String keyType, String keyHexString,
             String keyCheckValueHexString) {
         this(keyLength, keyType, ISOUtil.hex2byte(keyHexString), ISOUtil.hex2byte(keyCheckValueHexString));
+    }
+
+    /**
+     * Constructs an SecureDESKey
+     * @param keyLength
+     * @param keyType
+     * @param keyHexString secure key represented as HexString instead of byte[]
+     * @param keyCheckValueHexString key check value represented as HexString instead of byte[]
+     */
+    public SecureDESKey (short keyLength, String keyType, byte variant, KeyScheme scheme, String keyHexString,
+            String keyCheckValueHexString) {
+        this(keyLength, keyType, variant, scheme, ISOUtil.hex2byte(keyHexString), ISOUtil.hex2byte(keyCheckValueHexString));
     }
 
     /**
@@ -107,6 +146,65 @@ public class SecureDESKey extends SecureKey {
     }
 
     /**
+     * Key Type Variant is useful for stating whitch variant of key type should be used.
+     * ... TO COMPLITE ...<BR>
+     * @param variant
+     */
+    public void setVariant(byte variant){
+        this.variant = variant;
+    }
+
+    public byte getVariant () {
+        if (variant!=null)
+            return variant;
+        /**
+         * Some variant derivation if it hasn't been explicity stated
+         */
+        variant = 0;
+        StringTokenizer st = new StringTokenizer(keyType,":;");
+        if (st.hasMoreTokens())
+            st.nextToken();
+        if (st.hasMoreTokens())
+            try {
+                variant = Byte.valueOf(st.nextToken().substring(0,1));
+            } catch (Exception ex){}
+        return variant;
+    }
+
+    /**
+     * Key Type Scheme is useful for stating whitch scheme variant of key type should be used.
+     * ... TO COMPLITE ...<BR>
+     * @param variant
+     */
+    public void setScheme(KeyScheme scheme){
+        this.scheme = scheme;
+    }
+
+    public KeyScheme getScheme () {
+        if (scheme!=null)
+            return scheme;
+        /**
+         * Some scheme derivation if it hasn't been explicity stated
+         */
+        switch (keyLength){
+            case SMAdapter.LENGTH_DES:
+                scheme = KeyScheme.Z; break;
+            case SMAdapter.LENGTH_DES3_2KEY:
+                scheme = KeyScheme.X; break;
+            case SMAdapter.LENGTH_DES3_3KEY:
+                scheme = KeyScheme.Y; break;
+        }
+        StringTokenizer st = new StringTokenizer(keyType,":;");
+        if (st.hasMoreTokens())
+            st.nextToken();
+        if (st.hasMoreTokens())
+            try {
+                scheme = KeyScheme.valueOf(st.nextToken().substring(1,2));
+            } catch (Exception ex){}
+        return scheme;
+    }
+
+    /**
      * dumps SecureDESKey basic information
      * @param p a PrintStream usually supplied by Logger
      * @param indent indention string, usually suppiled by Logger
@@ -117,6 +215,8 @@ public class SecureDESKey extends SecureKey {
         p.print(indent + "<secure-des-key");
         p.print(" length=\"" + getKeyLength() + "\"");
         p.print(" type=\"" + keyType + "\"");
+        p.print(" variant=\"" + getVariant() + "\"");
+        p.print(" scheme=\"" + this.getScheme() + "\"");
         if (keyName != null)
             p.print(" name=\"" + keyName + "\"");
 

@@ -27,7 +27,8 @@ import javax.crypto.KeyGenerator;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.*;
-import java.util.Hashtable;
+import java.util.Map;
+import java.util.TreeMap;
 
 
 /**
@@ -281,7 +282,7 @@ public class JCEHandler {
      * @throws org.jpos.security.jceadapter.JCEHandlerException
      */
     Mac assignMACEngine(MacEngineKey engine) throws JCEHandlerException {
-        macEngines = macEngines==null?new Hashtable():macEngines;
+        macEngines = macEngines==null?new TreeMap():macEngines;
         if (macEngines.containsKey(engine)) {
           return (Mac)macEngines.get(engine);
         }
@@ -321,7 +322,7 @@ public class JCEHandler {
      * The JCE provider
      */
     Provider provider = null;
-    Hashtable macEngines = null;
+    Map macEngines = null;
     String desMode = "ECB";
     String desPadding = "NoPadding";
     

@@ -27,7 +27,6 @@ import org.jpos.util.Logger;
 import org.jpos.util.SimpleMsg;
 
 import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -35,8 +34,10 @@ import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.Provider;
 import java.security.Security;
-import java.util.Hashtable;
+import java.util.Map;
 import java.util.Properties;
+import java.util.StringTokenizer;
+import java.util.TreeMap;
 
 
 /**
@@ -60,6 +61,46 @@ import java.util.Properties;
  * @version $Revision$ $Date$
  */
 public class JCESecurityModule extends BaseSMAdapter {
+
+    /**
+     * NUmber of LMK pairs
+     */
+    private final static int LMK_PAIRS_NO = 0xe;
+
+    /**
+     * LMK variants appled to first byte of LMK pair
+     */
+    private final static int[] variants = {
+        0x00, 0xa6, 0x5a, 0x6a, 0xde, 0x2b, 0x50, 0x74, 0x9c,0xfa
+    };
+
+    /**
+     * LMK scheme variants appiled to first byte of second key in pair
+     */
+    private final static int[] schemeVariants = {
+        0x00, 0xa6, 0x5a, 0x6a, 0xde, 0x2b
+    };
+
+    /**
+     * Index of scheme variant for left LMK key for double length keys
+     */
+    private final static int KEY_U_LEFT      = 1;
+    /**
+     * Index of scheme variant for right LMK key for double length keys
+     */
+    private final static int KEY_U_RIGHT     = 2;
+    /**
+     * Index of scheme variant for left LMK key for triple length keys
+     */
+    private final static int KEY_T_LEFT      = 3;
+    /**
+     * Index of scheme variant for middle LMK key for triple length keys
+     */
+    private final static int KEY_T_MEDIUM    = 4;
+    /**
+     * Index of scheme variant for right LMK key for triple length keys
+     */
+    private final static int KEY_T_RIGHT     = 5;
 
     /**
      * Creates an uninitialized JCE Security Module, you need to setConfiguration to initialize it
@@ -138,6 +179,47 @@ public class JCESecurityModule extends BaseSMAdapter {
         // Encrypt key under kek
         exportedKey = jceHandler.encryptDESKey(key.getKeyLength(), clearKey, decryptFromLMK(kek));
         return  exportedKey;
+    }
+
+    private int getKeyTypeIndex (short keyLength, String keyType) throws SMException {
+        int index = 0;
+        if (keyType==null)
+            return index;
+        StringTokenizer st = new StringTokenizer(keyType,":;");
+        if (st.hasMoreTokens()){
+           String majorType = st.nextToken();
+           Integer idx = keyTypeToLMKIndex.get(majorType);
+           if (idx==null)
+              throw new SMException("Unsupported key type: " + majorType);
+           index = idx;
+        }
+        if (st.hasMoreTokens())
+            try {
+                index |= Integer.valueOf(st.nextToken().substring(0,1)) << 8;
+            } catch (Exception ex){}
+        return index;
+    }
+
+    private static KeyScheme getScheme (int keyLength, String keyType) {
+        KeyScheme scheme = KeyScheme.Z;
+        switch (keyLength){
+            case SMAdapter.LENGTH_DES:
+                scheme = KeyScheme.Z; break;
+            case SMAdapter.LENGTH_DES3_2KEY:
+                scheme = KeyScheme.X; break;
+            case SMAdapter.LENGTH_DES3_3KEY:
+                scheme = KeyScheme.Y; break;
+        }
+        if (keyType==null)
+            return scheme;
+        StringTokenizer st = new StringTokenizer(keyType,":;");
+        if (st.hasMoreTokens())
+            st.nextToken();
+        if (st.hasMoreTokens())
+            try {
+                scheme = KeyScheme.valueOf(st.nextToken().substring(1,2));
+            } catch (Exception ex){}
+        return scheme;
     }
 
     public EncryptedPIN encryptPINImpl (String pin, String accountNumber) throws SMException {
@@ -369,10 +451,46 @@ public class JCESecurityModule extends BaseSMAdapter {
      * @throws SMException
      */
     private SecureDESKey encryptToLMK (short keyLength, String keyType, Key clearDESKey) throws SMException {
-        SecureDESKey secureDESKey = null;
-        byte[] encryptedKeyDataArray = jceHandler.encryptDESKey(keyLength, clearDESKey,
-                getLMK(keyType));
-        secureDESKey = new SecureDESKey(keyLength, keyType, encryptedKeyDataArray,
+        Key novar, left, medium, right;
+        byte[] clearKeyBytes = jceHandler.extractDESKeyMaterial(keyLength, clearDESKey);
+        byte[] bl = new byte[SMAdapter.LENGTH_DES>>3];
+        byte[] bm = new byte[SMAdapter.LENGTH_DES>>3];
+        byte[] br = new byte[SMAdapter.LENGTH_DES>>3];
+        byte[] encrypted = null;
+        // enforce correct (odd) parity before encrypting the key
+        Util.adjustDESParity(clearKeyBytes);
+        int lmkIndex = getKeyTypeIndex(keyLength, keyType);
+        switch ( getScheme(keyLength, keyType) ){
+            case Z:
+            case X:
+            case Y:
+                novar = getLMK( lmkIndex );
+                encrypted = jceHandler.encryptData(clearKeyBytes, novar);
+                break;
+            case U:
+                left  = getLMK( KEY_U_LEFT  << 12 | lmkIndex & 0xfff );
+                right = getLMK( KEY_U_RIGHT << 12 | lmkIndex & 0xfff );
+                System.arraycopy(clearKeyBytes, 0, bl, 0, bl.length);
+                System.arraycopy(clearKeyBytes, bl.length, br, 0, br.length);
+                bl = jceHandler.encryptData(bl, left);
+                br = jceHandler.encryptData(br, right);
+                encrypted = ISOUtil.concat(bl, br);
+                break;
+            case T:
+                left  = getLMK( KEY_T_LEFT   << 12 | lmkIndex & 0xfff );
+                medium= getLMK( KEY_T_MEDIUM << 12 | lmkIndex & 0xfff );
+                right = getLMK( KEY_T_RIGHT  << 12 | lmkIndex & 0xfff );
+                System.arraycopy(clearKeyBytes, 0, bl, 0, bl.length);
+                System.arraycopy(clearKeyBytes, bl.length, bm, 0, bm.length);
+                System.arraycopy(clearKeyBytes, bl.length+bm.length, br, 0, br.length);
+                bl = jceHandler.encryptData(bl, left);
+                bm = jceHandler.encryptData(bm, medium);
+                br = jceHandler.encryptData(br, right);
+                encrypted = ISOUtil.concat(bl, bm);
+                encrypted = ISOUtil.concat(encrypted, br);
+                break;
+        }
+        SecureDESKey secureDESKey = new SecureDESKey(keyLength, keyType, encrypted,
                 calculateKeyCheckValue(clearDESKey));
         return  secureDESKey;
     }
@@ -385,11 +503,50 @@ public class JCESecurityModule extends BaseSMAdapter {
      */
     private Key decryptFromLMK (SecureDESKey secureDESKey) throws SMException {
         Key key = null;
+        Key left, medium, right;
         byte[] keyBytes = secureDESKey.getKeyBytes();
-        short keyLength = secureDESKey.getKeyLength();
-        String keyType = secureDESKey.getKeyType();
-        key = jceHandler.decryptDESKey(keyLength, keyBytes, getLMK(keyType), true);
-        return  key;
+        byte[] bl = new byte[SMAdapter.LENGTH_DES>>3];
+        byte[] bm = new byte[SMAdapter.LENGTH_DES>>3];
+        byte[] br = new byte[SMAdapter.LENGTH_DES>>3];
+        byte[] clearKeyBytes = null;
+        Integer lmkIndex = getKeyTypeIndex(secureDESKey.getKeyLength(), secureDESKey.getKeyType());
+        if (lmkIndex==null)
+           throw new SMException("Unsupported key type: " + secureDESKey.getKeyType());
+        lmkIndex |= secureDESKey.getVariant()<<8;
+        switch ( secureDESKey.getScheme() ) {
+            case Z:
+            case X:
+            case Y:
+                clearKeyBytes = jceHandler.decryptData(keyBytes, getLMK( lmkIndex ));
+                break;
+            case U:
+                left  = getLMK( KEY_U_LEFT  << 12 | lmkIndex & 0xfff );
+                right = getLMK( KEY_U_RIGHT << 12 | lmkIndex & 0xfff );
+                System.arraycopy(keyBytes, 0, bl, 0, bl.length);
+                System.arraycopy(keyBytes, bl.length, br, 0, br.length);
+                bl = jceHandler.decryptData(bl, left);
+                br = jceHandler.decryptData(br, right);
+                clearKeyBytes = ISOUtil.concat(bl, br);
+                clearKeyBytes = ISOUtil.concat(clearKeyBytes, 0, clearKeyBytes.length, clearKeyBytes, 0, br.length );
+                break;
+            case T:
+                left  = getLMK( KEY_T_LEFT   << 12 | lmkIndex & 0xfff );
+                medium= getLMK( KEY_T_MEDIUM << 12 | lmkIndex & 0xfff );
+                right = getLMK( KEY_T_RIGHT  << 12 | lmkIndex & 0xfff );
+                System.arraycopy(keyBytes, 0, bl, 0, bl.length);
+                System.arraycopy(keyBytes, bl.length, bm, 0, bm.length);
+                System.arraycopy(keyBytes, bl.length+bm.length, br, 0, br.length);
+                bl = jceHandler.decryptData(bl, left);
+                bm = jceHandler.decryptData(bm, medium);
+                br = jceHandler.decryptData(br, right);
+                clearKeyBytes = ISOUtil.concat(bl, bm);
+                clearKeyBytes = ISOUtil.concat(clearKeyBytes, br);
+                break;
+        }
+        if (true && !Util.isDESParityAdjusted(clearKeyBytes))
+            throw new JCEHandlerException("Parity not adjusted");
+        key = jceHandler.formDESKey(secureDESKey.getKeyLength(), clearKeyBytes);
+        return key;
     }
 
     /**
@@ -536,17 +693,17 @@ public class JCESecurityModule extends BaseSMAdapter {
     private void init (String jceProviderClassName, String lmkFile, boolean lmkRebuild) throws SMException {
         File lmk = new File(lmkFile);
         try {
-            keyTypeToLMKIndex = new Hashtable();
-            keyTypeToLMKIndex.put(SMAdapter.TYPE_ZMK, new Integer(0));
-            keyTypeToLMKIndex.put(SMAdapter.TYPE_ZPK, new Integer(1));
-            keyTypeToLMKIndex.put(SMAdapter.TYPE_PVK, new Integer(2));
-            keyTypeToLMKIndex.put(SMAdapter.TYPE_TPK, new Integer(2));
-            keyTypeToLMKIndex.put(SMAdapter.TYPE_TMK, new Integer(2));
-            keyTypeToLMKIndex.put(SMAdapter.TYPE_TAK, new Integer(3));
-            keyTypeToLMKIndex.put(PINLMKIndex, new Integer(4));
-            keyTypeToLMKIndex.put(SMAdapter.TYPE_CVK, new Integer(5));
-            keyTypeToLMKIndex.put(SMAdapter.TYPE_ZAK, new Integer(8));
-            keyTypeToLMKIndex.put(SMAdapter.TYPE_BDK, new Integer(9));
+            keyTypeToLMKIndex = new TreeMap<String,Integer>();
+            keyTypeToLMKIndex.put(SMAdapter.TYPE_ZMK, 0x000);
+            keyTypeToLMKIndex.put(SMAdapter.TYPE_ZPK, 0x001);
+            keyTypeToLMKIndex.put(SMAdapter.TYPE_PVK, 0x002);
+            keyTypeToLMKIndex.put(SMAdapter.TYPE_TPK, 0x002);
+            keyTypeToLMKIndex.put(SMAdapter.TYPE_TMK, 0x002);
+            keyTypeToLMKIndex.put(SMAdapter.TYPE_TAK, 0x003);
+//            keyTypeToLMKIndex.put(PINLMKIndex,        0x004);
+            keyTypeToLMKIndex.put(SMAdapter.TYPE_CVK, 0x402);
+            keyTypeToLMKIndex.put(SMAdapter.TYPE_ZAK, 0x008);
+            keyTypeToLMKIndex.put(SMAdapter.TYPE_BDK, 0x009);
             Provider provider = null;
             LogEvent evt = new LogEvent(this, "jce-provider");
             try {
@@ -566,8 +723,6 @@ public class JCESecurityModule extends BaseSMAdapter {
                 Logger.log(evt);
             }
             jceHandler = new JCEHandler(provider);
-            // Load Local Master Keys
-            Properties lmkProps = new Properties();
             if (lmkRebuild) {
                 // Creat new LMK file
                 evt = new LogEvent(this, "local-master-keys");
@@ -606,28 +761,56 @@ public class JCESecurityModule extends BaseSMAdapter {
         }
     }
 
+    private byte[] applySchemeVariant(byte[] lmkdata, int variant){
+        byte[] vardata = new byte[lmkdata.length];
+        System.arraycopy(lmkdata, 0, vardata, 0, lmkdata.length);
+        //XOR first byte of second key with selected variant byte
+        vardata[8] ^= variant;
+        return vardata;
+    }
+
+    private byte[] applyVariant(byte[] lmkdata, int variant){
+        byte[] vardata = new byte[lmkdata.length];
+        System.arraycopy(lmkdata, 0, vardata, 0, lmkdata.length);
+        //XOR first byte of first key with selected variant byte
+        vardata[0] ^= variant;
+        return vardata;
+    }
+
+    private void spreadLMKVariants(byte[] lmkData, int idx) throws SMException {
+        int i = 0;
+        for (int v :variants){
+            int k = 0;
+            byte[] variantData = applyVariant(lmkData,v);
+            for (int sv :schemeVariants){
+                byte[] svData = applySchemeVariant(variantData,sv);
+//                System.out.println(String.format("LMK0x%1$d:%2$d:%3$02x=%4$s", k, i, idx
+//                        ,ISOUtil.hexString(svData)));
+                // make it 3 components to work with sun JCE
+                svData = ISOUtil.concat(
+                    svData, 0, jceHandler.getBytesLength(SMAdapter.LENGTH_DES3_2KEY),
+                    svData, 0, jceHandler.getBytesLength(SMAdapter.LENGTH_DES)
+                    );
+                int key = idx;
+                key += 0x100*i;
+                key += 0x1000*k++;
+                lmks.put(key, (SecretKey)jceHandler.formDESKey(SMAdapter.LENGTH_DES3_2KEY, svData));
+            }
+            i++;
+        }
+    }
+
     /**
      * Generates new LMK keys
      * @exception SMException
      */
     private void generateLMK () throws SMException {
-        LMK = new SecretKey[0x0f];
+        lmks.clear();
         try {
-            LMK[0x00] = (SecretKey)jceHandler.generateDESKey(LMK_KEY_LENGTH);
-            LMK[0x01] = (SecretKey)jceHandler.generateDESKey(LMK_KEY_LENGTH);
-            LMK[0x02] = (SecretKey)jceHandler.generateDESKey(LMK_KEY_LENGTH);
-            LMK[0x03] = (SecretKey)jceHandler.generateDESKey(LMK_KEY_LENGTH);
-            LMK[0x04] = (SecretKey)jceHandler.generateDESKey(LMK_KEY_LENGTH);
-            LMK[0x05] = (SecretKey)jceHandler.generateDESKey(LMK_KEY_LENGTH);
-            LMK[0x06] = (SecretKey)jceHandler.generateDESKey(LMK_KEY_LENGTH);
-            LMK[0x07] = (SecretKey)jceHandler.generateDESKey(LMK_KEY_LENGTH);
-            LMK[0x08] = (SecretKey)jceHandler.generateDESKey(LMK_KEY_LENGTH);
-            LMK[0x09] = (SecretKey)jceHandler.generateDESKey(LMK_KEY_LENGTH);
-            LMK[0x0a] = (SecretKey)jceHandler.generateDESKey(LMK_KEY_LENGTH);
-            LMK[0x0b] = (SecretKey)jceHandler.generateDESKey(LMK_KEY_LENGTH);
-            LMK[0x0c] = (SecretKey)jceHandler.generateDESKey(LMK_KEY_LENGTH);
-            LMK[0x0d] = (SecretKey)jceHandler.generateDESKey(LMK_KEY_LENGTH);
-            LMK[0x0e] = (SecretKey)jceHandler.generateDESKey(LMK_KEY_LENGTH);
+            for (int i = 0; i <= LMK_PAIRS_NO; i++){
+              SecretKey lmkKey = (SecretKey)jceHandler.generateDESKey(LMK_KEY_LENGTH);
+              spreadLMKVariants(lmkKey.getEncoded(), i);
+            }
         } catch (JCEHandlerException e) {
             throw  new SMException("Can't generate Local Master Keys", e);
         }
@@ -639,18 +822,17 @@ public class JCESecurityModule extends BaseSMAdapter {
      * @exception SMException
      */
     private void readLMK (File lmkFile) throws SMException {
-        LMK = new SecretKey[0x0f];
+        lmks.clear();
         try {
             Properties lmkProps = new Properties();
             FileInputStream in = new FileInputStream(lmkFile);
             lmkProps.load(in);
             in.close();
             byte[] lmkData;
-            for (int i = 0x00; i < 0x0f; i++) {
-                lmkData = ISOUtil.hex2byte(lmkProps.getProperty("LMK0x0" +
-                        Integer.toHexString(i)));
-                // provider-independent method
-                LMK[i] = new SecretKeySpec(lmkData, JCEHandler.ALG_TRIPLE_DES);
+            for (int i = 0; i <= LMK_PAIRS_NO; i++) {
+                lmkData = ISOUtil.hex2byte(lmkProps.getProperty(
+                        String.format("LMK0x%1$02x", i)).substring(0, SMAdapter.LENGTH_DES3_2KEY/4));
+                spreadLMKVariants(lmkData, i);
             }
         } catch (Exception e) {
             throw  new SMException("Can't read Local Master Keys from file: " +
@@ -666,8 +848,9 @@ public class JCESecurityModule extends BaseSMAdapter {
     private void writeLMK (File lmkFile) throws SMException {
         Properties lmkProps = new Properties();
         try {
-            for (int i = 0x00; i < 0x0f; i++) {
-                lmkProps.setProperty("LMK0x0" + Integer.toHexString(i), ISOUtil.hexString(LMK[i].getEncoded()));
+            for (int i = 0; i <= LMK_PAIRS_NO; i++) {
+                lmkProps.setProperty(String.format("LMK0x%1$02x", i),
+                        ISOUtil.hexString(lmks.get(i).getEncoded()));
             }
             FileOutputStream out = new FileOutputStream(lmkFile);
             lmkProps.store(out, "Local Master Keys");
@@ -679,37 +862,29 @@ public class JCESecurityModule extends BaseSMAdapter {
     }
 
     /**
-     * gets the suitable LMK for the key type
-     * @param keyType
-     * @return the LMK secret key for the givin key type
+     * gets the suitable LMK variant for the key index
+     * @param lmkIndex
+     * @return the lmks secret key for the givin key index
      * @throws SMException
      */
-    private SecretKey getLMK (String keyType) throws SMException {
-        //int lmkIndex = keyType;
-        if (!keyTypeToLMKIndex.containsKey(keyType)) {
-            throw  new SMException("Unsupported key type: " + keyType);
-        }
-        int lmkIndex = ((Integer)keyTypeToLMKIndex.get(keyType)).intValue();
-        SecretKey lmk = null;
-        try {
-            lmk = LMK[lmkIndex];
-        } catch (Exception e) {
-            throw  new SMException("Invalid key code: " + "LMK0x0" + Integer.toHexString(lmkIndex));
-        }
+    private SecretKey getLMK (Integer lmkIndex) throws SMException {
+        SecretKey lmk = lmks.get(lmkIndex);
+        if (lmk==null)
+            throw  new SMException(String.format("Invalid key code: LMK0x%1$04x", lmkIndex));
         return  lmk;
     }
     /**
      * maps a key type to an LMK Index
      */
-    private Hashtable keyTypeToLMKIndex;
+    private Map<String,Integer> keyTypeToLMKIndex;
     /**
      * The clear Local Master Keys
      */
-    private SecretKey[] LMK;
+    private Map<Integer,SecretKey> lmks = new TreeMap<Integer,SecretKey>();
     /**
-     * A name for the LMK used to encrypt the PINs
+     * A index for the LMK used to encrypt the PINs
      */
-    private static final String PINLMKIndex = "PIN";
+    private static final Integer PINLMKIndex = 0x004;
     /**
      * The key length (in bits) of the Local Master Keys.
      * JCESecurityModule uses Triple DES Local Master Keys
