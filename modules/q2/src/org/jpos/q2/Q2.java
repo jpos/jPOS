@@ -28,6 +28,7 @@ import org.jdom.output.XMLOutputter;
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOUtil;
 import org.jpos.util.Log;
+import org.jpos.util.LogEvent;
 import org.jpos.util.Logger;
 import org.jpos.util.SimpleLogListener;
 
@@ -54,7 +55,6 @@ public class Q2 implements FileFilter, Runnable {
     public static final String LOGGER_NAME         = "Q2";
     public static final String REALM               = "Q2.system"; 
     public static final String LOGGER_CONFIG       = "00_logger.xml";
-    public static final String SYSMON_CONFIG       = "99_sysmon.xml";
     public static final String QBEAN_NAME          = "Q2:type=qbean,service=";
     public static final String Q2_CLASS_LOADER     = "Q2:type=system,service=loader";
     public static final String DUPLICATE_EXTENSION = "DUP";
@@ -151,7 +151,7 @@ public class Q2 implements FileFilter, Runnable {
             if (cli != null)
                 cli.start();
             initConfigDecorator();
-            while (!shutdown) {
+            for (int i=0; !shutdown; i++) {
                 try {
                     boolean forceNewClassLoader = scan ();
                     QClassLoader oldClassLoader = loader;
@@ -168,6 +168,8 @@ public class Q2 implements FileFilter, Runnable {
                     deploy ();
                     checkModified ();
                     relax (SCAN_INTERVAL);
+                    if (i % (3600000 / SCAN_INTERVAL) == 0)
+                        logVersion();;
                 } catch (Throwable t) {
                     log.error ("start", t);
                     relax ();
@@ -702,7 +704,11 @@ public class Q2 implements FileFilter, Runnable {
             }
         }
     }
-
+    private void logVersion () {
+        LogEvent evt = getLog().createLogEvent ("version");
+        evt.addMessage (getVersionString());
+        Logger.log (evt);
+    }
     private void setExit (boolean exit) {
         this.exit = exit;
     }
