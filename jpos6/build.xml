@@ -256,6 +256,7 @@
        <fileset dir=".">
          <include name="README"/>
          <include name="LICENSE"/>
+         <include name="LICENSEE.asc"/>
          <include name="COPYRIGHT"/>
          <include name="build.xml"/>
          <include name="build.properties"/>
@@ -294,6 +295,7 @@
             </fileset>
             <fileset dir=".">
                 <include name="LICENSE"/>
+                <include name="LICENSEE.asc"/>
                 <include name="COPYRIGHT"/>
             </fileset>
         </copy>
