@@ -60,6 +60,7 @@ public class Q2 implements FileFilter, Runnable {
     public static final String DUPLICATE_EXTENSION = "DUP";
     public static final String ERROR_EXTENSION     = "BAD";
     public static final String ENV_EXTENSION       = "ENV";
+    public static final String LICENSEE            = "/LICENSEE.asc";
 
     public static final String PROTECTED_QBEAN        = "protected-qbean";
     public static final int SCAN_INTERVAL             = 2500;
@@ -169,7 +170,7 @@ public class Q2 implements FileFilter, Runnable {
                     checkModified ();
                     relax (SCAN_INTERVAL);
                     if (i % (3600000 / SCAN_INTERVAL) == 0)
-                        logVersion();;
+                        logVersion();
                 } catch (Throwable t) {
                     log.error ("start", t);
                     relax ();
@@ -517,8 +518,26 @@ public class Q2 implements FileFilter, Runnable {
         return instanceId;
     }
     public String getVersionString() {
-        return String.format ("jPOS %s r%s", getVersion(), getRevision());
-
+        return String.format ("jPOS %s r%s%s",
+            getVersion(), getRevision(), getLicensee()
+        );
+    }
+    public String getLicensee() {
+        InputStream is = getClass().getResourceAsStream(LICENSEE);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        if (is != null) {
+            BufferedReader br = new BufferedReader (new InputStreamReader(is));
+            PrintStream p = new PrintStream(baos);
+            p.println ();
+            p.println ();
+            try {
+                while (br.ready())
+                    p.println (br.readLine());
+            } catch (Exception e) {
+                e.printStackTrace(p);
+            }
+        }
+        return baos.toString();
     }
     private void parseCmdLine (String[] args) {
         CommandLineParser parser = new PosixParser ();
