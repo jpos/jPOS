@@ -49,7 +49,7 @@ import java.util.*;
 public class Q2 implements FileFilter, Runnable {
     public static final String Q2_VERSION          = "@version@";
     public static final String Q2_REVISION         = "@revision@";
-    public static final String Q2_DATE             = "@date@";
+    public static final String Q2_BUILD_DATE       = "@date@";
     public static final String DEFAULT_DEPLOY_DIR  = "deploy";
     public static final String JMX_NAME            = "Q2";
     public static final String LOGGER_NAME         = "Q2";
@@ -518,8 +518,8 @@ public class Q2 implements FileFilter, Runnable {
         return instanceId;
     }
     public String getVersionString() {
-        return String.format ("jPOS %s r%s%s",
-            getVersion(), getRevision(), getLicensee()
+        return String.format ("jPOS %s r%s (%s)%s",
+            getVersion(), getRevision(), getBuildDate(), getLicensee()
         );
     }
     public String getLicensee() {
@@ -748,8 +748,11 @@ public class Q2 implements FileFilter, Runnable {
     public String getRevision() {
         return Q2_REVISION.split(" ")[1];
     }
-    public String getDate() {
-        return Q2_DATE;
+    public String getBuildDate() {
+        return Q2_BUILD_DATE.split(" ")[0];
+    }
+    public String getBuildTime() {
+        return Q2_BUILD_DATE.split(" ")[1];
     }
     public String getRelease() {
         return getVersion() + " " + getRevision();
