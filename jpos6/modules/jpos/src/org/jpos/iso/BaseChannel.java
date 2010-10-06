@@ -522,7 +522,7 @@ public abstract class BaseChannel extends Observable
             ISOPackager p = getDynamicPackager(m);
             m.setPackager (p);
             m = applyOutgoingFilters (m, evt);
-            evt.addMessage (p);
+            evt.addMessage (m);
             m.setDirection(ISOMsg.OUTGOING); // filter may have dropped this info
             m.setPackager (p); // and could have dropped packager as well
             byte[] b = m.pack();
