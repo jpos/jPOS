@@ -60,6 +60,8 @@ public class EuroSubFieldPackager extends ISOBasePackager
 
             for (Map.Entry e: (Set<Map.Entry>)tab.entrySet()){
                 Integer i = (Integer)e.getKey();
+                if (i < 0)
+                    continue;
                 if (fld[i] == null)
                     throw new ISOException ("Unsupported sub-field " + i + " packing field " + c.getKey());
                 if (e.getValue() instanceof ISOComponent) {
