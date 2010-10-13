@@ -142,6 +142,7 @@ public class GenericSubFieldPackager extends GenericPackager
                         evt.addMessage ("error packing subfield "+i);
                         evt.addMessage (c);
                         evt.addMessage (e);
+                        throw e;
                     }
                 }
             }
