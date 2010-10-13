@@ -152,7 +152,7 @@ public class Q2 implements FileFilter, Runnable {
             if (cli != null)
                 cli.start();
             initConfigDecorator();
-            for (int i=0; !shutdown; i++) {
+            for (int i=1; !shutdown; i++) {
                 try {
                     boolean forceNewClassLoader = scan ();
                     QClassLoader oldClassLoader = loader;
@@ -517,13 +517,13 @@ public class Q2 implements FileFilter, Runnable {
     public UUID getInstanceId() {
         return instanceId;
     }
-    public String getVersionString() {
+    public static String getVersionString() {
         return String.format ("jPOS %s r%s (%s)%s",
             getVersion(), getRevision(), getBuildDate(), getLicensee()
         );
     }
-    public String getLicensee() {
-        InputStream is = getClass().getResourceAsStream(LICENSEE);
+    public static String getLicensee() {
+        InputStream is = Q2.class.getResourceAsStream(LICENSEE);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         if (is != null) {
             BufferedReader br = new BufferedReader (new InputStreamReader(is));
@@ -742,19 +742,19 @@ public class Q2 implements FileFilter, Runnable {
         q2.setExit (true);
         q2.start();
     }
-    public String getVersion() {
+    public static String getVersion() {
         return Q2_VERSION;
     }
-    public String getRevision() {
+    public static String getRevision() {
         return Q2_REVISION.split(" ")[1];
     }
-    public String getBuildDate() {
+    public static String getBuildDate() {
         return Q2_BUILD_DATE.split(" ")[0];
     }
-    public String getBuildTime() {
+    public static String getBuildTime() {
         return Q2_BUILD_DATE.split(" ")[1];
     }
-    public String getRelease() {
+    public static String getRelease() {
         return getVersion() + " " + getRevision();
     }
     public static class QEntry {
