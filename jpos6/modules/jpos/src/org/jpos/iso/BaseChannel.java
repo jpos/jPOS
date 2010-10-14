@@ -670,9 +670,9 @@ public abstract class BaseChannel extends Observable
             if (b.length > 0 && !shouldIgnore (header))  // Ignore NULL messages
                 unpack (m, b);
             m.setDirection(ISOMsg.INCOMING);
+            evt.addMessage (m);
             m = applyIncomingFilters (m, header, b, evt);
             m.setDirection(ISOMsg.INCOMING);
-            evt.addMessage (m);
             cnt[RX]++;
             setChanged();
             notifyObservers(m);
