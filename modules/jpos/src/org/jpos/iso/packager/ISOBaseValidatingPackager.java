@@ -23,7 +23,6 @@ import org.jpos.iso.validator.ISOVException;
 import org.jpos.util.LogEvent;
 import org.jpos.util.Logger;
 
-import java.util.Hashtable;
 import java.util.Map;
 
 /**
