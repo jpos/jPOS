@@ -117,7 +117,6 @@ public class ISODate {
      * try to find out suitable date given [YY[YY]]MMDDhhmmss format<br>
      * (difficult thing being finding out appropiate year)
      * @param d date formated as [YY[YY]]MMDDhhmmss, typical field 13 + field 12
-     * @param currentTime currentTime in millis
      * @return Date
      */
     public static Date parseISODate (String d) {
@@ -128,10 +127,34 @@ public class ISODate {
      * try to find out suitable date given [YY[YY]]MMDDhhmmss format<br>
      * (difficult thing being finding out appropiate year)
      * @param d date formated as [YY[YY]]MMDDhhmmss, typical field 13 + field 12
+     * @param timeZone for GMT for example, use TimeZone.getTimeZone("GMT")
+     *        and for Uruguay use TimeZone.getTimeZone("GMT-03:00")
+     * @return Date
+     */
+    public static Date parseISODate (String d, TimeZone timeZone) {
+        return parseISODate (d, System.currentTimeMillis(), timeZone);
+    }
+
+    /**
+     * try to find out suitable date given [YY[YY]]MMDDhhmmss format<br>
+     * (difficult thing being finding out appropiate year)
+     * @param d date formated as [YY[YY]]MMDDhhmmss, typical field 13 + field 12
      * @param currentTime currentTime in millis
      * @return Date
      */
     public static Date parseISODate (String d, long currentTime) {
+        return parseISODate (d, currentTime, TimeZone.getDefault() );
+    }
+    /**
+     * try to find out suitable date given [YY[YY]]MMDDhhmmss format<br>
+     * (difficult thing being finding out appropiate year)
+     * @param d date formated as [YY[YY]]MMDDhhmmss, typical field 13 + field 12
+     * @param currentTime currentTime in millis
+     * @param timeZone for GMT for example, use TimeZone.getTimeZone("GMT")
+     *        and for Uruguay use TimeZone.getTimeZone("GMT-03:00")
+     * @return Date
+     */
+    public static Date parseISODate (String d, long currentTime, TimeZone timeZone) {
         int YY = 0;
         if (d.length() == 14) {
             YY = Integer.parseInt(d.substring (0, 4));
@@ -148,6 +171,7 @@ public class ISODate {
         int ss = Integer.parseInt(d.substring (8,10));
 
         Calendar cal = new GregorianCalendar();
+        cal.setTimeZone(timeZone);
         Date now = new Date(currentTime);
 
         cal.setTime (now);
