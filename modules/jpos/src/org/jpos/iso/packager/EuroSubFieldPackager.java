@@ -53,30 +53,39 @@ public class EuroSubFieldPackager extends ISOBasePackager
 
     @Override
     public byte[] pack (ISOComponent c) throws ISOException {
+        LogEvent evt = new LogEvent (this, "pack");
         try {
             int len =0;
             Map tab = c.getChildren();
             List<byte[]> l = new ArrayList();
 
-            for (Map.Entry e: (Set<Map.Entry>)tab.entrySet()){
-                Integer i = (Integer)e.getKey();
+            for (Map.Entry ent: (Set<Map.Entry>)tab.entrySet()){
+                Integer i = (Integer)ent.getKey();
                 if (i < 0)
                     continue;
                 if (fld[i] == null)
                     throw new ISOException ("Unsupported sub-field " + i + " packing field " + c.getKey());
-                if (e.getValue() instanceof ISOComponent) {
-                    ISOComponent f = (ISOComponent) e.getValue();
-                    byte[] b = fld[i].pack(f);
-                    len += b.length;
-                    l.add (b);
-                }
+                if (ent.getValue() instanceof ISOComponent)
+                    try {
+                        ISOComponent f = (ISOComponent) ent.getValue();
+                        byte[] b = fld[i].pack(f);
+                        len += b.length;
+                        l.add (b);
+                    } catch (Exception e) {
+                        evt.addMessage ("error packing subfield "+i);
+                        evt.addMessage (c);
+                        evt.addMessage (e);
+                        throw e;
+                    }
             }
             int k=0;
             byte[] d = new byte[len];
             for (byte[] b :l) {
                 System.arraycopy(b, 0, d, k, b.length);
-                k =+ b.length;
+                k += b.length;
             }
+            if (logger != null)  // save a few CPU cycle if no logger available
+                evt.addMessage (ISOUtil.hexString (d));
             return d;
         }
         catch (Exception ex)

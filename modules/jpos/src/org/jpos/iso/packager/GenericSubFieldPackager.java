@@ -23,7 +23,8 @@ import org.jpos.util.LogEvent;
 import org.jpos.util.Logger;
 
 import java.util.BitSet;
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -111,18 +112,17 @@ public class GenericSubFieldPackager extends GenericPackager
         try 
         {
             ISOComponent c;
-            Vector v = new Vector();
+            List<byte[]> l = new ArrayList();
             Map fields = m.getChildren();
             int len = 0;
-            byte[] b;
 
             if (emitBitMap()) 
             {
                 // BITMAP (-1 in HashTable)
                 c = (ISOComponent) fields.get (new Integer(-1));
-                b = getBitMapfieldPackager().pack(c);
+                byte[] b = getBitMapfieldPackager().pack(c);
                 len += b.length;
-                v.addElement (b);
+                l.add(b);
             }
 
             for (int i=getFirstField(); i<=m.getMaxField(); i++) 
@@ -133,9 +133,9 @@ public class GenericSubFieldPackager extends GenericPackager
                 if (c != null) {
                     try 
                     {
-                        b = fld[i].pack(c);
+                        byte[] b = fld[i].pack(c);
                         len += b.length;
-                        v.addElement (b);
+                        l.add(b);
                     } 
                     catch (Exception e) 
                     {
@@ -148,11 +148,9 @@ public class GenericSubFieldPackager extends GenericPackager
             }
             int k = 0;
             byte[] d = new byte[len];
-            for (int i=0; i<v.size(); i++) 
-            {
-                b = (byte[]) v.elementAt(i);
-                for (int j=0; j<b.length; j++)
-                d[k++] = b[j];
+            for (byte[] b :l) {
+                System.arraycopy(b, 0, d, k, b.length);
+                k += b.length;
             }
             if (logger != null)  // save a few CPU cycle if no logger available
                 evt.addMessage (ISOUtil.hexString (d));

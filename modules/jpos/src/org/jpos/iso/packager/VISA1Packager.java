@@ -24,7 +24,8 @@ import org.jpos.util.Logger;
 import org.jpos.util.SimpleLogSource;
 
 import java.io.InputStream;
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author apr@cs.com.uy
@@ -62,25 +63,24 @@ public class VISA1Packager
     public void setVISA1ResponseFilter (VISA1ResponseFilter filter) {
         this.filter = filter;
     }
-    protected int handleSpecialField35 (ISOMsg m, Vector v) 
+    protected int handleSpecialField35 (ISOMsg m, List l) 
         throws ISOException
     {
         int len = 0;
         byte[] entryMode = new byte[1];
         if (m.hasField (35)) {
             entryMode[0] = (byte) '\001';
-            byte[] value = ((String)m.getValue(35)).getBytes();
-            v.addElement (entryMode);
-            v.addElement (value);
-            v.addElement (FS);
+            byte[] value = m.getString(35).getBytes();
+            l.add (entryMode);
+            l.add (value);
+            l.add (FS);
             len += value.length+2;
         } else if (m.hasField (2) && m.hasField (14)) {
             entryMode[0] = (byte) '\000';
-            String simulatedTrack2 = 
-                (String) m.getValue(2) + "=" + (String) m.getValue(14);
-            v.addElement (entryMode);
-            v.addElement (simulatedTrack2.getBytes());
-            v.addElement (FS);
+            String simulatedTrack2 = m.getString(2) + "=" + m.getString(14);
+            l.add (entryMode);
+            l.add (simulatedTrack2.getBytes());
+            l.add (FS);
             len += simulatedTrack2.length()+2;
         }
         return len;
@@ -96,23 +96,23 @@ public class VISA1Packager
             ISOMsg m = (ISOMsg) c;
 
             int len  = 0;
-            Vector v = new Vector();
+            List<byte[]> l = new ArrayList();
             for (int i=0; i<sequence.length; i++) {
                 int fld = sequence[i];
                 if (fld == 35) 
-                    len += handleSpecialField35 (m, v);
+                    len += handleSpecialField35 (m, l);
                 else if (m.hasField(fld)) {
                     byte[] value;
                     if (fld == 4) {
-                        long l = Long.parseLong (((String)m.getValue(4)));
-                        value = ISOUtil.formatAmount (l,12).trim().getBytes();
+                        long amt = Long.valueOf(m.getString(4));
+                        value = ISOUtil.formatAmount (amt,12).trim().getBytes();
                     }
                     else
-                        value = ((String)m.getValue(fld)).getBytes();
-                    v.addElement (value);
+                        value = m.getString(fld).getBytes();
+                    l.add(value);
                     len += value.length;
                     if (i < (sequence.length-1)) {
-                        v.addElement (FS);
+                        l.add(FS);
                         len++;
                     }
                 }
@@ -120,10 +120,9 @@ public class VISA1Packager
 
             int k = 0;
             byte[] d = new byte[len];
-            for (int i=0; i<v.size(); i++) {
-                byte[] b = (byte[]) v.elementAt(i);
-                for (int j=0; j<b.length; j++)
-                    d[k++] = b[j];
+            for (byte[] b :l) {
+                System.arraycopy(b, 0, d, k, b.length);
+                k += b.length;
             }
             if (logger != null)  // save a few CPU cycle if no logger available
                 evt.addMessage (ISOUtil.dumpString (d));
