@@ -33,6 +33,8 @@ import org.xml.sax.helpers.XMLReaderFactory;
 
 import java.io.InputStream;
 import java.util.*;
+import java.util.Map.Entry;
+import org.jpos.iso.ISOBaseValidator;
 
 
 /**
@@ -57,29 +59,24 @@ public class GenericValidatingPackager extends GenericPackager implements ISOVal
     }
 
     /**
-     * Convert the ISOFieldPackagers in the Hashtable
+     * Convert the ISOFieldPackagers in the Map
      * to an array of ISOFieldPackagers
      */
-    private ISOFieldPackager[] makeFieldArray(Hashtable tab)
+    private ISOFieldPackager[] makeFieldArray(Map<Integer,ISOFieldPackager> m)
     {
         int maxField = 0;
 
-        // First find the largest field number in the Hashtable
-        for (Enumeration e=tab.keys(); e.hasMoreElements(); )
-        {
-            int n = ((Integer)e.nextElement()).intValue();
-            if (n > maxField) maxField = n;
-        }
+        // First find the largest field number in the Map
+        for (Entry<Integer,ISOFieldPackager> ent :m.entrySet())
+            if (ent.getKey() > maxField)
+                maxField = ent.getKey();
 
         // Create the array
         ISOFieldPackager fld[] = new ISOFieldPackager[maxField+1];
 
         // Populate it
-        for (Enumeration e=tab.keys(); e.hasMoreElements(); )
-        {
-            Integer key = (Integer) e.nextElement();
-            fld[key.intValue()] = (ISOFieldPackager)tab.get(key);
-        }
+        for (Entry<Integer,ISOFieldPackager> ent :m.entrySet())
+           fld[ent.getKey()] = ent.getValue();
         return fld;
     }
 
@@ -128,12 +125,12 @@ public class GenericValidatingPackager extends GenericPackager implements ISOVal
         LogEvent evt = new LogEvent( this, "validate" );
         try {
             ISOComponent c;
-            Map fields = m.getChildren();
+            Map<Object,ISOComponent> fields = m.getChildren();
             /** Field  validations **/
-            for (int i=0; i < fvlds.length; i++) {
-                if ( fvlds[i] != null && (c=(ISOComponent) fields.get (new Integer ( ((ISOFieldValidator)fvlds[i]).getFieldId() ))) != null ){
+            for (ISOValidator val :fvlds) {
+                if ( (c=fields.get (new Integer ( ((ISOFieldValidator)val).getFieldId() ))) != null ){
                     try {
-                        m.set( fvlds[i].validate( c ) );
+                        m.set( val.validate( c ) );
                     } catch ( ISOVException e ) {
                         if ( !e.treated() ) {
                             m.set( e.getErrComponent() );
@@ -146,12 +143,8 @@ public class GenericValidatingPackager extends GenericPackager implements ISOVal
             }
             /** msg validations **/
             try {
-                if ( mvlds != null ){
-                    for (int i = 0; i < this.mvlds.length; i++) {
-                        if ( mvlds[i] != null )
-                            m = mvlds[i].validate( m );
-                    }
-                }
+                for (ISOBaseValidator mval :mvlds)
+                    m = mval.validate( m );
             }
             catch (ISOVException ex) {
                 evt.addMessage( "Component Validation Error." );
@@ -170,9 +163,9 @@ These can be changes using attributes on the isopackager node */
     protected boolean emitBitmap=true;
     protected int bitmapField=1;
     /** FieldValidator array. **/
-    protected ISOValidator[] fvlds;
+    protected ISOValidator[] fvlds = {};
     /** MsgValidator array **/
-    protected ISOBaseValidator[] mvlds;
+    protected ISOBaseValidator[] mvlds = {};
     /** incr used to put validators in the same hashtable of
      *  fieldpackagers. packagers will stay on index 1, 2, 3...
      *  and validators in inc+1, inc+2, inc+3,... **/
@@ -180,28 +173,31 @@ These can be changes using attributes on the isopackager node */
 
 
     public class GenericValidatorContentHandler extends DefaultHandler {
+        @Override
         public void startDocument(){
-            fieldStack = new Stack();
-            validatorStack = new Stack();
+            fieldStack = new Stack<Object>();
+            validatorStack = new Stack<Object>();
         }
 
+        @Override
         public void endDocument() throws SAXException {
             if ( !fieldStack.isEmpty() )
                 throw new SAXException ( "Format error in XML Field Description File" );
         }
 
+        @Override
         public void startElement( String namespaceURI, String localName, String qName, Attributes atts )
                 throws SAXException {
             try {
                 if ( localName.equals( "isopackager" ) ) {
-                    // Stick a new Hashtable on stack to collect the fields
-                    fieldStack.push( new Hashtable() );
+                    // Stick a new Map on stack to collect the fields
+                    fieldStack.push( new TreeMap() );
 
                     /** used to insert msg-level validators **/
-                    Hashtable hash = new Hashtable();
-                    hash.put( new Integer( VALIDATOR_INDEX ), new Vector() );
+                    Map m = new TreeMap();
+                    m.put( new Integer( VALIDATOR_INDEX ), new ArrayList() );
 
-                    validatorStack.push( hash );
+                    validatorStack.push( m );
                     setGenericPackagerParams ( atts );
                 }
                 if (localName.equals("isofield")){
@@ -216,11 +212,11 @@ These can be changes using attributes on the isopackager node */
                     f = (ISOFieldPackager) c.newInstance();
                     f.setDescription(name);
                     f.setLength(Integer.parseInt(size));
-                    f.setPad(new Boolean(pad).booleanValue());
-                    // Insert this new isofield into the Hashtable
+                    f.setPad(Boolean.parseBoolean(pad));
+                    // Insert this new isofield into the Map
                     // on the top of the stack using the fieldID as the key
-                    Hashtable ht = (Hashtable) fieldStack.peek();
-                    ht.put(new Integer(fldID), f);
+                    Map m = (Map) fieldStack.peek();
+                    m.put(new Integer(fldID), f);
                 }
                 if ( localName.equals( "isofieldvalidator" ) ){
                     String type = atts.getValue( "class" );
@@ -264,7 +260,7 @@ onto the stack.
 1) an Integer indicating the field ID
 2) an instance of the specified ISOFieldPackager class
 3) an instance of the specified ISOBasePackager (msgPackager) class
-4) a Hashtable to collect the subfields
+4) a Map to collect the subfields
 */
                     String packager = atts.getValue("packager");
                     fieldStack.push(new Integer(id));
@@ -272,7 +268,7 @@ onto the stack.
                     f = (ISOFieldPackager) Class.forName(type).newInstance();
                     f.setDescription(name);
                     f.setLength(Integer.parseInt(size));
-                    f.setPad(new Boolean(pad).booleanValue());
+                    f.setPad(Boolean.parseBoolean(pad));
                     fieldStack.push(f);
                     ISOBasePackager p;
                     p = (ISOBasePackager) Class.forName(packager).newInstance();
@@ -285,10 +281,10 @@ onto the stack.
                     ISOBaseValidatingPackager v;
                     v = (ISOBaseValidatingPackager) Class.forName(validator).newInstance();
                     validatorStack.push( v );
-                    Hashtable hash = new Hashtable();
-                    hash.put( new Integer( VALIDATOR_INDEX ), new Vector() );
-                    validatorStack.push( hash );
-                    fieldStack.push( new Hashtable() );
+                    Map m = new TreeMap();
+                    m.put( new Integer( VALIDATOR_INDEX ), new ArrayList() );
+                    validatorStack.push( m );
+                    fieldStack.push( new TreeMap() );
                 }
             } catch (Exception ex){
                 throw new SAXException(ex);
@@ -296,33 +292,31 @@ onto the stack.
         }
 
         /**
-         * Convert the ISOFieldPackagers in the Hashtable
+         * Convert the ISOFieldPackagers in the Map
          * to an array of ISOFieldPackagers
          */
-        private ISOFieldPackager[] makeFieldPackArray(Hashtable tab){
+        private ISOFieldPackager[] makeFieldPackArray(Map<Integer,ISOFieldPackager> m){
             int maxField = 0;
-            // First find the largest field number in the Hashtable
-            for (Enumeration e=tab.keys(); e.hasMoreElements(); ){
-                int n = ((Integer)e.nextElement()).intValue();
-                if (n > maxField) maxField = n;
-            }
+            // First find the largest field number in the Map
+            for (Entry<Integer,ISOFieldPackager> ent :m.entrySet())
+                if (ent.getKey() > maxField)
+                    maxField = ent.getKey();
             // Create the array
             ISOFieldPackager fld[] = new ISOFieldPackager[maxField+1];
             // Populate it
-            for (Enumeration e=tab.keys(); e.hasMoreElements(); ){
-                Integer key = (Integer) e.nextElement();
-                fld[key.intValue()] = (ISOFieldPackager)tab.get(key);
-            }
+            for (Entry<Integer,ISOFieldPackager> ent :m.entrySet())
+               fld[ent.getKey()] = ent.getValue();
             return fld;
         }
 
+        @Override
         public void endElement(String namespaceURI, String localName, String qName) {
             if (localName.equals("isopackager")){
-                Hashtable tab  = (Hashtable)fieldStack.pop();
-                setFieldPackager( makeFieldPackArray(tab) );
-                tab = (Hashtable)validatorStack.pop();
-                setFieldValidator ( makeFieldValidatorArray( tab ));
-                setMsgValidator( makeMsgValidatorArray( tab ) );
+                Map m  = (Map)fieldStack.pop();
+                setFieldPackager( makeFieldPackArray(m) );
+                m = (Map)validatorStack.pop();
+                setFieldValidator ( makeFieldValidatorArray( m ));
+                setMsgValidator( makeMsgValidatorArray( m ) );
             }
             if ( localName.equals( "isofieldvalidator" ) ){
                 /** pop properties **/
@@ -340,7 +334,7 @@ onto the stack.
                         ex.printStackTrace(  );
                     }
                 }
-                ((Hashtable)validatorStack.peek()).put( new Integer(fldID), f );
+                ((Map)validatorStack.peek()).put( new Integer(fldID), f );
             }
             if ( localName.equals( "isovalidator" ) ){
                 /** pop properties **/
@@ -359,13 +353,13 @@ onto the stack.
                     }
                 }
                 /** add validator to the has **/
-                ((Vector)((Hashtable)validatorStack.peek()).get( new Integer(VALIDATOR_INDEX) )).addElement( v );
+                ((List)((Map)validatorStack.peek()).get( new Integer(VALIDATOR_INDEX) )).add( v );
             }
             if (localName.equals("isofieldpackager")){
                 // Pop the 4 entries off the stack in the correct order
-                Hashtable tab = (Hashtable)fieldStack.pop();
+                Map m = (Map)fieldStack.pop();
                 ISOBasePackager msgPackager = (ISOBasePackager) fieldStack.pop();
-                msgPackager.setFieldPackager (makeFieldArray(tab));
+                msgPackager.setFieldPackager (makeFieldArray(m));
                 msgPackager.setLogger (getLogger(), "Generic Packager");
                 ISOFieldPackager fieldPackager = (ISOFieldPackager) fieldStack.pop();
                 Integer fno = (Integer) fieldStack.pop();
@@ -375,58 +369,51 @@ onto the stack.
 
                 // Add the newly created ISOMsgField packager to the
                 // lower level field stack
-                tab=(Hashtable)fieldStack.peek();
-                tab.put(fno, mfp);
-                Hashtable val = (Hashtable)validatorStack.pop();
+                m=(Map)fieldStack.peek();
+                m.put(fno, mfp);
+                Map val = (Map)validatorStack.pop();
                 ISOBaseValidatingPackager v = (ISOBaseValidatingPackager) validatorStack.pop();
                 v.setFieldValidator( makeFieldValidatorArray ( val ) );
                 v.setMsgValidator( makeMsgValidatorArray ( val ) );
                 ISOMsgFieldValidator mfv = new ISOMsgFieldValidator ( fieldPackager.getDescription(), v );
                 mfv.setFieldId( fno.intValue() );
                 v.setLogger (getLogger(), "Generic validating Packager");
-                tab=(Hashtable)validatorStack.peek();
-                tab.put(fno, mfv);
+                m=(Map)validatorStack.peek();
+                m.put(fno, mfv);
             }
         }
 
-        ISOFieldValidator[] makeFieldValidatorArray ( Hashtable tab ){
-            // Create the array
-            ISOFieldValidator fvlds[] = new ISOFieldValidator[tab.keySet().size()];
+        ISOFieldValidator[] makeFieldValidatorArray ( Map<Integer,ISOFieldValidator> m ){
+            List<ISOFieldValidator> l = new ArrayList();
             // Populate it
-            int ind = 0;
-            for (Enumeration e=tab.keys(); e.hasMoreElements(); ){
-                Integer key = (Integer) e.nextElement();
-                if ( key.intValue() != VALIDATOR_INDEX ){
-                    fvlds[ind] = (ISOFieldValidator)tab.get(key);
-                    ind ++;
-                }
-            }
-            return fvlds;
+            for (Entry<Integer,ISOFieldValidator> ent :m.entrySet() )
+                if ( ent.getKey() != VALIDATOR_INDEX )
+                    l.add(ent.getValue());
+            // Create the array
+            return l.toArray(new ISOFieldValidator[l.size()]);
         }
 
-        ISOBaseValidator[] makeMsgValidatorArray ( Hashtable tab ){
+        ISOBaseValidator[] makeMsgValidatorArray ( Map m ){
             // First find the count
-            Vector v = (Vector)tab.get( new Integer( VALIDATOR_INDEX ) );
-            if ( v==null || v.size() <= 0 ) return null;
-            ISOBaseValidator[] r = new ISOBaseValidator[v.size()];
-            for (int i = 0; i < v.size(); i++)
-                r[i] = (ISOBaseValidator)v.elementAt( i );
-            return r;
+            List<ISOBaseValidator> l = (List)m.get( new Integer( VALIDATOR_INDEX ) );
+            return l.toArray(new ISOBaseValidator[l.size()]);
         }
 
         // ErrorHandler Methods
+        @Override
         public void error (SAXParseException ex) throws SAXException
         {
             throw ex;
         }
 
+        @Override
         public void fatalError (SAXParseException ex) throws SAXException
         {
             throw ex;
         }
 
         final int VALIDATOR_INDEX = -3 ;
-        private Stack fieldStack, validatorStack;
+        private Stack<Object> fieldStack, validatorStack;
         private String fldID;
 
     }
