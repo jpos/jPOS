@@ -194,7 +194,7 @@ public class ChannelAdaptor
      * @return true if channel is connected
      */
     public boolean isConnected () {
-        return sp.rdp (ready) != null;
+        return sp != null && sp.rdp (ready) != null;
     }
 
     /**
