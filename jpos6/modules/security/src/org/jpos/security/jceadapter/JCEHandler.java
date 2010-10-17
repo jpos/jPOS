@@ -28,7 +28,7 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.*;
 import java.util.Map;
-import java.util.TreeMap;
+import java.util.HashMap;
 
 
 /**
@@ -282,7 +282,7 @@ public class JCEHandler {
      * @throws org.jpos.security.jceadapter.JCEHandlerException
      */
     Mac assignMACEngine(MacEngineKey engine) throws JCEHandlerException {
-        macEngines = macEngines==null?new TreeMap():macEngines;
+        macEngines = macEngines==null?new HashMap():macEngines;
         if (macEngines.containsKey(engine)) {
           return (Mac)macEngines.get(engine);
         }
