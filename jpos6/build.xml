@@ -141,6 +141,7 @@
         <javac srcdir="${build.src}" destdir="${classes.dir}"
             debug="${debug}" nowarn="${nowarn}"
             target="1.5" source="1.5"
+            includeantruntime="false"
             deprecation="${deprecation}">
             <classpath refid="main.classpath"/>
         </javac>
