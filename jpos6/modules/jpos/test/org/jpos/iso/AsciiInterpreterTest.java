@@ -34,22 +34,22 @@ public class AsciiInterpreterTest extends TestCase {
         inter = AsciiInterpreter.INSTANCE;
     }
 
-    public void testInterpret() {
+    public void testInterpret() throws Exception {
         byte[] b = new byte[3];
         inter.interpret("123", b, 0);
         TestUtils.assertEquals(new byte[] {49, 50, 51}, b);
     }
 
-    public void testUninterpret() {
+    public void testUninterpret() throws Exception {
         byte[] b = new byte[] {49, 50, 51};
         assertEquals("123", inter.uninterpret(b, 0, 3));
     }
 
-    public void testGetPackedLength() {
+    public void testGetPackedLength() throws Exception {
         assertEquals(3, inter.getPackedLength(3));
     }
     
-    public void testReversability() {
+    public void testReversability() throws Exception {
         String origin = "Abc123:.-";
         byte[] b = new byte[origin.length()];
         inter.interpret(origin, b, 0);

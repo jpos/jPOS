@@ -32,9 +32,10 @@ public interface Interpreter
 	 * 
 	 * @param data
 	 *            The data to be interpreted.
+     * @throws ISOException on error
 	 * @return The interpreted data.
 	 */
-    void interpret(String data, byte[] b, int offset);
+    void interpret(String data, byte[] b, int offset) throws ISOException;
 
     /**
 	 * Converts the byte array into a String. This reverses the interpret
@@ -46,9 +47,10 @@ public interface Interpreter
 	 *            The index in rawData to start interpreting at.
 	 * @param length
 	 *            The number of data units to interpret.
+     * @throws ISOException on error
 	 * @return The uninterpreted data.
 	 */
-    String uninterpret(byte[] rawData, int offset, int length);
+    String uninterpret(byte[] rawData, int offset, int length) throws ISOException;
 
     /**
 	 * Returns the number of bytes required to interpret a String of length
