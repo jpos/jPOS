@@ -350,6 +350,7 @@ Sealed: false</concat>
       <javac srcdir="${build.test}" destdir="${test-classes.dir}"
          debug="${debug}" nowarn="${nowarn}"
          target="1.5" source="1.5"
+         includeantruntime="false"
          deprecation="${deprecation}">
          <classpath>
          	<path refid="main.classpath" />
