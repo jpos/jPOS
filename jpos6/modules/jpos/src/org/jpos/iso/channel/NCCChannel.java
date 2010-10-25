@@ -21,6 +21,8 @@ package org.jpos.iso.channel;
 import org.jpos.iso.*;
 import org.jpos.util.LogEvent;
 import org.jpos.util.Logger;
+import org.jpos.core.Configuration;
+import org.jpos.core.ConfigurationException;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -40,6 +42,7 @@ public class NCCChannel extends BaseChannel {
     /**
      * Public constructor 
      */
+    boolean tpduSwap = true;
     public NCCChannel () {
         super();
     }
@@ -102,7 +105,7 @@ public class NCCChannel extends BaseChannel {
     protected void sendMessageHeader(ISOMsg m, int len) throws IOException { 
         byte[] h = m.getHeader();
         if (h != null) {
-            if (h.length == 5) {
+            if (tpduSwap && h.length == 5) {
                 // swap src/dest address
                 byte[] tmp = new byte[2];
                 System.arraycopy (h,   1, tmp, 0, 2);
@@ -121,6 +124,12 @@ public class NCCChannel extends BaseChannel {
      */
     public void setHeader (String header) {
         super.setHeader (ISOUtil.str2bcd(header, false));
+    }
+    public void setConfiguration (Configuration cfg) 
+        throws ConfigurationException
+    {
+        super.setConfiguration (cfg);
+        tpduSwap = cfg.getBoolean ("tpdu-swap", true);
     }
 }
 
