@@ -224,7 +224,7 @@ public class FSDMsg implements Loggeable, Cloneable {
     public byte[] packToBytes () 
         throws JDOMException, MalformedURLException, IOException, ISOException, UnsupportedEncodingException
     {
-        return pack().getBytes("ISO8859_1");
+        return pack().getBytes(ISOUtil.ENCODING);
     }
 
     protected String get (String id, String type, int length, String defValue, String separator) 
@@ -263,19 +263,19 @@ public class FSDMsg implements Loggeable, Cloneable {
                         if (isSeparated(separator)) {
                             // Convert but do not pad if this field ends with a
                             // separator
-                            value = new String(ISOUtil.hex2byte(value), "ISO8859_1");
+                            value = new String(ISOUtil.hex2byte(value), ISOUtil.ENCODING);
                         } else {
                             value = new String(ISOUtil.hex2byte(ISOUtil.zeropad(
                                     value, length << 1).substring(0, length << 1)),
-                                    "ISO8859_1");
+                                    ISOUtil.ENCODING);
                         }
                     } else {
                         throw new RuntimeException("field content=" + value
                                 + " is too long to fit in field " + id
                                 + " whose length is " + length);
                     }
-                } catch (UnsupportedEncodingException e) {
-                    // ISO8859_1 is supported
+                } catch (UnsupportedEncodingException ignored) {
+                    // should not happen
                 }
             break;
         }
@@ -498,7 +498,7 @@ public class FSDMsg implements Loggeable, Cloneable {
         String fieldValue = read (is, len, type, separator);
         
         if (isBinary(type))
-            fieldValue = ISOUtil.hexString (fieldValue.getBytes ("ISO8859_1"));
+            fieldValue = ISOUtil.hexString (fieldValue.getBytes (ISOUtil.ENCODING));
         fields.put (fieldName, fieldValue);
 //         System.out.println ("++++ "+fieldName + ":" + fieldValue + " " + type + "," + isBinary(type));
         return fieldValue;

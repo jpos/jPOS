@@ -67,7 +67,7 @@ public class IF_TCHAR extends IF_TBASE {
         throws ISOException
     {
         try {
-            String s = new String(b, "ISO8859_1");
+            String s = new String(b, ISOUtil.ENCODING);
             int newoffset = s.indexOf( getToken() , offset );
             c.setValue( s.substring(offset, newoffset ));
             int len = newoffset - offset;

@@ -18,6 +18,8 @@
 
 package org.jpos.iso;
 
+import java.io.UnsupportedEncodingException;
+
 
 /**
  * Implements ASCII Interpreter. Strings are converted to and from ASCII bytes.
@@ -38,9 +40,10 @@ public class AsciiInterpreter implements Interpreter
 	 */
     public void interpret(String data, byte[] b, int offset)
     {
-        for (int i = data.length() - 1; i >= 0; i--)
-        {
-            b[offset + i] = (byte) data.charAt(i);
+        try {
+            System.arraycopy(data.getBytes(ISOUtil.ENCODING), 0, b, offset, data.length());
+        } catch (UnsupportedEncodingException ignored) {
+            // encoding is supported
         }
     }
 
@@ -51,16 +54,17 @@ public class AsciiInterpreter implements Interpreter
 	 */
     public String uninterpret (byte[] rawData, int offset, int length) {
         byte[] ret = new byte[length];
-        for (int i = 0; i < length; i++) {
-            ret[i] = (byte)rawData[offset + i];
-        }
-        String s = null;
         try {
-            s = new String(ret, "ISO8859_1");
-        } catch (java.io.UnsupportedEncodingException e) {
-            // ISO8859_1 is a supported encoding.
+            System.arraycopy(rawData, offset, ret, 0, length);
+            return new String(ret, ISOUtil.ENCODING);
+        } catch (UnsupportedEncodingException ignored) {
+            // encoding is supported
+        } catch (IndexOutOfBoundsException e) {
+            throw new RuntimeException(
+                String.format("Required %d but just got %d bytes", length, rawData.length-offset)
+            );
         }
-        return s;
+        return null;
     }
 
     /**

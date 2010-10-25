@@ -581,7 +581,7 @@ public class ISOMsg extends ISOComponent
             try {
                 Object obj = getValue(fldno);
                 if (obj instanceof String)
-                    b = ((String) obj).getBytes("ISO8859_1");
+                    b = ((String) obj).getBytes(ISOUtil.ENCODING);
                 else if (obj instanceof byte[])
                     b = ((byte[]) obj);
             } catch (ISOException ignored) {
@@ -599,7 +599,7 @@ public class ISOMsg extends ISOComponent
         try {
             Object obj = getValue(fpath);
             if (obj instanceof String)
-                b = ((String) obj).getBytes("ISO8859_1");
+                b = ((String) obj).getBytes(ISOUtil.ENCODING);
             else if (obj instanceof byte[])
                 b = ((byte[]) obj);
         } catch (ISOException ignored) {

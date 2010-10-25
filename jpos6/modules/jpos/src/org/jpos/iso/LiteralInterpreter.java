@@ -48,9 +48,9 @@ public class LiteralInterpreter implements Interpreter
 	 */
     public String uninterpret(byte[] rawData, int offset, int length) {
         try {
-            return new String(rawData, offset, length, "ISO8859_1");
-        } catch (java.io.UnsupportedEncodingException e) { }
-        return null;// should never happen, ISO8859_1 is a supported encoding
+            return new String(rawData, offset, length, ISOUtil.ENCODING);
+        } catch (java.io.UnsupportedEncodingException ignored) { }
+        return null; // should never happen
     }
 
     /**

@@ -34,6 +34,7 @@ import java.util.StringTokenizer;
  */
 
 public class ISOUtil {
+    public static final String ENCODING  = "ISO8859_1";
     public static final byte[] EBCDIC2ASCII = new byte[] {
         (byte)0x0,  (byte)0x1,  (byte)0x2,  (byte)0x3, 
         (byte)0x9C, (byte)0x9,  (byte)0x86, (byte)0x7F, 
@@ -176,7 +177,7 @@ public class ISOUtil {
     public static String ebcdicToAscii(byte[] e) {
         try {
             return new String (
-                ebcdicToAsciiBytes (e, 0, e.length), "ISO8859_1"
+                ebcdicToAsciiBytes (e, 0, e.length), ENCODING
             );
         } catch (UnsupportedEncodingException ex) {
             return ex.toString(); // should never happen
@@ -185,7 +186,7 @@ public class ISOUtil {
     public static String ebcdicToAscii(byte[] e, int offset, int len) {
         try {
             return new String (
-                ebcdicToAsciiBytes (e, offset, len), "ISO8859_1"
+                ebcdicToAsciiBytes (e, offset, len), ENCODING
             );
         } catch (UnsupportedEncodingException ex) {
             return ex.toString(); // should never happen
