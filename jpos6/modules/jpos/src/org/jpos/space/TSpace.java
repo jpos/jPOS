@@ -185,14 +185,10 @@ public class TSpace<K,V> extends TimerTask implements LocalSpace<K,V>, Loggeable
         synchronized (this) {
             keys = entries.keySet().toArray();
         }
-        if (keys.length >1){
-            for (int i=0; i<keys.length; i++) {
-                if (i > 0)
-                    p.println(indent+"<key>"+keys[i]+"</key>");
-            }
-            p.println(indent+"<keycount>"+(keys.length-1)+"</keycount>");
+        for (int i=0; i<keys.length; i++) {
+            p.printf ("%s<key size='%d'>%s</key>\n", indent, size(keys[i]), keys[i]);
         }
-
+        p.println(indent+"<keycount>"+(keys.length-1)+"</keycount>");
     }
     public void notifyListeners (Object key, Object value) {
         Object[] listeners = null;
