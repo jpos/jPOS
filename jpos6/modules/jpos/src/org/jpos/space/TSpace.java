@@ -186,7 +186,7 @@ public class TSpace<K,V> extends TimerTask implements LocalSpace<K,V>, Loggeable
             keys = entries.keySet().toArray();
         }
         for (int i=0; i<keys.length; i++) {
-            p.printf ("%s<key size='%d'>%s</key>\n", indent, size(keys[i]), keys[i]);
+            p.printf ("%s<key count='%d'>%s</key>\n", indent, size(keys[i]), keys[i]);
         }
         p.println(indent+"<keycount>"+(keys.length-1)+"</keycount>");
     }
