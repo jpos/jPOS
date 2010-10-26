@@ -108,10 +108,31 @@ public class MUXPool extends QBeanSupport implements MUX {
         }
         return ss;
     }
-    public void request (ISOMsg m, long timeout, ISOResponseListener r, Object handBack) 
+    public void request (ISOMsg m, long timeout, final ISOResponseListener r, final Object handBack) 
         throws ISOException 
     {
-        throw new ISOException ("Not implemented");
+        int mnumber = 0;
+        long maxWait = System.currentTimeMillis() + timeout;
+        synchronized (this) {
+            mnumber = msgno++;
+        }
+        MUX mux = strategy == ROUND_ROBIN ?
+        nextAvailableMUX (mnumber, maxWait) :
+        firstAvailableMUX (maxWait);
+
+        if (mux != null) {
+            timeout = maxWait - System.currentTimeMillis();
+            if (timeout >= 0)
+                mux.request(m, timeout,r, handBack);
+            else {
+                new Thread() {
+                    public void run() {
+                        r.expired (handBack);
+                    }
+                }.start();
+            }
+        } else 
+            throw new ISOException ("No MUX available");
     }
 }
 
