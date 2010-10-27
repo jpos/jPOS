@@ -85,6 +85,7 @@ public class LogListenerFactory implements UIFactory {
             this.cnt = 0;
             this.maxEvents = maxEvents;
             this.maxLines  = maxLines;
+            text.setEditable(false);
         }
         public void run () {
             if (ui.isDestroyed ()) {
@@ -95,8 +96,9 @@ public class LogListenerFactory implements UIFactory {
             int lc = text.getLineCount ();
             if (lc > maxLines) {
                 try {
-                    int offset = text.getLineStartOffset (maxLines);
-                    text.getDocument ().remove (0, offset);
+                    int startOffset = text.getLineStartOffset (maxLines);
+                    int endOffset = text.getLineEndOffset(lc-1);
+                    text.getDocument ().remove (startOffset, endOffset-startOffset);
                 } catch (BadLocationException ex) {
                     text.setText (ex.toString());
                 }
