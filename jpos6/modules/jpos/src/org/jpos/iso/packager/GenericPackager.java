@@ -323,18 +323,13 @@ public class GenericPackager
 
             if(systemId.equals("http://jpos.org/dtd/generic-packager-1.0.dtd"))
             {
-                InputSource source = new InputSource(cl.getResourceAsStream("org/jpos/iso/packager/genericpackager.dtd"));
-                source.setPublicId (publicId);
-                source.setSystemId (systemId);
-                return source;
+                final URL resource = cl.getResource("org/jpos/iso/packager/genericpackager.dtd");
+                return new InputSource(resource.toExternalForm());
             }
             else if(systemId.equals("http://jpos.org/dtd/generic-validating-packager-1.0.dtd"))
             {
-
-                InputSource source = new InputSource(cl.getResourceAsStream("org/jpos/iso/packager/generic-validating-packager.dtd"));
-                source.setPublicId (publicId);
-                source.setSystemId (systemId);
-                return source;
+                final URL resource = cl.getResource("org/jpos/iso/packager/generic-validating-packager.dtd");
+                return new InputSource(resource.toExternalForm());
             }
 
             URL url=new URL(systemId);

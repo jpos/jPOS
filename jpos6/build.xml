@@ -38,6 +38,7 @@
         <include name="**/*.cfg.xml"/>
         <include name="**/*.man"/>
         <include name="**/*.properties"/>
+        <include name="**/*.dtd"/>
     </patternset>
     <fileset dir="${classes.dir}" >
         <patternset id="rmic.classes" >
