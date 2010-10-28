@@ -195,7 +195,7 @@ public class GenericPackager
             createXMLReader().parse(filename);  
         } 
         catch (Exception e) {
-            throw new ISOException(e);
+            throw new ISOException("Error reading " + filename, e);
         }
     }
 
