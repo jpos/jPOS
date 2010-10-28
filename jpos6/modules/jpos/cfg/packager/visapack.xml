@@ -1,5 +1,7 @@
 <?xml version="1.0"?>
-<!DOCTYPE isopackager SYSTEM "genericpackager.dtd">
+<!DOCTYPE isopackager PUBLIC
+        "-//jPOS/jPOS Generic Packager DTD 1.0//EN"
+        "http://jpos.org/dtd/generic-packager-1.0.dtd">
 
 <!-- Visa Base1 field descriptions for the GenericPackager -->
 

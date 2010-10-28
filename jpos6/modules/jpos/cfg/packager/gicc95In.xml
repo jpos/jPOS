@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE isopackager PUBLIC
+        "-//jPOS/jPOS Generic Packager DTD 1.0//EN"
+        "http://jpos.org/dtd/generic-packager-1.0.dtd">
+
 <!-- SERMEPA field mapping based on a ISO93Apackager -->
-<!DOCTYPE isopackager SYSTEM "genericpackager.dtd">
 <!-- ISO 8583:1993 (ASCII) field descriptions for GenericPackager -->
 <!--
 Contributed by: julien.moebs@paybox.net
