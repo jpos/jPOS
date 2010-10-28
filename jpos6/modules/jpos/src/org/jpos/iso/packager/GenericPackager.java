@@ -18,17 +18,31 @@
 
 package org.jpos.iso.packager;
 
+import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
-import org.jpos.core.Configurable;
-import org.jpos.iso.*;
-import org.jpos.util.Logger;
+import org.jpos.iso.IF_TBASE;
+import org.jpos.iso.ISOBasePackager;
+import org.jpos.iso.ISOException;
+import org.jpos.iso.ISOFieldPackager;
+import org.jpos.iso.ISOMsgFieldPackager;
+import org.jpos.iso.ISOPackager;
 import org.jpos.util.LogSource;
-import org.xml.sax.*;
+import org.jpos.util.Logger;
+import org.xml.sax.Attributes;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Stack;
@@ -233,6 +247,7 @@ public class GenericPackager
         GenericContentHandler handler = new GenericContentHandler();
         reader.setContentHandler(handler);
         reader.setErrorHandler(handler);
+        reader.setEntityResolver(new GenericEntityResolver());
         return reader;
     }
     @Override
@@ -272,6 +287,73 @@ public class GenericPackager
         	setHeaderLength(Integer.parseInt(headerLenStr));
     }
 
+    public class GenericEntityResolver implements EntityResolver
+    {
+        /**
+         * Allow the application to resolve external entities.
+         * <p/>
+         * The strategy we follow is:<p>
+         * We first check whether the DTD points to a well defined URI,
+         * and resolve to our internal DTDs.<p>
+         *
+         * If the systemId points to a file, then we attempt to read the 
+         * DTD from the filesystem, in case they've been modified by the user.
+         * Otherwise, we fallback to the built-in DTDs inside jPOS.<p>
+         *
+         * @param publicId The public identifier of the external entity
+         *                 being referenced, or null if none was supplied.
+         * @param systemId The system identifier of the external entity
+         *                 being referenced.
+         * @return An InputSource object describing the new input source,
+         *         or null to request that the parser open a regular
+         *         URI connection to the system identifier.
+         * @throws org.xml.sax.SAXException Any SAX exception, possibly
+         *                                  wrapping another exception.
+         * @throws java.io.IOException      A Java-specific IO exception,
+         *                                  possibly the result of creating a new InputStream
+         *                                  or Reader for the InputSource.
+         * @see org.xml.sax.InputSource
+         */
+        public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException
+        {
+            if(systemId==null) return null;
+
+            ClassLoader cl =Thread.currentThread().getContextClassLoader();
+            cl = cl ==null?ClassLoader.getSystemClassLoader() : cl;
+
+            if(systemId.equals("http://jpos.org/dtd/generic-packager-1.0.dtd"))
+            {
+                return new InputSource(cl.getResourceAsStream("org/jpos/iso/packager/genericpackager.dtd"));
+            }
+
+            if(systemId.equals("http://jpos.org/dtd/generic-validating-packager-1.0.dtd"))
+            {
+                return new InputSource(cl.getResourceAsStream("org/jpos/iso/packager/generic-validating-packager.dtd"));
+            }
+
+            URL url=new URL(systemId);
+            if(url.getProtocol().equals("file"))
+            {
+                String file=url.getFile();
+                if(file.endsWith(".dtd"))
+                {
+                    File f=new File(file);
+                    InputStream res=null;
+                    if(f.exists())
+                    {
+                        res=new FileInputStream(f);
+                    }
+                    if(res==null)
+                    {
+                        String dtdResource="org/jpos/iso/packager/"+f.getName();
+                        res= cl.getResourceAsStream(dtdResource);
+                    }
+                    if(res!=null) return new InputSource(res);
+                }
+            }
+            return null;
+        }
+    }
 
     public class GenericContentHandler extends DefaultHandler
     {

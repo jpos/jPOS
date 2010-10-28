@@ -20,7 +20,15 @@ package org.jpos.iso.packager;
 
 import org.jpos.core.ConfigurationException;
 import org.jpos.core.SimpleConfiguration;
-import org.jpos.iso.*;
+import org.jpos.iso.ISOBasePackager;
+import org.jpos.iso.ISOBaseValidator;
+import org.jpos.iso.ISOComponent;
+import org.jpos.iso.ISOException;
+import org.jpos.iso.ISOFieldPackager;
+import org.jpos.iso.ISOFieldValidator;
+import org.jpos.iso.ISOMsgFieldPackager;
+import org.jpos.iso.ISOMsgFieldValidator;
+import org.jpos.iso.ISOValidator;
 import org.jpos.iso.validator.ISOVException;
 import org.jpos.util.LogEvent;
 import org.jpos.util.Logger;
@@ -32,9 +40,13 @@ import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
 
 import java.io.InputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
-import org.jpos.iso.ISOBaseValidator;
+import java.util.Properties;
+import java.util.Stack;
+import java.util.TreeMap;
 
 
 /**
@@ -92,6 +104,7 @@ public class GenericValidatingPackager extends GenericPackager implements ISOVal
             GenericValidatorContentHandler handler = new GenericValidatorContentHandler();
             reader.setContentHandler(handler);
             reader.setErrorHandler(handler);
+            reader.setEntityResolver(new GenericEntityResolver());
             reader.parse(filename);
         }
         catch (Exception e)

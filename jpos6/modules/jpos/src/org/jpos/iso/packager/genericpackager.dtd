@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!ELEMENT isopackager (isofield+,isofieldpackager*)*>
+<!ATTLIST isopackager maxValidField CDATA        #IMPLIED>
+<!ATTLIST isopackager bitmapField   CDATA        #IMPLIED>
+<!ATTLIST isopackager firstField    CDATA        #IMPLIED>
+<!ATTLIST isopackager emitBitmap    (true|false) #IMPLIED>
+<!ATTLIST isopackager headerLength  CDATA        #IMPLIED>
+
+<!-- isofield -->
+<!ELEMENT isofield (#PCDATA)>
+<!ATTLIST isofield id     CDATA        #REQUIRED>
+<!ATTLIST isofield length CDATA        #REQUIRED>
+<!ATTLIST isofield name   CDATA        #REQUIRED>
+<!ATTLIST isofield class  NMTOKEN      #REQUIRED>
+<!ATTLIST isofield token  CDATA        #IMPLIED>
+<!ATTLIST isofield pad    (true|false) #IMPLIED>
+
+<!-- isofieldpackager -->
+<!ELEMENT isofieldpackager (isofield+,isofieldpackager*)*>
+<!ATTLIST isofieldpackager id       CDATA        #REQUIRED>
+<!ATTLIST isofieldpackager name     CDATA        #REQUIRED>
+<!ATTLIST isofieldpackager length   CDATA        #REQUIRED>
+<!ATTLIST isofieldpackager class    NMTOKEN      #REQUIRED>
+<!ATTLIST isofieldpackager token    CDATA        #IMPLIED>
+<!ATTLIST isofieldpackager pad      (true|false) #IMPLIED>
+<!ATTLIST isofieldpackager packager NMTOKEN      #REQUIRED>
+<!ATTLIST isofieldpackager emitBitmap (true|false) #IMPLIED>
+<!ATTLIST isofieldpackager maxValidField CDATA        #IMPLIED>
+<!ATTLIST isofieldpackager bitmapField CDATA        #IMPLIED>
+<!ATTLIST isofieldpackager firstField  CDATA        #IMPLIED>
+<!ATTLIST isofieldpackager headerLength  CDATA        #IMPLIED>
+

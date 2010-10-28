@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!ELEMENT isopackager (isofield+,isofieldpackager*, isovalidator*)*>
+<!ATTLIST isopackager maxValidField CDATA        #IMPLIED>
+<!ATTLIST isopackager bitmapField   CDATA        #IMPLIED>
+<!ATTLIST isopackager emitBitmap    (true|false) #IMPLIED>
+
+<!-- isofield -->
+<!ELEMENT isofield (isofieldvalidator*)>
+<!ATTLIST isofield id     CDATA        #REQUIRED>
+<!ATTLIST isofield length CDATA        #REQUIRED>
+<!ATTLIST isofield name   CDATA        #REQUIRED>
+<!ATTLIST isofield class  NMTOKEN      #REQUIRED>
+<!ATTLIST isofield pad    (true|false) #IMPLIED>
+
+<!-- isofieldpackager -->
+<!ELEMENT isofieldpackager (isofield*,isofieldpackager*, isovalidator*)*>
+<!ATTLIST isofieldpackager id       CDATA        #REQUIRED>
+<!ATTLIST isofieldpackager name     CDATA        #REQUIRED>
+<!ATTLIST isofieldpackager length   CDATA        #REQUIRED>
+<!ATTLIST isofieldpackager class    NMTOKEN      #REQUIRED>
+<!ATTLIST isofieldpackager pad      (true|false) #IMPLIED>
+<!ATTLIST isofieldpackager packager NMTOKEN      #REQUIRED>
+<!ATTLIST isofieldpackager validator NMTOKEN      #REQUIRED>
+
+<!-- isofieldvalidator -->
+<!ELEMENT isofieldvalidator (property*)>
+<!ATTLIST isofieldvalidator class  NMTOKEN      #REQUIRED>
+<!ATTLIST isofieldvalidator break-on-error (true|false) #IMPLIED>
+<!ATTLIST isofieldvalidator minlen CDATA #IMPLIED>
+<!ATTLIST isofieldvalidator maxlen CDATA #IMPLIED>
+
+<!-- isovalidator -->
+<!ELEMENT isovalidator (property*)>
+<!ATTLIST isovalidator class  NMTOKEN      #REQUIRED>
+<!ATTLIST isovalidator break-on-error (true|false) #IMPLIED>
+
+<!-- property -->
+<!ELEMENT property EMPTY>
+<!ATTLIST property name  CDATA #IMPLIED>
+<!ATTLIST property value CDATA #IMPLIED>
+<!ATTLIST property file  CDATA #IMPLIED>
