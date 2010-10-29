@@ -190,6 +190,7 @@
         <fileset dir="${build.modules}" excludesfile="${modules.ignore.list}">
           <include name="**/*.java"/>
           <include name="**/*.xml"/>
+          <include name="**/*.dtd"/>
           <include name="**/*.properties"/>
           <include name="**/*.cfg"/>
           <include name="**/*.man"/>
