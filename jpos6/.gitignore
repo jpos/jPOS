@@ -1,0 +1,4 @@
+build/
+dist/
+modules/include.list
+modules/ignore.list
