@@ -2,3 +2,4 @@ build/
 dist/
 modules/include.list
 modules/ignore.list
+modules/jpos/test/org/jpos/iso/packagers/*.run
