@@ -595,7 +595,11 @@ public class Q2 implements FileFilter, Runnable {
         Iterator iter = doc.getRootElement().getChildren ().iterator ();
         for (int i=1; iter.hasNext (); i ++) {
             Element e = (Element) iter.next();
-            deployElement (e, String.format ("%02d_%s.xml",i, e.getName()), encrypt, true);
+            deployElement (e, String.format ("%02d_%s.xml",i, e.getName()), encrypt, !encrypt);
+            // the !encrypt above is tricky and deserves an explanation
+            // if we are encrypting a QBean, we want it to stay in the deploy
+            // directory for future runs. If on the other hand we are deploying
+            // a bundle, we want it to be transient.
         }
     }
     public void deployElement (Element e, String fileName, boolean encrypt, boolean isTransient)
