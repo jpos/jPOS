@@ -518,7 +518,7 @@ public class Q2 implements FileFilter, Runnable {
         return instanceId;
     }
     public static String getVersionString() {
-        return String.format ("jPOS %s r%s (%s)%s",
+        return String.format ("jPOS %s %s (%s)%s",
             getVersion(), getRevision(), getBuildDate(), getLicensee()
         );
     }
