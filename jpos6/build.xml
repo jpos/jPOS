@@ -158,6 +158,7 @@
     <target name="modules" depends="prepare, copy-lib">
       <filter filtersfile="${filter.properties}" />
       <filter token="date" value="${date}" />
+      <filter token="revision" value="${revision}" />
       <copy todir="${build.modules}" flatten="false" filtering="false">
         <fileset dir="${modules.dir}" includesfile="${modules.include.list}" />
       </copy>

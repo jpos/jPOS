@@ -750,7 +750,7 @@ public class Q2 implements FileFilter, Runnable {
         return Q2_VERSION;
     }
     public static String getRevision() {
-        return Q2_REVISION.split(" ")[1];
+        return Q2_REVISION;
     }
     public static String getBuildDate() {
         return Q2_BUILD_DATE.split(" ")[0];
