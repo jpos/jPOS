@@ -332,7 +332,7 @@ public class ISOServer extends Observable
         NameRegistrar.register ("server."+name, this);
     }
     /**
-     * @return ISOMUX instance with given name.
+     * @return ISOServer instance with given name.
      * @throws NameRegistrar.NotFoundException;
      * @see NameRegistrar
      */
