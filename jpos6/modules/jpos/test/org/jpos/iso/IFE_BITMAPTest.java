@@ -28,7 +28,7 @@ import java.util.BitSet;
 public class IFE_BITMAPTest extends TestCase
 {
     
-	IFE_BITMAP oneByte ;
+    IFE_BITMAP oneByte ;
     IFE_BITMAP twoBytes ;
     IFE_BITMAP threeBytes ;
     IFE_BITMAP fourBytes ;
