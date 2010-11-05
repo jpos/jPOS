@@ -1,4 +1,5 @@
 #!/bin/sh
 
 cd `dirname $0`/..
-ant -Drevision=`git describe --always` clean dist srcjar
+ant -Dunofficial-build=`git describe --always` clean dist srcjar
+

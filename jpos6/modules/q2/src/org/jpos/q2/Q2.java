@@ -48,7 +48,7 @@ import java.util.*;
  */
 public class Q2 implements FileFilter, Runnable {
     public static final String Q2_VERSION          = "@version@";
-    public static final String Q2_REVISION         = "@revision@";
+    public static final String Q2_REVISION         = "@unofficial-build@";
     public static final String Q2_BUILD_DATE       = "@date@";
     public static final String DEFAULT_DEPLOY_DIR  = "deploy";
     public static final String JMX_NAME            = "Q2";
