@@ -80,6 +80,7 @@ public class QMUX
     }
     public void startService () {
         if (!listenerRegistered) {
+            listenerRegistered = true;
             sp.addListener (in, this);
             NameRegistrar.register ("mux."+getName (), this);
         }
