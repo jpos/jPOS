@@ -21,15 +21,9 @@ package org.jpos.util;
 import junit.framework.TestCase;
 
 public class FSDMsgPropertiesTestCase extends TestCase {
-	// Eclipse wants :-
-	// private static final String SCHEMA_DIR_URL = "file:modules/jpos/test/org/jpos/util/";
-    // Original
-	private static final String SCHEMA_DIR_URL = "file:../modules/jpos/test/org/jpos/util/";
-
-	private static String FS = "\034";
-	
+    private static final String SCHEMA_DIR_URL = "file:target/test-classes/org/jpos/util/";
+    private static String FS = "\034";
     private FSDMsg imsg;
-
     private FSDMsg omsg;
 
     public void setUp() throws Exception {
