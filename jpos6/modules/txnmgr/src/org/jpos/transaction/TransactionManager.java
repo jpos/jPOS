@@ -565,7 +565,7 @@ public class TransactionManager
         return participant;
     }
     public int getOutstandingTransactions() {
-        if (sp instanceof LocalSpace)
+        if (isp instanceof LocalSpace)
             return ((LocalSpace)sp).size(queue);
         return -1;
     }
