@@ -28,7 +28,7 @@ public class JESpaceTestCase extends TestCase {
     JESpace<String,Object> sp;
     public void setUp () {
         sp = (JESpace<String,Object>) 
-            JESpace.getSpace ("space-test", ".");
+            JESpace.getSpace ("space-test", "target/test-classes/space-test");
     }
     public void testSimpleOut() throws Exception {
         Object o = new Boolean (true);
