@@ -56,6 +56,7 @@ public class QMUX
     List listeners;
     int rx, tx, rxExpired, txExpired, rxPending, rxUnhandled, rxForwarded;
     long lastTxn = 0L;
+    boolean listenerRegistered;
     public QMUX () {
         super ();
         listeners = new ArrayList ();
@@ -73,17 +74,19 @@ public class QMUX
             mtiMapping = new String[] { nomap, nomap, "0022446789" };
         addListeners ();
         unhandled = e.getChildTextTrim ("unhandled");
+        listenerRegistered = true;
         sp.addListener (in, this);
         NameRegistrar.register ("mux."+getName (), this);
     }
     public void startService () {
-        if (getState() == STOPPED) {
+        if (!listenerRegistered) {
             sp.addListener (in, this);
             NameRegistrar.register ("mux."+getName (), this);
         }
     }
     public void stopService () {
         sp.removeListener (in, this);
+        listenerRegistered = false;
     }
     public void destroyService () {
         NameRegistrar.unregister ("mux."+getName ());
