@@ -189,7 +189,10 @@ public class Q2 implements FileFilter, Runnable {
             if (exit && !shuttingDown)
                 System.exit (0);
         } catch (Exception e) {
-            log.error (e);
+            if (log != null)
+                log.error (e);
+            else
+                e.printStackTrace();
             System.exit (1);
         }
     }
