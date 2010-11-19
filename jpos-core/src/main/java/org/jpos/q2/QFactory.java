@@ -46,7 +46,9 @@ public class QFactory {
         super ();
         this.loaderName = loaderName;
         this.q2  = q2;
-        classMapping = ResourceBundle.getBundle(this.getClass().getName());
+        try {
+            classMapping = ResourceBundle.getBundle(this.getClass().getName());
+        } catch (MissingResourceException ignored) { }
     }
 
     public Object instantiate (Q2 server, Element e) 
