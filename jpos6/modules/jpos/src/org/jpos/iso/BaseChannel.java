@@ -1021,15 +1021,16 @@ public abstract class BaseChannel extends Observable
     }
     private void closeSocket() throws IOException {
         if (socket != null) {
+            Socket s = socket; // we don't want more than one thread
+            socket = null;     // attempting to close the socket
             try {
-                socket.setSoLinger (true, 5);
-                socket.shutdownOutput();  // This will force a TCP FIN to be sent.
+                s.setSoLinger (true, 5);
+                s.shutdownOutput();  // This will force a TCP FIN to be sent.
             } catch (SocketException e) {
                 // safe to ignore - can be closed already
                 // e.printStackTrace();
             }
-            socket.close ();
-            socket = null;
+            s.close ();
         }
     }
     
