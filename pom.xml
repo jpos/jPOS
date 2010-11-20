@@ -23,7 +23,7 @@
     <system>YouTrack</system>
     <url>https://jpos.org/issues</url>
   </issueManagement>
-
+  <inceptionYear>1998</inceptionYear>
   <licenses>
     <license>
       <name>GNU AFFERO GENERAL PUBLIC LICENSE v3</name>
@@ -36,6 +36,17 @@
     <url>scm:git:git://github.com/jpos/jPOS.git</url>
     <developerConnection>scm:git:git://github.com/jpos/jPOS.git</developerConnection>
   </scm>
+
+  <mailingLists>
+    <mailingList>
+      <name>jpos-users</name>
+      <subscribe>jpos-users@groups.google.com</subscribe>
+      <unsubscribe>jpos-users+subscribe@groups.google.com</unsubscribe>
+      <post>jpos-users@groups.google.com</post>
+      <archive>http://groups.google.com/group/jpos-users</archive>
+    </mailingList>
+  </mailingLists>
+
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
