@@ -55,10 +55,6 @@
   <modules>
     <module>jpos-core</module>
     <!--
-    <module>q2</module>
-    <module>txnmgr</module>
-    <module>security</module>
-    <module>q2mod_jpos</module>
     <module>compat_1_5_2</module>
     -->
   </modules>

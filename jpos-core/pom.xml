@@ -91,11 +91,34 @@
         </configuration>
         <executions>
           <execution>
+            <phase>package</phase>
             <goals>
-              <goal>assembly</goal>
+              <goal>single</goal>
             </goals>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.1</version>
+        <executions>
+          <execution>
+            <phase>compile</phase>
+            <goals>
+                <goal>exec</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <executable>git</executable>
+          <arguments>
+            <argument>log</argument>
+            <argument>--pretty=format:revision=%H</argument>
+            <argument>-n1</argument>
+          </arguments>
+          <outputFile>target/classes/org/jpos/q2/Q2.properties</outputFile>
+        </configuration>
       </plugin>
     </plugins>
 
@@ -103,6 +126,10 @@
       <resource>
         <directory>src/main/resources</directory>
         <filtering>true</filtering>
+        <excludes>
+         <exclude>**/cfg/packager/*</exclude>
+         <exclude>**/cfg/*</exclude>
+        </excludes>
       </resource>
     </resources>
   </build>
