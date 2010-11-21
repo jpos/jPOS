@@ -74,11 +74,11 @@ public class PackagerTestCase extends TestCase {
         doTest (new ISO87BPackager(), "ISO87", "ISO87BPackager");
     }
     public void testGeneric87ascii() throws Exception {
-        doTest (new GenericPackager ("target/classes/cfg/packager/iso87ascii.xml"),
+        doTest (new GenericPackager ("src/main/resources/cfg/packager/iso87ascii.xml"),
             "ISO87", "ISO87APackager");
     }
     public void testGeneric87binary() throws Exception {
-        doTest (new GenericPackager ("target/classes/cfg/packager/iso87binary.xml"),
+        doTest (new GenericPackager ("src/main/resources/cfg/packager/iso87binary.xml"),
             "ISO87", "ISO87BPackager");
     }
     public void testISO93APackager() throws Exception {
@@ -88,17 +88,17 @@ public class PackagerTestCase extends TestCase {
         doTest (new ISO93BPackager(), "ISO93", "ISO93BPackager");
     }
     public void testGeneric93ascii() throws Exception {
-        doTest (new GenericPackager ("target/classes/cfg/packager/iso93ascii.xml"),
+        doTest (new GenericPackager ("src/main/resources/cfg/packager/iso93ascii.xml"),
             "ISO93", "ISO93APackager");
     }
     public void testGeneric93binary() throws Exception {
-        doTest (new GenericPackager ("target/classes/cfg/packager/iso93binary.xml"), "ISO93", "ISO93BPackager");
+        doTest (new GenericPackager ("src/main/resources/cfg/packager/iso93binary.xml"), "ISO93", "ISO93BPackager");
     }        
     public void testF64Binary() throws Exception {
-        doTest (new GenericPackager ("target/classes/cfg/packager/iso87binary.xml"), "ISO87-Field64", "ISO87B-Field64");
+        doTest (new GenericPackager ("src/main/resources/cfg/packager/iso87binary.xml"), "ISO87-Field64", "ISO87B-Field64");
     }
     public void testF64ascii() throws Exception {
-        doTest (new GenericPackager ("target/classes/cfg/packager/iso87ascii.xml"),
+        doTest (new GenericPackager ("src/main/resources/cfg/packager/iso87ascii.xml"),
             "ISO87-Field64", "ISO87A-Field64");
     }
     public void testXMLPackager () throws Exception {
@@ -106,7 +106,7 @@ public class PackagerTestCase extends TestCase {
     }
     
     public void testGeneric93ebcdic() throws Exception {
-        doTest (new GenericPackager ("target/classes/cfg/packager/iso93ebcdic-custom.xml"), "ISO93ebcdic-Custom-XmlMsg", "ISO93ebcdic-Custom-Img");        
+        doTest (new GenericPackager ("src/main/resources/cfg/packager/iso93ebcdic-custom.xml"), "ISO93ebcdic-Custom-XmlMsg", "ISO93ebcdic-Custom-Img");        
 }    
     private void doTest (ISOPackager packager, String msg, String img)
         throws Exception
