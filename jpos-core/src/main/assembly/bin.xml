@@ -1,0 +1,43 @@
+<assembly>
+  <id>bin</id>
+  <formats>
+    <format>zip</format>
+    <format>tar.gz</format>
+  </formats>
+  <baseDirectory>jpos-${project.version}</baseDirectory>
+  <includeSiteDirectory>false</includeSiteDirectory>
+
+  <dependencySets>
+    <dependencySet>
+      <outputDirectory>/lib</outputDirectory>
+      <useProjectArtifact>true</useProjectArtifact>
+      <unpack>false</unpack>
+      <scope>runtime</scope>
+    </dependencySet>
+  </dependencySets>
+
+  <fileSets>
+    <!--
+    <fileSet>
+      <includes>
+        <include>target/classes/cfg/packager/*.xml</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <directory>${project.build.directory}</directory>
+      <outputDirectory>/lib</outputDirectory>
+      <includes>
+        <include>*.jar</include>
+      </includes>
+    </fileSet>
+    -->
+  </fileSets>
+
+  <files>
+    <file>
+      <source>target/jpos-core-${project.version}.jar</source>
+      <fileMode>0644</fileMode>
+    </file>
+  </files>
+</assembly>
+
