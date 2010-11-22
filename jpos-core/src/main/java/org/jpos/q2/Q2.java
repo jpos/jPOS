@@ -39,6 +39,8 @@ import java.io.*;
 import java.security.GeneralSecurityException;
 import java.util.*;
 
+import static java.util.ResourceBundle.*;
+
 /**
  * @author <a href="mailto:taherkordy@dpi2.dpi.net.ir">Alireza Taherkordi</a>
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
@@ -753,7 +755,7 @@ public class Q2 implements FileFilter, Runnable {
         return Q2_VERSION;
     }
     public static String getRevision() {
-        return Q2_REVISION;
+        return getBundle(Q2.class.getName()).getString ("revision");
     }
     public static String getBuildDate() {
         return Q2_BUILD_DATE.split(" ")[0];
