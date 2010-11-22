@@ -49,9 +49,6 @@ import static java.util.ResourceBundle.*;
  * @version $Revision$ $Date$
  */
 public class Q2 implements FileFilter, Runnable {
-    public static final String Q2_VERSION          = "@version@";
-    public static final String Q2_REVISION         = "@unofficial-build@";
-    public static final String Q2_BUILD_DATE       = "@date@";
     public static final String DEFAULT_DEPLOY_DIR  = "deploy";
     public static final String JMX_NAME            = "Q2";
     public static final String LOGGER_NAME         = "Q2";
@@ -524,7 +521,7 @@ public class Q2 implements FileFilter, Runnable {
     }
     public static String getVersionString() {
         return String.format ("jPOS %s %s (%s)%s",
-            getVersion(), getRevision(), getBuildDate(), getLicensee()
+            getVersion(), getRevision(), getBuildTimestamp(), getLicensee()
         );
     }
     public static String getLicensee() {
@@ -752,16 +749,13 @@ public class Q2 implements FileFilter, Runnable {
         q2.start();
     }
     public static String getVersion() {
-        return Q2_VERSION;
+        return getBundle("org/jpos/q2/buildinfo").getString ("version");
     }
     public static String getRevision() {
-        return getBundle(Q2.class.getName()).getString ("revision");
+        return getBundle("org/jpos/q2/revision").getString ("revision");
     }
-    public static String getBuildDate() {
-        return Q2_BUILD_DATE.split(" ")[0];
-    }
-    public static String getBuildTime() {
-        return Q2_BUILD_DATE.split(" ")[1];
+    public static String getBuildTimestamp() {
+        return getBundle("org/jpos/q2/buildinfo").getString ("buildTimestamp");
     }
     public static String getRelease() {
         return getVersion() + " " + getRevision();

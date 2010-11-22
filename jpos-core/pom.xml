@@ -117,7 +117,7 @@
             <argument>--pretty=format:revision=%h</argument>
             <argument>-n1</argument>
           </arguments>
-          <outputFile>target/classes/org/jpos/q2/Q2.properties</outputFile>
+          <outputFile>target/classes/org/jpos/q2/revision.properties</outputFile>
         </configuration>
       </plugin>
     </plugins>
