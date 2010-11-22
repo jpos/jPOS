@@ -20,20 +20,13 @@
   </dependencySets>
 
   <fileSets>
-    <!--
     <fileSet>
+      <directory>src/main/resources</directory>
+      <outputDirectory>/</outputDirectory>
       <includes>
-        <include>target/classes/cfg/packager/*.xml</include>
+        <include>cfg/packager/*.xml</include>
       </includes>
     </fileSet>
-    <fileSet>
-      <directory>${project.build.directory}</directory>
-      <outputDirectory>/lib</outputDirectory>
-      <includes>
-        <include>*.jar</include>
-      </includes>
-    </fileSet>
-    -->
   </fileSets>
 
   <files>
