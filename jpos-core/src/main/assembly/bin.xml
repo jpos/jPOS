@@ -34,6 +34,8 @@
       <source>target/jpos-core-${project.version}.jar</source>
       <fileMode>0644</fileMode>
     </file>
+    <file><source>../COPYRIGHT</source></file>
+    <file><source>../LICENSE</source></file>
   </files>
 </assembly>
 
