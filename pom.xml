@@ -30,12 +30,153 @@
       <url>http://www.opensource.org/licenses/agpl-v3.html</url>
     </license>
   </licenses>
-
   <scm>
     <connection>scm:git:git://github.com/jpos/jPOS.git</connection>
     <url>scm:git:git://github.com/jpos/jPOS.git</url>
     <developerConnection>scm:git:git://github.com/jpos/jPOS.git</developerConnection>
   </scm>
+  <developers>
+    <developer>
+      <id>apr</id>
+      <name>Alejandro Revilla</name>
+      <email>apr@jpos.org</name>
+    </developer>
+    <developer>
+      <id>vsalaman</id>
+      <name>Victor A. Salaman</name>
+      <email>salaman@teknos.com</name>
+    </developer>
+   <developer>
+     <id>hani</id> <!-- Silent Key - we miss you Hani! -->
+     <name>Hani S. Kirollow</name>
+     <email>h.samuel@egyptianbanks.net</email>
+   </developer>
+   <developer>
+     <id>marks</id>
+     <name>Mark Salter</name>
+     <email>marksalter@talktalk.net</email>
+   </developer>
+   <developer>
+     <id>dbergert</id>
+     <name>Dave Bergert</name>
+     <email>dbergert@olsdallas.com</email>
+   </developer>
+    <developer>
+      <id>eoin</id>
+      <name>Eoin Flood</name>
+      <email>eoin.flood@orbiscom.com</email>
+   </developer>
+   <developer>
+     <id>alireza</id>
+     <name>Alireza Taherkordi</name>
+     <email>a_taherkordi@yahoo.com</email>
+   </developer>
+   <developer>
+     <id>alwyn</id>
+     <name>Alwyn Schoeman</name>
+     <email>alwyn.schoeman@gmail.com</email>
+   </developer>
+   <developer>
+     <id>orrock</id>
+     <name>Andy Orrock</name>
+     <email>orrock@olsdallas.com</email>
+   </developer>
+   <developer>
+     <id>bharavi</id>
+     <name>Bharavi Gade</name>
+     <email>bharavi@mchek.com</email>
+   </developer>
+   <developer>
+     <id>john</id>
+     <name>John Overland</name>
+     <email>john@johnoverland.com</email>
+   </developer>
+   <developer>
+     <id>demsey</id>
+     <name>Robert Demski</name>
+     <email>Robert.Demski@wp.p</email>
+   </developer>
+   <developer>
+     <id>arunk</id>
+     <name>Arun Kumar U</name>
+     <email>bksys@vsnl.com</email>
+   </developer>
+   <developer>
+     <id>rajal</id>
+     <name>Rajal Shah</name>
+     <email>rshah@enstage.com</email>
+   </developer>
+   <developer>
+     <id>oconnor</id>
+     <name>Jonathan O'Connor</name>
+     <email>Jonathan.O'Connor@xcom.de</email>
+   </developer>
+   <developer>
+     <id>cyoung</id>
+     <name>Cameron Young</name>
+     <email>cn_young@attcanada.ca</email>
+   </developer>
+   <developer>
+     <id>alcarraz</id>
+     <name>Andres Alcarraz</name>
+     <email>alcarraz@fing.edu.uy</email>
+   </developer>
+   <developer>
+     <id>cquiroz</id>
+     <name>Carlos Quiroz</name>
+     <email>carlos.quiroz@welho.com</email>
+   </developer>
+   <developer>
+     <id>kleite</id>
+     <name>Kris Leite</name>
+     <email>kleite@imcsoftware.com</email>
+   </developer>
+   <developer>
+     <id>luar</id>
+     <name>Luar Roji</name>
+     <email>luar@roji.net</email>
+   </developer>
+   <developer>
+     <id>jgordy</id>
+     <name>Jeff Gordy</name>
+     <email>jeffgordy@gmail.com</email>
+   </developer>
+   <developer>
+     <id>tlk</id>
+     <name>Thomas L. Kjeldsen</name>
+     <email>tl@mayi.dk</email>
+   </developer>
+   <developer>
+     <id>amarques</id>
+     <name>Adrian Marques</name>
+     <email>amarques@cabal.com.uy</email>
+   </developer>
+   <developer>
+     <id>ansar</id>
+     <name>Ansar Ansari</name>
+     <email>Ansar.Ansari@bhnetwork.com</email>
+   </developer>
+   <developer>
+     <id>tushar</id>
+     <name>Tushar Vaish</name>
+     <email>Tushar.Vaish@bhnetwork.com</email>
+   </developer>
+   <developer>
+     <id>manoj</id>
+     <name>Manoj Krishna</name>
+     <email>Manoj.Krishna@bhnetwork.com</email>
+   </developer>
+   <developer>
+     <id>vishnu</id>
+     <name>Vishnu Pillai</name>
+     <email>vishnup@istsinc.com</email>
+   </developer>
+   <developer>
+     <id>anthony</id>
+     <name>Anthony Schexnaildre</name>
+     <email>anthony@duocash.com</email>
+   </developer>
+  </developers>
 
   <mailingLists>
     <mailingList>
@@ -46,7 +187,6 @@
       <archive>http://groups.google.com/group/jpos-users</archive>
     </mailingList>
   </mailingLists>
-
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
