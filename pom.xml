@@ -230,6 +230,14 @@
     </plugins>
   </build>
 
+  <distributionManagement>
+    <repository>
+      <id>jpos-repository</id>
+      <name>jPOS Central Repository</name>
+      <url>file:///tmp/jpos</url>
+    </repository>
+  </distributionManagement>
+
   <reporting>
     <plugins>
       <plugin>
