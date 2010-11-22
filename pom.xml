@@ -39,12 +39,12 @@
     <developer>
       <id>apr</id>
       <name>Alejandro Revilla</name>
-      <email>apr@jpos.org</name>
+      <email>apr@jpos.org</email>
     </developer>
     <developer>
       <id>vsalaman</id>
       <name>Victor A. Salaman</name>
-      <email>salaman@teknos.com</name>
+      <email>salaman@teknos.com</email>
     </developer>
    <developer>
      <id>hani</id> <!-- Silent Key - we miss you Hani! -->
@@ -203,7 +203,7 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>3.8.1</version>
+      <version>4.7</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
