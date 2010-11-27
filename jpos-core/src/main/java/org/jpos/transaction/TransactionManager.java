@@ -20,6 +20,7 @@ package org.jpos.transaction;
 
 import org.jdom.Element;
 import org.jpos.core.Configuration;
+import org.jpos.core.Configurable;
 import org.jpos.core.ConfigurationException;
 import org.jpos.q2.QBeanSupport;
 import org.jpos.q2.QFactory;
@@ -55,7 +56,7 @@ public class TransactionManager
     String queue;
     String tailLock;
     Thread[] threads;
-    List<TransactionStatusListener> statusListeners = new ArrayList<TransactionStatusListener>();
+    final List<TransactionStatusListener> statusListeners = new ArrayList<TransactionStatusListener>();
     boolean hasStatusListeners;
     int activeSessions;
     boolean debug;
@@ -82,6 +83,7 @@ public class TransactionManager
 
         groups = new HashMap();
         initParticipants (getPersist());
+        initStatusListeners (getPersist());
     }
     public void startService () throws Exception {
         NameRegistrar.register (getName (), this);
@@ -524,6 +526,18 @@ public class TransactionManager
         }
         return participantsChain;
     }
+
+    protected void initStatusListeners (Element config)  throws ConfigurationException{
+        final Iterator iter = config.getChildren ("status-listener").iterator();
+        while (iter.hasNext()) {
+            final Element e = (Element) iter.next();
+            final QFactory factory = getFactory();
+            final TransactionStatusListener listener = (TransactionStatusListener) factory.newInstance (e.getAttributeValue ("class"));
+            factory.setConfiguration (listener, config);
+            addListener(listener);
+        }
+    }
+
     protected void initParticipants (Element config) 
         throws ConfigurationException
     {
