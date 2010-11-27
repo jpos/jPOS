@@ -142,6 +142,8 @@
         <directory>src/main/resources</directory>
         <filtering>true</filtering>
         <excludes>
+         <exclude>**/deploy/*</exclude>
+         <exclude>**/log/*</exclude>
          <exclude>**/cfg/packager/*</exclude>
          <exclude>**/cfg/*</exclude>
         </excludes>

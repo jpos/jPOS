@@ -22,6 +22,8 @@
       <outputDirectory>/</outputDirectory>
       <includes>
         <include>cfg/packager/*.xml</include>
+        <include>deploy/*.xml</include>
+        <include>log/*.log</include>
       </includes>
     </fileSet>
   </fileSets>
