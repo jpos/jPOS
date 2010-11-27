@@ -1,5 +1,0 @@
-#!/bin/sh
-
-cd `dirname $0`/..
-ant -Dunofficial-build=`git describe --always` clean dist srcjar
-
