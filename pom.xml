@@ -196,9 +196,7 @@
 
   <modules>
     <module>jpos-core</module>
-    <!--
     <module>compat_1_5_2</module>
-    -->
   </modules>
 
   <dependencies>

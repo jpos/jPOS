@@ -1,0 +1,19 @@
+<assembly>
+  <id>bin</id>
+  <formats>
+    <format>tar.gz</format>
+    <format>zip</format>
+  </formats>
+  <baseDirectory>jpos-compat_1_5_2-${project.version}</baseDirectory>
+  <includeSiteDirectory>false</includeSiteDirectory>
+
+  <files>
+    <file>
+      <source>target/compat_1_5_2-${project.version}.jar</source>
+      <fileMode>0644</fileMode>
+    </file>
+    <file><source>../COPYRIGHT</source></file>
+    <file><source>../LICENSE</source></file>
+  </files>
+</assembly>
+
