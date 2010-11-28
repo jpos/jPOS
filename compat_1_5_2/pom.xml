@@ -22,7 +22,7 @@
   <dependencies>
     <dependency>
       <groupId>org.jpos</groupId>
-      <artifactId>jpos-core</artifactId>
+      <artifactId>jpos</artifactId>
       <version>1.8-SNAPSHOT</version>
     </dependency>
   </dependencies>

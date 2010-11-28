@@ -195,7 +195,7 @@
   </properties>
 
   <modules>
-    <module>jpos-core</module>
+    <module>jpos</module>
     <module>compat_1_5_2</module>
   </modules>
 
