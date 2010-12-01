@@ -79,4 +79,7 @@ public class TransactionStatusEvent {
     public String getStateAsString () {
         return state.toString();
     }
+    public Serializable getContext(){
+        return context;
+    }
 }
