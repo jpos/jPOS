@@ -12,7 +12,7 @@ Dependency:
     <dependency>
       <groupId>org.jpos</groupId>
       <artifactId>jpos-core</artifactId>
-      <version>1.8-SNAPSHOT</version>
+      <version>1.8.0</version>
     </dependency>
 
 Visit http://jpos.org/resources for further information.
