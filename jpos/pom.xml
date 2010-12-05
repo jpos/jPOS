@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>jpos</artifactId>
   <packaging>jar</packaging>
-  <name>jPOS</name>
+  <name>jPOS Core</name>
   <parent>
     <groupId>org.jpos</groupId>
     <artifactId>jpos-project</artifactId>
