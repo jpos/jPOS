@@ -1,0 +1,19 @@
+Maven Repository:
+
+    <repository>
+      <id>jpos</id>
+      <name>jPOS Central Repository</name>
+      <url>http://jpos.org/maven</url>
+      <layout>default</layout>
+    </repository>
+
+Dependency:
+
+    <dependency>
+      <groupId>org.jpos</groupId>
+      <artifactId>jpos-core</artifactId>
+      <version>1.8.0</version>
+    </dependency>
+
+Visit http://jpos.org/resources for further information.
+

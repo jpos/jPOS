@@ -1,0 +1,61 @@
+<txnmgr-test class="org.jpos.transaction.TransactionManager" logger="Q2">
+ <property name="queue"            value="TXNMGRTEST" />
+ <property name="sessions"         value="4" />
+ <property name="input-space" value="tspace:txnmgrtest" />
+ <property name="persistent-space" value="je:txnmgrtest:target/test-classes/txnmgrtest" />
+ <property name="debug"            value="true" />
+ <property name="retry-interval"   value="250" />
+ <property name="pause-timeout"   value="2000" />
+
+ <participant class="org.jpos.transaction.participant.Trace" logger="Q2">
+  <property name="trace" value="pre-retry" />
+ </participant>
+ <participant class="org.jpos.transaction.TestRetryParticipant" logger="Q2" />
+ <participant class="org.jpos.transaction.participant.Trace" logger="Q2">
+  <property name="trace" value="post-retry" />
+ </participant>
+ <participant class="org.jpos.transaction.TestPauseParticipant" logger="Q2" />
+ <participant class="org.jpos.transaction.participant.Trace" logger="Q2">
+  <property name="trace" value="post-pause" />
+ </participant>
+
+ <participant class="org.jpos.transaction.participant.Trace" logger="Q2">
+  <property name="trace" value="pre-switch" />
+ </participant>
+ <participant class="org.jpos.transaction.SwitchParticipant" logger="Q2">
+  <property name="switch" value="GroupA GroupB" />
+ </participant>
+ <participant class="org.jpos.transaction.SwitchParticipant" logger="Q2">
+  <property name="switch" value="GroupC" />
+ </participant>
+
+ <participant class="org.jpos.transaction.participant.Join" logger="Q2">
+  <participant class="org.jpos.transaction.participant.Trace" logger="Q2">
+   <property name="trace" value="Joined Participant 1" />
+  </participant>
+  <participant class="org.jpos.transaction.participant.Trace" logger="Q2">
+   <property name="trace" value="Joined Participant 2" />
+  </participant>
+  <participant class="org.jpos.transaction.participant.Trace" logger="Q2">
+   <property name="trace" value="Joined Participant 3" />
+  </participant>
+ </participant>
+ <participant class="org.jpos.transaction.participant.Debug" logger="Q2" />
+
+ <group name="GroupA">
+  <participant class="org.jpos.transaction.participant.Trace" logger="Q2">
+   <property name="trace" value="inGroupA" />
+  </participant>
+ </group>
+ <group name="GroupB">
+  <participant class="org.jpos.transaction.participant.Trace" logger="Q2">
+   <property name="trace" value="inGroupB" />
+  </participant>
+ </group>
+ <group name="GroupC">
+  <participant class="org.jpos.transaction.participant.Trace" logger="Q2">
+   <property name="trace" value="inGroupC" />
+  </participant>
+ </group>
+</txnmgr-test>
+

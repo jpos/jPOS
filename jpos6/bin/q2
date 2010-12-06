@@ -1,8 +1,0 @@
-#!/bin/sh
-
-cd `dirname $0`/../build || exit 1
-java -server \
-    -Dcom.sun.management.jmxremote \
-    -Djava.net.preferIPv4Stack=true \
-    -jar jpos.jar "$*"
-

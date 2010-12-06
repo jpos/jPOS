@@ -1,0 +1,40 @@
+<assembly>
+  <id>bin</id>
+  <formats>
+    <format>tar.gz</format>
+    <format>zip</format>
+  </formats>
+  <baseDirectory>jpos-${project.version}</baseDirectory>
+  <includeSiteDirectory>false</includeSiteDirectory>
+
+  <dependencySets>
+    <dependencySet>
+      <outputDirectory>/lib</outputDirectory>
+      <useProjectArtifact>true</useProjectArtifact>
+      <unpack>false</unpack>
+      <scope>runtime</scope>
+    </dependencySet>
+  </dependencySets>
+
+  <fileSets>
+    <fileSet>
+      <directory>src/main/resources</directory>
+      <outputDirectory>/</outputDirectory>
+      <includes>
+        <include>cfg/packager/*.xml</include>
+        <include>deploy/*.xml</include>
+        <include>log/*.log</include>
+      </includes>
+    </fileSet>
+  </fileSets>
+
+  <files>
+    <file>
+      <source>target/jpos-${project.version}.jar</source>
+      <fileMode>0644</fileMode>
+    </file>
+    <file><source>../COPYRIGHT</source></file>
+    <file><source>../LICENSE</source></file>
+  </files>
+</assembly>
+
