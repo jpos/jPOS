@@ -164,6 +164,7 @@
          <exclude>**/log/*</exclude>
          <exclude>**/cfg/packager/*</exclude>
          <exclude>**/cfg/*</exclude>
+         <exclude>**/bin/*</exclude>
         </excludes>
       </resource>
     </resources>
