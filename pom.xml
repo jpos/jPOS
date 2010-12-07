@@ -230,7 +230,7 @@
         <artifactId>maven-source-plugin</artifactId>
         <version>2.1.2</version>
         <configuration>
-          <attach>false</attach>
+          <attach>true</attach>
           <excludeResources>true</excludeResources>
         </configuration>
         <executions>
@@ -239,6 +239,24 @@
             <goals>
               <goal>jar</goal>
             </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.7</version>
+        <configuration>
+          <additionalJOption>-J-Xmx256m</additionalJOption>
+          <encoding>UTF-8</encoding>
+        </configuration>
+        <executions>
+          <execution>
+            <id>aggregate</id>
+            <goals>
+              <goal>aggregate</goal>
+            </goals>
+            <phase>site</phase>
           </execution>
         </executions>
       </plugin>
@@ -252,20 +270,6 @@
       <url>file:///tmp/jpos</url>
     </repository>
   </distributionManagement>
-
-  <reporting>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <version>2.7</version>
-        <configuration>
-          <additionalJOption>-J-Xmx256m</additionalJOption>
-          <encoding>UTF-8</encoding>
-        </configuration>
-      </plugin>
-    </plugins>
-  </reporting>
 
   <repositories>
     <repository>
