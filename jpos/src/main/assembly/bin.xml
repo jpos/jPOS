@@ -35,6 +35,28 @@
     </file>
     <file><source>../COPYRIGHT</source></file>
     <file><source>../LICENSE</source></file>
+    <file>
+      <source>src/main/resources/bin/q2</source>
+      <outputDirectory>/bin</outputDirectory>
+      <fileMode>0755</fileMode>
+      <filtered>true</filtered>
+    </file>
+    <file>
+      <source>src/main/resources/bin/bsh</source>
+      <outputDirectory>/bin</outputDirectory>
+      <fileMode>0755</fileMode>
+      <filtered>true</filtered>
+    </file>
+    <file>
+      <source>src/main/resources/bin/start</source>
+      <outputDirectory>/bin</outputDirectory>
+      <fileMode>0755</fileMode>
+    </file>
+    <file>
+      <source>src/main/resources/bin/stop</source>
+      <outputDirectory>/bin</outputDirectory>
+      <fileMode>0755</fileMode>
+    </file>
   </files>
 </assembly>
 
