@@ -116,7 +116,7 @@ public class ISOField
      * @param indent - optional indent string
      */
     public void dump (PrintStream p, String indent) {
-        if (value != null && value.startsWith("<?xml")) {
+        if (value != null && value.indexOf('<') >= 0) {
             p.print (indent +"<"+XMLPackager.ISOFIELD_TAG + " " +
                 XMLPackager.ID_ATTR +"=\"" +fieldNumber +"\"><![CDATA[");
             p.print (value);
