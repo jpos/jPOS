@@ -38,7 +38,7 @@ import java.util.*;
 public class ISOMsg extends ISOComponent 
     implements Cloneable, Loggeable, Externalizable
 {
-    protected Map fields;
+    protected Map<Integer,Object> fields;
     protected int maxField;
     protected ISOPackager packager;
     protected boolean dirty, maxFieldDirty;
@@ -54,7 +54,7 @@ public class ISOMsg extends ISOComponent
      * Creates an ISOMsg
      */
     public ISOMsg () {
-        fields = new TreeMap();                
+        fields = new TreeMap<Integer,Object>();
         maxField = -1;
         dirty = true;
         maxFieldDirty=true;
@@ -63,6 +63,7 @@ public class ISOMsg extends ISOComponent
     }
     /**
      * Creates a nested ISOMsg
+     * @param fieldNumber (in the outter ISOMsg) of this nested message
      */
     public ISOMsg (int fieldNumber) {
         this();
@@ -117,6 +118,7 @@ public class ISOMsg extends ISOComponent
 
     /**
      * Return this messages ISOHeader
+     * @return header associated with this ISOMsg, can be null
      */
     public ISOHeader getISOHeader() {
         return header;
@@ -152,11 +154,9 @@ public class ISOMsg extends ISOComponent
     }
     private void recalcMaxField() {
         maxField = 0;
-        Iterator iter = fields.keySet().iterator();
-        while (iter.hasNext()) {
-            Object obj = iter.next();
+        for (Object obj : fields.keySet()) {
             if (obj instanceof Integer)
-                maxField = Math.max (maxField, ((Integer)obj).intValue());
+                maxField = Math.max(maxField, ((Integer) obj).intValue());
         }
         maxFieldDirty = false;
     }
@@ -180,9 +180,8 @@ public class ISOMsg extends ISOComponent
         if (c != null) {
             Integer i = (Integer) c.getKey();
             fields.put (i, c);
-            if (i.intValue() > maxField) {
-                maxField = i.intValue();
-            }
+            if (i > maxField)
+                maxField = i;
             dirty = true;
         }
     }
@@ -190,6 +189,7 @@ public class ISOMsg extends ISOComponent
     * Creates an ISOField associated with fldno within this ISOMsg
     * @param fldno field number
     * @param value field value
+    * @throws ISOException on error
     */
     public void set(int fldno, String value) throws ISOException {
         if (value != null) {
@@ -216,6 +216,7 @@ public class ISOMsg extends ISOComponent
     * Creates an ISOField associated with fldno within this ISOMsg
     * @param fpath dot-separated field path (i.e. 63.2)
     * @param value field value
+    * @throws ISOException on error
     */
     public void set (String fpath, String value) throws ISOException {
         StringTokenizer st = new StringTokenizer (fpath, ".");
@@ -248,6 +249,7 @@ public class ISOMsg extends ISOComponent
      * Creates an ISOField associated with fldno within this ISOMsg
      * @param fpath dot-separated field path (i.e. 63.2)
      * @param c component
+     * @throws ISOException on error
      */
      public void set (String fpath, ISOComponent c) throws ISOException {
          StringTokenizer st = new StringTokenizer (fpath, ".");
@@ -281,6 +283,7 @@ public class ISOMsg extends ISOComponent
     * Creates an ISOField associated with fldno within this ISOMsg
     * @param fpath dot-separated field path (i.e. 63.2)
     * @param value binary field value
+    * @throws ISOException on error
     */
     public void set (String fpath, byte[] value) throws ISOException {
         StringTokenizer st = new StringTokenizer (fpath, ".");
@@ -303,6 +306,7 @@ public class ISOMsg extends ISOComponent
     * Creates an ISOBinaryField associated with fldno within this ISOMsg
     * @param fldno field number
     * @param value field value
+    * @throws ISOException on error
     */
     public void set (int fldno, byte[] value) throws ISOException {
         if (value != null)
@@ -325,13 +329,13 @@ public class ISOMsg extends ISOComponent
      * @param flds - array of fields to be unset from this ISOMsg
      */
     public void unset (int[] flds) {
-        for (int i=0; i<flds.length; i++)
-            unset (flds[i]);
+        for (int fld : flds)
+            unset(fld);
     }
     /**
      * Unset a field referenced by a fpath if it exists, otherwise ignore.
      * @param fpath dot-separated field path (i.e. 63.2)
-     * @throws ISOException 
+     * @throws ISOException on error
     */
     public void unset (String fpath) throws ISOException {
         StringTokenizer st = new StringTokenizer (fpath, ".");
@@ -354,7 +358,7 @@ public class ISOMsg extends ISOComponent
                 }
             } else {
                 m.unset(fldno);
-                if (m.hasFields() == false  && (lastfldno != -1)) {
+                if (!m.hasFields() && lastfldno != -1) {
                     lastm.unset(lastfldno);
                 }
                 break;
@@ -373,7 +377,7 @@ public class ISOMsg extends ISOComponent
     }
     /**
      * setup BitMap
-     * @exception ISOException
+     * @exception ISOException on error
      */
     public void recalcBitMap () throws ISOException {
         if (!dirty)
@@ -481,6 +485,7 @@ public class ISOMsg extends ISOComponent
      * Return the object value associated with the given field number
      * @param fldno the Field Number
      * @return the field Object
+     * @throws ISOException on error
      */
     public Object getValue(int fldno) throws ISOException {
         ISOComponent c = getComponent(fldno);
@@ -490,6 +495,7 @@ public class ISOMsg extends ISOComponent
      * Return the object value associated with the given field path
      * @param fpath field path
      * @return the field Object (may be null)
+     * @throws ISOException on error
      */
     public Object getValue (String fpath) throws ISOException {
         StringTokenizer st = new StringTokenizer (fpath, ".");
@@ -513,11 +519,12 @@ public class ISOMsg extends ISOComponent
      * get the component associated with the given field number
      * @param fpath field path
      * @return the Component
+     * @throws ISOException on error
      */
     public ISOComponent getComponent (String fpath) throws ISOException {
         StringTokenizer st = new StringTokenizer (fpath, ".");
         ISOMsg m = this;
-        ISOComponent obj = null;
+        ISOComponent obj;
         for (;;) {
             int fldno = Integer.parseInt(st.nextToken());
             obj = m.getComponent(fldno);
@@ -620,14 +627,16 @@ public class ISOMsg extends ISOComponent
      * @return true if all fields are present
      */
     public boolean hasFields (int[] fields) {
-        for (int i=0; i<fields.length; i++) 
-            if (!hasField (fields[i]))
+        for (int field : fields)
+            if (!hasField(field))
                 return false;
         return true;
     }
     /**
      * Check if a field indicated by a fpath is present
      * @param fpath dot-separated field path (i.e. 63.2)
+     * @return true if field present
+     * @throws ISOException on error
      */
      public boolean hasField (String fpath) throws ISOException {
          StringTokenizer st = new StringTokenizer (fpath, ".");
@@ -664,6 +673,7 @@ public class ISOMsg extends ISOComponent
         throw new ISOException ("setValue N/A in ISOMsg");
     }
     
+    @Override
     public Object clone() {
         try {
             ISOMsg m = (ISOMsg) super.clone();
@@ -671,12 +681,10 @@ public class ISOMsg extends ISOComponent
             if (header != null)
                 m.header = (ISOHeader) header.clone();
 
-            Iterator iter = fields.keySet().iterator();
-            while (iter.hasNext()) {
-                Integer k = (Integer) iter.next();
-                ISOComponent c = (ISOComponent) m.fields.get (k);
-                if (c instanceof ISOMsg) 
-                    m.fields.put (k, ((ISOMsg)c).clone());
+            for (Integer k : fields.keySet()) {
+                ISOComponent c = (ISOComponent) m.fields.get(k);
+                if (c instanceof ISOMsg)
+                    m.fields.put(k, ((ISOMsg) c).clone());
             }
             return m;
         } catch (CloneNotSupportedException e) {
@@ -693,11 +701,11 @@ public class ISOMsg extends ISOComponent
         try {
             ISOMsg m = (ISOMsg) super.clone();
             m.fields = new TreeMap();
-            for (int i=0; i<fields.length; i++) {
-                if (hasField(fields[i])) {
+            for (int field : fields) {
+                if (hasField(field)) {
                     try {
-                        m.set (getComponent(fields[i]));
-                    } catch (ISOException e) { 
+                        m.set(getComponent(field));
+                    } catch (ISOException e) {
                         // it should never happen
                     }
                 }
@@ -775,7 +783,7 @@ public class ISOMsg extends ISOComponent
      * moves a field (renumber)
      * @param oldFieldNumber old field number
      * @param newFieldNumber new field number
-     * @throws ISOException
+     * @throws ISOException on error
      */
     public void move (int oldFieldNumber, int newFieldNumber) 
         throws ISOException
@@ -921,20 +929,16 @@ public class ISOMsg extends ISOComponent
 
         // List keySet = new ArrayList (fields.keySet());
         // Collections.sort (keySet);
-        Iterator iter = fields.values().iterator();
-        while (iter.hasNext()) {
-            ISOComponent c = (ISOComponent) iter.next();
+        for (Object o : fields.values()) {
+            ISOComponent c = (ISOComponent) o;
             if (c instanceof ISOMsg) {
-                writeExternal (out, 'M', c);
-            }
-            else if (c instanceof ISOBinaryField) {
-                writeExternal (out, 'B', c);
-            }
-            else if (c instanceof ISOAmount) {
-                writeExternal (out, 'A', c);
-            }
-            else if (c instanceof ISOField) {
-                writeExternal (out, 'F', c);
+                writeExternal(out, 'M', c);
+            } else if (c instanceof ISOBinaryField) {
+                writeExternal(out, 'B', c);
+            } else if (c instanceof ISOAmount) {
+                writeExternal(out, 'A', c);
+            } else if (c instanceof ISOField) {
+                writeExternal(out, 'F', c);
             }
         }
         out.writeByte ('E');
