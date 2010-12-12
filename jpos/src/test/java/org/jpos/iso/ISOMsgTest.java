@@ -18,9 +18,6 @@
 
 package org.jpos.iso;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintStream;
 
 import junit.framework.TestCase;
 
@@ -105,9 +102,7 @@ public class ISOMsgTest extends TestCase
     
     public void testFPathISOComponent() throws Exception {
         ISOMsg m = new ISOMsg("0100");
-        
-        String mynull = null;
-        
+
         ISOField f100 = new ISOField(100,"value100");
         
         assertFalse(m.hasField("100"));
@@ -155,8 +150,6 @@ public class ISOMsgTest extends TestCase
         assertEquals("value1",copy.getString("102.1"));
         assertFalse(copy.hasField("102.2"));
         assertNull(copy.getString("102.2"));
-        
-        
     }
     
     public void testFPathISOEcho() throws Exception {
@@ -178,8 +171,7 @@ public class ISOMsgTest extends TestCase
         f103.set("98","value2");
         f103.set("99.1","99.1");
         m.set(f103);
-        
-        
+
         m.set(10,"10");
         m.set(11,"11");
         m.set(12,"12");
@@ -241,9 +233,5 @@ public class ISOMsgTest extends TestCase
         assertFalse(copyMsg.hasField(102));
         assertFalse(copyMsg.hasField("102.1"));
         assertFalse(copyMsg.hasField("102.2"));
-        
-        
-                
-        
     }
 }
