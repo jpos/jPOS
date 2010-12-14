@@ -32,7 +32,7 @@ import java.util.StringTokenizer;
  * @version $Id$
  * @see ISOComponent
  */
-
+@SuppressWarnings("unused")
 public class ISOUtil {
     public static final String ENCODING  = "ISO8859_1";
     public static final byte[] EBCDIC2ASCII = new byte[] {
@@ -222,6 +222,7 @@ public class ISOUtil {
      * @param len - desired len
      * @param c - padding char
      * @return padded string
+     * @throws ISOException on error
      */
     public static String padleft(String s, int len, char c)
         throws ISOException 
@@ -229,7 +230,7 @@ public class ISOUtil {
         s = s.trim();
         if (s.length() > len)
             throw new ISOException("invalid len " +s.length() + "/" +len);
-        StringBuffer d = new StringBuffer (len);
+        StringBuilder d = new StringBuilder (len);
         int fill = len - s.length();
         while (fill-- > 0)
             d.append (c);
@@ -247,12 +248,13 @@ public class ISOUtil {
      * @param c -
      *            padding char
      * @return padded string
+     * @throws ISOException if String's length greater than pad length
      */
     public static String padright(String s, int len, char c) throws ISOException {
         s = s.trim();
         if (s.length() > len)
             throw new ISOException("invalid len " + s.length() + "/" + len);
-        StringBuffer d = new StringBuffer(len);
+        StringBuilder d = new StringBuilder(len);
         int fill = len - s.length();
         d.append(s);
         while (fill-- > 0)
@@ -274,6 +276,7 @@ public class ISOUtil {
      * @param s - original string
      * @param len - desired len
      * @return zero padded string
+     * @throws ISOException if string's length greater than len
      */
     public static String zeropad(String s, int len) throws ISOException {
         return padleft(s, len, '0');
@@ -300,13 +303,13 @@ public class ISOUtil {
      * @return space padded string
      */
     public static String strpad(String s, int len) {
-        StringBuffer d = new StringBuffer(s);
+        StringBuilder d = new StringBuilder(s);
         while (d.length() < len)
             d.append(' ');
         return d.toString();
     }
     public static String zeropadRight (String s, int len) {
-        StringBuffer d = new StringBuffer(s);
+        StringBuilder d = new StringBuilder(s);
         while (d.length() < len)
             d.append('0');
         return d.toString();
@@ -364,7 +367,7 @@ public class ISOUtil {
     public static String bcd2str(byte[] b, int offset,
                         int len, boolean padLeft)
     {
-        StringBuffer d = new StringBuffer(len);
+        StringBuilder d = new StringBuilder(len);
         int start = (((len & 1) == 1) && padLeft) ? 1 : 0;
         for (int i=start; i < len+start; i++) {
             int shift = ((i & 1) == 1 ? 0 : 4);
@@ -383,10 +386,10 @@ public class ISOUtil {
      * @return String representation
      */
     public static String hexString(byte[] b) {
-        StringBuffer d = new StringBuffer(b.length * 2);
-        for (int i=0; i<b.length; i++) {
-            char hi = Character.forDigit ((b[i] >> 4) & 0x0F, 16);
-            char lo = Character.forDigit (b[i] & 0x0F, 16);
+        StringBuilder d = new StringBuilder(b.length * 2);
+        for (byte aB : b) {
+            char hi = Character.forDigit((aB >> 4) & 0x0F, 16);
+            char lo = Character.forDigit(aB & 0x0F, 16);
             d.append(Character.toUpperCase(hi));
             d.append(Character.toUpperCase(lo));
         }
@@ -398,7 +401,7 @@ public class ISOUtil {
      * @return String representation
      */
     public static String dumpString(byte[] b) {
-        StringBuffer d = new StringBuffer(b.length * 2);
+        StringBuilder d = new StringBuilder(b.length * 2);
         for (int i=0; i<b.length; i++) {
             char c = (char) b[i];
             if (Character.isISOControl (c)) {
@@ -441,11 +444,11 @@ public class ISOUtil {
      * (suitable for dumps and ASCII packaging of Binary fields
      * @param b - byte array
      * @param offset  - starting position
-     * @param len
+     * @param len the length
      * @return String representation
      */
     public static String hexString(byte[] b, int offset, int len) {
-        StringBuffer d = new StringBuffer(len * 2);
+        StringBuilder d = new StringBuilder(len * 2);
         len += offset;
         for (int i=offset; i<len; i++) {
             char hi = Character.forDigit ((b[i] >> 4) & 0x0F, 16);
@@ -465,7 +468,7 @@ public class ISOUtil {
     public static String bitSet2String (BitSet b) {
         int len = b.size();
         len = (len > 128) ? 128: len;
-        StringBuffer d = new StringBuffer(len);
+        StringBuilder d = new StringBuilder(len);
         for (int i=0; i<len; i++)
             d.append (b.get(i) ? '1' : '0');
         return d.toString();
@@ -737,7 +740,7 @@ public class ISOUtil {
         String buf = Long.toString(l);
         if (l < 100)
             buf = zeropad(buf, 3);
-        StringBuffer s = new StringBuffer(padleft (buf, len-1, ' ') );
+        StringBuilder s = new StringBuilder(padleft (buf, len-1, ' ') );
         s.insert(len-3, '.');
         return s.toString();
     }
@@ -749,7 +752,7 @@ public class ISOUtil {
      * @return normalized string suitable for XML Output
      */
     public static String normalize (String s, boolean canonical) {
-        StringBuffer str = new StringBuffer();
+        StringBuilder str = new StringBuilder();
 
         int len = (s != null) ? s.length() : 0;
         for (int i = 0; i < len; i++) {
@@ -810,7 +813,7 @@ public class ISOUtil {
      * @return 'protected' String
      */
     public static String protect (String s) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         int len   = s.length();
         int clear = len > 6 ? 6 : 0;
         int lastFourIndex = -1;
@@ -1217,9 +1220,9 @@ public class ISOUtil {
      * @return hexdump
      */
     public static String hexdump (byte[] b, int offset, int len) {
-        StringBuffer sb    = new StringBuffer ();
-        StringBuffer hex   = new StringBuffer ();
-        StringBuffer ascii = new StringBuffer ();
+        StringBuilder sb    = new StringBuilder ();
+        StringBuilder hex   = new StringBuilder ();
+        StringBuilder ascii = new StringBuilder ();
         String sep         = "  ";
         String lineSep     = System.getProperty ("line.separator");
 
@@ -1244,8 +1247,8 @@ public class ISOUtil {
                     sb.append (' ');
                     sb.append (ascii.toString());
                     sb.append (lineSep);
-                    hex   = new StringBuffer ();
-                    ascii = new StringBuffer ();
+                    hex   = new StringBuilder ();
+                    ascii = new StringBuilder ();
                     break;
             }
         }
@@ -1269,7 +1272,7 @@ public class ISOUtil {
      * @return string right padded with 'F's
      */
     public static String strpadf (String s, int len) {
-        StringBuffer d = new StringBuffer(s);
+        StringBuilder d = new StringBuilder(s);
         while (d.length() < len)
             d.append('F');
         return d.toString();
