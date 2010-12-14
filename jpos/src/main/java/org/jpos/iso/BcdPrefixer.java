@@ -24,6 +24,7 @@ package org.jpos.iso;
  * @author joconnor
  * @version $Revision$ $Date$
  */
+@SuppressWarnings("unused")
 public class BcdPrefixer implements Prefixer
 {
     /**
@@ -60,9 +61,7 @@ public class BcdPrefixer implements Prefixer
         this.nDigits = nDigits;
     }
 
-    /*
-	 * (non-Javadoc)
-	 * 
+    /**
 	 * @see org.jpos.iso.Prefixer#encodeLength(int, byte[])
 	 */
     public void encodeLength(int length, byte[] b)
@@ -74,9 +73,7 @@ public class BcdPrefixer implements Prefixer
         }
     }
 
-    /*
-	 * (non-Javadoc)
-	 * 
+    /**
 	 * @see org.jpos.iso.Prefixer#decodeLength(byte[], int)
 	 */
     public int decodeLength(byte[] b, int offset)
@@ -96,6 +93,6 @@ public class BcdPrefixer implements Prefixer
 	 */
     public int getPackedLength()
     {
-        return (nDigits + 1) / 2;
+        return (nDigits + 1) >> 1;
     }
 }
