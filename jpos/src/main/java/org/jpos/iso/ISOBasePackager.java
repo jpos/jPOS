@@ -32,12 +32,9 @@ import java.util.Map;
 /**
  * provides base functionality for the actual packagers
  *
- * @author apr@cs.com.uy
- * @version $Id$
- * @see org.jpos.iso.packager.ISO87APackager
- * @see org.jpos.iso.packager.ISO87BPackager
+ * @author apr
  */
-@SuppressWarnings ("unchecked unused")
+@SuppressWarnings ("unused")
 public abstract class ISOBasePackager implements ISOPackager, LogSource {
     protected ISOFieldPackager[] fld;
 
@@ -70,13 +67,15 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
      * @exception ISOException
      */
     public byte[] pack (ISOComponent m) throws ISOException {
-        LogEvent evt = new LogEvent (this, "pack");
+        LogEvent evt = null;
+        if (logger != null)
+            evt = new LogEvent (this, "pack");
         try {
             if (m.getComposite() != m) 
                 throw new ISOException ("Can't call packager on non Composite");
 
             ISOComponent c;
-            ArrayList v = new ArrayList(128);
+            ArrayList<byte[]> v = new ArrayList<byte[]>(128);
             Map fields = m.getChildren();
             int len = 0;
             int first = getFirstField();
@@ -121,9 +120,11 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
                         len += b.length;
                         v.add (b);
                     } catch (ISOException e) {
-                        evt.addMessage ("error packing field "+i);
-                        evt.addMessage (c);
-                        evt.addMessage (e);
+                        if (evt != null) {
+                            evt.addMessage ("error packing field "+i);
+                            evt.addMessage (c);
+                            evt.addMessage (e);
+                        }
                         throw e;
                     }
                 }
@@ -139,9 +140,11 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
                             len += b.length;
                             v.add (b);
                         } catch (ISOException e) {
-                            evt.addMessage ("error packing field "+(i+128));
-                            evt.addMessage (c);
-                            evt.addMessage (e);
+                            if (evt != null) {
+                                evt.addMessage ("error packing field "+(i+128));
+                                evt.addMessage (c);
+                                evt.addMessage (e);
+                            }
                             throw e;
                         }
                     }
@@ -155,24 +158,25 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
             if (m instanceof ISOMsg && headerLength>0) 
             {
             	byte[] h = ((ISOMsg) m).getHeader();
-            	if (h != null) 
-            		for (int j=0; j<h.length; j++)
-            			d[k++] = h[j];
+            	if (h != null) {
+                    System.arraycopy(h, 0, d, k, h.length);
+                    k += h.length;
+                }
             }
-
-            for (int i=0; i<v.size(); i++) {
-                b = (byte[]) v.get(i);
-                for (int j=0; j<b.length; j++)
-                    d[k++] = b[j];
+            for (byte[] bb : v) {
+                System.arraycopy(bb, 0, d, k, bb.length);
+                k += bb.length;
             }
-            if (logger != null)  // save a few CPU cycle if no logger available
+            if (evt != null)  // save a few CPU cycle if no logger available
                 evt.addMessage (ISOUtil.hexString (d));
             return d;
         } catch (ISOException e) {
-            evt.addMessage (e);
+            if (evt != null)
+                evt.addMessage (e);
             throw e;
         } finally {
-            Logger.log(evt);
+            if (evt != null)
+                Logger.log(evt);
         }
     }
 
