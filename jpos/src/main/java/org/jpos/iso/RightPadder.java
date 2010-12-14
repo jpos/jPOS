@@ -49,28 +49,28 @@ public class RightPadder implements Padder
     }
 
     /**
-	 * @see org.jpos.iso.Padder#pad(java.lang.String, int, char)
+	 * @see org.jpos.iso.Padder#pad(String, int)
 	 */
     public String pad(String data, int maxLength) throws ISOException
     {
-        StringBuffer padded = new StringBuffer(maxLength);
         int len = data.length();
-        if (len > maxLength)
-        {
-            throw new ISOException("Data is too long. Max = " + maxLength);
-        } else
-        {
+
+        if (len < maxLength) {
+            StringBuilder padded = new StringBuilder(maxLength);
             padded.append(data);
-            for (int i = maxLength - len; i > 0; i--)
-            {
+            for (; len < maxLength; len++) {
                 padded.append(pad);
             }
+            data = padded.toString();
         }
-        return padded.toString();
+        else if (len > maxLength) {
+            throw new ISOException("Data is too long. Max = " + maxLength);
+        }
+        return data;
     }
 
     /**
-	 * @see org.jpos.iso.Padder#unpad(java.lang.String, char)
+	 * @see org.jpos.iso.Padder#unpad(String)
 	 */
     public String unpad(String paddedData)
     {
