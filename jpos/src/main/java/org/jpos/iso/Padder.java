@@ -36,6 +36,7 @@ public interface Padder
 	 * @param maxLength
 	 *            The maximum length of the padded string.
 	 * @return A padded string.
+     * @throws ISOException on error
 	 */
     String pad(String data, int maxLength) throws ISOException;
 
@@ -45,6 +46,7 @@ public interface Padder
 	 * @param paddedData
 	 *            The string to unpad.
 	 * @return The unpadded string.
+     * @throws ISOException on error
 	 */
     String unpad(String paddedData) throws ISOException;
 }

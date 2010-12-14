@@ -47,8 +47,7 @@ public class RightTPadder extends RightPadder
     }
 
     /**
-	 * @see org.jpos.iso.Padder#pad(java.lang.String, int,
-	 *      char)
+	 * @see org.jpos.iso.Padder#pad(java.lang.String, int)
 	 */
     public String pad(String data, int maxLength) throws ISOException
     {
