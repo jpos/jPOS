@@ -278,5 +278,10 @@
       <url>http://download.oracle.com/maven</url>
       <layout>default</layout>
     </repository>
+    <repository>
+      <id>jline</id>
+      <name>JLine Project Repository</name>
+      <url>http://jline.sourceforge.net/m2repo</url>
+    </repository>
   </repositories>
 </project>
