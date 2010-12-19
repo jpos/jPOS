@@ -62,7 +62,11 @@ public class XMLPackager extends DefaultHandler
     public XMLPackager() throws ISOException {
         super();
         out = new ByteArrayOutputStream();
-        p   = new PrintStream(out);
+        try {
+            p   = new PrintStream(out, false, "utf-8");
+        } catch (UnsupportedEncodingException ignored) {
+            // utf-8 is a supported encoding
+        }
         stk = new Stack();
         try {
             reader = createXMLReader();
