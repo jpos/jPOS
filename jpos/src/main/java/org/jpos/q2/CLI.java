@@ -146,7 +146,7 @@ public class CLI extends Thread
     }
     private void initCompletors() throws IOException {
         List l = new LinkedList();
-        l.add(new ClassNameCompletor(this));
+        l.add(new CLIClassNameCompletor(this));
         completor = new ArgumentCompletor(l);
     }
     public interface Command {
