@@ -20,7 +20,6 @@ package org.jpos.transaction;
 
 import org.jdom.Element;
 import org.jpos.core.Configuration;
-import org.jpos.core.Configurable;
 import org.jpos.core.ConfigurationException;
 import org.jpos.q2.QBeanSupport;
 import org.jpos.q2.QFactory;
@@ -30,7 +29,7 @@ import org.jpos.util.*;
 import java.io.Serializable;
 import java.util.*;
 
-@SuppressWarnings("unchecked")
+@SuppressWarnings("unchecked unused")
 public class TransactionManager 
     extends QBeanSupport 
     implements Runnable, TransactionConstants, TransactionManagerMBean
@@ -47,6 +46,7 @@ public class TransactionManager
     public static final Integer DONE       = 2;
     public static final String  DEFAULT_GROUP = "";
     public static final long    MAX_PARTICIPANTS = 1000;  // loop prevention
+    public static final long    MAX_WAIT = 15000L;
 
     protected Map groups;
 
@@ -58,11 +58,14 @@ public class TransactionManager
     Thread[] threads;
     final List<TransactionStatusListener> statusListeners = new ArrayList<TransactionStatusListener>();
     boolean hasStatusListeners;
-    int activeSessions;
     boolean debug;
     boolean profiler;
     boolean doRecover;
+    int sessions;
+    int maxSessions;
+    int threshold;
     int maxActiveSessions;
+    int activeSessions;
     long head, tail;
     long retryInterval = 5000L;
     long retryTimeout  = 60000L;
@@ -88,35 +91,32 @@ public class TransactionManager
     public void startService () throws Exception {
         NameRegistrar.register (getName (), this);
         recover ();
-        int sessions = cfg.getInt ("sessions", 1);
-        threads = new Thread[sessions];
+        threads = new Thread[maxSessions];
         if (tps != null)
             tps.stop();
         tps = new TPS (cfg.getBoolean ("auto-update-tps", true));
         for (int i=0; i<sessions; i++) {
-            Thread t = new Thread (this);
-            t.setName (getName() + "-" + i);
-            t.setDaemon (false);
-            t.start ();
-            threads[i] = t;
+            new Thread(this).start();
         }
         if (psp.rdp (RETRY_QUEUE) != null)
             checkRetryTask();
     }
     public void stopService () throws Exception {
         NameRegistrar.unregister (getName ());
-        long sessions = cfg.getLong ("sessions", 1);
-        for (int i=0; i<sessions; i++) {
-            isp.out (queue, Boolean.FALSE, 60*1000);
+        for (int i = 0 ; i < threads.length; i++) {
+            if (threads[i] != null)
+                isp.out (queue, Boolean.FALSE, 60*1000);
         }
-        for (int i=0; i<sessions; i++) {
+        for (int i = 0 ; i < threads.length; i++) {
+            Thread thread = threads[i];
             try {
-                threads[i].join (60*1000);
+                if (thread != null)
+                    thread.join (60*1000);
+                threads[i] = null;
             } catch (InterruptedException e) {
-                getLog().warn ("Session " +i +" does not response - attempting to interrupt");
-                threads[i].interrupt();
+                getLog().warn ("Session " + thread.getName() +" does not response - attempting to interrupt");
+                thread.interrupt();
             }
-            threads[i] = null;
         }
         tps.stop();
     }
@@ -141,20 +141,36 @@ public class TransactionManager
     }
     public void run () {
         long id = 0;
-        int session;
+        int session = 0; // FIXME
         List members = null;
         Iterator iter = null;
         PausedTransaction pt;
         boolean abort = false;
         LogEvent evt = null;
         Profiler prof = null;
-        String threadName = Thread.currentThread().getName();
-        getLog().info (threadName + " start");
         long startTime = 0L;
         boolean paused;
-        synchronized (HEAD) { 
-            session = activeSessions++;
+        Thread thread = Thread.currentThread();
+        boolean assigned = false;
+        synchronized (threads) {
+            for (int i=0; i<threads.length; i++) {
+                if (threads[i] == null) {
+                    threads[i] = thread;
+                    session = i;
+                    assigned=true;
+                    break;
+                }
+            }
+            if (assigned)
+                activeSessions++;
         }
+        if (!assigned) {
+            getLog().warn ("Max sessions reached, new session not created");
+            return;
+        }
+        thread.setName (getName() + "-" + session);
+
+        getLog().info ("start " + thread);
         while (running()) {
             Serializable context = null;
             paused = false;
@@ -162,9 +178,24 @@ public class TransactionManager
                 if (hasStatusListeners)
                     notifyStatusListeners (session, TransactionStatusEvent.State.READY, id, "", null);
 
-                Object obj = isp.in (queue);
+                Object obj = isp.in (queue, MAX_WAIT);
                 if (obj == Boolean.FALSE)
                     continue;   // stopService ``hack''
+
+                if (obj == null) {
+                    if (session > sessions && getActiveSessions() > sessions)
+                        break; // we are an extra session, exit
+                    else
+                        continue;
+                }
+                if (session < sessions && // only initial sessions create extra sessions
+                    maxSessions > sessions &&
+                    getActiveSessions() < maxSessions &&
+                    id % sessions == 0 &&
+                    getOutstandingTransactions() > threshold)
+                {
+                        new Thread(this).start();
+                }
                 if (!(obj instanceof Serializable)) {
                     getLog().error (
                         "non serializable '" + obj.getClass().getName()
@@ -255,24 +286,30 @@ public class TransactionManager
 
                 if (evt != null) {
                     evt.addMessage (
-                        String.format ("head=%d, tail=%d, outstanding=%d, %s, elapsed=%dms",
+                        String.format ("head=%d, tail=%d, outstanding=%d, active-sessions=%d/%d, %s, elapsed=%dms",
                             head, tail, getOutstandingTransactions(),
+                            getActiveSessions(), maxSessions,
                             tps.toString(),
                             (System.currentTimeMillis() - startTime)
                         )
                     );
-                     if (prof != null)
+                    if (prof != null)
                         evt.addMessage (prof);
                     Logger.log (evt);
                     evt = null;
                 }
             }
         }
-        getLog().info (threadName + " stop");
-        synchronized (HEAD) {
+        synchronized (threads) {
+            for (int i=0; i<threads.length; i++) {
+                if (threads[i] == thread) {
+                    threads[i] = null;
+                    break;
+                }
+            }
             activeSessions--;
+            getLog().info ("stop " + Thread.currentThread() + ", active sessions=" + activeSessions);
         }
-        getLog().info ("stop " + Thread.currentThread() + ", active sessions=" + activeSessions);
     }
     public long getTail () {
         return tail;
@@ -296,6 +333,9 @@ public class TransactionManager
         retryTimeout  = cfg.getLong ("retry-timeout", retryTimeout);
         pauseTimeout  = cfg.getLong ("pause-timeout", pauseTimeout);
         maxActiveSessions  = cfg.getInt  ("max-active-sessions", 0);
+        sessions = cfg.getInt ("sessions", 1);
+        threshold = cfg.getInt ("threshold", sessions / 2);
+        maxSessions = cfg.getInt ("max-sessions", sessions);
     }
     public void addListener (TransactionStatusListener l) {
         synchronized (statusListeners) {
@@ -791,6 +831,9 @@ public class TransactionManager
     public int getRunningSessions() {
         return (int) (head - tail);
     }
+    public int getIdleSessions() {
+        return getActiveSessions() - getActiveSessions();
+    }
     private void notifyStatusListeners
             (int session, TransactionStatusEvent.State state, long id, String info, Serializable context)
     {
@@ -801,5 +844,4 @@ public class TransactionManager
             }
         }
     }
-
 }
