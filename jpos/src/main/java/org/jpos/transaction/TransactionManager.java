@@ -831,9 +831,6 @@ public class TransactionManager
     public int getRunningSessions() {
         return (int) (head - tail);
     }
-    public int getIdleSessions() {
-        return getActiveSessions() - getActiveSessions();
-    }
     private void notifyStatusListeners
             (int session, TransactionStatusEvent.State state, long id, String info, Serializable context)
     {
