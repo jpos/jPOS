@@ -114,7 +114,7 @@ public class TransactionManager
                     thread.join (60*1000);
                 threads[i] = null;
             } catch (InterruptedException e) {
-                getLog().warn ("Session " + thread.getName() +" does not response - attempting to interrupt");
+                getLog().warn ("Session " + thread.getName() +" does not respond - attempting to interrupt");
                 thread.interrupt();
             }
         }
