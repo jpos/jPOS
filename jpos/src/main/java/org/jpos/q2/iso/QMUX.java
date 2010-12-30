@@ -74,20 +74,17 @@ public class QMUX
             mtiMapping = new String[] { nomap, nomap, "0022446789" };
         addListeners ();
         unhandled = e.getChildTextTrim ("unhandled");
-        listenerRegistered = true;
-        sp.addListener (in, this);
         NameRegistrar.register ("mux."+getName (), this);
     }
     public void startService () {
         if (!listenerRegistered) {
             listenerRegistered = true;
             sp.addListener (in, this);
-            NameRegistrar.register ("mux."+getName (), this);
         }
     }
     public void stopService () {
-        sp.removeListener (in, this);
         listenerRegistered = false;
+        sp.removeListener (in, this);
     }
     public void destroyService () {
         NameRegistrar.unregister ("mux."+getName ());
