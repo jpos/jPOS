@@ -120,6 +120,7 @@
               <outputFile>target/classes/org/jpos/q2/revision.properties</outputFile>
             </configuration>
           </execution>
+          <!--
           <execution>
             <id>run-q2</id>
             <phase>integration-test</phase>
@@ -129,11 +130,12 @@
             <configuration>
               <mainClass>org.jpos.q2.Q2</mainClass>
               <arguments>
-                <argument>--deploydir</argument>
+                <argument>- -deploydir </argument>
                 <argument>target/deploy</argument>
               </arguments>
             </configuration>
           </execution>
+          -->
         </executions>
       </plugin>
       <plugin>
