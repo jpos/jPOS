@@ -45,8 +45,7 @@ import java.util.Vector;
  * allows the transmision and reception of ISO 8583 Messages
  * over a TCP/IP session.
  * <p>
- * It is not thread-safe, ISOMUX takes care of the
- * synchronization details
+ * This class is not thread-safe.
  * <p>
  * ISOChannel is Observable in order to suport GUI components
  * such as ISOChannelPanel.
