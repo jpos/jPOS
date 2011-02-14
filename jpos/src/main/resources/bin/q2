@@ -5,5 +5,5 @@ rm -f deploy/shutdown.xml
 java -server \
     -Xmx1G \
     -Dorg.mortbay.xml.XmlParser.NotValidating=true \
-    -jar ${project.build.finalName}.jar "$*"
+    -jar ${project.build.finalName}.jar $*
 
