@@ -29,7 +29,7 @@
     <dependency>
       <groupId>com.sleepycat</groupId>
       <artifactId>je</artifactId>
-      <version>4.0.103</version>
+      <version>4.1.7</version>
     </dependency>
     <dependency>
       <groupId>commons-cli</groupId>

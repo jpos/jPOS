@@ -45,8 +45,7 @@ import java.util.Vector;
  * allows the transmision and reception of ISO 8583 Messages
  * over a TCP/IP session.
  * <p>
- * It is not thread-safe, ISOMUX takes care of the
- * synchronization details
+ * This class is not thread-safe.
  * <p>
  * ISOChannel is Observable in order to suport GUI components
  * such as ISOChannelPanel.
@@ -1020,9 +1019,14 @@ public abstract class BaseChannel extends Observable
         this.maxPacketLength = maxPacketLength;
     }
     private void closeSocket() throws IOException {
-        if (socket != null) {
-            Socket s = socket; // we don't want more than one thread
-            socket = null;     // attempting to close the socket
+        Socket s = null;
+        synchronized (this) {
+            if (socket != null) {
+                s = socket; // we don't want more than one thread
+                socket = null;     // attempting to close the socket
+            }
+        }
+        if (s != null) {
             try {
                 s.setSoLinger (true, 5);
                 s.shutdownOutput();  // This will force a TCP FIN to be sent.
@@ -1033,7 +1037,6 @@ public abstract class BaseChannel extends Observable
             s.close ();
         }
     }
-    
     public Object clone(){
       try {
         BaseChannel channel = (BaseChannel)super.clone();

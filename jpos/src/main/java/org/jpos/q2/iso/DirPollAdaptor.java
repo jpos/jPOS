@@ -65,11 +65,11 @@ public class DirPollAdaptor
             ((LogSource) dpp).setLogger (
                 getLog().getLogger(), getLog().getRealm ()
             );
-            dirPoll.setProcessor (dpp);
         }
         if (dpp instanceof Configurable) {
             ((Configurable) dpp).setConfiguration (cfg);
         }
+        dirPoll.setProcessor (dpp);
     }
     protected void startService () throws Exception {
         new Thread (dirPoll).start ();
