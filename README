@@ -3,7 +3,7 @@ Maven Repository:
     <repository>
       <id>jpos</id>
       <name>jPOS Central Repository</name>
-      <url>http://jpos.org/maven</url>
+      <url> http://jpos.org/maven </url>
       <layout>default</layout>
     </repository>
 
