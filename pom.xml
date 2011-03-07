@@ -176,6 +176,11 @@
      <name>Anthony Schexnaildre</name>
      <email>anthony@duocash.com</email>
    </developer>
+   <developer>
+     <id>cbarham</id>
+     <name>Christopher Barham</name>
+     <email>cbarham@pobox.com</email>
+   </developer>
   </developers>
 
   <mailingLists>

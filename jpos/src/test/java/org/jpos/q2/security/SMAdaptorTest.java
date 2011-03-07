@@ -1,0 +1,107 @@
+package org.jpos.q2.security;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import org.jpos.q2.Q2;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
+
+@RunWith(MockitoJUnitRunner.class)
+public class SMAdaptorTest {
+    @Mock
+    Q2 q2;
+
+    @Test
+    public void testConstructor() throws Throwable {
+        SMAdaptor sMAdaptor = new SMAdaptor();
+        assertEquals("sMAdaptor.getLog().getRealm()", "org.jpos.q2.security.SMAdaptor", sMAdaptor.getLog().getRealm());
+        assertEquals("sMAdaptor.getState()", -1, sMAdaptor.getState());
+        assertTrue("sMAdaptor.isModified()", sMAdaptor.isModified());
+    }
+
+    @Test
+    public void testGetImpl() throws Throwable {
+        SMAdaptor sMAdaptor = new SMAdaptor();
+        sMAdaptor.setImpl("testSMAdaptorClazz");
+        String result = sMAdaptor.getImpl();
+        assertEquals("result", "testSMAdaptorClazz", result);
+    }
+
+    @Test
+    public void testGetImpl1() throws Throwable {
+        String result = new SMAdaptor().getImpl();
+        assertNull("result", result);
+    }
+
+    @Test
+    public void testInitServiceThrowsNullPointerException() throws Throwable {
+        SMAdaptor sMAdaptor = new SMAdaptor();
+        String[] args = new String[1];
+        args[0] = "testString";
+        sMAdaptor.setServer(q2);
+        try {
+            sMAdaptor.initService();
+            fail("Expected NullPointerException to be thrown");
+        } catch (NullPointerException ex) {
+            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull("sMAdaptor.sm", sMAdaptor.sm);
+            assertFalse("sMAdaptor.isModified()", sMAdaptor.isModified());
+        }
+    }
+
+    @Test
+    public void testInitServiceThrowsNullPointerException1() throws Throwable {
+        SMAdaptor sMAdaptor = new SMAdaptor();
+        try {
+            sMAdaptor.initService();
+            fail("Expected NullPointerException to be thrown");
+        } catch (NullPointerException ex) {
+            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull("sMAdaptor.sm", sMAdaptor.sm);
+            assertFalse("sMAdaptor.isModified()", sMAdaptor.isModified());
+        }
+    }
+
+    @Test
+    public void testSetImpl() throws Throwable {
+        SMAdaptor sMAdaptor = new SMAdaptor();
+        sMAdaptor.setImpl("testSMAdaptorClazz");
+        assertEquals("sMAdaptor.clazz", "testSMAdaptorClazz", sMAdaptor.clazz);
+    }
+
+    @Test
+    public void testStartServiceThrowsNullPointerException() throws Throwable {
+        SMAdaptor sMAdaptor = new SMAdaptor();
+        try {
+            sMAdaptor.startService();
+            fail("Expected NullPointerException to be thrown");
+        } catch (NullPointerException ex) {
+            assertNull("ex.getMessage()", ex.getMessage());
+        }
+    }
+
+    @Test
+    public void testStopService() throws Throwable {
+        SMAdaptor sMAdaptor = new SMAdaptor();
+        sMAdaptor.setName("testSMAdaptorName");
+        sMAdaptor.stopService();
+        assertEquals("sMAdaptor.getName()", "testSMAdaptorName", sMAdaptor.getName());
+    }
+
+    @Test
+    public void testStopServiceThrowsNullPointerException() throws Throwable {
+        SMAdaptor sMAdaptor = new SMAdaptor();
+        try {
+            sMAdaptor.stopService();
+            fail("Expected NullPointerException to be thrown");
+        } catch (NullPointerException ex) {
+            assertNull("ex.getMessage()", ex.getMessage());
+        }
+    }
+}

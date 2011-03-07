@@ -1,0 +1,92 @@
+package org.jpos.q2.qbean;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import org.jdom.Element;
+import org.junit.Test;
+
+public class LoggerAdaptorTest {
+
+    @Test
+    public void testConstructor() throws Throwable {
+        LoggerAdaptor loggerAdaptor = new LoggerAdaptor();
+        assertEquals("loggerAdaptor.getLog().getRealm()", "org.jpos.q2.qbean.LoggerAdaptor", loggerAdaptor.getLog().getRealm());
+        assertEquals("loggerAdaptor.getState()", -1, loggerAdaptor.getState());
+        assertTrue("loggerAdaptor.isModified()", loggerAdaptor.isModified());
+    }
+
+    @Test
+    public void testDestroyService() throws Throwable {
+        LoggerAdaptor loggerAdaptor = new LoggerAdaptor();
+        loggerAdaptor.destroyService();
+        assertTrue("Test completed without Exception", true);
+    }
+
+    @Test
+    public void testInitService() throws Throwable {
+        LoggerAdaptor loggerAdaptor = new LoggerAdaptor();
+        loggerAdaptor.initService();
+        assertNull("loggerAdaptor.logger.getName()", loggerAdaptor.logger.getName());
+    }
+
+    @Test
+    public void testStartService() throws Throwable {
+        LoggerAdaptor loggerAdaptor = new LoggerAdaptor();
+        loggerAdaptor.setPersist(new Element("testLoggerAdaptorName", "testLoggerAdaptorUri"));
+        loggerAdaptor.initService();
+        loggerAdaptor.startService();
+        assertFalse("loggerAdaptor.isModified()", loggerAdaptor.isModified());
+        assertNull("loggerAdaptor.logger.getName()", loggerAdaptor.logger.getName());
+    }
+
+    @Test
+    public void testStartServiceThrowsNullPointerException() throws Throwable {
+        LoggerAdaptor loggerAdaptor = new LoggerAdaptor();
+        try {
+            loggerAdaptor.startService();
+            fail("Expected NullPointerException to be thrown");
+        } catch (NullPointerException ex) {
+            assertNull("ex.getMessage()", ex.getMessage());
+            assertTrue("loggerAdaptor.isModified()", loggerAdaptor.isModified());
+            assertNull("loggerAdaptor.logger", loggerAdaptor.logger);
+        }
+    }
+
+    @Test
+    public void testStartServiceThrowsNullPointerException1() throws Throwable {
+        LoggerAdaptor loggerAdaptor = new LoggerAdaptor();
+        loggerAdaptor.initService();
+        try {
+            loggerAdaptor.startService();
+            fail("Expected NullPointerException to be thrown");
+        } catch (NullPointerException ex) {
+            assertNull("ex.getMessage()", ex.getMessage());
+            assertFalse("loggerAdaptor.isModified()", loggerAdaptor.isModified());
+            assertNull("loggerAdaptor.logger.getName()", loggerAdaptor.logger.getName());
+        }
+    }
+
+    @Test
+    public void testStopService() throws Throwable {
+        LoggerAdaptor loggerAdaptor = new LoggerAdaptor();
+        loggerAdaptor.init();
+        loggerAdaptor.stopService();
+        assertNull("loggerAdaptor.logger.getName()", loggerAdaptor.logger.getName());
+    }
+
+    @Test
+    public void testStopServiceThrowsNullPointerException() throws Throwable {
+        LoggerAdaptor loggerAdaptor = new LoggerAdaptor();
+        try {
+            loggerAdaptor.stopService();
+            fail("Expected NullPointerException to be thrown");
+        } catch (NullPointerException ex) {
+            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull("loggerAdaptor.logger", loggerAdaptor.logger);
+        }
+    }
+}
