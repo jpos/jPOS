@@ -91,7 +91,7 @@ public class CLIClassNameCompletor extends SimpleCompletor {
         // some JVMs do not report the core classes jar in the list of
         // class loaders.
         Class[] systemClasses = new Class[] {
-            String.class, javax.swing.JFrame.class
+            String.class, javax.swing.JFrame.class, org.jpos.q2.CLI.class
             };
 
         for (int i = 0; i < systemClasses.length; i++) {
@@ -125,6 +125,7 @@ public class CLIClassNameCompletor extends SimpleCompletor {
              {
                 continue;
             }
+
             if (!file.toString().endsWith (".jar"))
                 continue;
 
