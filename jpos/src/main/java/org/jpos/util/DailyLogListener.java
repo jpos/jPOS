@@ -50,11 +50,11 @@ public class DailyLogListener extends RotateLogListener{
     private static final int DEF_COMPRESSION = NONE;
     private static final int DEF_BUFFER_SIZE = 128*1024;//128 KB
     private static final String[] DEF_COMPRESSED_SUFFIX= {"",".gz",".zip"};
-    private static final Map COMPRESSION_FORMATS = new Hashtable();
+    private static final Map<String,Integer> COMPRESSION_FORMATS = new Hashtable<String,Integer>();
     static {
-        COMPRESSION_FORMATS.put("none", new Integer(NONE));
-        COMPRESSION_FORMATS.put("gzip", new Integer(GZIP));
-        COMPRESSION_FORMATS.put("zip", new Integer(ZIP));
+        COMPRESSION_FORMATS.put("none", NONE);
+        COMPRESSION_FORMATS.put("gzip", GZIP);
+        COMPRESSION_FORMATS.put("zip", ZIP);
     }
     
     /** Creates a new instance of DailyLogListener */
@@ -66,10 +66,10 @@ public class DailyLogListener extends RotateLogListener{
         String suffix = cfg.get("suffix", DEF_SUFFIX), prefix = cfg.get("prefix");
         setSuffix(suffix);
         setPrefix(prefix);
-        Integer formatObj = 
-                (Integer)COMPRESSION_FORMATS
+        Integer formatObj =
+                COMPRESSION_FORMATS
                 .get(cfg.get("compression-format","none").toLowerCase());
-        int compressionFormat = (formatObj == null) ? 0 : formatObj.intValue();
+        int compressionFormat = (formatObj == null) ? 0 : formatObj;
         setCompressionFormat(compressionFormat);
         setCompressedSuffix(cfg.get("compressed-suffix", 
                 DEF_COMPRESSED_SUFFIX[compressionFormat]));
@@ -268,15 +268,16 @@ public class DailyLogListener extends RotateLogListener{
 
     /**
      * Setter for property compressedExt.
-     * @param compressedExt New value of property compressedExt.
+     * @param compressedSuffix New value of property compressedExt.
      */
     public void setCompressedSuffix(String compressedSuffix) {
         this.compressedSuffix = compressedSuffix;
     }
 
     /**
-     *  Hook method that creates a thread to compress the file f.
-     * @returns a thread to compress the file and null if it is not necesary
+     * Hook method that creates a thread to compress the file f.
+     * @param f the file name
+     * @return a thread to compress the file and null if it is not necesary
      */
     protected Thread getCompressorThread(File f){
         return new Thread(new Compressor(f),"DailyLogListener-Compressor");
@@ -284,6 +285,9 @@ public class DailyLogListener extends RotateLogListener{
     
     /**
      *  Hook method that creates an output stream that will compress the data.
+     * @param f the file name
+     * @return ZIP/GZip OutputStream
+     * @throws java.io.IOException on error
      */
     protected OutputStream getCompressedOutputStream(File f) throws IOException{
         OutputStream os = new BufferedOutputStream(new FileOutputStream(f));
@@ -408,6 +412,7 @@ public class DailyLogListener extends RotateLogListener{
 
     /** 
      * Hook method to optionally compress the file
+     * @param logFile the file name
      */
     protected void compress(File logFile) {
         if (getCompressionFormat() != NONE){
@@ -415,9 +420,7 @@ public class DailyLogListener extends RotateLogListener{
             if (t != null)
                 t.start();
         }
-}
-
-    
+    }
 
     final class DailyRotate extends Rotate {
         public void run() {
@@ -426,6 +429,4 @@ public class DailyLogListener extends RotateLogListener{
         }
         
     }
-
-    
 }
