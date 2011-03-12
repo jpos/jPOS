@@ -7,14 +7,16 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
+@Ignore ("test causes problems, closes stdout")
 public class LoggerTest {
 
     @Test
     public void testAddListener() throws Throwable {
         Logger logger = new Logger();
-        LogListener l = new DailyLogListener();
+        LogListener l = new SimpleLogListener();
         logger.addListener(l);
         assertEquals("m_logger.listeners.size()", 1, logger.listeners.size());
         assertSame("m_logger.listeners.get(0)", l, logger.listeners.get(0));
@@ -30,7 +32,7 @@ public class LoggerTest {
     @Test
     public void testDestroy() throws Throwable {
         Logger logger = new Logger();
-        LogListener l = new RotateLogListener();
+        LogListener l = new SimpleLogListener();
         logger.addListener(l);
         logger.destroy();
         assertEquals("m_logger.listeners.size()", 0, logger.listeners.size());
@@ -40,7 +42,7 @@ public class LoggerTest {
     @Test
     public void testDestroy1() throws Throwable {
         Logger logger = new Logger();
-        logger.addListener(new RotateLogListener());
+        logger.addListener(new SimpleLogListener());
         logger.addListener(new ExceptionLogFilter());
         logger.destroy();
         assertEquals("m_logger.listeners.size()", 0, logger.listeners.size());

@@ -16,8 +16,10 @@ import org.jpos.core.ConfigurationException;
 import org.jpos.core.SimpleConfiguration;
 import org.jpos.core.SubConfiguration;
 import org.jpos.iso.channel.BASE24TCPChannel;
+import org.junit.Ignore;
 import org.junit.Test;
 
+@Ignore ("test causes problems, closes stdout")
 public class FilterLogListenerTest {
 
     @Test

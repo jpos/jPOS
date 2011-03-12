@@ -9,8 +9,10 @@ import static org.junit.Assert.fail;
 
 import org.jpos.core.Configuration;
 import org.jpos.core.SubConfiguration;
+import org.junit.Ignore;
 import org.junit.Test;
 
+@Ignore ("test causes problems, closes stdout")
 public class RotateLogListenerTest {
 
     @Test
