@@ -18,6 +18,7 @@ import org.jpos.iso.IFA_AMOUNT;
 import org.jpos.iso.IFA_BITMAP;
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOFieldPackager;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -421,10 +422,10 @@ public class GenericPackagerTest {
 
     @Test
     public void testSetConfigurationThrowsConfigurationException() throws Throwable {
-        GenericPackager genericValidatingPackager = new GenericValidatingPackager();
+        GenericPackager genericPackager = new GenericPackager();
         Configuration cfg = new SimpleConfiguration();
         try {
-            genericValidatingPackager.setConfiguration(cfg);
+            genericPackager.setConfiguration(cfg);
             fail("Expected ConfigurationException to be thrown");
         } catch (ConfigurationException ex) {
             assertEquals(
@@ -434,9 +435,9 @@ public class GenericPackagerTest {
             assertEquals("ex.getNested().getMessage()", "java.lang.ClassNotFoundException: org.apache.crimson.parser.XMLReaderImpl",
                     ex.getNested().getMessage());
             assertEquals("(GenericValidatingPackager) genericValidatingPackager.getLogger().getName()", "",
-                    genericValidatingPackager.getLogger().getName());
+                    genericPackager.getLogger().getName());
             assertEquals("(GenericValidatingPackager) genericValidatingPackager.getRealm()", "",
-                    genericValidatingPackager.getRealm());
+                    genericPackager.getRealm());
         }
     }
 
