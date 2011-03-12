@@ -1,0 +1,8 @@
+Usage: tmmon [tm-name] [tm-name] ...
+
+ can be used to monitor in real time a transaction manager
+
+ tmmon command without arguments provides a list of registered TransactionManagers
+
+ type 'q' to quit.
+ 
