@@ -130,12 +130,13 @@ public class ISOBinaryFieldPackager extends ISOFieldPackager
         try
         {
             int len = prefixer.decodeLength(b, offset);
-            if (len == -1)
-            {
+            if (len == -1) {
                 // The prefixer doesn't know how long the field is, so use
-    			// maxLength instead
+                // maxLength instead
                 len = getLength();
             }
+            else if (getLength() > 0 && len > getLength())
+                throw new ISOException("Field length " + len + " too long. Max: " + getLength());
             int lenLen = prefixer.getPackedLength();
             byte[] unpacked = interpreter.uninterpret(b, offset + lenLen, len);
             c.setValue(unpacked);
@@ -160,6 +161,8 @@ public class ISOBinaryFieldPackager extends ISOFieldPackager
             } else
             {
                 len = prefixer.decodeLength (readBytes (in, lenLen), 0);
+                if (getLength() > 0 && len > 0 && len > getLength())
+                    throw new ISOException("Field length " + len + " too long. Max: " + getLength());
             }
             int packedLen = interpreter.getPackedLength(len);
             byte[] unpacked = interpreter.uninterpret(readBytes (in, packedLen), 0, len);

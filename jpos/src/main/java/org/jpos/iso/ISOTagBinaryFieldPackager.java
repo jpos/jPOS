@@ -176,11 +176,13 @@ public class ISOTagBinaryFieldPackager extends ISOBinaryFieldPackager
             int tagLen = tagPrefixer.getPackedLength();
             c.setFieldNumber(tagPrefixer.decodeLength(b, offset));
             int len = prefixer.decodeLength(b, offset + tagLen);
-            if (len == -1)
+            if (len == -1) {
                 // The prefixer doesn't know how long the field is, so use
-    	        // maxLength instead
+                // maxLength instead
                 len = getLength();
-            
+            }
+            else if (getLength() > 0 && len > getLength())
+                throw new ISOException("Field length " + len + " too long. Max: " + getLength());
             int lenLen = prefixer.getPackedLength();
             byte[] unpacked = interpreter.uninterpret(b, offset + tagLen + lenLen, len);
             c.setValue(unpacked);
@@ -206,9 +208,11 @@ public class ISOTagBinaryFieldPackager extends ISOBinaryFieldPackager
             int len;
             if (lenLen == 0)
                 len = getLength();
-            else
+            else {
                 len = prefixer.decodeLength (readBytes (in, lenLen), 0);
-            
+                if (getLength() > 0 && len > 0 && len > getLength())
+                    throw new ISOException("Field length " + len + " too long. Max: " + getLength());
+            }
             int packedLen = interpreter.getPackedLength(len);
             byte[] unpacked = interpreter.uninterpret(readBytes (in, packedLen), 0, len);
             c.setValue(unpacked);
