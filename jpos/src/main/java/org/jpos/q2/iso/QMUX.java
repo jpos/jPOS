@@ -28,9 +28,11 @@ import org.jpos.space.Space;
 import org.jpos.space.SpaceFactory;
 import org.jpos.space.SpaceListener;
 import org.jpos.util.DefaultTimer;
+import org.jpos.util.LogSource;
 import org.jpos.util.Loggeable;
 import org.jpos.util.NameRegistrar;
 
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.*;
 
@@ -41,7 +43,7 @@ import java.util.*;
  */
 public class QMUX 
     extends QBeanSupport
-    implements SpaceListener, MUX, QMUXMBean, Loggeable
+    implements SpaceListener, MUX, QMUXMBean, Loggeable, ISOSource
 {
     final String nomap = "0123456789";
     final String DEFAULT_KEY = "41, 11";
@@ -332,15 +334,13 @@ public class QMUX
     }
     
     protected void processUnhandled (ISOMsg m) {
-        ISOSource source = m.getSource ();
-        if (source != null) {
-            Iterator iter = listeners.iterator();
-            if (iter.hasNext())
-                synchronized (this) { rxForwarded++; }
-            while (iter.hasNext())
-                if (((ISORequestListener)iter.next()).process (source, m))
-                    return;
-        }
+        ISOSource source = m.getSource () != null ? m.getSource() : this;
+        Iterator iter = listeners.iterator();
+        if (iter.hasNext())
+            synchronized (this) { rxForwarded++; }
+        while (iter.hasNext())
+            if (((ISORequestListener)iter.next()).process (source, m))
+                return;
         if (unhandled != null) {
             synchronized (this) { rxUnhandled++; }
             sp.out (unhandled, m, 120000);
@@ -356,6 +356,20 @@ public class QMUX
         }
         throw new ConfigurationException ("Invalid space " + uri);
     }
+
+    /**
+     * sends (or hands back) an ISOMsg
+     *
+     * @param m the Message to be sent
+     * @throws java.io.IOException
+     * @throws org.jpos.iso.ISOException
+     * @throws org.jpos.iso.ISOFilter.VetoException;
+     *
+     */
+    public void send(ISOMsg m) throws IOException, ISOException, ISOFilter.VetoException {
+        sp.out (out, m);
+    }
+
     public boolean isConnected() {
         if (ready != null && ready.length > 0) {
             for (int i=0; i<ready.length; i++)
