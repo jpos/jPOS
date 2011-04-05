@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>${groupId}</groupId>
+  <artifactId>${artifactId}</artifactId>
+  <version>${version}</version>
+  <packaging>jar</packaging>
+  <name>jPOS Sample Application</name>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.jpos</groupId>
+      <artifactId>jpos</artifactId>
+      <version>1.8.1-SNAPSHOT</version>
+    </dependency>
+  </dependencies>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <repositories>
+    <repository>
+      <id>jpos</id>
+      <name>jPOS Central Repository</name>
+      <url>http://jpos.org/maven</url>
+      <layout>default</layout>
+    </repository>
+  </repositories>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>2.3.2</version>
+        <configuration>
+          <source>1.6</source>
+          <target>1.6</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>2.3.1</version>
+        <configuration>
+          <archive>
+            <manifest>
+              <mainClass>org.jpos.q2.Q2</mainClass>
+              <addClasspath>true</addClasspath>
+              <classpathPrefix>lib/</classpathPrefix>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>2.2</version>
+        <configuration>
+          <descriptors>
+            <descriptor>src/main/assembly/bin.xml</descriptor>
+            <descriptor>src/main/assembly/dir.xml</descriptor>
+          </descriptors>
+          <appendAssemblyId>false</appendAssemblyId>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+  </plugins>
+
+   <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+        <excludes>
+         <exclude>**/deploy/*</exclude>
+         <exclude>**/log/*</exclude>
+         <exclude>**/cfg/packager/*</exclude>
+         <exclude>**/cfg/*</exclude>
+         <exclude>**/bin/*</exclude>
+        </excludes>
+      </resource>
+    </resources>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>doTests</id>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+              <workingDirectory>target/runtime</workingDirectory>
+              <skipTests>false</skipTests>
+            </configuration>
+          </plugin>
+        </plugins>
+        <resources>
+          <resource>
+            <directory>src/main/cfg</directory>
+            <targetPath>${basedir}/target/runtime/cfg</targetPath>
+          </resource>
+          <resource>
+            <directory>src/main/deploy</directory>
+            <targetPath>${basedir}/target/runtime/deploy</targetPath>
+          </resource>
+        </resources>
+      </build>
+    </profile>
+  </profiles>
+</project>

@@ -1,0 +1,64 @@
+#set( $symbol_pound = '#' )
+#set( $symbol_dollar = '$' )
+#set( $symbol_escape = '\' )
+<assembly>
+  <id>bin</id>
+  <formats>
+    <format>tar.gz</format>
+    <format>zip</format>
+  </formats>
+  <baseDirectory>${symbol_dollar}{artifactId}-${symbol_dollar}{project.version}</baseDirectory>
+  <includeSiteDirectory>false</includeSiteDirectory>
+
+  <dependencySets>
+    <dependencySet>
+      <outputDirectory>/lib</outputDirectory>
+      <useProjectArtifact>false</useProjectArtifact>
+      <unpack>false</unpack>
+      <scope>runtime</scope>
+    </dependencySet>
+  </dependencySets>
+
+  <fileSets>
+    <fileSet>
+      <directory>src/main/resources</directory>
+      <outputDirectory>/</outputDirectory>
+      <includes>
+        <include>cfg/*.xml</include>
+        <include>cfg/*.ks</include>
+        <include>cfg/context/*.xml</include>
+        <include>deploy/*.xml</include>
+      </includes>
+    </fileSet>
+  </fileSets>
+
+  <files>
+    <file>
+      <source>target/${symbol_dollar}{artifactId}-${symbol_dollar}{project.version}.jar</source>
+      <fileMode>0644</fileMode>
+    </file>
+    <file>
+      <source>src/main/resources/bin/q2</source>
+      <outputDirectory>/bin</outputDirectory>
+      <fileMode>0755</fileMode>
+      <filtered>true</filtered>
+    </file>
+    <file>
+      <source>src/main/resources/bin/bsh</source>
+      <outputDirectory>/bin</outputDirectory>
+      <fileMode>0755</fileMode>
+      <filtered>true</filtered>
+    </file>
+    <file>
+      <source>src/main/resources/bin/start</source>
+      <outputDirectory>/bin</outputDirectory>
+      <fileMode>0755</fileMode>
+    </file>
+    <file>
+      <source>src/main/resources/bin/stop</source>
+      <outputDirectory>/bin</outputDirectory>
+      <fileMode>0755</fileMode>
+    </file>
+  </files>
+</assembly>
+

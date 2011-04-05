@@ -1,0 +1,4 @@
+#!/bin/sh
+
+echo Stopping Q2
+echo '<shutdown/>' > `dirname $0`/../deploy/shutdown.xml
