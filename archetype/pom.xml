@@ -11,7 +11,7 @@
     <groupId>org.jpos</groupId>
     <artifactId>jpos-project</artifactId>
     <version>1.8.1-SNAPSHOT</version>
-    <relativePath>../../pom.xml</relativePath>
+    <relativePath>../pom.xml</relativePath>
   </parent>
 
   <build>
