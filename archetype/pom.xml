@@ -4,13 +4,12 @@
 
   <groupId>org.jpos</groupId>
   <artifactId>jpos-archetype</artifactId>
-  <version>1.8.1-SNAPSHOT</version>
   <packaging>maven-archetype</packaging>
   <name>jPOS Archetype</name>
   <parent>
     <groupId>org.jpos</groupId>
     <artifactId>jpos-project</artifactId>
-    <version>1.8.1-SNAPSHOT</version>
+    <version>1.8.2</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
