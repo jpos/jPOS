@@ -11,11 +11,12 @@
     <dependency>
       <groupId>org.jpos</groupId>
       <artifactId>jpos</artifactId>
-      <version>1.8.1-SNAPSHOT</version>
+      <version>${jpos.version}</version>
     </dependency>
   </dependencies>
 
   <properties>
+    <jpos.version>1.8.1-SNAPSHOT</jpos.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
