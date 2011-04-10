@@ -393,41 +393,22 @@ public class QMUX
                 st = new StringTokenizer(s, delimiter);
             else
                 st = new StringTokenizer(s);
-            arr = new String[st.countTokens()];
-            for (int i = 0; st.hasMoreTokens(); i++)
-                arr[i] = st.nextToken();
+
+            List<String> l = new ArrayList<String>();
+            while (st.hasMoreTokens()) {
+                String t = st.nextToken();
+                if ("header".equalsIgnoreCase(t)) {
+                    headerIsKey = true;
+                } else {
+                    l.add (t);
+                }
+            }
+            arr = l.toArray(new String[l.size()]);
         }
         return arr;
     }
     private String[] toStringArray(String s) {
         return toStringArray(s, null,null);
-    }
-    private int[] toIntArray (String s) 
-        throws ConfigurationException
-    {
-        if (s == null || s.length() == 0)
-            s = "41, 11";
-
-        StringTokenizer st = new StringTokenizer (s, ", ");
-        List<Integer> l = new ArrayList<Integer>();
-        for (int i=0; st.hasMoreTokens(); i++){
-            String nt = st.nextToken();
-            if ("header".equalsIgnoreCase(nt)) {
-                headerIsKey = true;
-            } else {
-                try {
-                    l.add(Integer.parseInt(nt));
-                } catch (NumberFormatException e) {
-                    throw new ConfigurationException (e);
-                }
-            }
-        }
-        int[] k = new int[l.size()];
-        int i=0;
-        for (int f : l) {
-            k[i++] = f;
-        }
-        return k;
     }
     private boolean shouldIgnore (ISOMsg m) {
         if (m != null && ignorerc != null 
