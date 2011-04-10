@@ -32,12 +32,8 @@ import org.jpos.q2.Q2;
 import org.jpos.space.Space;
 import org.jpos.space.SpaceFactory;
 import org.jpos.util.NameRegistrar;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.*;
 
-@Ignore("Starts Q2 and upsets following tests")
 public class QMUXTestCase implements ISOResponseListener {
     Q2 q2;
     Space sp;
@@ -91,8 +87,9 @@ public class QMUXTestCase implements ISOResponseListener {
 
     @After
     public void tearDown() throws Exception {
-        Thread.sleep(1500); // let the thing run
+        Thread.sleep(2000L); // let the thing run
         q2.shutdown(true);
+        Thread.sleep(2000L);
     }
 
     private ISOMsg createMsg(String stan) throws ISOException {
