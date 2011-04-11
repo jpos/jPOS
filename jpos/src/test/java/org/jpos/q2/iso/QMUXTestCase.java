@@ -120,7 +120,9 @@ public class QMUXTestCase implements ISOResponseListener {
         ISOMsg response = new ISOMsg();
         for (int i = 0; i < requests.length; i++) {
             request.setMTI(requests[i]);
+            request.set (11, Integer.toString(i));
             response.setMTI(responses[i]);
+            response.set (11, Integer.toString(i));
             assertEquals(((QMUX) mux).getKey(request), ((QMUX) mux).getKey(response));
         }
     }

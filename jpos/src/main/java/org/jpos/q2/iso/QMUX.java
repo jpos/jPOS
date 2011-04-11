@@ -181,7 +181,7 @@ public class QMUX
             sb.append(ISOUtil.hexString(m.getHeader()));
             sb.append ('.');
         }
-
+        boolean hasFields = false;
         for (int i = 0; i < key.length; i++) {
             String f = key[i];
             String v = m.getString(f);
@@ -195,9 +195,12 @@ public class QMUX
                 if ("41".equals(f)) {
                     v = ISOUtil.zeropad(v.trim(),16); // BIC ANSI to ISO hack
                 }
+                hasFields = true;
+                sb.append(v);
             }
-            sb.append(v);
         }
+        if (!hasFields)
+            throw new ISOException ("Key fields not found - not sending " + sb.toString());
         return sb.toString();
     }
     private String mapMTI (String mti) {
