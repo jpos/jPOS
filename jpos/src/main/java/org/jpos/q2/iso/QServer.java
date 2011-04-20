@@ -318,12 +318,13 @@ public class QServer
                 ISOChannel c = server.getLastConnectedISOChannel();
                 if (c == null)
                     throw new ISOException ("Server has no active connections");
+                if (!c.isConnected())
+                    throw new ISOException ("Client disconnected");
                 c.send(m);
             } catch (Exception e) { 
                 getLog().warn ("notify", e);
             }
         }
-        
     }
 
     /*
