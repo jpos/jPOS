@@ -40,6 +40,7 @@
       <id>apr</id>
       <name>Alejandro Revilla</name>
       <email>apr@jpos.org</email>
+      <timezone>-3</timezone>
     </developer>
     <developer>
       <id>vsalaman</id>
