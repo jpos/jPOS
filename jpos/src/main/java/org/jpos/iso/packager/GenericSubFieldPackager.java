@@ -113,14 +113,14 @@ public class GenericSubFieldPackager extends GenericPackager
         try 
         {
             ISOComponent c;
-            List<byte[]> l = new ArrayList();
+            List<byte[]> l = new ArrayList<byte[]>();
             Map fields = m.getChildren();
             int len = 0;
 
             if (emitBitMap()) 
             {
                 // BITMAP (-1 in HashTable)
-                c = (ISOComponent) fields.get (new Integer(-1));
+                c = (ISOComponent) fields.get (-1);
                 byte[] b = getBitMapfieldPackager().pack(c);
                 len += b.length;
                 l.add(b);
@@ -128,7 +128,7 @@ public class GenericSubFieldPackager extends GenericPackager
 
             for (int i=getFirstField(); i<=m.getMaxField(); i++) 
             {
-                c = (ISOComponent) fields.get (new Integer(i));
+                c = (ISOComponent) fields.get (i);
                 if (c == null && !emitBitMap())
                     c = new ISOField (i, "");
                 if (c != null) {
