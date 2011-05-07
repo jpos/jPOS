@@ -111,6 +111,8 @@ public class QMUX
     public ISOMsg request (ISOMsg m, long timeout) throws ISOException {
         String key = getKey (m);
         String req = key + ".req";
+        if (sp.rdp (req) != null)
+            throw new ISOException ("Duplicate key '" + req + "' detected");
         sp.out (req, m);
         m.setDirection(0);
         if (timeout > 0)
@@ -265,6 +267,8 @@ public class QMUX
     {
         String key = getKey (m);
         String req = key + ".req";
+        if (sp.rdp (req) != null)
+            throw new ISOException ("Duplicate key '" + req + "' detected.");
         m.setDirection(0);
         AsyncRequest ar = new AsyncRequest (rl, handBack);
         synchronized (ar) {
