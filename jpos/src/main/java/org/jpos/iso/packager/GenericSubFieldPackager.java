@@ -54,6 +54,8 @@ public class GenericSubFieldPackager extends GenericPackager
         {
             if (m.getComposite() != m) 
                 throw new ISOException ("Can't call packager on non Composite");
+            if (b.length == 0)
+                return 0; // nothing to do
             if (logger != null)  // save a few CPU cycle if no logger available
                 evt.addMessage (ISOUtil.hexString (b));
 

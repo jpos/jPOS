@@ -140,33 +140,23 @@ public class GenericSubFieldPackagerTest {
     }
 
     @Test
-    public void testUnpackThrowsISOException6() throws Throwable {
+    public void testReturnsZero() throws Throwable {
         byte[] b = new byte[0];
         GenericSubFieldPackager genericSubFieldPackager = new GenericSubFieldPackager();
         genericSubFieldPackager.setLogger(new Logger(), "testGenericSubFieldPackagerRealm");
-        try {
-            genericSubFieldPackager.unpack(new ISOMsg("testGenericSubFieldPackagerMti"), b);
-            fail("Expected ISOException to be thrown");
-        } catch (ISOException ex) {
-            assertEquals("ex.getMessage()", "java.lang.NullPointerException", ex.getMessage());
-            assertNull("ex.getNested().getMessage()", ex.getNested().getMessage());
-        }
+        int l = genericSubFieldPackager.unpack(new ISOMsg("testGenericSubFieldPackagerMti"), b);
+        assertEquals (0L, (long) l);
     }
 
     @Test
-    public void testUnpackThrowsISOException7() throws Throwable {
+    public void testUnpackReturnsZero1() throws Throwable {
         byte[] b = new byte[0];
         ISOFieldPackager[] fld = new ISOFieldPackager[0];
         GenericSubFieldPackager genericSubFieldPackager = new GenericSubFieldPackager();
         genericSubFieldPackager.setFieldPackager(fld);
         genericSubFieldPackager.setLogger(new Logger(), "testGenericSubFieldPackagerRealm");
-        try {
-            genericSubFieldPackager.unpack(new ISOMsg("testGenericSubFieldPackagerMti"), b);
-            fail("Expected ISOException to be thrown");
-        } catch (ISOException ex) {
-//            assertEquals("ex.getMessage()", "java.lang.ArrayIndexOutOfBoundsException: 1", ex.getMessage());
-//            assertEquals("ex.getNested().getMessage()", "1", ex.getNested().getMessage());
-        }
+        int l = genericSubFieldPackager.unpack(new ISOMsg("testGenericSubFieldPackagerMti"), b);
+        assertEquals (0L, (long) l);
     }
 
     @Test
