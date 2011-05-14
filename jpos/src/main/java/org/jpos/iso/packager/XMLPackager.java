@@ -58,6 +58,8 @@ public class XMLPackager extends DefaultHandler
     public static final String TYPE_BINARY   = "binary";
     public static final String TYPE_BITMAP   = "bitmap";
     public static final String HEADER_TAG    = "header";
+    public static final String ENCODING_ATTR = "encoding";
+    public static final String ASCII_ENCODING= "ascii";
 
     public XMLPackager() throws ISOException {
         super();
@@ -216,7 +218,9 @@ public class XMLPackager extends DefaultHandler
                 m.set (ic);
                 stk.push (ic);
             } else if (HEADER_TAG.equals (name)) {
-                stk.push (new BaseHeader());
+                BaseHeader bh = new BaseHeader();
+                bh.setAsciiEncoding (ASCII_ENCODING.equalsIgnoreCase(atts.getValue(ENCODING_ATTR)));
+                stk.push (bh);
             }
         } catch (ISOException e) {
             throw new SAXException 
@@ -240,9 +244,13 @@ public class XMLPackager extends DefaultHandler
             }
         }
         else if (obj instanceof BaseHeader) {
-            ((BaseHeader)obj).unpack (
-                ISOUtil.hex2byte (new String(ch,start,length))
-            );
+            BaseHeader bh = (BaseHeader) obj;
+            String s = new String(ch,start,length);
+            if (bh.isAsciiEncoding()) {
+                bh.unpack (s.getBytes());
+            } else {
+                bh.unpack (ISOUtil.hex2byte (s));
+            }
         }
     }
     public void endElement (String ns, String name, String qname) 

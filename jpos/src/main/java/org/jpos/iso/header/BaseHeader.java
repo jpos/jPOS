@@ -34,6 +34,7 @@ public class BaseHeader implements ISOHeader, Loggeable {
      */
     private static final long serialVersionUID = 8674535007934468935L;
     protected byte[] header;
+    transient boolean asciiEncoding = false;
 
     /**
      * Default Constructor.
@@ -44,22 +45,16 @@ public class BaseHeader implements ISOHeader, Loggeable {
         header = null;
     }
 
-    /**
-     * Create a new Header from a byte array.
-     */
     public BaseHeader (byte[] header) {
         unpack(header);
     }
 
-    /** 
-     * Clone this Header.
-     */
-    public Object clone() 
+    public Object clone()
     {
         try {
             BaseHeader h = (BaseHeader) super.clone();
             if (this.header != null)
-                h.header = (byte[]) this.header.clone();
+                h.header = this.header.clone();
             return h;
         } catch (CloneNotSupportedException e) {
             throw new InternalError();
@@ -88,10 +83,15 @@ public class BaseHeader implements ISOHeader, Loggeable {
     public void dump (PrintStream p, String indent) {
         if (header != null) {
             p.println (
-                indent 
+                indent
               + "<header>" + ISOUtil.hexString (header) + "</header>"
             );
         }
     }
+    public void setAsciiEncoding(boolean asciiEncoding) {
+        this.asciiEncoding = asciiEncoding;
+    }
+    public boolean isAsciiEncoding() {
+        return asciiEncoding;
+    }
 }
-
