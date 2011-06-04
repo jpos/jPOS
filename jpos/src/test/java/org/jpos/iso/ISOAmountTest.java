@@ -32,7 +32,8 @@ public class ISOAmountTest {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         iSOAmount.dump(new PrintStream(baos), ":-o");
         // then
-        String expected = ":-o<field id=\"28\" currency=\"831\" type=\"amount\" value=\"10\"/>\n";
+        String lineSep     = System.getProperty ("line.separator");
+        String expected = ":-o<field id=\"28\" currency=\"831\" type=\"amount\" value=\"10\"/>" + lineSep;
         assertThat(baos.toString(), is(expected));
     }
 
