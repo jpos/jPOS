@@ -29,7 +29,8 @@ public class DumpableTest {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream p = new PrintStream(baos);
         dumpable.dump(p, ":-o");
-        String expected = ":-o<testingDumpable>\n0000  39 38 37 36 35 34 33 32  31                       987654321\n:-o</testingDumpable>\n";
+        String lineSep     = System.getProperty ("line.separator");
+        String expected = ":-o<testingDumpable>" + lineSep + "0000  39 38 37 36 35 34 33 32  31                       987654321" + lineSep + ":-o</testingDumpable>" + lineSep;
         assertThat(baos.toString(), is(expected));
     }
 }
