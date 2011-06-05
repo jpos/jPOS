@@ -102,10 +102,10 @@ public class IFE_BITMAP extends ISOBitMapPackager {
         c.setValue(bmap);
         bytes = b1.length;
         // check for 2nd bit map indicator
-        if ((bytes > 16) && bmap.get(1)==false) { 
+        if ((bytes > 16) && !bmap.get(1)) {
           bytes = 16; 
         // check for 3rd bit map indicator
-        } else if ((bytes > 32) && bmap.get(65)==false) { 
+        } else if ((bytes > 32) && !bmap.get(65)) {
           bytes = 32; 
         } 
         return bytes;

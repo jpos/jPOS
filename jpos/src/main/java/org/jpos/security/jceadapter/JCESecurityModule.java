@@ -543,7 +543,7 @@ public class JCESecurityModule extends BaseSMAdapter {
                 clearKeyBytes = ISOUtil.concat(clearKeyBytes, br);
                 break;
         }
-        if (true && !Util.isDESParityAdjusted(clearKeyBytes))
+        if (!Util.isDESParityAdjusted(clearKeyBytes))
             throw new JCEHandlerException("Parity not adjusted");
         key = jceHandler.formDESKey(secureDESKey.getKeyLength(), clearKeyBytes);
         return key;
