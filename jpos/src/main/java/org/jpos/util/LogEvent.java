@@ -35,7 +35,7 @@ import java.util.*;
 public class LogEvent {
     private LogSource source;
     private String tag;
-    private List<Object> payLoad;
+    private final List<Object> payLoad;
     private long createdAt;
     private long dumpedAt;
 
@@ -43,7 +43,7 @@ public class LogEvent {
         super();
         this.tag = tag;
         createdAt = System.currentTimeMillis();
-        this.payLoad = new ArrayList<Object>();
+        this.payLoad = Collections.synchronizedList (new ArrayList<Object>());
     }
 
     public LogEvent () {
@@ -114,50 +114,52 @@ public class LogEvent {
                 newIndent = indent + "  ";
             } else
                 newIndent = "";
-            for (Object o : payLoad) {
-                if (o instanceof Loggeable)
-                    ((Loggeable) o).dump(p, newIndent);
-                else if (o instanceof SQLException) {
-                    SQLException e = (SQLException) o;
-                    p.println(newIndent + "<SQLException>"
-                            + e.getMessage() + "</SQLException>");
-                    p.println(newIndent + "<SQLState>"
-                            + e.getSQLState() + "</SQLState>");
-                    p.println(newIndent + "<VendorError>"
-                            + e.getErrorCode() + "</VendorError>");
-                    ((Throwable) o).printStackTrace(p);
-                } else if (o instanceof Throwable) {
-                    p.println(newIndent + "<exception name=\""
-                            + ((Throwable) o).getMessage() + "\">");
-                    p.print(newIndent);
-                    ((Throwable) o).printStackTrace(p);
-                    p.println(newIndent + "</exception>");
-                } else if (o instanceof Object[]) {
-                    Object[] oa = (Object[]) o;
-                    p.print(newIndent + "[");
-                    for (int j = 0; j < oa.length; j++) {
-                        if (j > 0)
-                            p.print(",");
-                        p.print(oa[j].toString());
+            synchronized (payLoad) {
+                for (Object o : payLoad) {
+                    if (o instanceof Loggeable)
+                        ((Loggeable) o).dump(p, newIndent);
+                    else if (o instanceof SQLException) {
+                        SQLException e = (SQLException) o;
+                        p.println(newIndent + "<SQLException>"
+                                + e.getMessage() + "</SQLException>");
+                        p.println(newIndent + "<SQLState>"
+                                + e.getSQLState() + "</SQLState>");
+                        p.println(newIndent + "<VendorError>"
+                                + e.getErrorCode() + "</VendorError>");
+                        ((Throwable) o).printStackTrace(p);
+                    } else if (o instanceof Throwable) {
+                        p.println(newIndent + "<exception name=\""
+                                + ((Throwable) o).getMessage() + "\">");
+                        p.print(newIndent);
+                        ((Throwable) o).printStackTrace(p);
+                        p.println(newIndent + "</exception>");
+                    } else if (o instanceof Object[]) {
+                        Object[] oa = (Object[]) o;
+                        p.print(newIndent + "[");
+                        for (int j = 0; j < oa.length; j++) {
+                            if (j > 0)
+                                p.print(",");
+                            p.print(oa[j].toString());
+                        }
+                        p.println("]");
+                    } else if (o instanceof Element) {
+                        p.println("");
+                        p.println(newIndent + "<![CDATA[");
+                        XMLOutputter out = new XMLOutputter(Format.getPrettyFormat());
+                        out.getFormat().setLineSeparator("\n");
+                        try {
+                            out.output((Element) o, p);
+                        } catch (IOException ex) {
+                            ex.printStackTrace(p);
+                        }
+                        p.println("");
+                        p.println(newIndent + "]]>");
+                    } else if (o != null) {
+                        p.println(newIndent + o.toString());
+                    } else {
+                        p.println(newIndent + "null");
                     }
-                    p.println("]");
-                } else if (o instanceof Element) {
-                    p.println("");
-                    p.println(newIndent + "<![CDATA[");
-                    XMLOutputter out = new XMLOutputter(Format.getPrettyFormat());
-                    out.getFormat().setLineSeparator("\n");
-                    try {
-                        out.output((Element) o, p);
-                    } catch (IOException ex) {
-                        ex.printStackTrace(p);
-                    }
-                    p.println("");
-                    p.println(newIndent + "]]>");
-                } else if (o != null) {
-                    p.println(newIndent + o.toString());
-                } else {
-                    p.println(newIndent + "null");
-                }
+            }
             }
             if (tag != null)
                 p.println (indent + "</" + tag + ">");
@@ -167,7 +169,25 @@ public class LogEvent {
     public String getRealm() {
         return source != null ? source.getRealm() : "";
     }
-    public List getPayLoad() {
+
+    /**
+     * WARNING: payLoad is a SynchronizedList. If you intend to get a reference
+     * to it in order to iterate over the list, you need to synchronize on the
+     * returned object.
+     *
+     * <pre>
+     *     synchronized (evt.getPayLoad()) {
+     *        Iterator iter = evt.getPayLoad().iterator();
+     *        while (iter.hasNext()) {
+     *            ...
+     *            ...
+     *
+     *        }
+     *     }
+     * </pre>
+     * @return payLoad, which is a SynchronizedList
+     */
+    public List<Object> getPayLoad() {
         return payLoad;
     }
     public String toString() {

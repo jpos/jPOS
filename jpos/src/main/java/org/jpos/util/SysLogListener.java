@@ -48,6 +48,7 @@ import java.util.Iterator;
  * </pre>
  *
  */
+@SuppressWarnings("unused")
 public class SysLogListener implements LogListener, Configurable {
     private DatagramSocket socket;
     private InetAddress    host;
@@ -82,11 +83,13 @@ public class SysLogListener implements LogListener, Configurable {
             sb.append (' ');
             sb.append (ev.getTag());
             sb.append (" - ");
-            Iterator iter = ev.getPayLoad().iterator();
-            for (int i=0; iter.hasNext(); i++) {
-                if (i>0)
-                    sb.append (' ');
-                sb.append (iter.next().toString());
+            synchronized (ev.getPayLoad()) {
+                Iterator iter = ev.getPayLoad().iterator();
+                for (int i=0; iter.hasNext(); i++) {
+                    if (i>0)
+                        sb.append (' ');
+                    sb.append (iter.next().toString());
+                }
             }
             byte[] b = sb.toString().getBytes();
             DatagramPacket packet = new DatagramPacket

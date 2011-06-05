@@ -18,8 +18,6 @@
 
 package org.jpos.util;
 
-import java.util.Iterator;
-
 /**
  * A specific log listener that filters all LogEvents that doesn't
  * contain any exception.
@@ -31,10 +29,11 @@ public class ExceptionLogFilter implements LogListener {
         super();
     }
     public synchronized LogEvent log (LogEvent evt) {
-        Iterator iter = evt.getPayLoad().iterator();
-        while (iter.hasNext()) {
-            if (iter.next() instanceof Throwable)
-                return evt;
+        synchronized (evt.getPayLoad()) {
+            for (Object o : evt.getPayLoad()) {
+                if (o instanceof Throwable)
+                    return evt;
+            }
         }
         return null;
     }

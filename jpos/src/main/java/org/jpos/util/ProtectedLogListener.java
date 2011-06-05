@@ -87,55 +87,55 @@ public class ProtectedLogListener implements LogListener, Configurable
         protectFields = ISOUtil.toStringArray (cfg.get ("protect", ""));
         wipeFields    = ISOUtil.toStringArray (cfg.get ("wipe", ""));
     }
-    public synchronized LogEvent log (LogEvent ev) {
-        List payLoad = ev.getPayLoad();
-        int size = payLoad.size();
-        for (int i=0; i<size; i++) {
-            Object obj = payLoad.get (i);
-            if (obj instanceof ISOMsg) {
-                ISOMsg m = (ISOMsg) ((ISOMsg) obj).clone();
-                try {
-                    checkProtected (m);
-                    checkHidden (m);
-                } catch (ISOException e) { 
-                    ev.addMessage (e);
+    public LogEvent log (LogEvent ev) {
+        synchronized (ev.getPayLoad()) {
+            final List<Object> payLoad = ev.getPayLoad();
+            int size = payLoad.size();
+            for (int i=0; i<size; i++) {
+                Object obj = payLoad.get (i);
+                if (obj instanceof ISOMsg) {
+                    ISOMsg m = (ISOMsg) ((ISOMsg) obj).clone();
+                    try {
+                        checkProtected (m);
+                        checkHidden (m);
+                    } catch (ISOException e) {
+                        ev.addMessage (e);
+                    }
+                    payLoad.set (i, m);
                 }
-                payLoad.set (i, m);
             }
         }
         return ev;
     }
     private void checkProtected (ISOMsg m) throws ISOException {
-        for (int i=0; i<protectFields.length; i++) {
-            String f = protectFields[i];
+        for (String f : protectFields) {
             Object v = null;
             try {
-                v = m.getValue (f);
+                v = m.getValue(f);
             } catch (ISOException e) {
                 // ignore error
             }
             if (v != null) {
                 if (v instanceof String)
-                    m.set (f, ISOUtil.protect ((String) v));
+                    m.set(f, ISOUtil.protect((String) v));
                 else
-                    m.set (f, BINARY_WIPED);
+                    m.set(f, BINARY_WIPED);
             }
         }
     }
     private void checkHidden (ISOMsg m) throws ISOException {
-        for (int i=0; i<wipeFields.length; i++) {
-            String f = wipeFields[i];
+        for (String f : wipeFields) {
             Object v = null;
             try {
-                v = m.getValue (f);
+                v = m.getValue(f);
             } catch (ISOException e) {
                 // ignore error
             }
             if (v != null) {
                 if (v instanceof String)
-                    m.set (f, WIPED);
+                    m.set(f, WIPED);
                 else
-                    m.set (f, BINARY_WIPED);
+                    m.set(f, BINARY_WIPED);
             }
         }
     }
