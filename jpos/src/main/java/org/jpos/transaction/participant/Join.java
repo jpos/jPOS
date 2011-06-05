@@ -19,8 +19,6 @@
 package org.jpos.transaction.participant;
 
 import org.jdom.Element;
-import org.jpos.core.Configurable;
-import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
 import org.jpos.core.XmlConfigurable;
 import org.jpos.transaction.AbortParticipant;
@@ -35,9 +33,8 @@ import java.util.List;
 
 public class Join 
        implements TransactionConstants, AbortParticipant, 
-                  Configurable, XmlConfigurable 
+                  XmlConfigurable
 {
-    private Configuration cfg;
     private TransactionManager mgr;
     private List participants = new ArrayList ();
 
@@ -57,10 +54,7 @@ public class Join
     public void abort  (long id, Serializable o) { 
         joinRunners(abort (createRunners(id, o)));
     }
-    public void setConfiguration (Configuration cfg) {
-        this.cfg = cfg;
-    }
-    public void setConfiguration (Element e) 
+    public void setConfiguration (Element e)
         throws ConfigurationException
     {
         Iterator iter = e.getChildren ("participant").iterator();
@@ -194,4 +188,3 @@ public class Join
         }
     }
 }
-

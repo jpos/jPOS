@@ -28,8 +28,8 @@ import org.jdom.Element;
  */
 public interface XmlConfigurable {
    /**
-    * @param cfg Configuration element
-    * @throws ConfigurationException
+    * @param e Configuration element
+    * @throws ConfigurationException on error
     */
     public void setConfiguration (Element e)
         throws ConfigurationException;
