@@ -62,6 +62,7 @@ import java.util.List;
  * @since jPOS 1.6.5
  */
 
+@SuppressWarnings ("unused")
 public class FSDProtectedLogListener implements LogListener, Configurable
 {
     String[] protectFields = null;
@@ -95,50 +96,51 @@ public class FSDProtectedLogListener implements LogListener, Configurable
         wipeFields      = ISOUtil.toStringArray (cfg.get ("wipe", ""));
     }
     public synchronized LogEvent log (LogEvent ev) {
-        List payLoad = ev.getPayLoad();
-        int size = payLoad.size();
-        for (int i=0; i<size; i++) {
-            Object obj = payLoad.get (i);
-            if (obj instanceof FSDISOMsg) {
-                FSDISOMsg m = (FSDISOMsg) ((FSDISOMsg) obj).clone();
-                try {
-                    checkTruncated (m);
-                    checkProtected (m);
-                    checkHidden (m);
-                } catch (ISOException e) {
-                    ev.addMessage (e);
+        synchronized (ev.getPayLoad()) {
+            final List<Object> payLoad = ev.getPayLoad();
+            int size = payLoad.size();
+            for (int i=0; i<size; i++) {
+                Object obj = payLoad.get (i);
+                if (obj instanceof FSDISOMsg) {
+                    FSDISOMsg m = (FSDISOMsg) ((FSDISOMsg) obj).clone();
+                    try {
+                        checkTruncated (m);
+                        checkProtected (m);
+                        checkHidden (m);
+                    } catch (ISOException e) {
+                        ev.addMessage (e);
+                    }
+                    payLoad.set (i, m);
                 }
-                payLoad.set (i, m);
             }
         }
         return ev;
     }
-     private void checkTruncated (FSDISOMsg m) throws ISOException {
-        for (int i=0; i<truncateFields.length; i++) {
-    	String truncate[] = truncateFields[i].split(":");
-    	    if (truncate.length == 2) {
-                String f = truncate[0];
-		int len = Integer.parseInt(truncate[1]);
-                Object v = null;
-                try {
-                    v = m.getFSDMsg().get (f);
-                } catch (Exception e) {
-                    // ignore error
-                }
-                if (v != null) {
-                    if (v instanceof String) {
-                       String x  = ((String) v);
-                       if (x.length()>len){
-                           m.getFSDMsg().set (f, x.substring(0,len));
-                           }
-                    }
-                }
-       	    }
-	 }
+    private void checkTruncated (FSDISOMsg m) throws ISOException {
+         for (String truncateField : truncateFields) {
+             String truncate[] = truncateField.split(":");
+             if (truncate.length == 2) {
+                 String f = truncate[0];
+                 int len = Integer.parseInt(truncate[1]);
+                 Object v = null;
+                 try {
+                     v = m.getFSDMsg().get(f);
+                 } catch (Exception e) {
+                     // ignore error
+                 }
+                 if (v != null) {
+                     if (v instanceof String) {
+                         String x = ((String) v);
+                         if (x.length() > len) {
+                             m.getFSDMsg().set(f, x.substring(0, len));
+                         }
+                     }
+                 }
+             }
+         }
     }
     private void checkProtected (FSDISOMsg m) throws ISOException {
-        for (int i=0; i<protectFields.length; i++) {
-            String f = protectFields[i];
+        for (String f : protectFields) {
             Object v = null;
             try {
                 v = m.getFSDMsg().get(f);
@@ -147,15 +149,14 @@ public class FSDProtectedLogListener implements LogListener, Configurable
             }
             if (v != null) {
                 if (v instanceof String)
-                    m.getFSDMsg().set (f, ISOUtil.protect ((String) v));
+                    m.getFSDMsg().set (f, ISOUtil.protect((String) v));
                 else
                     m.getFSDMsg().set (f, new String(BINARY_WIPED));
             }
         }
     }
     private void checkHidden (FSDISOMsg m) throws ISOException {
-        for (int i=0; i<wipeFields.length; i++) {
-            String f = wipeFields[i];
+        for (String f : wipeFields) {
             Object v = null;
             try {
                 v = m.getFSDMsg().get (f);
@@ -170,8 +171,5 @@ public class FSDProtectedLogListener implements LogListener, Configurable
             }
         }
     }
-
-
-
 }
                                                                             
