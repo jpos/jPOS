@@ -357,10 +357,7 @@ public class JCEHandler {
         if (this.macAlgorithm != other.macAlgorithm && (this.macAlgorithm == null || !this.macAlgorithm.equals(other.macAlgorithm))) {
           return false;
         }
-        if (this.macKey != other.macKey && (this.macKey == null || !this.macKey.equals(other.macKey))) {
-          return false;
-        }
-        return true;
+        return !(this.macKey != other.macKey && (this.macKey == null || !this.macKey.equals(other.macKey)));
       }
 
       public int hashCode() {

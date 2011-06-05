@@ -32,7 +32,6 @@ public class PerformanceTesting
         } else if (args.length < 3)
         {
             System.out.println("Usage: PackagerClass Length fieldData");
-            return;
         } else
         {
             runPack(args[0], Integer.parseInt(args[1]), args[2]);

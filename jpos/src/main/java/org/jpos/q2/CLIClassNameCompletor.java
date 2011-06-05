@@ -175,7 +175,7 @@ public class CLIClassNameCompletor extends SimpleCompletor {
             String name = files[i].getAbsolutePath();
 
             if (!(name.startsWith(root))) {
-                continue;
+                // continue
             } else if (files[i].isDirectory()) {
                 getClassFiles(root, holder, files[i], maxDirectories);
             } else if (files[i].getName().endsWith(".class")) {
