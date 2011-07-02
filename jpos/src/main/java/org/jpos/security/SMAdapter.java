@@ -218,6 +218,8 @@ public interface SMAdapter {
      * CAUTION: The use of clear pin presents a significant security risk
      * @param pin clear pin as entered by card holder
      * @param accountNumber The 12 right-most digits of the account number excluding the check digit. Should also function correctly if the complete account number, including the check digit is passed.
+     *        NOTE: Except when passed accountNumber is 12 digit length. Then isn't reliable way to distinguish
+     *        if it's just extracted or it's BIN, acount number and check digit
      * @return PIN under LMK
      * @throws SMException
      */

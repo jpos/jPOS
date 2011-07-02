@@ -20,6 +20,7 @@ package  org.jpos.security;
 
 import org.jpos.iso.ISOUtil;
 import org.jpos.util.Loggeable;
+import org.jpos.iso.ISOException;
 
 import java.io.PrintStream;
 import java.io.Serializable;
@@ -82,7 +83,10 @@ public class EncryptedPIN
      *
      * @param pinBlock
      * @param pinBlockFormat
-     * @param accountNumber (also functions correctly, if the complete account number with the check digit is passed)
+     * @param accountNumber 12 right-most digits of the account number, execluding the check digit.
+     *        NOTE: Also functions correctly, if the complete account number with the check digit is passed.
+     *        Except when passed accountNumber is 12 digit length. Then isn't reliable way to distinguish
+     *        if it's just extracted or it's BIN, acount number and check digit
      */
     public EncryptedPIN (byte[] pinBlock, byte pinBlockFormat, String accountNumber) {
         setPINBlock(pinBlock);
@@ -94,7 +98,10 @@ public class EncryptedPIN
      *
      * @param pinBlockHexString the PIN Block represented as a HexString instead of a byte[]
      * @param pinBlockFormat
-     * @param accountNumber (also functions correctly, if the complete account number with the check digit is passed)
+     * @param accountNumber 12 right-most digits of the account number, execluding the check digit.
+     *        NOTE: Also functions correctly, if the complete account number with the check digit is passed.
+     *        Except when passed accountNumber is 12 digit length. Then isn't reliable way to distinguish
+     *        if it's just extracted or it's BIN, acount number and check digit
      */
     public EncryptedPIN (String pinBlockHexString, byte pinBlockFormat, String accountNumber) {
         this(ISOUtil.hex2byte(pinBlockHexString), pinBlockFormat, accountNumber);
@@ -151,10 +158,16 @@ public class EncryptedPIN
 
     /**
      * Sets the 12 right-most digits of the account number excluding the check digit
-     * @param accountNumber (also functions correctly, if the complete account number with the check digit is passed)
+     * @param accountNumber 12 right-most digits of the account number, execluding the check digit.
+     *        NOTE: Also functions correctly, if the complete account number with the check digit is passed.
+     *        Except when passed accountNumber is 12 digit length. Then isn't reliable way to distinguish
+     *        if it's just extracted or it's BIN, acount number and check digit
      */
     public void setAccountNumber (String accountNumber) {
         this.accountNumber = extractAccountNumberPart(accountNumber);
+        if ( accountNumber.length() == 12 )
+	    //Leave it unchanged for backward capability
+            this.accountNumber = accountNumber;
     }
 
     /**
@@ -170,14 +183,15 @@ public class EncryptedPIN
      * @param accountNumber (PAN) consists of the BIN (Bank Identification Number), accountNumber
      * and a check digit.
      * @return the 12 right-most digits of the account number, execluding the check digit.
+     *         In case if account number length is lower that 12 proper count of 0 digts is added
+     *         on the left side for align to 12
      */
     public static String extractAccountNumberPart (String accountNumber) {
         String accountNumberPart = null;
-        if (accountNumber.length() > 12)
-            accountNumberPart = accountNumber.substring(accountNumber.length() -
-                    13, accountNumber.length() - 1);
-        else
-            accountNumberPart = accountNumber;
+        try {
+            accountNumberPart = ISOUtil.takeLastN(accountNumber, 13);
+            accountNumberPart = ISOUtil.takeFirstN(accountNumberPart, 12);
+        } catch(ISOException ex) {}
         return  accountNumberPart;
     }
 
