@@ -24,6 +24,7 @@ import org.jpos.iso.ISOException;
 
 import java.io.PrintStream;
 import java.io.Serializable;
+import java.security.InvalidParameterException;
 
 
 /**
@@ -77,13 +78,14 @@ public class EncryptedPIN
     byte pinBlockFormat;
 
     public EncryptedPIN () {
+        super();
     }
 
     /**
      *
      * @param pinBlock
      * @param pinBlockFormat
-     * @param accountNumber 12 right-most digits of the account number, execluding the check digit.
+     * @param accountNumber 12 right-most digits of the account number, excluding the check digit.
      *        NOTE: Also functions correctly, if the complete account number with the check digit is passed.
      *        Except when passed accountNumber is 12 digit length. Then isn't reliable way to distinguish
      *        if it's just extracted or it's BIN, acount number and check digit
@@ -91,11 +93,22 @@ public class EncryptedPIN
     public EncryptedPIN (byte[] pinBlock, byte pinBlockFormat, String accountNumber) {
         setPINBlock(pinBlock);
         setPINBlockFormat(pinBlockFormat);
-        setAccountNumber(accountNumber);
+        setAccountNumber(extractAccountNumberPart(accountNumber));
+    }
+    /**
+     * @param pinBlock
+     * @param pinBlockFormat
+     * @param accountNumber 12 right-most digits of the account number, excluding the check digit.
+     * @param extract true to extract 12 right-most digits off the account number
+     */
+    public EncryptedPIN (byte[] pinBlock, byte pinBlockFormat, String accountNumber, boolean extract) {
+        setPINBlock(pinBlock);
+        setPINBlockFormat(pinBlockFormat);
+        setAccountNumber(extract ? extractAccountNumberPart(accountNumber) : accountNumber);
     }
 
+
     /**
-     *
      * @param pinBlockHexString the PIN Block represented as a HexString instead of a byte[]
      * @param pinBlockFormat
      * @param accountNumber 12 right-most digits of the account number, execluding the check digit.
@@ -106,7 +119,15 @@ public class EncryptedPIN
     public EncryptedPIN (String pinBlockHexString, byte pinBlockFormat, String accountNumber) {
         this(ISOUtil.hex2byte(pinBlockHexString), pinBlockFormat, accountNumber);
     }
-
+    /**
+     * @param pinBlockHexString the PIN Block represented as a HexString instead of a byte[]
+     * @param pinBlockFormat
+     * @param accountNumber 12 right-most digits of the account number, excluding the check digit.
+     * @param extract true to extract 12 right-most digits off the account number
+     */
+    public EncryptedPIN (String pinBlockHexString, byte pinBlockFormat, String accountNumber, boolean extract) {
+        this(ISOUtil.hex2byte(pinBlockHexString), pinBlockFormat, accountNumber, extract);
+    }
 
     /**
      * dumps PIN basic information
@@ -158,16 +179,15 @@ public class EncryptedPIN
 
     /**
      * Sets the 12 right-most digits of the account number excluding the check digit
-     * @param accountNumber 12 right-most digits of the account number, execluding the check digit.
-     *        NOTE: Also functions correctly, if the complete account number with the check digit is passed.
-     *        Except when passed accountNumber is 12 digit length. Then isn't reliable way to distinguish
-     *        if it's just extracted or it's BIN, acount number and check digit
+     * @param extractedAccountNumber)  12 right-most digits of the account number, excluding the check digit.
      */
-    public void setAccountNumber (String accountNumber) {
-        this.accountNumber = extractAccountNumberPart(accountNumber);
-        if ( accountNumber.length() == 12 )
-	    //Leave it unchanged for backward capability
-            this.accountNumber = accountNumber;
+    public void setAccountNumber (String extractedAccountNumber) {
+        if(extractedAccountNumber.length() != 12)
+           throw new InvalidParameterException(
+               "Extracted account number length should be 12, got '"
+              +ISOUtil.protect(extractedAccountNumber) + "'"
+           );
+        this.accountNumber = extractedAccountNumber;
     }
 
     /**

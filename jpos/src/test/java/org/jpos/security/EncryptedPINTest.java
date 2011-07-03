@@ -8,6 +8,7 @@ import static org.junit.Assert.fail;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.security.InvalidParameterException;
 
 import org.junit.Test;
 
@@ -29,7 +30,7 @@ public class EncryptedPINTest {
 
     @Test
     public void testConstructor2() throws Throwable {
-        EncryptedPIN encryptedPIN = new EncryptedPIN("testEncryptedPINPinBlockHexString1", (byte) 0, "12Characters");
+        EncryptedPIN encryptedPIN = new EncryptedPIN("testEncryptedPINPinBlockHexString1", (byte) 0, "12Characters", false);
         assertEquals("encryptedPIN.accountNumber", "12Characters", encryptedPIN.accountNumber);
         assertEquals("encryptedPIN.pinBlockFormat", (byte) 0, encryptedPIN.pinBlockFormat);
         assertEquals("encryptedPIN.pinBlock.length", 17, encryptedPIN.pinBlock.length);
@@ -55,7 +56,7 @@ public class EncryptedPINTest {
     @Test
     public void testConstructor5() throws Throwable {
         byte[] pinBlock = new byte[0];
-        EncryptedPIN encryptedPIN = new EncryptedPIN(pinBlock, (byte) 0, "12Characters");
+        EncryptedPIN encryptedPIN = new EncryptedPIN(pinBlock, (byte) 0, "12Characters", false);
         assertEquals("encryptedPIN.accountNumber", "12Characters", encryptedPIN.accountNumber);
         assertEquals("encryptedPIN.pinBlockFormat", (byte) 0, encryptedPIN.pinBlockFormat);
         assertSame("encryptedPIN.pinBlock", pinBlock, encryptedPIN.pinBlock);
@@ -210,8 +211,10 @@ public class EncryptedPINTest {
     public void testSetAccountNumber() throws Throwable {
         byte[] pinBlock = new byte[3];
         EncryptedPIN encryptedPIN = new EncryptedPIN(pinBlock, (byte) 0, "testEncryptedPINAccountNumber");
-        encryptedPIN.setAccountNumber("13CharactersX");
-        assertEquals("encryptedPIN.accountNumber", "13Characters", encryptedPIN.accountNumber);
+        try {
+            encryptedPIN.setAccountNumber("13CharactersX");
+            fail("Expected InvalidParameterException");
+        } catch (InvalidParameterException ignored) { }
     }
 
     @Test
@@ -222,10 +225,9 @@ public class EncryptedPINTest {
     }
 
     @Test
-    public void testSetAccountNumber2() throws Throwable {
+    public void test11Chars() throws Throwable {
         byte[] pinBlock = new byte[3];
-        EncryptedPIN encryptedPIN = new EncryptedPIN(pinBlock, (byte) 0, "testEncryptedPINAccountNumber");
-        encryptedPIN.setAccountNumber("11Character");
+        EncryptedPIN encryptedPIN = new EncryptedPIN(pinBlock, (byte) 0, "11Character");
         assertEquals("encryptedPIN.accountNumber", "0011Characte", encryptedPIN.accountNumber);
     }
 
