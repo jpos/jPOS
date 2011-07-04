@@ -182,6 +182,11 @@
      <name>Christopher Barham</name>
      <email>cbarham@pobox.com</email>
    </developer>
+   <developer>
+     <id>gwr1</id>
+     <name>Grzegorz Wieczorek</name>
+     <email>gwr1@wp.pl</email>
+   </developer>
   </developers>
 
   <mailingLists>
