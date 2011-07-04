@@ -807,6 +807,7 @@ public class ISOUtil {
      * <pre>
      * "40000101010001" is converted to "400001____0001"
      * "40000101010001=020128375" is converted to "400001____0001=0201_____"
+     * "40000101010001D020128375" is converted to "400001____0001D0201_____"
      * "123" is converted to "___"
      * </pre>
      * @param s string to be protected 
@@ -819,14 +820,15 @@ public class ISOUtil {
         int lastFourIndex = -1;
         if (clear > 0) {
             lastFourIndex = s.indexOf ('=') - 4;
-            if (lastFourIndex < 0) {
+            if (lastFourIndex < 0)
                 lastFourIndex = s.indexOf ('^') - 4;
-                if (lastFourIndex < 0) 
-                    lastFourIndex = len - 4;
-            }
+            if (lastFourIndex < 0 && s.indexOf('^')<0)
+                lastFourIndex = s.indexOf('D') - 4;
+            if (lastFourIndex < 0)
+                lastFourIndex = len - 4;
         }
         for (int i=0; i<len; i++) {
-            if (s.charAt(i) == '=')
+            if (s.charAt(i) == '=' || (s.charAt(i) == 'D' && s.indexOf('^')<0) )
                 clear = 1;  // use clear=5 to keep the expiration date
             else if (s.charAt(i) == '^') {
                 lastFourIndex = 0;
@@ -838,16 +840,16 @@ public class ISOUtil {
         }
         s = sb.toString();
         try {
-        //Addresses Track1 Truncation
+            //Addresses Track1 Truncation
             int charCount = s.replaceAll("[^\\^]", "").length();
             if (charCount == 2 ) {
                 s = s.substring(0, s.lastIndexOf("^")+1);
                 s = ISOUtil.padright(s, len, '_');
             }
         } catch (ISOException e){
-            //cannot PAD - should never get here 
+            //cannot PAD - should never get here
         }
-        return s;        
+        return s;
     }
     public static int[] toIntArray(String s) {
         StringTokenizer st = new StringTokenizer (s);
