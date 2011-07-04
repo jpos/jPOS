@@ -102,7 +102,13 @@ public class ProtectedLogListener implements LogListener, Configurable
                         ev.addMessage (e);
                     }
                     payLoad.set (i, m);
-                }
+                } else if (obj instanceof SimpleMsg){
+                    try {
+                        checkProtected((SimpleMsg) obj);
+                    } catch (ISOException e) {
+                        ev.addMessage (e);
+                    }
+               }
             }
         }
         return ev;
@@ -121,6 +127,19 @@ public class ProtectedLogListener implements LogListener, Configurable
                 else
                     m.set(f, BINARY_WIPED);
             }
+        }
+    }
+    private void checkProtected(SimpleMsg sm) throws ISOException {
+        if (sm.msgContent instanceof SimpleMsg[])
+            for (SimpleMsg sMsg : (SimpleMsg[]) sm.msgContent)
+                checkProtected(sMsg);
+        else if (sm.msgContent instanceof SimpleMsg)
+            checkProtected((SimpleMsg) sm.msgContent);
+        else if (sm.msgContent instanceof ISOMsg) {
+            ISOMsg m = (ISOMsg) ((ISOMsg) sm.msgContent).clone();
+            checkProtected(m);
+            checkHidden(m);
+            sm.msgContent = m;
         }
     }
     private void checkHidden (ISOMsg m) throws ISOException {
