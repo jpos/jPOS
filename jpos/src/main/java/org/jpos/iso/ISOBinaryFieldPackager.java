@@ -102,7 +102,7 @@ public class ISOBinaryFieldPackager extends ISOFieldPackager
     {
         try
         {
-            byte[] data = (byte[])c.getValue();
+            byte[] data = c.getBytes();
             int packedLength = prefixer.getPackedLength();
             if (packedLength == 0)
             {

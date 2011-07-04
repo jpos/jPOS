@@ -134,7 +134,12 @@ public class ISOStringFieldPackager extends ISOFieldPackager
     {
         try
         {
-            String data = (String)c.getValue();
+            String data;
+            if(c.getValue() instanceof byte[])
+                data = new String(c.getBytes()); //For enable also complex fields
+            else
+                data = (String)c.getValue();
+
             if (data.length() > getLength())
             {
                 throw new ISOException("Field length " + data.length() + " too long. Max: " + getLength());
