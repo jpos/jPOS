@@ -217,10 +217,7 @@ public interface SMAdapter {
      *
      * CAUTION: The use of clear pin presents a significant security risk
      * @param pin clear pin as entered by card holder
-     * @param accountNumber The 12 right-most digits of the account number excluding the check digit.
-     *        Should also function correctly if the complete account number, including the check digit is passed.
-     *        NOTE: Except when passed accountNumber is 12 digit length. Then isn't reliable way to distinguish
-     *        if it's just extracted or it's BIN, acount number and check digit
+     * @param accountNumber account number, including BIN and the check digit
      * @return PIN under LMK
      * @throws SMException
      */
@@ -231,7 +228,8 @@ public interface SMAdapter {
      *
      * CAUTION: The use of clear pin presents a significant security risk
      * @param pin clear pin as entered by card holder
-     * @param accountNumber 12 right-most digits of the account number, excluding the check digit.
+     * @param accountNumber if <code>extract</code> is false then account number, including BIN and the check digit
+     *        or if parameter <code>extract</code> is true then 12 right-most digits of the account number, excluding the check digit
      * @param extract true to extract 12 right-most digits off the account number
      * @return PIN under LMK
      * @throws SMException

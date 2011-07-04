@@ -85,10 +85,7 @@ public class EncryptedPIN
      *
      * @param pinBlock
      * @param pinBlockFormat
-     * @param accountNumber 12 right-most digits of the account number, excluding the check digit.
-     *        NOTE: Also functions correctly, if the complete account number with the check digit is passed.
-     *        Except when passed accountNumber is 12 digit length. Then isn't reliable way to distinguish
-     *        if it's just extracted or it's BIN, acount number and check digit
+     * @param accountNumber account number, including BIN and the check digit
      */
     public EncryptedPIN (byte[] pinBlock, byte pinBlockFormat, String accountNumber) {
         setPINBlock(pinBlock);
@@ -98,7 +95,8 @@ public class EncryptedPIN
     /**
      * @param pinBlock
      * @param pinBlockFormat
-     * @param accountNumber 12 right-most digits of the account number, excluding the check digit.
+     * @param accountNumber if <code>extract</code> is false then account number, including BIN and the check digit
+     *        or if parameter <code>extract</code> is true then 12 right-most digits of the account number, excluding the check digit
      * @param extract true to extract 12 right-most digits off the account number
      */
     public EncryptedPIN (byte[] pinBlock, byte pinBlockFormat, String accountNumber, boolean extract) {
@@ -111,10 +109,7 @@ public class EncryptedPIN
     /**
      * @param pinBlockHexString the PIN Block represented as a HexString instead of a byte[]
      * @param pinBlockFormat
-     * @param accountNumber 12 right-most digits of the account number, execluding the check digit.
-     *        NOTE: Also functions correctly, if the complete account number with the check digit is passed.
-     *        Except when passed accountNumber is 12 digit length. Then isn't reliable way to distinguish
-     *        if it's just extracted or it's BIN, acount number and check digit
+     * @param accountNumber account number, including BIN and the check digit
      */
     public EncryptedPIN (String pinBlockHexString, byte pinBlockFormat, String accountNumber) {
         this(ISOUtil.hex2byte(pinBlockHexString), pinBlockFormat, accountNumber);
@@ -122,7 +117,8 @@ public class EncryptedPIN
     /**
      * @param pinBlockHexString the PIN Block represented as a HexString instead of a byte[]
      * @param pinBlockFormat
-     * @param accountNumber 12 right-most digits of the account number, excluding the check digit.
+     * @param accountNumber if <code>extract</code> is false then account number, including BIN and the check digit
+     *        or if parameter <code>extract</code> is true then 12 right-most digits of the account number, excluding the check digit
      * @param extract true to extract 12 right-most digits off the account number
      */
     public EncryptedPIN (String pinBlockHexString, byte pinBlockFormat, String accountNumber, boolean extract) {
