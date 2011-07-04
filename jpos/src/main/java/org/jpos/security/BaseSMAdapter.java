@@ -180,8 +180,8 @@ public class BaseSMAdapter
         return  result;
     }
 
-    public EncryptedPIN encryptPIN (String pin, String accountNumber) throws SMException {
-        accountNumber = EncryptedPIN.extractAccountNumberPart(accountNumber);
+    public EncryptedPIN encryptPIN (String pin, String accountNumber, boolean extract) throws SMException {
+        accountNumber = extract ? EncryptedPIN.extractAccountNumberPart(accountNumber) : accountNumber;
         SimpleMsg[] cmdParameters =  {
             new SimpleMsg("parameter", "clear pin", pin), new SimpleMsg("parameter", "account number",
                     accountNumber)
@@ -199,6 +199,9 @@ public class BaseSMAdapter
             Logger.log(evt);
         }
         return  result;
+    }
+    public EncryptedPIN encryptPIN (String pin, String accountNumber) throws SMException {
+        return encryptPIN(pin, accountNumber, true);
     }
 
     public String decryptPIN (EncryptedPIN pinUnderLmk) throws SMException {
@@ -416,7 +419,7 @@ public class BaseSMAdapter
 
     /**
      * Your SMAdapter should override this method if it has this functionality
-     * @param key
+     * @param kd
      * @return generated Key Check Value
      * @throws SMException
      */

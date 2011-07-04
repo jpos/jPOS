@@ -178,7 +178,7 @@ public interface SMAdapter {
 
     /**
      * Generates key check value.<br>
-     * @param key SecureDESKey with untrusted or fake Key Check Value
+     * @param kd SecureDESKey with untrusted or fake Key Check Value
      * @return key check value bytes
      * @throws SMException
      */
@@ -217,13 +217,26 @@ public interface SMAdapter {
      *
      * CAUTION: The use of clear pin presents a significant security risk
      * @param pin clear pin as entered by card holder
-     * @param accountNumber The 12 right-most digits of the account number excluding the check digit. Should also function correctly if the complete account number, including the check digit is passed.
+     * @param accountNumber The 12 right-most digits of the account number excluding the check digit.
+     *        Should also function correctly if the complete account number, including the check digit is passed.
      *        NOTE: Except when passed accountNumber is 12 digit length. Then isn't reliable way to distinguish
      *        if it's just extracted or it's BIN, acount number and check digit
      * @return PIN under LMK
      * @throws SMException
      */
     public EncryptedPIN encryptPIN (String pin, String accountNumber) throws SMException;
+
+    /**
+     * Encrypts a clear pin under LMK.
+     *
+     * CAUTION: The use of clear pin presents a significant security risk
+     * @param pin clear pin as entered by card holder
+     * @param accountNumber 12 right-most digits of the account number, excluding the check digit.
+     * @param extract true to extract 12 right-most digits off the account number
+     * @return PIN under LMK
+     * @throws SMException
+     */
+    public EncryptedPIN encryptPIN (String pin, String accountNumber, boolean extract) throws SMException;
 
     /**
      * Decrypts an Encrypted PIN (under LMK).
