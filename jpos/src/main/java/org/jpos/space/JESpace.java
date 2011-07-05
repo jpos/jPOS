@@ -21,6 +21,7 @@ package org.jpos.space;
 import java.io.*;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Set;
 import java.util.TimerTask;
 import java.util.concurrent.Semaphore;
 
@@ -35,6 +36,7 @@ import com.sleepycat.persist.model.Persistent;
 import com.sleepycat.persist.model.PrimaryKey;
 import com.sleepycat.persist.model.SecondaryKey;
 import com.sleepycat.persist.model.Relationship;
+import java.util.HashSet;
 
 import org.jpos.util.Log;
 import org.jpos.util.DefaultTimer;
@@ -46,7 +48,7 @@ import org.jpos.util.Loggeable;
  * @author Alejandro Revilla
  * @since 1.6.5
  */
-public class JESpace<K,V> extends Log implements Space<K,V>, Loggeable {
+public class JESpace<K,V> extends Log implements LocalSpace<K,V>, Loggeable {
     Environment dbe = null;
     EntityStore store = null;
     PrimaryIndex<Long, Ref> pIndex = null;
@@ -55,6 +57,7 @@ public class JESpace<K,V> extends Log implements Space<K,V>, Loggeable {
     SecondaryIndex<Long,Long,GCRef> gcsIndex = null;
     Semaphore gcSem = new Semaphore(1);
     TimerTask gcTimerTask = null;
+    LocalSpace<Object,SpaceListener> sl;
     public static final long GC_DELAY = 5*60*1000L;
 
     static final Map<String,Space> spaceRegistrar = 
@@ -105,6 +108,8 @@ public class JESpace<K,V> extends Log implements Space<K,V>, Loggeable {
             synchronized (this) {
                 notifyAll ();
             }
+            if (sl != null)
+                notifyListeners(key, value);
         } catch (Exception e) {
             throw new SpaceError (e);
         } finally {
@@ -126,6 +131,8 @@ public class JESpace<K,V> extends Log implements Space<K,V>, Loggeable {
             synchronized (this) {
                 notifyAll ();
             }
+            if (sl != null)
+                notifyListeners(key, value);
         } catch (Exception e) {
             throw new SpaceError (e);
         } finally {
@@ -254,6 +261,12 @@ public class JESpace<K,V> extends Log implements Space<K,V>, Loggeable {
             cursor = null;
             txn.commit();
             txn = null;
+            if (sl != null) {
+                synchronized (this) {
+                    if (sl != null && sl.getKeySet().isEmpty())
+                        sl = null;
+                }
+            }
         } finally {
             if (cursor != null)
                 cursor.close();
@@ -340,6 +353,92 @@ public class JESpace<K,V> extends Log implements Space<K,V>, Loggeable {
             throw new SpaceError (e);
         }
     }
+
+    private LocalSpace<Object,SpaceListener> getSL() {
+        synchronized (this) {
+            if (sl == null)
+                sl = new TSpace<Object,SpaceListener>();
+        }
+        return sl;
+    }
+
+    private void notifyListeners (Object key, Object value) {
+        Set<SpaceListener> listeners = new HashSet<SpaceListener>();
+        synchronized (this) {
+            if (sl == null)
+                return;
+            SpaceListener s = null;
+            while ((s = sl.inp(key)) != null)
+                listeners.add(s);
+            for (SpaceListener spl: listeners)
+                sl.out(key, spl);
+        }
+        for (SpaceListener spl: listeners)
+            spl.notify (key, value);
+    }
+
+    public synchronized void addListener(Object key, SpaceListener listener) {
+        getSL().out (key, listener);
+    }
+
+    public synchronized void addListener(Object key, SpaceListener listener, long timeout) {
+        getSL().out (key, listener);
+    }
+
+    public synchronized void removeListener(Object key, SpaceListener listener) {
+        if (sl != null)
+            sl.inp (new ObjectTemplate (key, listener));
+    }
+
+    public Set getKeySet() {
+        Set res = new HashSet();
+        Transaction txn = null;
+        EntityCursor<Ref> cursor = null;
+        try {
+            txn = dbe.beginTransaction (null, null);
+            cursor = sIndex.entities(txn, null);
+            for (Ref ref : cursor)
+                res.add(ref.getKey());
+            cursor.close();
+            cursor = null;
+            txn.commit();
+            txn = null;
+        } catch (IllegalStateException e) {
+        } finally {
+            if (cursor != null)
+                cursor.close ();
+            if (txn != null)
+                txn.abort();
+        }
+
+        return res;
+    }
+
+  public int size(Object key) {
+      Transaction txn = null;
+      EntityCursor<Ref> cursor = null;
+      try {
+          txn = dbe.beginTransaction (null, null);
+          cursor = sIndex.entities(txn, null);
+          int keyCount = 0;
+          for (Ref ref : cursor) {
+              if (ref.getKey().equals(key))
+                  keyCount++;
+          }
+          cursor.close();
+          cursor = null;
+          txn.commit();
+          txn = null;
+          return keyCount;
+      } catch (IllegalStateException e) {
+          return -1;
+      } finally {
+          if (cursor != null)
+              cursor.close ();
+          if (txn != null)
+              txn.abort();
+      }
+  }
 
     @Entity
     public static class Ref {
