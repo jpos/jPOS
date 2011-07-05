@@ -136,7 +136,7 @@ public class ISOStringFieldPackager extends ISOFieldPackager
         {
             String data;
             if(c.getValue() instanceof byte[])
-                data = new String(c.getBytes()); //For enable also complex fields
+                data = new String(c.getBytes(), ISOUtil.ENCODING); // transparent handling of complex fields
             else
                 data = (String)c.getValue();
 

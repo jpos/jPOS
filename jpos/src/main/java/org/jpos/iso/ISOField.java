@@ -107,7 +107,10 @@ public class ISOField
      * @return byte[] representing this field
      */
     public byte[] getBytes() {
-        return (value != null) ? value.getBytes() : new byte[] {};
+        try {
+            return (value != null) ? value.getBytes(ISOUtil.ENCODING) : new byte[] {};
+        } catch (UnsupportedEncodingException ignored) { }
+        return null;
     }
     /**
      * dump this field to PrintStream. The output is sorta
