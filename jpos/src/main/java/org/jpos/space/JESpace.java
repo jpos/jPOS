@@ -419,12 +419,11 @@ public class JESpace<K,V> extends Log implements LocalSpace<K,V>, Loggeable {
       EntityCursor<Ref> cursor = null;
       try {
           txn = dbe.beginTransaction (null, null);
-          cursor = sIndex.entities(txn, null);
+          cursor = sIndex.subIndex(key.toString()).entities(txn, null);
           int keyCount = 0;
-          for (Ref ref : cursor) {
-              if (ref.getKey().equals(key))
+          for (Ref ref : cursor)
+              if (ref.isActive())
                   keyCount++;
-          }
           cursor.close();
           cursor = null;
           txn.commit();
