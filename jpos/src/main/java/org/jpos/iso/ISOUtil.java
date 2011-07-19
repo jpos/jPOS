@@ -35,6 +35,23 @@ import java.util.StringTokenizer;
  */
 @SuppressWarnings("unused")
 public class ISOUtil {
+	
+    public static final String[] hexStrings = getHexStrings();
+
+    public static String [] getHexStrings() {
+        String [] hs = new String[256];
+
+        for (int i = 0; i < 256; i++ ) {
+            StringBuilder d = new StringBuilder(2);
+            char ch = Character.forDigit(((byte)i >> 4) & 0x0F, 16);
+            d.append(Character.toUpperCase(ch));
+            ch = Character.forDigit((byte)i & 0x0F, 16);
+            d.append(Character.toUpperCase(ch));
+            hs[i] = d.toString();
+        }
+        return hs;
+    }
+
     public static final String ENCODING  = "ISO8859_1";
     public static final byte[] EBCDIC2ASCII = new byte[] {
         (byte)0x0,  (byte)0x1,  (byte)0x2,  (byte)0x3, 
@@ -389,10 +406,7 @@ public class ISOUtil {
     public static String hexString(byte[] b) {
         StringBuilder d = new StringBuilder(b.length * 2);
         for (byte aB : b) {
-            char hi = Character.forDigit((aB >> 4) & 0x0F, 16);
-            char lo = Character.forDigit(aB & 0x0F, 16);
-            d.append(Character.toUpperCase(hi));
-            d.append(Character.toUpperCase(lo));
+            d.append(hexStrings[(int) aB & 0xFF]);
         }
         return d.toString();
     }
@@ -425,11 +439,8 @@ public class ISOUtil {
                     case '\034': d.append ("{FS}");  break;
                     case '\036': d.append ("{RS}");  break;
                     default:
-                        char hi = Character.forDigit ((b[i] >> 4) & 0x0F, 16);
-                        char lo = Character.forDigit (b[i] & 0x0F, 16);
                         d.append('[');
-                        d.append(Character.toUpperCase(hi));
-                        d.append(Character.toUpperCase(lo));
+                        d.append(hexStrings[(int)b[i] & 0xFF]);
                         d.append(']');
                         break;
                 }
@@ -452,10 +463,7 @@ public class ISOUtil {
         StringBuilder d = new StringBuilder(len * 2);
         len += offset;
         for (int i=offset; i<len; i++) {
-            char hi = Character.forDigit ((b[i] >> 4) & 0x0F, 16);
-            char lo = Character.forDigit (b[i] & 0x0F, 16);
-            d.append(Character.toUpperCase(hi));
-            d.append(Character.toUpperCase(lo));
+            d.append(hexStrings[(int)b[i] & 0xFF]);
         }
         return d.toString();
     }
@@ -1230,10 +1238,7 @@ public class ISOUtil {
         String lineSep     = System.getProperty ("line.separator");
 
         for (int i=offset; i<len; i++) {
-            char hi = Character.forDigit ((b[i] >> 4) & 0x0F, 16);
-            char lo = Character.forDigit (b[i] & 0x0F, 16);
-            hex.append (Character.toUpperCase(hi));
-            hex.append (Character.toUpperCase(lo));
+            hex.append(hexStrings[(int)b[i] & 0xFF]);
             hex.append (' ');
             char c = (char) b[i];
             ascii.append ((c >= 32 && c < 127) ? c : '.');
