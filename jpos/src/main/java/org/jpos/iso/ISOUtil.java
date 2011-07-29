@@ -1388,16 +1388,16 @@ public class ISOUtil {
    * witch is suitable for create fields 10 and 11
    * @throws ISOException
    */
-  public static String formatAmountConversionRate(Double convRate) throws ISOException {
-    if (convRate == null)
+  public static String formatAmountConversionRate(double convRate) throws ISOException {
+    if (convRate == 0)
       return null;
-    BigDecimal cr = new BigDecimal(Double.toString(convRate));
+    BigDecimal cr = new BigDecimal(convRate);
     int x = 7 - cr.precision() + cr.scale();
     String bds = cr.movePointRight(cr.scale()).toString();
     if (x > 9)
       bds = ISOUtil.zeropad(bds, bds.length() + x - 9);
     String ret = ISOUtil.zeropadRight(bds, 7);
-    return Math.min(9, x) + ret;
+    return Math.min(9, x) + ISOUtil.takeFirstN(ret, 7);
   }
 
   /**

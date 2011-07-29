@@ -1,5 +1,7 @@
 package org.jpos.iso;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -4822,6 +4824,127 @@ public class ISOUtilTest {
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
             assertNull("ex.getMessage()", ex.getMessage());
+        }
+    }
+    /**
+     * Test of formatAmtConvRate method, of class CSSUtil.
+     */
+    @Test
+    public void testFormatAmtConvRate() throws Exception {
+        double rate = 3456.78;
+        String expResult = "33456780";
+        String result = ISOUtil.formatAmountConversionRate(rate);
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of formatAmtConvRate method, of class CSSUtil.
+     */
+    @Test
+    public void testFormatAmtConvRate2() throws Exception {
+        double rate = 0.00345678;
+        String expResult = "93456780";
+        String result = ISOUtil.formatAmountConversionRate(rate);
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of formatAmtConvRate method, of class CSSUtil.
+     */
+    @Test
+    public void testFormatAmtConvRate3() throws Exception {
+        double rate = 0.0000345678;
+        String expResult = "90034567";
+        String result = ISOUtil.formatAmountConversionRate(rate);
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of formatAmtConvRate method, of class CSSUtil.
+     */
+    @Test
+    public void testFormatAmtConvRate4() throws Exception {
+        double rate = 0;
+        String expResult = null;
+        String result = ISOUtil.formatAmountConversionRate(rate);
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of formatAmtConvRate method, of class CSSUtil.
+     */
+    @Test
+    public void testFormatAmtConvRate5() throws Exception {
+        double rate = 0.0000000001;
+        String expResult = "90000000";
+        String result = ISOUtil.formatAmountConversionRate(rate);
+        assertEquals(expResult, result);
+    }  
+    
+    /**
+     * Test of parseAmtConvRate method, of class CSSUtil.
+     */
+    @Test
+    public void testParseAmtConvRate() {
+        String rate = "93456780";
+        BigDecimal expResult = new BigDecimal(0.003456780, MathContext.DECIMAL64);
+        BigDecimal result = new BigDecimal(ISOUtil.parseAmountConversionRate(rate),MathContext.DECIMAL64);
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of parseAmtConvRate method, of class CSSUtil.
+     */
+    @Test
+    public void testParseAmtConvRate2() {
+        String rate = "90034567";
+        BigDecimal expResult = new BigDecimal(0.000034567, MathContext.DECIMAL64);
+        BigDecimal result = new BigDecimal(ISOUtil.parseAmountConversionRate(rate), MathContext.DECIMAL64);
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of parseAmtConvRate method, of class CSSUtil.
+     */
+    @Test
+    public void testParseAmtConvRate3() {
+        String rate = null;
+        try {
+          ISOUtil.parseAmountConversionRate(rate);
+          fail();
+        } catch (IllegalArgumentException ex) {
+          assertEquals("Invalid amount converion rate argument: '" +
+              rate + "'", ex.getMessage());
+        }
+    }
+
+    /**
+     * Test of parseAmtConvRate method, of class CSSUtil.
+     */
+    @Test
+    public void testParseAmtConvRate4() {
+        String rate = "1234567";
+        try {
+          ISOUtil.parseAmountConversionRate(rate);
+          fail();
+        } catch (IllegalArgumentException ex) {
+          assertEquals("Invalid amount converion rate argument: '" +
+              rate + "'", ex.getMessage());
+        }
+    }
+
+    /**
+     * Test of parseAmtConvRate method, of class CSSUtil.
+     */
+    @Test
+    public void testParseAmtConvRate5() {
+        String rate = "123456789";
+        try {
+          ISOUtil.parseAmountConversionRate(rate);
+          fail();
+        } catch (IllegalArgumentException ex) {
+          assertEquals("Invalid amount converion rate argument: '" +
+              rate + "'", ex.getMessage());
         }
     }
 }
