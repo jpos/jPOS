@@ -4215,6 +4215,36 @@ public class ISOUtilTest {
     }
 
     @Test
+    public void testProtectT2D1() throws Throwable {
+        String result = ISOUtil.protect("#<gFDuG!");
+        assertEquals("result", "#<gFD___", result);
+    }
+
+    @Test
+    public void testProtectT2D2() throws Throwable {
+        String result = ISOUtil.protect("9a{#<gFuG!53Do;G");
+        assertEquals("result", "9a{#<g__G!53D___", result);
+    }
+
+    @Test
+    public void testProtectT1D1() throws Throwable {
+        String result = ISOUtil.protect("a{#<gFuG!53o;G609^FOO/BAR COM^67890o;G");
+        assertEquals("result", "a{#<gF_______G609^FOO/BAR COM^________", result);
+    }
+
+    @Test
+    public void testProtectT1D2() throws Throwable {
+        String result = ISOUtil.protect("9a{#<gFuG!^FOO/BAR COM^67890o;G");
+        assertEquals("result", "9a{#<gFuG!^FOO/BAR COM^________", result);
+    }
+
+    @Test
+    public void testProtectT1D3() throws Throwable {
+        String result = ISOUtil.protect("9a{D<gFuG!^FOO/BAR COM^67890o;G");
+        assertEquals("result", "9a{D<gFuG!^FOO/BAR COM^________", result);
+    }
+
+    @Test
     public void testProtectThrowsNullPointerException() throws Throwable {
         try {
             ISOUtil.protect(null);
