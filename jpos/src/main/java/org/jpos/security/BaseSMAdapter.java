@@ -18,6 +18,9 @@
 
 package  org.jpos.security;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
@@ -332,6 +335,212 @@ public class BaseSMAdapter
         return  result;
     }
 
+    public EncryptedPIN generatePIN(String accountNumber, int pinLen, List<String> excludes) throws
+            SMException {
+      List<SimpleMsg> cmdParameters = new ArrayList<SimpleMsg>();
+      cmdParameters.add(new SimpleMsg("parameter", "account number", accountNumber));
+      cmdParameters.add(new SimpleMsg("parameter", "PIN length", pinLen));
+      if(excludes != null && !excludes.isEmpty())
+        cmdParameters.add(new SimpleMsg("parameter", "Excluded PINS list", excludes));
+
+      LogEvent evt = new LogEvent(this, "s-m-operation");
+      evt.addMessage(new SimpleMsg("command", "Generate PIN", cmdParameters.toArray(new SimpleMsg[0])));
+      EncryptedPIN result = null;
+      try {
+        result = generatePINImpl(accountNumber, pinLen, excludes);
+        evt.addMessage(new SimpleMsg("result", "Generate PIN", result));
+      } catch (Exception e) {
+        evt.addMessage(e);
+        throw e instanceof SMException ? (SMException) e : new SMException(e);
+      } finally {
+        Logger.log(evt);
+      }
+      return result;
+    }
+
+    public String calculatePVV(EncryptedPIN pinUnderLMK, SecureDESKey pvkA,
+                               SecureDESKey pvkB, int pvkIdx) throws SMException {
+      SimpleMsg[] cmdParameters = {
+        new SimpleMsg("parameter", "account number", pinUnderLMK.getAccountNumber()),
+        new SimpleMsg("parameter", "PIN under LMK", pinUnderLMK),
+        new SimpleMsg("parameter", "PVK-A", pvkA == null ? "" : pvkA),
+        new SimpleMsg("parameter", "PVK-B", pvkB == null ? "" : pvkB),
+        new SimpleMsg("parameter", "PVK index", pvkIdx)};
+      LogEvent evt = new LogEvent(this, "s-m-operation");
+      evt.addMessage(new SimpleMsg("command", "Calculate PVV", cmdParameters));
+      String result = null;
+      try {
+        result = calculatePVVImpl(pinUnderLMK, pvkA, pvkB, pvkIdx);
+        evt.addMessage(new SimpleMsg("result", "Calculate PVV", result));
+      } catch (Exception e) {
+        evt.addMessage(e);
+        throw e instanceof SMException ? (SMException) e : new SMException(e);
+      } finally {
+        Logger.log(evt);
+      }
+      return result;
+    }
+
+    public boolean verifyPVV(EncryptedPIN pinUnderKd1, SecureDESKey kd1, SecureDESKey pvkA,
+                          SecureDESKey pvkB, int pvki, String pvv) throws SMException {
+
+      SimpleMsg[] cmdParameters = {
+        new SimpleMsg("parameter", "account number", pinUnderKd1.getAccountNumber()),
+        new SimpleMsg("parameter", "PIN under Data Key 1", pinUnderKd1),
+        new SimpleMsg("parameter", "Data Key 1", kd1),
+        new SimpleMsg("parameter", "PVK-A", pvkA == null ? "" : pvkA),
+        new SimpleMsg("parameter", "PVK-B", pvkB == null ? "" : pvkB),
+        new SimpleMsg("parameter", "pvki", pvki),
+        new SimpleMsg("parameter", "pvv", pvv)
+      };
+      LogEvent evt = new LogEvent(this, "s-m-operation");
+      evt.addMessage(new SimpleMsg("command", "Verify a PIN Using the VISA Method", cmdParameters));
+
+      try {
+        boolean r = verifyPVVImpl(pinUnderKd1, kd1, pvkA, pvkB, pvki, pvv);
+        evt.addMessage(new SimpleMsg("result", "Verification status", r ? "valid" : "invalid"));
+        return r;
+      } catch (Exception e) {
+        evt.addMessage(e);
+        throw e instanceof SMException ? (SMException) e : new SMException(e);
+      } finally {
+        Logger.log(evt);
+      }
+    }
+
+    public String calculateIBMPINOffset(EncryptedPIN pinUnderLmk, SecureDESKey pvk,
+                                        String decTab, String pinValData,
+                                        int minPinLen) throws SMException {
+      SimpleMsg[] cmdParameters = {
+        new SimpleMsg("parameter", "account number", pinUnderLmk.getAccountNumber()),
+        new SimpleMsg("parameter", "PIN under LMK", pinUnderLmk),
+        new SimpleMsg("parameter", "PVK", pvk),
+        new SimpleMsg("parameter", "decimalisation table", decTab),
+        new SimpleMsg("parameter", "PIN validation data", pinValData),
+        new SimpleMsg("parameter", "minimum PIN length", minPinLen)
+      };
+      LogEvent evt = new LogEvent(this, "s-m-operation");
+      evt.addMessage(new SimpleMsg("command", "Calculate PIN offset", cmdParameters));
+      String result = null;
+      try {
+        result = calculateIBMPINOffsetImpl(pinUnderLmk, pvk,
+                decTab, pinValData, minPinLen);
+        evt.addMessage(new SimpleMsg("result", "Calculate PIN offset", result));
+      } catch (Exception e) {
+        evt.addMessage(e);
+        throw e instanceof SMException ? (SMException) e : new SMException(e);
+      } finally {
+        Logger.log(evt);
+      }
+      return result;
+    }
+
+    public boolean verifyIBMPINOffset(EncryptedPIN pinUnderKd1, SecureDESKey kd1, SecureDESKey pvk,
+                                      String offset, String decTab, String pinValData,
+                                      int minPinLen) throws SMException {
+      SimpleMsg[] cmdParameters = {
+        new SimpleMsg("parameter", "account number", pinUnderKd1.getAccountNumber()),
+        new SimpleMsg("parameter", "PIN under Data Key 1", pinUnderKd1),
+        new SimpleMsg("parameter", "Data Key 1", kd1),
+        new SimpleMsg("parameter", "PVK", pvk),
+        new SimpleMsg("parameter", "Pin block format", pinUnderKd1.getPINBlockFormat()),
+        new SimpleMsg("parameter", "decimalisation table", decTab),
+        new SimpleMsg("parameter", "PIN validation data", pinValData),
+        new SimpleMsg("parameter", "minimum PIN length", minPinLen),
+        new SimpleMsg("parameter", "offset", offset)
+      };
+      LogEvent evt = new LogEvent(this, "s-m-operation");
+      evt.addMessage(new SimpleMsg("command", "Verify PIN offset", cmdParameters));
+
+      try {
+        boolean r = verifyIBMPINOffsetImpl(pinUnderKd1, kd1, pvk, offset, decTab,
+                 pinValData, minPinLen);
+        evt.addMessage(new SimpleMsg("result", "Verification status", r ? "valid" : "invalid"));
+        return r;
+      } catch (Exception e) {
+        evt.addMessage(e);
+        throw e instanceof SMException ? (SMException) e : new SMException(e);
+      } finally {
+        Logger.log(evt);
+      }
+    }
+
+    public EncryptedPIN deriveIBMPIN(String accountNo, SecureDESKey pvk,
+                                     String decTab, String pinValData,
+                                     int minPinLen, String offset) throws SMException {
+      SimpleMsg[] cmdParameters = {
+        new SimpleMsg("parameter", "account number", accountNo),
+        new SimpleMsg("parameter", "Offset", offset),
+        new SimpleMsg("parameter", "PVK", pvk), 
+        new SimpleMsg("parameter", "Decimalisation table", decTab),
+        new SimpleMsg("parameter", "PIN validation data", pinValData),
+        new SimpleMsg("parameter", "Minimum PIN length", minPinLen)
+      };
+      LogEvent evt = new LogEvent(this, "s-m-operation");
+      evt.addMessage(new SimpleMsg("command", "Derive a PIN Using the IBM Method", cmdParameters));
+      EncryptedPIN result = null;
+      try {
+        result = deriveIBMPINImpl(accountNo, pvk, decTab,  pinValData, minPinLen,  offset);
+        evt.addMessage(new SimpleMsg("result", "Derive a PIN Using the IBM Method", result));
+      } catch (Exception e) {
+        evt.addMessage(e);
+        throw e instanceof SMException ? (SMException) e : new SMException(e);
+      } finally {
+        Logger.log(evt);
+      }
+      return result;
+    }
+
+    public String calculateCVV(String accountNo, SecureDESKey cvkA, SecureDESKey cvkB,
+                               Date expDate, String serviceCode) throws SMException {
+
+      SimpleMsg[] cmdParameters = {
+            new SimpleMsg("parameter", "account number", accountNo),
+            new SimpleMsg("parameter", "cvk-a", cvkA == null ? "" : cvkA),
+            new SimpleMsg("parameter", "cvk-b", cvkB == null ? "" : cvkB),
+            new SimpleMsg("parameter", "Exp date", expDate),
+            new SimpleMsg("parameter", "Service code", serviceCode)
+      };
+      LogEvent evt = new LogEvent(this, "s-m-operation");
+      evt.addMessage(new SimpleMsg("command", "Calculate CVV/CVC", cmdParameters));
+      String result = null;
+      try {
+        result = calculateCVVImpl(accountNo, cvkA, cvkB, expDate, serviceCode);
+        evt.addMessage(new SimpleMsg("result", "Calculate CVV/CVC", result));
+      } catch (Exception e) {
+        evt.addMessage(e);
+        throw e instanceof SMException ? (SMException) e : new SMException(e);
+      } finally {
+        Logger.log(evt);
+      }
+      return result;
+    }
+
+    public boolean verifyCVV(String accountNo , SecureDESKey cvkA, SecureDESKey cvkB,
+                            String cvv, Date expDate, String serviceCode) throws SMException {
+
+      SimpleMsg[] cmdParameters = {
+            new SimpleMsg("parameter", "account number", accountNo),
+            new SimpleMsg("parameter", "cvk-a", cvkA == null ? "" : cvkA),
+            new SimpleMsg("parameter", "cvk-b", cvkB == null ? "" : cvkB),
+            new SimpleMsg("parameter", "CVV/CVC", cvv),
+            new SimpleMsg("parameter", "Exp date", expDate),
+            new SimpleMsg("parameter", "Service code", serviceCode)
+      };
+      LogEvent evt = new LogEvent(this, "s-m-operation");
+      evt.addMessage(new SimpleMsg("command", "Verify CVV/CVC", cmdParameters));
+      try {
+        boolean r = verifyCVVImpl(accountNo, cvkA, cvkB, cvv, expDate, serviceCode);
+        evt.addMessage(new SimpleMsg("result", "Verification status", r ? "valid" : "invalid"));
+        return r;
+      } catch (Exception e) {
+        evt.addMessage(e);
+        throw e instanceof SMException ? (SMException) e : new SMException(e);
+      } finally {
+        Logger.log(evt);
+      }
+    }
+
     public byte[] generateCBC_MAC (byte[] data, SecureDESKey kd) throws SMException {
         SimpleMsg[] cmdParameters =  {
             new SimpleMsg("parameter", "data", data), new SimpleMsg("parameter", "data key",
@@ -536,6 +745,131 @@ public class BaseSMAdapter
      */
     protected EncryptedPIN exportPINImpl (EncryptedPIN pinUnderLmk, SecureDESKey kd2,
             byte destinationPINBlockFormat) throws SMException {
+        throw  new SMException("Operation not supported in: " + this.getClass().getName());
+    }
+
+    /**
+     * Your SMAdapter should override this method if it has this functionality
+     * @param accountNumber
+     * @param pinLen
+     * @param excludes
+     * @return generated PIN under LMK
+     * @throws SMException
+     */
+    protected EncryptedPIN generatePINImpl(String accountNumber, int pinLen, List<String> excludes) throws
+            SMException {
+        throw  new SMException("Operation not supported in: " + this.getClass().getName());
+    }
+
+    /**
+     * Your SMAdapter should override this method if it has this functionality
+     * @param pinUnderLmk
+     * @param pvkA
+     * @param pvkB
+     * @param pvkIdx
+     * @return PVV (VISA PIN Verification Value)
+     * @throws SMException 
+     */
+    protected String calculatePVVImpl(EncryptedPIN pinUnderLMK, SecureDESKey pvkA,
+                       SecureDESKey pvkB, int pvkIdx) throws SMException {
+        throw  new SMException("Operation not supported in: " + this.getClass().getName());
+    }
+
+    /**
+     * Your SMAdapter should override this method if it has this functionality
+     * @param pinUnderKd 
+     * @param kd
+     * @param pvkA
+     * @param pvkB
+     * @param pvki
+     * @param pvv
+     * @return
+     * @throws SMException 
+     */
+    protected boolean verifyPVVImpl(EncryptedPIN pinUnderKd, SecureDESKey kd, SecureDESKey pvkA,
+                        SecureDESKey pvkB, int pvki, String pvv) throws SMException {
+        throw  new SMException("Operation not supported in: " + this.getClass().getName());
+    }
+
+    /**
+     * Your SMAdapter should override this method if it has this functionality
+     * @param pinUnderLmk
+     * @param pvk
+     * @param decTab
+     * @param pinValData
+     * @param minPinLen  pin minimal length
+     * @return IBM PIN Offset
+     * @throws SMException
+     */
+    protected String calculateIBMPINOffsetImpl(EncryptedPIN pinUnderLmk, SecureDESKey pvk,
+                                            String decTab, String pinValData,
+                                            int minPinLen) throws SMException {
+        throw  new SMException("Operation not supported in: " + this.getClass().getName());
+    }
+
+    /**
+     * Your SMAdapter should override this method if it has this functionality
+     * @param pinUnderKd
+     * @param kd
+     * @param pvk
+     * @param offset
+     * @param decTab
+     * @param pinValData
+     * @param minPinLen
+     * @return
+     * @throws SMException
+     */
+    protected boolean verifyIBMPINOffsetImpl(EncryptedPIN pinUnderKd, SecureDESKey kd
+                            ,SecureDESKey pvk, String offset, String decTab
+                            ,String pinValData, int minPinLen) throws SMException {
+        throw  new SMException("Operation not supported in: " + this.getClass().getName());
+    }
+
+    /**
+     * Your SMAdapter should override this method if it has this functionality
+     * @param accountNo
+     * @param pvk
+     * @param decTab
+     * @param pinValData
+     * @param minPinLen
+     * @param offset
+     * @return derived PIN under LMK
+     * @throws SMException
+     */
+    protected EncryptedPIN deriveIBMPINImpl(String accountNo, SecureDESKey pvk
+                              ,String decTab, String pinValData, int minPinLen
+                              ,String offset) throws SMException {
+        throw  new SMException("Operation not supported in: " + this.getClass().getName());
+    }
+
+    /**
+     * Your SMAdapter should override this method if it has this functionality
+     * @param accountNo
+     * @param cvkA
+     * @param cvkB
+     * @param expDate
+     * @param serviceCode
+     * @return Card Verification Code/Value
+     * @throws SMException
+     */
+    protected String calculateCVVImpl(String accountNo, SecureDESKey cvkA, SecureDESKey cvkB,
+                                   Date expDate, String serviceCode) throws SMException {
+        throw  new SMException("Operation not supported in: " + this.getClass().getName());
+    }
+
+    /**
+     * Your SMAdapter should override this method if it has this functionality
+     * @param accountNo
+     * @param cvkA
+     * @param cvkB
+     * @param cvv
+     * @param expDate
+     * @param serviceCode
+     * @return true if CVV/CVC is falid or false if not
+     * @throws SMException
+     */
+    protected boolean verifyCVVImpl(String accountNo, SecureDESKey cvkA, SecureDESKey cvkB,
+                        String cvv, Date expDate, String serviceCode) throws SMException {
         throw  new SMException("Operation not supported in: " + this.getClass().getName());
     }
 

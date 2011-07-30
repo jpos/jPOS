@@ -18,17 +18,21 @@
 
 package  org.jpos.security;
 
+import java.util.Date;
+import java.util.List;
+
 
 /**
- * A class that implements the SecurityModuleAdapter interface would act as an
+ * A class that implements the SMAdapter interface would act as an
  * adapter to the real security module device (by communicating with it using
  * its proprietary protocol).
  *
  * But application programmers will be communicating
  * with the security module using this simple interface.
  *
- * @todo support for PIN Verification API's and RSA
+ * @todo support for EMV Cryptogram Verification API's and RSA
  * @author Hani S. Kirollos
+ * @author Robert Demski
  * @version $Revision$ $Date$
  */
 public interface SMAdapter {
@@ -318,6 +322,186 @@ public interface SMAdapter {
      * @throws SMException
      */
     public EncryptedPIN exportPIN (EncryptedPIN pinUnderLmk, SecureDESKey kd2, byte destinationPINBlockFormat) throws SMException;
+
+
+
+    /**
+     * Generate random pin under LMK
+     *
+     * @param accountNumber The 12 right-most digits of the account number excluding the check digit
+     * @param pinLen lenght of the pin, usually in range 4-12.
+     *               Value 0 means that default length is assumed by HSM (usually 4)
+     * @param excludes list of pins which won't be generated.
+     *               Each pin has to be <code>pinLen</code> length
+     * @return generated PIN under LMK
+     * @throws SMException
+     */
+    public EncryptedPIN generatePIN(String accountNumber, int pinLen, List<String> excludes) throws
+            SMException;
+
+
+    /**
+     * Calculate PVV (VISA PIN Verification Value of PIN under LMK)
+     *
+     * NOTE: {@code pvkA} and {@code pvkB} should be single length keys
+     * but at least one of them may be double length key
+     *
+     * @param pinUnderLmk PIN under LMK
+     * @param pvkA first key PVK in PVK pair
+     * @param pvkB second key PVK in PVK pair
+     * @param pvkIdx index of the PVK, in range 0-6, if not present 0 is assumed
+     * @return PVV (VISA PIN Verification Value)
+     * @throws SMException
+     */
+    public String calculatePVV(EncryptedPIN pinUnderLmk, SecureDESKey pvkA,
+                               SecureDESKey pvkB, int pvkIdx) throws SMException;
+
+
+
+    /**
+     * Verify PVV (VISA PIN Verification Value of an LMK encrypted PIN)
+     *
+     * NOTE: {@code pvkA} and {@code pvkB} should be single
+     * length keys but at least one of them may be double length key
+     *
+     * @param pinUnderKd1 pin block under {@code kd1}
+     * @param kd1 Data Key (also called session key) under which the pin is encrypted (ZPK or TPK)
+     * @param pvkA first PVK in PVK pair
+     * @param pvkB second PVK in PVK pair
+     * @param pvki index of the PVK, in range 0-6, if not present 0 is assumed
+     * @param pvv (VISA PIN Verification Value)
+     * @return true if pin is valid false if not
+     * @throws SMException
+     */
+    public boolean verifyPVV(EncryptedPIN pinUnderKd1, SecureDESKey kd1, SecureDESKey pvkA,
+                             SecureDESKey pvkB, int pvki, String pvv) throws SMException;
+
+
+
+    /**
+     * Calculate an PIN Offset using the IBM 3624 method
+     *
+     * Using that method is not recomendated. PVV method is prefrred,
+     * but it may be need in some legacy systms
+     * @param pinUnderLmk PIN under LMK
+     * @param pvk        accepts single, double, triple size key lenght.
+     *                   Single key lenght is recomendated
+     * @param decTab     decimalisation table. Accepts plain text and encrypted
+     *                   decimalisation table depending to HSM configuration
+     * @param pinValData pin validation data. User-defined data consisting of hexadecimal
+     *                   characters and the character N, which indicates to the HSM where
+     *                   to insert the last 5 digits of the account number. Usualy it consists
+     *                   the first digits of the card number
+     * @param minPinLen  pin minimal length
+     * @return IBM PIN Offset
+     * @throws SMException
+     */
+    public String calculateIBMPINOffset(EncryptedPIN pinUnderLmk, SecureDESKey pvk,
+                                        String decTab, String pinValData,
+                                        int minPinLen) throws SMException;
+
+
+
+    /**
+     * Verify an PIN Offset using the IBM 3624 method
+     *
+     * @param pinUnderKd1 pin block under {@code kd1}
+     * @param kd1        Data Key (also called session key) under which the pin is encrypted (ZPK or TPK)
+     * @param pvk        accepts single, double, triple size key lenght.
+     *                   Single key lenght is recomendated
+     * @param offset     IBM PIN Offset
+     * @param decTab     decimalisation table. Accepts plain text and encrypted
+     *                   decimalisation table depending to HSM configuration
+     * @param pinValData pin validation data. User-defined data consisting of hexadecimal
+     *                   characters and the character N, which indicates to the HSM where
+     *                   to insert the last 5 digits of the account number. Usualy it consists
+     *                   the first digits of the card number
+     * @param minPinLen  min pin lenght
+     * @return true if pin offset is valid false if not
+     * @throws SMException
+     */
+    public boolean verifyIBMPINOffset(EncryptedPIN pinUnderKd1, SecureDESKey kd1, SecureDESKey pvk,
+                                      String offset, String decTab, String pinValData,
+                                      int minPinLen) throws SMException;
+
+
+
+    /**
+     * Derive a PIN Using the IBM 3624 method
+     *
+     * That method derive pin from pin offset (not exacly that same but working).
+     * Therefore that metod is not recomendated. It is similar to obtain pin
+     * from encrypted pinblock, but require (encrypted) decimalisation table
+     * handling is more complicated and returned pin may differ from pin what user has selected 
+     * It may be uable e.g. in migration from pin offset method to PVV method
+     * @param accountNo  the 12 right-most digits of the account number excluding the check digit
+     * @param pvk        accepts single, double, triple size key lenght.
+     *                   Single key lenght is recomendated
+     * @param decTab     decimalisation table. Accepts plain text and encrypted
+     *                   decimalisation table depending to HSM configuration
+     * @param pinValData pin validation data. User-defined data consisting of hexadecimal
+     *                   characters and the character N, which indicates to the HSM where
+     *                   to insert the last 5 digits of the account number. Usualy it consists
+     *                   the first digits of the card number
+     * @param minPinLen  min pin lenght
+     * @param offset     IBM PIN Offset
+     * @return           PIN under LMK
+     * @throws SMException
+     */
+    public EncryptedPIN deriveIBMPIN(String accountNo, SecureDESKey pvk
+                              ,String decTab, String pinValData, int minPinLen
+                              ,String offset) throws SMException;
+
+
+
+    /**
+     * Calaculate a Card Verification Code/Value
+     *
+     * NOTE: {@code cvkA} and {@code cvkB} should be single
+     * length keys but at least one of them may be double length key
+     *
+     * @param accountNo The 12 right-most digits of the account number excluding the check digit
+     * @param cvkA        the first CVK in CVK pair
+     * @param cvkB        the second CVK in CVK pair
+     * @param expDate     the card expiration date
+     * @param serviceCode the card service code
+     *        Service code should be:
+     *        <ul>
+     *          <li>the value which will be placed onto card's magnetic stripe for encoding CVV1/CVC1</li>
+     *          <li>"000" for printing CVV2/CVC2 on card's signature stripe</li>
+     *          <li>"999" for inclusion iCVV/Chip CVC on EMV chip card</li>
+     *        </ul>
+     * @return Card Verification Code/Value
+     * @throws SMException
+     */
+    public String calculateCVV(String accountNo, SecureDESKey cvkA, SecureDESKey cvkB,
+                               Date expDate, String serviceCode) throws SMException;
+
+
+
+    /**
+     * Verify a Card Verification Code/Value
+     *
+     * NOTE: {@code cvkA} and {@code cvkB} should be single
+     * length keys but at least one of them may be double length key
+     *
+     * @param accountNo The 12 right-most digits of the account number excluding the check digit
+     * @param cvkA the first CVK in CVK pair
+     * @param cvkB the second CVK in CVK pair
+     * @param cvv Card Verification Code/Value
+     * @param expDate the card expiration date
+     * @param serviceCode the card service code
+     *        Service code should be:
+     *        <ul>
+     *         <li>taken from card's magnetic stripe for verifing CVV1/CVC1</li>
+     *         <li>"000" for verifing CVV2/CVC2 printed on card's signature stripe</li>
+     *         <li>"999" for verifing iCVV/Chip CVC included on EMV chip card</li>
+     *        </ul>
+     * @return true if CVV/CVC is falid or false if not
+     * @throws SMException
+     */
+    public boolean verifyCVV(String accountNo, SecureDESKey cvkA, SecureDESKey cvkB,
+                     String cvv, Date expDate, String serviceCode) throws SMException;
 
 
 
