@@ -763,7 +763,7 @@ public class BaseSMAdapter
 
     /**
      * Your SMAdapter should override this method if it has this functionality
-     * @param pinUnderLmk
+     * @param pinUnderLMK
      * @param pvkA
      * @param pvkB
      * @param pvkIdx
