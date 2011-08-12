@@ -228,6 +228,7 @@ public class JCESecurityModule extends BaseSMAdapter {
         // Encrypt
         byte[] translatedPINBlock = jceHandler.encryptData(clearPINBlock, getLMK(PINLMKIndex));
         encryptedPIN = new EncryptedPIN(translatedPINBlock, FORMAT00, accountNumber);
+        encryptedPIN.setAccountNumber(accountNumber);
         return  encryptedPIN;
     }
 
@@ -257,6 +258,7 @@ public class JCESecurityModule extends BaseSMAdapter {
         byte[] translatedPINBlock = jceHandler.encryptData(clearPINBlock, getLMK(PINLMKIndex));
         pinUnderLmk = new EncryptedPIN(translatedPINBlock, destinationPINBlockFormat,
                 accountNumber);
+        pinUnderLmk.setAccountNumber(accountNumber);
         return  pinUnderLmk;
     }
 
@@ -276,6 +278,7 @@ public class JCESecurityModule extends BaseSMAdapter {
         byte[] translatedPINBlock = jceHandler.encryptData(clearPINBlock, decryptFromLMK(kd2));
         exportedPIN = new EncryptedPIN(translatedPINBlock, destinationPINBlockFormat,
                 accountNumber);
+        exportedPIN.setAccountNumber(accountNumber);
         return  exportedPIN;
     }
 
@@ -294,6 +297,7 @@ public class JCESecurityModule extends BaseSMAdapter {
         byte[] translatedPINBlock = jceHandler.encryptData(clearPINBlock, decryptFromLMK(kd2));
         translatedPIN = new EncryptedPIN(translatedPINBlock, destinationPINBlockFormat,
                 accountNumber);
+        translatedPIN.setAccountNumber(accountNumber);
         return  translatedPIN;
     }
 

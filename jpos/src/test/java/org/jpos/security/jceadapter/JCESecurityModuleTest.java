@@ -1,9 +1,6 @@
 package org.jpos.security.jceadapter;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 import javax.crypto.spec.SecretKeySpec;
 
@@ -11,13 +8,40 @@ import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
 import org.jpos.core.SimpleConfiguration;
 import org.jpos.core.SubConfiguration;
+import org.jpos.iso.ISOUtil;
 import org.jpos.security.EncryptedPIN;
+import org.jpos.security.SMAdapter;
 import org.jpos.security.SMException;
 import org.jpos.security.SecureDESKey;
 import org.jpos.util.Logger;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class JCESecurityModuleTest {
+
+    static JCESecurityModule jcesecmod;
+
+    /**
+     * Encrypted under standard LMK test key: keytype 001 ZMK (variant 0, scheme U)
+     * Clear key value: 4 times 12345678
+     */
+    static SecureDESKey zpk = new SecureDESKey(SMAdapter.LENGTH_DES3_2KEY
+          ,SMAdapter.TYPE_ZPK+":0U","34E2FC8EAD7CD07BFA2B7ED5FE4D8212" ,"6FB1");
+
+    /**
+     * Encrypted under standard LMK test key: keytype 002 TPK (variant 0, scheme U)
+     * Clear key value: 4 times 12345678
+     */
+    static SecureDESKey tpk = new SecureDESKey(SMAdapter.LENGTH_DES3_2KEY
+          ,SMAdapter.TYPE_TPK+":0U","E9F05D2F2DB8A8579CA3E806B35E336F" ,"6FB1");
+
+
+    private static final String PREFIX = "src/main/resources/cfg/";
+
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+      jcesecmod = new JCESecurityModule(PREFIX+"secret.lmk");
+    }
 
     @Test
     public void testCalculateKeyCheckValueThrowsNullPointerException() throws Throwable {
@@ -131,6 +155,16 @@ public class JCESecurityModuleTest {
         }
     }
 
+
+    @Test
+    public void testDecryptPINImpl() throws Throwable {
+        EncryptedPIN ep  =  new EncryptedPIN("E0F7E27FF5DA09A9",(byte)0, "12Characters");
+        ep.setAccountNumber("12Characters");
+        String pin = jcesecmod.decryptPINImpl(ep);
+        String expected = "123456789012";
+        assertEquals(expected, pin);
+    }
+
     @Test
     public void testEncryptPINImplThrowsNullPointerException5() throws Throwable {
         try {
@@ -235,6 +269,16 @@ public class JCESecurityModuleTest {
     }
 
     @Test
+    public void testExportPINImpl() throws Throwable {
+        EncryptedPIN ep = jcesecmod.encryptPINImpl("1234", "123456789012");
+        EncryptedPIN pinUnderZPK = jcesecmod.exportPINImpl(ep, zpk, SMAdapter.FORMAT01);
+        byte[] expected = ISOUtil.hex2byte("3C0CA40863092C3A");
+        assertArrayEquals(expected, pinUnderZPK.getPINBlock());
+        assertEquals(SMAdapter.FORMAT01, pinUnderZPK.getPINBlockFormat());
+        assertEquals("123456789012", pinUnderZPK.getAccountNumber());
+    }
+
+    @Test
     public void testGenerateKeyImplThrowsNullPointerException() throws Throwable {
         try {
             new JCESecurityModule().generateKeyImpl((short) 100, "testJCESecurityModuleKeyType");
@@ -299,6 +343,14 @@ public class JCESecurityModuleTest {
         } catch (NullPointerException ex) {
             assertNull("ex.getMessage()", ex.getMessage());
         }
+    }
+
+    @Test
+    public void testImportPINImpl() throws Throwable {
+        EncryptedPIN pinUnderKd1 = new EncryptedPIN("3C0CA40863092C3A", SMAdapter.FORMAT01,"1234567890120");
+        EncryptedPIN ep = jcesecmod.importPINImpl(pinUnderKd1, zpk);
+        String pin = jcesecmod.decryptPINImpl(ep);
+        assertEquals("1234", pin);
     }
 
     @Test
@@ -372,5 +424,16 @@ public class JCESecurityModuleTest {
         } catch (NullPointerException ex) {
             assertNull("ex.getMessage()", ex.getMessage());
         }
+    }
+
+    @Test
+    public void testTranslatePINImpl() throws Throwable {
+        EncryptedPIN pinUnderZPK = new EncryptedPIN("3C0CA40863092C3A", SMAdapter.FORMAT01,"1234567890120");
+        EncryptedPIN pinUnderTPK = jcesecmod.translatePINImpl(pinUnderZPK, zpk, tpk, SMAdapter.FORMAT01);
+        //Clear keys are that same so after translation expected result must be unchanged
+        byte[] expected = ISOUtil.hex2byte("3C0CA40863092C3A");
+        assertArrayEquals(expected, pinUnderTPK.getPINBlock());
+        assertEquals(SMAdapter.FORMAT01, pinUnderTPK.getPINBlockFormat());
+        assertEquals("123456789012", pinUnderTPK.getAccountNumber());
     }
 }
