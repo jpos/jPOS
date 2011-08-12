@@ -158,7 +158,7 @@ public class VAPChannel extends BaseChannel {
     protected void sendMessageHeader(ISOMsg m, int len) 
         throws IOException
     {
-        ISOHeader h = (m.getHeader() != null) ?
+        ISOHeader h = (!isOverrideHeader() && m.getHeader() != null) ?
                 m.getISOHeader() :
                 new BASE1Header (srcid, dstid);
 
