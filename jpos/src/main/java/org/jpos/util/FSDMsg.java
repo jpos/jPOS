@@ -279,7 +279,7 @@ public class FSDMsg implements Loggeable, Cloneable {
                 }
             break;
         }
-        return (isSeparated(separator)) ? ISOUtil.blankUnPad(value) : value;
+        return (isSeparated(separator)) && !EOM_SEPARATOR.equals(separator) ? ISOUtil.blankUnPad(value) : value;
     }
     
     private boolean isSeparated(String separator) {
