@@ -34,10 +34,13 @@ import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.Provider;
 import java.security.Security;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.Map;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
+import org.jpos.iso.ISODate;
 
 
 /**
@@ -280,6 +283,104 @@ public class JCESecurityModule extends BaseSMAdapter {
                 accountNumber);
         exportedPIN.setAccountNumber(accountNumber);
         return  exportedPIN;
+    }
+
+    /**
+     * Visa way to decimalize data block
+     * @param b
+     * @return
+     */
+    private String decimalizeVisa(byte[] b){
+        char[] bec = ISOUtil.hexString(b).toUpperCase().toCharArray();
+        char[] bhc = new char[16];
+        int k = 0;
+        //Select 0-9 chars
+        for ( char c : bec )
+          if (c<'A')
+            bhc[k++] = c;
+        //Select A-F chars and map them to 0-5
+        char adjust = 'A'-'0';
+        for ( char c : bec )
+          if (c>='A')
+            bhc[k++] = (char) (c-adjust);
+        return new String(bhc);
+    }
+
+    private Key concatKeys(SecureDESKey keyA, SecureDESKey keyB)
+            throws SMException {
+        if ( keyA!=null && keyA.getKeyLength()==SMAdapter.LENGTH_DES
+          && keyB!=null && keyB.getKeyLength()==SMAdapter.LENGTH_DES) {
+          Key cvkAclear = decryptFromLMK(keyA);
+          Key cvkBclear = decryptFromLMK(keyB);
+          return jceHandler.formDESKey(SMAdapter.LENGTH_DES3_2KEY
+                  ,ISOUtil.concat(cvkAclear.getEncoded(), cvkBclear.getEncoded()));
+        }
+        if (keyA!=null && keyA.getKeyLength()!=SMAdapter.LENGTH_DES)
+          return decryptFromLMK(keyA);
+        if (keyB!=null && keyB.getKeyLength()!=SMAdapter.LENGTH_DES)
+          return decryptFromLMK(keyB);
+        return null;
+    }
+
+    private String calculateCVV(String accountNo, Key cvk, Date expDate,
+                                String serviceCode) throws SMException {
+        Key udka = jceHandler.formDESKey(SMAdapter.LENGTH_DES
+                ,Arrays.copyOfRange(cvk.getEncoded(), 0, 8));
+
+        byte[] block = ISOUtil.hex2byte(
+                ISOUtil.zeropadRight(accountNo
+                    + ISODate.formatDate(expDate, "yyMM")
+                    + serviceCode, 32));
+        byte[] ba = Arrays.copyOfRange(block, 0, 8);
+        byte[] bb = Arrays.copyOfRange(block, 8,16);
+
+        //Encrypt ba with udka
+        byte[] bc = jceHandler.encryptData(ba, udka);
+        byte[] bd = ISOUtil.xor(bc, bb);
+        //Encrypt bd Tripple DES
+        byte[] be = jceHandler.encryptData(bd, cvk);
+        return decimalizeVisa(be).substring(0,3);
+    }
+
+    @Override
+    protected String calculateCVVImpl(String accountNo, SecureDESKey cvkA, SecureDESKey cvkB,
+                                   Date expDate, String serviceCode) throws SMException {
+        return calculateCVV(accountNo,concatKeys(cvkA, cvkB),expDate,serviceCode);
+    }
+
+    @Override
+    protected boolean verifyCVVImpl(String accountNo, SecureDESKey cvkA, SecureDESKey cvkB,
+                     String cvv, Date expDate, String serviceCode) throws SMException {
+        String result = calculateCVV(accountNo, concatKeys(cvkA, cvkB), expDate, serviceCode);
+        return result.equals(cvv);
+    }
+
+    private String calculatePVV(EncryptedPIN pinUnderLmk, Key key, int keyIdx)
+            throws SMException {
+        String pin = decryptPINImpl(pinUnderLmk);
+        String block = pinUnderLmk.getAccountNumber().substring(1);
+        block += Integer.toString(keyIdx%10);
+        block += pin.substring(0, 4);
+        byte[] b = ISOUtil.hex2byte(block);
+        b = jceHandler.encryptData(b, key);
+
+        return decimalizeVisa(b).substring(0,4);
+    }
+
+    @Override
+    protected String calculatePVVImpl(EncryptedPIN pinUnderLmk, SecureDESKey pvkA,
+                               SecureDESKey pvkB, int pvkIdx) throws SMException {
+        Key key = concatKeys(pvkA, pvkB);
+        return calculatePVV(pinUnderLmk, key, pvkIdx);
+    }
+
+    @Override
+    public boolean verifyPVVImpl(EncryptedPIN pinUnderKd1, SecureDESKey kd1, SecureDESKey pvkA,
+                             SecureDESKey pvkB, int pvki, String pvv) throws SMException {
+        Key key = concatKeys(pvkA, pvkB);
+        EncryptedPIN pinUnderLmk = importPINImpl(pinUnderKd1, kd1);
+        String result = calculatePVV(pinUnderLmk, key, pvki);
+        return result.equals(pvv);
     }
 
     public EncryptedPIN translatePINImpl (EncryptedPIN pinUnderKd1, SecureDESKey kd1,

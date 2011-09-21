@@ -1,5 +1,6 @@
 package org.jpos.security.jceadapter;
 
+import java.util.Date;
 import static org.junit.Assert.*;
 
 import javax.crypto.spec.SecretKeySpec;
@@ -8,6 +9,7 @@ import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
 import org.jpos.core.SimpleConfiguration;
 import org.jpos.core.SubConfiguration;
+import org.jpos.iso.ISODate;
 import org.jpos.iso.ISOUtil;
 import org.jpos.security.EncryptedPIN;
 import org.jpos.security.SMAdapter;
@@ -35,12 +37,60 @@ public class JCESecurityModuleTest {
     static SecureDESKey tpk = new SecureDESKey(SMAdapter.LENGTH_DES3_2KEY
           ,SMAdapter.TYPE_TPK+":0U","E9F05D2F2DB8A8579CA3E806B35E336F" ,"6FB1");
 
+    /**
+     * Encrypted under standard LMK test key: keytype 002 PVK (variant 0, scheme Z)
+     * Clear key value: 2 times 12345678
+     */
+    static SecureDESKey pvkA = new SecureDESKey(SMAdapter.LENGTH_DES
+          ,SMAdapter.TYPE_PVK+":0Z","141E1DA3D2D7F3F4" ,"6FB1");
+
+    /**
+     * Encrypted under standard LMK test key: keytype 002 PVK (variant 0, scheme Z)
+     * Clear key value: 2 times 12345678
+     */
+    static SecureDESKey pvkB = new SecureDESKey(SMAdapter.LENGTH_DES
+          ,SMAdapter.TYPE_PVK+":0Z","141E1DA3D2D7F3F4" ,"6FB1");
+
+    /**
+     * Encrypted under standard LMK test key: keytype 402 CVK (variant 4, scheme U)
+     * Clear key value: 4 times 12345678
+     */
+    static SecureDESKey cvk = new SecureDESKey(SMAdapter.LENGTH_DES3_2KEY
+          ,SMAdapter.TYPE_CVK+":4U","479D751977AA598CB481F548226DBF2B" ,"6FB1");
+
+    /**
+     * Encrypted under standard LMK test key: keytype 402 CVK (variant 4, scheme Z)
+     * Clear key value: 2 times 12345678
+     */
+    static SecureDESKey cvkA = new SecureDESKey(SMAdapter.LENGTH_DES
+          ,SMAdapter.TYPE_CVK+":4Z","56FBB74CDEAD6949" ,"6FB1");
+
+    /**
+     * Encrypted under standard LMK test key: keytype 402 CVK (variant 4, scheme Z)
+     * Clear key value: 2 times 87654321
+     */
+    static SecureDESKey cvkB = new SecureDESKey(SMAdapter.LENGTH_DES
+          ,SMAdapter.TYPE_CVK+":4Z","69E636CF27A47EEE" ,"AAB1");
+
+    /**
+     * Pin value 1234 for account number 1234567890123 encrypted
+     * under LMK in internal pinblock format
+     */
+    static EncryptedPIN pinUnderLMK;
+
+    /**
+     * Pin value 1234 for account number 1234567890123 encrypted
+     * under TPK in pinblock 01 format
+     */
+    static EncryptedPIN pinUnderTPK;
 
     private static final String PREFIX = "src/main/resources/cfg/";
 
     @BeforeClass
     public static void setUpClass() throws Exception {
       jcesecmod = new JCESecurityModule(PREFIX+"secret.lmk");
+      pinUnderLMK = jcesecmod.encryptPIN("1234", "1234567890123");
+      pinUnderTPK = jcesecmod.exportPINImpl(pinUnderLMK, tpk, SMAdapter.FORMAT01);
     }
 
     @Test
@@ -435,5 +485,79 @@ public class JCESecurityModuleTest {
         assertArrayEquals(expected, pinUnderTPK.getPINBlock());
         assertEquals(SMAdapter.FORMAT01, pinUnderTPK.getPINBlockFormat());
         assertEquals("123456789012", pinUnderTPK.getAccountNumber());
+    }
+
+    @Test
+    public void testCalculateCVVImpl1() throws Throwable {
+        String accountNo = "123456789012";
+        Date expDate = ISODate.parseISODate("1108"+"01000000");
+        String serviceCode = "000";
+        String expected = "204";
+        String cvv = jcesecmod.calculateCVV(accountNo, cvk, null, expDate, serviceCode);
+        assertEquals(expected, cvv);
+    }
+
+    @Test
+    public void testVerifyCVVImpl1() throws Throwable {
+        String accountNo = "123456789012";
+        Date expDate = ISODate.parseISODate("1108"+"01000000");
+        String serviceCode = "000";
+        String cvv = "204";
+        boolean result = jcesecmod.verifyCVV(accountNo, cvk, null, cvv, expDate, serviceCode);
+        assertTrue(result);
+    }
+
+    @Test
+    public void testCalculateCVVImpl2() throws Throwable {
+        String accountNo = "123456789012";
+        Date expDate = ISODate.parseISODate("1108"+"01000000");
+        String serviceCode = "000";
+        String expected = "453";
+        String cvv = jcesecmod.calculateCVV(accountNo, cvkA, cvkB, expDate, serviceCode);
+        assertEquals(expected, cvv);
+    }
+
+    @Test
+    public void testVerifyCVVImpl2() throws Throwable {
+        String accountNo = "123456789012";
+        Date expDate = ISODate.parseISODate("1108"+"01000000");
+        String serviceCode = "000";
+        String cvv = "453";
+        boolean result = jcesecmod.verifyCVV(accountNo, cvkA, cvkB, cvv, expDate, serviceCode);
+        assertTrue(result);
+    }
+
+    @Test
+    public void testCalculatePVVImpl1() throws Throwable {
+        SecureDESKey pvk = tpk; //pvk and zpk are same type
+        int pvki = 0;
+        String pvv = jcesecmod.calculatePVV(pinUnderLMK, pvk, null, pvki);
+        String expected = "1226";
+        assertEquals(expected, pvv);
+    }
+
+    @Test
+    public void testVerifyPVVImpl1() throws Throwable {
+        SecureDESKey pvk = tpk; //pvk and zpk are same type
+        int pvki = 0;
+        String pvv = "1226";
+        boolean result = jcesecmod.verifyPVV(pinUnderTPK, tpk, pvk, null, pvki, pvv);
+        assertTrue(result);
+    }
+
+    @Test
+    public void testCalculatePVVImpl2() throws Throwable {
+        int pvki = 0;
+        String pvv = jcesecmod.calculatePVV(pinUnderLMK, pvkA, pvkB, pvki);
+        String expected = "1226";
+        assertEquals(expected, pvv);
+    }
+
+    @Test
+    public void testVerifyPVVImpl2() throws Throwable {
+        int pvki = 0;
+        String pvv = "1226";
+        boolean result = jcesecmod.verifyPVV(pinUnderTPK, tpk, pvkA, pvkB, pvki, pvv);
+        assertTrue(result);
     }
 }
