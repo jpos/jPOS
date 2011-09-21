@@ -654,6 +654,17 @@ public class JCESecurityModule extends BaseSMAdapter {
         return key;
     }
 
+    private char[] formatPINBlock(String pin){
+      char[] block = "FFFFFFFFFFFFFFFF".toCharArray();
+      char[] pinLenHex = String.format("%02X", pin.length()).toCharArray();
+
+      // pin length then pad with 'F'
+      System.arraycopy(pinLenHex, 0, block, 0, pinLenHex.length);
+      System.arraycopy(pin.toCharArray(), 0
+                      ,block, pinLenHex.length, pin.length());
+      return block;
+    }
+
     /**
      * Calculates the clear PIN Block
      * @param pin as entered by the card holder on the PIN entry device
@@ -665,8 +676,10 @@ public class JCESecurityModule extends BaseSMAdapter {
      */
     private byte[] calculatePINBlock (String pin, byte pinBlockFormat, String accountNumber) throws SMException {
         byte[] pinBlock = null;
-        if (pin.length() > MAX_PIN_LENGTH)
+        if (pin.length() < MIN_PIN_LENGTH || pin.length() > MAX_PIN_LENGTH)
             throw  new SMException("Invalid PIN length: " + pin.length());
+        if (!ISOUtil.isNumeric(pin, 10))
+            throw  new SMException("Invalid PIN decimal digits: " + pin);
         if (accountNumber.length() != 12)
             throw  new SMException("Invalid Account Number: " + accountNumber + ". The length of the account number must be 12 (the 12 right-most digits of the account number excluding the check digit)");
         switch (pinBlockFormat) {
@@ -674,44 +687,16 @@ public class JCESecurityModule extends BaseSMAdapter {
             case FORMAT01:
                 {
                     // Block 1
-                    String block1 = null;
-                    byte[] block1ByteArray;
-                    switch (pin.length()) {
-                        // pin length then pad with 'F'
-                        case 4:
-                            block1 = "04" + pin + "FFFFFFFFFF";
-                            break;
-                        case 5:
-                            block1 = "05" + pin + "FFFFFFFFF";
-                            break;
-                        case 6:
-                            block1 = "06" + pin + "FFFFFFFF";
-                            break;
-                        case 7:
-                            block1 = "07" + pin + "FFFFFFF";
-                            break;
-                        case 8:
-                            block1 = "08" + pin + "FFFFFF";
-                            break;
-                        default:
-                            throw  new SMException("Unsupported PIN Length: " +
-                                    pin.length());
-                    }
-                    block1ByteArray = ISOUtil.hex2byte(block1);
+                    byte[] block1 = ISOUtil.hex2byte(new String(formatPINBlock(pin)));
+
                     // Block 2
-                    String block2;
-                    byte[] block2ByteArray = null;
-                    block2 = "0000" + accountNumber;
-                    block2ByteArray = ISOUtil.hex2byte(block2);
+                    byte[] block2 = ISOUtil.hex2byte("0000" + accountNumber);
                     // pinBlock
-                    pinBlock = ISOUtil.xor(block1ByteArray, block2ByteArray);
+                    pinBlock = ISOUtil.xor(block1, block2);
                 }
                 break;
             case FORMAT03: 
                 {
-                    if(pin.length() < 4 || pin.length() > 12) 
-                        throw new SMException("Unsupported PIN Length: " + 
-                                pin.length());
                     pinBlock = ISOUtil.hex2byte (
                         pin + "FFFFFFFFFFFFFFFF".substring(pin.length(),16)
                     );
@@ -777,7 +762,7 @@ public class JCESecurityModule extends BaseSMAdapter {
                         if(pin.charAt(i) >= 'A') 
                             throw new SMException("PIN Block Error");
 
-                    if(pin.length() < 4 || pin.length() > 12) 
+                    if(pin.length() < MIN_PIN_LENGTH || pin.length() > MAX_PIN_LENGTH) 
                         throw new SMException("Unsupported PIN Length: " + 
                                 pin.length());
                 }
@@ -995,6 +980,10 @@ public class JCESecurityModule extends BaseSMAdapter {
      * JCESecurityModule uses Triple DES Local Master Keys
      */
     private static final short LMK_KEY_LENGTH = LENGTH_DES3_2KEY;
+    /**
+     * The minimum length of the PIN
+     */
+    private static final short MIN_PIN_LENGTH = 4;
     /**
      * The maximum length of the PIN
      */

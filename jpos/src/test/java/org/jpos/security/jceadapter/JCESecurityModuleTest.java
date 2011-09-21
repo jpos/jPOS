@@ -231,7 +231,7 @@ public class JCESecurityModuleTest {
             new JCESecurityModule().encryptPINImpl("11Character", "12Characters");
             fail("Expected SMException to be thrown");
         } catch (SMException ex) {
-            assertEquals("ex.getMessage()", "Unsupported PIN Length: 11", ex.getMessage());
+            assertEquals("ex.getMessage()", "Invalid PIN decimal digits: 11Character", ex.getMessage());
             assertNull("ex.getNested()", ex.getNested());
         }
     }
@@ -239,7 +239,7 @@ public class JCESecurityModuleTest {
     @Test
     public void testEncryptPINImplThrowsSMException1() throws Throwable {
         try {
-            new JCESecurityModule().encryptPINImpl("11Character", "11Character");
+            jcesecmod.encryptPINImpl("12345678901", "11Character");
             fail("Expected SMException to be thrown");
         } catch (SMException ex) {
             assertEquals(
@@ -253,7 +253,7 @@ public class JCESecurityModuleTest {
     @Test
     public void testEncryptPINImplThrowsSMException2() throws Throwable {
         try {
-            new JCESecurityModule().encryptPINImpl("11Character", "13CharactersX");
+            jcesecmod.encryptPINImpl("12345678901", "13CharactersX");
             fail("Expected SMException to be thrown");
         } catch (SMException ex) {
             assertEquals(
@@ -267,10 +267,10 @@ public class JCESecurityModuleTest {
     @Test
     public void testEncryptPINImplThrowsSMException3() throws Throwable {
         try {
-            new JCESecurityModule().encryptPINImpl("12Characters", "12Characters");
+            jcesecmod.encryptPINImpl("1234567890123", "12Characters");
             fail("Expected SMException to be thrown");
         } catch (SMException ex) {
-            assertEquals("ex.getMessage()", "Unsupported PIN Length: 12", ex.getMessage());
+            assertEquals("ex.getMessage()", "Invalid PIN length: 13", ex.getMessage());
             assertNull("ex.getNested()", ex.getNested());
         }
     }
@@ -278,12 +278,20 @@ public class JCESecurityModuleTest {
     @Test
     public void testEncryptPINImplThrowsSMException4() throws Throwable {
         try {
-            new JCESecurityModule().encryptPINImpl("13CharactersX", "testJCESecurityModuleAccountNumber");
+            jcesecmod.encryptPINImpl("1234567890123", "testJCESecurityModuleAccountNumber");
             fail("Expected SMException to be thrown");
         } catch (SMException ex) {
             assertEquals("ex.getMessage()", "Invalid PIN length: 13", ex.getMessage());
             assertNull("ex.getNested()", ex.getNested());
         }
+    }
+
+    @Test
+    public void testEncryptPINImpl1() throws Throwable {
+        EncryptedPIN ep = jcesecmod.encryptPINImpl("123456789012", "12Characters");
+        byte[] expected = ISOUtil.hex2byte("E0F7E27FF5DA09A9");
+        assertArrayEquals(expected, ep.getPINBlock());
+        assertEquals(SMAdapter.FORMAT00, ep.getPINBlockFormat());
     }
 
     @Test
