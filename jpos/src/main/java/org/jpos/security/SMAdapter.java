@@ -150,6 +150,31 @@ public interface SMAdapter {
      * PIN Block Format 05 is the ISO 9564-1 Format 1 PIN Block.
      */
     public static final byte FORMAT05 = (byte)05;
+
+    /**
+     * PIN Block Format 34 is the standard EMV PIN block format.
+     * Is only avaliable as output of EMV PIN change commands.
+     */
+    public static final byte FORMAT34 = (byte)34;
+
+    /**
+     * PIN Block Format 35 is the required by Europay/MasterCard
+     * for their Pay Now & Pay Later products.
+     */
+    public static final byte FORMAT35 = (byte)35;
+
+    /**
+     * PIN Block Format 41 is the Visa format for PIN change
+     * without using the current PIN.
+     */
+    public static final byte FORMAT41 = (byte)41;
+
+    /**
+     * PIN Block Format 42 is the Visa format for PIN change
+     * using the current (old) PIN.
+     */
+    public static final byte FORMAT42 = (byte)42;
+
     /**
      * Proprietary PIN Block format.
      *

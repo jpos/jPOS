@@ -654,9 +654,10 @@ public class JCESecurityModule extends BaseSMAdapter {
         return key;
     }
 
-    private char[] formatPINBlock(String pin){
-      char[] block = "FFFFFFFFFFFFFFFF".toCharArray();
+    private char[] formatPINBlock(String pin, int checkDigit){
+      char[] block = ISOUtil.hexString(fPaddingBlock).toCharArray();
       char[] pinLenHex = String.format("%02X", pin.length()).toCharArray();
+      pinLenHex[0] = (char)('0' + checkDigit);
 
       // pin length then pad with 'F'
       System.arraycopy(pinLenHex, 0, block, 0, pinLenHex.length);
@@ -680,14 +681,18 @@ public class JCESecurityModule extends BaseSMAdapter {
             throw  new SMException("Invalid PIN length: " + pin.length());
         if (!ISOUtil.isNumeric(pin, 10))
             throw  new SMException("Invalid PIN decimal digits: " + pin);
-        if (accountNumber.length() != 12)
+        if (accountNumber.length() != 16 &&
+            (pinBlockFormat == SMAdapter.FORMAT41 || pinBlockFormat == SMAdapter.FORMAT42) )
+            throw  new SMException("Invalid UDK-A: " + accountNumber
+                    + ". The length of the UDK-A must be 16 hexadecimal digits");
+        else if (accountNumber.length() != 12)
             throw  new SMException("Invalid Account Number: " + accountNumber + ". The length of the account number must be 12 (the 12 right-most digits of the account number excluding the check digit)");
         switch (pinBlockFormat) {
             case FORMAT00: // same as FORMAT01
             case FORMAT01:
                 {
                     // Block 1
-                    byte[] block1 = ISOUtil.hex2byte(new String(formatPINBlock(pin)));
+                    byte[] block1 = ISOUtil.hex2byte(new String(formatPINBlock(pin,0x0)));
 
                     // Block 2
                     byte[] block2 = ISOUtil.hex2byte("0000" + accountNumber);
@@ -695,17 +700,86 @@ public class JCESecurityModule extends BaseSMAdapter {
                     pinBlock = ISOUtil.xor(block1, block2);
                 }
                 break;
-            case FORMAT03: 
+            case FORMAT03:
                 {
-                    pinBlock = ISOUtil.hex2byte (
-                        pin + "FFFFFFFFFFFFFFFF".substring(pin.length(),16)
-                    );
+                    char[] block = ISOUtil.hexString(fPaddingBlock).toCharArray();
+                    System.arraycopy(pin.toCharArray(), 0
+                                    ,block, 0, pin.length());
+                    pinBlock = ISOUtil.hex2byte (new String(block));
+                }
+                break;
+            case FORMAT34:
+                {
+                    pinBlock = ISOUtil.hex2byte (new String(formatPINBlock(pin,0x2)));
+                }
+                break;
+            case FORMAT35:
+                {
+                    // Block 1
+                    byte[] block1 = ISOUtil.hex2byte(new String(formatPINBlock(pin,0x2)));
+
+                    // Block 2
+                    byte[] block2 = ISOUtil.hex2byte("0000" + accountNumber);
+                    // pinBlock
+                    pinBlock = ISOUtil.xor(block1, block2);
+                }
+                break;
+            case FORMAT41:
+                {
+                    // Block 1
+                    byte[] block1 = ISOUtil.hex2byte(new String(formatPINBlock(pin,0x0)));
+
+                    // Block 2 - account number should contain Unique DEA Key A (UDK-A)
+                    byte[] block2 = ISOUtil.hex2byte("00000000"
+                                + accountNumber.substring(accountNumber.length()-8) );
+                    // pinBlock
+                    pinBlock = ISOUtil.xor(block1, block2);
+                }
+                break;
+            case FORMAT42:
+                {
+                    // Block 1
+                    String blk1 = new String(formatPINBlock(pin,0x0));
+                    blk1 = blk1.replaceAll("F", "0"); //fix padding chars
+                    byte[] block1 = ISOUtil.hex2byte(blk1);
+
+                    // Block 2 - account number should contain Unique DEA Key A (UDK-A)
+                    byte[] block2 = ISOUtil.hex2byte("00000000"
+                                + accountNumber.substring(accountNumber.length()-8) );
+                    // pinBlock
+                    pinBlock = ISOUtil.xor(block1, block2);
                 }
                 break;
             default:
                 throw  new SMException("Unsupported PIN format: " + pinBlockFormat);
         }
         return  pinBlock;
+    }
+
+    private void validatePinBlock(char[] pblock, int checkDigit, int padidx, int offset)
+            throws SMException {
+      validatePinBlock(pblock, checkDigit, padidx, offset, 'F');
+    }
+
+    private void validatePinBlock(char[] pblock, int checkDigit
+                             ,int padidx, int offset, char padDigit)
+            throws SMException {
+      // test pin block check digit
+      if (checkDigit >= 0 && (pblock[0] - '0') != checkDigit)
+          throw new SMException("PIN Block Error - invalid check digit");
+      // test pin block pdding
+      int i = pblock.length - 1;
+      while (i >= padidx)
+          if (pblock[i--] != padDigit)
+              throw new SMException("PIN Block Error - invalid padding");
+      // test pin block digits
+      while (i >= offset)
+          if (pblock[i--] >= 'A')
+              throw new SMException("PIN Block Error - illegal pin digit");
+      // test pin length
+      int pinLength = padidx - offset;
+      if (pinLength < MIN_PIN_LENGTH || pinLength > MAX_PIN_LENGTH)
+          throw new SMException("PIN Block Error - invalid pin length: " + pinLength);
     }
 
     /**
@@ -719,52 +793,110 @@ public class JCESecurityModule extends BaseSMAdapter {
      */
     private String calculatePIN (byte[] pinBlock, byte pinBlockFormat, String accountNumber) throws SMException {
         String pin = null;
-        int pinLength;
-        if (accountNumber.length() != 12)
+        if (accountNumber.length() != 16 &&
+            (pinBlockFormat == SMAdapter.FORMAT41 || pinBlockFormat == SMAdapter.FORMAT42) )
+            throw  new SMException("Invalid UDK-A: " + accountNumber
+                    + ". The length of the UDK-A must be 16 hexadecimal digits");
+        else if (accountNumber.length() != 12)
             throw  new SMException("Invalid Account Number: " + accountNumber + ". The length of the account number must be 12 (the 12 right-most digits of the account number excluding the check digit)");
         switch (pinBlockFormat) {
             case FORMAT00: // same as format 01
             case FORMAT01:
                 {
                     // Block 2
-                    String block2;
-                    block2 = "0000" + accountNumber;
-                    byte[] block2ByteArray = ISOUtil.hex2byte(block2);
+                    byte[] bl2 = ISOUtil.hex2byte("0000" + accountNumber);
                     // get Block1
-                    byte[] block1ByteArray = ISOUtil.xor(pinBlock, block2ByteArray);
-                    pinLength = Math.abs (block1ByteArray[0]);
-                    if (pinLength > MAX_PIN_LENGTH)
-                        throw  new SMException("PIN Block Error");
+                    byte[] bl1 = ISOUtil.xor(pinBlock, bl2);
+                    int pinLength = bl1[0] & 0x0f;
+                    char[] block1 = ISOUtil.hexString(bl1).toCharArray();
+                    int offset = 2;
+                    int checkDigit = 0x0;
+                    int padidx = pinLength + offset;
+                    // test pin block
+                    validatePinBlock(block1,checkDigit,padidx,offset);
                     // get pin
-                    String pinBlockHexString = ISOUtil.hexString(block1ByteArray);
-                    pin = pinBlockHexString.substring(2, pinLength
-                            + 2);
-                    String pad = pinBlockHexString.substring(pinLength + 2);
-                    pad = pad.toUpperCase();
-                    int i = pad.length();
-                    while (--i >= 0)
-                        if (pad.charAt(i) != 'F')
-                            throw new SMException("PIN Block Error");
+                    pin = new String(Arrays.copyOfRange(block1, offset, padidx));
                 }
                 break;
             case FORMAT03: 
                 {
-                    String block1 = ISOUtil.hexString(pinBlock);
-                    int len = block1.indexOf('F');
-                    if(len == -1) len = 12;
-                    int i = block1.length();
-                    pin = block1.substring(0, len);
+                    String bl1 = ISOUtil.hexString(pinBlock);
+                    int padidx = bl1.indexOf('F');
+                    if ( padidx < 0) padidx = 12;
+                    char[] block1 = bl1.toCharArray();
+                    int checkDigit = -0x1;
+                    int offset = 0;
 
-                    while(--i >= len) 
-                        if(block1.charAt(i) != 'F') 
-                            throw new SMException("PIN Block Error");
-                    while(--i >= 0) 
-                        if(pin.charAt(i) >= 'A') 
-                            throw new SMException("PIN Block Error");
-
-                    if(pin.length() < MIN_PIN_LENGTH || pin.length() > MAX_PIN_LENGTH) 
-                        throw new SMException("Unsupported PIN Length: " + 
-                                pin.length());
+                    // test pin block
+                    validatePinBlock(block1,checkDigit,padidx,offset);
+                    // get pin
+                    pin = new String(Arrays.copyOfRange(block1, offset, padidx));
+                }
+                break;
+            case FORMAT34:
+                {
+                    int pinLength = pinBlock[0] & 0x0f;
+                    char[] block1 = ISOUtil.hexString(pinBlock).toCharArray();
+                    int offset = 2;
+                    int checkDigit = 0x2;
+                    int padidx = pinLength + offset;
+                    // test pin block
+                    validatePinBlock(block1,checkDigit,padidx,offset);
+                    // get pin
+                    pin = new String(Arrays.copyOfRange(block1, offset, padidx));
+                }
+                break;
+            case FORMAT35:
+                {
+                    // Block 2
+                    byte[] bl2 = ISOUtil.hex2byte("0000" + accountNumber);
+                    // get Block1
+                    byte[] bl1 = ISOUtil.xor(pinBlock, bl2);
+                    int pinLength = bl1[0] & 0x0f;
+                    char[] block1 = ISOUtil.hexString(bl1).toCharArray();
+                    int offset = 2;
+                    int checkDigit = 0x2;
+                    int padidx = pinLength + offset;
+                    // test pin block
+                    validatePinBlock(block1,checkDigit,padidx,offset);
+                    // get pin
+                    pin = new String(Arrays.copyOfRange(block1, offset, padidx));
+                }
+                break;
+            case FORMAT41:
+                {
+                    // Block 2 - account number should contain Unique DEA Key A (UDK-A)
+                    byte[] bl2 = ISOUtil.hex2byte("00000000"
+                                + accountNumber.substring(accountNumber.length()-8) );
+                    // get Block1
+                    byte[] bl1 = ISOUtil.xor(pinBlock, bl2);
+                    int pinLength = bl1[0] & 0x0f;
+                    char[] block1 = ISOUtil.hexString(bl1).toCharArray();
+                    int offset = 2;
+                    int checkDigit = 0x0;
+                    int padidx = pinLength + offset;
+                    // test pin block
+                    validatePinBlock(block1,checkDigit,padidx,offset);
+                    // get pin
+                    pin = new String(Arrays.copyOfRange(block1, offset, padidx));
+                }
+                break;
+            case FORMAT42:
+                {
+                    // Block 2 - account number should contain Unique DEA Key A (UDK-A)
+                    byte[] bl2 = ISOUtil.hex2byte("00000000"
+                                + accountNumber.substring(accountNumber.length()-8) );
+                    // get Block1
+                    byte[] bl1 = ISOUtil.xor(pinBlock, bl2);
+                    int pinLength = bl1[0] & 0x0f;
+                    char[] block1 = ISOUtil.hexString(bl1).toCharArray();
+                    int offset = 2;
+                    int checkDigit = 0x0;
+                    int padidx = pinLength + offset;
+                    // test pin block
+                    validatePinBlock(block1,checkDigit,padidx,offset,'0');
+                    // get pin
+                    pin = new String(Arrays.copyOfRange(block1, offset, padidx));
                 }
                 break;
             default:
@@ -988,15 +1120,16 @@ public class JCESecurityModule extends BaseSMAdapter {
      * The maximum length of the PIN
      */
     private static final short MAX_PIN_LENGTH = 12;
+
+    /**
+     * a 64-bit block of ones used when calculating pin blocks
+     */
+    private static final byte[] fPaddingBlock = ISOUtil.hex2byte("FFFFFFFFFFFFFFFF");
+
     /**
      * a dummy 64-bit block of zeros used when calculating the check value
      */
-    private static final byte[] zeroBlock =  {
-        (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00,
-                (byte)0x00, (byte)0x00
-    };
+    private static final byte[] zeroBlock = ISOUtil.hex2byte("0000000000000000");
+
     private JCEHandler jceHandler;
 }
-
-
-
