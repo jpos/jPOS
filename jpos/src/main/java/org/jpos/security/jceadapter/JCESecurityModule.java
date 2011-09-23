@@ -30,10 +30,7 @@ import javax.crypto.SecretKey;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.security.InvalidKeyException;
-import java.security.Key;
-import java.security.Provider;
-import java.security.Security;
+import java.security.*;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -294,7 +291,7 @@ public class JCESecurityModule extends BaseSMAdapter {
           excludes = Arrays.asList();
         String pin;
         {
-          Random rd = new Random();
+          Random rd = new SecureRandom();
           int max = (int)Math.pow(10, Math.min(pinLen, 9));
           int max2 = (int)Math.pow(10, Math.max(pinLen - 9,0));
           do {
