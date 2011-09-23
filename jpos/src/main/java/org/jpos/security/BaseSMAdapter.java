@@ -335,8 +335,13 @@ public class BaseSMAdapter
         return  result;
     }
 
-    public EncryptedPIN generatePIN(String accountNumber, int pinLen, List<String> excludes) throws
-            SMException {
+    public EncryptedPIN generatePIN(String accountNumber, int pinLen)
+            throws SMException {
+      return generatePIN(accountNumber, pinLen, null);
+    }
+
+    public EncryptedPIN generatePIN(String accountNumber, int pinLen, List<String> excludes)
+            throws SMException {
       List<SimpleMsg> cmdParameters = new ArrayList<SimpleMsg>();
       cmdParameters.add(new SimpleMsg("parameter", "account number", accountNumber));
       cmdParameters.add(new SimpleMsg("parameter", "PIN length", pinLen));

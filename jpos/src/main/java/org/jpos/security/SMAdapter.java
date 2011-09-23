@@ -354,15 +354,29 @@ public interface SMAdapter {
      * Generate random pin under LMK
      *
      * @param accountNumber The 12 right-most digits of the account number excluding the check digit
-     * @param pinLen lenght of the pin, usually in range 4-12.
+     * @param pinLen length of the pin, usually in range 4-12.
+     *               Value 0 means that default length is assumed by HSM (usually 4)
+     * @return generated PIN under LMK
+     * @throws SMException
+     */
+    public EncryptedPIN generatePIN(String accountNumber, int pinLen)
+             throws SMException;
+
+
+
+    /**
+     * Generate random pin under LMK with exclude list
+     *
+     * @param accountNumber The 12 right-most digits of the account number excluding the check digit
+     * @param pinLen length of the pin, usually in range 4-12.
      *               Value 0 means that default length is assumed by HSM (usually 4)
      * @param excludes list of pins which won't be generated.
      *               Each pin has to be <code>pinLen</code> length
      * @return generated PIN under LMK
      * @throws SMException
      */
-    public EncryptedPIN generatePIN(String accountNumber, int pinLen, List<String> excludes) throws
-            SMException;
+    public EncryptedPIN generatePIN(String accountNumber, int pinLen, List<String> excludes)
+            throws SMException;
 
 
     /**
@@ -409,8 +423,8 @@ public interface SMAdapter {
      * Using that method is not recomendated. PVV method is prefrred,
      * but it may be need in some legacy systms
      * @param pinUnderLmk PIN under LMK
-     * @param pvk        accepts single, double, triple size key lenght.
-     *                   Single key lenght is recomendated
+     * @param pvk        accepts single, double, triple size key length.
+     *                   Single key length is recomendated
      * @param decTab     decimalisation table. Accepts plain text and encrypted
      *                   decimalisation table depending to HSM configuration
      * @param pinValData pin validation data. User-defined data consisting of hexadecimal
@@ -432,8 +446,8 @@ public interface SMAdapter {
      *
      * @param pinUnderKd1 pin block under {@code kd1}
      * @param kd1        Data Key (also called session key) under which the pin is encrypted (ZPK or TPK)
-     * @param pvk        accepts single, double, triple size key lenght.
-     *                   Single key lenght is recomendated
+     * @param pvk        accepts single, double, triple size key length.
+     *                   Single key length is recomendated
      * @param offset     IBM PIN Offset
      * @param decTab     decimalisation table. Accepts plain text and encrypted
      *                   decimalisation table depending to HSM configuration
@@ -441,7 +455,7 @@ public interface SMAdapter {
      *                   characters and the character N, which indicates to the HSM where
      *                   to insert the last 5 digits of the account number. Usualy it consists
      *                   the first digits of the card number
-     * @param minPinLen  min pin lenght
+     * @param minPinLen  min pin length
      * @return true if pin offset is valid false if not
      * @throws SMException
      */
@@ -460,15 +474,15 @@ public interface SMAdapter {
      * handling is more complicated and returned pin may differ from pin what user has selected 
      * It may be uable e.g. in migration from pin offset method to PVV method
      * @param accountNo  the 12 right-most digits of the account number excluding the check digit
-     * @param pvk        accepts single, double, triple size key lenght.
-     *                   Single key lenght is recomendated
+     * @param pvk        accepts single, double, triple size key length.
+     *                   Single key length is recomendated
      * @param decTab     decimalisation table. Accepts plain text and encrypted
      *                   decimalisation table depending to HSM configuration
      * @param pinValData pin validation data. User-defined data consisting of hexadecimal
      *                   characters and the character N, which indicates to the HSM where
      *                   to insert the last 5 digits of the account number. Usualy it consists
      *                   the first digits of the card number
-     * @param minPinLen  min pin lenght
+     * @param minPinLen  min pin length
      * @param offset     IBM PIN Offset
      * @return           PIN under LMK
      * @throws SMException

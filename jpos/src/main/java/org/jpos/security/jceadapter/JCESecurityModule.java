@@ -36,8 +36,10 @@ import java.security.Provider;
 import java.security.Security;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Random;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
 import org.jpos.iso.ISODate;
@@ -283,6 +285,29 @@ public class JCESecurityModule extends BaseSMAdapter {
                 accountNumber);
         exportedPIN.setAccountNumber(accountNumber);
         return  exportedPIN;
+    }
+
+    @Override
+    public EncryptedPIN generatePINImpl(String accountNumber, int pinLen, List<String> excludes)
+            throws SMException {
+        if (excludes==null)
+          excludes = Arrays.asList();
+        String pin;
+        {
+          Random rd = new Random();
+          int max = (int)Math.pow(10, Math.min(pinLen, 9));
+          int max2 = (int)Math.pow(10, Math.max(pinLen - 9,0));
+          do {
+            long pinl = rd.nextInt(max);
+            if (pinLen > 9){
+              pinl *= max2;
+              pinl += rd.nextInt(max2);
+            }
+            pin = ISOUtil.zeropad(pinl, pinLen);
+          } while (excludes.contains(pin));
+        }
+
+        return encryptPINImpl(pin, accountNumber);
     }
 
     /**
