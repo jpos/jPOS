@@ -908,7 +908,7 @@ public class BaseSMAdapter
      * @return key encrypted under the new LMK
      * @throws SMException if the parity of the imported key is not adjusted AND checkParity = true
      */
-    public SecureDESKey translateKeyFromOldLMKImpl (SecureDESKey kd) throws SMException {
+    protected SecureDESKey translateKeyFromOldLMKImpl (SecureDESKey kd) throws SMException {
         throw  new SMException("Operation not supported in: " + this.getClass().getName());
     }
 
@@ -920,7 +920,7 @@ public class BaseSMAdapter
      *
      * @throws SMException
      */
-    public void eraseOldLMKImpl () throws SMException {
+    protected void eraseOldLMKImpl () throws SMException {
         throw  new SMException("Operation not supported in: " + this.getClass().getName());
     }
 }
