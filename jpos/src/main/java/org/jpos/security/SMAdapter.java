@@ -499,7 +499,7 @@ public interface SMAdapter {
      * NOTE: {@code cvkA} and {@code cvkB} should be single
      * length keys but at least one of them may be double length key
      *
-     * @param accountNo The 12 right-most digits of the account number excluding the check digit
+     * @param accountNo The account number including BIN and the check digit
      * @param cvkA        the first CVK in CVK pair
      * @param cvkB        the second CVK in CVK pair
      * @param expDate     the card expiration date
@@ -524,7 +524,7 @@ public interface SMAdapter {
      * NOTE: {@code cvkA} and {@code cvkB} should be single
      * length keys but at least one of them may be double length key
      *
-     * @param accountNo The 12 right-most digits of the account number excluding the check digit
+     * @param accountNo The account number including BIN and the check digit
      * @param cvkA the first CVK in CVK pair
      * @param cvkB the second CVK in CVK pair
      * @param cvv Card Verification Code/Value
