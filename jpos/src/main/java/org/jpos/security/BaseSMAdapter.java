@@ -546,6 +546,104 @@ public class BaseSMAdapter
       }
     }
 
+    public boolean verifyARQC(MKDMethod mkdm, SKDMethod skdm, SecureDESKey imkac
+            ,String accoutNo, String acctSeqNo, byte[] arqc, byte[] atc
+            ,byte[] upn, byte[] transData) throws SMException {
+
+      SimpleMsg[] cmdParameters = {
+            new SimpleMsg("parameter", "mkd method", mkdm),
+            new SimpleMsg("parameter", "skd method", skdm),
+            new SimpleMsg("parameter", "imk-ac", imkac),
+            new SimpleMsg("parameter", "account number", accoutNo),
+            new SimpleMsg("parameter", "accnt seq no", acctSeqNo),
+            new SimpleMsg("parameter", "arqc", arqc == null ? "" : ISOUtil.hexString(arqc)),
+            new SimpleMsg("parameter", "atc", atc == null ? "" : ISOUtil.hexString(atc)),
+            new SimpleMsg("parameter", "upn", upn == null ? "" : ISOUtil.hexString(upn)),
+            new SimpleMsg("parameter", "trans. data", transData == null ? "" : ISOUtil.hexString(transData))
+      };
+      LogEvent evt = new LogEvent(this, "s-m-operation");
+      evt.addMessage(new SimpleMsg("command", "Verify ARQC/TC/AAC", cmdParameters));
+      try {
+        boolean r = verifyARQCImpl( mkdm, skdm, imkac, accoutNo, acctSeqNo, arqc, atc, upn, transData);
+        evt.addMessage(new SimpleMsg("result", "Verification status", r ? "valid" : "invalid"));
+        return r;
+      } catch (Exception e) {
+        evt.addMessage(e);
+        throw e instanceof SMException ? (SMException) e : new SMException(e);
+      } finally {
+        Logger.log(evt);
+      }
+    }
+
+    public byte[] generateARPC(MKDMethod mkdm, SKDMethod skdm, SecureDESKey imkac
+            ,String accoutNo, String acctSeqNo, byte[] arqc, byte[] atc, byte[] upn
+            ,ARPCMethod arpcMethod, byte[] arc, byte[] propAuthData)
+            throws SMException {
+
+      SimpleMsg[] cmdParameters = {
+            new SimpleMsg("parameter", "mkd method", mkdm),
+            new SimpleMsg("parameter", "skd method", skdm),
+            new SimpleMsg("parameter", "imk-ac", imkac),
+            new SimpleMsg("parameter", "account number", accoutNo),
+            new SimpleMsg("parameter", "accnt seq no", acctSeqNo),
+            new SimpleMsg("parameter", "arqc", arqc == null ? "" : ISOUtil.hexString(arqc)),
+            new SimpleMsg("parameter", "atc", atc == null ? "" : ISOUtil.hexString(atc)),
+            new SimpleMsg("parameter", "upn", upn == null ? "" : ISOUtil.hexString(upn)),
+            new SimpleMsg("parameter", "arpc gen. method", arpcMethod),
+            new SimpleMsg("parameter", "auth. rc", arc == null ? "" : ISOUtil.hexString(arc)),
+            new SimpleMsg("parameter", "prop auth. data", propAuthData == null
+                                       ? "" : ISOUtil.hexString(propAuthData))
+      };
+      LogEvent evt = new LogEvent(this, "s-m-operation");
+      evt.addMessage(new SimpleMsg("command", "Genarate ARPC", cmdParameters));
+      try {
+        byte[] result = generateARPCImpl( mkdm, skdm, imkac, accoutNo, acctSeqNo
+                           ,arqc, atc, upn, arpcMethod, arc, propAuthData );
+        evt.addMessage(new SimpleMsg("result", "ARPC", result));
+        return result;
+      } catch (Exception e) {
+        evt.addMessage(e);
+        throw e instanceof SMException ? (SMException) e : new SMException(e);
+      } finally {
+        Logger.log(evt);
+      }
+    }
+
+    public byte[] verifyARQCGenerateARPC(MKDMethod mkdm, SKDMethod skdm, SecureDESKey imkac
+            ,String accoutNo, String acctSeqNo, byte[] arqc, byte[] atc, byte[] upn
+            ,byte[] transData, ARPCMethod arpcMethod, byte[] arc, byte[] propAuthData)
+            throws SMException {
+
+      SimpleMsg[] cmdParameters = {
+            new SimpleMsg("parameter", "mkd method", mkdm),
+            new SimpleMsg("parameter", "skd method", skdm),
+            new SimpleMsg("parameter", "imk-ac", imkac),
+            new SimpleMsg("parameter", "account number", accoutNo),
+            new SimpleMsg("parameter", "accnt seq no", acctSeqNo),
+            new SimpleMsg("parameter", "arqc", arqc == null ? "" : ISOUtil.hexString(arqc)),
+            new SimpleMsg("parameter", "atc", atc == null ? "" : ISOUtil.hexString(atc)),
+            new SimpleMsg("parameter", "upn", upn == null ? "" : ISOUtil.hexString(upn)),
+            new SimpleMsg("parameter", "trans. data", transData == null ? "" : ISOUtil.hexString(transData)),
+            new SimpleMsg("parameter", "arpc gen. method", arpcMethod),
+            new SimpleMsg("parameter", "auth. rc", arc == null ? "" : ISOUtil.hexString(arc)),
+            new SimpleMsg("parameter", "prop auth. data", propAuthData == null
+                                       ? "" : ISOUtil.hexString(propAuthData))
+      };
+      LogEvent evt = new LogEvent(this, "s-m-operation");
+      evt.addMessage(new SimpleMsg("command", "Genarate ARPC", cmdParameters));
+      try {
+        byte[] result = verifyARPCGenerateARQCImpl( mkdm, skdm, imkac, accoutNo,
+                acctSeqNo, arqc, atc, upn, transData, arpcMethod, arc, propAuthData );
+        evt.addMessage(new SimpleMsg("result", "ARPC", result));
+        return result;
+      } catch (Exception e) {
+        evt.addMessage(e);
+        throw e instanceof SMException ? (SMException) e : new SMException(e);
+      } finally {
+        Logger.log(evt);
+      }
+    }
+
     public byte[] generateCBC_MAC (byte[] data, SecureDESKey kd) throws SMException {
         SimpleMsg[] cmdParameters =  {
             new SimpleMsg("parameter", "data", data), new SimpleMsg("parameter", "data key",
@@ -875,6 +973,71 @@ public class BaseSMAdapter
      */
     protected boolean verifyCVVImpl(String accountNo, SecureDESKey cvkA, SecureDESKey cvkB,
                         String cvv, Date expDate, String serviceCode) throws SMException {
+        throw  new SMException("Operation not supported in: " + this.getClass().getName());
+    }
+    /**
+     * Your SMAdapter should override this method if it has this functionality
+     * @param mkdm
+     * @param skdm
+     * @param imkac
+     * @param accountNo
+     * @param acctSeqNo
+     * @param arqc
+     * @param atc
+     * @param upn
+     * @param transData
+     * @return true if ARQC/TC/AAC is falid or false if not
+     * @throws SMException
+     */
+    protected boolean verifyARQCImpl(MKDMethod mkdm, SKDMethod skdm, SecureDESKey imkac
+            ,String accountNo, String acctSeqNo, byte[] arqc, byte[] atc
+            ,byte[] upn, byte[] transData) throws SMException {
+        throw  new SMException("Operation not supported in: " + this.getClass().getName());
+    }
+
+    /**
+     * Your SMAdapter should override this method if it has this functionality
+     * @param mkdm
+     * @param skdm
+     * @param imkac
+     * @param accountNo
+     * @param acctSeqNo
+     * @param arqc
+     * @param atc
+     * @param upn
+     * @param arpcMethod
+     * @param arc
+     * @param propAuthData
+     * @return calculated ARPC
+     * @throws SMException
+     */
+    protected byte[] generateARPCImpl(MKDMethod mkdm, SKDMethod skdm, SecureDESKey imkac
+            ,String accountNo, String acctSeqNo, byte[] arqc, byte[] atc
+            ,byte[] upn, ARPCMethod arpcMethod, byte[] arc, byte[] propAuthData)
+            throws SMException {
+        throw  new SMException("Operation not supported in: " + this.getClass().getName());
+    }
+
+    /**
+     * Your SMAdapter should override this method if it has this functionality
+     * @param mkdm
+     * @param skdm
+     * @param imkac
+     * @param accountNo
+     * @param acctSeqNo
+     * @param arqc
+     * @param atc
+     * @param upn
+     * @param arpcMethod
+     * @param arc
+     * @param propAuthData
+     * @return calculated ARPC
+     * @throws SMException
+     */
+    protected byte[] verifyARPCGenerateARQCImpl(MKDMethod mkdm, SKDMethod skdm, SecureDESKey imkac
+            ,String accountNo, String acctSeqNo, byte[] arqc, byte[] atc, byte[] upn
+            ,byte[] transData, ARPCMethod arpcMethod, byte[] arc, byte[] propAuthData)
+            throws SMException {
         throw  new SMException("Operation not supported in: " + this.getClass().getName());
     }
 

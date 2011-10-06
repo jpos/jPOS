@@ -30,7 +30,7 @@ import java.util.List;
  * But application programmers will be communicating
  * with the security module using this simple interface.
  *
- * @todo support for EMV Cryptogram Verification API's and RSA
+ * @todo support for EMV Secure Messaging, dCVV, CVC3 verification and RSA generation API's
  * @author Hani S. Kirollos
  * @author Robert Demski
  * @version $Revision$ $Date$
@@ -123,6 +123,12 @@ public interface SMAdapter {
      * communicating parties (e.g. between acquirers and issuers)
      */
     public static final String TYPE_ZAK = "ZAK";
+
+    /**
+     * MK-AC: Issuer Master Key for generating and verifying
+     * Application Cryptograms.
+     */
+    public static final String TYPE_MK_AC = "MK-AC";
 
     /**
      * PIN Block Format adopted by ANSI (ANSI X9.8) and is one of
@@ -541,6 +547,124 @@ public interface SMAdapter {
      */
     public boolean verifyCVV(String accountNo, SecureDESKey cvkA, SecureDESKey cvkB,
                      String cvv, Date expDate, String serviceCode) throws SMException;
+
+
+
+    /**
+     * Verify Application Cryptogram (ARQC or TC/AAC)
+     * <br>
+     * <li>Authorization Request Cryptogram (ARQC) - Online authorization
+     * <li>Transaction certificate (TC) - Offline approval
+     * <li>Application Authentication Cryptogram (AAC) - Offline decline
+     *
+     * @param mkdm ICC Master Key Derivation Method. For {@code skdm} equals
+     *        {@link SKDMethod#VSDC} and {@link SKDMethod#MCHIP} this parameter
+     *        is ignored and {@link MKDMethod#OPTION_A} is always used.
+     * @param skdm Session Key Derivation Method
+     * @param imkac the issuer master key for generating and verifying Application Cryptograms
+     * @param accountNo account number including BIN and check digit
+     * @param acctSeqNo account sequence number, 2 decimal digits
+     * @param arqc ARQC/TC/AAC. A 8 byte value must be supplied.
+     * @param atc application transactin counter. This is used for Session
+     *        Key Generation. A 2 byte value must be supplied.
+     *        For {@code skdm} equals {@link SKDMethod#VSDC} is not used.
+     * @param upn unpredictable number. This is used for Session Key Generation
+     *        A 4 byte value must be supplied. For {@code skdm} equals
+     *        {@link SKDMethod#VSDC} is not used.
+     * @param transData transaction data (without padding). Transaction data
+     *        elements and them order is dependend to proper cryptogram version
+     * @return true if ARQC/TC/AAC is passed or false if not
+     * @throws SMException
+     */
+    public boolean verifyARQC(MKDMethod mkdm, SKDMethod skdm, SecureDESKey imkac
+            ,String accountNo, String acctSeqNo, byte[] arqc, byte[] atc
+            ,byte[] upn, byte[] transData) throws SMException;
+
+
+
+    /**
+     * Genarate Authorisation Response Cryptogram (ARPC)
+     *
+     * @param mkdm ICC Master Key Derivation Method. For {@code skdm} equals
+     *        {@link SKDMethod#VSDC} and {@link SKDMethod#MCHIP} this parameter
+     *        is ignored and {@link MKDMethod#OPTION_A} is always used.
+     * @param skdm Session Key Derivation Method
+     * @param imkac the issuer master key for generating and verifying Application Cryptograms
+     * @param accoutNo account number including BIN and check digit
+     * @param acctSeqNo account sequence number, 2 decimal digits
+     * @param arqc ARQC/TC/AAC. A 8 byte value must be supplied.
+     * @param atc application transactin counter. This is used for Session
+     *        Key Generation. A 2 byte value must be supplied.
+     *        For {@code skdm} equals {@link SKDMethod#VSDC} is not used.
+     * @param upn unpredictable number. This is used for Session Key Generation
+     *        A 4 byte value must be supplied. For {@code skdm} equals
+     *        {@link SKDMethod#VSDC} is not used.
+     * @param arpcMethod ARPC calculating method. For {@code skdm} equals
+     *        {@link SKDMethod#VSDC}, {@link SKDMethod#MCHIP},
+     *        {@link SKDMethod#AEPIS_V40} only {@link ARPCMethod#METHOD_1} is valid
+     * @param arc the Authorisation Response Code. A 2 byte value must be supplied.
+     *        For {@code arpcMethod} equals {@link ARPCMethod#METHOD_2} it is
+     *        csu - Card Status Update. Then a 4 byte value must be supplied.
+     * @param propAuthData Proprietary Authentication Data. Up to 8 bytes.
+     *        Contains optional issuer data for transmission to the card in
+     *        the Issuer Authentication Data of an online transaction.
+     *        It may by used only for {@code arpcMethod} equals
+     *        {@link ARPCMethod#METHOD_2} in other case is ignored.
+     * @return calculated 8 bytes ARPC or if {@code arpcMethod} equals
+     *        {@link ARPCMethod#METHOD_2} 4 bytes ARPC
+     * @throws SMException
+     */
+    public byte[] generateARPC(MKDMethod mkdm, SKDMethod skdm, SecureDESKey imkac
+            ,String accoutNo, String acctSeqNo, byte[] arqc, byte[] atc, byte[] upn
+            ,ARPCMethod arpcMethod, byte[] arc, byte[] propAuthData)
+            throws SMException;
+
+
+
+    /**
+     * Verify Application Cryptogram (ARQC or TC/AAC) and Genarate
+     * Authorisation Response Cryptogram (ARPC)
+     * <br>
+     * <li>Authorization Request Cryptogram (ARQC) - Online authorization
+     * <li>Transaction certificate (TC) - Offline approval
+     * <li>Application Authentication Cryptogram (AAC) - Offline decline
+     *
+     * @param mkdm ICC Master Key Derivation Method. For {@code skdm} equals
+     *        {@link SKDMethod#VSDC} and {@link SKDMethod#MCHIP} this parameter
+     *        is ignored and {@link MKDMethod#OPTION_A} is always used.
+     * @param skdm Session Key Derivation Method
+     * @param imkac the issuer master key for generating and verifying Application Cryptograms
+     * @param accountNo account number including BIN and check digit
+     * @param acctSeqNo account sequence number, 2 decimal digits
+     * @param arqc ARQC/TC/AAC. A 8 byte value must be supplied.
+     * @param atc application transactin counter. This is used for Session
+     *        Key Generation. A 2 byte value must be supplied.
+     *        For {@code skdm} equals {@link SKDMethod#VSDC} is not used.
+     * @param upn unpredictable number. This is used for Session Key Generation
+     *        A 4 byte value must be supplied. For {@code skdm} equals
+     *        {@link SKDMethod#VSDC} is not used.
+     * @param transData transaction data (without padding). Transaction data
+     *        elements and them order is dependend to proper cryptogram version
+     * @param arpcMethod ARPC calculating method. For {@code skdm} equals
+     *        {@link SKDMethod#VSDC}, {@link SKDMethod#MCHIP},
+     *        {@link SKDMethod#AEPIS_V40} only {@link ARPCMethod#METHOD_1} is valid
+     * @param arc the Authorisation Response Code. A 2 byte value must be supplied.
+     *        For {@code arpcMethod} equals {@link ARPCMethod#METHOD_2} it is 
+     *        csu - Card Status Update. Then a 4 byte value must be supplied.
+     * @param propAuthData Proprietary Authentication Data. Up to 8 bytes.
+     *        Contains optional issuer data for transmission to the card in
+     *        the Issuer Authentication Data of an online transaction.
+     *        It may by used only for {@code arpcMethod} equals
+     *        {@link ARPCMethod#METHOD_2} in other case is ignored.
+     * @return if ARQC/TC/AAC verification passed then calculated 8 bytes ARPC
+     *         or for {@code arpcMethod} equals {@link ARPCMethod#METHOD_2}
+     *         4 bytes ARPC, null in other case
+     * @throws SMException
+     */
+    public byte[] verifyARQCGenerateARPC(MKDMethod mkdm, SKDMethod skdm, SecureDESKey imkac
+            ,String accountNo, String acctSeqNo, byte[] arqc, byte[] atc, byte[] upn 
+            ,byte[] transData, ARPCMethod arpcMethod, byte[] arc, byte[] propAuthData)
+            throws SMException;
 
 
 
