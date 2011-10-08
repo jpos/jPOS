@@ -632,9 +632,9 @@ public class BaseSMAdapter
       LogEvent evt = new LogEvent(this, "s-m-operation");
       evt.addMessage(new SimpleMsg("command", "Genarate ARPC", cmdParameters));
       try {
-        byte[] result = verifyARPCGenerateARQCImpl( mkdm, skdm, imkac, accoutNo,
+        byte[] result = verifyARQCGenerateARPCImpl( mkdm, skdm, imkac, accoutNo,
                 acctSeqNo, arqc, atc, upn, transData, arpcMethod, arc, propAuthData );
-        evt.addMessage(new SimpleMsg("result", "ARPC", result));
+        evt.addMessage(new SimpleMsg("result", "ARPC", result == null ? "" : ISOUtil.hexString(result)));
         return result;
       } catch (Exception e) {
         evt.addMessage(e);
@@ -1034,7 +1034,7 @@ public class BaseSMAdapter
      * @return calculated ARPC
      * @throws SMException
      */
-    protected byte[] verifyARPCGenerateARQCImpl(MKDMethod mkdm, SKDMethod skdm, SecureDESKey imkac
+    protected byte[] verifyARQCGenerateARPCImpl(MKDMethod mkdm, SKDMethod skdm, SecureDESKey imkac
             ,String accountNo, String acctSeqNo, byte[] arqc, byte[] atc, byte[] upn
             ,byte[] transData, ARPCMethod arpcMethod, byte[] arc, byte[] propAuthData)
             throws SMException {
