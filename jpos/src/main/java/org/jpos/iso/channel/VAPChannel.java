@@ -41,7 +41,7 @@ import java.net.ServerSocket;
 public class VAPChannel extends BaseChannel {
     String srcid = "000000";
     String dstid = "000000";
-    boolean disablePoll;
+    boolean debugPoll;
     /**
      * Public constructor (used by Class.forName("...").newInstance())
      */
@@ -178,7 +178,7 @@ public class VAPChannel extends BaseChannel {
             if (l == 0) {
                 serverOut.write(b);
                 serverOut.flush();
-                if (!disablePoll)
+                if (debugPoll)
                     Logger.log (new LogEvent (this, "poll"));
             }
         }
@@ -228,7 +228,7 @@ public class VAPChannel extends BaseChannel {
     {
         srcid = cfg.get ("srcid", "000000");
         dstid = cfg.get ("dstid", "000000");
-        disablePoll = cfg.getBoolean("disable-poll", false);
+        debugPoll = cfg.getBoolean("debug-poll", false);
         super.setConfiguration (cfg);
     }
 }
