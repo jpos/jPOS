@@ -20,6 +20,7 @@ package  org.jpos.security;
 
 import java.util.Date;
 import java.util.List;
+import org.javatuples.Pair;
 
 
 /**
@@ -656,12 +657,12 @@ public interface SMAdapter {
      *        the Issuer Authentication Data of an online transaction.
      *        It may by used only for {@code arpcMethod} equals
      *        {@link ARPCMethod#METHOD_2} in other case is ignored.
-     * @return if ARQC/TC/AAC verification passed then calculated 8 bytes ARPC
-     *         or for {@code arpcMethod} equals {@link ARPCMethod#METHOD_2}
-     *         4 bytes ARPC, null in other case
+     * @return Pair<Boolean,byte[]> of values ARQC/TC/AAC verification status
+     *         and calculated 8 bytes ARPC or for {@code arpcMethod} equals
+     *         {@link ARPCMethod#METHOD_2} 4 bytes ARPC
      * @throws SMException
      */
-    public byte[] verifyARQCGenerateARPC(MKDMethod mkdm, SKDMethod skdm, SecureDESKey imkac
+    public Pair<Boolean,byte[]> verifyARQCGenerateARPC(MKDMethod mkdm, SKDMethod skdm, SecureDESKey imkac
             ,String accountNo, String acctSeqNo, byte[] arqc, byte[] atc, byte[] upn 
             ,byte[] transData, ARPCMethod arpcMethod, byte[] arc, byte[] propAuthData)
             throws SMException;

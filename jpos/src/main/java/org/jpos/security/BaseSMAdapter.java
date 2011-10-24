@@ -21,6 +21,7 @@ package  org.jpos.security;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import org.javatuples.Pair;
 import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
@@ -609,7 +610,7 @@ public class BaseSMAdapter
       }
     }
 
-    public byte[] verifyARQCGenerateARPC(MKDMethod mkdm, SKDMethod skdm, SecureDESKey imkac
+    public Pair<Boolean,byte[]> verifyARQCGenerateARPC(MKDMethod mkdm, SKDMethod skdm, SecureDESKey imkac
             ,String accoutNo, String acctSeqNo, byte[] arqc, byte[] atc, byte[] upn
             ,byte[] transData, ARPCMethod arpcMethod, byte[] arc, byte[] propAuthData)
             throws SMException {
@@ -630,11 +631,16 @@ public class BaseSMAdapter
                                        ? "" : ISOUtil.hexString(propAuthData))
       };
       LogEvent evt = new LogEvent(this, "s-m-operation");
-      evt.addMessage(new SimpleMsg("command", "Genarate ARPC", cmdParameters));
+      evt.addMessage(new SimpleMsg("command", "Verify AC and Genarate ARPC", cmdParameters));
       try {
-        byte[] result = verifyARQCGenerateARPCImpl( mkdm, skdm, imkac, accoutNo,
+        Pair<Boolean,byte[]> result = verifyARQCGenerateARPCImpl( mkdm, skdm, imkac, accoutNo,
                 acctSeqNo, arqc, atc, upn, transData, arpcMethod, arc, propAuthData );
-        evt.addMessage(new SimpleMsg("result", "ARPC", result == null ? "" : ISOUtil.hexString(result)));
+        SimpleMsg[] cmdResult = {
+            new SimpleMsg("result1", "arqc verified", result.getValue0()),
+            new SimpleMsg("result2", "arpc", result.getValue1() == null
+                                             ? "" : ISOUtil.hexString(result.getValue1()))
+        };
+        evt.addMessage(new SimpleMsg("result", "Verification status and ARPC", cmdResult));
         return result;
       } catch (Exception e) {
         evt.addMessage(e);
@@ -1031,10 +1037,10 @@ public class BaseSMAdapter
      * @param arpcMethod
      * @param arc
      * @param propAuthData
-     * @return calculated ARPC
+     * @return Pair<Boolean,byte[]> of AC verification status and calculated ARPC
      * @throws SMException
      */
-    protected byte[] verifyARQCGenerateARPCImpl(MKDMethod mkdm, SKDMethod skdm, SecureDESKey imkac
+    protected Pair<Boolean,byte[]> verifyARQCGenerateARPCImpl(MKDMethod mkdm, SKDMethod skdm, SecureDESKey imkac
             ,String accountNo, String acctSeqNo, byte[] arqc, byte[] atc, byte[] upn
             ,byte[] transData, ARPCMethod arpcMethod, byte[] arc, byte[] propAuthData)
             throws SMException {
