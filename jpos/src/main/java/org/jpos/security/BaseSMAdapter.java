@@ -343,14 +343,14 @@ public class BaseSMAdapter
 
     public EncryptedPIN generatePIN(String accountNumber, int pinLen, List<String> excludes)
             throws SMException {
-      List<SimpleMsg> cmdParameters = new ArrayList<SimpleMsg>();
+      List<Loggeable> cmdParameters = new ArrayList<Loggeable>();
       cmdParameters.add(new SimpleMsg("parameter", "account number", accountNumber));
       cmdParameters.add(new SimpleMsg("parameter", "PIN length", pinLen));
       if(excludes != null && !excludes.isEmpty())
         cmdParameters.add(new SimpleMsg("parameter", "Excluded PINS list", excludes));
 
       LogEvent evt = new LogEvent(this, "s-m-operation");
-      evt.addMessage(new SimpleMsg("command", "Generate PIN", cmdParameters.toArray(new SimpleMsg[0])));
+      evt.addMessage(new SimpleMsg("command", "Generate PIN", cmdParameters.toArray(new Loggeable[0])));
       EncryptedPIN result = null;
       try {
         result = generatePINImpl(accountNumber, pinLen, excludes);
@@ -366,17 +366,25 @@ public class BaseSMAdapter
 
     public String calculatePVV(EncryptedPIN pinUnderLMK, SecureDESKey pvkA,
                                SecureDESKey pvkB, int pvkIdx) throws SMException {
-      SimpleMsg[] cmdParameters = {
-        new SimpleMsg("parameter", "account number", pinUnderLMK.getAccountNumber()),
-        new SimpleMsg("parameter", "PIN under LMK", pinUnderLMK),
-        new SimpleMsg("parameter", "PVK-A", pvkA == null ? "" : pvkA),
-        new SimpleMsg("parameter", "PVK-B", pvkB == null ? "" : pvkB),
-        new SimpleMsg("parameter", "PVK index", pvkIdx)};
+      return calculatePVV(pinUnderLMK, pvkA, pvkB, pvkIdx, null);
+    }
+
+    public String calculatePVV(EncryptedPIN pinUnderLMK, SecureDESKey pvkA,
+                               SecureDESKey pvkB, int pvkIdx,
+                               List<String> excludes) throws SMException {
+      List<Loggeable> cmdParameters = new ArrayList<Loggeable>();
+      cmdParameters.add(new SimpleMsg("parameter", "account number", pinUnderLMK.getAccountNumber()));
+      cmdParameters.add(new SimpleMsg("parameter", "PIN under LMK", pinUnderLMK));
+      cmdParameters.add(new SimpleMsg("parameter", "PVK-A", pvkA == null ? "" : pvkA));
+      cmdParameters.add(new SimpleMsg("parameter", "PVK-B", pvkB == null ? "" : pvkB));
+      cmdParameters.add(new SimpleMsg("parameter", "PVK index", pvkIdx));
+      if(excludes != null && !excludes.isEmpty())
+        cmdParameters.add(new SimpleMsg("parameter", "Excluded PINS list", excludes));
       LogEvent evt = new LogEvent(this, "s-m-operation");
-      evt.addMessage(new SimpleMsg("command", "Calculate PVV", cmdParameters));
+      evt.addMessage(new SimpleMsg("command", "Calculate PVV", cmdParameters.toArray(new Loggeable[0])));
       String result = null;
       try {
-        result = calculatePVVImpl(pinUnderLMK, pvkA, pvkB, pvkIdx);
+        result = calculatePVVImpl(pinUnderLMK, pvkA, pvkB, pvkIdx, excludes);
         evt.addMessage(new SimpleMsg("result", "Calculate PVV", result));
       } catch (Exception e) {
         evt.addMessage(e);
@@ -879,8 +887,9 @@ public class BaseSMAdapter
      * @return PVV (VISA PIN Verification Value)
      * @throws SMException 
      */
-    protected String calculatePVVImpl(EncryptedPIN pinUnderLMK, SecureDESKey pvkA,
-                       SecureDESKey pvkB, int pvkIdx) throws SMException {
+    protected String calculatePVVImpl(EncryptedPIN pinUnderLMK,
+                       SecureDESKey pvkA, SecureDESKey pvkB, int pvkIdx,
+                       List<String> excludes) throws SMException {
         throw  new SMException("Operation not supported in: " + this.getClass().getName());
     }
 

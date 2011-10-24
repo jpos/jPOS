@@ -377,9 +377,11 @@ public class JCESecurityModule extends BaseSMAdapter {
         return result.equals(cvv);
     }
 
-    private String calculatePVV(EncryptedPIN pinUnderLmk, Key key, int keyIdx)
-            throws SMException {
+    private String calculatePVV(EncryptedPIN pinUnderLmk, Key key, int keyIdx
+                               ,List<String> excludes) throws SMException {
         String pin = decryptPINImpl(pinUnderLmk);
+        if (excludes!=null && excludes.contains(pin))
+          throw new WeakPINException("Given PIN is on excludes list");
         String block = pinUnderLmk.getAccountNumber().substring(1);
         block += Integer.toString(keyIdx%10);
         block += pin.substring(0, 4);
@@ -391,9 +393,10 @@ public class JCESecurityModule extends BaseSMAdapter {
 
     @Override
     protected String calculatePVVImpl(EncryptedPIN pinUnderLmk, SecureDESKey pvkA,
-                               SecureDESKey pvkB, int pvkIdx) throws SMException {
+                               SecureDESKey pvkB, int pvkIdx, List<String> excludes)
+            throws SMException {
         Key key = concatKeys(pvkA, pvkB);
-        return calculatePVV(pinUnderLmk, key, pvkIdx);
+        return calculatePVV(pinUnderLmk, key, pvkIdx, excludes);
     }
 
     @Override
@@ -401,7 +404,7 @@ public class JCESecurityModule extends BaseSMAdapter {
                              SecureDESKey pvkB, int pvki, String pvv) throws SMException {
         Key key = concatKeys(pvkA, pvkB);
         EncryptedPIN pinUnderLmk = importPINImpl(pinUnderKd1, kd1);
-        String result = calculatePVV(pinUnderLmk, key, pvki);
+        String result = calculatePVV(pinUnderLmk, key, pvki, null);
         return result.equals(pvv);
     }
 

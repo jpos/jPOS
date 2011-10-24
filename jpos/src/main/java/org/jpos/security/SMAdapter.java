@@ -388,6 +388,7 @@ public interface SMAdapter {
 
     /**
      * Calculate PVV (VISA PIN Verification Value of PIN under LMK)
+     * with exclude list
      *
      * NOTE: {@code pvkA} and {@code pvkB} should be single length keys
      * but at least one of them may be double length key
@@ -397,10 +398,31 @@ public interface SMAdapter {
      * @param pvkB second key PVK in PVK pair
      * @param pvkIdx index of the PVK, in range 0-6, if not present 0 is assumed
      * @return PVV (VISA PIN Verification Value)
-     * @throws SMException
+     * @throws SMException if PIN is on exclude list {@link WeakPINException} is thrown
      */
     public String calculatePVV(EncryptedPIN pinUnderLmk, SecureDESKey pvkA,
                                SecureDESKey pvkB, int pvkIdx) throws SMException;
+
+
+
+    /**
+     * Calculate PVV (VISA PIN Verification Value of PIN under LMK)
+     *
+     * NOTE: {@code pvkA} and {@code pvkB} should be single length keys
+     * but at least one of them may be double length key
+     *
+     * @param pinUnderLmk PIN under LMK
+     * @param pvkA first key PVK in PVK pair
+     * @param pvkB second key PVK in PVK pair
+     * @param pvkIdx index of the PVK, in range 0-6, if not present 0 is assumed
+     * @param excludes list of pins which won't be generated.
+     *               Each pin has to be <code>pinLen</code> length
+     * @return PVV (VISA PIN Verification Value)
+     * @throws SMException
+     */
+    public String calculatePVV(EncryptedPIN pinUnderLmk, SecureDESKey pvkA,
+                               SecureDESKey pvkB, int pvkIdx,
+                               List<String> excludes) throws SMException;
 
 
 
