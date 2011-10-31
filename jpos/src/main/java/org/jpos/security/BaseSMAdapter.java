@@ -347,14 +347,14 @@ public class BaseSMAdapter
       cmdParameters.add(new SimpleMsg("parameter", "account number", accountNumber));
       cmdParameters.add(new SimpleMsg("parameter", "PIN length", pinLen));
       if(excludes != null && !excludes.isEmpty())
-        cmdParameters.add(new SimpleMsg("parameter", "Excluded PINS list", excludes));
+        cmdParameters.add(new SimpleMsg("parameter", "Excluded PINs list", excludes));
 
       LogEvent evt = new LogEvent(this, "s-m-operation");
       evt.addMessage(new SimpleMsg("command", "Generate PIN", cmdParameters.toArray(new Loggeable[0])));
       EncryptedPIN result = null;
       try {
         result = generatePINImpl(accountNumber, pinLen, excludes);
-        evt.addMessage(new SimpleMsg("result", "Generate PIN", result));
+        evt.addMessage(new SimpleMsg("result", "Generated PIN", result));
       } catch (Exception e) {
         evt.addMessage(e);
         throw e instanceof SMException ? (SMException) e : new SMException(e);
@@ -379,13 +379,13 @@ public class BaseSMAdapter
       cmdParameters.add(new SimpleMsg("parameter", "PVK-B", pvkB == null ? "" : pvkB));
       cmdParameters.add(new SimpleMsg("parameter", "PVK index", pvkIdx));
       if(excludes != null && !excludes.isEmpty())
-        cmdParameters.add(new SimpleMsg("parameter", "Excluded PINS list", excludes));
+        cmdParameters.add(new SimpleMsg("parameter", "Excluded PINs list", excludes));
       LogEvent evt = new LogEvent(this, "s-m-operation");
       evt.addMessage(new SimpleMsg("command", "Calculate PVV", cmdParameters.toArray(new Loggeable[0])));
       String result = null;
       try {
         result = calculatePVVImpl(pinUnderLMK, pvkA, pvkB, pvkIdx, excludes);
-        evt.addMessage(new SimpleMsg("result", "Calculate PVV", result));
+        evt.addMessage(new SimpleMsg("result", "Calculated PVV", result));
       } catch (Exception e) {
         evt.addMessage(e);
         throw e instanceof SMException ? (SMException) e : new SMException(e);
@@ -571,7 +571,7 @@ public class BaseSMAdapter
       EncryptedPIN result = null;
       try {
         result = deriveIBMPINImpl(accountNo, pvk, decTab,  pinValData, minPinLen,  offset);
-        evt.addMessage(new SimpleMsg("result", "Derive a PIN Using the IBM Method", result));
+        evt.addMessage(new SimpleMsg("result", "Derived PIN", result));
       } catch (Exception e) {
         evt.addMessage(e);
         throw e instanceof SMException ? (SMException) e : new SMException(e);
@@ -596,7 +596,7 @@ public class BaseSMAdapter
       String result = null;
       try {
         result = calculateCVVImpl(accountNo, cvkA, cvkB, expDate, serviceCode);
-        evt.addMessage(new SimpleMsg("result", "Calculate CVV/CVC", result));
+        evt.addMessage(new SimpleMsg("result", "Calculated CVV/CVC", result));
       } catch (Exception e) {
         evt.addMessage(e);
         throw e instanceof SMException ? (SMException) e : new SMException(e);
@@ -684,7 +684,7 @@ public class BaseSMAdapter
       try {
         byte[] result = generateARPCImpl( mkdm, skdm, imkac, accoutNo, acctSeqNo
                            ,arqc, atc, upn, arpcMethod, arc, propAuthData );
-        evt.addMessage(new SimpleMsg("result", "ARPC", result));
+        evt.addMessage(new SimpleMsg("result", "Generated ARPC", result));
         return result;
       } catch (Exception e) {
         evt.addMessage(e);
