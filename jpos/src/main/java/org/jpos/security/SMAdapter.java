@@ -427,6 +427,49 @@ public interface SMAdapter {
 
 
     /**
+     * Calculate PVV (VISA PIN Verification Value of customer selected PIN)
+     *
+     * NOTE: {@code pvkA} and {@code pvkB} should be single length keys
+     * but at least one of them may be double length key
+     *
+     * @param pinUnderKd1 the encrypted PIN
+     * @param kd1 Data Key under which the pin is encrypted
+     * @param pvkA first key PVK in PVK pair
+     * @param pvkB second key PVK in PVK pair
+     * @param pvkIdx index of the PVK, in range 0-6, if not present 0 is assumed
+     * @return PVV (VISA PIN Verification Value)
+     * @throws SMException
+     */
+    public String calculatePVV(EncryptedPIN pinUnderKd1, SecureDESKey kd1,
+                               SecureDESKey pvkA, SecureDESKey pvkB, int pvkIdx)
+            throws SMException;
+
+
+
+    /**
+     * Calculate PVV (VISA PIN Verification Value of customer selected PIN)
+     *
+     * NOTE: {@code pvkA} and {@code pvkB} should be single length keys
+     * but at least one of them may be double length key
+     *
+     * @param pinUnderKd1 the encrypted PIN
+     * @param kd1 Data Key under which the pin is encrypted
+     * @param pvkA first key PVK in PVK pair
+     * @param pvkB second key PVK in PVK pair
+     * @param pvkIdx index of the PVK, in range 0-6, if not present 0 is assumed
+     * @param excludes list of pins which won't be generated.
+     *               Each pin has to be <code>pinLen</code> length
+     * @return PVV (VISA PIN Verification Value)
+     * @throws WeakPINException if passed PIN is on {@code excludes} list
+     * @throws SMException
+     */
+    public String calculatePVV(EncryptedPIN pinUnderKd1, SecureDESKey kd1,
+                               SecureDESKey pvkA, SecureDESKey pvkB, int pvkIdx,
+                               List<String> excludes) throws SMException;
+
+
+
+    /**
      * Verify PVV (VISA PIN Verification Value of an LMK encrypted PIN)
      *
      * NOTE: {@code pvkA} and {@code pvkB} should be single
@@ -467,6 +510,86 @@ public interface SMAdapter {
     public String calculateIBMPINOffset(EncryptedPIN pinUnderLmk, SecureDESKey pvk,
                                         String decTab, String pinValData,
                                         int minPinLen) throws SMException;
+
+
+
+    /**
+     * Calculate an PIN Offset using the IBM 3624 method
+     *
+     * Using that method is not recomendated. PVV method is prefrred,
+     * but it may be need in some legacy systms
+     * @param pinUnderLmk PIN under LMK
+     * @param pvk        accepts single, double, triple size key length.
+     *                   Single key length is recomendated
+     * @param decTab     decimalisation table. Accepts plain text and encrypted
+     *                   decimalisation table depending to HSM configuration
+     * @param pinValData pin validation data. User-defined data consisting of hexadecimal
+     *                   characters and the character N, which indicates to the HSM where
+     *                   to insert the last 5 digits of the account number. Usualy it consists
+     *                   the first digits of the card number
+     * @param minPinLen  pin minimal length
+     * @param excludes list of pins which won't be generated.
+     *               Each pin has to be <code>pinLen</code> length
+     * @return IBM PIN Offset
+     * @throws WeakPINException if passed PIN is on {@code excludes} list
+     * @throws SMException
+     */
+    public String calculateIBMPINOffset(EncryptedPIN pinUnderLmk, SecureDESKey pvk,
+                           String decTab, String pinValData, int minPinLen,
+                           List<String> excludes) throws SMException;
+
+
+
+    /**
+     * Calculate an PIN Offset using the IBM 3624 method of customer selected PIN
+     *
+     * Using that method is not recomendated. PVV method is prefrred,
+     * but it may be need in some legacy systms
+     * @param pinUnderKd1 the encrypted PIN
+     * @param kd1 Data Key under which the pin is encrypted
+     * @param pvk        accepts single, double, triple size key length.
+     *                   Single key length is recomendated
+     * @param decTab     decimalisation table. Accepts plain text and encrypted
+     *                   decimalisation table depending to HSM configuration
+     * @param pinValData pin validation data. User-defined data consisting of hexadecimal
+     *                   characters and the character N, which indicates to the HSM where
+     *                   to insert the last 5 digits of the account number. Usualy it consists
+     *                   the first digits of the card number
+     * @param minPinLen  pin minimal length
+     * @return IBM PIN Offset
+     * @throws SMException
+     */
+    public String calculateIBMPINOffset(EncryptedPIN pinUnderkd1, SecureDESKey kd1,
+                          SecureDESKey pvk, String decTab, String pinValData,
+                          int minPinLen) throws SMException;
+
+
+
+    /**
+     * Calculate an PIN Offset using the IBM 3624 method of customer selected PIN
+     *
+     * Using that method is not recomendated. PVV method is prefrred,
+     * but it may be need in some legacy systms
+     * @param pinUnderKd1 the encrypted PIN
+     * @param kd1 Data Key under which the pin is encrypted
+     * @param pvk        accepts single, double, triple size key length.
+     *                   Single key length is recomendated
+     * @param decTab     decimalisation table. Accepts plain text and encrypted
+     *                   decimalisation table depending to HSM configuration
+     * @param pinValData pin validation data. User-defined data consisting of hexadecimal
+     *                   characters and the character N, which indicates to the HSM where
+     *                   to insert the last 5 digits of the account number. Usualy it consists
+     *                   the first digits of the card number
+     * @param minPinLen  pin minimal length
+     * @param excludes list of pins which won't be generated.
+     *               Each pin has to be <code>pinLen</code> length
+     * @return IBM PIN Offset
+     * @throws WeakPINException if passed PIN is on {@code excludes} list
+     * @throws SMException
+     */
+    public String calculateIBMPINOffset(EncryptedPIN pinUnderkd1, SecureDESKey kd1,
+                          SecureDESKey pvk, String decTab, String pinValData,
+                          int minPinLen, List<String> excludes) throws SMException;
 
 
 

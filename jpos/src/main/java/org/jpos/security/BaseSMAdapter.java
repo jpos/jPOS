@@ -395,6 +395,39 @@ public class BaseSMAdapter
       return result;
     }
 
+    public String calculatePVV(EncryptedPIN pinUnderKd1, SecureDESKey kd1,
+                               SecureDESKey pvkA, SecureDESKey pvkB, int pvkIdx)
+            throws SMException {
+      return calculatePVV(pinUnderKd1, kd1, pvkA, pvkB, pvkIdx, null);
+    }
+
+    public String calculatePVV(EncryptedPIN pinUnderKd1, SecureDESKey kd1,
+                               SecureDESKey pvkA, SecureDESKey pvkB, int pvkIdx,
+                               List<String> excludes) throws SMException {
+      List<Loggeable> cmdParameters = new ArrayList<Loggeable>();
+      cmdParameters.add(new SimpleMsg("parameter", "account number", pinUnderKd1.getAccountNumber()));
+      cmdParameters.add(new SimpleMsg("parameter", "PIN under Data Key 1", pinUnderKd1));
+      cmdParameters.add(new SimpleMsg("parameter", "Data Key 1", kd1));
+      cmdParameters.add(new SimpleMsg("parameter", "PVK-A", pvkA == null ? "" : pvkA));
+      cmdParameters.add(new SimpleMsg("parameter", "PVK-B", pvkB == null ? "" : pvkB));
+      cmdParameters.add(new SimpleMsg("parameter", "PVK index", pvkIdx));
+      if(excludes != null && !excludes.isEmpty())
+        cmdParameters.add(new SimpleMsg("parameter", "Excluded PINs list", excludes));
+      LogEvent evt = new LogEvent(this, "s-m-operation");
+      evt.addMessage(new SimpleMsg("command", "Calculate PVV", cmdParameters.toArray(new Loggeable[0])));
+      String result = null;
+      try {
+        result = calculatePVVImpl(pinUnderKd1, kd1, pvkA, pvkB, pvkIdx, excludes);
+        evt.addMessage(new SimpleMsg("result", "Calculated PVV", result));
+      } catch (Exception e) {
+        evt.addMessage(e);
+        throw e instanceof SMException ? (SMException) e : new SMException(e);
+      } finally {
+        Logger.log(evt);
+      }
+      return result;
+    }
+
     public boolean verifyPVV(EncryptedPIN pinUnderKd1, SecureDESKey kd1, SecureDESKey pvkA,
                           SecureDESKey pvkB, int pvki, String pvv) throws SMException {
 
@@ -423,23 +456,66 @@ public class BaseSMAdapter
     }
 
     public String calculateIBMPINOffset(EncryptedPIN pinUnderLmk, SecureDESKey pvk,
-                                        String decTab, String pinValData,
-                                        int minPinLen) throws SMException {
-      SimpleMsg[] cmdParameters = {
-        new SimpleMsg("parameter", "account number", pinUnderLmk.getAccountNumber()),
-        new SimpleMsg("parameter", "PIN under LMK", pinUnderLmk),
-        new SimpleMsg("parameter", "PVK", pvk),
-        new SimpleMsg("parameter", "decimalisation table", decTab),
-        new SimpleMsg("parameter", "PIN validation data", pinValData),
-        new SimpleMsg("parameter", "minimum PIN length", minPinLen)
-      };
+                           String decTab, String pinValData, int minPinLen)
+            throws SMException {
+      return calculateIBMPINOffset(pinUnderLmk, pvk, decTab, pinValData, minPinLen, null);
+    }
+
+    public String calculateIBMPINOffset(EncryptedPIN pinUnderLmk, SecureDESKey pvk,
+                           String decTab, String pinValData, int minPinLen,
+                           List<String> excludes) throws SMException {
+      List<Loggeable> cmdParameters = new ArrayList<Loggeable>();
+      cmdParameters.add(new SimpleMsg("parameter", "account number", pinUnderLmk.getAccountNumber()));
+      cmdParameters.add(new SimpleMsg("parameter", "PIN under LMK", pinUnderLmk));
+      cmdParameters.add(new SimpleMsg("parameter", "PVK", pvk));
+      cmdParameters.add(new SimpleMsg("parameter", "decimalisation table", decTab));
+      cmdParameters.add(new SimpleMsg("parameter", "PIN validation data", pinValData));
+      cmdParameters.add(new SimpleMsg("parameter", "minimum PIN length", minPinLen));
+      if(excludes != null && !excludes.isEmpty())
+        cmdParameters.add(new SimpleMsg("parameter", "Excluded PINs list", excludes));
       LogEvent evt = new LogEvent(this, "s-m-operation");
-      evt.addMessage(new SimpleMsg("command", "Calculate PIN offset", cmdParameters));
+      evt.addMessage(new SimpleMsg("command", "Calculate PIN offset", cmdParameters.toArray(new Loggeable[0])));
       String result = null;
       try {
         result = calculateIBMPINOffsetImpl(pinUnderLmk, pvk,
-                decTab, pinValData, minPinLen);
-        evt.addMessage(new SimpleMsg("result", "Calculate PIN offset", result));
+                decTab, pinValData, minPinLen, excludes);
+        evt.addMessage(new SimpleMsg("result", "Calculated PIN offset", result));
+      } catch (Exception e) {
+        evt.addMessage(e);
+        throw e instanceof SMException ? (SMException) e : new SMException(e);
+      } finally {
+        Logger.log(evt);
+      }
+      return result;
+    }
+
+    public String calculateIBMPINOffset(EncryptedPIN pinUnderKd1, SecureDESKey kd1,
+                           SecureDESKey pvk, String decTab, String pinValData, int minPinLen)
+            throws SMException {
+      return calculateIBMPINOffset(pinUnderKd1, kd1, pvk, decTab,
+              pinValData, minPinLen, null);
+    }
+
+    public String calculateIBMPINOffset(EncryptedPIN pinUnderKd1, SecureDESKey kd1,
+                           SecureDESKey pvk, String decTab, String pinValData, int minPinLen,
+                           List<String> excludes) throws SMException {
+      List<Loggeable> cmdParameters = new ArrayList<Loggeable>();
+      cmdParameters.add(new SimpleMsg("parameter", "account number", pinUnderKd1.getAccountNumber()));
+      cmdParameters.add(new SimpleMsg("parameter", "PIN under Data Key 1", pinUnderKd1));
+      cmdParameters.add(new SimpleMsg("parameter", "Data Key 1", kd1));
+      cmdParameters.add(new SimpleMsg("parameter", "PVK", pvk));
+      cmdParameters.add(new SimpleMsg("parameter", "decimalisation table", decTab));
+      cmdParameters.add(new SimpleMsg("parameter", "PIN validation data", pinValData));
+      cmdParameters.add(new SimpleMsg("parameter", "minimum PIN length", minPinLen));
+      if(excludes != null && !excludes.isEmpty())
+        cmdParameters.add(new SimpleMsg("parameter", "Excluded PINs list", excludes));
+      LogEvent evt = new LogEvent(this, "s-m-operation");
+      evt.addMessage(new SimpleMsg("command", "Calculate PIN offset", cmdParameters.toArray(new Loggeable[0])));
+      String result = null;
+      try {
+        result = calculateIBMPINOffsetImpl(pinUnderKd1, kd1, pvk,
+                decTab, pinValData, minPinLen, excludes);
+        evt.addMessage(new SimpleMsg("result", "Calculated PIN offset", result));
       } catch (Exception e) {
         evt.addMessage(e);
         throw e instanceof SMException ? (SMException) e : new SMException(e);
@@ -890,6 +966,22 @@ public class BaseSMAdapter
 
     /**
      * Your SMAdapter should override this method if it has this functionality
+     * @param pinUnderKd1
+     * @param kd1
+     * @param pvkA
+     * @param pvkB
+     * @param pvkIdx
+     * @return PVV (VISA PIN Verification Value)
+     * @throws SMException
+     */
+    protected String calculatePVVImpl(EncryptedPIN pinUnderKd1, SecureDESKey kd1,
+                       SecureDESKey pvkA, SecureDESKey pvkB, int pvkIdx,
+                       List<String> excludes) throws SMException {
+        throw  new SMException("Operation not supported in: " + this.getClass().getName());
+    }
+
+    /**
+     * Your SMAdapter should override this method if it has this functionality
      * @param pinUnderKd 
      * @param kd
      * @param pvkA
@@ -910,13 +1002,33 @@ public class BaseSMAdapter
      * @param pvk
      * @param decTab
      * @param pinValData
-     * @param minPinLen  pin minimal length
+     * @param minPinLen
+     * @param excludes
      * @return IBM PIN Offset
      * @throws SMException
      */
     protected String calculateIBMPINOffsetImpl(EncryptedPIN pinUnderLmk, SecureDESKey pvk,
-                                            String decTab, String pinValData,
-                                            int minPinLen) throws SMException {
+                              String decTab, String pinValData, int minPinLen,
+                              List<String> excludes) throws SMException {
+        throw  new SMException("Operation not supported in: " + this.getClass().getName());
+    }
+
+    /**
+     * Your SMAdapter should override this method if it has this functionality
+     * @param pinUnderKd1
+     * @param kd1
+     * @param pvk
+     * @param decTab
+     * @param pinValData
+     * @param minPinLen
+     * @param excludes
+     * @return IBM PIN Offset
+     * @throws SMException
+     */
+    protected String calculateIBMPINOffsetImpl(EncryptedPIN pinUnderKd1, SecureDESKey kd1,
+                              SecureDESKey pvk, String decTab, String pinValData,
+                              int minPinLen, List<String> excludes)
+            throws SMException {
         throw  new SMException("Operation not supported in: " + this.getClass().getName());
     }
 
