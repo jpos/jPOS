@@ -729,6 +729,76 @@ public class BaseSMAdapter
       }
     }
 
+    public byte[] generateSM_MAC(MKDMethod mkdm, SKDMethod skdm
+            ,SecureDESKey imksmi, String accountNo, String acctSeqNo
+            ,byte[] atc, byte[] arqc, byte[] data) throws SMException {
+
+      SimpleMsg[] cmdParameters = {
+            new SimpleMsg("parameter", "mkd method", mkdm),
+            new SimpleMsg("parameter", "skd method", skdm),
+            new SimpleMsg("parameter", "imk-smi", imksmi),
+            new SimpleMsg("parameter", "account number", accountNo),
+            new SimpleMsg("parameter", "accnt seq no", acctSeqNo),
+            new SimpleMsg("parameter", "atc", atc == null ? "" : ISOUtil.hexString(atc)),
+            new SimpleMsg("parameter", "arqc", arqc == null ? "" : ISOUtil.hexString(arqc)),
+            new SimpleMsg("parameter", "data", data == null ? "" : ISOUtil.hexString(data))
+      };
+      LogEvent evt = new LogEvent(this, "s-m-operation");
+      evt.addMessage(new SimpleMsg("command", "Generate Secure Messaging MAC", cmdParameters));
+      try {
+        byte[] mac = generateSM_MACImpl( mkdm, skdm, imksmi, accountNo, acctSeqNo, atc, arqc, data);
+        evt.addMessage(new SimpleMsg("result", "Generated MAC", mac!=null ? ISOUtil.hexString(mac) : ""));
+        return mac;
+      } catch (Exception e) {
+        evt.addMessage(e);
+        throw e instanceof SMException ? (SMException) e : new SMException(e);
+      } finally {
+        Logger.log(evt);
+      }
+    }
+
+    public Pair<EncryptedPIN,byte[]> translatePINGenerateSM_MAC(MKDMethod mkdm
+           ,SKDMethod skdm, SecureDESKey imksmi, String accountNo, String acctSeqNo
+           ,byte[] atc, byte[] arqc, byte[] data, EncryptedPIN currentPIN
+           ,EncryptedPIN newPIN, SecureDESKey kd1, SecureDESKey imksmc
+           ,SecureDESKey imkac, byte destinationPINBlockFormat) throws SMException {
+
+      SimpleMsg[] cmdParameters = {
+            new SimpleMsg("parameter", "mkd method", mkdm),
+            new SimpleMsg("parameter", "skd method", skdm),
+            new SimpleMsg("parameter", "imk-smi", imksmi),
+            new SimpleMsg("parameter", "account number", accountNo),
+            new SimpleMsg("parameter", "accnt seq no", acctSeqNo),
+            new SimpleMsg("parameter", "atc", atc == null ? "" : ISOUtil.hexString(atc)),
+            new SimpleMsg("parameter", "arqc", arqc == null ? "" : ISOUtil.hexString(arqc)),
+            new SimpleMsg("parameter", "data", data == null ? "" : ISOUtil.hexString(data)),
+            new SimpleMsg("parameter", "Current Encrypted PIN", currentPIN),
+            new SimpleMsg("parameter", "New Encrypted PIN", newPIN),
+            new SimpleMsg("parameter", "Source PIN Encryption Key", kd1),
+            new SimpleMsg("parameter", "imk-smc", imksmc),
+            new SimpleMsg("parameter", "imk-ac", imkac),
+            new SimpleMsg("parameter", "Destination PIN Block Format", destinationPINBlockFormat)
+      };
+      LogEvent evt = new LogEvent(this, "s-m-operation");
+      evt.addMessage(new SimpleMsg("command", "Translate PIN block format and Generate Secure Messaging MAC", cmdParameters));
+      try {
+        Pair<EncryptedPIN,byte[]> r = translatePINGenerateSM_MACImpl( mkdm, skdm
+                ,imksmi, accountNo, acctSeqNo, atc, arqc, data, currentPIN
+                ,newPIN, kd1, imksmc, imkac, destinationPINBlockFormat);
+        SimpleMsg[] cmdResults = {
+              new SimpleMsg("result", "Translated PIN block", r.getValue0()),
+              new SimpleMsg("result", "Generated MAC", r.getValue1() == null ? "" : ISOUtil.hexString(r.getValue1()))
+        };
+        evt.addMessage(new SimpleMsg("results", "Complex results", cmdResults));
+        return r;
+      } catch (Exception e) {
+        evt.addMessage(e);
+        throw e instanceof SMException ? (SMException) e : new SMException(e);
+      } finally {
+        Logger.log(evt);
+      }
+    }
+
     public byte[] generateCBC_MAC (byte[] data, SecureDESKey kd) throws SMException {
         SimpleMsg[] cmdParameters =  {
             new SimpleMsg("parameter", "data", data), new SimpleMsg("parameter", "data key",
@@ -1160,6 +1230,54 @@ public class BaseSMAdapter
             ,String accountNo, String acctSeqNo, byte[] arqc, byte[] atc, byte[] upn
             ,byte[] transData, ARPCMethod arpcMethod, byte[] arc, byte[] propAuthData)
             throws SMException {
+        throw  new SMException("Operation not supported in: " + this.getClass().getName());
+    }
+
+
+
+    /**
+     * Your SMAdapter should override this method if it has this functionality
+     * @param mkdm
+     * @param skdm
+     * @param imksmi
+     * @param accountNo
+     * @param acctSeqNo
+     * @param atc
+     * @param arqc
+     * @param data
+     * @return generated 8 bytes MAC
+     * @throws SMException
+     */
+    protected byte[] generateSM_MACImpl(MKDMethod mkdm, SKDMethod skdm
+            ,SecureDESKey imksmi, String accountNo, String acctSeqNo
+            ,byte[] atc, byte[] arqc, byte[] data) throws SMException {
+        throw  new SMException("Operation not supported in: " + this.getClass().getName());
+    }
+
+    /**
+     * Your SMAdapter should override this method if it has this functionality
+     * @param mkdm
+     * @param skdm
+     * @param imksmi
+     * @param accountNo
+     * @param acctSeqNo
+     * @param atc
+     * @param arqc
+     * @param data
+     * @param currentPIN
+     * @param newPIN
+     * @param kd1
+     * @param imksmc
+     * @param imkac
+     * @param destinationPINBlockFormat
+     * @return Pair of values, encrypted PIN and 8 bytes MAC
+     * @throws SMException
+     */
+    protected Pair<EncryptedPIN,byte[]> translatePINGenerateSM_MACImpl(MKDMethod mkdm
+           ,SKDMethod skdm, SecureDESKey imksmi, String accountNo, String acctSeqNo
+           ,byte[] atc, byte[] arqc, byte[] data, EncryptedPIN currentPIN
+           ,EncryptedPIN newPIN, SecureDESKey kd1, SecureDESKey imksmc
+           ,SecureDESKey imkac, byte destinationPINBlockFormat) throws SMException {
         throw  new SMException("Operation not supported in: " + this.getClass().getName());
     }
 

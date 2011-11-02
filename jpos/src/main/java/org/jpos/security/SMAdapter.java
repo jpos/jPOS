@@ -813,6 +813,93 @@ public interface SMAdapter {
             throws SMException;
 
 
+    /**
+     * Generate Secure Message MAC over suppiled message data
+     * <br/>
+     * This method is used by issuer to generate MAC over message data send
+     * from the issuer back to the card
+     *
+     * @param mkdm ICC Master Key Derivation Method. For {@code skdm} equals
+     *        {@link SKDMethod#VSDC} and {@link SKDMethod#MCHIP} this parameter
+     *        is ignored and {@link MKDMethod#OPTION_A} is always used.
+     * @param skdm Session Key Derivation Method
+     * @param imksmi the issuer master key for Secure Messaging Integrity
+     * @param accountNo account number including BIN and check digit
+     * @param acctSeqNo account sequence number, 2 decimal digits
+     * @param atc application transactin counter. This is used for Session
+     *        Key Generation. A 2 byte value must be supplied.
+     *        For {@code skdm} equals {@link SKDMethod#VSDC} is not used.
+     *        Second usage is as part of data which will be macked
+     * @param arqc ARQC/TC/AAC. A 8 byte value must be supplied.
+     *        For {@code skdm} equals {@link SKDMethod#MCHIP} RAND should
+     *        be suppiled. RAND is ARQC incremeted by 1 (with overflow) after
+     *        each script command for that same ATC value
+     * @param data for which MAC will be generated. Should contain
+     *        APDU command e.g. PIN Unblock, Application block/unblock
+     *        with some additional application dependent data
+     * @return generated 8 bytes MAC
+     * @throws SMException
+     */
+    public byte[] generateSM_MAC(MKDMethod mkdm, SKDMethod skdm
+            ,SecureDESKey imksmi, String accountNo, String acctSeqNo
+            ,byte[] atc, byte[] arqc, byte[] data) throws SMException;
+
+
+
+    /**
+     * Translate PIN and generate MAC over suppiled message data
+     * <br/>
+     * This method is used by issuer to:
+     * <li>translate standard ATM PIN block format encrypted under zone
+     * or terminal key {@code kd1} to an application specific PIN block
+     * format, encrypted under a confidentiality session key, derived from
+     * {@code imksmc}
+     * <li>generate MAC over suppiled message {@code data} and translated
+     * PIN block
+     *
+     * @param mkdm ICC Master Key Derivation Method. For {@code skdm} equals
+     *        {@link SKDMethod#VSDC} and {@link SKDMethod#MCHIP} this parameter
+     *        is ignored and {@link MKDMethod#OPTION_A} is always used.
+     * @param skdm Session Key Derivation Method
+     * @param imksmi the issuer master key for Secure Messaging Integrity
+     * @param accountNo account number including BIN and check digit
+     * @param acctSeqNo account sequence number, 2 decimal digits
+     * @param atc application transactin counter. This is used for Session
+     *        Key Generation. A 2 byte value must be supplied.
+     *        For {@code skdm} equals {@link SKDMethod#VSDC} is not used.
+     *        Second usage is as part of data which will be macked
+     * @param arqc ARQC/TC/AAC. A 8 byte value must be supplied.
+     *        For {@code skdm} equals {@link SKDMethod#MCHIP} RAND should
+     *        be suppiled. RAND is ARQC incremeted by 1 (with overflow) after
+     *        each script command for that same ATC value
+     * @param data for which MAC will be generated. Should contain APDU
+     *        command PIN Change with some additional application dependent data
+     * @param currentPIN encrypted under {@code kd1} current PIN. Used when
+     *        {@code destinationPINBlockFormat} equals {@link SMAdapter#FORMAT42}
+     * @param newPIN encrypted under {@code kd1} new PIN.
+     * @param kd1 Data Key (also called transport key) under which the source pin is encrypted
+     * @param imksmc the issuer master key for Secure Messaging Confidentiality
+     * @param imkac the issuer master key for generating and verifying
+     *        Application Cryptograms. Used when {@code destinationPINBlockFormat} equals
+     *        {@link SMAdapter#FORMAT41} or {@link SMAdapter#FORMAT42} in other cases is ignored
+     * @param destinationPINBlockFormat the PIN Block Format of the translated encrypted PIN
+     *        <dl>
+     *          <dt><b>Allowed values:</b>
+     *          <dd>{@link SMAdapter#FORMAT34} Standard EMV PIN Block
+     *          <dd>{@link SMAdapter#FORMAT35} Europay/Mastercard
+     *          <dd>{@link SMAdapter#FORMAT41} Visa/Amex format without using Current PIN
+     *          <dd>{@link SMAdapter#FORMAT42} Visa/Amex format using Current PIN
+     *        </dl>
+     * @return Pair of values, encrypted PIN and 8 bytes MAC
+     * @throws SMException
+     */
+    public Pair<EncryptedPIN,byte[]> translatePINGenerateSM_MAC(MKDMethod mkdm
+           ,SKDMethod skdm, SecureDESKey imksmi, String accountNo, String acctSeqNo
+           ,byte[] atc, byte[] arqc, byte[] data, EncryptedPIN currentPIN
+           ,EncryptedPIN newPIN, SecureDESKey kd1, SecureDESKey imksmc
+           ,SecureDESKey imkac, byte destinationPINBlockFormat) throws SMException;
+
+
 
     /**
      * Generates CBC-MAC (Cipher Block Chaining Message Authentication Code)
