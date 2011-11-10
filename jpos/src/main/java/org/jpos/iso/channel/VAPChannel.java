@@ -42,6 +42,7 @@ public class VAPChannel extends BaseChannel {
     String srcid = "000000";
     String dstid = "000000";
     boolean debugPoll;
+    int headerFormat = 2;
     /**
      * Public constructor (used by Class.forName("...").newInstance())
      */
@@ -161,7 +162,7 @@ public class VAPChannel extends BaseChannel {
     {
         ISOHeader h = (!isOverrideHeader() && m.getHeader() != null) ?
                 m.getISOHeader() :
-                new BASE1Header (srcid, dstid);
+                new BASE1Header (srcid, dstid, headerFormat);
 
         if (h instanceof BASE1Header)
             ((BASE1Header)h).setLen(len);
@@ -229,6 +230,7 @@ public class VAPChannel extends BaseChannel {
         srcid = cfg.get ("srcid", "000000");
         dstid = cfg.get ("dstid", "000000");
         debugPoll = cfg.getBoolean("debug-poll", false);
+        headerFormat = cfg.getInt("header-format", 2);
         super.setConfiguration (cfg);
     }
 }

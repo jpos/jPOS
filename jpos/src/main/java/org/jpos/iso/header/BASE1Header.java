@@ -58,6 +58,15 @@ public class BASE1Header extends BaseHeader {
         setSource(source);
         setDestination(destination);
     }
+    public BASE1Header(String source, String destination, int format) {
+        super();
+        header = new byte[LENGTH];
+        header[0] = LENGTH; // hlen
+        setHFormat(1);
+        setFormat(format);
+        setSource(source);
+        setDestination(destination);
+    }
     public BASE1Header(byte[] header) {
         super(header);
     }
