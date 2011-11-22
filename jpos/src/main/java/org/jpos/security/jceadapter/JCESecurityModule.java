@@ -40,6 +40,7 @@ import java.util.Random;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
 import org.jpos.iso.ISODate;
+import org.jpos.iso.ISOException;
 
 
 /**
@@ -103,6 +104,14 @@ public class JCESecurityModule extends BaseSMAdapter {
      * Index of scheme variant for right LMK key for triple length keys
      */
     private final static int KEY_T_RIGHT     = 5;
+
+    private static MessageDigest SHA1_MESSAGE_DIGEST = null;
+
+    static {
+      try {
+          SHA1_MESSAGE_DIGEST = MessageDigest.getInstance("SHA-1");
+      } catch (NoSuchAlgorithmException ex) {}
+    }
 
     /**
      * Creates an uninitialized JCE Security Module, you need to setConfiguration to initialize it
@@ -312,9 +321,9 @@ public class JCESecurityModule extends BaseSMAdapter {
      * @param b
      * @return
      */
-    private String decimalizeVisa(byte[] b){
+    private static String decimalizeVisa(byte[] b){
         char[] bec = ISOUtil.hexString(b).toUpperCase().toCharArray();
-        char[] bhc = new char[16];
+        char[] bhc = new char[bec.length];
         int k = 0;
         //Select 0-9 chars
         for ( char c : bec )
@@ -375,6 +384,147 @@ public class JCESecurityModule extends BaseSMAdapter {
                      String cvv, Date expDate, String serviceCode) throws SMException {
         String result = calculateCVV(accountNo, concatKeys(cvkA, cvkB), expDate, serviceCode);
         return result.equals(cvv);
+    }
+
+    @Override
+    protected boolean verifydCVVImpl(String accountNo, SecureDESKey imkac, String dcvv,
+                     Date expDate, String serviceCode, byte[] atc, MKDMethod mkdm)
+                     throws SMException {
+
+        if (mkdm==null)
+          mkdm = MKDMethod.OPTION_A;
+        byte[] panpsn = formatPANPSN(accountNo, null, mkdm);
+        Key mkac = deriveICCMasterKey(decryptFromLMK(imkac), panpsn);
+
+        String alteredPAN = ISOUtil.hexString(atc) + accountNo.substring(4);
+
+        String res = calculateCVV(alteredPAN, mkac, expDate, serviceCode);
+        return res.equals(dcvv);
+    }
+
+    private static byte[] formatPANPSN(String pan, String psn, MKDMethod mkdm)
+            throws SMException {
+        byte[] b;
+        switch (mkdm){
+          case OPTION_A:
+            b = formatPANPSNOptionA(pan, psn);
+            break;
+          case OPTION_B:
+            b = formatPANPSNOptionB(pan, psn);
+            break;
+          default:
+            throw new SMException("Unsupported ICC Master Key derivation method");
+        }
+      return b;
+    }
+
+    /**
+     * Format at least 8 bytes representing Application PAN and
+     * PAN Sequence Number in BCD format.
+     * <br>
+     * Concatenate from left to right decimal digits of PAN and
+     * PAN Sequence Number digits. If {@code psn} is not present, it is
+     * replaced by a "00" digits. If the result is less than 16 digits long,
+     * pad it to the left with hexadecimal zeros in order to obtain an
+     * 16-digit number. If the Application PAN has an odd number of decimal
+     * digits then concatenate a "0" padding digit to the left thereby
+     * ensuring that the result is an even number of digits.
+     *
+     * @param pan application primary account number
+     * @param psn PAN Sequence Number
+     * @return 8 to 11 bytes representing Application PAN
+     */
+    private static byte[] preparePANPSN(String pan, String psn){
+        if (psn == null || psn.isEmpty())
+            psn = "00";
+        String ret = pan + psn;
+        if ( ret.length() < 16 )
+            try {
+                ret = ISOUtil.zeropad(ret, 16);
+            } catch( ISOException ex ) {}
+        //convert digits to bytes and padd with "0"
+        //to left for ensure even number of digits
+        return ISOUtil.hex2byte(ret);
+    }
+
+    /**
+     * Prepare 8-bytes data from PAN and PAN Sequence Number (Option A)
+     *
+     * <li> Prepare Application PAN and PAN Sequence Number by {@see #preparePANPSN}
+     * <li> Select first 16 digits
+     *
+     * @param pan application primary account number
+     * @param psn PAN Sequence Number
+     * @return 8-bytes representing first 16 digits
+     */
+    private static byte[] formatPANPSNOptionA(String pan, String psn){
+        byte[] b = preparePANPSN(pan, psn);
+        return Arrays.copyOfRange(b, b.length-8, b.length);
+    }
+
+    /**
+     * Prepare 8-bytes data from PAN and PAN Sequence Number (Option B)
+     * <br>
+     * If the Application PAN is equal to or less than 16 decimal digits,
+     * {@see #formatPANPSNOptionA}.
+     * If the Application PAN is greater than 16 decimal digits, do the following:
+     * <li> Prepare Application PAN and PAN Sequence Number by {@see #preparePANPSN}
+     * <li> Hash the prepared result using the SHA-1 hashing algorithm
+     *      to obtain the 20-byte hash result
+     * <li> Decimalize result of hasing by {@see #decimalizeVisa }
+     * <li> Select first 16 decimal digits
+     *
+     * @param pan application primary account number
+     * @param psn PAN Sequence Number
+     * @return 8-bytes representing first 16 decimalised digits
+     */
+    private static byte[] formatPANPSNOptionB(String pan, String psn){
+        byte[] b = preparePANPSN(pan, psn);
+        if ( pan.length() <= 16)
+            //use OPTION_A
+            return Arrays.copyOfRange(b, b.length-8, b.length);
+
+        //20-bytes sha-1 digest
+        byte[] r = SHA1_MESSAGE_DIGEST.digest(b);
+        //decimalized HEX string of digest
+        String rs = decimalizeVisa(r);
+        //return 16-bytes decimalizd digest
+        return ISOUtil.hex2byte(rs.substring(0,16));
+    }
+
+    /**
+     * Derive ICC Master Key from Issuer Master Key and preformated PAN/PANSeqNo
+     *
+     * Compute two 8-byte numbers:
+     * <li> left part is a result of Tripple-DES encription {@code panpsn}
+     * with {@code imk} as the key
+     * <li> right part is a result of Tripple-DES binary inverted
+     * {@code panpsn} with {@code imk} as the key
+     * <li> concatenate left and right parts
+     * <br>
+     * Described in EMV v4.2 Book 2, Annex A1.4.1 Master Key Derivation point 2
+     *
+     * @param imk 16-bytes Issuer Master Key
+     * @param p preformated PAN and PAN Sequence Number
+     * @return derived 16-bytes ICC Master Key with adjusted DES parity
+     * @throws JCEHandlerException
+     */
+    private Key deriveICCMasterKey(Key imk, byte[] panpsn)
+            throws JCEHandlerException {
+        byte[] l = Arrays.copyOfRange(panpsn, 0, 8);
+        //left part of derived key
+        l = jceHandler.encryptData(l, imk);
+        byte[] r = Arrays.copyOfRange(panpsn, 0, 8);
+        //inverse clear right part of key
+        r = ISOUtil.xor(r, JCESecurityModule.fPaddingBlock);
+        //right part of derived key
+        r = jceHandler.encryptData(r,imk);
+        //derived key
+        byte[] mk = ISOUtil.concat(l,r);
+        //fix DES parity of key
+        Util.adjustDESParity(mk);
+        //form JCE Tripple-DES Key
+        return jceHandler.formDESKey(SMAdapter.LENGTH_DES3_2KEY, mk);
     }
 
     private String calculatePVV(EncryptedPIN pinUnderLmk, Key key, int keyIdx
@@ -951,6 +1101,7 @@ public class JCESecurityModule extends BaseSMAdapter {
             keyTypeToLMKIndex.put(SMAdapter.TYPE_CVK, 0x402);
             keyTypeToLMKIndex.put(SMAdapter.TYPE_ZAK, 0x008);
             keyTypeToLMKIndex.put(SMAdapter.TYPE_BDK, 0x009);
+            keyTypeToLMKIndex.put(SMAdapter.TYPE_MK_AC, 0x109);
             Provider provider = null;
             LogEvent evt = new LogEvent(this, "jce-provider");
             try {
