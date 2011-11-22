@@ -631,6 +631,33 @@ public class BaseSMAdapter
       }
     }
 
+    public boolean verifydCVV(String accountNo, SecureDESKey imkac, String dcvv,
+                     Date expDate, String serviceCode, byte[] atc, MKDMethod mkdm)
+                     throws SMException {
+
+      SimpleMsg[] cmdParameters = {
+            new SimpleMsg("parameter", "account number", accountNo),
+            new SimpleMsg("parameter", "imk-ac", imkac == null ? "" : imkac),
+            new SimpleMsg("parameter", "dCVV", dcvv),
+            new SimpleMsg("parameter", "Exp date", expDate),
+            new SimpleMsg("parameter", "Service code", serviceCode),
+            new SimpleMsg("parameter", "atc", atc == null ? "" : ISOUtil.hexString(atc)),
+            new SimpleMsg("parameter", "mkd method", mkdm)
+      };
+      LogEvent evt = new LogEvent(this, "s-m-operation");
+      evt.addMessage(new SimpleMsg("command", "Verify dCVV", cmdParameters));
+      try {
+        boolean r = verifydCVVImpl(accountNo, imkac, dcvv, expDate, serviceCode, atc, mkdm);
+        evt.addMessage(new SimpleMsg("result", "Verification status", r ? "valid" : "invalid"));
+        return r;
+      } catch (Exception e) {
+        evt.addMessage(e);
+        throw e instanceof SMException ? (SMException) e : new SMException(e);
+      } finally {
+        Logger.log(evt);
+      }
+    }
+
     public boolean verifyARQC(MKDMethod mkdm, SKDMethod skdm, SecureDESKey imkac
             ,String accoutNo, String acctSeqNo, byte[] arqc, byte[] atc
             ,byte[] upn, byte[] transData) throws SMException {
@@ -1167,6 +1194,25 @@ public class BaseSMAdapter
                         String cvv, Date expDate, String serviceCode) throws SMException {
         throw  new SMException("Operation not supported in: " + this.getClass().getName());
     }
+
+    /**
+     * Your SMAdapter should override this method if it has this functionality
+     * @param accountNo
+     * @param imkac
+     * @param dcvv
+     * @param expDate
+     * @param serviceCode
+     * @param atc
+     * @param mkdm
+     * @return
+     * @throws SMException
+     */
+    protected boolean verifydCVVImpl(String accountNo, SecureDESKey imkac, String dcvv,
+                     Date expDate, String serviceCode, byte[] atc, MKDMethod mkdm)
+                     throws SMException {
+        throw  new SMException("Operation not supported in: " + this.getClass().getName());
+    }
+
     /**
      * Your SMAdapter should override this method if it has this functionality
      * @param mkdm
