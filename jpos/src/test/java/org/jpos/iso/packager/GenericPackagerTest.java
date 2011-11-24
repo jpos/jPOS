@@ -52,7 +52,7 @@ public class GenericPackagerTest {
             new GenericPackager(new ByteArrayInputStream("".getBytes()));
             fail("Expected ISOException to be thrown");
         } catch (ISOException ex) {
-            assertEquals("ex.getMessage()", "org.xml.sax.SAXParseException: Premature end of file.", ex.getMessage());
+            assertEquals("ex.getNested().getClass()", SAXParseException.class, ex.getNested().getClass());
             assertEquals("ex.getNested().getMessage()", "Premature end of file.", ex.getNested().getMessage());
         }
     }
@@ -405,7 +405,7 @@ public class GenericPackagerTest {
             new GenericSubFieldPackager().readFile(new ByteArrayInputStream("".getBytes()));
             fail("Expected ISOException to be thrown");
         } catch (ISOException ex) {
-            assertEquals("ex.getMessage()", "org.xml.sax.SAXParseException: Premature end of file.", ex.getMessage());
+            assertEquals("ex.getNested().getClass()", SAXParseException.class, ex.getNested().getClass());
             assertEquals("ex.getNested().getMessage()", "Premature end of file.", ex.getNested().getMessage());
         }
     }

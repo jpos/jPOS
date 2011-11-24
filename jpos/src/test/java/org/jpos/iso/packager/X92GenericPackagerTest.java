@@ -11,6 +11,7 @@ import java.io.FileNotFoundException;
 import org.jpos.iso.ISOException;
 import org.jpos.iso.X92_BITMAP;
 import org.junit.Test;
+import org.xml.sax.SAXParseException;
 
 public class X92GenericPackagerTest {
 
@@ -28,7 +29,7 @@ public class X92GenericPackagerTest {
             new X92GenericPackager(new ByteArrayInputStream(bytes));
             fail("Expected ISOException to be thrown");
         } catch (ISOException ex) {
-            assertEquals("ex.getMessage()", "org.xml.sax.SAXParseException: Content is not allowed in prolog.", ex.getMessage());
+            assertEquals("ex.getNested().getClass()", SAXParseException.class, ex.getNested().getClass());
             assertEquals("ex.getNested().getMessage()", "Content is not allowed in prolog.", ex.getNested().getMessage());
         }
     }
