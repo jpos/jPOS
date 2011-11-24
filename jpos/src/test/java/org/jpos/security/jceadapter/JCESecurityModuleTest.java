@@ -12,6 +12,7 @@ import org.jpos.core.SubConfiguration;
 import org.jpos.iso.ISODate;
 import org.jpos.iso.ISOUtil;
 import org.jpos.security.EncryptedPIN;
+import org.jpos.security.MKDMethod;
 import org.jpos.security.SMAdapter;
 import org.jpos.security.SMException;
 import org.jpos.security.SecureDESKey;
@@ -71,6 +72,13 @@ public class JCESecurityModuleTest {
      */
     static SecureDESKey cvkB = new SecureDESKey(SMAdapter.LENGTH_DES
           ,SMAdapter.TYPE_CVK+":4Z","69E636CF27A47EEE" ,"AAB1");
+
+    /**
+     * Encrypted under standard LMK test key: keytype 109 MK-AC (variant 1, scheme U)
+     * Clear key value: 4 times 12345678
+     */
+    static SecureDESKey imkac = new SecureDESKey(SMAdapter.LENGTH_DES3_2KEY
+          ,SMAdapter.TYPE_MK_AC+":1U","0D39A43C864D1B40F33998B80BB02C95" ,"6FB1");
 
     /**
      * Pin value 1234 for account number 1234567890123 encrypted
@@ -568,4 +576,85 @@ public class JCESecurityModuleTest {
         boolean result = jcesecmod.verifyPVV(pinUnderTPK, tpk, pvkA, pvkB, pvki, pvv);
         assertTrue(result);
     }
+
+    @Test
+    public void testVerifyDCVVImpl1() throws Throwable {
+        String accountNo = "1234567890123456";
+        Date expDate = ISODate.parseISODate("1310"+"01000000");
+        String serviceCode = "226";
+        String dcvv = "422";
+        byte[] atc = ISOUtil.hex2byte("3210");
+        boolean result = jcesecmod.verifydCVV(accountNo, imkac, dcvv, expDate
+                        ,serviceCode, atc, MKDMethod.OPTION_A);
+        assertTrue(result);
+    }
+
+    @Test
+    public void testVerifyDCVVImpl2() throws Throwable {
+        String accountNo = "123456789012";
+        Date expDate = ISODate.parseISODate("1310"+"01000000");
+        String serviceCode = "226";
+        String dcvv = "719";
+        byte[] atc = ISOUtil.hex2byte("3210");
+        boolean result = jcesecmod.verifydCVV(accountNo, imkac, dcvv, expDate
+                        ,serviceCode, atc, MKDMethod.OPTION_A);
+        assertTrue(result);
+    }
+
+    @Test
+    public void testVerifyDCVVImpl3() throws Throwable {
+        String accountNo = "123456789012";
+        Date expDate = ISODate.parseISODate("1310"+"01000000");
+        String serviceCode = "226";
+        String dcvv = "719";
+        byte[] atc = ISOUtil.hex2byte("3210");
+        boolean result = jcesecmod.verifydCVV(accountNo, imkac, dcvv, expDate
+                        ,serviceCode, atc, MKDMethod.OPTION_B);
+        assertTrue(result);
+    }
+
+    @Test
+    public void testVerifyDCVVImpl4() throws Throwable {
+        String accountNo = "1234567890123456789";
+        Date expDate = ISODate.parseISODate("1310"+"01000000");
+        String serviceCode = "226";
+        String dcvv = "562";
+        byte[] atc = ISOUtil.hex2byte("3210");
+        boolean result = jcesecmod.verifydCVV(accountNo, imkac, dcvv, expDate
+                        ,serviceCode, atc, MKDMethod.OPTION_B);
+        assertTrue(result);
+    }
+
+    @Test
+    public void testVerifyDCVVImplException1() throws Throwable {
+        String accountNo = "";
+        Date expDate = ISODate.parseISODate("1310"+"01000000");
+        String serviceCode = "226";
+        String dcvv = "562";
+        byte[] atc = ISOUtil.hex2byte("3210");
+        try {
+            jcesecmod.verifydCVV(accountNo, imkac, dcvv, expDate
+                        ,serviceCode, atc, MKDMethod.OPTION_A);
+            fail("Expected SMException to be thrown");
+        } catch (SMException ex){
+            assertEquals("ex.getMessage()", "String index out of range: -4", ex.getNested().getMessage());
+        }
+    }
+
+    @Test
+    public void testVerifyDCVVImplException2() throws Throwable {
+        String accountNo = null;
+        Date expDate = ISODate.parseISODate("1310"+"01000000");
+        String serviceCode = "226";
+        String dcvv = "562";
+        byte[] atc = ISOUtil.hex2byte("3210");
+        try {
+            jcesecmod.verifydCVV(accountNo, imkac, dcvv, expDate
+                        ,serviceCode, atc, MKDMethod.OPTION_A);
+            fail("Expected SMException to be thrown");
+        } catch (SMException ex){
+            assertNull("ex.getMessage()", ex.getNested().getMessage());
+        }
+    }
+
 }

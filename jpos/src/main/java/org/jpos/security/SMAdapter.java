@@ -697,6 +697,36 @@ public interface SMAdapter {
 
 
     /**
+     * Verify a Dynamic Card Verification Value (CVV)
+     *
+     * The EMV "Track 2 Equivalent Data", provided in the authorisation
+     * message and originating from the contactless smart card, is the source
+     * for the following data elements used in this function:
+     * <li> {@code accountNo}
+     * <li> {@code expDate}
+     * <li> {@code serviceCode}
+     * <li> {@code atc}
+     * <li> {@code dCVV}
+     *
+     * @param accountNo The account number including BIN and the check digit
+     * @param imkac the issuer master key for generating and verifying Application Cryptograms
+     * @param dcvv dynamic Card Verification Value
+     * @param expDate the card expiration date
+     * @param serviceCode the card service code
+     * @param atc application transactin counter. This is used for ICC Master
+     *        Key derivation. A 2 byte value must be supplied.
+     * @param mkdm ICC Master Key Derivation Method. If {@code null} specified
+     *        is assumed {@see MKDMethod#OPTION_A}
+     * @return
+     * @throws SMException
+     */
+    public boolean verifydCVV(String accountNo, SecureDESKey imkac, String dcvv,
+                     Date expDate, String serviceCode, byte[] atc, MKDMethod mkdm)
+                     throws SMException;
+
+
+
+    /**
      * Verify Application Cryptogram (ARQC or TC/AAC)
      * <br>
      * <li>Authorization Request Cryptogram (ARQC) - Online authorization
