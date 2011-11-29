@@ -55,7 +55,6 @@ public class SpaceAdaptorTest {
             fail("Expected MalformedObjectNameException to be thrown");
         } catch (MalformedObjectNameException ex) {
             assertEquals("spaceAdaptor.getKeys().size()", 0, spaceAdaptor.getKeys().size());
-            assertEquals("ex.getMessage()", "Invalid character '\n' in value part of property", ex.getMessage());
         }
     }
 
