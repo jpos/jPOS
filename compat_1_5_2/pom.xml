@@ -7,7 +7,7 @@
   <parent>
     <groupId>org.jpos</groupId>
     <artifactId>jpos-project</artifactId>
-    <version>1.8.3-SNAPSHOT</version>
+    <version>1.8.4</version>
   </parent>
 
   <repositories>
@@ -23,7 +23,7 @@
     <dependency>
       <groupId>org.jpos</groupId>
       <artifactId>jpos</artifactId>
-      <version>1.8.3-SNAPSHOT</version>
+      <version>1.8.4</version>
     </dependency>
     <dependency>
       <groupId>log4j</groupId>
