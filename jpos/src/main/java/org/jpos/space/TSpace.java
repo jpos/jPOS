@@ -40,13 +40,15 @@ public class TSpace<K,V> extends TimerTask implements LocalSpace<K,V>, Loggeable
         entries = new HashMap ();
         DefaultTimer.getTimer().schedule (this, GCDELAY, GCDELAY);
     }
-    public synchronized void out (K key, V value) {
+    public void out (K key, V value) {
         if (key == null || value == null)
             throw new NullPointerException ("key=" + key + ", value=" + value);
-        getList (key).add (value);
-        this.notifyAll ();
-        if (sl != null)
-            notifyListeners(key, value);
+        synchronized(this) {
+            getList (key).add (value);
+            this.notifyAll ();
+            if (sl != null)
+                notifyListeners(key, value);
+        }
     }
     public void out (K key, V value, long timeout) {
         if (key == null || value == null)
@@ -58,9 +60,9 @@ public class TSpace<K,V> extends TimerTask implements LocalSpace<K,V>, Loggeable
         synchronized (this) {
             getList (key).add (v);
             this.notifyAll ();
+            if (sl != null)
+                notifyListeners(key, value);
         }
-        if (sl != null)
-            notifyListeners(key, value);
     }
     public synchronized V rdp (Object key) {
         if (key instanceof Template)
@@ -209,13 +211,15 @@ public class TSpace<K,V> extends TimerTask implements LocalSpace<K,V>, Loggeable
             }
         }
     }
-    public synchronized void push (K key, V value) {
+    public void push (K key, V value) {
         if (key == null || value == null)
             throw new NullPointerException ("key=" + key + ", value=" + value);
-        getList (key).add (0, value);
-        this.notifyAll ();
-        if (sl != null)
-            notifyListeners(key, value);
+        synchronized(this) {
+            getList (key).add (0, value);
+            this.notifyAll ();
+            if (sl != null)
+                 notifyListeners(key, value);
+         }
     }
 
     public void push (K key, V value, long timeout) {
@@ -228,9 +232,9 @@ public class TSpace<K,V> extends TimerTask implements LocalSpace<K,V>, Loggeable
         synchronized (this) {
             getList (key).add (0, v);
             this.notifyAll ();
+            if (sl != null)
+                notifyListeners(key, value);
         }
-        if (sl != null)
-            notifyListeners(key, value);
     }
 
     public synchronized void put (K key, V value) {
@@ -256,9 +260,9 @@ public class TSpace<K,V> extends TimerTask implements LocalSpace<K,V>, Loggeable
             l.add (v);
             entries.put (key, l);
             this.notifyAll ();
+            if (sl != null)
+                notifyListeners(key, value);
         }
-        if (sl != null)
-            notifyListeners(key, value);
     }
     public boolean existAny (K[] keys) {
         for (int i=0; i<keys.length; i++) {
@@ -388,4 +392,3 @@ public class TSpace<K,V> extends TimerTask implements LocalSpace<K,V>, Loggeable
         }
     }
 }
-
