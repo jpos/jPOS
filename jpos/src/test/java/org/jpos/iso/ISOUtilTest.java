@@ -3491,7 +3491,7 @@ public class ISOUtilTest {
     @Test
     public void testIsNumeric3() throws Throwable {
         boolean result = ISOUtil.isNumeric("", 100);
-        assertTrue("result", result);
+        assertFalse("result", result);
     }
 
     @Test

@@ -1051,7 +1051,7 @@ public class ISOUtil {
         while ( i < len && Character.digit( s.charAt( i ), radix ) > -1  ){
             i++;
         }
-        return ( i >= len );
+        return ( i >= len && len > 0);
     }
 
     /**
