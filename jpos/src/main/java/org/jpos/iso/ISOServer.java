@@ -39,7 +39,7 @@ import java.util.*;
  */
 public class ISOServer extends Observable 
     implements LogSource, Runnable, Observer, ISOServerMBean, Configurable,
-    Loggeable
+    Loggeable, ISOServerSocketFactory
 {
     int port;
     protected ISOChannel clientSideChannel;
@@ -250,13 +250,26 @@ public class ISOServer extends Observable
         }
     }
 
+    public ServerSocket createServerSocket(int port) throws IOException {
+        ServerSocket ss = new ServerSocket();
+        try {
+            ss.setReuseAddress(true);
+            ss.bind(new InetSocketAddress(bindAddr, port), backlog);
+        } catch(SecurityException e) {
+            ss.close();
+            throw e;
+        } catch(IOException e) {
+            ss.close();
+            throw e;
+        }
+        return ss;
+    }
+
     public void run() {
         ServerChannel  channel;
         serverLoop : while  (!shutdown) {
-                try {
-                serverSocket = socketFactory != null ?
-                        socketFactory.createServerSocket(port) :
-                        (new ServerSocket (port, backlog, bindAddr));
+            try {
+                serverSocket = socketFactory.createServerSocket(port);
                 
                 Logger.log (new LogEvent (this, "iso-server", 
                     "listening on " + (bindAddr != null ? bindAddr + ":" : "port ") + port
@@ -284,10 +297,8 @@ public class ISOServer extends Observable
                                     Logger.log (evt);
                                 }
                             }
-            
-                            serverSocket = socketFactory != null ?
-                                socketFactory.createServerSocket(port) :
-                                (new ServerSocket (port, backlog, bindAddr));
+
+                            serverSocket = socketFactory.createServerSocket(port);
                         }
                         channel = (ServerChannel) clientSideChannel.clone();
                         channel.accept (serverSocket);
@@ -440,6 +451,8 @@ public class ISOServer extends Observable
                 throw new ConfigurationException ("Invalid bind-address " + ip, e);
             }
         }
+        if (socketFactory == null)
+            socketFactory = this;
         if (socketFactory != this && socketFactory instanceof Configurable) {
             ((Configurable)socketFactory).setConfiguration (cfg);
         }
