@@ -278,6 +278,10 @@ public class QMUX
         sp.out (req, ar, timeout);
         sp.out (out, m, timeout);
     }
+    @SuppressWarnings("unused")
+    public String[] getReadyIndicatorNames() {
+        return ready;
+    }
     private void addListeners () 
         throws ConfigurationException
     {
