@@ -1374,47 +1374,48 @@ public class ISOUtil {
         return sb.toString();
     }
 
-  /**
-   * Format a string containing a amount conversion rate in the proper format
-   *
-   * Format:
-   * The leftmost digit (i.e., position 1) of this data element denotes the number of
-   * positions the decimal separator must be moved from the right. Positions 2–8 of
-   * this data element specify the rate. For example, a conversion rate value of
-   * 91234567 in this data element would equate to 0.001234567.
-   *
-   * @param convRate - amount conversion rate
-   * @return a string containing a amount conversion rate in the proper format,
-   * witch is suitable for create fields 10 and 11
-   * @throws ISOException
-   */
-  public static String formatAmountConversionRate(double convRate) throws ISOException {
-    if (convRate == 0)
-      return null;
-    BigDecimal cr = new BigDecimal(convRate);
-    int x = 7 - cr.precision() + cr.scale();
-    String bds = cr.movePointRight(cr.scale()).toString();
-    if (x > 9)
-      bds = ISOUtil.zeropad(bds, bds.length() + x - 9);
-    String ret = ISOUtil.zeropadRight(bds, 7);
-    return Math.min(9, x) + ISOUtil.takeFirstN(ret, 7);
-  }
+    /**
+     * Format a string containing a amount conversion rate in the proper format
+     * <p/>
+     * Format:
+     * The leftmost digit (i.e., position 1) of this data element denotes the number of
+     * positions the decimal separator must be moved from the right. Positions 2–8 of
+     * this data element specify the rate. For example, a conversion rate value of
+     * 91234567 in this data element would equate to 0.001234567.
+     *
+     * @param convRate - amount conversion rate
+     * @return a string containing a amount conversion rate in the proper format,
+     *         witch is suitable for create fields 10 and 11
+     * @throws ISOException
+     */
+    public static String formatAmountConversionRate(double convRate) throws ISOException {
+        if (convRate == 0)
+            return null;
+        BigDecimal cr = new BigDecimal(convRate);
+        int x = 7 - cr.precision() + cr.scale();
+        String bds = cr.movePointRight(cr.scale()).toString();
+        if (x > 9)
+            bds = ISOUtil.zeropad(bds, bds.length() + x - 9);
+        String ret = ISOUtil.zeropadRight(bds, 7);
+        return Math.min(9, x) + ISOUtil.takeFirstN(ret, 7);
+    }
 
-  /**
-   * Parse currency amount conversion rate string
-   *
-   * Suitble for parse fields 10 and 11
-   * @param convRate amount conversation rate
-   * @return parsed currency amount conversation rate
-   * @throws IllegalArgumentException
-   */
-  public static double parseAmountConversionRate(String convRate) {
-    if (convRate == null || convRate.length() != 8)
-      throw new IllegalArgumentException("Invalid amount converion rate argument: '" +
-              convRate + "'");
-    BigDecimal bd = new BigDecimal(convRate);
-    int pow = bd.movePointLeft(7).intValue();
-    bd = new BigDecimal(convRate.substring(1));
-    return bd.movePointLeft(pow).doubleValue();
-  }
+    /**
+     * Parse currency amount conversion rate string
+     * <p/>
+     * Suitble for parse fields 10 and 11
+     *
+     * @param convRate amount conversation rate
+     * @return parsed currency amount conversation rate
+     * @throws IllegalArgumentException
+     */
+    public static double parseAmountConversionRate(String convRate) {
+        if (convRate == null || convRate.length() != 8)
+            throw new IllegalArgumentException("Invalid amount converion rate argument: '" +
+                    convRate + "'");
+        BigDecimal bd = new BigDecimal(convRate);
+        int pow = bd.movePointLeft(7).intValue();
+        bd = new BigDecimal(convRate.substring(1));
+        return bd.movePointLeft(pow).doubleValue();
+    }
 }
