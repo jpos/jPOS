@@ -20,9 +20,7 @@ package org.jpos.iso;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.BitSet;
-import java.util.StringTokenizer;
+import java.util.*;
 
 /**
  * varios functions needed to pack/unpack ISO-8583 fields
@@ -1417,5 +1415,65 @@ public class ISOUtil {
         int pow = bd.movePointLeft(7).intValue();
         bd = new BigDecimal(convRate.substring(1));
         return bd.movePointLeft(pow).doubleValue();
+    }
+
+    /**
+     * Converts a string[] into a comma-delimited String.
+     *
+     * Takes care of escaping commas using a backlash
+     * @see org.jpos.iso.ISOUtil#commaDecode(String)
+     * @param ss string array to be comma encoded
+     * @return comma encoded string
+     */
+    public static String commaEncode (String[] ss) {
+        StringBuilder sb = new StringBuilder();
+        for (String s : ss) {
+            if (sb.length() > 0)
+                sb.append(',');
+            if (s != null) {
+                for (int i = 0; i<s.length(); i++) {
+                    char c = s.charAt(i);
+                    switch (c) {
+                        case '\\':
+                        case ',' :
+                            sb.append('\\');
+                            break;
+                    }
+                    sb.append(c);
+                }
+            }
+        }
+        return sb.toString();
+    }
+
+    /**
+     * Decodes a comma encoded String as encoded by commaEncode
+     * @see org.jpos.iso.ISOUtil#commaEncode(String[])
+     * @param s the command encoded String
+     * @return String[]
+     */
+    public static String[] commaDecode (String s) {
+        List<String> l = new ArrayList<String>();
+        StringBuilder sb = new StringBuilder();
+        boolean escaped = false;
+        for (int i=0; i<s.length(); i++) {
+            char c = s.charAt(i);
+            if (!escaped) {
+                switch (c) {
+                    case '\\':
+                        escaped = true;
+                        continue;
+                    case ',':
+                        l.add(sb.toString());
+                        sb = new StringBuilder();
+                        continue;
+                }
+            }
+            sb.append(c);
+            escaped=false;
+        }
+        if (sb.length() > 0)
+            l.add(sb.toString());
+        return l.toArray(new String[l.size()]);
     }
 }

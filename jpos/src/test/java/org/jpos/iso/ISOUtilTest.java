@@ -2,17 +2,12 @@ package org.jpos.iso;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.BitSet;
 
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 public class ISOUtilTest {
     final String lineSep = System.getProperty("line.separator");
@@ -4976,5 +4971,22 @@ public class ISOUtilTest {
           assertEquals("Invalid amount converion rate argument: '" +
               rate + "'", ex.getMessage());
         }
+    }
+
+    /**
+     * @see org.jpos.iso.ISOUtil#commaEncode(String[])
+     * @see org.jpos.iso.ISOUtil#commaDecode(String)
+     */
+    @Test
+    public void testCommaEncodeAndDecode() {
+        assertEquals("error encoding \"\"", "", ISOUtil.commaEncode(new String[]{}));
+        assertEquals("error encoding \"a,b,c\"", "a,b,c", ISOUtil.commaEncode(new String[] { "a", "b", "c" }));
+        assertEquals("error encoding \"\\,,\\\\,c\"", "\\,,\\\\,c", ISOUtil.commaEncode(new String[] { ",", "\\", "c"}));
+
+        assertArrayEquals("error decoding \"\"", new String[]{}, ISOUtil.commaDecode(""));
+        assertArrayEquals("error decoding \"a,b,c\"", new String[]{ "a", "b", "c"}, ISOUtil.commaDecode("a,b,c"));
+        assertArrayEquals("error decoding \"\\,,\\\\,c\"",
+                new String[] { ",", "\\", "c"}, ISOUtil.commaDecode("\\,,\\\\,c")
+        );
     }
 }
