@@ -22,6 +22,7 @@ import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
 import org.jpos.util.BlockingQueue.Closed;
+import org.jpos.util.NameRegistrar.NotFoundException;
 
 import java.io.PrintStream;
 
@@ -96,10 +97,7 @@ public class ThreadPool extends ThreadGroup implements LogSource, Loggeable, Con
      * @param maxPoolSize maximum number of threads on this pool
      */
     public ThreadPool (int poolSize, int maxPoolSize) {
-        super ("ThreadPool-" + poolNumber++);
-        this.maxPoolSize = maxPoolSize > 0 ? maxPoolSize : DEFAULT_MAX_THREADS ;
-        this.available = this.maxPoolSize;
-        init (poolSize);
+        this(poolSize, maxPoolSize, "ThreadPool-" + poolNumber++);
     }
     /**
      * @param name pool name
@@ -150,12 +148,12 @@ public class ThreadPool extends ThreadGroup implements LogSource, Loggeable, Con
         p.println (indent + "<thread-pool name=\""+getName()+"\">");
         if (!pool.ready())
             p.println (inner  + "<closed/>");
-        p.println (inner  + "<jobs>" +jobs+"</jobs>");
-        p.println (inner  + "<size>" +available+"</size>");
-        p.println (inner  + "<max>"  +maxPoolSize+"</max>");
-        p.println (inner  + "<active>" + running +"</active>");
-        p.println (inner  + "<idle>"  + pool.consumerCount() +"</idle>");
-        p.println (inner  + "<pending>"  +pool.pending()+"</pending>");
+        p.println (inner  + "<jobs>" + getJobCount() + "</jobs>");
+        p.println (inner  + "<size>" + getPoolSize() + "</size>");
+        p.println (inner  + "<max>"  + getMaxPoolSize() + "</max>");
+        p.println (inner  + "<active>" + getActiveCount() + "</active>");
+        p.println (inner  + "<idle>"  + getIdleCount() + "</idle>");
+        p.println (inner  + "<pending>" + getPendingCount() + "</pending>");
         p.println (indent + "</thread-pool>");
     }
 
@@ -166,10 +164,10 @@ public class ThreadPool extends ThreadGroup implements LogSource, Loggeable, Con
         return jobs;
     }
     /**
-     * @return number of active threads
+     * @return number of running threads
      */
     public int getPoolSize () {
-        return available;
+        return running;
     }
     /**
      * @return max number of active threads allowed
@@ -178,7 +176,7 @@ public class ThreadPool extends ThreadGroup implements LogSource, Loggeable, Con
         return maxPoolSize;
     }
     /**
-     * @return number of running threads
+     * @return number of active threads
      */
     public int getActiveCount () {
         return active;
@@ -238,7 +236,7 @@ public class ThreadPool extends ThreadGroup implements LogSource, Loggeable, Con
      * @throws NotFoundException thrown when there is not a thread-pool registered under this name.
      * @return returns the retrieved instance of thread pool
      */    
-    public static ThreadPool getThreadPool(java.lang.String name) throws org.jpos.util.NameRegistrar.NotFoundException {
+    public static ThreadPool getThreadPool(java.lang.String name) throws NotFoundException {
         return (ThreadPool)NameRegistrar.get("thread.pool." + name);
     }
 }
