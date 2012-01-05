@@ -34,10 +34,14 @@ public class TSpace<K,V> extends TimerTask implements LocalSpace<K,V>, Loggeable
     protected Map entries;
     protected TSpace sl;    // space listeners
     public static final long GCDELAY = 60*1000;
+    private Set[] expirables;
+    private static final long GCLONG = GCDELAY * 5;
+    private long lastLongGC = System.currentTimeMillis();
 
     public TSpace () {
         super();
         entries = new HashMap ();
+        expirables = new Set[] { new HashSet<K>(), new HashSet<K>() };
         DefaultTimer.getTimer().schedule (this, GCDELAY, GCDELAY);
     }
     public void out (K key, V value) {
@@ -62,6 +66,9 @@ public class TSpace<K,V> extends TimerTask implements LocalSpace<K,V>, Loggeable
             this.notifyAll ();
             if (sl != null)
                 notifyListeners(key, value);
+            if (timeout > 0) {
+                registerExpirable(key, timeout);
+            }
         }
     }
     public synchronized V rdp (Object key) {
@@ -126,12 +133,23 @@ public class TSpace<K,V> extends TimerTask implements LocalSpace<K,V>, Loggeable
         }
     }
     public void gc () {
-        Object[] keys;
-        synchronized (this) {
-            keys = entries.keySet().toArray();
+        gc(0);
+        if (System.currentTimeMillis() - lastLongGC > GCLONG) {
+            gc(1);
+            lastLongGC = System.currentTimeMillis();
         }
-        for (int i=0; i<keys.length; i++) {
-            rdp (keys[i]);
+    }
+    private void gc (int generation) {
+        Set<K> exps = expirables[generation];
+        synchronized (this) {
+            expirables[generation] = new HashSet<K>();
+        }
+        for (K k : exps) {
+            if (rdp(k) != null) {
+                synchronized (this) {
+                    expirables[generation].add(k);
+                }
+            }
             Thread.yield ();
         }
         if (sl != null) {
@@ -141,6 +159,7 @@ public class TSpace<K,V> extends TimerTask implements LocalSpace<K,V>, Loggeable
             }
         }
     }
+
     public synchronized int size (Object key) {
         int size = 0;
         List l = (List) entries.get (key);
@@ -191,6 +210,12 @@ public class TSpace<K,V> extends TimerTask implements LocalSpace<K,V>, Loggeable
             p.printf ("%s<key count='%d'>%s</key>\n", indent, size(keys[i]), keys[i]);
         }
         p.println(indent+"<keycount>"+(keys.length-1)+"</keycount>");
+        int exp0, exp1;
+        synchronized (this) {
+            exp0 = expirables[0].size();
+            exp1 = expirables[1].size();
+        }
+        p.println(String.format("%s<gcinfo>%d,%d</gcinfo>\n", indent, exp0, exp1));
     }
     public void notifyListeners (Object key, Object value) {
         Object[] listeners = null;
@@ -234,6 +259,9 @@ public class TSpace<K,V> extends TimerTask implements LocalSpace<K,V>, Loggeable
             this.notifyAll ();
             if (sl != null)
                 notifyListeners(key, value);
+            if (timeout > 0) {
+                registerExpirable(key, timeout);
+            }
         }
     }
 
@@ -262,6 +290,9 @@ public class TSpace<K,V> extends TimerTask implements LocalSpace<K,V>, Loggeable
             this.notifyAll ();
             if (sl != null)
                 notifyListeners(key, value);
+            if (timeout > 0) {
+                registerExpirable(key, timeout);
+            }
         }
     }
     public boolean existAny (K[] keys) {
@@ -308,10 +339,13 @@ public class TSpace<K,V> extends TimerTask implements LocalSpace<K,V>, Loggeable
     private Object getHead (Object key, boolean remove) {
         Object obj = null;
         List l = (List) entries.get (key);
+        boolean wasExpirable = false;
         while (obj == null && l != null && l.size() > 0) {
             obj = l.get(0);
-            if (obj instanceof Expirable) 
+            if (obj instanceof Expirable) { 
                 obj = ((Expirable) obj).getValue();
+                wasExpirable = true;
+            }
             if (obj == null) {
                 l.remove (0);
                 if (l.size() == 0) {
@@ -323,6 +357,8 @@ public class TSpace<K,V> extends TimerTask implements LocalSpace<K,V>, Loggeable
             l.remove (0);
             if (l.size() == 0) {
                 entries.remove (key);
+                if (wasExpirable)
+                    unregisterExpirable(key);
             }
         }
         return obj;
@@ -358,6 +394,13 @@ public class TSpace<K,V> extends TimerTask implements LocalSpace<K,V>, Loggeable
                 sl = new TSpace();
         }
         return sl;
+    }
+    private void registerExpirable(K k, long t) {
+        expirables[t > GCLONG ? 1 : 0].add(k);
+    }
+    private void unregisterExpirable(Object k) {
+        for (Set<K> s : expirables)
+            s.remove(k);
     }
     static class Expirable implements Comparable {
         Object value;
