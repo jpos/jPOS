@@ -76,6 +76,7 @@ public class ThreadPoolTest {
     @Test
     public void testRun1() throws Throwable {
         ThreadPool threadPool = new ThreadPool(1, 100);
+        ISOUtil.sleep(50);
         threadPool.execute(new TestTask());
         ISOUtil.sleep(50);
         assertEquals("threadPool.getJobCount()", 1, threadPool.getJobCount());
