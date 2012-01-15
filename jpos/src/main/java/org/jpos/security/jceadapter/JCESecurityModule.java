@@ -39,6 +39,8 @@ import java.util.Properties;
 import java.util.Random;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 import org.jpos.iso.ISODate;
 import org.jpos.iso.ISOException;
 
@@ -402,6 +404,80 @@ public class JCESecurityModule extends BaseSMAdapter {
         return res.equals(dcvv);
     }
 
+    @Override
+    protected boolean verifyCVC3Impl(SecureDESKey imkcvc3, String accountNo, String acctSeqNo,
+                     byte[] atc, byte[] upn, byte[] data, MKDMethod mkdm, String cvc3)
+                     throws SMException {
+        if (mkdm==null)
+          mkdm = MKDMethod.OPTION_A;
+        byte[] panpsn = formatPANPSN(accountNo, acctSeqNo, mkdm);
+        Key mkcvc3 = deriveICCMasterKey(decryptFromLMK(imkcvc3), panpsn);
+        byte[] ivcvc3 = data;
+        if (ivcvc3.length != 2)
+          //Compute IVCVC3
+          ivcvc3 = calculateIVCVC3(mkcvc3, data);
+        //Concatenate IVCVC3, UPN and ATC
+        byte[] b = ISOUtil.concat(ivcvc3, upn);
+        b = ISOUtil.concat(b, atc);
+        //Encrypt prepared blok
+        b = jceHandler.encryptData(b, mkcvc3);
+        //Format last two bytes to integer
+        int cvc3l = (b[6] & 0xff) << 8;
+        cvc3l |= b[7] & 0xff;
+        //Convert to string representation and get some last digits
+        String calcCVC3 = String.format("%05d",cvc3l);
+        cvc3 = cvc3==null?"":cvc3;
+        calcCVC3 = calcCVC3.substring(5-cvc3.length());
+
+        return calcCVC3.equals(cvc3);
+    }
+
+    private byte[] calculateIVCVC3(Key mkcvc3, byte[] data)
+            throws JCEHandlerException {
+        byte[] paddedData = paddingISO9797Method2(data);
+        byte[] mac = calculateMACISO9797Alg3(mkcvc3, paddedData);
+        return Arrays.copyOfRange(mac,6,8);
+    }
+
+    /**
+     * ISO/IEC 9797-1 padding method 2
+     * @param d da to be padded
+     * @return padded data
+     */
+    private byte[] paddingISO9797Method2(byte[] d) {
+        //Padding - first byte 0x80 rest 0x00
+        byte[] t = new byte[d.length - d.length%8 + 8];
+        System.arraycopy(d, 0, t, 0, d.length);
+        for (int i=d.length;i<t.length;i++)
+          t[i] = (byte)(i==d.length?0x80:0x00);
+        d = t;
+        return d;
+    }
+
+    /**
+     * Calculate MAC according to ISO/IEC 9797-1 Alg 3
+     * @param key DES double length key
+     * @param d data to calculate MAC on it
+     * @return
+     * @throws JCEHandlerException
+     */
+    private byte[] calculateMACISO9797Alg3(Key key, byte[] d) throws JCEHandlerException {
+        Key kl = jceHandler.formDESKey(SMAdapter.LENGTH_DES
+                            ,Arrays.copyOfRange(key.getEncoded(), 0, 8));
+        Key kr = jceHandler.formDESKey(SMAdapter.LENGTH_DES
+                            ,Arrays.copyOfRange(key.getEncoded(), 8, 16));
+        //MAC_CBC alg 3
+        byte[] y_i = ISOUtil.hex2byte("0000000000000000");
+        byte[] yi  = new byte[8];
+        for ( int i=0;i<d.length;i+=8){
+            System.arraycopy(d, i, yi, 0, yi.length);
+            y_i = jceHandler.encryptData(ISOUtil.xor(yi, y_i), kl);
+        }
+        y_i = jceHandler.decryptData(y_i, kr);
+        y_i = jceHandler.encryptData(y_i, kl);
+        return y_i;
+    }
+
     private static byte[] formatPANPSN(String pan, String psn, MKDMethod mkdm)
             throws SMException {
         byte[] b;
@@ -419,9 +495,9 @@ public class JCESecurityModule extends BaseSMAdapter {
     }
 
     /**
-     * Format at least 8 bytes representing Application PAN and
+     * Format bytes representing Application PAN and
      * PAN Sequence Number in BCD format.
-     * <br>
+     * <p>
      * Concatenate from left to right decimal digits of PAN and
      * PAN Sequence Number digits. If {@code psn} is not present, it is
      * replaced by a "00" digits. If the result is less than 16 digits long,
@@ -432,16 +508,12 @@ public class JCESecurityModule extends BaseSMAdapter {
      *
      * @param pan application primary account number
      * @param psn PAN Sequence Number
-     * @return 8 to 11 bytes representing Application PAN
+     * @return up to 11 bytes representing Application PAN
      */
     private static byte[] preparePANPSN(String pan, String psn){
         if (psn == null || psn.isEmpty())
             psn = "00";
         String ret = pan + psn;
-        if ( ret.length() < 16 )
-            try {
-                ret = ISOUtil.zeropad(ret, 16);
-            } catch( ISOException ex ) {}
         //convert digits to bytes and padd with "0"
         //to left for ensure even number of digits
         return ISOUtil.hex2byte(ret);
@@ -449,41 +521,40 @@ public class JCESecurityModule extends BaseSMAdapter {
 
     /**
      * Prepare 8-bytes data from PAN and PAN Sequence Number (Option A)
-     *
+     * <ul>
      * <li> Prepare Application PAN and PAN Sequence Number by {@see #preparePANPSN}
      * <li> Select first 16 digits
-     *
+     * </ul>
      * @param pan application primary account number
      * @param psn PAN Sequence Number
      * @return 8-bytes representing first 16 digits
      */
     private static byte[] formatPANPSNOptionA(String pan, String psn){
+        if ( pan.length() < 14 )
+            try {
+                pan = ISOUtil.zeropad(pan, 14);
+            } catch( ISOException ex ) {}
         byte[] b = preparePANPSN(pan, psn);
         return Arrays.copyOfRange(b, b.length-8, b.length);
     }
 
     /**
-     * Prepare 8-bytes data from PAN and PAN Sequence Number (Option B)
-     * <br>
-     * If the Application PAN is equal to or less than 16 decimal digits,
-     * {@see #formatPANPSNOptionA}.
-     * If the Application PAN is greater than 16 decimal digits, do the following:
+     * Prepare bytes data from PAN and PAN Sequence Number (Option B)
+     *
+     * <h5>Do the following:</h5>
+     * <ul>
      * <li> Prepare Application PAN and PAN Sequence Number by {@see #preparePANPSN}
      * <li> Hash the prepared result using the SHA-1 hashing algorithm
      *      to obtain the 20-byte hash result
      * <li> Decimalize result of hasing by {@see #decimalizeVisa }
      * <li> Select first 16 decimal digits
-     *
+     * </ul>
      * @param pan application primary account number
      * @param psn PAN Sequence Number
      * @return 8-bytes representing first 16 decimalised digits
      */
     private static byte[] formatPANPSNOptionB(String pan, String psn){
         byte[] b = preparePANPSN(pan, psn);
-        if ( pan.length() <= 16)
-            //use OPTION_A
-            return Arrays.copyOfRange(b, b.length-8, b.length);
-
         //20-bytes sha-1 digest
         byte[] r = SHA1_MESSAGE_DIGEST.digest(b);
         //decimalized HEX string of digest
@@ -1102,6 +1173,9 @@ public class JCESecurityModule extends BaseSMAdapter {
             keyTypeToLMKIndex.put(SMAdapter.TYPE_ZAK, 0x008);
             keyTypeToLMKIndex.put(SMAdapter.TYPE_BDK, 0x009);
             keyTypeToLMKIndex.put(SMAdapter.TYPE_MK_AC, 0x109);
+            keyTypeToLMKIndex.put(SMAdapter.TYPE_MK_SMI,  0x209);
+            keyTypeToLMKIndex.put(SMAdapter.TYPE_MK_SMC,  0x309);
+            keyTypeToLMKIndex.put(SMAdapter.TYPE_MK_CVC3, 0x709);
             Provider provider = null;
             LogEvent evt = new LogEvent(this, "jce-provider");
             try {

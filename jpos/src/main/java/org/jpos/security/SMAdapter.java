@@ -132,6 +132,28 @@ public interface SMAdapter {
     public static final String TYPE_MK_AC = "MK-AC";
 
     /**
+     * MK-SMI: Issuer Master Key for Secure Messaging Integrity.
+     *
+     * is a Triple-DES key which is used to generating Message
+     * Authrntication Codes (MAC) for scripts send to EMV chip cards.
+     */
+    public static final String TYPE_MK_SMI = "MK-SMI";
+
+    /**
+     * MK-SMC: Issuer Master Key for Secure Messaging Confidentiality.
+     *
+     * is a Triple-DES data-encrypting key which is used to encrypt
+     * data (e.g. PIN block) in scripts send to EMV chip cards.
+     */
+    public static final String TYPE_MK_SMC = "MK-SMC";
+
+    /**
+     * MK-CVC3: Issuer Master Key for generating and verifying
+     * Card Verification Code 3 (CVC3).
+     */
+    public static final String TYPE_MK_CVC3 = "MK-CVC3";
+
+    /**
      * PIN Block Format adopted by ANSI (ANSI X9.8) and is one of
      * two formats supported by the ISO (ISO 95641 - format 0).
      */
@@ -722,6 +744,55 @@ public interface SMAdapter {
      */
     public boolean verifydCVV(String accountNo, SecureDESKey imkac, String dcvv,
                      Date expDate, String serviceCode, byte[] atc, MKDMethod mkdm)
+                     throws SMException;
+
+
+
+    /**
+     * Verify a Dynamic Card Verification Code 3 (CVC3)
+     * <p>
+     * The EMV "Track 2 Equivalent Data", provided in the authorisation
+     * message and originating from the contactless smart card, is the source
+     * for the following data elements used in this function:
+     * <ul>
+     *   <li> {@code accountNo}
+     *   <li> {@code expDate}
+     *   <li> {@code serviceCode}
+     *   <li> {@code atc}
+     *   <li> {@code unpredictable number}
+     *   <li> {@code cvc3}
+     * </ul>
+     *
+     * @param imkcvc3 the issuer master key for generating and verifying CVC3
+     * @param accountNo The account number including BIN and the check digit
+     * @param acctSeqNo account sequence number, 2 decimal digits
+     * @param atc application transactin counter. This is used for CVC3
+     *        calculation. A 2 byte value must be supplied.
+     * @param upn  unpredictable number. This is used for CVC3 calculation
+     *        A 4 byte value must be supplied.
+     * @param data Static Track Data or when this data length is less or equal 2 IVCVC3
+     *        <ul>
+     *        <li>Static Track 1 or 2 Data. From the the issuer is dependent on
+     *            how to obtain it from the EMV "Track 2 Equivalent Data",
+     *            provided in the authorisation message and originating from
+     *            the contactless smart card. Usually variable part of
+     *            Discreditionary Data are replased by some static value.
+     *        <li>precomputed Initial Vector for <tt>CVC3</tt> calculation
+     *            <tt>(IVCVC3)</tt> which is a <tt>MAC</tt> calculated over
+     *            the static part of Track1 or Track2 data using the key derived
+     *            from <tt>MK-CVC3</tt>.
+     *        </ul>
+     * @param mkdm ICC Master Key Derivation Method. If {@code null} specified
+     *        is assumed {@see MKDMethod#OPTION_A}
+     * @param cvc3 dynamic Card Verification Code 3. Should contain 5 decimal
+     *        digits. Max value is {@code "65535"} (decimal representation
+     *        of 2 byte value). Is possible to pass shorter cvc3 value e.g.
+     *        {@code "789"} matches with calcuated CVC3 {@code "04789"}
+     * @return
+     * @throws SMException
+     */
+    public boolean verifyCVC3(SecureDESKey imkcvc3, String accountNo, String acctSeqNo,
+                     byte[] atc, byte[] upn, byte[] data, MKDMethod mkdm, String cvc3)
                      throws SMException;
 
 

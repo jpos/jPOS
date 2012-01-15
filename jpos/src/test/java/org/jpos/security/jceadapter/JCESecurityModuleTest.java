@@ -99,6 +99,13 @@ public class JCESecurityModuleTest {
           ,SMAdapter.TYPE_MK_AC+":1U","0D39A43C864D1B40F33998B80BB02C95" ,"6FB1");
 
     /**
+     * Encrypted under standard LMK test key: keytype 709 MK-CVC3 (variant 7, scheme U)
+     * Clear key value: 4 times 12345678
+     */
+    static SecureDESKey imkcvc3 = new SecureDESKey(SMAdapter.LENGTH_DES3_2KEY
+          ,SMAdapter.TYPE_MK_CVC3+":7U","DBD2D13CCA57AAAF3E477E0646EF10C9" ,"6FB1");
+
+    /**
      * Pin value 1234 for account number 1234567890123 encrypted
      * under LMK in internal pinblock format
      */
@@ -624,7 +631,7 @@ public class JCESecurityModuleTest {
         String accountNo = "123456789012";
         Date expDate = ISODate.parseISODate("1310"+"01000000");
         String serviceCode = "226";
-        String dcvv = "719";
+        String dcvv = "824";
         byte[] atc = ISOUtil.hex2byte("3210");
         boolean result = jcesecmod.verifydCVV(accountNo, imkac, dcvv, expDate
                         ,serviceCode, atc, MKDMethod.OPTION_B);
@@ -669,6 +676,101 @@ public class JCESecurityModuleTest {
         try {
             jcesecmod.verifydCVV(accountNo, imkac, dcvv, expDate
                         ,serviceCode, atc, MKDMethod.OPTION_A);
+            fail("Expected SMException to be thrown");
+        } catch (SMException ex){
+            assertNull("ex.getMessage()", ex.getNested().getMessage());
+        }
+    }
+
+    @Test
+    public void testVerifyCVC3Impl1() throws Throwable {
+        String accountNo = "1234567890123456";
+        String accntSeqNo = "00";
+        byte[] data = ISOUtil.hex2byte("1234567890123456D12012061000110000000F");
+        String cvc3 = "464";
+        byte[] atc = ISOUtil.hex2byte("2710");
+        byte[] upn = ISOUtil.hex2byte("00002710");
+        boolean result = jcesecmod.verifyCVC3(imkcvc3, accountNo, accntSeqNo, atc
+                        ,upn, data, MKDMethod.OPTION_A, cvc3);
+        assertTrue(result);
+    }
+
+    @Test
+    public void testVerifyCVC3Impl2() throws Throwable {
+        String accountNo = "1234567890123456";
+        String accntSeqNo = "00";
+        byte[] data = ISOUtil.hex2byte("1234567890123456D12012061000110000000FFFFFFFFFFF");
+        String cvc3 = "45423";
+        byte[] atc = ISOUtil.hex2byte("2710");
+        byte[] upn = ISOUtil.hex2byte("00002710");
+        boolean result = jcesecmod.verifyCVC3(imkcvc3, accountNo, accntSeqNo, atc
+                        ,upn, data, MKDMethod.OPTION_A, cvc3);
+        assertTrue(result);
+    }
+
+    @Test
+    public void testVerifyCVC3Impl3() throws Throwable {
+        String accountNo = "1234567890123456";
+        String accntSeqNo = "00";
+        byte[] ivcvc3 = ISOUtil.hex2byte("CD76");
+        String cvc3 = "39464";
+        byte[] atc = ISOUtil.hex2byte("2710");
+        byte[] upn = ISOUtil.hex2byte("00002710");
+        boolean result = jcesecmod.verifyCVC3(imkcvc3, accountNo, accntSeqNo, atc
+                        ,upn, ivcvc3, MKDMethod.OPTION_A, cvc3);
+        assertTrue(result);
+    }
+
+    @Test
+    public void testVerifyCVC3Impl4() throws Throwable {
+        String accountNo = "1234567890123456";
+        String accntSeqNo = "00";
+        byte[] data = ISOUtil.hex2byte("1234567890123456D12012061000110000000F");
+        String cvc3 = "03518";
+        byte[] atc = ISOUtil.hex2byte("2710");
+        byte[] upn = ISOUtil.hex2byte("00002710");
+        boolean result = jcesecmod.verifyCVC3(imkcvc3, accountNo, accntSeqNo, atc
+                        ,upn, data, MKDMethod.OPTION_B, cvc3);
+        assertTrue(result);
+    }
+
+    @Test
+    public void testVerifyCVC3Impl5() throws Throwable {
+        String accountNo = "123456789012345";
+        String accntSeqNo = "00";
+        byte[] data = ISOUtil.hex2byte("123456789012345D12012061000110000000");
+        String cvc3 = "12612";
+        byte[] atc = ISOUtil.hex2byte("2710");
+        byte[] upn = ISOUtil.hex2byte("00002710");
+        boolean result = jcesecmod.verifyCVC3(imkcvc3, accountNo, accntSeqNo, atc
+                        ,upn, data, MKDMethod.OPTION_B, cvc3);
+        assertTrue(result);
+    }
+
+    @Test
+    public void testVerifyCVC3ImplException6() throws Throwable {
+        String accountNo = "1234567890123456";
+        String accntSeqNo = "00";
+        byte[] data = ISOUtil.hex2byte("123456789012345D12012061000110000000");
+        String cvc3 = null;
+        byte[] atc = ISOUtil.hex2byte("2710");
+        byte[] upn = ISOUtil.hex2byte("00002710");
+        boolean result = jcesecmod.verifyCVC3(imkcvc3, accountNo, accntSeqNo, atc
+                        ,upn, data, MKDMethod.OPTION_A, cvc3);
+        assertTrue(result);
+    }
+
+    @Test
+    public void testVerifyCVC3ImplException2() throws Throwable {
+        String accountNo = null;
+        String accntSeqNo = "00";
+        byte[] data = ISOUtil.hex2byte("123456789012345D12012061000110000000");
+        String cvc3 = "12612";
+        byte[] atc = ISOUtil.hex2byte("2710");
+        byte[] upn = ISOUtil.hex2byte("00002710");
+        try {
+            jcesecmod.verifyCVC3(imkcvc3, accountNo, accntSeqNo, atc
+            ,upn, data, MKDMethod.OPTION_A, cvc3);
             fail("Expected SMException to be thrown");
         } catch (SMException ex){
             assertNull("ex.getMessage()", ex.getNested().getMessage());

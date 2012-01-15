@@ -658,6 +658,49 @@ public class BaseSMAdapter
       }
     }
 
+    /**
+     * @param imkcvc3 the issuer master key for generating and verifying CVC3
+     * @param accountNo The account number including BIN and the check digit
+     * @param acctSeqNo account sequence number, 2 decimal digits
+     * @param atc application transactin counter. This is used for ICC Master
+     *        Key derivation. A 2 byte value must be supplied.
+     * @param upn  unpredictable number. This is used for Session Key Generation
+     *        A 4 byte value must be supplied.
+     * @param data track data
+     * @param mkdm ICC Master Key Derivation Method. If {@code null} specified
+     *        is assumed {@see MKDMethod#OPTION_A}
+     * @param cvc3 dynamic Card Verification Code 3
+     * @return
+     * @throws SMException
+     */
+    public boolean verifyCVC3(SecureDESKey imkcvc3, String accountNo, String acctSeqNo,
+                     byte[] atc, byte[] upn, byte[] data, MKDMethod mkdm, String cvc3)
+                     throws SMException {
+
+      SimpleMsg[] cmdParameters = {
+            new SimpleMsg("parameter", "imk-cvc3", imkcvc3 == null ? "" : imkcvc3),
+            new SimpleMsg("parameter", "account number", accountNo),
+            new SimpleMsg("parameter", "accnt seq no", acctSeqNo),
+            new SimpleMsg("parameter", "atc", atc == null ? "" : ISOUtil.hexString(atc)),
+            new SimpleMsg("parameter", "upn", upn == null ? "" : ISOUtil.hexString(upn)),
+            new SimpleMsg("parameter", "data", data == null ? "" : ISOUtil.hexString(data)),
+            new SimpleMsg("parameter", "mkd method", mkdm),
+            new SimpleMsg("parameter", "cvc3", cvc3)
+      };
+      LogEvent evt = new LogEvent(this, "s-m-operation");
+      evt.addMessage(new SimpleMsg("command", "Verify CVC3", cmdParameters));
+      try {
+        boolean r = verifyCVC3Impl( imkcvc3, accountNo, acctSeqNo, atc, upn, data, mkdm, cvc3);
+        evt.addMessage(new SimpleMsg("result", "Verification status", r ? "valid" : "invalid"));
+        return r;
+      } catch (Exception e) {
+        evt.addMessage(e);
+        throw e instanceof SMException ? (SMException) e : new SMException(e);
+      } finally {
+        Logger.log(evt);
+      }
+    }
+
     public boolean verifyARQC(MKDMethod mkdm, SKDMethod skdm, SecureDESKey imkac
             ,String accoutNo, String acctSeqNo, byte[] arqc, byte[] atc
             ,byte[] upn, byte[] transData) throws SMException {
@@ -1209,6 +1252,25 @@ public class BaseSMAdapter
      */
     protected boolean verifydCVVImpl(String accountNo, SecureDESKey imkac, String dcvv,
                      Date expDate, String serviceCode, byte[] atc, MKDMethod mkdm)
+                     throws SMException {
+        throw  new SMException("Operation not supported in: " + this.getClass().getName());
+    }
+
+    /**
+     * Your SMAdapter should override this method if it has this functionality
+     * @param imkcvc3
+     * @param accountNo
+     * @param acctSeqNo
+     * @param atc
+     * @param upn
+     * @param data
+     * @param mkdm
+     * @param cvc3
+     * @return
+     * @throws SMException
+     */
+    protected boolean verifyCVC3Impl(SecureDESKey imkcvc3, String accountNo, String acctSeqNo,
+                     byte[] atc, byte[] upn, byte[] data, MKDMethod mkdm, String cvc3)
                      throws SMException {
         throw  new SMException("Operation not supported in: " + this.getClass().getName());
     }
