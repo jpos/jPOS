@@ -42,7 +42,7 @@ public class ChannelAdaptor
     implements ChannelAdaptorMBean, Channel, Loggeable
 {
     Space sp;
-    ISOChannel channel;
+    private ISOChannel channel;
     String in, out, ready, reconnect;
     long delay;
     boolean keepAlive = false;
@@ -56,44 +56,14 @@ public class ChannelAdaptor
         super ();
         resetCounters();
     }
-    public void initChannel () throws ConfigurationException {
-        Element persist = getPersist ();
-        sp = grabSpace (persist.getChild ("space")); 
-        Element e = persist.getChild ("channel");
-        if (e == null)
-            throw new ConfigurationException ("channel element missing");
-
-        in      = persist.getChildTextTrim ("in");
-        out     = persist.getChildTextTrim ("out");
-
-        String s = persist.getChildTextTrim ("reconnect-delay");
-        delay    = s != null ? Long.parseLong (s) : 10000; // reasonable default
-        channel = newChannel (e, getFactory());
-
-        keepAlive = "yes".equalsIgnoreCase (persist.getChildTextTrim ("keep-alive"));
-        ignoreISOExceptions = "yes".equalsIgnoreCase (persist.getChildTextTrim ("ignore-iso-exceptions"));
-        writeOnly = "yes".equalsIgnoreCase (getPersist().getChildTextTrim ("write-only"));
-        String t = persist.getChildTextTrim("timeout");
-        timeout = t != null && t.length() > 0 ? Long.parseLong(t) : 0l;
-        
-        String socketFactoryString = getSocketFactory();
-        if (socketFactoryString != null && channel instanceof FactoryChannel) {
-            ISOClientSocketFactory sFac = (ISOClientSocketFactory) getFactory().newInstance(socketFactoryString);
-            if (sFac != null && sFac instanceof LogSource) {
-                ((LogSource) sFac).setLogger(log.getLogger(),getName() + ".socket-factory");
-            }
-            getFactory().setConfiguration (sFac, e);
-            ((FactoryChannel)channel).setSocketFactory(sFac);
-        }
-        ready   = getName() + ".ready";
-        reconnect = getName() + ".reconnect";
-    }
-    public void initService() {
+    
+    public void initService() throws ConfigurationException {
+        initSpaceAndQueues();
         NameRegistrar.register (getName(), this);
     }
     public void startService () {
         try {
-            initChannel ();
+            channel = initChannel ();
             new Thread (new Sender ()).start ();
             if (!writeOnly) // fixes #426 && jPOS-20
                 new Thread (new Receiver ()).start ();
@@ -208,7 +178,7 @@ public class ChannelAdaptor
         return channel;
     }
 
-    private void addFilters (FilteredChannel channel, Element e, QFactory fact) 
+    protected void addFilters (FilteredChannel channel, Element e, QFactory fact)
         throws ConfigurationException
     {
         Iterator iter = e.getChildren ("filter").iterator();
@@ -230,6 +200,39 @@ public class ChannelAdaptor
                 channel.addOutgoingFilter (filter);
             }
         }
+    }
+    protected ISOChannel initChannel () throws ConfigurationException {
+        Element persist = getPersist ();
+        Element e = persist.getChild ("channel");
+        if (e == null)
+            throw new ConfigurationException ("channel element missing");
+
+        ISOChannel c = newChannel (e, getFactory());
+        String socketFactoryString = getSocketFactory();
+        if (socketFactoryString != null && c instanceof FactoryChannel) {
+            ISOClientSocketFactory sFac = (ISOClientSocketFactory) getFactory().newInstance(socketFactoryString);
+            if (sFac != null && sFac instanceof LogSource) {
+                ((LogSource) sFac).setLogger(log.getLogger(),getName() + ".socket-factory");
+            }
+            getFactory().setConfiguration (sFac, e);
+            ((FactoryChannel)c).setSocketFactory(sFac);
+        }
+        return c;
+    }
+    protected void initSpaceAndQueues () throws ConfigurationException {
+        Element persist = getPersist ();
+        sp = grabSpace (persist.getChild ("space"));
+        in      = persist.getChildTextTrim ("in");
+        out     = persist.getChildTextTrim ("out");
+        String s = persist.getChildTextTrim ("reconnect-delay");
+        delay    = s != null ? Long.parseLong (s) : 10000; // reasonable default
+        keepAlive = "yes".equalsIgnoreCase (persist.getChildTextTrim ("keep-alive"));
+        ignoreISOExceptions = "yes".equalsIgnoreCase (persist.getChildTextTrim ("ignore-iso-exceptions"));
+        writeOnly = "yes".equalsIgnoreCase (getPersist().getChildTextTrim ("write-only"));
+        String t = persist.getChildTextTrim("timeout");
+        timeout = t != null && t.length() > 0 ? Long.parseLong(t) : 0l;
+        ready   = getName() + ".ready";
+        reconnect = getName() + ".reconnect";
     }
 
     public class Sender implements Runnable {
@@ -404,10 +407,10 @@ public class ChannelAdaptor
     public void dump (PrintStream p, String indent) {
         p.println (indent + getCountersAsString());
     }
-    private Space grabSpace (Element e) {
+    protected Space grabSpace (Element e) {
         return SpaceFactory.getSpace (e != null ? e.getText() : "");
     }
-    private void append (StringBuffer sb, String name, int value) {
+    protected void append (StringBuffer sb, String name, int value) {
         sb.append (name);
         sb.append (value);
     }
