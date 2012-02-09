@@ -267,6 +267,8 @@ public class ISOServer extends Observable
 
     public void run() {
         ServerChannel  channel;
+        if (socketFactory == null)
+            socketFactory = this;
         serverLoop : while  (!shutdown) {
             try {
                 serverSocket = socketFactory.createServerSocket(port);
