@@ -23,6 +23,7 @@ import static org.junit.Assert.*;
 
 import javax.crypto.spec.SecretKeySpec;
 
+import org.javatuples.Pair;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
 import org.jpos.core.SimpleConfiguration;
@@ -31,6 +32,8 @@ import org.jpos.iso.ISODate;
 import org.jpos.iso.ISOUtil;
 import org.jpos.security.EncryptedPIN;
 import org.jpos.security.MKDMethod;
+import org.jpos.security.PaddingMethod;
+import org.jpos.security.SKDMethod;
 import org.jpos.security.SMAdapter;
 import org.jpos.security.SMException;
 import org.jpos.security.SecureDESKey;
@@ -99,6 +102,20 @@ public class JCESecurityModuleTest {
           ,SMAdapter.TYPE_MK_AC+":1U","0D39A43C864D1B40F33998B80BB02C95" ,"6FB1");
 
     /**
+     * Encrypted under standard LMK test key: keytype 702 MK-SMI (variant 2, scheme U)
+     * Clear key value: 4 times 12345678
+     */
+    static SecureDESKey imksmi = new SecureDESKey(SMAdapter.LENGTH_DES3_2KEY
+          ,SMAdapter.TYPE_MK_SMI+":2U","E86D8A2FC81DEC4E91F9FE76EDAF3C3B" ,"6FB1");
+
+    /**
+     * Encrypted under standard LMK test key: keytype 703 MK-SMC (variant 3, scheme U)
+     * Clear key value: 4 times 12345678
+     */
+    static SecureDESKey imksmc = new SecureDESKey(SMAdapter.LENGTH_DES3_2KEY
+          ,SMAdapter.TYPE_MK_SMC+":3U","9ED29EDD0BA8B771106EB77D819F7394" ,"6FB1");
+
+    /**
      * Encrypted under standard LMK test key: keytype 709 MK-CVC3 (variant 7, scheme U)
      * Clear key value: 4 times 12345678
      */
@@ -117,6 +134,34 @@ public class JCESecurityModuleTest {
      */
     static EncryptedPIN pinUnderTPK;
 
+    /**
+     * Pin value 1234 for account number 1234567890123456 encrypted
+     * under ZPK in pinblock 01 format
+     */
+    static EncryptedPIN pinUnderZPK;
+
+    /**
+     * 16 digits account number
+     */
+    static final String accountNoA = "1234567890123456";
+
+    /**
+     * Card Sequence Number
+     */
+    static final String accountNoA_CSN = "00";
+    
+    /**
+     * Application Transaction Counter
+     */
+    static final byte[] atc01 = ISOUtil.hex2byte("0002");
+
+    static final byte[] arqc01 = ISOUtil.hex2byte("4B07E35A87F27D2E");
+
+    /**
+     * APDU Header. Part of data for Secure Messaging MAC algorrithms
+     */
+    static final byte[] apdu01 = ISOUtil.hex2byte("8424000210");
+
     private static final String PREFIX = "src/main/resources/cfg/";
 
     @BeforeClass
@@ -124,6 +169,7 @@ public class JCESecurityModuleTest {
       jcesecmod = new JCESecurityModule(PREFIX+"secret.lmk");
       pinUnderLMK = jcesecmod.encryptPIN("1234", "1234567890123");
       pinUnderTPK = jcesecmod.exportPINImpl(pinUnderLMK, tpk, SMAdapter.FORMAT01);
+      pinUnderZPK  =  new EncryptedPIN("ABE38E29B58EA392", SMAdapter.FORMAT01, accountNoA);
     }
 
     @Test
@@ -775,6 +821,187 @@ public class JCESecurityModuleTest {
         } catch (SMException ex){
             assertNull("ex.getMessage()", ex.getNested().getMessage());
         }
+    }
+
+    @Test
+    public void testGenerateSM_MACImpl1() throws Throwable {
+        String accountNo = accountNoA;
+        String accntSeqNo = accountNoA_CSN;
+        byte[] apdu = apdu01;
+        byte[] atc = atc01;
+        byte[] arqc = arqc01;
+        byte[] data  = ISOUtil.hex2byte("1122334455667788");
+        apdu = ISOUtil.concat(apdu, atc);
+        apdu = ISOUtil.concat(apdu, arqc);
+        apdu = ISOUtil.concat(apdu, data);
+        byte[] result = jcesecmod.generateSM_MAC(MKDMethod.OPTION_A, SKDMethod.MCHIP
+                        ,imksmi, accountNo, accntSeqNo, atc, arqc, apdu);
+        assertArrayEquals(ISOUtil.hex2byte("217CF53EA0E7C327"), result);
+    }
+
+    @Test
+    public void testGenerateSM_MACImpl2() throws Throwable {
+        String accountNo = accountNoA;
+        String accntSeqNo = accountNoA_CSN;
+        byte[] apdu = apdu01;
+        byte[] atc = atc01;
+        byte[] arqc = arqc01;
+        byte[] data  = ISOUtil.hex2byte("11");
+        apdu = ISOUtil.concat(apdu, atc);
+        apdu = ISOUtil.concat(apdu, arqc);
+        apdu = ISOUtil.concat(apdu, data);
+        byte[] result = jcesecmod.generateSM_MAC(MKDMethod.OPTION_A, SKDMethod.MCHIP
+                        ,imksmi, accountNo, accntSeqNo, atc, arqc, apdu);
+        assertArrayEquals(ISOUtil.hex2byte("5E14A5A5C4B98C0C"), result);
+    }
+
+    @Test
+    public void testGenerateSM_MACImpl3() throws Throwable {
+        String accountNo = accountNoA;
+        String accntSeqNo = accountNoA_CSN;
+        byte[] apdu = apdu01;
+        byte[] atc = atc01;
+        byte[] arqc = arqc01;
+        byte[] data  = ISOUtil.hex2byte("1122334455667788");
+        apdu = ISOUtil.concat(apdu, atc);
+        apdu = ISOUtil.concat(apdu, arqc);
+        apdu = ISOUtil.concat(apdu, data);
+        byte[] result = jcesecmod.generateSM_MAC(MKDMethod.OPTION_A, SKDMethod.VSDC
+                        ,imksmi, accountNo, accntSeqNo, atc, arqc, apdu);
+        assertArrayEquals(ISOUtil.hex2byte("E218CC0B7FEC6876"), result);
+    }
+
+    @Test
+    public void testGenerateSM_MACImpl4() throws Throwable {
+        String accountNo = accountNoA;
+        String accntSeqNo = accountNoA_CSN;
+        byte[] apdu = apdu01;
+        byte[] atc = atc01;
+        byte[] arqc = arqc01;
+        byte[] data  = ISOUtil.hex2byte("11");
+        apdu = ISOUtil.concat(apdu, atc);
+        apdu = ISOUtil.concat(apdu, arqc);
+        apdu = ISOUtil.concat(apdu, data);
+        byte[] result = jcesecmod.generateSM_MAC(MKDMethod.OPTION_A, SKDMethod.VSDC
+                        ,imksmi, accountNo, accntSeqNo, atc, arqc, apdu);
+        System.out.println(ISOUtil.hexString(result));
+        assertArrayEquals(ISOUtil.hex2byte("C1F2C04136BD48E6"), result);
+    }
+
+
+    @Test
+    public void testTranslatePINGenerateSM_MACImpl1() throws Throwable {
+        String accountNo = accountNoA;
+        String accntSeqNo = accountNoA_CSN;
+        byte[] apdu = apdu01;
+        byte[] atc = atc01;
+        byte[] arqc = arqc01;
+        EncryptedPIN pin  =  pinUnderZPK;
+        apdu = ISOUtil.concat(apdu, atc);
+        apdu = ISOUtil.concat(apdu, arqc);
+        EncryptedPIN expectdPIN = new EncryptedPIN("F473D25D9B478970", SMAdapter.FORMAT34, accountNo);
+        Pair<EncryptedPIN, byte[]> result = jcesecmod.translatePINGenerateSM_MAC(
+                         MKDMethod.OPTION_A, SKDMethod.MCHIP, null
+                        ,imksmi, accountNo, accntSeqNo, atc, arqc, apdu
+                        ,null, pin, zpk, imksmc, null, SMAdapter.FORMAT34);
+        assertArrayEquals(expectdPIN.getPINBlock(), result.getValue0().getPINBlock());
+        assertArrayEquals(ISOUtil.hex2byte("831B043B4A314FD2"), result.getValue1());
+    }
+
+    @Test
+    public void testTranslatePINGenerateSM_MACImpl2() throws Throwable {
+        String accountNo = accountNoA;
+        String accntSeqNo = accountNoA_CSN;
+        byte[] apdu = apdu01;
+        byte[] atc = atc01;
+        byte[] arqc = arqc01;
+        EncryptedPIN pin  =  pinUnderZPK;
+        apdu = ISOUtil.concat(apdu, atc);
+        apdu = ISOUtil.concat(apdu, arqc);
+        EncryptedPIN expectdPIN = new EncryptedPIN("E60663E4B11CDB2DE4667CC9433384B4", SMAdapter.FORMAT41, accountNo);
+        Pair<EncryptedPIN, byte[]> result = jcesecmod.translatePINGenerateSM_MAC(
+                         MKDMethod.OPTION_A, SKDMethod.EMV_CSKD, null
+                        ,imksmi, accountNo, accntSeqNo, atc, arqc, apdu
+                        ,null, pin, zpk, imksmc, imkac, SMAdapter.FORMAT41);
+        assertArrayEquals(expectdPIN.getPINBlock(), result.getValue0().getPINBlock());
+        assertArrayEquals(ISOUtil.hex2byte("0405DB9BFB25BE6F"), result.getValue1());
+    }
+
+    @Test
+    public void testTranslatePINGenerateSM_MACImpl3() throws Throwable {
+        String accountNo = accountNoA;
+        String accntSeqNo = accountNoA_CSN;
+        byte[] apdu = apdu01;
+        byte[] atc = atc01;
+        byte[] arqc = arqc01;
+        EncryptedPIN pin  =  pinUnderZPK;
+        apdu = ISOUtil.concat(apdu, atc);
+        apdu = ISOUtil.concat(apdu, arqc);
+        EncryptedPIN expectdPIN = new EncryptedPIN("158C4C2E67041975DEB907E2E57EC85D", SMAdapter.FORMAT41, accountNo);
+        Pair<EncryptedPIN, byte[]> result = jcesecmod.translatePINGenerateSM_MAC(
+                         MKDMethod.OPTION_A, SKDMethod.EMV_CSKD, PaddingMethod.VSDC
+                        ,imksmi, accountNo, accntSeqNo, atc, arqc, apdu
+                        ,null, pin, zpk, imksmc, imkac, SMAdapter.FORMAT41);
+        assertArrayEquals(expectdPIN.getPINBlock(), result.getValue0().getPINBlock());
+        assertArrayEquals(ISOUtil.hex2byte("7DE6117DEB56D37F"), result.getValue1());
+    }
+
+    @Test
+    public void testTranslatePINGenerateSM_MACImpl4() throws Throwable {
+        String accountNo = accountNoA;
+        String accntSeqNo = accountNoA_CSN;
+        byte[] apdu = apdu01;
+        byte[] atc = atc01;
+        byte[] arqc = arqc01;
+        EncryptedPIN pin  =  pinUnderZPK;
+        apdu = ISOUtil.concat(apdu, atc);
+        apdu = ISOUtil.concat(apdu, arqc);
+        EncryptedPIN expectdPIN = new EncryptedPIN("F473D25D9B478970E72651C08FE487EF", SMAdapter.FORMAT34, accountNo);
+        Pair<EncryptedPIN, byte[]> result = jcesecmod.translatePINGenerateSM_MAC(
+                         MKDMethod.OPTION_A, SKDMethod.EMV_CSKD, null
+                        ,imksmi, accountNo, accntSeqNo, atc, arqc, apdu
+                        ,null, pin, zpk, imksmc, null, SMAdapter.FORMAT34);
+        assertArrayEquals(expectdPIN.getPINBlock(), result.getValue0().getPINBlock());
+        assertArrayEquals(ISOUtil.hex2byte("299E98C2B5A38B27"), result.getValue1());
+    }
+
+    @Test
+    public void testTranslatePINGenerateSM_MACImpl5() throws Throwable {
+        String accountNo = accountNoA;
+        String accntSeqNo = accountNoA_CSN;
+        byte[] apdu = apdu01;
+        byte[] atc = atc01;
+        byte[] arqc = arqc01;
+        EncryptedPIN pin  =  pinUnderZPK;
+        apdu = ISOUtil.concat(apdu, atc);
+        apdu = ISOUtil.concat(apdu, arqc);
+        EncryptedPIN expectdPIN = new EncryptedPIN("EF0F091EDA14326440C47C0F7C572473", SMAdapter.FORMAT41, accountNo);
+        Pair<EncryptedPIN, byte[]> result = jcesecmod.translatePINGenerateSM_MAC(
+                         MKDMethod.OPTION_A, SKDMethod.VSDC, null
+                        ,imksmi, accountNo, accntSeqNo, atc, arqc, apdu
+                        ,null, pin, zpk, imksmc, imkac, SMAdapter.FORMAT41);
+        assertArrayEquals(expectdPIN.getPINBlock(), result.getValue0().getPINBlock());
+        assertArrayEquals(ISOUtil.hex2byte("9F1B829D179E55C2"), result.getValue1());
+    }
+
+    @Test
+    public void testTranslatePINGenerateSM_MACImpl6() throws Throwable {
+        String accountNo = accountNoA;
+        String accntSeqNo = accountNoA_CSN;
+        byte[] apdu = apdu01;
+        byte[] atc = atc01;
+        byte[] arqc = arqc01;
+        EncryptedPIN oldpin= new EncryptedPIN("33BADC0F07C6FB29", SMAdapter.FORMAT01, accountNo);
+        EncryptedPIN pin   = pinUnderZPK;
+        apdu = ISOUtil.concat(apdu, atc);
+        apdu = ISOUtil.concat(apdu, arqc);
+        EncryptedPIN expectdPIN = new EncryptedPIN("74253653C81CE99140C47C0F7C572473", SMAdapter.FORMAT42, accountNo);
+        Pair<EncryptedPIN, byte[]> result = jcesecmod.translatePINGenerateSM_MAC(
+                         MKDMethod.OPTION_A, SKDMethod.VSDC, null
+                        ,imksmi, accountNo, accntSeqNo, atc, arqc, apdu
+                        ,oldpin, pin, zpk, imksmc, imkac, SMAdapter.FORMAT42);
+        assertArrayEquals(expectdPIN.getPINBlock(), result.getValue0().getPINBlock());
+        assertArrayEquals(ISOUtil.hex2byte("6F403E51DCE1E4A6"), result.getValue1());
     }
 
 }

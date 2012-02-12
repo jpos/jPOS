@@ -27,8 +27,10 @@ import javax.crypto.KeyGenerator;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.*;
+import java.security.spec.AlgorithmParameterSpec;
 import java.util.Map;
 import java.util.HashMap;
+import javax.crypto.spec.IvParameterSpec;
 
 
 /**
@@ -45,6 +47,16 @@ import java.util.HashMap;
 public class JCEHandler {
     static final String ALG_DES = "DES";
     static final String ALG_TRIPLE_DES = "DESede";
+    static final String DES_MODE_ECB = "ECB";
+    static final String DES_MODE_CBC = "CBC";
+    static final String DES_NO_PADDING = "NoPadding";
+
+    static final Map<MacEngineKey,Mac> macEngines = new HashMap();
+
+    /**
+     * The JCE provider
+     */
+    Provider provider = null;
 
     /**
      * Registers the JCE provider whose name is providerName and sets it to be the
@@ -232,6 +244,42 @@ public class JCEHandler {
     }
 
     /**
+     * Encrypts data
+     * @param data
+     * @param key
+     * @return encrypted data
+     * @exception JCEHandlerException
+     */
+    public byte[] encryptDataCBC (byte[] data, Key key, byte[] iv) throws JCEHandlerException {
+        return doCryptStuff(data, key, Cipher.ENCRYPT_MODE, DES_MODE_CBC, iv);
+    }
+
+    /**
+     * Decrypts data
+     * @param encryptedData
+     * @param key
+     * @return clear data
+     * @exception JCEHandlerException
+     */
+    public byte[] decryptDataCBC (byte[] encryptedData, Key key, byte[] iv) throws JCEHandlerException {
+        return doCryptStuff(encryptedData, key, Cipher.DECRYPT_MODE, DES_MODE_CBC, iv);
+    }
+
+    /**
+     * Performs cryptographic DES operations (encryption/decryption)
+     * in ECB mode using JCE Cipher
+     *
+     * @param data
+     * @param key
+     * @param cipherMode Cipher.ENCRYPT_MODE or Cipher.DECRYPT_MODE
+     * @return result of the cryptographic operations
+     * @throws JCEHandlerException
+     */
+    byte[] doCryptStuff (byte[] data, Key key, int cipherMode) throws JCEHandlerException {
+        return  doCryptStuff(data, key, cipherMode, DES_MODE_ECB, null);
+    }
+
+    /**
      * performs cryptographic operations (encryption/decryption) using JCE Cipher
      * @param data
      * @param key
@@ -239,18 +287,22 @@ public class JCEHandler {
      * @return result of the cryptographic operations
      * @throws JCEHandlerException
      */
-    byte[] doCryptStuff (byte[] data, Key key, int CipherMode) throws JCEHandlerException {
+    byte[] doCryptStuff (byte[] data, Key key, int CipherMode, String desMode, byte[] iv)
+            throws JCEHandlerException {
         byte[] result;
         String transformation;
         if (key.getAlgorithm().startsWith(ALG_DES)) {
-            transformation = key.getAlgorithm() + "/" + desMode + "/" + desPadding;
+            transformation = key.getAlgorithm() + "/" + desMode + "/" + DES_NO_PADDING;
         }
         else {
             transformation = key.getAlgorithm();
         }
+        AlgorithmParameterSpec aps = null;
         try {
             Cipher c1 = Cipher.getInstance(transformation, provider.getName());
-            c1.init(CipherMode, key);
+            if (DES_MODE_CBC.equals(desMode))
+              aps = new IvParameterSpec(iv);
+            c1.init(CipherMode, key, aps);
             result = c1.doFinal(data);
         } catch (Exception e) {
             throw  new JCEHandlerException(e);
@@ -282,9 +334,8 @@ public class JCEHandler {
      * @throws org.jpos.security.jceadapter.JCEHandlerException
      */
     Mac assignMACEngine(MacEngineKey engine) throws JCEHandlerException {
-        macEngines = macEngines==null?new HashMap():macEngines;
         if (macEngines.containsKey(engine)) {
-          return (Mac)macEngines.get(engine);
+          return macEngines.get(engine);
         }
         
         //Initalize new MAC engine and store them in macEngines cache
@@ -319,14 +370,6 @@ public class JCEHandler {
     }
 
     /**
-     * The JCE provider
-     */
-    Provider provider = null;
-    Map macEngines = null;
-    String desMode = "ECB";
-    String desPadding = "NoPadding";
-    
-    /**
      * Class used for indexing MAC algorithms in cache
      */
     protected class MacEngineKey{
@@ -346,6 +389,7 @@ public class JCEHandler {
         return macKey;
       }
 
+      @Override
       public boolean equals(Object obj) {
         if (obj == null) {
           return false;
@@ -360,6 +404,7 @@ public class JCEHandler {
         return !(this.macKey != other.macKey && (this.macKey == null || !this.macKey.equals(other.macKey)));
       }
 
+      @Override
       public int hashCode() {
         int hash = 5;
         hash = 67 * hash + (this.macAlgorithm != null ? this.macAlgorithm.hashCode() : 0);

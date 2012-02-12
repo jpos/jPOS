@@ -35,8 +35,8 @@ public class JCEHandlerTest {
     @Test
     public void testConstructor() throws Throwable {
         JCEHandler jCEHandler = new JCEHandler((Provider) null);
-        assertEquals("jCEHandler.desPadding", "NoPadding", jCEHandler.desPadding);
-        assertEquals("jCEHandler.desMode", "ECB", jCEHandler.desMode);
+        assertEquals("jCEHandler.desPadding", "NoPadding", JCEHandler.DES_NO_PADDING);
+        assertEquals("jCEHandler.desMode", "ECB", JCEHandler.DES_MODE_ECB);
         assertNull("jCEHandler.provider", jCEHandler.provider);
     }
 

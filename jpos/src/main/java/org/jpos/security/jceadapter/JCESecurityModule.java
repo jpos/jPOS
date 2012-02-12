@@ -39,8 +39,7 @@ import java.util.Properties;
 import java.util.Random;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
+import org.javatuples.Pair;
 import org.jpos.iso.ISODate;
 import org.jpos.iso.ISOException;
 
@@ -466,6 +465,12 @@ public class JCESecurityModule extends BaseSMAdapter {
                             ,Arrays.copyOfRange(key.getEncoded(), 0, 8));
         Key kr = jceHandler.formDESKey(SMAdapter.LENGTH_DES
                             ,Arrays.copyOfRange(key.getEncoded(), 8, 16));
+        if (d.length%8 != 0) {
+            //Padding - first byte 0x80 rest 0x00
+            byte[] t = new byte[d.length - d.length%8 + 8];
+            System.arraycopy(d, 0, t, 0, d.length);
+            d = t;
+        }
         //MAC_CBC alg 3
         byte[] y_i = ISOUtil.hex2byte("0000000000000000");
         byte[] yi  = new byte[8];
@@ -629,23 +634,184 @@ public class JCESecurityModule extends BaseSMAdapter {
         return result.equals(pvv);
     }
 
+    @Override
     public EncryptedPIN translatePINImpl (EncryptedPIN pinUnderKd1, SecureDESKey kd1,
             SecureDESKey kd2, byte destinationPINBlockFormat) throws SMException {
+        EncryptedPIN translatedPIN;
+        Key clearKd1 = decryptFromLMK(kd1);
+        Key clearKd2 = decryptFromLMK(kd2);
+        translatedPIN = translatePINExt(null, pinUnderKd1, clearKd1, clearKd2
+                        ,destinationPINBlockFormat, null, PaddingMethod.MCHIP);
+        return translatedPIN;
+    }
+
+    private EncryptedPIN translatePINExt (EncryptedPIN oldPinUnderKd1, EncryptedPIN pinUnderKd1, Key kd1,
+            Key kd2, byte destinationPINBlockFormat, Key udk, PaddingMethod padm) throws SMException {
         EncryptedPIN translatedPIN = null;
         String accountNumber = pinUnderKd1.getAccountNumber();
         // get clear PIN
-        byte[] clearPINBlock = jceHandler.decryptData(pinUnderKd1.getPINBlock(),
-                decryptFromLMK(kd1));
+        byte[] clearPINBlock = jceHandler.decryptData(pinUnderKd1.getPINBlock(), kd1);
         String pin = calculatePIN(clearPINBlock, pinUnderKd1.getPINBlockFormat(),
                 accountNumber);
         // Reformat PIN Block
-        clearPINBlock = calculatePINBlock(pin, destinationPINBlockFormat, accountNumber);
+        byte[] translatedPINBlock = null;
+        if (isVSDCPinBlockFormat(destinationPINBlockFormat)) {
+          String udka = ISOUtil.hexString(Arrays.copyOfRange(udk.getEncoded(), 0, 8));
+          if (destinationPINBlockFormat == SMAdapter.FORMAT42 ) {
+              byte[] oldClearPINBlock = jceHandler.decryptData(oldPinUnderKd1.getPINBlock(), kd1);
+              String oldPIN = calculatePIN(oldClearPINBlock, oldPinUnderKd1.getPINBlockFormat(),
+                      accountNumber);
+              clearPINBlock = calculatePINBlock(pin+":"+oldPIN, destinationPINBlockFormat, udka);
+          } else
+              clearPINBlock = calculatePINBlock(pin, destinationPINBlockFormat, udka);
+
+          accountNumber = udka.substring(4);
+        } else {
+          clearPINBlock = calculatePINBlock(pin, destinationPINBlockFormat, accountNumber);
+        }
+
+        switch(padm){
+          case VSDC:
+              //Add VSDC pin block padding
+              clearPINBlock = ISOUtil.concat(new byte[]{0x08}, clearPINBlock);
+              clearPINBlock = paddingISO9797Method2(clearPINBlock);
+              break;
+          case CCD:
+              //Add CCD pin block padding
+              clearPINBlock = paddingISO9797Method2(clearPINBlock);
+              break;
+          default:
+        }
+
         // encrypt PIN
-        byte[] translatedPINBlock = jceHandler.encryptData(clearPINBlock, decryptFromLMK(kd2));
-        translatedPIN = new EncryptedPIN(translatedPINBlock, destinationPINBlockFormat,
-                accountNumber);
+        if (padm == PaddingMethod.CCD)
+          translatedPINBlock = jceHandler.encryptDataCBC(clearPINBlock, kd2, zeroBlock);
+        else
+          translatedPINBlock = jceHandler.encryptData(clearPINBlock, kd2);
+        translatedPIN = new EncryptedPIN(translatedPINBlock
+                        ,destinationPINBlockFormat, accountNumber);
         translatedPIN.setAccountNumber(accountNumber);
         return  translatedPIN;
+    }
+
+    /**
+     * Derive the session key used for Application Cryptogram verification
+     * or for secure messaging, the diversification value is the ATC
+     * @param mkac unique ICC Master Key for Application Cryptogams or Secure Messaging
+     * @param atc ICC generated Application Transaction Counter as diversification value
+     * @return derived 16-bytes Session Key with adjusted DES parity
+     * @throws JCEHandlerException
+     */
+    private Key deriveSK_VISA(Key mkac, byte[] atc) throws JCEHandlerException {
+
+        byte[] skl = new byte[8];
+        System.arraycopy(atc, atc.length-2, skl, 6, 2);
+        skl = ISOUtil.xor(skl, Arrays.copyOfRange(mkac.getEncoded(),0 ,8));
+
+        byte[] skr = new byte[8];
+        System.arraycopy(atc, atc.length-2, skr, 6, 2);
+        skr = ISOUtil.xor(skr, ISOUtil.hex2byte("000000000000FFFF"));
+        skr = ISOUtil.xor(skr, Arrays.copyOfRange(mkac.getEncoded(),8 ,16));
+        Util.adjustDESParity(skl);
+        Util.adjustDESParity(skr);
+        return jceHandler.formDESKey(SMAdapter.LENGTH_DES3_2KEY, ISOUtil.concat(skl,skr));
+    }
+
+    /**
+     * Derive the session key used for secure messaging, the diversification
+     * value is the RAND. RAND is ARQC incremeted by 1 (with overflow) after
+     * each script command for that same ATC value.
+     * A1.3.1 Common Session Key Derivation Option
+     * @param mksm unique ICC Master Key for Secure Messaging
+     * @param rand Application Cryptogram as diversification value
+     * @return derived 16-bytes Session Key with adjusted DES parity
+     * @throws JCEHandlerException
+     */
+    private Key deriveCommonSK_SM(Key mksm, byte[] rand) throws JCEHandlerException {
+      byte[] rl = Arrays.copyOf(rand,8);
+      rl[2] = (byte)0xf0;
+      byte[] skl = jceHandler.encryptData(rl, mksm);
+      byte[] rr = Arrays.copyOf(rand,8);
+      rr[2] = (byte)0x0f;
+      byte[] skr = jceHandler.encryptData(rr, mksm);
+      Util.adjustDESParity(skl);
+      Util.adjustDESParity(skr);
+      return jceHandler.formDESKey(SMAdapter.LENGTH_DES3_2KEY, ISOUtil.concat(skl,skr));
+    }
+
+    @Override
+    protected byte[] generateSM_MACImpl(MKDMethod mkdm, SKDMethod skdm
+            ,SecureDESKey imksmi, String accountNo, String accntSeqNo
+            ,byte[] atc, byte[] arqc, byte[] data) throws SMException {
+        if (mkdm==null)
+          mkdm = MKDMethod.OPTION_A;
+        byte[] panpsn = formatPANPSN(accountNo, accntSeqNo, mkdm);
+        Key mksmi = deriveICCMasterKey(decryptFromLMK(imksmi), panpsn);
+        Key smi;
+        switch(skdm){
+          case VSDC:
+            smi = deriveSK_VISA(mksmi, atc);
+            data = paddingISO9797Method2(data);
+            break;
+          case MCHIP:
+          case EMV_CSKD:
+            smi = deriveCommonSK_SM(mksmi,arqc);
+            data = paddingISO9797Method2(data);
+            break;
+          default:
+            throw new SMException("Session Key Derivation "+skdm+" not supported");
+        }
+        return calculateMACISO9797Alg3(smi, data);
+    }
+
+    @Override
+    protected Pair<EncryptedPIN,byte[]> translatePINGenerateSM_MACImpl(
+            MKDMethod mkdm, SKDMethod skdm, PaddingMethod padm, SecureDESKey imksmi
+           ,String accountNo, String accntSeqNo, byte[] atc, byte[] arqc
+           ,byte[] data, EncryptedPIN currentPIN, EncryptedPIN newPIN
+           ,SecureDESKey kd1, SecureDESKey imksmc, SecureDESKey imkac
+           ,byte destinationPINBlockFormat) throws SMException {
+        if (mkdm==null)
+          mkdm = MKDMethod.OPTION_A;
+        byte[] panpsn = formatPANPSN(accountNo, accntSeqNo, mkdm);
+        Key mksmc = deriveICCMasterKey(decryptFromLMK(imksmc), panpsn);
+        Key smc;
+        PaddingMethod derivedPADM;
+        switch(skdm){
+          case VSDC:
+            smc = deriveSK_VISA(mksmc, atc);
+            derivedPADM = PaddingMethod.VSDC;
+            break;
+          case MCHIP:
+            smc = deriveCommonSK_SM(mksmc,arqc);
+            derivedPADM = PaddingMethod.MCHIP;
+            break;
+          case EMV_CSKD:
+            smc = deriveCommonSK_SM(mksmc,arqc);
+            derivedPADM = PaddingMethod.CCD;
+            break;
+          default:
+            throw new SMException("Session Key Derivation "+skdm+" not supported");
+        }
+
+        //Use derived Padding Method if not specified
+        if ( padm == null )
+          padm = derivedPADM;
+
+        Key udk = null;
+        if (isVSDCPinBlockFormat(destinationPINBlockFormat))
+          udk = deriveICCMasterKey(decryptFromLMK(imkac), panpsn);
+
+        EncryptedPIN pin =  translatePINExt(currentPIN, newPIN, decryptFromLMK(kd1)
+                            ,smc, destinationPINBlockFormat, udk, padm);
+        data = ISOUtil.concat(data, pin.getPINBlock());
+        byte[] mac = generateSM_MACImpl(mkdm, skdm, imksmi, accountNo
+                               ,accntSeqNo, atc, arqc, data);
+        return new Pair(pin, mac);
+    }
+
+    private boolean isVSDCPinBlockFormat(byte pinBlockFormat) {
+        return pinBlockFormat==SMAdapter.FORMAT41 || pinBlockFormat==SMAdapter.FORMAT42;
     }
 
     /**
@@ -912,6 +1078,15 @@ public class JCESecurityModule extends BaseSMAdapter {
       return block;
     }
 
+    private String[] splitPins(String pins) {
+      String[] pin = new String[2];
+      StringTokenizer st = new StringTokenizer(pins, " :;,.");
+      pin[0] = st.nextToken();
+      if (st.hasMoreTokens())
+        pin[1] = st.nextToken();
+      return pin;
+    }
+
     /**
      * Calculates the clear PIN Block
      * @param pin as entered by the card holder on the PIN entry device
@@ -923,15 +1098,25 @@ public class JCESecurityModule extends BaseSMAdapter {
      */
     private byte[] calculatePINBlock (String pin, byte pinBlockFormat, String accountNumber) throws SMException {
         byte[] pinBlock = null;
+        String oldPin = null;
+        if (pinBlockFormat==SMAdapter.FORMAT42){
+          String[] p = splitPins(pin);
+          pin = p[0];
+          oldPin = p[1];
+          if (oldPin.length() < MIN_PIN_LENGTH || oldPin.length() > MAX_PIN_LENGTH)
+              throw  new SMException("Invalid OLD PIN length: " + oldPin.length());
+          if (!ISOUtil.isNumeric(oldPin, 10))
+              throw  new SMException("Invalid OLD PIN decimal digits: " + oldPin);
+        }
         if (pin.length() < MIN_PIN_LENGTH || pin.length() > MAX_PIN_LENGTH)
             throw  new SMException("Invalid PIN length: " + pin.length());
         if (!ISOUtil.isNumeric(pin, 10))
             throw  new SMException("Invalid PIN decimal digits: " + pin);
-        if (accountNumber.length() != 16 &&
-            (pinBlockFormat == SMAdapter.FORMAT41 || pinBlockFormat == SMAdapter.FORMAT42) )
+        if (isVSDCPinBlockFormat(pinBlockFormat)) {
+          if (accountNumber.length() != 16 )
             throw  new SMException("Invalid UDK-A: " + accountNumber
                     + ". The length of the UDK-A must be 16 hexadecimal digits");
-        else if (accountNumber.length() != 12)
+        } else if (accountNumber.length() != 12)
             throw  new SMException("Invalid Account Number: " + accountNumber + ". The length of the account number must be 12 (the 12 right-most digits of the account number excluding the check digit)");
         switch (pinBlockFormat) {
             case FORMAT00: // same as FORMAT01
@@ -985,15 +1170,16 @@ public class JCESecurityModule extends BaseSMAdapter {
             case FORMAT42:
                 {
                     // Block 1
-                    String blk1 = new String(formatPINBlock(pin,0x0));
-                    blk1 = blk1.replaceAll("F", "0"); //fix padding chars
-                    byte[] block1 = ISOUtil.hex2byte(blk1);
+                    byte[] block1 = ISOUtil.hex2byte(new String(formatPINBlock(pin,0x0)));
 
                     // Block 2 - account number should contain Unique DEA Key A (UDK-A)
                     byte[] block2 = ISOUtil.hex2byte("00000000"
                                 + accountNumber.substring(accountNumber.length()-8) );
+                    // Block 3 - old pin
+                    byte[] block3 = ISOUtil.hex2byte(ISOUtil.zeropadRight(oldPin, 16));
                     // pinBlock
                     pinBlock = ISOUtil.xor(block1, block2);
+                    pinBlock = ISOUtil.xor(pinBlock, block3);
                 }
                 break;
             default:
@@ -1039,11 +1225,11 @@ public class JCESecurityModule extends BaseSMAdapter {
      */
     private String calculatePIN (byte[] pinBlock, byte pinBlockFormat, String accountNumber) throws SMException {
         String pin = null;
-        if (accountNumber.length() != 16 &&
-            (pinBlockFormat == SMAdapter.FORMAT41 || pinBlockFormat == SMAdapter.FORMAT42) )
+        if (isVSDCPinBlockFormat(pinBlockFormat)) {
+          if (accountNumber.length() != 16 )
             throw  new SMException("Invalid UDK-A: " + accountNumber
                     + ". The length of the UDK-A must be 16 hexadecimal digits");
-        else if (accountNumber.length() != 12)
+        } else if (accountNumber.length() != 12)
             throw  new SMException("Invalid Account Number: " + accountNumber + ". The length of the account number must be 12 (the 12 right-most digits of the account number excluding the check digit)");
         switch (pinBlockFormat) {
             case FORMAT00: // same as format 01

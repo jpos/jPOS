@@ -962,6 +962,20 @@ public interface SMAdapter {
      *        {@link SKDMethod#VSDC} and {@link SKDMethod#MCHIP} this parameter
      *        is ignored and {@link MKDMethod#OPTION_A} is always used.
      * @param skdm Session Key Derivation Method
+     * @param padm padding method. If null {@code padm} is derived as follow:
+     *    <blockquote>
+     *    <table>
+     *      <thead>
+     *        <tr><th>{@code skdm} value</th><th>derived {@code padm} value</th></tr>
+     *      </thead>
+     *      <tbody>
+     *        <tr><td>{@link SKDMethod#VSDC}</td><td>{@link PaddingMethod#VSDC}</td></tr>
+     *        <tr><td>{@link SKDMethod#MCHIP}</td><td>{@link PaddingMethod#MCHIP}</td></tr>
+     *        <tr><td>{@link SKDMethod#EMV_CSKD}</td><td>{@link PaddingMethod#CCD}</td></tr>
+     *      </tbody>
+     *    </table>
+     *    Other variations require to explicite pass {@code padm} value
+     *    </blockquote>
      * @param imksmi the issuer master key for Secure Messaging Integrity
      * @param accountNo account number including BIN and check digit
      * @param acctSeqNo account sequence number, 2 decimal digits
@@ -995,10 +1009,11 @@ public interface SMAdapter {
      * @throws SMException
      */
     public Pair<EncryptedPIN,byte[]> translatePINGenerateSM_MAC(MKDMethod mkdm
-           ,SKDMethod skdm, SecureDESKey imksmi, String accountNo, String acctSeqNo
-           ,byte[] atc, byte[] arqc, byte[] data, EncryptedPIN currentPIN
-           ,EncryptedPIN newPIN, SecureDESKey kd1, SecureDESKey imksmc
-           ,SecureDESKey imkac, byte destinationPINBlockFormat) throws SMException;
+           ,SKDMethod skdm, PaddingMethod padm, SecureDESKey imksmi
+           ,String accountNo, String acctSeqNo, byte[] atc, byte[] arqc
+           ,byte[] data, EncryptedPIN currentPIN, EncryptedPIN newPIN
+           ,SecureDESKey kd1, SecureDESKey imksmc, SecureDESKey imkac
+           ,byte destinationPINBlockFormat) throws SMException;
 
 
 

@@ -828,14 +828,16 @@ public class BaseSMAdapter
     }
 
     public Pair<EncryptedPIN,byte[]> translatePINGenerateSM_MAC(MKDMethod mkdm
-           ,SKDMethod skdm, SecureDESKey imksmi, String accountNo, String acctSeqNo
-           ,byte[] atc, byte[] arqc, byte[] data, EncryptedPIN currentPIN
-           ,EncryptedPIN newPIN, SecureDESKey kd1, SecureDESKey imksmc
-           ,SecureDESKey imkac, byte destinationPINBlockFormat) throws SMException {
+           ,SKDMethod skdm, PaddingMethod padm, SecureDESKey imksmi
+           ,String accountNo, String acctSeqNo, byte[] atc, byte[] arqc
+           ,byte[] data, EncryptedPIN currentPIN, EncryptedPIN newPIN
+           ,SecureDESKey kd1, SecureDESKey imksmc, SecureDESKey imkac
+           ,byte destinationPINBlockFormat) throws SMException {
 
       SimpleMsg[] cmdParameters = {
             new SimpleMsg("parameter", "mkd method", mkdm),
             new SimpleMsg("parameter", "skd method", skdm),
+            new SimpleMsg("parameter", "padding method", padm),
             new SimpleMsg("parameter", "imk-smi", imksmi),
             new SimpleMsg("parameter", "account number", accountNo),
             new SimpleMsg("parameter", "accnt seq no", acctSeqNo),
@@ -853,7 +855,7 @@ public class BaseSMAdapter
       evt.addMessage(new SimpleMsg("command", "Translate PIN block format and Generate Secure Messaging MAC", cmdParameters));
       try {
         Pair<EncryptedPIN,byte[]> r = translatePINGenerateSM_MACImpl( mkdm, skdm
-                ,imksmi, accountNo, acctSeqNo, atc, arqc, data, currentPIN
+                ,padm, imksmi, accountNo, acctSeqNo, atc, arqc, data, currentPIN
                 ,newPIN, kd1, imksmc, imkac, destinationPINBlockFormat);
         SimpleMsg[] cmdResults = {
               new SimpleMsg("result", "Translated PIN block", r.getValue0()),
@@ -1366,6 +1368,7 @@ public class BaseSMAdapter
      * Your SMAdapter should override this method if it has this functionality
      * @param mkdm
      * @param skdm
+     * @param padm
      * @param imksmi
      * @param accountNo
      * @param acctSeqNo
@@ -1382,10 +1385,11 @@ public class BaseSMAdapter
      * @throws SMException
      */
     protected Pair<EncryptedPIN,byte[]> translatePINGenerateSM_MACImpl(MKDMethod mkdm
-           ,SKDMethod skdm, SecureDESKey imksmi, String accountNo, String acctSeqNo
-           ,byte[] atc, byte[] arqc, byte[] data, EncryptedPIN currentPIN
-           ,EncryptedPIN newPIN, SecureDESKey kd1, SecureDESKey imksmc
-           ,SecureDESKey imkac, byte destinationPINBlockFormat) throws SMException {
+           ,SKDMethod skdm, PaddingMethod padm, SecureDESKey imksmi
+           ,String accountNo, String acctSeqNo, byte[] atc, byte[] arqc
+           ,byte[] data, EncryptedPIN currentPIN, EncryptedPIN newPIN
+           ,SecureDESKey kd1, SecureDESKey imksmc, SecureDESKey imkac
+           ,byte destinationPINBlockFormat) throws SMException {
         throw  new SMException("Operation not supported in: " + this.getClass().getName());
     }
 
