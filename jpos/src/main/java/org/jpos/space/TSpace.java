@@ -50,9 +50,9 @@ public class TSpace<K,V> extends TimerTask implements LocalSpace<K,V>, Loggeable
         synchronized(this) {
             getList (key).add (value);
             this.notifyAll ();
-            if (sl != null)
-                notifyListeners(key, value);
         }
+        if (sl != null)
+            notifyListeners(key, value);
     }
     public void out (K key, V value, long timeout) {
         if (key == null || value == null)
@@ -64,12 +64,12 @@ public class TSpace<K,V> extends TimerTask implements LocalSpace<K,V>, Loggeable
         synchronized (this) {
             getList (key).add (v);
             this.notifyAll ();
-            if (sl != null)
-                notifyListeners(key, value);
             if (timeout > 0) {
                 registerExpirable(key, timeout);
             }
         }
+        if (sl != null)
+            notifyListeners(key, value);
     }
     public synchronized V rdp (Object key) {
         if (key instanceof Template)
@@ -242,9 +242,9 @@ public class TSpace<K,V> extends TimerTask implements LocalSpace<K,V>, Loggeable
         synchronized(this) {
             getList (key).add (0, value);
             this.notifyAll ();
-            if (sl != null)
-                 notifyListeners(key, value);
-         }
+        }
+        if (sl != null)
+            notifyListeners(key, value);
     }
 
     public void push (K key, V value, long timeout) {
@@ -257,22 +257,24 @@ public class TSpace<K,V> extends TimerTask implements LocalSpace<K,V>, Loggeable
         synchronized (this) {
             getList (key).add (0, v);
             this.notifyAll ();
-            if (sl != null)
-                notifyListeners(key, value);
             if (timeout > 0) {
                 registerExpirable(key, timeout);
             }
         }
+        if (sl != null)
+            notifyListeners(key, value);
     }
 
-    public synchronized void put (K key, V value) {
+    public void put (K key, V value) {
         if (key == null || value == null)
             throw new NullPointerException ("key=" + key + ", value=" + value);
 
-        List l = new LinkedList();
-        l.add (value);
-        entries.put (key, l);
-        this.notifyAll ();
+        synchronized (this) {
+            List l = new LinkedList();
+            l.add (value);
+            entries.put (key, l);
+            this.notifyAll ();
+        }
         if (sl != null)
             notifyListeners(key, value);
     }
@@ -288,12 +290,12 @@ public class TSpace<K,V> extends TimerTask implements LocalSpace<K,V>, Loggeable
             l.add (v);
             entries.put (key, l);
             this.notifyAll ();
-            if (sl != null)
-                notifyListeners(key, value);
             if (timeout > 0) {
                 registerExpirable(key, timeout);
             }
         }
+        if (sl != null)
+            notifyListeners(key, value);
     }
     public boolean existAny (K[] keys) {
         for (int i=0; i<keys.length; i++) {
