@@ -107,9 +107,9 @@ public class JESpace<K,V> extends Log implements LocalSpace<K,V>, Loggeable {
             txn = null;
             synchronized (this) {
                 notifyAll ();
-                if (sl != null)
-                    notifyListeners(key, value);
             }
+            if (sl != null)
+                notifyListeners(key, value);
         } catch (Exception e) {
             throw new SpaceError (e);
         } finally {
@@ -130,9 +130,9 @@ public class JESpace<K,V> extends Log implements LocalSpace<K,V>, Loggeable {
             txn = null;
             synchronized (this) {
                 notifyAll ();
-                if (sl != null)
-                    notifyListeners(key, value);
             }
+            if (sl != null)
+                notifyListeners(key, value);
         } catch (Exception e) {
             throw new SpaceError (e);
         } finally {
