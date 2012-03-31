@@ -15,13 +15,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.jpos.transaction.participant;
 
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.when;
 
@@ -260,15 +263,7 @@ public class BSHMethodTest {
             BSHMethod.createBshMethod(e).execute(arguments, returnNames);
             fail("Expected ParseException to be thrown");
         } catch (ParseException ex) {
-            assertEquals("ex.getMessage()", "Parse error at line 1, column 19.  Encountered: XXXX", ex.getMessage());
-            assertEquals("ex.getErrorSourceFile()", "inline evaluation of: ``XXXXXXX XXXXXXXXX XXXX;''", ex.getErrorSourceFile());
-            assertEquals("ex.toString()", "Parse error at line 1, column 19.  Encountered: XXXX", ex.toString());
-            assertNull("ex.currentToken", ex.currentToken);
-            assertNull("ex.expectedTokenSequences", ex.expectedTokenSequences);
-            assertNull("ex.tokenImage", ex.tokenImage);
-            assertEquals("ex.getMessage()", "Parse error at line 1, column 19.  Encountered: XXXX", ex.getMessage());
-            assertEquals("(HashMap) arguments.size()", 0, arguments.size());
-            assertEquals("(ArrayList) returnNames.size()", 0, returnNames.size());
+            assertThat(ex.getMessage(), allOf(notNullValue(), containsString("line 1, column 19")));
         }
     }
 
@@ -281,14 +276,7 @@ public class BSHMethodTest {
             BSHMethod.createBshMethod(e).execute(arguments, "testBSHMethodResultName");
             fail("Expected ParseException to be thrown");
         } catch (ParseException ex) {
-            assertEquals("ex.getMessage()", "Parse error at line 1, column 19.  Encountered: XXXX", ex.getMessage());
-            assertEquals("ex.getErrorSourceFile()", "inline evaluation of: ``XXXXXXX XXXXXXXXX XXXX;''", ex.getErrorSourceFile());
-            assertEquals("ex.toString()", "Parse error at line 1, column 19.  Encountered: XXXX", ex.toString());
-            assertNull("ex.currentToken", ex.currentToken);
-            assertNull("ex.expectedTokenSequences", ex.expectedTokenSequences);
-            assertNull("ex.tokenImage", ex.tokenImage);
-            assertEquals("ex.getMessage()", "Parse error at line 1, column 19.  Encountered: XXXX", ex.getMessage());
-            assertEquals("(HashMap) arguments.size()", 0, arguments.size());
+            assertThat(ex.getMessage(), allOf(notNullValue(), containsString("line 1, column 19")));
         }
     }
 
@@ -384,14 +372,7 @@ public class BSHMethodTest {
             bSHMethod.initInterpreter(arguments);
             fail("Expected ParseException to be thrown");
         } catch (ParseException ex) {
-            assertEquals("ex.getMessage()", "Parse error at line 1, column 1.  Encountered: :", ex.getMessage());
-            assertEquals("ex.getErrorSourceFile()", "inline evaluation of: ``:]Z;''", ex.getErrorSourceFile());
-            assertEquals("ex.toString()", "Parse error at line 1, column 1.  Encountered: :", ex.toString());
-            assertNull("ex.currentToken", ex.currentToken);
-            assertNull("ex.expectedTokenSequences", ex.expectedTokenSequences);
-            assertNull("ex.tokenImage", ex.tokenImage);
-            assertEquals("ex.getMessage()", "Parse error at line 1, column 1.  Encountered: :", ex.getMessage());
-            assertEquals("(HashMap) arguments.size()", 1, arguments.size());
+            assertThat(ex.getMessage(), allOf(notNullValue(), containsString("line 1, column 1")));
         }
     }
 }
