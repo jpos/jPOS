@@ -34,13 +34,13 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-/** A TransactionParticipant which´s prepare, commit and abort methods can be 
+/** A TransactionParticipant whose prepare, commit and abort methods can be 
  *  specified through beanshell scripts. <BR>
  *
  *  To indicate what code to execute for any of the methods just add an element 
  *  named 'prepare', 'commit' or 'abort' contained in that of the participant. <BR>
  *
- *  See BSHMethod for details on the syntax of these elemets. The value to return 
+ *  See BSHMethod for details on the syntax of these elements. The value to return 
  *  in the prepare method should be stored in the script variable named "result".
  *  None of these tags are mandatory. <BR>
  *
