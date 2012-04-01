@@ -364,20 +364,34 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
         return trailler == null ? true : (trailler.trim().length() == 0);
     }
 
-    /**
-     * compares two cardholder object<br>
-     * based on PAN and EXP
-     * @param obj a CardHolder instance
-     * @return true if pan and exp matches
-     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((exp == null) ? 0 : exp.hashCode());
+        result = prime * result + ((pan == null) ? 0 : pan.hashCode());
+        return result;
+    }
+
+    @Override
     public boolean equals(Object obj) {
-        if ((obj != null) && (obj instanceof CardHolder)) {
-            CardHolder ch = (CardHolder) obj;
-            if ( (pan != null) && (ch.pan != null) &&
-                 (exp != null) && (ch.exp != null) &&
-                 pan.equals (ch.pan) && exp.equals (ch.exp))
-                return true;
-        }
-        return false;
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        CardHolder other = (CardHolder) obj;
+        if (exp == null) {
+            if (other.exp != null)
+                return false;
+        } else if (!exp.equals(other.exp))
+            return false;
+        if (pan == null) {
+            if (other.pan != null)
+                return false;
+        } else if (!pan.equals(other.pan))
+            return false;
+        return true;
     }
 }

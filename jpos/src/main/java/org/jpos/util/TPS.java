@@ -89,7 +89,7 @@ public class TPS implements Loggeable {
         }
     }
 
-    public void tick() {
+    public synchronized void tick() {
         count++;
     }
     public float floatValue() {

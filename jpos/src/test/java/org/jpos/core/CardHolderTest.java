@@ -15,7 +15,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.jpos.core;
 
 import static org.junit.Assert.assertEquals;
@@ -29,10 +28,10 @@ import java.io.PrintStream;
 
 import org.jpos.iso.ISOBitMap;
 import org.jpos.iso.ISOMsg;
+import org.jpos.testhelpers.EqualsHashCodeTestCase;
 import org.junit.Test;
 
-public class CardHolderTest {
-
+public class CardHolderTest extends EqualsHashCodeTestCase {
     @Test
     public void testConstructor() throws Throwable {
         CardHolder cardHolder = new CardHolder();
@@ -220,64 +219,6 @@ public class CardHolderTest {
         } catch (NullPointerException ex) {
             assertNull("ex.getMessage()", ex.getMessage());
         }
-    }
-
-    @Test
-    public void testEquals() throws Throwable {
-        CardHolder obj = new CardHolder("testCardHolderPan", "4Cha");
-        boolean result = obj.equals(obj);
-        assertTrue("result", result);
-    }
-
-    @Test
-    public void testEquals1() throws Throwable {
-        CardHolder obj = new CardHolder("k'X9|DH:!;uQ<kG8!P?- ,\"Y!u`r;jB^)>3AbS9,");
-        obj.setPAN("testCardHolderPan1");
-        boolean result = new CardHolder("testCardHolderPan", "4Cha").equals(obj);
-        assertFalse("result", result);
-    }
-
-    @Test
-    public void testEquals2() throws Throwable {
-        boolean result = new CardHolder("k'X9|DH:!;uQ<kG8!P?- ,\"Y!u`r;jB^)>3AbS9,").equals(new CardHolder());
-        assertFalse("result", result);
-    }
-
-    @Test
-    public void testEquals3() throws Throwable {
-        boolean result = new CardHolder().equals(new CardHolder());
-        assertFalse("result", result);
-    }
-
-    @Test
-    public void testEquals4() throws Throwable {
-        CardHolder cardHolder = new CardHolder();
-        cardHolder.setEXP("9913");
-        cardHolder.setPAN("testCardHolderPan");
-        CardHolder obj = new CardHolder();
-        obj.setPAN("testCardHolderPan1");
-        boolean result = cardHolder.equals(obj);
-        assertFalse("result", result);
-    }
-
-    @Test
-    public void testEquals5() throws Throwable {
-        CardHolder cardHolder = new CardHolder();
-        cardHolder.setPAN("testCardHolderPan");
-        boolean result = cardHolder.equals(new CardHolder("k'X9|DH:!;uQ<kG8!P?- ,\"Y!u`r;jB^)>3AbS9,"));
-        assertFalse("result", result);
-    }
-
-    @Test
-    public void testEquals6() throws Throwable {
-        boolean result = new CardHolder().equals(Boolean.TRUE);
-        assertFalse("result", result);
-    }
-
-    @Test
-    public void testEquals7() throws Throwable {
-        boolean result = new CardHolder().equals(null);
-        assertFalse("result", result);
     }
 
     @Test
@@ -758,5 +699,15 @@ public class CardHolderTest {
         CardHolder cardHolder = new CardHolder();
         cardHolder.setTrailler("testCardHolderTrailler");
         assertEquals("cardHolder.trailler", "testCardHolderTrailler", cardHolder.trailler);
+    }
+
+    @Override
+    protected Object createInstance() throws Exception {
+        return new CardHolder("AACardHolderPan", "9AAA");
+    }
+
+    @Override
+    protected Object createNotEqualInstance() throws Exception {
+        return new CardHolder("ZZCardHolderPan", "5ZZZ");
     }
 }

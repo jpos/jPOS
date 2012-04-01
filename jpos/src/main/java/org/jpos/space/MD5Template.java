@@ -50,8 +50,14 @@ public class MD5Template implements Template, Serializable  {
             throw new SpaceError (e);
         }
     }
+    @Override
     public boolean equals (Object obj) {
         return Arrays.equals (digest (obj), digest);
+    }
+    @Override
+    public int hashCode() {
+        assert false : "hashCode not designed";
+        return 42;
     }
     public Object getKey () {
         return key;
