@@ -15,7 +15,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.jpos.transaction.participant;
 
 import static org.hamcrest.Matchers.is;
@@ -49,6 +48,7 @@ public class DelayTest {
     @Before
     public void setUp() throws Exception {
         delay = new Delay();
+        delay.random = random;
         given(random.nextLong()).willReturn(1L);
         given(cfg.getLong("prepare-delay")).willReturn(12345L);
         given(cfg.getLong("commit-delay")).willReturn(54321L);
@@ -84,5 +84,17 @@ public class DelayTest {
     @Test
     public void testPrepare() {
         assertThat(delay.prepare(0L, context), is(PREPARED));
+    }
+
+    @Test
+    public void testComputeDelay() {
+        // This unit test exposes (and verifies fix) of bug found by FindBugs:
+        // "Bad attempt to compute absolute value of signed random long"
+        // Math.abs can potentially return a negative number
+        // see http://stackoverflow.com/questions/2546078/java-random-long-number-in-0-x-n-range
+        given(random.nextLong()).willReturn(Long.MIN_VALUE);
+        delay.sleep(5L);
+        // should not throw an IllegalArgumentException (timeout value is negative)
+        verify(random, atLeastOnce()).nextDouble(); // check we are using the mock Random
     }
 }

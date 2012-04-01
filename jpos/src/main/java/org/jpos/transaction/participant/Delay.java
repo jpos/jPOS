@@ -18,13 +18,13 @@
 
 package org.jpos.transaction.participant;
 
-import org.jpos.transaction.TransactionParticipant;
+import java.io.Serializable;
+import java.util.Random;
+
 import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
-
-import java.io.Serializable;
-import java.util.Random;
+import org.jpos.transaction.TransactionParticipant;
 
 public class Delay implements TransactionParticipant, Configurable {
     long prepareDelay = 0L;
@@ -43,16 +43,17 @@ public class Delay implements TransactionParticipant, Configurable {
     public void abort(long id, Serializable context) {
         sleep (abortDelay);
     }
+
     public void setConfiguration(Configuration cfg) throws ConfigurationException {
         prepareDelay = cfg.getLong ("prepare-delay");
         commitDelay  = cfg.getLong ("commit-delay");
         abortDelay   = cfg.getLong ("abort-delay");
         random       = cfg.getBoolean ("random") ? new Random() : null;
     }
-    private void sleep (long delay) {
+    void sleep (long delay) {
         if (delay > 0L) {
             try {
-                Thread.sleep (random != null ? Math.abs(random.nextLong()) % delay : delay);
+                Thread.sleep (random != null ? (long)random.nextDouble()*delay : delay);
             } catch (InterruptedException ignored) { }
         }
     }
