@@ -15,29 +15,38 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.jpos.security.jceadapter;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
 
 import java.security.Key;
 import java.security.Provider;
 
 import javax.crypto.spec.SecretKeySpec;
 
+import org.junit.Before;
 import org.junit.Test;
 
 public class JCEHandlerTest {
+    private JCEHandler jCEHandler;
+    private Provider provider;
+
+    @Before
+    public void onSetup() {
+        provider = mock(Provider.class);
+        jCEHandler = new JCEHandler(provider);
+    }
 
     @Test
     public void testConstructor() throws Throwable {
-        JCEHandler jCEHandler = new JCEHandler((Provider) null);
         assertEquals("jCEHandler.desPadding", "NoPadding", JCEHandler.DES_NO_PADDING);
         assertEquals("jCEHandler.desMode", "ECB", JCEHandler.DES_MODE_ECB);
-        assertNull("jCEHandler.provider", jCEHandler.provider);
+        assertSame("jCEHandler.provider", provider, jCEHandler.provider);
     }
 
     @Test
@@ -53,7 +62,7 @@ public class JCEHandlerTest {
 
     @Test
     public void testDecryptDataThrowsJCEHandlerException() throws Throwable {
-        JCEHandler jCEHandler = new JCEHandler((Provider) null);
+        jCEHandler = new JCEHandler((Provider) null);
         byte[] clearKeyBytes = new byte[1];
         Key key = jCEHandler.formDESKey((short) 192, clearKeyBytes);
         byte[] encryptedData = new byte[0];
@@ -79,7 +88,7 @@ public class JCEHandlerTest {
 
     @Test
     public void testDecryptDESKeyThrowsJCEHandlerException() throws Throwable {
-        JCEHandler jCEHandler = new JCEHandler((Provider) null);
+        jCEHandler = new JCEHandler((Provider) null);
         JCEHandler jCEHandler2 = new JCEHandler((Provider) null);
         byte[] clearKeyBytes = new byte[1];
         Key encryptingKey = jCEHandler2.formDESKey((short) 192, clearKeyBytes);
@@ -107,7 +116,7 @@ public class JCEHandlerTest {
 
     @Test
     public void testDoCryptStuffThrowsJCEHandlerException() throws Throwable {
-        JCEHandler jCEHandler = new JCEHandler((Provider) null);
+        jCEHandler = new JCEHandler((Provider) null);
         byte[] bytes = new byte[1];
         Key key = new SecretKeySpec(bytes, "testJCEHandlerParam2");
         byte[] data = new byte[3];
@@ -123,7 +132,6 @@ public class JCEHandlerTest {
 
     @Test
     public void testDoCryptStuffThrowsJCEHandlerException1() throws Throwable {
-        JCEHandler jCEHandler = new JCEHandler((Provider) null);
         byte[] clearKeyBytes = new byte[1];
         Key key = jCEHandler.formDESKey((short) 192, clearKeyBytes);
         JCEHandler jCEHandler2 = new JCEHandler((Provider) null);
@@ -140,7 +148,6 @@ public class JCEHandlerTest {
 
     @Test
     public void testDoCryptStuffThrowsNullPointerException() throws Throwable {
-        JCEHandler jCEHandler = new JCEHandler((Provider) null);
         byte[] data = new byte[4];
         try {
             jCEHandler.doCryptStuff(data, null, 100);
@@ -152,7 +159,7 @@ public class JCEHandlerTest {
 
     @Test
     public void testEncryptDataThrowsJCEHandlerException() throws Throwable {
-        JCEHandler jCEHandler = new JCEHandler((Provider) null);
+        jCEHandler = new JCEHandler((Provider) null);
         JCEHandler jCEHandler2 = new JCEHandler((Provider) null);
         byte[] clearKeyBytes = new byte[1];
         Key key = jCEHandler2.formDESKey((short) 192, clearKeyBytes);
@@ -197,7 +204,6 @@ public class JCEHandlerTest {
 
     @Test
     public void testEncryptDESKeyThrowsJCEHandlerException() throws Throwable {
-        JCEHandler jCEHandler = new JCEHandler((Provider) null);
         byte[] clearKeyBytes = new byte[1];
         Key clearDESKey = jCEHandler.formDESKey((short) 192, clearKeyBytes);
         try {
@@ -226,7 +232,6 @@ public class JCEHandlerTest {
 
     @Test
     public void testExtractDESKeyMaterialThrowsArrayIndexOutOfBoundsException() throws Throwable {
-        JCEHandler jCEHandler = new JCEHandler((Provider) null);
         byte[] clearKeyBytes = new byte[1];
         Key clearDESKey = jCEHandler.formDESKey((short) 192, clearKeyBytes);
         JCEHandler jCEHandler2 = new JCEHandler((Provider) null);
@@ -241,7 +246,6 @@ public class JCEHandlerTest {
 
     @Test
     public void testExtractDESKeyMaterialThrowsJCEHandlerException() throws Throwable {
-        JCEHandler jCEHandler = new JCEHandler((Provider) null);
         JCEHandler jCEHandler2 = new JCEHandler((Provider) null);
         byte[] clearKeyBytes = new byte[1];
         Key clearDESKey = jCEHandler.formDESKey((short) 192, clearKeyBytes);
@@ -257,7 +261,6 @@ public class JCEHandlerTest {
 
     @Test
     public void testExtractDESKeyMaterialThrowsJCEHandlerException1() throws Throwable {
-        JCEHandler jCEHandler = new JCEHandler((Provider) null);
         byte[] bytes = new byte[1];
         Key clearDESKey = new SecretKeySpec(bytes, "testJCEHandlerParam2");
         try {
@@ -273,7 +276,6 @@ public class JCEHandlerTest {
 
     @Test
     public void testExtractDESKeyMaterialThrowsNullPointerException() throws Throwable {
-        JCEHandler jCEHandler = new JCEHandler((Provider) null);
         try {
             jCEHandler.extractDESKeyMaterial((short) 100, null);
             fail("Expected NullPointerException to be thrown");
@@ -284,7 +286,6 @@ public class JCEHandlerTest {
 
     @Test
     public void testFormDESKey() throws Throwable {
-        JCEHandler jCEHandler = new JCEHandler((Provider) null);
         byte[] clearKeyBytes = new byte[4];
         SecretKeySpec result = (SecretKeySpec) jCEHandler.formDESKey((short) 64, clearKeyBytes);
         assertEquals("result.getAlgorithm()", "DES", result.getAlgorithm());
@@ -292,7 +293,6 @@ public class JCEHandlerTest {
 
     @Test
     public void testFormDESKey1() throws Throwable {
-        JCEHandler jCEHandler = new JCEHandler((Provider) null);
         byte[] clearKeyBytes = new byte[1];
         SecretKeySpec result = (SecretKeySpec) jCEHandler.formDESKey((short) 192, clearKeyBytes);
         assertEquals("result.getAlgorithm()", "DESede", result.getAlgorithm());
@@ -300,7 +300,6 @@ public class JCEHandlerTest {
 
     @Test
     public void testFormDESKeyThrowsArrayIndexOutOfBoundsException() throws Throwable {
-        JCEHandler jCEHandler = new JCEHandler((Provider) null);
         byte[] clearKeyBytes = new byte[1];
         try {
             jCEHandler.formDESKey((short) 128, clearKeyBytes);
@@ -312,7 +311,6 @@ public class JCEHandlerTest {
 
     @Test
     public void testFormDESKeyThrowsIllegalArgumentException() throws Throwable {
-        JCEHandler jCEHandler = new JCEHandler((Provider) null);
         byte[] clearKeyBytes = new byte[0];
         try {
             jCEHandler.formDESKey((short) 192, clearKeyBytes);
@@ -324,7 +322,6 @@ public class JCEHandlerTest {
 
     @Test
     public void testFormDESKeyThrowsIllegalArgumentException1() throws Throwable {
-        JCEHandler jCEHandler = new JCEHandler((Provider) null);
         byte[] clearKeyBytes = new byte[0];
         try {
             jCEHandler.formDESKey((short) 64, clearKeyBytes);
@@ -336,7 +333,6 @@ public class JCEHandlerTest {
 
     @Test
     public void testFormDESKeyThrowsJCEHandlerException() throws Throwable {
-        JCEHandler jCEHandler = new JCEHandler((Provider) null);
         byte[] clearKeyBytes = new byte[1];
         try {
             jCEHandler.formDESKey((short) 100, clearKeyBytes);
@@ -382,28 +378,24 @@ public class JCEHandlerTest {
 
     @Test
     public void testGetBytesLength() throws Throwable {
-        JCEHandler jCEHandler = new JCEHandler((Provider) null);
         jCEHandler.getBytesLength((short) 128);
         assertTrue("Test completed without Exception", true);
     }
 
     @Test
     public void testGetBytesLength1() throws Throwable {
-        JCEHandler jCEHandler = new JCEHandler((Provider) null);
         jCEHandler.getBytesLength((short) 192);
         assertTrue("Test completed without Exception", true);
     }
 
     @Test
     public void testGetBytesLength2() throws Throwable {
-        JCEHandler jCEHandler = new JCEHandler((Provider) null);
         int result = jCEHandler.getBytesLength((short) 64);
         assertEquals("result", 8, result);
     }
 
     @Test
     public void testGetBytesLengthThrowsJCEHandlerException() throws Throwable {
-        JCEHandler jCEHandler = new JCEHandler((Provider) null);
         try {
             jCEHandler.getBytesLength((short) 100);
             fail("Expected JCEHandlerException to be thrown");
