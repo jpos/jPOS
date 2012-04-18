@@ -22,6 +22,7 @@ import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
 import org.jpos.iso.ISOException;
+import org.jpos.iso.ISOUtil;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
@@ -369,7 +370,13 @@ public class DirPoll extends SimpleLogSource
                 logEvent = evt;
                 evt.addMessage (e);
                 try {
-                    store (request, badDir);
+                    if ((e instanceof DirPollException && ((DirPollException)e).isRetry())) {
+                        ISOUtil.sleep(pollInterval*2); // small retry delay
+                        evt.addMessage("retrying");
+                        store(request, requestDir);
+                    } else {
+                        store(request, badDir);
+                    }
                 } catch (IOException _e) {
                     evt.addMessage ("Can't move to "+badDir.getPath());
                     evt.addMessage (_e);
@@ -381,6 +388,7 @@ public class DirPoll extends SimpleLogSource
         }
     }
     public static class DirPollException extends ISOException {
+        boolean retry;
         public DirPollException () {
             super();
         }
@@ -392,6 +400,12 @@ public class DirPoll extends SimpleLogSource
         }
         public DirPollException (String detail, Exception nested) {
             super(detail, nested);
+        }
+        public boolean isRetry() {
+            return retry;
+        }
+        public void setRetry(boolean retry) {
+            this.retry = retry;
         }
     }
     
