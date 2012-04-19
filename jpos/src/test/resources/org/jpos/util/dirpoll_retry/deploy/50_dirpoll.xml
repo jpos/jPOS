@@ -1,0 +1,9 @@
+<dir-poll name="dirpoll" class="org.jpos.q2.iso.DirPollAdaptor"
+    logger="Q2" realm="dirpoll">
+
+ <attr name="path">target/test-classes/org/jpos/util/dirpoll_retry</attr>
+ <attr name="poolSize" type="java.lang.Integer">1</attr>
+ <attr name="pollInterval" type="java.lang.Long">100</attr>
+ <attr name="processor">org.jpos.util.DirPollTest$RetryTest</attr>
+</dir-poll>
+

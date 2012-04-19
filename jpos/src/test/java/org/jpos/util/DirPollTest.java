@@ -26,9 +26,13 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 import org.jpos.core.Configuration;
 import org.jpos.core.SubConfiguration;
+import org.jpos.iso.ISOUtil;
+import org.jpos.q2.Q2;
 import org.junit.Test;
 
 public class DirPollTest {
@@ -338,5 +342,34 @@ public class DirPollTest {
         dirPoll.pause();
         dirPoll.unpause();
         assertFalse("dirPoll.isPaused()", dirPoll.isPaused());
+    }
+
+    @Test
+    public void testRetry() throws IOException {
+        Q2 q2 = new Q2("target/test-classes/org/jpos/util/dirpoll_retry/deploy");
+        q2.start();
+        ISOUtil.sleep(3000L);
+        createTestFile("target/test-classes/org/jpos/util/dirpoll_retry/request/REQ1", "RETRYME");
+        ISOUtil.sleep(3000L);
+        q2.stop();
+        ISOUtil.sleep(2000L);
+        assertTrue("Can't read request", new File("target/test-classes/org/jpos/util/dirpoll_retry/request/REQ1").canRead());
+
+    }
+    public static class RetryTest implements DirPoll.Processor {
+        public byte[] process(String name, byte[] request) throws DirPoll.DirPollException {
+            if ("RETRYME".equals(new String(request))) {
+                DirPoll.DirPollException dpe = new DirPoll.DirPollException("Retrying");
+                dpe.setRetry(true);
+                throw dpe;
+            }
+            return new byte[0];
+        }
+    }
+    private void createTestFile (String path, String content) throws IOException {
+        File tmp = new File(path);
+        FileOutputStream out = new FileOutputStream(tmp);
+        out.write(content.getBytes());
+        out.close();
     }
 }
