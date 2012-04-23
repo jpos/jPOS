@@ -18,11 +18,14 @@
 
 package org.jpos.q2.cli;
 
-import org.jpos.q2.CLI;
+import org.jpos.q2.CLICommand;
+import org.jpos.q2.CLIContext;
 
-public class CLR implements CLI.Command {
-    public void exec (CLI cli, String[] args) throws Exception {
-        cli.getConsoleReader().clearScreen();
+public class CLR implements CLICommand
+{
+    public void exec(CLIContext ctx, String[] args) throws Exception
+    {
+        ctx.getConsoleReader().clearScreen();
     }
 }
 

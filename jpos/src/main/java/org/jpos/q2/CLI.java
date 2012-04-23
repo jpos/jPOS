@@ -18,139 +18,165 @@
 
 package org.jpos.q2;
 
-import jline.*;
-import org.jpos.iso.ISOUtil;
+import jline.ArgumentCompletor;
+import jline.Completor;
+import jline.ConsoleReader;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.PrintStream;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.StringTokenizer;
 
-public class CLI extends Thread 
-    implements SimpleCompletor.SimpleCompletorFilter 
+public class CLI implements Runnable
 {
-    Q2 q2;
-    ConsoleReader reader;
-    PrintStream out;
+    Thread t;
     Completor completor;
     String line = null;
     boolean keepRunning = false;
+    protected CLIContext ctx;
+    CLICommandInterface cmdInterface;
 
-    private CLI() { }
+    public CLI(Q2 q2, String line, boolean keepRunning) throws IOException
+    {
+        this(q2, System.in, System.out, line, keepRunning);
+    }
 
-    public CLI (Q2 q2, String line, boolean keepRunning) throws IOException {
-        super();
-        this.q2 = q2;
-        reader = new ConsoleReader();
+    public CLI(Q2 q2, InputStream in, OutputStream out, String line, boolean keepRunning) throws IOException
+    {
+        ConsoleReader reader = new ConsoleReader(in, new OutputStreamWriter(out));
         reader.setBellEnabled(true);
-        out = System.out;
+
+        ctx = new CLIContext();
+        ctx.setQ2(q2);
+        ctx.setConsoleReader(reader);
+        ctx.setOutputStream(new PrintStream(out));
+
         this.line = line;
         this.keepRunning = keepRunning;
-        initCompletors();
-        setName ("Q2-CLI");
+
+        initCompletor();
     }
 
-    public void run() {
-        try {
-            while (q2.running()) {
-                if (line == null) {
-                    reader.addCompletor(completor);
-                    line = reader.readLine("q2> ");
-                    reader.removeCompletor(completor);
-                }
-                if (line != null) {
-                    StringTokenizer st = new StringTokenizer (line, ";");
-                    while (st.hasMoreTokens()) {
-                        String n = st.nextToken();
-                        execCommand (n);
-                    }
-                    line = null;
-                }
-                if (!keepRunning)
-                    break;
-            }
-        } catch (IOException e) {
-            e.printStackTrace (out);
-            out.flush();
-        }
+    protected boolean isRunning()
+    {
+        return ctx.getQ2().running();
     }
-    public void print (String s) {
-        try {
-            reader.printString (s);
-        } catch (IOException e) {
-            e.printStackTrace (out);
-            out.flush();
-        }
-    }
-    public void println (String s) {
-        try {
-            reader.printString (s);
-            reader.printNewline ();
-        } catch (IOException e) {
-            e.printStackTrace (out);
-            out.flush();
-        }
-    }
-    public boolean confirm (String prompt) throws IOException {
-        return "yes".equalsIgnoreCase (reader.readLine (prompt));
-    }
-    public Q2 getQ2() {
-        return q2;
-    }
-    public ConsoleReader getConsoleReader() {
-        return reader;
-    }
-    public PrintStream getOutputStream () {
-        return out;
-    }
-    public String filter (String element) {
-        return element.startsWith ("org.jpos.q2.cli.") ? element.substring(16).toLowerCase() : null;
-    }
-    private void execCommand (String line) throws IOException {
-        String args[] = parseCommand (line);
-        if (args.length == 0)
-            return;
-        String command = args[0].toUpperCase();
-        String msg = null;
-        String className = command;
 
-        if (command.indexOf (".") < 0)
-            className = "org.jpos.q2.cli."+command;
-        try {
-            if (className != null) {
-                Object cmd = q2.getFactory().newInstance (className);
-                if (cmd instanceof Command) {
-                    try {
-                        args[0] = ISOUtil.unPadLeft(line, ' '); // full line
-                        ((Command) cmd).exec (this, args);
-                    } catch (Exception ex) {
-                        ex.printStackTrace (out);
-                        out.flush();
-                    }
-                }
-            }
-        } catch (Exception ex) {
-            println ("Invalid command '" + command + "'");
-        }
+    protected void markStopped()
+    {
     }
-    private String[] parseCommand (String line) throws IOException {
-        if (line == null)
-            return new String[0];
 
-        StringTokenizer st = new StringTokenizer(line);
-        String[] args = new String[st.countTokens()];
-        for (int i=0; st.hasMoreTokens(); i++)
-            args[i] = new String (st.nextToken());
-        return args;
+    protected void markStarted()
+    {
     }
-    private void initCompletors() throws IOException {
-        List l = new LinkedList();
-        l.add(new CLIClassNameCompletor(this));
+
+    protected String[] getCompletionPrefixes()
+    {
+        return new String[]{"org.jpos.q2.cli."};
+    }
+
+    protected String getPrompt()
+    {
+        return "q2> ";
+    }
+
+    protected void handleExit()
+    {
+    }
+
+    private void initCompletor() throws IOException
+    {
+        cmdInterface = new CLICommandInterface(ctx);
+        for (String s : getCompletionPrefixes())
+        {
+            cmdInterface.addPrefix(s);
+        }
+
+        List<Completor> l = new LinkedList<Completor>();
+        l.add(new CLIPrefixedClassNameCompletor(cmdInterface.getPrefixes()));
         completor = new ArgumentCompletor(l);
     }
-    public interface Command {
-        public void exec (CLI cli, String[] args) throws Exception;
+
+    public void start() throws Exception
+    {
+        markStarted();
+        t = new Thread(this);
+        t.setName("Q2-CLI");
+        t.start();
+    }
+
+    public void stop()
+    {
+        markStopped();
+        try
+        {
+            t.join();
+        }
+        catch (InterruptedException e)
+        {
+        }
+    }
+
+    public void run()
+    {
+        while (isRunning())
+        {
+            if (line == null)
+            {
+                ConsoleReader reader = ctx.getConsoleReader();
+                reader.addCompletor(completor);
+                try
+                {
+                    line = reader.readLine(getPrompt());
+                }
+                catch (IOException e)
+                {
+                    ctx.printThrowable(e);
+                }
+                finally
+                {
+                    reader.removeCompletor(completor);
+                }
+            }
+            if (line != null)
+            {
+                StringTokenizer st = new StringTokenizer(line, ";");
+                while (st.hasMoreTokens())
+                {
+                    String n = st.nextToken();
+                    try
+                    {
+                        cmdInterface.execCommand(n);
+                    }
+                    catch (IOException e)
+                    {
+                        ctx.printThrowable(e);
+                    }
+                }
+                line = null;
+            }
+            if (!keepRunning)
+            {
+                break;
+            }
+        }
+        handleExit();
+    }
+
+    // COMPATIBILITY METHODS
+    public void print(String s) {}
+    public void println(String s) {}
+    public boolean confirm(String prompt) throws IOException { return false; }
+    public Q2 getQ2() { return null; };
+    public ConsoleReader getConsoleReader() { return null; }
+    public PrintStream getOutputStream() { return null; }
+
+    public interface Command
+    {
+        public void exec(CLI cli, String[] args) throws Exception;
     }
 }
-

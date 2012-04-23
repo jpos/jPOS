@@ -18,12 +18,14 @@
 
 package org.jpos.q2.cli;
 
-import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOUtil;
-import org.jpos.q2.CLI;
+import org.jpos.q2.CLICommand;
+import org.jpos.q2.CLIContext;
 
-public class UPTIME implements CLI.Command {
-    public void exec (CLI cli, String[] args) throws Exception {
-        cli.println (ISOUtil.millisToString (cli.getQ2().getUptime()));
+public class UPTIME implements CLICommand
+{
+    public void exec(CLIContext cli, String[] args) throws Exception
+    {
+        cli.println(ISOUtil.millisToString(cli.getQ2().getUptime()));
     }
 }

@@ -18,12 +18,15 @@
 
 package org.jpos.q2.cli;
 
-import org.jpos.q2.CLI;
+import org.jpos.q2.CLICommand;
+import org.jpos.q2.CLIContext;
 import org.jpos.util.SystemMonitor;
 
-public class SYSMON implements CLI.Command {
-    public void exec (CLI cli, String[] args) throws Exception {
-        new SystemMonitor().dump (cli.getOutputStream(), " ");
+public class SYSMON implements CLICommand
+{
+    public void exec(CLIContext cli, String[] args) throws Exception
+    {
+        new SystemMonitor().dump(cli.getOutputStream(), " ");
     }
 }
 
