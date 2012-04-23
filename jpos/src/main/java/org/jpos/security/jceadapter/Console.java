@@ -26,8 +26,8 @@ import org.jpos.security.SecureDESKey;
 import org.jpos.util.Logger;
 import org.jpos.util.SimpleLogListener;
 
+import java.io.PrintStream;
 import java.util.Properties;
-
 
 /**
  * A simple application for sending critical commands to the JCE Security Module.
@@ -46,41 +46,46 @@ public class Console {
      * @param args
      */
     public static void main (String[] args) {
+        new Console().exec(System.out,System.err,args);
+    }
+
+    public void exec(PrintStream outPS,PrintStream errPS,String[] args)
+    {
         JCESecurityModule sm = new JCESecurityModule();
         Logger logger = new Logger();
-        logger.addListener(new SimpleLogListener(System.out));
+        logger.addListener(new SimpleLogListener(outPS));
         sm.setLogger(logger, "jce-security-module");
         Properties cfgProps = new Properties();
         SimpleConfiguration cfg = new SimpleConfiguration(cfgProps);
         String commandName = null;
         String[] commandParams = new String[10];                 // 10 is Maximum number of paramters for a command
-        System.out.println("Welcome to JCE Security Module console commander!");
+        outPS.println("Welcome to JCE Security Module console commander!");
         if (args.length == 0) {
-            System.out.println("Usage: Console [-options] command [commandparameters...]");
-            System.out.println("\nwhere options include:");
-            System.out.println("    -lmk <filename>");
-            System.out.println("                  to specify the Local Master Keys file");
-            System.out.println("    -rebuildlmk   to rebuild new Local Master Keys");
-            System.out.println("                  WARNING: old Local Master Keys gets overwritten");
-            System.out.println("    -jce <provider classname>");
-            System.out.println("                  to specify a JavaTM Cryptography Extension 1.2.1 provider");
-            System.out.println("\nWhere command include: ");
-            System.out.println("    GC <keyLength>");
-            System.out.println("                  to generate a clear key component.");
-            System.out.println("    FK <keyLength> <keyType> <component1> <component2> <component3>");
-            System.out.println("                  to form a key from three clear components.");
-            System.out.println("                  and returns the key encrypted under LMK");
-            System.out.println("                  Odd parity is be forced before encryption under LMK");
-            System.out.println("    CK <keyLength> <keyType> <KEYunderLMK>");
-            System.out.println("                  to generate a key check value for a key encrypted under LMK.");
-            System.out.println("    IK <keyLength> <keyType> <KEYunderKEK> ");
-            System.out.println("       <kekLength> <kekType> <KEKunderLMK> <KEKcheckValue>");
-            System.out.println("                  to import a key from encryption under KEK (eg. ZMK,TMK) to encryption under LMK");
-            System.out.println("                  Odd parity is be forced before encryption under LMK");
-            System.out.println("    KE <keyLength> <keyType> <KEYunderLMK> <KEYcheckValue> ");
-            System.out.println("       <kekLength> <kekType> <KEKunderLMK> <KEKcheckValue> ");
-            System.out.println("                  to translate (export) a key from encryption under LMK");
-            System.out.println("                  to encryption under KEK (eg. ZMK,TMK)");
+            outPS.println("Usage: Console [-options] command [commandparameters...]");
+            outPS.println("\nwhere options include:");
+            outPS.println("    -lmk <filename>");
+            outPS.println("                  to specify the Local Master Keys file");
+            outPS.println("    -rebuildlmk   to rebuild new Local Master Keys");
+            outPS.println("                  WARNING: old Local Master Keys gets overwritten");
+            outPS.println("    -jce <provider classname>");
+            outPS.println("                  to specify a JavaTM Cryptography Extension 1.2.1 provider");
+            outPS.println("\nWhere command include: ");
+            outPS.println("    GC <keyLength>");
+            outPS.println("                  to generate a clear key component.");
+            outPS.println("    FK <keyLength> <keyType> <component1> <component2> <component3>");
+            outPS.println("                  to form a key from three clear components.");
+            outPS.println("                  and returns the key encrypted under LMK");
+            outPS.println("                  Odd parity is be forced before encryption under LMK");
+            outPS.println("    CK <keyLength> <keyType> <KEYunderLMK>");
+            outPS.println("                  to generate a key check value for a key encrypted under LMK.");
+            outPS.println("    IK <keyLength> <keyType> <KEYunderKEK> ");
+            outPS.println("       <kekLength> <kekType> <KEKunderLMK> <KEKcheckValue>");
+            outPS.println("                  to import a key from encryption under KEK (eg. ZMK,TMK) to encryption under LMK");
+            outPS.println("                  Odd parity is be forced before encryption under LMK");
+            outPS.println("    KE <keyLength> <keyType> <KEYunderLMK> <KEYcheckValue> ");
+            outPS.println("       <kekLength> <kekType> <KEKunderLMK> <KEKcheckValue> ");
+            outPS.println("                  to translate (export) a key from encryption under LMK");
+            outPS.println("                  to encryption under KEK (eg. ZMK,TMK)");
         }
         else {
             int argsCounter = 0;
@@ -115,8 +120,8 @@ public class Console {
             try {
                 sm.setConfiguration(cfg);
             } catch (ConfigurationException e) {
-                e.printStackTrace();
-                System.exit(0);
+                e.printStackTrace(errPS);
+                return;
             }
             // Execute Command
             if (commandName != null) {
@@ -152,11 +157,11 @@ public class Console {
                 } catch (SMException e) {
                 //e.printStackTrace();
                 } catch (java.lang.NumberFormatException e) {
-                    System.err.println("Invalid KeyLength");
+                    errPS.println("Invalid KeyLength");
                 }
             }
             else {
-                System.err.println("No command specified");
+                errPS.println("No command specified");
             }
         }
     }

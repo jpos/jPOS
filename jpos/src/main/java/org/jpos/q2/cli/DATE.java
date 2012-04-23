@@ -18,13 +18,16 @@
 
 package org.jpos.q2.cli;
 
-import org.jpos.q2.CLI;
+import org.jpos.q2.CLICommand;
+import org.jpos.q2.CLIContext;
 
 import java.util.Date;
 
-public class DATE implements CLI.Command {
-    public void exec (CLI cli, String[] args) {
-        cli.println (new Date().toString());
+public class DATE implements CLICommand
+{
+    public void exec(CLIContext ctx, String[] args)
+    {
+        ctx.println(new Date().toString());
     }
 }
 

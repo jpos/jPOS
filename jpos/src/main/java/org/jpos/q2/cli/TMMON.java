@@ -18,81 +18,97 @@
 
 package org.jpos.q2.cli;
 
-import jline.ANSIBuffer;
-import org.jpos.q2.CLI;
+import org.jpos.q2.CLICommand;
+import org.jpos.q2.CLIContext;
 import org.jpos.transaction.TransactionManager;
 import org.jpos.transaction.TransactionStatusEvent;
 import org.jpos.transaction.TransactionStatusListener;
-import org.jpos.util.LogEvent;
-import org.jpos.util.LogListener;
-import org.jpos.util.Logger;
 import org.jpos.util.NameRegistrar;
 
 import java.io.PrintStream;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
 
 @SuppressWarnings("unused")
-public class TMMON implements CLI.Command, TransactionStatusListener {
+public class TMMON implements CLICommand, TransactionStatusListener
+{
     PrintStream p;
-    CLI cli;
+    CLIContext cli;
     boolean ansi;
-        
-    public void exec (CLI cli, String[] args) throws Exception {
+
+    public void exec(CLIContext cli, String[] args) throws Exception
+    {
         this.p = cli.getOutputStream();
         this.cli = cli;
         this.ansi = cli.getConsoleReader().getTerminal().isANSISupported();
-        if (args.length == 1) {
+        if (args.length == 1)
+        {
             usage(cli);
             return;
         }
-        for (int i=1; i<args.length; i++) {
-            try {
-                Object obj = NameRegistrar.get (args[i]);
-                if (obj instanceof TransactionManager) {
-                    ((TransactionManager) obj).addListener (this);
+        for (int i = 1; i < args.length; i++)
+        {
+            try
+            {
+                Object obj = NameRegistrar.get(args[i]);
+                if (obj instanceof TransactionManager)
+                {
+                    ((TransactionManager) obj).addListener(this);
                 }
-                else {
-                    cli.println ("Object '" + args[i]
-                        + "' is not an instance of TransactionManager (" + obj.toString() + ")");
+                else
+                {
+                    cli.println("Object '" + args[i]
+                                + "' is not an instance of TransactionManager (" + obj.toString() + ")");
                 }
-            } catch (NameRegistrar.NotFoundException e) {
-                cli.println ("TransactionManager '" + args[i] + "' not found -- ignored.");
+            }
+            catch (NameRegistrar.NotFoundException e)
+            {
+                cli.println("TransactionManager '" + args[i] + "' not found -- ignored.");
             }
         }
-        cli.getConsoleReader().readCharacter(new char[] { 'q', 'Q' });
-        for (int i=1; i<args.length; i++) {
-            try {
-                Object obj = NameRegistrar.get (args[i]);
-                if (obj instanceof TransactionManager) {
-                    ((TransactionManager) obj).removeListener (this);
+        cli.getConsoleReader().readCharacter(new char[]{'q', 'Q'});
+        for (int i = 1; i < args.length; i++)
+        {
+            try
+            {
+                Object obj = NameRegistrar.get(args[i]);
+                if (obj instanceof TransactionManager)
+                {
+                    ((TransactionManager) obj).removeListener(this);
                 }
-            } catch (NameRegistrar.NotFoundException ignored) { }
+            }
+            catch (NameRegistrar.NotFoundException ignored) { }
         }
     }
-    public void usage (CLI cli) {
-        cli.println ("Usage: tmmon [tm-name] [tm-name] ...");
-        showTMs (cli);
+
+    public void usage(CLIContext cli)
+    {
+        cli.println("Usage: tmmon [tm-name] [tm-name] ...");
+        showTMs(cli);
     }
-    private void showTMs (CLI cli) {
+
+    private void showTMs(CLIContext cli)
+    {
         NameRegistrar nr = NameRegistrar.getInstance();
         int maxw = 0;
         Iterator iter = NameRegistrar.getMap().entrySet().iterator();
-        StringBuffer sb = new StringBuffer ("available transaction managers:");
-        while (iter.hasNext()) {
-            Map.Entry entry = (Map.Entry) iter.next ();
+        StringBuffer sb = new StringBuffer("available transaction managers:");
+        while (iter.hasNext())
+        {
+            Map.Entry entry = (Map.Entry) iter.next();
             String key = (String) entry.getKey();
-            if (entry.getValue() instanceof TransactionManager) {
-                sb.append (' ');
-                sb.append (key);
+            if (entry.getValue() instanceof TransactionManager)
+            {
+                sb.append(' ');
+                sb.append(key);
             }
         }
-        cli.println (sb.toString());
+        cli.println(sb.toString());
     }
 
-    public void update(TransactionStatusEvent e) {
-        cli.println (e.toString());
+    public void update(TransactionStatusEvent e)
+    {
+        cli.println(e.toString());
     }
 }
 

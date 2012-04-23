@@ -18,26 +18,33 @@
 
 package org.jpos.q2.cli;
 
-import org.jpos.q2.CLI;
+import org.jpos.q2.CLICommand;
+import org.jpos.q2.CLIContext;
 
 import java.io.InputStream;
 
-public class MAN implements CLI.Command {
-    public void exec (CLI cli, String[] args) throws Exception {
-        if (args.length < 2) {
-            cli.println ("What manual page do you want?");
+public class MAN implements CLICommand
+{
+    public void exec(CLIContext cli, String[] args) throws Exception
+    {
+        if (args.length < 2)
+        {
+            cli.println("What manual page do you want?");
             return;
         }
         String command = args[1];
         InputStream is = MAN.class.getResourceAsStream(
-            command.toUpperCase()+".man"
+                command.toUpperCase() + ".man"
         );
-        if (is != null) {
+        if (is != null)
+        {
             byte[] b = new byte[is.available()];
-            is.read (b);
-            cli.print (new String(b, "ISO8859_1"));
-        } else {
-            cli.println ("No manual entry for " + command);
+            is.read(b);
+            cli.print(new String(b, "ISO8859_1"));
+        }
+        else
+        {
+            cli.println("No manual entry for " + command);
         }
     }
 }
