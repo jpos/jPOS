@@ -29,7 +29,7 @@ public class SMCONSOLE implements CLICommand
         {
             String[] params = new String[args.length - 1];
             System.arraycopy(args, 1, params, 0, params.length);
-            org.jpos.security.jceadapter.Console.main(params);
+            new org.jpos.security.jceadapter.Console().exec(cli.getOutputStream(),cli.getOutputStream(),params);
         }
         catch (Exception e)
         {

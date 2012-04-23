@@ -34,68 +34,56 @@ public class CLICommandInterface
 
     public void execCommand(String line) throws IOException
     {
-        for (String prefix : prefixes)
-        {
-            try
-            {
-                execCommand(prefix, line);
-            }
-            catch (ClassNotFoundException e)
-            {
-            }
-        }
-    }
-
-    private void execCommand(String prefix, String line) throws IOException, ClassNotFoundException
-    {
         String args[] = parseCommand(line);
         if (args.length == 0)
         {
             return;
         }
+        String verbatimCmd=args[0];
         String command = args[0].toUpperCase();
         String className = command;
 
-        if (command.indexOf(".") < 0)
+        for (String prefix : prefixes)
         {
-            className = prefix + command;
-        }
-
-        try
-        {
-            Object cmd = getCommand(className);
-            if (cmd != null)
+            if (command.indexOf(".") < 0)
             {
-                try
-                {
-                    long t1 = System.currentTimeMillis();
+                className = prefix + command;
+            }
 
-                    args[0] = ISOUtil.unPadLeft(line, ' '); // full line
-                    if (cmd instanceof Command)
-                    {
-                        ((Command) cmd).exec(new LegacyCommandAdapter(ctx), args);
-                    }
-                    else if (cmd instanceof CLICommand)
-                    {
-                        ((CLICommand) cmd).exec(ctx, args);
-                    }
-                    long elapsed = System.currentTimeMillis() - t1;
-                }
-                catch (Exception ex)
+            try
+            {
+                Object cmd = getCommand(className);
+                if (cmd != null)
                 {
-                    ctx.printThrowable(ex);
+                    try
+                    {
+                        args[0] = ISOUtil.unPadLeft(line, ' '); // full line
+                        if (cmd instanceof Command)
+                        {
+                            ((Command) cmd).exec(new LegacyCommandAdapter(ctx), args);
+                        }
+                        else if (cmd instanceof CLICommand)
+                        {
+                            ((CLICommand) cmd).exec(ctx, args);
+                        }
+                        return;
+                    }
+                    catch (Exception ex)
+                    {
+                        ctx.printThrowable(ex);
+                    }
                 }
             }
+            catch (ClassNotFoundException ex)
+            {
+            }
+            catch (Exception ex)
+            {
+                ctx.printThrowable(ex);
+                break;
+            }
         }
-        catch (ClassNotFoundException ex)
-        {
-            throw ex;
-        }
-        catch (Exception ex)
-        {
-            ctx.println("Invalid command '" + command + "'");
-            ex.printStackTrace();
-        }
+        ctx.println("Invalid command '" + verbatimCmd + "'");
     }
 
     private Object getCommand(String className) throws ClassNotFoundException, InstantiationException, IllegalAccessException

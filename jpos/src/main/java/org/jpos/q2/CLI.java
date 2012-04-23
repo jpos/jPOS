@@ -123,50 +123,57 @@ public class CLI implements Runnable
 
     public void run()
     {
-        try
+        while (isRunning())
         {
-            while (isRunning())
+            if (line == null)
             {
-                if (line == null)
+                ConsoleReader reader = ctx.getConsoleReader();
+                reader.addCompletor(completor);
+                try
                 {
-                    ConsoleReader reader = ctx.getConsoleReader();
-                    reader.addCompletor(completor);
                     line = reader.readLine(getPrompt());
+                }
+                catch (IOException e)
+                {
+                    ctx.printThrowable(e);
+                }
+                finally
+                {
                     reader.removeCompletor(completor);
                 }
-                if (line != null)
+            }
+            if (line != null)
+            {
+                StringTokenizer st = new StringTokenizer(line, ";");
+                while (st.hasMoreTokens())
                 {
-                    StringTokenizer st = new StringTokenizer(line, ";");
-                    while (st.hasMoreTokens())
+                    String n = st.nextToken();
+                    try
                     {
-                        String n = st.nextToken();
                         cmdInterface.execCommand(n);
                     }
-                    line = null;
+                    catch (IOException e)
+                    {
+                        ctx.printThrowable(e);
+                    }
                 }
-                if (!keepRunning)
-                {
-                    break;
-                }
+                line = null;
+            }
+            if (!keepRunning)
+            {
+                break;
             }
         }
-        catch (IOException e)
-        {
-            ctx.printThrowable(e);
-        }
-        finally
-        {
-            handleExit();
-        }
+        handleExit();
     }
 
     // COMPATIBILITY METHODS
-    protected void print(String s) {}
-    protected void println(String s) {}
-    protected boolean confirm(String prompt) throws IOException { return false; }
-    protected Q2 getQ2() { return null; };
-    protected ConsoleReader getConsoleReader() { return null; }
-    protected PrintStream getOutputStream() { return null; }
+    public void print(String s) {}
+    public void println(String s) {}
+    public boolean confirm(String prompt) throws IOException { return false; }
+    public Q2 getQ2() { return null; };
+    public ConsoleReader getConsoleReader() { return null; }
+    public PrintStream getOutputStream() { return null; }
 
     public interface Command
     {
