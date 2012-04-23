@@ -18,15 +18,21 @@
 
 package org.jpos.q2.cli;
 
-import org.jpos.q2.CLI;
+import org.jpos.q2.CLICommand;
+import org.jpos.q2.CLIContext;
 
-public class SMCONSOLE implements CLI.Command {
-    public void exec (CLI cli, String[] args) {
-        try {
-            String[] params = new String[args.length-1];
-            System.arraycopy (args, 1, params, 0, params.length);
-            org.jpos.security.jceadapter.Console.main (params);
-        } catch (Exception e) {
+public class SMCONSOLE implements CLICommand
+{
+    public void exec(CLIContext cli, String[] args)
+    {
+        try
+        {
+            String[] params = new String[args.length - 1];
+            System.arraycopy(args, 1, params, 0, params.length);
+            org.jpos.security.jceadapter.Console.main(params);
+        }
+        catch (Exception e)
+        {
             e.printStackTrace();
         }
     }

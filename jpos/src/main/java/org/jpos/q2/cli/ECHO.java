@@ -19,12 +19,15 @@
 package org.jpos.q2.cli;
 
 import org.jpos.iso.ISOUtil;
-import org.jpos.q2.CLI;
+import org.jpos.q2.CLICommand;
+import org.jpos.q2.CLIContext;
 
-public class ECHO implements CLI.Command {
-    public void exec (CLI cli, String[] args) {
+public class ECHO implements CLICommand
+{
+    public void exec(CLIContext cli, String[] args)
+    {
         String s = ISOUtil.unPadLeft(args[0].substring(4), ' ');
-        cli.println (s);
+        cli.println(s);
     }
 }
 
