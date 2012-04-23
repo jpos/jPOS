@@ -18,10 +18,13 @@
 
 package org.jpos.q2.cli;
 
-import org.jpos.q2.CLI;
+import org.jpos.q2.CLICommand;
+import org.jpos.q2.CLIContext;
 
-public class VERSION implements CLI.Command {
-    public void exec (CLI cli, String[] args) {
-        cli.println (cli.getQ2().getVersionString());
+public class VERSION implements CLICommand
+{
+    public void exec(CLIContext cli, String[] args)
+    {
+        cli.println(cli.getQ2().getVersionString());
     }
 }

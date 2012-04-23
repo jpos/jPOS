@@ -18,22 +18,29 @@
 
 package org.jpos.q2.cli;
 
-import org.jpos.q2.CLI;
+import org.jpos.q2.CLICommand;
+import org.jpos.q2.CLIContext;
 
 import java.io.IOException;
 import java.io.InputStream;
 
-public class LICENSE implements CLI.Command {
-    public void exec (CLI cli, String[] args) throws IOException {
-        display (cli, MAN.class.getResourceAsStream("/LICENSE"));
-        cli.println ("");
+public class LICENSE implements CLICommand
+{
+    public void exec(CLIContext cli, String[] args) throws IOException
+    {
+        display(cli, MAN.class.getResourceAsStream("/LICENSE"));
+        cli.println("");
     }
-    private void display (CLI cli, InputStream is) throws IOException {
-        if (is != null) {
-            while (is.available() > 0) {
+
+    private void display(CLIContext cli, InputStream is) throws IOException
+    {
+        if (is != null)
+        {
+            while (is.available() > 0)
+            {
                 byte[] b = new byte[is.available()];
-                is.read (b);
-                cli.print (new String(b, "ISO8859_1"));
+                is.read(b);
+                cli.print(new String(b, "ISO8859_1"));
             }
         }
     }
