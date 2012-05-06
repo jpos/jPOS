@@ -291,7 +291,7 @@
     <repository>
       <id>jpos-repository</id>
       <name>jPOS Central Repository</name>
-      <url>file:///tmp/jpos</url>
+      <url>file:///mnt/prod/www/maven</url>
     </repository>
   </distributionManagement>
 
