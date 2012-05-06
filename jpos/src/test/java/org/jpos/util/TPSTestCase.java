@@ -25,7 +25,7 @@ public class TPSTestCase extends TestCase {
         TPS tps = new TPS(true);
         for (int i=0; i<1000; i++)
             tps.tick();
-        Thread.sleep (1100L); // java.util.Timer is not accurate
+        Thread.sleep (1050L); // java.util.Timer is not accurate
         assertEquals("Expected 1000 TPS", 1000, tps.intValue());
         assertEquals("Still expecting 1000 TPS on a second call", 1000, tps.intValue());
         Thread.sleep (1000L);
@@ -41,13 +41,14 @@ public class TPSTestCase extends TestCase {
         TPS tps = new TPS();
         for (int i=0; i<1000; i++)
             tps.tick();
-        Thread.sleep (1000L);
-        assertTrue("Expected aprox 1000 TPS but was "+ tps.intValue(), tps.intValue() >= 950);
-        assertTrue("Still expecting aprox 1000 TPS on a second call", tps.intValue() >= 950);
-        Thread.sleep (1000L);
+        Thread.sleep (1050L);
+        assertTrue("Expected aprox 1000 TPS but was "+ tps.intValue(), tps.intValue() >= 900);
+        assertTrue("Still expecting aprox 1000 TPS on a second call", tps.intValue() >= 900);
+        Thread.sleep (1050L);
         assertEquals(
             "TPS should be zero but it's "+tps.intValue() + " (" + tps.floatValue() + ")",
             0, tps.intValue()
         );
     }
 }
+
