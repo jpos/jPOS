@@ -118,15 +118,8 @@ public class TLVFieldPackager extends ISOFieldPackager implements ConfigurablePa
 
     @Override
     public void setGenericPackagerParams(Attributes atts) throws ISOException {
-        String tagName = atts.getValue("tagName");
-        if (tagName.length() != getTagNameLength())
-            throw new ISOException(
-                    tagName
-                            + " is not an acceptable length of field tagName, it should must "
-                            + getTagNameLength() + " long!");
-        this.tagName = tagName;
+        this.tagName = atts.getValue("tagName");
         this.fieldId = Integer.parseInt(atts.getValue("id"));
-
         if (atts.getValue("lengthFieldLength") != null) {
             this.lengthFieldLength = Integer.parseInt(atts.getValue("lengthFieldLength"));
         }

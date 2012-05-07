@@ -92,6 +92,7 @@ public class AllTests
         //suite.addTest(new TestSuite(IFIPM_LLLCHARTest.class));
         //suite.addTest(new TestSuite(IFMC_LLCHARTest.class));
         suite.addTest(new TestSuite(IFE_BITMAPTest.class));
+        suite.addTest(new TestSuite(TLVFieldPackagerTest.class));
         //$JUnit-END$
         return suite;
     }
