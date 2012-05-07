@@ -21,6 +21,7 @@ package org.jpos.iso.packager;
 import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
+import org.jpos.iso.ConfigurablePackager;
 import org.jpos.iso.IF_TBASE;
 import org.jpos.iso.ISOBasePackager;
 import org.jpos.iso.ISOException;
@@ -442,6 +443,11 @@ public class GenericPackager
                     f.setDescription(name);
                     f.setLength(Integer.parseInt(size));
                     f.setPad(Boolean.parseBoolean(pad));
+                    if (f instanceof ConfigurablePackager)
+                    {
+                        ConfigurablePackager gp = (ConfigurablePackager) f;
+                        gp.setGenericPackagerParams(atts);
+                    }
                     // Modified for using IF_TBASE
                     if( f instanceof IF_TBASE){
                       ((IF_TBASE)f).setToken( token );
