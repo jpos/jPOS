@@ -22,7 +22,6 @@ import junit.framework.TestCase;
 import org.jpos.iso.packager.GenericPackager;
 
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 
 /**
  * @author Vishnu Pillai
@@ -56,7 +55,7 @@ public class TLVFieldPackagerTest extends TestCase {
         genericPackager.unpack(msg, new FileInputStream(path + "ISO93TLVPackager.bin"));
 
         assertEquals("1100", msg.getMTI());
-        assertEquals("A1", ((TLVField)((ISOMsg) msg.getComponent(48)).getComponent(1)).getTagName());
-        assertEquals("A1A1A1", ((TLVField)((ISOMsg) msg.getComponent(48)).getComponent(1)).getValue());
+        assertEquals("A1", ((TLVField) ((ISOMsg) msg.getComponent(48)).getComponent(1)).getTagName());
+        assertEquals("A1A1A1", ((TLVField) ((ISOMsg) msg.getComponent(48)).getComponent(1)).getValue());
     }
 }
