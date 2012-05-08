@@ -10,8 +10,6 @@
 <!-- isofield -->
 <!ELEMENT isofield (#PCDATA)>
 <!ATTLIST isofield id                   CDATA        #REQUIRED>
-<!ATTLIST isofield tagName              CDATA        #IMPLIED>
-<!ATTLIST isofield lengthFieldLength    CDATA        #IMPLIED>
 <!ATTLIST isofield length               CDATA        #REQUIRED>
 <!ATTLIST isofield name                 CDATA        #REQUIRED>
 <!ATTLIST isofield class                NMTOKEN      #REQUIRED>
@@ -32,4 +30,5 @@
 <!ATTLIST isofieldpackager bitmapField      CDATA        #IMPLIED>
 <!ATTLIST isofieldpackager firstField       CDATA        #IMPLIED>
 <!ATTLIST isofieldpackager headerLength     CDATA        #IMPLIED>
+<!ATTLIST isofieldpackager tagMapper        CDATA        #IMPLIED>
 

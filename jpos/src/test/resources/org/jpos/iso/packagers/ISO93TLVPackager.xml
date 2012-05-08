@@ -146,43 +146,34 @@
       length="999"
       name="Additional Data Private Use"
       class="org.jpos.iso.IFA_LLLCHAR"
-      emitBitmap="false" 
-      packager="org.jpos.iso.packager.GenericSubFieldPackager">
+      emitBitmap="false"
+      tagMapper="org.jpos.iso.packager.TaggedFieldPackagerBaseTest$TagMapperImpl"
+      packager="org.jpos.iso.packager.GenericTaggedFieldsPackager">
       <isofield
           id="1"
-          tagName="A1"
-          lengthFieldLength="2"
           length="29"
           name="Address Verification (AVS) Request Data"
-          class="org.jpos.iso.TLVFieldPackager"/>
+          class="org.jpos.iso.IFA_TTLLCHAR"/>
       <isofield
           id="2"
-          tagName="A2"
-          lengthFieldLength="2"
           length="1"
           name="Address Verification (AVS) Response Data"
-          class="org.jpos.iso.TLVFieldPackager"/>
+          class="org.jpos.iso.IFA_TTLLCHAR"/>
       <isofield
           id="3"
-          tagName="A3"
-          lengthFieldLength="2"
           length="8"
           name="Generic Transaction Additional Data"
-          class="org.jpos.iso.TLVFieldPackager"/>
+          class="org.jpos.iso.IFA_TTLLCHAR"/>
       <isofield
           id="4"
-          tagName="A4"
-          lengthFieldLength="2"
           length="1"
           name="Canadian Debit Account Type"
-          class="org.jpos.iso.TLVFieldPackager"/>
+          class="org.jpos.iso.IFA_TTLLCHAR"/>
       <isofield
           id="5"
-          tagName="A5"
-          lengthFieldLength="2"
           length="1"
           name="Transaction Identifier Data"
-          class="org.jpos.iso.TLVFieldPackager"/>                  
+          class="org.jpos.iso.IFA_TTLLCHAR"/>
   </isofieldpackager>
       
   <isofield
@@ -211,11 +202,20 @@
       length="513"
       name="Chip Card Data EMV Contactless Specification"
       class="org.jpos.iso.IFB_LLLCHAR"/>
-  <isofield
+  <isofieldpackager
       id="60"
       length="999"
-      name="Reserved National 1"
-      class="org.jpos.iso.IFA_LLLCHAR"/>
+      name="Reserved National – 1 - Transaction Environment Data"
+      class="org.jpos.iso.IFA_LLLCHAR"
+      emitBitmap="false"
+      tagMapper="org.jpos.iso.packager.TaggedFieldPackagerBaseTest$TagMapperImpl"
+      packager="org.jpos.iso.packager.GenericTaggedFieldsPackager">
+      <isofield
+          id="1"
+          length="21"
+          name="Chase Paymentech Defined Point of Service Data"
+          class="org.jpos.iso.IFA_TTLLLCHAR"/>
+  </isofieldpackager>
   <isofield
       id="62"
       length="999"
