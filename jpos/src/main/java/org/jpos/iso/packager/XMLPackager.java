@@ -52,7 +52,6 @@ public class XMLPackager extends DefaultHandler
 
     public static final String ISOMSG_TAG    = "isomsg";
     public static final String ISOFIELD_TAG  = "field";
-    public static final String TAG_ATTR      = "tag";
     public static final String ID_ATTR       = "id";
     public static final String VALUE_ATTR    = "value";
     public static final String TYPE_ATTR     = "type";
