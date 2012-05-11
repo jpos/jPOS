@@ -261,7 +261,8 @@ public class GenericPackager
         }
         return sb.toString();
     }
-    private void setGenericPackagerParams (Attributes atts)
+
+    protected void setGenericPackagerParams (Attributes atts)
     {
         String maxField  = atts.getValue("maxValidField");
         String emitBmap  = atts.getValue("emitBitmap");

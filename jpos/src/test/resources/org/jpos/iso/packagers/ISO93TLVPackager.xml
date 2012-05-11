@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE isopackager SYSTEM "./generic-subtag-packager.dtd">
+
+<!-- ISO 8583:2003 (ASCII) field descriptions for GenericPackager -->
+
+<isopackager>
+  <isofield
+      id="0"
+      length="4"
+      name="Message Type Indicator"
+      pad="false"
+      class="org.jpos.iso.IFA_NUMERIC"/>
+  <isofield
+      id="1"
+      length="16"
+      name="Bitmap"
+      class="org.jpos.iso.IFB_BITMAP"/>
+  <isofield
+      id="2"
+      length="19"
+      name="Primary Account number"
+      pad="false"
+      class="org.jpos.iso.IFA_LLCHAR"/>
+  <isofield
+      id="3"
+      length="6"
+      name="Processing Code"
+      pad="false"
+      class="org.jpos.iso.IFA_NUMERIC"/>
+  <isofield
+      id="4"
+      length="12"
+      name="Transaction Amount"
+      pad="true"
+      class="org.jpos.iso.IFA_NUMERIC"/>
+  <isofield
+      id="7"
+      length="14"
+      name="Transaction Date and Time"
+      pad="false"
+      class="org.jpos.iso.IFA_NUMERIC"/>
+  <isofield
+      id="8"
+      length="12"
+      name="Amount, Cardholder Billing Fee"
+      pad="true"
+      class="org.jpos.iso.IFA_NUMERIC"/>
+  <isofield
+      id="11"
+      length="6"
+      name="System Trace Audit Number"
+      pad="true"
+      class="org.jpos.iso.IFA_NUMERIC"/>
+  <isofield
+      id="12"
+      length="6"
+      name="Time, Local Transaction"
+      pad="false"
+      class="org.jpos.iso.IFA_NUMERIC"/>
+  <isofield
+      id="13"
+      length="8"
+      name="Date, Local Transaction"
+      pad="false"
+      class="org.jpos.iso.IFA_NUMERIC"/>
+  <isofield
+      id="14"
+      length="4"
+      name="Date, Expiration"
+      pad="false"
+      class="org.jpos.iso.IFA_NUMERIC"/>
+  <isofield
+      id="15"
+      length="4"
+      name="Date, Settlement"
+      pad="false"
+      class="org.jpos.iso.IFA_NUMERIC"/>
+  <isofield
+      id="18"
+      length="4"
+      name="Merchant Type"
+      pad="false"
+      class="org.jpos.iso.IFA_NUMERIC"/>
+  <isofield
+      id="22"
+      length="3"
+      name="POS Entry Mode"
+      pad="false"
+      class="org.jpos.iso.IFA_NUMERIC"/>
+  <isofield
+      id="23"
+      length="2"
+      name="EMV Contactless PAN Sequence Number"
+      pad="true"
+      class="org.jpos.iso.IFA_NUMERIC"/>
+  <isofield
+      id="25"
+      length="2"
+      name="POS Condition Code"
+      pad="false"
+      class="org.jpos.iso.IFA_NUMERIC"/>
+  <isofield
+      id="35"
+      length="37"
+      name="Track 2 data"
+      class="org.jpos.iso.IFA_LLCHAR"/>
+  <isofield
+      id="37"
+      length="12"
+      name="Retrieval reference number"
+      class="org.jpos.iso.IF_CHAR"/>
+  <isofield
+      id="38"
+      length="6"
+      name="Authorization ID Response"
+      class="org.jpos.iso.IF_CHAR"/>
+  <isofield
+      id="39"
+      length="2"
+      name="Response Code"
+      pad="false"
+      class="org.jpos.iso.IF_CHAR"/>
+  <isofield
+      id="41"
+      length="3"
+      name="Card Acquirer Terminal Id"
+      class="org.jpos.iso.IFA_NUMERIC"/>
+  <isofield
+      id="42"
+      length="12"
+      name="Card Acquirer Id"
+      class="org.jpos.iso.IFA_NUMERIC"/> 
+  <isofield
+      id="44"
+      length="9999"
+      name="Additional Response Data Private Use"
+      class="org.jpos.iso.IFA_LLLLCHAR"/>  
+  <isofield
+      id="45"
+      length="76"
+      name="Track 1 Data"
+      class="org.jpos.iso.IFA_LLCHAR"/>
+      
+  <isofieldpackager
+      id="48"
+      length="999"
+      name="Additional Data Private Use"
+      class="org.jpos.iso.IFA_LLLCHAR"
+      emitBitmap="false"
+      tagMapper="org.jpos.iso.packager.TaggedFieldPackagerBaseTest$TagMapperImpl"
+      packager="org.jpos.iso.packager.GenericTaggedFieldsPackager">
+      <isofield
+          id="1"
+          length="29"
+          name="Address Verification (AVS) Request Data"
+          class="org.jpos.iso.IFA_TTLLCHAR"/>
+      <isofield
+          id="2"
+          length="1"
+          name="Address Verification (AVS) Response Data"
+          class="org.jpos.iso.IFA_TTLLCHAR"/>
+      <isofield
+          id="3"
+          length="8"
+          name="Generic Transaction Additional Data"
+          class="org.jpos.iso.IFA_TTLLCHAR"/>
+      <isofield
+          id="4"
+          length="1"
+          name="Canadian Debit Account Type"
+          class="org.jpos.iso.IFA_TTLLCHAR"/>
+      <isofield
+          id="5"
+          length="1"
+          name="Transaction Identifier Data"
+          class="org.jpos.iso.IFA_TTLLCHAR"/>
+  </isofieldpackager>
+      
+  <isofield
+      id="49"
+      length="3"
+      name="Currency Code, Transaction"
+      class="org.jpos.iso.IFA_NUMERIC"/>
+  <isofield
+      id="52"
+      length="16"
+      name="Personal Identification Number"
+      class="org.jpos.iso.IF_CHAR"/>
+  <isofield
+      id="53"
+      length="16"
+      name="Security Related Control Information"
+      class="org.jpos.iso.IF_CHAR"/>
+  <isofield
+      id="54"
+      length="12"
+      pad="true"
+      name="Additional Amount"
+      class="org.jpos.iso.IFA_NUMERIC"/>
+  <isofield
+      id="55"
+      length="513"
+      name="Chip Card Data EMV Contactless Specification"
+      class="org.jpos.iso.IFB_LLLCHAR"/>
+  <isofieldpackager
+      id="60"
+      length="999"
+      name="Reserved National – 1 - Transaction Environment Data"
+      class="org.jpos.iso.IFA_LLLCHAR"
+      emitBitmap="false"
+      tagMapper="org.jpos.iso.packager.TaggedFieldPackagerBaseTest$TagMapperImpl"
+      packager="org.jpos.iso.packager.GenericTaggedFieldsPackager">
+      <isofield
+          id="1"
+          length="21"
+          name="Chase Paymentech Defined Point of Service Data"
+          class="org.jpos.iso.IFA_TTLLLCHAR"/>
+  </isofieldpackager>
+  <isofield
+      id="62"
+      length="999"
+      name="Reserved Private 2"
+      class="org.jpos.iso.IFA_LLLCHAR"/>
+  <isofield
+      id="63"
+      length="999"
+      name="Reserved Private 2"
+      class="org.jpos.iso.IFA_LLLCHAR"/>                  
+  <isofield
+      id="70"
+      length="3"
+      name="Network Management Information Code"
+      class="org.jpos.iso.IFA_NUMERIC"/>
+  <isofield
+      id="71"
+      length="7"
+      name="Message Number Security Message Counter"
+      class="org.jpos.iso.IFB_NUMERIC"/>
+  <isofield
+      id="72"
+      length="7"
+      name="Message Number Last Security Message Counter"
+      class="org.jpos.iso.IFB_NUMERIC"/>
+  <isofield
+      id="90"
+      length="46"
+      name="Original Transaction Data"
+      pad="false"
+      class="org.jpos.iso.IF_CHAR"/>
+</isopackager>
