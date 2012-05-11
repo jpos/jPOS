@@ -22,9 +22,6 @@ package org.jpos.iso;
 /**
  * ISOFieldPackager ASCII variable len BINARY
  *
- * @author apr@cs.com.uy
- * @version Id: $
- * @see org.jpos.iso.ISOComponent
  */
 public class IFA_LBINARY extends ISOBinaryFieldPackager {
     public IFA_LBINARY() {

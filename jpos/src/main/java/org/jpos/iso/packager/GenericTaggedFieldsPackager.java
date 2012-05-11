@@ -1,3 +1,21 @@
+/*
+ * jPOS Project [http://jpos.org]
+ * Copyright (C) 2000-2012 Alejandro P. Revilla
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package org.jpos.iso.packager;
 
 import org.jpos.iso.*;
@@ -13,7 +31,12 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @author Vishnu Pillai
+ *
+ * Packager for fields containing TLV sub-fields without a bitmap
+ *
+ * The Tag is alphanumeric so a mapping between fieldNumber and tag are required. A TagMapper
+ * implementation should provide this mapping
+ *
  */
 
 public class GenericTaggedFieldsPackager extends GenericPackager {
@@ -173,6 +196,8 @@ public class GenericTaggedFieldsPackager extends GenericPackager {
             if (fld[i] instanceof TaggedFieldPackagerBase) {
                 ((TaggedFieldPackagerBase) fld[i]).setParentFieldNumber(fieldId);
                 ((TaggedFieldPackagerBase) fld[i]).setTagMapper(tagMapper);
+                ((TaggedFieldPackagerBase) fld[i]).setPackingLenient(isPackingLenient());
+                ((TaggedFieldPackagerBase) fld[i]).setUnpackingLenient(isUnpackingLenient());
             }
         }
     }
@@ -191,8 +216,28 @@ public class GenericTaggedFieldsPackager extends GenericPackager {
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
-
     }
+
+    /**
+     * Subclasses may override this method if a lenient packing is required when a
+     * field-to-tag mapping cannot be found.
+     *
+     * @return A boolean value for or against lenient packing
+     */
+    protected boolean isPackingLenient() {
+        return false;
+    }
+
+    /**
+     * Subclasses may override this method if a lenient unpacking is required when a
+     * tag-to-field mapping cannot be found.
+     *
+     * @return A boolean value for or against lenient unpacking
+     */
+    protected boolean isUnpackingLenient() {
+        return false;
+    }
+
 }
 
 

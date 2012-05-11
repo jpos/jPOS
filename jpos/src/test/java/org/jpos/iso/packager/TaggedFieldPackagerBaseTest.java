@@ -24,11 +24,12 @@ import org.jpos.iso.ISOMsg;
 import org.junit.Test;
 
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @author Vishnu Pillai
+ *
  */
 public class TaggedFieldPackagerBaseTest extends TestCase {
 
@@ -47,7 +48,7 @@ public class TaggedFieldPackagerBaseTest extends TestCase {
         subFieldsContainer.set(tlvField);
 
         ISOField tlvField2 = new ISOField(3);
-        tlvField2.setValue("60TagA3");
+        tlvField2.setValue("48TagA3");
         subFieldsContainer.set(tlvField2);
 
         msg.set(subFieldsContainer);
@@ -64,9 +65,9 @@ public class TaggedFieldPackagerBaseTest extends TestCase {
         byte[] packed = msg.pack();
         assertNotNull(packed);
 
-        //FileOutputStream fos = new FileOutputStream(path + "ISO93TLVPackager.bin");
-        //fos.write(packed);
-        //fos.close();
+        FileOutputStream fos = new FileOutputStream(path + "ISO93TLVPackager.bin");
+        fos.write(packed);
+        fos.close();
     }
 
 
@@ -108,7 +109,7 @@ public class TaggedFieldPackagerBaseTest extends TestCase {
             return numberToTagMap.get(fieldNumber + "." + subFieldNumber);
         }
 
-        public int getFieldNumberForTag(int fieldNumber, String tag) {
+        public Integer getFieldNumberForTag(int fieldNumber, String tag) {
             return tagToNumberMap.get(fieldNumber + "." + tag);
         }
     }
