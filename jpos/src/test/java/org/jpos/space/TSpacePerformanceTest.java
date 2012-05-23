@@ -119,8 +119,10 @@ public class TSpacePerformanceTest  {
         long avg = 0;
         for (Long t :times)
           avg += t;
-        avg /= times.size();
-        avg /= 1000000;
+        if (avg != 0) {
+            avg /= times.size();
+            avg /= 1000000;
+        }
         System.out.println(prefix + avg);
     }
 
@@ -158,7 +160,7 @@ public class TSpacePerformanceTest  {
 
         long stamp = System.currentTimeMillis();
         while (((ThreadPoolExecutor)es).getActiveCount() > 0) {
-          if (System.currentTimeMillis() - stamp < 5000){
+          if (System.currentTimeMillis() - stamp < 10000){
             ISOUtil.sleep(100);
             continue;
           }
