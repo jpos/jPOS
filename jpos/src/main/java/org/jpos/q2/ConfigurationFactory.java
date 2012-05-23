@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-${today.year} Alejandro P. Revilla
+ * Copyright (C) 2000-2012 Alejandro P. Revilla
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,5 +20,11 @@
 
 package org.jpos.q2;
 
-public class ConfigurationFactory {
+import org.jdom.Element;
+import org.jpos.core.Configuration;
+import org.jpos.core.ConfigurationException;
+
+public interface ConfigurationFactory {
+    public Configuration getConfiguration (Element e)
+        throws ConfigurationException;
 }

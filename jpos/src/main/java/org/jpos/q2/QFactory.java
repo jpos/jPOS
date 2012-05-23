@@ -41,6 +41,7 @@ public class QFactory {
     ObjectName loaderName;
     Q2 q2;
     ResourceBundle classMapping;
+    ConfigurationFactory defaultConfigurationFactory = new SimpleConfigurationFactory();
 
     public QFactory (ObjectName loaderName, Q2 q2) {
         super ();
@@ -318,38 +319,12 @@ public class QFactory {
     public Configuration getConfiguration (Element e) 
         throws ConfigurationException
     {
-        Properties props = new Properties ();
-        Iterator iter = e.getChildren ("property").iterator();
-        while (iter.hasNext()) {
-            Element property = (Element) iter.next ();
-            String name  = property.getAttributeValue("name");
-            String value = property.getAttributeValue("value");
-            String file  = property.getAttributeValue("file");
-            if (file != null)
-                try {
-                    props.load (new FileInputStream (new File (file)));
-                } catch (Exception ex) {
-                    throw new ConfigurationException (file, ex);
-                }
-            else if (name != null && value != null) {
-                Object obj = props.get (name);
-                if (obj instanceof String[]) {
-                    String[] mobj = (String[]) obj;
-                    String[] m = new String[mobj.length + 1];
-                    System.arraycopy(mobj,0,m,0,mobj.length);
-                    m[mobj.length] = value;
-                    props.put (name, m);
-                } else if (obj instanceof String) {
-                    String[] m = new String[2];
-                    m[0] = (String) obj;
-                    m[1] = value;
-                    props.put (name, m);
-                } else
-                    props.put (name, value);
-            }
-        }
-        return new SimpleConfiguration (props);
+        String configurationFactoryClazz = e.getAttributeValue("configuration-factory");
+        ConfigurationFactory cf = configurationFactoryClazz != null ?
+            (ConfigurationFactory) newInstance(configurationFactoryClazz) : defaultConfigurationFactory;
+        return cf.getConfiguration(e);
     }
+
     public void setLogger (Object obj, Element e) {
         if (obj instanceof LogSource) {
             String loggerName = e.getAttributeValue ("logger");
