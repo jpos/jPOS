@@ -77,7 +77,6 @@ public class QFactory {
                MalformedObjectNameException,
                MalformedURLException,
                InstanceAlreadyExistsException,
-               MBeanRegistrationException,
                InstanceNotFoundException,
                MBeanException,
                NotCompliantMBeanException,
