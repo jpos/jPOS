@@ -60,7 +60,7 @@ public class TSpaceTestCase extends TestCase implements SpaceListener {
         assertNull ("ABC", sp.rdp ("testExpiration_Key"));
     }
     public void testOutRdpInpRdp() throws Exception {
-        Object o = new Boolean (true);
+        Object o = Boolean.TRUE;
         String k = "testOutRdpInpRdp_Key";
         sp.out (k, o);
         assertTrue (o.equals (sp.rdp (k)));

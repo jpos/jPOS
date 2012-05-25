@@ -31,13 +31,13 @@ public class JESpaceTestCase extends TestCase {
             JESpace.getSpace ("space-test", "target/test-classes/space-test");
     }
     public void testSimpleOut() throws Exception {
-        Object o = new Boolean (true);
+        Object o = Boolean.TRUE;
         sp.out ("testSimpleOut_Key", o);
         Object o1 = sp.in ("testSimpleOut_Key");
         assertTrue (o.equals (o1));
     }
     public void testOutRdpInpRdp() throws Exception {
-        Object o = new Boolean (true);
+        Object o = Boolean.TRUE;
         String k = "testOutRdpInpRdp_Key";
         sp.out (k, o);
         assertTrue (o.equals (sp.rdp (k)));
