@@ -94,17 +94,6 @@ public class SMAdaptorTest {
     }
 
     @Test
-    public void testStartServiceThrowsNullPointerException() throws Throwable {
-        SMAdaptor sMAdaptor = new SMAdaptor();
-        try {
-            sMAdaptor.startService();
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
-    }
-
-    @Test
     public void testStopService() throws Throwable {
         SMAdaptor sMAdaptor = new SMAdaptor();
         sMAdaptor.setName("testSMAdaptorName");
@@ -112,14 +101,4 @@ public class SMAdaptorTest {
         assertEquals("sMAdaptor.getName()", "testSMAdaptorName", sMAdaptor.getName());
     }
 
-    @Test
-    public void testStopServiceThrowsNullPointerException() throws Throwable {
-        SMAdaptor sMAdaptor = new SMAdaptor();
-        try {
-            sMAdaptor.stopService();
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
-    }
 }

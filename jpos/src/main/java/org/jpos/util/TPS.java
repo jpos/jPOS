@@ -76,6 +76,8 @@ public class TPS implements Loggeable {
      */
     public TPS(final long period, boolean autoupdate) {
         super();
+        count = new AtomicInteger(0);
+        start = new AtomicLong(0L);
         this.period = period;
         this.autoupdate = autoupdate;
         start.set(System.nanoTime() / FROM_NANOS);

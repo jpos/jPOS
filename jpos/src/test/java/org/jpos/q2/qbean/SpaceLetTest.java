@@ -155,13 +155,4 @@ public class SpaceLetTest {
         }
     }
 
-    @Test
-    public void testStopServiceThrowsNullPointerException() throws Throwable {
-        try {
-            new SpaceLet().stopService();
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            // expected
-        }
-    }
 }

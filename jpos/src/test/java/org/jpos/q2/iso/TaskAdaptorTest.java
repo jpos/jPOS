@@ -98,14 +98,4 @@ public class TaskAdaptorTest {
         assertEquals("taskAdaptor.getName()", "testTaskAdaptorName", taskAdaptor.getName());
     }
 
-    @Test
-    public void testStopServiceThrowsNullPointerException() throws Throwable {
-        TaskAdaptor taskAdaptor = new TaskAdaptor();
-        try {
-            taskAdaptor.stopService();
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
-    }
 }

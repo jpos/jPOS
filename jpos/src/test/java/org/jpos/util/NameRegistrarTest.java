@@ -18,6 +18,8 @@
 
 package org.jpos.util;
 
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.sameInstance;
@@ -27,45 +29,47 @@ import static org.junit.Assert.assertThat;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
-import org.junit.Before;
+import org.junit.*;
 import org.junit.Test;
 
 public class NameRegistrarTest {
 
     private static final boolean WITH_DETAIL = true;
 
-    @Before
-    public void setup() {
+    @BeforeClass
+    public static void onSetup() {
 	NameRegistrar.register("test1", "testValue1");
 	NameRegistrar.register("test2", "testValue2");
     }
 
-    @Test
-    public void testDumpWithoutDetailAndIndent() throws Throwable {
-	String expected = "testNameRegistrarIndent--- name-registrar ---\n"
-		+ "testNameRegistrarIndent  test1: java.lang.String\n"
-		+ "testNameRegistrarIndent  test2: java.lang.String\n";
+    @AfterClass
+    public static void tearDown() {
+	NameRegistrar.unregister("test1");
+	NameRegistrar.unregister("test2");
+    }
 
+    @Test
+    public void testDumpWithoutDetail() throws Throwable {
 	ByteArrayOutputStream out = new ByteArrayOutputStream();
 	NameRegistrar.getInstance().dump(new PrintStream(out),
-		"testNameRegistrarIndent");
+		"€");
 
-	String result = out.toString();
-	assertThat(result, is(expected));
+	assertThat(
+		out.toString(),
+		allOf(containsString("€--- name-registrar ---\n"),
+			containsString("test1"), containsString("test2")));
     }
 
     @Test
     public void testDumpWithDetailAndIndent() throws Throwable {
-	String expected = "+--- name-registrar ---\n"
-		+ "+  test1: java.lang.String\n"
-		+ "+  test2: java.lang.String\n";
-
 	ByteArrayOutputStream out = new ByteArrayOutputStream();
 	NameRegistrar.getInstance()
 		.dump(new PrintStream(out), "+", WITH_DETAIL);
 
-	String result = out.toString();
-	assertThat(result, is(expected));
+	assertThat(
+		out.toString(),
+		allOf(containsString("+--- name-registrar ---\n"),
+			containsString("test1"), containsString("test2")));
     }
 
     @Test
@@ -99,10 +103,17 @@ public class NameRegistrarTest {
 
     @Test(expected = NameRegistrar.NotFoundException.class)
     public void testUnregister() throws Exception {
-	NameRegistrar.unregister("test1");
-	NameRegistrar.get("test1");
+	NameRegistrar.register("test3", "someTest3Value");
+	assertThat((String) NameRegistrar.get("test3"), is("someTest3Value"));
+	NameRegistrar.unregister("test3");
+	NameRegistrar.get("test3");
     }
 
+    @Test
+    public void testUnregisterUnknownKeyDoesNotThrowException() throws Exception {
+	NameRegistrar.unregister("unknownKey");
+    }
+    
     @Test
     public void testNotFoundExceptionConstructor1() throws Throwable {
 	NameRegistrar.NotFoundException notFoundException = new NameRegistrar.NotFoundException(
@@ -110,5 +121,4 @@ public class NameRegistrarTest {
 	assertEquals("notFoundException.getMessage()",
 		"testNotFoundExceptionDetail", notFoundException.getMessage());
     }
-
 }

@@ -32,7 +32,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 public class NameRegistrar implements Loggeable {
 
     private static NameRegistrar instance = new NameRegistrar();
-    private Map<String,Object> registrar = new HashMap<String,Object>();
+    private Map<String,Object> registrar;
     private static ReadWriteLock LOCK = new ReentrantReadWriteLock();
 
     public static class NotFoundException extends Exception {
@@ -50,6 +50,7 @@ public class NameRegistrar implements Loggeable {
 
     private NameRegistrar() {
         super();
+        registrar = new HashMap<String,Object>();
     }
 
     public static Map<String,Object> getMap() {
@@ -133,9 +134,14 @@ public class NameRegistrar implements Loggeable {
         try {
             for (Map.Entry<String,Object> entry : registrar.entrySet()) {
                 Object obj = entry.getValue();
-                p.println(inner
-                        + entry.getKey().toString() + ": "
-                        + obj.getClass().getName());
+                String key = entry.getKey();
+                if (key == null) {
+                    key = "null";
+                }
+                String objectClassName = (obj == null) ? "<NULL>" :  obj.getClass().getName(); 
+		p.println(inner
+                        + key.toString() + ": "
+                        + objectClassName);
                 if (detail && obj instanceof Loggeable) {
                     ((Loggeable) obj).dump(p, inner + "  ");
                 }

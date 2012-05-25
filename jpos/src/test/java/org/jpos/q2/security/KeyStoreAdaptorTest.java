@@ -86,17 +86,7 @@ public class KeyStoreAdaptorTest {
         assertEquals("keyStoreAdaptor.clazz", "testKeyStoreAdaptorClazz", keyStoreAdaptor.clazz);
     }
 
-    @Test
-    public void testStartServiceThrowsNullPointerException() throws Throwable {
-        KeyStoreAdaptor keyStoreAdaptor = new KeyStoreAdaptor();
-        try {
-            keyStoreAdaptor.startService();
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
-    }
-
+ 
     @Test
     public void testStopService() throws Throwable {
         KeyStoreAdaptor keyStoreAdaptor = new KeyStoreAdaptor();
@@ -105,14 +95,5 @@ public class KeyStoreAdaptorTest {
         assertEquals("keyStoreAdaptor.getName()", "testKeyStoreAdaptorName", keyStoreAdaptor.getName());
     }
 
-    @Test
-    public void testStopServiceThrowsNullPointerException() throws Throwable {
-        KeyStoreAdaptor keyStoreAdaptor = new KeyStoreAdaptor();
-        try {
-            keyStoreAdaptor.stopService();
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
-    }
+
 }
