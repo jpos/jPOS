@@ -27,7 +27,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.GZIPOutputStream;
@@ -35,7 +35,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 /**
- * Rotates log daily and compress the prevoius log.
+ * Rotates log daily and compress the previous log.
  * @author <a href="mailto:alcarraz@cs.com.uy">Andr&eacute;s Alcarraz</a>
  * @since jPOS 1.5.1
  */
@@ -50,7 +50,7 @@ public class DailyLogListener extends RotateLogListener{
     private static final int DEF_COMPRESSION = NONE;
     private static final int DEF_BUFFER_SIZE = 128*1024;//128 KB
     private static final String[] DEF_COMPRESSED_SUFFIX= {"",".gz",".zip"};
-    private static final Map<String,Integer> COMPRESSION_FORMATS = new Hashtable<String,Integer>();
+    private static final Map<String,Integer> COMPRESSION_FORMATS = new HashMap<String,Integer>(3);
     static {
         COMPRESSION_FORMATS.put("none", NONE);
         COMPRESSION_FORMATS.put("gzip", GZIP);

@@ -41,7 +41,7 @@ public class FilterLogListener implements LogListener,Configurable
     private static Hashtable levels;
 
     static{
-            levels = new Hashtable();
+            levels = new Hashtable(6);
             levels.put(Log.TRACE, 1);
             levels.put(Log.DEBUG, 2);
             levels.put(Log.INFO, 3);
