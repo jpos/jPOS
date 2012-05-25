@@ -19,7 +19,6 @@ package org.jpos.util;
 
 import java.io.PrintStream;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -33,7 +32,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 public class NameRegistrar implements Loggeable {
 
     private static NameRegistrar instance = new NameRegistrar();
-    private Map registrar;
+    private Map<String,Object> registrar = new HashMap<String,Object>();
     private static ReadWriteLock LOCK = new ReentrantReadWriteLock();
 
     public static class NotFoundException extends Exception {
@@ -51,10 +50,9 @@ public class NameRegistrar implements Loggeable {
 
     private NameRegistrar() {
         super();
-        registrar = new HashMap();
     }
 
-    public static Map getMap() {
+    public static Map<String,Object> getMap() {
         return getInstance().registrar;
     }
 
@@ -72,7 +70,7 @@ public class NameRegistrar implements Loggeable {
      * @param value - value to be associated with the specified key
      */
     public static void register(String key, Object value) {
-        Map map = getMap();
+        Map<String,Object> map = getMap();
         LOCK.writeLock().lock();
         try {
             map.put(key, value);
@@ -85,7 +83,7 @@ public class NameRegistrar implements Loggeable {
      * @param key key whose mapping is to be removed from registrar.
      */
     public static void unregister(String key) {
-        Map map = getMap();
+        Map<String,Object> map = getMap();
         LOCK.writeLock().lock();
         try {
             map.remove(key);
@@ -133,9 +131,7 @@ public class NameRegistrar implements Loggeable {
         p.println(indent + "--- name-registrar ---");
         LOCK.readLock().lock();
         try {
-            Iterator iter = registrar.entrySet().iterator();
-            while (iter.hasNext()) {
-                Map.Entry entry = (Map.Entry) iter.next();
+            for (Map.Entry<String,Object> entry : registrar.entrySet()) {
                 Object obj = entry.getValue();
                 p.println(inner
                         + entry.getKey().toString() + ": "

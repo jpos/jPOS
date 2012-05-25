@@ -18,146 +18,97 @@
 
 package org.jpos.util;
 
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.assertThat;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
+import org.junit.Before;
 import org.junit.Test;
 
 public class NameRegistrarTest {
 
-    @Test
-    public void testDump() throws Throwable {
-        NameRegistrar.getInstance().dump(new PrintStream(new ByteArrayOutputStream()), "testNameRegistrarIndent");
-        assertTrue("Test completed without Exception", true);
-        // dependencies on static and environment state led to removal of 1
-        // assertion
+    private static final boolean WITH_DETAIL = true;
+
+    @Before
+    public void setup() {
+	NameRegistrar.register("test1", "testValue1");
+	NameRegistrar.register("test2", "testValue2");
     }
 
     @Test
-    public void testDump1() throws Throwable {
-        NameRegistrar.getInstance().dump(new PrintStream(new ByteArrayOutputStream()), "testNameRegistrarIndent", false);
-        assertTrue("Test completed without Exception", true);
-        // dependencies on static and environment state led to removal of 1
-        // assertion
+    public void testDumpWithoutDetailAndIndent() throws Throwable {
+	String expected = "testNameRegistrarIndent--- name-registrar ---\n"
+		+ "testNameRegistrarIndent  test1: java.lang.String\n"
+		+ "testNameRegistrarIndent  test2: java.lang.String\n";
+
+	ByteArrayOutputStream out = new ByteArrayOutputStream();
+	NameRegistrar.getInstance().dump(new PrintStream(out),
+		"testNameRegistrarIndent");
+
+	String result = out.toString();
+	assertThat(result, is(expected));
     }
 
     @Test
-    public void testDump2() throws Throwable {
-        NameRegistrar.getInstance().dump(new PrintStream(new ByteArrayOutputStream()), "testNameRegistrarIndent", true);
-        assertTrue("Test completed without Exception", true);
-        // dependencies on static and environment state led to removal of 1
-        // assertion
-    }
+    public void testDumpWithDetailAndIndent() throws Throwable {
+	String expected = "+--- name-registrar ---\n"
+		+ "+  test1: java.lang.String\n"
+		+ "+  test2: java.lang.String\n";
 
-    @Test
-    public void testDumpThrowsNullPointerException() throws Throwable {
-        try {
-            NameRegistrar.getInstance().dump(null, "testNameRegistrarIndent");
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertTrue("Test completed without Exception", true);
-            // dependencies on static and environment state led to removal of 3
-            // assertions
-        }
-    }
+	ByteArrayOutputStream out = new ByteArrayOutputStream();
+	NameRegistrar.getInstance()
+		.dump(new PrintStream(out), "+", WITH_DETAIL);
 
-    @Test
-    public void testDumpThrowsNullPointerException1() throws Throwable {
-        try {
-            NameRegistrar.getInstance().dump(null, "testNameRegistrarIndent", true);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertTrue("Test completed without Exception", true);
-            // dependencies on static and environment state led to removal of 3
-            // assertions
-        }
+	String result = out.toString();
+	assertThat(result, is(expected));
     }
 
     @Test
     public void testGetInstance() throws Throwable {
-        NameRegistrar result = NameRegistrar.getInstance();
-        assertNotNull("result", result);
+	NameRegistrar result = NameRegistrar.getInstance();
+	assertThat(result, is(sameInstance(NameRegistrar.getInstance())));
     }
 
     @Test
-    public void testGetMap() throws Throwable {
-        NameRegistrar.getMap();
-        assertTrue("Test completed without Exception", true);
-        // dependencies on static and environment state led to removal of 3
-        // assertions
+    public void testGet() throws Exception {
+	String value = (String) NameRegistrar.get("test1");
+	assertThat(value, is("testValue1"));
     }
 
-    @Test
+    @Test(expected = NameRegistrar.NotFoundException.class)
     public void testGetThrowsNotFoundException() throws Throwable {
-        try {
-            NameRegistrar.get("2C");
-            fail("Expected NotFoundException to be thrown");
-        } catch (NameRegistrar.NotFoundException ex) {
-            assertEquals("ex.getMessage()", "2C", ex.getMessage());
-        }
+	NameRegistrar.get("NonexistentKey");
     }
 
     @Test
-    public void testGetThrowsNullPointerException() throws Throwable {
-        try {
-            NameRegistrar.get(null);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
+    public void testGetIfExists() throws Throwable {
+	String value = (String) NameRegistrar.getIfExists("test2");
+	assertThat(value, is("testValue2"));
     }
 
     @Test
-    public void testNotFoundExceptionConstructor() throws Throwable {
-        new NameRegistrar.NotFoundException();
-        assertTrue("Test completed without Exception", true);
+    public void testGetIfExistsWithNotFoundKey() throws Exception {
+	String value = (String) NameRegistrar.getIfExists("NonexistentKey");
+	assertThat(value, is(nullValue()));
+    }
+
+    @Test(expected = NameRegistrar.NotFoundException.class)
+    public void testUnregister() throws Exception {
+	NameRegistrar.unregister("test1");
+	NameRegistrar.get("test1");
     }
 
     @Test
     public void testNotFoundExceptionConstructor1() throws Throwable {
-        NameRegistrar.NotFoundException notFoundException = new NameRegistrar.NotFoundException("testNotFoundExceptionDetail");
-        assertEquals("notFoundException.getMessage()", "testNotFoundExceptionDetail", notFoundException.getMessage());
+	NameRegistrar.NotFoundException notFoundException = new NameRegistrar.NotFoundException(
+		"testNotFoundExceptionDetail");
+	assertEquals("notFoundException.getMessage()",
+		"testNotFoundExceptionDetail", notFoundException.getMessage());
     }
 
-    @Test
-    public void testRegister() throws Throwable {
-        NameRegistrar.register("testNameRegistrarKey", "");
-        assertTrue("Test completed without Exception", true);
-        // dependencies on static and environment state led to removal of 1
-        // assertion
-    }
-
-    @Test
-    public void testRegisterThrowsNullPointerException() throws Throwable {
-        try {
-            NameRegistrar.register(null, Integer.valueOf(1));
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
-    }
-
-    @Test
-    public void testUnregister() throws Throwable {
-        NameRegistrar.unregister("testNameRegistrarKey");
-        assertTrue("Test completed without Exception", true);
-        // dependencies on static and environment state led to removal of 1
-        // assertion
-    }
-
-    @Test
-    public void testUnregisterThrowsNullPointerException() throws Throwable {
-        try {
-            NameRegistrar.unregister(null);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
-    }
 }
