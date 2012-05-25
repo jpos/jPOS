@@ -52,16 +52,16 @@ public class NameRegistrarTest {
     public void testDumpWithoutDetail() throws Throwable {
 	ByteArrayOutputStream out = new ByteArrayOutputStream();
 	NameRegistrar.getInstance().dump(new PrintStream(out),
-		"€");
+		">");
 
 	assertThat(
 		out.toString(),
-		allOf(containsString("€--- name-registrar ---\n"),
+		allOf(containsString(">--- name-registrar ---\n"),
 			containsString("test1"), containsString("test2")));
     }
 
     @Test
-    public void testDumpWithDetailAndIndent() throws Throwable {
+    public void testDumpWithDetail() throws Throwable {
 	ByteArrayOutputStream out = new ByteArrayOutputStream();
 	NameRegistrar.getInstance()
 		.dump(new PrintStream(out), "+", WITH_DETAIL);
