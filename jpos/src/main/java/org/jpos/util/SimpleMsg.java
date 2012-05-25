@@ -46,19 +46,19 @@ import java.io.PrintStream;
         }
 
         public SimpleMsg (String tagName, String msgName, boolean msgContent) {
-            this(tagName, msgName, new Boolean(msgContent));
+            this(tagName, msgName,  Boolean.valueOf(msgContent));
         }
 
         public SimpleMsg (String tagName, String msgName, short msgContent) {
-            this(tagName, msgName, new Short(msgContent));
+            this(tagName, msgName,  Short.valueOf(msgContent));
         }
 
         public SimpleMsg (String tagName, String msgName, int msgContent) {
-            this(tagName, msgName, new Integer(msgContent));
+            this(tagName, msgName,  Integer.valueOf(msgContent));
         }
 
         public SimpleMsg (String tagName, String msgName, long msgContent) {
-            this(tagName, msgName, new Long(msgContent));
+            this(tagName, msgName,  Long.valueOf(msgContent));
         }
 
         /**

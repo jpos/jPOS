@@ -350,14 +350,14 @@ public class TSpace<K,V> extends TimerTask implements LocalSpace<K,V>, Loggeable
             }
             if (obj == null) {
                 l.remove (0);
-                if (l.size() == 0) {
+                if (l.isEmpty()) {
                     entries.remove (key);
                 }
             }
         }
         if (obj != null && remove) {
             l.remove (0);
-            if (l.size() == 0) {
+            if (l.isEmpty()) {
                 entries.remove (key);
                 if (wasExpirable)
                     unregisterExpirable(key);

@@ -180,7 +180,7 @@ public class DirPoll extends SimpleLogSource
             String ext = st.nextToken();
             v.addElement (ext.equals ("*") ? "" : ext);
         }
-        if (v.size() == 0)
+        if (v.isEmpty())
             v.addElement ("");
         synchronized (this) {
             prio = v;
@@ -208,7 +208,7 @@ public class DirPoll extends SimpleLogSource
 
     public void run() { 
         Thread.currentThread().setName ("DirPoll-"+basePath);
-        if (prio.size() == 0)
+        if (prio.isEmpty())
             addPriority("");
         while (!shutdown) {
             synchronized (this) {

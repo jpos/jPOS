@@ -103,7 +103,7 @@ public class LogEvent {
     }
     public void dump (PrintStream p, String outer) {
         String indent = dumpHeader (p, outer);
-        if (payLoad.size() == 0) {
+        if (payLoad.isEmpty()) {
             if (tag != null)
                 p.println (indent + "<" + tag + "/>");
         }

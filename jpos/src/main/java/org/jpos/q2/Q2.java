@@ -121,7 +121,7 @@ public class Q2 implements FileFilter, Runnable {
             */
             ArrayList mbeanServerList = 
                 MBeanServerFactory.findMBeanServer(null);
-            if (mbeanServerList.size() == 0) {
+            if (mbeanServerList.isEmpty()) {
                 server  = MBeanServerFactory.createMBeanServer (JMX_NAME);
             } else {
                 server = (MBeanServer) mbeanServerList.get(0);

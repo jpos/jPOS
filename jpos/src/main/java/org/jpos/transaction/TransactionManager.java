@@ -542,7 +542,7 @@ public class TransactionManager
                 return PAUSE;
             }
         }
-        return members.size() == 0 ? NO_JOIN : 
+        return members.isEmpty() ? NO_JOIN : 
             (abort ? (retry ? RETRY : ABORTED) : PREPARED);
     }
     protected List getParticipants (String groupName) {
