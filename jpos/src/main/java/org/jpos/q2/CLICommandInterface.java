@@ -118,7 +118,7 @@ public class CLICommandInterface
         String[] args = new String[st.countTokens()];
         for (int i = 0; st.hasMoreTokens(); i++)
         {
-            args[i] = new String(st.nextToken());
+            args[i] = st.nextToken();
         }
         return args;
     }

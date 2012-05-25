@@ -153,7 +153,7 @@ public class TLVMsg {
      * @return value 
      */
     public String getStringValue() {
-        return new String(ISOUtil.hexString(value));
+        return ISOUtil.hexString(value);
     }
 }
 
