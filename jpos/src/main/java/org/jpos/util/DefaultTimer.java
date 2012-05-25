@@ -27,7 +27,7 @@ import java.util.Timer;
  */
 
 public class DefaultTimer {
-    private static Timer defaultTimer = null;
+    private static volatile Timer defaultTimer = null;
 
     private DefaultTimer() { }
 
