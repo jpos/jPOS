@@ -67,7 +67,7 @@ public class ISOMsgPanel extends JPanel {
         validFields = new Vector();
         for (int i=0; i<=m.getMaxField(); i++)
             if (m.hasField(i))
-                validFields.addElement(new Integer(i));
+                validFields.addElement(Integer.valueOf(i));
     }
     private JComponent createISOMsgTable() {
         TableModel dataModel = new AbstractTableModel() {
@@ -79,6 +79,7 @@ public class ISOMsgPanel extends JPanel {
             public int getRowCount() {
                 return validFields.size();
             }
+            @Override
             public String getColumnName(int columnIndex) {
                 switch (columnIndex) {
                     case 0 :
@@ -169,10 +170,12 @@ public class ISOMsgPanel extends JPanel {
         t.setFont(new Font ("Helvetica", Font.PLAIN, 8));
         t.setLineWrap(true);
         try {
-            StringBuffer buf = new StringBuffer();
-            if (m.getHeader() != null) 
-                buf.append("--[Header]--\n" 
-                    +ISOUtil.hexString(m.getHeader()) + "\n--[Msg]--\n");
+            StringBuilder buf = new StringBuilder();
+            if (m.getHeader() != null) {
+                buf.append("--[Header]--\n");
+                buf.append(ISOUtil.hexString(m.getHeader()));
+                buf.append("\n--[Msg]--\n");
+            }
             byte[] b = m.pack();
             buf.append (ISOUtil.hexString(b));
             t.setText(buf.toString());
