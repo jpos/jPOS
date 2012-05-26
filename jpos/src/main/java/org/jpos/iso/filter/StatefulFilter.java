@@ -156,9 +156,11 @@ public class StatefulFilter implements ISOFilter, Configurable{
         throws ISOFilter.VetoException 
     {
         int[] key = getKey();
-        StringBuffer b = new StringBuffer(getKeyPrefix());
-        for(int i = 0; i < key.length; i++)
-            b.append("|"+m.getString(key[i]));
+        StringBuilder b = new StringBuilder(getKeyPrefix());
+        for(int i = 0; i < key.length; i++) {
+            b.append("|");
+            b.append(m.getString(key[i]));
+        }
         String skey = b.toString();
         if(m.getDirection() == getMatchDirection()){
             int[] savedFields = getSavedFields();
