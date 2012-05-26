@@ -104,9 +104,12 @@ public class ISOException extends Exception implements Loggeable {
         p.println (indent + "</"+getTagName()+">");
     }
     public String toString() {
-        StringBuffer buf = new StringBuffer (super.toString());
-        if (nested != null)
-            buf.append (" (" + nested.toString() +")");
+        StringBuilder buf = new StringBuilder (super.toString());
+        if (nested != null) {
+            buf.append (" (");
+            buf.append (nested.toString());
+            buf.append (")");
+        }
         return buf.toString();
     }
 
