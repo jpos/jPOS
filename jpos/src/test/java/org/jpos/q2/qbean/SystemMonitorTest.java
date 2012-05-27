@@ -18,18 +18,22 @@
 
 package org.jpos.q2.qbean;
 
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
 import org.jpos.q2.Q2;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -37,89 +41,115 @@ import org.mockito.runners.MockitoJUnitRunner;
 public class SystemMonitorTest {
     @Mock
     Q2 q2;
+    @Mock
+    ThreadGroup threadGroup;
+    @InjectMocks
+    SystemMonitor systemMonitor;
 
-    @Test
-    public void testDumpThrowsNullPointerException() throws Throwable {
-        try {
-            new SystemMonitor().dump(null, "testString");
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
-    }
+    ByteArrayOutputStream baos;
+    PrintStream printStream;
 
-    @Test
-    public void testRun() throws Throwable {
-        SystemMonitor systemMonitor = new SystemMonitor();
-        systemMonitor.setState(4);
-        systemMonitor.run();
-    }
-
-    @Test
-    public void testRun1() throws Throwable {
-        SystemMonitor systemMonitor = new SystemMonitor();
-        systemMonitor.setState(1);
-        systemMonitor.run();
+    @Before
+    public void onSetup() throws Exception {
+	baos = new ByteArrayOutputStream();
+	printStream = new PrintStream(baos, true, "US-ASCII");
     }
 
     @Test
     public void testSetDetailRequired() throws Throwable {
-        SystemMonitor systemMonitor = new SystemMonitor();
-        systemMonitor.setDetailRequired(true);
-        assertTrue("systemMonitor.getDetailRequired()", systemMonitor.getDetailRequired());
-        assertTrue("systemMonitor.isModified()", systemMonitor.isModified());
-    }
-
-    @Test
-    public void testSetDetailRequired1() throws Throwable {
-        SystemMonitor systemMonitor = new SystemMonitor();
-        systemMonitor.startService();
-        systemMonitor.setDetailRequired(false);
-        assertFalse("systemMonitor.getDetailRequired()", systemMonitor.getDetailRequired());
-        assertTrue("systemMonitor.isModified()", systemMonitor.isModified());
+	systemMonitor.setDetailRequired(true);
+	assertTrue("systemMonitor.getDetailRequired()",
+		systemMonitor.getDetailRequired());
+	assertTrue("systemMonitor.isModified()", systemMonitor.isModified());
     }
 
     @Test
     public void testSetSleepTime() throws Throwable {
-        SystemMonitor systemMonitor = new SystemMonitor();
-        systemMonitor.setSleepTime(1L);
-        assertEquals("systemMonitor.getSleepTime()", 1L, systemMonitor.getSleepTime());
-        assertTrue("systemMonitor.isModified()", systemMonitor.isModified());
+	systemMonitor.setSleepTime(1L);
+	assertEquals("systemMonitor.getSleepTime()", 1L,
+		systemMonitor.getSleepTime());
+	assertTrue("systemMonitor.isModified()", systemMonitor.isModified());
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testShowThreadGroupThrowsNullPointerException()
+	    throws Throwable {
+	String indent = "++";
+	systemMonitor.showThreadGroup(null, printStream, indent);
     }
 
     @Test
-    public void testSetSleepTime1() throws Throwable {
-        SystemMonitor systemMonitor = new SystemMonitor();
-        systemMonitor.startService();
-        systemMonitor.setSleepTime(100L);
-        assertEquals("systemMonitor.getSleepTime()", 100L, systemMonitor.getSleepTime());
-        assertTrue("systemMonitor.isModified()", systemMonitor.isModified());
+    public void testShowThreadGroup() throws Throwable {
+	String indent = "++";
+	systemMonitor.showThreadGroup(threadGroup, printStream, indent);
+	assertThat(baos.toString(), is(""));
     }
 
     @Test
-    public void testShowThreadGroupThrowsNullPointerException() throws Throwable {
-        PrintStream printStream = new PrintStream(new ByteArrayOutputStream(), true, "US-ASCII");
-        printStream.append("r");
-        PrintStream p = new PrintStream(printStream, false, "ISO-8859-1");
-        try {
-            new SystemMonitor().showThreadGroup(null, p, "testSystemMonitorIndent");
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
+    public void testDump() {
+	systemMonitor = new SystemMonitorExtendedForTesting();
+	String indent = "##";
+	systemMonitor.dump(printStream, indent);
+	String result = baos.toString();
+	// System.out.println(result);
+	assertThat(
+		result,
+		allOf(containsString("##<revision>revision</revision>"),
+			containsString("##<instance>instance</instance>"),
+			containsString("##<uptime>15487d 17:03:12.870</uptime>"),
+			containsString("##<memory>"),
+			containsString("##   freeMemory=0"),
+			containsString("##  totalMemory=0"),
+			containsString("##  inUseMemory=0"),
+			containsString("##</memory>"),
+			containsString("##sec.manager=Mock for SecurityManager, hashCode:"),
+			containsString("##<threads>"),
+			containsString("##        delay="),
+			containsString("##      threads="),
+			containsString("##        Thread["),
+			containsString("##</threads>"),
+			containsString("##--- name-registrar ---")));
     }
 
-    @Test
-    public void testStartService() throws Throwable {
-        new SystemMonitor().startService();
-        assertTrue("Test completed without Exception", true);
+    class SystemMonitorExtendedForTesting extends SystemMonitor {
+	Runtime runtime;
+	SecurityManager securityManager;
+
+	public SystemMonitorExtendedForTesting() {
+	    super();
+	    runtime = mock(Runtime.class);
+	    securityManager = mock(SecurityManager.class);
+	}
+
+	@Override
+	SecurityManager getSecurityManager() {
+	    return securityManager;
+	}
+
+	@Override
+	boolean hasSecurityManager() {
+	    return true;
+	}
+
+	@Override
+	Runtime getRuntimeInstance() {
+	    return runtime;
+	}
+
+	@Override
+	long getServerUptimeAsMillisecond() {
+	    return 1338138192870L;
+	}
+
+	@Override
+	String getInstanceIdAsString() {
+	    return "instance";
+	}
+
+	@Override
+	String getRevision() {
+	    return "revision";
+	}
     }
 
-    @Test
-    public void testStopService() throws Throwable {
-        SystemMonitor systemMonitor = new SystemMonitor();
-        systemMonitor.startService();
-        systemMonitor.stopService();
-        assertTrue("Test completed without Exception", true);
-    }
 }

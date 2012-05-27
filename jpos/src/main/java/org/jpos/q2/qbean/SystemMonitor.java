@@ -124,24 +124,48 @@ public class SystemMonitor extends QBeanSupport implements Runnable,
 
     public void dump(PrintStream p, String indent) {
         String newIndent = indent + "  ";
-        Runtime r = Runtime.getRuntime();
-        p.printf ("%s<revision>%s</revision>\n", indent, getServer().getRevision());
-        p.printf ("%s<instance>%s</instance>\n", indent, getServer().getInstanceId().toString());
-        p.printf ("%s<uptime>%s</uptime>\n", indent, ISOUtil.millisToString(getServer().getUptime()));
+        Runtime r = getRuntimeInstance();
+        p.printf ("%s<revision>%s</revision>%n", indent, getRevision());
+        p.printf ("%s<instance>%s</instance>%n", indent, getInstanceIdAsString());
+        p.printf ("%s<uptime>%s</uptime>%n", indent, ISOUtil.millisToString(getServerUptimeAsMillisecond()));
         p.println(indent + "<memory>");
         p.println(newIndent + " freeMemory=" + r.freeMemory());
         p.println(newIndent + "totalMemory=" + r.totalMemory());
         p.println(newIndent + "inUseMemory="
                 + (r.totalMemory() - r.freeMemory()));
         p.println(indent + "</memory>");
-        if (System.getSecurityManager() != null)
-            p.println (indent +"sec.manager=" + System.getSecurityManager());
+        if (hasSecurityManager())
+            p.println (indent +"sec.manager=" + getSecurityManager());
         p.println(indent + "<threads>");
         p.println(newIndent + "      delay=" + delay + " ms");
         p.println(newIndent + "    threads=" + Thread.activeCount());
         showThreadGroup(Thread.currentThread().getThreadGroup(), p, newIndent);
         p.println(indent + "</threads>");
         NameRegistrar.getInstance().dump(p, indent, detailRequired);
+    }
+
+    SecurityManager getSecurityManager() {
+	return System.getSecurityManager();
+    }
+
+    boolean hasSecurityManager() {
+	return getSecurityManager() != null;
+    }
+
+    Runtime getRuntimeInstance() {
+	return Runtime.getRuntime();
+    }
+
+    long getServerUptimeAsMillisecond() {
+	return getServer().getUptime();
+    }
+
+    String getInstanceIdAsString() {
+	return getServer().getInstanceId().toString();
+    }
+
+    String getRevision() {
+	return getServer().getRevision();
     }
 
 }
