@@ -49,7 +49,7 @@ public class SpaceFactoryTest {
 	}
     }
 
-    @Test(expected = SpaceError.class)
+    @Test(expected = NullPointerException.class)
     public void testGetSpaceThrowsNullPointerException2() throws Throwable {
 	SpaceFactory.getSpace("testSpaceFactoryScheme", "testSpaceFactoryName",
 		null);

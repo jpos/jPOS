@@ -745,7 +745,7 @@ public class StatefulFilterTest {
 	}
     }
 
-    @Test(expected = SpaceError.class)
+    @Test(expected = NullPointerException.class)
     public void testSetSpaceThrowsNullPointerException() throws Throwable {
 	StatefulFilter statefulFilter = new StatefulFilter();
 	statefulFilter.setSpace("Invalid space: ");

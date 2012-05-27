@@ -25,7 +25,7 @@ import org.junit.Test;
 
 public class SpaceProxyTest {
 
-    @Test(expected=SpaceError.class)
+    @Test(expected=NullPointerException.class)
     public void testConstructor() throws Throwable {
             new SpaceProxy("Inval*d space: ");
     }
