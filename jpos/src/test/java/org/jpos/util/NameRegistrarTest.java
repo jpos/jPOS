@@ -25,11 +25,21 @@ import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
-import org.junit.*;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class NameRegistrarTest {
@@ -51,8 +61,7 @@ public class NameRegistrarTest {
     @Test
     public void testDumpWithoutDetail() throws Throwable {
 	ByteArrayOutputStream out = new ByteArrayOutputStream();
-	NameRegistrar.getInstance().dump(new PrintStream(out),
-		">");
+	NameRegistrar.getInstance().dump(new PrintStream(out), ">");
 
 	assertThat(
 		out.toString(),
@@ -110,10 +119,11 @@ public class NameRegistrarTest {
     }
 
     @Test
-    public void testUnregisterUnknownKeyDoesNotThrowException() throws Exception {
+    public void testUnregisterUnknownKeyDoesNotThrowException()
+	    throws Exception {
 	NameRegistrar.unregister("unknownKey");
     }
-    
+
     @Test
     public void testNotFoundExceptionConstructor1() throws Throwable {
 	NameRegistrar.NotFoundException notFoundException = new NameRegistrar.NotFoundException(
@@ -121,4 +131,5 @@ public class NameRegistrarTest {
 	assertEquals("notFoundException.getMessage()",
 		"testNotFoundExceptionDetail", notFoundException.getMessage());
     }
+
 }

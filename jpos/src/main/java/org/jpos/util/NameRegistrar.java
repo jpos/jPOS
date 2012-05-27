@@ -18,25 +18,21 @@
 package org.jpos.util;
 
 import java.io.PrintStream;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * Allow runtime binding of jPOS's components (ISOChannels, Logger, MUXes, etc)
- *
+ * 
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
  * @version $Revision$ $Date$
  */
 public class NameRegistrar implements Loggeable {
-
     private static NameRegistrar instance = new NameRegistrar();
-    private Map<String,Object> registrar;
-    private static ReadWriteLock LOCK = new ReentrantReadWriteLock();
+    private ConcurrentMap<String, Object> registrar;
 
     public static class NotFoundException extends Exception {
-
         private static final long serialVersionUID = 8744022794646381475L;
 
         public NotFoundException() {
@@ -50,10 +46,10 @@ public class NameRegistrar implements Loggeable {
 
     private NameRegistrar() {
         super();
-        registrar = new HashMap<String,Object>();
+        registrar = new ConcurrentHashMap<String, Object>();
     }
 
-    public static Map<String,Object> getMap() {
+    public static ConcurrentMap<String, Object> getMap() {
         return getInstance().registrar;
     }
 
@@ -66,61 +62,44 @@ public class NameRegistrar implements Loggeable {
 
     /**
      * register object
-     *
-     * @param key - key with which the specified value is to be associated.
-     * @param value - value to be associated with the specified key
+     * 
+     * @param key
+     *            - key with which the specified value is to be associated.
+     * @param value
+     *            - value to be associated with the specified key
      */
     public static void register(String key, Object value) {
-        Map<String,Object> map = getMap();
-        LOCK.writeLock().lock();
-        try {
-            map.put(key, value);
-        } finally {
-            LOCK.writeLock().unlock();
-        }
+        getMap().put(key, value);
     }
 
     /**
-     * @param key key whose mapping is to be removed from registrar.
+     * @param key
+     *            key whose mapping is to be removed from registrar.
      */
     public static void unregister(String key) {
-        Map<String,Object> map = getMap();
-        LOCK.writeLock().lock();
-        try {
-            map.remove(key);
-        } finally {
-            LOCK.writeLock().unlock();
-        }
+        getMap().remove(key);
     }
 
     /**
-     * @param key key whose associated value is to be returned.
-     * @throws NotFoundException if key not present in registrar
+     * @param key
+     *            key whose associated value is to be returned.
+     * @throws NotFoundException
+     *             if key not present in registrar
      */
     public static Object get(String key) throws NotFoundException {
-        LOCK.readLock().lock();
-        try {
-            Object obj = getMap().get(key);
-            if (obj == null) {
-                throw new NotFoundException(key);
-            }
-            return obj;
-        } finally {
-            LOCK.readLock().unlock();
+        Object obj = getMap().get(key);
+        if (obj == null) {
+            throw new NotFoundException(key);
         }
+        return obj;
     }
 
     /**
-     * @param key key whose associated value is to be returned, null if not
-     * present.
+     * @param key
+     *            key whose associated value is to be returned, null if not present.
      */
     public static Object getIfExists(String key) {
-        LOCK.readLock().lock();
-        try {
-            return getMap().get(key);
-        } finally {
-            LOCK.readLock().unlock();
-        }
+        return getMap().get(key);
     }
 
     public void dump(PrintStream p, String indent) {
@@ -130,24 +109,17 @@ public class NameRegistrar implements Loggeable {
     public void dump(PrintStream p, String indent, boolean detail) {
         String inner = indent + "  ";
         p.println(indent + "--- name-registrar ---");
-        LOCK.readLock().lock();
-        try {
-            for (Map.Entry<String,Object> entry : registrar.entrySet()) {
-                Object obj = entry.getValue();
-                String key = entry.getKey();
-                if (key == null) {
-                    key = "null";
-                }
-                String objectClassName = (obj == null) ? "<NULL>" :  obj.getClass().getName(); 
-		p.println(inner
-                        + key.toString() + ": "
-                        + objectClassName);
-                if (detail && obj instanceof Loggeable) {
-                    ((Loggeable) obj).dump(p, inner + "  ");
-                }
+        for (Map.Entry<String, Object> entry : registrar.entrySet()) {
+            Object obj = entry.getValue();
+            String key = entry.getKey();
+            if (key == null) {
+                key = "null";
             }
-        } finally {
-            LOCK.readLock().unlock();
+            String objectClassName = (obj == null) ? "<NULL>" : obj.getClass().getName();
+            p.println(inner + key.toString() + ": " + objectClassName);
+            if (detail && obj instanceof Loggeable) {
+                ((Loggeable) obj).dump(p, inner + "  ");
+            }
         }
     }
 }
