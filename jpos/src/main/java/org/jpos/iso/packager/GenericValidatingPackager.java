@@ -182,7 +182,7 @@ These can be changes using attributes on the isopackager node */
     /** incr used to put validators in the same hashtable of
      *  fieldpackagers. packagers will stay on index 1, 2, 3...
      *  and validators in inc+1, inc+2, inc+3,... **/
-    final int inc = 500;
+    static final int inc = 500;
 
 
     public class GenericValidatorContentHandler extends DefaultHandler {
@@ -425,7 +425,7 @@ onto the stack.
             throw ex;
         }
 
-        final int VALIDATOR_INDEX = -3 ;
+        static final int VALIDATOR_INDEX = -3 ;
         private Stack<Object> fieldStack, validatorStack;
         private String fldID;
 

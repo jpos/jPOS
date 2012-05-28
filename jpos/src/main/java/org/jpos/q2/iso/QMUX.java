@@ -45,8 +45,8 @@ public class QMUX
     extends QBeanSupport
     implements SpaceListener, MUX, QMUXMBean, Loggeable, ISOSource
 {
-    final String nomap = "0123456789";
-    final String DEFAULT_KEY = "41, 11";
+    static final String nomap = "0123456789";
+    static final String DEFAULT_KEY = "41, 11";
     private boolean headerIsKey;
     protected LocalSpace sp;
     protected String in, out, unhandled;
