@@ -599,7 +599,7 @@ public class FSDMsg implements Loggeable, Cloneable {
                 }
             }
             if (schema == null){
-                throw new RuntimeException(f.getCanonicalPath().toString() + " not found");
+                throw new RuntimeException(f.getCanonicalPath() + " not found");
             }
             sp.out (uri, schema);
         }
