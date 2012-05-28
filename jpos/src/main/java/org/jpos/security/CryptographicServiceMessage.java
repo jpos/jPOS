@@ -116,15 +116,20 @@ public class CryptographicServiceMessage implements Loggeable {
      * @return the CSM in string format
      */
     public String toString() {
-        String csm="CSM(MCL/" + getMCL() + " ";
-        Enumeration tags = orderedTags.elements();
-        while (tags.hasMoreElements()) {
-            String tag = (String) tags.nextElement();
-            csm = csm + tag + "/" + getFieldContent(tag) + " ";
+        StringBuilder csm = new StringBuilder();
+        csm.append("CSM(MCL/");
+        csm.append(getMCL());
+        csm.append(" ");
+        for (Object tagObject : orderedTags) {
+            String tag = (String) tagObject;
+            csm.append(tag);
+            csm.append("/");
+            csm.append(getFieldContent(tag));
+            csm.append(" ");
         }
 
-        csm = csm + ")";
-        return csm;
+        csm.append(")");
+        return csm.toString();
     }
 
 
@@ -139,9 +144,8 @@ public class CryptographicServiceMessage implements Loggeable {
         p.print(indent + "<csm");
         p.print(" class=\"" + getMCL() + "\"");
         p.println(">");
-        Enumeration tags = orderedTags.elements();
-        while (tags.hasMoreElements()) {
-            String tag = ((String) tags.nextElement());
+        for (Object tagObject : orderedTags) {
+            String tag = (String) tagObject;
             p.println(inner + "<field tag=\"" + tag + "\" value=\"" + getFieldContent(tag) + "\"/>");
         }
         p.println(indent + "</csm>");
