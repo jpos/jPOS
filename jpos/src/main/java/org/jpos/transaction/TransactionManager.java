@@ -624,7 +624,7 @@ public class TransactionManager
         return -1;
     }
     protected String getKey (String prefix, long id) {
-        StringBuffer sb = new StringBuffer (getName());
+        StringBuilder sb = new StringBuilder (getName());
         sb.append ('.');
         sb.append (prefix);
         sb.append (Long.toString (id));

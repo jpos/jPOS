@@ -130,7 +130,7 @@ public class Profiler implements Loggeable {
             return totalDuration;
         }
         public String toString()  {
-            StringBuffer sb = new StringBuffer (eventName);
+            StringBuilder sb = new StringBuilder (eventName);
             sb.append (" [");
             sb.append (getDuration());
             sb.append ('.');

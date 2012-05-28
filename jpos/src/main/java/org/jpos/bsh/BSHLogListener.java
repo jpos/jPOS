@@ -100,7 +100,7 @@ public class BSHLogListener implements org.jpos.util.LogListener, org.jpos.core.
     protected static String[] replace(String[] src, String[] patterns, String[] to){
         String[] ret = new String[src.length];
         for(int i=0; i<src.length; i++){
-            StringBuffer buff = new StringBuffer(2*src[i].length());
+            StringBuilder buff = new StringBuilder(2*src[i].length());
             int begin, end=0;
             //begin is the position of the next pattern, end is the end of the last pattern
             while ((begin = src[i].indexOf('$',end))>=0 && begin<src[i].length()){
@@ -178,7 +178,7 @@ public class BSHLogListener implements org.jpos.util.LogListener, org.jpos.core.
     }
     protected String loadCode(File f) throws IOException{
         FileReader r = new FileReader(f);
-        StringBuffer buf = new StringBuffer((int)f.length());
+        StringBuilder buf = new StringBuilder((int)f.length());
         char[] content = new char[(int)f.length()];
         int l;
         while((l=r.read(content))!=-1) buf.append(content,0,l);

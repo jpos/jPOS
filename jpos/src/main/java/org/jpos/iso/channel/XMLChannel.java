@@ -83,7 +83,7 @@ public class XMLChannel extends BaseChannel {
      */
     protected byte[] streamReceive() throws IOException {
         int sp = 0;
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         while (reader != null) {
             String s = reader.readLine();
             if (s == null)

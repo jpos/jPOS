@@ -460,7 +460,7 @@ public class ISOServer extends Observable
         }
     }
     public String getISOChannelNames () {
-        StringBuffer sb = new StringBuffer ();
+        StringBuilder sb = new StringBuilder ();
         Iterator iter = channels.entrySet().iterator();
         for (int i=0; iter.hasNext(); i++) {
             Map.Entry entry = (Map.Entry) iter.next();
@@ -475,7 +475,7 @@ public class ISOServer extends Observable
         return sb.toString();
     }
     public String getCountersAsString () {
-        StringBuffer sb = new StringBuffer ();
+        StringBuilder sb = new StringBuilder ();
         int cnt[] = getCounters();
         sb.append ("connected=");
         sb.append (Integer.toString(cnt[0]));
@@ -554,7 +554,7 @@ public class ISOServer extends Observable
             ISOChannel c = (ISOChannel) ref.get ();
             if (c != null && !LAST.equals (entry.getKey()) && c.isConnected()) {
                 if (c instanceof BaseChannel) {
-                    StringBuffer sb = new StringBuffer ();
+                    StringBuilder sb = new StringBuilder ();
                     int[] cc = ((BaseChannel)c).getCounters();
                     sb.append (inner);
                     sb.append (entry.getKey());

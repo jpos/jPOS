@@ -485,7 +485,7 @@ public class JDBMSpace<K,V> extends TimerTask implements Space<K,V> {
         }
     }
     public String getKeys () {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         try {
             FastIterator iter = htree.keys ();
             Object obj;

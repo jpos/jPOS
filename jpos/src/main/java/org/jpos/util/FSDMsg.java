@@ -442,7 +442,7 @@ public class FSDMsg implements Loggeable, Cloneable {
     protected String read (InputStream is, int len, String type, String separator) 
         throws IOException 
     {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         byte[] b = new byte[1];
         boolean expectSeparator = isSeparated(separator);
         boolean separated = expectSeparator;

@@ -77,7 +77,7 @@ public class TEST0100 extends ISOBaseValidator {
 
     private String makeStrFromArray( int[] validFields ){
         if ( validFields == null ) return null;
-        StringBuffer result = new StringBuffer();
+        StringBuilder result = new StringBuilder();
         for (int i = 0; i < validFields.length; i++){
             result.append( validFields[i] );
             result.append( ", " );

@@ -175,7 +175,7 @@ public class QMUX
     }
 
     public String getKey (ISOMsg m) throws ISOException {
-        StringBuffer sb = new StringBuffer (out);
+        StringBuilder sb = new StringBuilder (out);
         sb.append ('.');
         sb.append (mapMTI(m.getMTI()));
         if (headerIsKey && m.getHeader()!=null) {
@@ -206,7 +206,7 @@ public class QMUX
         return sb.toString();
     }
     private String mapMTI (String mti) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         if (mti != null && mti.length() == 4) {
             for (int i=0; i<mtiMapping.length; i++) {
                 int c = mti.charAt (i) - '0';

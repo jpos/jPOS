@@ -46,7 +46,7 @@ public class CTCSubFieldPackager extends ISOBaseValidatingPackager {
     public byte[] pack ( ISOComponent c ) throws ISOException {
         try     {
             Map tab = c.getChildren();
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             for ( int i = 0; i < fld.length; i++ ) {
                 ISOField f = (ISOField) tab.get (Integer.valueOf(i));
                 if ( f != null ) {

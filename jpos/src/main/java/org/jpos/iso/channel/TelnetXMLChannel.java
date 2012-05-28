@@ -102,7 +102,7 @@ public class TelnetXMLChannel extends BaseChannel {
      */
     protected byte[] streamReceive() throws IOException {
         int sp = 0;
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         while (reader != null) {
             /*
              * Throw away any telnet commands - each is 3 bytes first being
