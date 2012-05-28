@@ -295,7 +295,7 @@ onto the stack.
                     v = (ISOBaseValidatingPackager) Class.forName(validator).newInstance();
                     validatorStack.push( v );
                     Map m = new TreeMap();
-                    m.put( new Integer( VALIDATOR_INDEX ), new ArrayList() );
+                    m.put( Integer.valueOf( VALIDATOR_INDEX ), new ArrayList() );
                     validatorStack.push( m );
                     fieldStack.push( new TreeMap() );
                 }
