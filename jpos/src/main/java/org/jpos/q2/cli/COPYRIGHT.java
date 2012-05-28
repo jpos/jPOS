@@ -18,17 +18,22 @@
 
 package org.jpos.q2.cli;
 
-import org.jpos.q2.CLICommand;
-import org.jpos.q2.CLIContext;
-
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import org.jpos.q2.CLICommand;
+import org.jpos.q2.CLIContext;
 
 public class COPYRIGHT implements CLICommand
 {
     public void exec(CLIContext ctx, String[] args) throws IOException
     {
-        display(ctx, MAN.class.getResourceAsStream("/COPYRIGHT"));
+        InputStream input = new BufferedInputStream(getClass().getResourceAsStream("/COPYRIGHT"));
+        try {
+            display(ctx, input);
+        } finally {
+            input.close();
+        }
         ctx.println("");
     }
 

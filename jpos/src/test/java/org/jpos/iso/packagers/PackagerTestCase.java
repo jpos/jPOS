@@ -40,26 +40,37 @@ public class PackagerTestCase extends TestCase {
 
     private ISOMsg getMsg (String message) throws Exception {
         FileInputStream fis = new FileInputStream (PREFIX + message + ".xml");
-        byte[] b = new byte[fis.available()];
-        fis.read (b);
-        ISOMsg m = new ISOMsg ();
-        m.setPackager (xmlPackager);
-        m.unpack (b);
-        fis.close();
+        ISOMsg m = null;
+        try {
+            byte[] b = new byte[fis.available()];
+            fis.read (b);
+            m = new ISOMsg ();
+            m.setPackager (xmlPackager);
+            m.unpack (b);
+        } finally {
+            fis.close();
+        }
         return m;
     }
     private byte[] getImage (String message) throws Exception {
+        byte[] b = null;
         FileInputStream fis = new FileInputStream (PREFIX + message + ".bin");
-        byte[] b = new byte[fis.available()];
-        fis.read (b);
-        fis.close();
+        try {
+            b = new byte[fis.available()];
+            fis.read (b);
+        } finally {
+            fis.close();
+        }
         return b;
     }
 
     private void writeImage (String message, byte[] b) throws Exception {
         FileOutputStream fos = new FileOutputStream (PREFIX + message + ".run");
-        fos.write (b);
-        fos.close();
+        try{ 
+           fos.write(b);
+        } finally {
+            fos.close();
+        }
     }
 
     public void setUp () throws Exception {

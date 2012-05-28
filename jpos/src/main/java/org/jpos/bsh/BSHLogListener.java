@@ -20,12 +20,14 @@ package org.jpos.bsh;
 
 import bsh.Interpreter;
 import bsh.NameSpace;
+import java.io.BufferedReader;
 import org.jpos.core.Configuration;
 import org.jpos.util.LogEvent;
 
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.Reader;
 import java.io.StringReader;
 import java.util.Hashtable;
 import java.util.Map;
@@ -177,12 +179,15 @@ public class BSHLogListener implements org.jpos.util.LogListener, org.jpos.core.
         }
     }
     protected String loadCode(File f) throws IOException{
-        FileReader r = new FileReader(f);
         StringBuffer buf = new StringBuffer((int)f.length());
         char[] content = new char[(int)f.length()];
         int l;
-        while((l=r.read(content))!=-1) buf.append(content,0,l);
-        r.close();
+        Reader r = new BufferedReader(new FileReader(f));
+        try {
+            while((l=r.read(content))!=-1) buf.append(content,0,l);
+        } finally {
+            r.close();
+        }
         return buf.toString();
     }
     
