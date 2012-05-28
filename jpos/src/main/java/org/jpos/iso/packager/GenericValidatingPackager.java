@@ -141,7 +141,7 @@ public class GenericValidatingPackager extends GenericPackager implements ISOVal
             Map<Object,ISOComponent> fields = m.getChildren();
             /** Field  validations **/
             for (ISOValidator val :fvlds) {
-                if ( (c=fields.get (new Integer ( ((ISOFieldValidator)val).getFieldId() ))) != null ){
+                if ( (c=fields.get (Integer.valueOf( ((ISOFieldValidator)val).getFieldId() ))) != null ){
                     try {
                         m.set( val.validate( c ) );
                     } catch ( ISOVException e ) {
@@ -208,7 +208,7 @@ These can be changes using attributes on the isopackager node */
 
                     /** used to insert msg-level validators **/
                     Map m = new TreeMap();
-                    m.put( new Integer( VALIDATOR_INDEX ), new ArrayList() );
+                    m.put( Integer.valueOf( VALIDATOR_INDEX ), new ArrayList() );
 
                     validatorStack.push( m );
                     setGenericPackagerParams ( atts );
@@ -366,7 +366,7 @@ onto the stack.
                     }
                 }
                 /** add validator to the has **/
-                ((List)((Map)validatorStack.peek()).get( new Integer(VALIDATOR_INDEX) )).add( v );
+                ((List)((Map)validatorStack.peek()).get( Integer.valueOf(VALIDATOR_INDEX) )).add( v );
             }
             if (localName.equals("isofieldpackager")){
                 // Pop the 4 entries off the stack in the correct order
@@ -408,7 +408,7 @@ onto the stack.
 
         ISOBaseValidator[] makeMsgValidatorArray ( Map m ){
             // First find the count
-            List<ISOBaseValidator> l = (List)m.get( new Integer( VALIDATOR_INDEX ) );
+            List<ISOBaseValidator> l = (List)m.get( Integer.valueOf( VALIDATOR_INDEX ) );
             return l.toArray(new ISOBaseValidator[l.size()]);
         }
 

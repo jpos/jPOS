@@ -109,7 +109,7 @@ public class ISOBinaryField
      * @return Object representing this field number
      */
     public Object getKey() {
-        return new Integer(fieldNumber);
+        return Integer.valueOf(fieldNumber);
     }
     /**
      * @return Object representing this field value

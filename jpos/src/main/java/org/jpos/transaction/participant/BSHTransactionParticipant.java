@@ -155,7 +155,7 @@ public class BSHTransactionParticipant extends SimpleLogSource
     throws EvalError, FileNotFoundException, IOException {
         Map params = new HashMap();
         params.put("context", context);
-        params.put("id", new Long(id));
+        params.put("id", Long.valueOf(id));
         params.put("evt", evt);
         params.put("self", this);
         return m.execute(params, resultName);
