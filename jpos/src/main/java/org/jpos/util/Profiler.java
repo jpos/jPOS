@@ -96,7 +96,7 @@ public class Profiler implements Loggeable {
          return (Entry)events.get(eventName);         
     }
 
-    public class Entry  {
+    public static class Entry  {
         String  eventName;
         long    duration;
         long    totalDuration;          

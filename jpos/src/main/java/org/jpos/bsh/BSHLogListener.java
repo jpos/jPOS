@@ -192,7 +192,7 @@ public class BSHLogListener implements org.jpos.util.LogListener, org.jpos.core.
     protected void addScriptInfo(String filename, String code, long lastModified){
         scripts.put(filename, new ScriptInfo(code, lastModified));
     }
-    protected class ScriptInfo{
+    protected static class ScriptInfo{
         String code;
         long lastModified;
         long lastCheck;

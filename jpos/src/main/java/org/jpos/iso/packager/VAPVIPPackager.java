@@ -169,7 +169,7 @@ public class VAPVIPPackager extends ISOBasePackager {
             new IFB_BINARY  (  8, "MAC 2")
         };
 
-    protected class F127Packager extends ISOBasePackager {
+    protected static class F127Packager extends ISOBasePackager {
         protected ISOFieldPackager fld127[] = {
             new IFE_CHAR    (1,   "FILE UPDATE COD"),
             new IFB_LLHNUM  (19,  "ACCOUNT NUMBER", true),

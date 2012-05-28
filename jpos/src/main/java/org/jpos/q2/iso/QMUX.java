@@ -433,7 +433,7 @@ public class QMUX
         sb.append (name);
         sb.append (value);
     }
-    public class AsyncRequest extends TimerTask {
+    public static class AsyncRequest extends TimerTask {
         ISOResponseListener rl;
         Object handBack;
         public AsyncRequest (ISOResponseListener rl, Object handBack) {

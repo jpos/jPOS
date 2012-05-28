@@ -792,7 +792,7 @@ public class TransactionManager
             new Thread(retryTask).start();
         }
     }
-    public class PausedMonitor extends TimerTask {
+    public static class PausedMonitor extends TimerTask {
         Pausable context;
         public PausedMonitor (Pausable context) {
             super();

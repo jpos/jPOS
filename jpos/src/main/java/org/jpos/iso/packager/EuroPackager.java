@@ -177,7 +177,7 @@ public class EuroPackager extends ISOBasePackager {
         f48Packager.setLogger (logger, realm + ".field-48");
     }
 
-    protected class Euro48Packager extends EuroSubFieldPackager
+    protected static class Euro48Packager extends EuroSubFieldPackager
     { 
         // EuroPay refers to the message subfields as 
         // Private Data Subelements (PDS)
