@@ -18,6 +18,7 @@
 
 package  org.jpos.security;
 
+import java.io.BufferedInputStream;
 import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
@@ -29,6 +30,7 @@ import org.jpos.util.Logger;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Properties;
@@ -148,13 +150,16 @@ public class SimpleKeyFile
     }
 
     void load () throws SecureKeyStoreException {
-        FileInputStream in;
+        InputStream in;
         try {
             if (!file.canRead())
                 throw  new SecureKeyStoreException("Can't read from file: " + file.getCanonicalPath());
-            in = new FileInputStream(file);
-            props.load(in);
-            in.close();
+            in = new BufferedInputStream(new FileInputStream(file));
+            try {
+                props.load(in);
+            } finally {
+                in.close();
+            }
         } catch (Exception e) {
             throw  new SecureKeyStoreException(e);
         }

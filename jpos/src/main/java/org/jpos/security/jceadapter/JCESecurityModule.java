@@ -18,6 +18,8 @@
 
 package  org.jpos.security.jceadapter;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
 import org.jpos.iso.ISOUtil;
@@ -30,6 +32,8 @@ import javax.crypto.SecretKey;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.security.*;
 import java.util.Arrays;
 import java.util.Date;
@@ -1483,9 +1487,12 @@ public class JCESecurityModule extends BaseSMAdapter {
         lmks.clear();
         try {
             Properties lmkProps = new Properties();
-            FileInputStream in = new FileInputStream(lmkFile);
-            lmkProps.load(in);
-            in.close();
+            InputStream in = new BufferedInputStream(new FileInputStream(lmkFile));
+            try {
+                lmkProps.load(in);
+            } finally {
+                in.close();
+            }
             byte[] lmkData;
             for (int i = 0; i <= LMK_PAIRS_NO; i++) {
                 lmkData = ISOUtil.hex2byte(lmkProps.getProperty(
@@ -1510,9 +1517,12 @@ public class JCESecurityModule extends BaseSMAdapter {
                 lmkProps.setProperty(String.format("LMK0x%1$02x", i),
                         ISOUtil.hexString(lmks.get(i).getEncoded()));
             }
-            FileOutputStream out = new FileOutputStream(lmkFile);
-            lmkProps.store(out, "Local Master Keys");
-            out.close();
+            OutputStream out = new BufferedOutputStream(new FileOutputStream(lmkFile));
+            try {
+                lmkProps.store(out, "Local Master Keys");
+            } finally {
+                out.close();
+            }
         } catch (Exception e) {
             throw  new SMException("Can't write Local Master Keys to file: " + lmkFile,
                     e);
