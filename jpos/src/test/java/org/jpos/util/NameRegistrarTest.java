@@ -65,7 +65,7 @@ public class NameRegistrarTest {
 
 	assertThat(
 		out.toString(),
-		allOf(containsString(">--- name-registrar ---\n"),
+		allOf(containsString(">--- name-registrar ---" + System.getProperty("line.separator")),
 			containsString("test1"), containsString("test2")));
     }
 
@@ -77,7 +77,7 @@ public class NameRegistrarTest {
 
 	assertThat(
 		out.toString(),
-		allOf(containsString("+--- name-registrar ---\n"),
+		allOf(containsString("+--- name-registrar ---" + System.getProperty("line.separator")),
 			containsString("test1"), containsString("test2")));
     }
 
