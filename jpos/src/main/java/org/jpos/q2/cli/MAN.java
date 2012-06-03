@@ -15,37 +15,34 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.jpos.q2.cli;
 
+import java.io.BufferedInputStream;
 import org.jpos.q2.CLICommand;
 import org.jpos.q2.CLIContext;
 
 import java.io.InputStream;
 
-public class MAN implements CLICommand
-{
-    public void exec(CLIContext cli, String[] args) throws Exception
-    {
-        if (args.length < 2)
-        {
+public class MAN implements CLICommand {
+
+    public void exec(CLIContext cli, String[] args) throws Exception {
+        if (args.length < 2) {
             cli.println("What manual page do you want?");
             return;
         }
         String command = args[1];
-        InputStream is = MAN.class.getResourceAsStream(
-                command.toUpperCase() + ".man"
-        );
-        if (is != null)
-        {
-            byte[] b = new byte[is.available()];
-            is.read(b);
-            cli.print(new String(b, "ISO8859_1"));
-        }
-        else
-        {
+        InputStream is = new BufferedInputStream(getClass().getResourceAsStream(
+                command.toUpperCase() + ".man"));
+        if (is != null) {
+            try {
+                byte[] b = new byte[is.available()];
+                is.read(b);
+                cli.print(new String(b, "ISO8859_1"));
+            } finally {
+                is.close();
+            }
+        } else {
             cli.println("No manual entry for " + command);
         }
     }
 }
-

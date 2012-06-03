@@ -366,9 +366,12 @@ public class Q2 implements FileFilter, Runnable {
                 e.detach();
                 doc.setRootElement (e);
                 File tmp = new File (f.getAbsolutePath () + ".tmp");
-                FileWriter writer = new FileWriter (tmp);
-                out.output (doc, writer);
-                writer.close ();
+                Writer writer = new BufferedWriter(new FileWriter(tmp));
+                try {
+                    out.output (doc, writer);
+                } finally {
+                    writer.close ();
+                }
                 f.delete();
                 tmp.renameTo (f);
                 deployed = f.lastModified ();
@@ -617,11 +620,15 @@ public class Q2 implements FileFilter, Runnable {
             e.setAttribute("instance", getInstanceId().toString());
             qbean.deleteOnExit();
         }
-        FileWriter writer = new FileWriter (qbean);
-        if (encrypt)
+        if (encrypt) {
             doc = encrypt (doc);
-        out.output (doc, writer);
-        writer.close ();
+        }
+        Writer writer = new BufferedWriter(new FileWriter(qbean));
+        try {
+            out.output(doc, writer);
+        } finally {
+            writer.close();
+        }
     }
 
     private byte[] dodes (byte[] data, int mode) 

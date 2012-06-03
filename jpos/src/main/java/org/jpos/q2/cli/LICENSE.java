@@ -15,29 +15,29 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.jpos.q2.cli;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import org.jpos.q2.CLICommand;
 import org.jpos.q2.CLIContext;
 
-import java.io.IOException;
-import java.io.InputStream;
+public class LICENSE implements CLICommand {
 
-public class LICENSE implements CLICommand
-{
-    public void exec(CLIContext cli, String[] args) throws IOException
-    {
-        display(cli, MAN.class.getResourceAsStream("/LICENSE"));
+    public void exec(CLIContext cli, String[] args) throws IOException {
+        InputStream input = new BufferedInputStream(getClass().getResourceAsStream("/LICENSE"));
+        try {
+            display(cli, input);
+        } finally {
+            input.close();
+        }
         cli.println("");
     }
 
-    private void display(CLIContext cli, InputStream is) throws IOException
-    {
-        if (is != null)
-        {
-            while (is.available() > 0)
-            {
+    private void display(CLIContext cli, InputStream is) throws IOException {
+        if (is != null) {
+            while (is.available() > 0) {
                 byte[] b = new byte[is.available()];
                 is.read(b);
                 cli.print(new String(b, "ISO8859_1"));
@@ -45,4 +45,3 @@ public class LICENSE implements CLICommand
         }
     }
 }
-

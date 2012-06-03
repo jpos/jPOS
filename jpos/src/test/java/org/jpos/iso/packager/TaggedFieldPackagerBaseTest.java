@@ -15,9 +15,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.jpos.iso.packager;
 
+import java.io.BufferedInputStream;
 import junit.framework.TestCase;
 import org.jpos.iso.ISOField;
 import org.jpos.iso.ISOMsg;
@@ -25,6 +25,7 @@ import org.junit.Test;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -66,10 +67,12 @@ public class TaggedFieldPackagerBaseTest extends TestCase {
         assertNotNull(packed);
 
         FileOutputStream fos = new FileOutputStream(path + "ISO93TLVPackager.bin");
-        fos.write(packed);
-        fos.close();
+        try {
+            fos.write(packed);
+        } finally {
+            fos.close();
+        }
     }
-
 
     @Test
     public void testUnpack() throws Exception {
@@ -77,7 +80,12 @@ public class TaggedFieldPackagerBaseTest extends TestCase {
         GenericPackager genericPackager = new GenericPackager(new FileInputStream(path + "ISO93TLVPackager.xml"));
 
         ISOMsg msg = new ISOMsg();
-        genericPackager.unpack(msg, new FileInputStream(path + "ISO93TLVPackager.bin"));
+        InputStream input = new BufferedInputStream(new FileInputStream(path + "ISO93TLVPackager.bin"));
+        try {
+            genericPackager.unpack(msg, input);
+        } finally {
+            input.close();
+        }
 
         assertEquals("1100", msg.getMTI());
         assertEquals("48TagA1", ((ISOField) ((ISOMsg) msg.getComponent(48)).getComponent(1)).getValue());
