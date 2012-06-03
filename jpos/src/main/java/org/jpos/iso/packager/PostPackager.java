@@ -203,7 +203,7 @@ public class PostPackager extends ISOBasePackager {
             ),
             new IFA_LLLCHAR (999, "MAC 2")
         };
-        protected class PostPrivatePackager extends ISOBasePackager
+        protected static class PostPrivatePackager extends ISOBasePackager
         { 
                 protected ISOFieldPackager fld127[] = 
                 {

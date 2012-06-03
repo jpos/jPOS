@@ -78,7 +78,7 @@ public class LogChannel extends BaseChannel {
      * @exception IOException
      */
     protected byte[] streamReceive() throws IOException {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         boolean inMsg = false;
         while (reader != null) {
             String s = reader.readLine();

@@ -53,7 +53,7 @@ public class LeftPadder implements Padder
 	 */
     public String pad(String data, int maxLength) throws ISOException
     {
-        StringBuffer padded = new StringBuffer(maxLength);
+        StringBuilder padded = new StringBuilder(maxLength);
         int len = data.length();
         if (len > maxLength)
         {

@@ -624,7 +624,7 @@ public class TransactionManager
         return -1;
     }
     protected String getKey (String prefix, long id) {
-        StringBuffer sb = new StringBuffer (getName());
+        StringBuilder sb = new StringBuilder (getName());
         sb.append ('.');
         sb.append (prefix);
         sb.append (Long.toString (id));
@@ -792,7 +792,7 @@ public class TransactionManager
             new Thread(retryTask).start();
         }
     }
-    public class PausedMonitor extends TimerTask {
+    public static class PausedMonitor extends TimerTask {
         Pausable context;
         public PausedMonitor (Pausable context) {
             super();

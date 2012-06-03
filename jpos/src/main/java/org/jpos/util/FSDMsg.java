@@ -161,7 +161,7 @@ public class FSDMsg implements Loggeable, Cloneable {
      *  @param separator       char representing type
      */
     public void setSeparator(String separatorName, char separator) {
-        separators.put(separatorName,new Character(separator));
+        separators.put(separatorName, Character.valueOf(separator));
     }
     
     /*
@@ -314,7 +314,7 @@ public class FSDMsg implements Loggeable, Cloneable {
     }
     
     public boolean isSeparator(byte b) {
-        return separators.containsValue(new Character((char)b));
+        return separators.containsValue( Character.valueOf((char)b));
     }
     
     private String getSeparatorType(String type) {
@@ -442,7 +442,7 @@ public class FSDMsg implements Loggeable, Cloneable {
     protected String read (InputStream is, int len, String type, String separator) 
         throws IOException 
     {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         byte[] b = new byte[1];
         boolean expectSeparator = isSeparated(separator);
         boolean separated = expectSeparator;
@@ -599,7 +599,7 @@ public class FSDMsg implements Loggeable, Cloneable {
                 }
             }
             if (schema == null){
-                throw new RuntimeException(f.getCanonicalPath().toString() + " not found");
+                throw new RuntimeException(f.getCanonicalPath() + " not found");
             }
             sp.out (uri, schema);
         }

@@ -288,7 +288,7 @@ public class GenericPackager
         	setHeaderLength(Integer.parseInt(headerLenStr));
     }
 
-    public class GenericEntityResolver implements EntityResolver
+    public static class GenericEntityResolver implements EntityResolver
     {
         /**
          * Allow the application to resolve external entities.

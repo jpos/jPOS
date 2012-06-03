@@ -39,7 +39,7 @@ public class PostPackagerTest {
 
     @Test
     public void testPostPrivatePackagerConstructor() throws Throwable {
-        PostPackager.PostPrivatePackager postPrivatePackager = new PostPackager().new PostPrivatePackager();
+        PostPackager.PostPrivatePackager postPrivatePackager = new PostPackager.PostPrivatePackager();
         assertNull("postPrivatePackager.getLogger()", postPrivatePackager.getLogger());
         assertEquals("postPrivatePackager.fld127.length", 26, postPrivatePackager.fld127.length);
         assertNull("postPrivatePackager.getRealm()", postPrivatePackager.getRealm());

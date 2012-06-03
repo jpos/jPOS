@@ -169,7 +169,7 @@ public class QServer
      */
     public synchronized void setPort (int port) {
         this.port = port;
-        setAttr (getAttrs (), "port", new Integer (port));
+        setAttr (getAttrs (), "port", Integer.valueOf(port));
         setModified (true);
     }
 
@@ -217,7 +217,7 @@ public class QServer
      */
     public synchronized void setMaxSessions (int maxSessions) {
         this.maxSessions = maxSessions;
-        setAttr (getAttrs (), "maxSessions", new Integer (maxSessions));
+        setAttr (getAttrs (), "maxSessions", Integer.valueOf(maxSessions));
         setModified (true);
     }
     /**
@@ -231,7 +231,7 @@ public class QServer
      */
     public synchronized void setMinSessions (int minSessions) {
         this.minSessions = minSessions;
-        setAttr (getAttrs (), "minSessions", new Integer (minSessions));
+        setAttr (getAttrs (), "minSessions", Integer.valueOf(minSessions));
         setModified (true);
     }
     /**

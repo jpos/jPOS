@@ -79,7 +79,7 @@ public class SpaceUtil {
             wipe (sp, key); // just in case
             if (obj instanceof Long) 
                 l = ((Long)obj).longValue();
-            sp.out (key, new Long (++l));
+            sp.out (key, Long.valueOf(++l));
         }
         return l;
     }

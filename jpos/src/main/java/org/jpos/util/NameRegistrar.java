@@ -116,7 +116,7 @@ public class NameRegistrar implements Loggeable {
                 key = "null";
             }
             String objectClassName = (obj == null) ? "<NULL>" : obj.getClass().getName();
-            p.println(inner + key.toString() + ": " + objectClassName);
+            p.println(inner + key + ": " + objectClassName);
             if (detail && obj instanceof Loggeable) {
                 ((Loggeable) obj).dump(p, inner + "  ");
             }

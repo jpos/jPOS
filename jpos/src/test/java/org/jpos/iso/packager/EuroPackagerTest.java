@@ -39,7 +39,7 @@ public class EuroPackagerTest {
 
     @Test
     public void testEuro48PackagerConstructor() throws Throwable {
-        EuroPackager.Euro48Packager euro48Packager = new EuroPackager().new Euro48Packager();
+        EuroPackager.Euro48Packager euro48Packager = new EuroPackager.Euro48Packager();
         assertNull("euro48Packager.getLogger()", euro48Packager.getLogger());
         assertNull("euro48Packager.getRealm()", euro48Packager.getRealm());
     }

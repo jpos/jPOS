@@ -169,7 +169,7 @@ public class Base1Packager extends ISOBasePackager
 /*128*/ new IFB_BINARY  (  8, "MAC 2")
     };
 
-    protected class F126Packager extends Base1SubFieldPackager
+    protected static class F126Packager extends Base1SubFieldPackager
     {
         protected ISOFieldPackager fld126[] =
         {
@@ -193,7 +193,7 @@ public class Base1Packager extends ISOBasePackager
         }
     }
 
-    protected class F127Packager extends ISOBasePackager 
+    protected static class F127Packager extends ISOBasePackager 
     {
         protected ISOFieldPackager fld127[] = 
         {

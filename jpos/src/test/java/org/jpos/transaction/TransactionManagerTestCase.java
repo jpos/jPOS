@@ -41,7 +41,7 @@ public class TransactionManagerTestCase extends TestCase {
     }
     public void testRetryTransaction() {
         Context ctx = new Context();
-        ctx.put ("RETRY", new Integer(10), true);
+        ctx.put ("RETRY", Integer.valueOf(10), true);
         sp.out (QUEUE, ctx);
     }
     public void tearDown() throws Exception {

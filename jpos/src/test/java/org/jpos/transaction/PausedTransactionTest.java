@@ -53,7 +53,7 @@ public class PausedTransactionTest {
 
     @Test
     public void testCancelExpirationMonitor1() throws Throwable {
-        TimerTask expirationMonitor = new TransactionManager().new PausedMonitor(new Context());
+        TimerTask expirationMonitor = new TransactionManager.PausedMonitor(new Context());
         PausedTransaction pausedTransaction = new PausedTransaction(new TransactionManager(), 100L, new ArrayList(),
                 (new ArrayList()).iterator(), true, expirationMonitor);
         pausedTransaction.cancelExpirationMonitor();
@@ -140,7 +140,7 @@ public class PausedTransactionTest {
     @Test
     public void testId() throws Throwable {
         PausedTransaction pausedTransaction = new PausedTransaction(new TransactionManager(), 0L, new ArrayList(),
-                (new ArrayList()).iterator(), true, new TransactionManager().new PausedMonitor(new Context()));
+                (new ArrayList()).iterator(), true, new TransactionManager.PausedMonitor(new Context()));
         long result = pausedTransaction.id();
         assertEquals("result", 0L, result);
     }
@@ -156,7 +156,7 @@ public class PausedTransactionTest {
     @Test
     public void testIsAborting() throws Throwable {
         PausedTransaction pausedTransaction = new PausedTransaction(new TransactionManager(), 100L, new ArrayList(),
-                (new ArrayList()).iterator(), false, new TransactionManager().new PausedMonitor(new Context()));
+                (new ArrayList()).iterator(), false, new TransactionManager.PausedMonitor(new Context()));
         boolean result = pausedTransaction.isAborting();
         assertFalse("result", result);
     }
@@ -164,7 +164,7 @@ public class PausedTransactionTest {
     @Test
     public void testIsAborting1() throws Throwable {
         PausedTransaction pausedTransaction = new PausedTransaction(new TransactionManager(), 100L, new ArrayList(),
-                (new ArrayList()).iterator(), true, new TransactionManager().new PausedMonitor(new Context()));
+                (new ArrayList()).iterator(), true, new TransactionManager.PausedMonitor(new Context()));
         boolean result = pausedTransaction.isAborting();
         assertTrue("result", result);
     }

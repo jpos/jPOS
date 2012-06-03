@@ -134,7 +134,7 @@ public class SimpleKeyFile
             load();                 // load new changes (possibly made manually on the file)
             setProperty(alias, "class", secureKey.getClass().getName());
             setProperty(alias, "key", ISOUtil.hexString(secureKey.getKeyBytes()));
-            setProperty(alias, "length", new Short(secureKey.getKeyLength()).toString());
+            setProperty(alias, "length",  Short.toString(secureKey.getKeyLength()));
             setProperty(alias, "type", secureKey.getKeyType());
             String keyCheckValueHexString = ISOUtil.hexString(((SecureDESKey)secureKey).getKeyCheckValue());
             setProperty(alias, "checkvalue", keyCheckValueHexString);

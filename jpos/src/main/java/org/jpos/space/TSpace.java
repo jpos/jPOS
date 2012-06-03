@@ -189,7 +189,7 @@ public class TSpace<K,V> extends TimerTask implements LocalSpace<K,V>, Loggeable
         return entries.keySet();
     }
     public String getKeysAsString () {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         Object[] keys;
         synchronized (this) {
             keys = entries.keySet().toArray();

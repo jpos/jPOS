@@ -27,7 +27,7 @@ import org.mockito.internal.matchers.Matches;
 
 public class ThreadPoolTest {
 
-    class TestTask implements Runnable {
+    static class TestTask implements Runnable {
       public void run() {
         ISOUtil.sleep(500);
       }

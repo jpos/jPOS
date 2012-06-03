@@ -490,7 +490,7 @@ public class BSHLogListenerTest {
 
     @Test
     public void testScriptInfoConstructor() throws Throwable {
-        BSHLogListener.ScriptInfo scriptInfo = new BSHLogListener().new ScriptInfo("testScriptInfoCode", 100L);
+        BSHLogListener.ScriptInfo scriptInfo = new BSHLogListener.ScriptInfo("testScriptInfoCode", 100L);
         assertEquals("scriptInfo.lastModified", 100L, scriptInfo.lastModified);
         assertEquals("scriptInfo.code", "testScriptInfoCode", scriptInfo.code);
     }
@@ -498,37 +498,37 @@ public class BSHLogListenerTest {
     @Test
     public void testScriptInfoConstructor1() throws Throwable {
         NameSpace ns = NameSpace.JAVACODE;
-        BSHLogListener.ScriptInfo scriptInfo = new BSHLogListener().new ScriptInfo(ns);
+        BSHLogListener.ScriptInfo scriptInfo =  new BSHLogListener.ScriptInfo(ns);
         assertSame("scriptInfo.nameSpace", ns, scriptInfo.nameSpace);
     }
 
     @Test
     public void testScriptInfoConstructor2() throws Throwable {
-        BSHLogListener.ScriptInfo scriptInfo = new BSHLogListener().new ScriptInfo();
+        BSHLogListener.ScriptInfo scriptInfo = new BSHLogListener.ScriptInfo();
         assertNull("scriptInfo.getCode()", scriptInfo.getCode());
     }
 
     @Test
     public void testScriptInfoGetCode() throws Throwable {
-        String result = new BSHLogListener().new ScriptInfo("testScriptInfoCode", 100L).getCode();
+        String result = new BSHLogListener.ScriptInfo("testScriptInfoCode", 100L).getCode();
         assertEquals("result", "testScriptInfoCode", result);
     }
 
     @Test
     public void testScriptInfoGetCode1() throws Throwable {
-        String result = new BSHLogListener().new ScriptInfo().getCode();
+        String result = new BSHLogListener.ScriptInfo().getCode();
         assertNull("result", result);
     }
 
     @Test
     public void testScriptInfoGetLastCheck() throws Throwable {
-        long result = new BSHLogListener().new ScriptInfo("testScriptInfoCode", 100L).getLastCheck();
+        long result = new BSHLogListener.ScriptInfo("testScriptInfoCode", 100L).getLastCheck();
         assertEquals("result", 0L, result);
     }
 
     @Test
     public void testScriptInfoGetLastCheck1() throws Throwable {
-        BSHLogListener.ScriptInfo scriptInfo = new BSHLogListener().new ScriptInfo("testScriptInfoCode", 100L);
+        BSHLogListener.ScriptInfo scriptInfo = new BSHLogListener.ScriptInfo("testScriptInfoCode", 100L);
         scriptInfo.setLastCheck(100L);
         long result = scriptInfo.getLastCheck();
         assertEquals("result", 100L, result);
@@ -536,13 +536,13 @@ public class BSHLogListenerTest {
 
     @Test
     public void testScriptInfoGetLastModified() throws Throwable {
-        long result = new BSHLogListener().new ScriptInfo(NameSpace.JAVACODE).getLastModified();
+        long result = new BSHLogListener.ScriptInfo(NameSpace.JAVACODE).getLastModified();
         assertEquals("result", 0L, result);
     }
 
     @Test
     public void testScriptInfoGetLastModified1() throws Throwable {
-        BSHLogListener.ScriptInfo scriptInfo = new BSHLogListener().new ScriptInfo();
+        BSHLogListener.ScriptInfo scriptInfo = new BSHLogListener.ScriptInfo();
         scriptInfo.setLastModified(100L);
         long result = scriptInfo.getLastModified();
         assertEquals("result", 100L, result);
@@ -551,27 +551,27 @@ public class BSHLogListenerTest {
     @Test
     public void testScriptInfoGetNameSpace() throws Throwable {
         NameSpace ns = NameSpace.JAVACODE;
-        NameSpace result = new BSHLogListener().new ScriptInfo(ns).getNameSpace();
+        NameSpace result = new BSHLogListener.ScriptInfo(ns).getNameSpace();
         assertSame("result", ns, result);
     }
 
     @Test
     public void testScriptInfoSetCode() throws Throwable {
-        BSHLogListener.ScriptInfo scriptInfo = new BSHLogListener().new ScriptInfo();
+        BSHLogListener.ScriptInfo scriptInfo = new BSHLogListener.ScriptInfo();
         scriptInfo.setCode("testScriptInfoCode");
         assertEquals("scriptInfo.code", "testScriptInfoCode", scriptInfo.code);
     }
 
     @Test
     public void testScriptInfoSetLastCheck() throws Throwable {
-        BSHLogListener.ScriptInfo scriptInfo = new BSHLogListener().new ScriptInfo("testScriptInfoCode", 100L);
+        BSHLogListener.ScriptInfo scriptInfo = new BSHLogListener.ScriptInfo("testScriptInfoCode", 100L);
         scriptInfo.setLastCheck(100L);
         assertEquals("scriptInfo.lastCheck", 100L, scriptInfo.lastCheck);
     }
 
     @Test
     public void testScriptInfoSetLastModified() throws Throwable {
-        BSHLogListener.ScriptInfo scriptInfo = new BSHLogListener().new ScriptInfo(NameSpace.JAVACODE);
+        BSHLogListener.ScriptInfo scriptInfo = new BSHLogListener.ScriptInfo(NameSpace.JAVACODE);
         scriptInfo.setLastModified(100L);
         assertEquals("scriptInfo.lastModified", 100L, scriptInfo.lastModified);
     }
@@ -579,7 +579,7 @@ public class BSHLogListenerTest {
     @Test
     public void testScriptInfoSetNameSpace() throws Throwable {
         NameSpace ns = NameSpace.JAVACODE;
-        BSHLogListener.ScriptInfo scriptInfo = new BSHLogListener().new ScriptInfo(ns);
+        BSHLogListener.ScriptInfo scriptInfo = new BSHLogListener.ScriptInfo(ns);
         scriptInfo.getNameSpace();
         scriptInfo.setNameSpace(ns);
         assertSame("scriptInfo.nameSpace", ns, scriptInfo.nameSpace);
