@@ -15,24 +15,35 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.jpos.space;
 
-
 public class ObjectTemplate implements Template {
+  
     Object key;
     Object value;
 
-    public ObjectTemplate (Object key, Object value) {
-        super ();
-        this.key    = key;
-        this.value  = value;
+    public ObjectTemplate(Object key, Object value) {
+        super();
+        this.key = key;
+        this.value = value;
     }
-    public boolean equals (Object obj) {
-        return value.equals (obj);
-    }
-    public Object getKey () {
+
+    public Object getKey() {
         return key;
     }
-}
 
+    @Override
+    public boolean equals(Object obj) {
+        return value.equals(obj);
+    }
+
+    @Override
+    public int hashCode() {
+        return value.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "ObjectTemplate [key=" + key + ", value=" + value + "]";
+    }
+}
