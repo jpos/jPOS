@@ -111,7 +111,7 @@ public class SystemMonitorTest {
 			containsString("##--- name-registrar ---")));
     }
 
-    class SystemMonitorExtendedForTesting extends SystemMonitor {
+    static class SystemMonitorExtendedForTesting extends SystemMonitor {
 	Runtime runtime;
 	SecurityManager securityManager;
 

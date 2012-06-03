@@ -737,7 +737,7 @@ public class ISOMsg extends ISOComponent
      * @return a string suitable for a log
      */
     public String toString() {
-        StringBuffer s = new StringBuffer();
+        StringBuilder s = new StringBuilder();
         if (isIncoming())
             s.append("<-- ");
         else if (isOutgoing())

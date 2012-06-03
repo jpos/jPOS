@@ -68,7 +68,7 @@ public class LogListenerFactory implements UIFactory {
         }
         return textArea;
     }
-    public class Listener implements LogListener, Runnable {
+    public static class Listener implements LogListener, Runnable {
         final LogProducer logger;
         JTextArea text;
         UI ui;

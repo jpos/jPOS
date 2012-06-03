@@ -136,7 +136,7 @@ public class VISA1Packager
     }
 
     public String guessAutNumber (String s) {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         for (int i=0; i<s.length(); i++)
             if (Character.isDigit(s.charAt(i))) 
                 buf.append (s.charAt(i));

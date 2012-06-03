@@ -54,7 +54,7 @@ public class HtmlFactory implements UIFactory {
             return new JLabel (ex.getMessage());
         }
     }
-    class Listener implements HyperlinkListener {
+    static class Listener implements HyperlinkListener {
         public void hyperlinkUpdate(HyperlinkEvent e) {
             if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
                 JEditorPane pane = (JEditorPane) e.getSource();

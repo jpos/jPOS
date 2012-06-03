@@ -139,7 +139,7 @@ public class SpaceFactory {
         return sp;
     }
     private static String normalize (String scheme, String name, String param) {
-        StringBuffer sb = new StringBuffer (scheme);
+        StringBuilder sb = new StringBuilder (scheme);
         sb.append (':');
         sb.append (name);
         if (param != null) {

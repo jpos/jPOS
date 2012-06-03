@@ -49,7 +49,7 @@ public class ISOBaseValidatingPackager extends ISOBasePackager implements ISOVal
             Map fields = m.getChildren();
             /** Field  validations **/
             for (int i=0; i<fldVld.length; i++) {
-                if ( fldVld[i] != null && (c=(ISOComponent) fields.get (new Integer ( ((ISOFieldValidator)fldVld[i]).getFieldId() ))) != null ){
+                if ( fldVld[i] != null && (c=(ISOComponent) fields.get (Integer.valueOf( ((ISOFieldValidator)fldVld[i]).getFieldId() ))) != null ){
                     try {
                         m.set( fldVld[i].validate( c ) );
                     } catch ( ISOVException e ) {

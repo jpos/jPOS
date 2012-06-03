@@ -45,8 +45,8 @@ public class QMUX
     extends QBeanSupport
     implements SpaceListener, MUX, QMUXMBean, Loggeable, ISOSource
 {
-    final String nomap = "0123456789";
-    final String DEFAULT_KEY = "41, 11";
+    static final String nomap = "0123456789";
+    static final String DEFAULT_KEY = "41, 11";
     private boolean headerIsKey;
     protected LocalSpace sp;
     protected String in, out, unhandled;
@@ -175,7 +175,7 @@ public class QMUX
     }
 
     public String getKey (ISOMsg m) throws ISOException {
-        StringBuffer sb = new StringBuffer (out);
+        StringBuilder sb = new StringBuilder (out);
         sb.append ('.');
         sb.append (mapMTI(m.getMTI()));
         if (headerIsKey && m.getHeader()!=null) {
@@ -206,7 +206,7 @@ public class QMUX
         return sb.toString();
     }
     private String mapMTI (String mti) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         if (mti != null && mti.length() == 4) {
             for (int i=0; i<mtiMapping.length; i++) {
                 int c = mti.charAt (i) - '0';
@@ -433,7 +433,7 @@ public class QMUX
         sb.append (name);
         sb.append (value);
     }
-    public class AsyncRequest extends TimerTask {
+    public static class AsyncRequest extends TimerTask {
         ISOResponseListener rl;
         Object handBack;
         public AsyncRequest (ISOResponseListener rl, Object handBack) {

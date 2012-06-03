@@ -92,7 +92,7 @@ public class TMMON implements CLICommand, TransactionStatusListener
         NameRegistrar nr = NameRegistrar.getInstance();
         int maxw = 0;
         Iterator iter = NameRegistrar.getMap().entrySet().iterator();
-        StringBuffer sb = new StringBuffer("available transaction managers:");
+        StringBuilder sb = new StringBuilder("available transaction managers:");
         while (iter.hasNext())
         {
             Map.Entry entry = (Map.Entry) iter.next();

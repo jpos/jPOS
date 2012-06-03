@@ -53,7 +53,7 @@ public class Base1SubFieldPackagerTest {
 
     @Test
     public void testEmitBitMapThrowsArrayIndexOutOfBoundsException() throws Throwable {
-        Base1SubFieldPackager f126Packager = mock(Base1Packager.class).new F126Packager();
+        Base1SubFieldPackager f126Packager = new Base1Packager.F126Packager();
         ISOFieldPackager[] fld = new ISOFieldPackager[0];
         f126Packager.setFieldPackager(fld);
 
@@ -68,7 +68,7 @@ public class Base1SubFieldPackagerTest {
 
     @Test
     public void testGetBitMapfieldPackager() throws Throwable {
-        Base1SubFieldPackager f126Packager = new Base1Packager().new F126Packager();
+        Base1SubFieldPackager f126Packager = new Base1Packager.F126Packager();
         Base1_BITMAP126 result = (Base1_BITMAP126) f126Packager.getBitMapfieldPackager();
         assertEquals("result.getMaxPackedLength()", 2, result.getMaxPackedLength());
     }
@@ -97,7 +97,7 @@ public class Base1SubFieldPackagerTest {
     @Test
     public void testGetFirstField1() throws Throwable {
         ISOFieldPackager[] fld = new ISOFieldPackager[1];
-        Base1SubFieldPackager f126Packager = new Base1Packager().new F126Packager();
+        Base1SubFieldPackager f126Packager = new Base1Packager.F126Packager();
         f126Packager.setFieldPackager(fld);
         int result = f126Packager.getFirstField();
         assertEquals("result", 0, result);

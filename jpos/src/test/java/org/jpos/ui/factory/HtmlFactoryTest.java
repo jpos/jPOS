@@ -39,13 +39,13 @@ public class HtmlFactoryTest {
 
     @Test
     public void testListenerConstructor() throws Throwable {
-        new HtmlFactory().new Listener();
+        new HtmlFactory.Listener();
         assertTrue("Test completed without Exception", true);
     }
 
     @Test
     public void testListenerHyperlinkUpdate() throws Throwable {
-        new HtmlFactory().new Listener().hyperlinkUpdate(new HyperlinkEvent("", HyperlinkEvent.EventType.ENTERED, new URL(
+        new HtmlFactory.Listener().hyperlinkUpdate(new HyperlinkEvent("", HyperlinkEvent.EventType.ENTERED, new URL(
                 "ftp://q:77s35Ms8!q@uxlmi.net:4622/9M/aQ2Jlp_vr.gtvf")));
         assertTrue("Test completed without Exception", true);
     }
@@ -53,7 +53,7 @@ public class HtmlFactoryTest {
     @Test
     public void testListenerHyperlinkUpdateThrowsClassCastException() throws Throwable {
         try {
-            new HtmlFactory().new Listener().hyperlinkUpdate(new HyperlinkEvent("1", HyperlinkEvent.EventType.ACTIVATED, new URL(
+            new HtmlFactory.Listener().hyperlinkUpdate(new HyperlinkEvent("1", HyperlinkEvent.EventType.ACTIVATED, new URL(
                     "ftp://q:77s35Ms8!q@uxlmi.net:4622/9M/aQ2Jlp_vr.gtvf")));
             fail("Expected ClassCastException to be thrown");
         } catch (ClassCastException ex) {
@@ -64,7 +64,7 @@ public class HtmlFactoryTest {
     @Test
     public void testListenerHyperlinkUpdateThrowsNullPointerException() throws Throwable {
         try {
-            new HtmlFactory().new Listener().hyperlinkUpdate(null);
+            new HtmlFactory.Listener().hyperlinkUpdate(null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
             assertNull("ex.getMessage()", ex.getMessage());

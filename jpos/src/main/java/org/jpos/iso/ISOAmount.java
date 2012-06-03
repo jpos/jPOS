@@ -105,7 +105,7 @@ public class ISOAmount
         return ISOUtil.zeropad (amount.unscaledValue().toString(), 12);
     }
     public String getAmountAsString() throws ISOException {
-        StringBuffer sb = new StringBuffer(16);
+        StringBuilder sb = new StringBuilder(16);
         sb.append (ISOUtil.zeropad (Integer.toString (currencyCode),3));
         sb.append (Integer.toString(amount.scale() % 10));
         sb.append (ISOUtil.zeropad (amount.unscaledValue().toString(), 12));

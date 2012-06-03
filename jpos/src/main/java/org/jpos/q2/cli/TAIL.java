@@ -101,7 +101,7 @@ public class TAIL implements CLICommand, LogListener
         NameRegistrar nr = NameRegistrar.getInstance();
         int maxw = 0;
         Iterator iter = nr.getMap().entrySet().iterator();
-        StringBuffer sb = new StringBuffer("available loggers:");
+        StringBuilder sb = new StringBuilder("available loggers:");
         while (iter.hasNext())
         {
             Map.Entry entry = (Map.Entry) iter.next();

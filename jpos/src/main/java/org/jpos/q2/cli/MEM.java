@@ -30,7 +30,7 @@ public class MEM implements CLICommand
             System.gc();
         }
         Runtime r = Runtime.getRuntime();
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         sb.append("total=");
         sb.append(r.totalMemory());
         sb.append(" free=");

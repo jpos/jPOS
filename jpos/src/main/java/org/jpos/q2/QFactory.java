@@ -300,7 +300,7 @@ public class QFactory {
      */
     public String getAttributeName(String name)
     {
-        StringBuffer tmp = new StringBuffer(name);
+        StringBuilder tmp = new StringBuilder(name);
         tmp.setCharAt(0,name.toUpperCase().charAt(0)) ;
         return tmp.toString();
     }
