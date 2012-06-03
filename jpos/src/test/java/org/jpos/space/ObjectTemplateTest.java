@@ -15,47 +15,20 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.jpos.space;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
 public class ObjectTemplateTest {
-
     @Test
     public void testConstructor() throws Throwable {
         ObjectTemplate objectTemplate = new ObjectTemplate("", "");
         assertEquals("objectTemplate.key", "", objectTemplate.key);
         assertEquals("objectTemplate.value", "", objectTemplate.value);
-    }
-
-    @Test
-    public void testEquals() throws Throwable {
-        boolean result = new ObjectTemplate(null, new Object()).equals("");
-        assertFalse("result", result);
-    }
-
-    @Test
-    public void testEquals1() throws Throwable {
-        boolean result = new ObjectTemplate(new Object(), "").equals("");
-        assertTrue("result", result);
-    }
-
-    @Test
-    public void testEqualsThrowsNullPointerException() throws Throwable {
-        try {
-            new ObjectTemplate("", null).equals("");
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
     }
 
     @Test
@@ -76,5 +49,29 @@ public class ObjectTemplateTest {
     public void testGetKey2() throws Throwable {
         String result = (String) new ObjectTemplate("testString", "").getKey();
         assertEquals("result", "testString", result);
+    }
+
+    @Test
+    public void testEqualsValue() {
+        String value = "someValue";
+        ObjectTemplate objectTemplate = new ObjectTemplate("key", value);
+        assertEquals(objectTemplate, value);
+    }
+
+    @Test
+    public void testNotEqualsItSelfOrAnother() {
+        String value = "someValue";
+        ObjectTemplate objectTemplateA = new ObjectTemplate("key", value);
+        ObjectTemplate objectTemplateB = new ObjectTemplate("key", value);
+        assertFalse("should only equals on the template value", objectTemplateA.equals(objectTemplateA));
+        assertFalse("should only equals on the template value", objectTemplateA.equals(objectTemplateB));
+    }
+
+    @Test
+    public void testHaveHashCodeOfValue() {
+        String value = "someValue";
+        ObjectTemplate objectTemplate = new ObjectTemplate("key", value);
+        assertEquals("Should implement hashCode on the template value", objectTemplate.hashCode(), value.hashCode());
+        assertEquals("objectTemplate hashCode and value hashCode should be same", objectTemplate.hashCode(), value.hashCode());
     }
 }
