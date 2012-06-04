@@ -31,6 +31,7 @@ import org.jpos.util.NameRegistrar;
 
 import java.io.IOException;
 import java.io.PrintStream;
+import java.net.SocketTimeoutException;
 import java.util.Date;
 import java.util.Iterator;
 
@@ -296,6 +297,14 @@ public class ChannelAdaptor
                             disconnect ();
                             sp.out (in, new Object()); // wake-up Sender
                         }
+                        ISOUtil.sleep(1000);
+                    }
+                } catch (SocketTimeoutException e) {
+                    if (running()) {
+                        getLog().warn ("channel-receiver-"+out, "Read timeout");
+                        sp.out (reconnect, new Object(), delay);
+                        disconnect ();
+                        sp.out (in, new Object()); // wake-up Sender
                         ISOUtil.sleep(1000);
                     }
                 } catch (Exception e) { 
