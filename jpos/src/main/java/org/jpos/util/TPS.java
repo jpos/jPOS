@@ -168,7 +168,10 @@ public class TPS implements Loggeable {
         lock.lock();
         try {
             tps = (float) period * count.get() / interval;
-            avg = (avg + tps) / 2;
+            if (period != 1000L) {
+                tps = tps*1000L/period;
+            }
+            avg = avg == 0 ? tps : (avg + tps) / 2;
             if (tps > peak) {
                 peak = Math.round(tps);
                 peakWhen = System.currentTimeMillis();
