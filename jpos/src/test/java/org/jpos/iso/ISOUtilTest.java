@@ -836,12 +836,6 @@ public class ISOUtilTest {
     }
 
     @Test
-    public void testConstructor() throws Throwable {
-        new ISOUtil();
-        assertTrue("Test completed without Exception", true);
-    }
-
-    @Test
     public void testDumpString() throws Throwable {
         byte[] b = new byte[5];
         b[1] = (byte) 22;

@@ -32,6 +32,10 @@ import java.util.*;
  * @see ISOUtil
  */
 public class ISODate {
+    private ISODate() {
+        throw new AssertionError();
+    }
+
     public static final long ONE_YEAR = 365*86400*1000;
    /**
     * Formats a date object, using the default time zone for this host

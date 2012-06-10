@@ -33,21 +33,22 @@ import java.util.*;
  */
 @SuppressWarnings("unused")
 public class ISOUtil {
-	
-    public static final String[] hexStrings = getHexStrings();
+    private ISOUtil() {
+        throw new AssertionError();
+    }
+    public static final String[] hexStrings;
 
-    public static String [] getHexStrings() {
-        String [] hs = new String[256];
-
+    static {
+        hexStrings = new String[256];
         for (int i = 0; i < 256; i++ ) {
             StringBuilder d = new StringBuilder(2);
             char ch = Character.forDigit(((byte)i >> 4) & 0x0F, 16);
             d.append(Character.toUpperCase(ch));
             ch = Character.forDigit((byte)i & 0x0F, 16);
             d.append(Character.toUpperCase(ch));
-            hs[i] = d.toString();
+            hexStrings[i] = d.toString();
         }
-        return hs;
+
     }
 
     public static final String ENCODING  = "ISO8859_1";
