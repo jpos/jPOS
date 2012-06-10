@@ -29,8 +29,8 @@ import java.util.concurrent.ConcurrentMap;
  * @version $Revision$ $Date$
  */
 public class NameRegistrar implements Loggeable {
-    private static NameRegistrar instance = new NameRegistrar();
-    private ConcurrentMap<String, Object> registrar;
+    private static final NameRegistrar instance = new NameRegistrar();
+    private static final ConcurrentMap<String, Object> registrar = new ConcurrentHashMap<String, Object>();
 
     public static class NotFoundException extends Exception {
         private static final long serialVersionUID = 8744022794646381475L;
@@ -46,7 +46,6 @@ public class NameRegistrar implements Loggeable {
 
     private NameRegistrar() {
         super();
-        registrar = new ConcurrentHashMap<String, Object>();
     }
 
     public static ConcurrentMap<String, Object> getMap() {
