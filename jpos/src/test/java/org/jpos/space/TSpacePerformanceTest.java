@@ -8,6 +8,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import org.jpos.iso.ISOUtil;
 
+import org.jpos.util.TPS;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -27,6 +28,8 @@ public class TSpacePerformanceTest  {
     List<Long> t2 = new ArrayList();
 //    List t1 = Collections.synchronizedCollection(new ArrayList());
     public static final int COUNT = 100000;
+    TPS tpsOut = new TPS(100L, false);
+    TPS tpsIn = new TPS(100L, false);
 
     class WriteSpaceTask implements Runnable {
         String key;
@@ -36,13 +39,14 @@ public class TSpacePerformanceTest  {
         }
         public void run (){
           long stamp = System.nanoTime();
-          for (int i=0; i<COUNT; i++)
+          for (int i=0; i<COUNT; i++) {
              sp1.out(key, Boolean.TRUE);
+             tpsOut.tick();
+          }
           long stamp2 = System.nanoTime();
           t1.add(stamp2-stamp);
-          System.err.println("Write "+key+" out: "+(stamp2-stamp)/1000000);
+          System.err.println("Write "+key+" out: "+(stamp2-stamp)/1000000 + " " + tpsOut.toString());
         }
-
     }
 
     class ReadSpaceTask implements Runnable {
@@ -53,11 +57,13 @@ public class TSpacePerformanceTest  {
         }
         public void run (){
           long stamp = System.nanoTime();
-          for (int i=0; i<COUNT; i++)
+          for (int i=0; i<COUNT; i++) {
              sp1.in(key);
+             tpsIn.tick();
+          }
           long stamp2 = System.nanoTime();
           t2.add(stamp2-stamp);
-          System.err.println("Read  "+key+" out: "+(stamp2-stamp)/1000000);
+          System.err.println("Read  "+key+"  in: "+(stamp2-stamp)/1000000 + " " + tpsIn.toString());
         }  
     }
 
