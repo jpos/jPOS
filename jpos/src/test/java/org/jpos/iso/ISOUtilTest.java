@@ -18,14 +18,26 @@
 
 package org.jpos.iso;
 
+import static org.hamcrest.CoreMatchers.allOf;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.hasItemInArray;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.math.BigDecimal;
 import java.math.MathContext;
-
 import java.util.BitSet;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class ISOUtilTest {
     final String lineSep = System.getProperty("line.separator");
@@ -97,14 +109,9 @@ public class ISOUtilTest {
         }
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testAsciiToEbcdicThrowsNullPointerException() throws Throwable {
-        try {
-            ISOUtil.asciiToEbcdic((byte[]) null);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
+        ISOUtil.asciiToEbcdic((byte[]) null);
     }
 
     @Test
@@ -119,14 +126,9 @@ public class ISOUtilTest {
         }
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testAsciiToEbcdicThrowsNullPointerException2() throws Throwable {
-        try {
-            ISOUtil.asciiToEbcdic((String) null);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
+        ISOUtil.asciiToEbcdic((String) null);
     }
 
     @Test
@@ -182,125 +184,75 @@ public class ISOUtilTest {
         assertEquals("result", "00E", result);
     }
 
-    @Test
+    @Test(expected = ArrayIndexOutOfBoundsException.class)
     public void testBcd2strThrowsArrayIndexOutOfBoundsException() throws Throwable {
         byte[] b = new byte[41];
         b[25] = (byte) -100;
         b[30] = (byte) 13;
         b[35] = (byte) -29;
-        try {
-            ISOUtil.bcd2str(b, 16, 61, true);
-            fail("Expected ArrayIndexOutOfBoundsException to be thrown");
-        } catch (ArrayIndexOutOfBoundsException ex) {
-            // assertEquals("ex.getMessage()", "41", ex.getMessage());
-        }
+        ISOUtil.bcd2str(b, 16, 61, true);
     }
 
-    @Test
+    @Test(expected = ArrayIndexOutOfBoundsException.class)
     public void testBcd2strThrowsArrayIndexOutOfBoundsException1() throws Throwable {
         byte[] b = new byte[41];
         b[25] = (byte) -100;
         b[30] = (byte) 13;
         b[35] = (byte) -29;
-        try {
-            ISOUtil.bcd2str(b, 16, 61, false);
-            fail("Expected ArrayIndexOutOfBoundsException to be thrown");
-        } catch (ArrayIndexOutOfBoundsException ex) {
-            // assertEquals("ex.getMessage()", "41", ex.getMessage());
-        }
+        ISOUtil.bcd2str(b, 16, 61, false);
     }
 
-    @Test
+    @Test(expected = ArrayIndexOutOfBoundsException.class)
     public void testBcd2strThrowsArrayIndexOutOfBoundsException2() throws Throwable {
         byte[] b = new byte[25];
         b[2] = (byte) -63;
         b[3] = (byte) 62;
         b[23] = (byte) 29;
-        try {
-            ISOUtil.bcd2str(b, 0, 100, true);
-            fail("Expected ArrayIndexOutOfBoundsException to be thrown");
-        } catch (ArrayIndexOutOfBoundsException ex) {
-            // assertEquals("ex.getMessage()", "25", ex.getMessage());
-        }
+        ISOUtil.bcd2str(b, 0, 100, true);
     }
 
-    @Test
+    @Test(expected = ArrayIndexOutOfBoundsException.class)
     public void testBcd2strThrowsArrayIndexOutOfBoundsException3() throws Throwable {
         byte[] b = new byte[41];
         b[25] = (byte) -100;
         b[35] = (byte) -29;
-        try {
-            ISOUtil.bcd2str(b, 16, 61, false);
-            fail("Expected ArrayIndexOutOfBoundsException to be thrown");
-        } catch (ArrayIndexOutOfBoundsException ex) {
-            // assertEquals("ex.getMessage()", "41", ex.getMessage());
-        }
+        ISOUtil.bcd2str(b, 16, 61, false);
     }
 
-    @Test
+    @Test(expected = ArrayIndexOutOfBoundsException.class)
     public void testBcd2strThrowsArrayIndexOutOfBoundsException4() throws Throwable {
         byte[] b = new byte[2];
         b[1] = (byte) 28;
-        try {
-            ISOUtil.bcd2str(b, 0, 27, true);
-            fail("Expected ArrayIndexOutOfBoundsException to be thrown");
-        } catch (ArrayIndexOutOfBoundsException ex) {
-            // assertEquals("ex.getMessage()", "2", ex.getMessage());
-        }
+        ISOUtil.bcd2str(b, 0, 27, true);
     }
 
-    @Test
+    @Test(expected = ArrayIndexOutOfBoundsException.class)
     public void testBcd2strThrowsArrayIndexOutOfBoundsException5() throws Throwable {
         byte[] b = new byte[25];
         b[2] = (byte) -63;
         b[3] = (byte) 62;
-        try {
-            ISOUtil.bcd2str(b, 0, 100, true);
-            fail("Expected ArrayIndexOutOfBoundsException to be thrown");
-        } catch (ArrayIndexOutOfBoundsException ex) {
-            // assertEquals("ex.getMessage()", "25", ex.getMessage());
-        }
+        ISOUtil.bcd2str(b, 0, 100, true);
     }
 
-    @Test
+    @Test(expected = NegativeArraySizeException.class)
     public void testBcd2strThrowsNegativeArraySizeException() throws Throwable {
         byte[] b = new byte[3];
-        try {
-            ISOUtil.bcd2str(b, 100, -1, true);
-            fail("Expected NegativeArraySizeException to be thrown");
-        } catch (NegativeArraySizeException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
+        ISOUtil.bcd2str(b, 100, -1, true);
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testBcd2strThrowsNullPointerException() throws Throwable {
-        try {
-            ISOUtil.bcd2str((byte[]) null, 100, 1, false);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
+        ISOUtil.bcd2str((byte[]) null, 100, 1, false);
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testBcd2strThrowsNullPointerException1() throws Throwable {
-        try {
-            ISOUtil.bcd2str((byte[]) null, 100, 1, true);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
+        ISOUtil.bcd2str((byte[]) null, 100, 1, true);
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testBcd2strThrowsNullPointerException2() throws Throwable {
-        try {
-            ISOUtil.bcd2str((byte[]) null, 100, 1000, true);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
+        ISOUtil.bcd2str((byte[]) null, 100, 1000, true);
     }
 
     @Test
@@ -323,14 +275,9 @@ public class ISOUtilTest {
         assertEquals("result.length", 0, result.length);
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testBitSet2byteThrowsNullPointerException() throws Throwable {
-        try {
-            ISOUtil.bitSet2byte(null);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
+        ISOUtil.bitSet2byte(null);
     }
 
     @Test
@@ -340,14 +287,9 @@ public class ISOUtilTest {
         assertEquals("result[0]", (byte) -128, result[0]);
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testBitSet2extendedByteThrowsNullPointerException() throws Throwable {
-        try {
-            ISOUtil.bitSet2extendedByte(null);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
+        ISOUtil.bitSet2extendedByte(null);
     }
 
     @Test
@@ -379,14 +321,9 @@ public class ISOUtilTest {
         assertEquals("result", "", result);
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testBitSet2StringThrowsNullPointerException() throws Throwable {
-        try {
-            ISOUtil.bitSet2String(null);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
+        ISOUtil.bitSet2String(null);
     }
 
     @Test
@@ -401,14 +338,9 @@ public class ISOUtilTest {
         assertEquals("result", "1", result);
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testBlankUnPadThrowsNullPointerException() throws Throwable {
-        try {
-            ISOUtil.blankUnPad(null);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
+        ISOUtil.blankUnPad(null);
     }
 
     @Test
@@ -725,26 +657,16 @@ public class ISOUtilTest {
         }
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testByte2BitSetThrowsNullPointerException() throws Throwable {
-        try {
-            ISOUtil.byte2BitSet((byte[]) null, 100, true);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
+        ISOUtil.byte2BitSet((byte[]) null, 100, true);
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testByte2BitSetThrowsNullPointerException1() throws Throwable {
         byte[] b = new byte[4];
         b[2] = (byte) 127;
-        try {
-            ISOUtil.byte2BitSet((BitSet) null, b, 100);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
+        ISOUtil.byte2BitSet((BitSet) null, b, 100);
     }
 
     @Test
@@ -759,14 +681,9 @@ public class ISOUtilTest {
         }
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testByte2BitSetThrowsNullPointerException3() throws Throwable {
-        try {
-            ISOUtil.byte2BitSet((byte[]) null, 100, 65);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
+        ISOUtil.byte2BitSet((byte[]) null, 100, 65);
     }
 
     @Test
@@ -802,37 +719,22 @@ public class ISOUtilTest {
         assertEquals("result.length", 0, result.length);
     }
 
-    @Test
+    @Test(expected = NegativeArraySizeException.class)
     public void testConcatThrowsNegativeArraySizeException() throws Throwable {
         byte[] array1 = new byte[0];
         byte[] array2 = new byte[1];
-        try {
-            ISOUtil.concat(array1, 100, 0, array2, 1000, -1);
-            fail("Expected NegativeArraySizeException to be thrown");
-        } catch (NegativeArraySizeException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
+        ISOUtil.concat(array1, 100, 0, array2, 1000, -1);
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testConcatThrowsNullPointerException() throws Throwable {
-        try {
-            ISOUtil.concat((byte[]) null, 100, 1000, ISOUtil.asciiToEbcdic("testISOUtils"), 0, -1);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
+        ISOUtil.concat((byte[]) null, 100, 1000, ISOUtil.asciiToEbcdic("testISOUtils"), 0, -1);
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testConcatThrowsNullPointerException1() throws Throwable {
         byte[] array2 = new byte[3];
-        try {
-            ISOUtil.concat((byte[]) null, array2);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
+        ISOUtil.concat((byte[]) null, array2);
     }
 
     @Test
@@ -2353,14 +2255,9 @@ public class ISOUtilTest {
         assertEquals("result", "{RS}\uFFE3{NULL}{BEL}[09]", result);
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testDumpStringThrowsNullPointerException() throws Throwable {
-        try {
-            ISOUtil.dumpString((byte[]) null);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
+        ISOUtil.dumpString((byte[]) null);
     }
 
     @Test
@@ -2429,35 +2326,20 @@ public class ISOUtilTest {
         }
     }
 
-    @Test
+    @Test(expected = NegativeArraySizeException.class)
     public void testEbcdicToAsciiBytesThrowsNegativeArraySizeException() throws Throwable {
         byte[] e = new byte[1];
-        try {
-            ISOUtil.ebcdicToAsciiBytes(e, 100, -1);
-            fail("Expected NegativeArraySizeException to be thrown");
-        } catch (NegativeArraySizeException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
+        ISOUtil.ebcdicToAsciiBytes(e, 100, -1);
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testEbcdicToAsciiBytesThrowsNullPointerException() throws Throwable {
-        try {
-            ISOUtil.ebcdicToAsciiBytes((byte[]) null, 100, 1000);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
+        ISOUtil.ebcdicToAsciiBytes((byte[]) null, 100, 1000);
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testEbcdicToAsciiBytesThrowsNullPointerException1() throws Throwable {
-        try {
-            ISOUtil.ebcdicToAsciiBytes((byte[]) null);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
+        ISOUtil.ebcdicToAsciiBytes((byte[]) null);
     }
 
     @Test
@@ -2471,25 +2353,15 @@ public class ISOUtilTest {
         }
     }
 
-    @Test
+    @Test(expected = NegativeArraySizeException.class)
     public void testEbcdicToAsciiThrowsNegativeArraySizeException() throws Throwable {
         byte[] e = new byte[1];
-        try {
-            ISOUtil.ebcdicToAscii(e, 100, -1);
-            fail("Expected NegativeArraySizeException to be thrown");
-        } catch (NegativeArraySizeException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
+        ISOUtil.ebcdicToAscii(e, 100, -1);
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testEbcdicToAsciiThrowsNullPointerException() throws Throwable {
-        try {
-            ISOUtil.ebcdicToAscii((byte[]) null);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
+        ISOUtil.ebcdicToAscii((byte[]) null);
     }
 
     @Test
@@ -2502,21 +2374,24 @@ public class ISOUtilTest {
     public void testFormatAmount1() throws Throwable {
         String result = ISOUtil.formatAmount(1000L, 100);
         assertEquals("result",
-                "                                                                                               10.00", result);
+                "                                                                                               10.00",
+                result);
     }
 
     @Test
     public void testFormatAmount2() throws Throwable {
         String result = ISOUtil.formatAmount(100L, 100);
         assertEquals("result",
-                "                                                                                                1.00", result);
+                "                                                                                                1.00",
+                result);
     }
 
     @Test
     public void testFormatAmount3() throws Throwable {
         String result = ISOUtil.formatAmount(99L, 100);
         assertEquals("result",
-                "                                                                                                0.99", result);
+                "                                                                                                0.99",
+                result);
     }
 
     @Test
@@ -2562,7 +2437,8 @@ public class ISOUtilTest {
     public void testFormatDouble() throws Throwable {
         String result = ISOUtil.formatDouble(100.0, 100);
         assertEquals("result",
-                "                                                                                              100.00", result);
+                "                                                                                              100.00",
+                result);
     }
 
     @Test
@@ -2796,45 +2672,25 @@ public class ISOUtilTest {
         }
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testHex2BitSetThrowsNullPointerException() throws Throwable {
-        try {
-            ISOUtil.hex2BitSet((byte[]) null, 100, true);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
+        ISOUtil.hex2BitSet((byte[]) null, 100, true);
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testHex2BitSetThrowsNullPointerException1() throws Throwable {
-        try {
-            ISOUtil.hex2BitSet((byte[]) null, 100, 63);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
+        ISOUtil.hex2BitSet((byte[]) null, 100, 63);
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testHex2BitSetThrowsNullPointerException2() throws Throwable {
-        try {
-            ISOUtil.hex2BitSet((byte[]) null, 100, 65);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
+        ISOUtil.hex2BitSet((byte[]) null, 100, 65);
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testHex2BitSetThrowsNullPointerException3() throws Throwable {
         byte[] b = new byte[2];
-        try {
-            ISOUtil.hex2BitSet((BitSet) null, b, 100);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
+        ISOUtil.hex2BitSet((BitSet) null, b, 100);
     }
 
     @Test
@@ -2888,35 +2744,20 @@ public class ISOUtilTest {
         }
     }
 
-    @Test
+    @Test(expected = NegativeArraySizeException.class)
     public void testHex2byteThrowsNegativeArraySizeException() throws Throwable {
         byte[] b = new byte[1];
-        try {
-            ISOUtil.hex2byte(b, 100, -1);
-            fail("Expected NegativeArraySizeException to be thrown");
-        } catch (NegativeArraySizeException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
+        ISOUtil.hex2byte(b, 100, -1);
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testHex2byteThrowsNullPointerException() throws Throwable {
-        try {
-            ISOUtil.hex2byte((byte[]) null, 100, 1000);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
+        ISOUtil.hex2byte((byte[]) null, 100, 1000);
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testHex2byteThrowsNullPointerException1() throws Throwable {
-        try {
-            ISOUtil.hex2byte(null);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
+        ISOUtil.hex2byte(null);
     }
 
     @Test
@@ -3289,24 +3130,14 @@ public class ISOUtilTest {
         }
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testHexdumpThrowsNullPointerException() throws Throwable {
-        try {
-            ISOUtil.hexdump((byte[]) null, 100, 1000);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
+        ISOUtil.hexdump((byte[]) null, 100, 1000);
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testHexdumpThrowsNullPointerException1() throws Throwable {
-        try {
-            ISOUtil.hexdump((byte[]) null);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
+        ISOUtil.hexdump((byte[]) null);
     }
 
     @Test
@@ -3371,35 +3202,20 @@ public class ISOUtilTest {
         }
     }
 
-    @Test
+    @Test(expected = NegativeArraySizeException.class)
     public void testHexStringThrowsNegativeArraySizeException() throws Throwable {
         byte[] b = new byte[1];
-        try {
-            ISOUtil.hexString(b, 100, -1);
-            fail("Expected NegativeArraySizeException to be thrown");
-        } catch (NegativeArraySizeException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
+        ISOUtil.hexString(b, 100, -1);
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testHexStringThrowsNullPointerException() throws Throwable {
-        try {
-            ISOUtil.hexString((byte[]) null, 100, 1000);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
+        ISOUtil.hexString((byte[]) null, 100, 1000);
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testHexStringThrowsNullPointerException1() throws Throwable {
-        try {
-            ISOUtil.hexString((byte[]) null);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
+        ISOUtil.hexString((byte[]) null);
     }
 
     @Test
@@ -3415,14 +3231,9 @@ public class ISOUtilTest {
         assertFalse("result", result);
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testIsAlphaNumericThrowsNullPointerException() throws Throwable {
-        try {
-            ISOUtil.isAlphaNumeric(null);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
+        ISOUtil.isAlphaNumeric(null);
     }
 
     @Test
@@ -3467,14 +3278,9 @@ public class ISOUtilTest {
         assertFalse("result", result);
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testIsBlankThrowsNullPointerException() throws Throwable {
-        try {
-            ISOUtil.isBlank(null);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
+        ISOUtil.isBlank(null);
     }
 
     @Test
@@ -3501,14 +3307,9 @@ public class ISOUtilTest {
         assertFalse("result", result);
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testIsNumericThrowsNullPointerException() throws Throwable {
-        try {
-            ISOUtil.isNumeric(null, 100);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
+        ISOUtil.isNumeric(null, 100);
     }
 
     @Test
@@ -3535,14 +3336,9 @@ public class ISOUtilTest {
         assertTrue("result", result);
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testIsZeroThrowsNullPointerException() throws Throwable {
-        try {
-            ISOUtil.isZero(null);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
+        ISOUtil.isZero(null);
     }
 
     @Test
@@ -3691,7 +3487,8 @@ public class ISOUtilTest {
 
     @Test
     public void testNormalize4() throws Throwable {
-        String result = ISOUtil.normalize(" XX XXXX  XX XXXX X  XXX  XX XXXXX XXXXX   XX XXXXXXXX   XX X X  \t XXX", true);
+        String result = ISOUtil.normalize(" XX XXXX  XX XXXX X  XXX  XX XXXXX XXXXX   XX XXXXXXXX   XX X X  \t XXX",
+                true);
         assertEquals("result", " XX XXXX  XX XXXX X  XXX  XX XXXXX XXXXX   XX XXXXXXXX   XX X X  &#9; XXX", result);
     }
 
@@ -3760,14 +3557,9 @@ public class ISOUtilTest {
         }
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testPadleftThrowsNullPointerException() throws Throwable {
-        try {
-            ISOUtil.padleft(null, 0, '\u0002');
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
+        ISOUtil.padleft(null, 0, '\u0002');
     }
 
     @Test
@@ -3857,64 +3649,34 @@ public class ISOUtilTest {
         }
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testParseIntThrowsNullPointerException() throws Throwable {
-        try {
-            ISOUtil.parseInt((char[]) null, 100);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
+        ISOUtil.parseInt((char[]) null, 100);
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testParseIntThrowsNullPointerException1() throws Throwable {
-        try {
-            ISOUtil.parseInt((char[]) null);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
+        ISOUtil.parseInt((char[]) null);
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testParseIntThrowsNullPointerException2() throws Throwable {
-        try {
-            ISOUtil.parseInt((String) null, 100);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
+        ISOUtil.parseInt((String) null, 100);
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testParseIntThrowsNullPointerException3() throws Throwable {
-        try {
-            ISOUtil.parseInt((String) null);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
+        ISOUtil.parseInt((String) null);
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testParseIntThrowsNullPointerException4() throws Throwable {
-        try {
-            ISOUtil.parseInt((byte[]) null, 100);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
+        ISOUtil.parseInt((byte[]) null, 100);
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testParseIntThrowsNullPointerException5() throws Throwable {
-        try {
-            ISOUtil.parseInt((byte[]) null);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
+        ISOUtil.parseInt((byte[]) null);
     }
 
     @Test
@@ -4251,14 +4013,9 @@ public class ISOUtilTest {
         assertEquals("result", "9a{D<gFuG!^FOO/BAR COM^________", result);
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testProtectThrowsNullPointerException() throws Throwable {
-        try {
-            ISOUtil.protect(null);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
+        ISOUtil.protect(null);
     }
 
     @Test
@@ -4445,70 +4202,39 @@ public class ISOUtilTest {
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
             assertEquals("d[0]", (byte) 68, d[0]);
-            // assertEquals("ex.getMessage()", "1", ex.getMessage());
         }
     }
 
-    @Test
+    @Test(expected = ArrayIndexOutOfBoundsException.class)
     public void testStr2bcdThrowsArrayIndexOutOfBoundsException4() throws Throwable {
         byte[] d = new byte[2];
-        try {
-            ISOUtil.str2bcd("testISOUtils1", false, d, 100);
-            fail("Expected ArrayIndexOutOfBoundsException to be thrown");
-        } catch (ArrayIndexOutOfBoundsException ex) {
-            // assertEquals("ex.getMessage()", "100", ex.getMessage());
-        }
+        ISOUtil.str2bcd("testISOUtils1", false, d, 100);
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testStr2bcdThrowsNullPointerException() throws Throwable {
-        try {
-            ISOUtil.str2bcd(null, true);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
+        ISOUtil.str2bcd(null, true);
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testStr2bcdThrowsNullPointerException1() throws Throwable {
-        try {
-            ISOUtil.str2bcd(null, true, (byte) 0);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
+        ISOUtil.str2bcd(null, true, (byte) 0);
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testStr2bcdThrowsNullPointerException2() throws Throwable {
-        try {
-            ISOUtil.str2bcd("testISOUtils1", true, (byte[]) null, 100);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
+        ISOUtil.str2bcd("testISOUtils1", true, (byte[]) null, 100);
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testStr2bcdThrowsNullPointerException3() throws Throwable {
-        try {
-            ISOUtil.str2bcd("testISOUtils", true, (byte[]) null, 100);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
+        ISOUtil.str2bcd("testISOUtils", true, (byte[]) null, 100);
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testStr2bcdThrowsNullPointerException4() throws Throwable {
         byte[] d = new byte[2];
-        try {
-            ISOUtil.str2bcd(null, true, d, 100);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
+        ISOUtil.str2bcd(null, true, d, 100);
     }
 
     @Test
@@ -4521,7 +4247,8 @@ public class ISOUtilTest {
     public void testStrpad1() throws Throwable {
         String result = ISOUtil.strpad("testISOUtils", 100);
         assertEquals("result",
-                "testISOUtils                                                                                        ", result);
+                "testISOUtils                                                                                        ",
+                result);
     }
 
     @Test
@@ -4534,27 +4261,18 @@ public class ISOUtilTest {
     public void testStrpadf1() throws Throwable {
         String result = ISOUtil.strpadf("", 100);
         assertEquals("result",
-                "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF", result);
+                "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF",
+                result);
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testStrpadfThrowsNullPointerException() throws Throwable {
-        try {
-            ISOUtil.strpadf(null, 100);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
+        ISOUtil.strpadf(null, 100);
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testStrpadThrowsNullPointerException() throws Throwable {
-        try {
-            ISOUtil.strpad(null, 100);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
+        ISOUtil.strpad(null, 100);
     }
 
     @Test
@@ -4570,14 +4288,9 @@ public class ISOUtilTest {
         assertEquals("result.length", 0, result.length);
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testToIntArrayThrowsNullPointerException() throws Throwable {
-        try {
-            ISOUtil.toIntArray(null);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
+        ISOUtil.toIntArray(null);
     }
 
     @Test
@@ -4612,7 +4325,7 @@ public class ISOUtilTest {
     }
 
     @Test
-    public void testTrim3() throws Throwable {
+    public void testTrimNullReturnsNull() throws Throwable {
         String result = ISOUtil.trim(null);
         assertNull("result", result);
     }
@@ -4653,36 +4366,21 @@ public class ISOUtilTest {
         assertNull("result", result);
     }
 
-    @Test
+    @Test(expected = ArrayIndexOutOfBoundsException.class)
     public void testTrimThrowsArrayIndexOutOfBoundsException() throws Throwable {
         byte[] array = new byte[2];
-        try {
-            ISOUtil.trim(array, 100);
-            fail("Expected ArrayIndexOutOfBoundsException to be thrown");
-        } catch (ArrayIndexOutOfBoundsException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
+        ISOUtil.trim(array, 100);
     }
 
-    @Test
+    @Test(expected = NegativeArraySizeException.class)
     public void testTrimThrowsNegativeArraySizeException() throws Throwable {
         byte[] array = new byte[3];
-        try {
-            ISOUtil.trim(array, -1);
-            fail("Expected NegativeArraySizeException to be thrown");
-        } catch (NegativeArraySizeException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
+        ISOUtil.trim(array, -1);
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testTrimThrowsNullPointerException() throws Throwable {
-        try {
-            ISOUtil.trim((byte[]) null, 100);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
+        ISOUtil.trim((byte[]) null, 100);
     }
 
     @Test
@@ -4703,14 +4401,9 @@ public class ISOUtilTest {
         assertEquals("result", "estISOUtils", result);
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testUnPadLeftThrowsNullPointerException() throws Throwable {
-        try {
-            ISOUtil.unPadLeft(null, ' ');
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
+        ISOUtil.unPadLeft(null, ' ');
     }
 
     @Test
@@ -4743,14 +4436,9 @@ public class ISOUtilTest {
         assertEquals("result", "  &ON\\.!Wio=p^'@*xS'*ItLh|_g[,K2H|FkD]RPG", result);
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testUnPadRightThrowsNullPointerException() throws Throwable {
-        try {
-            ISOUtil.unPadRight(null, ' ');
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
+        ISOUtil.unPadRight(null, ' ');
     }
 
     @Test
@@ -4786,22 +4474,18 @@ public class ISOUtilTest {
         assertEquals("result[0]", (byte) 0, result[0]);
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testXorThrowsNullPointerException() throws Throwable {
         byte[] op2 = new byte[0];
-        try {
-            ISOUtil.xor((byte[]) null, op2);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
+        ISOUtil.xor((byte[]) null, op2);
     }
 
     @Test
     public void testZeropad() throws Throwable {
         String result = ISOUtil.zeropad("testISOUtils", 100);
         assertEquals("result",
-                "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000testISOUtils", result);
+                "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000testISOUtils",
+                result);
     }
 
     @Test
@@ -4814,17 +4498,13 @@ public class ISOUtilTest {
     public void testZeropadRight1() throws Throwable {
         String result = ISOUtil.zeropadRight("", 100);
         assertEquals("result",
-                "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", result);
+                "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+                result);
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testZeropadRightThrowsNullPointerException() throws Throwable {
-        try {
-            ISOUtil.zeropadRight(null, 100);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
+        ISOUtil.zeropadRight(null, 100);
     }
 
     @Test
@@ -4838,14 +4518,9 @@ public class ISOUtilTest {
         }
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testZeropadThrowsNullPointerException() throws Throwable {
-        try {
-            ISOUtil.zeropad(null, 100);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
+        ISOUtil.zeropad(null, 100);
     }
 
     @Test
@@ -4854,15 +4529,11 @@ public class ISOUtilTest {
         assertEquals("result", "", result);
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testZeroUnPadThrowsNullPointerException() throws Throwable {
-        try {
-            ISOUtil.zeroUnPad(null);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
+        ISOUtil.zeroUnPad(null);
     }
+
     /**
      * Test of formatAmtConvRate method, of class CSSUtil.
      */
@@ -4916,8 +4587,8 @@ public class ISOUtilTest {
         String expResult = "90000000";
         String result = ISOUtil.formatAmountConversionRate(rate);
         assertEquals(expResult, result);
-    }  
-    
+    }
+
     /**
      * Test of parseAmtConvRate method, of class CSSUtil.
      */
@@ -4925,7 +4596,7 @@ public class ISOUtilTest {
     public void testParseAmtConvRate() {
         String rate = "93456780";
         BigDecimal expResult = new BigDecimal(0.003456780, MathContext.DECIMAL64);
-        BigDecimal result = new BigDecimal(ISOUtil.parseAmountConversionRate(rate),MathContext.DECIMAL64);
+        BigDecimal result = new BigDecimal(ISOUtil.parseAmountConversionRate(rate), MathContext.DECIMAL64);
         assertEquals(expResult, result);
     }
 
@@ -4947,11 +4618,10 @@ public class ISOUtilTest {
     public void testParseAmtConvRate3() {
         String rate = null;
         try {
-          ISOUtil.parseAmountConversionRate(rate);
-          fail();
+            ISOUtil.parseAmountConversionRate(rate);
+            fail();
         } catch (IllegalArgumentException ex) {
-          assertEquals("Invalid amount converion rate argument: '" +
-              rate + "'", ex.getMessage());
+            assertEquals("Invalid amount converion rate argument: '" + rate + "'", ex.getMessage());
         }
     }
 
@@ -4962,11 +4632,10 @@ public class ISOUtilTest {
     public void testParseAmtConvRate4() {
         String rate = "1234567";
         try {
-          ISOUtil.parseAmountConversionRate(rate);
-          fail();
+            ISOUtil.parseAmountConversionRate(rate);
+            fail();
         } catch (IllegalArgumentException ex) {
-          assertEquals("Invalid amount converion rate argument: '" +
-              rate + "'", ex.getMessage());
+            assertEquals("Invalid amount converion rate argument: '" + rate + "'", ex.getMessage());
         }
     }
 
@@ -4977,11 +4646,10 @@ public class ISOUtilTest {
     public void testParseAmtConvRate5() {
         String rate = "123456789";
         try {
-          ISOUtil.parseAmountConversionRate(rate);
-          fail();
+            ISOUtil.parseAmountConversionRate(rate);
+            fail();
         } catch (IllegalArgumentException ex) {
-          assertEquals("Invalid amount converion rate argument: '" +
-              rate + "'", ex.getMessage());
+            assertEquals("Invalid amount converion rate argument: '" + rate + "'", ex.getMessage());
         }
     }
 
@@ -4991,14 +4659,68 @@ public class ISOUtilTest {
      */
     @Test
     public void testCommaEncodeAndDecode() {
-        assertEquals("error encoding \"\"", "", ISOUtil.commaEncode(new String[]{}));
+        assertEquals("error encoding \"\"", "", ISOUtil.commaEncode(new String[] {}));
         assertEquals("error encoding \"a,b,c\"", "a,b,c", ISOUtil.commaEncode(new String[] { "a", "b", "c" }));
-        assertEquals("error encoding \"\\,,\\\\,c\"", "\\,,\\\\,c", ISOUtil.commaEncode(new String[] { ",", "\\", "c"}));
+        assertEquals("error encoding \"\\,,\\\\,c\"", "\\,,\\\\,c",
+                ISOUtil.commaEncode(new String[] { ",", "\\", "c" }));
 
-        assertArrayEquals("error decoding \"\"", new String[]{}, ISOUtil.commaDecode(""));
-        assertArrayEquals("error decoding \"a,b,c\"", new String[]{ "a", "b", "c"}, ISOUtil.commaDecode("a,b,c"));
-        assertArrayEquals("error decoding \"\\,,\\\\,c\"",
-                new String[] { ",", "\\", "c"}, ISOUtil.commaDecode("\\,,\\\\,c")
-        );
+        assertArrayEquals("error decoding \"\"", new String[] {}, ISOUtil.commaDecode(""));
+        assertArrayEquals("error decoding \"a,b,c\"", new String[] { "a", "b", "c" }, ISOUtil.commaDecode("a,b,c"));
+        assertArrayEquals("error decoding \"\\,,\\\\,c\"", new String[] { ",", "\\", "c" },
+                ISOUtil.commaDecode("\\,,\\\\,c"));
     }
+
+    @Test
+    public void testMillisToString() {
+        Calendar cal = new GregorianCalendar(2012, Calendar.JUNE, 29, 10, 51, 47);
+        cal.set(Calendar.MILLISECOND, 16);
+        String result = ISOUtil.millisToString(cal.getTimeInMillis());
+        assertThat(result, is("15520d 09:51:47.016"));
+    }
+
+    @Test
+    public void testTakeFirstN() throws Exception {
+        String result = ISOUtil.takeFirstN("abcdefgh", 3);
+        assertThat(result, is("abc"));
+    }
+
+    @Test
+    public void testTakeFirstNAndPad() throws Exception {
+        String result = ISOUtil.takeFirstN("abc", 5);
+        assertThat(result, is("00abc"));
+    }
+
+    @Test
+    public void testTakeFirstNequal() throws Exception {
+        String result = ISOUtil.takeFirstN("abc", 3);
+        assertThat(result, is("abc"));
+    }
+
+    @Test
+    public void testTakeLastN() throws Exception {
+        String result = ISOUtil.takeLastN("abcdefgh", 3);
+        assertThat(result, is("fgh"));
+    }
+
+    @Test
+    public void testTakeLastNAndPad() throws Exception {
+        String result = ISOUtil.takeLastN("abc", 5);
+        assertThat(result, is("00abc"));
+    }
+
+    @Test
+    public void testTakeLastNequal() throws Exception {
+        String result = ISOUtil.takeLastN("abc", 3);
+        assertThat(result, is("abc"));
+    }
+
+    @Test
+    public void testToStringArray() throws Exception {
+        String[] result = ISOUtil.toStringArray("a\tb\nc\rd\fe");
+        assertThat(
+                result,
+                allOf(hasItemInArray("a"), hasItemInArray("b"), hasItemInArray("c"), hasItemInArray("d"),
+                        hasItemInArray("e")));
+    }
+
 }
