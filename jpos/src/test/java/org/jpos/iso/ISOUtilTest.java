@@ -36,6 +36,7 @@ import java.math.MathContext;
 import java.util.BitSet;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.TimeZone;
 
 import org.junit.Test;
 
@@ -4673,9 +4674,10 @@ public class ISOUtilTest {
     @Test
     public void testMillisToString() {
         Calendar cal = new GregorianCalendar(2012, Calendar.JUNE, 29, 10, 51, 47);
+        cal.setTimeZone(TimeZone.getTimeZone("GMT"));
         cal.set(Calendar.MILLISECOND, 16);
         String result = ISOUtil.millisToString(cal.getTimeInMillis());
-        assertThat(result, is("15520d 09:51:47.016"));
+        assertThat(result, is("15520d 10:51:47.016"));
     }
 
     @Test
