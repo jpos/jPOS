@@ -19,6 +19,9 @@
 package org.jpos.transaction;
 
 import org.jpos.q2.QBeanSupportMBean;
+import org.jpos.util.TPS;
+
+import java.util.Date;
 
 public interface TransactionManagerMBean extends QBeanSupportMBean {
     public long getHead ();
@@ -27,5 +30,10 @@ public interface TransactionManagerMBean extends QBeanSupportMBean {
     public boolean getDebug();
     public int getOutstandingTransactions();
     public int getActiveSessions();
+    public String getTPSAsString();
+    public float getTPSAvg();
+    public int getTPSPeak();
+    public Date getTPSPeakWhen();
+    public long getTPSElapsed();
+    public void resetTPS();
 }
-

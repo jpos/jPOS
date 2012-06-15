@@ -89,7 +89,7 @@ public class TransactionManager
         initStatusListeners (getPersist());
     }
     public void startService () throws Exception {
-        NameRegistrar.register (getName (), this);
+        NameRegistrar.register(getName(), this);
         recover ();
         threads = new Thread[maxSessions];
         if (tps != null)
@@ -121,7 +121,7 @@ public class TransactionManager
         tps.stop();
     }
     public void queue (Serializable context) {
-        isp.out (queue, context);
+        isp.out(queue, context);
     }
     public void push (Serializable context) {
         isp.push (queue, context);
@@ -320,7 +320,7 @@ public class TransactionManager
     public long getInTransit () {
         return head - tail;
     }
-    public void setConfiguration (Configuration cfg) 
+    public void setConfiguration (Configuration cfg)
         throws ConfigurationException 
     {
         super.setConfiguration (cfg);
@@ -352,7 +352,26 @@ public class TransactionManager
     public TPS getTPS() {
         return tps;
     }
-    protected void commit 
+    public String getTPSAsString() {
+        return tps.toString();
+    }
+    public float getTPSAvg() {
+        return tps.getAvg();
+    }
+    public int getTPSPeak() {
+        return tps.getPeak();
+    }
+    public Date getTPSPeakWhen() {
+        return new Date(tps.getPeakWhen());
+    }
+    public long getTPSElapsed() {
+        return tps.getElapsed();
+    }
+    public void resetTPS() {
+        tps.reset();
+    }
+
+    protected void commit
         (int session, long id, Serializable context, List members, boolean recover, LogEvent evt, Profiler prof)
     {
         Iterator iter = members.iterator();
