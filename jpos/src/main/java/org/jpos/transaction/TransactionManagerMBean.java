@@ -19,10 +19,9 @@
 package org.jpos.transaction;
 
 import org.jpos.q2.QBeanSupportMBean;
-import org.jpos.util.TPS;
-
 import java.util.Date;
 
+@SuppressWarnings("unused")
 public interface TransactionManagerMBean extends QBeanSupportMBean {
     public long getHead ();
     public long getTail ();
