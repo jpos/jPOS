@@ -71,7 +71,7 @@ public abstract class BaseChannel extends Observable
     private Socket socket;
     private String host, localIface;
     private String[] hosts;
-    int[] ports;
+    private int[] ports;
     private int port, timeout, connectTimeout, localPort;
     private int maxPacketLength = 100000;
     private boolean keepAlive;
