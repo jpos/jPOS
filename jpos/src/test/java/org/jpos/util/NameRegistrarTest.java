@@ -36,13 +36,13 @@ public class NameRegistrarTest {
     private static final boolean WITH_DETAIL = true;
 
     @Before
-    public static void onSetup() {
+    public void onSetup() {
         NameRegistrar.register("test1", "testValue1");
         NameRegistrar.register("test2", "testValue2");
     }
 
     @After
-    public static void tearDown() {
+    public void tearDown() {
         NameRegistrar.unregister("test1");
         NameRegistrar.unregister("test2");
     }
