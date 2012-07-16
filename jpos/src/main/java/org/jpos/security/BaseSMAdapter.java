@@ -350,7 +350,7 @@ public class BaseSMAdapter
         cmdParameters.add(new SimpleMsg("parameter", "Excluded PINs list", excludes));
 
       LogEvent evt = new LogEvent(this, "s-m-operation");
-      evt.addMessage(new SimpleMsg("command", "Generate PIN", cmdParameters.toArray(new Loggeable[0])));
+      evt.addMessage(new SimpleMsg("command", "Generate PIN", cmdParameters.toArray(new Loggeable[cmdParameters.size()])));
       EncryptedPIN result = null;
       try {
         result = generatePINImpl(accountNumber, pinLen, excludes);
@@ -381,7 +381,7 @@ public class BaseSMAdapter
       if(excludes != null && !excludes.isEmpty())
         cmdParameters.add(new SimpleMsg("parameter", "Excluded PINs list", excludes));
       LogEvent evt = new LogEvent(this, "s-m-operation");
-      evt.addMessage(new SimpleMsg("command", "Calculate PVV", cmdParameters.toArray(new Loggeable[0])));
+      evt.addMessage(new SimpleMsg("command", "Calculate PVV", cmdParameters.toArray(new Loggeable[cmdParameters.size()])));
       String result = null;
       try {
         result = calculatePVVImpl(pinUnderLMK, pvkA, pvkB, pvkIdx, excludes);
@@ -414,7 +414,7 @@ public class BaseSMAdapter
       if(excludes != null && !excludes.isEmpty())
         cmdParameters.add(new SimpleMsg("parameter", "Excluded PINs list", excludes));
       LogEvent evt = new LogEvent(this, "s-m-operation");
-      evt.addMessage(new SimpleMsg("command", "Calculate PVV", cmdParameters.toArray(new Loggeable[0])));
+      evt.addMessage(new SimpleMsg("command", "Calculate PVV", cmdParameters.toArray(new Loggeable[cmdParameters.size()])));
       String result = null;
       try {
         result = calculatePVVImpl(pinUnderKd1, kd1, pvkA, pvkB, pvkIdx, excludes);
@@ -474,7 +474,7 @@ public class BaseSMAdapter
       if(excludes != null && !excludes.isEmpty())
         cmdParameters.add(new SimpleMsg("parameter", "Excluded PINs list", excludes));
       LogEvent evt = new LogEvent(this, "s-m-operation");
-      evt.addMessage(new SimpleMsg("command", "Calculate PIN offset", cmdParameters.toArray(new Loggeable[0])));
+      evt.addMessage(new SimpleMsg("command", "Calculate PIN offset", cmdParameters.toArray(new Loggeable[cmdParameters.size()])));
       String result = null;
       try {
         result = calculateIBMPINOffsetImpl(pinUnderLmk, pvk,
@@ -510,7 +510,7 @@ public class BaseSMAdapter
       if(excludes != null && !excludes.isEmpty())
         cmdParameters.add(new SimpleMsg("parameter", "Excluded PINs list", excludes));
       LogEvent evt = new LogEvent(this, "s-m-operation");
-      evt.addMessage(new SimpleMsg("command", "Calculate PIN offset", cmdParameters.toArray(new Loggeable[0])));
+      evt.addMessage(new SimpleMsg("command", "Calculate PIN offset", cmdParameters.toArray(new Loggeable[cmdParameters.size()])));
       String result = null;
       try {
         result = calculateIBMPINOffsetImpl(pinUnderKd1, kd1, pvk,

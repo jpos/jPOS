@@ -11,7 +11,7 @@
     <dependency>
       <groupId>org.jpos</groupId>
       <artifactId>jpos</artifactId>
-      <version>1.8.5-SNAPSHOT</version>
+      <version>1.8.7-SNAPSHOT</version>
     </dependency>
   </dependencies>
 

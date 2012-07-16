@@ -12,7 +12,7 @@ Dependency:
     <dependency>
       <groupId>org.jpos</groupId>
       <artifactId>jpos</artifactId>
-      <version>1.8.2</version>
+      <version>1.8.6</version>
     </dependency>
 
 ChangeLog: http://jpos.org/wiki/ChangeLog
