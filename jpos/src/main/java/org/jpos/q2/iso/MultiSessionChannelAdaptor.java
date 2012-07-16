@@ -164,7 +164,7 @@ public class MultiSessionChannelAdaptor
         super.initSpaceAndQueues();
         Element persist = getPersist ();
         String s = persist.getChildTextTrim("sessions");
-        setSessions(s != null && s.length() > 0 ? Integer.parseInt(s) : 0);
+        setSessions(s != null && s.length() > 0 ? Integer.parseInt(s) : 1);
     }
 
     private void connect (int slot) {
