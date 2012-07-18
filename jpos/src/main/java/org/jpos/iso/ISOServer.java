@@ -106,7 +106,8 @@ public class ISOServer extends Observable
             if (channel instanceof BaseChannel) {
                 LogEvent ev = new LogEvent (this, "session-start");
                 Socket socket = ((BaseChannel)channel).getSocket ();
-                realm = realm + socket.getInetAddress();
+                realm = realm + "/" + socket.getInetAddress().getHostAddress() + ":"
+                        + socket.getPort();
                 try {
                     checkPermission (socket, ev);
                 } catch (ISOException e) {
