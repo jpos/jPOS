@@ -369,7 +369,8 @@ public class FSDMsg implements Loggeable, Cloneable {
                     sb.append(c);
             }
             if (key) {
-                keyOff = keyOff + normalizeKeyValue(value, properties);
+                String v = isBinary(type) ? ISOUtil.hexString(value.getBytes(ISOUtil.ENCODING)) : value;
+                keyOff = keyOff + normalizeKeyValue(v, properties);
                 defaultKey += elem.getAttributeValue ("default-key");
             }
         }
