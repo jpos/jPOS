@@ -369,7 +369,7 @@ public class FSDMsg implements Loggeable, Cloneable {
                     sb.append(c);
             }
             if (key) {
-                keyOff = keyOff + normalizeKeyValue(type, value, properties);
+                keyOff = keyOff + normalizeKeyValue(value, properties);
                 defaultKey += elem.getAttributeValue ("default-key");
             }
         }
@@ -389,9 +389,7 @@ public class FSDMsg implements Loggeable, Cloneable {
 	    return props;
     }
 
-	private String normalizeKeyValue(String type, String value, Map properties) throws UnsupportedEncodingException {
-        if (isBinary(type))
-            value = ISOUtil.hexString(value.getBytes(ISOUtil.ENCODING));
+	private String normalizeKeyValue(String value, Map properties) {
     	if (properties.containsKey(value)) {
     		return (String) properties.get(value);
     	}
@@ -421,7 +419,7 @@ public class FSDMsg implements Loggeable, Cloneable {
                 is, id, length, type, separator );
             
             if (key) {
-                keyOff = keyOff + normalizeKeyValue(type, value, properties);
+                keyOff = keyOff + normalizeKeyValue(value, properties);
                 defaultKey += elem.getAttributeValue ("default-key");
             }
             if ("K".equals(type) && !value.equals (elem.getText()))
