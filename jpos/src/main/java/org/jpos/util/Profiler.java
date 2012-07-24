@@ -82,7 +82,6 @@ public class Profiler implements Loggeable {
     }
     public void dump (PrintStream p, String indent) {
         String inner = indent + "  ";
-        partial = start;
         if (!events.containsKey("end"))
             checkPoint ("end");
         Collection c = events.values();
