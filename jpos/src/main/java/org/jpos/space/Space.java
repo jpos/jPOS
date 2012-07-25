@@ -34,8 +34,7 @@ package org.jpos.space;
  * @author Alejandro Revilla
  * @version $Revision$ $Date$
  * @since 2.0
- * @see LeasedReference
- * @see TransientSpace
+ * @see TSpace
  * @see SpaceError
  * @see <a href="http://www.cs.yale.edu/Linda/linda-lang.html">The Linda Coordination Language</a>
  */
