@@ -156,7 +156,9 @@ public class XMLPackager extends DefaultHandler
                 throw new ISOException ("error parsing");
 
             ISOMsg m = (ISOMsg) c;
-            m.merge ((ISOMsg) stk.pop());
+            ISOMsg m1 = (ISOMsg) stk.pop();
+            m.merge (m1);
+            m.setHeader (m1.getHeader());
 
             if (logger != null) 
                 evt.addMessage (m);
