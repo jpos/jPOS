@@ -181,9 +181,10 @@ public class XMLPackagerTest {
 
     @Test
     public void testUnpackBytes() throws IOException, ISOException {
-        String input = "<isomsg><!-- org.jpos.iso.packager.XMLPackager --><field id=\"0\" value=\"0800\"/>"
+        String input = "<isomsg><!-- org.jpos.iso.packager.XMLPackager --><header>686561646572</header><field id=\"0\" value=\"0800\"/>"
                 + "<field id=\"7\" value=\"7654321\"/><field id=\"11\" value=\"12345678\"/>"
                 + "<field id=\"12\" value=\"20110224112759\"/><field id=\"24\" value=\"831\"/></isomsg>";
+        isoMsg.setHeader("header".getBytes());
         isoMsg.setMTI("0800");
         isoMsg.set(7, "7654321");
         isoMsg.set(11, "12345678");
@@ -191,7 +192,8 @@ public class XMLPackagerTest {
         isoMsg.set(24, "");
         ISOMsg result = xMLPackager.createISOMsg();
         int consumedBytes = xMLPackager.unpack(result, input.getBytes());
-        assertThat(consumedBytes, is(218));
+        assertThat(consumedBytes, is(247));
+        assertThat(result.getHeader(), is("header".getBytes()));
         assertThat(result.getMTI(), is("0800"));
         assertThat(result.getString(7), is("7654321"));
         assertThat(result.getString(11), is("12345678"));
@@ -201,9 +203,10 @@ public class XMLPackagerTest {
 
     @Test
     public void testUnpackStream() throws IOException, ISOException {
-        String input = "<isomsg><!-- org.jpos.iso.packager.XMLPackager --><field id=\"0\" value=\"0800\"/>"
+        String input = "<isomsg><!-- org.jpos.iso.packager.XMLPackager --><header>686561646572</header><field id=\"0\" value=\"0800\"/>"
                 + "<field id=\"7\" value=\"7654321\"/><field id=\"11\" value=\"12345678\"/>"
                 + "<field id=\"12\" value=\"20110224112759\"/><field id=\"24\" value=\"\"/></isomsg>";
+        isoMsg.setHeader("header".getBytes());
         isoMsg.setMTI("0800");
         isoMsg.set(7, "7654321");
         isoMsg.set(11, "12345678");
@@ -211,6 +214,7 @@ public class XMLPackagerTest {
         isoMsg.set(24, "831");
         ISOMsg result = xMLPackager.createISOMsg();
         xMLPackager.unpack(result, new ByteArrayInputStream(input.getBytes()));
+        assertThat(result.getHeader(), is("header".getBytes()));
         assertThat(result.getMTI(), is("0800"));
         assertThat(result.getString(7), is("7654321"));
         assertThat(result.getString(11), is("12345678"));
