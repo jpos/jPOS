@@ -1029,7 +1029,8 @@ public abstract class BaseChannel extends Observable
         if (s != null) {
             try {
                 s.setSoLinger (true, 5);
-                s.shutdownOutput();  // This will force a TCP FIN to be sent.
+                if (socketFactory == null) // we can't close output on SSL connections, see [jPOS-85]
+                    s.shutdownOutput();  // This will force a TCP FIN to be sent on regular sockets,
             } catch (SocketException e) {
                 // safe to ignore - can be closed already
                 // e.printStackTrace();
