@@ -28,6 +28,7 @@ import org.jpos.util.LogSource;
 import org.jpos.util.Logger;
 import org.jpos.util.NameRegistrar;
 
+import javax.net.ssl.SSLSocket;
 import java.io.*;
 import java.net.*;
 import java.util.Collection;
@@ -1029,7 +1030,7 @@ public abstract class BaseChannel extends Observable
         if (s != null) {
             try {
                 s.setSoLinger (true, 5);
-                if (socketFactory == null) // we can't close output on SSL connections, see [jPOS-85]
+                if (!(s instanceof SSLSocket)) // we can't close output on SSL connections, see [jPOS-85]
                     s.shutdownOutput();  // This will force a TCP FIN to be sent on regular sockets,
             } catch (SocketException e) {
                 // safe to ignore - can be closed already
