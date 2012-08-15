@@ -76,6 +76,8 @@ public abstract class BaseChannel extends Observable
     private int port, timeout, connectTimeout, localPort;
     private int maxPacketLength = 100000;
     private boolean keepAlive;
+    private boolean soLingerOn = true;
+    private int soLingerSeconds = 5;
     private Configuration cfg;
     protected boolean usable;
     protected boolean overrideHeader;
@@ -357,6 +359,20 @@ public abstract class BaseChannel extends Observable
     protected void applyTimeout () throws SocketException {
         if (timeout >= 0 && socket != null) 
             socket.setSoTimeout (timeout);
+    }
+    /**
+     * Socket SO_LINGER option to use when closing the socket.
+     * @see java.net.Socket#setSoLinger(boolean, int)
+     */
+    public void setSoLinger(boolean on, int linger) {
+        this.soLingerOn = on;
+        this.soLingerSeconds = linger;
+    }
+    public boolean isSoLingerOn() {
+        return soLingerOn;
+    }
+    public int getSoLingerSeconds() {
+        return soLingerSeconds;
     }
     /**
      * Connects client ISOChannel to server
@@ -1029,8 +1045,8 @@ public abstract class BaseChannel extends Observable
         }
         if (s != null) {
             try {
-                s.setSoLinger (true, 5);
-                if (!(s instanceof SSLSocket)) // we can't close output on SSL connections, see [jPOS-85]
+                s.setSoLinger (soLingerOn, soLingerSeconds);
+                if (shutdownSupportedBySocket(s) && !isSoLingerForcingImmediateTcpReset())
                     s.shutdownOutput();  // This will force a TCP FIN to be sent on regular sockets,
             } catch (SocketException e) {
                 // safe to ignore - can be closed already
@@ -1038,6 +1054,12 @@ public abstract class BaseChannel extends Observable
             }
             s.close ();
         }
+    }
+    private boolean shutdownSupportedBySocket(Socket s) {
+        return !(s instanceof SSLSocket); // we can't close output on SSL connections, see [jPOS-85]
+    }
+    private boolean isSoLingerForcingImmediateTcpReset() {
+        return soLingerOn && soLingerSeconds == 0;
     }
     public Object clone(){
       try {

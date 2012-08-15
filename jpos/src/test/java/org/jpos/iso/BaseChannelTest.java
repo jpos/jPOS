@@ -24,12 +24,14 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.mockito.Mockito.when;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.*;
 
-import java.net.Proxy;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.SocketException;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.net.*;
 import java.util.ArrayList;
 import java.util.Properties;
 import java.util.Vector;
@@ -79,6 +81,8 @@ public class BaseChannelTest {
     ISOMsg m;
     @Mock
     ISOFilter filter;
+    @Mock
+    ISOClientSocketFactory socketFactory;
 
     @Test
     public void testAcceptThrowsNullPointerException() throws Throwable {
@@ -378,6 +382,55 @@ public class BaseChannelTest {
         assertSame("(CSChannel) cSChannel.serverSocket", sock, ((CSChannel) cSChannel).serverSocket);
         assertNull("(CSChannel) cSChannel.getSocket()", cSChannel.getSocket());
         assertFalse("(CSChannel) cSChannel.usable", ((CSChannel) cSChannel).usable);
+    }
+
+    @Test
+    public void testDisconnectWithDefaultSoLingerOption() throws Exception {
+        Socket socket = mockSocket();
+        when(socketFactory.createSocket(anyString(), anyInt())).thenReturn(socket);
+
+        BaseChannel rawChannel = new RawChannel();
+        rawChannel.setSocketFactory(socketFactory);
+
+        rawChannel.connect();
+        rawChannel.disconnect();
+
+        verify(socket).setSoLinger(true, 5);
+        verify(socket).shutdownOutput();
+        verify(socket).close();
+
+        assertTrue(rawChannel.isSoLingerOn());
+        assertEquals(5, rawChannel.getSoLingerSeconds());
+    }
+
+    @Test
+    public void testDisconnectWithCustomSoLingerOption() throws Exception {
+        Socket socket = mockSocket();
+        when(socketFactory.createSocket(anyString(), anyInt())).thenReturn(socket);
+
+        BaseChannel rawChannel = new RawChannel();
+        rawChannel.setSocketFactory(socketFactory);
+        rawChannel.setSoLinger(true, 0);
+
+        rawChannel.connect();
+        rawChannel.disconnect();
+
+        verify(socket).setSoLinger(true, 0);
+        verify(socket).close();
+        verify(socket, never()).shutdownOutput();  // this does not make sense when sending a TCP RST down the socket
+
+        assertTrue(rawChannel.isSoLingerOn());
+        assertEquals(0, rawChannel.getSoLingerSeconds());
+    }
+
+    private Socket mockSocket() throws IOException {
+        Socket socket = mock(Socket.class);
+        InetAddress inetAddress = mock(InetAddress.class);
+        when(socket.getInetAddress()).thenReturn(inetAddress);
+        when(inetAddress.getHostAddress()).thenReturn("localhost");
+        when(socket.getPort()).thenReturn(4000);
+        when(socket.getOutputStream()).thenReturn(new ByteArrayOutputStream());
+        return socket;
     }
 
     @Test
