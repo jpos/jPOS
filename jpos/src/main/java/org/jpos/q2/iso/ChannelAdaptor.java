@@ -52,6 +52,10 @@ public class ChannelAdaptor
     int rx, tx, connects;
     long lastTxn = 0l;
     long timeout = 0l;
+    boolean waitForWorkersOnStop;
+    private Thread receiver;
+    private Thread sender;
+    private final Object disconnectLock = new Object();
 
     public ChannelAdaptor () {
         super ();
@@ -65,9 +69,12 @@ public class ChannelAdaptor
     public void startService () {
         try {
             channel = initChannel ();
-            new Thread (new Sender ()).start ();
-            if (!writeOnly) // fixes #426 && jPOS-20
-                new Thread (new Receiver ()).start ();
+            sender = new Thread(new Sender());
+            sender.start();
+            if (!writeOnly) { // fixes #426 && jPOS-20
+                receiver = new Thread(new Receiver());
+                receiver.start();
+            }
         } catch (Exception e) {
             getLog().warn ("error starting service", e);
         }
@@ -75,10 +82,34 @@ public class ChannelAdaptor
     public void stopService () {
         try {
             sp.out (in, new Object());
-            if (channel != null && channel.isConnected())
+            if (channel != null)
                 disconnect();
+            if (waitForWorkersOnStop) {
+                waitForSenderToExit();
+                if (!writeOnly) {
+                    sp.out(ready, new Object());
+                    waitForReceiverToExit();
+                }
+            }
+            sender = null;
+            receiver = null;
         } catch (Exception e) {
             getLog().warn ("error disconnecting from remote host", e);
+        }
+    }
+    private void waitForSenderToExit() {
+        join(sender);
+    }
+    private void waitForReceiverToExit() {
+        join(receiver);
+        while (sp.inp (ready) != null)
+            ;
+    }
+    private void join(Thread thread) {
+        try {
+            if (thread != null)
+                thread.join();
+        } catch (InterruptedException ignored) {
         }
     }
     public void destroyService () {
@@ -234,6 +265,7 @@ public class ChannelAdaptor
         timeout = t != null && t.length() > 0 ? Long.parseLong(t) : 0l;
         ready   = getName() + ".ready";
         reconnect = getName() + ".reconnect";
+        waitForWorkersOnStop = "yes".equalsIgnoreCase(persist.getChildTextTrim ("wait-for-workers-on-stop"));
     }
 
     public class Sender implements Runnable {
@@ -341,13 +373,16 @@ public class ChannelAdaptor
         if (running() && (sp.rdp (ready) == null))
             sp.out (ready, new Date());
     }
-    protected synchronized void disconnect () {
-        try {
-            while (sp.inp (ready) != null)
-                ;
-            channel.disconnect ();
-        } catch (IOException e) {
-            getLog().warn ("disconnect", e);
+    protected void disconnect () {
+        // do not synchronize on this as both Sender and Receiver can deadlock against a thread calling stop()
+        synchronized (disconnectLock) {
+            try {
+                while (sp.inp(ready) != null)
+                    ;
+                channel.disconnect();
+            } catch (IOException e) {
+                getLog().warn("disconnect", e);
+            }
         }
     }
     public synchronized void setHost (String host) {
