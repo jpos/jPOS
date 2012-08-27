@@ -198,7 +198,7 @@ public class PostPackager extends ISOBasePackager {
             new IFA_LLLCHAR (999, "RESERVED PRIVATE USE"),
             new IFA_LLLCHAR (999, "RESERVED PRIVATE USE"),
             new ISOMsgFieldPackager(
-                new IFA_LLLLLLBINARY (999, "RESERVED PRIVATE USE"),
+                new IFA_LLLLLLBINARY (99999, "RESERVED PRIVATE USE"),
                 p127
             ),
             new IFA_LLLCHAR (999, "MAC 2")
