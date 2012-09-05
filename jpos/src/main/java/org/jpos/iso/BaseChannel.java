@@ -110,7 +110,7 @@ public abstract class BaseChannel extends Observable
         name = "";
         incomingFilters = new Vector();
         outgoingFilters = new Vector();
-        setHost (null, 0);
+        setHost(null, 0);
     }
 
     /**
@@ -807,7 +807,7 @@ public abstract class BaseChannel extends Observable
      */
     public void setName (String name) {
         this.name = name;
-        NameRegistrar.register ("channel."+name, this);
+        NameRegistrar.register("channel." + name, this);
     }
     /**
      * @return this ISOChannel's name ("" if no name was set)
@@ -838,13 +838,13 @@ public abstract class BaseChannel extends Observable
      * @param filter incoming filter to add
      */
     public void addIncomingFilter (ISOFilter filter) {
-        addFilter (filter, ISOMsg.INCOMING);
+        addFilter(filter, ISOMsg.INCOMING);
     }
     /**
      * @param filter outgoing filter to add
      */
     public void addOutgoingFilter (ISOFilter filter) {
-        addFilter (filter, ISOMsg.OUTGOING);
+        addFilter(filter, ISOMsg.OUTGOING);
     }
 
     /**
@@ -881,7 +881,7 @@ public abstract class BaseChannel extends Observable
      * @param filter incoming filter to remove
      */
     public void removeIncomingFilter (ISOFilter filter) {
-        removeFilter (filter, ISOMsg.INCOMING);
+        removeFilter(filter, ISOMsg.INCOMING);
     }
     /**
      * @param filter outgoing filter to remove
@@ -1062,24 +1062,22 @@ public abstract class BaseChannel extends Observable
         return soLingerOn && soLingerSeconds == 0;
     }
     public Object clone(){
-      try {
-        BaseChannel channel = (BaseChannel)super.clone();
-        channel.cnt = cnt.clone();
-        // The lock objects must also be cloned, and the DataStreams nullified, as it makes no sense
-        // to use the new lock objects to protect the old DataStreams.
-        // This should be safe as the only code that calls BaseChannel.clone() is ISOServer.run(),
-        // and it immediately calls accept(ServerSocket) which does a connect(), and that sets the stream objects.
-        channel.serverInLock = new Object();
-        channel.serverOutLock = new Object();
-        channel.serverIn = null;
-        channel.serverOut = null;
-        channel.usable = false;
-        channel.socket = null;
-        return channel;
-      } catch (CloneNotSupportedException e) {
-        throw new InternalError();
-      }
-
+        try {
+            BaseChannel channel = (BaseChannel) super.clone();
+            channel.cnt = cnt.clone();
+            // The lock objects must also be cloned, and the DataStreams nullified, as it makes no sense
+            // to use the new lock objects to protect the old DataStreams.
+            // This should be safe as the only code that calls BaseChannel.clone() is ISOServer.run(),
+            // and it immediately calls accept(ServerSocket) which does a connect(), and that sets the stream objects.
+            channel.serverInLock = new Object();
+            channel.serverOutLock = new Object();
+            channel.serverIn = null;
+            channel.serverOut = null;
+            channel.usable = false;
+            channel.socket = null;
+            return channel;
+        } catch (CloneNotSupportedException e) {
+            throw new InternalError();
+        }
     }
 }
-
