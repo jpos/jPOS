@@ -79,6 +79,11 @@ public class ThreadPool extends ThreadGroup implements LogSource, Loggeable, Con
                             available++;
                             active--;
                         }
+                    } else {
+                        synchronized (this) {
+                            currentJob = null;
+                            available++;
+                        }
                     }
                 }
             } catch (InterruptedException e) {
@@ -153,6 +158,7 @@ public class ThreadPool extends ThreadGroup implements LogSource, Loggeable, Con
         p.println (inner  + "<max>"  + getMaxPoolSize() + "</max>");
         p.println (inner  + "<active>" + getActiveCount() + "</active>");
         p.println (inner  + "<idle>"  + getIdleCount() + "</idle>");
+        p.println (inner  + "<active>"  + getActiveCount() + "</active>");
         p.println (inner  + "<pending>" + getPendingCount() + "</pending>");
         p.println (indent + "</thread-pool>");
     }

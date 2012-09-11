@@ -288,8 +288,7 @@ public class ISOServer extends Observable
                                 relax();
                             }
                             
-                            for (int i=0; pool.getAvailableCount() <= 0; i++) {
-                                ISOUtil.sleep (250);
+                            for (int i=0; pool.getIdleCount() == 0; i++) {
                                 if (shutdown) break serverLoop;
                                 if (i % 240 == 0 && cfg.getBoolean("pool-exhaustion-warning", true)) {
                                     LogEvent evt = new LogEvent (this, "warn");
@@ -299,8 +298,8 @@ public class ISOServer extends Observable
                                     evt.addMessage (pool);
                                     Logger.log (evt);
                                 }
+                                ISOUtil.sleep (250);
                             }
-
                             serverSocket = socketFactory.createServerSocket(port);
                         }
                         channel = (ServerChannel) clientSideChannel.clone();
