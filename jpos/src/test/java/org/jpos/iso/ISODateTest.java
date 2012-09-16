@@ -92,63 +92,86 @@ public class ISODateTest {
 
     @Test
     public void testGetJulianDate() {
-        Date date = new Date(2011, 02, 25);
-        String result = ISODate.getJulianDate(date, aus);
+        GregorianCalendar cal = new GregorianCalendar(aus);
+        cal.set(2011, 02, 25);        
+        String result = ISODate.getJulianDate(cal.getTime(), aus);
         assertThat(result, is("1084"));
     }
 
     @Test
     public void testGetExpirationDate() {
-        Date date = new Date(2011, 02, 25);
-        String result = ISODate.getExpirationDate(date, aus);
+        GregorianCalendar cal = new GregorianCalendar(aus);
+        cal.set(2011, 02, 25);
+        String result = ISODate.getExpirationDate(cal.getTime(), aus);
         assertThat(result, is("1103"));
     }
 
     @Test
     public void testGetEuropeanDate() {
-        Date date = new Date(2011, 02, 25);
-        String result = ISODate.getEuropeanDate(date, aus);
+        GregorianCalendar cal = new GregorianCalendar(aus);
+        cal.set(2011, 02, 25);
+        String result = ISODate.getEuropeanDate(cal.getTime(), aus);
         assertThat(result, is("250311"));
     }
 
     @Test
     public void testGetANSIDate() {
-        Date date = new Date(2011, 02, 25);
-        String result = ISODate.getANSIDate(date, aus);
+        GregorianCalendar cal = new GregorianCalendar(aus);
+        cal.set(2011, 02, 25);
+        String result = ISODate.getANSIDate(cal.getTime(), aus);
         assertThat(result, is("110325"));
     }
 
     @Test
     public void testGetDate() {
-        Date date = new Date(2011, 02, 25);
-        String result = ISODate.getDate(date, aus);
+        GregorianCalendar cal = new GregorianCalendar(aus);
+        cal.set(2011, 02, 25);
+        String result = ISODate.getDate(cal.getTime(), aus);
         assertThat(result, is("0325"));
     }
 
-    @Ignore("test failing on TZs other than aus, expected: is '235556' got: '115556'")
     @Test
     public void testGetTime() {
         // given
-        Calendar cal = new GregorianCalendar(2011, Calendar.FEBRUARY, 25, 23, 55, 56);
+        Calendar cal = new GregorianCalendar(aus);
+        cal.set(2011, Calendar.FEBRUARY, 25, 23, 55, 56);
         cal.set(Calendar.MILLISECOND, 23);
         Date date = cal.getTime();
         // when
         String result = ISODate.getTime(date, aus);
         // then
         assertThat(result, is("235556"));
+        
+        Calendar cal2 = new GregorianCalendar(TimeZone.getDefault());
+        cal2.set(2011, Calendar.FEBRUARY, 25, 23, 55, 56);
+        cal2.set(Calendar.MILLISECOND, 23);
+        Date date2 = cal2.getTime();
+        // when
+        String result2 = ISODate.getTime(date2, TimeZone.getDefault());
+        // then
+        assertThat(result2, is("235556"));
     }
 
-    @Ignore("test failing on TZs other than aus - Expected: is '0225235556' got: '0226115556'")
     @Test
     public void testGetDateTime() {
         // given
-        Calendar cal = new GregorianCalendar(2011, Calendar.FEBRUARY, 25, 23, 55, 56);
+        Calendar cal = new GregorianCalendar(aus);
+        cal.set(2011, Calendar.FEBRUARY, 25, 23, 55, 56);
         cal.set(Calendar.MILLISECOND, 23);
         Date date = cal.getTime();
         // when
         String result = ISODate.getDateTime(date, aus);
         // then
         assertThat(result, is("0225235556"));
+        
+        Calendar cal2 = new GregorianCalendar(TimeZone.getDefault());
+        cal2.set(2011, Calendar.FEBRUARY, 25, 23, 55, 56);
+        cal2.set(Calendar.MILLISECOND, 23);
+        Date date2 = cal2.getTime();
+        // when
+        String result2 = ISODate.getDateTime(date2, TimeZone.getDefault());
+        // then
+        assertThat(result2, is("0225235556"));
     }
 
     @Test
