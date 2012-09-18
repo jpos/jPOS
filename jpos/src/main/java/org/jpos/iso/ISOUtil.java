@@ -1477,4 +1477,16 @@ public class ISOUtil {
             l.add(sb.toString());
         return l.toArray(new String[l.size()]);
     }
+
+    /**
+     * Decodes a comma encoded String returning element in position i
+     * @param s comma encoded string
+     * @param i position (starts at 0)
+     * @return element in position i of comma encoded string, or null
+     */
+    public static String commaDecode (String s, int i) {
+        String[] ss = commaDecode(s);
+        int l = ss.length;
+        return i >= 0 && i < l ? ss[i] : null;
+    }
 }
