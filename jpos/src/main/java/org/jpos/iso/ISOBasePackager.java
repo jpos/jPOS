@@ -125,7 +125,7 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
                             evt.addMessage (c);
                             evt.addMessage (e);
                         }
-                        throw e;
+                        throw new ISOException("error packing field "+i, e);
                     }
                 }
             }
