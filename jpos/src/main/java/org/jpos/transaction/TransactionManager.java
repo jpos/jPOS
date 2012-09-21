@@ -61,6 +61,7 @@ public class TransactionManager
     boolean debug;
     boolean profiler;
     boolean doRecover;
+    boolean callSelectorOnAbort;
     int sessions;
     int maxSessions;
     int threshold;
@@ -336,6 +337,7 @@ public class TransactionManager
         sessions = cfg.getInt ("sessions", 1);
         threshold = cfg.getInt ("threshold", sessions / 2);
         maxSessions = cfg.getInt ("max-sessions", sessions);
+        callSelectorOnAbort = cfg.getBoolean("call-selector-on-abort", false);
     }
     public void addListener (TransactionStatusListener l) {
         synchronized (statusListeners) {
@@ -506,18 +508,19 @@ public class TransactionManager
             if ((action & NO_JOIN) == 0) {
                 members.add (p);
             }
-            if (p instanceof GroupSelector) {
+            if (p instanceof GroupSelector && ((action & PREPARED) == PREPARED || callSelectorOnAbort)) {
                 String groupName = null;
                 try {
                     groupName = ((GroupSelector)p).select (id, context);
                 } catch (Exception e) {
                     if (evt != null) 
-                        evt.addMessage ("  groupSelector " + p + " - " + e.getMessage());
+                        evt.addMessage ("       selector: " + p.getClass().getName() + " " + e.getMessage());
                     else 
-                        getLog().error (" groupSelector: " + p + " - " + e.getMessage());
+                        getLog().error ("       selector: " + p.getClass().getName() + " " + e.getMessage());
                 }
-                if (evt != null) 
-                    evt.addMessage ("  groupSelector: " + groupName);
+                if (evt != null) {
+                    evt.addMessage ("       selector: " + groupName);
+                }
                 if (groupName != null) {
                     StringTokenizer st = new StringTokenizer (groupName, " ,");
                     List participants = new ArrayList();
