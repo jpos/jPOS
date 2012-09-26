@@ -9,13 +9,11 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
-import java.util.WeakHashMap;
 
 public class CLICommandInterface
 {
     CLIContext ctx;
     List<String> prefixes = new ArrayList<String>();
-    WeakHashMap<String, Object> commandCache = new WeakHashMap<String, Object>(100);
 
     public List<String> getPrefixes()
     {
@@ -88,23 +86,8 @@ public class CLICommandInterface
 
     private Object getCommand(String className) throws ClassNotFoundException, InstantiationException, IllegalAccessException
     {
-        Object cmd = commandCache.get(className);
-        if (cmd == null)
-        {
-            Class<?> clazz = getClazz(className);
-            final Object o = clazz.newInstance();
-            if (o instanceof Command || o instanceof CLICommand)
-            {
-                commandCache.put(className, o);
-                cmd = o;
-            }
-        }
-        return cmd;
-    }
-
-    private Class<?> getClazz(String className) throws ClassNotFoundException
-    {
-        return Thread.currentThread().getContextClassLoader().loadClass(className);
+        final ClassLoader cl = Thread.currentThread().getContextClassLoader();
+        return cl.loadClass(className).newInstance();
     }
 
     private String[] parseCommand(String line) throws IOException
