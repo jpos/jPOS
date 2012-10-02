@@ -1,14 +1,16 @@
 package org.jpos.q2;
 
-import jline.ConsoleReader;
-import org.jpos.iso.ISOUtil;
-import org.jpos.q2.CLI.Command;
-
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import jline.ConsoleReader;
+
+import org.jpos.iso.ISOUtil;
+import org.jpos.q2.CLI.Command;
 
 public class CLICommandInterface
 {
@@ -97,12 +99,26 @@ public class CLICommandInterface
             return new String[0];
         }
 
-        StringTokenizer st = new StringTokenizer(line);
-        String[] args = new String[st.countTokens()];
-        for (int i = 0; st.hasMoreTokens(); i++)
-        {
-            args[i] = st.nextToken();
-        }
+        List<String> matchList = new ArrayList<String>();
+        Pattern regex = Pattern.compile("[^\\s\"']+|\"([^\"]*)\"|'([^']*)'");
+        Matcher regexMatcher = regex.matcher(line);
+        while (regexMatcher.find()) {
+            if (regexMatcher.group(1) != null) {
+                // Add double-quoted string without the quotes
+                matchList.add(regexMatcher.group(1));
+            } else if (regexMatcher.group(2) != null) {
+                // Add single-quoted string without the quotes
+                matchList.add(regexMatcher.group(2));
+            } else {
+                // Add unquoted word
+                matchList.add(regexMatcher.group());
+            }
+        } 
+        
+        String[] args = new String[matchList.size()];
+        
+        matchList.toArray(args);
+        
         return args;
     }
 
