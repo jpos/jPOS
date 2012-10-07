@@ -243,8 +243,7 @@ public class JCESecurityModule extends BaseSMAdapter {
         byte[] clearPINBlock = calculatePINBlock(pin, FORMAT00, accountNumber);
         // Encrypt
         byte[] translatedPINBlock = jceHandler.encryptData(clearPINBlock, getLMK(PINLMKIndex));
-        encryptedPIN = new EncryptedPIN(translatedPINBlock, FORMAT00, accountNumber);
-        encryptedPIN.setAccountNumber(accountNumber);
+        encryptedPIN = new EncryptedPIN(translatedPINBlock, FORMAT00, accountNumber, false);
         return  encryptedPIN;
     }
 
@@ -273,8 +272,7 @@ public class JCESecurityModule extends BaseSMAdapter {
         // encrypt PIN
         byte[] translatedPINBlock = jceHandler.encryptData(clearPINBlock, getLMK(PINLMKIndex));
         pinUnderLmk = new EncryptedPIN(translatedPINBlock, destinationPINBlockFormat,
-                accountNumber);
-        pinUnderLmk.setAccountNumber(accountNumber);
+                accountNumber, false);
         return  pinUnderLmk;
     }
 
@@ -293,8 +291,7 @@ public class JCESecurityModule extends BaseSMAdapter {
         // encrypt PIN
         byte[] translatedPINBlock = jceHandler.encryptData(clearPINBlock, decryptFromLMK(kd2));
         exportedPIN = new EncryptedPIN(translatedPINBlock, destinationPINBlockFormat,
-                accountNumber);
-        exportedPIN.setAccountNumber(accountNumber);
+                accountNumber, false);
         return  exportedPIN;
     }
 
@@ -585,7 +582,7 @@ public class JCESecurityModule extends BaseSMAdapter {
      * Described in EMV v4.2 Book 2, Annex A1.4.1 Master Key Derivation point 2
      *
      * @param imk 16-bytes Issuer Master Key
-     * @param p preformated PAN and PAN Sequence Number
+     * @param panpsn preformated PAN and PAN Sequence Number
      * @return derived 16-bytes ICC Master Key with adjusted DES parity
      * @throws JCEHandlerException
      */
@@ -693,8 +690,7 @@ public class JCESecurityModule extends BaseSMAdapter {
         else
           translatedPINBlock = jceHandler.encryptData(clearPINBlock, kd2);
         translatedPIN = new EncryptedPIN(translatedPINBlock
-                        ,destinationPINBlockFormat, accountNumber);
-        translatedPIN.setAccountNumber(accountNumber);
+                        ,destinationPINBlockFormat, accountNumber, false);
         return  translatedPIN;
     }
 
