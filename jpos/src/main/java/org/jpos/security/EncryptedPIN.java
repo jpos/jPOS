@@ -194,19 +194,25 @@ public class EncryptedPIN
     }
 
     /**
-     * Extracts the 12 right-most digits of the account number, excluding the check digit.
-     * @param pan Primary Account Number
-     * @return the 12 right-most digits of the account number, excluding the check digit.
-     * @throws NullPointerException if pan is null
-     * @throws IllegalArgumentException if length is < 12
+     * This method extracts the 12 right-most digits of the account number,
+     * execluding the check digit.
+     * @param accountNumber (PAN) consists of the BIN (Bank Identification Number), accountNumber
+     * and a check digit.
+     * @return the 12 right-most digits of the account number, execluding the check digit.
+     *         In case if account number length is lower that 12 proper count of 0 digts is added
+     *         on the left side for align to 12
      */
-    public static String extractAccountNumberPart (String pan) {
-        int l = pan.length();
-        if (l > 12)
-            pan = pan.substring(pan.length()-13, pan.length()-1);
-        else if (l < 12)
-            throw new IllegalArgumentException("Invalid pan length " + l);
-
-        return pan;
+    public static String extractAccountNumberPart (String accountNumber) {
+        String accountNumberPart = null;
+        try {
+            accountNumberPart = ISOUtil.takeLastN(accountNumber, 13);
+            accountNumberPart = ISOUtil.takeFirstN(accountNumberPart, 12);
+        } catch(ISOException ex) {}
+        return  accountNumberPart;
     }
+
+
 }
+
+
+

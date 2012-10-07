@@ -56,10 +56,10 @@ public class EncryptedPINTest {
 
     @Test
     public void testConstructor3() throws Throwable {
-        try {
-            EncryptedPIN encryptedPIN = new EncryptedPIN("testEncryptedPINPinBlockHexString1", (byte) 0, "11Character");
-            fail("IllegalArgumentException expected");
-        } catch (IllegalArgumentException e) { }
+        EncryptedPIN encryptedPIN = new EncryptedPIN("testEncryptedPINPinBlockHexString1", (byte) 0, "11Character");
+        assertEquals("encryptedPIN.accountNumber", "0011Characte", encryptedPIN.accountNumber);
+        assertEquals("encryptedPIN.pinBlockFormat", (byte) 0, encryptedPIN.pinBlockFormat);
+        assertEquals("encryptedPIN.pinBlock.length", 17, encryptedPIN.pinBlock.length);
     }
 
     @Test
@@ -83,8 +83,8 @@ public class EncryptedPINTest {
     @Test
     public void testConstructor6() throws Throwable {
         byte[] pinBlock = new byte[1];
-        EncryptedPIN encryptedPIN = new EncryptedPIN(pinBlock, (byte) 0, "13CharactersX");
-        assertEquals("encryptedPIN.accountNumber", "13Characters", encryptedPIN.accountNumber);
+        EncryptedPIN encryptedPIN = new EncryptedPIN(pinBlock, (byte) 0, "11Character");
+        assertEquals("encryptedPIN.accountNumber", "0011Characte", encryptedPIN.accountNumber);
         assertEquals("encryptedPIN.pinBlockFormat", (byte) 0, encryptedPIN.pinBlockFormat);
         assertSame("encryptedPIN.pinBlock", pinBlock, encryptedPIN.pinBlock);
     }
@@ -149,10 +149,8 @@ public class EncryptedPINTest {
 
     @Test
     public void testExtractAccountNumberPart() throws Throwable {
-        try {
-            EncryptedPIN.extractAccountNumberPart("11Character");
-            fail("Expected IllegalArgumentException");
-        } catch (IllegalArgumentException e) { }
+        String result = EncryptedPIN.extractAccountNumberPart("11Character");
+        assertEquals("result", "0011Characte", result);
     }
 
     @Test
@@ -164,7 +162,7 @@ public class EncryptedPINTest {
     @Test
     public void testExtractAccountNumberPart2() throws Throwable {
         String result = EncryptedPIN.extractAccountNumberPart("12Characters");
-        assertEquals("result", "12Characters", result);
+        assertEquals("result", "012Character", result);
     }
 
     @Test
@@ -242,6 +240,13 @@ public class EncryptedPINTest {
         EncryptedPIN encryptedPIN = new EncryptedPIN("testEncryptedPINPinBlockHexString1", (byte) 0, "testEncryptedPINAccountNumber");
         encryptedPIN.setAccountNumber("12Characters");
         assertEquals("encryptedPIN.accountNumber", "12Characters", encryptedPIN.accountNumber);
+    }
+
+    @Test
+    public void test11Chars() throws Throwable {
+        byte[] pinBlock = new byte[3];
+        EncryptedPIN encryptedPIN = new EncryptedPIN(pinBlock, (byte) 0, "11Character");
+        assertEquals("encryptedPIN.accountNumber", "0011Characte", encryptedPIN.accountNumber);
     }
 
     @Test
