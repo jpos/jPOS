@@ -356,9 +356,17 @@ public abstract class BaseChannel extends Observable
     public int getTimeout () {
         return timeout;
     }
+
+    /**
+     * sets timeout, and also keep alive
+     * @throws SocketException
+     */
     protected void applyTimeout () throws SocketException {
-        if (timeout >= 0 && socket != null) 
-            socket.setSoTimeout (timeout);
+        if (socket != null) {
+            socket.setKeepAlive(keepAlive);
+            if (timeout >= 0)
+                socket.setSoTimeout(timeout);
+        }
     }
     /**
      * Socket SO_LINGER option to use when closing the socket.
@@ -390,8 +398,6 @@ public abstract class BaseChannel extends Observable
                 connect(newSocket (hosts, ports, evt));
             }
             applyTimeout();
-            if (socket != null)
-                socket.setKeepAlive (keepAlive);
             Logger.log (evt);
             setChanged();
             notifyObservers();
