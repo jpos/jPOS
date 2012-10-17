@@ -128,6 +128,7 @@ public class SystemMonitor extends QBeanSupport implements Runnable,
         p.printf ("%s<revision>%s</revision>%n", indent, getRevision());
         p.printf ("%s<instance>%s</instance>%n", indent, getInstanceIdAsString());
         p.printf ("%s<uptime>%s</uptime>%n", indent, ISOUtil.millisToString(getServerUptimeAsMillisecond()));
+        p.printf("%s<processors>%d</processors>%n", indent, Runtime.getRuntime().availableProcessors());
         p.println(indent + "<memory>");
         p.println(newIndent + " freeMemory=" + r.freeMemory());
         p.println(newIndent + "totalMemory=" + r.totalMemory());
