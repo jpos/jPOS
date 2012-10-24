@@ -36,7 +36,7 @@ import java.util.Date;
 
 public class PackagerTestCase extends TestCase {
     private XMLPackager xmlPackager;
-    public static final String PREFIX = "target/test-classes/org/jpos/iso/packagers/";
+    public static final String PREFIX = "build/resources/test/org/jpos/iso/packagers/";
 
     private ISOMsg getMsg (String message) throws Exception {
         FileInputStream fis = new FileInputStream (PREFIX + message + ".xml");

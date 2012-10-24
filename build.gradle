@@ -1,0 +1,85 @@
+apply plugin: 'idea'
+apply plugin: 'eclipse'
+
+allprojects  {
+    apply plugin: 'java'
+    apply plugin: 'maven'
+    group = 'org.jpos'
+    version = '1.8.9-SNAPSHOT'
+    configurations.compile.transitive = true
+}
+
+subprojects { subProject ->
+    sourceCompatibility = 1.6
+    targetCompatibility = 1.6
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        mavenRepo name: 'oracle', url: "http://download.oracle.com/maven"
+        mavenRepo name: 'jline', url: "http://jline.sourceforge.net/m2repo"
+    }
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+                repository(url: 'file:///opt/local/maven')
+            }
+        }
+    }
+    def pomConfig = {
+        name 'jPOS Project'
+        description """
+    jPOS is a Java platform-based, mission-critical, 
+    ISO-8583 based financial transaction library/framework 
+    that can be customized and extended in order to 
+    implement financial interchanges.
+  """
+        url 'http://jpos.org'
+        organization {
+            name 'jPOS.org'
+            url 'http://jpos.org'
+        }
+        issueManagement {
+            system 'YouTrack'
+            url 'https://jpos.org/issues'
+        }
+        scm {
+            url "http://github.com/jpos/jPOS"
+            connection "scm:git:https://github.com/jpos/jPOS.git"
+            developerConnection "scm:git:git@github.com:jpos/jPOS.git"
+        }
+        licenses {
+            license {
+                name 'GNU AFFERO GENERAL PUBLIC LICENSE'
+                url 'http://www.gnu.org/licenses/agpl-v3.html'
+                comments 'See http://jpos.org/license for more details.'
+                distribution 'repo'
+            }
+        }
+        developers {
+            developer {
+                id 'jpos-team'
+                name 'jPOS Development Team'
+                email 'info@jpos.org'
+            }
+        }
+    }
+    subProject.ext.basePomConfig = pomConfig
+    configure(install.repositories.mavenInstaller) {
+        pom.project pomConfig
+    }
+}
+
+task aggregatedJavadoc (type: Javadoc, description: "Aggregated Javadocs") { 
+    source subprojects.collect {project -> 
+        project.sourceSets.main.allJava 
+    } 
+    destinationDir = new File(buildDir, 'docs/javadoc') 
+    classpath = files(subprojects.collect {project -> 
+        project.sourceSets.main.compileClasspath}) 
+} 
+
+task wrapper( type: Wrapper ) {
+    gradleVersion = '1.2'
+}
+

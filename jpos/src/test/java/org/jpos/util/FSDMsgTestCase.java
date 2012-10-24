@@ -25,7 +25,7 @@ import org.jpos.iso.ISOUtil;
 import java.util.Arrays;
 
 public class FSDMsgTestCase extends TestCase {
-    private static final String SCHEMA_DIR_URL = "file:target/test-classes/org/jpos/util/";
+    private static final String SCHEMA_DIR_URL = "file:build/resources/test/org/jpos/util/";
     FSDMsg imsg;
 
     FSDMsg omsg;

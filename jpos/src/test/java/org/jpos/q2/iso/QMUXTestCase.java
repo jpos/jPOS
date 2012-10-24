@@ -46,7 +46,7 @@ public class QMUXTestCase implements ISOResponseListener {
     @Before
     public void setUp() throws Exception {
         sp = SpaceFactory.getSpace();
-        q2 = new Q2("target/test-classes/org/jpos/q2/iso");
+        q2 = new Q2("build/resources/test/org/jpos/q2/iso");
         expiredCalled = false;
         q2.start();
         Thread.sleep(2000L);

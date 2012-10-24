@@ -4,5 +4,8 @@ target
 *.ipr
 *.iws
 .idea
-/.settings
-/.project
+.settings
+.project
+.gradle
+build
+

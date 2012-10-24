@@ -21,7 +21,7 @@ package org.jpos.util;
 import junit.framework.TestCase;
 
 public class FSDMsgPropertiesTestCase extends TestCase {
-    private static final String SCHEMA_DIR_URL = "file:target/test-classes/org/jpos/util/";
+    private static final String SCHEMA_DIR_URL = "file:build/resources/test/org/jpos/util/";
     private static String FS = "\034";
     private FSDMsg imsg;
     private FSDMsg omsg;

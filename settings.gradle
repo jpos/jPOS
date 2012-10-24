@@ -1,0 +1,5 @@
+include 'jpos'
+include 'compat_1_5_2'
+
+rootProject.name = 'jpos'
+

@@ -523,8 +523,8 @@ public class Q2 implements FileFilter, Runnable {
         return instanceId;
     }
     public static String getVersionString() {
-        return String.format ("jPOS %s %s (%s)%s",
-            getVersion(), getRevision(), getBuildTimestamp(), getLicensee()
+        return String.format ("jPOS %s %s/%s (%s)%s",
+            getVersion(), getBranch(), getRevision(), getBuildTimestamp(), getLicensee()
         );
     }
     public static String getLicensee() {
@@ -760,6 +760,9 @@ public class Q2 implements FileFilter, Runnable {
     }
     public static String getRevision() {
         return getBundle("org/jpos/q2/revision").getString ("revision");
+    }
+    public static String getBranch() {
+        return getBundle("org/jpos/q2/revision").getString ("branch");
     }
     public static String getBuildTimestamp() {
         return getBundle("org/jpos/q2/buildinfo").getString ("buildTimestamp");

@@ -36,7 +36,7 @@ public class TaggedFieldPackagerBaseTest extends TestCase {
 
     @Test
     public void testPack() throws Exception {
-        String path = "target/test-classes/org/jpos/iso/packagers/";
+        String path = "build/resources/test/org/jpos/iso/packagers/";
         GenericPackager genericPackager = new GenericPackager(new FileInputStream(path + "ISO93TLVPackager.xml"));
 
         ISOMsg msg = new ISOMsg();
@@ -76,7 +76,7 @@ public class TaggedFieldPackagerBaseTest extends TestCase {
 
     @Test
     public void testUnpack() throws Exception {
-        String path = "target/test-classes/org/jpos/iso/packagers/";
+        String path = "build/resources/test/org/jpos/iso/packagers/";
         GenericPackager genericPackager = new GenericPackager(new FileInputStream(path + "ISO93TLVPackager.xml"));
 
         ISOMsg msg = new ISOMsg();

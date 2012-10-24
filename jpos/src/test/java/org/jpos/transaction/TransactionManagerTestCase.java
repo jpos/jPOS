@@ -30,7 +30,7 @@ public class TransactionManagerTestCase extends TestCase {
 
     public void setUp () throws Exception {
         sp = SpaceFactory.getSpace();
-        q2 = new Q2("target/test-classes/org/jpos/transaction");
+        q2 = new Q2("build/resources/test/org/jpos/transaction");
         q2.start();
     }
     public void testSimpleTransaction() {

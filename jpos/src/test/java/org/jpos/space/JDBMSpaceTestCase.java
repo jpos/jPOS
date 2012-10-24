@@ -26,7 +26,7 @@ public class JDBMSpaceTestCase extends TestCase {
     public static final int COUNT = 100;
     JDBMSpace<String,Object> sp;
     public void setUp () {
-        sp = (JDBMSpace<String,Object>) JDBMSpace.getSpace ("target/test-classes/jdbm-space-test");
+        sp = (JDBMSpace<String,Object>) JDBMSpace.getSpace ("build/resources/test/jdbm-space-test");
     }
     public void testSimpleOut() throws Exception {
         Object o =Boolean.TRUE;

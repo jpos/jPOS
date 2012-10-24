@@ -5,6 +5,5 @@ rm -f deploy/shutdown.xml
 java -server \
     -Xmx1G \
     -Dcom.sun.management.jmxremote \
-    -Dorg.mortbay.xml.XmlParser.NotValidating=true \
-    -jar ${project.build.finalName}.jar $*
+    -jar jpos.jar $*
 

@@ -346,14 +346,14 @@ public class DirPollTest {
 
     @Test
     public void testRetry() throws IOException {
-        Q2 q2 = new Q2("target/test-classes/org/jpos/util/dirpoll_retry/deploy");
+        Q2 q2 = new Q2("build/resources/test/org/jpos/util/dirpoll_retry/deploy");
         q2.start();
         ISOUtil.sleep(5000L);
-        createTestFile("target/test-classes/org/jpos/util/dirpoll_retry/request/REQ1", "RETRYME");
+        createTestFile("build/resources/test/org/jpos/util/dirpoll_retry/request/REQ1", "RETRYME");
         ISOUtil.sleep(5000L);
         q2.stop();
         ISOUtil.sleep(2000L);
-        assertTrue("Can't read request", new File("target/test-classes/org/jpos/util/dirpoll_retry/request/REQ1").canRead());
+        assertTrue("Can't read request", new File("build/resources/test/org/jpos/util/dirpoll_retry/request/REQ1").canRead());
     }
     public static class RetryTest implements DirPoll.Processor {
         public byte[] process(String name, byte[] request) throws DirPoll.DirPollException {

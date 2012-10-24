@@ -23,7 +23,7 @@ import java.io.ByteArrayInputStream;
 import junit.framework.TestCase;
 
 public class FSDMsgEndOfMessageTestCase extends TestCase {
-    private static final String SCHEMA_DIR_URL = "file:target/test-classes/org/jpos/util/";
+    private static final String SCHEMA_DIR_URL = "file:build/resources/test/org/jpos/util/";
     FSDMsg imsg;
 
     FSDMsg omsg;
