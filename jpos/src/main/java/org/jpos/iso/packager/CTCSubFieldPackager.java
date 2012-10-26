@@ -18,14 +18,14 @@
 
 package org.jpos.iso.packager;
 
+import java.util.Map;
+
 import org.jpos.iso.ISOComponent;
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOField;
 import org.jpos.iso.validator.ISOVException;
 import org.jpos.util.LogEvent;
 import org.jpos.util.Logger;
-
-import java.util.Map;
 
 /**
  * Tester validating packager for subfields in field 48.
@@ -43,6 +43,7 @@ public class CTCSubFieldPackager extends ISOBaseValidatingPackager {
         super();
     }
 
+    @Override
     public byte[] pack ( ISOComponent c ) throws ISOException {
         try     {
             Map tab = c.getChildren();
@@ -60,11 +61,12 @@ public class CTCSubFieldPackager extends ISOBaseValidatingPackager {
         }
     }
 
+    @Override
     public int unpack ( ISOComponent m, byte[] b ) throws ISOException {
         LogEvent evt = new LogEvent ( this, "unpack" );
         int consumed = 0;
         for ( int i=0; consumed < b.length ; i++ ) {
-            ISOComponent c = fld[i].createComponent( i );
+            ISOComponent c = fld[i].createComponent( i,  fld[i].getDisplay());
             consumed += fld[i].unpack ( c, b, consumed );
             if ( logger != null )       {
                 evt.addMessage ("<unpack fld=\"" + i
@@ -85,10 +87,12 @@ public class CTCSubFieldPackager extends ISOBaseValidatingPackager {
      * Always return false.
      * <br><br>
      **/
+    @Override
     protected boolean emitBitMap() {
         return false;
     }
 
+    @Override
     public ISOComponent validate( ISOComponent c ) throws org.jpos.iso.ISOException {
         LogEvent evt = new LogEvent( this, "validate" );
         try {

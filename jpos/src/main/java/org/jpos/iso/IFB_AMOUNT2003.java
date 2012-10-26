@@ -19,7 +19,7 @@
 package org.jpos.iso;
 
 public class IFB_AMOUNT2003 extends IFB_NUMERIC {
-    public ISOComponent createComponent(int fieldNumber) {
+    public ISOComponent createComponent(int fieldNumber, int display) {
         return new ISOAmount (fieldNumber);    
     }
 }

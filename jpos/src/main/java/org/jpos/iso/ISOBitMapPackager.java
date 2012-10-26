@@ -36,7 +36,7 @@ public abstract class ISOBitMapPackager extends ISOFieldPackager {
     public ISOBitMapPackager(int len, String description) {
         super(len, description);
     }
-    public ISOComponent createComponent(int fieldNumber) {
+    public ISOComponent createComponent(int fieldNumber, int display) {
         return new ISOBitMap (fieldNumber);
     }
 }

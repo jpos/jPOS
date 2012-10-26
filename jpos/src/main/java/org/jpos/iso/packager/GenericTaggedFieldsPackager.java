@@ -18,17 +18,24 @@
 
 package org.jpos.iso.packager;
 
-import org.jpos.iso.*;
-import org.jpos.util.LogEvent;
-import org.jpos.util.Logger;
-import org.xml.sax.Attributes;
-
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import org.jpos.iso.ISOBitMapPackager;
+import org.jpos.iso.ISOComponent;
+import org.jpos.iso.ISOException;
+import org.jpos.iso.ISOFieldPackager;
+import org.jpos.iso.ISOMsg;
+import org.jpos.iso.ISOMsgFieldPackager;
+import org.jpos.iso.ISOUtil;
+import org.jpos.iso.TaggedFieldPackagerBase;
+import org.jpos.util.LogEvent;
+import org.jpos.util.Logger;
+import org.xml.sax.Attributes;
 
 /**
  *
@@ -63,7 +70,7 @@ public class GenericTaggedFieldsPackager extends GenericPackager {
             int maxField = fld.length;
             for (int i = getFirstField(); i < maxField && consumed < b.length; i++) {
                 if (fld[i] != null) {
-                    ISOComponent c = fld[i].createComponent(i);
+                    ISOComponent c = fld[i].createComponent(i,  fld[i].getDisplay());
                     int unpacked = fld[i].unpack(c, b, consumed);
                     consumed = consumed + unpacked;
                     if (unpacked > 0) {
@@ -103,7 +110,7 @@ public class GenericTaggedFieldsPackager extends GenericPackager {
 
             if (!(fld[0] instanceof ISOMsgFieldPackager) &&
                     !(fld[0] instanceof ISOBitMapPackager)) {
-                ISOComponent mti = fld[0].createComponent(0);
+                ISOComponent mti = fld[0].createComponent(0,  fld[0].getDisplay());
                 fld[0].unpack(mti, in);
                 m.set(mti);
             }
@@ -113,7 +120,7 @@ public class GenericTaggedFieldsPackager extends GenericPackager {
                 if (fld[i] == null)
                     continue;
 
-                ISOComponent c = fld[i].createComponent(i);
+                ISOComponent c = fld[i].createComponent(i,fld[i].getDisplay());
                 fld[i].unpack(c, in);
                 if (logger != null) {
                     evt.addMessage("<unpack fld=\"" + i
@@ -190,6 +197,7 @@ public class GenericTaggedFieldsPackager extends GenericPackager {
         }
     }
 
+    @Override
     public void setFieldPackager(ISOFieldPackager[] fld) {
         super.setFieldPackager(fld);
         for (int i = 0; i < fld.length; i++) {
