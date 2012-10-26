@@ -18,6 +18,16 @@
 
 package org.jpos.iso.packager;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Stack;
+import java.util.TreeMap;
+
 import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
@@ -37,16 +47,6 @@ import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Stack;
-import java.util.TreeMap;
 
 
 /**
@@ -315,6 +315,7 @@ public class GenericPackager
          *                                  or Reader for the InputSource.
          * @see org.xml.sax.InputSource
          */
+        @Override
         public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException
         {
             if(systemId==null) return null;
@@ -387,6 +388,7 @@ public class GenericPackager
                 String name = atts.getValue("name");
                 String size = atts.getValue("length");
                 String pad  = atts.getValue("pad");
+                String display  = atts.getValue("display");
                 // Modified for using IF_TBASE
                 String token = atts.getValue("token");
 
@@ -417,6 +419,11 @@ public class GenericPackager
                     f.setDescription(name);
                     f.setLength(Integer.parseInt(size));
                     f.setPad(Boolean.parseBoolean(pad));
+                    if (display==null) {
+                        display="0";
+                    }
+                    f.setDisplay(Integer.parseInt(display));
+
                     // Modified for using IF_TBASE
                     if( f instanceof IF_TBASE){
                       ((IF_TBASE)f).setToken( token );
@@ -443,6 +450,10 @@ public class GenericPackager
                     f.setDescription(name);
                     f.setLength(Integer.parseInt(size));
                     f.setPad(Boolean.parseBoolean(pad));
+                    if (display==null) {
+                        display="0";
+                    }
+                    f.setDisplay(Integer.parseInt(display));
                     // Modified for using IF_TBASE
                     if( f instanceof IF_TBASE){
                       ((IF_TBASE)f).setToken( token );

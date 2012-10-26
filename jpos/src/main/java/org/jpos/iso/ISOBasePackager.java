@@ -18,16 +18,16 @@
 
 package org.jpos.iso;
 
-import org.jpos.util.LogEvent;
-import org.jpos.util.LogSource;
-import org.jpos.util.Logger;
-
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Map;
+
+import org.jpos.util.LogEvent;
+import org.jpos.util.LogSource;
+import org.jpos.util.Logger;
 
 /**
  * provides base functionality for the actual packagers
@@ -66,6 +66,7 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
      * @return      Message image
      * @exception ISOException
      */
+    @Override
     public byte[] pack (ISOComponent m) throws ISOException {
         LogEvent evt = null;
         if (logger != null)
@@ -186,6 +187,7 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
      * @return      consumed bytes
      * @exception ISOException
      */
+    @Override
     public int unpack (ISOComponent m, byte[] b) throws ISOException {
         LogEvent evt = new LogEvent (this, "unpack");
         int consumed = 0;
@@ -208,7 +210,7 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
             
             if (!(fld[0] == null) && !(fld[0] instanceof ISOBitMapPackager))
             {
-                ISOComponent mti = fld[0].createComponent(0);
+                ISOComponent mti = fld[0].createComponent(0, fld[0].getDisplay());
                 consumed  += fld[0].unpack(mti, b, consumed);
                 m.set (mti);
             }
@@ -234,7 +236,7 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
                         if (fld[i] == null)
                             throw new ISOException ("field packager '" + i + "' is null");
 
-                        ISOComponent c = fld[i].createComponent(i);
+                        ISOComponent c = fld[i].createComponent(i,fld[i].getDisplay());
                         consumed += fld[i].unpack (c, b, consumed);
                         if (logger != null) {
                             evt.addMessage ("<unpack fld=\"" + i 
@@ -305,7 +307,7 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
             if (!(fld[0] instanceof ISOMsgFieldPackager) &&
                 !(fld[0] instanceof ISOBitMapPackager))
             {
-                ISOComponent mti = fld[0].createComponent(0);
+                ISOComponent mti = fld[0].createComponent(0,  fld[0].getDisplay());
                 fld[0].unpack(mti, in);
                 m.set (mti);
             }
@@ -329,7 +331,7 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
                     if (fld[i] == null)
                         throw new ISOException ("field packager '" + i + "' is null");
 
-                    ISOComponent c = fld[i].createComponent(i);
+                    ISOComponent c = fld[i].createComponent(i,  fld[i].getDisplay());
                     fld[i].unpack (c, in);
                     if (logger != null) {
                         evt.addMessage ("<unpack fld=\"" + i 
@@ -352,7 +354,7 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
                 bmap= (BitSet) ((ISOComponent) m.getChildren().get(65)).getValue();
                 for (int i=1; i<64; i++) {
                     if (bmap == null || bmap.get(i)) {
-                        ISOComponent c = fld[i+128].createComponent(i);
+                        ISOComponent c = fld[i+128].createComponent(i,  fld[i+128].getDisplay());
                         fld[i+128].unpack (c, in);
                         if (logger != null) {
                             evt.addMessage ("<unpack fld=\"" + i+128
@@ -384,6 +386,7 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
      * @param   fldNumber the Field Number
      * @return  Field Description
      */
+    @Override
     public String getFieldDescription(ISOComponent m, int fldNumber) {
         return fld[fldNumber].getDescription();
     }
@@ -403,6 +406,7 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
     {
         fld[fldNumber] = fieldPackager;
     }
+    @Override
     public ISOMsg createISOMsg () {
         return new ISOMsg();
     }
@@ -418,13 +422,16 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
     protected ISOFieldPackager getBitMapfieldPackager() {
         return fld[1];
     }
+    @Override
     public void setLogger (Logger logger, String realm) {
         this.logger = logger;
         this.realm  = realm;
     }
+    @Override
     public String getRealm () {
         return realm;
     }
+    @Override
     public Logger getLogger() {
         return logger;
     }
@@ -436,6 +443,7 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
     {
     	headerLength = len;
     }
+    @Override
     public String getDescription () {
         return getClass().getName();
     }

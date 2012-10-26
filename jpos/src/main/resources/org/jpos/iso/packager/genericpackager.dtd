@@ -15,6 +15,7 @@
 <!ATTLIST isofield class  NMTOKEN      #REQUIRED>
 <!ATTLIST isofield token  CDATA        #IMPLIED>
 <!ATTLIST isofield pad    (true|false) #IMPLIED>
+<!ATTLIST isofield display  (0|1|2)        #IMPLIED>
 
 <!-- isofieldpackager -->
 <!ELEMENT isofieldpackager (isofield+,isofieldpackager*)*>

@@ -19,7 +19,7 @@
 package org.jpos.iso;
 
 public class IFA_AMOUNT2003 extends IFA_NUMERIC {
-    public ISOComponent createComponent(int fieldNumber) {
+    public ISOComponent createComponent(int fieldNumber, int display) {
         return new ISOAmount (fieldNumber);    
     }
 }
