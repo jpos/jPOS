@@ -93,7 +93,7 @@ public class ISOMsgFieldPackager extends ISOFieldPackager {
             msgPackager.unpack((ISOMsg) c, (byte[]) f.getValue());
         }
     }
-    public ISOComponent createComponent(int fieldNumber) {
+    public ISOComponent createComponent(int fieldNumber, int display) {
         ISOMsg m = new ISOMsg(fieldNumber);
         m.setPackager(msgPackager);
         return m;

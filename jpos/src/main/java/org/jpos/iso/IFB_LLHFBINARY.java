@@ -79,7 +79,7 @@ public class IFB_LLHFBINARY extends ISOFieldPackager {
         c.setValue (readBytes (in, len));
         in.skip (getLength () - len);
     }
-    public ISOComponent createComponent(int fieldNumber) {
+    public ISOComponent createComponent(int fieldNumber, int display) {
         return new ISOBinaryField (fieldNumber);
     }
     public int getMaxPackedLength() {

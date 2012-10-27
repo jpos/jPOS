@@ -18,14 +18,20 @@
 
 package org.jpos.iso.packager;
 
-import org.jpos.iso.*;
-import org.jpos.util.LogEvent;
-import org.jpos.util.Logger;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.jpos.iso.AsciiPrefixer;
+import org.jpos.iso.ISOBasePackager;
+import org.jpos.iso.ISOComponent;
+import org.jpos.iso.ISOException;
+import org.jpos.iso.ISOPackager;
+import org.jpos.iso.ISOUtil;
+import org.jpos.iso.Prefixer;
+import org.jpos.util.LogEvent;
+import org.jpos.util.Logger;
 
 /**
  * EuroPay SubField packager
@@ -109,7 +115,7 @@ public class EuroSubFieldPackager extends ISOBasePackager
             if (fld[i] == null)
                 throw new ISOException ("Unsupported sub-field " + i + " unpacking field " + m.getKey());
 
-            c = fld[i].createComponent(i);
+            c = fld[i].createComponent(i,fld[i].getDisplay());
             consumed += fld[i].unpack (c, b, consumed);
             if (logger != null) 
             {

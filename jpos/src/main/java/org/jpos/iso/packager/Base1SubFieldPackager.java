@@ -18,14 +18,21 @@
 
 package org.jpos.iso.packager;
 
-import org.jpos.iso.*;
-import org.jpos.util.LogEvent;
-import org.jpos.util.Logger;
-
-import java.util.BitSet;
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.List;
 import java.util.Map;
+
+import org.jpos.iso.ISOBasePackager;
+import org.jpos.iso.ISOBitMap;
+import org.jpos.iso.ISOBitMapPackager;
+import org.jpos.iso.ISOComponent;
+import org.jpos.iso.ISOException;
+import org.jpos.iso.ISOFieldPackager;
+import org.jpos.iso.ISOPackager;
+import org.jpos.iso.ISOUtil;
+import org.jpos.util.LogEvent;
+import org.jpos.util.Logger;
 
 /**
  * ISO 8583 v1987 BINARY Packager 
@@ -45,16 +52,19 @@ public class Base1SubFieldPackager extends ISOBasePackager
     // except that fld[1] has been replaced with fld[0]
     // and a secondard bitmap is not allowed
 
+    @Override
     protected boolean emitBitMap()
     {
         return (fld[0] instanceof ISOBitMapPackager);
     }
 
+    @Override
     protected int getFirstField()
     {
         return (fld[0] instanceof ISOBitMapPackager) ? 1 : 0;
     }
 
+    @Override
     protected ISOFieldPackager getBitMapfieldPackager() 
     {
         return fld[0];
@@ -65,6 +75,7 @@ public class Base1SubFieldPackager extends ISOBasePackager
      * its corresponding ISOComponent
      */
 
+    @Override
     public int unpack (ISOComponent m, byte[] b) throws ISOException 
     {
         LogEvent evt = new LogEvent (this, "unpack");
@@ -91,7 +102,7 @@ public class Base1SubFieldPackager extends ISOBasePackager
             {
                 if (bmap == null || bmap.get(i)) 
                 {
-                    ISOComponent c = fld[i].createComponent(i);
+                    ISOComponent c = fld[i].createComponent(i, fld[i].getDisplay());
                     consumed += fld[i].unpack (c, b, consumed);
                     m.set(c);
                 }
@@ -118,6 +129,7 @@ public class Base1SubFieldPackager extends ISOBasePackager
      * Pack the subfield into a byte array
      */ 
 
+    @Override
     public byte[] pack (ISOComponent m) throws ISOException 
     {
         LogEvent evt = new LogEvent (this, "pack");
