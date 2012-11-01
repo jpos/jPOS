@@ -62,6 +62,7 @@ public abstract class ISOFieldPackager {
     private int len;
     private String description;
     protected boolean pad;
+    protected int display;
 
     /**
      * Default Constructor
@@ -97,10 +98,20 @@ public abstract class ISOFieldPackager {
         this.pad = pad;
     }
 
+    public void setDisplay(int display) {
+        this.display = display;
+    }
+
+
+    public int getDisplay() {
+        return display;
+    }
+
+
     public abstract int getMaxPackedLength();
 
-    public ISOComponent createComponent(int fieldNumber) {
-        return new ISOField (fieldNumber);
+    public ISOComponent createComponent(int fieldNumber, int display) {
+        return new ISOField (fieldNumber, display);
     }
     /**
      * @param c - a component

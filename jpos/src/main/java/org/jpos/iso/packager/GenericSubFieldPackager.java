@@ -18,14 +18,18 @@
 
 package org.jpos.iso.packager;
 
-import org.jpos.iso.*;
-import org.jpos.util.LogEvent;
-import org.jpos.util.Logger;
-
-import java.util.BitSet;
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.List;
 import java.util.Map;
+
+import org.jpos.iso.ISOBitMap;
+import org.jpos.iso.ISOComponent;
+import org.jpos.iso.ISOException;
+import org.jpos.iso.ISOField;
+import org.jpos.iso.ISOUtil;
+import org.jpos.util.LogEvent;
+import org.jpos.util.Logger;
 
 /**
  * GenericSubFieldPackager
@@ -76,7 +80,7 @@ public class GenericSubFieldPackager extends GenericPackager
                 if (bmap == null || bmap.get(i)) 
                 {
                     if (fld[i] != null) {
-                        ISOComponent c = fld[i].createComponent(i);
+                        ISOComponent c = fld[i].createComponent(i,fld[i].getDisplay());
                         consumed += fld[i].unpack (c, b, consumed);
                         m.set(c);
                     }

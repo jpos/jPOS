@@ -18,13 +18,22 @@
 
 package org.jpos.iso;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
+import java.lang.ref.WeakReference;
+import java.util.BitSet;
+import java.util.Map;
+import java.util.StringTokenizer;
+import java.util.TreeMap;
+
 import org.jpos.iso.header.BaseHeader;
 import org.jpos.iso.packager.XMLPackager;
 import org.jpos.util.Loggeable;
-
-import java.io.*;
-import java.lang.ref.WeakReference;
-import java.util.*;
 
 /**
  * implements <b>Composite</b>
@@ -75,6 +84,7 @@ public class ISOMsg extends ISOComponent
      * any reference held by a Composite.
      * @param fieldNumber new field number
      */
+    @Override
     public void setFieldNumber (int fieldNumber) {
         this.fieldNumber = fieldNumber;
     }
@@ -147,6 +157,7 @@ public class ISOMsg extends ISOComponent
     /**
      * @return the max field number associated with this message
      */
+    @Override
     public int getMaxField() {
         if (maxFieldDirty)
             recalcMaxField();
@@ -176,6 +187,7 @@ public class ISOMsg extends ISOComponent
      * Set a field within this message
      * @param c - a component
      */
+    @Override
     public void set (ISOComponent c) throws ISOException {
         if (c != null) {
             Integer i = (Integer) c.getKey();
@@ -204,7 +216,13 @@ public class ISOMsg extends ISOComponent
                 if (obj instanceof ISOBinaryFieldPackager) {
                     set(new ISOBinaryField(fldno, ISOUtil.hex2byte(value)));
                 } else {
-                    set(new ISOField(fldno, value));
+                    if (obj==null) {
+                    // will be null if we add fields that are not defined in the packager
+                        set(new ISOField(fldno, value));
+                    }
+                    else {
+                        set(new ISOField(fldno, value,obj.getDisplay()));
+                    }
                 }
             }
         }
@@ -320,6 +338,7 @@ public class ISOMsg extends ISOComponent
      * Unset a field if it exists, otherwise ignore.
      * @param fldno - the field number
      */
+    @Override
     public void unset (int fldno) {
         if (fields.remove (fldno) != null)
             dirty = maxFieldDirty = true;
@@ -372,6 +391,7 @@ public class ISOMsg extends ISOComponent
      *
      * @return ISOComponent
      */
+    @Override
     public ISOComponent getComposite() {
         return this;
     }
@@ -395,6 +415,7 @@ public class ISOMsg extends ISOComponent
     /**
      * clone fields
      */
+    @Override
     public Map getChildren() {
         return (Map) ((TreeMap)fields).clone();
     }
@@ -403,6 +424,7 @@ public class ISOMsg extends ISOComponent
      * @return the packed message
      * @exception ISOException
      */
+    @Override
     public byte[] pack() throws ISOException {
         synchronized (this) {
             recalcBitMap();
@@ -415,11 +437,13 @@ public class ISOMsg extends ISOComponent
      * @return consumed bytes
      * @exception ISOException
      */
+    @Override
     public int unpack(byte[] b) throws ISOException {
         synchronized (this) {
             return packager.unpack(this, b);
         }
     }
+    @Override
     public void unpack (InputStream in) throws IOException, ISOException {
         synchronized (this) {
             packager.unpack(this, in);
@@ -434,6 +458,7 @@ public class ISOMsg extends ISOComponent
      * @param p - print stream
      * @param indent - optional indent string
      */
+    @Override
     public void dump (PrintStream p, String indent) {
         ISOComponent c;
         p.print (indent + "<" + XMLPackager.ISOMSG_TAG);
@@ -669,6 +694,7 @@ public class ISOMsg extends ISOComponent
      * @see ISOField
      * @see ISOException
      */
+    @Override
     public void setValue(Object obj) throws ISOException {
         throw new ISOException ("setValue N/A in ISOMsg");
     }
@@ -756,6 +782,7 @@ public class ISOMsg extends ISOComponent
         }
         return s.toString();
     }
+    @Override
     public Object getKey() throws ISOException {
         if (fieldNumber != -1)
             return fieldNumber;
@@ -915,7 +942,8 @@ public class ISOMsg extends ISOComponent
     {
         direction = in.readByte();
     }
- 
+
+    @Override
     public void writeExternal (ObjectOutput out) throws IOException {
         out.writeByte (0);  // reserved for future expansion (version id)
         out.writeShort (fieldNumber);
@@ -944,6 +972,7 @@ public class ISOMsg extends ISOComponent
         out.writeByte ('E');
     }
 
+    @Override
     public void readExternal  (ObjectInput in)
         throws IOException, ClassNotFoundException
     {

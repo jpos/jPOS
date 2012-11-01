@@ -178,7 +178,7 @@ public class ISOBinaryFieldPackager extends ISOFieldPackager
      * @param fieldNumber - the field number
      * @return the newly created component
      */
-    public ISOComponent createComponent(int fieldNumber) {
+    public ISOComponent createComponent(int fieldNumber, int display) {
         return new ISOBinaryField (fieldNumber);
     }
 

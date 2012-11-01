@@ -85,7 +85,7 @@ public class IFA_LLABINARY extends ISOFieldPackager {
         
         
     }
-    public ISOComponent createComponent(int fieldNumber) {
+    public ISOComponent createComponent(int fieldNumber, int display) {
         return new ISOBinaryField (fieldNumber);
     }
     public int getMaxPackedLength() {

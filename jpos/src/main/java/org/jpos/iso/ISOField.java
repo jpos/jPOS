@@ -18,9 +18,15 @@
 
 package org.jpos.iso;
 
-import org.jpos.iso.packager.XMLPackager;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
 
-import java.io.*;
+import org.jpos.iso.packager.XMLPackager;
 
 /**
  * implements <b>Leaf</b> for standard fields
@@ -29,14 +35,15 @@ import java.io.*;
  * @version $Id$
  * @see ISOComponent
  */
-public class ISOField 
-    extends ISOComponent 
+public class ISOField
+    extends ISOComponent
     implements Cloneable, Externalizable
 {
 
     private static final long serialVersionUID = -4053616930139887829L;
     protected int fieldNumber;
     protected String value;
+    private int display;
 
     /**
      * No args constructor 
@@ -48,9 +55,11 @@ public class ISOField
 
     /**
      * @param n - the FieldNumber
+     * @param display - flag to indicate if field should be wiped/protected or default while dumping
      */
-    public ISOField (int n) {
+    public ISOField (int n, int display) {
         fieldNumber = n;
+        this.display = display;
     }
     /**
      * @param n - fieldNumber
@@ -64,6 +73,7 @@ public class ISOField
      * not available on Leaf - always throw ISOException
      * @exception ISOException
      */
+    @Override
     public byte[] pack() throws ISOException {
         throw new ISOException ("Not available on Leaf");
     }
@@ -71,6 +81,7 @@ public class ISOField
      * not available on Leaf - always throw ISOException
      * @exception ISOException
      */
+    @Override
     public int unpack(byte[] b) throws ISOException {
         throw new ISOException ("Not available on Leaf");
     }
@@ -78,18 +89,21 @@ public class ISOField
      * not available on Leaf - always throw ISOException
      * @exception ISOException
      */
+    @Override
     public void unpack(InputStream in) throws ISOException {
         throw new ISOException ("Not available on Leaf");
     }
     /**
      * @return Object representing this field number
      */
+    @Override
     public Object getKey() {
         return fieldNumber;
     }
     /**
      * @return Object representing this field value
      */
+    @Override
     public Object getValue() {
         return value;
     }
@@ -97,6 +111,7 @@ public class ISOField
      * @param obj - Object representing this field value
      * @exception ISOException
      */
+    @Override
     public void setValue(Object obj) throws ISOException {
         if (obj instanceof String)
             value = (String) obj;
@@ -106,6 +121,7 @@ public class ISOField
     /**
      * @return byte[] representing this field
      */
+    @Override
     public byte[] getBytes() {
         try {
             return (value != null) ? value.getBytes(ISOUtil.ENCODING) : new byte[] {};
@@ -118,17 +134,52 @@ public class ISOField
      * @param p - print stream
      * @param indent - optional indent string
      */
-    public void dump (PrintStream p, String indent) {
+    @Override
+    public void dump(PrintStream p, String indent) {
+
+        String temp = null;
         if (value != null && value.indexOf('<') >= 0) {
-            p.print (indent +"<"+XMLPackager.ISOFIELD_TAG + " " +
-                XMLPackager.ID_ATTR +"=\"" +fieldNumber +"\"><![CDATA[");
-            p.print (value);
-            p.println ("]]></" + XMLPackager.ISOFIELD_TAG + ">");                        
-        } else {
-            p.println (indent +"<"+XMLPackager.ISOFIELD_TAG + " " +
-                XMLPackager.ID_ATTR +"=\"" +fieldNumber +"\" "+
-                XMLPackager.VALUE_ATTR
-                +"=\"" +ISOUtil.normalize (value) +"\"/>");
+
+            switch (display) {
+
+            case Display.PROTECT:
+                temp = ISOUtil.protect(value);
+                break;
+            case Display.WIPE:
+                temp = "***";
+                break;
+            case Display.NOP:
+                temp = value;
+                break;
+            default:
+                temp = value;
+                break;
+            }
+
+            p.print(indent + "<" + XMLPackager.ISOFIELD_TAG + " " + XMLPackager.ID_ATTR + "=\"" + fieldNumber
+                    + "\"><![CDATA[");
+            p.print(value);
+            p.println("]]></" + XMLPackager.ISOFIELD_TAG + ">");
+        }
+        else {
+
+            switch (display) {
+
+            case Display.PROTECT:
+                temp = ISOUtil.protect(value);
+                break;
+            case Display.WIPE:
+                temp = "***";
+                break;
+            case Display.NOP:
+                temp = value;
+                break;
+            default:
+                temp = value;
+                break;
+            }
+            p.println(indent + "<" + XMLPackager.ISOFIELD_TAG + " " + XMLPackager.ID_ATTR + "=\"" + fieldNumber + "\" "
+                    + XMLPackager.VALUE_ATTR + "=\"" + ISOUtil.normalize(temp) + "\"/>");
         }
     }
     /**
@@ -137,13 +188,16 @@ public class ISOField
      * any reference held by a Composite.
      * @param fieldNumber new field number
      */
+    @Override
     public void setFieldNumber (int fieldNumber) {
         this.fieldNumber = fieldNumber;
     }
+    @Override
     public void writeExternal (ObjectOutput out) throws IOException {
         out.writeShort (fieldNumber);
         out.writeUTF (value);
     }
+    @Override
     public void readExternal  (ObjectInput in) 
         throws IOException, ClassNotFoundException
     {
