@@ -4725,4 +4725,9 @@ public class ISOUtilTest {
                         hasItemInArray("e")));
     }
 
+    @Test
+    public void testcalcLUHN() throws Exception {
+        char check = ISOUtil.calcLUHN("411111111111111");
+        assertThat(check, is('1'));
+    }
 }

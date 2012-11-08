@@ -20,6 +20,7 @@ package org.jpos.iso;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+import java.security.SecureRandom;
 import java.util.*;
 
 /**
@@ -1489,4 +1490,39 @@ public class ISOUtil {
         int l = ss.length;
         return i >= 0 && i < l ? ss[i] : null;
     }
+
+    /**
+     * Compute card's check digit (LUHN)
+     * @param p PAN (without checkdigit)
+     * @return the checkdigit
+     */
+    public static char calcLUHN (String p) {
+        int i, crc;
+
+        int odd = p.length() % 2;
+
+        for (i=crc=0; i<p.length(); i++) {
+            char c = p.charAt(i);
+            if (!Character.isDigit (c)) {
+                throw new IllegalArgumentException("Invalid PAN " + p);
+            }
+            c = (char) (c - '0');
+            if (i % 2 != odd)
+                crc+=(c*2) >= 10 ? ((c*2)-9) : (c*2);
+            else
+                crc+=c;
+        }
+
+        return (char) ((crc % 10 == 0 ? 0 : (10 - crc % 10)) + '0');
+    }
+
+    public static String getRandomBlock(int l, int radix) {
+        Random r = new SecureRandom();
+        StringBuilder sb = new StringBuilder();
+        for (int i=0; i<l; i++) {
+            sb.append (Math.abs(r.nextInt() % radix));
+        }
+        return sb.toString();
+    }
 }
+
