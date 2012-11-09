@@ -28,19 +28,36 @@ import org.jpos.util.LogEvent;
 import org.jpos.util.Logger;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
+import org.jpos.iso.ISOUtil;
 
 public class FSDChannel extends NACChannel {
     String schema;
+    Charset charset;
 
     public ISOMsg createMsg() {
-        return new FSDISOMsg (new FSDMsg (schema));
+        FSDMsg fsdmsg = new FSDMsg (schema);
+        fsdmsg.setCharset(charset);
+        return new FSDISOMsg (fsdmsg);
     }
     public void setConfiguration (Configuration cfg)
         throws ConfigurationException 
     {
         super.setConfiguration (cfg);
         schema = cfg.get ("schema");
+        charset = Charset.forName(cfg.get("charset", ISOUtil.ENCODING));
     }
+
+    @Override
+    public void send (ISOMsg m)
+        throws IOException, ISOException {
+      if(m instanceof FSDISOMsg) {
+        FSDMsg fsd = ((FSDISOMsg) m).getFSDMsg();
+        fsd.setCharset(charset);
+      }
+      super.send(m);
+    }
+
     protected int getMessageLength() throws IOException, ISOException {
         int len = super.getMessageLength();
         LogEvent evt = new LogEvent (this, "fsd-channel-debug");

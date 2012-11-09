@@ -31,13 +31,16 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.EOFException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.MalformedURLException;
+import java.nio.charset.Charset;
 import java.util.LinkedHashMap;
 
 import org.jdom.Element;
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOUtil;
+import org.jpos.space.SpaceFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -49,7 +52,7 @@ public class FSDMsgTest {
     FSDMsg msg;
 
     @Mock
-    ByteArrayInputStream is;
+    InputStreamReader is;
 
     @Test
     public void testConstructor() throws Throwable {
@@ -288,8 +291,8 @@ public class FSDMsgTest {
     @Test
     public void testGetHexBytes2() throws Throwable {
         FSDMsg fSDMsg = new FSDMsg("testFSDMsgBasePath", "testFSDMsgBaseSchema");
-        byte[] bytes = new byte[1];
-        fSDMsg.readField(new ByteArrayInputStream(bytes), "testString", 0, "", null);
+        ByteArrayInputStream bais = new ByteArrayInputStream(new byte[1]);
+        fSDMsg.readField(new InputStreamReader(bais), "testString", 0, "", null);
         byte[] result = fSDMsg.getHexBytes("testString");
         assertEquals("result.length", 0, result.length);
         assertEquals("fSDMsg.fields.size()", 1, fSDMsg.fields.size());
@@ -724,17 +727,17 @@ public class FSDMsgTest {
 
     @Test
     public void testRead() throws Throwable {
-        byte[] bytes = new byte[3];
+        ByteArrayInputStream bais = new ByteArrayInputStream(new byte[3]);
         FSDMsg fSDMsg = new FSDMsg("testFSDMsgBasePath");
-        String result = fSDMsg.read(new ByteArrayInputStream(bytes), 1, "", null);
+        String result = fSDMsg.read(new InputStreamReader(bais), 1, "", null);
         assertEquals("result", "\u0000", result);
     }
 
     @Test
     public void testRead1() throws Throwable {
-        byte[] bytes = new byte[2];
+        ByteArrayInputStream bais = new ByteArrayInputStream(new byte[2]);
         FSDMsg fSDMsg = new FSDMsg("testFSDMsgBasePath");
-        String result = fSDMsg.read(new ByteArrayInputStream(bytes), 0, " ", null);
+        String result = fSDMsg.read(new InputStreamReader(bais), 0, " ", null);
         assertEquals("result", "", result);
     }
 
@@ -749,8 +752,8 @@ public class FSDMsgTest {
     @Test
     public void testReadField() throws Throwable {
         FSDMsg fSDMsg = new FSDMsg("testFSDMsgBasePath");
-        byte[] bytes = new byte[1];
-        String result = fSDMsg.readField(new ByteArrayInputStream(bytes), "testFSDMsgFieldName", 1, " ", null);
+        ByteArrayInputStream bais = new ByteArrayInputStream(new byte[1]);
+        String result = fSDMsg.readField(new InputStreamReader(bais), "testFSDMsgFieldName", 1, " ", null);
         assertEquals("fSDMsg.fields.size()", 1, fSDMsg.fields.size());
         assertEquals("result", "\u0000", result);
     }
@@ -758,8 +761,8 @@ public class FSDMsgTest {
     @Test
     public void testReadField1() throws Throwable {
         FSDMsg fSDMsg = new FSDMsg("testFSDMsgBasePath");
-        byte[] bytes = new byte[1];
-        String result = fSDMsg.readField(new ByteArrayInputStream(bytes), "testFSDMsgFieldName", 1, "B", null);
+        ByteArrayInputStream bais = new ByteArrayInputStream(new byte[1]);
+        String result = fSDMsg.readField(new InputStreamReader(bais), "testFSDMsgFieldName", 1, "B", null);
         assertEquals("00", result);
     }
 
@@ -787,10 +790,10 @@ public class FSDMsgTest {
     @Test
     public void testReadFieldTypeNullLengthToMuchThrowsEOFException1() throws Throwable {
         FSDMsg fSDMsg = new FSDMsg("testFSDMsgBasePath");
-        byte[] bytes = new byte[1];
-        InputStream is = new ByteArrayInputStream(bytes);
+        InputStream is = new ByteArrayInputStream(new byte[1]);
+        InputStreamReader r = new InputStreamReader(is);
         try {
-            fSDMsg.readField(is, "testFSDMsgFieldName", 100, null, null);
+            fSDMsg.readField(r, "testFSDMsgFieldName", 100, null, null);
             fail("Expected EOFException to be thrown");
         } catch (EOFException ex) {
             assertNull("ex.getMessage()", ex.getMessage());
@@ -802,10 +805,10 @@ public class FSDMsgTest {
     @Test
     public void testReadFieldThrowsRuntimeException() throws Throwable {
         FSDMsg fSDMsg = new FSDMsg("testFSDMsgBasePath");
-        byte[] bytes = new byte[0];
-        InputStream is = new ByteArrayInputStream(bytes);
+        InputStream is = new ByteArrayInputStream(new byte[0]);
+        InputStreamReader r = new InputStreamReader(is);
         try {
-            fSDMsg.readField(is, "testFSDMsgFieldName", 100, "3Ch", "Ch");
+            fSDMsg.readField(r, "testFSDMsgFieldName", 100, "3Ch", "Ch");
             fail("Expected RuntimeException to be thrown");
         } catch (RuntimeException ex) {
             assertEquals("ex.getMessage()", "FSDMsg.isSeparated(String) found that Ch has not been defined as a separator!",
@@ -818,9 +821,9 @@ public class FSDMsgTest {
     @Test
     public void testReadThrowsEOFException() throws Throwable {
         FSDMsg fSDMsg = new FSDMsg("testFSDMsgBasePath");
-        when(is.read(new byte[] { (byte) 00 })).thenReturn(Integer.valueOf(1));
-        when(is.read(new byte[] { (byte) 00 })).thenReturn(Integer.valueOf(1));
-        when(is.read(new byte[] { (byte) 00 })).thenReturn(Integer.valueOf(-1));
+        when(is.read(new char[] { (char) 00 })).thenReturn(Integer.valueOf(1));
+        when(is.read(new char[] { (char) 00 })).thenReturn(Integer.valueOf(1));
+        when(is.read(new char[] { (char) 00 })).thenReturn(Integer.valueOf(-1));
         try {
             fSDMsg.read(is, 100, " ", null);
             fail("Expected EOFException to be thrown");
@@ -831,11 +834,11 @@ public class FSDMsgTest {
 
     @Test
     public void testReadMoreThanInputThrowsEOFException() throws Throwable {
-        byte[] bytes = new byte[2];
         FSDMsg fSDMsg = new FSDMsg("testFSDMsgBasePath", "testFSDMsgBaseSchema");
-        InputStream is = new ByteArrayInputStream(bytes);
+        InputStream is = new ByteArrayInputStream(new byte[2]);
+        InputStreamReader r = new InputStreamReader(is);
         try {
-            fSDMsg.read(is, 100, null, null);
+            fSDMsg.read(r, 100, null, null);
             fail("Expected EOFException to be thrown");
         } catch (EOFException ex) {
             assertNull("ex.getMessage()", ex.getMessage());
@@ -845,11 +848,11 @@ public class FSDMsgTest {
 
     @Test
     public void testReadThrowsRuntimeException() throws Throwable {
-        byte[] bytes = new byte[2];
         FSDMsg fSDMsg = new FSDMsg("testFSDMsgBasePath", "testFSDMsgBaseSchema");
-        InputStream is = new ByteArrayInputStream(bytes);
+        InputStream is = new ByteArrayInputStream(new byte[2]);
+        InputStreamReader r = new InputStreamReader(is);
         try {
-            fSDMsg.read(is, 100, "3Ch", "Ch");
+            fSDMsg.read(r, 100, "3Ch", "Ch");
             fail("Expected RuntimeException to be thrown");
         } catch (RuntimeException ex) {
             assertEquals("ex.getMessage()", "FSDMsg.isSeparated(String) found that Ch has not been defined as a separator!",
@@ -944,10 +947,10 @@ public class FSDMsgTest {
     @Test
     public void testUnpack() throws Throwable {
         FSDMsg fSDMsg = new FSDMsg("testFSDMsgBasePath");
-        byte[] bytes = new byte[1];
-        InputStream is = new ByteArrayInputStream(bytes);
+        InputStream is = new ByteArrayInputStream(new byte[1]);
+        InputStreamReader r = new InputStreamReader(is);
         Element schema = new Element("testFSDMsgName", "testFSDMsgUri");
-        fSDMsg.unpack(is, schema);
+        fSDMsg.unpack(r, schema);
         assertEquals("fSDMsg.fields.size()", 0, fSDMsg.fields.size());
         assertEquals("(ByteArrayInputStream) is.available()", 1, is.available());
         assertEquals("schema.getName()", "testFSDMsgName", schema.getName());
@@ -1002,10 +1005,10 @@ public class FSDMsgTest {
     @Test
     public void testUnpackThrowsNullPointerException1() throws Throwable {
         FSDMsg fSDMsg = new FSDMsg("testFSDMsgBasePath");
-        byte[] bytes = new byte[0];
-        InputStream is = new ByteArrayInputStream(bytes);
+        InputStream is = new ByteArrayInputStream(new byte[0]);
+        InputStreamReader r = new InputStreamReader(is);
         try {
-            fSDMsg.unpack(is, null);
+            fSDMsg.unpack(r, null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
             assertNull("ex.getMessage()", ex.getMessage());
@@ -1047,5 +1050,33 @@ public class FSDMsgTest {
             assertEquals("ex.getMessage()",
                     "unsetSeparator was attempted for testFSDMsgSeparatorName which was not previously defined.", ex.getMessage());
         }
+    }
+
+    @Test
+    public void testPackToBytesCharset() throws Throwable {
+        Element schema = new Element("schema");
+        schema.setAttribute("id","base");
+        Element field = new Element("field");
+        field.setAttribute("id", "name");
+        field.setAttribute("type", "ADS");
+        field.setAttribute("length", "32");
+        schema.addContent(field);
+        SpaceFactory.getSpace().out("test-base.xml", schema);
+        FSDMsg fSDMsg = new FSDMsg("test-");
+
+        //bytes represents "Zażółć żółtą gęś" it's a sample in polish
+        byte[] expected = ISOUtil.hex2byte("5A61BFF3B3E620BFF3B374B12067EAB6");
+        Charset charset = Charset.forName("ISO-8859-2");
+        fSDMsg.setCharset(charset);
+        fSDMsg.set("name", new String(expected,charset));
+        byte[] b = fSDMsg.packToBytes();
+//        System.out.println(new String(b, charset));
+        assertArrayEquals("FSDMsg.packToBytes() don't properly handle character encodings", expected, b);
+
+        fSDMsg.unpack(b);
+//        System.out.println(fSDMsg.get("name"));
+        b = fSDMsg.get("name").getBytes(charset);
+        assertArrayEquals("FSDMsg.unpack(b) don't properly handle character encodings", expected, b);
+
     }
 }
