@@ -1498,7 +1498,6 @@ public class ISOUtil {
      */
     public static char calcLUHN (String p) {
         int i, crc;
-
         int odd = p.length() % 2;
 
         for (i=crc=0; i<p.length(); i++) {
@@ -1516,13 +1515,11 @@ public class ISOUtil {
         return (char) ((crc % 10 == 0 ? 0 : (10 - crc % 10)) + '0');
     }
 
-    public static String getRandomBlock(int l, int radix) {
-        Random r = new SecureRandom();
+    public static String getRandomDigits(Random r, int l, int radix) {
         StringBuilder sb = new StringBuilder();
         for (int i=0; i<l; i++) {
-            sb.append (Math.abs(r.nextInt() % radix));
+            sb.append (r.nextInt(radix));
         }
         return sb.toString();
     }
 }
-
