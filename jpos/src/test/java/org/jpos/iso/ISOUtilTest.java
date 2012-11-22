@@ -119,7 +119,7 @@ public class ISOUtilTest {
     public void testAsciiToEbcdicThrowsNullPointerException1() throws Throwable {
         byte[] e = new byte[3];
         try {
-            ISOUtil.asciiToEbcdic(null, e, 100);
+            ISOUtil.asciiToEbcdic((String) null, e, 100);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
             assertNull("ex.getMessage()", ex.getMessage());
