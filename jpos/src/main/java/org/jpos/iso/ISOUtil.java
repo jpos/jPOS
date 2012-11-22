@@ -233,6 +233,11 @@ public class ISOUtil {
         for (int i=0; i<len; i++)
             e[offset + i] = ASCII2EBCDIC[s.charAt(i)&0xFF];
     }
+    public static void asciiToEbcdic(byte[] s, byte[] e, int offset) {
+        int len = s.length;
+        for (int i=0; i<len; i++)
+            e[offset + i] = ASCII2EBCDIC[s[i]];
+    }
 
     /**
      * pad to the left
