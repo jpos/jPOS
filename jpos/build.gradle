@@ -53,6 +53,10 @@ task sourceJar( type: Jar ) {
     from sourceSets.main.allSource
 }
 
+artifacts {
+    archives sourceJar
+}
+
 task dist (type: Tar) { 
     dependsOn 'assemble', 'sourceJar'
     compression = Compression.GZIP
@@ -64,10 +68,8 @@ task dist (type: Tar) {
     into("jpos-$version/lib") {
         from configurations.runtime 
     }
-    [ 'deploy', 'bin', 'cfg', 'log' ].each { dir ->
-        into("jpos-$version/$dir") {
-            from "$sourceSets.main.output.resourcesDir/$dir"
-        }
+    into("jpos-$version") {
+        from "$projectDir/src/dist"
     }
 }
 

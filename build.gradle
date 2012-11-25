@@ -1,30 +1,22 @@
+apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'eclipse'
 
-allprojects  {
+subprojects  {
     apply plugin: 'java'
     apply plugin: 'maven'
+    apply plugin: 'idea'
+    apply plugin: 'eclipse'
     group = 'org.jpos'
     version = '1.8.9-SNAPSHOT'
     configurations.compile.transitive = true
-}
-
-subprojects { subProject ->
     sourceCompatibility = 1.6
     targetCompatibility = 1.6
-
     repositories {
         mavenLocal()
         mavenCentral()
         mavenRepo name: 'oracle', url: "http://download.oracle.com/maven"
         mavenRepo name: 'jline', url: "http://jline.sourceforge.net/m2repo"
-    }
-    uploadArchives {
-        repositories {
-            mavenDeployer {
-                repository(url: 'file:///opt/local/maven')
-            }
-        }
     }
     def pomConfig = {
         name 'jPOS Project'
@@ -64,9 +56,15 @@ subprojects { subProject ->
             }
         }
     }
-    subProject.ext.basePomConfig = pomConfig
     configure(install.repositories.mavenInstaller) {
         pom.project pomConfig
+    }
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+                repository(url: 'file:///opt/local/maven')
+            }
+        }
     }
 }
 
