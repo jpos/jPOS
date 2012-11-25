@@ -80,10 +80,10 @@ task version (type: JavaExec, dependsOn: classes) {
 
 class GitRevisionTask extends DefaultTask
 {
-    @InputFile
+    @InputFile @Optional
     File gitHead
+    boolean gotHead
 
-    @InputFile
     File getRefFile()
     {
         return new File(gitHead.parent,gitHead.text.replace('ref: ', '').trim())
@@ -96,9 +96,14 @@ class GitRevisionTask extends DefaultTask
     public void writeFile()
     {
         Properties props=new Properties()
-        File ref=getRefFile()
-        props.put("branch",ref.getName())
-        props.put("revision",ref.text.substring(0,7))
+        if (gotHead) {
+            File ref=getRefFile()
+            props.put("branch",ref.getName())
+            props.put("revision",ref.text.substring(0,7))
+        } else {
+            props.put("branch", "unknown");
+            props.put("revision", "unknown");
+        }
         props.store(new FileOutputStream(outputFile),"Revision Properties")
     }
 }
@@ -119,6 +124,9 @@ class BuildTimestampTask extends DefaultTask {
 
 task createRevisionPropertyFile(type: GitRevisionTask) {
     gitHead = "$rootDir/.git/HEAD" as File
+    gotHead = gitHead.exists()
+    if (!gotHead)
+        gitHead = null;
     outputFile = "$sourceSets.main.output.resourcesDir/org/jpos/q2/revision.properties" as File
 }
 
