@@ -162,7 +162,7 @@ public class JCESecurityModuleTest {
      */
     static final byte[] apdu01 = ISOUtil.hex2byte("8424000210");
 
-    private static final String PREFIX = "src/main/resources/cfg/";
+    private static final String PREFIX = "src/dist/cfg/";
 
     @BeforeClass
     public static void setUpClass() throws Exception {
