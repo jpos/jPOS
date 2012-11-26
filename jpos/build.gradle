@@ -1,13 +1,3 @@
-apply plugin: 'about'
-
-buildscript {
-    repositories { mavenRepo url: 'http://evgenyg.artifactoryonline.com/evgenyg/repo/' }
-    dependencies { classpath      'com.github.goldin.plugins:gradle:0.1.3'             }
-}
-about { 
-    dumpDependencies = true   
-}
-
 dependencies {
     compile "org.jdom:jdom:1.1.3"
     compile "jdbm:jdbm:1.0"
