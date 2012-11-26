@@ -80,3 +80,10 @@ task wrapper( type: Wrapper ) {
     gradleVersion = '1.3'
 }
 
+// Configure IDEA to use Git
+idea.project.ipr {
+  withXml { provider ->
+    provider.node.component.find { it.@name == 'VcsDirectoryMappings' }.mapping.@vcs = 'Git'
+  }
+}
+
