@@ -37,6 +37,7 @@ import com.sleepycat.persist.model.PrimaryKey;
 import com.sleepycat.persist.model.SecondaryKey;
 import com.sleepycat.persist.model.Relationship;
 import java.util.HashSet;
+import java.util.concurrent.TimeUnit;
 
 import org.jpos.util.Log;
 import org.jpos.util.DefaultTimer;
@@ -70,8 +71,9 @@ public class JESpace<K,V> extends Log implements LocalSpace<K,V>, Loggeable {
             StoreConfig storeConfig = new StoreConfig();
 
             envConfig.setAllowCreate (true);
-            envConfig.setTransactional (true);
-            envConfig.setTxnTimeout(30000000); // 30 seconds
+            envConfig.setTransactional(true);
+            // envConfig.setTxnTimeout(5L, TimeUnit.MINUTES);
+            // envConfig.setLockTimeout(5L, TimeUnit.MINUTES);
             storeConfig.setAllowCreate (true);
             storeConfig.setTransactional (true);
 
