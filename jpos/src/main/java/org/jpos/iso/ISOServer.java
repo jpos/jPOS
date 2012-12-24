@@ -315,8 +315,11 @@ public class ISOServer extends Observable
                         if (channel instanceof Observable)  
                             ((Observable)channel).addObserver (this);
                     } catch (SocketException e) {
-                        if (!shutdown)
+                        if (!shutdown) {
                             Logger.log (new LogEvent (this, "iso-server", e));
+                            relax();
+                            continue serverLoop;
+                        }
                     } catch (IOException e) {
                         Logger.log (new LogEvent (this, "iso-server", e));
                         relax();
