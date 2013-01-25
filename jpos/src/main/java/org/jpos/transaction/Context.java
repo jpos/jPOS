@@ -149,7 +149,7 @@ public class Context implements Externalizable, Loggeable, Pausable {
             map = Collections.synchronizedMap (new LinkedHashMap ());
         return map;
     }
-    private void dumpMap (PrintStream p, String indent) {
+    protected void dumpMap (PrintStream p, String indent) {
         if (map == null)
             return;
 
