@@ -27,14 +27,14 @@ import java.util.List;
 /**
  * @author vsalaman
  */
-public class BasicSetup
+public class Install
 {
     private static final String prefix = "META-INF/q2/installs/";
 
     public static void main(String[] args) throws Exception
     {
         String dir=args.length>0?args[0]:".";
-        new BasicSetup().install(false, dir);
+        new Install().install(false, dir);
     }
 
     public void install(boolean allowOverride,String outputBasePath) throws IOException
