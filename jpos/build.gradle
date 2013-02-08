@@ -24,6 +24,36 @@ dependencies {
     }
 }
 
+def archiveJarName="${project.name}-${project.version}.jar"
+def jposCopySpec = copySpec {
+    def cfg = new Properties()
+    def target = project.hasProperty('target') ? target : 'devel'
+    cfg.put('jarname', archiveJarName.toString())
+    cfg.put('target', target.toString())
+    File cfgFile = file("${target}.properties")
+    if (cfgFile.exists()) {
+        cfgFile.withInputStream{
+            cfg.load(it);   
+        }
+    }
+    from(file("src/dist")) {
+        exclude 'cfg/*.jks'
+        filter(
+            org.apache.tools.ant.filters.ReplaceTokens, 
+            tokens: cfg
+        )
+    }
+    from(file("src/dist")) {
+        include 'cfg/*.jks'
+    }
+    from(jar) {
+        rename archiveJarName, "${cfg.jarname}"
+    }
+    into("lib") {
+        from(configurations.runtime)
+    }
+}
+
 task listJars << {
     configurations.testCompile.each { File file -> println file.name }
 }
@@ -51,16 +81,8 @@ task dist (type: Tar) {
     dependsOn 'assemble', 'sourceJar'
     compression = Compression.GZIP
     includeEmptyDirs true
-    rename "jpos-${version}.jar", "jpos.jar"
-    into("jpos-$version") {
-        from jar.archivePath 
-    }
-    into("jpos-$version/lib") {
-        from configurations.runtime 
-    }
-    into("jpos-$version") {
-        from "$projectDir/src/dist"
-    }
+    with jposCopySpec
+    into "jpos-$version"
 }
 
 task version (type: JavaExec, dependsOn: classes) {
@@ -127,4 +149,10 @@ task createBuildTimestampPropertyFile(type: BuildTimestampTask) {
 }
 
 processResources.dependsOn createBuildTimestampPropertyFile, createRevisionPropertyFile
+
+task installApp(type: Sync) {
+    description 'Installs jPOS based application'
+    into { file("${project.buildDir}/install/${project.name}") }
+    with jposCopySpec
+}
 
