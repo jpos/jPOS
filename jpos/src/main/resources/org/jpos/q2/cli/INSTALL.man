@@ -1,0 +1,3 @@
+Extract Q2 configuration files from installed modules.
+
+Try 'install --help' for further information.

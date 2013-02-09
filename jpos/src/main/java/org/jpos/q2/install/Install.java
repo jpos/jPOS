@@ -18,6 +18,8 @@
 
 package org.jpos.q2.install;
 
+import org.apache.commons.cli.*;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -29,20 +31,35 @@ import java.util.List;
  */
 public class Install
 {
-    private static final String prefix = "META-INF/q2/installs/";
+    private static final String DEFAULT_PREFIX = "META-INF/q2/installs/";
 
     public static void main(String[] args) throws Exception
     {
-        String dir=args.length>0?args[0]:".";
-        new Install().install(false, dir);
+        CommandLineParser parser = new PosixParser();
+        Options options = new Options ();
+        options.addOption ("p", "prefix", true, String.format("prefix, defaults to '%s'", DEFAULT_PREFIX));
+        options.addOption ("q", "quiet", false, "do not show information about files being extracted");
+        options.addOption ("f", "force", false, "override existing files in output directory");
+        options.addOption ("o", "outputDir", true, "output directory, defaults to " + new File(".").getAbsolutePath());
+        options.addOption ("h", "help", false, "Usage information");
+
+        CommandLine line = parser.parse (options, args);
+        if (line.hasOption ("h")) {
+            HelpFormatter helpFormatter = new HelpFormatter ();
+            helpFormatter.printHelp ("install", options);
+            return;
+        }
+        String prefix = line.hasOption("p") ? line.getOptionValue("prefix") : DEFAULT_PREFIX;
+        String outputBasePath = line.hasOption("o") ? line.getOptionValue("o") : ".";
+        new Install().install(
+            line.hasOption("f"),
+            new File(outputBasePath),
+            !line.hasOption("q"),
+            prefix
+        );
     }
 
-    public void install(boolean allowOverride,String outputBasePath) throws IOException
-    {
-        install(allowOverride,new File(outputBasePath));
-    }
-
-    public void install(boolean allowOverride,File outputBasePath) throws IOException
+    public void install(boolean allowOverride,File outputBasePath, boolean verbose, String prefix) throws IOException
     {
         if(!outputBasePath.exists())
         {
@@ -58,27 +75,36 @@ public class Install
             if (dirPrefix != null)
             {
                 File dir = new File(outputBasePath,dirPrefix);
-                if (!dir.exists()) { dir.mkdirs(); }
+                if (!dir.exists()) {
+                    if (verbose)
+                        System.out.println("Created " + dir.getAbsolutePath());
+                    dir.mkdirs();
+                }
             }
             String path = s.replaceAll("/", "\\" + File.separator);
-
             File outputFile = new File(outputBasePath,path);
             if(outputFile.exists() && !allowOverride)
             {
+                if (verbose) {
+                    System.out.printf ("%s exists, use --force to override%n", outputFile);
+                }
                 //outputFile = new File(outputBasePath,path+".sample");
                 continue;
             }
-            copyResourceToFile(resource, outputFile);
+            copyResourceToFile(resource, outputFile, verbose);
         }
     }
 
-    private void copyResourceToFile(String resource, File destination) throws IOException
+    private void copyResourceToFile(String resource, File destination, boolean verbose) throws IOException
     {
         InputStream source=null;
         try
         {
             source = getClass().getClassLoader().getResourceAsStream(resource);
             FileOutputStream output = new FileOutputStream(destination);
+            if (verbose) {
+                System.out.println("extracting " + destination);
+            }
             try
             {
                 byte[] buffer = new byte[4096];

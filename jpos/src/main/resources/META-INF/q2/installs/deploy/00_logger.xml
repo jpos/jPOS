@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<logger name="Q2" class="org.jpos.q2.qbean.LoggerAdaptor">
+  <log-listener class="org.jpos.util.SimpleLogListener" />
+  <log-listener class="org.jpos.util.BufferedLogListener">
+    <property name="max-size" value="100" />
+    <property name="name" value="logger.Q2.buffered" />
+  </log-listener>
+
+  <!--
+  <log-listener class="org.jpos.util.SysLogListener">
+     <property name="facility" value="21" />
+     <property name="severity" value="5" />
+     <property name="tags" value="audit, syslog" />
+     <property name="prefix" value="[jPOS]" />
+  </log-listener>
+  -->
+
+  <log-listener class="org.jpos.util.DailyLogListener">
+    <property name="window" value="86400" /> <!-- optional, default one day -->
+    <!--needed-->
+    <property name="prefix" value="log/q2" />
+    <property name="suffix" value=".log"/> <!-- optional -->
+
+    <!--optional the default is "-yyyy-MM-dd" -->
+    <property name="date-format" value="-yyyy-MM-dd-HH"/>
+
+    <!--optional the default is gzip-->
+    <property name="compression-format" value="gzip"/> 
+
+    <!--optional the default is .zip for zip, .gz for gzip-->
+    <!--
+    <property name="compressed-suffix" value=".zip"/>
+    -->
+    <!--
+      almost equals to rotate, except 0 or negatives means no limit 
+     (which is the default), in case exceeded the file is compressed, 
+     successsive copies will be appended .(count) before the suffix
+     unlike rotate older copies have the least numbers
+    -->
+    <!-- <property name="maxsize" value="-1"/> -->
+
+    <!-- 
+      this is a low level parameter which determines the size of the 
+      buffer used to read from the uncompressed file, the default is 
+      128*1024 = 128 KB, use bigger values in machines with lot of
+      memory and your logs are big
+    -->
+    <!--
+    <property name="compression-buffer-size" value="131072"/>
+    -->
+    <!--
+     first-rotate-time and first-rotate-date determines the first rotation, 
+     succesive rotations will take place at the time determined by this two 
+     parameters plus multiples of window, the defaults are 00:00:00 and today 
+     and the formats are HH:mm:ss and yyyy-MM-dd respectively
+    -->
+  </log-listener>
+</logger>
+
