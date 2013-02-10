@@ -115,6 +115,7 @@ public class QFactory {
         }
         catch (ConfigurationException ce) {
             mserver.unregisterMBean(objectName);
+            ce.fillInStackTrace();
             throw ce;
         }
 
