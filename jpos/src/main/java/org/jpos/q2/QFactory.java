@@ -383,8 +383,8 @@ public class QFactory {
                 param[0] = p;
                 method.invoke (obj, param);
             } else {
-                Method method = obj.getClass().getMethod(m,null);
-                method.invoke (obj,null);
+                Method method = obj.getClass().getMethod(m);
+                method.invoke (obj);
            }
         } catch (NoSuchMethodException e) { 
         } catch (NullPointerException e) {
