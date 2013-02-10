@@ -116,7 +116,6 @@ public class GenericPackager
      */
     public GenericPackager(String filename) throws ISOException
     {
-        this();
         this.filename = filename;
         readFile(filename);
     }
@@ -128,7 +127,6 @@ public class GenericPackager
      */
     public GenericPackager(InputStream input) throws ISOException
     {
-        this();
         readFile(input);
     }
 
@@ -146,19 +144,28 @@ public class GenericPackager
     public void setConfiguration (Configuration cfg) 
         throws ConfigurationException
     {
+        filename = cfg.get("packager-config", null);
+        if (filename == null)
+            throw new ConfigurationException("packager-config property cannot be null");
+
         try
         {
             String loggerName = cfg.get("packager-logger");
             if (loggerName != null)
                 setLogger(Logger.getLogger (loggerName), 
                            cfg.get ("packager-realm"));
-            readFile(
-                this.filename = cfg.get("packager-config")
-            );
-        } 
-        catch (ISOException e) 
+            if (filename.startsWith("jar:") && filename.length()>4) {
+                ClassLoader cl =Thread.currentThread().getContextClassLoader();
+                cl = cl ==null?ClassLoader.getSystemClassLoader() : cl;
+                readFile(
+                    cl.getResourceAsStream(filename.substring(4))
+                );
+            } else {
+                readFile(filename);
+            }
+        } catch (ISOException e)
         {
-            throw new ConfigurationException(e);
+            throw new ConfigurationException(e.getMessage(), e.fillInStackTrace());
         }
     }
 
