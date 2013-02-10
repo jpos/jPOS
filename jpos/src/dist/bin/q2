@@ -5,5 +5,5 @@ rm -f deploy/shutdown.xml
 java -server \
     -Xmx1G \
     -Dcom.sun.management.jmxremote \
-    -jar @jarname@ $*
+    -jar @jarname@ "$@"
 
