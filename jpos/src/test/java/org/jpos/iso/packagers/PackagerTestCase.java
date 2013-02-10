@@ -92,6 +92,11 @@ public class PackagerTestCase extends TestCase {
         doTest (new GenericPackager ("src/main/resources/packager/iso87ascii.xml"),
             "ISO87", "ISO87APackager");
     }
+    public void testGeneric87asciiAsResource() throws Exception {
+        doTest (new GenericPackager ("jar:packager/iso87ascii.xml"),
+                "ISO87", "ISO87APackager");
+    }
+
     public void testGeneric87binary() throws Exception {
         doTest (new GenericPackager ("src/main/resources/packager/iso87binary.xml"),
             "ISO87", "ISO87BPackager");

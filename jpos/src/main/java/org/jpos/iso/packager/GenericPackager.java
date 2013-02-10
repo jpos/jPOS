@@ -154,15 +154,7 @@ public class GenericPackager
             if (loggerName != null)
                 setLogger(Logger.getLogger (loggerName), 
                            cfg.get ("packager-realm"));
-            if (filename.startsWith("jar:") && filename.length()>4) {
-                ClassLoader cl =Thread.currentThread().getContextClassLoader();
-                cl = cl ==null?ClassLoader.getSystemClassLoader() : cl;
-                readFile(
-                    cl.getResourceAsStream(filename.substring(4))
-                );
-            } else {
-                readFile(filename);
-            }
+            readFile(filename);
         } catch (ISOException e)
         {
             throw new ConfigurationException(e.getMessage(), e.fillInStackTrace());
@@ -199,7 +191,14 @@ public class GenericPackager
     public void readFile(String filename) throws ISOException
     {
         try {
-            createXMLReader().parse(filename);  
+            if (filename.startsWith("jar:") && filename.length()>4) {
+                ClassLoader cl = Thread.currentThread().getContextClassLoader();
+                readFile(
+                    cl.getResourceAsStream(filename.substring(4))
+                );
+            } else {
+                createXMLReader().parse(filename);
+            }
         } 
         catch (Exception e) {
             throw new ISOException("Error reading " + filename, e);
