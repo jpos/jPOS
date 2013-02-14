@@ -313,7 +313,9 @@ public class ChannelAdaptor
             Thread.currentThread().setName ("channel-receiver-"+out);
             while (running()) {
                 try {
-                    sp.rd (ready);
+                    Object r = sp.rd (ready, 5000L);
+                    if (r == null)
+                        continue;
                     ISOMsg m = channel.receive ();
                     rx++;
                     lastTxn = System.currentTimeMillis();
