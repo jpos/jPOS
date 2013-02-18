@@ -57,8 +57,11 @@ public class Context implements Externalizable, Loggeable, Pausable {
      */
     public void put (Object key, Object value, boolean persist) {
         getMap().put (key, value);
-        if (persist && value instanceof Serializable)
-            getPMap().put (key, value);
+        if (persist && value instanceof Serializable) {
+            synchronized(this) {
+                getPMap().put (key, value);
+            }
+        }
     }
     /**
      * Get
@@ -138,7 +141,7 @@ public class Context implements Externalizable, Loggeable, Pausable {
      */
     private synchronized Map getPMap() {
         if (pmap == null)
-            pmap = Collections.synchronizedMap (new LinkedHashMap ());
+            pmap = new HashMap ();
         return pmap;
     }
     /**
