@@ -29,9 +29,6 @@ import org.jpos.util.Profiler;
 import java.io.*;
 import java.util.*;
 
-import com.sleepycat.persist.model.Persistent;
-
-@Persistent
 public class Context implements Externalizable, Loggeable, Pausable {
     private transient Map map; // transient map
     private Map pmap;          // persistent (serializable) map
