@@ -57,6 +57,7 @@ public class KeyStoreAdaptor extends QBeanSupport implements KeyStoreAdaptorMBea
         ks = (SecureKeyStore) factory.newInstance (getImpl ());
         factory.setLogger  (ks, e);
         factory.setConfiguration (ks, e);
+        NameRegistrar.register (getName (), ks);
     }
 
     /**
@@ -71,11 +72,7 @@ public class KeyStoreAdaptor extends QBeanSupport implements KeyStoreAdaptorMBea
     public String getImpl() {
         return clazz;
     }
-    protected void startService () throws Exception {
-        NameRegistrar.register (getName (), ks);
-    }
-    protected void stopService () throws Exception {
+    protected void destroyService () throws Exception {
         NameRegistrar.unregister (getName ());
     }
 }
-

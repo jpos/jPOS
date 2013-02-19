@@ -91,7 +91,7 @@ public class KeyStoreAdaptorTest {
     public void testStopService() throws Throwable {
         KeyStoreAdaptor keyStoreAdaptor = new KeyStoreAdaptor();
         keyStoreAdaptor.setName("testKeyStoreAdaptorName");
-        keyStoreAdaptor.stopService();
+        keyStoreAdaptor.destroyService();
         assertEquals("keyStoreAdaptor.getName()", "testKeyStoreAdaptorName", keyStoreAdaptor.getName());
     }
 
