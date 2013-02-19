@@ -33,7 +33,6 @@ public class Context implements Externalizable, Loggeable, Pausable {
     private transient Map map; // transient map
     private Map pmap;          // persistent (serializable) map
     private long timeout;
-    private int resuming=0;
     private boolean resumeOnPause = false;
 
     public static String LOGEVT = "LOGEVT";
@@ -54,11 +53,8 @@ public class Context implements Externalizable, Loggeable, Pausable {
      */
     public void put (Object key, Object value, boolean persist) {
         getMap().put (key, value);
-        if (persist && value instanceof Serializable) {
-            synchronized(this) {
-                getPMap().put (key, value);
-            }
-        }
+        if (persist && value instanceof Serializable)
+            getPMap().put (key, value);
     }
     /**
      * Get
@@ -138,7 +134,7 @@ public class Context implements Externalizable, Loggeable, Pausable {
      */
     private synchronized Map getPMap() {
         if (pmap == null)
-            pmap = new HashMap ();
+            pmap = Collections.synchronizedMap (new LinkedHashMap ());
         return pmap;
     }
     /**
@@ -146,7 +142,7 @@ public class Context implements Externalizable, Loggeable, Pausable {
      */
     public synchronized Map getMap() {
         if (map == null)
-            map = Collections.synchronizedMap (new LinkedHashMap ());
+            map = Collections.synchronizedMap (new HashMap ());
         return map;
     }
     protected void dumpMap (PrintStream p, String indent) {
