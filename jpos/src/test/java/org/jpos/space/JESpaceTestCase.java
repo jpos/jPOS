@@ -180,7 +180,7 @@ public class JESpaceTestCase extends TestCase {
         ctx.put("P", "ABC", true);
         ISOMsg m = new ISOMsg("0800");
         m.set(11, "000001");
-        ctx.put("ISOMSG", m);
+        ctx.put("ISOMSG", m, true);
         sp.out("CTX", ctx);
         assertNotNull("entry should not be null", sp.in("CTX"));
     }
