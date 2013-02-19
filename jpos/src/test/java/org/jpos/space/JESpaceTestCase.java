@@ -20,6 +20,7 @@ package org.jpos.space;
 
 import junit.framework.TestCase;
 
+import org.jpos.iso.ISOMsg;
 import org.jpos.transaction.Context;
 import org.jpos.util.Profiler;
 import org.jpos.iso.ISOUtil;
@@ -174,9 +175,12 @@ public class JESpaceTestCase extends TestCase {
         assertEquals ("ZERO", sp.inp ("PUT"));
         assertNull (sp.rdp ("PUT"));
     }
-    public void testPersistentContext() {
+    public void testPersistentContext() throws Exception {
         Context ctx = new Context();
         ctx.put("P", "ABC", true);
+        ISOMsg m = new ISOMsg("0800");
+        m.set(11, "000001");
+        ctx.put("ISOMSG", m);
         sp.out("CTX", ctx);
         assertNotNull("entry should not be null", sp.in("CTX"));
     }
