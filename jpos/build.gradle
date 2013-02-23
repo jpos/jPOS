@@ -73,8 +73,14 @@ task sourceJar( type: Jar ) {
     from sourceSets.main.allSource
 }
 
+
+task javadocJar (type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from new File(project.buildDir, 'docs/javadoc')
+}
+
 artifacts {
-    archives sourceJar
+    archives sourceJar, javadocJar
 }
 
 task dist (type: Tar) { 

@@ -3,6 +3,8 @@ allprojects {
     apply plugin: 'idea'
     apply plugin: 'eclipse'
     apply plugin: 'maven'
+    apply plugin: 'signing'
+
     group = 'org.jpos'
     version = '1.8.9-SNAPSHOT'
     sourceCompatibility = 1.6
@@ -16,10 +18,9 @@ allprojects {
     def pomConfig = {
         name 'jPOS Project'
         description """
-    jPOS is a Java platform-based, mission-critical, 
-    ISO-8583 based financial transaction library/framework 
-    that can be customized and extended in order to 
-    implement financial interchanges.
+    jPOS is an ISO-8583 based financial transaction 
+    library/framework that can be customized and 
+    extended in order to implement financial interchanges.
   """
         url 'http://jpos.org'
         organization {
@@ -51,12 +52,16 @@ allprojects {
             }
         }
     }
+    signing {
+        sign configurations.archives
+    }
     configure(install.repositories.mavenInstaller) {
         pom.project pomConfig
     }
     uploadArchives {
         repositories {
             mavenDeployer {
+                beforeDeployment { MavenDeployment deployment -> signPom(deployment) }
                 repository(url: 'file:///opt/local/maven')
             }
         }
