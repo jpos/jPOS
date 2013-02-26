@@ -7,6 +7,9 @@ allprojects {
 
     group = 'org.jpos'
     version = '1.8.9-SNAPSHOT'
+    ext.mavenCentralRepo = version.endsWith("SNAPSHOT") ? 
+        'https://oss.sonatype.org/content/repositories/snapshots/' : 
+        'https://oss.sonatype.org/service/local/staging/deploy/maven2';
     sourceCompatibility = 1.6
     targetCompatibility = 1.6
     repositories {
@@ -61,8 +64,11 @@ allprojects {
     uploadArchives {
         repositories {
             mavenDeployer {
-                beforeDeployment { MavenDeployment deployment -> signPom(deployment) }
+                // beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
                 repository(url: 'file:///opt/local/maven')
+                // repository(url: ext.mavenCentralRepo) {
+                //    authentication(userName: mavenCentralUsername, password: mavenCentralPassword)
+                // }
             }
         }
     }
