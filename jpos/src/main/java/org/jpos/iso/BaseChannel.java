@@ -399,8 +399,6 @@ public abstract class BaseChannel extends Observable
             }
             applyTimeout();
             Logger.log (evt);
-            setChanged();
-            notifyObservers();
         } catch (ConnectException e) {
             Logger.log (new LogEvent (this, "connection-refused",
                 getHost()+":"+getPort())
