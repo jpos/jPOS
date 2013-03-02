@@ -73,7 +73,7 @@ public class JESpace<K,V> extends Log implements LocalSpace<K,V>, Loggeable {
             envConfig.setAllowCreate (true);
             envConfig.setTransactional(true);
             // envConfig.setTxnTimeout(5L, TimeUnit.MINUTES);
-            // envConfig.setLockTimeout(5L, TimeUnit.MINUTES);
+            envConfig.setLockTimeout(5, TimeUnit.SECONDS);
             storeConfig.setAllowCreate (true);
             storeConfig.setTransactional (true);
 
