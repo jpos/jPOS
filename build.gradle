@@ -1,3 +1,4 @@
+
 allprojects {
     apply plugin: 'java'
     apply plugin: 'idea'
@@ -8,7 +9,7 @@ allprojects {
     group = 'org.jpos'
     version = '1.8.9-SNAPSHOT'
     def isSnapshot = version.contains("SNAPSHOT")
-    ext.mavenCentralRepo = isSnapshot ?
+    def mavenCentralRepo = isSnapshot ?
         'https://oss.sonatype.org/content/repositories/snapshots/' : 
         'https://oss.sonatype.org/service/local/staging/deploy/maven2';
 
@@ -67,11 +68,11 @@ allprojects {
     uploadArchives {
         repositories {
             mavenDeployer {
-                // beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
                 repository(url: 'file:///opt/local/maven')
-                // repository(url: ext.mavenCentralRepo) {
-                //    authentication(userName: mavenCentralUsername, password: mavenCentralPassword)
-                // }
+                repository(url: mavenCentralRepo) {
+                    authentication(userName: mavenCentralUsername, password: mavenCentralPassword)
+                }
             }
         }
     }
