@@ -7,9 +7,11 @@ allprojects {
 
     group = 'org.jpos'
     version = '1.8.9-SNAPSHOT'
-    ext.mavenCentralRepo = version.endsWith("SNAPSHOT") ? 
+    def isSnapshot = version.contains("SNAPSHOT")
+    ext.mavenCentralRepo = isSnapshot ?
         'https://oss.sonatype.org/content/repositories/snapshots/' : 
         'https://oss.sonatype.org/service/local/staging/deploy/maven2';
+
     sourceCompatibility = 1.6
     targetCompatibility = 1.6
     repositories {
@@ -56,6 +58,7 @@ allprojects {
         }
     }
     signing {
+        required { !isSnapshot }
         sign configurations.archives
     }
     configure(install.repositories.mavenInstaller) {
