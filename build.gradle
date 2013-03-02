@@ -7,7 +7,7 @@ allprojects {
     apply plugin: 'signing'
 
     group = 'org.jpos'
-    version = '1.8.9-SNAPSHOT'
+    version = '1.9.0'
     def isSnapshot = version.contains("SNAPSHOT")
     def mavenCentralRepo = isSnapshot ?
         'https://oss.sonatype.org/content/repositories/snapshots/' : 
