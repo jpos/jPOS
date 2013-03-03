@@ -29,6 +29,7 @@ allprojects {
     extended in order to implement financial interchanges.
   """
         url 'http://jpos.org'
+        inceptionYear '1998'
         organization {
             name 'jPOS.org'
             url 'http://jpos.org'
@@ -68,11 +69,12 @@ allprojects {
     uploadArchives {
         repositories {
             mavenDeployer {
+                pom.project pomConfig
                 beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-                repository(url: 'file:///opt/local/maven')
                 repository(url: mavenCentralRepo) {
                     authentication(userName: mavenCentralUsername, password: mavenCentralPassword)
                 }
+                // repository(url: 'file:///opt/local/maven')
             }
         }
     }
