@@ -71,10 +71,12 @@ allprojects {
             mavenDeployer {
                 pom.project pomConfig
                 beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+                /*
                 repository(url: mavenCentralRepo) {
                     authentication(userName: mavenCentralUsername, password: mavenCentralPassword)
                 }
-                // repository(url: 'file:///opt/local/maven')
+                */
+                repository(url: 'file:///opt/local/maven')
             }
         }
     }
