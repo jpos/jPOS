@@ -1040,7 +1040,7 @@ public interface SMAdapter {
     public byte[] generateEDE_MAC (byte[] data, SecureDESKey kd) throws SMException;
     
     /**
-     * Translate key from encryption under the LMK held in “key change storage”
+     * Translate key from encryption under the LMK held in key change storage
      * to encryption under a new LMK.
      *
      * @param kd the key encrypted under old LMK
