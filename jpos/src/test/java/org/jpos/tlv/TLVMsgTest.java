@@ -141,5 +141,14 @@ public class TLVMsgTest {
         TLVMsg tLVMsg = new TLVMsg(23, "987612".getBytes());
         String result = tLVMsg.getStringValue();
         assertThat(result,is("393837363132"));
-    } 
+    }
+    @Test
+    public void testLowTagID() {
+        TLVMsg tlvMsg = new TLVMsg(8, "987612".getBytes());
+        String result = tlvMsg.getStringValue();
+        assertThat(result,is("393837363132"));
+        byte[] b = tlvMsg.getTLV();
+        assertEquals("b.length", 8, b.length);
+        assertEquals("b[0]", (byte) 8, b[0]);
+    }
 }
