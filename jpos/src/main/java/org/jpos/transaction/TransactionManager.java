@@ -337,7 +337,7 @@ public class TransactionManager
         sessions = cfg.getInt ("sessions", 1);
         threshold = cfg.getInt ("threshold", sessions / 2);
         maxSessions = cfg.getInt ("max-sessions", sessions);
-        callSelectorOnAbort = cfg.getBoolean("call-selector-on-abort", false);
+        callSelectorOnAbort = cfg.getBoolean("call-selector-on-abort", true);
     }
     public void addListener (TransactionStatusListener l) {
         synchronized (statusListeners) {
