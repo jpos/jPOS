@@ -18,18 +18,38 @@
 
 package org.jpos.iso;
 
-import org.jpos.core.Configurable;
-import org.jpos.core.Configuration;
-import org.jpos.core.ConfigurationException;
-import org.jpos.util.*;
-
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.io.PrintStream;
 import java.lang.ref.WeakReference;
-import java.net.*;
-import java.util.*;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.SocketException;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.EventObject;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Observable;
+import java.util.Observer;
+import java.util.Random;
+import java.util.Vector;
+
+import org.jpos.core.Configurable;
+import org.jpos.core.Configuration;
+import org.jpos.core.ConfigurationException;
+import org.jpos.util.LogEvent;
+import org.jpos.util.LogSource;
+import org.jpos.util.Loggeable;
+import org.jpos.util.Logger;
+import org.jpos.util.NameRegistrar;
+import org.jpos.util.ThreadPool;
 
 /**
  * Accept ServerChannel sessions and forwards them to ISORequestListeners
@@ -37,7 +57,7 @@ import java.util.*;
  * @author Bharavi Gade
  * @version $Revision$ $Date$
  */
-public class ISOServer extends Observable 
+public class ISOServer extends Observable
     implements LogSource, Runnable, Observer, ISOServerMBean, Configurable,
     Loggeable, ISOServerSocketFactory
 {
@@ -53,7 +73,7 @@ public class ISOServer extends Observable
     protected Logger logger;
     protected String realm;
     protected String realmChannel;
-    protected ISOServerSocketFactory socketFactory = null; 
+    protected ISOServerSocketFactory socketFactory = null;
     public static final int CONNECT      = 0;
     public static final int SIZEOF_CNT   = 1;
     private int[] cnt;
@@ -65,6 +85,7 @@ public class ISOServer extends Observable
     private ServerSocket serverSocket;
     private Map channels;
     protected boolean ignoreISOExceptions;
+    protected List serverListeners = null;
 
    /**
     * @param port port to listen
@@ -81,12 +102,13 @@ public class ISOServer extends Observable
             this.clientOutgoingFilters = fc.getOutgoingFilters();
             this.clientIncomingFilters = fc.getIncomingFilters();
         }
-        this.pool = (pool == null) ?  
+        this.pool = (pool == null) ?
             new ThreadPool (1, DEFAULT_MAX_THREADS) : pool;
         listeners = new Vector();
         name = "";
         channels = new HashMap();
         cnt = new int[SIZEOF_CNT];
+        serverListeners = new ArrayList();
     }
 
     protected Session createSession (ServerChannel channel) {
@@ -100,6 +122,7 @@ public class ISOServer extends Observable
             this.channel = channel;
             realm = ISOServer.this.getRealm() + ".session";
         }
+        @Override
         public void run() {
             setChanged ();
             notifyObservers ();
@@ -117,6 +140,7 @@ public class ISOServer extends Observable
                         ev.addMessage ("delay=" + delay);
                         ISOUtil.sleep (delay);
                         socket.close ();
+                        fireEvent(new ServerShutdownEvent(ISOServer.this));
                     } catch (IOException ioe) {
                         ev.addMessage (ioe);
                     }
@@ -131,53 +155,65 @@ public class ISOServer extends Observable
                         ISOMsg m = channel.receive();
                         lastTxn = System.currentTimeMillis();
                         Iterator iter = listeners.iterator();
-                        while (iter.hasNext())
+                        while (iter.hasNext()) {
                             if (((ISORequestListener)iter.next()).process
-                                (channel, m)) 
+                                (channel, m)) {
                                 break;
-                    } 
+                            }
+                        }
+                    }
                     catch (ISOFilter.VetoException e) {
                         Logger.log (new LogEvent (this, "VetoException", e.getMessage()));
                     }
                     catch (ISOException e) {
                         if (ignoreISOExceptions) {
                             Logger.log (new LogEvent (this, "ISOException", e.getMessage()));
-                        } else
+                        }
+                        else {
                             throw e;
+                        }
                     }
                 }
             } catch (EOFException e) {
+
                 // Logger.log (new LogEvent (this, "session-warning", "<eof/>"));
             } catch (SocketException e) {
-                // if (!shutdown) 
+
+                // if (!shutdown)
                 //     Logger.log (new LogEvent (this, "session-warning", e));
             } catch (InterruptedIOException e) {
+
                 // nothing to log
-            } catch (Throwable e) { 
+            } catch (Throwable e) {
                 Logger.log (new LogEvent (this, "session-error", e));
-            } 
+            }
             try {
                 channel.disconnect();
-            } catch (IOException ex) { 
+                fireEvent(new ServerClientDisconnectEvent(ISOServer.this));
+            } catch (IOException ex) {
                 Logger.log (new LogEvent (this, "session-error", ex));
+                fireEvent(new ServerClientDisconnectEvent(ISOServer.this));
             }
             Logger.log (new LogEvent (this, "session-end"));
         }
-        public void setLogger (Logger logger, String realm) { 
+        @Override
+        public void setLogger (Logger logger, String realm) {
         }
+        @Override
         public String getRealm () {
             return realm;
         }
+        @Override
         public Logger getLogger() {
             return ISOServer.this.getLogger();
         }
-        public void checkPermission (Socket socket, LogEvent evt) 
-            throws ISOException 
+        public void checkPermission (Socket socket, LogEvent evt)
+            throws ISOException
         {
             if (allow != null && allow.length > 0) {
                 String ip = socket.getInetAddress().getHostAddress ();
-                for (int i=0; i<allow.length; i++) {
-                    if (ip.equals (allow[i])) {
+                for (String element : allow) {
+                    if (ip.equals (element)) {
                         evt.addMessage ("access granted, ip=" + ip);
                         return;
                     }
@@ -208,20 +244,26 @@ public class ISOServer extends Observable
     public void shutdown () {
         shutdown = true;
         new Thread ("ISOServer-shutdown") {
+            @Override
             public void run () {
                 shutdownServer ();
-                if (!cfg.getBoolean ("keep-channels"))
+                if (!cfg.getBoolean ("keep-channels")) {
                     shutdownChannels ();
+                }
             }
         }.start();
     }
     private void shutdownServer () {
         try {
-            if (serverSocket != null)
+            if (serverSocket != null) {
                 serverSocket.close ();
-            if (pool != null)
+                fireEvent(new ServerShutdownEvent(this));
+            }
+            if (pool != null) {
                 pool.close();
+            }
         } catch (IOException e) {
+            fireEvent(new ServerShutdownEvent(this));
             Logger.log (new LogEvent (this, "shutdown", e));
         }
     }
@@ -234,6 +276,7 @@ public class ISOServer extends Observable
             if (c != null) {
                 try {
                     c.disconnect ();
+                    fireEvent(new ServerClientDisconnectEvent(this));
                 } catch (IOException e) {
                     Logger.log (new LogEvent (this, "shutdown", e));
                 }
@@ -246,11 +289,13 @@ public class ISOServer extends Observable
             Map.Entry entry = (Map.Entry) iter.next();
             WeakReference ref = (WeakReference) entry.getValue();
             ISOChannel c = (ISOChannel) ref.get ();
-            if (c == null || (!c.isConnected()))
+            if (c == null || (!c.isConnected())) {
                 iter.remove ();
+            }
         }
     }
 
+    @Override
     public ServerSocket createServerSocket(int port) throws IOException {
         ServerSocket ss = new ServerSocket();
         try {
@@ -258,23 +303,27 @@ public class ISOServer extends Observable
             ss.bind(new InetSocketAddress(bindAddr, port), backlog);
         } catch(SecurityException e) {
             ss.close();
+            fireEvent(new ServerShutdownEvent(this));
             throw e;
         } catch(IOException e) {
             ss.close();
+            fireEvent(new ServerShutdownEvent(this));
             throw e;
         }
         return ss;
     }
 
+    @Override
     public void run() {
         ServerChannel  channel;
-        if (socketFactory == null)
+        if (socketFactory == null) {
             socketFactory = this;
+        }
         serverLoop : while  (!shutdown) {
             try {
                 serverSocket = socketFactory.createServerSocket(port);
-                
-                Logger.log (new LogEvent (this, "iso-server", 
+
+                Logger.log (new LogEvent (this, "iso-server",
                     "listening on " + (bindAddr != null ? bindAddr + ":" : "port ") + port
                     + (backlog > 0 ? " backlog="+backlog : "")
                 ));
@@ -283,13 +332,16 @@ public class ISOServer extends Observable
                         if (pool.getAvailableCount() <= 0) {
                             try {
                                 serverSocket.close();
+                                fireEvent(new ServerShutdownEvent(this));
                             } catch (IOException e){
                                 Logger.log (new LogEvent (this, "iso-server", e));
                                 relax();
                             }
-                            
+
                             for (int i=0; pool.getIdleCount() == 0; i++) {
-                                if (shutdown) break serverLoop;
+                                if (shutdown) {
+                                    break serverLoop;
+                                }
                                 if (i % 240 == 0 && cfg.getBoolean("pool-exhaustion-warning", true)) {
                                     LogEvent evt = new LogEvent (this, "warn");
                                     evt.addMessage (
@@ -304,16 +356,20 @@ public class ISOServer extends Observable
                         }
                         channel = (ServerChannel) clientSideChannel.clone();
                         channel.accept (serverSocket);
-                        if ((cnt[CONNECT]++) % 100 == 0)
+
+                        if ((cnt[CONNECT]++) % 100 == 0) {
                             purgeChannels ();
+                        }
                         WeakReference wr = new WeakReference (channel);
                         channels.put (channel.getName(), wr);
                         channels.put (LAST, wr);
                         pool.execute (createSession(channel));
                         setChanged ();
                         notifyObservers (this);
-                        if (channel instanceof Observable)  
+                        fireEvent(new ServerAcceptEvent(this));
+                        if (channel instanceof Observable) {
                             ((Observable)channel).addObserver (this);
+                        }
                     } catch (SocketException e) {
                         if (!shutdown) {
                             Logger.log (new LogEvent (this, "iso-server", e));
@@ -363,17 +419,21 @@ public class ISOServer extends Observable
     public String getName() {
         return this.name;
     }
+    @Override
     public void setLogger (Logger logger, String realm) {
         this.logger = logger;
         this.realm  = realm;
         this.realmChannel = realm + ".channel";
     }
+    @Override
     public String getRealm () {
         return realm;
     }
+    @Override
     public Logger getLogger() {
         return logger;
     }
+    @Override
     public void update(Observable o, Object arg) {
         setChanged ();
         notifyObservers (arg);
@@ -395,9 +455,11 @@ public class ISOServer extends Observable
     public void setSocketFactory(ISOServerSocketFactory socketFactory) {
         this.socketFactory = socketFactory;
     }
+    @Override
     public int getPort () {
         return port;
     }
+    @Override
     public void resetCounters () {
         cnt = new int[SIZEOF_CNT];
         lastTxn = 0l;
@@ -405,23 +467,29 @@ public class ISOServer extends Observable
     /**
      * @return number of connections accepted by this server
      */
+    @Override
     public int getConnectionCount () {
         return cnt[CONNECT];
     }
 
     // ThreadPoolMBean implementation (delegate calls to pool)
+    @Override
     public int getJobCount () {
         return pool.getJobCount();
     }
+    @Override
     public int getPoolSize () {
         return pool.getPoolSize();
     }
+    @Override
     public int getMaxPoolSize () {
         return pool.getMaxPoolSize();
     }
+    @Override
     public int getIdleCount() {
         return pool.getIdleCount();
     }
+    @Override
     public int getPendingCount () {
         return pool.getPendingCount();
     }
@@ -439,10 +507,12 @@ public class ISOServer extends Observable
      */
     public ISOChannel getISOChannel (String name) {
         WeakReference ref = (WeakReference) channels.get (name);
-        if (ref != null)
+        if (ref != null) {
             return (ISOChannel) ref.get ();
+        }
         return null;
     }
+    @Override
     public void setConfiguration (Configuration cfg) throws ConfigurationException {
         this.cfg = cfg;
         allow = cfg.getAll ("allow");
@@ -456,12 +526,14 @@ public class ISOServer extends Observable
                 throw new ConfigurationException ("Invalid bind-address " + ip, e);
             }
         }
-        if (socketFactory == null)
+        if (socketFactory == null) {
             socketFactory = this;
+        }
         if (socketFactory != this && socketFactory instanceof Configurable) {
             ((Configurable)socketFactory).setConfiguration (cfg);
         }
     }
+    @Override
     public String getISOChannelNames () {
         StringBuilder sb = new StringBuilder ();
         Iterator iter = channels.entrySet().iterator();
@@ -470,8 +542,9 @@ public class ISOServer extends Observable
             WeakReference ref = (WeakReference) entry.getValue();
             ISOChannel c = (ISOChannel) ref.get ();
             if (c != null && !LAST.equals (entry.getKey()) && c.isConnected()) {
-                if (i > 0)
+                if (i > 0) {
                     sb.append (' ');
+                }
                 sb.append (entry.getKey());
             }
         }
@@ -481,7 +554,7 @@ public class ISOServer extends Observable
         StringBuilder sb = new StringBuilder ();
         int cnt[] = getCounters();
         sb.append ("connected=");
-        sb.append (Integer.toString(cnt[0]));
+        sb.append (Integer.toString(cnt[2]));
         sb.append (", rx=");
         sb.append (Integer.toString(cnt[0]));
         sb.append (", tx=");
@@ -495,7 +568,7 @@ public class ISOServer extends Observable
         }
         return sb.toString();
     }
-    
+
     public int[] getCounters()
     {
         Iterator iter = channels.entrySet().iterator();
@@ -516,10 +589,12 @@ public class ISOServer extends Observable
         }
         return cnt;
     }
+    @Override
     public int getTXCounter() {
         int cnt[] = getCounters();
         return cnt[1];
     }
+    @Override
     public int getRXCounter() {
         int cnt[] = getCounters();
         return cnt[0];
@@ -528,14 +603,17 @@ public class ISOServer extends Observable
         int cnt[] = getCounters();
         return cnt[2];
     }
+    @Override
     public long getLastTxnTimestampInMillis() {
         return lastTxn;
     }
+    @Override
     public long getIdleTimeInMillis() {
         return lastTxn > 0L ? System.currentTimeMillis() - lastTxn : -1L;
     }
 
-        
+
+    @Override
     public String getCountersAsString (String isoChannelName) {
         ISOChannel channel = getISOChannel(isoChannelName);
         StringBuffer sb = new StringBuffer();
@@ -547,6 +625,7 @@ public class ISOServer extends Observable
         }
         return sb.toString();
     }
+    @Override
     public void dump (PrintStream p, String indent) {
         p.println (indent + getCountersAsString());
         Iterator iter = channels.entrySet().iterator();
@@ -576,5 +655,21 @@ public class ISOServer extends Observable
         sb.append (name);
         sb.append (value);
     }
+
+    public synchronized void addServerEventListener(ISOServerEventsListener listener) {
+        serverListeners.add(listener);
+    }
+    public synchronized void removeServerEventListener(ISOServerEventsListener listener) {
+        serverListeners.remove(listener);
+    }
+
+    public synchronized void fireEvent(EventObject event) {
+
+        Iterator i = serverListeners.iterator();
+        while (i.hasNext()) {
+            ((ISOServerEventsListener) i.next()).handleISOServerEvent(event);
+        }
+    }
+
 }
 
