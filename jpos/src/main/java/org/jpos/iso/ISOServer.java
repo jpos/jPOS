@@ -85,7 +85,7 @@ public class ISOServer extends Observable
     private ServerSocket serverSocket;
     private Map channels;
     protected boolean ignoreISOExceptions;
-    protected List serverListeners = null;
+    protected List<ISOServerEventListener> serverListeners = null;
 
    /**
     * @param port port to listen
@@ -108,7 +108,7 @@ public class ISOServer extends Observable
         name = "";
         channels = new HashMap();
         cnt = new int[SIZEOF_CNT];
-        serverListeners = new ArrayList();
+        serverListeners = new ArrayList<ISOServerEventListener>();
     }
 
     protected Session createSession (ServerChannel channel) {
@@ -140,7 +140,7 @@ public class ISOServer extends Observable
                         ev.addMessage ("delay=" + delay);
                         ISOUtil.sleep (delay);
                         socket.close ();
-                        fireEvent(new ServerShutdownEvent(ISOServer.this));
+                        fireEvent(new ISOServerShutdownEvent(ISOServer.this));
                     } catch (IOException ioe) {
                         ev.addMessage (ioe);
                     }
@@ -189,10 +189,10 @@ public class ISOServer extends Observable
             }
             try {
                 channel.disconnect();
-                fireEvent(new ServerClientDisconnectEvent(ISOServer.this));
+                fireEvent(new ISOServerClientDisconnectEvent(ISOServer.this));
             } catch (IOException ex) {
                 Logger.log (new LogEvent (this, "session-error", ex));
-                fireEvent(new ServerClientDisconnectEvent(ISOServer.this));
+                fireEvent(new ISOServerClientDisconnectEvent(ISOServer.this));
             }
             Logger.log (new LogEvent (this, "session-end"));
         }
@@ -257,13 +257,13 @@ public class ISOServer extends Observable
         try {
             if (serverSocket != null) {
                 serverSocket.close ();
-                fireEvent(new ServerShutdownEvent(this));
+                fireEvent(new ISOServerShutdownEvent(this));
             }
             if (pool != null) {
                 pool.close();
             }
         } catch (IOException e) {
-            fireEvent(new ServerShutdownEvent(this));
+            fireEvent(new ISOServerShutdownEvent(this));
             Logger.log (new LogEvent (this, "shutdown", e));
         }
     }
@@ -276,7 +276,7 @@ public class ISOServer extends Observable
             if (c != null) {
                 try {
                     c.disconnect ();
-                    fireEvent(new ServerClientDisconnectEvent(this));
+                    fireEvent(new ISOServerClientDisconnectEvent(this));
                 } catch (IOException e) {
                     Logger.log (new LogEvent (this, "shutdown", e));
                 }
@@ -303,11 +303,11 @@ public class ISOServer extends Observable
             ss.bind(new InetSocketAddress(bindAddr, port), backlog);
         } catch(SecurityException e) {
             ss.close();
-            fireEvent(new ServerShutdownEvent(this));
+            fireEvent(new ISOServerShutdownEvent(this));
             throw e;
         } catch(IOException e) {
             ss.close();
-            fireEvent(new ServerShutdownEvent(this));
+            fireEvent(new ISOServerShutdownEvent(this));
             throw e;
         }
         return ss;
@@ -332,7 +332,7 @@ public class ISOServer extends Observable
                         if (pool.getAvailableCount() <= 0) {
                             try {
                                 serverSocket.close();
-                                fireEvent(new ServerShutdownEvent(this));
+                                fireEvent(new ISOServerShutdownEvent(this));
                             } catch (IOException e){
                                 Logger.log (new LogEvent (this, "iso-server", e));
                                 relax();
@@ -366,7 +366,7 @@ public class ISOServer extends Observable
                         pool.execute (createSession(channel));
                         setChanged ();
                         notifyObservers (this);
-                        fireEvent(new ServerAcceptEvent(this));
+                        fireEvent(new ISOServerAcceptEvent(this));
                         if (channel instanceof Observable) {
                             ((Observable)channel).addObserver (this);
                         }
@@ -656,20 +656,16 @@ public class ISOServer extends Observable
         sb.append (value);
     }
 
-    public synchronized void addServerEventListener(ISOServerEventsListener listener) {
+    public synchronized void addServerEventListener(ISOServerEventListener listener) {
         serverListeners.add(listener);
     }
-    public synchronized void removeServerEventListener(ISOServerEventsListener listener) {
+    public synchronized void removeServerEventListener(ISOServerEventListener listener) {
         serverListeners.remove(listener);
     }
 
     public synchronized void fireEvent(EventObject event) {
-
-        Iterator i = serverListeners.iterator();
-        while (i.hasNext()) {
-            ((ISOServerEventsListener) i.next()).handleISOServerEvent(event);
-        }
+        for (ISOServerEventListener l : serverListeners)
+            l.handleISOServerEvent(event);
     }
-
 }
 
