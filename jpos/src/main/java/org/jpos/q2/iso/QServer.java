@@ -23,15 +23,7 @@ import java.util.StringTokenizer;
 
 import org.jdom.Element;
 import org.jpos.core.ConfigurationException;
-import org.jpos.iso.ISOChannel;
-import org.jpos.iso.ISOException;
-import org.jpos.iso.ISOMsg;
-import org.jpos.iso.ISORequestListener;
-import org.jpos.iso.ISOServer;
-import org.jpos.iso.ISOServerEventsListener;
-import org.jpos.iso.ISOServerSocketFactory;
-import org.jpos.iso.ISOSource;
-import org.jpos.iso.ServerChannel;
+import org.jpos.iso.*;
 import org.jpos.q2.QBeanSupport;
 import org.jpos.q2.QFactory;
 import org.jpos.space.LocalSpace;
@@ -343,7 +335,7 @@ public class QServer
         ).iterator();
         while (iter.hasNext()) {
             Element l = (Element) iter.next();
-            ISOServerEventsListener listener = (ISOServerEventsListener)
+            ISOServerEventListener listener = (ISOServerEventListener)
                 factory.newInstance (l.getAttributeValue ("class"));
             factory.setLogger        (listener, l);
             factory.setConfiguration (listener, l);
