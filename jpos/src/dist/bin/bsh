@@ -1,5 +1,5 @@
 #!/bin/sh
 cd `dirname $0`/.. || exit 1
 CLASSPATH=classes:$CLASSPATH
-CLASSPATH=`echo jpos.jar lib/*.jar | tr ' ' ':'`:$CLASSPATH
+CLASSPATH=`echo @jarname@ lib/*.jar | tr ' ' ':'`:$CLASSPATH
 exec java -cp $CLASSPATH bsh.Interpreter $*
