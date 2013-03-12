@@ -134,19 +134,38 @@ public class DailyLogListener extends RotateLogListener{
     }
 
     public synchronized  void logRotate() throws IOException {
-        closeLogFile ();
-        super.close ();
-        setPrintStream (null);
-        String suffix = getSuffix() + getCompressedSuffix();
-        String newName = getPrefix()+getLastDate();
-        int i=0;
-        File dest = new File (newName+suffix), source = new File(logName);
-        while (dest.exists()) 
-            dest  = new File (newName + "." + ++i + suffix);
-        source.renameTo(dest);
-        setLastDate(getDateFmt().format(new Date()));
-        openLogFile();
-        compress(dest);
+        PrintStream activePrintStream = p;
+        FileOutputStream activeFileStream = f;
+
+        String suffixForArchivedLog = getSuffix() + getCompressedSuffix();
+        String filenameForArchivedLog = getPrefix() + getLastDate();
+        int archivedLogIndexForDay = 0;
+        File archivedLogFile = new File (filenameForArchivedLog + suffixForArchivedLog);
+        while (archivedLogFile.exists()) {
+            archivedLogFile = new File(filenameForArchivedLog + "." + (++archivedLogIndexForDay) + suffixForArchivedLog);
+        }
+        File activeLogFile = new File(logName);
+        if (!activeLogFile.renameTo(archivedLogFile)) {
+            return;
+        }
+        boolean newFileCreated = false;
+        try {
+            openLogFile(false);
+            newFileCreated = true;
+        } catch (Exception e) {
+            logDebug("Failed to open new log file: " + e);
+        }
+        if (newFileCreated) {
+            activePrintStream.println("</logger>");
+            if (activeFileStream != null) {
+                activeFileStream.close();
+            }
+            setLastDate(getDateFmt().format(new Date()));
+            compress(archivedLogFile);
+        } else {
+            // Move the old one back and keep the file handle open.
+            archivedLogFile.renameTo(activeLogFile);
+        }
     }
     /**
      * Holds value of property suffix.
