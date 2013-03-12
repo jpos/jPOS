@@ -18,20 +18,27 @@
 
 package org.jpos.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.jpos.util.LogFileTestUtils.getStringFromCompressedFile;
+import static org.jpos.util.LogFileTestUtils.getStringFromFile;
+import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Properties;
 
 import org.jpos.core.Configuration;
+import org.jpos.core.ConfigurationException;
+import org.jpos.core.SimpleConfiguration;
 import org.jpos.core.SubConfiguration;
+import org.junit.After;
 import org.junit.Ignore;
 import org.junit.Test;
 
-@Ignore ("test causes problems, closes stdout")
 public class RotateLogListenerTest {
+
+    private final LogRotationTestDirectory logRotationTestDirectory = new LogRotationTestDirectory();
 
     @Test
     public void testCheckSizeThrowsNullPointerException() throws Throwable {
@@ -47,6 +54,7 @@ public class RotateLogListenerTest {
     }
 
     @Test
+    @Ignore ("test causes problems, closes stdout")
     public void testCloseLogFile() throws Throwable {
         RotateLogListener rotateLogListener = new RotateLogListener();
         rotateLogListener.closeLogFile();
@@ -87,6 +95,7 @@ public class RotateLogListenerTest {
     }
 
     @Test
+    @Ignore ("test causes problems, closes stdout")
     public void testLog() throws Throwable {
         RotateLogListener dailyLogListener = new DailyLogListener();
         dailyLogListener.close();
@@ -98,6 +107,7 @@ public class RotateLogListenerTest {
     }
 
     @Test
+    @Ignore ("test causes problems, closes stdout")
     public void testLog1() throws Throwable {
         RotateLogListener dailyLogListener = new DailyLogListener();
         dailyLogListener.close();
@@ -115,6 +125,7 @@ public class RotateLogListenerTest {
     }
 
     @Test
+    @Ignore ("test causes problems, closes stdout")
     public void testLogDebug1() throws Throwable {
         RotateLogListener dailyLogListener = new DailyLogListener();
         dailyLogListener.close();
@@ -123,6 +134,7 @@ public class RotateLogListenerTest {
     }
 
     @Test
+    @Ignore ("test causes problems, closes stdout")
     public void testLogRotateThrowsNullPointerException() throws Throwable {
         RotateLogListener rotateLogListener = new RotateLogListener();
         try {
@@ -169,5 +181,96 @@ public class RotateLogListenerTest {
             assertNull("rotateLogListener.f", rotateLogListener.f);
             assertNotNull("rotateLogListener.p", rotateLogListener.p);
         }
+    }
+
+    @Test
+    public void testLogRotationWorks() throws Exception {
+        String logFileName = "RotateWorksTestLog";
+        RotateLogListener listener = createRotateLogListenerWithIsoDateFormat(logFileName);
+
+        listener.log(new LogEvent("Message 1"));
+
+        // when: a rotation is executed
+        listener.logRotate();
+
+        // then: new events should end up in the current file and old events in the archived file
+        listener.log(new LogEvent("Message 2"));
+
+        String currentLogFileContents = getStringFromFile(logRotationTestDirectory.getFile(logFileName));
+        assertFalse("Current log file should not contain the first message", currentLogFileContents.contains("Message 1"));
+        assertTrue("Current log file should contain the second message", currentLogFileContents.contains("Message 2"));
+        assertTrue("Logger element should have been opened in the current file", currentLogFileContents.contains("<logger "));
+        assertFalse("Logger element should not have been closed in the current file", currentLogFileContents.contains("</logger>"));
+
+        String archivedLogFile1Contents = getStringFromFile(logRotationTestDirectory.getFile(logFileName + ".1"));
+        assertTrue("Archived log file should contain the first message", archivedLogFile1Contents.contains("Message 1"));
+        assertFalse("Archived log file should not contain the second message", archivedLogFile1Contents.contains("Message 2"));
+        assertTrue("Logger element should have been opened in the archived file", archivedLogFile1Contents.contains("<logger "));
+        assertTrue("Logger element should have been closed in the archived file", archivedLogFile1Contents.contains("</logger>"));
+
+        // when: another rotation is executed
+        listener.logRotate();
+
+        // then: new events should end up in the current file and old events in the archived files
+        listener.log(new LogEvent("Message 3"));
+
+        currentLogFileContents = getStringFromFile(logRotationTestDirectory.getFile(logFileName));
+        assertFalse("Current log file should not contain the first message", currentLogFileContents.contains("Message 1"));
+        assertFalse("Current log file should not contain the second message", currentLogFileContents.contains("Message 2"));
+        assertTrue("Current log file should contain the third message", currentLogFileContents.contains("Message 3"));
+        assertTrue("Logger element should have been opened in the current file", currentLogFileContents.contains("<logger "));
+        assertFalse("Logger element should not have been closed in the current file", currentLogFileContents.contains("</logger>"));
+
+        archivedLogFile1Contents = getStringFromFile(logRotationTestDirectory.getFile(logFileName + ".1"));
+        assertTrue("Archived log file should contain the second message", archivedLogFile1Contents.contains("Message 2"));
+        assertFalse("Archived log file should not contain the third message", archivedLogFile1Contents.contains("Message 3"));
+        assertTrue("Logger element should have been opened in the archived file", archivedLogFile1Contents.contains("<logger "));
+        assertTrue("Logger element should have been closed in the archived file", archivedLogFile1Contents.contains("</logger>"));
+
+        String archivedLogFile2Contents = getStringFromFile(logRotationTestDirectory.getFile(logFileName + ".2"));
+        assertTrue("Archived log file should contain the first message", archivedLogFile2Contents.contains("Message 1"));
+        assertTrue("Logger element should have been opened in the archived file", archivedLogFile2Contents.contains("<logger "));
+        assertTrue("Logger element should have been closed in the archived file", archivedLogFile2Contents.contains("</logger>"));
+
+    }
+
+    @Test
+    public void testLogRotateAbortsWhenCreatingNewFileFails() throws Exception {
+        String logFileName = "RotateAbortsTestLog";
+        RotateLogListener listener = createRotateLogListenerWithIsoDateFormat(logFileName);
+
+        listener.log(new LogEvent("Message 1"));
+
+        // when: a rotation is required but a new file cannot be created
+        logRotationTestDirectory.preventNewFileCreation();
+        listener.logRotate();
+
+        // then: no error should escape and the existing log file should continue being written to
+        listener.log(new LogEvent("Message 2"));
+        logRotationTestDirectory.allowNewFileCreation();
+
+        String logFileContents = getStringFromFile(logRotationTestDirectory.getFile(logFileName));
+        System.out.println("logFileContents = " + logFileContents);
+        assertTrue("Log file should contain first message", logFileContents.contains("Message 1"));
+        assertTrue("Log file should contain second message", logFileContents.contains("Message 2"));
+        assertFalse("Logger element should not have been closed", logFileContents.contains("</logger>"));
+
+        File archiveFile = logRotationTestDirectory.getFile(logFileName + ".1");
+        assertFalse("Archive file should not exist", archiveFile.exists());
+    }
+
+    private RotateLogListener createRotateLogListenerWithIsoDateFormat(String logFileName) throws ConfigurationException {
+        RotateLogListener listener = new RotateLogListener();
+        Properties configuration = new Properties();
+        configuration.setProperty("file", logRotationTestDirectory.getDirectory().getAbsolutePath() + "/" + logFileName);
+        configuration.setProperty("copies", "10");
+        configuration.setProperty("maxsize", "1000000");
+        listener.setConfiguration(new SimpleConfiguration(configuration));
+        return listener;
+    }
+
+    @After
+    public void cleanupLogRotateAbortsTestDir() {
+        logRotationTestDirectory.delete();
     }
 }

@@ -18,29 +18,29 @@
 
 package org.jpos.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.jpos.util.LogFileTestUtils.getStringFromCompressedFile;
+import static org.jpos.util.LogFileTestUtils.getStringFromFile;
+import static org.junit.Assert.*;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.OutputStream;
-import java.io.PrintStream;
+import java.io.*;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Properties;
 import java.util.zip.Deflater;
 import java.util.zip.DeflaterOutputStream;
 
 import org.jpos.core.Configuration;
+import org.jpos.core.ConfigurationException;
+import org.jpos.core.SimpleConfiguration;
 import org.jpos.core.SubConfiguration;
+import org.junit.After;
 import org.junit.Ignore;
 import org.junit.Test;
 
-@Ignore
 public class DailyLogListenerTest {
+
+    private final LogRotationTestDirectory logRotationTestDirectory = new LogRotationTestDirectory();
 
     @Test
     public void testCheckSize() throws Throwable {
@@ -118,6 +118,7 @@ public class DailyLogListenerTest {
     }
 
     @Test
+    @Ignore
     public void testDailyRotateRunThrowsNullPointerException() throws Throwable {
         try {
             new DailyLogListener().new DailyRotate().run();
@@ -167,6 +168,7 @@ public class DailyLogListenerTest {
     }
 
     @Test
+    @Ignore
     public void testLogRotateThrowsNullPointerException() throws Throwable {
         DailyLogListener dailyLogListener = new DailyLogListener();
         try {
@@ -273,5 +275,75 @@ public class DailyLogListenerTest {
         DailyLogListener dailyLogListener = new DailyLogListener();
         dailyLogListener.setSuffix("testDailyLogListenerSuffix");
         assertEquals("dailyLogListener.getSuffix()", "testDailyLogListenerSuffix", dailyLogListener.getSuffix());
+    }
+
+    @Test
+    public void testLogRotationAndCompressionWorks() throws Exception {
+        String logFileName = "RotateWorksTestLog";
+        DailyLogListener listener = createCompressingDailyLogListenerWithIsoDateFormat(logFileName);
+
+        listener.log(new LogEvent("Message 1"));
+
+        // when: a rotation is executed
+        listener.logRotate();
+
+        // then: new events should end up in the current file and old events in the archived file
+        listener.log(new LogEvent("Message 2"));
+
+        String currentLogFileContents = getStringFromFile(logRotationTestDirectory.getFile(logFileName + ".log"));
+        assertFalse("Current log file should not contain the first message", currentLogFileContents.contains("Message 1"));
+        assertTrue("Current log file should contain the second message", currentLogFileContents.contains("Message 2"));
+        assertTrue("Logger element should not have been opened in the current file", currentLogFileContents.contains("<logger "));
+        assertFalse("Logger element should not have been closed in the current file", currentLogFileContents.contains("</logger>"));
+
+        Thread.sleep(1000); // to allow compressor thread to run
+        String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+        String archivedLogFileContents = getStringFromCompressedFile(logRotationTestDirectory.getFile(logFileName + "." + date + ".log.gz"));
+        assertTrue("Archived log file should contain the first message", archivedLogFileContents.contains("Message 1"));
+        assertFalse("Archived log file should not contain the second message", archivedLogFileContents.contains("Message 2"));
+        assertTrue("Logger element should have been opened in the archived file", archivedLogFileContents.contains("<logger "));
+        assertTrue("Logger element should have been closed in the archived file", archivedLogFileContents.contains("</logger>"));
+    }
+
+    @Test
+    public void testLogRotateAbortsWhenCreatingNewFileFails() throws Exception {
+        String logFileName = "RotateAbortsTestLog";
+        DailyLogListener listener = createCompressingDailyLogListenerWithIsoDateFormat(logFileName);
+
+        listener.log(new LogEvent("Message 1"));
+
+        // when: a rotation is required but a new file cannot be created
+        logRotationTestDirectory.preventNewFileCreation();
+        listener.logRotate();
+
+        // then: no error should escape and the existing log file should continue being written to
+        listener.log(new LogEvent("Message 2"));
+        logRotationTestDirectory.allowNewFileCreation();
+
+        String logFileContents = getStringFromFile(logRotationTestDirectory.getFile(logFileName + ".log"));
+        assertTrue("Log file should contain first message", logFileContents.contains("Message 1"));
+        assertTrue("Log file should contain second message", logFileContents.contains("Message 2"));
+        assertFalse("Logger element should not have been closed", logFileContents.contains("</logger>"));
+
+        Thread.sleep(1000); // to allow compressor thread to run
+        String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+        File archiveFile = logRotationTestDirectory.getFile(logFileName + ".log." + date + ".gz");
+        assertFalse("Archive file should not exist", archiveFile.exists());
+    }
+
+    private DailyLogListener createCompressingDailyLogListenerWithIsoDateFormat(String logFileName) throws ConfigurationException {
+        DailyLogListener listener = new DailyLogListener();
+        Properties configuration = new Properties();
+        configuration.setProperty("prefix", logRotationTestDirectory.getDirectory().getAbsolutePath() + "/" + logFileName);
+        configuration.setProperty("date-format", ".yyyy-MM-dd");
+        configuration.setProperty("compression-format", "gzip");
+        configuration.setProperty("maxsize", "1000000");
+        listener.setConfiguration(new SimpleConfiguration(configuration));
+        return listener;
+    }
+
+    @After
+    public void cleanupLogRotateAbortsTestDir() {
+        logRotationTestDirectory.delete();
     }
 }
