@@ -168,7 +168,7 @@ public class FSDMsg implements Loggeable, Cloneable {
      *  @param separator       char representing type
      */
     public void setSeparator(String separatorName, char separator) {
-        separators.put(separatorName, Character.valueOf(separator));
+        separators.put(separatorName, separator);
     }
     
     /*
@@ -319,7 +319,7 @@ public class FSDMsg implements Loggeable, Cloneable {
     }
     
     public boolean isSeparator(byte b) {
-        return separators.containsValue( Character.valueOf((char)b));
+        return separators.containsValue((char) b);
     }
     
     private String getSeparatorType(String type) {

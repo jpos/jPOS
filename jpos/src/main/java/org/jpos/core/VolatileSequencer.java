@@ -45,7 +45,7 @@ public class VolatileSequencer implements Sequencer, VolatileSequencerMBean {
         if (I != null)
             i = I.intValue();
         i += add;
-        map.put (counterName, Integer.valueOf(i));
+        map.put (counterName, i);
         return i;
     }
     /**
@@ -65,7 +65,7 @@ public class VolatileSequencer implements Sequencer, VolatileSequencerMBean {
         Integer I = (Integer) map.get (counterName);
         if (I != null)
             oldValue = I.intValue();
-        map.put (counterName, Integer.valueOf(newValue));
+        map.put (counterName, newValue);
         return oldValue;
     }
     public String[] getCounterNames () {

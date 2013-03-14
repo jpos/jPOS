@@ -67,7 +67,7 @@ public class ISOMsgPanel extends JPanel {
         validFields = new Vector();
         for (int i=0; i<=m.getMaxField(); i++)
             if (m.hasField(i))
-                validFields.addElement(Integer.valueOf(i));
+                validFields.addElement(i);
     }
     private JComponent createISOMsgTable() {
         TableModel dataModel = new AbstractTableModel() {
