@@ -43,7 +43,7 @@ public class ISODateTest {
 
     @Test
     public void testONEYEAR() {
-        assertThat(ISODate.ONE_YEAR, is(1471228928L));
+        assertThat(ISODate.ONE_YEAR, is(31536000000L));
     }
 
     @Test
