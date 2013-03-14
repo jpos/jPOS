@@ -141,7 +141,7 @@ public class IVA_NUM extends ISOFieldValidator {
             else
                 c = new ISOVField( c, e );
             if ( breakOnError )
-                throw new ISOVException ( "Error on field " + ((Integer)c.getKey()).intValue(), c );
+                throw new ISOVException ( "Error on field " + (Integer) c.getKey(), c );
         }
         return c;
     }

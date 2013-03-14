@@ -112,7 +112,7 @@ public abstract class TaggedFieldPackagerBase extends ISOFieldPackager {
                 throw new ISOException(c.getClass().getName()
                         + " is not an ISOField");
             Integer fieldNumber = getTagMapper().getFieldNumberForTag(getParentFieldNumber(), tag);
-            if (fieldNumber == null || fieldNumber.intValue() < 0) {
+            if (fieldNumber == null || fieldNumber < 0) {
                 if (!isUnpackingLenient()) {
                     throw new ISOException("No field mapping found for tag: " + parentFieldNumber + "." + tag);
                 }
@@ -143,7 +143,7 @@ public abstract class TaggedFieldPackagerBase extends ISOFieldPackager {
         String tag;
         tag = new String(readBytes(in, getTagNameLength()), ISOUtil.ENCODING);
         fieldNumber = getTagMapper().getFieldNumberForTag(getParentFieldNumber(), tag);
-        if (fieldNumber == null || fieldNumber.intValue() < 0) {
+        if (fieldNumber == null || fieldNumber < 0) {
             if (!isUnpackingLenient()) {
                 throw new ISOException("No field mapping found for tag: " + parentFieldNumber + "." + tag);
             }

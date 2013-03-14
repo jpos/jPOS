@@ -331,7 +331,7 @@ public class FSDMsg implements Loggeable, Cloneable {
     
     private char getSeparator(String separator) {
         if (separators.containsKey(separator)) {
-            return ((Character)separators.get(separator)).charValue();
+            return (Character) separators.get(separator);
         } else {
             if (isDummySeparator (separator)) {
                 // Dummy separator type, return 0 to indicate nothing to add.

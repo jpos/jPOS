@@ -106,7 +106,7 @@ public class BSHTransactionParticipant extends SimpleLogSource
         int result = ABORTED | READONLY;
         if (prepareMethod != null) {
             try {
-                result = ((Integer) executeMethod(prepareMethod, id, context, ev, "result")).intValue();
+                result = (Integer) executeMethod(prepareMethod, id, context, ev, "result");
             } catch (Exception ex) {
                 ev.addMessage(ex);
             }
@@ -124,7 +124,7 @@ public class BSHTransactionParticipant extends SimpleLogSource
         int result = ABORTED | READONLY;
         if (prepareForAbortMethod != null) {
             try {
-                result = ((Integer) executeMethod(prepareForAbortMethod, id, context, ev, "result")).intValue();
+                result = (Integer) executeMethod(prepareForAbortMethod, id, context, ev, "result");
             } catch (Exception ex) {
                 ev.addMessage(ex);
             }

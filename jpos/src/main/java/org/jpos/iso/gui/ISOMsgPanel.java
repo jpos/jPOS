@@ -99,7 +99,7 @@ public class ISOMsgPanel extends JPanel {
                     case 1 :
                         try {
                             int index =
-                            ((Integer)validFields.elementAt(row)).intValue();
+                                    (Integer) validFields.elementAt(row);
 
                             Object obj = m.getValue(index);
                             if (obj instanceof String) 
@@ -113,7 +113,7 @@ public class ISOMsgPanel extends JPanel {
                         }   
                         break;
                     case 2 :
-                        int i=((Integer)validFields.elementAt(row)).intValue();
+                        int i= (Integer) validFields.elementAt(row);
                         ISOPackager p = m.getPackager();
                         return p.getFieldDescription(m,i);
                 }
@@ -137,8 +137,8 @@ public class ISOMsgPanel extends JPanel {
                 if (!lsm.isSelectionEmpty()) {
                     int selectedRow = lsm.getMinSelectionIndex();
                     try {
-                        int index = ((Integer)
-                            validFields.elementAt(selectedRow)).intValue();
+                        int index = (Integer)
+                                validFields.elementAt(selectedRow);
 
                         Object obj = m.getValue(index);
                         if (obj instanceof ISOMsg) {

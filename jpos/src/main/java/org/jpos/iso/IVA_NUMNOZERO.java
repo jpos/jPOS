@@ -109,7 +109,7 @@ public class IVA_NUMNOZERO extends IVA_NUM {
                 else
                     c = new ISOVField( c, e );
                 if ( breakOnError )
-                    throw new ISOVException ( "Error on field " + ((Integer)c.getKey()).intValue(), c );
+                    throw new ISOVException ( "Error on field " + (Integer) c.getKey(), c );
             }
             return c;
         }
