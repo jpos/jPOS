@@ -66,7 +66,7 @@ public class SysLogListener implements LogListener, Configurable {
         super();
     }
     public synchronized LogEvent log (LogEvent ev) {
-        if (socket != null && ev.getTag() != null && tags.indexOf(ev.getTag()) != -1) {
+        if (socket != null && ev.getTag() != null && tags.contains(ev.getTag())) {
             int facility = cfg.getInt (ev.getTag() + ".facility", defaultFacility);
             int severity = cfg.getInt (ev.getTag() + ".severity", defaultSeverity);
             int priority = (facility<<3) | severity;

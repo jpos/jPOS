@@ -424,7 +424,7 @@ public class QMUX
         if (m != null && ignorerc != null 
             && ignorerc.length() > 0 && m.hasField(39))
         {
-            return ignorerc.indexOf(m.getString(39)) >= 0;
+            return ignorerc.contains(m.getString(39));
         }
         return false;
     }
