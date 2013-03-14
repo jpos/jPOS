@@ -84,11 +84,11 @@ public class QClassLoader
             loader = this;
 
         File file[] = libDir.listFiles (this);
-        for (int i=0; i<file.length; i++) {
+        for (File aFile : file) {
             try {
-                loader.addURL (file[i].toURL ());
+                loader.addURL(aFile.toURL());
             } catch (MalformedURLException e) {
-                e.printStackTrace ();
+                e.printStackTrace();
             }
         }
         loader.lastModified = libDir.lastModified ();

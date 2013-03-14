@@ -184,8 +184,7 @@ public class QMUX
             sb.append ('.');
         }
         boolean hasFields = false;
-        for (int i = 0; i < key.length; i++) {
-            String f = key[i];
+        for (String f : key) {
             String v = m.getString(f);
             if (v != null) {
                 if ("11".equals(f)) {
@@ -195,7 +194,7 @@ public class QMUX
                         v = ISOUtil.zeropad(vt, l);
                 }
                 if ("41".equals(f)) {
-                    v = ISOUtil.zeropad(v.trim(),16); // BIC ANSI to ISO hack
+                    v = ISOUtil.zeropad(v.trim(), 16); // BIC ANSI to ISO hack
                 }
                 hasFields = true;
                 sb.append(v);
@@ -383,8 +382,8 @@ public class QMUX
 
     public boolean isConnected() {
         if (ready != null && ready.length > 0) {
-            for (int i=0; i<ready.length; i++)
-                if (sp.rdp (ready[i]) != null)
+            for (String aReady : ready)
+                if (sp.rdp(aReady) != null)
                     return true;
             return false;
         }

@@ -48,16 +48,16 @@ public class ISOBaseValidatingPackager extends ISOBasePackager implements ISOVal
             ISOComponent c;
             Map fields = m.getChildren();
             /** Field  validations **/
-            for (int i=0; i<fldVld.length; i++) {
-                if ( fldVld[i] != null && (c=(ISOComponent) fields.get (Integer.valueOf( ((ISOFieldValidator)fldVld[i]).getFieldId() ))) != null ){
+            for (ISOValidator aFldVld : fldVld) {
+                if (aFldVld != null && (c = (ISOComponent) fields.get(Integer.valueOf(((ISOFieldValidator) aFldVld).getFieldId()))) != null) {
                     try {
-                        m.set( fldVld[i].validate( c ) );
-                    } catch ( ISOVException e ) {
-                        if ( !e.treated() ) {
-                            m.set( e.getErrComponent() );
-                            e.setTreated( true );
+                        m.set(aFldVld.validate(c));
+                    } catch (ISOVException e) {
+                        if (!e.treated()) {
+                            m.set(e.getErrComponent());
+                            e.setTreated(true);
                         }
-                        evt.addMessage( "Component Validation Error." );
+                        evt.addMessage("Component Validation Error.");
                         throw e;
                     }
                 }
@@ -65,9 +65,9 @@ public class ISOBaseValidatingPackager extends ISOBasePackager implements ISOVal
             /** msg validations **/
             try {
                 if ( msgVld != null ){
-                    for (int i = 0; i < this.msgVld.length; i++) {
-                        if ( msgVld[i] != null )
-                            m = msgVld[i].validate( m );
+                    for (ISOBaseValidator aMsgVld : this.msgVld) {
+                        if (aMsgVld != null)
+                            m = aMsgVld.validate(m);
                     }
                 }
             }

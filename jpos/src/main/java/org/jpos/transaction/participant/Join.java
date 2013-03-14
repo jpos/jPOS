@@ -66,23 +66,19 @@ public class Join
         this.mgr = mgr;
     }
     private Runner[] prepare (Runner[] runners) {
-        for (int i=0; i<runners.length; i++)
-            runners[i].prepare();
+        for (Runner runner : runners) runner.prepare();
         return runners;
     }
     private Runner[] prepareForAbort (Runner[] runners) {
-        for (int i=0; i<runners.length; i++)
-            runners[i].prepareForAbort();
+        for (Runner runner : runners) runner.prepareForAbort();
         return runners;
     }
     private Runner[] commit (Runner[] runners) {
-        for (int i=0; i<runners.length; i++)
-            runners[i].commit();
+        for (Runner runner : runners) runner.commit();
         return runners;
     }
     private Runner[] abort (Runner[] runners) {
-        for (int i=0; i<runners.length; i++)
-            runners[i].abort();
+        for (Runner runner : runners) runner.abort();
         return runners;
     }
     private Runner[] createRunners(long id, Serializable o) {
@@ -96,8 +92,7 @@ public class Join
         return runners;
     }
     private Runner[] joinRunners (Runner[] runners) {
-        for (int i=0; i<runners.length; i++)
-            runners[i].join();
+        for (Runner runner : runners) runner.join();
         return runners;
     }
     private int mergeActions (Runner[] runners) {
@@ -105,17 +100,17 @@ public class Join
         boolean readonly = true;
         boolean no_join = true;
         boolean retry = false;
-        for (int i=0; i<runners.length; i++) {
-            int action = runners[i].rc;
-            retry  = (action & RETRY) == RETRY;
+        for (Runner runner : runners) {
+            int action = runner.rc;
+            retry = (action & RETRY) == RETRY;
             if (retry)
-                return RETRY; 
-           if ((action & PREPARED) == ABORTED)
-               prepared = false;
-           if ((action & READONLY) != READONLY)
-               readonly = false;
-           if ((action & NO_JOIN) != NO_JOIN)
-               no_join = false;
+                return RETRY;
+            if ((action & PREPARED) == ABORTED)
+                prepared = false;
+            if ((action & READONLY) != READONLY)
+                readonly = false;
+            if ((action & NO_JOIN) != NO_JOIN)
+                no_join = false;
         }
         return (prepared ? PREPARED : ABORTED) |
                (no_join  ? NO_JOIN  : 0) |

@@ -192,12 +192,12 @@ public class GenericTaggedFieldsPackager extends GenericPackager {
 
     public void setFieldPackager(ISOFieldPackager[] fld) {
         super.setFieldPackager(fld);
-        for (int i = 0; i < fld.length; i++) {
-            if (fld[i] instanceof TaggedFieldPackagerBase) {
-                ((TaggedFieldPackagerBase) fld[i]).setParentFieldNumber(fieldId);
-                ((TaggedFieldPackagerBase) fld[i]).setTagMapper(tagMapper);
-                ((TaggedFieldPackagerBase) fld[i]).setPackingLenient(isPackingLenient());
-                ((TaggedFieldPackagerBase) fld[i]).setUnpackingLenient(isUnpackingLenient());
+        for (ISOFieldPackager aFld : fld) {
+            if (aFld instanceof TaggedFieldPackagerBase) {
+                ((TaggedFieldPackagerBase) aFld).setParentFieldNumber(fieldId);
+                ((TaggedFieldPackagerBase) aFld).setTagMapper(tagMapper);
+                ((TaggedFieldPackagerBase) aFld).setPackingLenient(isPackingLenient());
+                ((TaggedFieldPackagerBase) aFld).setUnpackingLenient(isUnpackingLenient());
             }
         }
     }

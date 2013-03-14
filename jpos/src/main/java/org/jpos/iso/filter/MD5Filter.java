@@ -89,14 +89,13 @@ public class MD5Filter implements ISOFilter, Configurable {
             MessageDigest md = MessageDigest.getInstance("MD5");
             md.update (getKey());
             int[] f = getFields (m);
-            for (int i=0; i<f.length; i++) {
-                int fld = f[i];
-                if (m.hasField (fld)) {
-                    ISOComponent c = m.getComponent (fld);
+            for (int fld : f) {
+                if (m.hasField(fld)) {
+                    ISOComponent c = m.getComponent(fld);
                     if (c instanceof ISOBinaryField)
-                        md.update ((byte[]) c.getValue());
+                        md.update((byte[]) c.getValue());
                     else
-                        md.update (((String)c.getValue()).getBytes());
+                        md.update(((String) c.getValue()).getBytes());
                 }
             }
             byte[] digest = md.digest();

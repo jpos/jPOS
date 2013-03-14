@@ -104,9 +104,9 @@ public class TransactionManager
     }
     public void stopService () throws Exception {
         NameRegistrar.unregister (getName ());
-        for (int i = 0 ; i < threads.length; i++) {
-            if (threads[i] != null)
-                isp.out (queue, Boolean.FALSE, 60*1000);
+        for (Thread thread1 : threads) {
+            if (thread1 != null)
+                isp.out(queue, Boolean.FALSE, 60 * 1000);
         }
         for (int i = 0 ; i < threads.length; i++) {
             Thread thread = threads[i];

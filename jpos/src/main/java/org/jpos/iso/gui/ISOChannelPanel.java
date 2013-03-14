@@ -178,17 +178,15 @@ public class ISOChannelPanel extends JPanel implements Observer {
         return pm;
     }
     private void checkProtected (ISOMsg m) throws ISOException {
-        for (int i=0; i<protectFields.length; i++) {
-            int f = protectFields[i];
-            if (m.hasField (f))
-                m.set (f, ISOUtil.protect (m.getString(f)));
+        for (int f : protectFields) {
+            if (m.hasField(f))
+                m.set(f, ISOUtil.protect(m.getString(f)));
         }
     }
     private void checkHidden (ISOMsg m) throws ISOException {
-        for (int i=0; i<wipeFields.length; i++) {
-            int f = wipeFields[i];
-            if (m.hasField (f))
-                m.set (f, "[WIPED]");
+        for (int f : wipeFields) {
+            if (m.hasField(f))
+                m.set(f, "[WIPED]");
         }
     }
 }
