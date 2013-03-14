@@ -165,7 +165,7 @@ public class ISOFieldValidator implements Configurable, ISOValidator {
             else
                 f = new ISOVField( f, e );
             if ( breakOnError )
-                throw new ISOVException ( "Error on field " + (Integer) f.getKey(), f );
+                throw new ISOVException ( "Error on field " + f.getKey(), f );
         }
         return f;
     }

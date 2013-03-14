@@ -95,7 +95,7 @@ public class ISOMsgPanel extends JPanel {
             public Object getValueAt(int row, int col) {
                 switch (col) {
                     case 0 :
-                        return ((Integer)validFields.elementAt(row));
+                        return validFields.elementAt(row);
                     case 1 :
                         try {
                             int index =

@@ -45,8 +45,7 @@ public class ISOMeterFactory implements UIFactory {
     public JComponent create (UI ui, Element e) {
         ISOChannelPanel icp = null;
         try {
-            Object obj = (Object) 
-                NameRegistrar.get (e.getAttributeValue ("idref"));
+            Object obj = NameRegistrar.get (e.getAttributeValue ("idref"));
 
             if (obj instanceof ISOChannel) {
                 icp = new ISOChannelPanel ((ISOChannel) obj, e.getText ());

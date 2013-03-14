@@ -75,13 +75,13 @@ public class BASE1Header extends BaseHeader {
         return header.length;
     }
     public int getHLen() {
-        return (int) (header[0] & 0xFF);
+        return header[0] & 0xFF;
     }
     public void setHFormat(int hformat) {
         header[1] = (byte) hformat;
     }
     public int getFormat() {
-        return (int) (header[2] & 0xFF);
+        return header[2] & 0xFF;
     }
     public void setRtCtl(int i) {
         header[11] = (byte) i;

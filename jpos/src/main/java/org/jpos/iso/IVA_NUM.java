@@ -133,7 +133,7 @@ public class IVA_NUM extends ISOFieldValidator {
         c = (ISOField)super.validate( c );
         if ( !ISOUtil.isNumeric( (String)c.getValue(), this.radix ) ){
             ISOVError e = new ISOVError(
-                    "Invalid Value Error. " + (String)c.getValue() +
+                    "Invalid Value Error. " + c.getValue() +
                     " is not a numeric value in radix " +
                     this.radix, getRejCode( ISOVError.ERR_INVALID_VALUE ) );
             if ( c instanceof ISOVField )

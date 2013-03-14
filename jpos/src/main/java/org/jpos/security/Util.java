@@ -49,7 +49,7 @@ public class Util {
      * @return true if parity is adjusted else returns false
      */
     public static boolean isDESParityAdjusted (byte[] bytes) {
-        byte[] correct = (byte[])bytes.clone();
+        byte[] correct = bytes.clone();
         adjustDESParity(correct);
         return  Arrays.equals(bytes, correct);
     }

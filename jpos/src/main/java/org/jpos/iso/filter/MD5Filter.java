@@ -106,11 +106,11 @@ public class MD5Filter implements ISOFilter, Configurable {
                 byte[] rxDigest = new byte[16];
                 if (m.hasField (64))
                     System.arraycopy (
-                        (byte[]) m.getValue(64), 0, rxDigest, 0, 8
+                            m.getValue(64), 0, rxDigest, 0, 8
                     );
                 if (m.hasField (128))
                     System.arraycopy (
-                        (byte[]) m.getValue(128), 0, rxDigest, 8, 8
+                            m.getValue(128), 0, rxDigest, 8, 8
                     );
                 if (!Arrays.equals (digest, rxDigest)) {
                     evt.addMessage (m);

@@ -51,7 +51,7 @@ public class CTCSubElementPackager extends ISOBaseValidatingPackager {
             for ( int i = 0; i < fld.length; i++ ) {
                 ISOMsg f = (ISOMsg) tab.get (i);
                 if ( f != null ) {
-                    sb.append ( ISOUtil.zeropad( ((Integer)f.getKey()).toString(), 2 ) + new String( fld[i].pack( f ) ) );
+                    sb.append ( ISOUtil.zeropad( f.getKey().toString(), 2 ) + new String( fld[i].pack( f ) ) );
                 }
             }
             return sb.toString().getBytes();
@@ -100,7 +100,7 @@ public class CTCSubElementPackager extends ISOBaseValidatingPackager {
             for ( int i = 0; i < fldVld.length; i++ ) {
                 ISOMsg f = (ISOMsg) tab.get (i);
                 if ( f != null )
-                    c.set( (ISOMsg)fldVld[i].validate( f ) );
+                    c.set(fldVld[i].validate( f ));
             }
             return c;
         } catch ( ISOVException ex ) {

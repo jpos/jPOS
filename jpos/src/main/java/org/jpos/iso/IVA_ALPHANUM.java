@@ -75,7 +75,7 @@ public class IVA_ALPHANUM extends ISOFieldValidator {
             c = (ISOField)super.validate( c );
             /** alphanum validations **/
             if ( !ISOUtil.isAlphaNumeric( (String)c.getValue() ) ){
-                ISOVError e = new ISOVError( "Invalid Value Error. " + (String)c.getValue() + " is not an alphanumeric value. ", getRejCode( ISOVError.ERR_INVALID_VALUE ) );
+                ISOVError e = new ISOVError( "Invalid Value Error. " + c.getValue() + " is not an alphanumeric value. ", getRejCode( ISOVError.ERR_INVALID_VALUE ) );
                 if ( c instanceof ISOVField )
                     ((ISOVField)c).addISOVError( e );
                 else

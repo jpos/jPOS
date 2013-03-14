@@ -74,7 +74,7 @@ public class IVA_ALPHANUMNOZERO_NOBLANK extends IVA_ALPHANUMNOZERO {
             /** no blank **/
             if ( ISOUtil.isBlank( (String)c.getValue() ) ){
                 ISOVError e = new ISOVError( "Invalid Value Error. It can not be blank-filled. (Current value: "+
-                        (String)c.getValue()+") ", getRejCode( ISOVError.ERR_INVALID_VALUE ) );
+                        c.getValue() +") ", getRejCode( ISOVError.ERR_INVALID_VALUE ) );
                 if ( c instanceof ISOVField )
                     ((ISOVField)c).addISOVError( e );
                 else

@@ -817,7 +817,7 @@ public class ISOUtil {
                 case '\n': 
                     if (canonical) {
                         str.append("&#");
-                        str.append(Integer.toString((int) (ch & 0xFF)));
+                        str.append(Integer.toString(ch & 0xFF));
                         str.append(';');
                         break;
                     }
@@ -825,7 +825,7 @@ public class ISOUtil {
                 default: 
                     if (ch < 0x20) {
                         str.append("&#");
-                        str.append(Integer.toString((int) (ch & 0xFF)));
+                        str.append(Integer.toString(ch & 0xFF));
                         str.append(';');
                     }
                     else if (ch > 0xff00) {

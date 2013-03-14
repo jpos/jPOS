@@ -159,7 +159,7 @@ public abstract class FilteredBase extends Observable
     
     public Object clone(){
       try {
-        return (FilteredBase)super.clone();
+        return super.clone();
       } catch (CloneNotSupportedException e) {
         throw new InternalError();
       }
