@@ -274,12 +274,11 @@ public class XML2003Packager extends DefaultHandler
         return getClass().getName();
     }    
     private void fixup (ISOMsg m, int[] bfields) throws ISOException {
-        for (int i=0; i<bfields.length; i++) {
-            int f = bfields[i];
+        for (int f : bfields) {
             if (m.hasField(f)) {
-                ISOComponent c = m.getComponent (f);
-                if (c instanceof ISOField) 
-                    m.set (f, ((ISOField) c).getBytes());
+                ISOComponent c = m.getComponent(f);
+                if (c instanceof ISOField)
+                    m.set(f, ((ISOField) c).getBytes());
             }
         }
     }

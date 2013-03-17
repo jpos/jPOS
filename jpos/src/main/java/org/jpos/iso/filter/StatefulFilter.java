@@ -157,9 +157,9 @@ public class StatefulFilter implements ISOFilter, Configurable{
     {
         int[] key = getKey();
         StringBuilder b = new StringBuilder(getKeyPrefix());
-        for(int i = 0; i < key.length; i++) {
+        for (int aKey : key) {
             b.append("|");
-            b.append(m.getString(key[i]));
+            b.append(m.getString(aKey));
         }
         String skey = b.toString();
         if(m.getDirection() == getMatchDirection()){

@@ -67,7 +67,7 @@ public class ISOMsgPanel extends JPanel {
         validFields = new Vector();
         for (int i=0; i<=m.getMaxField(); i++)
             if (m.hasField(i))
-                validFields.addElement(Integer.valueOf(i));
+                validFields.addElement(i);
     }
     private JComponent createISOMsgTable() {
         TableModel dataModel = new AbstractTableModel() {
@@ -95,11 +95,11 @@ public class ISOMsgPanel extends JPanel {
             public Object getValueAt(int row, int col) {
                 switch (col) {
                     case 0 :
-                        return ((Integer)validFields.elementAt(row));
+                        return validFields.elementAt(row);
                     case 1 :
                         try {
                             int index =
-                            ((Integer)validFields.elementAt(row)).intValue();
+                                    (Integer) validFields.elementAt(row);
 
                             Object obj = m.getValue(index);
                             if (obj instanceof String) 
@@ -113,7 +113,7 @@ public class ISOMsgPanel extends JPanel {
                         }   
                         break;
                     case 2 :
-                        int i=((Integer)validFields.elementAt(row)).intValue();
+                        int i= (Integer) validFields.elementAt(row);
                         ISOPackager p = m.getPackager();
                         return p.getFieldDescription(m,i);
                 }
@@ -137,8 +137,8 @@ public class ISOMsgPanel extends JPanel {
                 if (!lsm.isSelectionEmpty()) {
                     int selectedRow = lsm.getMinSelectionIndex();
                     try {
-                        int index = ((Integer)
-                            validFields.elementAt(selectedRow)).intValue();
+                        int index = (Integer)
+                                validFields.elementAt(selectedRow);
 
                         Object obj = m.getValue(index);
                         if (obj instanceof ISOMsg) {

@@ -392,7 +392,7 @@ public class QFactory {
         } catch (InvocationTargetException e) {
             throw new ConfigurationException (
                 obj.getClass().getName() + "." + m + "("+p.toString()+")" ,
-                ((Exception) e.getTargetException())
+                    e.getTargetException()
             );
         }
     }

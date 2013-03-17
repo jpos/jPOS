@@ -125,9 +125,9 @@ public class VErrorParser implements LogSource, Loggeable  {
             }
             /** recursively in childs **/
             Map fields = c.getChildren();
-            int max = ((ISOMsg)c).getMaxField();
+            int max = c.getMaxField();
             for (int i = 0; i <= max ; i++)
-                if ((c=(ISOComponent) fields.get (Integer.valueOf(i))) != null )
+                if ((c=(ISOComponent) fields.get (i)) != null )
                     _getErr( c, list, id +  Integer.toString(i) + " " );
         }
     }

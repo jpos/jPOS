@@ -84,11 +84,11 @@ public class LogChannel extends BaseChannel {
             String s = reader.readLine();
             if (s == null)
                 throw new EOFException();
-            if (s.indexOf ("<isomsg") >= 0)
+            if (s.contains("<isomsg"))
                 inMsg = true;
             if (inMsg) 
                 sb.append (s);
-            if (s.indexOf ("</isomsg>") >= 0)
+            if (s.contains("</isomsg>"))
                 break;
         }
         return sb.toString().getBytes();

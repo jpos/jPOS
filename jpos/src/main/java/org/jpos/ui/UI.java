@@ -158,7 +158,7 @@ public class UI implements UIFactory, UIObjectFactory {
                 createComponent (config.getChild (elementName))
             );
             if (c instanceof JComponent) {
-                ((JComponent)c).revalidate ();
+                c.revalidate();
             }
             c.repaint ();
         }
@@ -227,9 +227,9 @@ public class UI implements UIFactory, UIObjectFactory {
         if (c instanceof Container) {
             Container cont = (Container) c;
             Component[] cc = cont.getComponents();
-            
-            for (int i=0; i<cc.length; i++) {
-                removeComponent (cc[i]);
+
+            for (Component aCc : cc) {
+                removeComponent(aCc);
             }
             cont.removeAll();
         }
@@ -240,8 +240,8 @@ public class UI implements UIFactory, UIObjectFactory {
         System.out.println (c.getClass().getName() + ":" + c.getBounds().getSize().toString());
         if (c instanceof Container) {
             Component[] cc = ((Container) c).getComponents();
-            for (int i=0; i<cc.length; i++) {
-                dumpComponent (cc[i]);
+            for (Component aCc : cc) {
+                dumpComponent(aCc);
             }
         }
     }

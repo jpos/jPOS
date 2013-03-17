@@ -89,9 +89,9 @@ public class XMLChannel extends BaseChannel {
             if (s == null)
                 throw new EOFException();
             sb.append (s);
-            if (s.indexOf ("<" + XMLPackager.ISOMSG_TAG) >= 0)
+            if (s.contains("<" + XMLPackager.ISOMSG_TAG))
                 sp++;
-            if (s.indexOf ("</" + XMLPackager.ISOMSG_TAG + ">") >= 0)
+            if (s.contains("</" + XMLPackager.ISOMSG_TAG + ">"))
             {
                 if (--sp <= 0)
                     break;

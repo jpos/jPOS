@@ -121,7 +121,7 @@ public class GenericValidatingPackager extends GenericPackager implements ISOVal
         if ( maxField != null )
             maxValidField = Integer.parseInt( maxField );
         if ( emitBmap != null )
-            emitBitmap = Boolean.valueOf( emitBmap ).booleanValue();
+            emitBitmap = Boolean.valueOf(emitBmap);
         if ( bmapfield != null )
             bitmapField = Integer.parseInt( bmapfield );
     }
@@ -141,7 +141,7 @@ public class GenericValidatingPackager extends GenericPackager implements ISOVal
             Map<Object,ISOComponent> fields = m.getChildren();
             /** Field  validations **/
             for (ISOValidator val :fvlds) {
-                if ( (c=fields.get (Integer.valueOf( ((ISOFieldValidator)val).getFieldId() ))) != null ){
+                if ( (c=fields.get (((ISOFieldValidator) val).getFieldId())) != null ){
                     try {
                         m.set( val.validate( c ) );
                     } catch ( ISOVException e ) {
@@ -208,7 +208,7 @@ These can be changes using attributes on the isopackager node */
 
                     /** used to insert msg-level validators **/
                     Map m = new TreeMap();
-                    m.put( Integer.valueOf( VALIDATOR_INDEX ), new ArrayList() );
+                    m.put(VALIDATOR_INDEX, new ArrayList() );
 
                     validatorStack.push( m );
                     setGenericPackagerParams ( atts );
@@ -238,7 +238,7 @@ These can be changes using attributes on the isopackager node */
                     String maxLen = atts.getValue( "maxlen" );
                     Class c = Class.forName( type );
                     ISOFieldValidator v = (ISOFieldValidator)c.newInstance();
-                    if ( breakOnError != null ) v.setBreakOnError( Boolean.valueOf( breakOnError ).booleanValue() );
+                    if ( breakOnError != null ) v.setBreakOnError(Boolean.valueOf(breakOnError));
                     if ( minLen != null ) v.setMinLength( Integer.parseInt( minLen ) );
                     if ( maxLen != null ) v.setMaxLength( Integer.parseInt( maxLen ) );
                     v.setFieldId( Integer.parseInt(fldID) );
@@ -256,7 +256,7 @@ These can be changes using attributes on the isopackager node */
                     String breakOnError = atts.getValue( "break-on-error" );
                     Class c = Class.forName( type );
                     ISOBaseValidator v = (ISOBaseValidator)c.newInstance();
-                    if ( breakOnError != null ) v.setBreakOnError( Boolean.valueOf( breakOnError ).booleanValue() );
+                    if ( breakOnError != null ) v.setBreakOnError(Boolean.valueOf(breakOnError));
                     /** insert validator on stack waiting for properties **/
                     validatorStack.push( v );
                     validatorStack.push( new Properties() );
@@ -295,7 +295,7 @@ onto the stack.
                     v = (ISOBaseValidatingPackager) Class.forName(validator).newInstance();
                     validatorStack.push( v );
                     Map m = new TreeMap();
-                    m.put( Integer.valueOf( VALIDATOR_INDEX ), new ArrayList() );
+                    m.put(VALIDATOR_INDEX, new ArrayList() );
                     validatorStack.push( m );
                     fieldStack.push( new TreeMap() );
                 }
@@ -366,7 +366,7 @@ onto the stack.
                     }
                 }
                 /** add validator to the has **/
-                ((List)((Map)validatorStack.peek()).get( Integer.valueOf(VALIDATOR_INDEX) )).add( v );
+                ((List)((Map)validatorStack.peek()).get(VALIDATOR_INDEX)).add( v );
             }
             if (localName.equals("isofieldpackager")){
                 // Pop the 4 entries off the stack in the correct order
@@ -389,7 +389,7 @@ onto the stack.
                 v.setFieldValidator( makeFieldValidatorArray ( val ) );
                 v.setMsgValidator( makeMsgValidatorArray ( val ) );
                 ISOMsgFieldValidator mfv = new ISOMsgFieldValidator ( fieldPackager.getDescription(), v );
-                mfv.setFieldId( fno.intValue() );
+                mfv.setFieldId(fno);
                 v.setLogger (getLogger(), "Generic validating Packager");
                 m=(Map)validatorStack.peek();
                 m.put(fno, mfv);
@@ -408,7 +408,7 @@ onto the stack.
 
         ISOBaseValidator[] makeMsgValidatorArray ( Map m ){
             // First find the count
-            List<ISOBaseValidator> l = (List)m.get( Integer.valueOf( VALIDATOR_INDEX ) );
+            List<ISOBaseValidator> l = (List)m.get(VALIDATOR_INDEX);
             return l.toArray(new ISOBaseValidator[l.size()]);
         }
 

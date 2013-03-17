@@ -73,16 +73,16 @@ public class MUXPool extends QBeanSupport implements MUX {
         return null;
     }
     public boolean isConnected() {
-        for (int i=0; i<mux.length; i++)
-            if (mux[i].isConnected())
+        for (MUX aMux : mux)
+            if (aMux.isConnected())
                 return true;
         return false;
     }
     private MUX firstAvailableMUX (long maxWait) {
         do {
-            for (int i=0; i<mux.length; i++)
-                if (mux[i].isConnected())
-                    return mux[i];
+            for (MUX aMux : mux)
+                if (aMux.isConnected())
+                    return aMux;
             ISOUtil.sleep (1000);
         } while (System.currentTimeMillis() < maxWait);
         return null;

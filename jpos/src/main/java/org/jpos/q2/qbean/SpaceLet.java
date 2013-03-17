@@ -325,7 +325,7 @@ public class SpaceLet extends QBeanSupport implements Space {
             if (source != null)
                 retValue = bsh.source (source);
             if (retValue instanceof Boolean) {
-                rc = ((Boolean)retValue).booleanValue ();
+                rc = (Boolean) retValue;
             }
         }
         return rc;

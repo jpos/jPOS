@@ -402,8 +402,8 @@ public class Q2 implements FileFilter, Runnable {
         boolean rc = false;
         if (f.isDirectory()) {
             File file[] = f.listFiles (this);
-            for (int i=0; i<file.length; i++) {
-                if (register (file[i]))
+            for (File aFile : file) {
+                if (register(aFile))
                     rc = true;
             }
         } else if (dirMap.get (f) == null) {

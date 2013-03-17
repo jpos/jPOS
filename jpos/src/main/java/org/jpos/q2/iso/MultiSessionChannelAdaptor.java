@@ -188,8 +188,7 @@ public class MultiSessionChannelAdaptor
         }
     }
     private void disconnectAll() {
-        for (int i=0; i<channels.length; i++)
-            disconnect(channels[i]);
+        for (ISOChannel channel : channels) disconnect(channel);
     }
     private ISOChannel getNextChannel() {
         ISOChannel c = null;
@@ -204,8 +203,7 @@ public class MultiSessionChannelAdaptor
     }
     private int getConnectedCount() {
         int connected = 0;
-        for (int i=0; i<channels.length; i++) {
-            ISOChannel c = channels[i];
+        for (ISOChannel c : channels) {
             if (c != null && c.isConnected()) {
                 connected++;
             }

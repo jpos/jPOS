@@ -78,12 +78,12 @@ public class ChannelPool implements ISOChannel, LogSource, Configurable, Cloneab
     public synchronized void disconnect () throws IOException {
         current = null;
         LogEvent evt = new LogEvent (this, "disconnect");
-        for (int i=0; i<pool.size(); i++) {
+        for (Object aPool : pool) {
             try {
-                ISOChannel c = (ISOChannel) pool.get (i);
-                c.disconnect ();
+                ISOChannel c = (ISOChannel) aPool;
+                c.disconnect();
             } catch (IOException e) {
-                evt.addMessage (e);
+                evt.addMessage(e);
             }
         }
         Logger.log (evt);
@@ -119,7 +119,7 @@ public class ChannelPool implements ISOChannel, LogSource, Configurable, Cloneab
         return this.name;
     }
     public ISOPackager getPackager () {
-        return (ISOPackager) null;
+        return null;
     }
     public void setLogger (Logger logger, String realm) {
         this.logger = logger;
@@ -136,11 +136,11 @@ public class ChannelPool implements ISOChannel, LogSource, Configurable, Cloneab
     {
         this.cfg = cfg;
         String channelName[] = cfg.getAll ("channel");
-        for (int i=0; i<channelName.length; i++) {
+        for (String aChannelName : channelName) {
             try {
-                addChannel (channelName[i]);
+                addChannel(aChannelName);
             } catch (NameRegistrar.NotFoundException e) {
-                throw new ConfigurationException (e);
+                throw new ConfigurationException(e);
             }
         }
     }
@@ -150,13 +150,13 @@ public class ChannelPool implements ISOChannel, LogSource, Configurable, Cloneab
     public void addChannel (String name) 
         throws NameRegistrar.NotFoundException
     {
-        pool.add ((ISOChannel) NameRegistrar.get ("channel."+name));
+        pool.add (NameRegistrar.get ("channel."+name));
     }
     public void removeChannel (ISOChannel channel) {
         pool.remove (channel);
     }
     public void removeChannel (String name) throws NameRegistrar.NotFoundException {
-        pool.remove ((ISOChannel) NameRegistrar.get ("channel."+name));
+        pool.remove (NameRegistrar.get ("channel."+name));
     }
     public int size() {
         return pool.size();
@@ -172,7 +172,7 @@ public class ChannelPool implements ISOChannel, LogSource, Configurable, Cloneab
     
     public Object clone(){
       try {
-        return (ChannelPool)super.clone();
+        return super.clone();
       } catch (CloneNotSupportedException e) {
         throw new InternalError();
       }

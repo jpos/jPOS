@@ -143,8 +143,8 @@ public class BSHMethod {
         Interpreter i = initInterpreter(arguments);
         Map result = new HashMap();
         String rName;
-        for (Iterator it = returnNames.iterator(); it.hasNext(); ) {
-            rName = (String) it.next();
+        for (Object returnName : returnNames) {
+            rName = (String) returnName;
             result.put(rName, i.get(rName));
         }
         return result;
@@ -153,8 +153,8 @@ public class BSHMethod {
     protected Interpreter initInterpreter(Map arguments) throws EvalError, FileNotFoundException, IOException {
         Interpreter i = new Interpreter();
         Map.Entry entry;
-        for (Iterator it = arguments.entrySet().iterator(); it.hasNext(); ) {
-            entry = (Map.Entry) it.next();
+        for (Object o : arguments.entrySet()) {
+            entry = (Map.Entry) o;
             i.set((String) entry.getKey(), entry.getValue());
         }
         if (source) {

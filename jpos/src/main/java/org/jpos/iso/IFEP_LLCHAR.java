@@ -61,12 +61,12 @@ public class IFEP_LLCHAR extends ISOFieldPackager {
         if ((len=s.length()) > getLength() || len>97)   // paranoia settings
             throw new ISOException (
                 "invalid len "+len +" packing IFEP_LLCHAR field "
-                +(Integer) c.getKey()
+                + c.getKey()
             );
 
         return (
             ISOUtil.zeropad(Integer.toString(len+2), 2) 
-           +ISOUtil.zeropad(((Integer) c.getKey()).toString(), 2) 
+           +ISOUtil.zeropad(c.getKey().toString(), 2)
            +s
         ).getBytes();
     }
@@ -86,8 +86,8 @@ public class IFEP_LLCHAR extends ISOFieldPackager {
             throw new ISOException 
                 (c.getClass().getName() + " is not an ISOField");
 
-        ((ISOField)c).setFieldNumber (
-            Integer.parseInt(new String(b, offset+2, 2))
+        c.setFieldNumber(
+                Integer.parseInt(new String(b, offset + 2, 2))
         );
         c.setValue (new String (b, offset+4, len-2));
         return len + 2;
@@ -102,7 +102,7 @@ public class IFEP_LLCHAR extends ISOFieldPackager {
 
         int len   = Integer.parseInt(new String(readBytes (in, 2)));
         int fldno = Integer.parseInt(new String(readBytes (in, 2)));
-        ((ISOField)c).setFieldNumber (fldno);
+        c.setFieldNumber(fldno);
         c.setValue (new String (readBytes (in, len-2)));
     }
 
