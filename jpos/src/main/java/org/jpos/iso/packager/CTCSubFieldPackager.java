@@ -48,7 +48,7 @@ public class CTCSubFieldPackager extends ISOBaseValidatingPackager {
             Map tab = c.getChildren();
             StringBuilder sb = new StringBuilder();
             for ( int i = 0; i < fld.length; i++ ) {
-                ISOField f = (ISOField) tab.get (Integer.valueOf(i));
+                ISOField f = (ISOField) tab.get (i);
                 if ( f != null ) {
                     sb.append ( new String( fld[i].pack( f ) ) );
                 }
@@ -94,7 +94,7 @@ public class CTCSubFieldPackager extends ISOBaseValidatingPackager {
         try {
             Map tab = c.getChildren();
             for ( int i = 0; i < fldVld.length; i++ ) {
-                ISOField f = (ISOField) tab.get (Integer.valueOf(i));
+                ISOField f = (ISOField) tab.get (i);
                 if ( f != null )
                     c.set( fldVld[i].validate( f ) );
             }

@@ -34,8 +34,8 @@ public class QBeanFactory extends QBeanSupport implements QBeanFactoryMBean {
         Element e = getPersist();
         privateList = new HashMap();
         List beans = e.getChildren("bean");
-        for (Iterator i = beans.iterator(); i.hasNext();) {
-            Element bean = (Element) i.next();
+        for (Object bean1 : beans) {
+            Element bean = (Element) bean1;
             String id = bean.getAttributeValue("id");
             privateList.put(id, bean);
         }
@@ -116,11 +116,11 @@ public class QBeanFactory extends QBeanSupport implements QBeanFactoryMBean {
         String className = bean.getAttributeValue("class");
         Object beanInstance = getFactory().newInstance(className);
         List propertyList = bean.getChildren("property");
-        for (Iterator props = propertyList.iterator(); props.hasNext();) {
-            Element propertyElement = (Element) props.next();
+        for (Object aPropertyList : propertyList) {
+            Element propertyElement = (Element) aPropertyList;
             String pName = propertyElement.getAttributeValue("name");
             String pValue = propertyElement.getAttributeValue("value");
-            String pRef =  propertyElement.getAttributeValue("ref");
+            String pRef = propertyElement.getAttributeValue("ref");
             String methodName = "set"
                     + Character.toUpperCase(pName.charAt(0))
                     + pName.substring(1);

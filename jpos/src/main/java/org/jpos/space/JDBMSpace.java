@@ -79,7 +79,7 @@ public class JDBMSpace<K,V> extends TimerTask implements Space<K,V> {
      * @return reference to default JDBMSpace
      */
     public static JDBMSpace getSpace() {
-        return (JDBMSpace) getSpace ("space");
+        return getSpace ("space");
     }
     /**
      * creates a named JDBMSpace 
@@ -88,7 +88,7 @@ public class JDBMSpace<K,V> extends TimerTask implements Space<K,V> {
      * @return reference to named JDBMSpace
      */
     public static JDBMSpace getSpace(String name) {
-        return (JDBMSpace) getSpace(name, name);
+        return getSpace(name, name);
     }
     /**
      * creates a named JDBMSpace

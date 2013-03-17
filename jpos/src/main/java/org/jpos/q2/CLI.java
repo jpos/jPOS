@@ -171,7 +171,8 @@ public class CLI implements Runnable
     public void print(String s) {}
     public void println(String s) {}
     public boolean confirm(String prompt) throws IOException { return false; }
-    public Q2 getQ2() { return null; };
+    public Q2 getQ2() { return null; }
+
     public ConsoleReader getConsoleReader() { return null; }
     public PrintStream getOutputStream() { return null; }
 

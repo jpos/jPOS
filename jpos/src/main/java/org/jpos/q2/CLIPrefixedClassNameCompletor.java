@@ -58,11 +58,8 @@ public class CLIPrefixedClassNameCompletor extends SimpleCompletor
         // trailing ".class"
         Set<String> classNames = new TreeSet<String>();
 
-        for (Iterator i = classes.iterator(); i.hasNext(); )
-        {
-            String name = (String) i.next();
-            if (name.endsWith(".class"))
-            {
+        for (String name : classes) {
+            if (name.endsWith(".class")) {
                 classNames.add(name.replace('/', '.').
                         substring(0, name.length() - 6));
             }

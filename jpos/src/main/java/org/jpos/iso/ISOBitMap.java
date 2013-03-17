@@ -84,7 +84,7 @@ public class ISOBitMap extends ISOComponent implements Cloneable {
      * @return Object representing this field number
      */
     public Object getKey() {
-        return Integer.valueOf(fieldNumber);
+        return fieldNumber;
     }
     /**
      * @return Object representing this field value

@@ -84,7 +84,7 @@ public class SimpleConfiguration implements Configuration {
         String[] ss = getAll (name);
         double[] dd = new double[ss.length];
         for (int i=0; i<ss.length; i++)
-            dd[i] = Double.valueOf(ss[i].trim()).doubleValue();
+            dd[i] = Double.valueOf(ss[i].trim());
         return dd;
     }
     public boolean[] getBooleans (String name) {
@@ -113,11 +113,11 @@ public class SimpleConfiguration implements Configuration {
     }
     public double getDouble(String name) {
         return Double.valueOf(
-            props.getProperty(name,"0.00").trim()).doubleValue();
+                props.getProperty(name, "0.00").trim());
     }
     public double getDouble(String name, double def) {
         return Double.valueOf(
-            props.getProperty(name,Double.toString(def)).trim()).doubleValue();
+                props.getProperty(name, Double.toString(def)).trim());
     }
     public boolean getBoolean (String name) {
         String v = get (name, "false").trim();

@@ -206,8 +206,8 @@ public class TSpace<K,V> extends TimerTask implements LocalSpace<K,V>, Loggeable
         synchronized (this) {
             keys = entries.keySet().toArray();
         }
-        for (int i=0; i<keys.length; i++) {
-            p.printf ("%s<key count='%d'>%s</key>\n", indent, size(keys[i]), keys[i]);
+        for (Object key : keys) {
+            p.printf("%s<key count='%d'>%s</key>\n", indent, size(key), key);
         }
         p.println(indent+"<keycount>"+(keys.length-1)+"</keycount>");
         int exp0, exp1;
@@ -227,12 +227,12 @@ public class TSpace<K,V> extends TimerTask implements LocalSpace<K,V>, Loggeable
                 listeners = l.toArray();
         }
         if (listeners != null) {
-            for (int i=0; i<listeners.length; i++) {
-                Object o = listeners[i];
+            for (Object listener : listeners) {
+                Object o = listener;
                 if (o instanceof Expirable)
-                    o = ((Expirable)o).getValue();
+                    o = ((Expirable) o).getValue();
                 if (o instanceof SpaceListener)
-                    ((SpaceListener) o).notify (key, value);
+                    ((SpaceListener) o).notify(key, value);
             }
         }
     }
@@ -298,8 +298,8 @@ public class TSpace<K,V> extends TimerTask implements LocalSpace<K,V>, Loggeable
             notifyListeners(key, value);
     }
     public boolean existAny (K[] keys) {
-        for (int i=0; i<keys.length; i++) {
-            if (rdp (keys[i]) != null)
+        for (K key : keys) {
+            if (rdp(key) != null)
                 return true;
         }
         return false;

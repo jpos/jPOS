@@ -102,14 +102,14 @@ public class IVA_NUMNOZERO extends IVA_NUM {
             if (ISOUtil.isZero( (String)c.getValue() ) ){
                 ISOVError e = new ISOVError(
                         "Invalid Value Error. It can not be zero-filled. (Current value: " +
-                        (String)c.getValue()+ ") ",
+                                c.getValue() + ") ",
                         getRejCode( ISOVError.ERR_INVALID_VALUE ) );
                 if ( c instanceof ISOVField )
                     ((ISOVField)c).addISOVError( e );
                 else
                     c = new ISOVField( c, e );
                 if ( breakOnError )
-                    throw new ISOVException ( "Error on field " + ((Integer)c.getKey()).intValue(), c );
+                    throw new ISOVException ( "Error on field " + (Integer) c.getKey(), c );
             }
             return c;
         }

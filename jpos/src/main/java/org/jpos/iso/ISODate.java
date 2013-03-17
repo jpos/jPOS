@@ -36,7 +36,7 @@ public class ISODate {
         throw new AssertionError();
     }
 
-    public static final long ONE_YEAR = 365*86400*1000;
+    public static final long ONE_YEAR = 365L*86400L*1000L;
    /**
     * Formats a date object, using the default time zone for this host
     * @param d date object to be formatted

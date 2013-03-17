@@ -53,7 +53,7 @@ public class IF_TCHAR extends IF_TBASE {
      * @exception ISOException
      */
     public byte[] pack (ISOComponent c) throws ISOException {
-        String s = (String) c.getValue() + getToken() ;
+        String s = c.getValue() + getToken() ;
         return s.getBytes();
     }
     /**

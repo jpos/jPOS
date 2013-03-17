@@ -109,9 +109,9 @@ public class FSDISOMsg extends ISOMsg implements Cloneable  {
     public Object clone(int[] fields) {
         FSDISOMsg m = (FSDISOMsg) super.clone();
         m.fsd = new FSDMsg(fsd.getBasePath(), fsd.getBaseSchema());
-        for (int i=0; i<fields.length; i++) {
-            String f = Integer.toString(fields[i]);
-            m.fsd.set (f, fsd.get (f));
+        for (int field : fields) {
+            String f = Integer.toString(field);
+            m.fsd.set(f, fsd.get(f));
         }
         return m;
     }

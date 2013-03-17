@@ -67,28 +67,28 @@ public class BSHRequestListener extends Log
             if (!whitelist.contains(mti) && !whitelist.contains("*"))
                 mti = "unsupported";
 
-            for (int i=0; i<bshSource.length; i++) {
+            for (String aBshSource : bshSource) {
                 try {
-                    Interpreter bsh = new Interpreter ();
-                    bsh.set ("source", source);
-                    bsh.set ("message", m);
-                    bsh.set ("log", this);
-                    bsh.set ("cfg", cfg);
+                    Interpreter bsh = new Interpreter();
+                    bsh.set("source", source);
+                    bsh.set("message", m);
+                    bsh.set("log", this);
+                    bsh.set("cfg", cfg);
 
-                    int idx = bshSource[i].indexOf(MTI_MACRO);
+                    int idx = aBshSource.indexOf(MTI_MACRO);
                     String script;
 
                     if (idx >= 0) {
                         // replace $mti with the actual value in script file name
-                        script = bshSource[i].substring(0, idx) + mti +
-                            bshSource[i].substring(idx + MTI_MACRO.length());
+                        script = aBshSource.substring(0, idx) + mti +
+                                aBshSource.substring(idx + MTI_MACRO.length());
                     } else {
-                        script = bshSource[i];
+                        script = aBshSource;
                     }
 
-                    bsh.source (script);
+                    bsh.source(script);
                 } catch (Exception e) {
-                    warn (e);
+                    warn(e);
                 }
             }
         }catch (Exception e){

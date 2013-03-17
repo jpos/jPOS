@@ -422,36 +422,65 @@ public class ISOUtil {
      */
     public static String dumpString(byte[] b) {
         StringBuilder d = new StringBuilder(b.length * 2);
-        for (int i=0; i<b.length; i++) {
-            char c = (char) b[i];
-            if (Character.isISOControl (c)) {
+        for (byte aB : b) {
+            char c = (char) aB;
+            if (Character.isISOControl(c)) {
                 // TODO: complete list of control characters,
                 // use a String[] instead of this weird switch
                 switch (c) {
-                    case '\r'  : d.append ("{CR}");   break;
-                    case '\n'  : d.append ("{LF}");   break;
-                    case '\000': d.append ("{NULL}"); break;
-                    case '\001': d.append ("{SOH}");  break;
-                    case '\002': d.append ("{STX}");  break;
-                    case '\003': d.append ("{ETX}");  break;
-                    case '\004': d.append ("{EOT}");  break;
-                    case '\005': d.append ("{ENQ}");  break;
-                    case '\006': d.append ("{ACK}");  break;
-                    case '\007': d.append ("{BEL}");  break;
-                    case '\020': d.append ("{DLE}");  break;
-                    case '\025': d.append ("{NAK}");  break;
-                    case '\026': d.append ("{SYN}");  break;
-                    case '\034': d.append ("{FS}");  break;
-                    case '\036': d.append ("{RS}");  break;
+                    case '\r':
+                        d.append("{CR}");
+                        break;
+                    case '\n':
+                        d.append("{LF}");
+                        break;
+                    case '\000':
+                        d.append("{NULL}");
+                        break;
+                    case '\001':
+                        d.append("{SOH}");
+                        break;
+                    case '\002':
+                        d.append("{STX}");
+                        break;
+                    case '\003':
+                        d.append("{ETX}");
+                        break;
+                    case '\004':
+                        d.append("{EOT}");
+                        break;
+                    case '\005':
+                        d.append("{ENQ}");
+                        break;
+                    case '\006':
+                        d.append("{ACK}");
+                        break;
+                    case '\007':
+                        d.append("{BEL}");
+                        break;
+                    case '\020':
+                        d.append("{DLE}");
+                        break;
+                    case '\025':
+                        d.append("{NAK}");
+                        break;
+                    case '\026':
+                        d.append("{SYN}");
+                        break;
+                    case '\034':
+                        d.append("{FS}");
+                        break;
+                    case '\036':
+                        d.append("{RS}");
+                        break;
                     default:
                         d.append('[');
-                        d.append(hexStrings[(int)b[i] & 0xFF]);
+                        d.append(hexStrings[(int) aB & 0xFF]);
                         d.append(']');
                         break;
                 }
-            }
-            else
-                d.append (c);
+            } else
+                d.append(c);
 
         }
         return d.toString();
@@ -788,7 +817,7 @@ public class ISOUtil {
                 case '\n': 
                     if (canonical) {
                         str.append("&#");
-                        str.append(Integer.toString((int) (ch & 0xFF)));
+                        str.append(Integer.toString(ch & 0xFF));
                         str.append(';');
                         break;
                     }
@@ -796,7 +825,7 @@ public class ISOUtil {
                 default: 
                     if (ch < 0x20) {
                         str.append("&#");
-                        str.append(Integer.toString((int) (ch & 0xFF)));
+                        str.append(Integer.toString(ch & 0xFF));
                         str.append(';');
                     }
                     else if (ch > 0xff00) {

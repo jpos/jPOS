@@ -63,7 +63,7 @@ public class CLICommandInterface
 
         for (String prefix : prefixes)
         {
-            if (command.indexOf(".") < 0)
+            if (!command.contains("."))
             {
                 className = prefix + command;
             }

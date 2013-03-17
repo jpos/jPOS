@@ -108,7 +108,7 @@ public class FilterLogListener implements LogListener,Configurable
 
         Integer J = (Integer)levels.get(priority);
 
-        return ( I.intValue() >= J.intValue() );
+        return (I >= J);
     }
 
     public synchronized LogEvent log(LogEvent ev) {

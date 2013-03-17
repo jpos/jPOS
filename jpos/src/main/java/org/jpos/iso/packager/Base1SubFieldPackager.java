@@ -131,7 +131,7 @@ public class Base1SubFieldPackager extends ISOBasePackager
             if (emitBitMap()) 
             {
                 // BITMAP (-1 in HashTable)
-                c = (ISOComponent) fields.get (Integer.valueOf(-1));
+                c = (ISOComponent) fields.get (-1);
                 byte[] b = getBitMapfieldPackager().pack(c);
                 len += b.length;
                 l.add(b);
@@ -139,7 +139,7 @@ public class Base1SubFieldPackager extends ISOBasePackager
 
             for (int i=getFirstField(); i<=m.getMaxField(); i++) 
             {
-                if ((c = (ISOComponent) fields.get (Integer.valueOf(i))) != null)
+                if ((c = (ISOComponent) fields.get (i)) != null)
                 {
                     try 
                     {
