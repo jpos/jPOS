@@ -158,7 +158,7 @@ public class UI implements UIFactory, UIObjectFactory {
                 createComponent (config.getChild (elementName))
             );
             if (c instanceof JComponent) {
-                c.revalidate();
+                ((JComponent)c).revalidate();
             }
             c.repaint ();
         }
