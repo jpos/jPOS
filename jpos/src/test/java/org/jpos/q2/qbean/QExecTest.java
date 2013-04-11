@@ -64,13 +64,6 @@ public class QExecTest {
     }
 
     @Test
-    public void testInitService() throws Throwable {
-        QExec qExec = new QExec();
-        qExec.initService();
-        assertNull("qExec.getShutdownScript()", qExec.getShutdownScript());
-    }
-
-    @Test
     public void testSetShutdownScript() throws Throwable {
         QExec qExec = new QExec();
         qExec.setShutdownScript("testQExecScriptPath");
@@ -96,15 +89,6 @@ public class QExecTest {
         }
     }
 
-    @Test
-    public void testStartServiceThrowsNullPointerException() throws Throwable {
-        try {
-            new QExec().startService();
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
-    }
 
     @Test
     public void testStopServiceThrowsArrayIndexOutOfBoundsException() throws Throwable {
@@ -127,16 +111,6 @@ public class QExecTest {
             fail("Expected IllegalArgumentException to be thrown");
         } catch (IllegalArgumentException ex) {
             assertEquals("ex.getMessage()", "Empty command", ex.getMessage());
-        }
-    }
-
-    @Test
-    public void testStopServiceThrowsNullPointerException() throws Throwable {
-        try {
-            new QExec().stopService();
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
         }
     }
 }

@@ -19,6 +19,10 @@
 package org.jpos.q2.qbean;
 
 import org.jpos.q2.QBeanSupport;
+import org.jpos.util.LogEvent;
+import org.jpos.util.Logger;
+
+import java.io.*;
 
 /**
 * QBean for starting and stopping scripts or programs.
@@ -38,15 +42,14 @@ public class QExec extends QBeanSupport implements QExecMBean {
     String startScript;
     String shutdownScript;
 
-    public void initService () throws Exception {
+    @Override
+    protected void startService () throws Exception {
+        exec(startScript);
     }
 
-    public void startService () throws Exception {
-        Runtime.getRuntime().exec (startScript);
-    }
-
-    public void stopService () throws Exception {
-        Runtime.getRuntime().exec (shutdownScript);
+    @Override
+    protected void stopService () throws Exception {
+        exec(shutdownScript);
     }
 
     /**
@@ -75,5 +78,18 @@ public class QExec extends QBeanSupport implements QExecMBean {
      */
     public String getShutdownScript () {
         return shutdownScript;
+    }
+
+    private void exec (String script) throws IOException {
+        if (script != null) {
+            Process p = Runtime.getRuntime().exec(script);
+            BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()) );
+            LogEvent evt = getLog().createInfo("--- " + script + " ---");
+            String line;
+            while ((line = in.readLine()) != null) {
+                evt.addMessage(line);
+            }
+            Logger.log(evt);
+        }
     }
 }
