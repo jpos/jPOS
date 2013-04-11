@@ -64,7 +64,8 @@ public class QBeanSupport
     public void setName (String name) {
         if (this.name == null) 
             this.name = name;
-        log.setRealm (name);
+        if (log != null)
+            log.setRealm (name);
         setModified (true);
     }
     public void setLogger (String loggerName) {
@@ -80,7 +81,7 @@ public class QBeanSupport
     }
 
     public String getLogger () {
-        return log.getLogger().getName();
+        return log != null ? log.getLogger().getName() : null;
     }
     public Log getLog () {
         return log;
@@ -270,6 +271,4 @@ public class QBeanSupport
     public Configuration getConfiguration () {
         return cfg;
     }
-
 }
-
