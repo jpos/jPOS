@@ -54,7 +54,7 @@ public class NameRegistrarTest {
         NameRegistrar.getInstance().dump(new PrintStream(out), ">");
         assertThat(
                 out.toString(),
-                allOf(containsString(">--- name-registrar ---" + System.getProperty("line.separator")), containsString("test1"),
+                allOf(containsString("name-registrar:" + System.getProperty("line.separator")), containsString("test1"),
                         containsString("test2")));
     }
 
@@ -64,7 +64,7 @@ public class NameRegistrarTest {
         NameRegistrar.getInstance().dump(new PrintStream(out), "+", WITH_DETAIL);
         assertThat(
                 out.toString(),
-                allOf(containsString("+--- name-registrar ---" + System.getProperty("line.separator")), containsString("test1"),
+                allOf(containsString("name-registrar:" + System.getProperty("line.separator")), containsString("test1"),
                         containsString("test2")));
     }
 
