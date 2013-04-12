@@ -108,7 +108,7 @@ public class NameRegistrar implements Loggeable {
 
     public void dump(PrintStream p, String indent, boolean detail) {
         String inner = indent + "  ";
-        p.println(indent + "--- name-registrar ---");
+        p.println(indent + "name-registrar:");
         for (Map.Entry<String, Object> entry : registrar.entrySet()) {
             Object obj = entry.getValue();
             String key = entry.getKey();
