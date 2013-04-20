@@ -337,6 +337,14 @@ public class TransactionManager
         sessions = cfg.getInt ("sessions", 1);
         threshold = cfg.getInt ("threshold", sessions / 2);
         maxSessions = cfg.getInt ("max-sessions", sessions);
+        if (maxSessions < sessions)
+            throw new ConfigurationException("max-sessions < sessions");
+        if (maxActiveSessions > 0) {
+            if (maxActiveSessions < sessions)
+                throw new ConfigurationException("max-active-sessions < sessions");
+            if (maxActiveSessions < maxSessions)
+                throw new ConfigurationException("max-active-sessions < max-sessions");
+        }
         callSelectorOnAbort = cfg.getBoolean("call-selector-on-abort", true);
     }
     public void addListener (TransactionStatusListener l) {
