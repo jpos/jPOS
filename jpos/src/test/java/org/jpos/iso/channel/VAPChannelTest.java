@@ -239,7 +239,7 @@ public class VAPChannelTest {
         assertEquals("vAPChannel.getMaxPacketLength()", 100000, vAPChannel.getMaxPacketLength());
         assertEquals("vAPChannel.getPort()", 0, vAPChannel.getPort());
         assertNull("vAPChannel.getSocket()", vAPChannel.getSocket());
-        assertEquals("vAPChannel.getTimeout()", 0, vAPChannel.getTimeout());
+        assertEquals("vAPChannel.getTimeout()", 300000, vAPChannel.getTimeout());
         assertFalse("vAPChannel.isOverrideHeader()", vAPChannel.isOverrideHeader());
         assertNull("vAPChannel.getHost()", vAPChannel.getHost());
     }
@@ -253,7 +253,7 @@ public class VAPChannelTest {
         assertEquals("vAPChannel.getMaxPacketLength()", 100000, vAPChannel.getMaxPacketLength());
         assertEquals("vAPChannel.getPort()", 0, vAPChannel.getPort());
         assertNull("vAPChannel.getSocket()", vAPChannel.getSocket());
-        assertEquals("vAPChannel.getTimeout()", 0, vAPChannel.getTimeout());
+        assertEquals("vAPChannel.getTimeout()", 300000, vAPChannel.getTimeout());
         assertFalse("vAPChannel.isOverrideHeader()", vAPChannel.isOverrideHeader());
         assertNull("vAPChannel.getHost()", vAPChannel.getHost());
     }

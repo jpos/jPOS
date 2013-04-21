@@ -901,7 +901,7 @@ public class BaseChannelTest {
         BaseChannel gZIPChannel = new GZIPChannel(new ISO93BPackager(), null);
         gZIPChannel.setSocketFactory(new SunJSSESocketFactory());
         gZIPChannel.setConfiguration(new SimpleConfiguration());
-        assertEquals("(GZIPChannel) gZIPChannel.getTimeout()", 0, gZIPChannel.getTimeout());
+        assertEquals("(GZIPChannel) gZIPChannel.getTimeout()", 300000, gZIPChannel.getTimeout());
         assertEquals("(GZIPChannel) gZIPChannel.getMaxPacketLength()", 100000, gZIPChannel.getMaxPacketLength());
         assertFalse("(GZIPChannel) gZIPChannel.overrideHeader", ((GZIPChannel) gZIPChannel).overrideHeader);
     }
@@ -910,7 +910,7 @@ public class BaseChannelTest {
     public void testSetConfiguration1() throws Throwable {
         BaseChannel gZIPChannel = new GZIPChannel();
         gZIPChannel.setConfiguration(new SimpleConfiguration());
-        assertEquals("(GZIPChannel) gZIPChannel.getTimeout()", 0, gZIPChannel.getTimeout());
+        assertEquals("(GZIPChannel) gZIPChannel.getTimeout()", 300000, gZIPChannel.getTimeout());
         assertEquals("(GZIPChannel) gZIPChannel.getMaxPacketLength()", 100000, gZIPChannel.getMaxPacketLength());
         assertFalse("(GZIPChannel) gZIPChannel.overrideHeader", ((GZIPChannel) gZIPChannel).overrideHeader);
     }

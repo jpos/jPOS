@@ -99,6 +99,7 @@ public abstract class BaseChannel extends Observable
     protected String realm = null;
     protected String originalRealm = null;
     protected byte[] header = null;
+    private static final int DEFAULT_TIMEOUT = 300000;
 
     /**
      * constructor shared by server and client
@@ -968,7 +969,7 @@ public abstract class BaseChannel extends Observable
         if (socketFactory != this && socketFactory instanceof Configurable)
             ((Configurable)socketFactory).setConfiguration (cfg);
         try {
-            setTimeout (cfg.getInt ("timeout"));
+            setTimeout (cfg.getInt ("timeout", DEFAULT_TIMEOUT));
             connectTimeout = cfg.getInt ("connect-timeout", timeout);
         } catch (SocketException e) {
             throw new ConfigurationException (e);
