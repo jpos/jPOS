@@ -41,10 +41,10 @@ public class ISOAmount
         super ();
         setFieldNumber (fieldNumber);
     }
-    public ISOAmount (int fieldNumber, int currencyCode, BigDecimal amount) {
+    public ISOAmount (int fieldNumber, int currencyCode, BigDecimal amount) throws ISOException {
         super ();
-        setFieldNumber (fieldNumber);
-        this.amount = amount;
+        setFieldNumber(fieldNumber);
+        this.amount = amount.setScale(ISOCurrency.getCurrency(currencyCode).getDecimals());
         this.currencyCode = currencyCode;
     }
     public Object getKey() {

@@ -42,7 +42,7 @@ public class ISOAmountTest {
 
     @Before
     public void setUp() throws Exception {
-        iSOAmount = new ISOAmount(28, 831, BigDecimal.TEN);
+        iSOAmount = new ISOAmount(28, 840, BigDecimal.TEN.setScale(2));
     }
 
     @Test
@@ -51,18 +51,18 @@ public class ISOAmountTest {
         iSOAmount.dump(new PrintStream(baos), ":-o");
         // then
         String lineSep     = System.getProperty ("line.separator");
-        String expected = ":-o<field id=\"28\" currency=\"831\" type=\"amount\" value=\"10\"/>" + lineSep;
+        String expected = ":-o<field id=\"28\" currency=\"840\" type=\"amount\" value=\"10.00\"/>" + lineSep;
         assertThat(baos.toString(), is(expected));
     }
 
     @Test
     public void testGetAmountAsString() throws ISOException {
-        assertThat(iSOAmount.getAmountAsString(), is("8310000000000010"));
+        assertThat(iSOAmount.getAmountAsString(), is("8402000000001000"));
     }
 
     @Test
     public void testGetAmountAsLegacyString() throws ISOException {
-        assertThat(iSOAmount.getAmountAsLegacyString(), is("000000000010"));
+        assertThat(iSOAmount.getAmountAsLegacyString(), is("000000001000"));
     }
 
     @Test
@@ -97,27 +97,27 @@ public class ISOAmountTest {
 
     @Test
     public void testGetAmount() {
-        assertThat(iSOAmount.getAmount(), is(BigDecimal.TEN));
+        assertThat(iSOAmount.getAmount(), is(BigDecimal.TEN.setScale(2)));
     }
 
     @Test
     public void testGetScale() {
-        assertThat(iSOAmount.getScale(), is(0));
+        assertThat(iSOAmount.getScale(), is(2));
     }
 
     @Test
     public void testGetScaleAsString() {
-        assertThat(iSOAmount.getScaleAsString(), is("0"));
+        assertThat(iSOAmount.getScaleAsString(), is("2"));
     }
 
     @Test
     public void testGetCurrencyCode() {
-        assertThat(iSOAmount.getCurrencyCode(), is(831));
+        assertThat(iSOAmount.getCurrencyCode(), is(840));
     }
 
     @Test
     public void testGetCurrencyCodeAsString() throws ISOException {
-        assertThat(iSOAmount.getCurrencyCodeAsString(), is("831"));
+        assertThat(iSOAmount.getCurrencyCodeAsString(), is("840"));
     }
 
     @Test
