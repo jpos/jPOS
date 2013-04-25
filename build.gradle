@@ -22,6 +22,12 @@ allprojects {
         mavenRepo name: 'oracle', url: "http://download.oracle.com/maven"
         mavenRepo name: 'jline', url: "http://jline.sourceforge.net/m2repo"
     }
+    if (project.hasProperty("lint")) {
+      // gradle -Plint ...
+      tasks.withType(Compile) { 
+        options.compilerArgs << "-Xlint" 
+      } 
+    }
     def pomConfig = {
         name 'jPOS Project'
         description """
