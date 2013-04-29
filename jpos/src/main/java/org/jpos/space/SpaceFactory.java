@@ -21,6 +21,7 @@ package org.jpos.space;
 import org.jpos.util.NameRegistrar;
 
 import java.util.StringTokenizer;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 /**
  * Creates a space based on a space URI.
@@ -62,6 +63,7 @@ public class SpaceFactory {
     public static final String JDBM       = "jdbm";
     public static final String JE         = "je";
     public static final String DEFAULT    = "default";
+    private static ScheduledThreadPoolExecutor gcExecutor = new ScheduledThreadPoolExecutor(1);
 
     /**
      * @return the default TransientSpace
@@ -119,6 +121,9 @@ public class SpaceFactory {
             throw new SpaceError ("Invalid space: " + uri);
         }
         return sp;
+    }
+    public static ScheduledThreadPoolExecutor getGCExecutor() {
+        return gcExecutor;
     }
     private static Space createSpace (String scheme, String name, String param)
     {

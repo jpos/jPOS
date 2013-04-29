@@ -22,7 +22,7 @@ import java.io.*;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Set;
-import java.util.TimerTask;
+import java.util.concurrent.Future;
 import java.util.concurrent.Semaphore;
 
 import com.sleepycat.je.*;
@@ -40,7 +40,6 @@ import java.util.HashSet;
 import java.util.concurrent.TimeUnit;
 
 import org.jpos.util.Log;
-import org.jpos.util.DefaultTimer;
 import org.jpos.util.Loggeable;
 
 /**
@@ -49,7 +48,7 @@ import org.jpos.util.Loggeable;
  * @author Alejandro Revilla
  * @since 1.6.5
  */
-public class JESpace<K,V> extends Log implements LocalSpace<K,V>, Loggeable {
+public class JESpace<K,V> extends Log implements LocalSpace<K,V>, Loggeable, Runnable {
     Environment dbe = null;
     EntityStore store = null;
     PrimaryIndex<Long, Ref> pIndex = null;
@@ -57,9 +56,9 @@ public class JESpace<K,V> extends Log implements LocalSpace<K,V>, Loggeable {
     SecondaryIndex<String,Long, Ref> sIndex = null;
     SecondaryIndex<Long,Long,GCRef> gcsIndex = null;
     Semaphore gcSem = new Semaphore(1);
-    TimerTask gcTimerTask = null;
     LocalSpace<Object,SpaceListener> sl;
-    public static final long GC_DELAY = 5*60*1000L;
+    public static final long GC_DELAY = 60*1000L;
+    private Future gcTask;
 
     static final Map<String,Space> spaceRegistrar = 
         new HashMap<String,Space> ();
@@ -86,7 +85,7 @@ public class JESpace<K,V> extends Log implements LocalSpace<K,V>, Loggeable {
             gcpIndex = store.getPrimaryIndex (Long.class, GCRef.class);
             sIndex = store.getSecondaryIndex (pIndex, String.class, "key");
             gcsIndex = store.getSecondaryIndex (gcpIndex, Long.class, "expires");
-            scheduleGC();
+            gcTask = SpaceFactory.getGCExecutor().scheduleAtFixedRate(this, GC_DELAY, GC_DELAY, TimeUnit.MILLISECONDS);
         } catch (Exception e) {
             throw new SpaceError (e);
         }
@@ -277,21 +276,21 @@ public class JESpace<K,V> extends Log implements LocalSpace<K,V>, Loggeable {
             gcSem.release();
         }
     }
-    public void scheduleGC() {
-        gcTimerTask  = new TimerTask() {
-            public void run() {
-                try {
-                    gc();
-                } catch (DatabaseException e) {
-                    warn (e);
-                }
-            }
-        };
-        DefaultTimer.getTimer().schedule(gcTimerTask, GC_DELAY, GC_DELAY);
+    public void run() {
+        try {
+            gc();
+        } catch (DatabaseException e) {
+            warn(e);
+        }
     }
     public void close () throws DatabaseException {
         gcSem.acquireUninterruptibly();
-        gcTimerTask.cancel();
+        gcTask.cancel(false);
+        while (!gcTask.isDone()) {
+            try {
+                Thread.sleep(500L);
+            } catch (InterruptedException ignored) { }
+        }
         store.close ();
         dbe.close();
     }

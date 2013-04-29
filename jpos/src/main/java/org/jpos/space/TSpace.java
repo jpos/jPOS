@@ -17,12 +17,11 @@
  */
 
 package org.jpos.space;
-
-import org.jpos.util.DefaultTimer;
 import org.jpos.util.Loggeable;
-
 import java.io.PrintStream;
 import java.util.*;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * TSpace implementation
@@ -30,19 +29,20 @@ import java.util.*;
  * @version $Revision$ $Date$
  * @since !.4.9
  */
-public class TSpace<K,V> extends TimerTask implements LocalSpace<K,V>, Loggeable {
+
+public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
     protected Map entries;
     protected TSpace sl;    // space listeners
-    public static final long GCDELAY = 60*1000;
+    public static final long GCDELAY = 5*1000;
+    private static final long GCLONG = 60*1000;
     private Set[] expirables;
-    private static final long GCLONG = GCDELAY * 5;
     private long lastLongGC = System.currentTimeMillis();
 
     public TSpace () {
         super();
         entries = new HashMap ();
         expirables = new Set[] { new HashSet<K>(), new HashSet<K>() };
-        DefaultTimer.getTimer().schedule (this, GCDELAY, GCDELAY);
+        SpaceFactory.getGCExecutor().scheduleAtFixedRate(this, GCDELAY, GCDELAY, TimeUnit.MILLISECONDS);
     }
     public void out (K key, V value) {
         if (key == null || value == null)
