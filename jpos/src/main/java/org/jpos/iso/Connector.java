@@ -40,11 +40,12 @@ public class Connector
 {
     private Logger logger;
     private String realm;
+    private boolean preserveSourceHeader = true;
     protected String muxName;
     protected String channelName;
     protected int timeout = 0;
     protected static ThreadPool pool;
-    
+
     public Connector () {
         super();
     }
@@ -78,6 +79,7 @@ public class Connector
             pool    = new ThreadPool (1, cfg.getInt ("poolsize", 10));
         muxName     = cfg.get ("destination-mux", null);
         channelName = cfg.get ("destination-channel", null);
+        preserveSourceHeader = cfg.getBoolean ("preserve-source-header", true);
         if (muxName == null && channelName == null) {
             throw new ConfigurationException("Neither destination mux nor channel were specified.");
         }
@@ -101,7 +103,8 @@ public class Connector
                     MUX destMux = (MUX) NameRegistrar.get (muxName);
                     ISOMsg response = destMux.request (c, timeout);
                     if (response != null) {
-                        response.setHeader (c.getISOHeader()); 
+                        if (preserveSourceHeader)
+                            response.setHeader (c.getISOHeader());
                         source.send(response);
                     }
                 } else if (channelName != null) {
