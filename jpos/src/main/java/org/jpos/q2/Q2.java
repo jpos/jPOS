@@ -72,9 +72,9 @@ public class Q2 implements FileFilter, Runnable {
     private QClassLoader loader;
     private ClassLoader mainClassLoader;
     private Log log;
-    private boolean started;
-    private boolean shutdown;
-    private boolean shuttingDown;
+    private volatile boolean started;
+    private volatile boolean shutdown;
+    private volatile boolean shuttingDown;
     private Thread q2Thread;
     private String[] args;
     private boolean hasSystemLogger;
@@ -414,9 +414,8 @@ public class Q2 implements FileFilter, Runnable {
     }
 
     private boolean deploy (File f) {
+        LogEvent evt = log != null ? log.createInfo() : null;
         try {
-            if (log != null)
-                log.info ("deploy:" + f.getCanonicalPath());
             QEntry qentry = (QEntry) dirMap.get (f);
             SAXBuilder builder = createSAXBuilder();
             Document doc;
@@ -438,13 +437,19 @@ public class Q2 implements FileFilter, Runnable {
                     return false;
                 }
             }
-            Object obj = factory.instantiate (this, rootElement);
-            qentry.setObject (obj);
+            if (!"true".equalsIgnoreCase(rootElement.getAttributeValue("ignore"))) {
+                if (evt != null)
+                    evt.addMessage("deploy: " + f.getCanonicalPath());
+                Object obj = factory.instantiate (this, rootElement);
+                qentry.setObject (obj);
 
-            ObjectInstance instance = factory.createQBean (
-                this, doc.getRootElement(), obj
-            );
-            qentry.setInstance (instance);
+                ObjectInstance instance = factory.createQBean (
+                    this, doc.getRootElement(), obj
+                );
+                qentry.setInstance (instance);
+            } else if (evt != null) {
+                evt.addMessage("deploy ignored: " + f.getCanonicalPath());
+            }
         } 
         catch (InstanceAlreadyExistsException e) {
            /*
@@ -455,20 +460,26 @@ public class Q2 implements FileFilter, Runnable {
             * 
             */
             tidyFileAway(f,DUPLICATE_EXTENSION);
-            getLog().warn ("deploy", e);
+            if (evt != null)
+                evt.addMessage(e);
             return false;
         }
         catch (Exception e) {
-            getLog().warn ("deploy", e);
+            if (evt != null)
+                evt.addMessage(e);
             tidyFileAway(f,ERROR_EXTENSION);
             // This will also save deploy error repeats...
             return false;
         } 
         catch (Error e) {
-            getLog().warn ("deploy", e);
+            if (evt != null)
+                evt.addMessage(e);
             tidyFileAway(f,ENV_EXTENSION);
             // This will also save deploy error repeats...
             return false;
+        } finally {
+            if (evt != null)
+                Logger.log(evt);
         }
         return true ;
     }
