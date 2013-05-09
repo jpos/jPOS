@@ -437,7 +437,8 @@ public class Q2 implements FileFilter, Runnable {
                     return false;
                 }
             }
-            if (!"true".equalsIgnoreCase(rootElement.getAttributeValue("ignore"))) {
+            String enabledAttribute = rootElement.getAttributeValue("enabled", "true");
+            if ("true".equalsIgnoreCase(enabledAttribute) || "yes".equalsIgnoreCase(enabledAttribute)) {
                 if (evt != null)
                     evt.addMessage("deploy: " + f.getCanonicalPath());
                 Object obj = factory.instantiate (this, rootElement);
@@ -448,7 +449,7 @@ public class Q2 implements FileFilter, Runnable {
                 );
                 qentry.setInstance (instance);
             } else if (evt != null) {
-                evt.addMessage("deploy ignored: " + f.getCanonicalPath());
+                evt.addMessage("deploy ignored (enabled='" + enabledAttribute + "'): " + f.getCanonicalPath());
             }
         } 
         catch (InstanceAlreadyExistsException e) {
