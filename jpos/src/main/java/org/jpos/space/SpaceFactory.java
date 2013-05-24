@@ -21,7 +21,9 @@ package org.jpos.space;
 import org.jpos.util.NameRegistrar;
 
 import java.util.StringTokenizer;
+import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.ThreadFactory;
 
 /**
  * Creates a space based on a space URI.
@@ -63,7 +65,19 @@ public class SpaceFactory {
     public static final String JDBM       = "jdbm";
     public static final String JE         = "je";
     public static final String DEFAULT    = "default";
-    private static ScheduledThreadPoolExecutor gcExecutor = new ScheduledThreadPoolExecutor(1);
+    private static ScheduledThreadPoolExecutor gcExecutor;
+    static {
+        gcExecutor = new ScheduledThreadPoolExecutor(1, new ThreadFactory() {
+            @Override
+            public Thread newThread(Runnable r) {
+                Thread t = Executors.defaultThreadFactory().newThread(r);
+                t.setDaemon(true);
+                return t;
+            }
+        });
+        gcExecutor.setExecuteExistingDelayedTasksAfterShutdownPolicy(false);
+        gcExecutor.setContinueExistingPeriodicTasksAfterShutdownPolicy(false);
+    }
 
     /**
      * @return the default TransientSpace
