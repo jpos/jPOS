@@ -51,7 +51,7 @@ public class RotateLogListener extends SimpleLogListener
     public static final long DEFAULT_MAXSIZE = 10000000;
 
     /**
-     * @param name base log filename
+     * @param logName base log filename
      * @param sleepTime switch logs every t seconds
      * @param maxCopies number of old logs
      * @param maxSize in bytes 
@@ -125,14 +125,9 @@ public class RotateLogListener extends SimpleLogListener
         return super.log (ev);
     }
     protected synchronized void openLogFile() throws IOException {
-        openLogFile(true);
-    }
-
-    protected synchronized void openLogFile(boolean closeCurrentFile) throws IOException {
-        FileOutputStream newFileOut = new FileOutputStream(logName, true);
-        if (f != null && closeCurrentFile)
+        if (f != null)
             f.close();
-        f = newFileOut;
+        f = new FileOutputStream (logName, true);
         setPrintStream (new PrintStream(f));
         p.println ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
         p.println ("<logger class=\"" + getClass().getName() + "\">");
@@ -146,36 +141,16 @@ public class RotateLogListener extends SimpleLogListener
     public synchronized void logRotate ()
         throws IOException
     {
-        PrintStream activePrintStream = p;
-
-        File activeFile = new File(logName);
-        File tempActiveFile = new File(logName + "~move");
-        if (!activeFile.renameTo(tempActiveFile))
-            return;
-
-        boolean newFileCreated = false;
-        try {
-            openLogFile(false);
-            newFileCreated = true;
-        } catch (Exception e) {
-            logDebug("Failed to open new log file: " + e);
+        closeLogFile ();
+        super.close ();
+        setPrintStream (null);
+        for (int i=maxCopies; i>0; ) {
+            File dest   = new File (logName + "." + i);
+            File source = new File (logName + ((--i > 0) ? ("." + i) : ""));
+            dest.delete();
+            source.renameTo(dest);
         }
-
-        if (newFileCreated) {
-            activePrintStream.println("</logger>");
-            activePrintStream.close();
-            for (int i=maxCopies; i>0; i--) {
-                File source = new File (logName + "." + (i-1));
-                File dest   = new File (logName + "." + i);
-                dest.delete();
-                source.renameTo(dest);
-            }
-            if (maxCopies > 0) {
-                tempActiveFile.renameTo(new File(logName + ".1"));
-            }
-        } else {
-            tempActiveFile.renameTo(activeFile);
-        }
+        openLogFile();
     }
     protected synchronized void logDebug (String msg) {
         if (p != null) {

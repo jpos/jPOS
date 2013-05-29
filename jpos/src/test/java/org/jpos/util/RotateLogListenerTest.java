@@ -235,6 +235,7 @@ public class RotateLogListenerTest {
     }
 
     @Test
+    @Ignore("This feature doesn't work in Windows so we reverted the patch c94ff02f2")
     public void testLogRotateAbortsWhenCreatingNewFileFails() throws Exception {
         String logFileName = "RotateAbortsTestLog";
         RotateLogListener listener = createRotateLogListenerWithIsoDateFormat(logFileName);
@@ -265,6 +266,7 @@ public class RotateLogListenerTest {
         configuration.setProperty("file", logRotationTestDirectory.getDirectory().getAbsolutePath() + "/" + logFileName);
         configuration.setProperty("copies", "10");
         configuration.setProperty("maxsize", "1000000");
+        logRotationTestDirectory.allowNewFileCreation();
         listener.setConfiguration(new SimpleConfiguration(configuration));
         return listener;
     }

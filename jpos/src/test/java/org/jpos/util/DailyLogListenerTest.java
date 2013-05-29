@@ -306,6 +306,7 @@ public class DailyLogListenerTest {
     }
 
     @Test
+    @Ignore("This feature doesn't work in Windows so we reverted the patch c94ff02f2")
     public void testLogRotateAbortsWhenCreatingNewFileFails() throws Exception {
         String logFileName = "RotateAbortsTestLog";
         DailyLogListener listener = createCompressingDailyLogListenerWithIsoDateFormat(logFileName);
@@ -338,6 +339,7 @@ public class DailyLogListenerTest {
         configuration.setProperty("date-format", ".yyyy-MM-dd");
         configuration.setProperty("compression-format", "gzip");
         configuration.setProperty("maxsize", "1000000");
+        logRotationTestDirectory.allowNewFileCreation();
         listener.setConfiguration(new SimpleConfiguration(configuration));
         return listener;
     }
