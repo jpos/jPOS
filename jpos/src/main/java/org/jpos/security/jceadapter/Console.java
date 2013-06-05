@@ -155,7 +155,7 @@ public class Console {
                         System.err.println("Unknown command: " + commandName);
                     }
                 } catch (SMException e) {
-                //e.printStackTrace();
+                    e.printStackTrace(errPS);
                 } catch (java.lang.NumberFormatException e) {
                     errPS.println("Invalid KeyLength");
                 }
