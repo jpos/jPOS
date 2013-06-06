@@ -18,6 +18,8 @@
 
 package org.jpos.iso.channel;
 
+import org.jpos.core.Configuration;
+import org.jpos.core.ConfigurationException;
 import org.jpos.iso.*;
 import org.jpos.util.LogEvent;
 import org.jpos.util.Logger;
@@ -40,6 +42,7 @@ import java.net.ServerSocket;
  */
 public class PADChannel extends BaseChannel {
     BufferedReader reader = null;
+    long delay = 0L;
     /**
      * No-args constructor
      */
@@ -76,7 +79,10 @@ public class PADChannel extends BaseChannel {
         throws IOException
     {
         super (p, serverSocket);
+        if (delay > 0L)
+            ISOUtil.sleep(delay);
     }
+    @Override
     public ISOMsg receive() throws IOException, ISOException {
         byte[] header = null;
         ISOMsg m = new ISOMsg ();
@@ -85,7 +91,7 @@ public class PADChannel extends BaseChannel {
         int hLen = getHeaderLength();
         LogEvent evt = new LogEvent (this, "receive");
         try {
-            synchronized (serverIn) {
+            synchronized (serverInLock) {
                 if (hLen > 0) {
                     header = new byte [hLen];
                     serverIn.readFully(header);
@@ -121,6 +127,16 @@ public class PADChannel extends BaseChannel {
         }
         Logger.log (evt);
         return m;
+    }
+    @Override
+    public void send (ISOMsg m) throws IOException, ISOException {
+        super.send(m);
+    }
+    @Override
+    public void setConfiguration (Configuration cfg)
+            throws ConfigurationException {
+        super.setConfiguration(cfg);
+        delay = cfg.getLong("delay", 0L);
     }
 
     /**
