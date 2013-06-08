@@ -18,6 +18,7 @@
 
 package org.jpos.space;
 
+import org.jpos.util.ConcurrentUtil;
 import org.jpos.util.NameRegistrar;
 
 import java.util.StringTokenizer;
@@ -65,19 +66,7 @@ public class SpaceFactory {
     public static final String JDBM       = "jdbm";
     public static final String JE         = "je";
     public static final String DEFAULT    = "default";
-    private static ScheduledThreadPoolExecutor gcExecutor;
-    static {
-        gcExecutor = new ScheduledThreadPoolExecutor(1, new ThreadFactory() {
-            @Override
-            public Thread newThread(Runnable r) {
-                Thread t = Executors.defaultThreadFactory().newThread(r);
-                t.setDaemon(true);
-                return t;
-            }
-        });
-        gcExecutor.setExecuteExistingDelayedTasksAfterShutdownPolicy(false);
-        gcExecutor.setContinueExistingPeriodicTasksAfterShutdownPolicy(false);
-    }
+    private static ScheduledThreadPoolExecutor gcExecutor = ConcurrentUtil.newScheduledThreadPoolExecutor();
 
     /**
      * @return the default TransientSpace
