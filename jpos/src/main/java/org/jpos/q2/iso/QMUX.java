@@ -201,13 +201,17 @@ public class QMUX
             throw new ISOException ("Key fields not found - not sending " + sb.toString());
         return sb.toString();
     }
-    private String mapMTI (String mti) {
+    private String mapMTI (String mti) throws ISOException {
         StringBuilder sb = new StringBuilder();
-        if (mti != null && mti.length() == 4) {
-            for (int i=0; i<mtiMapping.length; i++) {
-                int c = mti.charAt (i) - '0';
-                if (c >= 0 && c < 10) 
-                    sb.append (mtiMapping[i].charAt(c));
+        if (mti != null) {
+            if (mti.length() < 4)
+                mti = ISOUtil.zeropad(mti, 4); // #jPOS-55
+            if (mti.length() == 4) {
+                for (int i=0; i<mtiMapping.length; i++) {
+                    int c = mti.charAt (i) - '0';
+                    if (c >= 0 && c < 10)
+                        sb.append (mtiMapping[i].charAt(c));
+                }
             }
         }
         return sb.toString();
