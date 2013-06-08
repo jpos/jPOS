@@ -47,6 +47,9 @@ public class Context implements Externalizable, Loggeable, Pausable {
      */
     public void put (Object key, Object value) {
         getMap().put (key, value);
+        synchronized (this) {
+            notifyAll();
+        }
     }
     /**
      * puts an Object in the transient Map
@@ -152,10 +155,13 @@ public class Context implements Externalizable, Loggeable, Pausable {
         Iterator iter = map.entrySet().iterator();
         while (iter.hasNext()) {
             Map.Entry entry = (Map.Entry) iter.next ();
+            String key  = entry.getKey().toString();
+            if (key.startsWith("*"))
+                continue; // see jPOS-63
             if (pmap != null && pmap.containsKey(entry.getKey())) 
-                p.print (indent + "<entry key='" + entry.getKey().toString() + "' p='true'>"); 
+                p.print (indent + "<entry key='" + key + "' p='true'>");
             else
-                p.print (indent + "<entry key='" + entry.getKey().toString() + "'>"); 
+                p.print (indent + "<entry key='" + key + "'>");
             Object value = entry.getValue();
             if (value instanceof Loggeable) {
                 p.println ("");
