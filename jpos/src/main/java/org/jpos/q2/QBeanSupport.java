@@ -22,6 +22,7 @@ import org.jdom.Element;
 import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
+import org.jpos.util.ConcurrentUtil;
 import org.jpos.util.Log;
 
 import java.beans.BeanInfo;
@@ -30,6 +31,7 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.Iterator;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 /**
  * @author <a href="mailto:taherkordy@dpi2.dpi.net.ir">Alireza Taherkordi</a>
@@ -46,6 +48,7 @@ public class QBeanSupport
     String name;
     protected Log log;
     protected Configuration cfg;
+    protected ScheduledThreadPoolExecutor scheduledThreadPoolExecutor;
         
     public QBeanSupport () {
         super();
@@ -136,6 +139,10 @@ public class QBeanSupport
         if (state != QBean.STOPPED)
            stop();
 
+        if (scheduledThreadPoolExecutor != null) {
+            scheduledThreadPoolExecutor.shutdown();
+            scheduledThreadPoolExecutor = null;
+        }
         try {
            destroyService();
         }
@@ -182,6 +189,12 @@ public class QBeanSupport
     protected void startService()   throws Exception {}
     protected void stopService()    throws Exception {}
     protected void destroyService() throws Exception {}
+
+    protected synchronized ScheduledThreadPoolExecutor getScheduledThreadPoolExecutor() {
+        if (scheduledThreadPoolExecutor == null)
+            scheduledThreadPoolExecutor = ConcurrentUtil.newScheduledThreadPoolExecutor();
+        return scheduledThreadPoolExecutor;
+    }
 
     protected Element createElement (String name, Class mbeanClass) {
         Element e = new Element (name);
