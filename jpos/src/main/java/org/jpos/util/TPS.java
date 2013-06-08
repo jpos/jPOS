@@ -47,7 +47,6 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 @SuppressWarnings("unused")
 public class TPS implements Loggeable {
-
     AtomicInteger count;
     AtomicLong start;
     int peak;
@@ -66,7 +65,7 @@ public class TPS implements Loggeable {
 
     /**
      *
-     * @param autoupdate
+     * @param autoupdate true to auto update
      */
     public TPS(boolean autoupdate) {
         this(1000L, autoupdate);
@@ -74,6 +73,7 @@ public class TPS implements Loggeable {
 
     /**
      * @param period in millis
+     * @param autoupdate true to autoupdate
      */
     public TPS(final long period, boolean autoupdate) {
         super();
