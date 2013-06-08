@@ -27,19 +27,17 @@ import org.jpos.space.LocalSpace;
 import org.jpos.space.Space;
 import org.jpos.space.SpaceFactory;
 import org.jpos.space.SpaceListener;
-import org.jpos.util.DefaultTimer;
-import org.jpos.util.LogSource;
 import org.jpos.util.Loggeable;
 import org.jpos.util.NameRegistrar;
 
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.*;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Alejandro Revilla
- * @version $Revision$ $Date$
- * @jmx:mbean description="QMUX" extends="org.jpos.q2.QBeanSupportMBean"
  */
 public class QMUX 
     extends QBeanSupport
@@ -51,7 +49,6 @@ public class QMUX
     protected LocalSpace sp;
     protected String in, out, unhandled;
     protected String[] ready;
-    protected String spaceName;
     protected String[] key;
     protected String ignorerc;
     protected String[] mtiMapping;
@@ -215,49 +212,30 @@ public class QMUX
         }
         return sb.toString();
     }
-    /**
-     * @jmx:managed-attribute description="input queue"
-     */
     public synchronized void setInQueue (String in) {
         this.in = in;
         getPersist().getChild("in").setText (in);
         setModified (true);
     }
-    /**
-     * @jmx:managed-attribute description="input queue"
-     */
     public String getInQueue () {
         return in;
     }
-
-    /**
-     * @jmx:managed-attribute description="output queue"
-     */
     public synchronized void setOutQueue (String out) {
         this.out = out; 
         getPersist().getChild("out").setText (out);
         setModified (true);
     }
-    /**
-     * @jmx:managed-attribute description="output queue"
-     */
     public String getOutQueue () {
         return out;
     }
     public Space getSpace() {
         return sp;
     }
-    /**
-     * @jmx:managed-attribute description="unhandled queue"
-     */
     public synchronized void setUnhandledQueue (String unhandled) {
         this.unhandled = unhandled;
         getPersist().getChild("unhandled").setText (unhandled);
         setModified (true);
     }
-    /**
-     * @jmx:managed-attribute description="unhandled queue"
-     */
     public String getUnhandledQueue () {
         return unhandled;
     }
@@ -272,7 +250,7 @@ public class QMUX
         AsyncRequest ar = new AsyncRequest (rl, handBack);
         synchronized (ar) {
             if (timeout > 0)
-                DefaultTimer.getTimer().schedule (ar, timeout);
+                ar.setFuture(getScheduledThreadPoolExecutor().schedule(ar, timeout, TimeUnit.MILLISECONDS));
         }
         sp.out (req, ar, timeout);
         sp.out (out, m, timeout);
@@ -376,7 +354,7 @@ public class QMUX
      * @throws org.jpos.iso.ISOFilter.VetoException;
      *
      */
-    public void send(ISOMsg m) throws IOException, ISOException, ISOFilter.VetoException {
+    public void send(ISOMsg m) throws IOException, ISOException {
         sp.out (out, m);
     }
 
@@ -432,33 +410,24 @@ public class QMUX
         sb.append (name);
         sb.append (value);
     }
-    public static class AsyncRequest extends TimerTask {
+    public static class AsyncRequest implements Runnable {
         ISOResponseListener rl;
         Object handBack;
+        ScheduledFuture future;
         public AsyncRequest (ISOResponseListener rl, Object handBack) {
             super();
             this.rl = rl;
             this.handBack = handBack;
         }
+        public void setFuture(ScheduledFuture future) {
+            this.future = future;
+        }
         public void responseReceived (ISOMsg response) {
-            cancel();
-            ISOResponseListener _rl;
-            synchronized (this) {
-                _rl = rl;
-                rl = null;
-            }
-            if (_rl != null)
-                _rl.responseReceived (response, handBack);
+            if (future == null || future.cancel(false))
+                rl.responseReceived (response, handBack);
         }
         public void run() {
-            cancel();
-            ISOResponseListener _rl;
-            synchronized (this) {
-                _rl = rl;
-                rl = null;
-            }
-            if (_rl != null)
-                _rl.expired(handBack);
+            rl.expired(handBack);
         }
     }
 }
