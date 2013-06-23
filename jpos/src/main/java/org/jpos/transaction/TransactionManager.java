@@ -169,12 +169,11 @@ public class TransactionManager
             getLog().warn ("Max sessions reached, new session not created");
             return;
         }
-        thread.setName (getName() + "-" + session);
-
         getLog().info ("start " + thread);
         while (running()) {
             Serializable context = null;
             paused = false;
+            thread.setName (getName() + "-" + session + ":idle");
             try {
                 if (hasStatusListeners)
                     notifyStatusListeners (session, TransactionStatusEvent.State.READY, id, "", null);
@@ -432,8 +431,10 @@ public class TransactionManager
         (TransactionParticipant p, long id, Serializable context) 
     {
         try {
-            if (p instanceof AbortParticipant)
+            if (p instanceof AbortParticipant) {
+                setThreadName(id, "prepareForAbort", p);
                 return ((AbortParticipant)p).prepareForAbort (id, context);
+            }
         } catch (Throwable t) {
             getLog().warn ("PREPARE-FOR-ABORT: " + Long.toString (id), t);
         }
@@ -443,6 +444,7 @@ public class TransactionManager
         (TransactionParticipant p, long id, Serializable context) 
     {
         try {
+            setThreadName(id, "prepare", p);
             return p.prepare (id, context);
         } catch (Throwable t) {
             getLog().warn ("PREPARE: " + Long.toString (id), t);
@@ -453,6 +455,7 @@ public class TransactionManager
         (TransactionParticipant p, long id, Serializable context) 
     {
         try {
+            setThreadName(id, "commit", p);
             p.commit (id, context);
         } catch (Throwable t) {
             getLog().warn ("COMMIT: " + Long.toString (id), t);
@@ -462,6 +465,7 @@ public class TransactionManager
         (TransactionParticipant p, long id, Serializable context) 
     {
         try {
+            setThreadName(id, "abort", p);
             p.abort (id, context);
         } catch (Throwable t) {
             getLog().warn ("ABORT: " + Long.toString (id), t);
@@ -870,5 +874,10 @@ public class TransactionManager
                 l.update (e);
             }
         }
+    }
+    private void setThreadName (long id, String method, TransactionParticipant p) {
+        Thread.currentThread().setName(
+            String.format("%s:%d %s %s", getName(), id, method, p.getClass().getName())
+        );
     }
 }
