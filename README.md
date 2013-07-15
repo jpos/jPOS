@@ -12,6 +12,14 @@
     ./gradlew version
     
 ## Maven POM
+    <dependency>
+      <groupId>org.jpos</groupId>
+      <artifactId>jpos</artifactId>
+      <version>1.9.0</version>
+    </dependency>
+
+if you want to use our nightly builds, for instance to get `1.9.1-SNAPSHOT`, you can
+add the following repository:
 
     <repository>
       <id>jpos</id>
@@ -20,13 +28,5 @@
       <layout>default</layout>
     </repository>
 
-    <dependency>
-      <groupId>org.jpos</groupId>
-      <artifactId>jpos</artifactId>
-      <version>1.8.9-SNAPSHOT</version>
-    </dependency>
-
 ----
 See the [ChangeLog:](http://jpos.org/wiki/ChangeLog) or visit the [Resources](http://jpos.org/resources) page for additional information.
-
-
