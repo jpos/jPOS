@@ -18,22 +18,34 @@
 
 package org.jpos.util;
 
+import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.atomic.AtomicLong;
 
 
 /**
  * WatchDog will issue a warning message 
  * if not canceled on time
  */
+@SuppressWarnings("unused")
 public class WatchDog extends TimerTask {
     String message;
     String logName;
     String realm;
-    public WatchDog (long maxWait, String message) {
-        this.message = message;
+    private static Timer timer = new Timer(true);
+    private static AtomicLong counter = new AtomicLong(0L);
+    public static long PURGE_INTERVAL = 1000L;
+
+    public WatchDog (long duration) {
+        timer.schedule(this, duration);
+        if (counter.incrementAndGet() % PURGE_INTERVAL == 0)
+            timer.purge();  // pro-active purge due to excessive number of timertask cancels.
+    }
+    public WatchDog (long duration, String message) {
+        this(duration);
         this.logName = "Q2";
         this.realm = "watchdog";
-        DefaultTimer.getTimer().schedule (this, maxWait);
+        this.message = message;
     }
     public void setLogName (String logName) {
         this.logName = logName;
@@ -42,7 +54,7 @@ public class WatchDog extends TimerTask {
         this.realm = realm;
     }
     public void run () {
-        Log.getLog (logName, realm).warn (message);
+        if (message != null)
+            Log.getLog (logName, realm).warn (message);
     }
 }
-
