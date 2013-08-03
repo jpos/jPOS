@@ -7,7 +7,7 @@ allprojects {
     apply plugin: 'signing'
 
     group = 'org.jpos'
-    version = '1.9.1-SNAPSHOT'
+    version = '1.9.2'
     [ compileJava, compileTestJava, javadoc ]*.options*.encoding = 'UTF-8'
     def isSnapshot = version.contains("SNAPSHOT")
     def mavenCentralRepo = isSnapshot ?
