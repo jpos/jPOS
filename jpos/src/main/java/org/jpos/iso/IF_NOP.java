@@ -26,12 +26,16 @@ package org.jpos.iso;
  * @see IFA_LLNUM
  */
 public class IF_NOP extends ISOFieldPackager {
+    public IF_NOP () {
+        super(0, "<dummy>");
+    }
+
     /**
      * @param len - field len
      * @param description symbolic descrption
      */
-    public IF_NOP () {
-        super(0, "<dummy>");
+    public IF_NOP (int len, String description) {
+        super(len, description);
     }
     /**
      * @param c - a component
