@@ -89,6 +89,7 @@ public class Q2 implements FileFilter, Runnable {
     private ConfigDecorationProvider decorator=null;
     private UUID instanceId;
     private Framework osgiFramework;
+    private boolean startOSGI = false;
 
     public Q2 (String[] args) {
         super();
@@ -156,6 +157,8 @@ public class Q2 implements FileFilter, Runnable {
             if (cli != null)
                 cli.start();
             initConfigDecorator();
+            if (startOSGI)
+                startOSGIFramework();
             for (int i=1; !shutdown; i++) {
                 try {
                     boolean forceNewClassLoader = scan ();
@@ -619,7 +622,7 @@ public class Q2 implements FileFilter, Runnable {
             if (line.hasOption ("e"))
                 deployBundle (new File (line.getOptionValue ("e")), true);
             if (line.hasOption("O"))
-                startOSGIFramework();
+                startOSGI = true;
         } catch (MissingArgumentException e) {
             System.out.println ("ERROR: " + e.getMessage());
             System.exit (1);
@@ -725,11 +728,15 @@ public class Q2 implements FileFilter, Runnable {
     }
 
     private void startOSGIFramework() throws BundleException {
-        FrameworkFactory frameworkFactory = ServiceLoader.load(
-                FrameworkFactory.class).iterator().next();
-        Map<String, String> config = new HashMap<String, String>();
-        osgiFramework = frameworkFactory.newFramework(config);
-        osgiFramework.start();
+        Iterator<FrameworkFactory> iter = ServiceLoader.load(FrameworkFactory.class, loader).iterator();
+        if (iter.hasNext()) {
+            FrameworkFactory frameworkFactory = iter.next();
+            Map<String, String> config = new HashMap<String, String>();
+            osgiFramework = frameworkFactory.newFramework(config);
+            osgiFramework.start();
+        } else {
+            getLog().warn("OSGI framework not found");
+        }
     }
     private boolean registerOSGIBundle (File f) {
         BundleContext context = osgiFramework.getBundleContext();
