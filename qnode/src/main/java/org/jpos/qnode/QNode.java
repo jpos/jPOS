@@ -96,7 +96,7 @@ public class QNode {
         CommandLineParser parser = new PosixParser();
         Options options = new Options ();
         options.addOption ("v", "version", false, "QNode's version");
-        options.addOption ("b", "bundleDir", true, "Hot deploy bundle directory (defaults to 'bundle')");
+        options.addOption ("b", "bundleDir", true, "bundle directory (defaults to 'bundle')");
         CommandLine line = parser.parse (options, args);
         if (line.hasOption ("v")) {
             displayVersion();
