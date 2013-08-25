@@ -19,11 +19,15 @@
 package org.jpos.qnode;
 
 import org.apache.commons.cli.*;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.launch.Framework;
 import org.osgi.framework.launch.FrameworkFactory;
 
 
+import java.io.File;
+import java.io.FileFilter;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -33,6 +37,8 @@ import static java.util.ResourceBundle.getBundle;
 
 public class QNode {
     private Framework osgiFramework;
+    private File bundleDir;
+    public static final String DEFAULT_BUNDLE_DIR = "bundle";
 
     @SuppressWarnings("unused")
     private QNode() { }
@@ -47,7 +53,7 @@ public class QNode {
             qnode.addShutdownHook();
             qnode.startOSGIFramework();
         } catch (Exception e) {
-            warn(e.getMessage());
+            warn(e);
             System.exit(1);
         }
     }
@@ -89,12 +95,14 @@ public class QNode {
     private void parseCmdLine (String[] args) throws ParseException {
         CommandLineParser parser = new PosixParser();
         Options options = new Options ();
-        options.addOption ("v","version", false, "QNode's version");
+        options.addOption ("v", "version", false, "QNode's version");
+        options.addOption ("b", "bundleDir", true, "Hot deploy bundle directory (defaults to 'bundle')");
         CommandLine line = parser.parse (options, args);
         if (line.hasOption ("v")) {
             displayVersion();
             System.exit (0);
         }
+        bundleDir = new File(line.getOptionValue("b", DEFAULT_BUNDLE_DIR));
     }
 
     private void addShutdownHook () {
@@ -114,6 +122,7 @@ public class QNode {
             Map<String, String> config = new HashMap<String, String>();
             osgiFramework = frameworkFactory.newFramework(config);
             osgiFramework.start();
+            scanBundleDir();
         } else {
             warn("OSGI framework not found");
         }
@@ -128,5 +137,25 @@ public class QNode {
                 warn(e);
             }
         }
+    }
+
+    private void scanBundleDir() throws BundleException {
+        File bundles[] = bundleDir.listFiles (new FileFilter() {
+            @Override
+            public boolean accept(File f) {
+                return f.canRead() && f.getName().toLowerCase().endsWith(".jar");
+            }
+        });
+        if (bundles != null) {
+            for (File b : bundles) {
+                registerOSGIBundle(b);
+            }
+        }
+    }
+
+    private void registerOSGIBundle (File b) throws BundleException {
+        BundleContext context = osgiFramework.getBundleContext();
+        Bundle bundle = context.installBundle("file:" + b.getAbsolutePath());
+        bundle.start();
     }
 }
