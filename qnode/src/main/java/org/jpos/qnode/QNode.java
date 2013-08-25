@@ -28,10 +28,7 @@ import org.osgi.framework.launch.FrameworkFactory;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.ServiceLoader;
+import java.util.*;
 
 import static java.util.ResourceBundle.getBundle;
 
@@ -147,15 +144,18 @@ public class QNode {
             }
         });
         if (bundles != null) {
-            for (File b : bundles) {
-                registerOSGIBundle(b);
+            List<Bundle> bundleList = new ArrayList<Bundle>(bundles.length);
+            for (File f : bundles) {
+                bundleList.add(installOSGIBundle(f));
+            }
+            for (Bundle b : bundleList) {
+                b.start();
             }
         }
     }
 
-    private void registerOSGIBundle (File b) throws BundleException {
+    private Bundle installOSGIBundle (File b) throws BundleException {
         BundleContext context = osgiFramework.getBundleContext();
-        Bundle bundle = context.installBundle("file:" + b.getAbsolutePath());
-        bundle.start();
+        return context.installBundle("file:" + b.getAbsolutePath());
     }
 }
