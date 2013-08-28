@@ -71,9 +71,11 @@ jar () {
                    'Class-Path': manifestClasspath
         instruction 'Bundle-Vendor', 'jPOS.org'
         instruction 'Bundle-Description', "jPOS ${project.version}"
-        instruction 'Include-Resource', configurations.runtime.collect { 'lib/' + it.getName() }.join(' ')
+        // instruction 'Include-Resource', configurations.runtime.collect { 'lib/' + it.getName() }.join(' ')
         instruction 'Bundle-Activator', 'org.jpos.q2.Activator'
-        instruction 'Import-Package', ''
+        instruction 'Import-Package', 'org.osgi.framework,javax.management'
+        instruction 'Export-Package', 'org.jpos.iso'
+        instruction 'Bundle-ClassPath', '.,' + configurations.runtime.collect { "lib/" + it.getName() }.join(',')
     } 
     into ('lib') {
         from configurations.runtime {
