@@ -140,9 +140,10 @@ public class QNode {
         File bundles[] = bundleDir.listFiles (new FileFilter() {
             @Override
             public boolean accept(File f) {
-                return f.canRead() && f.getName().toLowerCase().endsWith(".jar");
+            return f.canRead() && f.getName().toLowerCase().endsWith(".jar");
             }
         });
+        Arrays.sort (bundles);
         if (bundles != null) {
             List<Bundle> bundleList = new ArrayList<Bundle>(bundles.length);
             for (File f : bundles) {
