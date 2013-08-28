@@ -143,14 +143,16 @@ public class QNode {
             return f.canRead() && f.getName().toLowerCase().endsWith(".jar");
             }
         });
-        Arrays.sort (bundles);
         if (bundles != null) {
-            List<Bundle> bundleList = new ArrayList<Bundle>(bundles.length);
-            for (File f : bundles) {
-                bundleList.add(installOSGIBundle(f));
-            }
-            for (Bundle b : bundleList) {
-                b.start();
+            Arrays.sort (bundles);
+            if (bundles != null) {
+                List<Bundle> bundleList = new ArrayList<Bundle>(bundles.length);
+                for (File f : bundles) {
+                    bundleList.add(installOSGIBundle(f));
+                }
+                for (Bundle b : bundleList) {
+                    b.start();
+                }
             }
         }
     }
