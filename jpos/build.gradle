@@ -76,7 +76,9 @@ jar () {
         instruction 'Import-Package', ''
     } 
     into ('lib') {
-        from configurations.runtime
+        from configurations.runtime {
+            exclude 'org.osgi.core*.jar'
+        }
     }
 }
 
