@@ -1,3 +1,4 @@
+apply from: 'jpos/libraries.gradle'
 
 allprojects {
     apply plugin: 'java'

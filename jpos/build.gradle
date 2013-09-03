@@ -1,5 +1,4 @@
 apply plugin: 'osgi'
-apply from: 'libraries.gradle'
 
 dependencies {
     compile libraries.jdom
