@@ -59,18 +59,19 @@ public class SpaceUtil {
         while (sp.inp (key) != null)
             ;
     }
+
+    /**
+     * @deprecated Use space.put instead
+     */
     public static void wipeAndOut  (Space sp, Object key, Object value) {
-        synchronized (sp) {
-            wipe (sp, key);
-            sp.out (key, value);
-        }
+        sp.put(key, value);
     }
-    public static void wipeAndOut  (Space sp, Object key, Object value, long timeout) 
-    {
-        synchronized (sp) {
-            wipe (sp, key);
-            sp.out (key, value, timeout);
-        }
+
+    /**
+     * @deprecated use space.put instead
+     */
+    public static void wipeAndOut  (Space sp, Object key, Object value, long timeout) {
+        sp.out(key, value, timeout);
     }
     public static long nextLong (Space sp, Object key) {
         long l = 0L;
@@ -84,4 +85,3 @@ public class SpaceUtil {
         return l;
     }
 }
-
