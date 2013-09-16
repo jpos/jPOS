@@ -8,6 +8,7 @@ dependencies {
     compile libraries.jline
     compile libraries.beanshell
     compile libraries.javatuples
+    compile "xerces:xercesImpl:2.10.0"
 
     // compile 'org.apache.felix:org.apache.felix.framework:4.2.1'
     compile( "org.osgi:org.osgi.core:4.3.1" )
@@ -23,7 +24,6 @@ dependencies {
     }
     testCompile "org.easytesting:fest-assert:1.4"
     testCompile "xmlunit:xmlunit:1.3"
-    testCompile "xerces:xercesImpl:2.10.0"
     testCompile("junit:junit-dep:4.10") {
         exclude(module: 'hamcrest-core')
     }
@@ -74,7 +74,7 @@ jar () {
         instruction 'Bundle-Description', "jPOS ${project.version}"
         // instruction 'Include-Resource', configurations.runtime.collect { 'lib/' + it.getName() }.join(' ')
         instruction 'Bundle-Activator', 'org.jpos.q2.Activator'
-        instruction 'Import-Package', 'org.osgi.framework,javax.management'
+        instruction 'Import-Package', 'javax.crypto,javax.crypto.spec,javax.management,javax.naming,javax.net.ssl,javax.security.cert,javax.swing,javax.swing.border,javax.swing.event,javax.swing.table,javax.swing.text,javax.swing.text.html,javax.swing.tree,javax.xml.transform,javax.xml.transform.stream,org.osgi.framework;version="[1.6,2)",org.osgi.framework.launch;version="[1.0,2)",org.w3c.dom,org.xml.sax,org.xml.sax.helpers,org.xml.sax.ext'
         instruction 'Export-Package', 'org.jpos.bsh,org.jpos.core,org.jpos.iso,org.jpos.iso.channel,org.jpos.iso.filter,org.jpos.iso.gui,org.jpos.iso.header,org.jpos.iso.packager,org.jpos.iso.validator,org.jpos.q2,org.jpos.q2.cli,org.jpos.q2.install,org.jpos.q2.iso,org.jpos.q2.qbean,org.jpos.q2.security,org.jpos.q2.ui,org.jpos.security,org.jpos.security.jceadapter,org.jpos.space,org.jpos.tlv,org.jpos.transaction,org.jpos.transaction.gui,org.jpos.transaction.participant,org.jpos.ui,org.jpos.ui.action,org.jpos.ui.factory,org.jpos.util'
         instruction 'Bundle-ClassPath', '.,' + configurations.runtime.collect { "lib/" + it.getName() }.join(',')
     } 

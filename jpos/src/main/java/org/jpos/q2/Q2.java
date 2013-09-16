@@ -90,8 +90,9 @@ public class Q2 implements FileFilter, Runnable {
     private UUID instanceId;
     private Framework osgiFramework;
     private boolean startOSGI = false;
+    private BundleContext bundleContext;
 
-    public Q2 (String[] args) {
+    public Q2 (String[] args, BundleContext bundleContext) {
         super();
         this.args = args;
         startTime = System.currentTimeMillis();
@@ -100,13 +101,17 @@ public class Q2 implements FileFilter, Runnable {
         libDir     = new File (deployDir, "lib");
         dirMap     = new TreeMap ();
         deployDir.mkdirs ();
-        mainClassLoader = Thread.currentThread().getContextClassLoader();
+        mainClassLoader = getClass().getClassLoader();
+        this.bundleContext = bundleContext;
     }
     public Q2 () {
-        this (new String[] {} );
+        this (new String[] {}, null );
     }
     public Q2 (String deployDir) {
-        this (new String[] { "-d", deployDir });
+        this (new String[] { "-d", deployDir }, null);
+    }
+    public Q2 (String[] args) {
+        this (args, null);
     }
     public void start () {
         new Thread (this).start();

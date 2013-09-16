@@ -26,7 +26,7 @@ public class Activator implements BundleActivator {
 
     @Override
     public void start(BundleContext context) throws Exception {
-        (q2 = new Q2()).start();
+        (q2 = new Q2(new String[] {}, context)).start();
     }
 
     @Override
