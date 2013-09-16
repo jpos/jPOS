@@ -35,7 +35,6 @@ import javax.management.ObjectName;
 
 import org.jdom.Document;
 import org.jdom.Element;
-import org.jpos.q2.iso.DailyTaskAdaptor;
 import org.jpos.q2.qbean.SystemMonitor;
 import org.jpos.util.Log;
 import org.junit.Before;
@@ -202,11 +201,6 @@ public class Q2Test {
         assertSame("qEntry.instance", instance, qEntry.instance);
     }
 
-    @Test
-    public void testQEntryConstructor1() throws Throwable {
-        Q2.QEntry qEntry = new Q2.QEntry();
-        assertEquals("qEntry.getDeployed()", 0L, qEntry.getDeployed());
-    }
 
     @Test
     public void testQEntryGetDeployed() throws Throwable {
@@ -247,15 +241,6 @@ public class Q2Test {
     }
 
     @Test
-    public void testQEntryGetObject2() throws Throwable {
-        Q2.QEntry qEntry = new Q2.QEntry();
-        Float obj = Float.valueOf(0.0F);
-        qEntry.setObject(obj);
-        Float result = (Float) qEntry.getObject();
-        assertSame("result", obj, result);
-    }
-
-    @Test
     public void testQEntryGetObjectName() throws Throwable {
         ObjectName result = new Q2.QEntry(100L, null).getObjectName();
         assertNull("result", result);
@@ -285,25 +270,10 @@ public class Q2Test {
     }
 
     @Test
-    public void testQEntryIsQPersist() throws Throwable {
-        Q2.QEntry qEntry = new Q2.QEntry();
-        qEntry.setObject(new DailyTaskAdaptor());
-        boolean result = qEntry.isQPersist();
-        assertTrue("result", result);
-    }
-
-    @Test
     public void testQEntryIsQPersist1() throws Throwable {
         boolean result = new Q2.QEntry(100L, new ObjectInstance(new ObjectName("testQEntryParam1", "testQEntryParam2",
                 "testQEntryParam3"), "testQEntryParam2")).isQPersist();
         assertFalse("result", result);
-    }
-
-    @Test
-    public void testQEntrySetDeployed() throws Throwable {
-        Q2.QEntry qEntry = new Q2.QEntry();
-        qEntry.setDeployed(100L);
-        assertEquals("qEntry.deployed", 100L, qEntry.deployed);
     }
 
     @Test
