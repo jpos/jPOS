@@ -8,7 +8,7 @@ dependencies {
     compile libraries.jline
     compile libraries.beanshell
     compile libraries.javatuples
-    compile "xerces:xercesImpl:2.10.0"
+    compile libraries.xerces
 
     // compile 'org.apache.felix:org.apache.felix.framework:4.2.1'
     compile( "org.osgi:org.osgi.core:4.3.1" )
@@ -70,6 +70,21 @@ jar () {
                    'Implementation-Version': version,
                    'Main-Class': 'org.jpos.q2.Q2',
                    'Class-Path': manifestClasspath
+    } 
+}
+
+task bundle (type: Jar) {
+    dependsOn jar
+    classifier = 'bundle'
+    from sourceSets.main.output.classesDir, sourceSets.main.output.resourcesDir
+    manifest = osgiManifest {
+        classesDir = sourceSets.main.output.classesDir
+        classpath = sourceSets.main.runtimeClasspath
+        def manifestClasspath = configurations.runtime.collect { "lib/" + it.getName() }.join(' ') 
+        attributes 'Implementation-Title': 'jPOS', 
+                   'Implementation-Version': version,
+                   'Main-Class': 'org.jpos.q2.Q2',
+                   'Class-Path': manifestClasspath
         instruction 'Bundle-Vendor', 'jPOS.org'
         instruction 'Bundle-Description', "jPOS ${project.version}"
         // instruction 'Include-Resource', configurations.runtime.collect { 'lib/' + it.getName() }.join(' ')
@@ -97,7 +112,7 @@ task javadocJar (type: Jar, dependsOn: javadoc) {
 }
 
 artifacts {
-    archives sourceJar, javadocJar
+    archives sourceJar, javadocJar, bundle
 }
 
 task dist (type: Tar) { 
