@@ -69,6 +69,7 @@ public class DirPoll extends SimpleLogSource
     private boolean shutdown;
     private boolean paused = false;
     private boolean shouldArchive;
+    private boolean shouldCompressArchive;
     private boolean shouldTimestampArchive;
     private String archiveDateFormat;
     private boolean acceptZeroLength = false;
@@ -96,6 +97,9 @@ public class DirPoll extends SimpleLogSource
     }
     public void setShouldArchive(boolean shouldArchive) {
         this.shouldArchive = shouldArchive;
+    }
+    public void setShouldCompressArchive(boolean shouldCompressArchive) {
+        this.shouldCompressArchive = shouldCompressArchive;
     }
     public void setAcceptZeroLength(boolean acceptZeroLength) {
         this.acceptZeroLength = acceptZeroLength;
@@ -156,13 +160,14 @@ public class DirPoll extends SimpleLogSource
                 ((Configurable) processor).setConfiguration (cfg);
             }
             setRequestDir  (cfg.get ("request.dir",  "request"));
-            setResponseDir (cfg.get ("response.dir", "response"));
-            setTmpDir      (cfg.get ("tmp.dir",      "tmp"));
-            setRunDir      (cfg.get ("run.dir",      "run"));
-            setBadDir      (cfg.get ("bad.dir",      "bad"));
-            setArchiveDir  (cfg.get ("archive.dir",  "archive"));
-            setResponseSuffix (cfg.get ("response.suffix", null));
-            setShouldArchive (cfg.getBoolean ("archive", false));
+            setResponseDir(cfg.get("response.dir", "response"));
+            setTmpDir(cfg.get("tmp.dir", "tmp"));
+            setRunDir(cfg.get("run.dir", "run"));
+            setBadDir(cfg.get("bad.dir", "bad"));
+            setArchiveDir(cfg.get("archive.dir", "archive"));
+            setResponseSuffix(cfg.get("response.suffix", null));
+            setShouldArchive(cfg.getBoolean("archive", false));
+            setShouldCompressArchive(cfg.getBoolean("archive.compress", false));
             setAcceptZeroLength (cfg.getBoolean ("zero-length", false));
             setArchiveDateFormat (
                 cfg.get ("archive.dateformat", "yyyyMMddHHmmss")
@@ -290,13 +295,19 @@ public class DirPoll extends SimpleLogSource
         return destination;
     }
 
-    private void store(File f, File destinationDirectory) throws IOException {
+    private File store(File f, File destinationDirectory) throws IOException {
         String storedFilename = f.getName();
         if (shouldTimestampArchive)
             storedFilename = f.getName() + "." + new SimpleDateFormat(archiveDateFormat).format(new Date());
         File destination = new File(destinationDirectory, storedFilename);
         if (!f.renameTo(destination))
             throw new IOException("Unable to archive " + "'" + f.getName() + "' in directory " + destinationDirectory);
+        return destination;
+    }
+
+    private void compress(File f) throws IOException {
+        ZipUtil.zipFile(f, new File(f.getAbsolutePath() + ".zip"));
+        f.delete();
     }
     
     private File scan() {
@@ -359,7 +370,10 @@ public class DirPoll extends SimpleLogSource
                     ((FileProcessor) processor).process (request);
 
                 if (shouldArchive) {
-                    store(request, archiveDir);
+                    File archivedFile = store(request, archiveDir);
+                    if (shouldCompressArchive) {
+                        compress(archivedFile);
+                    }
                 } else {
                     if (!request.delete ())
                         throw new DirPollException 
