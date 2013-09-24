@@ -47,6 +47,7 @@ public class TransactionManager
     public static final String  DEFAULT_GROUP = "";
     public static final long    MAX_PARTICIPANTS = 1000;  // loop prevention
     public static final long    MAX_WAIT = 15000L;
+    public static final long    TIMER_PURGE_INTERVAL = 1000L;
 
     protected Map groups;
 
@@ -73,6 +74,7 @@ public class TransactionManager
     long pauseTimeout  = 0L;
     RetryTask retryTask = null;
     TPS tps;
+    final Timer timer = DefaultTimer.getTimer();
 
     public void initService () throws ConfigurationException {
         queue = cfg.get ("queue", null);
@@ -249,6 +251,8 @@ public class TransactionManager
                 switch (action) {
                     case PAUSE:
                         paused = true;
+                        if (id % TIMER_PURGE_INTERVAL == 0)
+                            timer.purge();
                         break;
                     case PREPARED:
                         setState (id, COMMITTING);
@@ -564,7 +568,7 @@ public class TransactionManager
                     if (expirationMonitor != null) {
                         synchronized (context) {
                             if (!pt.isResumed()) {
-                                DefaultTimer.getTimer().schedule (
+                                timer.schedule (
                                     expirationMonitor, t
                                 );
                             }
