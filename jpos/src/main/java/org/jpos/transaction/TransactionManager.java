@@ -174,6 +174,7 @@ public class TransactionManager
         getLog().info ("start " + thread);
         while (running()) {
             Serializable context = null;
+            prof = null;
             paused = false;
             thread.setName (getName() + "-" + session + ":idle");
             try {
@@ -215,6 +216,9 @@ public class TransactionManager
                         members = pt.members();
                         iter    = pt.iterator();
                         abort   = pt.isAborting();
+                        prof    = pt.getProfiler();
+                        if (prof != null)
+                            prof.reenable();
                     }
                 } else 
                     pt = null;
@@ -243,7 +247,8 @@ public class TransactionManager
                         + ":" + Long.toString(id) +
                         (pt != null ? " [resuming]" : "")
                     );
-                    prof = new Profiler();
+                    if (prof == null)
+                        prof = new Profiler();
                     startTime = System.currentTimeMillis();
                 }
                 snapshot (id, context, PREPARING);
@@ -562,7 +567,7 @@ public class TransactionManager
                     if (t > 0)
                         expirationMonitor = new PausedMonitor (pausable);
                     PausedTransaction pt = new PausedTransaction (
-                        this, id, members, iter, abort, expirationMonitor
+                        this, id, members, iter, abort, expirationMonitor, prof
                     );
                     pausable.setPausedTransaction (pt);
                     if (expirationMonitor != null) {

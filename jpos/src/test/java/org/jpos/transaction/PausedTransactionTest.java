@@ -36,6 +36,7 @@ import java.util.Stack;
 import java.util.TimerTask;
 import java.util.Vector;
 
+import org.jpos.util.Profiler;
 import org.junit.Test;
 
 @SuppressWarnings("unchecked")
@@ -47,7 +48,7 @@ public class PausedTransactionTest {
     @Test
     public void testCancelExpirationMonitor() throws Throwable {
         PausedTransaction pausedTransaction = new PausedTransaction(new TransactionManager(), 100L, new ArrayList(),
-                (new ArrayList()).iterator(), true, null);
+                (new ArrayList()).iterator(), true, null, null);
         pausedTransaction.cancelExpirationMonitor();
         assertNull("pausedTransaction.expirationMonitor",
                 junitx.util.PrivateAccessor.getField(pausedTransaction, "expirationMonitor"));
@@ -57,7 +58,7 @@ public class PausedTransactionTest {
     public void testCancelExpirationMonitor1() throws Throwable {
         TimerTask expirationMonitor = new TransactionManager.PausedMonitor(new Context());
         PausedTransaction pausedTransaction = new PausedTransaction(new TransactionManager(), 100L, new ArrayList(),
-                (new ArrayList()).iterator(), true, expirationMonitor);
+                (new ArrayList()).iterator(), true, expirationMonitor, null);
         pausedTransaction.cancelExpirationMonitor();
         assertSame("pausedTransaction.expirationMonitor", expirationMonitor,
                 junitx.util.PrivateAccessor.getField(pausedTransaction, "expirationMonitor"));
@@ -69,7 +70,7 @@ public class PausedTransactionTest {
         Iterator iter = new ArrayList().iterator();
         TransactionManager txnmgr = new TransactionManager();
         TimerTask expirationMonitor = dummyTimerTask;
-        PausedTransaction pausedTransaction = new PausedTransaction(txnmgr, 100L, members, iter, true, expirationMonitor);
+        PausedTransaction pausedTransaction = new PausedTransaction(txnmgr, 100L, members, iter, true, expirationMonitor, null);
         assertEquals("pausedTransaction.id()", 100L, pausedTransaction.id());
         assertSame("pausedTransaction.expirationMonitor", expirationMonitor,
                 junitx.util.PrivateAccessor.getField(pausedTransaction, "expirationMonitor"));
@@ -82,7 +83,7 @@ public class PausedTransactionTest {
     @Test
     public void testDump() throws Throwable {
         PausedTransaction pausedTransaction = new PausedTransaction(new TransactionManager(), 100L, new ArrayList(),
-                (new ArrayList()).iterator(), true, dummyTimerTask);
+                (new ArrayList()).iterator(), true, dummyTimerTask, null);
         pausedTransaction.dump(new PrintStream(new ByteArrayOutputStream()), "testPausedTransactionIndent");
         assertEquals("pausedTransaction.id()", 100L, pausedTransaction.id());
         assertTrue("pausedTransaction.isAborting()", pausedTransaction.isAborting());
@@ -91,7 +92,7 @@ public class PausedTransactionTest {
     @Test
     public void testDump1() throws Throwable {
         PausedTransaction pausedTransaction = new PausedTransaction(new TransactionManager(), 100L, new ArrayList(),
-                (new ArrayList()).iterator(), false, null);
+                (new ArrayList()).iterator(), false, null, null);
         pausedTransaction.dump(new PrintStream(new ByteArrayOutputStream()), "testPausedTransactionIndent");
         assertEquals("pausedTransaction.id()", 100L, pausedTransaction.id());
         assertFalse("pausedTransaction.isAborting()", pausedTransaction.isAborting());
@@ -100,7 +101,7 @@ public class PausedTransactionTest {
     @Test
     public void testDumpThrowsNullPointerException() throws Throwable {
         PausedTransaction pausedTransaction = new PausedTransaction(new TransactionManager(), 100L, new ArrayList(),
-                (new ArrayList()).iterator(), false, null);
+                (new ArrayList()).iterator(), false, null, null);
         try {
             pausedTransaction.dump(null, "testPausedTransactionIndent");
             fail("Expected NullPointerException to be thrown");
@@ -112,7 +113,7 @@ public class PausedTransactionTest {
     @Test
     public void testDumpThrowsNullPointerException1() throws Throwable {
         PausedTransaction pausedTransaction = new PausedTransaction(new TransactionManager(), 100L, new ArrayList(),
-                (new ArrayList()).iterator(), true, null);
+                (new ArrayList()).iterator(), true, null, null);
         try {
             pausedTransaction.dump(null, "testPausedTransactionIndent");
             fail("Expected NullPointerException to be thrown");
@@ -125,7 +126,7 @@ public class PausedTransactionTest {
     public void testForceAbort() throws Throwable {
         byte[] bytes = new byte[2];
         PausedTransaction pausedTransaction = new PausedTransaction(new TransactionManager(), 100L, new Stack(), new Scanner(
-                new ByteArrayInputStream(bytes)), false, dummyTimerTask);
+                new ByteArrayInputStream(bytes)), false, dummyTimerTask, null);
         pausedTransaction.forceAbort();
         assertTrue("pausedTransaction.isAborting()", pausedTransaction.isAborting());
     }
@@ -134,7 +135,7 @@ public class PausedTransactionTest {
     public void testGetTransactionManager() throws Throwable {
         TransactionManager txnmgr = new TransactionManager();
         PausedTransaction pausedTransaction = new PausedTransaction(txnmgr, 100L, new ArrayList(), new ArrayList().iterator(), true,
-                dummyTimerTask);
+                dummyTimerTask, null);
         TransactionManager result = pausedTransaction.getTransactionManager();
         assertSame("result", txnmgr, result);
     }
@@ -142,7 +143,7 @@ public class PausedTransactionTest {
     @Test
     public void testId() throws Throwable {
         PausedTransaction pausedTransaction = new PausedTransaction(new TransactionManager(), 0L, new ArrayList(),
-                (new ArrayList()).iterator(), true, new TransactionManager.PausedMonitor(new Context()));
+                (new ArrayList()).iterator(), true, new TransactionManager.PausedMonitor(new Context()), null);
         long result = pausedTransaction.id();
         assertEquals("result", 0L, result);
     }
@@ -150,7 +151,7 @@ public class PausedTransactionTest {
     @Test
     public void testId1() throws Throwable {
         PausedTransaction pausedTransaction = new PausedTransaction(new TransactionManager(), 100L, new ArrayList(),
-                (new ArrayList()).iterator(), true, null);
+                (new ArrayList()).iterator(), true, null, null);
         long result = pausedTransaction.id();
         assertEquals("result", 100L, result);
     }
@@ -158,7 +159,7 @@ public class PausedTransactionTest {
     @Test
     public void testIsAborting() throws Throwable {
         PausedTransaction pausedTransaction = new PausedTransaction(new TransactionManager(), 100L, new ArrayList(),
-                (new ArrayList()).iterator(), false, new TransactionManager.PausedMonitor(new Context()));
+                (new ArrayList()).iterator(), false, new TransactionManager.PausedMonitor(new Context()), null);
         boolean result = pausedTransaction.isAborting();
         assertFalse("result", result);
     }
@@ -166,7 +167,7 @@ public class PausedTransactionTest {
     @Test
     public void testIsAborting1() throws Throwable {
         PausedTransaction pausedTransaction = new PausedTransaction(new TransactionManager(), 100L, new ArrayList(),
-                (new ArrayList()).iterator(), true, new TransactionManager.PausedMonitor(new Context()));
+                (new ArrayList()).iterator(), true, new TransactionManager.PausedMonitor(new Context()), null);
         boolean result = pausedTransaction.isAborting();
         assertTrue("result", result);
     }
@@ -175,7 +176,7 @@ public class PausedTransactionTest {
     public void testIterator() throws Throwable {
         Iterator iter = new ArrayList().iterator();
         PausedTransaction pausedTransaction = new PausedTransaction(new TransactionManager(), 100L, new ArrayList(), iter, true,
-                null);
+                null, null);
         Iterator result = pausedTransaction.iterator();
         assertSame("result", iter, result);
     }
@@ -184,7 +185,7 @@ public class PausedTransactionTest {
     public void testMembers() throws Throwable {
         List members = new ArrayList();
         PausedTransaction pausedTransaction = new PausedTransaction(new TransactionManager(), 100L, members,
-                new ArrayList().iterator(), true, dummyTimerTask);
+                new ArrayList().iterator(), true, dummyTimerTask, null);
         List result = pausedTransaction.members();
         assertSame("result", members, result);
     }
@@ -192,7 +193,7 @@ public class PausedTransactionTest {
     @Test
     public void testSetResumed() throws Throwable {
         PausedTransaction pausedTransaction = new PausedTransaction(new TransactionManager(), 100L, new Vector(100), new Scanner(
-                "testPausedTransactionParam1"), true, dummyTimerTask);
+                "testPausedTransactionParam1"), true, dummyTimerTask, null);
         pausedTransaction.setResumed(true);
         assertTrue("pausedTransaction.isResumed()", pausedTransaction.isResumed());
     }
