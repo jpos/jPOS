@@ -104,7 +104,7 @@ task aggregatedJavadoc (type: Javadoc, description: "Aggregated Javadocs") {
 } 
 
 task wrapper( type: Wrapper ) {
-    gradleVersion = '1.4'
+    gradleVersion = '1.8'
 }
 
 // Configure IDEA to use Git
