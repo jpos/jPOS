@@ -26,6 +26,7 @@ import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
+@SuppressWarnings("unchecked")
 public class SpaceUtilTest {
 
     @Test
@@ -48,7 +49,7 @@ public class SpaceUtilTest {
         assertEquals("(TSpace) sp.entries.size()", 0, ((TSpace) sp).entries.size());
         assertFalse("(TSpace) sp.entries.containsKey(\"\")", ((TSpace) sp).entries.containsKey(""));
         assertEquals("result.length", 1, result.length);
-        assertEquals("result[0]", Long.valueOf(1L), result[0]);
+        assertEquals("result[0]", 1L, result[0]);
     }
 
     @Test
@@ -97,44 +98,6 @@ public class SpaceUtilTest {
         assertTrue("Test completed without Exception", true);
         // dependencies on static and environment state led to removal of 1
         // assertion
-    }
-
-    @Test
-    public void testWipeAndOut1() throws Throwable {
-        Space sp = new TSpace();
-        SpaceUtil.wipeAndOut(sp, "", new Object());
-        assertEquals("(TSpace) sp.entries.size()", 1, ((TSpace) sp).entries.size());
-    }
-
-    @Test
-    public void testWipeAndOutThrowsNullPointerException() throws Throwable {
-        try {
-            SpaceUtil.wipeAndOut(null, Long.valueOf(1L), "", 100L);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
-    }
-
-    @Test
-    public void testWipeAndOutThrowsNullPointerException3() throws Throwable {
-        Space sp = new TSpace();
-        try {
-            SpaceUtil.wipeAndOut(sp, null, new Object());
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertTrue("(TSpace) sp.isEmpty()", ((TSpace) sp).isEmpty());
-        }
-    }
-
-    @Test
-    public void testWipeAndOutThrowsNullPointerException4() throws Throwable {
-        try {
-            SpaceUtil.wipeAndOut(null, "testString", "");
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
     }
 
     @Test
