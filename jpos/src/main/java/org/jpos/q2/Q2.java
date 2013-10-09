@@ -156,7 +156,8 @@ public class Q2 implements FileFilter, Runnable {
             }
             factory = new QFactory (loaderName, this);
             initSystemLogger ();
-            // addShutdownHook ();
+            if (bundleContext == null)
+                addShutdownHook ();
             q2Thread = Thread.currentThread ();
             q2Thread.setContextClassLoader (loader);
             if (cli != null)
