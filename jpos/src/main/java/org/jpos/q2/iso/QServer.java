@@ -170,6 +170,7 @@ public class QServer
     public void stopService () {
         if (server != null) {
             server.shutdown ();
+            sp.removeListener(inQueue, this);
         }
     }
     @Override
