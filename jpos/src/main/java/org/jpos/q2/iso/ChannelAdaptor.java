@@ -55,7 +55,7 @@ public class ChannelAdaptor
     boolean waitForWorkersOnStop;
     private Thread receiver;
     private Thread sender;
-    private final Object disconnectLock = new Object();
+    private final Object disconnectLock = Boolean.TRUE;
 
     public ChannelAdaptor () {
         super ();
@@ -81,13 +81,13 @@ public class ChannelAdaptor
     }
     public void stopService () {
         try {
-            sp.out (in, new Object());
+            sp.out (in, Boolean.TRUE);
             if (channel != null)
                 disconnect();
             if (waitForWorkersOnStop) {
                 waitForSenderToExit();
                 if (!writeOnly) {
-                    sp.out(ready, new Object());
+                    sp.out(ready, new Date());
                     waitForReceiverToExit();
                 }
             }
@@ -130,7 +130,7 @@ public class ChannelAdaptor
         String old = this.in;
         this.in = in;
         if (old != null)
-            sp.out (old, new Object());
+            sp.out (old, Boolean.TRUE);
 
         getPersist().getChild("in").setText (in);
         setModified (true);
@@ -327,26 +327,26 @@ public class ChannelAdaptor
                     if (running()) {
                         getLog().warn ("channel-receiver-"+out, e);
                         if (!ignoreISOExceptions) {
-                            sp.out (reconnect, new Object(), delay);
+                            sp.out (reconnect, Boolean.TRUE, delay);
                             disconnect ();
-                            sp.out (in, new Object()); // wake-up Sender
+                            sp.out (in, Boolean.TRUE); // wake-up Sender
                         }
                         ISOUtil.sleep(1000);
                     }
                 } catch (SocketTimeoutException e) {
                     if (running()) {
                         getLog().warn ("channel-receiver-"+out, "Read timeout");
-                        sp.out (reconnect, new Object(), delay);
+                        sp.out (reconnect, Boolean.TRUE, delay);
                         disconnect ();
-                        sp.out (in, new Object()); // wake-up Sender
+                        sp.out (in, Boolean.TRUE); // wake-up Sender
                         ISOUtil.sleep(1000);
                     }
                 } catch (Exception e) { 
                     if (running()) {
                         getLog().warn ("channel-receiver-"+out, e);
-                        sp.out (reconnect, new Object(), delay);
+                        sp.out (reconnect, Boolean.TRUE, delay);
                         disconnect ();
-                        sp.out (in, new Object()); // wake-up Sender
+                        sp.out (in, Boolean.TRUE); // wake-up Sender
                         ISOUtil.sleep(1000);
                     }
                 }
