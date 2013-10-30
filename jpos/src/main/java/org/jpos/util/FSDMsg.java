@@ -112,6 +112,7 @@ public class FSDMsg implements Loggeable, Cloneable {
     
     private static final Set<String> DUMMY_SEPARATORS = new HashSet<String>(Arrays.asList("DS", "EOM"));
     private static final String EOM_SEPARATOR = "EOM";
+    private static final int READ_BUFFER = 8192;
     
     Map fields;
     Map separators;
@@ -120,6 +121,7 @@ public class FSDMsg implements Loggeable, Cloneable {
     String basePath;
     byte[] header;
     Charset charset;
+    int readCount;
 
     /**
      * Creates a FSDMsg with a specific base path for the message format schema.
@@ -142,6 +144,7 @@ public class FSDMsg implements Loggeable, Cloneable {
         this.basePath   = basePath;
         this.baseSchema = baseSchema;
         charset = Charset.forName(ISOUtil.ENCODING);
+        readCount = 0;
         
         setSeparator("FS", FS);
         setSeparator("US", US);
@@ -195,9 +198,16 @@ public class FSDMsg implements Loggeable, Cloneable {
      * @throws MalformedURLException
      */
     public void unpack (InputStream is) 
-        throws IOException, JDOMException, MalformedURLException {
+        throws IOException, JDOMException {
         try {
-            unpack (new InputStreamReader(is,charset), getSchema (baseSchema));
+            if (is.markSupported())
+                is.mark(READ_BUFFER);
+            unpack (new InputStreamReader(is, charset), getSchema (baseSchema));
+            if (is.markSupported()) {
+                is.reset();
+                is.skip (readCount);
+                readCount = 0;
+            }
         } catch (EOFException e) {
             fields.put ("EOF", "true");
         }
@@ -213,7 +223,7 @@ public class FSDMsg implements Loggeable, Cloneable {
      * @throws ISOException 
      */
     public void unpack (byte[] b) 
-        throws IOException, JDOMException, MalformedURLException {
+        throws IOException, JDOMException {
         unpack (new ByteArrayInputStream (b));
     }
 
@@ -222,7 +232,7 @@ public class FSDMsg implements Loggeable, Cloneable {
      * @throws ISOException 
      */
     public String pack () 
-        throws JDOMException, MalformedURLException, IOException, ISOException
+        throws JDOMException, IOException, ISOException
     {
         StringBuffer sb = new StringBuffer ();
         pack (getSchema (baseSchema), sb);
@@ -403,12 +413,13 @@ public class FSDMsg implements Loggeable, Cloneable {
     }
 
     protected void unpack (InputStreamReader r, Element schema)
-        throws IOException, JDOMException, MalformedURLException  
+        throws IOException, JDOMException, MalformedURLException
     
     {
         Iterator iter = schema.getChildren("field").iterator();
         String keyOff = "";
         String defaultKey = "";
+
         while (iter.hasNext()) {
             Element elem = (Element) iter.next();
 
@@ -472,7 +483,6 @@ public class FSDMsg implements Loggeable, Cloneable {
                 sb.append(c[0]);
             }
         } else {
-
             for (int i = 0; i < len; i++) {
                 if (r.read(c) < 0) {
                     if (!"EOF".equals(separator))
@@ -495,6 +505,7 @@ public class FSDMsg implements Loggeable, Cloneable {
                 }
             }
         }
+        readCount += sb.length();
         return sb.toString();
     }
     protected String readField (InputStreamReader r, String fieldName, int len,
@@ -505,7 +516,7 @@ public class FSDMsg implements Loggeable, Cloneable {
         if (isBinary(type))
             fieldValue = ISOUtil.hexString (fieldValue.getBytes (charset));
         fields.put (fieldName, fieldValue);
-//         System.out.println ("++++ "+fieldName + ":" + fieldValue + " " + type + "," + isBinary(type));
+        // System.out.println ("++++ "+fieldName + ":" + fieldValue + " " + type + "," + isBinary(type));
         return fieldValue;
     }
     public void set (String name, String value) {
