@@ -20,8 +20,8 @@ allprojects {
     repositories {
         mavenLocal()
         mavenCentral()
-        mavenRepo name: 'oracle', url: "http://download.oracle.com/maven"
-        mavenRepo name: 'jline', url: "http://jline.sourceforge.net/m2repo"
+        maven { url 'http://download.oracle.com/maven' }
+        maven { url 'http://jline.sourceforge.net/m2repo' }
     }
     if (project.hasProperty("lint")) {
       // gradle -Plint ...
