@@ -20,13 +20,12 @@ package org.jpos.iso;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
-import java.security.SecureRandom;
 import java.util.*;
 
 /**
- * varios functions needed to pack/unpack ISO-8583 fields
+ * various functions needed to pack/unpack ISO-8583 fields
  *
- * @author apr@cs.com.uy
+ * @author apr@jpos.org
  * @author Hani S. Kirollos
  * @author Alwyn Schoeman
  * @version $Id$
@@ -915,7 +914,7 @@ public class ISOUtil {
      * @return an array of length = the smallest between op1 and op2
      */
     public static byte[] xor (byte[] op1, byte[] op2) {
-        byte[] result = null;
+        byte[] result;
         // Use the smallest array
         if (op2.length > op1.length) {
             result = new byte[op1.length];
@@ -953,8 +952,8 @@ public class ISOUtil {
 
     /**
      * Concatenates two byte arrays (array1 and array2)
-     * @param array1
-     * @param array2
+     * @param array1 first part
+     * @param array2 last part
      * @return the concatenated array
      */
     public static byte[] concat (byte[] array1, byte[] array2) {
@@ -966,12 +965,12 @@ public class ISOUtil {
 
     /**
      * Concatenates two byte arrays (array1 and array2)
-     * @param array1
-     * @param beginIndex1
-     * @param length1
-     * @param array2
-     * @param beginIndex2
-     * @param length2
+     * @param array1 first part
+     * @param beginIndex1 initial index
+     * @param length1  length
+     * @param array2 last part
+     * @param beginIndex2 last part index
+     * @param length2 last part length
      * @return the concatenated array
      */
     public static byte[] concat (byte[] array1, int beginIndex1, int length1, byte[] array2,
@@ -993,7 +992,7 @@ public class ISOUtil {
     public static void sleep (long millis) {
         try {
             Thread.sleep (millis);
-        } catch (InterruptedException e) { }
+        } catch (InterruptedException ignored) { }
     }
 
     /**
@@ -1121,7 +1120,7 @@ public class ISOUtil {
         int length = s.length();
         if (length > 9)
             throw new NumberFormatException ("Number can have maximum 9 digits");
-        int result = 0;
+        int result;
         int index = 0;
         int digit = Character.digit (s.charAt(index++), radix);
         if (digit == -1)
@@ -1166,7 +1165,7 @@ public class ISOUtil {
         int length = cArray.length;
         if (length > 9)
             throw new NumberFormatException ("Number can have maximum 9 digits");
-        int result = 0;
+        int result;
         int index = 0;
         int digit = Character.digit(cArray[index++], radix);
         if (digit == -1)
@@ -1211,7 +1210,7 @@ public class ISOUtil {
         int length = bArray.length;
         if (length > 9)
             throw new NumberFormatException ("Number can have maximum 9 digits");
-        int result = 0;
+        int result;
         int index = 0;
         int digit = Character.digit((char)bArray[index++], radix);
         if (digit == -1)
