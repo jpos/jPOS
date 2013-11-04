@@ -1,0 +1,70 @@
+<title>jPOS Programmer's Guide</title>
+<subtitle>jPOS Programmer's Guide</subtitle>
+<releaseinfo>{jpos_version}</releaseinfo>
+<copyright>
+  <year>1998-2013</year>
+  <holder>Alejandro Revilla / Uruguay</holder>
+</copyright>
+<legalnotice>
+  <para>
+    All rights reserved. No part of this document may be reproduced in any
+    form or by any electronic or mechanical means, including information
+    storage and retrieval systems, without permission in writing from
+    Alejandro Revilla (company# 212 752 380 016 - Uruguay).
+  </para>
+</legalnotice>
+<abstract>
+  <para>
+    jPOS is an ISO-8583 library/framework that can be used to
+    implement financial interchanges, protocol converters, 
+    payment gateways, credit card verification clients and 
+    servers (merchant/issuer/acquirer roles), etc.
+  </para>
+  <para>
+     This document describes jPOS' design, its internals and shows
+     you how to get the most out of it.
+  </para>
+</abstract>
+<authorgroup>
+  <author>
+     <!-- honorific>Maestro</honorific-->
+     <firstname>Alejandro</firstname>
+     <surname>Revilla</surname>
+     <othername role="mi">P</othername>
+     <affiliation>
+        <jobtitle>Programmer</jobtitle>
+        <orgname>jPOS.org</orgname>
+        <orgdiv/>
+     </affiliation>
+  </author>
+</authorgroup>
+<othercredit>
+  <firstname>Dave</firstname>
+  <surname>Bergert</surname>
+  <contrib>Extensive review, and multiple corrections</contrib>
+  <affiliation><jobtitle/>
+   <orgname>Nobel Electronics LLC</orgname>
+   <orgdiv/>
+  </affiliation>
+</othercredit>
+<othercredit>
+  <firstname>Alwyn</firstname>
+  <surname>Schoeman</surname>
+  <contrib>Review, Feedback, Corrections</contrib>
+  <affiliation>
+    <jobtitle/>
+    <orgname>Debian.org</orgname>
+    <orgdiv/>
+  </affiliation>
+</othercredit>
+<othercredit>
+  <firstname>Andy</firstname>
+  <surname>Orrock</surname>
+  <contrib>Extensive feedback and corrections</contrib>
+  <affiliation>
+    <jobtitle/>
+    <orgname>Online Strategies, Inc.</orgname>
+    <orgdiv/>
+  </affiliation>
+</othercredit>
+

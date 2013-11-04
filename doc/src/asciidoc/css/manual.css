@@ -1,0 +1,113 @@
+@IMPORT url("highlight.css");
+
+html {
+  padding:       0;
+  margin:        0;
+}
+
+body {
+  margin-left:   10%;
+  margin-right:  10%;
+  font-family:   Arial, Sans-serif,sans-serif;
+}
+
+div {
+  margin:        0;
+}
+
+p {
+  text-align:    justify;
+}
+
+hr {
+  border:        1px solid gray;
+  background:    gray;
+}
+
+h1,h2,h3,h4 {
+  color:         #527bbd;
+  font-family:   Arial, Sans-serif,sans-serif;
+}
+
+pre {
+  line-height:   1.0;
+  color:         black;
+}
+
+pre.programlisting {
+  font-size:     10pt;
+  padding:       7pt 3pt;
+  border:        1pt solid black;
+  background:    #eeeeee;
+  clear:         both;
+}
+
+div.table {
+  margin:        1em;
+  padding:       0.5em;
+  text-align:    center;
+}
+
+div.table table {
+  display:       table;
+  width:         100%;
+}
+
+div.table td {
+  padding-left:  7px;
+  padding-right: 7px;
+}
+
+.sidebar {
+    float: right;
+    margin: 10px 0 10px 30px;
+    padding: 10px 20px 20px 20px;
+    width: 33%;
+    border: 1px solid black;
+    background-color: #F4F4F4;
+    font-size: 14px;
+}
+
+pre.screen, pre.programlisting
+{
+    padding: 20px;
+    border: 1px solid #999;
+    font-family:   Courier, Courier New,monospace;
+    font-size: 10pt;
+}
+
+pre.screen
+{
+    background-color: #ccc;
+}
+
+pre.screen
+{
+    background-color: #ddd;
+}
+
+div.important .title, div.caution .title, div.warning .title {
+  color: #c00;
+}
+
+div.informaltable table {
+  border-collapse: separate;
+  border: solid 1px #999;
+  border-spacing: 1px;
+  background: #333366;
+}
+
+div.informaltable th {
+  color: white;
+  background: #666;
+  border: solid 1px #999;
+  padding: 2px;
+}
+
+div.informaltable td {
+  background: #ccc;
+  padding: 5px;
+  border: solid 1px #999;
+}
+
+

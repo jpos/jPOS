@@ -1,0 +1,60 @@
+apply plugin: 'groovy'
+apply plugin: 'idea'
+
+import org.jpos.buildtools.docs.DocbookPdf
+import org.jpos.buildtools.docs.DocbookHtml
+
+sourceCompatibility = 1.6
+targetCompatibility = 1.6
+
+task copySources(type: Sync) {
+    from "${projectDir}/src/asciidoc"
+    into "${buildDir}/docbook/source/"
+}
+
+task copyWebResources(type: Sync) {
+    from "${projectDir}/src/asciidoc"
+    include "images/**"
+    include "css/**"
+    into "${buildDir}/docbook/html/"
+}
+
+task a2x(dependsOn: copySources) << {
+    def inFile = "${buildDir}/docbook/source/master.asc"
+    def outFile = "${buildDir}/docbook/source/master.xml"
+    def cmd = "asciidoc -a docinfo -a lang=en -d book -b docbook -o ${outFile} ${inFile}"
+    def proc = cmd.execute(null, file(inFile).parentFile)
+    proc.in.eachLine { line -> println line }
+    proc.err.eachLine {line -> println 'ERROR: '+line }
+    proc.waitFor()
+}
+
+task createPdf(type: DocbookPdf) {
+    setDescription('Generates PDF docbook output.')
+    extension = 'fo'
+    dependsOn a2x
+    sourceFileName 'master.xml'
+    sourceDirectory "${buildDir}/docbook/source/" as File
+    docsDir "${buildDir}/docbook/pdf/" as File
+    stylesheet "${projectDir}/src/xslt/fo.xsl" as File
+}
+
+task createHtml(type: DocbookHtml) {
+    setDescription('Generates HTML docbook output.')
+    dependsOn a2x,copyWebResources
+    sourceFileName "master.xml"
+    sourceDirectory "${buildDir}/docbook/source/" as File
+    docsDir "${buildDir}/docbook/html/" as File
+    stylesheet "${projectDir}/src/xslt/html.xsl" as File
+}
+
+task viewHtml (dependsOn: createHtml, description: 'Open HTML docbook outout in default browser') << {
+    Class.forName("java.awt.Desktop").newInstance().browse(
+        new File("${buildDir}/docbook/html", 'master.html').toURI())
+}
+
+task viewPdf (dependsOn: createPdf , description: 'Open PDF docbook outout in default viewer') << {
+    Class.forName("java.awt.Desktop").newInstance().browse(
+        new File("${buildDir}/docbook/pdf", this.project.rootProject.name + '.pdf').toURI())
+}
+

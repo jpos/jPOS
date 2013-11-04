@@ -1,0 +1,344 @@
+### OLD STUFF NEEDS REVIEW
+
+chunk of code was lost 
+
+
+ +QTest+ extends +QBeanSupport+ which is a general purpose QBean implementation that provides handy functionality such as Logging, implementing the +Configurable+ interface, etc. but you are actually not required to extend QBeanSupport as long as you implement the +org.jpos.q2.QBean+ interface. QBeanSupport is located in the +q2+ module  in the +modules/q2/src/org/jpos/q2+ directory. 
+
+ In order to implement a QBean you basically need to provide four methods that implements the Q2 services lifecycle: 
+* *init*
+* *start*
+* *stop*
+* *destroy* 
+
+ +QBeanSupport+ implements those methods for you providing a default implementation that in turn call four protected methods: 
+* *initService*
+* *startService*
+* *stopService*
+* *destroyService* as well as some handy methods that provide access to the QBean configuration (including its XML content), logging and even some helpers to write back the XML configuration. 
+
+ In addition, the +initService+,  +startService+,  +stopService+ and  +destroyService+ set of protected methods  take care of catching and logging any possible exception that  your implementation may throw and keeping track of the QBean's  "state"  (STARTING / STARTED / STOPPING / STOPPED / DESTROYED / FAILED) for you. 
+
+ By extending QBeanSupport you don't have to implement all the QBean lifecycle callbacks, just the ones you need. 
+
+ In our QTest case, we want our QBean to be a Runnable, so we just need to do something at "start" time, therefore  we only have to override +startService+: 
+
+
+----
+
+
+    public void startService() {
+        new Thread(this).start();
+    }
+
+  
+----
+
+ +startService+ creates a new Thread passing an instance of your QTest class (which happens to be a Runnable)  and starts it. 
+
+
+----
+
+    public void run () {
+        for (int tickCount=0; running (); tickCount++) {
+            log.info ("tick " + tickCount);
+            ISOUtil.sleep (tickInterval);
+        }
+    }
+  
+----
+
+ The run method is very simple, two things worth noting: 
+* 
+     We can use "log.info" here because QBeanSupport creates a
+     Log (+org.jpos.util.Log+) object for you.
+    
+*  
+     the +running()+ method is also provided
+     by QBeanSupport and returns true if the service is
+     either in the STARTING or STARTED state.
+     
+
+ In order to demonstrate the lifecycle of a QBean, we override some methods such as its constructor as well as the +init()+, +start()+, +stop()+ and +destroy()+ methods just to log an info message, but you obviously don't need to do that in your application. 
+
+
+----
+
+    public QTest () {
+        super();
+        log.info ("constructor");
+    }
+    public void init () {
+        log.info ("init");
+        super.init ();
+    }
+    public void start() {
+        log.info ("start");
+        super.start ();
+    }
+    public void stop () {
+        log.info ("stop");
+        super.stop ();
+    }
+    public void destroy () {
+        log.info ("destroy");
+        log = null;
+    }
+  
+----
+
+ QBeans support two kind of configuration: the so-called IoC footnote:[Inversion of Control] where the container "pushes" the configuration onto the QBean and a regular "pull" method where you can query the Configuration object. _(technically the second method is still a "push" scheme as Q2 will "push" a Configuration Object onto the component at "init" time and the component can either hold a reference to the Configuration object or hold references to a subset of its properties)_ 
+
+ If you configure your QBean using  *properties*, the configuration would look like this: 
+
+
+----
+
+   <qtest class="org.jpos.qtest.QTest" logger="Q2">
+    <property name="mypropA" value="abc" />
+    <property name="mypropB" value="123" />
+   </qtest>
+  
+----
+
+ So you can use code like this: 
+----
+
+    String a = cfg.get ("mypropA");
+    String b = cfg.get ("mypropB");
+   
+----
+
+ or you can override +void setConfiguration(Configuration)+ and store your +a+ and +b+ Strings as instance variables. 
+
+ On the other hand, if you want to use  *attributes*, you have to provide setters and getters and you need to expose those setters and getters as part of your MBean interface. 
+
+ In our QTest example we want to expose the "tickInterval" as an attribute so we have to provide the following methods: 
+
+
+----
+
+    public void setTickInterval (long tickInterval) {
+        this.tickInterval = tickInterval;
+    }
+    public long getTickInterval () {
+        return tickInterval;
+    }
+  
+----
+
+ In addition we have to define an interface called QTestMBean  that extends QBeanSupportMBean and expose those two methods as well: 
+
+
+----
+
+   public interface QTestMBean extends org.jpos.q2.QBeanSupportMBean {
+     public void setTickInterval(long tickInterval) ;
+     public long getTickInterval() ;
+   }
+  
+----
+
+
+[NOTE]
+====
+
+   JMX requires these *MBean interfaces in order to know which
+   attributes and operations should be managed by JMX and available 
+   through the MBeanServer.
+   Covering JMX is beyond the scope of this guide, it's a small
+   yet powerful API that we strongly recommend you to read.
+  
+====
+
+
+ When using attributes, the QBean descriptor looks like this: 
+
+
+----
+
+   <qtest class="org.jpos.test.QTest" logger="Q2">
+    <attr name="tickInterval" type="java.lang.Long">5000</attr>
+   </qtest>
+  
+----
+
+
+[NOTE]
+====
+
+   If you look at <<appendix_qtest>>
+   you'll see that we also provide a 
+   +void setPersist(Element)+ and
+   +Element getPersist()+ operations.
+    These are extensions to the QBean provided by QBeanSupport that let a QBean return its own XML configuration so QBeanSupport can update the XML file in order to persist changed properties. 
+
+ You are free to ignore these feature unless you have a strong use case for it. See +org.jpos.q2.QPersist+ for further details. 
+
+
+====
+
+
+Compiling QTest You can compile QTest and QTestMBean using whatever  way you like, however, we'll tell you here how we'd do it in a jPOSsy way, by means of a little +module+. 
+
+ Let's call our module +qtest+, you want to create the following directory structure: 
+----
+
+     modules/qtest/src/org/jpos/test/QTest.java
+     modules/qtest/src/org/jpos/test/QTestMBean.java
+     modules/qtest/deploy/10_qtest.xml
+    
+----
+
+ 
+
+ Once you call "ant", your *.java classes will be compiled into +build/jpos.jar+ and your deployment descriptor will be copied to  +build/deploy/10_qtest.xml+ so the next time you start Q2, your QBean is going to be launched. 
+
+ Once you start jPOS/Q2 again you'd see: 
+
+
+----
+
+<log realm="Q2.system" at="Wed May 26 09:50:59 UYT 2004.134">
+  <info>
+    deploy:qtest.xml
+  </info>
+</log>
+<log realm="org.jpos.q2.example.QTest" at="Wed May 26 09:50:59 UYT 2004.290">
+  <info>
+    constructor
+  </info>
+</log>
+<log realm="org.jpos.q2.example.QTest" at="Wed May 26 09:50:59 UYT 2004.296">
+  <info>
+    setName qtest
+  </info>
+</log>
+<log realm="qtest" at="Wed May 26 09:50:59 UYT 2004.302">
+  <info>
+    setPersist
+  </info>
+</log>
+<log realm="qtest" at="Wed May 26 09:50:59 UYT 2004.313">
+  <info>
+    init
+  </info>
+</log>
+<log realm="qtest" at="Wed May 26 09:50:59 UYT 2004.316">
+  <info>
+    start
+  </info>
+</log>
+<log realm="qtest" at="Wed May 26 09:50:59 UYT 2004.321">
+  <info>
+    tick 0
+  </info>
+</log>
+<log realm="qtest" at="Wed May 26 09:51:00 UYT 2004.343">
+  <info>
+    tick 1
+  </info>
+</log>
+<log realm="qtest" at="Wed May 26 09:51:01 UYT 2004.353">
+  <info>
+    tick 2
+  </info>
+</log>
+<log realm="qtest" at="Wed May 26 09:51:02 UYT 2004.363">
+  <info>
+    tick 3
+  </info>
+</log>
+...
+...
+  
+----
+
+QTest is a verbose QBean, so it logs an output message when its constructor is called as well as when other lifecycle methods, such as init, start, stop and destroy are called. In our example, we also implement QPersist so we see the calls to +setPersist+ that you are free to ignore. 
+
+Try to move QTest (+build/deploy/10_qtest.xml+) away from your deploy directory and it should stop running.
+
+
+----
+
+<log realm="Q2.system" at="Wed May 26 09:51:11 UYT 2004.883">
+  <trace>
+    undeploying:qtest.xml
+  </trace>
+</log>
+<log realm="qtest" at="Wed May 26 09:51:11 UYT 2004.884">
+  <info>
+    stop
+  </info>
+</log>
+<log realm="qtest" at="Wed May 26 09:51:11 UYT 2004.884">
+  <info>
+    destroy
+  </info>
+</log>
+<log realm="Q2.system" at="Wed May 26 09:51:11 UYT 2004.885">
+  <info>
+    undeployed:qtest.xml
+  </info>
+</log>
+  
+----
+
+
+[TIP]
+====
+Please note the +realm+ of these log events: 
+  QTest-originated messages use the realm 'qtest' while Q2 uses 
+  'Q2.system'.
+    You can use this facility to write a custom LogListener that can react to specific realms. 
+
+
+====
+
+
+ Our QTest bean supports a +tickInterval+ attribute. So, while Q2 is still running, try to modify qtest.xml so it looks like this: 
+
+
+----
+
+  <qtest class="org.jpos.q2.example.QTest">
+   <attr name="tickInterval" type="long">5000</attr>
+  </qtest>
+  
+----
+
+ Now, the tick shows every five seconds instead of every second. 
+
+ QBeans are registered into an JMX MBeanServer, so we can change their parameters either by modifying the deployment descriptors, or by using a JMX to communicate with them. You can use +jconsole+ in order to connect to the running JVM and modify the tickInterval on the fly. 
+
+
+.QTest in jConsole
+image::[]
+
+
+[TIP]
+====
+
+   In order to run +jconsole+ you want to
+   start Q2 using +-Dcom.sun.management.jmxremote+.
+   See the +bin/q2+ Unix script for details.
+  
+====
+
+
+From there, you can change the tickInterval. Let's put a value of   20000 in there and check the results.
+
+As you can see, QTest now 'ticks' every 20 seconds, but what's more important is that +deploy/10_qtest.xml+ now looks like  this:
+
+
+----
+
+  <qtest class="org.jpos.q2.example.QTest" logger="Q2">
+    <attr name="tickInterval" type="long">20000</attr>
+  </qtest>
+ 
+----
+
+ It has been automatically persisted back to disk by Q2  (see QPersist javadocs for details)  
+
+
