@@ -15,10 +15,10 @@
     <dependency>
       <groupId>org.jpos</groupId>
       <artifactId>jpos</artifactId>
-      <version>1.9.0</version>
+      <version>1.9.2</version>
     </dependency>
 
-if you want to use our nightly builds, for instance to get `1.9.1-SNAPSHOT`, you can
+if you want to use our nightly builds, for instance to get `1.9.3-SNAPSHOT`, you can
 add the following repository:
 
     <repository>
@@ -27,6 +27,10 @@ add the following repository:
       <url>http://jpos.org/maven</url>
       <layout>default</layout>
     </repository>
+
+## Programmer's Guide
+
+Visit [http://jpos.org/learn](http://jpos.org/learn).
 
 ----
 See the [ChangeLog:](http://jpos.org/wiki/ChangeLog) or visit the [Resources](http://jpos.org/resources) page for additional information.
