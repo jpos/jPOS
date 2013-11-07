@@ -310,7 +310,7 @@ public class DirPoll extends SimpleLogSource
         f.delete();
     }
     
-    private File scan() {
+    protected File scan() {
         for (currentPriority=0; 
             currentPriority < prio.size(); currentPriority++)
         {
