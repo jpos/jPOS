@@ -163,8 +163,13 @@ class GitRevisionTask extends DefaultTask
         Properties props=new Properties()
         if (gotHead) {
             File ref=getRefFile()
-            props.put("branch",ref.getName())
-            props.put("revision",ref.text.substring(0,7))
+            if (ref.exists()) {
+                props.put("branch",ref.getName())
+                props.put("revision",ref.text.substring(0,7))
+            } else {
+                props.put("branch", "detached");
+                props.put("revision", gitHead.text.substring(0,7))
+            }
         } else {
             props.put("branch", "unknown");
             props.put("revision", "unknown");
