@@ -120,7 +120,7 @@ public class DirPollOperationTest {
 
         File archiveDirectory = new File(absolutePathTo(RELATIVE_ARCHIVE_DIR));
         waitForFileProcessed();
-        waitForNumFilesInDirOrTimeout(1, archiveDirectory, 200);
+        waitForNumFilesInDirOrTimeout(1, archiveDirectory, 5000);
         assertThat(archiveDirectory.listFiles().length, is(1));
         assertThat(archiveDirectory.listFiles()[0].getName(), is(testIncomingFile.getName() + ".zip"));
     }
