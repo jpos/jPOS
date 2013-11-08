@@ -2,3 +2,9 @@ language: java
 jdk:
   - oraclejdk7
 
+install:
+  - TERM=dumb ./gradlew assemble
+
+script:
+  - TERM=dumb ./gradlew check
+
