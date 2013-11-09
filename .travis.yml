@@ -1,10 +1,16 @@
 language: java
 jdk:
-  - oraclejdk7
-
+- oraclejdk7
 install:
-  - TERM=dumb ./gradlew assemble
-
+- TERM=dumb ./gradlew assemble
 script:
-  - TERM=dumb ./gradlew check
+- TERM=dumb ./gradlew check
+
+after_success: .travis/update-gh-pages.sh
+
+after_failure: .travis/update-gh-pages.sh
+
+env:
+  global:
+    secure: ZWDnTNCsRaxOV4hPiWslj1ieKwYjuxBA4COHFVApxr8TBcQEwhPAzo+b+WbDsi45rJkk/Ee9Du0+mbT//x3TTK78fePg6EDk0WBSmWRUFC3eITgTmUJe7Qh5VOUZOdz9vFaYH8080/CB4VyygJuSp2XLte+S/MVSoXVVABrNggU=
 
