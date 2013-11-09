@@ -1,8 +1,6 @@
 if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
   echo -e "Starting to update gh-pages\n"
-
-  cd `dirname $0`/..
-
+  pwd
   #copy data we're interested in to other place
   cp -R jPOS/build/reports/tests $HOME/tests
 
