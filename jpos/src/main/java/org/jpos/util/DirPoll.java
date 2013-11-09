@@ -137,6 +137,31 @@ public class DirPoll extends SimpleLogSource
     public void setProcessor (Object processor) {
         this.processor = processor;
     }
+
+    protected File getRequestDir() {
+        return requestDir;
+    }
+
+    protected File getResponseDir() {
+        return responseDir;
+    }
+
+    protected File getTmpDir() {
+        return tmpDir;
+    }
+
+    protected File getBadDir() {
+        return badDir;
+    }
+
+    protected File getRunDir() {
+        return runDir;
+    }
+
+    protected File getArchiveDir() {
+        return archiveDir;
+    }
+
     /**
      * Return instance implementing {@link FileProcessor} or {@link Processor}
      * @return
@@ -309,7 +334,7 @@ public class DirPoll extends SimpleLogSource
         ZipUtil.zipFile(f, new File(f.getAbsolutePath() + ".zip"));
         f.delete();
     }
-    
+
     protected File scan() {
         for (currentPriority=0; 
             currentPriority < prio.size(); currentPriority++)
