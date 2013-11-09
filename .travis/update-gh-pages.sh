@@ -1,8 +1,9 @@
 if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
   echo -e "Starting to update gh-pages\n"
   pwd
+  ls -l 
   #copy data we're interested in to other place
-  cp -R jPOS/build/reports/tests $HOME/tests
+  cp -R jpos/build/reports/tests $HOME/tests
 
   #go to home and setup git
   cd $HOME
