@@ -50,7 +50,7 @@ public class DirPollAdaptor
 
     protected void initService () throws Exception {
         QFactory factory = getServer().getFactory();
-        dirPoll  = new DirPoll ();
+        dirPoll  = createDirPoll();
         dirPoll.setPath (getPath ());
         dirPoll.setThreadPool (new ThreadPool (1, poolSize));
         dirPoll.setPollInterval (pollInterval);
@@ -71,6 +71,11 @@ public class DirPollAdaptor
         }
         dirPoll.setProcessor (dpp);
     }
+
+    protected DirPoll createDirPoll() {
+        return new DirPoll();
+    }
+
     protected void startService () throws Exception {
         new Thread (dirPoll).start ();
     }
