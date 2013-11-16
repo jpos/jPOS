@@ -1,5 +1,4 @@
 apply plugin: 'groovy'
-apply plugin: 'idea'
 
 repositories {
     mavenLocal()
@@ -33,8 +32,6 @@ dependencies {
             'net.sf.docbook:docbook-xsl:1.76.1:ns-resources@zip',
             'net.sf.docbook:docbook-xsl-saxon:1.0.0',
             gradleApi()
+
 }
 
-idea.module {
-	jdkName = '1.6'
-}
