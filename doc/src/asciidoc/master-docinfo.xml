@@ -1,4 +1,3 @@
-<title>jPOS Programmer's Guide</title>
 <subtitle>jPOS Programmer's Guide</subtitle>
 <releaseinfo>{jpos_version}</releaseinfo>
 <copyright>
@@ -27,43 +26,39 @@
 </abstract>
 <authorgroup>
   <author>
-     <firstname>Alejandro</firstname>
-     <surname>Revilla</surname>
-     <othername role="mi">P</othername>
-     <affiliation>
-        <jobtitle>Programmer</jobtitle>
-        <orgname>jPOS.org</orgname>
-        <orgdiv/>
-     </affiliation>
+    <personname>
+      <firstname>Alejandro</firstname>
+      <surname>Revilla</surname>
+      <othername role="mi">P</othername>
+    </personname>
   </author>
 </authorgroup>
 <othercredit>
-  <firstname>Dave</firstname>
-  <surname>Bergert</surname>
+  <personname>
+    <firstname>Dave</firstname>
+    <surname>Bergert</surname>
+  </personname>
   <contrib>Extensive review, and multiple corrections</contrib>
-  <affiliation><jobtitle/>
-   <orgname>Nobel Electronics LLC</orgname>
-   <orgdiv/>
-  </affiliation>
 </othercredit>
 <othercredit>
-  <firstname>Alwyn</firstname>
-  <surname>Schoeman</surname>
+  <personname>
+    <firstname>Alwyn</firstname>
+    <surname>Schoeman</surname>
+  </personname>
   <contrib>Review, Feedback, Corrections</contrib>
-  <affiliation>
-    <jobtitle/>
-    <orgname>Debian.org</orgname>
-    <orgdiv/>
-  </affiliation>
 </othercredit>
 <othercredit>
-  <firstname>Andy</firstname>
-  <surname>Orrock</surname>
+  <personname>
+    <firstname>Andy</firstname>
+    <surname>Orrock</surname>
+  </personname>
   <contrib>Extensive feedback and corrections</contrib>
-  <affiliation>
-    <jobtitle/>
-    <orgname>Online Strategies, Inc.</orgname>
-    <orgdiv/>
-  </affiliation>
+</othercredit>
+<othercredit>
+  <personname>
+    <firstname>Mark</firstname>
+    <surname>Salter</surname>
+  </personname>
+  <contrib>Extensive feedback and corrections</contrib>
 </othercredit>
 
