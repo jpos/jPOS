@@ -24,6 +24,7 @@ import org.jpos.iso.*;
 import org.jpos.q2.QBeanSupport;
 import org.jpos.util.NameRegistrar;
 
+import java.io.IOException;
 import java.util.StringTokenizer;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -69,7 +70,7 @@ public class MUXPool extends QBeanSupport implements MUX {
         }
         return null;
     }
-    public void queue (ISOMsg m) throws ISOException {
+    public void send (ISOMsg m) throws ISOException, IOException {
         long maxWait = 1000L; // reasonable default
         MUX mux = strategy == ROUND_ROBIN ?
             nextAvailableMUX (msgno.incrementAndGet(), maxWait) :
@@ -78,7 +79,7 @@ public class MUXPool extends QBeanSupport implements MUX {
         if (mux == null)
             throw new ISOException ("No available MUX");
 
-        mux.queue (m);
+        mux.send(m);
     }
     public boolean isConnected() {
         for (MUX aMux : mux)

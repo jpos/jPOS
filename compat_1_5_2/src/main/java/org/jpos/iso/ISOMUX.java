@@ -41,7 +41,7 @@ import java.util.Vector;
  * @see ISORequestListener
  */
 
-public class ISOMUX implements Runnable, ISOSource, LogSource, MUX,
+public class ISOMUX implements Runnable, LogSource, MUX,
                                ReConfigurable, Loggeable, ISOMUXMBean
 {
     private ISOChannel channel;
@@ -565,16 +565,6 @@ public class ISOMUX implements Runnable, ISOSource, LogSource, MUX,
         throws ISOException 
     {
         throw new ISOException ("Not implemented");
-    }
-
-    /**
-     * queue a message
-     *
-     * @param m the Message to be sent
-     */
-    @Override
-    public void queue(ISOMsg m) throws ISOException {
-        throw new ISOException ("Not implemented - use QMUX instead");
     }
 }
 

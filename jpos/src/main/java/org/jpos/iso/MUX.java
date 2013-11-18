@@ -22,7 +22,7 @@ package org.jpos.iso;
  * MUX interface
  * @author Alejandro Revilla
  */
-public interface MUX {
+public interface MUX extends ISOSource {
     /**
      * Sends a message to remote host and wait for response
      * @param m message to send
@@ -42,15 +42,4 @@ public interface MUX {
      */
     public void request (ISOMsg m, long timeout, ISOResponseListener r, Object handBack)
         throws ISOException;
-
-    /**
-     * queue a message
-     * @param m the Message to be sent
-     */
-    public void queue (ISOMsg m) throws ISOException;
-
-    /**
-     * @return true if connected
-     */
-    public boolean isConnected();
 }

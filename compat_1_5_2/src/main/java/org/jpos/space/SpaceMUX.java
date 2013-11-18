@@ -27,6 +27,8 @@ import org.jpos.util.Logger;
 import org.jpos.util.NameRegistrar;
 import org.jpos.util.SimpleLogSource;
 
+import java.io.IOException;
+
 /**
  * Space based MUX implementation
  * @author Alejandro Revilla
@@ -89,7 +91,7 @@ public class SpaceMUX extends SimpleLogSource
         }
         return resp;
     }
-    public void queue(ISOMsg m) throws ISOException {
+    public void send (ISOMsg m) throws ISOException, IOException {
         sp.out (to, m);
     }
     protected String getFrom () {

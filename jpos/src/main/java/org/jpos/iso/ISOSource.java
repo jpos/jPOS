@@ -18,8 +18,6 @@
 
 package org.jpos.iso;
 
-import org.jpos.iso.ISOFilter.VetoException;
-
 import java.io.IOException;
 
 /**
@@ -37,11 +35,10 @@ public interface ISOSource {
      * @exception ISOFilter.VetoException;
      */
     public void send (ISOMsg m) 
-        throws IOException, ISOException, VetoException;
+        throws IOException, ISOException;
 
     /**
      * @return true if source is connected and usable
      */
     public boolean isConnected();
 }
-

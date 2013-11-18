@@ -41,7 +41,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class QMUX 
     extends QBeanSupport
-    implements SpaceListener, MUX, QMUXMBean, Loggeable, ISOSource
+    implements SpaceListener, MUX, QMUXMBean, Loggeable
 {
     static final String nomap = "0123456789";
     static final String DEFAULT_KEY = "41, 11";
@@ -356,18 +356,13 @@ public class QMUX
      * @throws java.io.IOException
      * @throws org.jpos.iso.ISOException
      * @throws org.jpos.iso.ISOFilter.VetoException;
-     *
-     * @deprecated Use 'queue' instead
      */
     public void send(ISOMsg m) throws IOException, ISOException {
-        sp.out (out, m);
-    }
-
-    public void queue(ISOMsg m) throws ISOException {
         if (!isConnected())
             throw new ISOException ("MUX is not connected");
         sp.out (out, m);
     }
+
     public boolean isConnected() {
         if (ready != null && ready.length > 0) {
             for (String aReady : ready)
