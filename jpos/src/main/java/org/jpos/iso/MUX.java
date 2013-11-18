@@ -18,14 +18,13 @@
 
 package org.jpos.iso;
 
-
 /**
  * MUX interface
  * @author Alejandro Revilla
- * @version $Revision$ $Date$
  */
 public interface MUX {
     /**
+     * Sends a message to remote host and wait for response
      * @param m message to send
      * @param timeout time to wait for a message
      * @return received message or null
@@ -33,12 +32,25 @@ public interface MUX {
      */
     public ISOMsg request (ISOMsg m, long timeout) throws ISOException;
 
+    /**
+     * Sends a message to remote host in async way
+     * @param m message to send
+     * @param timeout time to wait for the response
+     * @param r reference to response listener
+     * @param handBack optional handback to be given to reponse listener
+     * @throws ISOException
+     */
     public void request (ISOMsg m, long timeout, ISOResponseListener r, Object handBack)
         throws ISOException;
+
+    /**
+     * queue a message
+     * @param m the Message to be sent
+     */
+    public void queue (ISOMsg m) throws ISOException;
 
     /**
      * @return true if connected
      */
     public boolean isConnected();
 }
-

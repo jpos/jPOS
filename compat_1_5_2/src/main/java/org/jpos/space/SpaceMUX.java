@@ -89,6 +89,9 @@ public class SpaceMUX extends SimpleLogSource
         }
         return resp;
     }
+    public void queue(ISOMsg m) throws ISOException {
+        sp.out (to, m);
+    }
     protected String getFrom () {
         return from;
     }

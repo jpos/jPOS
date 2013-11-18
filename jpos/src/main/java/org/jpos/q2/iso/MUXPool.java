@@ -25,6 +25,7 @@ import org.jpos.q2.QBeanSupport;
 import org.jpos.util.NameRegistrar;
 
 import java.util.StringTokenizer;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author apr
@@ -33,7 +34,7 @@ public class MUXPool extends QBeanSupport implements MUX {
     int strategy = 0;
     String[] muxName;
     MUX[] mux;
-    int msgno = 0;
+    AtomicInteger msgno = new AtomicInteger();
     public static final int ROUND_ROBIN = 1;
     public static final int PRIMARY_SECONDARY = 0;
        
@@ -56,13 +57,9 @@ public class MUXPool extends QBeanSupport implements MUX {
         NameRegistrar.unregister ("mux."+getName ());
     }
     public ISOMsg request (ISOMsg m, long timeout) throws ISOException {
-        int mnumber = 0;
         long maxWait = System.currentTimeMillis() + timeout;
-        synchronized (this) {
-            mnumber = msgno++;
-        }
-        MUX mux = strategy == ROUND_ROBIN ? 
-            nextAvailableMUX (mnumber, maxWait) :
+        MUX mux = strategy == ROUND_ROBIN ?
+            nextAvailableMUX (msgno.incrementAndGet(), maxWait) :
             firstAvailableMUX (maxWait);
 
         if (mux != null) {
@@ -71,6 +68,17 @@ public class MUXPool extends QBeanSupport implements MUX {
                 return mux.request (m, timeout);
         }
         return null;
+    }
+    public void queue (ISOMsg m) throws ISOException {
+        long maxWait = 1000L; // reasonable default
+        MUX mux = strategy == ROUND_ROBIN ?
+            nextAvailableMUX (msgno.incrementAndGet(), maxWait) :
+            firstAvailableMUX (maxWait);
+
+        if (mux == null)
+            throw new ISOException ("No available MUX");
+
+        mux.queue (m);
     }
     public boolean isConnected() {
         for (MUX aMux : mux)
@@ -111,11 +119,9 @@ public class MUXPool extends QBeanSupport implements MUX {
     public void request (ISOMsg m, long timeout, final ISOResponseListener r, final Object handBack) 
         throws ISOException 
     {
-        int mnumber = 0;
+        int mnumber;
         long maxWait = System.currentTimeMillis() + timeout;
-        synchronized (this) {
-            mnumber = msgno++;
-        }
+        mnumber = msgno.incrementAndGet();
         MUX mux = strategy == ROUND_ROBIN ?
         nextAvailableMUX (mnumber, maxWait) :
         firstAvailableMUX (maxWait);
@@ -135,4 +141,3 @@ public class MUXPool extends QBeanSupport implements MUX {
             throw new ISOException ("No MUX available");
     }
 }
-

@@ -29,17 +29,6 @@ import org.jpos.iso.ISOMsg;
 import org.junit.Test;
 
 public class MUXPoolTest {
-
-    @Test
-    public void testConstructor() throws Throwable {
-        MUXPool mUXPool = new MUXPool();
-        assertEquals("mUXPool.getLog().getRealm()", "org.jpos.q2.iso.MUXPool", mUXPool.getLog().getRealm());
-        assertEquals("mUXPool.getState()", -1, mUXPool.getState());
-        assertTrue("mUXPool.isModified()", mUXPool.isModified());
-        assertEquals("mUXPool.msgno", 0, mUXPool.msgno);
-        assertEquals("mUXPool.strategy", 0, mUXPool.strategy);
-    }
-
     @Test
     public void testInitServiceThrowsNullPointerException() throws Throwable {
         MUXPool mUXPool = new MUXPool();
@@ -88,7 +77,6 @@ public class MUXPoolTest {
             mUXPool.request(new ISOMsg("testMUXPoolMti"), 100L);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertEquals("mUXPool.msgno", 1, mUXPool.msgno);
             assertNull("ex.getMessage()", ex.getMessage());
         }
     }

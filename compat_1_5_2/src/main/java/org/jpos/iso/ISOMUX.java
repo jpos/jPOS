@@ -566,5 +566,15 @@ public class ISOMUX implements Runnable, ISOSource, LogSource, MUX,
     {
         throw new ISOException ("Not implemented");
     }
+
+    /**
+     * queue a message
+     *
+     * @param m the Message to be sent
+     */
+    @Override
+    public void queue(ISOMsg m) throws ISOException {
+        throw new ISOException ("Not implemented - use QMUX instead");
+    }
 }
 

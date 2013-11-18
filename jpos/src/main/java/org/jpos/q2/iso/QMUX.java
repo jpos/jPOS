@@ -357,11 +357,17 @@ public class QMUX
      * @throws org.jpos.iso.ISOException
      * @throws org.jpos.iso.ISOFilter.VetoException;
      *
+     * @deprecated Use 'queue' instead
      */
     public void send(ISOMsg m) throws IOException, ISOException {
         sp.out (out, m);
     }
 
+    public void queue(ISOMsg m) throws ISOException {
+        if (!isConnected())
+            throw new ISOException ("MUX is not connected");
+        sp.out (out, m);
+    }
     public boolean isConnected() {
         if (ready != null && ready.length > 0) {
             for (String aReady : ready)
