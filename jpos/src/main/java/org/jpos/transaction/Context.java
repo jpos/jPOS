@@ -70,7 +70,6 @@ public class Context implements Externalizable, Loggeable, Pausable {
      * Transient remove
      */
     public synchronized Object remove (Object key) {
-        getPMap().remove (key);
         return getMap().remove (key);
     }
     public String getString (Object key) {
