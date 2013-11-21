@@ -73,6 +73,7 @@ public class DirPoll extends SimpleLogSource
     private boolean shouldTimestampArchive;
     private String archiveDateFormat;
     private boolean acceptZeroLength = false;
+    private boolean regexPriorityMatching = false;
 
     public DirPoll () {
         prio = new Vector();
@@ -162,6 +163,14 @@ public class DirPoll extends SimpleLogSource
         return archiveDir;
     }
 
+    public boolean isRegexPriorityMatching() {
+        return regexPriorityMatching;
+    }
+
+    public void setRegexPriorityMatching(boolean regexPriorityMatching) {
+        this.regexPriorityMatching = regexPriorityMatching;
+    }
+
     /**
      * Return instance implementing {@link FileProcessor} or {@link Processor}
      * @return
@@ -198,6 +207,7 @@ public class DirPoll extends SimpleLogSource
                 cfg.get ("archive.dateformat", "yyyyMMddHHmmss")
             );
             setShouldTimestampArchive (cfg.getBoolean ("archive.timestamp", false));
+            setRegexPriorityMatching(cfg.getBoolean("priority.regex", false));
         }
     }
     /**
@@ -224,8 +234,15 @@ public class DirPoll extends SimpleLogSource
         boolean result;
         String ext = currentPriority >= 0 ? 
             ((String) prio.elementAt(currentPriority)) : null;
-        if (ext != null && !name.endsWith(ext))
-            return false;
+        if (ext != null) {
+            if (isRegexPriorityMatching()) {
+                if (!name.matches(ext))
+                    return false;
+            } else {
+                if (!name.endsWith(ext))
+                    return false;
+            }
+        }
         File f = new File (dir, name);
         if (acceptZeroLength){
              result = f.isFile();
