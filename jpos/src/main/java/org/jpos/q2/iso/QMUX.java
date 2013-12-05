@@ -23,10 +23,7 @@ import org.jpos.core.ConfigurationException;
 import org.jpos.iso.*;
 import org.jpos.q2.QBeanSupport;
 import org.jpos.q2.QFactory;
-import org.jpos.space.LocalSpace;
-import org.jpos.space.Space;
-import org.jpos.space.SpaceFactory;
-import org.jpos.space.SpaceListener;
+import org.jpos.space.*;
 import org.jpos.util.Loggeable;
 import org.jpos.util.NameRegistrar;
 
@@ -78,7 +75,13 @@ public class QMUX
     public void startService () {
         if (!listenerRegistered) {
             listenerRegistered = true;
-            sp.addListener (in, this);
+            // Handle messages that could be in the in queue at start time
+            synchronized (sp) {
+                Object[] pending = SpaceUtil.inpAll(sp, in);
+                sp.addListener (in, this);
+                for (Object o : pending)
+                    sp.out(in, o);
+            }
         }
     }
     public void stopService () {
