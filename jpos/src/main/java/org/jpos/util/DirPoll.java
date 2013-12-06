@@ -429,7 +429,7 @@ public class DirPoll extends SimpleLogSource
                     if ((e instanceof DirPollException && ((DirPollException)e).isRetry())) {
                         ISOUtil.sleep(pollInterval*10); // retry delay (pollInterval defaults to 100ms)
                         evt.addMessage("retrying");
-                        store(request, requestDir);
+                        moveTo(request, requestDir);
                     } else {
                         store(request, badDir);
                     }
