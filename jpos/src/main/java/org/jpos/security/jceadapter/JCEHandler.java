@@ -24,8 +24,8 @@ import java.security.NoSuchAlgorithmException;
 import java.security.Provider;
 import java.security.Security;
 import java.security.spec.AlgorithmParameterSpec;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
@@ -54,7 +54,7 @@ public class JCEHandler {
     static final String DES_MODE_ECB = "ECB";
     static final String DES_MODE_CBC = "CBC";
     static final String DES_NO_PADDING = "NoPadding";
-    static final Map<MacEngineKey, Mac> macEngines = new HashMap();
+    static final Map<MacEngineKey, Mac> macEngines = new ConcurrentHashMap();
     /**
      * The JCE provider
      */
