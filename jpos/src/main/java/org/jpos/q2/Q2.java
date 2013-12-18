@@ -566,6 +566,12 @@ public class Q2 implements FileFilter, Runnable {
         return instanceId;
     }
     public static String getVersionString() {
+        String appVersionString = getAppVersionString();
+        if (appVersionString != null) {
+            return String.format ("jPOS %s %s/%s (%s)%n%s%s",
+                getVersion(), getBranch(), getRevision(), getBuildTimestamp(), appVersionString, getLicensee()
+            );
+        }
         return String.format ("jPOS %s %s/%s (%s)%s",
             getVersion(), getBranch(), getRevision(), getBuildTimestamp(), getLicensee()
         );
@@ -856,6 +862,22 @@ public class Q2 implements FileFilter, Runnable {
     }
     public static String getRelease() {
         return getVersion() + " " + getRevision();
+    }
+    public static String getAppVersionString() {
+        try {
+            ResourceBundle buildinfo = getBundle("buildinfo");
+            ResourceBundle revision = getBundle("revision");
+
+            return String.format ("%s %s %s/%s (%s)",
+                buildinfo.getString("projectName"),
+                buildinfo.getString("version"),
+                revision.getString("branch"),
+                revision.getString("revision"),
+                buildinfo.getString("buildTimestamp")
+            );
+        } catch (MissingResourceException ignored) {
+            return null;
+        }
     }
     public static class QEntry {
         long deployed;
