@@ -36,7 +36,7 @@ import org.jpos.util.NameRegistrar.NotFoundException;
 import org.junit.Test;
 
 public class NameRegistrarConcurrencyTest {
-    static final int TOTAL_THREADS_TO_RUN = 1000;
+    static final int TOTAL_THREADS_TO_RUN = 100;
 
     @Test
     public void testConcurrency() throws Exception {
