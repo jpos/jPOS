@@ -1,10 +1,14 @@
 language: java
 jdk:
 - oraclejdk7
+before_script:
+ - "echo $JAVA_OPTS"
+ - "export JAVA_OPTS=-Xmx1G"
 install:
 - TERM=dumb ./gradlew assemble
 script:
 - TERM=dumb ./gradlew check
+
 
 after_success: .travis/update-gh-pages.sh
 
