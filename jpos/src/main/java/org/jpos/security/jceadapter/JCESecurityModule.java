@@ -112,6 +112,12 @@ public class JCESecurityModule extends BaseSMAdapter {
 
     private static MessageDigest SHA1_MESSAGE_DIGEST = null;
 
+    private static final byte[] _VARIANT_RIGHT_HALF = new byte[]
+            {
+                    (byte) 0xC0, (byte) 0xC0, (byte) 0xC0, (byte) 0xC0,
+                    (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00
+            };
+
     static {
       try {
           SHA1_MESSAGE_DIGEST = MessageDigest.getInstance("SHA-1");
@@ -1574,4 +1580,355 @@ public class JCESecurityModule extends BaseSMAdapter {
     private static final byte[] zeroBlock = ISOUtil.hex2byte("0000000000000000");
 
     private JCEHandler jceHandler;
+
+    //--------------------------------------------------------------------------------------------------
+    // DUKPT
+    //--------------------------------------------------------------------------------------------------
+
+    private byte[] encrypt64(byte[] data, byte[] key)
+            throws JCEHandlerException
+    {
+        return jceHandler.encryptData(
+                data,
+                jceHandler.formDESKey((short) (key.length << 3), key)
+        );
+    }
+
+    private byte[] decrypt64(byte[] data, byte[] key)
+            throws JCEHandlerException
+    {
+        return jceHandler.decryptData(
+                data,
+                jceHandler.formDESKey((short) (key.length << 3), key)
+        );
+    }
+
+    private byte[] specialEncrypt(byte[] data, byte[] key)
+            throws JCEHandlerException
+    {
+        if (key.length == 8)
+        {
+            data = ISOUtil.xor(data, key);
+            data = encrypt64(data, key);
+            return ISOUtil.xor(data, key);
+        }
+        byte[] keyL = new byte[8];
+        byte[] keyR = new byte[8];
+        System.arraycopy(key, 0, keyL, 0, 8);
+        System.arraycopy(key, 8, keyR, 0, 8);
+        data = encrypt64(data, keyL);
+        data = decrypt64(data, keyR);
+        data = encrypt64(data, keyL);
+        return data;
+    }
+
+    private byte[] specialDecrypt(byte[] data, byte[] key)
+            throws JCEHandlerException
+    {
+        if (key.length == 8)
+        {
+            data = ISOUtil.xor(data, key);
+            data = decrypt64(data, key);
+            return ISOUtil.xor(data, key);
+        }
+        byte[] keyL = new byte[8];
+        byte[] keyR = new byte[8];
+        System.arraycopy(key, 0, keyL, 0, 8);
+        System.arraycopy(key, 8, keyR, 0, 8);
+        data = decrypt64(data, keyL);
+        data = encrypt64(data, keyR);
+        data = decrypt64(data, keyL);
+        return data;
+    }
+
+    private void shr(byte[] b)
+    {
+        boolean carry = false;
+        for (int i = 0; i < b.length; i++)
+        {
+            byte c = b[i];
+            b[i] = (byte) ((c >>> 1) & 0x7F);
+            if (carry)
+            {
+                b[i] |= 0x80;
+            }
+            carry = ((c & 0x01) == 1);
+        }
+    }
+
+    private void or(byte[] b, byte[] mask, int offset)
+    {
+        int len = Math.min(b.length - offset, mask.length);
+        byte[] d = new byte[len];
+
+        for (int i = 0; i < len; i++)
+        {
+            b[offset++] |= mask[i];
+        }
+    }
+
+    private byte[] and(byte[] b, byte[] mask, int offset)
+    {
+        int len = Math.min(b.length - offset, mask.length);
+        byte[] d = new byte[b.length];
+        System.arraycopy(b, 0, d, 0, b.length);
+
+        for (int i = 0; i < len; i++, offset++)
+        {
+            d[offset] = (byte) (b[offset] & mask[i]);
+        }
+        return d;
+    }
+
+    private byte[] and(byte[] b, byte[] mask)
+    {
+        return and(b, mask, 0);
+    }
+
+    private boolean notZero(byte[] b)
+    {
+        int l = b.length;
+        for (int i = 0; i < l; i++)
+        {
+            if (b[i] != 0)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private byte[] calculateInitialKey(KeySerialNumber sn, SecureDESKey bdk, boolean tdes)
+            throws SMException
+    {
+        byte[] kl = new byte[8];
+        byte[] kr = new byte[8];
+        byte[] kk = decryptFromLMK(bdk).getEncoded();
+
+        System.arraycopy(kk, 0, kl, 0, 8);
+        System.arraycopy(kk, 8, kr, 0, 8);
+        String paddedKsn;
+        try
+        {
+            paddedKsn = ISOUtil.padleft(
+                    sn.getBaseKeyID() + sn.getDeviceID() + sn.getTransactionCounter(),
+                    20, 'F'
+            );
+        }
+        catch (ISOException e)
+        {
+            throw new SMException(e);
+        }
+
+        byte[] ksn = ISOUtil.hex2byte(paddedKsn.substring(0, 16));
+        ksn[7] &= 0xE0;
+
+        byte[] data = encrypt64(ksn, kl);
+        data = decrypt64(data, kr);
+        data = encrypt64(data, kl);
+
+        // ANS X9.24:2009 3DES keys (@DFLC/@apr 2011) A.6 steps 5 & 6 (p69)
+        if (tdes)
+        {
+            byte[] kl2 = ISOUtil.xor(kl, _VARIANT_RIGHT_HALF);
+            byte[] kr2 = ISOUtil.xor(kr, _VARIANT_RIGHT_HALF);
+            byte[] data2 = encrypt64(ksn, kl2);
+            data2 = decrypt64(data2, kr2);
+            data2 = encrypt64(data2, kl2);
+
+            byte[] d = new byte[16];
+            System.arraycopy(data, 0, d, 0, 8);
+            System.arraycopy(data2, 0, d, 8, 8);
+            data = d;
+        }
+        return data;
+    }
+
+    private byte[] calculateDerivedKey(KeySerialNumber ksn, SecureDESKey bdk)
+            throws SMException
+    {
+        return calculateDerivedKey(ksn,bdk,false);
+    }
+
+    private byte[] calculateDerivedKey(KeySerialNumber ksn, SecureDESKey bdk, boolean tdes)
+            throws SMException
+    {
+        return tdes?calculateDerivedKeyTDES(ksn,bdk):calculateDerivedKeySDES(ksn,bdk);
+    }
+
+    private byte[] calculateDerivedKeySDES(KeySerialNumber ksn, SecureDESKey bdk)
+            throws SMException
+    {
+        final byte[] _1FFFFF =
+                new byte[]{(byte) 0x1F, (byte) 0xFF, (byte) 0xFF};
+        final byte[] _100000 =
+                new byte[]{(byte) 0x10, (byte) 0x00, (byte) 0x00};
+        final byte[] _E00000 =
+                new byte[]{(byte) 0xE0, (byte) 0x00, (byte) 0x00};
+
+        byte[] curkey = calculateInitialKey(ksn, bdk, false);
+        byte[] smidr = ISOUtil.hex2byte(
+                ksn.getBaseKeyID() + ksn.getDeviceID() + ksn.getTransactionCounter()
+        );
+        byte[] reg3 = ISOUtil.hex2byte(ksn.getTransactionCounter());
+        reg3 = and(reg3, _1FFFFF);
+        byte[] shiftr = _100000;
+        byte[] temp;
+        byte[] tksnr;
+        smidr = and(smidr, _E00000, 5);
+        do
+        {
+            temp = and(shiftr, reg3);
+            if (notZero(temp))
+            {
+                or(smidr, shiftr, 5);
+                tksnr = ISOUtil.xor(smidr, curkey);
+                tksnr = encrypt64(tksnr, curkey);
+                curkey = ISOUtil.xor(tksnr, curkey);
+            }
+            shr(shiftr);
+        }
+        while (notZero(shiftr));
+        curkey[7] ^= 0xFF;
+        return curkey;
+    }
+    private byte[] calculateDerivedKeyTDES(KeySerialNumber ksn, SecureDESKey bdk)
+            throws SMException
+    {
+        final byte[] _1FFFFF =
+                new byte[]{(byte) 0x1F, (byte) 0xFF, (byte) 0xFF};
+        final byte[] _100000 =
+                new byte[]{(byte) 0x10, (byte) 0x00, (byte) 0x00};
+        final byte[] _E00000 =
+                new byte[]{(byte) 0xE0, (byte) 0x00, (byte) 0x00};
+
+        byte[] curkey = calculateInitialKey(ksn, bdk, true);
+
+        byte[] smidr = ISOUtil.hex2byte(
+                ksn.getBaseKeyID() + ksn.getDeviceID() + ksn.getTransactionCounter()
+        );
+        byte[] reg3 = ISOUtil.hex2byte(ksn.getTransactionCounter());
+        reg3 = and(reg3, _1FFFFF);
+        byte[] shiftr = _100000;
+        byte[] temp;
+        byte[] tksnr;
+        byte[] r8a;
+        byte[] r8b;
+        byte[] curkeyL = new byte[8];
+        byte[] curkeyR = new byte[8];
+        smidr = and(smidr, _E00000, 5);
+        do
+        {
+            temp = and(shiftr, reg3);
+            if (notZero(temp))
+            {
+                System.arraycopy(curkey, 0, curkeyL, 0, 8);
+                System.arraycopy(curkey, 8, curkeyR, 0, 8);
+
+                or(smidr, shiftr, 5);
+                // smidr == R8
+
+                tksnr = ISOUtil.xor(smidr, curkeyR);
+                tksnr = encrypt64(tksnr, curkeyL);
+                tksnr = ISOUtil.xor(tksnr, curkeyR);
+                // tksnr == R8A
+                curkeyL = ISOUtil.xor(curkeyL, _VARIANT_RIGHT_HALF);
+                curkeyR = ISOUtil.xor(curkeyR, _VARIANT_RIGHT_HALF);
+
+                r8b = ISOUtil.xor(smidr, curkeyR);
+                r8b = encrypt64(r8b, curkeyL);
+                r8b = ISOUtil.xor(r8b, curkeyR);
+
+                System.arraycopy(r8b, 0, curkey, 0, 8);
+                System.arraycopy(tksnr, 0, curkey, 8, 8);
+            }
+            shr(shiftr);
+        }
+        while (notZero(shiftr));
+        curkey[7] ^= 0xFF;
+        curkey[15] ^= 0xFF;
+        return curkey;
+    }
+
+    public SecureDESKey importBDK(String clearComponent1HexString,
+                                  String clearComponent2HexString,
+                                  String clearComponent3HexString) throws SMException
+    {
+        return formKEYfromThreeClearComponents((short) 128, "BDK",
+                clearComponent1HexString,
+                clearComponent2HexString,
+                clearComponent3HexString);
+    }
+
+    private KeySerialNumber getKSN(String s)
+    {
+        return new KeySerialNumber(
+                s.substring(0, 6),
+                s.substring(6, 10),
+                s.substring(10)
+        );
+    }
+
+    protected EncryptedPIN translatePINImpl
+            (EncryptedPIN pinUnderDuk, KeySerialNumber ksn,
+             SecureDESKey bdk, SecureDESKey kd2, byte destinationPINBlockFormat)
+            throws SMException
+    {
+        return translatePINImpl(pinUnderDuk,ksn,bdk,kd2,destinationPINBlockFormat,false);
+    }
+
+    protected EncryptedPIN translatePINImpl
+            (EncryptedPIN pinUnderDuk, KeySerialNumber ksn,
+             SecureDESKey bdk, SecureDESKey kd2, byte destinationPINBlockFormat,boolean tdes)
+            throws SMException
+    {
+        byte[] derivedKey = calculateDerivedKey(ksn, bdk, tdes);
+        byte[] clearPinblk = specialDecrypt(
+                pinUnderDuk.getPINBlock(), derivedKey
+        );
+
+        String pan = pinUnderDuk.getAccountNumber();
+        String pin = calculatePIN(
+                clearPinblk, pinUnderDuk.getPINBlockFormat(), pan
+        );
+        byte[] translatedPinblk = jceHandler.encryptData(
+                calculatePINBlock(pin, destinationPINBlockFormat, pan),
+                decryptFromLMK(kd2)
+        );
+        return new EncryptedPIN(translatedPinblk, destinationPINBlockFormat, pan,false);
+    }
+    protected EncryptedPIN importPINImpl
+            (EncryptedPIN pinUnderDuk, KeySerialNumber ksn, SecureDESKey bdk,boolean tdes)
+            throws SMException
+    {
+        byte[] derivedKey = calculateDerivedKey(ksn, bdk,tdes);
+        byte[] clearPinblk = specialDecrypt(
+                pinUnderDuk.getPINBlock(), derivedKey
+        );
+        String pan = pinUnderDuk.getAccountNumber();
+        String pin = calculatePIN(
+                clearPinblk, pinUnderDuk.getPINBlockFormat(), pan
+        );
+
+        byte[] pinUnderLmk = jceHandler.encryptData(
+                calculatePINBlock(pin, SMAdapter.FORMAT00, pan),
+                getLMK(PINLMKIndex)
+        );
+        return new EncryptedPIN(pinUnderLmk, SMAdapter.FORMAT00, pan,false);
+    }
+
+    public EncryptedPIN translatePIN
+            (EncryptedPIN pinUnderDuk, KeySerialNumber ksn,
+             SecureDESKey bdk, SecureDESKey kd2, byte destinationPINBlockFormat, boolean tdes)
+            throws SMException
+    {
+        return translatePINImpl(pinUnderDuk,ksn,bdk,kd2,destinationPINBlockFormat,tdes);
+    }
+
+    public EncryptedPIN importPIN
+            (EncryptedPIN pinUnderDuk, KeySerialNumber ksn, SecureDESKey bdk, boolean tdes)
+            throws SMException
+    {
+        return importPINImpl(pinUnderDuk,ksn,bdk,tdes);
+    }
 }
