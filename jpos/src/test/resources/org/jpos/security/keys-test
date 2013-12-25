@@ -1,0 +1,89 @@
+#
+# Test data - ANSI X9.24
+# bin/smconsole -lmk cfg/lmk-test FK 64 BDK \
+#               6AC292FAA1315B4D 0000000000000000 0000000000000000
+#
+test-pin-key.key=7447BD5781B80F95
+test-pin-key.checkvalue=06AD9C
+test-pin-key.length=64
+test-pin-key.type=TPK
+test-pin-key.class=org.jpos.security.SecureDESKey
+
+#
+# Test data - ANSI X9.24:2009
+# bin/smconsole -lmk cfg/lmk-test FK 128 BDK \
+#               6AC292FAA1315B4D858AB3A3D7D5933A 00000000000000000000000000000000 00000000000000000000000000000000
+#
+test3des-pin-key.key=7447BD5781B80F95B2D178074DB664A4
+test3des-pin-key.checkvalue=AF8C07
+test3des-pin-key.length=128
+test3des-pin-key.type=TPK
+test3des-pin-key.class=org.jpos.security.SecureDESKey
+
+#
+# bin/smconsole -lmk cfg/lmk-test FK 128 BDK \
+#         0123456789ABCDEFFEDCBA9876543210 \
+#         00000000000000000000000000000000 \
+#         00000000000000000000000000000000
+test-bdk.key=26FB71EA0C9CBBA1D51CA00CFFA36374
+test-bdk.checkvalue=08D7B4
+test-bdk.length=128
+test-bdk.type=BDK
+test-bdk.class=org.jpos.security.SecureDESKey
+
+#
+# bin/smconsole -lmk cfg/lmk-test FK 64 ZPK \
+#               0123456789ABCDEF 0000000000000000 0000000000000000
+pos.key=7BA00300BDE4343E
+pos.checkvalue=D5D44F
+pos.length=64
+pos.type=ZPK
+pos.class=org.jpos.security.SecureDESKey
+
+# Pruebas iniciales, paridad PAR
+# bin/smconsole -lmk cfg/lmk-test FK 128 BDK A666277BB8BDDBE127561D24B2D4E84B 00000000000000000000000000000000 00000000000000000000000000000000
+#
+# visanetdukpttest.key=BD69EA887C5A71E67913D317F3211D92
+# visanetdukpttest.checkvalue=7C8EA5
+# visanetdukpttest.length=128
+# visanetdukpttest.type=BDK
+# visanetdukpttest.class=org.jpos.security.SecureDESKey
+
+# Nuevas pruebas, paridad correcta (impar)
+# bin/smconsole -lmk cfg/lmk-test FK 128 BDK A7672F7CB9BFDFE32F571F26B6D6EC4C 00000000000000000000000000000000 00000000000000000000000000000000
+#
+visanetdukpttest.key=C9DE9ADA1DFC1A29216AB2B22EEEA8AF
+visanetdukpttest.checkvalue=737032
+visanetdukpttest.length=128
+visanetdukpttest.type=BDK
+visanetdukpttest.class=org.jpos.security.SecureDESKey
+
+#
+# bin/smconsole -lmk cfg/lmk-test FK 128 ZMK 98F8BFD5FB58DACEFDCD1C675DA19EAD 68AB8364294F5D64645208A1460D13B6 00000000000000000000000000000000
+#
+visanetzmk.key=174E61C67FBDB8BD70306489C4D322F8
+visanetzmk.checkvalue=2CB9CB
+visanetzmk.length=128
+visanetzmk.type=ZMK
+visanetzmk.class=org.jpos.security.SecureDESKey
+
+#
+# bin/smconsole -lmk cfg/lmk-test FK 128 ZPK 98F8BFD5FB58DACEFDCD1C675DA19EAD 68AB8364294F5D64645208A1460D13B6 00000000000000000000000000000000
+#
+visanetzpk.key=FCA62DFFA0A433CF1050CA99118F637F
+visanetzpk.checkvalue=2CB9CB
+visanetzpk.length=128
+visanetzpk.type=ZMK
+visanetzpk.class=org.jpos.security.SecureDESKey
+
+
+#
+# bin/smconsole -lmk cfg/lmk-test FK 128 BDK 0123456789ABCDEFFEDCBA9876543210 00000000000000000000000000000000 00000000000000000000000000000000
+# Test USAG-INC - same as test bdk
+#
+usag.key=26FB71EA0C9CBBA1D51CA00CFFA36374
+usag.checkvalue=08D7B4
+usag.length=128
+usag.type=BDK
+usag.class=org.jpos.security.SecureDESKey
+
