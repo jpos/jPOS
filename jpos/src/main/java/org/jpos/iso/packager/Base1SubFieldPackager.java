@@ -152,6 +152,7 @@ public class Base1SubFieldPackager extends ISOBasePackager
                         evt.addMessage ("error packing field "+i);
                         evt.addMessage (c);
                         evt.addMessage (e);
+                        throw new ISOException (e);
                     }
                 }
             }
