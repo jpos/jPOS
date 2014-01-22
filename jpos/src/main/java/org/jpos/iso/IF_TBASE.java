@@ -25,7 +25,7 @@ package org.jpos.iso;
  * @version $Id$
  * @see ISOComponent
  */
-public abstract class IF_TBASE extends ISOFieldPackager {
+public abstract class IF_TBASE extends ISOFieldPackager implements TaggedField {
 
     private String token;
 
