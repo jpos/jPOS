@@ -1744,12 +1744,6 @@ public class JCESecurityModule extends BaseSMAdapter {
         return data;
     }
 
-    private byte[] calculateDerivedKey(KeySerialNumber ksn, SecureDESKey bdk)
-            throws SMException
-    {
-        return calculateDerivedKey(ksn,bdk,false, false);
-    }
-
     private byte[] calculateDerivedKey(KeySerialNumber ksn, SecureDESKey bdk, boolean tdes, boolean dataEncryption)
             throws SMException
     {
