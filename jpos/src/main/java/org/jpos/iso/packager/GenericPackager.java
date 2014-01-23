@@ -21,7 +21,7 @@ package org.jpos.iso.packager;
 import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
-import org.jpos.iso.IF_TBASE;
+import org.jpos.iso.TaggedFieldPackager;
 import org.jpos.iso.ISOBasePackager;
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOFieldPackager;
@@ -393,7 +393,7 @@ public class GenericPackager
                 String name = atts.getValue("name");
                 String size = atts.getValue("length");
                 String pad  = atts.getValue("pad");
-                // Modified for using IF_TBASE
+                // Modified for using TaggedFieldPackager
                 String token = atts.getValue("token");
 
                 if (localName.equals("isopackager"))
@@ -423,9 +423,9 @@ public class GenericPackager
                     f.setDescription(name);
                     f.setLength(Integer.parseInt(size));
                     f.setPad(Boolean.parseBoolean(pad));
-                    // Modified for using IF_TBASE
-                    if( f instanceof IF_TBASE){
-                      ((IF_TBASE)f).setToken( token );
+                    // Modified for using TaggedFieldPackager
+                    if( f instanceof TaggedFieldPackager){
+                      ((TaggedFieldPackager)f).setToken( token );
                     }
                     fieldStack.push(f);
 
@@ -449,9 +449,9 @@ public class GenericPackager
                     f.setDescription(name);
                     f.setLength(Integer.parseInt(size));
                     f.setPad(Boolean.parseBoolean(pad));
-                    // Modified for using IF_TBASE
-                    if( f instanceof IF_TBASE){
-                      ((IF_TBASE)f).setToken( token );
+                    // Modified for using TaggedFieldPackager
+                    if( f instanceof TaggedFieldPackager){
+                      ((TaggedFieldPackager)f).setToken( token );
                     }
                     // Insert this new isofield into the Map
                     // on the top of the stack using the fieldID as the key
