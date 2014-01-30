@@ -75,7 +75,7 @@ public class GenericSubFieldPackager extends GenericPackager
             {
                 if (bmap == null || bmap.get(i)) 
                 {
-                    if (fld[i] != null) {
+                    if (i<fld.length && fld[i] != null) {
                         ISOComponent c = fld[i].createComponent(i);
                         consumed += fld[i].unpack (c, b, consumed);
                         m.set(c);
