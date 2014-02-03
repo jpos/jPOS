@@ -66,6 +66,12 @@ public class TinySpace implements Space, Serializable {
         }
         return obj;
     }
+    public void nrd(Object key) {
+        throw new SpaceError("Not implemented");
+    }
+    public Object nrd(Object key, long timeout) {
+        throw new SpaceError("Not implemented");
+    }
     public synchronized Object inp (Object key) {
         Object obj = map.get (key);
         if (obj instanceof Data) {

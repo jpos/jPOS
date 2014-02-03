@@ -372,4 +372,10 @@ public class PersistentSpace implements LocalSpace // PersistentSpaceMBean {
     public boolean existAny (Object[] keys, long timeout) {
         throw new SpaceError ("Unsupported operation");
     }
+    public void nrd(Object key) {
+        throw new SpaceError("Not implemented");
+    }
+    public Object nrd(Object key, long timeout) {
+        throw new SpaceError("Not implemented");
+    }
 }
