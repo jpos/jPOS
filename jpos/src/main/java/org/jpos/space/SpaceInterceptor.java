@@ -24,53 +24,61 @@ package org.jpos.space;
  * @author Alejandro Revilla
  * @since  1.4.7
  */
-public class SpaceInterceptor implements Space {
-    protected Space sp;
-    public SpaceInterceptor (Space sp) {
+public class SpaceInterceptor<K,V> implements Space<K,V> {
+    protected Space<K,V> sp;
+    public SpaceInterceptor (Space<K,V> sp) {
         super();
         this.sp = sp;
     }
-    public void out (Object key, Object value) {
+    public void out (K key, V value) {
         sp.out (key, value);
     }
-    public void out (Object key, Object value, long timeout) {
+    public void out (K key, V value, long timeout) {
         sp.out (key, value, timeout);
     }
-    public void push (Object key, Object value) {
+    public void push (K key, V value) {
         sp.push (key, value);
     }
-    public void push (Object key, Object value, long timeout) {
+    public void push (K key, V value, long timeout) {
         sp.push (key, value, timeout);
     }
-    public void put (Object key, Object value) {
+    public void put (K key, V value) {
         sp.put (key, value);
     }
-    public void put (Object key, Object value, long timeout) {
+    public void put (K key, V value, long timeout) {
         sp.put (key, value, timeout);
     }    
-    public Object in  (Object key) {
+    public V in  (K key) {
         return sp.in (key);
     }
-    public Object rd  (Object key) {
+    public V rd  (K key) {
         return sp.rd (key);
     }
-    public Object in  (Object key, long timeout) {
+    public V in  (K key, long timeout) {
         return sp.in (key, timeout);
     }
-    public Object rd  (Object key, long timeout) {
+    public V rd  (K key, long timeout) {
         return sp.rd (key, timeout);
     }
-    public Object inp (Object key) {
+    public V inp (K key) {
         return sp.inp (key);
     }
-    public Object rdp (Object key) {
+    public V rdp (K key) {
         return sp.rdp (key);
     }
-    public boolean existAny (Object[] keys) {
+    @Override
+    public void nrd(K key) {
+        sp.nrd(key);
+    }
+    @Override
+    public V nrd(K key, long timeout) {
+        return sp.nrd(key, timeout);
+    }
+
+    public boolean existAny (K[] keys) {
         return sp.existAny (keys);
     }
-    public boolean existAny (Object[] keys, long timeout) {
+    public boolean existAny (K[] keys, long timeout) {
         return sp.existAny (keys, timeout);
     }
 }
-

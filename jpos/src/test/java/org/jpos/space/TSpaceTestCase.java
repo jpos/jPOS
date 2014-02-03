@@ -18,12 +18,6 @@
 
 package org.jpos.space;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.util.HashSet;
 import java.util.Set;
 
@@ -32,6 +26,8 @@ import org.jpos.util.Profiler;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 public class TSpaceTestCase implements SpaceListener {
     TSpace<String, Object> sp;
@@ -266,6 +262,25 @@ public class TSpaceTestCase implements SpaceListener {
         assertTrue("delay was > 1000", elapsed > 900L);
     }
 
+    @Test
+    public void testNRD() {
+        long now  = System.currentTimeMillis();
+        sp.out("NRD", "NRDTEST", 1000L);
+        sp.nrd("NRD");
+        long elapsed = System.currentTimeMillis() - now;
+        assertTrue("Invalid elapsed time " + elapsed, elapsed >= 1000L);
+    }
+    @Test
+    public void testNRDWithDelay() {
+        long now  = System.currentTimeMillis();
+        sp.out("NRD", "NRDTEST", 1000L);
+        Object obj = sp.nrd("NRD", 500L);
+        assertNotNull("Object should not be null", obj);
+        obj = sp.nrd("NRD", 5000L);
+        long elapsed = System.currentTimeMillis() - now;
+        assertTrue("Invalid elapsed time " + elapsed, elapsed >= 1000L && elapsed <= 2000L);
+        assertNull("Object should be null", obj);
+    }
     public void notify(Object key, Object value) {
         this.notifiedValue = value;
     }

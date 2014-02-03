@@ -253,6 +253,12 @@ public class SpaceLet extends QBeanSupport implements Space {
     private String getScript (Element e) {
         return (e == null) ? null : e.getText();
     }
+    public void nrd (Object key) {
+         sp.nrd(key);
+    }
+    public Object nrd (Object key, long timeout) {
+        return sp.nrd(key, timeout);
+    }
     private void launch (Element e) {
         // final Interpreter bsh = initInterpreter ();
         final String script = e.getText();
