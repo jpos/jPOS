@@ -48,11 +48,32 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class FSDMsgTest {
+
+    static final String SCHEMA_PREFIX = "test-";
+
     @Mock
     FSDMsg msg;
 
     @Mock
     InputStreamReader is;
+
+    private static Element createSchema() {
+        Element schema = new Element("schema");
+        schema.setAttribute("id","base");
+        SpaceFactory.getSpace().put(SCHEMA_PREFIX+"base.xml", schema);
+        return schema;
+    }
+
+    private static void appendField(Element schema, String id, String type
+            , String separator, int len) {
+        Element field = new Element("field");
+        field.setAttribute("id", id);
+        field.setAttribute("type", type);
+        if (separator!=null)
+          field.setAttribute("separator", separator);
+        field.setAttribute("length", String.valueOf(len));
+        schema.addContent(field);
+    }
 
     @Test
     public void testConstructor() throws Throwable {
@@ -1053,16 +1074,109 @@ public class FSDMsgTest {
     }
 
     @Test
+    public void testPackASCIIPadding() throws Throwable {
+        Element schema = createSchema();
+        appendField(schema, "name", "A", null, 14);
+        FSDMsg fSDMsg = new FSDMsg(SCHEMA_PREFIX);
+
+        byte[] expected = "Test message  ".getBytes();
+        fSDMsg.set("name", "Test message");
+        byte[] b = fSDMsg.packToBytes();
+        assertArrayEquals("FSDMsg.packToBytes() don't properly padd ASCII fields", expected, b);
+    }
+
+    @Test
+    public void testPackNumericPadding() throws Throwable {
+        Element schema = createSchema();
+        appendField(schema, "name", "N", null, 6);
+        FSDMsg fSDMsg = new FSDMsg(SCHEMA_PREFIX);
+
+        byte[] expected = "001234".getBytes();
+        fSDMsg.set("name", "1234");
+        byte[] b = fSDMsg.packToBytes();
+        assertArrayEquals("FSDMsg.packToBytes() don't properly padd numeric fields", expected, b);
+    }
+
+    @Test
+    public void testPackBinaryNoPadding() throws Throwable {
+        Element schema = createSchema();
+        appendField(schema, "name", "B", null, 14);
+        FSDMsg fSDMsg = new FSDMsg(SCHEMA_PREFIX);
+
+        byte[] expected = "Test message".getBytes();
+        expected = ISOUtil.concat(new byte[2], expected);
+        fSDMsg.set("name", ISOUtil.hexString("Test message".getBytes()));
+        byte[] b = fSDMsg.packToBytes();
+        assertArrayEquals("FSDMsg.packToBytes() can't padd binary fields", expected, b);
+    }
+
+
+    @Test
+    public void testPackToOldStyleDS() throws Throwable {
+        Element schema = createSchema();
+        appendField(schema, "name", "ADS", null, 32);
+        FSDMsg fSDMsg = new FSDMsg(SCHEMA_PREFIX);
+
+        byte[] expected = "Test message".getBytes();
+        fSDMsg.set("name", "Test message");
+        byte[] b = fSDMsg.packToBytes();
+        assertArrayEquals("FSDMsg.packToBytes() don't properly handle old style DS", expected, b);
+    }
+
+    @Test
+    public void testPackToUnpadADS() throws Throwable {
+        Element schema = createSchema();
+        appendField(schema, "name", "A", "DS", 32);
+        FSDMsg fSDMsg = new FSDMsg(SCHEMA_PREFIX);
+
+        byte[] expected = "Test message".getBytes();
+        fSDMsg.set("name", "Test message ");
+        byte[] b = fSDMsg.packToBytes();
+        assertArrayEquals("FSDMsg.packToBytes() don't properly handle ADS unpadding", expected, b);
+    }
+
+    @Test
+    public void testPackToNoUnpadBDS() throws Throwable {
+        Element schema = createSchema();
+        appendField(schema, "name", "B", "DS", 32);
+        FSDMsg fSDMsg = new FSDMsg(SCHEMA_PREFIX);
+
+        byte[] expected = "Test message ".getBytes();
+        fSDMsg.set("name", ISOUtil.hexString("Test message ".getBytes()));
+        byte[] b = fSDMsg.packToBytes();
+        assertArrayEquals("FSDMsg.packToBytes() can't unpadding BDS fields", expected, b);
+    }
+
+    @Test
+    public void testPackToBDStoLong() throws Throwable {
+        Element schema = createSchema();
+        appendField(schema, "name", "B", "DS", 8);
+        FSDMsg fSDMsg = new FSDMsg(SCHEMA_PREFIX);
+
+        fSDMsg.set("name", ISOUtil.hexString("Test message".getBytes()));
+        try {
+          fSDMsg.packToBytes();
+          fail("FSDMsg.packToBytes() should throw RuntimeException when content is too long");
+        } catch (RuntimeException ex) {}
+    }
+
+    @Test
+    public void testPackToADStoLong() throws Throwable {
+        Element schema = createSchema();
+        appendField(schema, "name", "A", "DS", 8);
+        FSDMsg fSDMsg = new FSDMsg(SCHEMA_PREFIX);
+
+        byte[] expected = "Test mes".getBytes();
+        fSDMsg.set("name", "Test message");
+        byte[] b = fSDMsg.packToBytes();
+        assertArrayEquals("FSDMsg.packToBytes() don't properly truncat ADS field", expected, b);
+    }
+
+    @Test
     public void testPackToBytesCharset() throws Throwable {
-        Element schema = new Element("schema");
-        schema.setAttribute("id","base");
-        Element field = new Element("field");
-        field.setAttribute("id", "name");
-        field.setAttribute("type", "ADS");
-        field.setAttribute("length", "32");
-        schema.addContent(field);
-        SpaceFactory.getSpace().out("test-base.xml", schema);
-        FSDMsg fSDMsg = new FSDMsg("test-");
+        Element schema = createSchema();
+        appendField(schema, "name", "A", "DS", 32);
+        FSDMsg fSDMsg = new FSDMsg(SCHEMA_PREFIX);
 
         //bytes represents "Zażółć żółtą gęś" it's a sample in polish
         byte[] expected = ISOUtil.hex2byte("5A61BFF3B3E620BFF3B374B12067EAB6");
