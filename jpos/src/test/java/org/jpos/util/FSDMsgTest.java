@@ -699,7 +699,7 @@ public class FSDMsgTest {
     public void testPack() throws Throwable {
         Element schema = new FSDMsg("testFSDMsgBasePath").toXML();
         FSDMsg fSDMsg = new FSDMsg("testFSDMsgBasePath", "testFSDMsgBaseSchema");
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         fSDMsg.pack(schema, sb);
         assertEquals("fSDMsg.fields.size()", 0, fSDMsg.fields.size());
         assertEquals("schema.getName()", "message", schema.getName());
@@ -734,7 +734,7 @@ public class FSDMsgTest {
 
     @Test
     public void testPackThrowsNullPointerException1() throws Throwable {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         FSDMsg fSDMsg = new FSDMsg("testFSDMsgBasePath", "testFSDMsgBaseSchema");
         try {
             fSDMsg.pack(null, sb);

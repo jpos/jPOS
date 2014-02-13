@@ -25,18 +25,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
-
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
@@ -114,8 +113,8 @@ public class FSDMsg implements Loggeable, Cloneable {
     private static final String EOM_SEPARATOR = "EOM";
     private static final int READ_BUFFER = 8192;
     
-    Map fields;
-    Map separators;
+    Map<String,String> fields;
+    Map<String, Character> separators;
 
     String baseSchema;
     String basePath;
@@ -181,11 +180,11 @@ public class FSDMsg implements Loggeable, Cloneable {
      *  @param separator       char representing type
      */
     public void unsetSeparator(String separatorName) {
-        if (separators.containsKey(separatorName)) {
-            separators.remove(separatorName);
-        } else {
-            throw new RuntimeException("unsetSeparator was attempted for "+separatorName+" which was not previously defined.");
-        }
+        if (!separators.containsKey(separatorName))
+            throw new RuntimeException("unsetSeparator was attempted for "+
+                      separatorName+" which was not previously defined.");
+
+        separators.remove(separatorName);
     }
     
     /**
@@ -195,7 +194,6 @@ public class FSDMsg implements Loggeable, Cloneable {
      *
      * @throws IOException
      * @throws JDOMException
-     * @throws MalformedURLException
      */
     public void unpack (InputStream is) 
         throws IOException, JDOMException {
@@ -219,8 +217,6 @@ public class FSDMsg implements Loggeable, Cloneable {
      *
      * @throws IOException
      * @throws JDOMException
-     * @throws MalformedURLException
-     * @throws ISOException 
      */
     public void unpack (byte[] b) 
         throws IOException, JDOMException {
@@ -229,12 +225,14 @@ public class FSDMsg implements Loggeable, Cloneable {
 
     /**
      * @return message string
+     * @throws org.jdom.JDOMException
+     * @throws java.io.IOException
      * @throws ISOException 
      */
     public String pack () 
         throws JDOMException, IOException, ISOException
     {
-        StringBuffer sb = new StringBuffer ();
+        StringBuilder sb = new StringBuilder ();
         pack (getSchema (baseSchema), sb);
         return sb.toString ();
     }
@@ -275,22 +273,18 @@ public class FSDMsg implements Loggeable, Cloneable {
                     value = defValue;
                 break;
             case 'B':
-                {
-                    if ((length << 1) >= value.length()) {
-                        if (isSeparated(separator)) {
-                            // Convert but do not pad if this field ends with a
-                            // separator
-                            value = new String(ISOUtil.hex2byte(value), charset);
-                        } else {
-                            value = new String(ISOUtil.hex2byte(ISOUtil.zeropad(
-                                    value, length << 1).substring(0, length << 1)),
-                                    charset);
-                        }
-                    } else {
-                        throw new RuntimeException("field content=" + value
-                                + " is too long to fit in field " + id
-                                + " whose length is " + length);
-                    }
+                if ((length << 1) < value.length())
+                    throw new RuntimeException("field content=" + value
+                            + " is too long to fit in field " + id
+                            + " whose length is " + length);
+
+                if (isSeparated(separator)) {
+                    // Convert but do not pad if this field ends with a
+                    // separator
+                    value = new String(ISOUtil.hex2byte(value), charset);
+                } else {
+                    value = new String(ISOUtil.hex2byte(ISOUtil.zeropad(
+                            value, length << 1).substring(0, length << 1)), charset);
                 }
                 break;
         }
@@ -306,19 +300,15 @@ public class FSDMsg implements Loggeable, Cloneable {
          * if type's last two characters appear in our Map of separators,
          * return true
          */
-        if (separator != null) {
-            if (separators.containsKey (separator)) {
-                return true;
-            } else {
-                if (isDummySeparator (separator)) { 
-                    return true;
-                }
-                
-                throw new RuntimeException("FSDMsg.isSeparated(String) found that "+separator+" has not been defined as a separator!");
-            }
-        }
-        return false;
-
+        if (separator == null)
+            return false;
+        else if (separators.containsKey (separator))
+            return true;
+        else if (isDummySeparator (separator))
+            return true;
+        else
+            throw new RuntimeException("FSDMsg.isSeparated(String) found that "+
+                    separator+" has not been defined as a separator!");
     }
 
     private boolean isDummySeparator(String separator) {
@@ -344,26 +334,22 @@ public class FSDMsg implements Loggeable, Cloneable {
     }
     
     private char getSeparator(String separator) {
-        if (separators.containsKey(separator)) {
-            return (Character) separators.get(separator);
-        } else {
-            if (isDummySeparator (separator)) {
-                // Dummy separator type, return 0 to indicate nothing to add.
-                return 0;
-            }
+        if (separators.containsKey(separator))
+            return separators.get(separator);
+        else if (isDummySeparator (separator)) {
+            // Dummy separator type, return 0 to indicate nothing to add.
+            return 0;
         }
-        
+
         throw new RuntimeException("getSeparator called on separator="+separator+" which does not resolve to a known separator.");
     }
 
-    protected void pack (Element schema, StringBuffer sb) 
-        throws JDOMException, MalformedURLException, IOException, ISOException
+    protected void pack (Element schema, StringBuilder sb)
+        throws JDOMException, IOException, ISOException
     {
         String keyOff = "";
         String defaultKey = "";
-        Iterator iter = schema.getChildren("field").iterator();
-        while (iter.hasNext()) {
-            Element elem = (Element) iter.next ();
+        for (Element elem :(List<Element>)schema.getChildren("field")) {
             String id    = elem.getAttributeValue ("id");
             int length   = Integer.parseInt (elem.getAttributeValue ("length"));
             String type  = elem.getAttributeValue ("type");
@@ -399,9 +385,7 @@ public class FSDMsg implements Loggeable, Cloneable {
 
     private Map loadProperties(Element elem) {
     	Map props = new HashMap ();
-    	Iterator iter = elem.getChildren ("property").iterator ();
-    	while (iter.hasNext ()) {
-    		Element prop = (Element) iter.next ();
+        for (Element prop : (List<Element>)elem.getChildren ("property")) {
     		String name = prop.getAttributeValue ("name");
     		String value = prop.getAttributeValue ("value");
     		props.put (name, value);
@@ -409,23 +393,19 @@ public class FSDMsg implements Loggeable, Cloneable {
 	    return props;
     }
 
-	private String normalizeKeyValue(String value, Map properties) {
+	private String normalizeKeyValue(String value, Map<?,String> properties) {
     	if (properties.containsKey(value)) {
-    		return (String) properties.get(value);
+            return properties.get(value);
     	}
     	return ISOUtil.normalize(value);
     }
 
     protected void unpack (InputStreamReader r, Element schema)
-        throws IOException, JDOMException, MalformedURLException
-    
-    {
-        Iterator iter = schema.getChildren("field").iterator();
+        throws IOException, JDOMException {
+
         String keyOff = "";
         String defaultKey = "";
-
-        while (iter.hasNext()) {
-            Element elem = (Element) iter.next();
+        for (Element elem :(List<Element>)schema.getChildren("field")) {
 
             String id    = elem.getAttributeValue ("id");
             int length   = Integer.parseInt (elem.getAttributeValue ("length"));
@@ -574,11 +554,9 @@ public class FSDMsg implements Loggeable, Cloneable {
                     .setText (getHexHeader ())
             );
         }
-        Iterator iter = fields.keySet().iterator();
-        while (iter.hasNext()) {
-            String fieldName = (String) iter.next();
+        for (String fieldName :fields.keySet()) {
             Element inner = new Element (fieldName);
-            inner.addContent (ISOUtil.normalize ((String) fields.get (fieldName)));
+            inner.addContent (ISOUtil.normalize (fields.get (fieldName)));
             e.addContent (inner);
         }
         return e;
@@ -626,7 +604,6 @@ public class FSDMsg implements Loggeable, Cloneable {
         return schema;
     }
 
-
     /**
      * @return message's Map
      */
@@ -642,12 +619,8 @@ public class FSDMsg implements Loggeable, Cloneable {
         if (header != null) {
             append (p, "header", getHexHeader(), inner);
         }
-        Iterator iter = fields.keySet().iterator();
-        while (iter.hasNext()) {
-            String f = (String) iter.next();
-            String v = ((String) fields.get (f));
-            append (p, f, v, inner);
-        }
+        for (String f :fields.keySet())
+            append (p, f, fields.get (f), inner);
         p.println (indent + "</fsdmsg>");
     }
     private void append (PrintStream p, String f, String v, String indent) {
@@ -659,17 +632,14 @@ public class FSDMsg implements Loggeable, Cloneable {
     public Object clone() {
         try {              
             FSDMsg m = (FSDMsg) super.clone();
-	    m.fields = (Map) ((LinkedHashMap) fields).clone();
+            m.fields = (Map) ((LinkedHashMap) fields).clone();
             return m;
         } catch (CloneNotSupportedException e) {
             throw new InternalError();
         }
     }
     public void merge (FSDMsg m) {
-        Iterator<Map.Entry<String,String>> iter = m.fields.entrySet().iterator();
-        while (iter.hasNext()) {
-             Map.Entry<String,String> entry = iter.next();
+        for (Entry<String,String> entry: m.fields.entrySet())
              set (entry.getKey(), entry.getValue());
-        }
     }
 }
