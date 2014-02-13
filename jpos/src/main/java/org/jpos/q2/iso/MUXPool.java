@@ -102,7 +102,7 @@ public class MUXPool extends QBeanSupport implements MUX {
                 int j = (mnumber+i) % mux.length;
                 if (mux[j].isConnected())
                     return mux[j];
-                msgno.set(msgno.incrementAndGet());
+                msgno.incrementAndGet();
             }
             ISOUtil.sleep (1000);
         } while (System.currentTimeMillis() < maxWait);
