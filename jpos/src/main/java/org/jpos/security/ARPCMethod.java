@@ -38,7 +38,7 @@ public enum ARPCMethod {
    /**
     * Method For the generation of a 4-byte ARPC consists of applying
     * the MAC algorithm:
-    * <li>the 8-byte ARQC
+    * <li>the 4-byte ARQC
     * <li>the 4-byte binary Card Status Update (CSU)
     * <li>the 0-8 byte binary Proprietary Authentication Data
     */
