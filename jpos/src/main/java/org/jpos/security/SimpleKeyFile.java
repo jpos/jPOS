@@ -195,16 +195,14 @@ public class SimpleKeyFile
     }
 
     public Map<String,SecureKey> getKeys() throws SecureKeyStoreException {
-      Map keys    = new Hashtable();
-      for ( Object k :props.keySet() ){
-        String alias = ((String)k).split("\\.")[0];
-        if ( !keys.containsKey(alias) ){
-          keys.put(alias,getKey(alias));
+        Map<String,SecureKey> keys = new Hashtable<String,SecureKey>();
+        for (Object k : props.keySet()) {
+            String keyStr = (String) k;
+            String alias = keyStr.substring(0, keyStr.lastIndexOf('.'));
+            if (!keys.containsKey(alias)) {
+                keys.put(alias, getKey(alias));
+            }
         }
-      }
-      return keys;
+        return keys;
     }
 }
-
-
-
