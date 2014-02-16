@@ -32,122 +32,135 @@ import org.jpos.util.ThreadPool;
  * @author Alejandro Revilla
  * @version $Revision$ $Date$
  * @jmx:mbean description="DirPoll adaptor QBean"
- *                  extends="org.jpos.q2.QBeanSupportMBean"
+ * extends="org.jpos.q2.QBeanSupportMBean"
  */
-public class DirPollAdaptor 
-    extends QBeanSupport
-    implements DirPollAdaptorMBean
-{
+public class DirPollAdaptor
+        extends QBeanSupport
+        implements DirPollAdaptorMBean {
     String path, priorities, processorClass;
     int poolSize;
     long pollInterval;
     protected DirPoll dirPoll;
-    public DirPollAdaptor () {
-        super ();
+    protected Thread dirPollThread = null;
+
+    public DirPollAdaptor() {
+        super();
         poolSize = 1;
         pollInterval = 1000;
     }
 
-    protected void initService () throws Exception {
+    protected void initService() throws Exception {
         QFactory factory = getServer().getFactory();
-        dirPoll  = createDirPoll();
-        dirPoll.setPath (getPath ());
-        dirPoll.setThreadPool (new ThreadPool (1, poolSize));
-        dirPoll.setPollInterval (pollInterval);
-        if (priorities != null) 
-            dirPoll.setPriorities (priorities);
-        dirPoll.setLogger (getLog().getLogger(), getLog().getRealm ());
-        Configuration cfg = factory.getConfiguration (getPersist());
-        dirPoll.setConfiguration (cfg);
-        dirPoll.createDirs ();
-        Object dpp = factory.newInstance (getProcessor());
+        dirPoll = createDirPoll();
+        dirPoll.setPath(getPath());
+        dirPoll.setThreadPool(new ThreadPool(1, poolSize));
+        dirPoll.setPollInterval(pollInterval);
+        if (priorities != null)
+            dirPoll.setPriorities(priorities);
+        dirPoll.setLogger(getLog().getLogger(), getLog().getRealm());
+        Configuration cfg = factory.getConfiguration(getPersist());
+        dirPoll.setConfiguration(cfg);
+        dirPoll.createDirs();
+        Object dpp = factory.newInstance(getProcessor());
         if (dpp instanceof LogSource) {
-            ((LogSource) dpp).setLogger (
-                getLog().getLogger(), getLog().getRealm ()
+            ((LogSource) dpp).setLogger(
+                    getLog().getLogger(), getLog().getRealm()
             );
         }
         if (dpp instanceof Configurable) {
-            ((Configurable) dpp).setConfiguration (cfg);
+            ((Configurable) dpp).setConfiguration(cfg);
         }
-        dirPoll.setProcessor (dpp);
+        dirPoll.setProcessor(dpp);
     }
 
     protected DirPoll createDirPoll() {
         return new DirPoll();
     }
 
-    protected void startService () throws Exception {
-        new Thread (dirPoll).start ();
+    protected void startService() throws Exception {
+        dirPollThread = new Thread(dirPoll);
+        dirPollThread.start();
     }
 
-    protected void stopService () throws Exception {
-        dirPoll.destroy ();
+    protected void stopService() throws Exception {
+        dirPoll.destroy();
+        synchronized (this) {
+            if (dirPollThread != null) {
+                dirPollThread.join(cfg.getLong("shutdown-timeout", 60000));
+                dirPollThread = null;
+            }
+        }
     }
 
 
     /**
      * @jmx:managed-attribute description="Base path"
      */
-    public synchronized void setPath (String path) {
+    public synchronized void setPath(String path) {
         this.path = path;
-        setModified (true);
+        setModified(true);
     }
 
     /**
      * @jmx:managed-attribute description="thread pool size"
      */
-    public synchronized void setPoolSize (int size) {
+    public synchronized void setPoolSize(int size) {
         this.poolSize = size;
-        setModified (true);
+        setModified(true);
     }
+
     /**
      * @jmx:managed-attribute description="thread pool size"
      */
-    public int getPoolSize () {
+    public int getPoolSize() {
         return poolSize;
     }
 
     /**
      * @jmx:managed-attribute description="Base path"
      */
-    public String getPath () {
+    public String getPath() {
         return path == null ? "." : path;
     }
 
     /**
      * @jmx:managed-attribute description="poll time in millis"
      */
-    public synchronized void setPollInterval (long pollInterval) {
+    public synchronized void setPollInterval(long pollInterval) {
         this.pollInterval = pollInterval;
-        setModified (true);
+        setModified(true);
     }
+
     /**
      * @jmx:managed-attribute description="poll time in millis"
      */
-    public long getPollInterval () {
+    public long getPollInterval() {
         return pollInterval;
     }
+
     /**
      * @jmx:managed-attribute description="priorities"
      */
-    public synchronized void setPriorities (String priorities) {
+    public synchronized void setPriorities(String priorities) {
         this.priorities = priorities;
-        setModified (true);
+        setModified(true);
     }
+
     /**
      * @jmx:managed-attribute description="priorities"
      */
-    public String getPriorities () {
+    public String getPriorities() {
         return priorities;
     }
 
     /**
      * @jmx:managed-attribute description="processor class"
      */
-    public synchronized void setProcessor (String processor) {
+    public synchronized void setProcessor(String processor) {
         this.processorClass = processor;
-        setModified (true);
+        setModified(true);
     }
+
     /**
      * @jmx:managed-attribute description="processor class"
      */
