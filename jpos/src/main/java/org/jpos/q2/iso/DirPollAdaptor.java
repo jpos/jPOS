@@ -79,13 +79,15 @@ public class DirPollAdaptor
     }
 
     protected void startService () throws Exception {
-        dirPollThread = new Thread(dirPoll);
-        dirPollThread.start();
+        synchronized (dirPoll) {
+            dirPollThread = new Thread(dirPoll);
+            dirPollThread.start();
+        }
     }
 
     protected void stopService () throws Exception {
         dirPoll.destroy ();
-        synchronized (this) {
+        synchronized (dirPoll) {
             if (dirPollThread != null) {
                 dirPollThread.join(cfg.getLong("shutdown-timeout", 60000));
                 dirPollThread = null;
