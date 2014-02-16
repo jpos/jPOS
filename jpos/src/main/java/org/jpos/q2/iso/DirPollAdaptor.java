@@ -35,8 +35,8 @@ import org.jpos.util.ThreadPool;
  *                  extends="org.jpos.q2.QBeanSupportMBean"
  */
 public class DirPollAdaptor
-        extends QBeanSupport
-        implements DirPollAdaptorMBean
+    extends QBeanSupport
+    implements DirPollAdaptorMBean
 {
     String path, priorities, processorClass;
     int poolSize;
@@ -65,7 +65,7 @@ public class DirPollAdaptor
         Object dpp = factory.newInstance (getProcessor());
         if (dpp instanceof LogSource) {
             ((LogSource) dpp).setLogger (
-                    getLog().getLogger(), getLog().getRealm ()
+                getLog().getLogger(), getLog().getRealm ()
             );
         }
         if (dpp instanceof Configurable) {
