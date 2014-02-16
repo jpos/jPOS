@@ -1744,16 +1744,10 @@ public class JCESecurityModule extends BaseSMAdapter {
         return data;
     }
 
-    private byte[] calculateDerivedKey(KeySerialNumber ksn, SecureDESKey bdk)
+    private byte[] calculateDerivedKey(KeySerialNumber ksn, SecureDESKey bdk, boolean tdes, boolean dataEncryption)
             throws SMException
     {
-        return calculateDerivedKey(ksn,bdk,false);
-    }
-
-    private byte[] calculateDerivedKey(KeySerialNumber ksn, SecureDESKey bdk, boolean tdes)
-            throws SMException
-    {
-        return tdes?calculateDerivedKeyTDES(ksn,bdk):calculateDerivedKeySDES(ksn,bdk);
+        return tdes?calculateDerivedKeyTDES(ksn,bdk, dataEncryption):calculateDerivedKeySDES(ksn,bdk);
     }
 
     private byte[] calculateDerivedKeySDES(KeySerialNumber ksn, SecureDESKey bdk)
@@ -1792,7 +1786,7 @@ public class JCESecurityModule extends BaseSMAdapter {
         curkey[7] ^= 0xFF;
         return curkey;
     }
-    private byte[] calculateDerivedKeyTDES(KeySerialNumber ksn, SecureDESKey bdk)
+    private byte[] calculateDerivedKeyTDES(KeySerialNumber ksn, SecureDESKey bdk, boolean dataEncryption)
             throws SMException
     {
         final byte[] _1FFFFF =
@@ -1845,8 +1839,25 @@ public class JCESecurityModule extends BaseSMAdapter {
             shr(shiftr);
         }
         while (notZero(shiftr));
-        curkey[7] ^= 0xFF;
-        curkey[15] ^= 0xFF;
+
+        if (dataEncryption) {
+            curkey[5] ^= 0xFF;
+            curkey[13] ^= 0xFF;
+            System.arraycopy(curkey, 0, curkeyL, 0, 8);
+            System.arraycopy(curkey, 8, curkeyR, 0, 8);
+            byte[] L = encrypt64(curkeyL, curkeyL);
+            L = decrypt64(L, curkeyR);
+            L = encrypt64(L, curkeyL);
+
+            byte[] R = encrypt64(curkeyR, curkeyL); // this is the right implementation
+            R = decrypt64(R, curkeyR);
+            R = encrypt64(R, curkeyL);
+            System.arraycopy (L, 0, curkey, 0, 8);
+            System.arraycopy (R, 0, curkey, 8, 8);
+        } else {
+            curkey[7] ^= 0xFF;
+            curkey[15] ^= 0xFF;
+        }
         return curkey;
     }
 
@@ -1882,7 +1893,7 @@ public class JCESecurityModule extends BaseSMAdapter {
              SecureDESKey bdk, SecureDESKey kd2, byte destinationPINBlockFormat,boolean tdes)
             throws SMException
     {
-        byte[] derivedKey = calculateDerivedKey(ksn, bdk, tdes);
+        byte[] derivedKey = calculateDerivedKey(ksn, bdk, tdes, false);
         byte[] clearPinblk = specialDecrypt(
                 pinUnderDuk.getPINBlock(), derivedKey
         );
@@ -1901,7 +1912,7 @@ public class JCESecurityModule extends BaseSMAdapter {
             (EncryptedPIN pinUnderDuk, KeySerialNumber ksn, SecureDESKey bdk,boolean tdes)
             throws SMException
     {
-        byte[] derivedKey = calculateDerivedKey(ksn, bdk,tdes);
+        byte[] derivedKey = calculateDerivedKey(ksn, bdk,tdes, false);
         byte[] clearPinblk = specialDecrypt(
                 pinUnderDuk.getPINBlock(), derivedKey
         );

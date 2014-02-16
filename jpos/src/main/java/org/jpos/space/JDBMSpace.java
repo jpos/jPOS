@@ -48,6 +48,7 @@ public class JDBMSpace<K,V> extends TimerTask implements Space<K,V> {
     protected boolean autoCommit = true;
     protected String name;
     public static final long GCDELAY = 5*60*1000;
+    private static final long NRD_RESOLUTION = 500L;
 
     /**
      * protected constructor.
@@ -366,6 +367,27 @@ public class JDBMSpace<K,V> extends TimerTask implements Space<K,V> {
         }
         return (V) obj;
     }
+    public synchronized void nrd  (Object key) {
+        while (rdp (key) != null) {
+            try {
+                this.wait (NRD_RESOLUTION);
+            } catch (InterruptedException ignored) { }
+        }
+    }
+    public synchronized V nrd  (Object key, long timeout) {
+        Object obj;
+        long now = System.currentTimeMillis();
+        long end = now + timeout;
+        while ((obj = rdp (key)) != null &&
+                ((now = System.currentTimeMillis()) < end))
+        {
+            try {
+                this.wait (Math.min(NRD_RESOLUTION, end - now));
+            } catch (InterruptedException ignored) { }
+        }
+        return (V) obj;
+    }
+
     /**
      * @param key the Key
      * @return aproximately queue size

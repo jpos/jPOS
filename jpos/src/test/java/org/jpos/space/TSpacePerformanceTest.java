@@ -85,7 +85,7 @@ public class TSpacePerformanceTest  {
         }  
     }
 
-    class WriteSpaceWithNotifyTask implements Runnable, SpaceListener {
+    class WriteSpaceWithNotifyTask implements Runnable, SpaceListener<String,Object> {
         String key;
         LocalSpace sp1;
         LocalSpace sp2;
@@ -106,14 +106,14 @@ public class TSpacePerformanceTest  {
           System.err.println("Perform. "+key+" out: "+(stamp2-stamp)/1000000);
         }
 
-        public void notify(Object key, Object value) {
+        public void notify(String key, Object value) {
           if ( (++count % 100) == 0) {
-            sp2.out((String)key, value);
+            sp2.out(key, value);
           }
         }
     }
 
-    class WriteSpaceWithNotifyReadTask implements Runnable, SpaceListener {
+    class WriteSpaceWithNotifyReadTask implements Runnable, SpaceListener<String,Object> {
         String key;
        
         WriteSpaceWithNotifyReadTask(String key){
@@ -124,8 +124,7 @@ public class TSpacePerformanceTest  {
           for (int i=0; i<COUNT; i++)
              sp1.out(key, Boolean.TRUE);
         }
-
-        public void notify(Object key, Object value) {
+        public void notify(String key, Object value) {
           if ( sp1.rdp(key) == null)
             sp2.out("lost-entry", value);
         }

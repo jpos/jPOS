@@ -35,6 +35,7 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
     protected TSpace sl;    // space listeners
     public static final long GCDELAY = 5*1000;
     private static final long GCLONG = 60*1000;
+    private static final long NRD_RESOLUTION = 500L;
     private Set[] expirables;
     private long lastLongGC = System.currentTimeMillis();
 
@@ -122,6 +123,26 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
             try {
                 this.wait (end - now);
             } catch (InterruptedException e) { }
+        }
+        return (V) obj;
+    }
+    public synchronized void nrd  (Object key) {
+        while (rdp (key) != null) {
+            try {
+                this.wait (NRD_RESOLUTION);
+            } catch (InterruptedException ignored) { }
+        }
+    }
+    public synchronized V nrd  (Object key, long timeout) {
+        Object obj;
+        long now = System.currentTimeMillis();
+        long end = now + timeout;
+        while ((obj = rdp (key)) != null &&
+                ((now = System.currentTimeMillis()) < end))
+        {
+            try {
+                this.wait (Math.min(NRD_RESOLUTION, end - now));
+            } catch (InterruptedException ignored) { }
         }
         return (V) obj;
     }

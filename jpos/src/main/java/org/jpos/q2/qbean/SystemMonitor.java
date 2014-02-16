@@ -23,7 +23,6 @@ import org.jpos.core.ConfigurationException;
 import org.jpos.iso.ISOUtil;
 import org.jpos.q2.Q2;
 import org.jpos.q2.QBeanSupport;
-import org.jpos.util.LogEvent;
 import org.jpos.util.Loggeable;
 import org.jpos.util.Logger;
 import org.jpos.util.NameRegistrar;
@@ -33,6 +32,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.InetAddress;
+import java.nio.charset.Charset;
 
 /**
  * Periodically dumps Thread and memory usage
@@ -189,6 +189,7 @@ public class SystemMonitor extends QBeanSupport
             p.printf("%s  sec-manager: %s%n", indent, getSecurityManager());
         p.printf("%s      threads: %d%n", indent, Thread.activeCount());
         showThreadGroup(Thread.currentThread().getThreadGroup(), p, newIndent);
+        p.printf("%s     encoding: %s%n", indent, Charset.defaultCharset());
         NameRegistrar.getInstance().dump(p, indent, detailRequired);
         for (String s : scripts) {
             p.printf("%s%s:%n", indent, s);

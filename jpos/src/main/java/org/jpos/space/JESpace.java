@@ -57,6 +57,7 @@ public class JESpace<K,V> extends Log implements LocalSpace<K,V>, Loggeable, Run
     SecondaryIndex<Long,Long,GCRef> gcsIndex = null;
     Semaphore gcSem = new Semaphore(1);
     LocalSpace<Object,SpaceListener> sl;
+    private static final long NRD_RESOLUTION = 500L;
     public static final long GC_DELAY = 60*1000L;
     private Future gcTask;
 
@@ -202,7 +203,26 @@ public class JESpace<K,V> extends Log implements LocalSpace<K,V>, Loggeable, Run
         }
         return (V) obj;
     }
-
+    public synchronized void nrd  (Object key) {
+        while (rdp (key) != null) {
+            try {
+                this.wait (NRD_RESOLUTION);
+            } catch (InterruptedException ignored) { }
+        }
+    }
+    public synchronized V nrd  (Object key, long timeout) {
+        Object obj;
+        long now = System.currentTimeMillis();
+        long end = now + timeout;
+        while ((obj = rdp (key)) != null &&
+                ((now = System.currentTimeMillis()) < end))
+        {
+            try {
+                this.wait (Math.min(NRD_RESOLUTION, end - now));
+            } catch (InterruptedException ignored) { }
+        }
+        return (V) obj;
+    }
     @SuppressWarnings("unchecked")
     public V inp (Object key) {
         try {
