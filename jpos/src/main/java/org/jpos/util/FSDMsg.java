@@ -306,9 +306,16 @@ public class FSDMsg implements Loggeable, Cloneable {
             return true;
         else if (isDummySeparator (separator))
             return true;
-        else
-            throw new RuntimeException("FSDMsg.isSeparated(String) found that "+
-                    separator+" has not been defined as a separator!");
+        else {
+            try {
+                if (Character.isDefined(Integer.parseInt(separator,16))) {
+                    setSeparator(separator, (char)Long.parseLong(separator,16));
+                    return true;
+                }
+            } catch (NumberFormatException ignored) { }
+        }
+        throw new RuntimeException("FSDMsg.isSeparated(String) found that "+
+                separator+" has not been defined as a separator!");
     }
 
     private boolean isDummySeparator(String separator) {
