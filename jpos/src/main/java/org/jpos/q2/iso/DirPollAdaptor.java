@@ -34,7 +34,7 @@ import org.jpos.util.ThreadPool;
  * @jmx:mbean description="DirPoll adaptor QBean"
  *                  extends="org.jpos.q2.QBeanSupportMBean"
  */
-public class DirPollAdaptor 
+public class DirPollAdaptor
     extends QBeanSupport
     implements DirPollAdaptorMBean
 {
@@ -42,6 +42,8 @@ public class DirPollAdaptor
     int poolSize;
     long pollInterval;
     protected DirPoll dirPoll;
+    protected Thread dirPollThread = null;
+
     public DirPollAdaptor () {
         super ();
         poolSize = 1;
@@ -54,7 +56,7 @@ public class DirPollAdaptor
         dirPoll.setPath (getPath ());
         dirPoll.setThreadPool (new ThreadPool (1, poolSize));
         dirPoll.setPollInterval (pollInterval);
-        if (priorities != null) 
+        if (priorities != null)
             dirPoll.setPriorities (priorities);
         dirPoll.setLogger (getLog().getLogger(), getLog().getRealm ());
         Configuration cfg = factory.getConfiguration (getPersist());
@@ -77,11 +79,32 @@ public class DirPollAdaptor
     }
 
     protected void startService () throws Exception {
-        new Thread (dirPoll).start ();
+        if (dirPoll == null) {
+            throw new IllegalStateException("Not initialized!");
+        }
+        synchronized (dirPoll) {
+            dirPollThread = new Thread(dirPoll);
+            dirPollThread.start();
+        }
     }
 
     protected void stopService () throws Exception {
         dirPoll.destroy ();
+        synchronized (dirPoll) {
+            if (dirPollThread != null) {
+                long shutdownTimeout = cfg.getLong("shutdown-timeout", 60000);
+                try {
+                    dirPollThread.join(shutdownTimeout);
+                } catch (InterruptedException e) {
+
+                }
+                if (dirPollThread.isAlive()) {
+                    getLog().warn(getName() + " - dirPoll thread did not finish in " + shutdownTimeout + " milliseconds. Interrupting thread now.");
+                    dirPollThread.interrupt();
+                }
+                dirPollThread = null;
+            }
+        }
     }
 
 
@@ -156,4 +179,4 @@ public class DirPollAdaptor
     }
 }
 
-   
+
