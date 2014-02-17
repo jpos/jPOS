@@ -306,7 +306,7 @@ public class FSDMsg implements Loggeable, Cloneable {
             return true;
         else if (isDummySeparator (separator))
             return true;
-        else if (Long.parseLong(separator,16)>0 && Long.parseLong(separator,16)<256) {
+        else if (Character.isDefined(Integer.parseInt(separator,16))) {
             setSeparator(separator, (char)Long.parseLong(separator,16));
             return true;
         }
