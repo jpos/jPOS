@@ -79,6 +79,9 @@ public class DirPollAdaptor
     }
 
     protected void startService () throws Exception {
+        if (dirPoll == null) {
+            throw new IllegalStateException("Not initialized!");
+        }
         synchronized (dirPoll) {
             dirPollThread = new Thread(dirPoll);
             dirPollThread.start();
@@ -87,18 +90,20 @@ public class DirPollAdaptor
 
     protected void stopService () throws Exception {
         dirPoll.destroy ();
-        if (dirPollThread != null) {
-            long shutdownTimeout = cfg.getLong("shutdown-timeout", 60000);
-            try {
-                dirPollThread.join(shutdownTimeout);
-            } catch (InterruptedException e) {
+        synchronized (dirPoll) {
+            if (dirPollThread != null) {
+                long shutdownTimeout = cfg.getLong("shutdown-timeout", 60000);
+                try {
+                    dirPollThread.join(shutdownTimeout);
+                } catch (InterruptedException e) {
 
+                }
+                if (dirPollThread.isAlive()) {
+                    getLog().warn(getName() + " - dirPoll thread did not finish in " + shutdownTimeout + " milliseconds. Interrupting thread now.");
+                    dirPollThread.interrupt();
+                }
+                dirPollThread = null;
             }
-            if (dirPollThread.isAlive()) {
-                getLog().warn(getName() + " - dirPoll thread did not finish in " + shutdownTimeout + " milliseconds. Interrupting thread now.");
-                dirPollThread.interrupt();
-            }
-            dirPollThread = null;
         }
     }
 

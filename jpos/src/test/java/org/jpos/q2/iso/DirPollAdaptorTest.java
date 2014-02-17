@@ -203,8 +203,11 @@ public class DirPollAdaptorTest {
     @Test
     public void testStartService() throws Throwable {
         DirPollAdaptor dirPollAdaptor = new DirPollAdaptor();
-        dirPollAdaptor.startService();
-        assertNull("dirPollAdaptor.dirPoll", dirPollAdaptor.dirPoll);
+        try {
+            dirPollAdaptor.startService();
+        } catch (IllegalStateException e) {
+            assertNull("dirPollAdaptor.dirPoll", dirPollAdaptor.dirPoll);
+        }
     }
 
     @Test
