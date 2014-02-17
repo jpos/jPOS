@@ -87,11 +87,18 @@ public class DirPollAdaptor
 
     protected void stopService () throws Exception {
         dirPoll.destroy ();
-        synchronized (dirPoll) {
-            if (dirPollThread != null) {
-                dirPollThread.join(cfg.getLong("shutdown-timeout", 60000));
-                dirPollThread = null;
+        if (dirPollThread != null) {
+            long shutdownTimeout = cfg.getLong("shutdown-timeout", 60000);
+            try {
+                dirPollThread.join(shutdownTimeout);
+            } catch (InterruptedException e) {
+
             }
+            if (dirPollThread.isAlive()) {
+                getLog().warn(getName() + " - dirPoll thread did not finish in " + shutdownTimeout + " milliseconds. Interrupting thread now.");
+                dirPollThread.interrupt();
+            }
+            dirPollThread = null;
         }
     }
 
