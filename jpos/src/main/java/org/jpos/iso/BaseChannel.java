@@ -1040,7 +1040,7 @@ public abstract class BaseChannel extends Observable
     public void setMaxPacketLength(int maxPacketLength) {
         this.maxPacketLength = maxPacketLength;
     }
-    private void closeSocket() throws IOException {
+    protected void closeSocket() throws IOException {
         Socket s = null;
         synchronized (this) {
             if (socket != null) {
