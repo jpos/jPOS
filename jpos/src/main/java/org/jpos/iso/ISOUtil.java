@@ -33,8 +33,13 @@ import java.util.*;
  */
 @SuppressWarnings("unused")
 public class ISOUtil {
-    private ISOUtil() {
-        throw new AssertionError();
+    /**
+     * All methods in this class are static, so there's usually no need to instantiate it
+     * We provide this public constructor in order to deal with some legacy script integration
+     * that needs an instance of this class in a rendering context.
+     */
+    public ISOUtil() {
+        super();
     }
     public static final String[] hexStrings;
 
