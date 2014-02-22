@@ -21,6 +21,7 @@ package  org.jpos.security;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import org.javatuples.Pair;
 import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
@@ -362,6 +363,30 @@ public class BaseSMAdapter
         Logger.log(evt);
       }
       return result;
+    }
+
+    @Override
+    public void printPIN (String accountNo, EncryptedPIN pinUnderKd1, SecureDESKey kd1
+                         ,String template, Map<String, String> fields) throws SMException {
+      List<Loggeable> cmdParameters = new ArrayList<Loggeable>();
+      cmdParameters.add(new SimpleMsg("parameter", "account number", accountNo == null ? "" : accountNo));
+      cmdParameters.add(new SimpleMsg("parameter", "PIN under Key data 1", pinUnderKd1 == null ? "" : pinUnderKd1));
+      if (kd1!=null)
+        cmdParameters.add(new SimpleMsg("parameter", "Key data 1", kd1));
+      cmdParameters.add(new SimpleMsg("parameter", "Template", template == null ? "" : template));
+      if (fields!=null)
+        cmdParameters.add(new SimpleMsg("parameter", "Fields", fields));
+
+      LogEvent evt = new LogEvent(this, "s-m-operation");
+      evt.addMessage(new SimpleMsg("command", "Print PIN", cmdParameters.toArray(new Loggeable[0])));
+      try {
+          printPINImpl(accountNo, pinUnderKd1, kd1, template, fields);
+      } catch (Exception e) {
+          evt.addMessage(e);
+          throw  e instanceof SMException ? (SMException) e : new SMException(e);
+      } finally {
+          Logger.log(evt);
+      }
     }
 
     public String calculatePVV(EncryptedPIN pinUnderLMK, SecureDESKey pvkA,
@@ -1088,6 +1113,20 @@ public class BaseSMAdapter
      */
     protected EncryptedPIN generatePINImpl(String accountNumber, int pinLen, List<String> excludes) throws
             SMException {
+        throw  new SMException("Operation not supported in: " + this.getClass().getName());
+    }
+
+    /**
+     * Your SMAdapter should override this method if it has this functionality
+     * @param accountNo
+     * @param pinUnderKd1
+     * @param kd1
+     * @param template
+     * @param fields
+     * @throws SMException
+     */
+    public void printPINImpl (String accountNo, EncryptedPIN pinUnderKd1, SecureDESKey kd1
+                             ,String template, Map<String, String> fields) throws SMException {
         throw  new SMException("Operation not supported in: " + this.getClass().getName());
     }
 

@@ -20,6 +20,7 @@ package  org.jpos.security;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import org.javatuples.Pair;
 
 
@@ -407,6 +408,28 @@ public interface SMAdapter {
     public EncryptedPIN generatePIN(String accountNumber, int pinLen, List<String> excludes)
             throws SMException;
 
+    /**
+     * Print PIN or PIN and solicitation data to the HSM configured printer.
+     * <p>If {@code kd1} includes an encrypted PIN block then is first imported,
+     * Also template is updated if needed in HSM storage. Then the PIN and
+     * solicitation data are included into the template and result are
+     * printed to the HSM attached printer.
+     *
+     * @param accountNo The 12 right-most digits of the account number excluding the check digit.
+     * @param pinUnderKd1 pin block under Key Data 1
+     * @param kd1 Data Key 1 ZPK, TPK may be null if {@code pinUnderKd1} contains PIN under LMK
+     * @param template template text (PCL, PostScript or other) for PIN Mailer printer.
+     *                 Its format depends on used HSM. This template should
+     *                 includes placeholders tags (e.g. in format ${tag})
+     *                 indicationg place where coresponding value or PIN should
+     *                 be inserted. Tags values are passed in {@code fields}
+     *                 map argument except PIN which is passed in argument {@code pinUnderKd1}.
+     * @param fields map of tags values representing solicitation data to include
+     *               in template. null if no solicitation data are passed
+     * @throws SMException
+     */
+    public void printPIN (String accountNo, EncryptedPIN pinUnderKd1, SecureDESKey kd1
+                         ,String template, Map<String, String> fields) throws SMException;
 
     /**
      * Calculate PVV (VISA PIN Verification Value of PIN under LMK)
