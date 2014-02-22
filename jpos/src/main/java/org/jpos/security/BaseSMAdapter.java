@@ -59,19 +59,23 @@ public class BaseSMAdapter
         setConfiguration(cfg);
     }
 
+    @Override
     public void setConfiguration (Configuration cfg) throws ConfigurationException {
         this.cfg = cfg;
     }
 
+    @Override
     public void setLogger (Logger logger, String realm) {
         this.logger = logger;
         this.realm = realm;
     }
 
+    @Override
     public Logger getLogger () {
         return  logger;
     }
 
+    @Override
     public String getRealm () {
         return  realm;
     }
@@ -103,6 +107,7 @@ public class BaseSMAdapter
         return  (SMAdapter)NameRegistrar.get("s-m-adapter." + name);
     }
 
+    @Override
     public SecureDESKey generateKey (short keyLength, String keyType) throws SMException {
         SimpleMsg[] cmdParameters =  {
             new SimpleMsg("parameter", "Key Length", keyLength), new SimpleMsg("parameter",
@@ -123,7 +128,7 @@ public class BaseSMAdapter
         return  result;
     }
 
-
+    @Override
     public byte[] generateKeyCheckValue (SecureDESKey kd) throws SMException {
         SimpleMsg[] cmdParameters =  {
             new SimpleMsg("parameter", "Key with untrusted check value", kd)
@@ -143,6 +148,7 @@ public class BaseSMAdapter
         return  result;
     }
 
+    @Override
     public SecureDESKey importKey (short keyLength, String keyType, byte[] encryptedKey,
             SecureDESKey kek, boolean checkParity) throws SMException {
         SimpleMsg[] cmdParameters =  {
@@ -165,6 +171,7 @@ public class BaseSMAdapter
         return  result;
     }
 
+    @Override
     public byte[] exportKey (SecureDESKey key, SecureDESKey kek) throws SMException {
         SimpleMsg[] cmdParameters =  {
             new SimpleMsg("parameter", "Key", key), new SimpleMsg("parameter", "Key-Encrypting Key",
@@ -185,6 +192,7 @@ public class BaseSMAdapter
         return  result;
     }
 
+    @Override
     public EncryptedPIN encryptPIN (String pin, String accountNumber, boolean extract) throws SMException {
         accountNumber = extract ? EncryptedPIN.extractAccountNumberPart(accountNumber) : accountNumber;
         SimpleMsg[] cmdParameters =  {
@@ -205,10 +213,12 @@ public class BaseSMAdapter
         }
         return  result;
     }
+    @Override
     public EncryptedPIN encryptPIN (String pin, String accountNumber) throws SMException {
         return encryptPIN(pin, accountNumber, true);
     }
 
+    @Override
     public String decryptPIN (EncryptedPIN pinUnderLmk) throws SMException {
         SimpleMsg[] cmdParameters =  {
             new SimpleMsg("parameter", "PIN under LMK", pinUnderLmk),
@@ -228,6 +238,7 @@ public class BaseSMAdapter
         return  result;
     }
 
+    @Override
     public EncryptedPIN importPIN (EncryptedPIN pinUnderKd1, SecureDESKey kd1) throws SMException {
         SimpleMsg[] cmdParameters =  {
             new SimpleMsg("parameter", "PIN under Data Key 1", pinUnderKd1), new SimpleMsg("parameter",
@@ -248,6 +259,7 @@ public class BaseSMAdapter
         return  result;
     }
 
+    @Override
     public EncryptedPIN translatePIN (EncryptedPIN pinUnderKd1, SecureDESKey kd1,
             SecureDESKey kd2, byte destinationPINBlockFormat) throws SMException {
         SimpleMsg[] cmdParameters =  {
@@ -271,6 +283,7 @@ public class BaseSMAdapter
         return  result;
     }
 
+    @Override
     public EncryptedPIN importPIN (EncryptedPIN pinUnderDuk, KeySerialNumber ksn,
             SecureDESKey bdk) throws SMException {
         SimpleMsg[] cmdParameters =  {
@@ -293,6 +306,7 @@ public class BaseSMAdapter
         return  result;
     }
 
+    @Override
     public EncryptedPIN translatePIN (EncryptedPIN pinUnderDuk, KeySerialNumber ksn,
             SecureDESKey bdk, SecureDESKey kd2, byte destinationPINBlockFormat) throws SMException {
         SimpleMsg[] cmdParameters =  {
@@ -316,6 +330,7 @@ public class BaseSMAdapter
         return  result;
     }
 
+    @Override
     public EncryptedPIN exportPIN (EncryptedPIN pinUnderLmk, SecureDESKey kd2, byte destinationPINBlockFormat) throws SMException {
         SimpleMsg[] cmdParameters =  {
             new SimpleMsg("parameter", "PIN under LMK", pinUnderLmk), new SimpleMsg("parameter",
@@ -337,11 +352,13 @@ public class BaseSMAdapter
         return  result;
     }
 
+    @Override
     public EncryptedPIN generatePIN(String accountNumber, int pinLen)
             throws SMException {
       return generatePIN(accountNumber, pinLen, null);
     }
 
+    @Override
     public EncryptedPIN generatePIN(String accountNumber, int pinLen, List<String> excludes)
             throws SMException {
       List<Loggeable> cmdParameters = new ArrayList<Loggeable>();
@@ -389,11 +406,13 @@ public class BaseSMAdapter
       }
     }
 
+    @Override
     public String calculatePVV(EncryptedPIN pinUnderLMK, SecureDESKey pvkA,
                                SecureDESKey pvkB, int pvkIdx) throws SMException {
       return calculatePVV(pinUnderLMK, pvkA, pvkB, pvkIdx, null);
     }
 
+    @Override
     public String calculatePVV(EncryptedPIN pinUnderLMK, SecureDESKey pvkA,
                                SecureDESKey pvkB, int pvkIdx,
                                List<String> excludes) throws SMException {
@@ -420,12 +439,14 @@ public class BaseSMAdapter
       return result;
     }
 
+    @Override
     public String calculatePVV(EncryptedPIN pinUnderKd1, SecureDESKey kd1,
                                SecureDESKey pvkA, SecureDESKey pvkB, int pvkIdx)
             throws SMException {
       return calculatePVV(pinUnderKd1, kd1, pvkA, pvkB, pvkIdx, null);
     }
 
+    @Override
     public String calculatePVV(EncryptedPIN pinUnderKd1, SecureDESKey kd1,
                                SecureDESKey pvkA, SecureDESKey pvkB, int pvkIdx,
                                List<String> excludes) throws SMException {
@@ -453,6 +474,7 @@ public class BaseSMAdapter
       return result;
     }
 
+    @Override
     public boolean verifyPVV(EncryptedPIN pinUnderKd1, SecureDESKey kd1, SecureDESKey pvkA,
                           SecureDESKey pvkB, int pvki, String pvv) throws SMException {
 
@@ -480,12 +502,14 @@ public class BaseSMAdapter
       }
     }
 
+    @Override
     public String calculateIBMPINOffset(EncryptedPIN pinUnderLmk, SecureDESKey pvk,
                            String decTab, String pinValData, int minPinLen)
             throws SMException {
       return calculateIBMPINOffset(pinUnderLmk, pvk, decTab, pinValData, minPinLen, null);
     }
 
+    @Override
     public String calculateIBMPINOffset(EncryptedPIN pinUnderLmk, SecureDESKey pvk,
                            String decTab, String pinValData, int minPinLen,
                            List<String> excludes) throws SMException {
@@ -514,6 +538,7 @@ public class BaseSMAdapter
       return result;
     }
 
+    @Override
     public String calculateIBMPINOffset(EncryptedPIN pinUnderKd1, SecureDESKey kd1,
                            SecureDESKey pvk, String decTab, String pinValData, int minPinLen)
             throws SMException {
@@ -521,6 +546,7 @@ public class BaseSMAdapter
               pinValData, minPinLen, null);
     }
 
+    @Override
     public String calculateIBMPINOffset(EncryptedPIN pinUnderKd1, SecureDESKey kd1,
                            SecureDESKey pvk, String decTab, String pinValData, int minPinLen,
                            List<String> excludes) throws SMException {
@@ -550,6 +576,7 @@ public class BaseSMAdapter
       return result;
     }
 
+    @Override
     public boolean verifyIBMPINOffset(EncryptedPIN pinUnderKd1, SecureDESKey kd1, SecureDESKey pvk,
                                       String offset, String decTab, String pinValData,
                                       int minPinLen) throws SMException {
@@ -580,6 +607,7 @@ public class BaseSMAdapter
       }
     }
 
+    @Override
     public EncryptedPIN deriveIBMPIN(String accountNo, SecureDESKey pvk,
                                      String decTab, String pinValData,
                                      int minPinLen, String offset) throws SMException {
@@ -606,6 +634,7 @@ public class BaseSMAdapter
       return result;
     }
 
+    @Override
     public String calculateCVV(String accountNo, SecureDESKey cvkA, SecureDESKey cvkB,
                                Date expDate, String serviceCode) throws SMException {
 
@@ -631,6 +660,7 @@ public class BaseSMAdapter
       return result;
     }
 
+    @Override
     public boolean verifyCVV(String accountNo , SecureDESKey cvkA, SecureDESKey cvkB,
                             String cvv, Date expDate, String serviceCode) throws SMException {
 
@@ -656,6 +686,7 @@ public class BaseSMAdapter
       }
     }
 
+    @Override
     public boolean verifydCVV(String accountNo, SecureDESKey imkac, String dcvv,
                      Date expDate, String serviceCode, byte[] atc, MKDMethod mkdm)
                      throws SMException {
@@ -698,6 +729,7 @@ public class BaseSMAdapter
      * @return
      * @throws SMException
      */
+    @Override
     public boolean verifyCVC3(SecureDESKey imkcvc3, String accountNo, String acctSeqNo,
                      byte[] atc, byte[] upn, byte[] data, MKDMethod mkdm, String cvc3)
                      throws SMException {
@@ -726,6 +758,7 @@ public class BaseSMAdapter
       }
     }
 
+    @Override
     public boolean verifyARQC(MKDMethod mkdm, SKDMethod skdm, SecureDESKey imkac
             ,String accoutNo, String acctSeqNo, byte[] arqc, byte[] atc
             ,byte[] upn, byte[] transData) throws SMException {
@@ -755,6 +788,7 @@ public class BaseSMAdapter
       }
     }
 
+    @Override
     public byte[] generateARPC(MKDMethod mkdm, SKDMethod skdm, SecureDESKey imkac
             ,String accoutNo, String acctSeqNo, byte[] arqc, byte[] atc, byte[] upn
             ,ARPCMethod arpcMethod, byte[] arc, byte[] propAuthData)
@@ -789,6 +823,7 @@ public class BaseSMAdapter
       }
     }
 
+    @Override
     public byte[] verifyARQCGenerateARPC(MKDMethod mkdm, SKDMethod skdm, SecureDESKey imkac
             ,String accoutNo, String acctSeqNo, byte[] arqc, byte[] atc, byte[] upn
             ,byte[] transData, ARPCMethod arpcMethod, byte[] arc, byte[] propAuthData)
@@ -824,6 +859,7 @@ public class BaseSMAdapter
       }
     }
 
+    @Override
     public byte[] generateSM_MAC(MKDMethod mkdm, SKDMethod skdm
             ,SecureDESKey imksmi, String accountNo, String acctSeqNo
             ,byte[] atc, byte[] arqc, byte[] data) throws SMException {
@@ -852,6 +888,7 @@ public class BaseSMAdapter
       }
     }
 
+    @Override
     public Pair<EncryptedPIN,byte[]> translatePINGenerateSM_MAC(MKDMethod mkdm
            ,SKDMethod skdm, PaddingMethod padm, SecureDESKey imksmi
            ,String accountNo, String acctSeqNo, byte[] atc, byte[] arqc
@@ -898,6 +935,7 @@ public class BaseSMAdapter
       }
     }
 
+    @Override
     public byte[] generateCBC_MAC (byte[] data, SecureDESKey kd) throws SMException {
         SimpleMsg[] cmdParameters =  {
             new SimpleMsg("parameter", "data", data), new SimpleMsg("parameter", "data key",
@@ -918,6 +956,7 @@ public class BaseSMAdapter
         return  result;
     }
 
+    @Override
     public byte[] generateEDE_MAC (byte[] data, SecureDESKey kd) throws SMException {
         SimpleMsg[] cmdParameters =  {
             new SimpleMsg("parameter", "data", data), new SimpleMsg("parameter", "data key",
@@ -938,6 +977,7 @@ public class BaseSMAdapter
         return  result;
     }
 
+    @Override
     public SecureDESKey translateKeyFromOldLMK (SecureDESKey kd) throws SMException {
         SimpleMsg[] cmdParameters =  {
             new SimpleMsg("parameter", "Key under old LMK", kd)
@@ -957,6 +997,7 @@ public class BaseSMAdapter
         return  result;
     }
 
+    @Override
     public void eraseOldLMK () throws SMException {
         SimpleMsg[] cmdParameters =  {
         };
