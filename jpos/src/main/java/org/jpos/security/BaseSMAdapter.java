@@ -859,25 +859,27 @@ public class BaseSMAdapter
            ,SecureDESKey kd1, SecureDESKey imksmc, SecureDESKey imkac
            ,byte destinationPINBlockFormat) throws SMException {
 
-      SimpleMsg[] cmdParameters = {
-            new SimpleMsg("parameter", "mkd method", mkdm),
-            new SimpleMsg("parameter", "skd method", skdm),
-            new SimpleMsg("parameter", "padding method", padm),
-            new SimpleMsg("parameter", "imk-smi", imksmi),
-            new SimpleMsg("parameter", "account number", accountNo),
-            new SimpleMsg("parameter", "accnt seq no", acctSeqNo),
-            new SimpleMsg("parameter", "atc", atc == null ? "" : ISOUtil.hexString(atc)),
-            new SimpleMsg("parameter", "arqc", arqc == null ? "" : ISOUtil.hexString(arqc)),
-            new SimpleMsg("parameter", "data", data == null ? "" : ISOUtil.hexString(data)),
-            new SimpleMsg("parameter", "Current Encrypted PIN", currentPIN),
-            new SimpleMsg("parameter", "New Encrypted PIN", newPIN),
-            new SimpleMsg("parameter", "Source PIN Encryption Key", kd1),
-            new SimpleMsg("parameter", "imk-smc", imksmc),
-            new SimpleMsg("parameter", "imk-ac", imkac),
-            new SimpleMsg("parameter", "Destination PIN Block Format", destinationPINBlockFormat)
-      };
+      List<Loggeable> cmdParameters = new ArrayList<Loggeable>();
+      cmdParameters.add(new SimpleMsg("parameter", "mkd method", mkdm));
+      cmdParameters.add(new SimpleMsg("parameter", "skd method", skdm));
+      if (padm!=null)
+        cmdParameters.add(new SimpleMsg("parameter", "padding method", padm));
+      cmdParameters.add(new SimpleMsg("parameter", "imk-smi", imksmi));
+      cmdParameters.add(new SimpleMsg("parameter", "account number", accountNo));
+      cmdParameters.add(new SimpleMsg("parameter", "accnt seq no", acctSeqNo));
+      cmdParameters.add(new SimpleMsg("parameter", "atc", atc == null ? "" : ISOUtil.hexString(atc)));
+      cmdParameters.add(new SimpleMsg("parameter", "arqc", arqc == null ? "" : ISOUtil.hexString(arqc)));
+      cmdParameters.add(new SimpleMsg("parameter", "data", data == null ? "" : ISOUtil.hexString(data)));
+      cmdParameters.add(new SimpleMsg("parameter", "Current Encrypted PIN", currentPIN));
+      cmdParameters.add(new SimpleMsg("parameter", "New Encrypted PIN", newPIN));
+      cmdParameters.add(new SimpleMsg("parameter", "Source PIN Encryption Key", kd1));
+      cmdParameters.add(new SimpleMsg("parameter", "imk-smc", imksmc));
+      if (imkac!=null)
+        cmdParameters.add(new SimpleMsg("parameter", "imk-ac", imkac));
+      cmdParameters.add(new SimpleMsg("parameter", "Destination PIN Block Format", destinationPINBlockFormat));
       LogEvent evt = new LogEvent(this, "s-m-operation");
-      evt.addMessage(new SimpleMsg("command", "Translate PIN block format and Generate Secure Messaging MAC", cmdParameters));
+      evt.addMessage(new SimpleMsg("command", "Translate PIN block format and Generate Secure Messaging MAC"
+                    ,cmdParameters.toArray(new Loggeable[cmdParameters.size()])));
       try {
         Pair<EncryptedPIN,byte[]> r = translatePINGenerateSM_MACImpl( mkdm, skdm
                 ,padm, imksmi, accountNo, acctSeqNo, atc, arqc, data, currentPIN
