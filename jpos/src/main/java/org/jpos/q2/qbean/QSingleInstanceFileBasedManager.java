@@ -39,7 +39,7 @@ public class QSingleInstanceFileBasedManager extends QBeanSupport {
             }
         }
         catch (Exception e) {
-            getLog().error("An instance of switch is already running. Shutting this instance");
+            getLog().error("An instance of Q2 is already running. Shutting this instance");
             if (lock != null) {
                 lock.release();
             }
@@ -54,11 +54,6 @@ public class QSingleInstanceFileBasedManager extends QBeanSupport {
 
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.jpos.q2.QBeanSupport#stopService()
-     */
     @Override
     protected void stopService() throws Exception {
 

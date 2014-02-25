@@ -27,22 +27,15 @@ public class QSingleInstancePortBasedManager extends QBeanSupport {
             ss = new ServerSocket(port);
         }
         catch (IOException e) {
-            getLog().error("An instance of switch is already running. Shutting this instance");
+            getLog().error("An instance of Q2 is already running. Shutting this instance");
             getServer().shutdown();
         }
 
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * org.jpos.q2.QBeanSupport#setConfiguration(org.jpos.core.Configuration)
-     */
     @Override
     public void setConfiguration(Configuration cfg) throws ConfigurationException {
 
-        // TODO Auto-generated method stub
         super.setConfiguration(cfg);
 
         port = cfg.getInt("port", 65000);
