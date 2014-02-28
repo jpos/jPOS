@@ -34,7 +34,7 @@ import java.util.*;
  */
 public class ISOCurrency
 {
-    private static Map<String, Currency> currencies;
+    private static Map<String, Currency> currencies = new HashMap<String, Currency>();
     private static final Object mutex = new Object();
 
     // Avoid creation of instances.
@@ -44,10 +44,6 @@ public class ISOCurrency
 
     static
     {
-        synchronized (mutex)
-        {
-            currencies = new HashMap<String, Currency>();
-        }
         addBundle(ISOCurrency.class.getName());
         loadPropertiesFromClasspath("META-INF/org/jpos/config/ISOCurrency.properties");
     }
