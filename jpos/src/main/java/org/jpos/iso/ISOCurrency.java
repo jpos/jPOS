@@ -20,6 +20,7 @@ package org.jpos.iso;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -88,11 +89,26 @@ public class ISOCurrency
      * @param currency  - The ISO currency to be converted (eg. ISOField 49)
      * @return result - A double representing the converted field
      * @throws IllegalArgumentException if we fail to convert the amount
+     * @deprecated You should never use doubles
      */
     public static double convertFromIsoMsg(String isoamount, String currency) throws IllegalArgumentException
     {
         Currency c = findCurrency(currency);
         return c.parseAmountFromISOMsg(isoamount);
+    }
+    public static String toISO87String (BigDecimal amount, String currency)
+    {
+        try {
+            Currency c = findCurrency(currency);
+            return ISOUtil.zeropad(amount.movePointRight(c.getDecimals()).setScale(0).toPlainString(), 12);
+        }
+        catch (ISOException e) {
+            throw new IllegalArgumentException("Failed to convert amount",e);
+        }
+    }
+    public static BigDecimal parseFromISO87String (String isoamount, String currency) {
+        int decimals = findCurrency(currency).getDecimals();
+        return new BigDecimal(isoamount).movePointLeft(decimals);
     }
 
     public static void addBundle(ResourceBundle r)
