@@ -35,7 +35,6 @@ import java.util.*;
 public class ISOCurrency
 {
     private static final Map<String, Currency> currencies = new HashMap<String, Currency>();
-    private static final Object mutex = new Object();
 
     // Avoid creation of instances.
     private ISOCurrency()
