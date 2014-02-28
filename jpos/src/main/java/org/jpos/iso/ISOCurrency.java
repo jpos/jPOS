@@ -106,22 +106,6 @@ public class ISOCurrency
         return new BigDecimal(isoamount).movePointLeft(decimals);
     }
 
-    public static void addBundle(ResourceBundle r)
-    {
-        synchronized (mutex)
-        {
-            Enumeration en = r.getKeys();
-            while (en.hasMoreElements())
-            {
-                String alphaCode = (String) en.nextElement();
-                String[] tmp = r.getString(alphaCode).split(" ");
-                String isoCode = tmp[0];
-                int numDecimals = Integer.parseInt(tmp[1]);
-                addCurrency(alphaCode, isoCode, numDecimals);
-            }
-        }
-    }
-
     public static void addBundle(String bundleName)
     {
         ResourceBundle r = ResourceBundle.getBundle(bundleName);
@@ -223,5 +207,18 @@ public class ISOCurrency
             throw new IllegalArgumentException("Currency with key '" + currency + "' was not found");
         }
         return c;
+    }
+
+    private static void addBundle(ResourceBundle r)
+    {
+        Enumeration en = r.getKeys();
+        while (en.hasMoreElements())
+        {
+            String alphaCode = (String) en.nextElement();
+            String[] tmp = r.getString(alphaCode).split(" ");
+            String isoCode = tmp[0];
+            int numDecimals = Integer.parseInt(tmp[1]);
+            addCurrency(alphaCode, isoCode, numDecimals);
+        }
     }
 }
