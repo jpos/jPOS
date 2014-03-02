@@ -47,15 +47,15 @@ public class TLVMsg {
         this.value = value;
     }
 
-    /*
-     * @return TAG 
+    /**
+     * @return tag
      */
     public int getTag() {
         return tag;
     }
 
-    /*
-     * @return value 
+    /**
+     * @return tag value
      */
     public byte[] getValue() {
         return value;
@@ -69,13 +69,13 @@ public class TLVMsg {
     }
 
     /**
-     * @param newValue of TLV Message
+     * @param value of TLV Message
      */
-    public void setValue(byte[] newValue) {
-        this.value = newValue;
+    public void setValue(byte[] value) {
+        this.value = value;
     }
 
-    /*
+    /**
      * @return tag + length + value of the TLV Message
      */
     public byte[] getTLV() {
@@ -135,7 +135,7 @@ public class TLVMsg {
         return rBytes;
     }
     
-    /*
+    /**
      * @return value 
      */
     public String getStringValue() {

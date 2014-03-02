@@ -62,7 +62,7 @@ public class TLVList implements Serializable {
     }
 
     /**
-     * return an enumeration of the Vector of tags.
+     * @return an enumeration of the List of tags.
      */
     public Enumeration elements() {
         return Collections.enumeration(tags);
@@ -71,6 +71,8 @@ public class TLVList implements Serializable {
     /**
      * unpack a message with a starting offset
      * @param buf - raw message
+     * @param offset
+     * @throws org.jpos.iso.ISOException
      */
     public void unpack(byte[] buf, int offset) throws ISOException {
         ByteBuffer buffer=ByteBuffer.wrap(buf,offset,buf.length-offset);
@@ -92,7 +94,7 @@ public class TLVList implements Serializable {
     
     /**
      * Append TLVMsg to the TLVList
-     * @param TAG
+     * @param tag
      * @param value
      */
     public void append(int tag, byte[] value) {
@@ -101,24 +103,24 @@ public class TLVList implements Serializable {
     
     /**
      * Append TLVMsg to the TLVList
-     * @param TAG
+     * @param tag
      * @param value in hexadecimal character representation
      */
     public void append(int tag, String value) {
         append(new TLVMsg(tag, ISOUtil.hex2byte(value)));
     }
 
-    /*
-     *delete the specified TLV from the list using a Zero based index
-     *@param index 
+    /**
+     * delete the specified TLV from the list using a Zero based index
+     * @param index
      */
     public void deleteByIndex(int index) {
         tags.remove(index);
     }
 
-    /*
+    /**
      * Delete the specified TLV from the list by tag value
-     * @param TAG
+     * @param tag
      */
     public void deleteByTag(int tag) {
         List t = new ArrayList();
@@ -129,9 +131,10 @@ public class TLVList implements Serializable {
         tags.removeAll(t);
     }
 
-    /*
-     *searches the list for a specified tag and returns a TLV object
-     *@return TLVMsg  
+    /**
+     * searches the list for a specified tag and returns a TLV object
+     * @param tag
+     * @return TLVMsg
      */
     public TLVMsg find(int tag) {
         tagToFind = tag;
@@ -145,10 +148,10 @@ public class TLVList implements Serializable {
         return null;
     }
 
-    /*
+    /**
      * searches the list for a specified tag and returns a zero based index for
-     * that TAG
-     * @return index for a given TAG
+     * that tag
+     * @return index for a given {2code tag}
      */
     public int findIndex(int tag) {
         tagToFind = tag;
@@ -162,7 +165,7 @@ public class TLVList implements Serializable {
         return -1;
     }
     
-    /*
+    /**
      * Return the next TLVMsg of same TAG value
      * @return TLVMsg (return null if not found)
      */
@@ -177,10 +180,11 @@ public class TLVList implements Serializable {
         return null;
     }
 
-    /*
-     *Returns a TLV object which represents the TLVMsg stored within the TLVList
-     *at the given index
-     *@return TLVMsg 
+    /**
+     * Returns a TLV object which represents the TLVMsg stored within the TLVList
+     * at the given index
+     * @param index
+     * @return TLVMsg
      */
     public TLVMsg index(int index) {
         return tags.get(index);
@@ -201,9 +205,10 @@ public class TLVList implements Serializable {
  
     }
 
-    /*
+    /**
      * Read next TLV Message from stream and return it 
-     *@return TLVMsg 
+     * @param buffer
+     * @return TLVMsg
      */
     private TLVMsg getTLVMsg(ByteBuffer buffer) throws ISOException {
         int tag = getTAG(buffer);  // tag = 0 if tag not found
@@ -230,7 +235,7 @@ public class TLVList implements Serializable {
         return new TLVMsg(tag,arrValue);
     }
 
-    /*
+    /**
      * Check Existance of next TLV Field
      * @param buffer  ByteBuffer containing TLV data
      */
@@ -238,7 +243,7 @@ public class TLVList implements Serializable {
         return buffer.hasRemaining();
     }
     
-    /* 
+    /**
      * Return the next TAG
      * @return tag
      */
@@ -266,8 +271,9 @@ public class TLVList implements Serializable {
         return tag;
     }
     
-    /*
+    /**
      * Read length bytes and return the int value
+     * @param buffer
      * @return value length
      */
     protected int getValueLength(ByteBuffer buffer) {
@@ -287,8 +293,9 @@ public class TLVList implements Serializable {
         return new BigInteger(bb).intValue();
     }
     
-    /*
-     *searches the list for a specified tag and returns a hex String
+    /**
+     * searches the list for a specified tag and returns a hex String
+     * @param tag
      * @return hexString  
      */
     public String getString(int tag) {
@@ -301,8 +308,9 @@ public class TLVList implements Serializable {
         }
     }
     
-    /*
-     *searches the list for a specified tag and returns it raw
+    /**
+     * searches the list for a specified tag and returns it raw
+     * @param tag
      * @return byte[]  
      */
     public byte[] getValue(int tag) {
@@ -315,9 +323,9 @@ public class TLVList implements Serializable {
         }
     }
     
-    /*
-     *  searches the list for a specified tag and returns a boolean indicating presence
-     *  @return boolean
+    /**
+     * searches the list for a specified tag and returns a boolean indicating presence
+     * @return boolean
      */
     public boolean hasTag(int tag) {
         return (findIndex(tag) > -1);
