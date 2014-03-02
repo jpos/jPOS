@@ -74,8 +74,8 @@ public class TLVListTest {
         assertFalse("tLVList.elements().hasMoreElements()", tLVList.elements().hasMoreElements());
     }
 
-    @Test(expected=ArrayIndexOutOfBoundsException.class)
-    public void testDeleteByIndexThrowsArrayIndexOutOfBoundsException() throws Throwable {
+    @Test(expected=IndexOutOfBoundsException.class)
+    public void testDeleteByIndexThrowsIndexOutOfBoundsException() throws Throwable {
         tLVList.deleteByIndex(100);
     }
 
@@ -304,8 +304,8 @@ public class TLVListTest {
         assertNull("result", result);
     }
 
-    @Test(expected=ArrayIndexOutOfBoundsException.class)
-    public void testIndexThrowsArrayIndexOutOfBoundsException() throws Throwable {
+    @Test(expected=IndexOutOfBoundsException.class)
+    public void testIndexThrowsIndexOutOfBoundsException() throws Throwable {
         tLVList.index(100);
     }
 
@@ -336,6 +336,9 @@ public class TLVListTest {
         byte[] buf = ISOUtil.hex2byte("000100");
         tLVList.unpack(buf, 0);
         assertTrue("tLVList.elements().hasMoreElements()", tLVList.elements().hasMoreElements());
+        TLVMsg tm = tLVList.index(0);
+        assertEquals("tm.getTag()", 0x01, tm.getTag());
+        assertArrayEquals("tm.getValue()", new byte[0], tm.getValue());
     }
 
     @Test
@@ -343,6 +346,9 @@ public class TLVListTest {
         byte[] buf = ISOUtil.hex2byte("2080");
         tLVList.unpack(buf);
         assertTrue("tLVList.elements().hasMoreElements()", tLVList.elements().hasMoreElements());
+        TLVMsg tm = tLVList.index(0);
+        assertEquals("tm.getTag()", 0x20, tm.getTag());
+        assertArrayEquals("tm.getValue()", new byte[0], tm.getValue());
     }
 
     @Test
@@ -367,6 +373,9 @@ public class TLVListTest {
         byte[] buf = ISOUtil.hex2byte("000100");;
         tLVList.unpack(buf);
         assertTrue("tLVList.elements().hasMoreElements()", tLVList.elements().hasMoreElements());
+        TLVMsg tm = tLVList.index(0);
+        assertEquals("tm.getTag()", 0x01, tm.getTag());
+        assertArrayEquals("tm.getValue()", new byte[0], tm.getValue());
     }
 
     @Test
@@ -374,6 +383,9 @@ public class TLVListTest {
         byte[] buf = ISOUtil.hex2byte("0100");
         tLVList.unpack(buf);
         assertTrue("tLVList.elements().hasMoreElements()", tLVList.elements().hasMoreElements());
+        TLVMsg tm = tLVList.index(0);
+        assertEquals("tm.getTag()", 0x01, tm.getTag());
+        assertArrayEquals("tm.getValue()", new byte[0], tm.getValue());
     }
 
     @Test
