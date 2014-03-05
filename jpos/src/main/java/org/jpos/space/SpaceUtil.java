@@ -84,4 +84,25 @@ public class SpaceUtil {
         }
         return l;
     }
+    public static boolean outIfEmpty (Space sp, Object key, Object value, long nrdTimeout, long outTimeout) {
+        synchronized (sp) {
+            if (sp.nrd(key, nrdTimeout) == null) {
+                sp.out(key, value, outTimeout);
+                return true;
+            }
+        }
+        return false;
+    }
+    public static void outWhenEmpty (Space sp, Object key, Object value, long timeout) {
+        synchronized (sp) {
+            sp.nrd(key);
+            sp.out(key, value, timeout);
+        }
+    }
+    public static void outWhenEmpty (Space sp, Object key, Object value) {
+        synchronized (sp) {
+            sp.nrd(key);
+            sp.out(key, value);
+        }
+    }
 }
