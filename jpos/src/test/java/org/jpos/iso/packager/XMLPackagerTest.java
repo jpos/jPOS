@@ -27,6 +27,7 @@ import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.lang.String;
 import java.util.EmptyStackException;
 import java.util.List;
 
@@ -199,6 +200,19 @@ public class XMLPackagerTest {
         assertThat(result.getString(11), is("12345678"));
         assertThat(result.getString(12), is("20110224112759"));
         assertThat(result.getString(24), is("831"));
+    }
+
+    @Test
+    public void testUnpackLargeXmlBytes() throws IOException, ISOException {
+        String veryLongXml = "<large-xml><element><nested-element>Some very very long text</nested-element></element><element><nested-element>Some very very long text</nested-element></element><element><nested-element>Some very very long text</nested-element></element><element><nested-element>Some very very long text</nested-element></element><element><nested-element>Some very very long text</nested-element></element><element><nested-element>Some very very long text</nested-element></element><element><nested-element>Some very very long text</nested-element></element><element><nested-element>Some very very long text</nested-element></element><element><nested-element>Some very very long text</nested-element></element><element><nested-element>Some very very long text</nested-element></element><element><nested-element>Some very very long text</nested-element></element><element><nested-element>Some very very long text</nested-element></element><element><nested-element>Some very very long text</nested-element></element><element><nested-element>Some very very long text</nested-element></element><element><nested-element>Some very very long text</nested-element></element><element><nested-element>Some very very long text</nested-element></element><element><nested-element>Some very very long text</nested-element></element><element><nested-element>Some very very long text</nested-element></element><element><nested-element>Some very very long text</nested-element></element><element><nested-element>Some very very long text</nested-element></element><element><nested-element>Some very very long text</nested-element></element><element><nested-element>Some very very long text</nested-element></element><element><nested-element>Some very very long text</nested-element></element><element><nested-element>Some very very long text</nested-element></element><element><nested-element>Some very very long text</nested-element></element><element><nested-element>Some very very long text</nested-element></element><element><nested-element>Some very very long text</nested-element></element><element><nested-element>Some very very long text</nested-element></element><element><nested-element>Some very very long text</nested-element></element><element><nested-element>Some very very long text</nested-element></element><element><nested-element>Some very very long text</nested-element></element></large-xml>";
+        String input = "<isomsg>  <!-- org.jpos.iso.packager.XMLPackager -->" +
+                "<field id=\"0\" value=\"0800\"/>" +
+                "<field id=\"1\"><![CDATA[" + veryLongXml + "]]></field>" +
+                "</isomsg>";
+        isoMsg.setHeader("header".getBytes());
+        ISOMsg result = xMLPackager.createISOMsg();
+        int consumedBytes = xMLPackager.unpack(result, input.getBytes());
+        assertThat(result.getString(1), is(veryLongXml));
     }
 
     @Test
