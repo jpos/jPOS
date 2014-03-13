@@ -49,8 +49,10 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
         if (key == null || value == null)
             throw new NullPointerException ("key=" + key + ", value=" + value);
         synchronized(this) {
-            getList (key).add (value);
-            this.notifyAll ();
+            List l = getList(key);
+            l.add (value);
+            if (l.size() == 1)
+                this.notifyAll ();
         }
         if (sl != null)
             notifyListeners(key, value);
@@ -63,8 +65,10 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
             v = new Expirable (value, System.currentTimeMillis() + timeout);
         }
         synchronized (this) {
-            getList (key).add (v);
-            this.notifyAll ();
+            List l = getList(key);
+            l.add(v);
+            if (l.size() == 1)
+                this.notifyAll ();
             if (timeout > 0) {
                 registerExpirable(key, timeout);
             }
@@ -261,8 +265,11 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
         if (key == null || value == null)
             throw new NullPointerException ("key=" + key + ", value=" + value);
         synchronized(this) {
-            getList (key).add (0, value);
-            this.notifyAll ();
+            List l = getList(key);
+            boolean wasEmpty = l.isEmpty();
+            l.add (0, value);
+            if (wasEmpty)
+                this.notifyAll ();
         }
         if (sl != null)
             notifyListeners(key, value);
@@ -276,8 +283,11 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
             v = new Expirable (value, System.currentTimeMillis() + timeout);
         }
         synchronized (this) {
-            getList (key).add (0, v);
-            this.notifyAll ();
+            List l = getList(key);
+            boolean wasEmpty = l.isEmpty();
+            l.add (0, v);
+            if (wasEmpty)
+                this.notifyAll ();
             if (timeout > 0) {
                 registerExpirable(key, timeout);
             }
