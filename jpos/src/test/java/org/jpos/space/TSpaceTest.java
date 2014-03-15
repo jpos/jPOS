@@ -29,7 +29,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.AbstractSet;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
+import org.jpos.iso.ISOUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -216,5 +218,23 @@ public class TSpaceTest {
         TSpace tSpace = new TSpace();
         tSpace.out(Integer.valueOf(0), "testString", 100L);
         assertEquals("tSpace.entries.size()", 1, tSpace.entries.size());
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testNotifyReaders() {
+        final Space sp = new TSpace();
+        final AtomicInteger ai = new AtomicInteger(10);
+        for (int i=0; i<10; i++) {
+            new Thread() {
+                public void run() {
+                    if (sp.rd("TEST", 5000L) != null)
+                        ai.decrementAndGet();
+                }
+            }.start();
+        }
+        sp.out("TEST", Boolean.TRUE);
+        ISOUtil.sleep(500L);
+        assertTrue("Counter should be zero", ai.get() == 0);
     }
 }
