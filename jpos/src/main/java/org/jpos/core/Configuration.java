@@ -19,6 +19,8 @@
 package org.jpos.core;
 
 
+import java.util.Set;
+
 /**
  * @author apr@cs.com.uy
  * @version $Id$
@@ -31,7 +33,6 @@ public interface Configuration {
     public String get       (String propertyName);
     /**
      * @param propertyName  ditto
-     * @param propertyValue ditto
      * @return all properties with a given name (or a zero length string)
      */
     public String[] getAll  (String propertyName);
@@ -53,5 +54,5 @@ public interface Configuration {
      * @param value typically a String, but could be a String[] too
      */
     public void put (String name, Object value);
+    public Set<String> keySet();
 }
-

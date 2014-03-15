@@ -21,8 +21,10 @@ package org.jpos.q2;
 
 import org.jdom.Element;
 import org.jpos.core.*;
+import org.jpos.q2.qbean.QConfig;
 import org.jpos.util.LogSource;
 import org.jpos.util.Logger;
+import org.jpos.util.NameRegistrar;
 
 import javax.management.*;
 import java.io.File;
@@ -317,13 +319,40 @@ public class QFactory {
         }
     }
 
-    public Configuration getConfiguration (Element e) 
+    public Configuration getConfiguration (Element e)
         throws ConfigurationException
     {
         String configurationFactoryClazz = e.getAttributeValue("configuration-factory");
         ConfigurationFactory cf = configurationFactoryClazz != null ?
             (ConfigurationFactory) newInstance(configurationFactoryClazz) : defaultConfigurationFactory;
-        return cf.getConfiguration(e);
+
+        Configuration cfg = cf.getConfiguration(e);
+        String merge = e.getAttributeValue("merge-configuration");
+        if (merge != null) {
+            StringTokenizer st = new StringTokenizer(merge, ", ");
+            while (st.hasMoreElements()) {
+                try {
+                    Configuration c = QConfig.getConfiguration(st.nextToken());
+                    for (String k : c.keySet()) {
+                        if (cfg.get(k, null) == null) {
+                            String[] v = c.getAll(k);
+                            switch (v.length) {
+                                case 0:
+                                    break;
+                                case 1:
+                                    cfg.put(k, v[0]);
+                                    break;
+                                default:
+                                    cfg.put(k, v);
+                            }
+                        }
+                    }
+                } catch (NameRegistrar.NotFoundException ex) {
+                    throw new ConfigurationException (ex.getMessage());
+                }
+            }
+        }
+        return cfg;
     }
 
     public void setLogger (Object obj, Element e) {

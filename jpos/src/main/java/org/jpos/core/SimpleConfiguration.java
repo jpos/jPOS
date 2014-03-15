@@ -20,10 +20,8 @@ package org.jpos.core;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 /**
  * @author apr@cs.com.uy
@@ -39,8 +37,8 @@ public class SimpleConfiguration implements Configuration {
     public SimpleConfiguration (Properties props) {
         this.props = props;
     }
-    public SimpleConfiguration (String filename) 
-        throws FileNotFoundException, IOException
+    public SimpleConfiguration (String filename)
+        throws IOException
     {
         props = new Properties();
         load (filename);
@@ -95,21 +93,21 @@ public class SimpleConfiguration implements Configuration {
         return bb;
     }
     public String get (String name) {
-        return get (name, "");
+        return get(name, "");
     }
     public int getInt (String name) {
         return Integer.parseInt(props.getProperty(name, "0").trim());
     }
     public int getInt (String name, int def) {
         return Integer.parseInt(
-            props.getProperty (name, Integer.toString (def)).trim());
+                props.getProperty(name, Integer.toString(def)).trim());
     }
     public long getLong (String name) {
         return Long.parseLong(props.getProperty(name, "0").trim());
     }
     public long getLong (String name, long def) {
-        return Long.parseLong (
-            props.getProperty (name, Long.toString (def)).trim());
+        return Long.parseLong(
+                props.getProperty(name, Long.toString(def)).trim());
     }
     public double getDouble(String name) {
         return Double.valueOf(
@@ -129,14 +127,17 @@ public class SimpleConfiguration implements Configuration {
             (v.equalsIgnoreCase("true") || v.equalsIgnoreCase("yes"));
     }
     public void load(String filename) 
-        throws FileNotFoundException, IOException
+        throws IOException
     {
         FileInputStream fis = new FileInputStream(filename);
         props.load(new BufferedInputStream(fis));
         fis.close();
     }
-    public void put (String name, Object value) {
+    public synchronized void put (String name, Object value) {
         props.put (name, value);
     }
+    @Override
+    public Set<String> keySet() {
+        return props.stringPropertyNames();
+    }
 }
-
