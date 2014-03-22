@@ -57,7 +57,7 @@ public class TransactionManager
     Space isp; // input space
     String queue;
     String tailLock;
-    Thread[] threads;
+    List<Thread> threads;
     final List<TransactionStatusListener> statusListeners = new ArrayList<TransactionStatusListener>();
     boolean hasStatusListeners;
     boolean debug;
@@ -98,7 +98,7 @@ public class TransactionManager
     public void startService () throws Exception {
         NameRegistrar.register(getName(), this);
         recover ();
-        threads = new Thread[maxSessions];
+        threads = new ArrayList(maxSessions);
         if (tps != null)
             tps.stop();
         tps = new TPS (cfg.getBoolean ("auto-update-tps", true));
@@ -112,20 +112,17 @@ public class TransactionManager
     @Override
     public void stopService () throws Exception {
         NameRegistrar.unregister (getName ());
-        for (Thread thread1 : threads) {
-            if (thread1 != null)
-                isp.out(queue, Boolean.FALSE, 60 * 1000);
+        for (Thread t :threads ) {
+            isp.out(queue, Boolean.FALSE, 60 * 1000);
         }
-        for (int i = 0 ; i < threads.length; i++) {
-            Thread thread = threads[i];
+        for (Thread thread :threads ) {
             try {
-            if (thread != null)
-                    thread.join (60*1000);
-                threads[i] = null;
-                } catch (InterruptedException e) {
-                    getLog().warn ("Session " + thread.getName() +" does not respond - attempting to interrupt");
-                    thread.interrupt();
-                }
+                thread.join (60*1000);
+                threads.remove(thread);
+            } catch (InterruptedException e) {
+                getLog().warn ("Session " + thread.getName() +" does not respond - attempting to interrupt");
+                thread.interrupt();
+            }
         }
         tps.stop();
     }
@@ -162,22 +159,15 @@ public class TransactionManager
         long startTime = 0L;
         boolean paused;
         Thread thread = Thread.currentThread();
-        boolean assigned = false;
         synchronized (threads) {
-            for (int i=0; i<threads.length; i++) {
-                if (threads[i] == null) {
-                    threads[i] = thread;
-                    session = i;
-                    assigned=true;
-                    break;
-                }
-            }
-            if (assigned)
+            if (threads.size() < maxSessions) {
+                threads.add(thread);
+                session = threads.indexOf(thread);
                 activeSessions++;
-        }
-        if (!assigned) {
-            getLog().warn ("Max sessions reached, new session not created");
-            return;
+            } else {
+                getLog().warn ("Max sessions reached, new session not created");
+                return;              
+            }
         }
         getLog().info ("start " + thread);
         while (running()) {
@@ -318,12 +308,7 @@ public class TransactionManager
             }
         }
         synchronized (threads) {
-            for (int i=0; i<threads.length; i++) {
-                if (threads[i] == thread) {
-                    threads[i] = null;
-                    break;
-                }
-            }
+            threads.remove(thread);
             activeSessions--;
             getLog().info ("stop " + Thread.currentThread() + ", active sessions=" + activeSessions);
         }
