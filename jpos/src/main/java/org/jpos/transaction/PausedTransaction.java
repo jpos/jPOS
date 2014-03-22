@@ -28,16 +28,17 @@ import java.util.TimerTask;
 
 public class PausedTransaction implements Loggeable {
     private long id;
-    private List members;
-    private Iterator iter;
+    private List<TransactionParticipant> members;
+    private Iterator<TransactionParticipant> iter;
     private boolean aborting;
     private TransactionManager txnmgr;
     private boolean resumed;
     private TimerTask expirationMonitor;
     private Profiler prof;
     public PausedTransaction (
-            TransactionManager txnmgr,
-            long id, List members, Iterator iter, boolean aborting, TimerTask expirationMonitor, Profiler prof)
+            TransactionManager txnmgr, long id, List<TransactionParticipant> members
+           ,Iterator<TransactionParticipant> iter, boolean aborting
+           ,TimerTask expirationMonitor, Profiler prof)
     {
         super();
         this.txnmgr = txnmgr;
@@ -51,10 +52,10 @@ public class PausedTransaction implements Loggeable {
     public long id() {
         return id;
     }
-    public List members() {
+    public List<TransactionParticipant> members() {
         return members;
     }
-    public Iterator iterator() {
+    public Iterator<TransactionParticipant> iterator() {
         return iter;
     }
     public void dump (PrintStream p, String indent) {

@@ -382,8 +382,8 @@ public class TransactionManagerTest {
     @Test
     public void testPrepare7() throws Throwable {
         transactionManager = new TransactionManager();
-        List<HasEntry> members = new ArrayList();
-        AbstractList<TransactionParticipant> arrayList = new ArrayList();
+        List<TransactionParticipant> members = new ArrayList();
+        List<TransactionParticipant> arrayList = new ArrayList();
         BSHTransactionParticipant bSHTransactionParticipant = new BSHTransactionParticipant();
         boolean abort = arrayList.add(bSHTransactionParticipant);
         LogEvent evt = new LogEvent();
@@ -420,8 +420,8 @@ public class TransactionManagerTest {
 
     @Test
     public void testPrepareThrowsNullPointerException3() throws Throwable {
-        List<HasEntry> members = new ArrayList();
-        AbstractList<TransactionParticipant> arrayList = new ArrayList();
+        List<TransactionParticipant> members = new ArrayList();
+        List<TransactionParticipant> arrayList = new ArrayList();
         arrayList.add(new Forward());
         LogEvent evt = new LogEvent();
         try {
@@ -441,8 +441,8 @@ public class TransactionManagerTest {
     @Test
     public void testPrepareThrowsNullPointerException5() throws Throwable {
         LogEvent evt = new LogEvent("testTransactionManagerTag");
-        List<HasEntry> members = new ArrayList();
-        AbstractList<TransactionParticipant> arrayList = new ArrayList();
+        List<TransactionParticipant> members = new ArrayList();
+        List<TransactionParticipant> arrayList = new ArrayList();
         boolean abort = arrayList.add(new Trace());
         try {
             transactionManager.prepare(1, 100L, new NotActiveException(), members, arrayList.iterator(), abort, evt, null);

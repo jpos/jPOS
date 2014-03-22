@@ -25,22 +25,34 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Scanner;
-import java.util.Stack;
 import java.util.TimerTask;
-import java.util.Vector;
-
-import org.jpos.util.Profiler;
 import org.junit.Test;
 
 @SuppressWarnings("unchecked")
 public class PausedTransactionTest {
+
+    class DummyParticipant implements TransactionParticipant {
+
+        @Override
+        public int prepare(long id, Serializable context) {
+          return TransactionConstants.PREPARED;
+        }
+
+        @Override
+        public void commit(long id, Serializable context) {
+        }
+
+        @Override
+        public void abort(long id, Serializable context) {
+        }
+    }
+
     private TimerTask dummyTimerTask = new TimerTask() {
         public void run() { }
     };
@@ -124,9 +136,10 @@ public class PausedTransactionTest {
 
     @Test
     public void testForceAbort() throws Throwable {
-        byte[] bytes = new byte[2];
-        PausedTransaction pausedTransaction = new PausedTransaction(new TransactionManager(), 100L, new Stack(), new Scanner(
-                new ByteArrayInputStream(bytes)), false, dummyTimerTask, null);
+        List<TransactionParticipant> ltp = new ArrayList();
+        ltp.add(new DummyParticipant());
+        PausedTransaction pausedTransaction = new PausedTransaction(new TransactionManager(), 100L
+                ,new ArrayList(), ltp.iterator(), false, dummyTimerTask, null);
         pausedTransaction.forceAbort();
         assertTrue("pausedTransaction.isAborting()", pausedTransaction.isAborting());
     }
@@ -192,8 +205,10 @@ public class PausedTransactionTest {
 
     @Test
     public void testSetResumed() throws Throwable {
-        PausedTransaction pausedTransaction = new PausedTransaction(new TransactionManager(), 100L, new Vector(100), new Scanner(
-                "testPausedTransactionParam1"), true, dummyTimerTask, null);
+        List<TransactionParticipant> ltp = new ArrayList();
+        ltp.add(new DummyParticipant());
+        PausedTransaction pausedTransaction = new PausedTransaction(new TransactionManager(), 100L
+                ,new ArrayList(100), ltp.iterator(), true, dummyTimerTask, null);
         pausedTransaction.setResumed(true);
         assertTrue("pausedTransaction.isResumed()", pausedTransaction.isResumed());
     }

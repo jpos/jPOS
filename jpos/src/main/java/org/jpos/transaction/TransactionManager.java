@@ -28,6 +28,7 @@ import org.jpos.util.*;
 
 import java.io.Serializable;
 import java.util.*;
+import org.jpos.iso.ISOUtil;
 
 @SuppressWarnings("unchecked unused")
 public class TransactionManager 
@@ -49,7 +50,7 @@ public class TransactionManager
     public static final long    MAX_WAIT = 15000L;
     public static final long    TIMER_PURGE_INTERVAL = 1000L;
 
-    protected Map groups;
+    protected Map<String,List<TransactionParticipant>> groups;
 
     Space sp;
     Space psp;
@@ -72,10 +73,11 @@ public class TransactionManager
     long retryInterval = 5000L;
     long retryTimeout  = 60000L;
     long pauseTimeout  = 0L;
-    RetryTask retryTask = null;
+    Runnable retryTask = null;
     TPS tps;
     final Timer timer = DefaultTimer.getTimer();
 
+    @Override
     public void initService () throws ConfigurationException {
         queue = cfg.get ("queue", null);
         if (queue == null)
@@ -91,6 +93,8 @@ public class TransactionManager
         initParticipants (getPersist());
         initStatusListeners (getPersist());
     }
+
+    @Override
     public void startService () throws Exception {
         NameRegistrar.register(getName(), this);
         recover ();
@@ -104,6 +108,8 @@ public class TransactionManager
         if (psp.rdp (RETRY_QUEUE) != null)
             checkRetryTask();
     }
+
+    @Override
     public void stopService () throws Exception {
         NameRegistrar.unregister (getName ());
         for (Thread thread1 : threads) {
@@ -113,13 +119,13 @@ public class TransactionManager
         for (int i = 0 ; i < threads.length; i++) {
             Thread thread = threads[i];
             try {
-                if (thread != null)
+            if (thread != null)
                     thread.join (60*1000);
                 threads[i] = null;
-            } catch (InterruptedException e) {
-                getLog().warn ("Session " + thread.getName() +" does not respond - attempting to interrupt");
-                thread.interrupt();
-            }
+                } catch (InterruptedException e) {
+                    getLog().warn ("Session " + thread.getName() +" does not respond - attempting to interrupt");
+                    thread.interrupt();
+                }
         }
         tps.stop();
     }
@@ -142,11 +148,13 @@ public class TransactionManager
     public Space getPersistentSpace() {
         return psp;
     }
+
+    @Override
     public void run () {
         long id = 0;
         int session = 0; // FIXME
-        List members = null;
-        Iterator iter = null;
+        List<TransactionParticipant> members = null;
+        Iterator<TransactionParticipant> iter = null;
         PausedTransaction pt;
         boolean abort = false;
         LogEvent evt = null;
@@ -320,16 +328,23 @@ public class TransactionManager
             getLog().info ("stop " + Thread.currentThread() + ", active sessions=" + activeSessions);
         }
     }
+
+    @Override
     public long getTail () {
         return tail;
     }
+
+    @Override
     public long getHead () {
         return head;
     }
+
     public long getInTransit () {
         return head - tail;
     }
-    public void setConfiguration (Configuration cfg)
+
+    @Override
+    public void setConfiguration (Configuration cfg) 
         throws ConfigurationException 
     {
         super.setConfiguration (cfg);
@@ -364,37 +379,47 @@ public class TransactionManager
     public void removeListener (TransactionStatusListener l) {
         synchronized (statusListeners) {
             statusListeners.remove (l);
-            hasStatusListeners = statusListeners.size() > 0;
+            hasStatusListeners = !statusListeners.isEmpty();
         }
     }
     public TPS getTPS() {
         return tps;
     }
+
+    @Override
     public String getTPSAsString() {
         return tps.toString();
     }
+
+    @Override
     public float getTPSAvg() {
         return tps.getAvg();
     }
+
+    @Override
     public int getTPSPeak() {
         return tps.getPeak();
     }
+
+    @Override
     public Date getTPSPeakWhen() {
         return new Date(tps.getPeakWhen());
     }
+
+    @Override
     public long getTPSElapsed() {
         return tps.getElapsed();
     }
+
+    @Override
     public void resetTPS() {
         tps.reset();
     }
 
-    protected void commit
-        (int session, long id, Serializable context, List members, boolean recover, LogEvent evt, Profiler prof)
+    protected void commit 
+        (int session, long id, Serializable context, List<TransactionParticipant> members, boolean recover, LogEvent evt, Profiler prof)
     {
-        Iterator iter = members.iterator();
-        while (iter.hasNext ()) {
-            TransactionParticipant p = (TransactionParticipant) iter.next();
+        for (TransactionParticipant p :members) {
             if (recover && p instanceof ContextRecovery) {
                 context = ((ContextRecovery) p).recover (id, context, true);
                 if (evt != null)
@@ -413,11 +438,9 @@ public class TransactionManager
         }
     }
     protected void abort 
-        (int session, long id, Serializable context, List members, boolean recover, LogEvent evt, Profiler prof)
+        (int session, long id, Serializable context, List<TransactionParticipant> members, boolean recover, LogEvent evt, Profiler prof)
     {
-        Iterator iter = members.iterator();
-        while (iter.hasNext ()) {
-            TransactionParticipant p = (TransactionParticipant) iter.next();
+        for (TransactionParticipant p :members) {
             if (recover && p instanceof ContextRecovery) {
                 context = ((ContextRecovery) p).recover (id, context, false);
                 if (evt != null)
@@ -481,7 +504,7 @@ public class TransactionManager
         }
     }
     protected int prepare
-        (int session, long id, Serializable context, List members, Iterator iter, boolean abort, LogEvent evt, Profiler prof)
+        (int session, long id, Serializable context, List<TransactionParticipant> members, Iterator<TransactionParticipant> iter, boolean abort, LogEvent evt, Profiler prof)
     {
         boolean retry = false;
         boolean pause = false;
@@ -493,7 +516,7 @@ public class TransactionManager
                 );
                 return ABORTED;
             }
-            TransactionParticipant p = (TransactionParticipant) iter.next();
+            TransactionParticipant p = iter.next();
             if (abort) {
                 if (hasStatusListeners)
                     notifyStatusListeners (
@@ -588,17 +611,17 @@ public class TransactionManager
         return members.isEmpty() ? NO_JOIN : 
             (abort ? (retry ? RETRY : ABORTED) : PREPARED);
     }
-    protected List getParticipants (String groupName) {
-        List participants = (List) groups.get (groupName);
+    protected List<TransactionParticipant> getParticipants (String groupName) {
+        List<TransactionParticipant> participants = groups.get (groupName);
         if (participants == null)
             participants = new ArrayList();
         return participants;
     }
-    protected List getParticipants (long id) {
+    protected List<TransactionParticipant> getParticipants (long id) {
     	// Use a local copy of participant to avoid adding the 
         // GROUP participant to the DEFAULT_GROUP
-    	ArrayList participantsChain = new ArrayList();
-        List participants = getParticipants (DEFAULT_GROUP);
+    	List<TransactionParticipant> participantsChain = new ArrayList();
+        List<TransactionParticipant> participants = getParticipants (DEFAULT_GROUP);
         // Add DEFAULT_GROUP participants 
         participantsChain.addAll(participants);
         String key = getKey(GROUPS, id);
@@ -625,13 +648,11 @@ public class TransactionManager
         throws ConfigurationException
     {
         groups.put (DEFAULT_GROUP,  initGroup (config));
-        Iterator iter = config.getChildren ("group").iterator();
-        while (iter.hasNext()) {
-            Element e = (Element) iter.next();
+        for (Element e :(List<Element>)config.getChildren("group")) {
             String name = e.getAttributeValue ("name");
             if (name == null) 
                 throw new ConfigurationException ("missing group name");
-            if (groups.get (name) != null) {
+            if (groups.containsKey(name)) {
                 throw new ConfigurationException (
                     "Group '" + name + "' already defined"
                 );
@@ -639,13 +660,12 @@ public class TransactionManager
             groups.put (name, initGroup (e));
         }
     }
-    protected ArrayList initGroup (Element e) 
+    protected List<TransactionParticipant> initGroup (Element e) 
         throws ConfigurationException
     {
-        ArrayList group = new ArrayList ();
-        Iterator iter = e.getChildren ("participant").iterator();
-        while (iter.hasNext()) {
-            group.add (createParticipant ((Element) iter.next()));
+        List group = new ArrayList ();
+        for (Element el :(List<Element>)e.getChildren ("participant")) {
+            group.add(createParticipant(el));
         }
         return group;
     }
@@ -661,6 +681,8 @@ public class TransactionManager
         factory.setConfiguration (participant, e);
         return participant;
     }
+
+    @Override
     public int getOutstandingTransactions() {
         if (isp instanceof LocalSpace)
             return ((LocalSpace)sp).size(queue);
@@ -703,8 +725,7 @@ public class TransactionManager
     }
     protected void initTailLock () {
         tailLock = TAILLOCK + "." + Integer.toString (this.hashCode());
-        SpaceUtil.wipe (sp, tailLock);
-        sp.out (tailLock, TAILLOCK);
+        sp.put (tailLock, TAILLOCK);
     }
     protected void checkTail () {
         Object lock = sp.in (tailLock);
@@ -743,16 +764,13 @@ public class TransactionManager
         String contextKey = getKey (CONTEXT, id);
         synchronized (psp) {
             commitOff (psp);
-            while (psp.inp (contextKey) != null)
-                ;
+            SpaceUtil.wipe(psp, contextKey);
             if (context != null)
                 psp.out (contextKey, context);
 
             if (status != null) {
                 String stateKey  = getKey (STATE, id);
-                while (psp.inp (stateKey) != null)
-                    ;
-                psp.out (stateKey, status);
+                psp.put (stateKey, status);
             }
             commitOn (psp);
         }
@@ -761,8 +779,7 @@ public class TransactionManager
         String stateKey  = getKey (STATE, id);
         synchronized (psp) {
             commitOff (psp);
-            while (psp.inp (stateKey) != null)
-                ;
+            SpaceUtil.wipe(psp, stateKey);
             if (state!= null)
                 psp.out (stateKey, state);
             commitOn (psp);
@@ -778,12 +795,9 @@ public class TransactionManager
         String groupsKey  = getKey (GROUPS, id);
         synchronized (psp) {
             commitOff (psp);
-            while (psp.inp (stateKey) != null)
-                ;
-            while (psp.inp (contextKey) != null)
-                ;
-            while (psp.inp (groupsKey) != null)
-                ;
+            SpaceUtil.wipe(psp, stateKey);
+            SpaceUtil.wipe(psp, contextKey);
+            SpaceUtil.wipe(psp, groupsKey);
             commitOn (psp);
         }
     }
@@ -835,39 +849,47 @@ public class TransactionManager
             new Thread(retryTask).start();
         }
     }
+
     public static class PausedMonitor extends TimerTask {
         Pausable context;
         public PausedMonitor (Pausable context) {
             super();
             this.context = context;
         }
+        @Override
         public void run() {
             cancel();
             context.getPausedTransaction().forceAbort();
             context.resume();
         }
     }
+
     public class RetryTask implements Runnable {
+        @Override
         public void run() {
             Thread.currentThread().setName (getName()+"-retry-task");
             while (running()) {
-                for (Object context; (context = psp.rdp (RETRY_QUEUE)) != null;) 
+                for (Serializable context; (context = (Serializable)psp.rdp (RETRY_QUEUE)) != null;) 
                 {
                     isp.out (queue, context, retryTimeout);
                     psp.inp (RETRY_QUEUE);
                 }
-                try {
-                    Thread.sleep (retryInterval);
-                } catch (InterruptedException ignored) { } 
+                ISOUtil.sleep(retryInterval);
             }
         }
     }
+
+    @Override
     public void setDebug (boolean debug) {
         this.debug = debug;
     }
+
+    @Override
     public boolean getDebug() {
         return debug;
     }
+
+    @Override
     public int getActiveSessions() {
         return activeSessions;
     }
