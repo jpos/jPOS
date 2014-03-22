@@ -134,7 +134,7 @@ public class QServer
         if (outQueue != null) {
             /*
              * We have an 'out' queue to send any messages to that are received
-             * by the our requestListner(this).
+             * by the our requestListener(this).
              *
              * Note, if additional ISORequestListeners are registered with the server after
              *  this point, then they won't see anything as our process(ISOSource, ISOMsg)
