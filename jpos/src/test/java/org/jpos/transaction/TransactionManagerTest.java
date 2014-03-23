@@ -578,7 +578,6 @@ public class TransactionManagerTest {
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
             assertNull("ex.getMessage()", ex.getMessage());
-            assertNull("transactionManager.threads", transactionManager.threads);
             assertNull("transactionManager.getConfiguration()", transactionManager.getConfiguration());
             assertEquals("transactionManager.tail", 0L, transactionManager.tail);
             assertNull("transactionManager.psp", transactionManager.psp);
@@ -595,7 +594,6 @@ public class TransactionManagerTest {
         } catch (NullPointerException ex) {
             assertNull("ex.getMessage()", ex.getMessage());
             assertNull("transactionManager.psp", transactionManager.psp);
-            assertNull("transactionManager.threads", transactionManager.threads);
             assertNull("transactionManager.getConfiguration()", transactionManager.getConfiguration());
             assertEquals("transactionManager.tail", 0L, transactionManager.tail);
             assertNull("transactionManager.groups", transactionManager.groups);

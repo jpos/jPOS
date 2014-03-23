@@ -28,12 +28,18 @@ import org.jpos.util.*;
 
 import java.io.Serializable;
 import java.util.*;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import org.jpos.iso.ISOUtil;
 
 @SuppressWarnings("unchecked unused")
 public class TransactionManager 
     extends QBeanSupport 
-    implements Runnable, TransactionConstants, TransactionManagerMBean
+    implements SpaceListener, TransactionConstants, TransactionManagerMBean
 {
     public static final String  HEAD       = "$HEAD";
     public static final String  TAIL       = "$TAIL";
@@ -54,11 +60,11 @@ public class TransactionManager
     private static final ThreadLocal<Long> tlId = new ThreadLocal<Long>();
 
     Space sp;
-    Space psp;
-    Space isp; // input space
+    Space<String, Serializable> psp;
+    LocalSpace isp; // input space
     String queue;
     String tailLock;
-    List<Thread> threads;
+    ThreadPoolExecutor es;
     final List<TransactionStatusListener> statusListeners = new ArrayList<TransactionStatusListener>();
     boolean hasStatusListeners;
     boolean debug;
@@ -67,9 +73,7 @@ public class TransactionManager
     boolean callSelectorOnAbort;
     int sessions;
     int maxSessions;
-    int threshold;
-    int maxActiveSessions;
-    int activeSessions;
+    int sessionIdle;
     long head, tail;
     long retryInterval = 5000L;
     long retryTimeout  = 60000L;
@@ -84,7 +88,7 @@ public class TransactionManager
         if (queue == null)
             throw new ConfigurationException ("queue property not specified");
         sp   = SpaceFactory.getSpace (cfg.get ("space"));
-        isp  = SpaceFactory.getSpace (cfg.get ("input-space", cfg.get ("space")));
+        isp  = (LocalSpace)SpaceFactory.getSpace (cfg.get ("input-space", cfg.get ("space")));
         psp  = SpaceFactory.getSpace (cfg.get ("persistent-space", this.toString()));
         tail = initCounter (TAIL, cfg.getLong ("initial-tail", 1));
         head = Math.max (initCounter (HEAD, tail), tail);
@@ -95,17 +99,27 @@ public class TransactionManager
         initStatusListeners (getPersist());
     }
 
+    protected void initExecutorService () {
+        BlockingQueue bqueue;
+        if (sessions == maxSessions)
+            bqueue = new SynchronousQueue();
+        else
+            bqueue = new LinkedBlockingQueue();
+        es = new ThreadPoolExecutor(maxSessions, Integer.MAX_VALUE, sessionIdle
+                ,TimeUnit.SECONDS, bqueue, new TMThreadFactory(getName(),getLog()));
+//        es.prestartAllCoreThreads();
+        es.allowCoreThreadTimeOut(true);
+    }
+
     @Override
     public void startService () throws Exception {
         NameRegistrar.register(getName(), this);
         recover ();
-        threads = new ArrayList(maxSessions);
         if (tps != null)
             tps.stop();
         tps = new TPS (cfg.getBoolean ("auto-update-tps", true));
-        for (int i=0; i<sessions; i++) {
-            new Thread(this).start();
-        }
+        initExecutorService();
+        isp.addListener(queue, this);
         if (psp.rdp (RETRY_QUEUE) != null)
             checkRetryTask();
     }
@@ -113,18 +127,8 @@ public class TransactionManager
     @Override
     public void stopService () throws Exception {
         NameRegistrar.unregister (getName ());
-        for (Thread t :threads ) {
-            isp.out(queue, Boolean.FALSE, 60 * 1000);
-        }
-        for (Thread thread :threads ) {
-            try {
-                thread.join (60*1000);
-                threads.remove(thread);
-            } catch (InterruptedException e) {
-                getLog().warn ("Session " + thread.getName() +" does not respond - attempting to interrupt");
-                thread.interrupt();
-            }
-        }
+        isp.removeListener(queue, this);
+        es.shutdown();
         tps.stop();
     }
     public void queue (Serializable context) {
@@ -148,62 +152,46 @@ public class TransactionManager
     }
 
     @Override
-    public void run () {
-        long id = 0;
-        int session = 0; // FIXME
-        List<TransactionParticipant> members = null;
-        Iterator<TransactionParticipant> iter = null;
-        PausedTransaction pt;
-        boolean abort = false;
-        LogEvent evt = null;
-        Profiler prof = null;
-        long startTime = 0L;
-        boolean paused;
-        Thread thread = Thread.currentThread();
-        synchronized (threads) {
-            if (threads.size() < maxSessions) {
-                threads.add(thread);
-                session = threads.indexOf(thread);
-                activeSessions++;
-            } else {
-                getLog().warn ("Max sessions reached, new session not created");
-                return;              
-            }
+    public void notify(Object key, Object value) {
+        es.submit(new TMTask(value));
+    }
+
+    class TMTask implements Runnable {
+
+        Object obj;
+        long enqueueStamp;
+
+        TMTask (Object payload) {
+            obj = payload;
+            enqueueStamp = System.currentTimeMillis();
         }
-        getLog().info ("start " + thread);
-        while (running()) {
+
+        @Override
+        public void run () {
+            long id = 0;
+            List<TransactionParticipant> members = null;
+            Iterator<TransactionParticipant> iter = null;
+            PausedTransaction pt = null;
+            boolean abort = false;
+            LogEvent evt = null;
+            Profiler prof = null;
+            boolean paused = false;
+            TMThread thread = ((TMThread) Thread.currentThread());
+            int session = thread.getSession();
             Serializable context = null;
-            prof = null;
-            paused = false;
-            thread.setName (getName() + "-" + session + ":idle");
             try {
                 if (hasStatusListeners)
                     notifyStatusListeners (session, TransactionStatusEvent.State.READY, id, "", null);
 
-                Object obj = isp.in (queue, MAX_WAIT);
                 if (obj == Boolean.FALSE)
-                    continue;   // stopService ``hack''
+                    return;  // for backward compatibility of stopService ``hack''
 
-                if (obj == null) {
-                    if (session > sessions && getActiveSessions() > sessions)
-                        break; // we are an extra session, exit
-                    else
-                        continue;
-                }
-                if (session < sessions && // only initial sessions create extra sessions
-                    maxSessions > sessions &&
-                    getActiveSessions() < maxSessions &&
-                    id % sessions == 0 &&
-                    getOutstandingTransactions() > threshold)
-                {
-                        new Thread(this).start();
-                }
                 if (!(obj instanceof Serializable)) {
                     getLog().error (
                         "non serializable '" + obj.getClass().getName()
                        + "' on queue '" + queue + "'"
                     );
-                    continue;
+                    return;
                 }
                 context = (Serializable) obj;
                 if (obj instanceof Pausable) {
@@ -223,17 +211,15 @@ public class TransactionManager
                     pt = null;
 
                 if (pt == null) {
-                    int running = getRunningSessions();
-                    if (maxActiveSessions > 0 && running >= maxActiveSessions) {
+                    long late = System.currentTimeMillis() - enqueueStamp;
+                    if (late > retryTimeout) {
                         evt = getLog().createLogEvent ("warn",
-                            Thread.currentThread().getName() 
-                            + ": emergency retry, running-sessions=" + running 
-                            + ", max-active-sessions=" + maxActiveSessions
+                            thread.getName() + ": discard task after="+late
+                            + ", running-sessions=" + getRunningSessions()
+                            + ", max-sessions=" + maxSessions
                         );
                         evt.addMessage (obj);
-                        psp.out (RETRY_QUEUE, obj, retryTimeout);
-                        checkRetryTask();
-                        continue;
+                        return;
                     }
                     abort = false;
                     id = nextId ();
@@ -242,13 +228,11 @@ public class TransactionManager
                 }
                 if (debug) {
                     evt = getLog().createLogEvent ("debug",
-                        Thread.currentThread().getName() 
-                        + ":" + Long.toString(id) +
+                        thread.getName() + ":" + Long.toString(id) +
                         (pt != null ? " [resuming]" : "")
                     );
                     if (prof == null)
                         prof = new Profiler();
-                    startTime = System.currentTimeMillis();
                 }
                 snapshot (id, context, PREPARING);
                 setThreadLocal(id, context);
@@ -304,21 +288,14 @@ public class TransactionManager
                         String.format ("head=%d, tail=%d, outstanding=%d, active-sessions=%d/%d, %s, elapsed=%dms",
                             head, tail, getOutstandingTransactions(),
                             getActiveSessions(), maxSessions,
-                            tps.toString(),
-                            (System.currentTimeMillis() - startTime)
+                            tps.toString(), thread.getElapsed()
                         )
                     );
                     if (prof != null)
                         evt.addMessage (prof);
                     Logger.log (evt);
-                    evt = null;
                 }
             }
-        }
-        synchronized (threads) {
-            threads.remove(thread);
-            activeSessions--;
-            getLog().info ("stop " + Thread.currentThread() + ", active sessions=" + activeSessions);
         }
     }
 
@@ -349,18 +326,11 @@ public class TransactionManager
         retryInterval = cfg.getLong ("retry-interval", retryInterval);
         retryTimeout  = cfg.getLong ("retry-timeout", retryTimeout);
         pauseTimeout  = cfg.getLong ("pause-timeout", pauseTimeout);
-        maxActiveSessions  = cfg.getInt  ("max-active-sessions", 0);
         sessions = cfg.getInt ("sessions", 1);
-        threshold = cfg.getInt ("threshold", sessions / 2);
         maxSessions = cfg.getInt ("max-sessions", sessions);
         if (maxSessions < sessions)
             throw new ConfigurationException("max-sessions < sessions");
-        if (maxActiveSessions > 0) {
-            if (maxActiveSessions < sessions)
-                throw new ConfigurationException("max-active-sessions < sessions");
-            if (maxActiveSessions < maxSessions)
-                throw new ConfigurationException("max-active-sessions < max-sessions");
-        }
+        sessionIdle = cfg.getInt("session-idle", 5*60);
         callSelectorOnAbort = cfg.getBoolean("call-selector-on-abort", true);
     }
     public void addListener (TransactionStatusListener l) {
@@ -677,9 +647,7 @@ public class TransactionManager
 
     @Override
     public int getOutstandingTransactions() {
-        if (isp instanceof LocalSpace)
-            return ((LocalSpace)sp).size(queue);
-        return -1;
+        return es!=null ? es.getQueue().size() : -1;
     }
     protected String getKey (String prefix, long id) {
         StringBuilder sb = new StringBuilder (getName());
@@ -862,13 +830,83 @@ public class TransactionManager
         public void run() {
             Thread.currentThread().setName (getName()+"-retry-task");
             while (running()) {
-                for (Serializable context; (context = (Serializable)psp.rdp (RETRY_QUEUE)) != null;) 
+                for (Serializable context; (context = psp.rdp (RETRY_QUEUE)) != null;)
                 {
                     isp.out (queue, context, retryTimeout);
                     psp.inp (RETRY_QUEUE);
                 }
                 ISOUtil.sleep(retryInterval);
             }
+        }
+    }
+
+    class TMThread extends Thread {
+
+        TMThreadFactory tf;
+        int session;
+        long startTime;
+
+        TMThread(Runnable r) {
+            super(r);
+        }
+
+        TMThread(ThreadGroup tg, Runnable r) {
+            super(tg,r);
+        }
+
+        int getSession() {
+            return session;
+        }
+
+        long getElapsed() {
+            return System.currentTimeMillis() - startTime;
+        }
+
+        @Override
+        public void run() {
+            startTime = System.currentTimeMillis();
+            if (tf.log != null)
+              tf.log.info("start " + TMThread.this);
+            super.run();
+            tf.realaseSession(session);
+            setName (String.format("%s-%d:idle", tf.tg.getName(),session));
+            if (tf.log != null)
+              tf.log.info (String.format("stop %s, active sessions=%d"
+                      ,TMThread.this, getActiveSessions()));
+        }
+    }
+
+    class TMThreadFactory implements ThreadFactory {
+
+        Set<Integer> ss = new HashSet();
+        ThreadGroup tg;
+        Log log;
+
+        TMThreadFactory(String name, Log log) {
+            tg = new ThreadGroup(name);
+            this.log = log;
+        }
+
+        synchronized int assignSession() {
+            int key = 0;
+            do {
+                key++;
+            } while (ss.contains(key));
+            ss.add(key);
+            return key;
+        }
+
+        synchronized void realaseSession(int session) {
+            ss.remove(session);
+        }
+
+        @Override
+        public Thread newThread(Runnable r) {
+//            TMThread t = new TMThread(tg, r); //FIXME: Enable when SystemMonitor will be ready
+            TMThread t = new TMThread(r);
+            t.tf = this;
+            t.session = assignSession();
+            return t;
         }
     }
 
@@ -884,10 +922,10 @@ public class TransactionManager
 
     @Override
     public int getActiveSessions() {
-        return activeSessions;
+        return es!=null ? es.getPoolSize(): 0;
     }
     public int getRunningSessions() {
-        return (int) (head - tail);
+        return es!=null ? es.getActiveCount():0;
     }
 
     public static Serializable getSerializable() {
