@@ -26,6 +26,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -87,9 +89,8 @@ public class LogEvent {
         sb.append ("<log realm=\"");
         sb.append (getRealm());
         sb.append ( "\" at=\"");
-        sb.append (date.toString());
-        sb.append ('.');
-        sb.append (Long.toString (dumpedAt % 1000));
+        DateFormat df = new SimpleDateFormat("EEE MMM dd HH:mm:ss.SSS z yyyy",Locale.US);
+        sb.append (df.format(date));
         sb.append ('"');
         if (dumpedAt != createdAt) {
             sb.append (" lifespan=\"");
