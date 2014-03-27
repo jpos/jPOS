@@ -92,6 +92,7 @@ allprojects {
 
 subprojects  {
     configurations.compile.transitive = true
+    javadoc.failOnError = false
 }
 
 task aggregatedJavadoc (type: Javadoc, description: "Aggregated Javadocs") { 
@@ -101,6 +102,7 @@ task aggregatedJavadoc (type: Javadoc, description: "Aggregated Javadocs") {
     destinationDir = new File(buildDir, 'docs/javadoc') 
     classpath = files(subprojects.collect {project -> 
         project.sourceSets.main.compileClasspath}) 
+    failOnError = false
 } 
 
 task wrapper( type: Wrapper ) {
@@ -113,4 +115,5 @@ idea.project.ipr {
     provider.node.component.find { it.@name == 'VcsDirectoryMappings' }.mapping.@vcs = 'Git'
   }
 }
+
 
