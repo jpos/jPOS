@@ -23,6 +23,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class AsciiHexInterpreter2Test {
@@ -112,89 +113,6 @@ public class AsciiHexInterpreter2Test {
             assertNull("ex.getMessage()", ex.getMessage());
             assertEquals("b.length", 5, b.length);
         }
-    }
-
-    @Test
-    public void testUninterpret() throws Throwable {
-        byte[] rawData = new byte[70];
-        rawData[65] = (byte) 65;
-        byte[] result = AsciiHexInterpreter.INSTANCE.uninterpret(rawData, 63, 3);
-        assertEquals("result.length", 3, result.length);
-        assertEquals("result[0]", (byte) -48, result[0]);
-    }
-
-    @Test
-    public void testUninterpret1() throws Throwable {
-        byte[] rawData = new byte[5];
-        rawData[3] = (byte) 64;
-        rawData[4] = (byte) 64;
-        byte[] result = AsciiHexInterpreter.INSTANCE.uninterpret(rawData, 3, 1);
-        assertEquals("result.length", 1, result.length);
-        assertEquals("result[0]", (byte) 16, result[0]);
-    }
-
-    @Test
-    public void testUninterpret2() throws Throwable {
-        byte[] rawData = new byte[67];
-        rawData[66] = (byte) 65;
-        byte[] result = AsciiHexInterpreter.INSTANCE.uninterpret(rawData, 65, 1);
-        assertEquals("result.length", 1, result.length);
-        assertEquals("result[0]", (byte) 10, result[0]);
-    }
-
-    @Test
-    public void testUninterpret3() throws Throwable {
-        byte[] rawData = new byte[74];
-        rawData[66] = (byte) 65;
-        byte[] result = AsciiHexInterpreter.INSTANCE.uninterpret(rawData, 65, 3);
-        assertEquals("result.length", 3, result.length);
-        assertEquals("result[0]", (byte) 10, result[0]);
-    }
-
-    @Test
-    public void testUninterpret4() throws Throwable {
-        byte[] rawData = new byte[67];
-        rawData[65] = (byte) 65;
-        rawData[66] = (byte) 65;
-        byte[] result = AsciiHexInterpreter.INSTANCE.uninterpret(rawData, 65, 1);
-        assertEquals("result.length", 1, result.length);
-        assertEquals("result[0]", (byte) -86, result[0]);
-    }
-
-    @Test
-    public void testUninterpret5() throws Throwable {
-        byte[] rawData = new byte[9];
-        rawData[3] = (byte) 65;
-        rawData[4] = (byte) 64;
-        rawData[6] = (byte) 65;
-        byte[] result = new AsciiHexInterpreter().uninterpret(rawData, 1, 3);
-        assertEquals("result.length", 3, result.length);
-        assertEquals("result[0]", (byte) -48, result[0]);
-    }
-
-    @Test
-    public void testUninterpret6() throws Throwable {
-        byte[] rawData = new byte[6];
-        rawData[1] = (byte) 65;
-        byte[] result = new AsciiHexInterpreter().uninterpret(rawData, 1, 1);
-        assertEquals("result.length", 1, result.length);
-        assertEquals("result[0]", (byte) -16, result[0]);
-    }
-
-    @Test
-    public void testUninterpret7() throws Throwable {
-        byte[] rawData = new byte[3];
-        rawData[1] = (byte) 63;
-        byte[] result = AsciiHexInterpreter.INSTANCE.uninterpret(rawData, 0, 1);
-        assertEquals("result.length", 1, result.length);
-        assertEquals("result[0]", (byte) 15, result[0]);
-    }
-
-    @Test
-    public void testUninterpret8() throws Throwable {
-        byte[] rawData = new byte[1];
-        byte[] result = new AsciiHexInterpreter().uninterpret(rawData, 100, 0);
-        assertEquals("result.length", 0, result.length);
     }
 
     @Test
