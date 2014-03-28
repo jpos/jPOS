@@ -53,16 +53,12 @@ public class AsciiHexInterpreter implements BinaryInterpreter
      */
     public byte[] uninterpret(byte[] rawData, int offset, int length)
     {
-        byte[] ret = new byte[length];
-        for (int i = 0; i < length; i++)
-        {
-            byte hi = rawData[offset + i * 2];
-            byte lo = rawData[offset + i * 2 + 1];
-            int h = hi > 0x40 ? 10 + hi - 0x41 : hi - 0x30;
-            int l = lo > 0x40 ? 10 + lo - 0x41 : lo - 0x30;
-            ret[i] = (byte)(h << 4 | l);
+        byte[] d = new byte[length];
+        for (int i=0; i<length*2; i++) {
+            int shift = i%2 == 1 ? 0 : 4;
+            d[i>>1] |= Character.digit((char) rawData[offset+i], 16) << shift;
         }
-        return ret;
+        return d;
     }
 
     /**
