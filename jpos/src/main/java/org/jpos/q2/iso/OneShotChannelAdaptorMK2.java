@@ -15,10 +15,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.jpos.q2.iso;
 
 import org.jdom.Element;
 import org.jpos.core.ConfigurationException;
+import org.jpos.iso.BaseChannel;
 import org.jpos.iso.Channel;
 import org.jpos.iso.FactoryChannel;
 import org.jpos.iso.FilteredChannel;
@@ -31,11 +33,17 @@ import org.jpos.q2.QBeanSupport;
 import org.jpos.q2.QFactory;
 import org.jpos.space.Space;
 import org.jpos.space.SpaceFactory;
+import org.jpos.space.SpaceUtil;
+import org.jpos.util.LogEvent;
 import org.jpos.util.LogSource;
+import org.jpos.util.Logger;
 import org.jpos.util.NameRegistrar;
 
+import java.io.IOException;
 import java.util.Date;
-import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -49,7 +57,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author Thomas L. Kjeldsen
  * @author Victor Salaman
  */
-@SuppressWarnings("UnusedDeclaration")
+@SuppressWarnings({"UnusedDeclaration", "StatementWithEmptyBody"})
 public class OneShotChannelAdaptorMK2
         extends QBeanSupport
         implements OneShotChannelAdaptorMK2MBean, Channel, Runnable
@@ -57,11 +65,14 @@ public class OneShotChannelAdaptorMK2
     Space<String, Object> sp;
     String in, out, ready;
     long delay;
+    long checkInterval;
     int maxConnections;
     int[] handbackFields;
     ThreadPoolExecutor threadPool = null;
     AtomicInteger cnt;
     Element channelElement;
+
+    ScheduledExecutorService checkTimer;
 
     public OneShotChannelAdaptorMK2()
     {
@@ -87,31 +98,44 @@ public class OneShotChannelAdaptorMK2
         in = persist.getChildTextTrim("in");
         out = persist.getChildTextTrim("out");
         ready = getName() + ".ready";
-        delay = 2500;
 
-        cnt = new AtomicInteger(0);
         String s = persist.getChildTextTrim("max-connections");
         maxConnections = (s != null) ? Integer.parseInt(s) : 1;
         handbackFields = cfg.getInts("handback-field");
+
+        s = persist.getChildTextTrim("delay");
+        delay = s != null ? Integer.valueOf(s) : 2500;
+
+        s = persist.getChildTextTrim("check-interval");
+        checkInterval = s != null ? Integer.valueOf(s) : 60000;
+
         NameRegistrar.register(getName(), this);
     }
 
     public void startService()
     {
+        setRealm(getName());
+        cnt = new AtomicInteger(0);
         threadPool = new ThreadPoolExecutor(1,
                                             maxConnections,
                                             10,
                                             TimeUnit.SECONDS,
-                                            new ArrayBlockingQueue<Runnable>(2));
+                                            new SynchronousQueue<Runnable>());
         new Thread(this).start();
+
+        checkTimer=Executors.newScheduledThreadPool(1);
+        checkTimer.scheduleAtFixedRate(new CheckChannelTask(), 0L, checkInterval,TimeUnit.MILLISECONDS);
     }
 
     public void stopService()
     {
-        //noinspection StatementWithEmptyBody
-        while (sp.inp(ready) != null)
+        if(checkTimer!=null)
         {
+            checkTimer.shutdown();
+            checkTimer=null;
         }
+
+        takeOffline();
         sp.out(in, new Object());
         threadPool.shutdown();
         while (!threadPool.isTerminated())
@@ -123,6 +147,20 @@ public class OneShotChannelAdaptorMK2
             catch (InterruptedException e)
             {
             }
+        }
+
+        int c=0;
+        while(running())
+        {
+            try
+            {
+                Thread.sleep(500);
+            }
+            catch (InterruptedException e)
+            {
+            }
+            c++;
+            if(c>10) break;
         }
     }
 
@@ -144,42 +182,13 @@ public class OneShotChannelAdaptorMK2
         {
             try
             {
-                while (sp.rdp(ready) == null && running())
-                {
-                    ISOChannel channel = null;
-                    try
-                    {
-                        channel = newChannel(channelElement, getFactory());
-                        channel.connect();
-                        sp.out(ready, new Date());
-                        getLog().info("Channel " + getName() + " is now online");
-                        break;
-                    }
-                    catch (Exception e)
-                    {
-                        getLog().error(getName(), e);
-                    }
-                    finally
-                    {
-                        if (channel != null)
-                        {
-                            channel.disconnect();
-                        }
-                    }
-                    if (running())
-                    {
-                        Thread.sleep(delay);
-                    }
-                    //NOTE: We will eat all coming requests since we're offline!
-                    while (sp.inp(in) != null)
-                    {
-                        ;
-                    }
-                }
-
                 Object o = sp.in(in, delay);
                 if (o instanceof ISOMsg)
                 {
+                    if(!isConnected())
+                    {
+                        continue;
+                    }
                     ISOMsg m = (ISOMsg) o;
                     int i = cnt.incrementAndGet();
                     if (i > 9999)
@@ -187,7 +196,6 @@ public class OneShotChannelAdaptorMK2
                         cnt.set(0);
                         i = cnt.incrementAndGet();
                     }
-
                     threadPool.execute(new Worker(m, i));
                 }
             }
@@ -196,6 +204,97 @@ public class OneShotChannelAdaptorMK2
                 getLog().warn(getName(), e.getMessage());
             }
         }
+    }
+
+    private class CheckChannelTask implements Runnable
+    {
+        @Override
+        public void run()
+        {
+            try
+            {
+                Date lastOnline = (Date) sp.rdp(ready);
+                final LogEvent ev = getLog().createLogEvent("status");
+                if (isChannelConnectable(true))
+                {
+                    if (lastOnline == null)
+                    {
+                        ev.addMessage("Channel is now online");
+                        Logger.log(ev);
+                        flushInput();
+                    }
+                    takeOnline();
+                }
+                else
+                {
+                    takeOffline();
+                    if (lastOnline != null)
+                    {
+                        ev.addMessage("Channel is now offline");
+                        Logger.log(ev);
+                    }
+                }
+            }
+            catch (Throwable e)
+            {
+                getLog().warn(getName(), e.getMessage());
+            }
+        }
+
+        private boolean isChannelConnectable(boolean showExceptions)
+        {
+            boolean res = false;
+
+            ISOChannel channel = null;
+            try
+            {
+                channel = newChannel(channelElement, getFactory());
+                if (channel instanceof BaseChannel)
+                {
+                    BaseChannel bc = (BaseChannel) channel;
+                    bc.setLogger(null, null);
+                }
+                channel.connect();
+                res = true;
+            }
+            catch (Exception e)
+            {
+                if (showExceptions)
+                {
+                    getLog().error(e.getMessage());
+                }
+            }
+            finally
+            {
+                if (channel != null && channel.isConnected())
+                {
+                    try
+                    {
+                        channel.disconnect();
+                    }
+                    catch (IOException e)
+                    {
+                    }
+                }
+            }
+
+            return res;
+        }
+    }
+
+    private void flushInput()
+    {
+        SpaceUtil.wipe(sp,in);
+    }
+
+    private void takeOffline()
+    {
+        SpaceUtil.wipe(sp,ready);
+    }
+
+    private void takeOnline()
+    {
+        sp.put(ready, new Date());
     }
 
     public void send(ISOMsg m)
@@ -403,15 +502,11 @@ public class OneShotChannelAdaptorMK2
                 }
                 catch (Throwable e)
                 {
-                    //noinspection StatementWithEmptyBody
-                    while (sp.inp(ready) != null)
-                    {
-                    }
-                    getLog().info("Channel " + getName() + " is now offline");
+                    takeOffline();
                 }
                 if (channel.isConnected())
                 {
-                    sp.out(ready, new Date());
+                    takeOnline();
                     channel.send(req);
                     ISOMsg rsp = channel.receive();
                     channel.disconnect();
