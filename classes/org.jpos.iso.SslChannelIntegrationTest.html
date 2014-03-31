@@ -34,7 +34,7 @@
 </td>
 <td>
 <div class="infoBox" id="duration">
-<div class="counter">0.653s</div>
+<div class="counter">10.786s</div>
 <p>duration</p>
 </div>
 </td>
@@ -72,7 +72,7 @@
 </thead>
 <tr>
 <td class="success">serverSideDisconnect</td>
-<td>0.653s</td>
+<td>10.786s</td>
 <td class="success">passed</td>
 </tr>
 </table>
@@ -80,20 +80,20 @@
 <div id="tab1" class="tab">
 <h2>Standard output</h2>
 <span class="code">
-<pre>&lt;log realm=&quot;server&quot; at=&quot;Fri Mar 28 02:22:11 UTC 2014.122&quot;&gt;
+<pre>&lt;log realm=&quot;server&quot; at=&quot;Mon Mar 31 15:21:01 UTC 2014.247&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;iso-server&gt;
     listening on port 4000
   &lt;/iso-server&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;client.channel/127.0.0.1:4000&quot; at=&quot;Fri Mar 28 02:22:11 UTC 2014.128&quot; lifespan=&quot;282ms&quot;&gt;
+&lt;log realm=&quot;client.channel/127.0.0.1:4000&quot; at=&quot;Mon Mar 31 15:21:01 UTC 2014.266&quot; lifespan=&quot;10475ms&quot;&gt;
   &lt;connect&gt;
     localhost:4000
   &lt;/connect&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;server.session/127.0.0.1:35269&quot; at=&quot;Fri Mar 28 02:22:11 UTC 2014.136&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;server.session/127.0.0.1:36588&quot; at=&quot;Mon Mar 31 15:21:01 UTC 2014.301&quot;&gt;
   &lt;session-start/&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;client.channel/127.0.0.1:4000&quot; at=&quot;Fri Mar 28 02:22:11 UTC 2014.251&quot; lifespan=&quot;122ms&quot;&gt;
+&lt;log realm=&quot;client.channel/127.0.0.1:4000&quot; at=&quot;Mon Mar 31 15:21:01 UTC 2014.468&quot; lifespan=&quot;201ms&quot;&gt;
   &lt;send&gt;
     &lt;isomsg&gt;
       &lt;!-- org.jpos.iso.packager.XMLPackager --&gt;
@@ -101,7 +101,7 @@
     &lt;/isomsg&gt;
   &lt;/send&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;server.channel/127.0.0.1:35269&quot; at=&quot;Fri Mar 28 02:22:11 UTC 2014.267&quot; lifespan=&quot;131ms&quot;&gt;
+&lt;log realm=&quot;server.channel/127.0.0.1:36588&quot; at=&quot;Mon Mar 31 15:21:01 UTC 2014.490&quot; lifespan=&quot;188ms&quot;&gt;
   &lt;receive&gt;
     &lt;isomsg direction=&quot;incoming&quot;&gt;
       &lt;!-- org.jpos.iso.packager.XMLPackager --&gt;
@@ -109,15 +109,7 @@
     &lt;/isomsg&gt;
   &lt;/receive&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;server.channel/127.0.0.1:35269&quot; at=&quot;Fri Mar 28 02:22:11 UTC 2014.269&quot; lifespan=&quot;1ms&quot;&gt;
-  &lt;send&gt;
-    &lt;isomsg&gt;
-      &lt;!-- org.jpos.iso.packager.XMLPackager --&gt;
-      &lt;field id=&quot;0&quot; value=&quot;0810&quot;/&gt;
-    &lt;/isomsg&gt;
-  &lt;/send&gt;
-&lt;/log&gt;
-&lt;log realm=&quot;client.channel/127.0.0.1:4000&quot; at=&quot;Fri Mar 28 02:22:11 UTC 2014.271&quot; lifespan=&quot;18ms&quot;&gt;
+&lt;log realm=&quot;client.channel/127.0.0.1:4000&quot; at=&quot;Mon Mar 31 15:21:01 UTC 2014.495&quot; lifespan=&quot;26ms&quot;&gt;
   &lt;receive&gt;
     &lt;isomsg direction=&quot;incoming&quot;&gt;
       &lt;!-- org.jpos.iso.packager.XMLPackager --&gt;
@@ -125,15 +117,42 @@
     &lt;/isomsg&gt;
   &lt;/receive&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;server.channel/127.0.0.1:35269&quot; at=&quot;Fri Mar 28 02:22:11 UTC 2014.279&quot; lifespan=&quot;9ms&quot;&gt;
-  &lt;receive/&gt;
+&lt;log realm=&quot;server.channel/127.0.0.1:36588&quot; at=&quot;Mon Mar 31 15:21:01 UTC 2014.507&quot; lifespan=&quot;16ms&quot;&gt;
+  &lt;send&gt;
+    &lt;isomsg&gt;
+      &lt;!-- org.jpos.iso.packager.XMLPackager --&gt;
+      &lt;field id=&quot;0&quot; value=&quot;0810&quot;/&gt;
+    &lt;/isomsg&gt;
+  &lt;/send&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;client.channel/127.0.0.1:4000&quot; at=&quot;Fri Mar 28 02:22:11 UTC 2014.280&quot; lifespan=&quot;2ms&quot;&gt;
+&lt;log realm=&quot;server.channel/127.0.0.1:36588&quot; at=&quot;Mon Mar 31 15:21:01 UTC 2014.523&quot;&gt;
+  &lt;receive&gt;
+    &lt;iso-exception&gt;
+      unconnected ISOChannel
+      org.jpos.iso.ISOException: unconnected ISOChannel
+	at org.jpos.iso.BaseChannel.receive(BaseChannel.java:662)
+	at org.jpos.iso.ISOServer$Session.run(ISOServer.java:155)
+	at org.jpos.util.ThreadPool$PooledThread.run(ThreadPool.java:72)
+    &lt;/iso-exception&gt;
+  &lt;/receive&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;client.channel/127.0.0.1:4000&quot; at=&quot;Mon Mar 31 15:21:01 UTC 2014.535&quot; lifespan=&quot;28ms&quot;&gt;
   &lt;receive&gt;
     &lt;peer-disconnect/&gt;
   &lt;/receive&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;server.session/127.0.0.1:35269&quot; at=&quot;Fri Mar 28 02:22:11 UTC 2014.281&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;server.session/127.0.0.1:36588&quot; at=&quot;Mon Mar 31 15:21:01 UTC 2014.537&quot; lifespan=&quot;2ms&quot;&gt;
+  &lt;session-error&gt;
+    &lt;iso-exception&gt;
+      unconnected ISOChannel
+      org.jpos.iso.ISOException: unconnected ISOChannel
+	at org.jpos.iso.BaseChannel.receive(BaseChannel.java:662)
+	at org.jpos.iso.ISOServer$Session.run(ISOServer.java:155)
+	at org.jpos.util.ThreadPool$PooledThread.run(ThreadPool.java:72)
+    &lt;/iso-exception&gt;
+  &lt;/session-error&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;server.session/127.0.0.1:36588&quot; at=&quot;Mon Mar 31 15:21:01 UTC 2014.540&quot;&gt;
   &lt;session-end/&gt;
 &lt;/log&gt;
 </pre>
@@ -142,7 +161,7 @@
 </div>
 <div id="footer">
 <p>Generated by 
-<a href="http://www.gradle.org">Gradle 1.9</a> at Mar 28, 2014 2:23:58 AM</p>
+<a href="http://www.gradle.org">Gradle 1.9</a> at Mar 31, 2014 3:23:19 PM</p>
 </div>
 </div>
 </body>
