@@ -33,6 +33,7 @@ import org.jpos.q2.QBeanSupport;
 import org.jpos.q2.QFactory;
 import org.jpos.space.Space;
 import org.jpos.space.SpaceFactory;
+import org.jpos.space.SpaceUtil;
 import org.jpos.util.LogEvent;
 import org.jpos.util.LogSource;
 import org.jpos.util.Logger;
@@ -40,9 +41,9 @@ import org.jpos.util.NameRegistrar;
 
 import java.io.IOException;
 import java.util.Date;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -119,7 +120,7 @@ public class OneShotChannelAdaptorMK2
                                             maxConnections,
                                             10,
                                             TimeUnit.SECONDS,
-                                            new ArrayBlockingQueue<Runnable>(2));
+                                            new SynchronousQueue<Runnable>());
         new Thread(this).start();
 
         checkTimer=Executors.newScheduledThreadPool(1);
@@ -283,16 +284,12 @@ public class OneShotChannelAdaptorMK2
 
     private void flushInput()
     {
-        while (sp.inp(in) != null)
-        {
-        }
+        SpaceUtil.wipe(sp,in);
     }
 
     private void takeOffline()
     {
-        while (sp.inp(ready) != null)
-        {
-        }
+        SpaceUtil.wipe(sp,ready);
     }
 
     private void takeOnline()
