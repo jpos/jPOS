@@ -1,0 +1,2970 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>PMD 4.3 Report</title>
+<style type="text/css">
+    .bannercell {
+      border: 0px;
+      padding: 0px;
+    }
+    body {
+      margin-left: 10px;
+      margin-right: 10px;
+      font:normal 80% arial,helvetica,sanserif;
+      background-color:#FFFFFF;
+      color:#000000;
+    }
+    .a td {
+      background: #efefef;
+    }
+    .b td {
+      background: #fff;
+    }
+    th, td {
+      text-align: left;
+      vertical-align: top;
+    }
+    th {
+      font-weight:bold;
+      background: #ccc;
+      color: black;
+    }
+    table, th, td {
+      font-size:100%;
+      border: none
+    }
+    table.log tr td, tr th {
+
+    }
+    h2 {
+      font-weight:bold;
+      font-size:140%;
+      margin-bottom: 5;
+    }
+    h3 {
+      font-size:100%;
+      font-weight:bold;
+      background: #525D76;
+      color: white;
+      text-decoration: none;
+      padding: 5px;
+      margin-right: 2px;
+      margin-left: 2px;
+      margin-bottom: 0px;
+    }
+	.p1 { background:#FF9999; }
+	.p2 { background:#FFCC66; }
+	.p3 { background:#FFFF99; }
+	.p4 { background:#99FF99; }
+	.p5 { background:#a6caf0; }
+
+		</style>
+</head>
+<body>
+<a name="top"/>
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td class="bannercell" rowspan="2"/>
+<td class="text-align:right">
+<h2>PMD 4.3 Report. Generated on 2014-04-01 - 23:32:43</h2>
+</td>
+</tr>
+</table>
+<hr size="1"/>
+<h3>Summary</h3>
+<table class="log" border="0" cellpadding="5" cellspacing="2" width="100%">
+<tr>
+<th style="width:25%">Files</th>
+<th>Total</th>
+<th>
+<div class="p1">Priority 1</div>
+</th>
+<th>
+<div class="p2">Priority 2</div>
+</th>
+<th>
+<div class="p3">Priority 3</div>
+</th>
+<th>
+<div class="p4">Priority 4</div>
+</th>
+<th>
+<div class="p5">Priority 5</div>
+</th>
+</tr>
+<tr class="a">
+<td>60</td>
+<td>121</td>
+<td>1</td>
+<td>0</td>
+<td>120</td>
+<td>0</td>
+<td>0</td>
+</tr>
+</table>
+<hr size="1" width="100%" align="left"/>
+<h3>Rules</h3>
+<table class="log" border="0" cellpadding="5" cellspacing="2" width="100%">
+<tr>
+<th style="width:84%">Rule</th>
+<th style="width:8%">Violations</th>
+<th style="width:8%">Severity</th>
+</tr>
+<tr class="a">
+<td>
+					[Basic Rules] EmptyCatchBlock</td>
+<td>86</td>
+<td>
+<div class="p3"> 3</div>
+</td>
+</tr>
+<tr class="b">
+<td>
+					[Basic Rules] CollapsibleIfStatements</td>
+<td>13</td>
+<td>
+<div class="p3"> 3</div>
+</td>
+</tr>
+<tr class="a">
+<td>
+					[Basic Rules] AvoidThreadGroup</td>
+<td>10</td>
+<td>
+<div class="p3"> 3</div>
+</td>
+</tr>
+<tr class="b">
+<td>
+					[Basic Rules] EmptyWhileStmt</td>
+<td>8</td>
+<td>
+<div class="p3"> 3</div>
+</td>
+</tr>
+<tr class="a">
+<td>
+					[Basic Rules] EmptyIfStmt</td>
+<td>2</td>
+<td>
+<div class="p3"> 3</div>
+</td>
+</tr>
+<tr class="b">
+<td>
+					[Basic Rules] DoubleCheckedLocking</td>
+<td>1</td>
+<td>
+<div class="p1"> 1</div>
+</td>
+</tr>
+<tr class="a">
+<td>
+					[Basic Rules] UselessOverridingMethod</td>
+<td>1</td>
+<td>
+<div class="p3"> 3</div>
+</td>
+</tr>
+</table>
+<hr size="1" width="100%" align="left"/>
+<h3>Files</h3>
+<table class="log" border="0" cellpadding="5" cellspacing="2" width="100%">
+<tr>
+<th>File</th>
+<th style="width:40px">
+<div class="p5">5</div>
+</th>
+<th style="width:40px">
+<div class="p4">4</div>
+</th>
+<th style="width:40px">
+<div class="p3">3</div>
+</th>
+<th style="width:40px">
+<div class="p2">2</div>
+</th>
+<th style="width:40px">
+<div class="p1">1</div>
+</th>
+</tr>
+<tr class="a">
+<td>
+<a href="#f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_iso_ISOMsg.java">/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/ISOMsg.java</a>
+</td>
+<td>0</td>
+<td>0</td>
+<td>9</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="b">
+<td>
+<a href="#f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_q2_QFactory.java">/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/q2/QFactory.java</a>
+</td>
+<td>0</td>
+<td>0</td>
+<td>7</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="a">
+<td>
+<a href="#f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_util_FSDMsg.java">/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/util/FSDMsg.java</a>
+</td>
+<td>0</td>
+<td>0</td>
+<td>6</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="b">
+<td>
+<a href="#f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_q2_Q2.java">/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/q2/Q2.java</a>
+</td>
+<td>0</td>
+<td>0</td>
+<td>5</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="a">
+<td>
+<a href="#f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_q2_iso_ChannelAdaptor.java">/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/q2/iso/ChannelAdaptor.java</a>
+</td>
+<td>0</td>
+<td>0</td>
+<td>5</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="b">
+<td>
+<a href="#f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_iso_ISOServer.java">/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/ISOServer.java</a>
+</td>
+<td>0</td>
+<td>0</td>
+<td>4</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="a">
+<td>
+<a href="#f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_security_jceadapter_JCESecurityModule.java">/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/security/jceadapter/JCESecurityModule.java</a>
+</td>
+<td>0</td>
+<td>0</td>
+<td>4</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="b">
+<td>
+<a href="#f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_space_JDBMSpace.java">/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/space/JDBMSpace.java</a>
+</td>
+<td>0</td>
+<td>0</td>
+<td>4</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="a">
+<td>
+<a href="#f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_util_FSDProtectedLogListener.java">/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/util/FSDProtectedLogListener.java</a>
+</td>
+<td>0</td>
+<td>0</td>
+<td>4</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="b">
+<td>
+<a href="#f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_iso_ISOUtil.java">/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/ISOUtil.java</a>
+</td>
+<td>0</td>
+<td>0</td>
+<td>3</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="a">
+<td>
+<a href="#f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_iso_packager_XMLPackager.java">/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/packager/XMLPackager.java</a>
+</td>
+<td>0</td>
+<td>0</td>
+<td>3</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="b">
+<td>
+<a href="#f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_space_JESpace.java">/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/space/JESpace.java</a>
+</td>
+<td>0</td>
+<td>0</td>
+<td>3</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="a">
+<td>
+<a href="#f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_core_CardHolder.java">/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/core/CardHolder.java</a>
+</td>
+<td>0</td>
+<td>0</td>
+<td>2</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="b">
+<td>
+<a href="#f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_iso_AsciiInterpreter.java">/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/AsciiInterpreter.java</a>
+</td>
+<td>0</td>
+<td>0</td>
+<td>2</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="a">
+<td>
+<a href="#f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_iso_ISOBinaryFieldPackager.java">/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/ISOBinaryFieldPackager.java</a>
+</td>
+<td>0</td>
+<td>0</td>
+<td>2</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="b">
+<td>
+<a href="#f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_iso_ISOCurrency.java">/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/ISOCurrency.java</a>
+</td>
+<td>0</td>
+<td>0</td>
+<td>2</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="a">
+<td>
+<a href="#f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_iso_ISODate.java">/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/ISODate.java</a>
+</td>
+<td>0</td>
+<td>0</td>
+<td>2</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="b">
+<td>
+<a href="#f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_iso_LiteralInterpreter.java">/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/LiteralInterpreter.java</a>
+</td>
+<td>0</td>
+<td>0</td>
+<td>2</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="a">
+<td>
+<a href="#f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_iso_SunJSSESocketFactory.java">/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/SunJSSESocketFactory.java</a>
+</td>
+<td>0</td>
+<td>0</td>
+<td>2</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="b">
+<td>
+<a href="#f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_iso_gui_ISOChannelPanel.java">/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/gui/ISOChannelPanel.java</a>
+</td>
+<td>0</td>
+<td>0</td>
+<td>2</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="a">
+<td>
+<a href="#f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_iso_packager_XML2003Packager.java">/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/packager/XML2003Packager.java</a>
+</td>
+<td>0</td>
+<td>0</td>
+<td>2</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="b">
+<td>
+<a href="#f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_iso_validator_TEST0100.java">/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/validator/TEST0100.java</a>
+</td>
+<td>0</td>
+<td>0</td>
+<td>2</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="a">
+<td>
+<a href="#f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_q2_install_Install.java">/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/q2/install/Install.java</a>
+</td>
+<td>0</td>
+<td>0</td>
+<td>2</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="b">
+<td>
+<a href="#f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_security_SecureDESKey.java">/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/security/SecureDESKey.java</a>
+</td>
+<td>0</td>
+<td>0</td>
+<td>2</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="a">
+<td>
+<a href="#f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_space_SpaceProxy.java">/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/space/SpaceProxy.java</a>
+</td>
+<td>0</td>
+<td>0</td>
+<td>2</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="b">
+<td>
+<a href="#f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_util_FilterLogListener.java">/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/util/FilterLogListener.java</a>
+</td>
+<td>0</td>
+<td>0</td>
+<td>2</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="a">
+<td>
+<a href="#f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_util_ProtectedLogListener.java">/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/util/ProtectedLogListener.java</a>
+</td>
+<td>0</td>
+<td>0</td>
+<td>2</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="b">
+<td>
+<a href="#f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_util_ThreadPool.java">/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/util/ThreadPool.java</a>
+</td>
+<td>0</td>
+<td>0</td>
+<td>2</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="a">
+<td>
+<a href="#f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_bsh_BSHLogListener.java">/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/bsh/BSHLogListener.java</a>
+</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="b">
+<td>
+<a href="#f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_iso_BaseChannel.java">/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/BaseChannel.java</a>
+</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="a">
+<td>
+<a href="#f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_iso_FSDISOMsg.java">/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/FSDISOMsg.java</a>
+</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="b">
+<td>
+<a href="#f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_iso_GenericSSLSocketFactory.java">/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/GenericSSLSocketFactory.java</a>
+</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="a">
+<td>
+<a href="#f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_iso_ISOAmountFieldPackager.java">/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/ISOAmountFieldPackager.java</a>
+</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="b">
+<td>
+<a href="#f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_iso_ISOField.java">/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/ISOField.java</a>
+</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="a">
+<td>
+<a href="#f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_iso_ISOFilledStringFieldPackager.java">/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/ISOFilledStringFieldPackager.java</a>
+</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="b">
+<td>
+<a href="#f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_iso_ISOStringFieldPackager.java">/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/ISOStringFieldPackager.java</a>
+</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="a">
+<td>
+<a href="#f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_iso_ISOTagBinaryFieldPackager.java">/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/ISOTagBinaryFieldPackager.java</a>
+</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="b">
+<td>
+<a href="#f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_iso_ISOTagStringFieldPackager.java">/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/ISOTagStringFieldPackager.java</a>
+</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="a">
+<td>
+<a href="#f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_iso_TaggedFieldPackagerBase.java">/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/TaggedFieldPackagerBase.java</a>
+</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr class="b">
+<td>
+<a href="#f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_iso_channel_ASCIIChannel.java">/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/channel/ASCIIChannel.java</a>
+</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="a">
+<td>
+<a href="#f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_iso_channel_BASE24Channel.java">/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/channel/BASE24Channel.java</a>
+</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="b">
+<td>
+<a href="#f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_iso_channel_PADChannel.java">/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/channel/PADChannel.java</a>
+</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="a">
+<td>
+<a href="#f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_iso_channel_XMLChannel.java">/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/channel/XMLChannel.java</a>
+</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="b">
+<td>
+<a href="#f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_iso_packager_GenericSubFieldPackager.java">/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/packager/GenericSubFieldPackager.java</a>
+</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="a">
+<td>
+<a href="#f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_iso_packager_LogPackager.java">/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/packager/LogPackager.java</a>
+</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="b">
+<td>
+<a href="#f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_q2_CLICommandInterface.java">/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/q2/CLICommandInterface.java</a>
+</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="a">
+<td>
+<a href="#f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_q2_cli_TAIL.java">/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/q2/cli/TAIL.java</a>
+</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="b">
+<td>
+<a href="#f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_q2_cli_TMMON.java">/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/q2/cli/TMMON.java</a>
+</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="a">
+<td>
+<a href="#f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_q2_iso_MultiSessionChannelAdaptor.java">/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/q2/iso/MultiSessionChannelAdaptor.java</a>
+</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="b">
+<td>
+<a href="#f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_q2_iso_OneShotChannelAdaptorMK2.java">/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/q2/iso/OneShotChannelAdaptorMK2.java</a>
+</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="a">
+<td>
+<a href="#f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_q2_iso_QMUXProxy.java">/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/q2/iso/QMUXProxy.java</a>
+</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="b">
+<td>
+<a href="#f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_q2_qbean_QThreadPoolExecutor.java">/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/q2/qbean/QThreadPoolExecutor.java</a>
+</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="a">
+<td>
+<a href="#f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_q2_qbean_SystemMonitor.java">/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/q2/qbean/SystemMonitor.java</a>
+</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="b">
+<td>
+<a href="#f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_security_EncryptedPIN.java">/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/security/EncryptedPIN.java</a>
+</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="a">
+<td>
+<a href="#f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_security_jceadapter_JCEHandler.java">/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/security/jceadapter/JCEHandler.java</a>
+</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="b">
+<td>
+<a href="#f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_space_SpaceUtil.java">/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/space/SpaceUtil.java</a>
+</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="a">
+<td>
+<a href="#f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_ui_UI.java">/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/ui/UI.java</a>
+</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="b">
+<td>
+<a href="#f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_ui_action_Exit.java">/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/ui/action/Exit.java</a>
+</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="a">
+<td>
+<a href="#f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_util_RotateLogListener.java">/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/util/RotateLogListener.java</a>
+</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="b">
+<td>
+<a href="#f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_util_SystemMonitor.java">/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/util/SystemMonitor.java</a>
+</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+</table>
+<hr size="1" width="100%" align="left"/>
+<a name="f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_bsh_BSHLogListener.java"/>
+<h3>File /home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/bsh/BSHLogListener.java</h3>
+<table class="log" border="0" cellpadding="5" cellspacing="2" width="100%">
+<tr>
+<th style="width:60px;">Violation</th>
+<th>Error Description</th>
+<th style="width:40px;">Line</th>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.AvoidThreadGroup]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#AvoidThreadGroup">
+Avoid using java.lang.ThreadGroup; it is not thread safe
+</a>
+</td>
+<td>143 - 143</td>
+</tr>
+</table>
+<a href="#top">Back to top</a>
+<a name="f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_core_CardHolder.java"/>
+<h3>File /home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/core/CardHolder.java</h3>
+<table class="log" border="0" cellpadding="5" cellspacing="2" width="100%">
+<tr>
+<th style="width:60px;">Violation</th>
+<th>Error Description</th>
+<th style="width:40px;">Line</th>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.AvoidThreadGroup]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#AvoidThreadGroup">
+Avoid using java.lang.ThreadGroup; it is not thread safe
+</a>
+</td>
+<td>294 - 294</td>
+</tr>
+<tr class="b">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>303 - 303</td>
+</tr>
+</table>
+<a href="#top">Back to top</a>
+<a name="f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_iso_AsciiInterpreter.java"/>
+<h3>File /home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/AsciiInterpreter.java</h3>
+<table class="log" border="0" cellpadding="5" cellspacing="2" width="100%">
+<tr>
+<th style="width:60px;">Violation</th>
+<th>Error Description</th>
+<th style="width:40px;">Line</th>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>45 - 47</td>
+</tr>
+<tr class="b">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>60 - 62</td>
+</tr>
+</table>
+<a href="#top">Back to top</a>
+<a name="f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_iso_BaseChannel.java"/>
+<h3>File /home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/BaseChannel.java</h3>
+<table class="log" border="0" cellpadding="5" cellspacing="2" width="100%">
+<tr>
+<th style="width:60px;">Violation</th>
+<th>Error Description</th>
+<th style="width:40px;">Line</th>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>1056 - 1059</td>
+</tr>
+</table>
+<a href="#top">Back to top</a>
+<a name="f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_iso_FSDISOMsg.java"/>
+<h3>File /home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/FSDISOMsg.java</h3>
+<table class="log" border="0" cellpadding="5" cellspacing="2" width="100%">
+<tr>
+<th style="width:60px;">Violation</th>
+<th>Error Description</th>
+<th style="width:40px;">Line</th>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>131 - 131</td>
+</tr>
+</table>
+<a href="#top">Back to top</a>
+<a name="f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_iso_GenericSSLSocketFactory.java"/>
+<h3>File /home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/GenericSSLSocketFactory.java</h3>
+<table class="log" border="0" cellpadding="5" cellspacing="2" width="100%">
+<tr>
+<th style="width:60px;">Violation</th>
+<th>Error Description</th>
+<th style="width:40px;">Line</th>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.AvoidThreadGroup]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#AvoidThreadGroup">
+Avoid using java.lang.ThreadGroup; it is not thread safe
+</a>
+</td>
+<td>102 - 102</td>
+</tr>
+</table>
+<a href="#top">Back to top</a>
+<a name="f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_iso_ISOAmountFieldPackager.java"/>
+<h3>File /home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/ISOAmountFieldPackager.java</h3>
+<table class="log" border="0" cellpadding="5" cellspacing="2" width="100%">
+<tr>
+<th style="width:60px;">Violation</th>
+<th>Error Description</th>
+<th style="width:40px;">Line</th>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>123 - 125</td>
+</tr>
+</table>
+<a href="#top">Back to top</a>
+<a name="f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_iso_ISOBinaryFieldPackager.java"/>
+<h3>File /home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/ISOBinaryFieldPackager.java</h3>
+<table class="log" border="0" cellpadding="5" cellspacing="2" width="100%">
+<tr>
+<th style="width:60px;">Violation</th>
+<th>Error Description</th>
+<th style="width:40px;">Line</th>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.CollapsibleIfStatements]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#CollapsibleIfStatements">
+These nested if statements could be combined
+</a>
+</td>
+<td>109 - 112</td>
+</tr>
+<tr class="b">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>193 - 195</td>
+</tr>
+</table>
+<a href="#top">Back to top</a>
+<a name="f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_iso_ISOCurrency.java"/>
+<h3>File /home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/ISOCurrency.java</h3>
+<table class="log" border="0" cellpadding="5" cellspacing="2" width="100%">
+<tr>
+<th style="width:60px;">Violation</th>
+<th>Error Description</th>
+<th style="width:40px;">Line</th>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>61 - 63</td>
+</tr>
+<tr class="b">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>72 - 74</td>
+</tr>
+</table>
+<a href="#top">Back to top</a>
+<a name="f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_iso_ISODate.java"/>
+<h3>File /home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/ISODate.java</h3>
+<table class="log" border="0" cellpadding="5" cellspacing="2" width="100%">
+<tr>
+<th style="width:60px;">Violation</th>
+<th>Error Description</th>
+<th style="width:40px;">Line</th>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>86 - 87</td>
+</tr>
+<tr class="b">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>116 - 116</td>
+</tr>
+</table>
+<a href="#top">Back to top</a>
+<a name="f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_iso_ISOField.java"/>
+<h3>File /home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/ISOField.java</h3>
+<table class="log" border="0" cellpadding="5" cellspacing="2" width="100%">
+<tr>
+<th style="width:60px;">Violation</th>
+<th>Error Description</th>
+<th style="width:40px;">Line</th>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>112 - 112</td>
+</tr>
+</table>
+<a href="#top">Back to top</a>
+<a name="f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_iso_ISOFilledStringFieldPackager.java"/>
+<h3>File /home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/ISOFilledStringFieldPackager.java</h3>
+<table class="log" border="0" cellpadding="5" cellspacing="2" width="100%">
+<tr>
+<th style="width:60px;">Violation</th>
+<th>Error Description</th>
+<th style="width:40px;">Line</th>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>123 - 125</td>
+</tr>
+</table>
+<a href="#top">Back to top</a>
+<a name="f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_iso_ISOMsg.java"/>
+<h3>File /home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/ISOMsg.java</h3>
+<table class="log" border="0" cellpadding="5" cellspacing="2" width="100%">
+<tr>
+<th style="width:60px;">Violation</th>
+<th>Error Description</th>
+<th style="width:40px;">Line</th>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>89 - 91</td>
+</tr>
+<tr class="b">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>556 - 558</td>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>575 - 577</td>
+</tr>
+<tr class="b">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>594 - 595</td>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>595 - 595</td>
+</tr>
+<tr class="b">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>612 - 613</td>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>613 - 613</td>
+</tr>
+<tr class="b">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>708 - 710</td>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>731 - 733</td>
+</tr>
+</table>
+<a href="#top">Back to top</a>
+<a name="f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_iso_ISOServer.java"/>
+<h3>File /home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/ISOServer.java</h3>
+<table class="log" border="0" cellpadding="5" cellspacing="2" width="100%">
+<tr>
+<th style="width:60px;">Violation</th>
+<th>Error Description</th>
+<th style="width:40px;">Line</th>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>177 - 180</td>
+</tr>
+<tr class="b">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>180 - 184</td>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>184 - 187</td>
+</tr>
+<tr class="b">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.CollapsibleIfStatements]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#CollapsibleIfStatements">
+These nested if statements could be combined
+</a>
+</td>
+<td>638 - 650</td>
+</tr>
+</table>
+<a href="#top">Back to top</a>
+<a name="f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_iso_ISOStringFieldPackager.java"/>
+<h3>File /home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/ISOStringFieldPackager.java</h3>
+<table class="log" border="0" cellpadding="5" cellspacing="2" width="100%">
+<tr>
+<th style="width:60px;">Violation</th>
+<th>Error Description</th>
+<th style="width:40px;">Line</th>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>123 - 125</td>
+</tr>
+</table>
+<a href="#top">Back to top</a>
+<a name="f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_iso_ISOTagBinaryFieldPackager.java"/>
+<h3>File /home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/ISOTagBinaryFieldPackager.java</h3>
+<table class="log" border="0" cellpadding="5" cellspacing="2" width="100%">
+<tr>
+<th style="width:60px;">Violation</th>
+<th>Error Description</th>
+<th style="width:40px;">Line</th>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>135 - 135</td>
+</tr>
+</table>
+<a href="#top">Back to top</a>
+<a name="f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_iso_ISOTagStringFieldPackager.java"/>
+<h3>File /home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/ISOTagStringFieldPackager.java</h3>
+<table class="log" border="0" cellpadding="5" cellspacing="2" width="100%">
+<tr>
+<th style="width:60px;">Violation</th>
+<th>Error Description</th>
+<th style="width:40px;">Line</th>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>131 - 131</td>
+</tr>
+</table>
+<a href="#top">Back to top</a>
+<a name="f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_iso_ISOUtil.java"/>
+<h3>File /home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/ISOUtil.java</h3>
+<table class="log" border="0" cellpadding="5" cellspacing="2" width="100%">
+<tr>
+<th style="width:60px;">Violation</th>
+<th>Error Description</th>
+<th style="width:40px;">Line</th>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>322 - 322</td>
+</tr>
+<tr class="b">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>773 - 775</td>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>896 - 898</td>
+</tr>
+</table>
+<a href="#top">Back to top</a>
+<a name="f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_iso_LiteralInterpreter.java"/>
+<h3>File /home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/LiteralInterpreter.java</h3>
+<table class="log" border="0" cellpadding="5" cellspacing="2" width="100%">
+<tr>
+<th style="width:60px;">Violation</th>
+<th>Error Description</th>
+<th style="width:40px;">Line</th>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>45 - 45</td>
+</tr>
+<tr class="b">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>56 - 56</td>
+</tr>
+</table>
+<a href="#top">Back to top</a>
+<a name="f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_iso_SunJSSESocketFactory.java"/>
+<h3>File /home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/SunJSSESocketFactory.java</h3>
+<table class="log" border="0" cellpadding="5" cellspacing="2" width="100%">
+<tr>
+<th style="width:60px;">Violation</th>
+<th>Error Description</th>
+<th style="width:40px;">Line</th>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.AvoidThreadGroup]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#AvoidThreadGroup">
+Avoid using java.lang.ThreadGroup; it is not thread safe
+</a>
+</td>
+<td>94 - 94</td>
+</tr>
+<tr class="b">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.AvoidThreadGroup]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#AvoidThreadGroup">
+Avoid using java.lang.ThreadGroup; it is not thread safe
+</a>
+</td>
+<td>108 - 108</td>
+</tr>
+</table>
+<a href="#top">Back to top</a>
+<a name="f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_iso_TaggedFieldPackagerBase.java"/>
+<h3>File /home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/TaggedFieldPackagerBase.java</h3>
+<table class="log" border="0" cellpadding="5" cellspacing="2" width="100%">
+<tr>
+<th style="width:60px;">Violation</th>
+<th>Error Description</th>
+<th style="width:40px;">Line</th>
+</tr>
+<tr class="a">
+<td>
+<div class="p1">1</div>
+</td>
+<td>
+						[Basic Rules.DoubleCheckedLocking]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#DoubleCheckedLocking">
+Double checked locking is not thread safe in Java.
+</a>
+</td>
+<td>160 - 169</td>
+</tr>
+</table>
+<a href="#top">Back to top</a>
+<a name="f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_iso_channel_ASCIIChannel.java"/>
+<h3>File /home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/channel/ASCIIChannel.java</h3>
+<table class="log" border="0" cellpadding="5" cellspacing="2" width="100%">
+<tr>
+<th style="width:60px;">Violation</th>
+<th>Error Description</th>
+<th style="width:40px;">Line</th>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>86 - 86</td>
+</tr>
+</table>
+<a href="#top">Back to top</a>
+<a name="f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_iso_channel_BASE24Channel.java"/>
+<h3>File /home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/channel/BASE24Channel.java</h3>
+<table class="log" border="0" cellpadding="5" cellspacing="2" width="100%">
+<tr>
+<th style="width:60px;">Violation</th>
+<th>Error Description</th>
+<th style="width:40px;">Line</th>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>100 - 100</td>
+</tr>
+</table>
+<a href="#top">Back to top</a>
+<a name="f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_iso_channel_PADChannel.java"/>
+<h3>File /home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/channel/PADChannel.java</h3>
+<table class="log" border="0" cellpadding="5" cellspacing="2" width="100%">
+<tr>
+<th style="width:60px;">Violation</th>
+<th>Error Description</th>
+<th style="width:40px;">Line</th>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.UselessOverridingMethod]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#UselessOverridingMethod">
+Overriding method merely calls super
+</a>
+</td>
+<td>132 - 134</td>
+</tr>
+</table>
+<a href="#top">Back to top</a>
+<a name="f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_iso_channel_XMLChannel.java"/>
+<h3>File /home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/channel/XMLChannel.java</h3>
+<table class="log" border="0" cellpadding="5" cellspacing="2" width="100%">
+<tr>
+<th style="width:60px;">Violation</th>
+<th>Error Description</th>
+<th style="width:40px;">Line</th>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.CollapsibleIfStatements]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#CollapsibleIfStatements">
+These nested if statements could be combined
+</a>
+</td>
+<td>96 - 97</td>
+</tr>
+</table>
+<a href="#top">Back to top</a>
+<a name="f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_iso_gui_ISOChannelPanel.java"/>
+<h3>File /home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/gui/ISOChannelPanel.java</h3>
+<table class="log" border="0" cellpadding="5" cellspacing="2" width="100%">
+<tr>
+<th style="width:60px;">Violation</th>
+<th>Error Description</th>
+<th style="width:40px;">Line</th>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>123 - 123</td>
+</tr>
+<tr class="b">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>135 - 135</td>
+</tr>
+</table>
+<a href="#top">Back to top</a>
+<a name="f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_iso_packager_GenericSubFieldPackager.java"/>
+<h3>File /home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/packager/GenericSubFieldPackager.java</h3>
+<table class="log" border="0" cellpadding="5" cellspacing="2" width="100%">
+<tr>
+<th style="width:60px;">Violation</th>
+<th>Error Description</th>
+<th style="width:40px;">Line</th>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.CollapsibleIfStatements]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#CollapsibleIfStatements">
+These nested if statements could be combined
+</a>
+</td>
+<td>78 - 82</td>
+</tr>
+</table>
+<a href="#top">Back to top</a>
+<a name="f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_iso_packager_LogPackager.java"/>
+<h3>File /home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/packager/LogPackager.java</h3>
+<table class="log" border="0" cellpadding="5" cellspacing="2" width="100%">
+<tr>
+<th style="width:60px;">Violation</th>
+<th>Error Description</th>
+<th style="width:40px;">Line</th>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>181 - 181</td>
+</tr>
+</table>
+<a href="#top">Back to top</a>
+<a name="f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_iso_packager_XML2003Packager.java"/>
+<h3>File /home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/packager/XML2003Packager.java</h3>
+<table class="log" border="0" cellpadding="5" cellspacing="2" width="100%">
+<tr>
+<th style="width:60px;">Violation</th>
+<th>Error Description</th>
+<th style="width:40px;">Line</th>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>71 - 73</td>
+</tr>
+<tr class="b">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>188 - 188</td>
+</tr>
+</table>
+<a href="#top">Back to top</a>
+<a name="f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_iso_packager_XMLPackager.java"/>
+<h3>File /home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/packager/XMLPackager.java</h3>
+<table class="log" border="0" cellpadding="5" cellspacing="2" width="100%">
+<tr>
+<th style="width:60px;">Violation</th>
+<th>Error Description</th>
+<th style="width:40px;">Line</th>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>69 - 71</td>
+</tr>
+<tr class="b">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>186 - 186</td>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>242 - 244</td>
+</tr>
+</table>
+<a href="#top">Back to top</a>
+<a name="f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_iso_validator_TEST0100.java"/>
+<h3>File /home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/validator/TEST0100.java</h3>
+<table class="log" border="0" cellpadding="5" cellspacing="2" width="100%">
+<tr>
+<th style="width:60px;">Violation</th>
+<th>Error Description</th>
+<th style="width:40px;">Line</th>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.AvoidThreadGroup]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#AvoidThreadGroup">
+Avoid using java.lang.ThreadGroup; it is not thread safe
+</a>
+</td>
+<td>48 - 48</td>
+</tr>
+<tr class="b">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.AvoidThreadGroup]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#AvoidThreadGroup">
+Avoid using java.lang.ThreadGroup; it is not thread safe
+</a>
+</td>
+<td>89 - 89</td>
+</tr>
+</table>
+<a href="#top">Back to top</a>
+<a name="f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_q2_CLICommandInterface.java"/>
+<h3>File /home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/q2/CLICommandInterface.java</h3>
+<table class="log" border="0" cellpadding="5" cellspacing="2" width="100%">
+<tr>
+<th style="width:60px;">Violation</th>
+<th>Error Description</th>
+<th style="width:40px;">Line</th>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>95 - 97</td>
+</tr>
+</table>
+<a href="#top">Back to top</a>
+<a name="f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_q2_Q2.java"/>
+<h3>File /home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/q2/Q2.java</h3>
+<table class="log" border="0" cellpadding="5" cellspacing="2" width="100%">
+<tr>
+<th style="width:60px;">Violation</th>
+<th>Error Description</th>
+<th style="width:40px;">Line</th>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.AvoidThreadGroup]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#AvoidThreadGroup">
+Avoid using java.lang.ThreadGroup; it is not thread safe
+</a>
+</td>
+<td>143 - 143</td>
+</tr>
+<tr class="b">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>336 - 341</td>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>379 - 381</td>
+</tr>
+<tr class="b">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>807 - 809</td>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>826 - 828</td>
+</tr>
+</table>
+<a href="#top">Back to top</a>
+<a name="f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_q2_QFactory.java"/>
+<h3>File /home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/q2/QFactory.java</h3>
+<table class="log" border="0" cellpadding="5" cellspacing="2" width="100%">
+<tr>
+<th style="width:60px;">Violation</th>
+<th>Error Description</th>
+<th style="width:40px;">Line</th>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>54 - 54</td>
+</tr>
+<tr class="b">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>66 - 69</td>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>161 - 163</td>
+</tr>
+<tr class="b">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>163 - 165</td>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>418 - 419</td>
+</tr>
+<tr class="b">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>419 - 420</td>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>420 - 421</td>
+</tr>
+</table>
+<a href="#top">Back to top</a>
+<a name="f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_q2_cli_TAIL.java"/>
+<h3>File /home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/q2/cli/TAIL.java</h3>
+<table class="log" border="0" cellpadding="5" cellspacing="2" width="100%">
+<tr>
+<th style="width:60px;">Violation</th>
+<th>Error Description</th>
+<th style="width:40px;">Line</th>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>70 - 70</td>
+</tr>
+</table>
+<a href="#top">Back to top</a>
+<a name="f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_q2_cli_TMMON.java"/>
+<h3>File /home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/q2/cli/TMMON.java</h3>
+<table class="log" border="0" cellpadding="5" cellspacing="2" width="100%">
+<tr>
+<th style="width:60px;">Violation</th>
+<th>Error Description</th>
+<th style="width:40px;">Line</th>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>80 - 80</td>
+</tr>
+</table>
+<a href="#top">Back to top</a>
+<a name="f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_q2_install_Install.java"/>
+<h3>File /home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/q2/install/Install.java</h3>
+<table class="log" border="0" cellpadding="5" cellspacing="2" width="100%">
+<tr>
+<th style="width:60px;">Violation</th>
+<th>Error Description</th>
+<th style="width:40px;">Line</th>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>119 - 119</td>
+</tr>
+<tr class="b">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>124 - 124</td>
+</tr>
+</table>
+<a href="#top">Back to top</a>
+<a name="f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_q2_iso_ChannelAdaptor.java"/>
+<h3>File /home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/q2/iso/ChannelAdaptor.java</h3>
+<table class="log" border="0" cellpadding="5" cellspacing="2" width="100%">
+<tr>
+<th style="width:60px;">Violation</th>
+<th>Error Description</th>
+<th style="width:40px;">Line</th>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyWhileStmt]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyWhileStmt">
+Avoid empty while statements
+</a>
+</td>
+<td>106 - 106</td>
+</tr>
+<tr class="b">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.CollapsibleIfStatements]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#CollapsibleIfStatements">
+These nested if statements could be combined
+</a>
+</td>
+<td>288 - 290</td>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyWhileStmt]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyWhileStmt">
+Avoid empty while statements
+</a>
+</td>
+<td>364 - 364</td>
+</tr>
+<tr class="b">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyWhileStmt]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyWhileStmt">
+Avoid empty while statements
+</a>
+</td>
+<td>383 - 383</td>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>409 - 409</td>
+</tr>
+</table>
+<a href="#top">Back to top</a>
+<a name="f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_q2_iso_MultiSessionChannelAdaptor.java"/>
+<h3>File /home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/q2/iso/MultiSessionChannelAdaptor.java</h3>
+<table class="log" border="0" cellpadding="5" cellspacing="2" width="100%">
+<tr>
+<th style="width:60px;">Violation</th>
+<th>Error Description</th>
+<th style="width:40px;">Line</th>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.CollapsibleIfStatements]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#CollapsibleIfStatements">
+These nested if statements could be combined
+</a>
+</td>
+<td>96 - 99</td>
+</tr>
+</table>
+<a href="#top">Back to top</a>
+<a name="f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_q2_iso_OneShotChannelAdaptorMK2.java"/>
+<h3>File /home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/q2/iso/OneShotChannelAdaptorMK2.java</h3>
+<table class="log" border="0" cellpadding="5" cellspacing="2" width="100%">
+<tr>
+<th style="width:60px;">Violation</th>
+<th>Error Description</th>
+<th style="width:40px;">Line</th>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>275 - 277</td>
+</tr>
+</table>
+<a href="#top">Back to top</a>
+<a name="f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_q2_iso_QMUXProxy.java"/>
+<h3>File /home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/q2/iso/QMUXProxy.java</h3>
+<table class="log" border="0" cellpadding="5" cellspacing="2" width="100%">
+<tr>
+<th style="width:60px;">Violation</th>
+<th>Error Description</th>
+<th style="width:40px;">Line</th>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>54 - 56</td>
+</tr>
+</table>
+<a href="#top">Back to top</a>
+<a name="f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_q2_qbean_QThreadPoolExecutor.java"/>
+<h3>File /home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/q2/qbean/QThreadPoolExecutor.java</h3>
+<table class="log" border="0" cellpadding="5" cellspacing="2" width="100%">
+<tr>
+<th style="width:60px;">Violation</th>
+<th>Error Description</th>
+<th style="width:40px;">Line</th>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>137 - 139</td>
+</tr>
+</table>
+<a href="#top">Back to top</a>
+<a name="f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_q2_qbean_SystemMonitor.java"/>
+<h3>File /home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/q2/qbean/SystemMonitor.java</h3>
+<table class="log" border="0" cellpadding="5" cellspacing="2" width="100%">
+<tr>
+<th style="width:60px;">Violation</th>
+<th>Error Description</th>
+<th style="width:40px;">Line</th>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.AvoidThreadGroup]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#AvoidThreadGroup">
+Avoid using java.lang.ThreadGroup; it is not thread safe
+</a>
+</td>
+<td>191 - 191</td>
+</tr>
+</table>
+<a href="#top">Back to top</a>
+<a name="f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_security_EncryptedPIN.java"/>
+<h3>File /home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/security/EncryptedPIN.java</h3>
+<table class="log" border="0" cellpadding="5" cellspacing="2" width="100%">
+<tr>
+<th style="width:60px;">Violation</th>
+<th>Error Description</th>
+<th style="width:40px;">Line</th>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>210 - 210</td>
+</tr>
+</table>
+<a href="#top">Back to top</a>
+<a name="f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_security_SecureDESKey.java"/>
+<h3>File /home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/security/SecureDESKey.java</h3>
+<table class="log" border="0" cellpadding="5" cellspacing="2" width="100%">
+<tr>
+<th style="width:60px;">Violation</th>
+<th>Error Description</th>
+<th style="width:40px;">Line</th>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>170 - 170</td>
+</tr>
+<tr class="b">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>203 - 203</td>
+</tr>
+</table>
+<a href="#top">Back to top</a>
+<a name="f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_security_jceadapter_JCEHandler.java"/>
+<h3>File /home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/security/jceadapter/JCEHandler.java</h3>
+<table class="log" border="0" cellpadding="5" cellspacing="2" width="100%">
+<tr>
+<th style="width:60px;">Violation</th>
+<th>Error Description</th>
+<th style="width:40px;">Line</th>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.CollapsibleIfStatements]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#CollapsibleIfStatements">
+These nested if statements could be combined
+</a>
+</td>
+<td>192 - 194</td>
+</tr>
+</table>
+<a href="#top">Back to top</a>
+<a name="f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_security_jceadapter_JCESecurityModule.java"/>
+<h3>File /home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/security/jceadapter/JCESecurityModule.java</h3>
+<table class="log" border="0" cellpadding="5" cellspacing="2" width="100%">
+<tr>
+<th style="width:60px;">Violation</th>
+<th>Error Description</th>
+<th style="width:40px;">Line</th>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>124 - 124</td>
+</tr>
+<tr class="b">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>221 - 221</td>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>243 - 243</td>
+</tr>
+<tr class="b">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>548 - 548</td>
+</tr>
+</table>
+<a href="#top">Back to top</a>
+<a name="f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_space_JDBMSpace.java"/>
+<h3>File /home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/space/JDBMSpace.java</h3>
+<table class="log" border="0" cellpadding="5" cellspacing="2" width="100%">
+<tr>
+<th style="width:60px;">Violation</th>
+<th>Error Description</th>
+<th style="width:40px;">Line</th>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyWhileStmt]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyWhileStmt">
+Avoid empty while statements
+</a>
+</td>
+<td>426 - 426</td>
+</tr>
+<tr class="b">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyWhileStmt]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyWhileStmt">
+Avoid empty while statements
+</a>
+</td>
+<td>431 - 431</td>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>495 - 497</td>
+</tr>
+<tr class="b">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.CollapsibleIfStatements]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#CollapsibleIfStatements">
+These nested if statements could be combined
+</a>
+</td>
+<td>592 - 601</td>
+</tr>
+</table>
+<a href="#top">Back to top</a>
+<a name="f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_space_JESpace.java"/>
+<h3>File /home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/space/JESpace.java</h3>
+<table class="log" border="0" cellpadding="5" cellspacing="2" width="100%">
+<tr>
+<th style="width:60px;">Violation</th>
+<th>Error Description</th>
+<th style="width:40px;">Line</th>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyWhileStmt]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyWhileStmt">
+Avoid empty while statements
+</a>
+</td>
+<td>259 - 259</td>
+</tr>
+<tr class="b">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyWhileStmt]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyWhileStmt">
+Avoid empty while statements
+</a>
+</td>
+<td>264 - 264</td>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>427 - 428</td>
+</tr>
+</table>
+<a href="#top">Back to top</a>
+<a name="f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_space_SpaceProxy.java"/>
+<h3>File /home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/space/SpaceProxy.java</h3>
+<table class="log" border="0" cellpadding="5" cellspacing="2" width="100%">
+<tr>
+<th style="width:60px;">Violation</th>
+<th>Error Description</th>
+<th style="width:40px;">Line</th>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>61 - 63</td>
+</tr>
+<tr class="b">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>114 - 116</td>
+</tr>
+</table>
+<a href="#top">Back to top</a>
+<a name="f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_space_SpaceUtil.java"/>
+<h3>File /home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/space/SpaceUtil.java</h3>
+<table class="log" border="0" cellpadding="5" cellspacing="2" width="100%">
+<tr>
+<th style="width:60px;">Violation</th>
+<th>Error Description</th>
+<th style="width:40px;">Line</th>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyWhileStmt]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyWhileStmt">
+Avoid empty while statements
+</a>
+</td>
+<td>60 - 60</td>
+</tr>
+</table>
+<a href="#top">Back to top</a>
+<a name="f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_ui_UI.java"/>
+<h3>File /home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/ui/UI.java</h3>
+<table class="log" border="0" cellpadding="5" cellspacing="2" width="100%">
+<tr>
+<th style="width:60px;">Violation</th>
+<th>Error Description</th>
+<th style="width:40px;">Line</th>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>388 - 391</td>
+</tr>
+</table>
+<a href="#top">Back to top</a>
+<a name="f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_ui_action_Exit.java"/>
+<h3>File /home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/ui/action/Exit.java</h3>
+<table class="log" border="0" cellpadding="5" cellspacing="2" width="100%">
+<tr>
+<th style="width:60px;">Violation</th>
+<th>Error Description</th>
+<th style="width:40px;">Line</th>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>42 - 42</td>
+</tr>
+</table>
+<a href="#top">Back to top</a>
+<a name="f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_util_FSDMsg.java"/>
+<h3>File /home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/util/FSDMsg.java</h3>
+<table class="log" border="0" cellpadding="5" cellspacing="2" width="100%">
+<tr>
+<th style="width:60px;">Violation</th>
+<th>Error Description</th>
+<th style="width:40px;">Line</th>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyIfStmt]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyIfStmt">
+Avoid empty if statements
+</a>
+</td>
+<td>256 - 258</td>
+</tr>
+<tr class="b">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyIfStmt]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyIfStmt">
+Avoid empty if statements
+</a>
+</td>
+<td>263 - 265</td>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>315 - 315</td>
+</tr>
+<tr class="b">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.CollapsibleIfStatements]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#CollapsibleIfStatements">
+These nested if statements could be combined
+</a>
+</td>
+<td>494 - 496</td>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>546 - 546</td>
+</tr>
+<tr class="b">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>553 - 553</td>
+</tr>
+</table>
+<a href="#top">Back to top</a>
+<a name="f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_util_FSDProtectedLogListener.java"/>
+<h3>File /home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/util/FSDProtectedLogListener.java</h3>
+<table class="log" border="0" cellpadding="5" cellspacing="2" width="100%">
+<tr>
+<th style="width:60px;">Violation</th>
+<th>Error Description</th>
+<th style="width:40px;">Line</th>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>128 - 130</td>
+</tr>
+<tr class="b">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.CollapsibleIfStatements]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#CollapsibleIfStatements">
+These nested if statements could be combined
+</a>
+</td>
+<td>132 - 137</td>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>147 - 149</td>
+</tr>
+<tr class="b">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>163 - 165</td>
+</tr>
+</table>
+<a href="#top">Back to top</a>
+<a name="f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_util_FilterLogListener.java"/>
+<h3>File /home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/util/FilterLogListener.java</h3>
+<table class="log" border="0" cellpadding="5" cellspacing="2" width="100%">
+<tr>
+<th style="width:60px;">Violation</th>
+<th>Error Description</th>
+<th style="width:40px;">Line</th>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.CollapsibleIfStatements]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#CollapsibleIfStatements">
+These nested if statements could be combined
+</a>
+</td>
+<td>73 - 74</td>
+</tr>
+<tr class="b">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.CollapsibleIfStatements]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#CollapsibleIfStatements">
+These nested if statements could be combined
+</a>
+</td>
+<td>116 - 126</td>
+</tr>
+</table>
+<a href="#top">Back to top</a>
+<a name="f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_util_ProtectedLogListener.java"/>
+<h3>File /home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/util/ProtectedLogListener.java</h3>
+<table class="log" border="0" cellpadding="5" cellspacing="2" width="100%">
+<tr>
+<th style="width:60px;">Violation</th>
+<th>Error Description</th>
+<th style="width:40px;">Line</th>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>121 - 123</td>
+</tr>
+<tr class="b">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>150 - 152</td>
+</tr>
+</table>
+<a href="#top">Back to top</a>
+<a name="f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_util_RotateLogListener.java"/>
+<h3>File /home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/util/RotateLogListener.java</h3>
+<table class="log" border="0" cellpadding="5" cellspacing="2" width="100%">
+<tr>
+<th style="width:60px;">Violation</th>
+<th>Error Description</th>
+<th style="width:40px;">Line</th>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>188 - 190</td>
+</tr>
+</table>
+<a href="#top">Back to top</a>
+<a name="f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_util_SystemMonitor.java"/>
+<h3>File /home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/util/SystemMonitor.java</h3>
+<table class="log" border="0" cellpadding="5" cellspacing="2" width="100%">
+<tr>
+<th style="width:60px;">Violation</th>
+<th>Error Description</th>
+<th style="width:40px;">Line</th>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.AvoidThreadGroup]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#AvoidThreadGroup">
+Avoid using java.lang.ThreadGroup; it is not thread safe
+</a>
+</td>
+<td>107 - 107</td>
+</tr>
+</table>
+<a href="#top">Back to top</a>
+<a name="f-_home_travis_build_jpos_jPOS_jpos_src_main_java_org_jpos_util_ThreadPool.java"/>
+<h3>File /home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/util/ThreadPool.java</h3>
+<table class="log" border="0" cellpadding="5" cellspacing="2" width="100%">
+<tr>
+<th style="width:60px;">Violation</th>
+<th>Error Description</th>
+<th style="width:40px;">Line</th>
+</tr>
+<tr class="a">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.EmptyCatchBlock]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
+Avoid empty catch blocks
+</a>
+</td>
+<td>90 - 91</td>
+</tr>
+<tr class="b">
+<td>
+<div class="p3">3</div>
+</td>
+<td>
+						[Basic Rules.CollapsibleIfStatements]
+						 -
+						 <a href="http://pmd.sourceforge.net/rules/basic.html#CollapsibleIfStatements">
+These nested if statements could be combined
+</a>
+</td>
+<td>95 - 96</td>
+</tr>
+</table>
+<a href="#top">Back to top</a>
+<hr size="1" width="100%" align="left"/>
+</body>
+</html>
+

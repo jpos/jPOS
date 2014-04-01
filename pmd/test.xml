@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pmd version="4.3" timestamp="2014-04-01T23:33:02.436">
+<file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/bsh/BSHLogListenerTest.java">
+<violation beginline="113" endline="115" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.jpos.bsh" class="BSHLogListenerTest" method="testLoadCodeThrowsNullPointerException" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
+Avoid empty catch blocks
+</violation>
+</file>
+<file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/core/SimpleConfigurationTest.java">
+<violation beginline="60" endline="62" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.jpos.core" class="SimpleConfigurationTest" method="testConstructorThrowsNullPointerException" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
+Avoid empty catch blocks
+</violation>
+<violation beginline="434" endline="436" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.jpos.core" class="SimpleConfigurationTest" method="testLoadThrowsNullPointerException" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
+Avoid empty catch blocks
+</violation>
+</file>
+<file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/iso/IFA_BINARYTest.java">
+<violation beginline="44" endline="47" begincolumn="9" endcolumn="9" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.jpos.iso" class="IFA_BINARYTest" method="testPackWrongLength" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
+Avoid empty catch blocks
+</violation>
+</file>
+<file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/iso/IFB_LLHCHARTest.java">
+<violation beginline="43" endline="45" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.jpos.iso" class="IFB_LLHCHARTest" method="testPackagerTooLong" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
+Avoid empty catch blocks
+</violation>
+<violation beginline="56" endline="58" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.jpos.iso" class="IFB_LLHCHARTest" method="testPackTooMuch" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
+Avoid empty catch blocks
+</violation>
+</file>
+<file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/iso/IFB_LLLHCHARTest.java">
+<violation beginline="43" endline="45" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.jpos.iso" class="IFB_LLLHCHARTest" method="testPackagerTooLong" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
+Avoid empty catch blocks
+</violation>
+<violation beginline="56" endline="58" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.jpos.iso" class="IFB_LLLHCHARTest" method="testPackTooMuch" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
+Avoid empty catch blocks
+</violation>
+</file>
+<file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/iso/IF_UNUSEDTest.java">
+<violation beginline="36" endline="38" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.jpos.iso" class="IF_UNUSEDTest" method="testPack" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
+Avoid empty catch blocks
+</violation>
+<violation beginline="50" endline="52" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.jpos.iso" class="IF_UNUSEDTest" method="testUnpack" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
+Avoid empty catch blocks
+</violation>
+</file>
+<file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/iso/ISOUtilTest.java">
+<violation beginline="4599" endline="4599" begincolumn="32" endcolumn="81" rule="AvoidDecimalLiteralsInBigDecimalConstructor" ruleset="Basic Rules" package="org.jpos.iso" class="ISOUtilTest" method="testParseAmtConvRate" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#AvoidDecimalLiteralsInBigDecimalConstructor" priority="3">
+Avoid creating BigDecimal with a decimal (float/double) literal. Use a String literal
+</violation>
+<violation beginline="4610" endline="4610" begincolumn="32" endcolumn="81" rule="AvoidDecimalLiteralsInBigDecimalConstructor" ruleset="Basic Rules" package="org.jpos.iso" class="ISOUtilTest" method="testParseAmtConvRate2" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#AvoidDecimalLiteralsInBigDecimalConstructor" priority="3">
+Avoid creating BigDecimal with a decimal (float/double) literal. Use a String literal
+</violation>
+</file>
+<file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/iso/LeftPadderTest.java">
+<violation beginline="45" endline="46" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.jpos.iso" class="LeftPadderTest" method="testPadLengthTooShort" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
+Avoid empty catch blocks
+</violation>
+</file>
+<file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/iso/RightPadderTest.java">
+<violation beginline="45" endline="46" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.jpos.iso" class="RightPadderTest" method="testPadLengthTooShort" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
+Avoid empty catch blocks
+</violation>
+</file>
+<file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/iso/header/BASE1HeaderTest.java">
+<violation beginline="98" endline="100" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.jpos.iso.header" class="BASE1HeaderTest" method="testGetDestinationThrowsArrayIndexOutOfBoundsException" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
+Avoid empty catch blocks
+</violation>
+<violation beginline="183" endline="185" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.jpos.iso.header" class="BASE1HeaderTest" method="testGetSourceThrowsArrayIndexOutOfBoundsException" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
+Avoid empty catch blocks
+</violation>
+</file>
+<file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/iso/packager/GenericSubFieldPackagerTest.java">
+<violation beginline="89" endline="92" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.jpos.iso.packager" class="GenericSubFieldPackagerTest" method="testUnpackThrowsISOException" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
+Avoid empty catch blocks
+</violation>
+</file>
+<file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/q2/iso/ChannelAdaptorTest.java">
+<violation beginline="265" endline="267" begincolumn="17" endcolumn="17" rule="CollapsibleIfStatements" ruleset="Basic Rules" package="org.jpos.q2.iso" class="ChannelAdaptorTest" method="findSendAndReceiveThreads" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#CollapsibleIfStatements" priority="3">
+These nested if statements could be combined
+</violation>
+</file>
+<file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/q2/qbean/QThreadPoolExecutorTest.java">
+<violation beginline="104" endline="105" begincolumn="15" endcolumn="13" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.jpos.q2.qbean" class="QThreadPoolExecutorTest" method="tearDown" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
+Avoid empty catch blocks
+</violation>
+<violation beginline="275" endline="276" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.jpos.q2.qbean" class="QThreadPoolExecutorTest" method="testInitService_FixedThreadPool_CorePoolSizeAttributeValueIsNotANumber" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
+Avoid empty catch blocks
+</violation>
+</file>
+<file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/q2/qbean/SpaceLetTest.java">
+<violation beginline="49" endline="51" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.jpos.q2.qbean" class="SpaceLetTest" method="testInitServiceThrowsNullPointerException" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
+Avoid empty catch blocks
+</violation>
+<violation beginline="70" endline="72" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.jpos.q2.qbean" class="SpaceLetTest" method="testInpThrowsSpaceError" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
+Avoid empty catch blocks
+</violation>
+<violation beginline="87" endline="89" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.jpos.q2.qbean" class="SpaceLetTest" method="testInThrowsSpaceError1" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
+Avoid empty catch blocks
+</violation>
+<violation beginline="98" endline="100" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.jpos.q2.qbean" class="SpaceLetTest" method="testOutThrowsSpaceError1" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
+Avoid empty catch blocks
+</violation>
+<violation beginline="109" endline="111" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.jpos.q2.qbean" class="SpaceLetTest" method="testOutThrowsSpaceError3" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
+Avoid empty catch blocks
+</violation>
+<violation beginline="120" endline="122" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.jpos.q2.qbean" class="SpaceLetTest" method="testRdpThrowsSpaceError" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
+Avoid empty catch blocks
+</violation>
+<violation beginline="131" endline="133" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.jpos.q2.qbean" class="SpaceLetTest" method="testRdThrowsSpaceError" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
+Avoid empty catch blocks
+</violation>
+<violation beginline="142" endline="144" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.jpos.q2.qbean" class="SpaceLetTest" method="testRdThrowsSpaceError1" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
+Avoid empty catch blocks
+</violation>
+<violation beginline="153" endline="155" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.jpos.q2.qbean" class="SpaceLetTest" method="testStartServiceThrowsNullPointerException" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
+Avoid empty catch blocks
+</violation>
+</file>
+<file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/security/EncryptedPINTest.java">
+<violation beginline="235" endline="235" begincolumn="11" endcolumn="55" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.jpos.security" class="EncryptedPINTest" method="testSetAccountNumber" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
+Avoid empty catch blocks
+</violation>
+</file>
+<file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/security/jceadapter/JCESecurityModuleTest.java">
+<violation beginline="211" endline="213" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testConstructorThrowsConfigurationException1" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
+Avoid empty catch blocks
+</violation>
+<violation beginline="252" endline="254" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testConstructorThrowsSMException" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
+Avoid empty catch blocks
+</violation>
+<violation beginline="262" endline="264" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testConstructorThrowsSMException2" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
+Avoid empty catch blocks
+</violation>
+<violation beginline="272" endline="274" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testConstructorThrowsSMException3" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
+Avoid empty catch blocks
+</violation>
+<violation beginline="500" endline="502" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testSetConfigurationThrowsConfigurationException" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
+Avoid empty catch blocks
+</violation>
+</file>
+<file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/tlv/TLVListTest.java">
+<violation beginline="373" endline="373" begincolumn="49" endcolumn="49" rule="EmptyStatementNotInLoop" ruleset="Basic Rules" package="org.jpos.tlv" class="TLVListTest" method="testUnpack2" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyStatementNotInLoop" priority="3">
+An empty statement (semicolon) not part of a loop
+</violation>
+<violation beginline="407" endline="407" begincolumn="47" endcolumn="47" rule="EmptyStatementNotInLoop" ruleset="Basic Rules" package="org.jpos.tlv" class="TLVListTest" method="testUnpack6" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyStatementNotInLoop" priority="3">
+An empty statement (semicolon) not part of a loop
+</violation>
+<violation beginline="428" endline="428" begincolumn="47" endcolumn="47" rule="EmptyStatementNotInLoop" ruleset="Basic Rules" package="org.jpos.tlv" class="TLVListTest" method="testUnpack9" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyStatementNotInLoop" priority="3">
+An empty statement (semicolon) not part of a loop
+</violation>
+<violation beginline="473" endline="473" begincolumn="47" endcolumn="47" rule="EmptyStatementNotInLoop" ruleset="Basic Rules" package="org.jpos.tlv" class="TLVListTest" method="testUnpackThrowsBufferUnderflowException3" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyStatementNotInLoop" priority="3">
+An empty statement (semicolon) not part of a loop
+</violation>
+<violation beginline="498" endline="498" begincolumn="49" endcolumn="49" rule="EmptyStatementNotInLoop" ruleset="Basic Rules" package="org.jpos.tlv" class="TLVListTest" method="testUnpackThrowsISOException" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyStatementNotInLoop" priority="3">
+An empty statement (semicolon) not part of a loop
+</violation>
+<violation beginline="512" endline="512" begincolumn="47" endcolumn="47" rule="EmptyStatementNotInLoop" ruleset="Basic Rules" package="org.jpos.tlv" class="TLVListTest" method="testUnpackThrowsISOException1" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyStatementNotInLoop" priority="3">
+An empty statement (semicolon) not part of a loop
+</violation>
+<violation beginline="526" endline="526" begincolumn="49" endcolumn="49" rule="EmptyStatementNotInLoop" ruleset="Basic Rules" package="org.jpos.tlv" class="TLVListTest" method="testUnpackThrowsISOException10" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyStatementNotInLoop" priority="3">
+An empty statement (semicolon) not part of a loop
+</violation>
+<violation beginline="540" endline="540" begincolumn="47" endcolumn="47" rule="EmptyStatementNotInLoop" ruleset="Basic Rules" package="org.jpos.tlv" class="TLVListTest" method="testUnpackThrowsISOException11" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyStatementNotInLoop" priority="3">
+An empty statement (semicolon) not part of a loop
+</violation>
+<violation beginline="582" endline="582" begincolumn="47" endcolumn="47" rule="EmptyStatementNotInLoop" ruleset="Basic Rules" package="org.jpos.tlv" class="TLVListTest" method="testUnpackThrowsISOException14" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyStatementNotInLoop" priority="3">
+An empty statement (semicolon) not part of a loop
+</violation>
+<violation beginline="596" endline="596" begincolumn="45" endcolumn="45" rule="EmptyStatementNotInLoop" ruleset="Basic Rules" package="org.jpos.tlv" class="TLVListTest" method="testUnpackThrowsISOException15" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyStatementNotInLoop" priority="3">
+An empty statement (semicolon) not part of a loop
+</violation>
+</file>
+<file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/transaction/TestRetryParticipant.java">
+<violation beginline="31" endline="35" begincolumn="13" endcolumn="13" rule="CollapsibleIfStatements" ruleset="Basic Rules" package="org.jpos.transaction" class="TestRetryParticipant" method="prepare" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#CollapsibleIfStatements" priority="3">
+These nested if statements could be combined
+</violation>
+</file>
+<file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/util/DailyLogListenerTest.java">
+<violation beginline="137" endline="139" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.jpos.util" class="DailyLogListenerTest" method="testGetCompressedOutputStreamThrowsNullPointerException" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
+Avoid empty catch blocks
+</violation>
+</file>
+<file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/util/FSDMsgTest.java">
+<violation beginline="1160" endline="1160" begincolumn="11" endcolumn="40" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.jpos.util" class="FSDMsgTest" method="testPackToBDStoLong" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
+Avoid empty catch blocks
+</violation>
+</file>
+<file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/util/FSDMsgTestCase.java">
+<violation beginline="179" endline="181" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.jpos.util" class="FSDMsgTestCase" method="testDummySeparatorBinary" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
+Avoid empty catch blocks
+</violation>
+</file>
+<file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/util/RotateLogListenerTest.java">
+<violation beginline="75" endline="77" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.jpos.util" class="RotateLogListenerTest" method="testConstructorThrowsNullPointerException" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
+Avoid empty catch blocks
+</violation>
+<violation beginline="85" endline="87" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.jpos.util" class="RotateLogListenerTest" method="testConstructorThrowsNullPointerException1" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
+Avoid empty catch blocks
+</violation>
+</file>
+</pmd>
