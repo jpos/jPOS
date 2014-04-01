@@ -4,7 +4,6 @@ if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
   ls -l 
   #copy data we're interested in to other place
   cp -R jpos/build/reports/tests $HOME/tests
-  cp jpos/build/reports/pmd/main.html $HOME/tests/pmd.html
 
   #go to home and setup git
   cd $HOME
