@@ -284,10 +284,8 @@ public class ChannelAdaptor
                         channel.send ((ISOMsg) o);
                         tx++;
                     }
-                    else if (keepAlive && channel.isConnected()) {
-                        if (channel instanceof BaseChannel) {
-                            ((BaseChannel)channel).sendKeepAlive();
-                        }
+                    else if (keepAlive && channel.isConnected() && channel instanceof BaseChannel) {
+                        ((BaseChannel)channel).sendKeepAlive();
                     }
                 } catch (ISOFilter.VetoException e) { 
                     getLog().warn ("channel-sender-"+in, e.getMessage ());
