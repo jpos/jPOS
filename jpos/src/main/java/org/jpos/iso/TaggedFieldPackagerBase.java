@@ -157,13 +157,9 @@ public abstract class TaggedFieldPackagerBase extends ISOFieldPackager {
         }
     }
 
-    private ISOFieldPackager getDelegate() {
+    private synchronized ISOFieldPackager getDelegate() {
         if (delegate == null) {
-            synchronized (this) {
-                if (delegate == null) {
-                    delegate = getDelegate(getLength(), getDescription());
-                }
-            }
+            delegate = getDelegate(getLength(), getDescription());
         }
         return delegate;
     }
