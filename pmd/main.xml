@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pmd version="4.3" timestamp="2014-04-01T23:32:43.284">
+<pmd version="4.3" timestamp="2014-04-02T22:37:09.881">
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/bsh/BSHLogListener.java">
 <violation beginline="143" endline="143" begincolumn="42" endcolumn="59" rule="AvoidThreadGroup" ruleset="Basic Rules" package="org.jpos.bsh" class="BSHLogListener" method="log" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#AvoidThreadGroup" priority="3">
 Avoid using java.lang.ThreadGroup; it is not thread safe
@@ -158,11 +158,6 @@ Avoid using java.lang.ThreadGroup; it is not thread safe
 </violation>
 <violation beginline="108" endline="108" begincolumn="36" endcolumn="69" rule="AvoidThreadGroup" ruleset="Basic Rules" package="org.jpos.iso" class="SunJSSESocketFactory" method="getAcceptedIssuers" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#AvoidThreadGroup" priority="3">
 Avoid using java.lang.ThreadGroup; it is not thread safe
-</violation>
-</file>
-<file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/TaggedFieldPackagerBase.java">
-<violation beginline="160" endline="169" begincolumn="13" endcolumn="5" rule="DoubleCheckedLocking" ruleset="Basic Rules" package="org.jpos.iso" class="TaggedFieldPackagerBase" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#DoubleCheckedLocking" priority="1">
-Double checked locking is not thread safe in Java.
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/channel/ASCIIChannel.java">
