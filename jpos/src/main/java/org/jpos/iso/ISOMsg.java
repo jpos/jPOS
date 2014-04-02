@@ -82,12 +82,13 @@ public class ISOMsg extends ISOComponent
      * Creates an ISOMsg with given mti
      * @param mti Msg's MTI
      */
+    @SuppressWarnings("PMD.EmptyCatchBlock")
     public ISOMsg (String mti) {
         this();
         try {
             setMTI (mti);
-        } catch (ISOException e) {
-            // should never happen
+        } catch (ISOException ignored) {
+            // Should never happen as this is not an inner message
         }
     }
     /**
@@ -554,7 +555,7 @@ public class ISOMsg extends ISOComponent
                 else if (obj instanceof byte[])
                     s = ISOUtil.hexString ((byte[]) obj);
             } catch (ISOException e) {
-                // ignore ISOException - return null
+                return null; // make PMD happy by returning here and avoiding an empty catch
             }
         }
         return s;
@@ -573,14 +574,14 @@ public class ISOMsg extends ISOComponent
             else if (obj instanceof byte[])
                 s = ISOUtil.hexString ((byte[]) obj);
         } catch (ISOException e) {
-            // ignore ISOException - return null
+            return null;
         }
         return s;
     }
     /**
      * Return the byte[] value associated with the given ISOField number
      * @param fldno the Field Number
-     * @return field's byte[] value
+     * @return field's byte[] value or null if ISOException or UnsupportedEncodingException happens
      */
     public byte[] getBytes (int fldno) {
         byte[] b = null;
@@ -592,7 +593,10 @@ public class ISOMsg extends ISOComponent
                 else if (obj instanceof byte[])
                     b = ((byte[]) obj);
             } catch (ISOException ignored) {
-            } catch (UnsupportedEncodingException ignored) {}
+                return null;
+            } catch (UnsupportedEncodingException ignored) {
+                return null;
+            }
         }
         return b;
     }
@@ -610,7 +614,10 @@ public class ISOMsg extends ISOComponent
             else if (obj instanceof byte[])
                 b = ((byte[]) obj);
         } catch (ISOException ignored) {
-        } catch (UnsupportedEncodingException ignored) { }
+            return null;
+        } catch (UnsupportedEncodingException ignored) {
+            return null;
+        }
         return b;
     }
     /**
@@ -697,6 +704,7 @@ public class ISOMsg extends ISOComponent
      * @param fields int array of fields to go
      * @return new ISOMsg instance
      */
+    @SuppressWarnings("PMD.EmptyCatchBlock")
     public Object clone(int[] fields) {
         try {
             ISOMsg m = (ISOMsg) super.clone();
@@ -705,8 +713,8 @@ public class ISOMsg extends ISOComponent
                 if (hasField(field)) {
                     try {
                         m.set(getComponent(field));
-                    } catch (ISOException e) {
-                        // it should never happen
+                    } catch (ISOException ignored) {
+                        // should never happen
                     }
                 }
             }
@@ -723,12 +731,13 @@ public class ISOMsg extends ISOComponent
      * and template handling)
      * @param m ISOMsg to merge
      */
+    @SuppressWarnings("PMD.EmptyCatchBlock")
     public void merge (ISOMsg m) {
         for (int i=0; i<=m.getMaxField(); i++) 
             try {
                 if (m.hasField(i))
                     set (m.getComponent(i));
-            } catch (ISOException e) {
+            } catch (ISOException ignored) {
                 // should never happen 
             }
     }
