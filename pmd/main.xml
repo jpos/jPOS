@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pmd version="4.3" timestamp="2014-04-02T22:37:09.881">
+<pmd version="4.3" timestamp="2014-04-02T23:10:50.777">
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/bsh/BSHLogListener.java">
 <violation beginline="143" endline="143" begincolumn="42" endcolumn="59" rule="AvoidThreadGroup" ruleset="Basic Rules" package="org.jpos.bsh" class="BSHLogListener" method="log" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#AvoidThreadGroup" priority="3">
 Avoid using java.lang.ThreadGroup; it is not thread safe
@@ -72,35 +72,6 @@ Avoid empty catch blocks
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/ISOFilledStringFieldPackager.java">
 <violation beginline="123" endline="125" begincolumn="15" endcolumn="13" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.jpos.iso" class="ISOFilledStringFieldPackager" method="makeExceptionMessage" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
-Avoid empty catch blocks
-</violation>
-</file>
-<file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/ISOMsg.java">
-<violation beginline="89" endline="91" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.jpos.iso" class="ISOMsg" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
-Avoid empty catch blocks
-</violation>
-<violation beginline="556" endline="558" begincolumn="15" endcolumn="13" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.jpos.iso" class="ISOMsg" method="getString" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
-Avoid empty catch blocks
-</violation>
-<violation beginline="575" endline="577" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.jpos.iso" class="ISOMsg" method="getString" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
-Avoid empty catch blocks
-</violation>
-<violation beginline="594" endline="595" begincolumn="15" endcolumn="13" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.jpos.iso" class="ISOMsg" method="getBytes" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
-Avoid empty catch blocks
-</violation>
-<violation beginline="595" endline="595" begincolumn="15" endcolumn="61" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.jpos.iso" class="ISOMsg" method="getBytes" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
-Avoid empty catch blocks
-</violation>
-<violation beginline="612" endline="613" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.jpos.iso" class="ISOMsg" method="getBytes" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
-Avoid empty catch blocks
-</violation>
-<violation beginline="613" endline="613" begincolumn="11" endcolumn="58" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.jpos.iso" class="ISOMsg" method="getBytes" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
-Avoid empty catch blocks
-</violation>
-<violation beginline="708" endline="710" begincolumn="23" endcolumn="21" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.jpos.iso" class="ISOMsg" method="clone" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
-Avoid empty catch blocks
-</violation>
-<violation beginline="731" endline="733" begincolumn="15" endcolumn="13" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.jpos.iso" class="ISOMsg" method="merge" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
 </violation>
 </file>
@@ -292,16 +263,13 @@ Avoid empty catch blocks
 <violation beginline="106" endline="106" begincolumn="13" endcolumn="13" rule="EmptyWhileStmt" ruleset="Basic Rules" package="org.jpos.q2.iso" class="ChannelAdaptor" method="waitForReceiverToExit" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyWhileStmt" priority="3">
 Avoid empty while statements
 </violation>
-<violation beginline="288" endline="290" begincolumn="25" endcolumn="25" rule="CollapsibleIfStatements" ruleset="Basic Rules" package="org.jpos.q2.iso" class="ChannelAdaptor$Sender" method="run" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#CollapsibleIfStatements" priority="3">
-These nested if statements could be combined
-</violation>
-<violation beginline="364" endline="364" begincolumn="17" endcolumn="17" rule="EmptyWhileStmt" ruleset="Basic Rules" package="org.jpos.q2.iso" class="ChannelAdaptor" method="checkConnection" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyWhileStmt" priority="3">
+<violation beginline="362" endline="362" begincolumn="17" endcolumn="17" rule="EmptyWhileStmt" ruleset="Basic Rules" package="org.jpos.q2.iso" class="ChannelAdaptor" method="checkConnection" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyWhileStmt" priority="3">
 Avoid empty while statements
 </violation>
-<violation beginline="383" endline="383" begincolumn="21" endcolumn="21" rule="EmptyWhileStmt" ruleset="Basic Rules" package="org.jpos.q2.iso" class="ChannelAdaptor" method="disconnect" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyWhileStmt" priority="3">
+<violation beginline="381" endline="381" begincolumn="21" endcolumn="21" rule="EmptyWhileStmt" ruleset="Basic Rules" package="org.jpos.q2.iso" class="ChannelAdaptor" method="disconnect" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyWhileStmt" priority="3">
 Avoid empty while statements
 </violation>
-<violation beginline="409" endline="409" begincolumn="11" endcolumn="45" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.jpos.q2.iso" class="ChannelAdaptor" method="getPort" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
+<violation beginline="407" endline="407" begincolumn="11" endcolumn="45" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.jpos.q2.iso" class="ChannelAdaptor" method="getPort" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
 </violation>
 </file>
