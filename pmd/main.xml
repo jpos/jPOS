@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pmd version="4.3" timestamp="2014-04-06T15:51:37.201">
+<pmd version="4.3" timestamp="2014-04-06T21:03:11.059">
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/bsh/BSHLogListener.java">
 <violation beginline="143" endline="143" begincolumn="42" endcolumn="59" rule="AvoidThreadGroup" ruleset="Basic Rules" package="org.jpos.bsh" class="BSHLogListener" method="log" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#AvoidThreadGroup" priority="3">
 Avoid using java.lang.ThreadGroup; it is not thread safe
@@ -218,29 +218,6 @@ Avoid empty catch blocks
 Avoid empty catch blocks
 </violation>
 </file>
-<file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/q2/QFactory.java">
-<violation beginline="54" endline="54" begincolumn="11" endcolumn="54" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.jpos.q2" class="QFactory" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
-Avoid empty catch blocks
-</violation>
-<violation beginline="66" endline="69" begincolumn="15" endcolumn="13" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.jpos.q2" class="QFactory" method="instantiate" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
-Avoid empty catch blocks
-</violation>
-<violation beginline="161" endline="163" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.jpos.q2" class="QFactory" method="setAttribute" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
-Avoid empty catch blocks
-</violation>
-<violation beginline="163" endline="165" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.jpos.q2" class="QFactory" method="setAttribute" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
-Avoid empty catch blocks
-</violation>
-<violation beginline="418" endline="419" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.jpos.q2" class="QFactory" method="invoke" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
-Avoid empty catch blocks
-</violation>
-<violation beginline="419" endline="420" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.jpos.q2" class="QFactory" method="invoke" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
-Avoid empty catch blocks
-</violation>
-<violation beginline="420" endline="421" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.jpos.q2" class="QFactory" method="invoke" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
-Avoid empty catch blocks
-</violation>
-</file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/q2/cli/TAIL.java">
 <violation beginline="70" endline="70" begincolumn="13" endcolumn="57" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.jpos.q2.cli" class="TAIL" method="exec" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
@@ -375,26 +352,6 @@ Avoid empty catch blocks
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/ui/action/Exit.java">
 <violation beginline="42" endline="42" begincolumn="11" endcolumn="33" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.jpos.ui.action" class="Exit" method="actionPerformed" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
-Avoid empty catch blocks
-</violation>
-</file>
-<file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/util/FSDMsg.java">
-<violation beginline="256" endline="258" begincolumn="45" endcolumn="17" rule="EmptyIfStmt" ruleset="Basic Rules" package="org.jpos.util" class="FSDMsg" method="get" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyIfStmt" priority="3">
-Avoid empty if statements
-</violation>
-<violation beginline="263" endline="265" begincolumn="45" endcolumn="17" rule="EmptyIfStmt" ruleset="Basic Rules" package="org.jpos.util" class="FSDMsg" method="get" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyIfStmt" priority="3">
-Avoid empty if statements
-</violation>
-<violation beginline="315" endline="315" begincolumn="15" endcolumn="55" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.jpos.util" class="FSDMsg" method="isSeparated" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
-Avoid empty catch blocks
-</violation>
-<violation beginline="494" endline="496" begincolumn="17" endcolumn="17" rule="CollapsibleIfStatements" ruleset="Basic Rules" package="org.jpos.util" class="FSDMsg" method="read" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#CollapsibleIfStatements" priority="3">
-These nested if statements could be combined
-</violation>
-<violation beginline="546" endline="546" begincolumn="11" endcolumn="33" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.jpos.util" class="FSDMsg" method="getInt" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
-Avoid empty catch blocks
-</violation>
-<violation beginline="553" endline="553" begincolumn="11" endcolumn="33" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.jpos.util" class="FSDMsg" method="getInt" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
 </violation>
 </file>
