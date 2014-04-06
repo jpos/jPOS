@@ -484,7 +484,7 @@ public class FSDMsgTest {
             fSDMsg.get("testFSDMsgId", "3Ch", 100, "testFSDMsgDefValue", "3Ch");
             fail("Expected RuntimeException to be thrown");
         } catch (RuntimeException ex) {
-            assertEquals("ex.getMessage()", "FSDMsg.isSeparated(String) found that 3Ch has not been defined as a separator!",
+            assertEquals("ex.getMessage()", "Invalid separator '3Ch'",
                     ex.getMessage());
             assertEquals("fSDMsg.fields.size()", 0, fSDMsg.fields.size());
         }
@@ -498,7 +498,7 @@ public class FSDMsgTest {
             fSDMsg.get("testString", "B]Z", 100, "testFSDMsgDefValue", "B]Z");
             fail("Expected RuntimeException to be thrown");
         } catch (RuntimeException ex) {
-            assertEquals("ex.getMessage()", "FSDMsg.isSeparated(String) found that B]Z has not been defined as a separator!",
+            assertEquals("ex.getMessage()", "Invalid separator 'B]Z'",
                     ex.getMessage());
             assertEquals("fSDMsg.fields.size()", 1, fSDMsg.fields.size());
         }
@@ -539,7 +539,7 @@ public class FSDMsgTest {
             fail("Expected RuntimeException to be thrown");
         } catch (RuntimeException ex) {
             assertEquals("ex.getMessage()",
-                    "FSDMsg.isSeparated(String) found that testFSDMsgType has not been defined as a separator!", ex.getMessage());
+                    "Invalid separator 'testFSDMsgType'", ex.getMessage());
             assertEquals("fSDMsg.fields.size()", 0, fSDMsg.fields.size());
         }
     }
@@ -553,7 +553,7 @@ public class FSDMsgTest {
             fail("Expected RuntimeException to be thrown");
         } catch (RuntimeException ex) {
             assertEquals("ex.getMessage()",
-                    "FSDMsg.isSeparated(String) found that testFSDMsgType has not been defined as a separator!", ex.getMessage());
+                    "Invalid separator 'testFSDMsgType'", ex.getMessage());
             assertEquals("fSDMsg.fields.size()", 1, fSDMsg.fields.size());
         }
     }
@@ -569,7 +569,7 @@ public class FSDMsgTest {
         } catch (RuntimeException ex) {
             assertEquals(
                     "ex.getMessage()",
-                    "FSDMsg.isSeparated(String) found that Ka`xc-3DywniD\"+9W\"Uh/mY~23E0(V)P_^sv )@ has not been defined as a separator!",
+                    "Invalid separator 'Ka`xc-3DywniD\"+9W\"Uh/mY~23E0(V)P_^sv )@'",
                     ex.getMessage());
             assertEquals("fSDMsg.fields.size()", 1, fSDMsg.fields.size());
         }
@@ -585,7 +585,7 @@ public class FSDMsgTest {
         } catch (RuntimeException ex) {
             assertEquals(
                     "ex.getMessage()",
-                    "FSDMsg.isSeparated(String) found that Ka`xc-3DywniD\"+9W\"Uh/mY~23E0(V)P_^sv )@ has not been defined as a separator!",
+                    "Invalid separator 'Ka`xc-3DywniD\"+9W\"Uh/mY~23E0(V)P_^sv )@'",
                     ex.getMessage());
             assertEquals("fSDMsg.fields.size()", 0, fSDMsg.fields.size());
         }
@@ -598,7 +598,7 @@ public class FSDMsgTest {
             fSDMsg.get("testFSDMsgId", "B]Z", 100, null, "B]Z");
             fail("Expected RuntimeException to be thrown");
         } catch (RuntimeException ex) {
-            assertEquals("ex.getMessage()", "FSDMsg.isSeparated(String) found that B]Z has not been defined as a separator!",
+            assertEquals("ex.getMessage()", "Invalid separator 'B]Z'",
                     ex.getMessage());
             assertEquals("fSDMsg.fields.size()", 0, fSDMsg.fields.size());
         }
@@ -611,7 +611,7 @@ public class FSDMsgTest {
             fSDMsg.get("testFSDMsgId", "B]Z", 100, "testFSDMsgDefValue", "B]Z");
             fail("Expected RuntimeException to be thrown");
         } catch (RuntimeException ex) {
-            assertEquals("ex.getMessage()", "FSDMsg.isSeparated(String) found that B]Z has not been defined as a separator!",
+            assertEquals("ex.getMessage()", "Invalid separator 'B]Z'",
                     ex.getMessage());
             assertEquals("fSDMsg.fields.size()", 0, fSDMsg.fields.size());
         }
@@ -640,7 +640,7 @@ public class FSDMsgTest {
         } catch (RuntimeException ex) {
             assertEquals(
                     "ex.getMessage()",
-                    "FSDMsg.isSeparated(String) found that Ka`xc-3DywniD\"+9W\"Uh/mY~23E0(V)P_^sv )@ has not been defined as a separator!",
+                    "Invalid separator 'Ka`xc-3DywniD\"+9W\"Uh/mY~23E0(V)P_^sv )@'",
                     ex.getMessage());
             assertEquals("fSDMsg.fields.size()", 0, fSDMsg.fields.size());
         }
@@ -832,7 +832,7 @@ public class FSDMsgTest {
             fSDMsg.readField(r, "testFSDMsgFieldName", 100, "3Ch", "Ch");
             fail("Expected RuntimeException to be thrown");
         } catch (RuntimeException ex) {
-            assertEquals("ex.getMessage()", "FSDMsg.isSeparated(String) found that Ch has not been defined as a separator!",
+            assertEquals("ex.getMessage()", "Invalid separator 'Ch'",
                     ex.getMessage());
             assertEquals("fSDMsg.fields.size()", 0, fSDMsg.fields.size());
             assertEquals("(ByteArrayInputStream) is.available()", 0, is.available());
@@ -876,7 +876,7 @@ public class FSDMsgTest {
             fSDMsg.read(r, 100, "3Ch", "Ch");
             fail("Expected RuntimeException to be thrown");
         } catch (RuntimeException ex) {
-            assertEquals("ex.getMessage()", "FSDMsg.isSeparated(String) found that Ch has not been defined as a separator!",
+            assertEquals("ex.getMessage()", "Invalid separator 'Ch'",
                     ex.getMessage());
             assertEquals("(ByteArrayInputStream) is.available()", 2, is.available());
         }

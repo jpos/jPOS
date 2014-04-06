@@ -138,8 +138,8 @@ public class FSDMsg implements Loggeable, Cloneable {
      */
     public FSDMsg (String basePath, String baseSchema) {
         super();
-        fields = new LinkedHashMap();
-        separators = new LinkedHashMap();        
+        fields = new LinkedHashMap<String,String>();
+        separators = new LinkedHashMap<String,Character>();
         this.basePath   = basePath;
         this.baseSchema = baseSchema;
         charset = Charset.forName(ISOUtil.ENCODING);
@@ -245,7 +245,7 @@ public class FSDMsg implements Loggeable, Cloneable {
     protected String get (String id, String type, int length, String defValue, String separator) 
         throws ISOException
     {
-        String value = (String) fields.get (id);
+        String value = fields.get (id);
         if (value == null)
             value = defValue == null ? "" : defValue;
 
@@ -253,18 +253,14 @@ public class FSDMsg implements Loggeable, Cloneable {
 
         switch (type.charAt (0)) {
             case 'N':
-                if (isSeparated(separator)) {
-                    // Leave value unpadded.
-                } else {
+                if (!isSeparated(separator)) {
                     value = ISOUtil.zeropad (value, length);
-                }
+                } // else Leave value unpadded.
                 break;
             case 'A':
-                if (isSeparated(separator)) {
-                    // Leave value unpadded.
-                } else {
+                if (!isSeparated(separator)) {
                     value = ISOUtil.strpad (value, length);
-                }
+                } // else Leave value unpadded.
                 if (value.length() > length)
                     value = value.substring(0,length);
                 break;
@@ -312,7 +308,9 @@ public class FSDMsg implements Loggeable, Cloneable {
                     setSeparator(separator, (char)Long.parseLong(separator,16));
                     return true;
                 }
-            } catch (NumberFormatException ignored) { }
+            } catch (NumberFormatException ignored) {
+                throw new RuntimeException("Invalid separator '"+ separator + "'");
+            }
         }
         throw new RuntimeException("FSDMsg.isSeparated(String) found that "+
                 separator+" has not been defined as a separator!");
@@ -356,7 +354,7 @@ public class FSDMsg implements Loggeable, Cloneable {
     {
         String keyOff = "";
         String defaultKey = "";
-        for (Element elem :(List<Element>)schema.getChildren("field")) {
+        for (Element elem : (List<Element>)schema.getChildren("field")) {
             String id    = elem.getAttributeValue ("id");
             int length   = Integer.parseInt (elem.getAttributeValue ("length"));
             String type  = elem.getAttributeValue ("type");
@@ -490,10 +488,8 @@ public class FSDMsg implements Loggeable, Cloneable {
                 sb.append(c[0]);
             }
 
-            if (separated && !"EOF".equals(separator)) {
-                if (r.read(c) < 0) {
-                    throw new EOFException();
-                }
+            if (separated && !"EOF".equals(separator) && r.read(c) < 0) {
+                throw new EOFException();
             }
         }
         readCount += sb.length();
@@ -539,18 +535,20 @@ public class FSDMsg implements Loggeable, Cloneable {
         String s = get (name);
         return s == null ? null : ISOUtil.hex2byte (s);
     }
+    @SuppressWarnings("PMD.EmptyCatchBlock")
     public int getInt (String name) {
         int i = 0;
         try {
             i = Integer.parseInt (get (name));
-        } catch (Exception e) { }
+        } catch (Exception ignored) { }
         return i;
     }
+    @SuppressWarnings("PMD.EmptyCatchBlock")
     public int getInt (String name, int def) {
         int i = def;
         try {
             i = Integer.parseInt (get (name));
-        } catch (Exception e) { }
+        } catch (Exception ignored) { }
         return i;
     }
     public Element toXML () {
