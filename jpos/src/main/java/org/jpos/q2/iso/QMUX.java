@@ -42,24 +42,27 @@ public class QMUX
 {
     static final String nomap = "0123456789";
     static final String DEFAULT_KEY = "41, 11";
-    private boolean headerIsKey;
     protected LocalSpace sp;
     protected String in, out, unhandled;
     protected String[] ready;
     protected String[] key;
     protected String ignorerc;
     protected String[] mtiMapping;
-    List listeners;
+    private boolean headerIsKey;
+    private LocalSpace isp; // internal space
+
+    List<ISORequestListener> listeners;
     int rx, tx, rxExpired, txExpired, rxPending, rxUnhandled, rxForwarded;
     long lastTxn = 0L;
     boolean listenerRegistered;
     public QMUX () {
         super ();
-        listeners = new ArrayList ();
+        listeners = new ArrayList<ISORequestListener>();
     }
     public void initService () throws ConfigurationException {
         Element e = getPersist ();
-        sp        = grabSpace (e.getChild ("space")); 
+        sp        = grabSpace (e.getChild ("space"));
+        isp       = cfg.getBoolean("reuse-space", false) ? sp : new TSpace();
         in        = e.getChildTextTrim ("in");
         out       = e.getChildTextTrim ("out");
         ignorerc  = e.getChildTextTrim ("ignore-rc");
@@ -111,9 +114,9 @@ public class QMUX
     public ISOMsg request (ISOMsg m, long timeout) throws ISOException {
         String key = getKey (m);
         String req = key + ".req";
-        if (sp.rdp (req) != null)
+        if (isp.rdp (req) != null)
             throw new ISOException ("Duplicate key '" + req + "' detected");
-        sp.out (req, m);
+        isp.out (req, m);
         m.setDirection(0);
         if (timeout > 0)
             sp.out (out, m, timeout);
@@ -125,15 +128,15 @@ public class QMUX
             synchronized (this) { tx++; rxPending++; }
 
             for (;;) {
-                resp = (ISOMsg) sp.rd (key, timeout);
+                resp = (ISOMsg) isp.rd (key, timeout);
                 if (shouldIgnore (resp)) 
                     continue;
-                sp.inp (key);
+                isp.inp (key);
                 break;
             } 
-            if (resp == null && sp.inp (req) == null) {
+            if (resp == null && isp.inp (req) == null) {
                 // possible race condition, retry for a few extra seconds
-                resp = (ISOMsg) sp.in (key, 10000);
+                resp = (ISOMsg) isp.in (key, 10000);
             }
             synchronized (this) {
                 if (resp != null) 
@@ -158,12 +161,12 @@ public class QMUX
             try {
                 String key = getKey (m);
                 String req = key + ".req";
-                Object r = sp.inp (req);
+                Object r = isp.inp (req);
                 if (r != null) {
                     if (r instanceof AsyncRequest) {
                         ((AsyncRequest) r).responseReceived (m);
                     } else {
-                        sp.out (key, m);
+                        isp.out (key, m);
                     }
                     return;
                 }
@@ -251,7 +254,7 @@ public class QMUX
     {
         String key = getKey (m);
         String req = key + ".req";
-        if (sp.rdp (req) != null)
+        if (isp.rdp (req) != null)
             throw new ISOException ("Duplicate key '" + req + "' detected.");
         m.setDirection(0);
         AsyncRequest ar = new AsyncRequest (rl, handBack);
@@ -259,7 +262,7 @@ public class QMUX
             if (timeout > 0)
                 ar.setFuture(getScheduledThreadPoolExecutor().schedule(ar, timeout, TimeUnit.MILLISECONDS));
         }
-        sp.out (req, ar, timeout);
+        isp.out (req, ar, timeout);
         sp.out (out, m, timeout);
     }
     @SuppressWarnings("unused")
@@ -327,7 +330,7 @@ public class QMUX
     public long getIdleTimeInMillis() {
         return lastTxn > 0L ? System.currentTimeMillis() - lastTxn : -1L;
     }
-    
+
     protected void processUnhandled (ISOMsg m) {
         ISOSource source = m.getSource () != null ? m.getSource() : this;
         Iterator iter = listeners.iterator();
