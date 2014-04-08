@@ -276,6 +276,28 @@ public class ISOUtilTest {
         assertEquals("result.length", 0, result.length);
     }
 
+    @Test
+    public void testBitSetByteHexInteroperability() throws Throwable {
+        BitSet bs = new BitSet();
+        bs.set(1);
+        bs.set(63);
+        bs.set(127);
+        bs.set(191);
+        byte[] b = ISOUtil.bitSet2byte(bs);
+        BitSet bs1 = ISOUtil.byte2BitSet(b, 0, 192);
+        BitSet bs2 = ISOUtil.hex2BitSet(ISOUtil.hexString(b).getBytes(), 0, 192);
+        assertEquals("BitSets should be equal", bs1, bs2);
+    }
+
+    @Test
+    public void testBitSetByteHexInteroperability2() throws Throwable {
+        byte[] b = ISOUtil.hex2byte("F23C04800EE0000080000000000000000000380000000000");
+        BitSet bs1 = ISOUtil.byte2BitSet(b, 0, 192);
+        BitSet bs2 = ISOUtil.hex2BitSet (ISOUtil.hexString(b).getBytes(), 0, 192);
+        assertEquals("BitSets should be equal", bs1, bs2);
+        assertEquals("Image matches", ISOUtil.hexString(b), ISOUtil.hexString(ISOUtil.bitSet2byte(bs1)));
+    }
+
     @Test(expected = NullPointerException.class)
     public void testBitSet2byteThrowsNullPointerException() throws Throwable {
         ISOUtil.bitSet2byte(null);
@@ -2466,7 +2488,7 @@ public class ISOUtilTest {
     public void testHex2BitSet10() throws Throwable {
         byte[] b = new byte[80];
         BitSet result = ISOUtil.hex2BitSet(b, 0, 1000);
-        assertEquals("result.size()", 256, result.size());
+        assertEquals("result.size()", 384, result.size());
     }
 
     @Test

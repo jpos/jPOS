@@ -698,6 +698,12 @@ public class ISOUtil {
         int len = maxBits > 64?
           ((Character.digit((char)b[offset],16) & 0x08) == 8 ? 128 : 64) :
           maxBits;
+        if (len > 64 && maxBits > 128 &&
+            b.length > offset+16 &&
+            (Character.digit((char)b[offset+16],16) & 0x08) == 8)
+        {
+            len = 192;
+        }
         BitSet bmap = new BitSet (len);
         for (int i=0; i<len; i++) {
             int digit = Character.digit((char)b[offset + (i >> 2)], 16);
