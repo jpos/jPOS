@@ -121,8 +121,6 @@ public class BSHMethod {
      *  @param arguments    Parameters to set to the Interpreter. For every 
      *                      Map.Entry (key, value), interpreter.set(key, value)
      *                      is called. All keys must be Strings.
-     *  @param returnName   The names of the variables wich`s content is to be 
-     *                      returned.
      */
     public Object execute(Map arguments, String resultName) throws EvalError, FileNotFoundException, IOException {
         Interpreter i = initInterpreter(arguments);

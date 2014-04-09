@@ -35,9 +35,8 @@ public class AsciiInterpreter implements Interpreter
 
     /**
 	 * (non-Javadoc)
-	 * 
-	 * @see org.jpos.iso.Interpreter#interpret(java.lang.String)
-	 */
+	 *
+     */
     public void interpret(String data, byte[] b, int offset)
     {
         try {
@@ -49,9 +48,8 @@ public class AsciiInterpreter implements Interpreter
 
     /**
 	 * (non-Javadoc)
-	 * 
-	 * @see org.jpos.iso.Interpreter#uninterpret(byte[])
-	 */
+	 *
+     */
     public String uninterpret (byte[] rawData, int offset, int length) {
         byte[] ret = new byte[length];
         try {
@@ -69,9 +67,8 @@ public class AsciiInterpreter implements Interpreter
 
     /**
 	 * (non-Javadoc)
-	 * 
-	 * @see org.jpos.iso.Interpreter#getPackedLength(int)
-	 */
+	 *
+     */
     public int getPackedLength(int nDataUnits)
     {
         return nDataUnits;

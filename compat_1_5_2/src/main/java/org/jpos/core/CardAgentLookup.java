@@ -85,7 +85,7 @@ public class CardAgentLookup {
     }
     /**
      * locate an agent giving its class Name
-     * @param class name
+     * @param name
      * @return given agent
      * @exception CardAgentNotFoundException
      */
@@ -138,7 +138,7 @@ public class CardAgentLookup {
 
     /**
      * locate an agent of a given class
-     * @param class 
+     * @param t
      * @return given agent
      * @exception CardAgentNotFoundException
      */

@@ -25,10 +25,17 @@ allprojects {
     }
     if (project.hasProperty("lint")) {
       // gradle -Plint ...
-      tasks.withType(Compile) { 
+      tasks.withType(JavaCompile) {
         options.compilerArgs << "-Xlint" 
       } 
     }
+
+    if (JavaVersion.current().isJava8Compatible()) {
+        tasks.withType(Javadoc) {
+          options.addStringOption('Xdoclint:none', '-quiet')
+        }
+    }
+
     def pomConfig = {
         name 'jPOS Project'
         description """

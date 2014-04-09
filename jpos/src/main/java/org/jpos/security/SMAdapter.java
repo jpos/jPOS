@@ -18,10 +18,11 @@
 
 package  org.jpos.security;
 
+import org.javatuples.Pair;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import org.javatuples.Pair;
 
 
 /**
@@ -32,7 +33,8 @@ import org.javatuples.Pair;
  * But application programmers will be communicating
  * with the security module using this simple interface.
  *
- * @todo support for EMV Secure Messaging, dCVV, CVC3 verification and RSA generation API's
+ * TODO: support for EMV Secure Messaging, dCVV, CVC3 verification and RSA generation API's
+ *
  * @author Hani S. Kirollos
  * @author Robert Demski
  * @version $Revision$ $Date$
@@ -762,8 +764,7 @@ public interface SMAdapter {
      * @param atc application transactin counter. This is used for ICC Master
      *        Key derivation. A 2 byte value must be supplied.
      * @param mkdm ICC Master Key Derivation Method. If {@code null} specified
-     *        is assumed {@see MKDMethod#OPTION_A}
-     * @return
+     *        is assumed.
      * @throws SMException
      */
     public boolean verifydCVV(String accountNo, SecureDESKey imkac, String dcvv,
@@ -807,12 +808,11 @@ public interface SMAdapter {
      *            from <tt>MK-CVC3</tt>.
      *        </ul>
      * @param mkdm ICC Master Key Derivation Method. If {@code null} specified
-     *        is assumed {@see MKDMethod#OPTION_A}
+     *        is assumed.
      * @param cvc3 dynamic Card Verification Code 3. Should contain 5 decimal
      *        digits. Max value is {@code "65535"} (decimal representation
      *        of 2 byte value). Is possible to pass shorter cvc3 value e.g.
      *        {@code "789"} matches with calcuated CVC3 {@code "04789"}
-     * @return
      * @throws SMException
      */
     public boolean verifyCVC3(SecureDESKey imkcvc3, String accountNo, String acctSeqNo,

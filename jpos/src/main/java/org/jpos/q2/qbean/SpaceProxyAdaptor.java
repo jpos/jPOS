@@ -31,8 +31,6 @@ import java.util.Set;
  *
  * @author Alwyn Schoeman
  * @version $Revision$ $Date$
- * @jmx:mbean description="SpaceProxy QBean"
- *                  extends="org.jpos.q2.QBeanSupportMBean"
  */
 
 public class SpaceProxyAdaptor 
@@ -59,25 +57,16 @@ public class SpaceProxyAdaptor
         sp.shutdown ();
     }
 
-    /**
-     * @jmx:managed-attribute description="Space Name"
-     */
     public synchronized void setSpaceName (String spaceName) {
         this.spaceName = spaceName;
         setAttr (getAttrs (), "spaceName", spaceName);
         setModified (true);
     }
 
-    /**
-     * @jmx:managed-attribute description="Space Name"
-     */
     public String getSpaceName () {
         return spaceName;
     }
     
-    /**
-     * @jmx:managed-attribute description="Space Keys"
-     */
     public Set getKeys () {
         return sp.getKeySet ();
     }

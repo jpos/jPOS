@@ -43,17 +43,15 @@ public class NullPrefixer implements Prefixer
 
     /**
 	 * Returns -1 meaning there is no length field.
-	 * 
-	 * @see org.jpos.iso.Prefixer#decodeLength(byte[], int)
-	 */
+	 *
+     */
     public int decodeLength(byte[] b, int offset)
     {
         return -1;
     }
 
     /**
-	 * @see org.jpos.iso.Prefixer#getLengthInBytes()
-	 */
+     */
     public int getPackedLength()
     {
         return 0;

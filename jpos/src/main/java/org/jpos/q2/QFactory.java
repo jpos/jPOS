@@ -20,19 +20,25 @@ package org.jpos.q2;
 
 
 import org.jdom.Element;
-import org.jpos.core.*;
+import org.jpos.core.Configurable;
+import org.jpos.core.Configuration;
+import org.jpos.core.ConfigurationException;
+import org.jpos.core.XmlConfigurable;
 import org.jpos.q2.qbean.QConfig;
 import org.jpos.util.LogSource;
 import org.jpos.util.Logger;
 import org.jpos.util.NameRegistrar;
 
 import javax.management.*;
-import java.io.File;
-import java.io.FileInputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
-import java.util.*;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
+import java.util.StringTokenizer;
 
 /**
  * @author <a href="mailto:taherkordy@dpi2.dpi.net.ir">Alireza Taherkordi</a>
@@ -282,8 +288,7 @@ public class QFactory {
      * @param type
      * @param e
      * @throws ConfigurationException
-     * @return
-     */    
+     */
     protected Collection getCollection(Class type, Element e) 
         throws ConfigurationException
     {

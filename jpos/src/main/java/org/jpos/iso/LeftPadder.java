@@ -49,8 +49,7 @@ public class LeftPadder implements Padder
     }
 
     /**
-	 * @see org.jpos.iso.Padder#pad(java.lang.String, int, char)
-	 */
+     */
     public String pad(String data, int maxLength) throws ISOException
     {
         StringBuilder padded = new StringBuilder(maxLength);
@@ -71,9 +70,8 @@ public class LeftPadder implements Padder
 
     /**
 	 * (non-Javadoc)
-	 * 
-	 * @see org.jpos.iso.Padder#unpad(java.lang.String, char)
-	 */
+	 *
+     */
     public String unpad(String paddedData)
     {
         int i = 0;

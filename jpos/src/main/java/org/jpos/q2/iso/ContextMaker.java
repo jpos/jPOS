@@ -18,19 +18,18 @@
 
 package org.jpos.q2.iso;
 
-import java.io.PrintStream;
-import java.util.List;
-
 import org.jdom.Element;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
 import org.jpos.q2.QBeanSupport;
 import org.jpos.space.Space;
 import org.jpos.space.SpaceFactory;
+import org.jpos.transaction.Context;
 import org.jpos.util.Loggeable;
 import org.jpos.util.NameRegistrar;
 
-import org.jpos.transaction.Context;
+import java.io.PrintStream;
+import java.util.List;
 
 /**
  * A utility QBean to provide the ability to monitor an 'in' queue for items that will be placed in
@@ -39,7 +38,6 @@ import org.jpos.transaction.Context;
 
  * @author Mark Salter
  * @version $Revision: 2854 $ $Date: 2010-01-02 10:34:31 +0000 (Sat, 02 Jan 2010) $
- * @jmx:mbean description="ContextMaker" extends="org.jpos.q2.QBeanSupportMBean"
  */
 public class ContextMaker extends QBeanSupport implements Runnable,
 		Loggeable {
