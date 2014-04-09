@@ -30,18 +30,14 @@ public class EbcdicBinaryInterpreter implements BinaryInterpreter {
 
     /**
 	 * (non-Javadoc)
-	 * 
-	 * @see org.jpos.iso.BinaryInterpreter#interpret(byte[],byte[],int)
-	 */
+	 *
+     */
     public void interpret(byte[] data, byte[] b, int offset)
     {
         ISOUtil.asciiToEbcdic(data, b, offset);
     }
 
-   /**
-    * @see org.jpos.iso.BinaryInterpreter#uninterpret(byte[],int,int)
-    */
-    public byte[] uninterpret(byte[] rawData, int offset, int length)
+   public byte[] uninterpret(byte[] rawData, int offset, int length)
     {
         return ISOUtil.ebcdicToAsciiBytes(rawData, offset, length);
     }

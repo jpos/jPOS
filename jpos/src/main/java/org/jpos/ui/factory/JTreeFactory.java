@@ -53,6 +53,7 @@ import java.util.StringTokenizer;
  * </pre>
  * @see org.jpos.ui.UIFactory
  */
+@SuppressWarnings("unchecked")
 public class JTreeFactory implements UIFactory {
     public JComponent create (UI ui, Element e) {
         final UI parentUI = ui;

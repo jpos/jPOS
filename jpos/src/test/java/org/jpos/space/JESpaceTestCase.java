@@ -25,6 +25,7 @@ import org.jpos.transaction.Context;
 import org.jpos.util.Profiler;
 import org.jpos.iso.ISOUtil;
 
+@SuppressWarnings("unchecked")
 public class JESpaceTestCase extends TestCase {
     public static final int COUNT = 100;
     JESpace<String,Object> sp;

@@ -35,6 +35,7 @@ import java.util.Hashtable;
  * @author <a href="mailto:taherkordy@dpi2.dpi.net.ir">Alireza Taherkordi</a>
  * @version $Revision$ $Date$
  */
+@SuppressWarnings("unchecked")
 public class FilterLogListener implements LogListener,Configurable
 {
 

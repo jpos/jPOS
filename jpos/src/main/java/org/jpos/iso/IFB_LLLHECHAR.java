@@ -24,7 +24,6 @@ package org.jpos.iso;
  * @version $Id$
  * @see ISOComponent
  * @see IFB_LLHECHAR
- * @see IF_ECHAR
  */
 public class IFB_LLLHECHAR extends ISOStringFieldPackager {
     public IFB_LLLHECHAR() {

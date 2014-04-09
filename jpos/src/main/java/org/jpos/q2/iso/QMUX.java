@@ -36,7 +36,8 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author Alejandro Revilla
  */
-public class QMUX 
+@SuppressWarnings("unchecked")
+public class QMUX
     extends QBeanSupport
     implements SpaceListener, MUX, QMUXMBean, Loggeable
 {

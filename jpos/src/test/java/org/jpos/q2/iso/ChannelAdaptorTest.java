@@ -55,6 +55,7 @@ import org.mockito.stubbing.Stubber;
  * $Date$
  * $Author$
  */
+@SuppressWarnings("unchecked")
 public class ChannelAdaptorTest {
 
     private static final long RECONNECT_DELAY = 200;

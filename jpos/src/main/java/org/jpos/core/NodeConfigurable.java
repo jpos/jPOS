@@ -28,7 +28,6 @@ import org.w3c.dom.Node;
  */
 public interface NodeConfigurable {
    /**
-    * @param cfg Configuration object
     * @throws ConfigurationException
     */
     public void setConfiguration (Node node)

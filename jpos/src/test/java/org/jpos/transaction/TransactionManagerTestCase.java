@@ -23,6 +23,7 @@ import org.jpos.q2.Q2;
 import org.jpos.space.Space;
 import org.jpos.space.SpaceFactory;
 
+@SuppressWarnings("unchecked")
 public class TransactionManagerTestCase extends TestCase {
     Q2 q2;
     Space sp;

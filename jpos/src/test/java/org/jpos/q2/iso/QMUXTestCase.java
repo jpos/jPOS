@@ -37,6 +37,7 @@ import org.junit.*;
 
 import java.lang.reflect.Field;
 
+@SuppressWarnings("unchecked")
 public class QMUXTestCase implements ISOResponseListener {
     Q2 q2;
     Space sp;

@@ -87,9 +87,6 @@ public class ISOBinaryFieldPackager extends ISOFieldPackager
         this.prefixer = prefixer;
     }
 
-    /**
-	 * @see org.jpos.iso.ISOFieldPackager#getMaxPackedLength()
-	 */
     public int getMaxPackedLength()
     {
         return prefixer.getPackedLength() + interpreter.getPackedLength(getLength());
@@ -121,10 +118,6 @@ public class ISOBinaryFieldPackager extends ISOFieldPackager
         }
     }
 
-    /**
-	 * @see org.jpos.iso.ISOFieldPackager#unpack(org.jpos.iso.ISOComponent,
-	 *      byte[], int)
-	 */
     public int unpack(ISOComponent c, byte[] b, int offset) throws ISOException
     {
         try

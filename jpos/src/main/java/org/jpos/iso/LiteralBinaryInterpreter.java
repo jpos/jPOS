@@ -38,7 +38,6 @@ public class LiteralBinaryInterpreter implements BinaryInterpreter
 
     /**
      * Copies the input to the output.
-     * @see org.jpos.iso.BinaryInterpreter#interpret(byte[], byte[], int)
      */
     public void interpret(byte[] data, byte[] b, int offset)
     {
@@ -47,7 +46,6 @@ public class LiteralBinaryInterpreter implements BinaryInterpreter
 
     /**
      * Copies the data out of the byte array.
-     * @see org.jpos.iso.BinaryInterpreter#uninterpret(byte[], int, int)
      */
     public byte[] uninterpret(byte[] rawData, int offset, int length)
     {
@@ -58,7 +56,6 @@ public class LiteralBinaryInterpreter implements BinaryInterpreter
 
     /**
      * Returns nBytes because we are not doing any conversion.
-     * @see org.jpos.iso.BinaryInterpreter#getPackedLength(int)
      */
     public int getPackedLength(int nBytes)
     {

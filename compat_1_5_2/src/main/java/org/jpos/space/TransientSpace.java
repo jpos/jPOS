@@ -25,15 +25,12 @@ import java.util.*;
  * @author Alejandro Revilla
  * @version $Revision$ $Date$
  * @since 2.0
- * @jmx:mbean description "TransientSpace"
  */
+@SuppressWarnings("unchecked")
 public class TransientSpace implements LocalSpace, TransientSpaceMBean {
     protected Map map;
     static LocalSpace defaultSpace = new TransientSpace ();
 
-    /**
-     * @jmx:managed-constructor description="Default Constructor"
-     */
     public TransientSpace () {
         super();
         map = new HashMap ();
@@ -145,6 +142,7 @@ public class TransientSpace implements LocalSpace, TransientSpaceMBean {
             data.removeListener (listener);
     }
 
+    @SuppressWarnings("unchecked")
     protected static final class Data {
         LinkedList data;
         LinkedList listeners;
@@ -234,7 +232,6 @@ public class TransientSpace implements LocalSpace, TransientSpaceMBean {
     }
     /**
      * @return set of keys present in the Space
-     * @jmx:managed-attribute description="Keys in Space"
      */
     public Set getKeySet () {
         Set keySet;
@@ -261,9 +258,6 @@ public class TransientSpace implements LocalSpace, TransientSpaceMBean {
      * same as Space.out (key,value)
      * @param key Key
      * @param value value
-     * @jmx:managed-operation description="Write value to key"
-     * @jmx:managed-operation-parameter position="0" name="key" description="Space Key"
-     * @jmx:managed-operation-parameter position="1" name="value" description="Value to write"
      */
     public void write (String key, String value) {
         out (key, value);
@@ -273,8 +267,6 @@ public class TransientSpace implements LocalSpace, TransientSpaceMBean {
      * same as (String) Space.rdp (key)
      * @param key Key
      * @return value.toString()
-     * @jmx:managed-operation description="Read value from key"
-     * @jmx:managed-operation-parameter position="0" name="key" description="Space Key"
      */
     public String read (String key) {
         Object o = rdp (key);

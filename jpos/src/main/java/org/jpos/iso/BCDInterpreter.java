@@ -47,9 +47,8 @@ public class BCDInterpreter implements Interpreter
 
     /**
 	 * (non-Javadoc)
-	 * 
-	 * @see org.jpos.iso.Interpreter#interpret(java.lang.String)
-	 */
+	 *
+     */
     public void interpret(String data, byte[] b, int offset)
     {
         ISOUtil.str2bcd(data, leftPadded, b, offset);
@@ -65,9 +64,8 @@ public class BCDInterpreter implements Interpreter
 
     /**
 	 * (non-Javadoc)
-	 * 
-	 * @see org.jpos.iso.Interpreter#uninterpret(byte[])
-	 */
+	 *
+     */
     public String uninterpret(byte[] rawData, int offset, int length)
     {
         return ISOUtil.bcd2str (rawData, offset, length, leftPadded);
@@ -76,9 +74,8 @@ public class BCDInterpreter implements Interpreter
     /**
 	 * Each numeric digit is packed into a nibble, so 2 digits per byte, plus the
      * possibility of padding.
-	 * 
-	 * @see org.jpos.iso.Interpreter#getPackedLength(int)
-	 */
+	 *
+     */
     public int getPackedLength(int nDataUnits)
     {
         return (nDataUnits + 1) / 2;

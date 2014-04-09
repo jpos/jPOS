@@ -34,6 +34,7 @@ import java.util.Vector;
  * instance of CardSelector we have the chance to use multiple
  * instances of CardSelector within the same JVM if ever needed.
  */
+@SuppressWarnings("unchecked")
 public class CardSelector {
     List list;
     static CardSelector defaultInstance;

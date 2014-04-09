@@ -35,7 +35,8 @@ import java.util.*;
  * @see ISOComponent
  * @see ISOField
  */
-public class ISOMsg extends ISOComponent 
+@SuppressWarnings("unchecked")
+public class ISOMsg extends ISOComponent
     implements Cloneable, Loggeable, Externalizable
 {
     protected Map<Integer,Object> fields;

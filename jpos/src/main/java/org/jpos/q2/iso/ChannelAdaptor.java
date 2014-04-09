@@ -38,7 +38,8 @@ import java.util.Iterator;
 /**
  * @author Alejandro Revilla
  */
-public class ChannelAdaptor 
+@SuppressWarnings("unchecked")
+public class ChannelAdaptor
     extends QBeanSupport
     implements ChannelAdaptorMBean, Channel, Loggeable
 {
@@ -268,6 +269,7 @@ public class ChannelAdaptor
         waitForWorkersOnStop = "yes".equalsIgnoreCase(persist.getChildTextTrim ("wait-for-workers-on-stop"));
     }
 
+    @SuppressWarnings("unchecked")
     public class Sender implements Runnable {
         public Sender () {
             super ();
@@ -303,6 +305,7 @@ public class ChannelAdaptor
             }
         }
     }
+    @SuppressWarnings("unchecked")
     public class Receiver implements Runnable {
         public Receiver () {
             super ();

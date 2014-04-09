@@ -38,6 +38,7 @@ import java.util.Set;
  * This packager is used by EuroPackager to package subfields
  * such as field 48.
  */
+@SuppressWarnings("unchecked")
 public class EuroSubFieldPackager extends ISOBasePackager
 {
     protected static Prefixer tagPrefixer = AsciiPrefixer.LL;

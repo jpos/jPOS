@@ -18,14 +18,13 @@
 
 package org.jpos.q2.iso;
 
-import java.rmi.RemoteException;
-
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-
 import org.jpos.q2.QBeanSupport;
 import org.jpos.util.NameRegistrar;
 import org.jpos.util.NameRegistrar.NotFoundException;
+
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import java.rmi.RemoteException;
 
 /**
  * Remote Space Proxy Adaptor.
@@ -33,8 +32,6 @@ import org.jpos.util.NameRegistrar.NotFoundException;
  * @author Mark Salter
  * @author Alwyn Schoeman
  * @version $Revision: 2854 $ $Date: 2010-01-02 10:34:31 +0000 (Sat, 02 Jan 2010) $
- * @jmx:mbean description="QMUXProxy QBean"
- *                  extends="org.jpos.q2.QBeanSupportMBean"
  */
 
 public class QMUXProxyAdaptor 
@@ -61,19 +58,12 @@ public class QMUXProxyAdaptor
         ctx.unbind(getName());
     }
     
-    /**
-     * @jmx:managed-attribute description="MUX Name"
-     */
     public synchronized void setQmuxName (String muxName) {
         this.qmuxName = muxName;
         setAttr (getAttrs (), "qmuxName", muxName);
         setModified (true);
     }
-    
-   
-    /**
-     * @jmx:managed-attribute description="MUX Name"
-     */
+
     public String getQmuxName () {
         return qmuxName;
     }

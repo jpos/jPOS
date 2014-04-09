@@ -34,6 +34,7 @@ import java.util.ListIterator;
  * @author Jose Eduardo Leon
  * @version 1.0
  */
+@SuppressWarnings("unchecked")
 public class ISOVField extends ISOField implements ISOVErrorList {
 
     private static final long serialVersionUID = -2503711799295775875L;

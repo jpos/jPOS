@@ -27,19 +27,12 @@ import java.util.Map;
  *
  * @author <a href="mailto:nevyn@debian.org">Alwyn Schoeman</a>
  * @version $Revision$ $Date$
- * @jmx:mbean description="Name Registrar Inspector"
  */
 public class NameRegistrarInspector implements NameRegistrarInspectorMBean {
 
-    /**
-     * @jmx:managed-constructor description="Empty default constructor"
-     */
     public NameRegistrarInspector () {
     }
 
-    /**
-     * @jmx:managed-attribute description="Registry contents"
-     */
     public Map getRegistry () {
         return NameRegistrar.getMap ();
     }

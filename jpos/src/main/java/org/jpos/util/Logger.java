@@ -39,6 +39,7 @@ import org.jpos.q2.Q2;
  * @see SimpleLogListener
  * @see RotateLogListener
  */
+@SuppressWarnings("unchecked")
 public class Logger implements LogProducer {
     String name;
     Vector listeners;

@@ -18,11 +18,6 @@
 
 package org.jpos.q2.qbean;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-
 import org.jdom.Attribute;
 import org.jdom.Element;
 import org.jpos.core.ConfigurationException;
@@ -30,13 +25,16 @@ import org.jpos.q2.QBeanSupport;
 import org.jpos.util.NameRegistrar;
 import org.jpos.util.NameRegistrar.NotFoundException;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
 /**
  * A qbean dedicated to thread pool executor creation and registration by Q2
  * NameRegistrar registry<br>
  * 
  * @author dgrandemange
- * @jmx:mbean description="ThreadPoolExecutor QBean"
- *            extends="org.jpos.q2.QBeanSupportMBean"
  */
 public class QThreadPoolExecutor extends QBeanSupport implements
         QThreadPoolExecutorMBean {
@@ -178,7 +176,6 @@ public class QThreadPoolExecutor extends QBeanSupport implements
      * @param attrName
      * @param mandatory
      * @param errDesc
-     * @return
      * @throws ConfigurationException
      */
     protected Attribute getAttribute(Element elt, String attrName,
@@ -202,7 +199,6 @@ public class QThreadPoolExecutor extends QBeanSupport implements
      * Retrieves a thread pool executor from NameRegistrar given its name
      * 
      * @param name
-     * @return
      * @throws NotFoundException
      */
     public static ThreadPoolExecutor getThreadPoolExecutor(java.lang.String name)
@@ -225,7 +221,6 @@ public class QThreadPoolExecutor extends QBeanSupport implements
      * 
      * @param name
      * @param clazz
-     * @return
      * @throws NotFoundException
      */
     @SuppressWarnings("unchecked")

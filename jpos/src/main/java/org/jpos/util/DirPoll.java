@@ -49,7 +49,8 @@ import java.util.Vector;
  * @since jPOS 1.2.7
  * @version $Revision$ $Date$
  */
-public class DirPoll extends SimpleLogSource 
+@SuppressWarnings("unchecked")
+public class DirPoll extends SimpleLogSource
     implements Runnable, FilenameFilter, Configurable, Destroyable
 {
     private long pollInterval;

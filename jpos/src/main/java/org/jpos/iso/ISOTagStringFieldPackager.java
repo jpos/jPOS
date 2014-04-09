@@ -114,7 +114,6 @@ public class ISOTagStringFieldPackager extends ISOFieldPackager
 
     /**
      * Returns the prefixer's packed length and the interpreter's packed length.
-     * @see org.jpos.iso.ISOFieldPackager#getMaxPackedLength()
      */
     public int getMaxPackedLength() {
         return tagPrefixer.getPackedLength() + prefixer.getPackedLength() + interpreter.getPackedLength(getLength());

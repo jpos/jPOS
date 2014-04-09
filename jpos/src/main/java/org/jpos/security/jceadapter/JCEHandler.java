@@ -48,6 +48,7 @@ import org.jpos.security.Util;
  * @author Hani S. Kirollos
  * @version $Revision$ $Date$
  */
+@SuppressWarnings("unchecked")
 public class JCEHandler {
     static final String ALG_DES = "DES";
     static final String ALG_TRIPLE_DES = "DESede";

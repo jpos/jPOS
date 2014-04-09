@@ -51,7 +51,8 @@ import java.util.Map;
  * @see BSHMethod
  * @author  AMarques
  */
-public class BSHTransactionParticipant extends SimpleLogSource 
+@SuppressWarnings("unchecked")
+public class BSHTransactionParticipant extends SimpleLogSource
     implements TransactionParticipant, AbortParticipant, XmlConfigurable 
 {
     

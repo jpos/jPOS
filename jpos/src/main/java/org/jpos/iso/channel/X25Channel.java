@@ -45,6 +45,7 @@ import java.util.Vector;
  * @see ISOException
  * @see ISOChannel
  */
+@SuppressWarnings("unchecked")
 public class X25Channel extends BaseChannel {
     BufferedReader reader = null;
     protected byte[] header;
