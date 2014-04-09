@@ -18,17 +18,23 @@
 
 package  org.jpos.security;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
 import org.javatuples.Pair;
 import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
 import org.jpos.iso.ISOUtil;
-import org.jpos.util.*;
+import org.jpos.util.LogEvent;
+import org.jpos.util.LogSource;
+import org.jpos.util.Loggeable;
+import org.jpos.util.Logger;
+import org.jpos.util.NameRegistrar;
 import org.jpos.util.NameRegistrar.NotFoundException;
+import org.jpos.util.SimpleMsg;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -724,9 +730,8 @@ public class BaseSMAdapter
      *        A 4 byte value must be supplied.
      * @param data track data
      * @param mkdm ICC Master Key Derivation Method. If {@code null} specified
-     *        is assumed {@see MKDMethod#OPTION_A}
+     *        is assumed.
      * @param cvc3 dynamic Card Verification Code 3
-     * @return
      * @throws SMException
      */
     @Override
@@ -1212,8 +1217,7 @@ public class BaseSMAdapter
      * @param pvkB
      * @param pvki
      * @param pvv
-     * @return
-     * @throws SMException 
+     * @throws SMException
      */
     protected boolean verifyPVVImpl(EncryptedPIN pinUnderKd, SecureDESKey kd, SecureDESKey pvkA,
                         SecureDESKey pvkB, int pvki, String pvv) throws SMException {
@@ -1265,7 +1269,6 @@ public class BaseSMAdapter
      * @param decTab
      * @param pinValData
      * @param minPinLen
-     * @return
      * @throws SMException
      */
     protected boolean verifyIBMPINOffsetImpl(EncryptedPIN pinUnderKd, SecureDESKey kd
@@ -1331,7 +1334,6 @@ public class BaseSMAdapter
      * @param serviceCode
      * @param atc
      * @param mkdm
-     * @return
      * @throws SMException
      */
     protected boolean verifydCVVImpl(String accountNo, SecureDESKey imkac, String dcvv,
@@ -1350,7 +1352,6 @@ public class BaseSMAdapter
      * @param data
      * @param mkdm
      * @param cvc3
-     * @return
      * @throws SMException
      */
     protected boolean verifyCVC3Impl(SecureDESKey imkcvc3, String accountNo, String acctSeqNo,

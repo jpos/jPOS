@@ -30,10 +30,7 @@ public interface Interpreter
 	 * Converts the string data into a different interpretation. Standard
 	 * interpretations are ASCII, EBCDIC, BCD and LITERAL.
 	 * 
-	 * @param data
-	 *            The data to be interpreted.
      * @throws ISOException on error
-	 * @return The interpreted data.
 	 */
     void interpret(String data, byte[] b, int offset) throws ISOException;
 

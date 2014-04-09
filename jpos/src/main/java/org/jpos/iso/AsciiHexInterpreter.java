@@ -37,7 +37,6 @@ public class AsciiHexInterpreter implements BinaryInterpreter
 
     /**
      * Converts the binary data into ASCII hex digits.
-     * @see org.jpos.iso.BinaryInterpreter#interpret(byte[], byte[], int)
      */
     public void interpret(byte[] data, byte[] b, int offset)
     {
@@ -49,7 +48,6 @@ public class AsciiHexInterpreter implements BinaryInterpreter
 
     /**
      * Converts the ASCII hex digits into binary data.
-     * @see org.jpos.iso.BinaryInterpreter#uninterpret(byte[], int, int)
      */
     public byte[] uninterpret(byte[] rawData, int offset, int length)
     {
@@ -63,8 +61,7 @@ public class AsciiHexInterpreter implements BinaryInterpreter
 
     /**
      * Returns double nBytes because the hex representation of 1 byte needs 2 hex digits.
-     * 
-     * @see org.jpos.iso.BinaryInterpreter#getPackedLength(int)
+     *
      */
     public int getPackedLength(int nBytes)
     {

@@ -26,9 +26,6 @@ import javax.swing.*;
  * @author Alejandro Revilla
  *
  * UI delegates the creation of UI components to an UIFactory.
- * @param ui reference to this UI instance
- * @param config free form configuration Element
- * @return a JComponent
  */
 public interface UIFactory {
     public JComponent create (UI ui, Element config);

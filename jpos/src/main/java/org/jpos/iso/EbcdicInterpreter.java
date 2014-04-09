@@ -32,9 +32,8 @@ public class EbcdicInterpreter implements Interpreter
 
     /**
 	 * (non-Javadoc)
-	 * 
-	 * @see org.jpos.iso.Interpreter#interpret(java.lang.String)
-	 */
+	 *
+     */
     public void interpret(String data, byte[] b, int offset)
     {
         ISOUtil.asciiToEbcdic(data, b, offset);
@@ -42,9 +41,8 @@ public class EbcdicInterpreter implements Interpreter
 
     /**
 	 * (non-Javadoc)
-	 * 
-	 * @see org.jpos.iso.Interpreter#uninterpret(byte[])
-	 */
+	 *
+     */
     public String uninterpret(byte[] rawData, int offset, int length)
     {
         return ISOUtil.ebcdicToAscii(rawData, offset, length);
@@ -52,9 +50,8 @@ public class EbcdicInterpreter implements Interpreter
 
     /**
 	 * (non-Javadoc)
-	 * 
-	 * @see org.jpos.iso.Interpreter#getPackedLength(int)
-	 */
+	 *
+     */
     public int getPackedLength(int nDataUnits)
     {
         return nDataUnits;

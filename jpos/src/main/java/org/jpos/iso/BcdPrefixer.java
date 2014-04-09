@@ -61,9 +61,6 @@ public class BcdPrefixer implements Prefixer
         this.nDigits = nDigits;
     }
 
-    /**
-	 * @see org.jpos.iso.Prefixer#encodeLength(int, byte[])
-	 */
     public void encodeLength(int length, byte[] b)
     {
         for (int i = getPackedLength() - 1; i >= 0; i--) {
@@ -73,9 +70,6 @@ public class BcdPrefixer implements Prefixer
         }
     }
 
-    /**
-	 * @see org.jpos.iso.Prefixer#decodeLength(byte[], int)
-	 */
     public int decodeLength(byte[] b, int offset)
     {
         int len = 0;

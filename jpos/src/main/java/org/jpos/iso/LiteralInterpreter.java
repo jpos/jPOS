@@ -34,9 +34,8 @@ public class LiteralInterpreter implements Interpreter
 
     /**
 	 * (non-Javadoc)
-	 * 
-	 * @see org.jpos.iso.Interpreter#interpret(String, byte[], int)
-	 */
+	 *
+     */
     public void interpret(String data, byte[] b, int offset)
     {
         try {
@@ -47,9 +46,8 @@ public class LiteralInterpreter implements Interpreter
 
     /**
 	 * (non-Javadoc)
-	 * 
-	 * @see org.jpos.iso.Interpreter#uninterpret(byte[], int, int)
-	 */
+	 *
+     */
     public String uninterpret(byte[] rawData, int offset, int length) {
         try {
             return new String(rawData, offset, length, ISOUtil.ENCODING);
@@ -59,9 +57,8 @@ public class LiteralInterpreter implements Interpreter
 
     /**
 	 * (non-Javadoc)
-	 * 
-	 * @see org.jpos.iso.Interpreter#getPackedLength(int)
-	 */
+	 *
+     */
     public int getPackedLength(int nDataUnits)
     {
         return nDataUnits;

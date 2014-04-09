@@ -235,7 +235,7 @@ public class Context implements Externalizable, Loggeable, Pausable {
     }
     /**
      * adds a trace message
-     * @msg trace information
+     * @param msg trace information
      */
     public void log (Object msg) {
         getLogEvent().addMessage (msg);

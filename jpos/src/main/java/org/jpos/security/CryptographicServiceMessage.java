@@ -21,7 +21,6 @@ package org.jpos.security;
 import org.jpos.util.Loggeable;
 
 import java.io.PrintStream;
-import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.StringTokenizer;
 import java.util.Vector;
@@ -35,7 +34,6 @@ import java.util.Vector;
  * For more information refer to ANSI X9.17: Financial Institution Key Mangement
  * (Wholesale).
  * </p>
- * @todo add sub-fields support
  * @author Hani S. Kirollos
  * @version $Revision$ $Date$
  */

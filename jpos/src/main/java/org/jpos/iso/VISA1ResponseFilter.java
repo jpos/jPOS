@@ -20,7 +20,6 @@ package org.jpos.iso;
 
 public interface VISA1ResponseFilter {
     /**
-     * @param VISA1 response message
      * @return authorization number or null
      */
     public String guessAutNumber (String response);

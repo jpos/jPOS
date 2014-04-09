@@ -174,7 +174,6 @@ public class SecureDESKey extends SecureKey {
     /**
      * Key Type Scheme is useful for stating whitch scheme variant of key type should be used.
      * ... TO COMPLITE ...<BR>
-     * @param variant
      */
     public void setScheme(KeyScheme scheme){
         this.scheme = scheme;

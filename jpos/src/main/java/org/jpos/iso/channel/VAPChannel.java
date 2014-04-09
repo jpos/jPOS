@@ -103,7 +103,6 @@ public class VAPChannel extends BaseChannel {
      * This method reads in a Base 1 Header.
      *
      * @param hLen
-     * @return
      * @throws IOException
      */
     protected byte[] readHeader(int hLen)

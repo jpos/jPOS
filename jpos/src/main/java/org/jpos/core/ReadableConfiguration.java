@@ -28,7 +28,7 @@ package org.jpos.core;
  */
 public interface ReadableConfiguration {
    /**
-    * @returns cfg Configuration object
+    * @return cfg Configuration object
     */
     public Configuration getConfiguration ();
 }

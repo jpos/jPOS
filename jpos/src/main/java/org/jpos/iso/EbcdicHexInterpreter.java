@@ -39,7 +39,6 @@ public class EbcdicHexInterpreter implements BinaryInterpreter
 
     /**
      * Converts the binary data into EBCDIC hex digits.
-     * @see org.jpos.iso.BinaryInterpreter#interpret(byte[], byte[], int)
      */
     public void interpret(byte[] data, byte[] b, int offset)
     {
@@ -51,7 +50,6 @@ public class EbcdicHexInterpreter implements BinaryInterpreter
 
     /**
      * Converts the EBCDIC hex digits into binary data.
-     * @see org.jpos.iso.BinaryInterpreter#uninterpret(byte[], int, int)
      */
     public byte[] uninterpret(byte[] rawData, int offset, int length)
     {
@@ -70,8 +68,7 @@ public class EbcdicHexInterpreter implements BinaryInterpreter
 
     /**
      * Returns double nBytes because the hex representation of 1 byte needs 2 hex digits.
-     * 
-     * @see org.jpos.iso.BinaryInterpreter#getPackedLength(int)
+     *
      */
     public int getPackedLength(int nBytes)
     {

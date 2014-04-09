@@ -54,7 +54,6 @@ public class JDBMSpace<K,V> extends TimerTask implements Space<K,V> {
      * protected constructor.
      * @param name Space Name
      * @param filename underlying JDBM filename
-     * @see SpaceFactory().getSpace()
      */
     protected JDBMSpace (String name, String filename) {
         super();

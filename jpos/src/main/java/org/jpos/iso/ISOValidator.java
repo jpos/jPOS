@@ -34,7 +34,7 @@ public interface ISOValidator {
 
     /**
      * Validate an ISOComponent.
-     * @throws ISOVException if break-on-error is assummed and there are
+     * @throws ISOException if break-on-error is assummed and there are
      * some errors.
      */
     public ISOComponent validate( ISOComponent m ) throws ISOException;

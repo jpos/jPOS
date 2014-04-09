@@ -31,8 +31,7 @@ public class NullPadder implements Padder
     public static final NullPadder INSTANCE = new NullPadder();
 
     /**
-	 * @see org.jpos.iso.Padder#pad(java.lang.String, int, char)
-	 */
+     */
     public String pad(String data, int maxLength)
     {
         return data;
@@ -40,9 +39,8 @@ public class NullPadder implements Padder
 
     /**
 	 * (non-Javadoc)
-	 * 
-	 * @see org.jpos.iso.Padder#unpad(java.lang.String, char)
-	 */
+	 *
+     */
     public String unpad(String paddedData)
     {
         return paddedData;

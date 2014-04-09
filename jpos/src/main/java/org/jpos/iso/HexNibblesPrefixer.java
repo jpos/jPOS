@@ -34,9 +34,6 @@ public class HexNibblesPrefixer implements Prefixer {
         this.nDigits = nDigits;
     }
 
-    /**
-	 * @see org.jpos.iso.Prefixer#encodeLength(int, byte[])
-	 */
     public void encodeLength(int length, byte[] b) {
         length <<= 1;
         for (int i = getPackedLength() - 1; i >= 0; i--) {
@@ -46,9 +43,6 @@ public class HexNibblesPrefixer implements Prefixer {
         }
     }
 
-    /**
-	 * @see org.jpos.iso.Prefixer#decodeLength(byte[], int)
-	 */
     public int decodeLength(byte[] b, int offset) {
         int len = 0;
         for (int i = 0; i < (nDigits + 1) / 2; i++)

@@ -32,8 +32,6 @@ import java.util.Set;
  *
  * @author Alejandro Revilla
  * @version $Revision$ $Date$
- * @jmx:mbean description="Space QBean"
- *                  extends="org.jpos.q2.QBeanSupportMBean"
  */
 
 public class SpaceAdaptor 
@@ -65,25 +63,16 @@ public class SpaceAdaptor
         getServer().getMBeanServer().unregisterMBean (objectName);
     }
 
-    /**
-     * @jmx:managed-attribute description="Space Name"
-     */
     public synchronized void setSpaceName (String spaceName) {
         this.spaceName = spaceName;
         setAttr (getAttrs (), "spaceName", spaceName);
         setModified (true);
     }
 
-    /**
-     * @jmx:managed-attribute description="Space Name"
-     */
     public String getSpaceName () {
         return spaceName;
     }
     
-    /**
-     * @jmx:managed-attribute description="Space Keys"
-     */
     public Set getKeys () {
         if (sp instanceof LocalSpace) 
             return ((LocalSpace)sp).getKeySet ();

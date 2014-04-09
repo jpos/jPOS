@@ -88,7 +88,6 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
 
     /**
      * creates a new CardHolder based on pan and exp
-     * @param track2 cards track2
      * @exception InvalidCardException
      */
     public CardHolder (String pan, String exp) 

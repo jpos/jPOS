@@ -40,8 +40,6 @@ import org.jpos.util.NameRegistrar;
  * @author Hani Kirollos
  * @author Alejandro Revilla
  * @version $Revision$ $Date$
- * @jmx:mbean description="SMAdaptor QBean"
- *                extends="org.jpos.q2.QBeanSupportMBean"
  */
 public class SMAdaptor extends QBeanSupport implements SMAdaptorMBean
 {
@@ -58,15 +56,10 @@ public class SMAdaptor extends QBeanSupport implements SMAdaptorMBean
         factory.setConfiguration (sm, e);
     }
 
-    /**
-     * @jmx:managed-attribute description="Implementation class name"
-     */
     public void setImpl (String clazz) {
         this.clazz = clazz;
     }
-    /**
-     * @jmx:managed-attribute description="Implementation class name"
-     */
+
     public String getImpl() {
         return clazz;
     }

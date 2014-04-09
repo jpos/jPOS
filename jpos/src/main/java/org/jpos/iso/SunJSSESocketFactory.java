@@ -337,9 +337,6 @@ public class SunJSSESocketFactory
     }
 
 
-    /**
-     * @see org.jpos.core.Configurable#setConfiguration(org.jpos.core.Configuration)
-     */
     public void setConfiguration(Configuration cfg) throws ConfigurationException {
         this.cfg = cfg;
         keyStore = cfg.get("keystore");
