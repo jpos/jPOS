@@ -34,7 +34,8 @@ import java.util.List;
  * @see ISOBasePackager
  * @see ISOComponent
  */
-public class VISA1Packager 
+@SuppressWarnings("unchecked")
+public class VISA1Packager
     extends SimpleLogSource implements ISOPackager, VISA1ResponseFilter
 {
     public static final byte[] FS = { (byte)'\034' };

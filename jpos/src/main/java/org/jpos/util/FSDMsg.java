@@ -100,6 +100,7 @@ import org.jpos.space.SpaceFactory;
  * @author Dave Bergert
  * @since 1.4.7
  */
+@SuppressWarnings("unchecked")
 public class FSDMsg implements Loggeable, Cloneable {
     public static char FS = '\034';
     public static char US = '\037';

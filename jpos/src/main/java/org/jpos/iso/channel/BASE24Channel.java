@@ -40,6 +40,7 @@ import java.net.SocketException;
  * @see ISOException
  * @see ISOChannel
  */
+@SuppressWarnings("deprecation")
 public class BASE24Channel extends BaseChannel {
     /**
      * Public constructor (used by Class.forName("...").newInstance())

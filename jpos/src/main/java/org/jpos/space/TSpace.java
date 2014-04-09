@@ -30,6 +30,7 @@ import java.util.concurrent.TimeUnit;
  * @since !.4.9
  */
 
+@SuppressWarnings("unchecked")
 public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
     protected Map entries;
     protected TSpace sl;    // space listeners

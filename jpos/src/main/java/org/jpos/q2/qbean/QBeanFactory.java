@@ -25,6 +25,7 @@ import org.jpos.util.NameRegistrar;
 
 import java.util.*;
 
+@SuppressWarnings("unchecked")
 public class QBeanFactory extends QBeanSupport implements QBeanFactoryMBean {
   
     private static Map beanMap = new WeakHashMap();

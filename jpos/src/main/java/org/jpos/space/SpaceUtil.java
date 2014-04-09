@@ -29,6 +29,7 @@ import java.util.List;
  * @since 1.4.7
  */
 
+@SuppressWarnings("unchecked")
 public class SpaceUtil {
     /**
      * return all entries under a given key

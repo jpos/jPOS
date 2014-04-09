@@ -33,7 +33,7 @@ import java.util.Date;
  * @author apr
  * @since 1.8.5
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "unchecked"})
 public class MultiSessionChannelAdaptor 
     extends ChannelAdaptor
     implements MultiSessionChannelAdaptorMBean, Channel, Loggeable
@@ -77,6 +77,7 @@ public class MultiSessionChannelAdaptor
     public void setSessions(int sessions) {
         this.sessions = sessions;
     }
+    @SuppressWarnings("unchecked")
     public class Sender implements Runnable {
         public Sender () {
             super ();
@@ -115,6 +116,7 @@ public class MultiSessionChannelAdaptor
             disconnectAll();
         }
     }
+    @SuppressWarnings("unchecked")
     public class Receiver implements Runnable {
         int slot;
         ISOChannel channel;

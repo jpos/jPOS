@@ -26,6 +26,7 @@ import java.util.*;
  * @version $Revision$ $Date$
  * @since 2.0
  */
+@SuppressWarnings("unchecked")
 public class TransientSpace implements LocalSpace, TransientSpaceMBean {
     protected Map map;
     static LocalSpace defaultSpace = new TransientSpace ();
@@ -141,6 +142,7 @@ public class TransientSpace implements LocalSpace, TransientSpaceMBean {
             data.removeListener (listener);
     }
 
+    @SuppressWarnings("unchecked")
     protected static final class Data {
         LinkedList data;
         LinkedList listeners;

@@ -29,6 +29,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
+@SuppressWarnings("unchecked")
 public class TSpaceTestCase implements SpaceListener {
     TSpace<String, Object> sp;
     public static final int COUNT = 100000;

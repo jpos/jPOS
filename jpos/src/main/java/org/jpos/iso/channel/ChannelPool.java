@@ -34,6 +34,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Vector;
 
+@SuppressWarnings("unchecked")
 public class ChannelPool implements ISOChannel, LogSource, Configurable, Cloneable {
     boolean usable = true;
     String name = "";

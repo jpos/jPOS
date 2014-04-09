@@ -38,6 +38,7 @@ import java.util.Map;
  * @author Jose Eduardo Leon
  * @version 1.0
  */
+@SuppressWarnings("unchecked")
 public class VErrorParser implements LogSource, Loggeable  {
 
     /**

@@ -35,7 +35,8 @@ import java.util.HashSet;
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
  * @version $Revision$ $Date$
  */
-public class BSHRequestListener extends Log 
+@SuppressWarnings("unchecked")
+public class BSHRequestListener extends Log
     implements ISORequestListener, Configurable
 {
     protected static final String MTI_MACRO = "$mti";

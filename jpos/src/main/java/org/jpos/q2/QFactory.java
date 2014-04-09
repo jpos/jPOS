@@ -45,6 +45,7 @@ import java.util.StringTokenizer;
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
  * @version $Revision$ $Date$
  */
+@SuppressWarnings("unchecked")
 public class QFactory {
     ObjectName loaderName;
     Q2 q2;

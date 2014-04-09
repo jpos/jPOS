@@ -33,6 +33,7 @@ import java.awt.event.MouseListener;
  * @author Kris Leite <kleite at imcsoftware.com>
  * @see org.jpos.iso.ISOMsg
  */
+@SuppressWarnings("deprecation")
 public class ISOMeter extends JComponent implements Runnable {
 
     private static final long serialVersionUID = -1770533267122111538L;

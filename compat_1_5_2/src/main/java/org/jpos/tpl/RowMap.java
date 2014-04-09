@@ -31,6 +31,7 @@ import java.util.Map;
  * @author apr@cs.com.uy
  * @version $Id$
  */
+@SuppressWarnings("unchecked")
 public class RowMap {
     protected Map map;
     public RowMap () {

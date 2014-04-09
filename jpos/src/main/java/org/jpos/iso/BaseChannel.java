@@ -65,7 +65,8 @@ import java.util.Vector;
  * @see Logger
  *
  */
-public abstract class BaseChannel extends Observable 
+@SuppressWarnings("unchecked")
+public abstract class BaseChannel extends Observable
     implements FilteredChannel, ClientChannel, ServerChannel, FactoryChannel, 
                LogSource, Configurable, BaseChannelMBean, Cloneable
 {

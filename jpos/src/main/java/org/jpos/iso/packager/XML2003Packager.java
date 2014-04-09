@@ -41,6 +41,7 @@ import java.util.Stack;
  * @version $Id: XMLPackager.java 2594 2008-01-22 16:41:31Z apr $
  * @see ISOPackager
  */
+@SuppressWarnings("unchecked")
 public class XML2003Packager extends DefaultHandler
                          implements ISOPackager, LogSource
 {

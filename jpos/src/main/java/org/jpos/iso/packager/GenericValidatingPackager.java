@@ -58,6 +58,7 @@ import java.util.TreeMap;
  * @author Jose Eduardo Leon
  * @version 1.0
  */
+@SuppressWarnings("unchecked")
 public class GenericValidatingPackager extends GenericPackager implements ISOValidator {
 
     public GenericValidatingPackager(  ) throws ISOException{
@@ -185,6 +186,7 @@ These can be changes using attributes on the isopackager node */
     static final int inc = 500;
 
 
+    @SuppressWarnings("unchecked")
     public class GenericValidatorContentHandler extends DefaultHandler {
         @Override
         public void startDocument(){

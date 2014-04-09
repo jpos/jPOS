@@ -48,6 +48,7 @@ import java.util.List;
  * </pre>
  * @see org.jpos.ui.UIFactory
  */
+@SuppressWarnings("unchecked")
 public class JTabbedPaneFactory implements UIFactory, ChangeListener {
     UI ui;
     List actions = new ArrayList();

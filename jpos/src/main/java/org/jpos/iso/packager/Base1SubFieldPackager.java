@@ -39,7 +39,8 @@ import java.util.Map;
  * @see ISOComponent
  */
 
-public class Base1SubFieldPackager extends ISOBasePackager 
+@SuppressWarnings("unchecked")
+public class Base1SubFieldPackager extends ISOBasePackager
 {
     // These methods are identical to ISOBasePackager
     // except that fld[1] has been replaced with fld[0]

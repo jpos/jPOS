@@ -32,6 +32,7 @@ import java.util.List;
 /**
  * @author bharavi
  */
+@SuppressWarnings("unchecked")
 public class TLVList implements Serializable {
 
     private List<TLVMsg> tags = new ArrayList();

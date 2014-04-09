@@ -33,6 +33,7 @@ import java.util.Iterator;
  * @see CardAgent
  * @see CardTransaction
  */
+@SuppressWarnings("unchecked")
 public class CardAgentLookup {
     private static CardAgentLookup instance = new CardAgentLookup();
     private ArrayList agents;

@@ -22,6 +22,7 @@ import junit.framework.TestCase;
 import org.jpos.iso.ISOUtil;
 import org.jpos.util.Profiler;
 
+@SuppressWarnings("unchecked")
 public class JDBMSpaceTestCase extends TestCase {
     public static final int COUNT = 100;
     JDBMSpace<String,Object> sp;

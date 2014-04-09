@@ -49,6 +49,7 @@ package org.jpos.util;
 import java.util.Hashtable;
 import java.util.Map;
 
+@SuppressWarnings("unchecked")
 public class SimpleLockManager implements LockManager {
     Map locks;
 

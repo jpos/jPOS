@@ -38,6 +38,7 @@ import static org.junit.Assert.fail;
  *
  * @author Robert Demski
  */
+@SuppressWarnings("unchecked")
 public class TSpacePerformanceTest  {
 
     LocalSpace<String,Object> sp1;
@@ -85,6 +86,7 @@ public class TSpacePerformanceTest  {
         }  
     }
 
+    @SuppressWarnings("unchecked")
     class WriteSpaceWithNotifyTask implements Runnable, SpaceListener<String,Object> {
         String key;
         LocalSpace sp1;
