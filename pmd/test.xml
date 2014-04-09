@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pmd version="4.3" timestamp="2014-04-08T21:45:17.956">
+<pmd version="4.3" timestamp="2014-04-09T21:36:39.420">
 <file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/bsh/BSHLogListenerTest.java">
 <violation beginline="113" endline="115" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.jpos.bsh" class="BSHLogListenerTest" method="testLoadCodeThrowsNullPointerException" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
@@ -74,7 +74,7 @@ Avoid empty catch blocks
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/q2/iso/ChannelAdaptorTest.java">
-<violation beginline="265" endline="267" begincolumn="17" endcolumn="17" rule="CollapsibleIfStatements" ruleset="Basic Rules" package="org.jpos.q2.iso" class="ChannelAdaptorTest" method="findSendAndReceiveThreads" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#CollapsibleIfStatements" priority="3">
+<violation beginline="266" endline="268" begincolumn="17" endcolumn="17" rule="CollapsibleIfStatements" ruleset="Basic Rules" package="org.jpos.q2.iso" class="ChannelAdaptorTest" method="findSendAndReceiveThreads" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#CollapsibleIfStatements" priority="3">
 These nested if statements could be combined
 </violation>
 </file>
@@ -180,7 +180,7 @@ Avoid empty catch blocks
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/util/FSDMsgTest.java">
-<violation beginline="1160" endline="1160" begincolumn="11" endcolumn="40" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.jpos.util" class="FSDMsgTest" method="testPackToBDStoLong" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
+<violation beginline="1161" endline="1161" begincolumn="11" endcolumn="40" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.jpos.util" class="FSDMsgTest" method="testPackToBDStoLong" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
 </violation>
 </file>
