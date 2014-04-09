@@ -29,6 +29,7 @@ import org.jpos.util.Profiler;
 import java.io.*;
 import java.util.*;
 
+@SuppressWarnings("unchecked")
 public class Context implements Externalizable, Loggeable, Pausable {
     private transient Map map; // transient map
     private Map pmap;          // persistent (serializable) map

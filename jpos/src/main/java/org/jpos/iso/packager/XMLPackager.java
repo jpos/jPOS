@@ -40,6 +40,7 @@ import java.util.Stack;
  * @version $Id$
  * @see ISOPackager
  */
+@SuppressWarnings("unchecked")
 public class XMLPackager extends DefaultHandler
                          implements ISOPackager, LogSource
 {

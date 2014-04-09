@@ -38,6 +38,7 @@ import java.util.Vector;
  * @version $Revision$ $Date$
  */
 
+@SuppressWarnings("unchecked")
 public class CryptographicServiceMessage implements Loggeable {
     Hashtable fields = new Hashtable();
     Vector orderedTags = new Vector();

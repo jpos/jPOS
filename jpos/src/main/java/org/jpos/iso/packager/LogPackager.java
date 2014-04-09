@@ -39,6 +39,7 @@ import java.util.Stack;
  * @version $Id$
  * @see ISOPackager
  */
+@SuppressWarnings("unchecked")
 public class LogPackager extends DefaultHandler
                          implements ISOPackager, LogSource
 {

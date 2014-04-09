@@ -34,7 +34,8 @@ import java.util.Vector;
  * @see FilteredChannel
  */
 
-public abstract class FilteredBase extends Observable 
+@SuppressWarnings("unchecked")
+public abstract class FilteredBase extends Observable
     implements FilteredChannel, Cloneable
 {
     protected Vector incomingFilters, outgoingFilters;

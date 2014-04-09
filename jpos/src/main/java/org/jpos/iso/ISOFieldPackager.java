@@ -56,7 +56,6 @@ import java.io.ObjectOutput;
  * @see IFB_LLNUM
  * @see IFB_NUMERIC
  * @see IF_CHAR
- * @see IF_ECHAR
  */
 public abstract class ISOFieldPackager {
     private int len;

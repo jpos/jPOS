@@ -39,6 +39,7 @@ import java.util.Vector;
  * @see ISOChannelPanel
  * @see ISORequestListenerPanel
  */
+@SuppressWarnings({"unchecked", "deprecation"})
 public class ISOMsgPanel extends JPanel {
 
     private static final long serialVersionUID = 7779880613544725704L;

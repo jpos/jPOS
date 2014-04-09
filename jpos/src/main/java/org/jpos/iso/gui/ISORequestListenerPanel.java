@@ -29,6 +29,7 @@ import java.awt.event.MouseListener;
 import java.util.Observable;
 import java.util.Observer;
 
+@SuppressWarnings("deprecation")
 public class ISORequestListenerPanel extends JPanel implements Observer {
 
     private static final long serialVersionUID = -1786048717180010741L;

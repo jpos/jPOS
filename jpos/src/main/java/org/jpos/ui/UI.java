@@ -38,6 +38,7 @@ import java.util.*;
  *
  * See src/examples/ui/* for usage details
  */
+@SuppressWarnings({"unchecked", "deprecation"})
 public class UI implements UIFactory, UIObjectFactory {
     JFrame mainFrame;
     Map registrar, mapping;

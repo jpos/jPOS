@@ -35,6 +35,7 @@ import org.jpos.space.SpaceFactory;
 import org.jpos.util.NameRegistrar;
 import org.junit.*;
 
+@SuppressWarnings("unchecked")
 public class QMUXTestCase implements ISOResponseListener {
     Q2 q2;
     Space sp;

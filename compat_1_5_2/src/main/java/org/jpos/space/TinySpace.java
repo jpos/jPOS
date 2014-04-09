@@ -31,6 +31,7 @@ import java.util.Map;
  * @since 1.4.7
  * @deprecated org.jpos.space.TSpace is the new default lightweight space
  */
+@SuppressWarnings("unchecked")
 public class TinySpace implements Space, Serializable {
     protected Map map = new HashMap ();
     private static final long serialVersionUID = -5216796586015661708L;
@@ -165,6 +166,7 @@ public class TinySpace implements Space, Serializable {
     public void put (Object key, Object value, long timeout) {
         throw new SpaceError ("Unsupported operation");
     }
+    @SuppressWarnings("unchecked")
     protected static final class Data {
         LinkedList data;
 

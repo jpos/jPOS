@@ -32,7 +32,8 @@ import java.net.URLClassLoader;
  * @author <a href="mailto:taherkordy@dpi2.dpi.net.ir">Alireza Taherkordi</a>
  * @version $Revision$ $Date$
  */
-public class QClassLoader 
+@SuppressWarnings("deprecation")
+public class QClassLoader
     extends URLClassLoader 
     implements QClassLoaderMBean, FileFilter {
     File libDir;

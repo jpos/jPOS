@@ -48,6 +48,7 @@ import java.util.StringTokenizer;
  * @version $Revision$ $Date$
  */
 
+@SuppressWarnings("unchecked")
 public class QServer
     extends QBeanSupport
     implements QServerMBean, SpaceListener, ISORequestListener

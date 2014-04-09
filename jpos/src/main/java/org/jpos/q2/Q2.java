@@ -52,6 +52,7 @@ import static java.util.ResourceBundle.*;
  * @author <a href="mailto:alwynschoeman@yahoo.com">Alwyn Schoeman</a>
  * @author <a href="mailto:vsalaman@vmantek.com">Victor Salaman</a>
  */
+@SuppressWarnings("unchecked")
 public class Q2 implements FileFilter, Runnable {
     public static final String DEFAULT_DEPLOY_DIR  = "deploy";
     public static final String JMX_NAME            = "Q2";

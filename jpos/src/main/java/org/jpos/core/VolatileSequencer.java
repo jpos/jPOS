@@ -29,6 +29,7 @@ import java.util.Map;
  * A simple sequencer intended for Debugging applications.<br>
  * Production grade Sequencers are required to be persistent capables
  */
+@SuppressWarnings("unchecked")
 public class VolatileSequencer implements Sequencer, VolatileSequencerMBean {
     private Map map;
     public VolatileSequencer () {

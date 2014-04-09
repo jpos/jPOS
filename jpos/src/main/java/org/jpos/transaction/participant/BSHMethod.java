@@ -36,6 +36,7 @@ import java.util.Map;
  *
  * @author  AMarques
  */
+@SuppressWarnings("unchecked")
 public class BSHMethod {
     
     private String bshData;

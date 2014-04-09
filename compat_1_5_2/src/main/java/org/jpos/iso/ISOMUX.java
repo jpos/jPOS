@@ -18,9 +18,13 @@
 
 package org.jpos.iso;
 
+import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
-import org.jpos.core.ReConfigurable;
-import org.jpos.util.*;
+import org.jpos.util.LogEvent;
+import org.jpos.util.LogSource;
+import org.jpos.util.Loggeable;
+import org.jpos.util.Logger;
+import org.jpos.util.NameRegistrar;
 
 import java.io.EOFException;
 import java.io.IOException;
@@ -41,8 +45,9 @@ import java.util.Vector;
  * @see ISORequestListener
  */
 
+@SuppressWarnings({"unchecked", "deprecation"})
 public class ISOMUX implements Runnable, LogSource, MUX,
-                               ReConfigurable, Loggeable, ISOMUXMBean
+                               Configurable, Loggeable, ISOMUXMBean
 {
     private ISOChannel channel;
     private Thread rx = null, tx = null;

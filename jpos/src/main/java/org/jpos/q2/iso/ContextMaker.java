@@ -39,6 +39,7 @@ import java.util.List;
  * @author Mark Salter
  * @version $Revision: 2854 $ $Date: 2010-01-02 10:34:31 +0000 (Sat, 02 Jan 2010) $
  */
+@SuppressWarnings("unchecked")
 public class ContextMaker extends QBeanSupport implements Runnable,
 		Loggeable {
 
