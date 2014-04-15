@@ -31,10 +31,10 @@ import org.jpos.util.NameRegistrar;
 import javax.net.ssl.SSLSocket;
 import java.io.*;
 import java.net.*;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
+import java.util.List;
 import java.util.Observable;
-import java.util.Vector;
 
 /*
  * BaseChannel was ISOChannel. Now ISOChannel is an interface
@@ -91,7 +91,7 @@ public abstract class BaseChannel extends Observable
     protected Object serverOutLock = new Object();
     protected ISOPackager packager;
     protected ServerSocket serverSocket = null;
-    protected Vector incomingFilters, outgoingFilters;
+    protected List<ISOFilter> incomingFilters, outgoingFilters;
     protected ISOClientSocketFactory socketFactory = null;
 
     protected int[] cnt;
@@ -110,8 +110,8 @@ public abstract class BaseChannel extends Observable
         super();
         cnt = new int[SIZEOF_CNT];
         name = "";
-        incomingFilters = new Vector();
-        outgoingFilters = new Vector();
+        incomingFilters = new ArrayList();
+        outgoingFilters = new ArrayList();
         setHost(null, 0);
     }
 
@@ -898,9 +898,8 @@ public abstract class BaseChannel extends Observable
     protected ISOMsg applyOutgoingFilters (ISOMsg m, LogEvent evt) 
         throws VetoException
     {
-        Iterator iter  = outgoingFilters.iterator();
-        while (iter.hasNext())
-            m = ((ISOFilter) iter.next()).filter (this, m, evt);
+        for (ISOFilter f :outgoingFilters)
+            m = f.filter (this, m, evt);
         return m;
     }
     protected ISOMsg applyIncomingFilters (ISOMsg m, LogEvent evt) 
@@ -911,9 +910,7 @@ public abstract class BaseChannel extends Observable
     protected ISOMsg applyIncomingFilters (ISOMsg m, byte[] header, byte[] image, LogEvent evt) 
         throws VetoException
     {
-        Iterator iter  = incomingFilters.iterator();
-        while (iter.hasNext()) {
-            ISOFilter f = (ISOFilter) iter.next ();
+        for (ISOFilter f :incomingFilters) {
             if (image != null && (f instanceof RawIncomingFilter))
                 m = ((RawIncomingFilter)f).filter (this, m, header, image, evt);
             else
@@ -979,17 +976,17 @@ public abstract class BaseChannel extends Observable
     public Configuration getConfiguration() {
         return cfg;
     }
-    public Collection getIncomingFilters() {
+    public Collection<ISOFilter> getIncomingFilters() {
         return incomingFilters;
     }
-    public Collection getOutgoingFilters() {
+    public Collection<ISOFilter> getOutgoingFilters() {
         return outgoingFilters;
     }
     public void setIncomingFilters (Collection filters) {
-        incomingFilters = new Vector (filters);
+        incomingFilters = new ArrayList (filters);
     }
     public void setOutgoingFilters (Collection filters) {
-        outgoingFilters = new Vector (filters);
+        outgoingFilters = new ArrayList (filters);
     }
     public void setHeader (byte[] header) {
         this.header = header;
