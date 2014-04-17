@@ -614,11 +614,7 @@ public enum EMVStandardTagType implements EMVTagType {
     }
 
     @Override
-    public int getTagNumber() throws NoTagNumberForProprietaryTagException {
-        if (isProprietaryTag()) {
-            throw new NoTagNumberForProprietaryTagException("ProprietaryTag: " +
-                    getTagShortDescription());
-        }
+    public int getTagNumber() {
         return tagNumber;
     }
 
@@ -626,27 +622,15 @@ public enum EMVStandardTagType implements EMVTagType {
         return false;
     }
 
-    public int getTagNumberLength() throws NoTagNumberForProprietaryTagException {
-        if (isProprietaryTag()) {
-            throw new NoTagNumberForProprietaryTagException("ProprietaryTag: " +
-                    getTagShortDescription());
-        }
+    public int getTagNumberLength() {
         return tagNumber > 0xFF ? 2 : 1;
     }
 
-    public String getTagNumberHex() throws NoTagNumberForProprietaryTagException {
-        if (isProprietaryTag()) {
-            throw new NoTagNumberForProprietaryTagException("ProprietaryTag: " +
-                    getTagShortDescription());
-        }
+    public String getTagNumberHex() {
         return Integer.toHexString(tagNumber).toUpperCase();
     }
 
-    public byte[] getTagNumberBytes() throws NoTagNumberForProprietaryTagException {
-        if (isProprietaryTag()) {
-            throw new NoTagNumberForProprietaryTagException("ProprietaryTag: " +
-                    getTagShortDescription());
-        }
+    public byte[] getTagNumberBytes() {
         return ISOUtil.int2byte(tagNumber);
     }
 

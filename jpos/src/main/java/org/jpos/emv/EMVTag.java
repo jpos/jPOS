@@ -19,7 +19,7 @@ public abstract class EMVTag<T> implements TagValue<T>, Serializable {
     private final T value;
 
 
-    public EMVTag(final EMVStandardTagType tagType, final T value) throws IllegalArgumentException, NoTagNumberForProprietaryTagException {
+    public EMVTag(final EMVStandardTagType tagType, final T value) throws IllegalArgumentException {
         if (tagType == null) {
             throw new IllegalArgumentException("tagType cannot be null");
         }
@@ -41,17 +41,11 @@ public abstract class EMVTag<T> implements TagValue<T>, Serializable {
                 }
             } catch (ProprietaryFormatException e) {
                 throw new IllegalStateException(e);
-            } catch (NoTagNumberForProprietaryTagException e) {
-                throw new IllegalStateException(e);
             }
         }
         this.tagType = tagType;
         this.value = value;
-        try {
-            this.tagNumber = tagType.getTagNumber();
-        } catch (NoTagNumberForProprietaryTagException e) {
-            throw new IllegalStateException(e);
-        }
+        this.tagNumber = tagType.getTagNumber();
         this.dataFormat = tagType.getFormat();
     }
 
@@ -79,8 +73,6 @@ public abstract class EMVTag<T> implements TagValue<T>, Serializable {
                             value.getClass());
                 }
             } catch (ProprietaryFormatException e) {
-                throw new IllegalStateException(e);
-            } catch (NoTagNumberForProprietaryTagException e) {
                 throw new IllegalStateException(e);
             }
         }

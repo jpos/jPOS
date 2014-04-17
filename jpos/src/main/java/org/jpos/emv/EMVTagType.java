@@ -8,7 +8,7 @@ import org.jpos.tlv.TLVDataFormat;
  */
 public interface EMVTagType {
 
-    public int getTagNumber() throws NoTagNumberForProprietaryTagException;
+    public int getTagNumber();
 
     public String getTagShortDescription();
 
@@ -24,9 +24,9 @@ public interface EMVTagType {
 
     boolean isProprietaryFormat();
 
-    String getTagNumberHex() throws NoTagNumberForProprietaryTagException;
+    String getTagNumberHex();
 
-    public byte[] getTagNumberBytes() throws NoTagNumberForProprietaryTagException;
+    public byte[] getTagNumberBytes();
 
     Class<?> getDataType() throws ProprietaryFormatException;
 

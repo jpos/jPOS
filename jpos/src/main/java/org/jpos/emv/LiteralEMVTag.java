@@ -10,7 +10,7 @@ import org.jpos.tlv.TLVDataFormat;
 public class LiteralEMVTag extends EMVTag<String> {
 
     public LiteralEMVTag(EMVStandardTagType tagType, String value)
-            throws IllegalArgumentException, NoTagNumberForProprietaryTagException {
+            throws IllegalArgumentException {
         super(tagType, value);
     }
 

@@ -39,17 +39,11 @@ public class EMVConstructedTag<T> implements Serializable {
                 }
             } catch (ProprietaryFormatException e) {
                 throw new IllegalStateException(e);
-            } catch (NoTagNumberForProprietaryTagException e) {
-                throw new IllegalStateException(e);
             }
         }
         this.tagType = tagType;
         this.value = value;
-        try {
-            this.tagNumber = tagType.getTagNumber();
-        } catch (NoTagNumberForProprietaryTagException e) {
-            throw new IllegalStateException(e);
-        }
+        this.tagNumber = tagType.getTagNumber();
         this.dataFormat = tagType.getFormat();
     }
 
@@ -77,8 +71,6 @@ public class EMVConstructedTag<T> implements Serializable {
                             value.getClass());
                 }
             } catch (ProprietaryFormatException e) {
-                throw new IllegalStateException(e);
-            } catch (NoTagNumberForProprietaryTagException e) {
                 throw new IllegalStateException(e);
             }
         }

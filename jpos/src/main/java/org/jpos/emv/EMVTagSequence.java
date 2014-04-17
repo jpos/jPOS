@@ -25,8 +25,6 @@ public class EMVTagSequence extends TagSequenceBase {
     protected EMVTag createLiteralTagValuePair(String tag, String value) throws ISOException {
         try {
             return new LiteralEMVTag(EMVStandardTagType.forHexCode(tag), value);
-        } catch (NoTagNumberForProprietaryTagException e) {
-            throw new ISOException(e);
         } catch (UnknownTagNumberException e) {
             throw new ISOException(e);
         }
@@ -36,8 +34,6 @@ public class EMVTagSequence extends TagSequenceBase {
     protected EMVTag createBinaryTagValuePair(String tag, byte[] value) throws ISOException {
         try {
             return new BinaryEMVTag(EMVStandardTagType.forHexCode(tag), value);
-        } catch (NoTagNumberForProprietaryTagException e) {
-            throw new ISOException(e);
         } catch (UnknownTagNumberException e) {
             throw new ISOException(e);
         }

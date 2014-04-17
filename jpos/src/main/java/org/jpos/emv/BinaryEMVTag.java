@@ -10,7 +10,7 @@ import org.jpos.tlv.TLVDataFormat;
 public class BinaryEMVTag extends EMVTag<byte[]> {
 
     public BinaryEMVTag(EMVStandardTagType tagType, byte[] value)
-            throws IllegalArgumentException, NoTagNumberForProprietaryTagException {
+            throws IllegalArgumentException {
         super(tagType, value);
     }
 
