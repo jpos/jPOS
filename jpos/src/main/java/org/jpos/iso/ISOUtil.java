@@ -20,6 +20,7 @@ package org.jpos.iso;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+import java.nio.ByteBuffer;
 import java.util.*;
 
 /**
@@ -739,6 +740,7 @@ public class ISOUtil {
         return d;
     }
     /**
+     * Converts a hex string into a byte array
      * @param s source string (with Hex representation)
      * @return byte array
      */
@@ -748,6 +750,85 @@ public class ISOUtil {
         } else {
         	// Padding left zero to make it even size #Bug raised by tommy
         	return hex2byte("0"+s);
+        }
+    }
+
+    /**
+     * Converts a byte array into a hex string
+     * @param bs source byte array
+     * @return
+     */
+    public static final String byte2hex(byte[] bs) {
+        return byte2hex(bs, 0, bs.length);
+    }
+
+    /**
+     * Converts an integer into a byte array of hex
+     *
+     * @param value
+     * @return
+     */
+    public static byte[] int2byte(int value) {
+        if (value < 0) {
+            return new byte[]{(byte) (value >>> 24 & 0xFF), (byte) ((value >>> 16) & 0xFF),
+                    (byte) ((value >>> 8) & 0xFF), (byte) ((value) & 0xFF)};
+        } else if (value <= 0xFF) {
+            return new byte[]{(byte) (value & 0xFF)};
+        } else if (value <= 0xFFFF) {
+            return new byte[]{(byte) (value >>> 8 & 0xFF), (byte) ((value) & 0xFF)};
+        } else if (value <= 0xFFFFFF) {
+            return new byte[]{(byte) (value >>> 16 & 0xFF), (byte) ((value >>> 8) & 0xFF),
+                    (byte) ((value) & 0xFF)};
+        } else {
+            return new byte[]{(byte) (value >>> 24 & 0xFF), (byte) ((value >>> 16) & 0xFF),
+                    (byte) ((value >>> 8) & 0xFF), (byte) ((value) & 0xFF)};
+        }
+    }
+
+    /**
+     * Converts a byte array of hex into an integer
+     *
+     * @param bytes
+     * @return
+     */
+    public static int byte2int(byte[] bytes) {
+        if (bytes == null || bytes.length == 0) {
+            return 0;
+        }
+        ByteBuffer byteBuffer = ByteBuffer.allocate(4);
+        for (int i = 0; i < (4 - bytes.length); i++) {
+            byteBuffer.put((byte) 0);
+        }
+        for (int i = 0; i < bytes.length; i++) {
+            byteBuffer.put(bytes[i]);
+        }
+        byteBuffer.position(0);
+        return byteBuffer.getInt();
+    }
+
+    /**
+     * Converts a byte array into a string of lower case hex chars.
+     *
+     * @param bs     A byte array
+     * @param off    The index of the first byte to read
+     * @param length The number of bytes to read.
+     * @return the string of hex chars.
+     */
+    public static final String byte2hex(byte[] bs, int off, int length) {
+        if (bs.length <= off || bs.length < off + length)
+            throw new IllegalArgumentException();
+        StringBuilder sb = new StringBuilder(length * 2);
+        byte2hexAppend(bs, off, length, sb);
+        return sb.toString();
+    }
+
+    private static final void byte2hexAppend(byte[] bs, int off, int length, StringBuilder sb) {
+        if (bs.length <= off || bs.length < off + length)
+            throw new IllegalArgumentException();
+        sb.ensureCapacity(sb.length() + length * 2);
+        for (int i = off; i < off + length; i++) {
+            sb.append(Character.forDigit((bs[i] >>> 4) & 0xf, 16));
+            sb.append(Character.forDigit(bs[i] & 0xf, 16));
         }
     }
 
@@ -1068,7 +1149,7 @@ public class ISOUtil {
         while ( i < len && ( Character.isLetterOrDigit( s.charAt( i ) ) ||
                              s.charAt( i ) == ' ' || s.charAt( i ) == '.' ||
                              s.charAt( i ) == '-' || s.charAt( i ) == '_' )
-                             || s.charAt( i ) == '?' ){
+                             || s.charAt(i) == '?' ){
             i++;
         }
         return ( i >= len );
