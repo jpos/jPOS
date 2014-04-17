@@ -208,4 +208,13 @@ public class IFA_BITMAPTest
         assertEquals("48 Byte (16 bytes used) bitmap pack should reflect unpack",ISOUtil.hexString(sixteenByteBitMapIn48Bytes,0,16),ISOUtil.hexString(outBytes));
         
     }
+    @Test public void testThirdBitmapPack() throws Exception {
+        byte[] b = ISOUtil.hex2byte("F23C04800AE00000800000000000010863BC780000000010");
+        BitSet bs1 = ISOUtil.byte2BitSet(b, 0, 192);
+        ISOBitMap bmap = new ISOBitMap(-1);
+        bmap.setValue(bs1);
+        IFA_BITMAP ifa = new IFA_BITMAP(24, "BITMAP");
+        byte[] b1 = ifa.pack(bmap);
+        assertEquals ("Pack should be equal to unpack", ISOUtil.hexString(b), new String(b1));
+    }
 }

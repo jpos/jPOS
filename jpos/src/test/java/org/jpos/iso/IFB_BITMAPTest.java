@@ -190,4 +190,13 @@ public class IFB_BITMAPTest
         }
     }
 
+    @Test public void testThirdBitmapPack() throws Exception {
+        byte[] b = ISOUtil.hex2byte("F23C04800AE00000800000000000010863BC780000000010");
+        BitSet bs1 = ISOUtil.byte2BitSet(b, 0, 192);
+        ISOBitMap bmap = new ISOBitMap(-1);
+        bmap.setValue(bs1);
+        IFB_BITMAP ifb = new IFB_BITMAP(24, "BITMAP");
+        byte[] b1 = ifb.pack(bmap);
+        assertEquals ("Pack should be equal to unpack", ISOUtil.hexString(b), ISOUtil.hexString(b1));
+    }
 }
