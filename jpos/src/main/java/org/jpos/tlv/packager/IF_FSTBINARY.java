@@ -1,3 +1,21 @@
+/*
+ * jPOS Project [http://jpos.org]
+ * Copyright (C) 2000-2014 Alejandro P. Revilla
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package org.jpos.tlv.packager;
 
 import org.jpos.iso.ISOComponent;
@@ -12,34 +30,37 @@ import java.nio.ByteBuffer;
 
 /**
  * Field Separator Terminated packager
+ *
  * @author Vishnu Pillai
  */
-public class IFA_FST extends ISOFieldPackager implements TaggedFieldPackager {
+public class IF_FSTBINARY extends ISOFieldPackager implements TaggedFieldPackager {
 
-    private char terminator = '\\';
+    private byte terminator = (byte) 0xFF;
+    private String token;
 
-    public IFA_FST() {
+    public IF_FSTBINARY() {
         super();
     }
 
     @Override
     public void setToken(String token) {
-        if (token == null || token.length() != 1) {
-            throw new IllegalArgumentException("IFA_FST needs a token of 1 character.");
+        if (token == null || token.length() != 2) {
+            throw new IllegalArgumentException("IF_FSTBINARY needs a HEX token of 2 characters.");
         }
-        terminator = token.charAt(0);
+        this.token = token;
+        this.terminator = (byte) Integer.parseInt(token, 16);
     }
 
     @Override
     public String getToken() {
-        return String.valueOf(terminator);
+        return token;
     }
 
     /**
      * @param len         - field len
      * @param description symbolic descrption
      */
-    public IFA_FST(int len, String description) {
+    public IF_FSTBINARY(int len, String description) {
         super(len, description);
     }
 
@@ -50,17 +71,17 @@ public class IFA_FST extends ISOFieldPackager implements TaggedFieldPackager {
      */
     public byte[] pack(ISOComponent c) throws ISOException {
         int len;
-        String s = (String) c.getValue();
+        byte[] s = c.getBytes();
 
-        if ((len = s.length()) > getLength()) {
+        if ((len = s.length) > getLength()) {
             throw new ISOException(
-                    "Invalid length " + len + " packing IFA_FST field "
+                    "Invalid length " + len + " packing IF_FSTBINARY field "
                             + c.getKey() + " max length=" + getLength()
             );
         }
-
-        s = s + terminator;
-        byte[] b = s.getBytes();
+        byte[] b = new byte[s.length + 1];
+        System.arraycopy(s, 0, b, 0, s.length);
+        b[b.length - 2] = terminator;
         return b;
     }
 
@@ -79,13 +100,14 @@ public class IFA_FST extends ISOFieldPackager implements TaggedFieldPackager {
         int length = -1;
         for (int i = 0; i < getMaxPackedLength(); i++) {
             byte dataByte = b[offset + i];
-            if ((char) dataByte == terminator) {
+            if (dataByte == terminator) {
                 length = i;
                 break;
             }
         }
         if (length >= 0) {
-            String value = new String(b, offset, length);
+            byte[] value = new byte[length];
+            System.arraycopy(b, offset, value, 0, length);
             c.setValue(value);
             return length + 1;
         } else {
@@ -108,7 +130,7 @@ public class IFA_FST extends ISOFieldPackager implements TaggedFieldPackager {
 
         for (int i = 0; i < getMaxPackedLength() && in.available() > 0; i++) {
             byte dataByte = (byte) in.read();
-            if ((char) dataByte == terminator) {
+            if (dataByte == terminator) {
                 endFound = true;
                 break;
             } else {
@@ -117,8 +139,7 @@ public class IFA_FST extends ISOFieldPackager implements TaggedFieldPackager {
         }
         if (endFound) {
             byte[] data = byteBufferToBytes(buf);
-            String value = new String(data);
-            c.setValue(value);
+            c.setValue(data);
         } else {
             if (in.markSupported()) {
                 in.reset();

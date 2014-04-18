@@ -16,38 +16,43 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.jpos.tlv.packager.bertlv;
+package org.jpos.tlv.packager;
 
-
-import org.jpos.iso.BinaryInterpreter;
-import org.jpos.iso.ISOException;
+import org.jpos.iso.ISOBinaryFieldPackager;
 import org.jpos.iso.LiteralBinaryInterpreter;
-
+import org.jpos.iso.Prefixer;
 
 /**
- * Packager for BER TLV values. This packager does not require sub-field packagers
+ * Fully consuming packager
  *
  * @author Vishnu Pillai
  */
+public class IF_FBINARY extends ISOBinaryFieldPackager {
 
-public class BERTLVBinaryPackager extends DefaultICCBERTLVPackager {
-
-    public BERTLVBinaryPackager() throws ISOException {
-        super();
+    public IF_FBINARY() {
+        super(LiteralBinaryInterpreter.INSTANCE, FullyConsumingPrefixer.INSTANCE);
     }
 
-    @Override
-    protected BinaryInterpreter getTagInterpreter() {
-        return LiteralBinaryInterpreter.INSTANCE;
-    }
+    public static class FullyConsumingPrefixer implements Prefixer {
 
-    @Override
-    protected BinaryInterpreter getLengthInterpreter() {
-        return LiteralBinaryInterpreter.INSTANCE;
-    }
+        private static final FullyConsumingPrefixer INSTANCE = new FullyConsumingPrefixer();
 
-    @Override
-    protected BinaryInterpreter getValueInterpreter() {
-        return LiteralBinaryInterpreter.INSTANCE;
+        private FullyConsumingPrefixer() {
+        }
+
+        @Override
+        public void encodeLength(int length, byte[] bytes) {
+
+        }
+
+        @Override
+        public int decodeLength(byte[] bytes, int offset) {
+            return bytes.length - offset;
+        }
+
+        @Override
+        public int getPackedLength() {
+            return 0;
+        }
     }
 }

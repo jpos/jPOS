@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE isopackager PUBLIC
         "-//jPOS/jPOS Generic Packager DTD 1.0//EN"
-        "generic-subtag-packager.dtd">
+        "http://jpos.org/dtd/generic-packager-1.0.dtd">
 
 <isopackager>
     <isofield
