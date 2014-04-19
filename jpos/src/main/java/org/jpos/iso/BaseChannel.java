@@ -76,6 +76,7 @@ public abstract class BaseChannel extends Observable
     private int port, timeout, connectTimeout, localPort;
     private int maxPacketLength = 100000;
     private boolean keepAlive;
+    private boolean expectKeepAlive;
     private boolean soLingerOn = true;
     private int soLingerSeconds = 5;
     private Configuration cfg;
@@ -663,6 +664,13 @@ public abstract class BaseChannel extends Observable
 
             synchronized (serverInLock) {
                 int len  = getMessageLength();
+                if (expectKeepAlive) {
+                    while (len == 0) {
+                        //If zero length, this is a keep alive msg
+                        Logger.log(new LogEvent(this, "receive", "Zero length keep alive message received"));
+                        len  = getMessageLength();
+                    }
+                }
                 int hLen = getHeaderLength();
 
                 if (len == -1) {
@@ -966,6 +974,7 @@ public abstract class BaseChannel extends Observable
         }
         setOverrideHeader(cfg.getBoolean ("override-header", false));
         keepAlive = cfg.getBoolean ("keep-alive", false);
+        expectKeepAlive = cfg.getBoolean ("expect-keep-alive", false);
         if (socketFactory != this && socketFactory instanceof Configurable)
             ((Configurable)socketFactory).setConfiguration (cfg);
         try {
