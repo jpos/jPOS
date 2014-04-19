@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE isopackager PUBLIC
+        "-//jPOS/jPOS Generic Packager DTD 1.0//EN"
+        "http://jpos.org/dtd/generic-packager-1.0.dtd">
+
+<isopackager>
+    <isofield
+            id="0"
+            length="4"
+            name="Message Type Indicator"
+            class="org.jpos.iso.IFA_NUMERIC"/>
+    <isofield
+            id="1"
+            length="16"
+            name="Bit Map"
+            class="org.jpos.iso.IFB_BITMAP"/>
+    <isofieldpackager
+            id="48"
+            length="40"
+            name="Additional Data"
+            class="org.jpos.iso.IFA_LLLBINARY"
+            emitBitmap="false"
+            packager="org.jpos.tlv.packager.bertlv.BERTLVBinaryPackager">
+    </isofieldpackager>
+    <isofieldpackager
+            id="62"
+            length="40"
+            name="Additional Data - 2"
+            class="org.jpos.iso.IFA_LLLBINARY"
+            emitBitmap="false"
+            packager="org.jpos.tlv.packager.bertlv.BERTLVBinaryPackager">
+    </isofieldpackager>
+    <isofieldpackager
+            id="63"
+            length="40"
+            name="Additional Data - 3"
+            class="org.jpos.iso.IFA_LLLBINARY"
+            emitBitmap="false"
+            packager="org.jpos.tlv.packager.bertlv.BERTLVBinaryPackager">
+    </isofieldpackager>
+    <isofieldpackager
+            id="64"
+            length="100"
+            name="Additional Data - 4"
+            class="org.jpos.iso.IFA_LLLBINARY"
+            emitBitmap="false"
+            packager="org.jpos.tlv.packager.bertlv.BERTLVBinaryPackager">
+    </isofieldpackager>
+</isopackager>

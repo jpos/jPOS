@@ -16,15 +16,34 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.jpos.iso;
+package org.jpos.tlv.packager;
+
+import org.jpos.iso.BinaryPrefixer;
+import org.jpos.iso.ISOBinaryFieldPackager;
+import org.jpos.iso.LiteralBinaryInterpreter;
 
 /**
  * @author Vishnu Pillai
- *         Date: 1/22/14
  */
-public interface TaggedFieldPackager {
+public class IFB_LHBINARY extends ISOBinaryFieldPackager {
+	public IFB_LHBINARY() {
+		super(LiteralBinaryInterpreter.INSTANCE, BinaryPrefixer.B);
+	}
 
-    public void setToken(String token);
+	/**
+	 * @param len
+	 *            - field len
+	 * @param description
+	 *            symbolic descrption
+	 */
+	public IFB_LHBINARY(int len, String description) {
+		super(len, description, LiteralBinaryInterpreter.INSTANCE,
+				BinaryPrefixer.B);
+		checkLength(len, 255);
+	}
 
-    public String getToken();
+	public void setLength(int len) {
+		checkLength(len, 255);
+		super.setLength(len);
+	}
 }

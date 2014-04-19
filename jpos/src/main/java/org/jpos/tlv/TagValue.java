@@ -16,15 +16,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.jpos.iso;
+package org.jpos.tlv;
+
+import org.jpos.iso.ISOException;
 
 /**
  * @author Vishnu Pillai
- *         Date: 1/22/14
  */
-public interface TaggedFieldPackager {
+public interface TagValue<T> {
 
-    public void setToken(String token);
+    String getTag();
 
-    public String getToken();
+    T getValue() throws ISOException;
+
+    boolean isComposite();
+
 }

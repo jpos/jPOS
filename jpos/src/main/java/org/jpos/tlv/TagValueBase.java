@@ -16,15 +16,34 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.jpos.iso;
+package org.jpos.tlv;
 
 /**
  * @author Vishnu Pillai
- *         Date: 1/22/14
  */
-public interface TaggedFieldPackager {
+public abstract class TagValueBase<T> implements TagValue<T> {
 
-    public void setToken(String token);
+    private final String tag;
+    private final T value;
 
-    public String getToken();
+    public TagValueBase(String tag, T value) {
+        this.tag = tag;
+        this.value = value;
+    }
+
+    @Override
+    public String getTag() {
+        return tag;
+    }
+
+    @Override
+    public T getValue() {
+        return value;
+    }
+
+    @Override
+    public boolean isComposite() {
+        return false;
+    }
+
 }

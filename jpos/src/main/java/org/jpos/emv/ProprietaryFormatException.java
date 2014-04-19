@@ -16,15 +16,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.jpos.iso;
+package org.jpos.emv;
 
 /**
  * @author Vishnu Pillai
- *         Date: 1/22/14
  */
-public interface TaggedFieldPackager {
+public class ProprietaryFormatException extends Exception {
+    public ProprietaryFormatException() {
+        super();
+    }
 
-    public void setToken(String token);
+    public ProprietaryFormatException(final String message) {
+        super(message);
+    }
 
-    public String getToken();
+    public ProprietaryFormatException(final String message, final Throwable cause) {
+        super(message, cause);
+    }
+
+    public ProprietaryFormatException(final Throwable cause) {
+        super(cause);
+    }
 }

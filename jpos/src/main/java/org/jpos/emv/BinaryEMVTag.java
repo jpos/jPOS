@@ -16,15 +16,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.jpos.iso;
+package org.jpos.emv;
+
+
+import org.jpos.tlv.TLVDataFormat;
+
 
 /**
  * @author Vishnu Pillai
- *         Date: 1/22/14
  */
-public interface TaggedFieldPackager {
+public class BinaryEMVTag extends EMVTag<byte[]> {
 
-    public void setToken(String token);
+    public BinaryEMVTag(EMVStandardTagType tagType, byte[] value)
+            throws IllegalArgumentException {
+        super(tagType, value);
+    }
 
-    public String getToken();
+    public BinaryEMVTag(EMVProprietaryTagType tagType, Integer tagNumber, byte[] value)
+            throws IllegalArgumentException {
+        super(tagType, tagNumber, value);
+    }
+
+    public BinaryEMVTag(EMVProprietaryTagType tagType, Integer tagNumber, TLVDataFormat dataFormat, byte[] value)
+            throws IllegalArgumentException {
+        super(tagType, tagNumber, dataFormat, value);
+    }
 }

@@ -16,15 +16,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.jpos.iso;
+package org.jpos.tlv;
 
 /**
  * @author Vishnu Pillai
- *         Date: 1/22/14
+ *         Date: 1/24/14
  */
-public interface TaggedFieldPackager {
+public interface OffsetIndexedComposite {
 
-    public void setToken(String token);
+    public void incOffset();
 
-    public String getToken();
+    public void setOffset(int offset);
+
+    public void resetOffset();
+
+    public int getOffset();
 }

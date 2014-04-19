@@ -16,15 +16,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.jpos.iso;
+package org.jpos.tlv;
+
 
 /**
  * @author Vishnu Pillai
- *         Date: 1/22/14
  */
-public interface TaggedFieldPackager {
-
-    public void setToken(String token);
-
-    public String getToken();
+public enum TLVDataFormat {
+    CONSTRUCTED,
+    BINARY,
+    COMPRESSED_NUMERIC,
+    NUMERIC,
+    DATE_YYMMDD,
+    ALPHA,
+    ALPHA_NUMERIC,
+    ALPHA_NUMERIC_SPACE,
+    ALPHA_NUMERIC_SPECIAL,
+    CARD_NUMBER,
+    TIME_HHMMSS,
+    PROPRIETARY;
 }

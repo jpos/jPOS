@@ -16,15 +16,38 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.jpos.iso;
+package org.jpos.tlv.packager.bertlv;
+
+
+import org.jpos.iso.BinaryInterpreter;
+import org.jpos.iso.EbcdicHexInterpreter;
+import org.jpos.iso.ISOException;
+
 
 /**
+ * Packager for BER TLV values. This packager does not require sub-field packagers
+ *
  * @author Vishnu Pillai
- *         Date: 1/22/14
  */
-public interface TaggedFieldPackager {
 
-    public void setToken(String token);
+public class BERTLVEbcdicHexPackager extends DefaultICCBERTLVPackager {
 
-    public String getToken();
+    public BERTLVEbcdicHexPackager() throws ISOException {
+        super();
+    }
+
+    @Override
+    protected BinaryInterpreter getTagInterpreter() {
+        return EbcdicHexInterpreter.INSTANCE;
+    }
+
+    @Override
+    protected BinaryInterpreter getLengthInterpreter() {
+        return EbcdicHexInterpreter.INSTANCE;
+    }
+
+    @Override
+    protected BinaryInterpreter getValueInterpreter() {
+        return EbcdicHexInterpreter.INSTANCE;
+    }
 }

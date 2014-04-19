@@ -16,15 +16,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.jpos.iso;
+package org.jpos.tlv.packager;
+
+
+import org.jpos.iso.ISOComponent;
+import org.jpos.iso.ISOException;
+
 
 /**
  * @author Vishnu Pillai
- *         Date: 1/22/14
  */
-public interface TaggedFieldPackager {
+public interface PackagerErrorHandler {
 
-    public void setToken(String token);
+    public void handlePackError(ISOComponent m, ISOException e);
 
-    public String getToken();
+    public void handleUnpackError(ISOComponent isoComponent, byte[] msg, ISOException e);
 }

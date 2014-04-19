@@ -16,15 +16,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.jpos.iso;
+package org.jpos.tlv;
 
 /**
  * @author Vishnu Pillai
- *         Date: 1/22/14
+ *
  */
-public interface TaggedFieldPackager {
+public class LiteralTagValue extends TagValueBase<String> {
 
-    public void setToken(String token);
+    public LiteralTagValue(String tag, String value) {
+        super(tag, value);
+    }
 
-    public String getToken();
 }

@@ -16,15 +16,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.jpos.iso;
+package org.jpos.emv;
 
 /**
  * @author Vishnu Pillai
- *         Date: 1/22/14
  */
-public interface TaggedFieldPackager {
+public class UnknownTagNumberException extends Exception {
 
-    public void setToken(String token);
+    public UnknownTagNumberException() {
+        super();
+    }
 
-    public String getToken();
+    public UnknownTagNumberException(final String message) {
+        super(message);
+    }
+
+    public UnknownTagNumberException(final String message, final Throwable cause) {
+        super(message, cause);
+    }
+
+    public UnknownTagNumberException(final Throwable cause) {
+        super(cause);
+    }
 }
