@@ -51,7 +51,7 @@ public class Context implements Externalizable, Loggeable, Pausable {
     public void put (Object key, Object value) {
         if (trace) {
             getProfiler().checkPoint(
-                String.format("   %s='%s' [%s]", key, value, new Throwable().getStackTrace()[1].toString())
+                String.format("   %s='%s' [%s]", key, value, Thread.currentThread().getStackTrace()[2])
             );
         }
         getMap().put (key, value);
