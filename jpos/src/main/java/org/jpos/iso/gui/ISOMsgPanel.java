@@ -103,8 +103,19 @@ public class ISOMsgPanel extends JPanel {
                                     (Integer) validFields.elementAt(row);
 
                             Object obj = m.getValue(index);
-                            if (obj instanceof String) 
-                                return obj.toString();
+                            if (obj instanceof String) {
+                                String s = obj.toString();
+                                switch (index) {
+                                    case 2 :
+                                    case 35:
+                                    case 45:
+                                        s = ISOUtil.protect (s);
+                                        break;
+                                    case 14:
+                                        s = "----";
+                                }
+                                return s;
+                            }
                             else if (obj instanceof byte[])
                                 return ISOUtil.hexString((byte[]) obj);
                             else if (obj instanceof ISOMsg)
