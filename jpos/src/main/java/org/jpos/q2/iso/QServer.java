@@ -132,7 +132,6 @@ public class QServer
              */
 
             sp.addListener(inQueue, this);
-
         }
     }
     private void initOut() {
@@ -148,7 +147,6 @@ public class QServer
              *  always return true.
              */
            server.addISORequestListener(this);
-
         }
     }
     @Override
@@ -337,7 +335,6 @@ public class QServer
      */
     @Override
     public void notify(Object key, Object value) {
-
         Object obj = sp.inp(key);
         if (obj instanceof ISOMsg) {
             ISOMsg m = (ISOMsg) obj;
@@ -358,8 +355,8 @@ public class QServer
             }
             else if ("ALL".equals(sendMethod)) {
                 String channelNames = getISOChannelNames();
-                if (channelNames!=null) {
-                    StringTokenizer tok =new StringTokenizer(channelNames, " ");
+                if (channelNames != null) {
+                    StringTokenizer tok = new StringTokenizer(channelNames, " ");
                     while (tok.hasMoreTokens()) {
                         try {
                             ISOChannel c = server.getISOChannel(tok.nextToken());
@@ -370,16 +367,11 @@ public class QServer
                                 throw new ISOException("Client disconnected");
                             }
                             c.send(m);
-                        }
-                        catch (Exception e) {
+                        } catch (Exception e) {
                             getLog().warn("notify", e);
                         }
-
-
-
                     }
                 }
-
             }
         }
     }
