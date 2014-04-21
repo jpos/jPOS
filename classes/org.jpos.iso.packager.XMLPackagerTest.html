@@ -34,7 +34,7 @@
 </td>
 <td>
 <div class="infoBox" id="duration">
-<div class="counter">0.123s</div>
+<div class="counter">0.163s</div>
 <p>duration</p>
 </div>
 </td>
@@ -77,17 +77,17 @@
 </tr>
 <tr>
 <td class="success">testConstructor</td>
-<td>0.002s</td>
-<td class="success">passed</td>
-</tr>
-<tr>
-<td class="success">testCreateISOMsg</td>
 <td>0.001s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
+<td class="success">testCreateISOMsg</td>
+<td>0.002s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
 <td class="success">testEndElementThrowsEmptyStackException</td>
-<td>0s</td>
+<td>0.001s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
@@ -122,12 +122,12 @@
 </tr>
 <tr>
 <td class="success">testPack</td>
-<td>0.091s</td>
+<td>0.114s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">testPackException</td>
-<td>0.004s</td>
+<td>0.011s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
@@ -147,7 +147,7 @@
 </tr>
 <tr>
 <td class="success">testStartElementThrowsEmptyStackException</td>
-<td>0s</td>
+<td>0.001s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
@@ -162,17 +162,17 @@
 </tr>
 <tr>
 <td class="success">testUnpackBytes</td>
-<td>0.003s</td>
-<td class="success">passed</td>
-</tr>
-<tr>
-<td class="success">testUnpackLargeXmlBytes</td>
 <td>0.005s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
+<td class="success">testUnpackLargeXmlBytes</td>
+<td>0.009s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
 <td class="success">testUnpackStream</td>
-<td>0.003s</td>
+<td>0.005s</td>
 <td class="success">passed</td>
 </tr>
 </table>
@@ -180,7 +180,7 @@
 <div id="tab1" class="tab">
 <h2>Standard output</h2>
 <span class="code">
-<pre>&lt;log realm=&quot;org.jpos.iso.packager.XMLPackager&quot; at=&quot;Mon Apr 21 00:38:39 UTC 2014.992&quot; lifespan=&quot;1ms&quot;&gt;
+<pre>&lt;log realm=&quot;org.jpos.iso.packager.XMLPackager&quot; at=&quot;Mon Apr 21 23:37:00 UTC 2014.558&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;pack&gt;
     &lt;isomsg&gt;
       &lt;!-- org.jpos.iso.packager.XMLPackager --&gt;
@@ -192,7 +192,7 @@
     &lt;/isomsg&gt;
   &lt;/pack&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;org.jpos.iso.packager.XMLPackager&quot; at=&quot;Mon Apr 21 00:38:40 UTC 2014.83&quot;&gt;
+&lt;log realm=&quot;org.jpos.iso.packager.XMLPackager&quot; at=&quot;Mon Apr 21 23:37:00 UTC 2014.687&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;pack&gt;
     &lt;iso-exception&gt;
       cannot pack class org.jpos.iso.ISOField
@@ -221,7 +221,7 @@
 	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecuter.execute(JUnitTestClassExecuter.java:47)
 	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassProcessor.processTestClass(JUnitTestClassProcessor.java:69)
 	at org.gradle.api.internal.tasks.testing.SuiteTestClassProcessor.processTestClass(SuiteTestClassProcessor.java:49)
-	at sun.reflect.GeneratedMethodAccessor9.invoke(Unknown Source)
+	at sun.reflect.GeneratedMethodAccessor15.invoke(Unknown Source)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
 	at java.lang.reflect.Method.invoke(Method.java:606)
 	at org.gradle.messaging.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:35)
@@ -230,7 +230,7 @@
 	at org.gradle.messaging.dispatch.ProxyDispatchAdapter$DispatchingInvocationHandler.invoke(ProxyDispatchAdapter.java:93)
 	at com.sun.proxy.$Proxy2.processTestClass(Unknown Source)
 	at org.gradle.api.internal.tasks.testing.worker.TestWorker.processTestClass(TestWorker.java:103)
-	at sun.reflect.GeneratedMethodAccessor8.invoke(Unknown Source)
+	at sun.reflect.GeneratedMethodAccessor14.invoke(Unknown Source)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
 	at java.lang.reflect.Method.invoke(Method.java:606)
 	at org.gradle.messaging.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:35)
@@ -243,27 +243,7 @@
     &lt;/iso-exception&gt;
   &lt;/pack&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;org.jpos.iso.packager.XMLPackager&quot; at=&quot;Mon Apr 21 00:38:40 UTC 2014.91&quot; lifespan=&quot;4ms&quot;&gt;
-  &lt;unpack&gt;
-    &lt;isomsg&gt;
-      &lt;field id=&quot;0&quot; value=&quot;0800&quot;/&gt;
-      &lt;field id=&quot;1&quot;&gt;&lt;![CDATA[&lt;large-xml&gt;&lt;element&gt;&lt;nested-element&gt;Some very very long text&lt;/nested-element&gt;&lt;/element&gt;&lt;element&gt;&lt;nested-element&gt;Some very very long text&lt;/nested-element&gt;&lt;/element&gt;&lt;element&gt;&lt;nested-element&gt;Some very very long text&lt;/nested-element&gt;&lt;/element&gt;&lt;element&gt;&lt;nested-element&gt;Some very very long text&lt;/nested-element&gt;&lt;/element&gt;&lt;element&gt;&lt;nested-element&gt;Some very very long text&lt;/nested-element&gt;&lt;/element&gt;&lt;element&gt;&lt;nested-element&gt;Some very very long text&lt;/nested-element&gt;&lt;/element&gt;&lt;element&gt;&lt;nested-element&gt;Some very very long text&lt;/nested-element&gt;&lt;/element&gt;&lt;element&gt;&lt;nested-element&gt;Some very very long text&lt;/nested-element&gt;&lt;/element&gt;&lt;element&gt;&lt;nested-element&gt;Some very very long text&lt;/nested-element&gt;&lt;/element&gt;&lt;element&gt;&lt;nested-element&gt;Some very very long text&lt;/nested-element&gt;&lt;/element&gt;&lt;element&gt;&lt;nested-element&gt;Some very very long text&lt;/nested-element&gt;&lt;/element&gt;&lt;element&gt;&lt;nested-element&gt;Some very very long text&lt;/nested-element&gt;&lt;/element&gt;&lt;element&gt;&lt;nested-element&gt;Some very very long text&lt;/nested-element&gt;&lt;/element&gt;&lt;element&gt;&lt;nested-element&gt;Some very very long text&lt;/nested-element&gt;&lt;/element&gt;&lt;element&gt;&lt;nested-element&gt;Some very very long text&lt;/nested-element&gt;&lt;/element&gt;&lt;element&gt;&lt;nested-element&gt;Some very very long text&lt;/nested-element&gt;&lt;/element&gt;&lt;element&gt;&lt;nested-element&gt;Some very very long text&lt;/nested-element&gt;&lt;/element&gt;&lt;element&gt;&lt;nested-element&gt;Some very very long text&lt;/nested-element&gt;&lt;/element&gt;&lt;element&gt;&lt;nested-element&gt;Some very very long text&lt;/nested-element&gt;&lt;/element&gt;&lt;element&gt;&lt;nested-element&gt;Some very very long text&lt;/nested-element&gt;&lt;/element&gt;&lt;element&gt;&lt;nested-element&gt;Some very very long text&lt;/nested-element&gt;&lt;/element&gt;&lt;element&gt;&lt;nested-element&gt;Some very very long text&lt;/nested-element&gt;&lt;/element&gt;&lt;element&gt;&lt;nested-element&gt;Some very very long text&lt;/nested-element&gt;&lt;/element&gt;&lt;element&gt;&lt;nested-element&gt;Some very very long text&lt;/nested-element&gt;&lt;/element&gt;&lt;element&gt;&lt;nested-element&gt;Some very very long text&lt;/nested-element&gt;&lt;/element&gt;&lt;element&gt;&lt;nested-element&gt;Some very very long text&lt;/nested-element&gt;&lt;/element&gt;&lt;element&gt;&lt;nested-element&gt;Some very very long text&lt;/nested-element&gt;&lt;/element&gt;&lt;element&gt;&lt;nested-element&gt;Some very very long text&lt;/nested-element&gt;&lt;/element&gt;&lt;element&gt;&lt;nested-element&gt;Some very very long text&lt;/nested-element&gt;&lt;/element&gt;&lt;element&gt;&lt;nested-element&gt;Some very very long text&lt;/nested-element&gt;&lt;/element&gt;&lt;element&gt;&lt;nested-element&gt;Some very very long text&lt;/nested-element&gt;&lt;/element&gt;&lt;/large-xml&gt;]]&gt;&lt;/field&gt;
-    &lt;/isomsg&gt;
-  &lt;/unpack&gt;
-&lt;/log&gt;
-&lt;log realm=&quot;org.jpos.iso.packager.XMLPackager&quot; at=&quot;Mon Apr 21 00:38:40 UTC 2014.93&quot; lifespan=&quot;1ms&quot;&gt;
-  &lt;unpack&gt;
-    &lt;isomsg&gt;
-      &lt;header&gt;686561646572&lt;/header&gt;
-      &lt;field id=&quot;0&quot; value=&quot;0800&quot;/&gt;
-      &lt;field id=&quot;7&quot; value=&quot;7654321&quot;/&gt;
-      &lt;field id=&quot;11&quot; value=&quot;12345678&quot;/&gt;
-      &lt;field id=&quot;12&quot; value=&quot;20110224112759&quot;/&gt;
-      &lt;field id=&quot;24&quot; value=&quot;&quot;/&gt;
-    &lt;/isomsg&gt;
-  &lt;/unpack&gt;
-&lt;/log&gt;
-&lt;log realm=&quot;org.jpos.iso.packager.XMLPackager&quot; at=&quot;Mon Apr 21 00:38:40 UTC 2014.108&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;org.jpos.iso.packager.XMLPackager&quot; at=&quot;Mon Apr 21 23:37:00 UTC 2014.701&quot; lifespan=&quot;2ms&quot;&gt;
   &lt;unpack&gt;
     &lt;isomsg&gt;
       &lt;header&gt;686561646572&lt;/header&gt;
@@ -275,13 +255,33 @@
     &lt;/isomsg&gt;
   &lt;/unpack&gt;
 &lt;/log&gt;
+&lt;log realm=&quot;org.jpos.iso.packager.XMLPackager&quot; at=&quot;Mon Apr 21 23:37:00 UTC 2014.708&quot; lifespan=&quot;4ms&quot;&gt;
+  &lt;unpack&gt;
+    &lt;isomsg&gt;
+      &lt;field id=&quot;0&quot; value=&quot;0800&quot;/&gt;
+      &lt;field id=&quot;1&quot;&gt;&lt;![CDATA[&lt;large-xml&gt;&lt;element&gt;&lt;nested-element&gt;Some very very long text&lt;/nested-element&gt;&lt;/element&gt;&lt;element&gt;&lt;nested-element&gt;Some very very long text&lt;/nested-element&gt;&lt;/element&gt;&lt;element&gt;&lt;nested-element&gt;Some very very long text&lt;/nested-element&gt;&lt;/element&gt;&lt;element&gt;&lt;nested-element&gt;Some very very long text&lt;/nested-element&gt;&lt;/element&gt;&lt;element&gt;&lt;nested-element&gt;Some very very long text&lt;/nested-element&gt;&lt;/element&gt;&lt;element&gt;&lt;nested-element&gt;Some very very long text&lt;/nested-element&gt;&lt;/element&gt;&lt;element&gt;&lt;nested-element&gt;Some very very long text&lt;/nested-element&gt;&lt;/element&gt;&lt;element&gt;&lt;nested-element&gt;Some very very long text&lt;/nested-element&gt;&lt;/element&gt;&lt;element&gt;&lt;nested-element&gt;Some very very long text&lt;/nested-element&gt;&lt;/element&gt;&lt;element&gt;&lt;nested-element&gt;Some very very long text&lt;/nested-element&gt;&lt;/element&gt;&lt;element&gt;&lt;nested-element&gt;Some very very long text&lt;/nested-element&gt;&lt;/element&gt;&lt;element&gt;&lt;nested-element&gt;Some very very long text&lt;/nested-element&gt;&lt;/element&gt;&lt;element&gt;&lt;nested-element&gt;Some very very long text&lt;/nested-element&gt;&lt;/element&gt;&lt;element&gt;&lt;nested-element&gt;Some very very long text&lt;/nested-element&gt;&lt;/element&gt;&lt;element&gt;&lt;nested-element&gt;Some very very long text&lt;/nested-element&gt;&lt;/element&gt;&lt;element&gt;&lt;nested-element&gt;Some very very long text&lt;/nested-element&gt;&lt;/element&gt;&lt;element&gt;&lt;nested-element&gt;Some very very long text&lt;/nested-element&gt;&lt;/element&gt;&lt;element&gt;&lt;nested-element&gt;Some very very long text&lt;/nested-element&gt;&lt;/element&gt;&lt;element&gt;&lt;nested-element&gt;Some very very long text&lt;/nested-element&gt;&lt;/element&gt;&lt;element&gt;&lt;nested-element&gt;Some very very long text&lt;/nested-element&gt;&lt;/element&gt;&lt;element&gt;&lt;nested-element&gt;Some very very long text&lt;/nested-element&gt;&lt;/element&gt;&lt;element&gt;&lt;nested-element&gt;Some very very long text&lt;/nested-element&gt;&lt;/element&gt;&lt;element&gt;&lt;nested-element&gt;Some very very long text&lt;/nested-element&gt;&lt;/element&gt;&lt;element&gt;&lt;nested-element&gt;Some very very long text&lt;/nested-element&gt;&lt;/element&gt;&lt;element&gt;&lt;nested-element&gt;Some very very long text&lt;/nested-element&gt;&lt;/element&gt;&lt;element&gt;&lt;nested-element&gt;Some very very long text&lt;/nested-element&gt;&lt;/element&gt;&lt;element&gt;&lt;nested-element&gt;Some very very long text&lt;/nested-element&gt;&lt;/element&gt;&lt;element&gt;&lt;nested-element&gt;Some very very long text&lt;/nested-element&gt;&lt;/element&gt;&lt;element&gt;&lt;nested-element&gt;Some very very long text&lt;/nested-element&gt;&lt;/element&gt;&lt;element&gt;&lt;nested-element&gt;Some very very long text&lt;/nested-element&gt;&lt;/element&gt;&lt;element&gt;&lt;nested-element&gt;Some very very long text&lt;/nested-element&gt;&lt;/element&gt;&lt;/large-xml&gt;]]&gt;&lt;/field&gt;
+    &lt;/isomsg&gt;
+  &lt;/unpack&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;org.jpos.iso.packager.XMLPackager&quot; at=&quot;Mon Apr 21 23:37:00 UTC 2014.716&quot; lifespan=&quot;2ms&quot;&gt;
+  &lt;unpack&gt;
+    &lt;isomsg&gt;
+      &lt;header&gt;686561646572&lt;/header&gt;
+      &lt;field id=&quot;0&quot; value=&quot;0800&quot;/&gt;
+      &lt;field id=&quot;7&quot; value=&quot;7654321&quot;/&gt;
+      &lt;field id=&quot;11&quot; value=&quot;12345678&quot;/&gt;
+      &lt;field id=&quot;12&quot; value=&quot;20110224112759&quot;/&gt;
+      &lt;field id=&quot;24&quot; value=&quot;&quot;/&gt;
+    &lt;/isomsg&gt;
+  &lt;/unpack&gt;
+&lt;/log&gt;
 </pre>
 </span>
 </div>
 </div>
 <div id="footer">
 <p>Generated by 
-<a href="http://www.gradle.org">Gradle 1.9</a> at Apr 21, 2014 12:38:58 AM</p>
+<a href="http://www.gradle.org">Gradle 1.9</a> at Apr 21, 2014 11:38:40 PM</p>
 </div>
 </div>
 </body>
