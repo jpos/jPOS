@@ -2930,7 +2930,7 @@ public class ISOUtilTest {
     public void testHexdump22() throws Throwable {
         byte[] b = new byte[18];
         b[14] = (byte) 46;
-        String result = ISOUtil.hexdump(b, 10, 15);
+        String result = ISOUtil.hexdump(b, 10,5);
         assertEquals("result", "0000  00 00 00 00 2E                                    ....." + lineSep, result);
     }
 
@@ -2953,7 +2953,7 @@ public class ISOUtilTest {
     public void testHexdump4() throws Throwable {
         byte[] b = new byte[3];
         b[1] = (byte) -4;
-        String result = ISOUtil.hexdump(b, 1, 2);
+        String result = ISOUtil.hexdump(b, 1, 1);
         assertEquals("result", "0000  FC                                                ." + lineSep, result);
     }
 
@@ -2978,7 +2978,7 @@ public class ISOUtilTest {
     public void testHexdump7() throws Throwable {
         byte[] b = new byte[10];
         b[7] = (byte) -2;
-        String result = ISOUtil.hexdump(b, 7, 8);
+        String result = ISOUtil.hexdump(b, 7, 1);
         assertEquals("result", "0000  FE                                                ." + lineSep, result);
     }
 

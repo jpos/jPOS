@@ -1361,6 +1361,7 @@ public class ISOUtil {
         StringBuilder ascii = new StringBuilder ();
         String sep         = "  ";
         String lineSep     = System.getProperty ("line.separator");
+        len = offset + len;
 
         for (int i=offset; i<len; i++) {
             hex.append(hexStrings[(int)b[i] & 0xFF]);
