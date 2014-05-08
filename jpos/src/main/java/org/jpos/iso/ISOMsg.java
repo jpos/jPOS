@@ -45,6 +45,7 @@ public class ISOMsg extends ISOComponent
     protected boolean dirty, maxFieldDirty;
     protected int direction;
     protected ISOHeader header;
+    protected byte[] trailer;
     protected int fieldNumber = -1;
     public static final int INCOMING = 1;
     public static final int OUTGOING = 2;
@@ -61,6 +62,7 @@ public class ISOMsg extends ISOComponent
         maxFieldDirty=true;
         direction = 0;
         header = null;
+        trailer = null;
     }
     /**
      * Creates a nested ISOMsg
@@ -116,7 +118,29 @@ public class ISOMsg extends ISOComponent
      */
     public byte[] getHeader() {
         return (header != null) ? header.pack() : null;
-    } 
+    }
+
+    /**
+     * Sets optional trailer data.
+     * <p/>
+     * Note: The trailer data requires a customised channel that explicitily handles the trailer data from the ISOMsg.
+     *
+     * @param trailer The trailer data.
+     * @see BaseChannel#getMessageTrailer(ISOMsg).
+     * @see BaseChannel#sendMessageTrailer(ISOMsg, byte[]).
+     */
+    public void setTrailer(byte[] trailer) {
+        this.trailer = trailer;
+    }
+
+    /**
+     * Get optional trailer image.
+     *
+     * @return message trailer imange (may be null)
+     */
+    public byte[] getTrailer() {
+        return this.trailer;
+    }
 
     /**
      * Return this messages ISOHeader
@@ -688,7 +712,8 @@ public class ISOMsg extends ISOComponent
             m.fields = (TreeMap) ((TreeMap) fields).clone();
             if (header != null)
                 m.header = (ISOHeader) header.clone();
-
+            if (trailer != null)
+                m.trailer = trailer.clone();
             for (Integer k : fields.keySet()) {
                 ISOComponent c = (ISOComponent) m.fields.get(k);
                 if (c instanceof ISOMsg)

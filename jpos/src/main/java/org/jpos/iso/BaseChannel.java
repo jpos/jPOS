@@ -488,20 +488,52 @@ public abstract class BaseChannel extends Observable
             serverOut.write(header);
     }
     /**
-     * @deprecated use sendMessageTrailler(ISOMsg m, byte[] b) instead.
+     * @deprecated use sendMessageTrailer(ISOMsg m, byte[] b) instead.
      * @param m a reference to the ISOMsg
      * @param len the packed image length
      * @throws IOException on error
      */
-    protected void sendMessageTrailler(ISOMsg m, int len) throws IOException 
+    protected void sendMessageTrailler(ISOMsg m, int len) throws IOException
     {
     }
+
+    /**
+     * @deprecated use sendMessageTrailer(ISOMsg m, byte[] b instead.
+     */
     @SuppressWarnings ("deprecation")
-    protected void sendMessageTrailler(ISOMsg m, byte[] b) throws IOException 
-    {
+    protected void sendMessageTrailler(ISOMsg m, byte[] b) throws IOException  {
         sendMessageTrailler (m, b.length);
     }
-    protected void getMessageTrailler() throws IOException { }
+
+    /**
+     * Send a Message trailer.
+     *
+     * @param m The unpacked ISOMsg.
+     * @param b The packed ISOMsg image.
+     */
+    @SuppressWarnings("deprecation")
+    protected void sendMessageTrailer(ISOMsg m, byte[] b) throws IOException {
+        sendMessageTrailler(m, b);
+    }
+
+
+    /**
+     * @deprecated use getMessageTrailer(ISOMsg m) instead.
+     */
+    protected void getMessageTrailler() throws IOException {
+    }
+
+    /**
+     * Read some trailer data from this channel and optionally store it in the incoming ISOMsg.
+     *
+     * @param m The ISOMessage to store the trailer data.
+     * @see ISOMsg#setTrailer(byte[]).
+     */
+    @SuppressWarnings("deprecation")
+    protected void getMessageTrailer(ISOMsg m) throws IOException {
+        getMessageTrailler();
+    }
+
     protected void getMessage (byte[] b, int offset, int len) throws IOException, ISOException { 
         serverIn.readFully(b, offset, len);
     }
@@ -552,7 +584,7 @@ public abstract class BaseChannel extends Observable
                 sendMessageLength(b.length + getHeaderLength(m));
                 sendMessageHeader(m, b.length);
                 sendMessage (b, 0, b.length);
-                sendMessageTrailler(m, b);
+                sendMessageTrailer(m, b);
                 serverOut.flush ();
             }
             cnt[TX]++;
@@ -681,7 +713,7 @@ public abstract class BaseChannel extends Observable
                     }
                     b = new byte[len];
                     getMessage (b, 0, len);
-                    getMessageTrailler();
+                    getMessageTrailer(m);
                 }
                 else
                     throw new ISOException(
