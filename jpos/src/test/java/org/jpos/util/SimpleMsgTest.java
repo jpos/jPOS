@@ -19,7 +19,6 @@
 package org.jpos.util;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.ByteArrayOutputStream;
@@ -104,7 +103,12 @@ public class SimpleMsgTest {
     public void testDump() throws Throwable {
         new SimpleMsg("tag", "Some Name", new SimpleMsg("inner-tag", "Inner Name",
                 100L)).dump(p, "--||--");
-        assertTrue("Test completed without Exception", true);
+        assertEquals( "--||--<tag name=\"Some Name\">" + NL +
+                      "--||--  <inner-tag name=\"Inner Name\">" + NL +
+                      "--||--    100" + NL +
+                      "--||--  </inner-tag>" + NL +
+                      "--||--</tag>" + NL
+                     ,os.toString());
     }
 
     @Test
@@ -115,7 +119,13 @@ public class SimpleMsgTest {
         msgContent2[0] = simpleMsg;
         msgContent2[1] = simpleMsg;
         new SimpleMsg("tag", "Some Name", msgContent2).dump(p, "--||--");
-        assertTrue("Test completed without Exception", true);
+        assertEquals( "--||--<tag name=\"Some Name\">" + NL +
+                      "--||--  <inner-tag name=\"Inner Name\">" + NL +
+                      "--||--  </inner-tag>" + NL +
+                      "--||--  <inner-tag name=\"Inner Name\">" + NL +
+                      "--||--  </inner-tag>" + NL +
+                      "--||--</tag>" + NL
+                     ,os.toString());
     }
 
     @Test
@@ -126,20 +136,35 @@ public class SimpleMsgTest {
         msgContent2[1] = new SimpleMsg("inner-tag2", "Inner Name2", (short) 100);
         msgContent2[2] = new SimpleMsg("inner-tag3", "Inner Name3", msgContent);
         new SimpleMsg("tag", "Some Name", msgContent2).dump(p, "--||--");
-        assertTrue("Test completed without Exception", true);
+        assertEquals( "--||--<tag name=\"Some Name\">" + NL +
+                      "--||--  <inner-tag1 name=\"Inner Name1\">" + NL +
+                      "--||--    ~@%&|K}Id]+l\\" + NL +
+                      "--||--  </inner-tag1>" + NL +
+                      "--||--  <inner-tag2 name=\"Inner Name2\">" + NL +
+                      "--||--    100" + NL +
+                      "--||--  </inner-tag2>" + NL +
+                      "--||--  <inner-tag3 name=\"Inner Name3\">" + NL +
+                      "--||--  </inner-tag3>" + NL +
+                      "--||--</tag>" +  NL
+                      ,os.toString());
     }
 
     @Test
     public void testDump3() throws Throwable {
         new SimpleMsg("tag", "Some Name", "~@%&|K}Id]+l\\").dump(p, "--||--");
-        assertTrue("Test completed without Exception", true);
+        assertEquals( "--||--<tag name=\"Some Name\">" + NL +
+                      "--||--  ~@%&|K}Id]+l\\" + NL +
+                      "--||--</tag>" +  NL
+                      ,os.toString());
     }
 
     @Test
     public void testDump4() throws Throwable {
         SimpleMsg[] msgContent = new SimpleMsg[0];
         new SimpleMsg("tag", "Some Name", msgContent).dump(p, "--||--");
-        assertTrue("Test completed without Exception", true);
+        assertEquals( "--||--<tag name=\"Some Name\">" + NL +
+                      "--||--</tag>" +  NL
+                      ,os.toString());
     }
 
     @Test(expected = NullPointerException.class)
