@@ -39,7 +39,7 @@ import org.jpos.iso.ISOUtil;
 @SuppressWarnings("unchecked unused")
 public class TransactionManager 
     extends QBeanSupport 
-    implements SpaceListener, TransactionConstants, TransactionManagerMBean
+    implements Runnable, SpaceListener, TransactionConstants, TransactionManagerMBean
 {
     public static final String  HEAD       = "$HEAD";
     public static final String  TAIL       = "$TAIL";
@@ -101,7 +101,8 @@ public class TransactionManager
 
     protected void initExecutorService () {
         BlockingQueue bqueue;
-        if (sessions == maxSessions)
+        String strategy = cfg.get("queuing-strategy", "unbound");
+        if (strategy.equals("direct-hand-off"))
             bqueue = new SynchronousQueue();
         else
             bqueue = new LinkedBlockingQueue();
@@ -120,6 +121,7 @@ public class TransactionManager
         tps = new TPS (cfg.getBoolean ("auto-update-tps", true));
         initExecutorService();
         isp.addListener(queue, this);
+        this.start();
         if (psp.rdp (RETRY_QUEUE) != null)
             checkRetryTask();
     }
@@ -149,6 +151,12 @@ public class TransactionManager
     }
     public Space getPersistentSpace() {
         return psp;
+    }
+
+    @Override
+    public void run () {
+        while (running())
+            isp.in (queue, MAX_WAIT);
     }
 
     @Override
