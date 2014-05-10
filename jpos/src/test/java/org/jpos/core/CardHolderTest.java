@@ -58,7 +58,7 @@ public class CardHolderTest extends EqualsHashCodeTestCase {
         CardHolder cardHolder = new CardHolder("k'X9|DH:!;uQ<kG8!P?- ,\"Y!u`r;jB^)>3AbS9,");
         assertEquals("cardHolder.exp", "H:!;", cardHolder.exp);
         assertEquals("cardHolder.pan", "k'X9|", cardHolder.pan);
-        assertEquals("cardHolder.trailler", "uQ<kG8!P?- ,\"Y!u`r;jB^)>3AbS9,", cardHolder.trailler);
+        assertEquals("cardHolder.trailler", "uQ<kG8!P?- ,\"Y!u`r;jB^)>3AbS9,", cardHolder.trailer);
     }
 
     @Test
@@ -159,7 +159,7 @@ public class CardHolderTest extends EqualsHashCodeTestCase {
         CardHolder cardHolder = new CardHolder("testCardHolderPan", "4Cha");
         cardHolder.setTrack1(null);
         cardHolder.setSecurityCode("testCardHolderSecurityCode");
-        cardHolder.setTrailler("testCardHolderTrailler");
+        cardHolder.setTrailer("testCardHolderTrailler");
         PrintStream p = new PrintStream(new ByteArrayOutputStream());
         cardHolder.dump(p, "testCardHolderIndent");
         assertTrue("Test completed without Exception", true);
@@ -315,7 +315,7 @@ public class CardHolderTest extends EqualsHashCodeTestCase {
     @Test
     public void testGetServiceCode1() throws Throwable {
         CardHolder cardHolder = new CardHolder();
-        cardHolder.setTrailler("w:4");
+        cardHolder.setTrailer("w:4");
         String result = cardHolder.getServiceCode();
         assertEquals("result", "w:4", result);
     }
@@ -353,16 +353,16 @@ public class CardHolderTest extends EqualsHashCodeTestCase {
     }
 
     @Test
-    public void testGetTrailler() throws Throwable {
+    public void testGetTrailer() throws Throwable {
         CardHolder cardHolder = new CardHolder();
-        cardHolder.setTrailler("testCardHolderTrailler");
-        String result = cardHolder.getTrailler();
+        cardHolder.setTrailer("testCardHolderTrailler");
+        String result = cardHolder.getTrailer();
         assertEquals("result", "testCardHolderTrailler", result);
     }
 
     @Test
-    public void testGetTrailler1() throws Throwable {
-        String result = new CardHolder().getTrailler();
+    public void testGetTrailer1() throws Throwable {
+        String result = new CardHolder().getTrailer();
         assertNull("result", result);
     }
 
@@ -533,7 +533,7 @@ public class CardHolderTest extends EqualsHashCodeTestCase {
         cardHolder.parseTrack2("uD|kOAf(Ls@RaT\f4_3[l\f#mF*'7-yeK^S?qBK ~G");
         assertEquals("cardHolder.pan", "u", cardHolder.pan);
         assertEquals("cardHolder.exp", "|kOA", cardHolder.exp);
-        assertEquals("cardHolder.trailler", "f(Ls@RaT\f4_3[l\f#mF*'7-yeK^S?qBK ~G", cardHolder.trailler);
+        assertEquals("cardHolder.trailler", "f(Ls@RaT\f4_3[l\f#mF*'7-yeK^S?qBK ~G", cardHolder.trailer);
     }
 
     @Test
@@ -546,7 +546,7 @@ public class CardHolderTest extends EqualsHashCodeTestCase {
             assertEquals("ex.getMessage()", "D0", ex.getMessage());
             assertEquals("cardHolder.exp", "4Cha", cardHolder.exp);
             assertEquals("cardHolder.pan", "testCardHolderPan", cardHolder.pan);
-            assertNull("cardHolder.trailler", cardHolder.trailler);
+            assertNull("cardHolder.trailler", cardHolder.trailer);
         }
     }
 
@@ -560,7 +560,7 @@ public class CardHolderTest extends EqualsHashCodeTestCase {
             assertEquals("ex.getMessage()", "testCardHolders", ex.getMessage());
             assertNull("cardHolder.exp", cardHolder.exp);
             assertNull("cardHolder.pan", cardHolder.pan);
-            assertNull("cardHolder.trailler", cardHolder.trailler);
+            assertNull("cardHolder.trailler", cardHolder.trailer);
         }
     }
 
@@ -574,14 +574,14 @@ public class CardHolderTest extends EqualsHashCodeTestCase {
             assertEquals("ex.getMessage()", "null track2 data", ex.getMessage());
             assertEquals("cardHolder.exp", "H:!;", cardHolder.exp);
             assertEquals("cardHolder.pan", "k'X9|", cardHolder.pan);
-            assertEquals("cardHolder.trailler", "uQ<kG8!P?- ,\"Y!u`r;jB^)>3AbS9,", cardHolder.trailler);
+            assertEquals("cardHolder.trailler", "uQ<kG8!P?- ,\"Y!u`r;jB^)>3AbS9,", cardHolder.trailer);
         }
     }
 
     @Test
     public void testSeemsManualEntry() throws Throwable {
         CardHolder cardHolder = new CardHolder("k'X9|DH:!;uQ<kG8!P?- ,\"Y!u`r;jB^)>3AbS9,");
-        cardHolder.setTrailler("");
+        cardHolder.setTrailer("");
         boolean result = cardHolder.seemsManualEntry();
         assertTrue("result", result);
     }
@@ -589,7 +589,7 @@ public class CardHolderTest extends EqualsHashCodeTestCase {
     @Test
     public void testSeemsManualEntry1() throws Throwable {
         CardHolder cardHolder = new CardHolder("testCardHolderPan", "4Cha");
-        cardHolder.setTrailler("1");
+        cardHolder.setTrailer("1");
         boolean result = cardHolder.seemsManualEntry();
         assertFalse("result", result);
     }
@@ -698,8 +698,8 @@ public class CardHolderTest extends EqualsHashCodeTestCase {
     @Test
     public void testSetTrailler() throws Throwable {
         CardHolder cardHolder = new CardHolder();
-        cardHolder.setTrailler("testCardHolderTrailler");
-        assertEquals("cardHolder.trailler", "testCardHolderTrailler", cardHolder.trailler);
+        cardHolder.setTrailer("testCardHolderTrailler");
+        assertEquals("cardHolder.trailler", "testCardHolderTrailler", cardHolder.trailer);
     }
 
     @Override

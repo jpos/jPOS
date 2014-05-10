@@ -80,7 +80,7 @@ public class Q2 implements FileFilter, Runnable {
     private volatile boolean started;
     private volatile boolean shutdown;
     private volatile boolean shuttingDown;
-    private Thread q2Thread;
+    private volatile Thread q2Thread;
     private String[] args;
     private boolean hasSystemLogger;
     private boolean exit;
@@ -333,8 +333,8 @@ public class Q2 implements FileFilter, Runnable {
                         log.info ("shutting down (hook)");
                         try {
                             q2Thread.join (SHUTDOWN_TIMEOUT);
-                        } catch (InterruptedException e) { 
-                        } catch (NullPointerException e) {
+                        } catch (InterruptedException ignored) {
+                        } catch (NullPointerException ignored) {
                             // on thin Q2 systems where shutdown is very fast, 
                             // q2Thread can become null between the upper if and
                             // the actual join. Not a big deal so we ignore the
@@ -527,7 +527,7 @@ public class Q2 implements FileFilter, Runnable {
     public void relax (long sleep) {
         try {
             Thread.sleep (sleep);
-        } catch (InterruptedException e) { }
+        } catch (InterruptedException ignored) { }
     }
     public void relax () {
         relax (1000);
@@ -805,7 +805,7 @@ public class Q2 implements FileFilter, Runnable {
                 decorator.initialize(getDeployDir());
             }
         }
-        catch (IOException e)
+        catch (IOException ignored)
         {
         }
         catch (Exception e)
@@ -824,7 +824,7 @@ public class Q2 implements FileFilter, Runnable {
                 {
                     in.close();
                 }
-                catch (IOException e)
+                catch (IOException ignored)
                 {
                 }
             }

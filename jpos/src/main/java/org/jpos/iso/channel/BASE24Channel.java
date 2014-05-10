@@ -20,10 +20,8 @@ package org.jpos.iso.channel;
 
 import org.jpos.iso.*;
 
-import java.io.EOFException;
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.net.SocketException;
 
 /**
  * Implements an ISOChannel capable to exchange messages with
@@ -95,18 +93,13 @@ public class BASE24Channel extends BaseChannel {
         int i;
         byte[] buf = new byte[4096];
         for (i=0; i<4096; i++) {
-            int c = -1;
-            try {
-                c = serverIn.read();
-            } catch (SocketException e) { }
-            if (c == 03)
+            int c = serverIn.read();
+            if (c == 0x3)
                 break;
-            else if (c == -1)
-                throw new EOFException("connection closed");
             buf[i] = (byte) c;
         }
         if (i == 4096)
-            throw new IOException("packet too long");
+            throw new IOException("message too long");
 
         byte[] d = new byte[i];
         System.arraycopy(buf, 0, d, 0, i);

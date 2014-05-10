@@ -277,8 +277,7 @@ public class ChannelAdaptorTest {
             Thread thread =  iterator.next();
             try {
                 thread.join(RECONNECT_DELAY + 500);
-            } catch (InterruptedException e) {
-            }
+            } catch (InterruptedException ignored) { }
             if (!thread.isAlive()) {
                 iterator.remove();
             }

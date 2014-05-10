@@ -25,6 +25,7 @@ import org.jpos.q2.QBeanSupport;
 import org.jpos.q2.QFactory;
 import org.jpos.space.Space;
 import org.jpos.space.SpaceFactory;
+import org.jpos.space.SpaceUtil;
 import org.jpos.util.LogSource;
 import org.jpos.util.Loggeable;
 import org.jpos.util.NameRegistrar;
@@ -33,7 +34,6 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.net.SocketTimeoutException;
 import java.util.Date;
-import java.util.Iterator;
 
 /**
  * @author Alejandro Revilla
@@ -103,15 +103,13 @@ public class ChannelAdaptor
     }
     private void waitForReceiverToExit() {
         join(receiver);
-        while (sp.inp (ready) != null)
-            ;
+        SpaceUtil.wipe(sp, ready);
     }
     private void join(Thread thread) {
         try {
             if (thread != null)
                 thread.join();
-        } catch (InterruptedException ignored) {
-        }
+        } catch (InterruptedException ignored) { }
     }
     public void destroyService () {
         NameRegistrar.unregister (getName ());
@@ -155,7 +153,7 @@ public class ChannelAdaptor
     /**
      * Queue a message to be transmitted by this adaptor
      * @param m message to send
-     * @param timeout 
+     * @param timeout timeout in millis
      */
     public void send (ISOMsg m, long timeout) {
         sp.out (in, m, timeout);
@@ -193,7 +191,7 @@ public class ChannelAdaptor
         String packagerName = e.getAttributeValue ("packager");
 
         ISOChannel channel   = (ISOChannel) f.newInstance (channelName);
-        ISOPackager packager = null;
+        ISOPackager packager;
         if (packagerName != null) {
             packager = (ISOPackager) f.newInstance (packagerName);
             channel.setPackager (packager);
@@ -214,23 +212,22 @@ public class ChannelAdaptor
     protected void addFilters (FilteredChannel channel, Element e, QFactory fact)
         throws ConfigurationException
     {
-        Iterator iter = e.getChildren ("filter").iterator();
-        while (iter.hasNext()) {
-            Element f = (Element) iter.next();
-            String clazz = f.getAttributeValue ("class");
-            ISOFilter filter = (ISOFilter) fact.newInstance (clazz);
-            fact.setLogger        (filter, f);
-            fact.setConfiguration (filter, f);
-            String direction = f.getAttributeValue ("direction");
+        for (Object o : e.getChildren("filter")) {
+            Element f = (Element) o;
+            String clazz = f.getAttributeValue("class");
+            ISOFilter filter = (ISOFilter) fact.newInstance(clazz);
+            fact.setLogger(filter, f);
+            fact.setConfiguration(filter, f);
+            String direction = f.getAttributeValue("direction");
             if (direction == null)
-                channel.addFilter (filter);
-            else if ("incoming".equalsIgnoreCase (direction))
-                channel.addIncomingFilter (filter);
-            else if ("outgoing".equalsIgnoreCase (direction))
-                channel.addOutgoingFilter (filter);
-            else if ("both".equalsIgnoreCase (direction)) {
-                channel.addIncomingFilter (filter);
-                channel.addOutgoingFilter (filter);
+                channel.addFilter(filter);
+            else if ("incoming".equalsIgnoreCase(direction))
+                channel.addIncomingFilter(filter);
+            else if ("outgoing".equalsIgnoreCase(direction))
+                channel.addOutgoingFilter(filter);
+            else if ("both".equalsIgnoreCase(direction)) {
+                channel.addIncomingFilter(filter);
+                channel.addOutgoingFilter(filter);
             }
         }
     }
@@ -361,8 +358,7 @@ public class ChannelAdaptor
             ISOUtil.sleep(1000);
         }
         while (running() && !channel.isConnected ()) {
-            while (sp.inp (ready) != null)
-                ;
+            SpaceUtil.wipe(sp, ready);
             try {
                 channel.connect ();
             } catch (IOException e) {
@@ -380,8 +376,7 @@ public class ChannelAdaptor
         // do not synchronize on this as both Sender and Receiver can deadlock against a thread calling stop()
         synchronized (disconnectLock) {
             try {
-                while (sp.inp(ready) != null)
-                    ;
+                SpaceUtil.wipe(sp, ready);
                 channel.disconnect();
             } catch (IOException e) {
                 getLog().warn("disconnect", e);
@@ -407,7 +402,9 @@ public class ChannelAdaptor
             port = Integer.parseInt (
                 getProperty (getProperties ("channel"), "port")
             );
-        } catch (NumberFormatException e) { }
+        } catch (NumberFormatException e) {
+            getLog().error(e);
+        }
         return port;
     }
     public synchronized void setSocketFactory (String sFac) {
