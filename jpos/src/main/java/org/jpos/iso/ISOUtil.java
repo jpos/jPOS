@@ -825,7 +825,7 @@ public class ISOUtil {
      * @param length The number of bytes to read.
      * @return the string of hex chars.
      */
-    public static final String byte2hex(byte[] bs, int off, int length) {
+    public static String byte2hex(byte[] bs, int off, int length) {
         if (bs.length <= off || bs.length < off + length)
             throw new IllegalArgumentException();
         StringBuilder sb = new StringBuilder(length * 2);
@@ -833,7 +833,7 @@ public class ISOUtil {
         return sb.toString();
     }
 
-    private static final void byte2hexAppend(byte[] bs, int off, int length, StringBuilder sb) {
+    private static void byte2hexAppend(byte[] bs, int off, int length, StringBuilder sb) {
         if (bs.length <= off || bs.length < off + length)
             throw new IllegalArgumentException();
         sb.ensureCapacity(sb.length() + length * 2);
