@@ -769,7 +769,7 @@ public class ISOUtil {
      * @param bs source byte array
      * @return
      */
-    public static final String byte2hex(byte[] bs) {
+    public static String byte2hex(byte[] bs) {
         return byte2hex(bs, 0, bs.length);
     }
 

@@ -53,7 +53,7 @@ public interface EMVTagType {
     public enum DataSource {
         ICC,
         TERMINAL,
-        ISSUER;
+        ISSUER
     }
 
     public abstract static class DataLength {

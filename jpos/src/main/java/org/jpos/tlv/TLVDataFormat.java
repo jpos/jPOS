@@ -34,5 +34,5 @@ public enum TLVDataFormat {
     ALPHA_NUMERIC_SPECIAL,
     CARD_NUMBER,
     TIME_HHMMSS,
-    PROPRIETARY;
+    PROPRIETARY
 }

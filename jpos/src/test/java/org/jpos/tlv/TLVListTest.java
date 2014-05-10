@@ -370,7 +370,7 @@ public class TLVListTest {
 
     @Test
     public void testUnpack2() throws Throwable {
-        byte[] buf = ISOUtil.hex2byte("000100");;
+        byte[] buf = ISOUtil.hex2byte("000100");
         tLVList.unpack(buf);
         assertTrue("tLVList.elements().hasMoreElements()", tLVList.elements().hasMoreElements());
         TLVMsg tm = tLVList.index(0);
@@ -404,7 +404,7 @@ public class TLVListTest {
 
     @Test
     public void testUnpack6() throws Throwable {
-        byte[] buf = ISOUtil.hex2byte("6000");;
+        byte[] buf = ISOUtil.hex2byte("6000");
         tLVList.unpack(buf);
         assertTrue("tLVList.elements().hasMoreElements()", tLVList.elements().hasMoreElements());
     }
@@ -425,7 +425,7 @@ public class TLVListTest {
 
     @Test
     public void testUnpack9() throws Throwable {
-        byte[] buf = ISOUtil.hex2byte("1e00");;
+        byte[] buf = ISOUtil.hex2byte("1e00");
         tLVList.unpack(buf);
         assertTrue("tLVList.elements().hasMoreElements()", tLVList.elements().hasMoreElements());
     }
@@ -470,7 +470,7 @@ public class TLVListTest {
 
     @Test
     public void testUnpackThrowsBufferUnderflowException3() throws Throwable {
-        byte[] buf = ISOUtil.hex2byte("007f");;
+        byte[] buf = ISOUtil.hex2byte("007f");
         exception.expect(BufferUnderflowException.class);
         try {
             tLVList.unpack(buf);
@@ -495,7 +495,7 @@ public class TLVListTest {
 
     @Test
     public void testUnpackThrowsISOException() throws Throwable {
-        byte[] buf = ISOUtil.hex2byte("00ff80");;
+        byte[] buf = ISOUtil.hex2byte("00ff80");
         exception.expect(ISOException.class);
         exception.expectMessage(String.format(ISO_EXCEPT_WITHOUT_LEN, 0x80));
         try {
@@ -509,7 +509,7 @@ public class TLVListTest {
 
     @Test
     public void testUnpackThrowsISOException1() throws Throwable {
-        byte[] buf = ISOUtil.hex2byte("001e");;
+        byte[] buf = ISOUtil.hex2byte("001e");
         exception.expect(ISOException.class);
         exception.expectMessage(String.format(ISO_EXCEPT_WITHOUT_LEN, 0x1e));
         try {
@@ -523,7 +523,7 @@ public class TLVListTest {
 
     @Test
     public void testUnpackThrowsISOException10() throws Throwable {
-        byte[] buf = ISOUtil.hex2byte("7f0007");;
+        byte[] buf = ISOUtil.hex2byte("7f0007");
         exception.expect(ISOException.class);
         exception.expectMessage(String.format(ISO_EXCEPT_EXCEEDS_AVAL, 0x7f00, 0x07));
         try {
@@ -537,7 +537,7 @@ public class TLVListTest {
 
     @Test
     public void testUnpackThrowsISOException11() throws Throwable {
-        byte[] buf = ISOUtil.hex2byte("ff1e");;
+        byte[] buf = ISOUtil.hex2byte("ff1e");
         exception.expect(ISOException.class);
         exception.expectMessage(String.format(ISO_EXCEPT_WITHOUT_LEN, 0x1e));
         try {
@@ -579,7 +579,7 @@ public class TLVListTest {
 
     @Test
     public void testUnpackThrowsISOException14() throws Throwable {
-        byte[] buf = ISOUtil.hex2byte("7f00");;
+        byte[] buf = ISOUtil.hex2byte("7f00");
         exception.expect(ISOException.class);
         exception.expectMessage(String.format(ISO_EXCEPT_WITHOUT_LEN, 0x7f00));
         try {
@@ -593,7 +593,7 @@ public class TLVListTest {
 
     @Test
     public void testUnpackThrowsISOException15() throws Throwable {
-        byte[] buf = ISOUtil.hex2byte("f8");;
+        byte[] buf = ISOUtil.hex2byte("f8");
         exception.expect(ISOException.class);
         exception.expectMessage(String.format(ISO_EXCEPT_WITHOUT_LEN, 0xf8));
         try {
