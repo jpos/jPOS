@@ -40,31 +40,14 @@ import java.util.Collection;
         public SimpleMsg (String tagName, String msgName, Object msgContent) {
             this.tagName = tagName;
             this.msgName = msgName;
-            this.msgContent = msgContent;
+            if(msgContent instanceof byte[])
+              this.msgContent = ISOUtil.hexString((byte[])msgContent);
+            else
+              this.msgContent = msgContent;
         }
 
         public SimpleMsg (String tagName, Object msgContent) {
           this(tagName, null, msgContent);
-        }
-
-        public SimpleMsg (String tagName, String msgName, byte[] msgContent) {
-            this(tagName, msgName, ISOUtil.hexString(msgContent));
-        }
-
-        public SimpleMsg (String tagName, String msgName, boolean msgContent) {
-            this(tagName, msgName,  Boolean.valueOf(msgContent));
-        }
-
-        public SimpleMsg (String tagName, String msgName, short msgContent) {
-            this(tagName, msgName,  Short.valueOf(msgContent));
-        }
-
-        public SimpleMsg (String tagName, String msgName, int msgContent) {
-            this(tagName, msgName,  Integer.valueOf(msgContent));
-        }
-
-        public SimpleMsg (String tagName, String msgName, long msgContent) {
-            this(tagName, msgName,  Long.valueOf(msgContent));
         }
 
         /**
