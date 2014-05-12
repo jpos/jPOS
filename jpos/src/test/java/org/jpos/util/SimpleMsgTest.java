@@ -22,6 +22,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import org.jpos.iso.ISOUtil;
 import org.junit.Before;
 
 import org.junit.Test;
@@ -85,11 +86,6 @@ public class SimpleMsgTest {
         assertEquals("simpleMsg.msgContent", "", simpleMsg.msgContent);
         assertEquals("simpleMsg.tagName", "tag", simpleMsg.tagName);
         assertEquals("simpleMsg.msgName", "Some Name", simpleMsg.msgName);
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void testConstructorThrowsNullPointerException() throws Throwable {
-        new SimpleMsg("tag", "Some Name", (byte[]) null);
     }
 
     @Test
@@ -168,6 +164,13 @@ public class SimpleMsgTest {
     }
 
     @Test
+    public void testDumpContentNullByteArr() throws Throwable {
+        new SimpleMsg("tag", "Some Name", (byte[]) null).dump(p, "--||--");
+        assertEquals( "--||--<tag name=\"Some Name\"/>" + NL
+                      ,os.toString());
+    }
+
+    @Test
     public void testDumpContentNullWithoutName() throws Throwable {
         new SimpleMsg("tag", (Object)null).dump(p, "--||--");
         assertEquals( "--||--<tag/>" + NL
@@ -178,6 +181,67 @@ public class SimpleMsgTest {
     public void testDumpContentWithoutName() throws Throwable {
         new SimpleMsg("tag", 100).dump(p, "--||--");
         assertEquals( "--||--<tag>100</tag>" + NL
+                      ,os.toString());
+    }
+
+    @Test
+    public void testDumpContentByteArr() throws Throwable {
+        byte[] b = ISOUtil.hex2byte("3AF1");
+        new SimpleMsg("tag", "Some Name", b).dump(p, "--||--");
+        assertEquals( "--||--<tag name=\"Some Name\">" + NL +
+                      "--||--  3AF1" + NL +
+                      "--||--</tag>" + NL
+                      ,os.toString());
+    }
+
+    @Test
+    public void testDumpContentByteArrWithoutName() throws Throwable {
+        byte[] b = ISOUtil.hex2byte("f13a");
+        new SimpleMsg("tag", b).dump(p, "--||--");
+        assertEquals( "--||--<tag>F13A</tag>" + NL
+                      ,os.toString());
+    }
+
+    @Test
+    public void testDumpContentBoolean() throws Throwable {
+        new SimpleMsg("tag", "Some Name", true).dump(p, "--||--");
+        assertEquals( "--||--<tag name=\"Some Name\">" + NL +
+                      "--||--  true" + NL +
+                      "--||--</tag>" + NL
+                      ,os.toString());
+    }
+
+    @Test
+    public void testDumpContentShort() throws Throwable {
+        new SimpleMsg("tag", "Some Name", (short)123).dump(p, "--||--");
+        assertEquals( "--||--<tag name=\"Some Name\">" + NL +
+                      "--||--  123" + NL +
+                      "--||--</tag>" + NL
+                      ,os.toString());
+    }
+
+    @Test
+    public void testDumpContentLong() throws Throwable {
+        new SimpleMsg("tag", "Some Name", -123L).dump(p, "--||--");
+        assertEquals( "--||--<tag name=\"Some Name\">" + NL +
+                      "--||--  -123" + NL +
+                      "--||--</tag>" + NL
+                      ,os.toString());
+    }
+
+    @Test
+    public void testDumpContentDouble() throws Throwable {
+        new SimpleMsg("tag", "Some Name", -12.3).dump(p, "--||--");
+        assertEquals( "--||--<tag name=\"Some Name\">" + NL +
+                      "--||--  -12.3" + NL +
+                      "--||--</tag>" + NL
+                      ,os.toString());
+    }
+
+    @Test
+    public void testDumpContentDoubleWithoutName() throws Throwable {
+        new SimpleMsg("tag",  -12.3).dump(p, "--||--");
+        assertEquals( "--||--<tag>-12.3</tag>" + NL
                       ,os.toString());
     }
 
