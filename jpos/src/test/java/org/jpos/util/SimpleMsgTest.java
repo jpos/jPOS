@@ -19,12 +19,9 @@
 package org.jpos.util;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
-import org.jpos.iso.ISOUtil;
 import org.junit.Before;
 
 import org.junit.Test;
@@ -38,11 +35,7 @@ public class SimpleMsgTest {
     @Before
     public void setUp() {
       os = new ByteArrayOutputStream();
-      try {
-        p = new PrintStream(os, true, ISOUtil.ENCODING);
-      } catch (UnsupportedEncodingException ex) {
-        fail(ex.getMessage());
-      }
+      p = new PrintStream(os);
     }
 
     @Test
@@ -167,35 +160,68 @@ public class SimpleMsgTest {
                       ,os.toString());
     }
 
-    @Test(expected = NullPointerException.class)
-    public void testDumpThrowsNullPointerException() throws Throwable {
+    @Test
+    public void testDumpContentNull() throws Throwable {
+        new SimpleMsg("tag", "Some Name", (Object)null).dump(p, "--||--");
+        assertEquals( "--||--<tag name=\"Some Name\"/>" + NL
+                      ,os.toString());
+    }
+
+    @Test
+    public void testDumpContentNullWithoutName() throws Throwable {
+        new SimpleMsg("tag", (Object)null).dump(p, "--||--");
+        assertEquals( "--||--<tag/>" + NL
+                      ,os.toString());
+    }
+
+    @Test
+    public void testDumpContentWithoutName() throws Throwable {
+        new SimpleMsg("tag", 100).dump(p, "--||--");
+        assertEquals( "--||--<tag>100</tag>" + NL
+                      ,os.toString());
+    }
+
+    @Test
+    public void testDumpInnerNull() throws Throwable {
         new SimpleMsg("tag", "Some Name", new SimpleMsg("inner-tag",
                 "Inner Name", (Object) null)).dump(p, "--||--");
+        assertEquals( "--||--<tag name=\"Some Name\">" + NL +
+                      "--||--  <inner-tag name=\"Inner Name\"/>" + NL +
+                      "--||--</tag>" +  NL
+                      ,os.toString());
     }
 
-    @Test(expected = NullPointerException.class)
-    public void testDumpThrowsNullPointerException1() throws Throwable {
-        PrintStream ps = new PrintStream(new ByteArrayOutputStream());
+    @Test
+    public void testDumpInnerNulls() throws Throwable {
+        SimpleMsg[] msgContent = new SimpleMsg[4];
+        new SimpleMsg("tag", "Some Name", msgContent).dump(p, "--||--");
+        assertEquals( "--||--<tag name=\"Some Name\">" + NL +
+                      "--||--  null" + NL +
+                      "--||--  null" + NL +
+                      "--||--  null" + NL +
+                      "--||--  null" + NL +
+                      "--||--</tag>" +  NL
+                      ,os.toString());
+    }
+
+    @Test
+    public void testDumpInnerCompositeAndNulls() throws Throwable {
         SimpleMsg[] msgContent = new SimpleMsg[4];
         msgContent[0] = new SimpleMsg("inner-tag", "Inner Name", 100);
-        new SimpleMsg("tag", "Some Name", msgContent).dump(ps, "--||--");
+        new SimpleMsg("tag", "Some Name", msgContent).dump(p, "--||--");
+        assertEquals( "--||--<tag name=\"Some Name\">" + NL +
+                      "--||--  <inner-tag name=\"Inner Name\">" + NL +
+                      "--||--    100" + NL +
+                      "--||--  </inner-tag>" + NL +
+                      "--||--  null" + NL +
+                      "--||--  null" + NL +
+                      "--||--  null" + NL +
+                      "--||--</tag>" +  NL
+                      ,os.toString());
     }
 
     @Test(expected = NullPointerException.class)
-    public void testDumpThrowsNullPointerException2() throws Throwable {
-        PrintStream ps = new PrintStream(p, false, "UTF-16BE");
-        new SimpleMsg("tag", "Some Name", (Object) null).dump(ps, "--||--");
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void testDumpThrowsNullPointerException4() throws Throwable {
-        SimpleMsg[] msgContent = new SimpleMsg[4];
-        PrintStream ps = new PrintStream(p, false, ISOUtil.ENCODING);
-        new SimpleMsg("tag", "Some Name", msgContent).dump(ps, "--||--");
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void testDumpThrowsNullPointerException5() throws Throwable {
+    public void testDumpPrintStreamNull() throws Throwable {
         new SimpleMsg("tag", "Some Name", 100L).dump(null, "--||--");
     }
 }

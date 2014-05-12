@@ -87,10 +87,17 @@ import java.util.Collection;
                 cl = (Collection) msgContent;
             else if (msgContent instanceof Loggeable)
                 cl = Arrays.asList(msgContent);
-            else if (msgName != null)
+            else if (msgName != null && msgContent == null){
+                p.println("/>");
+                return;
+            } else if (msgName != null)
                 cl = Arrays.asList(msgContent);
-            else
-                p.print(">" + msgContent.toString());
+            else if (msgContent != null)
+                p.print(">" + msgContent);
+            else {
+                p.println("/>");
+                return;
+            }
 
             if (cl != null) {
                 p.println(">");
@@ -98,7 +105,7 @@ import java.util.Collection;
                     if (o instanceof Loggeable)
                         ((Loggeable) o).dump(p, inner);
                     else
-                        p.println(inner + o.toString());
+                        p.println(inner + o);
                 }
                 p.print(indent);
             }
