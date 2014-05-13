@@ -143,7 +143,7 @@ public class FSDMsg implements Loggeable, Cloneable {
         separators = new LinkedHashMap<String,Character>();
         this.basePath   = basePath;
         this.baseSchema = baseSchema;
-        charset = Charset.forName(ISOUtil.ENCODING);
+        charset = ISOUtil.CHARSET;
         readCount = 0;
         
         setSeparator("FS", FS);
@@ -619,6 +619,8 @@ public class FSDMsg implements Loggeable, Cloneable {
     public void setMap (Map fields) {
         this.fields = fields;
     }
+
+    @Override
     public void dump (PrintStream p, String indent) {
         String inner = indent + "  ";
         p.println (indent + "<fsdmsg schema='" + basePath + baseSchema  + "'>");
@@ -635,6 +637,8 @@ public class FSDMsg implements Loggeable, Cloneable {
     public boolean hasField(String fieldName) {
         return fields.containsKey(fieldName);
     }
+
+    @Override
     public Object clone() {
         try {              
             FSDMsg m = (FSDMsg) super.clone();

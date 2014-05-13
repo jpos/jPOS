@@ -18,9 +18,9 @@
 
 package org.jpos.iso;
 
-import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
 import java.util.*;
 
 /**
@@ -57,7 +57,17 @@ public class ISOUtil {
 
     }
 
+    /**
+     * Default encoding (charset) for bytes transmissions over network
+     * @deprecated use {@link #CHARSET} instead
+     */
     public static final String ENCODING  = "ISO8859_1";
+
+    /**
+     * Default charset for bytes transmissions over network
+     */
+    public static final Charset CHARSET  = Charset.forName("ISO8859_1");
+
     public static final byte[] EBCDIC2ASCII = new byte[] {
         (byte)0x0,  (byte)0x1,  (byte)0x2,  (byte)0x3, 
         (byte)0x9C, (byte)0x9,  (byte)0x86, (byte)0x7F, 
@@ -198,22 +208,14 @@ public class ISOUtil {
     public static final byte ETX = 0x03;
 
     public static String ebcdicToAscii(byte[] e) {
-        try {
-            return new String (
-                ebcdicToAsciiBytes (e, 0, e.length), ENCODING
-            );
-        } catch (UnsupportedEncodingException ex) {
-            return ex.toString(); // should never happen
-        }
+        return new String (
+            ebcdicToAsciiBytes (e, 0, e.length), CHARSET
+        );
     }
     public static String ebcdicToAscii(byte[] e, int offset, int len) {
-        try {
-            return new String (
-                ebcdicToAsciiBytes (e, offset, len), ENCODING
-            );
-        } catch (UnsupportedEncodingException ex) {
-            return ex.toString(); // should never happen
-        }
+        return new String (
+            ebcdicToAsciiBytes (e, offset, len), CHARSET
+        );
     }
     public static byte[] ebcdicToAsciiBytes (byte[] e) {
         return ebcdicToAsciiBytes (e, 0, e.length);
@@ -767,7 +769,7 @@ public class ISOUtil {
     /**
      * Converts a byte array into a hex string
      * @param bs source byte array
-     * @return
+     * @return hexadecimal representation of bytes
      */
     public static String byte2hex(byte[] bs) {
         return byte2hex(bs, 0, bs.length);
@@ -777,7 +779,7 @@ public class ISOUtil {
      * Converts an integer into a byte array of hex
      *
      * @param value
-     * @return
+     * @return bytes representation of integer
      */
     public static byte[] int2byte(int value) {
         if (value < 0) {
@@ -800,7 +802,7 @@ public class ISOUtil {
      * Converts a byte array of hex into an integer
      *
      * @param bytes
-     * @return
+     * @return integer representation of bytes
      */
     public static int byte2int(byte[] bytes) {
         if (bytes == null || bytes.length == 0) {
