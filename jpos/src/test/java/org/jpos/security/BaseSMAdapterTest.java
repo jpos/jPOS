@@ -22,6 +22,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.fail;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Properties;
 
@@ -118,15 +119,10 @@ public class BaseSMAdapterTest {
         }
     }
 
-    @Test
-    public void testGenerateCBC_MACThrowsNullPointerException1() throws Throwable {
-        try {
-            new BaseSMAdapter().generateCBC_MAC((byte[]) null, new SecureDESKey((short) 100, "testBaseSMAdapterKeyType",
-                    "testBaseSMAdapterKeyHexString1", "testBaseSMAdapterKeyCheckValueHexString1"));
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
+    @Test(expected = SMException.class)
+    public void testGenerateCBC_MACThrowsSMException1() throws Throwable {
+        new BaseSMAdapter().generateCBC_MAC((byte[]) null, new SecureDESKey((short) 100, "testBaseSMAdapterKeyType",
+                "testBaseSMAdapterKeyHexString1", "testBaseSMAdapterKeyCheckValueHexString1"));
     }
 
     @Test
@@ -191,15 +187,10 @@ public class BaseSMAdapterTest {
         }
     }
 
-    @Test
-    public void testImportKeyThrowsNullPointerException2() throws Throwable {
-        try {
-            new BaseSMAdapter().importKey((short) 100, "testBaseSMAdapterKeyType", (byte[]) null, new SecureDESKey((short) 100,
-                    "testBaseSMAdapterKeyType", "testBaseSMAdapterKeyHexString1", "testBaseSMAdapterKeyCheckValueHexString1"), true);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
+    @Test(expected = SMException.class)
+    public void testImportKeyThrowsSMException2() throws Throwable {
+        new BaseSMAdapter().importKey((short) 100, "testBaseSMAdapterKeyType", (byte[]) null, new SecureDESKey((short) 100,
+                "testBaseSMAdapterKeyType", "testBaseSMAdapterKeyHexString1", "testBaseSMAdapterKeyCheckValueHexString1"), true);
     }
 
     @Test

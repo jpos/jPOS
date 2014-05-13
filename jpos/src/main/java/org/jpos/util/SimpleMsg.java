@@ -21,6 +21,8 @@ package  org.jpos.util;
 import org.jpos.iso.ISOUtil;
 
 import java.io.PrintStream;
+import java.util.Arrays;
+import java.util.Collection;
 
 /**
  * <p>
@@ -38,27 +40,14 @@ import java.io.PrintStream;
         public SimpleMsg (String tagName, String msgName, Object msgContent) {
             this.tagName = tagName;
             this.msgName = msgName;
-            this.msgContent = msgContent;
+            if(msgContent instanceof byte[])
+              this.msgContent = ISOUtil.hexString((byte[])msgContent);
+            else
+              this.msgContent = msgContent;
         }
 
-        public SimpleMsg (String tagName, String msgName, byte[] msgContent) {
-            this(tagName, msgName, ISOUtil.hexString(msgContent));
-        }
-
-        public SimpleMsg (String tagName, String msgName, boolean msgContent) {
-            this(tagName, msgName,  Boolean.valueOf(msgContent));
-        }
-
-        public SimpleMsg (String tagName, String msgName, short msgContent) {
-            this(tagName, msgName,  Short.valueOf(msgContent));
-        }
-
-        public SimpleMsg (String tagName, String msgName, int msgContent) {
-            this(tagName, msgName,  Integer.valueOf(msgContent));
-        }
-
-        public SimpleMsg (String tagName, String msgName, long msgContent) {
-            this(tagName, msgName,  Long.valueOf(msgContent));
+        public SimpleMsg (String tagName, Object msgContent) {
+          this(tagName, null, msgContent);
         }
 
         /**
@@ -67,20 +56,43 @@ import java.io.PrintStream;
          * @param indent indention string, usually suppiled by Logger
          * @see org.jpos.util.Loggeable
          */
+        @Override
         public void dump (PrintStream p, String indent) {
             String inner = indent + "  ";
             p.print(indent + "<" + tagName);
-            p.print(" name=\"" + msgName + "\"");
-            p.println(">");
-            if (msgContent instanceof SimpleMsg[]) {
-                // dump sub messages
-                for (int i = 0; i < ((SimpleMsg[])msgContent).length; i++)
-                    ((SimpleMsg[])msgContent)[i].dump(p, inner);
-            }
+            if (msgName != null)
+                p.print(" name=\"" + msgName + "\"");
+
+            Collection cl = null;
+            if (msgContent instanceof Object[])
+                cl = Arrays.asList((Object[]) msgContent);
+            else if (msgContent instanceof Collection)
+                cl = (Collection) msgContent;
             else if (msgContent instanceof Loggeable)
-                ((Loggeable)msgContent).dump(p, inner);
-            else
-                p.println(inner + msgContent.toString());
-            p.println(indent + "</" + tagName + ">");
+                cl = Arrays.asList(msgContent);
+            else if (msgName != null && msgContent == null){
+                p.println("/>");
+                return;
+            } else if (msgName != null)
+                cl = Arrays.asList(msgContent);
+            else if (msgContent != null)
+                p.print(">" + msgContent);
+            else {
+                p.println("/>");
+                return;
+            }
+
+            if (cl != null) {
+                p.println(">");
+                for (Object o : cl) {
+                    if (o instanceof Loggeable)
+                        ((Loggeable) o).dump(p, inner);
+                    else
+                        p.println(inner + o);
+                }
+                p.print(indent);
+            }
+
+            p.println("</" + tagName + ">");
         }
     }
