@@ -18,6 +18,7 @@
 
 package org.jpos.iso.packager;
 
+import org.jpos.iso.ISOSubFieldPackager;
 import org.jpos.iso.*;
 import org.jpos.util.LogEvent;
 import org.jpos.util.Logger;
@@ -38,14 +39,19 @@ import java.util.Map;
  * implementation should provide this mapping
  *
  */
-
-public class GenericTaggedFieldsPackager extends GenericPackager {
+public class GenericTaggedFieldsPackager extends GenericPackager
+    implements ISOSubFieldPackager {
 
     private TagMapper tagMapper = null;
     private Integer fieldId = 0;
 
     public GenericTaggedFieldsPackager() throws ISOException {
         super();
+    }
+
+    @Override
+    public int getFieldNumber() {
+      return fieldId;
     }
 
     @Override
@@ -145,8 +151,11 @@ public class GenericTaggedFieldsPackager extends GenericPackager {
 
     /**
      * Pack the subfield into a byte array
+     *
+     * @return packed array of bytes
+     * @throws org.jpos.iso.ISOException
      */
-
+    @Override
     public byte[] pack(ISOComponent m) throws ISOException {
         LogEvent evt = new LogEvent(this, "pack");
         try {
@@ -190,14 +199,23 @@ public class GenericTaggedFieldsPackager extends GenericPackager {
         }
     }
 
+    @Override
     public void setFieldPackager(ISOFieldPackager[] fld) {
         super.setFieldPackager(fld);
         for (ISOFieldPackager aFld : fld) {
-            if (aFld instanceof TaggedFieldPackagerBase) {
-                ((TaggedFieldPackagerBase) aFld).setParentFieldNumber(fieldId);
-                ((TaggedFieldPackagerBase) aFld).setTagMapper(tagMapper);
-                ((TaggedFieldPackagerBase) aFld).setPackingLenient(isPackingLenient());
-                ((TaggedFieldPackagerBase) aFld).setUnpackingLenient(isUnpackingLenient());
+            TaggedFieldPackagerBase tfp = null;
+            if (aFld instanceof TaggedFieldPackagerBase)
+                tfp = ((TaggedFieldPackagerBase) aFld);
+            else if(aFld instanceof ISOMsgFieldPackager) {
+                ISOMsgFieldPackager fp = (ISOMsgFieldPackager) aFld;
+                if(fp.getISOFieldPackager() instanceof TaggedFieldPackagerBase)
+                    tfp = (TaggedFieldPackagerBase) fp.getISOFieldPackager();
+            }
+            if (tfp != null) {
+                tfp.setParentFieldNumber(fieldId);
+                tfp.setTagMapper(tagMapper);
+                tfp.setPackingLenient(isPackingLenient());
+                tfp.setUnpackingLenient(isUnpackingLenient());
             }
         }
     }
