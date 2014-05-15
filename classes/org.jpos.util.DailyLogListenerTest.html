@@ -34,7 +34,7 @@
 </td>
 <td>
 <div class="infoBox" id="duration">
-<div class="counter">1.086s</div>
+<div class="counter">1.024s</div>
 <p>duration</p>
 </div>
 </td>
@@ -75,7 +75,7 @@
 </thead>
 <tr>
 <td class="success">testCheckSize</td>
-<td>0s</td>
+<td>0.001s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
@@ -90,17 +90,17 @@
 </tr>
 <tr>
 <td class="success">testCloseCompressedOutputStreamThrowsNullPointerException</td>
-<td>0s</td>
+<td>0.001s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">testCompress</td>
-<td>0s</td>
+<td>0.001s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">testCompressorConstructor</td>
-<td>0s</td>
+<td>0.001s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
@@ -110,12 +110,12 @@
 </tr>
 <tr>
 <td class="success">testConstructor</td>
-<td>0.001s</td>
+<td>0s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">testDailyRotateConstructor</td>
-<td>0.001s</td>
+<td>0s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
@@ -125,17 +125,17 @@
 </tr>
 <tr>
 <td class="success">testGetCompressedOutputStreamThrowsNullPointerException</td>
-<td>0s</td>
+<td>0.001s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">testGetCompressorThread</td>
-<td>0s</td>
+<td>0.001s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">testLogDebugEx</td>
-<td>0.011s</td>
+<td>0.008s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
@@ -155,12 +155,12 @@
 </tr>
 <tr>
 <td class="success">testLogRotationAndCompressionWorks</td>
-<td>1.067s</td>
+<td>1.007s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">testSetCompressedSuffix</td>
-<td>0.001s</td>
+<td>0s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
@@ -175,12 +175,12 @@
 </tr>
 <tr>
 <td class="success">testSetCompressionBufferSize2</td>
-<td>0.001s</td>
+<td>0s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">testSetCompressionFormat</td>
-<td>0.001s</td>
+<td>0s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
@@ -190,7 +190,7 @@
 </tr>
 <tr>
 <td class="success">testSetDateFmt</td>
-<td>0.001s</td>
+<td>0s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
@@ -200,7 +200,7 @@
 </tr>
 <tr>
 <td class="success">testSetPrefix</td>
-<td>0s</td>
+<td>0.001s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
@@ -210,7 +210,7 @@
 </tr>
 <tr>
 <td class="success">testSetSuffix</td>
-<td>0s</td>
+<td>0.001s</td>
 <td class="success">passed</td>
 </tr>
 </table>
@@ -218,7 +218,7 @@
 <div id="tab1" class="tab">
 <h2>Standard output</h2>
 <span class="code">
-<pre>&lt;log realm=&quot;rotate-log-listener&quot; at=&quot;Tue May 13 18:13:50 UTC 2014&quot;&gt;
+<pre>&lt;log realm=&quot;rotate-log-listener&quot; at=&quot;Thu May 15 18:41:22 UTC 2014&quot;&gt;
    testDailyLogListenerMsg
 java.lang.NullPointerException: testDailyLogListenerParam1
 	at org.jpos.util.DailyLogListenerTest.testLogDebugEx(DailyLogListenerTest.java:154)
@@ -244,7 +244,7 @@ java.lang.NullPointerException: testDailyLogListenerParam1
 	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecuter.execute(JUnitTestClassExecuter.java:47)
 	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassProcessor.processTestClass(JUnitTestClassProcessor.java:69)
 	at org.gradle.api.internal.tasks.testing.SuiteTestClassProcessor.processTestClass(SuiteTestClassProcessor.java:49)
-	at sun.reflect.GeneratedMethodAccessor9.invoke(Unknown Source)
+	at sun.reflect.GeneratedMethodAccessor15.invoke(Unknown Source)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
 	at java.lang.reflect.Method.invoke(Method.java:606)
 	at org.gradle.messaging.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:35)
@@ -253,7 +253,7 @@ java.lang.NullPointerException: testDailyLogListenerParam1
 	at org.gradle.messaging.dispatch.ProxyDispatchAdapter$DispatchingInvocationHandler.invoke(ProxyDispatchAdapter.java:93)
 	at com.sun.proxy.$Proxy2.processTestClass(Unknown Source)
 	at org.gradle.api.internal.tasks.testing.worker.TestWorker.processTestClass(TestWorker.java:103)
-	at sun.reflect.GeneratedMethodAccessor8.invoke(Unknown Source)
+	at sun.reflect.GeneratedMethodAccessor14.invoke(Unknown Source)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
 	at java.lang.reflect.Method.invoke(Method.java:606)
 	at org.gradle.messaging.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:35)
@@ -271,15 +271,15 @@ java.lang.NullPointerException: testDailyLogListenerParam1
 <div id="tab2" class="tab">
 <h2>Standard error</h2>
 <span class="code">
-<pre>Deleting /tmp/jposLogRotationTestDir/RotateWorksTestLog.log
-Deleting /tmp/jposLogRotationTestDir/RotateWorksTestLog.2014-05-13.log.gz
+<pre>Deleting /tmp/jposLogRotationTestDir/RotateWorksTestLog.2014-05-15.log.gz
+Deleting /tmp/jposLogRotationTestDir/RotateWorksTestLog.log
 </pre>
 </span>
 </div>
 </div>
 <div id="footer">
 <p>Generated by 
-<a href="http://www.gradle.org">Gradle 1.9</a> at May 13, 2014 6:15:10 PM</p>
+<a href="http://www.gradle.org">Gradle 1.9</a> at May 15, 2014 6:42:20 PM</p>
 </div>
 </div>
 </body>
