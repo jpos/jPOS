@@ -135,10 +135,9 @@ public class FSDMsgTestCase extends TestCase {
         
 
         String macData = "12345678123456781234567812345678";
-        String binaryMacData = new String(ISOUtil.hex2byte(macData),
-                "ISO8859_1");
+        String binaryMacData = new String(ISOUtil.hex2byte(macData), ISOUtil.CHARSET);
         String id = "01";
-        String binaryID = new String(ISOUtil.hex2byte(id),"ISO8859_1");
+        String binaryID = new String(ISOUtil.hex2byte(id),ISOUtil.CHARSET);
         
         imsg.set("id", id);
         imsg.set("content", macData);
@@ -151,7 +150,7 @@ public class FSDMsgTestCase extends TestCase {
         assertEquals(macData, omsg.get("content"));
 
         macData = "1234567812345678123456781234567812345678123456781234567812345678";
-        binaryMacData = new String(ISOUtil.hex2byte(macData), "ISO8859_1");
+        binaryMacData = new String(ISOUtil.hex2byte(macData), ISOUtil.CHARSET);
         imsg.set("id", id);
         imsg.set("content", macData);
         assertEquals("Dummy separator long data", binaryID + binaryMacData, imsg
@@ -169,7 +168,6 @@ public class FSDMsgTestCase extends TestCase {
         try {
             macData = "1234567890123456789012345678901234567890123456789012345678901234567890123456789099";
 
-            binaryMacData = new String(ISOUtil.hex2byte(macData), "ISO8859_1");
             imsg.set("id", id); 
             imsg.set("content", macData);
 

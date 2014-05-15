@@ -78,6 +78,7 @@ public class ISOMsg extends ISOComponent
      * any reference held by a Composite.
      * @param fieldNumber new field number
      */
+    @Override
     public void setFieldNumber (int fieldNumber) {
         this.fieldNumber = fieldNumber;
     }
@@ -173,6 +174,7 @@ public class ISOMsg extends ISOComponent
     /**
      * @return the max field number associated with this message
      */
+    @Override
     public int getMaxField() {
         if (maxFieldDirty)
             recalcMaxField();
@@ -346,6 +348,7 @@ public class ISOMsg extends ISOComponent
      * Unset a field if it exists, otherwise ignore.
      * @param fldno - the field number
      */
+    @Override
     public void unset (int fldno) {
         if (fields.remove (fldno) != null)
             dirty = maxFieldDirty = true;
@@ -398,6 +401,7 @@ public class ISOMsg extends ISOComponent
      *
      * @return ISOComponent
      */
+    @Override
     public ISOComponent getComposite() {
         return this;
     }
@@ -420,7 +424,9 @@ public class ISOMsg extends ISOComponent
     }
     /**
      * clone fields
+     * @return copy of fields
      */
+    @Override
     public Map getChildren() {
         return (Map) ((TreeMap)fields).clone();
     }
@@ -429,6 +435,7 @@ public class ISOMsg extends ISOComponent
      * @return the packed message
      * @exception ISOException
      */
+    @Override
     public byte[] pack() throws ISOException {
         synchronized (this) {
             recalcBitMap();
@@ -441,11 +448,13 @@ public class ISOMsg extends ISOComponent
      * @return consumed bytes
      * @exception ISOException
      */
+    @Override
     public int unpack(byte[] b) throws ISOException {
         synchronized (this) {
             return packager.unpack(this, b);
         }
     }
+    @Override
     public void unpack (InputStream in) throws IOException, ISOException {
         synchronized (this) {
             packager.unpack(this, in);
@@ -460,6 +469,7 @@ public class ISOMsg extends ISOComponent
      * @param p - print stream
      * @param indent - optional indent string
      */
+    @Override
     public void dump (PrintStream p, String indent) {
         ISOComponent c;
         p.print (indent + "<" + XMLPackager.ISOMSG_TAG);
@@ -614,12 +624,10 @@ public class ISOMsg extends ISOComponent
             try {
                 Object obj = getValue(fldno);
                 if (obj instanceof String)
-                    b = ((String) obj).getBytes(ISOUtil.ENCODING);
+                    b = ((String) obj).getBytes(ISOUtil.CHARSET);
                 else if (obj instanceof byte[])
                     b = ((byte[]) obj);
             } catch (ISOException ignored) {
-                return null;
-            } catch (UnsupportedEncodingException ignored) {
                 return null;
             }
         }
@@ -635,12 +643,10 @@ public class ISOMsg extends ISOComponent
         try {
             Object obj = getValue(fpath);
             if (obj instanceof String)
-                b = ((String) obj).getBytes(ISOUtil.ENCODING);
+                b = ((String) obj).getBytes(ISOUtil.CHARSET);
             else if (obj instanceof byte[])
                 b = ((byte[]) obj);
         } catch (ISOException ignored) {
-            return null;
-        } catch (UnsupportedEncodingException ignored) {
             return null;
         }
         return b;
@@ -698,9 +704,12 @@ public class ISOMsg extends ISOComponent
     /**
      * Don't call setValue on an ISOMsg. You'll sure get
      * an ISOException. It's intended to be used on Leafs
+     * @param obj
+     * @throws org.jpos.iso.ISOException
      * @see ISOField
      * @see ISOException
      */
+    @Override
     public void setValue(Object obj) throws ISOException {
         throw new ISOException ("setValue N/A in ISOMsg");
     }
@@ -771,6 +780,7 @@ public class ISOMsg extends ISOComponent
     /**
      * @return a string suitable for a log
      */
+    @Override
     public String toString() {
         StringBuilder s = new StringBuilder();
         if (isIncoming())
@@ -791,11 +801,13 @@ public class ISOMsg extends ISOComponent
         }
         return s.toString();
     }
+    @Override
     public Object getKey() throws ISOException {
         if (fieldNumber != -1)
             return fieldNumber;
         throw new ISOException ("This is not a subField");
     }
+    @Override
     public Object getValue() {
         return this;
     }
@@ -951,6 +963,7 @@ public class ISOMsg extends ISOComponent
         direction = in.readByte();
     }
  
+    @Override
     public void writeExternal (ObjectOutput out) throws IOException {
         out.writeByte (0);  // reserved for future expansion (version id)
         out.writeShort (fieldNumber);
@@ -979,6 +992,7 @@ public class ISOMsg extends ISOComponent
         out.writeByte ('E');
     }
 
+    @Override
     public void readExternal  (ObjectInput in)
         throws IOException, ClassNotFoundException
     {

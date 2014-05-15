@@ -18,9 +18,6 @@
 
 package org.jpos.iso;
 
-
-import java.io.UnsupportedEncodingException;
-
 /**
  * Implements a Literal Interpreter. No conversion is done.
  * 
@@ -36,29 +33,27 @@ public class LiteralInterpreter implements Interpreter
 	 * (non-Javadoc)
 	 *
      */
+    @Override
     public void interpret(String data, byte[] b, int offset)
     {
-        try {
-            byte[] raw = data.getBytes(ISOUtil.ENCODING);
-            System.arraycopy(raw, 0, b, offset, raw.length);
-        } catch (UnsupportedEncodingException ignored) { }
+        byte[] raw = data.getBytes(ISOUtil.CHARSET);
+        System.arraycopy(raw, 0, b, offset, raw.length);
     }
 
     /**
 	 * (non-Javadoc)
 	 *
      */
+    @Override
     public String uninterpret(byte[] rawData, int offset, int length) {
-        try {
-            return new String(rawData, offset, length, ISOUtil.ENCODING);
-        } catch (UnsupportedEncodingException ignored) { }
-        return null; // should never happen
+        return new String(rawData, offset, length, ISOUtil.CHARSET);
     }
 
     /**
 	 * (non-Javadoc)
 	 *
      */
+    @Override
     public int getPackedLength(int nDataUnits)
     {
         return nDataUnits;
