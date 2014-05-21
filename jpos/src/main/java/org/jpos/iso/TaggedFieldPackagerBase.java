@@ -103,7 +103,7 @@ public abstract class TaggedFieldPackagerBase extends ISOFieldPackager {
         byte[] tagBytes = new byte[getTagNameLength()];
         System.arraycopy(b, offset, tagBytes, 0, getTagNameLength());
         String tag = new String(tagBytes, ISOUtil.CHARSET);
-        if (!(c instanceof ISOField))
+        if (!(c instanceof ISOField) && !(c instanceof ISOBinaryField))
             throw new ISOException(c.getClass().getName()
                     + " is not an ISOField");
         Integer fieldNumber = getTagMapper().getFieldNumberForTag(getParentFieldNumber(), tag);

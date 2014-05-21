@@ -33,6 +33,7 @@ public class DecimalTagMapper implements TagMapper {
 
   protected DecimalTagMapper(int tagLen) {
     tagMaxValue = 1;
+    this.tagLen = tagLen;
     for(int i = 0; i < tagLen; i++)
       tagMaxValue *= 10;
   }

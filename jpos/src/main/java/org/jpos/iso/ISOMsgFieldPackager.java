@@ -52,11 +52,17 @@ public class ISOMsgFieldPackager extends ISOFieldPackager {
      * @return packed component
      * @exception ISOException
      */
+    @Override
     public byte[] pack (ISOComponent c) throws ISOException {
         if (c instanceof ISOMsg) {
             ISOMsg m = (ISOMsg) c;
             m.recalcBitMap();
             ISOBinaryField f = new ISOBinaryField(0, msgPackager.pack(m));
+            if(fieldPackager instanceof TaggedFieldPackagerBase &&
+               msgPackager   instanceof ISOSubFieldPackager) {
+                ISOSubFieldPackager sfp = (ISOSubFieldPackager) msgPackager;
+                f.setFieldNumber(sfp.getFieldNumber());
+            }
             return fieldPackager.pack(f);
         }
         return fieldPackager.pack(c);
@@ -69,10 +75,15 @@ public class ISOMsgFieldPackager extends ISOFieldPackager {
      * @return consumed bytes
      * @exception ISOException
      */
+    @Override
     public int unpack (ISOComponent c, byte[] b, int offset)
         throws ISOException
     {
         ISOBinaryField f = new ISOBinaryField(0);
+        if(msgPackager instanceof ISOSubFieldPackager) {
+            ISOSubFieldPackager sfp = (ISOSubFieldPackager) msgPackager;
+            f.setFieldNumber(sfp.getFieldNumber());
+        }
         int consumed = fieldPackager.unpack(f, b, offset);
         if (c instanceof ISOMsg) 
             msgPackager.unpack(c, (byte[]) f.getValue());
@@ -82,22 +93,32 @@ public class ISOMsgFieldPackager extends ISOFieldPackager {
     /**
      * @param c  - the Component to unpack
      * @param in - input stream
-     * @exception ISOException
+     * @throws org.jpos.iso.ISOException
+     * @throws java.io.IOException
      */
+    @Override
     public void unpack (ISOComponent c, InputStream in) 
         throws IOException, ISOException
     {
         ISOBinaryField f = new ISOBinaryField(0);
+        if(msgPackager instanceof ISOSubFieldPackager) {
+            ISOSubFieldPackager sfp = (ISOSubFieldPackager) msgPackager;
+            f.setFieldNumber(sfp.getFieldNumber());
+        }
         fieldPackager.unpack (f, in);
         if (c instanceof ISOMsg) {
             msgPackager.unpack(c, (byte[]) f.getValue());
         }
     }
+
+    @Override
     public ISOComponent createComponent(int fieldNumber) {
         ISOMsg m = new ISOMsg(fieldNumber);
         m.setPackager(msgPackager);
         return m;
     }
+
+    @Override
     public int getMaxPackedLength() {
         return fieldPackager.getLength();
     }
