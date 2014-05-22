@@ -336,6 +336,6 @@ public class TLVList implements Serializable, Loggeable {
         p.println (indent + "<tlvlist>");
         for (TLVMsg msg : getTags())
             msg.dump (p, inner);
-        p.println (indent + "</tlvlist");
+        p.println (indent + "</tlvlist>");
     }
 }
