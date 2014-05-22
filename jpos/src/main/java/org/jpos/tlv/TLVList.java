@@ -20,7 +20,9 @@ package org.jpos.tlv;
 
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOUtil;
+import org.jpos.util.Loggeable;
 
+import java.io.PrintStream;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
@@ -33,18 +35,14 @@ import java.util.List;
  * @author bharavi
  */
 @SuppressWarnings("unchecked")
-public class TLVList implements Serializable {
+public class TLVList implements Serializable, Loggeable {
 
     private List<TLVMsg> tags = new ArrayList();
     private int tagToFind = 0;
     private int indexLastOccurrence = -1;
 
-    /**
-     * empty constructor
-     */
     public TLVList() {
-     
-       
+        super();
     }
 
     /**
@@ -72,10 +70,11 @@ public class TLVList implements Serializable {
     /**
      * unpack a message with a starting offset
      * @param buf - raw message
-     * @param offset
+     * @param offset theoffset
      * @throws org.jpos.iso.ISOException
      */
     public void unpack(byte[] buf, int offset) throws ISOException {
+        System.out.println (ISOUtil.hexdump(buf));
         ByteBuffer buffer=ByteBuffer.wrap(buf,offset,buf.length-offset);
         TLVMsg currentNode;
         while (hasNext(buffer)) {    
@@ -94,8 +93,8 @@ public class TLVList implements Serializable {
     
     /**
      * Append TLVMsg to the TLVList
-     * @param tag
-     * @param value
+     * @param tag tag id
+     * @param value tag value
      */
     public void append(int tag, byte[] value) {
         append(new TLVMsg(tag, value));
@@ -103,7 +102,7 @@ public class TLVList implements Serializable {
     
     /**
      * Append TLVMsg to the TLVList
-     * @param tag
+     * @param tag id
      * @param value in hexadecimal character representation
      */
     public void append(int tag, String value) {
@@ -112,7 +111,7 @@ public class TLVList implements Serializable {
 
     /**
      * delete the specified TLV from the list using a Zero based index
-     * @param index
+     * @param index number
      */
     public void deleteByIndex(int index) {
         tags.remove(index);
@@ -120,7 +119,7 @@ public class TLVList implements Serializable {
 
     /**
      * Delete the specified TLV from the list by tag value
-     * @param tag
+     * @param tag id
      */
     public void deleteByTag(int tag) {
         List t = new ArrayList();
@@ -133,7 +132,7 @@ public class TLVList implements Serializable {
 
     /**
      * searches the list for a specified tag and returns a TLV object
-     * @param tag
+     * @param tag id
      * @return TLVMsg
      */
     public TLVMsg find(int tag) {
@@ -183,7 +182,7 @@ public class TLVList implements Serializable {
     /**
      * Returns a TLV object which represents the TLVMsg stored within the TLVList
      * at the given index
-     * @param index
+     * @param index number
      * @return TLVMsg
      */
     public TLVMsg index(int index) {
@@ -207,7 +206,7 @@ public class TLVList implements Serializable {
 
     /**
      * Read next TLV Message from stream and return it 
-     * @param buffer
+     * @param buffer the buffer
      * @return TLVMsg
      */
     private TLVMsg getTLVMsg(ByteBuffer buffer) throws ISOException {
@@ -273,7 +272,7 @@ public class TLVList implements Serializable {
     
     /**
      * Read length bytes and return the int value
-     * @param buffer
+     * @param buffer buffer
      * @return value length
      */
     protected int getValueLength(ByteBuffer buffer) {
@@ -295,7 +294,7 @@ public class TLVList implements Serializable {
     
     /**
      * searches the list for a specified tag and returns a hex String
-     * @param tag
+     * @param tag id
      * @return hexString  
      */
     public String getString(int tag) {
@@ -310,7 +309,7 @@ public class TLVList implements Serializable {
     
     /**
      * searches the list for a specified tag and returns it raw
-     * @param tag
+     * @param tag id
      * @return byte[]  
      */
     public byte[] getValue(int tag) {
@@ -329,6 +328,14 @@ public class TLVList implements Serializable {
      */
     public boolean hasTag(int tag) {
         return (findIndex(tag) > -1);
-    }     
-     
+    }
+
+    @Override
+    public void dump(PrintStream p, String indent) {
+        String inner = indent + "   ";
+        p.println (indent + "<tlvlist>");
+        for (TLVMsg msg : getTags())
+            msg.dump (p, inner);
+        p.println (indent + "</tlvlist");
+    }
 }

@@ -18,14 +18,15 @@
 
 package org.jpos.tlv;
 
+import java.io.PrintStream;
 import java.math.BigInteger;
 import org.jpos.iso.ISOUtil;
+import org.jpos.util.Loggeable;
 
 /**
  * @author bharavi
  */
-public class TLVMsg {
-
+public class TLVMsg implements Loggeable {
     private int tag;
     protected byte[] value;
 
@@ -33,14 +34,14 @@ public class TLVMsg {
      * empty constructor
      */
     public TLVMsg() {
-
+        super();
     }
 
     /**
      * constructs a TLV Message from tag and value
      * 
-     * @param tag 
-     * @param value 
+     * @param tag id
+     * @param value tag value
      */
     public TLVMsg(int tag, byte[] value) {
         this.tag = tag;
@@ -150,5 +151,14 @@ public class TLVMsg {
         return String.format("[tag: 0x%s, %s]", t
                 ,value==null?null:getStringValue());
     }
-}
 
+    @Override
+    public void dump(PrintStream p, String indent) {
+        p.print (indent);
+        p.print ("<tag id='");
+        p.print (Integer.toHexString(getTag()));
+        p.print ("' value='");
+        p.print (ISOUtil.hexString(getValue()));
+        p.println ("' />");
+    }
+}
