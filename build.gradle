@@ -13,7 +13,7 @@ allprojects {
     [ compileJava, compileTestJava, javadoc ]*.options*.encoding = 'UTF-8'
     def isSnapshot = version.contains("SNAPSHOT")
     def mavenCentralRepo = isSnapshot ?
-        'https://oss.sonatype.org/content/repositories/snapshots/' : 
+        'https://oss.sonatype.org/content/repositories/snapshots/' :
         'https://oss.sonatype.org/service/local/staging/deploy/maven2';
 
     sourceCompatibility = 1.6
