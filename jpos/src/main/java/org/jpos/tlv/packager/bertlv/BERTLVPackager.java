@@ -32,6 +32,7 @@ import org.jpos.iso.ISOField;
 import org.jpos.iso.ISOFieldPackager;
 import org.jpos.iso.ISOMsg;
 import org.jpos.iso.ISOUtil;
+import org.jpos.iso.Interpreter;
 import org.jpos.iso.LiteralInterpreter;
 import org.jpos.iso.packager.GenericPackager;
 import org.jpos.tlv.ISOTaggedField;
@@ -59,7 +60,8 @@ public abstract class BERTLVPackager extends GenericPackager {
 
     private static final LiteralInterpreter literalInterpreter = LiteralInterpreter.INSTANCE;
     private static final AsciiInterpreter asciiInterpreter = AsciiInterpreter.INSTANCE;
-    private static final BCDInterpreter bcdInterpreter = BCDInterpreter.LEFT_PADDED;
+    private static final BCDInterpreter bcdInterpreterLeftPaddedZero = BCDInterpreter.LEFT_PADDED;
+    private static final BCDInterpreter bcdInterpreterRightPaddedF = BCDInterpreter.RIGHT_PADDED_F;
 
     private final BinaryInterpreter tagInterpreter;
     private final BinaryInterpreter lengthInterpreter;
@@ -166,7 +168,6 @@ public abstract class BERTLVPackager extends GenericPackager {
             throw new ISOException(e);
         }
 
-
         byte[] valueBytes = new byte[valueInterpreter.getPackedLength(rawValueBytes.length)];
         valueInterpreter.interpret(rawValueBytes, valueBytes, 0);
 
@@ -264,12 +265,11 @@ public abstract class BERTLVPackager extends GenericPackager {
                         System.arraycopy(b, consumed, value, 0, value.length);
                     }
 
-                    int lengthAdjusted = length + length % 2;
-                    int uninterpretLength = length * (lengthAdjusted / valueInterpreter.getPackedLength(lengthAdjusted));
+                    int uninterpretLength = getUninterpretLength(length, valueInterpreter);
                     byte[] rawValueBytes =
                             valueInterpreter.uninterpret(value, 0, uninterpretLength);
 
-                    tlvSubFieldData = unpackValue(tag, rawValueBytes, subFieldNumber);
+                    tlvSubFieldData = unpackValue(tag, rawValueBytes, subFieldNumber, length);
 
 
                     consumed = consumed + length;
@@ -355,17 +355,20 @@ public abstract class BERTLVPackager extends GenericPackager {
                 tagValue = (String) c.getValue();
                 switch (dataFormat) {
                     case COMPRESSED_NUMERIC:
-                    case CARD_NUMBER:
-                    case DATE_YYMMDD:
-                    case TIME_HHMMSS:
-                        packedValue = new byte[bcdInterpreter.getPackedLength(tagValue.length())];
-                        bcdInterpreter.interpret(tagValue, packedValue, 0);
+                        packedValue = new byte[bcdInterpreterRightPaddedF.getPackedLength(tagValue.length())];
+                        bcdInterpreterRightPaddedF.interpret(tagValue, packedValue, 0);
                         break;
-                    case NUMERIC:
-                    case ALPHA:
-                    case ALPHA_NUMERIC:
-                    case ALPHA_NUMERIC_SPACE:
-                    case ALPHA_NUMERIC_SPECIAL:
+                    case PACKED_NUMERIC:
+                    case PACKED_NUMERIC_DATE_YYMMDD:
+                    case PACKED_NUMERIC_TIME_HHMMSS:
+                        packedValue = new byte[bcdInterpreterLeftPaddedZero.getPackedLength(tagValue.length())];
+                        bcdInterpreterLeftPaddedZero.interpret(tagValue, packedValue, 0);
+                        break;
+                    case ASCII_NUMERIC:
+                    case ASCII_ALPHA:
+                    case ASCII_ALPHA_NUMERIC:
+                    case ASCII_ALPHA_NUMERIC_SPACE:
+                    case ASCII_ALPHA_NUMERIC_SPECIAL:
                         packedValue = new byte[asciiInterpreter.getPackedLength(tagValue.length())];
                         asciiInterpreter.interpret(tagValue, packedValue, 0);
                         break;
@@ -396,29 +399,43 @@ public abstract class BERTLVPackager extends GenericPackager {
     }
 
     private ISOComponent unpackValue(String tagNameHex, final byte[] tlvData,
-                                     int subFieldNumber) throws ISOException, UnknownTagNumberException {
+                                     int subFieldNumber, int dataLength) throws ISOException, UnknownTagNumberException {
         final int tagNumber = Integer.parseInt(tagNameHex, 16);
         final TLVDataFormat dataFormat = getTagFormatMapper().getFormat(tagNumber);
         ISOComponent value;
         String unpackedValue;
-        int length;
+        int uninterpretLength;
         switch (dataFormat) {
             case COMPRESSED_NUMERIC:
-            case CARD_NUMBER:
-            case DATE_YYMMDD:
-            case TIME_HHMMSS:
-                int lengthAdjusted = tlvData.length + tlvData.length % 2;
-                length = tlvData.length * (lengthAdjusted / bcdInterpreter.getPackedLength(lengthAdjusted));
-                unpackedValue = bcdInterpreter.uninterpret(tlvData, 0, length);
+                uninterpretLength = getUninterpretLength(dataLength, bcdInterpreterRightPaddedF);
+                unpackedValue = bcdInterpreterRightPaddedF.uninterpret(tlvData, 0, uninterpretLength);
+                if (unpackedValue.length() > 1) {
+                    if (unpackedValue.charAt(unpackedValue.length() - 1) == 'F') {
+                        unpackedValue = unpackedValue.substring(0, unpackedValue.length() - 1);
+                    }
+                }
                 value = new ISOField(subFieldNumber, unpackedValue);
                 break;
-            case NUMERIC:
-            case ALPHA:
-            case ALPHA_NUMERIC:
-            case ALPHA_NUMERIC_SPACE:
-            case ALPHA_NUMERIC_SPECIAL:
-                length = tlvData.length;
-                unpackedValue = asciiInterpreter.uninterpret(tlvData, 0, length);
+            case PACKED_NUMERIC:
+            case PACKED_NUMERIC_DATE_YYMMDD:
+            case PACKED_NUMERIC_TIME_HHMMSS:
+                uninterpretLength = getUninterpretLength(dataLength, bcdInterpreterLeftPaddedZero);
+                unpackedValue = bcdInterpreterLeftPaddedZero.uninterpret(tlvData, 0, uninterpretLength);
+
+                if (unpackedValue.length() > 1) {
+                    if (unpackedValue.charAt(0) == '0') {
+                        unpackedValue = unpackedValue.substring(1);
+                    }
+                }
+                value = new ISOField(subFieldNumber, unpackedValue);
+                break;
+            case ASCII_NUMERIC:
+            case ASCII_ALPHA:
+            case ASCII_ALPHA_NUMERIC:
+            case ASCII_ALPHA_NUMERIC_SPACE:
+            case ASCII_ALPHA_NUMERIC_SPECIAL:
+                uninterpretLength = getUninterpretLength(dataLength, asciiInterpreter);
+                unpackedValue = asciiInterpreter.uninterpret(tlvData, 0, uninterpretLength);
                 value = new ISOField(subFieldNumber, unpackedValue);
                 break;
             case BINARY:
@@ -439,6 +456,18 @@ public abstract class BERTLVPackager extends GenericPackager {
     public void unpack(ISOComponent m, InputStream in) throws IOException, ISOException {
         throw new IllegalStateException(
                 "Call to unpack(ISOComponent m, InputStream in) was not expected.");
+    }
+
+    private int getUninterpretLength(int length, BinaryInterpreter interpreter) {
+        int lengthAdjusted = length + length % 2;
+        int uninterpretLength = length * (lengthAdjusted / interpreter.getPackedLength(lengthAdjusted));
+        return uninterpretLength;
+    }
+
+    private int getUninterpretLength(int length, Interpreter interpreter) {
+        int lengthAdjusted = length + length % 2;
+        int uninterpretLength = length * (lengthAdjusted / interpreter.getPackedLength(lengthAdjusted));
+        return uninterpretLength;
     }
 
     private class UnpackResult {

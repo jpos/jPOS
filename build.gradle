@@ -12,7 +12,7 @@ allprojects {
     [ compileJava, compileTestJava, javadoc ]*.options*.encoding = 'UTF-8'
     def isSnapshot = version.contains("SNAPSHOT")
     def mavenCentralRepo = isSnapshot ?
-        'https://oss.sonatype.org/content/repositories/snapshots/' : 
+        'https://opsadmbuild01.ord.marqeta.com:8090/nexus/content/repositories/snapshots/' :
         'https://oss.sonatype.org/service/local/staging/deploy/maven2';
 
     sourceCompatibility = 1.6
@@ -79,12 +79,15 @@ allprojects {
             mavenDeployer {
                 pom.project pomConfig
                 beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-                /*
+
                 repository(url: mavenCentralRepo) {
-                    authentication(userName: mavenCentralUsername, password: mavenCentralPassword)
+                    authentication(userName: '', password: '')
                 }
-                */
+
+                /*
                 repository(url: 'file:///opt/local/maven')
+                 */
+
             }
         }
     }
