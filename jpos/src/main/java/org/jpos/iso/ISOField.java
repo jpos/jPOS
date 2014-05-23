@@ -62,34 +62,43 @@ public class ISOField
     }
     /**
      * not available on Leaf - always throw ISOException
+     * @return
      * @exception ISOException
      */
+    @Override
     public byte[] pack() throws ISOException {
         throw new ISOException ("Not available on Leaf");
     }
     /**
      * not available on Leaf - always throw ISOException
+     * @param b
+     * @return
      * @exception ISOException
      */
+    @Override
     public int unpack(byte[] b) throws ISOException {
         throw new ISOException ("Not available on Leaf");
     }
     /**
      * not available on Leaf - always throw ISOException
+     * @param in
      * @exception ISOException
      */
+    @Override
     public void unpack(InputStream in) throws ISOException {
         throw new ISOException ("Not available on Leaf");
     }
     /**
      * @return Object representing this field number
      */
+    @Override
     public Object getKey() {
         return fieldNumber;
     }
     /**
      * @return Object representing this field value
      */
+    @Override
     public Object getValue() {
         return value;
     }
@@ -97,6 +106,7 @@ public class ISOField
      * @param obj - Object representing this field value
      * @exception ISOException
      */
+    @Override
     public void setValue(Object obj) throws ISOException {
         if (obj instanceof String)
             value = (String) obj;
@@ -106,11 +116,9 @@ public class ISOField
     /**
      * @return byte[] representing this field
      */
+    @Override
     public byte[] getBytes() {
-        try {
-            return (value != null) ? value.getBytes(ISOUtil.ENCODING) : new byte[] {};
-        } catch (UnsupportedEncodingException ignored) { }
-        return null;
+        return (value != null) ? value.getBytes(ISOUtil.CHARSET) : new byte[] {};
     }
     /**
      * dump this field to PrintStream. The output is sorta
@@ -118,6 +126,7 @@ public class ISOField
      * @param p - print stream
      * @param indent - optional indent string
      */
+    @Override
     public void dump (PrintStream p, String indent) {
         if (value != null && value.indexOf('<') >= 0) {
             p.print (indent +"<"+XMLPackager.ISOFIELD_TAG + " " +
@@ -137,13 +146,16 @@ public class ISOField
      * any reference held by a Composite.
      * @param fieldNumber new field number
      */
+    @Override
     public void setFieldNumber (int fieldNumber) {
         this.fieldNumber = fieldNumber;
     }
+    @Override
     public void writeExternal (ObjectOutput out) throws IOException {
         out.writeShort (fieldNumber);
         out.writeUTF (value);
     }
+    @Override
     public void readExternal  (ObjectInput in) 
         throws IOException, ClassNotFoundException
     {

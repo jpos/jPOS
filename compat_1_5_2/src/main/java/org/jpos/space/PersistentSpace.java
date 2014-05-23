@@ -27,6 +27,7 @@ import java.util.*;
  * @version $Revision$ $Date$
  * @since 2.0
  */
+@SuppressWarnings("unchecked")
 public class PersistentSpace implements LocalSpace // PersistentSpaceMBean {
 {
     protected Map map;
@@ -147,6 +148,7 @@ public class PersistentSpace implements LocalSpace // PersistentSpaceMBean {
             data.removeListener (listener);
     }
 
+    @SuppressWarnings("unchecked")
     protected static final class Data {
         LinkedList data;
         LinkedList stored;

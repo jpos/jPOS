@@ -40,6 +40,7 @@ import java.util.*;
  * @version $Revision$ $Date$
  * @since 1.4.7
  */
+@SuppressWarnings("unchecked")
 public class JDBMSpace<K,V> extends TimerTask implements Space<K,V> {
     protected HTree htree;
     protected RecordManager recman;
@@ -54,7 +55,6 @@ public class JDBMSpace<K,V> extends TimerTask implements Space<K,V> {
      * protected constructor.
      * @param name Space Name
      * @param filename underlying JDBM filename
-     * @see SpaceFactory().getSpace()
      */
     protected JDBMSpace (String name, String filename) {
         super();

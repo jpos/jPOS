@@ -2,19 +2,17 @@ language: java
 jdk:
 - oraclejdk7
 before_script:
- - "echo $JAVA_OPTS"
- - "export JAVA_OPTS=-Xmx1G"
+- echo $JAVA_OPTS
+- export JAVA_OPTS=-Xmx1G
 install:
 - TERM=dumb ./gradlew assemble
 script:
 - TERM=dumb ./gradlew check
-
-
 after_success: .travis/update-gh-pages.sh
-
 after_failure: .travis/update-gh-pages.sh
-
 env:
   global:
     secure: ZWDnTNCsRaxOV4hPiWslj1ieKwYjuxBA4COHFVApxr8TBcQEwhPAzo+b+WbDsi45rJkk/Ee9Du0+mbT//x3TTK78fePg6EDk0WBSmWRUFC3eITgTmUJe7Qh5VOUZOdz9vFaYH8080/CB4VyygJuSp2XLte+S/MVSoXVVABrNggU=
-
+notifications:
+  slack:
+    secure: opKU+4jJWYuhq5STCVW2cvxEq/1/xY17xpxGKoJXWA+RbhPo+viT5uJLmb67HwdmvQNwUVAW6uOLO7SDOmpGh5oAwpI74DrA0y6uEzN6GgzutZDBY5oCMRYCGi/5xNOuzDdsryDtSJvXWLxyCysnTrAqqQ9XdOnRK/ZqSIeQg+s=

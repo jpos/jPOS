@@ -38,6 +38,7 @@ import java.util.Set;
  * @version $Revision$ $Date$
  * @since 1.4.9
  */
+@SuppressWarnings("unchecked")
 public class SpaceProxy implements RemoteSpace, Configurable {
     Space sp;
     Configuration cfg;

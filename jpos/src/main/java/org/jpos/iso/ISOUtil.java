@@ -18,9 +18,9 @@
 
 package org.jpos.iso;
 
-import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
 import java.util.*;
 
 /**
@@ -34,8 +34,13 @@ import java.util.*;
  */
 @SuppressWarnings("unused")
 public class ISOUtil {
-    private ISOUtil() {
-        throw new AssertionError();
+    /**
+     * All methods in this class are static, so there's usually no need to instantiate it
+     * We provide this public constructor in order to deal with some legacy script integration
+     * that needs an instance of this class in a rendering context.
+     */
+    public ISOUtil() {
+        super();
     }
     public static final String[] hexStrings;
 
@@ -52,7 +57,17 @@ public class ISOUtil {
 
     }
 
+    /**
+     * Default encoding (charset) for bytes transmissions over network
+     * @deprecated use {@link #CHARSET} instead
+     */
     public static final String ENCODING  = "ISO8859_1";
+
+    /**
+     * Default charset for bytes transmissions over network
+     */
+    public static final Charset CHARSET  = Charset.forName("ISO8859_1");
+
     public static final byte[] EBCDIC2ASCII = new byte[] {
         (byte)0x0,  (byte)0x1,  (byte)0x2,  (byte)0x3, 
         (byte)0x9C, (byte)0x9,  (byte)0x86, (byte)0x7F, 
@@ -193,22 +208,14 @@ public class ISOUtil {
     public static final byte ETX = 0x03;
 
     public static String ebcdicToAscii(byte[] e) {
-        try {
-            return new String (
-                ebcdicToAsciiBytes (e, 0, e.length), ENCODING
-            );
-        } catch (UnsupportedEncodingException ex) {
-            return ex.toString(); // should never happen
-        }
+        return new String (
+            ebcdicToAsciiBytes (e, 0, e.length), CHARSET
+        );
     }
     public static String ebcdicToAscii(byte[] e, int offset, int len) {
-        try {
-            return new String (
-                ebcdicToAsciiBytes (e, offset, len), ENCODING
-            );
-        } catch (UnsupportedEncodingException ex) {
-            return ex.toString(); // should never happen
-        }
+        return new String (
+            ebcdicToAsciiBytes (e, offset, len), CHARSET
+        );
     }
     public static byte[] ebcdicToAsciiBytes (byte[] e) {
         return ebcdicToAsciiBytes (e, 0, e.length);
@@ -694,6 +701,12 @@ public class ISOUtil {
         int len = maxBits > 64?
           ((Character.digit((char)b[offset],16) & 0x08) == 8 ? 128 : 64) :
           maxBits;
+        if (len > 64 && maxBits > 128 &&
+            b.length > offset+16 &&
+            (Character.digit((char)b[offset+16],16) & 0x08) == 8)
+        {
+            len = 192;
+        }
         BitSet bmap = new BitSet (len);
         for (int i=0; i<len; i++) {
             int digit = Character.digit((char)b[offset + (i >> 2)], 16);
@@ -756,9 +769,9 @@ public class ISOUtil {
     /**
      * Converts a byte array into a hex string
      * @param bs source byte array
-     * @return
+     * @return hexadecimal representation of bytes
      */
-    public static final String byte2hex(byte[] bs) {
+    public static String byte2hex(byte[] bs) {
         return byte2hex(bs, 0, bs.length);
     }
 
@@ -766,7 +779,7 @@ public class ISOUtil {
      * Converts an integer into a byte array of hex
      *
      * @param value
-     * @return
+     * @return bytes representation of integer
      */
     public static byte[] int2byte(int value) {
         if (value < 0) {
@@ -789,7 +802,7 @@ public class ISOUtil {
      * Converts a byte array of hex into an integer
      *
      * @param bytes
-     * @return
+     * @return integer representation of bytes
      */
     public static int byte2int(byte[] bytes) {
         if (bytes == null || bytes.length == 0) {
@@ -814,7 +827,7 @@ public class ISOUtil {
      * @param length The number of bytes to read.
      * @return the string of hex chars.
      */
-    public static final String byte2hex(byte[] bs, int off, int length) {
+    public static String byte2hex(byte[] bs, int off, int length) {
         if (bs.length <= off || bs.length < off + length)
             throw new IllegalArgumentException();
         StringBuilder sb = new StringBuilder(length * 2);
@@ -822,7 +835,7 @@ public class ISOUtil {
         return sb.toString();
     }
 
-    private static final void byte2hexAppend(byte[] bs, int off, int length, StringBuilder sb) {
+    private static void byte2hexAppend(byte[] bs, int off, int length, StringBuilder sb) {
         if (bs.length <= off || bs.length < off + length)
             throw new IllegalArgumentException();
         sb.ensureCapacity(sb.length() + length * 2);
@@ -1350,6 +1363,7 @@ public class ISOUtil {
         StringBuilder ascii = new StringBuilder ();
         String sep         = "  ";
         String lineSep     = System.getProperty ("line.separator");
+        len = offset + len;
 
         for (int i=offset; i<len; i++) {
             hex.append(hexStrings[(int)b[i] & 0xFF]);

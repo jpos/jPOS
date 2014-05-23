@@ -35,6 +35,9 @@ import org.jpos.space.SpaceFactory;
 import org.jpos.util.NameRegistrar;
 import org.junit.*;
 
+import java.lang.reflect.Field;
+
+@SuppressWarnings("unchecked")
 public class QMUXTestCase implements ISOResponseListener {
     Q2 q2;
     Space sp;
@@ -59,13 +62,14 @@ public class QMUXTestCase implements ISOResponseListener {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testExpiredMessage() throws Exception {
         mux.request(createMsg("000001"), 500L, this, "Handback One");
         assertFalse("expired called too fast", expiredCalled);
-        assertNotNull("Space doesn't contain message key", sp.rdp("send.0800000000029110001000001.req"));
+        assertNotNull("Space doesn't contain message key", getInternalSpace(mux).rdp("send.0800000000029110001000001.req"));
         Thread.sleep(1000L);
         assertTrue("expired has not been called after 1 second", expiredCalled);
-        assertNull("Cleanup failed, Space still contains message key", sp.rdp("send.0800000000029110001000001.req"));
+        assertNull("Cleanup failed, Space still contains message key", getInternalSpace(mux).rdp("send.0800000000029110001000001.req"));
         assertEquals("Handback One not received", "Handback One", receivedHandback);
     }
 
@@ -75,14 +79,14 @@ public class QMUXTestCase implements ISOResponseListener {
         assertFalse("expired called too fast", expiredCalled);
         ISOMsg m = (ISOMsg) sp.in("send", 500L);
         assertNotNull("Message not received by pseudo-channel", m);
-        assertNotNull("Space doesn't contain message key", sp.rdp("send.0800000000029110001000002.req"));
+        assertNotNull("Space doesn't contain message key", getInternalSpace(mux).rdp("send.0800000000029110001000002.req"));
         m.setResponseMTI();
         sp.out("receive", m);
         Thread.sleep(100L);
         assertNotNull("Response not received", responseMsg);
         Thread.sleep(1000L);
         assertFalse("Response received but expired was called", expiredCalled);
-        assertNull("Cleanup failed, Space still contains message key", sp.rdp("send.0800000000029110001000002.req"));
+        assertNull("Cleanup failed, Space still contains message key", getInternalSpace(mux).rdp("send.0800000000029110001000002.req"));
         assertEquals("Handback Two not received", "Handback Two", receivedHandback);
     }
 
@@ -126,5 +130,11 @@ public class QMUXTestCase implements ISOResponseListener {
             response.set (11, Integer.toString(i));
             assertEquals(((QMUX) mux).getKey(request), ((QMUX) mux).getKey(response));
         }
+    }
+
+    private Space getInternalSpace (MUX mux) throws NoSuchFieldException, IllegalAccessException {
+        Field field = mux.getClass().getDeclaredField("isp");
+        field.setAccessible(true);
+        return (Space) field.get(mux);
     }
 }

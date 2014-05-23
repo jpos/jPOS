@@ -35,7 +35,8 @@ import java.util.*;
  * @see ISOComponent
  * @see ISOField
  */
-public class ISOMsg extends ISOComponent 
+@SuppressWarnings("unchecked")
+public class ISOMsg extends ISOComponent
     implements Cloneable, Loggeable, Externalizable
 {
     protected Map<Integer,Object> fields;
@@ -44,6 +45,7 @@ public class ISOMsg extends ISOComponent
     protected boolean dirty, maxFieldDirty;
     protected int direction;
     protected ISOHeader header;
+    protected byte[] trailer;
     protected int fieldNumber = -1;
     public static final int INCOMING = 1;
     public static final int OUTGOING = 2;
@@ -60,6 +62,7 @@ public class ISOMsg extends ISOComponent
         maxFieldDirty=true;
         direction = 0;
         header = null;
+        trailer = null;
     }
     /**
      * Creates a nested ISOMsg
@@ -75,6 +78,7 @@ public class ISOMsg extends ISOComponent
      * any reference held by a Composite.
      * @param fieldNumber new field number
      */
+    @Override
     public void setFieldNumber (int fieldNumber) {
         this.fieldNumber = fieldNumber;
     }
@@ -82,12 +86,13 @@ public class ISOMsg extends ISOComponent
      * Creates an ISOMsg with given mti
      * @param mti Msg's MTI
      */
+    @SuppressWarnings("PMD.EmptyCatchBlock")
     public ISOMsg (String mti) {
         this();
         try {
             setMTI (mti);
-        } catch (ISOException e) {
-            // should never happen
+        } catch (ISOException ignored) {
+            // Should never happen as this is not an inner message
         }
     }
     /**
@@ -114,7 +119,29 @@ public class ISOMsg extends ISOComponent
      */
     public byte[] getHeader() {
         return (header != null) ? header.pack() : null;
-    } 
+    }
+
+    /**
+     * Sets optional trailer data.
+     * <p/>
+     * Note: The trailer data requires a customised channel that explicitily handles the trailer data from the ISOMsg.
+     *
+     * @param trailer The trailer data.
+     * @see BaseChannel#getMessageTrailer(ISOMsg).
+     * @see BaseChannel#sendMessageTrailer(ISOMsg, byte[]).
+     */
+    public void setTrailer(byte[] trailer) {
+        this.trailer = trailer;
+    }
+
+    /**
+     * Get optional trailer image.
+     *
+     * @return message trailer imange (may be null)
+     */
+    public byte[] getTrailer() {
+        return this.trailer;
+    }
 
     /**
      * Return this messages ISOHeader
@@ -147,6 +174,7 @@ public class ISOMsg extends ISOComponent
     /**
      * @return the max field number associated with this message
      */
+    @Override
     public int getMaxField() {
         if (maxFieldDirty)
             recalcMaxField();
@@ -320,6 +348,7 @@ public class ISOMsg extends ISOComponent
      * Unset a field if it exists, otherwise ignore.
      * @param fldno - the field number
      */
+    @Override
     public void unset (int fldno) {
         if (fields.remove (fldno) != null)
             dirty = maxFieldDirty = true;
@@ -372,6 +401,7 @@ public class ISOMsg extends ISOComponent
      *
      * @return ISOComponent
      */
+    @Override
     public ISOComponent getComposite() {
         return this;
     }
@@ -394,7 +424,9 @@ public class ISOMsg extends ISOComponent
     }
     /**
      * clone fields
+     * @return copy of fields
      */
+    @Override
     public Map getChildren() {
         return (Map) ((TreeMap)fields).clone();
     }
@@ -403,6 +435,7 @@ public class ISOMsg extends ISOComponent
      * @return the packed message
      * @exception ISOException
      */
+    @Override
     public byte[] pack() throws ISOException {
         synchronized (this) {
             recalcBitMap();
@@ -415,11 +448,13 @@ public class ISOMsg extends ISOComponent
      * @return consumed bytes
      * @exception ISOException
      */
+    @Override
     public int unpack(byte[] b) throws ISOException {
         synchronized (this) {
             return packager.unpack(this, b);
         }
     }
+    @Override
     public void unpack (InputStream in) throws IOException, ISOException {
         synchronized (this) {
             packager.unpack(this, in);
@@ -434,6 +469,7 @@ public class ISOMsg extends ISOComponent
      * @param p - print stream
      * @param indent - optional indent string
      */
+    @Override
     public void dump (PrintStream p, String indent) {
         ISOComponent c;
         p.print (indent + "<" + XMLPackager.ISOMSG_TAG);
@@ -554,7 +590,7 @@ public class ISOMsg extends ISOComponent
                 else if (obj instanceof byte[])
                     s = ISOUtil.hexString ((byte[]) obj);
             } catch (ISOException e) {
-                // ignore ISOException - return null
+                return null; // make PMD happy by returning here and avoiding an empty catch
             }
         }
         return s;
@@ -573,14 +609,14 @@ public class ISOMsg extends ISOComponent
             else if (obj instanceof byte[])
                 s = ISOUtil.hexString ((byte[]) obj);
         } catch (ISOException e) {
-            // ignore ISOException - return null
+            return null;
         }
         return s;
     }
     /**
      * Return the byte[] value associated with the given ISOField number
      * @param fldno the Field Number
-     * @return field's byte[] value
+     * @return field's byte[] value or null if ISOException or UnsupportedEncodingException happens
      */
     public byte[] getBytes (int fldno) {
         byte[] b = null;
@@ -588,11 +624,12 @@ public class ISOMsg extends ISOComponent
             try {
                 Object obj = getValue(fldno);
                 if (obj instanceof String)
-                    b = ((String) obj).getBytes(ISOUtil.ENCODING);
+                    b = ((String) obj).getBytes(ISOUtil.CHARSET);
                 else if (obj instanceof byte[])
                     b = ((byte[]) obj);
             } catch (ISOException ignored) {
-            } catch (UnsupportedEncodingException ignored) {}
+                return null;
+            }
         }
         return b;
     }
@@ -606,11 +643,12 @@ public class ISOMsg extends ISOComponent
         try {
             Object obj = getValue(fpath);
             if (obj instanceof String)
-                b = ((String) obj).getBytes(ISOUtil.ENCODING);
+                b = ((String) obj).getBytes(ISOUtil.CHARSET);
             else if (obj instanceof byte[])
                 b = ((byte[]) obj);
         } catch (ISOException ignored) {
-        } catch (UnsupportedEncodingException ignored) { }
+            return null;
+        }
         return b;
     }
     /**
@@ -666,9 +704,12 @@ public class ISOMsg extends ISOComponent
     /**
      * Don't call setValue on an ISOMsg. You'll sure get
      * an ISOException. It's intended to be used on Leafs
+     * @param obj
+     * @throws org.jpos.iso.ISOException
      * @see ISOField
      * @see ISOException
      */
+    @Override
     public void setValue(Object obj) throws ISOException {
         throw new ISOException ("setValue N/A in ISOMsg");
     }
@@ -680,7 +721,8 @@ public class ISOMsg extends ISOComponent
             m.fields = (TreeMap) ((TreeMap) fields).clone();
             if (header != null)
                 m.header = (ISOHeader) header.clone();
-
+            if (trailer != null)
+                m.trailer = trailer.clone();
             for (Integer k : fields.keySet()) {
                 ISOComponent c = (ISOComponent) m.fields.get(k);
                 if (c instanceof ISOMsg)
@@ -697,6 +739,7 @@ public class ISOMsg extends ISOComponent
      * @param fields int array of fields to go
      * @return new ISOMsg instance
      */
+    @SuppressWarnings("PMD.EmptyCatchBlock")
     public Object clone(int[] fields) {
         try {
             ISOMsg m = (ISOMsg) super.clone();
@@ -705,8 +748,8 @@ public class ISOMsg extends ISOComponent
                 if (hasField(field)) {
                     try {
                         m.set(getComponent(field));
-                    } catch (ISOException e) {
-                        // it should never happen
+                    } catch (ISOException ignored) {
+                        // should never happen
                     }
                 }
             }
@@ -723,12 +766,13 @@ public class ISOMsg extends ISOComponent
      * and template handling)
      * @param m ISOMsg to merge
      */
+    @SuppressWarnings("PMD.EmptyCatchBlock")
     public void merge (ISOMsg m) {
         for (int i=0; i<=m.getMaxField(); i++) 
             try {
                 if (m.hasField(i))
                     set (m.getComponent(i));
-            } catch (ISOException e) {
+            } catch (ISOException ignored) {
                 // should never happen 
             }
     }
@@ -736,6 +780,7 @@ public class ISOMsg extends ISOComponent
     /**
      * @return a string suitable for a log
      */
+    @Override
     public String toString() {
         StringBuilder s = new StringBuilder();
         if (isIncoming())
@@ -756,11 +801,13 @@ public class ISOMsg extends ISOComponent
         }
         return s.toString();
     }
+    @Override
     public Object getKey() throws ISOException {
         if (fieldNumber != -1)
             return fieldNumber;
         throw new ISOException ("This is not a subField");
     }
+    @Override
     public Object getValue() {
         return this;
     }
@@ -916,6 +963,7 @@ public class ISOMsg extends ISOComponent
         direction = in.readByte();
     }
  
+    @Override
     public void writeExternal (ObjectOutput out) throws IOException {
         out.writeByte (0);  // reserved for future expansion (version id)
         out.writeShort (fieldNumber);
@@ -944,6 +992,7 @@ public class ISOMsg extends ISOComponent
         out.writeByte ('E');
     }
 
+    @Override
     public void readExternal  (ObjectInput in)
         throws IOException, ClassNotFoundException
     {

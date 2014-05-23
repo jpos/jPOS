@@ -21,9 +21,9 @@ package org.jpos.util;
 import org.apache.log4j.Level;
 import org.apache.log4j.helpers.FileWatchdog;
 import org.apache.log4j.xml.DOMConfigurator;
+import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
-import org.jpos.core.ReConfigurable;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -42,7 +42,8 @@ import java.io.PrintStream;
  * be changed by calling <code>setLevel</code>
  */
 
-public class Log4JListener implements LogListener, ReConfigurable
+@SuppressWarnings("deprecation")
+public class Log4JListener implements LogListener, Configurable
 {
     private Level _level;
     /** 

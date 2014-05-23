@@ -34,6 +34,7 @@ import java.util.ListIterator;
  * @author Jose Eduardo Leon
  * @version 1.0
  */
+@SuppressWarnings("unchecked")
 public class ISOVMsg extends ISOMsg implements ISOVErrorList {
 
     private static final long serialVersionUID = 443461124206801037L;

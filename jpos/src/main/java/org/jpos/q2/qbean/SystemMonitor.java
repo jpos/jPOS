@@ -39,8 +39,6 @@ import java.nio.charset.Charset;
  * 
  * @author apr@cs.com.uy
  * @version $Id$
- * @jmx:mbean description="System Monitor"
- *            extends="org.jpos.q2.QBeanSupportMBean"
  * @see Logger
  */
 public class SystemMonitor extends QBeanSupport
@@ -70,9 +68,6 @@ public class SystemMonitor extends QBeanSupport
             me.interrupt();
     }
 
-    /**
-     * @jmx:managed-attribute description="Milliseconds between dump"
-     */
     public synchronized void setSleepTime(long sleepTime) {
         this.sleepTime = sleepTime;
         setModified(true);
@@ -80,16 +75,10 @@ public class SystemMonitor extends QBeanSupport
             me.interrupt();
     }
 
-    /**
-     * @jmx:managed-attribute description="Milliseconds between dump"
-     */
     public synchronized long getSleepTime() {
         return sleepTime;
     }
 
-    /**
-     * @jmx:managed-attribute description="Detail required?"
-     */
     public synchronized void setDetailRequired(boolean detail) {
         this.detailRequired = detail;
         setModified(true);
@@ -97,9 +86,6 @@ public class SystemMonitor extends QBeanSupport
             me.interrupt();
     }
 
-    /**
-     * @jmx:managed-attribute description="Detail required?"
-     */
     public synchronized boolean getDetailRequired() {
         return detailRequired;
     }

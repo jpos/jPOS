@@ -6,9 +6,10 @@ allprojects {
     apply plugin: 'eclipse'
     apply plugin: 'maven'
     apply plugin: 'signing'
+    apply plugin: 'pmd'
 
     group = 'org.jpos'
-    version = '1.9.5-SNAPSHOT'
+    version = '1.9.7-SNAPSHOT'
     [ compileJava, compileTestJava, javadoc ]*.options*.encoding = 'UTF-8'
     def isSnapshot = version.contains("SNAPSHOT")
     def mavenCentralRepo = isSnapshot ?
@@ -25,10 +26,17 @@ allprojects {
     }
     if (project.hasProperty("lint")) {
       // gradle -Plint ...
-      tasks.withType(Compile) { 
+      tasks.withType(JavaCompile) {
         options.compilerArgs << "-Xlint" 
       } 
     }
+
+    if (JavaVersion.current().isJava8Compatible()) {
+        tasks.withType(Javadoc) {
+          options.addStringOption('Xdoclint:none', '-quiet')
+        }
+    }
+
     def pomConfig = {
         name 'jPOS Project'
         description """
@@ -95,6 +103,8 @@ allprojects {
 
 subprojects  {
     configurations.compile.transitive = true
+    javadoc.failOnError = false
+    pmd.ignoreFailures = true
 }
 
 task aggregatedJavadoc (type: Javadoc, description: "Aggregated Javadocs") { 
@@ -104,6 +114,7 @@ task aggregatedJavadoc (type: Javadoc, description: "Aggregated Javadocs") {
     destinationDir = new File(buildDir, 'docs/javadoc') 
     classpath = files(subprojects.collect {project -> 
         project.sourceSets.main.compileClasspath}) 
+    failOnError = false
 } 
 
 task wrapper( type: Wrapper ) {
@@ -116,4 +127,5 @@ idea.project.ipr {
     provider.node.component.find { it.@name == 'VcsDirectoryMappings' }.mapping.@vcs = 'Git'
   }
 }
+
 

@@ -24,15 +24,13 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.*;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Properties;
 import java.util.Vector;
 
@@ -581,7 +579,7 @@ public class BaseChannelTest {
 
     @Test
     public void testGetIncomingFilters() throws Throwable {
-        Vector result = (Vector) new CSChannel(new PostPackager()).getIncomingFilters();
+        Collection result = (Collection) new CSChannel(new PostPackager()).getIncomingFilters();
         assertEquals("result.size()", 0, result.size());
     }
 
@@ -608,7 +606,7 @@ public class BaseChannelTest {
 
     @Test
     public void testGetOutgoingFilters() throws Throwable {
-        Vector result = (Vector) new GZIPChannel().getOutgoingFilters();
+        Collection result = (Collection) new GZIPChannel().getOutgoingFilters();
         assertEquals("result.size()", 0, result.size());
     }
 

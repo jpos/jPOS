@@ -31,10 +31,10 @@ import org.jpos.util.NameRegistrar;
 import javax.net.ssl.SSLSocket;
 import java.io.*;
 import java.net.*;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
+import java.util.List;
 import java.util.Observable;
-import java.util.Vector;
 
 /*
  * BaseChannel was ISOChannel. Now ISOChannel is an interface
@@ -65,7 +65,8 @@ import java.util.Vector;
  * @see Logger
  *
  */
-public abstract class BaseChannel extends Observable 
+@SuppressWarnings("unchecked")
+public abstract class BaseChannel extends Observable
     implements FilteredChannel, ClientChannel, ServerChannel, FactoryChannel, 
                LogSource, Configurable, BaseChannelMBean, Cloneable
 {
@@ -91,7 +92,7 @@ public abstract class BaseChannel extends Observable
     protected Object serverOutLock = new Object();
     protected ISOPackager packager;
     protected ServerSocket serverSocket = null;
-    protected Vector incomingFilters, outgoingFilters;
+    protected List<ISOFilter> incomingFilters, outgoingFilters;
     protected ISOClientSocketFactory socketFactory = null;
 
     protected int[] cnt;
@@ -110,8 +111,8 @@ public abstract class BaseChannel extends Observable
         super();
         cnt = new int[SIZEOF_CNT];
         name = "";
-        incomingFilters = new Vector();
-        outgoingFilters = new Vector();
+        incomingFilters = new ArrayList();
+        outgoingFilters = new ArrayList();
         setHost(null, 0);
     }
 
@@ -488,20 +489,52 @@ public abstract class BaseChannel extends Observable
             serverOut.write(header);
     }
     /**
-     * @deprecated use sendMessageTrailler(ISOMsg m, byte[] b) instead.
+     * @deprecated use sendMessageTrailer(ISOMsg m, byte[] b) instead.
      * @param m a reference to the ISOMsg
      * @param len the packed image length
      * @throws IOException on error
      */
-    protected void sendMessageTrailler(ISOMsg m, int len) throws IOException 
+    protected void sendMessageTrailler(ISOMsg m, int len) throws IOException
     {
     }
+
+    /**
+     * @deprecated use sendMessageTrailer(ISOMsg m, byte[] b instead.
+     */
     @SuppressWarnings ("deprecation")
-    protected void sendMessageTrailler(ISOMsg m, byte[] b) throws IOException 
-    {
+    protected void sendMessageTrailler(ISOMsg m, byte[] b) throws IOException  {
         sendMessageTrailler (m, b.length);
     }
-    protected void getMessageTrailler() throws IOException { }
+
+    /**
+     * Send a Message trailer.
+     *
+     * @param m The unpacked ISOMsg.
+     * @param b The packed ISOMsg image.
+     */
+    @SuppressWarnings("deprecation")
+    protected void sendMessageTrailer(ISOMsg m, byte[] b) throws IOException {
+        sendMessageTrailler(m, b);
+    }
+
+
+    /**
+     * @deprecated use getMessageTrailer(ISOMsg m) instead.
+     */
+    protected void getMessageTrailler() throws IOException {
+    }
+
+    /**
+     * Read some trailer data from this channel and optionally store it in the incoming ISOMsg.
+     *
+     * @param m The ISOMessage to store the trailer data.
+     * @see ISOMsg#setTrailer(byte[]).
+     */
+    @SuppressWarnings("deprecation")
+    protected void getMessageTrailer(ISOMsg m) throws IOException {
+        getMessageTrailler();
+    }
+
     protected void getMessage (byte[] b, int offset, int len) throws IOException, ISOException { 
         serverIn.readFully(b, offset, len);
     }
@@ -552,7 +585,7 @@ public abstract class BaseChannel extends Observable
                 sendMessageLength(b.length + getHeaderLength(m));
                 sendMessageHeader(m, b.length);
                 sendMessage (b, 0, b.length);
-                sendMessageTrailler(m, b);
+                sendMessageTrailer(m, b);
                 serverOut.flush ();
             }
             cnt[TX]++;
@@ -688,7 +721,7 @@ public abstract class BaseChannel extends Observable
                     }
                     b = new byte[len];
                     getMessage (b, 0, len);
-                    getMessageTrailler();
+                    getMessageTrailer(m);
                 }
                 else
                     throw new ISOException(
@@ -905,9 +938,8 @@ public abstract class BaseChannel extends Observable
     protected ISOMsg applyOutgoingFilters (ISOMsg m, LogEvent evt) 
         throws VetoException
     {
-        Iterator iter  = outgoingFilters.iterator();
-        while (iter.hasNext())
-            m = ((ISOFilter) iter.next()).filter (this, m, evt);
+        for (ISOFilter f :outgoingFilters)
+            m = f.filter (this, m, evt);
         return m;
     }
     protected ISOMsg applyIncomingFilters (ISOMsg m, LogEvent evt) 
@@ -918,9 +950,7 @@ public abstract class BaseChannel extends Observable
     protected ISOMsg applyIncomingFilters (ISOMsg m, byte[] header, byte[] image, LogEvent evt) 
         throws VetoException
     {
-        Iterator iter  = incomingFilters.iterator();
-        while (iter.hasNext()) {
-            ISOFilter f = (ISOFilter) iter.next ();
+        for (ISOFilter f :incomingFilters) {
             if (image != null && (f instanceof RawIncomingFilter))
                 m = ((RawIncomingFilter)f).filter (this, m, header, image, evt);
             else
@@ -987,17 +1017,17 @@ public abstract class BaseChannel extends Observable
     public Configuration getConfiguration() {
         return cfg;
     }
-    public Collection getIncomingFilters() {
+    public Collection<ISOFilter> getIncomingFilters() {
         return incomingFilters;
     }
-    public Collection getOutgoingFilters() {
+    public Collection<ISOFilter> getOutgoingFilters() {
         return outgoingFilters;
     }
     public void setIncomingFilters (Collection filters) {
-        incomingFilters = new Vector (filters);
+        incomingFilters = new ArrayList (filters);
     }
     public void setOutgoingFilters (Collection filters) {
-        outgoingFilters = new Vector (filters);
+        outgoingFilters = new ArrayList (filters);
     }
     public void setHeader (byte[] header) {
         this.header = header;

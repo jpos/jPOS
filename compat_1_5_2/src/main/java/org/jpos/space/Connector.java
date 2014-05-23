@@ -18,15 +18,16 @@
 
 package org.jpos.space;
 
+import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
-import org.jpos.core.ReConfigurable;
 
 /**
  * @author Alejandro Revilla
  * @version $Revision$ $Date$
  * @since 2.0
  */
-public class Connector implements ReConfigurable, SpaceListener
+@SuppressWarnings({"unchecked", "deprecation"})
+public class Connector implements Configurable, SpaceListener
 {
     LocalSpace sp;
     Configuration cfg;

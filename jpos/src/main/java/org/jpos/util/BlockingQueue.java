@@ -25,6 +25,7 @@ import java.util.LinkedList;
  * @see ThreadPool
  * @since 1.1
  */
+@SuppressWarnings("unchecked")
 public class BlockingQueue {
     private LinkedList queue = new LinkedList();
     private boolean closed = false;

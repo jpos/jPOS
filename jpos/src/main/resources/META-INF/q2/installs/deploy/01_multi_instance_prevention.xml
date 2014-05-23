@@ -1,0 +1,9 @@
+<single-instance-checker class="org.jpos.q2.qbean.QSingleInstancePortBasedManager" logger="Q2" realm="Multi Instance Prevention">
+	<!-- The class can be org.jpos.q2.qbean.QSingleInstanceFileBasedManager or org.jpos.q2.qbean.QSingleInstancePortBasedManager
+The QSingleInstanceFileBasedManager will check if a lock file exists in the deploy dir. If it exists it will try and delete it. Delete will fail if another instance is holding onto the lock. It will succeed if the app crashed without deleting the lock file on stopping cleanly.
+If the lock file doesnt exixt it will create the file and hold a lock on it so any other switch instance that is trying to run from this deploy dir will not start. 
+
+If class QSingleInstancePortBasedManager is used, it will only allow one instance of the switch to run on the system, you cannot point to a different deploy dir to run multiple instances. This is achieved by configuring a property called port and giving it a value, the class will bind to the port and if another instance tries to bind to the port it will throw an exception and we shut down the system
+
+This needs a file number in the name that starts up as early as possible, I have put it after the logger so that info can get logged if it fails.--> 
+</single-instance-checker>

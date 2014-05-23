@@ -17,19 +17,9 @@
  */
 
 package org.jpos.tlv;
-import static java.lang.String.format;
-import static org.mockito.BDDMockito.*;
-import static org.junit.Assume.*;
+
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
-import org.mockito.*;
-import org.mockito.runners.*;
-import org.junit.*;
-import org.junit.runner.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.fail;
-
 import org.junit.Test;
 
 public class TLVMsgTest {
@@ -72,14 +62,40 @@ public class TLVMsgTest {
     }
 
     @Test
-    public void testGetLThrowsArrayIndexOutOfBoundsException() throws Throwable {
+    public void testGetL3() throws Throwable {
+        byte[] value = new byte[200];
+        byte[] result = new TLVMsg(100, value).getL();
+        assertEquals("result.length", 2, result.length);
+        assertEquals("result[0]", (byte) 0x81, result[0]);
+        assertEquals("result[1]", (byte) 0xc8, result[1]);
+    }
+
+    @Test
+    public void testGetL4() throws Throwable {
+        byte[] value = new byte[0x7ff7];
+        byte[] result = new TLVMsg(100, value).getL();
+        assertEquals("result.length", 3, result.length);
+        assertEquals("result[0]", (byte) 0x82, result[0]);
+        assertEquals("result[1]", (byte) 0x7f, result[1]);
+        assertEquals("result[2]", (byte) 0xf7, result[2]);
+    }
+
+    @Test
+    public void testGetL5() throws Throwable {
+        byte[] value = new byte[0x8ff8];
+        byte[] result = new TLVMsg(100, value).getL();
+        assertEquals("result.length", 3, result.length);
+        assertEquals("result[0]", (byte) 0x82, result[0]);
+        assertEquals("result[1]", (byte) 0x8f, result[1]);
+        assertEquals("result[2]", (byte) 0xf8, result[2]);
+    }
+
+    @Test
+    public void testGetL6() throws Throwable {
         byte[] value = new byte[0];
-        try {
-            new TLVMsg(100, value).getL();
-            fail("Expected ArrayIndexOutOfBoundsException to be thrown");
-        } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "0", ex.getMessage());
-        }
+        byte[] result = new TLVMsg(100, value).getL();
+        assertEquals("result.length", 1, result.length);
+        assertEquals("result[0]", (byte) 0x00, result[0]);
     }
 
     @Test
@@ -95,29 +111,26 @@ public class TLVMsgTest {
         byte[] result = new TLVMsg(100, null).getTLV();
         assertEquals("result.length", 2, result.length);
         assertEquals("result[0]", (byte) 100, result[0]);
+        assertEquals("result[1]", (byte) 0,   result[1]);
     }
 
     @Test
-    public void testGetTLVThrowsArrayIndexOutOfBoundsException() throws Throwable {
+    public void testGetTLVEmptyValue1() throws Throwable {
         byte[] value = new byte[0];
-        try {
-            new TLVMsg(100, value).getTLV();
-            fail("Expected ArrayIndexOutOfBoundsException to be thrown");
-        } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "0", ex.getMessage());
-        }
+        byte[] result = new TLVMsg(100, value).getTLV();
+        assertEquals("result.length", 2, result.length);
+        assertEquals("result[0]", (byte) 100, result[0]);
+        assertEquals("result[1]", (byte) 0,   result[1]);
     }
 
     @Test
-    public void testGetTLVEmptyValueThrowsArrayIndexOutOfBoundsException() throws Throwable {
+    public void testGetTLVEmptyValue2() throws Throwable {
         byte[] value = new byte[0];
-        TLVMsg tLVMsg = new TLVMsg(1000, value);
-        try {
-            tLVMsg.getTLV();
-            fail("Expected ArrayIndexOutOfBoundsException to be thrown");
-        } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "0", ex.getMessage());
-        }
+        byte[] result = new TLVMsg(1000, value).getTLV();
+        assertEquals("result.length", 3, result.length);
+        assertEquals("result[0]", (byte) 0x03, result[0]);
+        assertEquals("result[1]", (byte) 0xe8, result[1]);
+        assertEquals("result[2]", (byte) 0,    result[2]);
     }
 
     @Test

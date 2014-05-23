@@ -50,7 +50,7 @@ public class NameRegistrar implements Loggeable {
     }
 
     public static ConcurrentMap<String, Object> getMap() {
-        return getInstance().registrar;
+        return registrar;
     }
 
     /**

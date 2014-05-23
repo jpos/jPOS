@@ -175,7 +175,7 @@ public class EncryptedPIN
 
     /**
      * Sets the 12 right-most digits of the account number excluding the check digit
-     * @param extractedAccountNumber)  12 right-most digits of the account number, excluding the check digit.
+     * @param extractedAccountNumber  12 right-most digits of the account number, excluding the check digit.
      */
     public void setAccountNumber (String extractedAccountNumber) {
         if(extractedAccountNumber.length() != 12)

@@ -116,9 +116,7 @@ public class CLI implements Runnable
         {
             t.join();
         }
-        catch (InterruptedException e)
-        {
-        }
+        catch (InterruptedException ignored) { }
     }
 
     public void run()

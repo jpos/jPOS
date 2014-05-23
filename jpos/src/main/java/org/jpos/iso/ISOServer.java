@@ -57,6 +57,7 @@ import org.jpos.util.ThreadPool;
  * @author Bharavi Gade
  * @version $Revision$ $Date$
  */
+@SuppressWarnings("unchecked")
 public class ISOServer extends Observable
     implements LogSource, Runnable, Observer, ISOServerMBean, Configurable,
     Loggeable, ISOServerSocketFactory

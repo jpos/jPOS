@@ -27,6 +27,7 @@ import org.jpos.transaction.TransactionParticipant;
 
 import java.io.Serializable;
 
+@SuppressWarnings("unchecked")
 public class Forward implements TransactionParticipant, Configurable  {
     Space sp;
     String queue;

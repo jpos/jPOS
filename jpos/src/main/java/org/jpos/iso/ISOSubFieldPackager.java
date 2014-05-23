@@ -1,0 +1,38 @@
+/*
+ * jPOS Project [http://jpos.org]
+ * Copyright (C) 2000-2014 Alejandro P. Revilla
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package org.jpos.iso;
+
+/**
+ * Interafce enable to get current composite field number.
+ * <p>
+ * {@link ISOMsgFieldPackager} needs a number of current (parent) composite field
+ * in order to enable nesting in its tags other composite fields (e.g.
+ * {@link GenericSubFieldPackager} or even {@link GenericTaggedFieldsPackager})
+ *
+ * @author Robert Demski <drdemsey@gmail.com>
+ */
+public interface ISOSubFieldPackager {
+
+    /**
+     * Get current composite field number
+     * @return composite field number
+     */
+    public int getFieldNumber();
+
+}

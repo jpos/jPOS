@@ -33,6 +33,7 @@ import org.jpos.util.Logger;
  * @author Jose Eduardo Leon
  * @version 1.0
  */
+@SuppressWarnings("unchecked")
 public class TEST0100 extends ISOBaseValidator {
 
     public TEST0100() {

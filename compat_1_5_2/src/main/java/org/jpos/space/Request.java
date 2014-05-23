@@ -26,6 +26,7 @@ package org.jpos.space;
  * @version $Revision$ $Date$
  * @since 1.4.7
  */
+@SuppressWarnings("deprecation")
 public class Request extends TinySpace {
     public static String REQUEST  = "$REQ";
     public static String RESPONSE = "$RESP";

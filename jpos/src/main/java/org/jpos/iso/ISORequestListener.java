@@ -25,7 +25,6 @@ package org.jpos.iso;
  * 
  * @author apr@cs.com.uy
  * @version $Id$
- * @see ISOMUX#setISORequestListener
  */
 public interface ISORequestListener {
     /**

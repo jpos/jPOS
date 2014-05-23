@@ -18,8 +18,8 @@
 
 package org.jpos.space;
 
+import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
-import org.jpos.core.ReConfigurable;
 import org.jpos.iso.Channel;
 import org.jpos.iso.ISOMsg;
 
@@ -29,7 +29,9 @@ import org.jpos.iso.ISOMsg;
  * @version $Revision$ $Date$
  * @see org.jpos.iso.Channel
  */
-public class SpaceChannel implements Channel, ReConfigurable {
+@SuppressWarnings({"unchecked", "deprecation"})
+public class SpaceChannel implements Channel, Configurable
+{
     Space sp;
     Configuration cfg;
     String from, to;

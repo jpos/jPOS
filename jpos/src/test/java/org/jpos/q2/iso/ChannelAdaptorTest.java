@@ -55,6 +55,7 @@ import org.mockito.stubbing.Stubber;
  * $Date$
  * $Author$
  */
+@SuppressWarnings("unchecked")
 public class ChannelAdaptorTest {
 
     private static final long RECONNECT_DELAY = 200;
@@ -276,8 +277,7 @@ public class ChannelAdaptorTest {
             Thread thread =  iterator.next();
             try {
                 thread.join(RECONNECT_DELAY + 500);
-            } catch (InterruptedException e) {
-            }
+            } catch (InterruptedException ignored) { }
             if (!thread.isAlive()) {
                 iterator.remove();
             }

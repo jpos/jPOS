@@ -40,6 +40,7 @@ import java.util.Stack;
  * @version $Id$
  * @see ISOPackager
  */
+@SuppressWarnings("unchecked")
 public class XMLPackager extends DefaultHandler
                          implements ISOPackager, LogSource
 {
@@ -233,15 +234,14 @@ public class XMLPackager extends DefaultHandler
         Object obj = stk.peek();
         if (obj instanceof ISOField) {
             ISOField f = (ISOField) obj;
-            if (f.getValue().toString().length() == 0) {
+            String value = f.getValue() + new String(ch, start, length);
+            try {
+                f.setValue(value);
+            } catch (ISOException e) {
                 try {
-                    f.setValue (new String (ch, start, length));
-                } catch (ISOException e) {
-                    try {
-                        f.setValue (e.getMessage());
-                    } catch (ISOException ignored) {
-                        // giving up
-                    }
+                    f.setValue (e.getMessage());
+                } catch (ISOException ignored) {
+                    // giving up
                 }
             }
         }

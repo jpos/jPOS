@@ -31,7 +31,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class Join 
+@SuppressWarnings("unchecked")
+public class Join
        implements TransactionConstants, AbortParticipant, 
                   XmlConfigurable
 {

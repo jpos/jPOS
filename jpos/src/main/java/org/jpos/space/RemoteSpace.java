@@ -46,7 +46,6 @@ public interface RemoteSpace extends Remote {
     /**
      * Write a new leased entry into the Space. Entry will remain valid
      * for a limited amount of time.
-     * @see LeasedReference
      * @param key Entry's key
      * @param value Object value
      * @param timeout entry valid time

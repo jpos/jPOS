@@ -41,6 +41,7 @@ import java.util.Vector;
  *  @author Rajal Shah
  *  @version $Revision$ $Date$
  */
+@SuppressWarnings("unchecked")
 public class ConnectionPool implements Runnable, LogSource, Configurable {
     Configuration cfg;
     Logger logger;

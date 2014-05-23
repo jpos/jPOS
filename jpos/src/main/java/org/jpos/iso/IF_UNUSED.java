@@ -31,8 +31,6 @@ package org.jpos.iso;
  */
 public class IF_UNUSED extends ISOFieldPackager {
     /**
-     * @param len - field len
-     * @param description symbolic descrption
      */
     public IF_UNUSED () {
         super(0, "<dummy>");

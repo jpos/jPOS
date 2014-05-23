@@ -18,12 +18,17 @@
 
 package org.jpos.q2.iso;
 
-import java.util.Iterator;
-import java.util.StringTokenizer;
-
 import org.jdom.Element;
 import org.jpos.core.ConfigurationException;
-import org.jpos.iso.*;
+import org.jpos.iso.ISOChannel;
+import org.jpos.iso.ISOException;
+import org.jpos.iso.ISOMsg;
+import org.jpos.iso.ISORequestListener;
+import org.jpos.iso.ISOServer;
+import org.jpos.iso.ISOServerEventListener;
+import org.jpos.iso.ISOServerSocketFactory;
+import org.jpos.iso.ISOSource;
+import org.jpos.iso.ServerChannel;
 import org.jpos.q2.QBeanSupport;
 import org.jpos.q2.QFactory;
 import org.jpos.space.LocalSpace;
@@ -33,15 +38,17 @@ import org.jpos.space.SpaceListener;
 import org.jpos.util.LogSource;
 import org.jpos.util.NameRegistrar;
 import org.jpos.util.ThreadPool;
+
+import java.util.Iterator;
+import java.util.StringTokenizer;
 /**
  * ISO Server wrapper.
  *
  * @author Alwyn Schoeman
  * @version $Revision$ $Date$
- * @jmx:mbean description="ISOServer wrapper"
- *                  extends="org.jpos.q2.QBeanSupportMBean"
  */
 
+@SuppressWarnings("unchecked")
 public class QServer
     extends QBeanSupport
     implements QServerMBean, SpaceListener, ISORequestListener
@@ -125,7 +132,6 @@ public class QServer
              */
 
             sp.addListener(inQueue, this);
-
         }
     }
     private void initOut() {
@@ -134,14 +140,13 @@ public class QServer
         if (outQueue != null) {
             /*
              * We have an 'out' queue to send any messages to that are received
-             * by the our requestListner(this).
+             * by the our requestListener(this).
              *
              * Note, if additional ISORequestListeners are registered with the server after
              *  this point, then they won't see anything as our process(ISOSource, ISOMsg)
              *  always return true.
              */
            server.addISORequestListener(this);
-
         }
     }
     @Override
@@ -179,9 +184,6 @@ public class QServer
         NameRegistrar.unregister ("server." + getName());
     }
 
-    /**
-     * @jmx:managed-attribute description="Server port"
-     */
     @Override
     public synchronized void setPort (int port) {
         this.port = port;
@@ -189,17 +191,11 @@ public class QServer
         setModified (true);
     }
 
-    /**
-     * @jmx:managed-attribute description="Server port"
-     */
     @Override
     public int getPort () {
         return port;
     }
 
-    /**
-     * @jmx:managed-attribute description="Packager"
-     */
     @Override
     public synchronized void setPackager (String packager) {
         packagerString = packager;
@@ -207,17 +203,11 @@ public class QServer
         setModified (true);
     }
 
-    /**
-     * @jmx:managed-attribute description="Packager"
-     */
     @Override
     public String getPackager () {
         return packagerString;
     }
 
-    /**
-     * @jmx:managed-attribute description="Channel"
-     */
     @Override
     public synchronized void setChannel (String channel) {
         channelString = channel;
@@ -225,58 +215,42 @@ public class QServer
         setModified (true);
     }
 
-    /**
-     * @jmx:managed-attribute description="Channel"
-     */
     @Override
     public String getChannel () {
         return channelString;
     }
 
-    /**
-     * @jmx:managed-attribute description="Maximum Nr. of Sessions"
-     */
     @Override
     public synchronized void setMaxSessions (int maxSessions) {
         this.maxSessions = maxSessions;
         setAttr (getAttrs (), "maxSessions", maxSessions);
         setModified (true);
     }
-    /**
-     * @jmx:managed-attribute description="Maximum Nr. of Sessions"
-     */
+
     @Override
     public int getMaxSessions () {
         return maxSessions;
     }
-    /**
-     * @jmx:managed-attribute description="Minimum Nr. of Sessions"
-     */
+
     @Override
     public synchronized void setMinSessions (int minSessions) {
         this.minSessions = minSessions;
         setAttr (getAttrs (), "minSessions", minSessions);
         setModified (true);
     }
-    /**
-     * @jmx:managed-attribute description="Minimum Nr. of Sessions"
-     */
+
     @Override
     public int getMinSessions () {
         return minSessions;
     }
-    /**
-     * @jmx:managed-attribute description="Socket Factory"
-     */
+
     @Override
     public synchronized void setSocketFactory (String sFactory) {
         socketFactoryString = sFactory;
         setAttr (getAttrs(),"socketFactory", socketFactoryString);
         setModified (true);
     }
-    /**
-     * @jmx:managed-attribute description="Socket Factory"
-     */
+
     @Override
     public String getSocketFactory() {
         return socketFactoryString;
@@ -361,7 +335,6 @@ public class QServer
      */
     @Override
     public void notify(Object key, Object value) {
-
         Object obj = sp.inp(key);
         if (obj instanceof ISOMsg) {
             ISOMsg m = (ISOMsg) obj;
@@ -382,8 +355,8 @@ public class QServer
             }
             else if ("ALL".equals(sendMethod)) {
                 String channelNames = getISOChannelNames();
-                if (channelNames!=null) {
-                    StringTokenizer tok =new StringTokenizer(channelNames, " ");
+                if (channelNames != null) {
+                    StringTokenizer tok = new StringTokenizer(channelNames, " ");
                     while (tok.hasMoreTokens()) {
                         try {
                             ISOChannel c = server.getISOChannel(tok.nextToken());
@@ -394,16 +367,11 @@ public class QServer
                                 throw new ISOException("Client disconnected");
                             }
                             c.send(m);
-                        }
-                        catch (Exception e) {
+                        } catch (Exception e) {
                             getLog().warn("notify", e);
                         }
-
-
-
                     }
                 }
-
             }
         }
     }

@@ -18,6 +18,7 @@
 
 package org.jpos.space;
 
+@SuppressWarnings("unchecked")
 public class SpaceTap implements SpaceListener {
     LocalSpace ssp;
     LocalSpace dsp;

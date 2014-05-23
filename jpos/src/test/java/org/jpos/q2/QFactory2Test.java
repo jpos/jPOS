@@ -112,18 +112,6 @@ public class QFactory2Test {
     }
 
     @Test
-    public void testGetAttributeNameThrowsStringIndexOutOfBoundsException() throws Throwable {
-        String[] args = new String[0];
-        try {
-            new QFactory(new ObjectName("testQFactoryParam1", "testQFactoryParam2", "testQFactoryParam3"), new Q2(args))
-                    .getAttributeName("");
-            fail("Expected StringIndexOutOfBoundsException to be thrown");
-        } catch (StringIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "String index out of range: 0", ex.getMessage());
-        }
-    }
-
-    @Test
     public void testGetObject() throws Throwable {
         QFactory qFactory = new QFactory(new ObjectName(""), null);
         String result = (String) qFactory.getObject(new Element("testQFactoryName", "testQFactoryPrefix", "testQFactoryUri"));

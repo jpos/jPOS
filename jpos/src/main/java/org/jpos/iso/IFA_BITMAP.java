@@ -47,8 +47,11 @@ public class IFA_BITMAP extends ISOBitMapPackager {
      * @exception ISOException
      */
     public byte[] pack (ISOComponent c) throws ISOException {
-        byte[] b = ISOUtil.bitSet2byte ((BitSet) c.getValue());
-        return ISOUtil.hexString(b).getBytes();
+        BitSet b = (BitSet) c.getValue();
+        int len =
+            getLength() >= 8 ?
+                (((b.length()+62)>>6)<<3) : getLength();
+        return ISOUtil.hexString(ISOUtil.bitSet2byte (b, len)).getBytes();
     }
 
     public int getMaxPackedLength() {
@@ -68,8 +71,10 @@ public class IFA_BITMAP extends ISOBitMapPackager {
         BitSet bmap = ISOUtil.hex2BitSet (b, offset, getLength() << 3);
         c.setValue(bmap);
         len = (bmap.get(1)) ? 128 : 64; /* changed by Hani */
-        if (getLength() > 16 && bmap.get(65))
+        if (getLength() > 16 && bmap.get(65)) {
             len = 192;
+            bmap.clear(65);
+        }
         return (len >> 2);
     }
     public void unpack (ISOComponent c, InputStream in) 

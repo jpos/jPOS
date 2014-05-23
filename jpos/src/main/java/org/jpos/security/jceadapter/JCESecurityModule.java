@@ -68,6 +68,7 @@ import org.jpos.iso.ISOException;
  * @author Hani Samuel Kirollos
  * @version $Revision$ $Date$
  */
+@SuppressWarnings("unchecked")
 public class JCESecurityModule extends BaseSMAdapter {
 
     /**

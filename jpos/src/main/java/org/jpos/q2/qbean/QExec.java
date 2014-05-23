@@ -35,8 +35,7 @@ import java.io.*;
 * </pre>
 * @author Alwyn Schoeman
 * @version $Revision$ $Date$
-* @jmx:mbean description="QExec QBean" extends="org.jpos.q2.QBeanSupportMBean"
-*/ 
+*/
 
 public class QExec extends QBeanSupport implements QExecMBean {
     String startScript;
@@ -52,30 +51,18 @@ public class QExec extends QBeanSupport implements QExecMBean {
         exec(shutdownScript);
     }
 
-    /**
-     * @jmx:managed-attribute description="Program startup script"
-     */
     public void setStartScript (String scriptPath) {
         startScript = scriptPath;
     }
 
-    /**
-     * @jmx:managed-attribute description="Program startup script"
-     */
     public String getStartScript () {
         return startScript;
     }
 
-    /**
-     * @jmx:managed-attribute description="Program shutdown script"
-     */
     public void setShutdownScript (String scriptPath) {
         shutdownScript = scriptPath;
     }
 
-    /**
-     * @jmx:managed-attribute description="Program shutdown script"
-     */
     public String getShutdownScript () {
         return shutdownScript;
     }

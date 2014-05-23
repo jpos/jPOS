@@ -44,6 +44,7 @@ public class BSH extends QBeanSupport implements Runnable {
         try {
             bsh.set  ("qbean", this);
             bsh.set  ("log", getLog());
+            bsh.set  ("cfg", getConfiguration());
             bsh.eval (config.getText());
             String source = config.getAttributeValue ("source");
             if (source != null)

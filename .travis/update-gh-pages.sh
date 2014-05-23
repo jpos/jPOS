@@ -4,6 +4,7 @@ if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
   ls -l 
   #copy data we're interested in to other place
   cp -R jpos/build/reports/tests $HOME/tests
+  cp -R jpos/build/reports/pmd $HOME/pmd
 
   #go to home and setup git
   cd $HOME
@@ -16,6 +17,7 @@ if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
   #go into diractory and copy data we're interested in to that directory
   cd gh-pages
   cp -Rf $HOME/tests/* .
+  mkdir -p pmd && cp -Rf $HOME/pmd/* pmd
 
   #add, commit and push files
   git add -f .

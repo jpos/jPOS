@@ -32,6 +32,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Iterator;
 
+@SuppressWarnings("unchecked")
 public class SpaceLet extends QBeanSupport implements Space {
     Space sp;
     String uri;

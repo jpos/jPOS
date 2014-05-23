@@ -59,4 +59,16 @@ public class AsciiHexInterpreterTest extends TestCase {
         
         TestUtils.assertEquals(data, inter.uninterpret(b, 0, data.length));
     }
+
+    public void testISOUtilCompatibility() throws Exception {
+        byte[] b=ISOUtil.hex2byte("66656637656236643736323431653438");
+        AsciiHexInterpreter as=AsciiHexInterpreter.INSTANCE;
+        byte[] n=as.uninterpret(b, 0, 8);
+        byte[] a=ISOUtil.hex2byte("46454637454236443736323431453438");
+        byte[] n1=as.uninterpret(a, 0, 8);
+        byte[] expected = ISOUtil.hex2byte("fef7eb6d76241e48");
+
+        assertEquals (ISOUtil.hexString(expected), ISOUtil.hexString(n));
+        assertEquals (ISOUtil.hexString(expected), ISOUtil.hexString(n1));
+    }
 }

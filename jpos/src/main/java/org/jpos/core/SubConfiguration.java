@@ -18,6 +18,8 @@
 
 package org.jpos.core;
 
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * SubConfiguration objects lets childs objects access attributes
@@ -27,7 +29,7 @@ package org.jpos.core;
  * @author <a href="mailto:alcarraz@iie.edu.uy">Andr?s Alcarraz</a>
  * @version $Id$
  */
-public class SubConfiguration implements Configuration{
+public class SubConfiguration implements Configuration {
     /** Parent Configuration */
     protected Configuration cfg;
     /** prefix identifying the child parameters */
@@ -108,7 +110,7 @@ public class SubConfiguration implements Configuration{
         return cfg.getInt(prefix + propertyName, defaultValue);
     }
     public void put (String name, Object value) {
-        cfg.put (prefix + name, value);
+        cfg.put(prefix + name, value);
     }
     /**
      * Creates a new object, it takes the class from the value of the property
@@ -130,5 +132,13 @@ public class SubConfiguration implements Configuration{
                                              );
         }
     }
-}
+    @Override
+    public Set<String> keySet() {
+        Set<String> keys = new HashSet<String>();
+        for (String k : cfg.keySet())
+            if (k.startsWith(prefix))
+                keys.add(k);
 
+        return keys;
+    }
+}

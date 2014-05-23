@@ -35,6 +35,7 @@ import org.jpos.util.LogEvent;
  * based on a key formed by some fields.
  * @author <a href="mailto:aalcarraz@cabal.com.uy">Andr&eacute;s Alcarraz </a>
  */
+@SuppressWarnings("unchecked")
 public class StatefulFilter implements ISOFilter, Configurable{
     
     /**

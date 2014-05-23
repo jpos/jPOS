@@ -276,6 +276,37 @@ public class ISOUtilTest {
         assertEquals("result.length", 0, result.length);
     }
 
+    @Test
+    public void testBitSetByteHexInteroperability() throws Throwable {
+        BitSet bs = new BitSet();
+        bs.set(1);
+        bs.set(63);
+        bs.set(127);
+        bs.set(191);
+        byte[] b = ISOUtil.bitSet2byte(bs);
+        BitSet bs1 = ISOUtil.byte2BitSet(b, 0, 192);
+        BitSet bs2 = ISOUtil.hex2BitSet(ISOUtil.hexString(b).getBytes(), 0, 192);
+        assertEquals("BitSets should be equal", bs1, bs2);
+    }
+
+    @Test
+    public void testBitSetByteHexInteroperability2() throws Throwable {
+        byte[] b = ISOUtil.hex2byte("F23C04800EE0000080000000000000000000380000000000");
+        BitSet bs1 = ISOUtil.byte2BitSet(b, 0, 192);
+        BitSet bs2 = ISOUtil.hex2BitSet (ISOUtil.hexString(b).getBytes(), 0, 192);
+        assertEquals("BitSets should be equal", bs1, bs2);
+        assertEquals("Image matches", ISOUtil.hexString(b), ISOUtil.hexString(ISOUtil.bitSet2byte(bs1)));
+    }
+
+    @Test
+    public void testBitSetByteHexInteroperability3() throws Throwable {
+        byte[] b = ISOUtil.hex2byte("F23C04800AE00000800000000000010863BC780000000010");
+        BitSet bs1 = ISOUtil.byte2BitSet(b, 0, 192);
+        BitSet bs2 = ISOUtil.hex2BitSet (ISOUtil.hexString(b).getBytes(), 0, 192);
+        assertEquals("BitSets should be equal", bs1, bs2);
+        assertEquals("Image matches", ISOUtil.hexString(b), ISOUtil.hexString(ISOUtil.bitSet2byte(bs1)));
+    }
+
     @Test(expected = NullPointerException.class)
     public void testBitSet2byteThrowsNullPointerException() throws Throwable {
         ISOUtil.bitSet2byte(null);
@@ -2466,7 +2497,7 @@ public class ISOUtilTest {
     public void testHex2BitSet10() throws Throwable {
         byte[] b = new byte[80];
         BitSet result = ISOUtil.hex2BitSet(b, 0, 1000);
-        assertEquals("result.size()", 256, result.size());
+        assertEquals("result.size()", 384, result.size());
     }
 
     @Test
@@ -2899,7 +2930,7 @@ public class ISOUtilTest {
     public void testHexdump22() throws Throwable {
         byte[] b = new byte[18];
         b[14] = (byte) 46;
-        String result = ISOUtil.hexdump(b, 10, 15);
+        String result = ISOUtil.hexdump(b, 10,5);
         assertEquals("result", "0000  00 00 00 00 2E                                    ....." + lineSep, result);
     }
 
@@ -2922,7 +2953,7 @@ public class ISOUtilTest {
     public void testHexdump4() throws Throwable {
         byte[] b = new byte[3];
         b[1] = (byte) -4;
-        String result = ISOUtil.hexdump(b, 1, 2);
+        String result = ISOUtil.hexdump(b, 1, 1);
         assertEquals("result", "0000  FC                                                ." + lineSep, result);
     }
 
@@ -2947,7 +2978,7 @@ public class ISOUtilTest {
     public void testHexdump7() throws Throwable {
         byte[] b = new byte[10];
         b[7] = (byte) -2;
-        String result = ISOUtil.hexdump(b, 7, 8);
+        String result = ISOUtil.hexdump(b, 7, 1);
         assertEquals("result", "0000  FE                                                ." + lineSep, result);
     }
 

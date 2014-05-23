@@ -42,6 +42,7 @@ import java.net.ServerSocket;
  * @see ISOChannel
  */
 
+@SuppressWarnings("deprecation")
 public class BASE24TCPChannel extends BaseChannel {
     /**
      * Public constructor (used by Class.forName("...").newInstance())

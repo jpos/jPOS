@@ -52,10 +52,10 @@ public class IFA_BITMAPTest
         thirtytwoBytes = new IFA_BITMAP(32,"32 byte bitmap");
         fortyeightBytes = new IFA_BITMAP(48,"48 byte bitmap");
         
-        inBytes                       = "8F81421FF12418F18F81421FF12418F18F81421FF12418F1".getBytes();
-        sixteenByteBitMapIn32Bytes    = "7F81421FF12418F18F81421FF12418F18F81421FF12418F1".getBytes();
-        thirtytwoByteBitMapIn48Bytes  = "8F81421FF12418F17F81421FF12418F18F81421FF12418F1".getBytes();
-        sixteenByteBitMapIn48Bytes    = "7F81421FF12418F17F81421FF12418F18F81421FF12418F1".getBytes();
+        inBytes                       = "8F81421FF12418F18F81421FF12418F18081421FF12418F1".getBytes();
+        sixteenByteBitMapIn32Bytes    = "7F81421FF12418F18F81421FF12418F18081421FF12418F1".getBytes();
+        thirtytwoByteBitMapIn48Bytes  = "8F81421FF12418F17F81421FF12418F18081421FF12418F1".getBytes();
+        sixteenByteBitMapIn48Bytes    = "7F81421FF12418F17F81421FF12418F18081421FF12418F1".getBytes();
         in = ISOUtil.hexdump(inBytes);
         
     }
@@ -208,5 +208,13 @@ public class IFA_BITMAPTest
         assertEquals("48 Byte (16 bytes used) bitmap pack should reflect unpack",ISOUtil.hexString(sixteenByteBitMapIn48Bytes,0,16),ISOUtil.hexString(outBytes));
         
     }
-
+    @Test public void testThirdBitmapPack() throws Exception {
+        byte[] b = ISOUtil.hex2byte("F23C04800AE00000800000000000010863BC780000000010");
+        BitSet bs1 = ISOUtil.byte2BitSet(b, 0, 192);
+        ISOBitMap bmap = new ISOBitMap(-1);
+        bmap.setValue(bs1);
+        IFA_BITMAP ifa = new IFA_BITMAP(24, "BITMAP");
+        byte[] b1 = ifa.pack(bmap);
+        assertEquals ("Pack should be equal to unpack", ISOUtil.hexString(b), new String(b1));
+    }
 }

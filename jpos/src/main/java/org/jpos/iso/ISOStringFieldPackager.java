@@ -105,8 +105,7 @@ public class ISOStringFieldPackager extends ISOFieldPackager
 
     /**
      * Returns the prefixer's packed length and the interpreter's packed length.
-	 * @see org.jpos.iso.ISOFieldPackager#getMaxPackedLength()
-	 */
+     */
     public int getMaxPackedLength()
     {
         return prefixer.getPackedLength() + interpreter.getPackedLength(getLength());
@@ -128,15 +127,18 @@ public class ISOStringFieldPackager extends ISOFieldPackager
     }
 
     /**
-	 * Convert the component into a byte[].
+     * Convert the component into a byte[].
+     * @return byte array representation of component
+     * @throws org.jpos.iso.ISOException
 	 */
+    @Override
     public byte[] pack(ISOComponent c) throws ISOException
     {
         try
         {
             String data;
             if(c.getValue() instanceof byte[])
-                data = new String(c.getBytes(), ISOUtil.ENCODING); // transparent handling of complex fields
+                data = new String(c.getBytes(), ISOUtil.CHARSET); // transparent handling of complex fields
             else
                 data = (String)c.getValue();
 

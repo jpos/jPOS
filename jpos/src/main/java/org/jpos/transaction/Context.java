@@ -29,11 +29,13 @@ import org.jpos.util.Profiler;
 import java.io.*;
 import java.util.*;
 
+@SuppressWarnings("unchecked")
 public class Context implements Externalizable, Loggeable, Pausable {
     private transient Map map; // transient map
     private Map pmap;          // persistent (serializable) map
     private long timeout;
     private boolean resumeOnPause = false;
+    private transient boolean trace = false;
 
     public static String LOGEVT = "LOGEVT";
     public static String PROFILER = "PROFILER";
@@ -42,10 +44,16 @@ public class Context implements Externalizable, Loggeable, Pausable {
     public Context () {
         super ();
     }
+
     /**
      * puts an Object in the transient Map
      */
     public void put (Object key, Object value) {
+        if (trace) {
+            getProfiler().checkPoint(
+                String.format("   %s='%s' [%s]", key, value, Thread.currentThread().getStackTrace()[2])
+            );
+        }
         getMap().put (key, value);
         synchronized (this) {
             notifyAll();
@@ -55,9 +63,14 @@ public class Context implements Externalizable, Loggeable, Pausable {
      * puts an Object in the transient Map
      */
     public void put (Object key, Object value, boolean persist) {
-        getMap().put (key, value);
+        if (trace) {
+            getProfiler().checkPoint(
+                String.format("P: %s='%s' [%s]", key, value, new Throwable().getStackTrace()[1].toString())
+            );
+        }
         if (persist && value instanceof Serializable)
             getPMap().put (key, value);
+        getMap().put(key, value);
     }
     /**
      * Get
@@ -223,7 +236,7 @@ public class Context implements Externalizable, Loggeable, Pausable {
     }
     /**
      * adds a trace message
-     * @msg trace information
+     * @param msg trace information
      */
     public void log (Object msg) {
         getLogEvent().addMessage (msg);
@@ -260,6 +273,13 @@ public class Context implements Externalizable, Loggeable, Pausable {
         } else {
             resumeOnPause = true;
         }
+    }
+    public boolean isTrace() {
+        return trace;
+    }
+    public void setTrace(boolean trace) {
+        getProfiler();
+        this.trace = trace;
     }
     static final long serialVersionUID = 6056487212221438338L;
 }

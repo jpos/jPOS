@@ -31,8 +31,6 @@ import org.jpos.util.ThreadPool;
  *
  * @author Alejandro Revilla
  * @version $Revision$ $Date$
- * @jmx:mbean description="DirPoll adaptor QBean"
- *                  extends="org.jpos.q2.QBeanSupportMBean"
  */
 public class DirPollAdaptor
     extends QBeanSupport
@@ -108,75 +106,48 @@ public class DirPollAdaptor
     }
 
 
-    /**
-     * @jmx:managed-attribute description="Base path"
-     */
     public synchronized void setPath (String path) {
         this.path = path;
         setModified (true);
     }
 
-    /**
-     * @jmx:managed-attribute description="thread pool size"
-     */
     public synchronized void setPoolSize (int size) {
         this.poolSize = size;
         setModified (true);
     }
-    /**
-     * @jmx:managed-attribute description="thread pool size"
-     */
+
     public int getPoolSize () {
         return poolSize;
     }
 
-    /**
-     * @jmx:managed-attribute description="Base path"
-     */
     public String getPath () {
         return path == null ? "." : path;
     }
 
-    /**
-     * @jmx:managed-attribute description="poll time in millis"
-     */
     public synchronized void setPollInterval (long pollInterval) {
         this.pollInterval = pollInterval;
         setModified (true);
     }
-    /**
-     * @jmx:managed-attribute description="poll time in millis"
-     */
+
     public long getPollInterval () {
         return pollInterval;
     }
-    /**
-     * @jmx:managed-attribute description="priorities"
-     */
+
     public synchronized void setPriorities (String priorities) {
         this.priorities = priorities;
         setModified (true);
     }
-    /**
-     * @jmx:managed-attribute description="priorities"
-     */
+
     public String getPriorities () {
         return priorities;
     }
 
-    /**
-     * @jmx:managed-attribute description="processor class"
-     */
     public synchronized void setProcessor (String processor) {
         this.processorClass = processor;
         setModified (true);
     }
-    /**
-     * @jmx:managed-attribute description="processor class"
-     */
+
     public String getProcessor() {
         return processorClass;
     }
 }
-
-

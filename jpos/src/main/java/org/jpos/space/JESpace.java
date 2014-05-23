@@ -48,6 +48,7 @@ import org.jpos.util.Loggeable;
  * @author Alejandro Revilla
  * @since 1.6.5
  */
+@SuppressWarnings("unchecked")
 public class JESpace<K,V> extends Log implements LocalSpace<K,V>, Loggeable, Runnable {
     Environment dbe = null;
     EntityStore store = null;

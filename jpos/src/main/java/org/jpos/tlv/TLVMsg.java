@@ -18,13 +18,15 @@
 
 package org.jpos.tlv;
 
+import java.io.PrintStream;
+import java.math.BigInteger;
 import org.jpos.iso.ISOUtil;
+import org.jpos.util.Loggeable;
 
 /**
  * @author bharavi
  */
-public class TLVMsg {
-
+public class TLVMsg implements Loggeable {
     private int tag;
     protected byte[] value;
 
@@ -32,29 +34,29 @@ public class TLVMsg {
      * empty constructor
      */
     public TLVMsg() {
-
+        super();
     }
 
     /**
      * constructs a TLV Message from tag and value
      * 
-     * @param tag 
-     * @param value 
+     * @param tag id
+     * @param value tag value
      */
     public TLVMsg(int tag, byte[] value) {
         this.tag = tag;
         this.value = value;
     }
 
-    /*
-     * @return TAG 
+    /**
+     * @return tag
      */
     public int getTag() {
         return tag;
     }
 
-    /*
-     * @return value 
+    /**
+     * @return tag value
      */
     public byte[] getValue() {
         return value;
@@ -68,13 +70,13 @@ public class TLVMsg {
     }
 
     /**
-     * @param newValue of TLV Message
+     * @param value of TLV Message
      */
-    public void setValue(byte[] newValue) {
-        this.value = newValue;
+    public void setValue(byte[] value) {
+        this.value = value;
     }
 
-    /*
+    /**
      * @return tag + length + value of the TLV Message
      */
     public byte[] getTLV() {
@@ -109,51 +111,54 @@ public class TLVMsg {
 
         if (value == null)
             return new byte[1];
-        int ix = 0;
-        int tmp = value.length;
-        int bytes = 0;
-        // if Length is greater less than 127
-        //set the 8bit as 0 indicating next 7 bits is the length
-        //of the message
-        //if length is more than 127 then, set the first bit as 1 indicating
-        //next 7 bits will indicate the length of following bytes used for
+
+        // if Length is less than 128
+        // set the 8bit as 0 indicating next 7 bits is the length
+        // of the message
+        // if length is more than 127 then, set the first bit as 1 indicating
+        // next 7 bits will indicate the length of following bytes used for
         // length
 
-        while (tmp != 0) {
-            tmp = tmp >> 8;
-            bytes++;
-        }
-
-        /* If value can be encoded on one byte */
-        if (bytes <= 1 && value.length <= 127) {
-            byte[] rBytes = new byte[bytes];
-            rBytes[0] = (byte) value.length;
-            return rBytes;
-        }
-        //else {
+        BigInteger bi = BigInteger.valueOf(value.length);
         /* Value to be encoded on multiple bytes */
-        //we need 1 byte to indicate the length
-        byte[] rBytes = new byte[1 + bytes];
-        rBytes[0] = (byte) (0x80 | bytes);
+        byte[] rBytes = bi.toByteArray();
+        /* If value can be encoded on one byte */
+        if (value.length < 0x80)
+          return rBytes;
 
-        int mask = 0xFF;
-        tmp = value.length;
-        while (ix < bytes) {
-            /* Mask off 8 bits of the value at a time */
-            rBytes[(bytes - ix)] = (byte) (tmp & mask);
-            bytes--;
-            /* Shift value right 8 bits, effectively removing them */
-            tmp = (tmp >> 8);
-        }
-        //}
+        //we need 1 byte to indicate the length
+        //for that is used sign byte (first 8-bits equals 0),
+        //if it is not present it is added
+        if ( rBytes[0] > 0 )
+          rBytes = ISOUtil.concat(new byte[1], rBytes);
+        rBytes[0] = (byte) (0x80 | rBytes.length-1);
+
         return rBytes;
     }
     
-    /*
+    /**
      * @return value 
      */
     public String getStringValue() {
         return ISOUtil.hexString(value);
     }
-}
 
+    @Override
+    public String toString(){
+        String t = Integer.toHexString(tag);
+        if (t.length() % 2 > 0)
+          t = "0"+t;
+        return String.format("[tag: 0x%s, %s]", t
+                ,value==null?null:getStringValue());
+    }
+
+    @Override
+    public void dump(PrintStream p, String indent) {
+        p.print (indent);
+        p.print ("<tag id='");
+        p.print (Integer.toHexString(getTag()));
+        p.print ("' value='");
+        p.print (ISOUtil.hexString(getValue()));
+        p.println ("' />");
+    }
+}
