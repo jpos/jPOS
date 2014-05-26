@@ -37,6 +37,7 @@ public abstract class TagSequenceBase implements TagSequence {
 
     private final String tag;
     private final TreeMap<String, List<TagValue>> tagMap = new TreeMap();
+    private final LinkedList<TagValue> orderedList = new LinkedList();
 
     public TagSequenceBase() {
         this.tag = "Root";
@@ -65,6 +66,12 @@ public abstract class TagSequenceBase implements TagSequence {
             tagMap.put(tag, values);
         }
         values.add(tagValue);
+        orderedList.add(tagValue);
+    }
+
+    @Override
+    public List<TagValue> getOrderedList() {
+        return orderedList;
     }
 
     @Override
