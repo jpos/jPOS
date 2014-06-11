@@ -225,7 +225,11 @@ public class ISOUtil {
         return a;
     }
     public static byte[] asciiToEbcdic(String s) {
-        return asciiToEbcdic (s.getBytes());
+        int len = s.length();
+        byte b[] = new byte[len];
+        for (int i = 0; i < len; i++)
+            b[i] = ASCII2EBCDIC[s.charAt(i) & 0xFF];
+        return b;
     }
     public static byte[] asciiToEbcdic(byte[] a) {
         byte[] e = new byte[a.length];
