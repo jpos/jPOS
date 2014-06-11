@@ -86,6 +86,22 @@ public class ISOUtilTest {
     }
 
     @Test
+    public void testAsciiToEbcdic6() throws Throwable {
+        byte[] result = ISOUtil.asciiToEbcdic("testISOUtils");
+        byte[] expected = new byte[]{(byte)0xA3, (byte)0x85, (byte)0xA2, (byte)0xA3, (byte)0xC9,
+                (byte)0xE2, (byte)0xD6, (byte)0xE4, (byte)0xA3, (byte) 0x89, (byte)0x93, (byte)0xA2 };
+        assertArrayEquals("full result", expected, result);
+    }
+
+    @Test
+    public void testAsciiToEbcdic7() throws Throwable {
+        String testString = "testISOUtils1047`¬!\"£$%^&*()-=_+;:[]{}'@#~\\|,<>./?";
+        byte[] result = ISOUtil.asciiToEbcdic(testString);
+        byte[] expected = testString.getBytes("Cp1047");
+        assertArrayEquals("full result", expected, result);
+    }
+
+    @Test
     public void testAsciiToEbcdicThrowsArrayIndexOutOfBoundsException() throws Throwable {
         byte[] e = new byte[0];
         try {
