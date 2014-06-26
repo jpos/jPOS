@@ -174,7 +174,7 @@ public class EuroPackager extends ISOBasePackager {
     public void setLogger (Logger logger, String realm) {
         this.logger = logger;
         this.realm  = realm;
-        f48Packager.setLogger (logger, realm + ".field-48");
+        // f48Packager.setLogger (logger, realm + ".field-48");
     }
 
     protected static class Euro48Packager extends EuroSubFieldPackager

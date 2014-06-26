@@ -18,8 +18,6 @@
 
 package org.jpos.iso;
 
-import org.jpos.util.LogSource;
-
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -28,7 +26,7 @@ import java.io.InputStream;
  * @version $Id$
  * @see ISOComponent
  */
-public interface ISOPackager extends LogSource {
+public interface ISOPackager {
     /**
      * @param   m   the Component to pack
      * @return      Message image

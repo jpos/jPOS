@@ -61,10 +61,12 @@ public abstract class PackagerWrapper
     {
         return standardPackager;
     }
+
     public void setLogger (Logger logger, String realm) {
         this.logger = logger;
         this.realm  = realm;
-        standardPackager.setLogger (logger, realm);
+        if (standardPackager instanceof LogSource)
+            ((LogSource) standardPackager).setLogger (logger, realm);
     }
     public String getRealm () {
         return realm;
