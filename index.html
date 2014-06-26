@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head>
-<meta httpEquiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 <title>Test results - Test Summary</title>
 <link href="css/base-style.css" rel="stylesheet" type="text/css"/>
 <link href="css/style.css" rel="stylesheet" type="text/css"/>
@@ -30,8 +30,14 @@
 </div>
 </td>
 <td>
+<div class="infoBox" id="ignored">
+<div class="counter">97</div>
+<p>ignored</p>
+</div>
+</td>
+<td>
 <div class="infoBox" id="duration">
-<div class="counter">1m48.33s</div>
+<div class="counter">1m53.96s</div>
 <p>duration</p>
 </div>
 </td>
@@ -40,7 +46,7 @@
 </div>
 </td>
 <td>
-<div class="infoBox success" id="successRate">
+<div class="infoBox skipped" id="successRate">
 <div class="percent">100%</div>
 <p>successful</p>
 </div>
@@ -51,13 +57,409 @@
 <div id="tabs">
 <ul class="tabLinks">
 <li>
-<a href="#tab0">Packages</a>
+<a href="#tab0">Ignored tests</a>
 </li>
 <li>
-<a href="#tab1">Classes</a>
+<a href="#tab1">Packages</a>
+</li>
+<li>
+<a href="#tab2">Classes</a>
 </li>
 </ul>
 <div id="tab0" class="tab">
+<h2>Ignored tests</h2>
+<ul class="linkList">
+<li>
+<a href="classes/org.jpos.bsh.BSHActionTest.html">BSHActionTest</a>.
+<a href="classes/org.jpos.bsh.BSHActionTest.html#testActionPerformed">testActionPerformed</a>
+</li>
+<li>
+<a href="classes/org.jpos.iso.IFA_BITMAPTest.html">IFA_BITMAPTest</a>.
+<a href="classes/org.jpos.iso.IFA_BITMAPTest.html#test02ByteBitmap">test02ByteBitmap</a>
+</li>
+<li>
+<a href="classes/org.jpos.iso.IFA_BITMAPTest.html">IFA_BITMAPTest</a>.
+<a href="classes/org.jpos.iso.IFA_BITMAPTest.html#test16ByteBitmap">test16ByteBitmap</a>
+</li>
+<li>
+<a href="classes/org.jpos.iso.IFA_BITMAPTest.html">IFA_BITMAPTest</a>.
+<a href="classes/org.jpos.iso.IFA_BITMAPTest.html#test32ByteBitmap">test32ByteBitmap</a>
+</li>
+<li>
+<a href="classes/org.jpos.iso.IFA_BITMAPTest.html">IFA_BITMAPTest</a>.
+<a href="classes/org.jpos.iso.IFA_BITMAPTest.html#test48ByteBitmap">test48ByteBitmap</a>
+</li>
+<li>
+<a href="classes/org.jpos.iso.IFA_BITMAPTest.html">IFA_BITMAPTest</a>.
+<a href="classes/org.jpos.iso.IFA_BITMAPTest.html#test48ByteBitmapWithOnly32BytesUsed">test48ByteBitmapWithOnly32BytesUsed</a>
+</li>
+<li>
+<a href="classes/org.jpos.iso.IFB_BITMAPTest.html">IFB_BITMAPTest</a>.
+<a href="classes/org.jpos.iso.IFB_BITMAPTest.html#test08ByteBitmap">test08ByteBitmap</a>
+</li>
+<li>
+<a href="classes/org.jpos.iso.IFB_BITMAPTest.html">IFB_BITMAPTest</a>.
+<a href="classes/org.jpos.iso.IFB_BITMAPTest.html#test16ByteBitmap">test16ByteBitmap</a>
+</li>
+<li>
+<a href="classes/org.jpos.iso.IFB_BITMAPTest.html">IFB_BITMAPTest</a>.
+<a href="classes/org.jpos.iso.IFB_BITMAPTest.html#test24ByteBitmap">test24ByteBitmap</a>
+</li>
+<li>
+<a href="classes/org.jpos.iso.filter.XSLTFilterTest.html">XSLTFilterTest</a>.
+<a href="classes/org.jpos.iso.filter.XSLTFilterTest.html#testConstructorThrowsISOException">testConstructorThrowsISOException</a>
+</li>
+<li>
+<a href="classes/org.jpos.iso.packager.GenericPackagerTest.html">GenericPackagerTest</a>.
+<a href="classes/org.jpos.iso.packager.GenericPackagerTest.html#testSetConfigurationThrowsConfigurationException">testSetConfigurationThrowsConfigurationException</a>
+</li>
+<li>
+<a href="classes/org.jpos.iso.packager.GenericValidatingPackagerTest.html">GenericValidatingPackagerTest</a>.
+<a href="classes/org.jpos.iso.packager.GenericValidatingPackagerTest.html#testConstructorThrowsISOException">testConstructorThrowsISOException</a>
+</li>
+<li>
+<a href="classes/org.jpos.iso.packager.GenericValidatingPackagerTest.html">GenericValidatingPackagerTest</a>.
+<a href="classes/org.jpos.iso.packager.GenericValidatingPackagerTest.html#testConstructorThrowsISOException1">testConstructorThrowsISOException1</a>
+</li>
+<li>
+<a href="classes/org.jpos.iso.packager.GenericValidatingPackagerTest.html">GenericValidatingPackagerTest</a>.
+<a href="classes/org.jpos.iso.packager.GenericValidatingPackagerTest.html#testReadFileThrowsISOException">testReadFileThrowsISOException</a>
+</li>
+<li>
+<a href="classes/org.jpos.q2.Q2Test.html">Q2Test</a>.
+<a href="classes/org.jpos.q2.Q2Test.html#testAccept">testAccept</a>
+</li>
+<li>
+<a href="classes/org.jpos.q2.Q2Test.html">Q2Test</a>.
+<a href="classes/org.jpos.q2.Q2Test.html#testAcceptThrowsNullPointerException">testAcceptThrowsNullPointerException</a>
+</li>
+<li>
+<a href="classes/org.jpos.q2.Q2Test.html">Q2Test</a>.
+<a href="classes/org.jpos.q2.Q2Test.html#testConstructor">testConstructor</a>
+</li>
+<li>
+<a href="classes/org.jpos.q2.Q2Test.html">Q2Test</a>.
+<a href="classes/org.jpos.q2.Q2Test.html#testDecrypt">testDecrypt</a>
+</li>
+<li>
+<a href="classes/org.jpos.q2.Q2Test.html">Q2Test</a>.
+<a href="classes/org.jpos.q2.Q2Test.html#testDecryptThrowsIllegalStateException">testDecryptThrowsIllegalStateException</a>
+</li>
+<li>
+<a href="classes/org.jpos.q2.Q2Test.html">Q2Test</a>.
+<a href="classes/org.jpos.q2.Q2Test.html#testDecryptThrowsNullPointerException">testDecryptThrowsNullPointerException</a>
+</li>
+<li>
+<a href="classes/org.jpos.q2.Q2Test.html">Q2Test</a>.
+<a href="classes/org.jpos.q2.Q2Test.html#testEncryptThrowsIllegalStateException">testEncryptThrowsIllegalStateException</a>
+</li>
+<li>
+<a href="classes/org.jpos.q2.Q2Test.html">Q2Test</a>.
+<a href="classes/org.jpos.q2.Q2Test.html#testGetCommandLineArgs">testGetCommandLineArgs</a>
+</li>
+<li>
+<a href="classes/org.jpos.q2.Q2Test.html">Q2Test</a>.
+<a href="classes/org.jpos.q2.Q2Test.html#testGetDeployDir">testGetDeployDir</a>
+</li>
+<li>
+<a href="classes/org.jpos.q2.Q2Test.html">Q2Test</a>.
+<a href="classes/org.jpos.q2.Q2Test.html#testGetFactory">testGetFactory</a>
+</li>
+<li>
+<a href="classes/org.jpos.q2.Q2Test.html">Q2Test</a>.
+<a href="classes/org.jpos.q2.Q2Test.html#testGetKey">testGetKey</a>
+</li>
+<li>
+<a href="classes/org.jpos.q2.Q2Test.html">Q2Test</a>.
+<a href="classes/org.jpos.q2.Q2Test.html#testGetLoader">testGetLoader</a>
+</li>
+<li>
+<a href="classes/org.jpos.q2.Q2Test.html">Q2Test</a>.
+<a href="classes/org.jpos.q2.Q2Test.html#testGetLog">testGetLog</a>
+</li>
+<li>
+<a href="classes/org.jpos.q2.Q2Test.html">Q2Test</a>.
+<a href="classes/org.jpos.q2.Q2Test.html#testGetLog2">testGetLog2</a>
+</li>
+<li>
+<a href="classes/org.jpos.q2.Q2Test.html">Q2Test</a>.
+<a href="classes/org.jpos.q2.Q2Test.html#testGetMBeanServer">testGetMBeanServer</a>
+</li>
+<li>
+<a href="classes/org.jpos.q2.Q2Test.html">Q2Test</a>.
+<a href="classes/org.jpos.q2.Q2Test.html#testQEntryConstructor">testQEntryConstructor</a>
+</li>
+<li>
+<a href="classes/org.jpos.q2.Q2Test.html">Q2Test</a>.
+<a href="classes/org.jpos.q2.Q2Test.html#testQEntryGetDeployed">testQEntryGetDeployed</a>
+</li>
+<li>
+<a href="classes/org.jpos.q2.Q2Test.html">Q2Test</a>.
+<a href="classes/org.jpos.q2.Q2Test.html#testQEntryGetDeployed1">testQEntryGetDeployed1</a>
+</li>
+<li>
+<a href="classes/org.jpos.q2.Q2Test.html">Q2Test</a>.
+<a href="classes/org.jpos.q2.Q2Test.html#testQEntryGetInstance">testQEntryGetInstance</a>
+</li>
+<li>
+<a href="classes/org.jpos.q2.Q2Test.html">Q2Test</a>.
+<a href="classes/org.jpos.q2.Q2Test.html#testQEntryGetObject">testQEntryGetObject</a>
+</li>
+<li>
+<a href="classes/org.jpos.q2.Q2Test.html">Q2Test</a>.
+<a href="classes/org.jpos.q2.Q2Test.html#testQEntryGetObject1">testQEntryGetObject1</a>
+</li>
+<li>
+<a href="classes/org.jpos.q2.Q2Test.html">Q2Test</a>.
+<a href="classes/org.jpos.q2.Q2Test.html#testQEntryGetObjectName">testQEntryGetObjectName</a>
+</li>
+<li>
+<a href="classes/org.jpos.q2.Q2Test.html">Q2Test</a>.
+<a href="classes/org.jpos.q2.Q2Test.html#testQEntryGetObjectName1">testQEntryGetObjectName1</a>
+</li>
+<li>
+<a href="classes/org.jpos.q2.Q2Test.html">Q2Test</a>.
+<a href="classes/org.jpos.q2.Q2Test.html#testQEntryIsQBean">testQEntryIsQBean</a>
+</li>
+<li>
+<a href="classes/org.jpos.q2.Q2Test.html">Q2Test</a>.
+<a href="classes/org.jpos.q2.Q2Test.html#testQEntryIsQBean1">testQEntryIsQBean1</a>
+</li>
+<li>
+<a href="classes/org.jpos.q2.Q2Test.html">Q2Test</a>.
+<a href="classes/org.jpos.q2.Q2Test.html#testQEntryIsQPersist1">testQEntryIsQPersist1</a>
+</li>
+<li>
+<a href="classes/org.jpos.q2.Q2Test.html">Q2Test</a>.
+<a href="classes/org.jpos.q2.Q2Test.html#testQEntrySetInstance">testQEntrySetInstance</a>
+</li>
+<li>
+<a href="classes/org.jpos.q2.Q2Test.html">Q2Test</a>.
+<a href="classes/org.jpos.q2.Q2Test.html#testQEntrySetObject">testQEntrySetObject</a>
+</li>
+<li>
+<a href="classes/org.jpos.q2.Q2Test.html">Q2Test</a>.
+<a href="classes/org.jpos.q2.Q2Test.html#testRelax">testRelax</a>
+</li>
+<li>
+<a href="classes/org.jpos.q2.Q2Test.html">Q2Test</a>.
+<a href="classes/org.jpos.q2.Q2Test.html#testRelaxThrowsIllegalArgumentException">testRelaxThrowsIllegalArgumentException</a>
+</li>
+<li>
+<a href="classes/org.jpos.q2.Q2Test.html">Q2Test</a>.
+<a href="classes/org.jpos.q2.Q2Test.html#testShutdown">testShutdown</a>
+</li>
+<li>
+<a href="classes/org.jpos.q2.Q2Test.html">Q2Test</a>.
+<a href="classes/org.jpos.q2.Q2Test.html#testShutdown1">testShutdown1</a>
+</li>
+<li>
+<a href="classes/org.jpos.q2.iso.ChannelAdaptorTest.html">ChannelAdaptorTest</a>.
+<a href="classes/org.jpos.q2.iso.ChannelAdaptorTest.html#waitForWorkersOnStopDoesNotDeadlockWithUnfortunatelyTimedDisconnectReceivedByReceiver">waitForWorkersOnStopDoesNotDeadlockWithUnfortunatelyTimedDisconnectReceivedByReceiver</a>
+</li>
+<li>
+<a href="classes/org.jpos.q2.iso.ChannelAdaptorTest.html">ChannelAdaptorTest</a>.
+<a href="classes/org.jpos.q2.iso.ChannelAdaptorTest.html#waitForWorkersOnStopDoesNotDeadlockWithUnfortunatelyTimedDisconnectReceivedBySender">waitForWorkersOnStopDoesNotDeadlockWithUnfortunatelyTimedDisconnectReceivedBySender</a>
+</li>
+<li>
+<a href="classes/org.jpos.space.TSpacePerformanceTest.html">TSpacePerformanceTest</a>.
+<a href="classes/org.jpos.space.TSpacePerformanceTest.html#testStolenEntryAtNotify">testStolenEntryAtNotify</a>
+</li>
+<li>
+<a href="classes/org.jpos.ui.factory.JTabbedPaneFactoryTest.html">JTabbedPaneFactoryTest</a>.
+<a href="classes/org.jpos.ui.factory.JTabbedPaneFactoryTest.html#testStateChanged">testStateChanged</a>
+</li>
+<li>
+<a href="classes/org.jpos.util.DailyLogListenerTest.html">DailyLogListenerTest</a>.
+<a href="classes/org.jpos.util.DailyLogListenerTest.html#testCompressorRun">testCompressorRun</a>
+</li>
+<li>
+<a href="classes/org.jpos.util.DailyLogListenerTest.html">DailyLogListenerTest</a>.
+<a href="classes/org.jpos.util.DailyLogListenerTest.html#testDailyRotateRunThrowsNullPointerException">testDailyRotateRunThrowsNullPointerException</a>
+</li>
+<li>
+<a href="classes/org.jpos.util.DailyLogListenerTest.html">DailyLogListenerTest</a>.
+<a href="classes/org.jpos.util.DailyLogListenerTest.html#testLogRotateAbortsWhenCreatingNewFileFails">testLogRotateAbortsWhenCreatingNewFileFails</a>
+</li>
+<li>
+<a href="classes/org.jpos.util.DailyLogListenerTest.html">DailyLogListenerTest</a>.
+<a href="classes/org.jpos.util.DailyLogListenerTest.html#testLogRotateThrowsNullPointerException">testLogRotateThrowsNullPointerException</a>
+</li>
+<li>
+<a href="classes/org.jpos.util.FilterLogListenerTest.html">FilterLogListenerTest</a>.
+<a href="classes/org.jpos.util.FilterLogListenerTest.html#testClose">testClose</a>
+</li>
+<li>
+<a href="classes/org.jpos.util.FilterLogListenerTest.html">FilterLogListenerTest</a>.
+<a href="classes/org.jpos.util.FilterLogListenerTest.html#testClose1">testClose1</a>
+</li>
+<li>
+<a href="classes/org.jpos.util.FilterLogListenerTest.html">FilterLogListenerTest</a>.
+<a href="classes/org.jpos.util.FilterLogListenerTest.html#testConstructor">testConstructor</a>
+</li>
+<li>
+<a href="classes/org.jpos.util.FilterLogListenerTest.html">FilterLogListenerTest</a>.
+<a href="classes/org.jpos.util.FilterLogListenerTest.html#testConstructor1">testConstructor1</a>
+</li>
+<li>
+<a href="classes/org.jpos.util.FilterLogListenerTest.html">FilterLogListenerTest</a>.
+<a href="classes/org.jpos.util.FilterLogListenerTest.html#testLog">testLog</a>
+</li>
+<li>
+<a href="classes/org.jpos.util.FilterLogListenerTest.html">FilterLogListenerTest</a>.
+<a href="classes/org.jpos.util.FilterLogListenerTest.html#testLog1">testLog1</a>
+</li>
+<li>
+<a href="classes/org.jpos.util.FilterLogListenerTest.html">FilterLogListenerTest</a>.
+<a href="classes/org.jpos.util.FilterLogListenerTest.html#testLog2">testLog2</a>
+</li>
+<li>
+<a href="classes/org.jpos.util.FilterLogListenerTest.html">FilterLogListenerTest</a>.
+<a href="classes/org.jpos.util.FilterLogListenerTest.html#testLogThrowsNullPointerException1">testLogThrowsNullPointerException1</a>
+</li>
+<li>
+<a href="classes/org.jpos.util.FilterLogListenerTest.html">FilterLogListenerTest</a>.
+<a href="classes/org.jpos.util.FilterLogListenerTest.html#testPermitLogging">testPermitLogging</a>
+</li>
+<li>
+<a href="classes/org.jpos.util.FilterLogListenerTest.html">FilterLogListenerTest</a>.
+<a href="classes/org.jpos.util.FilterLogListenerTest.html#testPermitLogging1">testPermitLogging1</a>
+</li>
+<li>
+<a href="classes/org.jpos.util.FilterLogListenerTest.html">FilterLogListenerTest</a>.
+<a href="classes/org.jpos.util.FilterLogListenerTest.html#testPermitLogging2">testPermitLogging2</a>
+</li>
+<li>
+<a href="classes/org.jpos.util.FilterLogListenerTest.html">FilterLogListenerTest</a>.
+<a href="classes/org.jpos.util.FilterLogListenerTest.html#testPermitLogging3">testPermitLogging3</a>
+</li>
+<li>
+<a href="classes/org.jpos.util.FilterLogListenerTest.html">FilterLogListenerTest</a>.
+<a href="classes/org.jpos.util.FilterLogListenerTest.html#testPermitLoggingThrowsNullPointerException">testPermitLoggingThrowsNullPointerException</a>
+</li>
+<li>
+<a href="classes/org.jpos.util.FilterLogListenerTest.html">FilterLogListenerTest</a>.
+<a href="classes/org.jpos.util.FilterLogListenerTest.html#testPermitLoggingThrowsNullPointerException1">testPermitLoggingThrowsNullPointerException1</a>
+</li>
+<li>
+<a href="classes/org.jpos.util.FilterLogListenerTest.html">FilterLogListenerTest</a>.
+<a href="classes/org.jpos.util.FilterLogListenerTest.html#testPermitLoggingThrowsNullPointerException2">testPermitLoggingThrowsNullPointerException2</a>
+</li>
+<li>
+<a href="classes/org.jpos.util.FilterLogListenerTest.html">FilterLogListenerTest</a>.
+<a href="classes/org.jpos.util.FilterLogListenerTest.html#testSetConfiguration">testSetConfiguration</a>
+</li>
+<li>
+<a href="classes/org.jpos.util.FilterLogListenerTest.html">FilterLogListenerTest</a>.
+<a href="classes/org.jpos.util.FilterLogListenerTest.html#testSetConfigurationThrowsConfigurationException">testSetConfigurationThrowsConfigurationException</a>
+</li>
+<li>
+<a href="classes/org.jpos.util.FilterLogListenerTest.html">FilterLogListenerTest</a>.
+<a href="classes/org.jpos.util.FilterLogListenerTest.html#testSetPrintStream">testSetPrintStream</a>
+</li>
+<li>
+<a href="classes/org.jpos.util.FilterLogListenerTest.html">FilterLogListenerTest</a>.
+<a href="classes/org.jpos.util.FilterLogListenerTest.html#testSetPriority">testSetPriority</a>
+</li>
+<li>
+<a href="classes/org.jpos.util.LoggerTest.html">LoggerTest</a>.
+<a href="classes/org.jpos.util.LoggerTest.html#testAddListener">testAddListener</a>
+</li>
+<li>
+<a href="classes/org.jpos.util.LoggerTest.html">LoggerTest</a>.
+<a href="classes/org.jpos.util.LoggerTest.html#testConstructor">testConstructor</a>
+</li>
+<li>
+<a href="classes/org.jpos.util.LoggerTest.html">LoggerTest</a>.
+<a href="classes/org.jpos.util.LoggerTest.html#testDestroy">testDestroy</a>
+</li>
+<li>
+<a href="classes/org.jpos.util.LoggerTest.html">LoggerTest</a>.
+<a href="classes/org.jpos.util.LoggerTest.html#testDestroy1">testDestroy1</a>
+</li>
+<li>
+<a href="classes/org.jpos.util.LoggerTest.html">LoggerTest</a>.
+<a href="classes/org.jpos.util.LoggerTest.html#testGetLogger">testGetLogger</a>
+</li>
+<li>
+<a href="classes/org.jpos.util.LoggerTest.html">LoggerTest</a>.
+<a href="classes/org.jpos.util.LoggerTest.html#testGetName">testGetName</a>
+</li>
+<li>
+<a href="classes/org.jpos.util.LoggerTest.html">LoggerTest</a>.
+<a href="classes/org.jpos.util.LoggerTest.html#testHasListeners">testHasListeners</a>
+</li>
+<li>
+<a href="classes/org.jpos.util.LoggerTest.html">LoggerTest</a>.
+<a href="classes/org.jpos.util.LoggerTest.html#testHasListeners1">testHasListeners1</a>
+</li>
+<li>
+<a href="classes/org.jpos.util.LoggerTest.html">LoggerTest</a>.
+<a href="classes/org.jpos.util.LoggerTest.html#testLog">testLog</a>
+</li>
+<li>
+<a href="classes/org.jpos.util.LoggerTest.html">LoggerTest</a>.
+<a href="classes/org.jpos.util.LoggerTest.html#testLog1">testLog1</a>
+</li>
+<li>
+<a href="classes/org.jpos.util.LoggerTest.html">LoggerTest</a>.
+<a href="classes/org.jpos.util.LoggerTest.html#testLog2">testLog2</a>
+</li>
+<li>
+<a href="classes/org.jpos.util.LoggerTest.html">LoggerTest</a>.
+<a href="classes/org.jpos.util.LoggerTest.html#testLogThrowsNullPointerException">testLogThrowsNullPointerException</a>
+</li>
+<li>
+<a href="classes/org.jpos.util.LoggerTest.html">LoggerTest</a>.
+<a href="classes/org.jpos.util.LoggerTest.html#testRemoveAllListeners">testRemoveAllListeners</a>
+</li>
+<li>
+<a href="classes/org.jpos.util.LoggerTest.html">LoggerTest</a>.
+<a href="classes/org.jpos.util.LoggerTest.html#testRemoveAllListeners1">testRemoveAllListeners1</a>
+</li>
+<li>
+<a href="classes/org.jpos.util.LoggerTest.html">LoggerTest</a>.
+<a href="classes/org.jpos.util.LoggerTest.html#testRemoveAllListeners2">testRemoveAllListeners2</a>
+</li>
+<li>
+<a href="classes/org.jpos.util.LoggerTest.html">LoggerTest</a>.
+<a href="classes/org.jpos.util.LoggerTest.html#testRemoveAllListeners3">testRemoveAllListeners3</a>
+</li>
+<li>
+<a href="classes/org.jpos.util.LoggerTest.html">LoggerTest</a>.
+<a href="classes/org.jpos.util.LoggerTest.html#testRemoveListener">testRemoveListener</a>
+</li>
+<li>
+<a href="classes/org.jpos.util.LoggerTest.html">LoggerTest</a>.
+<a href="classes/org.jpos.util.LoggerTest.html#testSetName">testSetName</a>
+</li>
+<li>
+<a href="classes/org.jpos.util.RotateLogListenerTest.html">RotateLogListenerTest</a>.
+<a href="classes/org.jpos.util.RotateLogListenerTest.html#testCloseLogFile">testCloseLogFile</a>
+</li>
+<li>
+<a href="classes/org.jpos.util.RotateLogListenerTest.html">RotateLogListenerTest</a>.
+<a href="classes/org.jpos.util.RotateLogListenerTest.html#testLog">testLog</a>
+</li>
+<li>
+<a href="classes/org.jpos.util.RotateLogListenerTest.html">RotateLogListenerTest</a>.
+<a href="classes/org.jpos.util.RotateLogListenerTest.html#testLog1">testLog1</a>
+</li>
+<li>
+<a href="classes/org.jpos.util.RotateLogListenerTest.html">RotateLogListenerTest</a>.
+<a href="classes/org.jpos.util.RotateLogListenerTest.html#testLogDebug1">testLogDebug1</a>
+</li>
+<li>
+<a href="classes/org.jpos.util.RotateLogListenerTest.html">RotateLogListenerTest</a>.
+<a href="classes/org.jpos.util.RotateLogListenerTest.html#testLogRotateAbortsWhenCreatingNewFileFails">testLogRotateAbortsWhenCreatingNewFileFails</a>
+</li>
+<li>
+<a href="classes/org.jpos.util.RotateLogListenerTest.html">RotateLogListenerTest</a>.
+<a href="classes/org.jpos.util.RotateLogListenerTest.html#testLogRotateThrowsNullPointerException">testLogRotateThrowsNullPointerException</a>
+</li>
+</ul>
+</div>
+<div id="tab1" class="tab">
 <h2>Packages</h2>
 <table>
 <thead>
@@ -65,19 +467,21 @@
 <th>Package</th>
 <th>Tests</th>
 <th>Failures</th>
+<th>Ignored</th>
 <th>Duration</th>
 <th>Success rate</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td class="success">
+<td class="skipped">
 <a href="packages/org.jpos.bsh.html">org.jpos.bsh</a>
 </td>
 <td>55</td>
 <td>0</td>
-<td>0.013s</td>
-<td class="success">100%</td>
+<td>1</td>
+<td>0.015s</td>
+<td class="skipped">100%</td>
 </tr>
 <tr>
 <td class="success">
@@ -85,17 +489,19 @@
 </td>
 <td>194</td>
 <td>0</td>
-<td>0.050s</td>
+<td>0</td>
+<td>0.032s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
-<td class="success">
+<td class="skipped">
 <a href="packages/org.jpos.iso.html">org.jpos.iso</a>
 </td>
 <td>1242</td>
 <td>0</td>
-<td>1.112s</td>
-<td class="success">100%</td>
+<td>8</td>
+<td>2.579s</td>
+<td class="skipped">100%</td>
 </tr>
 <tr>
 <td class="success">
@@ -103,17 +509,19 @@
 </td>
 <td>192</td>
 <td>0</td>
-<td>0.051s</td>
+<td>0</td>
+<td>0.066s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
-<td class="success">
+<td class="skipped">
 <a href="packages/org.jpos.iso.filter.html">org.jpos.iso.filter</a>
 </td>
 <td>91</td>
 <td>0</td>
-<td>0.105s</td>
-<td class="success">100%</td>
+<td>1</td>
+<td>0.097s</td>
+<td class="skipped">100%</td>
 </tr>
 <tr>
 <td class="success">
@@ -121,17 +529,19 @@
 </td>
 <td>65</td>
 <td>0</td>
-<td>0.004s</td>
+<td>0</td>
+<td>0.014s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
-<td class="success">
+<td class="skipped">
 <a href="packages/org.jpos.iso.packager.html">org.jpos.iso.packager</a>
 </td>
 <td>258</td>
 <td>0</td>
-<td>0.251s</td>
-<td class="success">100%</td>
+<td>4</td>
+<td>0.492s</td>
+<td class="skipped">100%</td>
 </tr>
 <tr>
 <td class="success">
@@ -139,7 +549,8 @@
 </td>
 <td>15</td>
 <td>0</td>
-<td>19.220s</td>
+<td>0</td>
+<td>19.632s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -148,26 +559,29 @@
 </td>
 <td>55</td>
 <td>0</td>
-<td>0.009s</td>
+<td>0</td>
+<td>0.011s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
-<td class="success">
+<td class="skipped">
 <a href="packages/org.jpos.q2.html">org.jpos.q2</a>
 </td>
 <td>64</td>
 <td>0</td>
-<td>0.090s</td>
-<td class="success">100%</td>
+<td>32</td>
+<td>0.077s</td>
+<td class="skipped">100%</td>
 </tr>
 <tr>
-<td class="success">
+<td class="skipped">
 <a href="packages/org.jpos.q2.iso.html">org.jpos.q2.iso</a>
 </td>
 <td>93</td>
 <td>0</td>
-<td>22.807s</td>
-<td class="success">100%</td>
+<td>2</td>
+<td>22.781s</td>
+<td class="skipped">100%</td>
 </tr>
 <tr>
 <td class="success">
@@ -175,7 +589,8 @@
 </td>
 <td>68</td>
 <td>0</td>
-<td>0.184s</td>
+<td>0</td>
+<td>0.206s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -183,6 +598,7 @@
 <a href="packages/org.jpos.q2.security.html">org.jpos.q2.security</a>
 </td>
 <td>13</td>
+<td>0</td>
 <td>0</td>
 <td>0.003s</td>
 <td class="success">100%</td>
@@ -193,7 +609,8 @@
 </td>
 <td>5</td>
 <td>0</td>
-<td>0.001s</td>
+<td>0</td>
+<td>0.002s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -202,7 +619,8 @@
 </td>
 <td>136</td>
 <td>0</td>
-<td>0.022s</td>
+<td>0</td>
+<td>0.044s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -211,17 +629,19 @@
 </td>
 <td>114</td>
 <td>0</td>
-<td>0.421s</td>
+<td>0</td>
+<td>0.597s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
-<td class="success">
+<td class="skipped">
 <a href="packages/org.jpos.space.html">org.jpos.space</a>
 </td>
 <td>138</td>
 <td>0</td>
-<td>16.729s</td>
-<td class="success">100%</td>
+<td>1</td>
+<td>16.668s</td>
+<td class="skipped">100%</td>
 </tr>
 <tr>
 <td class="success">
@@ -229,7 +649,8 @@
 </td>
 <td>91</td>
 <td>0</td>
-<td>0.034s</td>
+<td>0</td>
+<td>0.027s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -238,7 +659,8 @@
 </td>
 <td>6</td>
 <td>0</td>
-<td>0.181s</td>
+<td>0</td>
+<td>0.072s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -247,7 +669,8 @@
 </td>
 <td>121</td>
 <td>0</td>
-<td>6.299s</td>
+<td>0</td>
+<td>9.069s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -256,7 +679,8 @@
 </td>
 <td>59</td>
 <td>0</td>
-<td>0.469s</td>
+<td>0</td>
+<td>0.415s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -265,31 +689,34 @@
 </td>
 <td>10</td>
 <td>0</td>
-<td>0.020s</td>
+<td>0</td>
+<td>0.918s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
-<td class="success">
+<td class="skipped">
 <a href="packages/org.jpos.ui.factory.html">org.jpos.ui.factory</a>
 </td>
 <td>13</td>
 <td>0</td>
-<td>0.018s</td>
-<td class="success">100%</td>
+<td>1</td>
+<td>0.091s</td>
+<td class="skipped">100%</td>
 </tr>
 <tr>
-<td class="success">
+<td class="skipped">
 <a href="packages/org.jpos.util.html">org.jpos.util</a>
 </td>
 <td>406</td>
 <td>0</td>
-<td>40.235s</td>
-<td class="success">100%</td>
+<td>47</td>
+<td>40.053s</td>
+<td class="skipped">100%</td>
 </tr>
 </tbody>
 </table>
 </div>
-<div id="tab1" class="tab">
+<div id="tab2" class="tab">
 <h2>Classes</h2>
 <table>
 <thead>
@@ -297,25 +724,28 @@
 <th>Class</th>
 <th>Tests</th>
 <th>Failures</th>
+<th>Ignored</th>
 <th>Duration</th>
 <th>Success rate</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td class="success"/>
+<td class="skipped"/>
 <a href="classes/org.jpos.bsh.BSHActionTest.html">org.jpos.bsh.BSHActionTest</a>
 <td>3</td>
 <td>0</td>
+<td>1</td>
 <td>0.002s</td>
-<td class="success">100%</td>
+<td class="skipped">100%</td>
 </tr>
 <tr>
 <td class="success"/>
 <a href="classes/org.jpos.bsh.BSHFilterTest.html">org.jpos.bsh.BSHFilterTest</a>
 <td>5</td>
 <td>0</td>
-<td>0.004s</td>
+<td>0</td>
+<td>0.002s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -323,7 +753,8 @@
 <a href="classes/org.jpos.bsh.BSHLogListenerTest.html">org.jpos.bsh.BSHLogListenerTest</a>
 <td>41</td>
 <td>0</td>
-<td>0.004s</td>
+<td>0</td>
+<td>0.010s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -331,7 +762,8 @@
 <a href="classes/org.jpos.bsh.BSHRequestListenerTest.html">org.jpos.bsh.BSHRequestListenerTest</a>
 <td>6</td>
 <td>0</td>
-<td>0.003s</td>
+<td>0</td>
+<td>0.001s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -339,13 +771,15 @@
 <a href="classes/org.jpos.core.CardHolderTest.html">org.jpos.core.CardHolderTest</a>
 <td>89</td>
 <td>0</td>
-<td>0.035s</td>
+<td>0</td>
+<td>0.021s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
 <td class="success"/>
 <a href="classes/org.jpos.core.ConfigurationExceptionTest.html">org.jpos.core.ConfigurationExceptionTest</a>
 <td>5</td>
+<td>0</td>
 <td>0</td>
 <td>0.001s</td>
 <td class="success">100%</td>
@@ -355,13 +789,15 @@
 <a href="classes/org.jpos.core.InvalidCardExceptionTest.html">org.jpos.core.InvalidCardExceptionTest</a>
 <td>2</td>
 <td>0</td>
-<td>0.001s</td>
+<td>0</td>
+<td>0s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
 <td class="success"/>
 <a href="classes/org.jpos.core.SimpleConfigurationTest.html">org.jpos.core.SimpleConfigurationTest</a>
 <td>47</td>
+<td>0</td>
 <td>0</td>
 <td>0.008s</td>
 <td class="success">100%</td>
@@ -371,13 +807,15 @@
 <a href="classes/org.jpos.core.SubConfigurationTest.html">org.jpos.core.SubConfigurationTest</a>
 <td>40</td>
 <td>0</td>
-<td>0.004s</td>
+<td>0</td>
+<td>0.001s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
 <td class="success"/>
 <a href="classes/org.jpos.core.VolatileSequencerTest.html">org.jpos.core.VolatileSequencerTest</a>
 <td>11</td>
+<td>0</td>
 <td>0</td>
 <td>0.001s</td>
 <td class="success">100%</td>
@@ -387,13 +825,15 @@
 <a href="classes/org.jpos.iso.AsciiHexInterpreter2Test.html">org.jpos.iso.AsciiHexInterpreter2Test</a>
 <td>19</td>
 <td>0</td>
-<td>0.001s</td>
+<td>0</td>
+<td>0s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
 <td class="success"/>
 <a href="classes/org.jpos.iso.AsciiHexInterpreterTest.html">org.jpos.iso.AsciiHexInterpreterTest</a>
 <td>5</td>
+<td>0</td>
 <td>0</td>
 <td>0s</td>
 <td class="success">100%</td>
@@ -403,13 +843,15 @@
 <a href="classes/org.jpos.iso.AsciiInterpreter2Test.html">org.jpos.iso.AsciiInterpreter2Test</a>
 <td>9</td>
 <td>0</td>
-<td>0.001s</td>
+<td>0</td>
+<td>0s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
 <td class="success"/>
 <a href="classes/org.jpos.iso.AsciiInterpreterTest.html">org.jpos.iso.AsciiInterpreterTest</a>
 <td>4</td>
+<td>0</td>
 <td>0</td>
 <td>0s</td>
 <td class="success">100%</td>
@@ -419,7 +861,8 @@
 <a href="classes/org.jpos.iso.AsciiPrefixer2Test.html">org.jpos.iso.AsciiPrefixer2Test</a>
 <td>14</td>
 <td>0</td>
-<td>0s</td>
+<td>0</td>
+<td>0.002s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -427,7 +870,8 @@
 <a href="classes/org.jpos.iso.AsciiPrefixerTest.html">org.jpos.iso.AsciiPrefixerTest</a>
 <td>4</td>
 <td>0</td>
-<td>0.001s</td>
+<td>0</td>
+<td>0s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -435,7 +879,8 @@
 <a href="classes/org.jpos.iso.BCDInterpreterTest.html">org.jpos.iso.BCDInterpreterTest</a>
 <td>12</td>
 <td>0</td>
-<td>0.001s</td>
+<td>0</td>
+<td>0.003s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -443,13 +888,15 @@
 <a href="classes/org.jpos.iso.BaseChannelTest.html">org.jpos.iso.BaseChannelTest</a>
 <td>105</td>
 <td>0</td>
-<td>0.098s</td>
+<td>0</td>
+<td>0.249s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
 <td class="success"/>
 <a href="classes/org.jpos.iso.BcdPrefixer2Test.html">org.jpos.iso.BcdPrefixer2Test</a>
 <td>11</td>
+<td>0</td>
 <td>0</td>
 <td>0.001s</td>
 <td class="success">100%</td>
@@ -459,13 +906,15 @@
 <a href="classes/org.jpos.iso.BcdPrefixerTest.html">org.jpos.iso.BcdPrefixerTest</a>
 <td>9</td>
 <td>0</td>
-<td>0.001s</td>
+<td>0</td>
+<td>0.002s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
 <td class="success"/>
 <a href="classes/org.jpos.iso.BinaryPrefixer2Test.html">org.jpos.iso.BinaryPrefixer2Test</a>
 <td>11</td>
+<td>0</td>
 <td>0</td>
 <td>0s</td>
 <td class="success">100%</td>
@@ -475,6 +924,7 @@
 <a href="classes/org.jpos.iso.ConnectorTest.html">org.jpos.iso.ConnectorTest</a>
 <td>9</td>
 <td>0</td>
+<td>0</td>
 <td>0.006s</td>
 <td class="success">100%</td>
 </tr>
@@ -483,7 +933,8 @@
 <a href="classes/org.jpos.iso.CurrencyTest.html">org.jpos.iso.CurrencyTest</a>
 <td>6</td>
 <td>0</td>
-<td>0s</td>
+<td>0</td>
+<td>0.001s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -491,7 +942,8 @@
 <a href="classes/org.jpos.iso.EbcdicBinaryInterpreterTest.html">org.jpos.iso.EbcdicBinaryInterpreterTest</a>
 <td>2</td>
 <td>0</td>
-<td>0.001s</td>
+<td>0</td>
+<td>0s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -499,7 +951,8 @@
 <a href="classes/org.jpos.iso.EbcdicHexInterpreterTest.html">org.jpos.iso.EbcdicHexInterpreterTest</a>
 <td>2</td>
 <td>0</td>
-<td>0s</td>
+<td>0</td>
+<td>0.002s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -507,7 +960,8 @@
 <a href="classes/org.jpos.iso.EbcdicInterpreter2Test.html">org.jpos.iso.EbcdicInterpreter2Test</a>
 <td>9</td>
 <td>0</td>
-<td>0.001s</td>
+<td>0</td>
+<td>0.002s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -515,13 +969,15 @@
 <a href="classes/org.jpos.iso.EbcdicInterpreterTest.html">org.jpos.iso.EbcdicInterpreterTest</a>
 <td>4</td>
 <td>0</td>
-<td>0.002s</td>
+<td>0</td>
+<td>0s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
 <td class="success"/>
 <a href="classes/org.jpos.iso.EbcdicPrefixer2Test.html">org.jpos.iso.EbcdicPrefixer2Test</a>
 <td>14</td>
+<td>0</td>
 <td>0</td>
 <td>0.001s</td>
 <td class="success">100%</td>
@@ -531,6 +987,7 @@
 <a href="classes/org.jpos.iso.EbcdicPrefixerTest.html">org.jpos.iso.EbcdicPrefixerTest</a>
 <td>3</td>
 <td>0</td>
+<td>0</td>
 <td>0s</td>
 <td class="success">100%</td>
 </tr>
@@ -539,7 +996,8 @@
 <a href="classes/org.jpos.iso.IFA_AMOUNTTest.html">org.jpos.iso.IFA_AMOUNTTest</a>
 <td>3</td>
 <td>0</td>
-<td>0.001s</td>
+<td>0</td>
+<td>0s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -547,23 +1005,26 @@
 <a href="classes/org.jpos.iso.IFA_BINARYTest.html">org.jpos.iso.IFA_BINARYTest</a>
 <td>4</td>
 <td>0</td>
-<td>0.001s</td>
+<td>0</td>
+<td>0.003s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
-<td class="success"/>
+<td class="skipped"/>
 <a href="classes/org.jpos.iso.IFA_BITMAPTest.html">org.jpos.iso.IFA_BITMAPTest</a>
 <td>8</td>
 <td>0</td>
-<td>0.001s</td>
-<td class="success">100%</td>
+<td>5</td>
+<td>0.003s</td>
+<td class="skipped">100%</td>
 </tr>
 <tr>
 <td class="success"/>
 <a href="classes/org.jpos.iso.IFA_FLLCHARTest.html">org.jpos.iso.IFA_FLLCHARTest</a>
 <td>3</td>
 <td>0</td>
-<td>0.001s</td>
+<td>0</td>
+<td>0.002s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -571,13 +1032,15 @@
 <a href="classes/org.jpos.iso.IFA_FLLNUMTest.html">org.jpos.iso.IFA_FLLNUMTest</a>
 <td>3</td>
 <td>0</td>
-<td>0.001s</td>
+<td>0</td>
+<td>0.004s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
 <td class="success"/>
 <a href="classes/org.jpos.iso.IFA_LCHARTest.html">org.jpos.iso.IFA_LCHARTest</a>
 <td>3</td>
+<td>0</td>
 <td>0</td>
 <td>0s</td>
 <td class="success">100%</td>
@@ -587,13 +1050,15 @@
 <a href="classes/org.jpos.iso.IFA_LLBINARYTest.html">org.jpos.iso.IFA_LLBINARYTest</a>
 <td>3</td>
 <td>0</td>
-<td>0s</td>
+<td>0</td>
+<td>0.001s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
 <td class="success"/>
 <a href="classes/org.jpos.iso.IFA_LLBNUMTest.html">org.jpos.iso.IFA_LLBNUMTest</a>
 <td>3</td>
+<td>0</td>
 <td>0</td>
 <td>0.001s</td>
 <td class="success">100%</td>
@@ -603,13 +1068,15 @@
 <a href="classes/org.jpos.iso.IFA_LLCHARTest.html">org.jpos.iso.IFA_LLCHARTest</a>
 <td>3</td>
 <td>0</td>
-<td>0.001s</td>
+<td>0</td>
+<td>0.002s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
 <td class="success"/>
 <a href="classes/org.jpos.iso.IFA_LLLBINARYTest.html">org.jpos.iso.IFA_LLLBINARYTest</a>
 <td>3</td>
+<td>0</td>
 <td>0</td>
 <td>0s</td>
 <td class="success">100%</td>
@@ -619,6 +1086,7 @@
 <a href="classes/org.jpos.iso.IFA_LLLCHARTest.html">org.jpos.iso.IFA_LLLCHARTest</a>
 <td>3</td>
 <td>0</td>
+<td>0</td>
 <td>0.001s</td>
 <td class="success">100%</td>
 </tr>
@@ -626,6 +1094,7 @@
 <td class="success"/>
 <a href="classes/org.jpos.iso.IFA_LLLLCHARTest.html">org.jpos.iso.IFA_LLLLCHARTest</a>
 <td>3</td>
+<td>0</td>
 <td>0</td>
 <td>0s</td>
 <td class="success">100%</td>
@@ -635,13 +1104,15 @@
 <a href="classes/org.jpos.iso.IFA_LLLLLCHARTest.html">org.jpos.iso.IFA_LLLLLCHARTest</a>
 <td>3</td>
 <td>0</td>
-<td>0.001s</td>
+<td>0</td>
+<td>0.002s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
 <td class="success"/>
 <a href="classes/org.jpos.iso.IFA_LLLNUMTest.html">org.jpos.iso.IFA_LLLNUMTest</a>
 <td>3</td>
+<td>0</td>
 <td>0</td>
 <td>0.001s</td>
 <td class="success">100%</td>
@@ -651,7 +1122,8 @@
 <a href="classes/org.jpos.iso.IFA_LLNUMTest.html">org.jpos.iso.IFA_LLNUMTest</a>
 <td>3</td>
 <td>0</td>
-<td>0s</td>
+<td>0</td>
+<td>0.001s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -659,7 +1131,8 @@
 <a href="classes/org.jpos.iso.IFA_NUMERICTest.html">org.jpos.iso.IFA_NUMERICTest</a>
 <td>3</td>
 <td>0</td>
-<td>0.001s</td>
+<td>0</td>
+<td>0s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -667,7 +1140,8 @@
 <a href="classes/org.jpos.iso.IFB_AMOUNTTest.html">org.jpos.iso.IFB_AMOUNTTest</a>
 <td>4</td>
 <td>0</td>
-<td>0.001s</td>
+<td>0</td>
+<td>0s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -675,23 +1149,26 @@
 <a href="classes/org.jpos.iso.IFB_BINARYTest.html">org.jpos.iso.IFB_BINARYTest</a>
 <td>3</td>
 <td>0</td>
+<td>0</td>
 <td>0s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
-<td class="success"/>
+<td class="skipped"/>
 <a href="classes/org.jpos.iso.IFB_BITMAPTest.html">org.jpos.iso.IFB_BITMAPTest</a>
 <td>8</td>
 <td>0</td>
-<td>0.003s</td>
-<td class="success">100%</td>
+<td>3</td>
+<td>0.001s</td>
+<td class="skipped">100%</td>
 </tr>
 <tr>
 <td class="success"/>
 <a href="classes/org.jpos.iso.IFB_LLBINARYTest.html">org.jpos.iso.IFB_LLBINARYTest</a>
 <td>3</td>
 <td>0</td>
-<td>0.001s</td>
+<td>0</td>
+<td>0s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -699,13 +1176,15 @@
 <a href="classes/org.jpos.iso.IFB_LLCHARTest.html">org.jpos.iso.IFB_LLCHARTest</a>
 <td>3</td>
 <td>0</td>
-<td>0.001s</td>
+<td>0</td>
+<td>0s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
 <td class="success"/>
 <a href="classes/org.jpos.iso.IFB_LLHBINARYTest.html">org.jpos.iso.IFB_LLHBINARYTest</a>
 <td>3</td>
+<td>0</td>
 <td>0</td>
 <td>0.001s</td>
 <td class="success">100%</td>
@@ -715,13 +1194,15 @@
 <a href="classes/org.jpos.iso.IFB_LLHCHARTest.html">org.jpos.iso.IFB_LLHCHARTest</a>
 <td>5</td>
 <td>0</td>
-<td>0s</td>
+<td>0</td>
+<td>0.003s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
 <td class="success"/>
 <a href="classes/org.jpos.iso.IFB_LLHECHARTest.html">org.jpos.iso.IFB_LLHECHARTest</a>
 <td>3</td>
+<td>0</td>
 <td>0</td>
 <td>0.001s</td>
 <td class="success">100%</td>
@@ -731,7 +1212,8 @@
 <a href="classes/org.jpos.iso.IFB_LLHFBINARYTest.html">org.jpos.iso.IFB_LLHFBINARYTest</a>
 <td>3</td>
 <td>0</td>
-<td>0s</td>
+<td>0</td>
+<td>0.001s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -739,7 +1221,8 @@
 <a href="classes/org.jpos.iso.IFB_LLHNUMTest.html">org.jpos.iso.IFB_LLHNUMTest</a>
 <td>3</td>
 <td>0</td>
-<td>0.002s</td>
+<td>0</td>
+<td>0.003s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -747,7 +1230,8 @@
 <a href="classes/org.jpos.iso.IFB_LLLBINARYTest.html">org.jpos.iso.IFB_LLLBINARYTest</a>
 <td>6</td>
 <td>0</td>
-<td>0.001s</td>
+<td>0</td>
+<td>0.003s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -755,7 +1239,8 @@
 <a href="classes/org.jpos.iso.IFB_LLLCHARTest.html">org.jpos.iso.IFB_LLLCHARTest</a>
 <td>3</td>
 <td>0</td>
-<td>0s</td>
+<td>0</td>
+<td>0.001s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -763,7 +1248,8 @@
 <a href="classes/org.jpos.iso.IFB_LLLHBINARYTest.html">org.jpos.iso.IFB_LLLHBINARYTest</a>
 <td>3</td>
 <td>0</td>
-<td>0s</td>
+<td>0</td>
+<td>0.001s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -771,13 +1257,15 @@
 <a href="classes/org.jpos.iso.IFB_LLLHCHARTest.html">org.jpos.iso.IFB_LLLHCHARTest</a>
 <td>5</td>
 <td>0</td>
-<td>0.001s</td>
+<td>0</td>
+<td>0.002s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
 <td class="success"/>
 <a href="classes/org.jpos.iso.IFB_LLLHECHARTest.html">org.jpos.iso.IFB_LLLHECHARTest</a>
 <td>3</td>
+<td>0</td>
 <td>0</td>
 <td>0.001s</td>
 <td class="success">100%</td>
@@ -787,7 +1275,8 @@
 <a href="classes/org.jpos.iso.IFB_LLLNUMTest.html">org.jpos.iso.IFB_LLLNUMTest</a>
 <td>3</td>
 <td>0</td>
-<td>0.002s</td>
+<td>0</td>
+<td>0.001s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -795,13 +1284,15 @@
 <a href="classes/org.jpos.iso.IFB_LLNUMTest.html">org.jpos.iso.IFB_LLNUMTest</a>
 <td>3</td>
 <td>0</td>
-<td>0.002s</td>
+<td>0</td>
+<td>0s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
 <td class="success"/>
 <a href="classes/org.jpos.iso.IFB_NUMERICTest.html">org.jpos.iso.IFB_NUMERICTest</a>
 <td>3</td>
+<td>0</td>
 <td>0</td>
 <td>0.001s</td>
 <td class="success">100%</td>
@@ -811,7 +1302,8 @@
 <a href="classes/org.jpos.iso.IFEPE_LLCHARTest.html">org.jpos.iso.IFEPE_LLCHARTest</a>
 <td>4</td>
 <td>0</td>
-<td>0.003s</td>
+<td>0</td>
+<td>0.002s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -819,7 +1311,8 @@
 <a href="classes/org.jpos.iso.IFE_AMOUNTTest.html">org.jpos.iso.IFE_AMOUNTTest</a>
 <td>3</td>
 <td>0</td>
-<td>0.002s</td>
+<td>0</td>
+<td>0.001s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -827,13 +1320,15 @@
 <a href="classes/org.jpos.iso.IFE_BITMAPTest.html">org.jpos.iso.IFE_BITMAPTest</a>
 <td>7</td>
 <td>0</td>
-<td>0.003s</td>
+<td>0</td>
+<td>0.005s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
 <td class="success"/>
 <a href="classes/org.jpos.iso.IFE_CHARTest.html">org.jpos.iso.IFE_CHARTest</a>
 <td>3</td>
+<td>0</td>
 <td>0</td>
 <td>0s</td>
 <td class="success">100%</td>
@@ -843,6 +1338,7 @@
 <a href="classes/org.jpos.iso.IFE_LLCHARTest.html">org.jpos.iso.IFE_LLCHARTest</a>
 <td>3</td>
 <td>0</td>
+<td>0</td>
 <td>0.001s</td>
 <td class="success">100%</td>
 </tr>
@@ -851,7 +1347,8 @@
 <a href="classes/org.jpos.iso.IFE_LLLBINARYTest.html">org.jpos.iso.IFE_LLLBINARYTest</a>
 <td>3</td>
 <td>0</td>
-<td>0.001s</td>
+<td>0</td>
+<td>0s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -859,7 +1356,8 @@
 <a href="classes/org.jpos.iso.IFE_LLLCHARTest.html">org.jpos.iso.IFE_LLLCHARTest</a>
 <td>3</td>
 <td>0</td>
-<td>0.002s</td>
+<td>0</td>
+<td>0.001s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -867,7 +1365,8 @@
 <a href="classes/org.jpos.iso.IFE_LLNUMTest.html">org.jpos.iso.IFE_LLNUMTest</a>
 <td>3</td>
 <td>0</td>
-<td>0.002s</td>
+<td>0</td>
+<td>0.009s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -875,13 +1374,15 @@
 <a href="classes/org.jpos.iso.IFE_NUMERICTest.html">org.jpos.iso.IFE_NUMERICTest</a>
 <td>3</td>
 <td>0</td>
-<td>0.002s</td>
+<td>0</td>
+<td>0.001s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
 <td class="success"/>
 <a href="classes/org.jpos.iso.IF_CHARTest.html">org.jpos.iso.IF_CHARTest</a>
 <td>3</td>
+<td>0</td>
 <td>0</td>
 <td>0s</td>
 <td class="success">100%</td>
@@ -891,6 +1392,7 @@
 <a href="classes/org.jpos.iso.IF_NOPTest.html">org.jpos.iso.IF_NOPTest</a>
 <td>2</td>
 <td>0</td>
+<td>0</td>
 <td>0.001s</td>
 <td class="success">100%</td>
 </tr>
@@ -898,6 +1400,7 @@
 <td class="success"/>
 <a href="classes/org.jpos.iso.IF_UNUSEDTest.html">org.jpos.iso.IF_UNUSEDTest</a>
 <td>2</td>
+<td>0</td>
 <td>0</td>
 <td>0s</td>
 <td class="success">100%</td>
@@ -907,7 +1410,8 @@
 <a href="classes/org.jpos.iso.ISOAmountTest.html">org.jpos.iso.ISOAmountTest</a>
 <td>18</td>
 <td>0</td>
-<td>0.037s</td>
+<td>0</td>
+<td>0.045s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -915,7 +1419,8 @@
 <a href="classes/org.jpos.iso.ISOBasePackagerTest.html">org.jpos.iso.ISOBasePackagerTest</a>
 <td>7</td>
 <td>0</td>
-<td>0.009s</td>
+<td>0</td>
+<td>0.002s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -923,13 +1428,15 @@
 <a href="classes/org.jpos.iso.ISODateTest.html">org.jpos.iso.ISODateTest</a>
 <td>17</td>
 <td>0</td>
-<td>0.011s</td>
+<td>0</td>
+<td>0.063s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
 <td class="success"/>
 <a href="classes/org.jpos.iso.ISOFieldPackagerTest.html">org.jpos.iso.ISOFieldPackagerTest</a>
 <td>17</td>
+<td>0</td>
 <td>0</td>
 <td>0s</td>
 <td class="success">100%</td>
@@ -939,7 +1446,8 @@
 <a href="classes/org.jpos.iso.ISOFieldTest.html">org.jpos.iso.ISOFieldTest</a>
 <td>21</td>
 <td>0</td>
-<td>0.002s</td>
+<td>0</td>
+<td>0.007s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -947,7 +1455,8 @@
 <a href="classes/org.jpos.iso.ISOMsg2Test.html">org.jpos.iso.ISOMsg2Test</a>
 <td>125</td>
 <td>0</td>
-<td>0.133s</td>
+<td>0</td>
+<td>0.194s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -955,7 +1464,8 @@
 <a href="classes/org.jpos.iso.ISOMsgTest.html">org.jpos.iso.ISOMsgTest</a>
 <td>4</td>
 <td>0</td>
-<td>0.003s</td>
+<td>0</td>
+<td>0.005s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -963,7 +1473,8 @@
 <a href="classes/org.jpos.iso.ISOServerTest.html">org.jpos.iso.ISOServerTest</a>
 <td>2</td>
 <td>0</td>
-<td>0.001s</td>
+<td>0</td>
+<td>0s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -971,13 +1482,15 @@
 <a href="classes/org.jpos.iso.ISOUtilTest.html">org.jpos.iso.ISOUtilTest</a>
 <td>552</td>
 <td>0</td>
-<td>0.195s</td>
+<td>0</td>
+<td>0.178s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
 <td class="success"/>
 <a href="classes/org.jpos.iso.ISOVMsgTest.html">org.jpos.iso.ISOVMsgTest</a>
 <td>7</td>
+<td>0</td>
 <td>0</td>
 <td>0s</td>
 <td class="success">100%</td>
@@ -987,6 +1500,7 @@
 <a href="classes/org.jpos.iso.LeftPadderTest.html">org.jpos.iso.LeftPadderTest</a>
 <td>6</td>
 <td>0</td>
+<td>0</td>
 <td>0s</td>
 <td class="success">100%</td>
 </tr>
@@ -995,13 +1509,15 @@
 <a href="classes/org.jpos.iso.LiteralInterpreterTest.html">org.jpos.iso.LiteralInterpreterTest</a>
 <td>4</td>
 <td>0</td>
-<td>0.001s</td>
+<td>0</td>
+<td>0.002s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
 <td class="success"/>
 <a href="classes/org.jpos.iso.NullPadderTest.html">org.jpos.iso.NullPadderTest</a>
 <td>5</td>
+<td>0</td>
 <td>0</td>
 <td>0.001s</td>
 <td class="success">100%</td>
@@ -1011,6 +1527,7 @@
 <a href="classes/org.jpos.iso.NullPrefixerTest.html">org.jpos.iso.NullPrefixerTest</a>
 <td>3</td>
 <td>0</td>
+<td>0</td>
 <td>0s</td>
 <td class="success">100%</td>
 </tr>
@@ -1018,6 +1535,7 @@
 <td class="success"/>
 <a href="classes/org.jpos.iso.RightPadder2Test.html">org.jpos.iso.RightPadder2Test</a>
 <td>9</td>
+<td>0</td>
 <td>0</td>
 <td>0.001s</td>
 <td class="success">100%</td>
@@ -1027,6 +1545,7 @@
 <a href="classes/org.jpos.iso.RightPadderTest.html">org.jpos.iso.RightPadderTest</a>
 <td>8</td>
 <td>0</td>
+<td>0</td>
 <td>0.001s</td>
 <td class="success">100%</td>
 </tr>
@@ -1034,6 +1553,7 @@
 <td class="success"/>
 <a href="classes/org.jpos.iso.RightTPadderTest.html">org.jpos.iso.RightTPadderTest</a>
 <td>5</td>
+<td>0</td>
 <td>0</td>
 <td>0.001s</td>
 <td class="success">100%</td>
@@ -1043,7 +1563,8 @@
 <a href="classes/org.jpos.iso.SignedEbcdicNumberInterpreter2Test.html">org.jpos.iso.SignedEbcdicNumberInterpreter2Test</a>
 <td>14</td>
 <td>0</td>
-<td>0.001s</td>
+<td>0</td>
+<td>0s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -1051,7 +1572,8 @@
 <a href="classes/org.jpos.iso.SignedEbcdicNumberInterpreterTest.html">org.jpos.iso.SignedEbcdicNumberInterpreterTest</a>
 <td>5</td>
 <td>0</td>
-<td>0.002s</td>
+<td>0</td>
+<td>0.001s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -1059,7 +1581,8 @@
 <a href="classes/org.jpos.iso.SslChannelIntegrationTest.html">org.jpos.iso.SslChannelIntegrationTest</a>
 <td>1</td>
 <td>0</td>
-<td>0.552s</td>
+<td>0</td>
+<td>1.747s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -1067,7 +1590,8 @@
 <a href="classes/org.jpos.iso.channel.ASCIIChannelTest.html">org.jpos.iso.channel.ASCIIChannelTest</a>
 <td>9</td>
 <td>0</td>
-<td>0s</td>
+<td>0</td>
+<td>0.002s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -1075,7 +1599,8 @@
 <a href="classes/org.jpos.iso.channel.BASE24ChannelTest.html">org.jpos.iso.channel.BASE24ChannelTest</a>
 <td>6</td>
 <td>0</td>
-<td>0.001s</td>
+<td>0</td>
+<td>0s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -1083,7 +1608,8 @@
 <a href="classes/org.jpos.iso.channel.BASE24TCPChannelTest.html">org.jpos.iso.channel.BASE24TCPChannelTest</a>
 <td>6</td>
 <td>0</td>
-<td>0s</td>
+<td>0</td>
+<td>0.001s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -1091,7 +1617,8 @@
 <a href="classes/org.jpos.iso.channel.CSChannelTest.html">org.jpos.iso.channel.CSChannelTest</a>
 <td>8</td>
 <td>0</td>
-<td>0.001s</td>
+<td>0</td>
+<td>0.003s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -1099,7 +1626,8 @@
 <a href="classes/org.jpos.iso.channel.ChannelPoolTest.html">org.jpos.iso.channel.ChannelPoolTest</a>
 <td>39</td>
 <td>0</td>
-<td>0.010s</td>
+<td>0</td>
+<td>0.011s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -1107,13 +1635,15 @@
 <a href="classes/org.jpos.iso.channel.GZIPChannelTest.html">org.jpos.iso.channel.GZIPChannelTest</a>
 <td>8</td>
 <td>0</td>
-<td>0s</td>
+<td>0</td>
+<td>0.003s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
 <td class="success"/>
 <a href="classes/org.jpos.iso.channel.HEXChannelTest.html">org.jpos.iso.channel.HEXChannelTest</a>
 <td>8</td>
+<td>0</td>
 <td>0</td>
 <td>0.002s</td>
 <td class="success">100%</td>
@@ -1123,6 +1653,7 @@
 <a href="classes/org.jpos.iso.channel.LogChannelTest.html">org.jpos.iso.channel.LogChannelTest</a>
 <td>8</td>
 <td>0</td>
+<td>0</td>
 <td>0.003s</td>
 <td class="success">100%</td>
 </tr>
@@ -1131,7 +1662,8 @@
 <a href="classes/org.jpos.iso.channel.LoopbackChannelTest.html">org.jpos.iso.channel.LoopbackChannelTest</a>
 <td>17</td>
 <td>0</td>
-<td>0.002s</td>
+<td>0</td>
+<td>0.005s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -1139,7 +1671,8 @@
 <a href="classes/org.jpos.iso.channel.NACChannelTest.html">org.jpos.iso.channel.NACChannelTest</a>
 <td>12</td>
 <td>0</td>
-<td>0.002s</td>
+<td>0</td>
+<td>0.001s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -1147,7 +1680,8 @@
 <a href="classes/org.jpos.iso.channel.NCCChannelTest.html">org.jpos.iso.channel.NCCChannelTest</a>
 <td>13</td>
 <td>0</td>
-<td>0.004s</td>
+<td>0</td>
+<td>0.003s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -1155,13 +1689,15 @@
 <a href="classes/org.jpos.iso.channel.PADChannelTest.html">org.jpos.iso.channel.PADChannelTest</a>
 <td>6</td>
 <td>0</td>
-<td>0.001s</td>
+<td>0</td>
+<td>0.002s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
 <td class="success"/>
 <a href="classes/org.jpos.iso.channel.PostChannelTest.html">org.jpos.iso.channel.PostChannelTest</a>
 <td>7</td>
+<td>0</td>
 <td>0</td>
 <td>0.001s</td>
 <td class="success">100%</td>
@@ -1171,7 +1707,8 @@
 <a href="classes/org.jpos.iso.channel.RawChannelTest.html">org.jpos.iso.channel.RawChannelTest</a>
 <td>8</td>
 <td>0</td>
-<td>0.017s</td>
+<td>0</td>
+<td>0.019s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -1179,7 +1716,8 @@
 <a href="classes/org.jpos.iso.channel.VAPChannelTest.html">org.jpos.iso.channel.VAPChannelTest</a>
 <td>19</td>
 <td>0</td>
-<td>0.006s</td>
+<td>0</td>
+<td>0.005s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -1187,7 +1725,8 @@
 <a href="classes/org.jpos.iso.channel.X25ChannelTest.html">org.jpos.iso.channel.X25ChannelTest</a>
 <td>7</td>
 <td>0</td>
-<td>0.001s</td>
+<td>0</td>
+<td>0.003s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -1195,7 +1734,8 @@
 <a href="classes/org.jpos.iso.channel.XMLChannelTest.html">org.jpos.iso.channel.XMLChannelTest</a>
 <td>11</td>
 <td>0</td>
-<td>0s</td>
+<td>0</td>
+<td>0.002s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -1203,13 +1743,15 @@
 <a href="classes/org.jpos.iso.filter.DelayFilterTest.html">org.jpos.iso.filter.DelayFilterTest</a>
 <td>8</td>
 <td>0</td>
-<td>0.003s</td>
+<td>0</td>
+<td>0.004s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
 <td class="success"/>
 <a href="classes/org.jpos.iso.filter.MD5FilterTest.html">org.jpos.iso.filter.MD5FilterTest</a>
 <td>22</td>
+<td>0</td>
 <td>0</td>
 <td>0.008s</td>
 <td class="success">100%</td>
@@ -1219,6 +1761,7 @@
 <a href="classes/org.jpos.iso.filter.MacroFilterTest.html">org.jpos.iso.filter.MacroFilterTest</a>
 <td>12</td>
 <td>0</td>
+<td>0</td>
 <td>0.005s</td>
 <td class="success">100%</td>
 </tr>
@@ -1227,23 +1770,26 @@
 <a href="classes/org.jpos.iso.filter.StatefulFilterTest.html">org.jpos.iso.filter.StatefulFilterTest</a>
 <td>46</td>
 <td>0</td>
-<td>0.084s</td>
+<td>0</td>
+<td>0.076s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
-<td class="success"/>
+<td class="skipped"/>
 <a href="classes/org.jpos.iso.filter.XSLTFilterTest.html">org.jpos.iso.filter.XSLTFilterTest</a>
 <td>3</td>
 <td>0</td>
-<td>0.005s</td>
-<td class="success">100%</td>
+<td>1</td>
+<td>0.004s</td>
+<td class="skipped">100%</td>
 </tr>
 <tr>
 <td class="success"/>
 <a href="classes/org.jpos.iso.header.BASE1HeaderTest.html">org.jpos.iso.header.BASE1HeaderTest</a>
 <td>48</td>
 <td>0</td>
-<td>0.003s</td>
+<td>0</td>
+<td>0.005s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -1251,13 +1797,15 @@
 <a href="classes/org.jpos.iso.header.BaseHeaderTest.html">org.jpos.iso.header.BaseHeaderTest</a>
 <td>17</td>
 <td>0</td>
-<td>0.001s</td>
+<td>0</td>
+<td>0.009s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
 <td class="success"/>
 <a href="classes/org.jpos.iso.packager.BASE24PackagerTest.html">org.jpos.iso.packager.BASE24PackagerTest</a>
 <td>1</td>
+<td>0</td>
 <td>0</td>
 <td>0.001s</td>
 <td class="success">100%</td>
@@ -1267,7 +1815,8 @@
 <a href="classes/org.jpos.iso.packager.Base1PackagerTest.html">org.jpos.iso.packager.Base1PackagerTest</a>
 <td>3</td>
 <td>0</td>
-<td>0.002s</td>
+<td>0</td>
+<td>0.004s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -1275,7 +1824,8 @@
 <a href="classes/org.jpos.iso.packager.Base1SubFieldPackagerTest.html">org.jpos.iso.packager.Base1SubFieldPackagerTest</a>
 <td>9</td>
 <td>0</td>
-<td>0.003s</td>
+<td>0</td>
+<td>0s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -1283,13 +1833,15 @@
 <a href="classes/org.jpos.iso.packager.Base1_BITMAP126Test.html">org.jpos.iso.packager.Base1_BITMAP126Test</a>
 <td>9</td>
 <td>0</td>
-<td>0.002s</td>
+<td>0</td>
+<td>0.001s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
 <td class="success"/>
 <a href="classes/org.jpos.iso.packager.CTCSubElementPackagerTest.html">org.jpos.iso.packager.CTCSubElementPackagerTest</a>
 <td>14</td>
+<td>0</td>
 <td>0</td>
 <td>0.002s</td>
 <td class="success">100%</td>
@@ -1299,6 +1851,7 @@
 <a href="classes/org.jpos.iso.packager.CTCSubFieldPackagerTest.html">org.jpos.iso.packager.CTCSubFieldPackagerTest</a>
 <td>13</td>
 <td>0</td>
+<td>0</td>
 <td>0.002s</td>
 <td class="success">100%</td>
 </tr>
@@ -1307,7 +1860,8 @@
 <a href="classes/org.jpos.iso.packager.EuroPackagerTest.html">org.jpos.iso.packager.EuroPackagerTest</a>
 <td>3</td>
 <td>0</td>
-<td>0.001s</td>
+<td>0</td>
+<td>0s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -1315,45 +1869,51 @@
 <a href="classes/org.jpos.iso.packager.EuroSubFieldPackagerTest.html">org.jpos.iso.packager.EuroSubFieldPackagerTest</a>
 <td>8</td>
 <td>0</td>
-<td>0.001s</td>
+<td>0</td>
+<td>0.002s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
-<td class="success"/>
+<td class="skipped"/>
 <a href="classes/org.jpos.iso.packager.GenericPackagerTest.html">org.jpos.iso.packager.GenericPackagerTest</a>
 <td>38</td>
 <td>0</td>
-<td>0.006s</td>
-<td class="success">100%</td>
+<td>1</td>
+<td>0.011s</td>
+<td class="skipped">100%</td>
 </tr>
 <tr>
 <td class="success"/>
 <a href="classes/org.jpos.iso.packager.GenericSubFieldPackagerTest.html">org.jpos.iso.packager.GenericSubFieldPackagerTest</a>
 <td>13</td>
 <td>0</td>
-<td>0.002s</td>
+<td>0</td>
+<td>0.001s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
-<td class="success"/>
+<td class="skipped"/>
 <a href="classes/org.jpos.iso.packager.GenericValidatingPackagerTest.html">org.jpos.iso.packager.GenericValidatingPackagerTest</a>
 <td>53</td>
 <td>0</td>
-<td>0.013s</td>
-<td class="success">100%</td>
+<td>3</td>
+<td>0.004s</td>
+<td class="skipped">100%</td>
 </tr>
 <tr>
 <td class="success"/>
 <a href="classes/org.jpos.iso.packager.ISO87APackagerBBitmapTest.html">org.jpos.iso.packager.ISO87APackagerBBitmapTest</a>
 <td>1</td>
 <td>0</td>
-<td>0.001s</td>
+<td>0</td>
+<td>0s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
 <td class="success"/>
 <a href="classes/org.jpos.iso.packager.ISO87APackagerTest.html">org.jpos.iso.packager.ISO87APackagerTest</a>
 <td>1</td>
+<td>0</td>
 <td>0</td>
 <td>0s</td>
 <td class="success">100%</td>
@@ -1363,6 +1923,7 @@
 <a href="classes/org.jpos.iso.packager.ISO87BPackagerTest.html">org.jpos.iso.packager.ISO87BPackagerTest</a>
 <td>1</td>
 <td>0</td>
+<td>0</td>
 <td>0.001s</td>
 <td class="success">100%</td>
 </tr>
@@ -1370,6 +1931,7 @@
 <td class="success"/>
 <a href="classes/org.jpos.iso.packager.ISO93APackagerTest.html">org.jpos.iso.packager.ISO93APackagerTest</a>
 <td>1</td>
+<td>0</td>
 <td>0</td>
 <td>0s</td>
 <td class="success">100%</td>
@@ -1379,6 +1941,7 @@
 <a href="classes/org.jpos.iso.packager.ISO93BPackagerTest.html">org.jpos.iso.packager.ISO93BPackagerTest</a>
 <td>1</td>
 <td>0</td>
+<td>0</td>
 <td>0s</td>
 <td class="success">100%</td>
 </tr>
@@ -1387,13 +1950,15 @@
 <a href="classes/org.jpos.iso.packager.ISOBaseValidatingPackagerTest.html">org.jpos.iso.packager.ISOBaseValidatingPackagerTest</a>
 <td>28</td>
 <td>0</td>
-<td>0.009s</td>
+<td>0</td>
+<td>0.008s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
 <td class="success"/>
 <a href="classes/org.jpos.iso.packager.ISOMsgFieldValidatingPackagerTest.html">org.jpos.iso.packager.ISOMsgFieldValidatingPackagerTest</a>
 <td>4</td>
+<td>0</td>
 <td>0</td>
 <td>0.001s</td>
 <td class="success">100%</td>
@@ -1403,6 +1968,7 @@
 <a href="classes/org.jpos.iso.packager.LogPackagerTest.html">org.jpos.iso.packager.LogPackagerTest</a>
 <td>1</td>
 <td>0</td>
+<td>0</td>
 <td>0.002s</td>
 <td class="success">100%</td>
 </tr>
@@ -1410,6 +1976,7 @@
 <td class="success"/>
 <a href="classes/org.jpos.iso.packager.PostPackagerTest.html">org.jpos.iso.packager.PostPackagerTest</a>
 <td>3</td>
+<td>0</td>
 <td>0</td>
 <td>0.001s</td>
 <td class="success">100%</td>
@@ -1419,13 +1986,15 @@
 <a href="classes/org.jpos.iso.packager.TaggedFieldPackagerBaseTest.html">org.jpos.iso.packager.TaggedFieldPackagerBaseTest</a>
 <td>2</td>
 <td>0</td>
-<td>0.048s</td>
+<td>0</td>
+<td>0.026s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
 <td class="success"/>
 <a href="classes/org.jpos.iso.packager.VAPSMSPackagerTest.html">org.jpos.iso.packager.VAPSMSPackagerTest</a>
 <td>1</td>
+<td>0</td>
 <td>0</td>
 <td>0.001s</td>
 <td class="success">100%</td>
@@ -1435,6 +2004,7 @@
 <a href="classes/org.jpos.iso.packager.VAPVIPPackagerTest.html">org.jpos.iso.packager.VAPVIPPackagerTest</a>
 <td>1</td>
 <td>0</td>
+<td>0</td>
 <td>0s</td>
 <td class="success">100%</td>
 </tr>
@@ -1443,7 +2013,8 @@
 <a href="classes/org.jpos.iso.packager.VISA1PackagerTest.html">org.jpos.iso.packager.VISA1PackagerTest</a>
 <td>18</td>
 <td>0</td>
-<td>0.003s</td>
+<td>0</td>
+<td>0.005s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -1451,13 +2022,15 @@
 <a href="classes/org.jpos.iso.packager.X92GenericPackagerTest.html">org.jpos.iso.packager.X92GenericPackagerTest</a>
 <td>6</td>
 <td>0</td>
-<td>0.011s</td>
+<td>0</td>
+<td>0.012s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
 <td class="success"/>
 <a href="classes/org.jpos.iso.packager.X92PackagerTest.html">org.jpos.iso.packager.X92PackagerTest</a>
 <td>4</td>
+<td>0</td>
 <td>0</td>
 <td>0.001s</td>
 <td class="success">100%</td>
@@ -1467,7 +2040,8 @@
 <a href="classes/org.jpos.iso.packager.XMLPackagerTest.html">org.jpos.iso.packager.XMLPackagerTest</a>
 <td>21</td>
 <td>0</td>
-<td>0.137s</td>
+<td>0</td>
+<td>0.406s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -1475,13 +2049,15 @@
 <a href="classes/org.jpos.iso.packagers.PackagerTestCase.html">org.jpos.iso.packagers.PackagerTestCase</a>
 <td>15</td>
 <td>0</td>
-<td>19.220s</td>
+<td>0</td>
+<td>19.632s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
 <td class="success"/>
 <a href="classes/org.jpos.iso.validator.ISOVException1Test.html">org.jpos.iso.validator.ISOVException1Test</a>
 <td>6</td>
+<td>0</td>
 <td>0</td>
 <td>0.001s</td>
 <td class="success">100%</td>
@@ -1491,7 +2067,8 @@
 <a href="classes/org.jpos.iso.validator.MSGTEST021Test.html">org.jpos.iso.validator.MSGTEST021Test</a>
 <td>12</td>
 <td>0</td>
-<td>0.002s</td>
+<td>0</td>
+<td>0.003s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -1499,7 +2076,8 @@
 <a href="classes/org.jpos.iso.validator.MSGTEST1Test.html">org.jpos.iso.validator.MSGTEST1Test</a>
 <td>8</td>
 <td>0</td>
-<td>0.004s</td>
+<td>0</td>
+<td>0.002s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -1507,7 +2085,8 @@
 <a href="classes/org.jpos.iso.validator.TEST01001Test.html">org.jpos.iso.validator.TEST01001Test</a>
 <td>6</td>
 <td>0</td>
-<td>0s</td>
+<td>0</td>
+<td>0.001s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -1515,7 +2094,8 @@
 <a href="classes/org.jpos.iso.validator.VErrorParserTest.html">org.jpos.iso.validator.VErrorParserTest</a>
 <td>23</td>
 <td>0</td>
-<td>0.002s</td>
+<td>0</td>
+<td>0.004s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -1523,39 +2103,44 @@
 <a href="classes/org.jpos.q2.CLICommandInterfaceTest.html">org.jpos.q2.CLICommandInterfaceTest</a>
 <td>11</td>
 <td>0</td>
-<td>0.040s</td>
+<td>0</td>
+<td>0.033s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
-<td class="success"/>
+<td class="skipped"/>
 <a href="classes/org.jpos.q2.Q2Test.html">org.jpos.q2.Q2Test</a>
 <td>32</td>
 <td>0</td>
-<td>0.002s</td>
-<td class="success">100%</td>
+<td>32</td>
+<td>0.003s</td>
+<td class="skipped">-</td>
 </tr>
 <tr>
 <td class="success"/>
 <a href="classes/org.jpos.q2.QFactory2Test.html">org.jpos.q2.QFactory2Test</a>
 <td>21</td>
 <td>0</td>
-<td>0.048s</td>
+<td>0</td>
+<td>0.041s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
-<td class="success"/>
+<td class="skipped"/>
 <a href="classes/org.jpos.q2.iso.ChannelAdaptorTest.html">org.jpos.q2.iso.ChannelAdaptorTest</a>
 <td>7</td>
 <td>0</td>
-<td>2.643s</td>
-<td class="success">100%</td>
+<td>2</td>
+<td>2.623s</td>
+<td class="skipped">100%</td>
 </tr>
 <tr>
 <td class="success"/>
 <a href="classes/org.jpos.q2.iso.DailyTaskAdaptorTest.html">org.jpos.q2.iso.DailyTaskAdaptorTest</a>
 <td>14</td>
 <td>0</td>
-<td>0.006s</td>
+<td>0</td>
+<td>0.003s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -1563,7 +2148,8 @@
 <a href="classes/org.jpos.q2.iso.DirPollAdaptorTest.html">org.jpos.q2.iso.DirPollAdaptorTest</a>
 <td>21</td>
 <td>0</td>
-<td>0.011s</td>
+<td>0</td>
+<td>0.010s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -1571,7 +2157,8 @@
 <a href="classes/org.jpos.q2.iso.MUXPoolTest.html">org.jpos.q2.iso.MUXPoolTest</a>
 <td>5</td>
 <td>0</td>
-<td>0.001s</td>
+<td>0</td>
+<td>0.002s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -1579,7 +2166,8 @@
 <a href="classes/org.jpos.q2.iso.QMUXTest.html">org.jpos.q2.iso.QMUXTest</a>
 <td>21</td>
 <td>0</td>
-<td>0.015s</td>
+<td>0</td>
+<td>0.014s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -1587,13 +2175,15 @@
 <a href="classes/org.jpos.q2.iso.QMUXTestCase.html">org.jpos.q2.iso.QMUXTestCase</a>
 <td>3</td>
 <td>0</td>
-<td>20.125s</td>
+<td>0</td>
+<td>20.124s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
 <td class="success"/>
 <a href="classes/org.jpos.q2.iso.QServerTest.html">org.jpos.q2.iso.QServerTest</a>
 <td>16</td>
+<td>0</td>
 <td>0</td>
 <td>0.004s</td>
 <td class="success">100%</td>
@@ -1603,7 +2193,8 @@
 <a href="classes/org.jpos.q2.iso.TaskAdaptorTest.html">org.jpos.q2.iso.TaskAdaptorTest</a>
 <td>6</td>
 <td>0</td>
-<td>0.002s</td>
+<td>0</td>
+<td>0.001s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -1611,7 +2202,8 @@
 <a href="classes/org.jpos.q2.qbean.BSHTest.html">org.jpos.q2.qbean.BSHTest</a>
 <td>4</td>
 <td>0</td>
-<td>0.008s</td>
+<td>0</td>
+<td>0.007s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -1619,13 +2211,15 @@
 <a href="classes/org.jpos.q2.qbean.LoggerAdaptorTest.html">org.jpos.q2.qbean.LoggerAdaptorTest</a>
 <td>8</td>
 <td>0</td>
-<td>0s</td>
+<td>0</td>
+<td>0.002s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
 <td class="success"/>
 <a href="classes/org.jpos.q2.qbean.NameRegistrarInspectorTest.html">org.jpos.q2.qbean.NameRegistrarInspectorTest</a>
 <td>1</td>
+<td>0</td>
 <td>0</td>
 <td>0.001s</td>
 <td class="success">100%</td>
@@ -1635,6 +2229,7 @@
 <a href="classes/org.jpos.q2.qbean.QExecTest.html">org.jpos.q2.qbean.QExecTest</a>
 <td>10</td>
 <td>0</td>
+<td>0</td>
 <td>0.002s</td>
 <td class="success">100%</td>
 </tr>
@@ -1643,13 +2238,15 @@
 <a href="classes/org.jpos.q2.qbean.QThreadPoolExecutorTest.html">org.jpos.q2.qbean.QThreadPoolExecutorTest</a>
 <td>16</td>
 <td>0</td>
-<td>0.108s</td>
+<td>0</td>
+<td>0.130s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
 <td class="success"/>
 <a href="classes/org.jpos.q2.qbean.ShutdownTest.html">org.jpos.q2.qbean.ShutdownTest</a>
 <td>3</td>
+<td>0</td>
 <td>0</td>
 <td>0s</td>
 <td class="success">100%</td>
@@ -1659,6 +2256,7 @@
 <a href="classes/org.jpos.q2.qbean.SpaceAdaptorTest.html">org.jpos.q2.qbean.SpaceAdaptorTest</a>
 <td>5</td>
 <td>0</td>
+<td>0</td>
 <td>0.002s</td>
 <td class="success">100%</td>
 </tr>
@@ -1667,7 +2265,8 @@
 <a href="classes/org.jpos.q2.qbean.SpaceLetTest.html">org.jpos.q2.qbean.SpaceLetTest</a>
 <td>12</td>
 <td>0</td>
-<td>0.054s</td>
+<td>0</td>
+<td>0.058s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -1675,7 +2274,8 @@
 <a href="classes/org.jpos.q2.qbean.SpaceProxyTest.html">org.jpos.q2.qbean.SpaceProxyTest</a>
 <td>5</td>
 <td>0</td>
-<td>0.003s</td>
+<td>0</td>
+<td>0.002s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -1683,13 +2283,15 @@
 <a href="classes/org.jpos.q2.qbean.SystemMonitorTest.html">org.jpos.q2.qbean.SystemMonitorTest</a>
 <td>4</td>
 <td>0</td>
-<td>0.006s</td>
+<td>0</td>
+<td>0.002s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
 <td class="success"/>
 <a href="classes/org.jpos.q2.security.KeyStoreAdaptorTest.html">org.jpos.q2.security.KeyStoreAdaptorTest</a>
 <td>6</td>
+<td>0</td>
 <td>0</td>
 <td>0.001s</td>
 <td class="success">100%</td>
@@ -1699,6 +2301,7 @@
 <a href="classes/org.jpos.q2.security.SMAdaptorTest.html">org.jpos.q2.security.SMAdaptorTest</a>
 <td>7</td>
 <td>0</td>
+<td>0</td>
 <td>0.002s</td>
 <td class="success">100%</td>
 </tr>
@@ -1707,7 +2310,8 @@
 <a href="classes/org.jpos.q2.ui.UITest.html">org.jpos.q2.ui.UITest</a>
 <td>5</td>
 <td>0</td>
-<td>0.001s</td>
+<td>0</td>
+<td>0.002s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -1715,7 +2319,8 @@
 <a href="classes/org.jpos.security.BaseSMAdapterTest.html">org.jpos.security.BaseSMAdapterTest</a>
 <td>22</td>
 <td>0</td>
-<td>0.005s</td>
+<td>0</td>
+<td>0.008s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -1723,7 +2328,8 @@
 <a href="classes/org.jpos.security.CryptographicServiceMessageTest.html">org.jpos.security.CryptographicServiceMessageTest</a>
 <td>23</td>
 <td>0</td>
-<td>0.004s</td>
+<td>0</td>
+<td>0.005s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -1731,7 +2337,8 @@
 <a href="classes/org.jpos.security.EncryptedPINTest.html">org.jpos.security.EncryptedPINTest</a>
 <td>29</td>
 <td>0</td>
-<td>0.005s</td>
+<td>0</td>
+<td>0.010s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -1739,7 +2346,8 @@
 <a href="classes/org.jpos.security.KeySerialNumberTest.html">org.jpos.security.KeySerialNumberTest</a>
 <td>11</td>
 <td>0</td>
-<td>0.002s</td>
+<td>0</td>
+<td>0.006s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -1747,7 +2355,8 @@
 <a href="classes/org.jpos.security.SMExceptionTest.html">org.jpos.security.SMExceptionTest</a>
 <td>6</td>
 <td>0</td>
-<td>0s</td>
+<td>0</td>
+<td>0.001s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -1755,7 +2364,8 @@
 <a href="classes/org.jpos.security.SecureDESKeyTest.html">org.jpos.security.SecureDESKeyTest</a>
 <td>11</td>
 <td>0</td>
-<td>0.002s</td>
+<td>0</td>
+<td>0.005s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -1763,7 +2373,8 @@
 <a href="classes/org.jpos.security.SecureKeyStoreTest.html">org.jpos.security.SecureKeyStoreTest</a>
 <td>5</td>
 <td>0</td>
-<td>0s</td>
+<td>0</td>
+<td>0.001s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -1771,7 +2382,8 @@
 <a href="classes/org.jpos.security.SecureKeyTest.html">org.jpos.security.SecureKeyTest</a>
 <td>7</td>
 <td>0</td>
-<td>0.001s</td>
+<td>0</td>
+<td>0.005s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -1779,7 +2391,8 @@
 <a href="classes/org.jpos.security.SimpleKeyFileTest.html">org.jpos.security.SimpleKeyFileTest</a>
 <td>15</td>
 <td>0</td>
-<td>0.003s</td>
+<td>0</td>
+<td>0.001s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -1787,13 +2400,15 @@
 <a href="classes/org.jpos.security.UtilTest.html">org.jpos.security.UtilTest</a>
 <td>7</td>
 <td>0</td>
-<td>0s</td>
+<td>0</td>
+<td>0.002s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
 <td class="success"/>
 <a href="classes/org.jpos.security.jceadapter.ConsoleTest.html">org.jpos.security.jceadapter.ConsoleTest</a>
 <td>1</td>
+<td>0</td>
 <td>0</td>
 <td>0.001s</td>
 <td class="success">100%</td>
@@ -1803,7 +2418,8 @@
 <a href="classes/org.jpos.security.jceadapter.DUKPTTest.html">org.jpos.security.jceadapter.DUKPTTest</a>
 <td>1</td>
 <td>0</td>
-<td>0.309s</td>
+<td>0</td>
+<td>0.448s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -1811,7 +2427,8 @@
 <a href="classes/org.jpos.security.jceadapter.JCEHandlerExceptionTest.html">org.jpos.security.jceadapter.JCEHandlerExceptionTest</a>
 <td>5</td>
 <td>0</td>
-<td>0s</td>
+<td>0</td>
+<td>0.001s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -1819,7 +2436,8 @@
 <a href="classes/org.jpos.security.jceadapter.JCEHandlerMacEngineKeyTest.html">org.jpos.security.jceadapter.JCEHandlerMacEngineKeyTest</a>
 <td>8</td>
 <td>0</td>
-<td>0.010s</td>
+<td>0</td>
+<td>0.041s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -1827,7 +2445,8 @@
 <a href="classes/org.jpos.security.jceadapter.JCEHandlerTest.html">org.jpos.security.jceadapter.JCEHandlerTest</a>
 <td>31</td>
 <td>0</td>
-<td>0.031s</td>
+<td>0</td>
+<td>0.011s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -1835,7 +2454,8 @@
 <a href="classes/org.jpos.security.jceadapter.JCESecurityModuleTest.html">org.jpos.security.jceadapter.JCESecurityModuleTest</a>
 <td>68</td>
 <td>0</td>
-<td>0.070s</td>
+<td>0</td>
+<td>0.095s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -1843,7 +2463,8 @@
 <a href="classes/org.jpos.space.JDBMSpaceTest.html">org.jpos.space.JDBMSpaceTest</a>
 <td>29</td>
 <td>0</td>
-<td>0.010s</td>
+<td>0</td>
+<td>0.003s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -1851,7 +2472,8 @@
 <a href="classes/org.jpos.space.JDBMSpaceTestCase.html">org.jpos.space.JDBMSpaceTestCase</a>
 <td>10</td>
 <td>0</td>
-<td>3.985s</td>
+<td>0</td>
+<td>3.867s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -1859,13 +2481,15 @@
 <a href="classes/org.jpos.space.JESpaceTestCase.html">org.jpos.space.JESpaceTestCase</a>
 <td>12</td>
 <td>0</td>
-<td>4.158s</td>
+<td>0</td>
+<td>4.391s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
 <td class="success"/>
 <a href="classes/org.jpos.space.MD5TemplateTest.html">org.jpos.space.MD5TemplateTest</a>
 <td>4</td>
+<td>0</td>
 <td>0</td>
 <td>0s</td>
 <td class="success">100%</td>
@@ -1875,7 +2499,8 @@
 <a href="classes/org.jpos.space.ObjectTemplateTest.html">org.jpos.space.ObjectTemplateTest</a>
 <td>7</td>
 <td>0</td>
-<td>0s</td>
+<td>0</td>
+<td>0.001s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -1883,7 +2508,8 @@
 <a href="classes/org.jpos.space.SpaceErrorTest.html">org.jpos.space.SpaceErrorTest</a>
 <td>4</td>
 <td>0</td>
-<td>0s</td>
+<td>0</td>
+<td>0.001s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -1891,7 +2517,8 @@
 <a href="classes/org.jpos.space.SpaceFactoryTest.html">org.jpos.space.SpaceFactoryTest</a>
 <td>4</td>
 <td>0</td>
-<td>0.001s</td>
+<td>0</td>
+<td>0s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -1899,13 +2526,15 @@
 <a href="classes/org.jpos.space.SpaceInterceptorTest.html">org.jpos.space.SpaceInterceptorTest</a>
 <td>7</td>
 <td>0</td>
-<td>0.046s</td>
+<td>0</td>
+<td>0.045s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
 <td class="success"/>
 <a href="classes/org.jpos.space.SpaceProxyTest.html">org.jpos.space.SpaceProxyTest</a>
 <td>1</td>
+<td>0</td>
 <td>0</td>
 <td>0.001s</td>
 <td class="success">100%</td>
@@ -1915,7 +2544,8 @@
 <a href="classes/org.jpos.space.SpaceTapTest.html">org.jpos.space.SpaceTapTest</a>
 <td>8</td>
 <td>0</td>
-<td>0.003s</td>
+<td>0</td>
+<td>0.002s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -1923,23 +2553,26 @@
 <a href="classes/org.jpos.space.SpaceUtilTest.html">org.jpos.space.SpaceUtilTest</a>
 <td>9</td>
 <td>0</td>
-<td>0.002s</td>
+<td>0</td>
+<td>0.003s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
-<td class="success"/>
+<td class="skipped"/>
 <a href="classes/org.jpos.space.TSpacePerformanceTest.html">org.jpos.space.TSpacePerformanceTest</a>
 <td>3</td>
 <td>0</td>
-<td>1.714s</td>
-<td class="success">100%</td>
+<td>1</td>
+<td>1.984s</td>
+<td class="skipped">100%</td>
 </tr>
 <tr>
 <td class="success"/>
 <a href="classes/org.jpos.space.TSpaceTest.html">org.jpos.space.TSpaceTest</a>
 <td>24</td>
 <td>0</td>
-<td>0.514s</td>
+<td>0</td>
+<td>0.530s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -1947,7 +2580,8 @@
 <a href="classes/org.jpos.space.TSpaceTestCase.html">org.jpos.space.TSpaceTestCase</a>
 <td>16</td>
 <td>0</td>
-<td>6.295s</td>
+<td>0</td>
+<td>5.840s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -1955,7 +2589,8 @@
 <a href="classes/org.jpos.tlv.TLVListTest.html">org.jpos.tlv.TLVListTest</a>
 <td>74</td>
 <td>0</td>
-<td>0.033s</td>
+<td>0</td>
+<td>0.023s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -1963,7 +2598,8 @@
 <a href="classes/org.jpos.tlv.TLVMsgTest.html">org.jpos.tlv.TLVMsgTest</a>
 <td>17</td>
 <td>0</td>
-<td>0.001s</td>
+<td>0</td>
+<td>0.004s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -1971,7 +2607,8 @@
 <a href="classes/org.jpos.tlv.packager.EMVTagSequenceTest.html">org.jpos.tlv.packager.EMVTagSequenceTest</a>
 <td>1</td>
 <td>0</td>
-<td>0.032s</td>
+<td>0</td>
+<td>0.024s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -1979,7 +2616,8 @@
 <a href="classes/org.jpos.tlv.packager.ISOTaggedSequenceTest.html">org.jpos.tlv.packager.ISOTaggedSequenceTest</a>
 <td>5</td>
 <td>0</td>
-<td>0.149s</td>
+<td>0</td>
+<td>0.048s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -1987,13 +2625,15 @@
 <a href="classes/org.jpos.transaction.ContextTest.html">org.jpos.transaction.ContextTest</a>
 <td>41</td>
 <td>0</td>
-<td>0.107s</td>
+<td>0</td>
+<td>0.354s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
 <td class="success"/>
 <a href="classes/org.jpos.transaction.ContextTestCase.html">org.jpos.transaction.ContextTestCase</a>
 <td>1</td>
+<td>0</td>
 <td>0</td>
 <td>0.002s</td>
 <td class="success">100%</td>
@@ -2003,7 +2643,8 @@
 <a href="classes/org.jpos.transaction.PausedTransactionTest.html">org.jpos.transaction.PausedTransactionTest</a>
 <td>16</td>
 <td>0</td>
-<td>0.008s</td>
+<td>0</td>
+<td>0.007s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -2011,7 +2652,8 @@
 <a href="classes/org.jpos.transaction.TransactionManagerTest.html">org.jpos.transaction.TransactionManagerTest</a>
 <td>52</td>
 <td>0</td>
-<td>0.128s</td>
+<td>0</td>
+<td>0.116s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -2019,7 +2661,8 @@
 <a href="classes/org.jpos.transaction.TransactionManagerTestCase.html">org.jpos.transaction.TransactionManagerTestCase</a>
 <td>2</td>
 <td>0</td>
-<td>6.039s</td>
+<td>0</td>
+<td>8.571s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -2027,7 +2670,8 @@
 <a href="classes/org.jpos.transaction.TransactionStatusEventTest.html">org.jpos.transaction.TransactionStatusEventTest</a>
 <td>9</td>
 <td>0</td>
-<td>0.015s</td>
+<td>0</td>
+<td>0.019s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -2035,7 +2679,8 @@
 <a href="classes/org.jpos.transaction.participant.BSHGroupSelectorTest.html">org.jpos.transaction.participant.BSHGroupSelectorTest</a>
 <td>5</td>
 <td>0</td>
-<td>0.004s</td>
+<td>0</td>
+<td>0.001s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -2043,7 +2688,8 @@
 <a href="classes/org.jpos.transaction.participant.BSHMethodTest.html">org.jpos.transaction.participant.BSHMethodTest</a>
 <td>27</td>
 <td>0</td>
-<td>0.235s</td>
+<td>0</td>
+<td>0.206s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -2051,7 +2697,8 @@
 <a href="classes/org.jpos.transaction.participant.BSHTransactionParticipantTest.html">org.jpos.transaction.participant.BSHTransactionParticipantTest</a>
 <td>16</td>
 <td>0</td>
-<td>0.170s</td>
+<td>0</td>
+<td>0.160s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -2059,7 +2706,8 @@
 <a href="classes/org.jpos.transaction.participant.DelayTest.html">org.jpos.transaction.participant.DelayTest</a>
 <td>4</td>
 <td>0</td>
-<td>0.050s</td>
+<td>0</td>
+<td>0.019s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -2067,7 +2715,8 @@
 <a href="classes/org.jpos.transaction.participant.HasEntryTest.html">org.jpos.transaction.participant.HasEntryTest</a>
 <td>3</td>
 <td>0</td>
-<td>0.003s</td>
+<td>0</td>
+<td>0.024s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -2075,7 +2724,8 @@
 <a href="classes/org.jpos.transaction.participant.TraceTest.html">org.jpos.transaction.participant.TraceTest</a>
 <td>4</td>
 <td>0</td>
-<td>0.007s</td>
+<td>0</td>
+<td>0.005s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -2083,7 +2733,8 @@
 <a href="classes/org.jpos.ui.action.DebugTest.html">org.jpos.ui.action.DebugTest</a>
 <td>3</td>
 <td>0</td>
-<td>0.003s</td>
+<td>0</td>
+<td>0.143s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -2091,7 +2742,8 @@
 <a href="classes/org.jpos.ui.action.DisposeTest.html">org.jpos.ui.action.DisposeTest</a>
 <td>2</td>
 <td>0</td>
-<td>0.016s</td>
+<td>0</td>
+<td>0.002s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -2099,13 +2751,15 @@
 <a href="classes/org.jpos.ui.action.RedirectTest.html">org.jpos.ui.action.RedirectTest</a>
 <td>5</td>
 <td>0</td>
-<td>0.001s</td>
+<td>0</td>
+<td>0.773s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
 <td class="success"/>
 <a href="classes/org.jpos.ui.factory.GridLayoutFactoryTest.html">org.jpos.ui.factory.GridLayoutFactoryTest</a>
 <td>1</td>
+<td>0</td>
 <td>0</td>
 <td>0.001s</td>
 <td class="success">100%</td>
@@ -2115,7 +2769,8 @@
 <a href="classes/org.jpos.ui.factory.HSplitFactoryTest.html">org.jpos.ui.factory.HSplitFactoryTest</a>
 <td>1</td>
 <td>0</td>
-<td>0.006s</td>
+<td>0</td>
+<td>0.001s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -2123,7 +2778,8 @@
 <a href="classes/org.jpos.ui.factory.HtmlFactoryTest.html">org.jpos.ui.factory.HtmlFactoryTest</a>
 <td>5</td>
 <td>0</td>
-<td>0.003s</td>
+<td>0</td>
+<td>0.073s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -2131,21 +2787,24 @@
 <a href="classes/org.jpos.ui.factory.ISOMeterFactoryTest.html">org.jpos.ui.factory.ISOMeterFactoryTest</a>
 <td>1</td>
 <td>0</td>
-<td>0.002s</td>
+<td>0</td>
+<td>0.009s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
-<td class="success"/>
+<td class="skipped"/>
 <a href="classes/org.jpos.ui.factory.JTabbedPaneFactoryTest.html">org.jpos.ui.factory.JTabbedPaneFactoryTest</a>
 <td>2</td>
 <td>0</td>
+<td>1</td>
 <td>0.002s</td>
-<td class="success">100%</td>
+<td class="skipped">100%</td>
 </tr>
 <tr>
 <td class="success"/>
 <a href="classes/org.jpos.ui.factory.LogListenerFactoryTest.html">org.jpos.ui.factory.LogListenerFactoryTest</a>
 <td>1</td>
+<td>0</td>
 <td>0</td>
 <td>0.002s</td>
 <td class="success">100%</td>
@@ -2155,6 +2814,7 @@
 <a href="classes/org.jpos.ui.factory.PanelFactoryTest.html">org.jpos.ui.factory.PanelFactoryTest</a>
 <td>1</td>
 <td>0</td>
+<td>0</td>
 <td>0.001s</td>
 <td class="success">100%</td>
 </tr>
@@ -2163,7 +2823,8 @@
 <a href="classes/org.jpos.ui.factory.TextFactoryTest.html">org.jpos.ui.factory.TextFactoryTest</a>
 <td>1</td>
 <td>0</td>
-<td>0.001s</td>
+<td>0</td>
+<td>0.002s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -2171,21 +2832,24 @@
 <a href="classes/org.jpos.util.BlockingQueueTest.html">org.jpos.util.BlockingQueueTest</a>
 <td>29</td>
 <td>0</td>
-<td>0.005s</td>
+<td>0</td>
+<td>0.008s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
-<td class="success"/>
+<td class="skipped"/>
 <a href="classes/org.jpos.util.DailyLogListenerTest.html">org.jpos.util.DailyLogListenerTest</a>
 <td>28</td>
 <td>0</td>
-<td>1.031s</td>
-<td class="success">100%</td>
+<td>4</td>
+<td>1.023s</td>
+<td class="skipped">100%</td>
 </tr>
 <tr>
 <td class="success"/>
 <a href="classes/org.jpos.util.DefaultTimerTest.html">org.jpos.util.DefaultTimerTest</a>
 <td>1</td>
+<td>0</td>
 <td>0</td>
 <td>0s</td>
 <td class="success">100%</td>
@@ -2195,7 +2859,8 @@
 <a href="classes/org.jpos.util.DirPollOperationTest.html">org.jpos.util.DirPollOperationTest</a>
 <td>6</td>
 <td>0</td>
-<td>6.962s</td>
+<td>0</td>
+<td>6.549s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -2203,7 +2868,8 @@
 <a href="classes/org.jpos.util.DirPollTest.html">org.jpos.util.DirPollTest</a>
 <td>33</td>
 <td>0</td>
-<td>12.056s</td>
+<td>0</td>
+<td>12.072s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -2211,13 +2877,15 @@
 <a href="classes/org.jpos.util.DumpableTest.html">org.jpos.util.DumpableTest</a>
 <td>2</td>
 <td>0</td>
-<td>0s</td>
+<td>0</td>
+<td>0.001s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
 <td class="success"/>
 <a href="classes/org.jpos.util.ExceptionLogFilterTest.html">org.jpos.util.ExceptionLogFilterTest</a>
 <td>2</td>
+<td>0</td>
 <td>0</td>
 <td>0.001s</td>
 <td class="success">100%</td>
@@ -2227,7 +2895,8 @@
 <a href="classes/org.jpos.util.FSDMsgEndOfMessageTestCase.html">org.jpos.util.FSDMsgEndOfMessageTestCase</a>
 <td>2</td>
 <td>0</td>
-<td>0.005s</td>
+<td>0</td>
+<td>0.004s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -2235,7 +2904,8 @@
 <a href="classes/org.jpos.util.FSDMsgPropertiesTestCase.html">org.jpos.util.FSDMsgPropertiesTestCase</a>
 <td>1</td>
 <td>0</td>
-<td>0.011s</td>
+<td>0</td>
+<td>0.009s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -2243,7 +2913,8 @@
 <a href="classes/org.jpos.util.FSDMsgSeparatorTestCase.html">org.jpos.util.FSDMsgSeparatorTestCase</a>
 <td>1</td>
 <td>0</td>
-<td>0.005s</td>
+<td>0</td>
+<td>0.006s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -2251,7 +2922,8 @@
 <a href="classes/org.jpos.util.FSDMsgTest.html">org.jpos.util.FSDMsgTest</a>
 <td>100</td>
 <td>0</td>
-<td>0.027s</td>
+<td>0</td>
+<td>0.140s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -2259,23 +2931,26 @@
 <a href="classes/org.jpos.util.FSDMsgTestCase.html">org.jpos.util.FSDMsgTestCase</a>
 <td>11</td>
 <td>0</td>
-<td>0.030s</td>
+<td>0</td>
+<td>0.033s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
-<td class="success"/>
+<td class="skipped"/>
 <a href="classes/org.jpos.util.FilterLogListenerTest.html">org.jpos.util.FilterLogListenerTest</a>
 <td>19</td>
 <td>0</td>
-<td>0s</td>
-<td class="success">100%</td>
+<td>19</td>
+<td>0.002s</td>
+<td class="skipped">-</td>
 </tr>
 <tr>
 <td class="success"/>
 <a href="classes/org.jpos.util.ISOCurrencyTest.html">org.jpos.util.ISOCurrencyTest</a>
 <td>2</td>
 <td>0</td>
-<td>0.019s</td>
+<td>0</td>
+<td>0s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -2283,7 +2958,8 @@
 <a href="classes/org.jpos.util.LogEventTest.html">org.jpos.util.LogEventTest</a>
 <td>15</td>
 <td>0</td>
-<td>0.020s</td>
+<td>0</td>
+<td>0.006s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -2291,23 +2967,26 @@
 <a href="classes/org.jpos.util.LogTest.html">org.jpos.util.LogTest</a>
 <td>35</td>
 <td>0</td>
-<td>0.005s</td>
+<td>0</td>
+<td>0.009s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
-<td class="success"/>
+<td class="skipped"/>
 <a href="classes/org.jpos.util.LoggerTest.html">org.jpos.util.LoggerTest</a>
 <td>18</td>
 <td>0</td>
+<td>18</td>
 <td>0.001s</td>
-<td class="success">100%</td>
+<td class="skipped">-</td>
 </tr>
 <tr>
 <td class="success"/>
 <a href="classes/org.jpos.util.NameRegistrarConcurrencyTest.html">org.jpos.util.NameRegistrarConcurrencyTest</a>
 <td>1</td>
 <td>0</td>
-<td>0.026s</td>
+<td>0</td>
+<td>0.078s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -2315,13 +2994,15 @@
 <a href="classes/org.jpos.util.NameRegistrarTest.html">org.jpos.util.NameRegistrarTest</a>
 <td>10</td>
 <td>0</td>
-<td>0.007s</td>
+<td>0</td>
+<td>0.010s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
 <td class="success"/>
 <a href="classes/org.jpos.util.ProfilerTest.html">org.jpos.util.ProfilerTest</a>
 <td>7</td>
+<td>0</td>
 <td>0</td>
 <td>0.002s</td>
 <td class="success">100%</td>
@@ -2331,23 +3012,26 @@
 <a href="classes/org.jpos.util.ProtectedLogListenerTest.html">org.jpos.util.ProtectedLogListenerTest</a>
 <td>4</td>
 <td>0</td>
-<td>0.001s</td>
+<td>0</td>
+<td>0.002s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
-<td class="success"/>
+<td class="skipped"/>
 <a href="classes/org.jpos.util.RotateLogListenerTest.html">org.jpos.util.RotateLogListenerTest</a>
 <td>16</td>
 <td>0</td>
-<td>0.010s</td>
-<td class="success">100%</td>
+<td>6</td>
+<td>0.016s</td>
+<td class="skipped">100%</td>
 </tr>
 <tr>
 <td class="success"/>
 <a href="classes/org.jpos.util.SerializerTest.html">org.jpos.util.SerializerTest</a>
 <td>1</td>
 <td>0</td>
-<td>0.012s</td>
+<td>0</td>
+<td>0.040s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -2355,7 +3039,8 @@
 <a href="classes/org.jpos.util.SimpleLogListenerTest.html">org.jpos.util.SimpleLogListenerTest</a>
 <td>7</td>
 <td>0</td>
-<td>0.002s</td>
+<td>0</td>
+<td>0.003s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -2363,7 +3048,8 @@
 <a href="classes/org.jpos.util.SimpleLogSourceTest.html">org.jpos.util.SimpleLogSourceTest</a>
 <td>13</td>
 <td>0</td>
-<td>0s</td>
+<td>0</td>
+<td>0.001s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -2371,7 +3057,8 @@
 <a href="classes/org.jpos.util.SimpleMsgTest.html">org.jpos.util.SimpleMsgTest</a>
 <td>26</td>
 <td>0</td>
-<td>0.011s</td>
+<td>0</td>
+<td>0.012s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -2379,7 +3066,8 @@
 <a href="classes/org.jpos.util.TPSTestCase.html">org.jpos.util.TPSTestCase</a>
 <td>2</td>
 <td>0</td>
-<td>4.152s</td>
+<td>0</td>
+<td>4.154s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -2387,7 +3075,8 @@
 <a href="classes/org.jpos.util.ThreadPoolTest.html">org.jpos.util.ThreadPoolTest</a>
 <td>9</td>
 <td>0</td>
-<td>1.788s</td>
+<td>0</td>
+<td>1.789s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -2395,7 +3084,8 @@
 <a href="classes/org.jpos.util.ThroughputControlTestCase.html">org.jpos.util.ThroughputControlTestCase</a>
 <td>4</td>
 <td>0</td>
-<td>14.040s</td>
+<td>0</td>
+<td>14.078s</td>
 <td class="success">100%</td>
 </tr>
 <tr>
@@ -2403,7 +3093,8 @@
 <a href="classes/org.jpos.util.ZipUtilTest.html">org.jpos.util.ZipUtilTest</a>
 <td>1</td>
 <td>0</td>
-<td>0.006s</td>
+<td>0</td>
+<td>0.004s</td>
 <td class="success">100%</td>
 </tr>
 </tbody>
@@ -2412,7 +3103,7 @@
 </div>
 <div id="footer">
 <p>Generated by 
-<a href="http://www.gradle.org">Gradle 1.9</a> at Jun 23, 2014 12:28:16 AM</p>
+<a href="http://www.gradle.org">Gradle 1.12</a> at Jun 26, 2014 1:05:28 AM</p>
 </div>
 </div>
 </body>

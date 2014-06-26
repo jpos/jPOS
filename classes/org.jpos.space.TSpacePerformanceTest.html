@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head>
-<meta httpEquiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 <title>Test results - Class org.jpos.space.TSpacePerformanceTest</title>
 <link href="css/base-style.css" rel="stylesheet" type="text/css"/>
 <link href="css/style.css" rel="stylesheet" type="text/css"/>
@@ -33,8 +33,14 @@
 </div>
 </td>
 <td>
+<div class="infoBox" id="ignored">
+<div class="counter">1</div>
+<p>ignored</p>
+</div>
+</td>
+<td>
 <div class="infoBox" id="duration">
-<div class="counter">1.714s</div>
+<div class="counter">1.984s</div>
 <p>duration</p>
 </div>
 </td>
@@ -43,7 +49,7 @@
 </div>
 </td>
 <td>
-<div class="infoBox success" id="successRate">
+<div class="infoBox skipped" id="successRate">
 <div class="percent">100%</div>
 <p>successful</p>
 </div>
@@ -75,12 +81,12 @@
 </thead>
 <tr>
 <td class="success">testDeadLockWithNotify</td>
-<td>0.709s</td>
+<td>0.918s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">testReadPerformance</td>
-<td>1.005s</td>
+<td>1.066s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
@@ -93,53 +99,62 @@
 <div id="tab1" class="tab">
 <h2>Standard output</h2>
 <span class="code">
-<pre>Avg. write: 275
-Avg. read : 443
-Avg. write: 556
+<pre>Avg. write: 180
+Avg. read : 424
+Avg. write: 628
 </pre>
 </span>
 </div>
 <div id="tab2" class="tab">
 <h2>Standard error</h2>
 <span class="code">
-<pre>Write PerformTask-4 out: 156 tps=2698506, peak=2698506, avg=2698506.25
-Write PerformTask-7 out: 158 tps=2698506, peak=2698506, avg=2698506.25
-Write PerformTask-9 out: 171 tps=2698506, peak=2698506, avg=2698506.25
-Write PerformTask-5 out: 201 tps=2698506, peak=2698506, avg=2698506.25
-Write PerformTask-3 out: 248 tps=2698506, peak=2698506, avg=2698506.25
-Write PerformTask-0 out: 278 tps=3166992, peak=3166992, avg=2932749.00
-Write PerformTask-2 out: 378 tps=1395250, peak=3166992, avg=2163999.50
-Write PerformTask-8 out: 383 tps=1395250, peak=3166992, avg=2163999.50
-Write PerformTask-6 out: 388 tps=1395250, peak=3166992, avg=2163999.50
-Write PerformTask-1 out: 389 tps=1395250, peak=3166992, avg=2163999.50
-Read  PerformTask-6  in: 443 tps=590772, peak=590772, avg=590771.56
-Perform. WriteTask1-6 out: 329
-Perform. WriteTask1-1 out: 432
-Perform. WriteTask2-8 out: 439
-Perform. WriteTask2-2 out: 456
-Perform. WriteTask1-2 out: 484
-Perform. WriteTask2-0 out: 498
-Perform. WriteTask1-9 out: 502
-Perform. WriteTask2-5 out: 515
-Perform. WriteTask1-4 out: 551
-Perform. WriteTask2-1 out: 590
-Perform. WriteTask1-7 out: 590
-Perform. WriteTask2-4 out: 607
-Perform. WriteTask2-3 out: 617
-Perform. WriteTask2-9 out: 628
-Perform. WriteTask2-6 out: 634
-Perform. WriteTask2-7 out: 640
-Perform. WriteTask1-5 out: 645
-Perform. WriteTask1-0 out: 652
-Perform. WriteTask1-3 out: 652
-Perform. WriteTask1-8 out: 659
+<pre>Write PerformTask-5 out: 109 tps=3638072, peak=3638072, avg=3638071.75
+Write PerformTask-1 out: 124 tps=3638072, peak=3638072, avg=3638071.75
+Write PerformTask-9 out: 129 tps=3638072, peak=3638072, avg=3638071.75
+Write PerformTask-0 out: 204 tps=3638072, peak=3638072, avg=3638071.75
+Write PerformTask-8 out: 207 tps=3638072, peak=3638072, avg=3638071.75
+Write PerformTask-4 out: 207 tps=3638072, peak=3638072, avg=3638071.75
+Write PerformTask-3 out: 217 tps=4115695, peak=4115695, avg=3876883.00
+Write PerformTask-2 out: 242 tps=4115695, peak=4115695, avg=3876883.00
+Write PerformTask-6 out: 651 tps=299136, peak=4115695, avg=2088009.50
+Write PerformTask-7 out: 821 tps=104456, peak=4115695, avg=1096232.88
+Read  PerformTask-6  in: 303 tps=603831, peak=603831, avg=603830.81
+Read  PerformTask-9  in: 439 tps=1998343, peak=1998343, avg=1301087.00
+Read  PerformTask-7  in: 445 tps=1998343, peak=1998343, avg=1301087.00
+Read  PerformTask-5  in: 459 tps=1998343, peak=1998343, avg=1301087.00
+Read  PerformTask-1  in: 472 tps=1998343, peak=1998343, avg=1301087.00
+Read  PerformTask-3  in: 506 tps=1998343, peak=1998343, avg=1301087.00
+Read  PerformTask-0  in: 515 tps=1998343, peak=1998343, avg=1301087.00
+Read  PerformTask-4  in: 520 tps=1998343, peak=1998343, avg=1301087.00
+Read  PerformTask-2  in: 524 tps=1998343, peak=1998343, avg=1301087.00
+Read  PerformTask-8  in: 533 tps=1998343, peak=1998343, avg=1301087.00
+Perform. WriteTask2-3 out: 239
+Perform. WriteTask2-7 out: 257
+Perform. WriteTask2-6 out: 401
+Perform. WriteTask1-2 out: 416
+Perform. WriteTask2-5 out: 607
+Perform. WriteTask1-1 out: 630
+Perform. WriteTask2-9 out: 631
+Perform. WriteTask2-4 out: 639
+Perform. WriteTask1-4 out: 664
+Perform. WriteTask2-8 out: 667
+Perform. WriteTask2-2 out: 673
+Perform. WriteTask1-7 out: 679
+Perform. WriteTask2-0 out: 688
+Perform. WriteTask2-1 out: 711
+Perform. WriteTask1-6 out: 737
+Perform. WriteTask1-8 out: 752
+Perform. WriteTask1-3 out: 765
+Perform. WriteTask1-9 out: 792
+Perform. WriteTask1-5 out: 807
+Perform. WriteTask1-0 out: 811
 </pre>
 </span>
 </div>
 </div>
 <div id="footer">
 <p>Generated by 
-<a href="http://www.gradle.org">Gradle 1.9</a> at Jun 23, 2014 12:28:16 AM</p>
+<a href="http://www.gradle.org">Gradle 1.12</a> at Jun 26, 2014 1:05:28 AM</p>
 </div>
 </div>
 </body>
