@@ -588,17 +588,15 @@ public class JDBMSpace<K,V> extends TimerTask implements Space<K,V> {
                     unlinkCount++;
                 } else  {
                     Object o = recman.fetch (r.recid);
-                    if (o != null) {
-                        if (tmpl.equals (o)) {
-                            obj = o;
-                            if (remove) {
-                                unlinkRef (
-                                    recid, head, r, previousRef, previousRecId
-                                );
-                                unlinkCount++;
-                            }
-                            break;
+                    if (o != null && tmpl.equals(o)) {
+                        obj = o;
+                        if (remove) {
+                            unlinkRef (
+                                recid, head, r, previousRef, previousRecId
+                            );
+                            unlinkCount++;
                         }
+                        break;
                     }
                     previousRef = r;
                     previousRecId = recid;

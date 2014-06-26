@@ -93,11 +93,9 @@ public class MultiSessionChannelAdaptor
                     Object o = sp.in (in, delay);
                     channel = getNextChannel(); // we want to call getNextChannel even if o is null so that
                                                 // it can pull the 'ready' indicator.
-                    if (o instanceof ISOMsg) {
-                        if (channel != null) {
-                            channel.send ((ISOMsg) o);
-                            tx++;
-                        }
+                    if (o instanceof ISOMsg && channel != null) {
+                        channel.send ((ISOMsg) o);
+                        tx++;
                     }
                 } catch (ISOFilter.VetoException e) { 
                     getLog().warn ("channel-sender-"+in, e.getMessage ());

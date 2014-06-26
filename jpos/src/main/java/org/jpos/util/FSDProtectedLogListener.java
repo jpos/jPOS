@@ -128,12 +128,10 @@ public class FSDProtectedLogListener implements LogListener, Configurable
                  } catch (Exception e) {
                      // ignore error
                  }
-                 if (v != null) {
-                     if (v instanceof String) {
-                         String x = ((String) v);
-                         if (x.length() > len) {
-                             m.getFSDMsg().set(f, x.substring(0, len));
-                         }
+                 if (v instanceof String) {
+                     String x = ((String) v);
+                     if (x.length() > len) {
+                         m.getFSDMsg().set(f, x.substring(0, len));
                      }
                  }
              }
