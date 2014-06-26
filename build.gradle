@@ -115,7 +115,7 @@ task aggregatedJavadoc (type: Javadoc, description: "Aggregated Javadocs") {
 } 
 
 task wrapper( type: Wrapper ) {
-    gradleVersion = '1.9'
+    gradleVersion = '1.12'
 }
 
 // Configure IDEA to use Git
@@ -124,5 +124,4 @@ idea.project.ipr {
     provider.node.component.find { it.@name == 'VcsDirectoryMappings' }.mapping.@vcs = 'Git'
   }
 }
-
 
