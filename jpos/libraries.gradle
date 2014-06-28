@@ -7,7 +7,7 @@ ext {
         jline: 'jline:jline:1.0',
         beanshell: 'org.beanshell:bsh:2.0b5',
         javatuples: 'org.javatuples:javatuples:1.2',
-        xerces: "xerces:xercesImpl:2.10.0"
+        xerces: 'xerces:xercesImpl:2.10.0',
+        jsonsimple: 'com.googlecode.json-simple:json-simple:1.1.1'
     ]
 }
-
