@@ -166,9 +166,8 @@ public class TSpacePerformanceTest  {
         for (int i=0; i<size; i++)
           es.execute(new ReadSpaceTask("PerformTask-"+i));
         ISOUtil.sleep(500);
-        printAvg(t2, "Avg. read : ");
-
         es.shutdown();
+        printAvg(t2, "Avg. read : ");
     }
 
     @Test
