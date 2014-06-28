@@ -64,6 +64,10 @@ public class ISOTaggedField extends ISOComponent {
         delegate.setFieldNumber(fieldNumber);
     }
 
+    @Override
+    public int getFieldNumber () {
+        return delegate.getFieldNumber();
+    }
 
     @Override
     public void setValue(final Object obj) throws ISOException {

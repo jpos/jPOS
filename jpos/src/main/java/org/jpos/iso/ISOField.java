@@ -150,6 +150,11 @@ public class ISOField
     public void setFieldNumber (int fieldNumber) {
         this.fieldNumber = fieldNumber;
     }
+
+    @Override
+    public int getFieldNumber () {
+        return fieldNumber;
+    }
     @Override
     public void writeExternal (ObjectOutput out) throws IOException {
         out.writeShort (fieldNumber);

@@ -844,6 +844,11 @@ public class ISOMsg extends ISOComponent
             unset (newFieldNumber);
     }
 
+    @Override
+    public int getFieldNumber () {
+        return fieldNumber;
+    }
+
     /**
      * @return current MTI
      * @exception ISOException on inner message or MTI not set

@@ -86,6 +86,11 @@ public class ISOAmount
     public void setFieldNumber (int fieldNumber) {
         this.fieldNumber = fieldNumber;
     }
+
+    @Override
+    public int getFieldNumber () {
+        return fieldNumber;
+    }
     public BigDecimal getAmount () {
         return amount;
     }

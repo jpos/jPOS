@@ -59,6 +59,12 @@ public class ISOBitMap extends ISOComponent implements Cloneable {
     public void setFieldNumber (int fieldNumber) {
         this.fieldNumber = fieldNumber;
     }
+
+    @Override
+    public int getFieldNumber () {
+        return fieldNumber;
+    }
+
     /**
      * not available on Leaf - always throw ISOException
      * @exception ISOException

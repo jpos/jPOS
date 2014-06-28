@@ -114,6 +114,7 @@ public abstract class ISOComponent implements Cloneable {
      * @param fieldNumber new field number
      */
     public abstract void setFieldNumber (int fieldNumber);
+    public abstract int getFieldNumber ();
     public abstract void setValue(Object obj) throws ISOException;
     public abstract byte[] pack() throws ISOException;
     public abstract int unpack(byte[] b) throws ISOException;
