@@ -49,8 +49,9 @@ public class TransactionManager
     public static final long    MAX_PARTICIPANTS = 1000;  // loop prevention
     public static final long    MAX_WAIT = 15000L;
     public static final long    TIMER_PURGE_INTERVAL = 1000L;
-
     protected Map<String,List<TransactionParticipant>> groups;
+    private static final ThreadLocal<Serializable> tlContext = new ThreadLocal<Serializable>();
+    private static final ThreadLocal<Long> tlId = new ThreadLocal<Long>();
 
     Space sp;
     Space psp;
@@ -250,7 +251,9 @@ public class TransactionManager
                     startTime = System.currentTimeMillis();
                 }
                 snapshot (id, context, PREPARING);
+                setThreadLocal(id, context);
                 int action = prepare (session, id, context, members, iter, abort, evt, prof);
+                removeThreadLocal();
                 switch (action) {
                     case PAUSE:
                         paused = true;
@@ -259,10 +262,14 @@ public class TransactionManager
                         break;
                     case PREPARED:
                         setState (id, COMMITTING);
+                        setThreadLocal(id, context);
                         commit (session, id, context, members, false, evt, prof);
+                        removeThreadLocal();
                         break;
                     case ABORTED:
+                        setThreadLocal(id, context);
                         abort (session, id, context, members, false, evt, prof);
+                        removeThreadLocal();
                         break;
                     case RETRY:
                         psp.out (RETRY_QUEUE, context);
@@ -284,6 +291,7 @@ public class TransactionManager
                 else
                     evt.addMessage (t);
             } finally {
+                removeThreadLocal();
                 if (hasStatusListeners) {
                     notifyStatusListeners (
                         session,
@@ -881,6 +889,16 @@ public class TransactionManager
     public int getRunningSessions() {
         return (int) (head - tail);
     }
+
+    public static Serializable getSerializable() {
+        return tlContext.get();
+    }
+    public static Context getContext() {
+        return (Context) tlContext.get();
+    }
+    public static Long getId() {
+        return tlId.get();
+    }
     private void notifyStatusListeners
             (int session, TransactionStatusEvent.State state, long id, String info, Serializable context)
     {
@@ -895,5 +913,13 @@ public class TransactionManager
         Thread.currentThread().setName(
             String.format("%s:%d %s %s", getName(), id, method, p.getClass().getName())
         );
+    }
+    private void setThreadLocal (long id, Serializable context) {
+        tlId.set(id);
+        tlContext.set(context);
+    }
+    private void removeThreadLocal() {
+        tlId.remove();
+        tlContext.remove();
     }
 }
