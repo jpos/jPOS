@@ -9,7 +9,11 @@ dependencies {
     compile libraries.beanshell
     compile libraries.javatuples
     compile libraries.xerces
-    compile libraries.jsonsimple
+
+    compile (libraries.jsonsimple) {
+        exclude(module: 'junit')
+        exclude(module: 'hamcrest-core')
+    }
 
     // compile 'org.apache.felix:org.apache.felix.framework:4.2.1'
     compile( "org.osgi:org.osgi.core:4.3.1" )
