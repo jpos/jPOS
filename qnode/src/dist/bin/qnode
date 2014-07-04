@@ -4,6 +4,7 @@ cd `dirname $0`/.. || exit 1
 rm -f deploy/shutdown.xml
 java -server \
     -Xmx1G \
+    -Dorg.jpos.q2.autostart=true \
     -Dcom.sun.management.jmxremote \
     -jar @jarname@ "$@"
 

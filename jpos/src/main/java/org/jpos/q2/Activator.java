@@ -21,16 +21,19 @@ package org.jpos.q2;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
+@SuppressWarnings("unused")
 public class Activator implements BundleActivator {
     Q2 q2;
 
     @Override
     public void start(BundleContext context) throws Exception {
-        (q2 = new Q2(new String[] {}, context)).start();
+        if ("true".equalsIgnoreCase(context.getProperty("org.jpos.q2.autostart")))
+            (q2 = new Q2(new String[] {}, context)).start();
     }
 
     @Override
     public void stop(BundleContext context) throws Exception {
-        q2.stop();
+        if (q2 != null)
+            q2.stop();
     }
 }
