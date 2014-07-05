@@ -92,12 +92,12 @@ public class QThreadPoolExecutorTest {
         qbeanConfigBos = new ByteArrayOutputStream();
         qbeanConfigPw = new PrintWriter(new OutputStreamWriter(qbeanConfigBos));
 
-        NameRegistrar.getMap().clear();
+        NameRegistrar.getAsMap().clear();
     }
 
     @After
     public void tearDown() {
-        NameRegistrar.getMap().clear();
+        NameRegistrar.getAsMap().clear();
         if (null != executor) {
             try {
                 executor.shutdownNow();

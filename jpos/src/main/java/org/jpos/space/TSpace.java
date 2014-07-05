@@ -211,8 +211,8 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
     public boolean isEmpty() {
         return entries.isEmpty();
     }
-    public Set getKeySet() {
-        return entries.keySet();
+    public synchronized Set<K> getKeySet() {
+        return new HashSet<K>(entries.keySet());
     }
     public String getKeysAsString () {
         StringBuilder sb = new StringBuilder();

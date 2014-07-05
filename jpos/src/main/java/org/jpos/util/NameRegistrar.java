@@ -18,10 +18,12 @@
 
 package org.jpos.util;
 
+import org.jpos.space.SpaceUtil;
+import org.jpos.space.TSpace;
+
 import java.io.PrintStream;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 /**
  * Allow runtime binding of jPOS's components (ISOChannels, Logger, MUXes, etc)
@@ -31,7 +33,7 @@ import java.util.concurrent.ConcurrentMap;
  */
 public class NameRegistrar implements Loggeable {
     private static final NameRegistrar instance = new NameRegistrar();
-    private static final ConcurrentMap<String, Object> registrar = new ConcurrentHashMap<String, Object>();
+    private static final TSpace<String, Object> sp = new TSpace<String,Object>();
 
     public static class NotFoundException extends Exception {
         private static final long serialVersionUID = 8744022794646381475L;
@@ -49,8 +51,21 @@ public class NameRegistrar implements Loggeable {
         super();
     }
 
-    public static ConcurrentMap<String, Object> getMap() {
-        return registrar;
+    public static TSpace<String, Object> getSpace() {
+        return sp;
+    }
+
+    /**
+     * @return a copy of the NameRegistrar's entries as a Map
+     */
+    public static Map<String,Object> getAsMap() {
+        Map<String,Object> map = new HashMap<String,Object>();
+        for (String k : sp.getKeySet()) {
+            Object v  = sp.rdp(k);
+            if (v != null)
+                map.put(k,v);
+        }
+        return map;
     }
 
     /**
@@ -69,7 +84,7 @@ public class NameRegistrar implements Loggeable {
      *            - value to be associated with the specified key
      */
     public static void register(String key, Object value) {
-        getMap().put(key, value);
+        sp.put(key, value);
     }
 
     /**
@@ -77,7 +92,7 @@ public class NameRegistrar implements Loggeable {
      *            key whose mapping is to be removed from registrar.
      */
     public static void unregister(String key) {
-        getMap().remove(key);
+        SpaceUtil.wipe(sp, key);
     }
 
     /**
@@ -87,11 +102,15 @@ public class NameRegistrar implements Loggeable {
      *             if key not present in registrar
      */
     public static Object get(String key) throws NotFoundException {
-        Object obj = getMap().get(key);
+        Object obj = sp.rdp(key);
         if (obj == null) {
             throw new NotFoundException(key);
         }
         return obj;
+    }
+
+    public static Object get(String key, long timeout) {
+        return sp.rd (key, timeout);
     }
 
     /**
@@ -99,7 +118,7 @@ public class NameRegistrar implements Loggeable {
      *            key whose associated value is to be returned, null if not present.
      */
     public static Object getIfExists(String key) {
-        return getMap().get(key);
+        return sp.rdp(key);
     }
 
     public void dump(PrintStream p, String indent) {
@@ -109,12 +128,8 @@ public class NameRegistrar implements Loggeable {
     public void dump(PrintStream p, String indent, boolean detail) {
         String inner = indent + "  ";
         p.println(indent + "name-registrar:");
-        for (Map.Entry<String, Object> entry : registrar.entrySet()) {
-            Object obj = entry.getValue();
-            String key = entry.getKey();
-            if (key == null) {
-                key = "null";
-            }
+        for (String key : sp.getKeySet()) {
+            Object obj = sp.rdp(key);
             String objectClassName = (obj == null) ? "<NULL>" : obj.getClass().getName();
             p.println(inner + key + ": " + objectClassName);
             if (detail && obj instanceof Loggeable) {

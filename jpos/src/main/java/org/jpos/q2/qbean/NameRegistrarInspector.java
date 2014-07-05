@@ -34,7 +34,7 @@ public class NameRegistrarInspector implements NameRegistrarInspectorMBean {
     }
 
     public Map getRegistry () {
-        return NameRegistrar.getMap ();
+        return NameRegistrar.getAsMap();
     }
 }
 
