@@ -115,6 +115,8 @@ public class Q2 implements FileFilter, Runnable {
         this (args, null);
     }
     public void start () {
+        if (shutdown)
+            throw new IllegalStateException("Q2 has been stopped");
         new Thread (this).start();
     }
     public void stop () {
