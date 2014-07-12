@@ -2,4 +2,5 @@
 cd `dirname $0`/.. || exit 1
 CLASSPATH=classes:$CLASSPATH
 CLASSPATH=`echo @jarname@ lib/*.jar | tr ' ' ':'`:$CLASSPATH
-exec java -cp $CLASSPATH bsh.Interpreter $*
+exec java -Dcom.sun.management.jmxremote  -cp $CLASSPATH bsh.Interpreter $*
+
