@@ -115,19 +115,20 @@ public class TransactionManager
     @Override
     public void stopService () throws Exception {
         NameRegistrar.unregister (getName ());
-        int size = threads.size();
-        for (int i=0; i < size; i++) {
+
+        Thread[] tt = threads.toArray(new Thread[threads.size()]);
+        for (int i=0; i < tt.length; i++) {
             isp.out(queue, Boolean.FALSE, 60 * 1000);
         }
-        for (Thread thread : (Thread[]) threads.toArray() ) {
+        for (Thread thread : tt) {
             try {
                 thread.join (60*1000);
+                threads.remove(thread);
             } catch (InterruptedException e) {
                 getLog().warn ("Session " + thread.getName() +" does not respond - attempting to interrupt");
                 thread.interrupt();
             }
         }
-        threads.clear();
         tps.stop();
     }
     public void queue (Serializable context) {
