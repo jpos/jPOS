@@ -28,6 +28,8 @@ import org.jpos.util.*;
 
 import java.io.Serializable;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.jpos.iso.ISOUtil;
 
 @SuppressWarnings("unchecked unused")
@@ -69,7 +71,7 @@ public class TransactionManager
     int maxSessions;
     int threshold;
     int maxActiveSessions;
-    int activeSessions;
+    AtomicInteger activeSessions = new AtomicInteger();
     long head, tail;
     long retryInterval = 5000L;
     long retryTimeout  = 60000L;
@@ -99,7 +101,7 @@ public class TransactionManager
     public void startService () throws Exception {
         NameRegistrar.register(getName(), this);
         recover ();
-        threads = new ArrayList(maxSessions);
+        threads = Collections.synchronizedList(new ArrayList(maxSessions));
         if (tps != null)
             tps.stop();
         tps = new TPS (cfg.getBoolean ("auto-update-tps", true));
@@ -113,18 +115,19 @@ public class TransactionManager
     @Override
     public void stopService () throws Exception {
         NameRegistrar.unregister (getName ());
-        for (Thread t :threads ) {
+        int size = threads.size();
+        for (int i=0; i < size; i++) {
             isp.out(queue, Boolean.FALSE, 60 * 1000);
         }
-        for (Thread thread :threads ) {
+        for (Thread thread : (Thread[]) threads.toArray() ) {
             try {
                 thread.join (60*1000);
-                threads.remove(thread);
             } catch (InterruptedException e) {
                 getLog().warn ("Session " + thread.getName() +" does not respond - attempting to interrupt");
                 thread.interrupt();
             }
         }
+        threads.clear();
         tps.stop();
     }
     public void queue (Serializable context) {
@@ -160,15 +163,13 @@ public class TransactionManager
         long startTime = 0L;
         boolean paused;
         Thread thread = Thread.currentThread();
-        synchronized (threads) {
-            if (threads.size() < maxSessions) {
-                threads.add(thread);
-                session = threads.indexOf(thread);
-                activeSessions++;
-            } else {
-                getLog().warn ("Max sessions reached, new session not created");
-                return;              
-            }
+        if (threads.size() < maxSessions) {
+            threads.add(thread);
+            session = threads.indexOf(thread);
+            activeSessions.incrementAndGet();
+        } else {
+            getLog().warn ("Max sessions reached, new session not created");
+            return;
         }
         getLog().info ("start " + thread);
         while (running()) {
@@ -315,11 +316,9 @@ public class TransactionManager
                 }
             }
         }
-        synchronized (threads) {
-            threads.remove(thread);
-            activeSessions--;
-            getLog().info ("stop " + Thread.currentThread() + ", active sessions=" + activeSessions);
-        }
+        threads.remove(thread);
+        int currentActiveSessions = activeSessions.decrementAndGet();
+        getLog().info ("stop " + Thread.currentThread() + ", active sessions=" + currentActiveSessions);
     }
 
     @Override
@@ -884,7 +883,7 @@ public class TransactionManager
 
     @Override
     public int getActiveSessions() {
-        return activeSessions;
+        return activeSessions.intValue();
     }
     public int getRunningSessions() {
         return (int) (head - tail);
