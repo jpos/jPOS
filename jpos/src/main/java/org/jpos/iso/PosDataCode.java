@@ -18,12 +18,15 @@
 
 package org.jpos.iso;
 
+import org.jpos.iso.ISOUtil;
+
 @SuppressWarnings("unused")
 public class PosDataCode {
+
     public enum ReadingMethod {
         UNKNOWN                (1, "Unknown"),
-        INFO_NOT_FROM_CARD     (1 << 1, "Information not taken from card"),
-        PHYSICAL               (1 << 2, "Physical entry"),
+        INFO_NOT_FROM_CARD     (1 << 1, "Information not taken from card"),  // i.e.: RFID
+        PHYSICAL               (1 << 2, "Physical entry"),                   // i.e.: Manual Entry or OCR
         BARCODE                (1 << 3, "Bar code"),
         MAGNETIC_STRIPE        (1 << 4, "Magnetic Stripe"),
         ICC                    (1 << 5, "ICC"),
@@ -167,7 +170,7 @@ public class PosDataCode {
         b[15] = (byte) (securityCharacteristic >>> 24);
     }
 
-    public PosDataCode (byte[] b) {
+    private PosDataCode (byte[] b) {
         this.b = b;
     }
 
@@ -204,5 +207,8 @@ public class PosDataCode {
     }
     public String toString() {
         return super.toString() + "[" + ISOUtil.hexString (getBytes())+ "]";
+    }
+    public static PosDataCode valueOf (byte[] b) {
+        return new PosDataCode(b);  // we create new objects for now, but may return cached instances in the future
     }
 }
