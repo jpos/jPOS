@@ -18,8 +18,6 @@
 
 package org.jpos.iso;
 
-import org.jpos.iso.ISOUtil;
-
 @SuppressWarnings("unused")
 public class PosDataCode {
 
