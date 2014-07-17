@@ -40,7 +40,7 @@
 </td>
 <td>
 <div class="infoBox" id="duration">
-<div class="counter">0.120s</div>
+<div class="counter">0.164s</div>
 <p>duration</p>
 </div>
 </td>
@@ -88,7 +88,7 @@
 </tr>
 <tr>
 <td class="success">testCreateISOMsg</td>
-<td>0.001s</td>
+<td>0.002s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
@@ -128,12 +128,12 @@
 </tr>
 <tr>
 <td class="success">testPack</td>
-<td>0.086s</td>
+<td>0.112s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">testPackException</td>
-<td>0.005s</td>
+<td>0.013s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
@@ -168,17 +168,17 @@
 </tr>
 <tr>
 <td class="success">testUnpackBytes</td>
-<td>0.003s</td>
-<td class="success">passed</td>
-</tr>
-<tr>
-<td class="success">testUnpackLargeXmlBytes</td>
 <td>0.005s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
+<td class="success">testUnpackLargeXmlBytes</td>
+<td>0.009s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
 <td class="success">testUnpackStream</td>
-<td>0.002s</td>
+<td>0.005s</td>
 <td class="success">passed</td>
 </tr>
 </table>
@@ -186,7 +186,19 @@
 <div id="tab1" class="tab">
 <h2>Standard output</h2>
 <span class="code">
-<pre>&lt;log realm=&quot;org.jpos.iso.packager.XMLPackager&quot; at=&quot;Thu Jul 17 23:24:49 UTC 2014.502&quot;&gt;
+<pre>&lt;log realm=&quot;org.jpos.iso.packager.XMLPackager&quot; at=&quot;Thu Jul 17 23:35:54 UTC 2014.624&quot; lifespan=&quot;1ms&quot;&gt;
+  &lt;pack&gt;
+    &lt;isomsg&gt;
+      &lt;!-- org.jpos.iso.packager.XMLPackager --&gt;
+      &lt;field id=&quot;0&quot; value=&quot;0800&quot;/&gt;
+      &lt;field id=&quot;7&quot; value=&quot;7654321&quot;/&gt;
+      &lt;field id=&quot;11&quot; value=&quot;12345678&quot;/&gt;
+      &lt;field id=&quot;12&quot; value=&quot;20110224112759&quot;/&gt;
+      &lt;field id=&quot;24&quot; value=&quot;&quot;/&gt;
+    &lt;/isomsg&gt;
+  &lt;/pack&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;org.jpos.iso.packager.XMLPackager&quot; at=&quot;Thu Jul 17 23:35:54 UTC 2014.742&quot;&gt;
   &lt;pack&gt;
     &lt;iso-exception&gt;
       cannot pack class org.jpos.iso.ISOField
@@ -215,7 +227,7 @@
 	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecuter.execute(JUnitTestClassExecuter.java:49)
 	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassProcessor.processTestClass(JUnitTestClassProcessor.java:69)
 	at org.gradle.api.internal.tasks.testing.SuiteTestClassProcessor.processTestClass(SuiteTestClassProcessor.java:48)
-	at sun.reflect.GeneratedMethodAccessor9.invoke(Unknown Source)
+	at sun.reflect.GeneratedMethodAccessor8.invoke(Unknown Source)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
 	at java.lang.reflect.Method.invoke(Method.java:606)
 	at org.gradle.messaging.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:35)
@@ -224,7 +236,7 @@
 	at org.gradle.messaging.dispatch.ProxyDispatchAdapter$DispatchingInvocationHandler.invoke(ProxyDispatchAdapter.java:93)
 	at com.sun.proxy.$Proxy2.processTestClass(Unknown Source)
 	at org.gradle.api.internal.tasks.testing.worker.TestWorker.processTestClass(TestWorker.java:105)
-	at sun.reflect.GeneratedMethodAccessor8.invoke(Unknown Source)
+	at sun.reflect.GeneratedMethodAccessor7.invoke(Unknown Source)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
 	at java.lang.reflect.Method.invoke(Method.java:606)
 	at org.gradle.messaging.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:35)
@@ -237,7 +249,7 @@
     &lt;/iso-exception&gt;
   &lt;/pack&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;org.jpos.iso.packager.XMLPackager&quot; at=&quot;Thu Jul 17 23:24:49 UTC 2014.508&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;org.jpos.iso.packager.XMLPackager&quot; at=&quot;Thu Jul 17 23:35:54 UTC 2014.762&quot; lifespan=&quot;2ms&quot;&gt;
   &lt;unpack&gt;
     &lt;isomsg&gt;
       &lt;header&gt;686561646572&lt;/header&gt;
@@ -249,7 +261,7 @@
     &lt;/isomsg&gt;
   &lt;/unpack&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;org.jpos.iso.packager.XMLPackager&quot; at=&quot;Thu Jul 17 23:24:49 UTC 2014.513&quot; lifespan=&quot;3ms&quot;&gt;
+&lt;log realm=&quot;org.jpos.iso.packager.XMLPackager&quot; at=&quot;Thu Jul 17 23:35:54 UTC 2014.769&quot; lifespan=&quot;3ms&quot;&gt;
   &lt;unpack&gt;
     &lt;isomsg&gt;
       &lt;field id=&quot;0&quot; value=&quot;0800&quot;/&gt;
@@ -257,7 +269,7 @@
     &lt;/isomsg&gt;
   &lt;/unpack&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;org.jpos.iso.packager.XMLPackager&quot; at=&quot;Thu Jul 17 23:24:49 UTC 2014.515&quot;&gt;
+&lt;log realm=&quot;org.jpos.iso.packager.XMLPackager&quot; at=&quot;Thu Jul 17 23:35:54 UTC 2014.776&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;unpack&gt;
     &lt;isomsg&gt;
       &lt;header&gt;686561646572&lt;/header&gt;
@@ -269,25 +281,13 @@
     &lt;/isomsg&gt;
   &lt;/unpack&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;org.jpos.iso.packager.XMLPackager&quot; at=&quot;Thu Jul 17 23:24:49 UTC 2014.531&quot;&gt;
-  &lt;pack&gt;
-    &lt;isomsg&gt;
-      &lt;!-- org.jpos.iso.packager.XMLPackager --&gt;
-      &lt;field id=&quot;0&quot; value=&quot;0800&quot;/&gt;
-      &lt;field id=&quot;7&quot; value=&quot;7654321&quot;/&gt;
-      &lt;field id=&quot;11&quot; value=&quot;12345678&quot;/&gt;
-      &lt;field id=&quot;12&quot; value=&quot;20110224112759&quot;/&gt;
-      &lt;field id=&quot;24&quot; value=&quot;&quot;/&gt;
-    &lt;/isomsg&gt;
-  &lt;/pack&gt;
-&lt;/log&gt;
 </pre>
 </span>
 </div>
 </div>
 <div id="footer">
 <p>Generated by 
-<a href="http://www.gradle.org">Gradle 2.0</a> at Jul 17, 2014 11:24:51 PM</p>
+<a href="http://www.gradle.org">Gradle 2.0</a> at Jul 17, 2014 11:37:49 PM</p>
 </div>
 </div>
 </body>
