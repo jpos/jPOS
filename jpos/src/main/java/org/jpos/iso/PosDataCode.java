@@ -31,7 +31,9 @@ public class PosDataCode {
         DATA_ON_FILE           (1 << 6, "Data on file"),
         ICC_FAILED             (1 << 11, "ICC read but failed"),
         MAGNETIC_STRIPE_FAILED (1 << 12, "Magnetic Stripe read but failed"),
-        FALLBACK               (1 << 13, "Fallback");
+        FALLBACK               (1 << 13, "Fallback"),
+        TRACK1_PRESENT         (1 << 27, "Track1 data present"), // jCard private field
+        TRACK2_PRESENT         (1 << 28, "Track2 data present"); // jCard private field
 
         private int val;
         private String description;
