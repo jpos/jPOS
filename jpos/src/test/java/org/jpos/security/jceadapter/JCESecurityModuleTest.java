@@ -287,7 +287,7 @@ public class JCESecurityModuleTest {
 
     @Test
     public void testDecryptPINImpl() throws Throwable {
-        EncryptedPIN ep  =  new EncryptedPIN("E0F7E27FF5DA09A9",(byte)0, "12Characters");
+        EncryptedPIN ep  =  new EncryptedPIN("B7D085B0EB9E0956",(byte)0, "12Characters");
         ep.setAccountNumber("12Characters");
         String pin = jcesecmod.decryptPINImpl(ep);
         String expected = "123456789012";
@@ -368,7 +368,7 @@ public class JCESecurityModuleTest {
     @Test
     public void testEncryptPINImpl1() throws Throwable {
         EncryptedPIN ep = jcesecmod.encryptPINImpl("123456789012", "12Characters");
-        byte[] expected = ISOUtil.hex2byte("E0F7E27FF5DA09A9");
+        byte[] expected = ISOUtil.hex2byte("B7D085B0EB9E0956");
         assertArrayEquals(expected, ep.getPINBlock());
         assertEquals(SMAdapter.FORMAT00, ep.getPINBlockFormat());
     }
