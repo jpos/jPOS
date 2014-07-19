@@ -85,7 +85,7 @@ public class ISOMsgFieldPackager extends ISOFieldPackager {
             f.setFieldNumber(sfp.getFieldNumber());
         }
         int consumed = fieldPackager.unpack(f, b, offset);
-        if (c instanceof ISOMsg) 
+        if (f.getValue() != null && c instanceof ISOMsg)
             msgPackager.unpack(c, (byte[]) f.getValue());
         return consumed;
     }
@@ -106,9 +106,8 @@ public class ISOMsgFieldPackager extends ISOFieldPackager {
             f.setFieldNumber(sfp.getFieldNumber());
         }
         fieldPackager.unpack (f, in);
-        if (c instanceof ISOMsg) {
+        if (f.getValue() != null && c instanceof ISOMsg)
             msgPackager.unpack(c, (byte[]) f.getValue());
-        }
     }
 
     @Override
