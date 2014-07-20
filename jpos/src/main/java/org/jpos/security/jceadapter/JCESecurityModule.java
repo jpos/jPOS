@@ -1368,7 +1368,11 @@ public class JCESecurityModule extends BaseSMAdapter {
             keyTypeToLMKIndex.put(SMAdapter.TYPE_MK_AC, 0x109);
             keyTypeToLMKIndex.put(SMAdapter.TYPE_MK_SMI,  0x209);
             keyTypeToLMKIndex.put(SMAdapter.TYPE_MK_SMC,  0x309);
+            keyTypeToLMKIndex.put(SMAdapter.TYPE_MK_DAC,  0x409);
+            keyTypeToLMKIndex.put(SMAdapter.TYPE_MK_DN,   0x509);
             keyTypeToLMKIndex.put(SMAdapter.TYPE_MK_CVC3, 0x709);
+            keyTypeToLMKIndex.put(SMAdapter.TYPE_ZEK, 0x00A);
+            keyTypeToLMKIndex.put(SMAdapter.TYPE_DEK, 0x00B);
             Provider provider = null;
             LogEvent evt = new LogEvent(this, "jce-provider");
             try {

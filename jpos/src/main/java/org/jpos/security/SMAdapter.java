@@ -157,6 +157,28 @@ public interface SMAdapter {
     public static final String TYPE_MK_CVC3 = "MK-CVC3";
 
     /**
+     * MK-DAC Issuer Master Key for generating and verifying
+     * Data Authentication Codes.
+     */
+    public static final String TYPE_MK_DAC = "MK-DAC";
+
+    /**
+     * MK-DN: Issuer Master Key for generating and verifying
+     * Dynamic Numbers.
+     */
+    public static final String TYPE_MK_DN = "MK-DN";
+
+    /**
+     * ZEK: Zone Encryption Key.
+     */
+    public static final String TYPE_ZEK = "ZEK";
+
+    /**
+     * DEK: Data Encryption Key.
+     */
+    public static final String TYPE_DEK = "DEK";
+
+    /**
      * PIN Block Format adopted by ANSI (ANSI X9.8) and is one of
      * two formats supported by the ISO (ISO 95641 - format 0).
      */
