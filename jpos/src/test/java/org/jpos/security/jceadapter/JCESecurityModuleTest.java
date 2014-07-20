@@ -614,6 +614,63 @@ public class JCESecurityModuleTest {
         assertTrue(result);
     }
 
+
+    @Test
+    public void testCalculateCAVVImpl1() throws Throwable {
+        String accountNo = "123456789012";
+        String upn = "1108";
+        String authrc = "0";
+        String sfarc = "00";
+        String expected = "204";
+        String cavv = jcesecmod.calculateCAVV(accountNo, cvk, upn, authrc, sfarc);
+        assertEquals(expected, cavv);
+    }
+
+    @Test
+    public void testVerifyCAVVImpl1() throws Throwable {
+        String accountNo = "123456789012";
+        String upn = "1108";
+        String authrc = "0";
+        String sfarc = "00";
+        String cavv = "204";
+        boolean result = jcesecmod.verifyCAVV(accountNo, cvk, cavv, upn, authrc, sfarc);
+        assertTrue(result);
+    }
+
+    @Test
+    public void testCalculateCAVVImpl2() throws Throwable {
+        String accountNo = "123456789012";
+        String upn = "1108";
+        String authrc = "1";
+        String sfarc = "00";
+        String expected = "439";
+        String cavv = jcesecmod.calculateCAVV(accountNo, cvk, upn, authrc, sfarc);
+        assertEquals(expected, cavv);
+    }
+
+    @Test
+    public void testVerifyCAVVImpl2() throws Throwable {
+        String accountNo = "123456789012";
+        String upn = "1108";
+        String authrc = "1";
+        String sfarc = "00";
+        String cavv = "439";
+        boolean result = jcesecmod.verifyCAVV(accountNo, cvk, cavv, upn, authrc, sfarc);
+        assertTrue(result);
+    }
+
+    @Test( expected = SMException.class)
+    public void testCalculateCAVVImplSMException() throws Throwable {
+        String accountNo = "123456789012";
+        String cavv = jcesecmod.calculateCAVV(accountNo, cvk, null, null, null);
+    }
+
+    @Test( expected = SMException.class)
+    public void testVerifyCAVVImplSMException() throws Throwable {
+        String accountNo = "123456789012";
+        boolean result = jcesecmod.verifyCAVV(accountNo, cvk, null, null, null, null);
+    }
+
     @Test
     public void testCalculatePVVImpl1() throws Throwable {
         SecureDESKey pvk = tpk; //pvk and zpk are same type
