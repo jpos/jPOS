@@ -364,12 +364,18 @@ public class JCESecurityModule extends BaseSMAdapter {
 
     private String calculateCVV(String accountNo, Key cvk, Date expDate,
                                 String serviceCode) throws SMException {
+        String ed = ISODate.formatDate(expDate, "yyMM");
+        return calculateCVD(accountNo, cvk, ed, serviceCode);
+    }
+
+    private String calculateCVD(String accountNo, Key cvk, String expDate,
+                                String serviceCode) throws SMException {
         Key udka = jceHandler.formDESKey(SMAdapter.LENGTH_DES
                 ,Arrays.copyOfRange(cvk.getEncoded(), 0, 8));
 
         byte[] block = ISOUtil.hex2byte(
                 ISOUtil.zeropadRight(accountNo
-                    + ISODate.formatDate(expDate, "yyMM")
+                    + expDate
                     + serviceCode, 32));
         byte[] ba = Arrays.copyOfRange(block, 0, 8);
         byte[] bb = Arrays.copyOfRange(block, 8,16);
@@ -388,11 +394,46 @@ public class JCESecurityModule extends BaseSMAdapter {
         return calculateCVV(accountNo,concatKeys(cvkA, cvkB),expDate,serviceCode);
     }
 
+    protected void checkCAVVArgs(String upn, String authrc, String sfarc)
+            throws SMException {
+        if (upn == null)
+            throw new SMException("Unpredictable Number can not be null");
+        if (authrc == null)
+            throw new SMException("Authorization Result Code can not be null");
+        if (sfarc == null)
+            throw new SMException("Secend Factor Authorization Result Code"
+                    + " can not be null");
+        if (upn.length() != 4 )
+            throw new SMException("Length of Unpredictable Number"
+                  + " must be 4 but got "+upn.length());
+        if (authrc.length() != 1 )
+            throw new SMException("Length of Authorization Result Code"
+                  + " must be 1 but got "+authrc.length());
+        if (sfarc.length() != 2 )
+            throw new SMException("Length of Secend Factor Authorization Result"
+                  + " Code must be 2 but got "+sfarc.length());
+    }
+
+    @Override
+    protected String calculateCAVVImpl(String accountNo, SecureDESKey cvk, String upn,
+                                       String authrc, String sfarc) throws SMException {
+        checkCAVVArgs(upn, authrc,sfarc);
+        return calculateCVD(accountNo,concatKeys(cvk, null),upn,authrc+sfarc);
+    }
+
     @Override
     protected boolean verifyCVVImpl(String accountNo, SecureDESKey cvkA, SecureDESKey cvkB,
                      String cvv, Date expDate, String serviceCode) throws SMException {
         String result = calculateCVV(accountNo, concatKeys(cvkA, cvkB), expDate, serviceCode);
         return result.equals(cvv);
+    }
+
+    @Override
+    protected boolean verifyCAVVImpl(String accountNo, SecureDESKey cvk, String cavv,
+                     String upn, String authrc, String sfarc) throws SMException {
+        checkCAVVArgs(upn, authrc,sfarc);
+        String result = calculateCVD(accountNo, concatKeys(cvk, null), upn, authrc+sfarc);
+        return result.equals(cavv);
     }
 
     @Override

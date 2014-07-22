@@ -739,6 +739,34 @@ public interface SMAdapter {
                                Date expDate, String serviceCode) throws SMException;
 
 
+    /**
+     * Calaculate a 3-D Secure CAVV/AAV.
+     *
+     * <ul>
+     * <li>Visa uses CAVV (Cardholder Authentication Verification Value)</li>
+     * <li>MasterCard uses AAV (Accountholder Authentication Value)</li>
+     * </ul>
+     * <p>NOTE: Algorithm used to calculation CAVV/AAV is same as for CVV/CVC
+     *          calculation. Only has been changed meaning of parameters
+     *          {@code expDate} and {@code serviceCode}.
+     *
+     * @param accountNo   the account number including BIN and the check digit.
+     * @param cvk         the key used to CVV/CVC generation
+     * @param upn         the unpredictable number. Calculated value based
+     *                    on Transaction Identifier (xid) from PAReq.
+     *                    A 4 decimal digits value must be supplied.
+     * @param authrc      the Authentication Results Code. A value based on
+     *                    the Transaction Status (status) that will be used in
+     *                    PARes. A 1 decimal digit value must be supplied.
+     * @param sfarc       the Second Factor Authentication Results Code.
+     *                    A value based on the result of second factor authentication. 
+     *                    A 2 decimal digits value must be suppiled.
+     * @return Cardholder Authentication Verification Value/Accountholder
+     *         Authentication Value
+     * @throws SMException
+     */
+    public String calculateCAVV(String accountNo, SecureDESKey cvk, String upn,
+                               String authrc, String sfarc) throws SMException;
 
     /**
      * Verify a Card Verification Code/Value
@@ -758,12 +786,42 @@ public interface SMAdapter {
      *         <li>"000" for verifing CVV2/CVC2 printed on card's signature stripe</li>
      *         <li>"999" for verifing iCVV/Chip CVC included on EMV chip card</li>
      *        </ul>
-     * @return true if CVV/CVC is falid or false if not
+     * @return true if CVV/CVC is valid or false if not
      * @throws SMException
      */
     public boolean verifyCVV(String accountNo, SecureDESKey cvkA, SecureDESKey cvkB,
                      String cvv, Date expDate, String serviceCode) throws SMException;
 
+
+    /**
+     * Verify a 3-D Secure CAVV/AAV.
+     *
+     * <ul>
+     * <li>Visa uses CAVV (Cardholder Authentication Verification Value)</li>
+     * <li>MasterCard uses AAV (Accountholder Authentication Value)</li>
+     * </ul>
+     * <p>NOTE: Algorithm used to verification CAVV/AAV is same as for CVV/CVC
+     *          verification. Only has been changed meaning of parameters
+     *          {@code expDate} and {@code serviceCode}.
+     *
+     * @param accountNo   the account number including BIN and the check digit.
+     * @param cvk         the key used to CVV/CVC generation
+     * @param cavv        the Cardholder Authentication Verification Value
+     *                    or Accountholder Authentication Value.
+     * @param upn         the unpredictable number. Calculated value based
+     *                    on Transaction Identifier (xid) from PAReq.
+     *                    A 4 decimal digits value must be supplied.
+     * @param authrc      the Authentication Results Code. A value based on
+     *                    the Transaction Status (status) that will be used in
+     *                    PARes. A 1 decimal digit value must be supplied.
+     * @param sfarc       the Second Factor Authentication Results Code.
+     *                    A value based on the result of second factor authentication. 
+     *                    A 2 decimal digits value must be suppiled.
+     * @return true if CAVV/AAV is valid or false if not
+     * @throws SMException
+     */
+    public boolean verifyCAVV(String accountNo, SecureDESKey cvk, String cavv,
+                              String upn, String authrc, String sfarc) throws SMException;
 
 
     /**
