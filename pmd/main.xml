@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pmd version="5.1.1" timestamp="2014-07-20T00:46:21.800">
+<pmd version="5.1.1" timestamp="2014-07-22T00:30:36.682">
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/bsh/BSHLogListener.java">
 <violation beginline="112" endline="112" begincolumn="40" endcolumn="84" rule="UselessParentheses" ruleset="Unnecessary" package="org.jpos.bsh" class="BSHLogListener" method="replace" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/unnecessary.html#UselessParentheses" priority="4">
 Useless parentheses.
@@ -674,16 +674,16 @@ Avoid empty catch blocks
 <violation beginline="244" endline="244" begincolumn="15" endcolumn="36" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="getScheme" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
 </violation>
-<violation beginline="549" endline="549" begincolumn="15" endcolumn="41" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="formatPANPSNOptionA" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/empty.html#EmptyCatchBlock" priority="3">
+<violation beginline="590" endline="590" begincolumn="15" endcolumn="41" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="formatPANPSNOptionA" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
 </violation>
-<violation beginline="1379" endline="1379" begincolumn="22" endcolumn="49" rule="UselessParentheses" ruleset="Unnecessary" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="init" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/unnecessary.html#UselessParentheses" priority="4">
+<violation beginline="1420" endline="1420" begincolumn="22" endcolumn="49" rule="UselessParentheses" ruleset="Unnecessary" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="init" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/unnecessary.html#UselessParentheses" priority="4">
 Useless parentheses.
 </violation>
-<violation beginline="1379" endline="1380" begincolumn="56" endcolumn="28" rule="UselessParentheses" ruleset="Unnecessary" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="init" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/unnecessary.html#UselessParentheses" priority="4">
+<violation beginline="1420" endline="1421" begincolumn="56" endcolumn="28" rule="UselessParentheses" ruleset="Unnecessary" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="init" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/unnecessary.html#UselessParentheses" priority="4">
 Useless parentheses.
 </violation>
-<violation beginline="1660" endline="1660" begincolumn="22" endcolumn="36" rule="UselessParentheses" ruleset="Unnecessary" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="shr" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/unnecessary.html#UselessParentheses" priority="4">
+<violation beginline="1701" endline="1701" begincolumn="22" endcolumn="36" rule="UselessParentheses" ruleset="Unnecessary" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="shr" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/unnecessary.html#UselessParentheses" priority="4">
 Useless parentheses.
 </violation>
 </file>
