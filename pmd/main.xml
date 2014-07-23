@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pmd version="5.1.1" timestamp="2014-07-22T00:30:36.682">
+<pmd version="5.1.1" timestamp="2014-07-23T01:03:13.053">
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/bsh/BSHLogListener.java">
 <violation beginline="112" endline="112" begincolumn="40" endcolumn="84" rule="UselessParentheses" ruleset="Unnecessary" package="org.jpos.bsh" class="BSHLogListener" method="replace" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/unnecessary.html#UselessParentheses" priority="4">
 Useless parentheses.
@@ -540,13 +540,16 @@ Avoid empty catch blocks
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/q2/Q2.java">
-<violation beginline="250" endline="250" begincolumn="15" endcolumn="83" rule="UselessParentheses" ruleset="Unnecessary" package="org.jpos.q2" class="Q2" method="accept" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/unnecessary.html#UselessParentheses" priority="4">
+<violation beginline="248" endline="248" begincolumn="15" endcolumn="83" rule="UselessParentheses" ruleset="Unnecessary" package="org.jpos.q2" class="Q2" method="accept" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/unnecessary.html#UselessParentheses" priority="4">
 Useless parentheses.
 </violation>
-<violation beginline="339" endline="344" begincolumn="27" endcolumn="25" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.q2" class="Q2" method="run" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/empty.html#EmptyCatchBlock" priority="3">
+<violation beginline="337" endline="342" begincolumn="27" endcolumn="25" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.q2" class="Q2" method="run" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
 </violation>
-<violation beginline="382" endline="384" begincolumn="15" endcolumn="13" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.q2" class="Q2" method="isModified" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/empty.html#EmptyCatchBlock" priority="3">
+<violation beginline="380" endline="382" begincolumn="15" endcolumn="13" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.q2" class="Q2" method="isModified" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/empty.html#EmptyCatchBlock" priority="3">
+Avoid empty catch blocks
+</violation>
+<violation beginline="593" endline="593" begincolumn="15" endcolumn="43" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.q2" class="Q2" method="getLicensee" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
 </violation>
 <violation beginline="810" endline="812" begincolumn="9" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.q2" class="Q2" method="initConfigDecorator" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/empty.html#EmptyCatchBlock" priority="3">
@@ -888,6 +891,14 @@ Useless parentheses.
 </violation>
 <violation beginline="110" endline="110" begincolumn="17" endcolumn="22" rule="UselessParentheses" ruleset="Unnecessary" package="org.jpos.util" class="FilterLogListener" method="permitLogging" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/unnecessary.html#UselessParentheses" priority="4">
 Useless parentheses.
+</violation>
+</file>
+<file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/util/PGPHelper.java">
+<violation beginline="129" endline="129" begincolumn="11" endcolumn="39" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.util" class="PGPHelper" method="checkSignature" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/empty.html#EmptyCatchBlock" priority="3">
+Avoid empty catch blocks
+</violation>
+<violation beginline="202" endline="202" begincolumn="11" endcolumn="39" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.util" class="PGPHelper" method="checkLicense" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/empty.html#EmptyCatchBlock" priority="3">
+Avoid empty catch blocks
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/util/Profiler.java">
