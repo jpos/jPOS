@@ -27,10 +27,7 @@ import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOUtil;
-import org.jpos.util.Log;
-import org.jpos.util.LogEvent;
-import org.jpos.util.Logger;
-import org.jpos.util.SimpleLogListener;
+import org.jpos.util.*;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
@@ -65,6 +62,7 @@ public class Q2 implements FileFilter, Runnable {
     public static final String ERROR_EXTENSION     = "BAD";
     public static final String ENV_EXTENSION       = "ENV";
     public static final String LICENSEE            = "/LICENSEE.asc";
+    public static final byte[] PUBKEYHASH          = ISOUtil.hex2byte("C0C73A47A5A27992267AC825F3C8B0666DF3F8A544210851821BFCC1CFA9136C");
 
     public static final String PROTECTED_QBEAN        = "protected-qbean";
     public static final int SCAN_INTERVAL             = 2500;
@@ -570,13 +568,15 @@ public class Q2 implements FileFilter, Runnable {
     }
     public static String getVersionString() {
         String appVersionString = getAppVersionString();
+        int l = PGPHelper.checkLicense();
+        String sl = l > 0 ? " " + Integer.toString(l,16) : "";
         if (appVersionString != null) {
-            return String.format ("jPOS %s %s/%s (%s)%n%s%s",
-                getVersion(), getBranch(), getRevision(), getBuildTimestamp(), appVersionString, getLicensee()
+            return String.format ("jPOS %s %s/%s%s (%s)%n%s%s",
+                getVersion(), getBranch(), getRevision(), sl, getBuildTimestamp(), appVersionString, getLicensee()
             );
         }
-        return String.format ("jPOS %s %s/%s (%s)%s",
-            getVersion(), getBranch(), getRevision(), getBuildTimestamp(), getLicensee()
+        return String.format ("jPOS %s %s/%s%s (%s) %s",
+            getVersion(), getBranch(), getRevision(), sl, getBuildTimestamp(), getLicensee()
         );
     }
     public static String getLicensee() {
@@ -590,12 +590,12 @@ public class Q2 implements FileFilter, Runnable {
             try {
                 while (br.ready())
                     p.println (br.readLine());
-            } catch (Exception e) {
-                e.printStackTrace(p);
-            }
+            } catch (Exception ignored) { }
         }
         return baos.toString();
     }
+
+
     private void parseCmdLine (String[] args) {
         CommandLineParser parser = new PosixParser ();
 
@@ -927,5 +927,6 @@ public class Q2 implements FileFilter, Runnable {
             return obj instanceof QPersist;
         }
     }
+
 }
 
