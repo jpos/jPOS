@@ -20,7 +20,7 @@ package org.jpos.util;
 
 import java.io.ByteArrayInputStream;
 import java.io.EOFException;
-import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -587,27 +587,46 @@ public class FSDMsg implements Loggeable, Cloneable {
         Space sp = SpaceFactory.getSpace();
         Element schema = (Element) sp.rdp (uri);
         if (schema == null) {
-            SAXBuilder builder = new SAXBuilder ();
-            URL url = new URL (uri);
-            File f = new File(url.getFile());
-            if (f.exists()) {
-                schema = builder.build (url).getRootElement ();
-            } else if (defSuffix != null) {
+            schema = loadSchema(uri, defSuffix == null);
+            if (schema == null && defSuffix != null) {
                 sb = new StringBuilder (prefix);
                 sb.append (defSuffix);
                 sb.append (".xml");
-                url = new URL (sb.toString());
-                f = new File (url.getFile());
-                if (f.exists()) {
-                    schema = builder.build (url).getRootElement ();
-                }
-            }
-            if (schema == null){
-                throw new RuntimeException(f.getCanonicalPath() + " not found");
+                schema = loadSchema(sb.toString(), true);
             }
             sp.out (uri, schema);
         }
         return schema;
+    }
+
+    protected Element loadSchema(String uri, boolean throwex)
+        throws JDOMException, IOException {
+        SAXBuilder builder = new SAXBuilder();
+        if (uri.startsWith("jar:") && uri.length()>4) {
+            InputStream is = schemaResouceInputStream(uri.substring(4));
+            if (is == null && throwex)
+                throw new FileNotFoundException(uri + " not found");
+            else if (is != null)
+                return builder.build(is).getRootElement();
+            else
+                return null;
+        }
+
+        URL url = new URL(uri);
+        try {
+            return builder.build(url).getRootElement();
+        } catch (FileNotFoundException ex) {
+            if (throwex)
+                throw ex;
+            return null;
+        }
+    }
+
+    protected InputStream schemaResouceInputStream(String resource)
+        throws JDOMException, IOException {
+        ClassLoader cl = Thread.currentThread().getContextClassLoader();
+        cl = cl==null ? ClassLoader.getSystemClassLoader() : cl;
+        return cl.getResourceAsStream(resource);
     }
 
     /**
