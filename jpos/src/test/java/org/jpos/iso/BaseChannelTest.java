@@ -866,28 +866,27 @@ public class BaseChannelTest {
         }
     }
 
-    @SuppressWarnings("deprecation")
     @Test
-    public void testSendMessageTrailler() throws Throwable {
+    public void testSendMessageTrailer() throws Throwable {
         BaseChannel xMLChannel = new XMLChannel(new PostPackager());
-        xMLChannel.sendMessageTrailler(new ISOMsg(), 100);
+        xMLChannel.sendMessageTrailer(new ISOMsg(), new byte[]{100});
         int actual = xMLChannel.getHeaderLength();
         assertEquals("(XMLChannel) xMLChannel.getHeaderLength()", 0, actual);
     }
 
     @Test
-    public void testSendMessageTrailler1() throws Throwable {
+    public void testSendMessageTrailer1() throws Throwable {
         BaseChannel rawChannel = new RawChannel();
-        rawChannel.sendMessageTrailler(new ISOMsg(), "testString".getBytes());
+        rawChannel.sendMessageTrailer(new ISOMsg(), "testString".getBytes());
         assertTrue("Test completed without Exception", true);
     }
 
     @Test
-    public void testSendMessageTraillerThrowsNullPointerException() throws Throwable {
+    public void testSendMessageTrailerThrowsNullPointerException() throws Throwable {
         byte[] b = new byte[3];
         BaseChannel bASE24TCPChannel = new BASE24TCPChannel();
         try {
-            bASE24TCPChannel.sendMessageTrailler(new ISOMsg(), b);
+            bASE24TCPChannel.sendMessageTrailer(new ISOMsg(), b);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
             assertNull("ex.getMessage()", ex.getMessage());
