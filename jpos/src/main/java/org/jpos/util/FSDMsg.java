@@ -182,7 +182,7 @@ public class FSDMsg implements Loggeable, Cloneable {
      */
     public void unsetSeparator(String separatorName) {
         if (!separators.containsKey(separatorName))
-            throw new RuntimeException("unsetSeparator was attempted for "+
+            throw new IllegalArgumentException("unsetSeparator was attempted for "+
                       separatorName+" which was not previously defined.");
 
         separators.remove(separatorName);
@@ -271,7 +271,7 @@ public class FSDMsg implements Loggeable, Cloneable {
                 break;
             case 'B':
                 if ((length << 1) < value.length())
-                    throw new RuntimeException("field content=" + value
+                    throw new IllegalArgumentException("field content=" + value
                             + " is too long to fit in field " + id
                             + " whose length is " + length);
 
@@ -303,18 +303,17 @@ public class FSDMsg implements Loggeable, Cloneable {
             return true;
         else if (isDummySeparator (separator))
             return true;
-        else {
+        else
             try {
                 if (Character.isDefined(Integer.parseInt(separator,16))) {
                     setSeparator(separator, (char)Long.parseLong(separator,16));
                     return true;
                 }
             } catch (NumberFormatException ignored) {
-                throw new RuntimeException("Invalid separator '"+ separator + "'");
+                throw new IllegalArgumentException("Invalid separator '"+ separator + "'");
             }
-        }
-        throw new RuntimeException("FSDMsg.isSeparated(String) found that "+
-                separator+" has not been defined as a separator!");
+        throw new IllegalArgumentException("isSeparated called on separator="+
+                      separator+" which was not previously defined.");
     }
 
     private boolean isDummySeparator(String separator) {
@@ -347,7 +346,8 @@ public class FSDMsg implements Loggeable, Cloneable {
             return 0;
         }
 
-        throw new RuntimeException("getSeparator called on separator="+separator+" which does not resolve to a known separator.");
+        throw new IllegalArgumentException("getSeparator called on separator="+
+                      separator+" which was not previously defined.");
     }
 
     protected void pack (Element schema, StringBuilder sb)
