@@ -43,4 +43,13 @@ public class QXmlConfig extends QBeanSupport implements XmlConfigurable {
     {
         return (Element) NameRegistrar.get(XML_PREFIX + name);
     }
+
+    /**
+     * @param name configuration name
+     * @param timeout in millis
+     * @return Configuration Element or null
+     */
+    public static Element getConfiguration (String name, long timeout) {
+        return (Element) NameRegistrar.get(XML_PREFIX + name, timeout);
+    }
 }

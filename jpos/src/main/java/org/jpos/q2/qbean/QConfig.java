@@ -40,4 +40,13 @@ public class QConfig extends QBeanSupport {
     {
         return (Configuration) NameRegistrar.get(PREFIX + name);
     }
+
+    /**
+     * @param name configuration name
+     * @param timeout in millis
+     * @return Configuration object or null
+     */
+    public static Configuration getConfiguration (String name, long timeout) {
+        return (Configuration) NameRegistrar.get(PREFIX + name, timeout);
+    }
 }
