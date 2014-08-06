@@ -114,8 +114,7 @@ public class QMUXTest {
 
     @Test
     public void testIsConnected() throws Throwable {
-        boolean result = new QMUX().isConnected();
-        assertTrue("result", result);
+        assertFalse("result", new QMUX().isConnected()); // MUX was not started
     }
 
     @Test

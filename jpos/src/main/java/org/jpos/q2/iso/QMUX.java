@@ -371,14 +371,13 @@ public class QMUX
     }
 
     public boolean isConnected() {
-        if (ready != null && ready.length > 0) {
+        if (running() && ready != null && ready.length > 0) {
             for (String aReady : ready)
                 if (sp.rdp(aReady) != null)
                     return true;
             return false;
         }
-        else
-            return true;
+        return running();
     }
     public void dump (PrintStream p, String indent) {
         p.println (indent + getCountersAsString());
