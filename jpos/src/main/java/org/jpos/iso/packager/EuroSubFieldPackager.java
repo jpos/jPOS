@@ -41,7 +41,7 @@ import java.util.Set;
 @SuppressWarnings("unchecked")
 public class EuroSubFieldPackager extends ISOBasePackager
 {
-    protected static Prefixer tagPrefixer = AsciiPrefixer.LL;
+    protected static Prefixer tagPrefixer = AsciiPrefixer.LLLL;
 
     /**
      * Always return false
