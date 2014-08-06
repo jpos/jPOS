@@ -75,7 +75,7 @@ public class IFA_BITMAP extends ISOBitMapPackager {
             len = 192;
             bmap.clear(65);
         }
-        return (len >> 2);
+        return (Math.min (getLength() << 1, len >> 2));
     }
     public void unpack (ISOComponent c, InputStream in) 
         throws IOException, ISOException
