@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pmd version="5.1.1" timestamp="2014-08-01T16:57:41.092">
+<pmd version="5.1.1" timestamp="2014-08-06T01:03:55.460">
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/bsh/BSHLogListener.java">
 <violation beginline="112" endline="112" begincolumn="40" endcolumn="84" rule="UselessParentheses" ruleset="Unnecessary" package="org.jpos.bsh" class="BSHLogListener" method="replace" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/unnecessary.html#UselessParentheses" priority="4">
 Useless parentheses.
@@ -112,7 +112,7 @@ Useless parentheses.
 <violation beginline="73" endline="73" begincolumn="16" endcolumn="26" rule="UselessParentheses" ruleset="Unnecessary" package="org.jpos.iso" class="IFA_BITMAP" method="unpack" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/unnecessary.html#UselessParentheses" priority="4">
 Useless parentheses.
 </violation>
-<violation beginline="78" endline="78" begincolumn="17" endcolumn="24" rule="UselessParentheses" ruleset="Unnecessary" package="org.jpos.iso" class="IFA_BITMAP" method="unpack" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/unnecessary.html#UselessParentheses" priority="4">
+<violation beginline="78" endline="78" begincolumn="17" endcolumn="53" rule="UselessParentheses" ruleset="Unnecessary" package="org.jpos.iso" class="IFA_BITMAP" method="unpack" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/unnecessary.html#UselessParentheses" priority="4">
 Useless parentheses.
 </violation>
 </file>
