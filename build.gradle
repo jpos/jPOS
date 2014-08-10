@@ -9,7 +9,7 @@ allprojects {
     apply plugin: 'pmd'
 
     group = 'org.jpos'
-    version = '1.9.8'
+    version = '1.9.9-SNAPSHOT'
     [ compileJava, compileTestJava, javadoc ]*.options*.encoding = 'UTF-8'
     def isSnapshot = version.contains("SNAPSHOT")
     def mavenCentralRepo = isSnapshot ?
