@@ -334,7 +334,7 @@ public class DirPoll extends SimpleLogSource
     private File moveTo(File f, File dir) throws IOException {
         File destination = new File(dir, f.getName());
         if (!f.renameTo(destination))
-            throw new IOException("Unable to move"+f.getName());
+            throw new IOException("Unable to move "+f.getName());
         return destination;
     }
 
