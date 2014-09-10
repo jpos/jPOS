@@ -82,6 +82,9 @@ public class Logger implements LogProducer {
         }
         if (source != null)
             l = source.getLogger();
+        if (l == null || !l.hasListeners ()) {
+            l = getLogger(Q2.LOGGER_NAME);
+        }
         if (l != null && l.hasListeners ()) {
             synchronized (l.listeners) {
                 Iterator i = l.listeners.iterator();
