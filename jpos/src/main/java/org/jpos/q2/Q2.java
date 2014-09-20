@@ -139,6 +139,7 @@ public class Q2 implements FileFilter, Runnable {
                 server = (MBeanServer) mbeanServerList.get(0);
             }
             final ObjectName loaderName = new ObjectName (Q2_CLASS_LOADER);
+
             try {
                 loader = (QClassLoader) java.security.AccessController.doPrivileged(
                     new java.security.PrivilegedAction() {
@@ -147,6 +148,8 @@ public class Q2 implements FileFilter, Runnable {
                         }
                     }
                 );
+                if (server.isRegistered (loaderName))
+                    server.unregisterMBean (loaderName);
                 server.registerMBean (loader, loaderName);
                 loader = loader.scan(false);
             } catch (Throwable t) {
