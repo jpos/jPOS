@@ -3,10 +3,12 @@ apply plugin: 'groovy'
 repositories {
     mavenLocal()
     mavenCentral()
+    maven { url 'http://repository.sonatype.org/content/groups/public' }
 }
 
 sourceCompatibility = 1.6
 targetCompatibility = 1.6
+
 
 dependencies {
     //noinspection GroovyAssignabilityCheck
