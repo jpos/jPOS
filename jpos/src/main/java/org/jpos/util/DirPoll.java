@@ -22,7 +22,6 @@ import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
 import org.jpos.iso.ISOException;
-import org.jpos.iso.ISOUtil;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
@@ -66,6 +65,7 @@ public class DirPoll extends SimpleLogSource
     private String responseSuffix;
     private ThreadPool pool;
     private Object processor;
+    private final Object shutdownMonitor = new Object();
 
     private boolean shutdown;
     private boolean paused = false;
@@ -278,19 +278,31 @@ public class DirPoll extends SimpleLogSource
                     getPool().execute (new ProcessorRunner (f));
                     Thread.yield(); // be nice
                 }
-                else
-                    Thread.sleep(pollInterval);
-            } catch (InterruptedException e) { 
+                else {
+                    synchronized (shutdownMonitor) {
+                        if (!shutdown) {
+                            shutdownMonitor.wait(pollInterval);
+                        }
+                    }
+                }
+            } catch (InterruptedException e) {
             } catch (Throwable e) {
                 Logger.log (new LogEvent (this, "dirpoll", e));
                 try {
-                    Thread.sleep(pollInterval * 10);    // anti hog
+                    synchronized (shutdownMonitor) {
+                        if (!shutdown) {
+                            shutdownMonitor.wait(pollInterval * 10);
+                        }
+                    }
                 } catch (InterruptedException ex) { }
             }
-        }   
+        }
     }
     public void destroy () {
-        shutdown = true;
+        synchronized (shutdownMonitor) {
+            shutdown = true;
+            shutdownMonitor.notifyAll();
+        }
     }
 
     //----------------------------------------------------- public helpers
@@ -428,7 +440,14 @@ public class DirPoll extends SimpleLogSource
                 evt.addMessage (e);
                 try {
                     if ((e instanceof DirPollException && ((DirPollException)e).isRetry())) {
-                        ISOUtil.sleep(pollInterval*10); // retry delay (pollInterval defaults to 100ms)
+                        synchronized (shutdownMonitor) {
+                            if (!shutdown) {
+                                try {
+                                    shutdownMonitor.wait(pollInterval * 10); // retry delay (pollInterval defaults to 100ms)
+                                } catch (InterruptedException ie) {
+                                }
+                            }
+                        }
                         evt.addMessage("retrying");
                         moveTo(request, requestDir);
                     } else {
