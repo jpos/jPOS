@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2014 Alejandro P. Revilla
+ * Copyright (C) 2000-2013 Alejandro P. Revilla
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -99,6 +99,11 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
             if (emitBitMap()) {
                 // BITMAP (-1 in HashTable)
                 c = (ISOComponent) fields.get (-1);
+                
+                if (fld[65] instanceof ISOBitMapStandalonePackager) {
+                	((ISOBitMapStandalonePackager)fld[65]).adjustBitMapForPack((BitSet)c.getValue());
+                }
+                
                 b = getBitMapfieldPackager().pack(c);
                 len += b.length;
                 v.add (b);
@@ -198,7 +203,7 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
 
             
             // if ISOMsg and headerLength defined 
-            if (m instanceof ISOMsg /*&& ((ISOMsg) m).getHeader()==null*/ && headerLength>0) 
+            if (m instanceof ISOMsg && ((ISOMsg) m).getHeader()!=null) 
             {
             	byte[] h = new byte[headerLength];
                 System.arraycopy(b, 0, h, 0, headerLength);
@@ -227,8 +232,8 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
                 try {
                     if (bmap == null && fld[i] == null)
                         continue;
-                    if (maxField > 128 && i==65)
-                        continue;   // ignore extended bitmap
+                    if (maxField > 128 && i==65 && !(fld[i] instanceof ISOBitMapStandalonePackager))
+                        continue;   // ignore extended bitmap unless Standalone
 
                     if (bmap == null || bmap.get(i)) {
                         if (fld[i] == null)
@@ -236,6 +241,18 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
 
                         ISOComponent c = fld[i].createComponent(i);
                         consumed += fld[i].unpack (c, b, consumed);
+                        
+                        if (fld[i] != null && fld[i] instanceof ISOBitMapStandalonePackager) {
+                        	/*
+                        	 * Special kind of bitmap that should compound the fields present in BitMaps 1 & 2 as
+                        	 * well as the maximum field we will process in this item.
+                        	 */
+                        	((ISOBitMapStandalonePackager)fld[i]).adjustBitMapForUnpack(bmap);
+                        	maxField = ((ISOBitMapStandalonePackager)fld[i]).getMaxField(); 
+                        	
+                        }
+                        
+                        
                         if (logger != null) {
                             evt.addMessage ("<unpack fld=\"" + i 
                                 +"\" packager=\""
