@@ -97,11 +97,11 @@ public class SimpleKeyFile
         }
     }
 
-
     public synchronized SecureKey getKey (String alias) throws SecureKeyStoreException {
         SecureKey secureKey = null;
-        LogEvent evt = new LogEvent(this, "get-key");
-        evt.addMessage("alias", alias);
+        LogEvent evt = logger != null ? new LogEvent(this, "get-key") : null;
+        if (evt != null)
+            evt.addMessage("alias", alias);
         try {
             load();
             String keyClassName = getProperty(alias, "class");
@@ -115,12 +115,16 @@ public class SimpleKeyFile
             String keyType = getProperty(alias, "type");
             byte[] KeyCheckValue = ISOUtil.hex2byte(getProperty(alias, "checkvalue"));
             secureKey = new SecureDESKey(keyLength, keyType, keyBytes, KeyCheckValue);
-            evt.addMessage(secureKey);
+            if (evt != null)
+                evt.addMessage(secureKey);
         } catch (Exception e) {
+            if (evt == null) // this is an exception, we want to log it, even if we don't have an assigned logger
+                evt = new LogEvent(this, "get-key-error", alias);
             evt.addMessage(e);
             throw  e instanceof SecureKeyStoreException ? (SecureKeyStoreException) e : new SecureKeyStoreException(e);
         } finally {
-            Logger.log(evt);
+            if (evt != null)
+                Logger.log(evt);
         }
         return  secureKey;
     }
