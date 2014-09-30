@@ -1,0 +1,847 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE isopackager SYSTEM "genericpackager.dtd">
+
+<!-- LIS's field descriptions for GenericPackager -->
+
+<isopackager>
+    <isofield
+            id="0"
+            length="4"
+            name="Message Type Indicator"
+            pad="true"
+            class="org.jpos.iso.IFA_NUMERIC"/>
+    <isofield
+            id="1"
+            length="16"
+            name="BIT Map A"
+            class="org.jpos.iso.IFA_BITMAP"/>
+    <isofield
+            id="2"
+            length="19"
+            name="PAN - Primary Account Number"
+            pad="true"
+            class="org.jpos.iso.IFA_LLCHAR"/>
+    <isofield
+            id="3"
+            length="6"
+            name="Processing Code"
+            pad="true"
+            class="org.jpos.iso.IFA_NUMERIC"/>
+    <isofield
+            id="4"
+            length="12"
+            name="Amount, Transaction"
+            pad="true"
+            class="org.jpos.iso.IFA_NUMERIC"/>
+    <isofield
+            id="6"
+            length="12"
+            name="Amount, Cardholder Billing"
+            pad="true"
+            class="org.jpos.iso.IFA_NUMERIC"/>
+    <isofield
+            id="7"
+            length="10"
+            name="Transmission Date And Time"
+            pad="true"
+            class="org.jpos.iso.IFA_NUMERIC"/>
+    <isofield
+            id="10"
+            length="8"
+            name="Conversion Rate, Cardholder Billing"
+            pad="true"
+            class="org.jpos.iso.IFA_NUMERIC"/>
+    <isofield
+            id="11"
+            length="6"
+            name="System Trace Audit Number"
+            pad="true"
+            class="org.jpos.iso.IFA_NUMERIC"/>
+    <isofield
+            id="12"
+            length="6"
+            name="Time, Local Transaction"
+            pad="true"
+            class="org.jpos.iso.IFA_NUMERIC"/>
+    <isofield
+            id="13"
+            length="4"
+            name="Date, Local Transaction"
+            pad="true"
+            class="org.jpos.iso.IFA_NUMERIC"/>
+    <isofield
+            id="14"
+            length="4"
+            name="Date, Expiration"
+            pad="true"
+            class="org.jpos.iso.IFA_NUMERIC"/>
+    <isofield
+            id="15"
+            length="4"
+            name="Date, Settlement"
+            pad="true"
+            class="org.jpos.iso.IFA_NUMERIC"/>
+    <isofield
+            id="18"
+            length="4"
+            name="Merchant Type"
+            pad="true"
+            class="org.jpos.iso.IFA_NUMERIC"/>
+
+    <isofield
+            id="19"
+            length="3"
+            name="Acquiring Institution Country Code"
+            pad="true"
+            class="org.jpos.iso.IFA_NUMERIC"/>
+
+    <isofield
+            id="22"
+            length="3"
+            name="Point Of Service Entry Mode"
+            pad="true"
+            class="org.jpos.iso.IFA_NUMERIC"/>
+
+    <isofield
+            id="23"
+            length="3"
+            name="Application PAN Sequence Number"
+            pad="true"
+            class="org.jpos.iso.IFA_NUMERIC"/>
+
+    <isofield
+            id="25"
+            length="2"
+            name="Point Of Service Condition Code"
+            pad="true"
+            class="org.jpos.iso.IFA_NUMERIC"/>
+    <isofield
+            id="26"
+            length="2"
+            name="Point Of Service PIN Capture Code"
+            pad="true"
+            class="org.jpos.iso.IFA_NUMERIC"/>
+    <isofield
+            id="28"
+            length="9"
+            name="Amount, Transaction Fee"
+            pad="true"
+            class="org.jpos.iso.IFA_AMOUNT"/>
+
+    <isofield
+            id="30"
+            length="9"
+            name="Amount, Transaction Processing Fee"
+            pad="true"
+            class="org.jpos.iso.IFA_AMOUNT"/>
+
+    <isofield
+            id="32"
+            length="11"
+            name="Acquiring Institution Identification Code"
+            pad="true"
+            class="org.jpos.iso.IFA_LLNUM"/>
+    <isofield
+            id="33"
+            length="11"
+            name="Forwarding Institution Identification Code"
+            pad="true"
+            class="org.jpos.iso.IFA_LLNUM"/>
+
+    <isofield
+            id="35"
+            length="37"
+            name="Track 2 Data"
+            pad="true"
+            class="org.jpos.iso.IFA_LLNUM"/>
+
+    <isofield
+            id="37"
+            length="12"
+            name="Retrieval Reference Number"
+            class="org.jpos.iso.IF_CHAR"/>
+
+    <isofield
+            id="38"
+            length="6"
+            name="Authorization Identification Response"
+            class="org.jpos.iso.IF_CHAR"/>
+
+    <isofield
+            id="39"
+            length="2"
+            name="Response Code"
+            class="org.jpos.iso.IF_CHAR"/>
+
+    <isofield
+            id="41"
+            length="8"
+            name="Card Acceptor Terminal Identification"
+            class="org.jpos.iso.IF_CHAR"/>
+    <isofield
+            id="42"
+            length="15"
+            name="Card Acceptor Identification Code"
+            class="org.jpos.iso.IF_CHAR"/>
+    <isofield
+            id="43"
+            length="40"
+            name="Card Acceptor Name/Location"
+            class="org.jpos.iso.IF_CHAR"/>
+
+    <isofield
+            id="44"
+            length="25"
+            name="Additional Response Data"
+            class="org.jpos.iso.IFA_LLCHAR"/>
+
+    <isofield
+            id="45"
+            length="76"
+            name="Track 1 Data"
+            class="org.jpos.iso.IFA_LLCHAR"/>
+
+    <isofield
+            id="49"
+            length="3"
+            name="Currency Code, Transaction"
+            pad="true"
+            class="org.jpos.iso.IFA_NUMERIC"/>
+
+    <isofield
+            id="51"
+            length="3"
+            name="Currency Code, Cardholder Billing"
+            pad="true"
+            class="org.jpos.iso.IFA_NUMERIC"/>
+
+    <isofield
+            id="52"
+            length="8"
+            name="PIN Data"
+            class="org.jpos.iso.IFA_BINARY"/>
+
+    <isofield
+            id="54"
+            length="120"
+            name="Additional Amounts"
+            class="org.jpos.iso.IFA_LLLBINARY"/>
+
+    <isofield
+            id="60"
+            length="6"
+            name="Additional POS Information"
+            class="org.jpos.iso.IFA_LLLCHAR"/>
+
+    <isofield
+            id="61"
+            length="40"
+            name="POINT OF SERVICE DATA"
+            pad="true"
+            class="org.jpos.iso.IF_CHAR"/>
+
+    <isofield
+            id="64"
+            length="8"
+            name="MAC"
+            class="org.jpos.iso.IFA_BINARY"/>
+
+    <isofield
+            id="65"
+            length="8"
+            name="BITMAP, Tertiary"
+            class="org.jpos.iso.IFA_BITMAPStandalone"/>
+
+    <isofield
+            id="70"
+            length="3"
+            name="Network Management Information Code"
+            pad="true"
+            class="org.jpos.iso.IFA_NUMERIC"/>
+
+    <isofield
+            id="90"
+            length="42"
+            name="Original Data Elements"
+            pad="true"
+            class="org.jpos.iso.IFA_NUMERIC"/>
+
+    <isofield
+            id="95"
+            length="42"
+            name="Replacement Amounts"
+            class="org.jpos.iso.IF_CHAR"/>
+
+    <isofield
+            id="96"
+            length="8"
+            name="MAC"
+            class="org.jpos.iso.IFA_NUMERIC"/>
+
+    <isofield
+            id="102"
+            length="28"
+            name="Account Identification 1"
+            class="org.jpos.iso.IFA_LLCHAR"/>
+
+    <isofield
+            id="103"
+            length="28"
+            name="Account Identification 2"
+            class="org.jpos.iso.IFA_LLCHAR"/>
+
+    <isofield
+            id="113"
+            length="11"
+            name="Authorising Agent Institution Id"
+            class="org.jpos.iso.IFA_LLLBINARY"/>
+
+    <isofieldpackager
+            id="121"
+            length="255"
+            name="AUTHORISATION RESPONSE DATA"
+            class="org.jpos.iso.IFA_LLLCHAR"
+            packager="org.jpos.iso.packager.LISSubFieldPackager">
+
+
+        <isofield
+                id="2"
+                length="40"
+                name="Generic Message"
+                class="org.jpos.iso.IFA_LLCHAR"/>
+        <isofield
+                id="3"
+                length="15"
+                name="Issuer Transaction Identifier"
+                class="org.jpos.iso.IFA_LLCHAR"/>
+        <isofield
+                id="4"
+                length="15"
+                name="Issuer Account Number"
+                class="org.jpos.iso.IFA_LLCHAR"/>
+        <isofield
+                id="5"
+                length="8"
+                name="Cheque Clearance Date "
+                class="org.jpos.iso.IF_CHAR"/>
+        <isofield
+                id="6"
+                length="30"
+                name="MasterCard Additional Processing Results"
+                class="org.jpos.iso.IFA_LLCHAR"/>
+        <isofield
+                id="7"
+                length="99"
+                name="Bilateral Discretionary Data"
+                pad="true"
+                class="org.jpos.iso.IFA_LLNUM"/>
+        <isofield
+                id="8"
+                length="228"
+                name="Mini Statement Details"
+                pad="true"
+                class="org.jpos.iso.IFA_LLLCHAR"/>
+        <isofield
+                id="9"
+                length="2"
+                name="AVS Request"
+                pad="true"
+                class="org.jpos.iso.IF_CHAR"/>
+        <isofield
+                id="10"
+                length="1"
+                name="AVS Response"
+                class="org.jpos.iso.IF_CHAR"/>
+        <isofield
+                id="11"
+                length="2"
+                name="Merchant Advice Code"
+                class="org.jpos.iso.IF_CHAR"/>
+        <isofield
+                id="12"
+                length="1"
+                name="Magnetic Stripe/CVC Invalid"
+                class="org.jpos.iso.IF_CHAR"/>
+        <isofield
+                id="13"
+                length="16"
+                name="Magnetic Stripe/CVC Status Change"
+                class="org.jpos.iso.IFA_LLCHAR"/>
+        <isofield
+                id="14"
+                length="12"
+                name="????++++????"
+                class="org.jpos.iso.IF_CHAR"/>
+        <isofield
+                id="15"
+                length="6"
+                name="Service Provider ID"
+                class="org.jpos.iso.IF_CHAR"/>
+        <isofield
+                id="16"
+                length="1"
+                name="Recurring Payment Indicator"
+                class="org.jpos.iso.IF_CHAR"/>
+        <isofield
+                id="17"
+                length="15"
+                name="Cheque Deposit Details"
+                class="org.jpos.iso.IF_CHAR"/>
+        <isofield
+                id="18"
+                length="99"
+                name="Bilateral Discretionary Data"
+                class="org.jpos.iso.IF_CHAR"/>
+
+        <isofield
+                id="19"
+                length="19"
+                name="MONILINK security cryptogram"
+                class="org.jpos.iso.IFB_BINARY"/>
+        <isofield
+                id="20"
+                length="3"
+                name="Security Level Indicator"
+                class="org.jpos.iso.IF_CHAR"/>
+        <isofield
+                id="21"
+                length="32"
+                name="UCAF"
+                class="org.jpos.iso.IF_CHAR"/>
+        <isofield
+                id="22"
+                length="1"
+                name="MasterCard Electronic Acceptance Indicator"
+                class="org.jpos.iso.IF_CHAR"/>
+        <isofield
+                id="23"
+                length="2"
+                name="AVS Request"
+                class="org.jpos.iso.IF_CHAR"/>
+        <isofield
+                id="24"
+                length="1"
+                name="Magnetic Stripe/CVC Status Change"
+                class="org.jpos.iso.IF_CHAR"/>
+        <isofield
+                id="25"
+                length="1"
+                name="Magnetic Stripe/CVC Track Edit Errors"
+                class="org.jpos.iso.IF_CHAR"/>
+        <isofield
+                id="26"
+                length="12"
+                name="Bilateral Discretionary Data"
+                class="org.jpos.iso.IFA_NUMERIC"/>
+        <isofield
+                id="27"
+                length="24"
+                name="FCD Commission"
+                class="org.jpos.iso.IFA_NUMERIC"/>
+        <isofield
+                id="28"
+                length="50"
+                name="MasterCard Chip CVR/TVR Bit Error Results"
+                class="org.jpos.iso.IFB_BINARY"/>
+        <isofield
+                id="29"
+                length="16"
+                name="MasterCard Network Data"
+                class="org.jpos.iso.IF_CHAR"/>
+        <isofield
+                id="30"
+                length="15"
+                name="Original MasterCard Network Data"
+                class="org.jpos.iso.IF_CHAR"/>
+        <isofield
+                id="31"
+                length="32"
+                name="MasterCard Issuer Chip Authentication"
+                class="org.jpos.iso.IF_CHAR"/>
+        <isofield
+                id="32"
+                length="1"
+                name="MasterCard Cardholder Verification Method"
+                class="org.jpos.iso.IF_CHAR"/>
+        <isofield
+                id="33"
+                length="1"
+                name="CAVV Results Code"
+                class="org.jpos.iso.IF_CHAR"/>
+        <isofield
+                id="34"
+                length="20"
+                name="Transaction ID (XID)"
+                class="org.jpos.iso.IFB_BINARY"/>
+        <isofield
+                id="35"
+                length="20"
+                name="Cardholder Authentication Verification Value (CAVV)"
+                class="org.jpos.iso.IFB_BINARY"/>
+        <isofield
+                id="36"
+                length="2"
+                name="Electronic Commerce Indicator (ECI)"
+                class="org.jpos.iso.IF_CHAR"/>
+        <isofield
+                id="37"
+                length="47"
+                name="MasterCard MPTU Request Data"
+                class="org.jpos.iso.IF_CHAR"/>
+        <isofield
+                id="38"
+                length="199"
+                name="MasterCard Member Defined Data"
+                class="org.jpos.iso.IF_CHAR"/>
+        <isofield
+                id="39"
+                length="3"
+                name="MasterCard Payment Transaction Type"
+                class="org.jpos.iso.IF_CHAR"/>
+        <isofield
+                id="40"
+                length="6"
+                name="MasterCard CVM Results"
+                class="org.jpos.iso.IFB_BINARY"/>
+    </isofieldpackager>
+
+    <isofieldpackager
+            id="123"
+            length="255"
+            name="Authorisation Data"
+            class="org.jpos.iso.IFA_LLLCHAR"
+            packager="org.jpos.iso.packager.LISSubFieldPackager">
+
+        <isofield
+                id="1"
+                length="2"
+                name="Product Type"
+                class="org.jpos.iso.IFA_LLLCHAR"/>
+        <isofield
+                id="2"
+                length="4"
+                name="Product ID"
+                class="org.jpos.iso.IFA_LLLCHAR"/>
+        <isofield
+                id="3"
+                length="20"
+                name="Product Description"
+                class="org.jpos.iso.IFA_LLLCHAR"/>
+        <isofield
+                id="5"
+                length="3"
+                name="Funds Type "
+                class="org.jpos.iso.IFA_LLLCHAR"/>
+        <isofield
+                id="6"
+                length="1"
+                name="Pre-Authorisation Flag"
+                class="org.jpos.iso.IFA_LLLCHAR"/>
+        <isofield
+                id="7"
+                length="19"
+                name="Pre-pay Account Number"
+                pad="true"
+                class="org.jpos.iso.IFA_LLLCHAR"/>
+        <isofield
+                id="8"
+                length="37"
+                name="Pre-pay Track 2 Data"
+                pad="true"
+                class="org.jpos.iso.IFA_LLLCHAR"/>
+        <isofield
+                id="9"
+                length="40"
+                name="MasterCard On-behalf Services "
+                pad="true"
+                class="org.jpos.iso.IFA_LLLCHAR"/>
+        <isofield
+                id="10"
+                length="6"
+                name="CVV2 Request Data"
+                class="org.jpos.iso.IFA_LLLCHAR"/>
+        <isofield
+                id="11"
+                length="1"
+                name="CVV2 Result Code"
+                class="org.jpos.iso.IFA_LLLCHAR"/>
+        <isofield
+                id="12"
+                length="29"
+                name="Address Verification Data"
+                class="org.jpos.iso.IFA_LLLCHAR"/>
+        <isofield
+                id="13"
+                length="16"
+                name="New PIN"
+                class="org.jpos.iso.IFA_LLLCHAR"/>
+        <isofield
+                id="14"
+                length="12"
+                name="Issuer Script Result"
+                class="org.jpos.iso.IFA_LLLCHAR"/>
+        <isofield
+                id="15"
+                length="6"
+                name="Service Provider ID"
+                class="org.jpos.iso.IFA_LLLCHAR"/>
+        <isofield
+                id="16"
+                length="1"
+                name="Recurring Payment Indicator"
+                class="org.jpos.iso.IFA_LLLCHAR"/>
+        <isofield
+                id="17"
+                length="15"
+                name="Cheque Deposit Details"
+                class="org.jpos.iso.IFA_LLLCHAR"/>
+        <isofield
+                id="18"
+                length="99"
+                name="Bilateral Discretionary Data"
+                class="org.jpos.iso.IFA_LLLCHAR"/>
+
+        <isofield
+                id="19"
+                length="19"
+                name="MONILINK security cryptogram"
+                class="org.jpos.iso.IFA_LLLCHAR"/>
+        <isofield
+                id="20"
+                length="3"
+                name="Security Level Indicator"
+                class="org.jpos.iso.IFA_LLLCHAR"/>
+        <isofield
+                id="21"
+                length="32"
+                name="UCAF"
+                class="org.jpos.iso.IFA_LLLCHAR"/>
+        <isofield
+                id="22"
+                length="1"
+                name="MasterCard Electronic Acceptance Indicator"
+                class="org.jpos.iso.IFA_LLLCHAR"/>
+        <isofield
+                id="23"
+                length="2"
+                name="AVS Request"
+                class="org.jpos.iso.IFA_LLLCHAR"/>
+        <isofield
+                id="24"
+                length="1"
+                name="Magnetic Stripe/CVC Status Change"
+                class="org.jpos.iso.IFA_LLLCHAR"/>
+        <isofield
+                id="25"
+                length="1"
+                name="Magnetic Stripe/CVC Track Edit Errors"
+                class="org.jpos.iso.IFA_LLLCHAR"/>
+        <isofield
+                id="26"
+                length="12"
+                name="Bilateral Discretionary Data"
+                class="org.jpos.iso.IFA_LLLCHAR"/>
+        <isofield
+                id="27"
+                length="24"
+                name="FCD Commission"
+                class="org.jpos.iso.IFA_LLLCHAR"/>
+        <isofield
+                id="28"
+                length="50"
+                name="MasterCard Chip CVR/TVR Bit Error Results"
+                class="org.jpos.iso.IFA_LLLCHAR"/>
+        <isofield
+                id="29"
+                length="16"
+                name="MasterCard Network Data"
+                class="org.jpos.iso.IFA_LLLCHAR"/>
+        <isofield
+                id="30"
+                length="15"
+                name="Original MasterCard Network Data"
+                class="org.jpos.iso.IFA_LLLCHAR"/>
+        <isofield
+                id="31"
+                length="32"
+                name="MasterCard Issuer Chip Authentication"
+                class="org.jpos.iso.IFA_LLLCHAR"/>
+        <isofield
+                id="32"
+                length="1"
+                name="MasterCard Cardholder Verification Method"
+                class="org.jpos.iso.IFA_LLLCHAR"/>
+        <isofield
+                id="33"
+                length="1"
+                name="CAVV Results Code"
+                class="org.jpos.iso.IFA_LLLCHAR"/>
+        <isofield
+                id="34"
+                length="20"
+                name="Transaction ID (XID)"
+                class="org.jpos.iso.IFA_LLLCHAR"/>
+        <isofield
+                id="35"
+                length="20"
+                name="Cardholder Authentication Verification Value (CAVV)"
+                class="org.jpos.iso.IFA_LLLCHAR"/>
+        <isofield
+                id="36"
+                length="2"
+                name="Electronic Commerce Indicator (ECI)"
+                class="org.jpos.iso.IFA_LLLCHAR"/>
+        <isofield
+                id="37"
+                length="47"
+                name="MasterCard MPTU Request Data"
+                class="org.jpos.iso.IFA_LLLCHAR"/>
+        <isofield
+                id="38"
+                length="199"
+                name="MasterCard Member Defined Data"
+                class="org.jpos.iso.IFA_LLLCHAR"/>
+        <isofield
+                id="39"
+                length="3"
+                name="MasterCard Payment Transaction Type"
+                class="org.jpos.iso.IFA_LLLCHAR"/>
+        <isofield
+                id="40"
+                length="6"
+                name="MasterCard CVM Results"
+                class="org.jpos.iso.IFA_LLLCHAR"/>
+    </isofieldpackager>
+
+
+    <isofield
+            id="124"
+            length="99"
+            name="Info Text"
+            class="org.jpos.iso.IFA_LLCHAR"/>
+
+    <isofield
+            id="125"
+            length="99"
+            name="Supporting Information"
+            class="org.jpos.iso.IFA_LLLCHAR"/>
+
+    <isofield
+            id="126"
+            length="6"
+            name="Issuer Trace Id"
+            class="org.jpos.iso.IFA_LLLCHAR"/>
+
+    <isofield
+            id="128"
+            length="8"
+            name="MAC 2"
+            class="org.jpos.iso.IFA_BINARY"/>
+
+    <isofield
+            id="130"
+            length="6"
+            name="Terminal Capability Profile"
+            class="org.jpos.iso.IFA_NUMERIC"/>
+
+    <isofield
+            id="131"
+            length="10"
+            name="Terminal Verification Results"
+            class="org.jpos.iso.IF_CHAR"/>
+
+    <isofield
+            id="132"
+            length="8"
+            name="Unpredicatable Number"
+            class="org.jpos.iso.IF_CHAR"/>
+
+    <isofield
+            id="133"
+            length="16"
+            name="Terminal Serial Number"
+            class="org.jpos.iso.IF_CHAR"/>
+
+    <isofield
+            id="134"
+            length="64"
+            name="Issuer Application Data"
+            class="org.jpos.iso.IFA_LLCHAR"/>
+
+    <isofield
+            id="136"
+            length="16"
+            name="Cryptogram"
+            class="org.jpos.iso.IF_CHAR"/>
+
+    <isofield
+            id="137"
+            length="4"
+            name="Application Transaction Counter"
+            class="org.jpos.iso.IF_CHAR"/>
+
+    <isofield
+            id="138"
+            length="4"
+            name="Application Interchange Profile"
+            class="org.jpos.iso.IF_CHAR"/>
+
+    <isofield
+            id="139"
+            length="32"
+            name="Issuer Authentication Data"
+            class="org.jpos.iso.IFA_LLCHAR"/>
+
+    <isofield
+            id="142"
+            length="255"
+            name="Issuer Script"
+            class="org.jpos.iso.IFA_LLLCHAR"/>
+
+    <isofield
+            id="144"
+            length="2"
+            name="Cryptogram Transaction Type"
+            class="org.jpos.iso.IF_CHAR"/>
+
+    <isofield
+            id="145"
+            length="3"
+            name="Terminal Country Code"
+            pad="true"
+            class="org.jpos.iso.IFA_NUMERIC"/>
+
+    <isofield
+            id="146"
+            length="6"
+            name="Terminal Transaction Date"
+            pad="true"
+            class="org.jpos.iso.IFA_NUMERIC"/>
+
+    <isofield
+            id="147"
+            length="12"
+            name="Cryptogram Amount"
+            pad="true"
+            class="org.jpos.iso.IFA_NUMERIC"/>
+
+    <isofield
+            id="148"
+            length="3"
+            name="Cryptogram Currency Code"
+            pad="true"
+            class="org.jpos.iso.IFA_NUMERIC"/>
+
+    <isofield
+            id="149"
+            length="12"
+            name="Cryptogram Cashback Amount"
+            pad="true"
+            class="org.jpos.iso.IFA_NUMERIC"/>
+
+    <isofield
+            id="192"
+            length="8"
+            name="MAC 3"
+            class="org.jpos.iso.IFA_BINARY"/>
+</isopackager>
