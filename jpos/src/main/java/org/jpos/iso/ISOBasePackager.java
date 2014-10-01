@@ -187,13 +187,13 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
      * @exception ISOException
      */
     public int unpack (ISOComponent m, byte[] b) throws ISOException {
-        LogEvent evt = new LogEvent (this, "unpack");
+        LogEvent evt = logger != null ?  new LogEvent (this, "unpack") : null;
         int consumed = 0;
 
         try {
             if (m.getComposite() != m) 
                 throw new ISOException ("Can't call packager on non Composite");
-            if (logger != null)  // save a few CPU cycle if no logger available
+            if (evt != null)  // save a few CPU cycle if no logger available
                 evt.addMessage (ISOUtil.hexString (b));
 
             
@@ -218,7 +218,7 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
                 ISOBitMap bitmap = new ISOBitMap (-1);
                 consumed += getBitMapfieldPackager().unpack(bitmap,b,consumed);
                 bmap = (BitSet) bitmap.getValue();
-                if (logger != null)
+                if (evt != null)
                     evt.addMessage ("<bitmap>"+bmap.toString()+"</bitmap>");
                 m.set (bitmap);
                 maxField = Math.min(maxField, bmap.size());
@@ -236,7 +236,7 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
 
                         ISOComponent c = fld[i].createComponent(i);
                         consumed += fld[i].unpack (c, b, consumed);
-                        if (logger != null) {
+                        if (evt != null) {
                             evt.addMessage ("<unpack fld=\"" + i 
                                 +"\" packager=\""
                                 +fld[i].getClass().getName()+ "\">");
@@ -257,10 +257,12 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
                         m.set(c);
                     }
                 } catch (ISOException e) {
-                    evt.addMessage (
-                        "error unpacking field " + i + " consumed=" + consumed
-                    );
-                    evt.addMessage (e);
+                    if (evt != null) {
+                        evt.addMessage(
+                                "error unpacking field " + i + " consumed=" + consumed
+                        );
+                        evt.addMessage(e);
+                    }
                     // jPOS-3
                     e = new ISOException (
                         String.format ("%s (%s) unpacking field=%d, consumed=%d",
@@ -269,26 +271,29 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
                     throw e;
                 }
             }
-            if (b.length != consumed) {
+            if (evt != null && b.length != consumed) {
                 evt.addMessage (
                     "WARNING: unpack len=" +b.length +" consumed=" +consumed
                 );
             }
             return consumed;
         } catch (ISOException e) {
-            evt.addMessage (e);
+            if (evt != null)
+                evt.addMessage (e);
             throw e;
         } catch (Exception e) {
-            evt.addMessage (e);
+            if (evt != null)
+                evt.addMessage (e);
             throw new ISOException (e.getMessage() + " consumed=" + consumed);
         } finally {
-            Logger.log (evt);
+            if (evt != null)
+                Logger.log (evt);
         }
     }
     public void unpack (ISOComponent m, InputStream in) 
         throws IOException, ISOException 
     {
-        LogEvent evt = new LogEvent (this, "unpack");
+        LogEvent evt = logger != null ? new LogEvent (this, "unpack") : null;
         try {
             if (m.getComposite() != m) 
                 throw new ISOException ("Can't call packager on non Composite");
@@ -315,7 +320,7 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
                 ISOBitMap bitmap = new ISOBitMap (-1);
                 getBitMapfieldPackager().unpack(bitmap, in);
                 bmap = (BitSet) bitmap.getValue();
-                if (logger != null)
+                if (evt != null)
                     evt.addMessage ("<bitmap>"+bmap.toString()+"</bitmap>");
                 m.set (bitmap);
                 maxField = Math.min(maxField, bmap.size());
@@ -331,7 +336,7 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
 
                     ISOComponent c = fld[i].createComponent(i);
                     fld[i].unpack (c, in);
-                    if (logger != null) {
+                    if (evt != null) {
                         evt.addMessage ("<unpack fld=\"" + i 
                             +"\" packager=\""
                             +fld[i].getClass().getName()+ "\">");
@@ -354,7 +359,7 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
                     if (bmap == null || bmap.get(i)) {
                         ISOComponent c = fld[i+128].createComponent(i);
                         fld[i+128].unpack (c, in);
-                        if (logger != null) {
+                        if (evt != null) {
                             evt.addMessage ("<unpack fld=\"" + i+128
                                 +"\" packager=\""
                                 +fld[i+128].getClass().getName()+ "\">");
@@ -368,15 +373,18 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
                 }
             }
         } catch (ISOException e) {
-            evt.addMessage (e);
+            if (evt != null)
+                evt.addMessage (e);
             throw e;
         } catch (EOFException e) {
             throw e;
         } catch (Exception e) {
-            evt.addMessage (e);
+            if (evt != null)
+                evt.addMessage (e);
             throw new ISOException (e);
         } finally {
-            Logger.log (evt);
+            if (evt != null)
+                Logger.log (evt);
         }
     }
     /**
