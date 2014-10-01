@@ -82,7 +82,7 @@ public class Logger implements LogProducer {
         }
         if (source != null)
             l = source.getLogger();
-        if (l == null) {
+        if (l == null && !evt.isHonorSourceLogger()) {
             l = getLogger(Q2.LOGGER_NAME);
         }
         if (l != null && l.hasListeners ()) {

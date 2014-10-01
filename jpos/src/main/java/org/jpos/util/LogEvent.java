@@ -29,8 +29,7 @@ import java.sql.SQLException;
 import java.util.*;
 
 /**
- * @author apr@cs.com.uy
- * @version $Id$
+ * @author @apr
  */
 public class LogEvent {
     private LogSource source;
@@ -38,6 +37,7 @@ public class LogEvent {
     private final List<Object> payLoad;
     private long createdAt;
     private long dumpedAt;
+    private boolean honorSourceLogger;
 
     public LogEvent (String tag) {
         super();
@@ -56,10 +56,12 @@ public class LogEvent {
     public LogEvent (LogSource source, String tag) {
         this (tag);
         this.source  = source;
+        honorSourceLogger = true;
     }
     public LogEvent (LogSource source, String tag, Object msg) {
         this (tag);
         this.source  = source;
+        honorSourceLogger = true;
         addMessage(msg);
     }
     public String getTag() {
@@ -196,5 +198,13 @@ public class LogEvent {
         dump (p, "");
         return baos.toString();
     }
-}
 
+    /**
+     * This is a hack for backward compatibility after accepting PR67
+     * @see <a href="https://github.com/jpos/jPOS/pull/67">PR67</a>
+     * @return true if ISOSource has been set
+     */
+    public boolean isHonorSourceLogger() {
+        return honorSourceLogger;
+    }
+}
