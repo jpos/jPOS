@@ -107,8 +107,8 @@ public class EuroSubFieldPackager extends ISOBasePackager
             //Determine current tag
             int i = consumed==0&&fld[0]!=null?0:tagPrefixer.decodeLength(b, consumed);
 
-            if (!(i < fld.length) || fld[i] == null)
-                throw new ISOException ("Unsupported sub-field " + i + " unpacking field " + m.getKey());
+            if (i >= fld.length || fld[i] == null)
+                throw new ISOException("Unsupported sub-field " + i + " unpacking field " + m.getKey());
 
             c = fld[i].createComponent(i);
             consumed += fld[i].unpack (c, b, consumed);
