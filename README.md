@@ -1,9 +1,9 @@
-## Build distribution
 [![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/jpos/jPOS?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
+## Build distribution
     ./gradlew dist
 
-    
+        
 ## Install locally
 
     ./gradlew install
