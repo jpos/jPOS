@@ -1355,6 +1355,15 @@ public class ISOUtil {
     public static String hexdump (byte[] b) {
         return hexdump (b, 0, b.length);
     }
+
+    /**
+     * @param b a byte[] buffer
+     * @param offset starting offset
+     */
+    public static String hexdump (byte[] b, int offset) {
+        return hexdump (b, offset, b.length-offset);
+    }
+
     /**
      * @param b a byte[] buffer
      * @param offset starting offset
