@@ -74,7 +74,6 @@ public class TLVList implements Serializable, Loggeable {
      * @throws org.jpos.iso.ISOException
      */
     public void unpack(byte[] buf, int offset) throws ISOException {
-        System.out.println (ISOUtil.hexdump(buf));
         ByteBuffer buffer=ByteBuffer.wrap(buf,offset,buf.length-offset);
         TLVMsg currentNode;
         while (hasNext(buffer)) {    
