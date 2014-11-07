@@ -20,15 +20,15 @@ package org.jpos.iso;
 
 public class IFEMC_LLLCHAR extends ISOTagStringFieldPackager {
     public IFEMC_LLLCHAR() {
-        super(0, null, AsciiPrefixer.LLL, NullPadder.INSTANCE,
-                EbcdicInterpreter.INSTANCE, AsciiPrefixer.LLL);
+        super(0, null, EbcdicPrefixer.LLLL, NullPadder.INSTANCE,
+                EbcdicInterpreter.INSTANCE, EbcdicPrefixer.LLL);
     }
     /**
      * @param len - field len
      * @param description symbolic descrption
      */
     public IFEMC_LLLCHAR (int len, String description) {
-        super(len, description, AsciiPrefixer.LLL, NullPadder.INSTANCE,
-                EbcdicInterpreter.INSTANCE, AsciiPrefixer.LLL);
+        super(len, description, EbcdicPrefixer.LLLL, NullPadder.INSTANCE,
+                EbcdicInterpreter.INSTANCE, EbcdicPrefixer.LLL);
     }
 }
