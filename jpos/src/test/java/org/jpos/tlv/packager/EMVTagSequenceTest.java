@@ -79,9 +79,7 @@ public class EMVTagSequenceTest {
         System.arraycopy(packed, 12, field48Packed, 0, field48Packed.length);
 
         Assert.assertEquals("Pack error", 29, field48Packed.length);
-        //
-        Assert.assertEquals("Pack error", "303236500251325a08999999123456789f5f2a0208409f12044a504f53", ISOUtil.byte2hex(field48Packed));
-        //Assert.assertEquals("Pack error", "303235500251325a079999991234567895f2a0208409f12044a504f53", ISOUtil.byte2hex(field48Packed));
+        Assert.assertEquals("Pack error", "3032365a08999999123456789f9f12044a504f53500251325f2a020840", ISOUtil.byte2hex(field48Packed));
 
         msg = new ISOMsg();
         packager.unpack(msg, packed);
@@ -117,7 +115,7 @@ public class EMVTagSequenceTest {
 
         Assert.assertEquals("Pack error", 29, field48Packed.length);
 
-        Assert.assertEquals("Pack error", "303236500251325a08999999123456789f5f2a0208409f12044a504f53", ISOUtil.byte2hex(field48Packed));
+        Assert.assertEquals("Pack error", "3032365a08999999123456789f9f12044a504f53500251325f2a020840", ISOUtil.byte2hex(field48Packed));
     }
 
 }
