@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pmd version="5.1.1" timestamp="2014-11-11T22:13:10.959">
+<pmd version="5.1.1" timestamp="2014-11-24T22:23:44.320">
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/bsh/BSHLogListener.java">
 <violation beginline="112" endline="112" begincolumn="40" endcolumn="84" rule="UselessParentheses" ruleset="Unnecessary" package="org.jpos.bsh" class="BSHLogListener" method="replace" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/unnecessary.html#UselessParentheses" priority="4">
 Useless parentheses.
