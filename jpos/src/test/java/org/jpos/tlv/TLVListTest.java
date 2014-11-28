@@ -431,41 +431,19 @@ public class TLVListTest {
     }
 
     @Test
-    public void testUnpackThrowsBufferUnderflowException() throws Throwable {
+    public void testUnpackWith0x00Padding() throws Throwable {
         byte[] buf = ISOUtil.hex2byte("fe0000");
-        exception.expect(BufferUnderflowException.class);
-        try {
-            tLVList.unpack(buf, 0);
-        } catch (BufferUnderflowException ex) {
-            assertTrue("tLVList.elements().hasMoreElements()", tLVList.elements().hasMoreElements());
-            throw ex;
-        }
+        tLVList.unpack(buf, 0);
+        assertTrue("tLVList.elements().hasMoreElements()", tLVList.elements().hasMoreElements());
     }
 
     @Test
-    public void testUnpackThrowsBufferUnderflowException1() throws Throwable {
+    public void testUnpackWith0x00Padding1() throws Throwable {
         byte[] buf = ISOUtil.hex2byte("878000");
-//        buf[0] = (byte) -121;
-//        buf[1] = (byte) -128;
-        exception.expect(BufferUnderflowException.class);
-        try {
-            tLVList.unpack(buf);
-        } catch (BufferUnderflowException ex) {
-            assertTrue("tLVList.elements().hasMoreElements()", tLVList.elements().hasMoreElements());
-            throw ex;
-        }
-    }
-
-    @Test
-    public void testUnpackThrowsBufferUnderflowException2() throws Throwable {
-        byte[] buf = ISOUtil.hex2byte("fe0000");
-        exception.expect(BufferUnderflowException.class);
-        try {
-            tLVList.unpack(buf);
-        } catch (BufferUnderflowException ex) {
-            assertTrue("tLVList.elements().hasMoreElements()", tLVList.elements().hasMoreElements());
-            throw ex;
-        }
+        // buf[0] = (byte) -121;
+        // buf[1] = (byte) -128;
+        tLVList.unpack(buf);
+        assertTrue("tLVList.elements().hasMoreElements()", tLVList.elements().hasMoreElements());
     }
 
     @Test
