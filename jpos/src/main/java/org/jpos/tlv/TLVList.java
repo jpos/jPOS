@@ -252,8 +252,12 @@ public class TLVList implements Serializable, Loggeable {
         // Skip padding chars
         if (b == 0xFF || b == 0x00) {
             do {
-                b = buffer.get() & 0xff;    
-            } while ((b == 0xFF || b == 0x00) && hasNext(buffer));
+                if (hasNext(buffer)) {
+                    b = buffer.get() & 0xff;
+                } else {
+                    break;
+                }    
+            } while ((b == 0xFF || b == 0x00));
         }
         // Get first byte of Tag Identifier
         tag = b;
