@@ -18,8 +18,11 @@
 
 package org.jpos.iso;
 
+import java.io.PrintStream;
+import org.jpos.util.Loggeable;
+
 @SuppressWarnings("unused")
-public class PosDataCode {
+public class PosDataCode implements Loggeable {
 
     public enum ReadingMethod {
         UNKNOWN                (1, "Unknown"),
@@ -210,5 +213,46 @@ public class PosDataCode {
     }
     public static PosDataCode valueOf (byte[] b) {
         return new PosDataCode(b);  // we create new objects for now, but may return cached instances in the future
+    }
+    public void dump(PrintStream p, String indent) {
+        String inner = indent + "  ";
+        StringBuilder sb = new StringBuilder();
+        p.printf("%s<pdc value='%s'>%s%n", indent, ISOUtil.hexString(getBytes()), sb.toString());
+        for (ReadingMethod m : ReadingMethod.values()) {
+            if (hasReadingMethod(m)) {
+                if (sb.length() > 0)
+                    sb.append(',');
+                sb.append(m.name());
+            }
+        }
+        p.printf ("%srm: %s%n", inner, sb.toString());
+        sb = new StringBuilder();
+        for (VerificationMethod m : VerificationMethod.values()) {
+            if (hasVerificationMethod(m)) {
+                if (sb.length() > 0)
+                    sb.append(',');
+                sb.append(m.name());
+            }
+        }
+        p.printf ("%svm: %s%n", inner, sb.toString());
+        sb = new StringBuilder();
+        for (POSEnvironment m : POSEnvironment.values()) {
+            if (hasPosEnvironment(m)) {
+                if (sb.length() > 0)
+                    sb.append(',');
+                sb.append(m.name());
+            }
+        }
+        p.printf ("%spe: %s%n", inner, sb.toString());
+        sb = new StringBuilder();
+        for (SecurityCharacteristic m : SecurityCharacteristic.values()) {
+            if (hasSecurityCharacteristic(m)) {
+                if (sb.length() > 0)
+                    sb.append(',');
+                sb.append(m.name());
+            }
+        }
+        p.printf ("%ssc: %s%n", inner, sb.toString());
+        p.println("</pdc>");
     }
 }
