@@ -192,11 +192,14 @@ public class LogEvent {
     public List<Object> getPayLoad() {
         return payLoad;
     }
-    public String toString() {
+    public String toString(String indent) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream p = new PrintStream (baos);
-        dump (p, "");
+        dump (p, indent);
         return baos.toString();
+    }
+    public String toString() {
+        return toString("");
     }
 
     /**
