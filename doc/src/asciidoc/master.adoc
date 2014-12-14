@@ -1,0 +1,114 @@
+jPOS Programmer's Guide
+=======================
+:author: Alejandro Revilla
+:email: apr@jpos.org
+:revdate: {localdate}
+:revnumber: 1.9.8
+:jpos_version: 1.9.8
+
+:leveloffset: 1
+include::legal/copyright.adoc[]
+include::preface/preface.adoc[]
+
+= The jPOS Project
+include::ch01/about.adoc[]
+include::ch01/license.adoc[]
+include::ch01/iso8583.adoc[]
+include::ch01/downloading.adoc[]
+include::ch01/directory_structure.adoc[]
+include::ch01/using.adoc[]
+include::ch01/building.adoc[]
+include::ch01/running.adoc[]
+
+= About ISO-8583
+include::ch02/iso8583.adoc[]
+include::ch02/jposiso.adoc[]
+
+= Support classes
+include::ch03/logger.adoc[]
+include::ch03/nameregistrar.adoc[]
+include::ch03/configuration.adoc[]
+include::ch03/systemmonitor.adoc[]
+include::ch03/profiler.adoc[]
+include::ch03/dirpoll.adoc[]
+include::ch03/threadpool.adoc[]
+
+= Packagers
+include::ch04/custom_packagers.adoc[]
+include::ch04/genericpackager.adoc[]
+
+= Channels
+include::ch05/intro.adoc[]
+include::ch05/tcpip_channels.adoc[]
+include::ch05/ssl_channels.adoc[]
+include::ch05/loopback.adoc[]
+include::ch05/channel_pool.adoc[]
+
+= jPOS Space
+include::ch06/intro.adoc[]
+include::ch06/space_interface.adoc[]
+include::ch06/local_space_interface.adoc[]
+
+include::ch06/space_factory.adoc[]
+include::ch06/tspace.adoc[]
+include::ch06/jdbm_space.adoc[]
+include::ch06/je_space.adoc[]
+include::ch06/space_interceptor.adoc[]
+include::ch06/space_tap.adoc[]
+include::ch06/space_util.adoc[]
+
+= Q2
+include::ch07/intro.adoc[]
+include::ch07/running.adoc[]
+include::ch07/shutdown.adoc[]
+include::ch07/writing_first_script.adoc[]
+include::ch07/qtest.adoc[]
+include::ch07/qbeansupport.adoc[]
+include::ch07/dynamic_classloading.adoc[]
+
+= Q2 jPOS Services
+include::ch08/intro.adoc[]
+include::ch08/channel_adaptor.adoc[]
+include::ch08/one_shot_channel_adaptor.adoc[]
+include::ch08/qmux.adoc[]
+include::ch08/qserver.adoc[]
+
+= TransactionManager
+include::ch09/intro.adoc[]
+include::ch09/constants.adoc[]
+include::ch09/context.adoc[]
+include::ch09/context_recovery.adoc[]
+include::ch09/assembly_line.adoc[]
+include::ch09/abort_participant.adoc[]
+include::ch09/group_selector.adoc[]
+include::ch09/transaction_manager.adoc[]
+
+//include::ch02.adociidoc[]
+//include::ch03.adociidoc[]
+//include::ch04.adociidoc[]
+//include::ch05.adociidoc[]
+//include::ch06.adociidoc[]
+//include::ch07.adociidoc[]
+//include::ch08.adociidoc[]
+//include::ch09.adociidoc[]
+//include::ch10.adociidoc[]
+//include::ch11.adociidoc[]
+//include::ch12.adociidoc[]
+//include::ch13.adociidoc[]
+//include::glossary.adociidoc[]
+
+include::appendix/getting_involved.adoc[]
+include::appendix/license.adoc[]
+
+// ==========
+// include::appendix_LICENSE.adoc[]
+// include::appa.adociidoc[]
+// include::appb.adociidoc[]
+// include::appc.adociidoc[]
+// include::appd.adociidoc[]
+// include::appe.adociidoc[]
+// include::appf.adociidoc[]
+// include::appg.adociidoc[]
+// include::apph.adociidoc[]
+// include::appi.adociidoc[]
+
