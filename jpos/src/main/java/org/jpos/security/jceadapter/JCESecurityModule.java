@@ -49,8 +49,8 @@ import org.jpos.iso.ISOException;
 
 
 /**
- * <p>
  * JCESecurityModule is an implementation of a security module in software.
+ * <p>
  * It doesn't require any hardware device to work.<br>
  * JCESecurityModule also implements the SMAdapter, so you can view it: either
  * as a self contained security module adapter that doesn't need a security module
@@ -58,14 +58,14 @@ import org.jpos.iso.ISOException;
  * a separate adapter.<br>
  * It relies on Java(tm) Cryptography Extension (JCE), hence its name.<br>
  * JCESecurityModule relies on the JCEHandler class to do the low level JCE work.
- * </p>
  * <p>
  * WARNING: This version of JCESecurityModule is meant for testing purposes and
  * NOT for life operation, since the Local Master Keys are stored in CLEAR on
  * the system's disk. Comming versions of JCESecurity Module will rely on
  * java.security.KeyStore for a better protection of the Local Master Keys.
- * </p>
+ *
  * @author Hani Samuel Kirollos
+ * @author Robert Demski
  * @version $Revision$ $Date$
  */
 @SuppressWarnings("unchecked")
@@ -792,10 +792,14 @@ public class JCESecurityModule extends BaseSMAdapter {
     }
 
     /**
-     * Derive the session key used for secure messaging, the diversification
-     * value is the RAND. RAND is ARQC incremeted by 1 (with overflow) after
-     * each script command for that same ATC value.
-     * A1.3.1 Common Session Key Derivation Option
+     * Common Session Key Derivation Method for secure messaging.
+     * <p>
+     * The diversification value is the <em>RAND</em>, which is ARQC
+     * incremeted by 1 (with overflow) after each script command
+     * for that same ATC value.
+     * Described in EMV v4.2 Book 2, Annex A1.3.1 Common Session Key
+     * Derivation Option for secure messaging.
+     *
      * @param mksm unique ICC Master Key for Secure Messaging
      * @param rand Application Cryptogram as diversification value
      * @return derived 16-bytes Session Key with adjusted DES parity
@@ -811,6 +815,194 @@ public class JCESecurityModule extends BaseSMAdapter {
       Util.adjustDESParity(skl);
       Util.adjustDESParity(skr);
       return jceHandler.formDESKey(SMAdapter.LENGTH_DES3_2KEY, ISOUtil.concat(skl,skr));
+    }
+
+    /**
+     * Common Session Key Derivation Method for Application Cryptograms.
+     * <p>
+     * Described in EMV v4.2 Book 2, Annex A1.3.1 Common Session Key Derivation
+     * Option for Application Cryptograms.
+     *
+     * @param mkac unique ICC Master Key for Application Cryptogams.
+     * @param atc ICC generated Application Transaction Counter as diversification value.
+     * @return derived 16-bytes Session Key with adjusted DES parity.
+     * @throws JCEHandlerException
+     */
+    private Key deriveCommonSK_AC(Key mkac, byte[] atc) throws JCEHandlerException {
+
+        byte[] r = new byte[8];
+        System.arraycopy(atc, atc.length-2, r, 0, 2);
+
+        return deriveCommonSK_SM(mkac, r);
+    }
+
+    /**
+     * MasterCard Proprietary Session Key Derivation (SKD) method.
+     * <p>
+     * Described in M/Chip 4 version 1.1 Security & Key Management manual
+     * paragraph 7 ICC Session Key Derivation.
+     *
+     * @param mkac unique ICC Master Key for Application Cryptogams
+     * @param atc ICC generated Application Transaction Counter as diversification value
+     * @param upn terminal generated random as diversification value
+     * @return derived 16-bytes Session Key with adjusted DES parity
+     * @throws JCEHandlerException
+     */
+    private Key deriveSK_MK(Key mkac, byte[] atc, byte[] upn) throws JCEHandlerException {
+
+        byte[] r = new byte[8];
+        System.arraycopy(atc, atc.length-2, r, 0, 2);
+        System.arraycopy(upn, upn.length-4, r, 4, 4);
+
+        return deriveCommonSK_SM(mkac, r);
+    }
+
+    private void constraintMKDM(MKDMethod mkdm, SKDMethod skdm) throws SMException {
+        if (mkdm == MKDMethod.OPTION_B)
+            throw new SMException("Master Key Derivation Option B"
+                    + " is not used in practice with scheme "+skdm);
+    }
+
+    private void constraintARPCM(SKDMethod skdm, ARPCMethod arpcMethod) throws SMException {
+        if (arpcMethod == ARPCMethod.METHOD_2 )
+            throw new SMException("ARPC generation method 2"
+                    + " is not used in practice with scheme "+skdm);
+    }
+
+    /**
+     * Calculate ARQC.
+     * <p>
+     * Entry point e.g. for simulator systems
+     */
+    byte[] calculateARQC(MKDMethod mkdm, SKDMethod skdm
+            ,SecureDESKey imkac, String accountNo, String accntSeqNo, byte[] atc
+            ,byte[] upn, byte[] transData) throws SMException {
+        if (mkdm==null)
+            mkdm = MKDMethod.OPTION_A;
+
+        byte[] panpsn = formatPANPSN(accountNo, accntSeqNo, mkdm);
+        Key mkac = deriveICCMasterKey(decryptFromLMK(imkac), panpsn);
+        Key skac = mkac;
+        switch(skdm){
+            case VSDC:
+                constraintMKDM(mkdm, skdm);
+                break;
+            case MCHIP:
+                constraintMKDM(mkdm, skdm);
+                skac = deriveSK_MK(mkac,atc,upn);
+                break;
+            case EMV_CSKD:
+                skac = deriveCommonSK_AC(mkac, atc);
+                break;
+            default:
+                throw new SMException("Session Key Derivation "+skdm+" not supported");
+        }
+
+        return calculateMACISO9797Alg3(skac, transData);
+    }
+
+    @Override
+    protected boolean verifyARQCImpl(MKDMethod mkdm, SKDMethod skdm, SecureDESKey imkac
+            ,String accountNo, String accntSeqNo, byte[] arqc, byte[] atc
+            ,byte[] upn, byte[] transData) throws SMException {
+
+        byte[] res = calculateARQC(mkdm, skdm, imkac, accountNo, accntSeqNo
+                ,atc, upn, transData);
+        return Arrays.equals(arqc, res);
+    }
+
+    @Override
+    public byte[] generateARPCImpl(MKDMethod mkdm, SKDMethod skdm, SecureDESKey imkac
+            ,String accountNo, String accntSeqNo, byte[] arqc, byte[] atc, byte[] upn
+            ,ARPCMethod arpcMethod, byte[] arc, byte[] propAuthData)
+            throws SMException {
+        if (mkdm==null)
+            mkdm = MKDMethod.OPTION_A;
+
+        byte[] panpsn = formatPANPSN(accountNo, accntSeqNo, mkdm);
+        Key mkac = deriveICCMasterKey(decryptFromLMK(imkac), panpsn);
+        Key skarpc = mkac;
+        switch(skdm){
+            case VSDC:
+                constraintMKDM(mkdm, skdm);
+                constraintARPCM(skdm, arpcMethod);
+                break;
+            case MCHIP:
+                constraintMKDM(mkdm, skdm);
+                constraintARPCM(skdm, arpcMethod);
+                break;
+            case EMV_CSKD:
+                skarpc = deriveCommonSK_AC(mkac, atc);;
+                break;
+            default:
+                throw new SMException("Session Key Derivation "+skdm+" not supported");
+        }
+
+        return calculateARPC(skarpc, arqc, arpcMethod, arc, propAuthData);
+    }
+
+    @Override
+    public byte[] verifyARQCGenerateARPCImpl(MKDMethod mkdm, SKDMethod skdm, SecureDESKey imkac
+            ,String accountNo, String accntSeqNo, byte[] arqc, byte[] atc, byte[] upn 
+            ,byte[] transData, ARPCMethod arpcMethod, byte[] arc, byte[] propAuthData)
+            throws SMException {
+        if (mkdm==null)
+            mkdm = MKDMethod.OPTION_A;
+
+        byte[] panpsn = formatPANPSN(accountNo, accntSeqNo, mkdm);
+        Key mkac = deriveICCMasterKey(decryptFromLMK(imkac), panpsn);
+        Key skac = mkac;
+        Key skarpc = mkac;
+        switch(skdm){
+            case VSDC:
+                constraintMKDM(mkdm, skdm);
+                constraintARPCM(skdm, arpcMethod);
+                break;
+            case MCHIP:
+                constraintMKDM(mkdm, skdm);
+                constraintARPCM(skdm, arpcMethod);
+                skac = deriveSK_MK(mkac,atc,upn);
+                break;
+            case EMV_CSKD:
+                skac = deriveSK_MK(mkac, atc, new byte[4]);
+                skarpc = skac;
+                break;
+            default:
+                throw new SMException("Session Key Derivation "+skdm+" not supported");
+        }
+
+        if (!Arrays.equals(arqc, calculateMACISO9797Alg3(skac, transData)))
+            return null;
+
+        return calculateARPC(skarpc, arqc, arpcMethod, arc, propAuthData);
+    }
+
+    /**
+     * Calculate ARPC.
+     * <p>
+     * Entry point e.g. for simulator systems
+     */
+    byte[] calculateARPC(Key skarpc, byte[] arqc, ARPCMethod arpcMethod
+             ,byte[] arc, byte[] propAuthData) throws SMException {
+        if (arpcMethod == null)
+            arpcMethod = ARPCMethod.METHOD_1;
+
+        byte[] b = new byte[8];
+        switch(arpcMethod) {
+            case METHOD_1:
+                System.arraycopy(arc, arc.length-2, b, 0, 2);
+                b = ISOUtil.xor(arqc, b);
+                return jceHandler.encryptData(b, skarpc);
+            case METHOD_2:
+                b = ISOUtil.concat(arqc, arc);
+                if (propAuthData != null)
+                    b = ISOUtil.concat(b, propAuthData);
+                b = paddingISO9797Method2(b);
+                b = calculateMACISO9797Alg3(skarpc, b);
+                return Arrays.copyOf(b, 4);
+            default:
+                throw new SMException("ARPC Method "+arpcMethod+" not supported");
+        }
     }
 
     @Override

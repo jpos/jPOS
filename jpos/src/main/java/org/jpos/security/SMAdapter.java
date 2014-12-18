@@ -33,7 +33,7 @@ import java.util.Map;
  * But application programmers will be communicating
  * with the security module using this simple interface.
  *
- * TODO: support for EMV Secure Messaging, dCVV, CVC3 verification and RSA generation API's
+ * TODO: support for RSA generation API's
  *
  * @author Hani S. Kirollos
  * @author Robert Demski
