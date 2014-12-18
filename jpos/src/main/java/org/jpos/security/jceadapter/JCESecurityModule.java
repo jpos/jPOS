@@ -509,7 +509,7 @@ public class JCESecurityModule extends BaseSMAdapter {
         Key kr = jceHandler.formDESKey(SMAdapter.LENGTH_DES
                             ,Arrays.copyOfRange(key.getEncoded(), 8, 16));
         if (d.length%8 != 0) {
-            //Padding - first byte 0x80 rest 0x00
+            //Padding with 0x00 bytes
             byte[] t = new byte[d.length - d.length%8 + 8];
             System.arraycopy(d, 0, t, 0, d.length);
             d = t;

@@ -925,8 +925,12 @@ public interface SMAdapter {
      * @param upn unpredictable number. This is used for Session Key Generation
      *        A 4 byte value must be supplied. For {@code skdm} equals
      *        {@link SKDMethod#VSDC} is not used.
-     * @param transData transaction data (without padding). Transaction data
-     *        elements and them order is dependend to proper cryptogram version
+     * @param transData transaction data. Transaction data elements and them
+     *        order is dependend to proper cryptogram version. If the data
+     *        supplied is a multiple of 8 bytes, no extra padding is added.
+     *        If it is not a multiple of 8 bytes, additional zero padding is added.
+     *        <b>If alternative padding methods are required, it have to be
+     *        applied before</b>.
      * @return true if ARQC/TC/AAC is passed or false if not
      * @throws SMException
      */
@@ -997,8 +1001,12 @@ public interface SMAdapter {
      * @param upn unpredictable number. This is used for Session Key Generation
      *        A 4 byte value must be supplied. For {@code skdm} equals
      *        {@link SKDMethod#VSDC} is not used.
-     * @param transData transaction data (without padding). Transaction data
-     *        elements and them order is dependend to proper cryptogram version
+     * @param transData transaction data. Transaction data elements and them
+     *        order is dependend to proper cryptogram version. If the data
+     *        supplied is a multiple of 8 bytes, no extra padding is added.
+     *        If it is not a multiple of 8 bytes, additional zero padding is added.
+     *        <b>If alternative padding methods are required, it have to be
+     *        applied before</b>.
      * @param arpcMethod ARPC calculating method. For {@code skdm} equals
      *        {@link SKDMethod#VSDC}, {@link SKDMethod#MCHIP},
      *        {@link SKDMethod#AEPIS_V40} only {@link ARPCMethod#METHOD_1} is valid
