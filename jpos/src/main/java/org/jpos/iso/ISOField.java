@@ -62,7 +62,7 @@ public class ISOField
     }
     /**
      * not available on Leaf - always throw ISOException
-     * @return
+     * @return never returns
      * @exception ISOException
      */
     @Override
@@ -72,7 +72,7 @@ public class ISOField
     /**
      * not available on Leaf - always throw ISOException
      * @param b
-     * @return
+     * @return never returns
      * @exception ISOException
      */
     @Override

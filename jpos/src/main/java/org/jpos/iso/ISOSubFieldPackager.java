@@ -23,7 +23,8 @@ package org.jpos.iso;
  * <p>
  * {@link ISOMsgFieldPackager} needs a number of current (parent) composite field
  * in order to enable nesting in its tags other composite fields (e.g.
- * {@link GenericSubFieldPackager} or even {@link GenericTaggedFieldsPackager})
+ * {@link org.jpos.iso.packager.GenericSubFieldPackager} or even
+ * {@link org.jpos.iso.packager.GenericTaggedFieldsPackager})
  *
  * @author Robert Demski <drdemsey@gmail.com>
  */

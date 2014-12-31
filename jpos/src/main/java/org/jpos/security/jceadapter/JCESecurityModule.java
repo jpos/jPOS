@@ -328,7 +328,7 @@ public class JCESecurityModule extends BaseSMAdapter {
     /**
      * Visa way to decimalize data block
      * @param b
-     * @return
+     * @return decimalized data string
      */
     private static String decimalizeVisa(byte[] b){
         char[] bec = ISOUtil.hexString(b).toUpperCase().toCharArray();
@@ -506,7 +506,7 @@ public class JCESecurityModule extends BaseSMAdapter {
      * Calculate MAC according to ISO/IEC 9797-1 Alg 3
      * @param key DES double length key
      * @param d data to calculate MAC on it
-     * @return
+     * @return 8 byte of mac value
      * @throws JCEHandlerException
      */
     private byte[] calculateMACISO9797Alg3(Key key, byte[] d) throws JCEHandlerException {

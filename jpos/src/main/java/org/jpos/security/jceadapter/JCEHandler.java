@@ -262,6 +262,7 @@ public class JCEHandler {
      * 
      * @param data
      * @param key
+     * @param iv 8 bytes initial vector
      * @return encrypted data
      * @exception JCEHandlerException
      */
@@ -274,6 +275,7 @@ public class JCEHandler {
      * 
      * @param encryptedData
      * @param key
+     * @param iv 8 bytes initial vector
      * @return clear data
      * @exception JCEHandlerException
      */

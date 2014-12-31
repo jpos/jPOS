@@ -845,6 +845,7 @@ public interface SMAdapter {
      *        Key derivation. A 2 byte value must be supplied.
      * @param mkdm ICC Master Key Derivation Method. If {@code null} specified
      *        is assumed.
+     * @return true if dcvv is valid false if not
      * @throws SMException
      */
     public boolean verifydCVV(String accountNo, SecureDESKey imkac, String dcvv,
@@ -893,6 +894,7 @@ public interface SMAdapter {
      *        digits. Max value is {@code "65535"} (decimal representation
      *        of 2 byte value). Is possible to pass shorter cvc3 value e.g.
      *        {@code "789"} matches with calcuated CVC3 {@code "04789"}
+     * @return true if cvc3 is valid false if not
      * @throws SMException
      */
     public boolean verifyCVC3(SecureDESKey imkcvc3, String accountNo, String acctSeqNo,
