@@ -1,9 +1,12 @@
 apply from: 'jpos/libraries.gradle'
 
 allprojects {
-    apply plugin: 'java'
     apply plugin: 'idea'
     apply plugin: 'eclipse'
+}
+
+subprojects {
+    apply plugin: 'java'
     apply plugin: 'maven'
     apply plugin: 'signing'
     apply plugin: 'pmd'
@@ -15,6 +18,10 @@ allprojects {
     def mavenCentralRepo = isSnapshot ?
         'https://oss.sonatype.org/content/repositories/snapshots/' :
         'https://oss.sonatype.org/service/local/staging/deploy/maven2';
+
+    configurations.compile.transitive = true
+    javadoc.failOnError = false
+    pmd.ignoreFailures = true
 
     sourceCompatibility = 1.6
     targetCompatibility = 1.6
@@ -96,32 +103,23 @@ allprojects {
             }
         }
     }
-}
 
-subprojects  {
-    configurations.compile.transitive = true
-    javadoc.failOnError = false
-    pmd.ignoreFailures = true
-}
-
-task aggregatedJavadoc (type: Javadoc, description: "Aggregated Javadocs") { 
-    source subprojects.collect {project -> 
-        project.sourceSets.main.allJava 
-    } 
-    destinationDir = new File(buildDir, 'docs/javadoc') 
-    classpath = files(subprojects.collect {project -> 
-        project.sourceSets.main.compileClasspath}) 
-    failOnError = false
-} 
-
-task wrapper( type: Wrapper ) {
-    gradleVersion = '2.2.1'
+	task aggregatedJavadoc (type: Javadoc, description: "Aggregated Javadocs") { 
+		source subprojects.collect {project -> 
+			project.sourceSets.main.allJava 
+		} 
+		destinationDir = new File(buildDir, 'docs/javadoc') 
+		classpath = files(subprojects.collect {project -> 
+			project.sourceSets.main.compileClasspath}) 
+		failOnError = false
+	} 
 }
 
 // Configure IDEA to use Git
 idea.project.ipr {
-  withXml { provider ->
-    provider.node.component.find { it.@name == 'VcsDirectoryMappings' }.mapping.@vcs = 'Git'
-  }
+   withXml { provider -> provider.node.component.find { it.@name == 'VcsDirectoryMappings' }.mapping.@vcs = 'Git' }
 }
 
+task wrapper( type: Wrapper ) {
+    gradleVersion = '2.2.1'
+}
