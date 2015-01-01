@@ -40,7 +40,6 @@ public class LogEvent {
     private long createdAt;
     private long dumpedAt;
     private boolean honorSourceLogger;
-    private static DateFormat df = new SimpleDateFormat("EEE MMM dd HH:mm:ss.SSS z yyyy", Locale.US);
 
     public LogEvent (String tag) {
         super();
@@ -86,6 +85,7 @@ public class LogEvent {
         if (dumpedAt == 0L)
             dumpedAt = System.currentTimeMillis();
         Date date = new Date (dumpedAt);
+        DateFormat df = new SimpleDateFormat("EEE MMM dd HH:mm:ss.SSS z yyyy", Locale.US);
         StringBuilder sb = new StringBuilder(indent);
         sb.append ("<log realm=\"");
         sb.append (getRealm());
