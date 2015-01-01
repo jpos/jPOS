@@ -40,6 +40,7 @@ public class LogEvent {
     private long createdAt;
     private long dumpedAt;
     private boolean honorSourceLogger;
+    private static DateFormat df = new SimpleDateFormat("EEE MMM dd HH:mm:ss.SSS z yyyy", Locale.US);
 
     public LogEvent (String tag) {
         super();
@@ -89,7 +90,6 @@ public class LogEvent {
         sb.append ("<log realm=\"");
         sb.append (getRealm());
         sb.append ( "\" at=\"");
-        DateFormat df = new SimpleDateFormat("EEE MMM dd HH:mm:ss.SSS z yyyy",Locale.US);
         sb.append (df.format(date));
         sb.append ('"');
         if (dumpedAt != createdAt) {
