@@ -168,6 +168,7 @@ public class JCESecurityModule extends BaseSMAdapter {
      *             ANSI X9.19<br>
      * @throws ConfigurationException
      */
+    @Override
     public void setConfiguration (Configuration cfg) throws ConfigurationException {
         this.cfg = cfg;
         try {
@@ -177,6 +178,7 @@ public class JCESecurityModule extends BaseSMAdapter {
         }
     }
 
+    @Override
     public SecureDESKey generateKeyImpl (short keyLength, String keyType) throws SMException {
         SecureDESKey generatedSecureKey = null;
         Key generatedClearKey = jceHandler.generateDESKey(keyLength);
@@ -184,6 +186,7 @@ public class JCESecurityModule extends BaseSMAdapter {
         return  generatedSecureKey;
     }
 
+    @Override
     public SecureDESKey importKeyImpl (short keyLength, String keyType, byte[] encryptedKey,
             SecureDESKey kek, boolean checkParity) throws SMException {
         SecureDESKey importedKey = null;
@@ -195,6 +198,7 @@ public class JCESecurityModule extends BaseSMAdapter {
         return  importedKey;
     }
 
+    @Override
     public byte[] exportKeyImpl (SecureDESKey key, SecureDESKey kek) throws SMException {
         byte[] exportedKey = null;
         // get key in clear
@@ -245,6 +249,7 @@ public class JCESecurityModule extends BaseSMAdapter {
         return scheme;
     }
 
+    @Override
     public EncryptedPIN encryptPINImpl (String pin, String accountNumber) throws SMException {
         EncryptedPIN encryptedPIN = null;
         byte[] clearPINBlock = calculatePINBlock(pin, FORMAT00, accountNumber);
@@ -254,6 +259,7 @@ public class JCESecurityModule extends BaseSMAdapter {
         return  encryptedPIN;
     }
 
+    @Override
     public String decryptPINImpl (EncryptedPIN pinUnderLmk) throws SMException {
         String pin = null;
         byte[] clearPINBlock = jceHandler.decryptData(pinUnderLmk.getPINBlock(),
@@ -262,6 +268,7 @@ public class JCESecurityModule extends BaseSMAdapter {
         return  pin;
     }
 
+    @Override
     public EncryptedPIN importPINImpl (EncryptedPIN pinUnderKd1, SecureDESKey kd1) throws SMException {
         EncryptedPIN pinUnderLmk = null;
         // read inputs
@@ -283,6 +290,7 @@ public class JCESecurityModule extends BaseSMAdapter {
         return  pinUnderLmk;
     }
 
+    @Override
     public EncryptedPIN exportPINImpl (EncryptedPIN pinUnderLmk, SecureDESKey kd2,
             byte destinationPINBlockFormat) throws SMException {
         EncryptedPIN exportedPIN = null;
@@ -871,6 +879,7 @@ public class JCESecurityModule extends BaseSMAdapter {
      * @return generated CBC-MAC bytes
      * @throws SMException
      */
+    @Override
     protected byte[] generateCBC_MACImpl (byte[] data, SecureDESKey kd) throws SMException {
         LogEvent evt = new LogEvent(this, "jce-provider-cbc-mac");
         try {
@@ -890,6 +899,7 @@ public class JCESecurityModule extends BaseSMAdapter {
      * @return generated EDE-MAC bytes
      * @throws SMException
      */
+    @Override
     protected byte[] generateEDE_MACImpl (byte[] data, SecureDESKey kd) throws SMException {
         LogEvent evt = new LogEvent(this, "jce-provider-ede-mac");
         try {
@@ -949,6 +959,7 @@ public class JCESecurityModule extends BaseSMAdapter {
      * @return generated Key Check Value
      * @throws SMException
      */
+    @Override
     protected byte[] generateKeyCheckValueImpl (SecureDESKey secureDESKey) throws SMException {
         return  calculateKeyCheckValue(decryptFromLMK(secureDESKey));
     }
@@ -1596,7 +1607,7 @@ public class JCESecurityModule extends BaseSMAdapter {
     /**
      * The clear Local Master Keys
      */
-    private Map<Integer,SecretKey> lmks = new TreeMap<Integer,SecretKey>();
+    private final Map<Integer,SecretKey> lmks = new TreeMap<Integer,SecretKey>();
     /**
      * A index for the LMK used to encrypt the PINs
      */
@@ -1926,6 +1937,7 @@ public class JCESecurityModule extends BaseSMAdapter {
         );
     }
 
+    @Override
     protected EncryptedPIN translatePINImpl
             (EncryptedPIN pinUnderDuk, KeySerialNumber ksn,
              SecureDESKey bdk, SecureDESKey kd2, byte destinationPINBlockFormat)

@@ -405,8 +405,8 @@ public class JCEHandler {
      * Class used for indexing MAC algorithms in cache
      */
     protected static class MacEngineKey {
-        private String macAlgorithm;
-        private Key macKey;
+        private final String macAlgorithm;
+        private final Key macKey;
 
         protected MacEngineKey(String macAlgorithm, Key macKey) {
             this.macAlgorithm = macAlgorithm;
