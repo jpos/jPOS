@@ -845,6 +845,7 @@ public interface SMAdapter {
      *        Key derivation. A 2 byte value must be supplied.
      * @param mkdm ICC Master Key Derivation Method. If {@code null} specified
      *        is assumed.
+     * @return true if dcvv is valid false if not
      * @throws SMException
      */
     public boolean verifydCVV(String accountNo, SecureDESKey imkac, String dcvv,
@@ -893,6 +894,7 @@ public interface SMAdapter {
      *        digits. Max value is {@code "65535"} (decimal representation
      *        of 2 byte value). Is possible to pass shorter cvc3 value e.g.
      *        {@code "789"} matches with calcuated CVC3 {@code "04789"}
+     * @return true if cvc3 is valid false if not
      * @throws SMException
      */
     public boolean verifyCVC3(SecureDESKey imkcvc3, String accountNo, String acctSeqNo,
@@ -923,8 +925,12 @@ public interface SMAdapter {
      * @param upn unpredictable number. This is used for Session Key Generation
      *        A 4 byte value must be supplied. For {@code skdm} equals
      *        {@link SKDMethod#VSDC} is not used.
-     * @param transData transaction data (without padding). Transaction data
-     *        elements and them order is dependend to proper cryptogram version
+     * @param transData transaction data. Transaction data elements and them
+     *        order is dependend to proper cryptogram version. If the data
+     *        supplied is a multiple of 8 bytes, no extra padding is added.
+     *        If it is not a multiple of 8 bytes, additional zero padding is added.
+     *        <b>If alternative padding methods are required, it have to be
+     *        applied before</b>.
      * @return true if ARQC/TC/AAC is passed or false if not
      * @throws SMException
      */
@@ -995,8 +1001,12 @@ public interface SMAdapter {
      * @param upn unpredictable number. This is used for Session Key Generation
      *        A 4 byte value must be supplied. For {@code skdm} equals
      *        {@link SKDMethod#VSDC} is not used.
-     * @param transData transaction data (without padding). Transaction data
-     *        elements and them order is dependend to proper cryptogram version
+     * @param transData transaction data. Transaction data elements and them
+     *        order is dependend to proper cryptogram version. If the data
+     *        supplied is a multiple of 8 bytes, no extra padding is added.
+     *        If it is not a multiple of 8 bytes, additional zero padding is added.
+     *        <b>If alternative padding methods are required, it have to be
+     *        applied before</b>.
      * @param arpcMethod ARPC calculating method. For {@code skdm} equals
      *        {@link SKDMethod#VSDC}, {@link SKDMethod#MCHIP},
      *        {@link SKDMethod#AEPIS_V40} only {@link ARPCMethod#METHOD_1} is valid

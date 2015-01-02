@@ -99,7 +99,7 @@ public class JCEHandler {
     public Key generateDESKey(short keyLength) throws JCEHandlerException {
         Key generatedClearKey = null;
         try {
-            KeyGenerator k1 = null;
+            KeyGenerator k1;
             if (keyLength > SMAdapter.LENGTH_DES) {
                 k1 = KeyGenerator.getInstance(ALG_TRIPLE_DES, provider.getName());
             } else {
@@ -137,12 +137,10 @@ public class JCEHandler {
      * @throws JCEHandlerException
      */
     public byte[] encryptDESKey(short keyLength, Key clearDESKey, Key encryptingKey) throws JCEHandlerException {
-        byte[] encryptedDESKey = null;
         byte[] clearKeyBytes = extractDESKeyMaterial(keyLength, clearDESKey);
         // enforce correct (odd) parity before encrypting the key
         Util.adjustDESParity(clearKeyBytes);
-        encryptedDESKey = doCryptStuff(clearKeyBytes, encryptingKey, Cipher.ENCRYPT_MODE);
-        return encryptedDESKey;
+        return doCryptStuff(clearKeyBytes, encryptingKey, Cipher.ENCRYPT_MODE);
     }
 
     /**
@@ -156,7 +154,6 @@ public class JCEHandler {
      * @throws JCEHandlerException
      */
     protected byte[] extractDESKeyMaterial(short keyLength, Key clearDESKey) throws JCEHandlerException {
-        byte[] clearKeyBytes = null;
         String keyAlg = clearDESKey.getAlgorithm();
         String keyFormat = clearDESKey.getFormat();
         if (keyFormat.compareTo("RAW") != 0) {
@@ -165,7 +162,7 @@ public class JCEHandler {
         if (!keyAlg.startsWith(ALG_DES)) {
             throw new JCEHandlerException("Unsupported key algorithm: " + keyAlg);
         }
-        clearKeyBytes = clearDESKey.getEncoded();
+        byte[] clearKeyBytes = clearDESKey.getEncoded();
         clearKeyBytes = ISOUtil.trim(clearKeyBytes, getBytesLength(keyLength));
         return clearKeyBytes;
     }
@@ -187,15 +184,13 @@ public class JCEHandler {
      */
     public Key decryptDESKey(short keyLength, byte[] encryptedDESKey, Key encryptingKey, boolean checkParity)
             throws JCEHandlerException {
-        Key key = null;
         byte[] clearKeyBytes = doCryptStuff(encryptedDESKey, encryptingKey, Cipher.DECRYPT_MODE);
         if (checkParity) {
             if (!Util.isDESParityAdjusted(clearKeyBytes)) {
                 throw new JCEHandlerException("Parity not adjusted");
             }
         }
-        key = formDESKey(keyLength, clearKeyBytes);
-        return key;
+        return formDESKey(keyLength, clearKeyBytes);
     }
 
     /**
@@ -262,6 +257,7 @@ public class JCEHandler {
      * 
      * @param data
      * @param key
+     * @param iv 8 bytes initial vector
      * @return encrypted data
      * @exception JCEHandlerException
      */
@@ -274,6 +270,7 @@ public class JCEHandler {
      * 
      * @param encryptedData
      * @param key
+     * @param iv 8 bytes initial vector
      * @return clear data
      * @exception JCEHandlerException
      */
@@ -403,8 +400,8 @@ public class JCEHandler {
      * Class used for indexing MAC algorithms in cache
      */
     protected static class MacEngineKey {
-        private String macAlgorithm;
-        private Key macKey;
+        private final String macAlgorithm;
+        private final Key macKey;
 
         protected MacEngineKey(String macAlgorithm, Key macKey) {
             this.macAlgorithm = macAlgorithm;

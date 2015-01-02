@@ -783,6 +783,7 @@ public class BaseSMAdapter
      * @param mkdm ICC Master Key Derivation Method. If {@code null} specified
      *        is assumed.
      * @param cvc3 dynamic Card Verification Code 3
+     * @return true if cvc3 is valid false if not
      * @throws SMException
      */
     @Override
@@ -1096,6 +1097,7 @@ public class BaseSMAdapter
      * @param keyType
      * @param encryptedKey
      * @param kek
+     * @param checkParity
      * @return imported key
      * @throws SMException
      */
@@ -1235,6 +1237,7 @@ public class BaseSMAdapter
      * @param pvkA
      * @param pvkB
      * @param pvkIdx
+     * @param excludes
      * @return PVV (VISA PIN Verification Value)
      * @throws SMException 
      */
@@ -1251,6 +1254,7 @@ public class BaseSMAdapter
      * @param pvkA
      * @param pvkB
      * @param pvkIdx
+     * @param excludes
      * @return PVV (VISA PIN Verification Value)
      * @throws SMException
      */
@@ -1268,6 +1272,7 @@ public class BaseSMAdapter
      * @param pvkB
      * @param pvki
      * @param pvv
+     * @return true if pin is valid false if not
      * @throws SMException
      */
     protected boolean verifyPVVImpl(EncryptedPIN pinUnderKd, SecureDESKey kd, SecureDESKey pvkA,
@@ -1320,6 +1325,7 @@ public class BaseSMAdapter
      * @param decTab
      * @param pinValData
      * @param minPinLen
+     * @return true if pin is valid false if not
      * @throws SMException
      */
     protected boolean verifyIBMPINOffsetImpl(EncryptedPIN pinUnderKd, SecureDESKey kd
@@ -1417,6 +1423,7 @@ public class BaseSMAdapter
      * @param serviceCode
      * @param atc
      * @param mkdm
+     * @return true if dcvv is valid false if not
      * @throws SMException
      */
     protected boolean verifydCVVImpl(String accountNo, SecureDESKey imkac, String dcvv,
@@ -1435,6 +1442,7 @@ public class BaseSMAdapter
      * @param data
      * @param mkdm
      * @param cvc3
+     * @return true if cvc3 is valid false if not
      * @throws SMException
      */
     protected boolean verifyCVC3Impl(SecureDESKey imkcvc3, String accountNo, String acctSeqNo,
@@ -1496,6 +1504,7 @@ public class BaseSMAdapter
      * @param arqc
      * @param atc
      * @param upn
+     * @param transData
      * @param arpcMethod
      * @param arc
      * @param propAuthData
