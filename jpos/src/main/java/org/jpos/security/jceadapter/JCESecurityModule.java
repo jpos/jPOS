@@ -669,6 +669,15 @@ public class JCESecurityModule extends BaseSMAdapter {
     }
 
     @Override
+    protected String calculatePVVImpl(EncryptedPIN pinUnderKd1, SecureDESKey kd1,
+                       SecureDESKey pvkA, SecureDESKey pvkB, int pvkIdx,
+                       List<String> excludes) throws SMException {
+        Key key = concatKeys(pvkA, pvkB);
+        EncryptedPIN pinUnderLmk = importPIN(pinUnderKd1, kd1);
+        return calculatePVV(pinUnderLmk, key, pvkIdx, excludes);
+    }
+
+    @Override
     public boolean verifyPVVImpl(EncryptedPIN pinUnderKd1, SecureDESKey kd1, SecureDESKey pvkA,
                              SecureDESKey pvkB, int pvki, String pvv) throws SMException {
         Key key = concatKeys(pvkA, pvkB);
