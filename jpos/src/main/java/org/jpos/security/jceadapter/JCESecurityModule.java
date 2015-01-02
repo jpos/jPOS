@@ -180,32 +180,26 @@ public class JCESecurityModule extends BaseSMAdapter {
 
     @Override
     public SecureDESKey generateKeyImpl (short keyLength, String keyType) throws SMException {
-        SecureDESKey generatedSecureKey = null;
         Key generatedClearKey = jceHandler.generateDESKey(keyLength);
-        generatedSecureKey = encryptToLMK(keyLength, keyType, generatedClearKey);
-        return  generatedSecureKey;
+        return encryptToLMK(keyLength, keyType, generatedClearKey);
     }
 
     @Override
     public SecureDESKey importKeyImpl (short keyLength, String keyType, byte[] encryptedKey,
             SecureDESKey kek, boolean checkParity) throws SMException {
-        SecureDESKey importedKey = null;
         // decrypt encrypted key
         Key clearKEY = jceHandler.decryptDESKey(keyLength, encryptedKey, decryptFromLMK(kek),
                 checkParity);
         // Encrypt Key under LMK
-        importedKey = encryptToLMK(keyLength, keyType, clearKEY);
-        return  importedKey;
+        return encryptToLMK(keyLength, keyType, clearKEY);
     }
 
     @Override
     public byte[] exportKeyImpl (SecureDESKey key, SecureDESKey kek) throws SMException {
-        byte[] exportedKey = null;
         // get key in clear
         Key clearKey = decryptFromLMK(key);
         // Encrypt key under kek
-        exportedKey = jceHandler.encryptDESKey(key.getKeyLength(), clearKey, decryptFromLMK(kek));
-        return  exportedKey;
+        return jceHandler.encryptDESKey(key.getKeyLength(), clearKey, decryptFromLMK(kek));
     }
 
     private int getKeyTypeIndex (short keyLength, String keyType) throws SMException {
@@ -251,26 +245,21 @@ public class JCESecurityModule extends BaseSMAdapter {
 
     @Override
     public EncryptedPIN encryptPINImpl (String pin, String accountNumber) throws SMException {
-        EncryptedPIN encryptedPIN = null;
         byte[] clearPINBlock = calculatePINBlock(pin, FORMAT00, accountNumber);
         // Encrypt
         byte[] translatedPINBlock = jceHandler.encryptData(clearPINBlock, getLMK(PINLMKIndex));
-        encryptedPIN = new EncryptedPIN(translatedPINBlock, FORMAT00, accountNumber, false);
-        return  encryptedPIN;
+        return new EncryptedPIN(translatedPINBlock, FORMAT00, accountNumber, false);
     }
 
     @Override
     public String decryptPINImpl (EncryptedPIN pinUnderLmk) throws SMException {
-        String pin = null;
         byte[] clearPINBlock = jceHandler.decryptData(pinUnderLmk.getPINBlock(),
                 getLMK(PINLMKIndex));
-        pin = calculatePIN(clearPINBlock, pinUnderLmk.getPINBlockFormat(), pinUnderLmk.getAccountNumber());
-        return  pin;
+        return calculatePIN(clearPINBlock, pinUnderLmk.getPINBlockFormat(), pinUnderLmk.getAccountNumber());
     }
 
     @Override
     public EncryptedPIN importPINImpl (EncryptedPIN pinUnderKd1, SecureDESKey kd1) throws SMException {
-        EncryptedPIN pinUnderLmk = null;
         // read inputs
         String accountNumber = pinUnderKd1.getAccountNumber();
         // Use FORMAT00 for encrypting PIN under LMK
@@ -285,15 +274,13 @@ public class JCESecurityModule extends BaseSMAdapter {
         clearPINBlock = calculatePINBlock(pin, destinationPINBlockFormat, accountNumber);
         // encrypt PIN
         byte[] translatedPINBlock = jceHandler.encryptData(clearPINBlock, getLMK(PINLMKIndex));
-        pinUnderLmk = new EncryptedPIN(translatedPINBlock, destinationPINBlockFormat,
+        return new EncryptedPIN(translatedPINBlock, destinationPINBlockFormat,
                 accountNumber, false);
-        return  pinUnderLmk;
     }
 
     @Override
     public EncryptedPIN exportPINImpl (EncryptedPIN pinUnderLmk, SecureDESKey kd2,
             byte destinationPINBlockFormat) throws SMException {
-        EncryptedPIN exportedPIN = null;
         String accountNumber = pinUnderLmk.getAccountNumber();
         // process
         // get clear PIN
@@ -305,9 +292,8 @@ public class JCESecurityModule extends BaseSMAdapter {
         clearPINBlock = calculatePINBlock(pin, destinationPINBlockFormat, accountNumber);
         // encrypt PIN
         byte[] translatedPINBlock = jceHandler.encryptData(clearPINBlock, decryptFromLMK(kd2));
-        exportedPIN = new EncryptedPIN(translatedPINBlock, destinationPINBlockFormat,
+        return new EncryptedPIN(translatedPINBlock, destinationPINBlockFormat,
                 accountNumber, false);
-        return  exportedPIN;
     }
 
     @Override
@@ -704,14 +690,13 @@ public class JCESecurityModule extends BaseSMAdapter {
 
     private EncryptedPIN translatePINExt (EncryptedPIN oldPinUnderKd1, EncryptedPIN pinUnderKd1, Key kd1,
             Key kd2, byte destinationPINBlockFormat, Key udk, PaddingMethod padm) throws SMException {
-        EncryptedPIN translatedPIN = null;
         String accountNumber = pinUnderKd1.getAccountNumber();
         // get clear PIN
         byte[] clearPINBlock = jceHandler.decryptData(pinUnderKd1.getPINBlock(), kd1);
         String pin = calculatePIN(clearPINBlock, pinUnderKd1.getPINBlockFormat(),
                 accountNumber);
         // Reformat PIN Block
-        byte[] translatedPINBlock = null;
+        byte[] translatedPINBlock;
         if (isVSDCPinBlockFormat(destinationPINBlockFormat)) {
           String udka = ISOUtil.hexString(Arrays.copyOfRange(udk.getEncoded(), 0, 8));
           if (destinationPINBlockFormat == SMAdapter.FORMAT42 ) {
@@ -745,9 +730,8 @@ public class JCESecurityModule extends BaseSMAdapter {
           translatedPINBlock = jceHandler.encryptDataCBC(clearPINBlock, kd2, zeroBlock);
         else
           translatedPINBlock = jceHandler.encryptData(clearPINBlock, kd2);
-        translatedPIN = new EncryptedPIN(translatedPINBlock
+        return new EncryptedPIN(translatedPINBlock
                         ,destinationPINBlockFormat, accountNumber, false);
-        return  translatedPIN;
     }
 
     /**
@@ -986,8 +970,7 @@ public class JCESecurityModule extends BaseSMAdapter {
             byte[] clearComponent3 = ISOUtil.hex2byte(clearComponent3HexString);
             byte[] clearKeyBytes = ISOUtil.xor(ISOUtil.xor(clearComponent1, clearComponent2),
                     clearComponent3);
-            Key clearKey = null;
-            clearKey = jceHandler.formDESKey(keyLength, clearKeyBytes);
+            Key clearKey = jceHandler.formDESKey(keyLength, clearKeyBytes);
             secureDESKey = encryptToLMK(keyLength, keyType, clearKey);
             SimpleMsg[] cmdParameters =  {
                 new SimpleMsg("parameter", "Key Length", keyLength),
@@ -1078,7 +1061,6 @@ public class JCESecurityModule extends BaseSMAdapter {
      * @throws SMException
      */
     private Key decryptFromLMK (SecureDESKey secureDESKey) throws SMException {
-        Key key = null;
         Key left, medium, right;
         byte[] keyBytes = secureDESKey.getKeyBytes();
         byte[] bl = new byte[SMAdapter.LENGTH_DES>>3];
@@ -1121,8 +1103,7 @@ public class JCESecurityModule extends BaseSMAdapter {
         }
         if (!Util.isDESParityAdjusted(clearKeyBytes))
             throw new JCEHandlerException("Parity not adjusted");
-        key = jceHandler.formDESKey(secureDESKey.getKeyLength(), clearKeyBytes);
-        return key;
+        return jceHandler.formDESKey(secureDESKey.getKeyLength(), clearKeyBytes);
     }
 
     private char[] formatPINBlock(String pin, int checkDigit){
