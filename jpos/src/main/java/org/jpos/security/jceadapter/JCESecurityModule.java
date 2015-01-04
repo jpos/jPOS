@@ -437,7 +437,7 @@ public class JCESecurityModule extends BaseSMAdapter {
 
         if (mkdm==null)
           mkdm = MKDMethod.OPTION_A;
-        byte[] panpsn = formatPANPSN(accountNo, null, mkdm);
+        byte[] panpsn = formatPANPSN_dCVD(accountNo, null, mkdm);
         Key mkac = deriveICCMasterKey(decryptFromLMK(imkac), panpsn);
 
         String alteredPAN = ISOUtil.hexString(atc) + accountNo.substring(4);
@@ -452,7 +452,7 @@ public class JCESecurityModule extends BaseSMAdapter {
                      throws SMException {
         if (mkdm==null)
           mkdm = MKDMethod.OPTION_A;
-        byte[] panpsn = formatPANPSN(accountNo, acctSeqNo, mkdm);
+        byte[] panpsn = formatPANPSN_dCVD(accountNo, acctSeqNo, mkdm);
         Key mkcvc3 = deriveICCMasterKey(decryptFromLMK(imkcvc3), panpsn);
         byte[] ivcvc3 = data;
         if (ivcvc3.length != 2)
@@ -526,20 +526,45 @@ public class JCESecurityModule extends BaseSMAdapter {
         return y_i;
     }
 
+    /**
+     * Prepare 8-bytes data from PAN and PAN Sequence Number.
+     * <p>
+     * Used at EMV operations: {@link #verifyARQCImpl ARQC verification},
+     * {@link #generateARPCImpl ARPC generation},
+     * {@link #generateSM_MACImpl secure message MAC generation}
+     * and {@link #translatePINGenerateSM_MACImpl secure message PIN translation}
+     */
     private static byte[] formatPANPSN(String pan, String psn, MKDMethod mkdm)
             throws SMException {
-        byte[] b;
         switch (mkdm){
-          case OPTION_A:
-            b = formatPANPSNOptionA(pan, psn);
-            break;
-          case OPTION_B:
-            b = formatPANPSNOptionB(pan, psn);
-            break;
-          default:
-            throw new SMException("Unsupported ICC Master Key derivation method");
+            case OPTION_A:
+                return formatPANPSNOptionA(pan, psn);
+            case OPTION_B:
+                if ( pan.length() <= 16)
+                    //use OPTION_A
+                    return formatPANPSNOptionA(pan, psn);
+                return formatPANPSNOptionB(pan, psn);
+            default:
+                throw new SMException("Unsupported ICC Master Key derivation method");
         }
-      return b;
+    }
+
+    /**
+     * Prepare 8-bytes data from PAN and PAN Sequence Number.
+     * <p>
+     * Used at dCVV verification {@link #verifydCVVImpl verifydCVV}
+     * and CVC3 {@link #verifyCVC3Impl verifyCVC3}
+     */
+    private static byte[] formatPANPSN_dCVD(String pan, String psn, MKDMethod mkdm)
+            throws SMException {
+        switch (mkdm){
+            case OPTION_A:
+                return formatPANPSNOptionA(pan, psn);
+            case OPTION_B:
+                return formatPANPSNOptionB(pan, psn);
+            default:
+                throw new SMException("Unsupported ICC Master Key derivation method");
+        }
     }
 
     /**
