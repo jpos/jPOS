@@ -87,7 +87,19 @@ public class BSHRequestListener extends Log
                         script = aBshSource;
                     }
 
-                    bsh.source(script);
+                    Object ret= bsh.source(script);
+
+                    // any non-null and non-boolean value is considered "true-ish"
+                    // a null return is considered false
+                    if (ret != null) {
+                        if (ret instanceof Boolean)
+                            return ((Boolean) ret).booleanValue();
+                        else
+                            return true;
+                    } else {
+                        return false;
+                    }
+
                 } catch (Exception e) {
                     warn(e);
                 }
