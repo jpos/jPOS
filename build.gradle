@@ -104,15 +104,6 @@ subprojects {
         }
     }
 
-	task aggregatedJavadoc (type: Javadoc, description: "Aggregated Javadocs") { 
-		source subprojects.collect {project -> 
-			project.sourceSets.main.allJava 
-		} 
-		destinationDir = new File(buildDir, 'docs/javadoc') 
-		classpath = files(subprojects.collect {project -> 
-			project.sourceSets.main.compileClasspath}) 
-		failOnError = false
-	} 
 }
 
 // Configure IDEA to use Git
@@ -120,6 +111,17 @@ idea.project.ipr {
    withXml { provider -> provider.node.component.find { it.@name == 'VcsDirectoryMappings' }.mapping.@vcs = 'Git' }
 }
 
+task aggregatedJavadoc (type: Javadoc, description: "Aggregated Javadocs") {
+    source subprojects.collect {project ->
+        project.sourceSets.main.allJava
+    }
+    destinationDir = new File(buildDir, 'docs/javadoc')
+    classpath = files(subprojects.collect {project ->
+        project.sourceSets.main.compileClasspath})
+    failOnError = false
+}
+
 task wrapper( type: Wrapper ) {
     gradleVersion = '2.2.1'
 }
+
