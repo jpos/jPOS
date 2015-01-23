@@ -673,7 +673,7 @@ public class JCESecurityModule extends BaseSMAdapter {
                        SecureDESKey pvkA, SecureDESKey pvkB, int pvkIdx,
                        List<String> excludes) throws SMException {
         Key key = concatKeys(pvkA, pvkB);
-        EncryptedPIN pinUnderLmk = importPIN(pinUnderKd1, kd1);
+        EncryptedPIN pinUnderLmk = importPINImpl(pinUnderKd1, kd1);
         return calculatePVV(pinUnderLmk, key, pvkIdx, excludes);
     }
 
