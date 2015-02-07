@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pmd version="5.1.1" timestamp="2015-01-26T16:15:34.826">
+<pmd version="5.1.1" timestamp="2015-02-07T20:35:29.433">
 <file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/bsh/BSHLogListenerTest.java">
 <violation beginline="113" endline="115" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.bsh" class="BSHLogListenerTest" method="testLoadCodeThrowsNullPointerException" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
@@ -140,72 +140,14 @@ Avoid empty catch blocks
 Avoid empty catch blocks
 </violation>
 </file>
-<file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/space/JDBMSpaceTest.java">
-<violation beginline="267" endline="267" begincolumn="57" endcolumn="81" rule="UselessParentheses" ruleset="Unnecessary" package="org.jpos.space" class="JDBMSpaceTest" method="testRefIsExpired" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/unnecessary.html#UselessParentheses" priority="4">
-Useless parentheses.
-</violation>
-</file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/space/TSpacePerformanceTest.java">
-<violation beginline="112" endline="112" begincolumn="17" endcolumn="29" rule="UselessParentheses" ruleset="Unnecessary" package="org.jpos.space" class="TSpacePerformanceTest$WriteSpaceWithNotifyTask" method="notify" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/unnecessary.html#UselessParentheses" priority="4">
-Useless parentheses.
-</violation>
 <violation beginline="193" endline="193" begincolumn="11" endcolumn="17" rule="AvoidBranchingStatementAsLastInLoop" ruleset="Basic" package="org.jpos.space" class="TSpacePerformanceTest" method="testDeadLockWithNotify" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/basic.html#AvoidBranchingStatementAsLastInLoop" priority="2">
 Avoid using a branching statement as the last in a loop.
-</violation>
-</file>
-<file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/testhelpers/ComparabilityTestCase.java">
-<violation beginline="181" endline="181" begincolumn="40" endcolumn="54" rule="UselessParentheses" ruleset="Unnecessary" package="org.jpos.testhelpers" class="ComparabilityTestCase" method="sgn" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/unnecessary.html#UselessParentheses" priority="4">
-Useless parentheses.
-</violation>
-</file>
-<file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/testhelpers/EqualsHashCodeTestCase.java">
-<violation beginline="132" endline="132" begincolumn="22" endcolumn="55" rule="UselessParentheses" ruleset="Unnecessary" package="org.jpos.testhelpers" class="EqualsHashCodeTestCase" method="assertNotEquals" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/unnecessary.html#UselessParentheses" priority="4">
-Useless parentheses.
-</violation>
-<violation beginline="133" endline="133" begincolumn="37" endcolumn="79" rule="UselessParentheses" ruleset="Unnecessary" package="org.jpos.testhelpers" class="EqualsHashCodeTestCase" method="assertNotEquals" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/unnecessary.html#UselessParentheses" priority="4">
-Useless parentheses.
-</violation>
-</file>
-<file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/transaction/PausedTransactionTest.java">
-<violation beginline="63" endline="63" begincolumn="18" endcolumn="32" rule="UselessParentheses" ruleset="Unnecessary" package="org.jpos.transaction" class="PausedTransactionTest" method="testCancelExpirationMonitor" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/unnecessary.html#UselessParentheses" priority="4">
-Useless parentheses.
-</violation>
-<violation beginline="73" endline="73" begincolumn="18" endcolumn="32" rule="UselessParentheses" ruleset="Unnecessary" package="org.jpos.transaction" class="PausedTransactionTest" method="testCancelExpirationMonitor1" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/unnecessary.html#UselessParentheses" priority="4">
-Useless parentheses.
-</violation>
-<violation beginline="98" endline="98" begincolumn="18" endcolumn="32" rule="UselessParentheses" ruleset="Unnecessary" package="org.jpos.transaction" class="PausedTransactionTest" method="testDump" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/unnecessary.html#UselessParentheses" priority="4">
-Useless parentheses.
-</violation>
-<violation beginline="107" endline="107" begincolumn="18" endcolumn="32" rule="UselessParentheses" ruleset="Unnecessary" package="org.jpos.transaction" class="PausedTransactionTest" method="testDump1" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/unnecessary.html#UselessParentheses" priority="4">
-Useless parentheses.
-</violation>
-<violation beginline="116" endline="116" begincolumn="18" endcolumn="32" rule="UselessParentheses" ruleset="Unnecessary" package="org.jpos.transaction" class="PausedTransactionTest" method="testDumpThrowsNullPointerException" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/unnecessary.html#UselessParentheses" priority="4">
-Useless parentheses.
-</violation>
-<violation beginline="128" endline="128" begincolumn="18" endcolumn="32" rule="UselessParentheses" ruleset="Unnecessary" package="org.jpos.transaction" class="PausedTransactionTest" method="testDumpThrowsNullPointerException1" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/unnecessary.html#UselessParentheses" priority="4">
-Useless parentheses.
-</violation>
-<violation beginline="159" endline="159" begincolumn="18" endcolumn="32" rule="UselessParentheses" ruleset="Unnecessary" package="org.jpos.transaction" class="PausedTransactionTest" method="testId" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/unnecessary.html#UselessParentheses" priority="4">
-Useless parentheses.
-</violation>
-<violation beginline="167" endline="167" begincolumn="18" endcolumn="32" rule="UselessParentheses" ruleset="Unnecessary" package="org.jpos.transaction" class="PausedTransactionTest" method="testId1" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/unnecessary.html#UselessParentheses" priority="4">
-Useless parentheses.
-</violation>
-<violation beginline="175" endline="175" begincolumn="18" endcolumn="32" rule="UselessParentheses" ruleset="Unnecessary" package="org.jpos.transaction" class="PausedTransactionTest" method="testIsAborting" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/unnecessary.html#UselessParentheses" priority="4">
-Useless parentheses.
-</violation>
-<violation beginline="183" endline="183" begincolumn="18" endcolumn="32" rule="UselessParentheses" ruleset="Unnecessary" package="org.jpos.transaction" class="PausedTransactionTest" method="testIsAborting1" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/unnecessary.html#UselessParentheses" priority="4">
-Useless parentheses.
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/transaction/TestRetryParticipant.java">
 <violation beginline="31" endline="35" begincolumn="13" endcolumn="13" rule="CollapsibleIfStatements" ruleset="Basic" package="org.jpos.transaction" class="TestRetryParticipant" method="prepare" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/basic.html#CollapsibleIfStatements" priority="3">
 These nested if statements could be combined
-</violation>
-</file>
-<file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/transaction/TransactionManagerTest.java">
-<violation beginline="377" endline="378" begincolumn="118" endcolumn="21" rule="UselessParentheses" ruleset="Unnecessary" package="org.jpos.transaction" class="TransactionManagerTest" method="testPrepare5" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/unnecessary.html#UselessParentheses" priority="4">
-Useless parentheses.
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/util/DailyLogListenerTest.java">
