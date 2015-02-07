@@ -69,7 +69,7 @@ public class SysLogListener implements LogListener, Configurable {
         if (socket != null && ev.getTag() != null && tags.contains(ev.getTag())) {
             int facility = cfg.getInt (ev.getTag() + ".facility", defaultFacility);
             int severity = cfg.getInt (ev.getTag() + ".severity", defaultSeverity);
-            int priority = (facility<<3) | severity;
+            int priority = facility<<3 | severity;
 
             StringBuilder sb = new StringBuilder();
             sb.append ('<');

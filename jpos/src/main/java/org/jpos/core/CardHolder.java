@@ -140,7 +140,7 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
         if (s == null)
             throw new InvalidCardException ("null track2 data");
         int separatorIndex = s.replace ('D','=').indexOf(TRACK2_SEPARATOR);
-        if ((separatorIndex > 0) && (s.length() > separatorIndex+4)) {
+        if (separatorIndex > 0 && s.length() > separatorIndex+4) {
             pan = s.substring(0, separatorIndex);
             exp = s.substring(separatorIndex+1, separatorIndex+1+4);
             trailer = s.substring(separatorIndex+1+4);
@@ -166,7 +166,7 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
      * @return true if we have a track1
      */
     public boolean hasTrack1() {
-        return (track1!=null);
+        return track1!=null;
     }
 
     /**
@@ -198,7 +198,7 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
      * @return true if we have a (may be valid) track2
      */
     public boolean hasTrack2() {
-        return (pan != null && exp != null && trailer != null);
+        return pan != null && exp != null && trailer != null;
     }
 
     /**
@@ -315,8 +315,8 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
         try {
             int mm = Integer.parseInt(exp.substring(2));
             int aa = Integer.parseInt(exp.substring(0,2));
-            if ((aa < 100) && (mm > 0) && (mm <= 12)) {
-                String expDate = ((aa < 70) ? "20" : "19") + exp;
+            if (aa < 100 && mm > 0 && mm <= 12) {
+                String expDate = (aa < 70 ? "20" : "19") + exp;
                 if (expDate.compareTo(now) >= 0)
                     return false;
             }
@@ -337,7 +337,7 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
                 return false;
             c = (char) (c - '0');
             if (i % 2 == odd)
-                crc+=(c*2) >= 10 ? ((c*2)-9) : (c*2);        
+                crc+= c*2 >= 10 ? c*2 -9 : c*2;
             else
                 crc+=c;
         }
@@ -376,7 +376,7 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
      * @return ServiceCode (if available) or a String with three blanks
      */
     public String getServiceCode () {
-        return (trailer != null && trailer.length() >= 3) ?
+        return trailer != null && trailer.length() >= 3 ?
             trailer.substring (0, 3) :
             "   ";
     }
@@ -388,8 +388,8 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((exp == null) ? 0 : exp.hashCode());
-        result = prime * result + ((pan == null) ? 0 : pan.hashCode());
+        result = prime * result + (exp == null ? 0 : exp.hashCode());
+        result = prime * result + (pan == null ? 0 : pan.hashCode());
         return result;
     }
 

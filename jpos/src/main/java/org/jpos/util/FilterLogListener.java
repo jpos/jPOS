@@ -69,7 +69,7 @@ public class FilterLogListener implements LogListener,Configurable
     {
         try {
             String log_priority = cfg.get("priority");
-            if ( (log_priority != null) && (!log_priority.trim().equals("")) && levels.containsKey(log_priority) ) {
+            if ( log_priority != null && !log_priority.trim().equals("") && levels.containsKey(log_priority) ) {
                 priority = log_priority;
             }
         } catch (Exception e) {
@@ -107,7 +107,7 @@ public class FilterLogListener implements LogListener,Configurable
 
         Integer J = (Integer)levels.get(priority);
 
-        return (I >= J);
+        return I >= J;
     }
 
     public synchronized LogEvent log(LogEvent ev) {

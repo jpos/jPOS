@@ -109,7 +109,7 @@ public class TSpacePerformanceTest  {
         }
 
         public void notify(String key, Object value) {
-          if ( (++count % 100) == 0) {
+          if ( ++count % 100 == 0) {
             sp2.out(key, value);
           }
         }

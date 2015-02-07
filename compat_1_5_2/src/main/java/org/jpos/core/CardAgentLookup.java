@@ -96,7 +96,7 @@ public class CardAgentLookup {
         Iterator i = instance.agents.iterator();
         while (i.hasNext()) {
             CardAgent a = (CardAgent) i.next();
-            if ( (a.getClass().getName()).endsWith (name) ) 
+            if ( a.getClass().getName().endsWith(name) )
                 return a;
         }
         throw new CardAgentNotFoundException (name);

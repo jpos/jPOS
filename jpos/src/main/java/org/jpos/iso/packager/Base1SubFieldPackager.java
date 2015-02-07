@@ -48,12 +48,12 @@ public class Base1SubFieldPackager extends ISOBasePackager
 
     protected boolean emitBitMap()
     {
-        return (fld[0] instanceof ISOBitMapPackager);
+        return fld[0] instanceof ISOBitMapPackager;
     }
 
     protected int getFirstField()
     {
-        return (fld[0] instanceof ISOBitMapPackager) ? 1 : 0;
+        return fld[0] instanceof ISOBitMapPackager ? 1 : 0;
     }
 
     protected ISOFieldPackager getBitMapfieldPackager() 

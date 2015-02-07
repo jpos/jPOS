@@ -129,7 +129,7 @@ public class FSDProtectedLogListener implements LogListener, Configurable
                      // ignore error
                  }
                  if (v instanceof String) {
-                     String x = ((String) v);
+                     String x = (String) v;
                      if (x.length() > len) {
                          m.getFSDMsg().set(f, x.substring(0, len));
                      }

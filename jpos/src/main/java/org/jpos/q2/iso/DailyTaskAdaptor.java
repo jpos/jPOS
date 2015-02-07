@@ -104,7 +104,7 @@ public class DailyTaskAdaptor extends QBeanSupport implements Runnable {
                     continue;
                 }
                 getLog().info ("sleeping",
-                    (sleepTime/1000) + " secs until " + when.toString()
+                    sleepTime/1000 + " secs until " + when.toString()
                 );
                 try {
                     Thread.sleep (sleepTime);

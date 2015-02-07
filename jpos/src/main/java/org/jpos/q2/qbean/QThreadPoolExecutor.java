@@ -182,7 +182,7 @@ public class QThreadPoolExecutor extends QBeanSupport implements
             boolean mandatory, String errDesc) throws ConfigurationException {
         Attribute attr = elt.getAttribute(attrName);
 
-        if ((null == attr) || ("".equals(attr.getValue().trim()))) {
+        if (null == attr || "".equals(attr.getValue().trim())) {
             if (mandatory) {
                 throw new ConfigurationException(String.format(
                         "'%s' attribute has not been found or is empty %s",

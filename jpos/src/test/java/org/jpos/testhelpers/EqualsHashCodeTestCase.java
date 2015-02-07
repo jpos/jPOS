@@ -129,8 +129,8 @@ public abstract class EqualsHashCodeTestCase {
 	 * <tt>AssertionFailedError</tt> if they are equal.
 	 */
 	public void assertNotEquals(Object expected, Object actual) {
-		if ((expected == null && actual == null)
-				|| (expected != null && expected.equals(actual))) {
+		if (expected == null && actual == null
+				|| expected != null && expected.equals(actual)) {
 			fail("expected not equals to: <" + expected + ">");
 		}
 	}

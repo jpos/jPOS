@@ -60,7 +60,7 @@ public class X92_BITMAP extends ISOBitMapPackager {
     {
         BitSet bmap = ISOUtil.hex2BitSet (b, offset, false);
         c.setValue(bmap);
-        return (bmap.size() >> 2);
+        return bmap.size() >> 2;
     }
     public int getMaxPackedLength() {
         return getLength() >> 2;

@@ -112,7 +112,7 @@ public class VISA1Packager
                         value = m.getString(fld).getBytes();
                     l.add(value);
                     len += value.length;
-                    if (i < (sequence.length-1)) {
+                    if (i < sequence.length-1) {
                         l.add(FS);
                         len++;
                     }

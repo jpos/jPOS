@@ -86,7 +86,7 @@ public class GZIPChannel extends BaseChannel {
         byte[] b = new byte[4];
         while (l == 0) {
             serverIn.readFully(b,0,2);
-            l = ((((int)b[0])&0xFF) << 8) | (((int)b[1])&0xFF);
+            l = ((int)b[0] &0xFF) << 8 | (int)b[1] &0xFF;
             if (l == 0) {
                 serverOut.write(b);
                 serverOut.flush();

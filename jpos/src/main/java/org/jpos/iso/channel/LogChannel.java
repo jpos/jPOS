@@ -105,20 +105,18 @@ public class LogChannel extends BaseChannel {
             if (s.contains("<isomsg")) {
                 inMsg++;
             }
-            if (s.contains("</isomsg>")) {
-                if (--inMsg == 0) {
-                    if (at != null || realm != null && inMsg == 0) {
-                        if (realm != null) {
-                            sb.append("  <field id=\"" + realmField + "\" value=\"" + realm + "\" />");
-                            realm = null;
-                        }
-                        if (at != null) {
-                            sb.append("  <field id=\"" + timestampField + "\" value=\"" + at + "\" />");
-                        }
+            if (s.contains("</isomsg>") && --inMsg == 0) {
+                if (at != null || realm != null && inMsg == 0) {
+                    if (realm != null) {
+                        sb.append("  <field id=\"" + realmField + "\" value=\"" + realm + "\" />");
+                        realm = null;
                     }
-                    sb.append (s);
-                    break;
+                    if (at != null) {
+                        sb.append("  <field id=\"" + timestampField + "\" value=\"" + at + "\" />");
+                    }
                 }
+                sb.append (s);
+                break;
             }
             if (inMsg > 0)
                 sb.append (s);

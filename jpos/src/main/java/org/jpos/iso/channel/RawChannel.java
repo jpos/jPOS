@@ -88,10 +88,10 @@ public class RawChannel extends BaseChannel {
     protected int getMessageLength() throws IOException, ISOException {
         byte[] b = new byte[4];
         serverIn.readFully(b,0,4);
-        return ((((int)b[0])&0xFF) << 24) |
-        ((((int)b[1])&0xFF) << 16) |
-        ((((int)b[2])&0xFF) << 8) |
-        (((int)b[3])&0xFF);
+        return ((int)b[0] &0xFF) << 24 |
+                ((int)b[1] &0xFF) << 16 |
+                ((int)b[2] &0xFF) << 8 |
+                (int)b[3] &0xFF;
     }
     /**
      * New QSP compatible signature (see QSP's ConfigChannel)

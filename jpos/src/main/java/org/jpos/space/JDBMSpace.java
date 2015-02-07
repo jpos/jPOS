@@ -189,7 +189,7 @@ public class JDBMSpace<K,V> extends TimerTask implements Space<K,V> {
                 long recid = recman.insert (value);
 
                 long expiration = timeout == -1 ? Long.MAX_VALUE :
-                    (System.currentTimeMillis() + timeout);
+                        System.currentTimeMillis() + timeout;
                 Ref dataRef = new Ref (recid, expiration);
                 long dataRefRecId = recman.insert (dataRef, refSerializer);
 
@@ -235,7 +235,7 @@ public class JDBMSpace<K,V> extends TimerTask implements Space<K,V> {
             synchronized (this) {
                 long recid = recman.insert (value);
                 long expiration = timeout == -1 ? Long.MAX_VALUE :
-                    (System.currentTimeMillis() + timeout);
+                        System.currentTimeMillis() + timeout;
                 Ref dataRef = new Ref (recid, expiration);
 
                 Head head = (Head) htree.get (key);
@@ -322,8 +322,8 @@ public class JDBMSpace<K,V> extends TimerTask implements Space<K,V> {
         Object obj;
         long now = System.currentTimeMillis();
         long end = now + timeout;
-        while ((obj = inp (key)) == null && 
-                ((now = System.currentTimeMillis()) < end))
+        while ((obj = inp (key)) == null &&
+                (now = System.currentTimeMillis()) < end)
         {
             try {
                 this.wait (end - now);
@@ -358,8 +358,8 @@ public class JDBMSpace<K,V> extends TimerTask implements Space<K,V> {
         Object obj;
         long now = System.currentTimeMillis();
         long end = now + timeout;
-        while ((obj = rdp (key)) == null && 
-                ((now = System.currentTimeMillis()) < end))
+        while ((obj = rdp (key)) == null &&
+                (now = System.currentTimeMillis()) < end)
         {
             try {
                 this.wait (end - now);
@@ -379,7 +379,7 @@ public class JDBMSpace<K,V> extends TimerTask implements Space<K,V> {
         long now = System.currentTimeMillis();
         long end = now + timeout;
         while ((obj = rdp (key)) != null &&
-                ((now = System.currentTimeMillis()) < end))
+                (now = System.currentTimeMillis()) < end)
         {
             try {
                 this.wait (Math.min(NRD_RESOLUTION, end - now));
@@ -395,7 +395,7 @@ public class JDBMSpace<K,V> extends TimerTask implements Space<K,V> {
     public long size (Object key) {
         try {
             Head head = (Head) htree.get (key);
-            return (head != null) ? head.count : 0;
+            return head != null ? head.count : 0;
         } catch (IOException e) {
             throw new SpaceError (e);
         }
@@ -410,7 +410,7 @@ public class JDBMSpace<K,V> extends TimerTask implements Space<K,V> {
     public boolean existAny (Object[] keys, long timeout) {
         long now = System.currentTimeMillis();
         long end = now + timeout;
-        while (((now = System.currentTimeMillis()) < end)) {
+        while ((now = System.currentTimeMillis()) < end) {
             if (existAny (keys))
                 return true;
             synchronized (this) {
@@ -692,7 +692,7 @@ public class JDBMSpace<K,V> extends TimerTask implements Space<K,V> {
         }
     }
     static void putLong (byte[] b, int off, long val) {
-        b[off+7] = (byte) (val);
+        b[off+7] = (byte) val;
         b[off+6] = (byte) (val >>>  8);
         b[off+5] = (byte) (val >>> 16);
         b[off+4] = (byte) (val >>> 24);

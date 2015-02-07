@@ -270,7 +270,7 @@ public class ISOMUX implements Runnable, LogSource, MUX,
                             rxQueue.remove(k);
                             synchronized (r) {
                                 if (r.isExpired()) {
-                                    if ((++cnt[RX_EXPIRED]) % 10 == 0)
+                                    if (++cnt[RX_EXPIRED] % 10 == 0)
                                         purgeRxQueue();
                                 }
                                 else {

@@ -76,8 +76,8 @@ public class Base1_BITMAP126 extends ISOBitMapPackager
         BitSet bmap = ISOUtil.byte2BitSet (b, offset, false); // False => no extended bitmap
 
         c.setValue(bmap);
-        len = ((len=bmap.size()) > 128) ? 128 : len;
-        return (len >> 3);
+        len = (len=bmap.size()) > 128 ? 128 : len;
+        return len >> 3;
     }
     public int getMaxPackedLength() 
     {

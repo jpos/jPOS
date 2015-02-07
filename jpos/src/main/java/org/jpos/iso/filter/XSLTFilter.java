@@ -98,7 +98,7 @@ public class XSLTFilter implements ISOFilter, Configurable {
                 new StreamSource(cfg.get("xsltfile"))
             );
             String s = cfg.get ("reread");
-            reread   =  (s == null || s.equals ("no"));
+            reread   = s == null || s.equals ("no");
         } catch (Exception e) {
             throw new ConfigurationException (e);
         }

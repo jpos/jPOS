@@ -79,7 +79,7 @@ public class IFA_LLABINARY extends ISOFieldPackager {
          
       int len = Integer.parseInt(new String(b, offset, 2));       
       c.setValue (ISOUtil.hex2byte(b, offset + 2, len));
-      return (len * 2) + 2;
+      return len * 2 + 2;
 
       //CJH END.
         

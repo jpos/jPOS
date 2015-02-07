@@ -56,7 +56,7 @@ public class MultiSessionChannelAdaptor
             for (int i=0; i<sessions; i++) {
                 ISOChannel c = initChannel();
                 if (c instanceof LogSource) {
-                    LogSource ls = ((LogSource) c);
+                    LogSource ls = (LogSource) c;
                     ls.setLogger(ls.getLogger(), ls.getRealm()+"-"+i);
 
                 }

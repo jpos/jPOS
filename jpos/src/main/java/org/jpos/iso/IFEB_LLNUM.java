@@ -61,9 +61,9 @@ public class IFEB_LLNUM extends ISOFieldPackager {
             "invalid len "+len +" packing IFEB_LLNUM field "+ c.getKey());
         
         // if odd length
-        if ( (len%2)==1 ) {
+        if ( len%2 ==1 ) {
             odd = true;
-            len = (len/2)+1;
+            len = len/2 +1;
         } else {
             odd = false;
             len = len/2;
@@ -97,11 +97,11 @@ public class IFEB_LLNUM extends ISOFieldPackager {
     public int unpack(ISOComponent c, byte[] b, int offset)
     throws ISOException {
         boolean pad = false;
-        int len = ((b[offset] & 0x0f) * 10)  + (b[offset+1] & 0x0f);
+        int len = (b[offset] & 0x0f) * 10 + (b[offset+1] & 0x0f);
         int tempLen = len*2;
 
         // odd handling
-        byte lastByte = b[ (offset+2+len-1) ];
+        byte lastByte = b[offset+2+len-1];
 
         if((lastByte & 0x0f) == 0x0f)
             tempLen--;
@@ -118,12 +118,11 @@ public class IFEB_LLNUM extends ISOFieldPackager {
         throws IOException, ISOException
     {
         byte[] b = readBytes (in, 2);
-        int len = 
-            (100 * ((((b[0] >> 4) & 0x0F) > 0x09 ? 0 : 
-            ((b[0] >> 4) & 0x0F)) * 10 + (b[0] & 0x0F)) 
-           +(((b[1] >> 4) & 0x0F) > 0x09 ? 0 : 
-              ((b[1] >> 4) & 0x0F)) * 10 + (b[1] & 0x0F)
-            );
+        int len =
+                100 * (((b[0] >> 4 & 0x0F) > 0x09 ? 0 :
+                        b[0] >> 4 & 0x0F) * 10 + (b[0] & 0x0F))
+               + ((b[1] >> 4 & 0x0F) > 0x09 ? 0 :
+                        b[1] >> 4 & 0x0F) * 10 + (b[1] & 0x0F);
         c.setValue (ISOUtil.bcd2str (readBytes (in, len), 0, 2*len, pad));
     }
     

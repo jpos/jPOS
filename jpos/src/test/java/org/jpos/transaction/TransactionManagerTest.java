@@ -374,8 +374,8 @@ public class TransactionManagerTest {
 
     @Test
     public void testPrepare5() throws Throwable {
-        int result = transactionManager.prepare(1, 100L, new File("testTransactionManagerParam1"), new ArrayList(), (new ArrayList(
-                1000)).iterator(), true, new LogEvent("testTransactionManagerTag"), null);
+        int result = transactionManager.prepare(1, 100L, new File("testTransactionManagerParam1"), new ArrayList(), new ArrayList(
+                1000).iterator(), true, new LogEvent("testTransactionManagerTag"), null);
         assertEquals("result", 64, result);
     }
 

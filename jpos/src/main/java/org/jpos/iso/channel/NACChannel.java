@@ -88,7 +88,7 @@ public class NACChannel extends BaseChannel {
     protected int getMessageLength() throws IOException, ISOException {
         byte[] b = new byte[2];
         serverIn.readFully(b,0,2);
-        return ((((int)b[0])&0xFF) << 8) | (((int)b[1])&0xFF);
+        return ((int)b[0] &0xFF) << 8 | (int)b[1] &0xFF;
     }
     protected void sendMessageHeader(ISOMsg m, int len) throws IOException { 
         byte[] h = m.getHeader();

@@ -60,7 +60,7 @@ public class QClassLoader
     }
 
     public boolean isModified () {
-        return libDir.canRead () && (lastModified != libDir.lastModified());
+        return libDir.canRead () && lastModified != libDir.lastModified();
     }
     public QClassLoader scan (boolean forceNewClassLoader) 
         throws InstanceAlreadyExistsException,
@@ -70,7 +70,7 @@ public class QClassLoader
                MBeanRegistrationException
     
     {
-        if ((!isModified () && !forceNewClassLoader) || !libDir.canRead())
+        if (!isModified () && !forceNewClassLoader || !libDir.canRead())
             return this;
         QClassLoader loader;
         if (server.isRegistered (loaderName)) {

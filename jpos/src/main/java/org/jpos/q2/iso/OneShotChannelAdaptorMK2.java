@@ -100,7 +100,7 @@ public class OneShotChannelAdaptorMK2
         ready = getName() + ".ready";
 
         String s = persist.getChildTextTrim("max-connections");
-        maxConnections = (s != null) ? Integer.parseInt(s) : 1;
+        maxConnections = s != null ? Integer.parseInt(s) : 1;
         handbackFields = cfg.getInts("handback-field");
 
         s = persist.getChildTextTrim("delay");

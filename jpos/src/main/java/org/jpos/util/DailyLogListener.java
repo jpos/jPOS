@@ -69,7 +69,7 @@ public class DailyLogListener extends RotateLogListener{
         Integer formatObj =
                 COMPRESSION_FORMATS
                 .get(cfg.get("compression-format","none").toLowerCase());
-        int compressionFormat = (formatObj == null) ? 0 : formatObj;
+        int compressionFormat = formatObj == null ? 0 : formatObj;
         setCompressionFormat(compressionFormat);
         setCompressedSuffix(cfg.get("compressed-suffix", 
                 DEF_COMPRESSED_SUFFIX[compressionFormat]));
@@ -401,7 +401,7 @@ public class DailyLogListener extends RotateLogListener{
      * @param compressionBufferSize New value of property compressionBufferSize.
      */
     public void setCompressionBufferSize(int compressionBufferSize) {
-        this.compressionBufferSize = (compressionBufferSize >= 0) ? 
+        this.compressionBufferSize = compressionBufferSize >= 0 ?
             compressionBufferSize : DEF_BUFFER_SIZE;
     }
 

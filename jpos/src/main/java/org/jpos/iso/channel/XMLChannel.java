@@ -91,11 +91,8 @@ public class XMLChannel extends BaseChannel {
             sb.append (s);
             if (s.contains("<" + XMLPackager.ISOMSG_TAG))
                 sp++;
-            if (s.contains("</" + XMLPackager.ISOMSG_TAG + ">"))
-            {
-                if (--sp <= 0)
-                    break;
-            }
+            if (s.contains("</" + XMLPackager.ISOMSG_TAG + ">") && --sp <= 0)
+                break;
         }
         return sb.toString().getBytes();
     }

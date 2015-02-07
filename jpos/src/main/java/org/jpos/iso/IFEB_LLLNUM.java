@@ -62,9 +62,9 @@ public class IFEB_LLLNUM extends ISOFieldPackager {
         
         
         // if odd length
-        if ( (len%2)==1 ) {
+        if ( len%2 ==1 ) {
             odd = true;
-            len = (len/2)+1;
+            len = len/2 +1;
         } else {
             odd = false;
             len = len/2;
@@ -105,7 +105,7 @@ public class IFEB_LLLNUM extends ISOFieldPackager {
         boolean pad = false;
         
         
-        int len = ((b[offset] & 0x0f) * 100)  + ((b[offset+1] & 0x0f) * 10) + (b[offset+2] & 0x0f);
+        int len = (b[offset] & 0x0f) * 100 + (b[offset+1] & 0x0f) * 10 + (b[offset+2] & 0x0f);
         
         int tempLen = len*2;
 
@@ -113,7 +113,7 @@ public class IFEB_LLLNUM extends ISOFieldPackager {
         
         
         // odd handling
-        byte testByte = b[ (offset+3+len-1) ];
+        byte testByte = b[offset+3+len-1];
         
         if( (testByte | 0xf0)== 0xff) {
             // odd length

@@ -306,7 +306,7 @@ public abstract class BaseChannel extends Observable
                 } else if (localIface == null && localPort == 0){
                     return new Socket(host,port);
                 } else {
-                    InetAddress addr = (localIface == null) ?
+                    InetAddress addr = localIface == null ?
                         InetAddress.getLocalHost() : 
                         InetAddress.getByName(localIface);
                     return new Socket(host, port, addr, localPort);
@@ -547,7 +547,7 @@ public abstract class BaseChannel extends Observable
     protected int getHeaderLength(byte[] b) { return 0; }
 
     protected int getHeaderLength(ISOMsg m) {                                   
-        return (!overrideHeader && m.getHeader() != null) ?
+        return !overrideHeader && m.getHeader() != null ?
             m.getHeader().length : getHeaderLength();
     }                                                                           
 
@@ -951,7 +951,7 @@ public abstract class BaseChannel extends Observable
         throws VetoException
     {
         for (ISOFilter f :incomingFilters) {
-            if (image != null && (f instanceof RawIncomingFilter))
+            if (image != null && f instanceof RawIncomingFilter)
                 m = ((RawIncomingFilter)f).filter (this, m, header, image, evt);
             else
                 m = f.filter (this, m, evt);

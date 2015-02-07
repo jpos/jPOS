@@ -50,7 +50,7 @@ public class IFA_BITMAP extends ISOBitMapPackager {
         BitSet b = (BitSet) c.getValue();
         int len =
             getLength() >= 8 ?
-                (((b.length()+62)>>6)<<3) : getLength();
+                    b.length()+62 >>6 <<3 : getLength();
         return ISOUtil.hexString(ISOUtil.bitSet2byte (b, len)).getBytes();
     }
 
@@ -70,12 +70,12 @@ public class IFA_BITMAP extends ISOBitMapPackager {
         int len;
         BitSet bmap = ISOUtil.hex2BitSet (b, offset, getLength() << 3);
         c.setValue(bmap);
-        len = (bmap.get(1)) ? 128 : 64; /* changed by Hani */
+        len = bmap.get(1) ? 128 : 64; /* changed by Hani */
         if (getLength() > 16 && bmap.get(65)) {
             len = 192;
             bmap.clear(65);
         }
-        return (Math.min (getLength() << 1, len >> 2));
+        return Math.min (getLength() << 1, len >> 2);
     }
     public void unpack (ISOComponent c, InputStream in) 
         throws IOException, ISOException

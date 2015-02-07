@@ -73,13 +73,10 @@ public class GenericSubFieldPackager extends GenericPackager
             }
             for (int i=getFirstField(); i<maxField && consumed < b.length; i++) 
             {
-                if (bmap == null || bmap.get(i)) 
-                {
-                    if (i<fld.length && fld[i] != null) {
-                        ISOComponent c = fld[i].createComponent(i);
-                        consumed += fld[i].unpack (c, b, consumed);
-                        m.set(c);
-                    }
+                if ((bmap == null || bmap.get(i)) && i<fld.length && fld[i] != null) {
+                    ISOComponent c = fld[i].createComponent(i);
+                    consumed += fld[i].unpack (c, b, consumed);
+                    m.set(c);
                 }
             }
             if (b.length != consumed) 

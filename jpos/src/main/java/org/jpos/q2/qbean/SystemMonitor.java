@@ -111,7 +111,7 @@ public class SystemMonitor extends QBeanSupport
             try {
                 long expected = System.currentTimeMillis() + sleepTime;
                 Thread.sleep(sleepTime);
-                delay = (System.currentTimeMillis() - expected);
+                delay = System.currentTimeMillis() - expected;
             } catch (InterruptedException e) {
             }
         }

@@ -114,7 +114,7 @@ public class LogListenerFactory implements UIFactory {
             evt.dump (ps, "");
             text.insert (str.toString(), 0);
 
-            if ((++cnt % maxEvents) == 0) {
+            if (++cnt % maxEvents == 0) {
                 SwingUtilities.invokeLater (this);
             }
             return evt;

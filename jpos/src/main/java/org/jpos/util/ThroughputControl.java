@@ -82,14 +82,14 @@ public class ThroughputControl {
                     long now = System.currentTimeMillis();
                     if (now - start[i] > period[i]) {
                         long elapsed = now - start[i];
-                        int  allowed = (int) ((elapsed * max[i]) / period[i]);
+                        int  allowed = (int) (elapsed * max[i] / period[i]);
                         start[i] = now;
                         cnt[i] = Math.max (cnt[i] - allowed, 0);
                     }
                 }
             } while (cnt[i] > max[i]);
         }
-        return delayed ? (System.currentTimeMillis() - init) : 0L;
+        return delayed ? System.currentTimeMillis() - init : 0L;
     }
 }
 

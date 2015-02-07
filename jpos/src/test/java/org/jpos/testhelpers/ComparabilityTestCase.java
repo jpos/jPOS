@@ -178,6 +178,6 @@ public abstract class ComparabilityTestCase<T extends Comparable<T>> {
 	// }
 
 	private int sgn(int x) {
-		return (x == 0) ? 0 : (x / Math.abs(x));
+		return x == 0 ? 0 : x / Math.abs(x);
 	}
 }

@@ -102,8 +102,8 @@ public class TinySpace implements Space, Serializable {
         Object obj;
         long now = System.currentTimeMillis();
         long end = now + timeout;
-        while ((obj = inp (key)) == null && 
-                ((now = System.currentTimeMillis()) < end))
+        while ((obj = inp (key)) == null &&
+                (now = System.currentTimeMillis()) < end)
         {
             try {
                 this.wait (end - now);
@@ -124,8 +124,8 @@ public class TinySpace implements Space, Serializable {
         Object obj;
         long now = System.currentTimeMillis();
         long end = now + timeout;
-        while ((obj = rdp (key)) == null && 
-                ((now = System.currentTimeMillis()) < end))
+        while ((obj = rdp (key)) == null &&
+                (now = System.currentTimeMillis()) < end)
         {
             try {
                 this.wait (end - now);
@@ -143,7 +143,7 @@ public class TinySpace implements Space, Serializable {
     public boolean existAny (Object[] keys, long timeout) {
         long now = System.currentTimeMillis();
         long end = now + timeout;
-        while (((now = System.currentTimeMillis()) < end)) {
+        while ((now = System.currentTimeMillis()) < end) {
             if (existAny (keys))
                 return true;
             synchronized (this) {

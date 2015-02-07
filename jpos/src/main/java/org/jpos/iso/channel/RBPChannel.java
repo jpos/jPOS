@@ -39,6 +39,6 @@ public class RBPChannel extends BaseChannel {
     protected int getMessageLength() throws IOException, ISOException {
         byte[] b = new byte[6];
         serverIn.readFully(b,0,6);
-        return ((((int)b[2])&0xFF) << 8) | (((int)b[3])&0xFF);
+        return ((int)b[2] &0xFF) << 8 | (int)b[3] &0xFF;
     }
 }

@@ -86,7 +86,7 @@ public class CardSelector {
             Iterator i = list.iterator();
             while (i.hasNext()) {
                 Entry e = (Entry) i.next();
-                if ((b >= e.low) && (b <= e.high)) 
+                if (b >= e.low && b <= e.high)
                     return e.card;
             }
         } catch (NumberFormatException x) { }

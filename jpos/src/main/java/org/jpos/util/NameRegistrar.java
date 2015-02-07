@@ -130,7 +130,7 @@ public class NameRegistrar implements Loggeable {
         p.println(indent + "name-registrar:");
         for (String key : sp.getKeySet()) {
             Object obj = sp.rdp(key);
-            String objectClassName = (obj == null) ? "<NULL>" : obj.getClass().getName();
+            String objectClassName = obj == null ? "<NULL>" : obj.getClass().getName();
             p.println(inner + key + ": " + objectClassName);
             if (detail && obj instanceof Loggeable) {
                 ((Loggeable) obj).dump(p, inner + "  ");

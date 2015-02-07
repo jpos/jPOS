@@ -90,20 +90,20 @@ public class Console {
         else {
             int argsCounter = 0;
             for (int j = 0; j < 10; j++) {
-                if ((argsCounter < args.length) &&
-                    (args[argsCounter].toLowerCase().compareTo("-lmk") == 0)
+                if (argsCounter < args.length &&
+                        args[argsCounter].toLowerCase().compareTo("-lmk") == 0
                 ) {
                     argsCounter++;
                     cfgProps.setProperty("lmk", args[argsCounter++]);
                 }
-                if ((argsCounter < args.length) &&
-                    (args[argsCounter].toLowerCase().compareTo("-jce") == 0)
+                if (argsCounter < args.length &&
+                        args[argsCounter].toLowerCase().compareTo("-jce") == 0
                 ) {
                     argsCounter++;
                     cfgProps.setProperty("provider", args[argsCounter++]);
                 }
-                if ((argsCounter < args.length) &&
-                    (args[argsCounter].toLowerCase().compareTo("-rebuildlmk") == 0)
+                if (argsCounter < args.length &&
+                        args[argsCounter].toLowerCase().compareTo("-rebuildlmk") == 0
                 ) {
                     argsCounter++;
                     cfgProps.setProperty("rebuildlmk", "true");

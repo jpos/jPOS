@@ -49,7 +49,7 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
      * @return true if BitMap have to be emited
      */
     protected boolean emitBitMap () {
-        return (fld[1] instanceof ISOBitMapPackager);
+        return fld[1] instanceof ISOBitMapPackager;
     }
     /**
      * usually 2 for normal fields, 1 for bitmap-less
@@ -57,8 +57,8 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
      * @return first valid field
      */
     protected int getFirstField() {
-        if ((!(fld[0] instanceof ISOMsgFieldPackager) ) && fld.length > 1)
-            return (fld[1] instanceof ISOBitMapPackager) ? 2 : 1;
+        if (!(fld[0] instanceof ISOMsgFieldPackager) && fld.length > 1)
+            return fld[1] instanceof ISOBitMapPackager ? 2 : 1;
         return 0;
     }
     /**

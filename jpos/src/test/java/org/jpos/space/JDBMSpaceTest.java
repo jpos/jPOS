@@ -264,7 +264,7 @@ public class JDBMSpaceTest {
 
     @Test
     public void testRefIsExpired() throws Throwable {
-        long expirytime = System.currentTimeMillis() + (365 * 24 * 60 * 60 * 1000);
+        long expirytime = System.currentTimeMillis() + 365 * 24 * 60 * 60 * 1000;
         boolean result = new JDBMSpace.Ref(100L, expirytime).isExpired();
         assertFalse("result", result);
     }

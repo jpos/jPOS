@@ -257,7 +257,7 @@ public class TLVList implements Serializable, Loggeable {
                 } else {
                     break;
                 }    
-            } while ((b == 0xFF || b == 0x00));
+            } while (b == 0xFF || b == 0x00);
         }
         // Get first byte of Tag Identifier
         tag = b;
@@ -330,7 +330,7 @@ public class TLVList implements Serializable, Loggeable {
      * @return boolean
      */
     public boolean hasTag(int tag) {
-        return (findIndex(tag) > -1);
+        return findIndex(tag) > -1;
     }
 
     @Override

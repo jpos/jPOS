@@ -54,7 +54,7 @@ public class ThreadPool extends ThreadGroup implements LogSource, Loggeable, Con
 
         public PooledThread() {
             super (ThreadPool.this,
-                "PooledThread-" + (threadNumber++));
+                "PooledThread-" + threadNumber++);
             setDaemon(true);
         }
         public void run () {

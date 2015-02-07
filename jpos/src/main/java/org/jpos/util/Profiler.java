@@ -53,8 +53,8 @@ public class Profiler implements Loggeable {
     public synchronized void checkPoint (String detail) {
         long now = System.nanoTime();
         Entry e = new Entry();
-        e.setDurationInNanos((now - partial));
-        e.setTotalDurationInNanos((now - start));
+        e.setDurationInNanos(now - partial);
+        e.setTotalDurationInNanos(now - start);
         if (events.containsKey(detail)) {
             for (int i=1; ;i++) {
                 String d = detail + "-" + i;
@@ -135,11 +135,11 @@ public class Profiler implements Loggeable {
             sb.append (" [");
             sb.append (getDuration());
             sb.append ('.');
-            sb.append ((duration % TO_MILLIS) / 100000);
+            sb.append (duration % TO_MILLIS / 100000);
             sb.append ('/');
             sb.append (getTotalDuration ());
             sb.append ('.');
-            sb.append ((totalDuration % TO_MILLIS) / 100000);
+            sb.append (totalDuration % TO_MILLIS / 100000);
             sb.append (']');
             return sb.toString();
         }            

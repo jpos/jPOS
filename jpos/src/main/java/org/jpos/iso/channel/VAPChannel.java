@@ -159,7 +159,7 @@ public class VAPChannel extends BaseChannel {
     protected void sendMessageHeader(ISOMsg m, int len) 
         throws IOException
     {
-        ISOHeader h = (!isOverrideHeader() && m.getHeader() != null) ?
+        ISOHeader h = !isOverrideHeader() && m.getHeader() != null ?
                 m.getISOHeader() :
                 new BASE1Header (srcid, dstid, headerFormat);
 
@@ -174,7 +174,7 @@ public class VAPChannel extends BaseChannel {
         // ignore VAP polls (0 message length)
         while (l == 0) {
             serverIn.readFully(b,0,4);
-            l = ((((int)b[0])&0xFF) << 8) | (((int)b[1])&0xFF);
+            l = ((int)b[0] &0xFF) << 8 | (int)b[1] &0xFF;
             if (l == 0) {
                 serverOut.write(b);
                 serverOut.flush();
@@ -191,7 +191,7 @@ public class VAPChannel extends BaseChannel {
         
     protected boolean isRejected(byte[] b) {
         BASE1Header h = new BASE1Header(b);
-        return h.isRejected() || (h.getHLen() != BASE1Header.LENGTH);
+        return h.isRejected() || h.getHLen() != BASE1Header.LENGTH;
     }
 
     protected boolean shouldIgnore (byte[] b) {

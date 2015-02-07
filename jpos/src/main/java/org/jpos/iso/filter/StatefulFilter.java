@@ -166,7 +166,7 @@ public class StatefulFilter implements ISOFilter, Configurable{
         if(m.getDirection() == getMatchDirection()){
             int[] savedFields = getSavedFields();
             ISOMsg saved = (ISOMsg)(
-                (savedFields != null && savedFields.length != 0) ?
+                savedFields != null && savedFields.length != 0 ?
                     m.clone(savedFields) : m.clone());
             int[] ignoredFields = getIgnoredFields();
             if (ignoredFields != null) saved.unset(ignoredFields);

@@ -96,7 +96,7 @@ public class MacroFilter implements ISOFilter, Configurable {
                     continue;
                 if (value.equalsIgnoreCase ("$date") )
                     m.set (new ISOField (i, ISODate.getDateTime(new Date())));
-                else if ((value.toLowerCase().startsWith ("$date") ) && value.contains("GMT")) {
+                else if (value.toLowerCase().startsWith ("$date") && value.contains("GMT")) {
                     String zoneID = value.substring(value.indexOf("GMT"));
                     m.set (new ISOField (i, ISODate.getDateTime(new Date(), TimeZone.getTimeZone(zoneID))));
                 }                    

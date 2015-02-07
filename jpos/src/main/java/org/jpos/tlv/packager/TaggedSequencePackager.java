@@ -102,7 +102,7 @@ public class TaggedSequencePackager extends GenericPackager {
                 }
                 subFieldId++;
             }
-            if (subFieldId == 0 && !((fld[subFieldId] instanceof TaggedFieldPackager))) {
+            if (subFieldId == 0 && !(fld[subFieldId] instanceof TaggedFieldPackager)) {
                 subFieldId = 1;
             }
 
@@ -188,7 +188,7 @@ public class TaggedSequencePackager extends GenericPackager {
                                 throw new ISOException("No default tag packager and no field packager configured for tag: " + tag);
                             }
                             b = fieldPackager.pack(c);
-                            if ((len + b.length) > this.length) {
+                            if (len + b.length > this.length) {
                                 break;
                             }
                             len += b.length;
@@ -209,7 +209,7 @@ public class TaggedSequencePackager extends GenericPackager {
                                 throw new ISOException("No default tag packager and no field packager configured for tag: " + tag);
                             }
                             b = fieldPackager.pack(isoTaggedField);
-                            if ((len + b.length) > this.length) {
+                            if (len + b.length > this.length) {
                                 break;
                             }
                         }

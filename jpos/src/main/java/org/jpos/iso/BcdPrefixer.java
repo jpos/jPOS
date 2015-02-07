@@ -66,7 +66,7 @@ public class BcdPrefixer implements Prefixer
         for (int i = getPackedLength() - 1; i >= 0; i--) {
             int twoDigits = length % 100;
             length /= 100;
-            b[i] = (byte)(((twoDigits / 10) << 4) + twoDigits % 10);
+            b[i] = (byte)((twoDigits / 10 << 4) + twoDigits % 10);
         }
     }
 
@@ -75,7 +75,7 @@ public class BcdPrefixer implements Prefixer
         int len = 0;
         for (int i = 0; i < (nDigits + 1) / 2; i++)
         {
-            len = 100 * len + ((b[offset + i] & 0xF0) >> 4) * 10 + ((b[offset + i] & 0x0F));
+            len = 100 * len + ((b[offset + i] & 0xF0) >> 4) * 10 + (b[offset + i] & 0x0F);
         }
         return len;
     }
@@ -87,6 +87,6 @@ public class BcdPrefixer implements Prefixer
 	 */
     public int getPackedLength()
     {
-        return (nDigits + 1) >> 1;
+        return nDigits + 1 >> 1;
     }
 }

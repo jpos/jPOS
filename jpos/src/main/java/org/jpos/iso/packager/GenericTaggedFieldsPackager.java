@@ -205,7 +205,7 @@ public class GenericTaggedFieldsPackager extends GenericPackager
         for (ISOFieldPackager aFld : fld) {
             TaggedFieldPackagerBase tfp = null;
             if (aFld instanceof TaggedFieldPackagerBase)
-                tfp = ((TaggedFieldPackagerBase) aFld);
+                tfp = (TaggedFieldPackagerBase) aFld;
             else if(aFld instanceof ISOMsgFieldPackager) {
                 ISOMsgFieldPackager fp = (ISOMsgFieldPackager) aFld;
                 if(fp.getISOFieldPackager() instanceof TaggedFieldPackagerBase)

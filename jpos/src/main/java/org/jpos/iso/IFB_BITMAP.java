@@ -50,7 +50,7 @@ public class IFB_BITMAP extends ISOBitMapPackager {
         BitSet b = (BitSet) c.getValue();
         int len = 
             getLength() >= 8 ?
-                (((b.length()+62)>>6)<<3) : getLength();
+                    b.length()+62 >>6 <<3 : getLength();
         return ISOUtil.bitSet2byte (b, len);
     }
     /**
@@ -69,7 +69,7 @@ public class IFB_BITMAP extends ISOBitMapPackager {
         len = bmap.get(1) ? 128 : 64;
         if (getLength() > 16 && bmap.get(65))
             len = 192;
-        return (Math.min (getLength(), len >> 3));
+        return Math.min (getLength(), len >> 3);
     }
     public void unpack (ISOComponent c, InputStream in) 
         throws IOException, ISOException

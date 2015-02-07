@@ -37,7 +37,7 @@ public class ISOMsgFieldValidator extends ISOFieldValidator {
     }
 
     public ISOComponent validate(ISOComponent m) throws ISOException {
-        return (m instanceof ISOMsg)? msgValidator.validate( m ):m;
+        return m instanceof ISOMsg ? msgValidator.validate( m ):m;
     }
 
     protected ISOValidator msgValidator;

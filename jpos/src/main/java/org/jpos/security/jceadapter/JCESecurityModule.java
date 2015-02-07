@@ -1463,7 +1463,7 @@ public class JCESecurityModule extends BaseSMAdapter {
                              ,int padidx, int offset, char padDigit)
             throws SMException {
       // test pin block check digit
-      if (checkDigit >= 0 && (pblock[0] - '0') != checkDigit)
+      if (checkDigit >= 0 && pblock[0] - '0' != checkDigit)
           throw new SMException("PIN Block Error - invalid check digit");
       // test pin block pdding
       int i = pblock.length - 1;
@@ -1635,8 +1635,8 @@ public class JCESecurityModule extends BaseSMAdapter {
             Provider provider = null;
             LogEvent evt = new LogEvent(this, "jce-provider");
             try {
-                if ((jceProviderClassName == null) || (jceProviderClassName.compareTo("")
-                        == 0)) {
+                if (jceProviderClassName == null || jceProviderClassName.compareTo("")
+                        == 0) {
                     evt.addMessage("No JCE Provider specified. Attempting to load default provider (SunJCE).");
                     jceProviderClassName = "com.sun.crypto.provider.SunJCE";
                 }
@@ -1911,12 +1911,12 @@ public class JCESecurityModule extends BaseSMAdapter {
         for (int i = 0; i < b.length; i++)
         {
             byte c = b[i];
-            b[i] = (byte) ((c >>> 1) & 0x7F);
+            b[i] = (byte) (c >>> 1 & 0x7F);
             if (carry)
             {
                 b[i] |= 0x80;
             }
-            carry = ((c & 0x01) == 1);
+            carry = (c & 0x01) == 1;
         }
     }
 

@@ -111,8 +111,8 @@ public class Context implements Externalizable, Loggeable, Pausable {
         Object obj;
         long now = System.currentTimeMillis();
         long end = now + timeout;
-        while ((obj = map.get (key)) == null && 
-                ((now = System.currentTimeMillis()) < end))
+        while ((obj = map.get (key)) == null &&
+                (now = System.currentTimeMillis()) < end)
         {
             try {
                 this.wait (end - now);

@@ -192,7 +192,7 @@ public class ISOMeter extends JComponent implements Runnable {
     }
 
     public void setValue(int val) {
-        int y = mass - ((val%1000) * height / 2000);
+        int y = mass - val%1000 * height / 2000;
         yPoints[width-1] = y;
         continueScroll = width;
         scroll();
@@ -276,7 +276,7 @@ public class ISOMeter extends JComponent implements Runnable {
             if (i % 20 == 0) 
                 img.drawLine(i,0,i,height);
         for (int i=-1000; i<1000; i+= 200) {
-            int y = mass + (i*height/2000);
+            int y = mass + i*height/2000;
             img.drawLine(0,y,width,y);
         }
     }

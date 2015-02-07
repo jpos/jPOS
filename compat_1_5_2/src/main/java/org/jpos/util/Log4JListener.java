@@ -83,7 +83,7 @@ public class Log4JListener implements LogListener, Configurable
         if (watch == 0)
             watch = FileWatchdog.DEFAULT_DELAY;
 
-        if ( (config!=null) && (!config.trim().equals("")) )
+        if ( config!=null && !config.trim().equals(""))
             DOMConfigurator.configureAndWatch (config, watch);
 
         setLevel (cfg.get ("priority"));

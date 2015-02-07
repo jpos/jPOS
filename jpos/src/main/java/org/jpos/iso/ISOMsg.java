@@ -118,7 +118,7 @@ public class ISOMsg extends ISOComponent
      * @return message header image (may be null)
      */
     public byte[] getHeader() {
-        return (header != null) ? header.pack() : null;
+        return header != null ? header.pack() : null;
     }
 
     /**
@@ -415,9 +415,9 @@ public class ISOMsg extends ISOComponent
 
         int mf = Math.min (getMaxField(), 192);
 
-        BitSet bmap = new BitSet (((mf+62)>>6)<<6);
+        BitSet bmap = new BitSet (mf+62 >>6 <<6);
         for (int i=1; i<=mf; i++)
-            if ((fields.get (i)) != null)
+            if (fields.get (i) != null)
                 bmap.set (i);
         set (new ISOBitMap (-1, bmap));
         dirty = false;
@@ -626,7 +626,7 @@ public class ISOMsg extends ISOComponent
                 if (obj instanceof String)
                     b = ((String) obj).getBytes(ISOUtil.CHARSET);
                 else if (obj instanceof byte[])
-                    b = ((byte[]) obj);
+                    b = (byte[]) obj;
             } catch (ISOException ignored) {
                 return null;
             }
@@ -645,7 +645,7 @@ public class ISOMsg extends ISOComponent
             if (obj instanceof String)
                 b = ((String) obj).getBytes(ISOUtil.CHARSET);
             else if (obj instanceof byte[])
-                b = ((byte[]) obj);
+                b = (byte[]) obj;
         } catch (ISOException ignored) {
             return null;
         }
@@ -1055,7 +1055,7 @@ public class ISOMsg extends ISOComponent
      * @return an ISOSource or null
      */
     public ISOSource getSource () {
-        return (sourceRef != null) ? (ISOSource) sourceRef.get () : null;
+        return sourceRef != null ? (ISOSource) sourceRef.get () : null;
     }
     private void writeExternal (ObjectOutput out, char b, ISOComponent c) throws IOException {
         out.writeByte (b);

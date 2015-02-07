@@ -36,16 +36,6 @@ public class BinaryHexTaggedSequencePackager extends TaggedSequencePackager {
     }
 
     @Override
-    protected void setGenericPackagerParams(Attributes atts) {
-        super.setGenericPackagerParams(atts);
-    }
-
-    @Override
-    public void setConfiguration(Configuration cfg) throws ConfigurationException {
-        super.setConfiguration(cfg);
-    }
-
-    @Override
     protected ISOFieldPackager getTagPackager() {
         TagPackager tagPackager = new TagPackager(this.tag.length(), "Tag");
         return tagPackager;

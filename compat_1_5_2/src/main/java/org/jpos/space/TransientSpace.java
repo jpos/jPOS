@@ -40,7 +40,7 @@ public class TransientSpace implements LocalSpace, TransientSpaceMBean {
         synchronized (this) {
             Data data = (Data) map.get (key);
             if (data == null) 
-                map.put (key, (data = new Data ()));
+                map.put (key, data = new Data ());
             data.add (value);
             this.notifyAll ();
             listeners = data.getListeners();
@@ -87,8 +87,8 @@ public class TransientSpace implements LocalSpace, TransientSpaceMBean {
         Object obj;
         long now = System.currentTimeMillis();
         long end = now + timeout;
-        while ((obj = inp (key)) == null && 
-                ((now = System.currentTimeMillis()) < end))
+        while ((obj = inp (key)) == null &&
+                (now = System.currentTimeMillis()) < end)
         {
             try {
                 this.wait (end - now);
@@ -109,8 +109,8 @@ public class TransientSpace implements LocalSpace, TransientSpaceMBean {
         Object obj;
         long now = System.currentTimeMillis();
         long end = now + timeout;
-        while ((obj = rdp (key)) == null && 
-                ((now = System.currentTimeMillis()) < end))
+        while ((obj = rdp (key)) == null &&
+                (now = System.currentTimeMillis()) < end)
         {
             try {
                 this.wait (end - now);
@@ -127,7 +127,7 @@ public class TransientSpace implements LocalSpace, TransientSpaceMBean {
     public synchronized void addListener    (Object key, SpaceListener listener) {
         Data data = (Data) map.get (key);
         if (data == null) 
-            map.put (key, (data = new Data()));
+            map.put (key, data = new Data());
         data.addListener (listener);
     }
     public synchronized void addListener 
@@ -270,7 +270,7 @@ public class TransientSpace implements LocalSpace, TransientSpaceMBean {
      */
     public String read (String key) {
         Object o = rdp (key);
-        return (o != null) ? o.toString() : "null";
+        return o != null ? o.toString() : "null";
     }
     public int size (Object key) {
         Data data  = (Data) map.get (key);

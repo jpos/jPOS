@@ -118,7 +118,7 @@ public class ISOField
      */
     @Override
     public byte[] getBytes() {
-        return (value != null) ? value.getBytes(ISOUtil.CHARSET) : new byte[] {};
+        return value != null ? value.getBytes(ISOUtil.CHARSET) : new byte[] {};
     }
     /**
      * dump this field to PrintStream. The output is sorta

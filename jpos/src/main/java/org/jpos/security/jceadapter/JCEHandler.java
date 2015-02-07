@@ -185,10 +185,8 @@ public class JCEHandler {
     public Key decryptDESKey(short keyLength, byte[] encryptedDESKey, Key encryptingKey, boolean checkParity)
             throws JCEHandlerException {
         byte[] clearKeyBytes = doCryptStuff(encryptedDESKey, encryptingKey, Cipher.DECRYPT_MODE);
-        if (checkParity) {
-            if (!Util.isDESParityAdjusted(clearKeyBytes)) {
-                throw new JCEHandlerException("Parity not adjusted");
-            }
+        if (checkParity && !Util.isDESParityAdjusted(clearKeyBytes)) {
+            throw new JCEHandlerException("Parity not adjusted");
         }
         return formDESKey(keyLength, clearKeyBytes);
     }
@@ -420,7 +418,7 @@ public class JCEHandler {
         public int hashCode() {
             final int prime = 31;
             int result = 1;
-            result = prime * result + ((macAlgorithm == null) ? 0 : macAlgorithm.hashCode());
+            result = prime * result + (macAlgorithm == null ? 0 : macAlgorithm.hashCode());
             // Note: class Key does not redefine hashCode - therefore hash on Algorithm only or breaks java equals/hashCode contract
             return result;
         }

@@ -152,7 +152,7 @@ public class UI implements UIFactory, UIObjectFactory {
      */
     public void reconfigure (String elementName, String panelName) {
         Container c = 
-            panelName == null ? mainFrame.getContentPane() : ((JComponent) get (panelName));
+            panelName == null ? mainFrame.getContentPane() : (JComponent) get (panelName);
         if (c != null) {
             c.removeAll ();
             c.add (
@@ -179,7 +179,7 @@ public class UI implements UIFactory, UIObjectFactory {
      */
         destroyed = true;
 
-        Iterator it = (Arrays.asList(Frame.getFrames())).iterator();
+        Iterator it = Arrays.asList(Frame.getFrames()).iterator();
 
         while (it.hasNext()) {
             JFrame jf = (JFrame) it.next();

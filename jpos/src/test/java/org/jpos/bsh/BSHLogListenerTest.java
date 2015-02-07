@@ -128,19 +128,6 @@ public class BSHLogListenerTest {
     }
 
     @Test
-    public void testLogThrowsNullPointerException() throws Throwable {
-        BSHLogListener bSHLogListener = new BSHLogListener();
-        try {
-            bSHLogListener.log(null);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertNull("bSHLogListener.cfg", bSHLogListener.cfg);
-            assertEquals("bSHLogListener.scripts.size()", 0, bSHLogListener.scripts.size());
-        }
-    }
-
-    @Test
     public void testReplace() throws Throwable {
         String[] src = new String[87];
         src[0] = "x9";

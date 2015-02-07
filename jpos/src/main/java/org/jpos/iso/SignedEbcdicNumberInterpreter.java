@@ -44,8 +44,8 @@ public class SignedEbcdicNumberInterpreter implements Interpreter
     }
 
     public String uninterpret(byte[] rawData, int offset, int length) {
-        boolean negative = ((byte)(rawData[offset + length - 1] & 0xF0)) == ((byte)0xD0);
-        rawData[offset + length - 1] = ((byte)(rawData[offset + length - 1] | 0xF0));
+        boolean negative = (byte) (rawData[offset + length - 1] & 0xF0) == (byte)0xD0;
+        rawData[offset + length - 1] = (byte) (rawData[offset + length - 1] | 0xF0);
         return (negative ? "-" : "") + ISOUtil.ebcdicToAscii(rawData, offset, length);
     }
 

@@ -63,7 +63,7 @@ public class LeasedReference extends TimerTask {
     public synchronized long renew (long duration) {
         if (isExpired ())
             return -1;
-        return (expiration = System.currentTimeMillis() + duration);
+        return expiration = System.currentTimeMillis() + duration;
     }
     public synchronized boolean isExpired () {
         return expiration <= System.currentTimeMillis();

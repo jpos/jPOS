@@ -100,7 +100,7 @@ public class BASE24TCPChannel extends BaseChannel {
         Logger.log (new LogEvent (this, "get-message-length"));
         while (l == 0) {
             serverIn.readFully(b,0,2);
-            l = ((((int)b[0])&0xFF) << 8) | (((int)b[1])&0xFF);
+            l = ((int)b[0] &0xFF) << 8 | (int)b[1] &0xFF;
             if (l == 0) {
                 serverOut.write(b);
                 serverOut.flush();

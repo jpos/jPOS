@@ -69,7 +69,7 @@ public class IFA_LLBNUM extends ISOFieldPackager {
             );
 
         byte[] b = new byte[3 + (len >> 1)];
-        prefixer.encodeLength(((len + 1) >> 1) << 1, b);
+        prefixer.encodeLength(len + 1 >> 1 << 1, b);
         interpreter.interpret(s, b, 2);
         return b;
     }
@@ -92,9 +92,9 @@ public class IFA_LLBNUM extends ISOFieldPackager {
         throws IOException, ISOException
     {
         int len = prefixer.decodeLength(readBytes (in, 2), 2);
-        c.setValue (interpreter.uninterpret(readBytes (in, (len+2) >> 1), 0, len));
+        c.setValue (interpreter.uninterpret(readBytes (in, len+2 >> 1), 0, len));
     }
     public int getMaxPackedLength() {
-        return 1 + ((getLength()+1) >> 1);
+        return 1 + (getLength()+1 >> 1);
     }
 }

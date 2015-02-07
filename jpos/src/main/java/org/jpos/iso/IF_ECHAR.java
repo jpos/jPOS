@@ -44,7 +44,7 @@ public class IF_ECHAR extends ISOFieldPackager {
      * @exception ISOException
      */
     public byte[] pack (ISOComponent c) throws ISOException {
-        String s = (ISOUtil.strpad ((String) c.getValue(), getLength()));
+        String s = ISOUtil.strpad ((String) c.getValue(), getLength());
         return ISOUtil.asciiToEbcdic(s);
     }
     /**

@@ -47,9 +47,9 @@ public class SimpleConfiguration implements Configuration {
         Object obj = props.get (name);
         if (obj instanceof List) {
             List l = (List) obj;
-            obj = (l.size() > 0) ? l.get(0) : null;
+            obj = l.size() > 0 ? l.get(0) : null;
         }
-        return (obj instanceof String) ? ((String) obj) : def;
+        return obj instanceof String ? (String) obj : def;
     }
     public String[] getAll (String name) {
         String[] ret;
@@ -124,7 +124,7 @@ public class SimpleConfiguration implements Configuration {
     public boolean getBoolean (String name, boolean def) {
         String v = get (name);
         return v.length() == 0 ? def :
-            (v.equalsIgnoreCase("true") || v.equalsIgnoreCase("yes"));
+                v.equalsIgnoreCase("true") || v.equalsIgnoreCase("yes");
     }
     public void load(String filename) 
         throws IOException

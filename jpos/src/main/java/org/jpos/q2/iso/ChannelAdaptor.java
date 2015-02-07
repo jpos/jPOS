@@ -369,7 +369,7 @@ public class ChannelAdaptor
             else
                 connects++;
         }
-        if (running() && (sp.rdp (ready) == null))
+        if (running() && sp.rdp (ready) == null)
             sp.out (ready, new Date());
     }
     protected void disconnect () {

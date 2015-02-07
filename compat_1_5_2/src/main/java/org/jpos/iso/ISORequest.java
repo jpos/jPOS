@@ -195,7 +195,7 @@ public class ISORequest implements LogSource, Loggeable {
      * @return time in milliseconds of how long it took to get a Response
      */
     public long getResponseTime () {
-        return (responseTime-requestTime);
+        return responseTime-requestTime;
     }
 }
 
