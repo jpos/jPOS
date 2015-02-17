@@ -572,7 +572,7 @@ public abstract class BaseChannel extends Observable
         LogEvent evt = new LogEvent (this, "send");
         try {
             if (!isConnected())
-                throw new ISOException ("unconnected ISOChannel");
+                throw new IOException ("unconnected ISOChannel");
             m.setDirection(ISOMsg.OUTGOING);
             ISOPackager p = getDynamicPackager(m);
             m.setPackager (p);
