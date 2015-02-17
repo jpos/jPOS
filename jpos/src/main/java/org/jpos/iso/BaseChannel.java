@@ -767,10 +767,11 @@ public abstract class BaseChannel extends Observable
             if (usable) 
                 evt.addMessage (e);
             throw e;
-        } catch (Exception e) { 
+        } catch (Exception e) {
+            closeSocket();
             evt.addMessage (m);
             evt.addMessage (e);
-            throw new ISOException ("unexpected exception", e);
+            throw new IOException ("unexpected exception", e);
         } finally {
             Logger.log (evt);
         }
