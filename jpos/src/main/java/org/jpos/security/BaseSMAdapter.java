@@ -292,6 +292,12 @@ public class BaseSMAdapter
     @Override
     public EncryptedPIN importPIN (EncryptedPIN pinUnderDuk, KeySerialNumber ksn,
             SecureDESKey bdk) throws SMException {
+        return importPIN(pinUnderDuk,ksn,bdk,false);
+    }
+
+    @Override
+    public EncryptedPIN importPIN (EncryptedPIN pinUnderDuk, KeySerialNumber ksn,
+            SecureDESKey bdk, boolean tdes) throws SMException {
         SimpleMsg[] cmdParameters =  {
             new SimpleMsg("parameter", "PIN under Derived Unique Key", pinUnderDuk), new SimpleMsg("parameter",
                     "Key Serial Number", ksn), new SimpleMsg("parameter", "Base Derivation Key",
@@ -301,7 +307,7 @@ public class BaseSMAdapter
         evt.addMessage(new SimpleMsg("command", "Import PIN", cmdParameters));
         EncryptedPIN result = null;
         try {
-            result = importPINImpl(pinUnderDuk, ksn, bdk);
+            result = importPINImpl(pinUnderDuk, ksn, bdk, tdes);
             evt.addMessage(new SimpleMsg("result", "PIN under LMK", result));
         } catch (Exception e) {
             evt.addMessage(e);
@@ -315,6 +321,12 @@ public class BaseSMAdapter
     @Override
     public EncryptedPIN translatePIN (EncryptedPIN pinUnderDuk, KeySerialNumber ksn,
             SecureDESKey bdk, SecureDESKey kd2, byte destinationPINBlockFormat) throws SMException {
+        return translatePIN(pinUnderDuk,ksn,bdk,kd2,destinationPINBlockFormat,false);
+    }
+
+    @Override
+    public EncryptedPIN translatePIN (EncryptedPIN pinUnderDuk, KeySerialNumber ksn,
+            SecureDESKey bdk, SecureDESKey kd2, byte destinationPINBlockFormat,boolean tdes) throws SMException {
         SimpleMsg[] cmdParameters =  {
             new SimpleMsg("parameter", "PIN under Derived Unique Key", pinUnderDuk), new SimpleMsg("parameter",
                     "Key Serial Number", ksn), new SimpleMsg("parameter", "Base Derivation Key",
@@ -325,7 +337,7 @@ public class BaseSMAdapter
         evt.addMessage(new SimpleMsg("command", "Translate PIN", cmdParameters));
         EncryptedPIN result = null;
         try {
-            result = translatePINImpl(pinUnderDuk, ksn, bdk, kd2, destinationPINBlockFormat);
+            result = translatePINImpl(pinUnderDuk, ksn, bdk, kd2, destinationPINBlockFormat,tdes);
             evt.addMessage(new SimpleMsg("result", "PIN under Data Key 2", result));
         } catch (Exception e) {
             evt.addMessage(e);
@@ -1172,7 +1184,7 @@ public class BaseSMAdapter
      * @throws SMException
      */
     protected EncryptedPIN importPINImpl (EncryptedPIN pinUnderDuk, KeySerialNumber ksn,
-            SecureDESKey bdk) throws SMException {
+            SecureDESKey bdk, boolean tdes) throws SMException {
         throw  new SMException("Operation not supported in: " + this.getClass().getName());
     }
 
@@ -1187,7 +1199,8 @@ public class BaseSMAdapter
      * @throws SMException
      */
     protected EncryptedPIN translatePINImpl (EncryptedPIN pinUnderDuk, KeySerialNumber ksn,
-            SecureDESKey bdk, SecureDESKey kd2, byte destinationPINBlockFormat) throws SMException {
+            SecureDESKey bdk, SecureDESKey kd2, byte destinationPINBlockFormat,
+            boolean tdes) throws SMException {
         throw  new SMException("Operation not supported in: " + this.getClass().getName());
     }
 

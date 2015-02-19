@@ -18,10 +18,11 @@
 
 package  org.jpos.security.jceadapter;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
+import org.javatuples.Pair;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
+import org.jpos.iso.ISODate;
+import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOUtil;
 import org.jpos.security.*;
 import org.jpos.util.LogEvent;
@@ -29,12 +30,20 @@ import org.jpos.util.Logger;
 import org.jpos.util.SimpleMsg;
 
 import javax.crypto.SecretKey;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.security.*;
+import java.security.InvalidKeyException;
+import java.security.Key;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.Provider;
+import java.security.SecureRandom;
+import java.security.Security;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -43,9 +52,6 @@ import java.util.Properties;
 import java.util.Random;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
-import org.javatuples.Pair;
-import org.jpos.iso.ISODate;
-import org.jpos.iso.ISOException;
 
 
 /**
@@ -2144,15 +2150,6 @@ public class JCESecurityModule extends BaseSMAdapter {
         );
     }
 
-    @Override
-    protected EncryptedPIN translatePINImpl
-            (EncryptedPIN pinUnderDuk, KeySerialNumber ksn,
-             SecureDESKey bdk, SecureDESKey kd2, byte destinationPINBlockFormat)
-            throws SMException
-    {
-        return translatePINImpl(pinUnderDuk,ksn,bdk,kd2,destinationPINBlockFormat,false);
-    }
-
     protected EncryptedPIN translatePINImpl
             (EncryptedPIN pinUnderDuk, KeySerialNumber ksn,
              SecureDESKey bdk, SecureDESKey kd2, byte destinationPINBlockFormat,boolean tdes)
@@ -2193,18 +2190,39 @@ public class JCESecurityModule extends BaseSMAdapter {
         return new EncryptedPIN(pinUnderLmk, SMAdapter.FORMAT00, pan,false);
     }
 
-    public EncryptedPIN translatePIN
-            (EncryptedPIN pinUnderDuk, KeySerialNumber ksn,
-             SecureDESKey bdk, SecureDESKey kd2, byte destinationPINBlockFormat, boolean tdes)
+    /**
+     * Exports PIN to DUKPT Encryption.
+     *
+     * @param pinUnderLmk
+     * @param ksn
+     * @param bdk
+     * @param tdes
+     * @param destinationPINBlockFormat
+     * @return The encrypted pin
+     * @throws SMException
+     */
+    public EncryptedPIN exportPIN
+            (EncryptedPIN pinUnderLmk, KeySerialNumber ksn, SecureDESKey bdk, boolean tdes,
+             byte destinationPINBlockFormat)
             throws SMException
     {
-        return translatePINImpl(pinUnderDuk,ksn,bdk,kd2,destinationPINBlockFormat,tdes);
+        String accountNumber = pinUnderLmk.getAccountNumber();
+        // process
+        // get clear PIN
+        byte[] clearPINBlock = jceHandler.decryptData(pinUnderLmk.getPINBlock(),
+                                                      getLMK(PINLMKIndex));
+        // extract clear pin
+        String pin = calculatePIN(clearPINBlock, pinUnderLmk.getPINBlockFormat(),
+                                  accountNumber);
+
+        clearPINBlock = calculatePINBlock(pin, destinationPINBlockFormat, accountNumber);
+
+        // encrypt PIN
+        byte[] derivedKey = calculateDerivedKey(ksn, bdk, tdes, false);
+        byte[] translatedPINBlock = specialEncrypt(clearPINBlock, derivedKey);
+
+        return new EncryptedPIN(translatedPINBlock, destinationPINBlockFormat,
+                                accountNumber, false);
     }
 
-    public EncryptedPIN importPIN
-            (EncryptedPIN pinUnderDuk, KeySerialNumber ksn, SecureDESKey bdk, boolean tdes)
-            throws SMException
-    {
-        return importPINImpl(pinUnderDuk,ksn,bdk,tdes);
-    }
 }
