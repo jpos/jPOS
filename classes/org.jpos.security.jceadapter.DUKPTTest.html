@@ -41,7 +41,7 @@
 </td>
 <td>
 <div class="infoBox" id="duration">
-<div class="counter">0.523s</div>
+<div class="counter">0.670s</div>
 <p>duration</p>
 </div>
 </td>
@@ -79,7 +79,7 @@
 </thead>
 <tr>
 <td class="success">test_DUKPT</td>
-<td>0.523s</td>
+<td>0.670s</td>
 <td class="success">passed</td>
 </tr>
 </table>
@@ -87,17 +87,17 @@
 <div id="tab1" class="tab">
 <h2>Standard output</h2>
 <span class="code">
-<pre>&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 02:11:57.903 UTC 2015&quot; lifespan=&quot;1ms&quot;&gt;
+<pre>&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.432 UTC 2015&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;jce-provider&gt;
     &lt;name&gt;SunJCE&lt;/name&gt;
   &lt;/jce-provider&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 02:11:57.944 UTC 2015&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.458 UTC 2015&quot;&gt;
   &lt;local-master-keys&gt;
     Loaded successfully from file: &quot;/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/security/lmk-test&quot;
   &lt;/local-master-keys&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 02:11:57.947 UTC 2015&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 17:24:42.461 UTC 2015&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -106,7 +106,38 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 02:11:57.965 UTC 2015&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.465 UTC 2015&quot; lifespan=&quot;2ms&quot;&gt;
+  &lt;s-m-operation&gt;
+    &lt;command name=&quot;Import PIN&quot;&gt;
+      &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
+        &lt;encrypted-pin format=&quot;01&quot;&gt;
+          &lt;pin-block&gt;B76997F83C1479DB&lt;/pin-block&gt;
+          &lt;account-number&gt;401234567890&lt;/account-number&gt;
+        &lt;/encrypted-pin&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Key Serial Number&quot;&gt;
+        &lt;key-serial-number&gt;
+          &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
+          &lt;device-id&gt;3210&lt;/device-id&gt;
+          &lt;transaction-counter&gt;E00002&lt;/transaction-counter
+        &lt;/key-serial-number&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Base Derivation Key&quot;&gt;
+        &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
+          &lt;data&gt;26FB71EA0C9CBBA1D51CA00CFFA36374&lt;/data&gt;
+          &lt;check-value&gt;08D7B4&lt;/check-value&gt;
+        &lt;/secure-des-key&gt;
+      &lt;/parameter&gt;
+    &lt;/command&gt;
+    &lt;result name=&quot;PIN under LMK&quot;&gt;
+      &lt;encrypted-pin format=&quot;00&quot;&gt;
+        &lt;pin-block&gt;5591F133A6462BD7&lt;/pin-block&gt;
+        &lt;account-number&gt;401234567890&lt;/account-number&gt;
+      &lt;/encrypted-pin&gt;
+    &lt;/result&gt;
+  &lt;/s-m-operation&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.472 UTC 2015&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -121,9 +152,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 02:11:57.968 UTC 2015&quot; lifespan=&quot;22ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 17:24:42.475 UTC 2015&quot; lifespan=&quot;15ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@2a242f84
+    test_DUKPT org.jpos.security.KeySerialNumber@355a847
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -149,7 +180,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 02:11:57.973 UTC 2015&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 17:24:42.481 UTC 2015&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -158,7 +189,38 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 02:11:57.977 UTC 2015&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.485 UTC 2015&quot; lifespan=&quot;2ms&quot;&gt;
+  &lt;s-m-operation&gt;
+    &lt;command name=&quot;Import PIN&quot;&gt;
+      &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
+        &lt;encrypted-pin format=&quot;01&quot;&gt;
+          &lt;pin-block&gt;925BC2A39652CF75&lt;/pin-block&gt;
+          &lt;account-number&gt;401234567890&lt;/account-number&gt;
+        &lt;/encrypted-pin&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Key Serial Number&quot;&gt;
+        &lt;key-serial-number&gt;
+          &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
+          &lt;device-id&gt;3210&lt;/device-id&gt;
+          &lt;transaction-counter&gt;E00003&lt;/transaction-counter
+        &lt;/key-serial-number&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Base Derivation Key&quot;&gt;
+        &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
+          &lt;data&gt;26FB71EA0C9CBBA1D51CA00CFFA36374&lt;/data&gt;
+          &lt;check-value&gt;08D7B4&lt;/check-value&gt;
+        &lt;/secure-des-key&gt;
+      &lt;/parameter&gt;
+    &lt;/command&gt;
+    &lt;result name=&quot;PIN under LMK&quot;&gt;
+      &lt;encrypted-pin format=&quot;00&quot;&gt;
+        &lt;pin-block&gt;5591F133A6462BD7&lt;/pin-block&gt;
+        &lt;account-number&gt;401234567890&lt;/account-number&gt;
+      &lt;/encrypted-pin&gt;
+    &lt;/result&gt;
+  &lt;/s-m-operation&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.492 UTC 2015&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -173,9 +235,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 02:11:57.980 UTC 2015&quot; lifespan=&quot;7ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 17:24:42.495 UTC 2015&quot; lifespan=&quot;14ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@45e83537
+    test_DUKPT org.jpos.security.KeySerialNumber@6c9acf06
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -201,7 +263,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 02:11:57.985 UTC 2015&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 17:24:42.501 UTC 2015&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -210,7 +272,38 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 02:11:57.989 UTC 2015&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.505 UTC 2015&quot; lifespan=&quot;2ms&quot;&gt;
+  &lt;s-m-operation&gt;
+    &lt;command name=&quot;Import PIN&quot;&gt;
+      &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
+        &lt;encrypted-pin format=&quot;01&quot;&gt;
+          &lt;pin-block&gt;8DC939C56D0FD13C&lt;/pin-block&gt;
+          &lt;account-number&gt;401234567890&lt;/account-number&gt;
+        &lt;/encrypted-pin&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Key Serial Number&quot;&gt;
+        &lt;key-serial-number&gt;
+          &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
+          &lt;device-id&gt;3210&lt;/device-id&gt;
+          &lt;transaction-counter&gt;E00009&lt;/transaction-counter
+        &lt;/key-serial-number&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Base Derivation Key&quot;&gt;
+        &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
+          &lt;data&gt;26FB71EA0C9CBBA1D51CA00CFFA36374&lt;/data&gt;
+          &lt;check-value&gt;08D7B4&lt;/check-value&gt;
+        &lt;/secure-des-key&gt;
+      &lt;/parameter&gt;
+    &lt;/command&gt;
+    &lt;result name=&quot;PIN under LMK&quot;&gt;
+      &lt;encrypted-pin format=&quot;00&quot;&gt;
+        &lt;pin-block&gt;5591F133A6462BD7&lt;/pin-block&gt;
+        &lt;account-number&gt;401234567890&lt;/account-number&gt;
+      &lt;/encrypted-pin&gt;
+    &lt;/result&gt;
+  &lt;/s-m-operation&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.511 UTC 2015&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -225,9 +318,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 02:11:57.993 UTC 2015&quot; lifespan=&quot;9ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 17:24:42.515 UTC 2015&quot; lifespan=&quot;15ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@ffdd1bc
+    test_DUKPT org.jpos.security.KeySerialNumber@278dca9e
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -253,7 +346,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 02:11:57.998 UTC 2015&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 17:24:42.525 UTC 2015&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -262,7 +355,38 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 02:11:58.003 UTC 2015&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.529 UTC 2015&quot; lifespan=&quot;2ms&quot;&gt;
+  &lt;s-m-operation&gt;
+    &lt;command name=&quot;Import PIN&quot;&gt;
+      &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
+        &lt;encrypted-pin format=&quot;01&quot;&gt;
+          &lt;pin-block&gt;C578B541B9A58A5B&lt;/pin-block&gt;
+          &lt;account-number&gt;401234567890&lt;/account-number&gt;
+        &lt;/encrypted-pin&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Key Serial Number&quot;&gt;
+        &lt;key-serial-number&gt;
+          &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
+          &lt;device-id&gt;3210&lt;/device-id&gt;
+          &lt;transaction-counter&gt;E0000F&lt;/transaction-counter
+        &lt;/key-serial-number&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Base Derivation Key&quot;&gt;
+        &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
+          &lt;data&gt;26FB71EA0C9CBBA1D51CA00CFFA36374&lt;/data&gt;
+          &lt;check-value&gt;08D7B4&lt;/check-value&gt;
+        &lt;/secure-des-key&gt;
+      &lt;/parameter&gt;
+    &lt;/command&gt;
+    &lt;result name=&quot;PIN under LMK&quot;&gt;
+      &lt;encrypted-pin format=&quot;00&quot;&gt;
+        &lt;pin-block&gt;5591F133A6462BD7&lt;/pin-block&gt;
+        &lt;account-number&gt;401234567890&lt;/account-number&gt;
+      &lt;/encrypted-pin&gt;
+    &lt;/result&gt;
+  &lt;/s-m-operation&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.535 UTC 2015&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -277,9 +401,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 02:11:58.005 UTC 2015&quot; lifespan=&quot;7ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 17:24:42.540 UTC 2015&quot; lifespan=&quot;15ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@108a6823
+    test_DUKPT org.jpos.security.KeySerialNumber@4df15f5b
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -305,7 +429,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 02:11:58.010 UTC 2015&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 17:24:42.544 UTC 2015&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -314,7 +438,38 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 02:11:58.014 UTC 2015&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.548 UTC 2015&quot; lifespan=&quot;2ms&quot;&gt;
+  &lt;s-m-operation&gt;
+    &lt;command name=&quot;Import PIN&quot;&gt;
+      &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
+        &lt;encrypted-pin format=&quot;01&quot;&gt;
+          &lt;pin-block&gt;6268FFC127118969&lt;/pin-block&gt;
+          &lt;account-number&gt;401234567890&lt;/account-number&gt;
+        &lt;/encrypted-pin&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Key Serial Number&quot;&gt;
+        &lt;key-serial-number&gt;
+          &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
+          &lt;device-id&gt;3210&lt;/device-id&gt;
+          &lt;transaction-counter&gt;E00010&lt;/transaction-counter
+        &lt;/key-serial-number&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Base Derivation Key&quot;&gt;
+        &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
+          &lt;data&gt;26FB71EA0C9CBBA1D51CA00CFFA36374&lt;/data&gt;
+          &lt;check-value&gt;08D7B4&lt;/check-value&gt;
+        &lt;/secure-des-key&gt;
+      &lt;/parameter&gt;
+    &lt;/command&gt;
+    &lt;result name=&quot;PIN under LMK&quot;&gt;
+      &lt;encrypted-pin format=&quot;00&quot;&gt;
+        &lt;pin-block&gt;5591F133A6462BD7&lt;/pin-block&gt;
+        &lt;account-number&gt;401234567890&lt;/account-number&gt;
+      &lt;/encrypted-pin&gt;
+    &lt;/result&gt;
+  &lt;/s-m-operation&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.563 UTC 2015&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -329,9 +484,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 02:11:58.016 UTC 2015&quot; lifespan=&quot;6ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 17:24:42.568 UTC 2015&quot; lifespan=&quot;24ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@6ebada50
+    test_DUKPT org.jpos.security.KeySerialNumber@21ab7757
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -357,7 +512,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 02:11:58.021 UTC 2015&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 17:24:42.574 UTC 2015&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -366,7 +521,38 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 02:11:58.028 UTC 2015&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.578 UTC 2015&quot; lifespan=&quot;3ms&quot;&gt;
+  &lt;s-m-operation&gt;
+    &lt;command name=&quot;Import PIN&quot;&gt;
+      &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
+        &lt;encrypted-pin format=&quot;01&quot;&gt;
+          &lt;pin-block&gt;A6552D24B01E71A0&lt;/pin-block&gt;
+          &lt;account-number&gt;401234567890&lt;/account-number&gt;
+        &lt;/encrypted-pin&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Key Serial Number&quot;&gt;
+        &lt;key-serial-number&gt;
+          &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
+          &lt;device-id&gt;3210&lt;/device-id&gt;
+          &lt;transaction-counter&gt;EFF800&lt;/transaction-counter
+        &lt;/key-serial-number&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Base Derivation Key&quot;&gt;
+        &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
+          &lt;data&gt;26FB71EA0C9CBBA1D51CA00CFFA36374&lt;/data&gt;
+          &lt;check-value&gt;08D7B4&lt;/check-value&gt;
+        &lt;/secure-des-key&gt;
+      &lt;/parameter&gt;
+    &lt;/command&gt;
+    &lt;result name=&quot;PIN under LMK&quot;&gt;
+      &lt;encrypted-pin format=&quot;00&quot;&gt;
+        &lt;pin-block&gt;5591F133A6462BD7&lt;/pin-block&gt;
+        &lt;account-number&gt;401234567890&lt;/account-number&gt;
+      &lt;/encrypted-pin&gt;
+    &lt;/result&gt;
+  &lt;/s-m-operation&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.582 UTC 2015&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -381,9 +567,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 02:11:58.030 UTC 2015&quot; lifespan=&quot;9ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 17:24:42.585 UTC 2015&quot; lifespan=&quot;12ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@2d52f2fb
+    test_DUKPT org.jpos.security.KeySerialNumber@280206
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -409,7 +595,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 02:11:58.034 UTC 2015&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 17:24:42.588 UTC 2015&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -418,7 +604,38 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 02:11:58.040 UTC 2015&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.593 UTC 2015&quot; lifespan=&quot;3ms&quot;&gt;
+  &lt;s-m-operation&gt;
+    &lt;command name=&quot;Import PIN&quot;&gt;
+      &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
+        &lt;encrypted-pin format=&quot;01&quot;&gt;
+          &lt;pin-block&gt;6DEF7FD593810AC7&lt;/pin-block&gt;
+          &lt;account-number&gt;401234567890&lt;/account-number&gt;
+        &lt;/encrypted-pin&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Key Serial Number&quot;&gt;
+        &lt;key-serial-number&gt;
+          &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
+          &lt;device-id&gt;3210&lt;/device-id&gt;
+          &lt;transaction-counter&gt;EFFC00&lt;/transaction-counter
+        &lt;/key-serial-number&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Base Derivation Key&quot;&gt;
+        &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
+          &lt;data&gt;26FB71EA0C9CBBA1D51CA00CFFA36374&lt;/data&gt;
+          &lt;check-value&gt;08D7B4&lt;/check-value&gt;
+        &lt;/secure-des-key&gt;
+      &lt;/parameter&gt;
+    &lt;/command&gt;
+    &lt;result name=&quot;PIN under LMK&quot;&gt;
+      &lt;encrypted-pin format=&quot;00&quot;&gt;
+        &lt;pin-block&gt;5591F133A6462BD7&lt;/pin-block&gt;
+        &lt;account-number&gt;401234567890&lt;/account-number&gt;
+      &lt;/encrypted-pin&gt;
+    &lt;/result&gt;
+  &lt;/s-m-operation&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.597 UTC 2015&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -433,9 +650,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 02:11:58.041 UTC 2015&quot; lifespan=&quot;7ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 17:24:42.599 UTC 2015&quot; lifespan=&quot;11ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@1a3cdacb
+    test_DUKPT org.jpos.security.KeySerialNumber@429cd7fe
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -461,7 +678,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 02:11:58.044 UTC 2015&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 17:24:42.603 UTC 2015&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -470,7 +687,38 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 02:11:58.048 UTC 2015&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.606 UTC 2015&quot; lifespan=&quot;2ms&quot;&gt;
+  &lt;s-m-operation&gt;
+    &lt;command name=&quot;Import PIN&quot;&gt;
+      &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
+        &lt;encrypted-pin format=&quot;01&quot;&gt;
+          &lt;pin-block&gt;3FAC6F8763C0B60C&lt;/pin-block&gt;
+          &lt;account-number&gt;401234567890&lt;/account-number&gt;
+        &lt;/encrypted-pin&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Key Serial Number&quot;&gt;
+        &lt;key-serial-number&gt;
+          &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
+          &lt;device-id&gt;3210&lt;/device-id&gt;
+          &lt;transaction-counter&gt;F00000&lt;/transaction-counter
+        &lt;/key-serial-number&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Base Derivation Key&quot;&gt;
+        &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
+          &lt;data&gt;26FB71EA0C9CBBA1D51CA00CFFA36374&lt;/data&gt;
+          &lt;check-value&gt;08D7B4&lt;/check-value&gt;
+        &lt;/secure-des-key&gt;
+      &lt;/parameter&gt;
+    &lt;/command&gt;
+    &lt;result name=&quot;PIN under LMK&quot;&gt;
+      &lt;encrypted-pin format=&quot;00&quot;&gt;
+        &lt;pin-block&gt;5591F133A6462BD7&lt;/pin-block&gt;
+        &lt;account-number&gt;401234567890&lt;/account-number&gt;
+      &lt;/encrypted-pin&gt;
+    &lt;/result&gt;
+  &lt;/s-m-operation&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.610 UTC 2015&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -485,9 +733,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 02:11:58.049 UTC 2015&quot; lifespan=&quot;5ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 17:24:42.613 UTC 2015&quot; lifespan=&quot;10ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@114052e2
+    test_DUKPT org.jpos.security.KeySerialNumber@472886dc
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -513,7 +761,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 02:11:58.053 UTC 2015&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 17:24:42.616 UTC 2015&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -522,7 +770,38 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 02:11:58.057 UTC 2015&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.621 UTC 2015&quot; lifespan=&quot;3ms&quot;&gt;
+  &lt;s-m-operation&gt;
+    &lt;command name=&quot;Import PIN&quot;&gt;
+      &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
+        &lt;encrypted-pin format=&quot;01&quot;&gt;
+          &lt;pin-block&gt;A6552D24B01E71A0&lt;/pin-block&gt;
+          &lt;account-number&gt;401234567890&lt;/account-number&gt;
+        &lt;/encrypted-pin&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Key Serial Number&quot;&gt;
+        &lt;key-serial-number&gt;
+          &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
+          &lt;device-id&gt;3210&lt;/device-id&gt;
+          &lt;transaction-counter&gt;EFF800&lt;/transaction-counter
+        &lt;/key-serial-number&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Base Derivation Key&quot;&gt;
+        &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
+          &lt;data&gt;26FB71EA0C9CBBA1D51CA00CFFA36374&lt;/data&gt;
+          &lt;check-value&gt;08D7B4&lt;/check-value&gt;
+        &lt;/secure-des-key&gt;
+      &lt;/parameter&gt;
+    &lt;/command&gt;
+    &lt;result name=&quot;PIN under LMK&quot;&gt;
+      &lt;encrypted-pin format=&quot;00&quot;&gt;
+        &lt;pin-block&gt;5591F133A6462BD7&lt;/pin-block&gt;
+        &lt;account-number&gt;401234567890&lt;/account-number&gt;
+      &lt;/encrypted-pin&gt;
+    &lt;/result&gt;
+  &lt;/s-m-operation&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.625 UTC 2015&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -537,9 +816,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 02:11:58.059 UTC 2015&quot; lifespan=&quot;7ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 17:24:42.627 UTC 2015&quot; lifespan=&quot;11ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@16017c47
+    test_DUKPT org.jpos.security.KeySerialNumber@35adfa03
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -565,7 +844,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 02:11:58.062 UTC 2015&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 17:24:42.630 UTC 2015&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -574,7 +853,38 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 02:11:58.065 UTC 2015&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.634 UTC 2015&quot; lifespan=&quot;2ms&quot;&gt;
+  &lt;s-m-operation&gt;
+    &lt;command name=&quot;Import PIN&quot;&gt;
+      &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
+        &lt;encrypted-pin format=&quot;01&quot;&gt;
+          &lt;pin-block&gt;E6F851D98E8DD722&lt;/pin-block&gt;
+          &lt;account-number&gt;999980000990&lt;/account-number&gt;
+        &lt;/encrypted-pin&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Key Serial Number&quot;&gt;
+        &lt;key-serial-number&gt;
+          &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
+          &lt;device-id&gt;3210&lt;/device-id&gt;
+          &lt;transaction-counter&gt;E00002&lt;/transaction-counter
+        &lt;/key-serial-number&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Base Derivation Key&quot;&gt;
+        &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
+          &lt;data&gt;26FB71EA0C9CBBA1D51CA00CFFA36374&lt;/data&gt;
+          &lt;check-value&gt;08D7B4&lt;/check-value&gt;
+        &lt;/secure-des-key&gt;
+      &lt;/parameter&gt;
+    &lt;/command&gt;
+    &lt;result name=&quot;PIN under LMK&quot;&gt;
+      &lt;encrypted-pin format=&quot;00&quot;&gt;
+        &lt;pin-block&gt;2A27A121EA7BCC1C&lt;/pin-block&gt;
+        &lt;account-number&gt;999980000990&lt;/account-number&gt;
+      &lt;/encrypted-pin&gt;
+    &lt;/result&gt;
+  &lt;/s-m-operation&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.638 UTC 2015&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -589,9 +899,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 02:11:58.067 UTC 2015&quot; lifespan=&quot;5ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 17:24:42.640 UTC 2015&quot; lifespan=&quot;10ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@3b86249a
+    test_DUKPT org.jpos.security.KeySerialNumber@30f8f67d
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -617,7 +927,7 @@
     &lt;decrypted-pin&gt;9901&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 02:11:58.070 UTC 2015&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 17:24:42.644 UTC 2015&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -626,7 +936,38 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 02:11:58.073 UTC 2015&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.647 UTC 2015&quot; lifespan=&quot;2ms&quot;&gt;
+  &lt;s-m-operation&gt;
+    &lt;command name=&quot;Import PIN&quot;&gt;
+      &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
+        &lt;encrypted-pin format=&quot;01&quot;&gt;
+          &lt;pin-block&gt;DE4FF9ABA523F853&lt;/pin-block&gt;
+          &lt;account-number&gt;999980000990&lt;/account-number&gt;
+        &lt;/encrypted-pin&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Key Serial Number&quot;&gt;
+        &lt;key-serial-number&gt;
+          &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
+          &lt;device-id&gt;3210&lt;/device-id&gt;
+          &lt;transaction-counter&gt;E00003&lt;/transaction-counter
+        &lt;/key-serial-number&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Base Derivation Key&quot;&gt;
+        &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
+          &lt;data&gt;26FB71EA0C9CBBA1D51CA00CFFA36374&lt;/data&gt;
+          &lt;check-value&gt;08D7B4&lt;/check-value&gt;
+        &lt;/secure-des-key&gt;
+      &lt;/parameter&gt;
+    &lt;/command&gt;
+    &lt;result name=&quot;PIN under LMK&quot;&gt;
+      &lt;encrypted-pin format=&quot;00&quot;&gt;
+        &lt;pin-block&gt;F01903223CB429DE&lt;/pin-block&gt;
+        &lt;account-number&gt;999980000990&lt;/account-number&gt;
+      &lt;/encrypted-pin&gt;
+    &lt;/result&gt;
+  &lt;/s-m-operation&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.651 UTC 2015&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -641,9 +982,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 02:11:58.075 UTC 2015&quot; lifespan=&quot;5ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 17:24:42.653 UTC 2015&quot; lifespan=&quot;10ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@63cd18fd
+    test_DUKPT org.jpos.security.KeySerialNumber@28fea1a9
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -669,7 +1010,7 @@
     &lt;decrypted-pin&gt;1575&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 02:11:58.078 UTC 2015&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 17:24:42.656 UTC 2015&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -678,7 +1019,38 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 02:11:58.082 UTC 2015&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.660 UTC 2015&quot; lifespan=&quot;2ms&quot;&gt;
+  &lt;s-m-operation&gt;
+    &lt;command name=&quot;Import PIN&quot;&gt;
+      &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
+        &lt;encrypted-pin format=&quot;01&quot;&gt;
+          &lt;pin-block&gt;148F2CD3554F09F3&lt;/pin-block&gt;
+          &lt;account-number&gt;999980000990&lt;/account-number&gt;
+        &lt;/encrypted-pin&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Key Serial Number&quot;&gt;
+        &lt;key-serial-number&gt;
+          &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
+          &lt;device-id&gt;3210&lt;/device-id&gt;
+          &lt;transaction-counter&gt;E00006&lt;/transaction-counter
+        &lt;/key-serial-number&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Base Derivation Key&quot;&gt;
+        &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
+          &lt;data&gt;26FB71EA0C9CBBA1D51CA00CFFA36374&lt;/data&gt;
+          &lt;check-value&gt;08D7B4&lt;/check-value&gt;
+        &lt;/secure-des-key&gt;
+      &lt;/parameter&gt;
+    &lt;/command&gt;
+    &lt;result name=&quot;PIN under LMK&quot;&gt;
+      &lt;encrypted-pin format=&quot;00&quot;&gt;
+        &lt;pin-block&gt;2A27A121EA7BCC1C&lt;/pin-block&gt;
+        &lt;account-number&gt;999980000990&lt;/account-number&gt;
+      &lt;/encrypted-pin&gt;
+    &lt;/result&gt;
+  &lt;/s-m-operation&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.663 UTC 2015&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -693,9 +1065,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 02:11:58.084 UTC 2015&quot; lifespan=&quot;6ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 17:24:42.665 UTC 2015&quot; lifespan=&quot;9ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@2e23bd3b
+    test_DUKPT org.jpos.security.KeySerialNumber@65277345
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -721,7 +1093,7 @@
     &lt;decrypted-pin&gt;9901&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 02:11:58.087 UTC 2015&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 17:24:42.669 UTC 2015&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -730,7 +1102,38 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 02:11:58.091 UTC 2015&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.672 UTC 2015&quot; lifespan=&quot;2ms&quot;&gt;
+  &lt;s-m-operation&gt;
+    &lt;command name=&quot;Import PIN&quot;&gt;
+      &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
+        &lt;encrypted-pin format=&quot;01&quot;&gt;
+          &lt;pin-block&gt;1B9C1845EB993A7A&lt;/pin-block&gt;
+          &lt;account-number&gt;401234567890&lt;/account-number&gt;
+        &lt;/encrypted-pin&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Key Serial Number&quot;&gt;
+        &lt;key-serial-number&gt;
+          &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
+          &lt;device-id&gt;3210&lt;/device-id&gt;
+          &lt;transaction-counter&gt;E00001&lt;/transaction-counter
+        &lt;/key-serial-number&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Base Derivation Key&quot;&gt;
+        &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
+          &lt;data&gt;26FB71EA0C9CBBA1D51CA00CFFA36374&lt;/data&gt;
+          &lt;check-value&gt;08D7B4&lt;/check-value&gt;
+        &lt;/secure-des-key&gt;
+      &lt;/parameter&gt;
+    &lt;/command&gt;
+    &lt;result name=&quot;PIN under LMK&quot;&gt;
+      &lt;encrypted-pin format=&quot;00&quot;&gt;
+        &lt;pin-block&gt;5591F133A6462BD7&lt;/pin-block&gt;
+        &lt;account-number&gt;401234567890&lt;/account-number&gt;
+      &lt;/encrypted-pin&gt;
+    &lt;/result&gt;
+  &lt;/s-m-operation&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.676 UTC 2015&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -745,9 +1148,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 02:11:58.093 UTC 2015&quot; lifespan=&quot;7ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 17:24:42.677 UTC 2015&quot; lifespan=&quot;9ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@2c5c8427
+    test_DUKPT org.jpos.security.KeySerialNumber@100eae5
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -773,7 +1176,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 02:11:58.096 UTC 2015&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 17:24:42.680 UTC 2015&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -782,7 +1185,38 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 02:11:58.100 UTC 2015&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.684 UTC 2015&quot; lifespan=&quot;3ms&quot;&gt;
+  &lt;s-m-operation&gt;
+    &lt;command name=&quot;Import PIN&quot;&gt;
+      &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
+        &lt;encrypted-pin format=&quot;01&quot;&gt;
+          &lt;pin-block&gt;10A01C8D02C69107&lt;/pin-block&gt;
+          &lt;account-number&gt;401234567890&lt;/account-number&gt;
+        &lt;/encrypted-pin&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Key Serial Number&quot;&gt;
+        &lt;key-serial-number&gt;
+          &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
+          &lt;device-id&gt;3210&lt;/device-id&gt;
+          &lt;transaction-counter&gt;E00002&lt;/transaction-counter
+        &lt;/key-serial-number&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Base Derivation Key&quot;&gt;
+        &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
+          &lt;data&gt;26FB71EA0C9CBBA1D51CA00CFFA36374&lt;/data&gt;
+          &lt;check-value&gt;08D7B4&lt;/check-value&gt;
+        &lt;/secure-des-key&gt;
+      &lt;/parameter&gt;
+    &lt;/command&gt;
+    &lt;result name=&quot;PIN under LMK&quot;&gt;
+      &lt;encrypted-pin format=&quot;00&quot;&gt;
+        &lt;pin-block&gt;5591F133A6462BD7&lt;/pin-block&gt;
+        &lt;account-number&gt;401234567890&lt;/account-number&gt;
+      &lt;/encrypted-pin&gt;
+    &lt;/result&gt;
+  &lt;/s-m-operation&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.687 UTC 2015&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -797,9 +1231,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 02:11:58.102 UTC 2015&quot; lifespan=&quot;6ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 17:24:42.689 UTC 2015&quot; lifespan=&quot;9ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@6de83331
+    test_DUKPT org.jpos.security.KeySerialNumber@633d60e6
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -825,7 +1259,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 02:11:58.105 UTC 2015&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 17:24:42.692 UTC 2015&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -834,7 +1268,38 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 02:11:58.110 UTC 2015&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.695 UTC 2015&quot; lifespan=&quot;2ms&quot;&gt;
+  &lt;s-m-operation&gt;
+    &lt;command name=&quot;Import PIN&quot;&gt;
+      &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
+        &lt;encrypted-pin format=&quot;01&quot;&gt;
+          &lt;pin-block&gt;18DC07B94797B466&lt;/pin-block&gt;
+          &lt;account-number&gt;401234567890&lt;/account-number&gt;
+        &lt;/encrypted-pin&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Key Serial Number&quot;&gt;
+        &lt;key-serial-number&gt;
+          &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
+          &lt;device-id&gt;3210&lt;/device-id&gt;
+          &lt;transaction-counter&gt;E00003&lt;/transaction-counter
+        &lt;/key-serial-number&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Base Derivation Key&quot;&gt;
+        &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
+          &lt;data&gt;26FB71EA0C9CBBA1D51CA00CFFA36374&lt;/data&gt;
+          &lt;check-value&gt;08D7B4&lt;/check-value&gt;
+        &lt;/secure-des-key&gt;
+      &lt;/parameter&gt;
+    &lt;/command&gt;
+    &lt;result name=&quot;PIN under LMK&quot;&gt;
+      &lt;encrypted-pin format=&quot;00&quot;&gt;
+        &lt;pin-block&gt;5591F133A6462BD7&lt;/pin-block&gt;
+        &lt;account-number&gt;401234567890&lt;/account-number&gt;
+      &lt;/encrypted-pin&gt;
+    &lt;/result&gt;
+  &lt;/s-m-operation&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.699 UTC 2015&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -849,9 +1314,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 02:11:58.111 UTC 2015&quot; lifespan=&quot;6ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 17:24:42.701 UTC 2015&quot; lifespan=&quot;10ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@27790e56
+    test_DUKPT org.jpos.security.KeySerialNumber@52a4cef0
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -877,7 +1342,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 02:11:58.115 UTC 2015&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 17:24:42.704 UTC 2015&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -886,7 +1351,38 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 02:11:58.119 UTC 2015&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.708 UTC 2015&quot; lifespan=&quot;3ms&quot;&gt;
+  &lt;s-m-operation&gt;
+    &lt;command name=&quot;Import PIN&quot;&gt;
+      &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
+        &lt;encrypted-pin format=&quot;01&quot;&gt;
+          &lt;pin-block&gt;0BC79509D5645DF7&lt;/pin-block&gt;
+          &lt;account-number&gt;401234567890&lt;/account-number&gt;
+        &lt;/encrypted-pin&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Key Serial Number&quot;&gt;
+        &lt;key-serial-number&gt;
+          &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
+          &lt;device-id&gt;3210&lt;/device-id&gt;
+          &lt;transaction-counter&gt;E00004&lt;/transaction-counter
+        &lt;/key-serial-number&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Base Derivation Key&quot;&gt;
+        &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
+          &lt;data&gt;26FB71EA0C9CBBA1D51CA00CFFA36374&lt;/data&gt;
+          &lt;check-value&gt;08D7B4&lt;/check-value&gt;
+        &lt;/secure-des-key&gt;
+      &lt;/parameter&gt;
+    &lt;/command&gt;
+    &lt;result name=&quot;PIN under LMK&quot;&gt;
+      &lt;encrypted-pin format=&quot;00&quot;&gt;
+        &lt;pin-block&gt;5591F133A6462BD7&lt;/pin-block&gt;
+        &lt;account-number&gt;401234567890&lt;/account-number&gt;
+      &lt;/encrypted-pin&gt;
+    &lt;/result&gt;
+  &lt;/s-m-operation&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.711 UTC 2015&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -901,9 +1397,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 02:11:58.121 UTC 2015&quot; lifespan=&quot;7ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 17:24:42.713 UTC 2015&quot; lifespan=&quot;10ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@7c9c4458
+    test_DUKPT org.jpos.security.KeySerialNumber@420e18f3
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -929,7 +1425,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 02:11:58.124 UTC 2015&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 17:24:42.716 UTC 2015&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -938,7 +1434,38 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 02:11:58.128 UTC 2015&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.720 UTC 2015&quot; lifespan=&quot;3ms&quot;&gt;
+  &lt;s-m-operation&gt;
+    &lt;command name=&quot;Import PIN&quot;&gt;
+      &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
+        &lt;encrypted-pin format=&quot;01&quot;&gt;
+          &lt;pin-block&gt;5BC0AF22AD87B327&lt;/pin-block&gt;
+          &lt;account-number&gt;401234567890&lt;/account-number&gt;
+        &lt;/encrypted-pin&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Key Serial Number&quot;&gt;
+        &lt;key-serial-number&gt;
+          &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
+          &lt;device-id&gt;3210&lt;/device-id&gt;
+          &lt;transaction-counter&gt;E00005&lt;/transaction-counter
+        &lt;/key-serial-number&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Base Derivation Key&quot;&gt;
+        &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
+          &lt;data&gt;26FB71EA0C9CBBA1D51CA00CFFA36374&lt;/data&gt;
+          &lt;check-value&gt;08D7B4&lt;/check-value&gt;
+        &lt;/secure-des-key&gt;
+      &lt;/parameter&gt;
+    &lt;/command&gt;
+    &lt;result name=&quot;PIN under LMK&quot;&gt;
+      &lt;encrypted-pin format=&quot;00&quot;&gt;
+        &lt;pin-block&gt;5591F133A6462BD7&lt;/pin-block&gt;
+        &lt;account-number&gt;401234567890&lt;/account-number&gt;
+      &lt;/encrypted-pin&gt;
+    &lt;/result&gt;
+  &lt;/s-m-operation&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.723 UTC 2015&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -953,9 +1480,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 02:11:58.130 UTC 2015&quot; lifespan=&quot;7ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 17:24:42.725 UTC 2015&quot; lifespan=&quot;9ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@57711189
+    test_DUKPT org.jpos.security.KeySerialNumber@1e54c60c
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -981,7 +1508,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 02:11:58.133 UTC 2015&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 17:24:42.728 UTC 2015&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -990,7 +1517,38 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 02:11:58.137 UTC 2015&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.732 UTC 2015&quot; lifespan=&quot;3ms&quot;&gt;
+  &lt;s-m-operation&gt;
+    &lt;command name=&quot;Import PIN&quot;&gt;
+      &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
+        &lt;encrypted-pin format=&quot;01&quot;&gt;
+          &lt;pin-block&gt;A16DF70AE36158D8&lt;/pin-block&gt;
+          &lt;account-number&gt;401234567890&lt;/account-number&gt;
+        &lt;/encrypted-pin&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Key Serial Number&quot;&gt;
+        &lt;key-serial-number&gt;
+          &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
+          &lt;device-id&gt;3210&lt;/device-id&gt;
+          &lt;transaction-counter&gt;E00006&lt;/transaction-counter
+        &lt;/key-serial-number&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Base Derivation Key&quot;&gt;
+        &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
+          &lt;data&gt;26FB71EA0C9CBBA1D51CA00CFFA36374&lt;/data&gt;
+          &lt;check-value&gt;08D7B4&lt;/check-value&gt;
+        &lt;/secure-des-key&gt;
+      &lt;/parameter&gt;
+    &lt;/command&gt;
+    &lt;result name=&quot;PIN under LMK&quot;&gt;
+      &lt;encrypted-pin format=&quot;00&quot;&gt;
+        &lt;pin-block&gt;5591F133A6462BD7&lt;/pin-block&gt;
+        &lt;account-number&gt;401234567890&lt;/account-number&gt;
+      &lt;/encrypted-pin&gt;
+    &lt;/result&gt;
+  &lt;/s-m-operation&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.735 UTC 2015&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -1005,9 +1563,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 02:11:58.139 UTC 2015&quot; lifespan=&quot;7ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 17:24:42.736 UTC 2015&quot; lifespan=&quot;9ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@40366638
+    test_DUKPT org.jpos.security.KeySerialNumber@4f964d62
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -1033,7 +1591,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 02:11:58.142 UTC 2015&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 17:24:42.739 UTC 2015&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -1042,7 +1600,38 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 02:11:58.146 UTC 2015&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.743 UTC 2015&quot; lifespan=&quot;3ms&quot;&gt;
+  &lt;s-m-operation&gt;
+    &lt;command name=&quot;Import PIN&quot;&gt;
+      &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
+        &lt;encrypted-pin format=&quot;01&quot;&gt;
+          &lt;pin-block&gt;27711C16CB257F8E&lt;/pin-block&gt;
+          &lt;account-number&gt;401234567890&lt;/account-number&gt;
+        &lt;/encrypted-pin&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Key Serial Number&quot;&gt;
+        &lt;key-serial-number&gt;
+          &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
+          &lt;device-id&gt;3210&lt;/device-id&gt;
+          &lt;transaction-counter&gt;E00007&lt;/transaction-counter
+        &lt;/key-serial-number&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Base Derivation Key&quot;&gt;
+        &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
+          &lt;data&gt;26FB71EA0C9CBBA1D51CA00CFFA36374&lt;/data&gt;
+          &lt;check-value&gt;08D7B4&lt;/check-value&gt;
+        &lt;/secure-des-key&gt;
+      &lt;/parameter&gt;
+    &lt;/command&gt;
+    &lt;result name=&quot;PIN under LMK&quot;&gt;
+      &lt;encrypted-pin format=&quot;00&quot;&gt;
+        &lt;pin-block&gt;5591F133A6462BD7&lt;/pin-block&gt;
+        &lt;account-number&gt;401234567890&lt;/account-number&gt;
+      &lt;/encrypted-pin&gt;
+    &lt;/result&gt;
+  &lt;/s-m-operation&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.747 UTC 2015&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -1057,9 +1646,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 02:11:58.148 UTC 2015&quot; lifespan=&quot;7ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 17:24:42.748 UTC 2015&quot; lifespan=&quot;9ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@33710777
+    test_DUKPT org.jpos.security.KeySerialNumber@14b285c0
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -1085,7 +1674,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 02:11:58.151 UTC 2015&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 17:24:42.751 UTC 2015&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -1094,7 +1683,38 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 02:11:58.155 UTC 2015&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.755 UTC 2015&quot; lifespan=&quot;3ms&quot;&gt;
+  &lt;s-m-operation&gt;
+    &lt;command name=&quot;Import PIN&quot;&gt;
+      &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
+        &lt;encrypted-pin format=&quot;01&quot;&gt;
+          &lt;pin-block&gt;50E55547A5027551&lt;/pin-block&gt;
+          &lt;account-number&gt;401234567890&lt;/account-number&gt;
+        &lt;/encrypted-pin&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Key Serial Number&quot;&gt;
+        &lt;key-serial-number&gt;
+          &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
+          &lt;device-id&gt;3210&lt;/device-id&gt;
+          &lt;transaction-counter&gt;E00008&lt;/transaction-counter
+        &lt;/key-serial-number&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Base Derivation Key&quot;&gt;
+        &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
+          &lt;data&gt;26FB71EA0C9CBBA1D51CA00CFFA36374&lt;/data&gt;
+          &lt;check-value&gt;08D7B4&lt;/check-value&gt;
+        &lt;/secure-des-key&gt;
+      &lt;/parameter&gt;
+    &lt;/command&gt;
+    &lt;result name=&quot;PIN under LMK&quot;&gt;
+      &lt;encrypted-pin format=&quot;00&quot;&gt;
+        &lt;pin-block&gt;5591F133A6462BD7&lt;/pin-block&gt;
+        &lt;account-number&gt;401234567890&lt;/account-number&gt;
+      &lt;/encrypted-pin&gt;
+    &lt;/result&gt;
+  &lt;/s-m-operation&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.758 UTC 2015&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -1109,9 +1729,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 02:11:58.157 UTC 2015&quot; lifespan=&quot;6ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 17:24:42.760 UTC 2015&quot; lifespan=&quot;9ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@41a13003
+    test_DUKPT org.jpos.security.KeySerialNumber@546b0add
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -1137,7 +1757,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 02:11:58.160 UTC 2015&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 17:24:42.762 UTC 2015&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -1146,7 +1766,38 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 02:11:58.164 UTC 2015&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.766 UTC 2015&quot; lifespan=&quot;2ms&quot;&gt;
+  &lt;s-m-operation&gt;
+    &lt;command name=&quot;Import PIN&quot;&gt;
+      &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
+        &lt;encrypted-pin format=&quot;01&quot;&gt;
+          &lt;pin-block&gt;536CF7F678ACFC8D&lt;/pin-block&gt;
+          &lt;account-number&gt;401234567890&lt;/account-number&gt;
+        &lt;/encrypted-pin&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Key Serial Number&quot;&gt;
+        &lt;key-serial-number&gt;
+          &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
+          &lt;device-id&gt;3210&lt;/device-id&gt;
+          &lt;transaction-counter&gt;E00009&lt;/transaction-counter
+        &lt;/key-serial-number&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Base Derivation Key&quot;&gt;
+        &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
+          &lt;data&gt;26FB71EA0C9CBBA1D51CA00CFFA36374&lt;/data&gt;
+          &lt;check-value&gt;08D7B4&lt;/check-value&gt;
+        &lt;/secure-des-key&gt;
+      &lt;/parameter&gt;
+    &lt;/command&gt;
+    &lt;result name=&quot;PIN under LMK&quot;&gt;
+      &lt;encrypted-pin format=&quot;00&quot;&gt;
+        &lt;pin-block&gt;5591F133A6462BD7&lt;/pin-block&gt;
+        &lt;account-number&gt;401234567890&lt;/account-number&gt;
+      &lt;/encrypted-pin&gt;
+    &lt;/result&gt;
+  &lt;/s-m-operation&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.769 UTC 2015&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -1161,9 +1812,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 02:11:58.166 UTC 2015&quot; lifespan=&quot;7ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 17:24:42.771 UTC 2015&quot; lifespan=&quot;9ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@3d57369e
+    test_DUKPT org.jpos.security.KeySerialNumber@3f965e77
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -1189,7 +1840,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 02:11:58.169 UTC 2015&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 17:24:42.774 UTC 2015&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -1198,7 +1849,38 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 02:11:58.173 UTC 2015&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.778 UTC 2015&quot; lifespan=&quot;3ms&quot;&gt;
+  &lt;s-m-operation&gt;
+    &lt;command name=&quot;Import PIN&quot;&gt;
+      &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
+        &lt;encrypted-pin format=&quot;01&quot;&gt;
+          &lt;pin-block&gt;EDABBA23221833FE&lt;/pin-block&gt;
+          &lt;account-number&gt;401234567890&lt;/account-number&gt;
+        &lt;/encrypted-pin&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Key Serial Number&quot;&gt;
+        &lt;key-serial-number&gt;
+          &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
+          &lt;device-id&gt;3210&lt;/device-id&gt;
+          &lt;transaction-counter&gt;E0000A&lt;/transaction-counter
+        &lt;/key-serial-number&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Base Derivation Key&quot;&gt;
+        &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
+          &lt;data&gt;26FB71EA0C9CBBA1D51CA00CFFA36374&lt;/data&gt;
+          &lt;check-value&gt;08D7B4&lt;/check-value&gt;
+        &lt;/secure-des-key&gt;
+      &lt;/parameter&gt;
+    &lt;/command&gt;
+    &lt;result name=&quot;PIN under LMK&quot;&gt;
+      &lt;encrypted-pin format=&quot;00&quot;&gt;
+        &lt;pin-block&gt;5591F133A6462BD7&lt;/pin-block&gt;
+        &lt;account-number&gt;401234567890&lt;/account-number&gt;
+      &lt;/encrypted-pin&gt;
+    &lt;/result&gt;
+  &lt;/s-m-operation&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.781 UTC 2015&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -1213,9 +1895,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 02:11:58.175 UTC 2015&quot; lifespan=&quot;7ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 17:24:42.783 UTC 2015&quot; lifespan=&quot;9ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@28c2de88
+    test_DUKPT org.jpos.security.KeySerialNumber@2913f73e
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -1241,7 +1923,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 02:11:58.178 UTC 2015&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 17:24:42.785 UTC 2015&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -1250,7 +1932,38 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 02:11:58.182 UTC 2015&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.790 UTC 2015&quot; lifespan=&quot;3ms&quot;&gt;
+  &lt;s-m-operation&gt;
+    &lt;command name=&quot;Import PIN&quot;&gt;
+      &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
+        &lt;encrypted-pin format=&quot;01&quot;&gt;
+          &lt;pin-block&gt;2328981C57B4BDBA&lt;/pin-block&gt;
+          &lt;account-number&gt;401234567890&lt;/account-number&gt;
+        &lt;/encrypted-pin&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Key Serial Number&quot;&gt;
+        &lt;key-serial-number&gt;
+          &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
+          &lt;device-id&gt;3210&lt;/device-id&gt;
+          &lt;transaction-counter&gt;E0000B&lt;/transaction-counter
+        &lt;/key-serial-number&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Base Derivation Key&quot;&gt;
+        &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
+          &lt;data&gt;26FB71EA0C9CBBA1D51CA00CFFA36374&lt;/data&gt;
+          &lt;check-value&gt;08D7B4&lt;/check-value&gt;
+        &lt;/secure-des-key&gt;
+      &lt;/parameter&gt;
+    &lt;/command&gt;
+    &lt;result name=&quot;PIN under LMK&quot;&gt;
+      &lt;encrypted-pin format=&quot;00&quot;&gt;
+        &lt;pin-block&gt;5591F133A6462BD7&lt;/pin-block&gt;
+        &lt;account-number&gt;401234567890&lt;/account-number&gt;
+      &lt;/encrypted-pin&gt;
+    &lt;/result&gt;
+  &lt;/s-m-operation&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.793 UTC 2015&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -1265,9 +1978,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 02:11:58.184 UTC 2015&quot; lifespan=&quot;7ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 17:24:42.795 UTC 2015&quot; lifespan=&quot;10ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@119fc7a0
+    test_DUKPT org.jpos.security.KeySerialNumber@5dcd1c83
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -1293,7 +2006,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 02:11:58.187 UTC 2015&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 17:24:42.798 UTC 2015&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -1302,7 +2015,38 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 02:11:58.191 UTC 2015&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.802 UTC 2015&quot; lifespan=&quot;3ms&quot;&gt;
+  &lt;s-m-operation&gt;
+    &lt;command name=&quot;Import PIN&quot;&gt;
+      &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
+        &lt;encrypted-pin format=&quot;01&quot;&gt;
+          &lt;pin-block&gt;038D03CC926CF286&lt;/pin-block&gt;
+          &lt;account-number&gt;401234567890&lt;/account-number&gt;
+        &lt;/encrypted-pin&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Key Serial Number&quot;&gt;
+        &lt;key-serial-number&gt;
+          &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
+          &lt;device-id&gt;3210&lt;/device-id&gt;
+          &lt;transaction-counter&gt;E0000C&lt;/transaction-counter
+        &lt;/key-serial-number&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Base Derivation Key&quot;&gt;
+        &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
+          &lt;data&gt;26FB71EA0C9CBBA1D51CA00CFFA36374&lt;/data&gt;
+          &lt;check-value&gt;08D7B4&lt;/check-value&gt;
+        &lt;/secure-des-key&gt;
+      &lt;/parameter&gt;
+    &lt;/command&gt;
+    &lt;result name=&quot;PIN under LMK&quot;&gt;
+      &lt;encrypted-pin format=&quot;00&quot;&gt;
+        &lt;pin-block&gt;5591F133A6462BD7&lt;/pin-block&gt;
+        &lt;account-number&gt;401234567890&lt;/account-number&gt;
+      &lt;/encrypted-pin&gt;
+    &lt;/result&gt;
+  &lt;/s-m-operation&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.805 UTC 2015&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -1317,9 +2061,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 02:11:58.193 UTC 2015&quot; lifespan=&quot;7ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 17:24:42.806 UTC 2015&quot; lifespan=&quot;9ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@10eae26a
+    test_DUKPT org.jpos.security.KeySerialNumber@450b0c91
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -1345,7 +2089,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 02:11:58.196 UTC 2015&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 17:24:42.809 UTC 2015&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -1354,7 +2098,38 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 02:11:58.210 UTC 2015&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.813 UTC 2015&quot; lifespan=&quot;3ms&quot;&gt;
+  &lt;s-m-operation&gt;
+    &lt;command name=&quot;Import PIN&quot;&gt;
+      &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
+        &lt;encrypted-pin format=&quot;01&quot;&gt;
+          &lt;pin-block&gt;6C8AA97088B62C68&lt;/pin-block&gt;
+          &lt;account-number&gt;401234567890&lt;/account-number&gt;
+        &lt;/encrypted-pin&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Key Serial Number&quot;&gt;
+        &lt;key-serial-number&gt;
+          &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
+          &lt;device-id&gt;3210&lt;/device-id&gt;
+          &lt;transaction-counter&gt;E0000D&lt;/transaction-counter
+        &lt;/key-serial-number&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Base Derivation Key&quot;&gt;
+        &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
+          &lt;data&gt;26FB71EA0C9CBBA1D51CA00CFFA36374&lt;/data&gt;
+          &lt;check-value&gt;08D7B4&lt;/check-value&gt;
+        &lt;/secure-des-key&gt;
+      &lt;/parameter&gt;
+    &lt;/command&gt;
+    &lt;result name=&quot;PIN under LMK&quot;&gt;
+      &lt;encrypted-pin format=&quot;00&quot;&gt;
+        &lt;pin-block&gt;5591F133A6462BD7&lt;/pin-block&gt;
+        &lt;account-number&gt;401234567890&lt;/account-number&gt;
+      &lt;/encrypted-pin&gt;
+    &lt;/result&gt;
+  &lt;/s-m-operation&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.816 UTC 2015&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -1369,9 +2144,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 02:11:58.212 UTC 2015&quot; lifespan=&quot;16ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 17:24:42.818 UTC 2015&quot; lifespan=&quot;10ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@2cb6a5d3
+    test_DUKPT org.jpos.security.KeySerialNumber@58662700
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -1397,7 +2172,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 02:11:58.216 UTC 2015&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 17:24:42.820 UTC 2015&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -1406,7 +2181,38 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 02:11:58.222 UTC 2015&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.824 UTC 2015&quot; lifespan=&quot;3ms&quot;&gt;
+  &lt;s-m-operation&gt;
+    &lt;command name=&quot;Import PIN&quot;&gt;
+      &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
+        &lt;encrypted-pin format=&quot;01&quot;&gt;
+          &lt;pin-block&gt;F17C9E1D72CD4950&lt;/pin-block&gt;
+          &lt;account-number&gt;401234567890&lt;/account-number&gt;
+        &lt;/encrypted-pin&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Key Serial Number&quot;&gt;
+        &lt;key-serial-number&gt;
+          &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
+          &lt;device-id&gt;3210&lt;/device-id&gt;
+          &lt;transaction-counter&gt;E0000E&lt;/transaction-counter
+        &lt;/key-serial-number&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Base Derivation Key&quot;&gt;
+        &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
+          &lt;data&gt;26FB71EA0C9CBBA1D51CA00CFFA36374&lt;/data&gt;
+          &lt;check-value&gt;08D7B4&lt;/check-value&gt;
+        &lt;/secure-des-key&gt;
+      &lt;/parameter&gt;
+    &lt;/command&gt;
+    &lt;result name=&quot;PIN under LMK&quot;&gt;
+      &lt;encrypted-pin format=&quot;00&quot;&gt;
+        &lt;pin-block&gt;5591F133A6462BD7&lt;/pin-block&gt;
+        &lt;account-number&gt;401234567890&lt;/account-number&gt;
+      &lt;/encrypted-pin&gt;
+    &lt;/result&gt;
+  &lt;/s-m-operation&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.827 UTC 2015&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -1421,9 +2227,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 02:11:58.224 UTC 2015&quot; lifespan=&quot;9ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 17:24:42.829 UTC 2015&quot; lifespan=&quot;9ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@5d273377
+    test_DUKPT org.jpos.security.KeySerialNumber@1a8a9e57
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -1449,7 +2255,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 02:11:58.227 UTC 2015&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 17:24:42.831 UTC 2015&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -1458,7 +2264,38 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 02:11:58.232 UTC 2015&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.835 UTC 2015&quot; lifespan=&quot;3ms&quot;&gt;
+  &lt;s-m-operation&gt;
+    &lt;command name=&quot;Import PIN&quot;&gt;
+      &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
+        &lt;encrypted-pin format=&quot;01&quot;&gt;
+          &lt;pin-block&gt;B170F6E7F7F2F64A&lt;/pin-block&gt;
+          &lt;account-number&gt;401234567890&lt;/account-number&gt;
+        &lt;/encrypted-pin&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Key Serial Number&quot;&gt;
+        &lt;key-serial-number&gt;
+          &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
+          &lt;device-id&gt;3210&lt;/device-id&gt;
+          &lt;transaction-counter&gt;E0000F&lt;/transaction-counter
+        &lt;/key-serial-number&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Base Derivation Key&quot;&gt;
+        &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
+          &lt;data&gt;26FB71EA0C9CBBA1D51CA00CFFA36374&lt;/data&gt;
+          &lt;check-value&gt;08D7B4&lt;/check-value&gt;
+        &lt;/secure-des-key&gt;
+      &lt;/parameter&gt;
+    &lt;/command&gt;
+    &lt;result name=&quot;PIN under LMK&quot;&gt;
+      &lt;encrypted-pin format=&quot;00&quot;&gt;
+        &lt;pin-block&gt;5591F133A6462BD7&lt;/pin-block&gt;
+        &lt;account-number&gt;401234567890&lt;/account-number&gt;
+      &lt;/encrypted-pin&gt;
+    &lt;/result&gt;
+  &lt;/s-m-operation&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.838 UTC 2015&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -1473,9 +2310,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 02:11:58.234 UTC 2015&quot; lifespan=&quot;7ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 17:24:42.840 UTC 2015&quot; lifespan=&quot;9ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@707594ad
+    test_DUKPT org.jpos.security.KeySerialNumber@2a16f5e
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -1501,7 +2338,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 02:11:58.237 UTC 2015&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 17:24:42.843 UTC 2015&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -1510,7 +2347,38 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 02:11:58.241 UTC 2015&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.846 UTC 2015&quot; lifespan=&quot;3ms&quot;&gt;
+  &lt;s-m-operation&gt;
+    &lt;command name=&quot;Import PIN&quot;&gt;
+      &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
+        &lt;encrypted-pin format=&quot;01&quot;&gt;
+          &lt;pin-block&gt;D5D9638559EF53D6&lt;/pin-block&gt;
+          &lt;account-number&gt;401234567890&lt;/account-number&gt;
+        &lt;/encrypted-pin&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Key Serial Number&quot;&gt;
+        &lt;key-serial-number&gt;
+          &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
+          &lt;device-id&gt;3210&lt;/device-id&gt;
+          &lt;transaction-counter&gt;E00010&lt;/transaction-counter
+        &lt;/key-serial-number&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Base Derivation Key&quot;&gt;
+        &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
+          &lt;data&gt;26FB71EA0C9CBBA1D51CA00CFFA36374&lt;/data&gt;
+          &lt;check-value&gt;08D7B4&lt;/check-value&gt;
+        &lt;/secure-des-key&gt;
+      &lt;/parameter&gt;
+    &lt;/command&gt;
+    &lt;result name=&quot;PIN under LMK&quot;&gt;
+      &lt;encrypted-pin format=&quot;00&quot;&gt;
+        &lt;pin-block&gt;5591F133A6462BD7&lt;/pin-block&gt;
+        &lt;account-number&gt;401234567890&lt;/account-number&gt;
+      &lt;/encrypted-pin&gt;
+    &lt;/result&gt;
+  &lt;/s-m-operation&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.849 UTC 2015&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -1525,9 +2393,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 02:11:58.243 UTC 2015&quot; lifespan=&quot;6ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 17:24:42.850 UTC 2015&quot; lifespan=&quot;8ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@37742389
+    test_DUKPT org.jpos.security.KeySerialNumber@349685ab
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -1553,7 +2421,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 02:11:58.245 UTC 2015&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 17:24:42.858 UTC 2015&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -1562,7 +2430,38 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 02:11:58.250 UTC 2015&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.862 UTC 2015&quot; lifespan=&quot;2ms&quot;&gt;
+  &lt;s-m-operation&gt;
+    &lt;command name=&quot;Import PIN&quot;&gt;
+      &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
+        &lt;encrypted-pin format=&quot;01&quot;&gt;
+          &lt;pin-block&gt;D544F8CDD292C863&lt;/pin-block&gt;
+          &lt;account-number&gt;401234567890&lt;/account-number&gt;
+        &lt;/encrypted-pin&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Key Serial Number&quot;&gt;
+        &lt;key-serial-number&gt;
+          &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
+          &lt;device-id&gt;3210&lt;/device-id&gt;
+          &lt;transaction-counter&gt;E00011&lt;/transaction-counter
+        &lt;/key-serial-number&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Base Derivation Key&quot;&gt;
+        &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
+          &lt;data&gt;26FB71EA0C9CBBA1D51CA00CFFA36374&lt;/data&gt;
+          &lt;check-value&gt;08D7B4&lt;/check-value&gt;
+        &lt;/secure-des-key&gt;
+      &lt;/parameter&gt;
+    &lt;/command&gt;
+    &lt;result name=&quot;PIN under LMK&quot;&gt;
+      &lt;encrypted-pin format=&quot;00&quot;&gt;
+        &lt;pin-block&gt;5591F133A6462BD7&lt;/pin-block&gt;
+        &lt;account-number&gt;401234567890&lt;/account-number&gt;
+      &lt;/encrypted-pin&gt;
+    &lt;/result&gt;
+  &lt;/s-m-operation&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.867 UTC 2015&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -1577,9 +2476,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 02:11:58.251 UTC 2015&quot; lifespan=&quot;6ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 17:24:42.869 UTC 2015&quot; lifespan=&quot;11ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@29c913d0
+    test_DUKPT org.jpos.security.KeySerialNumber@621b886
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -1605,7 +2504,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 02:11:58.254 UTC 2015&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 17:24:42.872 UTC 2015&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -1614,7 +2513,38 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 02:11:58.259 UTC 2015&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.877 UTC 2015&quot; lifespan=&quot;4ms&quot;&gt;
+  &lt;s-m-operation&gt;
+    &lt;command name=&quot;Import PIN&quot;&gt;
+      &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
+        &lt;encrypted-pin format=&quot;01&quot;&gt;
+          &lt;pin-block&gt;7A21BD10F36DC41D&lt;/pin-block&gt;
+          &lt;account-number&gt;401234567890&lt;/account-number&gt;
+        &lt;/encrypted-pin&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Key Serial Number&quot;&gt;
+        &lt;key-serial-number&gt;
+          &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
+          &lt;device-id&gt;3210&lt;/device-id&gt;
+          &lt;transaction-counter&gt;E00012&lt;/transaction-counter
+        &lt;/key-serial-number&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Base Derivation Key&quot;&gt;
+        &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
+          &lt;data&gt;26FB71EA0C9CBBA1D51CA00CFFA36374&lt;/data&gt;
+          &lt;check-value&gt;08D7B4&lt;/check-value&gt;
+        &lt;/secure-des-key&gt;
+      &lt;/parameter&gt;
+    &lt;/command&gt;
+    &lt;result name=&quot;PIN under LMK&quot;&gt;
+      &lt;encrypted-pin format=&quot;00&quot;&gt;
+        &lt;pin-block&gt;5591F133A6462BD7&lt;/pin-block&gt;
+        &lt;account-number&gt;401234567890&lt;/account-number&gt;
+      &lt;/encrypted-pin&gt;
+    &lt;/result&gt;
+  &lt;/s-m-operation&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.881 UTC 2015&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -1629,9 +2559,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 02:11:58.260 UTC 2015&quot; lifespan=&quot;6ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 17:24:42.883 UTC 2015&quot; lifespan=&quot;11ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@7a27d8b4
+    test_DUKPT org.jpos.security.KeySerialNumber@fd9688f
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -1657,7 +2587,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 02:11:58.263 UTC 2015&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 17:24:42.886 UTC 2015&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -1666,7 +2596,38 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 02:11:58.268 UTC 2015&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.891 UTC 2015&quot; lifespan=&quot;3ms&quot;&gt;
+  &lt;s-m-operation&gt;
+    &lt;command name=&quot;Import PIN&quot;&gt;
+      &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
+        &lt;encrypted-pin format=&quot;01&quot;&gt;
+          &lt;pin-block&gt;78649BD17D0DFA60&lt;/pin-block&gt;
+          &lt;account-number&gt;401234567890&lt;/account-number&gt;
+        &lt;/encrypted-pin&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Key Serial Number&quot;&gt;
+        &lt;key-serial-number&gt;
+          &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
+          &lt;device-id&gt;3210&lt;/device-id&gt;
+          &lt;transaction-counter&gt;E00013&lt;/transaction-counter
+        &lt;/key-serial-number&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Base Derivation Key&quot;&gt;
+        &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
+          &lt;data&gt;26FB71EA0C9CBBA1D51CA00CFFA36374&lt;/data&gt;
+          &lt;check-value&gt;08D7B4&lt;/check-value&gt;
+        &lt;/secure-des-key&gt;
+      &lt;/parameter&gt;
+    &lt;/command&gt;
+    &lt;result name=&quot;PIN under LMK&quot;&gt;
+      &lt;encrypted-pin format=&quot;00&quot;&gt;
+        &lt;pin-block&gt;5591F133A6462BD7&lt;/pin-block&gt;
+        &lt;account-number&gt;401234567890&lt;/account-number&gt;
+      &lt;/encrypted-pin&gt;
+    &lt;/result&gt;
+  &lt;/s-m-operation&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.894 UTC 2015&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -1681,9 +2642,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 02:11:58.269 UTC 2015&quot; lifespan=&quot;6ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 17:24:42.896 UTC 2015&quot; lifespan=&quot;10ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@4e045013
+    test_DUKPT org.jpos.security.KeySerialNumber@a5f8c6a
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -1709,7 +2670,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 02:11:58.272 UTC 2015&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 17:24:42.899 UTC 2015&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -1718,7 +2679,38 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 02:11:58.276 UTC 2015&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.903 UTC 2015&quot; lifespan=&quot;3ms&quot;&gt;
+  &lt;s-m-operation&gt;
+    &lt;command name=&quot;Import PIN&quot;&gt;
+      &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
+        &lt;encrypted-pin format=&quot;01&quot;&gt;
+          &lt;pin-block&gt;7E7E16EA0C31AD56&lt;/pin-block&gt;
+          &lt;account-number&gt;401234567890&lt;/account-number&gt;
+        &lt;/encrypted-pin&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Key Serial Number&quot;&gt;
+        &lt;key-serial-number&gt;
+          &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
+          &lt;device-id&gt;3210&lt;/device-id&gt;
+          &lt;transaction-counter&gt;E00014&lt;/transaction-counter
+        &lt;/key-serial-number&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Base Derivation Key&quot;&gt;
+        &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
+          &lt;data&gt;26FB71EA0C9CBBA1D51CA00CFFA36374&lt;/data&gt;
+          &lt;check-value&gt;08D7B4&lt;/check-value&gt;
+        &lt;/secure-des-key&gt;
+      &lt;/parameter&gt;
+    &lt;/command&gt;
+    &lt;result name=&quot;PIN under LMK&quot;&gt;
+      &lt;encrypted-pin format=&quot;00&quot;&gt;
+        &lt;pin-block&gt;5591F133A6462BD7&lt;/pin-block&gt;
+        &lt;account-number&gt;401234567890&lt;/account-number&gt;
+      &lt;/encrypted-pin&gt;
+    &lt;/result&gt;
+  &lt;/s-m-operation&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.906 UTC 2015&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -1733,9 +2725,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 02:11:58.278 UTC 2015&quot; lifespan=&quot;6ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 17:24:42.908 UTC 2015&quot; lifespan=&quot;10ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@7d253768
+    test_DUKPT org.jpos.security.KeySerialNumber@6fb8878
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -1761,7 +2753,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 02:11:58.280 UTC 2015&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 17:24:42.910 UTC 2015&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -1770,7 +2762,38 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 02:11:58.284 UTC 2015&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.914 UTC 2015&quot; lifespan=&quot;3ms&quot;&gt;
+  &lt;s-m-operation&gt;
+    &lt;command name=&quot;Import PIN&quot;&gt;
+      &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
+        &lt;encrypted-pin format=&quot;01&quot;&gt;
+          &lt;pin-block&gt;72105C22EBC791E6&lt;/pin-block&gt;
+          &lt;account-number&gt;401234567890&lt;/account-number&gt;
+        &lt;/encrypted-pin&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Key Serial Number&quot;&gt;
+        &lt;key-serial-number&gt;
+          &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
+          &lt;device-id&gt;3210&lt;/device-id&gt;
+          &lt;transaction-counter&gt;E00015&lt;/transaction-counter
+        &lt;/key-serial-number&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Base Derivation Key&quot;&gt;
+        &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
+          &lt;data&gt;26FB71EA0C9CBBA1D51CA00CFFA36374&lt;/data&gt;
+          &lt;check-value&gt;08D7B4&lt;/check-value&gt;
+        &lt;/secure-des-key&gt;
+      &lt;/parameter&gt;
+    &lt;/command&gt;
+    &lt;result name=&quot;PIN under LMK&quot;&gt;
+      &lt;encrypted-pin format=&quot;00&quot;&gt;
+        &lt;pin-block&gt;5591F133A6462BD7&lt;/pin-block&gt;
+        &lt;account-number&gt;401234567890&lt;/account-number&gt;
+      &lt;/encrypted-pin&gt;
+    &lt;/result&gt;
+  &lt;/s-m-operation&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.918 UTC 2015&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -1785,9 +2808,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 02:11:58.286 UTC 2015&quot; lifespan=&quot;6ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 17:24:42.920 UTC 2015&quot; lifespan=&quot;10ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@1658cd08
+    test_DUKPT org.jpos.security.KeySerialNumber@6bbc81dc
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -1813,7 +2836,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 02:11:58.289 UTC 2015&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 17:24:42.922 UTC 2015&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -1822,7 +2845,38 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 02:11:58.295 UTC 2015&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.929 UTC 2015&quot; lifespan=&quot;6ms&quot;&gt;
+  &lt;s-m-operation&gt;
+    &lt;command name=&quot;Import PIN&quot;&gt;
+      &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
+        &lt;encrypted-pin format=&quot;01&quot;&gt;
+          &lt;pin-block&gt;33365F5CC6F23C35&lt;/pin-block&gt;
+          &lt;account-number&gt;401234567890&lt;/account-number&gt;
+        &lt;/encrypted-pin&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Key Serial Number&quot;&gt;
+        &lt;key-serial-number&gt;
+          &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
+          &lt;device-id&gt;3210&lt;/device-id&gt;
+          &lt;transaction-counter&gt;EFF800&lt;/transaction-counter
+        &lt;/key-serial-number&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Base Derivation Key&quot;&gt;
+        &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
+          &lt;data&gt;26FB71EA0C9CBBA1D51CA00CFFA36374&lt;/data&gt;
+          &lt;check-value&gt;08D7B4&lt;/check-value&gt;
+        &lt;/secure-des-key&gt;
+      &lt;/parameter&gt;
+    &lt;/command&gt;
+    &lt;result name=&quot;PIN under LMK&quot;&gt;
+      &lt;encrypted-pin format=&quot;00&quot;&gt;
+        &lt;pin-block&gt;5591F133A6462BD7&lt;/pin-block&gt;
+        &lt;account-number&gt;401234567890&lt;/account-number&gt;
+      &lt;/encrypted-pin&gt;
+    &lt;/result&gt;
+  &lt;/s-m-operation&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.932 UTC 2015&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -1837,9 +2891,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 02:11:58.296 UTC 2015&quot; lifespan=&quot;7ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 17:24:42.937 UTC 2015&quot; lifespan=&quot;15ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@1ffcd3ae
+    test_DUKPT org.jpos.security.KeySerialNumber@24f1c9c6
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -1865,7 +2919,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 02:11:58.299 UTC 2015&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 17:24:42.940 UTC 2015&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -1874,7 +2928,38 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 02:11:58.305 UTC 2015&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.947 UTC 2015&quot; lifespan=&quot;6ms&quot;&gt;
+  &lt;s-m-operation&gt;
+    &lt;command name=&quot;Import PIN&quot;&gt;
+      &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
+        &lt;encrypted-pin format=&quot;01&quot;&gt;
+          &lt;pin-block&gt;3A86BF003F835C9D&lt;/pin-block&gt;
+          &lt;account-number&gt;401234567890&lt;/account-number&gt;
+        &lt;/encrypted-pin&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Key Serial Number&quot;&gt;
+        &lt;key-serial-number&gt;
+          &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
+          &lt;device-id&gt;3210&lt;/device-id&gt;
+          &lt;transaction-counter&gt;EFF801&lt;/transaction-counter
+        &lt;/key-serial-number&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Base Derivation Key&quot;&gt;
+        &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
+          &lt;data&gt;26FB71EA0C9CBBA1D51CA00CFFA36374&lt;/data&gt;
+          &lt;check-value&gt;08D7B4&lt;/check-value&gt;
+        &lt;/secure-des-key&gt;
+      &lt;/parameter&gt;
+    &lt;/command&gt;
+    &lt;result name=&quot;PIN under LMK&quot;&gt;
+      &lt;encrypted-pin format=&quot;00&quot;&gt;
+        &lt;pin-block&gt;5591F133A6462BD7&lt;/pin-block&gt;
+        &lt;account-number&gt;401234567890&lt;/account-number&gt;
+      &lt;/encrypted-pin&gt;
+    &lt;/result&gt;
+  &lt;/s-m-operation&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.950 UTC 2015&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -1889,9 +2974,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 02:11:58.307 UTC 2015&quot; lifespan=&quot;8ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 17:24:42.952 UTC 2015&quot; lifespan=&quot;12ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@fad54ea
+    test_DUKPT org.jpos.security.KeySerialNumber@7df5f91c
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -1917,7 +3002,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 02:11:58.309 UTC 2015&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 17:24:42.954 UTC 2015&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -1926,7 +3011,38 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 02:11:58.316 UTC 2015&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.960 UTC 2015&quot; lifespan=&quot;5ms&quot;&gt;
+  &lt;s-m-operation&gt;
+    &lt;command name=&quot;Import PIN&quot;&gt;
+      &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
+        &lt;encrypted-pin format=&quot;01&quot;&gt;
+          &lt;pin-block&gt;3DB977D05C36DF3F&lt;/pin-block&gt;
+          &lt;account-number&gt;401234567890&lt;/account-number&gt;
+        &lt;/encrypted-pin&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Key Serial Number&quot;&gt;
+        &lt;key-serial-number&gt;
+          &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
+          &lt;device-id&gt;3210&lt;/device-id&gt;
+          &lt;transaction-counter&gt;EFF802&lt;/transaction-counter
+        &lt;/key-serial-number&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Base Derivation Key&quot;&gt;
+        &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
+          &lt;data&gt;26FB71EA0C9CBBA1D51CA00CFFA36374&lt;/data&gt;
+          &lt;check-value&gt;08D7B4&lt;/check-value&gt;
+        &lt;/secure-des-key&gt;
+      &lt;/parameter&gt;
+    &lt;/command&gt;
+    &lt;result name=&quot;PIN under LMK&quot;&gt;
+      &lt;encrypted-pin format=&quot;00&quot;&gt;
+        &lt;pin-block&gt;5591F133A6462BD7&lt;/pin-block&gt;
+        &lt;account-number&gt;401234567890&lt;/account-number&gt;
+      &lt;/encrypted-pin&gt;
+    &lt;/result&gt;
+  &lt;/s-m-operation&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.963 UTC 2015&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -1941,9 +3057,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 02:11:58.317 UTC 2015&quot; lifespan=&quot;8ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 17:24:42.965 UTC 2015&quot; lifespan=&quot;11ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@3ca1d6b0
+    test_DUKPT org.jpos.security.KeySerialNumber@1fb5dddf
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -1969,7 +3085,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 02:11:58.320 UTC 2015&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 17:24:42.968 UTC 2015&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -1978,7 +3094,38 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 02:11:58.326 UTC 2015&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.974 UTC 2015&quot; lifespan=&quot;5ms&quot;&gt;
+  &lt;s-m-operation&gt;
+    &lt;command name=&quot;Import PIN&quot;&gt;
+      &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
+        &lt;encrypted-pin format=&quot;01&quot;&gt;
+          &lt;pin-block&gt;BA83243305712099&lt;/pin-block&gt;
+          &lt;account-number&gt;401234567890&lt;/account-number&gt;
+        &lt;/encrypted-pin&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Key Serial Number&quot;&gt;
+        &lt;key-serial-number&gt;
+          &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
+          &lt;device-id&gt;3210&lt;/device-id&gt;
+          &lt;transaction-counter&gt;EFF804&lt;/transaction-counter
+        &lt;/key-serial-number&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Base Derivation Key&quot;&gt;
+        &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
+          &lt;data&gt;26FB71EA0C9CBBA1D51CA00CFFA36374&lt;/data&gt;
+          &lt;check-value&gt;08D7B4&lt;/check-value&gt;
+        &lt;/secure-des-key&gt;
+      &lt;/parameter&gt;
+    &lt;/command&gt;
+    &lt;result name=&quot;PIN under LMK&quot;&gt;
+      &lt;encrypted-pin format=&quot;00&quot;&gt;
+        &lt;pin-block&gt;5591F133A6462BD7&lt;/pin-block&gt;
+        &lt;account-number&gt;401234567890&lt;/account-number&gt;
+      &lt;/encrypted-pin&gt;
+    &lt;/result&gt;
+  &lt;/s-m-operation&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.977 UTC 2015&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -1993,9 +3140,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 02:11:58.328 UTC 2015&quot; lifespan=&quot;8ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 17:24:42.979 UTC 2015&quot; lifespan=&quot;12ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@2515dbe9
+    test_DUKPT org.jpos.security.KeySerialNumber@5cf96bbc
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -2021,7 +3168,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 02:11:58.331 UTC 2015&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 17:24:42.982 UTC 2015&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -2030,7 +3177,38 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 02:11:58.338 UTC 2015&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.988 UTC 2015&quot; lifespan=&quot;5ms&quot;&gt;
+  &lt;s-m-operation&gt;
+    &lt;command name=&quot;Import PIN&quot;&gt;
+      &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
+        &lt;encrypted-pin format=&quot;01&quot;&gt;
+          &lt;pin-block&gt;B0DA04AC90A36D85&lt;/pin-block&gt;
+          &lt;account-number&gt;401234567890&lt;/account-number&gt;
+        &lt;/encrypted-pin&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Key Serial Number&quot;&gt;
+        &lt;key-serial-number&gt;
+          &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
+          &lt;device-id&gt;3210&lt;/device-id&gt;
+          &lt;transaction-counter&gt;EFF808&lt;/transaction-counter
+        &lt;/key-serial-number&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Base Derivation Key&quot;&gt;
+        &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
+          &lt;data&gt;26FB71EA0C9CBBA1D51CA00CFFA36374&lt;/data&gt;
+          &lt;check-value&gt;08D7B4&lt;/check-value&gt;
+        &lt;/secure-des-key&gt;
+      &lt;/parameter&gt;
+    &lt;/command&gt;
+    &lt;result name=&quot;PIN under LMK&quot;&gt;
+      &lt;encrypted-pin format=&quot;00&quot;&gt;
+        &lt;pin-block&gt;5591F133A6462BD7&lt;/pin-block&gt;
+        &lt;account-number&gt;401234567890&lt;/account-number&gt;
+      &lt;/encrypted-pin&gt;
+    &lt;/result&gt;
+  &lt;/s-m-operation&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:42.991 UTC 2015&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -2045,9 +3223,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 02:11:58.339 UTC 2015&quot; lifespan=&quot;8ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 17:24:42.993 UTC 2015&quot; lifespan=&quot;12ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@3e18b104
+    test_DUKPT org.jpos.security.KeySerialNumber@7b103353
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -2073,7 +3251,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 02:11:58.342 UTC 2015&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 17:24:42.995 UTC 2015&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -2082,7 +3260,38 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 02:11:58.348 UTC 2015&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:43.002 UTC 2015&quot; lifespan=&quot;6ms&quot;&gt;
+  &lt;s-m-operation&gt;
+    &lt;command name=&quot;Import PIN&quot;&gt;
+      &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
+        &lt;encrypted-pin format=&quot;01&quot;&gt;
+          &lt;pin-block&gt;2CF02BD9C309EEDA&lt;/pin-block&gt;
+          &lt;account-number&gt;401234567890&lt;/account-number&gt;
+        &lt;/encrypted-pin&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Key Serial Number&quot;&gt;
+        &lt;key-serial-number&gt;
+          &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
+          &lt;device-id&gt;3210&lt;/device-id&gt;
+          &lt;transaction-counter&gt;EFF810&lt;/transaction-counter
+        &lt;/key-serial-number&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Base Derivation Key&quot;&gt;
+        &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
+          &lt;data&gt;26FB71EA0C9CBBA1D51CA00CFFA36374&lt;/data&gt;
+          &lt;check-value&gt;08D7B4&lt;/check-value&gt;
+        &lt;/secure-des-key&gt;
+      &lt;/parameter&gt;
+    &lt;/command&gt;
+    &lt;result name=&quot;PIN under LMK&quot;&gt;
+      &lt;encrypted-pin format=&quot;00&quot;&gt;
+        &lt;pin-block&gt;5591F133A6462BD7&lt;/pin-block&gt;
+        &lt;account-number&gt;401234567890&lt;/account-number&gt;
+      &lt;/encrypted-pin&gt;
+    &lt;/result&gt;
+  &lt;/s-m-operation&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:43.006 UTC 2015&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -2097,9 +3306,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 02:11:58.349 UTC 2015&quot; lifespan=&quot;8ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 17:24:43.007 UTC 2015&quot; lifespan=&quot;12ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@470d9d75
+    test_DUKPT org.jpos.security.KeySerialNumber@6499cd43
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -2125,7 +3334,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 02:11:58.352 UTC 2015&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 17:24:43.010 UTC 2015&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -2134,7 +3343,38 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 02:11:58.358 UTC 2015&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:43.017 UTC 2015&quot; lifespan=&quot;6ms&quot;&gt;
+  &lt;s-m-operation&gt;
+    &lt;command name=&quot;Import PIN&quot;&gt;
+      &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
+        &lt;encrypted-pin format=&quot;01&quot;&gt;
+          &lt;pin-block&gt;9D1E2F77AEEE81C6&lt;/pin-block&gt;
+          &lt;account-number&gt;401234567890&lt;/account-number&gt;
+        &lt;/encrypted-pin&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Key Serial Number&quot;&gt;
+        &lt;key-serial-number&gt;
+          &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
+          &lt;device-id&gt;3210&lt;/device-id&gt;
+          &lt;transaction-counter&gt;EFF820&lt;/transaction-counter
+        &lt;/key-serial-number&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Base Derivation Key&quot;&gt;
+        &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
+          &lt;data&gt;26FB71EA0C9CBBA1D51CA00CFFA36374&lt;/data&gt;
+          &lt;check-value&gt;08D7B4&lt;/check-value&gt;
+        &lt;/secure-des-key&gt;
+      &lt;/parameter&gt;
+    &lt;/command&gt;
+    &lt;result name=&quot;PIN under LMK&quot;&gt;
+      &lt;encrypted-pin format=&quot;00&quot;&gt;
+        &lt;pin-block&gt;5591F133A6462BD7&lt;/pin-block&gt;
+        &lt;account-number&gt;401234567890&lt;/account-number&gt;
+      &lt;/encrypted-pin&gt;
+    &lt;/result&gt;
+  &lt;/s-m-operation&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:43.020 UTC 2015&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -2149,9 +3389,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 02:11:58.359 UTC 2015&quot; lifespan=&quot;8ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 17:24:43.022 UTC 2015&quot; lifespan=&quot;12ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@4edc90c4
+    test_DUKPT org.jpos.security.KeySerialNumber@2d731d4e
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -2177,7 +3417,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 02:11:58.362 UTC 2015&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 17:24:43.025 UTC 2015&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -2186,7 +3426,38 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 02:11:58.368 UTC 2015&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:43.031 UTC 2015&quot; lifespan=&quot;5ms&quot;&gt;
+  &lt;s-m-operation&gt;
+    &lt;command name=&quot;Import PIN&quot;&gt;
+      &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
+        &lt;encrypted-pin format=&quot;01&quot;&gt;
+          &lt;pin-block&gt;40870B0F8BA2011C&lt;/pin-block&gt;
+          &lt;account-number&gt;401234567890&lt;/account-number&gt;
+        &lt;/encrypted-pin&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Key Serial Number&quot;&gt;
+        &lt;key-serial-number&gt;
+          &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
+          &lt;device-id&gt;3210&lt;/device-id&gt;
+          &lt;transaction-counter&gt;EFF840&lt;/transaction-counter
+        &lt;/key-serial-number&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Base Derivation Key&quot;&gt;
+        &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
+          &lt;data&gt;26FB71EA0C9CBBA1D51CA00CFFA36374&lt;/data&gt;
+          &lt;check-value&gt;08D7B4&lt;/check-value&gt;
+        &lt;/secure-des-key&gt;
+      &lt;/parameter&gt;
+    &lt;/command&gt;
+    &lt;result name=&quot;PIN under LMK&quot;&gt;
+      &lt;encrypted-pin format=&quot;00&quot;&gt;
+        &lt;pin-block&gt;5591F133A6462BD7&lt;/pin-block&gt;
+        &lt;account-number&gt;401234567890&lt;/account-number&gt;
+      &lt;/encrypted-pin&gt;
+    &lt;/result&gt;
+  &lt;/s-m-operation&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:43.034 UTC 2015&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -2201,9 +3472,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 02:11:58.369 UTC 2015&quot; lifespan=&quot;8ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 17:24:43.036 UTC 2015&quot; lifespan=&quot;12ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@72a45c4e
+    test_DUKPT org.jpos.security.KeySerialNumber@60890331
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -2229,7 +3500,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 02:11:58.371 UTC 2015&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 17:24:43.039 UTC 2015&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -2238,7 +3509,38 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 02:11:58.378 UTC 2015&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:43.045 UTC 2015&quot; lifespan=&quot;5ms&quot;&gt;
+  &lt;s-m-operation&gt;
+    &lt;command name=&quot;Import PIN&quot;&gt;
+      &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
+        &lt;encrypted-pin format=&quot;01&quot;&gt;
+          &lt;pin-block&gt;22E340D6ABB40981&lt;/pin-block&gt;
+          &lt;account-number&gt;401234567890&lt;/account-number&gt;
+        &lt;/encrypted-pin&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Key Serial Number&quot;&gt;
+        &lt;key-serial-number&gt;
+          &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
+          &lt;device-id&gt;3210&lt;/device-id&gt;
+          &lt;transaction-counter&gt;EFF880&lt;/transaction-counter
+        &lt;/key-serial-number&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Base Derivation Key&quot;&gt;
+        &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
+          &lt;data&gt;26FB71EA0C9CBBA1D51CA00CFFA36374&lt;/data&gt;
+          &lt;check-value&gt;08D7B4&lt;/check-value&gt;
+        &lt;/secure-des-key&gt;
+      &lt;/parameter&gt;
+    &lt;/command&gt;
+    &lt;result name=&quot;PIN under LMK&quot;&gt;
+      &lt;encrypted-pin format=&quot;00&quot;&gt;
+        &lt;pin-block&gt;5591F133A6462BD7&lt;/pin-block&gt;
+        &lt;account-number&gt;401234567890&lt;/account-number&gt;
+      &lt;/encrypted-pin&gt;
+    &lt;/result&gt;
+  &lt;/s-m-operation&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:43.049 UTC 2015&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -2253,9 +3555,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 02:11:58.379 UTC 2015&quot; lifespan=&quot;8ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 17:24:43.050 UTC 2015&quot; lifespan=&quot;11ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@4a83faf
+    test_DUKPT org.jpos.security.KeySerialNumber@4330b77a
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -2281,7 +3583,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 02:11:58.382 UTC 2015&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 17:24:43.053 UTC 2015&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -2290,7 +3592,38 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 02:11:58.388 UTC 2015&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:43.059 UTC 2015&quot; lifespan=&quot;5ms&quot;&gt;
+  &lt;s-m-operation&gt;
+    &lt;command name=&quot;Import PIN&quot;&gt;
+      &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
+        &lt;encrypted-pin format=&quot;01&quot;&gt;
+          &lt;pin-block&gt;1A4C10AFBA03A430&lt;/pin-block&gt;
+          &lt;account-number&gt;401234567890&lt;/account-number&gt;
+        &lt;/encrypted-pin&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Key Serial Number&quot;&gt;
+        &lt;key-serial-number&gt;
+          &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
+          &lt;device-id&gt;3210&lt;/device-id&gt;
+          &lt;transaction-counter&gt;EFF900&lt;/transaction-counter
+        &lt;/key-serial-number&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Base Derivation Key&quot;&gt;
+        &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
+          &lt;data&gt;26FB71EA0C9CBBA1D51CA00CFFA36374&lt;/data&gt;
+          &lt;check-value&gt;08D7B4&lt;/check-value&gt;
+        &lt;/secure-des-key&gt;
+      &lt;/parameter&gt;
+    &lt;/command&gt;
+    &lt;result name=&quot;PIN under LMK&quot;&gt;
+      &lt;encrypted-pin format=&quot;00&quot;&gt;
+        &lt;pin-block&gt;5591F133A6462BD7&lt;/pin-block&gt;
+        &lt;account-number&gt;401234567890&lt;/account-number&gt;
+      &lt;/encrypted-pin&gt;
+    &lt;/result&gt;
+  &lt;/s-m-operation&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:43.063 UTC 2015&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -2305,9 +3638,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 02:11:58.390 UTC 2015&quot; lifespan=&quot;8ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 17:24:43.064 UTC 2015&quot; lifespan=&quot;11ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@41ecfc8c
+    test_DUKPT org.jpos.security.KeySerialNumber@335dcd0c
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -2333,7 +3666,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 02:11:58.392 UTC 2015&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 17:24:43.067 UTC 2015&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -2342,7 +3675,38 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 02:11:58.398 UTC 2015&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:43.073 UTC 2015&quot; lifespan=&quot;5ms&quot;&gt;
+  &lt;s-m-operation&gt;
+    &lt;command name=&quot;Import PIN&quot;&gt;
+      &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
+        &lt;encrypted-pin format=&quot;01&quot;&gt;
+          &lt;pin-block&gt;849763B43E5F9CFF&lt;/pin-block&gt;
+          &lt;account-number&gt;401234567890&lt;/account-number&gt;
+        &lt;/encrypted-pin&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Key Serial Number&quot;&gt;
+        &lt;key-serial-number&gt;
+          &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
+          &lt;device-id&gt;3210&lt;/device-id&gt;
+          &lt;transaction-counter&gt;EFFA00&lt;/transaction-counter
+        &lt;/key-serial-number&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Base Derivation Key&quot;&gt;
+        &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
+          &lt;data&gt;26FB71EA0C9CBBA1D51CA00CFFA36374&lt;/data&gt;
+          &lt;check-value&gt;08D7B4&lt;/check-value&gt;
+        &lt;/secure-des-key&gt;
+      &lt;/parameter&gt;
+    &lt;/command&gt;
+    &lt;result name=&quot;PIN under LMK&quot;&gt;
+      &lt;encrypted-pin format=&quot;00&quot;&gt;
+        &lt;pin-block&gt;5591F133A6462BD7&lt;/pin-block&gt;
+        &lt;account-number&gt;401234567890&lt;/account-number&gt;
+      &lt;/encrypted-pin&gt;
+    &lt;/result&gt;
+  &lt;/s-m-operation&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:43.075 UTC 2015&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -2357,9 +3721,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 02:11:58.400 UTC 2015&quot; lifespan=&quot;8ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 17:24:43.077 UTC 2015&quot; lifespan=&quot;10ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@2db86d24
+    test_DUKPT org.jpos.security.KeySerialNumber@5340e92c
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -2385,7 +3749,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 02:11:58.402 UTC 2015&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 17:24:43.079 UTC 2015&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -2394,7 +3758,38 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 02:11:58.408 UTC 2015&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:43.085 UTC 2015&quot; lifespan=&quot;5ms&quot;&gt;
+  &lt;s-m-operation&gt;
+    &lt;command name=&quot;Import PIN&quot;&gt;
+      &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
+        &lt;encrypted-pin format=&quot;01&quot;&gt;
+          &lt;pin-block&gt;DEFC6F09F8927B71&lt;/pin-block&gt;
+          &lt;account-number&gt;401234567890&lt;/account-number&gt;
+        &lt;/encrypted-pin&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Key Serial Number&quot;&gt;
+        &lt;key-serial-number&gt;
+          &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
+          &lt;device-id&gt;3210&lt;/device-id&gt;
+          &lt;transaction-counter&gt;EFFC00&lt;/transaction-counter
+        &lt;/key-serial-number&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Base Derivation Key&quot;&gt;
+        &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
+          &lt;data&gt;26FB71EA0C9CBBA1D51CA00CFFA36374&lt;/data&gt;
+          &lt;check-value&gt;08D7B4&lt;/check-value&gt;
+        &lt;/secure-des-key&gt;
+      &lt;/parameter&gt;
+    &lt;/command&gt;
+    &lt;result name=&quot;PIN under LMK&quot;&gt;
+      &lt;encrypted-pin format=&quot;00&quot;&gt;
+        &lt;pin-block&gt;5591F133A6462BD7&lt;/pin-block&gt;
+        &lt;account-number&gt;401234567890&lt;/account-number&gt;
+      &lt;/encrypted-pin&gt;
+    &lt;/result&gt;
+  &lt;/s-m-operation&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:43.087 UTC 2015&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -2409,9 +3804,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 02:11:58.409 UTC 2015&quot; lifespan=&quot;7ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 17:24:43.089 UTC 2015&quot; lifespan=&quot;10ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@27056def
+    test_DUKPT org.jpos.security.KeySerialNumber@4a8c7267
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -2437,7 +3832,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 02:11:58.412 UTC 2015&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;Thu Feb 19 17:24:43.091 UTC 2015&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -2446,7 +3841,38 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 02:11:58.415 UTC 2015&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:43.094 UTC 2015&quot; lifespan=&quot;2ms&quot;&gt;
+  &lt;s-m-operation&gt;
+    &lt;command name=&quot;Import PIN&quot;&gt;
+      &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
+        &lt;encrypted-pin format=&quot;01&quot;&gt;
+          &lt;pin-block&gt;73EC88AD0AC5830E&lt;/pin-block&gt;
+          &lt;account-number&gt;401234567890&lt;/account-number&gt;
+        &lt;/encrypted-pin&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Key Serial Number&quot;&gt;
+        &lt;key-serial-number&gt;
+          &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
+          &lt;device-id&gt;3210&lt;/device-id&gt;
+          &lt;transaction-counter&gt;F00000&lt;/transaction-counter
+        &lt;/key-serial-number&gt;
+      &lt;/parameter&gt;
+      &lt;parameter name=&quot;Base Derivation Key&quot;&gt;
+        &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
+          &lt;data&gt;26FB71EA0C9CBBA1D51CA00CFFA36374&lt;/data&gt;
+          &lt;check-value&gt;08D7B4&lt;/check-value&gt;
+        &lt;/secure-des-key&gt;
+      &lt;/parameter&gt;
+    &lt;/command&gt;
+    &lt;result name=&quot;PIN under LMK&quot;&gt;
+      &lt;encrypted-pin format=&quot;00&quot;&gt;
+        &lt;pin-block&gt;5591F133A6462BD7&lt;/pin-block&gt;
+        &lt;account-number&gt;401234567890&lt;/account-number&gt;
+      &lt;/encrypted-pin&gt;
+    &lt;/result&gt;
+  &lt;/s-m-operation&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;Thu Feb 19 17:24:43.097 UTC 2015&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -2461,9 +3887,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 02:11:58.416 UTC 2015&quot; lifespan=&quot;4ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;Thu Feb 19 17:24:43.098 UTC 2015&quot; lifespan=&quot;7ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@557479ec
+    test_DUKPT org.jpos.security.KeySerialNumber@4aaaee6d
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -2495,7 +3921,7 @@
 </div>
 <div id="footer">
 <p>Generated by 
-<a href="http://www.gradle.org">Gradle 2.2.1</a> at Feb 19, 2015 2:13:03 AM</p>
+<a href="http://www.gradle.org">Gradle 2.2.1</a> at Feb 19, 2015 5:27:52 PM</p>
 </div>
 </div>
 </body>

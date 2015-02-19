@@ -41,7 +41,7 @@
 </td>
 <td>
 <div class="infoBox" id="duration">
-<div class="counter">2.576s</div>
+<div class="counter">1m6.03s</div>
 <p>duration</p>
 </div>
 </td>
@@ -63,6 +63,9 @@
 <li>
 <a href="#tab0">Tests</a>
 </li>
+<li>
+<a href="#tab1">Standard output</a>
+</li>
 </ul>
 <div id="tab0" class="tab">
 <h2>Tests</h2>
@@ -76,7 +79,7 @@
 </thead>
 <tr>
 <td class="success">receivePullsMessageFromUnderlyingChannel</td>
-<td>0.002s</td>
+<td>0.003s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
@@ -86,12 +89,12 @@
 </tr>
 <tr>
 <td class="success">stopCanWaitForWorkersEvenWhenOutgoingChannelNeverConnects</td>
-<td>2.070s</td>
+<td>3.297s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">stopCanWaitForWorkersEvenWhenSenderBlockedTryingToConnect</td>
-<td>0.210s</td>
+<td>0.304s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
@@ -106,15 +109,659 @@
 </tr>
 <tr>
 <td class="success">waitForWorkersOnStopStopsAfterChannelConnects</td>
-<td>0.287s</td>
+<td>1m2.41s</td>
 <td class="success">passed</td>
 </tr>
 </table>
 </div>
+<div id="tab1" class="tab">
+<h2>Standard output</h2>
+<span class="code">
+<pre>&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;Thu Feb 19 17:25:08.360 UTC 2015&quot; lifespan=&quot;3ms&quot;&gt;
+  &lt;warn&gt;
+    channel-receiver-TestSpace-receive
+    &lt;exception name=&quot;simulated disconnect&quot;&gt;
+    java.io.EOFException: simulated disconnect
+	at org.jpos.q2.iso.ChannelAdaptorTest$StubISOChannel.receive(ChannelAdaptorTest.java:377)
+	at org.jpos.q2.iso.ChannelAdaptor$Receiver.run(ChannelAdaptor.java:317)
+	at java.lang.Thread.run(Thread.java:745)
+    &lt;/exception&gt;
+  &lt;/warn&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;Thu Feb 19 17:25:09.378 UTC 2015&quot;&gt;
+  &lt;warn&gt;
+    channel-receiver-TestSpace-receive
+    &lt;exception name=&quot;simulated disconnect&quot;&gt;
+    java.io.EOFException: simulated disconnect
+	at org.jpos.q2.iso.ChannelAdaptorTest$StubISOChannel.receive(ChannelAdaptorTest.java:377)
+	at org.jpos.q2.iso.ChannelAdaptor$Receiver.run(ChannelAdaptor.java:317)
+	at java.lang.Thread.run(Thread.java:745)
+    &lt;/exception&gt;
+  &lt;/warn&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;Thu Feb 19 17:25:10.387 UTC 2015&quot;&gt;
+  &lt;warn&gt;
+    channel-receiver-TestSpace-receive
+    &lt;exception name=&quot;simulated disconnect&quot;&gt;
+    java.io.EOFException: simulated disconnect
+	at org.jpos.q2.iso.ChannelAdaptorTest$StubISOChannel.receive(ChannelAdaptorTest.java:377)
+	at org.jpos.q2.iso.ChannelAdaptor$Receiver.run(ChannelAdaptor.java:317)
+	at java.lang.Thread.run(Thread.java:745)
+    &lt;/exception&gt;
+  &lt;/warn&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;Thu Feb 19 17:25:11.394 UTC 2015&quot; lifespan=&quot;1ms&quot;&gt;
+  &lt;warn&gt;
+    channel-receiver-TestSpace-receive
+    &lt;exception name=&quot;simulated disconnect&quot;&gt;
+    java.io.EOFException: simulated disconnect
+	at org.jpos.q2.iso.ChannelAdaptorTest$StubISOChannel.receive(ChannelAdaptorTest.java:377)
+	at org.jpos.q2.iso.ChannelAdaptor$Receiver.run(ChannelAdaptor.java:317)
+	at java.lang.Thread.run(Thread.java:745)
+    &lt;/exception&gt;
+  &lt;/warn&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;Thu Feb 19 17:25:12.404 UTC 2015&quot;&gt;
+  &lt;warn&gt;
+    channel-receiver-TestSpace-receive
+    &lt;exception name=&quot;simulated disconnect&quot;&gt;
+    java.io.EOFException: simulated disconnect
+	at org.jpos.q2.iso.ChannelAdaptorTest$StubISOChannel.receive(ChannelAdaptorTest.java:377)
+	at org.jpos.q2.iso.ChannelAdaptor$Receiver.run(ChannelAdaptor.java:317)
+	at java.lang.Thread.run(Thread.java:745)
+    &lt;/exception&gt;
+  &lt;/warn&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;Thu Feb 19 17:25:13.416 UTC 2015&quot;&gt;
+  &lt;warn&gt;
+    channel-receiver-TestSpace-receive
+    &lt;exception name=&quot;simulated disconnect&quot;&gt;
+    java.io.EOFException: simulated disconnect
+	at org.jpos.q2.iso.ChannelAdaptorTest$StubISOChannel.receive(ChannelAdaptorTest.java:377)
+	at org.jpos.q2.iso.ChannelAdaptor$Receiver.run(ChannelAdaptor.java:317)
+	at java.lang.Thread.run(Thread.java:745)
+    &lt;/exception&gt;
+  &lt;/warn&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;Thu Feb 19 17:25:14.428 UTC 2015&quot;&gt;
+  &lt;warn&gt;
+    channel-receiver-TestSpace-receive
+    &lt;exception name=&quot;simulated disconnect&quot;&gt;
+    java.io.EOFException: simulated disconnect
+	at org.jpos.q2.iso.ChannelAdaptorTest$StubISOChannel.receive(ChannelAdaptorTest.java:377)
+	at org.jpos.q2.iso.ChannelAdaptor$Receiver.run(ChannelAdaptor.java:317)
+	at java.lang.Thread.run(Thread.java:745)
+    &lt;/exception&gt;
+  &lt;/warn&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;Thu Feb 19 17:25:15.438 UTC 2015&quot;&gt;
+  &lt;warn&gt;
+    channel-receiver-TestSpace-receive
+    &lt;exception name=&quot;simulated disconnect&quot;&gt;
+    java.io.EOFException: simulated disconnect
+	at org.jpos.q2.iso.ChannelAdaptorTest$StubISOChannel.receive(ChannelAdaptorTest.java:377)
+	at org.jpos.q2.iso.ChannelAdaptor$Receiver.run(ChannelAdaptor.java:317)
+	at java.lang.Thread.run(Thread.java:745)
+    &lt;/exception&gt;
+  &lt;/warn&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;Thu Feb 19 17:25:16.443 UTC 2015&quot;&gt;
+  &lt;warn&gt;
+    channel-receiver-TestSpace-receive
+    &lt;exception name=&quot;simulated disconnect&quot;&gt;
+    java.io.EOFException: simulated disconnect
+	at org.jpos.q2.iso.ChannelAdaptorTest$StubISOChannel.receive(ChannelAdaptorTest.java:377)
+	at org.jpos.q2.iso.ChannelAdaptor$Receiver.run(ChannelAdaptor.java:317)
+	at java.lang.Thread.run(Thread.java:745)
+    &lt;/exception&gt;
+  &lt;/warn&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;Thu Feb 19 17:25:17.459 UTC 2015&quot; lifespan=&quot;2ms&quot;&gt;
+  &lt;warn&gt;
+    channel-receiver-TestSpace-receive
+    &lt;exception name=&quot;simulated disconnect&quot;&gt;
+    java.io.EOFException: simulated disconnect
+	at org.jpos.q2.iso.ChannelAdaptorTest$StubISOChannel.receive(ChannelAdaptorTest.java:377)
+	at org.jpos.q2.iso.ChannelAdaptor$Receiver.run(ChannelAdaptor.java:317)
+	at java.lang.Thread.run(Thread.java:745)
+    &lt;/exception&gt;
+  &lt;/warn&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;Thu Feb 19 17:25:18.479 UTC 2015&quot; lifespan=&quot;6ms&quot;&gt;
+  &lt;warn&gt;
+    channel-receiver-TestSpace-receive
+    &lt;exception name=&quot;simulated disconnect&quot;&gt;
+    java.io.EOFException: simulated disconnect
+	at org.jpos.q2.iso.ChannelAdaptorTest$StubISOChannel.receive(ChannelAdaptorTest.java:377)
+	at org.jpos.q2.iso.ChannelAdaptor$Receiver.run(ChannelAdaptor.java:317)
+	at java.lang.Thread.run(Thread.java:745)
+    &lt;/exception&gt;
+  &lt;/warn&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;Thu Feb 19 17:25:19.501 UTC 2015&quot; lifespan=&quot;5ms&quot;&gt;
+  &lt;warn&gt;
+    channel-receiver-TestSpace-receive
+    &lt;exception name=&quot;simulated disconnect&quot;&gt;
+    java.io.EOFException: simulated disconnect
+	at org.jpos.q2.iso.ChannelAdaptorTest$StubISOChannel.receive(ChannelAdaptorTest.java:377)
+	at org.jpos.q2.iso.ChannelAdaptor$Receiver.run(ChannelAdaptor.java:317)
+	at java.lang.Thread.run(Thread.java:745)
+    &lt;/exception&gt;
+  &lt;/warn&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;Thu Feb 19 17:25:20.507 UTC 2015&quot;&gt;
+  &lt;warn&gt;
+    channel-receiver-TestSpace-receive
+    &lt;exception name=&quot;simulated disconnect&quot;&gt;
+    java.io.EOFException: simulated disconnect
+	at org.jpos.q2.iso.ChannelAdaptorTest$StubISOChannel.receive(ChannelAdaptorTest.java:377)
+	at org.jpos.q2.iso.ChannelAdaptor$Receiver.run(ChannelAdaptor.java:317)
+	at java.lang.Thread.run(Thread.java:745)
+    &lt;/exception&gt;
+  &lt;/warn&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;Thu Feb 19 17:25:21.513 UTC 2015&quot;&gt;
+  &lt;warn&gt;
+    channel-receiver-TestSpace-receive
+    &lt;exception name=&quot;simulated disconnect&quot;&gt;
+    java.io.EOFException: simulated disconnect
+	at org.jpos.q2.iso.ChannelAdaptorTest$StubISOChannel.receive(ChannelAdaptorTest.java:377)
+	at org.jpos.q2.iso.ChannelAdaptor$Receiver.run(ChannelAdaptor.java:317)
+	at java.lang.Thread.run(Thread.java:745)
+    &lt;/exception&gt;
+  &lt;/warn&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;Thu Feb 19 17:25:22.517 UTC 2015&quot;&gt;
+  &lt;warn&gt;
+    channel-receiver-TestSpace-receive
+    &lt;exception name=&quot;simulated disconnect&quot;&gt;
+    java.io.EOFException: simulated disconnect
+	at org.jpos.q2.iso.ChannelAdaptorTest$StubISOChannel.receive(ChannelAdaptorTest.java:377)
+	at org.jpos.q2.iso.ChannelAdaptor$Receiver.run(ChannelAdaptor.java:317)
+	at java.lang.Thread.run(Thread.java:745)
+    &lt;/exception&gt;
+  &lt;/warn&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;Thu Feb 19 17:25:23.522 UTC 2015&quot; lifespan=&quot;1ms&quot;&gt;
+  &lt;warn&gt;
+    channel-receiver-TestSpace-receive
+    &lt;exception name=&quot;simulated disconnect&quot;&gt;
+    java.io.EOFException: simulated disconnect
+	at org.jpos.q2.iso.ChannelAdaptorTest$StubISOChannel.receive(ChannelAdaptorTest.java:377)
+	at org.jpos.q2.iso.ChannelAdaptor$Receiver.run(ChannelAdaptor.java:317)
+	at java.lang.Thread.run(Thread.java:745)
+    &lt;/exception&gt;
+  &lt;/warn&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;Thu Feb 19 17:25:24.531 UTC 2015&quot;&gt;
+  &lt;warn&gt;
+    channel-receiver-TestSpace-receive
+    &lt;exception name=&quot;simulated disconnect&quot;&gt;
+    java.io.EOFException: simulated disconnect
+	at org.jpos.q2.iso.ChannelAdaptorTest$StubISOChannel.receive(ChannelAdaptorTest.java:377)
+	at org.jpos.q2.iso.ChannelAdaptor$Receiver.run(ChannelAdaptor.java:317)
+	at java.lang.Thread.run(Thread.java:745)
+    &lt;/exception&gt;
+  &lt;/warn&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;Thu Feb 19 17:25:25.537 UTC 2015&quot;&gt;
+  &lt;warn&gt;
+    channel-receiver-TestSpace-receive
+    &lt;exception name=&quot;simulated disconnect&quot;&gt;
+    java.io.EOFException: simulated disconnect
+	at org.jpos.q2.iso.ChannelAdaptorTest$StubISOChannel.receive(ChannelAdaptorTest.java:377)
+	at org.jpos.q2.iso.ChannelAdaptor$Receiver.run(ChannelAdaptor.java:317)
+	at java.lang.Thread.run(Thread.java:745)
+    &lt;/exception&gt;
+  &lt;/warn&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;Thu Feb 19 17:25:26.542 UTC 2015&quot; lifespan=&quot;1ms&quot;&gt;
+  &lt;warn&gt;
+    channel-receiver-TestSpace-receive
+    &lt;exception name=&quot;simulated disconnect&quot;&gt;
+    java.io.EOFException: simulated disconnect
+	at org.jpos.q2.iso.ChannelAdaptorTest$StubISOChannel.receive(ChannelAdaptorTest.java:377)
+	at org.jpos.q2.iso.ChannelAdaptor$Receiver.run(ChannelAdaptor.java:317)
+	at java.lang.Thread.run(Thread.java:745)
+    &lt;/exception&gt;
+  &lt;/warn&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;Thu Feb 19 17:25:27.546 UTC 2015&quot;&gt;
+  &lt;warn&gt;
+    channel-receiver-TestSpace-receive
+    &lt;exception name=&quot;simulated disconnect&quot;&gt;
+    java.io.EOFException: simulated disconnect
+	at org.jpos.q2.iso.ChannelAdaptorTest$StubISOChannel.receive(ChannelAdaptorTest.java:377)
+	at org.jpos.q2.iso.ChannelAdaptor$Receiver.run(ChannelAdaptor.java:317)
+	at java.lang.Thread.run(Thread.java:745)
+    &lt;/exception&gt;
+  &lt;/warn&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;Thu Feb 19 17:25:28.550 UTC 2015&quot;&gt;
+  &lt;warn&gt;
+    channel-receiver-TestSpace-receive
+    &lt;exception name=&quot;simulated disconnect&quot;&gt;
+    java.io.EOFException: simulated disconnect
+	at org.jpos.q2.iso.ChannelAdaptorTest$StubISOChannel.receive(ChannelAdaptorTest.java:377)
+	at org.jpos.q2.iso.ChannelAdaptor$Receiver.run(ChannelAdaptor.java:317)
+	at java.lang.Thread.run(Thread.java:745)
+    &lt;/exception&gt;
+  &lt;/warn&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;Thu Feb 19 17:25:29.554 UTC 2015&quot;&gt;
+  &lt;warn&gt;
+    channel-receiver-TestSpace-receive
+    &lt;exception name=&quot;simulated disconnect&quot;&gt;
+    java.io.EOFException: simulated disconnect
+	at org.jpos.q2.iso.ChannelAdaptorTest$StubISOChannel.receive(ChannelAdaptorTest.java:377)
+	at org.jpos.q2.iso.ChannelAdaptor$Receiver.run(ChannelAdaptor.java:317)
+	at java.lang.Thread.run(Thread.java:745)
+    &lt;/exception&gt;
+  &lt;/warn&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;Thu Feb 19 17:25:30.560 UTC 2015&quot; lifespan=&quot;1ms&quot;&gt;
+  &lt;warn&gt;
+    channel-receiver-TestSpace-receive
+    &lt;exception name=&quot;simulated disconnect&quot;&gt;
+    java.io.EOFException: simulated disconnect
+	at org.jpos.q2.iso.ChannelAdaptorTest$StubISOChannel.receive(ChannelAdaptorTest.java:377)
+	at org.jpos.q2.iso.ChannelAdaptor$Receiver.run(ChannelAdaptor.java:317)
+	at java.lang.Thread.run(Thread.java:745)
+    &lt;/exception&gt;
+  &lt;/warn&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;Thu Feb 19 17:25:31.564 UTC 2015&quot;&gt;
+  &lt;warn&gt;
+    channel-receiver-TestSpace-receive
+    &lt;exception name=&quot;simulated disconnect&quot;&gt;
+    java.io.EOFException: simulated disconnect
+	at org.jpos.q2.iso.ChannelAdaptorTest$StubISOChannel.receive(ChannelAdaptorTest.java:377)
+	at org.jpos.q2.iso.ChannelAdaptor$Receiver.run(ChannelAdaptor.java:317)
+	at java.lang.Thread.run(Thread.java:745)
+    &lt;/exception&gt;
+  &lt;/warn&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;Thu Feb 19 17:25:32.568 UTC 2015&quot;&gt;
+  &lt;warn&gt;
+    channel-receiver-TestSpace-receive
+    &lt;exception name=&quot;simulated disconnect&quot;&gt;
+    java.io.EOFException: simulated disconnect
+	at org.jpos.q2.iso.ChannelAdaptorTest$StubISOChannel.receive(ChannelAdaptorTest.java:377)
+	at org.jpos.q2.iso.ChannelAdaptor$Receiver.run(ChannelAdaptor.java:317)
+	at java.lang.Thread.run(Thread.java:745)
+    &lt;/exception&gt;
+  &lt;/warn&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;Thu Feb 19 17:25:33.573 UTC 2015&quot;&gt;
+  &lt;warn&gt;
+    channel-receiver-TestSpace-receive
+    &lt;exception name=&quot;simulated disconnect&quot;&gt;
+    java.io.EOFException: simulated disconnect
+	at org.jpos.q2.iso.ChannelAdaptorTest$StubISOChannel.receive(ChannelAdaptorTest.java:377)
+	at org.jpos.q2.iso.ChannelAdaptor$Receiver.run(ChannelAdaptor.java:317)
+	at java.lang.Thread.run(Thread.java:745)
+    &lt;/exception&gt;
+  &lt;/warn&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;Thu Feb 19 17:25:34.579 UTC 2015&quot;&gt;
+  &lt;warn&gt;
+    channel-receiver-TestSpace-receive
+    &lt;exception name=&quot;simulated disconnect&quot;&gt;
+    java.io.EOFException: simulated disconnect
+	at org.jpos.q2.iso.ChannelAdaptorTest$StubISOChannel.receive(ChannelAdaptorTest.java:377)
+	at org.jpos.q2.iso.ChannelAdaptor$Receiver.run(ChannelAdaptor.java:317)
+	at java.lang.Thread.run(Thread.java:745)
+    &lt;/exception&gt;
+  &lt;/warn&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;Thu Feb 19 17:25:35.583 UTC 2015&quot;&gt;
+  &lt;warn&gt;
+    channel-receiver-TestSpace-receive
+    &lt;exception name=&quot;simulated disconnect&quot;&gt;
+    java.io.EOFException: simulated disconnect
+	at org.jpos.q2.iso.ChannelAdaptorTest$StubISOChannel.receive(ChannelAdaptorTest.java:377)
+	at org.jpos.q2.iso.ChannelAdaptor$Receiver.run(ChannelAdaptor.java:317)
+	at java.lang.Thread.run(Thread.java:745)
+    &lt;/exception&gt;
+  &lt;/warn&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;Thu Feb 19 17:25:36.589 UTC 2015&quot;&gt;
+  &lt;warn&gt;
+    channel-receiver-TestSpace-receive
+    &lt;exception name=&quot;simulated disconnect&quot;&gt;
+    java.io.EOFException: simulated disconnect
+	at org.jpos.q2.iso.ChannelAdaptorTest$StubISOChannel.receive(ChannelAdaptorTest.java:377)
+	at org.jpos.q2.iso.ChannelAdaptor$Receiver.run(ChannelAdaptor.java:317)
+	at java.lang.Thread.run(Thread.java:745)
+    &lt;/exception&gt;
+  &lt;/warn&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;Thu Feb 19 17:25:37.595 UTC 2015&quot;&gt;
+  &lt;warn&gt;
+    channel-receiver-TestSpace-receive
+    &lt;exception name=&quot;simulated disconnect&quot;&gt;
+    java.io.EOFException: simulated disconnect
+	at org.jpos.q2.iso.ChannelAdaptorTest$StubISOChannel.receive(ChannelAdaptorTest.java:377)
+	at org.jpos.q2.iso.ChannelAdaptor$Receiver.run(ChannelAdaptor.java:317)
+	at java.lang.Thread.run(Thread.java:745)
+    &lt;/exception&gt;
+  &lt;/warn&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;Thu Feb 19 17:25:38.603 UTC 2015&quot;&gt;
+  &lt;warn&gt;
+    channel-receiver-TestSpace-receive
+    &lt;exception name=&quot;simulated disconnect&quot;&gt;
+    java.io.EOFException: simulated disconnect
+	at org.jpos.q2.iso.ChannelAdaptorTest$StubISOChannel.receive(ChannelAdaptorTest.java:377)
+	at org.jpos.q2.iso.ChannelAdaptor$Receiver.run(ChannelAdaptor.java:317)
+	at java.lang.Thread.run(Thread.java:745)
+    &lt;/exception&gt;
+  &lt;/warn&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;Thu Feb 19 17:25:39.612 UTC 2015&quot;&gt;
+  &lt;warn&gt;
+    channel-receiver-TestSpace-receive
+    &lt;exception name=&quot;simulated disconnect&quot;&gt;
+    java.io.EOFException: simulated disconnect
+	at org.jpos.q2.iso.ChannelAdaptorTest$StubISOChannel.receive(ChannelAdaptorTest.java:377)
+	at org.jpos.q2.iso.ChannelAdaptor$Receiver.run(ChannelAdaptor.java:317)
+	at java.lang.Thread.run(Thread.java:745)
+    &lt;/exception&gt;
+  &lt;/warn&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;Thu Feb 19 17:25:40.616 UTC 2015&quot;&gt;
+  &lt;warn&gt;
+    channel-receiver-TestSpace-receive
+    &lt;exception name=&quot;simulated disconnect&quot;&gt;
+    java.io.EOFException: simulated disconnect
+	at org.jpos.q2.iso.ChannelAdaptorTest$StubISOChannel.receive(ChannelAdaptorTest.java:377)
+	at org.jpos.q2.iso.ChannelAdaptor$Receiver.run(ChannelAdaptor.java:317)
+	at java.lang.Thread.run(Thread.java:745)
+    &lt;/exception&gt;
+  &lt;/warn&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;Thu Feb 19 17:25:41.622 UTC 2015&quot;&gt;
+  &lt;warn&gt;
+    channel-receiver-TestSpace-receive
+    &lt;exception name=&quot;simulated disconnect&quot;&gt;
+    java.io.EOFException: simulated disconnect
+	at org.jpos.q2.iso.ChannelAdaptorTest$StubISOChannel.receive(ChannelAdaptorTest.java:377)
+	at org.jpos.q2.iso.ChannelAdaptor$Receiver.run(ChannelAdaptor.java:317)
+	at java.lang.Thread.run(Thread.java:745)
+    &lt;/exception&gt;
+  &lt;/warn&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;Thu Feb 19 17:25:42.628 UTC 2015&quot;&gt;
+  &lt;warn&gt;
+    channel-receiver-TestSpace-receive
+    &lt;exception name=&quot;simulated disconnect&quot;&gt;
+    java.io.EOFException: simulated disconnect
+	at org.jpos.q2.iso.ChannelAdaptorTest$StubISOChannel.receive(ChannelAdaptorTest.java:377)
+	at org.jpos.q2.iso.ChannelAdaptor$Receiver.run(ChannelAdaptor.java:317)
+	at java.lang.Thread.run(Thread.java:745)
+    &lt;/exception&gt;
+  &lt;/warn&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;Thu Feb 19 17:25:43.635 UTC 2015&quot;&gt;
+  &lt;warn&gt;
+    channel-receiver-TestSpace-receive
+    &lt;exception name=&quot;simulated disconnect&quot;&gt;
+    java.io.EOFException: simulated disconnect
+	at org.jpos.q2.iso.ChannelAdaptorTest$StubISOChannel.receive(ChannelAdaptorTest.java:377)
+	at org.jpos.q2.iso.ChannelAdaptor$Receiver.run(ChannelAdaptor.java:317)
+	at java.lang.Thread.run(Thread.java:745)
+    &lt;/exception&gt;
+  &lt;/warn&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;Thu Feb 19 17:25:44.658 UTC 2015&quot;&gt;
+  &lt;warn&gt;
+    channel-receiver-TestSpace-receive
+    &lt;exception name=&quot;simulated disconnect&quot;&gt;
+    java.io.EOFException: simulated disconnect
+	at org.jpos.q2.iso.ChannelAdaptorTest$StubISOChannel.receive(ChannelAdaptorTest.java:377)
+	at org.jpos.q2.iso.ChannelAdaptor$Receiver.run(ChannelAdaptor.java:317)
+	at java.lang.Thread.run(Thread.java:745)
+    &lt;/exception&gt;
+  &lt;/warn&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;Thu Feb 19 17:25:45.680 UTC 2015&quot; lifespan=&quot;1ms&quot;&gt;
+  &lt;warn&gt;
+    channel-receiver-TestSpace-receive
+    &lt;exception name=&quot;simulated disconnect&quot;&gt;
+    java.io.EOFException: simulated disconnect
+	at org.jpos.q2.iso.ChannelAdaptorTest$StubISOChannel.receive(ChannelAdaptorTest.java:377)
+	at org.jpos.q2.iso.ChannelAdaptor$Receiver.run(ChannelAdaptor.java:317)
+	at java.lang.Thread.run(Thread.java:745)
+    &lt;/exception&gt;
+  &lt;/warn&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;Thu Feb 19 17:25:46.691 UTC 2015&quot; lifespan=&quot;1ms&quot;&gt;
+  &lt;warn&gt;
+    channel-receiver-TestSpace-receive
+    &lt;exception name=&quot;simulated disconnect&quot;&gt;
+    java.io.EOFException: simulated disconnect
+	at org.jpos.q2.iso.ChannelAdaptorTest$StubISOChannel.receive(ChannelAdaptorTest.java:377)
+	at org.jpos.q2.iso.ChannelAdaptor$Receiver.run(ChannelAdaptor.java:317)
+	at java.lang.Thread.run(Thread.java:745)
+    &lt;/exception&gt;
+  &lt;/warn&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;Thu Feb 19 17:25:47.697 UTC 2015&quot;&gt;
+  &lt;warn&gt;
+    channel-receiver-TestSpace-receive
+    &lt;exception name=&quot;simulated disconnect&quot;&gt;
+    java.io.EOFException: simulated disconnect
+	at org.jpos.q2.iso.ChannelAdaptorTest$StubISOChannel.receive(ChannelAdaptorTest.java:377)
+	at org.jpos.q2.iso.ChannelAdaptor$Receiver.run(ChannelAdaptor.java:317)
+	at java.lang.Thread.run(Thread.java:745)
+    &lt;/exception&gt;
+  &lt;/warn&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;Thu Feb 19 17:25:48.701 UTC 2015&quot;&gt;
+  &lt;warn&gt;
+    channel-receiver-TestSpace-receive
+    &lt;exception name=&quot;simulated disconnect&quot;&gt;
+    java.io.EOFException: simulated disconnect
+	at org.jpos.q2.iso.ChannelAdaptorTest$StubISOChannel.receive(ChannelAdaptorTest.java:377)
+	at org.jpos.q2.iso.ChannelAdaptor$Receiver.run(ChannelAdaptor.java:317)
+	at java.lang.Thread.run(Thread.java:745)
+    &lt;/exception&gt;
+  &lt;/warn&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;Thu Feb 19 17:25:49.706 UTC 2015&quot;&gt;
+  &lt;warn&gt;
+    channel-receiver-TestSpace-receive
+    &lt;exception name=&quot;simulated disconnect&quot;&gt;
+    java.io.EOFException: simulated disconnect
+	at org.jpos.q2.iso.ChannelAdaptorTest$StubISOChannel.receive(ChannelAdaptorTest.java:377)
+	at org.jpos.q2.iso.ChannelAdaptor$Receiver.run(ChannelAdaptor.java:317)
+	at java.lang.Thread.run(Thread.java:745)
+    &lt;/exception&gt;
+  &lt;/warn&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;Thu Feb 19 17:25:50.710 UTC 2015&quot;&gt;
+  &lt;warn&gt;
+    channel-receiver-TestSpace-receive
+    &lt;exception name=&quot;simulated disconnect&quot;&gt;
+    java.io.EOFException: simulated disconnect
+	at org.jpos.q2.iso.ChannelAdaptorTest$StubISOChannel.receive(ChannelAdaptorTest.java:377)
+	at org.jpos.q2.iso.ChannelAdaptor$Receiver.run(ChannelAdaptor.java:317)
+	at java.lang.Thread.run(Thread.java:745)
+    &lt;/exception&gt;
+  &lt;/warn&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;Thu Feb 19 17:25:51.720 UTC 2015&quot;&gt;
+  &lt;warn&gt;
+    channel-receiver-TestSpace-receive
+    &lt;exception name=&quot;simulated disconnect&quot;&gt;
+    java.io.EOFException: simulated disconnect
+	at org.jpos.q2.iso.ChannelAdaptorTest$StubISOChannel.receive(ChannelAdaptorTest.java:377)
+	at org.jpos.q2.iso.ChannelAdaptor$Receiver.run(ChannelAdaptor.java:317)
+	at java.lang.Thread.run(Thread.java:745)
+    &lt;/exception&gt;
+  &lt;/warn&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;Thu Feb 19 17:25:52.728 UTC 2015&quot;&gt;
+  &lt;warn&gt;
+    channel-receiver-TestSpace-receive
+    &lt;exception name=&quot;simulated disconnect&quot;&gt;
+    java.io.EOFException: simulated disconnect
+	at org.jpos.q2.iso.ChannelAdaptorTest$StubISOChannel.receive(ChannelAdaptorTest.java:377)
+	at org.jpos.q2.iso.ChannelAdaptor$Receiver.run(ChannelAdaptor.java:317)
+	at java.lang.Thread.run(Thread.java:745)
+    &lt;/exception&gt;
+  &lt;/warn&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;Thu Feb 19 17:25:53.733 UTC 2015&quot;&gt;
+  &lt;warn&gt;
+    channel-receiver-TestSpace-receive
+    &lt;exception name=&quot;simulated disconnect&quot;&gt;
+    java.io.EOFException: simulated disconnect
+	at org.jpos.q2.iso.ChannelAdaptorTest$StubISOChannel.receive(ChannelAdaptorTest.java:377)
+	at org.jpos.q2.iso.ChannelAdaptor$Receiver.run(ChannelAdaptor.java:317)
+	at java.lang.Thread.run(Thread.java:745)
+    &lt;/exception&gt;
+  &lt;/warn&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;Thu Feb 19 17:25:54.738 UTC 2015&quot;&gt;
+  &lt;warn&gt;
+    channel-receiver-TestSpace-receive
+    &lt;exception name=&quot;simulated disconnect&quot;&gt;
+    java.io.EOFException: simulated disconnect
+	at org.jpos.q2.iso.ChannelAdaptorTest$StubISOChannel.receive(ChannelAdaptorTest.java:377)
+	at org.jpos.q2.iso.ChannelAdaptor$Receiver.run(ChannelAdaptor.java:317)
+	at java.lang.Thread.run(Thread.java:745)
+    &lt;/exception&gt;
+  &lt;/warn&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;Thu Feb 19 17:25:55.744 UTC 2015&quot;&gt;
+  &lt;warn&gt;
+    channel-receiver-TestSpace-receive
+    &lt;exception name=&quot;simulated disconnect&quot;&gt;
+    java.io.EOFException: simulated disconnect
+	at org.jpos.q2.iso.ChannelAdaptorTest$StubISOChannel.receive(ChannelAdaptorTest.java:377)
+	at org.jpos.q2.iso.ChannelAdaptor$Receiver.run(ChannelAdaptor.java:317)
+	at java.lang.Thread.run(Thread.java:745)
+    &lt;/exception&gt;
+  &lt;/warn&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;Thu Feb 19 17:25:56.757 UTC 2015&quot;&gt;
+  &lt;warn&gt;
+    channel-receiver-TestSpace-receive
+    &lt;exception name=&quot;simulated disconnect&quot;&gt;
+    java.io.EOFException: simulated disconnect
+	at org.jpos.q2.iso.ChannelAdaptorTest$StubISOChannel.receive(ChannelAdaptorTest.java:377)
+	at org.jpos.q2.iso.ChannelAdaptor$Receiver.run(ChannelAdaptor.java:317)
+	at java.lang.Thread.run(Thread.java:745)
+    &lt;/exception&gt;
+  &lt;/warn&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;Thu Feb 19 17:25:57.771 UTC 2015&quot;&gt;
+  &lt;warn&gt;
+    channel-receiver-TestSpace-receive
+    &lt;exception name=&quot;simulated disconnect&quot;&gt;
+    java.io.EOFException: simulated disconnect
+	at org.jpos.q2.iso.ChannelAdaptorTest$StubISOChannel.receive(ChannelAdaptorTest.java:377)
+	at org.jpos.q2.iso.ChannelAdaptor$Receiver.run(ChannelAdaptor.java:317)
+	at java.lang.Thread.run(Thread.java:745)
+    &lt;/exception&gt;
+  &lt;/warn&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;Thu Feb 19 17:25:58.775 UTC 2015&quot;&gt;
+  &lt;warn&gt;
+    channel-receiver-TestSpace-receive
+    &lt;exception name=&quot;simulated disconnect&quot;&gt;
+    java.io.EOFException: simulated disconnect
+	at org.jpos.q2.iso.ChannelAdaptorTest$StubISOChannel.receive(ChannelAdaptorTest.java:377)
+	at org.jpos.q2.iso.ChannelAdaptor$Receiver.run(ChannelAdaptor.java:317)
+	at java.lang.Thread.run(Thread.java:745)
+    &lt;/exception&gt;
+  &lt;/warn&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;Thu Feb 19 17:25:59.781 UTC 2015&quot;&gt;
+  &lt;warn&gt;
+    channel-receiver-TestSpace-receive
+    &lt;exception name=&quot;simulated disconnect&quot;&gt;
+    java.io.EOFException: simulated disconnect
+	at org.jpos.q2.iso.ChannelAdaptorTest$StubISOChannel.receive(ChannelAdaptorTest.java:377)
+	at org.jpos.q2.iso.ChannelAdaptor$Receiver.run(ChannelAdaptor.java:317)
+	at java.lang.Thread.run(Thread.java:745)
+    &lt;/exception&gt;
+  &lt;/warn&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;Thu Feb 19 17:26:00.788 UTC 2015&quot;&gt;
+  &lt;warn&gt;
+    channel-receiver-TestSpace-receive
+    &lt;exception name=&quot;simulated disconnect&quot;&gt;
+    java.io.EOFException: simulated disconnect
+	at org.jpos.q2.iso.ChannelAdaptorTest$StubISOChannel.receive(ChannelAdaptorTest.java:377)
+	at org.jpos.q2.iso.ChannelAdaptor$Receiver.run(ChannelAdaptor.java:317)
+	at java.lang.Thread.run(Thread.java:745)
+    &lt;/exception&gt;
+  &lt;/warn&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;Thu Feb 19 17:26:01.795 UTC 2015&quot;&gt;
+  &lt;warn&gt;
+    channel-receiver-TestSpace-receive
+    &lt;exception name=&quot;simulated disconnect&quot;&gt;
+    java.io.EOFException: simulated disconnect
+	at org.jpos.q2.iso.ChannelAdaptorTest$StubISOChannel.receive(ChannelAdaptorTest.java:377)
+	at org.jpos.q2.iso.ChannelAdaptor$Receiver.run(ChannelAdaptor.java:317)
+	at java.lang.Thread.run(Thread.java:745)
+    &lt;/exception&gt;
+  &lt;/warn&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;Thu Feb 19 17:26:02.811 UTC 2015&quot;&gt;
+  &lt;warn&gt;
+    channel-receiver-TestSpace-receive
+    &lt;exception name=&quot;simulated disconnect&quot;&gt;
+    java.io.EOFException: simulated disconnect
+	at org.jpos.q2.iso.ChannelAdaptorTest$StubISOChannel.receive(ChannelAdaptorTest.java:377)
+	at org.jpos.q2.iso.ChannelAdaptor$Receiver.run(ChannelAdaptor.java:317)
+	at java.lang.Thread.run(Thread.java:745)
+    &lt;/exception&gt;
+  &lt;/warn&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;Thu Feb 19 17:26:03.820 UTC 2015&quot;&gt;
+  &lt;warn&gt;
+    channel-receiver-TestSpace-receive
+    &lt;exception name=&quot;simulated disconnect&quot;&gt;
+    java.io.EOFException: simulated disconnect
+	at org.jpos.q2.iso.ChannelAdaptorTest$StubISOChannel.receive(ChannelAdaptorTest.java:377)
+	at org.jpos.q2.iso.ChannelAdaptor$Receiver.run(ChannelAdaptor.java:317)
+	at java.lang.Thread.run(Thread.java:745)
+    &lt;/exception&gt;
+  &lt;/warn&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;Thu Feb 19 17:26:04.825 UTC 2015&quot;&gt;
+  &lt;warn&gt;
+    channel-receiver-TestSpace-receive
+    &lt;exception name=&quot;simulated disconnect&quot;&gt;
+    java.io.EOFException: simulated disconnect
+	at org.jpos.q2.iso.ChannelAdaptorTest$StubISOChannel.receive(ChannelAdaptorTest.java:377)
+	at org.jpos.q2.iso.ChannelAdaptor$Receiver.run(ChannelAdaptor.java:317)
+	at java.lang.Thread.run(Thread.java:745)
+    &lt;/exception&gt;
+  &lt;/warn&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;Thu Feb 19 17:26:05.833 UTC 2015&quot;&gt;
+  &lt;warn&gt;
+    channel-receiver-TestSpace-receive
+    &lt;exception name=&quot;simulated disconnect&quot;&gt;
+    java.io.EOFException: simulated disconnect
+	at org.jpos.q2.iso.ChannelAdaptorTest$StubISOChannel.receive(ChannelAdaptorTest.java:377)
+	at org.jpos.q2.iso.ChannelAdaptor$Receiver.run(ChannelAdaptor.java:317)
+	at java.lang.Thread.run(Thread.java:745)
+    &lt;/exception&gt;
+  &lt;/warn&gt;
+&lt;/log&gt;
+</pre>
+</span>
+</div>
 </div>
 <div id="footer">
 <p>Generated by 
-<a href="http://www.gradle.org">Gradle 2.2.1</a> at Feb 19, 2015 2:13:03 AM</p>
+<a href="http://www.gradle.org">Gradle 2.2.1</a> at Feb 19, 2015 5:27:52 PM</p>
 </div>
 </div>
 </body>
