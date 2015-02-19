@@ -362,6 +362,7 @@ public interface SMAdapter {
      * under LMK.
      *
      * <p>The transaction key is derived from the Key Serial Number and the Base Derivation Key using DUKPT (Derived Unique Key per Transaction). See ANSI X9.24 for more information.
+     * @deprecated Use signature that specifies tdes flag.
      * @param pinUnderDuk pin encrypted under a transaction key
      * @param ksn Key Serial Number (also called Key Name, in ANSI X9.24) needed to derive the transaction key
      * @param bdk Base Derivation Key, used to derive the transaction key underwhich the pin is encrypted
@@ -371,6 +372,39 @@ public interface SMAdapter {
     public EncryptedPIN importPIN (EncryptedPIN pinUnderDuk, KeySerialNumber ksn,
             SecureDESKey bdk) throws SMException;
 
+    /**
+     * Imports a PIN from encryption under a transaction key to encryption
+     * under LMK.
+     *
+     * <p>The transaction key is derived from the Key Serial Number and the Base Derivation Key using DUKPT (Derived Unique Key per Transaction). See ANSI X9.24 for more information.
+     * @param pinUnderDuk pin encrypted under a transaction key
+     * @param ksn Key Serial Number (also called Key Name, in ANSI X9.24) needed to derive the transaction key
+     * @param bdk Base Derivation Key, used to derive the transaction key underwhich the pin is encrypted
+     * @param tdes Use Triple DES to calculate derived transaction key.
+     * @return pin encrypted under LMK
+     * @throws SMException
+     */
+    public EncryptedPIN importPIN (EncryptedPIN pinUnderDuk, KeySerialNumber ksn,
+            SecureDESKey bdk, boolean tdes) throws SMException;
+
+
+
+    /**
+     * Translates a PIN from encryption under a transaction key to
+     * encryption under a KD (Data Key).
+     *
+     * <p>The transaction key is derived from the Key Serial Number and the Base Derivation Key using DUKPT (Derived Unique Key per Transaction). See ANSI X9.24 for more information.
+     * @deprecated Use signature that specifies tdes flag.
+     * @param pinUnderDuk pin encrypted under a DUKPT transaction key
+     * @param ksn Key Serial Number (also called Key Name, in ANSI X9.24) needed to derive the transaction key
+     * @param bdk Base Derivation Key, used to derive the transaction key underwhich the pin is encrypted
+     * @param kd2 the destination Data Key (also called session key) under which the pin will be encrypted
+     * @param destinationPINBlockFormat the PIN Block Format of the translated encrypted PIN
+     * @return pin encrypted under kd2
+     * @throws SMException
+     */
+    public EncryptedPIN translatePIN (EncryptedPIN pinUnderDuk, KeySerialNumber ksn,
+            SecureDESKey bdk, SecureDESKey kd2, byte destinationPINBlockFormat) throws SMException;
 
 
     /**
@@ -383,11 +417,12 @@ public interface SMAdapter {
      * @param bdk Base Derivation Key, used to derive the transaction key underwhich the pin is encrypted
      * @param kd2 the destination Data Key (also called session key) under which the pin will be encrypted
      * @param destinationPINBlockFormat the PIN Block Format of the translated encrypted PIN
+     * @param tdes Use Triple DES to calculate derived transaction key.
      * @return pin encrypted under kd2
      * @throws SMException
      */
     public EncryptedPIN translatePIN (EncryptedPIN pinUnderDuk, KeySerialNumber ksn,
-            SecureDESKey bdk, SecureDESKey kd2, byte destinationPINBlockFormat) throws SMException;
+            SecureDESKey bdk, SecureDESKey kd2, byte destinationPINBlockFormat,boolean tdes) throws SMException;
 
 
 

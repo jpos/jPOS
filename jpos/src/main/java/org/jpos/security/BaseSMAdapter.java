@@ -292,6 +292,12 @@ public class BaseSMAdapter
     @Override
     public EncryptedPIN importPIN (EncryptedPIN pinUnderDuk, KeySerialNumber ksn,
             SecureDESKey bdk) throws SMException {
+        return importPIN(pinUnderDuk,ksn,bdk,false);
+    }
+
+    @Override
+    public EncryptedPIN importPIN (EncryptedPIN pinUnderDuk, KeySerialNumber ksn,
+            SecureDESKey bdk, boolean tdes) throws SMException {
         SimpleMsg[] cmdParameters =  {
             new SimpleMsg("parameter", "PIN under Derived Unique Key", pinUnderDuk), new SimpleMsg("parameter",
                     "Key Serial Number", ksn), new SimpleMsg("parameter", "Base Derivation Key",
@@ -301,7 +307,7 @@ public class BaseSMAdapter
         evt.addMessage(new SimpleMsg("command", "Import PIN", cmdParameters));
         EncryptedPIN result = null;
         try {
-            result = importPINImpl(pinUnderDuk, ksn, bdk);
+            result = importPINImpl(pinUnderDuk, ksn, bdk, tdes);
             evt.addMessage(new SimpleMsg("result", "PIN under LMK", result));
         } catch (Exception e) {
             evt.addMessage(e);
@@ -315,6 +321,12 @@ public class BaseSMAdapter
     @Override
     public EncryptedPIN translatePIN (EncryptedPIN pinUnderDuk, KeySerialNumber ksn,
             SecureDESKey bdk, SecureDESKey kd2, byte destinationPINBlockFormat) throws SMException {
+        return translatePIN(pinUnderDuk,ksn,bdk,kd2,destinationPINBlockFormat,false);
+    }
+
+    @Override
+    public EncryptedPIN translatePIN (EncryptedPIN pinUnderDuk, KeySerialNumber ksn,
+            SecureDESKey bdk, SecureDESKey kd2, byte destinationPINBlockFormat,boolean tdes) throws SMException {
         SimpleMsg[] cmdParameters =  {
             new SimpleMsg("parameter", "PIN under Derived Unique Key", pinUnderDuk), new SimpleMsg("parameter",
                     "Key Serial Number", ksn), new SimpleMsg("parameter", "Base Derivation Key",
@@ -325,7 +337,7 @@ public class BaseSMAdapter
         evt.addMessage(new SimpleMsg("command", "Translate PIN", cmdParameters));
         EncryptedPIN result = null;
         try {
-            result = translatePINImpl(pinUnderDuk, ksn, bdk, kd2, destinationPINBlockFormat);
+            result = translatePINImpl(pinUnderDuk, ksn, bdk, kd2, destinationPINBlockFormat,tdes);
             evt.addMessage(new SimpleMsg("result", "PIN under Data Key 2", result));
         } catch (Exception e) {
             evt.addMessage(e);
@@ -804,7 +816,7 @@ public class BaseSMAdapter
       LogEvent evt = new LogEvent(this, "s-m-operation");
       evt.addMessage(new SimpleMsg("command", "Verify CVC3", cmdParameters));
       try {
-        boolean r = verifyCVC3Impl( imkcvc3, accountNo, acctSeqNo, atc, upn, data, mkdm, cvc3);
+        boolean r = verifyCVC3Impl(imkcvc3, accountNo, acctSeqNo, atc, upn, data, mkdm, cvc3);
         evt.addMessage(new SimpleMsg("result", "Verification status", r ? "valid" : "invalid"));
         return r;
       } catch (Exception e) {
@@ -834,7 +846,7 @@ public class BaseSMAdapter
       LogEvent evt = new LogEvent(this, "s-m-operation");
       evt.addMessage(new SimpleMsg("command", "Verify ARQC/TC/AAC", cmdParameters));
       try {
-        boolean r = verifyARQCImpl( mkdm, skdm, imkac, accoutNo, acctSeqNo, arqc, atc, upn, transData);
+        boolean r = verifyARQCImpl(mkdm, skdm, imkac, accoutNo, acctSeqNo, arqc, atc, upn, transData);
         evt.addMessage(new SimpleMsg("result", "Verification status", r ? "valid" : "invalid"));
         return r;
       } catch (Exception e) {
@@ -868,8 +880,8 @@ public class BaseSMAdapter
       LogEvent evt = new LogEvent(this, "s-m-operation");
       evt.addMessage(new SimpleMsg("command", "Genarate ARPC", cmdParameters));
       try {
-        byte[] result = generateARPCImpl( mkdm, skdm, imkac, accoutNo, acctSeqNo
-                           ,arqc, atc, upn, arpcMethod, arc, propAuthData );
+        byte[] result = generateARPCImpl(mkdm, skdm, imkac, accoutNo, acctSeqNo
+            , arqc, atc, upn, arpcMethod, arc, propAuthData);
         evt.addMessage(new SimpleMsg("result", "Generated ARPC", result));
         return result;
       } catch (Exception e) {
@@ -904,8 +916,8 @@ public class BaseSMAdapter
       LogEvent evt = new LogEvent(this, "s-m-operation");
       evt.addMessage(new SimpleMsg("command", "Genarate ARPC", cmdParameters));
       try {
-        byte[] result = verifyARQCGenerateARPCImpl( mkdm, skdm, imkac, accoutNo,
-                acctSeqNo, arqc, atc, upn, transData, arpcMethod, arc, propAuthData );
+        byte[] result = verifyARQCGenerateARPCImpl(mkdm, skdm, imkac, accoutNo,
+                                                   acctSeqNo, arqc, atc, upn, transData, arpcMethod, arc, propAuthData);
         evt.addMessage(new SimpleMsg("result", "ARPC", result == null ? "" : ISOUtil.hexString(result)));
         return result;
       } catch (Exception e) {
@@ -934,7 +946,7 @@ public class BaseSMAdapter
       LogEvent evt = new LogEvent(this, "s-m-operation");
       evt.addMessage(new SimpleMsg("command", "Generate Secure Messaging MAC", cmdParameters));
       try {
-        byte[] mac = generateSM_MACImpl( mkdm, skdm, imksmi, accountNo, acctSeqNo, atc, arqc, data);
+        byte[] mac = generateSM_MACImpl(mkdm, skdm, imksmi, accountNo, acctSeqNo, atc, arqc, data);
         evt.addMessage(new SimpleMsg("result", "Generated MAC", mac!=null ? ISOUtil.hexString(mac) : ""));
         return mac;
       } catch (Exception e) {
@@ -1165,6 +1177,7 @@ public class BaseSMAdapter
 
     /**
      * Your SMAdapter should override this method if it has this functionality
+     * @deprecated
      * @param pinUnderDuk
      * @param ksn
      * @param bdk
@@ -1173,11 +1186,26 @@ public class BaseSMAdapter
      */
     protected EncryptedPIN importPINImpl (EncryptedPIN pinUnderDuk, KeySerialNumber ksn,
             SecureDESKey bdk) throws SMException {
+        return importPINImpl(pinUnderDuk,ksn,bdk,false);
+    }
+
+    /**
+     * Your SMAdapter should override this method if it has this functionality
+     * @param pinUnderDuk
+     * @param ksn
+     * @param bdk
+     * @param tdes
+     * @return imported pin
+     * @throws SMException
+     */
+    protected EncryptedPIN importPINImpl (EncryptedPIN pinUnderDuk, KeySerialNumber ksn,
+            SecureDESKey bdk, boolean tdes) throws SMException {
         throw  new SMException("Operation not supported in: " + this.getClass().getName());
     }
 
     /**
      * Your SMAdapter should override this method if it has this functionality
+     * @deprecated
      * @param pinUnderDuk
      * @param ksn
      * @param bdk
@@ -1188,6 +1216,23 @@ public class BaseSMAdapter
      */
     protected EncryptedPIN translatePINImpl (EncryptedPIN pinUnderDuk, KeySerialNumber ksn,
             SecureDESKey bdk, SecureDESKey kd2, byte destinationPINBlockFormat) throws SMException {
+        return translatePINImpl(pinUnderDuk,ksn,bdk,kd2,destinationPINBlockFormat,false);
+    }
+
+    /**
+     * Your SMAdapter should override this method if it has this functionality
+     * @param pinUnderDuk
+     * @param ksn
+     * @param bdk
+     * @param kd2
+     * @param tdes
+     * @param destinationPINBlockFormat
+     * @return translated pin
+     * @throws SMException
+     */
+    protected EncryptedPIN translatePINImpl (EncryptedPIN pinUnderDuk, KeySerialNumber ksn,
+            SecureDESKey bdk, SecureDESKey kd2, byte destinationPINBlockFormat,
+            boolean tdes) throws SMException {
         throw  new SMException("Operation not supported in: " + this.getClass().getName());
     }
 
