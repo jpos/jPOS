@@ -378,7 +378,7 @@ public class ChannelAdaptor
             try {
                 SpaceUtil.wipe(sp, ready);
                 channel.disconnect();
-            } catch (IOException e) {
+            } catch (Exception e) {
                 getLog().warn("disconnect", e);
             }
         }
