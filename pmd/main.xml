@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pmd version="5.1.1" timestamp="2015-02-17T14:34:04.568">
+<pmd version="5.1.1" timestamp="2015-02-19T02:10:53.288">
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/core/CardHolder.java">
 <violation beginline="323" endline="323" begincolumn="11" endcolumn="51" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.core" class="CardHolder" method="isExpired" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
