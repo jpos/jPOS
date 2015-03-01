@@ -52,6 +52,7 @@ import java.util.Properties;
 import java.util.Random;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
+import javax.crypto.Cipher;
 
 
 /**
@@ -767,7 +768,8 @@ public class JCESecurityModule extends BaseSMAdapter {
 
         // encrypt PIN
         if (padm == PaddingMethod.CCD)
-          translatedPINBlock = jceHandler.encryptDataCBC(clearPINBlock, kd2, zeroBlock);
+          translatedPINBlock = jceHandler.encryptDataCBC(clearPINBlock, kd2
+                  ,Arrays.copyOf(zeroBlock, zeroBlock.length));
         else
           translatedPINBlock = jceHandler.encryptData(clearPINBlock, kd2);
         return new EncryptedPIN(translatedPINBlock
@@ -1084,6 +1086,20 @@ public class JCESecurityModule extends BaseSMAdapter {
 
     private boolean isVSDCPinBlockFormat(byte pinBlockFormat) {
         return pinBlockFormat==SMAdapter.FORMAT41 || pinBlockFormat==SMAdapter.FORMAT42;
+    }
+
+    @Override
+    public byte[] encryptDataImpl(CipherMode cipherMode, SecureDESKey kd
+            ,byte[] data, byte[] iv) throws SMException {
+        Key dek = decryptFromLMK(kd);
+        return jceHandler.doCryptStuff(data, dek, Cipher.ENCRYPT_MODE, cipherMode, iv);
+    }
+
+    @Override
+    public byte[] decryptDataImpl(CipherMode cipherMode, SecureDESKey kd
+            ,byte[] data, byte[] iv) throws SMException {
+        Key dek = decryptFromLMK(kd);
+        return jceHandler.doCryptStuff(data, dek, Cipher.DECRYPT_MODE, cipherMode, iv);
     }
 
     /**

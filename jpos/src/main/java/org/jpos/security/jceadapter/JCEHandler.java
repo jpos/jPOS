@@ -34,6 +34,7 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.jpos.iso.ISOUtil;
+import org.jpos.security.CipherMode;
 import org.jpos.security.SMAdapter;
 import org.jpos.security.Util;
 
@@ -260,7 +261,7 @@ public class JCEHandler {
      * @exception JCEHandlerException
      */
     public byte[] encryptDataCBC(byte[] data, Key key, byte[] iv) throws JCEHandlerException {
-        return doCryptStuff(data, key, Cipher.ENCRYPT_MODE, DES_MODE_CBC, iv);
+        return doCryptStuff(data, key, Cipher.ENCRYPT_MODE, CipherMode.CBC, iv);
     }
 
     /**
@@ -273,54 +274,69 @@ public class JCEHandler {
      * @exception JCEHandlerException
      */
     public byte[] decryptDataCBC(byte[] encryptedData, Key key, byte[] iv) throws JCEHandlerException {
-        return doCryptStuff(encryptedData, key, Cipher.DECRYPT_MODE, DES_MODE_CBC, iv);
+        return doCryptStuff(encryptedData, key, Cipher.DECRYPT_MODE, CipherMode.CBC, iv);
     }
 
     /**
-     * Performs cryptographic DES operations (encryption/decryption) in ECB mode using JCE Cipher
+     * Performs cryptographic DES operations (en/de)cryption) in ECB mode using JCE Cipher.
      * 
      * @param data
      * @param key
-     * @param cipherMode
-     *            Cipher.ENCRYPT_MODE or Cipher.DECRYPT_MODE
+     * @param direction {@link Cipher#ENCRYPT_MODE} or {@link Cipher#DECRYPT_MODE}.
      * @return result of the cryptographic operations
      * @throws JCEHandlerException
      */
-    byte[] doCryptStuff(byte[] data, Key key, int cipherMode) throws JCEHandlerException {
-        return doCryptStuff(data, key, cipherMode, DES_MODE_ECB, null);
+    byte[] doCryptStuff(byte[] data, Key key, int direction) throws JCEHandlerException {
+        return doCryptStuff(data, key, direction, CipherMode.ECB, null);
     }
 
     /**
-     * performs cryptographic operations (encryption/decryption) using JCE Cipher
+     * Performs cryptographic operations (en/de)cryption using JCE Cipher.
      * 
      * @param data
      * @param key
-     * @param CipherMode
-     *            Cipher.ENCRYPT_MODE or Cipher.DECRYPT_MODE
-     * @return result of the cryptographic operations
+     * @param direction {@link Cipher#ENCRYPT_MODE} or {@link Cipher#DECRYPT_MODE}.
+     * @param cipherMode values specified by {@link CipherMode}.
+     * @param iv 8 bytes initial vector. After operation will contain new iv value.
+     * @return result of the cryptographic operations.
      * @throws JCEHandlerException
      */
-    byte[] doCryptStuff(byte[] data, Key key, int CipherMode, String desMode, byte[] iv) throws JCEHandlerException {
+    byte[] doCryptStuff(byte[] data, Key key, int direction
+            ,CipherMode cipherMode, byte[] iv) throws JCEHandlerException {
         byte[] result;
-        String transformation;
+        String transformation = key.getAlgorithm();
         if (key.getAlgorithm().startsWith(ALG_DES)) {
-            transformation = key.getAlgorithm() + "/" + desMode + "/" + DES_NO_PADDING;
-        } else {
-            transformation = key.getAlgorithm();
+            transformation += "/" + modetoString(cipherMode) + "/" + DES_NO_PADDING;
         }
         AlgorithmParameterSpec aps = null;
         try {
             Cipher c1 = Cipher.getInstance(transformation, provider.getName());
-            if (DES_MODE_CBC.equals(desMode))
+            if (cipherMode != CipherMode.ECB)
                 aps = new IvParameterSpec(iv);
-            c1.init(CipherMode, key, aps);
+            c1.init(direction, key, aps);
             result = c1.doFinal(data);
+            if (cipherMode != CipherMode.ECB)
+               System.arraycopy(result, result.length-8, iv, 0, iv.length);
         } catch (Exception e) {
             throw new JCEHandlerException(e);
         }
         return result;
     }
 
+    private String modetoString(CipherMode cipherMode) throws JCEHandlerException {
+        switch(cipherMode) {
+            case ECB:
+                return "ECB";
+            case CBC:
+                return "CBC";
+            case CFB8:
+                return "CFB8";
+            case CFB64:
+                return "CFB64";
+            default:
+                throw new JCEHandlerException("Unsupported cipher mode "+cipherMode);
+        }
+    }
     /**
      * Calculates the length of key in bytes
      * 
