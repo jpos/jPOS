@@ -53,77 +53,77 @@ public class JCESecurityModuleTest {
      * Clear key value: 4 times 12345678
      */
     static SecureDESKey zpk = new SecureDESKey(SMAdapter.LENGTH_DES3_2KEY
-          ,SMAdapter.TYPE_ZPK+":0U","34E2FC8EAD7CD07BFA2B7ED5FE4D8212" ,"6FB1");
+          ,SMAdapter.TYPE_ZPK+":0U","34E2FC8EAD7CD07BFA2B7ED5FE4D8212", "6FB1C8");
 
     /**
      * Encrypted under standard LMK test key: keytype 002 TPK (variant 0, scheme U)
      * Clear key value: 4 times 12345678
      */
     static SecureDESKey tpk = new SecureDESKey(SMAdapter.LENGTH_DES3_2KEY
-          ,SMAdapter.TYPE_TPK+":0U","E9F05D2F2DB8A8579CA3E806B35E336F" ,"6FB1");
+          ,SMAdapter.TYPE_TPK+":0U","E9F05D2F2DB8A8579CA3E806B35E336F", "6FB1C8");
 
     /**
      * Encrypted under standard LMK test key: keytype 002 PVK (variant 0, scheme Z)
      * Clear key value: 2 times 12345678
      */
     static SecureDESKey pvkA = new SecureDESKey(SMAdapter.LENGTH_DES
-          ,SMAdapter.TYPE_PVK+":0Z","141E1DA3D2D7F3F4" ,"6FB1");
+          ,SMAdapter.TYPE_PVK+":0Z","141E1DA3D2D7F3F4", "6FB1C8");
 
     /**
      * Encrypted under standard LMK test key: keytype 002 PVK (variant 0, scheme Z)
      * Clear key value: 2 times 12345678
      */
     static SecureDESKey pvkB = new SecureDESKey(SMAdapter.LENGTH_DES
-          ,SMAdapter.TYPE_PVK+":0Z","141E1DA3D2D7F3F4" ,"6FB1");
+          ,SMAdapter.TYPE_PVK+":0Z","141E1DA3D2D7F3F4", "6FB1C8");
 
     /**
      * Encrypted under standard LMK test key: keytype 402 CVK (variant 4, scheme U)
      * Clear key value: 4 times 12345678
      */
     static SecureDESKey cvk = new SecureDESKey(SMAdapter.LENGTH_DES3_2KEY
-          ,SMAdapter.TYPE_CVK+":4U","479D751977AA598CB481F548226DBF2B" ,"6FB1");
+          ,SMAdapter.TYPE_CVK+":4U","479D751977AA598CB481F548226DBF2B", "6FB1C8");
 
     /**
      * Encrypted under standard LMK test key: keytype 402 CVK (variant 4, scheme Z)
      * Clear key value: 2 times 12345678
      */
     static SecureDESKey cvkA = new SecureDESKey(SMAdapter.LENGTH_DES
-          ,SMAdapter.TYPE_CVK+":4Z","56FBB74CDEAD6949" ,"6FB1");
+          ,SMAdapter.TYPE_CVK+":4Z","56FBB74CDEAD6949", "6FB1C8");
 
     /**
      * Encrypted under standard LMK test key: keytype 402 CVK (variant 4, scheme Z)
      * Clear key value: 2 times 87654321
      */
     static SecureDESKey cvkB = new SecureDESKey(SMAdapter.LENGTH_DES
-          ,SMAdapter.TYPE_CVK+":4Z","69E636CF27A47EEE" ,"AAB1");
+          ,SMAdapter.TYPE_CVK+":4Z","69E636CF27A47EEE", "AAB151");
 
     /**
      * Encrypted under standard LMK test key: keytype 109 MK-AC (variant 1, scheme U)
      * Clear key value: 4 times 12345678
      */
     static SecureDESKey imkac = new SecureDESKey(SMAdapter.LENGTH_DES3_2KEY
-          ,SMAdapter.TYPE_MK_AC+":1U","0D39A43C864D1B40F33998B80BB02C95" ,"6FB1");
+          ,SMAdapter.TYPE_MK_AC+":1U","0D39A43C864D1B40F33998B80BB02C95", "6FB1C8");
 
     /**
      * Encrypted under standard LMK test key: keytype 702 MK-SMI (variant 2, scheme U)
      * Clear key value: 4 times 12345678
      */
     static SecureDESKey imksmi = new SecureDESKey(SMAdapter.LENGTH_DES3_2KEY
-          ,SMAdapter.TYPE_MK_SMI+":2U","E86D8A2FC81DEC4E91F9FE76EDAF3C3B" ,"6FB1");
+          ,SMAdapter.TYPE_MK_SMI+":2U","E86D8A2FC81DEC4E91F9FE76EDAF3C3B", "6FB1C8");
 
     /**
      * Encrypted under standard LMK test key: keytype 703 MK-SMC (variant 3, scheme U)
      * Clear key value: 4 times 12345678
      */
     static SecureDESKey imksmc = new SecureDESKey(SMAdapter.LENGTH_DES3_2KEY
-          ,SMAdapter.TYPE_MK_SMC+":3U","9ED29EDD0BA8B771106EB77D819F7394" ,"6FB1");
+          ,SMAdapter.TYPE_MK_SMC+":3U","9ED29EDD0BA8B771106EB77D819F7394", "6FB1C8");
 
     /**
      * Encrypted under standard LMK test key: keytype 709 MK-CVC3 (variant 7, scheme U)
      * Clear key value: 4 times 12345678
      */
     static SecureDESKey imkcvc3 = new SecureDESKey(SMAdapter.LENGTH_DES3_2KEY
-          ,SMAdapter.TYPE_MK_CVC3+":7U","DBD2D13CCA57AAAF3E477E0646EF10C9" ,"6FB1");
+          ,SMAdapter.TYPE_MK_CVC3+":7U","DBD2D13CCA57AAAF3E477E0646EF10C9", "6FB1C8");
 
     /**
      * Pin value 1234 for account number 1234567890123 encrypted
