@@ -129,7 +129,7 @@ public class JCESecurityModule extends BaseSMAdapter {
     static {
       try {
           SHA1_MESSAGE_DIGEST = MessageDigest.getInstance("SHA-1");
-      } catch (NoSuchAlgorithmException ex) {}
+      } catch (NoSuchAlgorithmException ex) {} //NOPMD: SHA-1 is a standard digest
     }
 
     /**
@@ -613,7 +613,7 @@ public class JCESecurityModule extends BaseSMAdapter {
         if ( pan.length() < 14 )
             try {
                 pan = ISOUtil.zeropad(pan, 14);
-            } catch( ISOException ex ) {}
+            } catch( ISOException ex ) {} //NOPMD: ISOException condition is checked before.
         byte[] b = preparePANPSN(pan, psn);
         return Arrays.copyOfRange(b, b.length-8, b.length);
     }
@@ -940,7 +940,7 @@ public class JCESecurityModule extends BaseSMAdapter {
                 constraintARPCM(skdm, arpcMethod);
                 break;
             case EMV_CSKD:
-                skarpc = deriveCommonSK_AC(mkac, atc);;
+                skarpc = deriveCommonSK_AC(mkac, atc);
                 break;
             default:
                 throw new SMException("Session Key Derivation "+skdm+" not supported");
