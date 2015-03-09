@@ -92,7 +92,7 @@ public class TransactionManager
         head = Math.max (initCounter (HEAD, tail), tail);
         initTailLock ();
 
-        groups = new HashMap();
+        groups = new HashMap<String,List<TransactionParticipant>>();
         initParticipants (getPersist());
         initStatusListeners (getPersist());
     }

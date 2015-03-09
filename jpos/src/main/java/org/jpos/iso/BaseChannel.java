@@ -693,7 +693,7 @@ public abstract class BaseChannel extends Observable
         m.setSource (this);
         try {
             if (!isConnected())
-                throw new ISOException ("unconnected ISOChannel");
+                throw new IOException ("unconnected ISOChannel");
 
             synchronized (serverInLock) {
                 int len  = getMessageLength();
