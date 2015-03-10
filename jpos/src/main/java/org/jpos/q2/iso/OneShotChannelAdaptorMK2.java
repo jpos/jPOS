@@ -275,6 +275,7 @@ public class OneShotChannelAdaptorMK2
                     catch (IOException e)
                     {
                     }
+                    NameRegistrar.unregister("channel."+channel.getName());
                 }
             }
 
@@ -289,7 +290,7 @@ public class OneShotChannelAdaptorMK2
 
     private void takeOffline()
     {
-        SpaceUtil.wipe(sp,ready);
+        SpaceUtil.wipe(sp, ready);
     }
 
     private void takeOnline()
@@ -536,7 +537,7 @@ public class OneShotChannelAdaptorMK2
                 }
                 finally
                 {
-                    NameRegistrar.unregister(getName() + id);
+                    NameRegistrar.unregister("channel." + getName() + id);
                 }
             }
         }
