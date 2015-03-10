@@ -1004,6 +1004,90 @@ public class BaseSMAdapter
       }
     }
 
+    /**
+     * Encrypt Data Block.
+     *
+     * @param cipherMode block cipher mode
+     * @param kd DEK or ZEK key used to encrypt data
+     * @param data data to be encrypted
+     * @param iv initial vector
+     * @return encrypted data
+     * @throws SMException
+     */
+    @Override
+    public byte[] encryptData(CipherMode cipherMode, SecureDESKey kd
+            ,byte[] data, byte[] iv) throws SMException {
+
+        List<Loggeable> cmdParameters = new ArrayList<Loggeable>();
+        cmdParameters.add(new SimpleMsg("parameter", "Block Cipher Mode", cipherMode));
+        if(kd != null)
+            cmdParameters.add(new SimpleMsg("parameter", "Data key", kd));
+        if(data != null)
+            cmdParameters.add(new SimpleMsg("parameter", "Data", ISOUtil.hexString(data)));
+        if(iv != null)
+            cmdParameters.add(new SimpleMsg("parameter", "Initialization Vector", ISOUtil.hexString(iv)));
+
+        LogEvent evt = new LogEvent(this, "s-m-operation");
+        evt.addMessage(new SimpleMsg("command", "Encrypt Data", cmdParameters));
+        byte[] encData = null;
+        try {
+            encData = encryptDataImpl(cipherMode, kd, iv, data);
+            List<Loggeable> r = new ArrayList<Loggeable>();
+            r.add(new SimpleMsg("result", "Encrypted Data", encData));
+            if(iv != null)
+                r.add(new SimpleMsg("result", "Initialization Vector", iv));
+            evt.addMessage(new SimpleMsg("results", r));
+        } catch (Exception e) {
+            evt.addMessage(e);
+            throw e instanceof SMException ? (SMException) e : new SMException(e);
+        } finally {
+            Logger.log(evt);
+        }
+        return encData;
+    }
+
+    /**
+     * Decrypt Data Block.
+     *
+     * @param cipherMode block cipher mode
+     * @param kd DEK or ZEK key used to decrypt data
+     * @param data data to be decrypted
+     * @param iv initial vector
+     * @return decrypted data
+     * @throws SMException
+     */
+    @Override
+    public byte[] decryptData(CipherMode cipherMode, SecureDESKey kd
+            ,byte[] data, byte[] iv) throws SMException {
+
+        List<Loggeable> cmdParameters = new ArrayList<Loggeable>();
+        cmdParameters.add(new SimpleMsg("parameter", "Block Cipher Mode", cipherMode));
+        if(kd != null)
+            cmdParameters.add(new SimpleMsg("parameter", "Data key", kd));
+        if(data != null)
+            cmdParameters.add(new SimpleMsg("parameter", "Data", ISOUtil.hexString(data)));
+        if(iv != null)
+            cmdParameters.add(new SimpleMsg("parameter", "Initialization Vector", ISOUtil.hexString(iv)));
+
+        LogEvent evt = new LogEvent(this, "s-m-operation");
+        evt.addMessage(new SimpleMsg("command", "Decrypt Data", cmdParameters));
+        byte[] decData = null;
+        try {
+            decData = decryptDataImpl(cipherMode, kd, iv, data);
+            List<Loggeable> r = new ArrayList<Loggeable>();
+            r.add(new SimpleMsg("result", "Decrypted Data", decData));
+            if(iv != null)
+                r.add(new SimpleMsg("result", "Initialization Vector", iv));
+            evt.addMessage(new SimpleMsg("results", r));
+        } catch (Exception e) {
+            evt.addMessage(e);
+            throw e instanceof SMException ? (SMException) e : new SMException(e);
+        } finally {
+            Logger.log(evt);
+        }
+        return decData;
+    }
+
     @Override
     public byte[] generateCBC_MAC (byte[] data, SecureDESKey kd) throws SMException {
         SimpleMsg[] cmdParameters =  {
@@ -1610,6 +1694,34 @@ public class BaseSMAdapter
            ,byte[] data, EncryptedPIN currentPIN, EncryptedPIN newPIN
            ,SecureDESKey kd1, SecureDESKey imksmc, SecureDESKey imkac
            ,byte destinationPINBlockFormat) throws SMException {
+        throw  new SMException("Operation not supported in: " + this.getClass().getName());
+    }
+
+    /**
+     * Your SMAdapter should override this method if it has this functionality
+     * @param cipherMode
+     * @param kd
+     * @param data
+     * @param iv
+     * @return encrypted data
+     * @throws SMException
+     */
+    public byte[] encryptDataImpl(CipherMode cipherMode, SecureDESKey kd
+            ,byte[] data, byte[] iv) throws SMException {
+        throw  new SMException("Operation not supported in: " + this.getClass().getName());
+    }
+
+    /**
+     * Your SMAdapter should override this method if it has this functionality
+     * @param cipherMode
+     * @param kd
+     * @param data
+     * @param iv
+     * @return decrypted data
+     * @throws SMException
+     */
+    public byte[] decryptDataImpl(CipherMode cipherMode, SecureDESKey kd
+            ,byte[] data, byte[] iv) throws SMException {
         throw  new SMException("Operation not supported in: " + this.getClass().getName());
     }
 

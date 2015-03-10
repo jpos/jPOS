@@ -18,6 +18,7 @@
 
 package org.jpos.security.jceadapter;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -33,6 +34,7 @@ import org.jpos.core.SubConfiguration;
 import org.jpos.iso.ISODate;
 import org.jpos.iso.ISOUtil;
 import org.jpos.security.ARPCMethod;
+import org.jpos.security.CipherMode;
 import org.jpos.security.EncryptedPIN;
 import org.jpos.security.MKDMethod;
 import org.jpos.security.PaddingMethod;
@@ -53,77 +55,84 @@ public class JCESecurityModuleTest {
      * Clear key value: 4 times 12345678
      */
     static SecureDESKey zpk = new SecureDESKey(SMAdapter.LENGTH_DES3_2KEY
-          ,SMAdapter.TYPE_ZPK+":0U","34E2FC8EAD7CD07BFA2B7ED5FE4D8212" ,"6FB1");
+          ,SMAdapter.TYPE_ZPK+":0U","34E2FC8EAD7CD07BFA2B7ED5FE4D8212", "6FB1C8");
 
     /**
      * Encrypted under standard LMK test key: keytype 002 TPK (variant 0, scheme U)
      * Clear key value: 4 times 12345678
      */
     static SecureDESKey tpk = new SecureDESKey(SMAdapter.LENGTH_DES3_2KEY
-          ,SMAdapter.TYPE_TPK+":0U","E9F05D2F2DB8A8579CA3E806B35E336F" ,"6FB1");
+          ,SMAdapter.TYPE_TPK+":0U","E9F05D2F2DB8A8579CA3E806B35E336F", "6FB1C8");
 
     /**
      * Encrypted under standard LMK test key: keytype 002 PVK (variant 0, scheme Z)
      * Clear key value: 2 times 12345678
      */
     static SecureDESKey pvkA = new SecureDESKey(SMAdapter.LENGTH_DES
-          ,SMAdapter.TYPE_PVK+":0Z","141E1DA3D2D7F3F4" ,"6FB1");
+          ,SMAdapter.TYPE_PVK+":0Z","141E1DA3D2D7F3F4", "6FB1C8");
 
     /**
      * Encrypted under standard LMK test key: keytype 002 PVK (variant 0, scheme Z)
      * Clear key value: 2 times 12345678
      */
     static SecureDESKey pvkB = new SecureDESKey(SMAdapter.LENGTH_DES
-          ,SMAdapter.TYPE_PVK+":0Z","141E1DA3D2D7F3F4" ,"6FB1");
+          ,SMAdapter.TYPE_PVK+":0Z","141E1DA3D2D7F3F4", "6FB1C8");
 
     /**
      * Encrypted under standard LMK test key: keytype 402 CVK (variant 4, scheme U)
      * Clear key value: 4 times 12345678
      */
     static SecureDESKey cvk = new SecureDESKey(SMAdapter.LENGTH_DES3_2KEY
-          ,SMAdapter.TYPE_CVK+":4U","479D751977AA598CB481F548226DBF2B" ,"6FB1");
+          ,SMAdapter.TYPE_CVK+":4U","479D751977AA598CB481F548226DBF2B", "6FB1C8");
 
     /**
      * Encrypted under standard LMK test key: keytype 402 CVK (variant 4, scheme Z)
      * Clear key value: 2 times 12345678
      */
     static SecureDESKey cvkA = new SecureDESKey(SMAdapter.LENGTH_DES
-          ,SMAdapter.TYPE_CVK+":4Z","56FBB74CDEAD6949" ,"6FB1");
+          ,SMAdapter.TYPE_CVK+":4Z","56FBB74CDEAD6949", "6FB1C8");
 
     /**
      * Encrypted under standard LMK test key: keytype 402 CVK (variant 4, scheme Z)
      * Clear key value: 2 times 87654321
      */
     static SecureDESKey cvkB = new SecureDESKey(SMAdapter.LENGTH_DES
-          ,SMAdapter.TYPE_CVK+":4Z","69E636CF27A47EEE" ,"AAB1");
+          ,SMAdapter.TYPE_CVK+":4Z","69E636CF27A47EEE", "AAB151");
 
     /**
      * Encrypted under standard LMK test key: keytype 109 MK-AC (variant 1, scheme U)
      * Clear key value: 4 times 12345678
      */
     static SecureDESKey imkac = new SecureDESKey(SMAdapter.LENGTH_DES3_2KEY
-          ,SMAdapter.TYPE_MK_AC+":1U","0D39A43C864D1B40F33998B80BB02C95" ,"6FB1");
+          ,SMAdapter.TYPE_MK_AC+":1U","0D39A43C864D1B40F33998B80BB02C95", "6FB1C8");
 
     /**
      * Encrypted under standard LMK test key: keytype 702 MK-SMI (variant 2, scheme U)
      * Clear key value: 4 times 12345678
      */
     static SecureDESKey imksmi = new SecureDESKey(SMAdapter.LENGTH_DES3_2KEY
-          ,SMAdapter.TYPE_MK_SMI+":2U","E86D8A2FC81DEC4E91F9FE76EDAF3C3B" ,"6FB1");
+          ,SMAdapter.TYPE_MK_SMI+":2U","E86D8A2FC81DEC4E91F9FE76EDAF3C3B", "6FB1C8");
 
     /**
      * Encrypted under standard LMK test key: keytype 703 MK-SMC (variant 3, scheme U)
      * Clear key value: 4 times 12345678
      */
     static SecureDESKey imksmc = new SecureDESKey(SMAdapter.LENGTH_DES3_2KEY
-          ,SMAdapter.TYPE_MK_SMC+":3U","9ED29EDD0BA8B771106EB77D819F7394" ,"6FB1");
+          ,SMAdapter.TYPE_MK_SMC+":3U","9ED29EDD0BA8B771106EB77D819F7394", "6FB1C8");
 
     /**
      * Encrypted under standard LMK test key: keytype 709 MK-CVC3 (variant 7, scheme U)
      * Clear key value: 4 times 12345678
      */
     static SecureDESKey imkcvc3 = new SecureDESKey(SMAdapter.LENGTH_DES3_2KEY
-          ,SMAdapter.TYPE_MK_CVC3+":7U","DBD2D13CCA57AAAF3E477E0646EF10C9" ,"6FB1");
+          ,SMAdapter.TYPE_MK_CVC3+":7U","DBD2D13CCA57AAAF3E477E0646EF10C9", "6FB1C8");
+
+    /**
+     * Encrypted under standard LMK test key: keytype 00B DEK (variant 0, scheme U)
+     * Clear key value: 4 times 12345678
+     */
+    static SecureDESKey dek = new SecureDESKey(SMAdapter.LENGTH_DES3_2KEY
+          ,SMAdapter.TYPE_DEK+":0U","AAD5E90B44EE630E3D76D6CEC1F4AA72" ,"6FB1C8");
 
     /**
      * Pin value 1234 for account number 1234567890123 encrypted
@@ -169,6 +178,16 @@ public class JCESecurityModuleTest {
      * APDU Header. Part of data for Secure Messaging MAC algorrithms
      */
     static final byte[] apdu01 = ISOUtil.hex2byte("8424000210");
+
+    /**
+     * Test Data 8 bytes.
+     */
+    static final byte[] testData01 = ISOUtil.hex2byte("0011223344556677");
+
+    /**
+     * Test Data 16 bytes.
+     */
+    static final byte[] testData02 = ISOUtil.hex2byte("00112233445566770011223344556677");
 
     private static final String PREFIX = "src/dist/cfg/";
 
@@ -1481,6 +1500,142 @@ public class JCESecurityModuleTest {
                         ,oldpin, pin, zpk, imksmc, imkac, SMAdapter.FORMAT42);
         assertArrayEquals(expectdPIN.getPINBlock(), result.getValue0().getPINBlock());
         assertArrayEquals(ISOUtil.hex2byte("6F403E51DCE1E4A6"), result.getValue1());
+    }
+
+    @Test
+    public void testEncryptDataImplECB_8Bytes() throws Throwable {
+        byte[] b = testData01;
+        b = jcesecmod.encryptDataImpl(CipherMode.ECB, dek, b, null);
+        assertArrayEquals(ISOUtil.hex2byte("ABFA6F3C28A8CB0C"), b);
+    }
+
+    @Test
+    public void testEncryptDataImplECB_16Bytes() throws Throwable {
+        byte[] b = testData02;
+        b = jcesecmod.encryptDataImpl(CipherMode.ECB, dek, b, null);
+        assertArrayEquals(ISOUtil.hex2byte("ABFA6F3C28A8CB0CABFA6F3C28A8CB0C"), b);
+    }
+
+    @Test
+    public void testEncryptDataImplCBC_8Bytes() throws Throwable {
+        byte[] b = testData01;
+        byte[] iv = new byte[8];
+        b = jcesecmod.encryptDataImpl(CipherMode.CBC, dek, b, iv);
+        assertArrayEquals(ISOUtil.hex2byte("ABFA6F3C28A8CB0C"), b);
+        assertArrayEquals(ISOUtil.hex2byte("ABFA6F3C28A8CB0C"), iv);
+    }
+
+    @Test
+    public void testEncryptDataImplCBC_16Bytes() throws Throwable {
+        byte[] b = testData02;
+        byte[] iv = new byte[8];
+        b = jcesecmod.encryptDataImpl(CipherMode.CBC, dek, b, iv);
+        assertArrayEquals(ISOUtil.hex2byte("ABFA6F3C28A8CB0C99C22188F56DAE9F"), b);
+        assertArrayEquals(ISOUtil.hex2byte("99C22188F56DAE9F"), iv);
+    }
+
+    @Test
+    public void testEncryptDataImplCFB8_8Bytes() throws Throwable {
+        byte[] b = testData01;
+        byte[] iv = new byte[8];
+        b = jcesecmod.encryptDataImpl(CipherMode.CFB8, dek, b, iv);
+        assertArrayEquals(ISOUtil.hex2byte("6F5DF407E1691DB1"), b);
+        assertArrayEquals(ISOUtil.hex2byte("6F5DF407E1691DB1"), iv);
+    }
+
+    @Test
+    public void testEncryptDataImplCFB8_16Bytes() throws Throwable {
+        byte[] b = testData02;
+        byte[] iv = new byte[8];
+        b = jcesecmod.encryptDataImpl(CipherMode.CFB8, dek, b, iv);
+        assertArrayEquals(ISOUtil.hex2byte("6F5DF407E1691DB1B049507DB318D6E2"), b);
+        assertArrayEquals(ISOUtil.hex2byte("B049507DB318D6E2"), iv);
+    }
+
+    @Test
+    public void testEncryptDataImplCFB64_8Bytes() throws Throwable {
+        byte[] b = testData01;
+        byte[] iv = new byte[8];
+        b = jcesecmod.encryptDataImpl(CipherMode.CFB64, dek, b, iv);
+        assertArrayEquals(ISOUtil.hex2byte("6FA0EA8C194EDCFC"), b);
+        assertArrayEquals(ISOUtil.hex2byte("6FA0EA8C194EDCFC"), iv);
+    }
+
+    @Test
+    public void testEncryptDataImplCFB64_16Bytes() throws Throwable {
+        byte[] b = testData02;
+        byte[] iv = new byte[8];
+        b = jcesecmod.encryptDataImpl(CipherMode.CFB64, dek, b, iv);
+        assertArrayEquals(ISOUtil.hex2byte("6FA0EA8C194EDCFCC5028844E9D2FADF"), b);
+        assertArrayEquals(ISOUtil.hex2byte("C5028844E9D2FADF"), iv);
+    }
+
+    @Test
+    public void testDecryptDataImplECB_8Bytes() throws Throwable {
+        byte[] b = ISOUtil.hex2byte("ABFA6F3C28A8CB0C");
+        b = jcesecmod.decryptDataImpl(CipherMode.ECB, dek, b, null);
+        assertArrayEquals(testData01, b);
+    }
+
+    @Test
+    public void testDecryptDataImplECB_16Bytes() throws Throwable {
+        byte[] b = ISOUtil.hex2byte("ABFA6F3C28A8CB0CABFA6F3C28A8CB0C");
+        b = jcesecmod.decryptDataImpl(CipherMode.ECB, dek, b, null);
+        assertArrayEquals(testData02, b);
+    }
+
+    @Test
+    public void testDecryptDataImplCBC_8Bytes() throws Throwable {
+        byte[] b = ISOUtil.hex2byte("ABFA6F3C28A8CB0C");
+        byte[] iv = new byte[8];
+        b = jcesecmod.decryptDataImpl(CipherMode.CBC, dek, b, iv);
+        assertArrayEquals(testData01, b);
+        assertArrayEquals(testData01, iv);
+    }
+
+    @Test
+    public void testDecryptDataImplCBC_16Bytes() throws Throwable {
+        byte[] b = ISOUtil.hex2byte("ABFA6F3C28A8CB0C99C22188F56DAE9F");
+        byte[] iv = new byte[8];
+        b = jcesecmod.decryptDataImpl(CipherMode.CBC, dek, b, iv);
+        assertArrayEquals(testData02, b);
+        assertArrayEquals(testData01, iv);
+    }
+
+    @Test
+    public void testDecryptDataImplCFB8_8Bytes() throws Throwable {
+        byte[] b = ISOUtil.hex2byte("6F5DF407E1691DB1");
+        byte[] iv = new byte[8];
+        b = jcesecmod.decryptDataImpl(CipherMode.CFB8, dek, b, iv);
+        assertArrayEquals(testData01, b);
+        assertArrayEquals(testData01, iv);
+    }
+
+    @Test
+    public void testDecryptDataImplCFB8_16Bytes() throws Throwable {
+        byte[] b = ISOUtil.hex2byte("6F5DF407E1691DB1B049507DB318D6E2");
+        byte[] iv = new byte[8];
+        b = jcesecmod.decryptDataImpl(CipherMode.CFB8, dek, b, iv);
+        assertArrayEquals(testData02, b);
+        assertArrayEquals(testData01, iv);
+    }
+
+    @Test
+    public void testDecryptDataImplCFB64_8Bytes() throws Throwable {
+        byte[] b = ISOUtil.hex2byte("6FA0EA8C194EDCFC");
+        byte[] iv = new byte[8];
+        b = jcesecmod.decryptDataImpl(CipherMode.CFB64, dek, b, iv);
+        assertArrayEquals(testData01, b);
+        assertArrayEquals(testData01, iv);
+    }
+
+    @Test
+    public void testDecryptDataImplCFB64_16Bytes() throws Throwable {
+        byte[] b = ISOUtil.hex2byte("6FA0EA8C194EDCFCC5028844E9D2FADF");
+        byte[] iv = new byte[8];
+        b = jcesecmod.decryptDataImpl(CipherMode.CFB64, dek, b, iv);
+        assertArrayEquals(testData02, b);
+        assertArrayEquals(testData01, iv);
     }
 
 }

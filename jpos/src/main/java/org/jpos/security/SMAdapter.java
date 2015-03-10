@@ -1169,6 +1169,43 @@ public interface SMAdapter {
 
 
     /**
+     * Encrypt Data Block.
+     *
+     * @param cipherMode block cipher mode.
+     * @param kd DEK or ZEK key used to encrypt data.
+     * @param data data to be encrypted. If the data is not a multiple of
+     *        8 bytes, padding have to be applied before.
+     * @param iv initial vector. Its length must be equal to the length
+     *        of cipher block (8 bytes for DES, 3DES ciphers). After operation
+     *        will contain new iv value. Not used for {@link CipherMode#ECB}.
+     * @return encrypted data. In {@code iv} array refference new value of
+     *        initial vector value will be placed.
+     * @throws SMException
+     */
+    public byte[] encryptData(CipherMode cipherMode, SecureDESKey kd
+            ,byte[] data, byte[] iv) throws SMException;
+
+
+
+    /**
+     * Decrypt Data Block.
+     *
+     * @param cipherMode block cipher mode.
+     * @param kd DEK or ZEK key used to decrypt data.
+     * @param data data to be decrypted.
+     * @param iv initial vector. Its length must be equal to the length
+     *        of cipher block (8 bytes for DES, 3DES ciphers). After operation
+     *        will contain new iv value. Not used for {@link CipherMode#ECB}.
+     * @return decrypted data. In {@code iv} array refference new value of
+     *        initial vector value will be placed.
+     * @throws SMException
+     */
+    public byte[] decryptData(CipherMode cipherMode, SecureDESKey kd
+            ,byte[] data, byte[] iv) throws SMException;
+
+
+
+    /**
      * Generates CBC-MAC (Cipher Block Chaining Message Authentication Code)
      * for some data.
      *

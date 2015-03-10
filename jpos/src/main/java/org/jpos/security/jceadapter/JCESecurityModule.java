@@ -52,6 +52,7 @@ import java.util.Properties;
 import java.util.Random;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
+import javax.crypto.Cipher;
 
 
 /**
@@ -128,7 +129,7 @@ public class JCESecurityModule extends BaseSMAdapter {
     static {
       try {
           SHA1_MESSAGE_DIGEST = MessageDigest.getInstance("SHA-1");
-      } catch (NoSuchAlgorithmException ex) {}
+      } catch (NoSuchAlgorithmException ex) {} //NOPMD: SHA-1 is a standard digest
     }
 
     /**
@@ -612,7 +613,7 @@ public class JCESecurityModule extends BaseSMAdapter {
         if ( pan.length() < 14 )
             try {
                 pan = ISOUtil.zeropad(pan, 14);
-            } catch( ISOException ex ) {}
+            } catch( ISOException ex ) {} //NOPMD: ISOException condition is checked before.
         byte[] b = preparePANPSN(pan, psn);
         return Arrays.copyOfRange(b, b.length-8, b.length);
     }
@@ -767,7 +768,8 @@ public class JCESecurityModule extends BaseSMAdapter {
 
         // encrypt PIN
         if (padm == PaddingMethod.CCD)
-          translatedPINBlock = jceHandler.encryptDataCBC(clearPINBlock, kd2, zeroBlock);
+          translatedPINBlock = jceHandler.encryptDataCBC(clearPINBlock, kd2
+                  ,Arrays.copyOf(zeroBlock, zeroBlock.length));
         else
           translatedPINBlock = jceHandler.encryptData(clearPINBlock, kd2);
         return new EncryptedPIN(translatedPINBlock
@@ -938,7 +940,7 @@ public class JCESecurityModule extends BaseSMAdapter {
                 constraintARPCM(skdm, arpcMethod);
                 break;
             case EMV_CSKD:
-                skarpc = deriveCommonSK_AC(mkac, atc);;
+                skarpc = deriveCommonSK_AC(mkac, atc);
                 break;
             default:
                 throw new SMException("Session Key Derivation "+skdm+" not supported");
@@ -1084,6 +1086,20 @@ public class JCESecurityModule extends BaseSMAdapter {
 
     private boolean isVSDCPinBlockFormat(byte pinBlockFormat) {
         return pinBlockFormat==SMAdapter.FORMAT41 || pinBlockFormat==SMAdapter.FORMAT42;
+    }
+
+    @Override
+    public byte[] encryptDataImpl(CipherMode cipherMode, SecureDESKey kd
+            ,byte[] data, byte[] iv) throws SMException {
+        Key dek = decryptFromLMK(kd);
+        return jceHandler.doCryptStuff(data, dek, Cipher.ENCRYPT_MODE, cipherMode, iv);
+    }
+
+    @Override
+    public byte[] decryptDataImpl(CipherMode cipherMode, SecureDESKey kd
+            ,byte[] data, byte[] iv) throws SMException {
+        Key dek = decryptFromLMK(kd);
+        return jceHandler.doCryptStuff(data, dek, Cipher.DECRYPT_MODE, cipherMode, iv);
     }
 
     /**
