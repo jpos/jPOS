@@ -26,10 +26,9 @@ subprojects {
     sourceCompatibility = 1.6
     targetCompatibility = 1.6
     repositories {
-        mavenLocal()
         mavenCentral()
-        maven { url 'http://download.oracle.com/maven' }
-        maven { url 'http://jline.sourceforge.net/m2repo' }
+        maven { url 'http://jpos.org/maven' }
+        mavenLocal()
     }
     if (project.hasProperty("lint")) {
       // gradle -Plint ...
