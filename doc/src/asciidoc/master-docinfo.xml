@@ -1,7 +1,7 @@
 <subtitle>jPOS Programmer's Guide</subtitle>
 <releaseinfo>{jpos_version}</releaseinfo>
 <copyright>
-  <year>1998-2013</year>
+  <year>1998-2015</year>
   <holder>Alejandro Revilla / Uruguay</holder>
 </copyright>
 <legalnotice>
@@ -58,6 +58,13 @@
   <personname>
     <firstname>Mark</firstname>
     <surname>Salter</surname>
+  </personname>
+  <contrib>Extensive feedback and corrections</contrib>
+</othercredit>
+<othercredit>
+  <personname>
+    <firstname>Murtuza</firstname>
+    <surname>Chhil</surname>
   </personname>
   <contrib>Extensive feedback and corrections</contrib>
 </othercredit>
