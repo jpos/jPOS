@@ -3,8 +3,8 @@ jPOS Programmer's Guide
 :author: Alejandro Revilla
 :email: apr@jpos.org
 :revdate: {localdate}
-:revnumber: 1.9.8
-:jpos_version: 1.9.8
+:revnumber: 2.0.0
+:jpos_version: 2.0.0
 
 :leveloffset: 1
 include::legal/copyright.adoc[]
