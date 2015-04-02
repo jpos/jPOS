@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pmd version="5.1.1" timestamp="2015-03-30T01:47:11.371">
+<pmd version="5.1.1" timestamp="2015-04-02T17:06:41.890">
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/core/CardHolder.java">
 <violation beginline="323" endline="323" begincolumn="11" endcolumn="51" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.core" class="CardHolder" method="isExpired" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
@@ -58,6 +58,19 @@ Useless parentheses.
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/IFEP_LLCHAR.java">
 <violation beginline="68" endline="70" begincolumn="13" endcolumn="13" rule="UselessParentheses" ruleset="Unnecessary" package="org.jpos.iso" class="IFEP_LLCHAR" method="pack" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/unnecessary.html#UselessParentheses" priority="4">
+Useless parentheses.
+</violation>
+</file>
+<file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/IFEP_LLLBINARY.java">
+<violation beginline="44" endline="45" begincolumn="16" endcolumn="58" rule="UselessParentheses" ruleset="Unnecessary" package="org.jpos.iso" class="IFEP_LLLBINARY" method="pack" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/unnecessary.html#UselessParentheses" priority="4">
+Useless parentheses.
+</violation>
+<violation beginline="45" endline="45" begincolumn="33" endcolumn="42" rule="UselessParentheses" ruleset="Unnecessary" package="org.jpos.iso" class="IFEP_LLLBINARY" method="pack" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/unnecessary.html#UselessParentheses" priority="4">
+Useless parentheses.
+</violation>
+</file>
+<file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/IFEP_LLLCHAR.java">
+<violation beginline="62" endline="63" begincolumn="16" endcolumn="68" rule="UselessParentheses" ruleset="Unnecessary" package="org.jpos.iso" class="IFEP_LLLCHAR" method="pack" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/unnecessary.html#UselessParentheses" priority="4">
 Useless parentheses.
 </violation>
 </file>
@@ -153,6 +166,11 @@ Avoid empty catch blocks
 </violation>
 <violation beginline="135" endline="135" begincolumn="23" endcolumn="48" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.iso.gui" class="ISOChannelPanel" method="run" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
+</violation>
+</file>
+<file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/packager/GICCSubFieldPackager.java">
+<violation beginline="104" endline="113" begincolumn="9" endcolumn="9" rule="ForLoopShouldBeWhileLoop" ruleset="Basic" package="org.jpos.iso.packager" class="GICCSubFieldPackager" method="unpack" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/basic.html#ForLoopShouldBeWhileLoop" priority="3">
+This for loop could be simplified to a while loop
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/packager/LogPackager.java">
