@@ -1031,7 +1031,7 @@ public class BaseSMAdapter
         evt.addMessage(new SimpleMsg("command", "Encrypt Data", cmdParameters));
         byte[] encData = null;
         try {
-            encData = encryptDataImpl(cipherMode, kd, iv, data);
+            encData = encryptDataImpl(cipherMode, kd, data, iv);
             List<Loggeable> r = new ArrayList<Loggeable>();
             r.add(new SimpleMsg("result", "Encrypted Data", encData));
             if(iv != null)
@@ -1073,7 +1073,7 @@ public class BaseSMAdapter
         evt.addMessage(new SimpleMsg("command", "Decrypt Data", cmdParameters));
         byte[] decData = null;
         try {
-            decData = decryptDataImpl(cipherMode, kd, iv, data);
+            decData = decryptDataImpl(cipherMode, kd, data, iv);
             List<Loggeable> r = new ArrayList<Loggeable>();
             r.add(new SimpleMsg("result", "Decrypted Data", decData));
             if(iv != null)
@@ -1706,7 +1706,7 @@ public class BaseSMAdapter
      * @return encrypted data
      * @throws SMException
      */
-    public byte[] encryptDataImpl(CipherMode cipherMode, SecureDESKey kd
+    protected byte[] encryptDataImpl(CipherMode cipherMode, SecureDESKey kd
             ,byte[] data, byte[] iv) throws SMException {
         throw  new SMException("Operation not supported in: " + this.getClass().getName());
     }
@@ -1720,7 +1720,7 @@ public class BaseSMAdapter
      * @return decrypted data
      * @throws SMException
      */
-    public byte[] decryptDataImpl(CipherMode cipherMode, SecureDESKey kd
+    protected byte[] decryptDataImpl(CipherMode cipherMode, SecureDESKey kd
             ,byte[] data, byte[] iv) throws SMException {
         throw  new SMException("Operation not supported in: " + this.getClass().getName());
     }
