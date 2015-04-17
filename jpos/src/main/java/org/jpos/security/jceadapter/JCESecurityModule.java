@@ -1222,6 +1222,49 @@ public class JCESecurityModule extends BaseSMAdapter {
         return  calculateKeyCheckValue(decryptFromLMK(secureDESKey));
     }
 
+    @Override
+    public SecureDESKey translateKeySchemeImpl (SecureDESKey key, KeyScheme keyScheme)
+            throws SMException {
+
+        if (key == null)
+            throw new SMException("Missing key to change");
+
+        if (keyScheme == null)
+            throw new SMException("Missing desired key schame");
+
+        if (keyScheme == key.getScheme())
+            return key;
+
+        switch (key.getScheme()) {
+            case Z:
+                throw new SMException("Single length DES key using the variant method"
+                        + " can not be converted to any other key");
+            case U:
+            case T:
+                throw new SMException("DES key using the variant method can not "
+                        + "be converted to less secure key using X9.17 method");
+            case X:
+                if (keyScheme != KeyScheme.U)
+                    throw new SMException("Double length key using X9.17 method may be  "
+                            + "converted only to double length key using variant method");
+                break;
+            case Y:
+                if (keyScheme != KeyScheme.T)
+                    throw new SMException("Triple length key using X9.17 method may be  "
+                            + "converted only to triple length key using variant method");
+                break;
+            default:
+                throw new SMException("Change key scheme allowed only for keys"
+                        + "using variant method");
+        }
+
+        // get key in clear
+        Key clearKey = decryptFromLMK(key);
+        // Encrypt key under LMK
+        String keyType = getMajorType(key.getKeyType()) + ":" + key.getVariant() + keyScheme;
+        return encryptToLMK(key.getKeyLength(), keyType, clearKey);
+    }
+
     /**
      * Forms a key from 3 clear components and returns it encrypted under its corresponding LMK
      * The corresponding LMK is determined from the keyType

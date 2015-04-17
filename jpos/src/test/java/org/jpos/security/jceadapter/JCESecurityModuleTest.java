@@ -18,7 +18,6 @@
 
 package org.jpos.security.jceadapter;
 
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,6 +35,7 @@ import org.jpos.iso.ISOUtil;
 import org.jpos.security.ARPCMethod;
 import org.jpos.security.CipherMode;
 import org.jpos.security.EncryptedPIN;
+import org.jpos.security.KeyScheme;
 import org.jpos.security.MKDMethod;
 import org.jpos.security.PaddingMethod;
 import org.jpos.security.SKDMethod;
@@ -43,6 +43,7 @@ import org.jpos.security.SMAdapter;
 import org.jpos.security.SMException;
 import org.jpos.security.SecureDESKey;
 import org.jpos.util.Logger;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -1636,6 +1637,46 @@ public class JCESecurityModuleTest {
         b = jcesecmod.decryptDataImpl(CipherMode.CFB64, dek, b, iv);
         assertArrayEquals(testData02, b);
         assertArrayEquals(testData01, iv);
+    }
+
+    @Test( expected = SMException.class)
+    public void translateKeySchemeImpl_NULS() throws Throwable {
+        jcesecmod.translateKeySchemeImpl(null, null);
+    }
+
+    @Test( expected = SMException.class)
+    public void translateKeySchemeImpl_NullKey() throws Throwable {
+        jcesecmod.translateKeySchemeImpl(null, KeyScheme.U);
+    }
+
+    @Test( expected = SMException.class)
+    public void translateKeySchemeImpl_NullKeyScheme() throws Throwable {
+        jcesecmod.translateKeySchemeImpl(zpk, null);
+    }
+
+    @Test
+    public void translateKeySchemeImpl_Same() throws Throwable {
+        SecureDESKey conv = jcesecmod.translateKeySchemeImpl(zpk, KeyScheme.U);
+        assertEquals(zpk.getKeyLength(), conv.getKeyLength());
+        assertEquals(zpk.getKeyType(), conv.getKeyType());
+        Assert.assertArrayEquals(zpk.getKeyCheckValue(), conv.getKeyCheckValue());
+        Assert.assertEquals(KeyScheme.U, zpk.getScheme());
+        Assert.assertEquals(zpk.getVariant(), zpk.getVariant());
+    }
+
+    @Test
+    public void translateKeySchemeImpl_Convert() throws Throwable {
+        SecureDESKey pvk = new SecureDESKey(SMAdapter.LENGTH_DES3_2KEY
+          ,SMAdapter.TYPE_PVK+":0X","141E1DA3D2D7F3F4141E1DA3D2D7F3F4", "6FB1C8");
+
+        SecureDESKey conv = jcesecmod.translateKeySchemeImpl(pvk, KeyScheme.U);
+        assertEquals(pvk.getKeyLength(), conv.getKeyLength());
+        assertEquals(SMAdapter.TYPE_PVK+":0U", conv.getKeyType());
+        Assert.assertArrayEquals(pvk.getKeyCheckValue(), conv.getKeyCheckValue());
+        Assert.assertEquals(KeyScheme.U, conv.getScheme());
+        Assert.assertEquals(pvk.getVariant(), conv.getVariant());
+        //TPK and ZPK uses same encription variant
+        Assert.assertArrayEquals(tpk.getKeyBytes(), conv.getKeyBytes());
     }
 
 }

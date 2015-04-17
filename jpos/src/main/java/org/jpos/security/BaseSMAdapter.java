@@ -155,6 +155,28 @@ public class BaseSMAdapter
     }
 
     @Override
+    public SecureDESKey translateKeyScheme (SecureDESKey key, KeyScheme destKeyScheme)
+            throws SMException {
+        SimpleMsg[] cmdParameters =  {
+            new SimpleMsg("parameter", "Key", key)
+           ,new SimpleMsg("parameter", "Destination Key Scheme", destKeyScheme)
+        };
+        LogEvent evt = new LogEvent(this, "s-m-operation");
+        evt.addMessage(new SimpleMsg("command", "Translate Key Scheme", cmdParameters));
+        SecureDESKey result = null;
+        try {
+            result = translateKeySchemeImpl(key, destKeyScheme);
+            evt.addMessage(new SimpleMsg("result", "Translate Key Scheme", result));
+        } catch (Exception e) {
+            evt.addMessage(e);
+            throw  e instanceof SMException ? (SMException) e : new SMException(e);
+        } finally {
+            Logger.log(evt);
+        }
+        return  result;
+    }
+
+    @Override
     public SecureDESKey importKey (short keyLength, String keyType, byte[] encryptedKey,
             SecureDESKey kek, boolean checkParity) throws SMException {
         SimpleMsg[] cmdParameters =  {
@@ -1184,6 +1206,18 @@ public class BaseSMAdapter
      * @throws SMException
      */
     protected byte[] generateKeyCheckValueImpl (SecureDESKey kd) throws SMException {
+        throw  new SMException("Operation not supported in: " + this.getClass().getName());
+    }
+
+    /**
+     * Your SMAdapter should override this method if it has this functionality
+     * @param key
+     * @param destKeyScheme
+     * @return translated key with {@code destKeyScheme} scheme
+     * @throws SMException
+     */
+    public SecureDESKey translateKeySchemeImpl (SecureDESKey key, KeyScheme destKeyScheme)
+            throws SMException {
         throw  new SMException("Operation not supported in: " + this.getClass().getName());
     }
 
