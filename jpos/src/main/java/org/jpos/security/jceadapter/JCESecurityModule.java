@@ -50,8 +50,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Random;
-import java.util.StringTokenizer;
 import java.util.TreeMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.crypto.Cipher;
 
 
@@ -77,6 +78,16 @@ import javax.crypto.Cipher;
  */
 @SuppressWarnings("unchecked")
 public class JCESecurityModule extends BaseSMAdapter {
+
+    /**
+     * Pattern representing key type string value.
+     */
+    private static final Pattern KEY_TYPE_PATTERN = Pattern.compile("([^:;]*)([:;])?([^:;])?([^:;])?");
+
+    /**
+     * Pattern for split two clear pins.
+     */
+    private static final Pattern SPLIT_PIN_PATTERN = Pattern.compile("[ :;,/.]");
 
     /**
      * NUmber of LMK pairs
@@ -210,22 +221,36 @@ public class JCESecurityModule extends BaseSMAdapter {
     }
 
     private int getKeyTypeIndex (short keyLength, String keyType) throws SMException {
-        int index = 0;
+        int index;
         if (keyType==null)
-            return index;
-        StringTokenizer st = new StringTokenizer(keyType,":;");
-        if (st.hasMoreTokens()){
-           String majorType = st.nextToken();
-           Integer idx = keyTypeToLMKIndex.get(majorType);
-           if (idx==null)
-              throw new SMException("Unsupported key type: " + majorType);
-           index = idx;
-        }
-        if (st.hasMoreTokens())
-            try {
-                index |= Integer.valueOf(st.nextToken().substring(0,1)) << 8;
-            } catch (Exception ex){}
+            return 0;
+        String majorType = getMajorType(keyType);
+        if (!keyTypeToLMKIndex.containsKey(majorType))
+            throw new SMException("Unsupported key type: " + majorType);
+        index = keyTypeToLMKIndex.get(majorType);
+        index |= getVariant(keyType) << 8;
         return index;
+    }
+
+    private static String getMajorType (String keyType) {
+        Matcher m = KEY_TYPE_PATTERN.matcher(keyType);
+        m.find();
+        if (m.group(1) != null)
+            return m.group(1);
+        throw new IllegalArgumentException("Missing key type");
+    }
+
+    private static int getVariant (String keyType) {
+        int variant = 0;
+        Matcher m = KEY_TYPE_PATTERN.matcher(keyType);
+        m.find();
+        if (m.group(3) != null)
+            try {
+                variant = Integer.valueOf(m.group(3));
+            } catch (NumberFormatException ex){
+                throw new NumberFormatException("Value "+m.group(4)+" is not valid key variant");
+            }
+        return variant;
     }
 
     private static KeyScheme getScheme (int keyLength, String keyType) {
@@ -240,13 +265,14 @@ public class JCESecurityModule extends BaseSMAdapter {
         }
         if (keyType==null)
             return scheme;
-        StringTokenizer st = new StringTokenizer(keyType,":;");
-        if (st.hasMoreTokens())
-            st.nextToken();
-        if (st.hasMoreTokens())
+        Matcher m = KEY_TYPE_PATTERN.matcher(keyType);
+        m.find();
+        if (m.group(4) != null)
             try {
-                scheme = KeyScheme.valueOf(st.nextToken().substring(1,2));
-            } catch (Exception ex){}
+                scheme = KeyScheme.valueOf(m.group(4));
+            } catch (IllegalArgumentException ex){
+                throw new IllegalArgumentException("Value "+m.group(4)+" is not valid key scheme");
+            }
         return scheme;
     }
 
@@ -1368,10 +1394,10 @@ public class JCESecurityModule extends BaseSMAdapter {
 
     private String[] splitPins(String pins) {
       String[] pin = new String[2];
-      StringTokenizer st = new StringTokenizer(pins, " :;,.");
-      pin[0] = st.nextToken();
-      if (st.hasMoreTokens())
-        pin[1] = st.nextToken();
+      String[] p = SPLIT_PIN_PATTERN.split(pins);
+      pin[0] = p[0];
+      if (p.length >= 2)
+          pin[1] = p[1];
       return pin;
     }
 
