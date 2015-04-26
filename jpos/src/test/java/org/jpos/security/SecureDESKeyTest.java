@@ -63,6 +63,31 @@ public class SecureDESKeyTest {
         assertNull(key.getKeyBytes());
     }
 
+    @Test
+    public void testConstructorExtType() throws Throwable {
+        byte[] keyBytes = new byte[2];
+        String kt = "Key-Type123:4U";
+        SecureDESKey key = new SecureDESKey(length, kt, keyBytes, kcv);
+        assertEquals(kt, key.getKeyType());
+        assertSame(kcv, key.getKeyCheckValue());
+        assertSame(keyBytes, key.getKeyBytes());
+        assertEquals(length, key.getKeyLength());
+        assertEquals(4, key.getVariant());
+        assertEquals(KeyScheme.U, key.getScheme());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testConstructorExtType_InvalidVariant() throws Throwable {
+        byte[] keyBytes = new byte[2];
+        new SecureDESKey(length, "Key-Type123:JU", keyBytes, kcv);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testConstructorExtType_InvalidScheme() throws Throwable {
+        byte[] keyBytes = new byte[2];
+        new SecureDESKey(length, "Key-Type123:3H", keyBytes, kcv);
+    }
+
     @Test(expected = NullPointerException.class)
     public void testConstructorThrowsNullPointerException() throws Throwable {
         new SecureDESKey(length, keyType, null, "testSecureDESKeyKeyCheckValueHexString");
