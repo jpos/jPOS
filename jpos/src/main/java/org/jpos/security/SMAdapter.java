@@ -271,6 +271,22 @@ public interface SMAdapter {
 
 
     /**
+     * Translate Key Scheme to more secure encription.
+     * <p>
+     * Converts an DES key encrypted using X9.17 methods to a more secure
+     * key using the variant method.
+     *
+     * @param key key to be translated to {@code destKeyScheme} scheme
+     * @param keyScheme destination key scheme
+     * @return translated key with {@code destKeyScheme} scheme
+     * @throws SMException
+     */
+    public SecureDESKey translateKeyScheme (SecureDESKey key, KeyScheme keyScheme)
+      throws SMException;
+
+
+
+    /**
      * Imports a key from encryption under a KEK (Key-Encrypting Key)
      * to protection under the security module.
      *
