@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pmd version="5.1.1" timestamp="2015-04-16T00:03:52.543">
+<pmd version="5.1.1" timestamp="2015-04-27T23:32:50.337">
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/core/CardHolder.java">
 <violation beginline="323" endline="323" begincolumn="11" endcolumn="51" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.core" class="CardHolder" method="isExpired" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
@@ -272,22 +272,6 @@ Avoid using java.lang.ThreadGroup; it is not thread safe
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/security/EncryptedPIN.java">
 <violation beginline="210" endline="210" begincolumn="11" endcolumn="35" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.security" class="EncryptedPIN" method="extractAccountNumberPart" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/empty.html#EmptyCatchBlock" priority="3">
-Avoid empty catch blocks
-</violation>
-</file>
-<file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/security/SecureDESKey.java">
-<violation beginline="170" endline="170" begincolumn="15" endcolumn="36" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.security" class="SecureDESKey" method="getVariant" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/empty.html#EmptyCatchBlock" priority="3">
-Avoid empty catch blocks
-</violation>
-<violation beginline="202" endline="202" begincolumn="15" endcolumn="36" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.security" class="SecureDESKey" method="getScheme" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/empty.html#EmptyCatchBlock" priority="3">
-Avoid empty catch blocks
-</violation>
-</file>
-<file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/security/jceadapter/JCESecurityModule.java">
-<violation beginline="227" endline="227" begincolumn="15" endcolumn="36" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="getKeyTypeIndex" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/empty.html#EmptyCatchBlock" priority="3">
-Avoid empty catch blocks
-</violation>
-<violation beginline="249" endline="249" begincolumn="15" endcolumn="36" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="getScheme" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
 </violation>
 </file>

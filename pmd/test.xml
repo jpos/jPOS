@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pmd version="5.1.1" timestamp="2015-04-16T00:04:00.413">
+<pmd version="5.1.1" timestamp="2015-04-27T23:32:59.573">
 <file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/bsh/BSHLogListenerTest.java">
 <violation beginline="113" endline="115" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.bsh" class="BSHLogListenerTest" method="testLoadCodeThrowsNullPointerException" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
@@ -124,19 +124,19 @@ Avoid empty catch blocks
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/security/jceadapter/JCESecurityModuleTest.java">
-<violation beginline="305" endline="307" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testConstructorThrowsConfigurationException1" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/empty.html#EmptyCatchBlock" priority="3">
+<violation beginline="306" endline="308" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testConstructorThrowsConfigurationException1" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
 </violation>
-<violation beginline="346" endline="348" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testConstructorThrowsSMException" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/empty.html#EmptyCatchBlock" priority="3">
+<violation beginline="347" endline="349" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testConstructorThrowsSMException" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
 </violation>
-<violation beginline="356" endline="358" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testConstructorThrowsSMException2" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/empty.html#EmptyCatchBlock" priority="3">
+<violation beginline="357" endline="359" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testConstructorThrowsSMException2" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
 </violation>
-<violation beginline="366" endline="368" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testConstructorThrowsSMException3" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/empty.html#EmptyCatchBlock" priority="3">
+<violation beginline="367" endline="369" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testConstructorThrowsSMException3" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
 </violation>
-<violation beginline="594" endline="596" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testSetConfigurationThrowsConfigurationException" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/empty.html#EmptyCatchBlock" priority="3">
+<violation beginline="595" endline="597" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testSetConfigurationThrowsConfigurationException" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
 </violation>
 </file>
