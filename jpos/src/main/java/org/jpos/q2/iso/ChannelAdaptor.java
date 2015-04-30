@@ -43,7 +43,7 @@ public class ChannelAdaptor
     extends QBeanSupport
     implements ChannelAdaptorMBean, Channel, Loggeable
 {
-    Space sp;
+    protected Space sp;
     private ISOChannel channel;
     String in, out, ready, reconnect;
     long delay;
