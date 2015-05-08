@@ -31,7 +31,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * @author apr
  */
-public class MUXPool extends QBeanSupport implements MUX {
+public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
     int strategy = 0;
     String[] muxName;
     MUX[] mux;
@@ -141,5 +141,15 @@ public class MUXPool extends QBeanSupport implements MUX {
             }
         } else 
             throw new ISOException ("No MUX available");
+    }
+
+    @Override
+    public String[] getMuxNames() {
+        return muxName;
+    }
+
+    @Override
+    public int getStrategy() {
+        return strategy;
     }
 }
