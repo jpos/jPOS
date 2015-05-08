@@ -27,7 +27,6 @@ import org.jpos.iso.ISOMsg;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 
 /**
@@ -113,33 +112,30 @@ public abstract class TagSequenceBase implements TagSequence {
     @Override
     public synchronized void writeTo(ISOMsg isoMsg) throws ISOException {
         int maxField = isoMsg.getMaxField();
-        Set<Map.Entry<String, List<TagValue>>> tagValues = getAll().entrySet();
+        List<TagValue> tagValueList = getOrderedList();
         int fieldNumber = 0;
-        for (Map.Entry<String, List<TagValue>> tagValueEntry : tagValues) {
-            List<TagValue> tagValueList = tagValueEntry.getValue();
-            for (TagValue tagValue : tagValueList) {
-                Object value = tagValue.getValue();
-                if (value != null) {
-                    ISOComponent subField;
-                    if (value instanceof byte[]) {
-                        subField = new ISOBinaryField(fieldNumber + maxField + 1, (byte[]) value);
-                    } else if (value instanceof String) {
-                        subField = new ISOField(fieldNumber + maxField + 1, (String) value);
-                    } else if (value instanceof TagSequence) {
-                        TagSequence subSequence = (TagSequence) tagValue;
-                        subField = new ISOMsg(fieldNumber + maxField + 1);
-                        subSequence.writeTo((ISOMsg) subField);
-                    } else if (value instanceof ISOMsg) {
-                        ISOMsgTagValue subSequence = (ISOMsgTagValue) tagValue;
-                        subField = subSequence.getValue();
-                        subField.setFieldNumber(fieldNumber + maxField + 1);
-                    } else {
-                        throw new ISOException("Unknown TagValue subclass: " + tagValue.getClass());
-                    }
-                    isoMsg.set(new ISOTaggedField(tagValue.getTag(), subField));
+        for (TagValue tagValue : tagValueList) {
+            Object value = tagValue.getValue();
+            if (value != null) {
+                ISOComponent subField;
+                if (value instanceof byte[]) {
+                    subField = new ISOBinaryField(fieldNumber + maxField + 1, (byte[]) value);
+                } else if (value instanceof String) {
+                    subField = new ISOField(fieldNumber + maxField + 1, (String) value);
+                } else if (value instanceof TagSequence) {
+                    TagSequence subSequence = (TagSequence) tagValue;
+                    subField = new ISOMsg(fieldNumber + maxField + 1);
+                    subSequence.writeTo((ISOMsg) subField);
+                } else if (value instanceof ISOMsg) {
+                    ISOMsgTagValue subSequence = (ISOMsgTagValue) tagValue;
+                    subField = subSequence.getValue();
+                    subField.setFieldNumber(fieldNumber + maxField + 1);
+                } else {
+                    throw new ISOException("Unknown TagValue subclass: " + tagValue.getClass());
                 }
-                fieldNumber++;
+                isoMsg.set(new ISOTaggedField(tagValue.getTag(), subField));
             }
+            fieldNumber++;
         }
     }
 

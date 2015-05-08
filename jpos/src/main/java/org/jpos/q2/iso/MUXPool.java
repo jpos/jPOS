@@ -31,7 +31,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * @author apr
  */
-public class MUXPool extends QBeanSupport implements MUX {
+public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
     int strategy = 0;
     String[] muxName;
     MUX[] mux;
@@ -87,7 +87,7 @@ public class MUXPool extends QBeanSupport implements MUX {
                 return true;
         return false;
     }
-    private MUX firstAvailableMUX (long maxWait) {
+    protected MUX firstAvailableMUX (long maxWait) {
         do {
             for (MUX aMux : mux)
                 if (aMux.isConnected())
@@ -96,7 +96,7 @@ public class MUXPool extends QBeanSupport implements MUX {
         } while (System.currentTimeMillis() < maxWait);
         return null;
     }
-    private MUX nextAvailableMUX (int mnumber, long maxWait) {
+    protected MUX nextAvailableMUX (int mnumber, long maxWait) {
         do {
             for (int i=0; i<mux.length; i++) {
                 int j = (mnumber+i) % mux.length;
@@ -141,5 +141,15 @@ public class MUXPool extends QBeanSupport implements MUX {
             }
         } else 
             throw new ISOException ("No MUX available");
+    }
+
+    @Override
+    public String[] getMuxNames() {
+        return muxName;
+    }
+
+    @Override
+    public int getStrategy() {
+        return strategy;
     }
 }

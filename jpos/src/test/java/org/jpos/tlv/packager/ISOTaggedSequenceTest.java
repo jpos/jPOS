@@ -67,7 +67,7 @@ public class ISOTaggedSequenceTest {
 
         Assert.assertEquals("Pack error", 42, field48Packed.length);
 
-        Assert.assertEquals("Pack error", "0390012014199609300000000023003CT20165001M", new String(field48Packed));
+        Assert.assertEquals("Pack error", "0390012014199609300000000165001M0023003CT2", new String(field48Packed));
 
         msg = new ISOMsg();
         packager.unpack(msg, packed);
@@ -81,7 +81,7 @@ public class ISOTaggedSequenceTest {
 
         Assert.assertEquals("Pack error", 42, field48Packed.length);
 
-        Assert.assertEquals("Pack error", "0390012014199609300000000023003CT20165001M", new String(field48Packed));
+        Assert.assertEquals("Pack error", "0390012014199609300000000165001M0023003CT2", new String(field48Packed));
     }
 
     @Test
@@ -208,7 +208,7 @@ public class ISOTaggedSequenceTest {
 
         Assert.assertEquals("Pack error", 43, field48Packed.length);
 
-        Assert.assertEquals("Pack error", "040M0012014199609300000000023003CT20165001M", new String(field48Packed));
+        Assert.assertEquals("Pack error", "040M0012014199609300000000165001M0023003CT2", new String(field48Packed));
 
         msg = new ISOMsg();
         packager.unpack(msg, packed);
@@ -221,7 +221,7 @@ public class ISOTaggedSequenceTest {
 
         Assert.assertEquals("Pack error", 43, field48Packed.length);
 
-        Assert.assertEquals("Pack error", "040M0012014199609300000000023003CT20165001M", new String(field48Packed));
+        Assert.assertEquals("Pack error", "040M0012014199609300000000165001M0023003CT2", new String(field48Packed));
 
     }
 
@@ -257,7 +257,7 @@ public class ISOTaggedSequenceTest {
 
         Assert.assertEquals("Pack error", 66, field48Packed.length);
 
-        Assert.assertEquals("Pack error", "0390012014199609300000000023003CT20165001M02101700141-800-555-1212", new String(field48Packed));
+        Assert.assertEquals("Pack error", "0390012014199609300000000165001M0023003CT202101700141-800-555-1212", new String(field48Packed));
 
         msg = new ISOMsg();
         packager.unpack(msg, packed);
@@ -277,7 +277,7 @@ public class ISOTaggedSequenceTest {
 
         Assert.assertEquals("Pack error", 66, field48Packed.length);
 
-        Assert.assertEquals("Pack error", "0390012014199609300000000023003CT20165001M02101700141-800-555-1212", new String(field48Packed));
+        Assert.assertEquals("Pack error", "0390012014199609300000000165001M0023003CT202101700141-800-555-1212", new String(field48Packed));
 
     }
 }

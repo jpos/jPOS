@@ -50,7 +50,6 @@ public class TaggedSequencePackager extends GenericPackager {
     protected Map<String, TaggedFieldPackager> packagerMap = new TreeMap<String, TaggedFieldPackager>();
     protected String tag;
     protected int length;
-    protected boolean numericTag = false;
 
     public TaggedSequencePackager() throws ISOException {
         super();
@@ -70,13 +69,6 @@ public class TaggedSequencePackager extends GenericPackager {
      */
     public void setToken(String token) {
         this.tag = token;
-        try {
-            if (Integer.parseInt(tag) >= 0) {
-                numericTag = true;
-            }
-        } catch (NumberFormatException e) {
-
-        }
     }
 
 
@@ -90,19 +82,13 @@ public class TaggedSequencePackager extends GenericPackager {
                 return 0; // nothing to do
             if (logger != null)  // save a few CPU cycle if no logger available
                 evt.addMessage(ISOUtil.hexString(b));
-            int consumed = 0;
-            int subFieldId = 0;
-            while (fld.length > subFieldId) {
-                if (fld[subFieldId] instanceof TaggedFieldPackager) {
-                    break;
-                } else if (fld[subFieldId] != null) {
-                    ISOComponent subField = fld[subFieldId].createComponent(subFieldId);
-                    consumed += fld[subFieldId].unpack(subField, b, consumed);
-                    m.set(subField);
-                }
-                subFieldId++;
-            }
-            if (subFieldId == 0 && !(fld[subFieldId] instanceof TaggedFieldPackager)) {
+
+            // Read any non-tlv fields present at beginning of data
+            PrefixUnpackResult prefixUnpackResult = unpackPrefixes(m, b);
+            int subFieldId = prefixUnpackResult.getSubFieldId();
+            int consumed = prefixUnpackResult.getConsumed();
+
+            if (subFieldId == 0) {
                 subFieldId = 1;
             }
 
@@ -117,12 +103,10 @@ public class TaggedSequencePackager extends GenericPackager {
                 if (fieldPackager == null) {
                     throw new ISOException("No default tag packager and no field packager configured for tag: " + tag);
                 }
-                //Numeric field numbering is helpful in accessing them - e.g.: using m.getComponent("path")
-                ISOTaggedField taggedField = (ISOTaggedField) fieldPackager.createComponent(numericTag ? Integer.parseInt(tag) : subFieldId);
+                int fieldNumber = subFieldId++;
+                ISOTaggedField taggedField = (ISOTaggedField) fieldPackager.createComponent(fieldNumber);
                 consumed += fieldPackager.unpack(taggedField, b, consumed);
-                //ISOTaggedField taggedField = new ISOTaggedField(tag, subField);
                 m.set(taggedField);
-                subFieldId++;
             }
             if (b.length != consumed) {
                 evt.addMessage(
@@ -194,7 +178,11 @@ public class TaggedSequencePackager extends GenericPackager {
                             len += b.length;
                             l.add(b);
                         }
-                    } else if (numericTag) {
+                    } else if (!tagsStarted && fld.length > (Integer) c.getKey() && fld[(Integer) c.getKey()] != null) {
+                        b = fld[(Integer) c.getKey()].pack(c);
+                        len += b.length;
+                        l.add(b);
+                    } else {
                         int tagNumber = (Integer) c.getKey();
                         String tag = ISOUtil.padleft(String.valueOf(tagNumber), this.tag.length(), '0');
                         ISOTaggedField isoTaggedField = new ISOTaggedField(tag, c);
@@ -215,18 +203,6 @@ public class TaggedSequencePackager extends GenericPackager {
                         }
                         len += b.length;
                         l.add(b);
-                    } else if (!tagsStarted) {
-                        if (fld.length > (Integer) c.getKey()) {
-                            b = fld[(Integer) c.getKey()].pack(c);
-                        } else {
-                            throw new ISOException("Non ISOTagField without packager definition. Cannot pack as tag is non-numeric");
-                        }
-                        len += b.length;
-                        l.add(b);
-                    } else {
-                        evt.addMessage("error packing sub-field " + c.getKey() + ". Sub-field should be of type ISOTaggedField when tag is non-numeric");
-                        evt.addMessage(c);
-                        throw new ISOException("error packing sub-field " + c.getKey() + ". Sub-field should be of type ISOTaggedField when tag is non-numeric");
                     }
                 }
                 if (m instanceof OffsetIndexedComposite) {
@@ -279,4 +255,41 @@ public class TaggedSequencePackager extends GenericPackager {
         tagPackager.setPadder(LeftPadder.ZERO_PADDER);
         return tagPackager;
     }
+
+    protected class PrefixUnpackResult {
+        private int consumed;
+        private int subFieldId;
+
+        public PrefixUnpackResult(int consumed, int subFieldId) {
+            this.consumed = consumed;
+            this.subFieldId = subFieldId;
+        }
+
+        public int getConsumed() {
+            return consumed;
+        }
+
+        public int getSubFieldId() {
+            return subFieldId;
+        }
+
+    }
+
+    protected PrefixUnpackResult unpackPrefixes(ISOComponent m, byte[] b) throws ISOException {
+        int consumed = 0;
+        int subFieldId = 0;
+        while (fld.length > subFieldId) {
+            if (fld[subFieldId] instanceof TaggedFieldPackager) {
+                break;
+            } else if (fld[subFieldId] != null) {
+                ISOComponent subField = fld[subFieldId].createComponent(subFieldId);
+                consumed += fld[subFieldId].unpack(subField, b, consumed);
+                m.set(subField);
+            }
+            subFieldId++;
+        }
+        PrefixUnpackResult prefixUnpackResult = new PrefixUnpackResult(consumed, subFieldId);
+        return prefixUnpackResult;
+    }
+
 }
