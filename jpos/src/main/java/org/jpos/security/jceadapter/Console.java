@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2014 Alejandro P. Revilla
+ * Copyright (C) 2000-2015 Alejandro P. Revilla
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -90,20 +90,20 @@ public class Console {
         else {
             int argsCounter = 0;
             for (int j = 0; j < 10; j++) {
-                if ((argsCounter < args.length) &&
-                    (args[argsCounter].toLowerCase().compareTo("-lmk") == 0)
+                if (argsCounter < args.length &&
+                        args[argsCounter].toLowerCase().compareTo("-lmk") == 0
                 ) {
                     argsCounter++;
                     cfgProps.setProperty("lmk", args[argsCounter++]);
                 }
-                if ((argsCounter < args.length) &&
-                    (args[argsCounter].toLowerCase().compareTo("-jce") == 0)
+                if (argsCounter < args.length &&
+                        args[argsCounter].toLowerCase().compareTo("-jce") == 0
                 ) {
                     argsCounter++;
                     cfgProps.setProperty("provider", args[argsCounter++]);
                 }
-                if ((argsCounter < args.length) &&
-                    (args[argsCounter].toLowerCase().compareTo("-rebuildlmk") == 0)
+                if (argsCounter < args.length &&
+                        args[argsCounter].toLowerCase().compareTo("-rebuildlmk") == 0
                 ) {
                     argsCounter++;
                     cfgProps.setProperty("rebuildlmk", "true");

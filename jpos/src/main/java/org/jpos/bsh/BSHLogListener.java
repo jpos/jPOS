@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2014 Alejandro P. Revilla
+ * Copyright (C) 2000-2015 Alejandro P. Revilla
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -109,7 +109,7 @@ public class BSHLogListener implements org.jpos.util.LogListener, org.jpos.core.
                 buff.append(src[i].substring(end, begin));
                 boolean patternFound = false;
                 for(int k=0; k<patterns.length && !patternFound ; k++){
-                    if(patternFound = (src[i].indexOf(patterns[k], begin) == begin+1)){
+                    if(patternFound = src[i].indexOf(patterns[k], begin) == begin+1){
                         buff.append(to[k]);
                         end = begin + patterns[k].length() + 1;
                     }
@@ -122,7 +122,7 @@ public class BSHLogListener implements org.jpos.util.LogListener, org.jpos.core.
         }
         return ret;
     }
-    public LogEvent log(org.jpos.util.LogEvent ev) {
+    public LogEvent log(LogEvent ev) {
         LogEvent ret = ev;
         boolean processed = false;
         try{
@@ -131,7 +131,7 @@ public class BSHLogListener implements org.jpos.util.LogListener, org.jpos.core.
                 try{
                     Interpreter bsh = new Interpreter();
                     BSHLogListener.ScriptInfo info = getScriptInfo(sources[i]);
-                    NameSpace ns = (info!=null)?info.getNameSpace():null;
+                    NameSpace ns = info!=null ?info.getNameSpace():null;
                     if(ns!=null) bsh.setNameSpace(ns);
                     bsh.set("event", ret);
                     bsh.set("cfg", cfg);
@@ -163,7 +163,7 @@ public class BSHLogListener implements org.jpos.util.LogListener, org.jpos.core.
                     ret = (LogEvent)bsh.get("event");
                     Object saveNS = bsh.get("saveNameSpace");
                     boolean saveNameSpace = 
-                        (saveNS instanceof Boolean)? (Boolean) saveNS :cfg.getBoolean("save-name-space");
+                        saveNS instanceof Boolean ? (Boolean) saveNS :cfg.getBoolean("save-name-space");
                     if(saveNameSpace) {
                         if(info!=null) info.setNameSpace(bsh.getNameSpace());
                         else scripts.put(sources[i], new ScriptInfo(bsh.getNameSpace()));
@@ -172,9 +172,11 @@ public class BSHLogListener implements org.jpos.util.LogListener, org.jpos.core.
                     ret.addMessage(e);
                 }
             }
-            return (!processed && cfg.getBoolean("filter-by-default"))?null:ret;
+            return !processed && cfg.getBoolean("filter-by-default") ? null : ret;
         }catch(Exception e){
-            ret.addMessage(e);
+            if (ret != null) {
+                ret.addMessage(e);
+            }
             return ret;
         }
     }

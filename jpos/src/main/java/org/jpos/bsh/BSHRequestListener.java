@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2014 Alejandro P. Revilla
+ * Copyright (C) 2000-2015 Alejandro P. Revilla
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -87,7 +87,19 @@ public class BSHRequestListener extends Log
                         script = aBshSource;
                     }
 
-                    bsh.source(script);
+                    Object ret= bsh.source(script);
+
+                    // any non-null and non-boolean value is considered "true-ish"
+                    // a null return is considered false
+                    if (ret != null) {
+                        if (ret instanceof Boolean)
+                            return ((Boolean) ret).booleanValue();
+                        else
+                            return true;
+                    } else {
+                        return false;
+                    }
+
                 } catch (Exception e) {
                     warn(e);
                 }

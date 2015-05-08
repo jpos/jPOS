@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2014 Alejandro P. Revilla
+ * Copyright (C) 2000-2015 Alejandro P. Revilla
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -252,7 +252,7 @@ public class SpaceLet extends QBeanSupport implements Space {
         sp = SpaceFactory.getSpace (e != null ? e.getText() : "");
     }
     private String getScript (Element e) {
-        return (e == null) ? null : e.getText();
+        return e == null ? null : e.getText();
     }
     public void nrd (Object key) {
          sp.nrd(key);

@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2014 Alejandro P. Revilla
+ * Copyright (C) 2000-2015 Alejandro P. Revilla
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -369,7 +369,7 @@ public class ChannelAdaptor
             else
                 connects++;
         }
-        if (running() && (sp.rdp (ready) == null))
+        if (running() && sp.rdp (ready) == null)
             sp.out (ready, new Date());
     }
     protected void disconnect () {
@@ -378,7 +378,7 @@ public class ChannelAdaptor
             try {
                 SpaceUtil.wipe(sp, ready);
                 channel.disconnect();
-            } catch (IOException e) {
+            } catch (Exception e) {
                 getLog().warn("disconnect", e);
             }
         }

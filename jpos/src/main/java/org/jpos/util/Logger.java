@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2014 Alejandro P. Revilla
+ * Copyright (C) 2000-2015 Alejandro P. Revilla
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -64,7 +64,7 @@ public class Logger implements LogProducer {
         synchronized (listeners) {
             Iterator i = listeners.iterator();
             while (i.hasNext()) {
-                LogListener l = ((LogListener) i.next());
+                LogListener l = (LogListener) i.next();
                 if (l instanceof Destroyable) {
                     ((Destroyable) l).destroy ();
                 }

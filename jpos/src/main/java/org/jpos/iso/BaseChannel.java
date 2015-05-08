@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2014 Alejandro P. Revilla
+ * Copyright (C) 2000-2015 Alejandro P. Revilla
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -306,7 +306,7 @@ public abstract class BaseChannel extends Observable
                 } else if (localIface == null && localPort == 0){
                     return new Socket(host,port);
                 } else {
-                    InetAddress addr = (localIface == null) ?
+                    InetAddress addr = localIface == null ?
                         InetAddress.getLocalHost() : 
                         InetAddress.getByName(localIface);
                     return new Socket(host, port, addr, localPort);
@@ -547,7 +547,7 @@ public abstract class BaseChannel extends Observable
     protected int getHeaderLength(byte[] b) { return 0; }
 
     protected int getHeaderLength(ISOMsg m) {                                   
-        return (!overrideHeader && m.getHeader() != null) ?
+        return !overrideHeader && m.getHeader() != null ?
             m.getHeader().length : getHeaderLength();
     }                                                                           
 
@@ -572,7 +572,7 @@ public abstract class BaseChannel extends Observable
         LogEvent evt = new LogEvent (this, "send");
         try {
             if (!isConnected())
-                throw new ISOException ("unconnected ISOChannel");
+                throw new IOException ("unconnected ISOChannel");
             m.setDirection(ISOMsg.OUTGOING);
             ISOPackager p = getDynamicPackager(m);
             m.setPackager (p);
@@ -604,7 +604,7 @@ public abstract class BaseChannel extends Observable
             throw e;
         } catch (Exception e) {
             evt.addMessage (e);
-            throw new ISOException ("unexpected exception", e);
+            throw new IOException ("unexpected exception", e);
         } finally {
             Logger.log (evt);
         }
@@ -693,7 +693,7 @@ public abstract class BaseChannel extends Observable
         m.setSource (this);
         try {
             if (!isConnected())
-                throw new ISOException ("unconnected ISOChannel");
+                throw new IOException ("unconnected ISOChannel");
 
             synchronized (serverInLock) {
                 int len  = getMessageLength();
@@ -767,10 +767,11 @@ public abstract class BaseChannel extends Observable
             if (usable) 
                 evt.addMessage (e);
             throw e;
-        } catch (Exception e) { 
+        } catch (Exception e) {
+            closeSocket();
             evt.addMessage (m);
             evt.addMessage (e);
-            throw new ISOException ("unexpected exception", e);
+            throw new IOException ("unexpected exception", e);
         } finally {
             Logger.log (evt);
         }
@@ -951,7 +952,7 @@ public abstract class BaseChannel extends Observable
         throws VetoException
     {
         for (ISOFilter f :incomingFilters) {
-            if (image != null && (f instanceof RawIncomingFilter))
+            if (image != null && f instanceof RawIncomingFilter)
                 m = ((RawIncomingFilter)f).filter (this, m, header, image, evt);
             else
                 m = f.filter (this, m, evt);

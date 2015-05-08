@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2014 Alejandro P. Revilla
+ * Copyright (C) 2000-2015 Alejandro P. Revilla
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,7 +23,8 @@ package org.jpos.iso;
  * <p>
  * {@link ISOMsgFieldPackager} needs a number of current (parent) composite field
  * in order to enable nesting in its tags other composite fields (e.g.
- * {@link GenericSubFieldPackager} or even {@link GenericTaggedFieldsPackager})
+ * {@link org.jpos.iso.packager.GenericSubFieldPackager} or even
+ * {@link org.jpos.iso.packager.GenericTaggedFieldsPackager})
  *
  * @author Robert Demski <drdemsey@gmail.com>
  */

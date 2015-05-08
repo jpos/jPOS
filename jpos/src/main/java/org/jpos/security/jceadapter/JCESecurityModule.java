@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2014 Alejandro P. Revilla
+ * Copyright (C) 2000-2015 Alejandro P. Revilla
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,10 +18,11 @@
 
 package  org.jpos.security.jceadapter;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
+import org.javatuples.Pair;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
+import org.jpos.iso.ISODate;
+import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOUtil;
 import org.jpos.security.*;
 import org.jpos.util.LogEvent;
@@ -29,28 +30,35 @@ import org.jpos.util.Logger;
 import org.jpos.util.SimpleMsg;
 
 import javax.crypto.SecretKey;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.security.*;
+import java.security.InvalidKeyException;
+import java.security.Key;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.Provider;
+import java.security.SecureRandom;
+import java.security.Security;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Random;
-import java.util.StringTokenizer;
 import java.util.TreeMap;
-import org.javatuples.Pair;
-import org.jpos.iso.ISODate;
-import org.jpos.iso.ISOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import javax.crypto.Cipher;
 
 
 /**
- * <p>
  * JCESecurityModule is an implementation of a security module in software.
+ * <p>
  * It doesn't require any hardware device to work.<br>
  * JCESecurityModule also implements the SMAdapter, so you can view it: either
  * as a self contained security module adapter that doesn't need a security module
@@ -58,18 +66,28 @@ import org.jpos.iso.ISOException;
  * a separate adapter.<br>
  * It relies on Java(tm) Cryptography Extension (JCE), hence its name.<br>
  * JCESecurityModule relies on the JCEHandler class to do the low level JCE work.
- * </p>
  * <p>
  * WARNING: This version of JCESecurityModule is meant for testing purposes and
  * NOT for life operation, since the Local Master Keys are stored in CLEAR on
  * the system's disk. Comming versions of JCESecurity Module will rely on
  * java.security.KeyStore for a better protection of the Local Master Keys.
- * </p>
+ *
  * @author Hani Samuel Kirollos
+ * @author Robert Demski
  * @version $Revision$ $Date$
  */
 @SuppressWarnings("unchecked")
 public class JCESecurityModule extends BaseSMAdapter {
+
+    /**
+     * Pattern representing key type string value.
+     */
+    private static final Pattern KEY_TYPE_PATTERN = Pattern.compile("([^:;]*)([:;])?([^:;])?([^:;])?");
+
+    /**
+     * Pattern for split two clear pins.
+     */
+    private static final Pattern SPLIT_PIN_PATTERN = Pattern.compile("[ :;,/.]");
 
     /**
      * NUmber of LMK pairs
@@ -122,7 +140,7 @@ public class JCESecurityModule extends BaseSMAdapter {
     static {
       try {
           SHA1_MESSAGE_DIGEST = MessageDigest.getInstance("SHA-1");
-      } catch (NoSuchAlgorithmException ex) {}
+      } catch (NoSuchAlgorithmException ex) {} //NOPMD: SHA-1 is a standard digest
     }
 
     /**
@@ -168,6 +186,7 @@ public class JCESecurityModule extends BaseSMAdapter {
      *             ANSI X9.19<br>
      * @throws ConfigurationException
      */
+    @Override
     public void setConfiguration (Configuration cfg) throws ConfigurationException {
         this.cfg = cfg;
         try {
@@ -177,50 +196,61 @@ public class JCESecurityModule extends BaseSMAdapter {
         }
     }
 
+    @Override
     public SecureDESKey generateKeyImpl (short keyLength, String keyType) throws SMException {
-        SecureDESKey generatedSecureKey = null;
         Key generatedClearKey = jceHandler.generateDESKey(keyLength);
-        generatedSecureKey = encryptToLMK(keyLength, keyType, generatedClearKey);
-        return  generatedSecureKey;
+        return encryptToLMK(keyLength, keyType, generatedClearKey);
     }
 
+    @Override
     public SecureDESKey importKeyImpl (short keyLength, String keyType, byte[] encryptedKey,
             SecureDESKey kek, boolean checkParity) throws SMException {
-        SecureDESKey importedKey = null;
         // decrypt encrypted key
         Key clearKEY = jceHandler.decryptDESKey(keyLength, encryptedKey, decryptFromLMK(kek),
                 checkParity);
         // Encrypt Key under LMK
-        importedKey = encryptToLMK(keyLength, keyType, clearKEY);
-        return  importedKey;
+        return encryptToLMK(keyLength, keyType, clearKEY);
     }
 
+    @Override
     public byte[] exportKeyImpl (SecureDESKey key, SecureDESKey kek) throws SMException {
-        byte[] exportedKey = null;
         // get key in clear
         Key clearKey = decryptFromLMK(key);
         // Encrypt key under kek
-        exportedKey = jceHandler.encryptDESKey(key.getKeyLength(), clearKey, decryptFromLMK(kek));
-        return  exportedKey;
+        return jceHandler.encryptDESKey(key.getKeyLength(), clearKey, decryptFromLMK(kek));
     }
 
     private int getKeyTypeIndex (short keyLength, String keyType) throws SMException {
-        int index = 0;
+        int index;
         if (keyType==null)
-            return index;
-        StringTokenizer st = new StringTokenizer(keyType,":;");
-        if (st.hasMoreTokens()){
-           String majorType = st.nextToken();
-           Integer idx = keyTypeToLMKIndex.get(majorType);
-           if (idx==null)
-              throw new SMException("Unsupported key type: " + majorType);
-           index = idx;
-        }
-        if (st.hasMoreTokens())
-            try {
-                index |= Integer.valueOf(st.nextToken().substring(0,1)) << 8;
-            } catch (Exception ex){}
+            return 0;
+        String majorType = getMajorType(keyType);
+        if (!keyTypeToLMKIndex.containsKey(majorType))
+            throw new SMException("Unsupported key type: " + majorType);
+        index = keyTypeToLMKIndex.get(majorType);
+        index |= getVariant(keyType) << 8;
         return index;
+    }
+
+    private static String getMajorType (String keyType) {
+        Matcher m = KEY_TYPE_PATTERN.matcher(keyType);
+        m.find();
+        if (m.group(1) != null)
+            return m.group(1);
+        throw new IllegalArgumentException("Missing key type");
+    }
+
+    private static int getVariant (String keyType) {
+        int variant = 0;
+        Matcher m = KEY_TYPE_PATTERN.matcher(keyType);
+        m.find();
+        if (m.group(3) != null)
+            try {
+                variant = Integer.valueOf(m.group(3));
+            } catch (NumberFormatException ex){
+                throw new NumberFormatException("Value "+m.group(4)+" is not valid key variant");
+            }
+        return variant;
     }
 
     private static KeyScheme getScheme (int keyLength, String keyType) {
@@ -235,35 +265,34 @@ public class JCESecurityModule extends BaseSMAdapter {
         }
         if (keyType==null)
             return scheme;
-        StringTokenizer st = new StringTokenizer(keyType,":;");
-        if (st.hasMoreTokens())
-            st.nextToken();
-        if (st.hasMoreTokens())
+        Matcher m = KEY_TYPE_PATTERN.matcher(keyType);
+        m.find();
+        if (m.group(4) != null)
             try {
-                scheme = KeyScheme.valueOf(st.nextToken().substring(1,2));
-            } catch (Exception ex){}
+                scheme = KeyScheme.valueOf(m.group(4));
+            } catch (IllegalArgumentException ex){
+                throw new IllegalArgumentException("Value "+m.group(4)+" is not valid key scheme");
+            }
         return scheme;
     }
 
+    @Override
     public EncryptedPIN encryptPINImpl (String pin, String accountNumber) throws SMException {
-        EncryptedPIN encryptedPIN = null;
         byte[] clearPINBlock = calculatePINBlock(pin, FORMAT00, accountNumber);
         // Encrypt
         byte[] translatedPINBlock = jceHandler.encryptData(clearPINBlock, getLMK(PINLMKIndex));
-        encryptedPIN = new EncryptedPIN(translatedPINBlock, FORMAT00, accountNumber, false);
-        return  encryptedPIN;
+        return new EncryptedPIN(translatedPINBlock, FORMAT00, accountNumber, false);
     }
 
+    @Override
     public String decryptPINImpl (EncryptedPIN pinUnderLmk) throws SMException {
-        String pin = null;
         byte[] clearPINBlock = jceHandler.decryptData(pinUnderLmk.getPINBlock(),
                 getLMK(PINLMKIndex));
-        pin = calculatePIN(clearPINBlock, pinUnderLmk.getPINBlockFormat(), pinUnderLmk.getAccountNumber());
-        return  pin;
+        return calculatePIN(clearPINBlock, pinUnderLmk.getPINBlockFormat(), pinUnderLmk.getAccountNumber());
     }
 
+    @Override
     public EncryptedPIN importPINImpl (EncryptedPIN pinUnderKd1, SecureDESKey kd1) throws SMException {
-        EncryptedPIN pinUnderLmk = null;
         // read inputs
         String accountNumber = pinUnderKd1.getAccountNumber();
         // Use FORMAT00 for encrypting PIN under LMK
@@ -278,14 +307,13 @@ public class JCESecurityModule extends BaseSMAdapter {
         clearPINBlock = calculatePINBlock(pin, destinationPINBlockFormat, accountNumber);
         // encrypt PIN
         byte[] translatedPINBlock = jceHandler.encryptData(clearPINBlock, getLMK(PINLMKIndex));
-        pinUnderLmk = new EncryptedPIN(translatedPINBlock, destinationPINBlockFormat,
+        return new EncryptedPIN(translatedPINBlock, destinationPINBlockFormat,
                 accountNumber, false);
-        return  pinUnderLmk;
     }
 
+    @Override
     public EncryptedPIN exportPINImpl (EncryptedPIN pinUnderLmk, SecureDESKey kd2,
             byte destinationPINBlockFormat) throws SMException {
-        EncryptedPIN exportedPIN = null;
         String accountNumber = pinUnderLmk.getAccountNumber();
         // process
         // get clear PIN
@@ -297,9 +325,8 @@ public class JCESecurityModule extends BaseSMAdapter {
         clearPINBlock = calculatePINBlock(pin, destinationPINBlockFormat, accountNumber);
         // encrypt PIN
         byte[] translatedPINBlock = jceHandler.encryptData(clearPINBlock, decryptFromLMK(kd2));
-        exportedPIN = new EncryptedPIN(translatedPINBlock, destinationPINBlockFormat,
+        return new EncryptedPIN(translatedPINBlock, destinationPINBlockFormat,
                 accountNumber, false);
-        return  exportedPIN;
     }
 
     @Override
@@ -328,7 +355,7 @@ public class JCESecurityModule extends BaseSMAdapter {
     /**
      * Visa way to decimalize data block
      * @param b
-     * @return
+     * @return decimalized data string
      */
     private static String decimalizeVisa(byte[] b){
         char[] bec = ISOUtil.hexString(b).toUpperCase().toCharArray();
@@ -443,7 +470,7 @@ public class JCESecurityModule extends BaseSMAdapter {
 
         if (mkdm==null)
           mkdm = MKDMethod.OPTION_A;
-        byte[] panpsn = formatPANPSN(accountNo, null, mkdm);
+        byte[] panpsn = formatPANPSN_dCVD(accountNo, null, mkdm);
         Key mkac = deriveICCMasterKey(decryptFromLMK(imkac), panpsn);
 
         String alteredPAN = ISOUtil.hexString(atc) + accountNo.substring(4);
@@ -458,7 +485,7 @@ public class JCESecurityModule extends BaseSMAdapter {
                      throws SMException {
         if (mkdm==null)
           mkdm = MKDMethod.OPTION_A;
-        byte[] panpsn = formatPANPSN(accountNo, acctSeqNo, mkdm);
+        byte[] panpsn = formatPANPSN_dCVD(accountNo, acctSeqNo, mkdm);
         Key mkcvc3 = deriveICCMasterKey(decryptFromLMK(imkcvc3), panpsn);
         byte[] ivcvc3 = data;
         if (ivcvc3.length != 2)
@@ -506,7 +533,7 @@ public class JCESecurityModule extends BaseSMAdapter {
      * Calculate MAC according to ISO/IEC 9797-1 Alg 3
      * @param key DES double length key
      * @param d data to calculate MAC on it
-     * @return
+     * @return 8 byte of mac value
      * @throws JCEHandlerException
      */
     private byte[] calculateMACISO9797Alg3(Key key, byte[] d) throws JCEHandlerException {
@@ -515,7 +542,7 @@ public class JCESecurityModule extends BaseSMAdapter {
         Key kr = jceHandler.formDESKey(SMAdapter.LENGTH_DES
                             ,Arrays.copyOfRange(key.getEncoded(), 8, 16));
         if (d.length%8 != 0) {
-            //Padding - first byte 0x80 rest 0x00
+            //Padding with 0x00 bytes
             byte[] t = new byte[d.length - d.length%8 + 8];
             System.arraycopy(d, 0, t, 0, d.length);
             d = t;
@@ -532,20 +559,45 @@ public class JCESecurityModule extends BaseSMAdapter {
         return y_i;
     }
 
+    /**
+     * Prepare 8-bytes data from PAN and PAN Sequence Number.
+     * <p>
+     * Used at EMV operations: {@link #verifyARQCImpl ARQC verification},
+     * {@link #generateARPCImpl ARPC generation},
+     * {@link #generateSM_MACImpl secure message MAC generation}
+     * and {@link #translatePINGenerateSM_MACImpl secure message PIN translation}
+     */
     private static byte[] formatPANPSN(String pan, String psn, MKDMethod mkdm)
             throws SMException {
-        byte[] b;
         switch (mkdm){
-          case OPTION_A:
-            b = formatPANPSNOptionA(pan, psn);
-            break;
-          case OPTION_B:
-            b = formatPANPSNOptionB(pan, psn);
-            break;
-          default:
-            throw new SMException("Unsupported ICC Master Key derivation method");
+            case OPTION_A:
+                return formatPANPSNOptionA(pan, psn);
+            case OPTION_B:
+                if ( pan.length() <= 16)
+                    //use OPTION_A
+                    return formatPANPSNOptionA(pan, psn);
+                return formatPANPSNOptionB(pan, psn);
+            default:
+                throw new SMException("Unsupported ICC Master Key derivation method");
         }
-      return b;
+    }
+
+    /**
+     * Prepare 8-bytes data from PAN and PAN Sequence Number.
+     * <p>
+     * Used at dCVV verification {@link #verifydCVVImpl verifydCVV}
+     * and CVC3 {@link #verifyCVC3Impl verifyCVC3}
+     */
+    private static byte[] formatPANPSN_dCVD(String pan, String psn, MKDMethod mkdm)
+            throws SMException {
+        switch (mkdm){
+            case OPTION_A:
+                return formatPANPSNOptionA(pan, psn);
+            case OPTION_B:
+                return formatPANPSNOptionB(pan, psn);
+            default:
+                throw new SMException("Unsupported ICC Master Key derivation method");
+        }
     }
 
     /**
@@ -587,7 +639,7 @@ public class JCESecurityModule extends BaseSMAdapter {
         if ( pan.length() < 14 )
             try {
                 pan = ISOUtil.zeropad(pan, 14);
-            } catch( ISOException ex ) {}
+            } catch( ISOException ex ) {} //NOPMD: ISOException condition is checked before.
         byte[] b = preparePANPSN(pan, psn);
         return Arrays.copyOfRange(b, b.length-8, b.length);
     }
@@ -675,6 +727,15 @@ public class JCESecurityModule extends BaseSMAdapter {
     }
 
     @Override
+    protected String calculatePVVImpl(EncryptedPIN pinUnderKd1, SecureDESKey kd1,
+                       SecureDESKey pvkA, SecureDESKey pvkB, int pvkIdx,
+                       List<String> excludes) throws SMException {
+        Key key = concatKeys(pvkA, pvkB);
+        EncryptedPIN pinUnderLmk = importPINImpl(pinUnderKd1, kd1);
+        return calculatePVV(pinUnderLmk, key, pvkIdx, excludes);
+    }
+
+    @Override
     public boolean verifyPVVImpl(EncryptedPIN pinUnderKd1, SecureDESKey kd1, SecureDESKey pvkA,
                              SecureDESKey pvkB, int pvki, String pvv) throws SMException {
         Key key = concatKeys(pvkA, pvkB);
@@ -696,14 +757,13 @@ public class JCESecurityModule extends BaseSMAdapter {
 
     private EncryptedPIN translatePINExt (EncryptedPIN oldPinUnderKd1, EncryptedPIN pinUnderKd1, Key kd1,
             Key kd2, byte destinationPINBlockFormat, Key udk, PaddingMethod padm) throws SMException {
-        EncryptedPIN translatedPIN = null;
         String accountNumber = pinUnderKd1.getAccountNumber();
         // get clear PIN
         byte[] clearPINBlock = jceHandler.decryptData(pinUnderKd1.getPINBlock(), kd1);
         String pin = calculatePIN(clearPINBlock, pinUnderKd1.getPINBlockFormat(),
                 accountNumber);
         // Reformat PIN Block
-        byte[] translatedPINBlock = null;
+        byte[] translatedPINBlock;
         if (isVSDCPinBlockFormat(destinationPINBlockFormat)) {
           String udka = ISOUtil.hexString(Arrays.copyOfRange(udk.getEncoded(), 0, 8));
           if (destinationPINBlockFormat == SMAdapter.FORMAT42 ) {
@@ -734,12 +794,12 @@ public class JCESecurityModule extends BaseSMAdapter {
 
         // encrypt PIN
         if (padm == PaddingMethod.CCD)
-          translatedPINBlock = jceHandler.encryptDataCBC(clearPINBlock, kd2, zeroBlock);
+          translatedPINBlock = jceHandler.encryptDataCBC(clearPINBlock, kd2
+                  ,Arrays.copyOf(zeroBlock, zeroBlock.length));
         else
           translatedPINBlock = jceHandler.encryptData(clearPINBlock, kd2);
-        translatedPIN = new EncryptedPIN(translatedPINBlock
+        return new EncryptedPIN(translatedPINBlock
                         ,destinationPINBlockFormat, accountNumber, false);
-        return  translatedPIN;
     }
 
     /**
@@ -766,10 +826,14 @@ public class JCESecurityModule extends BaseSMAdapter {
     }
 
     /**
-     * Derive the session key used for secure messaging, the diversification
-     * value is the RAND. RAND is ARQC incremeted by 1 (with overflow) after
-     * each script command for that same ATC value.
-     * A1.3.1 Common Session Key Derivation Option
+     * Common Session Key Derivation Method for secure messaging.
+     * <p>
+     * The diversification value is the <em>RAND</em>, which is ARQC
+     * incremeted by 1 (with overflow) after each script command
+     * for that same ATC value.
+     * Described in EMV v4.2 Book 2, Annex A1.3.1 Common Session Key
+     * Derivation Option for secure messaging.
+     *
      * @param mksm unique ICC Master Key for Secure Messaging
      * @param rand Application Cryptogram as diversification value
      * @return derived 16-bytes Session Key with adjusted DES parity
@@ -785,6 +849,194 @@ public class JCESecurityModule extends BaseSMAdapter {
       Util.adjustDESParity(skl);
       Util.adjustDESParity(skr);
       return jceHandler.formDESKey(SMAdapter.LENGTH_DES3_2KEY, ISOUtil.concat(skl,skr));
+    }
+
+    /**
+     * Common Session Key Derivation Method for Application Cryptograms.
+     * <p>
+     * Described in EMV v4.2 Book 2, Annex A1.3.1 Common Session Key Derivation
+     * Option for Application Cryptograms.
+     *
+     * @param mkac unique ICC Master Key for Application Cryptogams.
+     * @param atc ICC generated Application Transaction Counter as diversification value.
+     * @return derived 16-bytes Session Key with adjusted DES parity.
+     * @throws JCEHandlerException
+     */
+    private Key deriveCommonSK_AC(Key mkac, byte[] atc) throws JCEHandlerException {
+
+        byte[] r = new byte[8];
+        System.arraycopy(atc, atc.length-2, r, 0, 2);
+
+        return deriveCommonSK_SM(mkac, r);
+    }
+
+    /**
+     * MasterCard Proprietary Session Key Derivation (SKD) method.
+     * <p>
+     * Described in M/Chip 4 version 1.1 Security & Key Management manual
+     * paragraph 7 ICC Session Key Derivation.
+     *
+     * @param mkac unique ICC Master Key for Application Cryptogams
+     * @param atc ICC generated Application Transaction Counter as diversification value
+     * @param upn terminal generated random as diversification value
+     * @return derived 16-bytes Session Key with adjusted DES parity
+     * @throws JCEHandlerException
+     */
+    private Key deriveSK_MK(Key mkac, byte[] atc, byte[] upn) throws JCEHandlerException {
+
+        byte[] r = new byte[8];
+        System.arraycopy(atc, atc.length-2, r, 0, 2);
+        System.arraycopy(upn, upn.length-4, r, 4, 4);
+
+        return deriveCommonSK_SM(mkac, r);
+    }
+
+    private void constraintMKDM(MKDMethod mkdm, SKDMethod skdm) throws SMException {
+        if (mkdm == MKDMethod.OPTION_B)
+            throw new SMException("Master Key Derivation Option B"
+                    + " is not used in practice with scheme "+skdm);
+    }
+
+    private void constraintARPCM(SKDMethod skdm, ARPCMethod arpcMethod) throws SMException {
+        if (arpcMethod == ARPCMethod.METHOD_2 )
+            throw new SMException("ARPC generation method 2"
+                    + " is not used in practice with scheme "+skdm);
+    }
+
+    /**
+     * Calculate ARQC.
+     * <p>
+     * Entry point e.g. for simulator systems
+     */
+    byte[] calculateARQC(MKDMethod mkdm, SKDMethod skdm
+            ,SecureDESKey imkac, String accountNo, String accntSeqNo, byte[] atc
+            ,byte[] upn, byte[] transData) throws SMException {
+        if (mkdm==null)
+            mkdm = MKDMethod.OPTION_A;
+
+        byte[] panpsn = formatPANPSN(accountNo, accntSeqNo, mkdm);
+        Key mkac = deriveICCMasterKey(decryptFromLMK(imkac), panpsn);
+        Key skac = mkac;
+        switch(skdm){
+            case VSDC:
+                constraintMKDM(mkdm, skdm);
+                break;
+            case MCHIP:
+                constraintMKDM(mkdm, skdm);
+                skac = deriveSK_MK(mkac,atc,upn);
+                break;
+            case EMV_CSKD:
+                skac = deriveCommonSK_AC(mkac, atc);
+                break;
+            default:
+                throw new SMException("Session Key Derivation "+skdm+" not supported");
+        }
+
+        return calculateMACISO9797Alg3(skac, transData);
+    }
+
+    @Override
+    protected boolean verifyARQCImpl(MKDMethod mkdm, SKDMethod skdm, SecureDESKey imkac
+            ,String accountNo, String accntSeqNo, byte[] arqc, byte[] atc
+            ,byte[] upn, byte[] transData) throws SMException {
+
+        byte[] res = calculateARQC(mkdm, skdm, imkac, accountNo, accntSeqNo
+                ,atc, upn, transData);
+        return Arrays.equals(arqc, res);
+    }
+
+    @Override
+    public byte[] generateARPCImpl(MKDMethod mkdm, SKDMethod skdm, SecureDESKey imkac
+            ,String accountNo, String accntSeqNo, byte[] arqc, byte[] atc, byte[] upn
+            ,ARPCMethod arpcMethod, byte[] arc, byte[] propAuthData)
+            throws SMException {
+        if (mkdm==null)
+            mkdm = MKDMethod.OPTION_A;
+
+        byte[] panpsn = formatPANPSN(accountNo, accntSeqNo, mkdm);
+        Key mkac = deriveICCMasterKey(decryptFromLMK(imkac), panpsn);
+        Key skarpc = mkac;
+        switch(skdm){
+            case VSDC:
+                constraintMKDM(mkdm, skdm);
+                constraintARPCM(skdm, arpcMethod);
+                break;
+            case MCHIP:
+                constraintMKDM(mkdm, skdm);
+                constraintARPCM(skdm, arpcMethod);
+                break;
+            case EMV_CSKD:
+                skarpc = deriveCommonSK_AC(mkac, atc);
+                break;
+            default:
+                throw new SMException("Session Key Derivation "+skdm+" not supported");
+        }
+
+        return calculateARPC(skarpc, arqc, arpcMethod, arc, propAuthData);
+    }
+
+    @Override
+    public byte[] verifyARQCGenerateARPCImpl(MKDMethod mkdm, SKDMethod skdm, SecureDESKey imkac
+            ,String accountNo, String accntSeqNo, byte[] arqc, byte[] atc, byte[] upn 
+            ,byte[] transData, ARPCMethod arpcMethod, byte[] arc, byte[] propAuthData)
+            throws SMException {
+        if (mkdm==null)
+            mkdm = MKDMethod.OPTION_A;
+
+        byte[] panpsn = formatPANPSN(accountNo, accntSeqNo, mkdm);
+        Key mkac = deriveICCMasterKey(decryptFromLMK(imkac), panpsn);
+        Key skac = mkac;
+        Key skarpc = mkac;
+        switch(skdm){
+            case VSDC:
+                constraintMKDM(mkdm, skdm);
+                constraintARPCM(skdm, arpcMethod);
+                break;
+            case MCHIP:
+                constraintMKDM(mkdm, skdm);
+                constraintARPCM(skdm, arpcMethod);
+                skac = deriveSK_MK(mkac,atc,upn);
+                break;
+            case EMV_CSKD:
+                skac = deriveSK_MK(mkac, atc, new byte[4]);
+                skarpc = skac;
+                break;
+            default:
+                throw new SMException("Session Key Derivation "+skdm+" not supported");
+        }
+
+        if (!Arrays.equals(arqc, calculateMACISO9797Alg3(skac, transData)))
+            return null;
+
+        return calculateARPC(skarpc, arqc, arpcMethod, arc, propAuthData);
+    }
+
+    /**
+     * Calculate ARPC.
+     * <p>
+     * Entry point e.g. for simulator systems
+     */
+    byte[] calculateARPC(Key skarpc, byte[] arqc, ARPCMethod arpcMethod
+             ,byte[] arc, byte[] propAuthData) throws SMException {
+        if (arpcMethod == null)
+            arpcMethod = ARPCMethod.METHOD_1;
+
+        byte[] b = new byte[8];
+        switch(arpcMethod) {
+            case METHOD_1:
+                System.arraycopy(arc, arc.length-2, b, 0, 2);
+                b = ISOUtil.xor(arqc, b);
+                return jceHandler.encryptData(b, skarpc);
+            case METHOD_2:
+                b = ISOUtil.concat(arqc, arc);
+                if (propAuthData != null)
+                    b = ISOUtil.concat(b, propAuthData);
+                b = paddingISO9797Method2(b);
+                b = calculateMACISO9797Alg3(skarpc, b);
+                return Arrays.copyOf(b, 4);
+            default:
+                throw new SMException("ARPC Method "+arpcMethod+" not supported");
+        }
     }
 
     @Override
@@ -862,6 +1114,20 @@ public class JCESecurityModule extends BaseSMAdapter {
         return pinBlockFormat==SMAdapter.FORMAT41 || pinBlockFormat==SMAdapter.FORMAT42;
     }
 
+    @Override
+    public byte[] encryptDataImpl(CipherMode cipherMode, SecureDESKey kd
+            ,byte[] data, byte[] iv) throws SMException {
+        Key dek = decryptFromLMK(kd);
+        return jceHandler.doCryptStuff(data, dek, Cipher.ENCRYPT_MODE, cipherMode, iv);
+    }
+
+    @Override
+    public byte[] decryptDataImpl(CipherMode cipherMode, SecureDESKey kd
+            ,byte[] data, byte[] iv) throws SMException {
+        Key dek = decryptFromLMK(kd);
+        return jceHandler.doCryptStuff(data, dek, Cipher.DECRYPT_MODE, cipherMode, iv);
+    }
+
     /**
      * Generates CBC-MAC (Cipher Block Chaining Message Authentication Code)
      * for some data.
@@ -871,6 +1137,7 @@ public class JCESecurityModule extends BaseSMAdapter {
      * @return generated CBC-MAC bytes
      * @throws SMException
      */
+    @Override
     protected byte[] generateCBC_MACImpl (byte[] data, SecureDESKey kd) throws SMException {
         LogEvent evt = new LogEvent(this, "jce-provider-cbc-mac");
         try {
@@ -890,6 +1157,7 @@ public class JCESecurityModule extends BaseSMAdapter {
      * @return generated EDE-MAC bytes
      * @throws SMException
      */
+    @Override
     protected byte[] generateEDE_MACImpl (byte[] data, SecureDESKey kd) throws SMException {
         LogEvent evt = new LogEvent(this, "jce-provider-ede-mac");
         try {
@@ -949,8 +1217,52 @@ public class JCESecurityModule extends BaseSMAdapter {
      * @return generated Key Check Value
      * @throws SMException
      */
+    @Override
     protected byte[] generateKeyCheckValueImpl (SecureDESKey secureDESKey) throws SMException {
         return  calculateKeyCheckValue(decryptFromLMK(secureDESKey));
+    }
+
+    @Override
+    public SecureDESKey translateKeySchemeImpl (SecureDESKey key, KeyScheme keyScheme)
+            throws SMException {
+
+        if (key == null)
+            throw new SMException("Missing key to change");
+
+        if (keyScheme == null)
+            throw new SMException("Missing desired key schame");
+
+        if (keyScheme == key.getScheme())
+            return key;
+
+        switch (key.getScheme()) {
+            case Z:
+                throw new SMException("Single length DES key using the variant method"
+                        + " can not be converted to any other key");
+            case U:
+            case T:
+                throw new SMException("DES key using the variant method can not "
+                        + "be converted to less secure key using X9.17 method");
+            case X:
+                if (keyScheme != KeyScheme.U)
+                    throw new SMException("Double length key using X9.17 method may be  "
+                            + "converted only to double length key using variant method");
+                break;
+            case Y:
+                if (keyScheme != KeyScheme.T)
+                    throw new SMException("Triple length key using X9.17 method may be  "
+                            + "converted only to triple length key using variant method");
+                break;
+            default:
+                throw new SMException("Change key scheme allowed only for keys"
+                        + "using variant method");
+        }
+
+        // get key in clear
+        Key clearKey = decryptFromLMK(key);
+        // Encrypt key under LMK
+        String keyType = getMajorType(key.getKeyType()) + ":" + key.getVariant() + keyScheme;
+        return encryptToLMK(key.getKeyLength(), keyType, clearKey);
     }
 
     /**
@@ -975,8 +1287,7 @@ public class JCESecurityModule extends BaseSMAdapter {
             byte[] clearComponent3 = ISOUtil.hex2byte(clearComponent3HexString);
             byte[] clearKeyBytes = ISOUtil.xor(ISOUtil.xor(clearComponent1, clearComponent2),
                     clearComponent3);
-            Key clearKey = null;
-            clearKey = jceHandler.formDESKey(keyLength, clearKeyBytes);
+            Key clearKey = jceHandler.formDESKey(keyLength, clearKeyBytes);
             secureDESKey = encryptToLMK(keyLength, keyType, clearKey);
             SimpleMsg[] cmdParameters =  {
                 new SimpleMsg("parameter", "Key Length", keyLength),
@@ -1067,7 +1378,6 @@ public class JCESecurityModule extends BaseSMAdapter {
      * @throws SMException
      */
     private Key decryptFromLMK (SecureDESKey secureDESKey) throws SMException {
-        Key key = null;
         Key left, medium, right;
         byte[] keyBytes = secureDESKey.getKeyBytes();
         byte[] bl = new byte[SMAdapter.LENGTH_DES>>3];
@@ -1110,8 +1420,7 @@ public class JCESecurityModule extends BaseSMAdapter {
         }
         if (!Util.isDESParityAdjusted(clearKeyBytes))
             throw new JCEHandlerException("Parity not adjusted");
-        key = jceHandler.formDESKey(secureDESKey.getKeyLength(), clearKeyBytes);
-        return key;
+        return jceHandler.formDESKey(secureDESKey.getKeyLength(), clearKeyBytes);
     }
 
     private char[] formatPINBlock(String pin, int checkDigit){
@@ -1128,10 +1437,10 @@ public class JCESecurityModule extends BaseSMAdapter {
 
     private String[] splitPins(String pins) {
       String[] pin = new String[2];
-      StringTokenizer st = new StringTokenizer(pins, " :;,.");
-      pin[0] = st.nextToken();
-      if (st.hasMoreTokens())
-        pin[1] = st.nextToken();
+      String[] p = SPLIT_PIN_PATTERN.split(pins);
+      pin[0] = p[0];
+      if (p.length >= 2)
+          pin[1] = p[1];
       return pin;
     }
 
@@ -1245,7 +1554,7 @@ public class JCESecurityModule extends BaseSMAdapter {
                              ,int padidx, int offset, char padDigit)
             throws SMException {
       // test pin block check digit
-      if (checkDigit >= 0 && (pblock[0] - '0') != checkDigit)
+      if (checkDigit >= 0 && pblock[0] - '0' != checkDigit)
           throw new SMException("PIN Block Error - invalid check digit");
       // test pin block pdding
       int i = pblock.length - 1;
@@ -1417,8 +1726,8 @@ public class JCESecurityModule extends BaseSMAdapter {
             Provider provider = null;
             LogEvent evt = new LogEvent(this, "jce-provider");
             try {
-                if ((jceProviderClassName == null) || (jceProviderClassName.compareTo("")
-                        == 0)) {
+                if (jceProviderClassName == null || jceProviderClassName.compareTo("")
+                        == 0) {
                     evt.addMessage("No JCE Provider specified. Attempting to load default provider (SunJCE).");
                     jceProviderClassName = "com.sun.crypto.provider.SunJCE";
                 }
@@ -1596,7 +1905,7 @@ public class JCESecurityModule extends BaseSMAdapter {
     /**
      * The clear Local Master Keys
      */
-    private Map<Integer,SecretKey> lmks = new TreeMap<Integer,SecretKey>();
+    private final Map<Integer,SecretKey> lmks = new TreeMap<Integer,SecretKey>();
     /**
      * A index for the LMK used to encrypt the PINs
      */
@@ -1693,12 +2002,12 @@ public class JCESecurityModule extends BaseSMAdapter {
         for (int i = 0; i < b.length; i++)
         {
             byte c = b[i];
-            b[i] = (byte) ((c >>> 1) & 0x7F);
+            b[i] = (byte) (c >>> 1 & 0x7F);
             if (carry)
             {
                 b[i] |= 0x80;
             }
-            carry = ((c & 0x01) == 1);
+            carry = (c & 0x01) == 1;
         }
     }
 
@@ -1928,14 +2237,6 @@ public class JCESecurityModule extends BaseSMAdapter {
 
     protected EncryptedPIN translatePINImpl
             (EncryptedPIN pinUnderDuk, KeySerialNumber ksn,
-             SecureDESKey bdk, SecureDESKey kd2, byte destinationPINBlockFormat)
-            throws SMException
-    {
-        return translatePINImpl(pinUnderDuk,ksn,bdk,kd2,destinationPINBlockFormat,false);
-    }
-
-    protected EncryptedPIN translatePINImpl
-            (EncryptedPIN pinUnderDuk, KeySerialNumber ksn,
              SecureDESKey bdk, SecureDESKey kd2, byte destinationPINBlockFormat,boolean tdes)
             throws SMException
     {
@@ -1974,18 +2275,39 @@ public class JCESecurityModule extends BaseSMAdapter {
         return new EncryptedPIN(pinUnderLmk, SMAdapter.FORMAT00, pan,false);
     }
 
-    public EncryptedPIN translatePIN
-            (EncryptedPIN pinUnderDuk, KeySerialNumber ksn,
-             SecureDESKey bdk, SecureDESKey kd2, byte destinationPINBlockFormat, boolean tdes)
+    /**
+     * Exports PIN to DUKPT Encryption.
+     *
+     * @param pinUnderLmk
+     * @param ksn
+     * @param bdk
+     * @param tdes
+     * @param destinationPINBlockFormat
+     * @return The encrypted pin
+     * @throws SMException
+     */
+    public EncryptedPIN exportPIN
+            (EncryptedPIN pinUnderLmk, KeySerialNumber ksn, SecureDESKey bdk, boolean tdes,
+             byte destinationPINBlockFormat)
             throws SMException
     {
-        return translatePINImpl(pinUnderDuk,ksn,bdk,kd2,destinationPINBlockFormat,tdes);
+        String accountNumber = pinUnderLmk.getAccountNumber();
+        // process
+        // get clear PIN
+        byte[] clearPINBlock = jceHandler.decryptData(pinUnderLmk.getPINBlock(),
+                                                      getLMK(PINLMKIndex));
+        // extract clear pin
+        String pin = calculatePIN(clearPINBlock, pinUnderLmk.getPINBlockFormat(),
+                                  accountNumber);
+
+        clearPINBlock = calculatePINBlock(pin, destinationPINBlockFormat, accountNumber);
+
+        // encrypt PIN
+        byte[] derivedKey = calculateDerivedKey(ksn, bdk, tdes, false);
+        byte[] translatedPINBlock = specialEncrypt(clearPINBlock, derivedKey);
+
+        return new EncryptedPIN(translatedPINBlock, destinationPINBlockFormat,
+                                accountNumber, false);
     }
 
-    public EncryptedPIN importPIN
-            (EncryptedPIN pinUnderDuk, KeySerialNumber ksn, SecureDESKey bdk, boolean tdes)
-            throws SMException
-    {
-        return importPINImpl(pinUnderDuk,ksn,bdk,tdes);
-    }
 }

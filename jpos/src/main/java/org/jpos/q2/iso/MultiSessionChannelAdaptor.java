@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2014 Alejandro P. Revilla
+ * Copyright (C) 2000-2015 Alejandro P. Revilla
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -56,7 +56,7 @@ public class MultiSessionChannelAdaptor
             for (int i=0; i<sessions; i++) {
                 ISOChannel c = initChannel();
                 if (c instanceof LogSource) {
-                    LogSource ls = ((LogSource) c);
+                    LogSource ls = (LogSource) c;
                     ls.setLogger(ls.getLogger(), ls.getRealm()+"-"+i);
 
                 }

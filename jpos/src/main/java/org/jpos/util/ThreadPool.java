@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2014 Alejandro P. Revilla
+ * Copyright (C) 2000-2015 Alejandro P. Revilla
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -54,7 +54,7 @@ public class ThreadPool extends ThreadGroup implements LogSource, Loggeable, Con
 
         public PooledThread() {
             super (ThreadPool.this,
-                "PooledThread-" + (threadNumber++));
+                "PooledThread-" + threadNumber++);
             setDaemon(true);
         }
         public void run () {

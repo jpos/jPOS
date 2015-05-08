@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2014 Alejandro P. Revilla
+ * Copyright (C) 2000-2015 Alejandro P. Revilla
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -252,8 +252,12 @@ public class TLVList implements Serializable, Loggeable {
         // Skip padding chars
         if (b == 0xFF || b == 0x00) {
             do {
-                b = buffer.get() & 0xff;    
-            } while ((b == 0xFF || b == 0x00) && hasNext(buffer));
+                if (hasNext(buffer)) {
+                    b = buffer.get() & 0xff;
+                } else {
+                    break;
+                }    
+            } while (b == 0xFF || b == 0x00);
         }
         // Get first byte of Tag Identifier
         tag = b;
@@ -326,7 +330,7 @@ public class TLVList implements Serializable, Loggeable {
      * @return boolean
      */
     public boolean hasTag(int tag) {
-        return (findIndex(tag) > -1);
+        return findIndex(tag) > -1;
     }
 
     @Override

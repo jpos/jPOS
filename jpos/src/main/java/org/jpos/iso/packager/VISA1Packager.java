@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2014 Alejandro P. Revilla
+ * Copyright (C) 2000-2015 Alejandro P. Revilla
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -112,7 +112,7 @@ public class VISA1Packager
                         value = m.getString(fld).getBytes();
                     l.add(value);
                     len += value.length;
-                    if (i < (sequence.length-1)) {
+                    if (i < sequence.length-1) {
                         l.add(FS);
                         len++;
                     }

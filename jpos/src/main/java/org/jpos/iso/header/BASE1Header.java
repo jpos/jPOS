@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2014 Alejandro P. Revilla
+ * Copyright (C) 2000-2015 Alejandro P. Revilla
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -87,12 +87,12 @@ public class BASE1Header extends BaseHeader {
         header[11] = (byte) i;
     }
     public void setFlags(int i) {
-        header[12] = (byte) ((i >> 8) & 0xFF);
+        header[12] = (byte) (i >> 8 & 0xFF);
         header[13] = (byte) (i & 0xFF);
     }
     public void setStatus(int i) {
-        header[14] = (byte) ((i >> 16) & 0xFF);
-        header[15] = (byte) ((i >> 8) & 0xFF);
+        header[14] = (byte) (i >> 16 & 0xFF);
+        header[15] = (byte) (i >> 8 & 0xFF);
         header[16] = (byte) (i & 0xFF);
     }
     public void setBatchNumber(int i) {
@@ -103,7 +103,7 @@ public class BASE1Header extends BaseHeader {
     }
     public void setLen(int len) {
         len += header.length;
-        header[3]  = (byte) ((len >> 8) & 0xff);
+        header[3]  = (byte) (len >> 8 & 0xff);
         header[4]  = (byte) (len        & 0xff);
     }
     public void setDestination(String dest) {
@@ -131,7 +131,7 @@ public class BASE1Header extends BaseHeader {
     public boolean isRejected() {
         // Header length must be 26 or gerater
         // And header field 13 bit 1 must be 1 (field 13 starts at byte 22)
-        return (getLength() >= 26) && ((header[22] & 0x80) == 0x80);
+        return getLength() >= 26 && (header[22] & 0x80) == 0x80;
     }
 	
     /**

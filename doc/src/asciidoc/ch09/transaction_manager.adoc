@@ -26,7 +26,7 @@ image:images/tm_sessions.png[width="75%",alt="TransactionManager Sessions"]
 
 [IMPORTANT]
 ===========
-In the previous paragraph we mention that the TransactionManager use the
+In the previous paragraph we mention that the TransactionManager uses the
 _Flyweight pattern_.  It is extremely important to understand the pattern
 before implementing participants. Each participant is instantiated once, but
 multiple sessions can run simultaneously. In addition, sessions can be paused
@@ -52,10 +52,10 @@ transactions. Again, if not specified, the TransactionManager will use
 that using the `space` property in the XML configuration file.
 
 For recovery purposes, a persistent space (defined with the property
-`persistent-space`) is required, i.e.: `je:XXXX` (being XXXX the name
+`persistent-space`) is required, i.e.: `je:XXXX` (XXXX being the name
 of the space). But taking snapshots to disk reduces the TM speed by
 probably an order of magnitude, and many applications that use the
-TransactionManager doesn't take advantage of its recovery features, 
+TransactionManager don't take advantage of its recovery features, 
 this space defaults to an internal space.
 
 === Configuration
@@ -129,7 +129,7 @@ used, it is recommended to set `recover` to false (although it doesn't hurt
 to keep it on in most situations).
 
 * *debug* +
-If true, the TransactionManager log a small report after each transaction
+If true, the TransactionManager logs a small report after each transaction
 indicating which participants took place. The log looks like this:
 
 [source,xml]
@@ -190,12 +190,12 @@ This adds the following information to the log
 
 * *sessions* +
 Defines the number of simultaneous sessions (Threads) used to process transactions.
-Defaults to one. It is recommended to keep the `sessions` property with a
+Defaults to one. It is recommended to keep the `sessions` property within a
 reasonable value commensurate the number of CPU cores of the system. A
 large number here just slows down the capacity of the system.
 
 * *max-sessions* +
-In order to deal with occasional traffic spikes (sometime caused by small
+In order to deal with occasional traffic spikes (sometimes caused by small
 network glitches), the TransactionManager can temporarily increase the
 number of sessions. This property defines that maximum. It defaults to
 the value set for `sessions`. For obvious reasons, `max-sessions` can't
@@ -208,7 +208,8 @@ can process a large number of in-flight transactions. Those transactions
 may place in the `Context` references to live objects such as JDBC
 sessions. In order to place a cap on the number of in-flight transactions
 to avoid exhausting resources (for example a JDBC pool), this
-`max-active-sessions` property can be set. The default is 0 that means no limit.
+`max-active-sessions` property can be set.
+The default is 0, which means no limit is imposed.
 
 [TIP]
 =====

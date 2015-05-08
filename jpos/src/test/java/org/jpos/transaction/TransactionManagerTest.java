@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2014 Alejandro P. Revilla
+ * Copyright (C) 2000-2015 Alejandro P. Revilla
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -374,8 +374,8 @@ public class TransactionManagerTest {
 
     @Test
     public void testPrepare5() throws Throwable {
-        int result = transactionManager.prepare(1, 100L, new File("testTransactionManagerParam1"), new ArrayList(), (new ArrayList(
-                1000)).iterator(), true, new LogEvent("testTransactionManagerTag"), null);
+        int result = transactionManager.prepare(1, 100L, new File("testTransactionManagerParam1"), new ArrayList(), new ArrayList(
+                1000).iterator(), true, new LogEvent("testTransactionManagerTag"), null);
         assertEquals("result", 64, result);
     }
 

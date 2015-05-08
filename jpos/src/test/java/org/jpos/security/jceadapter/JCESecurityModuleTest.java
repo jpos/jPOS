@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2014 Alejandro P. Revilla
+ * Copyright (C) 2000-2015 Alejandro P. Revilla
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,6 +19,8 @@
 package org.jpos.security.jceadapter;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import static org.junit.Assert.*;
 
 import javax.crypto.spec.SecretKeySpec;
@@ -30,7 +32,10 @@ import org.jpos.core.SimpleConfiguration;
 import org.jpos.core.SubConfiguration;
 import org.jpos.iso.ISODate;
 import org.jpos.iso.ISOUtil;
+import org.jpos.security.ARPCMethod;
+import org.jpos.security.CipherMode;
 import org.jpos.security.EncryptedPIN;
+import org.jpos.security.KeyScheme;
 import org.jpos.security.MKDMethod;
 import org.jpos.security.PaddingMethod;
 import org.jpos.security.SKDMethod;
@@ -38,6 +43,7 @@ import org.jpos.security.SMAdapter;
 import org.jpos.security.SMException;
 import org.jpos.security.SecureDESKey;
 import org.jpos.util.Logger;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -50,77 +56,84 @@ public class JCESecurityModuleTest {
      * Clear key value: 4 times 12345678
      */
     static SecureDESKey zpk = new SecureDESKey(SMAdapter.LENGTH_DES3_2KEY
-          ,SMAdapter.TYPE_ZPK+":0U","34E2FC8EAD7CD07BFA2B7ED5FE4D8212" ,"6FB1");
+          ,SMAdapter.TYPE_ZPK+":0U","34E2FC8EAD7CD07BFA2B7ED5FE4D8212", "6FB1C8");
 
     /**
      * Encrypted under standard LMK test key: keytype 002 TPK (variant 0, scheme U)
      * Clear key value: 4 times 12345678
      */
     static SecureDESKey tpk = new SecureDESKey(SMAdapter.LENGTH_DES3_2KEY
-          ,SMAdapter.TYPE_TPK+":0U","E9F05D2F2DB8A8579CA3E806B35E336F" ,"6FB1");
+          ,SMAdapter.TYPE_TPK+":0U","E9F05D2F2DB8A8579CA3E806B35E336F", "6FB1C8");
 
     /**
      * Encrypted under standard LMK test key: keytype 002 PVK (variant 0, scheme Z)
      * Clear key value: 2 times 12345678
      */
     static SecureDESKey pvkA = new SecureDESKey(SMAdapter.LENGTH_DES
-          ,SMAdapter.TYPE_PVK+":0Z","141E1DA3D2D7F3F4" ,"6FB1");
+          ,SMAdapter.TYPE_PVK+":0Z","141E1DA3D2D7F3F4", "6FB1C8");
 
     /**
      * Encrypted under standard LMK test key: keytype 002 PVK (variant 0, scheme Z)
      * Clear key value: 2 times 12345678
      */
     static SecureDESKey pvkB = new SecureDESKey(SMAdapter.LENGTH_DES
-          ,SMAdapter.TYPE_PVK+":0Z","141E1DA3D2D7F3F4" ,"6FB1");
+          ,SMAdapter.TYPE_PVK+":0Z","141E1DA3D2D7F3F4", "6FB1C8");
 
     /**
      * Encrypted under standard LMK test key: keytype 402 CVK (variant 4, scheme U)
      * Clear key value: 4 times 12345678
      */
     static SecureDESKey cvk = new SecureDESKey(SMAdapter.LENGTH_DES3_2KEY
-          ,SMAdapter.TYPE_CVK+":4U","479D751977AA598CB481F548226DBF2B" ,"6FB1");
+          ,SMAdapter.TYPE_CVK+":4U","479D751977AA598CB481F548226DBF2B", "6FB1C8");
 
     /**
      * Encrypted under standard LMK test key: keytype 402 CVK (variant 4, scheme Z)
      * Clear key value: 2 times 12345678
      */
     static SecureDESKey cvkA = new SecureDESKey(SMAdapter.LENGTH_DES
-          ,SMAdapter.TYPE_CVK+":4Z","56FBB74CDEAD6949" ,"6FB1");
+          ,SMAdapter.TYPE_CVK+":4Z","56FBB74CDEAD6949", "6FB1C8");
 
     /**
      * Encrypted under standard LMK test key: keytype 402 CVK (variant 4, scheme Z)
      * Clear key value: 2 times 87654321
      */
     static SecureDESKey cvkB = new SecureDESKey(SMAdapter.LENGTH_DES
-          ,SMAdapter.TYPE_CVK+":4Z","69E636CF27A47EEE" ,"AAB1");
+          ,SMAdapter.TYPE_CVK+":4Z","69E636CF27A47EEE", "AAB151");
 
     /**
      * Encrypted under standard LMK test key: keytype 109 MK-AC (variant 1, scheme U)
      * Clear key value: 4 times 12345678
      */
     static SecureDESKey imkac = new SecureDESKey(SMAdapter.LENGTH_DES3_2KEY
-          ,SMAdapter.TYPE_MK_AC+":1U","0D39A43C864D1B40F33998B80BB02C95" ,"6FB1");
+          ,SMAdapter.TYPE_MK_AC+":1U","0D39A43C864D1B40F33998B80BB02C95", "6FB1C8");
 
     /**
      * Encrypted under standard LMK test key: keytype 702 MK-SMI (variant 2, scheme U)
      * Clear key value: 4 times 12345678
      */
     static SecureDESKey imksmi = new SecureDESKey(SMAdapter.LENGTH_DES3_2KEY
-          ,SMAdapter.TYPE_MK_SMI+":2U","E86D8A2FC81DEC4E91F9FE76EDAF3C3B" ,"6FB1");
+          ,SMAdapter.TYPE_MK_SMI+":2U","E86D8A2FC81DEC4E91F9FE76EDAF3C3B", "6FB1C8");
 
     /**
      * Encrypted under standard LMK test key: keytype 703 MK-SMC (variant 3, scheme U)
      * Clear key value: 4 times 12345678
      */
     static SecureDESKey imksmc = new SecureDESKey(SMAdapter.LENGTH_DES3_2KEY
-          ,SMAdapter.TYPE_MK_SMC+":3U","9ED29EDD0BA8B771106EB77D819F7394" ,"6FB1");
+          ,SMAdapter.TYPE_MK_SMC+":3U","9ED29EDD0BA8B771106EB77D819F7394", "6FB1C8");
 
     /**
      * Encrypted under standard LMK test key: keytype 709 MK-CVC3 (variant 7, scheme U)
      * Clear key value: 4 times 12345678
      */
     static SecureDESKey imkcvc3 = new SecureDESKey(SMAdapter.LENGTH_DES3_2KEY
-          ,SMAdapter.TYPE_MK_CVC3+":7U","DBD2D13CCA57AAAF3E477E0646EF10C9" ,"6FB1");
+          ,SMAdapter.TYPE_MK_CVC3+":7U","DBD2D13CCA57AAAF3E477E0646EF10C9", "6FB1C8");
+
+    /**
+     * Encrypted under standard LMK test key: keytype 00B DEK (variant 0, scheme U)
+     * Clear key value: 4 times 12345678
+     */
+    static SecureDESKey dek = new SecureDESKey(SMAdapter.LENGTH_DES3_2KEY
+          ,SMAdapter.TYPE_DEK+":0U","AAD5E90B44EE630E3D76D6CEC1F4AA72" ,"6FB1C8");
 
     /**
      * Pin value 1234 for account number 1234567890123 encrypted
@@ -151,6 +164,11 @@ public class JCESecurityModuleTest {
     static final String accountNoA_CSN = "00";
     
     /**
+     * 19 digits account number
+     */
+    static final String accountNoB = "8901234567890123456";
+
+    /**
      * Application Transaction Counter
      */
     static final byte[] atc01 = ISOUtil.hex2byte("0002");
@@ -162,7 +180,19 @@ public class JCESecurityModuleTest {
      */
     static final byte[] apdu01 = ISOUtil.hex2byte("8424000210");
 
+    /**
+     * Test Data 8 bytes.
+     */
+    static final byte[] testData01 = ISOUtil.hex2byte("0011223344556677");
+
+    /**
+     * Test Data 16 bytes.
+     */
+    static final byte[] testData02 = ISOUtil.hex2byte("00112233445566770011223344556677");
+
     private static final String PREFIX = "src/dist/cfg/";
+
+    private static EMVTxnData etd;
 
     @BeforeClass
     public static void setUpClass() throws Exception {
@@ -170,6 +200,71 @@ public class JCESecurityModuleTest {
       pinUnderLMK = jcesecmod.encryptPIN("1234", "1234567890123");
       pinUnderTPK = jcesecmod.exportPINImpl(pinUnderLMK, tpk, SMAdapter.FORMAT01);
       pinUnderZPK  =  new EncryptedPIN("ABE38E29B58EA392", SMAdapter.FORMAT01, accountNoA);
+      etd = new EMVTxnData();
+    }
+
+    static class EMVTxnData {
+ 
+      Map<String, byte[]> dm;
+ 
+      EMVTxnData() {
+          dm = new HashMap<String, byte[]>();
+          dm.put("AMMOUNT",           ISOUtil.hex2byte("000000010000"));
+          dm.put("AMMOUNT_OTHER",     ISOUtil.hex2byte("000000001000"));
+          dm.put("TERMINAL_COUNTRY",  ISOUtil.hex2byte("0840"));
+          dm.put("TVR",               ISOUtil.hex2byte("0000001080"));
+          dm.put("TERMINAL_CURRENCY", ISOUtil.hex2byte("0840"));
+          dm.put("TXN_DATE",          ISOUtil.hex2byte("980704"));
+          dm.put("TXN_TYPE", ISOUtil.hex2byte("00"));
+          dm.put("UPN",      ISOUtil.hex2byte("11111111"));
+          dm.put("AIP",      ISOUtil.hex2byte("5800"));
+          dm.put("ATC",      ISOUtil.hex2byte("3456"));
+          dm.put("CVR",      ISOUtil.hex2byte("A08003242000"));
+      }
+
+      byte[] getDataNoPad() {
+          byte[] data = new byte[0];
+          data = ISOUtil.concat(data, dm.get("AMMOUNT") );
+          data = ISOUtil.concat(data, dm.get("AMMOUNT_OTHER") );
+          data = ISOUtil.concat(data, dm.get("TERMINAL_COUNTRY") );
+          data = ISOUtil.concat(data, dm.get("TVR") );
+          data = ISOUtil.concat(data, dm.get("TERMINAL_CURRENCY") );
+          data = ISOUtil.concat(data, dm.get("TXN_DATE") );
+          data = ISOUtil.concat(data, dm.get("TXN_TYPE") );
+          data = ISOUtil.concat(data, dm.get("UPN") );
+          data = ISOUtil.concat(data, dm.get("AIP") );
+          data = ISOUtil.concat(data, dm.get("ATC") );
+          data = ISOUtil.concat(data, dm.get("CVR") );
+          return data;
+      }
+
+      byte[] getDataPad80() {
+          return paddingISO9797Method2(getDataNoPad());
+      }
+
+      byte[] getATC() {
+          return dm.get("ATC");
+      }
+
+      byte[] getUPN() {
+          return dm.get("UPN");
+      }
+
+    }
+
+    /**
+     * ISO/IEC 9797-1 padding method 2
+     * @param d da to be padded
+     * @return padded data
+     */
+    static byte[] paddingISO9797Method2(byte[] d) {
+        //Padding - first byte 0x80 rest 0x00
+        byte[] t = new byte[d.length - d.length%8 + 8];
+        System.arraycopy(d, 0, t, 0, d.length);
+        for (int i=d.length;i<t.length;i++)
+          t[i] = (byte)(i==d.length?0x80:0x00);
+        d = t;
+        return d;
     }
 
     @Test
@@ -881,6 +976,354 @@ public class JCESecurityModuleTest {
     }
 
     @Test
+    public void testGenerateARPCImpl_VSDC_M1() throws Throwable {
+        byte[] arqc   = ISOUtil.hex2byte("26C8A1042D1CAF3E");
+        byte[] arc    = ISOUtil.hex2byte("3030");
+        byte[] arpc   = ISOUtil.hex2byte("98DE7C7B3D80A831");
+        byte[] result = jcesecmod.generateARPC(MKDMethod.OPTION_A, SKDMethod.VSDC
+                        ,imkac, accountNoA, accountNoA_CSN, arqc
+                        ,etd.getATC(), null
+                        ,ARPCMethod.METHOD_1, arc, null);
+        assertArrayEquals(arpc, result);
+    }
+
+    @Test (expected = SMException.class)
+    public void testGenerateARPCImpl_VSDC_M2() throws Throwable {
+        byte[] arqc   = ISOUtil.hex2byte("26C8A1042D1CAF3E");
+        byte[] csu    = ISOUtil.hex2byte("00120000");
+        byte[] arpc   = ISOUtil.hex2byte("701E5370");
+        byte[] result = jcesecmod.generateARPC(MKDMethod.OPTION_A, SKDMethod.VSDC
+                        ,imkac, accountNoA, accountNoA_CSN, arqc
+                        ,etd.getATC(), null
+                        ,ARPCMethod.METHOD_2, csu, null);
+        assertArrayEquals(arpc, result);
+    }
+
+    @Test
+    public void testGenerateARPCImpl_MCHIP_M1() throws Throwable {
+        byte[] arqc   = ISOUtil.hex2byte("AC8074C9E62EE6EF");
+        byte[] arc    = ISOUtil.hex2byte("0012");
+        byte[] arpc   = ISOUtil.hex2byte("5B5B712F9A644774");
+        byte[] result = jcesecmod.generateARPC(MKDMethod.OPTION_A, SKDMethod.MCHIP
+                        ,imkac, accountNoA, accountNoA_CSN, arqc
+                        ,etd.getATC(), etd.getUPN()
+                        ,ARPCMethod.METHOD_1, arc, null);
+        assertArrayEquals(arpc, result);
+    }
+
+    @Test (expected = SMException.class)
+    public void testGenerateARPCImpl_MCHIP_M2() throws Throwable {
+        byte[] arqc   = ISOUtil.hex2byte("AC8074C9E62EE6EF");
+        byte[] csu    = ISOUtil.hex2byte("00120000");
+        byte[] arpc   = ISOUtil.hex2byte("C5868248");
+        byte[] result = jcesecmod.generateARPC(MKDMethod.OPTION_A, SKDMethod.MCHIP
+                        ,imkac, accountNoA, accountNoA_CSN, arqc
+                        ,etd.getATC(), etd.getUPN()
+                        ,ARPCMethod.METHOD_2, csu, null);
+        assertArrayEquals(arpc, result);
+    }
+
+    @Test
+    public void testGenerateARPCImpl_CSKD_M1() throws Throwable {
+        byte[] arqc   = ISOUtil.hex2byte("55BE45DD2C9E0CBF");
+        byte[] arc    = ISOUtil.hex2byte("0012");
+        byte[] arpc   = ISOUtil.hex2byte("01BAE8DE6A0DE9E0");
+        byte[] result = jcesecmod.generateARPC(MKDMethod.OPTION_A, SKDMethod.EMV_CSKD
+                        ,imkac, accountNoA, accountNoA_CSN, arqc
+                        ,etd.getATC(), null
+                        ,ARPCMethod.METHOD_1, arc, null);
+        assertArrayEquals(arpc, result);
+    }
+
+    @Test
+    public void testGenerateARPCImpl_CSKD_M2() throws Throwable {
+        byte[] arqc   = ISOUtil.hex2byte("55BE45DD2C9E0CBF");
+        byte[] csu    = ISOUtil.hex2byte("00120000");
+        byte[] arpc   = ISOUtil.hex2byte("B4C698B6");
+        byte[] result = jcesecmod.generateARPC(MKDMethod.OPTION_A, SKDMethod.EMV_CSKD
+                        ,imkac, accountNoA, accountNoA_CSN, arqc
+                        ,etd.getATC(), null
+                        ,ARPCMethod.METHOD_2, csu, null);
+        assertArrayEquals(arpc, result);
+    }
+
+    @Test
+    public void testVerifyARQCImpl_VSDC_P00() throws Throwable {
+        byte[] arqc    = ISOUtil.hex2byte("26C8A1042D1CAF3E");
+        boolean result = jcesecmod.verifyARQC(MKDMethod.OPTION_A, SKDMethod.VSDC
+                        ,imkac, accountNoA, accountNoA_CSN, arqc
+                        ,etd.getATC(), null, etd.getDataNoPad()
+        );
+        assertTrue(result);
+    }
+
+    @Test
+    public void testVerifyARQCImpl_VSDC_P80() throws Throwable {
+        byte[] arqc    = ISOUtil.hex2byte("2263CD868F3E0234");
+        boolean result = jcesecmod.verifyARQC(MKDMethod.OPTION_A, SKDMethod.VSDC
+                        ,imkac, accountNoA, accountNoA_CSN, arqc
+                        ,etd.getATC(), null, etd.getDataPad80()
+        );
+        assertTrue(result);
+    }
+
+    @Test
+    public void testVerifyARQCImpl_MCHIP_P00() throws Throwable {
+        byte[] arqc    = ISOUtil.hex2byte("9FFD1D52AE0EC0F3");
+        boolean result = jcesecmod.verifyARQC(MKDMethod.OPTION_A, SKDMethod.MCHIP
+                        ,imkac, accountNoA, accountNoA_CSN, arqc
+                        ,etd.getATC(), etd.getUPN(), etd.getDataNoPad()
+        );
+        assertTrue(result);
+    }
+
+    @Test
+    public void testVerifyARQCImpl_MCHIP_P80() throws Throwable {
+        byte[] arqc    = ISOUtil.hex2byte("AC8074C9E62EE6EF");
+        boolean result = jcesecmod.verifyARQC(MKDMethod.OPTION_A, SKDMethod.MCHIP
+                        ,imkac, accountNoA, accountNoA_CSN, arqc
+                        ,etd.getATC(), etd.getUPN(), etd.getDataPad80()
+        );
+        assertTrue(result);
+    }
+
+    @Test
+    public void testVerifyARQCImpl_CSKD_P00() throws Throwable {
+        byte[] arqc    = ISOUtil.hex2byte("36DBEE15F36B1E7F");
+        boolean result = jcesecmod.verifyARQC(MKDMethod.OPTION_A, SKDMethod.EMV_CSKD
+                        ,imkac, accountNoA, accountNoA_CSN, arqc
+                        ,etd.getATC(), null, etd.getDataNoPad()
+        );
+        assertTrue(result);
+    }
+
+    @Test
+    public void testVerifyARQCImpl_CSKD_P80() throws Throwable {
+        byte[] arqc    = ISOUtil.hex2byte("55BE45DD2C9E0CBF");
+        boolean result = jcesecmod.verifyARQC(MKDMethod.OPTION_A, SKDMethod.EMV_CSKD
+                        ,imkac, accountNoA, accountNoA_CSN, arqc
+                        ,etd.getATC(), null, etd.getDataPad80()
+        );
+        assertTrue(result);
+    }
+
+    @Test //OK
+    public void testVerifyARQCGenerateARPCImpl_VSDC_P00_M1() throws Throwable {
+        byte[] arqc   = ISOUtil.hex2byte("26C8A1042D1CAF3E");
+        byte[] arc    = ISOUtil.hex2byte("3030");
+        byte[] arpc   = ISOUtil.hex2byte("98DE7C7B3D80A831");
+        byte[] result = jcesecmod.verifyARQCGenerateARPC(MKDMethod.OPTION_A, SKDMethod.VSDC
+                        ,imkac, accountNoA, accountNoA_CSN, arqc
+                        ,etd.getATC(), null, etd.getDataNoPad()
+                        ,ARPCMethod.METHOD_1, arc, null);
+        assertArrayEquals(arpc, result);
+    }
+
+    @Test //OK
+    public void testVerifyARQCGenerateARPCImpl_VSDC_P80_M1() throws Throwable {
+        byte[] arqc   = ISOUtil.hex2byte("2263CD868F3E0234");
+        byte[] arc    = ISOUtil.hex2byte("3030");
+        byte[] arpc   = ISOUtil.hex2byte("5A1D15A96C035C4F");
+        byte[] result = jcesecmod.verifyARQCGenerateARPC(MKDMethod.OPTION_A, SKDMethod.VSDC
+                        ,imkac, accountNoA, accountNoA_CSN, arqc
+                        ,etd.getATC(), null, etd.getDataPad80()
+                        ,ARPCMethod.METHOD_1, arc, null);
+        assertArrayEquals(arpc, result);
+    }
+
+    @Test (expected = SMException.class)
+    public void testVerifyARQCGenerateARPCImpl_VSDC_P00_M2() throws Throwable {
+        byte[] arqc   = ISOUtil.hex2byte("26C8A1042D1CAF3E");
+        byte[] csu    = ISOUtil.hex2byte("00120000");
+        byte[] arpc   = ISOUtil.hex2byte("701E5370");
+        byte[] result = jcesecmod.verifyARQCGenerateARPC(MKDMethod.OPTION_A, SKDMethod.VSDC
+                        ,imkac, accountNoA, accountNoA_CSN, arqc
+                        ,etd.getATC(), null, etd.getDataNoPad()
+                        ,ARPCMethod.METHOD_2, csu, null);
+        assertArrayEquals(arpc, result);
+    }
+
+    @Test (expected = SMException.class)
+    public void testVerifyARQCGenerateARPCImpl_VSDC_P80_M2() throws Throwable {
+        byte[] arqc   = ISOUtil.hex2byte("2263CD868F3E0234");
+        byte[] csu    = ISOUtil.hex2byte("00120000");
+        byte[] arpc   = ISOUtil.hex2byte("4A344A05");
+        byte[] result = jcesecmod.verifyARQCGenerateARPC(MKDMethod.OPTION_A, SKDMethod.VSDC
+                        ,imkac, accountNoA, accountNoA_CSN, arqc
+                        ,etd.getATC(), null, etd.getDataPad80()
+                        ,ARPCMethod.METHOD_2, csu, null);
+        assertArrayEquals(arpc, result);
+    }
+
+    @Test //OK
+    public void testVerifyARQCGenerateARPCImpl_MCHIP_P00_M1() throws Throwable {
+        byte[] arqc   = ISOUtil.hex2byte("9FFD1D52AE0EC0F3");
+        byte[] arc    = ISOUtil.hex2byte("0012");
+        byte[] arpc   = ISOUtil.hex2byte("20DCD25599B060B5");
+        byte[] result = jcesecmod.verifyARQCGenerateARPC(MKDMethod.OPTION_A, SKDMethod.MCHIP
+                        ,imkac, accountNoA, accountNoA_CSN, arqc
+                        ,etd.getATC(), etd.getUPN(), etd.getDataNoPad()
+                        ,ARPCMethod.METHOD_1, arc, null);
+        assertArrayEquals(arpc, result);
+    }
+
+    @Test //OK
+    public void testVerifyARQCGenerateARPCImpl_MCHIP_P80_M1() throws Throwable {
+        byte[] arqc   = ISOUtil.hex2byte("AC8074C9E62EE6EF");
+        byte[] arc    = ISOUtil.hex2byte("0012");
+        byte[] arpc   = ISOUtil.hex2byte("5B5B712F9A644774");
+        byte[] result = jcesecmod.verifyARQCGenerateARPC(MKDMethod.OPTION_A, SKDMethod.MCHIP
+                        ,imkac, accountNoA, accountNoA_CSN, arqc
+                        ,etd.getATC(), etd.getUPN(), etd.getDataPad80()
+                        ,ARPCMethod.METHOD_1, arc, null);
+        assertArrayEquals(arpc, result);
+    }
+
+    @Test (expected = SMException.class)
+    public void testVerifyARQCGenerateARPCImpl_MCHIP_P00_M2() throws Throwable {
+        byte[] arqc   = ISOUtil.hex2byte("9FFD1D52AE0EC0F3");
+        byte[] csu    = ISOUtil.hex2byte("00120000");
+        byte[] arpc   = ISOUtil.hex2byte("24E13D5D");
+        byte[] result = jcesecmod.verifyARQCGenerateARPC(MKDMethod.OPTION_A, SKDMethod.MCHIP
+                        ,imkac, accountNoA, accountNoA_CSN, arqc
+                        ,etd.getATC(), etd.getUPN(), etd.getDataNoPad()
+                        ,ARPCMethod.METHOD_2, csu, null);
+        assertArrayEquals(arpc, result);
+    }
+
+    @Test (expected = SMException.class)
+    public void testVerifyARQCGenerateARPCImpl_MCHIP_P80_M2() throws Throwable {
+        byte[] arqc   = ISOUtil.hex2byte("AC8074C9E62EE6EF");
+        byte[] csu    = ISOUtil.hex2byte("00120000");
+        byte[] arpc   = ISOUtil.hex2byte("C5868248");
+        byte[] result = jcesecmod.verifyARQCGenerateARPC(MKDMethod.OPTION_A, SKDMethod.MCHIP
+                        ,imkac, accountNoA, accountNoA_CSN, arqc
+                        ,etd.getATC(), etd.getUPN(), etd.getDataPad80()
+                        ,ARPCMethod.METHOD_2, csu, null);
+        assertArrayEquals(arpc, result);
+    }
+
+    @Test //OK
+    public void testVerifyARQCGenerateARPCImpl_CSKD_P00_M1() throws Throwable {
+        byte[] arqc   = ISOUtil.hex2byte("36DBEE15F36B1E7F");
+        byte[] arc    = ISOUtil.hex2byte("0012");
+        byte[] arpc   = ISOUtil.hex2byte("0E56BBA476EB5588");
+        byte[] result = jcesecmod.verifyARQCGenerateARPC(MKDMethod.OPTION_A, SKDMethod.EMV_CSKD
+                        ,imkac, accountNoA, accountNoA_CSN, arqc
+                        ,etd.getATC(), null, etd.getDataNoPad()
+                        ,ARPCMethod.METHOD_1, arc, null);
+        assertArrayEquals(arpc, result);
+    }
+
+    @Test //OK + panpsn_ob_fix
+    public void testVerifyARQCGenerateARPCImpl_CSKD_P00_M1_OB() throws Throwable {
+        byte[] arqc   = ISOUtil.hex2byte("36DBEE15F36B1E7F");
+        byte[] arc    = ISOUtil.hex2byte("0012");
+        byte[] arpc   = ISOUtil.hex2byte("0E56BBA476EB5588");
+        byte[] result = jcesecmod.verifyARQCGenerateARPC(MKDMethod.OPTION_B, SKDMethod.EMV_CSKD
+                        ,imkac, accountNoA, accountNoA_CSN, arqc
+                        ,etd.getATC(), null, etd.getDataNoPad()
+                        ,ARPCMethod.METHOD_1, arc, null);
+        assertArrayEquals(arpc, result);
+    }
+
+    @Test //OK
+    public void testVerifyARQCGenerateARPCImpl_CSKD_P00_M1_OA_P19() throws Throwable {
+        byte[] arqc   = ISOUtil.hex2byte("36DBEE15F36B1E7F");
+        byte[] arc    = ISOUtil.hex2byte("0012");
+        byte[] arpc   = ISOUtil.hex2byte("0E56BBA476EB5588");
+        byte[] result = jcesecmod.verifyARQCGenerateARPC(MKDMethod.OPTION_A, SKDMethod.EMV_CSKD
+                        ,imkac, accountNoB, accountNoA_CSN, arqc
+                        ,etd.getATC(), null, etd.getDataNoPad()
+                        ,ARPCMethod.METHOD_1, arc, null);
+        assertArrayEquals(arpc, result);
+    }
+
+    @Test //OK
+    public void testVerifyARQCGenerateARPCImpl_CSKD_P00_M1_OB_P19() throws Throwable {
+        byte[] arqc   = ISOUtil.hex2byte("FD4271966BB0E366");
+        byte[] arc    = ISOUtil.hex2byte("0012");
+        byte[] arpc   = ISOUtil.hex2byte("1882BCA130A38D6C");
+        byte[] result = jcesecmod.verifyARQCGenerateARPC(MKDMethod.OPTION_B, SKDMethod.EMV_CSKD
+                        ,imkac, accountNoB, accountNoA_CSN, arqc
+                        ,etd.getATC(), null, etd.getDataNoPad()
+                        ,ARPCMethod.METHOD_1, arc, null);
+        assertArrayEquals(arpc, result);
+    }
+
+    @Test //OK
+    public void testVerifyARQCGenerateARPCImpl_CSKD_P80_M1() throws Throwable {
+        byte[] arqc   = ISOUtil.hex2byte("55BE45DD2C9E0CBF");
+        byte[] arc    = ISOUtil.hex2byte("0012");
+        byte[] arpc   = ISOUtil.hex2byte("01BAE8DE6A0DE9E0");
+        byte[] result = jcesecmod.verifyARQCGenerateARPC(MKDMethod.OPTION_A, SKDMethod.EMV_CSKD
+                        ,imkac, accountNoA, accountNoA_CSN, arqc
+                        ,etd.getATC(), null, etd.getDataPad80()
+                        ,ARPCMethod.METHOD_1, arc, null);
+        assertArrayEquals(arpc, result);
+    }
+
+    @Test //OK
+    public void testVerifyARQCGenerateARPCImpl_CSKD_P80_M1_OB_P19() throws Throwable {
+        byte[] arqc   = ISOUtil.hex2byte("78289F2805494561");
+        byte[] arc    = ISOUtil.hex2byte("0012");
+        byte[] arpc   = ISOUtil.hex2byte("C99AF51220D865E3");
+        byte[] result = jcesecmod.verifyARQCGenerateARPC(MKDMethod.OPTION_B, SKDMethod.EMV_CSKD
+                        ,imkac, accountNoB, accountNoA_CSN, arqc
+                        ,etd.getATC(), null, etd.getDataPad80()
+                        ,ARPCMethod.METHOD_1, arc, null);
+        assertArrayEquals(arpc, result);
+    }
+
+    @Test //OK
+    public void testVerifyARQCGenerateARPCImpl_CSKD_P00_M2() throws Throwable {
+        byte[] arqc   = ISOUtil.hex2byte("36DBEE15F36B1E7F");
+        byte[] csu    = ISOUtil.hex2byte("00120000");
+        byte[] arpc   = ISOUtil.hex2byte("332CD266");
+        byte[] result = jcesecmod.verifyARQCGenerateARPC(MKDMethod.OPTION_A, SKDMethod.EMV_CSKD
+                        ,imkac, accountNoA, accountNoA_CSN, arqc
+                        ,etd.getATC(), null, etd.getDataNoPad()
+                        ,ARPCMethod.METHOD_2, csu, null);
+        assertArrayEquals(arpc, result);
+    }
+
+    @Test //OK
+    public void testVerifyARQCGenerateARPCImpl_CSKD_P00_M2_OB_P19() throws Throwable {
+        byte[] arqc   = ISOUtil.hex2byte("FD4271966BB0E366");
+        byte[] csu    = ISOUtil.hex2byte("00120000");
+        byte[] arpc   = ISOUtil.hex2byte("5CA2E0BC");
+        byte[] result = jcesecmod.verifyARQCGenerateARPC(MKDMethod.OPTION_B, SKDMethod.EMV_CSKD
+                        ,imkac, accountNoB, accountNoA_CSN, arqc
+                        ,etd.getATC(), null, etd.getDataNoPad()
+                        ,ARPCMethod.METHOD_2, csu, null);
+        assertArrayEquals(arpc, result);
+    }
+
+    @Test //OK
+    public void testVerifyARQCGenerateARPCImpl_CSKD_P80_M2() throws Throwable {
+        byte[] arqc   = ISOUtil.hex2byte("55BE45DD2C9E0CBF");
+        byte[] csu    = ISOUtil.hex2byte("00120000");
+        byte[] arpc   = ISOUtil.hex2byte("B4C698B6");
+        byte[] result = jcesecmod.verifyARQCGenerateARPC(MKDMethod.OPTION_A, SKDMethod.EMV_CSKD
+                        ,imkac, accountNoA, accountNoA_CSN, arqc
+                        ,etd.getATC(), null, etd.getDataPad80()
+                        ,ARPCMethod.METHOD_2, csu, null);
+        assertArrayEquals(arpc, result);
+    }
+
+    @Test
+    public void testVerifyARQCGenerateARPCImpl_CSKD_P80_M2_OB_P19() throws Throwable {
+        byte[] arqc   = ISOUtil.hex2byte("78289F2805494561");
+        byte[] csu    = ISOUtil.hex2byte("00120000");
+        byte[] arpc   = ISOUtil.hex2byte("26630C18");
+        byte[] result = jcesecmod.verifyARQCGenerateARPC(MKDMethod.OPTION_B, SKDMethod.EMV_CSKD
+                        ,imkac, accountNoB, accountNoA_CSN, arqc
+                        ,etd.getATC(), null, etd.getDataPad80()
+                        ,ARPCMethod.METHOD_2, csu, null);
+        assertArrayEquals(arpc, result);
+    }
+
+    @Test
     public void testGenerateSM_MACImpl1() throws Throwable {
         String accountNo = accountNoA;
         String accntSeqNo = accountNoA_CSN;
@@ -941,7 +1384,6 @@ public class JCESecurityModuleTest {
         apdu = ISOUtil.concat(apdu, data);
         byte[] result = jcesecmod.generateSM_MAC(MKDMethod.OPTION_A, SKDMethod.VSDC
                         ,imksmi, accountNo, accntSeqNo, atc, arqc, apdu);
-        System.out.println(ISOUtil.hexString(result));
         assertArrayEquals(ISOUtil.hex2byte("C1F2C04136BD48E6"), result);
     }
 
@@ -1059,6 +1501,182 @@ public class JCESecurityModuleTest {
                         ,oldpin, pin, zpk, imksmc, imkac, SMAdapter.FORMAT42);
         assertArrayEquals(expectdPIN.getPINBlock(), result.getValue0().getPINBlock());
         assertArrayEquals(ISOUtil.hex2byte("6F403E51DCE1E4A6"), result.getValue1());
+    }
+
+    @Test
+    public void testEncryptDataImplECB_8Bytes() throws Throwable {
+        byte[] b = testData01;
+        b = jcesecmod.encryptDataImpl(CipherMode.ECB, dek, b, null);
+        assertArrayEquals(ISOUtil.hex2byte("ABFA6F3C28A8CB0C"), b);
+    }
+
+    @Test
+    public void testEncryptDataImplECB_16Bytes() throws Throwable {
+        byte[] b = testData02;
+        b = jcesecmod.encryptDataImpl(CipherMode.ECB, dek, b, null);
+        assertArrayEquals(ISOUtil.hex2byte("ABFA6F3C28A8CB0CABFA6F3C28A8CB0C"), b);
+    }
+
+    @Test
+    public void testEncryptDataImplCBC_8Bytes() throws Throwable {
+        byte[] b = testData01;
+        byte[] iv = new byte[8];
+        b = jcesecmod.encryptDataImpl(CipherMode.CBC, dek, b, iv);
+        assertArrayEquals(ISOUtil.hex2byte("ABFA6F3C28A8CB0C"), b);
+        assertArrayEquals(ISOUtil.hex2byte("ABFA6F3C28A8CB0C"), iv);
+    }
+
+    @Test
+    public void testEncryptDataImplCBC_16Bytes() throws Throwable {
+        byte[] b = testData02;
+        byte[] iv = new byte[8];
+        b = jcesecmod.encryptDataImpl(CipherMode.CBC, dek, b, iv);
+        assertArrayEquals(ISOUtil.hex2byte("ABFA6F3C28A8CB0C99C22188F56DAE9F"), b);
+        assertArrayEquals(ISOUtil.hex2byte("99C22188F56DAE9F"), iv);
+    }
+
+    @Test
+    public void testEncryptDataImplCFB8_8Bytes() throws Throwable {
+        byte[] b = testData01;
+        byte[] iv = new byte[8];
+        b = jcesecmod.encryptDataImpl(CipherMode.CFB8, dek, b, iv);
+        assertArrayEquals(ISOUtil.hex2byte("6F5DF407E1691DB1"), b);
+        assertArrayEquals(ISOUtil.hex2byte("6F5DF407E1691DB1"), iv);
+    }
+
+    @Test
+    public void testEncryptDataImplCFB8_16Bytes() throws Throwable {
+        byte[] b = testData02;
+        byte[] iv = new byte[8];
+        b = jcesecmod.encryptDataImpl(CipherMode.CFB8, dek, b, iv);
+        assertArrayEquals(ISOUtil.hex2byte("6F5DF407E1691DB1B049507DB318D6E2"), b);
+        assertArrayEquals(ISOUtil.hex2byte("B049507DB318D6E2"), iv);
+    }
+
+    @Test
+    public void testEncryptDataImplCFB64_8Bytes() throws Throwable {
+        byte[] b = testData01;
+        byte[] iv = new byte[8];
+        b = jcesecmod.encryptDataImpl(CipherMode.CFB64, dek, b, iv);
+        assertArrayEquals(ISOUtil.hex2byte("6FA0EA8C194EDCFC"), b);
+        assertArrayEquals(ISOUtil.hex2byte("6FA0EA8C194EDCFC"), iv);
+    }
+
+    @Test
+    public void testEncryptDataImplCFB64_16Bytes() throws Throwable {
+        byte[] b = testData02;
+        byte[] iv = new byte[8];
+        b = jcesecmod.encryptDataImpl(CipherMode.CFB64, dek, b, iv);
+        assertArrayEquals(ISOUtil.hex2byte("6FA0EA8C194EDCFCC5028844E9D2FADF"), b);
+        assertArrayEquals(ISOUtil.hex2byte("C5028844E9D2FADF"), iv);
+    }
+
+    @Test
+    public void testDecryptDataImplECB_8Bytes() throws Throwable {
+        byte[] b = ISOUtil.hex2byte("ABFA6F3C28A8CB0C");
+        b = jcesecmod.decryptDataImpl(CipherMode.ECB, dek, b, null);
+        assertArrayEquals(testData01, b);
+    }
+
+    @Test
+    public void testDecryptDataImplECB_16Bytes() throws Throwable {
+        byte[] b = ISOUtil.hex2byte("ABFA6F3C28A8CB0CABFA6F3C28A8CB0C");
+        b = jcesecmod.decryptDataImpl(CipherMode.ECB, dek, b, null);
+        assertArrayEquals(testData02, b);
+    }
+
+    @Test
+    public void testDecryptDataImplCBC_8Bytes() throws Throwable {
+        byte[] b = ISOUtil.hex2byte("ABFA6F3C28A8CB0C");
+        byte[] iv = new byte[8];
+        b = jcesecmod.decryptDataImpl(CipherMode.CBC, dek, b, iv);
+        assertArrayEquals(testData01, b);
+        assertArrayEquals(testData01, iv);
+    }
+
+    @Test
+    public void testDecryptDataImplCBC_16Bytes() throws Throwable {
+        byte[] b = ISOUtil.hex2byte("ABFA6F3C28A8CB0C99C22188F56DAE9F");
+        byte[] iv = new byte[8];
+        b = jcesecmod.decryptDataImpl(CipherMode.CBC, dek, b, iv);
+        assertArrayEquals(testData02, b);
+        assertArrayEquals(testData01, iv);
+    }
+
+    @Test
+    public void testDecryptDataImplCFB8_8Bytes() throws Throwable {
+        byte[] b = ISOUtil.hex2byte("6F5DF407E1691DB1");
+        byte[] iv = new byte[8];
+        b = jcesecmod.decryptDataImpl(CipherMode.CFB8, dek, b, iv);
+        assertArrayEquals(testData01, b);
+        assertArrayEquals(testData01, iv);
+    }
+
+    @Test
+    public void testDecryptDataImplCFB8_16Bytes() throws Throwable {
+        byte[] b = ISOUtil.hex2byte("6F5DF407E1691DB1B049507DB318D6E2");
+        byte[] iv = new byte[8];
+        b = jcesecmod.decryptDataImpl(CipherMode.CFB8, dek, b, iv);
+        assertArrayEquals(testData02, b);
+        assertArrayEquals(testData01, iv);
+    }
+
+    @Test
+    public void testDecryptDataImplCFB64_8Bytes() throws Throwable {
+        byte[] b = ISOUtil.hex2byte("6FA0EA8C194EDCFC");
+        byte[] iv = new byte[8];
+        b = jcesecmod.decryptDataImpl(CipherMode.CFB64, dek, b, iv);
+        assertArrayEquals(testData01, b);
+        assertArrayEquals(testData01, iv);
+    }
+
+    @Test
+    public void testDecryptDataImplCFB64_16Bytes() throws Throwable {
+        byte[] b = ISOUtil.hex2byte("6FA0EA8C194EDCFCC5028844E9D2FADF");
+        byte[] iv = new byte[8];
+        b = jcesecmod.decryptDataImpl(CipherMode.CFB64, dek, b, iv);
+        assertArrayEquals(testData02, b);
+        assertArrayEquals(testData01, iv);
+    }
+
+    @Test( expected = SMException.class)
+    public void translateKeySchemeImpl_NULS() throws Throwable {
+        jcesecmod.translateKeySchemeImpl(null, null);
+    }
+
+    @Test( expected = SMException.class)
+    public void translateKeySchemeImpl_NullKey() throws Throwable {
+        jcesecmod.translateKeySchemeImpl(null, KeyScheme.U);
+    }
+
+    @Test( expected = SMException.class)
+    public void translateKeySchemeImpl_NullKeyScheme() throws Throwable {
+        jcesecmod.translateKeySchemeImpl(zpk, null);
+    }
+
+    @Test
+    public void translateKeySchemeImpl_Same() throws Throwable {
+        SecureDESKey conv = jcesecmod.translateKeySchemeImpl(zpk, KeyScheme.U);
+        assertEquals(zpk.getKeyLength(), conv.getKeyLength());
+        assertEquals(zpk.getKeyType(), conv.getKeyType());
+        Assert.assertArrayEquals(zpk.getKeyCheckValue(), conv.getKeyCheckValue());
+        Assert.assertEquals(KeyScheme.U, zpk.getScheme());
+        Assert.assertEquals(zpk.getVariant(), zpk.getVariant());
+    }
+
+    @Test
+    public void translateKeySchemeImpl_Convert() throws Throwable {
+        SecureDESKey pvk = new SecureDESKey(SMAdapter.LENGTH_DES3_2KEY
+          ,SMAdapter.TYPE_PVK+":0X","141E1DA3D2D7F3F4141E1DA3D2D7F3F4", "6FB1C8");
+
+        SecureDESKey conv = jcesecmod.translateKeySchemeImpl(pvk, KeyScheme.U);
+        assertEquals(pvk.getKeyLength(), conv.getKeyLength());
+        assertEquals(SMAdapter.TYPE_PVK+":0U", conv.getKeyType());
+        Assert.assertArrayEquals(pvk.getKeyCheckValue(), conv.getKeyCheckValue());
+        Assert.assertEquals(KeyScheme.U, conv.getScheme());
+        Assert.assertEquals(pvk.getVariant(), conv.getVariant());
+        //TPK and ZPK uses same encription variant
+        Assert.assertArrayEquals(tpk.getKeyBytes(), conv.getKeyBytes());
     }
 
 }

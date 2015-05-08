@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2014 Alejandro P. Revilla
+ * Copyright (C) 2000-2015 Alejandro P. Revilla
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -37,7 +37,7 @@ public class ISOMsgFieldValidator extends ISOFieldValidator {
     }
 
     public ISOComponent validate(ISOComponent m) throws ISOException {
-        return (m instanceof ISOMsg)? msgValidator.validate( m ):m;
+        return m instanceof ISOMsg ? msgValidator.validate( m ):m;
     }
 
     protected ISOValidator msgValidator;

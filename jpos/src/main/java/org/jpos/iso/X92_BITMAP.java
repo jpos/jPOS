@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2014 Alejandro P. Revilla
+ * Copyright (C) 2000-2015 Alejandro P. Revilla
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -60,7 +60,7 @@ public class X92_BITMAP extends ISOBitMapPackager {
     {
         BitSet bmap = ISOUtil.hex2BitSet (b, offset, false);
         c.setValue(bmap);
-        return (bmap.size() >> 2);
+        return bmap.size() >> 2;
     }
     public int getMaxPackedLength() {
         return getLength() >> 2;

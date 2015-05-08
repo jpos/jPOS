@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2014 Alejandro P. Revilla
+ * Copyright (C) 2000-2015 Alejandro P. Revilla
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -69,7 +69,7 @@ public class FilterLogListener implements LogListener,Configurable
     {
         try {
             String log_priority = cfg.get("priority");
-            if ( (log_priority != null) && (!log_priority.trim().equals("")) && levels.containsKey(log_priority) ) {
+            if ( log_priority != null && !log_priority.trim().equals("") && levels.containsKey(log_priority) ) {
                 priority = log_priority;
             }
         } catch (Exception e) {
@@ -107,7 +107,7 @@ public class FilterLogListener implements LogListener,Configurable
 
         Integer J = (Integer)levels.get(priority);
 
-        return (I >= J);
+        return I >= J;
     }
 
     public synchronized LogEvent log(LogEvent ev) {

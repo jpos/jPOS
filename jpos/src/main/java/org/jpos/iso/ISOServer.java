@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2014 Alejandro P. Revilla
+ * Copyright (C) 2000-2015 Alejandro P. Revilla
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -103,7 +103,7 @@ public class ISOServer extends Observable
             this.clientOutgoingFilters = fc.getOutgoingFilters();
             this.clientIncomingFilters = fc.getIncomingFilters();
         }
-        this.pool = (pool == null) ?
+        this.pool = pool == null ?
             new ThreadPool (1, DEFAULT_MAX_THREADS) : pool;
         listeners = new Vector();
         name = "";
@@ -290,7 +290,7 @@ public class ISOServer extends Observable
             Map.Entry entry = (Map.Entry) iter.next();
             WeakReference ref = (WeakReference) entry.getValue();
             ISOChannel c = (ISOChannel) ref.get ();
-            if (c == null || (!c.isConnected())) {
+            if (c == null || !c.isConnected()) {
                 iter.remove ();
             }
         }
@@ -358,7 +358,7 @@ public class ISOServer extends Observable
                         channel = (ServerChannel) clientSideChannel.clone();
                         channel.accept (serverSocket);
 
-                        if ((cnt[CONNECT]++) % 100 == 0) {
+                        if (cnt[CONNECT]++ % 100 == 0) {
                             purgeChannels ();
                         }
                         WeakReference wr = new WeakReference (channel);
@@ -635,20 +635,18 @@ public class ISOServer extends Observable
             Map.Entry entry = (Map.Entry) iter.next();
             WeakReference ref = (WeakReference) entry.getValue();
             ISOChannel c = (ISOChannel) ref.get ();
-            if (c != null && !LAST.equals (entry.getKey()) && c.isConnected()) {
-                if (c instanceof BaseChannel) {
-                    StringBuilder sb = new StringBuilder ();
-                    int[] cc = ((BaseChannel)c).getCounters();
-                    sb.append (inner);
-                    sb.append (entry.getKey());
-                    sb.append (": rx=");
-                    sb.append (Integer.toString (cc[ISOChannel.RX]));
-                    sb.append (", tx=");
-                    sb.append (Integer.toString (cc[ISOChannel.TX]));
-                    sb.append (", last=");
-                    sb.append (Long.toString(lastTxn));
-                    p.println (sb.toString());
-                }
+            if (c != null && !LAST.equals (entry.getKey()) && c.isConnected() && c instanceof BaseChannel) {
+                StringBuilder sb = new StringBuilder ();
+                int[] cc = ((BaseChannel)c).getCounters();
+                sb.append (inner);
+                sb.append (entry.getKey());
+                sb.append (": rx=");
+                sb.append (Integer.toString (cc[ISOChannel.RX]));
+                sb.append (", tx=");
+                sb.append (Integer.toString (cc[ISOChannel.TX]));
+                sb.append (", last=");
+                sb.append (Long.toString(lastTxn));
+                p.println (sb.toString());
             }
         }
     }

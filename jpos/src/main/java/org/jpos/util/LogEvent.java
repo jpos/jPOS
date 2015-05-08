@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2014 Alejandro P. Revilla
+ * Copyright (C) 2000-2015 Alejandro P. Revilla
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,6 +26,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -83,13 +85,12 @@ public class LogEvent {
         if (dumpedAt == 0L)
             dumpedAt = System.currentTimeMillis();
         Date date = new Date (dumpedAt);
+        DateFormat df = new SimpleDateFormat("EEE MMM dd HH:mm:ss.SSS z yyyy", Locale.US);
         StringBuilder sb = new StringBuilder(indent);
         sb.append ("<log realm=\"");
         sb.append (getRealm());
         sb.append ( "\" at=\"");
-        sb.append (date.toString());
-        sb.append ('.');
-        sb.append (Long.toString (dumpedAt % 1000));
+        sb.append (df.format(date));
         sb.append ('"');
         if (dumpedAt != createdAt) {
             sb.append (" lifespan=\"");
@@ -192,11 +193,14 @@ public class LogEvent {
     public List<Object> getPayLoad() {
         return payLoad;
     }
-    public String toString() {
+    public String toString(String indent) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream p = new PrintStream (baos);
-        dump (p, "");
+        dump (p, indent);
         return baos.toString();
+    }
+    public String toString() {
+        return toString("");
     }
 
     /**

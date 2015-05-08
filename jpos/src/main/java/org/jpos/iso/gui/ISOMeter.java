@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2014 Alejandro P. Revilla
+ * Copyright (C) 2000-2015 Alejandro P. Revilla
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -192,7 +192,7 @@ public class ISOMeter extends JComponent implements Runnable {
     }
 
     public void setValue(int val) {
-        int y = mass - ((val%1000) * height / 2000);
+        int y = mass - val%1000 * height / 2000;
         yPoints[width-1] = y;
         continueScroll = width;
         scroll();
@@ -276,7 +276,7 @@ public class ISOMeter extends JComponent implements Runnable {
             if (i % 20 == 0) 
                 img.drawLine(i,0,i,height);
         for (int i=-1000; i<1000; i+= 200) {
-            int y = mass + (i*height/2000);
+            int y = mass + i*height/2000;
             img.drawLine(0,y,width,y);
         }
     }

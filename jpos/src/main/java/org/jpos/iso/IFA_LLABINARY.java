@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2014 Alejandro P. Revilla
+ * Copyright (C) 2000-2015 Alejandro P. Revilla
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -79,7 +79,7 @@ public class IFA_LLABINARY extends ISOFieldPackager {
          
       int len = Integer.parseInt(new String(b, offset, 2));       
       c.setValue (ISOUtil.hex2byte(b, offset + 2, len));
-      return (len * 2) + 2;
+      return len * 2 + 2;
 
       //CJH END.
         

@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2014 Alejandro P. Revilla
+ * Copyright (C) 2000-2015 Alejandro P. Revilla
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,35 +21,39 @@ package  org.jpos.security;
 import org.jpos.iso.ISOUtil;
 
 import java.io.PrintStream;
-import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
- * <p>
  * The SecureDESKey class represents: <br>
  * Single, double or triple length DES keys that are secured by a security module.
  * This is typically the DES key encrypted under one of the Local Master Keys of the
  * security module.
- * </p>
  * <p>
  * SecureDESKey has an extra property "Key Check Value". It allows assuring that
  * two SecureDESKeys owned by two different parties map
  * to the same clear key. This can be a useful manual check for successful key
  * exchange.
- * </p>
  * <p>
  * NOTE: The security of SecureDESKey is totally dependent on the security of
  * the used security module.
- * </p>
+ *
  * @author Hani S. Kirollos
- * @version $Revision$ $Date$
+ * @author Robert Demski
  * @see SMAdapter
  */
 public class SecureDESKey extends SecureKey {
 
     private static final long serialVersionUID = -9145281998779008306L;
+
+    /**
+     * Regular expression pattern representing key type string value.
+     */
+    private static final Pattern KEY_TYPE_PATTERN = Pattern.compile("([^:;]*)([:;])?([^:;])?([^:;])?");
+
     /**
      * The keyCheckValue allows identifying which clear key does this
-     * secure key represent.<br>
+     * secure key represent.
      */
     protected byte[] keyCheckValue = null;
 
@@ -115,6 +119,8 @@ public class SecureDESKey extends SecureKey {
      * Constructs an SecureDESKey
      * @param keyLength
      * @param keyType
+     * @param variant
+     * @param scheme
      * @param keyHexString secure key represented as HexString instead of byte[]
      * @param keyCheckValueHexString key check value represented as HexString instead of byte[]
      */
@@ -161,19 +167,21 @@ public class SecureDESKey extends SecureKey {
          * Some variant derivation if it hasn't been explicity stated
          */
         variant = 0;
-        StringTokenizer st = new StringTokenizer(keyType,":;");
-        if (st.hasMoreTokens())
-            st.nextToken();
-        if (st.hasMoreTokens())
+        Matcher m = KEY_TYPE_PATTERN.matcher(keyType);
+        m.find();
+        if (m.group(3) != null)
             try {
-                variant = Byte.valueOf(st.nextToken().substring(0,1));
-            } catch (Exception ex){}
+                variant = Byte.valueOf(m.group(3));
+            } catch (NumberFormatException ex){
+                throw new NumberFormatException("Value "+m.group(4)+" is not valid key variant");
+            }
         return variant;
     }
 
     /**
      * Key Type Scheme is useful for stating whitch scheme variant of key type should be used.
      * ... TO COMPLITE ...<BR>
+     * @param scheme
      */
     public void setScheme(KeyScheme scheme){
         this.scheme = scheme;
@@ -193,13 +201,14 @@ public class SecureDESKey extends SecureKey {
             case SMAdapter.LENGTH_DES3_3KEY:
                 scheme = KeyScheme.Y; break;
         }
-        StringTokenizer st = new StringTokenizer(keyType,":;");
-        if (st.hasMoreTokens())
-            st.nextToken();
-        if (st.hasMoreTokens())
+        Matcher m = KEY_TYPE_PATTERN.matcher(keyType);
+        m.find();
+        if (m.group(4) != null)
             try {
-                scheme = KeyScheme.valueOf(st.nextToken().substring(1,2));
-            } catch (Exception ex){}
+                scheme = KeyScheme.valueOf(m.group(4));
+            } catch (IllegalArgumentException ex){
+                throw new IllegalArgumentException("Value "+m.group(4)+" is not valid key scheme");
+            }
         return scheme;
     }
 
@@ -209,6 +218,7 @@ public class SecureDESKey extends SecureKey {
      * @param indent indention string, usually suppiled by Logger
      * @see org.jpos.util.Loggeable
      */
+    @Override
     public void dump (PrintStream p, String indent) {
         String inner = indent + "  ";
         p.print(indent + "<secure-des-key");

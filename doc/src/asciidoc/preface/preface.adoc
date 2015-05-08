@@ -1,0 +1,5 @@
+["preface", id="preface"]
+= Preface
+
+This document covers *jPOS {jpos_version}*.
+

@@ -1,28 +1,34 @@
 apply from: 'jpos/libraries.gradle'
 
 allprojects {
-    apply plugin: 'java'
     apply plugin: 'idea'
     apply plugin: 'eclipse'
+}
+
+subprojects {
+    apply plugin: 'java'
     apply plugin: 'maven'
     apply plugin: 'signing'
     apply plugin: 'pmd'
 
     group = 'org.jpos'
-    version = '1.9.9-SNAPSHOT'
+    version = '2.0.1-SNAPSHOT'
     [ compileJava, compileTestJava, javadoc ]*.options*.encoding = 'UTF-8'
     def isSnapshot = version.contains("SNAPSHOT")
     def mavenCentralRepo = isSnapshot ?
         'https://oss.sonatype.org/content/repositories/snapshots/' :
         'https://oss.sonatype.org/service/local/staging/deploy/maven2';
 
+    configurations.compile.transitive = true
+    javadoc.failOnError = false
+    pmd.ignoreFailures = true
+
     sourceCompatibility = 1.6
     targetCompatibility = 1.6
     repositories {
-        mavenLocal()
         mavenCentral()
-        maven { url 'http://download.oracle.com/maven' }
-        maven { url 'http://jline.sourceforge.net/m2repo' }
+        maven { url 'http://jpos.org/maven' }
+        mavenLocal()
     }
     if (project.hasProperty("lint")) {
       // gradle -Plint ...
@@ -96,32 +102,25 @@ allprojects {
             }
         }
     }
-}
 
-subprojects  {
-    configurations.compile.transitive = true
-    javadoc.failOnError = false
-    pmd.ignoreFailures = true
-}
-
-task aggregatedJavadoc (type: Javadoc, description: "Aggregated Javadocs") { 
-    source subprojects.collect {project -> 
-        project.sourceSets.main.allJava 
-    } 
-    destinationDir = new File(buildDir, 'docs/javadoc') 
-    classpath = files(subprojects.collect {project -> 
-        project.sourceSets.main.compileClasspath}) 
-    failOnError = false
-} 
-
-task wrapper( type: Wrapper ) {
-    gradleVersion = '2.1'
 }
 
 // Configure IDEA to use Git
 idea.project.ipr {
-  withXml { provider ->
-    provider.node.component.find { it.@name == 'VcsDirectoryMappings' }.mapping.@vcs = 'Git'
-  }
+   withXml { provider -> provider.node.component.find { it.@name == 'VcsDirectoryMappings' }.mapping.@vcs = 'Git' }
+}
+
+task aggregatedJavadoc (type: Javadoc, description: "Aggregated Javadocs") {
+    source subprojects.collect {project ->
+        project.sourceSets.main.allJava
+    }
+    destinationDir = new File(buildDir, 'docs/javadoc')
+    classpath = files(subprojects.collect {project ->
+        project.sourceSets.main.compileClasspath})
+    failOnError = false
+}
+
+task wrapper( type: Wrapper ) {
+    gradleVersion = '2.3'
 }
 

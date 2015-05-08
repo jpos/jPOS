@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2014 Alejandro P. Revilla
+ * Copyright (C) 2000-2015 Alejandro P. Revilla
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -69,7 +69,7 @@ public class SysLogListener implements LogListener, Configurable {
         if (socket != null && ev.getTag() != null && tags.contains(ev.getTag())) {
             int facility = cfg.getInt (ev.getTag() + ".facility", defaultFacility);
             int severity = cfg.getInt (ev.getTag() + ".severity", defaultSeverity);
-            int priority = (facility<<3) | severity;
+            int priority = facility<<3 | severity;
 
             StringBuilder sb = new StringBuilder();
             sb.append ('<');

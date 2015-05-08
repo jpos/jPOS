@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2014 Alejandro P. Revilla
+ * Copyright (C) 2000-2015 Alejandro P. Revilla
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,6 +18,8 @@
 
 package org.jpos.iso.channel;
 
+import org.jpos.core.Configuration;
+import org.jpos.core.ConfigurationException;
 import org.jpos.iso.*;
 
 import java.io.BufferedReader;
@@ -26,6 +28,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Extracts &lt;isomsg&gt; blocks from standard jPOS log
@@ -36,6 +40,9 @@ import java.net.Socket;
  */
 public class LogChannel extends BaseChannel {
     BufferedReader reader = null;
+    int timestampField=0;
+    int realmField=0;
+    private static Pattern logPattern = Pattern.compile("<log realm=\"(\\.|[^\"]*)\"\\sat=\"((\\.|[^\"])*)\"");
     /**
      * Public constructor (used by Class.forName("...").newInstance())
      */
@@ -79,17 +86,40 @@ public class LogChannel extends BaseChannel {
      */
     protected byte[] streamReceive() throws IOException {
         StringBuilder sb = new StringBuilder();
-        boolean inMsg = false;
+        String realm = null;
+        String at= null;
+        int inMsg = 0;
         while (reader != null) {
             String s = reader.readLine();
             if (s == null)
                 throw new EOFException();
-            if (s.contains("<isomsg"))
-                inMsg = true;
-            if (inMsg) 
+            if ((timestampField > 0 || realmField > 0) && s.contains("<log") && s.contains("at=")) {
+                Matcher matcher = logPattern.matcher(s);
+                if (matcher.find() && matcher.groupCount() > 1) {
+                    if (realmField > 0)
+                        realm = matcher.group(1);
+                    if (timestampField > 0)
+                        at = matcher.group(2);
+                }
+            }
+            if (s.contains("<isomsg")) {
+                inMsg++;
+            }
+            if (s.contains("</isomsg>") && --inMsg == 0) {
+                if (at != null || realm != null && inMsg == 0) {
+                    if (realm != null) {
+                        sb.append("  <field id=\"" + realmField + "\" value=\"" + realm + "\" />");
+                        realm = null;
+                    }
+                    if (at != null) {
+                        sb.append("  <field id=\"" + timestampField + "\" value=\"" + at + "\" />");
+                    }
+                }
                 sb.append (s);
-            if (s.contains("</isomsg>"))
                 break;
+            }
+            if (inMsg > 0)
+                sb.append (s);
         }
         return sb.toString().getBytes();
     }
@@ -103,5 +133,12 @@ public class LogChannel extends BaseChannel {
     public void disconnect () throws IOException {
         super.disconnect ();
         reader = null;
+    }
+
+    @Override
+    public void setConfiguration (Configuration cfg) throws ConfigurationException {
+        super.setConfiguration(cfg);
+        timestampField = cfg.getInt("timestamp-field", 0);
+        realmField = cfg.getInt("realm-field", 0);
     }
 }

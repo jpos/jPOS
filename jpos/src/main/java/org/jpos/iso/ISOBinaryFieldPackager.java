@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2014 Alejandro P. Revilla
+ * Copyright (C) 2000-2015 Alejandro P. Revilla
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -101,19 +101,14 @@ public class ISOBinaryFieldPackager extends ISOFieldPackager
         {
             byte[] data = c.getBytes();
             int packedLength = prefixer.getPackedLength();
-            if (packedLength == 0)
-            {
-                if (data.length != getLength())
-                {
-                    throw new ISOException("Binary data length not the same as the packager length (" + data.length + "/" + getLength() + ")");
-                }
+            if (packedLength == 0 && data.length != getLength()) {
+                throw new ISOException("Binary data length not the same as the packager length (" + data.length + "/" + getLength() + ")");
             }
             byte[] ret = new byte[interpreter.getPackedLength(data.length) + packedLength];
             prefixer.encodeLength(data.length, ret);
             interpreter.interpret(data, ret, packedLength);
             return ret;
-        } catch(Exception e)
-        {
+        } catch(Exception e) {
             throw new ISOException(makeExceptionMessage(c, "packing"), e);
         }
     }

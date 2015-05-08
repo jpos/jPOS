@@ -20,7 +20,7 @@ task copyWebResources(type: Sync) {
 }
 
 task a2x(dependsOn: copySources) << {
-    def inFile = "${buildDir}/docbook/source/master.asc"
+    def inFile = "${buildDir}/docbook/source/master.adoc"
     def outFile = "${buildDir}/docbook/source/master.xml"
     def cmd = "asciidoctor --safe -a docinfo -a lang=en -d book -b docbook5 -o ${outFile} ${inFile}"
     def proc = cmd.execute(null, file(inFile).parentFile)

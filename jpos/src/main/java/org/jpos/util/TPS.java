@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2014 Alejandro P. Revilla
+ * Copyright (C) 2000-2015 Alejandro P. Revilla
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -58,6 +58,7 @@ public class TPS implements Loggeable {
     Timer timer;
     boolean autoupdate;
     final ReentrantLock lock = new ReentrantLock();
+    protected long simulatedNanoTime = 0L;
 
     public TPS() {
         this(1000L, false);
@@ -175,7 +176,7 @@ public class TPS implements Loggeable {
             avg = avg == 0 ? tps : (avg + tps) / 2;
             if (tps > peak) {
                 peak = Math.round(tps);
-                peakWhen = System.currentTimeMillis();
+                peakWhen = getNanoTime() / FROM_NANOS;
             }
             count.set(0);
             return tps;
@@ -187,7 +188,7 @@ public class TPS implements Loggeable {
     private float calcTPS() {
         lock.lock();
         try {
-            long now = System.nanoTime() / FROM_NANOS;
+            long now = getNanoTime() / FROM_NANOS;
             long interval = now - start.get();
             if (interval >= period) {
                 calcTPS(interval);
@@ -197,5 +198,16 @@ public class TPS implements Loggeable {
         } finally {
             lock.unlock();
         }
+    }
+
+    public void setSimulatedNanoTime(long simulatedNanoTime) {
+        if (this.simulatedNanoTime == 0L)
+            start.set(simulatedNanoTime / FROM_NANOS);
+
+        this.simulatedNanoTime = simulatedNanoTime;
+    }
+
+    protected long getNanoTime() {
+        return simulatedNanoTime > 0L ? simulatedNanoTime : System.nanoTime();
     }
 }

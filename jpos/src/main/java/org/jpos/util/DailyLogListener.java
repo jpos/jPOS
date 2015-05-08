@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2014 Alejandro P. Revilla
+ * Copyright (C) 2000-2015 Alejandro P. Revilla
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -69,7 +69,7 @@ public class DailyLogListener extends RotateLogListener{
         Integer formatObj =
                 COMPRESSION_FORMATS
                 .get(cfg.get("compression-format","none").toLowerCase());
-        int compressionFormat = (formatObj == null) ? 0 : formatObj;
+        int compressionFormat = formatObj == null ? 0 : formatObj;
         setCompressionFormat(compressionFormat);
         setCompressedSuffix(cfg.get("compressed-suffix", 
                 DEF_COMPRESSED_SUFFIX[compressionFormat]));
@@ -401,7 +401,7 @@ public class DailyLogListener extends RotateLogListener{
      * @param compressionBufferSize New value of property compressionBufferSize.
      */
     public void setCompressionBufferSize(int compressionBufferSize) {
-        this.compressionBufferSize = (compressionBufferSize >= 0) ? 
+        this.compressionBufferSize = compressionBufferSize >= 0 ?
             compressionBufferSize : DEF_BUFFER_SIZE;
     }
 

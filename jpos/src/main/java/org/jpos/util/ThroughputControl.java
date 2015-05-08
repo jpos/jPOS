@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2014 Alejandro P. Revilla
+ * Copyright (C) 2000-2015 Alejandro P. Revilla
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -82,14 +82,14 @@ public class ThroughputControl {
                     long now = System.currentTimeMillis();
                     if (now - start[i] > period[i]) {
                         long elapsed = now - start[i];
-                        int  allowed = (int) ((elapsed * max[i]) / period[i]);
+                        int  allowed = (int) (elapsed * max[i] / period[i]);
                         start[i] = now;
                         cnt[i] = Math.max (cnt[i] - allowed, 0);
                     }
                 }
             } while (cnt[i] > max[i]);
         }
-        return delayed ? (System.currentTimeMillis() - init) : 0L;
+        return delayed ? System.currentTimeMillis() - init : 0L;
     }
 }
 

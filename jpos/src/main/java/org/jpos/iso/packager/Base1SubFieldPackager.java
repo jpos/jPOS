@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2014 Alejandro P. Revilla
+ * Copyright (C) 2000-2015 Alejandro P. Revilla
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -48,12 +48,12 @@ public class Base1SubFieldPackager extends ISOBasePackager
 
     protected boolean emitBitMap()
     {
-        return (fld[0] instanceof ISOBitMapPackager);
+        return fld[0] instanceof ISOBitMapPackager;
     }
 
     protected int getFirstField()
     {
-        return (fld[0] instanceof ISOBitMapPackager) ? 1 : 0;
+        return fld[0] instanceof ISOBitMapPackager ? 1 : 0;
     }
 
     protected ISOFieldPackager getBitMapfieldPackager() 

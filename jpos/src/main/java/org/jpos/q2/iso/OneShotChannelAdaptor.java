@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2014 Alejandro P. Revilla
+ * Copyright (C) 2000-2015 Alejandro P. Revilla
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -75,9 +75,9 @@ public class OneShotChannelAdaptor
         delay = 5000;
 
         String s = persist.getChildTextTrim ("max-connections");
-        maxConnections = (s!=null) ? Integer.parseInt(s) : 1;  // reasonable default
+        maxConnections = s!=null ? Integer.parseInt(s) : 1;  // reasonable default
         s = persist.getChildTextTrim ("max-connect-attempts");
-        maxConnectAttempts = (s!=null) ? Integer.parseInt(s) : 15;  // reasonable default
+        maxConnectAttempts = s!=null ? Integer.parseInt(s) : 15;  // reasonable default
     }
     public void startService () {
         try {
@@ -85,7 +85,7 @@ public class OneShotChannelAdaptor
             for (int i=0; i<maxConnections; i++) {
                 Worker w = new Worker(i);
                 w.initChannel();
-                (new Thread(w)).start();
+                new Thread(w).start();
             }
             NameRegistrar.register (getName(), this);
         } catch (Exception e) {

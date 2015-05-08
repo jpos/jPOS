@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2014 Alejandro P. Revilla
+ * Copyright (C) 2000-2015 Alejandro P. Revilla
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -32,9 +32,10 @@ import java.net.Socket;
  * ChannelInfoFilter sets information about the channel
  * in the outgoing/incoming ISOMsg
  */
+@SuppressWarnings("unused")
 public class ChannelInfoFilter implements ISOFilter, Configurable {
-    int channelNameField;
-    int socketInfoField;
+    String channelNameField;
+    String socketInfoField;
     public ChannelInfoFilter() {
         super();
     }
@@ -50,15 +51,15 @@ public class ChannelInfoFilter implements ISOFilter, Configurable {
     public void setConfiguration (Configuration cfg) 
         throws ConfigurationException
     {
-        channelNameField = cfg.getInt ("channel-name", 0);
-        socketInfoField  = cfg.getInt ("socket-info", 0);
+        channelNameField = cfg.get("channel-name", null);
+        socketInfoField  = cfg.get("socket-info", null);
     }
 
     public ISOMsg filter (ISOChannel channel, ISOMsg m, LogEvent evt) {
         try {
-            if (channelNameField > 0)
-                m.set (Integer.toString(channelNameField), channel.getName());
-            if (socketInfoField > 0 && channel instanceof BaseChannel) {
+            if (channelNameField != null)
+                m.set (channelNameField, channel.getName());
+            if (socketInfoField != null && channel instanceof BaseChannel) {
                 Socket socket = ((BaseChannel)channel).getSocket();
                 InetSocketAddress remoteAddr = 
                     (InetSocketAddress) socket.getRemoteSocketAddress();
@@ -66,7 +67,7 @@ public class ChannelInfoFilter implements ISOFilter, Configurable {
                     (InetSocketAddress) socket.getLocalSocketAddress();
 
                 StringBuilder sb = new StringBuilder();
-                if (channelNameField == socketInfoField) {
+                if (socketInfoField.equals(channelNameField)) {
                     sb.append (channel.getName());
                     sb.append (' ');
                 }
@@ -77,7 +78,7 @@ public class ChannelInfoFilter implements ISOFilter, Configurable {
                 sb.append (remoteAddr.getAddress().getHostAddress());
                 sb.append (':');
                 sb.append (Integer.toString (remoteAddr.getPort()));
-                m.set (Integer.toString(socketInfoField), sb.toString());
+                m.set (socketInfoField, sb.toString());
             }
         } catch (ISOException e) {
             evt.addMessage (e);
@@ -85,4 +86,3 @@ public class ChannelInfoFilter implements ISOFilter, Configurable {
         return m;
     }
 }
-

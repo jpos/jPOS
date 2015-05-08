@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2014 Alejandro P. Revilla
+ * Copyright (C) 2000-2015 Alejandro P. Revilla
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -49,7 +49,7 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
      * @return true if BitMap have to be emited
      */
     protected boolean emitBitMap () {
-        return (fld[1] instanceof ISOBitMapPackager);
+        return fld[1] instanceof ISOBitMapPackager;
     }
     /**
      * usually 2 for normal fields, 1 for bitmap-less
@@ -57,8 +57,8 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
      * @return first valid field
      */
     protected int getFirstField() {
-        if ((!(fld[0] instanceof ISOMsgFieldPackager) ) && fld.length > 1)
-            return (fld[1] instanceof ISOBitMapPackager) ? 2 : 1;
+        if (!(fld[0] instanceof ISOMsgFieldPackager) && fld.length > 1)
+            return fld[1] instanceof ISOBitMapPackager ? 2 : 1;
         return 0;
     }
     /**

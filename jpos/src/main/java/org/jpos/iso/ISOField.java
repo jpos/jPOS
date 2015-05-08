@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2014 Alejandro P. Revilla
+ * Copyright (C) 2000-2015 Alejandro P. Revilla
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -62,7 +62,7 @@ public class ISOField
     }
     /**
      * not available on Leaf - always throw ISOException
-     * @return
+     * @return never returns
      * @exception ISOException
      */
     @Override
@@ -72,7 +72,7 @@ public class ISOField
     /**
      * not available on Leaf - always throw ISOException
      * @param b
-     * @return
+     * @return never returns
      * @exception ISOException
      */
     @Override
@@ -118,7 +118,7 @@ public class ISOField
      */
     @Override
     public byte[] getBytes() {
-        return (value != null) ? value.getBytes(ISOUtil.CHARSET) : new byte[] {};
+        return value != null ? value.getBytes(ISOUtil.CHARSET) : new byte[] {};
     }
     /**
      * dump this field to PrintStream. The output is sorta

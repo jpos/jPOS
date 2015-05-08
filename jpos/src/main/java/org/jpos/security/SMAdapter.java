@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2014 Alejandro P. Revilla
+ * Copyright (C) 2000-2015 Alejandro P. Revilla
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -33,7 +33,7 @@ import java.util.Map;
  * But application programmers will be communicating
  * with the security module using this simple interface.
  *
- * TODO: support for EMV Secure Messaging, dCVV, CVC3 verification and RSA generation API's
+ * TODO: support for RSA generation API's
  *
  * @author Hani S. Kirollos
  * @author Robert Demski
@@ -271,6 +271,22 @@ public interface SMAdapter {
 
 
     /**
+     * Translate Key Scheme to more secure encription.
+     * <p>
+     * Converts an DES key encrypted using X9.17 methods to a more secure
+     * key using the variant method.
+     *
+     * @param key key to be translated to {@code destKeyScheme} scheme
+     * @param keyScheme destination key scheme
+     * @return translated key with {@code destKeyScheme} scheme
+     * @throws SMException
+     */
+    public SecureDESKey translateKeyScheme (SecureDESKey key, KeyScheme keyScheme)
+      throws SMException;
+
+
+
+    /**
      * Imports a key from encryption under a KEK (Key-Encrypting Key)
      * to protection under the security module.
      *
@@ -362,6 +378,7 @@ public interface SMAdapter {
      * under LMK.
      *
      * <p>The transaction key is derived from the Key Serial Number and the Base Derivation Key using DUKPT (Derived Unique Key per Transaction). See ANSI X9.24 for more information.
+     * @deprecated Use signature that specifies tdes flag.
      * @param pinUnderDuk pin encrypted under a transaction key
      * @param ksn Key Serial Number (also called Key Name, in ANSI X9.24) needed to derive the transaction key
      * @param bdk Base Derivation Key, used to derive the transaction key underwhich the pin is encrypted
@@ -371,6 +388,39 @@ public interface SMAdapter {
     public EncryptedPIN importPIN (EncryptedPIN pinUnderDuk, KeySerialNumber ksn,
             SecureDESKey bdk) throws SMException;
 
+    /**
+     * Imports a PIN from encryption under a transaction key to encryption
+     * under LMK.
+     *
+     * <p>The transaction key is derived from the Key Serial Number and the Base Derivation Key using DUKPT (Derived Unique Key per Transaction). See ANSI X9.24 for more information.
+     * @param pinUnderDuk pin encrypted under a transaction key
+     * @param ksn Key Serial Number (also called Key Name, in ANSI X9.24) needed to derive the transaction key
+     * @param bdk Base Derivation Key, used to derive the transaction key underwhich the pin is encrypted
+     * @param tdes Use Triple DES to calculate derived transaction key.
+     * @return pin encrypted under LMK
+     * @throws SMException
+     */
+    public EncryptedPIN importPIN (EncryptedPIN pinUnderDuk, KeySerialNumber ksn,
+            SecureDESKey bdk, boolean tdes) throws SMException;
+
+
+
+    /**
+     * Translates a PIN from encryption under a transaction key to
+     * encryption under a KD (Data Key).
+     *
+     * <p>The transaction key is derived from the Key Serial Number and the Base Derivation Key using DUKPT (Derived Unique Key per Transaction). See ANSI X9.24 for more information.
+     * @deprecated Use signature that specifies tdes flag.
+     * @param pinUnderDuk pin encrypted under a DUKPT transaction key
+     * @param ksn Key Serial Number (also called Key Name, in ANSI X9.24) needed to derive the transaction key
+     * @param bdk Base Derivation Key, used to derive the transaction key underwhich the pin is encrypted
+     * @param kd2 the destination Data Key (also called session key) under which the pin will be encrypted
+     * @param destinationPINBlockFormat the PIN Block Format of the translated encrypted PIN
+     * @return pin encrypted under kd2
+     * @throws SMException
+     */
+    public EncryptedPIN translatePIN (EncryptedPIN pinUnderDuk, KeySerialNumber ksn,
+            SecureDESKey bdk, SecureDESKey kd2, byte destinationPINBlockFormat) throws SMException;
 
 
     /**
@@ -383,11 +433,12 @@ public interface SMAdapter {
      * @param bdk Base Derivation Key, used to derive the transaction key underwhich the pin is encrypted
      * @param kd2 the destination Data Key (also called session key) under which the pin will be encrypted
      * @param destinationPINBlockFormat the PIN Block Format of the translated encrypted PIN
+     * @param tdes Use Triple DES to calculate derived transaction key.
      * @return pin encrypted under kd2
      * @throws SMException
      */
     public EncryptedPIN translatePIN (EncryptedPIN pinUnderDuk, KeySerialNumber ksn,
-            SecureDESKey bdk, SecureDESKey kd2, byte destinationPINBlockFormat) throws SMException;
+            SecureDESKey bdk, SecureDESKey kd2, byte destinationPINBlockFormat,boolean tdes) throws SMException;
 
 
 
@@ -845,6 +896,7 @@ public interface SMAdapter {
      *        Key derivation. A 2 byte value must be supplied.
      * @param mkdm ICC Master Key Derivation Method. If {@code null} specified
      *        is assumed.
+     * @return true if dcvv is valid false if not
      * @throws SMException
      */
     public boolean verifydCVV(String accountNo, SecureDESKey imkac, String dcvv,
@@ -893,6 +945,7 @@ public interface SMAdapter {
      *        digits. Max value is {@code "65535"} (decimal representation
      *        of 2 byte value). Is possible to pass shorter cvc3 value e.g.
      *        {@code "789"} matches with calcuated CVC3 {@code "04789"}
+     * @return true if cvc3 is valid false if not
      * @throws SMException
      */
     public boolean verifyCVC3(SecureDESKey imkcvc3, String accountNo, String acctSeqNo,
@@ -923,8 +976,12 @@ public interface SMAdapter {
      * @param upn unpredictable number. This is used for Session Key Generation
      *        A 4 byte value must be supplied. For {@code skdm} equals
      *        {@link SKDMethod#VSDC} is not used.
-     * @param transData transaction data (without padding). Transaction data
-     *        elements and them order is dependend to proper cryptogram version
+     * @param transData transaction data. Transaction data elements and them
+     *        order is dependend to proper cryptogram version. If the data
+     *        supplied is a multiple of 8 bytes, no extra padding is added.
+     *        If it is not a multiple of 8 bytes, additional zero padding is added.
+     *        <b>If alternative padding methods are required, it have to be
+     *        applied before</b>.
      * @return true if ARQC/TC/AAC is passed or false if not
      * @throws SMException
      */
@@ -995,8 +1052,12 @@ public interface SMAdapter {
      * @param upn unpredictable number. This is used for Session Key Generation
      *        A 4 byte value must be supplied. For {@code skdm} equals
      *        {@link SKDMethod#VSDC} is not used.
-     * @param transData transaction data (without padding). Transaction data
-     *        elements and them order is dependend to proper cryptogram version
+     * @param transData transaction data. Transaction data elements and them
+     *        order is dependend to proper cryptogram version. If the data
+     *        supplied is a multiple of 8 bytes, no extra padding is added.
+     *        If it is not a multiple of 8 bytes, additional zero padding is added.
+     *        <b>If alternative padding methods are required, it have to be
+     *        applied before</b>.
      * @param arpcMethod ARPC calculating method. For {@code skdm} equals
      *        {@link SKDMethod#VSDC}, {@link SKDMethod#MCHIP},
      *        {@link SKDMethod#AEPIS_V40} only {@link ARPCMethod#METHOD_1} is valid
@@ -1120,6 +1181,43 @@ public interface SMAdapter {
            ,byte[] data, EncryptedPIN currentPIN, EncryptedPIN newPIN
            ,SecureDESKey kd1, SecureDESKey imksmc, SecureDESKey imkac
            ,byte destinationPINBlockFormat) throws SMException;
+
+
+
+    /**
+     * Encrypt Data Block.
+     *
+     * @param cipherMode block cipher mode.
+     * @param kd DEK or ZEK key used to encrypt data.
+     * @param data data to be encrypted. If the data is not a multiple of
+     *        8 bytes, padding have to be applied before.
+     * @param iv initial vector. Its length must be equal to the length
+     *        of cipher block (8 bytes for DES, 3DES ciphers). After operation
+     *        will contain new iv value. Not used for {@link CipherMode#ECB}.
+     * @return encrypted data. In {@code iv} array refference new value of
+     *        initial vector value will be placed.
+     * @throws SMException
+     */
+    public byte[] encryptData(CipherMode cipherMode, SecureDESKey kd
+            ,byte[] data, byte[] iv) throws SMException;
+
+
+
+    /**
+     * Decrypt Data Block.
+     *
+     * @param cipherMode block cipher mode.
+     * @param kd DEK or ZEK key used to decrypt data.
+     * @param data data to be decrypted.
+     * @param iv initial vector. Its length must be equal to the length
+     *        of cipher block (8 bytes for DES, 3DES ciphers). After operation
+     *        will contain new iv value. Not used for {@link CipherMode#ECB}.
+     * @return decrypted data. In {@code iv} array refference new value of
+     *        initial vector value will be placed.
+     * @throws SMException
+     */
+    public byte[] decryptData(CipherMode cipherMode, SecureDESKey kd
+            ,byte[] data, byte[] iv) throws SMException;
 
 
 

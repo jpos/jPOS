@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2014 Alejandro P. Revilla
+ * Copyright (C) 2000-2015 Alejandro P. Revilla
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -42,8 +42,8 @@ public class IFB_LLNUM extends ISOStringFieldPackager {
     
     public IFB_LLNUM(int len, String description, boolean isLeftPadded, boolean fPadded) {
         super(len, description, NullPadder.INSTANCE,
-                isLeftPadded ? BCDInterpreter.LEFT_PADDED : 
-                    (fPadded ? BCDInterpreter.RIGHT_PADDED_F : BCDInterpreter.RIGHT_PADDED),
+                isLeftPadded ? BCDInterpreter.LEFT_PADDED :
+                        fPadded ? BCDInterpreter.RIGHT_PADDED_F : BCDInterpreter.RIGHT_PADDED,
                 BcdPrefixer.LL);
         checkLength(len, 99);
     }

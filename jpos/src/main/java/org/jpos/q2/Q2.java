@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2014 Alejandro P. Revilla
+ * Copyright (C) 2000-2015 Alejandro P. Revilla
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -131,80 +131,80 @@ public class Q2 implements FileFilter, Runnable {
             * information other than MBeans so to pick a specific one 
             * would be difficult.
             */
-            ArrayList mbeanServerList = 
-                MBeanServerFactory.findMBeanServer(null);
+            ArrayList mbeanServerList =
+                    MBeanServerFactory.findMBeanServer(null);
             if (mbeanServerList.isEmpty()) {
-                server  = MBeanServerFactory.createMBeanServer (JMX_NAME);
+                server = MBeanServerFactory.createMBeanServer(JMX_NAME);
             } else {
                 server = (MBeanServer) mbeanServerList.get(0);
             }
-            final ObjectName loaderName = new ObjectName (Q2_CLASS_LOADER);
+            final ObjectName loaderName = new ObjectName(Q2_CLASS_LOADER);
 
             try {
                 loader = (QClassLoader) java.security.AccessController.doPrivileged(
-                    new java.security.PrivilegedAction() {
-                        public Object run() {
-                            return new QClassLoader (server, libDir, loaderName, mainClassLoader);
+                        new java.security.PrivilegedAction() {
+                            public Object run() {
+                                return new QClassLoader(server, libDir, loaderName, mainClassLoader);
+                            }
                         }
-                    }
                 );
-                if (server.isRegistered (loaderName))
-                    server.unregisterMBean (loaderName);
-                server.registerMBean (loader, loaderName);
+                if (server.isRegistered(loaderName))
+                    server.unregisterMBean(loaderName);
+                server.registerMBean(loader, loaderName);
                 loader = loader.scan(false);
             } catch (Throwable t) {
                 if (log != null)
-                    log.error ("initial-scan", t);
+                    log.error("initial-scan", t);
                 else
                     t.printStackTrace();
             }
-            factory = new QFactory (loaderName, this);
-            initSystemLogger ();
+            factory = new QFactory(loaderName, this);
+            initSystemLogger();
             if (bundleContext == null)
-                addShutdownHook ();
-            q2Thread = Thread.currentThread ();
-            q2Thread.setContextClassLoader (loader);
+                addShutdownHook();
+            q2Thread = Thread.currentThread();
+            q2Thread.setContextClassLoader(loader);
             if (cli != null)
                 cli.start();
             initConfigDecorator();
             if (startOSGI)
                 startOSGIFramework();
-            for (int i=1; !shutdown; i++) {
+            for (int i = 1; !shutdown; i++) {
                 try {
-                    boolean forceNewClassLoader = scan ();
+                    boolean forceNewClassLoader = scan();
                     QClassLoader oldClassLoader = loader;
-                    loader = loader.scan (forceNewClassLoader);
+                    loader = loader.scan(forceNewClassLoader);
                     if (loader != oldClassLoader) {
                         oldClassLoader = null; // We want this to be null so it gets GCed.
                         System.gc();  // force a GC
-                        log.info (
-                        "new classloader ["
-                        + Integer.toString(loader.hashCode(),16)
-                        + "] has been created"
+                        log.info(
+                                "new classloader ["
+                                        + Integer.toString(loader.hashCode(), 16)
+                                        + "] has been created"
                         );
                     }
-                    deploy ();
-                    checkModified ();
-                    relax (SCAN_INTERVAL);
+                    deploy();
+                    checkModified();
+                    relax(SCAN_INTERVAL);
                     if (i % (3600000 / SCAN_INTERVAL) == 0)
                         logVersion();
                 } catch (Throwable t) {
-                    log.error ("start", t);
-                    relax ();
+                    log.error("start", t);
+                    relax();
                 }
             }
-            undeploy ();
+            undeploy();
             try {
-                server.unregisterMBean (loaderName);
+                server.unregisterMBean(loaderName);
             } catch (InstanceNotFoundException e) {
-                log.error (e);
+                log.error(e);
             }
-            if(decorator!=null)
-            {
+            if (decorator != null) {
                 decorator.uninitialize();
             }
             if (exit && !shuttingDown)
-                System.exit (0);
+                System.exit(0);
+        } catch (IllegalAccessError e) {
         } catch (Exception e) {
             if (log != null)
                 log.error (e);
@@ -248,7 +248,7 @@ public class Q2 implements FileFilter, Runnable {
     public boolean accept (File f) {
         return f.canRead() && 
             (isXml(f) || isBundle(f) ||
-             (recursive && f.isDirectory() && !"lib".equalsIgnoreCase (f.getName())));
+                    recursive && f.isDirectory() && !"lib".equalsIgnoreCase (f.getName()));
     }
     public File getDeployDir () {
         return deployDir;
@@ -546,7 +546,7 @@ public class Q2 implements FileFilter, Runnable {
                 getLog().warn ("init-system-logger", e);
             }
         }
-        getLog().info ("Q2 started, deployDir="+deployDir.getAbsolutePath());
+        getLog().info("Q2 started, deployDir=" + deployDir.getAbsolutePath());
     }
     public Log getLog () {
         if (log == null) {
@@ -564,7 +564,7 @@ public class Q2 implements FileFilter, Runnable {
         return System.currentTimeMillis() - startTime;
     }
     public void displayVersion () {
-        System.out.println (getVersionString());
+        System.out.println(getVersionString());
     }
     public UUID getInstanceId() {
         return instanceId;
@@ -573,14 +573,19 @@ public class Q2 implements FileFilter, Runnable {
         String appVersionString = getAppVersionString();
         int l = PGPHelper.checkLicense();
         String sl = l > 0 ? " " + Integer.toString(l,16) : "";
+        String vs = null;
         if (appVersionString != null) {
-            return String.format ("jPOS %s %s/%s%s (%s)%n%s%s",
+            vs = String.format ("jPOS %s %s/%s%s (%s)%n%s%s",
                 getVersion(), getBranch(), getRevision(), sl, getBuildTimestamp(), appVersionString, getLicensee()
             );
+        } else {
+            vs = String.format("jPOS %s %s/%s%s (%s) %s",
+                    getVersion(), getBranch(), getRevision(), sl, getBuildTimestamp(), getLicensee()
+            );
         }
-        return String.format ("jPOS %s %s/%s%s (%s) %s",
-            getVersion(), getBranch(), getRevision(), sl, getBuildTimestamp(), getLicensee()
-        );
+        if ((l & 0xE0000) > 0)
+            throw new IllegalAccessError(vs);
+        return vs;
     }
     public static String getLicensee() {
         InputStream is = Q2.class.getResourceAsStream(LICENSEE);
@@ -642,8 +647,11 @@ public class Q2 implements FileFilter, Runnable {
             if (line.hasOption("O"))
                 startOSGI = true;
         } catch (MissingArgumentException e) {
-            System.out.println ("ERROR: " + e.getMessage());
-            System.exit (1);
+            System.out.println("ERROR: " + e.getMessage());
+            System.exit(1);
+        } catch (IllegalAccessError e) {
+            System.out.println(e.getMessage());
+            System.exit(1);
         } catch (Exception e) {
             e.printStackTrace ();
             System.exit (1);
@@ -668,11 +676,11 @@ public class Q2 implements FileFilter, Runnable {
     public void deployElement (Element e, String fileName, boolean encrypt, boolean isTransient)
         throws ISOException, IOException, GeneralSecurityException
     {
-        e = ((Element) e.clone ());
+        e = (Element) e.clone ();
 
         XMLOutputter out = new XMLOutputter (Format.getPrettyFormat());
         Document doc = new Document ();
-        doc.setRootElement (e);
+        doc.setRootElement(e);
         File qbean = new File (deployDir, fileName);
         if (isTransient) {
             e.setAttribute("instance", getInstanceId().toString());
@@ -696,7 +704,7 @@ public class Q2 implements FileFilter, Runnable {
     private byte[] dodes (byte[] data, int mode) 
        throws GeneralSecurityException
     {
-        Cipher cipher = Cipher.getInstance ("DES");
+        Cipher cipher = Cipher.getInstance("DES");
         cipher.init (mode, new SecretKeySpec(getKey(), "DES"));
         return cipher.doFinal (data);
     }
@@ -709,7 +717,7 @@ public class Q2 implements FileFilter, Runnable {
         ByteArrayOutputStream os = new ByteArrayOutputStream ();
         OutputStreamWriter writer = new OutputStreamWriter (os);
         XMLOutputter out = new XMLOutputter (Format.getPrettyFormat());
-        out.output (doc, writer);
+        out.output(doc, writer);
         writer.close ();
 
         byte[] crypt = dodes (os.toByteArray(), Cipher.ENCRYPT_MODE);
@@ -793,7 +801,7 @@ public class Q2 implements FileFilter, Runnable {
 
     private void deleteFile (File f, String iuuid) {
         f.delete();
-        getLog().info (String.format ("Deleted transient descriptor %s (%s)", f.getAbsolutePath(), iuuid));
+        getLog().info(String.format("Deleted transient descriptor %s (%s)", f.getAbsolutePath(), iuuid));
     }
 
     private void initConfigDecorator()

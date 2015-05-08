@@ -46,16 +46,17 @@ So a reasonable name for a channel descriptor can be something like
            value="jar:packager/iso87binary.xml" />
   <property name="host" value="127.0.0.1" />              <5>
   <property name="port" value="8001" />                   
-  <filter                                                 <6>
+  <property name="timeout" value="300000" />              <6>
+  <filter                                                 <7>
       class="org.jpos.iso.filter.YourFilter" 
       direction="incoming" />
   <filter 
       class="org.jpos.iso.filter.YourOutgoingFilter" 
       direction="outgoing" />
  </channel>
- <in>your-channel-send</in>                               <7>
- <out>your-channel-receive</out>                          <8>
- <reconnect-delay>10000</reconnect-delay>                 <9>
+ <in>your-channel-send</in>                               <8>
+ <out>your-channel-receive</out>                          <9>
+ <reconnect-delay>10000</reconnect-delay>                 <10>
 </channel-adaptor>
 ------------
 <1> The element name +channel-adaptor+ is defined in +QFactory.properties+
@@ -82,16 +83,20 @@ So a reasonable name for a channel descriptor can be something like
     implement the +Configurable+ interface). The host and port
     properties in this case are self explanatory, they point
     to the remote host.
-<6> The +channel+ element can have multiple optional +filter+ 
+<6> Channel level timeout in milliseconds. If the channel does not
+    receive any traffic in the configured timeout, it will disconnect.
+    Having a channel level timeout as described here is 
+    *highly recommended*.
+<7> The +channel+ element can have multiple optional +filter+ 
     child elements (see <<isofilter>>). The +direction+ attribute
     is optional, if not present (or if its value is +both+), 
     the filter is configured to process both incoming as well
     as outgoing messages.
-<7> Space queue used to receive messages to be transmitted to the
+<8> Space queue used to receive messages to be transmitted to the
     remote endpoint.
-<8> Messages received from the remote endpoint are placed in
+<9> Messages received from the remote endpoint are placed in
     this queue.
-<9> If the connection to the remote host breaks, ChannelAdaptor
+<10> If the connection to the remote host breaks, ChannelAdaptor
     will try to reconnect after a reasonable delay, expressed
     in millis. If this element is not present, a default of
     10 seconds (10000ms) will be used.
@@ -184,4 +189,17 @@ The +connection-timeout+ property can be used to set a smaller timeout at
 connect time, this is useful when combined with the +alternate-host+ and
 +alternate-port+ set of properties.
 
+------
+<channel-adaptor name='your-channel' logger="Q2"> 
+ <channel class="org.jpos.iso.channel.NACChannel" 
+    ....
+    ....
+    <property name="connection-timeout" value="300000" /> <!-- five minutes -->
+    <property name="timeout" value="15000" />             <!-- 15 seconds -->
+    <property name="keep-alive" value="true" />
+    ....
+    ....
+ </channel>
+</channel-adaptor>
+------
 

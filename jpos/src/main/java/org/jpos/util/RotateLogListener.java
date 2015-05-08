@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2014 Alejandro P. Revilla
+ * Copyright (C) 2000-2015 Alejandro P. Revilla
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -70,7 +70,7 @@ public class RotateLogListener extends SimpleLogListener
         openLogFile ();
         Timer timer = DefaultTimer.getTimer();
         if (sleepTime != 0) {
-            timer.schedule (rotate = new Rotate(), 
+            timer.schedule(rotate = new Rotate(),
                     this.sleepTime, this.sleepTime);
         }
     }
@@ -146,7 +146,7 @@ public class RotateLogListener extends SimpleLogListener
         setPrintStream (null);
         for (int i=maxCopies; i>0; ) {
             File dest   = new File (logName + "." + i);
-            File source = new File (logName + ((--i > 0) ? ("." + i) : ""));
+            File source = new File (logName + (--i > 0 ? "." + i : ""));
             dest.delete();
             source.renameTo(dest);
         }
@@ -182,7 +182,7 @@ public class RotateLogListener extends SimpleLogListener
     }
     public void destroy () {
         if (rotate != null)
-            rotate.cancel ();
+            rotate.cancel();
         try {
             closeLogFile ();
         } catch (IOException e) {

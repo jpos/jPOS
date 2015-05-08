@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2014 Alejandro P. Revilla
+ * Copyright (C) 2000-2015 Alejandro P. Revilla
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -125,19 +125,6 @@ public class BSHLogListenerTest {
         LogEvent result = bSHLogListener.log(ev);
         assertSame("result", ev, result);
         assertSame("bSHLogListener.cfg", cfg, bSHLogListener.cfg);
-    }
-
-    @Test
-    public void testLogThrowsNullPointerException() throws Throwable {
-        BSHLogListener bSHLogListener = new BSHLogListener();
-        try {
-            bSHLogListener.log(null);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertNull("bSHLogListener.cfg", bSHLogListener.cfg);
-            assertEquals("bSHLogListener.scripts.size()", 0, bSHLogListener.scripts.size());
-        }
     }
 
     @Test

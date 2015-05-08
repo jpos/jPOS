@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2014 Alejandro P. Revilla
+ * Copyright (C) 2000-2015 Alejandro P. Revilla
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -270,7 +270,7 @@ public class FSDMsg implements Loggeable, Cloneable {
                     value = defValue;
                 break;
             case 'B':
-                if ((length << 1) < value.length())
+                if (length << 1 < value.length())
                     throw new IllegalArgumentException("field content=" + value
                             + " is too long to fit in field " + id
                             + " whose length is " + length);
@@ -482,7 +482,7 @@ public class FSDMsg implements Loggeable, Cloneable {
                         break;
                     }
                 }
-                if (expectSeparator && (c[0] == getSeparator(separator))) {
+                if (expectSeparator && c[0] == getSeparator(separator)) {
                     separated = false;
                     break;
                 }

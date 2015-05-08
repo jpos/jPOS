@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2014 Alejandro P. Revilla
+ * Copyright (C) 2000-2015 Alejandro P. Revilla
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -96,7 +96,7 @@ public class MacroFilter implements ISOFilter, Configurable {
                     continue;
                 if (value.equalsIgnoreCase ("$date") )
                     m.set (new ISOField (i, ISODate.getDateTime(new Date())));
-                else if ((value.toLowerCase().startsWith ("$date") ) && value.contains("GMT")) {
+                else if (value.toLowerCase().startsWith ("$date") && value.contains("GMT")) {
                     String zoneID = value.substring(value.indexOf("GMT"));
                     m.set (new ISOField (i, ISODate.getDateTime(new Date(), TimeZone.getTimeZone(zoneID))));
                 }                    

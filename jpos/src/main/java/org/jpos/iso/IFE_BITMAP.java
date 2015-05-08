@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2014 Alejandro P. Revilla
+ * Copyright (C) 2000-2015 Alejandro P. Revilla
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -104,10 +104,10 @@ public class IFE_BITMAP extends ISOBitMapPackager {
         c.setValue(bmap);
         bytes = b1.length;
         // check for 2nd bit map indicator
-        if ((bytes > 16) && !bmap.get(1)) {
+        if (bytes > 16 && !bmap.get(1)) {
           bytes = 16; 
         // check for 3rd bit map indicator
-        } else if ((bytes > 32) && !bmap.get(65)) {
+        } else if (bytes > 32 && !bmap.get(65)) {
           bytes = 32; 
         } 
         return bytes;

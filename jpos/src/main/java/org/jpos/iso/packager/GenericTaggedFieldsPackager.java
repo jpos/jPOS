@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2014 Alejandro P. Revilla
+ * Copyright (C) 2000-2015 Alejandro P. Revilla
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -205,7 +205,7 @@ public class GenericTaggedFieldsPackager extends GenericPackager
         for (ISOFieldPackager aFld : fld) {
             TaggedFieldPackagerBase tfp = null;
             if (aFld instanceof TaggedFieldPackagerBase)
-                tfp = ((TaggedFieldPackagerBase) aFld);
+                tfp = (TaggedFieldPackagerBase) aFld;
             else if(aFld instanceof ISOMsgFieldPackager) {
                 ISOMsgFieldPackager fp = (ISOMsgFieldPackager) aFld;
                 if(fp.getISOFieldPackager() instanceof TaggedFieldPackagerBase)

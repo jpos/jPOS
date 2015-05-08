@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2014 Alejandro P. Revilla
+ * Copyright (C) 2000-2015 Alejandro P. Revilla
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -73,13 +73,10 @@ public class GenericSubFieldPackager extends GenericPackager
             }
             for (int i=getFirstField(); i<maxField && consumed < b.length; i++) 
             {
-                if (bmap == null || bmap.get(i)) 
-                {
-                    if (i<fld.length && fld[i] != null) {
-                        ISOComponent c = fld[i].createComponent(i);
-                        consumed += fld[i].unpack (c, b, consumed);
-                        m.set(c);
-                    }
+                if ((bmap == null || bmap.get(i)) && i<fld.length && fld[i] != null) {
+                    ISOComponent c = fld[i].createComponent(i);
+                    consumed += fld[i].unpack (c, b, consumed);
+                    m.set(c);
                 }
             }
             if (b.length != consumed) 

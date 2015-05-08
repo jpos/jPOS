@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2014 Alejandro P. Revilla
+ * Copyright (C) 2000-2015 Alejandro P. Revilla
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -152,7 +152,7 @@ public class UI implements UIFactory, UIObjectFactory {
      */
     public void reconfigure (String elementName, String panelName) {
         Container c = 
-            panelName == null ? mainFrame.getContentPane() : ((JComponent) get (panelName));
+            panelName == null ? mainFrame.getContentPane() : (JComponent) get (panelName);
         if (c != null) {
             c.removeAll ();
             c.add (
@@ -179,7 +179,7 @@ public class UI implements UIFactory, UIObjectFactory {
      */
         destroyed = true;
 
-        Iterator it = (Arrays.asList(Frame.getFrames())).iterator();
+        Iterator it = Arrays.asList(Frame.getFrames()).iterator();
 
         while (it.hasNext()) {
             JFrame jf = (JFrame) it.next();

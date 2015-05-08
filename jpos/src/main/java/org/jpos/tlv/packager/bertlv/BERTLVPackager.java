@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2014 Alejandro P. Revilla
+ * Copyright (C) 2000-2015 Alejandro P. Revilla
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -298,8 +298,8 @@ public abstract class BERTLVPackager extends GenericPackager {
                 tagInterpreter.uninterpret(
                         tlvData,
                         offset,
-                        tlvData.length >= (offset + MAX_TAG_BYTES)
-                                ? MAX_TAG_BYTES : (tlvData.length - offset));
+                        tlvData.length >= offset + MAX_TAG_BYTES
+                                ? MAX_TAG_BYTES : tlvData.length - offset);
         int index = 0;
         final byte[] tagBytes;
         byte tagByte = tlvBytesHex[index];
@@ -309,7 +309,7 @@ public abstract class BERTLVPackager extends GenericPackager {
             tagByte = tlvBytesHex[index + 1];
             while (/* tagLength < MAX_TAG_BYTES && */(tagByte & 0x80) == 0x80) {
                 tagLength++;
-                tagByte = tlvBytesHex[index + (tagLength - 1)];
+                tagByte = tlvBytesHex[index + tagLength - 1];
             }
             tagBytes = new byte[tagLength];
             System.arraycopy(tlvBytesHex, index, tagBytes, 0, tagBytes.length);
@@ -324,8 +324,8 @@ public abstract class BERTLVPackager extends GenericPackager {
                 lengthInterpreter.uninterpret(
                         tlvData,
                         offset,
-                        tlvData.length >= (offset + MAX_LENGTH_BYTES)
-                                ? MAX_LENGTH_BYTES : (tlvData.length - offset));
+                        tlvData.length >= offset + MAX_LENGTH_BYTES
+                                ? MAX_LENGTH_BYTES : tlvData.length - offset);
         final byte length = tlvBytesHex[0];
         final int lengthLength;
         final byte[] lengthBytes;
@@ -409,10 +409,8 @@ public abstract class BERTLVPackager extends GenericPackager {
             case COMPRESSED_NUMERIC:
                 uninterpretLength = getUninterpretLength(dataLength, bcdInterpreterRightPaddedF);
                 unpackedValue = bcdInterpreterRightPaddedF.uninterpret(tlvData, 0, uninterpretLength);
-                if (unpackedValue.length() > 1) {
-                    if (unpackedValue.charAt(unpackedValue.length() - 1) == 'F') {
-                        unpackedValue = unpackedValue.substring(0, unpackedValue.length() - 1);
-                    }
+                if (unpackedValue.length() > 1 && unpackedValue.charAt(unpackedValue.length() - 1) == 'F') {
+                    unpackedValue = unpackedValue.substring(0, unpackedValue.length() - 1);
                 }
                 value = new ISOField(subFieldNumber, unpackedValue);
                 break;
@@ -422,10 +420,8 @@ public abstract class BERTLVPackager extends GenericPackager {
                 uninterpretLength = getUninterpretLength(dataLength, bcdInterpreterLeftPaddedZero);
                 unpackedValue = bcdInterpreterLeftPaddedZero.uninterpret(tlvData, 0, uninterpretLength);
 
-                if (unpackedValue.length() > 1) {
-                    if (unpackedValue.charAt(0) == '0') {
-                        unpackedValue = unpackedValue.substring(1);
-                    }
+                if (unpackedValue.length() > 1 && unpackedValue.charAt(0) == '0') {
+                    unpackedValue = unpackedValue.substring(1);
                 }
                 value = new ISOField(subFieldNumber, unpackedValue);
                 break;

@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2014 Alejandro P. Revilla
+ * Copyright (C) 2000-2015 Alejandro P. Revilla
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -71,12 +71,12 @@ public class IFB_AMOUNT extends ISOFieldPackager {
     public int unpack (ISOComponent c, byte[] b, int offset)
         throws ISOException
     {
-        String d = (new String(b, offset, 1)) 
+        String d = new String(b, offset, 1)
                     + interpreter.uninterpret(b, offset + 1, getLength() - 1);
         c.setValue(d);
-        return 1 + ((getLength()) >> 1);
+        return 1 + (getLength() >> 1);
     }
     public int getMaxPackedLength() {
-        return 1 + ((getLength()) >> 1);
+        return 1 + (getLength() >> 1);
     }
 }

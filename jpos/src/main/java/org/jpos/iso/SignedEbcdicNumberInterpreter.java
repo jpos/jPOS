@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2014 Alejandro P. Revilla
+ * Copyright (C) 2000-2015 Alejandro P. Revilla
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -44,8 +44,8 @@ public class SignedEbcdicNumberInterpreter implements Interpreter
     }
 
     public String uninterpret(byte[] rawData, int offset, int length) {
-        boolean negative = ((byte)(rawData[offset + length - 1] & 0xF0)) == ((byte)0xD0);
-        rawData[offset + length - 1] = ((byte)(rawData[offset + length - 1] | 0xF0));
+        boolean negative = (byte) (rawData[offset + length - 1] & 0xF0) == (byte)0xD0;
+        rawData[offset + length - 1] = (byte) (rawData[offset + length - 1] | 0xF0);
         return (negative ? "-" : "") + ISOUtil.ebcdicToAscii(rawData, offset, length);
     }
 

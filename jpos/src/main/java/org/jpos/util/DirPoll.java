@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2014 Alejandro P. Revilla
+ * Copyright (C) 2000-2015 Alejandro P. Revilla
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -233,8 +233,8 @@ public class DirPoll extends SimpleLogSource
     //--------------------------------------- FilenameFilter implementation
     public boolean accept(File dir, String name) {
         boolean result;
-        String ext = currentPriority >= 0 ? 
-            ((String) prio.elementAt(currentPriority)) : null;
+        String ext = currentPriority >= 0 ?
+                (String) prio.elementAt(currentPriority) : null;
         if (ext != null) {
             if (isRegexPriorityMatching()) {
                 if (!name.matches(ext))
@@ -248,7 +248,7 @@ public class DirPoll extends SimpleLogSource
         if (acceptZeroLength){
              result = f.isFile();
         } else {
-             result = f.isFile() && (f.length() > 0);
+             result = f.isFile() && f.length() > 0;
         }
         return result;
     }
@@ -439,7 +439,7 @@ public class DirPoll extends SimpleLogSource
                 logEvent = evt;
                 evt.addMessage (e);
                 try {
-                    if ((e instanceof DirPollException && ((DirPollException)e).isRetry())) {
+                    if (e instanceof DirPollException && ((DirPollException)e).isRetry()) {
                         synchronized (shutdownMonitor) {
                             if (!shutdown) {
                                 try {

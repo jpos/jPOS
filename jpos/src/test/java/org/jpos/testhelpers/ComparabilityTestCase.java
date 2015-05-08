@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2014 Alejandro P. Revilla
+ * Copyright (C) 2000-2015 Alejandro P. Revilla
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -178,6 +178,6 @@ public abstract class ComparabilityTestCase<T extends Comparable<T>> {
 	// }
 
 	private int sgn(int x) {
-		return (x == 0) ? 0 : (x / Math.abs(x));
+		return x == 0 ? 0 : x / Math.abs(x);
 	}
 }

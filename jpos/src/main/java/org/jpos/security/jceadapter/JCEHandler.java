@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2014 Alejandro P. Revilla
+ * Copyright (C) 2000-2015 Alejandro P. Revilla
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -34,6 +34,7 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.jpos.iso.ISOUtil;
+import org.jpos.security.CipherMode;
 import org.jpos.security.SMAdapter;
 import org.jpos.security.Util;
 
@@ -99,7 +100,7 @@ public class JCEHandler {
     public Key generateDESKey(short keyLength) throws JCEHandlerException {
         Key generatedClearKey = null;
         try {
-            KeyGenerator k1 = null;
+            KeyGenerator k1;
             if (keyLength > SMAdapter.LENGTH_DES) {
                 k1 = KeyGenerator.getInstance(ALG_TRIPLE_DES, provider.getName());
             } else {
@@ -137,12 +138,10 @@ public class JCEHandler {
      * @throws JCEHandlerException
      */
     public byte[] encryptDESKey(short keyLength, Key clearDESKey, Key encryptingKey) throws JCEHandlerException {
-        byte[] encryptedDESKey = null;
         byte[] clearKeyBytes = extractDESKeyMaterial(keyLength, clearDESKey);
         // enforce correct (odd) parity before encrypting the key
         Util.adjustDESParity(clearKeyBytes);
-        encryptedDESKey = doCryptStuff(clearKeyBytes, encryptingKey, Cipher.ENCRYPT_MODE);
-        return encryptedDESKey;
+        return doCryptStuff(clearKeyBytes, encryptingKey, Cipher.ENCRYPT_MODE);
     }
 
     /**
@@ -156,7 +155,6 @@ public class JCEHandler {
      * @throws JCEHandlerException
      */
     protected byte[] extractDESKeyMaterial(short keyLength, Key clearDESKey) throws JCEHandlerException {
-        byte[] clearKeyBytes = null;
         String keyAlg = clearDESKey.getAlgorithm();
         String keyFormat = clearDESKey.getFormat();
         if (keyFormat.compareTo("RAW") != 0) {
@@ -165,7 +163,7 @@ public class JCEHandler {
         if (!keyAlg.startsWith(ALG_DES)) {
             throw new JCEHandlerException("Unsupported key algorithm: " + keyAlg);
         }
-        clearKeyBytes = clearDESKey.getEncoded();
+        byte[] clearKeyBytes = clearDESKey.getEncoded();
         clearKeyBytes = ISOUtil.trim(clearKeyBytes, getBytesLength(keyLength));
         return clearKeyBytes;
     }
@@ -187,15 +185,11 @@ public class JCEHandler {
      */
     public Key decryptDESKey(short keyLength, byte[] encryptedDESKey, Key encryptingKey, boolean checkParity)
             throws JCEHandlerException {
-        Key key = null;
         byte[] clearKeyBytes = doCryptStuff(encryptedDESKey, encryptingKey, Cipher.DECRYPT_MODE);
-        if (checkParity) {
-            if (!Util.isDESParityAdjusted(clearKeyBytes)) {
-                throw new JCEHandlerException("Parity not adjusted");
-            }
+        if (checkParity && !Util.isDESParityAdjusted(clearKeyBytes)) {
+            throw new JCEHandlerException("Parity not adjusted");
         }
-        key = formDESKey(keyLength, clearKeyBytes);
-        return key;
+        return formDESKey(keyLength, clearKeyBytes);
     }
 
     /**
@@ -262,11 +256,12 @@ public class JCEHandler {
      * 
      * @param data
      * @param key
+     * @param iv 8 bytes initial vector
      * @return encrypted data
      * @exception JCEHandlerException
      */
     public byte[] encryptDataCBC(byte[] data, Key key, byte[] iv) throws JCEHandlerException {
-        return doCryptStuff(data, key, Cipher.ENCRYPT_MODE, DES_MODE_CBC, iv);
+        return doCryptStuff(data, key, Cipher.ENCRYPT_MODE, CipherMode.CBC, iv);
     }
 
     /**
@@ -274,58 +269,74 @@ public class JCEHandler {
      * 
      * @param encryptedData
      * @param key
+     * @param iv 8 bytes initial vector
      * @return clear data
      * @exception JCEHandlerException
      */
     public byte[] decryptDataCBC(byte[] encryptedData, Key key, byte[] iv) throws JCEHandlerException {
-        return doCryptStuff(encryptedData, key, Cipher.DECRYPT_MODE, DES_MODE_CBC, iv);
+        return doCryptStuff(encryptedData, key, Cipher.DECRYPT_MODE, CipherMode.CBC, iv);
     }
 
     /**
-     * Performs cryptographic DES operations (encryption/decryption) in ECB mode using JCE Cipher
+     * Performs cryptographic DES operations (en/de)cryption) in ECB mode using JCE Cipher.
      * 
      * @param data
      * @param key
-     * @param cipherMode
-     *            Cipher.ENCRYPT_MODE or Cipher.DECRYPT_MODE
+     * @param direction {@link Cipher#ENCRYPT_MODE} or {@link Cipher#DECRYPT_MODE}.
      * @return result of the cryptographic operations
      * @throws JCEHandlerException
      */
-    byte[] doCryptStuff(byte[] data, Key key, int cipherMode) throws JCEHandlerException {
-        return doCryptStuff(data, key, cipherMode, DES_MODE_ECB, null);
+    byte[] doCryptStuff(byte[] data, Key key, int direction) throws JCEHandlerException {
+        return doCryptStuff(data, key, direction, CipherMode.ECB, null);
     }
 
     /**
-     * performs cryptographic operations (encryption/decryption) using JCE Cipher
+     * Performs cryptographic operations (en/de)cryption using JCE Cipher.
      * 
      * @param data
      * @param key
-     * @param CipherMode
-     *            Cipher.ENCRYPT_MODE or Cipher.DECRYPT_MODE
-     * @return result of the cryptographic operations
+     * @param direction {@link Cipher#ENCRYPT_MODE} or {@link Cipher#DECRYPT_MODE}.
+     * @param cipherMode values specified by {@link CipherMode}.
+     * @param iv 8 bytes initial vector. After operation will contain new iv value.
+     * @return result of the cryptographic operations.
      * @throws JCEHandlerException
      */
-    byte[] doCryptStuff(byte[] data, Key key, int CipherMode, String desMode, byte[] iv) throws JCEHandlerException {
+    byte[] doCryptStuff(byte[] data, Key key, int direction
+            ,CipherMode cipherMode, byte[] iv) throws JCEHandlerException {
         byte[] result;
-        String transformation;
+        String transformation = key.getAlgorithm();
         if (key.getAlgorithm().startsWith(ALG_DES)) {
-            transformation = key.getAlgorithm() + "/" + desMode + "/" + DES_NO_PADDING;
-        } else {
-            transformation = key.getAlgorithm();
+            transformation += "/" + modetoString(cipherMode) + "/" + DES_NO_PADDING;
         }
         AlgorithmParameterSpec aps = null;
         try {
             Cipher c1 = Cipher.getInstance(transformation, provider.getName());
-            if (DES_MODE_CBC.equals(desMode))
+            if (cipherMode != CipherMode.ECB)
                 aps = new IvParameterSpec(iv);
-            c1.init(CipherMode, key, aps);
+            c1.init(direction, key, aps);
             result = c1.doFinal(data);
+            if (cipherMode != CipherMode.ECB)
+               System.arraycopy(result, result.length-8, iv, 0, iv.length);
         } catch (Exception e) {
             throw new JCEHandlerException(e);
         }
         return result;
     }
 
+    private String modetoString(CipherMode cipherMode) throws JCEHandlerException {
+        switch(cipherMode) {
+            case ECB:
+                return "ECB";
+            case CBC:
+                return "CBC";
+            case CFB8:
+                return "CFB8";
+            case CFB64:
+                return "CFB64";
+            default:
+                throw new JCEHandlerException("Unsupported cipher mode "+cipherMode);
+        }
+    }
     /**
      * Calculates the length of key in bytes
      * 
@@ -403,8 +414,8 @@ public class JCEHandler {
      * Class used for indexing MAC algorithms in cache
      */
     protected static class MacEngineKey {
-        private String macAlgorithm;
-        private Key macKey;
+        private final String macAlgorithm;
+        private final Key macKey;
 
         protected MacEngineKey(String macAlgorithm, Key macKey) {
             this.macAlgorithm = macAlgorithm;
@@ -423,7 +434,7 @@ public class JCEHandler {
         public int hashCode() {
             final int prime = 31;
             int result = 1;
-            result = prime * result + ((macAlgorithm == null) ? 0 : macAlgorithm.hashCode());
+            result = prime * result + (macAlgorithm == null ? 0 : macAlgorithm.hashCode());
             // Note: class Key does not redefine hashCode - therefore hash on Algorithm only or breaks java equals/hashCode contract
             return result;
         }

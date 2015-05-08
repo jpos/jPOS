@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2014 Alejandro P. Revilla
+ * Copyright (C) 2000-2015 Alejandro P. Revilla
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -60,7 +60,7 @@ public class PausedTransactionTest {
     @Test
     public void testCancelExpirationMonitor() throws Throwable {
         PausedTransaction pausedTransaction = new PausedTransaction(new TransactionManager(), 100L, new ArrayList(),
-                (new ArrayList()).iterator(), true, null, null);
+                new ArrayList().iterator(), true, null, null);
         pausedTransaction.cancelExpirationMonitor();
         assertNull("pausedTransaction.expirationMonitor",
                 junitx.util.PrivateAccessor.getField(pausedTransaction, "expirationMonitor"));
@@ -70,7 +70,7 @@ public class PausedTransactionTest {
     public void testCancelExpirationMonitor1() throws Throwable {
         TimerTask expirationMonitor = new TransactionManager.PausedMonitor(new Context());
         PausedTransaction pausedTransaction = new PausedTransaction(new TransactionManager(), 100L, new ArrayList(),
-                (new ArrayList()).iterator(), true, expirationMonitor, null);
+                new ArrayList().iterator(), true, expirationMonitor, null);
         pausedTransaction.cancelExpirationMonitor();
         assertSame("pausedTransaction.expirationMonitor", expirationMonitor,
                 junitx.util.PrivateAccessor.getField(pausedTransaction, "expirationMonitor"));
@@ -95,7 +95,7 @@ public class PausedTransactionTest {
     @Test
     public void testDump() throws Throwable {
         PausedTransaction pausedTransaction = new PausedTransaction(new TransactionManager(), 100L, new ArrayList(),
-                (new ArrayList()).iterator(), true, dummyTimerTask, null);
+                new ArrayList().iterator(), true, dummyTimerTask, null);
         pausedTransaction.dump(new PrintStream(new ByteArrayOutputStream()), "testPausedTransactionIndent");
         assertEquals("pausedTransaction.id()", 100L, pausedTransaction.id());
         assertTrue("pausedTransaction.isAborting()", pausedTransaction.isAborting());
@@ -104,7 +104,7 @@ public class PausedTransactionTest {
     @Test
     public void testDump1() throws Throwable {
         PausedTransaction pausedTransaction = new PausedTransaction(new TransactionManager(), 100L, new ArrayList(),
-                (new ArrayList()).iterator(), false, null, null);
+                new ArrayList().iterator(), false, null, null);
         pausedTransaction.dump(new PrintStream(new ByteArrayOutputStream()), "testPausedTransactionIndent");
         assertEquals("pausedTransaction.id()", 100L, pausedTransaction.id());
         assertFalse("pausedTransaction.isAborting()", pausedTransaction.isAborting());
@@ -113,7 +113,7 @@ public class PausedTransactionTest {
     @Test
     public void testDumpThrowsNullPointerException() throws Throwable {
         PausedTransaction pausedTransaction = new PausedTransaction(new TransactionManager(), 100L, new ArrayList(),
-                (new ArrayList()).iterator(), false, null, null);
+                new ArrayList().iterator(), false, null, null);
         try {
             pausedTransaction.dump(null, "testPausedTransactionIndent");
             fail("Expected NullPointerException to be thrown");
@@ -125,7 +125,7 @@ public class PausedTransactionTest {
     @Test
     public void testDumpThrowsNullPointerException1() throws Throwable {
         PausedTransaction pausedTransaction = new PausedTransaction(new TransactionManager(), 100L, new ArrayList(),
-                (new ArrayList()).iterator(), true, null, null);
+                new ArrayList().iterator(), true, null, null);
         try {
             pausedTransaction.dump(null, "testPausedTransactionIndent");
             fail("Expected NullPointerException to be thrown");
@@ -156,7 +156,7 @@ public class PausedTransactionTest {
     @Test
     public void testId() throws Throwable {
         PausedTransaction pausedTransaction = new PausedTransaction(new TransactionManager(), 0L, new ArrayList(),
-                (new ArrayList()).iterator(), true, new TransactionManager.PausedMonitor(new Context()), null);
+                new ArrayList().iterator(), true, new TransactionManager.PausedMonitor(new Context()), null);
         long result = pausedTransaction.id();
         assertEquals("result", 0L, result);
     }
@@ -164,7 +164,7 @@ public class PausedTransactionTest {
     @Test
     public void testId1() throws Throwable {
         PausedTransaction pausedTransaction = new PausedTransaction(new TransactionManager(), 100L, new ArrayList(),
-                (new ArrayList()).iterator(), true, null, null);
+                new ArrayList().iterator(), true, null, null);
         long result = pausedTransaction.id();
         assertEquals("result", 100L, result);
     }
@@ -172,7 +172,7 @@ public class PausedTransactionTest {
     @Test
     public void testIsAborting() throws Throwable {
         PausedTransaction pausedTransaction = new PausedTransaction(new TransactionManager(), 100L, new ArrayList(),
-                (new ArrayList()).iterator(), false, new TransactionManager.PausedMonitor(new Context()), null);
+                new ArrayList().iterator(), false, new TransactionManager.PausedMonitor(new Context()), null);
         boolean result = pausedTransaction.isAborting();
         assertFalse("result", result);
     }
@@ -180,7 +180,7 @@ public class PausedTransactionTest {
     @Test
     public void testIsAborting1() throws Throwable {
         PausedTransaction pausedTransaction = new PausedTransaction(new TransactionManager(), 100L, new ArrayList(),
-                (new ArrayList()).iterator(), true, new TransactionManager.PausedMonitor(new Context()), null);
+                new ArrayList().iterator(), true, new TransactionManager.PausedMonitor(new Context()), null);
         boolean result = pausedTransaction.isAborting();
         assertTrue("result", result);
     }
