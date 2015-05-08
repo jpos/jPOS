@@ -87,7 +87,7 @@ public class MUXPool extends QBeanSupport implements MUX {
                 return true;
         return false;
     }
-    private MUX firstAvailableMUX (long maxWait) {
+    protected MUX firstAvailableMUX (long maxWait) {
         do {
             for (MUX aMux : mux)
                 if (aMux.isConnected())
@@ -96,7 +96,7 @@ public class MUXPool extends QBeanSupport implements MUX {
         } while (System.currentTimeMillis() < maxWait);
         return null;
     }
-    private MUX nextAvailableMUX (int mnumber, long maxWait) {
+    protected MUX nextAvailableMUX (int mnumber, long maxWait) {
         do {
             for (int i=0; i<mux.length; i++) {
                 int j = (mnumber+i) % mux.length;
