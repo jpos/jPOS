@@ -137,20 +137,17 @@ public class ThreadPoolTest {
     public void testConcurrentThreadAllocation() throws Throwable {
         ThreadPool pool = new ThreadPool(1, 200, "Test-ThreadPool");
         Server server = new Server(pool);
-
         Thread serverThread = new Thread(server);
         serverThread.start();
-
-        Thread.sleep(3000);
+        serverThread.join(3000);
+        serverThread.interrupt();
         
         assertEquals("pool.getActiveCount()", 100, pool.getActiveCount());
         
         synchronized (server) {
             server.notifyAll();
         }
-
-        serverThread.join(3000);
-        serverThread.interrupt();
+        pool.close();
     }
 
     private static class Job implements Runnable {
@@ -182,8 +179,9 @@ public class ThreadPoolTest {
 
         @Override
         public void run() {
-            for (int i = 0; i < 100; i++)
+            for (int i = 0; i < 100; i++) {
                 pool.execute(new Job(i, this));
+            }
         }
     }
 
