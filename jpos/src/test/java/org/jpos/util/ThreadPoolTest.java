@@ -19,18 +19,18 @@
 package org.jpos.util;
 
 import org.jpos.iso.ISOUtil;
-import org.junit.Test;
-import org.mockito.internal.matchers.Matches;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+
+import org.junit.Test;
+import org.mockito.internal.matchers.Matches;
 
 public class ThreadPoolTest {
 
     static class TestTask implements Runnable {
-        public void run() {
-            ISOUtil.sleep(500);
-        }
+      public void run() {
+        ISOUtil.sleep(500);
+      }
     }
 
     @Test
@@ -129,7 +129,7 @@ public class ThreadPoolTest {
         ISOUtil.sleep(20);
         Thread[] tl = new Thread[threadPool.activeCount()];
         threadPool.enumerate(tl);
-        for (Thread t : tl)
+        for (Thread t :tl )
             assertThat(t.getName(), new Matches("ThreadPool.PooledThread-\\d+-(running|idle)"));
     }
 
