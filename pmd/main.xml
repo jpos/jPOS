@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pmd version="5.1.1" timestamp="2015-05-15T02:43:08.262">
+<pmd version="5.1.1" timestamp="2015-05-24T12:53:09.790">
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/core/CardHolder.java">
 <violation beginline="323" endline="323" begincolumn="11" endcolumn="51" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.core" class="CardHolder" method="isExpired" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
@@ -374,10 +374,10 @@ Avoid using java.lang.ThreadGroup; it is not thread safe
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/util/ThreadPool.java">
-<violation beginline="90" endline="91" begincolumn="15" endcolumn="13" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.util" class="ThreadPool$PooledThread" method="run" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/empty.html#EmptyCatchBlock" priority="3">
+<violation beginline="94" endline="95" begincolumn="15" endcolumn="13" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.util" class="ThreadPool$PooledThread" method="run" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
 </violation>
-<violation beginline="95" endline="96" begincolumn="17" endcolumn="37" rule="CollapsibleIfStatements" ruleset="Basic" package="org.jpos.util" class="ThreadPool$PooledThread" method="supervise" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/basic.html#CollapsibleIfStatements" priority="3">
+<violation beginline="99" endline="100" begincolumn="17" endcolumn="37" rule="CollapsibleIfStatements" ruleset="Basic" package="org.jpos.util" class="ThreadPool$PooledThread" method="supervise" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/basic.html#CollapsibleIfStatements" priority="3">
 These nested if statements could be combined
 </violation>
 </file>
