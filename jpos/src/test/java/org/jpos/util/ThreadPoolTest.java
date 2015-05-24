@@ -130,7 +130,61 @@ public class ThreadPoolTest {
         Thread[] tl = new Thread[threadPool.activeCount()];
         threadPool.enumerate(tl);
         for (Thread t :tl )
-          assertThat(t.getName(), new Matches("PooledThread-\\d+-(running|idle)"));
+            assertThat(t.getName(), new Matches("ThreadPool.PooledThread-\\d+-(running|idle)"));
+    }
+
+    @Test
+    public void testConcurrentThreadAllocation() throws Throwable {
+        ThreadPool pool = new ThreadPool(1, 200, "Test-ThreadPool");
+        Server server = new Server(pool);
+        Thread serverThread = new Thread(server);
+        serverThread.start();
+
+        serverThread.join(1000);
+        serverThread.interrupt();
+
+        Thread.sleep(1000);
+        assertEquals("pool.getActiveCount()", 100, pool.getActiveCount());
+        
+        synchronized (server) {
+            server.notifyAll();
+        }
+        pool.close();
+    }
+
+    private static class Job implements Runnable {
+        private final int jobId;
+        private final Object monitor;
+
+        private Job(int jobId, Object monitor) {
+            this.jobId = jobId;
+            this.monitor = monitor;
+        }
+
+        @Override
+        public void run() {
+            synchronized (monitor) {
+                try {
+                    monitor.wait();
+                } catch (InterruptedException e) {
+                }
+            }
+        }
+    }
+
+    private static class Server implements Runnable {
+        private final ThreadPool pool;
+
+        public Server(ThreadPool pool) {
+            this.pool = pool;
+        }
+
+        @Override
+        public void run() {
+            for (int i = 0; i < 100; i++) {
+                pool.execute(new Job(i, this));
+            }
+        }
     }
 
 }

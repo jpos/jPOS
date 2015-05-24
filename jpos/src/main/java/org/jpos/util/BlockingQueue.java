@@ -95,6 +95,11 @@ public class BlockingQueue {
     public synchronized int consumerCount() {
         return consumers;
     }
+
+    public synchronized int consumerDeficit() {
+        return queue.size() - consumers;
+    }
+    
     public synchronized boolean ready() {
         return !closed;
     }

@@ -25,6 +25,7 @@ import org.jpos.util.BlockingQueue.Closed;
 import org.jpos.util.NameRegistrar.NotFoundException;
 
 import java.io.PrintStream;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Implements a ThreadPool with the ability to run simple Runnable
@@ -32,10 +33,10 @@ import java.io.PrintStream;
  * @since 1.1
  * @author apr@cs.com.uy
  */
-public class ThreadPool extends ThreadGroup implements LogSource, Loggeable, Configurable, ThreadPoolMBean
-{
-    private static int poolNumber=0;
-    private static int threadNumber=0;
+public class ThreadPool extends ThreadGroup implements LogSource, Loggeable, Configurable, ThreadPoolMBean {
+    
+    private static AtomicInteger poolNumber = new AtomicInteger(0);
+    private static AtomicInteger threadNumber = new AtomicInteger(0);
     private int maxPoolSize = 1;
     private int available;
     private int running = 0;
@@ -44,7 +45,9 @@ public class ThreadPool extends ThreadGroup implements LogSource, Loggeable, Con
     private Logger logger;
     private String realm;
     private int jobs = 0;
+    private final String namePrefix;
     public static final int DEFAULT_MAX_THREADS = 100;
+    
     public interface Supervised {
         public boolean expired ();
     }
@@ -54,9 +57,10 @@ public class ThreadPool extends ThreadGroup implements LogSource, Loggeable, Con
 
         public PooledThread() {
             super (ThreadPool.this,
-                "PooledThread-" + threadNumber++);
+                    ThreadPool.this.namePrefix + ".PooledThread-" + threadNumber.getAndIncrement());
             setDaemon(true);
         }
+
         public void run () {
             String name = getName();
             try {
@@ -102,7 +106,7 @@ public class ThreadPool extends ThreadGroup implements LogSource, Loggeable, Con
      * @param maxPoolSize maximum number of threads on this pool
      */
     public ThreadPool (int poolSize, int maxPoolSize) {
-        this(poolSize, maxPoolSize, "ThreadPool-" + poolNumber++);
+        this(poolSize, maxPoolSize, "ThreadPool");
     }
     /**
      * @param name pool name
@@ -110,9 +114,10 @@ public class ThreadPool extends ThreadGroup implements LogSource, Loggeable, Con
      * @param maxPoolSize maximum number of threads on this pool
      */
     public ThreadPool (int poolSize, int maxPoolSize, String name) {
-        super (name + "-" + poolNumber++);
+        super(name + "-" + poolNumber.getAndIncrement());
         this.maxPoolSize = maxPoolSize > 0 ? maxPoolSize : DEFAULT_MAX_THREADS ;
         this.available = this.maxPoolSize;
+        this.namePrefix = name;
         init (poolSize);
     }
     
@@ -131,20 +136,17 @@ public class ThreadPool extends ThreadGroup implements LogSource, Loggeable, Con
     public void close () {
         pool.close();
     }
-    public synchronized void execute (Runnable action) throws Closed
-    {
+    public synchronized void execute(Runnable action) throws Closed {        
         if (!pool.ready())
             throw new Closed();
 
         if (++jobs % this.maxPoolSize == 0 || pool.consumerCount() <= 0)
             supervise();
 
-        synchronized (pool) {
-        	if (running < maxPoolSize && pool.consumerCount() <= 0) {
-            	new PooledThread().start();
-	            running++;
-    	    }
-    	}
+        if (running < maxPoolSize && pool.consumerDeficit() >= 0) {
+            new PooledThread().start();
+            running++;
+        }
         available--;
         pool.enqueue (action);
     }

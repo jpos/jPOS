@@ -102,7 +102,7 @@ public class QServer
         }
 
         ThreadPool pool = null;
-        pool = new ThreadPool (minSessions ,maxSessions);
+        pool = new ThreadPool (minSessions ,maxSessions, getName() + "-ThreadPool");
         pool.setLogger (log.getLogger(), getName() + ".pool");
 
         server = new ISOServer (port, (ServerChannel) channel, pool);
