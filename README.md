@@ -18,11 +18,11 @@
 <dependency>
   <groupId>org.jpos</groupId>
   <artifactId>jpos</artifactId>
-  <version>1.9.6</version>
+  <version>2.0.0</version>
 </dependency>
 ```
 
-if you want to use our nightly builds, for instance to get `1.9.7-SNAPSHOT`, you can
+if you want to use our nightly builds, for instance to get `2.0.1-SNAPSHOT`, you can
 add the following repository:
 
 ```xml
