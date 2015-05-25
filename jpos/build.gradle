@@ -75,7 +75,7 @@ def bundleExportPackage = 'org.jpos.bsh,org.jpos.core,org.jpos.iso,org.jpos.iso.
 task listJars << {
     configurations.testCompile.each { File file -> println file.name }
 }
- 
+
 jar () {
     manifest {
         def manifestClasspath = configurations.runtime.collect { "lib/" + it.getName() }.join(' ') 
@@ -212,6 +212,7 @@ task createBuildTimestampPropertyFile(type: BuildTimestampTask) {
 }
 
 processResources.dependsOn createBuildTimestampPropertyFile, createRevisionPropertyFile
+processResources.outputs.upToDateWhen{ false } // issue with Gradle 2.4 confused about UP-TO-DATE (works OK with 2.3)
 
 task installApp(type: Sync) {
     description 'Installs jPOS based application'
