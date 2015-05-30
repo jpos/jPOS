@@ -39,7 +39,7 @@ optional 'socketFactory' property in the channel configuration,
   <property name="host" value="127.0.0.1" />
   <property name="port" value="10000" />
   <property name="timeout" value="360000" />
-  <property name="socketFactory" value="org.jpos.iso.SunJSSESocketFactory" />
+  <property name="socketFactory" value="org.jpos.iso.GenericSSLSocketFactory" />
  </channel>
  <in>sslsend</in>
  <out>sslreceive</out>
@@ -50,10 +50,25 @@ optional 'socketFactory' property in the channel configuration,
 
 [NOTE]
 ====
-While SunJSSESocketFactory can be used to demonstrate SSL support
+While `GenericSSLSocketFactory` can be used to demonstrate SSL support
 in jPOS, production-grade installations should consider it just
 a reference/sample implementation. It uses ${user.home}/.keystore
 with a default password, so *at the very least* you
 want to override its +getPassword()+ method.
+
+For backward compatibility, we also have a `SunJSSESocketFactory` implementation
+that uses `com.sun.net.ssl.internal.ssl.Provider`.
+====
+
+[TIP]
+====
+`GenericSSLSocketFactory` honors two very important properties:
+
+* `addEnabledCipherSuite` and
+* `addEnabledProtocol`
+
+For PCI compliance, you want to make sure which protocols and ciphersuites you
+want to enable. If this properties are not configured, all protocols and ciphersuites
+available to the JVM will be enabled, something you probably don't want.
 ====
 
