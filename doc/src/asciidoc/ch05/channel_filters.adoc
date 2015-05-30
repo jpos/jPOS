@@ -1,0 +1,128 @@
+== Channel Filters
+
+Filters give the ability to alter an incoming or outgoing message.
+
+jPOS comes with a few stock filters, mostly provided as proof-of-concept.
+
+=== MD5Filter
+
+On outgoing messages, the MD5Filter computes an MD5 hash of a key plus the 
+content of a selected number of fields from the ISOMsg and places the hash 
+in fields 64 (first half) and 128 (second half).
+
+On incoming messages, it computes the same MD5 hash and verifies they match
+the one coming in fields 64 and 128.
+
+[NOTE]
+======
+Mentioning MD5 would probably guarantee your QSA to go ballistic. While using
+MD5 is better than no message authentication at all, please consider this
+filter as an example to implement MAC filters.
+======
+
+=== ChannelInfoFilter
+
+In a Q2 environment where components are totally decoupled via multiplexers (MUX),
+and sometimes multiplexers pools (MUXPool), a client calling `MUX.request(...)`
+may not know which channel was actually used to send the message, or from which
+channel a response came. `ChannelInfoFilter` can place the channel name, and
+socket information in two customized fields.
+
+Interesting enough, while ISO-8583 uses fields up to 128, you can internally use
+fields beyond that (any arbitrary number greater than 128 would do) to store that
+information, so you can configure your filter like this:
+
+
+[source,xml]
+----
+
+ <channel class="org.jpos.iso.channel.NACChannel" logger="Q2"
+       packager="org.jpos.iso.packager.GenericPackager">
+
+  <property name="packager-config" value="jar:packager/iso87ascii.xml" />
+  <property name="host" value="127.0.0.1" />
+  <property name="port" value="9001" />
+  <property name="timeout" value="360000" />
+  <filter class='org.jpos.iso.filter.ChannelInfoFilter' direction='both'>
+    <property name='channel-name' value='1000' />
+    <property name='socket-info'  value='1001' />
+  </filter>
+ </channel>
+----
+
+The log would show something like this:
+
+[source,xml]
+----
+    <isomsg>
+      ...
+      ...
+      <field id="1000" value="selftest-adaptor"/>
+      <field id="1001" value="127.0.0.1:51865 127.0.0.1:9001"/>
+    </isomsg>
+----
+
+=== DelayFilter
+
+The DelayFilter is a demo filter that honors a `delay` property and can 
+be useful to delay messages as they come and go, useful for debugging/simulation
+purposes.
+
+=== DebugFilter
+
+The DebugFilter adds to the log an hex representation of the binary message as
+it comes and go through the wire. It's very useful in situations where you
+want to capture a message that is not properly unpacking without having to
+revert to `tcpdump` or `nc`. This filter is of course a no-no in a production
+environment (per PCI requirements).
+
+=== ThroughputControlFilter
+
+The ThroughputControlFilter honors two properties:
+
+* `transactions` and
+* `period` (in milliseconds).
+
+and can be used to apply back pressure to a channel sending a large number of transactions.
+We can configure for example a maximum of 100 messages in a 1000 milliseconds period in
+order to make sure that this particular channel won't load the system with more than 100 TPS.
+
+=== BSHFilter
+
+The BSHFilter is one of the most useful, and one of the most abused filters. It allows you to
+run link:http://beanshell.org[BeanShell] that can be modified on the fly. It's extremely
+useful in situations where you need to add a field or two, or change the content of a given
+field, i.e. while testing on a tight certification window.
+
+It is not intended to be used as a way to implement your business logic, BSH code is great, but
+tend to become brittle, difficult to refactor, test, you don't have IDE support, etc.
+
+The configuration might look like this:
+
+[source,xml]
+------------
+
+    <channel ...>
+     <filter class="org.jpos.bsh.BSHFilter" direction="outgoing" >
+        <property name="source" value="cfg/myfilter.bsh" />
+     </filter>
+     ...
+     ...
+    </channel>
+
+------------
+
+Your `bsh` file will have access to the following variables:
+
+* `message` - the ISOMsg to be filtered
+* `channel` - a reference to the ISOChannel associted with this filter
+* `header`  - if a header is present (on received messages)
+* `image`   - the binary image of the message (on received messages)
+* `evt`     - a LogEvent that you can use to add information to the Log
+* `cfg`     - a reference to the configuration object
+
+=== Aditional filters
+
+Take a look at link:https://github.com/jpos/jPOS/tree/master/jpos/src/main/java/org/jpos/iso/filter[Github repository] 
+for additional samples.
+

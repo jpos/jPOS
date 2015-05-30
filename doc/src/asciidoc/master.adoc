@@ -43,6 +43,7 @@ include::ch05/tcpip_channels.adoc[]
 include::ch05/ssl_channels.adoc[]
 include::ch05/loopback.adoc[]
 include::ch05/channel_pool.adoc[]
+include::ch05/channel_filters.adoc[]
 
 = jPOS Space
 include::ch06/intro.adoc[]
