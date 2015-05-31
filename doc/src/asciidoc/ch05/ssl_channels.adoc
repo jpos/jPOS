@@ -68,7 +68,7 @@ that uses `com.sun.net.ssl.internal.ssl.Provider`.
 * `addEnabledProtocol`
 
 For PCI compliance, you want to make sure which protocols and ciphersuites you
-want to enable. If this properties are not configured, all protocols and ciphersuites
+want to enable. If these properties are not configured, all protocols and ciphersuites
 available to the JVM will be enabled, something you probably don't want.
 ====
 
