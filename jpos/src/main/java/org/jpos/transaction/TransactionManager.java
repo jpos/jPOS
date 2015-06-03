@@ -195,7 +195,6 @@ public class TransactionManager
                 if (session < sessions && // only initial sessions create extra sessions
                     maxSessions > sessions &&
                     getActiveSessions() < maxSessions &&
-                    id % sessions == 0 &&
                     getOutstandingTransactions() > threshold)
                 {
                         new Thread(this).start();
