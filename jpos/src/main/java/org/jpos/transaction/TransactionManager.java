@@ -135,7 +135,7 @@ public class TransactionManager
         isp.out(queue, context);
     }
     public void push (Serializable context) {
-        isp.push (queue, context);
+        isp.push(queue, context);
     }
     @SuppressWarnings("unused")
     public String getQueueName() {
@@ -299,11 +299,15 @@ public class TransactionManager
                         paused ? TransactionStatusEvent.State.PAUSED : TransactionStatusEvent.State.DONE, 
                         id, "", context);
                 }
-
+                if (getInTransit() > Math.max(maxActiveSessions, activeSessions.get()) * 100) {
+                    if (evt == null)
+                        evt = getLog().createLogEvent ("warn");
+                    evt.addMessage("WARNING: IN-TRANSIT TOO HIGH");
+                }
                 if (evt != null) {
                     evt.addMessage (
-                        String.format ("head=%d, tail=%d, outstanding=%d, active-sessions=%d/%d, %s, elapsed=%dms",
-                            head, tail, getOutstandingTransactions(),
+                        String.format ("in-transit=%d, head=%d, tail=%d, outstanding=%d, active-sessions=%d/%d, %s, elapsed=%dms",
+                            getInTransit(), head, tail, getOutstandingTransactions(),
                             getActiveSessions(), maxSessions,
                             tps.toString(),
                                 System.currentTimeMillis() - startTime
