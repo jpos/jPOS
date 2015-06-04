@@ -38,13 +38,20 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
     AtomicInteger msgno = new AtomicInteger();
     public static final int ROUND_ROBIN = 1;
     public static final int PRIMARY_SECONDARY = 0;
+    public static final int ROUND_ROBIN_WITH_OVERRIDE = 2;
+    public static final int SPLIT_BY_DIVISOR = 3;
+    String[] overrideMTIs;
+    String originalChannelField = "";
+    String splitField = "";
        
     public void initService () throws ConfigurationException {
         Element e = getPersist ();
         muxName = toStringArray(e.getChildTextTrim ("muxes"));
-        String s = e.getChildTextTrim ("strategy");
-        strategy = "round-robin".equals (s) ? ROUND_ROBIN : PRIMARY_SECONDARY;
-
+        strategy = getStrategy(e.getChildTextTrim("strategy"));
+        overrideMTIs = toStringArray(e.getChildTextTrim("follower-override"));
+        originalChannelField = e.getChildTextTrim("original-channel-field");
+        splitField = e.getChildTextTrim("split-field");
+        
         mux = new MUX[muxName.length];
         try {
             for (int i=0; i<mux.length; i++)
@@ -59,9 +66,7 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
     }
     public ISOMsg request (ISOMsg m, long timeout) throws ISOException {
         long maxWait = System.currentTimeMillis() + timeout;
-        MUX mux = strategy == ROUND_ROBIN ?
-            nextAvailableMUX (msgno.incrementAndGet(), maxWait) :
-            firstAvailableMUX (maxWait);
+        MUX mux = getMUX(m,maxWait);
 
         if (mux != null) {
             timeout = maxWait - System.currentTimeMillis();
@@ -72,9 +77,7 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
     }
     public void send (ISOMsg m) throws ISOException, IOException {
         long maxWait = 1000L; // reasonable default
-        MUX mux = strategy == ROUND_ROBIN ?
-            nextAvailableMUX (msgno.incrementAndGet(), maxWait) :
-            firstAvailableMUX (maxWait);
+        MUX mux = getMUX(m,maxWait);
 
         if (mux == null)
             throw new ISOException ("No available MUX");
@@ -121,12 +124,8 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
     public void request (ISOMsg m, long timeout, final ISOResponseListener r, final Object handBack) 
         throws ISOException 
     {
-        int mnumber;
         long maxWait = System.currentTimeMillis() + timeout;
-        mnumber = msgno.incrementAndGet();
-        MUX mux = strategy == ROUND_ROBIN ?
-        nextAvailableMUX (mnumber, maxWait) :
-        firstAvailableMUX (maxWait);
+        MUX mux = getMUX(m,maxWait);
 
         if (mux != null) {
             timeout = maxWait - System.currentTimeMillis();
@@ -142,7 +141,69 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
         } else 
             throw new ISOException ("No MUX available");
     }
-
+    private boolean overrideMTI(String mtiReq) {
+        if(overrideMTIs != null){
+            for (String mti : overrideMTIs) {
+                if(mti.equals(mtiReq))
+                    return true;
+            }
+        }
+        return false;
+    }
+    private MUX nextAvailableWithOverrideMUX(ISOMsg m, long maxWait) {
+        try{
+            if(originalChannelField != null && !"".equals(originalChannelField)){
+                String channelName = m.getString(originalChannelField);
+                if(channelName != null && !"".equals(channelName) && overrideMTI(m.getMTI())){
+                    ChannelAdaptor channel = (ChannelAdaptor)NameRegistrar.get (channelName);
+                    for (MUX mx : mux) {
+                        if(channel != null && ((QMUX)mx).getInQueue().equals(channel.getOutQueue())){
+                            if(mx.isConnected())
+                                return mx;
+                        }
+                    }
+                }
+            }
+            return nextAvailableMUX(msgno.incrementAndGet(), maxWait);
+        }catch(Exception e){}
+        return null;
+    }
+    private MUX splitByDivisorMUX(ISOMsg m, long maxWait) {
+        try{
+            if(splitField != null && !"".equals(splitField)){
+                if(m.hasField(splitField) && ISOUtil.isNumeric(m.getString(splitField),10)){
+                    MUX mx = mux[(int)(Long.valueOf(m.getString(splitField))%mux.length)];
+                    if(mx.isConnected())
+                        return mx;
+                }
+            }
+            return nextAvailableMUX(msgno.incrementAndGet(), maxWait);
+        }catch(Exception e){}
+        return null;
+    }
+    private int getStrategy(String stg) {
+        if(stg == null)
+            return PRIMARY_SECONDARY;
+        
+        stg = stg.trim();
+        if("round-robin".equals(stg))
+            return ROUND_ROBIN;
+        else if("round-robin-with-override".equals(stg))
+            return ROUND_ROBIN_WITH_OVERRIDE;
+        else if("split-by-divisor".equals(stg))
+            return SPLIT_BY_DIVISOR;
+        else
+            return PRIMARY_SECONDARY;
+    }
+    private MUX getMUX(ISOMsg m, long maxWait){
+        switch (strategy) {
+            case ROUND_ROBIN: return nextAvailableMUX(msgno.incrementAndGet(), maxWait);
+            case ROUND_ROBIN_WITH_OVERRIDE: return nextAvailableWithOverrideMUX(m, maxWait);
+            case SPLIT_BY_DIVISOR: return splitByDivisorMUX(m, maxWait);
+            default: return firstAvailableMUX(maxWait);
+        }
+    }
+    
     @Override
     public String[] getMuxNames() {
         return muxName;
