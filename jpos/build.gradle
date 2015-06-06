@@ -10,10 +10,11 @@ dependencies {
     compile libraries.javatuples
     compile libraries.xerces
 
-    compile (libraries.jsonsimple) {
-        exclude(module: 'junit')
-        exclude(module: 'hamcrest-core')
-    }
+//  JSONPackager on hold
+//    compile (libraries.jsonsimple) {
+//        exclude(module: 'junit')
+//        exclude(module: 'hamcrest-core')
+//    }
 
     // compile 'org.apache.felix:org.apache.felix.framework:5.0.0'
     compile 'org.osgi:org.osgi.core:6.0.0'
