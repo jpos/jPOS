@@ -2,7 +2,7 @@ apply plugin: 'osgi'
 
 dependencies {
     compile "commons-cli:commons-cli:1.2"
-    compile 'org.apache.felix:org.apache.felix.framework:4.2.1'
+    compile 'org.apache.felix:org.apache.felix.framework:5.0.0'
     // compile( "org.osgi:org.osgi.core:4.3.1" )
 }
 
