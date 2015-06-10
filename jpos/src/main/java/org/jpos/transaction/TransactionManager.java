@@ -249,6 +249,8 @@ public class TransactionManager
                     );
                     if (prof == null)
                         prof = new Profiler();
+                    else
+                        prof.checkPoint("resume");
                     startTime = System.currentTimeMillis();
                 }
                 snapshot (id, context, PREPARING);
