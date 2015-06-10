@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pmd version="5.1.1" timestamp="2015-06-06T12:38:39.594">
+<pmd version="5.1.1" timestamp="2015-06-10T18:38:12.191">
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/core/CardHolder.java">
 <violation beginline="323" endline="323" begincolumn="11" endcolumn="51" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.core" class="CardHolder" method="isExpired" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
@@ -114,7 +114,7 @@ Check the value returned by the skip() method of an InputStream to see if the re
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/ISOMsg.java">
-<violation beginline="911" endline="911" begincolumn="15" endcolumn="62" rule="UselessParentheses" ruleset="Unnecessary" package="org.jpos.iso" class="ISOMsg" method="setResponseMTI" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/unnecessary.html#UselessParentheses" priority="4">
+<violation beginline="916" endline="916" begincolumn="15" endcolumn="62" rule="UselessParentheses" ruleset="Unnecessary" package="org.jpos.iso" class="ISOMsg" method="setResponseMTI" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.1.1/rules/java/unnecessary.html#UselessParentheses" priority="4">
 Useless parentheses.
 </violation>
 </file>
