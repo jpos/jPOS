@@ -221,3 +221,8 @@ task installApp(type: Sync) {
     with jposCopySpec
 }
 
+task viewTests (description: 'Open Test Reports') << {
+    Class.forName("java.awt.Desktop").newInstance().browse(
+        new File("${buildDir}/reports/tests", 'index.html').toURI())
+}
+
