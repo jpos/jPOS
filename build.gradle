@@ -102,7 +102,6 @@ subprojects {
             }
         }
     }
-
 }
 
 // Configure IDEA to use Git
@@ -121,6 +120,6 @@ task aggregatedJavadoc (type: Javadoc, description: "Aggregated Javadocs") {
 }
 
 task wrapper( type: Wrapper ) {
-    gradleVersion = '2.3'
+    gradleVersion = '2.4'
 }
 
