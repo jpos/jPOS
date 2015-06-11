@@ -18,21 +18,19 @@
 
 package org.jpos.iso.header;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import org.junit.Test;
+
+import java.util.Arrays;
+
+import static org.junit.Assert.*;
 
 public class BASE1HeaderTest {
     @Test
     public void testConstructor() throws Throwable {
         byte[] header = new byte[2];
         BASE1Header bASE1Header = new BASE1Header(header);
-        assertSame("bASE1Header.header", header, bASE1Header.header);
+        assertTrue("bASE1Header.header", Arrays.equals(header, bASE1Header.header)
+        );
     }
 
     @Test
@@ -68,13 +66,9 @@ public class BASE1HeaderTest {
     }
 
     @Test
-    public void testConstructorThrowsNullPointerException() throws Throwable {
-        try {
-            new BASE1Header(null);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
+    public void testConstructorAcceptsNullValue() throws Throwable {
+        BASE1Header h = new BASE1Header(null);
+        assertNotNull("BASE1Header is null", h);
     }
 
     @Test
@@ -220,7 +214,7 @@ public class BASE1HeaderTest {
         byte[] header = new byte[18];
         bASE1Header.unpack(header);
         bASE1Header.setBatchNumber(100);
-        assertSame("bASE1Header.header", header, bASE1Header.header);
+        assertFalse("bASE1Header.header", Arrays.equals(header, bASE1Header.header));
     }
 
     @Test
@@ -233,7 +227,7 @@ public class BASE1HeaderTest {
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
             assertEquals("ex.getMessage()", "17", ex.getMessage());
-            assertSame("bASE1Header.header", header, bASE1Header.header);
+            assertTrue("bASE1Header.header", Arrays.equals(header, bASE1Header.header));
         }
     }
 
@@ -243,7 +237,7 @@ public class BASE1HeaderTest {
         byte[] header = new byte[8];
         bASE1Header.unpack(header);
         bASE1Header.setDestination("testBASE1HeaderDest");
-        assertSame("bASE1Header.header", header, bASE1Header.header);
+        assertFalse("bASE1Header.header", Arrays.equals(header, bASE1Header.header));
     }
 
     @Test
@@ -283,7 +277,7 @@ public class BASE1HeaderTest {
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
             assertEquals("ex.getMessage()", "12", ex.getMessage());
-            assertSame("bASE1Header.header", header, bASE1Header.header);
+            assertTrue("bASE1Header.header", Arrays.equals(header, bASE1Header.header));
         }
     }
 
@@ -297,7 +291,7 @@ public class BASE1HeaderTest {
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
             assertEquals("ex.getMessage()", "13", ex.getMessage());
-            assertSame("bASE1Header.header", header, bASE1Header.header);
+            assertNotEquals("bASE1Header.header", header, bASE1Header.header);
         }
     }
 
@@ -318,7 +312,7 @@ public class BASE1HeaderTest {
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
             assertEquals("ex.getMessage()", "2", ex.getMessage());
-            assertSame("bASE1Header.header", header, bASE1Header.header);
+            assertNotEquals("bASE1Header.header", header, bASE1Header.header);
         }
     }
 
@@ -346,7 +340,7 @@ public class BASE1HeaderTest {
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
             assertEquals("ex.getMessage()", "4", ex.getMessage());
-            assertSame("bASE1Header.header", header, bASE1Header.header);
+            assertTrue("bASE1Header.header", Arrays.equals(header, bASE1Header.header));
         }
     }
 
@@ -360,7 +354,7 @@ public class BASE1HeaderTest {
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
             assertEquals("ex.getMessage()", "3", ex.getMessage());
-            assertSame("clone.header", header, clone.header);
+            assertTrue("clone.header", Arrays.equals(header, clone.header));
         }
     }
 
@@ -370,7 +364,7 @@ public class BASE1HeaderTest {
         byte[] header = new byte[22];
         bASE1Header.unpack(header);
         bASE1Header.setRtCtl(100);
-        assertSame("bASE1Header.header", header, bASE1Header.header);
+        assertFalse("bASE1Header.header", Arrays.equals(header, bASE1Header.header));
     }
 
     @Test
@@ -383,7 +377,7 @@ public class BASE1HeaderTest {
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
             assertEquals("ex.getMessage()", "11", ex.getMessage());
-            assertSame("bASE1Header.header", header, bASE1Header.header);
+            assertTrue("bASE1Header.header", Arrays.equals(header, bASE1Header.header));
         }
     }
 
@@ -393,7 +387,7 @@ public class BASE1HeaderTest {
         byte[] header = new byte[22];
         bASE1Header.unpack(header);
         bASE1Header.setSource("testBASE1HeaderSrc");
-        assertSame("bASE1Header.header", header, bASE1Header.header);
+        assertFalse("bASE1Header.header", Arrays.equals(header, bASE1Header.header));
     }
 
     @Test
@@ -422,7 +416,7 @@ public class BASE1HeaderTest {
         byte[] header = new byte[17];
         bASE1Header.unpack(header);
         bASE1Header.setStatus(100);
-        assertSame("bASE1Header.header", header, bASE1Header.header);
+        assertFalse("BASE1Header.header", Arrays.equals(header, bASE1Header.header));
     }
 
     @Test
@@ -435,7 +429,6 @@ public class BASE1HeaderTest {
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
             assertEquals("ex.getMessage()", "15", ex.getMessage());
-            assertSame("bASE1Header.header", header, bASE1Header.header);
         }
     }
 
@@ -449,36 +442,7 @@ public class BASE1HeaderTest {
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
             assertEquals("ex.getMessage()", "14", ex.getMessage());
-            assertSame("bASE1Header.header", header, bASE1Header.header);
         }
-    }
-
-    @Test
-    public void testSwapDirection() throws Throwable {
-        byte[] header = new byte[21];
-        BASE1Header bASE1Header = new BASE1Header();
-        bASE1Header.unpack(header);
-        bASE1Header.swapDirection();
-        assertSame("bASE1Header.header", header, bASE1Header.header);
-    }
-
-    @Test
-    public void testSwapDirection1() throws Throwable {
-        BASE1Header bASE1Header = new BASE1Header();
-        byte[] header = new byte[22];
-        bASE1Header.unpack(header);
-        bASE1Header.swapDirection();
-        assertSame("bASE1Header.header", header, bASE1Header.header);
-    }
-
-    @Test
-    public void testSwapDirection2() throws Throwable {
-        byte[] header = new byte[23];
-        byte[] header2 = new byte[0];
-        BASE1Header bASE1Header = new BASE1Header(header2);
-        bASE1Header.unpack(header);
-        bASE1Header.swapDirection();
-        assertSame("bASE1Header.header", header, bASE1Header.header);
     }
 
     @Test
@@ -487,7 +451,7 @@ public class BASE1HeaderTest {
         byte[] header = new byte[0];
         int result = bASE1Header.unpack(header);
         assertEquals("result", 0, result);
-        assertSame("bASE1Header.header", header, bASE1Header.header);
+        assertNotNull("bASE1Header.header", bASE1Header.header);
     }
 
     @Test
@@ -496,18 +460,5 @@ public class BASE1HeaderTest {
         byte[] header = new byte[3];
         int result = bASE1Header.unpack(header);
         assertEquals("result", 3, result);
-        assertSame("bASE1Header.header", header, bASE1Header.header);
-    }
-
-    @Test
-    public void testUnpackThrowsNullPointerException() throws Throwable {
-        BASE1Header bASE1Header = new BASE1Header();
-        try {
-            bASE1Header.unpack((byte[]) null);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertNull("bASE1Header.header", bASE1Header.header);
-        }
     }
 }

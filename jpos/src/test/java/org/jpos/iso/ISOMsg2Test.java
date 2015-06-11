@@ -41,6 +41,7 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Map;
 
 import org.jpos.iso.channel.LogChannel;
@@ -197,7 +198,7 @@ public class ISOMsg2Test {
         ISOMsg iSOMsg = new ISOMsg();
         iSOMsg.setHeader(header2);
         byte[] result = iSOMsg.getHeader();
-        assertSame("result", header, result);
+        assertTrue (ISOUtil.hexString(header) + "/" + ISOUtil.hexString(result), Arrays.equals(header, result));
         assertEquals("header[0]", (byte) 0, header[0]);
         assertSame("iSOMsg.header", header2, iSOMsg.header);
     }

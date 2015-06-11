@@ -20,12 +20,12 @@ package org.jpos.iso.header;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.util.Arrays;
 
 import org.junit.Test;
 
@@ -39,7 +39,7 @@ public class BaseHeaderTest {
         baseHeader.unpack(header2);
         BaseHeader result = (BaseHeader) baseHeader.clone();
         assertEquals("result.getLength()", 1, result.getLength());
-        assertSame("baseHeader.header", header2, baseHeader.header);
+        assertTrue("baseHeader.header", Arrays.equals(header2, baseHeader.header));
     }
 
     @Test
@@ -58,7 +58,7 @@ public class BaseHeaderTest {
     public void testConstructor1() throws Throwable {
         byte[] header = new byte[3];
         BaseHeader baseHeader = new BaseHeader(header);
-        assertSame("baseHeader.header", header, baseHeader.header);
+        assertTrue("baseHeader.header", Arrays.equals(header, baseHeader.header));
     }
 
     @Test
@@ -121,7 +121,7 @@ public class BaseHeaderTest {
         byte[] header2 = new byte[3];
         baseHeader.unpack(header2);
         byte[] result = baseHeader.pack();
-        assertSame("result", header2, result);
+        assertTrue("result", Arrays.equals(header2, result));
         assertEquals("header2[0]", (byte) 0, header2[0]);
     }
 
@@ -164,7 +164,7 @@ public class BaseHeaderTest {
         BaseHeader baseHeader = new BaseHeader(header);
         byte[] header2 = new byte[1];
         int result = baseHeader.unpack(header2);
-        assertSame("baseHeader.header", header2, baseHeader.header);
+        assertTrue("baseHeader.header", Arrays.equals(header2, baseHeader.header));
         assertEquals("baseHeader.header[0]", (byte) 0, baseHeader.header[0]);
         assertEquals("result", 1, result);
     }

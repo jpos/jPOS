@@ -70,10 +70,7 @@ public class BASE1Header extends BaseHeader {
     public BASE1Header(byte[] header) {
         super(header);
     }
-    public int unpack(byte[] header) {
-        this.header = header;
-        return header.length;
-    }
+
     public int getHLen() {
         return header[0] & 0xFF;
     }
@@ -167,4 +164,3 @@ public class BASE1Header extends BaseHeader {
         return d.toString();
     */
 }
-

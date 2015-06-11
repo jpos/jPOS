@@ -126,17 +126,6 @@ public class VAPChannelTest {
     }
 
     @Test
-    public void testGetDynamicHeaderThrowsNullPointerException() throws Throwable {
-        VAPChannel vAPChannel = new VAPChannel();
-        try {
-            vAPChannel.getDynamicHeader((byte[]) null);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
-    }
-
-    @Test
     public void testGetMessageLengthThrowsNullPointerException() throws Throwable {
         VAPChannel vAPChannel = new VAPChannel();
         try {
