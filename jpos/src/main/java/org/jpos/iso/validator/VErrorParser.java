@@ -24,7 +24,6 @@ import org.jpos.util.Loggeable;
 import org.jpos.util.Logger;
 
 import java.io.PrintStream;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Vector;
 import java.util.Map;

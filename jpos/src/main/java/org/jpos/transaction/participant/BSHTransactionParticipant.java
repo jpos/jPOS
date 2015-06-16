@@ -28,7 +28,6 @@ import org.jpos.util.LogEvent;
 import org.jpos.util.Logger;
 import org.jpos.util.SimpleLogSource;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashMap;

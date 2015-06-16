@@ -22,7 +22,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
-import static org.mockito.Mockito.mock;
 
 import org.jpos.iso.ISOFieldPackager;
 import org.jpos.iso.ISOMsg;

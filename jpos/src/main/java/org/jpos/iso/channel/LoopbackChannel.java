@@ -26,7 +26,6 @@ package org.jpos.iso.channel;
 
 import org.jpos.iso.FilteredBase;
 import org.jpos.iso.ISOException;
-import org.jpos.iso.ISOFilter.VetoException;
 import org.jpos.iso.ISOMsg;
 import org.jpos.iso.ISOPackager;
 import org.jpos.util.*;

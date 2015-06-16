@@ -22,7 +22,6 @@ import org.jpos.iso.EbcdicPrefixer;
 import org.jpos.iso.ISOBasePackager;
 import org.jpos.iso.ISOComponent;
 import org.jpos.iso.ISOPackager;
-import org.jpos.iso.Prefixer;
 
 
 /**

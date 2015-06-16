@@ -28,7 +28,6 @@ import org.jpos.space.SpaceError;
 import org.jpos.space.SpaceFactory;
 import org.jpos.util.NameRegistrar;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Iterator;
 

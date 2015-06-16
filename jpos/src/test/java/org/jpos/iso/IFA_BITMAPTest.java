@@ -17,21 +17,13 @@
  */
 
 package org.jpos.iso;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 import java.util.BitSet;
 
-import org.junit.Ignore;
-import static java.lang.String.format;
-import static org.mockito.BDDMockito.*;
-import static org.junit.Assume.*;
-import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
-import org.mockito.*;
-import org.mockito.runners.*;
+
 import org.junit.*;
-import org.junit.runner.*;
+
 /**
  * @author joconnor
  */

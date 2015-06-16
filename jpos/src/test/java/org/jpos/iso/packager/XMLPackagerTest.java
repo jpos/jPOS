@@ -45,7 +45,6 @@ import org.junit.Test;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.ext.Attributes2Impl;
-import org.xml.sax.helpers.AttributesImpl;
 
 public class XMLPackagerTest {
     private Attributes atts;

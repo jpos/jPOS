@@ -28,7 +28,6 @@ import org.bouncycastle.bcpg.ArmoredInputStream;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.openpgp.*;
 import org.bouncycastle.openpgp.operator.jcajce.JcaPGPContentVerifierBuilderProvider;
-import org.jpos.iso.ISOUtil;
 import org.jpos.q2.Q2;
 
 import javax.crypto.Mac;

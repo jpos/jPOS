@@ -30,7 +30,6 @@ import java.util.Properties;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
-import org.hamcrest.core.Is;
 import org.jpos.core.Configuration;
 import org.jpos.core.SimpleConfiguration;
 import org.jpos.iso.channel.XMLChannel;

@@ -18,8 +18,6 @@
 
 package org.jpos.q2.iso;
 
-import org.jpos.q2.QBeanSupportMBean;
-
 /**
  * MBean interface.
  * @author Alejandro Revilla

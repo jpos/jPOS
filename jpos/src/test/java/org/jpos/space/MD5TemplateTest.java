@@ -21,7 +21,6 @@ package org.jpos.space;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
-import org.jpos.testhelpers.EqualsHashCodeTestCase;
 import org.junit.Test;
 
 public class MD5TemplateTest {

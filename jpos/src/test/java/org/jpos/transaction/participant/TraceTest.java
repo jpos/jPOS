@@ -21,7 +21,6 @@ package org.jpos.transaction.participant;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 
 import org.jpos.core.Configuration;

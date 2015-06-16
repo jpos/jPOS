@@ -18,7 +18,6 @@
 
 package org.jpos.iso.packager;
 
-import org.jpos.iso.ISOSubFieldPackager;
 import org.jpos.iso.*;
 import org.jpos.util.LogEvent;
 import org.jpos.util.Logger;

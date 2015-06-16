@@ -27,7 +27,6 @@ import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 
 import java.util.Hashtable;
-import java.util.PropertyResourceBundle;
 
 import javax.management.ObjectName;
 

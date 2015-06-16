@@ -49,7 +49,6 @@ import org.jpos.iso.packager.GenericValidatingPackager;
 import org.jpos.iso.packager.PostPackager;
 import org.jpos.iso.packager.XMLPackager;
 import org.jpos.space.Space;
-import org.jpos.space.SpaceError;
 import org.jpos.util.LogEvent;
 import org.junit.Test;
 import org.junit.runner.RunWith;

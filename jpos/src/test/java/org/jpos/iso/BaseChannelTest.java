@@ -32,7 +32,6 @@ import java.net.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Properties;
-import java.util.Vector;
 
 import org.jpos.bsh.BSHFilter;
 import org.jpos.core.Configuration;

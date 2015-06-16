@@ -22,9 +22,7 @@ import org.jpos.util.ConcurrentUtil;
 import org.jpos.util.NameRegistrar;
 
 import java.util.StringTokenizer;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.ThreadFactory;
 
 /**
  * Creates a space based on a space URI.

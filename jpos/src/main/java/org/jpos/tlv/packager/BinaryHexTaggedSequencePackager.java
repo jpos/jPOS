@@ -18,13 +18,10 @@
 
 package org.jpos.tlv.packager;
 
-import org.jpos.core.Configuration;
-import org.jpos.core.ConfigurationException;
 import org.jpos.iso.ISOComponent;
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOFieldPackager;
 import org.jpos.iso.ISOUtil;
-import org.xml.sax.Attributes;
 
 /**
  * @author Vishnu Pillai
