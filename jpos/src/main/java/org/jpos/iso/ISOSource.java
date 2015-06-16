@@ -34,11 +34,11 @@ public interface ISOSource {
      * @exception ISOException
      * @exception ISOFilter.VetoException;
      */
-    public void send (ISOMsg m) 
+    void send(ISOMsg m)
         throws IOException, ISOException;
 
     /**
      * @return true if source is connected and usable
      */
-    public boolean isConnected();
+    boolean isConnected();
 }

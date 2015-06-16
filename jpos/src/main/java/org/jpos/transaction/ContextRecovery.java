@@ -38,6 +38,6 @@ public interface ContextRecovery {
      * @param commit true if transaction is committing
      * @return activated context
      */
-    public Serializable recover (long id, Serializable context, boolean commit);
+    Serializable recover(long id, Serializable context, boolean commit);
 }
 

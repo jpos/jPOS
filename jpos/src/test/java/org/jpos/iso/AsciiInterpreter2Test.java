@@ -55,7 +55,7 @@ public class AsciiInterpreter2Test {
     @Test
     public void testInterpretThrowsNullPointerException() throws Throwable {
         try {
-            new AsciiInterpreter().interpret("testAsciiInterpreterData", (byte[]) null, 100);
+            new AsciiInterpreter().interpret("testAsciiInterpreterData", null, 100);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
             assertNull("ex.getMessage()", ex.getMessage());
@@ -95,7 +95,7 @@ public class AsciiInterpreter2Test {
     @Test
     public void testUninterpretThrowsNullPointerException() throws Throwable {
         try {
-            new AsciiInterpreter().uninterpret((byte[]) null, 100, 1000);
+            new AsciiInterpreter().uninterpret(null, 100, 1000);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
             assertNull("ex.getMessage()", ex.getMessage());

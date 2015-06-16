@@ -36,16 +36,16 @@ public interface ClientChannel extends ISOChannel {
      * @param host  server TCP Address
      * @param port  server port number
      */
-    public void setHost(String host, int port);
+    void setHost(String host, int port);
 
     /**
      * @return hostname (may be null)
      */
-    public String getHost();
+    String getHost();
 
     /**
      * @return port number (may be 0)
      */
-    public int getPort();
+    int getPort();
 }
 

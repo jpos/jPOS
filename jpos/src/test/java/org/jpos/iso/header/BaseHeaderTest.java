@@ -103,7 +103,7 @@ public class BaseHeaderTest {
     public void testGetLength1() throws Throwable {
         byte[] header = new byte[0];
         BaseHeader baseHeader = new BaseHeader(header);
-        int unpack = baseHeader.unpack((byte[]) null);
+        int unpack = baseHeader.unpack(null);
         int result = baseHeader.getLength();
         assertEquals("result", unpack, result);
     }
@@ -153,7 +153,7 @@ public class BaseHeaderTest {
     public void testUnpack() throws Throwable {
         byte[] header = new byte[0];
         BaseHeader baseHeader = new BaseHeader(header);
-        int result = baseHeader.unpack((byte[]) null);
+        int result = baseHeader.unpack(null);
         assertNull("baseHeader.header", baseHeader.header);
         assertEquals("result", 0, result);
     }

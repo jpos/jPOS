@@ -37,11 +37,11 @@ public interface ISOVErrorList {
      * @param Error error detailed instance.
      * @return true if error list change after operation. See Collection.
      */
-    public boolean addISOVError( ISOVError Error );
+    boolean addISOVError(ISOVError Error);
 
     /**
      * Get an error list iterator.
      * @return iterator instance.
      */
-    public ListIterator errorListIterator();
+    ListIterator errorListIterator();
 }

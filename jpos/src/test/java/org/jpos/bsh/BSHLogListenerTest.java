@@ -455,7 +455,7 @@ public class BSHLogListenerTest {
         String[] patterns = new String[3];
         String[] to = new String[2];
         try {
-            BSHLogListener.replace((String[]) null, patterns, to);
+            BSHLogListener.replace(null, patterns, to);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
             assertNull("ex.getMessage()", ex.getMessage());

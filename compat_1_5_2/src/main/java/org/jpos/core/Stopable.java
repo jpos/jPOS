@@ -25,6 +25,6 @@ package org.jpos.core;
  * @since jPOS 1.3.7
  */
 public interface Stopable {
-    public void shutdown ();
+    void shutdown();
 }
 

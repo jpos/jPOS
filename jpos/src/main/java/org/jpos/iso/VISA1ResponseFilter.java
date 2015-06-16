@@ -22,5 +22,5 @@ public interface VISA1ResponseFilter {
     /**
      * @return authorization number or null
      */
-    public String guessAutNumber (String response);
+    String guessAutNumber(String response);
 }

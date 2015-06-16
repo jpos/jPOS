@@ -60,7 +60,7 @@ public class Request extends TinySpace {
         out (ERROR, o);
     }
     public Object[] getErrors () {
-        return (Object[]) SpaceUtil.inpAll(this, ERROR);
+        return SpaceUtil.inpAll(this, ERROR);
     }
     public Object getError () {
         return inp (ERROR);

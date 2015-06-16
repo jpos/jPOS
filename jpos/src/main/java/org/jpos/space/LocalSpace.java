@@ -30,7 +30,7 @@ public interface LocalSpace<K,V> extends Space<K,V> {
      * @param key Entry's key
      * @param listener a SpaceListener
      */
-    public void addListener (K key, SpaceListener<K,V> listener);
+    void addListener(K key, SpaceListener<K, V> listener);
 
     /**
      * add a SpaceListener associated with a given key for a given 
@@ -40,22 +40,22 @@ public interface LocalSpace<K,V> extends Space<K,V> {
      * @param listener a SpaceListener
      * @param timeout listener registration timeout in millis
      */
-    public void addListener (K key, SpaceListener<K,V> listener, long timeout);
+    void addListener(K key, SpaceListener<K, V> listener, long timeout);
 
     /**
      * removes a SpaceListener associated with a given key
      * @param key Entry's key
      * @param listener the SpaceListener
      */
-    public void removeListener (K key, SpaceListener<K,V> listener);
+    void removeListener(K key, SpaceListener<K, V> listener);
 
     /**
      * @return Set containing all keys in Space
      */
-    public Set<K> getKeySet ();
+    Set<K> getKeySet();
 
     /**
      * @return number of entries in a given key
      */
-    public int size (K key);
+    int size(K key);
 }

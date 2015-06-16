@@ -107,7 +107,7 @@ public class AsciiHexInterpreter2Test {
     public void testInterpretThrowsNullPointerException() throws Throwable {
         byte[] b = new byte[5];
         try {
-            new AsciiHexInterpreter().interpret((byte[]) null, b, 100);
+            new AsciiHexInterpreter().interpret(null, b, 100);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
             assertNull("ex.getMessage()", ex.getMessage());
@@ -237,7 +237,7 @@ public class AsciiHexInterpreter2Test {
     @Test
     public void testUninterpretThrowsNullPointerException() throws Throwable {
         try {
-            AsciiHexInterpreter.INSTANCE.uninterpret((byte[]) null, 100, 1000);
+            AsciiHexInterpreter.INSTANCE.uninterpret(null, 100, 1000);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
             assertNull("ex.getMessage()", ex.getMessage());

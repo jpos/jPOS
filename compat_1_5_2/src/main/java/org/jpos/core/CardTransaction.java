@@ -33,15 +33,15 @@ public interface CardTransaction extends Serializable {
     /**
      * @return desired action
      */
-    public String getAction();
+    String getAction();
 
     /**
      * @return action arguments
-     */ 
-    public String[] getArgs();
+     */
+    String[] getArgs();
 
     /**
      * @return agent generated response (should not be null)
      */
-    public CardTransactionResponse getResponse ();
+    CardTransactionResponse getResponse();
 }

@@ -40,12 +40,12 @@ package org.jpos.util;
  * @version $Id$
  */
 public interface LockManager {
-    public interface Ticket {
-        public boolean renew (long duration);
-        public long getExpiration();
-        public boolean isExpired();
-        public void cancel();
+    interface Ticket {
+        boolean renew(long duration);
+        long getExpiration();
+        boolean isExpired();
+        void cancel();
     }
-    public Ticket lock (String resourceName, long duration, long wait);
+    Ticket lock(String resourceName, long duration, long wait);
 }
     

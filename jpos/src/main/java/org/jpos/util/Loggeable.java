@@ -25,6 +25,6 @@ import java.io.PrintStream;
  * @version $Id$
  */
 public interface Loggeable {
-    public void dump (PrintStream p, String indent);
+    void dump(PrintStream p, String indent);
 }
 

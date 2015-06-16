@@ -39,6 +39,6 @@ public interface ServerChannel extends ISOChannel {
     * Accepts connection 
     * @exception IOException
     */
-    public void accept(ServerSocket s) throws IOException;
+   void accept(ServerSocket s) throws IOException;
 }
 

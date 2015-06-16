@@ -48,7 +48,7 @@ public class QFactory2Test {
         String[] args = new String[0];
         Q2 q2 = mock(Q2.class);
         QFactory qFactory = new QFactory(loaderName, q2);
-        assertTrue("qFactory.classMapping.getKeys().hasMoreElements()", ((PropertyResourceBundle) qFactory.classMapping).getKeys()
+        assertTrue("qFactory.classMapping.getKeys().hasMoreElements()", qFactory.classMapping.getKeys()
                 .hasMoreElements());
         assertSame("qFactory.loaderName", loaderName, qFactory.loaderName);
         assertSame("qFactory.q2", q2, qFactory.q2);
@@ -140,7 +140,7 @@ public class QFactory2Test {
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
             assertNull("ex.getMessage()", ex.getMessage());
-            assertTrue("qFactory.classMapping.getKeys().hasMoreElements()", ((PropertyResourceBundle) qFactory.classMapping)
+            assertTrue("qFactory.classMapping.getKeys().hasMoreElements()", qFactory.classMapping
                     .getKeys().hasMoreElements());
             assertSame("qFactory.q2", q2, qFactory.q2);
             assertEquals("e.getName()", "testQFactoryName", e.getName());
@@ -165,7 +165,7 @@ public class QFactory2Test {
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
             assertNull("ex.getMessage()", ex.getMessage());
-            assertTrue("qFactory.classMapping.getKeys().hasMoreElements()", ((PropertyResourceBundle) qFactory.classMapping)
+            assertTrue("qFactory.classMapping.getKeys().hasMoreElements()", qFactory.classMapping
                     .getKeys().hasMoreElements());
             assertSame("qFactory.q2", q2, qFactory.q2);
             assertEquals("e.getName()", "testQFactoryName", e.getName());

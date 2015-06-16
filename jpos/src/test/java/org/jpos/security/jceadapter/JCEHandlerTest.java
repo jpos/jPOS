@@ -73,7 +73,7 @@ public class JCEHandlerTest {
         } catch (JCEHandlerException ex) {
             assertEquals("ex.getMessage()", "java.lang.NullPointerException", ex.getMessage());
             assertNull("ex.getNested().getMessage()", ex.getNested().getMessage());
-            assertEquals("(SecretKeySpec) key.getAlgorithm()", "DESede", ((SecretKeySpec) key).getAlgorithm());
+            assertEquals("(SecretKeySpec) key.getAlgorithm()", "DESede", key.getAlgorithm());
         }
     }
 
@@ -100,7 +100,7 @@ public class JCEHandlerTest {
         } catch (JCEHandlerException ex) {
             assertEquals("ex.getMessage()", "java.lang.NullPointerException", ex.getMessage());
             assertNull("ex.getNested().getMessage()", ex.getNested().getMessage());
-            assertEquals("(SecretKeySpec) encryptingKey.getAlgorithm()", "DESede", ((SecretKeySpec) encryptingKey).getAlgorithm());
+            assertEquals("(SecretKeySpec) encryptingKey.getAlgorithm()", "DESede", encryptingKey.getAlgorithm());
         }
     }
 
@@ -127,7 +127,7 @@ public class JCEHandlerTest {
         } catch (JCEHandlerException ex) {
             assertEquals("ex.getMessage()", "java.lang.NullPointerException", ex.getMessage());
             assertNull("ex.getNested().getMessage()", ex.getNested().getMessage());
-            assertEquals("(SecretKeySpec) key.getAlgorithm()", "testJCEHandlerParam2", ((SecretKeySpec) key).getAlgorithm());
+            assertEquals("(SecretKeySpec) key.getAlgorithm()", "testJCEHandlerParam2", key.getAlgorithm());
         }
     }
 
@@ -143,7 +143,7 @@ public class JCEHandlerTest {
         } catch (JCEHandlerException ex) {
             assertEquals("ex.getMessage()", "java.lang.NullPointerException", ex.getMessage());
             assertNull("ex.getNested().getMessage()", ex.getNested().getMessage());
-            assertEquals("(SecretKeySpec) key.getAlgorithm()", "DESede", ((SecretKeySpec) key).getAlgorithm());
+            assertEquals("(SecretKeySpec) key.getAlgorithm()", "DESede", key.getAlgorithm());
         }
     }
 
@@ -171,7 +171,7 @@ public class JCEHandlerTest {
         } catch (JCEHandlerException ex) {
             assertEquals("ex.getMessage()", "java.lang.NullPointerException", ex.getMessage());
             assertNull("ex.getNested().getMessage()", ex.getNested().getMessage());
-            assertEquals("(SecretKeySpec) key.getAlgorithm()", "DESede", ((SecretKeySpec) key).getAlgorithm());
+            assertEquals("(SecretKeySpec) key.getAlgorithm()", "DESede", key.getAlgorithm());
         }
     }
 
@@ -197,9 +197,9 @@ public class JCEHandlerTest {
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
             assertNull("ex.getMessage()", ex.getMessage());
-            assertEquals("(SecretKeySpec) clearDESKey.getAlgorithm()", "DESde", ((SecretKeySpec) clearDESKey).getAlgorithm());
+            assertEquals("(SecretKeySpec) clearDESKey.getAlgorithm()", "DESde", clearDESKey.getAlgorithm());
             assertEquals("(SecretKeySpec) encryptingKey.getAlgorithm()", "testJCEHandlerParam2",
-                    ((SecretKeySpec) encryptingKey).getAlgorithm());
+                    encryptingKey.getAlgorithm());
         }
     }
 
@@ -213,7 +213,7 @@ public class JCEHandlerTest {
         } catch (JCEHandlerException ex) {
             assertEquals("ex.getMessage()", "Unsupported key length: 100 bits", ex.getMessage());
             assertNull("ex.getNested()", ex.getNested());
-            assertEquals("(SecretKeySpec) clearDESKey.getAlgorithm()", "DESede", ((SecretKeySpec) clearDESKey).getAlgorithm());
+            assertEquals("(SecretKeySpec) clearDESKey.getAlgorithm()", "DESede", clearDESKey.getAlgorithm());
         }
     }
 
@@ -227,7 +227,7 @@ public class JCEHandlerTest {
         } catch (NullPointerException ex) {
             assertNull("ex.getMessage()", ex.getMessage());
             assertEquals("(SecretKeySpec) encryptingKey.getAlgorithm()", "testJCEHandlerParam2",
-                    ((SecretKeySpec) encryptingKey).getAlgorithm());
+                    encryptingKey.getAlgorithm());
         }
     }
 
@@ -241,7 +241,7 @@ public class JCEHandlerTest {
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
             assertNull("ex.getMessage()", ex.getMessage());
-            assertEquals("(SecretKeySpec) clearDESKey.getAlgorithm()", "DESede", ((SecretKeySpec) clearDESKey).getAlgorithm());
+            assertEquals("(SecretKeySpec) clearDESKey.getAlgorithm()", "DESede", clearDESKey.getAlgorithm());
         }
     }
 
@@ -256,7 +256,7 @@ public class JCEHandlerTest {
         } catch (JCEHandlerException ex) {
             assertEquals("ex.getMessage()", "Unsupported key length: 100 bits", ex.getMessage());
             assertNull("ex.getNested()", ex.getNested());
-            assertEquals("(SecretKeySpec) clearDESKey.getAlgorithm()", "DESede", ((SecretKeySpec) clearDESKey).getAlgorithm());
+            assertEquals("(SecretKeySpec) clearDESKey.getAlgorithm()", "DESede", clearDESKey.getAlgorithm());
         }
     }
 
@@ -271,7 +271,7 @@ public class JCEHandlerTest {
             assertEquals("ex.getMessage()", "Unsupported key algorithm: testJCEHandlerParam2", ex.getMessage());
             assertNull("ex.getNested()", ex.getNested());
             assertEquals("(SecretKeySpec) clearDESKey.getAlgorithm()", "testJCEHandlerParam2",
-                    ((SecretKeySpec) clearDESKey).getAlgorithm());
+                    clearDESKey.getAlgorithm());
         }
     }
 

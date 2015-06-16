@@ -72,7 +72,7 @@ public class BinaryPrefixer2Test {
     @Test
     public void testDecodeLengthThrowsNullPointerException() throws Throwable {
         try {
-            new BinaryPrefixer(100).decodeLength((byte[]) null, 100);
+            new BinaryPrefixer(100).decodeLength(null, 100);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
             assertNull("ex.getMessage()", ex.getMessage());
@@ -108,7 +108,7 @@ public class BinaryPrefixer2Test {
     @Test
     public void testEncodeLengthThrowsNullPointerException() throws Throwable {
         try {
-            new BinaryPrefixer(2).encodeLength(100, (byte[]) null);
+            new BinaryPrefixer(2).encodeLength(100, null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
             assertNull("ex.getMessage()", ex.getMessage());

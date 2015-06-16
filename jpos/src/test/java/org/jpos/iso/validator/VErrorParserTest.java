@@ -131,7 +131,7 @@ public class VErrorParserTest {
         VErrorParser vErrorParser = new VErrorParser();
         ISOComponent c = new ISOMsg();
         Vector result = vErrorParser.getVErrors(c);
-        assertEquals("(ISOMsg) c.getMaxField()", 0, ((ISOMsg) c).getMaxField());
+        assertEquals("(ISOMsg) c.getMaxField()", 0, c.getMaxField());
         assertEquals("result.size()", 0, result.size());
     }
 

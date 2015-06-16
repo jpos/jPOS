@@ -21,5 +21,5 @@ package org.jpos.q2.qbean;
 import org.jpos.q2.QBeanSupportMBean;
 
 public interface QBeanFactoryMBean extends QBeanSupportMBean {
-    public Object getBean(String beanName);
+    Object getBean(String beanName);
 }

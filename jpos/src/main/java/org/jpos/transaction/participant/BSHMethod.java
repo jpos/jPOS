@@ -72,7 +72,7 @@ public class BSHMethod {
      *          &lt;routing file='cfg\files\routing1.bsh' cache='false'/>
      *  </pre>
      */ 
-    public static BSHMethod createBshMethod(Element e) throws FileNotFoundException, IOException {
+    public static BSHMethod createBshMethod(Element e) throws IOException {
         if (e == null) {
             return null;
         }
@@ -123,7 +123,7 @@ public class BSHMethod {
      *                      Map.Entry (key, value), interpreter.set(key, value)
      *                      is called. All keys must be Strings.
      */
-    public Object execute(Map arguments, String resultName) throws EvalError, FileNotFoundException, IOException {
+    public Object execute(Map arguments, String resultName) throws EvalError, IOException {
         Interpreter i = initInterpreter(arguments);
         return i.get(resultName);
     }
@@ -138,7 +138,7 @@ public class BSHMethod {
      *  @param returnNames  Collection of Strings. The names of the variables 
      *                      wich`s contents are to be returned.
      */
-    public Map execute(Map arguments, Collection returnNames) throws EvalError, FileNotFoundException, IOException {
+    public Map execute(Map arguments, Collection returnNames) throws EvalError, IOException {
         Interpreter i = initInterpreter(arguments);
         Map result = new HashMap();
         String rName;
@@ -149,7 +149,7 @@ public class BSHMethod {
         return result;
     }
     
-    protected Interpreter initInterpreter(Map arguments) throws EvalError, FileNotFoundException, IOException {
+    protected Interpreter initInterpreter(Map arguments) throws EvalError, IOException {
         Interpreter i = new Interpreter();
         Map.Entry entry;
         for (Object o : arguments.entrySet()) {

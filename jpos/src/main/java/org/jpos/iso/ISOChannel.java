@@ -28,39 +28,39 @@ import java.io.IOException;
  * @version $Revision$ $Date$
  */
 public interface ISOChannel extends ISOSource {
-    public static final int CONNECT      = 0;
-    public static final int TX           = 1;
-    public static final int RX           = 2;
-    public static final int SIZEOF_CNT   = 3;
+    int CONNECT      = 0;
+    int TX           = 1;
+    int RX           = 2;
+    int SIZEOF_CNT   = 3;
 
     /**
      * Associate a packager with this channel
      * @param p     an ISOPackager
      */
-    public void setPackager(ISOPackager p);
+    void setPackager(ISOPackager p);
 
     /**
      * Connects ISOChannel 
      * @exception IOException
      */
-    public void connect () throws IOException;
+    void connect() throws IOException;
 
     /**
      * disconnects ISOChannel
      * @exception IOException
      */
-    public void disconnect () throws IOException;
+    void disconnect() throws IOException;
 
     /**
      * Reconnect channel
      * @exception IOException
      */
-    public void reconnect() throws IOException;
+    void reconnect() throws IOException;
 
     /**
      * @return true if Channel is connected and usable
      */
-    public boolean isConnected();
+    boolean isConnected();
 
     /**
      * Receives an ISOMsg
@@ -68,7 +68,7 @@ public interface ISOChannel extends ISOSource {
      * @exception IOException
      * @exception ISOException
      */
-    public ISOMsg receive() throws IOException, ISOException;
+    ISOMsg receive() throws IOException, ISOException;
 
     /**
      * sends an ISOMsg over the TCP/IP session
@@ -76,7 +76,7 @@ public interface ISOChannel extends ISOSource {
      * @exception IOException
      * @exception ISOException
      */
-    public void send (ISOMsg m) throws IOException, ISOException;
+    void send(ISOMsg m) throws IOException, ISOException;
     
     /**
      * sends a byte[] over the TCP/IP session
@@ -84,34 +84,34 @@ public interface ISOChannel extends ISOSource {
      * @exception IOException
      * @exception ISOException
      */
-    public void send (byte[] b) throws IOException, ISOException;
+    void send(byte[] b) throws IOException, ISOException;
 
     /**
      * @param b - usable state
      */
-    public void setUsable(boolean b);
+    void setUsable(boolean b);
 
     /**
      * associates this ISOChannel with a name on NameRegistrar
      * @param name name to register
      * @see org.jpos.util.NameRegistrar
      */
-    public void setName (String name);
+    void setName(String name);
 
    /**
     * @return this ISOChannel's name ("" if no name was set)
     */
-    public String getName();
+   String getName();
 
    /**
     * @return current packager
     */
-    public ISOPackager getPackager();
+   ISOPackager getPackager();
 
    /**
     * Expose channel clonning interface
     */
-    public Object clone();
+   Object clone();
     
 }
 

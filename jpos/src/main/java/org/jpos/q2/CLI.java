@@ -176,6 +176,6 @@ public class CLI implements Runnable
 
     public interface Command
     {
-        public void exec(CLI cli, String[] args) throws Exception;
+        void exec(CLI cli, String[] args) throws Exception;
     }
 }

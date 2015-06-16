@@ -30,7 +30,7 @@ public interface MUX extends ISOSource {
      * @return received message or null
      * @throws ISOException
      */
-    public ISOMsg request (ISOMsg m, long timeout) throws ISOException;
+    ISOMsg request(ISOMsg m, long timeout) throws ISOException;
 
     /**
      * Sends a message to remote host in async way
@@ -40,6 +40,6 @@ public interface MUX extends ISOSource {
      * @param handBack optional handback to be given to reponse listener
      * @throws ISOException
      */
-    public void request (ISOMsg m, long timeout, ISOResponseListener r, Object handBack)
+    void request(ISOMsg m, long timeout, ISOResponseListener r, Object handBack)
         throws ISOException;
 }

@@ -42,14 +42,14 @@ public interface RemoteQMUX extends Remote  {
      * @return received message or null
      * @throws ISOException
      */
-    public ISOMsg request (ISOMsg m, long timeout) throws ISOException, RemoteException;
+    ISOMsg request(ISOMsg m, long timeout) throws ISOException, RemoteException;
 
-    public void request (ISOMsg m, long timeout, ISOResponseListener r, Object handBack)
+    void request(ISOMsg m, long timeout, ISOResponseListener r, Object handBack)
         throws ISOException, RemoteException;
 
     /**
      * @return true if connected
      */
-    public boolean isConnected() throws RemoteException;
+    boolean isConnected() throws RemoteException;
 }
 

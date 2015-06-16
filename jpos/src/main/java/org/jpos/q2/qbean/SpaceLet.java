@@ -324,7 +324,7 @@ public class SpaceLet extends QBeanSupport implements Space {
         return bsh;
     }
     private boolean eval (Interpreter bsh, String script, String source)
-        throws EvalError, FileNotFoundException, IOException
+        throws EvalError, IOException
     {
         boolean rc = false;
         if (script != null) {

@@ -23,6 +23,6 @@ import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
 
 public interface ConfigurationFactory {
-    public Configuration getConfiguration (Element e)
+    Configuration getConfiguration(Element e)
         throws ConfigurationException;
 }

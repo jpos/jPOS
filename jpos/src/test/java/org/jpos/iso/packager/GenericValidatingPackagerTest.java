@@ -61,7 +61,7 @@ public class GenericValidatingPackagerTest {
         GenericValidatingPackager genericValidatingPackager = new GenericValidatingPackager();
         assertEquals("genericValidatingPackager.bitmapField", 1, genericValidatingPackager.bitmapField);
         assertNull("genericValidatingPackager.getLogger()", genericValidatingPackager.getLogger());
-        assertEquals("genericValidatingPackager.inc", 500, genericValidatingPackager.inc);
+        assertEquals("genericValidatingPackager.inc", 500, GenericValidatingPackager.inc);
         assertEquals("genericValidatingPackager.maxValidField", 128, genericValidatingPackager.maxValidField);
         assertNull("genericValidatingPackager.getRealm()", genericValidatingPackager.getRealm());
         assertTrue("genericValidatingPackager.emitBitmap", genericValidatingPackager.emitBitmap);
@@ -96,7 +96,7 @@ public class GenericValidatingPackagerTest {
     @Test
     public void testGenericValidatorContentHandlerConstructor() throws Throwable {
         GenericValidatingPackager.GenericValidatorContentHandler genericValidatorContentHandler = new GenericValidatingPackager().new GenericValidatorContentHandler();
-        assertEquals("genericValidatorContentHandler.VALIDATOR_INDEX", -3, genericValidatorContentHandler.VALIDATOR_INDEX);
+        assertEquals("genericValidatorContentHandler.VALIDATOR_INDEX", -3, GenericValidatingPackager.GenericValidatorContentHandler.VALIDATOR_INDEX);
     }
 
     @Test
@@ -377,7 +377,7 @@ public class GenericValidatingPackagerTest {
         } catch (SAXException ex) {
             assertEquals("ex.getMessage()", "null", ex.getMessage());
             assertEquals("ex.getException().getMessage()", "null", ex.getException().getMessage());
-            assertEquals("(AttributesImpl) atts.getLength()", 0, ((AttributesImpl) atts).getLength());
+            assertEquals("(AttributesImpl) atts.getLength()", 0, atts.getLength());
         }
     }
 
@@ -392,7 +392,7 @@ public class GenericValidatingPackagerTest {
         } catch (SAXException ex) {
             assertNull("ex.getMessage()", ex.getMessage());
             assertNull("ex.getException().getMessage()", ex.getException().getMessage());
-            assertEquals("(AttributesImpl) atts.getLength()", 0, ((AttributesImpl) atts).getLength());
+            assertEquals("(AttributesImpl) atts.getLength()", 0, atts.getLength());
         }
     }
 
@@ -474,7 +474,7 @@ public class GenericValidatingPackagerTest {
         } catch (SAXException ex) {
             assertNull("ex.getMessage()", ex.getMessage());
             assertNull("ex.getException().getMessage()", ex.getException().getMessage());
-            assertEquals("(AttributesImpl) atts.getLength()", 0, ((AttributesImpl) atts).getLength());
+            assertEquals("(AttributesImpl) atts.getLength()", 0, atts.getLength());
         }
     }
 
@@ -502,7 +502,7 @@ public class GenericValidatingPackagerTest {
         } catch (SAXException ex) {
             assertNull("ex.getMessage()", ex.getMessage());
             assertNull("ex.getException().getMessage()", ex.getException().getMessage());
-            assertEquals("(AttributesImpl) atts.getLength()", 0, ((AttributesImpl) atts).getLength());
+            assertEquals("(AttributesImpl) atts.getLength()", 0, atts.getLength());
         }
     }
 
@@ -531,7 +531,7 @@ public class GenericValidatingPackagerTest {
         } catch (SAXException ex) {
             assertNull("ex.getMessage()", ex.getMessage());
             assertNull("ex.getException().getMessage()", ex.getException().getMessage());
-            assertEquals("(AttributesImpl) atts.getLength()", 0, ((AttributesImpl) atts).getLength());
+            assertEquals("(AttributesImpl) atts.getLength()", 0, atts.getLength());
         }
     }
 
@@ -565,7 +565,7 @@ public class GenericValidatingPackagerTest {
         assertEquals("genericValidatingPackager.bitmapField", 1, genericValidatingPackager.bitmapField);
         assertEquals("genericValidatingPackager.maxValidField", 128, genericValidatingPackager.maxValidField);
         assertTrue("genericValidatingPackager.emitBitmap", genericValidatingPackager.emitBitmap);
-        assertEquals("(AttributesImpl) atts.getLength()", 0, ((AttributesImpl) atts).getLength());
+        assertEquals("(AttributesImpl) atts.getLength()", 0, atts.getLength());
     }
 
     @Test

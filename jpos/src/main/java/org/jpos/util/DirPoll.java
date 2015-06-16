@@ -389,7 +389,7 @@ public class DirPoll extends SimpleLogSource
          * @param request request image
          * @return response (or null)
          */
-        public byte[] process(String name, byte[] request) 
+        byte[] process(String name, byte[] request)
             throws DirPollException;
     }
     public interface FileProcessor {
@@ -397,7 +397,7 @@ public class DirPoll extends SimpleLogSource
          * @param name request File
          * @throws org.jpos.util.DirPoll.DirPollException on errors
          */
-        public void process (File name) throws DirPollException;
+        void process(File name) throws DirPollException;
     }
     public class ProcessorRunner implements Runnable {
         File request;

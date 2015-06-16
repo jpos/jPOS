@@ -34,6 +34,6 @@ public interface AbortParticipant extends TransactionParticipant {
      * @param context transaction context
      * @return 0 [| NO_JOIN | READONLY)
      */
-    public int  prepareForAbort (long id, Serializable context);
+    int  prepareForAbort(long id, Serializable context);
 }
 

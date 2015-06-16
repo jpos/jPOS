@@ -34,6 +34,6 @@ public interface ISOSubFieldPackager {
      * Get current composite field number
      * @return composite field number
      */
-    public int getFieldNumber();
+    int getFieldNumber();
 
 }

@@ -49,7 +49,7 @@ public class ThreadPool extends ThreadGroup implements LogSource, Loggeable, Con
     public static final int DEFAULT_MAX_THREADS = 100;
     
     public interface Supervised {
-        public boolean expired ();
+        boolean expired();
     }
 
     private class PooledThread extends Thread {

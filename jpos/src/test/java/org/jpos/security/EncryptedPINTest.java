@@ -92,7 +92,7 @@ public class EncryptedPINTest {
     @Test
     public void testConstructorThrowsNullPointerException() throws Throwable {
         try {
-            new EncryptedPIN("testEncryptedPINPinBlockHexString1", (byte) 0, (String) null);
+            new EncryptedPIN("testEncryptedPINPinBlockHexString1", (byte) 0, null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
             assertNull("ex.getMessage()", ex.getMessage());
@@ -103,7 +103,7 @@ public class EncryptedPINTest {
     public void testConstructorThrowsNullPointerException1() throws Throwable {
         byte[] pinBlock = new byte[3];
         try {
-            new EncryptedPIN(pinBlock, (byte) 0, (String) null);
+            new EncryptedPIN(pinBlock, (byte) 0, null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
             assertNull("ex.getMessage()", ex.getMessage());
@@ -137,7 +137,7 @@ public class EncryptedPINTest {
     public void testDumpThrowsNullPointerException1() throws Throwable {
         byte[] pinBlock = new byte[2];
         EncryptedPIN encryptedPIN = new EncryptedPIN(pinBlock, (byte) 0, "testEncryptedPINAccountNumber");
-        encryptedPIN.setPINBlock((byte[]) null);
+        encryptedPIN.setPINBlock(null);
         PrintStream p = new PrintStream(new ByteArrayOutputStream(), true, "UTF-16BE");
         try {
             encryptedPIN.dump(p, "testEncryptedPINIndent");

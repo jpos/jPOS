@@ -158,21 +158,21 @@ public class SimpleMsgTest {
 
     @Test
     public void testDumpContentNull() throws Throwable {
-        new SimpleMsg("tag", "Some Name", (Object)null).dump(p, "--||--");
+        new SimpleMsg("tag", "Some Name", null).dump(p, "--||--");
         assertEquals( "--||--<tag name=\"Some Name\"/>" + NL
                       ,os.toString());
     }
 
     @Test
     public void testDumpContentNullByteArr() throws Throwable {
-        new SimpleMsg("tag", "Some Name", (byte[]) null).dump(p, "--||--");
+        new SimpleMsg("tag", "Some Name", null).dump(p, "--||--");
         assertEquals( "--||--<tag name=\"Some Name\"/>" + NL
                       ,os.toString());
     }
 
     @Test
     public void testDumpContentNullWithoutName() throws Throwable {
-        new SimpleMsg("tag", (Object)null).dump(p, "--||--");
+        new SimpleMsg("tag", null).dump(p, "--||--");
         assertEquals( "--||--<tag/>" + NL
                       ,os.toString());
     }
@@ -248,7 +248,7 @@ public class SimpleMsgTest {
     @Test
     public void testDumpInnerNull() throws Throwable {
         new SimpleMsg("tag", "Some Name", new SimpleMsg("inner-tag",
-                "Inner Name", (Object) null)).dump(p, "--||--");
+                "Inner Name", null)).dump(p, "--||--");
         assertEquals( "--||--<tag name=\"Some Name\">" + NL +
                       "--||--  <inner-tag name=\"Inner Name\"/>" + NL +
                       "--||--</tag>" +  NL

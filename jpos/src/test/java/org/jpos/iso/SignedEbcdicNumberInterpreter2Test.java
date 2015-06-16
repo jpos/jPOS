@@ -86,7 +86,7 @@ public class SignedEbcdicNumberInterpreter2Test {
     @Test
     public void testInterpretThrowsNullPointerException() throws Throwable {
         try {
-            new SignedEbcdicNumberInterpreter().interpret("-", (byte[]) null, 100);
+            new SignedEbcdicNumberInterpreter().interpret("-", null, 100);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
             assertNull("ex.getMessage()", ex.getMessage());
@@ -156,7 +156,7 @@ public class SignedEbcdicNumberInterpreter2Test {
     @Test
     public void testUninterpretThrowsNullPointerException() throws Throwable {
         try {
-            new SignedEbcdicNumberInterpreter().uninterpret((byte[]) null, 100, 1000);
+            new SignedEbcdicNumberInterpreter().uninterpret(null, 100, 1000);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
             assertNull("ex.getMessage()", ex.getMessage());

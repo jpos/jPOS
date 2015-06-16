@@ -32,6 +32,6 @@ public interface ISORequestListener {
      * @param  m   the unmatched request
      * @return true if request was handled by this listener
      */
-    public boolean process (ISOSource source, ISOMsg m);
+    boolean process(ISOSource source, ISOMsg m);
 }
 

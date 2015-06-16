@@ -30,6 +30,6 @@ public interface Configurable {
     * @param cfg Configuration object
     * @throws ConfigurationException
     */
-    public void setConfiguration (Configuration cfg)
+   void setConfiguration(Configuration cfg)
         throws ConfigurationException;
 }

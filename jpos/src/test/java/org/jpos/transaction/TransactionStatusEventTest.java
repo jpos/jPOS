@@ -81,8 +81,8 @@ public class TransactionStatusEventTest {
 
     @Test
     public void testStateAsString() {
-        List<String> expected = Arrays.asList(new String[] { "Ready", "Preparing", "Preparing for abort", "Commiting", "Aborting",
-                "Done", "Paused" });
+        List<String> expected = Arrays.asList("Ready", "Preparing", "Preparing for abort", "Commiting", "Aborting",
+          "Done", "Paused");
         State[] values = State.values();
         for (State state : values) {
             assertThat(expected, containsInAnyOrder(state.stateAsString));

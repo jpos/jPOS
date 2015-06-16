@@ -34,6 +34,6 @@ public interface GroupSelector extends TransactionParticipant {
      * @param context transaction context 
      * @return group name or null for no-action
      */
-    public String select (long id, Serializable context);
+    String select(long id, Serializable context);
 }
 

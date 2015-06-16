@@ -26,37 +26,37 @@ import org.jpos.tlv.TLVDataFormat;
  */
 public interface EMVTagType {
 
-    public int getTagNumber();
+    int getTagNumber();
 
-    public String getTagShortDescription();
+    String getTagShortDescription();
 
-    public String getTagDescription();
+    String getTagDescription();
 
-    public DataSource getSource();
+    DataSource getSource();
 
-    public TLVDataFormat getFormat();
+    TLVDataFormat getFormat();
 
-    public DataLength getDataLength();
+    DataLength getDataLength();
 
-    public ByteLength getByteLength();
+    ByteLength getByteLength();
 
     boolean isProprietaryFormat();
 
     String getTagNumberHex();
 
-    public byte[] getTagNumberBytes();
+    byte[] getTagNumberBytes();
 
     Class<?> getDataType() throws ProprietaryFormatException;
 
     boolean isProprietaryTag();
 
-    public enum DataSource {
+    enum DataSource {
         ICC,
         TERMINAL,
         ISSUER
     }
 
-    public abstract static class DataLength {
+    abstract class DataLength {
 
         public static final int DATA_LENGTH_VAR = -2;
         public static final int DATA_LENGTH_PROPRIETARY = -1;
@@ -93,7 +93,7 @@ public interface EMVTagType {
         public abstract boolean isFixedLength();
     }
 
-    public static class ProprietaryDataLength extends DataLength {
+    class ProprietaryDataLength extends DataLength {
 
         public ProprietaryDataLength() {
             super(-1, -1);
@@ -125,7 +125,7 @@ public interface EMVTagType {
         }
     }
 
-    public static class FixedDataLength extends DataLength {
+    class FixedDataLength extends DataLength {
 
         public FixedDataLength(int length) {
             super(length, length);
@@ -137,7 +137,7 @@ public interface EMVTagType {
         }
     }
 
-    public static class VariableDataLength extends DataLength {
+    class VariableDataLength extends DataLength {
 
         public VariableDataLength(int minLength, int maxLength) {
             super(minLength, maxLength);
@@ -149,7 +149,7 @@ public interface EMVTagType {
         }
     }
 
-    public static class VariableDiscreteDataLength extends DataLength {
+    class VariableDiscreteDataLength extends DataLength {
 
         public VariableDiscreteDataLength(int minLength, int maxLength) {
             super(minLength, maxLength);
@@ -161,7 +161,7 @@ public interface EMVTagType {
         }
     }
 
-    public abstract static class ByteLength {
+    abstract class ByteLength {
 
         public static final int BYTE_LENGTH_PROPRIETARY = -1;
         public static final int BYTE_LENGTH_VAR = -2;
@@ -198,7 +198,7 @@ public interface EMVTagType {
         public abstract boolean isFixedLength();
     }
 
-    public static class VariableDiscreteByteLength extends ByteLength {
+    class VariableDiscreteByteLength extends ByteLength {
 
         public VariableDiscreteByteLength(int minLength, int maxLength) {
             super(minLength, maxLength);
@@ -210,7 +210,7 @@ public interface EMVTagType {
         }
     }
 
-    public static class FixedByteLength extends ByteLength {
+    class FixedByteLength extends ByteLength {
 
         public FixedByteLength(int length) {
             super(length, length);
@@ -222,7 +222,7 @@ public interface EMVTagType {
         }
     }
 
-    public static class VariableByteLength extends ByteLength {
+    class VariableByteLength extends ByteLength {
 
         public VariableByteLength(int minLength, int maxLength) {
             super(minLength, maxLength);

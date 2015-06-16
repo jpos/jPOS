@@ -21,8 +21,8 @@ package org.jpos.util;
 import java.io.IOException;
 
 public interface Modem {
-    public void dial (String number, long aproxTimeout) throws IOException;
-    public void hangup () throws IOException;
-    public void answer () throws IOException;
-    public boolean isConnected();
+    void dial(String number, long aproxTimeout) throws IOException;
+    void hangup() throws IOException;
+    void answer() throws IOException;
+    boolean isConnected();
 }

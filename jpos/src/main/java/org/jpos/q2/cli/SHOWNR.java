@@ -63,13 +63,13 @@ public class SHOWNR implements CLICommand
     {
         NameRegistrar nr = NameRegistrar.getInstance();
         int maxw = 0;
-        Iterator iter = nr.getAsMap().entrySet().iterator();
+        Iterator iter = NameRegistrar.getAsMap().entrySet().iterator();
         while (iter.hasNext())
         {
             Map.Entry entry = (Map.Entry) iter.next();
             maxw = Math.max(maxw, entry.getKey().toString().length());
         }
-        iter = nr.getAsMap().entrySet().iterator();
+        iter = NameRegistrar.getAsMap().entrySet().iterator();
         maxw++;
         while (iter.hasNext())
         {

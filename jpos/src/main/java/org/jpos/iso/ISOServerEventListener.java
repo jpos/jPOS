@@ -22,6 +22,6 @@ import java.util.EventObject;
 
 public interface ISOServerEventListener {
 
-    public void handleISOServerEvent(EventObject event);
+    void handleISOServerEvent(EventObject event);
 
 }

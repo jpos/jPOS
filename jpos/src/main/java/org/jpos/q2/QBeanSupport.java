@@ -215,7 +215,7 @@ public class QBeanSupport
             for (PropertyDescriptor aDesc : desc) {
                 if (aDesc.getWriteMethod() != null) {
                     Method read = aDesc.getReadMethod();
-                    Object obj = read.invoke(this, new Object[]{});
+                    Object obj = read.invoke(this);
                     String type = read.getReturnType().getName();
                     if ("java.lang.String".equals(type))
                         type = null;

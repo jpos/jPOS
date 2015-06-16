@@ -28,6 +28,6 @@ import org.jpos.iso.ISOException;
  */
 public interface BERTLVFormatMapper {
 
-    public TLVDataFormat getFormat(Integer tagNumber) throws ISOException;
+    TLVDataFormat getFormat(Integer tagNumber) throws ISOException;
 
 }

@@ -31,7 +31,7 @@ public interface XmlConfigurable {
     * @param e Configuration element
     * @throws ConfigurationException on error
     */
-    public void setConfiguration (Element e)
+   void setConfiguration(Element e)
         throws ConfigurationException;
 }
 

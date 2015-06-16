@@ -61,7 +61,7 @@ public class BcdPrefixer2Test {
     @Test
     public void testDecodeLengthThrowsNullPointerException() throws Throwable {
         try {
-            new BcdPrefixer(100).decodeLength((byte[]) null, 100);
+            new BcdPrefixer(100).decodeLength(null, 100);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
             assertNull("ex.getMessage()", ex.getMessage());
@@ -96,7 +96,7 @@ public class BcdPrefixer2Test {
 
     @Test(expected = NullPointerException.class)
     public void testEncodeLengthThrowsNullPointerException() throws Throwable {
-        BcdPrefixer.L.encodeLength(100, (byte[]) null);
+        BcdPrefixer.L.encodeLength(100, null);
     }
 
     @Test

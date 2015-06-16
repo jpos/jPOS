@@ -60,7 +60,7 @@ public class AsciiPrefixer2Test {
     @Test
     public void testDecodeLengthThrowsNullPointerException() throws Throwable {
         try {
-            new AsciiPrefixer(100).decodeLength((byte[]) null, 100);
+            new AsciiPrefixer(100).decodeLength(null, 100);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
             assertNull("ex.getMessage()", ex.getMessage());
@@ -135,7 +135,7 @@ public class AsciiPrefixer2Test {
     @Test
     public void testEncodeLengthThrowsNullPointerException() throws Throwable {
         try {
-            new AsciiPrefixer(2).encodeLength(100, (byte[]) null);
+            new AsciiPrefixer(2).encodeLength(100, null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
             assertNull("ex.getMessage()", ex.getMessage());

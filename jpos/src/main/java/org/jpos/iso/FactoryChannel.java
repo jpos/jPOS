@@ -29,5 +29,5 @@ public interface FactoryChannel {
     /**
      * @param sfac a socket factory
      */
-    public void setSocketFactory(ISOClientSocketFactory sfac);
+    void setSocketFactory(ISOClientSocketFactory sfac);
 }

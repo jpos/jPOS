@@ -37,10 +37,10 @@ public interface QMUXMBean extends org.jpos.q2.QBeanSupportMBean {
 
   java.lang.String getUnhandledQueue() ;
 
-  public void resetCounters ();
-  public String getCountersAsString ();
-  public int getTXCounter();
-  public int getRXCounter();
-  public long getLastTxnTimestampInMillis();
-  public long getIdleTimeInMillis();
+  void resetCounters();
+  String getCountersAsString();
+  int getTXCounter();
+  int getRXCounter();
+  long getLastTxnTimestampInMillis();
+  long getIdleTimeInMillis();
 }

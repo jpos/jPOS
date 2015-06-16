@@ -30,14 +30,14 @@ package org.jpos.q2;
 public interface QBean {
 
     // State
-    public static final int STOPPED    = 0;
-    public static final int STOPPING   = 1;
-    public static final int STARTING   = 2;
-    public static final int STARTED    = 3;
-    public static final int FAILED     = 4;
-    public static final int DESTROYED  = 5;
+    int STOPPED    = 0;
+    int STOPPING   = 1;
+    int STARTING   = 2;
+    int STARTED    = 3;
+    int FAILED     = 4;
+    int DESTROYED  = 5;
 
-    public static final String stateString[] = {
+    String stateString[] = {
         "Stopped", "Stopping", "Starting", "Started", "Failed", "Destroyed"
     };
 

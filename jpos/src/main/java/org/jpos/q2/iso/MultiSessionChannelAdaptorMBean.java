@@ -27,6 +27,6 @@ import org.jpos.q2.QBeanSupportMBean;
  */
 @SuppressWarnings("unused")
 public interface MultiSessionChannelAdaptorMBean extends ChannelAdaptorMBean {
-    public int getSessions();
-    public void setSessions(int sessions);
+    int getSessions();
+    void setSessions(int sessions);
 }

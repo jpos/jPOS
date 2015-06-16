@@ -24,6 +24,6 @@ package org.jpos.util;
  * @version $Id$
  */
 public interface Destroyable {
-    public void destroy ();
+    void destroy();
 }
 

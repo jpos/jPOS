@@ -24,8 +24,8 @@ package org.jpos.util;
  * @version $Id$
  */
 public interface LogSource {
-    public void setLogger (Logger logger, String realm);
-    public String getRealm ();
-    public Logger getLogger ();
+    void setLogger(Logger logger, String realm);
+    String getRealm();
+    Logger getLogger();
 }
 

@@ -287,7 +287,7 @@ public class VAPChannelTest {
     @Test
     public void testShouldIgnore2() throws Throwable {
         VAPChannel vAPChannel = new VAPChannel(new GenericPackager());
-        boolean result = vAPChannel.shouldIgnore((byte[]) null);
+        boolean result = vAPChannel.shouldIgnore(null);
         assertFalse("result", result);
     }
 

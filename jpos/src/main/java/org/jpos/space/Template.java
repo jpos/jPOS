@@ -22,7 +22,7 @@ package org.jpos.space;
  * Used by JDBMSpace to match entries based on its value
  */
 public interface Template {
-    public Object getKey ();
-    public boolean equals (Object obj);
+    Object getKey();
+    boolean equals(Object obj);
 }
 

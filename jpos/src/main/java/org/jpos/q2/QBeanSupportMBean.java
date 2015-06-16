@@ -28,17 +28,17 @@ import java.net.URL;
  * @version $Revision$ $Date$
  */
 public interface QBeanSupportMBean extends QBean, QPersist {
-    public void setServer (Q2 server);
-    public Q2 getServer ();
-    public void setPersist (Element e);
-    public void setName (String name);
-    public String getName ();
-    public void setLogger (String name);
-    public void setRealm (String realm);
-    public String getRealm ();
-    public String getLogger ();
-    public void shutdownQ2 ();
-    public URL[] getLoaderURLS();
-    public QClassLoader getLoader();
+    void setServer(Q2 server);
+    Q2 getServer();
+    void setPersist(Element e);
+    void setName(String name);
+    String getName();
+    void setLogger(String name);
+    void setRealm(String realm);
+    String getRealm();
+    String getLogger();
+    void shutdownQ2();
+    URL[] getLoaderURLS();
+    QClassLoader getLoader();
 }
 

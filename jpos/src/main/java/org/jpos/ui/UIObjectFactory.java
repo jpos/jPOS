@@ -30,6 +30,6 @@ public interface UIObjectFactory {
      * @return the Object
      * @throws throws may throw something
      */
-    public Object newInstance (String clazz) throws Exception;
+    Object newInstance(String clazz) throws Exception;
 }
 

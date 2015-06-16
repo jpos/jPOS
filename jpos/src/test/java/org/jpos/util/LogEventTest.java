@@ -105,7 +105,7 @@ public class LogEventTest {
 
     @Test
     public void testDump2() throws Throwable {
-        LogEvent logEvent = new LogEvent("testLogEventTag", (Object) null);
+        LogEvent logEvent = new LogEvent("testLogEventTag", null);
         logEvent.addMessage("testString", "1s");
         PrintStream p = new PrintStream(new ByteArrayOutputStream());
         logEvent.dump(p, "testLogEventIndent");

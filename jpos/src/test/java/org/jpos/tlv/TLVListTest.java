@@ -739,11 +739,11 @@ public class TLVListTest {
 
     @Test(expected = NullPointerException.class)
     public void testUnpackThrowsNullPointerException() throws Throwable {
-        tLVList.unpack((byte[]) null, 100);
+        tLVList.unpack(null, 100);
     }
 
     @Test(expected = NullPointerException.class)
     public void testUnpackThrowsNullPointerException1() throws Throwable {
-        tLVList.unpack((byte[]) null);
+        tLVList.unpack(null);
     }
 }

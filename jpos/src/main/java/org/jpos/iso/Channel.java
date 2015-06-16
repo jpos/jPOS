@@ -30,15 +30,15 @@ public interface Channel {
     /**
      * @param m message to send
      */
-    public void send (ISOMsg m);
+    void send(ISOMsg m);
     /**
      * @return received message
      */
-    public ISOMsg receive ();
+    ISOMsg receive();
     /**
      * @param timeout time to wait for a message
      * @return received message or null
      */
-    public ISOMsg receive (long timeout);
+    ISOMsg receive(long timeout);
 }
 

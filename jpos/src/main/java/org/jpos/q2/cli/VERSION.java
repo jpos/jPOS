@@ -20,11 +20,12 @@ package org.jpos.q2.cli;
 
 import org.jpos.q2.CLICommand;
 import org.jpos.q2.CLIContext;
+import org.jpos.q2.Q2;
 
 public class VERSION implements CLICommand
 {
     public void exec(CLIContext cli, String[] args)
     {
-        cli.println(cli.getQ2().getVersionString());
+        cli.println(Q2.getVersionString());
     }
 }

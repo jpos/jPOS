@@ -81,7 +81,7 @@ public class IVA_ALPHANUM extends ISOFieldValidator {
                 else
                     c = new ISOVField( c, e );
                 if ( breakOnError )
-                    throw new ISOVException ( "Error on field " + (Integer) c.getKey(), c );
+                    throw new ISOVException ( "Error on field " + c.getKey(), c );
             }
             return c;
         }

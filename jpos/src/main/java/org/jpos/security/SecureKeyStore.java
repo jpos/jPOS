@@ -40,7 +40,7 @@ import java.util.Map;
  */
 public interface SecureKeyStore {
 
-    public static class SecureKeyStoreException extends ISOException {
+    class SecureKeyStoreException extends ISOException {
 
         private static final long serialVersionUID = 1976885367352075834L;
 
@@ -70,7 +70,7 @@ public interface SecureKeyStore {
      * @throws SecureKeyStoreException if SecureKeyStore is not initialized or if
      * the operation fails for some other reason.
      */
-    public SecureKey getKey (String alias) throws SecureKeyStoreException;
+    SecureKey getKey(String alias) throws SecureKeyStoreException;
 
 
 
@@ -83,7 +83,7 @@ public interface SecureKeyStore {
      * @throws SecureKeyStoreException if SecureKeyStore is not initialized or the key
      * can't be recovered.
      */
-    public void setKey (String alias, SecureKey key) throws SecureKeyStoreException;
+    void setKey(String alias, SecureKey key) throws SecureKeyStoreException;
 
     /**
      * return map of existing keys assiciated with aliases.
@@ -91,7 +91,7 @@ public interface SecureKeyStore {
      * @throws if SecureKeyStore is not initialized or if
      * the operation fails for some other reason.
      */
-    public Map<String,SecureKey> getKeys() throws SecureKeyStoreException;
+    Map<String,SecureKey> getKeys() throws SecureKeyStoreException;
 }
 
 

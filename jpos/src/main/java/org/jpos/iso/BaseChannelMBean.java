@@ -20,13 +20,13 @@ package org.jpos.iso;
 import java.io.IOException;
 
 public interface BaseChannelMBean {
-    public String getHost ();
-    public void setHost (String host);
-    public int    getPort ();
-    public void setPort (int port);
-    public boolean isConnected();
-    public void connect () throws IOException;
-    public void disconnect () throws IOException;
-    public void reconnect () throws IOException;
+    String getHost();
+    void setHost(String host);
+    int    getPort();
+    void setPort(int port);
+    boolean isConnected();
+    void connect() throws IOException;
+    void disconnect() throws IOException;
+    void reconnect() throws IOException;
 }
 

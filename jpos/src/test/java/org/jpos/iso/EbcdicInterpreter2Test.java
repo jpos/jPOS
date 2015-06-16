@@ -60,7 +60,7 @@ public class EbcdicInterpreter2Test {
     @Test
     public void testInterpretThrowsNullPointerException() throws Throwable {
         try {
-            EbcdicInterpreter.INSTANCE.interpret("testEbcdicInterpreterData", (byte[]) null, 100);
+            EbcdicInterpreter.INSTANCE.interpret("testEbcdicInterpreterData", null, 100);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
             assertNull("ex.getMessage()", ex.getMessage());
@@ -99,7 +99,7 @@ public class EbcdicInterpreter2Test {
     @Test
     public void testUninterpretThrowsNullPointerException() throws Throwable {
         try {
-            new EbcdicInterpreter().uninterpret((byte[]) null, 100, 1000);
+            new EbcdicInterpreter().uninterpret(null, 100, 1000);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
             assertNull("ex.getMessage()", ex.getMessage());

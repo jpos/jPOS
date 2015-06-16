@@ -39,7 +39,7 @@ public interface RemoteSpace extends Remote {
      * @param value Object value
      * @throws RemoteException
      */
-    public void out (Serializable key, Serializable value) 
+    void out(Serializable key, Serializable value)
         throws RemoteException;
 
 
@@ -51,7 +51,7 @@ public interface RemoteSpace extends Remote {
      * @param timeout entry valid time
      * @throws RemoteException
      */
-    public void out (Serializable key, Serializable value, long timeout)
+    void out(Serializable key, Serializable value, long timeout)
         throws RemoteException;
 
     /**
@@ -60,7 +60,7 @@ public interface RemoteSpace extends Remote {
      * @return value
      * @throws RemoteException
      */
-    public Serializable in (Serializable key)
+    Serializable in(Serializable key)
         throws RemoteException;
 
     /**
@@ -69,7 +69,7 @@ public interface RemoteSpace extends Remote {
      * @return value
      * @throws RemoteException
      */
-    public Serializable rd  (Serializable key)
+    Serializable rd(Serializable key)
         throws RemoteException;
 
     /**
@@ -80,7 +80,7 @@ public interface RemoteSpace extends Remote {
      * @return value or null
      * @throws RemoteException
      */
-    public Serializable in  (Serializable key, long timeout)
+    Serializable in(Serializable key, long timeout)
         throws RemoteException;
 
 
@@ -92,7 +92,7 @@ public interface RemoteSpace extends Remote {
      * @return value or null
      * @throws RemoteException
      */
-    public Serializable rd  (Serializable key, long timeout)
+    Serializable rd(Serializable key, long timeout)
         throws RemoteException;
 
     /**
@@ -102,7 +102,7 @@ public interface RemoteSpace extends Remote {
      * @return value or null
      * @throws RemoteException
      */
-    public Serializable inp (Serializable key)
+    Serializable inp(Serializable key)
         throws RemoteException;
 
     /**
@@ -112,7 +112,7 @@ public interface RemoteSpace extends Remote {
      * @return value or null
      * @throws RemoteException
      */
-    public Serializable rdp (Serializable key)
+    Serializable rdp(Serializable key)
         throws RemoteException;
 
 }

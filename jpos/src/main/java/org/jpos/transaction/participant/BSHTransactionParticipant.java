@@ -153,7 +153,7 @@ public class BSHTransactionParticipant extends SimpleLogSource
     }
     
     protected Object executeMethod(BSHMethod m, long id, Serializable context, LogEvent evt, String resultName) 
-    throws EvalError, FileNotFoundException, IOException {
+    throws EvalError, IOException {
         Map params = new HashMap();
         params.put("context", context);
         params.put("id", id);

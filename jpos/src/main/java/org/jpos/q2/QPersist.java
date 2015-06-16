@@ -30,7 +30,7 @@ import org.jdom.Element;
  *
  */
 public interface QPersist {
-    public Element getPersist ();
-    public boolean isModified ();
+    Element getPersist();
+    boolean isModified();
 }
 

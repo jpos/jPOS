@@ -33,48 +33,48 @@ public interface FilteredChannel extends ISOChannel {
     /**
      * @param filter incoming filter to add
      */
-    public void addIncomingFilter (ISOFilter filter);
+    void addIncomingFilter(ISOFilter filter);
 
     /**
      * @param filter outgoing filter to add
      */
-    public void addOutgoingFilter (ISOFilter filter);
+    void addOutgoingFilter(ISOFilter filter);
 
-    public void addFilter (ISOFilter filter);
+    void addFilter(ISOFilter filter);
 
     /**
      * @param filter filter to remove (both directions)
      */
-    public void removeFilter (ISOFilter filter);
+    void removeFilter(ISOFilter filter);
 
     /**
      * @param filter incoming filter to remove
      */
-    public void removeIncomingFilter (ISOFilter filter);
+    void removeIncomingFilter(ISOFilter filter);
 
     /**
      * @param filter outgoing filter to remove
      */
-    public void removeOutgoingFilter (ISOFilter filter);
+    void removeOutgoingFilter(ISOFilter filter);
 
    /**
     * @return Collection containing all incoming filters
     */
-    public Collection getIncomingFilters();
+   Collection getIncomingFilters();
 
    /**
     * @return Collection containing all outgoing filters
     */
-    public Collection getOutgoingFilters();
+   Collection getOutgoingFilters();
 
    /**
     * @param filters incoming filter set
     */
-    public void setIncomingFilters (Collection filters);
+   void setIncomingFilters(Collection filters);
 
    /**
     * @param filters outgoing filter set
     */
-    public void setOutgoingFilters (Collection filters);
+   void setOutgoingFilters(Collection filters);
 }
 

@@ -34,6 +34,6 @@ public interface UIAware {
      * @param ui reference
      * @param config action config block
      */
-    public void setUI (UI ui, Element config);
+    void setUI(UI ui, Element config);
 }
 

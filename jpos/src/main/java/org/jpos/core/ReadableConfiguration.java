@@ -30,6 +30,6 @@ public interface ReadableConfiguration {
    /**
     * @return cfg Configuration object
     */
-    public Configuration getConfiguration ();
+   Configuration getConfiguration();
 }
 

@@ -32,7 +32,7 @@ public interface ISOPackager {
      * @return      Message image
      * @exception ISOException on error
      */
-    public byte[] pack (ISOComponent m) throws ISOException;
+    byte[] pack(ISOComponent m) throws ISOException;
 
     /**
      * @param   m   the Container of this message
@@ -40,25 +40,25 @@ public interface ISOPackager {
      * @return      consumed bytes
      * @exception ISOException on error
      */
-    public int unpack (ISOComponent m, byte[] b) throws ISOException;
+    int unpack(ISOComponent m, byte[] b) throws ISOException;
 
-    public void unpack (ISOComponent m, InputStream in) throws IOException, ISOException;
+    void unpack(ISOComponent m, InputStream in) throws IOException, ISOException;
 
     /**
      * @return  Packager's Description
      */
-    public String getDescription();
+    String getDescription();
     
     /**
      * @param   m   the Container (i.e. an ISOMsg)
      * @param   fldNumber the Field Number
      * @return  Field Description
      */
-    public String getFieldDescription(ISOComponent m, int fldNumber);
+    String getFieldDescription(ISOComponent m, int fldNumber);
 
     /**
      * @return an ISOMsg
      */
-    public ISOMsg createISOMsg ();
+    ISOMsg createISOMsg();
 }
 

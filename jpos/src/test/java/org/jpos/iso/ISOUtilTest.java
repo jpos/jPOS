@@ -259,17 +259,17 @@ public class ISOUtilTest {
 
     @Test(expected = NullPointerException.class)
     public void testBcd2strThrowsNullPointerException() throws Throwable {
-        ISOUtil.bcd2str((byte[]) null, 100, 1, false);
+        ISOUtil.bcd2str(null, 100, 1, false);
     }
 
     @Test(expected = NullPointerException.class)
     public void testBcd2strThrowsNullPointerException1() throws Throwable {
-        ISOUtil.bcd2str((byte[]) null, 100, 1, true);
+        ISOUtil.bcd2str(null, 100, 1, true);
     }
 
     @Test(expected = NullPointerException.class)
     public void testBcd2strThrowsNullPointerException2() throws Throwable {
-        ISOUtil.bcd2str((byte[]) null, 100, 1000, true);
+        ISOUtil.bcd2str(null, 100, 1000, true);
     }
 
     @Test
@@ -432,14 +432,14 @@ public class ISOUtilTest {
     @Test
     public void testByte2BitSet5() throws Throwable {
         byte[] b = new byte[1];
-        BitSet result = ISOUtil.byte2BitSet((BitSet) null, b, 100);
+        BitSet result = ISOUtil.byte2BitSet(null, b, 100);
         assertNull("result", result);
     }
 
     @Test
     public void testByte2BitSet6() throws Throwable {
         byte[] b = new byte[0];
-        BitSet result = ISOUtil.byte2BitSet((BitSet) null, b, 100);
+        BitSet result = ISOUtil.byte2BitSet(null, b, 100);
         assertNull("result", result);
     }
 
@@ -707,21 +707,21 @@ public class ISOUtilTest {
 
     @Test(expected = NullPointerException.class)
     public void testByte2BitSetThrowsNullPointerException() throws Throwable {
-        ISOUtil.byte2BitSet((byte[]) null, 100, true);
+        ISOUtil.byte2BitSet(null, 100, true);
     }
 
     @Test(expected = NullPointerException.class)
     public void testByte2BitSetThrowsNullPointerException1() throws Throwable {
         byte[] b = new byte[4];
         b[2] = (byte) 127;
-        ISOUtil.byte2BitSet((BitSet) null, b, 100);
+        ISOUtil.byte2BitSet(null, b, 100);
     }
 
     @Test
     public void testByte2BitSetThrowsNullPointerException2() throws Throwable {
         BitSet bmap = new BitSet(100);
         try {
-            ISOUtil.byte2BitSet(bmap, (byte[]) null, 100);
+            ISOUtil.byte2BitSet(bmap, null, 100);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
             assertNull("ex.getMessage()", ex.getMessage());
@@ -731,7 +731,7 @@ public class ISOUtilTest {
 
     @Test(expected = NullPointerException.class)
     public void testByte2BitSetThrowsNullPointerException3() throws Throwable {
-        ISOUtil.byte2BitSet((byte[]) null, 100, 65);
+        ISOUtil.byte2BitSet(null, 100, 65);
     }
 
     @Test
@@ -776,13 +776,13 @@ public class ISOUtilTest {
 
     @Test(expected = NullPointerException.class)
     public void testConcatThrowsNullPointerException() throws Throwable {
-        ISOUtil.concat((byte[]) null, 100, 1000, ISOUtil.asciiToEbcdic("testISOUtils"), 0, -1);
+        ISOUtil.concat(null, 100, 1000, ISOUtil.asciiToEbcdic("testISOUtils"), 0, -1);
     }
 
     @Test(expected = NullPointerException.class)
     public void testConcatThrowsNullPointerException1() throws Throwable {
         byte[] array2 = new byte[3];
-        ISOUtil.concat((byte[]) null, array2);
+        ISOUtil.concat(null, array2);
     }
 
     @Test
@@ -2305,7 +2305,7 @@ public class ISOUtilTest {
 
     @Test(expected = NullPointerException.class)
     public void testDumpStringThrowsNullPointerException() throws Throwable {
-        ISOUtil.dumpString((byte[]) null);
+        ISOUtil.dumpString(null);
     }
 
     @Test
@@ -2382,12 +2382,12 @@ public class ISOUtilTest {
 
     @Test(expected = NullPointerException.class)
     public void testEbcdicToAsciiBytesThrowsNullPointerException() throws Throwable {
-        ISOUtil.ebcdicToAsciiBytes((byte[]) null, 100, 1000);
+        ISOUtil.ebcdicToAsciiBytes(null, 100, 1000);
     }
 
     @Test(expected = NullPointerException.class)
     public void testEbcdicToAsciiBytesThrowsNullPointerException1() throws Throwable {
-        ISOUtil.ebcdicToAsciiBytes((byte[]) null);
+        ISOUtil.ebcdicToAsciiBytes(null);
     }
 
     @Test
@@ -2409,7 +2409,7 @@ public class ISOUtilTest {
 
     @Test(expected = NullPointerException.class)
     public void testEbcdicToAsciiThrowsNullPointerException() throws Throwable {
-        ISOUtil.ebcdicToAscii((byte[]) null);
+        ISOUtil.ebcdicToAscii(null);
     }
 
     @Test
@@ -2519,7 +2519,7 @@ public class ISOUtilTest {
     @Test
     public void testHex2BitSet3() throws Throwable {
         byte[] b = new byte[0];
-        BitSet result = ISOUtil.hex2BitSet((BitSet) null, b, 100);
+        BitSet result = ISOUtil.hex2BitSet(null, b, 100);
         assertNull("result", result);
     }
 
@@ -2722,30 +2722,30 @@ public class ISOUtilTest {
 
     @Test(expected = NullPointerException.class)
     public void testHex2BitSetThrowsNullPointerException() throws Throwable {
-        ISOUtil.hex2BitSet((byte[]) null, 100, true);
+        ISOUtil.hex2BitSet(null, 100, true);
     }
 
     @Test(expected = NullPointerException.class)
     public void testHex2BitSetThrowsNullPointerException1() throws Throwable {
-        ISOUtil.hex2BitSet((byte[]) null, 100, 63);
+        ISOUtil.hex2BitSet(null, 100, 63);
     }
 
     @Test(expected = NullPointerException.class)
     public void testHex2BitSetThrowsNullPointerException2() throws Throwable {
-        ISOUtil.hex2BitSet((byte[]) null, 100, 65);
+        ISOUtil.hex2BitSet(null, 100, 65);
     }
 
     @Test(expected = NullPointerException.class)
     public void testHex2BitSetThrowsNullPointerException3() throws Throwable {
         byte[] b = new byte[2];
-        ISOUtil.hex2BitSet((BitSet) null, b, 100);
+        ISOUtil.hex2BitSet(null, b, 100);
     }
 
     @Test
     public void testHex2BitSetThrowsNullPointerException4() throws Throwable {
         BitSet bmap = new BitSet();
         try {
-            ISOUtil.hex2BitSet(bmap, (byte[]) null, 100);
+            ISOUtil.hex2BitSet(bmap, null, 100);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
             assertNull("ex.getMessage()", ex.getMessage());
@@ -2800,7 +2800,7 @@ public class ISOUtilTest {
 
     @Test(expected = NullPointerException.class)
     public void testHex2byteThrowsNullPointerException() throws Throwable {
-        ISOUtil.hex2byte((byte[]) null, 100, 1000);
+        ISOUtil.hex2byte(null, 100, 1000);
     }
 
     @Test(expected = NullPointerException.class)
@@ -3180,12 +3180,12 @@ public class ISOUtilTest {
 
     @Test(expected = NullPointerException.class)
     public void testHexdumpThrowsNullPointerException() throws Throwable {
-        ISOUtil.hexdump((byte[]) null, 100, 1000);
+        ISOUtil.hexdump(null, 100, 1000);
     }
 
     @Test(expected = NullPointerException.class)
     public void testHexdumpThrowsNullPointerException1() throws Throwable {
-        ISOUtil.hexdump((byte[]) null);
+        ISOUtil.hexdump(null);
     }
 
     @Test
@@ -3258,12 +3258,12 @@ public class ISOUtilTest {
 
     @Test(expected = NullPointerException.class)
     public void testHexStringThrowsNullPointerException() throws Throwable {
-        ISOUtil.hexString((byte[]) null, 100, 1000);
+        ISOUtil.hexString(null, 100, 1000);
     }
 
     @Test(expected = NullPointerException.class)
     public void testHexStringThrowsNullPointerException1() throws Throwable {
-        ISOUtil.hexString((byte[]) null);
+        ISOUtil.hexString(null);
     }
 
     @Test
@@ -4271,12 +4271,12 @@ public class ISOUtilTest {
 
     @Test(expected = NullPointerException.class)
     public void testStr2bcdThrowsNullPointerException2() throws Throwable {
-        ISOUtil.str2bcd("testISOUtils1", true, (byte[]) null, 100);
+        ISOUtil.str2bcd("testISOUtils1", true, null, 100);
     }
 
     @Test(expected = NullPointerException.class)
     public void testStr2bcdThrowsNullPointerException3() throws Throwable {
-        ISOUtil.str2bcd("testISOUtils", true, (byte[]) null, 100);
+        ISOUtil.str2bcd("testISOUtils", true, null, 100);
     }
 
     @Test(expected = NullPointerException.class)
@@ -4428,7 +4428,7 @@ public class ISOUtilTest {
 
     @Test(expected = NullPointerException.class)
     public void testTrimThrowsNullPointerException() throws Throwable {
-        ISOUtil.trim((byte[]) null, 100);
+        ISOUtil.trim(null, 100);
     }
 
     @Test
@@ -4525,7 +4525,7 @@ public class ISOUtilTest {
     @Test(expected = NullPointerException.class)
     public void testXorThrowsNullPointerException() throws Throwable {
         byte[] op2 = new byte[0];
-        ISOUtil.xor((byte[]) null, op2);
+        ISOUtil.xor(null, op2);
     }
 
     @Test

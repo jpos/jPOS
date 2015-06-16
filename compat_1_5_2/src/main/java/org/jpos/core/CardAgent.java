@@ -33,18 +33,18 @@ public interface CardAgent {
     /**
      * @return agent unique ID
      */
-    public int getID();
+    int getID();
 
     /**
      * @return Configuration instance
      */
-    public Configuration getConfiguration();
+    Configuration getConfiguration();
 
     /**
      * @param t CardTransaction
      * @return true if agent is able/willing to handle this transaction
      */
-    public boolean canHandle (CardTransaction t);
+    boolean canHandle(CardTransaction t);
 
     /**
      * Process the transaction
@@ -52,23 +52,23 @@ public interface CardAgent {
      * @return CardTransactionInfo object associated with this transaction
      * @exception CardAgentException
      */
-    public CardTransactionResponse process (CardTransaction t) 
+    CardTransactionResponse process(CardTransaction t)
         throws CardAgentException;
 
     /**
      * @return property prefix used in configuration
      */
-    public String getPropertyPrefix();
+    String getPropertyPrefix();
 
     /**
      * Set PersistentEngine associated with this CardAgent
      * @param engine a PersistentEngine instance
      */
-    public void setPersistentEngine (PersistentEngine engine);
+    void setPersistentEngine(PersistentEngine engine);
 
     /**
      * @return PersistentEngine instance
      */
-    public PersistentEngine getPersistentEngine ();
+    PersistentEngine getPersistentEngine();
 
 }

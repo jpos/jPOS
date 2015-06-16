@@ -24,11 +24,11 @@ package org.jpos.tlv;
  */
 public interface OffsetIndexedComposite {
 
-    public void incOffset();
+    void incOffset();
 
-    public void setOffset(int offset);
+    void setOffset(int offset);
 
-    public void resetOffset();
+    void resetOffset();
 
-    public int getOffset();
+    int getOffset();
 }

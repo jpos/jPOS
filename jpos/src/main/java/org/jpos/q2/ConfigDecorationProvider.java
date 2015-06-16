@@ -22,7 +22,7 @@ import java.io.File;
 
 public interface ConfigDecorationProvider
 {
-    public void initialize(File deployDir) throws Exception;
-    public void uninitialize();
-    public String decorateFile(File f) throws Exception;
+    void initialize(File deployDir) throws Exception;
+    void uninitialize();
+    String decorateFile(File f) throws Exception;
 }

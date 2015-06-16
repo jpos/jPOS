@@ -36,8 +36,8 @@ public interface RawIncomingFilter extends ISOFilter {
      * @return an ISOMsg (possibly parameter m)
      * @throws VetoException
      */
-    public ISOMsg filter (ISOChannel channel, ISOMsg m, 
-            byte[] header, byte[] image, LogEvent evt) 
+    ISOMsg filter(ISOChannel channel, ISOMsg m,
+                  byte[] header, byte[] image, LogEvent evt)
         throws VetoException;
 }
 

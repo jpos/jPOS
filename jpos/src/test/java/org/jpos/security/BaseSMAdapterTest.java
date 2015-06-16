@@ -121,7 +121,7 @@ public class BaseSMAdapterTest {
 
     @Test(expected = SMException.class)
     public void testGenerateCBC_MACThrowsSMException1() throws Throwable {
-        new BaseSMAdapter().generateCBC_MAC((byte[]) null, new SecureDESKey((short) 100, "testBaseSMAdapterKeyType",
+        new BaseSMAdapter().generateCBC_MAC(null, new SecureDESKey((short) 100, "testBaseSMAdapterKeyType",
                 "testBaseSMAdapterKeyHexString1", "testBaseSMAdapterKeyCheckValueHexString1"));
     }
 
@@ -189,7 +189,7 @@ public class BaseSMAdapterTest {
 
     @Test(expected = SMException.class)
     public void testImportKeyThrowsSMException2() throws Throwable {
-        new BaseSMAdapter().importKey((short) 100, "testBaseSMAdapterKeyType", (byte[]) null, new SecureDESKey((short) 100,
+        new BaseSMAdapter().importKey((short) 100, "testBaseSMAdapterKeyType", null, new SecureDESKey((short) 100,
                 "testBaseSMAdapterKeyType", "testBaseSMAdapterKeyHexString1", "testBaseSMAdapterKeyCheckValueHexString1"), true);
     }
 

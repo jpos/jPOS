@@ -32,5 +32,5 @@ public interface SpaceListener<K,V> {
      * @param key   Object's key
      * @param value Object's value
      */
-    public void notify (K key, V value);
+    void notify(K key, V value);
 }

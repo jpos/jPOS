@@ -39,6 +39,6 @@ public interface ISOServerSocketFactory {
     * @exception ISOException on any other error
     * creation
     */
-    public ServerSocket createServerSocket(int port)
+    ServerSocket createServerSocket(int port)
         throws IOException, ISOException;
 }

@@ -171,7 +171,7 @@ public class VISA1PackagerTest {
         VISA1Packager vISA1Packager = new VISA1Packager(sequence, 100, "testVISA1PackagerBadResultCode", "");
         byte[] b = new byte[1];
         int result = vISA1Packager.unpack(m, b);
-        assertEquals("(ISOMsg) m.getMaxField()", 100, ((ISOMsg) m).getMaxField());
+        assertEquals("(ISOMsg) m.getMaxField()", 100, m.getMaxField());
         assertEquals("result", 1, result);
         assertSame("vISA1Packager.filter", vISA1Packager, vISA1Packager.filter);
     }
@@ -184,7 +184,7 @@ public class VISA1PackagerTest {
         ISOComponent m = new ISOMsg(100);
         byte[] b = new byte[0];
         int result = vISA1Packager.unpack(m, b);
-        assertEquals("(ISOVMsg) m.getMaxField()", 100, ((ISOMsg) m).getMaxField());
+        assertEquals("(ISOVMsg) m.getMaxField()", 100, m.getMaxField());
         assertEquals("result", 0, result);
     }
 
@@ -244,7 +244,7 @@ public class VISA1PackagerTest {
             vISA1Packager.unpack(m, b);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertEquals("(ISOMsg) m.getMaxField()", 100, ((ISOMsg) m).getMaxField());
+            assertEquals("(ISOMsg) m.getMaxField()", 100, m.getMaxField());
             assertNull("ex.getMessage()", ex.getMessage());
             assertSame("vISA1Packager.filter", vISA1Packager, vISA1Packager.filter);
         }

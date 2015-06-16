@@ -19,18 +19,18 @@
 package org.jpos.iso;
 
 public interface ISOMUXMBean {
-    public boolean isConnected();
-    public void setConnect (boolean connect);
-    public boolean getConnect ();
-    public int getConnectionCount ();
-    public int getTransmitCount ();
-    public int getExpiredCount ();
-    public int getTransmitPendingCount ();
-    public int getReceiveCount ();
-    public int getReceiveExpiredCount ();
-    public int getReceivePendingCount ();
-    public int getUnknownCount ();
-    public int getForwardedCount ();
-    public void resetCounters ();
+    boolean isConnected();
+    void setConnect(boolean connect);
+    boolean getConnect();
+    int getConnectionCount();
+    int getTransmitCount();
+    int getExpiredCount();
+    int getTransmitPendingCount();
+    int getReceiveCount();
+    int getReceiveExpiredCount();
+    int getReceivePendingCount();
+    int getUnknownCount();
+    int getForwardedCount();
+    void resetCounters();
 }
 

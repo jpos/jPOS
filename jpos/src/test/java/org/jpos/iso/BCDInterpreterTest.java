@@ -76,7 +76,7 @@ public class BCDInterpreterTest {
 
     @Test(expected = NullPointerException.class)
     public void testInterpretThrowsNullPointerException() throws Throwable {
-        BCDInterpreter.LEFT_PADDED.interpret("testBCDInterpreterData", (byte[]) null, 100);
+        BCDInterpreter.LEFT_PADDED.interpret("testBCDInterpreterData", null, 100);
     }
 
     @Test
@@ -100,6 +100,6 @@ public class BCDInterpreterTest {
 
     @Test(expected = NullPointerException.class)
     public void testUninterpretThrowsNullPointerException() throws Throwable {
-        BCDInterpreter.LEFT_PADDED.uninterpret((byte[]) null, 100, 1000);
+        BCDInterpreter.LEFT_PADDED.uninterpret(null, 100, 1000);
     }
 }

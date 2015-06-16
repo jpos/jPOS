@@ -49,7 +49,7 @@ public class LogEventRenderer implements ObjectRenderer
     {
         if (o instanceof LogEvent)
         {
-            return "\n" + ((LogEvent) o).toString();
+            return "\n" + o.toString();
         }
         else
             return "ERROR: LogEventRenderer can only render LogEvent objects";

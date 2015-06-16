@@ -104,7 +104,7 @@ public class Base1_BITMAP126Test {
         Base1_BITMAP126 base1_BITMAP126 = new Base1_BITMAP126(100, "testBase1_BITMAP126Description");
         ISOComponent c = new ISOBinaryField(100);
         try {
-            base1_BITMAP126.unpack(c, (byte[]) null, 100);
+            base1_BITMAP126.unpack(c, null, 100);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
             assertNull("ex.getMessage()", ex.getMessage());

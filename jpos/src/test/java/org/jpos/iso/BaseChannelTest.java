@@ -480,7 +480,7 @@ public class BaseChannelTest {
     @Test
     public void testGetDynamicHeader1() throws Throwable {
         BaseChannel bASE24Channel = new BASE24Channel("testBaseChannelHost", 100, new ISO87APackagerBBitmap());
-        ISOHeader result = bASE24Channel.getDynamicHeader((byte[]) null);
+        ISOHeader result = bASE24Channel.getDynamicHeader(null);
         assertNull("result", result);
     }
 

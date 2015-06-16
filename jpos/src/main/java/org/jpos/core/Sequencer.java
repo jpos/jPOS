@@ -29,7 +29,7 @@ package org.jpos.core;
  * Sequencer interface isolate from particular DB implementations
  */
 public interface Sequencer {
-    public int get (String counterName);
-    public int get (String counterName, int add);
-    public int set (String counterName, int value);
+    int get(String counterName);
+    int get(String counterName, int add);
+    int set(String counterName, int value);
 }

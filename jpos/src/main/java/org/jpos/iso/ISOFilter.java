@@ -28,7 +28,7 @@ import org.jpos.util.LogEvent;
  * @version $Revision$ $Date$
  */
 public interface ISOFilter {
-    public class VetoException extends ISOException {
+    class VetoException extends ISOException {
 
         private static final long serialVersionUID = -4640160572663583113L;
         public VetoException () {
@@ -51,6 +51,6 @@ public interface ISOFilter {
      * @return an ISOMsg (possibly parameter m)
      * @throws VetoException
      */
-    public ISOMsg filter (ISOChannel channel, ISOMsg m, LogEvent evt) 
+    ISOMsg filter(ISOChannel channel, ISOMsg m, LogEvent evt)
         throws VetoException;
 }

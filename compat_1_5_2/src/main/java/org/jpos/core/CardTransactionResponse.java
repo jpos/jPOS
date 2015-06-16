@@ -35,13 +35,13 @@ public interface CardTransactionResponse extends Serializable {
      * (suitable to be saved on persistent storage)
      * @return a serialized image of this transaction
      */
-    public byte[] getImage() throws CardAgentException;
+    byte[] getImage() throws CardAgentException;
 
-    public String  getAutCode();
-    public String  getMessage();
-    public String  getAutNumber();
-    public boolean isApproved();
-    public boolean canContinue();
-    public boolean isAuthoritative();
-    public String  getBatchName();
+    String  getAutCode();
+    String  getMessage();
+    String  getAutNumber();
+    boolean isApproved();
+    boolean canContinue();
+    boolean isAuthoritative();
+    String  getBatchName();
 }

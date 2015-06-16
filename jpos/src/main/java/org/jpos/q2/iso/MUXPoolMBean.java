@@ -25,8 +25,8 @@ package org.jpos.q2.iso;
  */
 public interface MUXPoolMBean extends org.jpos.q2.QBeanSupportMBean {
 
-    public String[] getMuxNames();
+    String[] getMuxNames();
 
-    public int getStrategy();
+    int getStrategy();
 
 }

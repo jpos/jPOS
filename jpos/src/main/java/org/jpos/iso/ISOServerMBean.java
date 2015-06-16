@@ -21,14 +21,14 @@ package org.jpos.iso;
 import org.jpos.util.ThreadPoolMBean;
 
 public interface ISOServerMBean extends ThreadPoolMBean {
-    public int getPort ();
-    public void resetCounters ();
-    public int getConnectionCount ();
-    public String getISOChannelNames();
-    public String getCountersAsString (String isoChannelName);
-    public int getTXCounter();
-    public int getRXCounter();
-    public long getLastTxnTimestampInMillis();
-    public long getIdleTimeInMillis();
+    int getPort();
+    void resetCounters();
+    int getConnectionCount();
+    String getISOChannelNames();
+    String getCountersAsString(String isoChannelName);
+    int getTXCounter();
+    int getRXCounter();
+    long getLastTxnTimestampInMillis();
+    long getIdleTimeInMillis();
 }
 

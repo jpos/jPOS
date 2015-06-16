@@ -22,25 +22,25 @@ public interface ThreadPoolMBean {
     /**
      * @return number of jobs processed by this pool
      */
-    public int getJobCount ();
+    int getJobCount();
 
     /**
      * @return number of active threads
      */
-    public int getPoolSize ();
+    int getPoolSize();
 
     /**
      * @return max number of active threads allowed
      */
-    public int getMaxPoolSize ();
+    int getMaxPoolSize();
 
     /**
      * @return number of idle threads
      */
-    public int getIdleCount();
+    int getIdleCount();
 
     /**
      * @return number of Pending jobs
      */
-    public int getPendingCount ();
+    int getPendingCount();
 }

@@ -523,10 +523,10 @@ public class FSDMsg implements Loggeable, Cloneable {
         return header != null ? ISOUtil.hexString (header).substring (2) : "";
     }
     public String get (String fieldName) {
-        return (String) fields.get (fieldName);
+        return fields.get (fieldName);
     }
     public String get (String fieldName, String def) {
-        String s = (String) fields.get (fieldName);
+        String s = fields.get (fieldName);
         return s != null ? s : def;
     }
     public void copy (String fieldName, FSDMsg msg) {

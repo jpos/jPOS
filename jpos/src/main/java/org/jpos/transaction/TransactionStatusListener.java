@@ -21,5 +21,5 @@ package org.jpos.transaction;
 import java.util.EventListener;
 
 public interface TransactionStatusListener extends EventListener {
-    public void update (TransactionStatusEvent e);
+    void update(TransactionStatusEvent e);
 }

@@ -290,7 +290,7 @@ public class GenericPackagerTest {
         } catch (SAXException ex) {
             assertNull("ex.getMessage()", ex.getMessage());
             assertNull("ex.getException().getMessage()", ex.getException().getMessage());
-            assertEquals("(AttributesImpl) atts.getLength()", 0, ((AttributesImpl) atts).getLength());
+            assertEquals("(AttributesImpl) atts.getLength()", 0, atts.getLength());
         }
     }
 
@@ -319,7 +319,7 @@ public class GenericPackagerTest {
         } catch (SAXException ex) {
             assertNull("ex.getMessage()", ex.getMessage());
             assertNull("ex.getException().getMessage()", ex.getException().getMessage());
-            assertEquals("(AttributesImpl) atts.getLength()", 0, ((AttributesImpl) atts).getLength());
+            assertEquals("(AttributesImpl) atts.getLength()", 0, atts.getLength());
         }
     }
 

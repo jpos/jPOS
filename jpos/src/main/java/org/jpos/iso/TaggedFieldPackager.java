@@ -24,7 +24,7 @@ package org.jpos.iso;
  */
 public interface TaggedFieldPackager {
 
-    public void setToken(String token);
+    void setToken(String token);
 
-    public String getToken();
+    String getToken();
 }

@@ -25,8 +25,8 @@ package org.jpos.core;
  * @since jPOS 1.3.9
  */
 public interface VolatileSequencerMBean {
-    public String[] getCounterNames ();
-    public int get (String counterName, int add);
-    public int set (String counterName, int value);
+    String[] getCounterNames();
+    int get(String counterName, int add);
+    int set(String counterName, int value);
 }
 

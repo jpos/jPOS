@@ -247,7 +247,7 @@ public class XMLPackagerTest {
     @Test
     public void testStartElement1() throws Throwable {
         xMLPackager.startElement("testXMLPackagerNs", "testXMLPackagerName", "testXMLPackagerQName", atts);
-        assertEquals("(AttributesImpl) atts.getLength()", 0, ((AttributesImpl) atts).getLength());
+        assertEquals("(AttributesImpl) atts.getLength()", 0, atts.getLength());
     }
 
     @Test

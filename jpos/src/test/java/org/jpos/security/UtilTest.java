@@ -45,7 +45,7 @@ public class UtilTest {
     @Test
     public void testAdjustDESParityThrowsNullPointerException() throws Throwable {
         try {
-            Util.adjustDESParity((byte[]) null);
+            Util.adjustDESParity(null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
             assertNull("ex.getMessage()", ex.getMessage());
@@ -75,7 +75,7 @@ public class UtilTest {
     @Test
     public void testIsDESParityAdjustedThrowsNullPointerException() throws Throwable {
         try {
-            Util.isDESParityAdjusted((byte[]) null);
+            Util.isDESParityAdjusted(null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
             assertNull("ex.getMessage()", ex.getMessage());

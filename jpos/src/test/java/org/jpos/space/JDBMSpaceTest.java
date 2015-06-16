@@ -122,7 +122,7 @@ public class JDBMSpaceTest {
     @Test
     public void testGetLongThrowsNullPointerException() throws Throwable {
         try {
-            JDBMSpace.getLong((byte[]) null, 100);
+            JDBMSpace.getLong(null, 100);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
             assertNull("ex.getMessage()", ex.getMessage());
@@ -201,7 +201,7 @@ public class JDBMSpaceTest {
     @Test
     public void testPutLongThrowsNullPointerException() throws Throwable {
         try {
-            JDBMSpace.putLong((byte[]) null, 100, 100L);
+            JDBMSpace.putLong(null, 100, 100L);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
             assertNull("ex.getMessage()", ex.getMessage());
@@ -252,7 +252,7 @@ public class JDBMSpaceTest {
     public void testRefDeserializeThrowsNullPointerException() throws Throwable {
         JDBMSpace.Ref ref = new JDBMSpace.Ref(100L, 1000L);
         try {
-            ref.deserialize((byte[]) null);
+            ref.deserialize(null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
             assertNull("ex.getMessage()", ex.getMessage());

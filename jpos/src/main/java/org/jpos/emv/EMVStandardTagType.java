@@ -605,10 +605,7 @@ public enum EMVStandardTagType implements EMVTagType {
 
     public static boolean isProprietaryTag(int code) {
         EMVTagType tagType = MapHolder.tagCodeMap.get(code);
-        if (tagType == null) {
-            return true;
-        }
-        return false;
+        return tagType == null;
     }
 
     public static EMVStandardTagType forCode(int code) throws UnknownTagNumberException {

@@ -32,7 +32,7 @@ public interface TransactionParticipant extends TransactionConstants {
      * @param context transaction context
      * @return PREPARED or ABORTED (| NO_JOIN | READONLY)
      */
-    public int  prepare (long id, Serializable context);
+    int  prepare(long id, Serializable context);
 
     /**
      * Called by TransactionManager upon transaction commit.
@@ -42,7 +42,7 @@ public interface TransactionParticipant extends TransactionConstants {
      * @param id the Transaction identifier
      * @param context transaction context
      */
-    public void commit  (long id, Serializable context);
+    void commit(long id, Serializable context);
 
     /**
      * Called by TransactionManager upon transaction commit.
@@ -52,6 +52,6 @@ public interface TransactionParticipant extends TransactionConstants {
      * @param id the Transaction identifier
      * @param context transaction context
      */
-    public void abort   (long id, Serializable context);
+    void abort(long id, Serializable context);
 }
 

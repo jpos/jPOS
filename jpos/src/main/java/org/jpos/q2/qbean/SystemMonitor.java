@@ -148,7 +148,7 @@ public class SystemMonitor extends QBeanSupport
     }
 
     private String getRevision() {
-        return getServer().getRevision();
+        return Q2.getRevision();
     }
     private String getLocalHost () {
         try {

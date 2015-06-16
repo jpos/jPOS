@@ -23,16 +23,16 @@ import java.util.Date;
 
 @SuppressWarnings("unused")
 public interface TransactionManagerMBean extends QBeanSupportMBean {
-    public long getHead ();
-    public long getTail ();
-    public void setDebug (boolean debug);
-    public boolean getDebug();
-    public int getOutstandingTransactions();
-    public int getActiveSessions();
-    public String getTPSAsString();
-    public float getTPSAvg();
-    public int getTPSPeak();
-    public Date getTPSPeakWhen();
-    public long getTPSElapsed();
-    public void resetTPS();
+    long getHead();
+    long getTail();
+    void setDebug(boolean debug);
+    boolean getDebug();
+    int getOutstandingTransactions();
+    int getActiveSessions();
+    String getTPSAsString();
+    float getTPSAvg();
+    int getTPSPeak();
+    Date getTPSPeakWhen();
+    long getTPSElapsed();
+    void resetTPS();
 }

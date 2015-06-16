@@ -30,6 +30,6 @@ public interface NodeConfigurable {
    /**
     * @throws ConfigurationException
     */
-    public void setConfiguration (Node node)
+   void setConfiguration(Node node)
         throws ConfigurationException;
 }

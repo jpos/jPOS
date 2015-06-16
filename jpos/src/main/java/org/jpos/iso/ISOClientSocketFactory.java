@@ -38,6 +38,6 @@ public interface ISOClientSocketFactory {
     * @exception IOException should an I/O error occur
     * @exception ISOException on any other error
     */
-    public Socket createSocket(String host, int port)
+    Socket createSocket(String host, int port)
         throws IOException, ISOException;
 }

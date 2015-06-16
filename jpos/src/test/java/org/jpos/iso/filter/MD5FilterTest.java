@@ -283,7 +283,7 @@ public class MD5FilterTest {
     public void testFilterThrowsVetoException6() throws Throwable {
         MD5Filter mD5Filter = new MD5Filter();
         mD5Filter.setConfiguration(new SimpleConfiguration());
-        mD5Filter.setFields((int[]) null);
+        mD5Filter.setFields(null);
         try {
             mD5Filter.filter(new PADChannel(new PostPackager()), null, null);
             fail("Expected VetoException to be thrown");
