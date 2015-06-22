@@ -474,7 +474,7 @@ public class TransactionManagerTest {
     @Test
     public void testPurgeThrowsNullPointerException() throws Throwable {
         try {
-            transactionManager.purge(100L);
+            transactionManager.purge(100L, true);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
             assertNull("ex.getMessage()", ex.getMessage());

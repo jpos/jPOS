@@ -100,7 +100,7 @@ public class TransactionManager
     @Override
     public void startService () throws Exception {
         NameRegistrar.register(getName(), this);
-        recover ();
+        recover();
         threads = Collections.synchronizedList(new ArrayList(maxSessions));
         if (tps != null)
             tps.stop();
@@ -114,7 +114,7 @@ public class TransactionManager
 
     @Override
     public void stopService () throws Exception {
-        NameRegistrar.unregister (getName ());
+        NameRegistrar.unregister(getName());
 
         Thread[] tt = threads.toArray(new Thread[threads.size()]);
         for (int i=0; i < tt.length; i++) {
@@ -285,6 +285,8 @@ public class TransactionManager
                     snapshot (id, null, DONE);
                     if (id == tail) {
                         checkTail ();
+                    } else {
+                        purge (id, false);
                     }
                     tps.tick();
                 }
@@ -376,7 +378,7 @@ public class TransactionManager
     }
     public void removeListener (TransactionStatusListener l) {
         synchronized (statusListeners) {
-            statusListeners.remove (l);
+            statusListeners.remove(l);
             hasStatusListeners = !statusListeners.isEmpty();
         }
     }
@@ -449,7 +451,7 @@ public class TransactionManager
                     session, TransactionStatusEvent.State.ABORTING, id, p.getClass().getName(), context
                 );
 
-            abort (p, id, context);
+            abort(p, id, context);
             if (evt != null) {
                 evt.addMessage ("          abort: " + p.getClass().getName());
                 if (prof != null)
@@ -486,7 +488,7 @@ public class TransactionManager
     {
         try {
             setThreadName(id, "commit", p);
-            p.commit (id, context);
+            p.commit(id, context);
         } catch (Throwable t) {
             getLog().warn ("COMMIT: " + Long.toString (id), t);
         }
@@ -496,7 +498,7 @@ public class TransactionManager
     {
         try {
             setThreadName(id, "abort", p);
-            p.abort (id, context);
+            p.abort(id, context);
         } catch (Throwable t) {
             getLog().warn ("ABORT: " + Long.toString (id), t);
         }
@@ -703,14 +705,14 @@ public class TransactionManager
     }
     protected void commitOff (Space sp) {
         if (sp instanceof JDBMSpace) {
-            ((JDBMSpace) sp).setAutoCommit (false);
+            ((JDBMSpace) sp).setAutoCommit(false);
         }
     }
     protected void commitOn (Space sp) {
         if (sp instanceof JDBMSpace) {
             JDBMSpace jsp = (JDBMSpace) sp;
             jsp.commit ();
-            jsp.setAutoCommit (true);
+            jsp.setAutoCommit(true);
         }
     }
     protected void syncTail () {
@@ -734,12 +736,12 @@ public class TransactionManager
             tail++;
         }
         syncTail ();
-        sp.out (tailLock, lock);
+        sp.out(tailLock, lock);
     }
     protected boolean tailDone () {
-        String stateKey = getKey (STATE, tail);
+        String stateKey = getKey(STATE, tail);
         if (DONE.equals (psp.rdp (stateKey))) {
-            purge (tail);
+            purge (tail, true);
             return true;
         }
         return false;
@@ -787,18 +789,20 @@ public class TransactionManager
         if (groupName != null)
             psp.out (getKey (GROUPS, id), groupName);
     }
-    protected void purge (long id) {
+    protected void purge (long id, boolean full) {
         String stateKey   = getKey (STATE, id);
         String contextKey = getKey (CONTEXT, id);
         String groupsKey  = getKey (GROUPS, id);
         synchronized (psp) {
             commitOff (psp);
-            SpaceUtil.wipe(psp, stateKey);
+            if (full)
+                SpaceUtil.wipe(psp, stateKey);
             SpaceUtil.wipe(psp, contextKey);
             SpaceUtil.wipe(psp, groupsKey);
             commitOn (psp);
         }
     }
+
     protected void recover () {
         if (doRecover) {
             if (tail < head) {
@@ -835,7 +839,7 @@ public class TransactionManager
             } else if (PREPARING.equals (state)) {
                 abort (session, id, context, getParticipants (id), true, evt, prof);
             }
-            purge (id);
+            purge (id, true);
         } finally {
             evt.addMessage (prof);
             Logger.log (evt);
