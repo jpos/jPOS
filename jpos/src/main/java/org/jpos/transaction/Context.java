@@ -184,7 +184,7 @@ public class Context implements Externalizable, Loggeable, Pausable {
                 p.println ("");
                 p.println (indent+ "<![CDATA[");
                 XMLOutputter out = new XMLOutputter (Format.getPrettyFormat ());
-                out.getFormat().setLineSeparator ("\n");
+                out.getFormat().setLineSeparator (System.lineSeparator());
                 try {
                     out.output ((Element) value, p);
                 } catch (IOException ex) {
