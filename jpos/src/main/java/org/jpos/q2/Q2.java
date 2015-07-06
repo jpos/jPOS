@@ -110,7 +110,7 @@ public class Q2 implements FileFilter, Runnable {
         this (new String[] { "-d", deployDir }, null);
     }
     public Q2 (String[] args) {
-        this (args, null);
+        this(args, null);
     }
     public void start () {
         if (shutdown)
@@ -118,7 +118,7 @@ public class Q2 implements FileFilter, Runnable {
         new Thread (this).start();
     }
     public void stop () {
-        shutdown (true);
+        shutdown(true);
     }
     public void run () {
         started = true;
@@ -172,16 +172,18 @@ public class Q2 implements FileFilter, Runnable {
             for (int i = 1; !shutdown; i++) {
                 try {
                     boolean forceNewClassLoader = scan();
-                    QClassLoader oldClassLoader = loader;
-                    loader = loader.scan(forceNewClassLoader);
-                    if (loader != oldClassLoader) {
-                        oldClassLoader = null; // We want this to be null so it gets GCed.
-                        System.gc();  // force a GC
-                        log.info(
-                                "new classloader ["
-                                        + Integer.toString(loader.hashCode(), 16)
-                                        + "] has been created"
-                        );
+                    if (i > 1) {
+                        QClassLoader oldClassLoader = loader;
+                        loader = loader.scan(forceNewClassLoader);
+                        if (loader != oldClassLoader) {
+                            oldClassLoader = null; // We want this to be null so it gets GCed.
+                            System.gc();  // force a GC
+                            log.info(
+                                    "new classloader ["
+                                            + Integer.toString(loader.hashCode(), 16)
+                                            + "] has been created"
+                            );
+                        }
                     }
                     deploy();
                     checkModified();
