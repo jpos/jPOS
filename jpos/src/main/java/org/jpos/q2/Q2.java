@@ -171,19 +171,18 @@ public class Q2 implements FileFilter, Runnable {
                 startOSGIFramework();
             for (int i = 1; !shutdown; i++) {
                 try {
-                    boolean forceNewClassLoader = scan();
-                    if (i > 1) {
-                        QClassLoader oldClassLoader = loader;
-                        loader = loader.scan(forceNewClassLoader);
-                        if (loader != oldClassLoader) {
-                            oldClassLoader = null; // We want this to be null so it gets GCed.
-                            System.gc();  // force a GC
-                            log.info(
-                                    "new classloader ["
-                                            + Integer.toString(loader.hashCode(), 16)
-                                            + "] has been created"
-                            );
-                        }
+                    boolean forceNewClassLoader = scan() && i > 1;
+                    QClassLoader oldClassLoader = loader;
+                    loader = loader.scan(forceNewClassLoader);
+                    if (loader != oldClassLoader) {
+                        oldClassLoader = null; // We want this to be null so it gets GCed.
+                        System.gc();  // force a GC
+                        log.info(
+                                "new classloader ["
+                                        + Integer.toString(loader.hashCode(), 16)
+                                        + "] has been created"
+                        );
+                        q2Thread.setContextClassLoader(loader);
                     }
                     deploy();
                     checkModified();
