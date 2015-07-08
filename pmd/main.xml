@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pmd version="5.2.3" timestamp="2015-07-06T19:42:30.723">
+<pmd version="5.2.3" timestamp="2015-07-08T19:35:30.176">
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/core/CardHolder.java">
 <violation beginline="323" endline="323" begincolumn="11" endcolumn="51" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.core" class="CardHolder" method="isExpired" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
@@ -183,22 +183,22 @@ Avoid empty catch blocks
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/q2/Q2.java">
-<violation beginline="209" endline="210" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.q2" class="Q2" method="run" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
+<violation beginline="208" endline="209" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.q2" class="Q2" method="run" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
 </violation>
-<violation beginline="342" endline="347" begincolumn="27" endcolumn="25" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.q2" class="Q2" method="run" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
+<violation beginline="341" endline="346" begincolumn="27" endcolumn="25" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.q2" class="Q2" method="run" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
 </violation>
-<violation beginline="385" endline="387" begincolumn="15" endcolumn="13" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.q2" class="Q2" method="isModified" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
+<violation beginline="384" endline="386" begincolumn="15" endcolumn="13" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.q2" class="Q2" method="isModified" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
 </violation>
-<violation beginline="603" endline="603" begincolumn="15" endcolumn="43" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.q2" class="Q2" method="getLicensee" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
+<violation beginline="602" endline="602" begincolumn="15" endcolumn="43" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.q2" class="Q2" method="getLicensee" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
 </violation>
-<violation beginline="823" endline="825" begincolumn="9" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.q2" class="Q2" method="initConfigDecorator" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
+<violation beginline="822" endline="824" begincolumn="9" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.q2" class="Q2" method="initConfigDecorator" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
 </violation>
-<violation beginline="842" endline="844" begincolumn="17" endcolumn="17" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.q2" class="Q2" method="initConfigDecorator" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
+<violation beginline="841" endline="843" begincolumn="17" endcolumn="17" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.q2" class="Q2" method="initConfigDecorator" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
 </violation>
 </file>
