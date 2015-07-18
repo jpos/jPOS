@@ -34,7 +34,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author apr@cs.com.uy
  */
 public class ThreadPool extends ThreadGroup implements LogSource, Loggeable, Configurable, ThreadPoolMBean {
-    
     private static AtomicInteger poolNumber = new AtomicInteger(0);
     private static AtomicInteger threadNumber = new AtomicInteger(0);
     private int maxPoolSize = 1;
@@ -95,9 +94,8 @@ public class ThreadPool extends ThreadGroup implements LogSource, Loggeable, Con
             }
         }
         public synchronized void supervise () {
-            if (currentJob != null && currentJob instanceof Supervised) 
-                if ( ((Supervised)currentJob).expired() )
-                    this.interrupt();
+            if (currentJob != null && currentJob instanceof Supervised && ((Supervised)currentJob).expired())
+                this.interrupt();
         }
     }
 
