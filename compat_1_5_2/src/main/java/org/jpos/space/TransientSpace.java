@@ -212,10 +212,10 @@ public class TransientSpace implements LocalSpace, TransientSpaceMBean {
             return listeners;
         }
     }
-    public static final LocalSpace getSpace () {
+    public static LocalSpace getSpace () {
         return defaultSpace;
     }
-    public static final LocalSpace getSpace (String spaceName) {
+    public static LocalSpace getSpace (String spaceName) {
         String key = "jpos:space/"+spaceName;
         Object obj = getSpace().rdp (key);
         Space sp   = getSpace();
