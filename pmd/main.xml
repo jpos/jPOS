@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pmd version="5.2.3" timestamp="2015-07-09T16:12:40.826">
+<pmd version="5.2.3" timestamp="2015-07-19T02:19:27.590">
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/core/CardHolder.java">
-<violation beginline="323" endline="323" begincolumn="11" endcolumn="51" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.core" class="CardHolder" method="isExpired" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
+<violation beginline="323" endline="325" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.core" class="CardHolder" method="isExpired" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/BaseChannel.java">
-<violation beginline="1096" endline="1099" begincolumn="15" endcolumn="13" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.iso" class="BaseChannel" method="closeSocket" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
+<violation beginline="1096" endline="1100" begincolumn="15" endcolumn="13" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.iso" class="BaseChannel" method="closeSocket" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
 </violation>
 </file>
@@ -178,84 +178,50 @@ Avoid empty catch blocks
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/q2/CLICommandInterface.java">
-<violation beginline="95" endline="97" begincolumn="13" endcolumn="13" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.q2" class="CLICommandInterface" method="execCommand" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
+<violation beginline="95" endline="98" begincolumn="13" endcolumn="13" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.q2" class="CLICommandInterface" method="execCommand" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/q2/Q2.java">
-<violation beginline="208" endline="209" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.q2" class="Q2" method="run" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
+<violation beginline="208" endline="210" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.q2" class="Q2" method="run" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
 </violation>
-<violation beginline="341" endline="346" begincolumn="27" endcolumn="25" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.q2" class="Q2" method="run" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
+<violation beginline="343" endline="349" begincolumn="27" endcolumn="25" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.q2" class="Q2" method="run" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
 </violation>
-<violation beginline="384" endline="386" begincolumn="15" endcolumn="13" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.q2" class="Q2" method="isModified" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
+<violation beginline="387" endline="389" begincolumn="15" endcolumn="13" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.q2" class="Q2" method="isModified" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
 </violation>
-<violation beginline="602" endline="602" begincolumn="15" endcolumn="43" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.q2" class="Q2" method="getLicensee" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
+<violation beginline="605" endline="607" begincolumn="15" endcolumn="13" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.q2" class="Q2" method="getLicensee" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
 </violation>
-<violation beginline="822" endline="824" begincolumn="9" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.q2" class="Q2" method="initConfigDecorator" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
+<violation beginline="827" endline="830" begincolumn="9" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.q2" class="Q2" method="initConfigDecorator" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
 </violation>
-<violation beginline="841" endline="843" begincolumn="17" endcolumn="17" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.q2" class="Q2" method="initConfigDecorator" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
+<violation beginline="847" endline="850" begincolumn="17" endcolumn="17" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.q2" class="Q2" method="initConfigDecorator" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/q2/cli/TAIL.java">
-<violation beginline="70" endline="70" begincolumn="13" endcolumn="57" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.q2.cli" class="TAIL" method="exec" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
+<violation beginline="70" endline="72" begincolumn="13" endcolumn="13" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.q2.cli" class="TAIL" method="exec" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/q2/cli/TMMON.java">
-<violation beginline="80" endline="80" begincolumn="13" endcolumn="63" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.q2.cli" class="TMMON" method="exec" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
+<violation beginline="80" endline="82" begincolumn="13" endcolumn="13" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.q2.cli" class="TMMON" method="exec" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
-</violation>
-</file>
-<file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/q2/install/Install.java">
-<violation beginline="119" endline="119" begincolumn="41" endcolumn="70" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.q2.install" class="Install" method="copyResourceToFile" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
-Avoid empty catch blocks
-</violation>
-<violation beginline="124" endline="124" begincolumn="54" endcolumn="83" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.q2.install" class="Install" method="copyResourceToFile" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
-Avoid empty catch blocks
-</violation>
-</file>
-<file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/q2/iso/DailyTaskAdaptor.java">
-<violation beginline="77" endline="77" begincolumn="38" endcolumn="45" rule="AvoidUsingHardCodedIP" ruleset="Basic" package="org.jpos.q2.iso" class="DailyTaskAdaptor" method="getWhen" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/basic.html#AvoidUsingHardCodedIP" priority="3">
-Do not hard code the IP address 
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/q2/iso/MUXPool.java">
 <violation beginline="161" endline="162" begincolumn="29" endcolumn="42" rule="CollapsibleIfStatements" ruleset="Basic" package="org.jpos.q2.iso" class="MUXPool" method="nextAvailableWithOverrideMUX" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/basic.html#CollapsibleIfStatements" priority="3">
 These nested if statements could be combined
 </violation>
-<violation beginline="168" endline="168" begincolumn="10" endcolumn="29" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.q2.iso" class="MUXPool" method="nextAvailableWithOverrideMUX" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
-Avoid empty catch blocks
-</violation>
-<violation beginline="174" endline="178" begincolumn="17" endcolumn="17" rule="CollapsibleIfStatements" ruleset="Basic" package="org.jpos.q2.iso" class="MUXPool" method="splitByDivisorMUX" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/basic.html#CollapsibleIfStatements" priority="3">
+<violation beginline="176" endline="180" begincolumn="17" endcolumn="17" rule="CollapsibleIfStatements" ruleset="Basic" package="org.jpos.q2.iso" class="MUXPool" method="splitByDivisorMUX" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/basic.html#CollapsibleIfStatements" priority="3">
 These nested if statements could be combined
-</violation>
-<violation beginline="181" endline="181" begincolumn="10" endcolumn="29" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.q2.iso" class="MUXPool" method="splitByDivisorMUX" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
-Avoid empty catch blocks
-</violation>
-</file>
-<file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/q2/iso/OneShotChannelAdaptorMK2.java">
-<violation beginline="275" endline="277" begincolumn="21" endcolumn="21" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.q2.iso" class="OneShotChannelAdaptorMK2$CheckChannelTask" method="isChannelConnectable" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
-Avoid empty catch blocks
-</violation>
-</file>
-<file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/q2/iso/QMUX.java">
-<violation beginline="136" endline="136" begincolumn="17" endcolumn="22" rule="AvoidBranchingStatementAsLastInLoop" ruleset="Basic" package="org.jpos.q2.iso" class="QMUX" method="request" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/basic.html#AvoidBranchingStatementAsLastInLoop" priority="2">
-Avoid using a branching statement as the last in a loop.
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/q2/iso/QMUXProxy.java">
 <violation beginline="54" endline="56" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.q2.iso" class="QMUXProxy" method="startService" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
-Avoid empty catch blocks
-</violation>
-</file>
-<file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/q2/qbean/QThreadPoolExecutor.java">
-<violation beginline="135" endline="137" begincolumn="19" endcolumn="17" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.q2.qbean" class="QThreadPoolExecutor" method="startService" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
 </violation>
 </file>
@@ -265,17 +231,11 @@ Avoid using java.lang.ThreadGroup; it is not thread safe
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/security/EncryptedPIN.java">
-<violation beginline="210" endline="210" begincolumn="11" endcolumn="35" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.security" class="EncryptedPIN" method="extractAccountNumberPart" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
+<violation beginline="210" endline="212" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.security" class="EncryptedPIN" method="extractAccountNumberPart" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/space/JDBMSpace.java">
-<violation beginline="426" endline="426" begincolumn="13" endcolumn="13" rule="EmptyWhileStmt" ruleset="Empty Code" package="org.jpos.space" class="JDBMSpace" method="put" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyWhileStmt" priority="3">
-Avoid empty while statements
-</violation>
-<violation beginline="431" endline="431" begincolumn="13" endcolumn="13" rule="EmptyWhileStmt" ruleset="Empty Code" package="org.jpos.space" class="JDBMSpace" method="put" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyWhileStmt" priority="3">
-Avoid empty while statements
-</violation>
 <violation beginline="495" endline="497" begincolumn="15" endcolumn="13" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.space" class="JDBMSpace" method="gc" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
 </violation>
@@ -286,17 +246,6 @@ Invoke equals() on the object you've already ensured is not null
 Useless parentheses.
 </violation>
 </file>
-<file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/space/JESpace.java">
-<violation beginline="260" endline="260" begincolumn="13" endcolumn="13" rule="EmptyWhileStmt" ruleset="Empty Code" package="org.jpos.space" class="JESpace" method="put" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyWhileStmt" priority="3">
-Avoid empty while statements
-</violation>
-<violation beginline="265" endline="265" begincolumn="13" endcolumn="13" rule="EmptyWhileStmt" ruleset="Empty Code" package="org.jpos.space" class="JESpace" method="put" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyWhileStmt" priority="3">
-Avoid empty while statements
-</violation>
-<violation beginline="428" endline="429" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.space" class="JESpace" method="getKeySet" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
-Avoid empty catch blocks
-</violation>
-</file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/space/SpaceProxy.java">
 <violation beginline="62" endline="64" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.space" class="SpaceProxy" method="startService" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
@@ -305,23 +254,8 @@ Avoid empty catch blocks
 Avoid empty catch blocks
 </violation>
 </file>
-<file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/space/SpaceUtil.java">
-<violation beginline="61" endline="61" begincolumn="13" endcolumn="13" rule="EmptyWhileStmt" ruleset="Empty Code" package="org.jpos.space" class="SpaceUtil" method="wipe" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyWhileStmt" priority="3">
-Avoid empty while statements
-</violation>
-</file>
-<file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/tlv/packager/bertlv/BERTLVPackager.java">
-<violation beginline="79" endline="81" begincolumn="12" endcolumn="5" rule="UselessOverridingMethod" ruleset="Unnecessary" package="org.jpos.tlv.packager.bertlv" class="BERTLVPackager" method="setConfiguration" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/unnecessary.html#UselessOverridingMethod" priority="3">
-Overriding method merely calls super
-</violation>
-</file>
-<file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/ui/UI.java">
-<violation beginline="389" endline="392" begincolumn="15" endcolumn="13" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.ui" class="UI" method="createComponent" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
-Avoid empty catch blocks
-</violation>
-</file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/ui/action/Exit.java">
-<violation beginline="42" endline="42" begincolumn="11" endcolumn="33" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.ui.action" class="Exit" method="actionPerformed" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
+<violation beginline="42" endline="42" begincolumn="11" endcolumn="50" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.ui.action" class="Exit" method="actionPerformed" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
 </violation>
 </file>
@@ -342,10 +276,10 @@ Avoid empty catch blocks
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/util/PGPHelper.java">
-<violation beginline="128" endline="128" begincolumn="11" endcolumn="39" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.util" class="PGPHelper" method="checkSignature" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
+<violation beginline="128" endline="130" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.util" class="PGPHelper" method="checkSignature" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
 </violation>
-<violation beginline="201" endline="201" begincolumn="11" endcolumn="39" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.util" class="PGPHelper" method="checkLicense" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
+<violation beginline="203" endline="205" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.util" class="PGPHelper" method="checkLicense" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
 </violation>
 </file>
@@ -357,22 +291,9 @@ Avoid empty catch blocks
 Avoid empty catch blocks
 </violation>
 </file>
-<file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/util/RotateLogListener.java">
-<violation beginline="188" endline="190" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.util" class="RotateLogListener" method="destroy" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
-Avoid empty catch blocks
-</violation>
-</file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/util/SystemMonitor.java">
 <violation beginline="107" endline="107" begincolumn="48" endcolumn="62" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.util" class="SystemMonitor" method="dump" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
 Avoid using java.lang.ThreadGroup; it is not thread safe
-</violation>
-</file>
-<file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/util/ThreadPool.java">
-<violation beginline="94" endline="95" begincolumn="15" endcolumn="13" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.util" class="ThreadPool$PooledThread" method="run" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
-Avoid empty catch blocks
-</violation>
-<violation beginline="99" endline="100" begincolumn="17" endcolumn="37" rule="CollapsibleIfStatements" ruleset="Basic" package="org.jpos.util" class="ThreadPool$PooledThread" method="supervise" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/basic.html#CollapsibleIfStatements" priority="3">
-These nested if statements could be combined
 </violation>
 </file>
 </pmd>
