@@ -33,6 +33,7 @@ public class SystemMonitor implements Runnable, LogSource, Loggeable
     private int sleepTime = 0;
     private int delay     = 0;
     private Thread thread = null;
+    private volatile boolean shutdown = false;
 
     /**
      * noargs constructor
@@ -84,7 +85,7 @@ public class SystemMonitor implements Runnable, LogSource, Loggeable
     }
 
     public void run() {
-        for (;;) {
+        while (!shutdown) {
             Logger.log (new LogEvent (this, "SystemMonitor", this));
             try {
                 long expected = System.currentTimeMillis() + sleepTime;
@@ -93,6 +94,11 @@ public class SystemMonitor implements Runnable, LogSource, Loggeable
             } catch (InterruptedException e) { }
         }
     }
+
+    public void shutdown() {
+        shutdown = true;
+    }
+
     public void dump (PrintStream p, String indent) {
         String newIndent = indent + "  ";
         Runtime r = Runtime.getRuntime();
