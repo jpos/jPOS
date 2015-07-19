@@ -125,7 +125,9 @@ public class PGPHelper {
             InputStream ks = Thread.currentThread().getContextClassLoader().getResourceAsStream("META-INF/.pgp/pubring.asc");
             PGPPublicKey pk = PGPHelper.readPublicKey(ks, "license@jpos.org");
             ok = verifySignature(is, pk);
-        } catch (Exception ignored) { }
+        } catch (Exception ignored) {
+            // NOPMD: signature isn't good
+        }
         return ok;
     }
 
@@ -198,7 +200,9 @@ public class PGPHelper {
                 if (!Arrays.equals(Q2.PUBKEYHASH, mac.doFinal(pk.getEncoded())))
                     rc |= 0x20000;
             }
-        } catch (Exception ignored) { }
+        } catch (Exception ignored) {
+            // NOPMD: signature isn't good
+        }
         return rc;
     }
 }

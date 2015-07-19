@@ -175,8 +175,8 @@ public class RotateLogListener extends SimpleLogListener
             try {
                 logDebug ("time exceeded - log rotated");
                 logRotate();
-            } catch (IOException e) {
-                e.printStackTrace (System.err);
+            } catch (Exception e) {
+                logDebug(e.getMessage());
             }
         }
     }
@@ -186,7 +186,7 @@ public class RotateLogListener extends SimpleLogListener
         try {
             closeLogFile ();
         } catch (IOException e) {
-            // nothing we can do.
+            logDebug(e.getMessage());
         }
     }
 }

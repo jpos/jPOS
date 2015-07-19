@@ -51,8 +51,8 @@ public class QMUXProxy implements RemoteQMUX, Configurable {
     {
         try {
             LocateRegistry.createRegistry (Registry.REGISTRY_PORT);
-        } catch (ExportException e) {
-            // registry already exists
+        } catch (ExportException ignored) {
+            // NOPMD registry already exists
         }
         stub = UnicastRemoteObject.exportObject (this);
         ref  = stub.getRef();

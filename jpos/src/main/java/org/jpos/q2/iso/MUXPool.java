@@ -165,7 +165,9 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
                 }
             }
             return nextAvailableMUX(msgno.incrementAndGet(), maxWait);
-        }catch(Exception e){}
+        }catch(Exception e){
+            getLog().warn(e);
+        }
         return null;
     }
     private MUX splitByDivisorMUX(ISOMsg m, long maxWait) {
@@ -178,7 +180,9 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
                 }
             }
             return nextAvailableMUX(msgno.incrementAndGet(), maxWait);
-        }catch(Exception e){}
+        }catch(Exception e){
+            getLog().warn(e);
+        }
         return null;
     }
     private int getStrategy(String stg) {

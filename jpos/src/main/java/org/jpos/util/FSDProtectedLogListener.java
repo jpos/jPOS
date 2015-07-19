@@ -125,8 +125,8 @@ public class FSDProtectedLogListener implements LogListener, Configurable
                  Object v = null;
                  try {
                      v = m.getFSDMsg().get(f);
-                 } catch (Exception e) {
-                     // ignore error
+                 } catch (Exception ignored) {
+                     // NOPMD: NOP
                  }
                  if (v instanceof String) {
                      String x = (String) v;
@@ -142,8 +142,8 @@ public class FSDProtectedLogListener implements LogListener, Configurable
             Object v = null;
             try {
                 v = m.getFSDMsg().get(f);
-            } catch (Exception e) {
-                // ignore error
+            } catch (Exception ignored) {
+                // NOPMD: ignore error
             }
             if (v != null) {
                 if (v instanceof String)
@@ -158,8 +158,8 @@ public class FSDProtectedLogListener implements LogListener, Configurable
             Object v = null;
             try {
                 v = m.getFSDMsg().get (f);
-            } catch (Exception e) {
-                // ignore error
+            } catch (Exception ignored) {
+                // NOPMD ignore error
             }
             if (v != null) {
                 if (v instanceof String)

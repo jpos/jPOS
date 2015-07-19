@@ -67,7 +67,9 @@ public class TAIL implements CLICommand, LogListener
                 Logger logger = (Logger) NameRegistrar.get("logger." + args[i]);
                 logger.removeListener(this);
             }
-            catch (NameRegistrar.NotFoundException e) { }
+            catch (NameRegistrar.NotFoundException ignored) {
+                // NOPMD OK to happen
+            }
         }
     }
 

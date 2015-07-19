@@ -74,7 +74,7 @@ public class DailyTaskAdaptor extends QBeanSupport implements Runnable {
         }
     }
     public Date getWhen() {
-        String s = cfg.get ("start")+":00:00";
+        String s = cfg.get ("start")+":00:00"; // NOPMD
         int hh = Integer.parseInt(s.substring (0, 2));
         int mm = Integer.parseInt(s.substring (3, 5));
         int ss = Integer.parseInt(s.substring (6, 8));

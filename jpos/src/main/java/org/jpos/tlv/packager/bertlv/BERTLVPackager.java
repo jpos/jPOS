@@ -75,11 +75,6 @@ public abstract class BERTLVPackager extends GenericPackager {
         valueInterpreter = getValueInterpreter();
     }
 
-    @Override
-    public void setConfiguration(final Configuration cfg) throws ConfigurationException {
-        super.setConfiguration(cfg);
-    }
-
     protected abstract BinaryInterpreter getTagInterpreter();
 
     protected abstract BinaryInterpreter getLengthInterpreter();

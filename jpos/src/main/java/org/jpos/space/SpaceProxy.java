@@ -59,8 +59,8 @@ public class SpaceProxy implements RemoteSpace, Configurable {
     {
         try {
             LocateRegistry.createRegistry (Registry.REGISTRY_PORT);
-        } catch (ExportException e) {
-            // registry already exists
+        } catch (ExportException ignored) {
+            // NOPMD: ok to happen
         }
         stub = UnicastRemoteObject.exportObject (this);
         ref  = stub.getRef();
@@ -112,8 +112,8 @@ public class SpaceProxy implements RemoteSpace, Configurable {
                 return;
             Thread.sleep (5000);
             UnicastRemoteObject.unexportObject (this, true);
-        } catch (Exception e) {
-            // nothing to do .. we're shutting down ...
+        } catch (Exception ignored) {
+            // NOPMD: nothing to do .. we're shutting down ...
         }
     }
     public void setConfiguration (Configuration cfg) 

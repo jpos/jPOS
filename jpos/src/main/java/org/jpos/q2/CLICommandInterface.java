@@ -92,8 +92,9 @@ public class CLICommandInterface
                     }
                 }
             }
-            catch (ClassNotFoundException ex)
+            catch (ClassNotFoundException ignored)
             {
+                // NOPMD
             }
             catch (Exception ex)
             {

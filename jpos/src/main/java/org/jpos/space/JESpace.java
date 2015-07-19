@@ -257,12 +257,12 @@ public class JESpace<K,V> extends Log implements LocalSpace<K,V>, Loggeable, Run
     }
     public synchronized void put (K key, V value, long timeout) {
         while (inp (key) != null)
-            ;
+            ; // NOPMD
         out (key, value, timeout);
     }
     public synchronized void put (K key, V value) {
         while (inp (key) != null)
-            ;
+            ; // NOPMD
         out (key, value);
     }
     public void gc () throws DatabaseException {
@@ -425,7 +425,8 @@ public class JESpace<K,V> extends Log implements LocalSpace<K,V>, Loggeable, Run
             cursor = null;
             txn.commit();
             txn = null;
-        } catch (IllegalStateException e) {
+        } catch (IllegalStateException ex) {
+            warn (ex);
         } finally {
             if (cursor != null)
                 cursor.close ();

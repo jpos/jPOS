@@ -118,8 +118,8 @@ public class ProtectedLogListener implements LogListener, Configurable
             Object v = null;
             try {
                 v = m.getValue(f);
-            } catch (ISOException e) {
-                // ignore error
+            } catch (ISOException ignored) {
+                // NOPMD: nothing to do
             }
             if (v != null) {
                 if (v instanceof String)
@@ -147,8 +147,8 @@ public class ProtectedLogListener implements LogListener, Configurable
             Object v = null;
             try {
                 v = m.getValue(f);
-            } catch (ISOException e) {
-                // ignore error
+            } catch (ISOException ignored) {
+                // NOPMD: nothing to do
             }
             if (v != null) {
                 if (v instanceof String)

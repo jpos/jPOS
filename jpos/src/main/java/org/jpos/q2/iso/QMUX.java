@@ -129,12 +129,10 @@ public class QMUX
             synchronized (this) { tx++; rxPending++; }
 
             for (;;) {
-                resp = (ISOMsg) isp.rd (key, timeout);
-                if (shouldIgnore (resp)) 
-                    continue;
-                isp.inp (key);
-                break;
-            } 
+                resp = (ISOMsg) isp.in (key, timeout);
+                if (!shouldIgnore (resp))
+                    break;
+            }
             if (resp == null && isp.inp (req) == null) {
                 // possible race condition, retry for a few extra seconds
                 resp = (ISOMsg) isp.in (key, 10000);

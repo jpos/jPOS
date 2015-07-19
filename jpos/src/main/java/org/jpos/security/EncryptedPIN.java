@@ -207,7 +207,9 @@ public class EncryptedPIN
         try {
             accountNumberPart = ISOUtil.takeLastN(accountNumber, 13);
             accountNumberPart = ISOUtil.takeFirstN(accountNumberPart, 12);
-        } catch(ISOException ex) {}
+        } catch(ISOException ignored) {
+            // NOPMD return original accountNumber
+        }
         return  accountNumberPart;
     }
 

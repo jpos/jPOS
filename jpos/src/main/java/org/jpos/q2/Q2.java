@@ -205,7 +205,8 @@ public class Q2 implements FileFilter, Runnable {
             }
             if (exit && !shuttingDown)
                 System.exit(0);
-        } catch (IllegalAccessError e) {
+        } catch (IllegalAccessError ignored) {
+            // NOPMD OK to happen
         } catch (Exception e) {
             if (log != null)
                 log.error (e);
@@ -338,7 +339,9 @@ public class Q2 implements FileFilter, Runnable {
                         try {
                             q2Thread.join (SHUTDOWN_TIMEOUT);
                         } catch (InterruptedException ignored) {
+                            // NOPMD nothing to do
                         } catch (NullPointerException ignored) {
+                            // NOPMD
                             // on thin Q2 systems where shutdown is very fast, 
                             // q2Thread can become null between the upper if and
                             // the actual join. Not a big deal so we ignore the
@@ -381,8 +384,8 @@ public class Q2 implements FileFilter, Runnable {
         if (name != null) {
             try {
                 modified = (Boolean) server.getAttribute(name, "Modified");
-            } catch (Exception e) {
-                // Okay to fail
+            } catch (Exception ignored) {
+                // NOPMD Okay to fail
             }
         }
         return modified;
@@ -599,7 +602,9 @@ public class Q2 implements FileFilter, Runnable {
             try {
                 while (br.ready())
                     p.println (br.readLine());
-            } catch (Exception ignored) { }
+            } catch (Exception ignored) {
+                // NOPMD ignore error
+            }
         }
         return baos.toString();
     }
@@ -821,6 +826,7 @@ public class Q2 implements FileFilter, Runnable {
         }
         catch (IOException ignored)
         {
+            // NOPMD OK to happen
         }
         catch (Exception e)
         {
@@ -840,6 +846,7 @@ public class Q2 implements FileFilter, Runnable {
                 }
                 catch (IOException ignored)
                 {
+                    // NOPMD nothing to do
                 }
             }
         }

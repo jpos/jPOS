@@ -58,7 +58,7 @@ public class SpaceUtil {
      */
     public static void wipe (Space sp, Object key) {
         while (sp.inp (key) != null)
-            ;
+            ; // NOPMD
     }
 
     /**

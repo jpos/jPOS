@@ -133,7 +133,7 @@ public class QThreadPoolExecutor extends QBeanSupport implements
                 try {
                     execSrv.shutdownNow();
                 } catch (Exception ee) {
-                    // Ignore
+                    getLog().warn(ee);
                 }
             }
             throw e;

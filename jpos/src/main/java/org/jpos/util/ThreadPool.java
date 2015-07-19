@@ -32,6 +32,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * tasks as well as Jobs (supervised Runnable tasks)
  * @since 1.1
  * @author apr@cs.com.uy
+ * @deprecated Used Executor framework
  */
 public class ThreadPool extends ThreadGroup implements LogSource, Loggeable, Configurable, ThreadPoolMBean {
     private static AtomicInteger poolNumber = new AtomicInteger(0);
@@ -90,7 +91,13 @@ public class ThreadPool extends ThreadGroup implements LogSource, Loggeable, Con
                     }
                 }
             } catch (InterruptedException e) {
+                if (logger != null) {
+                    Logger.log(new LogEvent(ThreadPool.this, "Test"));
+                }
             } catch (Closed e) {
+                if (logger != null) {
+                    Logger.log(new LogEvent(ThreadPool.this, "Test"));
+                }
             }
         }
         public synchronized void supervise () {

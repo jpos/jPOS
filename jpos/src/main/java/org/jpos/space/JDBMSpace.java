@@ -423,12 +423,12 @@ public class JDBMSpace<K,V> extends TimerTask implements Space<K,V> {
     }
     public synchronized void put (K key, V value, long timeout) {
         while (inp (key) != null)
-            ;
+            ; // NOPMD
         out (key, value, timeout);
     }
     public synchronized void put (K key, V value) {
         while (inp (key) != null)
-            ;
+            ; // NOPMD
         out (key, value);
     }
     private void purge (Object key) throws IOException {

@@ -387,8 +387,7 @@ public class UI implements UIFactory, UIObjectFactory {
             try {
                 clazz = classMapping.getString (e.getName());
             } catch (MissingResourceException ex) {
-                // no class attribute, no mapping
-                // let MBeanServer do the yelling
+                warn (ex);
             }
         }
         try {
@@ -416,7 +415,6 @@ public class UI implements UIFactory, UIObjectFactory {
             if ("true".equals (e.getAttributeValue ("scrollable")))
                 component = new JScrollPane (component);
         } catch (Exception ex) {
-            ex.printStackTrace ();
             warn ("Error instantiating class " + clazz);
             warn (ex);
             component = new JLabel ("Error instantiating class " + clazz);

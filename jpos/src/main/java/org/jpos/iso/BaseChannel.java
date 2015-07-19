@@ -1094,6 +1094,7 @@ public abstract class BaseChannel extends Observable
                 if (shutdownSupportedBySocket(s) && !isSoLingerForcingImmediateTcpReset())
                     s.shutdownOutput();  // This will force a TCP FIN to be sent on regular sockets,
             } catch (SocketException e) {
+                // NOPMD
                 // safe to ignore - can be closed already
                 // e.printStackTrace();
             }

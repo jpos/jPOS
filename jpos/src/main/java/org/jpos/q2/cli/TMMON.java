@@ -77,7 +77,9 @@ public class TMMON implements CLICommand, TransactionStatusListener
                     ((TransactionManager) obj).removeListener(this);
                 }
             }
-            catch (NameRegistrar.NotFoundException ignored) { }
+            catch (NameRegistrar.NotFoundException ignored) {
+                // NOPMD ok to happen
+            }
         }
     }
 

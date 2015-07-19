@@ -39,7 +39,7 @@ public class Exit implements ActionListener, UIAware {
         ui.dispose ();
         try {
             exitCode = Integer.parseInt(ev.getActionCommand());
-        } catch (Exception e) { }
+        } catch (Exception ignored) { /* NOPMD*/ }
         new Thread() {
             public void run() {
                 System.exit (exitCode);

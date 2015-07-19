@@ -274,6 +274,7 @@ public class OneShotChannelAdaptorMK2
                     }
                     catch (IOException e)
                     {
+                        getLog().error(e);
                     }
                     NameRegistrar.unregister("channel."+channel.getName());
                 }

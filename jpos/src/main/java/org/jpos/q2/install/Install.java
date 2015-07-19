@@ -116,12 +116,16 @@ public class Install
             }
             finally
             {
-                try { output.close(); } catch (IOException ignored) {}
+                try { output.close(); } catch (IOException ex) {
+                    ex.printStackTrace(System.err);
+                }
             }
         }
         finally
         {
-            try { if(source!=null) source.close(); } catch (IOException ignored) {}
+            try { if(source!=null) source.close(); } catch (IOException ex) {
+                ex.printStackTrace(System.err);
+            }
         }
     }
 }

@@ -320,7 +320,9 @@ public class CardHolder implements Cloneable, Serializable, Loggeable {
                 if (expDate.compareTo(now) >= 0)
                     return false;
             }
-        } catch (NumberFormatException ignored) { }
+        } catch (NumberFormatException ignored) {
+            // NOPMD
+        }
         return true;
     }
     public boolean isValidCRC () {
