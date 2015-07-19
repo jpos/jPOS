@@ -611,7 +611,7 @@ public class Q2 implements FileFilter, Runnable {
 
 
     private void parseCmdLine (String[] args) {
-        CommandLineParser parser = new PosixParser ();
+        CommandLineParser parser = new DefaultParser ();
 
         Options options = new Options ();
         options.addOption ("v","version", false, "Q2's version");

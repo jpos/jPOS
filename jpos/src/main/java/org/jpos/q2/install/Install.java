@@ -35,7 +35,7 @@ public class Install
 
     public static void main(String[] args) throws Exception
     {
-        CommandLineParser parser = new PosixParser();
+        CommandLineParser parser = new DefaultParser();
         Options options = new Options ();
         options.addOption ("p", "prefix", true, String.format("prefix, defaults to '%s'", DEFAULT_PREFIX));
         options.addOption ("q", "quiet", false, "do not show information about files being extracted");
