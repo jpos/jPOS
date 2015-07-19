@@ -27,6 +27,8 @@ import java.util.regex.Pattern;
 import org.bouncycastle.bcpg.ArmoredInputStream;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.openpgp.*;
+import org.bouncycastle.openpgp.operator.KeyFingerPrintCalculator;
+import org.bouncycastle.openpgp.operator.bc.BcKeyFingerprintCalculator;
 import org.bouncycastle.openpgp.operator.jcajce.JcaPGPContentVerifierBuilderProvider;
 import org.jpos.q2.Q2;
 
@@ -34,9 +36,10 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
 public class PGPHelper {
+    static KeyFingerPrintCalculator fingerPrintCalculater = new BcKeyFingerprintCalculator();
     static {
         Security.addProvider(new BouncyCastleProvider());
-        PGPUtil.setDefaultProvider("BC");
+//        PGPUtil.setDefaultProvider("BC");
     }
 
     public static boolean verifySignature (InputStream in, PGPPublicKey pk) throws IOException, NoSuchProviderException, PGPException, SignatureException {
@@ -57,7 +60,7 @@ public class PGPHelper {
             }
             out.write((byte) ch);
         }
-        PGPObjectFactory pgpf = new PGPObjectFactory(ain);
+        PGPObjectFactory pgpf = new PGPObjectFactory(ain, fingerPrintCalculater);
         Object o = pgpf.nextObject();
         if (o instanceof PGPSignatureList) {
             PGPSignatureList list = (PGPSignatureList)o;
@@ -88,7 +91,7 @@ public class PGPHelper {
         in = PGPUtil.getDecoderStream(in);
         id = id.toLowerCase();
 
-        PGPPublicKeyRingCollection pubRings = new PGPPublicKeyRingCollection(in);
+        PGPPublicKeyRingCollection pubRings = new PGPPublicKeyRingCollection(in, fingerPrintCalculater);
         Iterator rIt = pubRings.getKeyRings();
         while (rIt.hasNext()) {
             PGPPublicKeyRing pgpPub = (PGPPublicKeyRing) rIt.next();
@@ -156,7 +159,7 @@ public class PGPHelper {
                 }
                 out.write((byte) ch);
             }
-            PGPObjectFactory pgpf = new PGPObjectFactory(ain);
+            PGPObjectFactory pgpf = new PGPObjectFactory(ain, fingerPrintCalculater);
             Object o = pgpf.nextObject();
             if (o instanceof PGPSignatureList) {
                 PGPSignatureList list = (PGPSignatureList) o;
