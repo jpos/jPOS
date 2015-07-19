@@ -41,8 +41,8 @@ public class IFEP_LLLBINARY extends ISOBinaryFieldPackager {
         byte[] b = new byte[len + 5];
         byte[] llltt = 
             ISOUtil.asciiToEbcdic (
-              (ISOUtil.zeropad(Integer.toString(len+2), 3) 
-              +ISOUtil.zeropad((c.getKey()).toString(), 2)));
+              ISOUtil.zeropad(Integer.toString(len+2), 3)
+              +ISOUtil.zeropad(c.getKey().toString(), 2));
 
         System.arraycopy(llltt, 0, b, 0, 5);
         System.arraycopy(c.getValue(), 0, b, 5, len);

@@ -86,7 +86,7 @@ public class GICCChannel extends BaseChannel {
         byte[] b = new byte[4];
         while (l == 0) {
             serverIn.readFully(b,0,4);
-            l = ((((int)b[2])&0xFF) << 8) | (((int)b[3])&0xFF);
+            l = ((int)b[2] &0xFF) << 8 | (int)b[3] &0xFF;
             if (l == 0) {
                 serverOut.write(b);
                 serverOut.flush();
