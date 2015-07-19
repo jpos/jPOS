@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pmd version="5.2.3" timestamp="2015-07-19T02:19:27.590">
+<pmd version="5.2.3" timestamp="2015-07-19T15:39:22.133">
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/core/CardHolder.java">
 <violation beginline="323" endline="325" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.core" class="CardHolder" method="isExpired" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
@@ -53,11 +53,6 @@ Useless parentheses.
 Useless parentheses.
 </violation>
 <violation beginline="125" endline="125" begincolumn="51" endcolumn="61" rule="UselessParentheses" ruleset="Unnecessary" package="org.jpos.iso" class="IFEB_LLNUM" method="unpack" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/unnecessary.html#UselessParentheses" priority="4">
-Useless parentheses.
-</violation>
-</file>
-<file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/IFEP_LLLBINARY.java">
-<violation beginline="45" endline="45" begincolumn="33" endcolumn="42" rule="UselessParentheses" ruleset="Unnecessary" package="org.jpos.iso" class="IFEP_LLLBINARY" method="pack" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/unnecessary.html#UselessParentheses" priority="4">
 Useless parentheses.
 </violation>
 </file>
@@ -160,9 +155,6 @@ Avoid empty catch blocks
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/packager/XML2003Packager.java">
 <violation beginline="72" endline="74" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.iso.packager" class="XML2003Packager" method="XML2003Packager" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
-Avoid empty catch blocks
-</violation>
-<violation beginline="189" endline="189" begincolumn="19" endcolumn="54" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.iso.packager" class="XML2003Packager" method="startElement" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
 </violation>
 </file>
@@ -292,7 +284,7 @@ Avoid empty catch blocks
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/util/SystemMonitor.java">
-<violation beginline="107" endline="107" begincolumn="48" endcolumn="62" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.util" class="SystemMonitor" method="dump" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
+<violation beginline="113" endline="113" begincolumn="48" endcolumn="62" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.util" class="SystemMonitor" method="dump" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
 Avoid using java.lang.ThreadGroup; it is not thread safe
 </violation>
 </file>
