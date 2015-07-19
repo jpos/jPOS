@@ -78,8 +78,7 @@ public class IF_FSTCHAR extends ISOFieldPackager implements TaggedFieldPackager 
         }
 
         s = s + terminator;
-        byte[] b = s.getBytes();
-        return b;
+        return s.getBytes();
     }
 
     /**

@@ -48,8 +48,7 @@ public class ISOMsgRef {
     }
 
     public ISOMsg reference(int fieldNumber) {
-        Ref ref = new Ref(fieldNumber);
-        return ref;
+        return new Ref(fieldNumber);
     }
 
 

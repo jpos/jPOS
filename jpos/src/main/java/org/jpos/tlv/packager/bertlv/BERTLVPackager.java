@@ -451,14 +451,12 @@ public abstract class BERTLVPackager extends GenericPackager {
 
     private int getUninterpretLength(int length, BinaryInterpreter interpreter) {
         int lengthAdjusted = length + length % 2;
-        int uninterpretLength = length * (lengthAdjusted / interpreter.getPackedLength(lengthAdjusted));
-        return uninterpretLength;
+        return length * (lengthAdjusted / interpreter.getPackedLength(lengthAdjusted));
     }
 
     private int getUninterpretLength(int length, Interpreter interpreter) {
         int lengthAdjusted = length + length % 2;
-        int uninterpretLength = length * (lengthAdjusted / interpreter.getPackedLength(lengthAdjusted));
-        return uninterpretLength;
+        return length * (lengthAdjusted / interpreter.getPackedLength(lengthAdjusted));
     }
 
     private class UnpackResult {

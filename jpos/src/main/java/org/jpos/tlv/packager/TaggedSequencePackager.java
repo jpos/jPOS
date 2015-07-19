@@ -288,8 +288,7 @@ public class TaggedSequencePackager extends GenericPackager {
             }
             subFieldId++;
         }
-        PrefixUnpackResult prefixUnpackResult = new PrefixUnpackResult(consumed, subFieldId);
-        return prefixUnpackResult;
+        return new PrefixUnpackResult(consumed, subFieldId);
     }
 
 }

@@ -677,8 +677,7 @@ public enum EMVStandardTagType implements EMVTagType {
      * @return The template or null if no template
      */
     public EMVTagType getTemplate() {
-        EMVTagType tagTemplate = MapHolder.tagCodeMap.get(this.template);
-        return tagTemplate;
+        return MapHolder.tagCodeMap.get(this.template);
     }
 
     @Override

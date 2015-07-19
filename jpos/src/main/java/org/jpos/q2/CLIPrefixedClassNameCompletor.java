@@ -157,8 +157,7 @@ public class CLIPrefixedClassNameCompletor extends SimpleCompletor
         {
             for (String prefix : prefixes)
             {
-                final String p = prefix;
-                if (element.startsWith(p)) { return element.substring(p.length()).toLowerCase(); }
+                if (element.startsWith(prefix)) { return element.substring(prefix.length()).toLowerCase(); }
             }
             return null;
         }

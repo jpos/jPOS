@@ -70,9 +70,7 @@ public class TSpaceTestCase implements SpaceListener {
         } catch (NullPointerException e) {
             assertNull("Verify null entry (rdp)", sp.rdp("testNull"));
             assertNull("Verify null entry (inp)", sp.inp("testNull"));
-            return;
         }
-     
     }
 
     @Test

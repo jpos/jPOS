@@ -49,8 +49,7 @@ public class DefaultICCBERTLVFormatMapper implements BERTLVFormatMapper {
         } catch (UnknownTagNumberException e) {
             throw new ISOException(e);
         }
-        final TLVDataFormat dataFormat = tagType.getFormat();
-        return dataFormat;
+        return tagType.getFormat();
     }
 
     /**

@@ -100,8 +100,7 @@ public abstract class TagSequenceBase implements TagSequence {
 
     @Override
     public synchronized List<TagValue> get(String tag) {
-        LinkedList<TagValue> values = (LinkedList<TagValue>) tagMap.get(tag);
-        return values;
+        return (LinkedList<TagValue>) tagMap.get(tag);
     }
 
     @Override
