@@ -80,8 +80,6 @@ public class MSGTEST02 extends ISOBaseValidator {
                     throw new ISOVException ( "Error on msg. " , msg );
             }
             return msg;
-        } catch ( ISOVException ex ) {
-            throw ex;
         } finally {
             Logger.log( evt );
         }

@@ -186,7 +186,9 @@ public class XML2003Packager extends DefaultHandler
             if (id != null) {
                 try {
                     fieldNumber = Integer.parseInt (id);
-                } catch (NumberFormatException ex) { }
+                } catch (NumberFormatException ex) {
+                    throw new SAXException ("Invalid idr " + id);
+                }
             }
             if (name.equals (ISOMSG_TAG)) {
                 if (fieldNumber >= 0) {

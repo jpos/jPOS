@@ -68,8 +68,6 @@ public class TEST0100 extends ISOBaseValidator {
                         throw new ISOVException ( "Error on msg. " , msg );
                 }
                 return msg;
-            } catch ( ISOVException ex ) {
-                throw ex;
             } finally {
                 Logger.log( evt );
             }
