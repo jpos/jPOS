@@ -278,9 +278,9 @@ public class Context implements Externalizable, Loggeable, Pausable {
         return trace;
     }
     public void setTrace(boolean trace) {
-        getProfiler();
+        if (trace)
+            getProfiler();
         this.trace = trace;
     }
     static final long serialVersionUID = 6056487212221438338L;
 }
-
