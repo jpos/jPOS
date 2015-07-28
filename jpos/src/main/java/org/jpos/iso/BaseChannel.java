@@ -102,6 +102,8 @@ public abstract class BaseChannel extends Observable
     protected String originalRealm = null;
     protected byte[] header = null;
     private static final int DEFAULT_TIMEOUT = 300000;
+    private int nextHostPort = 0;
+    private boolean roundRobin = false;
 
     /**
      * constructor shared by server and client
@@ -320,10 +322,13 @@ public abstract class BaseChannel extends Observable
         throws IOException
     {
         Socket s = null;
+        if (!roundRobin)
+            nextHostPort = 0;
         for (int i=0; i<hosts.length; i++) {
             try {
-                evt.addMessage (hosts[i]+":"+ports[i]);
-                s = newSocket (hosts[i], ports[i]);
+                int ii = nextHostPort++ % hosts.length;
+                evt.addMessage ("Try " + i + " " + hosts[ii]+":"+ports[ii]);
+                s = newSocket (hosts[ii], ports[ii]);
                 break;
             } catch (IOException e) {
                 evt.addMessage ("  " + e.getMessage());
@@ -1006,6 +1011,7 @@ public abstract class BaseChannel extends Observable
         setOverrideHeader(cfg.getBoolean ("override-header", false));
         keepAlive = cfg.getBoolean ("keep-alive", false);
         expectKeepAlive = cfg.getBoolean ("expect-keep-alive", false);
+        roundRobin = cfg.getBoolean ("round-robin", false);
         if (socketFactory != this && socketFactory instanceof Configurable)
             ((Configurable)socketFactory).setConfiguration (cfg);
         try {
