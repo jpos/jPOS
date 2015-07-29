@@ -361,8 +361,8 @@ public class ChannelAdaptor
             SpaceUtil.wipe(sp, ready);
             try {
                 channel.connect ();
-            } catch (IOException e) {
-                getLog().warn ("check-connection", e.getMessage ());
+            } catch (IOException ignored) {
+                // channel.connect already logs - no need for more warnings
             }
             if (!channel.isConnected ())
                 ISOUtil.sleep (delay);
