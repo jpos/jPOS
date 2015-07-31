@@ -67,7 +67,7 @@ public class UI implements UIFactory, UIObjectFactory {
      */
     public UI (Element config) {
         this ();
-        setConfig (config);
+        setConfig(config);
     }
     /**
      * Assigns an object factory use to create new object instances.
@@ -120,7 +120,7 @@ public class UI implements UIFactory, UIObjectFactory {
     * @return JComponent
     */
     public JComponent create (UI ui, Element e) {
-        return create (e);
+        return create(e);
     }
     /**
      * UIObjectFactory implementation.
@@ -133,7 +133,7 @@ public class UI implements UIFactory, UIObjectFactory {
     public Object newInstance (String clazz) throws Exception {
         ClassLoader cl = Thread.currentThread().getContextClassLoader ();
         Class type = cl.loadClass (clazz);
-        return type.newInstance ();
+        return type.newInstance();
     }
     /**
      * configure this UI object
@@ -266,7 +266,7 @@ public class UI implements UIFactory, UIObjectFactory {
 
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         mainFrame.setSize(getDimension (ui, screenSize));
-        locateOnScreen (mainFrame);
+        locateOnScreen(mainFrame);
         return mainFrame;
     }
 
@@ -274,12 +274,12 @@ public class UI implements UIFactory, UIObjectFactory {
         Dimension paneSize   = frame.getSize();
         Dimension screenSize = frame.getToolkit().getScreenSize();
         frame.setLocation(
-            (screenSize.width  - paneSize.width)  / 2,
-            (screenSize.height - paneSize.height) / 2);
+                (screenSize.width - paneSize.width) / 2,
+                (screenSize.height - paneSize.height) / 2);
     }
     private JMenuBar buildMenuBar (Element ui) {
         JMenuBar mb = new JMenuBar ();
-        Iterator iter = ui.getChildren ("menu").iterator();
+        Iterator iter = ui.getChildren("menu").iterator();
         while (iter.hasNext()) 
             mb.add (menu ((Element) iter.next()));
 
@@ -290,7 +290,7 @@ public class UI implements UIFactory, UIObjectFactory {
         setItemAttributes (menu, m);
         Iterator iter = m.getChildren ().iterator();
         while (iter.hasNext()) 
-            addMenuItem (menu, (Element) iter.next());
+            addMenuItem(menu, (Element) iter.next());
         return menu;
     }
     private void addMenuItem (JMenu menu, Element m) {
@@ -383,11 +383,10 @@ public class UI implements UIFactory, UIObjectFactory {
         if (clazz == null) 
             clazz = (String) mapping.get (e.getName());
         if (clazz == null) {
-
             try {
                 clazz = classMapping.getString (e.getName());
-            } catch (MissingResourceException ex) {
-                warn (ex);
+            } catch (MissingResourceException ignored) {
+                // OK to happen on components handled by this factory
             }
         }
         try {
@@ -485,8 +484,8 @@ public class UI implements UIFactory, UIObjectFactory {
             try {
                 Element ee = (Element) iter.next ();
                 String name  = ee.getAttributeValue ("name");
-                String clazz = ee.getAttributeValue ("factory");
-                mapping.put (name, clazz);
+                String clazz = ee.getAttributeValue("factory");
+                mapping.put(name, clazz);
             } catch (Exception ex) {
                 warn (ex);
             }
@@ -496,6 +495,11 @@ public class UI implements UIFactory, UIObjectFactory {
         if (log != null)
             log.warn (obj);
     }
+    protected void warn (Object obj, Exception ex) {
+        if (log != null)
+            log.warn (obj, ex);
+    }
+
     private void put (Object obj, Element e) {
         String id = e.getAttributeValue ("id");
         if (id != null) {
