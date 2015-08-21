@@ -523,8 +523,11 @@ public class TransactionManager
                         session, TransactionStatusEvent.State.PREPARING_FOR_ABORT, id, p.getClass().getName(), context
                     );
                 action = prepareForAbort (p, id, context);
-                if (evt != null && p instanceof AbortParticipant)
-                    evt.addMessage ("prepareForAbort: " + p.getClass().getName());
+                if (evt != null && p instanceof AbortParticipant) {
+                    evt.addMessage("prepareForAbort: " + p.getClass().getName());
+                    if (prof != null)
+                        prof.checkPoint ("prepareForAbort: " + p.getClass().getName());
+                }
             } else {
                 if (hasStatusListeners)
                     notifyStatusListeners (
