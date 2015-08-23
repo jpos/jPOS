@@ -18,8 +18,8 @@
 
 package org.jpos.util;
 
-import java.util.Iterator;
-import java.util.Vector;
+import java.util.*;
+
 import org.jpos.q2.Q2;
 
 /**
@@ -42,35 +42,28 @@ import org.jpos.q2.Q2;
 @SuppressWarnings("unchecked")
 public class Logger implements LogProducer {
     String name;
-    Vector listeners;
+    List<LogListener> listeners;
     static boolean versionShown = false;
+    public static final String NRPREFIX = "logger.";
 
     public Logger () {
         super();
-        listeners = new Vector ();
+        listeners = Collections.synchronizedList(new ArrayList<LogListener>());
         name = "";
     }
     public void addListener (LogListener l) {
-        synchronized (listeners) {
-            listeners.add (l);
-        }
+        listeners.add(l);
     }
     public void removeListener (LogListener l) {
-        synchronized (listeners) {
-            listeners.remove (l);
-        }
+        listeners.remove(l);
     }
     public void removeAllListeners () {
-        synchronized (listeners) {
-            Iterator i = listeners.iterator();
-            while (i.hasNext()) {
-                LogListener l = (LogListener) i.next();
-                if (l instanceof Destroyable) {
-                    ((Destroyable) l).destroy ();
-                }
+        for (Object l : listeners) {
+            if (l instanceof Destroyable) {
+                ((Destroyable) l).destroy();
             }
-            listeners.clear ();
         }
+        listeners.clear ();
     }
     public static void log (LogEvent evt) {
         Logger l = null;
@@ -86,10 +79,13 @@ public class Logger implements LogProducer {
             l = getLogger(Q2.LOGGER_NAME);
         }
         if (l != null && l.hasListeners ()) {
-            synchronized (l.listeners) {
-                Iterator i = l.listeners.iterator();
-                while (i.hasNext() && evt != null) 
-                    evt = ((LogListener) i.next()).log (evt);
+            Iterator i = l.listeners.iterator();
+            while (i.hasNext() && evt != null) {
+                try {
+                    evt = ((LogListener) i.next()).log(evt);
+                } catch (Throwable t) {
+                    evt.addMessage (t);
+                }
             }
         }
     }
@@ -100,13 +96,13 @@ public class Logger implements LogProducer {
      */
     public void setName (String name) {
         this.name = name;
-        NameRegistrar.register ("logger."+name, this);
+        NameRegistrar.register (NRPREFIX+name, this);
     }
     /**
      * destroy logger
      */
     public void destroy () {
-        NameRegistrar.unregister ("logger."+name);
+        NameRegistrar.unregister (NRPREFIX+name);
         removeAllListeners ();
     }
     /**
@@ -116,7 +112,7 @@ public class Logger implements LogProducer {
     public synchronized static Logger getLogger (String name) {
         Logger l;
         try {
-            l = (Logger) NameRegistrar.get ("logger."+name);
+            l = (Logger) NameRegistrar.get (NRPREFIX+name);
         } catch (NameRegistrar.NotFoundException e) {
             l = new Logger();
             l.setName (name);
@@ -134,8 +130,6 @@ public class Logger implements LogProducer {
      * @return true if Logger has associated LogListsners
      */
     public boolean hasListeners() {
-        synchronized (listeners) {
-            return listeners.size() > 0;
-        }
+        return !listeners.isEmpty();
     }
 }

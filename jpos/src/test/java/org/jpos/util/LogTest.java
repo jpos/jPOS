@@ -153,20 +153,6 @@ public class LogTest {
     }
 
     @Test
-    public void testErrorThrowsNullPointerException() throws Throwable {
-        Log bSHRequestListener = new BSHRequestListener();
-        Logger logger = new Logger();
-        bSHRequestListener.setLogger(logger, "testLogRealm");
-        logger.addListener(null);
-        try {
-            bSHRequestListener.error(new SimpleLogListener(), "");
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
-    }
-
-    @Test
     public void testFatal1() throws Throwable {
         Log log = new Log();
         log.fatal("", "q  ");
@@ -198,20 +184,6 @@ public class LogTest {
     public void testInfo1() throws Throwable {
         new BSHRequestListener().info("", "");
         assertTrue("Test completed without Exception", true);
-    }
-
-    @Test
-    public void testInfoThrowsNullPointerException1() throws Throwable {
-        Logger logger = new Logger();
-        logger.addListener(null);
-        Log log = new Log();
-        log.setLogger(logger, "testLogRealm");
-        try {
-            log.info("", "");
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
     }
 
     @Test
@@ -250,20 +222,6 @@ public class LogTest {
     public void testTrace1() throws Throwable {
         new BSHRequestListener().trace("testString");
         assertTrue("Test completed without Exception", true);
-    }
-
-    @Test
-    public void testTraceThrowsNullPointerException() throws Throwable {
-        Logger logger = new Logger();
-        logger.addListener(null);
-        Log bSHRequestListener = new BSHRequestListener();
-        bSHRequestListener.setLogger(logger);
-        try {
-            bSHRequestListener.trace("1\n", "l");
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
     }
 
     @Test

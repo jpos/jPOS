@@ -93,23 +93,6 @@ public class ChannelPoolTest {
     }
 
     @Test
-    public void testConnectThrowsNullPointerException() throws Throwable {
-        Logger logger = new Logger();
-        logger.addListener(null);
-        ChannelPool channelPool = new ChannelPool();
-        channelPool.setLogger(logger, "testChannelPoolRealm");
-        try {
-            channelPool.connect();
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertNull("channelPool.current", channelPool.current);
-            assertEquals("channelPool.pool.size()", 0, channelPool.pool.size());
-            assertTrue("channelPool.usable", channelPool.usable);
-        }
-    }
-
-    @Test
     public void testConnectThrowsNullPointerException1() throws Throwable {
         ChannelPool channelPool = new ChannelPool();
         channelPool.addChannel((ISOChannel) null);
@@ -160,39 +143,6 @@ public class ChannelPoolTest {
             assertNull("ex.getMessage()", ex.getMessage());
             assertEquals("channelPool.pool.size()", 1, channelPool.pool.size());
             assertNull("channelPool.current", channelPool.current);
-        }
-    }
-
-    @Test
-    public void testDisconnectThrowsNullPointerException2() throws Throwable {
-        Logger logger = new Logger();
-        ChannelPool channelPool = new ChannelPool();
-        channelPool.addChannel(new ASCIIChannel());
-        logger.addListener(null);
-        channelPool.setLogger(logger, "testChannelPoolRealm");
-        try {
-            channelPool.disconnect();
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertEquals("channelPool.pool.size()", 1, channelPool.pool.size());
-            assertNull("channelPool.current", channelPool.current);
-        }
-    }
-
-    @Test
-    public void testDisconnectThrowsNullPointerException3() throws Throwable {
-        Logger logger = new Logger();
-        logger.addListener(null);
-        ChannelPool channelPool = new ChannelPool();
-        channelPool.setLogger(logger, "testChannelPoolRealm");
-        try {
-            channelPool.disconnect();
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertNull("channelPool.current", channelPool.current);
-            assertEquals("channelPool.pool.size()", 0, channelPool.pool.size());
         }
     }
 
@@ -286,20 +236,15 @@ public class ChannelPoolTest {
     }
 
     @Test
-    public void testIsConnectedThrowsNullPointerException() throws Throwable {
+    public void testIsConnectedDoNotThrowNullPointerExceptionWithNullLogListener() throws Throwable {
         Logger logger = new Logger();
         logger.addListener(null);
         ChannelPool channelPool = new ChannelPool();
         channelPool.setLogger(logger, "testChannelPoolRealm");
-        try {
-            channelPool.isConnected();
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertNull("channelPool.current", channelPool.current);
-            assertEquals("channelPool.pool.size()", 0, channelPool.pool.size());
-            assertTrue("channelPool.usable", channelPool.usable);
-        }
+        assertEquals("connected.isFalse", false, channelPool.isConnected());
+        assertNull("channelPool.current", channelPool.current);
+        assertEquals("channelPool.pool.size()", 0, channelPool.pool.size());
+        assertTrue("channelPool.usable", channelPool.usable);
     }
 
     @Test
@@ -312,23 +257,6 @@ public class ChannelPoolTest {
             assertEquals("ex.getClass()", IOException.class, ex.getClass());
             assertEquals("channelPool.pool.size()", 0, channelPool.pool.size());
             assertNull("channelPool.current", channelPool.current);
-            assertTrue("channelPool.usable", channelPool.usable);
-        }
-    }
-
-    @Test
-    public void testReceiveThrowsNullPointerException() throws Throwable {
-        Logger logger = new Logger();
-        logger.addListener(null);
-        ChannelPool channelPool = new ChannelPool();
-        channelPool.setLogger(logger, "testChannelPoolRealm");
-        try {
-            channelPool.receive();
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertNull("channelPool.current", channelPool.current);
-            assertEquals("channelPool.pool.size()", 0, channelPool.pool.size());
             assertTrue("channelPool.usable", channelPool.usable);
         }
     }
@@ -407,23 +335,6 @@ public class ChannelPoolTest {
             assertEquals("ex.getClass()", IOException.class, ex.getClass());
             assertEquals("channelPool.pool.size()", 0, channelPool.pool.size());
             assertNull("channelPool.current", channelPool.current);
-            assertTrue("channelPool.usable", channelPool.usable);
-        }
-    }
-
-    @Test
-    public void testSendThrowsNullPointerException() throws Throwable {
-        Logger logger = new Logger();
-        logger.addListener(null);
-        ChannelPool channelPool = new ChannelPool();
-        channelPool.setLogger(logger, "testChannelPoolRealm");
-        try {
-            channelPool.send(new ISOMsg("testChannelPoolMti"));
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertNull("channelPool.current", channelPool.current);
-            assertEquals("channelPool.pool.size()", 0, channelPool.pool.size());
             assertTrue("channelPool.usable", channelPool.usable);
         }
     }
