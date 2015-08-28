@@ -6,32 +6,21 @@ repositories {
     maven { url 'http://repository.sonatype.org/content/groups/public' }
 }
 
-sourceCompatibility = 1.6
-targetCompatibility = 1.6
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 
 dependencies {
-    //noinspection GroovyAssignabilityCheck
-    def fopDeps = ['org.apache.xmlgraphics:fop:1.0@jar',
-            'org.apache.xmlgraphics:xmlgraphics-commons:1.4',
-            'org.apache.xmlgraphics:batik-bridge:1.7@jar',
-            'org.apache.xmlgraphics:batik-util:1.7@jar',
-            'org.apache.xmlgraphics:batik-css:1.7@jar',
-            'org.apache.xmlgraphics:batik-dom:1.7',
-            'org.apache.xmlgraphics:batik-parser:1.7',
-            'org.apache.xmlgraphics:batik-anim:1.7',
-            'org.apache.xmlgraphics:batik-script:1.7',
-            'org.apache.xmlgraphics:batik-svg-dom:1.7@jar',
-            'org.apache.avalon.framework:avalon-framework-api:4.3.1']
-
     compile localGroovy()
     compile 'xerces:xercesImpl:2.10.0',
             'xml-resolver:xml-resolver:1.2',
             'saxon:saxon:6.5.3',
-            fopDeps,
+            'org.apache.xmlgraphics:fop:1.1',
             'docbook:docbook-xml:4.5',
+            'org.apache.avalon.framework:avalon-framework-api:4.3.1',
+            'org.apache.avalon.framework:avalon-framework-impl:4.3.1',
             'net.sf.xslthl:xslthl:2.1.0',
-            'net.sf.docbook:docbook-xsl:1.76.1:ns-resources@zip',
+            'net.sf.docbook:docbook-xsl:1.78.1:ns-resources@zip',
             'net.sf.docbook:docbook-xsl-saxon:1.0.0',
             gradleApi()
 
