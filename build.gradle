@@ -23,8 +23,8 @@ subprojects {
     javadoc.failOnError = false
     pmd.ignoreFailures = true
 
-    sourceCompatibility = 1.6
-    targetCompatibility = 1.6
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
     repositories {
         mavenCentral()
         maven { url 'http://jpos.org/maven' }
