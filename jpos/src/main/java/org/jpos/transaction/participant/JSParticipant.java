@@ -78,7 +78,7 @@ import java.io.Serializable;
  * @author  @apr (based on AMarques' BSHTransactionParticipant)
  */
 @SuppressWarnings("unchecked")
-public class JSTransactionParticipant extends Log
+public class JSParticipant extends Log
     implements TransactionParticipant, AbortParticipant, XmlConfigurable 
 {
     private Invocable js;
