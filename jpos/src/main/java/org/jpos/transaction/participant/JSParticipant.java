@@ -47,7 +47,7 @@ import java.io.Serializable;
  *
  * <pre>
  *     Add a transaction participant like this:
- *     &lt;participant class="org.jpos.transaction.participant.JSTransactionParticipant" logger="Q2" realm="js"
+ *     &lt;participant class="org.jpos.transaction.participant.JSParticipant" logger="Q2" realm="js"
  *     src='deploy/test.js' /&gt;
  *
  *     test.js may look like this (all functions are optional)
