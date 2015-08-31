@@ -177,8 +177,8 @@ public class Context implements Externalizable, Loggeable, Pausable {
                 p.print (indent + "<entry key='" + key + "'>");
             Object value = entry.getValue();
             if (value instanceof Loggeable) {
-                p.println ("");
-                ((Loggeable) value).dump (p, indent + " ");
+                p.println("");
+                ((Loggeable) value).dump(p, indent + " ");
                 p.print (indent);
             } else if (value instanceof Element) {
                 p.println ("");
@@ -194,13 +194,18 @@ public class Context implements Externalizable, Loggeable, Pausable {
                 p.println (indent + "]]>");
             } else if (value instanceof byte[]) {
                 byte[] b = (byte[]) value;
-                p.println ("");
-                p.println (ISOUtil.hexdump (b));
+                p.println("");
+                p.println(ISOUtil.hexdump(b));
+                p.print (indent);
+            } else if (value instanceof LogEvent) {
+                ((LogEvent) value).dump(p, indent);
+                p.print (indent);
             } else if (value != null) {
                 try {
                     p.print (value.toString ());
                 } catch (Exception e) {
                     p.println (e.getMessage());
+                    p.print (indent);
                 }
             } else {
                 p.print ("nil");
@@ -217,7 +222,8 @@ public class Context implements Externalizable, Loggeable, Pausable {
     synchronized public LogEvent getLogEvent () {
         LogEvent evt = (LogEvent) get (LOGEVT);
         if (evt == null) {
-            evt = new LogEvent ("log");
+            evt = new LogEvent ();
+            evt.setNoArmor(true);
             put (LOGEVT, evt);
         }
         return evt;

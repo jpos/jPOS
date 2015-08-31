@@ -40,6 +40,7 @@ public class LogEvent {
     private long createdAt;
     private long dumpedAt;
     private boolean honorSourceLogger;
+    private boolean noArmor;
 
     public LogEvent (String tag) {
         super();
@@ -49,7 +50,7 @@ public class LogEvent {
     }
 
     public LogEvent () {
-        this ("info");
+        this("info");
     }
     public LogEvent (String tag, Object msg) {
         this (tag);
@@ -81,28 +82,36 @@ public class LogEvent {
     public void setSource(LogSource source) {
         this.source = source;
     }
+    public void setNoArmor (boolean noArmor) {
+        this.noArmor = noArmor;
+    }
     protected String dumpHeader (PrintStream p, String indent) {
-        if (dumpedAt == 0L)
-            dumpedAt = System.currentTimeMillis();
-        Date date = new Date (dumpedAt);
-        DateFormat df = new SimpleDateFormat("EEE MMM dd HH:mm:ss.SSS z yyyy", Locale.US);
-        StringBuilder sb = new StringBuilder(indent);
-        sb.append ("<log realm=\"");
-        sb.append (getRealm());
-        sb.append ( "\" at=\"");
-        sb.append (df.format(date));
-        sb.append ('"');
-        if (dumpedAt != createdAt) {
-            sb.append (" lifespan=\"");
-            sb.append (Long.toString (dumpedAt - createdAt));
-            sb.append ("ms\"");
+        if (noArmor) {
+            p.println("");
+        } else {
+            if (dumpedAt == 0L)
+                dumpedAt = System.currentTimeMillis();
+            Date date = new Date (dumpedAt);
+            DateFormat df = new SimpleDateFormat("EEE MMM dd HH:mm:ss.SSS z yyyy", Locale.US);
+            StringBuilder sb = new StringBuilder(indent);
+            sb.append ("<log realm=\"");
+            sb.append (getRealm());
+            sb.append ( "\" at=\"");
+            sb.append (df.format(date));
+            sb.append ('"');
+            if (dumpedAt != createdAt) {
+                sb.append (" lifespan=\"");
+                sb.append (Long.toString (dumpedAt - createdAt));
+                sb.append ("ms\"");
+            }
+            sb.append ('>');
+            p.println (sb.toString());
         }
-        sb.append ('>');
-        p.println (sb.toString());
         return indent + "  ";
     }
     protected void dumpTrailer (PrintStream p, String indent) {
-        p.println (indent + "</log>");
+        if (!noArmor)
+            p.println (indent + "</log>");
     }
     public void dump (PrintStream p, String outer) {
         String indent = dumpHeader (p, outer);
