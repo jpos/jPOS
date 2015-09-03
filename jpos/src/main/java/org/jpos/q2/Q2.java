@@ -61,7 +61,7 @@ public class Q2 implements FileFilter, Runnable {
     public static final String DUPLICATE_EXTENSION = "DUP";
     public static final String ERROR_EXTENSION     = "BAD";
     public static final String ENV_EXTENSION       = "ENV";
-    public static final String LICENSEE            = "/LICENSEE.asc";
+    public static final String LICENSEE            = "LICENSEE.asc";
     public static final byte[] PUBKEYHASH          = ISOUtil.hex2byte("C0C73A47A5A27992267AC825F3C8B0666DF3F8A544210851821BFCC1CFA9136C");
 
     public static final String PROTECTED_QBEAN        = "protected-qbean";

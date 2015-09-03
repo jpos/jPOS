@@ -36,7 +36,9 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
 public class PGPHelper {
-    static KeyFingerPrintCalculator fingerPrintCalculater = new BcKeyFingerprintCalculator();
+    private static KeyFingerPrintCalculator fingerPrintCalculater = new BcKeyFingerprintCalculator();
+    private static final String PUBRING = "META-INF/.pgp/pubring.asc";
+    private static final String SIGNER = "license@jpos.org";
     static {
         Security.addProvider(new BouncyCastleProvider());
 //        PGPUtil.setDefaultProvider("BC");
@@ -124,9 +126,9 @@ public class PGPHelper {
     public static boolean checkSignature() {
         boolean ok = false;
         try {
-            InputStream is = Q2.class.getResourceAsStream(Q2.LICENSEE);
-            InputStream ks = Thread.currentThread().getContextClassLoader().getResourceAsStream("META-INF/.pgp/pubring.asc");
-            PGPPublicKey pk = PGPHelper.readPublicKey(ks, "license@jpos.org");
+            InputStream is = Q2.class.getClassLoader().getResourceAsStream(Q2.LICENSEE);
+            InputStream ks = Q2.class.getClassLoader().getResourceAsStream(PUBRING);
+            PGPPublicKey pk = PGPHelper.readPublicKey(ks, SIGNER);
             ok = verifySignature(is, pk);
         } catch (Exception ignored) {
             // NOPMD: signature isn't good
@@ -140,9 +142,9 @@ public class PGPHelper {
         int ch;
 
         try {
-            InputStream in = Q2.class.getResourceAsStream(Q2.LICENSEE);
-            InputStream ks = Thread.currentThread().getContextClassLoader().getResourceAsStream("META-INF/.pgp/pubring.asc");
-            PGPPublicKey pk = readPublicKey(ks, "license@jpos.org");
+            InputStream in = Q2.class.getClassLoader().getResourceAsStream(Q2.LICENSEE);
+            InputStream ks = Q2.class.getClassLoader().getResourceAsStream(PUBRING);
+            PGPPublicKey pk = readPublicKey(ks, SIGNER);
             ArmoredInputStream ain = new ArmoredInputStream(in, true);
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             Mac mac = Mac.getInstance("HmacSHA256");
