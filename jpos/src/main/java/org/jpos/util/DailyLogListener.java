@@ -36,7 +36,7 @@ import java.util.zip.ZipOutputStream;
 
 /**
  * Rotates log daily and compress the previous log.
- * @author <a href="mailto:alcarraz@cs.com.uy">Andr&eacute;s Alcarraz</a>
+ * @author <a href="mailto:alcarraz@jpos.org">Andr&eacute;s Alcarraz</a>
  * @since jPOS 1.5.1
  */
 public class DailyLogListener extends RotateLogListener{
@@ -130,7 +130,7 @@ public class DailyLogListener extends RotateLogListener{
             cal.setTimeInMillis(cal.getTimeInMillis() + sleepTime*(n+1));
         }
         DefaultTimer.getTimer().scheduleAtFixedRate(
-                rotate=new DailyRotate(), cal.getTime(), sleepTime);
+                rotate = new DailyRotate(), cal.getTime(), sleepTime);
     }
 
     public synchronized  void logRotate() throws IOException {
@@ -417,8 +417,12 @@ public class DailyLogListener extends RotateLogListener{
     protected void compress(File logFile) {
         if (getCompressionFormat() != NONE){
             Thread t = getCompressorThread(logFile);
-            if (t != null)
-                t.start();
+            try{
+                if (t != null)
+                    t.start();
+            } catch (Exception e){
+                logDebugEx("error compressing file",e);
+            }
         }
     }
 
