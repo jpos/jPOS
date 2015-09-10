@@ -34,10 +34,11 @@ import java.util.List;
 /**
  * @author bharavi
  */
-@SuppressWarnings("unchecked")
+
 public class TLVList implements Serializable, Loggeable {
 
-    private List<TLVMsg> tags = new ArrayList();
+    private static final long serialVersionUID = 6962311407331957465L;
+    private List<TLVMsg> tags = new ArrayList<TLVMsg>();
     private int tagToFind = 0;
     private int indexLastOccurrence = -1;
 
@@ -63,7 +64,7 @@ public class TLVList implements Serializable, Loggeable {
     /**
      * @return an enumeration of the List of tags.
      */
-    public Enumeration elements() {
+    public Enumeration<TLVMsg> elements() {
         return Collections.enumeration(tags);
     }
 
@@ -121,7 +122,7 @@ public class TLVList implements Serializable, Loggeable {
      * @param tag id
      */
     public void deleteByTag(int tag) {
-        List t = new ArrayList();
+        List<TLVMsg> t = new ArrayList<TLVMsg>();
         for (TLVMsg tlv2 :tags ) {
             if (tlv2.getTag() == tag)
                 t.add(tlv2);
