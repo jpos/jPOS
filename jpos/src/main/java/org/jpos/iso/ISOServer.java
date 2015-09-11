@@ -112,6 +112,127 @@ public class ISOServer extends Observable
         serverListeners = new ArrayList<ISOServerEventListener>();
     }
 
+
+    @Override
+    public void setConfiguration (Configuration cfg) throws ConfigurationException {
+        this.cfg = cfg;
+        allow = cfg.getAll ("allow");
+        backlog = cfg.getInt ("backlog", 0);
+        ignoreISOExceptions = cfg.getBoolean("ignore-iso-exceptions");
+        String ip = cfg.get ("bind-address", null);
+        if (ip != null) {
+            try {
+                bindAddr = InetAddress.getByName (ip);
+            } catch (UnknownHostException e) {
+                throw new ConfigurationException ("Invalid bind-address " + ip, e);
+            }
+        }
+        if (socketFactory == null) {
+            socketFactory = this;
+        }
+        if (socketFactory != this && socketFactory instanceof Configurable) {
+            ((Configurable)socketFactory).setConfiguration (cfg);
+        }
+    }
+
+
+   /**
+    * add an ISORequestListener
+    * @param l request listener to be added
+    * @see ISORequestListener
+    */
+    public void addISORequestListener(ISORequestListener l) {
+        listeners.add (l);
+    }
+   /**
+    * remove an ISORequestListener
+    * @param l a request listener to be removed
+    * @see ISORequestListener
+    */
+    public void removeISORequestListener(ISORequestListener l) {
+        listeners.remove (l);
+    }
+
+    /**
+     * Shutdown this server
+     */
+    public void shutdown () {
+        shutdown = true;
+        new Thread ("ISOServer-shutdown") {
+            @Override
+            public void run () {
+                shutdownServer ();
+                if (!cfg.getBoolean ("keep-channels")) {
+                    shutdownChannels ();
+                }
+            }
+        }.start();
+    }
+    private void shutdownServer () {
+        try {
+            if (serverSocket != null) {
+                serverSocket.close ();
+                fireEvent(new ISOServerShutdownEvent(this));
+            }
+            if (pool != null) {
+                pool.close();
+            }
+        } catch (IOException e) {
+            fireEvent(new ISOServerShutdownEvent(this));
+            Logger.log (new LogEvent (this, "shutdown", e));
+        }
+    }
+    private void shutdownChannels () {
+        Iterator iter = channels.entrySet().iterator();
+        while (iter.hasNext()) {
+            Map.Entry entry = (Map.Entry) iter.next();
+            WeakReference ref = (WeakReference) entry.getValue();
+            ISOChannel c = (ISOChannel) ref.get ();
+            if (c != null) {
+                try {
+                    c.disconnect ();
+                    fireEvent(new ISOServerClientDisconnectEvent(this));
+                } catch (IOException e) {
+                    Logger.log (new LogEvent (this, "shutdown", e));
+                }
+            }
+        }
+    }
+    private void purgeChannels () {
+        Iterator iter = channels.entrySet().iterator();
+        while (iter.hasNext()) {
+            Map.Entry entry = (Map.Entry) iter.next();
+            WeakReference ref = (WeakReference) entry.getValue();
+            ISOChannel c = (ISOChannel) ref.get ();
+            if (c == null || !c.isConnected()) {
+                iter.remove ();
+            }
+        }
+    }
+
+
+    @Override
+    public ServerSocket createServerSocket(int port) throws IOException {
+        ServerSocket ss = new ServerSocket();
+        try {
+            ss.setReuseAddress(true);
+            ss.bind(new InetSocketAddress(bindAddr, port), backlog);
+        } catch(SecurityException e) {
+            ss.close();
+            fireEvent(new ISOServerShutdownEvent(this));
+            throw e;
+        } catch(IOException e) {
+            ss.close();
+            fireEvent(new ISOServerShutdownEvent(this));
+            throw e;
+        }
+        return ss;
+    }
+
+    //-----------------------------------------------------------------------------
+    // -- Helper Session inner class. It's a Runnable, running in its own
+    // -- thread and handling a connection to this ISOServer
+    // --
     protected Session createSession (ServerChannel channel) {
         return new Session (channel);
     }
@@ -222,98 +343,10 @@ public class ISOServer extends Observable
                 throw new ISOException ("access denied, ip=" + ip);
             }
         }
-    }
-   /**
-    * add an ISORequestListener
-    * @param l request listener to be added
-    * @see ISORequestListener
-    */
-    public void addISORequestListener(ISORequestListener l) {
-        listeners.add (l);
-    }
-   /**
-    * remove an ISORequestListener
-    * @param l a request listener to be removed
-    * @see ISORequestListener
-    */
-    public void removeISORequestListener(ISORequestListener l) {
-        listeners.remove (l);
-    }
-    /**
-     * Shutdown this server
-     */
-    public void shutdown () {
-        shutdown = true;
-        new Thread ("ISOServer-shutdown") {
-            @Override
-            public void run () {
-                shutdownServer ();
-                if (!cfg.getBoolean ("keep-channels")) {
-                    shutdownChannels ();
-                }
-            }
-        }.start();
-    }
-    private void shutdownServer () {
-        try {
-            if (serverSocket != null) {
-                serverSocket.close ();
-                fireEvent(new ISOServerShutdownEvent(this));
-            }
-            if (pool != null) {
-                pool.close();
-            }
-        } catch (IOException e) {
-            fireEvent(new ISOServerShutdownEvent(this));
-            Logger.log (new LogEvent (this, "shutdown", e));
-        }
-    }
-    private void shutdownChannels () {
-        Iterator iter = channels.entrySet().iterator();
-        while (iter.hasNext()) {
-            Map.Entry entry = (Map.Entry) iter.next();
-            WeakReference ref = (WeakReference) entry.getValue();
-            ISOChannel c = (ISOChannel) ref.get ();
-            if (c != null) {
-                try {
-                    c.disconnect ();
-                    fireEvent(new ISOServerClientDisconnectEvent(this));
-                } catch (IOException e) {
-                    Logger.log (new LogEvent (this, "shutdown", e));
-                }
-            }
-        }
-    }
-    private void purgeChannels () {
-        Iterator iter = channels.entrySet().iterator();
-        while (iter.hasNext()) {
-            Map.Entry entry = (Map.Entry) iter.next();
-            WeakReference ref = (WeakReference) entry.getValue();
-            ISOChannel c = (ISOChannel) ref.get ();
-            if (c == null || !c.isConnected()) {
-                iter.remove ();
-            }
-        }
-    }
+    } // inner class Session
 
-    @Override
-    public ServerSocket createServerSocket(int port) throws IOException {
-        ServerSocket ss = new ServerSocket();
-        try {
-            ss.setReuseAddress(true);
-            ss.bind(new InetSocketAddress(bindAddr, port), backlog);
-        } catch(SecurityException e) {
-            ss.close();
-            fireEvent(new ISOServerShutdownEvent(this));
-            throw e;
-        } catch(IOException e) {
-            ss.close();
-            fireEvent(new ISOServerShutdownEvent(this));
-            throw e;
-        }
-        return ss;
-    }
-
+    //-------------------------------------------------------------------------------
+    //-- This is the main run for this ISOServer's Thread
     @Override
     public void run() {
         ServerChannel  channel;
@@ -381,13 +414,14 @@ public class ISOServer extends Observable
                         Logger.log (new LogEvent (this, "iso-server", e));
                         relax();
                     }
-                }
+                } // while !shutdown
             } catch (Throwable e) {
                 Logger.log (new LogEvent (this, "iso-server", e));
                 relax();
             }
         }
-    }
+    } // ISOServer's run()
+    //-------------------------------------------------------------------------------
 
     private void relax() {
         try {
@@ -497,12 +531,14 @@ public class ISOServer extends Observable
     public int getActiveConnections () {
         return pool.getActiveCount();
     }
+
     /**
      * @return most recently connected ISOChannel or null
      */
     public ISOChannel getLastConnectedISOChannel () {
         return getISOChannel (LAST);
     }
+
     /**
      * @return ISOChannel under the given name
      */
@@ -513,27 +549,8 @@ public class ISOServer extends Observable
         }
         return null;
     }
-    @Override
-    public void setConfiguration (Configuration cfg) throws ConfigurationException {
-        this.cfg = cfg;
-        allow = cfg.getAll ("allow");
-        backlog = cfg.getInt ("backlog", 0);
-        ignoreISOExceptions = cfg.getBoolean("ignore-iso-exceptions");
-        String ip = cfg.get ("bind-address", null);
-        if (ip != null) {
-            try {
-                bindAddr = InetAddress.getByName (ip);
-            } catch (UnknownHostException e) {
-                throw new ConfigurationException ("Invalid bind-address " + ip, e);
-            }
-        }
-        if (socketFactory == null) {
-            socketFactory = this;
-        }
-        if (socketFactory != this && socketFactory instanceof Configurable) {
-            ((Configurable)socketFactory).setConfiguration (cfg);
-        }
-    }
+
+
     @Override
     public String getISOChannelNames () {
         StringBuilder sb = new StringBuilder ();
@@ -590,6 +607,7 @@ public class ISOServer extends Observable
         }
         return cnt;
     }
+
     @Override
     public int getTXCounter() {
         int cnt[] = getCounters();
