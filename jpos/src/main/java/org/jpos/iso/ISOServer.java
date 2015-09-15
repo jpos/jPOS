@@ -62,7 +62,19 @@ public class ISOServer extends Observable
     implements LogSource, Runnable, Observer, ISOServerMBean, Configurable,
     Loggeable, ISOServerSocketFactory
 {
+
+    private enum PermLogPolicy {
+        ALLOW_NOLOG, DENY_LOG, ALLOW_LOG, DENY_LOGWARNING
+    }
+
     int port;
+    private InetAddress bindAddr;
+
+    private Map<String,Boolean> specificIPPerms= new HashMap<>();   // TRUE means allow; FALSE means deny
+    private List<String> wildcardAllow;
+    private List<String> wildcardDeny;
+    private PermLogPolicy ipPermLogPolicy= PermLogPolicy.ALLOW_NOLOG;
+
     protected ISOChannel clientSideChannel;
     ISOPackager clientPackager;
     protected Collection clientOutgoingFilters, clientIncomingFilters, listeners;
@@ -78,8 +90,7 @@ public class ISOServer extends Observable
     public static final int CONNECT      = 0;
     public static final int SIZEOF_CNT   = 1;
     private int[] cnt;
-    private String[] allow;
-    private InetAddress bindAddr;
+
     private int backlog;
     protected Configuration cfg;
     private boolean shutdown = false;
@@ -116,7 +127,7 @@ public class ISOServer extends Observable
     @Override
     public void setConfiguration (Configuration cfg) throws ConfigurationException {
         this.cfg = cfg;
-        allow = cfg.getAll ("allow");
+        configureConnectionPerms();
         backlog = cfg.getInt ("backlog", 0);
         ignoreISOExceptions = cfg.getBoolean("ignore-iso-exceptions");
         String ip = cfg.get ("bind-address", null);
@@ -135,6 +146,62 @@ public class ISOServer extends Observable
         }
     }
 
+    // Helper method to setConfiguration. Handles "allow" and "deny" params
+    private void configureConnectionPerms() throws ConfigurationException
+    {
+        boolean hasAllows= false, hasDenies= false;
+
+        String[] allows= cfg.getAll ("allow");
+        if (allows != null && allows.length > 0) {
+            hasAllows= true;
+
+            for (String allowIP : allows) {
+                allowIP= allowIP.trim();
+
+                if (allowIP.indexOf('*') == -1) {                   // specific IP with no wildcards
+                    specificIPPerms.put(allowIP, true);
+                } else {                                            // there's a wildcard
+                    wildcardAllow= (wildcardAllow == null) ? new ArrayList<>() : wildcardAllow;
+                    String[] parts= allowIP.split("[*]");
+                    wildcardAllow.add(parts[0]);                    // keep only the first part
+                }
+            }
+        }
+
+        String[] denies= cfg.getAll ("deny");
+        if (denies != null && denies.length > 0) {
+            hasDenies= true;
+
+            for (String denyIP : denies) {
+                boolean conflict= false;                            // used for a little sanity check
+
+                denyIP= denyIP.trim();
+                if (denyIP.indexOf('*') == -1) {                    // specific IP with no wildcards
+                    Boolean oldVal= specificIPPerms.put(denyIP, false);
+                    conflict= (oldVal == Boolean.TRUE);
+                } else {                                            // there's a wildcard
+                    wildcardDeny= (wildcardDeny == null) ? new ArrayList<>() : wildcardDeny;
+                    String[] parts= denyIP.split("[*]");
+                    if (wildcardAllow != null && wildcardAllow.contains(parts[0]))
+                        conflict= true;
+                    else
+                        wildcardDeny.add(parts[0]);                 // keep only the first part
+                }
+
+                if (conflict) {
+                    throw new ConfigurationException(
+                            "Conflicting IP permission in '"+getName()+"' configuration: 'deny' "
+                                    +denyIP+" while having an identical previous 'allow'.");
+                }
+            }
+        }
+
+        // sum up permission policy and logging type
+        ipPermLogPolicy= (!hasAllows && !hasDenies) ? PermLogPolicy.ALLOW_NOLOG :           // default when no permissions specified
+                         ( hasAllows && !hasDenies) ? PermLogPolicy.DENY_LOG :
+                         (!hasAllows && hasDenies)  ? PermLogPolicy.ALLOW_LOG :
+                                                      PermLogPolicy.DENY_LOGWARNING;        // mixed allows & denies, if nothing matches we'll DENY and log a warning
+    }
 
    /**
     * add an ISORequestListener
@@ -329,19 +396,66 @@ public class ISOServer extends Observable
         public Logger getLogger() {
             return ISOServer.this.getLogger();
         }
-        public void checkPermission (Socket socket, LogEvent evt)
-            throws ISOException
+
+        public void checkPermission (Socket socket, LogEvent evt) throws ISOException
         {
-            if (allow != null && allow.length > 0) {
-                String ip = socket.getInetAddress().getHostAddress ();
-                for (String element : allow) {
-                    if (ip.equals (element)) {
-                        evt.addMessage ("access granted, ip=" + ip);
-                        return;
+            // if there are no allow/deny params, just return without doing any checks
+            // (i.e.: "silent allow policy", keeping backward compatibility)
+            if (specificIPPerms.isEmpty() && wildcardAllow == null && wildcardDeny == null)
+                return;
+
+            String ip= socket.getInetAddress().getHostAddress ();           // The remote IP
+
+            // first, check allows or denies for specific/whole IPs (no wildcards)
+            Boolean specificAllow= specificIPPerms.get(ip);
+            if (specificAllow == Boolean.TRUE) {                            // specific IP allow
+                evt.addMessage("access granted, ip=" + ip);
+                return;
+
+            } else if (specificAllow == Boolean.FALSE) {                    // specific IP deny
+                throw new ISOException("access denied, ip=" + ip);
+
+            } else {                                                        // no specific match under the specificIPPerms Map
+                // We check the wildcard lists, deny first
+                if (wildcardDeny != null) {
+                    for (String wdeny : wildcardDeny) {
+                        if (ip.startsWith(wdeny)) {
+                            throw new ISOException ("access denied, ip=" + ip);
+                        }
                     }
                 }
-                throw new ISOException ("access denied, ip=" + ip);
+                if (wildcardAllow != null) {
+                    for (String wallow : wildcardAllow) {
+                        if (ip.startsWith(wallow)) {
+                            evt.addMessage("access granted, ip=" + ip);
+                            return;
+                        }
+                    }
+                }
+
+                // Reaching this point means that nothing matched our specific or wildcard rules, so we fall
+                // back on the default permission policies and log type
+                switch (ipPermLogPolicy) {
+                    case DENY_LOG:        // only allows were specified, default policy is to deny non-matches and log the issue
+                        throw new ISOException ("access denied, ip=" + ip);
+                        // break;
+
+                    case ALLOW_LOG:       // only denies were specified, default policy is to allow non-matches and log the issue
+                        evt.addMessage("access granted, ip=" + ip);
+                        break;
+
+                    case DENY_LOGWARNING: // mix of allows and denies were specified, but the IP matched no rules!
+                                          // so we adopt a deny policy but give a special warning
+                        throw new ISOException ("access denied, ip=" + ip + " (WARNING: the IP did not match any rules!)");
+                        // break;
+
+                    case ALLOW_NOLOG:   // this is the default case when no allow/deny are specified
+                                        // the method will abort early on the first "if", so this is here just for completion
+                        break;
+                }
+
             }
+            // we should never reach this point!! :-)
         }
     } // inner class Session
 
