@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pmd version="5.2.3" timestamp="2015-09-10T17:09:14.095">
+<pmd version="5.2.3" timestamp="2015-09-15T18:50:03.608">
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/core/CardHolder.java">
 <violation beginline="323" endline="325" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.core" class="CardHolder" method="isExpired" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
@@ -91,13 +91,19 @@ Check the value returned by the skip() method of an InputStream to see if the re
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/ISOServer.java">
-<violation beginline="178" endline="181" begincolumn="15" endcolumn="13" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.iso" class="ISOServer$Session" method="run" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
+<violation beginline="181" endline="181" begincolumn="32" endcolumn="53" rule="UselessParentheses" ruleset="Unnecessary" package="org.jpos.iso" class="ISOServer" method="configureConnectionPerms" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/unnecessary.html#UselessParentheses" priority="4">
+Useless parentheses.
+</violation>
+<violation beginline="200" endline="200" begincolumn="27" endcolumn="50" rule="UselessParentheses" ruleset="Unnecessary" package="org.jpos.iso" class="ISOServer" method="configureConnectionPerms" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/unnecessary.html#UselessParentheses" priority="4">
+Useless parentheses.
+</violation>
+<violation beginline="366" endline="369" begincolumn="15" endcolumn="13" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.iso" class="ISOServer$Session" method="run" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
 </violation>
-<violation beginline="181" endline="185" begincolumn="15" endcolumn="13" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.iso" class="ISOServer$Session" method="run" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
+<violation beginline="369" endline="373" begincolumn="15" endcolumn="13" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.iso" class="ISOServer$Session" method="run" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
 </violation>
-<violation beginline="185" endline="188" begincolumn="15" endcolumn="13" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.iso" class="ISOServer$Session" method="run" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
+<violation beginline="373" endline="376" begincolumn="15" endcolumn="13" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.iso" class="ISOServer$Session" method="run" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
 </violation>
 </file>
