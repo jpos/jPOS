@@ -31,6 +31,9 @@ import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
+import java.lang.management.ManagementFactory;
+import java.lang.management.RuntimeMXBean;
+import java.lang.management.ThreadMXBean;
 import java.net.InetAddress;
 import java.nio.charset.Charset;
 
@@ -158,11 +161,14 @@ public class SystemMonitor extends QBeanSupport
         }
     }
     private String generateFrozenDump(String indent) {
+        RuntimeMXBean runtimeMXBean = ManagementFactory.getRuntimeMXBean();
+        ThreadMXBean mxBean = ManagementFactory.getThreadMXBean();
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream p = new PrintStream(baos);
         String newIndent = indent + "  ";
         Runtime r = getRuntimeInstance();
         p.printf ("%s           OS: %s%n", indent, System.getProperty("os.name"));
+        p.printf ("%s process name: %s%n", indent, runtimeMXBean.getName());
         p.printf ("%s         host: %s%n", indent, getLocalHost());
         p.printf ("%s      version: %s (%s)%n", indent, Q2.getVersion(), getRevision());
         p.printf ("%s     instance: %s%n", indent, getInstanceIdAsString());
@@ -171,11 +177,14 @@ public class SystemMonitor extends QBeanSupport
         p.printf ("%s       drift : %d%n", indent, delay);
         p.printf ("%smemory(t/u/f): %d/%d/%d%n", indent,
                 r.totalMemory()/MB, (r.totalMemory() - r.freeMemory())/MB, r.freeMemory()/MB);
+        p.printf("%s     encoding: %s%n", indent, Charset.defaultCharset());
         if (hasSecurityManager())
             p.printf("%s  sec-manager: %s%n", indent, getSecurityManager());
-        p.printf("%s      threads: %d%n", indent, Thread.activeCount());
+        p.printf("%s thread count: %d%n", indent, mxBean.getThreadCount());
+        p.printf("%s peak threads: %d%n", indent, mxBean.getPeakThreadCount());
+        p.printf("%s user threads: %d%n", indent, Thread.activeCount());
+
         showThreadGroup(Thread.currentThread().getThreadGroup(), p, newIndent);
-        p.printf("%s     encoding: %s%n", indent, Charset.defaultCharset());
         NameRegistrar.getInstance().dump(p, indent, detailRequired);
         for (String s : scripts) {
             p.printf("%s%s:%n", indent, s);
