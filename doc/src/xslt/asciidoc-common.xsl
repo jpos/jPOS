@@ -71,6 +71,14 @@
 
 <xsl:param name="section.label.includes.component.label" select="1"/>
 
+<!-- BBB To get compact bullet lists -->
+<xsl:attribute-set name="list.item.spacing">
+  <xsl:attribute name="space-before.optimum">0.0em</xsl:attribute>
+  <xsl:attribute name="space-before.minimum">0.0em</xsl:attribute>
+  <xsl:attribute name="space-before.maximum">0.2em</xsl:attribute>
+</xsl:attribute-set>
+
+
 <!--
   Table of contents inserted by <?asciidoc-toc?> processing instruction.
 -->
