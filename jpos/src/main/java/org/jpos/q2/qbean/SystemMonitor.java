@@ -36,6 +36,7 @@ import java.lang.management.RuntimeMXBean;
 import java.lang.management.ThreadMXBean;
 import java.net.InetAddress;
 import java.nio.charset.Charset;
+import java.util.TimeZone;
 
 /**
  * Periodically dumps Thread and memory usage
@@ -166,6 +167,7 @@ public class SystemMonitor extends QBeanSupport
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream p = new PrintStream(baos);
         String newIndent = indent + "  ";
+        TimeZone tz = TimeZone.getDefault();
         Runtime r = getRuntimeInstance();
         p.printf ("%s           OS: %s%n", indent, System.getProperty("os.name"));
         p.printf ("%s process name: %s%n", indent, runtimeMXBean.getName());
@@ -178,6 +180,8 @@ public class SystemMonitor extends QBeanSupport
         p.printf ("%smemory(t/u/f): %d/%d/%d%n", indent,
                 r.totalMemory()/MB, (r.totalMemory() - r.freeMemory())/MB, r.freeMemory()/MB);
         p.printf("%s     encoding: %s%n", indent, Charset.defaultCharset());
+        p.printf("%s     timezone: %s (%s) GMT OFFSET %d%n", indent, tz.getID(), tz.getDisplayName(), tz.getRawOffset()/3600000);
+        p.printf("%s        clock: %d%n", indent, System.currentTimeMillis() / 1000L);
         if (hasSecurityManager())
             p.printf("%s  sec-manager: %s%n", indent, getSecurityManager());
         p.printf("%s thread count: %d%n", indent, mxBean.getThreadCount());
