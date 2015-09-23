@@ -68,7 +68,7 @@ So a reasonable name for a channel descriptor can be something like
     flexible one, but of course, you can use any other custom
     packager or some of the stock packagers such as +XMLPackager+
     or +XML2003Packager+. For a complete list of available
-    packagers see link:https://github.com/jpos/jPOS/tree/master/jpos/src/main/java/org/jpos/iso/packager
+    packagers see link:https://github.com/jpos/jPOS/tree/master/jpos/src/main/java/org/jpos/iso/packager[]
 <3> Although not defined in the +ISOChannel+ interface, most channels 
     have a +setHeader(String)+ method. If the +header+ attribute is
     present in the child +channel+ element, ChannelAdaptor will use

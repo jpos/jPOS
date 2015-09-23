@@ -1,7 +1,7 @@
 [[qserver]]
 == QServer
 
-**QServer** is an adapter around ISOServer (see <<isoserver>>) that
+**QServer** is an adapter around +ISOServer+ (see <<isoserver>>) that
 interacts with other Q2 components, such as QMUX, using the Space
 by defining +in+ and +out+ queues, pretty much like the +ChannelAdaptor+
 does.
@@ -25,8 +25,8 @@ A QServer configuration looks like this:
 <qserver name="xml-server" logger="Q2">                      <1>
   <attr name="port" type="java.lang.Integer">8000</attr>     <2>
   <channel name="xml.channel"
-          class="org.jpos.iso.channel.XMLChannel"
-       packager="org.jpos.iso.packager.XMLPackager">
+           class="org.jpos.iso.channel.XMLChannel"
+           packager="org.jpos.iso.packager.XMLPackager">
   </channel>
   <request-listener class="my.request.Listener" logger="Q2">
     <property name="my-property" value="ABC" />
@@ -47,11 +47,11 @@ when running older versions, the QBean descriptor has to include
 the +class="org.jpos.q2.iso.QServer"+ attribute.
 ======
 
-QServer is registered in the +NameRegistrar+ under the name provided in 
+QServer is registered in the +NameRegistrar+ under the name provided in
 the qbean descriptor (*"xml-server"* in the previous example). In addition,
-the underlying +ISOServer+, instantiated by +QServer+ will register itself
+the underlying +ISOServer+ -- instantiated by +QServer+ -- will register itself
 with the +NameRegistrar+ using a prefix +"server."+, so in the previous
-example, +xml-server+ will have a reference to the +QServer+ object,
+example, +xml-server+ will be a reference to the +QServer+ object,
 and +server.xml-server+ will have a reference to the +ISOServer+ object.
 
 The Channel definition used by +QServer+ is the same as the one
@@ -59,7 +59,7 @@ used by the +ChannelAdaptor+, where you can configure SSL support,
 packager-level logging, etc. Please read <<channel_adaptor>> for
 details.
 
-The request listeners are the same as those used by +QMUX+ 
+The request listeners are the same as those used by +QMUX+
 (see <<qmux>> for details). A +QServer+ using a request
 listener would look like this:
 
@@ -68,18 +68,18 @@ listener would look like this:
 <server name="jcard-server" class="org.jpos.q2.iso.QServer" logger="Q2">
   <attr name="port" type="java.lang.Integer">8001</attr>
   <channel name="jcard.channel"
-          class="org.jpos.iso.channel.CSChannel"
-          packager="org.jpos.iso.packager.GenericPackager" logger="Q2">
+           class="org.jpos.iso.channel.CSChannel"
+           packager="org.jpos.iso.packager.GenericPackager" logger="Q2">
     <property name="packager-config" value="cfg/jcard.xml" />
     <property name="timeout" value="300000" />
   </channel>
-  <request-listener class="org.jpos.jcard.Dispatcher" logger="Q2" 
-        realm="incoming-request-listener">
+  <request-listener class="org.jpos.jcard.Dispatcher" logger="Q2"
+                    realm="incoming-request-listener">
    <property name="prefix"  value="org.jpos.jcard.Incoming_" />
    <property name="timeout" value="60000" />
    <property name="space"   value="tspace:default" />
    <property name="queue"   value="JCARD.TXN" />
-   <property name="station"   value="JCARD" />
+   <property name="station" value="JCARD" />
   </request-listener>
 </server>
 ------------
@@ -92,10 +92,10 @@ the business logic can be implemented.
 =====
 
 In situations where the system needs to initiate transactions to the
-remote host, an +in+ and +out+ queues can be configured like in
-the +ChannelAdaptor+. These names (in/out) are seen from +QServer's+
-perspective. Because a QServer can accept multiple sockets, an
-outgoing message needs to select which socket to use. When using
+remote host, +in+ and +out+ queues can be configured like in
+the +ChannelAdaptor+. These names (+in/out+) are seen from +QServer's+
+perspective. Because a QServer can accept multiple simultaneous connections in
+different sockets, an outgoing message needs to select which socket to use. When using
 this +in/out+ communication queues, QServer selects the latest
 socket (using the +ISOServer.getLastConnectedISOChannel()+ method
 (see link:http://jpos.org/doc/javadoc/org/jpos/q2/iso/QServer.html[QServer]).
@@ -124,25 +124,43 @@ i.e:
   <attr name="maxSessions" type="java.lang.Integer">250</attr>
 ------------
 
-In addition, it can check the client's IP address and drop the
-connection if it's not one of the allowed IP addresses. To add
-valid client IP addresses, you can use the "allow" property,
-i.e.:
+In addition, it can check the client's IP address against **"allow"**
+and **"deny"** IP addresses (including suffix wildcards) and drop the
+connection if it's not one of the allowed IP addresses. Here's an example:
 
 [source,xml]
 ------------
   ...
   ...
-  <property name="allow" value="192.168.1.1" />
+  <property name="allow" value="192.168.1.1" /> <1>
   <property name="allow" value="192.168.1.2" />
+  <property name="allow" value="10.0.0.10" />
+  <property name="deny"  value="10.0.*" />      <2>
   ...
   ...
 ------------
 
+<1> The first three IPs are _explicitly allowed_, even though the third one...
+<2> ...belongs to an IP range that is denied.
+
+Some considerations:
+
+* Explicit IPs (i.e., those without wildcards) will be checked and honored first.
+  Then, the wildcard expressions will be checked, starting with the wildcard +"deny"+ set,
+  and following with the wildcard +"allow"+ set.
+* If only +"allow"+ expressions are used, the default policy will be to _deny unmatching_ IPs.
+* If only +"deny"+ expressions are used, the default policy will be to _allow unmatching_ IPs.
+* For _mixed_ permissions (both, +"allow"+ and +"deny"+ present), the default policy will be to
+  _deny unmatching_ IPs.
+* Use caution when using mixed permissions and wildcards. Due to the order of evaluation and
+  default policies, some combinations may, at best, be redundant or unnecessary. At worst, they may
+  make no sense at all (even denying connections from valid IPs).
+
+
 [WARNING]
 =========
-The IP validation via the +allow+ set of properties,
-while very handy, should not to be used as a replacement 
+The IP validation via the +allow+ and +deny+ set of properties,
+while very handy, should not to be used as a replacement
 for proper firewall rules.
 =========
 
