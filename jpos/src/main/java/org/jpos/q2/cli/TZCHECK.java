@@ -51,6 +51,6 @@ public class TZCHECK implements CLICommand
             }
         }
         if (!offsetChange)
-            cli.println ("GMT offset won't change during the next year");
+            cli.println ("GMT offset (" + offset/3600000 + ") won't change during the next year");
     }
 }
