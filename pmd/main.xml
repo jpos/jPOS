@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pmd version="5.2.3" timestamp="2015-09-23T22:58:59.206">
+<pmd version="5.2.3" timestamp="2015-09-24T17:21:22.786">
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/core/CardHolder.java">
 <violation beginline="323" endline="325" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.core" class="CardHolder" method="isExpired" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
+</violation>
+</file>
+<file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/core/SimpleConfiguration.java">
+<violation beginline="64" endline="64" begincolumn="17" endcolumn="37" rule="UselessParentheses" ruleset="Unnecessary" package="org.jpos.core" class="SimpleConfiguration" method="get" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/unnecessary.html#UselessParentheses" priority="4">
+Useless parentheses.
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/BaseChannel.java">
