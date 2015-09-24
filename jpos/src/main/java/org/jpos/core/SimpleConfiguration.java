@@ -43,13 +43,25 @@ public class SimpleConfiguration implements Configuration {
         props = new Properties();
         load (filename);
     }
+
+    /**
+     * Returns the value of the configuration property named <tt>name</tt>, or the default value <tt>def</tt>.
+     *
+     * @param name The configuration property key name.
+     * @param def  The default value.
+     * @return  The value stored under <tt>name</tt>,
+     *          or <tt>def</tt> if there's no configuration property under the given <tt>name</tt>.
+     */
     public String get (String name, String def) {
         Object obj = props.get (name);
-        if (obj instanceof List) {
+        if (obj instanceof String[]) {
+            String[] arr= (String[]) obj;
+            obj = arr.length > 0 ? arr[0] : null;
+        } else if (obj instanceof List) {
             List l = (List) obj;
             obj = l.size() > 0 ? l.get(0) : null;
         }
-        return obj instanceof String ? (String) obj : def;
+        return (obj instanceof String) ? (String)obj : def;
     }
     public String[] getAll (String name) {
         String[] ret;
