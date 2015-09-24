@@ -592,7 +592,7 @@ public class Q2 implements FileFilter, Runnable {
         return vs;
     }
     public static String getLicensee() {
-        InputStream is = Q2.class.getResourceAsStream(LICENSEE);
+        InputStream is = Q2.class.getClassLoader().getResourceAsStream(LICENSEE);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         if (is != null) {
             BufferedReader br = new BufferedReader (new InputStreamReader(is));
