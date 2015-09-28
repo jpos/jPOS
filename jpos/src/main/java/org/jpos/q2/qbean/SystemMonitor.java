@@ -36,7 +36,13 @@ import java.lang.management.RuntimeMXBean;
 import java.lang.management.ThreadMXBean;
 import java.net.InetAddress;
 import java.nio.charset.Charset;
-import java.util.TimeZone;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.TextStyle;
+import java.time.zone.ZoneOffsetTransition;
+import java.time.zone.ZoneOffsetTransitionRule;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * Periodically dumps Thread and memory usage
@@ -116,7 +122,7 @@ public class SystemMonitor extends QBeanSupport
                 long expected = System.currentTimeMillis() + sleepTime;
                 Thread.sleep(sleepTime);
                 delay = System.currentTimeMillis() - expected;
-            } catch (InterruptedException e) {
+            } catch (InterruptedException ignored) {
             }
         }
     }
@@ -167,8 +173,9 @@ public class SystemMonitor extends QBeanSupport
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream p = new PrintStream(baos);
         String newIndent = indent + "  ";
-        TimeZone tz = TimeZone.getDefault();
         Runtime r = getRuntimeInstance();
+        ZoneId zi = ZoneId.systemDefault();
+        Instant instant = Instant.now();
         p.printf ("%s           OS: %s%n", indent, System.getProperty("os.name"));
         p.printf ("%s process name: %s%n", indent, runtimeMXBean.getName());
         p.printf ("%s         host: %s%n", indent, getLocalHost());
@@ -180,8 +187,19 @@ public class SystemMonitor extends QBeanSupport
         p.printf ("%smemory(t/u/f): %d/%d/%d%n", indent,
                 r.totalMemory()/MB, (r.totalMemory() - r.freeMemory())/MB, r.freeMemory()/MB);
         p.printf("%s     encoding: %s%n", indent, Charset.defaultCharset());
-        p.printf("%s     timezone: %s (%s) GMT OFFSET %d%n", indent, tz.getID(), tz.getDisplayName(), tz.getRawOffset()/3600000);
-        p.printf("%s        clock: %d%n", indent, System.currentTimeMillis() / 1000L);
+        p.printf("%s     timezone: %s (%s) %s%n", indent, zi,
+                zi.getDisplayName(TextStyle.FULL, Locale.getDefault()),
+                zi.getRules().getOffset(instant).toString());
+        List<ZoneOffsetTransitionRule> l = zi.getRules().getTransitionRules();
+        for (ZoneOffsetTransitionRule tr : l) {
+            p.printf("%s         rule: %s%n", indent, tr.toString());
+        }
+        ZoneOffsetTransition tran = zi.getRules().nextTransition(instant);
+        if (tran != null) {
+            Instant in = tran.getInstant();
+            p.printf("%s   transition: %s (%s)%n", indent, in, in.atZone(zi));
+        }
+        p.printf("%s        clock: %d %s%n", indent, System.currentTimeMillis() / 1000L, instant);
         if (hasSecurityManager())
             p.printf("%s  sec-manager: %s%n", indent, getSecurityManager());
         p.printf("%s thread count: %d%n", indent, mxBean.getThreadCount());

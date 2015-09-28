@@ -18,39 +18,37 @@
 
 package org.jpos.q2.cli;
 
-import org.jpos.iso.ISODate;
 import org.jpos.q2.CLICommand;
 import org.jpos.q2.CLIContext;
 
-import java.util.Date;
-import java.util.TimeZone;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.TextStyle;
+import java.time.zone.ZoneOffsetTransition;
+import java.time.zone.ZoneOffsetTransitionRule;
+import java.util.List;
+import java.util.Locale;
 
 @SuppressWarnings("unused")
 public class TZCHECK implements CLICommand
 {
     public void exec(CLIContext cli, String[] args) throws Exception
     {
-        TimeZone tz = TimeZone.getDefault();
+        ZoneId zi = ZoneId.systemDefault();
+        Instant i = Instant.now();
         cli.println(
-            "TimeZone ID: " + tz.getID() + " (" + tz.getDisplayName() + ")"
+            "         Zone ID: " + zi + " (" + zi.getDisplayName(TextStyle.FULL, Locale.getDefault()) + ") "
+                + zi.getRules().getOffset(i)
         );
-        cli.println("Date: " + new Date());
-        cli.println("System: " + System.currentTimeMillis());
-        long now = System.currentTimeMillis();
-        int offset = tz.getRawOffset();
-        boolean offsetChange = false;
-        for (int i=0; i<366; i++) {
-            now += 86400000L;
-            if (tz.getOffset(now) != offset) {
-                Date d = new Date(now);
-                cli.println ("GMT offset will change from " + offset/3600000
-                        + " to " + tz.getOffset(now)/3600000
-                        + " on " + ISODate.formatDate(d, "yyyyMMdd"));
-                offsetChange = true;
-                offset = tz.getOffset(now);
-            }
+        cli.println ("             UTC: " + i);
+        ZoneOffsetTransition tran = zi.getRules().nextTransition(i);
+        if (tran != null) {
+            Instant in = tran.getInstant();
+            cli.println (" Next transition: " + in + " (" + in.atZone(zi) + ")");
         }
-        if (!offsetChange)
-            cli.println ("GMT offset (" + offset/3600000 + ") won't change during the next year");
+        List<ZoneOffsetTransitionRule> l = zi.getRules().getTransitionRules();
+        for (ZoneOffsetTransitionRule r : l) {
+            cli.println (" Transition rule: " + r);
+        }
     }
 }
