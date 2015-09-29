@@ -1492,6 +1492,10 @@ public class ISOUtil {
     }
     public static String millisToString (long millis) {
         StringBuilder sb = new StringBuilder();
+        if (millis < 0) {
+            millis = -millis;
+            sb.append('-');
+        }
         int ms = (int) (millis % 1000);
         millis /= 1000;
         int dd = (int) (millis/86400);
