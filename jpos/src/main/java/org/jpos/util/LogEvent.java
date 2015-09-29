@@ -26,8 +26,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.sql.SQLException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.*;
 
 /**
@@ -37,15 +37,15 @@ public class LogEvent {
     private LogSource source;
     private String tag;
     private final List<Object> payLoad;
-    private long createdAt;
-    private long dumpedAt;
+    private Instant createdAt;
+    private Instant dumpedAt;
     private boolean honorSourceLogger;
     private boolean noArmor;
 
     public LogEvent (String tag) {
         super();
         this.tag = tag;
-        createdAt = System.currentTimeMillis();
+        createdAt = Instant.now();
         this.payLoad = Collections.synchronizedList (new ArrayList<Object>());
     }
 
@@ -89,19 +89,18 @@ public class LogEvent {
         if (noArmor) {
             p.println("");
         } else {
-            if (dumpedAt == 0L)
-                dumpedAt = System.currentTimeMillis();
-            Date date = new Date (dumpedAt);
-            DateFormat df = new SimpleDateFormat("EEE MMM dd HH:mm:ss.SSS z yyyy", Locale.US);
+            if (dumpedAt == null)
+                dumpedAt = Instant.now();
             StringBuilder sb = new StringBuilder(indent);
             sb.append ("<log realm=\"");
             sb.append (getRealm());
             sb.append ( "\" at=\"");
-            sb.append (df.format(date));
+            sb.append (dumpedAt.toString());
             sb.append ('"');
-            if (dumpedAt != createdAt) {
+            long elapsed = Duration.between(createdAt, dumpedAt).toMillis();
+            if (elapsed > 0) {
                 sb.append (" lifespan=\"");
-                sb.append (Long.toString (dumpedAt - createdAt));
+                sb.append (elapsed);
                 sb.append ("ms\"");
             }
             sb.append ('>');
