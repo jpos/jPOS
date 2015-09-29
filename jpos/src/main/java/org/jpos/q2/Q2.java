@@ -39,6 +39,8 @@ import javax.crypto.spec.SecretKeySpec;
 import javax.management.*;
 import java.io.*;
 import java.security.GeneralSecurityException;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.*;
 
 import static java.util.ResourceBundle.*;
@@ -82,7 +84,7 @@ public class Q2 implements FileFilter, Runnable {
     private String[] args;
     private boolean hasSystemLogger;
     private boolean exit;
-    private long startTime;
+    private Instant startTime;
     private CLI cli;
     private boolean recursive;
     private ConfigDecorationProvider decorator=null;
@@ -94,7 +96,7 @@ public class Q2 implements FileFilter, Runnable {
     public Q2 (String[] args, BundleContext bundleContext) {
         super();
         this.args = args;
-        startTime = System.currentTimeMillis();
+        startTime = Instant.now();
         instanceId = UUID.randomUUID();
         parseCmdLine (args);
         libDir     = new File (deployDir, "lib");
@@ -565,7 +567,7 @@ public class Q2 implements FileFilter, Runnable {
         return server;
     }
     public long getUptime() {
-        return System.currentTimeMillis() - startTime;
+        return Duration.between(startTime, Instant.now()).toMillis();
     }
     public void displayVersion () {
         System.out.println(getVersionString());
