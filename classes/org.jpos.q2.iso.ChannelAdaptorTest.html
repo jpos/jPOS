@@ -41,7 +41,7 @@
 </td>
 <td>
 <div class="infoBox" id="duration">
-<div class="counter">37.128s</div>
+<div class="counter">39.101s</div>
 <p>duration</p>
 </div>
 </td>
@@ -63,6 +63,9 @@
 <li>
 <a href="#tab0">Tests</a>
 </li>
+<li>
+<a href="#tab1">Standard output</a>
+</li>
 </ul>
 <div id="tab0" class="tab">
 <h2>Tests</h2>
@@ -76,22 +79,22 @@
 </thead>
 <tr>
 <td class="success">receivePullsMessageFromUnderlyingChannel</td>
-<td>0.002s</td>
+<td>0.009s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">sendPassesMessageToUnderlyingChannel</td>
-<td>0.004s</td>
+<td>0.013s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">stopCanWaitForWorkersEvenWhenOutgoingChannelNeverConnects</td>
-<td>6.163s</td>
+<td>5.727s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">stopCanWaitForWorkersEvenWhenSenderBlockedTryingToConnect</td>
-<td>0.717s</td>
+<td>0.715s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
@@ -106,10 +109,93 @@
 </tr>
 <tr>
 <td class="success">waitForWorkersOnStopStopsAfterChannelConnects</td>
-<td>30.242s</td>
+<td>32.637s</td>
 <td class="success">passed</td>
 </tr>
 </table>
+</div>
+<div id="tab1" class="tab">
+<h2>Standard output</h2>
+<span class="code">
+<pre>&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;2015-10-02T13:01:04.525Z&quot;&gt;
+  &lt;warn&gt;
+    channel-receiver-TestSpace-receive
+    &lt;exception name=&quot;simulated disconnect&quot;&gt;
+    java.io.EOFException: simulated disconnect
+	at org.jpos.q2.iso.ChannelAdaptorTest$StubISOChannel.receive(ChannelAdaptorTest.java:377)
+	at org.jpos.q2.iso.ChannelAdaptor$Receiver.run(ChannelAdaptor.java:317)
+	at java.lang.Thread.run(Thread.java:745)
+    &lt;/exception&gt;
+  &lt;/warn&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;2015-10-02T13:01:05.529Z&quot;&gt;
+  &lt;warn&gt;
+    channel-receiver-TestSpace-receive
+    &lt;exception name=&quot;simulated disconnect&quot;&gt;
+    java.io.EOFException: simulated disconnect
+	at org.jpos.q2.iso.ChannelAdaptorTest$StubISOChannel.receive(ChannelAdaptorTest.java:377)
+	at org.jpos.q2.iso.ChannelAdaptor$Receiver.run(ChannelAdaptor.java:317)
+	at java.lang.Thread.run(Thread.java:745)
+    &lt;/exception&gt;
+  &lt;/warn&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;2015-10-02T13:01:06.542Z&quot;&gt;
+  &lt;warn&gt;
+    channel-receiver-TestSpace-receive
+    &lt;exception name=&quot;simulated disconnect&quot;&gt;
+    java.io.EOFException: simulated disconnect
+	at org.jpos.q2.iso.ChannelAdaptorTest$StubISOChannel.receive(ChannelAdaptorTest.java:377)
+	at org.jpos.q2.iso.ChannelAdaptor$Receiver.run(ChannelAdaptor.java:317)
+	at java.lang.Thread.run(Thread.java:745)
+    &lt;/exception&gt;
+  &lt;/warn&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;2015-10-02T13:01:07.555Z&quot;&gt;
+  &lt;warn&gt;
+    channel-receiver-TestSpace-receive
+    &lt;exception name=&quot;simulated disconnect&quot;&gt;
+    java.io.EOFException: simulated disconnect
+	at org.jpos.q2.iso.ChannelAdaptorTest$StubISOChannel.receive(ChannelAdaptorTest.java:377)
+	at org.jpos.q2.iso.ChannelAdaptor$Receiver.run(ChannelAdaptor.java:317)
+	at java.lang.Thread.run(Thread.java:745)
+    &lt;/exception&gt;
+  &lt;/warn&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;2015-10-02T13:01:08.560Z&quot;&gt;
+  &lt;warn&gt;
+    channel-receiver-TestSpace-receive
+    &lt;exception name=&quot;simulated disconnect&quot;&gt;
+    java.io.EOFException: simulated disconnect
+	at org.jpos.q2.iso.ChannelAdaptorTest$StubISOChannel.receive(ChannelAdaptorTest.java:377)
+	at org.jpos.q2.iso.ChannelAdaptor$Receiver.run(ChannelAdaptor.java:317)
+	at java.lang.Thread.run(Thread.java:745)
+    &lt;/exception&gt;
+  &lt;/warn&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;2015-10-02T13:01:09.571Z&quot; lifespan=&quot;1ms&quot;&gt;
+  &lt;warn&gt;
+    channel-receiver-TestSpace-receive
+    &lt;exception name=&quot;simulated disconnect&quot;&gt;
+    java.io.EOFException: simulated disconnect
+	at org.jpos.q2.iso.ChannelAdaptorTest$StubISOChannel.receive(ChannelAdaptorTest.java:377)
+	at org.jpos.q2.iso.ChannelAdaptor$Receiver.run(ChannelAdaptor.java:317)
+	at java.lang.Thread.run(Thread.java:745)
+    &lt;/exception&gt;
+  &lt;/warn&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;2015-10-02T13:01:10.581Z&quot;&gt;
+  &lt;warn&gt;
+    channel-receiver-TestSpace-receive
+    &lt;exception name=&quot;simulated disconnect&quot;&gt;
+    java.io.EOFException: simulated disconnect
+	at org.jpos.q2.iso.ChannelAdaptorTest$StubISOChannel.receive(ChannelAdaptorTest.java:377)
+	at org.jpos.q2.iso.ChannelAdaptor$Receiver.run(ChannelAdaptor.java:317)
+	at java.lang.Thread.run(Thread.java:745)
+    &lt;/exception&gt;
+  &lt;/warn&gt;
+&lt;/log&gt;
+</pre>
+</span>
 </div>
 </div>
 <div id="footer">
@@ -119,7 +205,7 @@
 <input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
 </label>
 </div>Generated by 
-<a href="http://www.gradle.org">Gradle 2.6</a> at Oct 2, 2015 12:55:01 PM</p>
+<a href="http://www.gradle.org">Gradle 2.6</a> at Oct 2, 2015 1:02:42 PM</p>
 </div>
 </div>
 </body>
