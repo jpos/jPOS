@@ -27,10 +27,7 @@ import org.jpos.util.Loggeable;
 import org.jpos.util.Logger;
 import org.jpos.util.NameRegistrar;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStreamReader;
-import java.io.PrintStream;
+import java.io.*;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.lang.management.ThreadMXBean;
@@ -176,9 +173,19 @@ public class SystemMonitor extends QBeanSupport
         Runtime r = getRuntimeInstance();
         ZoneId zi = ZoneId.systemDefault();
         Instant instant = Instant.now();
+
+        File cwd = new File(".");
+
+        String freeSpace = ISOUtil.readableFileSize(cwd.getFreeSpace());
+        String usableSpace = ISOUtil.readableFileSize(cwd.getUsableSpace());
+
         p.printf ("%s           OS: %s%n", indent, System.getProperty("os.name"));
         p.printf ("%s process name: %s%n", indent, runtimeMXBean.getName());
         p.printf ("%s         host: %s%n", indent, getLocalHost());
+        p.printf ("%s          cwd: %s%n", indent, System.getProperty("user.dir"));
+        p.printf ("%s   free space: %s%n", indent, freeSpace);
+        if (!freeSpace.equals(usableSpace))
+            p.printf ("%s usable space: %s%n", indent, usableSpace);
         p.printf ("%s      version: %s (%s)%n", indent, Q2.getVersion(), getRevision());
         p.printf ("%s     instance: %s%n", indent, getInstanceIdAsString());
         p.printf ("%s       uptime: %s%n", indent, ISOUtil.millisToString(getServerUptimeAsMillisecond()));
