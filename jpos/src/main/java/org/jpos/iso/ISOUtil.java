@@ -21,6 +21,7 @@ package org.jpos.iso;
 import java.math.BigDecimal;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
+import java.text.DecimalFormat;
 import java.util.*;
 
 /**
@@ -939,7 +940,7 @@ public class ISOUtil {
      * @return normalized string suitable for XML Output
      */
     public static String normalize (String s) {
-        return normalize (s, true);
+        return normalize(s, true);
     }
     /**
      * Protects PAN, Track2, CVC (suitable for logs).
@@ -1179,7 +1180,7 @@ public class ISOUtil {
      **/
     public static boolean isNumeric ( String s, int radix ) {
         int i = 0, len = s.length();
-        while ( i < len && Character.digit( s.charAt( i ), radix ) > -1  ){
+        while ( i < len && Character.digit(s.charAt(i), radix) > -1  ){
             i++;
         }
         return i >= len && len > 0;
@@ -1666,5 +1667,14 @@ public class ISOUtil {
             sb.append (r.nextInt(radix));
         }
         return sb.toString();
+    }
+
+    // See http://stackoverflow.com/questions/3263892/format-file-size-as-mb-gb-etc
+    // and http://physics.nist.gov/cuu/Units/binary.html
+    public static String readableFileSize(long size) {
+        if(size <= 0) return "0";
+        final String[] units = new String[] { "Bi", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB" };
+        int digitGroups = (int) (Math.log10(size)/Math.log10(1024));
+        return new DecimalFormat("#,##0.#").format(size/Math.pow(1024, digitGroups)) + " " + units[digitGroups];
     }
 }
