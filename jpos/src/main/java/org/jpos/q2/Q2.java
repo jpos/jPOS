@@ -38,6 +38,8 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 import javax.management.*;
 import java.io.*;
+import java.lang.management.ManagementFactory;
+import java.lang.management.RuntimeMXBean;
 import java.security.GeneralSecurityException;
 import java.time.Duration;
 import java.time.Instant;
@@ -92,6 +94,7 @@ public class Q2 implements FileFilter, Runnable {
     private Framework osgiFramework;
     private boolean startOSGI = false;
     private BundleContext bundleContext;
+    private String pidFile;
 
     public Q2 (String[] args, BundleContext bundleContext) {
         super();
@@ -161,6 +164,7 @@ public class Q2 implements FileFilter, Runnable {
                     t.printStackTrace();
             }
             factory = new QFactory(loaderName, this);
+            writePidFile();
             initSystemLogger();
             if (bundleContext == null)
                 addShutdownHook();
@@ -625,6 +629,7 @@ public class Q2 implements FileFilter, Runnable {
         options.addOption ("i","cli", false, "Command Line Interface");
         options.addOption ("c","command", true, "Command to execute");
         options.addOption ("O", "osgi", false, "Start experimental OSGi framework server");
+        options.addOption ("p", "pid-file", true, "Store project's pid");
 
         try {
             CommandLine line = parser.parse (options, args);
@@ -654,6 +659,8 @@ public class Q2 implements FileFilter, Runnable {
                 deployBundle (new File (line.getOptionValue ("e")), true);
             if (line.hasOption("O"))
                 startOSGI = true;
+            if (line.hasOption("p"))
+                pidFile = line.getOptionValue("p");
         } catch (MissingArgumentException e) {
             System.out.println("ERROR: " + e.getMessage());
             System.exit(1);
@@ -949,5 +956,27 @@ public class Q2 implements FileFilter, Runnable {
         }
     }
 
-}
+    private void writePidFile() {
+        if (pidFile == null)
+            return;
 
+        File f = new File(pidFile);
+        try {
+            if (f.isDirectory()) {
+                System.err.printf("Q2: pid-file (%s) is a directory%n", pidFile);
+                System.exit(21); // EISDIR
+            }
+            if (!f.createNewFile()) {
+                System.err.printf("Q2: Unable to write pid-file (%s)%n", pidFile);
+                System.exit(17); // EEXIST
+            }
+            f.deleteOnExit();
+            FileOutputStream fow = new FileOutputStream(f);
+            fow.write(ManagementFactory.getRuntimeMXBean().getName().split("@")[0].getBytes());
+            fow.write(System.lineSeparator().getBytes());
+            fow.close();
+        } catch (IOException e) {
+            throw new IllegalArgumentException(String.format("Unable to write pid-file (%s)", pidFile), e);
+        }
+    }
+}
