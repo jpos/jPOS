@@ -28,6 +28,8 @@ import java.io.PrintStream;
 import java.sql.SQLException;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 
 /**
@@ -94,8 +96,8 @@ public class LogEvent {
             StringBuilder sb = new StringBuilder(indent);
             sb.append ("<log realm=\"");
             sb.append (getRealm());
-            sb.append ( "\" at=\"");
-            sb.append (dumpedAt.toString());
+            sb.append("\" at=\"");
+            sb.append(LocalDateTime.ofInstant(dumpedAt, ZoneId.systemDefault()));
             sb.append ('"');
             long elapsed = Duration.between(createdAt, dumpedAt).toMillis();
             if (elapsed > 0) {
