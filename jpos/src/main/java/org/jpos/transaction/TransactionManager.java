@@ -468,7 +468,7 @@ public class TransactionManager
     {
         try {
             if (p instanceof AbortParticipant) {
-                setThreadName(id, "prepareForAbort", p, Instant.now());
+                setThreadName(id, "prepareForAbort", p);
                 return ((AbortParticipant)p).prepareForAbort (id, context);
             }
         } catch (Throwable t) {
@@ -480,7 +480,7 @@ public class TransactionManager
         (TransactionParticipant p, long id, Serializable context) 
     {
         try {
-            setThreadName(id, "prepare", p, Instant.now());
+            setThreadName(id, "prepare", p);
             return p.prepare (id, context);
         } catch (Throwable t) {
             getLog().warn ("PREPARE: " + Long.toString (id), t);
@@ -491,7 +491,7 @@ public class TransactionManager
         (TransactionParticipant p, long id, Serializable context) 
     {
         try {
-            setThreadName(id, "commit", p, Instant.now());
+            setThreadName(id, "commit", p);
             p.commit(id, context);
         } catch (Throwable t) {
             getLog().warn ("COMMIT: " + Long.toString (id), t);
@@ -501,7 +501,7 @@ public class TransactionManager
         (TransactionParticipant p, long id, Serializable context) 
     {
         try {
-            setThreadName(id, "abort", p, Instant.now());
+            setThreadName(id, "abort", p);
             p.abort(id, context);
         } catch (Throwable t) {
             getLog().warn ("ABORT: " + Long.toString (id), t);
@@ -925,9 +925,10 @@ public class TransactionManager
             }
         }
     }
-    private void setThreadName (long id, String method, TransactionParticipant p, Instant now) {
+    private void setThreadName (long id, String method, TransactionParticipant p) {
         Thread.currentThread().setName(
-            String.format("%s:%d %s %s %s", getName(), id, method, p.getClass().getName(), LocalDateTime.ofInstant(now, ZoneId.systemDefault()))
+            String.format("%s:%d %s %s %s", getName(), id, method, p.getClass().getName(), 
+                LocalDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()))
         );
     }
     private void setThreadLocal (long id, Serializable context) {
