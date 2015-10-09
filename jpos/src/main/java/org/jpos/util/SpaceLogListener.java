@@ -44,10 +44,11 @@ public class SpaceLogListener implements LogListener, Configurable {
         LogEvent e = frozen ? new FrozenLogEvent(ev) : ev;
         try {
             getSpace().out(queueName, e, timeout);
+            return null;
         } catch (Throwable t) {
-            t.printStackTrace(System.err);
+            ev.addMessage("Unable to log to " + queueName);
+            return ev;
         }
-        return e;
     }
 
     /**
