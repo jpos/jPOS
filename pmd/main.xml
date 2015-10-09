@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pmd version="5.2.3" timestamp="2015-10-08T18:45:34.185">
+<pmd version="5.2.3" timestamp="2015-10-09T19:06:38.171">
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/core/CardHolder.java">
 <violation beginline="323" endline="325" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.core" class="CardHolder" method="isExpired" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
@@ -203,6 +203,11 @@ Avoid empty catch blocks
 </violation>
 <violation beginline="856" endline="859" begincolumn="17" endcolumn="17" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.q2" class="Q2" method="initConfigDecorator" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
+</violation>
+</file>
+<file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/q2/cli/LOGGER_BENCHMARK.java">
+<violation beginline="26" endline="30" begincolumn="21" endcolumn="21" rule="JumbledIncrementer" ruleset="Basic" package="org.jpos.q2.cli" class="LOGGER_BENCHMARK" method="run" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/basic.html#JumbledIncrementer" priority="3">
+Avoid modifying an outer loop incrementer in an inner loop for update expression
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/q2/cli/TAIL.java">
