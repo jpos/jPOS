@@ -6,30 +6,35 @@ import org.jpos.util.LogEvent;
 import org.jpos.util.Logger;
 import org.jpos.util.Profiler;
 
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.CountDownLatch;
 
 @SuppressWarnings("unused")
-public class LOGGER_BENCHMARK implements CLICommand, Runnable {
-    static AtomicInteger threadNumber = new AtomicInteger();
+public class LOGGER_BENCHMARK implements CLICommand {
     public void exec(CLIContext ctx, String[] args) throws Exception {
-        if (args.length != 2) {
-            ctx.println ("Usage: " + args[0] + "threads");
+        if (args.length != 3) {
+            ctx.println (String.format ("Usage: %s threads messages", args[0]));
             return;
         }
-        int threads = Integer.parseInt(args[1]);
-        for (int i = 0; i<threads; i++) {
-            new Thread(this).start();
-        }
-    }
+        int threadCount = Integer.parseInt(args[1]);
+        final int numMessages = Integer.parseInt(args[2]);
+        final Profiler p = new Profiler();
+        final CountDownLatch done = new CountDownLatch(threadCount);
+        for (int i = 0; i<threadCount; i++) {
+            final  String name = "Thread " + i;
+            new Thread() {
+                public void run() {
+                    for (int i = 0; i < numMessages; i++) {
+                        LogEvent ev = new LogEvent();
+                        ev.addMessage(name + " " + i);
+                        Logger.log(ev);
+                    }
+                    p.checkPoint (name);
+                    done.countDown();
 
-    public void run() {
-        String name = "Thread " + threadNumber.incrementAndGet() + " ";
-        Profiler p = new Profiler();
-        for (int i = 0; i <= 1000000; i++) {
-            LogEvent ev = new LogEvent();
-            ev.addMessage(name + i);
-            Logger.log(ev);
+                }
+            }.start();
         }
-        p.dump(System.out, name);
+        done.await();
+        p.dump (System.out, "");
     }
 }
