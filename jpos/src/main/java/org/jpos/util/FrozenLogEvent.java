@@ -19,8 +19,9 @@
 package org.jpos.util;
 
 import java.io.PrintStream;
+import java.io.Serializable;
 
-public class FrozenLogEvent extends LogEvent {
+public class FrozenLogEvent extends LogEvent implements Serializable {
     String frozen;
     String realm;
     public FrozenLogEvent (LogEvent evt) {
@@ -40,4 +41,6 @@ public class FrozenLogEvent extends LogEvent {
     public String toString () {
         return frozen;
     }
+
+    private static final long serialVersionUID = -5090836627480784404L;
 }
