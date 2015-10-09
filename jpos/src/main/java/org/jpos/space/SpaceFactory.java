@@ -111,7 +111,7 @@ public class SpaceFactory {
             try {
                 sp = (Space) NameRegistrar.get (uri);
             } catch (NameRegistrar.NotFoundException e) {
-                if (SPACELET.equals (scheme))
+                if (SPACELET.equals (scheme) || "rspace".equals(scheme))
                     throw new SpaceError (uri + " not found.");
 
                 sp = createSpace (scheme, name, param);

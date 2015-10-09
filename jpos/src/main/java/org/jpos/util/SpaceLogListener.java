@@ -22,23 +22,31 @@ import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
 import org.jpos.space.Space;
+import org.jpos.space.SpaceError;
 import org.jpos.space.SpaceFactory;
+import org.jpos.space.TSpace;
 
 public class SpaceLogListener implements LogListener, Configurable {
     String queueName;
     Space sp;
+    Space buffer;
     long timeout = 300000L;
     boolean frozen = true;
+    Configuration cfg;
 
     @SuppressWarnings("unused")
-    public SpaceLogListener () {
+    public SpaceLogListener() {
         super();
     }
 
     @SuppressWarnings("unchecked")
-    public synchronized LogEvent log (LogEvent ev) {
+    public synchronized LogEvent log(LogEvent ev) {
         LogEvent e = frozen ? new FrozenLogEvent(ev) : ev;
-        sp.out (queueName, e, timeout);
+        try {
+            getSpace().out(queueName, e, timeout);
+        } catch (Throwable t) {
+            t.printStackTrace(System.err);
+        }
         return e;
     }
 
@@ -48,11 +56,29 @@ public class SpaceLogListener implements LogListener, Configurable {
      */
     @Override
     public void setConfiguration(Configuration cfg) throws ConfigurationException {
+        this.cfg = cfg;
         queueName = cfg.get("queue", null);
         if (queueName == null)
             throw new ConfigurationException("'queue' property not configured");
-        sp = SpaceFactory.getSpace(cfg.get("space"));
+
         timeout = cfg.getLong("timeout", timeout);
         frozen = cfg.getBoolean("frozen", true);
+    }
+
+    @SuppressWarnings("unchecked")
+    private Space getSpace() {
+        if (sp == null) {
+            try {
+                sp = SpaceFactory.getSpace(cfg.get("space"));
+                if (buffer != null) {
+                    while (buffer.rdp(queueName) != null)
+                        sp.out (queueName, buffer.inp(queueName));
+                    buffer = null;
+                }
+            } catch (SpaceError e) {
+                return (buffer = new TSpace());
+            }
+        }
+        return sp;
     }
 }
