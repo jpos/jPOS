@@ -36,6 +36,7 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
     public static final long GCDELAY = 5*1000;
     private static final long GCLONG = 60*1000;
     private static final long NRD_RESOLUTION = 500L;
+    private static final int MAX_ENTRIES_IN_DUMP = 1000;
     private Set[] expirables;
     private long lastLongGC = System.currentTimeMillis();
 
@@ -228,19 +229,30 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
     }
     public void dump(PrintStream p, String indent) {
         Object[] keys;
+        int size = entries.size();
+        if (size > MAX_ENTRIES_IN_DUMP * 100) {
+            p.printf ("%sWARNING - space too big, size=%d%n", indent, size);
+            return;
+        }
         synchronized (this) {
             keys = entries.keySet().toArray();
         }
+        int i=0;
         for (Object key : keys) {
-            p.printf("%s<key count='%d'>%s</key>\n", indent, size(key), key);
+            p.printf("%s<key count='%d'>%s</key>%n", indent, size(key), key);
+            if (i++ > MAX_ENTRIES_IN_DUMP) {
+                p.printf ("%s...%n", indent);
+                p.printf ("%s...%n", indent);
+                break;
+            }
         }
-        p.println(indent+"<keycount>"+(keys.length-1)+"</keycount>");
+        p.printf("%s key-count: %d%n", indent, keys.length);
         int exp0, exp1;
         synchronized (this) {
             exp0 = expirables[0].size();
             exp1 = expirables[1].size();
         }
-        p.println(String.format("%s<gcinfo>%d,%d</gcinfo>\n", indent, exp0, exp1));
+        p.printf("%s    gcinfo: %d,%d%n", indent, exp0, exp1);
     }
     public void notifyListeners (Object key, Object value) {
         Object[] listeners = null;
