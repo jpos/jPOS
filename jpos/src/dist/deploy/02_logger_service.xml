@@ -1,4 +1,0 @@
-<logger-service class="org.jpos.q2.qbean.LoggerService" logger="DAEMON">
-    <property name="queue" value="logger.q2" />
-</logger-service>
-
