@@ -20,6 +20,7 @@ package  org.jpos.security;
 
 import org.javatuples.Pair;
 
+import java.security.MessageDigest;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -1257,7 +1258,7 @@ public interface SMAdapter {
      * @throws SMException
      */
     byte[] generateEDE_MAC(byte[] data, SecureDESKey kd) throws SMException;
-    
+
     /**
      * Translate key from encryption under the LMK held in key change storage
      * to encryption under a new LMK.
@@ -1268,6 +1269,22 @@ public interface SMAdapter {
      */
     SecureDESKey translateKeyFromOldLMK(SecureDESKey kd) throws SMException;
 
+
+
+    /**
+     * Calculate signature of Data Block.
+     *
+     * @param hash identifier of the hash algorithm used to hash passed data.
+     * @param privateKey private key used to compute data signature.
+     * @param data data to be signed.
+     * @return signature of passed data.
+     * @throws SMException
+     */
+    byte[] calculateSignature(MessageDigest hash, SecurePrivateKey privateKey
+            ,byte[] data) throws SMException;
+
+
+
     /**
      * Erase the key change storage area of memory
      *
@@ -1277,6 +1294,7 @@ public interface SMAdapter {
      * @throws SMException
      */
     void eraseOldLMK() throws SMException;
+
 }
 
 
