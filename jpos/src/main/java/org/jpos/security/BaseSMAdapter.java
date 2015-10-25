@@ -1216,7 +1216,7 @@ public class BaseSMAdapter
      * @return translated key with {@code destKeyScheme} scheme
      * @throws SMException
      */
-    public SecureDESKey translateKeySchemeImpl (SecureDESKey key, KeyScheme destKeyScheme)
+    protected SecureDESKey translateKeySchemeImpl (SecureDESKey key, KeyScheme destKeyScheme)
             throws SMException {
         throw  new SMException("Operation not supported in: " + this.getClass().getName());
     }
