@@ -42,24 +42,20 @@ import java.util.regex.Pattern;
  * @author Robert Demski
  * @see SMAdapter
  */
-public class SecureDESKey extends SecureKey {
+public class SecureDESKey extends SecureVariantKey {
 
     private static final long serialVersionUID = -9145281998779008306L;
 
     /**
      * Regular expression pattern representing key type string value.
      */
-    private static final Pattern KEY_TYPE_PATTERN = Pattern.compile("([^:;]*)([:;])?([^:;])?([^:;])?");
+    protected static final Pattern KEY_TYPE_PATTERN = Pattern.compile("([^:;]*)([:;])?([^:;])?([^:;])?");
 
     /**
      * The keyCheckValue allows identifying which clear key does this
      * secure key represent.
      */
     protected byte[] keyCheckValue = null;
-
-    protected Byte variant;
-
-    protected KeyScheme scheme;
 
     public SecureDESKey() {
         super();
@@ -151,15 +147,7 @@ public class SecureDESKey extends SecureKey {
         return  keyCheckValue;
     }
 
-    /**
-     * Key Type Variant is useful for stating whitch variant of key type should be used.
-     * ... TO COMPLITE ...<BR>
-     * @param variant
-     */
-    public void setVariant(byte variant){
-        this.variant = variant;
-    }
-
+    @Override
     public byte getVariant () {
         if (variant!=null)
             return variant;
@@ -178,15 +166,7 @@ public class SecureDESKey extends SecureKey {
         return variant;
     }
 
-    /**
-     * Key Type Scheme is useful for stating whitch scheme variant of key type should be used.
-     * ... TO COMPLITE ...<BR>
-     * @param scheme
-     */
-    public void setScheme(KeyScheme scheme){
-        this.scheme = scheme;
-    }
-
+    @Override
     public KeyScheme getScheme () {
         if (scheme!=null)
             return scheme;
