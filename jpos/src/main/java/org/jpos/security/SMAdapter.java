@@ -179,6 +179,21 @@ public interface SMAdapter {
     String TYPE_DEK = "DEK";
 
     /**
+     * RSA: Private Key.
+     */
+    String TYPE_RSA_SK = "RSA_SK";
+
+    /**
+     * HMAC: Hash Message Authentication Code <i>(with key usage)</i>.
+     */
+    String TYPE_HMAC   = "HMAC";
+
+    /**
+     * RSA: Public Key.
+     */
+    String TYPE_RSA_PK = "RSA_PK";
+
+    /**
      * PIN Block Format adopted by ANSI (ANSI X9.8) and is one of
      * two formats supported by the ISO (ISO 95641 - format 0).
      */
