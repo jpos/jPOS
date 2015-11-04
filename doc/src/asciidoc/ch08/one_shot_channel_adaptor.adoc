@@ -35,7 +35,7 @@ It supports the following attributes:
   <property name="host" value="127.0.0.1" />
   <property name="port" value="8001" />                   
   <filter
-      class="org.jpos.iso.filter.YourFilter" 
+      class="org.jpos.iso.filter.YourIncomingFilter" 
       direction="incoming" />
   <filter 
       class="org.jpos.iso.filter.YourOutgoingFilter" 

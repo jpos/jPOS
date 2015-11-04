@@ -6,7 +6,7 @@ All the details described in our first implementation of +QTest+ can be
 simplified by just extending link:https://github.com/jpos/jPOS/blob/master/jpos/src/main/java/org/jpos/q2/QBeanSupport.java[QBeanSupport].
 
 +QBeanSupport+ implement the +QBean+ life-cycle methods +init()+, +start()+,
-+stop()+ and +destry()+ and call the protected:
++stop()+ and +destroy()+ and call the protected:
 
 * initService
 * startService

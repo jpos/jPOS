@@ -48,7 +48,7 @@ So a reasonable name for a channel descriptor can be something like
   <property name="port" value="8001" />                   
   <property name="timeout" value="300000" />              <6>
   <filter                                                 <7>
-      class="org.jpos.iso.filter.YourFilter" 
+      class="org.jpos.iso.filter.YourIncomingFilter" 
       direction="incoming" />
   <filter 
       class="org.jpos.iso.filter.YourOutgoingFilter" 
@@ -194,8 +194,8 @@ connect time, this is useful when combined with the +alternate-host+ and
  <channel class="org.jpos.iso.channel.NACChannel" 
     ....
     ....
-    <property name="connection-timeout" value="300000" /> <!-- five minutes -->
-    <property name="timeout" value="15000" />             <!-- 15 seconds -->
+    <property name="connection-timeout" value="15000" />  <!-- 15 seconds -->
+    <property name="timeout" value="300000" />            <!-- five minutes -->
     <property name="keep-alive" value="true" />
     ....
     ....

@@ -142,7 +142,7 @@ Same goes for the second position, if we send a '0100' we expect a '0110',
 and that's what the '+0123456789+' mapping does, it actually takes no
 action.
 
-For the first position, we use the default value +0022446789+.
+For the third position, we use the default value +0022446789+.
 That means that a '1' in the third position (i.e. a '0110') will
 be considered a '0' when creating the MTI key part, so that a
 '0110' response will match the original '0100'.
