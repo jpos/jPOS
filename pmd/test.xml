@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pmd version="5.2.3" timestamp="2015-10-19T15:04:27.696">
+<pmd version="5.2.3" timestamp="2015-11-13T20:34:31.846">
 <file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/bsh/BSHLogListenerTest.java">
 <violation beginline="113" endline="115" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.bsh" class="BSHLogListenerTest" method="testLoadCodeThrowsNullPointerException" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
@@ -58,6 +58,11 @@ Avoid empty catch blocks
 <file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/iso/RightPadderTest.java">
 <violation beginline="45" endline="46" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.iso" class="RightPadderTest" method="testPadLengthTooShort" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
+</violation>
+</file>
+<file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/iso/SslChannelIntegrationTest.java">
+<violation beginline="96" endline="96" begincolumn="67" endcolumn="76" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.iso" class="SslChannelIntegrationTest" method="newIsoServer" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
+Avoid using java.lang.ThreadGroup; it is not thread safe
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/iso/header/BASE1HeaderTest.java">
@@ -171,12 +176,49 @@ Avoid empty catch blocks
 Avoid empty catch blocks
 </violation>
 </file>
+<file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/util/LogEventTest.java">
+<violation beginline="117" endline="117" begincolumn="26" endcolumn="35" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.util" class="LogEventTest" method="testDump3" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
+Avoid using java.lang.ThreadGroup; it is not thread safe
+</violation>
+</file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/util/RotateLogListenerTest.java">
 <violation beginline="71" endline="73" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.util" class="RotateLogListenerTest" method="testConstructorThrowsNullPointerException" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
 </violation>
 <violation beginline="81" endline="83" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.util" class="RotateLogListenerTest" method="testConstructorThrowsNullPointerException1" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
+</violation>
+</file>
+<file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/util/ThreadPoolTest.java">
+<violation beginline="38" endline="38" begincolumn="37" endcolumn="46" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.util" class="ThreadPoolTest" method="testConstructor" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
+Avoid using java.lang.ThreadGroup; it is not thread safe
+</violation>
+<violation beginline="46" endline="46" begincolumn="37" endcolumn="46" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.util" class="ThreadPoolTest" method="testConstructor1" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
+Avoid using java.lang.ThreadGroup; it is not thread safe
+</violation>
+<violation beginline="54" endline="54" begincolumn="37" endcolumn="46" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.util" class="ThreadPoolTest" method="testConstructor2" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
+Avoid using java.lang.ThreadGroup; it is not thread safe
+</violation>
+<violation beginline="62" endline="62" begincolumn="37" endcolumn="46" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.util" class="ThreadPoolTest" method="testConstructor3" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
+Avoid using java.lang.ThreadGroup; it is not thread safe
+</violation>
+<violation beginline="70" endline="70" begincolumn="37" endcolumn="46" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.util" class="ThreadPoolTest" method="testConstructor4" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
+Avoid using java.lang.ThreadGroup; it is not thread safe
+</violation>
+<violation beginline="78" endline="78" begincolumn="37" endcolumn="46" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.util" class="ThreadPoolTest" method="testRun1" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
+Avoid using java.lang.ThreadGroup; it is not thread safe
+</violation>
+<violation beginline="92" endline="92" begincolumn="37" endcolumn="46" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.util" class="ThreadPoolTest" method="testRun2" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
+Avoid using java.lang.ThreadGroup; it is not thread safe
+</violation>
+<violation beginline="113" endline="113" begincolumn="37" endcolumn="46" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.util" class="ThreadPoolTest" method="testRun3" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
+Avoid using java.lang.ThreadGroup; it is not thread safe
+</violation>
+<violation beginline="125" endline="125" begincolumn="37" endcolumn="46" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.util" class="ThreadPoolTest" method="testRunNames" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
+Avoid using java.lang.ThreadGroup; it is not thread safe
+</violation>
+<violation beginline="138" endline="138" begincolumn="31" endcolumn="40" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.util" class="ThreadPoolTest" method="testConcurrentThreadAllocation" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
+Avoid using java.lang.ThreadGroup; it is not thread safe
 </violation>
 </file>
 </pmd>
