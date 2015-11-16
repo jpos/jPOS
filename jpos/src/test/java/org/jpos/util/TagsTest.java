@@ -67,6 +67,7 @@ public class TagsTest {
         assertTrue(ts.containsAll(new Tags("abc,def")));
         assertTrue(ts.containsAll(new Tags("abc,ghi,def")));
         assertTrue(ts.containsAll(new Tags()));
+        assertTrue(new Tags().containsAll(new Tags()));
         assertFalse(ts.containsAll(new Tags("abc,jkl")));
     }
 
@@ -76,6 +77,7 @@ public class TagsTest {
         assertTrue(ts.containsAny(new Tags("abc,def")));
         assertTrue(ts.containsAny(new Tags("abc,jkl")));
         assertTrue(ts.containsAny(new Tags("")));
+        assertTrue(new Tags().containsAny(new Tags()));
         assertFalse(ts.containsAny(new Tags("jkl,mno")));
     }
 }
