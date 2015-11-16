@@ -60,22 +60,15 @@ public class Tags implements Serializable {
     public int size() {
         return ts.size();
     }
-    public boolean hasAll (Tags tags) {
+    public boolean containsAll (Tags tags) {
         return ts.containsAll(tags.ts);
     }
-    public boolean hasAny (Tags tags) {
+    public boolean containsAny (Tags tags) {
         for (String s : tags.ts) {
             if (ts.contains(s))
                 return true;
         }
-        return false;
-    }
-    public boolean hasNone (Tags tags) {
-        for (String s : tags.ts) {
-            if (ts.contains(s))
-                return false;
-        }
-        return true;
+        return tags.size() == 0;
     }
 
     @Override

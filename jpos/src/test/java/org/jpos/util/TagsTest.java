@@ -61,27 +61,21 @@ public class TagsTest {
     }
 
     @Test
-    public void testHasAll() {
+    public void testContainsAll() {
         Tags ts = new Tags("abc,def,ghi");
-        assertTrue(ts.hasAll(new Tags("def,ghi")));
-        assertTrue(ts.hasAll(new Tags("abc,def")));
-        assertTrue(ts.hasAll(new Tags("abc,ghi,def")));
-        assertFalse(ts.hasAll(new Tags("abc,jkl")));
+        assertTrue(ts.containsAll(new Tags("def,ghi")));
+        assertTrue(ts.containsAll(new Tags("abc,def")));
+        assertTrue(ts.containsAll(new Tags("abc,ghi,def")));
+        assertTrue(ts.containsAll(new Tags()));
+        assertFalse(ts.containsAll(new Tags("abc,jkl")));
     }
 
     @Test
-    public void testHasAny() {
+    public void testContainsAny() {
         Tags ts = new Tags("abc,def,ghi");
-        assertTrue(ts.hasAny(new Tags("abc,def")));
-        assertTrue(ts.hasAny(new Tags("abc,jkl")));
-        assertFalse(ts.hasAny(new Tags("jkl,mno")));
-    }
-
-    @Test
-    public void testHasNone() {
-        Tags ts = new Tags("abc,def,ghi");
-        assertFalse(ts.hasNone(new Tags("abc,def")));
-        assertFalse(ts.hasNone(new Tags("abc,jkl")));
-        assertTrue(ts.hasNone(new Tags("jkl,mno")));
+        assertTrue(ts.containsAny(new Tags("abc,def")));
+        assertTrue(ts.containsAny(new Tags("abc,jkl")));
+        assertTrue(ts.containsAny(new Tags("")));
+        assertFalse(ts.containsAny(new Tags("jkl,mno")));
     }
 }
