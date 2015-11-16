@@ -61,12 +61,7 @@ public class Tags implements Serializable {
         return ts.size();
     }
     public boolean hasAll (Tags tags) {
-        boolean rc = true;
-        for (String s : tags.ts) {
-            if (!ts.contains(s))
-                rc = false;
-        }
-        return rc;
+        return ts.containsAll(tags.ts);
     }
     public boolean hasAny (Tags tags) {
         for (String s : tags.ts) {
