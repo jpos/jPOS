@@ -59,4 +59,29 @@ public class TagsTest {
         assertTrue(ts1.hashCode() == ts2.hashCode());
         assertEquals(ts1.toString(), ts2.toString());
     }
+
+    @Test
+    public void testHasAll() {
+        Tags ts = new Tags("abc,def,ghi");
+        assertTrue(ts.hasAll(new Tags("def,ghi")));
+        assertTrue(ts.hasAll(new Tags("abc,def")));
+        assertTrue(ts.hasAll(new Tags("abc,ghi,def")));
+        assertFalse(ts.hasAll(new Tags("abc,jkl")));
+    }
+
+    @Test
+    public void testHasAny() {
+        Tags ts = new Tags("abc,def,ghi");
+        assertTrue(ts.hasAny(new Tags("abc,def")));
+        assertTrue(ts.hasAny(new Tags("abc,jkl")));
+        assertFalse(ts.hasAny(new Tags("jkl,mno")));
+    }
+
+    @Test
+    public void testHasNone() {
+        Tags ts = new Tags("abc,def,ghi");
+        assertFalse(ts.hasNone(new Tags("abc,def")));
+        assertFalse(ts.hasNone(new Tags("abc,jkl")));
+        assertTrue(ts.hasNone(new Tags("jkl,mno")));
+    }
 }
