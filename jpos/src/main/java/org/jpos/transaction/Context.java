@@ -31,8 +31,8 @@ import java.util.*;
 
 @SuppressWarnings("unchecked")
 public class Context implements Externalizable, Loggeable, Pausable {
-    private transient Map map; // transient map
-    private Map pmap;          // persistent (serializable) map
+    private transient Map<String,Object> map; // transient map
+    private Map<String,Object> pmap;          // persistent (serializable) map
     private long timeout;
     private boolean resumeOnPause = false;
     private transient boolean trace = false;
@@ -139,7 +139,7 @@ public class Context implements Externalizable, Loggeable, Pausable {
         getPMap();      // and pmap
         int size = in.readInt();
         for (int i=0; i<size; i++) {
-            Object k = in.readObject();
+            String k = (String) in.readObject();
             Object v = in.readObject();
             map.put (k, v);
             pmap.put (k, v);
@@ -158,60 +158,58 @@ public class Context implements Externalizable, Loggeable, Pausable {
      */
     public synchronized Map getMap() {
         if (map == null)
-            map = Collections.synchronizedMap (new HashMap ());
+            map = Collections.synchronizedMap (new LinkedHashMap ());
         return map;
     }
     protected void dumpMap (PrintStream p, String indent) {
         if (map == null)
             return;
 
-        Iterator iter = map.entrySet().iterator();
-        while (iter.hasNext()) {
-            Map.Entry entry = (Map.Entry) iter.next ();
-            String key  = entry.getKey().toString();
-            if (key.startsWith("*"))
-                continue; // see jPOS-63
-            if (pmap != null && pmap.containsKey(entry.getKey())) 
-                p.print (indent + "<entry key='" + key + "' p='true'>");
-            else
-                p.print (indent + "<entry key='" + key + "'>");
-            Object value = entry.getValue();
-            if (value instanceof Loggeable) {
-                p.println("");
-                ((Loggeable) value).dump(p, indent + " ");
-                p.print (indent);
-            } else if (value instanceof Element) {
-                p.println ("");
-                p.println (indent+ "<![CDATA[");
-                XMLOutputter out = new XMLOutputter (Format.getPrettyFormat ());
-                out.getFormat().setLineSeparator (System.lineSeparator());
-                try {
-                    out.output ((Element) value, p);
-                } catch (IOException ex) {
-                    ex.printStackTrace (p);
-                }
-                p.println ("");
-                p.println (indent + "]]>");
-            } else if (value instanceof byte[]) {
-                byte[] b = (byte[]) value;
-                p.println("");
-                p.println(ISOUtil.hexdump(b));
-                p.print (indent);
-            } else if (value instanceof LogEvent) {
-                ((LogEvent) value).dump(p, indent);
-                p.print (indent);
-            } else if (value != null) {
-                try {
-                    p.print (value.toString ());
-                } catch (Exception e) {
-                    p.println (e.getMessage());
-                    p.print (indent);
-                }
-            } else {
-                p.print ("nil");
-            }
-            p.println ("</entry>");
+        for (Map.Entry<String,Object> entry : map.entrySet()) {
+            dumpEntry(p, indent, entry);
         }
+    }
+
+    protected void dumpEntry (PrintStream p, String indent, Map.Entry<String,Object> entry) {
+        String key = entry.getKey();
+        if (key.startsWith(".") || key.startsWith("*"))
+            return; // see jPOS-63
+
+        p.printf("%s%s%s: ", indent, key, pmap != null && pmap.containsKey(key) ? "(P)" : "");
+        Object value = entry.getValue();
+        if (value instanceof Loggeable) {
+            p.println("");
+            ((Loggeable) value).dump(p, indent + " ");
+            p.print(indent);
+        } else if (value instanceof Element) {
+            p.println("");
+            p.println(indent + "<![CDATA[");
+            XMLOutputter out = new XMLOutputter(Format.getPrettyFormat());
+            out.getFormat().setLineSeparator(System.lineSeparator());
+            try {
+                out.output((Element) value, p);
+            } catch (IOException ex) {
+                ex.printStackTrace(p);
+            }
+            p.println("");
+            p.println(indent + "]]>");
+        } else if (value instanceof byte[]) {
+            byte[] b = (byte[]) value;
+            p.println("");
+            p.println(ISOUtil.hexdump(b));
+            p.print(indent);
+        } else if (value instanceof LogEvent) {
+            ((LogEvent) value).dump(p, indent);
+            p.print(indent);
+        } else if (value != null) {
+            try {
+                p.print(ISOUtil.normalize(value.toString(), true));
+            } catch (Exception e) {
+                p.println(e.getMessage());
+                p.print(indent);
+            }
+        }
+        p.println();
     }
     /**
      * return a LogEvent used to store trace information
