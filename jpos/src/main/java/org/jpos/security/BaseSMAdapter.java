@@ -32,6 +32,8 @@ import org.jpos.util.NameRegistrar.NotFoundException;
 import org.jpos.util.SimpleMsg;
 
 import java.security.MessageDigest;
+import java.security.PublicKey;
+import java.security.spec.AlgorithmParameterSpec;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -1174,6 +1176,31 @@ public class BaseSMAdapter
     }
 
     @Override
+    public Pair<PublicKey, SecurePrivateKey> generateKeyPair(AlgorithmParameterSpec spec)
+            throws SMException {
+        List<Loggeable> cmdParameters = new ArrayList<Loggeable>();
+        cmdParameters.add(new SimpleMsg("parameter", "Algorithm Parameter Spec", spec.getClass().getName()));
+
+        LogEvent evt = new LogEvent(this, "s-m-operation");
+        evt.addMessage(new SimpleMsg("command", "Generate public/private key pair", cmdParameters));
+        Pair<PublicKey, SecurePrivateKey> result = null;
+        try {
+            result = generateKeyPairImpl(spec);
+            SimpleMsg[] cmdResults = {
+                  new SimpleMsg("result", "Public Key", result.getValue0().getEncoded()),
+                  new SimpleMsg("result", "Private Key", result.getValue1().getKeyBytes())
+            };
+            evt.addMessage(new SimpleMsg("results", "Complex results", cmdResults));
+        } catch (Exception e) {
+            evt.addMessage(e);
+            throw  e instanceof SMException ? (SMException) e : new SMException(e);
+        } finally {
+            Logger.log(evt);
+        }
+        return result;
+    }
+
+    @Override
     public byte[] calculateSignature(MessageDigest hash, SecurePrivateKey privateKey
             ,byte[] data) throws SMException {
         List<Loggeable> cmdParameters = new ArrayList<Loggeable>();
@@ -1815,6 +1842,17 @@ public class BaseSMAdapter
      * @throws SMException if the parity of the imported key is not adjusted AND checkParity = true
      */
     protected SecureDESKey translateKeyFromOldLMKImpl (SecureDESKey kd) throws SMException {
+        throw  new SMException("Operation not supported in: " + this.getClass().getName());
+    }
+
+    /**
+     * Your SMAdapter should override this method if it has this functionality
+     * @param spec algorithm specific parameters (contains e.g. key size)
+     * @return key pair generated according to passed parameters
+     * @throws SMException
+     */
+    protected Pair<PublicKey, SecurePrivateKey> generateKeyPairImpl(AlgorithmParameterSpec spec)
+            throws SMException {
         throw  new SMException("Operation not supported in: " + this.getClass().getName());
     }
 

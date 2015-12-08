@@ -21,6 +21,8 @@ package  org.jpos.security;
 import org.javatuples.Pair;
 
 import java.security.MessageDigest;
+import java.security.PublicKey;
+import java.security.spec.AlgorithmParameterSpec;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -34,7 +36,7 @@ import java.util.Map;
  * But application programmers will be communicating
  * with the security module using this simple interface.
  *
- * TODO: support for RSA generation API's
+ * TODO: support for EMV card/issuer RSA generation API's
  *
  * @author Hani S. Kirollos
  * @author Robert Demski
@@ -1268,6 +1270,18 @@ public interface SMAdapter {
      * @throws SMException if the parity of the imported key is not adjusted AND checkParity = true
      */
     SecureDESKey translateKeyFromOldLMK(SecureDESKey kd) throws SMException;
+
+
+    /**
+     * Generate a public/private key pair.
+     *
+     * @param spec algorithm specific parameters, e.g. algorithm, key size,
+     *        public key exponent.
+     * @return key pair generated according to passed parameters
+     * @throws SMException
+     */
+    Pair<PublicKey, SecurePrivateKey> generateKeyPair(AlgorithmParameterSpec spec)
+      throws SMException;
 
 
 
