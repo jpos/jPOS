@@ -27,8 +27,10 @@ import org.jpos.util.Loggeable;
 import org.jpos.util.Logger;
 import org.jpos.util.NameRegistrar;
 
+import javax.management.MBeanServerConnection;
 import java.io.*;
 import java.lang.management.ManagementFactory;
+import java.lang.management.OperatingSystemMXBean;
 import java.lang.management.RuntimeMXBean;
 import java.lang.management.ThreadMXBean;
 import java.net.InetAddress;
@@ -179,7 +181,7 @@ public class SystemMonitor extends QBeanSupport
         String freeSpace = ISOUtil.readableFileSize(cwd.getFreeSpace());
         String usableSpace = ISOUtil.readableFileSize(cwd.getUsableSpace());
 
-        p.printf ("%s           OS: %s%n", indent, System.getProperty("os.name"));
+        p.printf ("%s           OS: %s (%s)%n", indent, System.getProperty("os.name"), System.getProperty("os.version"));
         p.printf ("%s process name: %s%n", indent, runtimeMXBean.getName());
         p.printf ("%s         host: %s%n", indent, getLocalHost());
         p.printf ("%s          cwd: %s%n", indent, System.getProperty("user.dir"));
@@ -188,7 +190,7 @@ public class SystemMonitor extends QBeanSupport
             p.printf ("%s usable space: %s%n", indent, usableSpace);
         p.printf ("%s      version: %s (%s)%n", indent, Q2.getVersion(), getRevision());
         p.printf ("%s     instance: %s%n", indent, getInstanceIdAsString());
-        p.printf ("%s       uptime: %s%n", indent, ISOUtil.millisToString(getServerUptimeAsMillisecond()));
+        p.printf ("%s       uptime: %s (%f)%n", indent, ISOUtil.millisToString(getServerUptimeAsMillisecond()), loadAverage());
         p.printf ("%s   processors: %d%n", indent, r.availableProcessors());
         p.printf ("%s       drift : %d%n", indent, delay);
         p.printf ("%smemory(t/u/f): %d/%d/%d%n", indent,
@@ -232,5 +234,16 @@ public class SystemMonitor extends QBeanSupport
         } catch (Exception e) {
             e.printStackTrace(ps);
         }
+    }
+
+    private double loadAverage () {
+        MBeanServerConnection mbsc = ManagementFactory.getPlatformMBeanServer();
+        try {
+            OperatingSystemMXBean osMBean = ManagementFactory.newPlatformMXBeanProxy(
+              mbsc, ManagementFactory.OPERATING_SYSTEM_MXBEAN_NAME, OperatingSystemMXBean.class);
+
+            return osMBean.getSystemLoadAverage();
+        } catch (Throwable ignored) { }
+        return -1;
     }
 }
