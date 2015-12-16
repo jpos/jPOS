@@ -26,8 +26,6 @@ import org.jpos.q2.QFactory;
 import org.jpos.util.LogListener;
 import org.jpos.util.Logger;
 
-import java.util.Iterator;
-
 public class LoggerAdaptor extends QBeanSupport {
     Logger logger;
 
@@ -36,9 +34,8 @@ public class LoggerAdaptor extends QBeanSupport {
     }
     protected void startService () throws ConfigurationException {
         logger.removeAllListeners ();
-        Iterator iter = getPersist ().getChildren ("log-listener").iterator();
-        while (iter.hasNext()) 
-            addListener ((Element) iter.next ());
+        for (Object o : getPersist().getChildren("log-listener"))
+            addListener((Element) o);
     }
     protected void stopService() {
         logger.removeAllListeners ();
@@ -65,8 +62,6 @@ public class LoggerAdaptor extends QBeanSupport {
                 throw new ConfigurationException (ex);
             }
         }
-        
         logger.addListener (listener);
     }
 }
-

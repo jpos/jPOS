@@ -22,6 +22,4 @@ public interface LogProducer {
     void addListener(LogListener l);
     void removeListener(LogListener l);
     void removeAllListeners();
-
-
 }

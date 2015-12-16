@@ -48,7 +48,7 @@ public class Logger implements LogProducer {
 
     public Logger () {
         super();
-        listeners = Collections.synchronizedList(new ArrayList<LogListener>());
+        listeners = Collections.synchronizedList(new ArrayList<>());
         name = "";
     }
     public void addListener (LogListener l) {

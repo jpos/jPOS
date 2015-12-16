@@ -27,6 +27,8 @@ import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOUtil;
+import org.jpos.q2.qbean.LoggerAdaptor;
+import org.jpos.security.SystemSeed;
 import org.jpos.util.*;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -39,7 +41,6 @@ import javax.crypto.spec.SecretKeySpec;
 import javax.management.*;
 import java.io.*;
 import java.lang.management.ManagementFactory;
-import java.lang.management.RuntimeMXBean;
 import java.security.GeneralSecurityException;
 import java.time.Duration;
 import java.time.Instant;
@@ -74,7 +75,7 @@ public class Q2 implements FileFilter, Runnable {
 
     private MBeanServer server;
     private File deployDir, libDir;
-    private Map dirMap;
+    private Map<File,QEntry> dirMap;
     private QFactory factory;
     private QClassLoader loader;
     private ClassLoader mainClassLoader;
@@ -103,7 +104,7 @@ public class Q2 implements FileFilter, Runnable {
         instanceId = UUID.randomUUID();
         parseCmdLine (args);
         libDir     = new File (deployDir, "lib");
-        dirMap     = new TreeMap ();
+        dirMap     = new TreeMap<>();
         deployDir.mkdirs ();
         mainClassLoader = getClass().getClassLoader();
         this.bundleContext = bundleContext;
@@ -287,12 +288,13 @@ public class Q2 implements FileFilter, Runnable {
     private void deploy () {
         List<ObjectInstance> startList = new ArrayList<ObjectInstance>();
         List<File> osgiBundelList = new ArrayList<File>();
-        Iterator iter = dirMap.entrySet().iterator();
+        Iterator<Map.Entry<File,QEntry>> iter = dirMap.entrySet().iterator();
+
         try {
             while (iter.hasNext() && !shutdown) {
-                Map.Entry entry = (Map.Entry) iter.next();
-                File   f        = (File)   entry.getKey ();
-                QEntry qentry   = (QEntry) entry.getValue ();
+                Map.Entry<File,QEntry> entry = iter.next();
+                File   f        = entry.getKey ();
+                QEntry qentry   = entry.getValue ();
                 long deployed   = qentry.getDeployed ();
                 if (deployed == 0) {
                     if (qentry.isOSGIBundle()) {
@@ -461,7 +463,7 @@ public class Q2 implements FileFilter, Runnable {
     private boolean deploy (File f) {
         LogEvent evt = log != null ? log.createInfo() : null;
         try {
-            QEntry qentry = (QEntry) dirMap.get (f);
+            QEntry qentry = dirMap.get (f);
             SAXBuilder builder = createSAXBuilder();
             Document doc;
             if(decorator!=null && !f.getName().equals(LOGGER_CONFIG))
@@ -704,11 +706,8 @@ public class Q2 implements FileFilter, Runnable {
         if (encrypt) {
             doc = encrypt (doc);
         }
-        Writer writer = new BufferedWriter(new FileWriter(qbean));
-        try {
+        try (Writer writer = new BufferedWriter(new FileWriter(qbean))) {
             out.output(doc, writer);
-        } finally {
-            writer.close();
         }
     }
 
@@ -724,7 +723,9 @@ public class Q2 implements FileFilter, Runnable {
         return cipher.doFinal (data);
     }
     protected byte[] getKey() {
-        return "CAFEBABE".getBytes();
+        return
+          ISOUtil.xor(SystemSeed.getSeed(8, 8),
+          ISOUtil.hex2byte("BD653F60F980F788"));
     }
     protected Document encrypt (Document doc)
         throws GeneralSecurityException, IOException
