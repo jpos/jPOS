@@ -19,6 +19,7 @@
 package org.jpos.space;
 import org.jpos.util.Loggeable;
 import java.io.PrintStream;
+import java.io.Serializable;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -447,7 +448,11 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
         for (Set<K> s : expirables)
             s.remove(k);
     }
-    static class Expirable implements Comparable {
+
+    static class Expirable implements Comparable, Serializable {
+
+        static final long serialVersionUID = 0xA7F22BF5;
+
         Object value;
         long expires;
 
