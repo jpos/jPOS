@@ -22,6 +22,8 @@ import org.jdom.Element;
 import org.jpos.core.ConfigurationException;
 import org.jpos.iso.*;
 import org.jpos.q2.QBeanSupport;
+import org.jpos.space.Space;
+import org.jpos.space.SpaceFactory;
 import org.jpos.util.NameRegistrar;
 
 import java.io.IOException;
@@ -43,6 +45,8 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
     String[] overrideMTIs;
     String originalChannelField = "";
     String splitField = "";
+    boolean checkEnabled;
+    Space sp;
        
     public void initService () throws ConfigurationException {
         Element e = getPersist ();
@@ -51,7 +55,8 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
         overrideMTIs = toStringArray(e.getChildTextTrim("follower-override"));
         originalChannelField = e.getChildTextTrim("original-channel-field");
         splitField = e.getChildTextTrim("split-field");
-        
+        checkEnabled = cfg.getBoolean("check-enabled");
+        sp = grabSpace (e.getChild ("space"));
         mux = new MUX[muxName.length];
         try {
             for (int i=0; i<mux.length; i++)
@@ -85,16 +90,16 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
         mux.send(m);
     }
     public boolean isConnected() {
-        for (MUX aMux : mux)
-            if (aMux.isConnected())
+        for (MUX m : mux)
+            if (isUsable(m))
                 return true;
         return false;
     }
     protected MUX firstAvailableMUX (long maxWait) {
         do {
-            for (MUX aMux : mux)
-                if (aMux.isConnected())
-                    return aMux;
+            for (MUX m : mux)
+                if (isUsable(m))
+                    return m;
             ISOUtil.sleep (1000);
         } while (System.currentTimeMillis() < maxWait);
         return null;
@@ -103,7 +108,7 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
         do {
             for (int i=0; i<mux.length; i++) {
                 int j = (mnumber+i) % mux.length;
-                if (mux[j].isConnected())
+                if (isUsable(mux[j]))
                     return mux[j];
                 msgno.incrementAndGet();
             }
@@ -158,7 +163,7 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
                     ChannelAdaptor channel = (ChannelAdaptor)NameRegistrar.get (channelName);
                     for (MUX mx : mux) {
                         if(channel != null && ((QMUX)mx).getInQueue().equals(channel.getOutQueue())){
-                            if(mx.isConnected())
+                            if(isUsable(mx))
                                 return mx;
                         }
                     }
@@ -175,7 +180,7 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
             if(splitField != null && !"".equals(splitField)){
                 if(m.hasField(splitField) && ISOUtil.isNumeric(m.getString(splitField),10)){
                     MUX mx = mux[(int)(Long.valueOf(m.getString(splitField))%mux.length)];
-                    if(mx.isConnected())
+                    if(isUsable(mx))
                         return mx;
                 }
             }
@@ -216,5 +221,27 @@ public class MUXPool extends QBeanSupport implements MUX, MUXPoolMBean {
     @Override
     public int getStrategy() {
         return strategy;
+    }
+
+    private Space grabSpace (Element e)
+      throws ConfigurationException
+    {
+        String uri = e != null ? e.getText() : "";
+        return SpaceFactory.getSpace (uri);
+    }
+
+    @SuppressWarnings("unchecked")
+    private boolean isUsable (MUX mux) {
+        if (!checkEnabled || !(mux instanceof QMUX))
+            return mux.isConnected();
+
+        QMUX qmux = (QMUX) mux;
+        String enabledKey = qmux.getName() + ".enabled";
+        String[] readyNames = qmux.getReadyIndicatorNames();
+        if (readyNames != null && readyNames.length == 1) {
+            // check that 'mux.enabled' entry has the same content as 'ready'
+            return mux.isConnected() && sp.rdp (enabledKey) == sp.rdp (readyNames[0]);
+        }
+        return mux.isConnected() && sp.rdp (enabledKey) != null;
     }
 }
