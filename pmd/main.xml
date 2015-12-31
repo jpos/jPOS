@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pmd version="5.2.3" timestamp="2015-12-16T01:43:50.250">
+<pmd version="5.2.3" timestamp="2015-12-31T14:59:47.064">
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/core/CardHolder.java">
 <violation beginline="323" endline="325" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.core" class="CardHolder" method="isExpired" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
@@ -226,10 +226,10 @@ Avoid empty catch blocks
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/q2/iso/MUXPool.java">
-<violation beginline="161" endline="162" begincolumn="29" endcolumn="42" rule="CollapsibleIfStatements" ruleset="Basic" package="org.jpos.q2.iso" class="MUXPool" method="nextAvailableWithOverrideMUX" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/basic.html#CollapsibleIfStatements" priority="3">
+<violation beginline="166" endline="167" begincolumn="29" endcolumn="42" rule="CollapsibleIfStatements" ruleset="Basic" package="org.jpos.q2.iso" class="MUXPool" method="nextAvailableWithOverrideMUX" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/basic.html#CollapsibleIfStatements" priority="3">
 These nested if statements could be combined
 </violation>
-<violation beginline="176" endline="180" begincolumn="17" endcolumn="17" rule="CollapsibleIfStatements" ruleset="Basic" package="org.jpos.q2.iso" class="MUXPool" method="splitByDivisorMUX" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/basic.html#CollapsibleIfStatements" priority="3">
+<violation beginline="181" endline="185" begincolumn="17" endcolumn="17" rule="CollapsibleIfStatements" ruleset="Basic" package="org.jpos.q2.iso" class="MUXPool" method="splitByDivisorMUX" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/basic.html#CollapsibleIfStatements" priority="3">
 These nested if statements could be combined
 </violation>
 </file>
