@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pmd version="5.2.3" timestamp="2016-01-05T03:22:46.176">
+<pmd version="5.2.3" timestamp="2016-01-21T18:18:21.919">
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/core/CardHolder.java">
 <violation beginline="323" endline="325" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.core" class="CardHolder" method="isExpired" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
@@ -131,13 +131,13 @@ Avoid empty catch blocks
 <violation beginline="330" endline="330" begincolumn="11" endcolumn="42" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.iso" class="ISOUtil" method="zeropad" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
 </violation>
-<violation beginline="867" endline="869" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.iso" class="ISOUtil" method="formatDouble" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
+<violation beginline="907" endline="909" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.iso" class="ISOUtil" method="formatDouble" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
 </violation>
-<violation beginline="990" endline="992" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.iso" class="ISOUtil" method="protect" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
+<violation beginline="1030" endline="1032" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.iso" class="ISOUtil" method="protect" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
 </violation>
-<violation beginline="1540" endline="1540" begincolumn="25" endcolumn="48" rule="AvoidDecimalLiteralsInBigDecimalConstructor" ruleset="Basic" package="org.jpos.iso" class="ISOUtil" method="formatAmountConversionRate" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/basic.html#AvoidDecimalLiteralsInBigDecimalConstructor" priority="3">
+<violation beginline="1580" endline="1580" begincolumn="25" endcolumn="48" rule="AvoidDecimalLiteralsInBigDecimalConstructor" ruleset="Basic" package="org.jpos.iso" class="ISOUtil" method="formatAmountConversionRate" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/basic.html#AvoidDecimalLiteralsInBigDecimalConstructor" priority="3">
 Avoid creating BigDecimal with a decimal (float/double) literal. Use a String literal
 </violation>
 </file>
