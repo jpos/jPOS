@@ -35,7 +35,7 @@ import java.io.FileNotFoundException;
 import java.io.NotActiveException;
 import java.io.UnsupportedEncodingException;
 
-import org.jdom.Element;
+import org.jdom2.Element;
 import org.jpos.core.ConfigurationException;
 import org.jpos.util.LogEvent;
 import org.junit.Test;

@@ -26,7 +26,7 @@ import static org.junit.Assert.fail;
 import java.io.EOFException;
 import java.io.StreamCorruptedException;
 
-import org.jdom.Element;
+import org.jdom2.Element;
 import org.jpos.core.ConfigurationException;
 import org.junit.Test;
 

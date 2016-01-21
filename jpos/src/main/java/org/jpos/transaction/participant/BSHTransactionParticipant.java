@@ -19,7 +19,7 @@
 package org.jpos.transaction.participant;
 
 import bsh.EvalError;
-import org.jdom.Element;
+import org.jdom2.Element;
 import org.jpos.core.ConfigurationException;
 import org.jpos.core.XmlConfigurable;
 import org.jpos.transaction.AbortParticipant;

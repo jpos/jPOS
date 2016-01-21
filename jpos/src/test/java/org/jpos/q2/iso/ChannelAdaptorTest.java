@@ -33,7 +33,7 @@ import java.util.concurrent.BlockingQueue;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
-import org.jdom.Element;
+import org.jdom2.Element;
 import org.jpos.core.ConfigurationException;
 import org.jpos.iso.ISOChannel;
 import org.jpos.iso.ISOException;

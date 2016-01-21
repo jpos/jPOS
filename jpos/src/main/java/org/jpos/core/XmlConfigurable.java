@@ -18,7 +18,7 @@
 
 package org.jpos.core;
 
-import org.jdom.Element;
+import org.jdom2.Element;
 
 /**
  * Object is Configurable by an Xml Element

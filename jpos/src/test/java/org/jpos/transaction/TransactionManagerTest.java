@@ -35,8 +35,8 @@ import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jdom.Comment;
-import org.jdom.Element;
+import org.jdom2.Comment;
+import org.jdom2.Element;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
 import org.jpos.core.SimpleConfiguration;

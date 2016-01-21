@@ -18,7 +18,7 @@
 
 package org.jpos.q2.iso;
 
-import org.jdom.Element;
+import org.jdom2.Element;
 import org.jpos.core.CardAgent;
 import org.jpos.core.CardAgentLookup;
 import org.jpos.core.Configurable;

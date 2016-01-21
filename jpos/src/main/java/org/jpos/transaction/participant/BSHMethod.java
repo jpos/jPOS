@@ -20,7 +20,7 @@ package org.jpos.transaction.participant;
 
 import bsh.EvalError;
 import bsh.Interpreter;
-import org.jdom.Element;
+import org.jdom2.Element;
 
 import java.io.FileReader;
 import java.io.IOException;

@@ -18,7 +18,7 @@
 
 package org.jpos.q2.ui;
 
-import org.jdom.Element;
+import org.jdom2.Element;
 import org.jpos.q2.QBeanSupport;
 import org.jpos.ui.UIObjectFactory;
 import org.jpos.util.NameRegistrar;

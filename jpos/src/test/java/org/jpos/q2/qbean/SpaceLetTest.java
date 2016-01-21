@@ -23,7 +23,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 
-import org.jdom.Element;
+import org.jdom2.Element;
 import org.jpos.space.SpaceError;
 import org.junit.Test;
 import org.junit.runner.RunWith;

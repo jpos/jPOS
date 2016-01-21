@@ -28,7 +28,7 @@ import java.util.Set;
 
 import javax.management.MalformedObjectNameException;
 
-import org.jdom.Element;
+import org.jdom2.Element;
 import org.junit.Test;
 
 public class SpaceAdaptorTest {

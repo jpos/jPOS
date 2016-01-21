@@ -24,7 +24,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import org.jdom.Element;
+import org.jdom2.Element;
 import org.junit.Test;
 
 public class SpaceProxyTest {

@@ -18,6 +18,7 @@
 
 package org.jpos.transaction.participant;
 
+import org.jdom2.Element;
 import org.jpos.core.ConfigurationException;
 import org.jpos.transaction.GroupSelector;
 import org.jpos.util.LogEvent;
@@ -32,7 +33,7 @@ public class BSHGroupSelector extends BSHTransactionParticipant implements Group
     
     protected BSHMethod selectMethod;
     
-    public void setConfiguration(org.jdom.Element e) throws ConfigurationException {
+    public void setConfiguration(Element e) throws ConfigurationException {
         super.setConfiguration(e);
         try {
             selectMethod = BSHMethod.createBshMethod(e.getChild("select"));

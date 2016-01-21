@@ -18,7 +18,7 @@
 
 package org.jpos.ui;
 
-import org.jdom.Element;
+import org.jdom2.Element;
 
 import javax.swing.*;
 
