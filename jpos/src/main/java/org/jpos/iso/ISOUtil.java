@@ -364,6 +364,23 @@ public class ISOUtil {
             d [offset + (i >> 1)] |= s.charAt(i-start)-'0' << ((i & 1) == 1 ? 0 : 4);
         return d;
     }
+
+    /**
+     * converts to BCD
+     * @param s - the number
+     * @param padLeft - flag indicating left/right padding
+     * @param d The byte array to copy into.
+     * @param offset Where to start copying into.
+     * @return BCD representation of the number
+     */
+    public static byte[] str2hex(String s, boolean padLeft, byte[] d, int offset) {
+        int len = s.length();
+        int start = (len & 1) == 1 && padLeft ? 1 : 0;
+        for (int i=start; i < len+start; i++)
+            d [offset + (i >> 1)] |= Character.digit(s.charAt(i-start),16) << ((i & 1) == 1 ? 0 : 4);
+        return d;
+    }
+
     /**
      * converts to BCD
      * @param s - the number
@@ -414,6 +431,29 @@ public class ISOUtil {
         }
         return d.toString();
     }
+    /**
+     * converts a a byte array to a String with padding support
+     * @param b - HEX representation
+     * @param offset - starting offset
+     * @param len - BCD field len
+     * @param padLeft - was padLeft packed?
+     * @return the String representation of the number
+     */
+    public static String hex2str(byte[] b, int offset,
+                                 int len, boolean padLeft)
+    {
+        StringBuilder d = new StringBuilder(len);
+        int start = (len & 1) == 1 && padLeft ? 1 : 0;
+
+        for (int i=start; i < len+start; i++) {
+            int shift = (i & 1) == 1 ? 0 : 4;
+            char c = Character.forDigit (
+                    b[offset+ (i>>1)] >> shift & 0x0F, 16);
+            d.append (Character.toUpperCase (c));
+        }
+        return d.toString();
+    }
+
     /**
      * converts a byte array to hex string 
      * (suitable for dumps and ASCII packaging of Binary fields
