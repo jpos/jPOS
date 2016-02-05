@@ -43,6 +43,8 @@ public class VAPChannel extends BaseChannel {
     String dstid = "000000";
     boolean debugPoll;
     int headerFormat = 2;
+    private boolean replyKeepAlive = true;
+
     /**
      * Public constructor (used by Class.forName("...").newInstance())
      */
@@ -175,11 +177,14 @@ public class VAPChannel extends BaseChannel {
         while (l == 0) {
             serverIn.readFully(b,0,4);
             l = ((int)b[0] &0xFF) << 8 | (int)b[1] &0xFF;
-            if (l == 0) {
-                serverOut.write(b);
-                serverOut.flush();
-                if (debugPoll)
-                    Logger.log (new LogEvent (this, "poll"));
+
+            if (replyKeepAlive && l == 0) {
+                synchronized (serverOutLock) {
+                    serverOut.write(b);
+                    serverOut.flush();
+                    if (debugPoll)
+                        Logger.log(new LogEvent(this, "poll"));
+                }
             }
         }
         return l;
@@ -226,10 +231,11 @@ public class VAPChannel extends BaseChannel {
     public void setConfiguration (Configuration cfg)
         throws ConfigurationException 
     {
+        super.setConfiguration (cfg);
         srcid = cfg.get ("srcid", "000000");
         dstid = cfg.get ("dstid", "000000");
         debugPoll = cfg.getBoolean("debug-poll", false);
         headerFormat = cfg.getInt("header-format", 2);
-        super.setConfiguration (cfg);
+        replyKeepAlive = cfg.getBoolean("reply-keepalive", true);
     }
 }
