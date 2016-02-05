@@ -18,6 +18,8 @@
 
 package org.jpos.iso.channel;
 
+import org.jpos.core.Configuration;
+import org.jpos.core.ConfigurationException;
 import org.jpos.iso.*;
 
 import java.io.IOException;
@@ -36,6 +38,7 @@ import java.net.ServerSocket;
  * @see ISOChannel
  */
 public class CSChannel extends BaseChannel {
+    private boolean replyKeepAlive = true;
     /**
      * Public constructor (used by Class.forName("...").newInstance())
      */
@@ -93,9 +96,11 @@ public class CSChannel extends BaseChannel {
         while (l == 0) {
             serverIn.readFully(b,0,4);
             l = ((int)b[0] &0xFF) << 8 | (int)b[1] &0xFF;
-            if (l == 0) {
-                serverOut.write(b);
-                serverOut.flush();
+            if (replyKeepAlive && l == 0) {
+                synchronized (serverOutLock) {
+                    serverOut.write(b);
+                    serverOut.flush();
+                }
             }
         }
         return l;
@@ -106,5 +111,11 @@ public class CSChannel extends BaseChannel {
     }
     protected void sendMessageHeader(ISOMsg m, int len) {
         // CS Channel does not support header
+    }
+
+    @Override
+    public void setConfiguration (Configuration cfg) throws ConfigurationException {
+        super.setConfiguration(cfg);
+        replyKeepAlive = cfg.getBoolean("reply-keepalive", true);
     }
 }
