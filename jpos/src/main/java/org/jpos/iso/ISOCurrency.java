@@ -21,7 +21,12 @@ package org.jpos.iso;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.PropertyResourceBundle;
+import java.util.ResourceBundle;
+import java.util.Set;
 
 /**
  * ISO Currency Conversion package
@@ -43,8 +48,25 @@ public class ISOCurrency
 
     static
     {
-        addBundle(ISOCurrency.class.getName());
+        addJavaCurrencies();
         loadPropertiesFromClasspath("META-INF/org/jpos/config/ISOCurrency.properties");
+    }
+
+    private static void addJavaCurrencies()
+    {
+        Set<java.util.Currency> currencies = java.util.Currency.getAvailableCurrencies();
+        for (java.util.Currency sc : currencies)
+        {
+            try
+            {
+                addCurrency(sc.getCurrencyCode().toUpperCase(),
+                            ISOUtil.zeropad(Integer.toString(sc.getNumericCode()), 3),
+                            sc.getDefaultFractionDigits());
+            }
+            catch (ISOException ignored)
+            {
+            }
+        }
     }
 
     @SuppressWarnings({"EmptyCatchBlock"})
