@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pmd version="5.2.3" timestamp="2016-02-24T01:00:34.393">
+<pmd version="5.2.3" timestamp="2016-02-24T19:38:05.265">
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/core/CardHolder.java">
 <violation beginline="323" endline="325" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.core" class="CardHolder" method="isExpired" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
@@ -72,10 +72,13 @@ Avoid empty catch blocks
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/ISOCurrency.java">
-<violation beginline="61" endline="63" begincolumn="9" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.iso" class="ISOCurrency" method="loadPropertiesFromClasspath" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
+<violation beginline="66" endline="68" begincolumn="13" endcolumn="13" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.iso" class="ISOCurrency" method="addJavaCurrencies" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
 </violation>
-<violation beginline="72" endline="74" begincolumn="17" endcolumn="17" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.iso" class="ISOCurrency" method="loadPropertiesFromClasspath" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
+<violation beginline="83" endline="85" begincolumn="9" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.iso" class="ISOCurrency" method="loadPropertiesFromClasspath" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
+Avoid empty catch blocks
+</violation>
+<violation beginline="94" endline="96" begincolumn="17" endcolumn="17" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.iso" class="ISOCurrency" method="loadPropertiesFromClasspath" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
 </violation>
 </file>
