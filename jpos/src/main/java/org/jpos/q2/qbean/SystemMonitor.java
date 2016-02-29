@@ -199,6 +199,7 @@ public class SystemMonitor extends QBeanSupport
         p.printf("%s     timezone: %s (%s) %s%n", indent, zi,
                 zi.getDisplayName(TextStyle.FULL, Locale.getDefault()),
                 zi.getRules().getOffset(instant).toString());
+        p.printf("%swatch service: %s%n", indent, getServer().getWatchServiceClassname());
         List<ZoneOffsetTransitionRule> l = zi.getRules().getTransitionRules();
         for (ZoneOffsetTransitionRule tr : l) {
             p.printf("%s         rule: %s%n", indent, tr.toString());

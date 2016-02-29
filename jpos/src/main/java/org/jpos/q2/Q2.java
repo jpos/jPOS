@@ -27,7 +27,6 @@ import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOUtil;
-import org.jpos.q2.qbean.LoggerAdaptor;
 import org.jpos.security.SystemSeed;
 import org.jpos.util.*;
 import org.osgi.framework.Bundle;
@@ -41,10 +40,12 @@ import javax.crypto.spec.SecretKeySpec;
 import javax.management.*;
 import java.io.*;
 import java.lang.management.ManagementFactory;
+import java.nio.file.*;
 import java.security.GeneralSecurityException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 import static java.util.ResourceBundle.*;
 
@@ -96,6 +97,8 @@ public class Q2 implements FileFilter, Runnable {
     private boolean startOSGI = false;
     private BundleContext bundleContext;
     private String pidFile;
+    private long lastVersionLog;
+    private String watchServiceClassname;
 
     public Q2 (String[] args, BundleContext bundleContext) {
         super();
@@ -129,7 +132,17 @@ public class Q2 implements FileFilter, Runnable {
     public void run () {
         started = true;
         Thread.currentThread().setName ("Q2-"+getInstanceId().toString());
-        try {
+
+        Path dir = Paths.get(deployDir.getAbsolutePath());
+        FileSystem fs = dir.getFileSystem();
+        try (WatchService service = fs.newWatchService()) {
+            watchServiceClassname = service.getClass().getName();
+            dir.register(
+              service,
+              StandardWatchEventKinds.ENTRY_CREATE,
+              StandardWatchEventKinds.ENTRY_MODIFY,
+              StandardWatchEventKinds.ENTRY_DELETE
+            );
             /*
             * The following code determines whether a MBeanServer exists 
             * already. If so then the first one in the list is used. 
@@ -176,6 +189,7 @@ public class Q2 implements FileFilter, Runnable {
             initConfigDecorator();
             if (startOSGI)
                 startOSGIFramework();
+
             for (int i = 1; !shutdown; i++) {
                 try {
                     boolean forceNewClassLoader = scan() && i > 1;
@@ -185,17 +199,19 @@ public class Q2 implements FileFilter, Runnable {
                         oldClassLoader = null; // We want this to be null so it gets GCed.
                         System.gc();  // force a GC
                         log.info(
-                                "new classloader ["
-                                        + Integer.toString(loader.hashCode(), 16)
-                                        + "] has been created"
+                          "new classloader ["
+                            + Integer.toString(loader.hashCode(), 16)
+                            + "] has been created"
                         );
                         q2Thread.setContextClassLoader(loader);
                     }
                     deploy();
                     checkModified();
-                    relax(SCAN_INTERVAL);
-                    if (i % (3600000 / SCAN_INTERVAL) == 0)
-                        logVersion();
+                    if (!waitForChanges(service))
+                        break;
+                    logVersion();
+                } catch (InterruptedException ignored) {
+                    // NOPMD
                 } catch (Throwable t) {
                     log.error("start", t);
                     relax();
@@ -261,6 +277,10 @@ public class Q2 implements FileFilter, Runnable {
     }
     public File getDeployDir () {
         return deployDir;
+    }
+
+    public String getWatchServiceClassname() {
+        return watchServiceClassname;
     }
 
     private boolean isXml(File f) {
@@ -862,9 +882,13 @@ public class Q2 implements FileFilter, Runnable {
         }
     }
     private void logVersion () {
-        LogEvent evt = getLog().createLogEvent ("version");
-        evt.addMessage (getVersionString());
-        Logger.log (evt);
+        long now = System.currentTimeMillis();
+        if (now - lastVersionLog > 3600000L) {
+            LogEvent evt = getLog().createLogEvent("version");
+            evt.addMessage(getVersionString());
+            Logger.log(evt);
+            lastVersionLog = now;
+        }
     }
     private void setExit (boolean exit) {
         this.exit = exit;
@@ -979,5 +1003,30 @@ public class Q2 implements FileFilter, Runnable {
         } catch (IOException e) {
             throw new IllegalArgumentException(String.format("Unable to write pid-file (%s)", pidFile), e);
         }
+    }
+
+    private boolean waitForChanges (WatchService service) throws InterruptedException {
+        WatchKey key = service.poll (SCAN_INTERVAL, TimeUnit.MILLISECONDS);
+        if (key != null) {
+            LogEvent evt = getLog().createInfo();
+            for (WatchEvent<?> ev : key.pollEvents()) {
+                if (ev.kind() == StandardWatchEventKinds.ENTRY_CREATE) {
+                    evt.addMessage(String.format ("created %s/%s", deployDir.getName(), ev.context()));
+                } else if (ev.kind() == StandardWatchEventKinds.ENTRY_DELETE) {
+                    evt.addMessage(String.format ("removed %s/%s", deployDir.getName(), ev.context()));
+                } else if (ev.kind() == StandardWatchEventKinds.ENTRY_MODIFY) {
+                    evt.addMessage(String.format ("modified %s/%s", deployDir.getName(), ev.context()));
+                }
+            }
+            Logger.log(evt);
+            if (!key.reset()) {
+                getLog().warn(String.format (
+                  "deploy directory '%s' no longer valid",
+                  deployDir.getAbsolutePath())
+                );
+                return false; // deploy directory no longer valid
+            }
+        }
+        return true;
     }
 }
