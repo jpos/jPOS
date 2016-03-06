@@ -19,6 +19,7 @@
 package org.jpos.space;
 import org.jpos.util.Loggeable;
 import java.io.PrintStream;
+import java.io.Serializable;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -37,7 +38,7 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
     private static final long GCLONG = 60*1000;
     private static final long NRD_RESOLUTION = 500L;
     private static final int MAX_ENTRIES_IN_DUMP = 1000;
-    private Set[] expirables;
+    private final Set[] expirables;
     private long lastLongGC = System.currentTimeMillis();
 
     public TSpace () {
@@ -46,6 +47,8 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
         expirables = new Set[] { new HashSet<K>(), new HashSet<K>() };
         SpaceFactory.getGCExecutor().scheduleAtFixedRate(this, GCDELAY, GCDELAY, TimeUnit.MILLISECONDS);
     }
+
+    @Override
     public void out (K key, V value) {
         if (key == null || value == null)
             throw new NullPointerException ("key=" + key + ", value=" + value);
@@ -58,6 +61,8 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
         if (sl != null)
             notifyListeners(key, value);
     }
+
+    @Override
     public void out (K key, V value, long timeout) {
         if (key == null || value == null)
             throw new NullPointerException ("key=" + key + ", value=" + value);
@@ -77,16 +82,22 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
         if (sl != null)
             notifyListeners(key, value);
     }
+
+    @Override
     public synchronized V rdp (Object key) {
         if (key instanceof Template)
             return (V) getObject ((Template) key, false);
         return (V) getHead (key, false);
     }
+
+    @Override
     public synchronized V inp (Object key) {
         if (key instanceof Template)
             return (V) getObject ((Template) key, true);
         return (V) getHead (key, true);
     }
+
+    @Override
     public synchronized V in (Object key) {
         Object obj;
         while ((obj = inp (key)) == null) {
@@ -96,6 +107,8 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
         }
         return (V) obj;
     }
+
+    @Override
     public synchronized V in  (Object key, long timeout) {
         Object obj;
         long now = System.currentTimeMillis();
@@ -109,6 +122,8 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
         }
         return (V) obj;
     }
+
+    @Override
     public synchronized V rd  (Object key) {
         Object obj;
         while ((obj = rdp (key)) == null) {
@@ -118,6 +133,8 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
         }
         return (V) obj;
     }
+
+    @Override
     public synchronized V rd  (Object key, long timeout) {
         Object obj;
         long now = System.currentTimeMillis();
@@ -131,6 +148,8 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
         }
         return (V) obj;
     }
+
+    @Override
     public synchronized void nrd  (Object key) {
         while (rdp (key) != null) {
             try {
@@ -138,6 +157,8 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
             } catch (InterruptedException ignored) { }
         }
     }
+
+    @Override
     public synchronized V nrd  (Object key, long timeout) {
         Object obj;
         long now = System.currentTimeMillis();
@@ -151,6 +172,8 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
         }
         return (V) obj;
     }
+
+    @Override
     public void run () {
         try {
             gc();
@@ -158,6 +181,7 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
             e.printStackTrace(); // this should never happen
         }
     }
+
     public void gc () {
         gc(0);
         if (System.currentTimeMillis() - lastLongGC > GCLONG) {
@@ -165,6 +189,7 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
             lastLongGC = System.currentTimeMillis();
         }
     }
+
     private void gc (int generation) {
         Set<K> exps = expirables[generation];
         synchronized (this) {
@@ -186,6 +211,7 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
         }
     }
 
+    @Override
     public synchronized int size (Object key) {
         int size = 0;
         List l = (List) entries.get (key);
@@ -193,14 +219,20 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
             size = l.size();
         return size;
     }
+
+    @Override
     public synchronized void addListener (Object key, SpaceListener listener) {
         getSL().out (key, listener);
     }
+
+    @Override
     public synchronized void addListener 
         (Object key, SpaceListener listener, long timeout) 
     {
         getSL().out (key, listener, timeout);
     }
+
+    @Override
     public synchronized void removeListener 
         (Object key, SpaceListener listener) 
     {
@@ -211,9 +243,12 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
     public boolean isEmpty() {
         return entries.isEmpty();
     }
+
+    @Override
     public synchronized Set<K> getKeySet() {
         return new HashSet<K>(entries.keySet());
     }
+
     public String getKeysAsString () {
         StringBuilder sb = new StringBuilder();
         Object[] keys;
@@ -227,6 +262,8 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
         }
         return sb.toString();
     }
+
+    @Override
     public void dump(PrintStream p, String indent) {
         Object[] keys;
         int size = entries.size();
@@ -254,6 +291,7 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
         }
         p.printf("%s    gcinfo: %d,%d%n", indent, exp0, exp1);
     }
+
     public void notifyListeners (Object key, Object value) {
         Object[] listeners = null;
         synchronized (this) {
@@ -273,6 +311,8 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
             }
         }
     }
+
+    @Override
     public void push (K key, V value) {
         if (key == null || value == null)
             throw new NullPointerException ("key=" + key + ", value=" + value);
@@ -287,6 +327,7 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
             notifyListeners(key, value);
     }
 
+    @Override
     public void push (K key, V value, long timeout) {
         if (key == null || value == null)
             throw new NullPointerException ("key=" + key + ", value=" + value);
@@ -308,6 +349,7 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
             notifyListeners(key, value);
     }
 
+    @Override
     public void put (K key, V value) {
         if (key == null || value == null)
             throw new NullPointerException ("key=" + key + ", value=" + value);
@@ -321,6 +363,8 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
         if (sl != null)
             notifyListeners(key, value);
     }
+
+    @Override
     public void put (K key, V value, long timeout) {
         if (key == null || value == null)
             throw new NullPointerException ("key=" + key + ", value=" + value);
@@ -340,6 +384,8 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
         if (sl != null)
             notifyListeners(key, value);
     }
+
+    @Override
     public boolean existAny (K[] keys) {
         for (K key : keys) {
             if (rdp(key) != null)
@@ -347,6 +393,8 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
         }
         return false;
     }
+
+    @Override
     public boolean existAny (K[] keys, long timeout) {
         long now = System.currentTimeMillis();
         long end = now + timeout;
@@ -361,6 +409,7 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
         }
         return false;
     }
+
     /**
      * unstandard method (required for space replication) - use with care
      * @return underlying entry map
@@ -368,6 +417,7 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
     public Map getEntries () {
         return entries;
     }
+
     /**
      * unstandard method (required for space replication) - use with care
      * @param entries underlying entry map
@@ -375,12 +425,14 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
     public void setEntries (Map entries) {
         this.entries = entries;
     }
+
     private List getList (Object key) {
         List l = (List) entries.get (key);
         if (l == null) 
             entries.put (key, l = new LinkedList());
         return l;
     }
+
     private Object getHead (Object key, boolean remove) {
         Object obj = null;
         List l = (List) entries.get (key);
@@ -408,6 +460,7 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
         }
         return obj;
     }
+
     private Object getObject (Template tmpl, boolean remove) {
         Object obj = null;
         List l = (List) entries.get (tmpl.getKey());
@@ -433,6 +486,7 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
         }
         return obj;
     }
+
     private TSpace getSL() {
         synchronized (this) {
             if (sl == null)
@@ -440,14 +494,20 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
         }
         return sl;
     }
+
     private void registerExpirable(K k, long t) {
         expirables[t > GCLONG ? 1 : 0].add(k);
     }
+
     private void unregisterExpirable(Object k) {
         for (Set<K> s : expirables)
             s.remove(k);
     }
-    static class Expirable implements Comparable {
+
+    static class Expirable implements Comparable, Serializable {
+
+        static final long serialVersionUID = 0xA7F22BF5;
+
         Object value;
         long expires;
 
@@ -456,18 +516,24 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
             this.value = value;
             this.expires = expires;
         }
+
         public boolean isExpired () {
             return expires < System.currentTimeMillis ();
         }
+
+        @Override
         public String toString() {
             return getClass().getName() 
                 + "@" + Integer.toHexString(hashCode())
                 + ",value=" + value.toString()
                 + ",expired=" + isExpired ();
         }
+
         public Object getValue() {
             return isExpired() ? null : value;
         }
+
+        @Override
         public int compareTo (Object obj) {
             Expirable other = (Expirable) obj;
             long otherExpires = other.expires;
@@ -479,4 +545,5 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
                 return 1;
         }
     }
+
 }
