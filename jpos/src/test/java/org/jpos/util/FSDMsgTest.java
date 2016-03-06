@@ -37,7 +37,7 @@ import java.net.MalformedURLException;
 import java.nio.charset.Charset;
 import java.util.LinkedHashMap;
 
-import org.jdom.Element;
+import org.jdom2.Element;
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOUtil;
 import org.jpos.space.SpaceFactory;

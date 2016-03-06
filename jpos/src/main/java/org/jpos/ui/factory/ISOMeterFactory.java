@@ -18,7 +18,7 @@
 
 package org.jpos.ui.factory;
 
-import org.jdom.Element;
+import org.jdom2.Element;
 import org.jpos.iso.ISOChannel;
 import org.jpos.iso.ISOUtil;
 import org.jpos.iso.gui.ISOChannelPanel;

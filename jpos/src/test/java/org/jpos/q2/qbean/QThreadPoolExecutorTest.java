@@ -34,9 +34,9 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import org.jdom.DataConversionException;
-import org.jdom.Document;
-import org.jdom.input.SAXBuilder;
+import org.jdom2.DataConversionException;
+import org.jdom2.Document;
+import org.jdom2.input.SAXBuilder;
 import org.jpos.core.ConfigurationException;
 import org.jpos.util.Log;
 import org.jpos.util.NameRegistrar;

@@ -18,7 +18,7 @@
 
 package org.jpos.ui.action;
 
-import org.jdom.Element;
+import org.jdom2.Element;
 import org.jpos.ui.UI;
 import org.jpos.ui.UIAware;
 

@@ -19,7 +19,7 @@
 package org.jpos.iso;
 
 import org.jpos.util.FSDMsg;
-import org.jdom.JDOMException;
+import org.jdom2.JDOMException;
 
 import java.io.*;
 import java.util.Iterator;

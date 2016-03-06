@@ -18,7 +18,7 @@
 
 package org.jpos.q2;
 
-import org.jdom.Element;
+import org.jdom2.Element;
 
 import java.net.URL;
 

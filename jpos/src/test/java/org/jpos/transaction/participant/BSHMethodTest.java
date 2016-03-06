@@ -35,8 +35,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jdom.Element;
-import org.jdom.Namespace;
+import org.jdom2.Element;
+import org.jdom2.Namespace;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

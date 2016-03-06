@@ -18,9 +18,9 @@
 
 package org.jpos.transaction;
 
-import org.jdom.Element;
-import org.jdom.output.Format;
-import org.jdom.output.XMLOutputter;
+import org.jdom2.Element;
+import org.jdom2.output.Format;
+import org.jdom2.output.XMLOutputter;
 import org.jpos.iso.ISOUtil;
 import org.jpos.util.LogEvent;
 import org.jpos.util.Loggeable;

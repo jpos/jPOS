@@ -30,8 +30,8 @@ import java.util.Hashtable;
 
 import javax.management.ObjectName;
 
-import org.jdom.Attribute;
-import org.jdom.Element;
+import org.jdom2.Attribute;
+import org.jdom2.Element;
 import org.jpos.core.ConfigurationException;
 import org.jpos.iso.ISOFieldValidator;
 import org.jpos.iso.IVA_ALPHANUM;

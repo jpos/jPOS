@@ -22,7 +22,7 @@ import org.jpos.ui.UIFactory;
 import org.jpos.ui.UI;
 import org.jpos.transaction.TransactionManager;
 import org.jpos.util.NameRegistrar;
-import org.jdom.Element;
+import org.jdom2.Element;
 
 import javax.swing.*;
 

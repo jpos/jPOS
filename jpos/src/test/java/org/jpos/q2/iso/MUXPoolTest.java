@@ -23,7 +23,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
-import org.jdom.Element;
+import org.jdom2.Element;
 import org.jpos.iso.ISOMsg;
 import org.junit.Test;
 

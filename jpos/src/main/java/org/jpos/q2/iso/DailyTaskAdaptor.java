@@ -18,7 +18,7 @@
 
 package org.jpos.q2.iso;
 
-import org.jdom.Element;
+import org.jdom2.Element;
 import org.jpos.core.Configurable;
 import org.jpos.iso.ISOUtil;
 import org.jpos.q2.QBeanSupport;
