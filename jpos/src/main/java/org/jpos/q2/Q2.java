@@ -97,6 +97,7 @@ public class Q2 implements FileFilter, Runnable {
     private boolean startOSGI = false;
     private BundleContext bundleContext;
     private String pidFile;
+    private String name = JMX_NAME;
     private long lastVersionLog;
     private String watchServiceClassname;
 
@@ -111,6 +112,7 @@ public class Q2 implements FileFilter, Runnable {
         deployDir.mkdirs ();
         mainClassLoader = getClass().getClassLoader();
         this.bundleContext = bundleContext;
+        registerQ2();
     }
     public Q2 () {
         this (new String[] {}, null );
@@ -652,6 +654,7 @@ public class Q2 implements FileFilter, Runnable {
         options.addOption ("c","command", true, "Command to execute");
         options.addOption ("O", "osgi", false, "Start experimental OSGi framework server");
         options.addOption ("p", "pid-file", true, "Store project's pid");
+        options.addOption ("n", "name", true, "Optional name (default to 'Q2')");
 
         try {
             CommandLine line = parser.parse (options, args);
@@ -683,6 +686,8 @@ public class Q2 implements FileFilter, Runnable {
                 startOSGI = true;
             if (line.hasOption("p"))
                 pidFile = line.getOptionValue("p");
+            if (line.hasOption("n"))
+                name = line.getOptionValue("n");
         } catch (MissingArgumentException e) {
             System.out.println("ERROR: " + e.getMessage());
             System.exit(1);
@@ -1028,5 +1033,17 @@ public class Q2 implements FileFilter, Runnable {
             }
         }
         return true;
+    }
+
+    private void registerQ2() {
+        synchronized (Q2.class) {
+            for (int i=0; ; i++) {
+                String key = name + (i > 0 ? "-" + i : "");
+                if (NameRegistrar.getIfExists(key) == null) {
+                    NameRegistrar.register(key, this);
+                    break;
+                }
+            }
+        }
     }
 }
