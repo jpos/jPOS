@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pmd version="5.2.3" timestamp="2016-03-07T23:27:58.271">
+<pmd version="5.2.3" timestamp="2016-03-10T01:26:29.379">
 <file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/bsh/BSHLogListenerTest.java">
 <violation beginline="113" endline="115" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.bsh" class="BSHLogListenerTest" method="testLoadCodeThrowsNullPointerException" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
+Avoid empty catch blocks
+</violation>
+</file>
+<file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/core/CardTest.java">
+<violation beginline="92" endline="92" begincolumn="11" endcolumn="50" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.core" class="CardTest" method="testInvalidPAN" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
 </violation>
 </file>
