@@ -30,7 +30,7 @@ public class DefaultLUHNCalculator implements LUHNCalculator {
     /**
      * Verify Card's PAN
      * @param p full card PAN
-     * @return
+     * @return true if pan LUHN's matches
      */
     public boolean verify (String p) throws InvalidCardException {
         if (p == null || p.length() < 5)
