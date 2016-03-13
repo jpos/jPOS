@@ -463,8 +463,7 @@ public class JCESecurityModule extends BaseSMAdapter {
         return result.equals(cavv);
     }
 
-    @Override
-    protected boolean verifydCVVImpl(String accountNo, SecureDESKey imkac, String dcvv,
+    protected String calculatedCVV(String accountNo, SecureDESKey imkac,
                      Date expDate, String serviceCode, byte[] atc, MKDMethod mkdm)
                      throws SMException {
 
@@ -475,13 +474,22 @@ public class JCESecurityModule extends BaseSMAdapter {
 
         String alteredPAN = ISOUtil.hexString(atc) + accountNo.substring(4);
 
-        String res = calculateCVV(alteredPAN, mkac, expDate, serviceCode);
-        return res.equals(dcvv);
+        return calculateCVV(alteredPAN, mkac, expDate, serviceCode);
     }
 
     @Override
-    protected boolean verifyCVC3Impl(SecureDESKey imkcvc3, String accountNo, String acctSeqNo,
-                     byte[] atc, byte[] upn, byte[] data, MKDMethod mkdm, String cvc3)
+    protected boolean verifydCVVImpl(String accountNo, SecureDESKey imkac, String dcvv,
+                     Date expDate, String serviceCode, byte[] atc, MKDMethod mkdm)
+                     throws SMException {
+
+        String res = calculatedCVV(accountNo, imkac, expDate,
+                serviceCode, atc, mkdm
+        );
+        return res.equals(dcvv);
+    }
+
+    protected String calculateCVC3(SecureDESKey imkcvc3, String accountNo, String acctSeqNo,
+                     byte[] atc, byte[] upn, byte[] data, MKDMethod mkdm)
                      throws SMException {
         if (mkdm==null)
           mkdm = MKDMethod.OPTION_A;
@@ -499,11 +507,21 @@ public class JCESecurityModule extends BaseSMAdapter {
         //Format last two bytes to integer
         int cvc3l = (b[6] & 0xff) << 8;
         cvc3l |= b[7] & 0xff;
-        //Convert to string representation and get some last digits
-        String calcCVC3 = String.format("%05d",cvc3l);
-        cvc3 = cvc3==null?"":cvc3;
-        calcCVC3 = calcCVC3.substring(5-cvc3.length());
+        //Convert to string representation
+        return String.format("%05d",cvc3l);
+    }
 
+    @Override
+    protected boolean verifyCVC3Impl(SecureDESKey imkcvc3, String accountNo, String acctSeqNo,
+                     byte[] atc, byte[] upn, byte[] data, MKDMethod mkdm, String cvc3)
+                     throws SMException {
+
+        String calcCVC3 = calculateCVC3(imkcvc3, accountNo, acctSeqNo,
+                atc, upn, data, mkdm
+        );
+        cvc3 = cvc3==null?"":cvc3;
+        //get some last digits
+        calcCVC3 = calcCVC3.substring(5-cvc3.length());
         return calcCVC3.equals(cvc3);
     }
 
