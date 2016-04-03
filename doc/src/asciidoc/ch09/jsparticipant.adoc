@@ -1,0 +1,42 @@
+== JSParticipant 
+
+The `org.jpos.transaction.participant.JSParticipant` is a handy stock
+participant that leverages Java 8 Nashorn.
+
+Here is a sample invocation:
+
+[source,xml]
+------------
+<participant class="org.jpos.transaction.participant.JSParticipant" 
+    logger="Q2" realm="js" src='deploy/test.js' />
+------------
+
+And here is a sample script:
+
+[source,javascript]
+-------------------
+var K = Java.type("org.jpos.transaction.TransactionConstants");
+
+var prepare = function(id, ctx) {
+    var map = ctx.getMap();
+    ctx.log ("Prepare has been called");
+    ctx.log (map.TIMESTAMP);
+    map.NEWPROPERTY='ABC';
+    return K.PREPARED;
+}
+
+var prepareForAbort = function(id, ctx) {
+    ctx.put ("Test", "Test from JS transaction $id");
+    ctx.log ("prepareForAbort has been called");
+    return K.PREPARED;
+}
+
+var commit = function(id, ctx) {
+    ctx.log ("Commit has been called");
+}
+
+var abort = function(id, ctx) {
+    ctx.log ("Abort has been called");
+}
+------------------- 
+
