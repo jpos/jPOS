@@ -74,12 +74,17 @@ public class ISOMsgPanel extends JPanel {
         TableModel dataModel = new AbstractTableModel() {
 
             private static final long serialVersionUID = 8917029825751856951L;
+
+            @Override
             public int getColumnCount() {
                 return 3;
             }
+
+            @Override
             public int getRowCount() {
                 return validFields.size();
             }
+
             @Override
             public String getColumnName(int columnIndex) {
                 switch (columnIndex) {
@@ -93,39 +98,36 @@ public class ISOMsgPanel extends JPanel {
                         return "";
                 }
             }
+
+            @Override
             public Object getValueAt(int row, int col) {
                 switch (col) {
                     case 0 :
                         return validFields.elementAt(row);
                     case 1 :
-                        try {
-                            int index =
-                                    (Integer) validFields.elementAt(row);
+                        int index = (Integer) validFields.elementAt(row);
 
-                            Object obj = m.getValue(index);
-                            if (obj instanceof String) {
-                                String s = obj.toString();
-                                switch (index) {
-                                    case 2 :
-                                    case 35:
-                                    case 45:
-                                        s = ISOUtil.protect (s);
-                                        break;
-                                    case 14:
-                                        s = "----";
-                                }
-                                return s;
+                        Object obj = m.getValue(index);
+                        if (obj instanceof String) {
+                            String s = obj.toString();
+                            switch (index) {
+                                case 2 :
+                                case 35:
+                                case 45:
+                                    s = ISOUtil.protect(s);
+                                    break;
+                                case 14:
+                                    s = "----";
                             }
-                            else if (obj instanceof byte[])
-                                return ISOUtil.hexString((byte[]) obj);
-                            else if (obj instanceof ISOMsg)
-                                return "<ISOMsg>";
-                        } catch (ISOException e) {
-                            e.printStackTrace();
-                        }   
+                            return s;
+                        }
+                        else if (obj instanceof byte[])
+                            return ISOUtil.hexString((byte[]) obj);
+                        else if (obj instanceof ISOMsg)
+                            return "<ISOMsg>";
                         break;
                     case 2 :
-                        int i= (Integer) validFields.elementAt(row);
+                        int i = (Integer) validFields.elementAt(row);
                         ISOPackager p = m.getPackager();
                         return p.getFieldDescription(m,i);
                 }
@@ -148,22 +150,18 @@ public class ISOMsgPanel extends JPanel {
                     (ListSelectionModel)e.getSource();
                 if (!lsm.isSelectionEmpty()) {
                     int selectedRow = lsm.getMinSelectionIndex();
-                    try {
-                        int index = (Integer)
-                                validFields.elementAt(selectedRow);
+                    int index = (Integer)
+                            validFields.elementAt(selectedRow);
 
-                        Object obj = m.getValue(index);
-                        if (obj instanceof ISOMsg) {
-                            ISOMsg sm = (ISOMsg) obj;
-                            JFrame f = new JFrame("ISOMsg field "+index);
-                            ISOMsgPanel p = new ISOMsgPanel(sm, false);
-                            f.getContentPane().add(p);
-                            f.pack();
-                            f.show();
-                        }
-                    } catch (ISOException ex) {
-                        ex.printStackTrace();
-                    }   
+                    Object obj = m.getValue(index);
+                    if (obj instanceof ISOMsg) {
+                        ISOMsg sm = (ISOMsg) obj;
+                        JFrame f = new JFrame("ISOMsg field "+index);
+                        ISOMsgPanel p = new ISOMsgPanel(sm, false);
+                        f.getContentPane().add(p);
+                        f.pack();
+                        f.show();
+                    }
                 }
             }
         });
