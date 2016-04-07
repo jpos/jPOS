@@ -55,33 +55,30 @@ public class ChannelInfoFilter implements ISOFilter, Configurable {
         socketInfoField  = cfg.get("socket-info", null);
     }
 
+    @Override
     public ISOMsg filter (ISOChannel channel, ISOMsg m, LogEvent evt) {
-        try {
-            if (channelNameField != null)
-                m.set (channelNameField, channel.getName());
-            if (socketInfoField != null && channel instanceof BaseChannel) {
-                Socket socket = ((BaseChannel)channel).getSocket();
-                InetSocketAddress remoteAddr = 
-                    (InetSocketAddress) socket.getRemoteSocketAddress();
-                InetSocketAddress localAddr = 
-                    (InetSocketAddress) socket.getLocalSocketAddress();
+        if (channelNameField != null)
+            m.set(channelNameField, channel.getName());
+        if (socketInfoField != null && channel instanceof BaseChannel) {
+            Socket socket = ((BaseChannel) channel).getSocket();
+            InetSocketAddress remoteAddr =
+                (InetSocketAddress) socket.getRemoteSocketAddress();
+            InetSocketAddress localAddr =
+                (InetSocketAddress) socket.getLocalSocketAddress();
 
-                StringBuilder sb = new StringBuilder();
-                if (socketInfoField.equals(channelNameField)) {
-                    sb.append (channel.getName());
-                    sb.append (' ');
-                }
-                sb.append (localAddr.getAddress().getHostAddress());
-                sb.append (':');
-                sb.append (Integer.toString (localAddr.getPort()));
-                sb.append (' ');
-                sb.append (remoteAddr.getAddress().getHostAddress());
-                sb.append (':');
-                sb.append (Integer.toString (remoteAddr.getPort()));
-                m.set (socketInfoField, sb.toString());
+            StringBuilder sb = new StringBuilder();
+            if (socketInfoField.equals(channelNameField)) {
+                sb.append(channel.getName());
+                sb.append(' ');
             }
-        } catch (ISOException e) {
-            evt.addMessage (e);
+            sb.append(localAddr.getAddress().getHostAddress());
+            sb.append(':');
+            sb.append(Integer.toString (localAddr.getPort()));
+            sb.append(' ');
+            sb.append(remoteAddr.getAddress().getHostAddress());
+            sb.append(':');
+            sb.append(Integer.toString (remoteAddr.getPort()));
+            m.set (socketInfoField, sb.toString());
         }
         return m;
     }

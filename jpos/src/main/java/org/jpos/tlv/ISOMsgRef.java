@@ -227,12 +227,12 @@ public class ISOMsgRef {
         }
 
         @Override
-        public void set(int fldno, String value) throws ISOException {
+        public void set(int fldno, String value) {
             delegate.set(fldno, value);
         }
 
         @Override
-        public void set(String fpath, String value) throws ISOException {
+        public void set(String fpath, String value) {
             delegate.set(fpath, value);
         }
 
@@ -242,12 +242,12 @@ public class ISOMsgRef {
         }
 
         @Override
-        public void set(String fpath, byte[] value) throws ISOException {
+        public void set(String fpath, byte[] value) {
             delegate.set(fpath, value);
         }
 
         @Override
-        public void set(int fldno, byte[] value) throws ISOException {
+        public void set(int fldno, byte[] value) {
             delegate.set(fldno, value);
         }
 
@@ -257,7 +257,7 @@ public class ISOMsgRef {
         }
 
         @Override
-        public void unset(String fpath) throws ISOException {
+        public void unset(String fpath) {
             delegate.unset(fpath);
         }
 
@@ -272,7 +272,7 @@ public class ISOMsgRef {
         }
 
         @Override
-        public Object getValue(int fldno) throws ISOException {
+        public Object getValue(int fldno) {
             return delegate.getValue(fldno);
         }
 
