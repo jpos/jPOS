@@ -92,11 +92,11 @@ public class ThreadPool extends ThreadGroup implements LogSource, Loggeable, Con
                 }
             } catch (InterruptedException e) {
                 if (logger != null) {
-                    Logger.log(new LogEvent(ThreadPool.this, "Test"));
+                    Logger.log(new LogEvent(ThreadPool.this, e.getMessage()));
                 }
             } catch (Closed e) {
                 if (logger != null) {
-                    Logger.log(new LogEvent(ThreadPool.this, "Test"));
+                    Logger.log(new LogEvent(ThreadPool.this, e.getMessage()));
                 }
             }
         }
