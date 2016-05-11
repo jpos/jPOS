@@ -41,7 +41,7 @@
 </td>
 <td>
 <div class="infoBox" id="duration">
-<div class="counter">0.131s</div>
+<div class="counter">0.073s</div>
 <p>duration</p>
 </div>
 </td>
@@ -79,32 +79,32 @@
 </thead>
 <tr>
 <td class="success">testCharactersThrowsEmptyStackException</td>
-<td>0.001s</td>
+<td>0s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">testConstructor</td>
-<td>0.001s</td>
+<td>0s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">testCreateISOMsg</td>
-<td>0.001s</td>
+<td>0s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">testEndElementThrowsEmptyStackException</td>
-<td>0s</td>
+<td>0.001s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">testEndElementThrowsEmptyStackException1</td>
-<td>0s</td>
+<td>0.001s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">testEndElementThrowsNullPointerException</td>
-<td>0s</td>
+<td>0.001s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
@@ -119,22 +119,22 @@
 </tr>
 <tr>
 <td class="success">testGetRealm</td>
-<td>0.001s</td>
-<td class="success">passed</td>
-</tr>
-<tr>
-<td class="success">testGetRealm1</td>
 <td>0s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
+<td class="success">testGetRealm1</td>
+<td>0.001s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
 <td class="success">testPack</td>
-<td>0.090s</td>
+<td>0.049s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">testPackException</td>
-<td>0.018s</td>
+<td>0.011s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
@@ -144,7 +144,7 @@
 </tr>
 <tr>
 <td class="success">testStartElement1</td>
-<td>0s</td>
+<td>0.001s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
@@ -164,12 +164,12 @@
 </tr>
 <tr>
 <td class="success">testStartElementThrowsNullPointerException1</td>
-<td>0.001s</td>
+<td>0s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">testUnpackBytes</td>
-<td>0.001s</td>
+<td>0.002s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
@@ -179,7 +179,7 @@
 </tr>
 <tr>
 <td class="success">testUnpackStream</td>
-<td>0.013s</td>
+<td>0.002s</td>
 <td class="success">passed</td>
 </tr>
 </table>
@@ -187,7 +187,7 @@
 <div id="tab1" class="tab">
 <h2>Standard output</h2>
 <span class="code">
-<pre>&lt;log realm=&quot;org.jpos.iso.packager.XMLPackager&quot; at=&quot;2016-05-09T20:39:39.047&quot; lifespan=&quot;1ms&quot;&gt;
+<pre>&lt;log realm=&quot;org.jpos.iso.packager.XMLPackager&quot; at=&quot;2016-05-11T01:35:14.029&quot;&gt;
   &lt;unpack&gt;
     &lt;isomsg&gt;
       &lt;header&gt;686561646572&lt;/header&gt;
@@ -199,7 +199,7 @@
     &lt;/isomsg&gt;
   &lt;/unpack&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;org.jpos.iso.packager.XMLPackager&quot; at=&quot;2016-05-09T20:39:39.053&quot;&gt;
+&lt;log realm=&quot;org.jpos.iso.packager.XMLPackager&quot; at=&quot;2016-05-11T01:35:14.031&quot;&gt;
   &lt;pack&gt;
     &lt;isomsg&gt;
       &lt;!-- org.jpos.iso.packager.XMLPackager --&gt;
@@ -211,7 +211,7 @@
     &lt;/isomsg&gt;
   &lt;/pack&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;org.jpos.iso.packager.XMLPackager&quot; at=&quot;2016-05-09T20:39:39.145&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;org.jpos.iso.packager.XMLPackager&quot; at=&quot;2016-05-11T01:35:14.082&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;unpack&gt;
     &lt;isomsg&gt;
       &lt;field id=&quot;0&quot; value=&quot;0800&quot;/&gt;
@@ -219,7 +219,7 @@
     &lt;/isomsg&gt;
   &lt;/unpack&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;org.jpos.iso.packager.XMLPackager&quot; at=&quot;2016-05-09T20:39:39.146&quot;&gt;
+&lt;log realm=&quot;org.jpos.iso.packager.XMLPackager&quot; at=&quot;2016-05-11T01:35:14.085&quot;&gt;
   &lt;pack&gt;
     &lt;iso-exception&gt;
       cannot pack class org.jpos.iso.ISOField
@@ -244,11 +244,11 @@
 	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58)
 	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268)
 	at org.junit.runners.ParentRunner.run(ParentRunner.java:363)
-	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecuter.runTestClass(JUnitTestClassExecuter.java:105)
+	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecuter.runTestClass(JUnitTestClassExecuter.java:112)
 	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecuter.execute(JUnitTestClassExecuter.java:56)
-	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassProcessor.processTestClass(JUnitTestClassProcessor.java:64)
-	at org.gradle.api.internal.tasks.testing.SuiteTestClassProcessor.processTestClass(SuiteTestClassProcessor.java:49)
-	at sun.reflect.GeneratedMethodAccessor7.invoke(Unknown Source)
+	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassProcessor.processTestClass(JUnitTestClassProcessor.java:66)
+	at org.gradle.api.internal.tasks.testing.SuiteTestClassProcessor.processTestClass(SuiteTestClassProcessor.java:51)
+	at sun.reflect.GeneratedMethodAccessor6.invoke(Unknown Source)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
 	at java.lang.reflect.Method.invoke(Method.java:483)
 	at org.gradle.messaging.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:35)
@@ -256,13 +256,13 @@
 	at org.gradle.messaging.dispatch.ContextClassLoaderDispatch.dispatch(ContextClassLoaderDispatch.java:32)
 	at org.gradle.messaging.dispatch.ProxyDispatchAdapter$DispatchingInvocationHandler.invoke(ProxyDispatchAdapter.java:93)
 	at com.sun.proxy.$Proxy2.processTestClass(Unknown Source)
-	at org.gradle.api.internal.tasks.testing.worker.TestWorker.processTestClass(TestWorker.java:106)
-	at sun.reflect.GeneratedMethodAccessor6.invoke(Unknown Source)
+	at org.gradle.api.internal.tasks.testing.worker.TestWorker.processTestClass(TestWorker.java:109)
+	at sun.reflect.GeneratedMethodAccessor5.invoke(Unknown Source)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
 	at java.lang.reflect.Method.invoke(Method.java:483)
 	at org.gradle.messaging.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:35)
 	at org.gradle.messaging.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:24)
-	at org.gradle.messaging.remote.internal.hub.MessageHub$Handler.run(MessageHub.java:360)
+	at org.gradle.messaging.remote.internal.hub.MessageHub$Handler.run(MessageHub.java:364)
 	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:54)
 	at org.gradle.internal.concurrent.StoppableExecutorImpl$1.run(StoppableExecutorImpl.java:40)
 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
@@ -271,7 +271,7 @@
     &lt;/iso-exception&gt;
   &lt;/pack&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;org.jpos.iso.packager.XMLPackager&quot; at=&quot;2016-05-09T20:39:39.166&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;org.jpos.iso.packager.XMLPackager&quot; at=&quot;2016-05-11T01:35:14.098&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;unpack&gt;
     &lt;isomsg&gt;
       &lt;header&gt;686561646572&lt;/header&gt;
@@ -294,7 +294,7 @@
 <input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
 </label>
 </div>Generated by 
-<a href="http://www.gradle.org">Gradle 2.11</a> at May 9, 2016 8:42:11 PM</p>
+<a href="http://www.gradle.org">Gradle 2.13</a> at May 11, 2016 1:37:31 AM</p>
 </div>
 </div>
 </body>
