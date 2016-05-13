@@ -30,6 +30,7 @@ import org.jpos.util.LogSource;
 import org.jpos.util.Loggeable;
 import org.jpos.util.NameRegistrar;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.SocketTimeoutException;
@@ -331,9 +332,9 @@ public class ChannelAdaptor
                         }
                         ISOUtil.sleep(1000);
                     }
-                } catch (SocketTimeoutException e) {
+                } catch (SocketTimeoutException | EOFException e) {
                     if (running()) {
-                        getLog().warn ("channel-receiver-"+out, "Read timeout");
+                        getLog().warn ("channel-receiver-"+out, "Read timeout / EOF - reconnecting");
                         sp.out (reconnect, Boolean.TRUE, delay);
                         disconnect ();
                         sp.out (in, Boolean.TRUE); // wake-up Sender
