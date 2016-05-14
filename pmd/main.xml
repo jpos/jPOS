@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pmd version="5.2.3" timestamp="2016-05-11T01:34:32.946">
+<pmd version="5.2.3" timestamp="2016-05-13T23:59:29.056">
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/core/Card.java">
 <violation beginline="133" endline="135" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.core" class="Card" method="isExpired" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
@@ -229,7 +229,7 @@ Avoid empty catch blocks
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/q2/iso/ChannelAdaptor.java">
-<violation beginline="364" endline="366" begincolumn="15" endcolumn="13" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.q2.iso" class="ChannelAdaptor" method="checkConnection" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
+<violation beginline="365" endline="367" begincolumn="15" endcolumn="13" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.q2.iso" class="ChannelAdaptor" method="checkConnection" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
 </violation>
 </file>
