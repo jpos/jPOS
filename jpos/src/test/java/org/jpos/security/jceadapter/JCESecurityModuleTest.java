@@ -511,6 +511,17 @@ public class JCESecurityModuleTest {
     }
 
     @Test
+    public void testExportPINImplFormat05() throws Throwable {
+        EncryptedPIN ep = jcesecmod.encryptPINImpl("1234", "123456789012");
+        EncryptedPIN pinUnderZPKfmt05 = jcesecmod.exportPINImpl(ep, zpk, SMAdapter.FORMAT05);
+        assertEquals(SMAdapter.FORMAT05, pinUnderZPKfmt05.getPINBlockFormat());
+        assertEquals("123456789012", pinUnderZPKfmt05.getAccountNumber());
+        EncryptedPIN ep2 = jcesecmod.importPINImpl(pinUnderZPKfmt05, zpk);
+        String pin = jcesecmod.decryptPINImpl(ep2);
+        assertEquals("1234", pin);
+    }
+
+    @Test
     public void testGenerateKeyImplThrowsNullPointerException() throws Throwable {
         try {
             new JCESecurityModule().generateKeyImpl((short) 100, "testJCESecurityModuleKeyType");
@@ -581,6 +592,22 @@ public class JCESecurityModuleTest {
     public void testImportPINImpl() throws Throwable {
         EncryptedPIN pinUnderKd1 = new EncryptedPIN("3C0CA40863092C3A", SMAdapter.FORMAT01,"1234567890120");
         EncryptedPIN ep = jcesecmod.importPINImpl(pinUnderKd1, zpk);
+        String pin = jcesecmod.decryptPINImpl(ep);
+        assertEquals("1234", pin);
+    }
+
+    @Test
+    public void testImportPINImplFormat05() throws Throwable {
+        EncryptedPIN pinUnderZPKfmt05 = new EncryptedPIN("07438C40F225BF7D", SMAdapter.FORMAT05, "1234567890120");
+        EncryptedPIN ep = jcesecmod.importPINImpl(pinUnderZPKfmt05, zpk);
+        String pin = jcesecmod.decryptPINImpl(ep);
+        assertEquals("1234", pin);
+    }
+
+    @Test
+    public void testImportPINImplFormat05Other() throws Throwable {
+        EncryptedPIN pinUnderZPKfmt05 = new EncryptedPIN("07438C40F225BF7D", SMAdapter.FORMAT05, "0210987654321");
+        EncryptedPIN ep = jcesecmod.importPINImpl(pinUnderZPKfmt05, zpk);
         String pin = jcesecmod.decryptPINImpl(ep);
         assertEquals("1234", pin);
     }
