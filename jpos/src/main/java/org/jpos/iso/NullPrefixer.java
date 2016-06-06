@@ -30,28 +30,22 @@ public class NullPrefixer implements Prefixer
     public static final NullPrefixer INSTANCE = new NullPrefixer();
 
     /** Hidden constructor */
-    private NullPrefixer()
-    {}
+    private NullPrefixer() {}
 
-    /*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.jpos.iso.Prefixer#encodeLength(int, byte[])
-	 */
-    public void encodeLength(int length, byte[] b)
-    {}
+    @Override
+    public void encodeLength(int length, byte[] b) {}
 
     /**
 	 * Returns -1 meaning there is no length field.
 	 *
      */
+    @Override
     public int decodeLength(byte[] b, int offset)
     {
         return -1;
     }
 
-    /**
-     */
+    @Override
     public int getPackedLength()
     {
         return 0;

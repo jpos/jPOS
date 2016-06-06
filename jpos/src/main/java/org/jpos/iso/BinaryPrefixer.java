@@ -27,12 +27,12 @@ package org.jpos.iso;
 public class BinaryPrefixer implements Prefixer
 {
     /**
-	 * A length prefixer for upto 255 chars. The length is encoded with 1 unsigned byte.
+	 * A length prefixer for up to 255 chars. The length is encoded with 1 unsigned byte.
 	 */
     public static final BinaryPrefixer B = new BinaryPrefixer(1);
 
     /**
-     * A length prefixer for upto 65535 chars. The length is encoded with 2 unsigned bytes.
+     * A length prefixer for up to 65535 chars. The length is encoded with 2 unsigned bytes.
      */
     public static final BinaryPrefixer BB = new BinaryPrefixer(2);
 
@@ -44,11 +44,8 @@ public class BinaryPrefixer implements Prefixer
         this.nBytes = nBytes;
     }
 
-    /*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.jpos.iso.Prefixer#encodeLength(int, byte[])
-	 */
+
+    @Override
     public void encodeLength(int length, byte[] b)
     {
         for (int i = nBytes - 1; i >= 0; i--) {
@@ -57,11 +54,7 @@ public class BinaryPrefixer implements Prefixer
         }
     }
 
-    /*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.jpos.iso.Prefixer#decodeLength(byte[], int)
-	 */
+    @Override
     public int decodeLength(byte[] b, int offset)
     {
         int len = 0;
@@ -72,11 +65,8 @@ public class BinaryPrefixer implements Prefixer
         return len;
     }
 
-    /*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.jpos.iso.Prefixer#getLengthInBytes()
-	 */
+
+    @Override
     public int getPackedLength()
     {
         return nBytes;
