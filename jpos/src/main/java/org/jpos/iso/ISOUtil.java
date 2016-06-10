@@ -621,9 +621,10 @@ public class ISOUtil {
             int value = (int) Math.pow(2,b);
             for (int i = 0; i <= b; i++) {
                 if (bs.get(i))
-                total += value;
-            value = value >> 1;
-        }
+                    total += value;
+
+                value = value >> 1;
+            }
         }
         
         return total;
@@ -678,17 +679,15 @@ public class ISOUtil {
      * @return java BitSet object
      */
     public static BitSet byte2BitSet (byte[] b, int offset, int maxBits) {
-        int len = maxBits > 64 ?
-                (b[offset] & 0x80) == 0x80 ? 128 : 64 : maxBits;
+        boolean  b1= (b[offset] & 0x80) == 0x80;
+        boolean b65= (b.length > offset+8) && ((b[offset+8] & 0x80) == 0x80);
 
-        if (maxBits > 128 && 
-            b.length > offset+8 && 
-            (b[offset+8] & 0x80) == 0x80)
-        {
-            len = 192;
-        } 
+        int len=  (maxBits > 128 && b1 && b65) ?     192 :
+                  (maxBits >  64 && b1)        ?     128 :
+                  (maxBits <  64)              ? maxBits : 64;
+
         BitSet bmap = new BitSet (len);
-        for (int i=0; i<len; i++) 
+        for (int i=0; i<len; i++)
             if ((b[offset + (i >> 3)] & 0x80 >> i % 8) > 0)
                 bmap.set(i+1);
         return bmap;
@@ -696,11 +695,14 @@ public class ISOUtil {
 
     /**
      * Converts a binary representation of a Bitmap field
-     * into a Java BitSet
+     * into a Java BitSet.
+     *
+     * The byte[] will be fully consumed, and fed into the given BitSet starting at bitOffset+1
+     *
      * @param bmap - BitSet
      * @param b - hex representation
      * @param bitOffset - (i.e. 0 for primary bitmap, 64 for secondary)
-     * @return java BitSet object
+     * @return the same java BitSet object given as first argument
      */
     public static BitSet byte2BitSet (BitSet bmap, byte[] b, int bitOffset)
     {

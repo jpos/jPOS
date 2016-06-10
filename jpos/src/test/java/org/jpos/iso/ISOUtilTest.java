@@ -558,18 +558,24 @@ public class ISOUtilTest {
         }
     }
 
-    @Test
-    public void testByte2BitSetThrowsArrayIndexOutOfBoundsException17() throws Throwable {
-        byte[] b = new byte[12];
-        b[1] = (byte) 1;
-        b[9] = (byte) -128;
-        try {
-            ISOUtil.byte2BitSet(b, 1, 129);
-            fail("Expected ArrayIndexOutOfBoundsException to be thrown");
-        } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "12", ex.getMessage());
-        }
-    }
+//    This test SHOULD NOT throw an ArrayIndexOutOfBoundsException
+//    because the first bit of the first byte (byte[1] since we're calling with offset 1) is 0.
+//    Therefore, only 8 bytes should be decoded, which is enough for the 11 available bytes in the array
+//    The test used to be successful (i.e. failed) because of a bad implementation of ISOUtil.byte2BitSet
+//    when asked for more than 128 bits, and bit 1 of the bitmap was 0 and bit 65 was one (in which case it
+//    wrongly attempted to unpack 24 bytes instead of just 8)
+//    @Test
+//    public void testByte2BitSetThrowsArrayIndexOutOfBoundsException17() throws Throwable {
+//        byte[] b = new byte[12];
+//        b[1] = (byte) 1;
+//        b[9] = (byte) -128;
+//        try {
+//            ISOUtil.byte2BitSet(b, 1, 129);
+//            fail("Expected ArrayIndexOutOfBoundsException to be thrown");
+//        } catch (ArrayIndexOutOfBoundsException ex) {
+//            assertEquals("ex.getMessage()", "12", ex.getMessage());
+//        }
+//    }
 
     @Test
     public void testByte2BitSetThrowsArrayIndexOutOfBoundsException18() throws Throwable {

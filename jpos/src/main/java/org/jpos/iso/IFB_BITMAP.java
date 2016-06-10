@@ -67,7 +67,7 @@ public class IFB_BITMAP extends ISOBitMapPackager {
         BitSet bmap = ISOUtil.byte2BitSet (b, offset, getLength() << 3);
         c.setValue(bmap);
         len = bmap.get(1) ? 128 : 64;
-        if (getLength() > 16 && bmap.get(65))
+        if (getLength() > 16 && bmap.get(1) && bmap.get(65))
             len = 192;
         return Math.min (getLength(), len >> 3);
     }
