@@ -28,17 +28,17 @@ package org.jpos.iso;
 public class EbcdicPrefixer implements Prefixer
 {
     /**
-     * A length prefixer for upto 99 chars. The length is encoded with 2 EBCDIC
+     * A length prefixer for up to 99 chars. The length is encoded with 2 EBCDIC
      * chars representing 2 decimal digits.
      */
     public static final EbcdicPrefixer LL = new EbcdicPrefixer(2);
     /**
-     * A length prefixer for upto 999 chars. The length is encoded with 3 EBCDIC
+     * A length prefixer for up to 999 chars. The length is encoded with 3 EBCDIC
      * chars representing 3 decimal digits.
      */
     public static final EbcdicPrefixer LLL = new EbcdicPrefixer(3);
     /**
-     * A length prefixer for upto 9999 chars. The length is encoded with 4
+     * A length prefixer for up to 9999 chars. The length is encoded with 4
      * EBCDIC chars representing 4 decimal digits.
      */
     public static final EbcdicPrefixer LLLL = new EbcdicPrefixer(4);
@@ -55,11 +55,8 @@ public class EbcdicPrefixer implements Prefixer
         this.nDigits = nDigits;
     }
 
-    /*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.jpos.iso.Prefixer#encodeLength(int, byte[])
-	 */
+
+    @Override
     public void encodeLength(int length, byte[] b)
     {
         for (int i = nDigits - 1; i >= 0; i--)
@@ -69,11 +66,7 @@ public class EbcdicPrefixer implements Prefixer
         }
     }
 
-    /*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.jpos.iso.Prefixer#decodeLength(byte[], int)
-	 */
+    @Override
     public int decodeLength(byte[] b, int offset)
     {
         int len = 0;
@@ -84,11 +77,7 @@ public class EbcdicPrefixer implements Prefixer
         return len;
     }
 
-    /*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.jpos.iso.Prefixer#getLengthInBytes()
-	 */
+    @Override
     public int getPackedLength()
     {
         return nDigits;

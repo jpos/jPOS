@@ -201,7 +201,7 @@ public class IFA_BITMAPTest
         
     }
     @Test public void testThirdBitmapPack() throws Exception {
-        byte[] b = ISOUtil.hex2byte("F23C04800AE00000800000000000010863BC780000000010");
+        byte[] b = ISOUtil.hex2byte("F23C04800AE00000"+"8000000000000108"+"63BC780000000010");
         BitSet bs1 = ISOUtil.byte2BitSet(b, 0, 192);
         ISOBitMap bmap = new ISOBitMap(-1);
         bmap.setValue(bs1);

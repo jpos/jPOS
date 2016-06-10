@@ -67,7 +67,7 @@ public class Base1_BITMAP126 extends ISOBitMapPackager
     {
         int len;
         // 
-        // For a this type of Bitmap bit0 does not mean
+        // For this type of Bitmap bit0 does not mean
         // that there is a secondary bitmap to follow
         // It simply means that field 1 is present
         // The standard IFB_BITMAP class assumes that

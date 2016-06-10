@@ -45,11 +45,11 @@ public class IFB_BITMAPTest
         sixteenBytes = new IFB_BITMAP(16,"16 byte bitmap");
         twentyfourBytes = new IFB_BITMAP(24,"24 byte bitmap");
         
-        //                                             Next Bitmap?    Next Bitmap?
-        //                                             V               V               
-        inBytes =                    ISOUtil.hex2byte("8181421FF12418F18F81421FF12418F18F81421FF12418F1");
-        eightByteBitMapIn24Bytes =   ISOUtil.hex2byte("7181421FF12418F11881421FF12418F18F81421FF12418F1");
-        sixteenByteBitMapIn24Bytes = ISOUtil.hex2byte("8181421FF12418F11881421FF12418F18F81421FF12418F1");
+        //                                             Next Bitmap?       Next Bitmap?
+        //                                             V                  V
+        inBytes =                    ISOUtil.hex2byte("8181421FF12418F1"+"8F81421FF12418F1"+"8F81421FF12418F1");
+        eightByteBitMapIn24Bytes =   ISOUtil.hex2byte("7181421FF12418F1"+"1881421FF12418F1"+"8F81421FF12418F1");
+        sixteenByteBitMapIn24Bytes = ISOUtil.hex2byte("8181421FF12418F1"+"1881421FF12418F1"+"8F81421FF12418F1");
 
         
     }
