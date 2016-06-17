@@ -2,7 +2,7 @@ ext {
     libraries = [
         jdom: 'org.jdom:jdom2:2.0.6',
         jdbm: 'jdbm:jdbm:1.0',
-        sleepycat_je: 'com.sleepycat:je:5.0.73',
+        sleepycat_je: 'com.sleepycat:je:6.4.25',
         commons_cli: 'commons-cli:commons-cli:1.3.1',
         jline: 'jline:jline:1.0',
         beanshell: 'org.beanshell:bsh:2.0b5',
@@ -10,14 +10,14 @@ ext {
         xerces: 'xerces:xercesImpl:2.11.0',
         jsonsimple: 'com.googlecode.json-simple:json-simple:1.1.1',
         osgi_core: 'org.osgi:org.osgi.core:6.0.0',
-        mockito: 'org.mockito:mockito-all:1.9.0',
+        mockito: 'org.mockito:mockito-all:1.10.19',
         fest_assert: 'org.easytesting:fest-assert:1.4',
         xmlunit: 'xmlunit:xmlunit:1.6',
         junit: 'junit:junit:4.12',
         junit_addons: 'junit-addons:junit-addons:1.4',
         bouncycastle: [
-            'org.bouncycastle:bcprov-jdk15on:1.52',
-            'org.bouncycastle:bcpg-jdk15on:1.52'
+            'org.bouncycastle:bcprov-jdk15on:1.54',
+            'org.bouncycastle:bcpg-jdk15on:1.54'
         ],
         hamcrest: [
             'org.hamcrest:hamcrest-core:1.3',
