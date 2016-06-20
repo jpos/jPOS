@@ -82,12 +82,14 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
 
             c = (ISOComponent) fields.get (0);
             byte[] b;
+            byte[] hdr= null;
 
+            // pre-read header, if it exists, and advance total len
             if (m instanceof ISOMsg && headerLength>0) 
             {
-            	byte[] h = ((ISOMsg) m).getHeader();
-            	if (h != null) 
-            		len += h.length;
+            	hdr= ((ISOMsg) m).getHeader();
+            	if (hdr != null)
+            		len += hdr.length;
             }
             
             if (first > 0 && c != null) {
@@ -153,15 +155,12 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
             int k = 0;
             byte[] d = new byte[len];
             
-            // if ISOMsg insert header 
-            if (m instanceof ISOMsg && headerLength>0) 
-            {
-            	byte[] h = ((ISOMsg) m).getHeader();
-            	if (h != null) {
-                    System.arraycopy(h, 0, d, k, h.length);
-                    k += h.length;
-                }
+            // if ISOMsg insert header (we pre-read it at the beginning)
+            if (hdr != null) {
+                System.arraycopy(hdr, 0, d, k, hdr.length);
+                k += hdr.length;
             }
+
             for (byte[] bb : v) {
                 System.arraycopy(bb, 0, d, k, bb.length);
                 k += bb.length;
