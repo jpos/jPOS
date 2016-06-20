@@ -48,9 +48,9 @@ public class IFB_BITMAP extends ISOBitMapPackager {
      */
     public byte[] pack (ISOComponent c) throws ISOException {
         BitSet b = (BitSet) c.getValue();
-        int len = 
+        int len =                                           // bytes needed to encode BitSet (in 8-byte chunks)
             getLength() >= 8 ?
-                    b.length()+62 >>6 <<3 : getLength();
+                    b.length()+62 >>6 <<3 : getLength();    // +62 because we don't use bit 0 in the BitSet
         return ISOUtil.bitSet2byte (b, len);
     }
     /**
