@@ -571,15 +571,19 @@ public class ISOUtil {
     /**
      * converts a BitSet into a binary field
      * used in pack routines
+     *
+     * This method will set bits 0 (and 65) if there's a secondary (and tertiary) bitmap
+     * (i.e., if the bitmap length is > 64 (and > 128))
+     *
      * @param b - the BitSet
      * @return binary representation
      */
     public static byte[] bitSet2byte (BitSet b)
     {
-        int len = b.length()+62 >>6 <<6;
+        int len = b.length()+62 >>6 <<6;        // +62 because we don't use bit 0 in the BitSet
         byte[] d = new byte[len >> 3];
         for (int i=0; i<len; i++) 
-            if (b.get(i+1)) 
+            if (b.get(i+1))                     // +1 because we don't use bit 0 of the BitSet
                 d[i >> 3] |= 0x80 >> i % 8;
         if (len>64)
             d[0] |= 0x80;
@@ -591,6 +595,10 @@ public class ISOUtil {
     /**
      * converts a BitSet into a binary field
      * used in pack routines
+     *
+     * This method will set bits 0 (and 65) if there's a secondary (and tertiary) bitmap
+     * (i.e., if the bitmap length is > 64 (and > 128))
+     *
      * @param b - the BitSet
      * @param bytes - number of bytes to return
      * @return binary representation
@@ -601,7 +609,7 @@ public class ISOUtil {
         
         byte[] d = new byte[bytes];
         for (int i=0; i<len; i++) 
-            if (b.get(i+1)) 
+            if (b.get(i+1))                     // +1 because we don't use bit 0 of the BitSet
                 d[i >> 3] |= 0x80 >> i % 8;
         //TODO: review why 2nd & 3rd bit map flags are set here??? 
         if (len>64)
@@ -725,8 +733,8 @@ public class ISOUtil {
         (byte[] b, int offset, boolean bitZeroMeansExtended)
     {
         int len = bitZeroMeansExtended ?
-                (Character.digit((char)b[offset],16) & 0x08) == 8 ? 128 : 64 :
-          64;
+                    (Character.digit((char)b[offset],16) & 0x08) == 8 ? 128 : 64 :
+                  64;
         BitSet bmap = new BitSet (len);
         for (int i=0; i<len; i++) {
             int digit = Character.digit((char)b[offset + (i >> 2)], 16);
@@ -745,9 +753,9 @@ public class ISOUtil {
      * @return java BitSet object
      */
     public static BitSet hex2BitSet (byte[] b, int offset, int maxBits) {
-        int len = maxBits > 64?
-                (Character.digit((char)b[offset],16) & 0x08) == 8 ? 128 : 64 :
-          maxBits;
+        int len = maxBits > 64 ?
+                    (Character.digit((char)b[offset],16) & 0x08) == 8 ? 128 : 64 :
+                  maxBits;
         if (len > 64 && maxBits > 128 &&
             b.length > offset+16 &&
             (Character.digit((char)b[offset+16],16) & 0x08) == 8)

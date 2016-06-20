@@ -556,7 +556,7 @@ public class ISOMsg extends ISOComponent
         for (;;) {
             int fldno = Integer.parseInt(st.nextToken());
             obj = m.getValue (fldno);
-             if (obj==null){
+            if (obj==null){
                 // The user will always get a null value for an incorrect path or path not present in the message
                 // no point having the ISOException thrown for fields that were not received.
                 break;
