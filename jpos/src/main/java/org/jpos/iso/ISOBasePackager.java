@@ -213,7 +213,8 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
             }
 
             BitSet bmap = null;
-            int maxField = fld.length;
+            int maxField= fld.length - 1;                       // array length counts position 0!
+
             if (emitBitMap()) {
                 ISOBitMap bitmap = new ISOBitMap (-1);
                 consumed += getBitMapfieldPackager().unpack(bitmap,b,consumed);
@@ -221,12 +222,15 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
                 if (evt != null)
                     evt.addMessage ("<bitmap>"+bmap.toString()+"</bitmap>");
                 m.set (bitmap);
-                maxField = Math.min(maxField, bmap.size());
+
+                maxField = Math.min(maxField, bmap.length()-1); // bmap.length behaves similarly to fld.length
             }
-            for (int i=getFirstField(); i<maxField; i++) {
+
+            for (int i= getFirstField(); i <= maxField; i++) {
                 try {
                     if (bmap == null && fld[i] == null)
                         continue;
+
                     if (maxField > 128 && i==65)
                         continue;   // ignore extended bitmap
 
