@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pmd version="5.2.3" timestamp="2016-06-17T18:37:58.891">
+<pmd version="5.2.3" timestamp="2016-06-20T22:26:37.749">
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/core/Card.java">
 <violation beginline="133" endline="135" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.core" class="Card" method="isExpired" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
@@ -139,22 +139,22 @@ Avoid empty catch blocks
 <violation beginline="330" endline="330" begincolumn="11" endcolumn="42" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.iso" class="ISOUtil" method="zeropad" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
 </violation>
-<violation beginline="683" endline="683" begincolumn="23" endcolumn="41" rule="UselessParentheses" ruleset="Unnecessary" package="org.jpos.iso" class="ISOUtil" method="byte2BitSet" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/unnecessary.html#UselessParentheses" priority="4">
+<violation beginline="691" endline="691" begincolumn="23" endcolumn="41" rule="UselessParentheses" ruleset="Unnecessary" package="org.jpos.iso" class="ISOUtil" method="byte2BitSet" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/unnecessary.html#UselessParentheses" priority="4">
 Useless parentheses.
 </violation>
-<violation beginline="683" endline="683" begincolumn="48" endcolumn="75" rule="UselessParentheses" ruleset="Unnecessary" package="org.jpos.iso" class="ISOUtil" method="byte2BitSet" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/unnecessary.html#UselessParentheses" priority="4">
+<violation beginline="691" endline="691" begincolumn="48" endcolumn="75" rule="UselessParentheses" ruleset="Unnecessary" package="org.jpos.iso" class="ISOUtil" method="byte2BitSet" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/unnecessary.html#UselessParentheses" priority="4">
 Useless parentheses.
 </violation>
-<violation beginline="685" endline="685" begincolumn="20" endcolumn="45" rule="UselessParentheses" ruleset="Unnecessary" package="org.jpos.iso" class="ISOUtil" method="byte2BitSet" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/unnecessary.html#UselessParentheses" priority="4">
+<violation beginline="693" endline="693" begincolumn="20" endcolumn="45" rule="UselessParentheses" ruleset="Unnecessary" package="org.jpos.iso" class="ISOUtil" method="byte2BitSet" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/unnecessary.html#UselessParentheses" priority="4">
 Useless parentheses.
 </violation>
-<violation beginline="909" endline="911" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.iso" class="ISOUtil" method="formatDouble" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
+<violation beginline="917" endline="919" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.iso" class="ISOUtil" method="formatDouble" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
 </violation>
-<violation beginline="1032" endline="1034" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.iso" class="ISOUtil" method="protect" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
+<violation beginline="1040" endline="1042" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.iso" class="ISOUtil" method="protect" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
 </violation>
-<violation beginline="1582" endline="1582" begincolumn="25" endcolumn="48" rule="AvoidDecimalLiteralsInBigDecimalConstructor" ruleset="Basic" package="org.jpos.iso" class="ISOUtil" method="formatAmountConversionRate" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/basic.html#AvoidDecimalLiteralsInBigDecimalConstructor" priority="3">
+<violation beginline="1590" endline="1590" begincolumn="25" endcolumn="48" rule="AvoidDecimalLiteralsInBigDecimalConstructor" ruleset="Basic" package="org.jpos.iso" class="ISOUtil" method="formatAmountConversionRate" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/basic.html#AvoidDecimalLiteralsInBigDecimalConstructor" priority="3">
 Avoid creating BigDecimal with a decimal (float/double) literal. Use a String literal
 </violation>
 </file>
