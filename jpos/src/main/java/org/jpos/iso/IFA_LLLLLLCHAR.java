@@ -21,7 +21,7 @@ package org.jpos.iso;
 /**
  * ISOFieldPackager ASCII variable len CHAR
  *
- * @author Alejandro Revilla 
+ * @author Alejandro Revilla
  * @see ISOComponent
  */
 public class IFA_LLLLLLCHAR extends ISOStringFieldPackager {
@@ -33,7 +33,7 @@ public class IFA_LLLLLLCHAR extends ISOStringFieldPackager {
      * @param description symbolic descrption
      */
     public  IFA_LLLLLLCHAR (int len, String description) {
-        super(len, description, NullPadder.INSTANCE, AsciiInterpreter.INSTANCE, AsciiPrefixer.LLLLL);
+        super(len, description, NullPadder.INSTANCE, AsciiInterpreter.INSTANCE, AsciiPrefixer.LLLLLL);
         checkLength(len, 999999);
     }
 
