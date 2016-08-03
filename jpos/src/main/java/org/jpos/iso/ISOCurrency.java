@@ -49,6 +49,7 @@ public class ISOCurrency
     static
     {
         addJavaCurrencies();
+        loadPropertiesFromClasspath("org/jpos/iso/ISOCurrency.properties");
         loadPropertiesFromClasspath("META-INF/org/jpos/config/ISOCurrency.properties");
     }
 
