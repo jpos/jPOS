@@ -314,13 +314,12 @@ public class ISOCurrencyTest extends TestCase {
                 assertEquals("Decimal digits do not match for " + currencyByCode, currencyByCode.getDecimals(), cD.get(code).intValue());
                 assertEquals("Name does not match for " + currencyByCode, currencyByCode.getAlphaCode(), c.get(code));
             } catch (Throwable ignored) {
-                msg.append(c.get(code) + "=" + 
-                        code + " " +  0 + 
+                msg.append(c.get(code) + "=" +
+                        code + " " +  cD.get(code) +
                         " //"  + ignored.getMessage() + "\n");
             }
         }
         assertEquals(msg.toString(), msg.length(), 0);
-
     }
 
     @Test
