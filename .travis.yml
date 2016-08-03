@@ -1,14 +1,15 @@
-sudo: false
+sudo: required
 language: java
 jdk:
 - oraclejdk8
 before_script:
 - echo $JAVA_OPTS
 - export JAVA_OPTS=-Xmx1G
-install:
-- TERM=dumb ./gradlew assemble
+install: true
 script:
-- TERM=dumb ./gradlew check
+- sudo apt-get update && sudo apt-get install oracle-java8-installer
+- java -version
+- TERM=dumb ./gradlew assemble check
 after_success: .travis/update-gh-pages.sh
 after_failure: .travis/update-gh-pages.sh
 env:
