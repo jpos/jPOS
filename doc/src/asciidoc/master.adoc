@@ -5,6 +5,7 @@ jPOS Programmer's Guide
 :revdate: {localdate}
 :revnumber: 2.0.0
 :jpos_version: 2.0.6
+:jpos_snapshot_version: 2.0.7-SNAPSHOT
 :toc:
 
 :leveloffset: 1

@@ -17,8 +17,10 @@ http://groups.google.com/group/jpos-users[users' mailing list (jpos-users@google
 
 Commit notifications can be tracked by following http://twitter.com/jposcommits[@jposcommits].
 
+We are also active in https://jpos.slack.com[Slack]. Please request an invitation via e-mail to support@jpos.org.
+
 [TIP]
 ====
-If you happen to tweet about jPOS, please use the hash tag `#jPOS` so we can read them and follow you.
+If you happen to tweet about jPOS, please use the hash tag `#jPOS` so we can follow you.
 ====
 

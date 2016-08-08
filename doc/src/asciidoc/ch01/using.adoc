@@ -10,20 +10,31 @@ to http://search.maven.org[Maven Central].
 If you want to use it from Maven, you can add this dependency to your +pom+:
 
 Here is a sample POM
-[source,xml]
+[source,xml,subs="attributes+"]
 -----------------------------------------------------------------------------
 <dependency>
     <groupId>org.jpos</groupId>
     <artifactId>jpos</artifactId>
-    <version>1.9.8</version>
+    <version>{jpos_version}</version>
 </dependency>
 -----------------------------------------------------------------------------
 
-jPOS uses a couple dependencies not available in Maven central, so you need to add
-the following repositories:
+or Gradle dependency:
+
+[source,subs="attributes+"]
+-----------------------------------------------------------------------------
+org.jpos:jpos:{jpos_version}
+-----------------------------------------------------------------------------
+
+[TIP]
+=====
+The stable release is {jpos_version}, development release is {jpos_snapshot_version}.
+=====
+
+jPOS uses the following dependency not available in Maven central, so you need to add
+the following repository
 
 * http://download.oracle.com/maven (required by Berkeley DB Java Edition)
-* http://jline.sourceforge.net/m2repo (required by jline)
 
 [NOTE]
 ======
@@ -33,22 +44,21 @@ the http://jpos.org/maven[jPOS Maven repository].
 
 if you use Gradle, you can configure:
 
-[source,groovy]
+[source,groovy,subs="attributes+"]
 -----------------------------------------------------------------------------
+
 repositories {
-    mavenLocal()
     mavenCentral()
-    mavenRepo name: 'oracle', url: "http://download.oracle.com/maven"
-    mavenRepo name: 'jline', url: "http://jline.sourceforge.net/m2repo"
-    mavenRepo url: "http://jpos.org/maven"
+    maven { url 'http://jpos.org/maven' }
+    maven { url 'http://download.oracle.com/maven' }
+    mavenLocal()
 }
 
 dependencies {
-    compile group:'org.jpos', name:'jpos', version:'1.9.8+'
-    testCompile group:'junit', name:'junit', version:'4.8.2'
+    compile org.jpos:jpos:{jpos_version}
+    testCompile 'junit:junit4.8.2'
 }
 -----------------------------------------------------------------------------
-
 
 [TIP]
 =====
