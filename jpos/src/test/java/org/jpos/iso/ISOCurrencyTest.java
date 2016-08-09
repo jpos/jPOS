@@ -311,8 +311,8 @@ public class ISOCurrencyTest extends TestCase {
         for (String code: c.keySet()) {
             try {
                 Currency currencyByCode = ISOCurrency.getCurrency(code);
-                assertEquals("Decimal digits do not match for " + currencyByCode, currencyByCode.getDecimals(), cD.get(code).intValue());
-                assertEquals("Name does not match for " + currencyByCode, currencyByCode.getAlphaCode(), c.get(code));
+                assertEquals("Decimal digits do not match for " + currencyByCode, cD.get(code).intValue(), currencyByCode.getDecimals());
+                assertEquals("Name does not match for " + currencyByCode,  c.get(code), currencyByCode.getAlphaCode());
             } catch (Throwable ignored) {
                 msg.append(c.get(code) + "=" +
                         code + " " +  cD.get(code) +
