@@ -29,18 +29,18 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Properties;
 
-import junitx.util.PrivateAccessor;
+// import junitx.util.PrivateAccessor;
 
 import org.junit.Test;
 
 @SuppressWarnings("unchecked")
 public class SimpleConfigurationTest {
-    @Test
-    public void testConstructor() throws Throwable {
-        Properties props = new Properties();
-        SimpleConfiguration simpleConfiguration = new SimpleConfiguration(props);
-        assertEquals(props, PrivateAccessor.getField(simpleConfiguration, "props"));
-    }
+//    @Test
+//    public void testConstructor() throws Throwable {
+//        Properties props = new Properties();
+//        SimpleConfiguration simpleConfiguration = new SimpleConfiguration(props);
+//        assertEquals(props, PrivateAccessor.getField(simpleConfiguration, "props"));
+//    }
 
     @Test
     public void testConstructorThrowsFileNotFoundException() throws Throwable {

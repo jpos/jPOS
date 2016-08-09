@@ -49,8 +49,7 @@ public class XSLTFilterTest {
             new XSLTFilter("testXSLTFilterXsltfile", true);
             fail("Expected ISOException to be thrown");
         } catch (ISOException ex) {
-            junitx.framework.StringAssert
-                    .assertStartsWith("javax.xml.transform.TransformerConfigurationException:", ex.getMessage());
+            assertTrue(ex.getMessage().startsWith("javax.xml.transform.TransformerConfigurationException:"));
         }
     }
 

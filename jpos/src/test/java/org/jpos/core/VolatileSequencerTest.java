@@ -20,17 +20,17 @@ package org.jpos.core;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import junitx.util.PrivateAccessor;
+// import junitx.util.PrivateAccessor;
 
 import org.junit.Test;
 
 public class VolatileSequencerTest {
 
-    @Test
-    public void testConstructor() throws Throwable {
-        VolatileSequencer volatileSequencer = new VolatileSequencer();
-        assertNotNull(PrivateAccessor.getField(volatileSequencer, "map"));
-    }
+//    @Test
+//    public void testConstructor() throws Throwable {
+//        VolatileSequencer volatileSequencer = new VolatileSequencer();
+//        assertNotNull(PrivateAccessor.getField(volatileSequencer, "map"));
+//    }
 
     @Test
     public void testGet() throws Throwable {

@@ -8,7 +8,6 @@ dependencies {
     compile libraries.jline
     compile libraries.beanshell
     compile libraries.javatuples
-    compile libraries.xerces
     compile libraries.osgi_core
     compile libraries.bouncycastle
 
@@ -17,11 +16,6 @@ dependencies {
     testCompile libraries.xmlunit
     testCompile libraries.junit
     testCompile(libraries.mockito) {
-        exclude(module: 'hamcrest-core')
-    }
-    testCompile(libraries.junit_addons) {
-        exclude(module: 'junit')
-	exclude(module: 'xmlParserAPIs')
         exclude(module: 'hamcrest-core')
     }
 

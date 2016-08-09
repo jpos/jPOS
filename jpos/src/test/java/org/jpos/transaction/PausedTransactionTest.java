@@ -57,24 +57,6 @@ public class PausedTransactionTest {
         public void run() { }
     };
 
-    @Test
-    public void testCancelExpirationMonitor() throws Throwable {
-        PausedTransaction pausedTransaction = new PausedTransaction(new TransactionManager(), 100L, new ArrayList(),
-                new ArrayList().iterator(), true, null, null);
-        pausedTransaction.cancelExpirationMonitor();
-        assertNull("pausedTransaction.expirationMonitor",
-                junitx.util.PrivateAccessor.getField(pausedTransaction, "expirationMonitor"));
-    }
-
-    @Test
-    public void testCancelExpirationMonitor1() throws Throwable {
-        TimerTask expirationMonitor = new TransactionManager.PausedMonitor(new Context());
-        PausedTransaction pausedTransaction = new PausedTransaction(new TransactionManager(), 100L, new ArrayList(),
-                new ArrayList().iterator(), true, expirationMonitor, null);
-        pausedTransaction.cancelExpirationMonitor();
-        assertSame("pausedTransaction.expirationMonitor", expirationMonitor,
-                junitx.util.PrivateAccessor.getField(pausedTransaction, "expirationMonitor"));
-    }
 
     @Test
     public void testConstructor() throws Throwable {
@@ -84,8 +66,6 @@ public class PausedTransactionTest {
         TimerTask expirationMonitor = dummyTimerTask;
         PausedTransaction pausedTransaction = new PausedTransaction(txnmgr, 100L, members, iter, true, expirationMonitor, null);
         assertEquals("pausedTransaction.id()", 100L, pausedTransaction.id());
-        assertSame("pausedTransaction.expirationMonitor", expirationMonitor,
-                junitx.util.PrivateAccessor.getField(pausedTransaction, "expirationMonitor"));
         assertTrue("pausedTransaction.isAborting()", pausedTransaction.isAborting());
         assertSame("pausedTransaction.members()", members, pausedTransaction.members());
         assertSame("pausedTransaction.iterator()", iter, pausedTransaction.iterator());

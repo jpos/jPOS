@@ -7,14 +7,12 @@ ext {
         jline: 'jline:jline:1.0',
         beanshell: 'org.beanshell:bsh:2.0b5',
         javatuples: 'org.javatuples:javatuples:1.2',
-        xerces: 'xerces:xercesImpl:2.11.0',
         jsonsimple: 'com.googlecode.json-simple:json-simple:1.1.1',
         osgi_core: 'org.osgi:org.osgi.core:6.0.0',
         mockito: 'org.mockito:mockito-all:1.10.19',
         fest_assert: 'org.easytesting:fest-assert:1.4',
         xmlunit: 'xmlunit:xmlunit:1.6',
         junit: 'junit:junit:4.12',
-        junit_addons: 'junit-addons:junit-addons:1.4',
         bouncycastle: [
             'org.bouncycastle:bcprov-jdk15on:1.54',
             'org.bouncycastle:bcpg-jdk15on:1.54'
