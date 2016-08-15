@@ -1,228 +1,67 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pmd version="5.2.3" timestamp="2016-08-09T20:06:23.020">
-<file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/bsh/BSHLogListenerTest.java">
-<violation beginline="113" endline="115" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.bsh" class="BSHLogListenerTest" method="testLoadCodeThrowsNullPointerException" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
-Avoid empty catch blocks
-</violation>
-</file>
-<file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/core/CardTest.java">
-<violation beginline="92" endline="92" begincolumn="11" endcolumn="50" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.core" class="CardTest" method="testInvalidPAN" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
-Avoid empty catch blocks
-</violation>
-</file>
-<file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/core/SimpleConfigurationTest.java">
-<violation beginline="60" endline="62" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.core" class="SimpleConfigurationTest" method="testConstructorThrowsNullPointerException" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
-Avoid empty catch blocks
-</violation>
-<violation beginline="434" endline="436" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.core" class="SimpleConfigurationTest" method="testLoadThrowsNullPointerException" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
-Avoid empty catch blocks
-</violation>
-</file>
-<file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/iso/IFA_BINARYTest.java">
-<violation beginline="44" endline="47" begincolumn="9" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.iso" class="IFA_BINARYTest" method="testPackWrongLength" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
-Avoid empty catch blocks
-</violation>
-</file>
-<file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/iso/IFB_LLHCHARTest.java">
-<violation beginline="43" endline="45" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.iso" class="IFB_LLHCHARTest" method="testPackagerTooLong" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
-Avoid empty catch blocks
-</violation>
-<violation beginline="56" endline="58" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.iso" class="IFB_LLHCHARTest" method="testPackTooMuch" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
-Avoid empty catch blocks
-</violation>
-</file>
-<file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/iso/IFB_LLLHCHARTest.java">
-<violation beginline="43" endline="45" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.iso" class="IFB_LLLHCHARTest" method="testPackagerTooLong" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
-Avoid empty catch blocks
-</violation>
-<violation beginline="56" endline="58" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.iso" class="IFB_LLLHCHARTest" method="testPackTooMuch" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
-Avoid empty catch blocks
-</violation>
-</file>
-<file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/iso/IF_UNUSEDTest.java">
-<violation beginline="36" endline="38" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.iso" class="IF_UNUSEDTest" method="testPack" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
-Avoid empty catch blocks
-</violation>
-<violation beginline="50" endline="52" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.iso" class="IF_UNUSEDTest" method="testUnpack" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
-Avoid empty catch blocks
-</violation>
-</file>
+<pmd version="5.5.1" timestamp="2016-08-15T18:17:00.464">
 <file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/iso/ISOUtilTest.java">
-<violation beginline="4652" endline="4652" begincolumn="32" endcolumn="81" rule="AvoidDecimalLiteralsInBigDecimalConstructor" ruleset="Basic" package="org.jpos.iso" class="ISOUtilTest" method="testParseAmtConvRate" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/basic.html#AvoidDecimalLiteralsInBigDecimalConstructor" priority="3">
+<violation beginline="4652" endline="4652" begincolumn="32" endcolumn="81" rule="AvoidDecimalLiteralsInBigDecimalConstructor" ruleset="Basic" package="org.jpos.iso" class="ISOUtilTest" method="testParseAmtConvRate" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/basic.html#AvoidDecimalLiteralsInBigDecimalConstructor" priority="3">
 Avoid creating BigDecimal with a decimal (float/double) literal. Use a String literal
 </violation>
-<violation beginline="4663" endline="4663" begincolumn="32" endcolumn="81" rule="AvoidDecimalLiteralsInBigDecimalConstructor" ruleset="Basic" package="org.jpos.iso" class="ISOUtilTest" method="testParseAmtConvRate2" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/basic.html#AvoidDecimalLiteralsInBigDecimalConstructor" priority="3">
+<violation beginline="4663" endline="4663" begincolumn="32" endcolumn="81" rule="AvoidDecimalLiteralsInBigDecimalConstructor" ruleset="Basic" package="org.jpos.iso" class="ISOUtilTest" method="testParseAmtConvRate2" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/basic.html#AvoidDecimalLiteralsInBigDecimalConstructor" priority="3">
 Avoid creating BigDecimal with a decimal (float/double) literal. Use a String literal
-</violation>
-</file>
-<file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/iso/LeftPadderTest.java">
-<violation beginline="45" endline="46" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.iso" class="LeftPadderTest" method="testPadLengthTooShort" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
-Avoid empty catch blocks
-</violation>
-</file>
-<file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/iso/RightPadderTest.java">
-<violation beginline="45" endline="46" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.iso" class="RightPadderTest" method="testPadLengthTooShort" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
-Avoid empty catch blocks
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/iso/SslChannelIntegrationTest.java">
-<violation beginline="96" endline="96" begincolumn="67" endcolumn="76" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.iso" class="SslChannelIntegrationTest" method="newIsoServer" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
+<violation beginline="96" endline="96" begincolumn="67" endcolumn="76" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.iso" class="SslChannelIntegrationTest" method="newIsoServer" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
 Avoid using java.lang.ThreadGroup; it is not thread safe
 </violation>
 </file>
-<file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/iso/header/BASE1HeaderTest.java">
-<violation beginline="92" endline="94" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.iso.header" class="BASE1HeaderTest" method="testGetDestinationThrowsArrayIndexOutOfBoundsException" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
-Avoid empty catch blocks
-</violation>
-<violation beginline="177" endline="179" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.iso.header" class="BASE1HeaderTest" method="testGetSourceThrowsArrayIndexOutOfBoundsException" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
-Avoid empty catch blocks
-</violation>
-</file>
-<file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/iso/packager/GenericSubFieldPackagerTest.java">
-<violation beginline="89" endline="92" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.iso.packager" class="GenericSubFieldPackagerTest" method="testUnpackThrowsISOException" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
-Avoid empty catch blocks
-</violation>
-</file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/q2/iso/ChannelAdaptorTest.java">
-<violation beginline="203" endline="203" begincolumn="29" endcolumn="60" rule="UselessParentheses" ruleset="Unnecessary" package="org.jpos.q2.iso" class="ChannelAdaptorTest" method="matchesSafely" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/unnecessary.html#UselessParentheses" priority="4">
-Useless parentheses.
-</violation>
-<violation beginline="266" endline="268" begincolumn="17" endcolumn="17" rule="CollapsibleIfStatements" ruleset="Basic" package="org.jpos.q2.iso" class="ChannelAdaptorTest" method="findSendAndReceiveThreads" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/basic.html#CollapsibleIfStatements" priority="3">
+<violation beginline="266" endline="268" begincolumn="17" endcolumn="17" rule="CollapsibleIfStatements" ruleset="Basic" package="org.jpos.q2.iso" class="ChannelAdaptorTest" method="findSendAndReceiveThreads" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/basic.html#CollapsibleIfStatements" priority="3">
 These nested if statements could be combined
 </violation>
 </file>
-<file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/q2/qbean/QThreadPoolExecutorTest.java">
-<violation beginline="104" endline="105" begincolumn="15" endcolumn="13" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.q2.qbean" class="QThreadPoolExecutorTest" method="tearDown" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
-Avoid empty catch blocks
-</violation>
-<violation beginline="275" endline="276" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.q2.qbean" class="QThreadPoolExecutorTest" method="testInitService_FixedThreadPool_CorePoolSizeAttributeValueIsNotANumber" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
-Avoid empty catch blocks
-</violation>
-</file>
-<file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/q2/qbean/SpaceLetTest.java">
-<violation beginline="47" endline="49" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.q2.qbean" class="SpaceLetTest" method="testInitServiceThrowsNullPointerException" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
-Avoid empty catch blocks
-</violation>
-<violation beginline="68" endline="70" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.q2.qbean" class="SpaceLetTest" method="testInpThrowsSpaceError" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
-Avoid empty catch blocks
-</violation>
-<violation beginline="85" endline="87" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.q2.qbean" class="SpaceLetTest" method="testInThrowsSpaceError1" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
-Avoid empty catch blocks
-</violation>
-<violation beginline="96" endline="98" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.q2.qbean" class="SpaceLetTest" method="testOutThrowsSpaceError1" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
-Avoid empty catch blocks
-</violation>
-<violation beginline="107" endline="109" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.q2.qbean" class="SpaceLetTest" method="testOutThrowsSpaceError3" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
-Avoid empty catch blocks
-</violation>
-<violation beginline="118" endline="120" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.q2.qbean" class="SpaceLetTest" method="testRdpThrowsSpaceError" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
-Avoid empty catch blocks
-</violation>
-<violation beginline="129" endline="131" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.q2.qbean" class="SpaceLetTest" method="testRdThrowsSpaceError" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
-Avoid empty catch blocks
-</violation>
-<violation beginline="140" endline="142" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.q2.qbean" class="SpaceLetTest" method="testRdThrowsSpaceError1" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
-Avoid empty catch blocks
-</violation>
-<violation beginline="151" endline="153" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.q2.qbean" class="SpaceLetTest" method="testStartServiceThrowsNullPointerException" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
-Avoid empty catch blocks
-</violation>
-</file>
-<file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/security/EncryptedPINTest.java">
-<violation beginline="235" endline="235" begincolumn="11" endcolumn="55" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.security" class="EncryptedPINTest" method="testSetAccountNumber" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
-Avoid empty catch blocks
-</violation>
-</file>
-<file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/security/jceadapter/JCESecurityModuleTest.java">
-<violation beginline="306" endline="308" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testConstructorThrowsConfigurationException1" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
-Avoid empty catch blocks
-</violation>
-<violation beginline="347" endline="349" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testConstructorThrowsSMException" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
-Avoid empty catch blocks
-</violation>
-<violation beginline="357" endline="359" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testConstructorThrowsSMException2" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
-Avoid empty catch blocks
-</violation>
-<violation beginline="367" endline="369" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testConstructorThrowsSMException3" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
-Avoid empty catch blocks
-</violation>
-<violation beginline="595" endline="597" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testSetConfigurationThrowsConfigurationException" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
-Avoid empty catch blocks
-</violation>
-</file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/space/TSpacePerformanceTest.java">
-<violation beginline="193" endline="193" begincolumn="11" endcolumn="17" rule="AvoidBranchingStatementAsLastInLoop" ruleset="Basic" package="org.jpos.space" class="TSpacePerformanceTest" method="testDeadLockWithNotify" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/basic.html#AvoidBranchingStatementAsLastInLoop" priority="2">
+<violation beginline="193" endline="193" begincolumn="11" endcolumn="17" rule="AvoidBranchingStatementAsLastInLoop" ruleset="Basic" package="org.jpos.space" class="TSpacePerformanceTest" method="testDeadLockWithNotify" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/basic.html#AvoidBranchingStatementAsLastInLoop" priority="2">
 Avoid using a branching statement as the last in a loop.
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/transaction/TestRetryParticipant.java">
-<violation beginline="31" endline="35" begincolumn="13" endcolumn="13" rule="CollapsibleIfStatements" ruleset="Basic" package="org.jpos.transaction" class="TestRetryParticipant" method="prepare" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/basic.html#CollapsibleIfStatements" priority="3">
+<violation beginline="31" endline="35" begincolumn="13" endcolumn="13" rule="CollapsibleIfStatements" ruleset="Basic" package="org.jpos.transaction" class="TestRetryParticipant" method="prepare" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/basic.html#CollapsibleIfStatements" priority="3">
 These nested if statements could be combined
 </violation>
 </file>
-<file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/util/DailyLogListenerTest.java">
-<violation beginline="137" endline="139" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.util" class="DailyLogListenerTest" method="testGetCompressedOutputStreamThrowsNullPointerException" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
-Avoid empty catch blocks
-</violation>
-</file>
-<file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/util/FSDMsgTest.java">
-<violation beginline="1137" endline="1137" begincolumn="11" endcolumn="40" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.util" class="FSDMsgTest" method="testPackToBDStoLong" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
-Avoid empty catch blocks
-</violation>
-</file>
-<file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/util/FSDMsgTestCase.java">
-<violation beginline="180" endline="182" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.util" class="FSDMsgTestCase" method="testDummySeparatorBinary" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
-Avoid empty catch blocks
-</violation>
-<violation beginline="212" endline="212" begincolumn="11" endcolumn="45" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.util" class="FSDMsgTestCase" method="testLoadMissingDirSchema" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
-Avoid empty catch blocks
-</violation>
-<violation beginline="226" endline="226" begincolumn="11" endcolumn="45" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.util" class="FSDMsgTestCase" method="testLoadMissingJarSchema" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
-Avoid empty catch blocks
-</violation>
-</file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/util/LogEventTest.java">
-<violation beginline="117" endline="117" begincolumn="26" endcolumn="35" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.util" class="LogEventTest" method="testDump3" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
+<violation beginline="117" endline="117" begincolumn="26" endcolumn="35" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.util" class="LogEventTest" method="testDump3" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
 Avoid using java.lang.ThreadGroup; it is not thread safe
-</violation>
-</file>
-<file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/util/RotateLogListenerTest.java">
-<violation beginline="71" endline="73" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.util" class="RotateLogListenerTest" method="testConstructorThrowsNullPointerException" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
-Avoid empty catch blocks
-</violation>
-<violation beginline="81" endline="83" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Empty Code" package="org.jpos.util" class="RotateLogListenerTest" method="testConstructorThrowsNullPointerException1" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/empty.html#EmptyCatchBlock" priority="3">
-Avoid empty catch blocks
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/util/ThreadPoolTest.java">
-<violation beginline="38" endline="38" begincolumn="37" endcolumn="46" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.util" class="ThreadPoolTest" method="testConstructor" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
+<violation beginline="38" endline="38" begincolumn="37" endcolumn="46" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.util" class="ThreadPoolTest" method="testConstructor" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
 Avoid using java.lang.ThreadGroup; it is not thread safe
 </violation>
-<violation beginline="46" endline="46" begincolumn="37" endcolumn="46" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.util" class="ThreadPoolTest" method="testConstructor1" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
+<violation beginline="46" endline="46" begincolumn="37" endcolumn="46" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.util" class="ThreadPoolTest" method="testConstructor1" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
 Avoid using java.lang.ThreadGroup; it is not thread safe
 </violation>
-<violation beginline="54" endline="54" begincolumn="37" endcolumn="46" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.util" class="ThreadPoolTest" method="testConstructor2" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
+<violation beginline="54" endline="54" begincolumn="37" endcolumn="46" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.util" class="ThreadPoolTest" method="testConstructor2" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
 Avoid using java.lang.ThreadGroup; it is not thread safe
 </violation>
-<violation beginline="62" endline="62" begincolumn="37" endcolumn="46" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.util" class="ThreadPoolTest" method="testConstructor3" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
+<violation beginline="62" endline="62" begincolumn="37" endcolumn="46" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.util" class="ThreadPoolTest" method="testConstructor3" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
 Avoid using java.lang.ThreadGroup; it is not thread safe
 </violation>
-<violation beginline="70" endline="70" begincolumn="37" endcolumn="46" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.util" class="ThreadPoolTest" method="testConstructor4" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
+<violation beginline="70" endline="70" begincolumn="37" endcolumn="46" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.util" class="ThreadPoolTest" method="testConstructor4" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
 Avoid using java.lang.ThreadGroup; it is not thread safe
 </violation>
-<violation beginline="78" endline="78" begincolumn="37" endcolumn="46" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.util" class="ThreadPoolTest" method="testRun1" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
+<violation beginline="78" endline="78" begincolumn="37" endcolumn="46" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.util" class="ThreadPoolTest" method="testRun1" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
 Avoid using java.lang.ThreadGroup; it is not thread safe
 </violation>
-<violation beginline="92" endline="92" begincolumn="37" endcolumn="46" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.util" class="ThreadPoolTest" method="testRun2" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
+<violation beginline="92" endline="92" begincolumn="37" endcolumn="46" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.util" class="ThreadPoolTest" method="testRun2" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
 Avoid using java.lang.ThreadGroup; it is not thread safe
 </violation>
-<violation beginline="113" endline="113" begincolumn="37" endcolumn="46" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.util" class="ThreadPoolTest" method="testRun3" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
+<violation beginline="113" endline="113" begincolumn="37" endcolumn="46" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.util" class="ThreadPoolTest" method="testRun3" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
 Avoid using java.lang.ThreadGroup; it is not thread safe
 </violation>
-<violation beginline="125" endline="125" begincolumn="37" endcolumn="46" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.util" class="ThreadPoolTest" method="testRunNames" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
+<violation beginline="125" endline="125" begincolumn="37" endcolumn="46" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.util" class="ThreadPoolTest" method="testRunNames" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
 Avoid using java.lang.ThreadGroup; it is not thread safe
 </violation>
-<violation beginline="138" endline="138" begincolumn="31" endcolumn="40" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.util" class="ThreadPoolTest" method="testConcurrentThreadAllocation" externalInfoUrl="http://pmd.sourceforge.net/pmd-5.2.3/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
+<violation beginline="138" endline="138" begincolumn="31" endcolumn="40" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.util" class="ThreadPoolTest" method="testConcurrentThreadAllocation" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
 Avoid using java.lang.ThreadGroup; it is not thread safe
 </violation>
 </file>
