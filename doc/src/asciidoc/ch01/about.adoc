@@ -10,7 +10,7 @@ encouraged to register by visiting the project's main page at http://jpos.org.
 
 Code is hosted at http://github.com/jpos/jPOS.
 
-You may also want to follow us on Twitter, where we keep a list of users who regularly tweet about jPOS at http://twitter.com/apr/jpos[@apr/jpos].
+You may also want to follow us on Twitter, where we keep a list of users who regularly tweet about jPOS at http://twitter.com/apr/lists/jpos[@apr/lists/jpos].
 
 In addition, you may want to subscribe to our
 http://groups.google.com/group/jpos-users[users' mailing list (jpos-users@googlegroups.com)].

@@ -38,8 +38,9 @@ the following repository
 
 [NOTE]
 ======
-We publish SNAPSHOT daily builds (i.e. version 1.9.9-SNAPSHOT) to 
-the http://jpos.org/maven[jPOS Maven repository].
+We publish SNAPSHOT daily builds (i.e. version {jpos_snapshot_version}) to 
+the http://jpos.org/maven[jPOS Maven repository] and stable releases to Maven Central.
+Please note the *compat_1_5_2* module is only published to jPOS Maven repo.
 ======
 
 if you use Gradle, you can configure:

@@ -12,27 +12,39 @@ the +bin/q2+ or +bin/q2.bat+ scripts.
 Once started, the output should look like this:
 
 ------------
-<log realm="org.jpos.q2.qbean.SystemMonitor" at="Fri Jul 12 11:51:37 UYT 2013.882">
+<log realm="org.jpos.q2.qbean.SystemMonitor" at="2016-08-27T22:26:51.720">
   <info>
-               OS: Mac OS X
-             host: Macintosh-2.local/192.168.2.20
-          version: 1.9.1-SNAPSHOT (fb4cc76)
-         instance: cd5013af-1d38-4a5e-b771-e807904212e1
-           uptime: 00:00:00.218
+               OS: Linux (3.14.35-28.38.amzn1.x86_64)
+     process name: 19213@ip-172-30-0-180
+             host: ip-172-30-0-180/52.5.73.144
+              cwd: /opt/local/jpos
+       free space: 133.3 GiB
+     usable space: 123.3 GiB
+          version: 2.0.7-SNAPSHOT (bdcac3f)
+         instance: b1016676-b840-4fb6-916b-37c4b4355c45
+           uptime: 00:00:00.691 (0.460000)
        processors: 2
            drift : 0
-    memory(t/u/f): 85/7/77
-          threads: 4
+    memory(t/u/f): 75/14/60
+         encoding: UTF-8
+         timezone: Etc/UTC (Coordinated Universal Time) Z
+    watch service: sun.nio.fs.LinuxWatchService
+            clock: 1472336811 2016-08-27T22:26:51.720Z
+     thread count: 10
+     peak threads: 10
+     user threads: 6
             Thread[Reference Handler,10,system]
             Thread[Finalizer,8,system]
             Thread[Signal Dispatcher,9,system]
             Thread[RMI TCP Accept-0,5,system]
-            Thread[Q2-cd5013af-1d38-4a5e-b771-e807904212e1,5,main]
+            Thread[pool-1-thread-1,5,main]
+            Thread[Q2-b1016676-b840-4fb6-916b-37c4b4355c45,5,main]
             Thread[DestroyJavaVM,5,main]
+            Thread[Thread-2,5,main]
             Thread[Timer-0,5,main]
             Thread[SystemMonitor,5,main]
     name-registrar:
-      logger.Q2.buffered: org.jpos.util.BufferedLogListener
+      Q2: org.jpos.q2.Q2
       logger.Q2: org.jpos.util.Logger
   </info>
 </log>
@@ -40,5 +52,4 @@ Once started, the output should look like this:
 
 You may want to review the content in the +deploy+ directory, 
 that comes from the +src/dist+ source tree.
-
 
