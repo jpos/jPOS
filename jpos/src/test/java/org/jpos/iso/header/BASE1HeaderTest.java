@@ -18,6 +18,7 @@
 
 package org.jpos.iso.header;
 
+import org.jpos.iso.ISOUtil;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -460,5 +461,21 @@ public class BASE1HeaderTest {
         byte[] header = new byte[3];
         int result = bASE1Header.unpack(header);
         assertEquals("result", 3, result);
+    }
+
+    @Test
+    public void testCloneAndSwap() throws Throwable {
+        BASE1Header h = new BASE1Header(ISOUtil.hex2byte("16010201020000001234560000000000000000000000"));
+        BASE1Header ha = (BASE1Header) h.clone();
+        BASE1Header hb = new BASE1Header(h.pack());
+        assertEquals ("source should be '123456'", h.getSource(), "123456");
+        assertEquals ("destination should be '000000'", h.getDestination(), "000000");
+        h.swapDirection();
+        assertEquals ("source should be '123456'", h.getSource(), "000000");
+        assertEquals ("destination should be '000000'", h.getDestination(), "123456");
+        assertEquals ("cloned source should be '123456'", ha.getSource(), "123456");
+        assertEquals ("cloned destination should be '000000'", ha.getDestination(), "000000");
+        assertEquals ("packed source should be '123456'", hb.getSource(), "123456");
+        assertEquals ("packed destination should be '000000'", hb.getDestination(), "000000");
     }
 }
