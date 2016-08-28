@@ -43,7 +43,6 @@ import org.jpos.q2.Q2;
 public class Logger implements LogProducer {
     String name;
     List<LogListener> listeners;
-    static boolean versionShown = false;
     public static final String NRPREFIX = "logger.";
 
     public Logger () {
@@ -68,11 +67,6 @@ public class Logger implements LogProducer {
     public static void log (LogEvent evt) {
         Logger l = null;
         LogSource source = evt.getSource();
-        if (!versionShown) {
-            evt.addMessage ("");
-            evt.addMessage (Q2.getVersionString());
-            versionShown = !versionShown;
-        }
         if (source != null)
             l = source.getLogger();
         if (l == null && !evt.isHonorSourceLogger()) {
