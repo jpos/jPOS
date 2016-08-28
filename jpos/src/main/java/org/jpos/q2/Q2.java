@@ -676,7 +676,7 @@ public class Q2 implements FileFilter, Runnable {
             if (line.hasOption ("d")) {
                 dir = line.getOptionValue ("d");
             } else if (cli != null)
-                dir = dir + File.separator + "cli";
+                dir = dir + "-" + "cli";
             recursive = line.hasOption ("r");
             this.deployDir  = new File (dir);
             if (line.hasOption ("C"))
