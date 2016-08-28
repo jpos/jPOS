@@ -585,7 +585,7 @@ public class Q2 implements FileFilter, Runnable {
     public Log getLog () {
         if (log == null) {
             Logger logger = Logger.getLogger (LOGGER_NAME);
-            if (!hasSystemLogger && !logger.hasListeners())
+            if (!hasSystemLogger && !logger.hasListeners() && cli == null)
                 logger.addListener (new SimpleLogListener (System.out));
             log = new Log (logger, REALM);
         }
@@ -654,7 +654,7 @@ public class Q2 implements FileFilter, Runnable {
         options.addOption ("c","command", true, "Command to execute");
         options.addOption ("O", "osgi", false, "Start experimental OSGi framework server");
         options.addOption ("p", "pid-file", true, "Store project's pid");
-        options.addOption ("n", "name", true, "Optional name (default to 'Q2')");
+        options.addOption ("n", "name", true, "Optional name (defaults to 'Q2')");
 
         try {
             CommandLine line = parser.parse (options, args);
@@ -675,7 +675,8 @@ public class Q2 implements FileFilter, Runnable {
             String dir = DEFAULT_DEPLOY_DIR;
             if (line.hasOption ("d")) {
                 dir = line.getOptionValue ("d");
-            }
+            } else if (cli != null)
+                dir = dir + File.separator + "cli";
             recursive = line.hasOption ("r");
             this.deployDir  = new File (dir);
             if (line.hasOption ("C"))
