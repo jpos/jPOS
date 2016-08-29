@@ -17,9 +17,11 @@
  */
 
 package org.jpos.iso;
-
+@FunctionalInterface
 public interface ISOResponseListener {
     void responseReceived (ISOMsg resp, Object handBack);
-    void expired (Object handBack);
+    default void expired (Object handBack){
+        responseReceived(null, handBack);
+    }
 }
 
