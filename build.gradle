@@ -103,6 +103,9 @@ subprojects {
             }
         }
     }
+    test {
+        systemProperty 'user.language', 'en'
+    }
 }
 
 // Configure IDEA to use Git
