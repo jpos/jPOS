@@ -248,7 +248,7 @@ public class ISOUtil {
     public static void asciiToEbcdic(byte[] s, byte[] e, int offset) {
         int len = s.length;
         for (int i=0; i<len; i++)
-            e[offset + i] = ASCII2EBCDIC[s[i]];
+            e[offset + i] = ASCII2EBCDIC[s[i]&0xFF];
     }
 
     /**
