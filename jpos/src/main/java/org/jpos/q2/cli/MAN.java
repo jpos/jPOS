@@ -36,7 +36,7 @@ public class MAN implements CLICommand {
             try {
                 byte[] b = new byte[is.available()];
                 is.read(b);
-                cli.print(new String(b);
+                cli.print(new String(b));
             } finally {
                 is.close();
             }
