@@ -27,63 +27,52 @@ import org.jpos.util.NameRegistrar;
 import java.util.Iterator;
 import java.util.Map;
 
-public class SHOWNR implements CLICommand
-{
-    public void exec(CLIContext cli, String[] args) throws Exception
-    {
+public class SHOWNR implements CLICommand {
+    public void exec(CLIContext cli, String[] args) throws Exception {
         boolean all = args.length > 1 && "-a".equals(args[1]);
         int i = 1;
-        if (all)
-        { i++; }
-        if (args.length > i)
-        { showOne(cli, args[i], all); }
-        else
-        { showAll(cli, all); }
+        if (all) {
+            i++;
+        }
+        if (args.length > i) {
+            showOne(cli, args[i], all); }
+        else {
+            showAll(cli, all);
+        }
     }
 
-    private void showOne(CLIContext cli, String name, boolean detail)
-    {
-        try
-        {
+    private void showOne(CLIContext cli, String name, boolean detail) {
+        try {
             Object obj = NameRegistrar.get(name);
             cli.println(name + " : " + obj.toString());
-            if (detail && obj instanceof Loggeable)
-            {
-                ((Loggeable) obj).dump(cli.getOutputStream(), "   ");
-                cli.getOutputStream().flush();
+            if (detail && obj instanceof Loggeable) {
+                cli.printLoggeable((Loggeable) obj, "");
             }
         }
-        catch (NameRegistrar.NotFoundException e)
-        {
+        catch (NameRegistrar.NotFoundException e) {
             cli.println("Object not found in NameRegistrar");
         }
     }
 
-    private void showAll(CLIContext cli, boolean detail)
-    {
+    private void showAll(CLIContext cli, boolean detail) {
         NameRegistrar nr = NameRegistrar.getInstance();
         int maxw = 0;
         Iterator iter = NameRegistrar.getAsMap().entrySet().iterator();
-        while (iter.hasNext())
-        {
+        while (iter.hasNext()) {
             Map.Entry entry = (Map.Entry) iter.next();
             maxw = Math.max(maxw, entry.getKey().toString().length());
         }
         iter = NameRegistrar.getAsMap().entrySet().iterator();
         maxw++;
-        while (iter.hasNext())
-        {
+        while (iter.hasNext()) {
             Map.Entry entry = (Map.Entry) iter.next();
             cli.println(
                     ISOUtil.strpad(entry.getKey().toString(), maxw) +
                     entry.getValue().toString()
             );
-            if (detail && entry.getValue() instanceof Loggeable)
-            {
-                ((Loggeable) entry.getValue()).dump(cli.getOutputStream(), "   ");
-                cli.getOutputStream().flush();
+            if (detail && entry.getValue() instanceof Loggeable) {
+                cli.printLoggeable((Loggeable) entry.getValue(), "   ");
             }
         }
     }
 }
-

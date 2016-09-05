@@ -20,23 +20,12 @@ package org.jpos.q2.cli;
 
 import org.jpos.q2.CLICommand;
 import org.jpos.q2.CLIContext;
-import java.io.IOException;
+import org.jline.terminal.Terminal;
 
 @SuppressWarnings("unused")
-public class SHUTDOWN implements CLICommand {
-    public void exec(CLIContext cli, String[] args) throws IOException {
-        boolean shutdown;
-        if (args.length == 2 && "--force".equals(args[1])) {
-            shutdown = true;
-        } else {
-            shutdown = cli.confirm("Confirm shutdown (Yes/No) ? ");
-        }
-
-        if (shutdown) {
-            cli.println("Shutting down.");
-            cli.getCLI().getQ2().shutdown();
-        } else {
-            cli.println("Q2 will continue running.");
-        }
+public class ENV implements CLICommand {
+    public void exec(CLIContext cli, String[] args) throws Exception {
+        Terminal term = cli.getReader().getTerminal();
+        cli.println("TERM=" + term.getClass().getSimpleName() + "/" + term.getType());
     }
 }

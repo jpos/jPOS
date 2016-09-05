@@ -18,164 +18,157 @@
 
 package org.jpos.q2;
 
-import jline.ArgumentCompletor;
-import jline.Completor;
-import jline.ConsoleReader;
+import org.jline.reader.*;
+import org.jline.reader.impl.history.history.MemoryHistory;
+import org.jline.terminal.Attributes;
+import org.jline.terminal.Terminal;
+import org.jline.terminal.TerminalBuilder;
+import java.io.*;
+import java.util.*;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintStream;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.StringTokenizer;
-
-public class CLI implements Runnable
-{
-    Thread t;
-    Completor completor;
-    String line = null;
-    boolean keepRunning = false;
+public class CLI implements Runnable {
+    final private static String DEFAULT_PROMPT = "q2> ";
+    private Thread t;
+    private String line = null;
+    private boolean keepRunning = false;
     protected CLIContext ctx;
-    CLICommandInterface cmdInterface;
+    private CLICommandInterface cmdInterface;
+    private Terminal terminal;
+    private LineReader reader;
+    private Q2 q2;
+    private String prompt = DEFAULT_PROMPT;
+    private History mainHistory;
 
-    public CLI(Q2 q2, String line, boolean keepRunning) throws IOException
-    {
+    public CLI(Q2 q2, String line, boolean keepRunning) throws IOException {
         this(q2, System.in, System.out, line, keepRunning);
     }
 
-    public CLI(Q2 q2, InputStream in, OutputStream out, String line, boolean keepRunning) throws IOException
-    {
-        ConsoleReader reader = new ConsoleReader(in, new OutputStreamWriter(out));
-        reader.setBellEnabled(true);
-
-        ctx = new CLIContext();
-        ctx.setQ2(q2);
-        ctx.setConsoleReader(reader);
-        ctx.setOutputStream(new PrintStream(out));
-
+    public CLI(Q2 q2, InputStream in, OutputStream rawout, String line, boolean keepRunning) throws IOException {
+        this.q2 = q2;
+        PrintStream out = rawout instanceof PrintStream ? (PrintStream) rawout : new PrintStream(rawout);
+        terminal = buildTerminal(in, out);
+        ctx = buildCLIContext(in, out);
         this.line = line;
         this.keepRunning = keepRunning;
-
-        initCompletor();
+        this.mainHistory = new MemoryHistory();
+        initCmdInterface(getCompletionPrefixes(), mainHistory);
     }
 
-    protected boolean isRunning()
-    {
-        return ctx.getQ2().running();
+
+    protected boolean running() {
+        return getQ2().running();
     }
 
-    protected void markStopped()
-    {
+    protected void markStopped() { }
+
+    protected void markStarted() { }
+
+    protected String[] getCompletionPrefixes() {
+        return new String[] {"org.jpos.q2.cli." };
     }
 
-    protected void markStarted()
-    {
+    protected void handleExit() { }
+
+    void setPrompt(String prompt, String[] completionPrefixes) throws IOException {
+        this.prompt = prompt;
+        initCmdInterface(completionPrefixes, completionPrefixes == null ? mainHistory : new MemoryHistory());
     }
 
-    protected String[] getCompletionPrefixes()
-    {
-        return new String[]{"org.jpos.q2.cli."};
-    }
-
-    protected String getPrompt()
-    {
-        return "q2> ";
-    }
-
-    protected void handleExit()
-    {
-    }
-
-    private void initCompletor() throws IOException
-    {
+    private void initCmdInterface(String[] completionPrefixes, History history) throws IOException {
+        completionPrefixes = completionPrefixes == null ? getCompletionPrefixes() : completionPrefixes;
         cmdInterface = new CLICommandInterface(ctx);
-        for (String s : getCompletionPrefixes())
-        {
+        for (String s : completionPrefixes) {
             cmdInterface.addPrefix(s);
         }
-
-        List<Completor> l = new LinkedList<Completor>();
-        l.add(new CLIPrefixedClassNameCompletor(cmdInterface.getPrefixes()));
-        completor = new ArgumentCompletor(l);
+        reader = buildReader(terminal, completionPrefixes, history);
+        ctx.setReader(reader);
     }
 
-    public void start() throws Exception
-    {
+    public void start() throws Exception {
         markStarted();
         t = new Thread(this);
         t.setName("Q2-CLI");
         t.start();
     }
 
-    public void stop()
-    {
+    public void stop() {
         markStopped();
-        try
-        {
+        try {
             t.join();
         }
         catch (InterruptedException ignored) { }
     }
 
-    public void run()
-    {
-        while (isRunning())
-        {
-            if (line == null)
-            {
-                ConsoleReader reader = ctx.getConsoleReader();
-                reader.addCompletor(completor);
-                try
-                {
-                    line = reader.readLine(getPrompt());
+    public void run() {
+        while (running()) {
+            try {
+                LineReader reader = getReader();
+                if (line == null) {
+                    line = reader.readLine(prompt, null, null, null);
                 }
-                catch (IOException e)
-                {
-                    ctx.printThrowable(e);
-                }
-                finally
-                {
-                    reader.removeCompletor(completor);
-                }
-            }
-            if (line != null)
-            {
-                StringTokenizer st = new StringTokenizer(line, ";");
-                while (st.hasMoreTokens())
-                {
-                    String n = st.nextToken();
-                    try
-                    {
-                        cmdInterface.execCommand(n);
+                if (line != null) {
+                    StringTokenizer st = new StringTokenizer(line, ";");
+                    while (st.hasMoreTokens()) {
+                        String n = st.nextToken();
+                        try {
+                            cmdInterface.execCommand(n);
+                        } catch (IOException e) {
+                            ctx.printThrowable(e);
+                        }
                     }
-                    catch (IOException e)
-                    {
-                        ctx.printThrowable(e);
-                    }
+                    line = null;
                 }
-                line = null;
-            }
-            if (!keepRunning)
-            {
+                if (!keepRunning) {
+                    break;
+                }
+
+            } catch (UserInterruptException | EndOfFileException e) {
                 break;
             }
+        }
+        try {
+            getReader().getTerminal().close();
+        } catch (IOException e) {
+            ctx.printThrowable(e);
         }
         handleExit();
     }
 
-    // COMPATIBILITY METHODS
-    public void print(String s) {}
-    public void println(String s) {}
-    public boolean confirm(String prompt) throws IOException { return false; }
-    public Q2 getQ2() { return null; }
+    public Q2 getQ2() {
+        return q2;
+    }
 
-    public ConsoleReader getConsoleReader() { return null; }
-    public PrintStream getOutputStream() { return null; }
+    public LineReader getReader() {
+        return reader;
+    }
 
-    public interface Command
-    {
-        void exec(CLI cli, String[] args) throws Exception;
+    private Terminal buildTerminal (InputStream in, OutputStream out) throws IOException {
+        TerminalBuilder builder = TerminalBuilder.builder();
+        builder.streams(in,out).system(System.in == in);
+        Terminal t = builder.build();
+        Attributes attr = t.getAttributes();
+        attr.getOutputFlags().addAll(
+          EnumSet.of(Attributes.OutputFlag.ONLCR, Attributes.OutputFlag.OPOST)
+        );
+        t.setAttributes(attr);
+        return t;
+    }
+
+    private LineReader buildReader(Terminal terminal, String[] completionPrefixes, History history) throws IOException {
+        LineReader reader = LineReaderBuilder.builder()
+          .terminal(terminal)
+          .history(history)
+          .completer(new CLIPrefixedClassNameCompleter(Arrays.asList(completionPrefixes)))
+          .build();
+        reader.unsetOpt(LineReader.Option.INSERT_TAB);
+        return reader;
+    }
+
+    private CLIContext buildCLIContext (InputStream in, OutputStream out) {
+        return CLIContext.builder()
+                .cli(this)
+                .in(in)
+                .out(out)
+                .build();
     }
 }

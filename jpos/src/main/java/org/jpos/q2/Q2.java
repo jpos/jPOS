@@ -27,6 +27,7 @@ import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOUtil;
+import org.jpos.q2.ssh.SshService;
 import org.jpos.security.SystemSeed;
 import org.jpos.util.*;
 import org.osgi.framework.Bundle;
@@ -100,6 +101,11 @@ public class Q2 implements FileFilter, Runnable {
     private String name = JMX_NAME;
     private long lastVersionLog;
     private String watchServiceClassname;
+    private boolean enableSsh;
+    private int sshPort;
+    private String sshAuthorizedKeys;
+    private String sshUser;
+    private String sshHostKeyFile;
 
     public Q2 (String[] args, BundleContext bundleContext) {
         super();
@@ -191,6 +197,10 @@ public class Q2 implements FileFilter, Runnable {
             initConfigDecorator();
             if (startOSGI)
                 startOSGIFramework();
+            if (enableSsh) {
+                deployElement(SshService.createDescriptor(sshPort, sshUser, sshAuthorizedKeys, sshHostKeyFile),
+                  "05_sshd-" + getInstanceId() + ".xml", false, true);
+            }
 
             for (int i = 1; !shutdown; i++) {
                 try {
@@ -655,6 +665,11 @@ public class Q2 implements FileFilter, Runnable {
         options.addOption ("O", "osgi", false, "Start experimental OSGi framework server");
         options.addOption ("p", "pid-file", true, "Store project's pid");
         options.addOption ("n", "name", true, "Optional name (defaults to 'Q2')");
+        options.addOption ("s", "ssh", false, "Enable SSH server");
+        options.addOption ("sp", "ssh-port", true, "ssh port (defaults to 2222)");
+        options.addOption ("sa", "ssh-authorized-keys", true, "Path to authorized key file (defaults to 'cfg/authorized_keys')");
+        options.addOption ("su", "ssh-user", true, "ssh user (defaults to 'admin')");
+        options.addOption ("sh", "ssh-host-key-file", true, "ssh host key file, defaults to 'cfg/hostkeys.ser'");
 
         try {
             CommandLine line = parser.parse (options, args);
@@ -689,6 +704,11 @@ public class Q2 implements FileFilter, Runnable {
                 pidFile = line.getOptionValue("p");
             if (line.hasOption("n"))
                 name = line.getOptionValue("n");
+            enableSsh = line.hasOption("s");
+            sshPort = Integer.parseInt(line.getOptionValue("sp", "2222"));
+            sshAuthorizedKeys = line.getOptionValue ("sa", "cfg/authorized_keys");
+            sshUser = line.getOptionValue("su", "admin");
+            sshHostKeyFile = line.getOptionValue("sh", "cfg/hostkeys.ser");
         } catch (MissingArgumentException e) {
             System.out.println("ERROR: " + e.getMessage());
             System.exit(1);

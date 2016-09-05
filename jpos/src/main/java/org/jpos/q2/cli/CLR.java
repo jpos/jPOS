@@ -18,14 +18,13 @@
 
 package org.jpos.q2.cli;
 
+import org.jline.utils.InfoCmp;
 import org.jpos.q2.CLICommand;
 import org.jpos.q2.CLIContext;
 
 public class CLR implements CLICommand
 {
-    public void exec(CLIContext ctx, String[] args) throws Exception
-    {
-        ctx.getConsoleReader().clearScreen();
+    public void exec(CLIContext ctx, String[] args) throws Exception {
+        ctx.getReader().getTerminal().puts(InfoCmp.Capability.clear_screen);
     }
 }
-

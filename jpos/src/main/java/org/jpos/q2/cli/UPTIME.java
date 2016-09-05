@@ -22,10 +22,9 @@ import org.jpos.iso.ISOUtil;
 import org.jpos.q2.CLICommand;
 import org.jpos.q2.CLIContext;
 
-public class UPTIME implements CLICommand
-{
-    public void exec(CLIContext cli, String[] args) throws Exception
-    {
-        cli.println(ISOUtil.millisToString(cli.getQ2().getUptime()));
+@SuppressWarnings("unused")
+public class UPTIME implements CLICommand {
+    public void exec(CLIContext ctx, String[] args) throws Exception {
+        ctx.println(ISOUtil.millisToString(ctx.getCLI().getQ2().getUptime()));
     }
 }

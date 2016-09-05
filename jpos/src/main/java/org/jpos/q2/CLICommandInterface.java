@@ -19,85 +19,67 @@
 package org.jpos.q2;
 
 import java.io.IOException;
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import jline.ConsoleReader;
-
+import org.jline.terminal.Terminal;
 import org.jpos.iso.ISOUtil;
-import org.jpos.q2.CLI.Command;
 
-public class CLICommandInterface
-{
+public class CLICommandInterface {
     CLIContext ctx;
     List<String> prefixes = new ArrayList<String>();
 
-    public List<String> getPrefixes()
-    {
+    public List<String> getPrefixes() {
         return prefixes;
     }
 
-    public CLICommandInterface(CLIContext ctx)
-    {
+    public CLICommandInterface(CLIContext ctx) {
         this.ctx = ctx;
     }
 
-    public void addPrefix(String prefix)
-    {
+    public void addPrefix(String prefix) {
         prefixes.add(prefix);
     }
 
-    public void execCommand(String line) throws IOException
-    {
+    public void execCommand(String line) throws IOException {
         String args[] = parseCommand(line);
-        if (args.length == 0)
-        {
+        if (args.length == 0) {
             return;
         }
-        String verbatimCmd=args[0];
+        String verbatimCmd = args[0];
         String command = args[0].toUpperCase();
         String className = command;
 
-        for (String prefix : prefixes)
-        {
-            if (!command.contains("."))
-            {
+        for (String prefix : prefixes) {
+            if (!command.contains(".")) {
                 className = prefix + command;
             }
 
-            try
-            {
+            try {
                 Object cmd = getCommand(className);
-                if (cmd != null)
-                {
-                    try
-                    {
+                if (cmd != null) {
+                    try {
                         args[0] = ISOUtil.unPadLeft(line, ' '); // full line
-                        if (cmd instanceof Command)
-                        {
-                            ((Command) cmd).exec(new LegacyCommandAdapter(ctx), args);
+                        if (cmd instanceof CLISubSystem) {
+                            CLISubSystem ss = (CLISubSystem) cmd;
+                            ctx.getCLI().setPrompt(ss.getPrompt(args), ss.getCompletionPrefixes(args));
                         }
-                        else if (cmd instanceof CLICommand)
-                        {
+                        if (cmd instanceof CLICommand) {
                             ((CLICommand) cmd).exec(ctx, args);
+                        } else if (cmd instanceof Command) {
+                            Terminal t = ctx.getReader().getTerminal();
+                            ((Command) cmd).exec (t.input(), t.output(), t.output(), args);
                         }
                         return;
-                    }
-                    catch (Exception ex)
-                    {
+                    } catch (Exception ex) {
                         ctx.printThrowable(ex);
                     }
                 }
-            }
-            catch (ClassNotFoundException ignored)
-            {
+            } catch (ClassNotFoundException ignored) {
                 // NOPMD
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 ctx.printThrowable(ex);
                 break;
             }
@@ -105,16 +87,13 @@ public class CLICommandInterface
         ctx.println("Invalid command '" + verbatimCmd + "'");
     }
 
-    private Object getCommand(String className) throws ClassNotFoundException, InstantiationException, IllegalAccessException
-    {
+    private Object getCommand(String className) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
         final ClassLoader cl = Thread.currentThread().getContextClassLoader();
         return cl.loadClass(className).newInstance();
     }
 
-    String[] parseCommand(String line) throws IOException
-    {
-        if (line == null)
-        {
+    String[] parseCommand(String line) throws IOException {
+        if (line == null) {
             return new String[0];
         }
 
@@ -132,59 +111,12 @@ public class CLICommandInterface
                 // Add unquoted word
                 matchList.add(regexMatcher.group());
             }
-        } 
+        }
 
         String[] args = new String[matchList.size()];
 
         matchList.toArray(args);
 
         return args;
-    }
-
-    public static class LegacyCommandAdapter extends CLI
-    {
-        CLIContext ctx;
-
-        public LegacyCommandAdapter(CLIContext ctx) throws IOException
-        {
-            super(null, null, false);
-            this.ctx = ctx;
-        }
-
-        @Override
-        public void print(String s)
-        {
-            ctx.print(s);
-        }
-
-        @Override
-        public void println(String s)
-        {
-            ctx.println(s);
-        }
-
-        @Override
-        public boolean confirm(String prompt) throws IOException
-        {
-            return ctx.confirm(prompt);
-        }
-
-        @Override
-        public Q2 getQ2()
-        {
-            return ctx.getQ2();
-        }
-
-        @Override
-        public ConsoleReader getConsoleReader()
-        {
-            return ctx.getConsoleReader();
-        }
-
-        @Override
-        public PrintStream getOutputStream()
-        {
-            return ctx.getOutputStream();
-        }
     }
 }

@@ -22,11 +22,10 @@ import org.jpos.q2.CLICommand;
 import org.jpos.q2.CLIContext;
 import org.jpos.util.SystemMonitor;
 
-public class SYSMON implements CLICommand
-{
-    public void exec(CLIContext cli, String[] args) throws Exception
-    {
-        new SystemMonitor().dump(cli.getOutputStream(), " ");
+@SuppressWarnings("unused")
+public class SYSMON implements CLICommand {
+    public void exec(CLIContext cli, String[] args) throws Exception {
+        cli.printLoggeable(new SystemMonitor(), " ");
     }
 }
 

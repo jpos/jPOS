@@ -10,6 +10,9 @@ dependencies {
     compile libraries.javatuples
     compile libraries.osgi_core
     compile libraries.bouncycastle
+    compile libraries.sshd
+    compile libraries.slf4j_api
+    compile libraries.slf4j_nop
 
     testCompile libraries.hamcrest
     testCompile libraries.fest_assert
@@ -41,16 +44,23 @@ def jposCopySpec = copySpec {
         }
     }
     from(file("src/dist")) {
+        exclude 'cfg/*.lmk'
         exclude 'cfg/*.jks'
         exclude 'cfg/*.ks'
+        exclude 'cfg/*.ser'
+        exclude 'cfg/authorized_keys'
         filter(
             org.apache.tools.ant.filters.ReplaceTokens, 
             tokens: cfg
         )
     }
     from(file("src/dist")) {
+        include 'cfg/*.lmk'
         include 'cfg/*.ks'
         include 'cfg/*.jks'
+        include 'cfg/*.ser'
+        include 'cfg/authorized_keys'
+        fileMode 0400
     }
     from(jar) {
         rename archiveJarName, "${cfg.jarname}"
@@ -213,6 +223,7 @@ processResources.dependsOn createBuildTimestampPropertyFile, createRevisionPrope
 processResources.outputs.upToDateWhen{ false } // issue with Gradle 2.4 confused about UP-TO-DATE (works OK with 2.3)
 
 task installApp(type: Sync) {
+    delete "${project.buildDir}/install/${project.name}/cfg"
     description 'Installs jPOS based application'
     into { file("${project.buildDir}/install/${project.name}") }
     with jposCopySpec

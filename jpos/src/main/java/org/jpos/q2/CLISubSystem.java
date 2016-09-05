@@ -16,27 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.jpos.q2.cli;
+package org.jpos.q2;
 
-import org.jpos.q2.CLICommand;
-import org.jpos.q2.CLIContext;
-import java.io.IOException;
 
-@SuppressWarnings("unused")
-public class SHUTDOWN implements CLICommand {
-    public void exec(CLIContext cli, String[] args) throws IOException {
-        boolean shutdown;
-        if (args.length == 2 && "--force".equals(args[1])) {
-            shutdown = true;
-        } else {
-            shutdown = cli.confirm("Confirm shutdown (Yes/No) ? ");
-        }
-
-        if (shutdown) {
-            cli.println("Shutting down.");
-            cli.getCLI().getQ2().shutdown();
-        } else {
-            cli.println("Q2 will continue running.");
-        }
-    }
+public interface CLISubSystem {
+     String getPrompt(String[] args);
+     String[] getCompletionPrefixes(String args[]);
 }

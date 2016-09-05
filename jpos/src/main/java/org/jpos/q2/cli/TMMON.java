@@ -30,77 +30,61 @@ import java.util.Iterator;
 import java.util.Map;
 
 @SuppressWarnings("unused")
-public class TMMON implements CLICommand, TransactionStatusListener
-{
+public class TMMON implements CLICommand, TransactionStatusListener {
     PrintStream p;
     CLIContext cli;
     boolean ansi;
 
-    public void exec(CLIContext cli, String[] args) throws Exception
-    {
-        this.p = cli.getOutputStream();
+    public void exec(CLIContext cli, String[] args) throws Exception {
+        this.p = new PrintStream(cli.getReader().getTerminal().output());
         this.cli = cli;
-        this.ansi = cli.getConsoleReader().getTerminal().isANSISupported();
-        if (args.length == 1)
-        {
+        this.ansi = false; // cli.getReader().getTerminal()
+        if (args.length == 1) {
             usage(cli);
             return;
         }
-        for (int i = 1; i < args.length; i++)
-        {
-            try
-            {
+        for (int i = 1; i < args.length; i++) {
+            try {
                 Object obj = NameRegistrar.get(args[i]);
-                if (obj instanceof TransactionManager)
-                {
+                if (obj instanceof TransactionManager) {
                     ((TransactionManager) obj).addListener(this);
-                }
-                else
-                {
+                } else {
                     cli.println("Object '" + args[i]
-                                + "' is not an instance of TransactionManager (" + obj.toString() + ")");
+                      + "' is not an instance of TransactionManager (" + obj.toString() + ")");
                 }
-            }
-            catch (NameRegistrar.NotFoundException e)
-            {
+            } catch (NameRegistrar.NotFoundException e) {
                 cli.println("TransactionManager '" + args[i] + "' not found -- ignored.");
             }
         }
-        cli.getConsoleReader().readCharacter(new char[]{'q', 'Q'});
-        for (int i = 1; i < args.length; i++)
-        {
-            try
-            {
+
+        cli.getReader().readLine();
+
+        for (int i = 1; i < args.length; i++) {
+            try {
                 Object obj = NameRegistrar.get(args[i]);
-                if (obj instanceof TransactionManager)
-                {
+                if (obj instanceof TransactionManager) {
                     ((TransactionManager) obj).removeListener(this);
                 }
-            }
-            catch (NameRegistrar.NotFoundException ignored) {
+            } catch (NameRegistrar.NotFoundException ignored) {
                 // NOPMD ok to happen
             }
         }
     }
 
-    public void usage(CLIContext cli)
-    {
+    public void usage(CLIContext cli) {
         cli.println("Usage: tmmon [tm-name] [tm-name] ...");
         showTMs(cli);
     }
 
-    private void showTMs(CLIContext cli)
-    {
+    private void showTMs(CLIContext cli) {
         NameRegistrar nr = NameRegistrar.getInstance();
         int maxw = 0;
         Iterator iter = NameRegistrar.getAsMap().entrySet().iterator();
         StringBuilder sb = new StringBuilder("available transaction managers:");
-        while (iter.hasNext())
-        {
+        while (iter.hasNext()) {
             Map.Entry entry = (Map.Entry) iter.next();
             String key = (String) entry.getKey();
-            if (entry.getValue() instanceof TransactionManager)
-            {
+            if (entry.getValue() instanceof TransactionManager) {
                 sb.append(' ');
                 sb.append(key);
             }
@@ -108,8 +92,7 @@ public class TMMON implements CLICommand, TransactionStatusListener
         cli.println(sb.toString());
     }
 
-    public void update(TransactionStatusEvent e)
-    {
+    public void update(TransactionStatusEvent e) {
         cli.println(e.toString());
     }
 }

@@ -18,7 +18,6 @@
 
 package org.jpos.q2;
 
-public interface CLICommand
-{
+public interface CLICommand {
     void exec(CLIContext cli, String[] strings) throws Exception;
 }
