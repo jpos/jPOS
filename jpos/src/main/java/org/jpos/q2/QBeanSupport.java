@@ -39,10 +39,9 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 /**
  * @author <a href="mailto:taherkordy@dpi2.dpi.net.ir">Alireza Taherkordi</a>
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
- * @version $Revision$ $Date$
  */
-public class QBeanSupport 
-    implements QBean, QPersist, QBeanSupportMBean, Configurable 
+public class QBeanSupport
+    implements QBean, QPersist, QBeanSupportMBean, Configurable
 {
     Element persist;
     int state;
@@ -52,49 +51,67 @@ public class QBeanSupport
     protected Log log;
     protected Configuration cfg;
     protected ScheduledThreadPoolExecutor scheduledThreadPoolExecutor;
-        
+
     public QBeanSupport () {
         super();
         setLogger (Q2.LOGGER_NAME);
         state = -1;
     }
+
+    @Override
     public void setServer (Q2 server) {
         this.server = server;
     }
+
+    @Override
     public Q2 getServer () {
         return server;
     }
     public QFactory getFactory () {
         return getServer().getFactory ();
     }
+
+    @Override
     public void setName (String name) {
-        if (this.name == null) 
+        if (this.name == null)
             this.name = name;
         if (log != null)
             log.setRealm (name);
         setModified (true);
     }
+
+    @Override
     public void setLogger (String loggerName) {
         log = Log.getLog (loggerName, getClass().getName());
         setModified (true);
     }
+
+    @Override
     public void setRealm (String realm) {
         if (log != null)
             log.setRealm (realm);
     }
+
+    @Override
     public String getRealm() {
         return log != null ? log.getRealm() : null;
     }
 
+    @Override
     public String getLogger () {
         return log != null ? log.getLogger().getName() : null;
     }
+
     public Log getLog () {
         return log;
     }
+
+    @Override
     public String getName () {
         return name;
     }
+
+    @Override
     public void init () {
         if (state == -1) {
             setModified (false);
@@ -106,9 +123,11 @@ public class QBeanSupport
             }
         }
     }
+
+    @Override
     public synchronized void start() {
-        if (state != QBean.DESTROYED && 
-            state != QBean.STOPPED   && 
+        if (state != QBean.DESTROYED &&
+            state != QBean.STOPPED   &&
             state != QBean.FAILED)
            return;
 
@@ -123,6 +142,8 @@ public class QBeanSupport
         }
         state = QBean.STARTED;
     }
+
+    @Override
     public synchronized void stop () {
         if (state != QBean.STARTED)
            return;
@@ -136,6 +157,8 @@ public class QBeanSupport
         }
         state = QBean.STOPPED;
     }
+
+    @Override
     public void destroy () {
         if (state == QBean.DESTROYED)
            return;
@@ -154,40 +177,61 @@ public class QBeanSupport
         }
         state = QBean.DESTROYED;
     }
+
+    @Override
     public void shutdownQ2 () {
         getServer().shutdown ();
     }
+
+    @Override
     public int getState () {
         return state;
     }
+
+    @Override
     public URL[] getLoaderURLS() {
         return server.getLoader().getURLs();
-    }    
+    }
+
+    @Override
     public QClassLoader getLoader() {
         return server.getLoader();
     }
+
+    @Override
     public String getStateAsString () {
         return state >= 0 ? stateString[state] : "Unknown";
     }
+
     public void setState (int state) {
         this.state = state;
     }
+
+    @Override
     public void setPersist (Element persist) {
         this.persist = persist ;
     }
+
+    @Override
     public synchronized Element getPersist () {
         setModified (false);
         return persist;
     }
+
     public synchronized void setModified (boolean modified) {
         this.modified = modified;
     }
+
+    @Override
     public synchronized boolean isModified () {
         return modified;
     }
+
     public boolean running () {
         return state == QBean.STARTING || state == QBean.STARTED;
     }
+
+    @Override
     public void setConfiguration (Configuration cfg)
       throws ConfigurationException
     {
@@ -236,7 +280,7 @@ public class QBeanSupport
             }
         } catch (Exception ex) {
             log.warn ("get-persist", ex);
-        } 
+        }
         return e;
     }
     protected void addAttr (Element e, String name, Object obj, String type) {
