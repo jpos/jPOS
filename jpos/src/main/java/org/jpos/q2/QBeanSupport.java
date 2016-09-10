@@ -46,6 +46,7 @@ public class QBeanSupport
     Element persist;
     int state;
     Q2 server;
+    final Object modifyLock = new Object();
     boolean modified;
     String name;
     protected Log log;
@@ -213,18 +214,22 @@ public class QBeanSupport
     }
 
     @Override
-    public synchronized Element getPersist () {
+    public Element getPersist () {
         setModified (false);
         return persist;
     }
 
-    public synchronized void setModified (boolean modified) {
-        this.modified = modified;
+    public void setModified (boolean modified) {
+        synchronized (this.modifyLock) {
+            this.modified = modified;
+        }
     }
 
     @Override
-    public synchronized boolean isModified () {
-        return modified;
+    public boolean isModified () {
+        synchronized (this.modifyLock) {
+            return modified;
+        }
     }
 
     public boolean running () {
