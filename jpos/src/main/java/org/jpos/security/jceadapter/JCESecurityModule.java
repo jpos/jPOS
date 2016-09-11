@@ -1514,6 +1514,27 @@ public class JCESecurityModule extends BaseSMAdapter {
                     pinBlock = ISOUtil.hex2byte (new String(block));
                 }
                 break;
+            case FORMAT05:
+                {
+                    // Block 1
+                    char[] block1 = formatPINBlock(pin, 0x1);
+
+                    // Block rnd
+                    byte[] rnd = new byte[8];
+                    Random rd = new SecureRandom();
+                    rd.nextBytes(rnd);
+
+                    // Block 2
+                    char[] block2 = ISOUtil.hexString(rnd).toCharArray();
+
+                    // merge blocks
+                    System.arraycopy(block1, 0
+                                    ,block2, 0, pin.length() + 2
+                    );
+                    // pinBlock
+                    pinBlock = ISOUtil.hex2byte(new String(block2));
+                }
+                break;
             case FORMAT34:
                 {
                     pinBlock = ISOUtil.hex2byte (new String(formatPINBlock(pin,0x2)));
@@ -1577,7 +1598,7 @@ public class JCESecurityModule extends BaseSMAdapter {
       // test pin block pdding
       int i = pblock.length - 1;
       while (i >= padidx)
-          if (pblock[i--] != padDigit)
+          if (pblock[i--] != padDigit && padDigit > 0)
               throw new SMException("PIN Block Error - invalid padding");
       // test pin block digits
       while (i >= offset)
@@ -1636,6 +1657,21 @@ public class JCESecurityModule extends BaseSMAdapter {
 
                     // test pin block
                     validatePinBlock(block1,checkDigit,padidx,offset);
+                    // get pin
+                    pin = new String(Arrays.copyOfRange(block1, offset, padidx));
+                }
+                break;
+            case FORMAT05:
+                {
+                    // get Block1
+                    byte[] bl1 = pinBlock;
+                    int pinLength = bl1[0] & 0x0f;
+                    char[] block1 = ISOUtil.hexString(bl1).toCharArray();
+                    int offset = 2;
+                    int checkDigit = 0x01;
+                    int padidx = pinLength + offset;
+                    // test pin block
+                    validatePinBlock(block1, checkDigit, padidx, offset, (char) 0);
                     // get pin
                     pin = new String(Arrays.copyOfRange(block1, offset, padidx));
                 }
