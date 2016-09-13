@@ -33,6 +33,9 @@ import static org.junit.Assert.fail;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.BitSet;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -65,11 +68,9 @@ public class ISOUtilTest {
         assertEquals("e[0]", (byte) -93, e[0]);
     }
 
-    @Test
+    @Test(expected=ArrayIndexOutOfBoundsException.class)
     public void testAsciiToEbcdic3() throws Throwable {
-        byte[] e = new byte[3];
-        ISOUtil.asciiToEbcdic("", e, 100);
-        assertEquals("e.length", 3, e.length);
+        ISOUtil.asciiToEbcdic("", new byte[3], 100);
     }
 
     @Test
@@ -107,24 +108,9 @@ public class ISOUtilTest {
         try {
             ISOUtil.asciiToEbcdic("testISOUtils", e, 100);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
-        } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "100", ex.getMessage());
-            assertEquals("e.length", 0, e.length);
-        }
+        } catch (ArrayIndexOutOfBoundsException ex) { }
     }
 
-    @Test
-    public void testAsciiToEbcdicThrowsArrayIndexOutOfBoundsException1() throws Throwable {
-        byte[] e = new byte[1];
-        try {
-            ISOUtil.asciiToEbcdic("testISOUtils", e, 0);
-            fail("Expected ArrayIndexOutOfBoundsException to be thrown");
-        } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("e[0]", (byte) -93, e[0]);
-            assertEquals("ex.getMessage()", "1", ex.getMessage());
-            assertEquals("e.length", 1, e.length);
-        }
-    }
 
     @Test(expected = NullPointerException.class)
     public void testAsciiToEbcdicThrowsNullPointerException() throws Throwable {
@@ -2337,13 +2323,6 @@ public class ISOUtilTest {
     }
 
     @Test
-    public void testEbcdicToAsciiBytes1() throws Throwable {
-        byte[] e = new byte[3];
-        byte[] result = ISOUtil.ebcdicToAsciiBytes(e, 100, 0);
-        assertEquals("result.length", 0, result.length);
-    }
-
-    @Test
     public void testEbcdicToAsciiBytes2() throws Throwable {
         byte[] e = new byte[0];
         byte[] result = ISOUtil.ebcdicToAsciiBytes(e);
@@ -2358,29 +2337,17 @@ public class ISOUtilTest {
         assertEquals("result[0]", (byte) 0, result[0]);
     }
 
-    @Test
+    @Test(expected=IndexOutOfBoundsException.class)
     public void testEbcdicToAsciiBytesThrowsArrayIndexOutOfBoundsException() throws Throwable {
-        byte[] e = new byte[1];
-        try {
-            ISOUtil.ebcdicToAsciiBytes(e, 0, 100);
-            fail("Expected ArrayIndexOutOfBoundsException to be thrown");
-        } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "1", ex.getMessage());
-        }
+        ISOUtil.ebcdicToAsciiBytes(new byte[1], 0, 100);
     }
 
-    @Test
+    @Test(expected=IndexOutOfBoundsException.class)
     public void testEbcdicToAsciiBytesThrowsArrayIndexOutOfBoundsException1() throws Throwable {
-        byte[] e = new byte[1];
-        try {
-            ISOUtil.ebcdicToAsciiBytes(e, 100, 1000);
-            fail("Expected ArrayIndexOutOfBoundsException to be thrown");
-        } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "100", ex.getMessage());
-        }
+        ISOUtil.ebcdicToAsciiBytes(new byte[1], 100, 1000);
     }
 
-    @Test(expected = NegativeArraySizeException.class)
+    @Test(expected = IndexOutOfBoundsException.class)
     public void testEbcdicToAsciiBytesThrowsNegativeArraySizeException() throws Throwable {
         byte[] e = new byte[1];
         ISOUtil.ebcdicToAsciiBytes(e, 100, -1);
@@ -2396,21 +2363,14 @@ public class ISOUtilTest {
         ISOUtil.ebcdicToAsciiBytes(null);
     }
 
-    @Test
+    @Test(expected=IndexOutOfBoundsException.class)
     public void testEbcdicToAsciiThrowsArrayIndexOutOfBoundsException() throws Throwable {
-        byte[] e = new byte[1];
-        try {
-            ISOUtil.ebcdicToAscii(e, 100, 1000);
-            fail("Expected ArrayIndexOutOfBoundsException to be thrown");
-        } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "100", ex.getMessage());
-        }
+        ISOUtil.ebcdicToAscii(new byte[1], 100, 1000);
     }
 
-    @Test(expected = NegativeArraySizeException.class)
+    @Test(expected = IndexOutOfBoundsException.class)
     public void testEbcdicToAsciiThrowsNegativeArraySizeException() throws Throwable {
-        byte[] e = new byte[1];
-        ISOUtil.ebcdicToAscii(e, 100, -1);
+        ISOUtil.ebcdicToAscii(new byte[1], 100, -1);
     }
 
     @Test(expected = NullPointerException.class)
@@ -4782,5 +4742,26 @@ public class ISOUtilTest {
     public void testcalcLUHN() throws Exception {
         char check = ISOUtil.calcLUHN("411111111111111");
         assertThat(check, is('1'));
+    }
+
+    @Test
+    public void testEbcdicCharSet() throws Throwable {
+        byte[] b = new byte[256];
+        for (int i=0; i<b.length; i++) {
+            b[i] = ((byte) (i & 0xFF));
+        }
+        String s = new String (b, ISOUtil.CHARSET);
+        byte[] ebcdic = ISOUtil.asciiToEbcdic(s);
+        byte[] ascii = ISOUtil.ebcdicToAsciiBytes(ebcdic);
+        assertArrayEquals("arrays should be equal", b, ascii);
+
+        Charset c = Charset.forName("IBM1047");
+        byte[] ebcdic1 = c.encode(s).array();
+        String s1 = c.decode(ByteBuffer.wrap(ebcdic1)).toString();
+        assertArrayEquals("arrays should match", ebcdic, ebcdic1);
+
+        assertEquals ("ASCII strings should be the same", s, s1);
+        assertArrayEquals ("byte[] should be the same as s1", b, s1.getBytes(ISOUtil.CHARSET));
+        assertArrayEquals ("byte[] should be the same as ascii", b, new String(ascii, ISOUtil.CHARSET).getBytes(ISOUtil.CHARSET));
     }
 }

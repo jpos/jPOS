@@ -39,22 +39,14 @@ public class EbcdicInterpreter2Test {
         assertEquals("result", 100, result);
     }
 
-    @Test
+    @Test(expected=ArrayIndexOutOfBoundsException.class)
     public void testInterpret() throws Throwable {
-        byte[] b = new byte[2];
-        new EbcdicInterpreter().interpret("", b, 100);
-        assertTrue("Test completed without Exception", true);
+        new EbcdicInterpreter().interpret("", new byte[2], 100);
     }
 
-    @Test
+    @Test(expected=ArrayIndexOutOfBoundsException.class)
     public void testInterpretThrowsArrayIndexOutOfBoundsException() throws Throwable {
-        byte[] b = new byte[1];
-        try {
-            new EbcdicInterpreter().interpret("testEbcdicInterpreterData", b, 100);
-            fail("Expected ArrayIndexOutOfBoundsException to be thrown");
-        } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "100", ex.getMessage());
-        }
+        new EbcdicInterpreter().interpret("testEbcdicInterpreterData", new byte[1], 100);
     }
 
     @Test
@@ -67,33 +59,21 @@ public class EbcdicInterpreter2Test {
         }
     }
 
-    @Test
+    @Test(expected=IndexOutOfBoundsException.class)
     public void testUninterpret() throws Throwable {
         byte[] rawData = new byte[0];
         String result = EbcdicInterpreter.INSTANCE.uninterpret(rawData, 100, 0);
         assertEquals("result", "", result);
     }
 
-    @Test
+    @Test(expected=IndexOutOfBoundsException.class)
     public void testUninterpretThrowsArrayIndexOutOfBoundsException() throws Throwable {
-        byte[] rawData = new byte[0];
-        try {
-            new EbcdicInterpreter().uninterpret(rawData, 100, 1000);
-            fail("Expected ArrayIndexOutOfBoundsException to be thrown");
-        } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "100", ex.getMessage());
-        }
+        new EbcdicInterpreter().uninterpret(new byte[0], 100, 1000);
     }
 
-    @Test
+    @Test(expected=IndexOutOfBoundsException.class)
     public void testUninterpretThrowsNegativeArraySizeException() throws Throwable {
-        byte[] rawData = new byte[2];
-        try {
-            new EbcdicInterpreter().uninterpret(rawData, 100, -1);
-            fail("Expected NegativeArraySizeException to be thrown");
-        } catch (NegativeArraySizeException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
+        new EbcdicInterpreter().uninterpret(new byte[2], 100, -1);
     }
 
     @Test
