@@ -62,15 +62,15 @@ public class CLIContext {
         this.reader = reader;
     }
 
-    public OutputStream getOut() {
+    public OutputStream getOutputStream() {
         return out;
     }
 
-    public OutputStream getErr() {
+    public OutputStream getErrorStream() {
         return err;
     }
 
-    public InputStream getIn() {
+    public InputStream getInputStream() {
         return in;
     }
 
