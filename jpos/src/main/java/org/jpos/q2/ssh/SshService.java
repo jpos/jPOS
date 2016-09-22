@@ -94,6 +94,11 @@ public class SshService extends QBeanSupport implements SshCLIContextMBean
     }
 
     private void checkAuthorizedKeys (String s) throws IOException {
+        String OS = System.getProperty("os.name").toLowerCase();
+        if((OS.indexOf("win") >= 0)){
+            log.info("Windows Detected, ignoring file permissions check: "+OS);
+            return;
+        }
         Path file = Paths.get(s);
         PosixFileAttributes attrs =
           Files.getFileAttributeView(file, PosixFileAttributeView.class)
@@ -119,4 +124,5 @@ public class SshService extends QBeanSupport implements SshCLIContextMBean
           .setAttribute("name", name)
           .setAttribute("value", value);
     }
+
 }
