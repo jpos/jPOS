@@ -1,25 +1,18 @@
 package org.jpos.q2.cli;
 
-import org.jpos.q2.CLICommand;
-import org.jpos.q2.CLIContext;
+import java.io.File;
 
-public class DEPLOY implements CLICommand {
+import org.jpos.q2.CLISubSystem;
+
+public class DEPLOY implements CLISubSystem {
+	@Override
+	public String getPrompt(String[] args) {
+		return "deploy> ";
+	}
 
 	@Override
-	public void exec(CLIContext ctx, String[] args) throws Exception {
-		if (args.length != 2) {
-			ctx.println("Usage: deploy [operation]");
-			return;
-		}
-		switch (args[1]) {
-			case "list":
-				this.listDeployDir(ctx);
-		}
-
-		return;
-	}
-	public void listDeployDir(CLIContext ctx){
-		Q2 q2 = ctx.getCLI().getQ2();
-	}
+    public String[] getCompletionPrefixes(String[] args) {
+        return new String[]{"org.jpos.q2.cli.deploy."};
+    }
 
 }
