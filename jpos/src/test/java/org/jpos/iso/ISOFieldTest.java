@@ -63,16 +63,6 @@ public class ISOFieldTest {
     }
 
     @Test
-    public void testDumpThrowsNullPointerException() throws Throwable {
-        try {
-            new ISOField(100).dump(null, "testISOFieldIndent");
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-        }
-    }
-
-    @Test
     public void testGetBytes() throws Throwable {
         ISOField iSOField = new ISOField(100);
         iSOField.setValue("");

@@ -128,16 +128,23 @@ public class ISOField
      */
     @Override
     public void dump (PrintStream p, String indent) {
-        if (value != null && value.indexOf('<') >= 0) {
-            p.print (indent +"<"+XMLPackager.ISOFIELD_TAG + " " +
-                XMLPackager.ID_ATTR +"=\"" +fieldNumber +"\"><![CDATA[");
-            p.print (value);
-            p.println ("]]></" + XMLPackager.ISOFIELD_TAG + ">");                        
-        } else {
-            p.println (indent +"<"+XMLPackager.ISOFIELD_TAG + " " +
-                XMLPackager.ID_ATTR +"=\"" +fieldNumber +"\" "+
-                XMLPackager.VALUE_ATTR
-                +"=\"" +ISOUtil.normalize (value) +"\"/>");
+        if (value != null) {
+            if (value.indexOf('<') >= 0) {
+                p.print(indent + "<" + XMLPackager.ISOFIELD_TAG + " " +
+                        XMLPackager.ID_ATTR + "=\"" + fieldNumber + "\"><![CDATA[");
+                p.print(value);
+                p.println("]]></" + XMLPackager.ISOFIELD_TAG + ">");
+            } else if (value.startsWith("{")) {
+                p.print(indent + "<" + XMLPackager.ISOFIELD_TAG + " " +
+                        XMLPackager.ID_ATTR + "=\"" + fieldNumber + "\">");
+                p.print(value);
+                p.println("</" + XMLPackager.ISOFIELD_TAG + ">");
+            } else {
+                p.println(indent + "<" + XMLPackager.ISOFIELD_TAG + " " +
+                        XMLPackager.ID_ATTR + "=\"" + fieldNumber + "\" " +
+                        XMLPackager.VALUE_ATTR
+                        + "=\"" + ISOUtil.normalize(value) + "\"/>");
+            }
         }
     }
     /**
