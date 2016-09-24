@@ -3,7 +3,11 @@ package org.jpos.q2.cli.deploy;
 import java.io.File;
 import org.jpos.q2.CLICommand;
 import org.jpos.q2.CLIContext;
-
+/**
+* CLI implementation - Deploy subsystem
+* 
+* @author Felipph Calado - luizfelipph@gmail.com
+*/
 public class DISABLE implements CLICommand {
 
 	@Override

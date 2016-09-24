@@ -10,7 +10,11 @@ import java.util.Set;
 import java.util.Iterator;
 import javax.management.MBeanServer;
 import javax.management.ObjectInstance;
-
+/**
+* CLI implementation - Deploy subsystem
+* 
+* @author Felipph Calado - luizfelipph@gmail.com
+*/
 public class PS implements CLICommand {
 
     @Override

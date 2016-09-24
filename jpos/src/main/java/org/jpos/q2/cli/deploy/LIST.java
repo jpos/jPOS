@@ -5,7 +5,11 @@ import java.io.File;
 import org.jpos.q2.CLICommand;
 import org.jpos.q2.CLIContext;
 import org.jpos.q2.Q2;
-
+/**
+* CLI implementation - Deploy subsystem
+* 
+* @author Felipph Calado - luizfelipph@gmail.com
+*/
 public class LIST implements CLICommand {
 
     @Override
