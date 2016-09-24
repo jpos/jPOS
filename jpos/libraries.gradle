@@ -7,7 +7,6 @@ ext {
         jline: 'org.jline:jline:3.0.0.M2',
         beanshell: 'org.beanshell:bsh:2.0b5',
         javatuples: 'org.javatuples:javatuples:1.2',
-        jsonsimple: 'com.googlecode.json-simple:json-simple:1.1.1',
         osgi_core: 'org.osgi:org.osgi.core:6.0.0',
         mockito: 'org.mockito:mockito-all:1.10.19',
         fest_assert: 'org.easytesting:fest-assert:1.4',
