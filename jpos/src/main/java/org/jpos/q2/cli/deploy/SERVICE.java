@@ -54,7 +54,7 @@ public class SERVICE implements CLICommand {
 
         MBeanServer server = ctx.getCLI().getQ2().getMBeanServer();
 
-        ObjectName on = new ObjectName("Q2:type=qbean,service=" + args[1]);
+        ObjectName on = new ObjectName(Q2.QBEAN_NAME + args[1]);
         Set<ObjectInstance> b = server.queryMBeans(on, null);
         Iterator<ObjectInstance> it = b.iterator();
         if (it.hasNext()) {
