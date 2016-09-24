@@ -71,7 +71,7 @@ public class CLI implements Runnable {
     }
 
     void setPrompt(String prompt, String[] completionPrefixes) throws IOException {
-        this.prompt = prompt;
+        this.prompt = prompt != null ? prompt : DEFAULT_PROMPT;
         initCmdInterface(completionPrefixes, completionPrefixes == null ? mainHistory : new MemoryHistory());
     }
 
