@@ -712,7 +712,7 @@ public class Q2 implements FileFilter, Runnable {
         } catch (MissingArgumentException e) {
             System.out.println("ERROR: " + e.getMessage());
             System.exit(1);
-        } catch (IllegalAccessError e) {
+        } catch (IllegalAccessError | UnrecognizedOptionException e) {
             System.out.println(e.getMessage());
             System.exit(1);
         } catch (Exception e) {
