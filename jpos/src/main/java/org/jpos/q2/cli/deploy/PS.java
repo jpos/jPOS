@@ -13,21 +13,21 @@ import javax.management.ObjectInstance;
 
 public class PS implements CLICommand {
 
-	@Override
-	public void exec(CLIContext ctx, String[] args) throws Exception {
-		final ObjectName on = new ObjectName("Q2:type=qbean,service=*");
-		MBeanServer server = ctx.getCLI().getQ2().getMBeanServer();
-		Set<ObjectInstance> b = server.queryMBeans(on, null);
-		Iterator<ObjectInstance> it = b.iterator();
-		while (it.hasNext()) {
-			ObjectInstance instance = it.next();
-			int status = (Integer) server.getAttribute(instance.getObjectName(), "State");
-			if (status == QBean.STARTED) {
-				ctx.println(instance.getObjectName().getKeyProperty("service") + "\t\t" + instance.getClassName());
-			}
+    @Override
+    public void exec(CLIContext ctx, String[] args) throws Exception {
+        final ObjectName on = new ObjectName("Q2:type=qbean,service=*");
+        MBeanServer server = ctx.getCLI().getQ2().getMBeanServer();
+        Set<ObjectInstance> b = server.queryMBeans(on, null);
+        Iterator<ObjectInstance> it = b.iterator();
+        while (it.hasNext()) {
+            ObjectInstance instance = it.next();
+            int status = (Integer) server.getAttribute(instance.getObjectName(), "State");
+            if (status == QBean.STARTED) {
+                ctx.println(instance.getObjectName().getKeyProperty("service") + "\t\t" + instance.getClassName());
+            }
 
-		}
+        }
 
-	}
+    }
 
 }

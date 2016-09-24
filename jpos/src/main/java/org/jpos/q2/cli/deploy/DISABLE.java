@@ -21,10 +21,10 @@ public class DISABLE implements CLICommand {
 			return;
 		}
 		File dest = new File(deployDir.getAbsolutePath()+"/"+args[1]+".xml.off");
-		if(dest.exists()){
-			ctx.println("Already disabled: "+args[1]);
-			return;
-		}
+        if (dest.exists()) {
+            ctx.println("Already disabled: " + args[1]);
+            return;
+        }
 		ctx.println("Can't find the bean descriptor: "+args[1]);
 		return;
 	}
