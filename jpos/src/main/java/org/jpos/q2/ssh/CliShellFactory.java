@@ -119,10 +119,6 @@ public class CliShellFactory implements Factory<Command>, CommandFactory {
             return prefixes;
         }
 
-        protected String getPrompt() {
-            return "q2> ";
-        }
-
         protected void handleExit() {
             if (serverSession != null) {
                 try {
