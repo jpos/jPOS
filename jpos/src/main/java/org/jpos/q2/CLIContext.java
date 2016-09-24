@@ -79,7 +79,7 @@ public class CLIContext {
     }
 
     public boolean isInteractive() {
-        return cli != null;
+        return cli.isInteractive();
     }
 
     public CLI getCLI() {

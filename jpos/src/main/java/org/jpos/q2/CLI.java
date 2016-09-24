@@ -54,7 +54,6 @@ public class CLI implements Runnable {
         initCmdInterface(getCompletionPrefixes(), mainHistory);
     }
 
-
     protected boolean running() {
         return getQ2().running();
     }
@@ -67,7 +66,9 @@ public class CLI implements Runnable {
         return new String[] {"org.jpos.q2.cli." };
     }
 
-    protected void handleExit() { }
+    protected void handleExit() {
+        q2.shutdown();
+    }
 
     void setPrompt(String prompt, String[] completionPrefixes) throws IOException {
         this.prompt = prompt;
@@ -127,7 +128,8 @@ public class CLI implements Runnable {
             }
         }
         try {
-            getReader().getTerminal().close();
+            if (keepRunning)
+                getReader().getTerminal().close();
         } catch (IOException e) {
             ctx.printThrowable(e);
         }
@@ -136,6 +138,10 @@ public class CLI implements Runnable {
 
     public Q2 getQ2() {
         return q2;
+    }
+
+    public boolean isInteractive() {
+        return keepRunning;
     }
 
     public LineReader getReader() {
