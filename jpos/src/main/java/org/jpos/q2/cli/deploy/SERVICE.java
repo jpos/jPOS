@@ -83,7 +83,7 @@ public class SERVICE implements CLICommand {
             return;
 
         } else {
-            ctx.println(args[1] + "not found");
+            ctx.println(args[1] + " not found");
         }
 
     }
