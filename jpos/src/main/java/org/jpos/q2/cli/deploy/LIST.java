@@ -16,7 +16,8 @@ public class LIST implements CLICommand {
     public void exec(CLIContext ctx, String[] args) throws Exception {
         Q2 q2 = ctx.getCLI().getQ2();
         File deployDir = q2.getDeployDir();
-        printDirectoryTree(deployDir);
+        
+        ctx.println(printDirectoryTree(deployDir));
         return;
     }
 
