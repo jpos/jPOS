@@ -41,7 +41,7 @@
 </td>
 <td>
 <div class="infoBox" id="duration">
-<div class="counter">20.141s</div>
+<div class="counter">20.157s</div>
 <p>duration</p>
 </div>
 </td>
@@ -79,17 +79,17 @@
 </thead>
 <tr>
 <td class="success">testAnsweredMessage</td>
-<td>7.107s</td>
+<td>7.108s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">testExpiredMessage</td>
-<td>7.030s</td>
+<td>7.042s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">testMTIMapping</td>
-<td>6.004s</td>
+<td>6.007s</td>
 <td class="success">passed</td>
 </tr>
 </table>
@@ -97,44 +97,44 @@
 <div id="tab1" class="tab">
 <h2>Standard output</h2>
 <span class="code">
-<pre>&lt;log realm=&quot;Q2.system&quot; at=&quot;2016-09-24T18:52:30.191&quot;&gt;
+<pre>&lt;log realm=&quot;Q2.system&quot; at=&quot;2016-09-24T21:30:18.283&quot;&gt;
   &lt;info&gt;
     Q2 started, deployDir=/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2016-09-24T18:52:30.228&quot; lifespan=&quot;10ms&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2016-09-24T21:30:18.315&quot; lifespan=&quot;5ms&quot;&gt;
   &lt;info&gt;
     deploy: /home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/20_mux.xml
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2016-09-24T18:52:30.243&quot; lifespan=&quot;14ms&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2016-09-24T21:30:18.334&quot; lifespan=&quot;5ms&quot;&gt;
   &lt;info&gt;
     deploy: /home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/99_sysmon.xml
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2016-09-24T18:52:30.247&quot;&gt;
+&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2016-09-24T21:30:18.339&quot;&gt;
   &lt;info&gt;
     Starting SystemMonitor
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2016-09-24T18:52:30.259&quot;&gt;
+&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2016-09-24T21:30:18.354&quot;&gt;
   &lt;info&gt;
                OS: Linux (3.13.0-92-generic)
-     process name: 2302@testing-gce-e89bf758-a580-4e9c-b411-aabe06a100eb
-             host: testing-gce-e89bf758-a580-4e9c-b411-aabe06a100eb/127.0.1.1
+     process name: 2363@testing-gce-520bd023-0d72-4f89-9dfd-c22c071bd6d4
+             host: testing-gce-520bd023-0d72-4f89-9dfd-c22c071bd6d4/127.0.1.1
               cwd: /home/travis/build/jpos/jPOS/jpos
        free space: 22.9 GiB
      usable space: 21.6 GiB
-          version: 2.0.7-SNAPSHOT (03e9ccb)
-         instance: f3346aee-3131-47fe-b0f3-a5133bd8250c
-           uptime: 00:00:00.204 (1.930000)
+          version: 2.0.7-SNAPSHOT (3377c83)
+         instance: 9f7663b7-8436-42dd-ab35-2bb96afda09d
+           uptime: 00:00:00.297 (1.700000)
        processors: 2
            drift : 0
-    memory(t/u/f): 113/12/100
+    memory(t/u/f): 113/12/101
          encoding: UTF-8
          timezone: Etc/UTC (Coordinated Universal Time) Z
     watch service: sun.nio.fs.LinuxWatchService
-            clock: 1474743150 2016-09-24T18:52:30.263Z
+            clock: 1474752618 2016-09-24T21:30:18.356Z
      thread count: 11
      peak threads: 11
      user threads: 8
@@ -143,10 +143,10 @@
             Thread[Signal Dispatcher,9,system]
             Thread[main,5,main]
             Thread[Test worker,5,main]
-            Thread[/127.0.0.1:58756 to /127.0.0.1:58144 workers Thread 2,5,main]
-            Thread[/127.0.0.1:58756 to /127.0.0.1:58144 workers Thread 3,5,main]
+            Thread[/127.0.0.1:58113 to /127.0.0.1:37220 workers Thread 2,5,main]
+            Thread[/127.0.0.1:58113 to /127.0.0.1:37220 workers Thread 3,5,main]
             Thread[pool-1-thread-1,5,main]
-            Thread[Q2-f3346aee-3131-47fe-b0f3-a5133bd8250c,5,main]
+            Thread[Q2-9f7663b7-8436-42dd-ab35-2bb96afda09d,5,main]
             Thread[Thread-5,5,main]
             Thread[SystemMonitor,5,main]
     name-registrar:
@@ -159,9 +159,9 @@
         tx=0, rx=0, tx_expired=0, tx_pending=0, rx_expired=0, rx_pending=0, rx_unhandled=0, rx_forwarded=0, connected=true, last=0
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2016-09-24T18:52:33.366&quot; lifespan=&quot;607ms&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2016-09-24T21:30:21.417&quot; lifespan=&quot;563ms&quot;&gt;
   &lt;version&gt;
-    jPOS 2.0.7-SNAPSHOT detached/03e9ccb (2016-09-24 18:51:45 UTC) 
+    jPOS 2.0.7-SNAPSHOT detached/3377c83 (2016-09-24 21:29:33 UTC) 
 
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA1
@@ -184,79 +184,79 @@ q9ulRPEqH9NR79619lNKVUkE206dVlXo7xHmJS1QZy5v/GT66xBxyDVfTduPFXk=
 
   &lt;/version&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2016-09-24T18:52:35.083&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2016-09-24T21:30:23.105&quot;&gt;
   &lt;info&gt;
     shutting down
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2016-09-24T18:52:35.084&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2016-09-24T21:30:23.107&quot;&gt;
   &lt;trace&gt;
     undeploying:/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/99_sysmon.xml
   &lt;/trace&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2016-09-24T18:52:35.085&quot;&gt;
+&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2016-09-24T21:30:23.107&quot;&gt;
   &lt;info&gt;
     Stopping SystemMonitor
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2016-09-24T18:52:35.089&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2016-09-24T21:30:23.107&quot;&gt;
   &lt;info&gt;
     undeployed:/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/99_sysmon.xml
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2016-09-24T18:52:35.093&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2016-09-24T21:30:23.108&quot;&gt;
   &lt;trace&gt;
     undeploying:/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/20_mux.xml
   &lt;/trace&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2016-09-24T18:52:35.096&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2016-09-24T21:30:23.109&quot;&gt;
   &lt;info&gt;
     undeployed:/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/20_mux.xml
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2016-09-24T18:52:35.097&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2016-09-24T21:30:23.109&quot;&gt;
   &lt;trace&gt;
     undeploying:/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/00_logger.xml
   &lt;/trace&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2016-09-24T18:52:37.104&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2016-09-24T21:30:25.119&quot;&gt;
   &lt;info&gt;
     Q2 started, deployDir=/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2016-09-24T18:52:37.107&quot; lifespan=&quot;2ms&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2016-09-24T21:30:25.122&quot; lifespan=&quot;3ms&quot;&gt;
   &lt;info&gt;
     deploy: /home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/20_mux.xml
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2016-09-24T18:52:37.109&quot; lifespan=&quot;2ms&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2016-09-24T21:30:25.124&quot; lifespan=&quot;2ms&quot;&gt;
   &lt;info&gt;
     deploy: /home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/99_sysmon.xml
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2016-09-24T18:52:37.109&quot;&gt;
+&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2016-09-24T21:30:25.124&quot;&gt;
   &lt;info&gt;
     Starting SystemMonitor
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2016-09-24T18:52:37.110&quot;&gt;
+&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2016-09-24T21:30:25.126&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;info&gt;
                OS: Linux (3.13.0-92-generic)
-     process name: 2302@testing-gce-e89bf758-a580-4e9c-b411-aabe06a100eb
-             host: testing-gce-e89bf758-a580-4e9c-b411-aabe06a100eb/127.0.1.1
+     process name: 2363@testing-gce-520bd023-0d72-4f89-9dfd-c22c071bd6d4
+             host: testing-gce-520bd023-0d72-4f89-9dfd-c22c071bd6d4/127.0.1.1
               cwd: /home/travis/build/jpos/jPOS/jpos
        free space: 22.9 GiB
      usable space: 21.6 GiB
-          version: 2.0.7-SNAPSHOT (03e9ccb)
-         instance: 2229fb3c-59d8-4093-9742-c19b68dee069
-           uptime: 00:00:00.011 (1.770000)
+          version: 2.0.7-SNAPSHOT (3377c83)
+         instance: c4baea56-03de-4b6d-ae4d-d7dfb3ea6040
+           uptime: 00:00:00.013 (1.560000)
        processors: 2
            drift : 0
-    memory(t/u/f): 113/21/92
+    memory(t/u/f): 113/20/93
          encoding: UTF-8
          timezone: Etc/UTC (Coordinated Universal Time) Z
     watch service: sun.nio.fs.LinuxWatchService
-            clock: 1474743157 2016-09-24T18:52:37.110Z
+            clock: 1474752625 2016-09-24T21:30:25.126Z
      thread count: 11
      peak threads: 12
      user threads: 8
@@ -265,10 +265,10 @@ q9ulRPEqH9NR79619lNKVUkE206dVlXo7xHmJS1QZy5v/GT66xBxyDVfTduPFXk=
             Thread[Signal Dispatcher,9,system]
             Thread[main,5,main]
             Thread[Test worker,5,main]
-            Thread[/127.0.0.1:58756 to /127.0.0.1:58144 workers Thread 2,5,main]
-            Thread[/127.0.0.1:58756 to /127.0.0.1:58144 workers Thread 3,5,main]
+            Thread[/127.0.0.1:58113 to /127.0.0.1:37220 workers Thread 2,5,main]
+            Thread[/127.0.0.1:58113 to /127.0.0.1:37220 workers Thread 3,5,main]
             Thread[pool-1-thread-1,5,main]
-            Thread[Q2-2229fb3c-59d8-4093-9742-c19b68dee069,5,main]
+            Thread[Q2-c4baea56-03de-4b6d-ae4d-d7dfb3ea6040,5,main]
             Thread[Thread-7,5,main]
             Thread[SystemMonitor,5,main]
     name-registrar:
@@ -282,9 +282,9 @@ q9ulRPEqH9NR79619lNKVUkE206dVlXo7xHmJS1QZy5v/GT66xBxyDVfTduPFXk=
         tx=0, rx=0, tx_expired=0, tx_pending=0, rx_expired=0, rx_pending=0, rx_unhandled=0, rx_forwarded=0, connected=true, last=0
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2016-09-24T18:52:39.613&quot; lifespan=&quot;3ms&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2016-09-24T21:30:27.629&quot; lifespan=&quot;4ms&quot;&gt;
   &lt;version&gt;
-    jPOS 2.0.7-SNAPSHOT detached/03e9ccb (2016-09-24 18:51:45 UTC) 
+    jPOS 2.0.7-SNAPSHOT detached/3377c83 (2016-09-24 21:29:33 UTC) 
 
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA1
@@ -307,79 +307,79 @@ q9ulRPEqH9NR79619lNKVUkE206dVlXo7xHmJS1QZy5v/GT66xBxyDVfTduPFXk=
 
   &lt;/version&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2016-09-24T18:52:41.101&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2016-09-24T21:30:29.115&quot;&gt;
   &lt;info&gt;
     shutting down
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2016-09-24T18:52:41.102&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2016-09-24T21:30:29.116&quot;&gt;
   &lt;trace&gt;
     undeploying:/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/99_sysmon.xml
   &lt;/trace&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2016-09-24T18:52:41.102&quot;&gt;
+&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2016-09-24T21:30:29.116&quot;&gt;
   &lt;info&gt;
     Stopping SystemMonitor
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2016-09-24T18:52:41.102&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2016-09-24T21:30:29.116&quot;&gt;
   &lt;info&gt;
     undeployed:/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/99_sysmon.xml
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2016-09-24T18:52:41.102&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2016-09-24T21:30:29.117&quot;&gt;
   &lt;trace&gt;
     undeploying:/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/20_mux.xml
   &lt;/trace&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2016-09-24T18:52:41.102&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2016-09-24T21:30:29.117&quot;&gt;
   &lt;info&gt;
     undeployed:/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/20_mux.xml
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2016-09-24T18:52:41.103&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2016-09-24T21:30:29.117&quot;&gt;
   &lt;trace&gt;
     undeploying:/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/00_logger.xml
   &lt;/trace&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2016-09-24T18:52:43.108&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2016-09-24T21:30:31.125&quot;&gt;
   &lt;info&gt;
     Q2 started, deployDir=/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2016-09-24T18:52:43.109&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2016-09-24T21:30:31.131&quot; lifespan=&quot;5ms&quot;&gt;
   &lt;info&gt;
     deploy: /home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/20_mux.xml
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2016-09-24T18:52:43.111&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2016-09-24T21:30:31.133&quot; lifespan=&quot;2ms&quot;&gt;
   &lt;info&gt;
     deploy: /home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/99_sysmon.xml
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2016-09-24T18:52:43.111&quot;&gt;
+&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2016-09-24T21:30:31.134&quot;&gt;
   &lt;info&gt;
     Starting SystemMonitor
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2016-09-24T18:52:43.112&quot;&gt;
+&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2016-09-24T21:30:31.135&quot;&gt;
   &lt;info&gt;
                OS: Linux (3.13.0-92-generic)
-     process name: 2302@testing-gce-e89bf758-a580-4e9c-b411-aabe06a100eb
-             host: testing-gce-e89bf758-a580-4e9c-b411-aabe06a100eb/127.0.1.1
+     process name: 2363@testing-gce-520bd023-0d72-4f89-9dfd-c22c071bd6d4
+             host: testing-gce-520bd023-0d72-4f89-9dfd-c22c071bd6d4/127.0.1.1
               cwd: /home/travis/build/jpos/jPOS/jpos
        free space: 22.9 GiB
      usable space: 21.6 GiB
-          version: 2.0.7-SNAPSHOT (03e9ccb)
-         instance: 0e255cff-3b7e-49ff-824d-26cb22f45683
-           uptime: 00:00:00.008 (1.630000)
+          version: 2.0.7-SNAPSHOT (3377c83)
+         instance: f81cc7e0-a004-4b87-be14-6d3d542c66a6
+           uptime: 00:00:00.014 (1.320000)
        processors: 2
            drift : 0
-    memory(t/u/f): 113/22/91
+    memory(t/u/f): 113/21/92
          encoding: UTF-8
          timezone: Etc/UTC (Coordinated Universal Time) Z
     watch service: sun.nio.fs.LinuxWatchService
-            clock: 1474743163 2016-09-24T18:52:43.112Z
+            clock: 1474752631 2016-09-24T21:30:31.135Z
      thread count: 11
      peak threads: 12
      user threads: 8
@@ -388,10 +388,10 @@ q9ulRPEqH9NR79619lNKVUkE206dVlXo7xHmJS1QZy5v/GT66xBxyDVfTduPFXk=
             Thread[Signal Dispatcher,9,system]
             Thread[main,5,main]
             Thread[Test worker,5,main]
-            Thread[/127.0.0.1:58756 to /127.0.0.1:58144 workers Thread 2,5,main]
-            Thread[/127.0.0.1:58756 to /127.0.0.1:58144 workers Thread 3,5,main]
+            Thread[/127.0.0.1:58113 to /127.0.0.1:37220 workers Thread 2,5,main]
+            Thread[/127.0.0.1:58113 to /127.0.0.1:37220 workers Thread 3,5,main]
             Thread[pool-1-thread-1,5,main]
-            Thread[Q2-0e255cff-3b7e-49ff-824d-26cb22f45683,5,main]
+            Thread[Q2-f81cc7e0-a004-4b87-be14-6d3d542c66a6,5,main]
             Thread[Thread-9,5,main]
             Thread[SystemMonitor,5,main]
     name-registrar:
@@ -406,9 +406,9 @@ q9ulRPEqH9NR79619lNKVUkE206dVlXo7xHmJS1QZy5v/GT66xBxyDVfTduPFXk=
         tx=0, rx=0, tx_expired=0, tx_pending=0, rx_expired=0, rx_pending=0, rx_unhandled=0, rx_forwarded=0, connected=true, last=0
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2016-09-24T18:52:45.614&quot; lifespan=&quot;2ms&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2016-09-24T21:30:33.639&quot; lifespan=&quot;4ms&quot;&gt;
   &lt;version&gt;
-    jPOS 2.0.7-SNAPSHOT detached/03e9ccb (2016-09-24 18:51:45 UTC) 
+    jPOS 2.0.7-SNAPSHOT detached/3377c83 (2016-09-24 21:29:33 UTC) 
 
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA1
@@ -431,37 +431,37 @@ q9ulRPEqH9NR79619lNKVUkE206dVlXo7xHmJS1QZy5v/GT66xBxyDVfTduPFXk=
 
   &lt;/version&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2016-09-24T18:52:48.206&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2016-09-24T21:30:36.224&quot;&gt;
   &lt;info&gt;
     shutting down
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2016-09-24T18:52:48.207&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2016-09-24T21:30:36.224&quot;&gt;
   &lt;trace&gt;
     undeploying:/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/99_sysmon.xml
   &lt;/trace&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2016-09-24T18:52:48.207&quot;&gt;
+&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2016-09-24T21:30:36.225&quot;&gt;
   &lt;info&gt;
     Stopping SystemMonitor
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2016-09-24T18:52:48.207&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2016-09-24T21:30:36.225&quot;&gt;
   &lt;info&gt;
     undeployed:/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/99_sysmon.xml
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2016-09-24T18:52:48.207&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2016-09-24T21:30:36.226&quot;&gt;
   &lt;trace&gt;
     undeploying:/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/20_mux.xml
   &lt;/trace&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2016-09-24T18:52:48.208&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2016-09-24T21:30:36.227&quot;&gt;
   &lt;info&gt;
     undeployed:/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/20_mux.xml
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2016-09-24T18:52:48.208&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2016-09-24T21:30:36.227&quot;&gt;
   &lt;trace&gt;
     undeploying:/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/00_logger.xml
   &lt;/trace&gt;
@@ -477,7 +477,7 @@ q9ulRPEqH9NR79619lNKVUkE206dVlXo7xHmJS1QZy5v/GT66xBxyDVfTduPFXk=
 <input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
 </label>
 </div>Generated by 
-<a href="http://www.gradle.org">Gradle 3.1</a> at Sep 24, 2016 6:54:51 PM</p>
+<a href="http://www.gradle.org">Gradle 3.1</a> at Sep 24, 2016 9:32:36 PM</p>
 </div>
 </div>
 </body>
