@@ -18,7 +18,7 @@
 
 package org.jpos.q2.ssh;
 
-import org.apache.sshd.server.PublickeyAuthenticator;
+import org.apache.sshd.server.auth.pubkey.PublickeyAuthenticator;
 import org.apache.sshd.server.session.ServerSession;
 import org.jpos.q2.Q2;
 import org.jpos.util.Log;

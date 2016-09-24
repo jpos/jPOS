@@ -18,17 +18,14 @@
 
 package org.jpos.q2.ssh;
 
-import org.apache.sshd.SshServer;
-import org.apache.sshd.common.NamedFactory;
-import org.apache.sshd.server.UserAuth;
-import org.apache.sshd.server.auth.UserAuthPublicKey;
+import org.apache.sshd.server.SshServer;
+import org.apache.sshd.server.auth.pubkey.UserAuthPublicKeyFactory;
 import org.apache.sshd.server.keyprovider.SimpleGeneratorHostKeyProvider;
 import org.jdom2.Element;
 import org.jpos.q2.QBeanSupport;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.BindException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -36,7 +33,6 @@ import java.nio.file.attribute.PosixFileAttributeView;
 import java.nio.file.attribute.PosixFileAttributes;
 import java.nio.file.attribute.PosixFilePermission;
 import java.nio.file.attribute.PosixFilePermissions;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Set;
 
@@ -56,13 +52,14 @@ public class SshService extends QBeanSupport implements SshCLIContextMBean
 
         sshd = SshServer.setUpDefaultServer();
         sshd.setPort(port);
-        sshd.setKeyPairProvider(new SimpleGeneratorHostKeyProvider(hostKeys));
+        sshd.setKeyPairProvider(new SimpleGeneratorHostKeyProvider(new File(hostKeys)));
 
         CliShellFactory csf = new CliShellFactory(getServer(), prefixes);
         sshd.setShellFactory(csf);
         sshd.setCommandFactory(csf);
 
-        sshd.setUserAuthFactories(Collections.singletonList(new UserAuthPublicKey.Factory()));
+
+        sshd.setUserAuthFactories(Collections.singletonList(new UserAuthPublicKeyFactory()));
         sshd.setPublickeyAuthenticator(new AuthorizedKeysFileBasedPKA(username, authorizedKeysFilename));
         sshd.start();
         log.info("Started SSHD @ port "+port);
@@ -77,7 +74,7 @@ public class SshService extends QBeanSupport implements SshCLIContextMBean
                 public void run() {
                     try {
                         sshd.stop(true);
-                    } catch (InterruptedException ignored) { }
+                    } catch (IOException ignored) { }
                     sshd=null;
                 }
             }.start();
