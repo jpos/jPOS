@@ -66,9 +66,7 @@ public class CLI implements Runnable {
         return new String[] {"org.jpos.q2.cli." };
     }
 
-    protected void handleExit() {
-        q2.shutdown();
-    }
+    protected void handleExit() { }
 
     void setPrompt(String prompt, String[] completionPrefixes) throws IOException {
         this.prompt = prompt != null ? prompt : DEFAULT_PROMPT;

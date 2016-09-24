@@ -1,1 +1,3 @@
-Usage: shutdown [--force]
+usage: shutdown
+    -f,--force  force shutdown
+    -q,--quiet  be quiet

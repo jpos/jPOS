@@ -26,17 +26,33 @@ import java.io.IOException;
 public class SHUTDOWN implements CLICommand {
     public void exec(CLIContext cli, String[] args) throws IOException {
         boolean shutdown;
-        if (args.length == 2 && "--force".equals(args[1])) {
+
+        if (cli.isInteractive() && cli.getOutputStream() != System.out) {
+            cli.println ("Can't shutdown remotely");
+            return;
+        }
+
+        if (hasOption(args, "-f", "--force", "-fq")) {
             shutdown = true;
         } else {
             shutdown = cli.confirm("Confirm shutdown (Yes/No) ? ");
         }
-
         if (shutdown) {
-            cli.println("Shutting down.");
+            if (!hasOption (args, "-q", "--quiet", "-fq"))
+                cli.println("Shutting down.");
             cli.getCLI().getQ2().shutdown();
         } else {
             cli.println("Q2 will continue running.");
         }
+    }
+
+    private boolean hasOption (String[] args, String... opts) {
+        for (String s : args) {
+            for (String o : opts) {
+                if (s.equals(o))
+                    return true;
+            }
+        }
+        return false;
     }
 }
