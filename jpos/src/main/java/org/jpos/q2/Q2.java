@@ -295,6 +295,13 @@ public class Q2 implements FileFilter, Runnable {
         return watchServiceClassname;
     }
 
+    public static Q2 getQ2() {
+        return (Q2) NameRegistrar.getIfExists(JMX_NAME);
+    }
+    public static Q2 getQ2(long timeout) {
+        return (Q2) NameRegistrar.get(JMX_NAME, timeout);
+    }
+
     private boolean isXml(File f) {
         return f != null && f.getName().toLowerCase().endsWith(".xml");
     }

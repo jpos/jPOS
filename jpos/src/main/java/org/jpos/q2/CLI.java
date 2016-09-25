@@ -153,7 +153,7 @@ public class CLI implements Runnable {
     }
 
     public static void exec (InputStream in, OutputStream out, String command) throws Exception {
-        CLI cli = new CLI(null, in, out, command, false, false);
+        CLI cli = new CLI(Q2.getQ2(), in, out, command, false, false);
         cli.start();
         cli.stop();
     }
