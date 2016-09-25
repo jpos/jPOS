@@ -104,7 +104,10 @@ public class CLIContext {
         else {
             try {
                 out.write(s.getBytes());
-            } catch (IOException ignored) { }
+                out.flush();
+            } catch (IOException ignored) {
+                ignored.printStackTrace();
+            }
         }
     }
 

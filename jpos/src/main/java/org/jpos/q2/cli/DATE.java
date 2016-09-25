@@ -25,8 +25,7 @@ import java.util.Date;
 
 public class DATE implements CLICommand
 {
-    public void exec(CLIContext ctx, String[] args)
-    {
+    public void exec(CLIContext ctx, String[] args) {
         ctx.println(new Date().toString());
     }
 }

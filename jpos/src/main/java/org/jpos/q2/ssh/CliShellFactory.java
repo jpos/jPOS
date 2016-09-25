@@ -100,7 +100,7 @@ public class CliShellFactory implements Factory<Command>, CommandFactory {
         ServerSession serverSession = null;
 
         public SshCLI(Q2 q2, InputStream in, OutputStream out, String line, boolean keepRunning) throws IOException {
-            super(q2, in, out, line, keepRunning);
+            super(q2, in, out, line, keepRunning, true);
         }
 
         protected boolean running() {

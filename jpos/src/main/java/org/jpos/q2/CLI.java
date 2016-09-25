@@ -31,6 +31,7 @@ public class CLI implements Runnable {
     private Thread t;
     private String line = null;
     private boolean keepRunning = false;
+    private boolean interactive = false;
     protected CLIContext ctx;
     private CLICommandInterface cmdInterface;
     private Terminal terminal;
@@ -40,22 +41,25 @@ public class CLI implements Runnable {
     private History mainHistory;
 
     public CLI(Q2 q2, String line, boolean keepRunning) throws IOException {
-        this(q2, System.in, System.out, line, keepRunning);
+        this(q2, System.in, System.out, line, keepRunning, true);
     }
 
-    public CLI(Q2 q2, InputStream in, OutputStream rawout, String line, boolean keepRunning) throws IOException {
+    public CLI(Q2 q2, InputStream in, OutputStream rawout, String line, boolean keepRunning, boolean interactive) throws IOException {
         this.q2 = q2;
         PrintStream out = rawout instanceof PrintStream ? (PrintStream) rawout : new PrintStream(rawout);
-        terminal = buildTerminal(in, out);
         ctx = buildCLIContext(in, out);
         this.line = line;
         this.keepRunning = keepRunning;
+        this.interactive = interactive;
         this.mainHistory = new MemoryHistory();
+        if (interactive) {
+            terminal = buildTerminal(in, out);
+        }
         initCmdInterface(getCompletionPrefixes(), mainHistory);
     }
 
     protected boolean running() {
-        return getQ2().running();
+        return getQ2() == null || getQ2().running();
     }
 
     protected void markStopped() { }
@@ -79,8 +83,10 @@ public class CLI implements Runnable {
         for (String s : completionPrefixes) {
             cmdInterface.addPrefix(s);
         }
-        reader = buildReader(terminal, completionPrefixes, history);
-        ctx.setReader(reader);
+        if (terminal != null) {
+            reader = buildReader(terminal, completionPrefixes, history);
+            ctx.setReader(reader);
+        }
     }
 
     public void start() throws Exception {
@@ -139,11 +145,23 @@ public class CLI implements Runnable {
     }
 
     public boolean isInteractive() {
-        return keepRunning;
+        return interactive;
     }
 
     public LineReader getReader() {
         return reader;
+    }
+
+    public static void exec (InputStream in, OutputStream out, String command) throws Exception {
+        CLI cli = new CLI(null, in, out, command, false, false);
+        cli.start();
+        cli.stop();
+    }
+
+    public static String exec (String command) throws Exception {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        exec (null, out, command);
+        return out.toString();
     }
 
     private Terminal buildTerminal (InputStream in, OutputStream out) throws IOException {
