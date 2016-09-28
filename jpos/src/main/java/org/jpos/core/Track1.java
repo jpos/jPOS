@@ -120,7 +120,7 @@ public class Track1 {
     }
 
     public static class Builder {
-        private static String TRACK1_EXPR = "^%[A-Z]+([0-9]{1,19})\\^([^\\^]{2,26})\\^([0-9]{4})([0-9]{3})([0-9]{4})?([0-9]{1,10})?";
+        private static String TRACK1_EXPR = "^[%]?[A-Z]+([0-9]{1,19})\\^([^\\^]{2,26})\\^([0-9]{4})([0-9]{3})([0-9]{4})?([0-9]{1,10})?";
         private static Pattern TRACK1_PATTERN = Pattern.compile(TRACK1_EXPR);
         private String pan;
         private String nameOnCard;
