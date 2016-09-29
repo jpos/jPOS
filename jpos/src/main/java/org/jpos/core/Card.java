@@ -179,6 +179,14 @@ public class Card {
                 track2(Track2.builder().track(m.getString(35)).build());
             if (m.hasField(45))
                 track1(Track1.builder().track(m.getString(45)).build());
+            if (pan == null && track2 != null)
+                pan (track2.getPan());
+            if (pan == null && track1 != null)
+                pan (track1.getPan());
+            if (exp == null && track2 != null)
+                exp (track2.getExp());
+            if (exp == null && track1 != null)
+                exp (track1.getExp());
             return this;
         }
 
