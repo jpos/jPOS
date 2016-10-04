@@ -82,7 +82,7 @@ import java.util.TreeMap;
  *         ...
  * &lt;/isofieldpackager&gt;
  *
- * The optional attributes maxValidField, bitmapField and emitBitmap
+ * The optional attributes maxValidField, bitmapField, thirdBitmapField, and emitBitmap
  * are allowed on the isopackager node.
  *
  * </pre>
@@ -273,6 +273,7 @@ public class GenericPackager
         String maxField  = atts.getValue("maxValidField");
         String emitBmap  = atts.getValue("emitBitmap");
         String bmapfield = atts.getValue("bitmapField");
+        String thirdbmf  = atts.getValue("thirdBitmapField");
         firstField = atts.getValue("firstField");
         String headerLenStr = atts.getValue("headerLength");
 
@@ -285,13 +286,21 @@ public class GenericPackager
         if (bmapfield != null)
             bitmapField = Integer.parseInt(bmapfield);
 
+        // BBB TODO IDEA: should we check somewhere that fld[thirdBitmapField] instanceof ISOBitMapPackager?
+        if (thirdbmf != null)
+            try { setThirdBitmapField(Integer.parseInt(thirdbmf)); }
+            catch (ISOException e)
+            {   // BBB throwing unchecked exception in order not to change the method's contract
+                // BBB (the parseInt's and valueOf's above are doing it anyway...)
+                throw new IllegalArgumentException(e.getMessage());
+            }
+
         if (firstField != null)
             Integer.parseInt (firstField);  // attempt to parse just to
                                             // force an exception if the
                                             // data is not correct.
-        
         if (headerLenStr != null)
-        	setHeaderLength(Integer.parseInt(headerLenStr));
+            setHeaderLength(Integer.parseInt(headerLenStr));
     }
 
     public static class GenericEntityResolver implements EntityResolver
