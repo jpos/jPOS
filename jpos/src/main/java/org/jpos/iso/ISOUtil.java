@@ -413,8 +413,8 @@ public class ISOUtil {
      * @return string representing the bits (i.e. 011010010...)
      */
     public static String bitSet2String (BitSet b) {
-        int len = b.size();
-        len = len > 128 ? 128: len;
+        int len = b.size();                             // BBB Should be length()?
+        len = len > 128 ? 128: len;                     // BBB existence of 3rd bitmap not considered here
         StringBuilder d = new StringBuilder(len);
         for (int i=0; i<len; i++)
             d.append (b.get(i) ? '1' : '0');
@@ -619,8 +619,8 @@ public class ISOUtil {
             int digit = Character.digit((char)b[offset + (i >> 2)], 16);
             if ((digit & 0x08 >> i%4) > 0) {
                 bmap.set(i+1);
-                if (i==65 && maxBits > 128)
-                    len = 192;
+                if (i==65 && maxBits > 128)     // BBB this is redundant (check already done outside
+                    len = 192;                  // BBB of the loop), but I'll leave it for now..
             }
         }
         return bmap;

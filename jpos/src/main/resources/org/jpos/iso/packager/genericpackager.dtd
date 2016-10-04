@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!ELEMENT isopackager (isofield+,isofieldpackager*)*>
-<!ATTLIST isopackager maxValidField CDATA        #IMPLIED>
-<!ATTLIST isopackager bitmapField   CDATA        #IMPLIED>
-<!ATTLIST isopackager firstField    CDATA        #IMPLIED>
-<!ATTLIST isopackager emitBitmap    (true|false) #IMPLIED>
-<!ATTLIST isopackager headerLength  CDATA        #IMPLIED>
+<!ATTLIST isopackager maxValidField     CDATA        #IMPLIED>
+<!ATTLIST isopackager bitmapField       CDATA        #IMPLIED>
+<!ATTLIST isopackager thirdBitmapField  CDATA        #IMPLIED>
+<!ATTLIST isopackager firstField        CDATA        #IMPLIED>
+<!ATTLIST isopackager emitBitmap        (true|false) #IMPLIED>
+<!ATTLIST isopackager headerLength      CDATA        #IMPLIED>
 
 <!-- isofield -->
 <!ELEMENT isofield (#PCDATA)>
