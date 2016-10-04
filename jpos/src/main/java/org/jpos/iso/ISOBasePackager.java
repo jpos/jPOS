@@ -45,15 +45,16 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
     public void setFieldPackager (ISOFieldPackager[] fld) {
         this.fld = fld;
     }
+
     /**
      * @return true if BitMap have to be emited
      */
     protected boolean emitBitMap () {
         return fld[1] instanceof ISOBitMapPackager;
     }
+
     /**
-     * usually 2 for normal fields, 1 for bitmap-less
-     * or ANSI X9.2 
+     * usually 2 for normal fields, 1 for bitmap-less or ANSI X9.2 
      * @return first valid field
      */
     protected int getFirstField() {
@@ -61,37 +62,40 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
             return fld[1] instanceof ISOBitMapPackager ? 2 : 1;
         return 0;
     }
+
     /**
      * @param   m   the Component to pack
      * @return      Message image
      * @exception ISOException
      */
+    @Override
     public byte[] pack (ISOComponent m) throws ISOException {
         LogEvent evt = null;
         if (logger != null)
             evt = new LogEvent (this, "pack");
+
         try {
-            if (m.getComposite() != m) 
+            if (m.getComposite() != m)
                 throw new ISOException ("Can't call packager on non Composite");
 
-            ISOComponent c;
             ArrayList<byte[]> v = new ArrayList<byte[]>(128);
-            Map fields = m.getChildren();
-            int len = 0;
-            int first = getFirstField();
-
-            c = (ISOComponent) fields.get (0);
             byte[] b;
             byte[] hdr= null;
+            int len = 0;
+
+            Map fields = m.getChildren();
+            ISOComponent c = (ISOComponent) fields.get (0);
+            int first = getFirstField();
+
 
             // pre-read header, if it exists, and advance total len
-            if (m instanceof ISOMsg && headerLength>0) 
+            if (m instanceof ISOMsg && headerLength>0)
             {
             	hdr= ((ISOMsg) m).getHeader();
             	if (hdr != null)
             		len += hdr.length;
             }
-            
+
             if (first > 0 && c != null) {
                 b = fld[0].pack(c);
                 len += b.length;
@@ -131,7 +135,7 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
                     }
                 }
             }
-        
+
             if(m.getMaxField()>128 && fld.length > 128) {
                 for (int i=1; i<=64; i++) {
                     if ((c = (ISOComponent)fields.get (i + 128)) != null)
@@ -154,7 +158,7 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
 
             int k = 0;
             byte[] d = new byte[len];
-            
+
             // if ISOMsg insert header (we pre-read it at the beginning)
             if (hdr != null) {
                 System.arraycopy(hdr, 0, d, k, hdr.length);
@@ -185,26 +189,27 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
      * @return      consumed bytes
      * @exception ISOException
      */
+    @Override
     public int unpack (ISOComponent m, byte[] b) throws ISOException {
-        LogEvent evt = logger != null ?  new LogEvent (this, "unpack") : null;
+        LogEvent evt = logger != null ? new LogEvent (this, "unpack") : null;
         int consumed = 0;
 
         try {
-            if (m.getComposite() != m) 
+            if (m.getComposite() != m)
                 throw new ISOException ("Can't call packager on non Composite");
             if (evt != null)  // save a few CPU cycle if no logger available
                 evt.addMessage (ISOUtil.hexString (b));
 
-            
-            // if ISOMsg and headerLength defined 
-            if (m instanceof ISOMsg /*&& ((ISOMsg) m).getHeader()==null*/ && headerLength>0) 
+
+            // if ISOMsg and headerLength defined
+            if (m instanceof ISOMsg /*&& ((ISOMsg) m).getHeader()==null*/ && headerLength>0)
             {
                 byte[] h = new byte[headerLength];
                 System.arraycopy(b, 0, h, 0, headerLength);
                 ((ISOMsg) m).setHeader(h);
                 consumed += headerLength;
             }
-            
+
             if (!(fld[0] == null) && !(fld[0] instanceof ISOBitMapPackager))
             {
                 ISOComponent mti = fld[0].createComponent(0);
@@ -231,6 +236,11 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
                     if (bmap == null && fld[i] == null)
                         continue;
 
+                    // maxField is computed above as min(fld.length-1, bmap.length()-1), therefore
+                    // "maxField > 128" means fld[] has packagers defined above 128, *and*
+                    // the bitmap's length is greater than 128 (i.e., a contiguous tertiary bitmap exists).
+                    // In this case, bit 65 simply indicates a 3rd bitmap contiguous to the 2nd one.
+                    // Therefore, there MUST NOT be a DE-65 with data payload to read.
                     if (maxField > 128 && i==65)
                         continue;   // ignore extended bitmap
 
@@ -363,7 +373,7 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
     /**
      * Internal helper logging function.
      * Assumes evt is not null.
-    */
+     */
     private static void fieldUnpackLogger(LogEvent evt, int fldno, ISOComponent c, ISOFieldPackager fld[]) throws ISOException
     {
         evt.addMessage ("<unpack fld=\""+fldno
