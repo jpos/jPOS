@@ -585,7 +585,7 @@ public abstract class BaseChannel extends Observable
             evt.addMessage (m);
             m.setDirection(ISOMsg.OUTGOING); // filter may have dropped this info
             m.setPackager (p); // and could have dropped packager as well
-            byte[] b = m.pack();
+            byte[] b = pack(m);
             synchronized (serverOutLock) {
                 sendMessageLength(b.length + getHeaderLength(m));
                 sendMessageHeader(m, b.length);
@@ -966,6 +966,9 @@ public abstract class BaseChannel extends Observable
     }
     protected void unpack (ISOMsg m, byte[] b) throws ISOException {
         m.unpack (b);
+    }
+    protected byte[] pack (ISOMsg m) throws ISOException {
+        return m.pack();
     }
    /**
     * Implements Configurable<br>
