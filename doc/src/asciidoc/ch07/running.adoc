@@ -36,14 +36,25 @@ use +--help+, e.g.:
 bin/q2 --help
 
 usage: Q2
- -c,--command <arg>     Command to execute
- -C,--config <arg>      Configuration bundle             
- -d,--deploydir <arg>   Deployment directory
- -e,--encrypt <arg>     Encrypt configuration bundle
- -h,--help              Usage information
- -i,--cli               Command Line Interface
- -r,--recursive         Deploy subdirectories recursively
- -v,--version           Q2's version
+ -C,--config <arg>                 Configuration bundle
+ -c,--command <arg>                Command to execute
+ -d,--deploydir <arg>              Deployment directory
+ -e,--encrypt <arg>                Encrypt configuration bundle
+ -h,--help                         Usage information
+ -i,--cli                          Command Line Interface
+ -n,--name <arg>                   Optional name (defaults to 'Q2')
+ -O,--osgi                         Start experimental OSGi framework
+                                   server
+ -p,--pid-file <arg>               Store project's pid
+ -r,--recursive                    Deploy subdirectories recursively
+ -s,--ssh                          Enable SSH server
+ -sa,--ssh-authorized-keys <arg>   Path to authorized key file (defaults
+                                   to 'cfg/authorized_keys')
+ -sh,--ssh-host-key-file <arg>     ssh host key file, defaults to
+                                   'cfg/hostkeys.ser'
+ -sp,--ssh-port <arg>              ssh port (defaults to 2222)
+ -su,--ssh-user <arg>              ssh user (defaults to 'admin')
+ -v,--version                      Q2's version
 ----
 
 Q2 has a reasonable set of defaults so you usually don't have to use 
@@ -51,31 +62,9 @@ any argument when calling it. A simple call to +bin/q2+ should look
 like this:
 
 ----
-<log realm="Q2.system" at="Fri Oct 04 12:45:52 UYT 2013.429" lifespan="24ms">
+<log realm="Q2.system" at="2016-10-16T20:19:41.174">
   <info>
-    Q2 started, deployDir=/home/jpos/git/jpos/jpos/build/install/jpos/deploy
-    
-    jPOS 1.9.3-SNAPSHOT master/4f0e5ff (2013-10-04 12:44:19 UYT)
-
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
-
-jPOS Community Edition, licensed under GNU AGPL v3.0.
-This software is probably not suitable for commercial use.
-Please see http://jpos.org/license for details.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (Darwin)
-
-iQEcBAEBAgAGBQJMolHDAAoJEOQyeO71nYtFv74H/3OgehDGEy1VXp2U3/GcAobg
-HH2eZjPUz53r38ARPiU3pzm9LwDa3WZgJJaa/b9VrJwKvbPwe9+0kY3gScDE1skT
-ladHt+KHHmGQArEutkzHlpZa73RbroFEIa1qmN6MaDEHGoxZqDh0Sv2cpvOaVYGO
-St8ZaddLBPC17bSjAPWo9sWbvL7FgPFOHhnPmbeux8SLtnfWxXWsgo5hLBanKmO1
-1z+I/w/6DL6ZYZU6bAJUk+eyVVImJqw0x3IEElI07Nh9MC6BA4iJ77ejobj8HI2r
-q9ulRPEqH9NR79619lNKVUkE206dVlXo7xHmJS1QZy5v/GT66xBxyDVfTduPFXk=
-=oP+v
------END PGP SIGNATURE-----
-
+    Q2 started, deployDir=/Users/apr/git/jpos/jpos/build/install/jpos/deploy
   </info>
 </log>
 ----
@@ -92,7 +81,6 @@ You can override the default deploy directory using the +--deploydir+
 In this particular case, we are running off the +build/install/jpos+ 
 directory, because we called +gradle installApp+ which is handy for
 local tests. 
-
 =====
 
 At start up time, Q2 scans the +deploy+ directory looking for
@@ -131,6 +119,15 @@ in the deploy directory:
 Sysmon starts the jPOS *SystemMonitor* that outputs useful
 system health information every hour which is good to keep handy
 in production systems.
+
+Please note that when using the `--cli` command line option that starts the jPOS 
+command line interface, the default deploy directory is `deploy-cli` instead of
+`deploy`. This is to prevent starting services (such as as logger, system monitor)
+typically used in jPOS applications. You can of course use the `--deploydir`
+command line option and point it back to the default `deploy` directory.
+
+The *CLI* can also be accessed via SSH using the `--ssh` command line option 
+(in that case, the default deploy directory doesn't change).
 ======
 
 === Command line options
@@ -142,8 +139,7 @@ it gives you output like this:
 ----
 $ bin/q2 --version
 
-jPOS 1.9.3-SNAPSHOT master/040bc63 (2013-09-24 09:23:43 UYT)
-
+jPOS 2.0.9-SNAPSHOT master/1592701 (2016-10-16 20:17:56 ART) 
 ...
 ...
 
@@ -164,10 +160,12 @@ q2>
 Typing 'tab' will give you the list of available commands, e.g.:
 
 ----
-clr         copyright   date        echo        help   
-install     license     man         mem         shownr      
-shutdown    sleep       smconsole   sysmon      tail        
-tmmon       uptime      version
+clr                echo               help               logger_benchmark   
+shownr             smconsole          tmmon              version
+date               env                install            man                
+shutdown           sysmon             tzcheck            deploy             
+exit               license            mem                sleep
+tail               uptime
 ----
 
 The 'man' command can be used to get information about a given command,
@@ -261,12 +259,12 @@ Containing the help text for some commands.
 ======
 CLI commands become more interesting when combined with the ability 
 to "connect" to a JVM running Q2 from a remote location, i.e. using
-the jPOS-EE SSH module.
+the `--ssh` command line option.
 ======
 
 [TIP]
 =====
-CLI commands use +jLine+ that supports tab completion and
+CLI commands use +jLine3+ that supports tab completion and
 basic edit capabilities using the cursor, similar to those
 of +readline+. Try to type 'tab' while typing a command,
 +jLine+ will complete it for you.
