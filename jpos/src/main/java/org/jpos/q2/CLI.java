@@ -19,7 +19,7 @@
 package org.jpos.q2;
 
 import org.jline.reader.*;
-import org.jline.reader.impl.history.history.MemoryHistory;
+import org.jline.reader.impl.history.DefaultHistory;
 import org.jline.terminal.Attributes;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
@@ -51,7 +51,7 @@ public class CLI implements Runnable {
         this.line = line;
         this.keepRunning = keepRunning;
         this.interactive = interactive;
-        this.mainHistory = new MemoryHistory();
+        this.mainHistory = new DefaultHistory();
         if (interactive) {
             terminal = buildTerminal(in, out);
         }
@@ -74,7 +74,7 @@ public class CLI implements Runnable {
 
     void setPrompt(String prompt, String[] completionPrefixes) throws IOException {
         this.prompt = prompt != null ? prompt : DEFAULT_PROMPT;
-        initCmdInterface(completionPrefixes, completionPrefixes == null ? mainHistory : new MemoryHistory());
+        initCmdInterface(completionPrefixes, completionPrefixes == null ? mainHistory : new DefaultHistory());
     }
 
     private void initCmdInterface(String[] completionPrefixes, History history) throws IOException {
