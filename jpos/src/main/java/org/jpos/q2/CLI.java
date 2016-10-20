@@ -23,11 +23,13 @@ import org.jline.reader.impl.history.DefaultHistory;
 import org.jline.terminal.Attributes;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
+
 import java.io.*;
 import java.util.*;
 
 public class CLI implements Runnable {
     final private static String DEFAULT_PROMPT = "q2> ";
+    final private static String ESCAPED_SEMICOLON = "__semicolon__";
     private Thread t;
     private String line = null;
     private boolean keepRunning = false;
@@ -83,6 +85,7 @@ public class CLI implements Runnable {
         for (String s : completionPrefixes) {
             cmdInterface.addPrefix(s);
         }
+        cmdInterface.addPrefix("org.jpos.q2.cli.builtin.");
         if (terminal != null) {
             reader = buildReader(terminal, completionPrefixes, history);
             ctx.setReader(reader);
@@ -108,20 +111,47 @@ public class CLI implements Runnable {
         while (running()) {
             try {
                 LineReader reader = getReader();
+                String p = prompt;
                 if (line == null) {
-                    line = reader.readLine(prompt, null, null, null);
+                    String s;
+                    while ((s = reader.readLine(p, null, null, null)) != null) {
+                        if (s.endsWith("\\")) {
+                            s = s.substring(0, s.length() -1);
+                            p = "";
+                            line = line == null ? s : line + s;
+                            continue;
+                        }
+                        line = line == null ? s : line + s;
+                        break;
+                    }
                 }
                 if (line != null) {
+                    line = line.replace("\\;", ESCAPED_SEMICOLON);
                     StringTokenizer st = new StringTokenizer(line, ";");
+                    boolean exit = false;
                     while (st.hasMoreTokens()) {
-                        String n = st.nextToken();
+                        String n = st.nextToken().replace (ESCAPED_SEMICOLON, ";");
                         try {
+                            String[] args = cmdInterface.parseCommand(n);
+                            if (args.length > 0 && args[0].contains(":")) {
+                                String prefixCommand = args[0].substring(0, args[0].indexOf(":"));
+                                cmdInterface.execCommand(prefixCommand);
+                                n = n.substring(prefixCommand.length() + 1);
+                                exit = true;
+                            }
                             cmdInterface.execCommand(n);
                         } catch (IOException e) {
                             ctx.printThrowable(e);
                         }
                     }
                     line = null;
+                    if (exit) {
+                        try {
+                            cmdInterface.execCommand("exit");
+                        } catch (IOException e) {
+                            ctx.printThrowable(e);
+                        }
+                    }
                 }
                 if (!keepRunning) {
                     break;
@@ -183,6 +213,7 @@ public class CLI implements Runnable {
           .completer(new CLIPrefixedClassNameCompleter(Arrays.asList(completionPrefixes)))
           .build();
         reader.unsetOpt(LineReader.Option.INSERT_TAB);
+        reader.setOpt(LineReader.Option.DISABLE_EVENT_EXPANSION);
         return reader;
     }
 

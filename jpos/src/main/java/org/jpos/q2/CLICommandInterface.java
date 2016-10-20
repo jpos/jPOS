@@ -56,7 +56,6 @@ public class CLICommandInterface {
             if (!command.contains(".")) {
                 className = prefix + command;
             }
-
             try {
                 Object cmd = getCommand(className);
                 if (cmd != null) {
@@ -92,7 +91,7 @@ public class CLICommandInterface {
         return cl.loadClass(className).newInstance();
     }
 
-    String[] parseCommand(String line) throws IOException {
+    public String[] parseCommand(String line) throws IOException {
         if (line == null) {
             return new String[0];
         }
@@ -112,11 +111,8 @@ public class CLICommandInterface {
                 matchList.add(regexMatcher.group());
             }
         }
-
         String[] args = new String[matchList.size()];
-
         matchList.toArray(args);
-
         return args;
     }
 }
