@@ -63,7 +63,7 @@ public class CLICommandInterface {
                         args[0] = ISOUtil.unPadLeft(line, ' '); // full line
                         if (cmd instanceof CLISubSystem) {
                             CLISubSystem ss = (CLISubSystem) cmd;
-                            ctx.getCLI().setPrompt(ss.getPrompt(args), ss.getCompletionPrefixes(args));
+                            ctx.getCLI().setPrompt(ss.getPrompt(ctx, args), ss.getCompletionPrefixes(ctx, args));
                         }
                         if (cmd instanceof CLICommand) {
                             ((CLICommand) cmd).exec(ctx, args);

@@ -18,17 +18,18 @@
 
 package org.jpos.q2.cli.builtin;
 
+import org.jpos.q2.CLIContext;
 import org.jpos.q2.CLISubSystem;
 
 @SuppressWarnings("unused")
 public class EXIT implements CLISubSystem {
     @Override
-    public String getPrompt(String[] args) {
+    public String getPrompt(CLIContext ctx, String[] args) {
         return null;
     }
 
     @Override
-    public String[] getCompletionPrefixes(String args[]) {
+    public String[] getCompletionPrefixes(CLIContext ctx, String args[]) {
         return null;
     }
 }

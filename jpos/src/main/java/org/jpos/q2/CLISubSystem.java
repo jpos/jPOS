@@ -20,6 +20,6 @@ package org.jpos.q2;
 
 
 public interface CLISubSystem {
-     String getPrompt(String[] args);
-     String[] getCompletionPrefixes(String args[]);
+     String getPrompt(CLIContext ctx, String[] args);
+     String[] getCompletionPrefixes(CLIContext ctx, String args[]);
 }
