@@ -36,8 +36,10 @@ def jposCopySpec = copySpec {
     }
 }
 
-task listJars << {
-    configurations.testCompile.each { File file -> println file.name }
+task listJars {
+    doLast {
+        configurations.testCompile.each { File file -> println file.name }
+    }
 }
  
 jar () {

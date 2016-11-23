@@ -78,8 +78,10 @@ def bundleExportPackage = 'org.jpos.bsh,org.jpos.core,org.jpos.iso,org.jpos.iso.
 def bundleLicense = 'http://jpos.org/license'
 def bundleDocURL = 'http://jpos.org/doc/javadoc/index.html'
 
-task listJars << {
-    configurations.testCompile.each { File file -> println file.name }
+task listJars {
+    doLast {
+        configurations.testCompile.each { File file -> println file.name }
+    }
 }
 
 jar () {
@@ -229,8 +231,10 @@ task installApp(type: Sync) {
     with jposCopySpec
 }
 
-task viewTests (description: 'Open Test Reports') << {
-    Class.forName("java.awt.Desktop").newInstance().browse(
-        new File("${buildDir}/reports/tests", 'index.html').toURI())
+task viewTests (description: 'Open Test Reports') {
+    doLast {
+        Class.forName("java.awt.Desktop").newInstance().browse(
+            new File("${buildDir}/reports/tests", 'index.html').toURI())
+    }
 }
 
