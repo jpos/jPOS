@@ -26,7 +26,7 @@ public class PosDataCode implements Loggeable {
 
     public enum ReadingMethod {
         UNKNOWN                (1, "Unknown"),
-        INFO_NOT_FROM_CARD     (1 << 1, "Information not taken from card"),  // i.e.: RFID
+        CONTACTLESS            (1 << 1, "Information not taken from card"),  // i.e.: RFID
         PHYSICAL               (1 << 2, "Physical entry"),                   // i.e.: Manual Entry or OCR
         BARCODE                (1 << 3, "Bar code"),
         MAGNETIC_STRIPE        (1 << 4, "Magnetic Stripe"),
