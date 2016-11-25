@@ -36,7 +36,7 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
 public class PGPHelper {
-    private static KeyFingerPrintCalculator fingerPrintCalculater = new BcKeyFingerprintCalculator();
+    private static KeyFingerPrintCalculator fingerPrintCalculator = new BcKeyFingerprintCalculator();
     private static final String PUBRING = "META-INF/.pgp/pubring.asc";
     private static final String SIGNER = "license@jpos.org";
     static {
@@ -62,7 +62,7 @@ public class PGPHelper {
             }
             out.write((byte) ch);
         }
-        PGPObjectFactory pgpf = new PGPObjectFactory(ain, fingerPrintCalculater);
+        PGPObjectFactory pgpf = new PGPObjectFactory(ain, fingerPrintCalculator);
         Object o = pgpf.nextObject();
         if (o instanceof PGPSignatureList) {
             PGPSignatureList list = (PGPSignatureList)o;
@@ -93,7 +93,7 @@ public class PGPHelper {
         in = PGPUtil.getDecoderStream(in);
         id = id.toLowerCase();
 
-        PGPPublicKeyRingCollection pubRings = new PGPPublicKeyRingCollection(in, fingerPrintCalculater);
+        PGPPublicKeyRingCollection pubRings = new PGPPublicKeyRingCollection(in, fingerPrintCalculator);
         Iterator rIt = pubRings.getKeyRings();
         while (rIt.hasNext()) {
             PGPPublicKeyRing pgpPub = (PGPPublicKeyRing) rIt.next();
@@ -161,7 +161,7 @@ public class PGPHelper {
                 }
                 out.write((byte) ch);
             }
-            PGPObjectFactory pgpf = new PGPObjectFactory(ain, fingerPrintCalculater);
+            PGPObjectFactory pgpf = new PGPObjectFactory(ain, fingerPrintCalculator);
             Object o = pgpf.nextObject();
             if (o instanceof PGPSignatureList) {
                 PGPSignatureList list = (PGPSignatureList) o;
