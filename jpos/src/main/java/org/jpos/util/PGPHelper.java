@@ -39,6 +39,11 @@ public class PGPHelper {
     private static KeyFingerPrintCalculator fingerPrintCalculator = new BcKeyFingerprintCalculator();
     private static final String PUBRING = "META-INF/.pgp/pubring.asc";
     private static final String SIGNER = "license@jpos.org";
+    private static final byte[] FP = new byte[] {
+      (byte) 0x59, (byte) 0xA9, (byte) 0x23, (byte) 0x24, (byte) 0xE9, (byte) 0x3B, (byte) 0x28, (byte) 0xE8,
+      (byte) 0xA3, (byte) 0x82, (byte) 0xA0, (byte) 0x51, (byte) 0xE4, (byte) 0x32, (byte) 0x78, (byte) 0xEE,
+      (byte) 0xF5, (byte) 0x9D, (byte) 0x8B, (byte) 0x45
+    };
     static {
         Security.addProvider(new BouncyCastleProvider());
 //        PGPUtil.setDefaultProvider("BC");
@@ -116,7 +121,7 @@ public class PGPHelper {
                         break;
                     }
                 }
-                if (pgpKey.isEncryptionKey() && isId) {
+                if (pgpKey.isEncryptionKey() && isId && Arrays.equals(FP, pgpKey.getFingerprint())) {
                     return pgpKey;
                 }
             }
