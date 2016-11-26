@@ -217,15 +217,15 @@ public class Q2 implements FileFilter, Runnable {
                         );
                         q2Thread.setContextClassLoader(loader);
                     }
+                    logVersion();
                     deploy();
                     checkModified();
                     if (!waitForChanges(service))
                         break;
-                    logVersion();
-                } catch (InterruptedException ignored) {
+                } catch (InterruptedException | IllegalAccessError ignored) {
                     // NOPMD
                 } catch (Throwable t) {
-                    log.error("start", t);
+                    log.error("start", t.getMessage());
                     relax();
                 }
             }
@@ -634,29 +634,20 @@ public class Q2 implements FileFilter, Runnable {
                     getVersion(), getBranch(), getRevision(), sl, getBuildTimestamp(), getLicensee()
             );
         }
-        if ((l & 0xE0000) > 0)
-            throw new IllegalAccessError(vs);
+//        if ((l & 0xE0000) > 0)
+//            throw new IllegalAccessError(vs);
         return vs;
     }
-    public static String getLicensee() {
-        InputStream is = Q2.class.getClassLoader().getResourceAsStream(LICENSEE);
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        if (is != null) {
-            BufferedReader br = new BufferedReader (new InputStreamReader(is));
-            PrintStream p = new PrintStream(baos);
-            p.println ();
-            p.println ();
-            try {
-                while (br.ready())
-                    p.println (br.readLine());
-            } catch (Exception ignored) {
-                // NOPMD ignore error
-            }
+
+    private static String getLicensee() {
+        String s = null;
+        try {
+            s = PGPHelper.getLicensee();
+        } catch (IOException ignored) {
+            // NOPMD: ignore
         }
-        return baos.toString();
+        return s;
     }
-
-
     private void parseCmdLine (String[] args) {
         CommandLineParser parser = new DefaultParser ();
 
@@ -921,6 +912,8 @@ public class Q2 implements FileFilter, Runnable {
             evt.addMessage(getVersionString());
             Logger.log(evt);
             lastVersionLog = now;
+            while ((PGPHelper.checkLicense() & 0xE0000) != 0)
+                relax();
         }
     }
     private void setExit (boolean exit) {

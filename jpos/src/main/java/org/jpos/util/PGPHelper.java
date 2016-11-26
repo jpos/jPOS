@@ -39,11 +39,6 @@ public class PGPHelper {
     private static KeyFingerPrintCalculator fingerPrintCalculator = new BcKeyFingerprintCalculator();
     private static final String PUBRING = "META-INF/.pgp/pubring.asc";
     private static final String SIGNER = "license@jpos.org";
-    private static final byte[] FP = new byte[] {
-      (byte) 0x59, (byte) 0xA9, (byte) 0x23, (byte) 0x24, (byte) 0xE9, (byte) 0x3B, (byte) 0x28, (byte) 0xE8,
-      (byte) 0xA3, (byte) 0x82, (byte) 0xA0, (byte) 0x51, (byte) 0xE4, (byte) 0x32, (byte) 0x78, (byte) 0xEE,
-      (byte) 0xF5, (byte) 0x9D, (byte) 0x8B, (byte) 0x45
-    };
     static {
         Security.addProvider(new BouncyCastleProvider());
 //        PGPUtil.setDefaultProvider("BC");
@@ -121,7 +116,10 @@ public class PGPHelper {
                         break;
                     }
                 }
-                if (pgpKey.isEncryptionKey() && isId && Arrays.equals(FP, pgpKey.getFingerprint())) {
+                if (pgpKey.isEncryptionKey() && isId && Arrays.equals(new byte[] {
+                  (byte) 0x59, (byte) 0xA9, (byte) 0x23, (byte) 0x24, (byte) 0xE9, (byte) 0x3B, (byte) 0x28, (byte) 0xE8,
+                  (byte) 0xA3, (byte) 0x82, (byte) 0xA0, (byte) 0x51, (byte) 0xE4, (byte) 0x32, (byte) 0x78, (byte) 0xEE,
+                  (byte) 0xF5, (byte) 0x9D, (byte) 0x8B, (byte) 0x45}, pgpKey.getFingerprint())) {
                     return pgpKey;
                 }
             }
@@ -130,8 +128,7 @@ public class PGPHelper {
     }
     public static boolean checkSignature() {
         boolean ok = false;
-        try {
-            InputStream is = Q2.class.getClassLoader().getResourceAsStream(Q2.LICENSEE);
+        try (InputStream is = getLicenseeStream()) {
             InputStream ks = Q2.class.getClassLoader().getResourceAsStream(PUBRING);
             PGPPublicKey pk = PGPHelper.readPublicKey(ks, SIGNER);
             ok = verifySignature(is, pk);
@@ -146,8 +143,7 @@ public class PGPHelper {
         boolean newl = false;
         int ch;
 
-        try {
-            InputStream in = Q2.class.getClassLoader().getResourceAsStream(Q2.LICENSEE);
+        try (InputStream in = getLicenseeStream()){
             InputStream ks = Q2.class.getClassLoader().getResourceAsStream(PUBRING);
             PGPPublicKey pk = readPublicKey(ks, SIGNER);
             ArmoredInputStream ain = new ArmoredInputStream(in, true);
@@ -214,5 +210,24 @@ public class PGPHelper {
             // NOPMD: signature isn't good
         }
         return rc;
+    }
+
+    static InputStream getLicenseeStream() throws FileNotFoundException {
+        File l = new File (Q2.LICENSEE);
+        return l.canRead() ? new FileInputStream(l) : Q2.class.getClassLoader().getResourceAsStream(Q2.LICENSEE);
+    }
+    public static String getLicensee() throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try (InputStream is = getLicenseeStream()) {
+            if (is != null) {
+                BufferedReader br = new BufferedReader(new InputStreamReader(is));
+                PrintStream p = new PrintStream(baos);
+                p.println();
+                p.println();
+                while (br.ready())
+                    p.println(br.readLine());
+            }
+        }
+        return baos.toString();
     }
 }
