@@ -41,7 +41,7 @@
 </td>
 <td>
 <div class="infoBox" id="duration">
-<div class="counter">0.560s</div>
+<div class="counter">0.176s</div>
 <p>duration</p>
 </div>
 </td>
@@ -79,7 +79,7 @@
 </thead>
 <tr>
 <td class="success">test_DUKPT</td>
-<td>0.560s</td>
+<td>0.176s</td>
 <td class="success">passed</td>
 </tr>
 </table>
@@ -87,17 +87,17 @@
 <div id="tab1" class="tab">
 <h2>Standard output</h2>
 <span class="code">
-<pre>&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:10.839&quot;&gt;
+<pre>&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.300&quot;&gt;
   &lt;jce-provider&gt;
     &lt;name&gt;SunJCE&lt;/name&gt;
   &lt;/jce-provider&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:10.842&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.306&quot;&gt;
   &lt;local-master-keys&gt;
     Loaded successfully from file: &quot;/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/security/lmk-test&quot;
   &lt;/local-master-keys&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;2016-11-23T17:51:10.844&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;2016-11-27T18:06:53.307&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -106,7 +106,7 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:10.846&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.311&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Import PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
@@ -137,7 +137,7 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:10.851&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.312&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -152,9 +152,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-23T17:51:10.853&quot; lifespan=&quot;10ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-27T18:06:53.312&quot; lifespan=&quot;5ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@1a2e749d
+    test_DUKPT org.jpos.security.KeySerialNumber@3319a4a6
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -180,7 +180,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;2016-11-23T17:51:10.857&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;2016-11-27T18:06:53.317&quot; lifespan=&quot;4ms&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -189,7 +189,7 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:10.859&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.318&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Import PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
@@ -220,7 +220,7 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:10.863&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.318&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -235,9 +235,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-23T17:51:10.866&quot; lifespan=&quot;9ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-27T18:06:53.318&quot; lifespan=&quot;5ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@60d1c53e
+    test_DUKPT org.jpos.security.KeySerialNumber@38a0169f
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -263,7 +263,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;2016-11-23T17:51:10.870&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;2016-11-27T18:06:53.319&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -272,7 +272,7 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:10.872&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.319&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Import PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
@@ -303,7 +303,7 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:10.876&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.323&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -318,9 +318,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-23T17:51:10.878&quot; lifespan=&quot;8ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-27T18:06:53.323&quot; lifespan=&quot;4ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@447726f0
+    test_DUKPT org.jpos.security.KeySerialNumber@7f28f7f
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -346,7 +346,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;2016-11-23T17:51:10.881&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;2016-11-27T18:06:53.324&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -355,7 +355,7 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:10.883&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.324&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Import PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
@@ -386,7 +386,7 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:10.888&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.325&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -401,9 +401,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-23T17:51:10.890&quot; lifespan=&quot;9ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-27T18:06:53.326&quot; lifespan=&quot;3ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@6b846f36
+    test_DUKPT org.jpos.security.KeySerialNumber@3067221e
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -429,7 +429,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;2016-11-23T17:51:10.894&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;2016-11-27T18:06:53.326&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -438,7 +438,7 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:10.902&quot; lifespan=&quot;7ms&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.327&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Import PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
@@ -469,7 +469,7 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:10.909&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.327&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -484,9 +484,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-23T17:51:10.910&quot; lifespan=&quot;17ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-27T18:06:53.328&quot; lifespan=&quot;2ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@2676447
+    test_DUKPT org.jpos.security.KeySerialNumber@4ea59c20
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -512,7 +512,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;2016-11-23T17:51:10.914&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;2016-11-27T18:06:53.328&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -521,7 +521,7 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:10.916&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.329&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Import PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
@@ -552,7 +552,7 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:10.921&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.331&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -567,9 +567,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-23T17:51:10.928&quot; lifespan=&quot;14ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-27T18:06:53.331&quot; lifespan=&quot;3ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@6c71b900
+    test_DUKPT org.jpos.security.KeySerialNumber@76896f85
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -595,7 +595,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;2016-11-23T17:51:10.931&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;2016-11-27T18:06:53.331&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -604,7 +604,7 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:10.933&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.334&quot; lifespan=&quot;2ms&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Import PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
@@ -635,7 +635,7 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:10.937&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.334&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -650,9 +650,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-23T17:51:10.939&quot; lifespan=&quot;8ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-27T18:06:53.334&quot; lifespan=&quot;3ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@11cc52d8
+    test_DUKPT org.jpos.security.KeySerialNumber@65139f5c
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -678,7 +678,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;2016-11-23T17:51:10.942&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;2016-11-27T18:06:53.335&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -687,7 +687,7 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:10.944&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.336&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Import PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
@@ -718,7 +718,7 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:10.948&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.337&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -733,9 +733,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-23T17:51:10.950&quot; lifespan=&quot;8ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-27T18:06:53.337&quot; lifespan=&quot;2ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@59f96208
+    test_DUKPT org.jpos.security.KeySerialNumber@6ced3632
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -761,7 +761,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;2016-11-23T17:51:10.953&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;2016-11-27T18:06:53.342&quot; lifespan=&quot;5ms&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -770,7 +770,7 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:10.955&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.343&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Import PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
@@ -801,7 +801,7 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:10.958&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.343&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -816,9 +816,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-23T17:51:10.960&quot; lifespan=&quot;7ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-27T18:06:53.343&quot; lifespan=&quot;6ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@6005702c
+    test_DUKPT org.jpos.security.KeySerialNumber@ecbf313
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -844,7 +844,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;2016-11-23T17:51:10.963&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;2016-11-27T18:06:53.344&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -853,7 +853,7 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:10.965&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.345&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Import PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
@@ -884,7 +884,7 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:10.970&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.346&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -899,9 +899,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-23T17:51:10.972&quot; lifespan=&quot;9ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-27T18:06:53.346&quot; lifespan=&quot;2ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@15d6c95
+    test_DUKPT org.jpos.security.KeySerialNumber@33035008
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -927,7 +927,7 @@
     &lt;decrypted-pin&gt;9901&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;2016-11-23T17:51:10.975&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;2016-11-27T18:06:53.347&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -936,7 +936,7 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:10.977&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.348&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Import PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
@@ -967,7 +967,7 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:10.980&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.349&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -982,9 +982,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-23T17:51:10.982&quot; lifespan=&quot;7ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-27T18:06:53.349&quot; lifespan=&quot;2ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@72f4a4f4
+    test_DUKPT org.jpos.security.KeySerialNumber@4a13d04b
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -1010,7 +1010,7 @@
     &lt;decrypted-pin&gt;1575&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;2016-11-23T17:51:10.985&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;2016-11-27T18:06:53.349&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -1019,7 +1019,7 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:10.986&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.350&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Import PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
@@ -1050,7 +1050,7 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:10.990&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.352&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -1065,9 +1065,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-23T17:51:10.992&quot; lifespan=&quot;7ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-27T18:06:53.352&quot; lifespan=&quot;3ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@608f7180
+    test_DUKPT org.jpos.security.KeySerialNumber@4fca239d
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -1093,7 +1093,7 @@
     &lt;decrypted-pin&gt;9901&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;2016-11-23T17:51:10.996&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;2016-11-27T18:06:53.353&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -1102,7 +1102,7 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:10.998&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.355&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Import PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
@@ -1133,7 +1133,7 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:11.002&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.355&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -1148,9 +1148,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-23T17:51:11.005&quot; lifespan=&quot;10ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-27T18:06:53.356&quot; lifespan=&quot;3ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@2bc0e9ad
+    test_DUKPT org.jpos.security.KeySerialNumber@1e48021c
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -1176,7 +1176,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;2016-11-23T17:51:11.008&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;2016-11-27T18:06:53.356&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -1185,7 +1185,7 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:11.010&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.357&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Import PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
@@ -1216,7 +1216,7 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:11.014&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.358&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -1231,9 +1231,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-23T17:51:11.016&quot; lifespan=&quot;8ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-27T18:06:53.358&quot; lifespan=&quot;2ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@41130184
+    test_DUKPT org.jpos.security.KeySerialNumber@376292cd
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -1259,7 +1259,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;2016-11-23T17:51:11.019&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;2016-11-27T18:06:53.358&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -1268,7 +1268,7 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:11.021&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.359&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Import PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
@@ -1299,7 +1299,7 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:11.024&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.359&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -1314,9 +1314,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-23T17:51:11.026&quot; lifespan=&quot;7ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-27T18:06:53.359&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@1697de56
+    test_DUKPT org.jpos.security.KeySerialNumber@63279de2
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -1342,7 +1342,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;2016-11-23T17:51:11.030&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;2016-11-27T18:06:53.361&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -1351,7 +1351,7 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:11.034&quot; lifespan=&quot;3ms&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.363&quot; lifespan=&quot;2ms&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Import PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
@@ -1382,7 +1382,7 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:11.038&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.364&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -1397,9 +1397,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-23T17:51:11.040&quot; lifespan=&quot;11ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-27T18:06:53.364&quot; lifespan=&quot;4ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@d8fae75
+    test_DUKPT org.jpos.security.KeySerialNumber@7d6f8cd0
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -1425,7 +1425,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;2016-11-23T17:51:11.043&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;2016-11-27T18:06:53.365&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -1434,7 +1434,7 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:11.046&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.366&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Import PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
@@ -1465,7 +1465,7 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:11.051&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.366&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -1480,9 +1480,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-23T17:51:11.052&quot; lifespan=&quot;9ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-27T18:06:53.366&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@78688978
+    test_DUKPT org.jpos.security.KeySerialNumber@3e33d9
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -1508,7 +1508,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;2016-11-23T17:51:11.057&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;2016-11-27T18:06:53.367&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -1517,7 +1517,7 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:11.059&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.368&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Import PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
@@ -1548,7 +1548,7 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:11.063&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.368&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -1563,9 +1563,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-23T17:51:11.064&quot; lifespan=&quot;8ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-27T18:06:53.368&quot; lifespan=&quot;2ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@50a58d4d
+    test_DUKPT org.jpos.security.KeySerialNumber@5fa976b1
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -1591,7 +1591,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;2016-11-23T17:51:11.068&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;2016-11-27T18:06:53.369&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -1600,7 +1600,7 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:11.069&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.369&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Import PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
@@ -1631,7 +1631,7 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:11.073&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.370&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -1646,9 +1646,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-23T17:51:11.075&quot; lifespan=&quot;8ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-27T18:06:53.370&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@20296d2a
+    test_DUKPT org.jpos.security.KeySerialNumber@5e217898
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -1674,7 +1674,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;2016-11-23T17:51:11.078&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;2016-11-27T18:06:53.370&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -1683,7 +1683,7 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:11.080&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.371&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Import PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
@@ -1714,7 +1714,7 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:11.083&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.371&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -1729,9 +1729,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-23T17:51:11.085&quot; lifespan=&quot;7ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-27T18:06:53.371&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@744c2b24
+    test_DUKPT org.jpos.security.KeySerialNumber@34ee77ee
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -1757,7 +1757,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;2016-11-23T17:51:11.089&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;2016-11-27T18:06:53.373&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -1766,7 +1766,7 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:11.092&quot; lifespan=&quot;2ms&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.374&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Import PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
@@ -1797,7 +1797,7 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:11.096&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.375&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -1812,9 +1812,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-23T17:51:11.098&quot; lifespan=&quot;10ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-27T18:06:53.375&quot; lifespan=&quot;3ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@48534f9c
+    test_DUKPT org.jpos.security.KeySerialNumber@45bf2a51
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -1840,7 +1840,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;2016-11-23T17:51:11.104&quot; lifespan=&quot;3ms&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;2016-11-27T18:06:53.376&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -1849,7 +1849,7 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:11.106&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.377&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Import PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
@@ -1880,7 +1880,7 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:11.110&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.377&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -1895,9 +1895,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-23T17:51:11.112&quot; lifespan=&quot;11ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-27T18:06:53.377&quot; lifespan=&quot;2ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@34606c3e
+    test_DUKPT org.jpos.security.KeySerialNumber@51b7d0a9
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -1923,7 +1923,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;2016-11-23T17:51:11.115&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;2016-11-27T18:06:53.378&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -1932,7 +1932,7 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:11.117&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.378&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Import PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
@@ -1963,7 +1963,7 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:11.120&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.379&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -1978,9 +1978,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-23T17:51:11.122&quot; lifespan=&quot;7ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-27T18:06:53.379&quot; lifespan=&quot;2ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@5fcb07a5
+    test_DUKPT org.jpos.security.KeySerialNumber@48797bf
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -2006,7 +2006,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;2016-11-23T17:51:11.126&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;2016-11-27T18:06:53.379&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -2015,7 +2015,7 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:11.128&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.380&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Import PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
@@ -2046,7 +2046,7 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:11.132&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.381&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -2061,9 +2061,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-23T17:51:11.134&quot; lifespan=&quot;9ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-27T18:06:53.381&quot; lifespan=&quot;2ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@4acb1273
+    test_DUKPT org.jpos.security.KeySerialNumber@4391c1c6
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -2089,7 +2089,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;2016-11-23T17:51:11.139&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;2016-11-27T18:06:53.383&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -2098,7 +2098,7 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:11.141&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.384&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Import PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
@@ -2129,7 +2129,7 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:11.144&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.384&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -2144,9 +2144,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-23T17:51:11.146&quot; lifespan=&quot;7ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-27T18:06:53.384&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@18369b19
+    test_DUKPT org.jpos.security.KeySerialNumber@7f408647
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -2172,7 +2172,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;2016-11-23T17:51:11.149&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;2016-11-27T18:06:53.385&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -2181,7 +2181,7 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:11.151&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.386&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Import PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
@@ -2212,7 +2212,7 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:11.155&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.387&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -2227,9 +2227,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-23T17:51:11.157&quot; lifespan=&quot;8ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-27T18:06:53.387&quot; lifespan=&quot;2ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@2f8015bd
+    test_DUKPT org.jpos.security.KeySerialNumber@101d239e
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -2255,7 +2255,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;2016-11-23T17:51:11.160&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;2016-11-27T18:06:53.387&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -2264,7 +2264,7 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:11.162&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.388&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Import PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
@@ -2295,7 +2295,7 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:11.166&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.388&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -2310,9 +2310,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-23T17:51:11.168&quot; lifespan=&quot;8ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-27T18:06:53.388&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@2871c9c7
+    test_DUKPT org.jpos.security.KeySerialNumber@281f744d
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -2338,7 +2338,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;2016-11-23T17:51:11.172&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;2016-11-27T18:06:53.389&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -2347,7 +2347,7 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:11.174&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.389&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Import PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
@@ -2378,7 +2378,7 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:11.178&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.390&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -2393,9 +2393,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-23T17:51:11.180&quot; lifespan=&quot;8ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-27T18:06:53.390&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@3a3b1e30
+    test_DUKPT org.jpos.security.KeySerialNumber@654d1f79
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -2421,7 +2421,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;2016-11-23T17:51:11.183&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;2016-11-27T18:06:53.390&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -2430,7 +2430,7 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:11.185&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.391&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Import PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
@@ -2461,7 +2461,7 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:11.189&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.391&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -2476,9 +2476,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-23T17:51:11.191&quot; lifespan=&quot;8ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-27T18:06:53.392&quot; lifespan=&quot;2ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@16f9a43d
+    test_DUKPT org.jpos.security.KeySerialNumber@1e44cf29
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -2504,7 +2504,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;2016-11-23T17:51:11.194&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;2016-11-27T18:06:53.392&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -2513,7 +2513,7 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:11.196&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.393&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Import PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
@@ -2544,7 +2544,7 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:11.200&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.393&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -2559,9 +2559,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-23T17:51:11.202&quot; lifespan=&quot;8ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-27T18:06:53.393&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@39fb76a2
+    test_DUKPT org.jpos.security.KeySerialNumber@67bc0eac
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -2587,7 +2587,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;2016-11-23T17:51:11.205&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;2016-11-27T18:06:53.394&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -2596,7 +2596,7 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:11.207&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.395&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Import PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
@@ -2627,7 +2627,7 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:11.211&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.395&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -2642,9 +2642,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-23T17:51:11.213&quot; lifespan=&quot;8ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-27T18:06:53.395&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@1f62bfab
+    test_DUKPT org.jpos.security.KeySerialNumber@34d2a30a
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -2670,7 +2670,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;2016-11-23T17:51:11.217&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;2016-11-27T18:06:53.396&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -2679,7 +2679,7 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:11.218&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.396&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Import PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
@@ -2710,7 +2710,7 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:11.222&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.397&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -2725,9 +2725,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-23T17:51:11.227&quot; lifespan=&quot;11ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-27T18:06:53.400&quot; lifespan=&quot;5ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@7d4af8e9
+    test_DUKPT org.jpos.security.KeySerialNumber@39e9d43e
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -2753,7 +2753,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;2016-11-23T17:51:11.231&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;2016-11-27T18:06:53.400&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -2762,7 +2762,7 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:11.233&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.402&quot; lifespan=&quot;2ms&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Import PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
@@ -2793,7 +2793,7 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:11.237&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.402&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -2808,9 +2808,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-23T17:51:11.239&quot; lifespan=&quot;8ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-27T18:06:53.402&quot; lifespan=&quot;2ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@26496331
+    test_DUKPT org.jpos.security.KeySerialNumber@16c69ad
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -2836,7 +2836,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;2016-11-23T17:51:11.242&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;2016-11-27T18:06:53.403&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -2845,7 +2845,7 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:11.244&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.404&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Import PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
@@ -2876,7 +2876,7 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:11.249&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.405&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -2891,9 +2891,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-23T17:51:11.250&quot; lifespan=&quot;8ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-27T18:06:53.405&quot; lifespan=&quot;3ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@44e55f3c
+    test_DUKPT org.jpos.security.KeySerialNumber@622de42
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -2919,7 +2919,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;2016-11-23T17:51:11.254&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;2016-11-27T18:06:53.405&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -2928,7 +2928,7 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:11.256&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.406&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Import PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
@@ -2959,7 +2959,7 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:11.260&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.407&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -2974,9 +2974,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-23T17:51:11.262&quot; lifespan=&quot;8ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-27T18:06:53.407&quot; lifespan=&quot;2ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@4ef02fec
+    test_DUKPT org.jpos.security.KeySerialNumber@27c9e77f
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -3002,7 +3002,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;2016-11-23T17:51:11.266&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;2016-11-27T18:06:53.408&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -3011,7 +3011,7 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:11.268&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.409&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Import PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
@@ -3042,7 +3042,7 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:11.272&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.409&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -3057,9 +3057,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-23T17:51:11.274&quot; lifespan=&quot;9ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-27T18:06:53.410&quot; lifespan=&quot;3ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@64570b6b
+    test_DUKPT org.jpos.security.KeySerialNumber@50f68f9c
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -3085,7 +3085,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;2016-11-23T17:51:11.278&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;2016-11-27T18:06:53.410&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -3094,7 +3094,7 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:11.280&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.411&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Import PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
@@ -3125,7 +3125,7 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:11.283&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.412&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -3140,9 +3140,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-23T17:51:11.285&quot; lifespan=&quot;8ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-27T18:06:53.412&quot; lifespan=&quot;2ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@9eaac3b
+    test_DUKPT org.jpos.security.KeySerialNumber@3235a52e
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -3168,7 +3168,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;2016-11-23T17:51:11.289&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;2016-11-27T18:06:53.412&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -3177,7 +3177,7 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:11.292&quot; lifespan=&quot;2ms&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.415&quot; lifespan=&quot;3ms&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Import PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
@@ -3208,7 +3208,7 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:11.296&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.415&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -3223,9 +3223,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-23T17:51:11.297&quot; lifespan=&quot;9ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-27T18:06:53.415&quot; lifespan=&quot;3ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@67980e85
+    test_DUKPT org.jpos.security.KeySerialNumber@22f5ade4
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -3251,7 +3251,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;2016-11-23T17:51:11.300&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;2016-11-27T18:06:53.416&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -3260,7 +3260,7 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:11.303&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.417&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Import PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
@@ -3291,7 +3291,7 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:11.306&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.417&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -3306,9 +3306,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-23T17:51:11.308&quot; lifespan=&quot;8ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-27T18:06:53.418&quot; lifespan=&quot;3ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@2858c2d5
+    test_DUKPT org.jpos.security.KeySerialNumber@4a6f54da
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -3334,7 +3334,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;2016-11-23T17:51:11.312&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;2016-11-27T18:06:53.418&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -3343,7 +3343,7 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:11.314&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.419&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Import PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
@@ -3374,7 +3374,7 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:11.317&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.419&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -3389,9 +3389,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-23T17:51:11.319&quot; lifespan=&quot;8ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-27T18:06:53.420&quot; lifespan=&quot;2ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@740898e6
+    test_DUKPT org.jpos.security.KeySerialNumber@2e01a864
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -3417,7 +3417,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;2016-11-23T17:51:11.322&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;2016-11-27T18:06:53.420&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -3426,7 +3426,7 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:11.324&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.421&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Import PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
@@ -3457,7 +3457,7 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:11.327&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.421&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -3472,9 +3472,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-23T17:51:11.329&quot; lifespan=&quot;7ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-27T18:06:53.422&quot; lifespan=&quot;2ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@28df6928
+    test_DUKPT org.jpos.security.KeySerialNumber@3102645f
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -3500,7 +3500,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;2016-11-23T17:51:11.332&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;2016-11-27T18:06:53.422&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -3509,7 +3509,7 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:11.335&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.426&quot; lifespan=&quot;2ms&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Import PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
@@ -3540,7 +3540,7 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:11.339&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.426&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -3555,9 +3555,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-23T17:51:11.341&quot; lifespan=&quot;9ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-27T18:06:53.428&quot; lifespan=&quot;6ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@f94a690
+    test_DUKPT org.jpos.security.KeySerialNumber@3e977516
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -3583,7 +3583,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;2016-11-23T17:51:11.344&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;2016-11-27T18:06:53.430&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -3592,7 +3592,7 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:11.346&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.431&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Import PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
@@ -3623,7 +3623,7 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:11.350&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.432&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -3638,9 +3638,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-23T17:51:11.351&quot; lifespan=&quot;7ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-27T18:06:53.432&quot; lifespan=&quot;2ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@613493dd
+    test_DUKPT org.jpos.security.KeySerialNumber@eee3f9a
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -3666,7 +3666,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;2016-11-23T17:51:11.355&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;2016-11-27T18:06:53.438&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -3675,7 +3675,7 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:11.358&quot; lifespan=&quot;2ms&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.441&quot; lifespan=&quot;2ms&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Import PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
@@ -3706,7 +3706,7 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:11.362&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.447&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -3721,9 +3721,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-23T17:51:11.363&quot; lifespan=&quot;8ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-27T18:06:53.448&quot; lifespan=&quot;11ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@51cbf8b5
+    test_DUKPT org.jpos.security.KeySerialNumber@2d8fe4ab
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -3749,7 +3749,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;2016-11-23T17:51:11.367&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;2016-11-27T18:06:53.450&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -3758,7 +3758,7 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:11.371&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.456&quot; lifespan=&quot;4ms&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Import PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
@@ -3789,7 +3789,7 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:11.375&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.458&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -3804,9 +3804,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-23T17:51:11.377&quot; lifespan=&quot;10ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-27T18:06:53.459&quot; lifespan=&quot;9ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@28e4d8d
+    test_DUKPT org.jpos.security.KeySerialNumber@f8d4dd9
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -3832,7 +3832,7 @@
     &lt;decrypted-pin&gt;1234&lt;/decrypted-pin&gt;
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;KS&quot; at=&quot;2016-11-23T17:51:11.387&quot;&gt;
+&lt;log realm=&quot;KS&quot; at=&quot;2016-11-27T18:06:53.467&quot;&gt;
   &lt;get-key&gt;
     &lt;alias&gt;test-bdk&lt;/alias&gt;
     &lt;secure-des-key length=&quot;128&quot; type=&quot;BDK&quot; variant=&quot;0&quot; scheme=&quot;X&quot;&gt;
@@ -3841,7 +3841,7 @@
     &lt;/secure-des-key&gt;
   &lt;/get-key&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:11.389&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.470&quot; lifespan=&quot;2ms&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Import PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under Derived Unique Key&quot;&gt;
@@ -3872,7 +3872,7 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-23T17:51:11.393&quot;&gt;
+&lt;log realm=&quot;SSM&quot; at=&quot;2016-11-27T18:06:53.472&quot;&gt;
   &lt;s-m-operation&gt;
     &lt;command name=&quot;Decrypt PIN&quot;&gt;
       &lt;parameter name=&quot;PIN under LMK&quot;&gt;
@@ -3887,9 +3887,9 @@
     &lt;/result&gt;
   &lt;/s-m-operation&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-23T17:51:11.396&quot; lifespan=&quot;9ms&quot;&gt;
+&lt;log realm=&quot;SM Test&quot; at=&quot;2016-11-27T18:06:53.474&quot; lifespan=&quot;7ms&quot;&gt;
   &lt;info&gt;
-    test_DUKPT org.jpos.security.KeySerialNumber@2804db6a
+    test_DUKPT org.jpos.security.KeySerialNumber@a37a6fb
     &lt;key-serial-number&gt;
       &lt;base-key-id&gt;987654&lt;/base-key-id&gt;
       &lt;device-id&gt;3210&lt;/device-id&gt;
@@ -3926,7 +3926,7 @@
 <input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
 </label>
 </div>Generated by 
-<a href="http://www.gradle.org">Gradle 3.2.1</a> at Nov 23, 2016 5:52:24 PM</p>
+<a href="http://www.gradle.org">Gradle 3.2.1</a> at Nov 27, 2016 6:08:07 PM</p>
 </div>
 </div>
 </body>
