@@ -213,8 +213,9 @@ public class PGPHelper {
     }
 
     static InputStream getLicenseeStream() throws FileNotFoundException {
-        File l = new File (Q2.LICENSEE);
-        return l.canRead() ? new FileInputStream(l) : Q2.class.getClassLoader().getResourceAsStream(Q2.LICENSEE);
+        String lf = System.getProperty("LICENSEE");
+        File l = new File (lf != null ? lf : Q2.LICENSEE);
+        return l.canRead() && l.length() < 8192 ? new FileInputStream(l) : Q2.class.getClassLoader().getResourceAsStream(Q2.LICENSEE);
     }
     public static String getLicensee() throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
