@@ -44,8 +44,14 @@ public class ISOAmount
     public ISOAmount (int fieldNumber, int currencyCode, BigDecimal amount) throws ISOException {
         super ();
         setFieldNumber(fieldNumber);
-        this.amount = amount.setScale(ISOCurrency.getCurrency(currencyCode).getDecimals());
         this.currencyCode = currencyCode;
+        try {
+            this.amount = amount.setScale(ISOCurrency.getCurrency(currencyCode).getDecimals());
+        } catch (ArithmeticException e) {
+            throw new ISOException (
+              "rounding problem, amount=" + amount + " scale=" + ISOCurrency.getCurrency(currencyCode).getDecimals()
+            );
+        }
     }
     public Object getKey() {
         return fieldNumber;

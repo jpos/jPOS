@@ -199,4 +199,12 @@ public class ISOAmountTest {
             assertThat(e.getMessage(), is("For input string: \"X23\""));
         }
     }
+
+    @Test
+    public void testScaleConverstionArithmeticException() {
+        try {
+            ISOAmount amnt = new ISOAmount (4, 600, new BigDecimal ("12.34"));
+            fail("should raise ISOException");
+        } catch (ISOException ignored) { }
+    }
 }
