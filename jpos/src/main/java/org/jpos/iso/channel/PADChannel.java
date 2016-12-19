@@ -125,7 +125,6 @@ public class PADChannel extends BaseChannel {
         } finally {
             Logger.log (evt);
         }
-        Logger.log (evt);
         return m;
     }
     @Override
