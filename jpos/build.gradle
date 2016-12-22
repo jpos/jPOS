@@ -234,7 +234,7 @@ task installApp(type: Sync) {
 task viewTests (description: 'Open Test Reports') {
     doLast {
         Class.forName("java.awt.Desktop").newInstance().browse(
-            new File("${buildDir}/reports/tests", 'index.html').toURI())
+            new File("${buildDir}/reports/tests/test", 'index.html').toURI())
     }
 }
 
