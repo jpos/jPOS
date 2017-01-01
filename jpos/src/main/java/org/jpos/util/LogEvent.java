@@ -72,6 +72,9 @@ public class LogEvent {
     public String getTag() {
         return tag;
     }
+    public void setTag (String tag) {
+        this.tag = tag;
+    }
     public void addMessage (Object msg) {
         payLoad.add (msg);
     }
