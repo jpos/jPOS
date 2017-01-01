@@ -74,6 +74,9 @@ public class Profiler implements Loggeable {
     public long getElapsed() {
         return System.nanoTime() - start;
     }
+    public long getElapsedInMillis() {
+        return getElapsed() / TO_MILLIS;
+    }
     /**
      * @return parcial elapsed time since last reset
      */
