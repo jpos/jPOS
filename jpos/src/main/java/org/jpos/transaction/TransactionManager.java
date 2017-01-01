@@ -68,6 +68,7 @@ public class TransactionManager
     final List<TransactionStatusListener> statusListeners = new ArrayList<TransactionStatusListener>();
     boolean hasStatusListeners;
     boolean debug;
+    boolean debugContext;
     boolean profiler;
     boolean doRecover;
     boolean callSelectorOnAbort;
@@ -165,7 +166,6 @@ public class TransactionManager
         boolean abort = false;
         LogEvent evt = null;
         Profiler prof = null;
-        long startTime = 0L;
         boolean paused;
         Thread thread = Thread.currentThread();
         if (threads.size() < maxSessions) {
@@ -182,6 +182,7 @@ public class TransactionManager
             prof = null;
             paused = false;
             thread.setName (getName() + "-" + session + ":idle");
+            int action = -1;
             try {
                 if (hasStatusListeners)
                     notifyStatusListeners (session, TransactionStatusEvent.State.READY, id, "", null);
@@ -220,6 +221,7 @@ public class TransactionManager
                         members = pt.members();
                         iter    = pt.iterator();
                         abort   = pt.isAborting();
+                        evt     = pt.getLogEvent();
                         prof    = pt.getProfiler();
                         if (prof != null)
                             prof.reenable();
@@ -230,12 +232,11 @@ public class TransactionManager
                 if (pt == null) {
                     int running = getRunningSessions();
                     if (maxActiveSessions > 0 && running >= maxActiveSessions) {
-                        evt = getLog().createLogEvent ("warn",
+                        getLog().warn (
                             Thread.currentThread().getName() 
                             + ": emergency retry, running-sessions=" + running 
                             + ", max-active-sessions=" + maxActiveSessions
                         );
-                        evt.addMessage (obj);
                         psp.out (RETRY_QUEUE, obj, retryTimeout);
                         checkRetryTask();
                         continue;
@@ -246,20 +247,24 @@ public class TransactionManager
                     iter = getParticipants (DEFAULT_GROUP).iterator();
                 }
                 if (debug) {
-                    evt = getLog().createLogEvent ("debug",
-                        Thread.currentThread().getName() 
-                        + ":" + Long.toString(id) +
-                        (pt != null ? " [resuming]" : "")
-                    );
+                    if (evt == null) {
+                        evt = getLog().createLogEvent("debug",
+                          Thread.currentThread().getName()
+                            + ":" + Long.toString(id) +
+                            (pt != null ? " [resuming]" : "")
+                        );
+                        if (debugContext) {
+                            evt.addMessage (context);
+                        }
+                    }
                     if (prof == null)
                         prof = new Profiler();
                     else
                         prof.checkPoint("resume");
-                    startTime = System.currentTimeMillis();
                 }
                 snapshot (id, context, PREPARING);
                 setThreadLocal(id, context);
-                int action = prepare (session, id, context, members, iter, abort, evt, prof);
+                action = prepare (session, id, context, members, iter, abort, evt, prof);
                 removeThreadLocal();
                 switch (action) {
                     case PAUSE:
@@ -312,17 +317,25 @@ public class TransactionManager
                         evt = getLog().createLogEvent ("warn");
                     evt.addMessage("WARNING: IN-TRANSIT TOO HIGH");
                 }
-                if (evt != null) {
+                if (evt != null && (action == PREPARED || action == ABORTED)) {
+                    switch (action) {
+                        case PREPARED :
+                            evt.setTag("commit");
+                            break;
+                        case ABORTED :
+                            evt.setTag ("abort");
+                            break;
+                    }
                     evt.addMessage (
-                        String.format ("in-transit=%d, head=%d, tail=%d, outstanding=%d, active-sessions=%d/%d, %s, elapsed=%dms",
+                        String.format ("  in-transit=%d, head=%d, tail=%d, outstanding=%d, active-sessions=%d/%d, %s, elapsed=%dms",
                             getInTransit(), head, tail, getOutstandingTransactions(),
                             getActiveSessions(), maxSessions,
-                            tps.toString(),
-                                System.currentTimeMillis() - startTime
+                            tps.toString(),  prof.getElapsedInMillis()
                         )
                     );
                     if (prof != null)
                         evt.addMessage (prof);
+
                     Logger.log (evt);
                     evt = null;
                 }
@@ -352,10 +365,11 @@ public class TransactionManager
         throws ConfigurationException 
     {
         super.setConfiguration (cfg);
-        debug = cfg.getBoolean ("debug");
+        debug = cfg.getBoolean ("debug", true);
+        debugContext = cfg.getBoolean ("debug-context", debug);
         profiler = cfg.getBoolean ("profiler", debug); 
-        if (profiler)
-            debug = true; // profiler needs debug
+        if (profiler || debugContext)
+            debug = true; // profiler and/or debugContext needs debug
         doRecover = cfg.getBoolean ("recover", true);
         retryInterval = cfg.getLong ("retry-interval", retryInterval);
         retryTimeout  = cfg.getLong ("retry-timeout", retryTimeout);
@@ -544,7 +558,7 @@ public class TransactionManager
                 if (evt != null) {
                     evt.addMessage ("        prepare: "
                             + p.getClass().getName() 
-                            + (abort ? " ABORTED" : "")
+                            + (abort ? " ABORTED" : " PREPARED")
                             + (retry ? " RETRY" : "")
                             + (pause ? " PAUSE" : "")
                             + ((action & READONLY) == READONLY ? " READONLY" : "")
@@ -597,7 +611,7 @@ public class TransactionManager
                     if (t > 0)
                         expirationMonitor = new PausedMonitor (pausable);
                     PausedTransaction pt = new PausedTransaction (
-                        this, id, members, iter, abort, expirationMonitor, prof
+                        this, id, members, iter, abort, expirationMonitor, prof, evt
                     );
                     pausable.setPausedTransaction (pt);
                     if (expirationMonitor != null) {
@@ -894,9 +908,20 @@ public class TransactionManager
     }
 
     @Override
+    public boolean getDebugContext() {
+        return debugContext;
+    }
+
+    @Override
+    public void setDebugContext (boolean debugContext) {
+        this.debugContext = debugContext;
+    }
+
+    @Override
     public boolean getDebug() {
         return debug;
     }
+
 
     @Override
     public int getActiveSessions() {

@@ -31,7 +31,7 @@ public class TestRetryParticipant implements TransactionParticipant {
             if (ii.intValue() > 0) {
                 ctx.log ("retry " + ii.intValue());
                 ctx.put ("RETRY", Integer.valueOf(ii.intValue()-1));
-                return RETRY;
+                return PREPARED | RETRY;
             }
         }
         return PREPARED | READONLY | NO_JOIN;

@@ -30,7 +30,7 @@ public class TransactionManagerTestCase extends TestCase {
     public static String QUEUE = "TXNMGRTEST";
 
     public void setUp () throws Exception {
-        sp = SpaceFactory.getSpace();
+        sp = SpaceFactory.getSpace("tspace:txnmgrtest");
         q2 = new Q2("build/resources/test/org/jpos/transaction");
         q2.start();
     }
@@ -46,7 +46,7 @@ public class TransactionManagerTestCase extends TestCase {
         sp.out (QUEUE, ctx);
     }
     public void tearDown() throws Exception {
-        Thread.sleep (3000); // let the thing run
+        Thread.sleep (5000); // let the thing run
         q2.stop();
     }
 }

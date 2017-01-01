@@ -27,6 +27,8 @@ public interface TransactionManagerMBean extends QBeanSupportMBean {
     long getTail();
     void setDebug(boolean debug);
     boolean getDebug();
+    void setDebugContext(boolean debugContext);
+    boolean getDebugContext();
     int getOutstandingTransactions();
     int getActiveSessions();
     String getTPSAsString();

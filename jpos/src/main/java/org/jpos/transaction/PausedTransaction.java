@@ -18,6 +18,7 @@
 
 package org.jpos.transaction;
 
+import org.jpos.util.LogEvent;
 import org.jpos.util.Loggeable;
 import org.jpos.util.Profiler;
 
@@ -35,10 +36,11 @@ public class PausedTransaction implements Loggeable {
     private boolean resumed;
     private TimerTask expirationMonitor;
     private Profiler prof;
+    private LogEvent evt;
     public PausedTransaction (
             TransactionManager txnmgr, long id, List<TransactionParticipant> members
            ,Iterator<TransactionParticipant> iter, boolean aborting
-           ,TimerTask expirationMonitor, Profiler prof)
+           ,TimerTask expirationMonitor, Profiler prof, LogEvent evt)
     {
         super();
         this.txnmgr = txnmgr;
@@ -48,6 +50,7 @@ public class PausedTransaction implements Loggeable {
         this.aborting = aborting;
         this.expirationMonitor = expirationMonitor;
         this.prof = prof;
+        this.evt = evt;
     }
     public long id() {
         return id;
@@ -81,6 +84,8 @@ public class PausedTransaction implements Loggeable {
     public Profiler getProfiler() {
         return prof;
     }
+    public LogEvent getLogEvent() { return evt; }
+
     public synchronized void cancelExpirationMonitor() {
         if (expirationMonitor != null)
             expirationMonitor.cancel();

@@ -3,7 +3,7 @@
  <property name="sessions"         value="4" />
  <property name="input-space" value="tspace:txnmgrtest" />
  <property name="persistent-space" value="je:txnmgrtest:target/test-classes/txnmgrtest" />
- <property name="debug"            value="true" />
+ <property name="debug-context"            value="true" />
  <property name="retry-interval"   value="250" />
  <property name="pause-timeout"   value="2000" />
 
@@ -40,7 +40,10 @@
    <property name="trace" value="Joined Participant 3" />
   </participant>
  </participant>
+ <!--
+ we use 'debug-context' now
  <participant class="org.jpos.transaction.participant.Debug" logger="Q2" />
+ -->
 
  <group name="GroupA">
   <participant class="org.jpos.transaction.participant.Trace" logger="Q2">
