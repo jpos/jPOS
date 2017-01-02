@@ -517,7 +517,7 @@ public class TransactionManagerTest {
     public void testSetConfiguration() throws Throwable {
         Configuration cfg = new SimpleConfiguration();
         transactionManager.setConfiguration(cfg);
-        assertFalse("transactionManager.debug", transactionManager.debug);
+        assertTrue("transactionManager.debug", transactionManager.debug);
         assertSame("transactionManager.getConfiguration()", cfg, transactionManager.getConfiguration());
         assertEquals("transactionManager.pauseTimeout", 0L, transactionManager.pauseTimeout);
         assertEquals("transactionManager.retryInterval", 5000L, transactionManager.retryInterval);
