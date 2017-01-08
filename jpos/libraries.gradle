@@ -21,8 +21,8 @@ ext {
             'org.hamcrest:hamcrest-library:1.3'
         ],
         sshd: 'org.apache.sshd:sshd-core:1.3.0',
-        slf4j_api: "org.slf4j:slf4j-api:1.7.21",
-        slf4j_nop: "org.slf4j:slf4j-nop:1.7.21"
+        slf4j_api: "org.slf4j:slf4j-api:1.7.22",
+        slf4j_nop: "org.slf4j:slf4j-nop:1.7.22"
     ]
 }
 
