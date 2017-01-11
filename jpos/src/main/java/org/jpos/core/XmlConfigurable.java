@@ -20,13 +20,15 @@ package org.jpos.core;
 
 import org.jdom2.Element;
 
+import java.io.Serializable;
+
 /**
  * Object is Configurable by an Xml Element
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
  * @version $Revision$ $Date$
  * @since jPOS 1.4.9
  */
-public interface XmlConfigurable {
+public interface XmlConfigurable extends Serializable {
    /**
     * @param e Configuration element
     * @throws ConfigurationException on error

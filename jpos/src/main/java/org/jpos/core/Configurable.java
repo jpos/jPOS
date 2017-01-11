@@ -19,13 +19,15 @@
 package org.jpos.core;
 
 
+import java.io.Serializable;
+
 /**
  * Object is Configurable
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
  * @version $Revision$ $Date$
  * @since jPOS 1.2
  */
-public interface Configurable {
+public interface Configurable extends Serializable {
    /**
     * @param cfg Configuration object
     * @throws ConfigurationException
