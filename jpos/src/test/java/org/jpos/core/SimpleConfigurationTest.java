@@ -454,8 +454,7 @@ public class SimpleConfigurationTest {
     public void testSerializable() throws Throwable {
         SimpleConfiguration cfg = new SimpleConfiguration();
         cfg.put ("A", "The Quick Brown Fox Jumps Over The Lazy Dog");
-        byte[] b = Serializer.serialize (cfg);
-        Configuration cfg1 = (Configuration) Serializer.deserialize(b);
+        Configuration cfg1 = Serializer.serializeDeserialize(cfg);
         assertEquals("cfg.A should equal cfg1.A", cfg.get("A"), cfg1.get("A"));
         assertEquals ("cfg should equal cfg1", cfg, cfg1);
     }

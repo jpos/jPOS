@@ -32,5 +32,11 @@ public class Serializer {
         ObjectInputStream is = new ObjectInputStream(bais);
         return is.readObject();
     }
+    @SuppressWarnings("unchecked")
+    public static <T> T deserialize (byte[] b, Class<T> clazz) throws IOException, ClassNotFoundException {
+        return (T) deserialize(b);
+    }
+    public static <T> T serializeDeserialize (T obj) throws IOException, ClassNotFoundException {
+        return (T) deserialize (serialize(obj));
+    }
 }
-
