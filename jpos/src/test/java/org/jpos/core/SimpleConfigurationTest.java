@@ -18,6 +18,7 @@
 
 package org.jpos.core;
 
+import static org.jpos.util.Serializer.serialize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -31,6 +32,8 @@ import java.util.Properties;
 
 // import junitx.util.PrivateAccessor;
 
+import org.jpos.iso.ISOUtil;
+import org.jpos.util.Serializer;
 import org.junit.Test;
 
 @SuppressWarnings("unchecked")
@@ -445,5 +448,15 @@ public class SimpleConfigurationTest {
         } catch (NullPointerException ex) {
             assertNull("ex.getMessage()", ex.getMessage());
         }
+    }
+
+    @Test
+    public void testSerializable() throws Throwable {
+        SimpleConfiguration cfg = new SimpleConfiguration();
+        cfg.put ("A", "The Quick Brown Fox Jumps Over The Lazy Dog");
+        byte[] b = Serializer.serialize (cfg);
+        Configuration cfg1 = (Configuration) Serializer.deserialize(b);
+        assertEquals("cfg.A should equal cfg1.A", cfg.get("A"), cfg1.get("A"));
+        assertEquals ("cfg should equal cfg1", cfg, cfg1);
     }
 }

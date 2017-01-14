@@ -21,6 +21,7 @@ package org.jpos.core;
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -28,7 +29,7 @@ import java.util.*;
  * @version $Id$
  * @since jPOS 1.1
  */
-public class SimpleConfiguration implements Configuration {
+public class SimpleConfiguration implements Configuration, Serializable {
     private Properties props;
 
     public SimpleConfiguration () {
@@ -152,4 +153,26 @@ public class SimpleConfiguration implements Configuration {
     public Set<String> keySet() {
         return props.stringPropertyNames();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SimpleConfiguration that = (SimpleConfiguration) o;
+        return Objects.equals(props, that.props);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(props);
+    }
+
+    @Override
+    public String toString() {
+        return "SimpleConfiguration{" +
+          "props=" + props +
+          '}';
+    }
+
+    private static final long serialVersionUID = -6361797037366246968L;
 }
