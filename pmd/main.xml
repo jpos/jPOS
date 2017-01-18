@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pmd version="5.5.1" timestamp="2017-01-18T18:40:58.310">
+<pmd version="5.5.1" timestamp="2017-01-18T19:33:12.682">
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/Connector.java">
 <violation beginline="79" endline="79" begincolumn="27" endcolumn="36" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.iso" class="Connector" method="setConfiguration" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
 Avoid using java.lang.ThreadGroup; it is not thread safe
