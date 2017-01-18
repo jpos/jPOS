@@ -22,6 +22,7 @@ import org.jpos.iso.ISOUtil;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.internal.matchers.Matches;
 
@@ -133,6 +134,7 @@ public class ThreadPoolTest {
             assertThat(t.getName(), new Matches("ThreadPool.PooledThread-\\d+-(running|idle)"));
     }
 
+    @Ignore
     @Test
     public void testConcurrentThreadAllocation() throws Throwable {
         ThreadPool pool = new ThreadPool(1, 200, "Test-ThreadPool");
