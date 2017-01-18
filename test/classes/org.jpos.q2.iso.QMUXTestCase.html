@@ -41,7 +41,7 @@
 </td>
 <td>
 <div class="infoBox" id="duration">
-<div class="counter">20.113s</div>
+<div class="counter">20.118s</div>
 <p>duration</p>
 </div>
 </td>
@@ -66,6 +66,9 @@
 <li>
 <a href="#tab1">Standard output</a>
 </li>
+<li>
+<a href="#tab2">Standard error</a>
+</li>
 </ul>
 <div id="tab0" class="tab">
 <h2>Tests</h2>
@@ -79,7 +82,7 @@
 </thead>
 <tr>
 <td class="success">testAnsweredMessage</td>
-<td>7.103s</td>
+<td>7.105s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
@@ -89,7 +92,7 @@
 </tr>
 <tr>
 <td class="success">testMTIMapping</td>
-<td>6.003s</td>
+<td>6.006s</td>
 <td class="success">passed</td>
 </tr>
 </table>
@@ -97,14 +100,14 @@
 <div id="tab1" class="tab">
 <h2>Standard output</h2>
 <span class="code">
-<pre>&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-01-15T20:41:31.946&quot;&gt;
+<pre>&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-01-18T17:31:35.668&quot;&gt;
   &lt;info&gt;
     Q2 started, deployDir=/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-01-15T20:41:31.949&quot; lifespan=&quot;3ms&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-01-18T17:31:35.670&quot; lifespan=&quot;2ms&quot;&gt;
   &lt;version&gt;
-    jPOS 2.1.0-SNAPSHOT detached/ef75c01 (2017-01-15 20:39:22 UTC) 
+    jPOS 2.1.0-SNAPSHOT detached/7e8e917 (2017-01-18 17:29:26 UTC) 
 
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA1
@@ -127,49 +130,49 @@ q9ulRPEqH9NR79619lNKVUkE206dVlXo7xHmJS1QZy5v/GT66xBxyDVfTduPFXk=
 
   &lt;/version&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-01-15T20:41:31.957&quot; lifespan=&quot;3ms&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-01-18T17:31:35.673&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;info&gt;
     deploy: /home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/20_mux.xml
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-01-15T20:41:31.963&quot; lifespan=&quot;5ms&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-01-18T17:31:35.680&quot; lifespan=&quot;7ms&quot;&gt;
   &lt;info&gt;
     deploy: /home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/99_sysmon.xml
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2017-01-15T20:41:31.964&quot;&gt;
+&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2017-01-18T17:31:35.680&quot;&gt;
   &lt;info&gt;
     Starting SystemMonitor
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2017-01-15T20:41:31.965&quot;&gt;
+&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2017-01-18T17:31:35.681&quot;&gt;
   &lt;info&gt;
                OS: Linux (3.13.0-103-generic)
-     process name: 2352@testing-gce-a2386be7-05f7-45b3-ac79-0d3359ea2d2b
-             host: testing-gce-a2386be7-05f7-45b3-ac79-0d3359ea2d2b/127.0.1.1
+     process name: 2631@testing-gce-98cbe5c6-e728-421f-99cc-6e6f39d208ad
+             host: testing-gce-98cbe5c6-e728-421f-99cc-6e6f39d208ad/127.0.1.1
               cwd: /home/travis/build/jpos/jPOS/jpos
-       free space: 22.8 GiB
-     usable space: 21.5 GiB
-          version: 2.1.0-SNAPSHOT (ef75c01)
-         instance: 77977c38-4511-47c9-be14-3f52123026a4
-           uptime: 00:00:00.024 (0.920000)
+       free space: 22.7 GiB
+     usable space: 21.4 GiB
+          version: 2.1.0-SNAPSHOT (7e8e917)
+         instance: 6b4059ce-59ce-43ed-aafe-94e85217b6d9
+           uptime: 00:00:00.017 (0.910000)
        processors: 2
            drift : 0
-    memory(t/u/f): 725/415/309
+    memory(t/u/f): 684/240/443
          encoding: UTF-8
          timezone: Etc/UTC (Coordinated Universal Time) Z
     watch service: sun.nio.fs.LinuxWatchService
-            clock: 1484512891 2017-01-15T20:41:31.965Z
-     thread count: 50
-     peak threads: 146
-     user threads: 47
+            clock: 1484760695 2017-01-18T17:31:35.682Z
+     thread count: 150
+     peak threads: 246
+     user threads: 147
             Thread[Reference Handler,10,system]
             Thread[Finalizer,8,system]
             Thread[Signal Dispatcher,9,system]
             Thread[main,5,main]
             Thread[Test worker,5,main]
-            Thread[/127.0.0.1:57046 to /127.0.0.1:36117 workers Thread 2,5,main]
-            Thread[/127.0.0.1:57046 to /127.0.0.1:36117 workers Thread 3,5,main]
+            Thread[/127.0.0.1:48642 to /127.0.0.1:58980 workers Thread 2,5,main]
+            Thread[/127.0.0.1:48642 to /127.0.0.1:58980 workers Thread 3,5,main]
             Thread[pool-1-thread-1,5,main]
             Thread[Timer-0,5,main]
             Thread[INCompressor,5,main]
@@ -184,7 +187,7 @@ q9ulRPEqH9NR79619lNKVUkE206dVlXo7xHmJS1QZy5v/GT66xBxyDVfTduPFXk=
             Thread[Timer-4,5,main]
             Thread[Timer-5,5,main]
             Thread[Timer-6,5,main]
-            Thread[Q2-77977c38-4511-47c9-be14-3f52123026a4,5,main]
+            Thread[Q2-6b4059ce-59ce-43ed-aafe-94e85217b6d9,5,main]
             Thread[Thread-77,5,main]
             Thread[SystemMonitor,5,main]
             Thread[ThreadPool.PooledThread-0-idle,5,ThreadPool-0]
@@ -199,6 +202,106 @@ q9ulRPEqH9NR79619lNKVUkE206dVlXo7xHmJS1QZy5v/GT66xBxyDVfTduPFXk=
             Thread[ThreadPool.PooledThread-10,5,ThreadPool-8]
             Thread[ThreadPool.PooledThread-11,5,ThreadPool-9]
             Thread[ThreadPool.PooledThread-12,5,ThreadPool-9]
+            Thread[Test-ThreadPool.PooledThread-13-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-14-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-15-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-16-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-17-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-18-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-19-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-20-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-21-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-22-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-23-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-24-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-25-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-26-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-27-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-28-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-29-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-30-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-31-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-32-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-33-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-34-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-35-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-36-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-37-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-38-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-39-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-40-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-41-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-42-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-43-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-44-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-45-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-46-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-47-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-48-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-49-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-50-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-51-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-52-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-53-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-54-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-55-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-56-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-57-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-58-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-59-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-60-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-61-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-62-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-63-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-64-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-65-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-66-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-67-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-68-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-69-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-70-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-71-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-72-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-73-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-74-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-75-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-76-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-77-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-78-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-79-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-80-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-81-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-82-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-83-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-84-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-85-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-86-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-87-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-88-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-89-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-90-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-91-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-92-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-93-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-94-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-95-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-96-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-97-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-98-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-99-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-100-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-101-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-102-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-103-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-104-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-105-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-106-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-107-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-108-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-109-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-110-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-111-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-112-running,5,Test-ThreadPool-10]
             Thread[ThreadPool.PooledThread-113-idle,5,ThreadPool-11]
             Thread[ThreadPool.PooledThread-114-idle,5,ThreadPool-11]
             Thread[ThreadPool.PooledThread-115,5,ThreadPool-12]
@@ -239,22 +342,22 @@ q9ulRPEqH9NR79619lNKVUkE206dVlXo7xHmJS1QZy5v/GT66xBxyDVfTduPFXk=
       tspace:default: org.jpos.space.TSpace
         &lt;key count='1'&gt;file:build/resources/test/org/jpos/util/fsd-base.xml&lt;/key&gt;
         &lt;key count='1'&gt;file:build/resources/test/org/jpos/util/fsd-03.xml&lt;/key&gt;
-        &lt;key count='1'&gt;$TAILLOCK.1455993300&lt;/key&gt;
-        &lt;key count='1'&gt;1238590697&lt;/key&gt;
-        &lt;key count='1'&gt;1099846245|null|null&lt;/key&gt;
+        &lt;key count='1'&gt;$TAILLOCK.802543948&lt;/key&gt;
         &lt;key count='1'&gt;file:build/resources/test/org/jpos/util/msg-base.xml&lt;/key&gt;
+        &lt;key count='1'&gt;922167379&lt;/key&gt;
         &lt;key count='1'&gt;file:build/resources/test/org/jpos/util/msg-prop-axx.xml&lt;/key&gt;
         &lt;key count='1'&gt;file:build/resources/test/org/jpos/util/eom-base.xml&lt;/key&gt;
-        &lt;key count='1'&gt;2092013648&lt;/key&gt;
-        &lt;key count='1'&gt;321843815&lt;/key&gt;
         &lt;key count='1'&gt;file:build/resources/test/org/jpos/util/msgDS-base.xml&lt;/key&gt;
         &lt;key count='1'&gt;file:build/resources/test/org/jpos/util/DSmsg-base.xml&lt;/key&gt;
         &lt;key count='1'&gt;test-base.xml&lt;/key&gt;
         &lt;key count='1'&gt;file:build/resources/test/org/jpos/util/msg-prop-base.xml&lt;/key&gt;
-        &lt;key count='1'&gt;1617305996|null|null&lt;/key&gt;
         &lt;key count='1'&gt;file:build/resources/test/org/jpos/util/msg-separator-base.xml&lt;/key&gt;
-        &lt;key count='1'&gt;1668294358|null|null&lt;/key&gt;
-        &lt;key count='1'&gt;$TAILLOCK.1892684984&lt;/key&gt;
+        &lt;key count='1'&gt;1412854212|null|null&lt;/key&gt;
+        &lt;key count='1'&gt;625664438|null|null&lt;/key&gt;
+        &lt;key count='1'&gt;1645443861&lt;/key&gt;
+        &lt;key count='1'&gt;$TAILLOCK.1033009245&lt;/key&gt;
+        &lt;key count='1'&gt;1247381792|null|null&lt;/key&gt;
+        &lt;key count='1'&gt;1924125905&lt;/key&gt;
         &lt;key count='1'&gt;jar:org/jpos/util/DSmsg-base.xml&lt;/key&gt;
         &lt;key count='1'&gt;file:build/resources/test/org/jpos/util/fsd-99.xml&lt;/key&gt;
          key-count: 20
@@ -297,49 +400,49 @@ SpaceName: org.jpos.space.TSpace
       logger.testXMLPackagerName: org.jpos.util.Logger
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-01-15T20:41:36.946&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-01-18T17:31:40.669&quot;&gt;
   &lt;info&gt;
     shutting down
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-01-15T20:41:36.946&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-01-18T17:31:40.670&quot;&gt;
   &lt;trace&gt;
     undeploying:/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/99_sysmon.xml
   &lt;/trace&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2017-01-15T20:41:36.946&quot;&gt;
+&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2017-01-18T17:31:40.670&quot;&gt;
   &lt;info&gt;
     Stopping SystemMonitor
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-01-15T20:41:36.946&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-01-18T17:31:40.670&quot;&gt;
   &lt;info&gt;
     undeployed:/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/99_sysmon.xml
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-01-15T20:41:36.946&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-01-18T17:31:40.670&quot;&gt;
   &lt;trace&gt;
     undeploying:/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/20_mux.xml
   &lt;/trace&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-01-15T20:41:36.946&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-01-18T17:31:40.671&quot;&gt;
   &lt;info&gt;
     undeployed:/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/20_mux.xml
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-01-15T20:41:36.947&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-01-18T17:31:40.671&quot;&gt;
   &lt;trace&gt;
     undeploying:/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/00_logger.xml
   &lt;/trace&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-01-15T20:41:38.953&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-01-18T17:31:42.676&quot;&gt;
   &lt;info&gt;
     Q2 started, deployDir=/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-01-15T20:41:38.956&quot; lifespan=&quot;3ms&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-01-18T17:31:42.679&quot; lifespan=&quot;2ms&quot;&gt;
   &lt;version&gt;
-    jPOS 2.1.0-SNAPSHOT detached/ef75c01 (2017-01-15 20:39:22 UTC) 
+    jPOS 2.1.0-SNAPSHOT detached/7e8e917 (2017-01-18 17:29:26 UTC) 
 
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA1
@@ -362,49 +465,49 @@ q9ulRPEqH9NR79619lNKVUkE206dVlXo7xHmJS1QZy5v/GT66xBxyDVfTduPFXk=
 
   &lt;/version&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-01-15T20:41:38.961&quot; lifespan=&quot;3ms&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-01-18T17:31:42.681&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;info&gt;
     deploy: /home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/20_mux.xml
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-01-15T20:41:38.962&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-01-18T17:31:42.682&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;info&gt;
     deploy: /home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/99_sysmon.xml
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2017-01-15T20:41:38.963&quot;&gt;
+&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2017-01-18T17:31:42.682&quot;&gt;
   &lt;info&gt;
     Starting SystemMonitor
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2017-01-15T20:41:38.966&quot; lifespan=&quot;3ms&quot;&gt;
+&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2017-01-18T17:31:42.685&quot; lifespan=&quot;2ms&quot;&gt;
   &lt;info&gt;
                OS: Linux (3.13.0-103-generic)
-     process name: 2352@testing-gce-a2386be7-05f7-45b3-ac79-0d3359ea2d2b
-             host: testing-gce-a2386be7-05f7-45b3-ac79-0d3359ea2d2b/127.0.1.1
+     process name: 2631@testing-gce-98cbe5c6-e728-421f-99cc-6e6f39d208ad
+             host: testing-gce-98cbe5c6-e728-421f-99cc-6e6f39d208ad/127.0.1.1
               cwd: /home/travis/build/jpos/jPOS/jpos
-       free space: 22.8 GiB
-     usable space: 21.5 GiB
-          version: 2.1.0-SNAPSHOT (ef75c01)
-         instance: 55c467d7-c2d2-4021-9f6c-b9523fdcc37b
-           uptime: 00:00:00.017 (0.850000)
+       free space: 22.7 GiB
+     usable space: 21.4 GiB
+          version: 2.1.0-SNAPSHOT (7e8e917)
+         instance: e1abc299-e8d0-4d21-8fa7-6bbf439dee59
+           uptime: 00:00:00.014 (0.770000)
        processors: 2
            drift : 0
-    memory(t/u/f): 725/420/305
+    memory(t/u/f): 684/244/439
          encoding: UTF-8
          timezone: Etc/UTC (Coordinated Universal Time) Z
     watch service: sun.nio.fs.LinuxWatchService
-            clock: 1484512898 2017-01-15T20:41:38.967Z
-     thread count: 50
-     peak threads: 146
-     user threads: 47
+            clock: 1484760702 2017-01-18T17:31:42.685Z
+     thread count: 150
+     peak threads: 246
+     user threads: 147
             Thread[Reference Handler,10,system]
             Thread[Finalizer,8,system]
             Thread[Signal Dispatcher,9,system]
             Thread[main,5,main]
             Thread[Test worker,5,main]
-            Thread[/127.0.0.1:57046 to /127.0.0.1:36117 workers Thread 2,5,main]
-            Thread[/127.0.0.1:57046 to /127.0.0.1:36117 workers Thread 3,5,main]
+            Thread[/127.0.0.1:48642 to /127.0.0.1:58980 workers Thread 2,5,main]
+            Thread[/127.0.0.1:48642 to /127.0.0.1:58980 workers Thread 3,5,main]
             Thread[pool-1-thread-1,5,main]
             Thread[Timer-0,5,main]
             Thread[INCompressor,5,main]
@@ -419,7 +522,7 @@ q9ulRPEqH9NR79619lNKVUkE206dVlXo7xHmJS1QZy5v/GT66xBxyDVfTduPFXk=
             Thread[Timer-4,5,main]
             Thread[Timer-5,5,main]
             Thread[Timer-6,5,main]
-            Thread[Q2-55c467d7-c2d2-4021-9f6c-b9523fdcc37b,5,main]
+            Thread[Q2-e1abc299-e8d0-4d21-8fa7-6bbf439dee59,5,main]
             Thread[Thread-79,5,main]
             Thread[SystemMonitor,5,main]
             Thread[ThreadPool.PooledThread-0-idle,5,ThreadPool-0]
@@ -434,6 +537,106 @@ q9ulRPEqH9NR79619lNKVUkE206dVlXo7xHmJS1QZy5v/GT66xBxyDVfTduPFXk=
             Thread[ThreadPool.PooledThread-10,5,ThreadPool-8]
             Thread[ThreadPool.PooledThread-11,5,ThreadPool-9]
             Thread[ThreadPool.PooledThread-12,5,ThreadPool-9]
+            Thread[Test-ThreadPool.PooledThread-13-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-14-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-15-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-16-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-17-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-18-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-19-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-20-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-21-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-22-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-23-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-24-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-25-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-26-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-27-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-28-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-29-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-30-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-31-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-32-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-33-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-34-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-35-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-36-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-37-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-38-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-39-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-40-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-41-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-42-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-43-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-44-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-45-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-46-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-47-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-48-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-49-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-50-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-51-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-52-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-53-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-54-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-55-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-56-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-57-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-58-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-59-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-60-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-61-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-62-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-63-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-64-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-65-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-66-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-67-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-68-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-69-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-70-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-71-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-72-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-73-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-74-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-75-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-76-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-77-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-78-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-79-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-80-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-81-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-82-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-83-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-84-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-85-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-86-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-87-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-88-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-89-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-90-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-91-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-92-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-93-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-94-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-95-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-96-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-97-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-98-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-99-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-100-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-101-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-102-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-103-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-104-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-105-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-106-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-107-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-108-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-109-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-110-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-111-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-112-running,5,Test-ThreadPool-10]
             Thread[ThreadPool.PooledThread-113-idle,5,ThreadPool-11]
             Thread[ThreadPool.PooledThread-114-idle,5,ThreadPool-11]
             Thread[ThreadPool.PooledThread-115,5,ThreadPool-12]
@@ -474,7 +677,7 @@ q9ulRPEqH9NR79619lNKVUkE206dVlXo7xHmJS1QZy5v/GT66xBxyDVfTduPFXk=
       tspace:default: org.jpos.space.TSpace
         &lt;key count='1'&gt;file:build/resources/test/org/jpos/util/fsd-base.xml&lt;/key&gt;
         &lt;key count='1'&gt;file:build/resources/test/org/jpos/util/fsd-03.xml&lt;/key&gt;
-        &lt;key count='1'&gt;$TAILLOCK.1455993300&lt;/key&gt;
+        &lt;key count='1'&gt;$TAILLOCK.802543948&lt;/key&gt;
         &lt;key count='1'&gt;file:build/resources/test/org/jpos/util/msg-base.xml&lt;/key&gt;
         &lt;key count='1'&gt;file:build/resources/test/org/jpos/util/msg-prop-axx.xml&lt;/key&gt;
         &lt;key count='1'&gt;file:build/resources/test/org/jpos/util/eom-base.xml&lt;/key&gt;
@@ -483,7 +686,7 @@ q9ulRPEqH9NR79619lNKVUkE206dVlXo7xHmJS1QZy5v/GT66xBxyDVfTduPFXk=
         &lt;key count='1'&gt;test-base.xml&lt;/key&gt;
         &lt;key count='1'&gt;file:build/resources/test/org/jpos/util/msg-prop-base.xml&lt;/key&gt;
         &lt;key count='1'&gt;file:build/resources/test/org/jpos/util/msg-separator-base.xml&lt;/key&gt;
-        &lt;key count='1'&gt;$TAILLOCK.1892684984&lt;/key&gt;
+        &lt;key count='1'&gt;$TAILLOCK.1033009245&lt;/key&gt;
         &lt;key count='1'&gt;jar:org/jpos/util/DSmsg-base.xml&lt;/key&gt;
         &lt;key count='1'&gt;file:build/resources/test/org/jpos/util/fsd-99.xml&lt;/key&gt;
          key-count: 14
@@ -527,49 +730,49 @@ SpaceName: org.jpos.space.TSpace
       logger.testXMLPackagerName: org.jpos.util.Logger
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-01-15T20:41:42.951&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-01-18T17:31:46.674&quot;&gt;
   &lt;info&gt;
     shutting down
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-01-15T20:41:42.951&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-01-18T17:31:46.674&quot;&gt;
   &lt;trace&gt;
     undeploying:/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/99_sysmon.xml
   &lt;/trace&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2017-01-15T20:41:42.952&quot;&gt;
+&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2017-01-18T17:31:46.674&quot;&gt;
   &lt;info&gt;
     Stopping SystemMonitor
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-01-15T20:41:42.952&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-01-18T17:31:46.675&quot;&gt;
   &lt;info&gt;
     undeployed:/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/99_sysmon.xml
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-01-15T20:41:42.952&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-01-18T17:31:46.675&quot;&gt;
   &lt;trace&gt;
     undeploying:/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/20_mux.xml
   &lt;/trace&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-01-15T20:41:42.952&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-01-18T17:31:46.675&quot;&gt;
   &lt;info&gt;
     undeployed:/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/20_mux.xml
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-01-15T20:41:42.952&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-01-18T17:31:46.675&quot;&gt;
   &lt;trace&gt;
     undeploying:/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/00_logger.xml
   &lt;/trace&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-01-15T20:41:44.955&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-01-18T17:31:48.681&quot;&gt;
   &lt;info&gt;
     Q2 started, deployDir=/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-01-15T20:41:44.961&quot; lifespan=&quot;5ms&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-01-18T17:31:48.683&quot; lifespan=&quot;2ms&quot;&gt;
   &lt;version&gt;
-    jPOS 2.1.0-SNAPSHOT detached/ef75c01 (2017-01-15 20:39:22 UTC) 
+    jPOS 2.1.0-SNAPSHOT detached/7e8e917 (2017-01-18 17:29:26 UTC) 
 
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA1
@@ -592,49 +795,49 @@ q9ulRPEqH9NR79619lNKVUkE206dVlXo7xHmJS1QZy5v/GT66xBxyDVfTduPFXk=
 
   &lt;/version&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-01-15T20:41:44.965&quot; lifespan=&quot;3ms&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-01-18T17:31:48.686&quot; lifespan=&quot;2ms&quot;&gt;
   &lt;info&gt;
     deploy: /home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/20_mux.xml
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-01-15T20:41:44.966&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-01-18T17:31:48.687&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;info&gt;
     deploy: /home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/99_sysmon.xml
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2017-01-15T20:41:44.966&quot;&gt;
+&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2017-01-18T17:31:48.687&quot;&gt;
   &lt;info&gt;
     Starting SystemMonitor
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2017-01-15T20:41:44.967&quot;&gt;
+&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2017-01-18T17:31:48.688&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;info&gt;
                OS: Linux (3.13.0-103-generic)
-     process name: 2352@testing-gce-a2386be7-05f7-45b3-ac79-0d3359ea2d2b
-             host: testing-gce-a2386be7-05f7-45b3-ac79-0d3359ea2d2b/127.0.1.1
+     process name: 2631@testing-gce-98cbe5c6-e728-421f-99cc-6e6f39d208ad
+             host: testing-gce-98cbe5c6-e728-421f-99cc-6e6f39d208ad/127.0.1.1
               cwd: /home/travis/build/jpos/jPOS/jpos
-       free space: 22.8 GiB
-     usable space: 21.5 GiB
-          version: 2.1.0-SNAPSHOT (ef75c01)
-         instance: 3e2d8811-ba78-4217-ba7e-2c09e1c053c3
-           uptime: 00:00:00.014 (0.780000)
+       free space: 22.7 GiB
+     usable space: 21.4 GiB
+          version: 2.1.0-SNAPSHOT (7e8e917)
+         instance: f0a1643c-d232-4ec9-b2d4-f583202b0e12
+           uptime: 00:00:00.011 (0.700000)
        processors: 2
            drift : 0
-    memory(t/u/f): 725/423/302
+    memory(t/u/f): 684/246/437
          encoding: UTF-8
          timezone: Etc/UTC (Coordinated Universal Time) Z
     watch service: sun.nio.fs.LinuxWatchService
-            clock: 1484512904 2017-01-15T20:41:44.967Z
-     thread count: 50
-     peak threads: 146
-     user threads: 47
+            clock: 1484760708 2017-01-18T17:31:48.688Z
+     thread count: 150
+     peak threads: 246
+     user threads: 147
             Thread[Reference Handler,10,system]
             Thread[Finalizer,8,system]
             Thread[Signal Dispatcher,9,system]
             Thread[main,5,main]
             Thread[Test worker,5,main]
-            Thread[/127.0.0.1:57046 to /127.0.0.1:36117 workers Thread 2,5,main]
-            Thread[/127.0.0.1:57046 to /127.0.0.1:36117 workers Thread 3,5,main]
+            Thread[/127.0.0.1:48642 to /127.0.0.1:58980 workers Thread 2,5,main]
+            Thread[/127.0.0.1:48642 to /127.0.0.1:58980 workers Thread 3,5,main]
             Thread[pool-1-thread-1,5,main]
             Thread[Timer-0,5,main]
             Thread[INCompressor,5,main]
@@ -649,7 +852,7 @@ q9ulRPEqH9NR79619lNKVUkE206dVlXo7xHmJS1QZy5v/GT66xBxyDVfTduPFXk=
             Thread[Timer-4,5,main]
             Thread[Timer-5,5,main]
             Thread[Timer-6,5,main]
-            Thread[Q2-3e2d8811-ba78-4217-ba7e-2c09e1c053c3,5,main]
+            Thread[Q2-f0a1643c-d232-4ec9-b2d4-f583202b0e12,5,main]
             Thread[Thread-81,5,main]
             Thread[SystemMonitor,5,main]
             Thread[ThreadPool.PooledThread-0-idle,5,ThreadPool-0]
@@ -664,6 +867,106 @@ q9ulRPEqH9NR79619lNKVUkE206dVlXo7xHmJS1QZy5v/GT66xBxyDVfTduPFXk=
             Thread[ThreadPool.PooledThread-10,5,ThreadPool-8]
             Thread[ThreadPool.PooledThread-11,5,ThreadPool-9]
             Thread[ThreadPool.PooledThread-12,5,ThreadPool-9]
+            Thread[Test-ThreadPool.PooledThread-13-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-14-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-15-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-16-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-17-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-18-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-19-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-20-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-21-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-22-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-23-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-24-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-25-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-26-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-27-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-28-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-29-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-30-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-31-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-32-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-33-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-34-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-35-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-36-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-37-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-38-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-39-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-40-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-41-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-42-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-43-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-44-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-45-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-46-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-47-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-48-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-49-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-50-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-51-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-52-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-53-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-54-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-55-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-56-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-57-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-58-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-59-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-60-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-61-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-62-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-63-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-64-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-65-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-66-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-67-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-68-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-69-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-70-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-71-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-72-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-73-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-74-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-75-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-76-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-77-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-78-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-79-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-80-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-81-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-82-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-83-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-84-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-85-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-86-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-87-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-88-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-89-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-90-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-91-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-92-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-93-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-94-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-95-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-96-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-97-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-98-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-99-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-100-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-101-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-102-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-103-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-104-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-105-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-106-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-107-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-108-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-109-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-110-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-111-running,5,Test-ThreadPool-10]
+            Thread[Test-ThreadPool.PooledThread-112-running,5,Test-ThreadPool-10]
             Thread[ThreadPool.PooledThread-113-idle,5,ThreadPool-11]
             Thread[ThreadPool.PooledThread-114-idle,5,ThreadPool-11]
             Thread[ThreadPool.PooledThread-115,5,ThreadPool-12]
@@ -704,7 +1007,7 @@ q9ulRPEqH9NR79619lNKVUkE206dVlXo7xHmJS1QZy5v/GT66xBxyDVfTduPFXk=
       tspace:default: org.jpos.space.TSpace
         &lt;key count='1'&gt;file:build/resources/test/org/jpos/util/fsd-base.xml&lt;/key&gt;
         &lt;key count='1'&gt;file:build/resources/test/org/jpos/util/fsd-03.xml&lt;/key&gt;
-        &lt;key count='1'&gt;$TAILLOCK.1455993300&lt;/key&gt;
+        &lt;key count='1'&gt;$TAILLOCK.802543948&lt;/key&gt;
         &lt;key count='1'&gt;file:build/resources/test/org/jpos/util/msg-base.xml&lt;/key&gt;
         &lt;key count='1'&gt;file:build/resources/test/org/jpos/util/msg-prop-axx.xml&lt;/key&gt;
         &lt;key count='1'&gt;file:build/resources/test/org/jpos/util/eom-base.xml&lt;/key&gt;
@@ -713,7 +1016,7 @@ q9ulRPEqH9NR79619lNKVUkE206dVlXo7xHmJS1QZy5v/GT66xBxyDVfTduPFXk=
         &lt;key count='1'&gt;test-base.xml&lt;/key&gt;
         &lt;key count='1'&gt;file:build/resources/test/org/jpos/util/msg-prop-base.xml&lt;/key&gt;
         &lt;key count='1'&gt;file:build/resources/test/org/jpos/util/msg-separator-base.xml&lt;/key&gt;
-        &lt;key count='1'&gt;$TAILLOCK.1892684984&lt;/key&gt;
+        &lt;key count='1'&gt;$TAILLOCK.1033009245&lt;/key&gt;
         &lt;key count='1'&gt;jar:org/jpos/util/DSmsg-base.xml&lt;/key&gt;
         &lt;key count='1'&gt;file:build/resources/test/org/jpos/util/fsd-99.xml&lt;/key&gt;
          key-count: 14
@@ -758,41 +1061,53 @@ SpaceName: org.jpos.space.TSpace
       Q2-18: org.jpos.q2.Q2
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-01-15T20:41:50.054&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-01-18T17:31:53.780&quot;&gt;
   &lt;info&gt;
     shutting down
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-01-15T20:41:50.055&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-01-18T17:31:53.780&quot;&gt;
   &lt;trace&gt;
     undeploying:/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/99_sysmon.xml
   &lt;/trace&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2017-01-15T20:41:50.055&quot;&gt;
+&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2017-01-18T17:31:53.780&quot;&gt;
   &lt;info&gt;
     Stopping SystemMonitor
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-01-15T20:41:50.055&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-01-18T17:31:53.780&quot;&gt;
   &lt;info&gt;
     undeployed:/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/99_sysmon.xml
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-01-15T20:41:50.055&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-01-18T17:31:53.780&quot;&gt;
   &lt;trace&gt;
     undeploying:/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/20_mux.xml
   &lt;/trace&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-01-15T20:41:50.055&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-01-18T17:31:53.781&quot;&gt;
   &lt;info&gt;
     undeployed:/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/20_mux.xml
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-01-15T20:41:50.055&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-01-18T17:31:53.781&quot;&gt;
   &lt;trace&gt;
     undeploying:/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/00_logger.xml
   &lt;/trace&gt;
 &lt;/log&gt;
+</pre>
+</span>
+</div>
+<div id="tab2" class="tab">
+<h2>Standard error</h2>
+<span class="code">
+<pre>JESpace::GC&gt; &lt;profiler&gt;
+JESpace::GC&gt;   end [0.1/0.1]
+JESpace::GC&gt; &lt;/profiler&gt;
+JESpace::GC&gt; &lt;profiler&gt;
+JESpace::GC&gt;   end [0.2/0.2]
+JESpace::GC&gt; &lt;/profiler&gt;
 </pre>
 </span>
 </div>
@@ -804,7 +1119,7 @@ SpaceName: org.jpos.space.TSpace
 <input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
 </label>
 </div>Generated by 
-<a href="http://www.gradle.org">Gradle 3.3</a> at Jan 15, 2017 8:42:33 PM</p>
+<a href="http://www.gradle.org">Gradle 3.3</a> at Jan 18, 2017 5:32:42 PM</p>
 </div>
 </div>
 </body>
