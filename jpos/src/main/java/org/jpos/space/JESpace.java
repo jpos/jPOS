@@ -39,8 +39,10 @@ import com.sleepycat.persist.model.Relationship;
 import java.util.HashSet;
 import java.util.concurrent.TimeUnit;
 
+import org.jpos.iso.ISOUtil;
 import org.jpos.util.Log;
 import org.jpos.util.Loggeable;
+import org.jpos.util.Profiler;
 
 /**
  * BerkeleyDB Jave Edition based persistent space implementation
@@ -59,22 +61,25 @@ public class JESpace<K,V> extends Log implements LocalSpace<K,V>, Loggeable, Run
     Semaphore gcSem = new Semaphore(1);
     LocalSpace<Object,SpaceListener> sl;
     private static final long NRD_RESOLUTION = 500L;
-    public static final long GC_DELAY = 60*1000L;
+    public static final long GC_DELAY = 15*1000L;
+    public static final long DEFAULT_TXN_TIMEOUT = 30*1000L;
+    public static final long DEFAULT_LOCK_TIMEOUT = 120*1000L;
     private Future gcTask;
 
     static final Map<String,Space> spaceRegistrar = 
         new HashMap<String,Space> ();
 
-    public JESpace(String name, String path) throws SpaceError {
+    public JESpace(String name, String params) throws SpaceError {
         super();
         try {
             EnvironmentConfig envConfig = new EnvironmentConfig();
             StoreConfig storeConfig = new StoreConfig();
-
+            String[] p = ISOUtil.commaDecode(params);
+            String path = p[0];
             envConfig.setAllowCreate (true);
             envConfig.setTransactional(true);
-            // envConfig.setTxnTimeout(5L, TimeUnit.MINUTES);
-            envConfig.setLockTimeout(5, TimeUnit.SECONDS);
+            envConfig.setLockTimeout(getParam("lock.timeout", p, DEFAULT_LOCK_TIMEOUT), TimeUnit.MILLISECONDS);
+            envConfig.setTxnTimeout(getParam("txn.timeout", p, DEFAULT_TXN_TIMEOUT), TimeUnit.MILLISECONDS);
             storeConfig.setAllowCreate (true);
             storeConfig.setTransactional (true);
 
@@ -268,6 +273,7 @@ public class JESpace<K,V> extends Log implements LocalSpace<K,V>, Loggeable, Run
     public void gc () throws DatabaseException {
         Transaction txn = null;
         EntityCursor<GCRef> cursor = null;
+        Profiler prof = new Profiler();
         try {
             if (!gcSem.tryAcquire())
                 return;
@@ -295,12 +301,13 @@ public class JESpace<K,V> extends Log implements LocalSpace<K,V>, Loggeable, Run
             if (txn != null)
                 abort (txn);
             gcSem.release();
+            prof.dump (System.err, "JESpace::GC> ");
         }
     }
     public void run() {
         try {
             gc();
-        } catch (DatabaseException e) {
+        } catch (Exception e) {
             warn(e);
         }
     }
@@ -587,6 +594,17 @@ public class JESpace<K,V> extends Log implements LocalSpace<K,V>, Loggeable, Run
             p.printf ("%s<key size='%d'>%s</key>\n", indent, count, key);
         else
             p.printf ("%s<key>%s</key>\n", indent, key);
+    }
+
+    private long getParam (String name, String[] params, long defaultValue) {
+        for (String s : params) {
+            if (s.contains(name)) {
+                int pos = s.indexOf('=');
+                if (pos >=0 && s.length() > pos)
+                    return Long.valueOf(s.substring(pos+1).trim());
+            }
+        }
+        return defaultValue;
     }
 
     @Entity
