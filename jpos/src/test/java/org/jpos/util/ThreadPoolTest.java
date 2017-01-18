@@ -140,10 +140,7 @@ public class ThreadPoolTest {
         Thread serverThread = new Thread(server);
         serverThread.start();
 
-        serverThread.join(5000);
-        serverThread.interrupt();
-
-        Thread.sleep(5000);
+        serverThread.join(15000);
         assertEquals("pool.getActiveCount()", 100, pool.getActiveCount());
         
         synchronized (server) {
