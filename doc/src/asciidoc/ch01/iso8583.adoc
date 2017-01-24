@@ -1,14 +1,14 @@
 [[iso8583_intro]]
 
-== About ISO-8583 
-We assume the reader is familiar with the ISO-8583 standard. 
+== About ISO-8583
+We assume the reader is familiar with the ISO-8583 standard.
 
 For starters, you can take a look at the Wikipedia
 http://en.wikipedia.org/wiki/ISO_8583[ISO_8583] page and the <<iso8583>>
-of this document, but for any serious work you need to get a copy 
+of this document, but for any serious work you need to get a copy
 of the standard from http://www.iso.org.
 
-This is a high level standard where vendors have implemented it in slightly
+This is a high level standard, and vendors have implemented it in slightly
 different ways. You also need the protocol specifications for your
 particular interchange.
 

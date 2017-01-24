@@ -1,12 +1,12 @@
 == SSL Channels
 
-SocketFactories (like +ISOServer+), as well as most channels that inherit 
-from +BaseChannel+ can delegate socket creation to an optional socket factory. 
+SocketFactories (like +ISOServer+), as well as most channels that inherit
+from +BaseChannel+ can delegate socket creation to an optional socket factory.
 
-We have two kinds of socket factories: 
+We have two kinds of socket factories:
 
 * +ISOClientSocketFactory+
-* +ISOServerSocketFactory+ 
+* +ISOServerSocketFactory+
 
 [source,java]
 ----
@@ -21,10 +21,10 @@ public interface ISOServerSocketFactory {
 }
 ----
 
-as well as a provider that implements both of them: +org.jpos.iso.GenericSSLSocketFactory+ 
+as well as a provider that implements both of them: +org.jpos.iso.GenericSSLSocketFactory+
 
 Q2 services (actually the ChannelAdaptor and QServer qbeans), accept an
-optional 'socketFactory' property in the channel configuration, 
+optional 'socketFactory' property in the channel configuration,
 
 
 .SocketFactory configuration
@@ -52,7 +52,7 @@ optional 'socketFactory' property in the channel configuration,
 ====
 While `GenericSSLSocketFactory` can be used to demonstrate SSL support
 in jPOS, production-grade installations should consider it just
-a reference/sample implementation. It uses ${user.home}/.keystore
+a reference/sample implementation. It uses `${user.home}/.keystore`
 with a default password, so *at the very least* you
 want to override its +getPassword()+ method.
 

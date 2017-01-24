@@ -14,7 +14,7 @@ look at the following directories:
 
 *  +jpos/src/main/java/org/jpos/iso/packager+ (Java based packagers) 
 *  +jpos/src/main/resources/packager+ (GenericPackager configurations accessible as a resource)
-*  +src/dist/cfg/packager+ (GenericPackager configurations accessible as external files)
+*  +jpos/src/dist/cfg/packager+ (GenericPackager configurations accessible as external files)
 ====
 
 Although not required, most ISOPackager implementations extend the supporting
