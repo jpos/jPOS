@@ -273,7 +273,6 @@ public class JESpace<K,V> extends Log implements LocalSpace<K,V>, Loggeable, Run
     public void gc () throws DatabaseException {
         Transaction txn = null;
         EntityCursor<GCRef> cursor = null;
-        Profiler prof = new Profiler();
         try {
             if (!gcSem.tryAcquire())
                 return;
@@ -301,7 +300,6 @@ public class JESpace<K,V> extends Log implements LocalSpace<K,V>, Loggeable, Run
             if (txn != null)
                 abort (txn);
             gcSem.release();
-            prof.dump (System.err, "JESpace::GC> ");
         }
     }
     public void run() {
