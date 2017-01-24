@@ -2,11 +2,12 @@
 The community edition of jPOS can be downloaded from the
 http://jpos.org/download[jPOS Download] page.
 
-The repository has many branches and tags.  Unless you are dealing with a
-legacy jPOS application, You want to use the `master` branch.
+A Git repository is hosted at http://github.com/jpos/jPOS[Github].
+The repository has many branches and tags. Unless you are dealing with a
+legacy jPOS application, you want to use the `master` branch.
 
 If you are looking for older jPOS versions, you can
 find them in the http://sourceforge.net/projects/jpos/files/jpos/[SourceForge]
-repository but please note all development activity takes place in the
+repository, but please note all current development activity is taking place in the
 http://github.com/jpos/jPOS[Github] repository, though.
 

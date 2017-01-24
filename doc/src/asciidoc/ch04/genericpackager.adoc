@@ -4,7 +4,7 @@
 
 After writing multiple ISOFieldPackager implementations, jPOS developer Eoin
 Flood came up with a nice idea: writing a GenericPackager that would read an
-XML configuration file and instantiate an ISOFieldPackager on-the-fly. 
+XML configuration file and instantiate an ISOFieldPackager on-the-fly.
 
 [NOTE]
 ======
@@ -15,7 +15,7 @@ time.
 ======
 
 Using this approach, the same packager we've seen in the previous example can
-be easily configured using +GenericPackager+ and a simple XML file like this: 
+be easily configured using +GenericPackager+ and a simple XML file like this:
 
 .ISO-8583 version 1993 packager configuration
 ====
@@ -81,8 +81,8 @@ be easily configured using +GenericPackager+ and a simple XML file like this:
 ----
 ====
 
-GenericPackager uses a DTD defined in +main/resources/org/jpos/iso/packager/genericpackager.dtd+ 
-that looks like this: 
+GenericPackager uses a DTD defined in `jpos/src/main/resources/org/jpos/iso/packager/genericpackager.dtd`
+that looks like this:
 
 ----
 <?xml version="1.0" encoding="UTF-8"?>
@@ -119,15 +119,15 @@ that looks like this:
 <!ATTLIST isofieldpackager headerLength  CDATA        #IMPLIED>
 ----
 
-GenericPackager's DTD eases the configuration of nested messages 
-(an ISO-8583 field that is a full ISO-8583 message itself), e.g.: 
+GenericPackager's DTD eases the configuration of nested messages
+(an ISO-8583 field that is a full ISO-8583 message itself), e.g.:
 
 [source,xml]
 ----
    ...
    ...
   <isofieldpackager
-      id="127"  
+      id="127"
       length="255"
       name="FILE RECORS(S) ACTION/DATA"
       class="org.jpos.iso.IFB_LLHBINARY"

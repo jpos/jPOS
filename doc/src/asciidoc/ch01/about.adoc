@@ -1,12 +1,12 @@
 == About jPOS.org
 
 The jPOS project is hosted at http://jpos.org.
-For an up to date list of project resources, you can visit the http://jpos.org/resources page there.
-In order to stay up-to-date with jPOS news, you may want to visit 
-the jPOS website at http://jpos.org as well as its blog at http://jpos.org/blog. 
+In order to stay up-to-date with jPOS news, you may want to visit
+the project's main page, as well as its blog at http://jpos.org/blog.
+For an up to date list of project resources, you can visit the http://jpos.org/resources page.
 There's also a low traffic *jPOS News* mailing list where we post important
 announcements, such as a the availability of new versions of this guide. You're
-encouraged to register by visiting the project's main page at http://jpos.org. 
+encouraged to register by visiting the project's main page at http://jpos.org.
 
 Code is hosted at http://github.com/jpos/jPOS.
 
@@ -17,7 +17,7 @@ http://groups.google.com/group/jpos-users[users' mailing list (jpos-users@google
 
 Commit notifications can be tracked by following http://twitter.com/jposcommits[@jposcommits].
 
-We are also active in https://jpos.slack.com[Slack]. Please request an invitation via e-mail to support@jpos.org.
+We are also active on https://jpos.slack.com[Slack]. Please request an invitation via e-mail to support@jpos.org.
 
 [TIP]
 ====
