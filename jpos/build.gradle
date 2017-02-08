@@ -12,7 +12,6 @@ dependencies {
     compile libraries.bouncycastle
     compile libraries.sshd
     compile libraries.slf4j_api
-    compile libraries.slf4j_nop
 
     testCompile libraries.hamcrest
     testCompile libraries.fest_assert
