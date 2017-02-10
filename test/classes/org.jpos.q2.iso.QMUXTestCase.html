@@ -41,7 +41,7 @@
 </td>
 <td>
 <div class="infoBox" id="duration">
-<div class="counter">20.113s</div>
+<div class="counter">20.120s</div>
 <p>duration</p>
 </div>
 </td>
@@ -66,6 +66,9 @@
 <li>
 <a href="#tab1">Standard output</a>
 </li>
+<li>
+<a href="#tab2">Standard error</a>
+</li>
 </ul>
 <div id="tab0" class="tab">
 <h2>Tests</h2>
@@ -79,17 +82,17 @@
 </thead>
 <tr>
 <td class="success">testAnsweredMessage</td>
-<td>7.107s</td>
+<td>7.104s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">testExpiredMessage</td>
-<td>7.004s</td>
+<td>7.013s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">testMTIMapping</td>
-<td>6.002s</td>
+<td>6.003s</td>
 <td class="success">passed</td>
 </tr>
 </table>
@@ -97,14 +100,14 @@
 <div id="tab1" class="tab">
 <h2>Standard output</h2>
 <span class="code">
-<pre>&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-02-08T17:36:25.542&quot;&gt;
+<pre>&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-02-10T15:23:46.423&quot;&gt;
   &lt;info&gt;
     Q2 started, deployDir=/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-02-08T17:36:25.545&quot; lifespan=&quot;2ms&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-02-10T15:23:46.429&quot; lifespan=&quot;6ms&quot;&gt;
   &lt;version&gt;
-    jPOS 2.1.0-SNAPSHOT detached/598d73f (2017-02-08 17:34:19 UTC) 
+    jPOS 2.1.0-SNAPSHOT detached/b50397e (2017-02-10 15:21:36 UTC) 
 
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA1
@@ -127,39 +130,39 @@ q9ulRPEqH9NR79619lNKVUkE206dVlXo7xHmJS1QZy5v/GT66xBxyDVfTduPFXk=
 
   &lt;/version&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-02-08T17:36:25.552&quot; lifespan=&quot;2ms&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-02-10T15:23:46.433&quot; lifespan=&quot;2ms&quot;&gt;
   &lt;info&gt;
     deploy: /home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/20_mux.xml
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-02-08T17:36:25.555&quot; lifespan=&quot;3ms&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-02-10T15:23:46.436&quot; lifespan=&quot;3ms&quot;&gt;
   &lt;info&gt;
     deploy: /home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/99_sysmon.xml
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2017-02-08T17:36:25.555&quot;&gt;
+&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2017-02-10T15:23:46.436&quot;&gt;
   &lt;info&gt;
     Starting SystemMonitor
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2017-02-08T17:36:25.559&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2017-02-10T15:23:46.447&quot;&gt;
   &lt;info&gt;
                OS: Linux (3.13.0-103-generic)
-     process name: 2609@testing-gce-144937dd-fe14-4974-bbd2-50cddcb16fd0
-             host: testing-gce-144937dd-fe14-4974-bbd2-50cddcb16fd0/127.0.1.1
+     process name: 2611@testing-gce-0e278089-cf89-423d-981d-34f961ec8201
+             host: testing-gce-0e278089-cf89-423d-981d-34f961ec8201/127.0.1.1
               cwd: /home/travis/build/jpos/jPOS/jpos
        free space: 22.7 GiB
      usable space: 21.4 GiB
-          version: 2.1.0-SNAPSHOT (598d73f)
-         instance: e1639ad2-8edc-43bf-a06a-7e767c9c4570
-           uptime: 00:00:00.020 (0.710000)
+          version: 2.1.0-SNAPSHOT (b50397e)
+         instance: 2a543b45-87bf-4a9e-9c73-15d725a85978
+           uptime: 00:00:00.030 (0.770000)
        processors: 2
            drift : 0
-    memory(t/u/f): 759/482/276
+    memory(t/u/f): 755/247/507
          encoding: UTF-8
          timezone: Etc/UTC (Coordinated Universal Time) Z
     watch service: sun.nio.fs.LinuxWatchService
-            clock: 1486575385 2017-02-08T17:36:25.559Z
+            clock: 1486740226 2017-02-10T15:23:46.447Z
      thread count: 51
      peak threads: 147
      user threads: 48
@@ -168,8 +171,8 @@ q9ulRPEqH9NR79619lNKVUkE206dVlXo7xHmJS1QZy5v/GT66xBxyDVfTduPFXk=
             Thread[Signal Dispatcher,9,system]
             Thread[main,5,main]
             Thread[Test worker,5,main]
-            Thread[/127.0.0.1:53897 to /127.0.0.1:46338 workers Thread 2,5,main]
-            Thread[/127.0.0.1:53897 to /127.0.0.1:46338 workers Thread 3,5,main]
+            Thread[/127.0.0.1:52556 to /127.0.0.1:35614 workers Thread 2,5,main]
+            Thread[/127.0.0.1:52556 to /127.0.0.1:35614 workers Thread 3,5,main]
             Thread[pool-1-thread-1,5,main]
             Thread[Timer-0,5,main]
             Thread[INCompressor,5,main]
@@ -184,7 +187,7 @@ q9ulRPEqH9NR79619lNKVUkE206dVlXo7xHmJS1QZy5v/GT66xBxyDVfTduPFXk=
             Thread[Timer-4,5,main]
             Thread[Timer-5,5,main]
             Thread[Timer-6,5,main]
-            Thread[Q2-e1639ad2-8edc-43bf-a06a-7e767c9c4570,5,main]
+            Thread[Q2-2a543b45-87bf-4a9e-9c73-15d725a85978,5,main]
             Thread[Thread-76,5,main]
             Thread[SystemMonitor,5,main]
             Thread[ThreadPool.PooledThread-0-idle,5,ThreadPool-0]
@@ -240,23 +243,23 @@ q9ulRPEqH9NR79619lNKVUkE206dVlXo7xHmJS1QZy5v/GT66xBxyDVfTduPFXk=
       tspace:default: org.jpos.space.TSpace
         &lt;key count='1'&gt;file:build/resources/test/org/jpos/util/fsd-base.xml&lt;/key&gt;
         &lt;key count='1'&gt;file:build/resources/test/org/jpos/util/fsd-03.xml&lt;/key&gt;
-        &lt;key count='1'&gt;922167379|null|null&lt;/key&gt;
+        &lt;key count='1'&gt;587036800|null|null&lt;/key&gt;
         &lt;key count='1'&gt;file:build/resources/test/org/jpos/util/msg-base.xml&lt;/key&gt;
         &lt;key count='1'&gt;file:build/resources/test/org/jpos/util/msg-prop-axx.xml&lt;/key&gt;
         &lt;key count='1'&gt;file:build/resources/test/org/jpos/util/eom-base.xml&lt;/key&gt;
-        &lt;key count='1'&gt;$TAILLOCK.73039195&lt;/key&gt;
-        &lt;key count='1'&gt;875957031&lt;/key&gt;
         &lt;key count='1'&gt;file:build/resources/test/org/jpos/util/msgDS-base.xml&lt;/key&gt;
         &lt;key count='1'&gt;file:build/resources/test/org/jpos/util/DSmsg-base.xml&lt;/key&gt;
         &lt;key count='1'&gt;test-base.xml&lt;/key&gt;
+        &lt;key count='1'&gt;$TAILLOCK.1401753469&lt;/key&gt;
         &lt;key count='1'&gt;file:build/resources/test/org/jpos/util/msg-prop-base.xml&lt;/key&gt;
-        &lt;key count='1'&gt;1619450048&lt;/key&gt;
         &lt;key count='1'&gt;file:build/resources/test/org/jpos/util/msg-separator-base.xml&lt;/key&gt;
-        &lt;key count='1'&gt;$TAILLOCK.867799074&lt;/key&gt;
-        &lt;key count='1'&gt;769394047|null|null&lt;/key&gt;
-        &lt;key count='1'&gt;1412854212&lt;/key&gt;
-        &lt;key count='1'&gt;1386279659|null|null&lt;/key&gt;
+        &lt;key count='1'&gt;2063738557|null|null&lt;/key&gt;
+        &lt;key count='1'&gt;690991253&lt;/key&gt;
+        &lt;key count='1'&gt;1144640272|null|null&lt;/key&gt;
+        &lt;key count='1'&gt;$TAILLOCK.1193023363&lt;/key&gt;
+        &lt;key count='1'&gt;192527622&lt;/key&gt;
         &lt;key count='1'&gt;jar:org/jpos/util/DSmsg-base.xml&lt;/key&gt;
+        &lt;key count='1'&gt;1437056412&lt;/key&gt;
         &lt;key count='1'&gt;file:build/resources/test/org/jpos/util/fsd-99.xml&lt;/key&gt;
          key-count: 20
             gcinfo: 6,0
@@ -298,49 +301,49 @@ SpaceName: org.jpos.space.TSpace
       logger.testXMLPackagerName: org.jpos.util.Logger
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-02-08T17:36:30.542&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-02-10T15:23:51.430&quot;&gt;
   &lt;info&gt;
     shutting down
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-02-08T17:36:30.543&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-02-10T15:23:51.430&quot;&gt;
   &lt;trace&gt;
     undeploying:/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/99_sysmon.xml
   &lt;/trace&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2017-02-08T17:36:30.543&quot;&gt;
+&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2017-02-10T15:23:51.430&quot;&gt;
   &lt;info&gt;
     Stopping SystemMonitor
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-02-08T17:36:30.543&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-02-10T15:23:51.430&quot;&gt;
   &lt;info&gt;
     undeployed:/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/99_sysmon.xml
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-02-08T17:36:30.543&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-02-10T15:23:51.430&quot;&gt;
   &lt;trace&gt;
     undeploying:/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/20_mux.xml
   &lt;/trace&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-02-08T17:36:30.543&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-02-10T15:23:51.431&quot;&gt;
   &lt;info&gt;
     undeployed:/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/20_mux.xml
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-02-08T17:36:30.543&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-02-10T15:23:51.431&quot;&gt;
   &lt;trace&gt;
     undeploying:/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/00_logger.xml
   &lt;/trace&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-02-08T17:36:32.546&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-02-10T15:23:53.435&quot;&gt;
   &lt;info&gt;
     Q2 started, deployDir=/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-02-08T17:36:32.548&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-02-10T15:23:53.438&quot; lifespan=&quot;2ms&quot;&gt;
   &lt;version&gt;
-    jPOS 2.1.0-SNAPSHOT detached/598d73f (2017-02-08 17:34:19 UTC) 
+    jPOS 2.1.0-SNAPSHOT detached/b50397e (2017-02-10 15:21:36 UTC) 
 
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA1
@@ -363,39 +366,39 @@ q9ulRPEqH9NR79619lNKVUkE206dVlXo7xHmJS1QZy5v/GT66xBxyDVfTduPFXk=
 
   &lt;/version&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-02-08T17:36:32.551&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-02-10T15:23:53.441&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;info&gt;
     deploy: /home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/20_mux.xml
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-02-08T17:36:32.552&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-02-10T15:23:53.441&quot;&gt;
   &lt;info&gt;
     deploy: /home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/99_sysmon.xml
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2017-02-08T17:36:32.553&quot;&gt;
+&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2017-02-10T15:23:53.442&quot;&gt;
   &lt;info&gt;
     Starting SystemMonitor
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2017-02-08T17:36:32.553&quot;&gt;
+&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2017-02-10T15:23:53.446&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;info&gt;
                OS: Linux (3.13.0-103-generic)
-     process name: 2609@testing-gce-144937dd-fe14-4974-bbd2-50cddcb16fd0
-             host: testing-gce-144937dd-fe14-4974-bbd2-50cddcb16fd0/127.0.1.1
+     process name: 2611@testing-gce-0e278089-cf89-423d-981d-34f961ec8201
+             host: testing-gce-0e278089-cf89-423d-981d-34f961ec8201/127.0.1.1
               cwd: /home/travis/build/jpos/jPOS/jpos
        free space: 22.7 GiB
      usable space: 21.4 GiB
-          version: 2.1.0-SNAPSHOT (598d73f)
-         instance: 7fa35f2e-0067-4fb8-997b-780fcd02858a
-           uptime: 00:00:00.010 (0.600000)
+          version: 2.1.0-SNAPSHOT (b50397e)
+         instance: 6657f688-4cde-4625-91ae-fad10aa7ce23
+           uptime: 00:00:00.015 (0.650000)
        processors: 2
            drift : 0
-    memory(t/u/f): 759/484/274
+    memory(t/u/f): 755/250/504
          encoding: UTF-8
          timezone: Etc/UTC (Coordinated Universal Time) Z
     watch service: sun.nio.fs.LinuxWatchService
-            clock: 1486575392 2017-02-08T17:36:32.553Z
+            clock: 1486740233 2017-02-10T15:23:53.446Z
      thread count: 51
      peak threads: 147
      user threads: 48
@@ -404,8 +407,8 @@ q9ulRPEqH9NR79619lNKVUkE206dVlXo7xHmJS1QZy5v/GT66xBxyDVfTduPFXk=
             Thread[Signal Dispatcher,9,system]
             Thread[main,5,main]
             Thread[Test worker,5,main]
-            Thread[/127.0.0.1:53897 to /127.0.0.1:46338 workers Thread 2,5,main]
-            Thread[/127.0.0.1:53897 to /127.0.0.1:46338 workers Thread 3,5,main]
+            Thread[/127.0.0.1:52556 to /127.0.0.1:35614 workers Thread 2,5,main]
+            Thread[/127.0.0.1:52556 to /127.0.0.1:35614 workers Thread 3,5,main]
             Thread[pool-1-thread-1,5,main]
             Thread[Timer-0,5,main]
             Thread[INCompressor,5,main]
@@ -420,7 +423,7 @@ q9ulRPEqH9NR79619lNKVUkE206dVlXo7xHmJS1QZy5v/GT66xBxyDVfTduPFXk=
             Thread[Timer-4,5,main]
             Thread[Timer-5,5,main]
             Thread[Timer-6,5,main]
-            Thread[Q2-7fa35f2e-0067-4fb8-997b-780fcd02858a,5,main]
+            Thread[Q2-6657f688-4cde-4625-91ae-fad10aa7ce23,5,main]
             Thread[Thread-78,5,main]
             Thread[SystemMonitor,5,main]
             Thread[ThreadPool.PooledThread-0-idle,5,ThreadPool-0]
@@ -476,23 +479,23 @@ q9ulRPEqH9NR79619lNKVUkE206dVlXo7xHmJS1QZy5v/GT66xBxyDVfTduPFXk=
       tspace:default: org.jpos.space.TSpace
         &lt;key count='1'&gt;file:build/resources/test/org/jpos/util/fsd-base.xml&lt;/key&gt;
         &lt;key count='1'&gt;file:build/resources/test/org/jpos/util/fsd-03.xml&lt;/key&gt;
-        &lt;key count='1'&gt;922167379|null|null&lt;/key&gt;
+        &lt;key count='1'&gt;587036800|null|null&lt;/key&gt;
         &lt;key count='1'&gt;file:build/resources/test/org/jpos/util/msg-base.xml&lt;/key&gt;
         &lt;key count='1'&gt;file:build/resources/test/org/jpos/util/msg-prop-axx.xml&lt;/key&gt;
         &lt;key count='1'&gt;file:build/resources/test/org/jpos/util/eom-base.xml&lt;/key&gt;
-        &lt;key count='1'&gt;$TAILLOCK.73039195&lt;/key&gt;
-        &lt;key count='1'&gt;875957031&lt;/key&gt;
         &lt;key count='1'&gt;file:build/resources/test/org/jpos/util/msgDS-base.xml&lt;/key&gt;
         &lt;key count='1'&gt;file:build/resources/test/org/jpos/util/DSmsg-base.xml&lt;/key&gt;
         &lt;key count='1'&gt;test-base.xml&lt;/key&gt;
+        &lt;key count='1'&gt;$TAILLOCK.1401753469&lt;/key&gt;
         &lt;key count='1'&gt;file:build/resources/test/org/jpos/util/msg-prop-base.xml&lt;/key&gt;
-        &lt;key count='1'&gt;1619450048&lt;/key&gt;
         &lt;key count='1'&gt;file:build/resources/test/org/jpos/util/msg-separator-base.xml&lt;/key&gt;
-        &lt;key count='1'&gt;$TAILLOCK.867799074&lt;/key&gt;
-        &lt;key count='1'&gt;769394047|null|null&lt;/key&gt;
-        &lt;key count='1'&gt;1412854212&lt;/key&gt;
-        &lt;key count='1'&gt;1386279659|null|null&lt;/key&gt;
+        &lt;key count='1'&gt;2063738557|null|null&lt;/key&gt;
+        &lt;key count='1'&gt;690991253&lt;/key&gt;
+        &lt;key count='1'&gt;1144640272|null|null&lt;/key&gt;
+        &lt;key count='1'&gt;$TAILLOCK.1193023363&lt;/key&gt;
+        &lt;key count='1'&gt;192527622&lt;/key&gt;
         &lt;key count='1'&gt;jar:org/jpos/util/DSmsg-base.xml&lt;/key&gt;
+        &lt;key count='1'&gt;1437056412&lt;/key&gt;
         &lt;key count='1'&gt;file:build/resources/test/org/jpos/util/fsd-99.xml&lt;/key&gt;
          key-count: 20
             gcinfo: 6,0
@@ -535,49 +538,49 @@ SpaceName: org.jpos.space.TSpace
       logger.testXMLPackagerName: org.jpos.util.Logger
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-02-08T17:36:36.545&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-02-10T15:23:57.434&quot;&gt;
   &lt;info&gt;
     shutting down
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-02-08T17:36:36.545&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-02-10T15:23:57.434&quot;&gt;
   &lt;trace&gt;
     undeploying:/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/99_sysmon.xml
   &lt;/trace&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2017-02-08T17:36:36.545&quot;&gt;
+&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2017-02-10T15:23:57.435&quot;&gt;
   &lt;info&gt;
     Stopping SystemMonitor
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-02-08T17:36:36.545&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-02-10T15:23:57.435&quot;&gt;
   &lt;info&gt;
     undeployed:/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/99_sysmon.xml
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-02-08T17:36:36.545&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-02-10T15:23:57.435&quot;&gt;
   &lt;trace&gt;
     undeploying:/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/20_mux.xml
   &lt;/trace&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-02-08T17:36:36.546&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-02-10T15:23:57.435&quot;&gt;
   &lt;info&gt;
     undeployed:/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/20_mux.xml
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-02-08T17:36:36.546&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-02-10T15:23:57.435&quot;&gt;
   &lt;trace&gt;
     undeploying:/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/00_logger.xml
   &lt;/trace&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-02-08T17:36:38.553&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-02-10T15:23:59.440&quot;&gt;
   &lt;info&gt;
     Q2 started, deployDir=/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-02-08T17:36:38.556&quot; lifespan=&quot;2ms&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-02-10T15:23:59.442&quot; lifespan=&quot;2ms&quot;&gt;
   &lt;version&gt;
-    jPOS 2.1.0-SNAPSHOT detached/598d73f (2017-02-08 17:34:19 UTC) 
+    jPOS 2.1.0-SNAPSHOT detached/b50397e (2017-02-10 15:21:36 UTC) 
 
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA1
@@ -600,39 +603,39 @@ q9ulRPEqH9NR79619lNKVUkE206dVlXo7xHmJS1QZy5v/GT66xBxyDVfTduPFXk=
 
   &lt;/version&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-02-08T17:36:38.559&quot; lifespan=&quot;2ms&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-02-10T15:23:59.459&quot; lifespan=&quot;6ms&quot;&gt;
   &lt;info&gt;
     deploy: /home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/20_mux.xml
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-02-08T17:36:38.560&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-02-10T15:23:59.465&quot; lifespan=&quot;6ms&quot;&gt;
   &lt;info&gt;
     deploy: /home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/99_sysmon.xml
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2017-02-08T17:36:38.560&quot;&gt;
+&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2017-02-10T15:23:59.465&quot;&gt;
   &lt;info&gt;
     Starting SystemMonitor
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2017-02-08T17:36:38.560&quot;&gt;
+&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2017-02-10T15:23:59.466&quot;&gt;
   &lt;info&gt;
                OS: Linux (3.13.0-103-generic)
-     process name: 2609@testing-gce-144937dd-fe14-4974-bbd2-50cddcb16fd0
-             host: testing-gce-144937dd-fe14-4974-bbd2-50cddcb16fd0/127.0.1.1
+     process name: 2611@testing-gce-0e278089-cf89-423d-981d-34f961ec8201
+             host: testing-gce-0e278089-cf89-423d-981d-34f961ec8201/127.0.1.1
               cwd: /home/travis/build/jpos/jPOS/jpos
        free space: 22.7 GiB
      usable space: 21.4 GiB
-          version: 2.1.0-SNAPSHOT (598d73f)
-         instance: 507f663d-71e9-4d20-b06e-2b2e77c1af2e
-           uptime: 00:00:00.015 (0.550000)
+          version: 2.1.0-SNAPSHOT (b50397e)
+         instance: f91843a2-05ba-4c4f-bd61-3ca1abcb60ab
+           uptime: 00:00:00.031 (0.600000)
        processors: 2
            drift : 0
-    memory(t/u/f): 759/486/272
+    memory(t/u/f): 755/253/501
          encoding: UTF-8
          timezone: Etc/UTC (Coordinated Universal Time) Z
     watch service: sun.nio.fs.LinuxWatchService
-            clock: 1486575398 2017-02-08T17:36:38.561Z
+            clock: 1486740239 2017-02-10T15:23:59.466Z
      thread count: 51
      peak threads: 147
      user threads: 48
@@ -641,8 +644,8 @@ q9ulRPEqH9NR79619lNKVUkE206dVlXo7xHmJS1QZy5v/GT66xBxyDVfTduPFXk=
             Thread[Signal Dispatcher,9,system]
             Thread[main,5,main]
             Thread[Test worker,5,main]
-            Thread[/127.0.0.1:53897 to /127.0.0.1:46338 workers Thread 2,5,main]
-            Thread[/127.0.0.1:53897 to /127.0.0.1:46338 workers Thread 3,5,main]
+            Thread[/127.0.0.1:52556 to /127.0.0.1:35614 workers Thread 2,5,main]
+            Thread[/127.0.0.1:52556 to /127.0.0.1:35614 workers Thread 3,5,main]
             Thread[pool-1-thread-1,5,main]
             Thread[Timer-0,5,main]
             Thread[INCompressor,5,main]
@@ -657,7 +660,7 @@ q9ulRPEqH9NR79619lNKVUkE206dVlXo7xHmJS1QZy5v/GT66xBxyDVfTduPFXk=
             Thread[Timer-4,5,main]
             Thread[Timer-5,5,main]
             Thread[Timer-6,5,main]
-            Thread[Q2-507f663d-71e9-4d20-b06e-2b2e77c1af2e,5,main]
+            Thread[Q2-f91843a2-05ba-4c4f-bd61-3ca1abcb60ab,5,main]
             Thread[Thread-80,5,main]
             Thread[SystemMonitor,5,main]
             Thread[ThreadPool.PooledThread-0-idle,5,ThreadPool-0]
@@ -716,13 +719,13 @@ q9ulRPEqH9NR79619lNKVUkE206dVlXo7xHmJS1QZy5v/GT66xBxyDVfTduPFXk=
         &lt;key count='1'&gt;file:build/resources/test/org/jpos/util/msg-base.xml&lt;/key&gt;
         &lt;key count='1'&gt;file:build/resources/test/org/jpos/util/msg-prop-axx.xml&lt;/key&gt;
         &lt;key count='1'&gt;file:build/resources/test/org/jpos/util/eom-base.xml&lt;/key&gt;
-        &lt;key count='1'&gt;$TAILLOCK.73039195&lt;/key&gt;
         &lt;key count='1'&gt;file:build/resources/test/org/jpos/util/msgDS-base.xml&lt;/key&gt;
         &lt;key count='1'&gt;file:build/resources/test/org/jpos/util/DSmsg-base.xml&lt;/key&gt;
         &lt;key count='1'&gt;test-base.xml&lt;/key&gt;
+        &lt;key count='1'&gt;$TAILLOCK.1401753469&lt;/key&gt;
         &lt;key count='1'&gt;file:build/resources/test/org/jpos/util/msg-prop-base.xml&lt;/key&gt;
         &lt;key count='1'&gt;file:build/resources/test/org/jpos/util/msg-separator-base.xml&lt;/key&gt;
-        &lt;key count='1'&gt;$TAILLOCK.867799074&lt;/key&gt;
+        &lt;key count='1'&gt;$TAILLOCK.1193023363&lt;/key&gt;
         &lt;key count='1'&gt;jar:org/jpos/util/DSmsg-base.xml&lt;/key&gt;
         &lt;key count='1'&gt;file:build/resources/test/org/jpos/util/fsd-99.xml&lt;/key&gt;
          key-count: 14
@@ -767,41 +770,197 @@ SpaceName: org.jpos.space.TSpace
       Q2-18: org.jpos.q2.Q2
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-02-08T17:36:43.652&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-02-10T15:24:04.539&quot;&gt;
   &lt;info&gt;
     shutting down
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-02-08T17:36:43.652&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-02-10T15:24:04.539&quot;&gt;
   &lt;trace&gt;
     undeploying:/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/99_sysmon.xml
   &lt;/trace&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2017-02-08T17:36:43.652&quot;&gt;
+&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2017-02-10T15:24:04.539&quot;&gt;
   &lt;info&gt;
     Stopping SystemMonitor
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-02-08T17:36:43.653&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-02-10T15:24:04.539&quot;&gt;
   &lt;info&gt;
     undeployed:/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/99_sysmon.xml
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-02-08T17:36:43.653&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-02-10T15:24:04.539&quot;&gt;
   &lt;trace&gt;
     undeploying:/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/20_mux.xml
   &lt;/trace&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-02-08T17:36:43.653&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-02-10T15:24:04.539&quot;&gt;
   &lt;info&gt;
     undeployed:/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/20_mux.xml
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-02-08T17:36:43.653&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-02-10T15:24:04.539&quot;&gt;
   &lt;trace&gt;
     undeploying:/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/00_logger.xml
   &lt;/trace&gt;
 &lt;/log&gt;
+</pre>
+</span>
+</div>
+<div id="tab2" class="tab">
+<h2>Standard error</h2>
+<span class="code">
+<pre>java.lang.RuntimeException: org.slf4j.impl.StaticLoggerBinder: frozen class (cannot edit)
+	at javassist.ClassPool.checkNotFrozen(ClassPool.java:617)
+	at javassist.CtClassType.setName(CtClassType.java:353)
+	at javassist.ClassPool.getAndRename(ClassPool.java:408)
+	at org.jpos.util.slf4j.Slf4JDynamicBinder.applyMods(Slf4JDynamicBinder.java:26)
+	at org.jpos.q2.Q2.&lt;init&gt;(Q2.java:145)
+	at org.jpos.q2.Q2.&lt;init&gt;(Q2.java:158)
+	at org.jpos.q2.iso.QMUXTestCase.setUp(QMUXTestCase.java:52)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:47)
+	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:24)
+	at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)
+	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:325)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:78)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:57)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:363)
+	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecuter.runTestClass(JUnitTestClassExecuter.java:114)
+	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecuter.execute(JUnitTestClassExecuter.java:57)
+	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassProcessor.processTestClass(JUnitTestClassProcessor.java:66)
+	at org.gradle.api.internal.tasks.testing.SuiteTestClassProcessor.processTestClass(SuiteTestClassProcessor.java:51)
+	at sun.reflect.GeneratedMethodAccessor13.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:35)
+	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:24)
+	at org.gradle.internal.dispatch.ContextClassLoaderDispatch.dispatch(ContextClassLoaderDispatch.java:32)
+	at org.gradle.internal.dispatch.ProxyDispatchAdapter$DispatchingInvocationHandler.invoke(ProxyDispatchAdapter.java:93)
+	at com.sun.proxy.$Proxy3.processTestClass(Unknown Source)
+	at org.gradle.api.internal.tasks.testing.worker.TestWorker.processTestClass(TestWorker.java:109)
+	at sun.reflect.GeneratedMethodAccessor12.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:35)
+	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:24)
+	at org.gradle.internal.remote.internal.hub.MessageHub$Handler.run(MessageHub.java:377)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:54)
+	at org.gradle.internal.concurrent.StoppableExecutorImpl$1.run(StoppableExecutorImpl.java:40)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
+java.lang.RuntimeException: org.slf4j.impl.StaticLoggerBinder: frozen class (cannot edit)
+	at javassist.ClassPool.checkNotFrozen(ClassPool.java:617)
+	at javassist.CtClassType.setName(CtClassType.java:353)
+	at javassist.ClassPool.getAndRename(ClassPool.java:408)
+	at org.jpos.util.slf4j.Slf4JDynamicBinder.applyMods(Slf4JDynamicBinder.java:26)
+	at org.jpos.q2.Q2.&lt;init&gt;(Q2.java:145)
+	at org.jpos.q2.Q2.&lt;init&gt;(Q2.java:158)
+	at org.jpos.q2.iso.QMUXTestCase.setUp(QMUXTestCase.java:52)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:47)
+	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:24)
+	at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)
+	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:325)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:78)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:57)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:363)
+	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecuter.runTestClass(JUnitTestClassExecuter.java:114)
+	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecuter.execute(JUnitTestClassExecuter.java:57)
+	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassProcessor.processTestClass(JUnitTestClassProcessor.java:66)
+	at org.gradle.api.internal.tasks.testing.SuiteTestClassProcessor.processTestClass(SuiteTestClassProcessor.java:51)
+	at sun.reflect.GeneratedMethodAccessor13.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:35)
+	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:24)
+	at org.gradle.internal.dispatch.ContextClassLoaderDispatch.dispatch(ContextClassLoaderDispatch.java:32)
+	at org.gradle.internal.dispatch.ProxyDispatchAdapter$DispatchingInvocationHandler.invoke(ProxyDispatchAdapter.java:93)
+	at com.sun.proxy.$Proxy3.processTestClass(Unknown Source)
+	at org.gradle.api.internal.tasks.testing.worker.TestWorker.processTestClass(TestWorker.java:109)
+	at sun.reflect.GeneratedMethodAccessor12.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:35)
+	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:24)
+	at org.gradle.internal.remote.internal.hub.MessageHub$Handler.run(MessageHub.java:377)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:54)
+	at org.gradle.internal.concurrent.StoppableExecutorImpl$1.run(StoppableExecutorImpl.java:40)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
+java.lang.RuntimeException: org.slf4j.impl.StaticLoggerBinder: frozen class (cannot edit)
+	at javassist.ClassPool.checkNotFrozen(ClassPool.java:617)
+	at javassist.CtClassType.setName(CtClassType.java:353)
+	at javassist.ClassPool.getAndRename(ClassPool.java:408)
+	at org.jpos.util.slf4j.Slf4JDynamicBinder.applyMods(Slf4JDynamicBinder.java:26)
+	at org.jpos.q2.Q2.&lt;init&gt;(Q2.java:145)
+	at org.jpos.q2.Q2.&lt;init&gt;(Q2.java:158)
+	at org.jpos.q2.iso.QMUXTestCase.setUp(QMUXTestCase.java:52)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:47)
+	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:24)
+	at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)
+	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:325)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:78)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:57)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:363)
+	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecuter.runTestClass(JUnitTestClassExecuter.java:114)
+	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecuter.execute(JUnitTestClassExecuter.java:57)
+	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassProcessor.processTestClass(JUnitTestClassProcessor.java:66)
+	at org.gradle.api.internal.tasks.testing.SuiteTestClassProcessor.processTestClass(SuiteTestClassProcessor.java:51)
+	at sun.reflect.GeneratedMethodAccessor13.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:35)
+	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:24)
+	at org.gradle.internal.dispatch.ContextClassLoaderDispatch.dispatch(ContextClassLoaderDispatch.java:32)
+	at org.gradle.internal.dispatch.ProxyDispatchAdapter$DispatchingInvocationHandler.invoke(ProxyDispatchAdapter.java:93)
+	at com.sun.proxy.$Proxy3.processTestClass(Unknown Source)
+	at org.gradle.api.internal.tasks.testing.worker.TestWorker.processTestClass(TestWorker.java:109)
+	at sun.reflect.GeneratedMethodAccessor12.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:35)
+	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:24)
+	at org.gradle.internal.remote.internal.hub.MessageHub$Handler.run(MessageHub.java:377)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:54)
+	at org.gradle.internal.concurrent.StoppableExecutorImpl$1.run(StoppableExecutorImpl.java:40)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
 </pre>
 </span>
 </div>
@@ -813,7 +972,7 @@ SpaceName: org.jpos.space.TSpace
 <input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
 </label>
 </div>Generated by 
-<a href="http://www.gradle.org">Gradle 3.3</a> at Feb 8, 2017 5:37:22 PM</p>
+<a href="http://www.gradle.org">Gradle 3.3</a> at Feb 10, 2017 3:24:47 PM</p>
 </div>
 </div>
 </body>
