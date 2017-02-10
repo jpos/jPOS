@@ -18,7 +18,13 @@
 
 package org.jpos.q2;
 
-import org.apache.commons.cli.*;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.MissingArgumentException;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.UnrecognizedOptionException;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
@@ -29,7 +35,13 @@ import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOUtil;
 import org.jpos.q2.ssh.SshService;
 import org.jpos.security.SystemSeed;
-import org.jpos.util.*;
+import org.jpos.util.Log;
+import org.jpos.util.LogEvent;
+import org.jpos.util.Logger;
+import org.jpos.util.NameRegistrar;
+import org.jpos.util.PGPHelper;
+import org.jpos.util.SimpleLogListener;
+import org.jpos.util.slf4j.Slf4JDynamicBinder;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
@@ -38,17 +50,28 @@ import org.osgi.framework.launch.FrameworkFactory;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
-import javax.management.*;
+import javax.management.InstanceAlreadyExistsException;
+import javax.management.InstanceNotFoundException;
+import javax.management.MBeanServer;
+import javax.management.MBeanServerFactory;
+import javax.management.ObjectInstance;
+import javax.management.ObjectName;
 import java.io.*;
 import java.lang.management.ManagementFactory;
-import java.nio.file.*;
+import java.nio.file.FileSystem;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardWatchEventKinds;
+import java.nio.file.WatchEvent;
+import java.nio.file.WatchKey;
+import java.nio.file.WatchService;
 import java.security.GeneralSecurityException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-import static java.util.ResourceBundle.*;
+import static java.util.ResourceBundle.getBundle;
 
 /**
  * @author <a href="mailto:taherkordy@dpi2.dpi.net.ir">Alireza Taherkordi</a>
@@ -118,6 +141,14 @@ public class Q2 implements FileFilter, Runnable {
         deployDir.mkdirs ();
         mainClassLoader = getClass().getClassLoader();
         this.bundleContext = bundleContext;
+        try {
+            Slf4JDynamicBinder.applyMods();
+        }
+        catch (Exception ignored) {
+            // We won't stop anything just because we could
+            // inot initialize slf4j.
+            ignored.printStackTrace();
+        }
         registerQ2();
     }
     public Q2 () {
