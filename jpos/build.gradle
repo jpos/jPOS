@@ -12,6 +12,7 @@ dependencies {
     compile libraries.bouncycastle
     compile libraries.sshd
     compile libraries.slf4j_api
+    compile libraries.javassist
 
     testCompile libraries.hamcrest
     testCompile libraries.fest_assert
