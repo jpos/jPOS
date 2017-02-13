@@ -19,7 +19,8 @@ task copyWebResources(type: Sync) {
     into "${buildDir}/docbook/html/"
 }
 
-task a2x(dependsOn: copySources) << {
+task a2x(dependsOn: copySources) {
+  doLast {
     def inFile = "${buildDir}/docbook/source/master.adoc"
     def outFile = "${buildDir}/docbook/source/master.xml"
     def cmd = "asciidoctor --safe -a docinfo -a lang=en -d book -b docbook5 -o ${outFile} ${inFile}"
@@ -27,6 +28,7 @@ task a2x(dependsOn: copySources) << {
     proc.in.eachLine { line -> println line }
     proc.err.eachLine {line -> println 'ERROR: '+line }
     proc.waitFor()
+  }
 }
 
 task createPdf(type: DocbookPdf) {
@@ -48,13 +50,18 @@ task createHtml(type: DocbookHtml) {
     stylesheet "${projectDir}/src/xslt/html.xsl" as File
 }
 
-task viewHtml (dependsOn: createHtml, description: 'Open HTML docbook outout in default browser') << {
+task viewHtml (dependsOn: createHtml, description: 'Open HTML docbook outout in default browser') {
+  doLast {
     Class.forName("java.awt.Desktop").newInstance().browse(
         new File("${buildDir}/docbook/html", 'master.html').toURI())
+  }
 }
 
-task viewPdf (dependsOn: createPdf , description: 'Open PDF docbook outout in default viewer') << {
+
+task viewPdf (dependsOn: createPdf , description: 'Open PDF docbook outout in default viewer') {
+  doLast {
     Class.forName("java.awt.Desktop").newInstance().browse(
         new File("${buildDir}/docbook/pdf", this.project.rootProject.name + '.pdf').toURI())
+  }
 }
 
