@@ -63,6 +63,7 @@ include::ch06/space_util.adoc[]
 = Q2
 include::ch07/intro.adoc[]
 include::ch07/running.adoc[]
+include::ch07/embedding.adoc[]
 include::ch07/shutdown.adoc[]
 include::ch07/writing_first_script.adoc[]
 include::ch07/qtest.adoc[]

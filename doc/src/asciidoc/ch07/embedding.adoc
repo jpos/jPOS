@@ -1,0 +1,20 @@
+[[embedding_Q2]]
+== Embedding Q2
+
+While we usually start Q2 from the command line (using the `bin/q2` or
+`bin/q2.bat` script), Q2 can be instantiated and started from a Java
+application using code like this:
+
+[source,java]
+-----
+import org.jpos.q2.Q2;
+...
+...
+Q2 q2 = new Q2("path/to/your/deploy/directory");
+q2.start();
+...
+...
+-----
+
+You can stop Q2 by calling `q2.stop()`.
+
