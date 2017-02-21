@@ -51,6 +51,7 @@ public class QMUX
     protected String[] mtiMapping;
     private boolean headerIsKey;
     private LocalSpace isp; // internal space
+    private Map<String,String[]> mtiKey = new HashMap<>();
 
     List<ISORequestListener> listeners;
     int rx, tx, rxExpired, txExpired, rxPending, rxUnhandled, rxForwarded;
@@ -67,7 +68,15 @@ public class QMUX
         in        = e.getChildTextTrim ("in");
         out       = e.getChildTextTrim ("out");
         ignorerc  = e.getChildTextTrim ("ignore-rc");
-        key = toStringArray(e.getChildTextTrim("key"), ", ", DEFAULT_KEY);
+        key = toStringArray(DEFAULT_KEY, ", ", null);
+        for (Element keyElement : e.getChildren("key")) {
+            String mtiOverride = keyElement.getAttributeValue("mti");
+            if (mtiOverride != null && mtiOverride.length() >= 2) {
+                mtiKey.put (mtiOverride.substring(0,2), toStringArray(keyElement.getTextTrim(), ", ", null));
+            } else {
+                key = toStringArray(e.getChildTextTrim("key"), ", ", DEFAULT_KEY);
+            }
+        }
         ready     = toStringArray(e.getChildTextTrim ("ready"));
         mtiMapping = toStringArray(e.getChildTextTrim ("mtimapping"));
         if (mtiMapping == null || mtiMapping.length != 3) 
@@ -186,7 +195,8 @@ public class QMUX
             sb.append ('.');
         }
         boolean hasFields = false;
-        for (String f : key) {
+        String[] k = mtiKey.getOrDefault(m.getMTI().substring(0,2), key);
+        for (String f : k) {
             String v = m.getString(f);
             if (v != null) {
                 if ("11".equals(f)) {

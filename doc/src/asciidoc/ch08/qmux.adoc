@@ -110,6 +110,7 @@ the QMUX configuration, i.e.:
 ------------
 <mux class="org.jpos.q2.iso.QMUX" logger="Q2" name="mymux">
  <key>42 41 11</key>                                             <1>
+ <key mti="0800">41</key>                                        <2>
  <in>your-channel-receive</in>
  <out>your-channel-send</out>
  <ready>your-channel.ready</ready>
@@ -117,6 +118,7 @@ the QMUX configuration, i.e.:
 </mux>
 ------------
 <1> overrides default key.
+<2> overrides default key for 0800 messages.
 
 In addition to the fields defined in the +'<key>'+ element, QMUX maps each
 digit of the MTI to use as a key part in order to avoid mixing for instance
