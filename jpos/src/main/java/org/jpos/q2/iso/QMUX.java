@@ -50,6 +50,7 @@ public class QMUX
     protected String ignorerc;
     protected String[] mtiMapping;
     private boolean headerIsKey;
+    private boolean returnRejects;
     private LocalSpace isp; // internal space
     private Map<String,String[]> mtiKey = new HashMap<>();
 
@@ -69,6 +70,7 @@ public class QMUX
         out       = e.getChildTextTrim ("out");
         ignorerc  = e.getChildTextTrim ("ignore-rc");
         key = toStringArray(DEFAULT_KEY, ", ", null);
+        returnRejects = cfg.getBoolean("return-rejects", false);
         for (Element keyElement : e.getChildren("key")) {
             String mtiOverride = keyElement.getAttributeValue("mti");
             if (mtiOverride != null && mtiOverride.length() >= 2) {
@@ -167,7 +169,7 @@ public class QMUX
         if (obj instanceof ISOMsg) {
             ISOMsg m = (ISOMsg) obj;
             try {
-                if (m.isResponse()) {
+                if (returnRejects || m.isResponse()) {
                     String key = getKey (m);
                     String req = key + ".req";
                     Object r = isp.inp (req);
