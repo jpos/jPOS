@@ -167,18 +167,20 @@ public class QMUX
         if (obj instanceof ISOMsg) {
             ISOMsg m = (ISOMsg) obj;
             try {
-                String key = getKey (m);
-                String req = key + ".req";
-                Object r = isp.inp (req);
-                if (r != null) {
-                    if (r instanceof AsyncRequest) {
-                        ((AsyncRequest) r).responseReceived (m);
-                    } else {
-                        isp.out (key, m);
+                if (m.isResponse()) {
+                    String key = getKey (m);
+                    String req = key + ".req";
+                    Object r = isp.inp (req);
+                    if (r != null) {
+                        if (r instanceof AsyncRequest) {
+                            ((AsyncRequest) r).responseReceived (m);
+                        } else {
+                            isp.out (key, m);
+                        }
+                        return;
                     }
-                    return;
                 }
-            } catch (ISOException e) { 
+            } catch (ISOException e) {
                 getLog().warn ("notify", e);
             }
             processUnhandled (m);
