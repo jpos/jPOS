@@ -17,9 +17,10 @@ public class Slf4JDynamicBinder
     private static final String STATIC_BINDER_RESOURCE =
         "org/slf4j/impl/StaticLoggerBinder.class";
 
+    private static boolean binded = false;
     public static void applyMods() throws Exception
     {
-        if (!bindingsExist())
+        if (!binded && !bindingsExist())
         {
             final ProtectionDomain pd = Slf4JDynamicBinder.class.getProtectionDomain();
             final ClassPool cp = ClassPool.getDefault();
@@ -46,6 +47,7 @@ public class Slf4JDynamicBinder
             clz2.toClass(null, pd);
             clz2.detach();
             clz.detach();
+            binded = true;
         }
     }
 
