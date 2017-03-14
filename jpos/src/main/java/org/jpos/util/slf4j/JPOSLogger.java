@@ -1,6 +1,7 @@
 package org.jpos.util.slf4j;
 
 import org.jpos.core.Configuration;
+import org.jpos.core.SimpleConfiguration;
 import org.jpos.util.Log;
 import org.jpos.util.Logger;
 import org.slf4j.helpers.FormattingTuple;
@@ -55,6 +56,8 @@ public class JPOSLogger extends MarkerIgnoringBase
     {
         Logger logger = log.getLogger();
         Configuration cfg = logger.getConfiguration();
+        if (cfg == null)
+            cfg = new SimpleConfiguration();
         String levelString = cfg.get("slf4j.level", System.getProperty("slf4j.level"));
         int currentLogLevel = levelString != null ? stringToLevel(levelString) : DEFAULT_LOG_LEVEL;
         return (logLevel >= currentLogLevel);
