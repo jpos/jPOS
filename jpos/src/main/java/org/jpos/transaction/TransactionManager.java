@@ -444,7 +444,8 @@ public class TransactionManager
 
     @Override
     public void dump (PrintStream ps, String indent) {
-        ps.println(indent + tps.toString());
+        if (tps != null)
+            ps.println(indent + tps.toString());
         metrics.dump (ps, indent);
     }
 
