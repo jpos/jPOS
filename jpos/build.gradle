@@ -13,6 +13,7 @@ dependencies {
     compile libraries.sshd
     compile libraries.slf4j_api
     compile libraries.javassist
+    compile libraries.hdrhistogram
 
     testCompile libraries.hamcrest
     testCompile libraries.fest_assert

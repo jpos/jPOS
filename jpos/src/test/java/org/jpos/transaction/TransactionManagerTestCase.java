@@ -35,10 +35,12 @@ public class TransactionManagerTestCase extends TestCase {
         q2.start();
     }
     public void testSimpleTransaction() {
-        Context ctx = new Context();
-        ctx.put ("volatile", "the quick brown fox");
-        ctx.put ("persistent", "jumped over the lazy dog", true);
-        sp.out (QUEUE, ctx);
+        for (int i=0; i<100; i++) {
+            Context ctx = new Context();
+            ctx.put("volatile", "the quick brown fox");
+            ctx.put("persistent", "jumped over the lazy dog", true);
+            sp.out(QUEUE, ctx);
+        }
     }
     public void testRetryTransaction() {
         Context ctx = new Context();

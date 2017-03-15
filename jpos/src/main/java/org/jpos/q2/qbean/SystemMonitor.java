@@ -124,6 +124,7 @@ public class SystemMonitor extends QBeanSupport
             } catch (InterruptedException ignored) {
             }
         }
+        log.info(this);
     }
     public void dump (PrintStream p, String indent) {
         if (frozenDump == null)

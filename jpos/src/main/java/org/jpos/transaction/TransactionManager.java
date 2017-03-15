@@ -18,6 +18,8 @@
 
 package org.jpos.transaction;
 
+import org.HdrHistogram.AtomicHistogram;
+import org.HdrHistogram.Histogram;
 import org.jdom2.Element;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
@@ -26,6 +28,7 @@ import org.jpos.q2.QFactory;
 import org.jpos.space.*;
 import org.jpos.util.*;
 
+import java.io.PrintStream;
 import java.io.Serializable;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -39,7 +42,7 @@ import org.jpos.iso.ISOUtil;
 @SuppressWarnings("unchecked unused")
 public class TransactionManager 
     extends QBeanSupport 
-    implements Runnable, TransactionConstants, TransactionManagerMBean
+    implements Runnable, TransactionConstants, TransactionManagerMBean, Loggeable
 {
     public static final String  HEAD       = "$HEAD";
     public static final String  TAIL       = "$TAIL";
@@ -58,6 +61,7 @@ public class TransactionManager
     protected Map<String,List<TransactionParticipant>> groups;
     private static final ThreadLocal<Serializable> tlContext = new ThreadLocal<Serializable>();
     private static final ThreadLocal<Long> tlId = new ThreadLocal<Long>();
+    private Metrics metrics = new Metrics(new AtomicHistogram(60000, 2));
 
     Space sp;
     Space psp;
@@ -434,7 +438,17 @@ public class TransactionManager
         tps.reset();
     }
 
-    protected void commit 
+    public Map<String, Histogram> getMetrics() {
+        return metrics.metrics();
+    }
+
+    @Override
+    public void dump (PrintStream ps, String indent) {
+        ps.println(indent + tps.toString());
+        metrics.dump (ps, indent);
+    }
+
+    protected void commit
         (int session, long id, Serializable context, List<TransactionParticipant> members, boolean recover, LogEvent evt, Profiler prof)
     {
         for (TransactionParticipant p :members) {
@@ -480,6 +494,7 @@ public class TransactionManager
     protected int prepareForAbort
         (TransactionParticipant p, long id, Serializable context) 
     {
+        Chronometer c = new Chronometer();
         try {
             if (p instanceof AbortParticipant) {
                 setThreadName(id, "prepareForAbort", p);
@@ -487,39 +502,48 @@ public class TransactionManager
             }
         } catch (Throwable t) {
             getLog().warn ("PREPARE-FOR-ABORT: " + Long.toString (id), t);
+        } finally {
+            metrics.record(p.getClass().getName() + "-prepare-for-abort", c.elapsed());
         }
         return ABORTED | NO_JOIN;
     }
     protected int prepare 
         (TransactionParticipant p, long id, Serializable context) 
     {
+        Chronometer c = new Chronometer();
         try {
             setThreadName(id, "prepare", p);
             return p.prepare (id, context);
         } catch (Throwable t) {
             getLog().warn ("PREPARE: " + Long.toString (id), t);
+        } finally {
+            metrics.record(p.getClass().getName() + "-prepare", c.elapsed());
         }
         return ABORTED;
     }
     protected void commit 
         (TransactionParticipant p, long id, Serializable context) 
     {
+        Chronometer c = new Chronometer();
         try {
             setThreadName(id, "commit", p);
             p.commit(id, context);
         } catch (Throwable t) {
             getLog().warn ("COMMIT: " + Long.toString (id), t);
         }
+        metrics.record(p.getClass().getName() + "-commit", c.elapsed());
     }
     protected void abort 
         (TransactionParticipant p, long id, Serializable context) 
     {
+        Chronometer c = new Chronometer();
         try {
             setThreadName(id, "abort", p);
             p.abort(id, context);
         } catch (Throwable t) {
             getLog().warn ("ABORT: " + Long.toString (id), t);
         }
+        metrics.record(p.getClass().getName() + "-abort", c.elapsed());
     }
     protected int prepare
         (int session, long id, Serializable context, List<TransactionParticipant> members, Iterator<TransactionParticipant> iter, boolean abort, LogEvent evt, Profiler prof)
@@ -541,6 +565,7 @@ public class TransactionManager
                         session, TransactionStatusEvent.State.PREPARING_FOR_ABORT, id, p.getClass().getName(), context
                     );
                 action = prepareForAbort (p, id, context);
+
                 if (evt != null && p instanceof AbortParticipant) {
                     evt.addMessage("prepareForAbort: " + p.getClass().getName());
                     if (prof != null)
@@ -552,6 +577,7 @@ public class TransactionManager
                         session, TransactionStatusEvent.State.PREPARING, id, p.getClass().getName(), context
                     );
                 action = prepare (p, id, context);
+
                 abort  = (action & PREPARED) == ABORTED;
                 retry  = (action & RETRY) == RETRY;
                 pause  = (action & PAUSE) == PAUSE;
@@ -568,13 +594,16 @@ public class TransactionManager
                 }
             }
             if ((action & READONLY) == 0) {
+                Chronometer c = new Chronometer();
                 snapshot (id, context);
+                metrics.record(p.getClass().getName() + "-snapshot", c.elapsed());
             }
             if ((action & NO_JOIN) == 0) {
                 members.add (p);
             }
             if (p instanceof GroupSelector && ((action & PREPARED) == PREPARED || callSelectorOnAbort)) {
                 String groupName = null;
+                Chronometer c = new Chronometer();
                 try {
                     groupName = ((GroupSelector)p).select (id, context);
                 } catch (Exception e) {
@@ -582,6 +611,8 @@ public class TransactionManager
                         evt.addMessage ("       selector: " + p.getClass().getName() + " " + e.getMessage());
                     else 
                         getLog().error ("       selector: " + p.getClass().getName() + " " + e.getMessage());
+                } finally {
+                    metrics.record(p.getClass().getName() + "-selector", c.lap());
                 }
                 if (evt != null) {
                     evt.addMessage ("       selector: " + groupName);
