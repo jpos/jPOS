@@ -20,6 +20,7 @@ package org.jpos.transaction.participant;
 
 import org.jpos.transaction.AbortParticipant;
 import org.jpos.transaction.Context;
+import org.jpos.util.FrozenLogEvent;
 import org.jpos.util.Log;
 import org.jpos.util.LogEvent;
 import org.jpos.util.Logger;
@@ -45,7 +46,6 @@ public class Debug extends Log implements AbortParticipant {
         LogEvent evt = createLogEvent (action);
         evt.addMessage ("<id>" + id + "</id>");
         evt.addMessage (ctx);
-        return evt;
+        return new FrozenLogEvent(evt);
     }
 }
-
