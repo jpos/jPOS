@@ -340,7 +340,7 @@ public class TransactionManager
                     if (prof != null)
                         evt.addMessage (prof);
 
-                    Logger.log (evt);
+                    Logger.log (new FrozenLogEvent(evt));
                     evt = null;
                 }
             }
