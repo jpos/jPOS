@@ -330,10 +330,17 @@ public abstract class ISOBasePackager implements ISOPackager, LogSource {
                         evt.addMessage(e);
                     }
                     // jPOS-3
-                    e = new ISOException (
-                        String.format ("%s (%s) unpacking field=%d, consumed=%d",
-                        e.getMessage(), e.getNested().toString(), i, consumed)
-                    );
+                    if (e.getNested() == null) {
+                        e = new ISOException(
+                            String.format("%s unpacking field=%d, consumed=%d",
+                            e.getMessage(), i, consumed)
+                        );
+                    } else {
+                        e = new ISOException(
+                            String.format("%s (%s) unpacking field=%d, consumed=%d",
+                            e.getMessage(), e.getNested().toString(), i, consumed)
+                        );
+                    }
                     throw e;
                 }
             } // for each field
