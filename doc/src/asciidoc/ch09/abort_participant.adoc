@@ -41,6 +41,12 @@ If we use this technique to implement a +SendResponse+ participant, as an additi
 protection it is a good idea to verify that we are not approving a transaction.
 =====
 
+[NOTE]
+======
+As of jPOS 2.1.0 the `prepareForAbort` has a default implementation that
+calls the TransactionParticipant's `prepare` method.
+======
+
 If you see the previous diagram, when participant 3 returns `ABORTED`, the last
 participant doesn't get called. If participant number four implements this
 `AbortParticipant` interface, the diagram would look like this:

@@ -55,6 +55,13 @@ that exposes the following interface:
 
 -------------
 
+[NOTE]
+======
+As of jPOS 2.1.0 the `commit` and `abort` methods have default
+implementations so they don't have to be called in situations
+where `prepare` returns the `NO_JOIN` modifier.
+======
+
 The TransactionManager implementation _drives_ the transaction by calling all of its 
 participants' +prepare+ method. If all of them return +PREPARED+ (indicating that
 they are ready to proceed with the transaction), then the transaction moves
