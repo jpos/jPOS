@@ -42,7 +42,7 @@ public interface TransactionParticipant extends TransactionConstants {
      * @param id the Transaction identifier
      * @param context transaction context
      */
-    void commit(long id, Serializable context);
+    default void commit(long id, Serializable context) { }
 
     /**
      * Called by TransactionManager upon transaction commit.
@@ -52,6 +52,5 @@ public interface TransactionParticipant extends TransactionConstants {
      * @param id the Transaction identifier
      * @param context transaction context
      */
-    void abort(long id, Serializable context);
+    default void abort(long id, Serializable context) { }
 }
-
