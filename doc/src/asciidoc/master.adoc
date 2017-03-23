@@ -3,9 +3,9 @@ jPOS Programmer's Guide
 :author: Alejandro Revilla
 :email: apr@jpos.org
 :revdate: {localdate}
-:revnumber: 2.0.0
-:jpos_version: 2.0.8
-:jpos_snapshot_version: 2.0.9-SNAPSHOT
+:revnumber: 2.0.1
+:jpos_version: 2.0.10
+:jpos_snapshot_version: 2.1.0-SNAPSHOT
 :toc:
 
 :leveloffset: 1
@@ -25,6 +25,7 @@ include::ch01/running.adoc[]
 = About ISO-8583
 include::ch02/iso8583.adoc[]
 include::ch02/jposiso.adoc[]
+include::ch02/incoming_listener.adoc[]
 
 = Support classes
 include::ch03/logger.adoc[]

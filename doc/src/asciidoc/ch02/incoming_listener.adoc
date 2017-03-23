@@ -1,0 +1,55 @@
+[[incoming_filter]]
+
+== IncomingListener
+
+As of jPOS 2.1.0, there's a new general purpose `ISORequestListener`
+called `org.jpos.iso.IncomingFilter` that forwards all incoming
+transactions to a space queue, to be picked up by the TransactionManager.
+
+It honors the following configuration properties:
+
+
+.IncomingListener Configuration Properties
+[cols="1,2,2", options="header"]
+|========================================================================
+|Property  | Description                  | Default Value
+|queue     | Transaction Manager's queue  | no default, this property is required
+|timeout   | Source Based Timeout         | 15000ms, set to 0 to disable
+|source    | Places `ISOSource`           | `SOURCE` 
+|request   | Places `ISOMsg`              | `REQUEST` 
+|timestamp | Context creation timestamp   | `TIMESTAMP`
+|space     | Spaces to use when queuing transaction | "" (default space)
+|========================================================================
+
+In addition to the previous configuration properties, `IncomingFilter` places
+in the context any additional optional property starting with the prefix `ctx.`,
+so for example, if a server or mux uses a request listener configured to handle
+transactions from a given endpoing "XYZ", a property called `ctx.XYZ` can be
+added to the configuration and will be available to the transaction participants,
+i.e.:
+
+
+[source,xml]
+------------
+<mux class="org.jpos.q2.iso.QMUX" logger="Q2" name="postilion">
+  <in>receive</in>
+  <out>send</out>
+  <readychannel.ready</ready>
+
+  <request-listener class="org.jpos.iso.IncomingListener" logger="Q2" 
+     realm="incoming-listener">
+   <property name="queue"   value="JPTS.TXN" />
+   <property name="ctx.STATION" value="SS_XYZ" />
+   <property name="ctx.PORT" value="1234" />
+  </request-listener>
+</mux>
+------------
+
+The `Context` queued to the `JPTS.TXN` queue would have the following properties:
+
+* `STATION` with a value of `SS_XYZ`
+* `PORT` with a value of `1234`
+
+as well as the entries `SOURCE`, `REQUEST`, `TIMESTAMP` and also a fresh `PROFILER`.
+
+
