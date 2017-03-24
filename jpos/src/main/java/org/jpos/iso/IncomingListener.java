@@ -18,6 +18,7 @@
 
 package org.jpos.iso;
 
+import org.jpos.transaction.ContextConstants;
 import org.jpos.util.Log;
 import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
@@ -31,10 +32,6 @@ import java.util.Map;
 
 @SuppressWarnings("unused")
 public class IncomingListener extends Log implements ISORequestListener, Configurable {
-    Configuration cfg;
-    public static final String SOURCE = "SOURCE";
-    public static final String REQUEST = "REQUEST";
-    public static final String TIMESTAMP = "TIMESTAMP";
     long timeout;
     private Space<String,Context> sp;
     private String queue;
@@ -48,15 +45,14 @@ public class IncomingListener extends Log implements ISORequestListener, Configu
     public void setConfiguration (Configuration cfg) 
         throws ConfigurationException
     {
-        this.cfg = cfg;
         timeout  = cfg.getLong ("timeout", 15000L);
         sp = (Space<String,Context>) SpaceFactory.getSpace (cfg.get ("space"));
         queue = cfg.get ("queue", null);
         if (queue == null)
             throw new ConfigurationException ("queue property not specified");
-        source = cfg.get ("source", SOURCE);
-        request = cfg.get ("request", REQUEST);
-        timestamp = cfg.get ("timestamp", TIMESTAMP);
+        source = cfg.get ("source", ContextConstants.SOURCE.toString());
+        request = cfg.get ("request", ContextConstants.REQUEST.toString());
+        timestamp = cfg.get ("timestamp", ContextConstants.TIMESTAMP.toString());
         Map<String,String> m = new HashMap<>();
         cfg.keySet()
            .stream()

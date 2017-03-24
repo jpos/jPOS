@@ -29,6 +29,10 @@ import org.jpos.util.Profiler;
 import java.io.*;
 import java.util.*;
 
+import static org.jpos.transaction.ContextConstants.LOGEVT;
+import static org.jpos.transaction.ContextConstants.PAUSED_TRANSACTION;
+import static org.jpos.transaction.ContextConstants.PROFILER;
+
 @SuppressWarnings("unchecked")
 public class Context implements Externalizable, Loggeable, Pausable {
     private transient Map<String,Object> map; // transient map
@@ -36,10 +40,6 @@ public class Context implements Externalizable, Loggeable, Pausable {
     private long timeout;
     private boolean resumeOnPause = false;
     private transient boolean trace = false;
-
-    public static String LOGEVT = "LOGEVT";
-    public static String PROFILER = "PROFILER";
-    public static String PAUSED_TRANSACTION = ":paused_transaction";
 
     public Context () {
         super ();
@@ -218,11 +218,11 @@ public class Context implements Externalizable, Loggeable, Pausable {
      * @return LogEvent
      */
     synchronized public LogEvent getLogEvent () {
-        LogEvent evt = (LogEvent) get (LOGEVT);
+        LogEvent evt = (LogEvent) get (LOGEVT.toString());
         if (evt == null) {
             evt = new LogEvent ();
             evt.setNoArmor(true);
-            put (LOGEVT, evt);
+            put (LOGEVT.toString(), evt);
         }
         return evt;
     }
@@ -231,10 +231,10 @@ public class Context implements Externalizable, Loggeable, Pausable {
      * @return Profiler object
      */
     synchronized public Profiler getProfiler () {
-        Profiler prof = (Profiler) get (PROFILER);
+        Profiler prof = (Profiler) get (PROFILER.toString());
         if (prof == null) {
             prof = new Profiler();
-            put (PROFILER, prof);
+            put (PROFILER.toString(), prof);
         }
         return prof;
     }
@@ -252,7 +252,7 @@ public class Context implements Externalizable, Loggeable, Pausable {
         getProfiler().checkPoint (detail);
     }
     public void setPausedTransaction (PausedTransaction p) {
-        put (PAUSED_TRANSACTION, p);
+        put (PAUSED_TRANSACTION.toString(), p);
         synchronized (this) {
             if (resumeOnPause) {
                 resume();
@@ -260,7 +260,7 @@ public class Context implements Externalizable, Loggeable, Pausable {
         }
     }
     public PausedTransaction getPausedTransaction() {
-        return (PausedTransaction) get (PAUSED_TRANSACTION);
+        return (PausedTransaction) get (PAUSED_TRANSACTION.toString());
 
     }
     public void setTimeout (long timeout) {
