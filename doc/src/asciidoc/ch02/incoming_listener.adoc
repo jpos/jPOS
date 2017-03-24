@@ -21,7 +21,7 @@ It honors the following configuration properties:
 |space     | Spaces to use when queuing transaction | "" (default space)
 |========================================================================
 
-In addition to the previous configuration properties, `IncomingFilter` places
+In addition to the previous configuration properties, `IncomingListener` places
 in the context any additional optional property starting with the prefix `ctx.`,
 so for example, if a server or mux uses a request listener configured to handle
 transactions from a given endpoing "XYZ", a property called `ctx.XYZ` can be
