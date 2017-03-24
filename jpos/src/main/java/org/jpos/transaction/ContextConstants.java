@@ -24,6 +24,7 @@ public enum ContextConstants {
     LOGEVT,
     DB, TX,
     IRC,
+    TXNNAME,
     PAUSED_TRANSACTION(":paused_transaction");
 
     private final String name;

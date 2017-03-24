@@ -1,0 +1,42 @@
+=== Switch participant
+
+The `org.jpos.transaction.participant.Switch` is a general
+purpose `GroupSelector` that uses a context entry's
+value to return a set of groups picked from a standard `Configuration`.
+
+.Switch participant Configuration Properties
+[cols="1,2,2", options="header"]
+|========================================================================
+|Property  | Description                                 | Default Value
+|txnname   | Context entry to use as key                 | `TXNNAME` 
+|unknown   | Set of groups to be used on not found       | ""
+|========================================================================
+
+Here is a sample configuration taken from jCard:
+
+[source,xml]
+------------
+
+ <participant class="org.jpos.transaction.participant.Switch" 
+      logger="Q2" realm="Switch">
+  <property name="100.30" 
+           value="balanceinquiry prepareresponse logit close sendresponse" />
+  <property name="100.30.182" 
+           value="customer-balanceinquiry prepareresponse logit close sendresponse" />
+  <property name="100.00" 
+           value="authorization prepareresponse logit close sendresponse" />
+  <property name="100.02" 
+           value="auth-void prepareresponse logit close sendresponse" />
+  <property name="100.20" 
+           value="refund prepareresponse logit close sendresponse" />
+  <property name="100.22" 
+           value="refund-void prepareresponse logit close sendresponse" />
+  <property name="100.00.201"
+           value="auth-adjustment prepareresponse logit close sendresponse" />
+   ...
+   ...
+------------
+
+A previous participant puts in the context under the key `TXNNAME` data taken from
+the request ISOMsg (i.e. MTI, processing code, function code).
+

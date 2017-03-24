@@ -1,4 +1,4 @@
-== SendResponse
+=== SendResponse
 
 The `org.jpos.transaction.participant.SendResponse` can be used
 to provide responses to a given source. It looks for a `SOURCE`

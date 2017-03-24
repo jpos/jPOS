@@ -1,4 +1,4 @@
-== JSParticipant 
+=== JSParticipant 
 
 The `org.jpos.transaction.participant.JSParticipant` is a handy stock
 participant that leverages Java 8 Nashorn.

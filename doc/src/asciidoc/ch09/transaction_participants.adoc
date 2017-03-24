@@ -1,0 +1,9 @@
+== Transaction Participants
+
+jPOS comes with some general purpose transaction participant implementations that
+can be used as-is or used as a reference to write your own.
+
+include::participants/switch.adoc[]
+include::participants/send_response.adoc[]
+include::participants/jsparticipant.adoc[]
+
