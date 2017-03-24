@@ -1,0 +1,24 @@
+== SendResponse
+
+The `org.jpos.transaction.participant.SendResponse` can be used
+to provide responses to a given source. It looks for a `SOURCE`
+property and a `RESPONSE` property in the Context and if both
+are present, and the source is connected, it sends back the response.
+
+.SendResponse Configuration Properties
+[cols="1,2,2", options="header"]
+|========================================================================
+|Property  | Description                                 | Default Value
+|source    | `ISOSource` used to send back the response  | `SOURCE` 
+|response  | A response `ISOMsg`                         | `RESPONSE` 
+|========================================================================
+
+[NOTE]
+======
+As a safety net, the `SendResponse` participant verifies that there is
+no entry in the Context under the name `TX` (typically used to store a
+JDBC/DB transaction. This is an arbitrary convention, we want to make
+sure that transactions are committed to disk before actually sending
+back responses.
+======
+

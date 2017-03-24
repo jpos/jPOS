@@ -88,6 +88,7 @@ include::ch09/abort_participant.adoc[]
 include::ch09/group_selector.adoc[]
 include::ch09/transaction_manager.adoc[]
 include::ch09/jsparticipant.adoc[]
+include::ch09/send_response.adoc[]
 
 //include::ch02.adociidoc[]
 //include::ch03.adociidoc[]
