@@ -3,7 +3,7 @@
 == IncomingListener
 
 As of jPOS 2.1.0, there's a new general purpose `ISORequestListener`
-called `org.jpos.iso.IncomingFilter` that forwards all incoming
+called `org.jpos.iso.IncomingListener` that forwards all incoming
 transactions to a space queue, to be picked up by the TransactionManager.
 
 It honors the following configuration properties:
