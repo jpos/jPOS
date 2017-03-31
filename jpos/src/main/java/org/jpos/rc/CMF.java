@@ -189,10 +189,13 @@ public enum CMF implements IRC {
 
     GENERAL_DECLINE(9999),
 
-    // jPOS specific result code
+    // jPOS specific result codes
     JPOS(10000),
+    INVALID_FIELD(10001),
+    MISSING_FIELD(10002),
+    EXTRA_FIELD(10003),
 
-    // User specific result code
+    // User specific result codes
     USER(90000);
 
     int irc;
