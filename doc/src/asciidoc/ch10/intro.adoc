@@ -7,7 +7,7 @@ v2003 link.
 
 In addition to the 100+ properly defined result codes in the ISO-8583
 v2003 spec (used by jPOS Common Message format)footnote:[jPOS Common Message Format - http://jpos.org/doc/jPOS-CMF.pdf]
-jPOS as well as user appplications need to define and map their own result codes.
+jPOS as well as user applications need to define and map their own result codes.
 
 `org.jpos.rc` defines two main interfaces:
 
