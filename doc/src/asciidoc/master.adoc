@@ -89,6 +89,11 @@ include::ch09/group_selector.adoc[]
 include::ch09/transaction_manager.adoc[]
 include::ch09/transaction_participants.adoc[]
 
+= ResultCode
+include::ch10/intro.adoc[]
+include::ch10/cmf.adoc[]
+include::ch10/result.adoc[]
+
 //include::ch02.adociidoc[]
 //include::ch03.adociidoc[]
 //include::ch04.adociidoc[]

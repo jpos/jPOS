@@ -1,0 +1,85 @@
+== CMF
+
+`org.jpos.rc.CMF` is an enum that implements `IRC` and defines all jPOS-CMF possible internal result codes,
+
+[source,java]
+-------------
+public enum CMF implements IRC {
+    // Approved
+    APPROVED         (0),
+    HONOR_WITH_ID    (1),
+    APPROVED_PARTIAL (2),
+    APPROVED_VIP     (3),
+    APPROVED_UPDATE_TRACK3 (4),
+    APPROVED_ISSUER_SPECIFIED_ACCOUNT (5),
+    APPROVED_PARTIAL_ISSUER_SPECIFIED_ACCOUNT (6),
+    APPROVED_FEES_DISPUTED(8),
+    APPROVED_WITH_OVERDRAFT(9),
+    APPROVED_CUSTOMER_REACTIVATED(10),
+    APPROVED_TERMINAL_UNABLE_TO_PROCESS_ONLINE(11),
+    APPROVED_OFFLINE (12),
+    APPROVED_OFFLINE_REFERRAL (13),
+
+    // Denied Authorization
+    DO_NOT_HONOUR(1000),
+    EXPIRED (1001),
+    SUSPECTED_FRAUD(1002),
+    CONTACT_ACQUIRER(1003),
+    RESTRICTED_CARD(1004),
+    CONTACT_ACQUIRER_SECURITY(1005),
+    MAX_PIN_TRIES_EXCEEDED(1006),
+    REFER_TO_ISSUER(1007),
+    REFER_TO_ISSUER_SPECIAL(1008),
+    INVALID_CARD_ACCEPTOR(1009),
+    ...
+    ...
+    GENERAL_DECLINE(9999),
+
+    // jPOS specific result code
+    JPOS(10000),
+
+    // User specific result code
+    USER(90000);
+    ...
+    ...
+}
+-------------
+
+[TIP]
+=====
+See https://github.com/jpos/jPOS/blob/master/jpos/src/main/java/org/jpos/rc/CMF.java[CMF.java at Github]
+for an up-to-date list of possible CMF IRCs.
+=====
+
+The standard `CMF` enum defines two special result codes, `JPOS` (with an irc
+value 10000) and `USER` (with an irc value 90000).
+
+jPOS.org standard applications would use values 10000 to 19999 for its result
+codes and we suggest user applications using the jPOS framework to use result codes
+90000 to 99999.
+
+This of course is optional.
+
+We provide a general purpose converter implementation called `CMFConverter` that has the following
+features:
+
+* It provides reasonable IRC-to-RC mapping for all result codes provided in the `CMF` enum
+* Default values can be overridden by a result bundled provided in the classpath
+* Default values can be overridden by means of a Configuration object (`CMFConverter` implements `Configurable`).
+
+The `CMFConverter` reads optional override resource bundles in the following locations within the classpath:
+
+* `org/jpos/rc/CMF.properties`
+* `META-INF/org/jpos/rc/CMF.properties`
+
+And then an optional `Configuration` object. The format for those overrides is:
+
+`IRC=RC,DISPLAY`, i.e:
+
+[source]
+--------
+9999=ZZZZ,General Decline
+--------
+
+This would return `ZZZZ` as the result code instead of `9999` with a display message `General Decline`.
+

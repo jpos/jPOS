@@ -1,0 +1,40 @@
+== Result holder class
+
+Financial applications typically have to perform a lot of validations,
+a typical jPOS application for instance using the Transaction Manager has
+participants to check mandatory and optional fields, check the terminal,
+the merchant, the card, PIN, etc.
+
+While certifying these kind of applications we usually detect the first
+error and abort. Once the error gets corrected we find there's another
+error in the next test, and yet another on a third one.
+
+So instead of early-failing, applications can "collect" result information 
+`Result` object.
+
+We handle three type of results:
+
+* `INFO`
+* `WARN`
+* `FAIL`
+
+`INFO` as well as `WARN` won't stop a transaction from succedding, while those
+results with a `FAIL` type should cause the transaction to fail.
+
+A `Result` object is typically placed in the Transaction's Context which
+now has a handy `getResult()` helper method, so a participant can use
+code like this:
+
+[source,java]
+-------------
+ctx.getResult().fail (CMF.EXPIRED, Caller.info(), "Card expired");
+-------------
+
+[TIP]
+=====
+`Caller.info()` is a handy static method available in `org.jpos.util.Caller` class.
+=====
+
+In addition to `fail` messages, it is possible to call `warn` or `info`. 
+Those methods don't require an `IRC` parameter.
+

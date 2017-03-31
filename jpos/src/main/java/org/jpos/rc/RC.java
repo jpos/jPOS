@@ -16,29 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.jpos.transaction;
+package org.jpos.rc;
 
-public enum ContextConstants {
-    PROFILER, TIMESTAMP,
-    SOURCE, REQUEST, RESPONSE,
-    LOGEVT,
-    DB, TX,
-    IRC,
-    TXNNAME,
-    RESULT,
-    PAUSED_TRANSACTION(":paused_transaction");
-
-    private final String name;
-
-    ContextConstants() {
-        this.name = name();
-    }
-    ContextConstants(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public String toString() {
-        return name;
-    }
+/**
+ * Result Code
+ */
+public interface RC {
+    String rc();
+    String display();
 }
+

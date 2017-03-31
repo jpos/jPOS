@@ -25,13 +25,12 @@ import org.jpos.iso.ISOUtil;
 import org.jpos.util.LogEvent;
 import org.jpos.util.Loggeable;
 import org.jpos.util.Profiler;
+import org.jpos.rc.Result;
 
 import java.io.*;
 import java.util.*;
 
-import static org.jpos.transaction.ContextConstants.LOGEVT;
-import static org.jpos.transaction.ContextConstants.PAUSED_TRANSACTION;
-import static org.jpos.transaction.ContextConstants.PROFILER;
+import static org.jpos.transaction.ContextConstants.*;
 
 @SuppressWarnings("unchecked")
 public class Context implements Externalizable, Loggeable, Pausable {
@@ -238,6 +237,20 @@ public class Context implements Externalizable, Loggeable, Pausable {
         }
         return prof;
     }
+
+    /**
+     * return (or creates) a Resultr object
+     * @return Profiler object
+     */
+    synchronized public Result getResult () {
+        Result result = (Result) get (RESULT.toString());
+        if (result == null) {
+            result = new Result();
+            put (RESULT.toString(), result);
+        }
+        return result;
+    }
+
     /**
      * adds a trace message
      * @param msg trace information

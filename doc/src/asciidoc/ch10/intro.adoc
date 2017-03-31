@@ -1,0 +1,45 @@
+Most jPOS applications need to deal with result codes going and coming
+to and from different endpoints.
+
+A "Card Expired" result code (data element 39) can be `14` for a given
+ISO-8583 v1987 endpoint, a `54` in another v87 one and `1001` in a
+v2003 link.
+
+In addition to the 100+ properly defined result codes in the ISO-8583
+v2003 spec (used by jPOS Common Message format)footnote:[jPOS Common Message Format - http://jpos.org/doc/jPOS-CMF.pdf]
+jPOS as well as user appplications need to define and map their own result codes.
+
+`org.jpos.rc` defines two main interfaces:
+
+- *IRC* (Internal Result Code)
+- *RC* (Result Code, which represents an external result code)
+
+The `IRC` interface is very simple, it just holds an integer value:
+
+[source,java]
+-------------
+public interface IRC {
+    int irc();
+}
+-------------
+
+and the `RC` looks like this:
+
+[source,java]
+-------------
+public interface RC {
+    String rc();
+    String display();
+}
+-------------
+
+Then we have an `IRCConverter` interface that maps an `IRC` into an `RC`
+
+[source,java]
+-------------
+public interface IRCConverter {
+    RC convert (IRC irc);
+}
+-------------
+
+
