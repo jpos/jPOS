@@ -101,40 +101,6 @@ public class ContextTest {
     }
 
     @Test
-    public void testGet3() throws Throwable {
-        Context context = new Context();
-        context.getString(new Object());
-        Byte defValue = Byte.valueOf((byte) 0);
-        Byte result = (Byte) context.get("", defValue);
-        assertSame("result", defValue, result);
-    }
-
-    @Test
-    public void testGet4() throws Throwable {
-        Context context = new Context();
-        context.getPausedTransaction();
-        String result = (String) context.get(Long.valueOf(2L), "1 +");
-        assertEquals("result", "1 +", result);
-    }
-
-    @Test
-    public void testGet5() throws Throwable {
-        Context key = new Context();
-        key.put("", new Object(), true);
-        Boolean defValue = Boolean.TRUE;
-        Boolean result = (Boolean) key.get(key, defValue);
-        assertSame("result", defValue, result);
-    }
-
-    @Test
-    public void testGet6() throws Throwable {
-        Context context = new Context();
-        context.put("", new Object(), true);
-        Object result = context.get(new Object(), null);
-        assertNull("result", result);
-    }
-
-    @Test
     public void testGet7() throws Throwable {
         Context context = new Context();
         context.remove(null);
@@ -146,8 +112,8 @@ public class ContextTest {
     @Test
     public void testGet8() throws Throwable {
         Context context = new Context();
-        Integer defValue = Integer.valueOf(-1);
-        Integer result = (Integer) context.get(new Object(), defValue);
+        Integer defValue = -1;
+        Integer result = (Integer) context.get("", defValue);
         assertSame("result", defValue, result);
     }
 
@@ -179,14 +145,6 @@ public class ContextTest {
     }
 
     @Test
-    public void testGetString() throws Throwable {
-        Context context = new Context();
-        context.getPausedTransaction();
-        String result = context.getString(Integer.valueOf(0));
-        assertNull("result", result);
-    }
-
-    @Test
     public void testGetString1() throws Throwable {
         Context context = new Context();
         String result = context.getString("testString");
@@ -206,18 +164,6 @@ public class ContextTest {
         context.getPausedTransaction();
         String result = context.getString("", null);
         assertNull("result", result);
-    }
-
-    @Test
-    public void testGetStringThrowsClassCastException() throws Throwable {
-        Context context = new Context();
-        context.getPausedTransaction();
-        try {
-            context.getString(Integer.valueOf(0), new Object());
-            fail("Expected ClassCastException to be thrown");
-        } catch (ClassCastException ex) {
-            assertEquals("ex.getClass()", ClassCastException.class, ex.getClass());
-        }
     }
 
     @Test
@@ -265,27 +211,6 @@ public class ContextTest {
         assertTrue("Test completed without Exception", true);
     }
 
-    @Test
-    public void testPut3() throws Throwable {
-        Context context = new Context();
-        context.put("", new Object(), true);
-        context.put(Integer.valueOf(0), new Object(), true);
-    }
-
-    @Test
-    public void testPut4() throws Throwable {
-        Context context = new Context();
-        context.remove(new Object());
-        context.put(Integer.valueOf(0), "testString", true);
-        assertTrue("Test completed without Exception", true);
-    }
-
-    @Test
-    public void testPut5() throws Throwable {
-        Context context = new Context();
-        context.getPausedTransaction();
-        context.put(new Object(), "testString", false);
-    }
 
     @Test
     public void testPut6() throws Throwable {

@@ -32,7 +32,6 @@ import java.util.*;
 
 import static org.jpos.transaction.ContextConstants.*;
 
-@SuppressWarnings("unchecked")
 public class Context implements Externalizable, Loggeable, Pausable {
     private transient Map<String,Object> map; // transient map
     private Map<String,Object> pmap;          // persistent (serializable) map
@@ -47,7 +46,7 @@ public class Context implements Externalizable, Loggeable, Pausable {
     /**
      * puts an Object in the transient Map
      */
-    public void put (Object key, Object value) {
+    public void put (String key, Object value) {
         if (trace) {
             getProfiler().checkPoint(
                 String.format("   %s='%s' [%s]", key, value, Thread.currentThread().getStackTrace()[2])
@@ -61,7 +60,7 @@ public class Context implements Externalizable, Loggeable, Pausable {
     /**
      * puts an Object in the transient Map
      */
-    public void put (Object key, Object value, boolean persist) {
+    public void put (String key, Object value, boolean persist) {
         if (trace) {
             getProfiler().checkPoint(
                 String.format("P: %s='%s' [%s]", key, value, new Throwable().getStackTrace()[1].toString())
@@ -74,10 +73,10 @@ public class Context implements Externalizable, Loggeable, Pausable {
     /**
      * Get
      */
-    public Object get (Object key) {
+    public Object get (String key) {
         return getMap().get (key);
     }
-    public Object get (Object key, Object defValue) {
+    public Object get (String key, Object defValue) {
         Object obj = getMap().get (key);
         return obj != null ? obj : defValue;
     }
@@ -88,11 +87,21 @@ public class Context implements Externalizable, Loggeable, Pausable {
         getPMap().remove (key);
         return getMap().remove (key);
     }
-    public String getString (Object key) {
-        return (String) getMap().get (key);
+    public String getString (String key) {
+        Object obj = getMap().get (key);
+        if (obj instanceof String)
+            return (String) obj;
+        else if (obj != null)
+            return obj.toString();
+        return null;
     }
-    public String getString (Object key, Object defValue) {
-        return (String) get (key, defValue);
+    public String getString (Object key, String defValue) {
+        Object obj = getMap().get (key);
+        if (obj instanceof String)
+            return (String) obj;
+        else if (obj != null)
+            return obj.toString();
+        return defValue;
     }
     public void dump (PrintStream p, String indent) {
         String inner = indent + "  ";
@@ -147,17 +156,17 @@ public class Context implements Externalizable, Loggeable, Pausable {
     /**
      * @return persistent map
      */
-    private synchronized Map getPMap() {
+    private synchronized Map<String,Object> getPMap() {
         if (pmap == null)
-            pmap = Collections.synchronizedMap (new LinkedHashMap ());
+            pmap = Collections.synchronizedMap (new LinkedHashMap<String,Object> ());
         return pmap;
     }
     /**
      * @return transient map
      */
-    public synchronized Map getMap() {
+    public synchronized Map<String,Object> getMap() {
         if (map == null)
-            map = Collections.synchronizedMap (new LinkedHashMap ());
+            map = Collections.synchronizedMap (new LinkedHashMap<String,Object>());
         return map;
     }
     protected void dumpMap (PrintStream p, String indent) {
@@ -170,7 +179,7 @@ public class Context implements Externalizable, Loggeable, Pausable {
     }
 
     protected void dumpEntry (PrintStream p, String indent, Map.Entry<String,Object> entry) {
-        String key = entry.getKey();
+        String key = entry.getKey().toString();
         if (key.startsWith(".") || key.startsWith("*"))
             return; // see jPOS-63
 
