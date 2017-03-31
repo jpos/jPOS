@@ -407,6 +407,7 @@ public class ISOMsg extends ISOComponent
             }
         }
     }
+
     /**
      * In order to interchange <b>Composites</b> and <b>Leafs</b> we use
      * getComposite(). A <b>Composite component</b> returns itself and
@@ -683,13 +684,36 @@ public class ISOMsg extends ISOComponent
                 return false;
         return true;
     }
+
+    /**
+     * Check if the message has any of these fields
+     * @param fields an array of fields to check for presence
+     * @return true if at least one field is present
+     */
+    public boolean hasAny (int[] fields) {
+        for (int field : fields)
+            if (hasField(field))
+                return true;
+        return false;
+    }
+    /**
+     * Check if the message has any of these fields
+     * @param fields to check for presence
+     * @return true if at least one field is present
+     */
+    public boolean hasAny (String... fields) {
+        for (String field : fields)
+            if (hasField (field))
+                return true;
+        return false;
+    }
+
     /**
      * Check if a field indicated by a fpath is present
      * @param fpath dot-separated field path (i.e. 63.2)
      * @return true if field present
-     * @throws ISOException on error
      */
-     public boolean hasField (String fpath) throws ISOException {
+     public boolean hasField (String fpath) {
          StringTokenizer st = new StringTokenizer (fpath, ".");
          ISOMsg m = this;
          for (;;) {

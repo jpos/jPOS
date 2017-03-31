@@ -317,7 +317,7 @@ public class ISOMsgRef {
         }
 
         @Override
-        public boolean hasField(String fpath) throws ISOException {
+        public boolean hasField(String fpath) {
             return delegate.hasField(fpath);
         }
 
