@@ -26,6 +26,10 @@ public enum ContextConstants {
     IRC,
     TXNNAME,
     RESULT,
+    MID,
+    TID,
+    PCODE,
+    CARD,
     PAUSED_TRANSACTION(":paused_transaction");
 
     private final String name;
