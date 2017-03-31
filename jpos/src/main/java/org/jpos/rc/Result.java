@@ -21,10 +21,8 @@ package org.jpos.rc;
 import org.jpos.util.Loggeable;
 
 import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Represents the Result of a transaction
@@ -69,6 +67,29 @@ public class Result implements Loggeable {
         }
     }
 
+    public List<Entry> entries() {
+        return entries;
+    }
+
+    public List<Entry> infos() {
+        return entries
+          .stream()
+          .filter(s -> s.type == Type.INFO)
+          .collect(Collectors.toList());
+    }
+
+    public List<Entry> warnings() {
+        return entries
+          .stream()
+          .filter(s -> s.type == Type.WARN)
+          .collect(Collectors.toList());
+    }
+    public List<Entry> failures() {
+        return entries
+          .stream()
+          .filter(s -> s.type == Type.FAIL)
+          .collect(Collectors.toList());
+    }
     private Result add (Type type, IRC irc, String source, String format, Object ... args) {
         entries.add (
           new Entry(type, irc, source, String.format(format, args))
@@ -148,6 +169,10 @@ public class Result implements Loggeable {
 
         public String getSource() {
             return source;
+        }
+
+        public String getMessage() {
+            return message;
         }
 
         @Override
