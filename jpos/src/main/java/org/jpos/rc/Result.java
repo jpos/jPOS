@@ -138,6 +138,18 @@ public class Result implements Loggeable {
             this.message = message;
         }
 
+        public Type getType() {
+            return type;
+        }
+
+        public IRC getIrc() {
+            return irc;
+        }
+
+        public String getSource() {
+            return source;
+        }
+
         @Override
         public String toString() {
             return "Entry{" +
