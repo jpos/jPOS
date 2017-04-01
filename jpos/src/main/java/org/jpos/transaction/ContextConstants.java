@@ -36,6 +36,10 @@ public enum ContextConstants {
     POS_DATA_CODE,
     AMOUNT,
     LOCAL_AMOUNT,
+    ORIGINAL_MTI,
+    ORIGINAL_STAN,
+    ORIGINAL_TIMESTAMP,
+    ORIGINAL_DATA_ELEMENTS,
     PAUSED_TRANSACTION(":paused_transaction");
 
     private final String name;

@@ -1,0 +1,53 @@
+=== CheckFields participant
+
+The `org.jpos.transaction.participant.CheckFields` is a general
+participant that can be used to check for mandatory as well as
+optional fields present in the context.
+
+
+.CheckFields Configuration Properties
+[cols="1,2,2", options="header"]
+|========================================================================
+|Property  | Description                                 | Default Value
+|request   | Name of the ISOMsg to be checked            | `REQUEST` 
+|========================================================================
+
+Here is a sample configuration:
+
+[source,xml]
+------------
+ <participant class="org.jpos.transaction.participant.CheckFields" logger="Q2">
+   <property name="mandatory" value="PCODE,TRANSMISSION_TIMESTAMP,11,12,AMOUNT,CARD,41" />
+   <property name="optional"  value="15,17,21,22,24,32,37,42,43,46,60,63,62,111,113" />
+   ...
+   ...
+</participant>
+------------
+
+The `CheckFields` handle standard numeric fields performing minimum validations (i.e. `7,11,12,35`),
+it just checks for presence of those fields, but it handle some special names that are relevant to
+most jPOS applications, specially those dealing with http://jpos.org/doc/jPOS-CMF.pdf[jPOS-CMF].
+
+In those situations, `CheckFields` performs additional parsing, validation, and places in the
+Context handy objects that other participants can use.
+
+For example, if we use the name `CARD`, then `CheckFields` participant tries to get us a `Card`
+object taking it from either fields 2 and 14 (manual entry) as well as 35 (track2) or 45 (track1).
+In addition, it verifies that track1 and track2 are valid, and matches the PAN and EXP values
+present in fields 2 and 14 (if available).
+
+The complete list of special names are:
+
+* `PCODE` - parses the processing code.
+* `CARD`  - creates a `org.jpos.core.Card` Object.
+* `TID`   - Terminal ID picked from field 41.
+* `MID`   - Merchant ID picked from field 42.
+* `TRANSMISSION_TIMESTAMP` - creates a Date object picked from field 7 (ISO-8583 v2003 format).
+* `TRANSACTION_TIMESTAMP` - creates a Date object picked from field 12 (ISO-8583 v2003 format).
+* `POS_DATA_CODE` - create a POSDataCode from field 22.
+* `CAPTURE_DATE` - date object picked from field 17
+* `AMOUNT` - picks `ISOAmount` from either field 4 or 5. If field 5 is available, then `AMOUNT` holds the content of field 5 (settlement amount)
+  while field 4 gets stored in another Context variable called `LOCAL_AMOUNT` (ISO-8583 v2003 format).
+* `ORIGINAL_DATA_ELEMENTS` parses original MTI, STAN and TIMESTAMP from field 56 (ISO-8583 v2003 format).
+
+
