@@ -30,6 +30,12 @@ public enum ContextConstants {
     TID,
     PCODE,
     CARD,
+    TRANSMISSION_TIMESTAMP,
+    TRANSACTION_TIMESTAMP,
+    CAPTURE_DATE,
+    POS_DATA_CODE,
+    AMOUNT,
+    LOCAL_AMOUNT,
     PAUSED_TRANSACTION(":paused_transaction");
 
     private final String name;
