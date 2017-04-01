@@ -1,0 +1,1017 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE isopackager PUBLIC
+        "-//jPOS/jPOS Generic Packager DTD 1.0//EN"
+        "http://jpos.org/dtd/generic-packager-1.0.dtd">
+
+<!-- jPOS Common Message Format - see http://jpos.org/doc/jPOS-CMF.pdf -->
+
+<isopackager>
+  <isofield
+      id="0"
+      length="4"
+      name="Message Type Indicator"
+      pad="false"
+      class="org.jpos.iso.IFB_NUMERIC"/>
+  <isofield
+      id="1"
+      length="16"
+      name="Bitmap"
+      class="org.jpos.iso.IFB_BITMAP"/>
+  <isofield
+      id="2"
+      length="19"
+      name="Primary Account number"
+      pad="false"
+      class="org.jpos.iso.IFB_LLNUM"/>
+  <isofield
+      id="3"
+      length="6"
+      name="Processing Code"
+      pad="false"
+      class="org.jpos.iso.IF_CHAR"/>
+  <isofield
+      id="4"
+      length="16"
+      name="Amount, Transaction"
+      pad="false"
+      class="org.jpos.iso.IFB_AMOUNT2003"/>
+  <isofield
+      id="5"
+      length="16"
+      name="Amount, Reconciliation"
+      pad="false"
+      class="org.jpos.iso.IFB_AMOUNT2003"/>
+  <isofield
+      id="6"
+      length="16"
+      name="Amount, Cardholder billing"
+      pad="false"
+      class="org.jpos.iso.IFB_AMOUNT2003"/>
+  <isofield
+      id="7"
+      length="10"
+      name="Date and time, transmission"
+      pad="false"
+      class="org.jpos.iso.IFB_NUMERIC"/>
+  <isofield
+      id="8"
+      length="12"
+      name="Amount, Cardholder billing fee"
+      pad="false"
+      class="org.jpos.iso.IFB_AMOUNT2003"/>
+  <isofield
+      id="9"
+      length="8"
+      name="Conversion rate, Reconciliation"
+      pad="false"
+      class="org.jpos.iso.IFB_NUMERIC"/>
+  <isofield
+      id="10"
+      length="8"
+      name="Conversion rate, Cardholder billing"
+      pad="false"
+      class="org.jpos.iso.IFB_NUMERIC"/>
+  <isofield
+      id="11"
+      length="12"
+      name="Systems trace audit number"
+      pad="false"
+      class="org.jpos.iso.IFB_NUMERIC"/>
+  <isofield
+      id="12"
+      length="14"
+      name="Date and time, Local transaction"
+      pad="false"
+      class="org.jpos.iso.IFB_NUMERIC"/>
+  <isofield
+      id="13"
+      length="6"
+      name="Date, Effective"
+      pad="false"
+      class="org.jpos.iso.IFB_NUMERIC"/>
+  <isofield
+      id="14"
+      length="4"
+      name="Date, Expiration"
+      pad="false"
+      class="org.jpos.iso.IFB_NUMERIC"/>
+  <isofield
+      id="15"
+      length="8"
+      name="Date, Settlement"
+      pad="false"
+      class="org.jpos.iso.IFB_NUMERIC"/>
+  <isofield
+      id="16"
+      length="4"
+      name="Date, Conversion"
+      pad="false"
+      class="org.jpos.iso.IFB_NUMERIC"/>
+  <isofield
+      id="17"
+      length="4"
+      name="Date, Capture"
+      pad="false"
+      class="org.jpos.iso.IFB_NUMERIC"/>
+  <isofield
+      id="18"
+      length="140"
+      name="Message error indicator"
+      pad="false"
+      class="org.jpos.iso.IFB_LLLCHAR"/>
+  <isofield
+      id="19"
+      length="3"
+      name="Country code, Acquiring institution"
+      pad="false"
+      class="org.jpos.iso.IFB_NUMERIC"/>
+  <isofield
+      id="20"
+      length="3"
+      name="Country code, Primary account number"
+      pad="false"
+      class="org.jpos.iso.IFB_NUMERIC"/>
+  <isofieldpackager
+      id="21"
+      length="19"
+      name="Transaction life cycle identification data"
+      class="org.jpos.iso.IFB_BINARY"
+      pad="false"
+      emitBitmap="false" 
+      firstField="0"
+      packager="org.jpos.iso.packager.GenericSubFieldPackager">
+      <isofield
+          id="0"
+          length="1"
+          name="support indicator"
+          class="org.jpos.iso.IF_CHAR"/>
+      <isofield
+          id="1"
+          length="15"
+          name="trace indicator"
+          class="org.jpos.iso.IF_CHAR"/>
+      <isofield
+          id="2"
+          length="2"
+          name="sequence number"
+          class="org.jpos.iso.IFB_NUMERIC"/>
+      <isofield
+          id="3"
+          length="4"
+          name="authentication token"
+          class="org.jpos.iso.IFB_NUMERIC"/>
+  </isofieldpackager>
+  <isofield
+      id="22"
+      length="16"
+      name="Point of service data code"
+      class="org.jpos.iso.IFB_BINARY"/>
+  <isofield
+      id="23"
+      length="3"
+      name="Card sequence number"
+      pad="false"
+      class="org.jpos.iso.IFB_NUMERIC"/>
+  <isofield
+      id="24"
+      length="3"
+      name="Function code"
+      pad="false"
+      class="org.jpos.iso.IFB_NUMERIC"/>
+  <isofield
+      id="25"
+      length="4"
+      name="Message reason code"
+      pad="false"
+      class="org.jpos.iso.IFB_NUMERIC"/>
+  <isofield
+      id="26"
+      length="4"
+      name="Merchant category code"
+      pad="false"
+      class="org.jpos.iso.IFB_NUMERIC"/>
+  <isofield
+      id="27"
+      length="27"
+      name="POS capability"
+      pad="false"
+      class="org.jpos.iso.IFB_BINARY"/>
+  <isofield
+      id="28"
+      length="8"
+      name="Date, Reconciliation"
+      pad="false"
+      class="org.jpos.iso.IFB_NUMERIC"/>
+  <isofield
+      id="29"
+      length="3"
+      name="Reconciliation indicator"
+      pad="false"
+      class="org.jpos.iso.IFB_NUMERIC"/>
+  <isofieldpackager
+      id="30"
+      length="32"
+      name="Amounts original"
+      class="org.jpos.iso.IFB_BINARY"
+      emitBitmap="false" 
+      packager="org.jpos.iso.packager.GenericSubFieldPackager">
+      <isofield
+          id="0"
+          length="16"
+          name="Replacement amount"
+          pad="false"
+          class="org.jpos.iso.IFB_AMOUNT2003"/>
+      <isofield
+          id="1"
+          length="16"
+          name="Replacement reconciliation amount"
+          pad="false"
+          class="org.jpos.iso.IFB_AMOUNT2003"/>
+  </isofieldpackager>
+  <isofield
+      id="31"
+      length="23"
+      name="Acquirer reference number"
+      class="org.jpos.iso.IFB_NUMERIC"/>
+  <isofield
+      id="32"
+      length="11"
+      name="Acquirer institution identfication code"
+      pad="false"
+      class="org.jpos.iso.IFB_LLNUM"/>
+  <isofield
+      id="33"
+      length="11"
+      name="Forwarding institution identification code"
+      pad="false"
+      class="org.jpos.iso.IFB_LLNUM"/>
+  <isofield
+      id="34"
+      length="9999"
+      name="Electronic commerce data"
+      class="org.jpos.iso.IFB_LLLLBINARY"/>
+  <isofield
+      id="35"
+      length="37"
+      name="Track 2 data"
+      class="org.jpos.iso.IFB_LLCHAR"/>
+  <isofield
+      id="36"
+      length="104"
+      name="Track 3 data"
+      class="org.jpos.iso.IFB_LLLCHAR"/>
+  <isofield
+      id="37"
+      length="12"
+      name="Retrieval reference number"
+      class="org.jpos.iso.IF_CHAR"/>
+  <isofield
+      id="38"
+      length="6"
+      name="Approval code"
+      class="org.jpos.iso.IF_CHAR"/>
+  <isofield
+      id="39"
+      length="4"
+      name="Action code"
+      pad="false"
+      class="org.jpos.iso.IFB_NUMERIC"/>
+
+  <isofield
+      id="40"
+      length="3"
+      name="Service code"
+      pad="false"
+      class="org.jpos.iso.IFB_NUMERIC"/>
+  <isofield
+      id="41"
+      length="16"
+      name="Card acceptor terminal identification"
+      class="org.jpos.iso.IF_CHAR"/>
+  <isofield
+      id="42"
+      length="35"
+      name="Card acceptor identification code"
+      class="org.jpos.iso.IFB_LLCHAR"/>
+  <isofieldpackager
+      id="43"
+      length="9999"
+      name="Card acceptor name/location"
+      class="org.jpos.iso.IFB_LLLLBINARY"
+      emitBitmap="true" bitmapField="0" 
+      packager="org.jpos.iso.packager.GenericSubFieldPackager">
+      <isofield
+          id="0"
+          length="16"
+          name="Bit Map"
+          class="org.jpos.iso.IFB_BITMAP"/>
+      <isofield
+          id="2"
+          length="50"
+          name="Card acceptor name"
+          class="org.jpos.iso.IFB_LLCHAR"/>
+      <isofield
+          id="3"
+          length="99"
+          name="Card acceptor street address"
+          class="org.jpos.iso.IFB_LLCHAR"/>
+      <isofield
+          id="4"
+          length="50"
+          name="Card acceptor city"
+          class="org.jpos.iso.IFB_LLCHAR"/>
+      <isofield
+          id="5"
+          length="3"
+          name="Card acceptor state, province, or region"
+          class="org.jpos.iso.IF_CHAR"/>
+      <isofield
+          id="6"
+          length="10"
+          name="Card acceptor postal code"
+          class="org.jpos.iso.IF_CHAR"/>
+      <isofield
+          id="7"
+          length="3"
+          name="Card acceptor country code"
+          class="org.jpos.iso.IF_CHAR"/>
+      <isofield
+          id="8"
+          length="16"
+          name="Card acceptor phone number"
+          class="org.jpos.iso.IF_CHAR"/>
+      <isofield
+          id="9"
+          length="16"
+          name="Card acceptor customer service phone number"
+          class="org.jpos.iso.IF_CHAR"/>
+      <isofield
+          id="10"
+          length="30"
+          name="Card acceptor additional contact information"
+          class="org.jpos.iso.IFB_LLCHAR"/>
+      <isofield
+          id="11"
+          length="255"
+          name="Card acceptor internet URL"
+          class="org.jpos.iso.IFB_LLLCHAR"/>
+      <isofield
+          id="12"
+          length="99"
+          name="Card acceptor e-mail address"
+          class="org.jpos.iso.IFB_LLCHAR"/>
+  </isofieldpackager>
+  <isofield
+      id="44"
+      length="9999"
+      name="Additional response data"
+      class="org.jpos.iso.IFB_LLLLBINARY"/>
+  <isofield
+      id="45"
+      length="76"
+      name="Track 1 data"
+      class="org.jpos.iso.IFB_LLCHAR"/>
+  <isofield
+      id="46"
+      length="216"
+      name="Amounts fees"
+      class="org.jpos.iso.IFB_LLLCHAR"/>
+  <isofield
+      id="47"
+      length="999"
+      name="Additional data national"
+      class="org.jpos.iso.IFB_LLLCHAR"/>
+  <isofield
+      id="48"
+      length="999"
+      name="Additional data private"
+      class="org.jpos.iso.IFB_LLLCHAR"/>
+  <isofieldpackager
+      id="49"
+      length="9999"
+      name="Verification data"
+      class="org.jpos.iso.IFB_LLLLBINARY"
+      emitBitmap="true" bitmapField="0" 
+      packager="org.jpos.iso.packager.GenericSubFieldPackager">
+      <isofield
+          id="0"
+          length="16"
+          name="Bit Map"
+          class="org.jpos.iso.IFB_BITMAP"/>
+      <isofield
+        id="1"
+        length="1"
+        name="Additional identification type"
+        class="org.jpos.iso.IFB_NUMERIC" />
+      <isofield
+        id="2"
+        length="4"
+        name="Card verification data"
+        class="org.jpos.iso.IFB_NUMERIC" />
+      <isofield
+        id="3"
+        length="16"
+        name="Cardholder billing address compressed"
+        class="org.jpos.iso.IF_CHAR" />
+      <isofield
+        id="4"
+        length="10"
+        name="Cardholder billing postal code"
+        class="org.jpos.iso.IF_CHAR" />
+      <isofield
+        id="5"
+        length="40"
+        name="Cardholder billing street address"
+        class="org.jpos.iso.IF_CHAR" />
+      <isofield
+        id="6"
+        length="1"
+        name="Address verification result code"
+        class="org.jpos.iso.IF_CHAR" />
+  </isofieldpackager>
+  <isofield
+      id="50"
+      length="9999"
+      name="Reserved for ISO"
+      class="org.jpos.iso.IFB_LLLLBINARY"/>
+  <isofield
+      id="51"
+      length="9999"
+      name="Reserved for ISO"
+      class="org.jpos.iso.IFB_LLLLBINARY"/>
+  <isofield
+      id="52"
+      length="8"
+      name="PIN data"
+      class="org.jpos.iso.IFB_BINARY"/>
+  <isofield
+      id="53"
+      length="48"
+      name="Security related control information"
+      class="org.jpos.iso.IFB_LLBINARY"/>
+  <isofield
+      id="54"
+      length="126"
+      name="Amounts, additional"
+      class="org.jpos.iso.IFB_LLLCHAR"/>
+  <isofield
+      id="55"
+      length="9999"
+      name="IC system related data"
+      class="org.jpos.iso.IFB_LLLLBINARY"/>
+  <isofield
+      id="56"
+      length="41"
+      name="Original data elements"
+      pad="false"
+      class="org.jpos.iso.IFB_LLNUM"/>
+  <isofield
+      id="57"
+      length="3"
+      name="Authorization life cycle code"
+      pad="false"
+      class="org.jpos.iso.IFB_NUMERIC"/>
+  <isofield
+      id="58"
+      length="11"
+      name="Authorizing agent institution identification code"
+      pad="false"
+      class="org.jpos.iso.IFB_LLNUM"/>
+  <isofield
+      id="59"
+      length="999"
+      name="Transport data"
+      class="org.jpos.iso.IFB_LLLCHAR"/>
+  <isofield
+      id="60"
+      length="999"
+      name="Reserved for national use"
+      class="org.jpos.iso.IFB_LLLCHAR"/>
+  <isofield
+      id="61"
+      length="999"
+      name="Reserved for national use"
+      class="org.jpos.iso.IFB_LLLCHAR"/>
+  <isofield
+      id="62"
+      length="999"
+      name="Reserved for private use"
+      class="org.jpos.iso.IFB_LLLCHAR"/>
+  <isofield
+      id="63"
+      length="999"
+      name="Reserved for private use"
+      class="org.jpos.iso.IFB_LLLCHAR"/>
+  <isofield
+      id="64"
+      length="4"
+      name="Message authentication code field"
+      class="org.jpos.iso.IFB_BINARY"/>
+  <isofield
+      id="65"
+      length="8"
+      name="Reserved for ISO use"
+      class="org.jpos.iso.IFB_BINARY"/>
+  <isofield
+      id="66"
+      length="216"
+      name="Amounts, original fees"
+      class="org.jpos.iso.IFB_LLLCHAR"/>
+  <isofield
+      id="67"
+      length="2"
+      name="Extended payment data"
+      pad="false"
+      class="org.jpos.iso.IFB_NUMERIC"/>
+  <isofield
+      id="68"
+      length="9"
+      name="Batch/file transfer message control"
+      pad="false"
+      class="org.jpos.iso.IF_CHAR"/>
+  <isofield
+      id="69"
+      length="40"
+      name="Batch/file transfer control data"
+      pad="false"
+      class="org.jpos.iso.IF_CHAR"/>
+  <isofield
+      id="70"
+      length="18"
+      name="File transfer description data"
+      pad="false"
+      class="org.jpos.iso.IFB_NUMERIC"/>
+  <isofield
+      id="71"
+      length="9999"
+      name="Reserved for ISO use"
+      pad="false"
+      class="org.jpos.iso.IFB_LLLLBINARY"/>
+  <isofield
+      id="72"
+      length="999"
+      name="Data record"
+      class="org.jpos.iso.IFB_LLLBINARY"/>
+  <isofield
+      id="73"
+      length="8"
+      name="Date action"
+      pad="false"
+      class="org.jpos.iso.IFB_NUMERIC"/>
+  <isofieldpackager
+      id="74"
+      length="78"
+      name="Reconciliation data primary"
+      class="org.jpos.iso.IFB_BINARY"
+      emitBitmap="false" firstField="0"
+      packager="org.jpos.iso.packager.GenericSubFieldPackager">
+      <isofield
+          id="0"
+          length="16"
+          name="Credits amount"
+          class="org.jpos.iso.IFB_NUMERIC"/>
+      <isofield
+          id="1"
+          length="10"
+          name="Credits number"
+          class="org.jpos.iso.IFB_NUMERIC"/>
+      <isofield
+          id="2"
+          length="16"
+          name="Credits chargeback amount"
+          class="org.jpos.iso.IFB_NUMERIC"/>
+      <isofield
+          id="3"
+          length="10"
+          name="Credits chargeback number"
+          class="org.jpos.iso.IFB_NUMERIC"/>
+      <isofield
+          id="4"
+          length="16"
+          name="Credits reversal amount"
+          class="org.jpos.iso.IFB_NUMERIC"/>
+      <isofield
+          id="5"
+          length="10"
+          name="Credits reversal number"
+          class="org.jpos.iso.IFB_NUMERIC"/>
+      <isofield
+          id="6"
+          length="16"
+          name="Debits amount"
+          class="org.jpos.iso.IFB_NUMERIC"/>
+      <isofield
+          id="7"
+          length="10"
+          name="Debits number"
+          class="org.jpos.iso.IFB_NUMERIC"/>
+      <isofield
+          id="8"
+          length="16"
+          name="Debits chargeback amount"
+          class="org.jpos.iso.IFB_NUMERIC"/>
+      <isofield
+          id="9"
+          length="10"
+          name="Debits chargeback number"
+          class="org.jpos.iso.IFB_NUMERIC"/>
+      <isofield
+          id="10"
+          length="16"
+          name="Debits reversal amount"
+          class="org.jpos.iso.IFB_NUMERIC"/>
+      <isofield
+          id="11"
+          length="10"
+          name="Debits reversal number"
+          class="org.jpos.iso.IFB_NUMERIC"/>
+  </isofieldpackager>
+  <isofield
+      id="75"
+      length="90"
+      name="Reconciliation data secondary"
+      pad="false"
+      class="org.jpos.iso.IFB_NUMERIC"/>
+  <isofield id="76"
+      length="9999"
+      name="Reserved for ISO use"
+      pad="false"
+      class="org.jpos.iso.IFB_LLLLBINARY"/>
+  <isofield id="77"
+      length="9999"
+      name="Reserved for ISO use"
+      pad="false"
+      class="org.jpos.iso.IFB_LLLLBINARY"/>
+  <isofield id="78"
+      length="9999"
+      name="Reserved for ISO use"
+      pad="false"
+      class="org.jpos.iso.IFB_LLLLBINARY"/>
+  <isofield id="79"
+      length="9999"
+      name="Reserved for ISO use"
+      pad="false"
+      class="org.jpos.iso.IFB_LLLLBINARY"/>
+  <isofield id="80"
+      length="9999"
+      name="Reserved for ISO use"
+      pad="false"
+      class="org.jpos.iso.IFB_LLLLBINARY"/>
+  <isofield id="81"
+      length="9999"
+      name="Reserved for ISO use"
+      pad="false"
+      class="org.jpos.iso.IFB_LLLLBINARY"/>
+  <isofield id="82"
+      length="9999"
+      name="Reserved for ISO use"
+      pad="false"
+      class="org.jpos.iso.IFB_LLLLBINARY"/>
+  <isofield id="83"
+      length="9999"
+      name="Reserved for ISO use"
+      pad="false"
+      class="org.jpos.iso.IFB_LLLLBINARY"/>
+  <isofield id="84"
+      length="9999"
+      name="Reserved for ISO use"
+      pad="false"
+      class="org.jpos.iso.IFB_LLLLBINARY"/>
+  <isofield id="85"
+      length="9999"
+      name="Reserved for ISO use"
+      pad="false"
+      class="org.jpos.iso.IFB_LLLLBINARY"/>
+  <isofield id="86"
+      length="9999"
+      name="Reserved for ISO use"
+      pad="false"
+      class="org.jpos.iso.IFB_LLLLBINARY"/>
+  <isofield id="87"
+      length="9999"
+      name="Reserved for ISO use"
+      pad="false"
+      class="org.jpos.iso.IFB_LLLLBINARY"/>
+  <isofield id="88"
+      length="9999"
+      name="Reserved for ISO use"
+      pad="false"
+      class="org.jpos.iso.IFB_LLLLBINARY"/>
+  <isofield id="89"
+      length="9999"
+      name="Reserved for ISO use"
+      pad="false"
+      class="org.jpos.iso.IFB_LLLLBINARY"/>
+  <isofield id="90"
+      length="9999"
+      name="Reserved for ISO use"
+      pad="false"
+      class="org.jpos.iso.IFB_LLLLBINARY"/>
+  <isofield id="96"
+      length="9999"
+      name="Reserved for ISO use"
+      pad="false"
+      class="org.jpos.iso.IFB_LLLLBINARY"/>
+  <isofield id="92"
+      length="9999"
+      name="Reserved for ISO use"
+      pad="false"
+      class="org.jpos.iso.IFB_LLLLBINARY"/>
+  <isofield
+      id="93"
+      length="11"
+      name="Transaction destination institution identification code"
+      pad="false"
+      class="org.jpos.iso.IFB_LLNUM"/>
+  <isofield
+      id="94"
+      length="11"
+      name="Transaction originator institution identification code"
+      pad="false"
+      class="org.jpos.iso.IFB_LLNUM"/>
+  <isofield
+      id="95"
+      length="99"
+      name="Card issuer reference data"
+      class="org.jpos.iso.IFB_LLCHAR"/>
+  <isofield
+      id="96"
+      length="999"
+      name="Key management data"
+      class="org.jpos.iso.IFB_LLLBINARY"/>
+  <isofield
+      id="97"
+      length="21"
+      name="Amount, Net reconciliation"
+      pad="false"
+      class="org.jpos.iso.IFB_AMOUNT2003"/>
+  <isofield
+      id="98"
+      length="25"
+      name="Payee"
+      class="org.jpos.iso.IF_CHAR"/>
+  <isofield
+      id="99"
+      length="11"
+      name="Settlement institution identification code"
+      class="org.jpos.iso.IFB_LLCHAR"/>
+  <isofield
+      id="100"
+      length="11"
+      name="Receiving institution identification code"
+      pad="false"
+      class="org.jpos.iso.IFB_LLNUM"/>
+  <isofield
+      id="101"
+      length="99"
+      name="File name"
+      class="org.jpos.iso.IFB_LLCHAR"/>
+  <isofield
+      id="102"
+      length="28"
+      name="Account identification 1"
+      class="org.jpos.iso.IFB_LLCHAR"/>
+  <isofield
+      id="103"
+      length="28"
+      name="Account identification 2"
+      class="org.jpos.iso.IFB_LLCHAR"/>
+  <isofield
+      id="104"
+      length="9999"
+      name="Transaction specific data"
+      class="org.jpos.iso.IFB_LLLLBINARY"/>
+  <isofield
+      id="105"
+      length="9999"
+      name="Reserved for ISO use"
+      pad="false"
+      class="org.jpos.iso.IFB_LLLLBINARY"/>
+  <isofield
+      id="106"
+      length="9999"
+      name="Reserved for ISO use"
+      pad="false"
+      class="org.jpos.iso.IFB_LLLLBINARY"/>
+  <isofield
+      id="107"
+      length="9999"
+      name="Reserved for ISO use"
+      pad="false"
+      class="org.jpos.iso.IFB_LLLLBINARY"/>
+  <isofield
+      id="108"
+      length="9999"
+      name="Reserved for ISO use"
+      pad="false"
+      class="org.jpos.iso.IFB_LLLLBINARY"/>
+
+  <isofield
+      id="109"
+      length="144"
+      name="Reconciliation fee amounts credit"
+      class="org.jpos.iso.IFB_LLLCHAR"/>
+  <isofield
+      id="110"
+      length="144"
+      name="Reconciliation fee amounts debit"
+      class="org.jpos.iso.IFB_LLLCHAR"/>
+  <isofield
+      id="111"
+      length="9999"
+      name="Reserved for private use"
+      class="org.jpos.iso.IFB_LLLLBINARY"/>
+  <isofield
+      id="112"
+      length="9999"
+      name="Reserved for private use"
+      class="org.jpos.iso.IFB_LLLLBINARY"/>
+  <isofieldpackager
+      id="113"
+      length="9999"
+      name="jCard private use"
+      class="org.jpos.iso.IFB_LLLLBINARY"
+      packager="org.jpos.iso.packager.GenericSubFieldPackager">
+      <isofield
+          id="0"
+          length="0"
+          name="Placeholder"
+          class="org.jpos.iso.IF_NOP" />
+      <isofield
+          id="1"
+          length="16"
+          name="Bit Map"
+          class="org.jpos.iso.IFB_BITMAP" />
+      <isofield
+          id="2"
+          length="20"
+          name="jPOS CMF Version"
+          class="org.jpos.iso.IFB_LLCHAR" />
+      <isofield
+          id="3"
+          length="40"
+          name="Firstname"
+          class="org.jpos.iso.IFB_LLCHAR" />
+      <isofield
+          id="4"
+          length="40"
+          name="Middle name"
+          class="org.jpos.iso.IFB_LLCHAR" />
+      <isofield
+          id="5"
+          length="40"
+          name="Lastname"
+          class="org.jpos.iso.IFB_LLCHAR" />
+      <isofield
+          id="6"
+          length="40"
+          name="Secondary lastname"
+          class="org.jpos.iso.IFB_LLCHAR" />
+      <isofield
+          id="7"
+          length="99"
+          name="email"
+          class="org.jpos.iso.IFB_LLCHAR" />
+      <isofield
+          id="8"
+          length="1"
+          name="Status flags"
+          class="org.jpos.iso.IFB_BINARY" />
+      <isofield
+          id="9"
+          length="10"
+          name="Honorific"
+          class="org.jpos.iso.IFB_LLCHAR" />
+      <isofield
+          id="10"
+          length="1"
+          name="Gender"
+          class="org.jpos.iso.IF_CHAR" />
+      <isofield
+          id="11"
+          length="40"
+          name="Address 1"
+          class="org.jpos.iso.IFB_LLCHAR" />
+      <isofield
+          id="12"
+          length="40"
+          name="Address 2"
+          class="org.jpos.iso.IFB_LLCHAR" />
+      <isofield
+          id="13"
+          length="40"
+          name="City"
+          class="org.jpos.iso.IFB_LLCHAR" />
+      <isofield
+          id="14"
+          length="2"
+          name="State"
+          class="org.jpos.iso.IF_CHAR" />
+      <isofield
+          id="15"
+          length="10"
+          name="Zip code"
+          class="org.jpos.iso.IFB_LLCHAR" />
+      <isofield
+          id="16"
+          length="2"
+          name="Country code"
+          class="org.jpos.iso.IF_CHAR" />
+      <isofield
+          id="17"
+          length="20"
+          name="Phone"
+          class="org.jpos.iso.IFB_LLCHAR" />
+      <isofield
+          id="18"
+          length="99"
+          name="Notes"
+          class="org.jpos.iso.IFB_LLCHAR" />
+      <isofield
+          id="19"
+          length="32"
+          name="Dates"
+          class="org.jpos.iso.IFB_LLNUM" />
+      <isofield
+          id="20"
+          length="64"
+          name="Customer Alternate Identifier"
+          class="org.jpos.iso.IFB_LLCHAR" />
+  </isofieldpackager>
+  <isofield
+      id="114"
+      length="9999"
+      name="Reserved for private use"
+      class="org.jpos.iso.IFB_LLLLBINARY"/>
+  <isofield
+      id="115"
+      length="9999"
+      name="Reserved for private use"
+      class="org.jpos.iso.IFB_LLLLBINARY"/>
+  <isofield
+      id="116"
+      length="9999"
+      name="Reserved for national use"
+      class="org.jpos.iso.IFB_LLLLBINARY"/>
+  <isofield
+      id="117"
+      length="9999"
+      name="Reserved for national use"
+      class="org.jpos.iso.IFB_LLLLBINARY"/>
+  <isofield
+      id="118"
+      length="9999"
+      name="Reserved for national use"
+      class="org.jpos.iso.IFB_LLLLBINARY"/>
+  <isofield
+      id="119"
+      length="9999"
+      name="Reserved for national use"
+      class="org.jpos.iso.IFB_LLLLBINARY"/>
+  <isofield
+      id="120"
+      length="9999"
+      name="Reserved for national use"
+      class="org.jpos.iso.IFB_LLLLBINARY"/>
+  <isofield
+      id="121"
+      length="9999"
+      name="Reserved for national use"
+      class="org.jpos.iso.IFB_LLLLBINARY"/>
+  <isofield
+      id="122"
+      length="9999"
+      name="Reserved for national use"
+      class="org.jpos.iso.IFB_LLLLBINARY"/>
+  <isofield
+      id="123"
+      length="999"
+      name="Reserved for private use"
+      class="org.jpos.iso.IFB_LLLCHAR"/>
+  <isofield
+      id="124"
+      length="9999"
+      name="Reserved for private use"
+      class="org.jpos.iso.IFB_LLLLBINARY"/>
+  <isofield
+      id="125"
+      length="9999"
+      name="Reserved for private use"
+      class="org.jpos.iso.IFB_LLLLBINARY"/>
+  <isofield
+      id="126"
+      length="9999"
+      name="Reserved for private use"
+      class="org.jpos.iso.IFB_LLLLBINARY"/>
+  <isofield
+      id="127"
+      length="9999"
+      name="Reserved for private use"
+      class="org.jpos.iso.IFB_LLLLBINARY"/>
+  <isofield
+      id="128"
+      length="4"
+      name="Message authentication code field"
+      class="org.jpos.iso.IFB_BINARY"/>
+</isopackager>
+
