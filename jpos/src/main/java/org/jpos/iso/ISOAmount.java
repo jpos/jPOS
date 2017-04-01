@@ -22,6 +22,7 @@ import org.jpos.iso.packager.XMLPackager;
 
 import java.io.*;
 import java.math.BigDecimal;
+import java.util.Objects;
 
 public class ISOAmount 
     extends ISOComponent 
@@ -156,6 +157,30 @@ public class ISOAmount
         } catch (ISOException e) {
             throw new IOException (e.getMessage());
         }
-    }       
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ISOAmount isoAmount = (ISOAmount) o;
+        return fieldNumber == isoAmount.fieldNumber &&
+          currencyCode == isoAmount.currencyCode &&
+          Objects.equals(amount, isoAmount.amount);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(fieldNumber, currencyCode, amount);
+    }
+
+    @Override
+    public String toString() {
+        return "ISOAmount{" +
+          "fieldNumber=" + fieldNumber +
+          ", currencyCode=" + currencyCode +
+          ", amount=" + amount +
+          '}';
+    }
 }
 
