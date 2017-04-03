@@ -40,6 +40,7 @@ public enum ContextConstants {
     ORIGINAL_STAN,
     ORIGINAL_TIMESTAMP,
     ORIGINAL_DATA_ELEMENTS,
+    PANIC,
     PAUSED_TRANSACTION(":paused_transaction");
 
     private final String name;
