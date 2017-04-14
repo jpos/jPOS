@@ -35,5 +35,13 @@ package org.jpos.rc;
  * 11xxx: User specific internal result codes.
  */
 public interface IRC {
+    /**
+     * @return internal result code
+     */
     int irc();
+
+    /**
+     * @return true if this IRC can be considered a 'success' (not necessarily an approval, could be a partial approval, advice accepted, etc.)
+     */
+    boolean isSuccess();
 }

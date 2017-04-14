@@ -22,6 +22,7 @@ import static org.junit.Assert.*;
 
 import org.jpos.core.ConfigurationException;
 import org.jpos.core.SimpleConfiguration;
+import org.jpos.util.Caller;
 import org.junit.Test;
 
 import java.util.HashSet;
@@ -36,6 +37,26 @@ public class CMFTest {
                 fail(String.format("CMF.%s uses duplicate irc %d", cmf.name(), cmf.irc()));
             ircs.add(cmf.irc());
         }
+    }
+
+    @Test
+    public void testSuccess() {
+        Result rc = new Result();
+        rc.success(CMF.APPROVED, Caller.info(), "Approved");
+        assertTrue(rc.isSuccess());
+        assertNotNull(rc.success());
+        rc.fail(CMF.GENERAL_DECLINE, Caller.info(), "Decline");
+        assertFalse(rc.isSuccess());
+        assertNull(rc.success());
+    }
+
+    @Test
+    public void testInvalidSuccess() {
+        Result rc = new Result();
+        try {
+            rc.success(CMF.GENERAL_DECLINE, Caller.info(), "Invalid Success");
+            fail ("IllegalArgumentException should have been raised");
+        } catch (IllegalArgumentException ignored) { }
     }
 
     @Test

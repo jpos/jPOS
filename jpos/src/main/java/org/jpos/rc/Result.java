@@ -40,10 +40,14 @@ public class Result implements Loggeable {
     public Result warn (String source, String format, Object ... args) {
         return add(Type.WARN, null, source, format, args);
     }
+    public Result success (IRC irc, String source, String format, Object ... args) {
+        if (!irc.isSuccess())
+            throw new IllegalArgumentException("Invalid success IRC " + irc);
+        return add(Type.SUCCESS, irc, source, format, args);
+    }
     public Result fail (IRC irc, String source, String format, Object ... args) {
         return add(Type.FAIL, irc, source, format, args);
     }
-
     public boolean hasInfo() {
         synchronized (entries) {
             return entries.stream().anyMatch(e -> e.type == Type.INFO);
@@ -59,14 +63,23 @@ public class Result implements Loggeable {
             return entries.stream().anyMatch(e -> e.type == Type.FAIL);
         }
     }
-
+    public boolean isSuccess() {
+        synchronized (entries) {
+            return entries.stream().anyMatch(e -> e.type == Type.SUCCESS) && !hasFailures();
+        }
+    }
     public Entry failure() {
         synchronized (entries) {
             Optional<Entry> entry = entries.stream().filter(e -> e.type == Type.FAIL).findFirst();
             return entry.isPresent() ? entry.get() : null;
         }
     }
-
+    public Entry success() {
+        synchronized (entries) {
+            Optional<Entry> entry = entries.stream().filter(e -> e.type == Type.SUCCESS).findFirst();
+            return entry.isPresent() && !hasFailures() ? entry.get() : null;
+        }
+    }
     public List<Entry> entries() {
         return entries;
     }
@@ -144,6 +157,7 @@ public class Result implements Loggeable {
     private enum Type {
         INFO,
         WARN,
+        SUCCESS,
         FAIL
     }
     public static class Entry {

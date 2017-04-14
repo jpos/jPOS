@@ -20,16 +20,16 @@ package org.jpos.rc;
 
 public enum CMF implements IRC {
     // Approved
-    APPROVED         (0),
-    HONOR_WITH_ID    (1),
-    APPROVED_PARTIAL (2),
-    APPROVED_VIP     (3),
-    APPROVED_UPDATE_TRACK3 (4),
-    APPROVED_ISSUER_SPECIFIED_ACCOUNT (5),
-    APPROVED_PARTIAL_ISSUER_SPECIFIED_ACCOUNT (6),
-    APPROVED_FEES_DISPUTED(8),
-    APPROVED_WITH_OVERDRAFT(9),
-    APPROVED_CUSTOMER_REACTIVATED(10),
+    APPROVED         (0, true),
+    HONOR_WITH_ID    (1, true),
+    APPROVED_PARTIAL (2, true),
+    APPROVED_VIP     (3, true),
+    APPROVED_UPDATE_TRACK3 (4, true),
+    APPROVED_ISSUER_SPECIFIED_ACCOUNT (5, true),
+    APPROVED_PARTIAL_ISSUER_SPECIFIED_ACCOUNT (6, true),
+    APPROVED_FEES_DISPUTED(8, true),
+    APPROVED_WITH_OVERDRAFT(9, true),
+    APPROVED_CUSTOMER_REACTIVATED(10, true),
     APPROVED_TERMINAL_UNABLE_TO_PROCESS_ONLINE(11),
     APPROVED_OFFLINE (12),
     APPROVED_OFFLINE_REFERRAL (13),
@@ -123,7 +123,7 @@ public enum CMF implements IRC {
     MAX_DAILY_AMOUNT(2012),
 
     // File action
-    SUCCESSFUL(3000),
+    SUCCESSFUL(3000, true),
     NOT_SUPPORTED_BY_RECEIVER(3001),
     UNABLE_TO_LOCATE_RECORD(3002),
     UPDATED_RECORD(3003),
@@ -136,28 +136,28 @@ public enum CMF implements IRC {
     INVALID_CARD_OR_CARDHOLDER_NUMBER(3010),
 
     // Reversals
-    REVERSAL_ACCEPTED(4000),
+    REVERSAL_ACCEPTED(4000, true),
 
     // Reconciliation
-    RECONCILED_IN_BALANCE(5000),
+    RECONCILED_IN_BALANCE(5000, true),
     RECONCILED_OUT_OF_BALANCE(5001),
     AMOUNT_NOT_RECONCILED_TOTALS_PROVIDED(5002),
     TOTALS_NOT_AVAILABLE(5003),
     NOT_RECONCILED_TOTALS_PROVIDED(5004),
 
     // Administrative messages
-    ADMIN_MESSAGE_ACCEPTED(6000),
+    ADMIN_MESSAGE_ACCEPTED(6000, true),
 
     // Fee collection
-    FEE_COLLECTION_ACCEPTED (7000),
+    FEE_COLLECTION_ACCEPTED (7000, true),
 
     // Network Management
-    NET_ACCEPTED (8000),
+    NET_ACCEPTED (8000, true),
     NET_RETRY(8001),
 
     // Misc
-    ADVICE_ACK_NO_FINANCIAL(9000),
-    ADVICE_ACCEPTED(9001),
+    ADVICE_ACK_NO_FINANCIAL(9000, true),
+    ADVICE_ACCEPTED(9001, true),
     MESSAGE_ERROR(9100),
     INVALID_TRANSACTION(9102),
     RETRY_TRANSACTION(9103),
@@ -199,13 +199,24 @@ public enum CMF implements IRC {
     USER(90000);
 
     int irc;
+    boolean success;
 
     CMF(int irc) {
         this.irc = irc;
+        this.success = false;
     }
-
+    CMF(int irc, boolean success) {
+        this.irc = irc;
+        this.success = success;
+    }
+    
     @Override
     public int irc() {
         return irc;
+    }
+
+    @Override
+    public boolean isSuccess() {
+        return success;
     }
 }
