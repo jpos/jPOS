@@ -194,7 +194,7 @@ public class CheckFieldsTest implements TransactionConstants {
         assertFalse(rc.hasInfo());
         assertFalse(rc.hasWarnings());
         assertTrue(rc.hasFailures());
-        assertEquals(2, rc.failures().size());
+        assertEquals(2, rc.failureList().size());
     }
 
     @Test
@@ -230,7 +230,7 @@ public class CheckFieldsTest implements TransactionConstants {
         assertFalse(rc.hasInfo());
         assertFalse(rc.hasWarnings());
         assertTrue(rc.hasFailures());
-        assertEquals(1, rc.failures().size());
+        assertEquals(1, rc.failureList().size());
         assertEquals(CMF.INVALID_FIELD, rc.failure().getIrc());
         assertEquals("Invalid TRANSACTION_TIMESTAMP '*'", rc.failure().getMessage());
     }

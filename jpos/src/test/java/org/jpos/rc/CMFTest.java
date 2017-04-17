@@ -44,10 +44,12 @@ public class CMFTest {
         Result rc = new Result();
         rc.success(CMF.APPROVED, Caller.info(), "Approved");
         assertTrue(rc.isSuccess());
+        rc.dump (System.out, "");
         assertNotNull(rc.success());
         rc.fail(CMF.GENERAL_DECLINE, Caller.info(), "Decline");
         assertFalse(rc.isSuccess());
         assertNull(rc.success());
+        rc.dump (System.out, "");
     }
 
     @Test

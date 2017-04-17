@@ -46,7 +46,12 @@ public class Result implements Loggeable {
         return add(Type.SUCCESS, irc, source, format, args);
     }
     public Result fail (IRC irc, String source, String format, Object ... args) {
-        return add(Type.FAIL, irc, source, format, args);
+        synchronized (entries) {
+            if (isSuccess()) {
+                format = format + " (inhibits " + success() + ")";
+            }
+            return add(Type.FAIL, irc, source, format, args);
+        }
     }
     public boolean hasInfo() {
         synchronized (entries) {
@@ -65,7 +70,7 @@ public class Result implements Loggeable {
     }
     public boolean isSuccess() {
         synchronized (entries) {
-            return entries.stream().anyMatch(e -> e.type == Type.SUCCESS) && !hasFailures();
+            return isSuccess0() && !hasFailures();
         }
     }
     public Entry failure() {
@@ -84,20 +89,28 @@ public class Result implements Loggeable {
         return entries;
     }
 
-    public List<Entry> infos() {
+    public List<Entry> infoList() {
         return entries
           .stream()
           .filter(s -> s.type == Type.INFO)
           .collect(Collectors.toList());
     }
 
-    public List<Entry> warnings() {
+    public List<Entry> successList() {
+        return entries
+          .stream()
+          .filter(s -> s.type == Type.SUCCESS)
+          .collect(Collectors.toList());
+    }
+
+
+    public List<Entry> warningList() {
         return entries
           .stream()
           .filter(s -> s.type == Type.WARN)
           .collect(Collectors.toList());
     }
-    public List<Entry> failures() {
+    public List<Entry> failureList() {
         return entries
           .stream()
           .filter(s -> s.type == Type.FAIL)
@@ -119,6 +132,15 @@ public class Result implements Loggeable {
         final String inner = indent + "  ";
         ps.printf("%s<result>%n", indent);
         synchronized (entries) {
+            if (isSuccess0()) {
+                String inhibited = hasFailures() ? " inhibited='true'" : "";
+                ps.printf("%s<success%s>%n", inner, inhibited);
+                entries
+                  .stream()
+                  .filter(s -> s.type == Type.SUCCESS)
+                  .forEach(e -> ps.printf("%s  [%s] %s %s%n", inner, e.irc, e.source, e.message));
+                ps.printf("%s</success>%n", inner);
+            }
             if (hasFailures()) {
                 ps.printf("%s<fail>%n", inner);
                 entries
@@ -152,6 +174,12 @@ public class Result implements Loggeable {
         return "Result{" +
           "entries=" + entries +
           '}';
+    }
+
+    private boolean isSuccess0() {
+        synchronized (entries) {
+            return entries.stream().anyMatch(e -> e.type == Type.SUCCESS);
+        }
     }
 
     private enum Type {
