@@ -45,6 +45,7 @@ public class CheckFields implements TransactionParticipant, Configurable {
     private Pattern TIMESTAMP_PATTERN = Pattern.compile("^\\d{10}");
     private Pattern CAPTUREDATE_PATTERN = Pattern.compile("^\\d{4}");
     private Pattern ORIGINAL_DATA_ELEMENTS_PATTERN = Pattern.compile("^\\d{30,41}$");
+    private boolean ignoreCardValidation = false;
 
     public int prepare (long id, Serializable context) {
         Context ctx = (Context) context;
@@ -69,6 +70,7 @@ public class CheckFields implements TransactionParticipant, Configurable {
     public void setConfiguration (Configuration cfg) {
         this.cfg = cfg;
         request = cfg.get ("request", ContextConstants.REQUEST.toString());
+        ignoreCardValidation = cfg.getBoolean("ignore-card-validation", false);
     }
 
     private void assertFields(Context ctx, ISOMsg m, String fields, boolean mandatory, Set<String> validFields, Result rc) {
@@ -139,7 +141,10 @@ public class CheckFields implements TransactionParticipant, Configurable {
 
     private void putCard (Context ctx, ISOMsg m, boolean mandatory, Set<String> validFields, Result rc) {
         try {
-            Card card = Card.builder().isomsg(m).build();
+            Card.Builder cb = Card.builder().isomsg(m);
+            if (ignoreCardValidation)
+                cb.validator(null);
+            Card card = cb.build();
             ctx.put (ContextConstants.CARD.toString(), card);
             if (card.hasTrack1())
                 validFields.add("45");
