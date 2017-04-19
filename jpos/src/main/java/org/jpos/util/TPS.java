@@ -176,7 +176,7 @@ public class TPS implements Loggeable {
             avg = avg == 0 ? tps : (avg + tps) / 2;
             if (tps > peak) {
                 peak = Math.round(tps);
-                peakWhen = getNanoTime() / FROM_NANOS;
+                peakWhen = System.currentTimeMillis();
             }
             count.set(0);
             return tps;
