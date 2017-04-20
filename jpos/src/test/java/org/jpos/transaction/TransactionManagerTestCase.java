@@ -28,28 +28,34 @@ public class TransactionManagerTestCase extends TestCase {
     Q2 q2;
     Space sp;
     public static String QUEUE = "TXNMGRTEST";
+    public static String QUEUE_EMPTY = "TXNMGRTEST.EMPTY";
 
     public void setUp () throws Exception {
         sp = SpaceFactory.getSpace("tspace:txnmgrtest");
         q2 = new Q2("build/resources/test/org/jpos/transaction");
         q2.start();
     }
-    public void testSimpleTransaction() {
-        for (int i=0; i<100; i++) {
-            Context ctx = new Context();
-            ctx.put("volatile", "the quick brown fox");
-            ctx.put("persistent", "jumped over the lazy dog", true);
-            sp.out(QUEUE, ctx);
-        }
-    }
-    public void testRetryTransaction() {
+//    public void testSimpleTransaction() {
+//        for (int i=0; i<100; i++) {
+//            Context ctx = new Context();
+//            ctx.put("volatile", "the quick brown fox");
+//            ctx.put("persistent", "jumped over the lazy dog", true);
+//            sp.out(QUEUE, ctx);
+//        }
+//    }
+//    public void testRetryTransaction() {
+//        Context ctx = new Context();
+//        ctx.put ("RETRY", Integer.valueOf(10), true);
+//        sp.out (QUEUE, ctx);
+//    }
+    public void testEmptyTM() {
         Context ctx = new Context();
-        ctx.put ("RETRY", Integer.valueOf(10), true);
-        sp.out (QUEUE, ctx);
+        ctx.put("volatile", "the quick brown empty fox");
+        ctx.put("persistent", "jumped over the lazy empty dog", true);
+        sp.out(QUEUE_EMPTY, ctx);
     }
     public void tearDown() throws Exception {
         Thread.sleep (5000); // let the thing run
         q2.stop();
     }
 }
-

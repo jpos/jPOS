@@ -1,0 +1,5 @@
+<txnmgr-empty class="org.jpos.transaction.TransactionManager" logger="Q2">
+ <property name="queue"            value="TXNMGRTEST.EMPTY" />
+ <property name="sessions"         value="4" />
+ <property name="input-space" value="tspace:txnmgrtest" />
+</txnmgr-empty>

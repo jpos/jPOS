@@ -169,7 +169,7 @@ public class TransactionManager
         PausedTransaction pt;
         boolean abort = false;
         LogEvent evt = null;
-        Profiler prof = null;
+        Profiler prof;
         boolean paused;
         Thread thread = Thread.currentThread();
         if (threads.size() < maxSessions) {
@@ -321,7 +321,7 @@ public class TransactionManager
                         evt = getLog().createLogEvent ("warn");
                     evt.addMessage("WARNING: IN-TRANSIT TOO HIGH");
                 }
-                if (evt != null && (action == PREPARED || action == ABORTED)) {
+                if (evt != null && (action == PREPARED || action == ABORTED || (action == -1 && prof != null))) {
                     switch (action) {
                         case PREPARED :
                             evt.setTag("commit");
@@ -329,12 +329,15 @@ public class TransactionManager
                         case ABORTED :
                             evt.setTag ("abort");
                             break;
+                        case -1:
+                            evt.setTag ("undefined");
+                            break;
                     }
                     evt.addMessage (
-                        String.format ("  in-transit=%d, head=%d, tail=%d, outstanding=%d, active-sessions=%d/%d, %s, elapsed=%dms",
+                        String.format (" in-transit=%d, head=%d, tail=%d, outstanding=%d, active-sessions=%d/%d, %s, elapsed=%dms",
                             getInTransit(), head, tail, getOutstandingTransactions(),
                             getActiveSessions(), maxSessions,
-                            tps.toString(),  prof.getElapsedInMillis()
+                            tps.toString(), prof != null ? prof.getElapsedInMillis() : -1
                         )
                     );
                     if (prof != null)
@@ -701,7 +704,7 @@ public class TransactionManager
         throws ConfigurationException
     {
         groups.put (DEFAULT_GROUP,  initGroup (config));
-        for (Element e :(List<Element>)config.getChildren("group")) {
+        for (Element e : config.getChildren("group")) {
             String name = e.getAttributeValue ("name");
             if (name == null) 
                 throw new ConfigurationException ("missing group name");
@@ -717,7 +720,7 @@ public class TransactionManager
         throws ConfigurationException
     {
         List group = new ArrayList ();
-        for (Element el :(List<Element>)e.getChildren ("participant")) {
+        for (Element el : e.getChildren ("participant")) {
             group.add(createParticipant(el));
         }
         return group;
