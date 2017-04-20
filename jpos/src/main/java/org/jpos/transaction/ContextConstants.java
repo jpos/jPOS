@@ -40,6 +40,7 @@ public enum ContextConstants {
     ORIGINAL_STAN,
     ORIGINAL_TIMESTAMP,
     ORIGINAL_DATA_ELEMENTS,
+    DESTINATION,
     PANIC,
     PAUSED_TRANSACTION(":paused_transaction");
 
