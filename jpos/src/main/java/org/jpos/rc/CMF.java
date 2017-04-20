@@ -195,6 +195,8 @@ public enum CMF implements IRC {
     MISSING_FIELD(10002),
     EXTRA_FIELD(10003),
     MISCONFIGURED_ENDPOINT(10004),
+    INVALID_REQUEST(10005),
+    HOST_UNREACHABLE(10006),
 
     // User specific result codes
     USER(90000);
