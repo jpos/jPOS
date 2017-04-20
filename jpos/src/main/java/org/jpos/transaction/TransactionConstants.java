@@ -34,5 +34,6 @@ public interface TransactionConstants {
      * Context has not been modified (no need to persist a snapshot)
      */
     int READONLY = 0x80;
-}
 
+    int FAIL = READONLY | NO_JOIN; // shortcut to heavily used action combination - assumes ABORTED == 0
+}
