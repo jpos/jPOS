@@ -18,6 +18,7 @@
 
 package org.jpos.rc;
 
+import org.jpos.transaction.TransactionConstants;
 import org.jpos.util.Loggeable;
 
 import java.io.PrintStream;
@@ -52,6 +53,14 @@ public class Result implements Loggeable {
             }
             return add(Type.FAIL, irc, source, format, args);
         }
+    }
+
+    /**
+     * Helper method used to avoid adding an extra 'return' line in failing transaction participants
+     * @return TransactionConstants.FAIL which is basically ABORT | READONLY | NO_JOIN;
+     */
+    public int FAIL() {
+        return TransactionConstants.FAIL;
     }
     public boolean hasInfo() {
         synchronized (entries) {
