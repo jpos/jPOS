@@ -38,6 +38,8 @@ c) A default timeout specified by the TransactionManager's +pause-timeout+ prope
   This modifier is a hint to the TransactionManager to let it know
   that this participant has not modified any persistent information
   in the context, so saving a snapshot of the context is not required.
+|FAIL|0xC0|
+  Handy constant equals to `ABORTED \| READONLY \| NO_JOIN`
 |===============
 
 [NOTE]
