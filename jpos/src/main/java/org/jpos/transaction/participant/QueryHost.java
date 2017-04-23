@@ -113,10 +113,6 @@ public class QueryHost implements TransactionParticipant, ISOResponseListener, C
         continuations = cfg.getBoolean("continuations", true);
     }
 
-    public String getMuxName (String kki) {
-        return "mux." + cfg.get ("mux", kki.toLowerCase() + "-mux");
-    }
-
     protected boolean isConnected (MUX mux) {
         if (mux.isConnected())
             return true;
