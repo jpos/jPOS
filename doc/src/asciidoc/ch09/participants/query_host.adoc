@@ -1,0 +1,76 @@
+=== QueryHost 
+
+`org.jpos.transaction.participant.QueryHost` can be used to send an ISOMsg
+to a remote host using a MUX and wait for a response.
+
+It can operate in synchronous mode (waits a given timeout for a response to
+arrive) or use TransactionManager's _continuations_ (default) to actually
+`PAUSE` the transaction until a response arrives.
+
+It provides sensible defaults up to the point that it can be easily
+configured without any property, i.e.:
+
+[source,xml]
+------------
+ <participant class="org.jpos.transaction.participant.QueryHost"/>
+------------
+
+.QueryHost Configuration Properties
+[cols="1,2,2", options="header"]
+|======================================================================================================
+|Property     | Description                                                             | Default Value
+|request      | ISOMsg to be transmitted                                                | `REQUEST` 
+|response     | Response object                                                         | `RESPONSE`
+|destination  | Destination MUX                                                         | `DESTINATION`
+|timeout      | Time to wait for response in milliseconds                               | 30000
+|wait-timeout | Time to wait for connection in case MUX is disconnected in milliseconds | 12000
+|continuations| Set to false in order to operate in sync mode                           | true
+|======================================================================================================
+
+`QueryHost` may place CMF failure messages in the Context, i.e.:
+
+* *MISCONFIGURED_ENDPOINT* when Context doesn't have a `DESTINATION` object or the destination MUX is not available in the `NameRegistrar`
+* *INVALID_REQUEST* if `REQUEST` is not in the context
+* *HOST_UNREACHABLE* if MUX can not connect to the host or a response is not provided within the specified timeout
+* *SYSTEM_ERROR* on ISOException
+
+A MUX/Server can have a request listener like this:
+
+[source,xml]
+------------
+ <request-listener class="org.jpos.iso.IncomingListener" logger="Q2">
+  <property name="queue"     value="TXNMGR" />
+  <property name="ctx.DESTINATION"  value="MYMUX" />
+ </request-listener>
+------------
+
+Then a TransactionManager can be configured like this:
+
+[source,xml]
+------------
+ <txnmgr class="org.jpos.transaction.TransactionManager" logger="Q2">
+  <property name="queue" value="TXNMGR"/>
+  <property name="sessions" value="2"/>
+  <property name="max-sessions" value="128"/>
+  <property name="debug" value="true"/>
+        
+  <participant class="org.jpos.transaction.participant.QueryHost"/>
+  <participant class="org.jpos.transaction.participant.SendResponse"/>
+ </txnmgr>
+------------
+
+In the previous example `IncomingListener` will create a context and set the
+`SOURCE`, `REQUEST` and `DESTINATION` variables. Those will be queued through
+a Space to the `TXNMGR` queue. The TransactionManager will query the remote host
+using a MUX called `MYMUX` (the `NameRegistrar` will show `mux.MYMUX`) and the
+response (if present) should be placed in the context under the name `RESPONSE`.
+
+`SendResponse` participant will pick that information to provide a response.
+
+[NOTE]
+======
+The previous was an ideal situation where we get a response. In a real world application,
+a small participant sitting before `SendResponse` would analyze `ctx.getResult()` for failures
+and set the appropriate response.
+======
+
