@@ -10,7 +10,7 @@ error and abort. Once the error gets corrected we find there's another
 error in the next test, and yet another on a third one.
 
 So instead of early-failing, applications can "collect" result information 
-`Result` object.
+in the `Result` object.
 
 We handle three type of results:
 

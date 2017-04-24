@@ -64,10 +64,11 @@ We provide a general purpose converter implementation called `CMFConverter` that
 features:
 
 * It provides reasonable IRC-to-RC mapping for all result codes provided in the `CMF` enum
-* Default values can be overridden by a result bundled provided in the classpath
+* Default values can be overridden by a result bundle provided in the classpath
 * Default values can be overridden by means of a Configuration object (`CMFConverter` implements `Configurable`).
 
-The `CMFConverter` reads optional override resource bundles in the following locations within the classpath:
+The `CMFConverter` reads optional override resource bundles in the following locations within the classpath
+(the second bundle overrides the first one):
 
 * `org/jpos/rc/CMF.properties`
 * `META-INF/org/jpos/rc/CMF.properties`
