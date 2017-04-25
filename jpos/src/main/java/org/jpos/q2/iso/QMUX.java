@@ -178,7 +178,11 @@ public class QMUX
                 ar.setFuture(getScheduledThreadPoolExecutor().schedule(ar, timeout, TimeUnit.MILLISECONDS));
         }
         isp.out (req, ar, timeout);
-        sp.out (out, m, timeout);
+        if (timeout > 0)
+            sp.out (out, m, timeout);
+        else
+            sp.out (out, m);
+        synchronized (this) { tx++; rxPending++; }
     }
     public void notify (Object k, Object value) {
         Object obj = sp.inp (k);
@@ -433,7 +437,7 @@ public class QMUX
         sb.append (name);
         sb.append (value);
     }
-    public static class AsyncRequest implements Runnable {
+    public class AsyncRequest implements Runnable {
         ISOResponseListener rl;
         Object handBack;
         ScheduledFuture future;
@@ -446,10 +450,19 @@ public class QMUX
             this.future = future;
         }
         public void responseReceived (ISOMsg response) {
-            if (future == null || future.cancel(false))
-                rl.responseReceived (response, handBack);
+            if (future == null || future.cancel(false)) {
+                synchronized (QMUX.this) {
+                    rx++;
+                    rxPending--;
+                    lastTxn = System.currentTimeMillis();
+                }
+                rl.responseReceived(response, handBack);
+            }
         }
         public void run() {
+            synchronized(QMUX.this) {
+                rxPending--;
+            }
             rl.expired(handBack);
         }
     }
