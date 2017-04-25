@@ -135,7 +135,7 @@ public class QMUX
         else
             sp.out (out, m);
 
-        ISOMsg resp = null;
+        ISOMsg resp;
         try {
             synchronized (this) { tx++; rxPending++; }
 
@@ -163,6 +163,22 @@ public class QMUX
             synchronized (this) { rxPending--; }
         }
         return resp;
+    }
+    public void request (ISOMsg m, long timeout, ISOResponseListener rl, Object handBack)
+      throws ISOException
+    {
+        String key = getKey (m);
+        String req = key + ".req";
+        if (isp.rdp (req) != null)
+            throw new ISOException ("Duplicate key '" + req + "' detected.");
+        m.setDirection(0);
+        AsyncRequest ar = new AsyncRequest (rl, handBack);
+        synchronized (ar) {
+            if (timeout > 0)
+                ar.setFuture(getScheduledThreadPoolExecutor().schedule(ar, timeout, TimeUnit.MILLISECONDS));
+        }
+        isp.out (req, ar, timeout);
+        sp.out (out, m, timeout);
     }
     public void notify (Object k, Object value) {
         Object obj = sp.inp (k);
@@ -261,22 +277,6 @@ public class QMUX
     }
     public String getUnhandledQueue () {
         return unhandled;
-    }
-    public void request (ISOMsg m, long timeout, ISOResponseListener rl, Object handBack)
-        throws ISOException 
-    {
-        String key = getKey (m);
-        String req = key + ".req";
-        if (isp.rdp (req) != null)
-            throw new ISOException ("Duplicate key '" + req + "' detected.");
-        m.setDirection(0);
-        AsyncRequest ar = new AsyncRequest (rl, handBack);
-        synchronized (ar) {
-            if (timeout > 0)
-                ar.setFuture(getScheduledThreadPoolExecutor().schedule(ar, timeout, TimeUnit.MILLISECONDS));
-        }
-        isp.out (req, ar, timeout);
-        sp.out (out, m, timeout);
     }
     @SuppressWarnings("unused")
     public String[] getReadyIndicatorNames() {
