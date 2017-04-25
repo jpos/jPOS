@@ -18,13 +18,17 @@
 
 package org.jpos.q2.iso;
 
+import org.HdrHistogram.AtomicHistogram;
+import org.HdrHistogram.Histogram;
 import org.jdom2.Element;
 import org.jpos.core.ConfigurationException;
 import org.jpos.iso.*;
 import org.jpos.q2.QBeanSupport;
 import org.jpos.q2.QFactory;
 import org.jpos.space.*;
+import org.jpos.util.Chronometer;
 import org.jpos.util.Loggeable;
+import org.jpos.util.Metrics;
 import org.jpos.util.NameRegistrar;
 
 import java.io.IOException;
@@ -53,6 +57,7 @@ public class QMUX
     private boolean returnRejects;
     private LocalSpace isp; // internal space
     private Map<String,String[]> mtiKey = new HashMap<>();
+    private Metrics metrics = new Metrics(new AtomicHistogram(60000, 2));
 
     List<ISORequestListener> listeners;
     int rx, tx, rxExpired, txExpired, rxPending, rxUnhandled, rxForwarded;
@@ -130,6 +135,7 @@ public class QMUX
             throw new ISOException ("Duplicate key '" + req + "' detected");
         isp.out (req, m);
         m.setDirection(0);
+        Chronometer c = new Chronometer();
         if (timeout > 0)
             sp.out (out, m, timeout);
         else
@@ -162,6 +168,10 @@ public class QMUX
         } finally {
             synchronized (this) { rxPending--; }
         }
+        long elapsed = c.elapsed();
+        metrics.record("all", elapsed);
+        if (resp != null)
+            metrics.record("ok", elapsed);
         return resp;
     }
     public void request (ISOMsg m, long timeout, ISOResponseListener rl, Object handBack)
@@ -240,6 +250,11 @@ public class QMUX
             throw new ISOException ("Key fields not found - not sending " + sb.toString());
         return sb.toString();
     }
+
+    public Map<String, Histogram> getMetrics() {
+        return metrics.metrics();
+    }
+
     private String mapMTI (String mti) throws ISOException {
         StringBuilder sb = new StringBuilder();
         if (mti != null) {
@@ -397,6 +412,7 @@ public class QMUX
     }
     public void dump (PrintStream p, String indent) {
         p.println (indent + getCountersAsString());
+        metrics.dump (p, indent);
     }
     private String[] toStringArray(String s, String delimiter, String def) {
         if (s == null)
@@ -441,10 +457,12 @@ public class QMUX
         ISOResponseListener rl;
         Object handBack;
         ScheduledFuture future;
+        Chronometer chrono;
         public AsyncRequest (ISOResponseListener rl, Object handBack) {
             super();
             this.rl = rl;
             this.handBack = handBack;
+            this.chrono = new Chronometer();
         }
         public void setFuture(ScheduledFuture future) {
             this.future = future;
@@ -456,6 +474,9 @@ public class QMUX
                     rxPending--;
                     lastTxn = System.currentTimeMillis();
                 }
+                long elapsed = chrono.elapsed();
+                metrics.record("all", elapsed);
+                metrics.record("ok", elapsed);
                 rl.responseReceived(response, handBack);
             }
         }
@@ -463,6 +484,7 @@ public class QMUX
             synchronized(QMUX.this) {
                 rxPending--;
             }
+            metrics.record("all", chrono.elapsed());
             rl.expired(handBack);
         }
     }
