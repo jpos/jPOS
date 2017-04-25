@@ -73,16 +73,16 @@ public class Metrics implements Loggeable {
     }
 
     private void dumpHistogram (PrintStream ps, String indent, String key, Histogram h) {
-        ps.printf ("%s%s max=%d, min=%d, mean=%.4f 0.5%%=%d 99.5%%=%d, 99.9%%=%d, 99.99%%=%d%n",
+        ps.printf ("%s%s max=%d, min=%d, mean=%.4f stddev=%.4f 0.5%%=%d 99.5%%=%d, 99.9%%=%d%n",
           indent,
           key,
           h.getMaxValue(),
           h.getMinValue(),
           h.getMean(),
+          h.getStdDeviation(),
           h.getValueAtPercentile(0.5),
           h.getValueAtPercentile(99.5),
-          h.getValueAtPercentile(99.9),
-          h.getValueAtPercentile(99.99)
+          h.getValueAtPercentile(99.9)
         );
     }
 }
