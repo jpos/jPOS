@@ -226,7 +226,7 @@ public class FSDMsg implements Loggeable, Cloneable {
 
     /**
      * @return message string
-     * @throws org.jdom.JDOMException
+     * @throws org.jdom2.JDOMException
      * @throws java.io.IOException
      * @throws ISOException 
      */
