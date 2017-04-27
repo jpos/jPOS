@@ -126,6 +126,17 @@ public class ASCIIChannelTest {
     }
 
     @Test
+    public void testSendMessageLength() throws Throwable {
+        ASCIIChannel aSCIIChannel = new ASCIIChannel("testASCIIChannelHost", 100, new GenericPackager());
+        try {
+            aSCIIChannel.sendMessageLength(Integer.MIN_VALUE);
+            fail("IOException expected");
+        } catch (IOException ex) {
+            assertEquals("ex.getMessage()", "invalid negative length ("+Integer.MIN_VALUE+")", ex.getMessage());
+        }
+    }
+
+    @Test
     public void testSendMessageLengthThrowsIOException() throws Throwable {
         ASCIIChannel aSCIIChannel = new ASCIIChannel();
         try {
