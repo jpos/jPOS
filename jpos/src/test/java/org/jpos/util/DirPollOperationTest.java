@@ -93,6 +93,7 @@ public class DirPollOperationTest {
         FileOutputStream fileOutputStream = new FileOutputStream(testIncomingFile);
         fileOutputStream.write("test".getBytes());
         fileOutputStream.flush();
+		fileOutputStream.close();
         assertThat(testIncomingFile.exists(), is(true));
 
         File badDirectory = new File(absolutePathTo(RELATIVE_BAD_DIR));
@@ -113,6 +114,7 @@ public class DirPollOperationTest {
         FileOutputStream fileOutputStream = new FileOutputStream(testIncomingFile);
         fileOutputStream.write("test".getBytes());
         fileOutputStream.flush();
+		fileOutputStream.close();
         assertThat(testIncomingFile.exists(), is(true));
 
         File archiveDirectory = new File(absolutePathTo(RELATIVE_ARCHIVE_DIR));
@@ -134,6 +136,7 @@ public class DirPollOperationTest {
         FileOutputStream fileOutputStream = new FileOutputStream(testIncomingFile);
         fileOutputStream.write("test".getBytes());
         fileOutputStream.flush();
+		fileOutputStream.close();
         assertThat(testIncomingFile.exists(), is(true));
 
         File archiveDirectory = new File(absolutePathTo(RELATIVE_ARCHIVE_DIR));
@@ -150,6 +153,7 @@ public class DirPollOperationTest {
         FileOutputStream fileOutputStream = new FileOutputStream(testIncomingFile);
         fileOutputStream.write("test".getBytes());
         fileOutputStream.flush();
+		fileOutputStream.close();
         assertThat(testIncomingFile.exists(), is(true));
 
         waitForFileProcessed();
@@ -168,6 +172,7 @@ public class DirPollOperationTest {
         FileOutputStream fileOutputStream = new FileOutputStream(testIncomingFile);
         fileOutputStream.write("test".getBytes());
         fileOutputStream.flush();
+		fileOutputStream.close();
         assertThat(testIncomingFile.exists(), is(true));
 
 
