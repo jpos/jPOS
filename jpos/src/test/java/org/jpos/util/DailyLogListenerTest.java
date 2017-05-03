@@ -297,6 +297,7 @@ public class DailyLogListenerTest {
         assertFalse("Logger element should not have been closed in the current file", currentLogFileContents.contains("</logger>"));
 
         Thread.sleep(1000); // to allow compressor thread to run
+		listener.destroy();
         String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
         String archivedLogFileContents = getStringFromCompressedFile(logRotationTestDirectory.getFile(logFileName + "." + date + ".log.gz"));
         assertTrue("Archived log file should contain the first message", archivedLogFileContents.contains("Message 1"));
@@ -327,6 +328,7 @@ public class DailyLogListenerTest {
         assertFalse("Logger element should not have been closed", logFileContents.contains("</logger>"));
 
         Thread.sleep(1000); // to allow compressor thread to run
+		listener.destroy();
         String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
         File archiveFile = logRotationTestDirectory.getFile(logFileName + ".log." + date + ".gz");
         assertFalse("Archive file should not exist", archiveFile.exists());
