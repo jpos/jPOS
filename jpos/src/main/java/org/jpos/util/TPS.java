@@ -137,7 +137,7 @@ public class TPS implements Loggeable {
     }
 
     public long getElapsed() {
-        return System.nanoTime() - start.get();
+        return (System.nanoTime() / FROM_NANOS) - start.get();
     }
 
     public String toString() {
