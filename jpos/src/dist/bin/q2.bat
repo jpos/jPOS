@@ -71,7 +71,7 @@ set CMD_LINE_ARGS=%$
 
 @rem Execute run
 CD "%APP_HOME%"
-"%JAVA_EXE%" %DEFAULT_JVM_OPTS% %JAVA_OPTS% %RUN_OPTS%  -jar @jarname@ %CMD_LINE_ARGS%
+"%JAVA_EXE%" %DEFAULT_JVM_OPTS% %JAVA_OPTS% %RUN_OPTS%  -jar @jarname@ --pid=jpos.pid %CMD_LINE_ARGS%
 
 :end
 @rem End local scope for the variables with windows NT shell
