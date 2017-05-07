@@ -152,6 +152,7 @@ task dist (type: Tar) {
     includeEmptyDirs true
     with jposCopySpec
     into "jpos-$version"
+    extension "tar.gz"
 }
 
 task zip (type: Zip) { 
