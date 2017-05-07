@@ -154,6 +154,14 @@ task dist (type: Tar) {
     into "jpos-$version"
 }
 
+task zip (type: Zip) { 
+    dependsOn 'assemble', 'sourceJar'
+    includeEmptyDirs true
+    includeEmptyDirs true
+    with jposCopySpec
+    into "jpos-$version"
+}
+
 task version (type: JavaExec, dependsOn: classes) {
     description = "Display jPOS Version"
     main = 'org.jpos.q2.Q2'
