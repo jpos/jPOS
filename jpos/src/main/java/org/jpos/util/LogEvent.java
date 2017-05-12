@@ -209,7 +209,9 @@ public class LogEvent {
     public String toString(String indent) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream p = new PrintStream (baos);
-        dump (p, indent);
+        synchronized (getPayLoad()) {
+            dump(p, indent);
+        }
         return baos.toString();
     }
     public String toString() {
