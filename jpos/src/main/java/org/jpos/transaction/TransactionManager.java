@@ -316,11 +316,6 @@ public class TransactionManager
                         paused ? TransactionStatusEvent.State.PAUSED : TransactionStatusEvent.State.DONE, 
                         id, "", context);
                 }
-                if (getInTransit() > Math.max(maxActiveSessions, activeSessions.get()) * 100) {
-                    if (evt == null)
-                        evt = getLog().createLogEvent ("warn");
-                    evt.addMessage("WARNING: IN-TRANSIT TOO HIGH");
-                }
                 if (evt != null && (action == PREPARED || action == ABORTED || (action == -1 && prof != null))) {
                     switch (action) {
                         case PREPARED :
@@ -332,6 +327,9 @@ public class TransactionManager
                         case -1:
                             evt.setTag ("undefined");
                             break;
+                    }
+                    if (getInTransit() > Math.max(maxActiveSessions, activeSessions.get()) * 100) {
+                        evt.addMessage("WARNING: IN-TRANSIT TOO HIGH");
                     }
                     evt.addMessage (
                         String.format (" in-transit=%d, head=%d, tail=%d, outstanding=%d, active-sessions=%d/%d, %s, elapsed=%dms",
