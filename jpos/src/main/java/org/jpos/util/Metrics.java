@@ -50,7 +50,8 @@ public class Metrics implements Loggeable {
     }
 
     public void record(String name, long elapsed) {
-        getHistogram(name).recordValue(elapsed);
+        Histogram h = getHistogram(name);
+        h.recordValue(Math.min(elapsed, h.getHighestTrackableValue()));
     }
 
     private Histogram getHistogram (String p) {
