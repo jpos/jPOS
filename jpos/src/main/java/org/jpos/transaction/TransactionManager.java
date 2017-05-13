@@ -275,6 +275,7 @@ public class TransactionManager
                         paused = true;
                         if (id % TIMER_PURGE_INTERVAL == 0)
                             timer.purge();
+                        evt = null;
                         break;
                     case PREPARED:
                         setState (id, COMMITTING);
