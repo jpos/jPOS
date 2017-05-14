@@ -131,9 +131,11 @@ public class QMUX
     public ISOMsg request (ISOMsg m, long timeout) throws ISOException {
         String key = getKey (m);
         String req = key + ".req";
-        if (isp.rdp (req) != null)
-            throw new ISOException ("Duplicate key '" + req + "' detected");
-        isp.out (req, m);
+        synchronized (isp) {
+            if (isp.rdp (req) != null)
+                throw new ISOException ("Duplicate key '" + req + "' detected");
+            isp.out (req, m);
+        }
         m.setDirection(0);
         Chronometer c = new Chronometer();
         if (timeout > 0)
@@ -179,15 +181,17 @@ public class QMUX
     {
         String key = getKey (m);
         String req = key + ".req";
-        if (isp.rdp (req) != null)
-            throw new ISOException ("Duplicate key '" + req + "' detected.");
-        m.setDirection(0);
-        AsyncRequest ar = new AsyncRequest (rl, handBack);
-        synchronized (ar) {
-            if (timeout > 0)
-                ar.setFuture(getScheduledThreadPoolExecutor().schedule(ar, timeout, TimeUnit.MILLISECONDS));
+        synchronized (isp) {
+            if (isp.rdp (req) != null)
+                throw new ISOException ("Duplicate key '" + req + "' detected.");
+            m.setDirection(0);
+            AsyncRequest ar = new AsyncRequest (rl, handBack);
+            synchronized (ar) {
+                if (timeout > 0)
+                    ar.setFuture(getScheduledThreadPoolExecutor().schedule(ar, timeout, TimeUnit.MILLISECONDS));
+            }
+            isp.out (req, ar, timeout);
         }
-        isp.out (req, ar, timeout);
         if (timeout > 0)
             sp.out (out, m, timeout);
         else
