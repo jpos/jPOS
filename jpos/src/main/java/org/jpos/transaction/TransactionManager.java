@@ -228,7 +228,8 @@ public class TransactionManager
                         abort   = pt.isAborting();
                         evt     = pt.getLogEvent();
                         prof    = pt.getProfiler();
-                        metrics.record(pt.getParticipant().getClass().getName() + "-resume", prof.getPartialInMillis());
+                        if (metrics != null)
+                            metrics.record(pt.getParticipant().getClass().getName() + "-resume", prof.getPartialInMillis());
                         if (prof != null)
                             prof.reenable();
                     }
@@ -449,7 +450,8 @@ public class TransactionManager
     public void dump (PrintStream ps, String indent) {
         if (tps != null)
             ps.println(indent + tps.toString());
-        metrics.dump (ps, indent);
+        if (metrics != null)
+            metrics.dump (ps, indent);
     }
 
     protected void commit
@@ -507,7 +509,8 @@ public class TransactionManager
         } catch (Throwable t) {
             getLog().warn ("PREPARE-FOR-ABORT: " + Long.toString (id), t);
         } finally {
-            metrics.record(p.getClass().getName() + "-prepare-for-abort", c.elapsed());
+            if (metrics != null)
+                metrics.record(p.getClass().getName() + "-prepare-for-abort", c.elapsed());
         }
         return ABORTED | NO_JOIN;
     }
@@ -521,7 +524,8 @@ public class TransactionManager
         } catch (Throwable t) {
             getLog().warn ("PREPARE: " + Long.toString (id), t);
         } finally {
-            metrics.record(p.getClass().getName() + "-prepare", c.elapsed());
+            if (metrics != null)
+                metrics.record(p.getClass().getName() + "-prepare", c.elapsed());
         }
         return ABORTED;
     }
@@ -535,7 +539,8 @@ public class TransactionManager
         } catch (Throwable t) {
             getLog().warn ("COMMIT: " + Long.toString (id), t);
         }
-        metrics.record(p.getClass().getName() + "-commit", c.elapsed());
+        if (metrics != null)
+            metrics.record(p.getClass().getName() + "-commit", c.elapsed());
     }
     protected void abort 
         (TransactionParticipant p, long id, Serializable context) 
@@ -547,7 +552,8 @@ public class TransactionManager
         } catch (Throwable t) {
             getLog().warn ("ABORT: " + Long.toString (id), t);
         }
-        metrics.record(p.getClass().getName() + "-abort", c.elapsed());
+        if (metrics != null)
+            metrics.record(p.getClass().getName() + "-abort", c.elapsed());
     }
     protected int prepare
         (int session, long id, Serializable context, List<TransactionParticipant> members, Iterator<TransactionParticipant> iter, boolean abort, LogEvent evt, Profiler prof)
@@ -600,7 +606,8 @@ public class TransactionManager
             if ((action & READONLY) == 0) {
                 Chronometer c = new Chronometer();
                 snapshot (id, context);
-                metrics.record(p.getClass().getName() + "-snapshot", c.elapsed());
+                if (metrics != null)
+                    metrics.record(p.getClass().getName() + "-snapshot", c.elapsed());
             }
             if ((action & NO_JOIN) == 0) {
                 members.add (p);
@@ -616,7 +623,8 @@ public class TransactionManager
                     else 
                         getLog().error ("       selector: " + p.getClass().getName() + " " + e.getMessage());
                 } finally {
-                    metrics.record(p.getClass().getName() + "-selector", c.lap());
+                    if (metrics != null)
+                        metrics.record(p.getClass().getName() + "-selector", c.lap());
                 }
                 if (evt != null) {
                     evt.addMessage ("       selector: " + groupName);
