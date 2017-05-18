@@ -37,14 +37,16 @@ public class PausedTransaction implements Loggeable {
     private TimerTask expirationMonitor;
     private Profiler prof;
     private LogEvent evt;
+    private TransactionParticipant participant;
     public PausedTransaction (
-            TransactionManager txnmgr, long id, List<TransactionParticipant> members
+            TransactionManager txnmgr, long id, TransactionParticipant participant, List<TransactionParticipant> members
            ,Iterator<TransactionParticipant> iter, boolean aborting
            ,TimerTask expirationMonitor, Profiler prof, LogEvent evt)
     {
         super();
         this.txnmgr = txnmgr;
         this.id = id;
+        this.participant = participant;
         this.members = members;
         this.iter = iter;
         this.aborting = aborting;
@@ -66,6 +68,11 @@ public class PausedTransaction implements Loggeable {
                 + (isAborting() ? " (aborting)" : ""));
 
     }
+
+    public TransactionParticipant getParticipant() {
+        return participant;
+    }
+
     public boolean isAborting() {
         return aborting;
     }

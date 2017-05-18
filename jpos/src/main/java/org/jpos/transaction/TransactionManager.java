@@ -61,7 +61,7 @@ public class TransactionManager
     protected Map<String,List<TransactionParticipant>> groups;
     private static final ThreadLocal<Serializable> tlContext = new ThreadLocal<Serializable>();
     private static final ThreadLocal<Long> tlId = new ThreadLocal<Long>();
-    private Metrics metrics = new Metrics(new AtomicHistogram(60000, 2));
+    private Metrics metrics;
 
     Space sp;
     Space psp;
@@ -184,6 +184,7 @@ public class TransactionManager
         while (running()) {
             Serializable context = null;
             prof = null;
+            evt = null;
             paused = false;
             thread.setName (getName() + "-" + session + ":idle");
             int action = -1;
@@ -227,6 +228,7 @@ public class TransactionManager
                         abort   = pt.isAborting();
                         evt     = pt.getLogEvent();
                         prof    = pt.getProfiler();
+                        metrics.record(pt.getParticipant().getClass().getName() + "-resume", prof.getPartialInMillis());
                         if (prof != null)
                             prof.reenable();
                     }
@@ -275,7 +277,6 @@ public class TransactionManager
                         paused = true;
                         if (id % TIMER_PURGE_INTERVAL == 0)
                             timer.purge();
-                        evt = null;
                         break;
                     case PREPARED:
                         setState (id, COMMITTING);
@@ -343,7 +344,6 @@ public class TransactionManager
                         evt.addMessage (prof);
 
                     Logger.log (new FrozenLogEvent(evt));
-                    evt = null;
                 }
             }
         }
@@ -393,6 +393,7 @@ public class TransactionManager
                 throw new ConfigurationException("max-active-sessions < max-sessions");
         }
         callSelectorOnAbort = cfg.getBoolean("call-selector-on-abort", true);
+        metrics = new Metrics(new AtomicHistogram(cfg.getLong("metrics-highest-trackable-value", 60000), 2));
     }
     public void addListener (TransactionStatusListener l) {
         synchronized (statusListeners) {
@@ -645,7 +646,7 @@ public class TransactionManager
                     if (t > 0)
                         expirationMonitor = new PausedMonitor (pausable);
                     PausedTransaction pt = new PausedTransaction (
-                        this, id, members, iter, abort, expirationMonitor, prof, evt
+                        this, id, p, members, iter, abort, expirationMonitor, prof, evt
                     );
                     pausable.setPausedTransaction (pt);
                     if (expirationMonitor != null) {
