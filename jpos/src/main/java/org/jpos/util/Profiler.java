@@ -83,6 +83,9 @@ public class Profiler implements Loggeable {
     public long getPartial() {
         return System.nanoTime() - partial;
     }
+    public long getPartialInMillis() {
+        return getPartial() / TO_MILLIS;
+    }
     public void dump (PrintStream p, String indent) {
         String inner = indent + "  ";
         if (!events.containsKey("end"))
