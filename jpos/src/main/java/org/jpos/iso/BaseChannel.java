@@ -581,6 +581,9 @@ public abstract class BaseChannel extends Observable
             m.setDirection(ISOMsg.OUTGOING);
             ISOPackager p = getDynamicPackager(m);
             m.setPackager (p);
+            //isomsg obj does not set the header time, the log can not be output header,but ouput has output
+            if(m.getHeader()==null)
+                m.setHeader(this.header)
             m = applyOutgoingFilters (m, evt);
             evt.addMessage (m);
             m.setDirection(ISOMsg.OUTGOING); // filter may have dropped this info
