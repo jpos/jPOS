@@ -31,6 +31,8 @@ import org.jpos.util.*;
 import java.io.PrintStream;
 import java.io.Serializable;
 import java.util.*;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import java.time.Instant;
@@ -62,6 +64,7 @@ public class TransactionManager
     private static final ThreadLocal<Serializable> tlContext = new ThreadLocal<Serializable>();
     private static final ThreadLocal<Long> tlId = new ThreadLocal<Long>();
     private Metrics metrics;
+    private static ScheduledThreadPoolExecutor loadMonitorExecutor;
 
     Space sp;
     Space psp;
@@ -121,12 +124,29 @@ public class TransactionManager
         }
         if (psp.rdp (RETRY_QUEUE) != null)
             checkRetryTask();
+
+        if (maxSessions > sessions) {
+            loadMonitorExecutor = ConcurrentUtil.newScheduledThreadPoolExecutor();
+            loadMonitorExecutor.scheduleAtFixedRate(
+              new Thread(() -> {
+                  int outstandingTransactions = getOutstandingTransactions();
+                  int activeSessions = getActiveSessions();
+                  if (activeSessions < maxSessions && outstandingTransactions > threshold) {
+                      int count = Math.min(outstandingTransactions, maxSessions - activeSessions);
+                      for (int i=0; i<count; i++)
+                          new Thread(this).start();
+                      getLog().info("Created " + count + " additional sessions");
+                  }
+              }), 1, 1, TimeUnit.SECONDS)
+            ;
+        }
     }
 
     @Override
     public void stopService () throws Exception {
         NameRegistrar.unregister(getName());
-
+        if (loadMonitorExecutor != null)
+            loadMonitorExecutor.shutdown();
         Thread[] tt = threads.toArray(new Thread[threads.size()]);
         for (int i=0; i < tt.length; i++) {
             isp.out(queue, Boolean.FALSE, 60 * 1000);
@@ -199,17 +219,11 @@ public class TransactionManager
                     continue;   // stopService ``hack''
 
                 if (obj == null) {
-                    if (session > sessions && getActiveSessions() > sessions)
+                    if (session+1 > sessions && getActiveSessions() > sessions)
                         break; // we are an extra session, exit
-                    else
+                    else {
                         continue;
-                }
-                if (session < sessions && // only initial sessions create extra sessions
-                    maxSessions > sessions &&
-                    getActiveSessions() < maxSessions &&
-                    getOutstandingTransactions() > threshold)
-                {
-                        new Thread(this).start();
+                    }
                 }
                 if (!(obj instanceof Serializable)) {
                     getLog().error (
