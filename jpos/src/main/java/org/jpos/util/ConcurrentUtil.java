@@ -20,18 +20,15 @@ package org.jpos.util;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.ThreadFactory;
 
 public class ConcurrentUtil {
     public static ScheduledThreadPoolExecutor newScheduledThreadPoolExecutor() {
         ScheduledThreadPoolExecutor stpe = new ScheduledThreadPoolExecutor(1,
-            new ThreadFactory() {
-                @Override public Thread newThread(Runnable r) {
-                    Thread t = Executors.defaultThreadFactory().newThread(r);
-                    t.setDaemon(true);
-                    return t;
-                }
-            });
+          r -> {
+              Thread t = Executors.defaultThreadFactory().newThread(r);
+              t.setDaemon(true);
+              return t;
+          });
         stpe.setExecuteExistingDelayedTasksAfterShutdownPolicy(false);
         stpe.setContinueExistingPeriodicTasksAfterShutdownPolicy(false);
         return stpe;
