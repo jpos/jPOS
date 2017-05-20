@@ -137,7 +137,7 @@ public class TransactionManager
                           new Thread(this).start();
                       getLog().info("Created " + count + " additional sessions");
                   }
-              }), 1, 1, TimeUnit.SECONDS)
+              }), 15, 2, TimeUnit.SECONDS)
             ;
         }
     }
