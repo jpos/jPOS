@@ -39,4 +39,5 @@ public interface QBeanSupportMBean extends QBean, QPersist {
     String getLogger();
     URL[] getLoaderURLS();
     QClassLoader getLoader();
+    String getDump();
 }

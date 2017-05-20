@@ -22,15 +22,14 @@ import org.jdom2.Element;
 import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
-import org.jpos.util.ConcurrentUtil;
-import org.jpos.util.Log;
-import org.jpos.util.LogEvent;
-import org.jpos.util.Logger;
+import org.jpos.util.*;
 
 import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
+import java.io.PrintStream;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.Iterator;
@@ -239,6 +238,16 @@ public class QBeanSupport
     }
     public Configuration getConfiguration () {
         return cfg;
+    }
+
+    public String getDump () {
+        if (this instanceof Loggeable) {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            PrintStream p = new PrintStream(baos);
+            ((Loggeable)this).dump(p, "");
+            return baos.toString();
+        }
+        return toString();
     }
     protected void initService()    throws Exception {}
     protected void startService()   throws Exception {}
