@@ -37,8 +37,6 @@ public interface QBeanSupportMBean extends QBean, QPersist {
     void setRealm(String realm);
     String getRealm();
     String getLogger();
-    void shutdownQ2();
     URL[] getLoaderURLS();
     QClassLoader getLoader();
 }
-

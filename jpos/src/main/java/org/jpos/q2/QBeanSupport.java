@@ -180,11 +180,6 @@ public class QBeanSupport
     }
 
     @Override
-    public void shutdownQ2 () {
-        getServer().shutdown ();
-    }
-
-    @Override
     public int getState () {
         return state;
     }
