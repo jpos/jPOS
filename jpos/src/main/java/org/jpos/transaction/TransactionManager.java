@@ -80,8 +80,10 @@ public class TransactionManager
     int maxSessions;
     int threshold;
     int maxActiveSessions;
-    AtomicInteger activeSessions = new AtomicInteger();
-    long head, tail;
+    private AtomicInteger activeSessions = new AtomicInteger();
+    private AtomicInteger pausedCounter = new AtomicInteger();
+
+    volatile long head, tail;
     long retryInterval = 5000L;
     long retryTimeout  = 60000L;
     long pauseTimeout  = 0L;
@@ -232,6 +234,7 @@ public class TransactionManager
                             metrics.record(pt.getParticipant().getClass().getName() + "-resume", prof.getPartialInMillis());
                         if (prof != null)
                             prof.reenable();
+                        pausedCounter.decrementAndGet();
                     }
                 } else 
                     pt = null;
@@ -278,6 +281,7 @@ public class TransactionManager
                         paused = true;
                         if (id % TIMER_PURGE_INTERVAL == 0)
                             timer.purge();
+                        pausedCounter.incrementAndGet();
                         break;
                     case PREPARED:
                         setState (id, COMMITTING);
@@ -335,8 +339,8 @@ public class TransactionManager
                         evt.addMessage("WARNING: IN-TRANSIT TOO HIGH");
                     }
                     evt.addMessage (
-                        String.format (" in-transit=%d, head=%d, tail=%d, outstanding=%d, active-sessions=%d/%d, %s, elapsed=%dms",
-                            getInTransit(), head, tail, getOutstandingTransactions(),
+                        String.format (" in-transit=%d, head=%d, tail=%d, paused=%d, outstanding=%d, active-sessions=%d/%d, %s, elapsed=%dms",
+                            getInTransit(), head, tail, pausedCounter.get(), getOutstandingTransactions(),
                             getActiveSessions(), maxSessions,
                             tps.toString(), prof != null ? prof.getElapsedInMillis() : -1
                         )
@@ -448,8 +452,12 @@ public class TransactionManager
 
     @Override
     public void dump (PrintStream ps, String indent) {
-        if (tps != null)
-            ps.println(indent + tps.toString());
+        ps.printf ("%sin-transit=%d, head=%d, tail=%d, paused=%d, outstanding=%d, active-sessions=%d/%d%s%n",
+          indent,
+          getInTransit(), head, tail, pausedCounter.get(), getOutstandingTransactions(),
+          getActiveSessions(), maxSessions,
+          (tps != null ? ", " + tps.toString() : "")
+        );
         if (metrics != null)
             metrics.dump (ps, indent);
     }
