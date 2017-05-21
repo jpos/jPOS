@@ -137,7 +137,7 @@ public class TransactionManager
                           new Thread(this).start();
                       getLog().info("Created " + count + " additional sessions");
                   }
-              }), 15, 2, TimeUnit.SECONDS)
+              }), 5, 2, TimeUnit.SECONDS)
             ;
         }
     }
@@ -298,15 +298,19 @@ public class TransactionManager
                         pausedCounter.incrementAndGet();
                         break;
                     case PREPARED:
-                        setState (id, COMMITTING);
-                        setThreadLocal(id, context);
-                        commit (session, id, context, members, false, evt, prof);
-                        removeThreadLocal();
+                        if (members.size() > 0) {
+                            setState(id, COMMITTING);
+                            setThreadLocal(id, context);
+                            commit(session, id, context, members, false, evt, prof);
+                            removeThreadLocal();
+                        }
                         break;
                     case ABORTED:
-                        setThreadLocal(id, context);
-                        abort (session, id, context, members, false, evt, prof);
-                        removeThreadLocal();
+                        if (members.size() > 0) {
+                            setThreadLocal(id, context);
+                            abort(session, id, context, members, false, evt, prof);
+                            removeThreadLocal();
+                        }
                         break;
                     case RETRY:
                         psp.out (RETRY_QUEUE, context);
@@ -694,8 +698,7 @@ public class TransactionManager
                 return PAUSE;
             }
         }
-        return members.isEmpty() ? NO_JOIN :
-                abort ? retry ? RETRY : ABORTED : PREPARED;
+        return abort ? retry ? RETRY : ABORTED : PREPARED;
     }
     protected List<TransactionParticipant> getParticipants (String groupName) {
         List<TransactionParticipant> participants = groups.get (groupName);
