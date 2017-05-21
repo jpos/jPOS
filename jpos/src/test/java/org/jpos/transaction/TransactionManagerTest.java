@@ -376,7 +376,7 @@ public class TransactionManagerTest {
     public void testPrepare5() throws Throwable {
         int result = transactionManager.prepare(1, 100L, new File("testTransactionManagerParam1"), new ArrayList(), new ArrayList(
                 1000).iterator(), true, new LogEvent("testTransactionManagerTag"), null);
-        assertEquals("result", 64, result);
+        assertEquals("result", TransactionConstants.ABORTED, result);
     }
 
     @Test
@@ -403,7 +403,7 @@ public class TransactionManagerTest {
         LogEvent evt = new LogEvent();
         int result = transactionManager.prepare(1, 100L, Boolean.TRUE, new ArrayList(), arrayList.iterator(), false, evt, null);
         assertEquals("evt.payLoad.size()", 3, evt.getPayLoad().size());
-        assertEquals("result", 64, result);
+        assertEquals("result", TransactionConstants.PREPARED, result);
     }
 
     @Test
