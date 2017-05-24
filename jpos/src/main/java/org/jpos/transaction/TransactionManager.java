@@ -998,7 +998,9 @@ public class TransactionManager
     public int getRunningSessions() {
         return (int) (head - tail);
     }
-
+    public int getPausedCounter() {
+        return pausedCounter.intValue();
+    }
     public static Serializable getSerializable() {
         return tlContext.get();
     }
