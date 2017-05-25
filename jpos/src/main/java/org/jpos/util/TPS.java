@@ -49,6 +49,7 @@ import java.util.concurrent.locks.ReentrantLock;
 public class TPS implements Loggeable {
     AtomicInteger count;
     AtomicLong start;
+    AtomicLong readings;
     int peak;
     long peakWhen;
     static final long FROM_NANOS = 1000000L;
@@ -59,7 +60,6 @@ public class TPS implements Loggeable {
     boolean autoupdate;
     final ReentrantLock lock = new ReentrantLock();
     protected long simulatedNanoTime = 0L;
-    long readings;
 
     public TPS() {
         this(1000L, false);
@@ -81,7 +81,7 @@ public class TPS implements Loggeable {
         super();
         count = new AtomicInteger(0);
         start = new AtomicLong(0L);
-        readings = 0L;
+        readings = new AtomicLong(0L);
         this.period = period;
         this.autoupdate = autoupdate;
         start.set(System.nanoTime() / FROM_NANOS);
@@ -129,7 +129,7 @@ public class TPS implements Loggeable {
             avg = 0f;
             peak = 0;
             peakWhen = 0L;
-            readings = 0L;
+            readings.set(0L);
         } finally {
             lock.unlock();
         }
@@ -176,7 +176,8 @@ public class TPS implements Loggeable {
             if (period != 1000L) {
                 tps = tps*1000L/period;
             }
-            avg = (readings * avg + tps) / ++readings;
+            long r = readings.getAndIncrement();
+            avg = (r * avg + tps) / ++r;
             if (tps > peak) {
                 peak = Math.round(tps);
                 peakWhen = System.currentTimeMillis();
