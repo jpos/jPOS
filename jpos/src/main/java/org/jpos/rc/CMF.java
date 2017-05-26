@@ -197,29 +197,43 @@ public enum CMF implements IRC {
     MISCONFIGURED_ENDPOINT(10004),
     INVALID_REQUEST(10005),
     HOST_UNREACHABLE(10006),
+    INTERNAL_ERROR(19999,false,true),
 
     // User specific result codes
     USER(90000);
 
     int irc;
     boolean success;
+    boolean inhibit;
 
     CMF(int irc) {
         this.irc = irc;
         this.success = false;
+        this.inhibit = false;
     }
     CMF(int irc, boolean success) {
         this.irc = irc;
         this.success = success;
+        this.inhibit = false;
     }
-    
+    CMF(int irc, boolean success, boolean inhibit) {
+        this.irc = irc;
+        this.success = success;
+        this.inhibit = inhibit;
+    }
+
     @Override
     public int irc() {
         return irc;
     }
 
     @Override
-    public boolean isSuccess() {
+    public boolean success() {
         return success;
+    }
+
+    @Override
+    public boolean inhibit() {
+        return inhibit;
     }
 }

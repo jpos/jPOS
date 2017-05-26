@@ -42,7 +42,7 @@ public class Result implements Loggeable {
         return add(Type.WARN, null, source, format, args);
     }
     public Result success (IRC irc, String source, String format, Object ... args) {
-        if (!irc.isSuccess())
+        if (!irc.success())
             throw new IllegalArgumentException("Invalid success IRC " + irc);
         return add(Type.SUCCESS, irc, source, format, args);
     }
@@ -77,6 +77,12 @@ public class Result implements Loggeable {
             return entries.stream().anyMatch(e -> e.type == Type.FAIL);
         }
     }
+    public boolean hasInhibit() {
+        synchronized (entries) {
+            return entries.stream().anyMatch(e -> e.irc.inhibit());
+        }
+    }
+
     public boolean isSuccess() {
         synchronized (entries) {
             return isSuccess0() && !hasFailures();

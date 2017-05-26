@@ -44,12 +44,10 @@ public class CMFTest {
         Result rc = new Result();
         rc.success(CMF.APPROVED, Caller.info(), "Approved");
         assertTrue(rc.isSuccess());
-        rc.dump (System.out, "");
         assertNotNull(rc.success());
         rc.fail(CMF.GENERAL_DECLINE, Caller.info(), "Decline");
         assertFalse(rc.isSuccess());
         assertNull(rc.success());
-        rc.dump (System.out, "");
     }
 
     @Test
@@ -71,5 +69,12 @@ public class CMFTest {
         assertEquals("Standard RC", new SimpleRC("0000", "APPROVED"), c.convert(CMF.APPROVED));
         assertEquals("ResourceBundle override", new SimpleRC("ZZZZ", "General Decline"), c.convert(CMF.GENERAL_DECLINE));
         assertEquals("Configuration override", new SimpleRC("----", "jPOS error message"), c.convert(CMF.JPOS));
+    }
+
+    @Test
+    public void testInhibit() {
+        Result rc = new Result();
+        rc.fail(CMF.INTERNAL_ERROR, Caller.info(), "Internal Error");
+        assertTrue(rc.hasInhibit());
     }
 }
