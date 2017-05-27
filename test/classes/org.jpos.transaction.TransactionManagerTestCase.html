@@ -41,7 +41,7 @@
 </td>
 <td>
 <div class="infoBox" id="duration">
-<div class="counter">5.011s</div>
+<div class="counter">5.012s</div>
 <p>duration</p>
 </div>
 </td>
@@ -79,7 +79,7 @@
 </thead>
 <tr>
 <td class="success">testEmptyTM</td>
-<td>5.011s</td>
+<td>5.012s</td>
 <td class="success">passed</td>
 </tr>
 </table>
@@ -87,14 +87,14 @@
 <div id="tab1" class="tab">
 <h2>Standard output</h2>
 <span class="code">
-<pre>&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-05-27T01:32:05.581&quot;&gt;
+<pre>&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-05-27T15:49:17.378&quot;&gt;
   &lt;info&gt;
     Q2 started, deployDir=/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/transaction
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-05-27T01:32:05.584&quot; lifespan=&quot;2ms&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-05-27T15:49:17.382&quot; lifespan=&quot;3ms&quot;&gt;
   &lt;version&gt;
-    jPOS 2.1.0-SNAPSHOT detached/6145612 (2017-05-27 01:29:20 UTC) 
+    jPOS 2.1.1-SNAPSHOT detached/8815367 (2017-05-27 15:46:35 UTC) 
 
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA1
@@ -117,97 +117,107 @@ q9ulRPEqH9NR79619lNKVUkE206dVlXo7xHmJS1QZy5v/GT66xBxyDVfTduPFXk=
 
   &lt;/version&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-05-27T01:32:05.595&quot; lifespan=&quot;8ms&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-05-27T15:49:17.404&quot; lifespan=&quot;17ms&quot;&gt;
   &lt;info&gt;
     deploy: /home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/transaction/10_txnmgr_empty.xml
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-05-27T01:32:05.675&quot; lifespan=&quot;80ms&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-05-27T15:49:17.503&quot; lifespan=&quot;98ms&quot;&gt;
   &lt;info&gt;
     deploy: /home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/transaction/10_txnmgr_test.xml
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-05-27T01:32:05.677&quot; lifespan=&quot;2ms&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-05-27T15:49:17.505&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;info&gt;
     deploy: /home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/transaction/99_sysmon.xml
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;org.jpos.transaction.TransactionManager&quot; at=&quot;2017-05-27T01:32:05.684&quot; lifespan=&quot;6ms&quot;&gt;
+&lt;log realm=&quot;org.jpos.transaction.TransactionManager&quot; at=&quot;2017-05-27T15:49:17.508&quot;&gt;
   &lt;info&gt;
     start Thread[Thread-280,5,main]
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;org.jpos.transaction.TransactionManager&quot; at=&quot;2017-05-27T01:32:05.684&quot;&gt;
-  &lt;info&gt;
-    start Thread[Thread-281,5,main]
-  &lt;/info&gt;
-&lt;/log&gt;
-&lt;log realm=&quot;org.jpos.transaction.TransactionManager&quot; at=&quot;2017-05-27T01:32:05.686&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;org.jpos.transaction.TransactionManager&quot; at=&quot;2017-05-27T15:49:17.510&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;commit&gt;
     txnmgr-empty-0:idle:1
     &lt;context&gt;
       volatile: the quick brown empty fox
       persistent(P): jumped over the lazy empty dog
     &lt;/context&gt;
-     in-transit=0, head=2, tail=2, paused=0, outstanding=0, active-sessions=2/4, tps=0, peak=0, avg=0.00, elapsed=0ms
+     in-transit=0, head=2, tail=2, paused=0, outstanding=0, active-sessions=1/4, tps=0, peak=0, avg=0.00, elapsed=0ms
     &lt;profiler&gt;
       end [0.7/0.7]
     &lt;/profiler&gt;
   &lt;/commit&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;org.jpos.transaction.TransactionManager&quot; at=&quot;2017-05-27T01:32:05.688&quot;&gt;
+&lt;log realm=&quot;org.jpos.transaction.TransactionManager&quot; at=&quot;2017-05-27T15:49:17.511&quot;&gt;
+  &lt;info&gt;
+    start Thread[Thread-281,5,main]
+  &lt;/info&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;org.jpos.transaction.TransactionManager&quot; at=&quot;2017-05-27T15:49:17.512&quot;&gt;
   &lt;info&gt;
     start Thread[Thread-282,5,main]
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;org.jpos.transaction.TransactionManager&quot; at=&quot;2017-05-27T01:32:05.690&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;org.jpos.transaction.TransactionManager&quot; at=&quot;2017-05-27T15:49:17.514&quot;&gt;
   &lt;info&gt;
     start Thread[Thread-283,5,main]
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;org.jpos.transaction.TransactionManager&quot; at=&quot;2017-05-27T01:32:05.695&quot; lifespan=&quot;3ms&quot;&gt;
+&lt;log realm=&quot;org.jpos.transaction.TransactionManager&quot; at=&quot;2017-05-27T15:49:17.518&quot;&gt;
   &lt;info&gt;
     start Thread[Thread-285,5,main]
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2017-05-27T01:32:05.700&quot;&gt;
-  &lt;info&gt;
-    Starting SystemMonitor
-  &lt;/info&gt;
-&lt;/log&gt;
-&lt;log realm=&quot;org.jpos.transaction.TransactionManager&quot; at=&quot;2017-05-27T01:32:05.705&quot;&gt;
+&lt;log realm=&quot;org.jpos.transaction.TransactionManager&quot; at=&quot;2017-05-27T15:49:17.520&quot;&gt;
   &lt;info&gt;
     start Thread[Thread-286,5,main]
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2017-05-27T01:32:05.706&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2017-05-27T15:49:17.520&quot;&gt;
+  &lt;info&gt;
+    Starting SystemMonitor
+  &lt;/info&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;org.jpos.transaction.TransactionManager&quot; at=&quot;2017-05-27T15:49:17.521&quot;&gt;
+  &lt;info&gt;
+    start Thread[Thread-288,5,main]
+  &lt;/info&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;org.jpos.transaction.TransactionManager&quot; at=&quot;2017-05-27T15:49:17.522&quot;&gt;
+  &lt;info&gt;
+    start Thread[Thread-287,5,main]
+  &lt;/info&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2017-05-27T15:49:17.523&quot;&gt;
   &lt;info&gt;
                OS: Linux (4.4.0-51-generic)
-     process name: 5936@testing-gce-eb6c1553-a08a-42ff-8114-a8ba27d110ae
-             host: testing-gce-eb6c1553-a08a-42ff-8114-a8ba27d110ae/127.0.1.1
+     process name: 5953@testing-gce-debaa812-7bb8-476b-924c-b86dfad54968
+             host: testing-gce-debaa812-7bb8-476b-924c-b86dfad54968/127.0.1.1
               cwd: /home/travis/build/jpos/jPOS/jpos
        free space: 13.3 GiB
      usable space: 12 GiB
-          version: 2.1.0-SNAPSHOT (6145612)
-         instance: d1005231-d8e7-431f-926d-f104d5702d01
-           uptime: 00:00:00.133 (0.330000)
+          version: 2.1.1-SNAPSHOT (8815367)
+         instance: ac205fdc-1a28-47ae-8772-c019ae10aefd
+           uptime: 00:00:00.160 (0.660000)
        processors: 2
            drift : 0
-    memory(t/u/f): 638/323/314
+    memory(t/u/f): 402/189/212
          encoding: UTF-8
          timezone: UTC (Coordinated Universal Time) Z
     watch service: sun.nio.fs.LinuxWatchService
-            clock: 1495848725 2017-05-27T01:32:05.706Z
-     thread count: 62
-     peak threads: 140
-     user threads: 59
+            clock: 1495900157 2017-05-27T15:49:17.523Z
+     thread count: 63
+     peak threads: 141
+     user threads: 60
             Thread[Reference Handler,10,system]
             Thread[Finalizer,8,system]
             Thread[Signal Dispatcher,9,system]
             Thread[main,5,main]
             Thread[Test worker,5,main]
-            Thread[/127.0.0.1:50358 to /127.0.0.1:41532 workers Thread 2,5,main]
-            Thread[/127.0.0.1:50358 to /127.0.0.1:41532 workers Thread 3,5,main]
+            Thread[/127.0.0.1:46162 to /127.0.0.1:38091 workers Thread 2,5,main]
+            Thread[/127.0.0.1:46162 to /127.0.0.1:38091 workers Thread 3,5,main]
             Thread[pool-1-thread-1,5,main]
             Thread[Timer-0,5,main]
             Thread[Timer-1,5,main]
@@ -218,7 +228,7 @@ q9ulRPEqH9NR79619lNKVUkE206dVlXo7xHmJS1QZy5v/GT66xBxyDVfTduPFXk=
             Thread[Cleaner-1,5,main]
             Thread[Checkpointer,5,main]
             Thread[StatCapture,5,main]
-            Thread[Q2-d1005231-d8e7-431f-926d-f104d5702d01,5,main]
+            Thread[Q2-ac205fdc-1a28-47ae-8772-c019ae10aefd,5,main]
             Thread[Thread-278,5,main]
             Thread[INCompressor,5,main]
             Thread[Cleaner-1,5,main]
@@ -232,8 +242,8 @@ q9ulRPEqH9NR79619lNKVUkE206dVlXo7xHmJS1QZy5v/GT66xBxyDVfTduPFXk=
             Thread[Timer-7,5,main]
             Thread[txnmgr-test-0:idle,5,main]
             Thread[txnmgr-test-1:idle,5,main]
-            Thread[Thread-287,5,main]
-            Thread[Thread-288,5,main]
+            Thread[txnmgr-test-3:idle,5,main]
+            Thread[txnmgr-test-2:idle,5,main]
             Thread[SystemMonitor,5,main]
             Thread[ThreadPool.PooledThread-0,5,ThreadPool-0]
             Thread[ThreadPool.PooledThread-1,5,ThreadPool-1]
@@ -256,13 +266,14 @@ q9ulRPEqH9NR79619lNKVUkE206dVlXo7xHmJS1QZy5v/GT66xBxyDVfTduPFXk=
             Thread[ThreadPool.PooledThread-19-idle,5,ThreadPool-15]
             Thread[ThreadPool.PooledThread-20,5,ThreadPool-15]
             Thread[ThreadPool.PooledThread-21-idle,5,ThreadPool-16]
-            Thread[ThreadPool.PooledThread-22-idle,5,ThreadPool-17]
-            Thread[ThreadPool.PooledThread-23,5,ThreadPool-17]
-            Thread[ThreadPool.PooledThread-24-idle,5,ThreadPool-18]
-            Thread[ThreadPool.PooledThread-25,5,ThreadPool-18]
-            Thread[ThreadPool.PooledThread-26-idle,5,ThreadPool-19]
-            Thread[ThreadPool.PooledThread-27,5,ThreadPool-19]
-            Thread[ThreadPool.PooledThread-28-idle,5,ThreadPool-20]
+            Thread[ThreadPool.PooledThread-22,5,ThreadPool-16]
+            Thread[ThreadPool.PooledThread-23-idle,5,ThreadPool-17]
+            Thread[ThreadPool.PooledThread-24,5,ThreadPool-17]
+            Thread[ThreadPool.PooledThread-25-idle,5,ThreadPool-18]
+            Thread[ThreadPool.PooledThread-26,5,ThreadPool-18]
+            Thread[ThreadPool.PooledThread-27-idle,5,ThreadPool-19]
+            Thread[ThreadPool.PooledThread-28,5,ThreadPool-19]
+            Thread[ThreadPool.PooledThread-29-idle,5,ThreadPool-20]
     name-registrar:
       Q2: org.jpos.q2.Q2
       channel.testLoopbackChannelName: org.jpos.iso.channel.LoopbackChannel
@@ -281,7 +292,7 @@ q9ulRPEqH9NR79619lNKVUkE206dVlXo7xHmJS1QZy5v/GT66xBxyDVfTduPFXk=
       logger.testLinkLogger: org.jpos.util.Logger
       logger.null: org.jpos.util.Logger
       s-m-adapter.testString: org.jpos.security.BaseSMAdapter
-      tspace:org.jpos.transaction.TransactionManager@21919e31: org.jpos.space.TSpace
+      tspace:org.jpos.transaction.TransactionManager@12b81caf: org.jpos.space.TSpace
         &lt;key count='1'&gt;$TAIL&lt;/key&gt;
         &lt;key count='1'&gt;$HEAD&lt;/key&gt;
          key-count: 2
@@ -320,15 +331,15 @@ q9ulRPEqH9NR79619lNKVUkE206dVlXo7xHmJS1QZy5v/GT66xBxyDVfTduPFXk=
         &lt;key count='1'&gt;file:build/resources/test/org/jpos/util/msgDS-base.xml&lt;/key&gt;
         &lt;key count='1'&gt;file:build/resources/test/org/jpos/util/DSmsg-base.xml&lt;/key&gt;
         &lt;key count='1'&gt;test-base.xml&lt;/key&gt;
-        &lt;key count='1'&gt;$TAILLOCK.563191345&lt;/key&gt;
+        &lt;key count='1'&gt;$TAILLOCK.1055659358&lt;/key&gt;
         &lt;key count='1'&gt;file:build/resources/test/org/jpos/util/msg-prop-base.xml&lt;/key&gt;
         &lt;key count='1'&gt;file:build/resources/test/org/jpos/util/msg-separator-base.xml&lt;/key&gt;
         &lt;key count='1'&gt;1835439440&lt;/key&gt;
         &lt;key count='1'&gt;856210336|null|null&lt;/key&gt;
-        &lt;key count='1'&gt;$TAILLOCK.151672581&lt;/key&gt;
         &lt;key count='1'&gt;1372289028|null|null&lt;/key&gt;
         &lt;key count='1'&gt;163322765|null|null&lt;/key&gt;
         &lt;key count='1'&gt;521923573&lt;/key&gt;
+        &lt;key count='1'&gt;$TAILLOCK.314055855&lt;/key&gt;
         &lt;key count='1'&gt;jar:org/jpos/util/DSmsg-base.xml&lt;/key&gt;
         &lt;key count='1'&gt;77373321&lt;/key&gt;
         &lt;key count='1'&gt;file:build/resources/test/org/jpos/util/fsd-99.xml&lt;/key&gt;
@@ -359,97 +370,87 @@ SpaceName: org.jpos.space.TSpace
       Q2-17: org.jpos.q2.Q2
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;org.jpos.transaction.TransactionManager&quot; at=&quot;2017-05-27T01:32:05.729&quot; lifespan=&quot;22ms&quot;&gt;
-  &lt;info&gt;
-    start Thread[Thread-288,5,main]
-  &lt;/info&gt;
-&lt;/log&gt;
-&lt;log realm=&quot;org.jpos.transaction.TransactionManager&quot; at=&quot;2017-05-27T01:32:05.729&quot; lifespan=&quot;22ms&quot;&gt;
-  &lt;info&gt;
-    start Thread[Thread-287,5,main]
-  &lt;/info&gt;
-&lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-05-27T01:32:10.578&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-05-27T15:49:22.368&quot;&gt;
   &lt;info&gt;
     shutting down
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-05-27T01:32:10.578&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-05-27T15:49:22.368&quot;&gt;
   &lt;trace&gt;
     undeploying:/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/transaction/99_sysmon.xml
   &lt;/trace&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2017-05-27T01:32:10.578&quot;&gt;
+&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2017-05-27T15:49:22.368&quot;&gt;
   &lt;info&gt;
     Stopping SystemMonitor
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-05-27T01:32:10.579&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-05-27T15:49:22.368&quot;&gt;
   &lt;info&gt;
     undeployed:/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/transaction/99_sysmon.xml
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-05-27T01:32:10.579&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-05-27T15:49:22.369&quot;&gt;
   &lt;trace&gt;
     undeploying:/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/transaction/10_txnmgr_test.xml
   &lt;/trace&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;org.jpos.transaction.TransactionManager&quot; at=&quot;2017-05-27T01:32:10.579&quot;&gt;
+&lt;log realm=&quot;org.jpos.transaction.TransactionManager&quot; at=&quot;2017-05-27T15:49:22.369&quot;&gt;
   &lt;info&gt;
-    stop Thread[txnmgr-test-2:idle,5,main], active sessions=3
+    stop Thread[txnmgr-test-3:idle,5,main], active sessions=3
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;org.jpos.transaction.TransactionManager&quot; at=&quot;2017-05-27T01:32:10.579&quot;&gt;
+&lt;log realm=&quot;org.jpos.transaction.TransactionManager&quot; at=&quot;2017-05-27T15:49:22.369&quot;&gt;
   &lt;info&gt;
-    stop Thread[txnmgr-test-3:idle,5,main], active sessions=2
+    stop Thread[txnmgr-test-2:idle,5,main], active sessions=2
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;org.jpos.transaction.TransactionManager&quot; at=&quot;2017-05-27T01:32:10.579&quot;&gt;
+&lt;log realm=&quot;org.jpos.transaction.TransactionManager&quot; at=&quot;2017-05-27T15:49:22.369&quot;&gt;
   &lt;info&gt;
     stop Thread[txnmgr-test-1:idle,5,main], active sessions=1
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;org.jpos.transaction.TransactionManager&quot; at=&quot;2017-05-27T01:32:10.579&quot;&gt;
+&lt;log realm=&quot;org.jpos.transaction.TransactionManager&quot; at=&quot;2017-05-27T15:49:22.369&quot;&gt;
   &lt;info&gt;
     stop Thread[txnmgr-test-0:idle,5,main], active sessions=0
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-05-27T01:32:10.580&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-05-27T15:49:22.370&quot;&gt;
   &lt;info&gt;
     undeployed:/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/transaction/10_txnmgr_test.xml
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-05-27T01:32:10.582&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-05-27T15:49:22.370&quot;&gt;
   &lt;trace&gt;
     undeploying:/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/transaction/10_txnmgr_empty.xml
   &lt;/trace&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;org.jpos.transaction.TransactionManager&quot; at=&quot;2017-05-27T01:32:10.582&quot;&gt;
+&lt;log realm=&quot;org.jpos.transaction.TransactionManager&quot; at=&quot;2017-05-27T15:49:22.370&quot;&gt;
   &lt;info&gt;
-    stop Thread[txnmgr-empty-1:idle,5,main], active sessions=3
+    stop Thread[txnmgr-empty-0:idle,5,main], active sessions=3
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;org.jpos.transaction.TransactionManager&quot; at=&quot;2017-05-27T01:32:10.582&quot;&gt;
+&lt;log realm=&quot;org.jpos.transaction.TransactionManager&quot; at=&quot;2017-05-27T15:49:22.370&quot;&gt;
   &lt;info&gt;
-    stop Thread[txnmgr-empty-0:idle,5,main], active sessions=2
+    stop Thread[txnmgr-empty-1:idle,5,main], active sessions=2
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;org.jpos.transaction.TransactionManager&quot; at=&quot;2017-05-27T01:32:10.582&quot;&gt;
+&lt;log realm=&quot;org.jpos.transaction.TransactionManager&quot; at=&quot;2017-05-27T15:49:22.371&quot;&gt;
   &lt;info&gt;
     stop Thread[txnmgr-empty-2:idle,5,main], active sessions=1
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;org.jpos.transaction.TransactionManager&quot; at=&quot;2017-05-27T01:32:10.582&quot;&gt;
+&lt;log realm=&quot;org.jpos.transaction.TransactionManager&quot; at=&quot;2017-05-27T15:49:22.371&quot;&gt;
   &lt;info&gt;
     stop Thread[txnmgr-empty-3:idle,5,main], active sessions=0
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-05-27T01:32:10.583&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-05-27T15:49:22.371&quot;&gt;
   &lt;info&gt;
     undeployed:/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/transaction/10_txnmgr_empty.xml
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-05-27T01:32:10.583&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-05-27T15:49:22.371&quot;&gt;
   &lt;trace&gt;
     undeploying:/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/transaction/00_logger.xml
   &lt;/trace&gt;
@@ -465,7 +466,7 @@ SpaceName: org.jpos.space.TSpace
 <input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
 </label>
 </div>Generated by 
-<a href="http://www.gradle.org">Gradle 3.5</a> at May 27, 2017 1:32:11 AM</p>
+<a href="http://www.gradle.org">Gradle 3.5</a> at May 27, 2017 3:49:23 PM</p>
 </div>
 </div>
 </body>
