@@ -82,14 +82,7 @@ public class Card {
 
     @Override
     public String toString() {
-        return "Card[" +
-          "pan='" + (pan != null ? ISOUtil.protect(pan) : "null") + '\'' +
-          ", exp='" + (exp != null ? "____" : "null") + '\'' +
-          ", cvv2='" + (cvv2 != null ? "____" : "null") + '\'' +
-          ", serviceCode='" + serviceCode + '\'' +
-          ", track1='" + track1 + '\'' +
-          ", track2='" + track2 + '\'' +
-          ']';
+        return pan != null ? ISOUtil.protect(pan) : "nil";
     }
 
     @Override

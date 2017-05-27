@@ -85,15 +85,7 @@ public class Track1 {
 
     @Override
     public String toString() {
-        return "Track1[" +
-          "pan='" + (pan != null ? ISOUtil.protect(pan) : "null") + '\'' +
-          ", nameOnCard='" + nameOnCard + '\'' +
-          ", exp='" + (exp != null ? "____" : "null") + '\'' +
-          ", cvv='" + (cvv != null ? "___" : "null") + '\'' +
-          ", serviceCode='" + serviceCode + '\'' +
-          ", discretionaryData= '" + discretionaryData + '\'' +
-          ", track1= '" + (track != null ? ISOUtil.protect(track) : "null") + '\'' +
-          ']';
+        return pan != null ? ISOUtil.protect(pan) : "nil";
     }
 
     @Override
