@@ -89,7 +89,7 @@ public class QueryHost implements TransactionParticipant, ISOResponseListener, C
                 return result.fail(CMF.SYSTEM_ERROR, Caller.info(), e.getMessage()).FAIL();
             }
         } else {
-            return result.fail(CMF.HOST_UNREACHABLE, Caller.info(), "'%s' is null", muxName).FAIL();
+            return result.fail(CMF.HOST_UNREACHABLE, Caller.info(), "'%s' is not connected", muxName).FAIL();
         }
 
     }
