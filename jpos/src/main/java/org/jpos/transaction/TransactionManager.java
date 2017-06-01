@@ -85,6 +85,7 @@ public class TransactionManager
     int maxActiveSessions;
     private AtomicInteger activeSessions = new AtomicInteger();
     private AtomicInteger pausedCounter = new AtomicInteger();
+    private AtomicInteger activeTransactions = new AtomicInteger(0);
 
     volatile long head, tail;
     long retryInterval = 5000L;
@@ -269,6 +270,7 @@ public class TransactionManager
                     id = nextId ();
                     members = new ArrayList ();
                     iter = getParticipants (DEFAULT_GROUP).iterator();
+                    activeTransactions.incrementAndGet();
                 }
                 if (debug) {
                     if (evt == null) {
@@ -335,6 +337,8 @@ public class TransactionManager
                     evt.addMessage (t);
             } finally {
                 removeThreadLocal();
+                if (!paused)
+                    activeTransactions.decrementAndGet();
                 if (hasStatusListeners) {
                     notifyStatusListeners (
                         session,
@@ -470,9 +474,9 @@ public class TransactionManager
 
     @Override
     public void dump (PrintStream ps, String indent) {
-        ps.printf ("%sin-transit=%d, head=%d, tail=%d, paused=%d, outstanding=%d, active-sessions=%d/%d%s%n",
+        ps.printf ("%sin-transit=%d/%d, head=%d, tail=%d, paused=%d, outstanding=%d, active-sessions=%d/%d%s%n",
           indent,
-          getInTransit(), head, tail, pausedCounter.get(), getOutstandingTransactions(),
+          getActiveTransactions(), getInTransit(), head, tail, pausedCounter.get(), getOutstandingTransactions(),
           getActiveSessions(), maxSessions,
           (tps != null ? ", " + tps.toString() : "")
         );
@@ -1000,6 +1004,12 @@ public class TransactionManager
     }
     public int getPausedCounter() {
         return pausedCounter.intValue();
+    }
+    public int getActiveTransactions() {
+        return activeTransactions.intValue();
+    }
+    public int getMaxSessions() {
+        return maxSessions;
     }
     public static Serializable getSerializable() {
         return tlContext.get();
