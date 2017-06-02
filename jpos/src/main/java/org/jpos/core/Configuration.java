@@ -19,6 +19,7 @@
 package org.jpos.core;
 
 
+import java.io.Serializable;
 import java.util.Set;
 
 /**
@@ -29,7 +30,7 @@ import java.util.Set;
  * CardAgents relies on a Configuration object to provide
  * runtime configuration parameters such as merchant number, etc.
  */
-public interface Configuration {
+public interface Configuration extends Serializable {
     String get(String propertyName);
     /**
      * @param propertyName  ditto
