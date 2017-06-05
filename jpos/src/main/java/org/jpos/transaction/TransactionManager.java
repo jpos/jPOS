@@ -194,6 +194,7 @@ public class TransactionManager
         LogEvent evt = null;
         Profiler prof;
         boolean paused;
+        boolean transactionActive;
         Thread thread = Thread.currentThread();
         if (threads.size() < maxSessions) {
             threads.add(thread);
@@ -209,6 +210,7 @@ public class TransactionManager
             prof = null;
             evt = null;
             paused = false;
+            transactionActive = false;
             thread.setName (getName() + "-" + session + ":idle");
             int action = -1;
             try {
@@ -272,6 +274,7 @@ public class TransactionManager
                     iter = getParticipants (DEFAULT_GROUP).iterator();
                     activeTransactions.incrementAndGet();
                 }
+                transactionActive = true;
                 if (debug) {
                     if (evt == null) {
                         evt = getLog().createLogEvent("debug",
@@ -337,7 +340,7 @@ public class TransactionManager
                     evt.addMessage (t);
             } finally {
                 removeThreadLocal();
-                if (!paused)
+                if (transactionActive && !paused)
                     activeTransactions.decrementAndGet();
                 if (hasStatusListeners) {
                     notifyStatusListeners (
