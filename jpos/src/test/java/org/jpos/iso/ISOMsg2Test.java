@@ -1161,7 +1161,7 @@ public class ISOMsg2Test {
     @Test
     public void testToString() throws Throwable {
         String result = new ISOMsg(100).toString();
-        assertEquals("result", "    null", result);
+        assertEquals("result", "     null", result);
     }
 
     @Test
@@ -1169,15 +1169,15 @@ public class ISOMsg2Test {
         ISOMsg iSOMsg = new ISOMsg("testISOMsgMti");
         iSOMsg.setDirection(100);
         String result = iSOMsg.toString();
-        assertEquals("result", "    testISOMsgMti", result);
+        assertEquals("result", "     testISOMsgMti", result);
     }
 
     @Test
     public void testToString2() throws Throwable {
         ISOMsg iSOMsg = new ISOMsg("testISOMsgMti");
-        iSOMsg.setDirection(1);
+        iSOMsg.setDirection(ISOMsg.INCOMING);
         String result = iSOMsg.toString();
-        assertEquals("result", "<-- testISOMsgMti", result);
+        assertEquals("result", " In: testISOMsgMti", result);
     }
 
     @Test

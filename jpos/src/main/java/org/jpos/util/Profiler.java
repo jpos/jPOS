@@ -18,6 +18,8 @@
 
 package org.jpos.util;
 
+import org.jpos.iso.ISOUtil;
+
 import java.io.PrintStream;
 import java.util.Collection;
 import java.util.Iterator;
@@ -94,7 +96,7 @@ public class Profiler implements Loggeable {
         Iterator iter = c.iterator();
         p.println (indent + "<profiler>");
         while (iter.hasNext()) 
-            p.println (inner + iter.next().toString());
+            p.println (inner + ISOUtil.normalize(iter.next().toString()));
         p.println (indent + "</profiler>");
     }
     public Entry getEntry(String eventName) {

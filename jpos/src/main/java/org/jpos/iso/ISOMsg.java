@@ -821,11 +821,11 @@ public class ISOMsg extends ISOComponent
     public String toString() {
         StringBuilder s = new StringBuilder();
         if (isIncoming())
-            s.append("<-- ");
+            s.append(" In: ");
         else if (isOutgoing())
-            s.append("--> ");
+            s.append("Out: ");
         else
-            s.append("    ");
+            s.append("     ");
 
         s.append(getString(0));
         if (hasField(11)) {
