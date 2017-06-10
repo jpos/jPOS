@@ -76,7 +76,7 @@ public class Card {
         return track2 != null;
     }
 
-    public String getBIN () {
+    public String getBin () {
         return pan.substring(0, BINLEN);
     }
 
