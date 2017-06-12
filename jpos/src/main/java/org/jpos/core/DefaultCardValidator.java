@@ -19,7 +19,8 @@
 package org.jpos.core;
 
 public class DefaultCardValidator implements CardValidator {
-    public static LUHNCalculator DEFAULT_LUHN_CALCULATOR = new DefaultLUHNCalculator();
+    private static LUHNCalculator DEFAULT_LUHN_CALCULATOR = new DefaultLUHNCalculator();
+    private LUHNCalculator luhnCalculator = DEFAULT_LUHN_CALCULATOR;
 
     public void validate (Card card) throws InvalidCardException {
         if (card != null) {
@@ -37,8 +38,12 @@ public class DefaultCardValidator implements CardValidator {
                 if (card.getTrack2() != null && !exp.equals(card.getTrack2().getExp()))
                     throw new InvalidCardException ("track2 EXP mismatch");
             }
-            if (!DEFAULT_LUHN_CALCULATOR.verify(pan))
+            if (luhnCalculator != null && !luhnCalculator.verify(pan))
                 throw new InvalidCardException ("Invalid LUHN");
         }
+    }
+
+    public void setLuhnCalculator(LUHNCalculator luhnCalculator) {
+        this.luhnCalculator = luhnCalculator;
     }
 }
