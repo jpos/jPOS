@@ -55,7 +55,9 @@ public class SendResponse implements AbortParticipant, Configurable {
         ISOSource src = (ISOSource) ctx.get (source);
         ISOMsg resp = (ISOMsg) ctx.get (response);
         try {
-            if (ctx.get (TX.toString()) != null) {
+            if (ctx.getResult().hasInhibit()) {
+                ctx.log("*** RESPONSE INHIBITED ***");
+            } else if (ctx.get (TX.toString()) != null) {
                 ctx.log("*** PANIC - TX not null - RESPONSE OMITTED ***");
             } else if (resp == null) {
                 ctx.log (response + " not present");
