@@ -33,6 +33,12 @@ Sample configuration:
 These BIN or BIN ranges have 1 to 19 digits. More specific ranges (more digits)
 get priority over less specific ones.
 
+If the Context has a `DESTINATION` entry already, and this participant finds an
+endpoint in its routing tables, then that `DESTINATION` will be overridden. On the
+other hand, if `DESTINATION` is not present in the context, and this participant
+doesn't find a route *and* there's a `default-destination` property present in
+the configuration, then the `default-destination` will be set.
+
 .SelectDestination Configuration Properties
 [cols="1,2,2", options="header"]
 |========================================================================================
