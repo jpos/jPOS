@@ -22,6 +22,7 @@ import org.jpos.iso.ISODate;
 import org.jpos.iso.ISOMsg;
 import org.jpos.iso.ISOUtil;
 
+import java.math.BigInteger;
 import java.util.Date;
 import java.util.Objects;
 
@@ -54,6 +55,10 @@ public class Card {
 
     public String getPan() {
         return pan;
+    }
+
+    public BigInteger getPanAsNumber() {
+        return new BigInteger(pan);
     }
 
     public String getExp() {
