@@ -175,7 +175,16 @@ public class Context implements Externalizable, Loggeable, Pausable, Cloneable {
     @Override
     public Context clone() {
         try {
-            return (Context) super.clone();
+            Context context = (Context) super.clone();
+            if (map != null) {
+                context.map = Collections.synchronizedMap (new LinkedHashMap<String,Object>());
+                context.map.putAll(map);
+            }
+            if (pmap != null) {
+                context.pmap = Collections.synchronizedMap (new LinkedHashMap<String,Object>());
+                context.pmap.putAll(pmap);
+            }
+            return context;
         } catch (CloneNotSupportedException e) {
             throw new AssertionError(); // Should not happen
         }
