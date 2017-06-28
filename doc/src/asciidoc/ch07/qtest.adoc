@@ -191,8 +191,8 @@ public interface QTestMBean extends QBean {
 }
 ----
 
-In addition, we need to change our +QTest+ so that it +implements QBeanTest+.
-Because +QBeanTest+ extends +QBean+, we can change:
+In addition, we need to change our +QTest+ so that it +implements QTestMBean+.
+Because +QTestMBean+ extends +QBean+, we can change:
 
 [source,java]
 ----
