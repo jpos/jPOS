@@ -32,7 +32,8 @@ import java.util.*;
 
 import static org.jpos.transaction.ContextConstants.*;
 
-public class Context implements Externalizable, Loggeable, Pausable {
+public class Context implements Externalizable, Loggeable, Pausable, Cloneable {
+    private static final long serialVersionUID = 480368630145602106L;
     private transient Map<String,Object> map; // transient map
     private Map<String,Object> pmap;          // persistent (serializable) map
     private long timeout;
@@ -69,6 +70,24 @@ public class Context implements Externalizable, Loggeable, Pausable {
         if (persist && value instanceof Serializable)
             getPMap().put (key, value);
         getMap().put(key, value);
+    }
+
+    /**
+     * Persists a transient entry
+     * @param key the key
+     */
+    public void persist (String key) {
+        Object value = get(key);
+        if (value instanceof Serializable)
+            getPMap().put (key, value);
+    }
+
+    /**
+     * Evicts a persistent entry
+     * @param key the key
+     */
+    public void evict (String key) {
+        getPMap().remove (key);
     }
     /**
      * Get
@@ -153,6 +172,32 @@ public class Context implements Externalizable, Loggeable, Pausable {
             pmap.put (k, v);
         }
     }
+    @Override
+    public Context clone() {
+        try {
+            return (Context) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError(); // Should not happen
+        }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Context context = (Context) o;
+        return timeout == context.timeout &&
+          resumeOnPause == context.resumeOnPause &&
+          trace == context.trace &&
+          Objects.equals(map, context.map) &&
+          Objects.equals(pmap, context.pmap);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(map, pmap, timeout, resumeOnPause, trace);
+    }
+
     /**
      * @return persistent map
      */
@@ -308,5 +353,4 @@ public class Context implements Externalizable, Loggeable, Pausable {
             getProfiler();
         this.trace = trace;
     }
-    static final long serialVersionUID = 6056487212221438338L;
 }
