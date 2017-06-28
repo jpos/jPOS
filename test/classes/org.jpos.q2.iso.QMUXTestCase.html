@@ -41,7 +41,7 @@
 </td>
 <td>
 <div class="infoBox" id="duration">
-<div class="counter">20.237s</div>
+<div class="counter">21.729s</div>
 <p>duration</p>
 </div>
 </td>
@@ -79,17 +79,17 @@
 </thead>
 <tr>
 <td class="success">testAnsweredMessage</td>
-<td>7.111s</td>
+<td>7.110s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">testExpiredMessage</td>
-<td>7.116s</td>
+<td>8.572s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">testMTIMapping</td>
-<td>6.010s</td>
+<td>6.047s</td>
 <td class="success">passed</td>
 </tr>
 </table>
@@ -97,14 +97,14 @@
 <div id="tab1" class="tab">
 <h2>Standard output</h2>
 <span class="code">
-<pre>&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-06-14T22:23:14.970&quot; lifespan=&quot;3ms&quot;&gt;
+<pre>&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-06-28T01:48:18.482&quot;&gt;
   &lt;info&gt;
     Q2 started, deployDir=/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-06-14T22:23:15.559&quot; lifespan=&quot;581ms&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-06-28T01:48:18.778&quot; lifespan=&quot;289ms&quot;&gt;
   &lt;version&gt;
-    jPOS 2.1.1-SNAPSHOT detached/1d01dac (2017-06-14 22:22:29 UTC) 
+    jPOS 2.1.1-SNAPSHOT detached/7c8b7fa (2017-06-28 01:46:53 UTC) 
 
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA1
@@ -127,316 +127,210 @@ q9ulRPEqH9NR79619lNKVUkE206dVlXo7xHmJS1QZy5v/GT66xBxyDVfTduPFXk=
 
   &lt;/version&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-06-14T22:23:15.568&quot; lifespan=&quot;4ms&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-06-28T01:48:18.800&quot; lifespan=&quot;18ms&quot;&gt;
   &lt;info&gt;
     deploy: /home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/20_mux.xml
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-06-14T22:23:15.576&quot; lifespan=&quot;8ms&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-06-28T01:48:18.806&quot; lifespan=&quot;6ms&quot;&gt;
   &lt;info&gt;
     deploy: /home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/99_sysmon.xml
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2017-06-14T22:23:15.576&quot;&gt;
+&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2017-06-28T01:48:18.806&quot;&gt;
   &lt;info&gt;
     Starting SystemMonitor
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2017-06-14T22:23:15.578&quot;&gt;
+&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2017-06-28T01:48:18.807&quot;&gt;
   &lt;info&gt;
-               OS: Linux (4.4.0-51-generic)
-     process name: 5337@testing-gce-a4565c43-0e62-43e1-ae09-52c23ea62d1b
-             host: testing-gce-a4565c43-0e62-43e1-ae09-52c23ea62d1b/127.0.1.1
+               OS: Linux (4.4.0-81-generic)
+     process name: 6794@testing-gce-b33b27fd-85d9-41ac-884e-a5ba70e9a5ef
+             host: testing-gce-b33b27fd-85d9-41ac-884e-a5ba70e9a5ef/127.0.1.1
               cwd: /home/travis/build/jpos/jPOS/jpos
-       free space: 13.3 GiB
-     usable space: 12 GiB
-          version: 2.1.1-SNAPSHOT (1d01dac)
-         instance: f09a414b-1a0b-48ec-a858-7affee056516
-           uptime: 00:00:00.784 (1.710000)
+       free space: 12.3 GiB
+     usable space: 11 GiB
+          version: 2.1.1-SNAPSHOT (7c8b7fa)
+         instance: 6a763b7c-5ad5-46b5-a841-1e79d4b46179
+           uptime: 00:00:00.528 (1.570000)
        processors: 2
            drift : 0
-    memory(t/u/f): 113/32/81
+    memory(t/u/f): 416/265/151
          encoding: UTF-8
          timezone: UTC (Coordinated Universal Time) Z
     watch service: sun.nio.fs.LinuxWatchService
-            clock: 1497478995 2017-06-14T22:23:15.581Z
-     thread count: 11
-     peak threads: 11
-     user threads: 8
+            clock: 1498614498 2017-06-28T01:48:18.811Z
+     thread count: 19
+     peak threads: 20
+     user threads: 16
             Thread[Reference Handler,10,system]
             Thread[Finalizer,8,system]
             Thread[Signal Dispatcher,9,system]
             Thread[main,5,main]
             Thread[Test worker,5,main]
-            Thread[/127.0.0.1:35348 to /127.0.0.1:42277 workers Thread 2,5,main]
-            Thread[/127.0.0.1:35348 to /127.0.0.1:42277 workers Thread 3,5,main]
+            Thread[/127.0.0.1:60194 to /127.0.0.1:42944 workers Thread 2,5,main]
+            Thread[/127.0.0.1:60194 to /127.0.0.1:42944 workers Thread 3,5,main]
             Thread[pool-1-thread-1,5,main]
-            Thread[Q2-f09a414b-1a0b-48ec-a858-7affee056516,5,main]
-            Thread[Thread-7,5,main]
+            Thread[Timer-0,5,main]
+            Thread[Timer-1,5,main]
+            Thread[Timer-2,5,main]
+            Thread[Timer-3,5,main]
+            Thread[Q2-6a763b7c-5ad5-46b5-a841-1e79d4b46179,5,main]
+            Thread[Thread-238,5,main]
             Thread[SystemMonitor,5,main]
+            Thread[ThreadPool.PooledThread-1-idle,5,ThreadPool-1]
+            Thread[ThreadPool.PooledThread-2,5,ThreadPool-1]
+            Thread[ThreadPool.PooledThread-3,5,ThreadPool-2]
+            Thread[ThreadPool.PooledThread-4,5,ThreadPool-3]
     name-registrar:
       tspace:default: org.jpos.space.TSpace
-         key-count: 0
-            gcinfo: 0,0
+        &lt;key count='1'&gt;541347290&lt;/key&gt;
+        &lt;key count='1'&gt;1104762619|null|null&lt;/key&gt;
+        &lt;key count='1'&gt;1257728827&lt;/key&gt;
+        &lt;key count='1'&gt;45958600|null|null&lt;/key&gt;
+        &lt;key count='1'&gt;226677346&lt;/key&gt;
+        &lt;key count='1'&gt;363776738|null|null&lt;/key&gt;
+         key-count: 6
+            gcinfo: 6,0
       Q2: org.jpos.q2.Q2
-      logger.Q2: org.jpos.util.Logger
+      channel.testLoopbackChannelName: org.jpos.iso.channel.LoopbackChannel
+      logger.testPostPackagerName: org.jpos.util.Logger
+      channel.testChannelPoolName: org.jpos.iso.channel.ChannelPool
+      logger.testLinkLogger: org.jpos.util.Logger
+      channel.channel.: org.jpos.iso.channel.ASCIIChannel
+      logger.testEuroPackagerName: org.jpos.util.Logger
       mux.mux: org.jpos.q2.iso.QMUX
         tx=0, rx=0, tx_expired=0, tx_pending=0, rx_expired=0, rx_pending=0, rx_unhandled=0, rx_forwarded=0, connected=true, last=0
+      tspace:testStatefulFilterUri: org.jpos.space.TSpace
+         key-count: 0
+            gcinfo: 0,0
+      logger.Q2: org.jpos.util.Logger
+      transient:TestLink: org.jpos.space.TSpace
+        &lt;key count='1'&gt;TestSpace-send&lt;/key&gt;
+         key-count: 1
+            gcinfo: 0,0
+      logger.: org.jpos.util.Logger
+      channel.testBaseChannelName: org.jpos.iso.channel.X25Channel
+      logger.testXMLPackagerName: org.jpos.util.Logger
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-06-14T22:23:19.895&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-06-28T01:48:23.416&quot;&gt;
   &lt;info&gt;
     shutting down
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-06-14T22:23:19.896&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-06-28T01:48:23.417&quot;&gt;
   &lt;trace&gt;
     undeploying:/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/99_sysmon.xml
   &lt;/trace&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2017-06-14T22:23:19.896&quot;&gt;
+&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2017-06-28T01:48:23.417&quot;&gt;
   &lt;info&gt;
     Stopping SystemMonitor
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-06-14T22:23:19.896&quot;&gt;
+&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2017-06-28T01:48:23.417&quot;&gt;
   &lt;info&gt;
-    undeployed:/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/99_sysmon.xml
-  &lt;/info&gt;
-&lt;/log&gt;
-&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2017-06-14T22:23:19.897&quot; lifespan=&quot;1ms&quot;&gt;
-  &lt;info&gt;
-               OS: Linux (4.4.0-51-generic)
-     process name: 5337@testing-gce-a4565c43-0e62-43e1-ae09-52c23ea62d1b
-             host: testing-gce-a4565c43-0e62-43e1-ae09-52c23ea62d1b/127.0.1.1
+               OS: Linux (4.4.0-81-generic)
+     process name: 6794@testing-gce-b33b27fd-85d9-41ac-884e-a5ba70e9a5ef
+             host: testing-gce-b33b27fd-85d9-41ac-884e-a5ba70e9a5ef/127.0.1.1
               cwd: /home/travis/build/jpos/jPOS/jpos
-       free space: 13.3 GiB
-     usable space: 12 GiB
-          version: 2.1.1-SNAPSHOT (1d01dac)
-         instance: f09a414b-1a0b-48ec-a858-7affee056516
-           uptime: 00:00:05.098 (1.580000)
+       free space: 12.3 GiB
+     usable space: 11 GiB
+          version: 2.1.1-SNAPSHOT (7c8b7fa)
+         instance: 6a763b7c-5ad5-46b5-a841-1e79d4b46179
+           uptime: 00:00:05.133 (1.440000)
        processors: 2
            drift : 0
-    memory(t/u/f): 113/33/79
+    memory(t/u/f): 416/266/149
          encoding: UTF-8
          timezone: UTC (Coordinated Universal Time) Z
     watch service: sun.nio.fs.LinuxWatchService
-            clock: 1497478999 2017-06-14T22:23:19.897Z
-     thread count: 12
-     peak threads: 12
-     user threads: 9
+            clock: 1498614503 2017-06-28T01:48:23.417Z
+     thread count: 20
+     peak threads: 20
+     user threads: 17
             Thread[Reference Handler,10,system]
             Thread[Finalizer,8,system]
             Thread[Signal Dispatcher,9,system]
             Thread[main,5,main]
             Thread[Test worker,5,main]
-            Thread[/127.0.0.1:35348 to /127.0.0.1:42277 workers Thread 2,5,main]
-            Thread[/127.0.0.1:35348 to /127.0.0.1:42277 workers Thread 3,5,main]
+            Thread[/127.0.0.1:60194 to /127.0.0.1:42944 workers Thread 2,5,main]
+            Thread[/127.0.0.1:60194 to /127.0.0.1:42944 workers Thread 3,5,main]
             Thread[pool-1-thread-1,5,main]
-            Thread[Q2-f09a414b-1a0b-48ec-a858-7affee056516,5,main]
-            Thread[Thread-7,5,main]
+            Thread[Timer-0,5,main]
+            Thread[Timer-1,5,main]
+            Thread[Timer-2,5,main]
+            Thread[Timer-3,5,main]
+            Thread[Q2-6a763b7c-5ad5-46b5-a841-1e79d4b46179,5,main]
+            Thread[Thread-238,5,main]
             Thread[SystemMonitor,5,main]
-            Thread[pool-2-thread-1,5,main]
+            Thread[pool-7-thread-1,5,main]
+            Thread[ThreadPool.PooledThread-1-idle,5,ThreadPool-1]
+            Thread[ThreadPool.PooledThread-2,5,ThreadPool-1]
+            Thread[ThreadPool.PooledThread-3,5,ThreadPool-2]
+            Thread[ThreadPool.PooledThread-4,5,ThreadPool-3]
     name-registrar:
       tspace:default: org.jpos.space.TSpace
-         key-count: 0
-            gcinfo: 0,0
+        &lt;key count='1'&gt;541347290&lt;/key&gt;
+        &lt;key count='1'&gt;1104762619|null|null&lt;/key&gt;
+        &lt;key count='1'&gt;1257728827&lt;/key&gt;
+        &lt;key count='1'&gt;45958600|null|null&lt;/key&gt;
+        &lt;key count='1'&gt;226677346&lt;/key&gt;
+        &lt;key count='1'&gt;363776738|null|null&lt;/key&gt;
+         key-count: 6
+            gcinfo: 6,0
       Q2: org.jpos.q2.Q2
-      logger.Q2: org.jpos.util.Logger
+      channel.testLoopbackChannelName: org.jpos.iso.channel.LoopbackChannel
+      logger.testPostPackagerName: org.jpos.util.Logger
+      channel.testChannelPoolName: org.jpos.iso.channel.ChannelPool
+      logger.testLinkLogger: org.jpos.util.Logger
+      channel.channel.: org.jpos.iso.channel.ASCIIChannel
+      logger.testEuroPackagerName: org.jpos.util.Logger
       mux.mux: org.jpos.q2.iso.QMUX
         tx=1, rx=0, tx_expired=0, tx_pending=0, rx_expired=0, rx_pending=0, rx_unhandled=0, rx_forwarded=0, connected=true, last=0
         all max=501, min=500, mean=501.0000 stddev=0.0000 0.5%=501 99.5%=501, 99.9%=501
-  &lt;/info&gt;
-&lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-06-14T22:23:19.912&quot; lifespan=&quot;15ms&quot;&gt;
-  &lt;trace&gt;
-    undeploying:/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/20_mux.xml
-  &lt;/trace&gt;
-&lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-06-14T22:23:19.913&quot;&gt;
-  &lt;info&gt;
-    undeployed:/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/20_mux.xml
-  &lt;/info&gt;
-&lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-06-14T22:23:19.913&quot;&gt;
-  &lt;trace&gt;
-    undeploying:/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/00_logger.xml
-  &lt;/trace&gt;
-&lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-06-14T22:23:21.921&quot;&gt;
-  &lt;info&gt;
-    Q2 started, deployDir=/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso
-  &lt;/info&gt;
-&lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-06-14T22:23:21.928&quot; lifespan=&quot;4ms&quot;&gt;
-  &lt;version&gt;
-    jPOS 2.1.1-SNAPSHOT detached/1d01dac (2017-06-14 22:22:29 UTC) 
-
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
-
-jPOS Community Edition, licensed under GNU AGPL v3.0.
-This software is probably not suitable for commercial use.
-Please see http://jpos.org/license for details.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (Darwin)
-
-iQEcBAEBAgAGBQJMolHDAAoJEOQyeO71nYtFv74H/3OgehDGEy1VXp2U3/GcAobg
-HH2eZjPUz53r38ARPiU3pzm9LwDa3WZgJJaa/b9VrJwKvbPwe9+0kY3gScDE1skT
-ladHt+KHHmGQArEutkzHlpZa73RbroFEIa1qmN6MaDEHGoxZqDh0Sv2cpvOaVYGO
-St8ZaddLBPC17bSjAPWo9sWbvL7FgPFOHhnPmbeux8SLtnfWxXWsgo5hLBanKmO1
-1z+I/w/6DL6ZYZU6bAJUk+eyVVImJqw0x3IEElI07Nh9MC6BA4iJ77ejobj8HI2r
-q9ulRPEqH9NR79619lNKVUkE206dVlXo7xHmJS1QZy5v/GT66xBxyDVfTduPFXk=
-=oP+v
------END PGP SIGNATURE-----
-
-  &lt;/version&gt;
-&lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-06-14T22:23:21.944&quot; lifespan=&quot;3ms&quot;&gt;
-  &lt;info&gt;
-    deploy: /home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/20_mux.xml
-  &lt;/info&gt;
-&lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-06-14T22:23:21.950&quot; lifespan=&quot;2ms&quot;&gt;
-  &lt;info&gt;
-    deploy: /home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/99_sysmon.xml
-  &lt;/info&gt;
-&lt;/log&gt;
-&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2017-06-14T22:23:21.952&quot;&gt;
-  &lt;info&gt;
-    Starting SystemMonitor
-  &lt;/info&gt;
-&lt;/log&gt;
-&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2017-06-14T22:23:21.956&quot;&gt;
-  &lt;info&gt;
-               OS: Linux (4.4.0-51-generic)
-     process name: 5337@testing-gce-a4565c43-0e62-43e1-ae09-52c23ea62d1b
-             host: testing-gce-a4565c43-0e62-43e1-ae09-52c23ea62d1b/127.0.1.1
-              cwd: /home/travis/build/jpos/jPOS/jpos
-       free space: 13.3 GiB
-     usable space: 12 GiB
-          version: 2.1.1-SNAPSHOT (1d01dac)
-         instance: cdf39ff2-fb3e-4f02-a21b-abf4423f9d5d
-           uptime: 00:00:00.041 (1.450000)
-       processors: 2
-           drift : 0
-    memory(t/u/f): 113/35/78
-         encoding: UTF-8
-         timezone: UTC (Coordinated Universal Time) Z
-    watch service: sun.nio.fs.LinuxWatchService
-            clock: 1497479001 2017-06-14T22:23:21.956Z
-     thread count: 11
-     peak threads: 12
-     user threads: 8
-            Thread[Reference Handler,10,system]
-            Thread[Finalizer,8,system]
-            Thread[Signal Dispatcher,9,system]
-            Thread[main,5,main]
-            Thread[Test worker,5,main]
-            Thread[/127.0.0.1:35348 to /127.0.0.1:42277 workers Thread 2,5,main]
-            Thread[/127.0.0.1:35348 to /127.0.0.1:42277 workers Thread 3,5,main]
-            Thread[pool-1-thread-1,5,main]
-            Thread[Q2-cdf39ff2-fb3e-4f02-a21b-abf4423f9d5d,5,main]
-            Thread[Thread-9,5,main]
-            Thread[SystemMonitor,5,main]
-    name-registrar:
-      tspace:default: org.jpos.space.TSpace
+      tspace:testStatefulFilterUri: org.jpos.space.TSpace
          key-count: 0
             gcinfo: 0,0
-      Q2-1: org.jpos.q2.Q2
-      Q2: org.jpos.q2.Q2
       logger.Q2: org.jpos.util.Logger
-      mux.mux: org.jpos.q2.iso.QMUX
-        tx=0, rx=0, tx_expired=0, tx_pending=0, rx_expired=0, rx_pending=0, rx_unhandled=0, rx_forwarded=0, connected=true, last=0
-  &lt;/info&gt;
-&lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-06-14T22:23:25.919&quot;&gt;
-  &lt;info&gt;
-    shutting down
-  &lt;/info&gt;
-&lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-06-14T22:23:25.919&quot;&gt;
-  &lt;trace&gt;
-    undeploying:/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/99_sysmon.xml
-  &lt;/trace&gt;
-&lt;/log&gt;
-&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2017-06-14T22:23:25.920&quot;&gt;
-  &lt;info&gt;
-    Stopping SystemMonitor
-  &lt;/info&gt;
-&lt;/log&gt;
-&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2017-06-14T22:23:25.920&quot;&gt;
-  &lt;info&gt;
-               OS: Linux (4.4.0-51-generic)
-     process name: 5337@testing-gce-a4565c43-0e62-43e1-ae09-52c23ea62d1b
-             host: testing-gce-a4565c43-0e62-43e1-ae09-52c23ea62d1b/127.0.1.1
-              cwd: /home/travis/build/jpos/jPOS/jpos
-       free space: 13.3 GiB
-     usable space: 12 GiB
-          version: 2.1.1-SNAPSHOT (1d01dac)
-         instance: cdf39ff2-fb3e-4f02-a21b-abf4423f9d5d
-           uptime: 00:00:04.005 (1.450000)
-       processors: 2
-           drift : 0
-    memory(t/u/f): 113/35/78
-         encoding: UTF-8
-         timezone: UTC (Coordinated Universal Time) Z
-    watch service: sun.nio.fs.LinuxWatchService
-            clock: 1497479005 2017-06-14T22:23:25.920Z
-     thread count: 11
-     peak threads: 12
-     user threads: 8
-            Thread[Reference Handler,10,system]
-            Thread[Finalizer,8,system]
-            Thread[Signal Dispatcher,9,system]
-            Thread[main,5,main]
-            Thread[Test worker,5,main]
-            Thread[/127.0.0.1:35348 to /127.0.0.1:42277 workers Thread 2,5,main]
-            Thread[/127.0.0.1:35348 to /127.0.0.1:42277 workers Thread 3,5,main]
-            Thread[pool-1-thread-1,5,main]
-            Thread[Q2-cdf39ff2-fb3e-4f02-a21b-abf4423f9d5d,5,main]
-            Thread[Thread-9,5,main]
-            Thread[SystemMonitor,5,main]
-    name-registrar:
-      tspace:default: org.jpos.space.TSpace
-         key-count: 0
+      transient:TestLink: org.jpos.space.TSpace
+        &lt;key count='1'&gt;TestSpace-send&lt;/key&gt;
+         key-count: 1
             gcinfo: 0,0
-      Q2-1: org.jpos.q2.Q2
-      Q2: org.jpos.q2.Q2
-      logger.Q2: org.jpos.util.Logger
-      mux.mux: org.jpos.q2.iso.QMUX
-        tx=0, rx=0, tx_expired=0, tx_pending=0, rx_expired=0, rx_pending=0, rx_unhandled=0, rx_forwarded=0, connected=true, last=0
+      logger.: org.jpos.util.Logger
+      channel.testBaseChannelName: org.jpos.iso.channel.X25Channel
+      logger.testXMLPackagerName: org.jpos.util.Logger
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-06-14T22:23:25.923&quot; lifespan=&quot;3ms&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-06-28T01:48:23.424&quot; lifespan=&quot;7ms&quot;&gt;
   &lt;info&gt;
     undeployed:/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/99_sysmon.xml
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-06-14T22:23:25.923&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-06-28T01:48:23.424&quot;&gt;
   &lt;trace&gt;
     undeploying:/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/20_mux.xml
   &lt;/trace&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-06-14T22:23:25.923&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-06-28T01:48:23.424&quot;&gt;
   &lt;info&gt;
     undeployed:/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/20_mux.xml
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-06-14T22:23:25.925&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-06-28T01:48:23.424&quot;&gt;
   &lt;trace&gt;
     undeploying:/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/00_logger.xml
   &lt;/trace&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-06-14T22:23:27.930&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-06-28T01:48:26.867&quot;&gt;
   &lt;info&gt;
     Q2 started, deployDir=/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-06-14T22:23:27.932&quot; lifespan=&quot;2ms&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-06-28T01:48:26.876&quot; lifespan=&quot;5ms&quot;&gt;
   &lt;version&gt;
-    jPOS 2.1.1-SNAPSHOT detached/1d01dac (2017-06-14 22:22:29 UTC) 
+    jPOS 2.1.1-SNAPSHOT detached/7c8b7fa (2017-06-28 01:46:53 UTC) 
 
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA1
@@ -459,143 +353,356 @@ q9ulRPEqH9NR79619lNKVUkE206dVlXo7xHmJS1QZy5v/GT66xBxyDVfTduPFXk=
 
   &lt;/version&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-06-14T22:23:27.935&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-06-28T01:48:26.895&quot; lifespan=&quot;2ms&quot;&gt;
   &lt;info&gt;
     deploy: /home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/20_mux.xml
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-06-14T22:23:27.937&quot; lifespan=&quot;2ms&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-06-28T01:48:26.903&quot; lifespan=&quot;8ms&quot;&gt;
   &lt;info&gt;
     deploy: /home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/99_sysmon.xml
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2017-06-14T22:23:27.937&quot;&gt;
+&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2017-06-28T01:48:26.904&quot;&gt;
   &lt;info&gt;
     Starting SystemMonitor
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2017-06-14T22:23:27.938&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2017-06-28T01:48:26.908&quot;&gt;
   &lt;info&gt;
-               OS: Linux (4.4.0-51-generic)
-     process name: 5337@testing-gce-a4565c43-0e62-43e1-ae09-52c23ea62d1b
-             host: testing-gce-a4565c43-0e62-43e1-ae09-52c23ea62d1b/127.0.1.1
+               OS: Linux (4.4.0-81-generic)
+     process name: 6794@testing-gce-b33b27fd-85d9-41ac-884e-a5ba70e9a5ef
+             host: testing-gce-b33b27fd-85d9-41ac-884e-a5ba70e9a5ef/127.0.1.1
               cwd: /home/travis/build/jpos/jPOS/jpos
-       free space: 13.3 GiB
-     usable space: 12 GiB
-          version: 2.1.1-SNAPSHOT (1d01dac)
-         instance: 888be0c2-65a7-4611-b472-f17a5836be45
-           uptime: 00:00:00.016 (1.330000)
+       free space: 12.3 GiB
+     usable space: 11 GiB
+          version: 2.1.1-SNAPSHOT (7c8b7fa)
+         instance: 88a22b2c-bd06-43a4-8c58-c12f3672d6a7
+           uptime: 00:00:00.053 (1.490000)
        processors: 2
            drift : 0
-    memory(t/u/f): 113/36/77
+    memory(t/u/f): 1157/492/664
          encoding: UTF-8
          timezone: UTC (Coordinated Universal Time) Z
     watch service: sun.nio.fs.LinuxWatchService
-            clock: 1497479007 2017-06-14T22:23:27.941Z
-     thread count: 11
-     peak threads: 12
-     user threads: 8
+            clock: 1498614506 2017-06-28T01:48:26.909Z
+     thread count: 19
+     peak threads: 20
+     user threads: 16
             Thread[Reference Handler,10,system]
             Thread[Finalizer,8,system]
             Thread[Signal Dispatcher,9,system]
             Thread[main,5,main]
             Thread[Test worker,5,main]
-            Thread[/127.0.0.1:35348 to /127.0.0.1:42277 workers Thread 2,5,main]
-            Thread[/127.0.0.1:35348 to /127.0.0.1:42277 workers Thread 3,5,main]
+            Thread[/127.0.0.1:60194 to /127.0.0.1:42944 workers Thread 2,5,main]
+            Thread[/127.0.0.1:60194 to /127.0.0.1:42944 workers Thread 3,5,main]
             Thread[pool-1-thread-1,5,main]
-            Thread[Q2-888be0c2-65a7-4611-b472-f17a5836be45,5,main]
-            Thread[Thread-11,5,main]
+            Thread[Timer-0,5,main]
+            Thread[Timer-1,5,main]
+            Thread[Timer-2,5,main]
+            Thread[Timer-3,5,main]
+            Thread[Q2-88a22b2c-bd06-43a4-8c58-c12f3672d6a7,5,main]
+            Thread[Thread-240,5,main]
             Thread[SystemMonitor,5,main]
+            Thread[ThreadPool.PooledThread-1-idle,5,ThreadPool-1]
+            Thread[ThreadPool.PooledThread-2,5,ThreadPool-1]
+            Thread[ThreadPool.PooledThread-3,5,ThreadPool-2]
+            Thread[ThreadPool.PooledThread-4,5,ThreadPool-3]
     name-registrar:
       tspace:default: org.jpos.space.TSpace
-         key-count: 0
-            gcinfo: 0,0
+        &lt;key count='1'&gt;541347290&lt;/key&gt;
+        &lt;key count='1'&gt;1104762619|null|null&lt;/key&gt;
+        &lt;key count='1'&gt;1257728827&lt;/key&gt;
+        &lt;key count='1'&gt;45958600|null|null&lt;/key&gt;
+        &lt;key count='1'&gt;226677346&lt;/key&gt;
+        &lt;key count='1'&gt;363776738|null|null&lt;/key&gt;
+         key-count: 6
+            gcinfo: 6,0
       Q2-1: org.jpos.q2.Q2
       Q2: org.jpos.q2.Q2
-      Q2-2: org.jpos.q2.Q2
-      logger.Q2: org.jpos.util.Logger
+      channel.testLoopbackChannelName: org.jpos.iso.channel.LoopbackChannel
+      logger.testPostPackagerName: org.jpos.util.Logger
+      channel.testChannelPoolName: org.jpos.iso.channel.ChannelPool
+      logger.testLinkLogger: org.jpos.util.Logger
+      channel.channel.: org.jpos.iso.channel.ASCIIChannel
+      logger.testEuroPackagerName: org.jpos.util.Logger
       mux.mux: org.jpos.q2.iso.QMUX
         tx=0, rx=0, tx_expired=0, tx_pending=0, rx_expired=0, rx_pending=0, rx_unhandled=0, rx_forwarded=0, connected=true, last=0
+      tspace:testStatefulFilterUri: org.jpos.space.TSpace
+         key-count: 0
+            gcinfo: 0,0
+      logger.Q2: org.jpos.util.Logger
+      transient:TestLink: org.jpos.space.TSpace
+        &lt;key count='1'&gt;TestSpace-send&lt;/key&gt;
+         key-count: 1
+            gcinfo: 0,0
+      logger.: org.jpos.util.Logger
+      channel.testBaseChannelName: org.jpos.iso.channel.X25Channel
+      logger.testXMLPackagerName: org.jpos.util.Logger
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-06-14T22:23:33.029&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-06-28T01:48:30.864&quot;&gt;
   &lt;info&gt;
     shutting down
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-06-14T22:23:33.029&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-06-28T01:48:30.865&quot;&gt;
   &lt;trace&gt;
     undeploying:/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/99_sysmon.xml
   &lt;/trace&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2017-06-14T22:23:33.029&quot;&gt;
+&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2017-06-28T01:48:30.865&quot;&gt;
   &lt;info&gt;
     Stopping SystemMonitor
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2017-06-14T22:23:33.029&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-06-28T01:48:30.865&quot;&gt;
   &lt;info&gt;
-               OS: Linux (4.4.0-51-generic)
-     process name: 5337@testing-gce-a4565c43-0e62-43e1-ae09-52c23ea62d1b
-             host: testing-gce-a4565c43-0e62-43e1-ae09-52c23ea62d1b/127.0.1.1
+    undeployed:/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/99_sysmon.xml
+  &lt;/info&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-06-28T01:48:30.865&quot;&gt;
+  &lt;trace&gt;
+    undeploying:/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/20_mux.xml
+  &lt;/trace&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-06-28T01:48:30.866&quot;&gt;
+  &lt;info&gt;
+    undeployed:/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/20_mux.xml
+  &lt;/info&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-06-28T01:48:30.866&quot;&gt;
+  &lt;trace&gt;
+    undeploying:/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/00_logger.xml
+  &lt;/trace&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-06-28T01:48:32.913&quot;&gt;
+  &lt;info&gt;
+    Q2 started, deployDir=/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso
+  &lt;/info&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-06-28T01:48:32.919&quot; lifespan=&quot;3ms&quot;&gt;
+  &lt;version&gt;
+    jPOS 2.1.1-SNAPSHOT detached/7c8b7fa (2017-06-28 01:46:53 UTC) 
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+
+jPOS Community Edition, licensed under GNU AGPL v3.0.
+This software is probably not suitable for commercial use.
+Please see http://jpos.org/license for details.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (Darwin)
+
+iQEcBAEBAgAGBQJMolHDAAoJEOQyeO71nYtFv74H/3OgehDGEy1VXp2U3/GcAobg
+HH2eZjPUz53r38ARPiU3pzm9LwDa3WZgJJaa/b9VrJwKvbPwe9+0kY3gScDE1skT
+ladHt+KHHmGQArEutkzHlpZa73RbroFEIa1qmN6MaDEHGoxZqDh0Sv2cpvOaVYGO
+St8ZaddLBPC17bSjAPWo9sWbvL7FgPFOHhnPmbeux8SLtnfWxXWsgo5hLBanKmO1
+1z+I/w/6DL6ZYZU6bAJUk+eyVVImJqw0x3IEElI07Nh9MC6BA4iJ77ejobj8HI2r
+q9ulRPEqH9NR79619lNKVUkE206dVlXo7xHmJS1QZy5v/GT66xBxyDVfTduPFXk=
+=oP+v
+-----END PGP SIGNATURE-----
+
+  &lt;/version&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-06-28T01:48:32.934&quot; lifespan=&quot;6ms&quot;&gt;
+  &lt;info&gt;
+    deploy: /home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/20_mux.xml
+  &lt;/info&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-06-28T01:48:32.938&quot; lifespan=&quot;3ms&quot;&gt;
+  &lt;info&gt;
+    deploy: /home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/99_sysmon.xml
+  &lt;/info&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2017-06-28T01:48:32.940&quot;&gt;
+  &lt;info&gt;
+    Starting SystemMonitor
+  &lt;/info&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2017-06-28T01:48:32.941&quot;&gt;
+  &lt;info&gt;
+               OS: Linux (4.4.0-81-generic)
+     process name: 6794@testing-gce-b33b27fd-85d9-41ac-884e-a5ba70e9a5ef
+             host: testing-gce-b33b27fd-85d9-41ac-884e-a5ba70e9a5ef/127.0.1.1
               cwd: /home/travis/build/jpos/jPOS/jpos
-       free space: 13.3 GiB
-     usable space: 12 GiB
-          version: 2.1.1-SNAPSHOT (1d01dac)
-         instance: 888be0c2-65a7-4611-b472-f17a5836be45
-           uptime: 00:00:05.104 (1.230000)
+       free space: 12.3 GiB
+     usable space: 11 GiB
+          version: 2.1.1-SNAPSHOT (7c8b7fa)
+         instance: 8f524a08-023c-401a-9aa4-eea2ffa04c38
+           uptime: 00:00:00.038 (1.370000)
        processors: 2
            drift : 0
-    memory(t/u/f): 113/36/76
+    memory(t/u/f): 1157/499/657
          encoding: UTF-8
          timezone: UTC (Coordinated Universal Time) Z
     watch service: sun.nio.fs.LinuxWatchService
-            clock: 1497479013 2017-06-14T22:23:33.029Z
-     thread count: 12
-     peak threads: 12
-     user threads: 9
+            clock: 1498614512 2017-06-28T01:48:32.942Z
+     thread count: 19
+     peak threads: 20
+     user threads: 16
             Thread[Reference Handler,10,system]
             Thread[Finalizer,8,system]
             Thread[Signal Dispatcher,9,system]
             Thread[main,5,main]
             Thread[Test worker,5,main]
-            Thread[/127.0.0.1:35348 to /127.0.0.1:42277 workers Thread 2,5,main]
-            Thread[/127.0.0.1:35348 to /127.0.0.1:42277 workers Thread 3,5,main]
+            Thread[/127.0.0.1:60194 to /127.0.0.1:42944 workers Thread 2,5,main]
+            Thread[/127.0.0.1:60194 to /127.0.0.1:42944 workers Thread 3,5,main]
             Thread[pool-1-thread-1,5,main]
-            Thread[Q2-888be0c2-65a7-4611-b472-f17a5836be45,5,main]
-            Thread[Thread-11,5,main]
+            Thread[Timer-0,5,main]
+            Thread[Timer-1,5,main]
+            Thread[Timer-2,5,main]
+            Thread[Timer-3,5,main]
+            Thread[Q2-8f524a08-023c-401a-9aa4-eea2ffa04c38,5,main]
+            Thread[Thread-242,5,main]
             Thread[SystemMonitor,5,main]
-            Thread[pool-3-thread-1,5,main]
+            Thread[ThreadPool.PooledThread-1-idle,5,ThreadPool-1]
+            Thread[ThreadPool.PooledThread-2,5,ThreadPool-1]
+            Thread[ThreadPool.PooledThread-3,5,ThreadPool-2]
+            Thread[ThreadPool.PooledThread-4,5,ThreadPool-3]
     name-registrar:
       tspace:default: org.jpos.space.TSpace
-         key-count: 0
-            gcinfo: 0,0
+        &lt;key count='1'&gt;541347290&lt;/key&gt;
+        &lt;key count='1'&gt;1104762619|null|null&lt;/key&gt;
+        &lt;key count='1'&gt;1257728827&lt;/key&gt;
+        &lt;key count='1'&gt;45958600|null|null&lt;/key&gt;
+        &lt;key count='1'&gt;226677346&lt;/key&gt;
+        &lt;key count='1'&gt;363776738|null|null&lt;/key&gt;
+         key-count: 6
+            gcinfo: 6,0
       Q2-1: org.jpos.q2.Q2
       Q2: org.jpos.q2.Q2
+      channel.testLoopbackChannelName: org.jpos.iso.channel.LoopbackChannel
+      logger.testPostPackagerName: org.jpos.util.Logger
       Q2-2: org.jpos.q2.Q2
-      logger.Q2: org.jpos.util.Logger
+      channel.testChannelPoolName: org.jpos.iso.channel.ChannelPool
+      logger.testLinkLogger: org.jpos.util.Logger
+      channel.channel.: org.jpos.iso.channel.ASCIIChannel
+      logger.testEuroPackagerName: org.jpos.util.Logger
       mux.mux: org.jpos.q2.iso.QMUX
-        tx=1, rx=1, tx_expired=0, tx_pending=0, rx_expired=0, rx_pending=0, rx_unhandled=0, rx_forwarded=0, connected=true, last=1497479009928, idle=3103ms
+        tx=0, rx=0, tx_expired=0, tx_pending=0, rx_expired=0, rx_pending=0, rx_unhandled=0, rx_forwarded=0, connected=true, last=0
+      tspace:testStatefulFilterUri: org.jpos.space.TSpace
+         key-count: 0
+            gcinfo: 0,0
+      logger.Q2: org.jpos.util.Logger
+      transient:TestLink: org.jpos.space.TSpace
+        &lt;key count='1'&gt;TestSpace-send&lt;/key&gt;
+         key-count: 1
+            gcinfo: 0,0
+      logger.: org.jpos.util.Logger
+      channel.testBaseChannelName: org.jpos.iso.channel.X25Channel
+      logger.testXMLPackagerName: org.jpos.util.Logger
+  &lt;/info&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-06-28T01:48:38.011&quot;&gt;
+  &lt;info&gt;
+    shutting down
+  &lt;/info&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-06-28T01:48:38.011&quot;&gt;
+  &lt;trace&gt;
+    undeploying:/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/99_sysmon.xml
+  &lt;/trace&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2017-06-28T01:48:38.011&quot;&gt;
+  &lt;info&gt;
+    Stopping SystemMonitor
+  &lt;/info&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-06-28T01:48:38.011&quot;&gt;
+  &lt;info&gt;
+    undeployed:/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/99_sysmon.xml
+  &lt;/info&gt;
+&lt;/log&gt;
+&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2017-06-28T01:48:38.011&quot;&gt;
+  &lt;info&gt;
+               OS: Linux (4.4.0-81-generic)
+     process name: 6794@testing-gce-b33b27fd-85d9-41ac-884e-a5ba70e9a5ef
+             host: testing-gce-b33b27fd-85d9-41ac-884e-a5ba70e9a5ef/127.0.1.1
+              cwd: /home/travis/build/jpos/jPOS/jpos
+       free space: 12.3 GiB
+     usable space: 11 GiB
+          version: 2.1.1-SNAPSHOT (7c8b7fa)
+         instance: 8f524a08-023c-401a-9aa4-eea2ffa04c38
+           uptime: 00:00:05.108 (1.260000)
+       processors: 2
+           drift : 0
+    memory(t/u/f): 1157/502/655
+         encoding: UTF-8
+         timezone: UTC (Coordinated Universal Time) Z
+    watch service: sun.nio.fs.LinuxWatchService
+            clock: 1498614518 2017-06-28T01:48:38.011Z
+     thread count: 20
+     peak threads: 20
+     user threads: 17
+            Thread[Reference Handler,10,system]
+            Thread[Finalizer,8,system]
+            Thread[Signal Dispatcher,9,system]
+            Thread[main,5,main]
+            Thread[Test worker,5,main]
+            Thread[/127.0.0.1:60194 to /127.0.0.1:42944 workers Thread 2,5,main]
+            Thread[/127.0.0.1:60194 to /127.0.0.1:42944 workers Thread 3,5,main]
+            Thread[pool-1-thread-1,5,main]
+            Thread[Timer-0,5,main]
+            Thread[Timer-1,5,main]
+            Thread[Timer-2,5,main]
+            Thread[Timer-3,5,main]
+            Thread[Q2-8f524a08-023c-401a-9aa4-eea2ffa04c38,5,main]
+            Thread[Thread-242,5,main]
+            Thread[SystemMonitor,5,main]
+            Thread[pool-8-thread-1,5,main]
+            Thread[ThreadPool.PooledThread-1-idle,5,ThreadPool-1]
+            Thread[ThreadPool.PooledThread-2,5,ThreadPool-1]
+            Thread[ThreadPool.PooledThread-3,5,ThreadPool-2]
+            Thread[ThreadPool.PooledThread-4,5,ThreadPool-3]
+    name-registrar:
+      tspace:default: org.jpos.space.TSpace
+        &lt;key count='1'&gt;541347290&lt;/key&gt;
+        &lt;key count='1'&gt;1104762619|null|null&lt;/key&gt;
+        &lt;key count='1'&gt;1257728827&lt;/key&gt;
+        &lt;key count='1'&gt;45958600|null|null&lt;/key&gt;
+        &lt;key count='1'&gt;226677346&lt;/key&gt;
+        &lt;key count='1'&gt;363776738|null|null&lt;/key&gt;
+         key-count: 6
+            gcinfo: 6,0
+      Q2-1: org.jpos.q2.Q2
+      Q2: org.jpos.q2.Q2
+      channel.testLoopbackChannelName: org.jpos.iso.channel.LoopbackChannel
+      logger.testPostPackagerName: org.jpos.util.Logger
+      Q2-2: org.jpos.q2.Q2
+      channel.testChannelPoolName: org.jpos.iso.channel.ChannelPool
+      logger.testLinkLogger: org.jpos.util.Logger
+      channel.channel.: org.jpos.iso.channel.ASCIIChannel
+      logger.testEuroPackagerName: org.jpos.util.Logger
+      mux.mux: org.jpos.q2.iso.QMUX
+        tx=1, rx=1, tx_expired=0, tx_pending=0, rx_expired=0, rx_pending=0, rx_unhandled=0, rx_forwarded=0, connected=true, last=1498614514910, idle=3103ms
         all max=1, min=1, mean=1.0000 stddev=0.0000 0.5%=1 99.5%=1, 99.9%=1
         ok max=1, min=1, mean=1.0000 stddev=0.0000 0.5%=1 99.5%=1, 99.9%=1
+      tspace:testStatefulFilterUri: org.jpos.space.TSpace
+         key-count: 0
+            gcinfo: 0,0
+      logger.Q2: org.jpos.util.Logger
+      transient:TestLink: org.jpos.space.TSpace
+        &lt;key count='1'&gt;TestSpace-send&lt;/key&gt;
+         key-count: 1
+            gcinfo: 0,0
+      logger.: org.jpos.util.Logger
+      channel.testBaseChannelName: org.jpos.iso.channel.X25Channel
+      logger.testXMLPackagerName: org.jpos.util.Logger
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-06-14T22:23:33.033&quot; lifespan=&quot;4ms&quot;&gt;
-  &lt;info&gt;
-    undeployed:/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/99_sysmon.xml
-  &lt;/info&gt;
-&lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-06-14T22:23:33.034&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-06-28T01:48:38.014&quot; lifespan=&quot;3ms&quot;&gt;
   &lt;trace&gt;
     undeploying:/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/20_mux.xml
   &lt;/trace&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-06-14T22:23:33.034&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-06-28T01:48:38.014&quot;&gt;
   &lt;info&gt;
     undeployed:/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/20_mux.xml
   &lt;/info&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-06-14T22:23:33.034&quot;&gt;
+&lt;log realm=&quot;Q2.system&quot; at=&quot;2017-06-28T01:48:38.014&quot;&gt;
   &lt;trace&gt;
     undeploying:/home/travis/build/jpos/jPOS/jpos/build/resources/test/org/jpos/q2/iso/00_logger.xml
   &lt;/trace&gt;
@@ -611,7 +718,7 @@ q9ulRPEqH9NR79619lNKVUkE206dVlXo7xHmJS1QZy5v/GT66xBxyDVfTduPFXk=
 <input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
 </label>
 </div>Generated by 
-<a href="http://www.gradle.org">Gradle 3.5</a> at Jun 14, 2017 10:25:07 PM</p>
+<a href="http://www.gradle.org">Gradle 3.5</a> at Jun 28, 2017 1:49:42 AM</p>
 </div>
 </div>
 </body>
