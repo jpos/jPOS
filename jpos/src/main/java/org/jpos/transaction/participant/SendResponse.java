@@ -30,6 +30,7 @@ import org.jpos.transaction.AbortParticipant;
 import org.jpos.transaction.ContextConstants;
 
 import static org.jpos.transaction.ContextConstants.SOURCE;
+import static org.jpos.transaction.ContextConstants.RESPONSE;
 import static org.jpos.transaction.ContextConstants.TX;
 
 @SuppressWarnings("unused")
@@ -39,16 +40,16 @@ public class SendResponse implements AbortParticipant, Configurable {
 
     public int prepare (long id, Serializable context) {
         Context ctx = (Context) context;
-        ISOSource source = (ISOSource) ctx.get (SOURCE.toString());
+        ISOSource source = (ISOSource) ctx.get (this.source);
         if (source == null || !source.isConnected())
             return ABORTED | READONLY | NO_JOIN;
 
         return PREPARED | READONLY;
     }
-    public void commit (long id, Serializable context) { 
+    public void commit (long id, Serializable context) {
         sendResponse(id, (Context) context);
     }
-    public void abort (long id, Serializable context) { 
+    public void abort (long id, Serializable context) {
         sendResponse(id, (Context) context);
     }
     private void sendResponse (long id, Context ctx) {
@@ -74,7 +75,7 @@ public class SendResponse implements AbortParticipant, Configurable {
 
     @Override
     public void setConfiguration(Configuration cfg) throws ConfigurationException {
-        source = cfg.get ("source", ContextConstants.SOURCE.toString());
-        response = cfg.get ("response", ContextConstants.RESPONSE.toString());
+        source   = cfg.get ("source",   SOURCE.toString());
+        response = cfg.get ("response", RESPONSE.toString());
     }
 }
