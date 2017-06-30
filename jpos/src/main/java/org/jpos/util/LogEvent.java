@@ -126,9 +126,11 @@ public class LogEvent {
         else {
             String newIndent;
             if (tag != null) {
-                p.println (indent + "<" + tag + ">");
+                if (!tag.isEmpty())
+                    p.println (indent + "<" + tag + ">");
                 newIndent = indent + "  ";
-            } else
+            }
+            else
                 newIndent = "";
             synchronized (payLoad) {
                 for (Object o : payLoad) {
@@ -177,7 +179,7 @@ public class LogEvent {
                     }
             }
             }
-            if (tag != null)
+            if (tag != null && !tag.isEmpty())
                 p.println (indent + "</" + tag + ">");
         }
         dumpTrailer (p, outer);
