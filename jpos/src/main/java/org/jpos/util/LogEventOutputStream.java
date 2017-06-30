@@ -18,7 +18,6 @@
 
 package org.jpos.util;
 
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -32,21 +31,21 @@ public class LogEventOutputStream extends OutputStream implements LogSource, Run
     private Logger logger;
     private String realm;
     private ScheduledExecutorService logService;
-    private StringBuilder sb;
     private Semaphore lock = new Semaphore(1);
-    private volatile boolean isScheduled = false;
+    private volatile LogEvent evt;
+    private long delay;
 
     public LogEventOutputStream() {
         super();
-        sb = new StringBuilder();
         baos = new ByteArrayOutputStream();
         logService = Executors.newScheduledThreadPool(1);
     }
 
-    public LogEventOutputStream(Logger logger, String realm) {
+    public LogEventOutputStream(Logger logger, String realm, long delay) {
         this();
         this.logger = logger;
         this.realm = realm;
+        this.delay = delay;
     }
 
     @Override
@@ -54,13 +53,12 @@ public class LogEventOutputStream extends OutputStream implements LogSource, Run
         if (b == '\n') {
             try {
                 lock.acquire();
-                sb.append(baos.toString());
-                sb.append(System.lineSeparator());
-                baos = new ByteArrayOutputStream();
-                if (!isScheduled) {
-                    isScheduled = !isScheduled;
-                    logService.schedule(this, 500, TimeUnit.MILLISECONDS);
+                if (evt == null) {
+                    evt = new LogEvent(this, "");
+                    logService.schedule(this, delay, TimeUnit.MILLISECONDS);
                 }
+                evt.addMessage(baos.toString());
+                baos = new ByteArrayOutputStream();
             } catch (InterruptedException ignored) {
             } finally {
                 lock.release();
@@ -88,16 +86,18 @@ public class LogEventOutputStream extends OutputStream implements LogSource, Run
 
     @Override
     public void run() {
-        try {
-            lock.acquire();
-            isScheduled = false;
-            if (sb.length() > 0) {
-                Logger.log(new LogEvent(this, "", sb.toString()));
-                sb = new StringBuilder();
+        LogEvent event = null;
+        if (evt != null) {
+            try {
+                lock.acquire();
+                event = evt;
+                evt = null;
+            } catch (InterruptedException ignore) {
+            } finally {
+                lock.release();
             }
-        } catch (InterruptedException ignore) {
-        } finally {
-            lock.release();
+            if (event != null)
+                Logger.log(event);
         }
     }
 
@@ -107,7 +107,6 @@ public class LogEventOutputStream extends OutputStream implements LogSource, Run
         try {
             lock.acquire();
             logService.shutdown();
-            sb = new StringBuilder();
         } catch (InterruptedException ignore) {
         } finally {
             lock.release();
