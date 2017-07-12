@@ -29,6 +29,7 @@ import java.util.*;
 
 public class CMFConverter implements IRCConverter, Configurable {
     private static final Map<Integer, RC> rcs = new HashMap<>();
+    private static final Map<String, IRC> ircs = new HashMap<>();
     private Configuration cfg;
 
     static {
@@ -48,6 +49,15 @@ public class CMFConverter implements IRCConverter, Configurable {
 
         s = irc.irc() > 9999 ? Long.toString(irc.irc()) : ISOUtil.zeropad(irc.irc(),4);
         return new SimpleRC(s, (irc instanceof CMF ? ((CMF)irc).name().replace("_", " ") : null));
+    }
+
+    @Override
+    public IRC convert (RC rc) {
+        IRC irc = ircs.get(rc.rc());
+        if (irc == null) {
+            irc =  CMF.valueOf(Integer.parseInt(rc.rc()));
+        }
+        return irc;
     }
 
     private static void load (String base) throws IOException {
@@ -79,13 +89,15 @@ public class CMFConverter implements IRCConverter, Configurable {
         return new SimpleRC (rc, display);
     }
 
-    private static void addBundle(ResourceBundle r)
-    {
+    private static void addBundle(ResourceBundle r) {
         Enumeration en = r.getKeys();
         while (en.hasMoreElements()) {
             String key = (String) en.nextElement();
             String value = r.getString(key);
-            rcs.put (Integer.parseInt(key), buildRC(value));
+            RC rc = buildRC(value);
+            int irc = Integer.parseInt(key);
+            rcs.put (irc, rc);
+            ircs.put (rc.rc(), CMF.valueOf(irc));
         }
     }
 

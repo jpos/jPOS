@@ -18,6 +18,9 @@
 
 package org.jpos.rc;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public enum CMF implements IRC {
     // Approved
     APPROVED         (0, true),
@@ -205,16 +208,17 @@ public enum CMF implements IRC {
     int irc;
     boolean success;
     boolean inhibit;
+    private static Map<Integer,IRC> lookup = new HashMap<>();
+    static {
+        for (IRC irc : values())
+            lookup.put(irc.irc(), irc);
+    }
 
     CMF(int irc) {
-        this.irc = irc;
-        this.success = false;
-        this.inhibit = false;
+        this (irc, false, false);
     }
     CMF(int irc, boolean success) {
-        this.irc = irc;
-        this.success = success;
-        this.inhibit = false;
+        this(irc, success, false);
     }
     CMF(int irc, boolean success, boolean inhibit) {
         this.irc = irc;
@@ -235,5 +239,9 @@ public enum CMF implements IRC {
     @Override
     public boolean inhibit() {
         return inhibit;
+    }
+
+    public static IRC valueOf(int i) {
+        return lookup.get(i);
     }
 }

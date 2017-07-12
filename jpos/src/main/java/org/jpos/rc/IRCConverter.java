@@ -23,4 +23,5 @@ package org.jpos.rc;
  */
 public interface IRCConverter {
     RC convert (IRC irc);
+    IRC convert (RC rc);
 }

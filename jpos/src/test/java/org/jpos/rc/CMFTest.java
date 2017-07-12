@@ -77,4 +77,17 @@ public class CMFTest {
         rc.fail(CMF.INTERNAL_ERROR, Caller.info(), "Internal Error");
         assertTrue(rc.hasInhibit());
     }
+
+    @Test
+    public void testConvertToIRC() throws ConfigurationException {
+        CMFConverter c = new CMFConverter();
+        SimpleConfiguration cfg = new SimpleConfiguration();
+        cfg.put("10000","----,jPOS error message");
+        c.setConfiguration(cfg);
+
+        IRC irc =  c.convert(new SimpleRC("0000", ""));
+        assertEquals(c.convert(new SimpleRC("0000", "")), CMF.APPROVED);
+        assertEquals(c.convert(new SimpleRC("0001", "")), CMF.HONOR_WITH_ID);
+        assertEquals(c.convert(new SimpleRC("ZZZZ", "")), CMF.GENERAL_DECLINE);
+    }
 }
