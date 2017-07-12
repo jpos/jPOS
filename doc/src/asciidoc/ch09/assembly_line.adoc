@@ -30,7 +30,7 @@ small (easy to develop, easy to reuse, easy to maintain) participants:
  The +Open+ participant gets a JDBC connection and starts a JDBC Transaction.
 |Switch
 |We'll explain later the +GroupSelectors+ that allows us to put together
- groups of partipants in the XML configuration. In this example, the 
+ groups of participants in the XML configuration. In this example, the 
  selector returns a String with the following content:
     +"balanceinquiry prepareresponse logit close sendresponse"+
  indicating that the TM needs to execute the participants defined
