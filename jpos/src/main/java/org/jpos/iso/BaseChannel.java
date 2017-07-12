@@ -457,7 +457,7 @@ public abstract class BaseChannel extends Observable
 
    /**
     * allow subclasses to override default packager
-    * on outgoing messages
+    * on incoming messages
     * @param image incoming message image
     * @return ISOPackager
     */
@@ -466,7 +466,7 @@ public abstract class BaseChannel extends Observable
     }
     /**
      * allow subclasses to override default packager
-     * on outgoing messages
+     * on incoming messages
      * @param header message header
      * @param image incoming message image
      * @return ISOPackager
