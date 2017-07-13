@@ -298,21 +298,18 @@ public abstract class BaseChannel extends Observable
             if (socketFactory != null)
                 return socketFactory.createSocket (host, port);
             else {
-                if (connectTimeout > 0) {
-                    Socket s = new Socket();
-                    s.connect (
-                        new InetSocketAddress (host, port),
-                        connectTimeout
-                    );
-                    return s;
-                } else if (localIface == null && localPort == 0){
-                    return new Socket(host,port);
-                } else {
+                Socket s = new Socket();
+                if (localIface != null || localPort != 0) {
                     InetAddress addr = localIface == null ?
-                        InetAddress.getLocalHost() : 
-                        InetAddress.getByName(localIface);
-                    return new Socket(host, port, addr, localPort);
+                      InetAddress.getLocalHost() :
+                      InetAddress.getByName(localIface);
+                    s.bind(new InetSocketAddress(addr, localPort));
                 }
+                s.connect (
+                    new InetSocketAddress (host, port),
+                    connectTimeout
+                );
+                return s;
             }
         } catch (ISOException e) {
             throw new IOException (e.getMessage());
