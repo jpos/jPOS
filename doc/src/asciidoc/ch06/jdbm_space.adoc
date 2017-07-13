@@ -7,14 +7,14 @@ It uses the SpaceFactory prefix +jdbm+ that must be followed by a name, and an o
 
 [source,java]
 -----
-Space sp = SpaceFactory("jdbm:myspace");
+Space sp = SpaceFactory.getSpace("jdbm:myspace");
 -----
 
 or
 
 [source,java]
 -----
-Space sp = SpaceFactory("jdbm:myspace:data/myspace");
+Space sp = SpaceFactory.getSpace("jdbm:myspace:data/myspace");
 -----
 
 [TIP]
