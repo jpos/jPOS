@@ -1,67 +1,67 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pmd version="5.5.1" timestamp="2017-07-12T19:46:17.101">
+<pmd version="5.6.1" timestamp="2017-07-14T01:12:51.979">
 <file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/iso/ISOUtilTest.java">
-<violation beginline="4612" endline="4612" begincolumn="32" endcolumn="81" rule="AvoidDecimalLiteralsInBigDecimalConstructor" ruleset="Basic" package="org.jpos.iso" class="ISOUtilTest" method="testParseAmtConvRate" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/basic.html#AvoidDecimalLiteralsInBigDecimalConstructor" priority="3">
+<violation beginline="4612" endline="4612" begincolumn="32" endcolumn="81" rule="AvoidDecimalLiteralsInBigDecimalConstructor" ruleset="Basic" package="org.jpos.iso" class="ISOUtilTest" method="testParseAmtConvRate" externalInfoUrl="https://pmd.github.io/pmd-5.6.1/pmd-java/rules/java/basic.html#AvoidDecimalLiteralsInBigDecimalConstructor" priority="3">
 Avoid creating BigDecimal with a decimal (float/double) literal. Use a String literal
 </violation>
-<violation beginline="4623" endline="4623" begincolumn="32" endcolumn="81" rule="AvoidDecimalLiteralsInBigDecimalConstructor" ruleset="Basic" package="org.jpos.iso" class="ISOUtilTest" method="testParseAmtConvRate2" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/basic.html#AvoidDecimalLiteralsInBigDecimalConstructor" priority="3">
+<violation beginline="4623" endline="4623" begincolumn="32" endcolumn="81" rule="AvoidDecimalLiteralsInBigDecimalConstructor" ruleset="Basic" package="org.jpos.iso" class="ISOUtilTest" method="testParseAmtConvRate2" externalInfoUrl="https://pmd.github.io/pmd-5.6.1/pmd-java/rules/java/basic.html#AvoidDecimalLiteralsInBigDecimalConstructor" priority="3">
 Avoid creating BigDecimal with a decimal (float/double) literal. Use a String literal
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/iso/SslChannelIntegrationTest.java">
-<violation beginline="96" endline="96" begincolumn="67" endcolumn="76" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.iso" class="SslChannelIntegrationTest" method="newIsoServer" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
+<violation beginline="96" endline="96" begincolumn="67" endcolumn="76" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.iso" class="SslChannelIntegrationTest" method="newIsoServer" externalInfoUrl="https://pmd.github.io/pmd-5.6.1/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
 Avoid using java.lang.ThreadGroup; it is not thread safe
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/q2/iso/ChannelAdaptorTest.java">
-<violation beginline="266" endline="268" begincolumn="17" endcolumn="17" rule="CollapsibleIfStatements" ruleset="Basic" package="org.jpos.q2.iso" class="ChannelAdaptorTest" method="findSendAndReceiveThreads" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/basic.html#CollapsibleIfStatements" priority="3">
+<violation beginline="266" endline="268" begincolumn="17" endcolumn="17" rule="CollapsibleIfStatements" ruleset="Basic" package="org.jpos.q2.iso" class="ChannelAdaptorTest" method="findSendAndReceiveThreads" externalInfoUrl="https://pmd.github.io/pmd-5.6.1/pmd-java/rules/java/basic.html#CollapsibleIfStatements" priority="3">
 These nested if statements could be combined
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/space/TSpacePerformanceTest.java">
-<violation beginline="193" endline="193" begincolumn="11" endcolumn="17" rule="AvoidBranchingStatementAsLastInLoop" ruleset="Basic" package="org.jpos.space" class="TSpacePerformanceTest" method="testDeadLockWithNotify" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/basic.html#AvoidBranchingStatementAsLastInLoop" priority="2">
+<violation beginline="193" endline="193" begincolumn="11" endcolumn="17" rule="AvoidBranchingStatementAsLastInLoop" ruleset="Basic" package="org.jpos.space" class="TSpacePerformanceTest" method="testDeadLockWithNotify" externalInfoUrl="https://pmd.github.io/pmd-5.6.1/pmd-java/rules/java/basic.html#AvoidBranchingStatementAsLastInLoop" priority="2">
 Avoid using a branching statement as the last in a loop.
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/transaction/TestRetryParticipant.java">
-<violation beginline="31" endline="35" begincolumn="13" endcolumn="13" rule="CollapsibleIfStatements" ruleset="Basic" package="org.jpos.transaction" class="TestRetryParticipant" method="prepare" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/basic.html#CollapsibleIfStatements" priority="3">
+<violation beginline="31" endline="35" begincolumn="13" endcolumn="13" rule="CollapsibleIfStatements" ruleset="Basic" package="org.jpos.transaction" class="TestRetryParticipant" method="prepare" externalInfoUrl="https://pmd.github.io/pmd-5.6.1/pmd-java/rules/java/basic.html#CollapsibleIfStatements" priority="3">
 These nested if statements could be combined
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/util/LogEventTest.java">
-<violation beginline="117" endline="117" begincolumn="26" endcolumn="35" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.util" class="LogEventTest" method="testDump3" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
+<violation beginline="117" endline="117" begincolumn="26" endcolumn="35" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.util" class="LogEventTest" method="testDump3" externalInfoUrl="https://pmd.github.io/pmd-5.6.1/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
 Avoid using java.lang.ThreadGroup; it is not thread safe
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/util/ThreadPoolTest.java">
-<violation beginline="39" endline="39" begincolumn="37" endcolumn="46" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.util" class="ThreadPoolTest" method="testConstructor" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
+<violation beginline="39" endline="39" begincolumn="37" endcolumn="46" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.util" class="ThreadPoolTest" method="testConstructor" externalInfoUrl="https://pmd.github.io/pmd-5.6.1/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
 Avoid using java.lang.ThreadGroup; it is not thread safe
 </violation>
-<violation beginline="47" endline="47" begincolumn="37" endcolumn="46" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.util" class="ThreadPoolTest" method="testConstructor1" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
+<violation beginline="47" endline="47" begincolumn="37" endcolumn="46" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.util" class="ThreadPoolTest" method="testConstructor1" externalInfoUrl="https://pmd.github.io/pmd-5.6.1/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
 Avoid using java.lang.ThreadGroup; it is not thread safe
 </violation>
-<violation beginline="55" endline="55" begincolumn="37" endcolumn="46" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.util" class="ThreadPoolTest" method="testConstructor2" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
+<violation beginline="55" endline="55" begincolumn="37" endcolumn="46" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.util" class="ThreadPoolTest" method="testConstructor2" externalInfoUrl="https://pmd.github.io/pmd-5.6.1/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
 Avoid using java.lang.ThreadGroup; it is not thread safe
 </violation>
-<violation beginline="63" endline="63" begincolumn="37" endcolumn="46" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.util" class="ThreadPoolTest" method="testConstructor3" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
+<violation beginline="63" endline="63" begincolumn="37" endcolumn="46" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.util" class="ThreadPoolTest" method="testConstructor3" externalInfoUrl="https://pmd.github.io/pmd-5.6.1/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
 Avoid using java.lang.ThreadGroup; it is not thread safe
 </violation>
-<violation beginline="71" endline="71" begincolumn="37" endcolumn="46" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.util" class="ThreadPoolTest" method="testConstructor4" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
+<violation beginline="71" endline="71" begincolumn="37" endcolumn="46" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.util" class="ThreadPoolTest" method="testConstructor4" externalInfoUrl="https://pmd.github.io/pmd-5.6.1/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
 Avoid using java.lang.ThreadGroup; it is not thread safe
 </violation>
-<violation beginline="79" endline="79" begincolumn="37" endcolumn="46" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.util" class="ThreadPoolTest" method="testRun1" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
+<violation beginline="79" endline="79" begincolumn="37" endcolumn="46" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.util" class="ThreadPoolTest" method="testRun1" externalInfoUrl="https://pmd.github.io/pmd-5.6.1/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
 Avoid using java.lang.ThreadGroup; it is not thread safe
 </violation>
-<violation beginline="93" endline="93" begincolumn="37" endcolumn="46" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.util" class="ThreadPoolTest" method="testRun2" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
+<violation beginline="93" endline="93" begincolumn="37" endcolumn="46" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.util" class="ThreadPoolTest" method="testRun2" externalInfoUrl="https://pmd.github.io/pmd-5.6.1/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
 Avoid using java.lang.ThreadGroup; it is not thread safe
 </violation>
-<violation beginline="114" endline="114" begincolumn="37" endcolumn="46" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.util" class="ThreadPoolTest" method="testRun3" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
+<violation beginline="114" endline="114" begincolumn="37" endcolumn="46" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.util" class="ThreadPoolTest" method="testRun3" externalInfoUrl="https://pmd.github.io/pmd-5.6.1/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
 Avoid using java.lang.ThreadGroup; it is not thread safe
 </violation>
-<violation beginline="126" endline="126" begincolumn="37" endcolumn="46" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.util" class="ThreadPoolTest" method="testRunNames" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
+<violation beginline="126" endline="126" begincolumn="37" endcolumn="46" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.util" class="ThreadPoolTest" method="testRunNames" externalInfoUrl="https://pmd.github.io/pmd-5.6.1/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
 Avoid using java.lang.ThreadGroup; it is not thread safe
 </violation>
-<violation beginline="140" endline="140" begincolumn="31" endcolumn="40" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.util" class="ThreadPoolTest" method="testConcurrentThreadAllocation" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
+<violation beginline="140" endline="140" begincolumn="31" endcolumn="40" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.util" class="ThreadPoolTest" method="testConcurrentThreadAllocation" externalInfoUrl="https://pmd.github.io/pmd-5.6.1/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
 Avoid using java.lang.ThreadGroup; it is not thread safe
 </violation>
 </file>

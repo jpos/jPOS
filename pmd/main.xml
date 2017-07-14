@@ -1,83 +1,83 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pmd version="5.5.1" timestamp="2017-07-12T19:46:02.032">
+<pmd version="5.6.1" timestamp="2017-07-14T01:12:41.947">
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/Connector.java">
-<violation beginline="79" endline="79" begincolumn="27" endcolumn="36" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.iso" class="Connector" method="setConfiguration" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
+<violation beginline="79" endline="79" begincolumn="27" endcolumn="36" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.iso" class="Connector" method="setConfiguration" externalInfoUrl="https://pmd.github.io/pmd-5.6.1/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
 Avoid using java.lang.ThreadGroup; it is not thread safe
 </violation>
-<violation beginline="127" endline="127" begincolumn="24" endcolumn="33" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.iso" class="Connector" method="process" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
+<violation beginline="127" endline="127" begincolumn="24" endcolumn="33" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.iso" class="Connector" method="process" externalInfoUrl="https://pmd.github.io/pmd-5.6.1/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
 Avoid using java.lang.ThreadGroup; it is not thread safe
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/IFB_LLHFBINARY.java">
-<violation beginline="80" endline="80" begincolumn="9" endcolumn="15" rule="CheckSkipResult" ruleset="Basic" package="org.jpos.iso" class="IFB_LLHFBINARY" method="unpack" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/basic.html#CheckSkipResult" priority="3">
+<violation beginline="80" endline="80" begincolumn="9" endcolumn="15" rule="CheckSkipResult" ruleset="Basic" package="org.jpos.iso" class="IFB_LLHFBINARY" method="unpack" externalInfoUrl="https://pmd.github.io/pmd-5.6.1/pmd-java/rules/java/basic.html#CheckSkipResult" priority="3">
 Check the value returned by the skip() method of an InputStream to see if the requested number of bytes has been skipped.
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/ISOFilledStringFieldPackager.java">
-<violation beginline="207" endline="207" begincolumn="13" endcolumn="19" rule="CheckSkipResult" ruleset="Basic" package="org.jpos.iso" class="ISOFilledStringFieldPackager" method="unpack" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/basic.html#CheckSkipResult" priority="3">
+<violation beginline="207" endline="207" begincolumn="13" endcolumn="19" rule="CheckSkipResult" ruleset="Basic" package="org.jpos.iso" class="ISOFilledStringFieldPackager" method="unpack" externalInfoUrl="https://pmd.github.io/pmd-5.6.1/pmd-java/rules/java/basic.html#CheckSkipResult" priority="3">
 Check the value returned by the skip() method of an InputStream to see if the requested number of bytes has been skipped.
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/ISOServer.java">
-<violation beginline="118" endline="118" begincolumn="17" endcolumn="26" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.iso" class="ISOServer" method="ISOServer" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
+<violation beginline="118" endline="118" begincolumn="17" endcolumn="26" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.iso" class="ISOServer" method="ISOServer" externalInfoUrl="https://pmd.github.io/pmd-5.6.1/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
 Avoid using java.lang.ThreadGroup; it is not thread safe
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/ISOUtil.java">
-<violation beginline="1442" endline="1442" begincolumn="25" endcolumn="48" rule="AvoidDecimalLiteralsInBigDecimalConstructor" ruleset="Basic" package="org.jpos.iso" class="ISOUtil" method="formatAmountConversionRate" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/basic.html#AvoidDecimalLiteralsInBigDecimalConstructor" priority="3">
+<violation beginline="1442" endline="1442" begincolumn="25" endcolumn="48" rule="AvoidDecimalLiteralsInBigDecimalConstructor" ruleset="Basic" package="org.jpos.iso" class="ISOUtil" method="formatAmountConversionRate" externalInfoUrl="https://pmd.github.io/pmd-5.6.1/pmd-java/rules/java/basic.html#AvoidDecimalLiteralsInBigDecimalConstructor" priority="3">
 Avoid creating BigDecimal with a decimal (float/double) literal. Use a String literal
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/packager/GICCSubFieldPackager.java">
-<violation beginline="104" endline="113" begincolumn="9" endcolumn="9" rule="ForLoopShouldBeWhileLoop" ruleset="Basic" package="org.jpos.iso.packager" class="GICCSubFieldPackager" method="unpack" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/basic.html#ForLoopShouldBeWhileLoop" priority="3">
+<violation beginline="104" endline="113" begincolumn="9" endcolumn="9" rule="ForLoopShouldBeWhileLoop" ruleset="Basic" package="org.jpos.iso.packager" class="GICCSubFieldPackager" method="unpack" externalInfoUrl="https://pmd.github.io/pmd-5.6.1/pmd-java/rules/java/basic.html#ForLoopShouldBeWhileLoop" priority="3">
 This for loop could be simplified to a while loop
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/q2/CLI.java">
-<violation beginline="125" endline="125" begincolumn="25" endcolumn="30" rule="AvoidBranchingStatementAsLastInLoop" ruleset="Basic" package="org.jpos.q2" class="CLI" method="run" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/basic.html#AvoidBranchingStatementAsLastInLoop" priority="2">
+<violation beginline="125" endline="125" begincolumn="25" endcolumn="30" rule="AvoidBranchingStatementAsLastInLoop" ruleset="Basic" package="org.jpos.q2" class="CLI" method="run" externalInfoUrl="https://pmd.github.io/pmd-5.6.1/pmd-java/rules/java/basic.html#AvoidBranchingStatementAsLastInLoop" priority="2">
 Avoid using a branching statement as the last in a loop.
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/q2/cli/LOGGER_BENCHMARK.java">
-<violation beginline="44" endline="48" begincolumn="21" endcolumn="21" rule="JumbledIncrementer" ruleset="Basic" package="org.jpos.q2.cli" class="LOGGER_BENCHMARK" method="run" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/basic.html#JumbledIncrementer" priority="3">
+<violation beginline="44" endline="48" begincolumn="21" endcolumn="21" rule="JumbledIncrementer" ruleset="Basic" package="org.jpos.q2.cli" class="LOGGER_BENCHMARK" method="run" externalInfoUrl="https://pmd.github.io/pmd-5.6.1/pmd-java/rules/java/basic.html#JumbledIncrementer" priority="3">
 Avoid modifying an outer loop incrementer in an inner loop for update expression
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/q2/iso/DirPollAdaptor.java">
-<violation beginline="55" endline="55" begincolumn="36" endcolumn="45" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.q2.iso" class="DirPollAdaptor" method="initService" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
+<violation beginline="55" endline="55" begincolumn="36" endcolumn="45" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.q2.iso" class="DirPollAdaptor" method="initService" externalInfoUrl="https://pmd.github.io/pmd-5.6.1/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
 Avoid using java.lang.ThreadGroup; it is not thread safe
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/q2/iso/MUXPool.java">
-<violation beginline="166" endline="167" begincolumn="29" endcolumn="42" rule="CollapsibleIfStatements" ruleset="Basic" package="org.jpos.q2.iso" class="MUXPool" method="nextAvailableWithOverrideMUX" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/basic.html#CollapsibleIfStatements" priority="3">
+<violation beginline="166" endline="167" begincolumn="29" endcolumn="42" rule="CollapsibleIfStatements" ruleset="Basic" package="org.jpos.q2.iso" class="MUXPool" method="nextAvailableWithOverrideMUX" externalInfoUrl="https://pmd.github.io/pmd-5.6.1/pmd-java/rules/java/basic.html#CollapsibleIfStatements" priority="3">
 These nested if statements could be combined
 </violation>
-<violation beginline="181" endline="185" begincolumn="17" endcolumn="17" rule="CollapsibleIfStatements" ruleset="Basic" package="org.jpos.q2.iso" class="MUXPool" method="splitByDivisorMUX" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/basic.html#CollapsibleIfStatements" priority="3">
+<violation beginline="181" endline="185" begincolumn="17" endcolumn="17" rule="CollapsibleIfStatements" ruleset="Basic" package="org.jpos.q2.iso" class="MUXPool" method="splitByDivisorMUX" externalInfoUrl="https://pmd.github.io/pmd-5.6.1/pmd-java/rules/java/basic.html#CollapsibleIfStatements" priority="3">
 These nested if statements could be combined
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/q2/iso/QServer.java">
-<violation beginline="105" endline="105" begincolumn="20" endcolumn="29" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.q2.iso" class="QServer" method="initServer" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
+<violation beginline="105" endline="105" begincolumn="20" endcolumn="29" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.q2.iso" class="QServer" method="initServer" externalInfoUrl="https://pmd.github.io/pmd-5.6.1/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
 Avoid using java.lang.ThreadGroup; it is not thread safe
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/q2/qbean/SystemMonitor.java">
-<violation beginline="220" endline="220" begincolumn="47" endcolumn="61" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.q2.qbean" class="SystemMonitor" method="generateFrozenDump" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
+<violation beginline="220" endline="220" begincolumn="47" endcolumn="61" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.q2.qbean" class="SystemMonitor" method="generateFrozenDump" externalInfoUrl="https://pmd.github.io/pmd-5.6.1/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
 Avoid using java.lang.ThreadGroup; it is not thread safe
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/util/DirPoll.java">
-<violation beginline="381" endline="381" begincolumn="24" endcolumn="33" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.util" class="DirPoll" method="getPool" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
+<violation beginline="381" endline="381" begincolumn="24" endcolumn="33" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.util" class="DirPoll" method="getPool" externalInfoUrl="https://pmd.github.io/pmd-5.6.1/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
 Avoid using java.lang.ThreadGroup; it is not thread safe
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/util/FSDMsg.java">
-<violation beginline="207" endline="207" begincolumn="17" endcolumn="23" rule="CheckSkipResult" ruleset="Basic" package="org.jpos.util" class="FSDMsg" method="unpack" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/basic.html#CheckSkipResult" priority="3">
+<violation beginline="207" endline="207" begincolumn="17" endcolumn="23" rule="CheckSkipResult" ruleset="Basic" package="org.jpos.util" class="FSDMsg" method="unpack" externalInfoUrl="https://pmd.github.io/pmd-5.6.1/pmd-java/rules/java/basic.html#CheckSkipResult" priority="3">
 Check the value returned by the skip() method of an InputStream to see if the requested number of bytes has been skipped.
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/util/SystemMonitor.java">
-<violation beginline="113" endline="113" begincolumn="48" endcolumn="62" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.util" class="SystemMonitor" method="dump" externalInfoUrl="https://pmd.github.io/pmd-5.5.1/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
+<violation beginline="113" endline="113" begincolumn="48" endcolumn="62" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.util" class="SystemMonitor" method="dump" externalInfoUrl="https://pmd.github.io/pmd-5.6.1/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
 Avoid using java.lang.ThreadGroup; it is not thread safe
 </violation>
 </file>
