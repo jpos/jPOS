@@ -33,6 +33,7 @@ import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOUtil;
+import org.jpos.q2.install.ModuleUtils;
 import org.jpos.q2.ssh.SshService;
 import org.jpos.security.SystemSeed;
 import org.jpos.util.Log;
@@ -47,7 +48,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.launch.Framework;
 import org.osgi.framework.launch.FrameworkFactory;
-
+import org.xml.sax.SAXException;
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 import javax.management.InstanceAlreadyExistsException;
@@ -129,7 +130,9 @@ public class Q2 implements FileFilter, Runnable {
     private String sshAuthorizedKeys;
     private String sshUser;
     private String sshHostKeyFile;
-
+    private static String DEPLOY_PREFIX = "META-INF/q2/deploy/";
+    private static String CFG_PREFIX = "META-INF/q2/cfg/";
+    
     public Q2 (String[] args, BundleContext bundleContext) {
         super();
         this.args = args;
@@ -233,6 +236,7 @@ public class Q2 implements FileFilter, Runnable {
                   "05_sshd-" + getInstanceId() + ".xml", false, true);
             }
 
+            deployInternal();
             for (int i = 1; !shutdown; i++) {
                 try {
                     boolean forceNewClassLoader = scan() && i > 1;
@@ -249,6 +253,7 @@ public class Q2 implements FileFilter, Runnable {
                         q2Thread.setContextClassLoader(loader);
                     }
                     logVersion();
+
                     deploy();
                     checkModified();
                     if (!waitForChanges(service))
@@ -768,7 +773,7 @@ public class Q2 implements FileFilter, Runnable {
     public void deployElement (Element e, String fileName, boolean encrypt, boolean isTransient)
         throws ISOException, IOException, GeneralSecurityException
     {
-        e = (Element) e.clone ();
+        e = e.clone ();
 
         XMLOutputter out = new XMLOutputter (Format.getPrettyFormat());
         Document doc = new Document ();
@@ -1096,6 +1101,48 @@ public class Q2 implements FileFilter, Runnable {
                     break;
                 }
             }
+        }
+    }
+
+    private void deployInternal() throws IOException, JDOMException, SAXException, ISOException, GeneralSecurityException {
+        extractCfg();
+        extractDeploy();
+    }
+    private void extractCfg() throws IOException {
+        List<String> qbeans = ModuleUtils.getModuleEntries(CFG_PREFIX);
+        for (String resource : qbeans)
+            copyResourceToFile(resource, new File("cfg", resource.substring(CFG_PREFIX.length())));
+    }
+    private void extractDeploy() throws IOException, JDOMException, SAXException, ISOException, GeneralSecurityException {
+        List<String> qbeans = ModuleUtils.getModuleEntries(DEPLOY_PREFIX);
+        for (String resource : qbeans) {
+            if (resource.toLowerCase().endsWith(".xml"))
+                deployResource(resource);
+            else
+                copyResourceToFile(resource, new File("cfg", resource.substring(DEPLOY_PREFIX.length())));
+
+        }
+    }
+
+    private void copyResourceToFile(String resource, File destination) throws IOException {
+        // taken from @vsalaman's Install using human readable braces as God mandates
+        try (InputStream source = getClass().getClassLoader().getResourceAsStream(resource)) {
+            try (FileOutputStream output = new FileOutputStream(destination)) {
+                int n;
+                byte[] buffer = new byte[4096];
+                while (-1 != (n = source.read(buffer))) {
+                    output.write(buffer, 0, n);
+                }
+            }
+        }
+    }
+    private void deployResource(String resource)
+      throws IOException, SAXException, JDOMException, GeneralSecurityException, ISOException
+    {
+        SAXBuilder builder = new SAXBuilder();
+        try (InputStream source = getClass().getClassLoader().getResourceAsStream(resource)) {
+            Document doc = builder.build(source);
+            deployElement (doc.getRootElement(), resource.substring(DEPLOY_PREFIX.length()), false,true);
         }
     }
 }
