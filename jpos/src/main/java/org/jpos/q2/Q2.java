@@ -1109,8 +1109,10 @@ public class Q2 implements FileFilter, Runnable {
         extractDeploy();
     }
     private void extractCfg() throws IOException {
-        List<String> qbeans = ModuleUtils.getModuleEntries(CFG_PREFIX);
-        for (String resource : qbeans)
+        List<String> resources = ModuleUtils.getModuleEntries(CFG_PREFIX);
+        if (resources.size() > 0)
+            new File("cfg").mkdirs();
+        for (String resource : resources)
             copyResourceToFile(resource, new File("cfg", resource.substring(CFG_PREFIX.length())));
     }
     private void extractDeploy() throws IOException, JDOMException, SAXException, ISOException, GeneralSecurityException {
