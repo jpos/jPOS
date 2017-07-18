@@ -26,9 +26,19 @@ import java.util.Objects;
 public class SimpleRC implements RC {
     private String rc;
     private String display;
-    public SimpleRC (String rc, String display) {
-        super();
+
+    private SimpleRC() {
+
+    }
+
+    public SimpleRC(String rc) {
         this.rc = rc;
+        if (rc == null)
+            throw new NullPointerException ();
+    }
+
+    public SimpleRC (String rc, String display) {
+        this(rc);
         this.display = display;
     }
     public String rc() {
