@@ -4196,6 +4196,18 @@ public class ISOUtilTest {
     }
 
     @Test
+    public void str2bcdRightPadF() {
+        byte[] d = ISOUtil.str2bcd("123", false, (byte) 0xF);
+        assertEquals("123F", ISOUtil.hexString(d));
+    }
+
+    @Test
+    public void str2bcdLeftPadF() {
+        byte[] d = ISOUtil.str2bcd("123", true, (byte) 0xF);
+        assertEquals("F123", ISOUtil.hexString(d));
+    }
+
+    @Test
     public void testStr2bcdThrowsArrayIndexOutOfBoundsException2() throws Throwable {
         byte[] d = new byte[2];
         try {

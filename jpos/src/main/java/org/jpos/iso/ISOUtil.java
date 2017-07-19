@@ -254,10 +254,16 @@ public class ISOUtil {
     public static byte[] str2bcd(String s, boolean padLeft, byte fill) {
         int len = s.length();
         byte[] d = new byte[ len+1 >> 1 ];
-        Arrays.fill (d, fill);
-        int start = (len & 1) == 1 && padLeft ? 1 : 0;
-        for (int i=start; i < len+start; i++) 
-            d [i >> 1] |= s.charAt(i-start)-'0' << ((i & 1) == 1 ? 0 : 4);
+        if (d.length > 0) {
+            if (padLeft)
+                d[0] = (byte) ((fill & 0xF) << 4);
+            int start = (len & 1) == 1 && padLeft ? 1 : 0;
+            int i;
+            for (i=start; i < len+start; i++)
+                d [i >> 1] |= s.charAt(i-start)-'0' << ((i & 1) == 1 ? 0 : 4);
+            if ((i & 1) == 1)
+                d [i >> 1] |= fill & 0xF;
+        }
         return d;
     }
     /**
