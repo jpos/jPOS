@@ -73,6 +73,9 @@ public class QMUX
         isp       = cfg.getBoolean("reuse-space", false) ? sp : new TSpace();
         in        = e.getChildTextTrim ("in");
         out       = e.getChildTextTrim ("out");
+        if (in == null || out == null) {
+            throw new ConfigurationException ("Misconfigured QMUX. Please verify in/out queues");
+        }
         ignorerc  = e.getChildTextTrim ("ignore-rc");
         key = toStringArray(DEFAULT_KEY, ", ", null);
         returnRejects = cfg.getBoolean("return-rejects", false);

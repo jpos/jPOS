@@ -255,6 +255,9 @@ public class ChannelAdaptor
         sp = grabSpace (persist.getChild ("space"));
         in      = persist.getChildTextTrim ("in");
         out     = persist.getChildTextTrim ("out");
+        if (in == null || out == null) {
+            throw new ConfigurationException ("Misconfigured channel. Please verify in/out queues");
+        }
         String s = persist.getChildTextTrim ("reconnect-delay");
         delay    = s != null ? Long.parseLong (s) : 10000; // reasonable default
         keepAlive = "yes".equalsIgnoreCase (persist.getChildTextTrim ("keep-alive"));
