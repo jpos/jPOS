@@ -22,6 +22,9 @@ Sample configuration:
      ...
      ...
   </endpoint>
+  <regexp destination="VISA">   <6>
+    ^4[\d]{15}?$
+   </regexp>
  </participant>
 ------------
 <1> All cards starting with 4 go to this destination
@@ -29,6 +32,7 @@ Sample configuration:
 <3> Cards starting with 32, 33, 34 or 35
 <4> Only cards starging with BIN 366666
 <5> Full PAN matching
+<6> Regular expression based matching (takes priority over the endpoint number matching)
 
 These BIN or BIN ranges have 1 to 19 digits. More specific ranges (more digits)
 get priority over less specific ones.

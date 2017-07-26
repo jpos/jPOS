@@ -27,6 +27,7 @@ public class SelectDestination implements TransactionParticipant, Configurable, 
     private boolean failOnNoRoute;
     private CardValidator validator;
     private Set<BinRange> binranges = new TreeSet<>();
+    private List<PanRegExp> regexps = new ArrayList<>();
 
     @Override
     public int prepare(long id, Serializable context) {
@@ -36,7 +37,7 @@ public class SelectDestination implements TransactionParticipant, Configurable, 
         if (m != null && (m.hasField(2) || m.hasField(35))) {
             try {
                 Card card = Card.builder().validator(validator).isomsg(m).build();
-                String destination = getDestination(card.getPanAsNumber());
+                String destination = getDestination(card);
                 if (destination != null) {
                     ctx.put(destinationName, destination);
                     destinationSet = true;
@@ -87,19 +88,42 @@ public class SelectDestination implements TransactionParticipant, Configurable, 
                 binranges.add(br);
             }
         }
+        for (Element re : xml.getChildren("regexp")) {
+            String destination = re.getAttributeValue("destination");
+            regexps.add(
+              new PanRegExp(re.getAttributeValue("destination"), re.getTextTrim())
+            );
+        }
         LogEvent evt = Log.getLog(Q2.LOGGER_NAME, this.getClass().getName()).createLogEvent("config");
         for (BinRange r : binranges)
+            evt.addMessage(r);
+        for (PanRegExp r : regexps)
             evt.addMessage(r);
         Logger.log(evt);
     }
 
-    private String getDestination (BigInteger pan) {
+    private String getDestination (Card card) {
+        String destination = getDestinationByRegExp(card.getPan());
+        if (destination == null)
+            destination = getDestinationByPanNumber(card.getPanAsNumber());
+        return destination;
+    }
+
+    private String getDestinationByPanNumber (BigInteger pan) {
         final BigInteger p = BinRange.floor(pan);
         return binranges
           .stream()
           .filter(r -> r.isInRange(p))
           .findFirst()
           .map(BinRange::destination).orElse(null);
+    }
+
+    private String getDestinationByRegExp (String pan) {
+        return regexps
+          .stream()
+          .filter(r -> r.matches(pan))
+          .findFirst()
+          .map(PanRegExp::destination).orElse(null);
     }
 
     public static class BinRange implements Comparable {
@@ -120,7 +144,7 @@ public class SelectDestination implements TransactionParticipant, Configurable, 
          * @param destination range destination
          * @param rangeExpr either a 'bin', 'extended bin' or 'bin range'
          */
-        public BinRange(String destination, String rangeExpr) {
+        BinRange(String destination, String rangeExpr) {
             this.destination = destination;
             Matcher matcher = rangePattern.matcher(rangeExpr);
             if (!matcher.matches())
@@ -174,6 +198,43 @@ public class SelectDestination implements TransactionParticipant, Configurable, 
         private BigInteger ceiling (BigInteger i) {
             int digits  = (int)Math.log10(i.doubleValue())+1;
             return floor(i).add(BigInteger.TEN.pow(19-digits)).subtract(BigInteger.ONE);
+        }
+    }
+
+    private static class PanRegExp {
+        private String destination;
+        private Pattern pattern;
+
+        PanRegExp(String destination, String regexp) {
+            this.destination = destination;
+            this.pattern = Pattern.compile(regexp);
+        }
+
+        public String destination() {
+            return destination;
+        }
+
+        public boolean matches(String pan) {
+            return pattern.matcher(pan).matches();
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            PanRegExp panRegExp = (PanRegExp) o;
+            return Objects.equals(destination, panRegExp.destination) &&
+              Objects.equals(pattern, panRegExp.pattern);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(destination, pattern);
+        }
+
+        @Override
+        public String toString() {
+            return String.format("%s [%s]", pattern.toString(), destination);
         }
     }
 }

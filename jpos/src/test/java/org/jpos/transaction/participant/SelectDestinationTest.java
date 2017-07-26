@@ -58,12 +58,23 @@ public class SelectDestinationTest implements TransactionConstants {
         endpoint.setText("5");
         qbean.addContent(endpoint);
 
+        qbean.addContent(regexp("N6", "^6[\\d]{15}$"));
+        qbean.addContent(regexp("N7", "  ^7[\\d]{15}$  ")); // use some whitespace
+
         p.setConfiguration(qbean);
+    }
+
+    private Element regexp (String endpoint, String regexp) {
+        Element e = new Element("regexp");
+        e.setAttribute("destination", endpoint);
+        e.setText(regexp);
+        return e;
     }
 
     @Test
     public void testNetwork_V () {
         cfg.put ("ignore-luhn", "false");
+        p.setConfiguration(cfg);
         Context ctx = new Context();
         ctx.put (ContextConstants.REQUEST.toString(), createISOMsg("4111111111111111"));
         int action = p.prepare(1L, ctx);
@@ -75,6 +86,7 @@ public class SelectDestinationTest implements TransactionConstants {
     @Test
     public void testNetwork_M () {
         cfg.put ("ignore-luhn", "false");
+        p.setConfiguration(cfg);
         Context ctx = new Context();
         ctx.put (ContextConstants.REQUEST.toString(), createISOMsg("5111111111111118"));
         int action = p.prepare(1L, ctx);
@@ -86,6 +98,7 @@ public class SelectDestinationTest implements TransactionConstants {
     @Test
     public void testInvalidLUHN () {
         cfg.put ("ignore-luhn", "false");
+        p.setConfiguration(cfg);
         Context ctx = new Context();
         ctx.put (ContextConstants.REQUEST.toString(), createISOMsg("5111111111111111"));
         int action = p.prepare(1L, ctx);
@@ -93,6 +106,32 @@ public class SelectDestinationTest implements TransactionConstants {
         Result rc = ctx.getResult();
         assertTrue("Has failures", rc.hasFailures());
         assertTrue("Should raise invalid card error", rc.failure().getIrc() == CMF.INVALID_CARD_OR_CARDHOLDER_NUMBER);
+    }
+
+    @Test
+    public void testNetwork6 () {
+        cfg.put ("ignore-luhn", "true");
+        p.setConfiguration(cfg);
+        Context ctx = new Context();
+        ctx.put (ContextConstants.REQUEST.toString(), createISOMsg("6111111111111111"));
+        int action = p.prepare(1L, ctx);
+        assertEquals ("Action should be PREPARED|NO_JOIN|READONLY", PREPARED | NO_JOIN | READONLY, action);
+        Result rc = ctx.getResult();
+        assertFalse("No failures", rc.hasFailures());
+        assertEquals("Invalid Destination", "N6", ctx.getString(DESTINATION.toString()));
+    }
+
+    @Test
+    public void testNetwork7 () {
+        cfg.put ("ignore-luhn", "true");
+        p.setConfiguration(cfg);
+        Context ctx = new Context();
+        ctx.put (ContextConstants.REQUEST.toString(), createISOMsg("7111111111111111"));
+        int action = p.prepare(1L, ctx);
+        assertEquals ("Action should be PREPARED|NO_JOIN|READONLY", PREPARED | NO_JOIN | READONLY, action);
+        Result rc = ctx.getResult();
+        assertFalse("No failures", rc.hasFailures());
+        assertEquals("Invalid Destination", "N7", ctx.getString(DESTINATION.toString()));
     }
 
     private ISOMsg createISOMsg(String pan) {
