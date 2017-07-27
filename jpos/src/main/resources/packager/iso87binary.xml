@@ -320,7 +320,7 @@
       id="55"
       length="999"
       name="RESERVED ISO"
-      class="org.jpos.iso.IFB_LLLCHAR"/>
+      class="org.jpos.iso.IFB_LLLBINARY"/>
   <isofield
       id="56"
       length="999"
