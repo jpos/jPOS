@@ -68,7 +68,8 @@ public class TransactionManager
 
     Space sp;
     Space psp;
-    Space isp; // input space
+    Space isp;  // real input space
+    Space iisp; // internal input space
     String queue;
     String tailLock;
     List<Thread> threads;
@@ -100,14 +101,19 @@ public class TransactionManager
         queue = cfg.get ("queue", null);
         if (queue == null)
             throw new ConfigurationException ("queue property not specified");
-        sp   = SpaceFactory.getSpace (cfg.get ("space"));
-        isp  = SpaceFactory.getSpace (cfg.get ("input-space", cfg.get ("space")));
+        sp  = SpaceFactory.getSpace (cfg.get ("space"));
+        isp = SpaceFactory.getSpace (cfg.get ("input-space", cfg.get ("space")));
+        if (isp == sp)
+            iisp = isp;
+        else {
+            iisp = sp;
+        }
         psp  = SpaceFactory.getSpace (cfg.get ("persistent-space", this.toString()));
         tail = initCounter (TAIL, cfg.getLong ("initial-tail", 1));
         head = Math.max (initCounter (HEAD, tail), tail);
         initTailLock ();
 
-        groups = new HashMap<String,List<TransactionParticipant>>();
+        groups = new HashMap<>();
         initParticipants (getPersist());
         initStatusListeners (getPersist());
     }
@@ -138,8 +144,11 @@ public class TransactionManager
                           new Thread(this).start();
                       getLog().info("Created " + count + " additional sessions");
                   }
-              }), 5, 2, TimeUnit.SECONDS)
+              }), 5, 1, TimeUnit.SECONDS)
             ;
+        }
+        if (iisp != isp) {
+            new Thread(new InputQueueMonitor()).start();
         }
     }
 
@@ -150,7 +159,7 @@ public class TransactionManager
             loadMonitorExecutor.shutdown();
         Thread[] tt = threads.toArray(new Thread[threads.size()]);
         for (int i=0; i < tt.length; i++) {
-            isp.out(queue, Boolean.FALSE, 60 * 1000);
+            iisp.out(queue, Boolean.FALSE, 60 * 1000);
         }
         for (Thread thread : tt) {
             try {
@@ -164,10 +173,10 @@ public class TransactionManager
         tps.stop();
     }
     public void queue (Serializable context) {
-        isp.out(queue, context);
+        iisp.out(queue, context);
     }
     public void push (Serializable context) {
-        isp.push(queue, context);
+        iisp.push(queue, context);
     }
     @SuppressWarnings("unused")
     public String getQueueName() {
@@ -177,7 +186,7 @@ public class TransactionManager
         return sp;
     }
     public Space getInputSpace() {
-        return isp;
+        return iisp;
     }
     public Space getPersistentSpace() {
         return psp;
@@ -217,7 +226,7 @@ public class TransactionManager
                 if (hasStatusListeners)
                     notifyStatusListeners (session, TransactionStatusEvent.State.READY, id, "", null);
 
-                Object obj = isp.in (queue, MAX_WAIT);
+                Object obj = iisp.in (queue, MAX_WAIT);
                 if (obj == Boolean.FALSE)
                     continue;   // stopService ``hack''
 
@@ -780,8 +789,8 @@ public class TransactionManager
 
     @Override
     public int getOutstandingTransactions() {
-        if (isp instanceof LocalSpace)
-            return ((LocalSpace)isp).size(queue);
+        if (iisp instanceof LocalSpace)
+            return ((LocalSpace) iisp).size(queue);
         return -1;
     }
     protected String getKey (String prefix, long id) {
@@ -969,10 +978,32 @@ public class TransactionManager
             while (running()) {
                 for (Serializable context; (context = (Serializable)psp.rdp (RETRY_QUEUE)) != null;) 
                 {
-                    isp.out (queue, context, retryTimeout);
+                    iisp.out (queue, context, retryTimeout);
                     psp.inp (RETRY_QUEUE);
                 }
                 ISOUtil.sleep(retryInterval);
+            }
+        }
+    }
+
+    public class InputQueueMonitor implements Runnable {
+        @Override
+        public void run() {
+            Thread.currentThread().setName (getName()+"-input-queue-monitor");
+            while (running()) {
+                while (getOutstandingTransactions() > getActiveSessions() && running()) {
+                    ISOUtil.sleep(500L);
+                }
+                if (!running())
+                    break;
+                Object context = isp.in(queue, 1000L);
+                if (context != null) {
+                    if (!running()) {
+                        isp.out(queue, context); // place it back
+                        break;
+                    }
+                    iisp.out(queue, context);
+                }
             }
         }
     }
