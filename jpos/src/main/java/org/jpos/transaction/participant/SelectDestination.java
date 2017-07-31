@@ -95,9 +95,9 @@ public class SelectDestination implements TransactionParticipant, Configurable, 
             );
         }
         LogEvent evt = Log.getLog(Q2.LOGGER_NAME, this.getClass().getName()).createLogEvent("config");
-        for (BinRange r : binranges)
-            evt.addMessage(r);
         for (PanRegExp r : regexps)
+            evt.addMessage("00:" + r);
+        for (BinRange r : binranges)
             evt.addMessage(r);
         Logger.log(evt);
     }
@@ -192,11 +192,14 @@ public class SelectDestination implements TransactionParticipant, Configurable, 
         }
 
         static BigInteger floor(BigInteger i) {
-            int digits  = (int)Math.log10(i.doubleValue())+1;
-            return i.multiply(BigInteger.TEN.pow(19-digits));
+            if (!BigInteger.ZERO.equals(i)) {
+                int digits  = (int)Math.log10(i.doubleValue())+1;
+                i = i.multiply(BigInteger.TEN.pow(19-digits));
+            }
+            return i;
         }
         private BigInteger ceiling (BigInteger i) {
-            int digits  = (int)Math.log10(i.doubleValue())+1;
+            int digits  = BigInteger.ZERO.equals(i) ? 1 : (int)Math.log10(i.doubleValue())+1;
             return floor(i).add(BigInteger.TEN.pow(19-digits)).subtract(BigInteger.ONE);
         }
     }

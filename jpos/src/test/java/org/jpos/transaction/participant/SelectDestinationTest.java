@@ -55,11 +55,16 @@ public class SelectDestinationTest implements TransactionConstants {
 
         endpoint = new Element("endpoint");
         endpoint.setAttribute("destination", "M");
-        endpoint.setText("5");
+        endpoint.setText("51");
         qbean.addContent(endpoint);
 
         qbean.addContent(regexp("N6", "^6[\\d]{15}$"));
         qbean.addContent(regexp("N7", "  ^7[\\d]{15}$  ")); // use some whitespace
+
+        endpoint = new Element("endpoint");
+        endpoint.setAttribute("destination", "DEFAULT");
+        endpoint.setText("0..9");
+        qbean.addContent(endpoint);
 
         p.setConfiguration(qbean);
     }
@@ -133,6 +138,19 @@ public class SelectDestinationTest implements TransactionConstants {
         assertFalse("No failures", rc.hasFailures());
         assertEquals("Invalid Destination", "N7", ctx.getString(DESTINATION.toString()));
     }
+    @Test
+    public void testNetwork_Default () {
+        cfg.put ("ignore-luhn", "true");
+        p.setConfiguration(cfg);
+        Context ctx = new Context();
+        ctx.put (ContextConstants.REQUEST.toString(), createISOMsg("0000000000000001"));
+        int action = p.prepare(1L, ctx);
+        assertEquals ("Action should be PREPARED|NO_JOIN|READONLY", PREPARED | NO_JOIN | READONLY, action);
+        Result rc = ctx.getResult();
+        assertFalse("No failures", rc.hasFailures());
+        assertEquals("Invalid Destination", "DEFAULT", ctx.getString(DESTINATION.toString()));
+    }
+
 
     private ISOMsg createISOMsg(String pan) {
         ISOMsg m = new ISOMsg("2100");
