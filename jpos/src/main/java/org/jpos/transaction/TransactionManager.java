@@ -158,9 +158,11 @@ public class TransactionManager
         if (loadMonitorExecutor != null)
             loadMonitorExecutor.shutdown();
         Thread[] tt = threads.toArray(new Thread[threads.size()]);
-        for (int i=0; i < tt.length; i++) {
+        if (iisp != isp)
+            for (Object o=iisp.inp(queue); o != null; o=iisp.inp(queue))
+                isp.out(queue, o); // push back to replicated space
+        for (Thread t : tt)
             iisp.out(queue, Boolean.FALSE, 60 * 1000);
-        }
         for (Thread thread : tt) {
             try {
                 thread.join (60*1000);
@@ -991,8 +993,8 @@ public class TransactionManager
         public void run() {
             Thread.currentThread().setName (getName()+"-input-queue-monitor");
             while (running()) {
-                while (getOutstandingTransactions() > getActiveSessions() && running()) {
-                    ISOUtil.sleep(500L);
+                while (getOutstandingTransactions() > getMaxSessions() && running()) {
+                    ISOUtil.sleep(100L);
                 }
                 if (!running())
                     break;
