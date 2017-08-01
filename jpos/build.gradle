@@ -106,9 +106,9 @@ jar () {
 task bundleFull (type: Jar) {
     dependsOn jar
     classifier = 'bundle-full'
-    from sourceSets.main.output.classesDir, sourceSets.main.output.resourcesDir
+    from sourceSets.main.output.classesDirs, sourceSets.main.output.resourcesDir
     manifest = osgiManifest {
-        classesDir = sourceSets.main.output.classesDir
+        classesDir = new File(buildDir, 'classes/java/main') // sourceSets.main.output.classesDir deprecated
         classpath = sourceSets.main.runtimeClasspath
         def manifestClasspath = configurations.runtime.collect { "lib/" + it.getName() }.join(' ') 
         attributes 'Implementation-Title': 'jPOS', 
