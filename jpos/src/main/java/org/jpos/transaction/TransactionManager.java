@@ -188,7 +188,7 @@ public class TransactionManager
         return sp;
     }
     public Space getInputSpace() {
-        return iisp;
+        return isp;
     }
     public Space getPersistentSpace() {
         return psp;
@@ -993,18 +993,23 @@ public class TransactionManager
         public void run() {
             Thread.currentThread().setName (getName()+"-input-queue-monitor");
             while (running()) {
-                while (getOutstandingTransactions() > getMaxSessions() && running()) {
+                while (getOutstandingTransactions() > getActiveSessions() + threshold && running()) {
                     ISOUtil.sleep(100L);
                 }
                 if (!running())
                     break;
-                Object context = isp.in(queue, 1000L);
-                if (context != null) {
-                    if (!running()) {
-                        isp.out(queue, context); // place it back
-                        break;
+                try {
+                    Object context = isp.in(queue, 1000L);
+                    if (context != null) {
+                        if (!running()) {
+                            isp.out(queue, context); // place it back
+                            break;
+                        }
+                        iisp.out(queue, context);
                     }
-                    iisp.out(queue, context);
+                } catch (SpaceError e) {
+                    getLog().error(e);
+                    ISOUtil.sleep(1000L); // relax on error
                 }
             }
         }
