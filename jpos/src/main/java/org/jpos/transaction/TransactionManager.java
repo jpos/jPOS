@@ -92,6 +92,7 @@ public class TransactionManager
     long retryInterval = 5000L;
     long retryTimeout  = 60000L;
     long pauseTimeout  = 0L;
+    boolean abortOnPauseTimeout = true;
     Runnable retryTask = null;
     TPS tps;
     final Timer timer = DefaultTimer.getTimer();
@@ -421,6 +422,7 @@ public class TransactionManager
         retryInterval = cfg.getLong ("retry-interval", retryInterval);
         retryTimeout  = cfg.getLong ("retry-timeout", retryTimeout);
         pauseTimeout  = cfg.getLong ("pause-timeout", pauseTimeout);
+        abortOnPauseTimeout = cfg.getBoolean("abort-on-pause-timeout", true);
         maxActiveSessions  = cfg.getInt  ("max-active-sessions", 0);
         sessions = cfg.getInt ("sessions", 1);
         threshold = cfg.getInt ("threshold", sessions / 2);
@@ -968,7 +970,9 @@ public class TransactionManager
         @Override
         public void run() {
             cancel();
-            context.getPausedTransaction().forceAbort();
+            PausedTransaction paused = context.getPausedTransaction();
+            if (paused.getTransactionManager().abortOnPauseTimeout)
+                paused.forceAbort();
             context.resume();
         }
     }
