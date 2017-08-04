@@ -18,6 +18,8 @@
 
 package org.jpos.iso;
 
+import org.jpos.space.LocalSpace;
+import org.jpos.space.SpaceSource;
 import org.jpos.transaction.ContextConstants;
 import org.jpos.util.Log;
 import org.jpos.core.Configurable;
@@ -39,7 +41,7 @@ public class IncomingListener extends Log implements ISORequestListener, Configu
     private String request;
     private String timestamp;
     private Map<String,String> additionalContextEntries = null;
-
+    private boolean remote = false;
 
     @SuppressWarnings("unchecked")
     public void setConfiguration (Configuration cfg) 
@@ -53,6 +55,7 @@ public class IncomingListener extends Log implements ISORequestListener, Configu
         source = cfg.get ("source", ContextConstants.SOURCE.toString());
         request = cfg.get ("request", ContextConstants.REQUEST.toString());
         timestamp = cfg.get ("timestamp", ContextConstants.TIMESTAMP.toString());
+        remote = cfg.getBoolean("remote") || cfg.get("space").startsWith("rspace:");
         Map<String,String> m = new HashMap<>();
         cfg.keySet()
            .stream()
@@ -63,13 +66,14 @@ public class IncomingListener extends Log implements ISORequestListener, Configu
     }
     public boolean process (ISOSource src, ISOMsg m) {
         final Context ctx  = new Context ();
-        ctx.put (timestamp, new Date());
-        ctx.getProfiler();
-        ctx.put (source, src);
-        ctx.put (request, m);
+        if (remote)
+            src = new SpaceSource((LocalSpace)sp, src, timeout);
+        ctx.put (timestamp, new Date(), remote);
+        ctx.put (source, src, remote);
+        ctx.put (request, m, remote);
         if (additionalContextEntries != null) {
             additionalContextEntries.entrySet().forEach(
-                e -> ctx.put(e.getKey(), e.getValue())
+                e -> ctx.put(e.getKey(), e.getValue(), remote)
             );
         }
         sp.out(queue, ctx, timeout);
