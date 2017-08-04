@@ -191,8 +191,9 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
     }
 
     private void gc (int generation) {
-        Set<K> exps = expirables[generation];
+        Set<K> exps;
         synchronized (this) {
+            exps = expirables[generation];
             expirables[generation] = new HashSet<K>();
         }
         for (K k : exps) {
@@ -450,8 +451,9 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
                 }
             }
         }
-        if (obj != null && remove) {
-            l.remove (0);
+        if (l != null) {
+            if (remove && obj != null)
+                l.remove (0);
             if (l.isEmpty()) {
                 entries.remove (key);
                 if (wasExpirable)
@@ -463,26 +465,33 @@ public class TSpace<K,V> implements LocalSpace<K,V>, Loggeable, Runnable {
 
     private Object getObject (Template tmpl, boolean remove) {
         Object obj = null;
-        List l = (List) entries.get (tmpl.getKey());
-        if (l == null)
-            return obj;
-
-        Iterator iter = l.iterator();
-        while (iter.hasNext()) {
-            obj = iter.next();
-            if (obj instanceof Expirable) {
-                obj = ((Expirable) obj).getValue();
-                if (obj == null) {
-                    iter.remove();
-                    continue;
+        Object key = tmpl.getKey();
+        List l = (List) entries.get (key);
+        if (l != null) {
+            Iterator iter = l.iterator();
+            boolean wasExpirable = false;
+            while (iter.hasNext()) {
+                obj = iter.next();
+                if (obj instanceof Expirable) {
+                    obj = ((Expirable) obj).getValue();
+                    if (obj == null) {
+                        iter.remove();
+                        wasExpirable = true;
+                        continue;
+                    }
                 }
+                if (tmpl.equals (obj)) {
+                    if (remove)
+                        iter.remove();
+                    break;
+                } else
+                    obj = null;
             }
-            if (tmpl.equals (obj)) {
-                if (remove)
-                    iter.remove();
-                break;
-            } else
-                obj = null;
+            if (l.isEmpty()) {
+                entries.remove (key);
+                if (wasExpirable)
+                    unregisterExpirable(key);
+            }
         }
         return obj;
     }
