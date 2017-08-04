@@ -25,9 +25,11 @@ import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
 import org.jpos.iso.ISOMsg;
 import org.jpos.iso.ISOSource;
+import org.jpos.space.LocalSpace;
+import org.jpos.space.SpaceSource;
 import org.jpos.transaction.Context;
 import org.jpos.transaction.AbortParticipant;
-import org.jpos.transaction.ContextConstants;
+import org.jpos.transaction.TransactionManager;
 
 import static org.jpos.transaction.ContextConstants.SOURCE;
 import static org.jpos.transaction.ContextConstants.RESPONSE;
@@ -37,6 +39,8 @@ import static org.jpos.transaction.ContextConstants.TX;
 public class SendResponse implements AbortParticipant, Configurable {
     private String source;
     private String response;
+    private LocalSpace isp;
+    private long timeout = 70000L;
 
     public int prepare (long id, Serializable context) {
         Context ctx = (Context) context;
@@ -66,8 +70,11 @@ public class SendResponse implements AbortParticipant, Configurable {
                 ctx.log (source + " not present");
             } else if (!src.isConnected())
                 ctx.log (source + " is no longer connected");
-            else
-                src.send (resp);
+            else {
+                if (src instanceof SpaceSource)
+                    ((SpaceSource)src).init(isp, timeout);
+                src.send(resp);
+            }
         } catch (Throwable t) {
             ctx.log(t);
         }
@@ -77,5 +84,9 @@ public class SendResponse implements AbortParticipant, Configurable {
     public void setConfiguration(Configuration cfg) throws ConfigurationException {
         source   = cfg.get ("source",   SOURCE.toString());
         response = cfg.get ("response", RESPONSE.toString());
+        timeout  = cfg.getLong ("timeout", timeout);
+    }
+    public void setTransactionManager(TransactionManager tm) {
+        isp = (LocalSpace) tm.getInputSpace();
     }
 }
