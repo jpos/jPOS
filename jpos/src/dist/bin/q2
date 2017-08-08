@@ -2,7 +2,7 @@
 
 cd `dirname $0`/.. || exit 1
 rm -f deploy/shutdown.xml
-java -server \
+exec java -server \
     -Xmx1G \
     -Dcom.sun.management.jmxremote \
     -jar @jarname@ --pid=jpos.pid "$@"
