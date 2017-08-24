@@ -7,11 +7,20 @@ are present, and the source is connected, it sends back the response.
 
 .SendResponse Configuration Properties
 [cols="1,2,2", options="header"]
-|========================================================================
+|=============================================================================
 |Property  | Description                                 | Default Value
 |source    | `ISOSource` used to send back the response  | `SOURCE` 
+|request   | The request `ISOMsg`                        | `REQUEST` 
 |response  | A response `ISOMsg`                         | `RESPONSE` 
-|========================================================================
+|header-strategy | Header handling                       | `PRESERVE_RESPONSE`
+|=============================================================================
+
+The `header-strategy` is used to define how to handle the message's header.
+It supports the following values:
+
+* `PRESERVE_RESPONSE` (default) use the response's header
+* `PRESERVE_ORIGINAL` use the request's header
+* `SET_TO_NULL` ditto - sets the response header to null
 
 [NOTE]
 ======
