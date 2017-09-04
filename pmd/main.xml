@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pmd version="5.6.1" timestamp="2017-08-24T01:56:38.180">
+<pmd version="5.6.1" timestamp="2017-09-04T17:14:13.256">
+<file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/core/DefaultCardValidator.java">
+<violation beginline="52" endline="53" begincolumn="25" endcolumn="39" rule="CollapsibleIfStatements" ruleset="Basic" package="org.jpos.core" class="DefaultCardValidator" method="validate" externalInfoUrl="https://pmd.github.io/pmd-5.6.1/pmd-java/rules/java/basic.html#CollapsibleIfStatements" priority="3">
+These nested if statements could be combined
+</violation>
+<violation beginline="56" endline="59" begincolumn="21" endcolumn="21" rule="CollapsibleIfStatements" ruleset="Basic" package="org.jpos.core" class="DefaultCardValidator" method="validate" externalInfoUrl="https://pmd.github.io/pmd-5.6.1/pmd-java/rules/java/basic.html#CollapsibleIfStatements" priority="3">
+These nested if statements could be combined
+</violation>
+<violation beginline="57" endline="58" begincolumn="25" endcolumn="39" rule="CollapsibleIfStatements" ruleset="Basic" package="org.jpos.core" class="DefaultCardValidator" method="validate" externalInfoUrl="https://pmd.github.io/pmd-5.6.1/pmd-java/rules/java/basic.html#CollapsibleIfStatements" priority="3">
+These nested if statements could be combined
+</violation>
+</file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/Connector.java">
 <violation beginline="79" endline="79" begincolumn="27" endcolumn="36" rule="AvoidThreadGroup" ruleset="Basic" package="org.jpos.iso" class="Connector" method="setConfiguration" externalInfoUrl="https://pmd.github.io/pmd-5.6.1/pmd-java/rules/java/basic.html#AvoidThreadGroup" priority="3">
 Avoid using java.lang.ThreadGroup; it is not thread safe
