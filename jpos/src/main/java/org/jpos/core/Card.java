@@ -81,6 +81,10 @@ public class Card {
         return track2 != null;
     }
 
+    public boolean hasBothTracks() {
+        return hasTrack1() && hasTrack2();
+    }
+
     public String getBin () {
         return pan.substring(0, BINLEN);
     }
@@ -185,6 +189,22 @@ public class Card {
                 exp (track2.getExp());
             if (exp == null && track1 != null)
                 exp (track1.getExp());
+            if (track2 != null) {
+                if (pan == null)
+                    pan (track2.getPan());
+                if (exp == null)
+                    exp (track2.getExp());
+                if (serviceCode == null)
+                    serviceCode(track2.getServiceCode());
+            }
+            if (track1 != null) {
+                if (pan == null)
+                    pan (track1.getPan());
+                if (exp == null)
+                    exp (track1.getExp());
+                if (serviceCode == null)
+                    serviceCode(track1.getServiceCode());
+            }
             return this;
         }
 

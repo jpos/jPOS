@@ -38,8 +38,32 @@ public class DefaultCardValidator implements CardValidator {
                 if (card.getTrack2() != null && !exp.equals(card.getTrack2().getExp()))
                     throw new InvalidCardException ("track2 EXP mismatch");
             }
+            if (card.getServiceCode() != null) {
+                int mismatch = 0;
+                if (card.hasBothTracks()) {
+                    if (card.getTrack2().getServiceCode() != null) {
+                        if (!card.getTrack2().getServiceCode().equals(card.getServiceCode()))
+                            mismatch++;
+                        if (!card.getTrack2().getServiceCode().equals(card.getTrack1().getServiceCode()))
+                            mismatch++;
+                    }
+                } else if (card.hasTrack2()) {
+                    if (card.getTrack2().getServiceCode() != null) {
+                        if (!card.getTrack2().getServiceCode().equals(card.getServiceCode()))
+                            mismatch++;
+                    }
+                } else if (card.hasTrack1()) {
+                    if (card.getTrack1().getServiceCode() != null) {
+                        if (!card.getTrack1().getServiceCode().equals(card.getServiceCode()))
+                            mismatch++;
+                    }
+                }
+                if (mismatch > 0) {
+                    throw new InvalidCardException(String.format("service code mismatch (%d)", mismatch));
+                }
+            }
             if (luhnCalculator != null && !luhnCalculator.verify(pan))
-                throw new InvalidCardException ("Invalid LUHN");
+                throw new InvalidCardException ("invalid LUHN");
         }
     }
 
