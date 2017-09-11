@@ -27,6 +27,7 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -56,6 +57,7 @@ public class GenericTaggedFieldsPackager extends GenericPackager
     @Override
     public int unpack(ISOComponent m, byte[] b) throws ISOException {
         LogEvent evt = new LogEvent(this, "unpack");
+        ISOFieldPackager[] fields = Arrays.copyOf(fld, fld.length);
         try {
             if (m.getComposite() != m)
                 throw new ISOException("Can't call packager on non Composite");
@@ -66,13 +68,17 @@ public class GenericTaggedFieldsPackager extends GenericPackager
 
             int consumed = 0;
             int maxField = fld.length;
-            for (int i = getFirstField(); i < maxField && consumed < b.length; i++) {
-                if (fld[i] != null) {
-                    ISOComponent c = fld[i].createComponent(i);
-                    int unpacked = fld[i].unpack(c, b, consumed);
-                    consumed = consumed + unpacked;
-                    if (unpacked > 0) {
-                        m.set(c);
+            while (consumed < b.length) {
+                for (int i = getFirstField(); i < maxField && consumed < b.length; i++) {
+                    if (fields[i] != null) {
+                        ISOComponent c = fields[i].createComponent(i);
+                        int unpacked = fields[i].unpack(c, b, consumed);
+                        consumed = consumed + unpacked;
+                        if (unpacked > 0) {
+                            if (!(fields[i] instanceof TaggedFieldPackagerBase))
+                                fields[i] = null;
+                            m.set(c);
+                        }
                     }
                 }
             }
