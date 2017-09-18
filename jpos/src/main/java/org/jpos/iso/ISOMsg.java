@@ -278,7 +278,7 @@ public class ISOMsg extends ISOComponent
             }
         }
     }
-    
+
     /**
      * Creates an ISOField associated with fldno within this ISOMsg
      * @param fpath dot-separated field path (i.e. 63.2)
@@ -295,7 +295,7 @@ public class ISOMsg extends ISOComponent
                  if (obj instanceof ISOMsg)
                      m = (ISOMsg) obj;
                  else
-                     /* 
+                     /*
                       * we need to go deeper, however, if the value == null then
                       * there is nothing to do (unset) at the lower levels, so break now and save some processing.
                       */
@@ -513,7 +513,7 @@ public class ISOMsg extends ISOComponent
                 c.dump (p, newIndent);
             //
             // Uncomment to include bitmaps within logs
-            // 
+            //
             // if (i == 0) {
             //  if ((c = (ISOComponent) fields.get (new Integer (-1))) != null)
             //    c.dump (p, newIndent);
@@ -568,7 +568,7 @@ public class ISOMsg extends ISOComponent
                 }
                 else
                     throw new ISOException ("Invalid path '" + fpath + "'");
-            } else 
+            } else
                 break;
         }
         return obj;
@@ -592,7 +592,7 @@ public class ISOMsg extends ISOComponent
                 }
                 else
                     break; // 'Quick' exit if hierachy is not present.
-            } else 
+            } else
                 break;
         }
         return obj;
@@ -614,7 +614,7 @@ public class ISOMsg extends ISOComponent
         return s;
     }
     /**
-     * Return the String value associated with the given field path 
+     * Return the String value associated with the given field path
      * @param fpath field path
      * @return field's String value (may be null)
      */
@@ -648,7 +648,7 @@ public class ISOMsg extends ISOComponent
         return b;
     }
     /**
-     * Return the String value associated with the given field path 
+     * Return the String value associated with the given field path
      * @param fpath field path
      * @return field's byte[] value (may be null)
      */
@@ -750,7 +750,7 @@ public class ISOMsg extends ISOComponent
     public void setValue(Object obj) throws ISOException {
         throw new ISOException ("setValue N/A in ISOMsg");
     }
-    
+
     @Override
     public Object clone() {
         try {
@@ -798,19 +798,19 @@ public class ISOMsg extends ISOComponent
 
     /**
      * add all fields present on received parameter to this ISOMsg<br>
-     * please note that received fields take precedence over 
-     * existing ones (simplifying card agent message creation 
+     * please note that received fields take precedence over
+     * existing ones (simplifying card agent message creation
      * and template handling)
      * @param m ISOMsg to merge
      */
     @SuppressWarnings("PMD.EmptyCatchBlock")
     public void merge (ISOMsg m) {
-        for (int i=0; i<=m.getMaxField(); i++) 
+        for (int i=0; i<=m.getMaxField(); i++)
             try {
                 if (m.hasField(i))
                     set (m.getComponent(i));
             } catch (ISOException ignored) {
-                // should never happen 
+                // should never happen
             }
     }
 
@@ -869,7 +869,7 @@ public class ISOMsg extends ISOComponent
      * @param newFieldNumber new field number
      * @throws ISOException on error
      */
-    public void move (int oldFieldNumber, int newFieldNumber) 
+    public void move (int oldFieldNumber, int newFieldNumber)
         throws ISOException
     {
         ISOComponent c = getComponent (oldFieldNumber);
@@ -887,6 +887,16 @@ public class ISOMsg extends ISOComponent
     }
 
     /**
+     * @return true is message has MTI field
+     * @exception ISOException if this is an inner message
+     */
+    public boolean hasMTI() throws ISOException {
+        if (isInner())
+            throw new ISOException ("can't hasMTI on inner message");
+        else
+            return hasField(0);
+    }
+    /**
      * @return current MTI
      * @exception ISOException on inner message or MTI not set
      */
@@ -897,6 +907,7 @@ public class ISOMsg extends ISOComponent
             throw new ISOException ("MTI not available");
         return (String) getValue(0);
     }
+
     /**
      * @return true if message "seems to be" a request
      * @exception ISOException on MTI not set
@@ -967,8 +978,8 @@ public class ISOMsg extends ISOComponent
             out.write (header.pack());
         }
     }
-    
-    protected void readHeader (ObjectInput in) 
+
+    protected void readHeader (ObjectInput in)
         throws IOException, ClassNotFoundException
     {
         byte[] b = new byte[in.readShort()];
@@ -999,18 +1010,18 @@ public class ISOMsg extends ISOComponent
         out.writeByte ('D');
         out.writeByte (direction);
     }
-    protected void readDirection (ObjectInput in) 
+    protected void readDirection (ObjectInput in)
         throws IOException, ClassNotFoundException
     {
         direction = in.readByte();
     }
- 
+
     @Override
     public void writeExternal (ObjectOutput out) throws IOException {
         out.writeByte (0);  // reserved for future expansion (version id)
         out.writeShort (fieldNumber);
 
-        if (header != null) 
+        if (header != null)
             writeHeader (out);
         if (packager != null)
             writePackager(out);
