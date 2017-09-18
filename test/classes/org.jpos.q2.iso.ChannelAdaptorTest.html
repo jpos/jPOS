@@ -41,7 +41,7 @@
 </td>
 <td>
 <div class="infoBox" id="duration">
-<div class="counter">42.180s</div>
+<div class="counter">18.445s</div>
 <p>duration</p>
 </div>
 </td>
@@ -63,9 +63,6 @@
 <li>
 <a href="#tab0">Tests</a>
 </li>
-<li>
-<a href="#tab1">Standard output</a>
-</li>
 </ul>
 <div id="tab0" class="tab">
 <h2>Tests</h2>
@@ -79,22 +76,22 @@
 </thead>
 <tr>
 <td class="success">receivePullsMessageFromUnderlyingChannel</td>
-<td>0s</td>
+<td>0.001s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">sendPassesMessageToUnderlyingChannel</td>
-<td>0.006s</td>
+<td>0.003s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">stopCanWaitForWorkersEvenWhenOutgoingChannelNeverConnects</td>
-<td>6.073s</td>
+<td>5.275s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">stopCanWaitForWorkersEvenWhenSenderBlockedTryingToConnect</td>
-<td>0.716s</td>
+<td>0.217s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
@@ -109,160 +106,10 @@
 </tr>
 <tr>
 <td class="success">waitForWorkersOnStopStopsAfterChannelConnects</td>
-<td>35.385s</td>
+<td>12.949s</td>
 <td class="success">passed</td>
 </tr>
 </table>
-</div>
-<div id="tab1" class="tab">
-<h2>Standard output</h2>
-<span class="code">
-<pre>&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;2017-09-11T21:45:22.334&quot;&gt;
-  &lt;warn&gt;
-    channel-receiver-TestSpace-receive
-    Read timeout / EOF - reconnecting
-  &lt;/warn&gt;
-&lt;/log&gt;
-&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;2017-09-11T21:45:23.346&quot;&gt;
-  &lt;warn&gt;
-    channel-receiver-TestSpace-receive
-    Read timeout / EOF - reconnecting
-  &lt;/warn&gt;
-&lt;/log&gt;
-&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;2017-09-11T21:45:24.348&quot;&gt;
-  &lt;warn&gt;
-    channel-receiver-TestSpace-receive
-    Read timeout / EOF - reconnecting
-  &lt;/warn&gt;
-&lt;/log&gt;
-&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;2017-09-11T21:45:25.353&quot; lifespan=&quot;1ms&quot;&gt;
-  &lt;warn&gt;
-    channel-receiver-TestSpace-receive
-    Read timeout / EOF - reconnecting
-  &lt;/warn&gt;
-&lt;/log&gt;
-&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;2017-09-11T21:45:26.356&quot;&gt;
-  &lt;warn&gt;
-    channel-receiver-TestSpace-receive
-    Read timeout / EOF - reconnecting
-  &lt;/warn&gt;
-&lt;/log&gt;
-&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;2017-09-11T21:45:27.360&quot; lifespan=&quot;1ms&quot;&gt;
-  &lt;warn&gt;
-    channel-receiver-TestSpace-receive
-    Read timeout / EOF - reconnecting
-  &lt;/warn&gt;
-&lt;/log&gt;
-&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;2017-09-11T21:45:28.363&quot;&gt;
-  &lt;warn&gt;
-    channel-receiver-TestSpace-receive
-    Read timeout / EOF - reconnecting
-  &lt;/warn&gt;
-&lt;/log&gt;
-&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;2017-09-11T21:45:29.369&quot; lifespan=&quot;1ms&quot;&gt;
-  &lt;warn&gt;
-    channel-receiver-TestSpace-receive
-    Read timeout / EOF - reconnecting
-  &lt;/warn&gt;
-&lt;/log&gt;
-&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;2017-09-11T21:45:30.376&quot; lifespan=&quot;1ms&quot;&gt;
-  &lt;warn&gt;
-    channel-receiver-TestSpace-receive
-    Read timeout / EOF - reconnecting
-  &lt;/warn&gt;
-&lt;/log&gt;
-&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;2017-09-11T21:45:31.381&quot; lifespan=&quot;1ms&quot;&gt;
-  &lt;warn&gt;
-    channel-receiver-TestSpace-receive
-    Read timeout / EOF - reconnecting
-  &lt;/warn&gt;
-&lt;/log&gt;
-&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;2017-09-11T21:45:32.386&quot;&gt;
-  &lt;warn&gt;
-    channel-receiver-TestSpace-receive
-    Read timeout / EOF - reconnecting
-  &lt;/warn&gt;
-&lt;/log&gt;
-&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;2017-09-11T21:45:33.392&quot; lifespan=&quot;1ms&quot;&gt;
-  &lt;warn&gt;
-    channel-receiver-TestSpace-receive
-    Read timeout / EOF - reconnecting
-  &lt;/warn&gt;
-&lt;/log&gt;
-&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;2017-09-11T21:45:34.397&quot;&gt;
-  &lt;warn&gt;
-    channel-receiver-TestSpace-receive
-    Read timeout / EOF - reconnecting
-  &lt;/warn&gt;
-&lt;/log&gt;
-&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;2017-09-11T21:45:35.399&quot; lifespan=&quot;1ms&quot;&gt;
-  &lt;warn&gt;
-    channel-receiver-TestSpace-receive
-    Read timeout / EOF - reconnecting
-  &lt;/warn&gt;
-&lt;/log&gt;
-&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;2017-09-11T21:45:36.401&quot; lifespan=&quot;1ms&quot;&gt;
-  &lt;warn&gt;
-    channel-receiver-TestSpace-receive
-    Read timeout / EOF - reconnecting
-  &lt;/warn&gt;
-&lt;/log&gt;
-&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;2017-09-11T21:45:37.409&quot;&gt;
-  &lt;warn&gt;
-    channel-receiver-TestSpace-receive
-    Read timeout / EOF - reconnecting
-  &lt;/warn&gt;
-&lt;/log&gt;
-&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;2017-09-11T21:45:38.417&quot; lifespan=&quot;1ms&quot;&gt;
-  &lt;warn&gt;
-    channel-receiver-TestSpace-receive
-    Read timeout / EOF - reconnecting
-  &lt;/warn&gt;
-&lt;/log&gt;
-&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;2017-09-11T21:45:39.419&quot;&gt;
-  &lt;warn&gt;
-    channel-receiver-TestSpace-receive
-    Read timeout / EOF - reconnecting
-  &lt;/warn&gt;
-&lt;/log&gt;
-&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;2017-09-11T21:45:40.425&quot; lifespan=&quot;1ms&quot;&gt;
-  &lt;warn&gt;
-    channel-receiver-TestSpace-receive
-    Read timeout / EOF - reconnecting
-  &lt;/warn&gt;
-&lt;/log&gt;
-&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;2017-09-11T21:45:41.427&quot;&gt;
-  &lt;warn&gt;
-    channel-receiver-TestSpace-receive
-    Read timeout / EOF - reconnecting
-  &lt;/warn&gt;
-&lt;/log&gt;
-&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;2017-09-11T21:45:42.433&quot; lifespan=&quot;1ms&quot;&gt;
-  &lt;warn&gt;
-    channel-receiver-TestSpace-receive
-    Read timeout / EOF - reconnecting
-  &lt;/warn&gt;
-&lt;/log&gt;
-&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;2017-09-11T21:45:43.441&quot;&gt;
-  &lt;warn&gt;
-    channel-receiver-TestSpace-receive
-    Read timeout / EOF - reconnecting
-  &lt;/warn&gt;
-&lt;/log&gt;
-&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;2017-09-11T21:45:44.445&quot; lifespan=&quot;1ms&quot;&gt;
-  &lt;warn&gt;
-    channel-receiver-TestSpace-receive
-    Read timeout / EOF - reconnecting
-  &lt;/warn&gt;
-&lt;/log&gt;
-&lt;log realm=&quot;org.jpos.q2.iso.ChannelAdaptorTest$ChannelAdaptorWithoutQ2&quot; at=&quot;2017-09-11T21:45:45.448&quot; lifespan=&quot;1ms&quot;&gt;
-  &lt;warn&gt;
-    channel-receiver-TestSpace-receive
-    Read timeout / EOF - reconnecting
-  &lt;/warn&gt;
-&lt;/log&gt;
-</pre>
-</span>
 </div>
 </div>
 <div id="footer">
@@ -272,7 +119,7 @@
 <input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
 </label>
 </div>Generated by 
-<a href="http://www.gradle.org">Gradle 4.0.1</a> at Sep 11, 2017 9:47:09 PM</p>
+<a href="http://www.gradle.org">Gradle 4.0.1</a> at Sep 18, 2017 7:17:58 PM</p>
 </div>
 </div>
 </body>
