@@ -325,6 +325,19 @@ public class ISOMsg2Test {
     }
 
     @Test
+    public void testHasMTIThrowsISOException() throws Throwable {
+        ISOMsg iSOMsg = new ISOMsg("testISOMsgMti");
+        iSOMsg.setFieldNumber(0);
+        try {
+            iSOMsg.hasMTI();
+            fail("Expected ISOException to be thrown");
+        } catch (ISOException ex) {
+            assertEquals("ex.getMessage()", "can't hasMTI on inner message", ex.getMessage());
+            assertNull("ex.nested", ex.nested);
+        }
+    }
+
+    @Test
     public void testGetPackager() throws Throwable {
         ISOMsg iSOMsg = new ISOMsg("testISOMsgMti");
         ISOPackager p = new GenericValidatingPackager();
@@ -356,6 +369,12 @@ public class ISOMsg2Test {
         ISOMsg iSOVMsg = new ISOVMsg(new ISOMsg(), new ISOVError("testISOMsgDescription", "testISOMsgRejectCode"));
         ISOMsg result = (ISOMsg) iSOVMsg.getValue();
         assertSame("result", iSOVMsg, result);
+    }
+
+    @Test
+    public void testHasMTI() throws Throwable {
+        boolean result = new ISOMsg("testISOMsgMti").hasMTI();
+        assertTrue("result", result);
     }
 
     @Test
