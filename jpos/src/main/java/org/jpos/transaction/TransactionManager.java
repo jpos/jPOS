@@ -405,7 +405,7 @@ public class TransactionManager
     }
 
     public long getInTransit () {
-        return head - tail;
+        return activeTransactions.get();
     }
 
     @Override
