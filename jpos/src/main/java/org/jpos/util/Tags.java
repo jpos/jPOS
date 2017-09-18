@@ -27,6 +27,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 public class Tags implements Serializable {
+    private static final long serialVersionUID = -7749305134294641955L;
     private transient Set<String> ts;
 
     public Tags() {
@@ -38,7 +39,8 @@ public class Tags implements Serializable {
     }
     public Tags(String... tags) {
         this();
-        Collections.addAll(ts, tags);
+        if (tags != null)
+            Collections.addAll(ts, tags);
     }
     public void setTags(String tags) {
         ts.clear();
@@ -112,9 +114,8 @@ public class Tags implements Serializable {
     }
     private void readObject(ObjectInputStream is)
             throws java.io.IOException, ClassNotFoundException {
-        ts = new TreeSet<String>();
+        ts = new TreeSet<>();
         is.defaultReadObject();
         setTags((String) is.readObject());
     }
-    // private static final long serialVersionUID = -4722472968305933277L;
 }
