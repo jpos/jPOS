@@ -21,10 +21,8 @@ package org.jpos.util;
 import org.jpos.iso.ISOUtil;
 
 import java.io.*;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Tags implements Serializable {
     private static final long serialVersionUID = -7749305134294641955L;
@@ -35,26 +33,37 @@ public class Tags implements Serializable {
     }
     public Tags(String tags) {
         this();
-        setTags(tags);
+        if (tags != null)
+            setTags(tags);
     }
     public Tags(String... tags) {
         this();
-        if (tags != null)
-            Collections.addAll(ts, tags);
+        if (tags != null) {
+            for (String t : tags) {
+                t = t.trim();
+                if (t.length() > 0)
+                    ts.add(t.trim());
+            }
+        }
     }
     public void setTags(String tags) {
         ts.clear();
-        if (tags != null)
-            Collections.addAll(ts, ISOUtil.commaDecode(tags));
+        if (tags != null) {
+            for (String t : ISOUtil.commaDecode(tags)) {
+                t = t.trim();
+                if (t.length() > 0)
+                    ts.add(t.trim());
+            }
+        }
     }
     public boolean add (String t) {
-        return ts.add(t);
+        return t != null && ts.add(t.trim());
     }
     public boolean remove (String t) {
-        return ts.remove(t);
+        return t != null && ts.remove(t.trim());
     }
     public boolean contains (String t) {
-        return ts.contains(t);
+        return t != null && ts.contains(t.trim());
     }
     public Iterator<String> iterator() {
         return ts.iterator();
@@ -99,7 +108,6 @@ public class Tags implements Serializable {
         if (o == null || getClass() != o.getClass()) return false;
         Tags tagSet = (Tags) o;
         return ts.equals(tagSet.ts);
-
     }
 
     @Override

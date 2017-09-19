@@ -54,6 +54,8 @@ public class TagsTest {
         Tags ts = new Tags((String) null);
         assertEquals("size=0", 0, ts.size());
         assertEquals("empty tags", new Tags(), ts);
+        assertEquals("empty tags \"\"", new Tags(""), ts);
+        assertEquals("empty tags (blank)", new Tags(" "), ts);
     }
 
     @Test
