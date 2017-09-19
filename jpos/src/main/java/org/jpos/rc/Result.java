@@ -44,14 +44,14 @@ public class Result implements Loggeable {
     public Result success (IRC irc, String source, String format, Object ... args) {
         if (!irc.success())
             throw new IllegalArgumentException("Invalid success IRC " + irc);
-        return add(Type.SUCCESS, irc, source, format, args);
+        return add(Type.SUCCESS, irc, source, ""+format, args);
     }
     public Result fail (IRC irc, String source, String format, Object ... args) {
         synchronized (entries) {
             if (isSuccess()) {
-                format = format + " (inhibits " + success() + ")";
+                format = "" + format + " (inhibits " + success() + ")";
             }
-            return add(Type.FAIL, irc, source, format, args);
+            return add(Type.FAIL, irc, source, ""+format, args);
         }
     }
 
