@@ -52,7 +52,7 @@ public class Tags implements Serializable {
             for (String t : ISOUtil.commaDecode(tags)) {
                 t = t.trim();
                 if (t.length() > 0)
-                    ts.add(t.trim());
+                    ts.add(t);
             }
         }
     }
