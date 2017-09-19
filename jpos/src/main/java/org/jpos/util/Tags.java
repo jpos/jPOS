@@ -42,7 +42,7 @@ public class Tags implements Serializable {
             for (String t : tags) {
                 t = t.trim();
                 if (t.length() > 0)
-                    ts.add(t.trim());
+                    ts.add(t);
             }
         }
     }
