@@ -44,13 +44,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.Provider;
 import java.security.SecureRandom;
 import java.security.Security;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Random;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.crypto.Cipher;
@@ -156,11 +150,13 @@ public class JCESecurityModule extends BaseSMAdapter {
      */
     public JCESecurityModule (String lmkFile) throws SMException
     {
+        Objects.requireNonNull(lmkFile);
         init(null, lmkFile, false);
     }
 
     public JCESecurityModule (String lmkFile, String jceProviderClassName) throws SMException
     {
+        Objects.requireNonNull(lmkFile);
         init(jceProviderClassName, lmkFile, false);
     }
 
@@ -190,7 +186,7 @@ public class JCESecurityModule extends BaseSMAdapter {
     public void setConfiguration (Configuration cfg) throws ConfigurationException {
         this.cfg = cfg;
         try {
-            init(cfg.get("provider"), cfg.get("lmk"), cfg.getBoolean("rebuildlmk"));
+            init(cfg.get("provider"), cfg.get("lmk", null), cfg.getBoolean("rebuildlmk"));
         } catch (SMException e) {
             throw  new ConfigurationException(e);
         }
@@ -1756,9 +1752,11 @@ public class JCESecurityModule extends BaseSMAdapter {
      * @throws SMException
      */
     private void init (String jceProviderClassName, String lmkFile, boolean lmkRebuild) throws SMException {
-        File lmk = new File(lmkFile);
+        File lmk = lmkFile != null ? new File(lmkFile) : null;
+        if (lmk == null && !lmkRebuild)
+            throw new SMException ("null lmkFile - needs rebuild");
         try {
-            keyTypeToLMKIndex = new TreeMap<String,Integer>();
+            keyTypeToLMKIndex = new TreeMap<>();
             keyTypeToLMKIndex.put(SMAdapter.TYPE_ZMK, 0x000);
             keyTypeToLMKIndex.put(SMAdapter.TYPE_ZPK, 0x001);
             keyTypeToLMKIndex.put(SMAdapter.TYPE_PVK, 0x002);
@@ -1780,11 +1778,10 @@ public class JCESecurityModule extends BaseSMAdapter {
             keyTypeToLMKIndex.put(SMAdapter.TYPE_RSA_SK, 0x00C);
             keyTypeToLMKIndex.put(SMAdapter.TYPE_HMAC,   0x10C);
             keyTypeToLMKIndex.put(SMAdapter.TYPE_RSA_PK, 0x00D);
-            Provider provider = null;
+            Provider provider;
             LogEvent evt = new LogEvent(this, "jce-provider");
             try {
-                if (jceProviderClassName == null || jceProviderClassName.compareTo("")
-                        == 0) {
+                if (jceProviderClassName == null || jceProviderClassName.isEmpty()) {
                     evt.addMessage("No JCE Provider specified. Attempting to load default provider (SunJCE).");
                     jceProviderClassName = "com.sun.crypto.provider.SunJCE";
                 }
@@ -1802,30 +1799,37 @@ public class JCESecurityModule extends BaseSMAdapter {
             if (lmkRebuild) {
                 // Creat new LMK file
                 evt = new LogEvent(this, "local-master-keys");
-                evt.addMessage("Rebuilding new Local Master Keys in file: \"" +
-                        lmk.getCanonicalPath() + "\".");
+                if (lmk != null)
+                    evt.addMessage("Rebuilding new Local Master Keys in file: \"" + lmk.getCanonicalPath() + "\".");
                 Logger.log(evt);
                 // Generate New random Local Master Keys
                 generateLMK();
                 // Write the new Local Master Keys to file
-                writeLMK(lmk);
                 evt = new LogEvent(this, "local-master-keys");
-                evt.addMessage("Local Master Keys built successfully in file: \""
-                        + lmk.getCanonicalPath() + "\".");
+                if (lmk != null) {
+                    writeLMK(lmk);
+                    evt.addMessage("Local Master Keys built successfully in file: \""
+                      + lmk.getCanonicalPath() + "\".");
+                } else {
+                    evt.addMessage("Local Master Keys built successfully");
+                }
                 Logger.log(evt);
             }
-            if (!lmk.exists()) {
-                // LMK File does not exist
-                throw  new SMException("Error loading Local Master Keys, file: \""
-                        + lmk.getCanonicalPath() + "\" does not exist." + " Please specify a valid LMK file, or rebuild a new one.");
-            }
-            else {
-                // Read LMK from file
-                readLMK(lmk);
-                evt = new LogEvent(this, "local-master-keys");
-                evt.addMessage("Loaded successfully from file: \"" + lmk.getCanonicalPath()
-                        + "\"");
-                Logger.log(evt);
+            if (lmk != null) {
+                if (!lmk.exists()) {
+                    // LMK File does not exist
+                    throw  new SMException("Error loading Local Master Keys, file: \""
+                      + lmk.getCanonicalPath() + "\" does not exist."
+                      + " Please specify a valid LMK file, or rebuild a new one.");
+                }
+                else {
+                    // Read LMK from file
+                    readLMK(lmk);
+                    evt = new LogEvent(this, "local-master-keys");
+                    evt.addMessage("Loaded successfully from file: \"" + lmk.getCanonicalPath()
+                      + "\"");
+                    Logger.log(evt);
+                }
             }
         } catch (Exception e) {
             if (e instanceof SMException) {
