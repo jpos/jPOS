@@ -24,6 +24,8 @@ import static org.junit.Assert.assertNotSame;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -45,5 +47,15 @@ public class SerializerTest {
         assertNotNull(reconstituted);
         assertEquals(cal, reconstituted);
         assertNotSame(cal, reconstituted);
+    }
+
+    @Test
+    public void testStringMapSerializer() throws Exception {
+        Map<String,String> smap = new HashMap<>();
+        smap.put ("A", "ABC");
+        smap.put ("B", "CBA");
+        byte[] b = Serializer.serializeStringMap(smap);
+        Map<String,String> smap2 = Serializer.deserializeStringMap(b);
+        assertEquals(smap, smap2);
     }
 }
