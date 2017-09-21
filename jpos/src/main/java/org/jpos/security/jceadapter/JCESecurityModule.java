@@ -37,6 +37,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.ByteBuffer;
 import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.MessageDigest;
@@ -2160,6 +2161,61 @@ public class JCESecurityModule extends BaseSMAdapter {
         return data;
     }
 
+
+    @Override
+    public byte[] dataEncrypt (SecureDESKey bdk, byte[] clearText) throws SMException {
+        try {
+            byte[] ksnB = jceHandler.generateDESKey ((short) 128).getEncoded();
+            KeySerialNumber ksn = getKSN (ISOUtil.hexString(ksnB));
+            byte[] derivedKey = calculateDerivedKey (ksn, bdk, true, true);
+            Key dk = jceHandler.formDESKey ((short) 128, derivedKey);
+            byte[] cypherText = jceHandler.encryptData (lpack(clearText), dk);
+            byte[] sha = sha (
+              new byte[][] { ksnB, cypherText } );
+            System.out.println (" Sha length: " + sha.length);
+            System.out.println ("ksnB.length: " + ksnB.length);
+            ByteBuffer bb = ByteBuffer.allocate (cypherText.length + 32);
+            bb.put (ksnB);
+            bb.put (cypherText);
+            bb.put (sha (new byte[][]{ ksnB, cypherText, derivedKey }));
+            return bb.array();
+        } catch (JCEHandlerException e) {
+            throw new SMException (e);
+        }
+    }
+
+    @Override
+    public byte[] dataDecrypt (SecureDESKey bdk, byte[] cypherText) throws SMException {
+        try {
+            if (cypherText.length < 32) {
+                throw new SMException (
+                  "Invalid key block '" + ISOUtil.hexString (cypherText) + "'"
+                );
+            }
+            byte[] ksnB          = new byte[24];
+            byte[] encryptedData = new byte[cypherText.length - 32];
+            byte[] mac           = new byte[8];
+
+            System.arraycopy (cypherText,  0, ksnB, 0, 24);
+            System.arraycopy (cypherText, 24, encryptedData, 0, encryptedData.length);
+            System.arraycopy (cypherText, cypherText.length-8, mac, 0, 8);
+
+            KeySerialNumber ksn = getKSN (ISOUtil.hexString(ksnB));
+
+            byte[] derivedKey = calculateDerivedKey (ksn, bdk, true, true);
+            Key dk = jceHandler.formDESKey ((short) 128, derivedKey);
+            byte[] clearText = jceHandler.decryptData (encryptedData, dk);
+            byte[] generatedMac = sha (
+              new byte[][] { ksnB, encryptedData, derivedKey }
+            );
+            if (!Arrays.equals (mac, generatedMac))
+                throw new SMException ("Invalid cyphertext.");
+            return lunpack (clearText);
+        } catch (JCEHandlerException e) {
+            throw new SMException (e);
+        }
+   }
+
     private byte[] calculateDerivedKey(KeySerialNumber ksn, SecureDESKey bdk, boolean tdes, boolean dataEncryption)
             throws SMException
     {
@@ -2292,7 +2348,7 @@ public class JCESecurityModule extends BaseSMAdapter {
         return new KeySerialNumber(
                 s.substring(0, 6),
                 s.substring(6, 10),
-                s.substring(10)
+                s.substring(10, Math.min(s.length(), 20))
         );
     }
 
@@ -2371,4 +2427,44 @@ public class JCESecurityModule extends BaseSMAdapter {
                                 accountNumber, false);
     }
 
+    /**
+     * places a length indicator in a byte array.
+     * @param b the byte array
+     * @return a byte array with a two-byte length indicator
+     */
+    private byte[] lpack (byte[] b) {
+        int l = b.length;
+        int adjustedLen = ((l+9) >> 3) << 3;
+        byte[] d = new byte[adjustedLen];
+        System.arraycopy (b, 0, d, 2, l);
+        d[0] = (byte) ((l >> 8) & 0xFF);
+        d[1] = (byte) (l & 0xFF);
+        return d;
+    }
+    /**
+     * Unpacks a byte array packed by lPack
+     * into the former byte[]
+     * @param b packed byte array
+     * @return original (unpacked) byte array
+     */
+    private byte[] lunpack (byte[] b) {
+        int l = ((((int)b[0])&0xFF) << 8) | (((int)b[1])&0xFF);
+        byte[] d = new byte[l];
+        System.arraycopy (b,2,d,0,l);
+        return d;
+    }
+
+    private byte[] sha (byte[][] b) throws SMException {
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA");
+            for (int i=0; i<b.length; i++) {
+                md.update (b[i]);
+            }
+            byte[] digest = new byte[8];
+            System.arraycopy (md.digest(), 0, digest, 0, 8);
+            return digest;
+        } catch (NoSuchAlgorithmException e) {
+            throw new SMException (e);
+        }
+    }
 }

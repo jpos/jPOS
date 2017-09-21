@@ -1454,7 +1454,7 @@ public class BaseSMAdapter
      * @param pvkIdx
      * @param excludes
      * @return PVV (VISA PIN Verification Value)
-     * @throws SMException 
+     * @throws SMException
      */
     protected String calculatePVVImpl(EncryptedPIN pinUnderLMK,
                        SecureDESKey pvkA, SecureDESKey pvkB, int pvkIdx,
@@ -1481,7 +1481,7 @@ public class BaseSMAdapter
 
     /**
      * Your SMAdapter should override this method if it has this functionality
-     * @param pinUnderKd 
+     * @param pinUnderKd
      * @param kd
      * @param pvkA
      * @param pvkB
@@ -1880,7 +1880,15 @@ public class BaseSMAdapter
     protected void eraseOldLMKImpl () throws SMException {
         throw  new SMException("Operation not supported in: " + this.getClass().getName());
     }
+
+    @Override
+    public byte[] dataEncrypt (SecureDESKey bdk, byte[] clearText) throws SMException {
+        throw  new SMException("Operation not supported in: " + this.getClass().getName());
+    }
+
+    @Override
+    public byte[] dataDecrypt (SecureDESKey bdk, byte[] clearText) throws SMException {
+        throw  new SMException("Operation not supported in: " + this.getClass().getName());
+    }
 }
-
-
 
