@@ -1967,7 +1967,7 @@ public class JCESecurityModule extends BaseSMAdapter {
     /**
      * The clear Local Master Keys
      */
-    private final Map<Integer,SecretKey> lmks = new TreeMap<Integer,SecretKey>();
+    private final Map<Integer,SecretKey> lmks = new TreeMap<>();
     /**
      * A index for the LMK used to encrypt the PINs
      */
