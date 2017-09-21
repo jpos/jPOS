@@ -117,6 +117,19 @@ public class DUKPTTest extends TestCase
         test_DUKPT ("test-bdk", new KeySerialNumber ("987654", "3210", "F00000"), ISOUtil.hex2byte ("73EC88AD0AC5830E"), PAN,true);
     }
 
+    public void test_dataEncrypt() throws Exception {
+        SecureDESKey bdk = (SecureDESKey) ks.getKey("test-bdk");
+        byte[] original = "The quick brown fox jumps over the lazy dog".getBytes();
+        byte[] cryptogram = sm.dataEncrypt(bdk, original);
+        byte[] cleartext = sm.dataDecrypt(bdk, cryptogram);
+        assertEqual(original, cleartext);
+        cryptogram[0] = (byte) (cryptogram[0] ^ 0xAA);
+        try {
+            sm.dataDecrypt(bdk, cryptogram);
+            fail("SMException not raised");
+        } catch (Exception ignored) { }
+    }
+
     private void test_DUKPT(String keyName, KeySerialNumber ksn, byte[] pinUnderDukpt, String pan)
             throws Exception
     {
