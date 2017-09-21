@@ -269,7 +269,7 @@ public class TransactionManager
                     pt = null;
 
                 if (pt == null) {
-                    int running = getRunningSessions();
+                    int running = getActiveTransactions();
                     if (maxActiveSessions > 0 && running >= maxActiveSessions) {
                         getLog().warn (
                             Thread.currentThread().getName() 
@@ -1043,9 +1043,6 @@ public class TransactionManager
     @Override
     public int getActiveSessions() {
         return activeSessions.intValue();
-    }
-    public int getRunningSessions() {
-        return (int) (head - tail);
     }
     public int getPausedCounter() {
         return pausedCounter.intValue();
