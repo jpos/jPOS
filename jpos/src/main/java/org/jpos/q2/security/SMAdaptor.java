@@ -43,10 +43,12 @@ import org.jpos.util.NameRegistrar;
  */
 public class SMAdaptor extends QBeanSupport implements SMAdaptorMBean
 {
+    private static final String DEFAULT_IMPL = "org.jpos.security.jceadapter.JCESecurityModule";
     String clazz;
     SMAdapter sm;
     public SMAdaptor () {
         super ();
+        clazz = DEFAULT_IMPL;
     }
     protected void initService () throws Exception {
         Element e = getPersist ();
@@ -63,6 +65,7 @@ public class SMAdaptor extends QBeanSupport implements SMAdaptorMBean
     public String getImpl() {
         return clazz;
     }
+
     protected void startService () throws Exception {
         NameRegistrar.register (getName (), sm);
     }
@@ -70,4 +73,3 @@ public class SMAdaptor extends QBeanSupport implements SMAdaptorMBean
         NameRegistrar.unregister (getName ());
     }
 }
-
