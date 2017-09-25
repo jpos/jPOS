@@ -18,6 +18,7 @@
 
 package  org.jpos.security.jceadapter;
 
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.javatuples.Pair;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
@@ -38,18 +39,11 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
-import java.security.InvalidKeyException;
-import java.security.Key;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.security.Provider;
-import java.security.SecureRandom;
-import java.security.Security;
+import java.security.*;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.crypto.Cipher;
-
 
 /**
  * JCESecurityModule is an implementation of a security module in software.
@@ -73,7 +67,6 @@ import javax.crypto.Cipher;
  */
 @SuppressWarnings("unchecked")
 public class JCESecurityModule extends BaseSMAdapter {
-
     /**
      * Pattern representing key type string value.
      */
@@ -2170,12 +2163,11 @@ public class JCESecurityModule extends BaseSMAdapter {
             byte[] derivedKey = calculateDerivedKey (ksn, bdk, true, true);
             Key dk = jceHandler.formDESKey ((short) 128, derivedKey);
             byte[] cypherText = jceHandler.encryptData (lpack(clearText), dk);
-            byte[] sha = sha (
-              new byte[][] { ksnB, cypherText } );
+
             ByteBuffer bb = ByteBuffer.allocate (cypherText.length + 32);
             bb.put (ksnB);
             bb.put (cypherText);
-            bb.put (sha (new byte[][]{ ksnB, cypherText, derivedKey }));
+            bb.put (hash8 (new byte[][]{ ksnB, cypherText, derivedKey }));
             return bb.array();
         } catch (JCEHandlerException e) {
             throw new SMException (e);
@@ -2203,7 +2195,7 @@ public class JCESecurityModule extends BaseSMAdapter {
             byte[] derivedKey = calculateDerivedKey (ksn, bdk, true, true);
             Key dk = jceHandler.formDESKey ((short) 128, derivedKey);
             byte[] clearText = jceHandler.decryptData (encryptedData, dk);
-            byte[] generatedMac = sha (
+            byte[] generatedMac = hash8 (
               new byte[][] { ksnB, encryptedData, derivedKey }
             );
             if (!Arrays.equals (mac, generatedMac))
@@ -2452,15 +2444,13 @@ public class JCESecurityModule extends BaseSMAdapter {
         return d;
     }
 
-    private byte[] sha (byte[][] b) throws SMException {
+    private byte[] hash8 (byte[][] bb) throws SMException {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA");
-            for (int i=0; i<b.length; i++) {
-                md.update (b[i]);
+            for (byte[] b : bb) {
+                md.update(b);
             }
-            byte[] digest = new byte[8];
-            System.arraycopy (md.digest(), 0, digest, 0, 8);
-            return digest;
+            return Arrays.copyOf(md.digest(), 8);
         } catch (NoSuchAlgorithmException e) {
             throw new SMException (e);
         }
