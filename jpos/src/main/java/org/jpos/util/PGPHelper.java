@@ -40,7 +40,8 @@ public class PGPHelper {
     private static final String PUBRING = "META-INF/.pgp/pubring.asc";
     private static final String SIGNER = "license@jpos.org";
     static {
-        Security.addProvider(new BouncyCastleProvider());
+        if(Security.getProvider("BC") == null)
+            Security.addProvider(new BouncyCastleProvider());
 //        PGPUtil.setDefaultProvider("BC");
     }
 
