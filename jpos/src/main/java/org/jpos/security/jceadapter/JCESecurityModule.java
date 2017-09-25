@@ -2172,8 +2172,6 @@ public class JCESecurityModule extends BaseSMAdapter {
             byte[] cypherText = jceHandler.encryptData (lpack(clearText), dk);
             byte[] sha = sha (
               new byte[][] { ksnB, cypherText } );
-            System.out.println (" Sha length: " + sha.length);
-            System.out.println ("ksnB.length: " + ksnB.length);
             ByteBuffer bb = ByteBuffer.allocate (cypherText.length + 32);
             bb.put (ksnB);
             bb.put (cypherText);
