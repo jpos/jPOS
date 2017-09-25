@@ -232,9 +232,7 @@ public class JCEHandler {
      * @exception JCEHandlerException
      */
     public byte[] encryptData(byte[] data, Key key) throws JCEHandlerException {
-        byte[] encryptedData;
-        encryptedData = doCryptStuff(data, key, Cipher.ENCRYPT_MODE);
-        return encryptedData;
+        return doCryptStuff(data, key, Cipher.ENCRYPT_MODE);
     }
 
     /**
@@ -246,9 +244,7 @@ public class JCEHandler {
      * @exception JCEHandlerException
      */
     public byte[] decryptData(byte[] encryptedData, Key key) throws JCEHandlerException {
-        byte[] clearData;
-        clearData = doCryptStuff(encryptedData, key, Cipher.DECRYPT_MODE);
-        return clearData;
+        return doCryptStuff(encryptedData, key, Cipher.DECRYPT_MODE);
     }
 
     /**
@@ -306,7 +302,7 @@ public class JCEHandler {
         byte[] result;
         String transformation = key.getAlgorithm();
         if (key.getAlgorithm().startsWith(ALG_DES)) {
-            transformation += "/" + modetoString(cipherMode) + "/" + DES_NO_PADDING;
+            transformation += "/" + cipherMode.name() + "/" + DES_NO_PADDING;
         }
         AlgorithmParameterSpec aps = null;
         try {
@@ -323,20 +319,6 @@ public class JCEHandler {
         return result;
     }
 
-    private String modetoString(CipherMode cipherMode) throws JCEHandlerException {
-        switch(cipherMode) {
-            case ECB:
-                return "ECB";
-            case CBC:
-                return "CBC";
-            case CFB8:
-                return "CFB8";
-            case CFB64:
-                return "CFB64";
-            default:
-                throw new JCEHandlerException("Unsupported cipher mode "+cipherMode);
-        }
-    }
     /**
      * Calculates the length of key in bytes
      * 
