@@ -43,6 +43,7 @@ public enum CipherMode {
     /**
      * Cipher feedback, self-synchronizing with 64 bit shift register.
      */
-    CFB64
+    CFB64,
 
+    AES
 }
