@@ -27,6 +27,7 @@ import org.jpos.util.Loggeable;
 import org.jpos.util.Logger;
 import org.jpos.util.NameRegistrar;
 
+import javax.crypto.Cipher;
 import javax.management.MBeanServerConnection;
 import java.io.*;
 import java.lang.management.ManagementFactory;
@@ -35,6 +36,7 @@ import java.lang.management.RuntimeMXBean;
 import java.lang.management.ThreadMXBean;
 import java.net.InetAddress;
 import java.nio.charset.Charset;
+import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.TextStyle;
@@ -183,6 +185,13 @@ public class SystemMonitor extends QBeanSupport
         String usableSpace = ISOUtil.readableFileSize(cwd.getUsableSpace());
 
         p.printf ("%s           OS: %s (%s)%n", indent, System.getProperty("os.name"), System.getProperty("os.version"));
+        try {
+            p.printf("%s         Java: %s (%s) AES-%d%n", indent,
+              System.getProperty("java.version"),
+              System.getProperty("java.vendor"),
+              Cipher.getMaxAllowedKeyLength("AES")
+            );
+        } catch (NoSuchAlgorithmException ignored) { }
         p.printf ("%s process name: %s%n", indent, runtimeMXBean.getName());
         p.printf ("%s         host: %s%n", indent, getLocalHost());
         p.printf ("%s          cwd: %s%n", indent, System.getProperty("user.dir"));
