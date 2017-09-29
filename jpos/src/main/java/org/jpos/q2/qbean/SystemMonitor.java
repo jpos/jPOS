@@ -101,14 +101,14 @@ public class SystemMonitor extends QBeanSupport
         return detailRequired;
     }
 
-    void dumpThreads(ThreadGroup g, PrintStream p, String indent) {
+    private void dumpThreads(ThreadGroup g, PrintStream p, String indent) {
         Thread[] list = new Thread[g.activeCount() + 5];
         int nthreads = g.enumerate(list);
         for (int i = 0; i < nthreads; i++)
             p.println(indent + list[i]);
     }
 
-    public void showThreadGroup(ThreadGroup g, PrintStream p, String indent) {
+    void showThreadGroup(ThreadGroup g, PrintStream p, String indent) {
         if (g.getParent() != null)
             showThreadGroup(g.getParent(), p, indent + "  ");
         else
@@ -185,13 +185,15 @@ public class SystemMonitor extends QBeanSupport
         String usableSpace = ISOUtil.readableFileSize(cwd.getUsableSpace());
 
         p.printf ("%s           OS: %s (%s)%n", indent, System.getProperty("os.name"), System.getProperty("os.version"));
+        int maxKeyLength = 0;
         try {
-            p.printf("%s         Java: %s (%s) AES-%d%n", indent,
-              System.getProperty("java.version"),
-              System.getProperty("java.vendor"),
-              Cipher.getMaxAllowedKeyLength("AES")
-            );
+            maxKeyLength = Cipher.getMaxAllowedKeyLength("AES");
         } catch (NoSuchAlgorithmException ignored) { }
+        p.printf("%s         Java: %s (%s) AES-%s%n", indent,
+          System.getProperty("java.version"),
+          System.getProperty("java.vendor"),
+          maxKeyLength == Integer.MAX_VALUE ? "secure" : Integer.toString(maxKeyLength)
+        );
         p.printf ("%s process name: %s%n", indent, runtimeMXBean.getName());
         p.printf ("%s         host: %s%n", indent, getLocalHost());
         p.printf ("%s          cwd: %s%n", indent, System.getProperty("user.dir"));
