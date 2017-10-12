@@ -34,8 +34,8 @@ import static org.jpos.transaction.ContextConstants.*;
 
 public class Context implements Externalizable, Loggeable, Pausable, Cloneable {
     private static final long serialVersionUID = 480368630145602106L;
-    private transient Map<String,Object> map; // transient map
-    private Map<String,Object> pmap;          // persistent (serializable) map
+    private transient Map<Object,Object> map; // transient map
+    private Map<Object,Object> pmap;          // persistent (serializable) map
     private long timeout;
     private boolean resumeOnPause = false;
     private transient boolean trace = false;
@@ -177,11 +177,11 @@ public class Context implements Externalizable, Loggeable, Pausable, Cloneable {
         try {
             Context context = (Context) super.clone();
             if (map != null) {
-                context.map = Collections.synchronizedMap (new LinkedHashMap<String,Object>());
+                context.map = Collections.synchronizedMap (new LinkedHashMap<>());
                 context.map.putAll(map);
             }
             if (pmap != null) {
-                context.pmap = Collections.synchronizedMap (new LinkedHashMap<String,Object>());
+                context.pmap = Collections.synchronizedMap (new LinkedHashMap<>());
                 context.pmap.putAll(pmap);
             }
             return context;
@@ -210,29 +210,29 @@ public class Context implements Externalizable, Loggeable, Pausable, Cloneable {
     /**
      * @return persistent map
      */
-    private synchronized Map<String,Object> getPMap() {
+    private synchronized Map<Object,Object> getPMap() {
         if (pmap == null)
-            pmap = Collections.synchronizedMap (new LinkedHashMap<String,Object> ());
+            pmap = Collections.synchronizedMap (new LinkedHashMap<> ());
         return pmap;
     }
     /**
      * @return transient map
      */
-    public synchronized Map<String,Object> getMap() {
+    public synchronized Map<Object,Object> getMap() {
         if (map == null)
-            map = Collections.synchronizedMap (new LinkedHashMap<String,Object>());
+            map = Collections.synchronizedMap (new LinkedHashMap<>());
         return map;
     }
     protected void dumpMap (PrintStream p, String indent) {
         if (map == null)
             return;
 
-        for (Map.Entry<String,Object> entry : map.entrySet()) {
+        for (Map.Entry<Object,Object> entry : map.entrySet()) {
             dumpEntry(p, indent, entry);
         }
     }
 
-    protected void dumpEntry (PrintStream p, String indent, Map.Entry<String,Object> entry) {
+    protected void dumpEntry (PrintStream p, String indent, Map.Entry<Object,Object> entry) {
         String key = entry.getKey().toString();
         if (key.startsWith(".") || key.startsWith("*"))
             return; // see jPOS-63
