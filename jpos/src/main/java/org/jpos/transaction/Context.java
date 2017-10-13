@@ -33,7 +33,7 @@ import java.util.*;
 import static org.jpos.transaction.ContextConstants.*;
 
 public class Context implements Externalizable, Loggeable, Pausable, Cloneable {
-    private static final long serialVersionUID = 480368630145602106L;
+    private static final long serialVersionUID = -764389940148411076L;
     private transient Map<Object,Object> map; // transient map
     private Map<Object,Object> pmap;          // persistent (serializable) map
     private long timeout;
@@ -47,7 +47,7 @@ public class Context implements Externalizable, Loggeable, Pausable, Cloneable {
     /**
      * puts an Object in the transient Map
      */
-    public void put (String key, Object value) {
+    public void put (Object key, Object value) {
         if (trace) {
             getProfiler().checkPoint(
                 String.format("   %s='%s' [%s]", key, value, Thread.currentThread().getStackTrace()[2])
@@ -61,7 +61,7 @@ public class Context implements Externalizable, Loggeable, Pausable, Cloneable {
     /**
      * puts an Object in the transient Map
      */
-    public void put (String key, Object value, boolean persist) {
+    public void put (Object key, Object value, boolean persist) {
         if (trace) {
             getProfiler().checkPoint(
                 String.format("P: %s='%s' [%s]", key, value, new Throwable().getStackTrace()[1].toString())
@@ -76,7 +76,7 @@ public class Context implements Externalizable, Loggeable, Pausable, Cloneable {
      * Persists a transient entry
      * @param key the key
      */
-    public void persist (String key) {
+    public void persist (Object key) {
         Object value = get(key);
         if (value instanceof Serializable)
             getPMap().put (key, value);
@@ -86,16 +86,16 @@ public class Context implements Externalizable, Loggeable, Pausable, Cloneable {
      * Evicts a persistent entry
      * @param key the key
      */
-    public void evict (String key) {
+    public void evict (Object key) {
         getPMap().remove (key);
     }
     /**
      * Get
      */
-    public Object get (String key) {
+    public Object get (Object key) {
         return getMap().get (key);
     }
-    public Object get (String key, Object defValue) {
+    public Object get (Object key, Object defValue) {
         Object obj = getMap().get (key);
         return obj != null ? obj : defValue;
     }
@@ -106,7 +106,7 @@ public class Context implements Externalizable, Loggeable, Pausable, Cloneable {
         getPMap().remove (key);
         return getMap().remove (key);
     }
-    public String getString (String key) {
+    public String getString (Object key) {
         Object obj = getMap().get (key);
         if (obj instanceof String)
             return (String) obj;
@@ -337,7 +337,6 @@ public class Context implements Externalizable, Loggeable, Pausable, Cloneable {
     }
     public PausedTransaction getPausedTransaction() {
         return (PausedTransaction) get (PAUSED_TRANSACTION.toString());
-
     }
     public void setTimeout (long timeout) {
         this.timeout = timeout;
