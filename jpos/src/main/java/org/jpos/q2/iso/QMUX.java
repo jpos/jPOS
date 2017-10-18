@@ -26,10 +26,7 @@ import org.jpos.iso.*;
 import org.jpos.q2.QBeanSupport;
 import org.jpos.q2.QFactory;
 import org.jpos.space.*;
-import org.jpos.util.Chronometer;
-import org.jpos.util.Loggeable;
-import org.jpos.util.Metrics;
-import org.jpos.util.NameRegistrar;
+import org.jpos.util.*;
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -220,7 +217,10 @@ public class QMUX
                     }
                 }
             } catch (ISOException e) {
-                getLog().warn ("notify", e);
+                LogEvent evt = getLog().createLogEvent("notify");
+                evt.addMessage(e);
+                evt.addMessage(obj);
+                Logger.log(evt);
             }
             processUnhandled (m);
         }
