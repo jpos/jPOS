@@ -65,6 +65,7 @@ public class TransactionManager
     private static final ThreadLocal<Long> tlId = new ThreadLocal<Long>();
     private Metrics metrics;
     private static ScheduledThreadPoolExecutor loadMonitorExecutor;
+    private static Map<TransactionParticipant,String> names = new HashMap<>();
 
     Space sp;
     Space psp;
@@ -507,17 +508,17 @@ public class TransactionManager
             if (recover && p instanceof ContextRecovery) {
                 context = ((ContextRecovery) p).recover (id, context, true);
                 if (evt != null)
-                    evt.addMessage (" commit-recover: " + p.getClass().getName());
+                    evt.addMessage (" commit-recover: " + names.get(p));
             }
             if (hasStatusListeners)
                 notifyStatusListeners (
-                    session, TransactionStatusEvent.State.COMMITING, id, p.getClass().getName(), context
+                    session, TransactionStatusEvent.State.COMMITING, id, names.get(p), context
                 );
             commit (p, id, context);
             if (evt != null) {
-                evt.addMessage ("         commit: " + p.getClass().getName());
+                evt.addMessage ("         commit: " + names.get(p));
                 if (prof != null)
-                    prof.checkPoint (" commit: " + p.getClass().getName());
+                    prof.checkPoint (" commit: " + names.get(p));
             }
         }
     }
@@ -528,18 +529,18 @@ public class TransactionManager
             if (recover && p instanceof ContextRecovery) {
                 context = ((ContextRecovery) p).recover (id, context, false);
                 if (evt != null)
-                    evt.addMessage ("  abort-recover: " + p.getClass().getName());
+                    evt.addMessage ("  abort-recover: " + names.get(p));
             }
             if (hasStatusListeners)
                 notifyStatusListeners (
-                    session, TransactionStatusEvent.State.ABORTING, id, p.getClass().getName(), context
+                    session, TransactionStatusEvent.State.ABORTING, id, names.get(p), context
                 );
 
             abort(p, id, context);
             if (evt != null) {
-                evt.addMessage ("          abort: " + p.getClass().getName());
+                evt.addMessage ("          abort: " + names.get(p));
                 if (prof != null)
-                    prof.checkPoint ("  abort: " + p.getClass().getName());
+                    prof.checkPoint ("  abort: " + names.get(p));
             }
         }
     }
@@ -556,7 +557,7 @@ public class TransactionManager
             getLog().warn ("PREPARE-FOR-ABORT: " + Long.toString (id), t);
         } finally {
             if (metrics != null)
-                metrics.record(p.getClass().getName() + "-prepare-for-abort", c.elapsed());
+                metrics.record(names.get(p) + "-prepare-for-abort", c.elapsed());
         }
         return ABORTED | NO_JOIN;
     }
@@ -571,7 +572,7 @@ public class TransactionManager
             getLog().warn ("PREPARE: " + Long.toString (id), t);
         } finally {
             if (metrics != null)
-                metrics.record(p.getClass().getName() + "-prepare", c.elapsed());
+                metrics.record(names.get(p) + "-prepare", c.elapsed());
         }
         return ABORTED;
     }
@@ -586,7 +587,7 @@ public class TransactionManager
             getLog().warn ("COMMIT: " + Long.toString (id), t);
         }
         if (metrics != null)
-            metrics.record(p.getClass().getName() + "-commit", c.elapsed());
+            metrics.record(names.get(p) + "-commit", c.elapsed());
     }
     protected void abort 
         (TransactionParticipant p, long id, Serializable context) 
@@ -599,7 +600,7 @@ public class TransactionManager
             getLog().warn ("ABORT: " + Long.toString (id), t);
         }
         if (metrics != null)
-            metrics.record(p.getClass().getName() + "-abort", c.elapsed());
+            metrics.record(names.get(p) + "-abort", c.elapsed());
     }
     protected int prepare
         (int session, long id, Serializable context, List<TransactionParticipant> members, Iterator<TransactionParticipant> iter, boolean abort, LogEvent evt, Profiler prof)
@@ -618,19 +619,19 @@ public class TransactionManager
             if (abort) {
                 if (hasStatusListeners)
                     notifyStatusListeners (
-                        session, TransactionStatusEvent.State.PREPARING_FOR_ABORT, id, p.getClass().getName(), context
+                        session, TransactionStatusEvent.State.PREPARING_FOR_ABORT, id, names.get(p), context
                     );
                 action = prepareForAbort (p, id, context);
 
                 if (evt != null && p instanceof AbortParticipant) {
-                    evt.addMessage("prepareForAbort: " + p.getClass().getName());
+                    evt.addMessage("prepareForAbort: " + names.get(p));
                     if (prof != null)
-                        prof.checkPoint ("prepareForAbort: " + p.getClass().getName());
+                        prof.checkPoint ("prepareForAbort: " + names.get(p));
                 }
             } else {
                 if (hasStatusListeners)
                     notifyStatusListeners (
-                        session, TransactionStatusEvent.State.PREPARING, id, p.getClass().getName(), context
+                        session, TransactionStatusEvent.State.PREPARING, id, names.get(p), context
                     );
                 action = prepare (p, id, context);
 
@@ -639,21 +640,21 @@ public class TransactionManager
                 pause  = (action & PAUSE) == PAUSE;
                 if (evt != null) {
                     evt.addMessage ("        prepare: "
-                            + p.getClass().getName() 
+                            + names.get(p)
                             + (abort ? " ABORTED" : " PREPARED")
                             + (retry ? " RETRY" : "")
                             + (pause ? " PAUSE" : "")
                             + ((action & READONLY) == READONLY ? " READONLY" : "")
                             + ((action & NO_JOIN) == NO_JOIN ? " NO_JOIN" : ""));
                     if (prof != null)
-                        prof.checkPoint ("prepare: " + p.getClass().getName());
+                        prof.checkPoint ("prepare: " + names.get(p));
                 }
             }
             if ((action & READONLY) == 0) {
                 Chronometer c = new Chronometer();
                 snapshot (id, context);
                 if (metrics != null)
-                    metrics.record(p.getClass().getName() + "-snapshot", c.elapsed());
+                    metrics.record(names.get(p) + "-snapshot", c.elapsed());
             }
             if ((action & NO_JOIN) == 0) {
                 members.add (p);
@@ -665,12 +666,12 @@ public class TransactionManager
                     groupName = ((GroupSelector)p).select (id, context);
                 } catch (Exception e) {
                     if (evt != null) 
-                        evt.addMessage ("       selector: " + p.getClass().getName() + " " + e.getMessage());
+                        evt.addMessage ("       selector: " + names.get(p) + " " + e.getMessage());
                     else 
-                        getLog().error ("       selector: " + p.getClass().getName() + " " + e.getMessage());
+                        getLog().error ("       selector: " + names.get(p) + " " + e.getMessage());
                 } finally {
                     if (metrics != null)
-                        metrics.record(p.getClass().getName() + "-selector", c.lap());
+                        metrics.record(names.get(p) + "-selector", c.lap());
                 }
                 if (evt != null) {
                     evt.addMessage ("       selector: " + groupName);
@@ -788,6 +789,12 @@ public class TransactionManager
         factory.setLogger (participant, e);
         QFactory.invoke (participant, "setTransactionManager", this, TransactionManager.class);
         factory.setConfiguration (participant, e);
+        String realm = e.getAttributeValue("realm");
+        if (realm != null && realm.trim().length() > 0)
+            realm = ":" + realm;
+        else
+            realm = "";
+        names.put(participant, Caller.shortClassName(participant.getClass().getName())+realm);
         return participant;
     }
 
@@ -1074,7 +1081,7 @@ public class TransactionManager
     }
     private void setThreadName (long id, String method, TransactionParticipant p) {
         Thread.currentThread().setName(
-            String.format("%s:%d %s %s %s", getName(), id, method, p.getClass().getName(), 
+            String.format("%s:%d %s %s %s", getName(), id, method, p.getClass().getName(),
                 LocalDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()))
         );
     }
