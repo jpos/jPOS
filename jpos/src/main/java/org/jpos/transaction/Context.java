@@ -22,6 +22,7 @@ import org.jdom2.Element;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 import org.jpos.iso.ISOUtil;
+import org.jpos.util.Caller;
 import org.jpos.util.LogEvent;
 import org.jpos.util.Loggeable;
 import org.jpos.util.Profiler;
@@ -50,7 +51,7 @@ public class Context implements Externalizable, Loggeable, Pausable, Cloneable {
     public void put (Object key, Object value) {
         if (trace) {
             getProfiler().checkPoint(
-                String.format("   %s='%s' [%s]", key, value, Thread.currentThread().getStackTrace()[2])
+                String.format("%s='%s' [%s]", getKeyName(key), value, Caller.info(1))
             );
         }
         getMap().put (key, value);
@@ -64,7 +65,7 @@ public class Context implements Externalizable, Loggeable, Pausable, Cloneable {
     public void put (Object key, Object value, boolean persist) {
         if (trace) {
             getProfiler().checkPoint(
-                String.format("P: %s='%s' [%s]", key, value, new Throwable().getStackTrace()[1].toString())
+                String.format("%s(P)='%s' [%s]", getKeyName(key), value, Caller.info(1))
             );
         }
         if (persist && value instanceof Serializable)
@@ -233,7 +234,7 @@ public class Context implements Externalizable, Loggeable, Pausable, Cloneable {
     }
 
     protected void dumpEntry (PrintStream p, String indent, Map.Entry<Object,Object> entry) {
-        String key = entry.getKey().toString();
+        String key = getKeyName(entry.getKey());
         if (key.startsWith(".") || key.startsWith("*"))
             return; // see jPOS-63
 
@@ -360,5 +361,10 @@ public class Context implements Externalizable, Loggeable, Pausable, Cloneable {
         if (trace)
             getProfiler();
         this.trace = trace;
+    }
+
+    private String getKeyName(Object keyObject) {
+        return keyObject instanceof String ? (String) keyObject :
+          Caller.shortClassName(keyObject.getClass().getName())+"."+keyObject.toString();
     }
 }
