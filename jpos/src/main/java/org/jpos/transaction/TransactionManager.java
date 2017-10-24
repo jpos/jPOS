@@ -1095,6 +1095,7 @@ public class TransactionManager
     }
 
     private String getName(TransactionParticipant p) {
-        return names.containsKey(p) ? names.get(p) : p.getClass().getName();
+        String name;
+        return ((name = names.get(p)) != null) ? name : p.getClass().getName();
     }
 }
