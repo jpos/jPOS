@@ -508,17 +508,17 @@ public class TransactionManager
             if (recover && p instanceof ContextRecovery) {
                 context = ((ContextRecovery) p).recover (id, context, true);
                 if (evt != null)
-                    evt.addMessage (" commit-recover: " + names.get(p));
+                    evt.addMessage (" commit-recover: " + getName(p));
             }
             if (hasStatusListeners)
                 notifyStatusListeners (
-                    session, TransactionStatusEvent.State.COMMITING, id, names.get(p), context
+                    session, TransactionStatusEvent.State.COMMITING, id, getName(p), context
                 );
             commit (p, id, context);
             if (evt != null) {
-                evt.addMessage ("         commit: " + names.get(p));
+                evt.addMessage ("         commit: " + getName(p));
                 if (prof != null)
-                    prof.checkPoint (" commit: " + names.get(p));
+                    prof.checkPoint (" commit: " + getName(p));
             }
         }
     }
@@ -529,18 +529,18 @@ public class TransactionManager
             if (recover && p instanceof ContextRecovery) {
                 context = ((ContextRecovery) p).recover (id, context, false);
                 if (evt != null)
-                    evt.addMessage ("  abort-recover: " + names.get(p));
+                    evt.addMessage ("  abort-recover: " + getName(p));
             }
             if (hasStatusListeners)
                 notifyStatusListeners (
-                    session, TransactionStatusEvent.State.ABORTING, id, names.get(p), context
+                    session, TransactionStatusEvent.State.ABORTING, id, getName(p), context
                 );
 
             abort(p, id, context);
             if (evt != null) {
-                evt.addMessage ("          abort: " + names.get(p));
+                evt.addMessage ("          abort: " + getName(p));
                 if (prof != null)
-                    prof.checkPoint ("  abort: " + names.get(p));
+                    prof.checkPoint ("  abort: " + getName(p));
             }
         }
     }
@@ -557,7 +557,7 @@ public class TransactionManager
             getLog().warn ("PREPARE-FOR-ABORT: " + Long.toString (id), t);
         } finally {
             if (metrics != null)
-                metrics.record(names.get(p) + "-prepare-for-abort", c.elapsed());
+                metrics.record(getName(p) + "-prepare-for-abort", c.elapsed());
         }
         return ABORTED | NO_JOIN;
     }
@@ -572,7 +572,7 @@ public class TransactionManager
             getLog().warn ("PREPARE: " + Long.toString (id), t);
         } finally {
             if (metrics != null)
-                metrics.record(names.get(p) + "-prepare", c.elapsed());
+                metrics.record(getName(p) + "-prepare", c.elapsed());
         }
         return ABORTED;
     }
@@ -587,7 +587,7 @@ public class TransactionManager
             getLog().warn ("COMMIT: " + Long.toString (id), t);
         }
         if (metrics != null)
-            metrics.record(names.get(p) + "-commit", c.elapsed());
+            metrics.record(getName(p) + "-commit", c.elapsed());
     }
     protected void abort 
         (TransactionParticipant p, long id, Serializable context) 
@@ -600,7 +600,7 @@ public class TransactionManager
             getLog().warn ("ABORT: " + Long.toString (id), t);
         }
         if (metrics != null)
-            metrics.record(names.get(p) + "-abort", c.elapsed());
+            metrics.record(getName(p) + "-abort", c.elapsed());
     }
     protected int prepare
         (int session, long id, Serializable context, List<TransactionParticipant> members, Iterator<TransactionParticipant> iter, boolean abort, LogEvent evt, Profiler prof)
@@ -619,19 +619,19 @@ public class TransactionManager
             if (abort) {
                 if (hasStatusListeners)
                     notifyStatusListeners (
-                        session, TransactionStatusEvent.State.PREPARING_FOR_ABORT, id, names.get(p), context
+                        session, TransactionStatusEvent.State.PREPARING_FOR_ABORT, id, getName(p), context
                     );
                 action = prepareForAbort (p, id, context);
 
                 if (evt != null && p instanceof AbortParticipant) {
-                    evt.addMessage("prepareForAbort: " + names.get(p));
+                    evt.addMessage("prepareForAbort: " + getName(p));
                     if (prof != null)
-                        prof.checkPoint ("prepareForAbort: " + names.get(p));
+                        prof.checkPoint ("prepareForAbort: " + getName(p));
                 }
             } else {
                 if (hasStatusListeners)
                     notifyStatusListeners (
-                        session, TransactionStatusEvent.State.PREPARING, id, names.get(p), context
+                        session, TransactionStatusEvent.State.PREPARING, id, getName(p), context
                     );
                 action = prepare (p, id, context);
 
@@ -640,21 +640,21 @@ public class TransactionManager
                 pause  = (action & PAUSE) == PAUSE;
                 if (evt != null) {
                     evt.addMessage ("        prepare: "
-                            + names.get(p)
+                            + getName(p)
                             + (abort ? " ABORTED" : " PREPARED")
                             + (retry ? " RETRY" : "")
                             + (pause ? " PAUSE" : "")
                             + ((action & READONLY) == READONLY ? " READONLY" : "")
                             + ((action & NO_JOIN) == NO_JOIN ? " NO_JOIN" : ""));
                     if (prof != null)
-                        prof.checkPoint ("prepare: " + names.get(p));
+                        prof.checkPoint ("prepare: " + getName(p));
                 }
             }
             if ((action & READONLY) == 0) {
                 Chronometer c = new Chronometer();
                 snapshot (id, context);
                 if (metrics != null)
-                    metrics.record(names.get(p) + "-snapshot", c.elapsed());
+                    metrics.record(getName(p) + "-snapshot", c.elapsed());
             }
             if ((action & NO_JOIN) == 0) {
                 members.add (p);
@@ -666,12 +666,12 @@ public class TransactionManager
                     groupName = ((GroupSelector)p).select (id, context);
                 } catch (Exception e) {
                     if (evt != null) 
-                        evt.addMessage ("       selector: " + names.get(p) + " " + e.getMessage());
+                        evt.addMessage ("       selector: " + getName(p) + " " + e.getMessage());
                     else 
-                        getLog().error ("       selector: " + names.get(p) + " " + e.getMessage());
+                        getLog().error ("       selector: " + getName(p) + " " + e.getMessage());
                 } finally {
                     if (metrics != null)
-                        metrics.record(names.get(p) + "-selector", c.lap());
+                        metrics.record(getName(p) + "-selector", c.lap());
                 }
                 if (evt != null) {
                     evt.addMessage ("       selector: " + groupName);
@@ -1092,5 +1092,9 @@ public class TransactionManager
     private void removeThreadLocal() {
         tlId.remove();
         tlContext.remove();
+    }
+
+    private String getName(TransactionParticipant p) {
+        return names.containsKey(p) ? getName(p) : p.getClass().getName();
     }
 }
