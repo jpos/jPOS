@@ -44,4 +44,19 @@ public class Caller {
           .append(Integer.toString(st.getLineNumber()))
           .toString();
     }
+    public static String shortClassName(String clazz) {
+        Matcher matcher = FQCN.matcher(clazz);
+        StringBuilder sb = new StringBuilder();
+        while (matcher.find()) {
+            if (matcher.hitEnd()) {
+                sb.append(matcher.group(1));
+                break;
+            }
+            else {
+                sb.append(matcher.group(1).charAt(0));
+                sb.append('.');
+            }
+        }
+        return sb.toString();
+    }
 }
