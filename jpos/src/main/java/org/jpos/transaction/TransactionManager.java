@@ -261,7 +261,7 @@ public class TransactionManager
                         evt     = pt.getLogEvent();
                         prof    = pt.getProfiler();
                         if (metrics != null)
-                            metrics.record(pt.getParticipant().getClass().getName() + "-resume", prof.getPartialInMillis());
+                            metrics.record(getName(pt.getParticipant()) + "-resume", prof.getPartialInMillis());
                         if (prof != null)
                             prof.reenable();
                         pausedCounter.decrementAndGet();
