@@ -255,14 +255,14 @@ public class ChannelAdaptor
         sp = grabSpace (persist.getChild ("space"));
         in      = persist.getChildTextTrim ("in");
         out     = persist.getChildTextTrim ("out");
-        if (in == null || out == null) {
+        writeOnly = "yes".equalsIgnoreCase (getPersist().getChildTextTrim ("write-only"));
+        if (in == null || (out == null && !writeOnly)) {
             throw new ConfigurationException ("Misconfigured channel. Please verify in/out queues");
         }
         String s = persist.getChildTextTrim ("reconnect-delay");
         delay    = s != null ? Long.parseLong (s) : 10000; // reasonable default
         keepAlive = "yes".equalsIgnoreCase (persist.getChildTextTrim ("keep-alive"));
         ignoreISOExceptions = "yes".equalsIgnoreCase (persist.getChildTextTrim ("ignore-iso-exceptions"));
-        writeOnly = "yes".equalsIgnoreCase (getPersist().getChildTextTrim ("write-only"));
         String t = persist.getChildTextTrim("timeout");
         timeout = t != null && t.length() > 0 ? Long.parseLong(t) : 0l;
         ready   = getName() + ".ready";
