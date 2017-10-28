@@ -41,7 +41,7 @@
 </td>
 <td>
 <div class="infoBox" id="duration">
-<div class="counter">0.030s</div>
+<div class="counter">0.023s</div>
 <p>duration</p>
 </div>
 </td>
@@ -66,9 +66,6 @@
 <li>
 <a href="#tab1">Standard output</a>
 </li>
-<li>
-<a href="#tab2">Standard error</a>
-</li>
 </ul>
 <div id="tab0" class="tab">
 <h2>Tests</h2>
@@ -87,7 +84,7 @@
 </tr>
 <tr>
 <td class="success">testGetPackedLength</td>
-<td>0s</td>
+<td>0.001s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
@@ -107,7 +104,7 @@
 </tr>
 <tr>
 <td class="success">testInterpretThrowsArrayIndexOutOfBoundsException</td>
-<td>0s</td>
+<td>0.003s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
@@ -117,7 +114,7 @@
 </tr>
 <tr>
 <td class="success">testInterpretThrowsArrayIndexOutOfBoundsException2</td>
-<td>0.001s</td>
+<td>0.015s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
@@ -127,7 +124,7 @@
 </tr>
 <tr>
 <td class="success">testUninterpretThrowsArrayIndexOutOfBoundsException</td>
-<td>0.003s</td>
+<td>0.001s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
@@ -137,22 +134,22 @@
 </tr>
 <tr>
 <td class="success">testUninterpretThrowsArrayIndexOutOfBoundsException2</td>
-<td>0s</td>
-<td class="success">passed</td>
-</tr>
-<tr>
-<td class="success">testUninterpretThrowsArrayIndexOutOfBoundsException3</td>
-<td>0.002s</td>
-<td class="success">passed</td>
-</tr>
-<tr>
-<td class="success">testUninterpretThrowsArrayIndexOutOfBoundsException4</td>
 <td>0.001s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
-<td class="success">testUninterpretThrowsArrayIndexOutOfBoundsException5</td>
+<td class="success">testUninterpretThrowsArrayIndexOutOfBoundsException3</td>
 <td>0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testUninterpretThrowsArrayIndexOutOfBoundsException4</td>
+<td>0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testUninterpretThrowsArrayIndexOutOfBoundsException5</td>
+<td>0.001s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
@@ -162,17 +159,17 @@
 </tr>
 <tr>
 <td class="success">testUninterpretThrowsArrayIndexOutOfBoundsException7</td>
-<td>0.001s</td>
+<td>0s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">testUninterpretThrowsNegativeArraySizeException</td>
-<td>0.022s</td>
+<td>0s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">testUninterpretThrowsNullPointerException</td>
-<td>0s</td>
+<td>0.001s</td>
 <td class="success">passed</td>
 </tr>
 </table>
@@ -180,58 +177,12 @@
 <div id="tab1" class="tab">
 <h2>Standard output</h2>
 <span class="code">
-<pre>&lt;log realm=&quot;server.channel/127.0.0.1:36030&quot; at=&quot;2017-10-28T00:37:33.141&quot; lifespan=&quot;33ms&quot;&gt;
-  &lt;send&gt;
-    &lt;isomsg&gt;
-      &lt;!-- org.jpos.iso.packager.XMLPackager --&gt;
-      &lt;field id=&quot;0&quot; value=&quot;0810&quot;/&gt;
-    &lt;/isomsg&gt;
-    &lt;exception name=&quot;Connection closed by remote host&quot;&gt;
-    java.net.SocketException: Connection closed by remote host
-	at sun.security.ssl.SSLSocketImpl.checkWrite(SSLSocketImpl.java:1565)
-	at sun.security.ssl.AppOutputStream.write(AppOutputStream.java:124)
-	at java.io.BufferedOutputStream.flushBuffer(BufferedOutputStream.java:82)
-	at java.io.BufferedOutputStream.flush(BufferedOutputStream.java:140)
-	at java.io.DataOutputStream.flush(DataOutputStream.java:123)
-	at org.jpos.iso.BaseChannel.send(BaseChannel.java:591)
-	at org.jpos.iso.SslChannelIntegrationTest$TestListener.process(SslChannelIntegrationTest.java:150)
-	at org.jpos.iso.ISOServer$Session.run(ISOServer.java:349)
-	at org.jpos.util.ThreadPool$PooledThread.run(ThreadPool.java:76)
-    &lt;/exception&gt;
-  &lt;/send&gt;
-&lt;/log&gt;
-&lt;log realm=&quot;server.channel/127.0.0.1:36030&quot; at=&quot;2017-10-28T00:37:33.143&quot;&gt;
+<pre>&lt;log realm=&quot;server.channel/127.0.0.1:44260&quot; at=&quot;2017-10-28T03:03:03.569&quot; lifespan=&quot;22ms&quot;&gt;
   &lt;receive/&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;server.session/127.0.0.1:36030&quot; at=&quot;2017-10-28T00:37:33.144&quot;&gt;
-  &lt;session-error&gt;
-    &lt;exception name=&quot;unconnected ISOChannel&quot;&gt;
-    java.io.IOException: unconnected ISOChannel
-	at org.jpos.iso.BaseChannel.receive(BaseChannel.java:698)
-	at org.jpos.iso.ISOServer$Session.run(ISOServer.java:344)
-	at org.jpos.util.ThreadPool$PooledThread.run(ThreadPool.java:76)
-    &lt;/exception&gt;
-  &lt;/session-error&gt;
-&lt;/log&gt;
-&lt;log realm=&quot;server.session/127.0.0.1:36030&quot; at=&quot;2017-10-28T00:37:33.144&quot;&gt;
+&lt;log realm=&quot;server.session/127.0.0.1:44260&quot; at=&quot;2017-10-28T03:03:03.569&quot;&gt;
   &lt;session-end/&gt;
 &lt;/log&gt;
-</pre>
-</span>
-</div>
-<div id="tab2" class="tab">
-<h2>Standard error</h2>
-<span class="code">
-<pre>java.net.SocketException: Connection closed by remote host
-	at sun.security.ssl.SSLSocketImpl.checkWrite(SSLSocketImpl.java:1565)
-	at sun.security.ssl.AppOutputStream.write(AppOutputStream.java:124)
-	at java.io.BufferedOutputStream.flushBuffer(BufferedOutputStream.java:82)
-	at java.io.BufferedOutputStream.flush(BufferedOutputStream.java:140)
-	at java.io.DataOutputStream.flush(DataOutputStream.java:123)
-	at org.jpos.iso.BaseChannel.send(BaseChannel.java:591)
-	at org.jpos.iso.SslChannelIntegrationTest$TestListener.process(SslChannelIntegrationTest.java:150)
-	at org.jpos.iso.ISOServer$Session.run(ISOServer.java:349)
-	at org.jpos.util.ThreadPool$PooledThread.run(ThreadPool.java:76)
 </pre>
 </span>
 </div>
@@ -243,7 +194,7 @@
 <input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
 </label>
 </div>Generated by 
-<a href="http://www.gradle.org">Gradle 4.0.1</a> at Oct 28, 2017 12:39:45 AM</p>
+<a href="http://www.gradle.org">Gradle 4.0.1</a> at Oct 28, 2017 3:04:56 AM</p>
 </div>
 </div>
 </body>
