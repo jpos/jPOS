@@ -2,19 +2,19 @@ jPOS Project
 Contributor License Agreement V1.0
 based on http://www.apache.org/licenses/
 
-Thank you for your interest in the jPOS project by Alejandro P. Revilla
-(Uruguayan company #212 752 380 016) doing business as jPOS Organization
-(jPOS.org). In order to clarify the intellectual property license granted with
-Contributions from any person or entity, jPOS.org must have a Contributor
-License Agreement ("CLA") that has been signed by each Contributor, indicating
-agreement to the license terms below. This license is for your protection as a
-Contributor as well as the protection of jPOS.org and its users; it does not
-change your rights to use your own Contributions for any other purpose.  
+Thank you for your interest in the jPOS project by jPOS Software SRL (Uruguayan
+company #217 883 210 018 - jPOS.org). In order to clarify the intellectual property
+license granted with Contributions from any person or entity, jPOS Software SRL
+must have a Contributor License Agreement ("CLA") that has been signed by each
+Contributor, indicating agreement to the license terms below. This license is
+for your protection as a Contributor as well as the protection of jPOS.org and
+its users; it does not change your rights to use your own Contributions for any
+other purpose.  
 
 If you have not already done so, please complete this agreement and
 commit it to the jPOS repository at
-https://svn.sourceforge.net/svnroot/jpos at legal/cla-USERNAME.txt using
-your authenticated SourceForge login. If you do not have commit
+https://github.com/jpos/jPOS/tree/master/legal at legal/cla-USERNAME.txt using
+your authenticated Github login. If you do not have commit
 privilege to the repository, please email the file to license@jpos.org.
 If possible, digitally sign the committed file, otherwise also send a
 signed Agreement to jPOS.org.
