@@ -136,9 +136,9 @@ public class ISOField
                 p.println("]]></" + XMLPackager.ISOFIELD_TAG + ">");
             } else if (value.startsWith("{")) {
                 p.print(indent + "<" + XMLPackager.ISOFIELD_TAG + " " +
-                        XMLPackager.ID_ATTR + "=\"" + fieldNumber + "\">");
+                        XMLPackager.ID_ATTR + "=\"" + fieldNumber + "\"><![CDATA[");
                 p.print(value);
-                p.println("</" + XMLPackager.ISOFIELD_TAG + ">");
+                p.println("]]></" + XMLPackager.ISOFIELD_TAG + ">");
             } else {
                 p.println(indent + "<" + XMLPackager.ISOFIELD_TAG + " " +
                         XMLPackager.ID_ATTR + "=\"" + fieldNumber + "\" " +

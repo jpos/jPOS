@@ -24,6 +24,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * various functions needed to pack/unpack ISO-8583 fields
@@ -64,6 +65,7 @@ public class ISOUtil {
      * @deprecated use {@link #CHARSET} instead
      */
     public static final String ENCODING  = "ISO8859_1";
+    public static final Pattern unicodePattern = Pattern.compile("u00([0-9a-fA-F]{2})+");
 
     /**
      * Default charset for bytes transmissions over network
@@ -819,9 +821,12 @@ public class ISOUtil {
                 case '"': 
                     str.append("&quot;");
                     break;
+                case '\'':
+                    str.append("&apos;");
+                    break;
                 case '\r':
-                case '\n': 
-                    if (canonical) {
+                case '\n':
+                    if (!canonical) {
                         str.append("&#");
                         str.append(Integer.toString(ch & 0xFF));
                         str.append(';');
@@ -830,17 +835,32 @@ public class ISOUtil {
                     // else, default append char
                 default: 
                     if (ch < 0x20) {
-                        str.append("&#");
-                        str.append(Integer.toString(ch & 0xFF));
-                        str.append(';');
-                    }
-                    else if (ch > 0xff00) {
-                        str.append((char) (ch & 0xFF));
-                    } else
+                        str.append(String.format("\\u%04x", (int) (ch & 0xFF)));
+                    } else {
                         str.append(ch);
+                    }
             }
         }
         return str.toString();
+    }
+
+    public static String stripUnicode (String s) {
+        StringBuilder sb = new StringBuilder();
+        int len = s != null ? s.length() : 0;
+        boolean escape = false;
+        for (int i = 0; i < len; i++) {
+            char ch = s.charAt(i);
+            if (ch == '\\' && i < len-5 && isInternalUnicodeSequence(s.substring(i+1, i+6))) {
+                sb.append((char) (Character.digit(s.charAt(i + 4), 16) << 4 | (Character.digit(s.charAt(i + 5), 16))));
+                i += 5;
+            } else
+                sb.append(ch);
+        }
+        return sb.toString();
+    }
+
+    private static boolean isInternalUnicodeSequence(String s) {
+        return unicodePattern.matcher(s).matches();
     }
     /**
      * XML normalizer (default canonical)
