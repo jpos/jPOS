@@ -90,7 +90,7 @@ public class BSHRequestListener extends Log
 
                     // any non-null and non-boolean value is considered "true-ish"
                     // a null return is considered false
-                    if (ret != null && ret instanceof Boolean && ((Boolean) ret).booleanValue()) {
+                    if (ret != null && (!(ret instanceof Boolean) || (Boolean)ret)) {
                         return true;
                     }
 
