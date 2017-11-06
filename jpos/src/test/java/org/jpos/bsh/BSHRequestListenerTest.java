@@ -47,7 +47,7 @@ public class BSHRequestListenerTest {
         BSHRequestListener bSHRequestListener = new BSHRequestListener();
         bSHRequestListener.setConfiguration(new SimpleConfiguration());
         boolean result = bSHRequestListener.process(new PostChannel(), new ISOMsg("testBSHRequestListenerMti"));
-        assertTrue("result", result);
+        assertFalse("result should be false", result); //there is no source to process
         assertEquals("bSHRequestListener.whitelist.size()", 1, bSHRequestListener.whitelist.size());
     }
 

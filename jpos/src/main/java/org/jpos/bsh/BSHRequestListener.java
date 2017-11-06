@@ -35,12 +35,11 @@ import java.util.HashSet;
  * @author <a href="mailto:apr@cs.com.uy">Alejandro P. Revilla</a>
  * @version $Revision$ $Date$
  */
-@SuppressWarnings("unchecked")
 public class BSHRequestListener extends Log
     implements ISORequestListener, Configurable
 {
     protected static final String MTI_MACRO = "$mti";
-    protected HashSet whitelist;
+    protected HashSet<String> whitelist;
     protected String[] bshSource;
     Configuration cfg;
     public BSHRequestListener () {
@@ -59,7 +58,7 @@ public class BSHRequestListener extends Log
         this.cfg = cfg;
         bshSource = cfg.getAll ("source");
         String[] mti = cfg.get ("whitelist", "*").split(",");
-        whitelist = new HashSet( Arrays.asList(mti) );
+        whitelist = new HashSet<>( Arrays.asList(mti) );
     }
 
     public boolean process (ISOSource source, ISOMsg m) {
@@ -91,13 +90,8 @@ public class BSHRequestListener extends Log
 
                     // any non-null and non-boolean value is considered "true-ish"
                     // a null return is considered false
-                    if (ret != null) {
-                        if (ret instanceof Boolean)
-                            return ((Boolean) ret).booleanValue();
-                        else
-                            return true;
-                    } else {
-                        return false;
+                    if (ret != null && ret instanceof Boolean && ((Boolean) ret).booleanValue()) {
+                        return true;
                     }
 
                 } catch (Exception e) {
@@ -108,7 +102,8 @@ public class BSHRequestListener extends Log
             warn(e);
             return false;
         }
-        return true;
+        //if we reached this far none of the sources handled the request.
+        return false;
     }
 }
 
