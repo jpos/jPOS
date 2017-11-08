@@ -41,7 +41,7 @@
 </td>
 <td>
 <div class="infoBox" id="duration">
-<div class="counter">0.285s</div>
+<div class="counter">0.183s</div>
 <p>duration</p>
 </div>
 </td>
@@ -84,7 +84,7 @@
 </tr>
 <tr>
 <td class="success">testConstructor</td>
-<td>0s</td>
+<td>0.001s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
@@ -94,52 +94,52 @@
 </tr>
 <tr>
 <td class="success">testEndElementThrowsEmptyStackException</td>
-<td>0s</td>
+<td>0.013s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">testEndElementThrowsEmptyStackException1</td>
-<td>0.001s</td>
+<td>0s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">testEndElementThrowsNullPointerException</td>
-<td>0.001s</td>
+<td>0s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">testGetFieldDescription</td>
-<td>0.001s</td>
+<td>0s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">testGetLogger</td>
-<td>0.005s</td>
+<td>0.001s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">testGetRealm</td>
-<td>0.001s</td>
+<td>0s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">testGetRealm1</td>
-<td>0.003s</td>
+<td>0.001s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">testPack</td>
-<td>0.126s</td>
+<td>0.116s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">testPackException</td>
-<td>0.043s</td>
+<td>0.009s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">testSetLogger</td>
-<td>0.001s</td>
+<td>0.016s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
@@ -159,7 +159,7 @@
 </tr>
 <tr>
 <td class="success">testStartElementThrowsNullPointerException</td>
-<td>0.003s</td>
+<td>0.004s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
@@ -169,17 +169,17 @@
 </tr>
 <tr>
 <td class="success">testUnpackBytes</td>
-<td>0.010s</td>
+<td>0.003s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">testUnpackLargeXmlBytes</td>
-<td>0.055s</td>
+<td>0.004s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">testUnpackStream</td>
-<td>0.030s</td>
+<td>0.010s</td>
 <td class="success">passed</td>
 </tr>
 </table>
@@ -187,7 +187,7 @@
 <div id="tab1" class="tab">
 <h2>Standard output</h2>
 <span class="code">
-<pre>&lt;log realm=&quot;org.jpos.iso.packager.XMLPackager&quot; at=&quot;2017-11-08T14:01:57.021&quot; lifespan=&quot;3ms&quot;&gt;
+<pre>&lt;log realm=&quot;org.jpos.iso.packager.XMLPackager&quot; at=&quot;2017-11-08T16:06:09.454&quot;&gt;
   &lt;unpack&gt;
     &lt;isomsg&gt;
       &lt;header&gt;686561646572&lt;/header&gt;
@@ -199,7 +199,7 @@
     &lt;/isomsg&gt;
   &lt;/unpack&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;org.jpos.iso.packager.XMLPackager&quot; at=&quot;2017-11-08T14:01:57.047&quot;&gt;
+&lt;log realm=&quot;org.jpos.iso.packager.XMLPackager&quot; at=&quot;2017-11-08T16:06:09.464&quot;&gt;
   &lt;pack&gt;
     &lt;isomsg&gt;
       &lt;!-- org.jpos.iso.packager.XMLPackager --&gt;
@@ -211,7 +211,7 @@
     &lt;/isomsg&gt;
   &lt;/pack&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;org.jpos.iso.packager.XMLPackager&quot; at=&quot;2017-11-08T14:01:57.176&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;org.jpos.iso.packager.XMLPackager&quot; at=&quot;2017-11-08T16:06:09.581&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;unpack&gt;
     &lt;isomsg&gt;
       &lt;field id=&quot;0&quot; value=&quot;0800&quot;/&gt;
@@ -219,7 +219,7 @@
     &lt;/isomsg&gt;
   &lt;/unpack&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;org.jpos.iso.packager.XMLPackager&quot; at=&quot;2017-11-08T14:01:57.239&quot;&gt;
+&lt;log realm=&quot;org.jpos.iso.packager.XMLPackager&quot; at=&quot;2017-11-08T16:06:09.599&quot;&gt;
   &lt;pack&gt;
     &lt;iso-exception&gt;
       cannot pack class org.jpos.iso.ISOField
@@ -256,7 +256,7 @@
 	at org.gradle.internal.dispatch.ContextClassLoaderDispatch.dispatch(ContextClassLoaderDispatch.java:32)
 	at org.gradle.internal.dispatch.ProxyDispatchAdapter$DispatchingInvocationHandler.invoke(ProxyDispatchAdapter.java:93)
 	at com.sun.proxy.$Proxy3.processTestClass(Unknown Source)
-	at org.gradle.api.internal.tasks.testing.worker.TestWorker.processTestClass(TestWorker.java:109)
+	at org.gradle.api.internal.tasks.testing.worker.TestWorker.processTestClass(TestWorker.java:108)
 	at sun.reflect.GeneratedMethodAccessor4.invoke(Unknown Source)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
 	at java.lang.reflect.Method.invoke(Method.java:498)
@@ -266,7 +266,7 @@
 	at org.gradle.internal.remote.internal.hub.MessageHubBackedObjectConnection$DispatchWrapper.dispatch(MessageHubBackedObjectConnection.java:128)
 	at org.gradle.internal.remote.internal.hub.MessageHub$Handler.run(MessageHub.java:404)
 	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:63)
-	at org.gradle.internal.concurrent.StoppableExecutorImpl$1.run(StoppableExecutorImpl.java:46)
+	at org.gradle.internal.concurrent.ManagedExecutorImpl$1.run(ManagedExecutorImpl.java:46)
 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
 	at org.gradle.internal.concurrent.ThreadFactoryImpl$ManagedThreadRunnable.run(ThreadFactoryImpl.java:55)
@@ -274,7 +274,7 @@
     &lt;/iso-exception&gt;
   &lt;/pack&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;org.jpos.iso.packager.XMLPackager&quot; at=&quot;2017-11-08T14:01:57.283&quot;&gt;
+&lt;log realm=&quot;org.jpos.iso.packager.XMLPackager&quot; at=&quot;2017-11-08T16:06:09.625&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;unpack&gt;
     &lt;isomsg&gt;
       &lt;header&gt;686561646572&lt;/header&gt;
@@ -297,7 +297,7 @@
 <input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
 </label>
 </div>Generated by 
-<a href="http://www.gradle.org">Gradle 4.0.1</a> at Nov 8, 2017 2:03:37 PM</p>
+<a href="http://www.gradle.org">Gradle 4.3.1</a> at Nov 8, 2017 4:07:48 PM</p>
 </div>
 </div>
 </body>
