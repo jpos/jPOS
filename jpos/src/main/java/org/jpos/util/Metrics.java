@@ -20,7 +20,7 @@ package org.jpos.util;
 
 import org.HdrHistogram.Histogram;
 
-import java.io.PrintStream;
+import java.io.*;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
@@ -65,25 +65,42 @@ public class Metrics implements Loggeable {
         return h;
     }
 
-
     public void dump (PrintStream ps, String indent) {
         metrics.entrySet()
           .stream()
           .sorted(Map.Entry.comparingByKey())
-          .forEach(e -> dumpHistogram (ps, indent, e.getKey(), e.getValue().copy()));
+          .forEach(e -> dumpPercentiles (ps, indent, e.getKey(), e.getValue().copy()));
     }
 
-    private void dumpHistogram (PrintStream ps, String indent, String key, Histogram h) {
-        ps.printf ("%s%s max=%d, min=%d, mean=%.4f stddev=%.4f 0.5%%=%d 99.5%%=%d, 99.9%%=%d%n",
+    private void dumpPercentiles (PrintStream ps, String indent, String key, Histogram h) {
+        ps.printf ("%s%s min=%d, max=%d, mean=%.4f stddev=%.4f 90%%=%d, 99%%=%d, 99.9%%=%d, 99.99%%=%d tot=%d size=%d%n",
           indent,
           key,
+          h.getMinNonZeroValue(),
           h.getMaxValue(),
-          h.getMinValue(),
           h.getMean(),
           h.getStdDeviation(),
-          h.getValueAtPercentile(0.5),
-          h.getValueAtPercentile(99.5),
-          h.getValueAtPercentile(99.9)
+          h.getValueAtPercentile(90.0),
+          h.getValueAtPercentile(99.0),
+          h.getValueAtPercentile(99.9),
+          h.getValueAtPercentile(99.99),
+          h.getTotalCount(),
+          h.getEstimatedFootprintInBytes()
         );
+    }
+
+    private void dumpHistogram (File dir, String key, Histogram h) {
+        try (FileOutputStream fos = new FileOutputStream(new File(dir, key + ".hgrm"))) {
+            h.outputPercentileDistribution(new PrintStream(fos), 1.0);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void dumpHistograms (File dir, String prefix) {
+        metrics.entrySet()
+          .stream()
+          .sorted(Map.Entry.comparingByKey())
+          .forEach(e -> dumpHistogram (dir, prefix + e.getKey(), e.getValue().copy()));
     }
 }

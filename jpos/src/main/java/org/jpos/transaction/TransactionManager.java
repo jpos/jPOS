@@ -19,7 +19,6 @@
 package org.jpos.transaction;
 
 import org.HdrHistogram.AtomicHistogram;
-import org.HdrHistogram.Histogram;
 import org.jdom2.Element;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
@@ -41,10 +40,10 @@ import java.time.ZoneId;
 
 import org.jpos.iso.ISOUtil;
 
-@SuppressWarnings("unchecked unused")
+@SuppressWarnings("unchecked")
 public class TransactionManager 
     extends QBeanSupport 
-    implements Runnable, TransactionConstants, TransactionManagerMBean, Loggeable
+    implements Runnable, TransactionConstants, TransactionManagerMBean, Loggeable, MetricsProvider
 {
     public static final String  HEAD       = "$HEAD";
     public static final String  TAIL       = "$TAIL";
@@ -485,8 +484,9 @@ public class TransactionManager
         tps.reset();
     }
 
-    public Map<String, Histogram> getMetrics() {
-        return metrics.metrics();
+    @Override
+    public Metrics getMetrics() {
+        return metrics;
     }
 
     @Override
@@ -497,8 +497,9 @@ public class TransactionManager
           getActiveSessions(), maxSessions,
           (tps != null ? ", " + tps.toString() : "")
         );
-        if (metrics != null)
-            metrics.dump (ps, indent);
+        if (metrics != null) {
+            metrics.dump(ps, indent);
+        }
     }
 
     protected void commit

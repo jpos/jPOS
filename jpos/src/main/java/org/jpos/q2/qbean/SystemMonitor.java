@@ -23,9 +23,7 @@ import org.jpos.core.ConfigurationException;
 import org.jpos.iso.ISOUtil;
 import org.jpos.q2.Q2;
 import org.jpos.q2.QBeanSupport;
-import org.jpos.util.Loggeable;
-import org.jpos.util.Logger;
-import org.jpos.util.NameRegistrar;
+import org.jpos.util.*;
 
 import javax.crypto.Cipher;
 import javax.management.MBeanServerConnection;
@@ -44,6 +42,7 @@ import java.time.zone.ZoneOffsetTransition;
 import java.time.zone.ZoneOffsetTransitionRule;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * Periodically dumps Thread and memory usage
@@ -132,6 +131,7 @@ public class SystemMonitor extends QBeanSupport
         if (frozenDump == null)
             frozenDump = generateFrozenDump(indent);
         p.print(frozenDump);
+        dumpMetrics();
     }
     @Override
     public void setConfiguration(Configuration cfg) throws ConfigurationException {
@@ -258,5 +258,18 @@ public class SystemMonitor extends QBeanSupport
             return osMBean.getSystemLoadAverage();
         } catch (Throwable ignored) { }
         return -1;
+    }
+
+    private void dumpMetrics() {
+        if (cfg.get("metrics-dir", null) != null) {
+            File dir = new File(cfg.get("metrics-dir"));
+            dir.mkdir();
+            NameRegistrar.getAsMap().forEach((key, value) -> {
+                if (value instanceof MetricsProvider) {
+                    Metrics metrics = ((MetricsProvider) value).getMetrics();
+                    metrics.dumpHistograms(dir, key + "-");
+                }
+            });
+        }
     }
 }

@@ -40,7 +40,7 @@ import java.util.concurrent.TimeUnit;
 @SuppressWarnings("unchecked")
 public class QMUX
     extends QBeanSupport
-    implements SpaceListener, MUX, QMUXMBean, Loggeable
+    implements SpaceListener, MUX, QMUXMBean, Loggeable, MetricsProvider
 {
     static final String nomap = "0123456789";
     static final String DEFAULT_KEY = "41, 11";
@@ -258,8 +258,9 @@ public class QMUX
         return sb.toString();
     }
 
-    public Map<String, Histogram> getMetrics() {
-        return metrics.metrics();
+    @Override
+    public Metrics getMetrics() {
+        return metrics;
     }
 
     private String mapMTI (String mti) throws ISOException {

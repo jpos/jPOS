@@ -1,0 +1,2 @@
+Usage: dumpmetrics <path-to-dump-directory>
+
