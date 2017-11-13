@@ -1605,4 +1605,57 @@ public class ISOUtil {
         int digitGroups = (int) (Math.log10(size)/Math.log10(1024));
         return new DecimalFormat("#,##0.#").format(size/Math.pow(1024, digitGroups)) + " " + units[digitGroups];
     }
+    
+    /**
+     * At times when the charset is not the default usual one the dump will have more unprintable characters than printable.
+     * The charset will allow printing of more printable character. Usually when your data is in EBCDIC format you will run into this.
+     * 
+     * The standard hexdump that exists would print a byte array of F0F1F2 as 
+     * F0 F1 F2        ...
+     * 
+     * This hexdump, if the Charset.forName("IBM1047") is passedin as charset will print
+     * F0 F1 F2       | 123      
+     * 
+     * 
+     * @param array
+     *            the array that needs to be dumped.
+     * @param offset
+     *            From where the data needs to be dumped.
+     * @param length
+     *            The number of byte that ned to be dumped.
+     * @param charSet
+     *            The Charset encoding the array is i.
+     * @return The hexdump string.
+     */
+    public static String hexDump(byte[] array, int offset, int length, Charset charSet) {
+        // https://gist.github.com/jen20/906db194bd97c14d91df
+        final int width = 16;
+
+        StringBuilder builder = new StringBuilder();
+
+        for (int rowOffset = offset; rowOffset < offset + length; rowOffset += width) {
+            builder.append(String.format("%06d:  ", rowOffset));
+
+            for (int index = 0; index < width; index++) {
+                if (rowOffset + index < array.length) {
+                    builder.append(String.format("%02x ", array[rowOffset + index]).toUpperCase());
+                }
+                else {
+                    builder.append("   ");
+                }
+            }
+
+            if (rowOffset < array.length) {
+                int asciiWidth = Math.min(width, array.length - rowOffset);
+                builder.append("  |  ");
+                builder.append(new String(array, rowOffset, asciiWidth, charSet).replaceAll("\r\n", " ")
+                        .replaceAll("\n", " "));
+            }
+
+            builder.append(String.format("%n"));
+        }
+
+        return builder.toString();
+    }
+
 }
