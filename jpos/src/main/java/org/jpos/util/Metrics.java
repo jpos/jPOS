@@ -76,7 +76,7 @@ public class Metrics implements Loggeable {
         ps.printf ("%s%s min=%d, max=%d, mean=%.4f stddev=%.4f 90%%=%d, 99%%=%d, 99.9%%=%d, 99.99%%=%d tot=%d size=%d%n",
           indent,
           key,
-          h.getMinNonZeroValue(),
+          h.getMinValue(),
           h.getMaxValue(),
           h.getMean(),
           h.getStdDeviation(),
