@@ -114,7 +114,7 @@ public class CLI implements Runnable {
                 String p = prompt;
                 if (line == null) {
                     String s;
-                    while ((s = reader.readLine(p, null, null, null)) != null) {
+                    while ((s = reader.readLine(p)) != null) {
                         if (s.endsWith("\\")) {
                             s = s.substring(0, s.length() -1);
                             p = "";
