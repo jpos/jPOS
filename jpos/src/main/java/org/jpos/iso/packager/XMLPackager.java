@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2017 jPOS Software SRL
+ * Copyright (C) 2000-2018 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -189,7 +189,7 @@ public class XMLPackager extends DefaultHandler
             if (name.equals (ISOMSG_TAG)) {
                 if (fieldNumber >= 0) {
                     if (stk.empty())
-                        throw new SAXException ("inner without outter");
+                        throw new SAXException ("inner without outer");
 
                     ISOMsg inner = new ISOMsg(fieldNumber);
                     ((ISOMsg)stk.peek()).set (inner);
@@ -201,9 +201,9 @@ public class XMLPackager extends DefaultHandler
                 ISOMsg m     = (ISOMsg) stk.peek();
                 String value = atts.getValue(VALUE_ATTR);
                 String type  = atts.getValue(TYPE_ATTR);
-                value = value == null ? "" : value;
-                if (id == null || value == null)
+                if (id == null)
                     throw new SAXException ("invalid field");
+                value = value == null ? "" : value;
 
                 ISOComponent ic;
                 if (TYPE_BINARY.equals (type)) {
@@ -216,7 +216,7 @@ public class XMLPackager extends DefaultHandler
 
                 }
                 else {
-                    ic = new ISOField (fieldNumber, value);
+                    ic = new ISOField (fieldNumber, ISOUtil.stripUnicode(value));
                 }
                 m.set (ic);
                 stk.push (ic);

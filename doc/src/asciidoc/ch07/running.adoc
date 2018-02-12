@@ -187,7 +187,7 @@ q2> clr; echo Hello; sleep 5; echo jPOS
 ----
 
 CLI commands are very easy to write, they just have
-to implement the link:http://jpos.org/doc/javadoc/org/jpos/q2/CLICommand.html[CLIContext]
+to implement the link:http://jpos.org/doc/javadoc/org/jpos/q2/CLICommand.html[CLICommand]
 interface. 
 
 Just to give you an example, the +sleep+ command is implemented like this:

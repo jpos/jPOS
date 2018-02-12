@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2017 jPOS Software SRL
+ * Copyright (C) 2000-2018 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -27,6 +27,11 @@ package org.jpos.iso;
  */
 public class EbcdicPrefixer implements Prefixer
 {
+    /**
+     * A length prefixer for up to 9 chars. The length is encoded with 1 EBCDIC
+     * chars representing 1 decimal digits.
+     */
+    public static final EbcdicPrefixer L = new EbcdicPrefixer(1);
     /**
      * A length prefixer for up to 99 chars. The length is encoded with 2 EBCDIC
      * chars representing 2 decimal digits.

@@ -8,9 +8,7 @@ jPOS Project
 Contributor License Agreement V1.0
 based on http://www.apache.org/licenses/
 
-Thank you for your interest in the jPOS project by Alejandro P. Revilla
-(Uruguayan company #212 752 380 016) conducting business as the jPOS Organization
-(jPOS.org).
+Thank you for your interest in the jPOS project by jPOS Software SRL, Uruguay.
 
 In order to clarify the intellectual property license granted with
 Contributions from any person or entity, jPOS.org must have a Contributor

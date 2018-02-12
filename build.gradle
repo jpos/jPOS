@@ -12,7 +12,7 @@ subprojects {
     apply plugin: 'pmd'
 
     group = 'org.jpos'
-    version = '2.1.1-SNAPSHOT'
+    version = '2.1.2-SNAPSHOT'
     [ compileJava, compileTestJava, javadoc ]*.options*.encoding = 'UTF-8'
     def isSnapshot = version.contains("SNAPSHOT")
     def mavenCentralRepo = isSnapshot ?
@@ -124,6 +124,6 @@ task aggregatedJavadoc (type: Javadoc, description: "Aggregated Javadocs") {
 }
 
 task wrapper( type: Wrapper ) {
-    gradleVersion = '4.0.1'
+    gradleVersion = '4.5'
 }
 

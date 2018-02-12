@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2017 jPOS Software SRL
+ * Copyright (C) 2000-2018 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -70,6 +70,7 @@ import java.security.GeneralSecurityException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import static java.util.ResourceBundle.getBundle;
@@ -107,6 +108,7 @@ public class Q2 implements FileFilter, Runnable {
     private ClassLoader mainClassLoader;
     private Log log;
     private volatile boolean started;
+    private CountDownLatch ready = new CountDownLatch(1);
     private volatile boolean shutdown;
     private volatile boolean shuttingDown;
     private volatile Thread q2Thread;
@@ -256,6 +258,7 @@ public class Q2 implements FileFilter, Runnable {
 
                     deploy();
                     checkModified();
+                    ready.countDown();
                     if (!waitForChanges(service))
                         break;
                 } catch (InterruptedException | IllegalAccessError ignored) {
@@ -291,6 +294,15 @@ public class Q2 implements FileFilter, Runnable {
     }
     public boolean running() {
         return started && !shutdown;
+    }
+    public boolean ready() {
+        return ready.getCount() == 0 && !shutdown;
+    }
+    public boolean ready (long millis) {
+        try {
+            ready.await(millis, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException ignored) { }
+        return ready();
     }
     public void shutdown (boolean join) {
         shutdown = true;

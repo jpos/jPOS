@@ -3,10 +3,10 @@
 
 [role='license']
 ======================================================
-Copyright (C) 1998-2016 by Alejandro Revilla d/b/a jPOS Consulting, Company# 212 752 380 016 - Uruguay.
+Copyright (C) 1998-2017 by jPOS Software SRL, Uruguay.
 All rights reserved. No part of this book may be reproduced in any form or by
 any electronic or mechanical means, including information storage and retrieval
-systems, without permission in writing from Alejandro Revilla, except by a
+systems, without permission in writing from jPOS Software SRL, except by a
 reviewer who may quote brief passages  in a review. 
 ======================================================
 

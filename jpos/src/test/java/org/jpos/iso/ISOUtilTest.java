@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2017 jPOS Software SRL
+ * Copyright (C) 2000-2018 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -3362,15 +3362,16 @@ public class ISOUtilTest {
                         "S\u0002\"m\u0011Ap}q\\!\u0005\u0010$:\"X\u0008FM\u00028\u000E&CZ#\"\"]'\u0008k\"\u000B$jT>L\u0017-<3z\u0000%E<\u0011\"j\u001F\u0014\u001C\fR\u00138\r\">\u0016<T7l\u0002]oM|w\"$4*ks{~Cqqx7fW^^zi}gV;cY<A=ylA%DR-9",
                         true);
         assertEquals(
-                "result",
-                "S&#2;&quot;m&#17;Ap}q\\!&#5;&#16;$:&quot;X&#8;FM&#2;8&#14;&amp;CZ#&quot;&quot;]'&#8;k&quot;&#11;$jT&gt;L&#23;-&lt;3z&#0;%E&lt;&#17;&quot;j&#31;&#20;&#28;&#12;R&#19;8&#13;&quot;&gt;&#22;&lt;T7l&#2;]oM|w&quot;$4*ks{~Cqqx7fW^^zi}gV;cY&lt;A=ylA%DR-9",
-                result);
+          "result",
+          "S\\u0002&quot;m\\u0011Ap}q\\!\\u0005\\u0010$:&quot;X\\u0008FM\\u00028\\u000e&amp;CZ#&quot;&quot;]&apos;\\u0008k&quot;\\u000b$jT&gt;L\\u0017-&lt;3z\\u0000%E&lt;\\u0011&quot;j\\u001f\\u0014\\u001c\\u000cR\\u00138\\u000d&quot;&gt;\\u0016&lt;T7l\\u0002]oM|w&quot;$4*ks{~Cqqx7fW^^zi}gV;cY&lt;A=ylA%DR-9",
+          result);
+
     }
 
     @Test
     public void testNormalize1() throws Throwable {
         String result = ISOUtil.normalize("testISOUtil\rs", true);
-        assertEquals("result", "testISOUtil&#13;s", result);
+        assertEquals("result", "testISOUtil\\u000ds", result);
     }
 
     @Test
@@ -3394,13 +3395,13 @@ public class ISOUtilTest {
     @Test
     public void testNormalize13() throws Throwable {
         String result = ISOUtil.normalize("\u0014", true);
-        assertEquals("result", "&#20;", result);
+        assertEquals("result", "\\u0014", result);
     }
 
     @Test
     public void testNormalize14() throws Throwable {
         String result = ISOUtil.normalize("\u7D79\u0001#h<Fuo|s)C<D&\\J:'{ul'p\\Nz@^dt`.", true);
-        assertEquals("result", "\u7D79&#1;#h&lt;Fuo|s)C&lt;D&amp;\\J:'{ul'p\\Nz@^dt`.", result);
+        assertEquals("result", "\u7D79\\u0001#h&lt;Fuo|s)C&lt;D&amp;\\J:&apos;{ul&apos;p\\Nz@^dt`.", result);
     }
 
     @Test
@@ -3418,13 +3419,13 @@ public class ISOUtilTest {
     @Test
     public void testNormalize17() throws Throwable {
         String result = ISOUtil.normalize("testISOUtil\rs");
-        assertEquals("result", "testISOUtil&#13;s", result);
+        assertEquals("result", "testISOUtil\\u000ds", result);
     }
 
     @Test
     public void testNormalize18() throws Throwable {
         String result = ISOUtil.normalize("\rI\u0004\"e", true);
-        assertEquals("result", "&#13;I&#4;&quot;e", result);
+        assertEquals("result", "\\u000dI\\u0004&quot;e", result);
     }
 
     @Test
@@ -3435,7 +3436,7 @@ public class ISOUtilTest {
                         false);
         assertEquals(
                 "result",
-                "&#20;iSa4&#13;@&#5;/&#26;i&gt;iK&gt;&amp;%EA]&#30;&#29;:B&#15;-&#22;&#18;K=9&#29;&#25;t:&amp;.2&quot;F&lt;}Nf&#17;&#3;&#8;,&#21;=&#29;&#10;?&#18;&#14;o&lt;E&#31;&#7;&#26;C&#28;3&#18;d7:rf^l,`",
+                "\\u0014iSa4&#13;@\\u0005/\\u001ai&gt;iK&gt;&amp;%EA]\\u001e\\u001d:B\\u000f-\\u0016\\u0012K=9\\u001d\\u0019t:&amp;.2&quot;F&lt;}Nf\\u0011\\u0003\\u0008,\\u0015=\\u001d&#10;?\\u0012\\u000eo&lt;E\\u001f\\u0007\\u001aC\\u001c3\\u0012d7:rf^l,`",
                 result);
     }
 
@@ -3459,7 +3460,7 @@ public class ISOUtilTest {
                         true);
         assertEquals(
                 "result",
-                "&#4;r2&#19;&amp;mX&amp;&#20;&#23;hT&#14;}Y!{&#4;&amp;&#22;&#15;b&quot;D&#27;&#20;Qz&#30;-&amp;fe&lt;&#18;]&lt;.5\\&#1;&#0;&#29;%v&#31;raS&quot;mMlc&#20;&#31;&#8;Q&quot;&#25;&amp;&#14;\\&#4;&#15;&#9;&#15;&amp;:\u4BF6",
+                "\\u0004r2\\u0013&amp;mX&amp;\\u0014\\u0017hT\\u000e}Y!{\\u0004&amp;\\u0016\\u000fb&quot;D\\u001b\\u0014Qz\\u001e-&amp;fe&lt;\\u0012]&lt;.5\\\\u0001\\u0000\\u001d%v\\u001fraS&quot;mMlc\\u0014\\u001f\\u0008Q&quot;\\u0019&amp;\\u000e\\\\u0004\\u000f\\u0009\\u000f&amp;:\u4BF6",
                 result);
     }
 
@@ -3471,7 +3472,7 @@ public class ISOUtilTest {
                         true);
         assertEquals(
                 "result",
-                "@|k7&#20;[&quot;7w&#2;'&gt;&#5;&#29;[&#29;&#12;u0,&quot;9'K&#7;u&#23;[@&quot;&gt;V&gt;&lt;uNo&gt;&#30;yj8&gt;, pS5V&amp;&lt;/sCZ &#8;dBz&quot;M&quot;%Wv)lQ)&lt;u7&gt;c]VKWRExFkiXlc1#'&gt;?QU |d45\\eZR",
+                "@|k7\\u0014[&quot;7w\\u0002&apos;&gt;\\u0005\\u001d[\\u001d\\u000cu0,&quot;9&apos;K\\u0007u\\u0017[@&quot;&gt;V&gt;&lt;uNo&gt;\\u001eyj8&gt;, pS5V&amp;&lt;/sCZ \\u0008dBz&quot;M&quot;%Wv)lQ)&lt;u7&gt;c]VKWRExFkiXlc1#&apos;&gt;?QU |d45\\eZR",
                 result);
     }
 
@@ -3489,7 +3490,7 @@ public class ISOUtilTest {
                         false);
         assertEquals(
                 "result",
-                "iC&#18;Vi&lt;&#9;&lt; A\\`&gt;|&amp;&#13;w&#24;l&#0;d&#15;_`&gt;\\ N8&#22;%Up&#13;f&#5;&#25;G&gt;%&gt;1Wnx;Ul0Rz}%[wn&#14;&#28;*&#9;&gt;DJ,&lt;\uDB18\uCA4B\u8FF8\u340F\u4F1F",
+                "iC\\u0012Vi&lt;\\u0009&lt; A\\`&gt;|&amp;&#13;w\\u0018l\\u0000d\\u000f_`&gt;\\ N8\\u0016%Up&#13;f\\u0005\\u0019G&gt;%&gt;1Wnx;Ul0Rz}%[wn\\u000e\\u001c*\\u0009&gt;DJ,&lt;\uDB18\uCA4B\u8FF8\u340F\u4F1F",
                 result);
     }
 
@@ -3503,7 +3504,7 @@ public class ISOUtilTest {
     public void testNormalize4() throws Throwable {
         String result = ISOUtil.normalize(" XX XXXX  XX XXXX X  XXX  XX XXXXX XXXXX   XX XXXXXXXX   XX X X  \t XXX",
                 true);
-        assertEquals("result", " XX XXXX  XX XXXX X  XXX  XX XXXXX XXXXX   XX XXXXXXXX   XX X X  &#9; XXX", result);
+        assertEquals("result", " XX XXXX  XX XXXX X  XXX  XX XXXXX XXXXX   XX XXXXXXXX   XX X X  \\u0009 XXX", result);
     }
 
     @Test
@@ -3514,38 +3515,50 @@ public class ISOUtilTest {
                         true);
         assertEquals(
                 "result",
-                "iC&#18;Vi&lt;&#9;&lt; A\\`&gt;|&amp;&#13;w&#24;l&#0;d&#15;_`&gt;\\ N8&#22;%Up&#13;f&#5;&#25;G&gt;%&gt;1Wnx;Ul0Rz}%[wn&#14;&#28;*&#9;&gt;DJ,&lt;\uDB18\uCA4B\u8FF8\u340F\u4F1F",
+                "iC\\u0012Vi&lt;\\u0009&lt; A\\`&gt;|&amp;\\u000dw\\u0018l\\u0000d\\u000f_`&gt;\\ N8\\u0016%Up\\u000df\\u0005\\u0019G&gt;%&gt;1Wnx;Ul0Rz}%[wn\\u000e\\u001c*\\u0009&gt;DJ,&lt;\uDB18\uCA4B\u8FF8\u340F\u4F1F",
                 result);
     }
 
     @Test
     public void testNormalize6() throws Throwable {
         String result = ISOUtil.normalize("\rI\u0004\"e", false);
-        assertEquals("result", "&#13;I&#4;&quot;e", result);
+        assertEquals("result", "&#13;I\\u0004&quot;e", result);
     }
 
     @Test
     public void testNormalize7() throws Throwable {
         String result = ISOUtil.normalize("J\u0006YTuVP>F}R+Js:(aD", true);
-        assertEquals("result", "J&#6;YTuVP&gt;F}R+Js:(aD", result);
+        assertEquals("result", "J\\u0006YTuVP&gt;F}R+Js:(aD", result);
     }
 
     @Test
     public void testNormalize8() throws Throwable {
         String result = ISOUtil.normalize(">=\u0011[\u0011_f\u0019<&[", true);
-        assertEquals("result", "&gt;=&#17;[&#17;_f&#25;&lt;&amp;[", result);
+        assertEquals("result", "&gt;=\\u0011[\\u0011_f\\u0019&lt;&amp;[", result);
     }
 
     @Test
     public void testNormalize9() throws Throwable {
-        String result = ISOUtil
-                .normalize(
-                        "<\u0010}\"\uCD88\uD16A\u1384\uFE1A\u44B2\u2712\u3BD7\u3AE5\uFCC4\uD19B\u16F2\uD45A\u45F8\u65FF\uA224\u3930\u946E\u8FB0\u3550\u061D\u4741\u8084\u8606\u6B1A\u8F81\uC634\u0190\u2053\uFA5A\u4C3F\uD365\uF7A7\uF8D4",
-                        true);
+        String s = "<\u0010}\"\uCD88\uD16A\u1384\uFE1A\u44B2\u2712\u3BD7\u3AE5\uFCC4\uD19B\u16F2\uD45A\u45F8\u65FF\uA224\u3930\u946E\u8FB0\u3550\u061D\u4741\u8084\u8606\u6B1A\u8F81\uC634\u0190\u2053\uFA5A\u4C3F\uD365\uF7A7\uF8D4";
+
+        String result = ISOUtil.normalize(s, true);
         assertEquals(
                 "result",
-                "&lt;&#16;}&quot;\uCD88\uD16A\u1384\uFE1A\u44B2\u2712\u3BD7\u3AE5\uFCC4\uD19B\u16F2\uD45A\u45F8\u65FF\uA224\u3930\u946E\u8FB0\u3550\u061D\u4741\u8084\u8606\u6B1A\u8F81\uC634\u0190\u2053\uFA5A\u4C3F\uD365\uF7A7\uF8D4",
+                "&lt;\\u0010}&quot;\uCD88\uD16A\u1384\uFE1A\u44B2\u2712\u3BD7\u3AE5\uFCC4\uD19B\u16F2\uD45A\u45F8\u65FF\uA224\u3930\u946E\u8FB0\u3550\u061D\u4741\u8084\u8606\u6B1A\u8F81\uC634\u0190\u2053\uFA5A\u4C3F\uD365\uF7A7\uF8D4",
                 result);
+    }
+
+    @Test
+    public void testNormalizeDenormalize() throws Throwable {
+        String s = "\u0010}\uCD88\uD16A\u1384\uFE1A\u44B2\u2712\u3BD7\u3AE5\uFCC4\uD19B\u16F2\uD45A\u45F8\u65FF\uA224\u3930\u946E\u8FB0\u3550\u061D\u4741\u8084\u8606\u6B1A\u8F81\uC634\u0190\u2053\uFA5A\u4C3F\uD365\uF7A7\uF8D4";
+
+        String result = ISOUtil.normalize(s, true);
+        assertEquals(
+          "result",
+          "\\u0010}\uCD88\uD16A\u1384\uFE1A\u44B2\u2712\u3BD7\u3AE5\uFCC4\uD19B\u16F2\uD45A\u45F8\u65FF\uA224\u3930\u946E\u8FB0\u3550\u061D\u4741\u8084\u8606\u6B1A\u8F81\uC634\u0190\u2053\uFA5A\u4C3F\uD365\uF7A7\uF8D4",
+          result);
+
+        assertEquals("original", s, ISOUtil.stripUnicode(result));
     }
 
     @Test
@@ -4775,5 +4788,16 @@ public class ISOUtilTest {
         assertEquals ("ASCII strings should be the same", s, s1);
         assertArrayEquals ("byte[] should be the same as s1", b, s1.getBytes(ISOUtil.CHARSET));
         assertArrayEquals ("byte[] should be the same as ascii", b, new String(ascii, ISOUtil.CHARSET).getBytes(ISOUtil.CHARSET));
+    }
+
+    @Test
+    public void testStringDLE() {
+        byte[] b = new byte[32];
+        for (int i=0; i<32; i++)
+            b[i] = (byte) i;
+        String s = "The quick brown fox " + new String(b, ISOUtil.CHARSET) + " jumps over the lazy dog";
+        String normalized = ISOUtil.normalize (s);
+        String stripped = ISOUtil.stripUnicode(normalized);
+        assertEquals(s, stripped);
     }
 }

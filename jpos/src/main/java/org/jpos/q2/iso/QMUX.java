@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2017 jPOS Software SRL
+ * Copyright (C) 2000-2018 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,10 +26,7 @@ import org.jpos.iso.*;
 import org.jpos.q2.QBeanSupport;
 import org.jpos.q2.QFactory;
 import org.jpos.space.*;
-import org.jpos.util.Chronometer;
-import org.jpos.util.Loggeable;
-import org.jpos.util.Metrics;
-import org.jpos.util.NameRegistrar;
+import org.jpos.util.*;
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -43,7 +40,7 @@ import java.util.concurrent.TimeUnit;
 @SuppressWarnings("unchecked")
 public class QMUX
     extends QBeanSupport
-    implements SpaceListener, MUX, QMUXMBean, Loggeable
+    implements SpaceListener, MUX, QMUXMBean, Loggeable, MetricsProvider
 {
     static final String nomap = "0123456789";
     static final String DEFAULT_KEY = "41, 11";
@@ -220,7 +217,10 @@ public class QMUX
                     }
                 }
             } catch (ISOException e) {
-                getLog().warn ("notify", e);
+                LogEvent evt = getLog().createLogEvent("notify");
+                evt.addMessage(e);
+                evt.addMessage(obj);
+                Logger.log(evt);
             }
             processUnhandled (m);
         }
@@ -258,8 +258,9 @@ public class QMUX
         return sb.toString();
     }
 
-    public Map<String, Histogram> getMetrics() {
-        return metrics.metrics();
+    @Override
+    public Metrics getMetrics() {
+        return metrics;
     }
 
     private String mapMTI (String mti) throws ISOException {
