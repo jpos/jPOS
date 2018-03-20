@@ -31,10 +31,14 @@ import org.jpos.util.NameRegistrar;
 import javax.net.ssl.SSLSocket;
 import java.io.*;
 import java.net.*;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Observable;
+import java.util.Random;
+import java.util.TimeZone;
 
 /*
  * BaseChannel was ISOChannel. Now ISOChannel is an interface
@@ -77,6 +81,7 @@ public abstract class BaseChannel extends Observable
     private int port, timeout, connectTimeout, localPort;
     private int maxPacketLength = 100000;
     private boolean keepAlive;
+    private boolean shouldEchoOnConnect = false;
     private boolean expectKeepAlive;
     private boolean soLingerOn = true;
     private int soLingerSeconds = 5;
@@ -278,6 +283,7 @@ public abstract class BaseChannel extends Observable
         usable = true;
         cnt[CONNECT]++;
         setChanged();
+        echoIfRequired();
         notifyObservers();
     }
     protected void postConnectHook() throws IOException {
@@ -1010,6 +1016,7 @@ public abstract class BaseChannel extends Observable
         }
         setOverrideHeader(cfg.getBoolean ("override-header", false));
         keepAlive = cfg.getBoolean ("keep-alive", false);
+        shouldEchoOnConnect = cfg.getBoolean("echo-on-connect", false);
         expectKeepAlive = cfg.getBoolean ("expect-keep-alive", false);
         roundRobin = cfg.getBoolean ("round-robin", false);
         if (socketFactory != this && socketFactory instanceof Configurable)
@@ -1132,4 +1139,58 @@ public abstract class BaseChannel extends Observable
             throw new InternalError();
         }
     }
+    
+    protected void echoIfRequired() throws IOException {
+        if (!shouldEchoOnConnect) {
+            return;
+        }
+        try {
+            this.send(newEchoMessage());
+        } catch (ISOException unused) {
+        }
+    }
+
+    public ISOMsg newEchoMessage() throws ISOException {
+        ISOMsg msg2 = new ISOMsg();
+        msg2.setMTI("0800");
+        msg2.set(3, "401010");
+        msg2.set(7, isoDateTime());
+        msg2.set(11, RandStan());
+        msg2.set(12, isoTime());
+        msg2.set(13, isoDate());
+        msg2.set(70, "001");
+        return msg2;
+    }
+
+    public static String RandStan() {
+        Random rand = new Random();
+        int stan = 0;
+        for (int j = 0; j < 5; j++) {
+            int randomInt = rand.nextInt();
+            stan = stan + randomInt;
+        }
+        stan = Math.abs(stan);
+        String rnd = Integer.toString(stan);
+        return rnd.substring(0, 6);//String.format("%06d",rnd);
+    }
+
+    public static String isoDate() {
+        SimpleDateFormat sdf = new SimpleDateFormat("MMdd");
+        sdf.setTimeZone(TimeZone.getTimeZone("Africa/Lagos"));
+        return sdf.format(new Date());
+    }
+
+    public static String isoTime() {
+        SimpleDateFormat sdf = new SimpleDateFormat("HHmmss");
+        sdf.setTimeZone(TimeZone.getTimeZone("Africa/Lagos"));
+        return sdf.format(new Date());
+    }
+    //yyyy-MM-dd'T'HH:mm:ss
+
+    public static String isoDateTime() {
+        SimpleDateFormat sdf = new SimpleDateFormat("MMddHHmmss");
+        sdf.setTimeZone(TimeZone.getTimeZone("Africa/Lagos"));
+        return sdf.format(new Date());
+    }
+
 }
