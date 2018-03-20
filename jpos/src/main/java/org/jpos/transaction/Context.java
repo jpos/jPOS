@@ -18,6 +18,7 @@
 
 package org.jpos.transaction;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import org.jdom2.Element;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
@@ -264,7 +265,7 @@ public class Context implements Externalizable, Loggeable, Pausable, Cloneable {
         } else if (value instanceof LogEvent) {
             ((LogEvent) value).dump(p, indent);
             p.print(indent);
-        } else if (value instanceof String && ISOUtil.needsCDATA((String) value)) {
+        } else if (value instanceof JsonNode || value instanceof String && ISOUtil.needsCDATA((String) value)) {
             p.println("");
             p.println(indent + "<![CDATA[");
             p.println(value);
