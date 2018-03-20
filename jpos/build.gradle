@@ -14,8 +14,8 @@ dependencies {
     compile libraries.slf4j_api
     compile libraries.javassist
     compile libraries.hdrhistogram
-    compile libraries.jersey_json
-
+    compile libraries.jackson_json
+    
     testCompile libraries.hamcrest
     testCompile libraries.fest_assert
     testCompile libraries.xmlunit

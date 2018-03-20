@@ -25,7 +25,7 @@ ext {
         slf4j_api: "org.slf4j:slf4j-api:1.7.22",
         slf4j_nop: "org.slf4j:slf4j-nop:1.7.22",
         hdrhistogram: 'org.hdrhistogram:HdrHistogram:2.1.10',
-        jersey_json: 'org.glassfish.jersey.media:jersey-media-json-jackson:2.22.1'
+        jackson_json: 'com.fasterxml.jackson.core:jackson-databind:2.9.4'
     ]
 }
 
