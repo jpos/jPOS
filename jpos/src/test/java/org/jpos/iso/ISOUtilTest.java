@@ -41,6 +41,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
+import org.jpos.util.LogUtil;
 import org.junit.Test;
 
 public class ISOUtilTest {
@@ -4800,35 +4801,4 @@ public class ISOUtilTest {
         String stripped = ISOUtil.stripUnicode(normalized);
         assertEquals(s, stripped);
     }
-
-    @Test
-    public void testNeedsCDATAjson() {
-        String json = "{\"amount\": 123}";
-        assertTrue(ISOUtil.needsCDATA(json));
-    }
-
-    @Test
-    public void testNeedsCDATAxml() {
-        String xml = "<tag>hello</tag>";
-        assertTrue(ISOUtil.needsCDATA(xml));
-    }
-
-    @Test
-    public void testNeedsCDATAapos() {
-        String apostrophe = "Rock'n roll";
-        assertTrue(ISOUtil.needsCDATA(apostrophe));
-    }
-
-    @Test
-    public void testNeedsCDATAamp() {
-        String amp = "This & that";
-        assertTrue(ISOUtil.needsCDATA(amp));
-    }
-
-    @Test
-    public void testNeedsCDATA() {
-        String normal = "The quick brown fox jumps over the lazy dog";
-        assertFalse(ISOUtil.needsCDATA(normal));
-    }
-
 }

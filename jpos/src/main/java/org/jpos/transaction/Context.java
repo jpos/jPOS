@@ -22,10 +22,7 @@ import org.jdom2.Element;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 import org.jpos.iso.ISOUtil;
-import org.jpos.util.Caller;
-import org.jpos.util.LogEvent;
-import org.jpos.util.Loggeable;
-import org.jpos.util.Profiler;
+import org.jpos.util.*;
 import org.jpos.rc.Result;
 
 import java.io.*;
@@ -246,7 +243,6 @@ public class Context implements Externalizable, Loggeable, Pausable, Cloneable {
             p.print(indent);
         } else if (value instanceof Element) {
             p.println("");
-            p.println(indent + "<![CDATA[");
             XMLOutputter out = new XMLOutputter(Format.getPrettyFormat());
             out.getFormat().setLineSeparator(System.lineSeparator());
             try {
@@ -255,7 +251,6 @@ public class Context implements Externalizable, Loggeable, Pausable, Cloneable {
                 ex.printStackTrace(p);
             }
             p.println("");
-            p.println(indent + "]]>");
         } else if (value instanceof byte[]) {
             byte[] b = (byte[]) value;
             p.println("");
@@ -265,18 +260,7 @@ public class Context implements Externalizable, Loggeable, Pausable, Cloneable {
             ((LogEvent) value).dump(p, indent);
             p.print(indent);
         } else if (value != null) {
-            try {
-                if (ISOUtil.needsCDATA(value.toString())) {
-                    p.println("");
-                    p.println(indent + "<![CDATA[");
-                    p.println(value);
-                    p.println(indent + "]]>");
-                } else
-                    p.print(ISOUtil.normalize(value.toString(), true));
-            } catch (Exception e) {
-                p.println(e.getMessage());
-                p.print(indent);
-            }
+            LogUtil.dump(p, indent, value.toString());
         }
         p.println();
     }

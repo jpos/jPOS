@@ -66,7 +66,6 @@ public class ISOUtil {
      */
     public static final String ENCODING  = "ISO8859_1";
     public static final Pattern unicodePattern = Pattern.compile("u00([0-9a-fA-F]{2})+");
-    public static final Pattern xmlReservedPattern = Pattern.compile("'|\"|&|<|>");
 
     /**
      * Default charset for bytes transmissions over network
@@ -1657,10 +1656,6 @@ public class ISOUtil {
         }
 
         return builder.toString();
-    }
-
-    public static boolean needsCDATA(String s) {
-        return xmlReservedPattern.matcher(s).find();
     }
 
 }

@@ -162,7 +162,6 @@ public class LogEvent {
                         p.println("]");
                     } else if (o instanceof Element) {
                         p.println("");
-                        p.println(newIndent + "<![CDATA[");
                         XMLOutputter out = new XMLOutputter(Format.getPrettyFormat());
                         out.getFormat().setLineSeparator("\n");
                         try {
@@ -171,7 +170,6 @@ public class LogEvent {
                             ex.printStackTrace(p);
                         }
                         p.println("");
-                        p.println(newIndent + "]]>");
                     } else if (o != null) {
                         p.println(newIndent + o.toString());
                     } else {
