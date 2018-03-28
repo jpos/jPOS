@@ -38,9 +38,10 @@ public class Chronometer {
     }
 
     public long lap() {
-        long elapsed = System.currentTimeMillis() - lap.get();
-        lap.set(System.currentTimeMillis());
-        return elapsed;
+        long now = System.currentTimeMillis();
+        long elapsed = now - lap.get();
+        lap.set(now);
+        return Math.max(elapsed, 0L);
     }
 
     @Override
