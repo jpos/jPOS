@@ -30,7 +30,7 @@ public class Chronometer {
     }
 
     public long elapsed() {
-        return System.currentTimeMillis() - start.get();
+        return Math.max(System.currentTimeMillis() - start.get(), 0L);
     }
 
     public void reset () {
