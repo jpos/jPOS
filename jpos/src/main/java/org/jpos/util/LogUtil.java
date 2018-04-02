@@ -37,7 +37,7 @@ public class LogUtil {
                     p.println("]]>");
                 }
             } else
-                p.println(s);
+                p.print(s);
         } catch (Exception e) {
             p.println(e.getMessage());
         }
