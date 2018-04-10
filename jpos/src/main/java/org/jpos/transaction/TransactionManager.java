@@ -384,8 +384,11 @@ public class TransactionManager
                     );
                     if (prof != null)
                         evt.addMessage (prof);
-
-                    Logger.log (new FrozenLogEvent(evt));
+                    try {
+                        Logger.log(new FrozenLogEvent(evt));
+                    } catch (Throwable t) {
+                        getLog().error(t);
+                    }
                 }
             }
         }
