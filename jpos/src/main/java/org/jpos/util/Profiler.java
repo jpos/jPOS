@@ -33,7 +33,7 @@ import java.util.LinkedHashMap;
  */
 public class Profiler implements Loggeable {
     long start, partial;
-    LinkedHashMap events;
+    LinkedHashMap<String, Entry> events;
     public static final int TO_MILLIS = 1000000;
 
     public Profiler () {
@@ -45,7 +45,7 @@ public class Profiler implements Loggeable {
      */
     public void reset() {
         start = partial = System.nanoTime();
-        events = new LinkedHashMap();
+        events = new LinkedHashMap<>();
     }
     /**
      * mark checkpoint
@@ -99,8 +99,11 @@ public class Profiler implements Loggeable {
             p.println (inner + ISOUtil.normalize(iter.next().toString()));
         p.println (indent + "</profiler>");
     }
+    public LinkedHashMap<String, Entry> getEvents() {
+        return events;
+    }
     public Entry getEntry(String eventName) {
-         return (Entry)events.get(eventName);         
+         return events.get(eventName);
     }
     public void reenable() {
         events.remove("end");
