@@ -40,6 +40,21 @@ public class TLVList implements Serializable, Loggeable {
 
     private static final long serialVersionUID = 6962311407331957465L;
 
+    /**
+     * Value not used as tag id in accordance with ISO/IEC 7816.
+     */
+    private static final int SKIP_BYTE1     = 0x00;
+
+    /**
+     * Value not used as tag id in accordance with ISO/IEC 7816.
+     */
+    private static final int SKIP_BYTE2     = 0xFF;
+
+    private static final int EXT_TAG_MASK   = 0x1F;
+
+    private static final int LEN_SIZE_MASK  = 0x7F;
+    private static final int EXT_LEN_MASK   = 0x80;
+
     private final List<TLVMsg> tags = new ArrayList<>();
 
     private int tagToFind = 0;
@@ -223,6 +238,10 @@ public class TLVList implements Serializable, Loggeable {
         return b;
     }
 
+    private boolean isExtTagByte(int b) {
+        return (b & EXT_TAG_MASK) == EXT_TAG_MASK;
+    }
+
     /**
      * Read next TLV Message from stream and return it.
      *
@@ -231,8 +250,8 @@ public class TLVList implements Serializable, Loggeable {
      * @throws BufferUnderflowException
      */
     private TLVMsg getTLVMsg(ByteBuffer buffer) throws ISOException, BufferUnderflowException {
-        int tag = getTAG(buffer);  // tag = 0 if tag not found
-        if (tag == 0)
+        int tag = getTAG(buffer);  // tag id 0x00 if tag not found
+        if (tag == SKIP_BYTE1)
             return null;
 
         // Get Length if buffer remains!
@@ -271,28 +290,27 @@ public class TLVList implements Serializable, Loggeable {
      * @throws BufferUnderflowException
      */
     private int getTAG(ByteBuffer buffer) throws BufferUnderflowException {
-        int b;
         int tag;
-        b = buffer.get() & 0xff;
+        int b = buffer.get() & 0xff;
         // Skip padding chars
-        if (b == 0xFF || b == 0x00) {
+        if (b == SKIP_BYTE1 || b == SKIP_BYTE2) {
             do {
                 if (hasNext(buffer)) {
                     b = buffer.get() & 0xff;
                 } else {
                     break;
                 }
-            } while (b == 0xFF || b == 0x00);
+            } while (b == SKIP_BYTE1 || b == SKIP_BYTE2);
         }
         // Get first byte of Tag Identifier
         tag = b;
         // Get rest of Tag identifier if required
-        if ((b & 0x1F) == 0x1F) {
+        if (isExtTagByte(b)) {
             do {
                 tag <<= 8;
                 b = buffer.get();
                 tag |= b & 0xFF;
-            } while ((b & 0x80) == 0x80);
+            } while ((b & EXT_LEN_MASK) == EXT_LEN_MASK);
         }
         return tag;
     }
@@ -305,9 +323,9 @@ public class TLVList implements Serializable, Loggeable {
      */
     protected int getValueLength(ByteBuffer buffer) throws BufferUnderflowException {
         byte b = buffer.get();
-        int count = b & 0x7f;
+        int count = b & LEN_SIZE_MASK;
         // check first byte for more bytes to follow
-        if ((b & 0x80) == 0 || count == 0)
+        if ((b & EXT_LEN_MASK) == 0 || count == 0)
             return count;
 
         //fetch rest of bytes
