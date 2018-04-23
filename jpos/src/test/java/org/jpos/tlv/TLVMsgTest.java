@@ -18,7 +18,6 @@
 
 package org.jpos.tlv;
 
-import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -148,20 +147,22 @@ public class TLVMsgTest {
         tLVMsg.setValue(newValue);
         assertSame("tLVMsg.getValue()", newValue, tLVMsg.getValue());
     }
-    
+
     @Test
     public void testGetStringValue() {
         TLVMsg tLVMsg = new TLVMsg(23, "987612".getBytes());
         String result = tLVMsg.getStringValue();
-        assertThat(result,is("393837363132"));
+        assertEquals("393837363132", result);
     }
+
     @Test
     public void testLowTagID() {
         TLVMsg tlvMsg = new TLVMsg(8, "987612".getBytes());
         String result = tlvMsg.getStringValue();
-        assertThat(result,is("393837363132"));
+        assertEquals("393837363132", result);
         byte[] b = tlvMsg.getTLV();
         assertEquals("b.length", 8, b.length);
         assertEquals("b[0]", (byte) 8, b[0]);
     }
+
 }

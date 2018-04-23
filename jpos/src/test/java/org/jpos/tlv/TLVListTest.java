@@ -37,7 +37,7 @@ import org.junit.rules.ExpectedException;
 
 public class TLVListTest {
 
-    static final String ISO_EXCEPT_EXCEEDS_AVAL = "BAD TLV FORMAT - tag (%x) length (%d) exceeds available data.";
+    static final String ISO_EXCEPT_EXCEEDS_AVAL = "BAD TLV FORMAT - tag (%x) length (%d) exceeds available data";
 
     static final String ISO_EXCEPT_WITHOUT_LEN  = "BAD TLV FORMAT - tag (%x) without length or value";
 
@@ -446,8 +446,19 @@ public class TLVListTest {
         assertTrue("tLVList.elements().hasMoreElements()", tLVList.elements().hasMoreElements());
     }
 
+    @Test(expected = BufferUnderflowException.class)
+    public void testUnpackInvalidLengthThrowsBufferUnderflowException() throws Throwable {
+        byte[] buf = ISOUtil.hex2byte("14830000");
+        try {
+            tLVList.unpack(buf);
+        } catch (RuntimeException ex) {
+            assertTrue(tLVList.getTags().isEmpty());
+            throw ex;
+        }
+    }
+
     @Test
-    public void testUnpackThrowsBufferUnderflowException3() throws Throwable {
+    public void testUnpackInvalidTagThrowsBufferUnderflowException() throws Throwable {
         byte[] buf = ISOUtil.hex2byte("007f");
         exception.expect(BufferUnderflowException.class);
         try {
@@ -679,7 +690,7 @@ public class TLVListTest {
             assertFalse("tLVList.elements().hasMoreElements()", tLVList.elements().hasMoreElements());
             throw ex;
         }
-    } 
+    }
 
     @Test
     public void testUnpackThrowsISOException6() throws Throwable {
@@ -746,4 +757,5 @@ public class TLVListTest {
     public void testUnpackThrowsNullPointerException1() throws Throwable {
         tLVList.unpack(null);
     }
+
 }

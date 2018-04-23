@@ -25,6 +25,7 @@ import org.jpos.util.Loggeable;
 import java.io.PrintStream;
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -38,7 +39,9 @@ import java.util.List;
 public class TLVList implements Serializable, Loggeable {
 
     private static final long serialVersionUID = 6962311407331957465L;
-    private List<TLVMsg> tags = new ArrayList<TLVMsg>();
+
+    private final List<TLVMsg> tags = new ArrayList<>();
+
     private int tagToFind = 0;
     private int indexLastOccurrence = -1;
 
@@ -47,10 +50,13 @@ public class TLVList implements Serializable, Loggeable {
     }
 
     /**
-     * unpack a message
-     * @param buf - raw message
+     * Unpack a message.
+     *
+     * @param buf raw message
+     * @throws ISOException
+     * @throws BufferUnderflowException
      */
-    public void unpack(byte[] buf) throws ISOException {
+    public void unpack(byte[] buf) throws ISOException, BufferUnderflowException {
         unpack(buf, 0);
     }
 
@@ -69,15 +75,19 @@ public class TLVList implements Serializable, Loggeable {
     }
 
     /**
-     * unpack a message with a starting offset
-     * @param buf - raw message
-     * @param offset theoffset
-     * @throws org.jpos.iso.ISOException
+     * Unpack a message with a starting offset.
+     *
+     * @param buf raw message
+     * @param offset the offset
+     * @throws ISOException
+     * @throws BufferUnderflowException
+     * @throws IndexOutOfBoundsException if {@code offset} exceeds {code buf.length}
      */
-    public void unpack(byte[] buf, int offset) throws ISOException {
-        ByteBuffer buffer=ByteBuffer.wrap(buf,offset,buf.length-offset);
+    public void unpack(byte[] buf, int offset) throws ISOException, BufferUnderflowException
+            , IndexOutOfBoundsException {
+        ByteBuffer buffer = ByteBuffer.wrap(buf, offset, buf.length - offset);
         TLVMsg currentNode;
-        while (hasNext(buffer)) {    
+        while (hasNext(buffer)) {
             currentNode = getTLVMsg(buffer);    // null is returned if no tag found (trailing padding)
             if (currentNode != null)
                 append(currentNode);
@@ -85,28 +95,30 @@ public class TLVList implements Serializable, Loggeable {
     }
 
     /**
-     * Append TLVMsg to the TLVList
+     * Append TLVMsg to the TLVList.
      */
-    public void append(TLVMsg tlvToAppend) {
-        tags.add(tlvToAppend);
+    public void append(TLVMsg tlv) {
+        tags.add(tlv);
     }
-    
+
     /**
-     * Append TLVMsg to the TLVList
+     * Append TLVMsg to the TLVList.
+     *
      * @param tag tag id
      * @param value tag value
      */
     public void append(int tag, byte[] value) {
-        append(new TLVMsg(tag, value));
+        append(getTLVMsg(tag, value));
     }
-    
+
     /**
-     * Append TLVMsg to the TLVList
+     * Append TLVMsg to the TLVList.
+     *
      * @param tag id
      * @param value in hexadecimal character representation
      */
     public void append(int tag, String value) {
-        append(new TLVMsg(tag, ISOUtil.hex2byte(value)));
+        append(getTLVMsg(tag, ISOUtil.hex2byte(value)));
     }
 
     /**
@@ -122,8 +134,8 @@ public class TLVList implements Serializable, Loggeable {
      * @param tag id
      */
     public void deleteByTag(int tag) {
-        List<TLVMsg> t = new ArrayList<TLVMsg>();
-        for (TLVMsg tlv2 :tags ) {
+        List<TLVMsg> t = new ArrayList<>();
+        for (TLVMsg tlv2 : tags) {
             if (tlv2.getTag() == tag)
                 t.add(tlv2);
         }
@@ -131,13 +143,14 @@ public class TLVList implements Serializable, Loggeable {
     }
 
     /**
-     * searches the list for a specified tag and returns a TLV object
+     * Searches the list for a specified tag and returns a TLV object.
+     *
      * @param tag id
-     * @return TLVMsg
+     * @return TLV message
      */
     public TLVMsg find(int tag) {
         tagToFind = tag;
-        for (TLVMsg tlv :tags ) {
+        for (TLVMsg tlv : tags) {
             if (tlv.getTag() == tag) {
                 indexLastOccurrence = tags.indexOf(tlv);
                 return tlv;
@@ -148,13 +161,15 @@ public class TLVList implements Serializable, Loggeable {
     }
 
     /**
-     * searches the list for a specified tag and returns a zero based index for
-     * that tag
-     * @return index for a given {2code tag}
+     * Searches the list for a specified tag and returns a zero based index for
+     * that tag.
+     *
+     * @param tag tag identifier
+     * @return index for a given {@code tag}
      */
     public int findIndex(int tag) {
         tagToFind = tag;
-        for (TLVMsg tlv :tags ) {
+        for (TLVMsg tlv : tags) {
             if (tlv.getTag() == tag) {
                 indexLastOccurrence = tags.indexOf(tlv);
                 return indexLastOccurrence;
@@ -163,10 +178,11 @@ public class TLVList implements Serializable, Loggeable {
         indexLastOccurrence = -1;
         return -1;
     }
-    
+
     /**
-     * Return the next TLVMsg of same TAG value
-     * @return TLVMsg (return null if not found)
+     * Return the next TLVMsg of same TAG value.
+     *
+     * @return TLV message or {@code null} if not found.
      */
     public TLVMsg findNextTLV() {
 
@@ -180,73 +196,81 @@ public class TLVList implements Serializable, Loggeable {
     }
 
     /**
-     * Returns a TLV object which represents the TLVMsg stored within the TLVList
-     * at the given index
-     * @param index number
-     * @return TLVMsg
+     * Returns a {@code TLVMsg} instance stored within the {@code TLVList} at
+     * the given {@code index}.
+     *
+     * @param index zero based index of TLV message
+     * @return TLV message instance
+     * @throws IndexOutOfBoundsException if the index is out of range
+     * (index < 0 || index >= size())
      */
-    public TLVMsg index(int index) {
+    public TLVMsg index(int index) throws IndexOutOfBoundsException {
         return tags.get(index);
     }
 
     /**
-     * pack the TLV message (BER-TLV Encoding)
+     * Pack the TLV message (BER-TLV Encoding).
+     *
      * @return the packed message
      */
     public byte[] pack() {
-        ByteBuffer buffer=ByteBuffer.allocate(516);
-        for ( TLVMsg tlv : tags)
-          buffer.put(tlv.getTLV());
-        byte[] b=new byte[buffer.position()];
+        ByteBuffer buffer = ByteBuffer.allocate(516);
+        for (TLVMsg tlv : tags)
+            buffer.put(tlv.getTLV());
+        byte[] b = new byte[buffer.position()];
         buffer.flip();
         buffer.get(b);
         return b;
- 
     }
 
     /**
-     * Read next TLV Message from stream and return it 
+     * Read next TLV Message from stream and return it.
+     *
      * @param buffer the buffer
      * @return TLVMsg
+     * @throws BufferUnderflowException
      */
-    private TLVMsg getTLVMsg(ByteBuffer buffer) throws ISOException {
+    private TLVMsg getTLVMsg(ByteBuffer buffer) throws ISOException, BufferUnderflowException {
         int tag = getTAG(buffer);  // tag = 0 if tag not found
-        if (tag ==0)
+        if (tag == 0)
             return null;
 
         // Get Length if buffer remains!
         if (!buffer.hasRemaining())
             throw new ISOException(String.format("BAD TLV FORMAT - tag (%x)"
-                    + " without length or value",tag));
-
+                    + " without length or value",tag)
+            );
         int length = getValueLength(buffer);
-        if(length >buffer.remaining())
+        if (length > buffer.remaining())
             throw new ISOException(String.format("BAD TLV FORMAT - tag (%x)"
-                    + " length (%d) exceeds available data.", tag, length));
-
-        byte[] arrValue= new byte[length];
+                    + " length (%d) exceeds available data", tag, length)
+            );
+        byte[] arrValue = new byte[length];
         buffer.get(arrValue);
 
         return getTLVMsg(tag, arrValue);
     }
-   
-    protected TLVMsg getTLVMsg(int tag, byte[] arrValue) {
-        return new TLVMsg(tag,arrValue);
+
+    protected TLVMsg getTLVMsg(int tag, byte[] value) {
+        return new TLVMsg(tag, value);
     }
 
     /**
-     * Check Existance of next TLV Field
-     * @param buffer  ByteBuffer containing TLV data
+     * Check existance of next TLV message.
+     *
+     * @param buffer contains TLV data
      */
     private  boolean hasNext(ByteBuffer buffer) {
         return buffer.hasRemaining();
     }
-    
+
     /**
      * Return the next TAG
+     *
      * @return tag
+     * @throws BufferUnderflowException
      */
-    private int getTAG(ByteBuffer buffer) {
+    private int getTAG(ByteBuffer buffer) throws BufferUnderflowException {
         int b;
         int tag;
         b = buffer.get() & 0xff;
@@ -257,7 +281,7 @@ public class TLVList implements Serializable, Loggeable {
                     b = buffer.get() & 0xff;
                 } else {
                     break;
-                }    
+                }
             } while (b == 0xFF || b == 0x00);
         }
         // Get first byte of Tag Identifier
@@ -268,18 +292,18 @@ public class TLVList implements Serializable, Loggeable {
                 tag <<= 8;
                 b = buffer.get();
                 tag |= b & 0xFF;
-                
             } while ((b & 0x80) == 0x80);
         }
         return tag;
     }
-    
+
     /**
      * Read length bytes and return the int value
      * @param buffer buffer
      * @return value length
+     * @throws BufferUnderflowException
      */
-    protected int getValueLength(ByteBuffer buffer) {
+    protected int getValueLength(ByteBuffer buffer) throws BufferUnderflowException {
         byte b = buffer.get();
         int count = b & 0x7f;
         // check first byte for more bytes to follow
@@ -291,44 +315,42 @@ public class TLVList implements Serializable, Loggeable {
         buffer.get(bb);
         //adjust buffer if first bit is turn on
         //important for BigInteger reprsentation
-        if ( (bb[0] & 0x80) > 0 )
+        if ((bb[0] & 0x80) > 0)
             bb = ISOUtil.concat(new byte[1], bb);
         return new BigInteger(bb).intValue();
     }
-    
+
     /**
      * searches the list for a specified tag and returns a hex String
      * @param tag id
-     * @return hexString  
+     * @return hexString
      */
     public String getString(int tag) {
         TLVMsg msg = find(tag);
-        if (msg != null) {
-            return msg.getStringValue();
-        }
-        else {
+        if (msg == null)
             return null;
-        }
+
+        return msg.getStringValue();
     }
-    
+
     /**
      * searches the list for a specified tag and returns it raw
      * @param tag id
-     * @return byte[]  
+     * @return byte[]
      */
     public byte[] getValue(int tag) {
         TLVMsg msg = find(tag);
-        if (msg != null) {
-            return msg.getValue();
-        }
-        else {
+        if (msg == null)
             return null;
-        }
+
+        return msg.getValue();
     }
-    
+
     /**
-     * searches the list for a specified tag and returns a boolean indicating presence
-     * @return boolean
+     * Indicates if TLV measege with passed {@code tag} is on list.
+     *
+     * @param tag tag identifier
+     * @return {@code true} if tag contains on list, {@code false} otherwise
      */
     public boolean hasTag(int tag) {
         return findIndex(tag) > -1;
@@ -337,9 +359,10 @@ public class TLVList implements Serializable, Loggeable {
     @Override
     public void dump(PrintStream p, String indent) {
         String inner = indent + "   ";
-        p.println (indent + "<tlvlist>");
+        p.println(indent + "<tlvlist>");
         for (TLVMsg msg : getTags())
-            msg.dump (p, inner);
-        p.println (indent + "</tlvlist>");
+            msg.dump(p, inner);
+        p.println(indent + "</tlvlist>");
     }
+
 }

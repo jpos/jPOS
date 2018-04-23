@@ -27,19 +27,20 @@ import org.jpos.util.Loggeable;
  * @author bharavi
  */
 public class TLVMsg implements Loggeable {
+
     private int tag;
     protected byte[] value;
 
     /**
-     * empty constructor
+     * Empty constructor.
      */
     public TLVMsg() {
         super();
     }
 
     /**
-     * constructs a TLV Message from tag and value
-     * 
+     * Constructs a TLV message from tag and value.
+     *
      * @param tag id
      * @param value tag value
      */
@@ -97,14 +98,13 @@ public class TLVMsg implements Loggeable {
             System.arraycopy(bTag, 0, out, 0, bTag.length);
             System.arraycopy(bLen, 0, out, bTag.length, bLen.length);
             return out;
-
         }
     }
 
     /**
      * Value up to 127 can be encoded in single byte and multiple bytes are
      * required for length bigger than 127
-     * 
+     *
      * @return encoded length
      */
     public byte[] getL() {
@@ -124,20 +124,20 @@ public class TLVMsg implements Loggeable {
         byte[] rBytes = bi.toByteArray();
         /* If value can be encoded on one byte */
         if (value.length < 0x80)
-          return rBytes;
+            return rBytes;
 
         //we need 1 byte to indicate the length
         //for that is used sign byte (first 8-bits equals 0),
         //if it is not present it is added
-        if ( rBytes[0] > 0 )
-          rBytes = ISOUtil.concat(new byte[1], rBytes);
-        rBytes[0] = (byte) (0x80 | rBytes.length-1);
+        if (rBytes[0] > 0)
+            rBytes = ISOUtil.concat(new byte[1], rBytes);
+        rBytes[0] = (byte) (0x80 | rBytes.length - 1);
 
         return rBytes;
     }
-    
+
     /**
-     * @return value 
+     * @return value
      */
     public String getStringValue() {
         return ISOUtil.hexString(value);
@@ -147,18 +147,20 @@ public class TLVMsg implements Loggeable {
     public String toString(){
         String t = Integer.toHexString(tag);
         if (t.length() % 2 > 0)
-          t = "0"+t;
+            t = "0" + t;
         return String.format("[tag: 0x%s, %s]", t
-                ,value==null?null:getStringValue());
+                ,value == null ? null : getStringValue()
+        );
     }
 
     @Override
     public void dump(PrintStream p, String indent) {
-        p.print (indent);
-        p.print ("<tag id='");
-        p.print (Integer.toHexString(getTag()));
-        p.print ("' value='");
-        p.print (ISOUtil.hexString(getValue()));
-        p.println ("' />");
+        p.print(indent);
+        p.print("<tag id='");
+        p.print(Integer.toHexString(getTag()));
+        p.print("' value='");
+        p.print(ISOUtil.hexString(getValue()));
+        p.println("' />");
     }
+
 }
