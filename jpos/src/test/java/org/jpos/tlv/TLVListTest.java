@@ -25,6 +25,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.jpos.iso.ISOUtil;
@@ -39,7 +40,7 @@ public class TLVListTest {
 
     static final int TEST_TAG1      = 0x64;
     static final int TEST_TAG2      = 0x46;
-    static final int TEST_TAG3      = 0x03e8;
+    static final int TEST_TAG3      = 0x1fe8;
 
     TLVList instance;
 
@@ -69,6 +70,76 @@ public class TLVListTest {
             assertFalse(instance.getTags().isEmpty());
             throw ex;
         }
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testAppendMinTagBelow() {
+        instance.append(0x00, new byte[0]);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testAppendMinTagAbove() {
+        instance.append(0xff, new byte[0]);
+    }
+
+    @Test
+    public void testAppendTwoBytesTag() {
+        byte[] expected = ISOUtil.hex2byte("37D47C");
+        instance.append(0x5f37, expected);
+        byte[] result = instance.pack();
+        assertEquals(6, result.length);
+        assertArrayEquals(ISOUtil.hex2byte("5F37"), Arrays.copyOf(result, 2));
+        assertArrayEquals(expected, Arrays.copyOfRange(result, 3, 6));
+    }
+
+    @Test
+    public void testAppendThreeBytesTag() {
+        byte[] expected = ISOUtil.hex2byte("37D47C");
+        instance.append(0xbf5f37, expected);
+        byte[] result = instance.pack();
+        assertEquals(7, result.length);
+        assertArrayEquals(ISOUtil.hex2byte("BF5F37"), Arrays.copyOf(result, 3));
+        assertArrayEquals(expected, Arrays.copyOfRange(result, 4, 7));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testAppendInvalidByteLow() {
+        instance.append(0x3f, new byte[0]);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testAppendInvalidByteHigh() {
+        instance.append(0x9f, new byte[0]);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testAppendInvalidTwoBytesTagLow() {
+        instance.append(0x6f37, new byte[0]);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testAppendInvalidTwoBytesTagHigh() {
+        instance.append(0xaf37, new byte[0]);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testAppendInvalidTwoBytesTagHighEndZero() {
+        instance.append(0xbf00, new byte[0]);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testAppendInvalidThreeBytesTagHigh() {
+        instance.append(0xbf4f37, new byte[0]);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testAppendInvalidThreeBytesTagLow() {
+        instance.append(0x3f5fbf, new byte[0]);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testAppendInvalidThreeBytesTagHighEndFF() {
+        instance.append(0x3fff04, new byte[0]);
     }
 
     @Test
@@ -230,16 +301,16 @@ public class TLVListTest {
         instance.append(instance.createTLVMsg(0x0b, null));
         instance.append(TEST_TAG3, new byte[3]);
         instance.append(TEST_TAG2, new byte[1]);
-        instance.append(-1, new byte[0]);
+        instance.append(0x0f, new byte[0]);
         instance.deleteByIndex(0);
         instance.append(instance.createTLVMsg(0x0c, null));
         instance.append(1, new byte[3]);
         instance.append(0x0a, new byte[0]);
         instance.append(instance.createTLVMsg(0x0d, null));
-        instance.append(0x2710, new byte[2]);
-        instance.append(0x0186a0, new byte[1]);
+        instance.append(0x3f10, new byte[2]);
+        instance.append(0x1f7fa0, new byte[1]);
         TLVMsg result = instance.index(10);
-        assertEquals(0x0186a0, result.getTag());
+        assertEquals(0x1f7fa0, result.getTag());
     }
 
     @Test(expected = IndexOutOfBoundsException.class)

@@ -20,6 +20,7 @@ package org.jpos.tlv;
 
 import java.io.PrintStream;
 import java.math.BigInteger;
+import java.util.Arrays;
 import org.jpos.iso.ISOUtil;
 import org.jpos.util.Loggeable;
 
@@ -27,6 +28,18 @@ import org.jpos.util.Loggeable;
  * @author bharavi
  */
 public class TLVMsg implements Loggeable {
+
+    /**
+     * Value not used as tag id in accordance with ISO/IEC 7816.
+     */
+    private static final int SKIP_BYTE1     = 0x00;
+
+    /**
+     * Value not used as tag id in accordance with ISO/IEC 7816.
+     */
+    private static final int SKIP_BYTE2     = 0xFF;
+
+    private static final int EXT_TAG_MASK   = 0x1F;
 
     private final int tag;
     private final byte[] value;
@@ -52,9 +65,68 @@ public class TLVMsg implements Loggeable {
      * The intention is to not promote the use of TLVMsg outside
      */
     @Deprecated
-    public TLVMsg(int tag, byte[] value) {
+    public TLVMsg(int tag, byte[] value) throws IllegalArgumentException {
         this.tag = tag;
         this.value = value;
+        verifyTag(tag);
+    }
+
+    private boolean isExtTagByte(int b) {
+        return (b & EXT_TAG_MASK) == EXT_TAG_MASK;
+    }
+
+    /**
+     * Verify tag identifier.
+     * <p>
+     * Tag number in accordance with ISO/IEC 7816
+     * <ol>
+     *   <li>The tag field consists of one or more consecutive bytes. It a number.
+     *   <li>ISO/IEC 7816 uses neither ’00’ nor ‘FF’ as tag value.
+     *   <li>If the bits B5-B1 of the leading byte are not all set to 1, then
+     *       may they shall encode an integer equal to the tag number. Then the
+     *       tag field consists of a single byte.
+     *       Otherwise <i>(B5-B1 set to 1 in the leading byte)</i>, the tag
+     *       field shall continue on one or more subsequent bytes.
+     *   </li>
+     * </ol>
+     *
+     * See <a href="http://cardwerk.com/iso7816-4-annex-d-use-of-basic-encoding-rules-asn-1/#AnnexD_2">ISO 7816-4 Annex D.2: Tag field</a>
+     *
+     * @param tag tag identifier
+     * @throws IllegalArgumentException if tag identifier is zero or less or
+     * it is included in the illegal ranges.
+     */
+    private void verifyTag(int tag) throws IllegalArgumentException {
+        if (tag <= 0)
+            throw new IllegalArgumentException("Tag id must be greater than zero");
+
+        BigInteger bi = BigInteger.valueOf(tag);
+        byte[] ba = bi.toByteArray();
+        if (ba[0] == 0x00)
+            // strip byte array if starts with 0x00
+            ba = Arrays.copyOfRange(ba, 1, ba.length);
+
+        int idx = 0;
+        do {
+            if ((ba[idx] & 0xff) == SKIP_BYTE1) {
+                throw new IllegalArgumentException("Tag id: 0x" + Integer.toString(tag, 0x10).toUpperCase()
+                        + " cannot contain in any 0x00 byte"
+                );
+            } else if ((ba[idx] & 0xff) == SKIP_BYTE2) {
+                throw new IllegalArgumentException("Tag id: 0x" + Integer.toString(tag, 0x10).toUpperCase()
+                        + " cannot contain in any 0xff byte"
+                );
+            } else if (isExtTagByte(ba[idx])) {
+                if (ba.length <= idx + 1)
+                    throw new IllegalArgumentException("Tag id: 0x" + Integer.toString(tag, 0x10).toUpperCase()
+                            + " shall contain subsequent byte"
+                    );
+            } else if (idx + 1 < ba.length)
+                throw new IllegalArgumentException("Tag id: 0x" + Integer.toString(tag, 0x10).toUpperCase()
+                        + " cannot contain subsequent byte"
+                );
+            idx++;
+        } while (idx < ba.length);
     }
 
     /**

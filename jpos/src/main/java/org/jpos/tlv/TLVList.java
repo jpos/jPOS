@@ -124,8 +124,9 @@ public class TLVList implements Serializable, Loggeable {
      *
      * @param tag tag id
      * @param value tag value
+     * @throws IllegalArgumentException when contains tag with illegal id
      */
-    public void append(int tag, byte[] value) {
+    public void append(int tag, byte[] value) throws IllegalArgumentException {
         append(createTLVMsg(tag, value));
     }
 
@@ -134,8 +135,9 @@ public class TLVList implements Serializable, Loggeable {
      *
      * @param tag id
      * @param value in hexadecimal character representation
+     * @throws IllegalArgumentException when contains tag with illegal id
      */
-    public void append(int tag, String value) {
+    public void append(int tag, String value) throws IllegalArgumentException {
         append(createTLVMsg(tag, ISOUtil.hex2byte(value)));
     }
 
@@ -286,9 +288,10 @@ public class TLVList implements Serializable, Loggeable {
      * @param tag tag identifier
      * @param value the value of tag
      * @return TLV message instance
+     * @throws IllegalArgumentException when contains tag with illegal id
      */
     @SuppressWarnings("deprecation")
-    protected TLVMsg createTLVMsg(int tag, byte[] value) {
+    protected TLVMsg createTLVMsg(int tag, byte[] value) throws IllegalArgumentException {
         return new TLVMsg(tag, value);
     }
 
