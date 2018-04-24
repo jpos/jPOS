@@ -37,12 +37,6 @@ public class TLVMsgTest {
     }
 
     @Test
-    public void testConstructor1() {
-        msg = new TLVMsg();
-        assertEquals(0, msg.getTag());
-    }
-
-    @Test
     public void testGetL() {
         byte[] value = new byte[3];
         byte[] result = tl.createTLVMsg(TEST_TAG1, value).getL();
@@ -115,22 +109,6 @@ public class TLVMsgTest {
         byte[] value = new byte[0];
         byte[] result = tl.createTLVMsg(TEST_TAG3, value).getTLV();
         assertArrayEquals(ISOUtil.hex2byte("03E800"), result);
-    }
-
-    @Test
-    public void testSetTag() {
-        byte[] value = new byte[0];
-        msg = tl.createTLVMsg(TEST_TAG1, value);
-        msg.setTag(TEST_TAG3);
-        assertEquals(TEST_TAG3, msg.getTag());
-    }
-
-    @Test
-    public void testSetValue() {
-        msg = new TLVMsg();
-        byte[] expected = new byte[1];
-        msg.setValue(expected);
-        assertSame(expected, msg.getValue());
     }
 
     @Test

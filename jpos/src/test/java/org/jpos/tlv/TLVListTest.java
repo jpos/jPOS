@@ -133,9 +133,9 @@ public class TLVListTest {
 
     @Test
     public void testFind1() {
-        TLVMsg expected = new TLVMsg();
+        TLVMsg expected = instance.createTLVMsg(TEST_TAG1, null);
         instance.append(expected);
-        TLVMsg result = instance.find(0x00);
+        TLVMsg result = instance.find(TEST_TAG1);
         assertSame(expected, result);
     }
 
@@ -169,8 +169,8 @@ public class TLVListTest {
 
     @Test
     public void testFindIndex2() {
-        instance.append(new TLVMsg());
-        int result = instance.findIndex(0);
+        instance.append(instance.createTLVMsg(TEST_TAG1, null));
+        int result = instance.findIndex(TEST_TAG1);
         assertEquals(0, result);
     }
 
@@ -227,15 +227,15 @@ public class TLVListTest {
     public void testIndex1() {
         instance.append(instance.createTLVMsg(TEST_TAG1, "testString".getBytes()));
         instance.append(TEST_TAG1, new byte[1]);
-        instance.append(new TLVMsg());
+        instance.append(instance.createTLVMsg(0x0b, null));
         instance.append(TEST_TAG3, new byte[3]);
         instance.append(TEST_TAG2, new byte[1]);
         instance.append(-1, new byte[0]);
         instance.deleteByIndex(0);
-        instance.append(new TLVMsg());
+        instance.append(instance.createTLVMsg(0x0c, null));
         instance.append(1, new byte[3]);
         instance.append(0x0a, new byte[0]);
-        instance.append(new TLVMsg());
+        instance.append(instance.createTLVMsg(0x0d, null));
         instance.append(0x2710, new byte[2]);
         instance.append(0x0186a0, new byte[1]);
         TLVMsg result = instance.index(10);

@@ -28,15 +28,8 @@ import org.jpos.util.Loggeable;
  */
 public class TLVMsg implements Loggeable {
 
-    private int tag;
-    protected byte[] value;
-
-    /**
-     * Empty constructor.
-     */
-    public TLVMsg() {
-        super();
-    }
+    private final int tag;
+    private final byte[] value;
 
     /**
      * Constructs a TLV message from tag and value.
@@ -76,20 +69,6 @@ public class TLVMsg implements Loggeable {
      */
     public byte[] getValue() {
         return value;
-    }
-
-    /**
-     * @param tag of TLV Message
-     */
-    public void setTag(int tag) {
-        this.tag = tag;
-    }
-
-    /**
-     * @param value of TLV Message
-     */
-    public void setValue(byte[] value) {
-        this.value = value;
     }
 
     /**
