@@ -62,17 +62,16 @@ public interface SecureKeyStore {
     }
 
 
-
     /**
-     * returns the key assiciated with the given alias
+     * Returns the key assiciated with the given alias.
+     *
+     * @param <T> desired type of requested key
      * @param alias the alias name
-     * @return the requested key, or null if the given alias does not exist.
+     * @return the requested key, or {@code null} if the given alias does not exist.
      * @throws SecureKeyStoreException if SecureKeyStore is not initialized or if
      * the operation fails for some other reason.
      */
-    SecureKey getKey(String alias) throws SecureKeyStoreException;
-
-
+    <T extends SecureKey> T getKey(String alias) throws SecureKeyStoreException;
 
     /**
      * Assigns the given key to the given alias.
@@ -86,12 +85,15 @@ public interface SecureKeyStore {
     void setKey(String alias, SecureKey key) throws SecureKeyStoreException;
 
     /**
-     * return map of existing keys assiciated with aliases.
+     * Returns map of existing keys assiciated with aliases.
+     *
+     * @param <T> desired type of requested keys
      * @return map of existing keys assiciated with aliases.
-     * @throws if SecureKeyStore is not initialized or if
+     * @throws SecureKeyStoreException if SecureKeyStore is not initialized or if
      * the operation fails for some other reason.
      */
-    Map<String,SecureKey> getKeys() throws SecureKeyStoreException;
+    <T extends SecureKey> Map<String, T> getKeys() throws SecureKeyStoreException;
+
 }
 
 
