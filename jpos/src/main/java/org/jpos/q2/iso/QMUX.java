@@ -19,7 +19,6 @@
 package org.jpos.q2.iso;
 
 import org.HdrHistogram.AtomicHistogram;
-import org.HdrHistogram.Histogram;
 import org.jdom2.Element;
 import org.jpos.core.ConfigurationException;
 import org.jpos.iso.*;
@@ -57,12 +56,12 @@ public class QMUX
     private Metrics metrics = new Metrics(new AtomicHistogram(60000, 2));
 
     List<ISORequestListener> listeners;
-    int rx, tx, rxExpired, txExpired, rxPending, rxUnhandled, rxForwarded;
-    long lastTxn = 0L;
-    boolean listenerRegistered;
+    private volatile int rx, tx, rxExpired, txExpired, rxPending, rxUnhandled, rxForwarded;
+    private volatile long lastTxn = 0L;
+    private boolean listenerRegistered;
     public QMUX () {
         super ();
-        listeners = new ArrayList<ISORequestListener>();
+        listeners = new ArrayList<>();
     }
     public void initService () throws ConfigurationException {
         Element e = getPersist ();
@@ -339,12 +338,12 @@ public class QMUX
         StringBuffer sb = new StringBuffer();
         append (sb, "tx=", tx);
         append (sb, ", rx=", rx);
-        append (sb, ", tx_expired=", txExpired);
-        append (sb, ", tx_pending=", sp.size(out));
-        append (sb, ", rx_expired=", rxExpired);
-        append (sb, ", rx_pending=", rxPending);
-        append (sb, ", rx_unhandled=", rxUnhandled);
-        append (sb, ", rx_forwarded=", rxForwarded);
+        append (sb, ", tx_expired=", getTXExpired());
+        append (sb, ", tx_pending=", getTXPending());
+        append (sb, ", rx_expired=", getRXExpired());
+        append (sb, ", rx_pending=", getRXPending());
+        append (sb, ", rx_unhandled=", getRXUnhandled());
+        append (sb, ", rx_forwarded=", getRXForwarded());
         sb.append (", connected=");
         sb.append (Boolean.toString(isConnected()));
         sb.append (", last=");
@@ -362,6 +361,36 @@ public class QMUX
     }
     public int getRXCounter() {
         return rx;
+    }
+
+    @Override
+    public int getTXExpired() {
+        return txExpired;
+    }
+
+    @Override
+    public int getTXPending() {
+        return sp.size(out);
+    }
+
+    @Override
+    public int getRXExpired() {
+        return rxExpired;
+    }
+
+    @Override
+    public int getRXPending() {
+        return rxPending;
+    }
+
+    @Override
+    public int getRXUnhandled() {
+        return rxUnhandled;
+    }
+
+    @Override
+    public int getRXForwarded() {
+        return rxForwarded;
     }
 
     public long getLastTxnTimestampInMillis() {
