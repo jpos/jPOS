@@ -21,6 +21,7 @@ package org.jpos.q2.qbean;
 import org.jdom2.Element;
 import org.jpos.core.Configurable;
 import org.jpos.core.ConfigurationException;
+import org.jpos.core.XmlConfigurable;
 import org.jpos.q2.QBeanSupport;
 import org.jpos.q2.QFactory;
 import org.jpos.util.LogEventOutputStream;
@@ -79,6 +80,13 @@ public class LoggerAdaptor extends QBeanSupport {
                 ((Configurable) listener).setConfiguration (
                     factory.getConfiguration (e)
                 );
+            } catch (ConfigurationException ex) {
+                throw new ConfigurationException (ex);
+            }
+        }
+        if (listener instanceof XmlConfigurable) {
+            try {
+                ((XmlConfigurable) listener).setConfiguration (e);
             } catch (ConfigurationException ex) {
                 throw new ConfigurationException (ex);
             }
