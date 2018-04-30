@@ -76,7 +76,7 @@ public class NameRegistrarTest {
 
     @Test
     public void testGet() throws Exception {
-        String value = (String) NameRegistrar.get("test1");
+        String value = NameRegistrar.get("test1");
         assertThat(value, is("testValue1"));
     }
 
@@ -87,20 +87,20 @@ public class NameRegistrarTest {
 
     @Test
     public void testGetIfExists() throws Throwable {
-        String value = (String) NameRegistrar.getIfExists("test2");
+        String value = NameRegistrar.getIfExists("test2");
         assertThat(value, is("testValue2"));
     }
 
     @Test
     public void testGetIfExistsWithNotFoundKey() throws Exception {
-        String value = (String) NameRegistrar.getIfExists("NonexistentKey");
+        String value = NameRegistrar.getIfExists("NonexistentKey");
         assertThat(value, is(nullValue()));
     }
 
     @Test(expected = NameRegistrar.NotFoundException.class)
     public void testUnregister() throws Exception {
         NameRegistrar.register("test3", "someTest3Value");
-        assertThat((String) NameRegistrar.get("test3"), is("someTest3Value"));
+        assertThat(NameRegistrar.get("test3"), is("someTest3Value"));
         NameRegistrar.unregister("test3");
         NameRegistrar.get("test3");
     }
