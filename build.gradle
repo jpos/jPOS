@@ -109,8 +109,17 @@ subprojects {
 }
 
 // Configure IDEA to use Git
-idea.project.ipr {
-   withXml { provider -> provider.node.component.find { it.@name == 'VcsDirectoryMappings' }.mapping.@vcs = 'Git' }
+idea {
+    project {
+        ipr {
+            withXml { 
+                provider -> provider.node.component.find { 
+                    it.@name == 'VcsDirectoryMappings' 
+                }.mapping.@vcs = 'Git' 
+            }
+        }
+        languageLevel = '1.8'
+    }
 }
 
 task aggregatedJavadoc (type: Javadoc, description: "Aggregated Javadocs") {
