@@ -144,7 +144,7 @@ public class DUKPTTest extends TestCase
         EncryptedPIN pin = new EncryptedPIN(
                 pinUnderDukpt, SMAdapter.FORMAT01, pan
         );
-        SecureDESKey bdk = (SecureDESKey) ks.getKey(keyName);
+        SecureDESKey bdk = ks.getKey(keyName);
         evt.addMessage(pin);
         evt.addMessage(ksn);
         evt.addMessage(bdk);

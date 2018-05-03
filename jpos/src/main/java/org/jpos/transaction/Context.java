@@ -87,23 +87,44 @@ public class Context implements Externalizable, Loggeable, Pausable, Cloneable {
     public void evict (Object key) {
         getPMap().remove (key);
     }
+
     /**
-     * Get
+     * Get object instance from transaction context.
+     *
+     * @param <T> desired type of object instance
+     * @param key the key of object instance
+     * @return object instance if exist in context or {@code null} otherwise
      */
-    public Object get (Object key) {
-        return getMap().get (key);
+    public <T> T get(Object key) {
+        @SuppressWarnings("unchecked")
+        T obj = (T) getMap().get(key);
+        return obj;
     }
-    public Object get (Object key, Object defValue) {
-        Object obj = getMap().get (key);
+
+    /**
+     * Get object instance from transaction context.
+     *
+     * @param <T> desired type of object instance
+     * @param key the key of object instance
+     * @param defValue default value returned if there is no value in context
+     * @return object instance if exist in context or {@code defValue} otherwise
+     */
+    public <T> T get(Object key, T defValue) {
+        @SuppressWarnings("unchecked")
+        T obj = (T) getMap().get(key);
         return obj != null ? obj : defValue;
     }
+
     /**
      * Transient remove
      */
-    public synchronized Object remove (Object key) {
-        getPMap().remove (key);
-        return getMap().remove (key);
+    public synchronized <T> T remove(Object key) {
+        getPMap().remove(key);
+        @SuppressWarnings("unchecked")
+        T obj = (T) getMap().get(key);
+        return obj;
     }
+
     public String getString (Object key) {
         Object obj = getMap().get (key);
         if (obj instanceof String)

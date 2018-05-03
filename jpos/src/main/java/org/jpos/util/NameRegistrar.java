@@ -96,29 +96,46 @@ public class NameRegistrar implements Loggeable {
     }
 
     /**
-     * @param key
-     *            key whose associated value is to be returned.
-     * @throws NotFoundException
-     *             if key not present in registrar
+     * Get a value from the registry.
+     *
+     * @param <T> desired type of entry value.
+     * @param key the key whose associated value is to be returned.
+     * @return a value
+     * @throws NotFoundException if key not present in registrar
      */
-    public static Object get(String key) throws NotFoundException {
-        Object obj = sp.rdp(key);
+    public static <T> T get(String key) throws NotFoundException {
+        @SuppressWarnings("unchecked")
+        T obj = (T) sp.rdp(key);
         if (obj == null) {
             throw new NotFoundException(key);
         }
         return obj;
     }
 
-    public static Object get(String key, long timeout) {
-        return sp.rd (key, timeout);
+    /**
+     * Get a value from the registry - wait for it specified time.
+     *
+     * @param <T> desired type of value.
+     * @param key the key whose associated value is to be returned.
+     * @param timeout the maximum waiting time (in miliseconds) for
+     * the appearance of value in the registry.
+     * @return a value or {@code null} if it does not exist
+     */
+    public static <T> T get(String key, long timeout) {
+        return (T) sp.rd(key, timeout);
     }
 
     /**
-     * @param key
-     *            key whose associated value is to be returned, null if not present.
+     * Get a value from the registry - without casting {@code NotFoundException}.
+     *
+     * @param <T> desired type of value.
+     * @param key the key whose associated value is to be returned.
+     * @return a value or {@code null} if it does not exist
      */
-    public static Object getIfExists(String key) {
-        return sp.rdp(key);
+    public static <T> T getIfExists(String key) {
+        @SuppressWarnings("unchecked")
+        T obj = (T) sp.rdp(key);
+        return obj;
     }
 
     public void dump(PrintStream p, String indent) {
