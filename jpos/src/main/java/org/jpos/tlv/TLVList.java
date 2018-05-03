@@ -102,7 +102,7 @@ public class TLVList implements Serializable, Loggeable {
             , IndexOutOfBoundsException {
         ByteBuffer buffer = ByteBuffer.wrap(buf, offset, buf.length - offset);
         TLVMsg currentNode;
-        while (hasNext(buffer)) {
+        while (buffer.hasRemaining()) {
             currentNode = getTLVMsg(buffer);    // null is returned if no tag found (trailing padding)
             if (currentNode != null)
                 append(currentNode);
@@ -275,44 +275,50 @@ public class TLVList implements Serializable, Loggeable {
     }
 
     /**
-     * Check existance of next TLV message.
+     * Skip padding bytes of TLV message.
+     * <p>
+     * ISO/IEC 7816 uses neither ’00’ nor ‘FF’ as tag value.
      *
-     * @param buffer contains TLV data
+     * @param buffer sequence of TLV data bytes
      */
-    private  boolean hasNext(ByteBuffer buffer) {
-        return buffer.hasRemaining();
+    private void skipBytes(ByteBuffer buffer) {
+        buffer.mark();
+        int b;
+        do {
+            if (!buffer.hasRemaining())
+                break;
+
+            buffer.mark();
+            b = buffer.get() & 0xff;
+        } while (b == SKIP_BYTE1 || b == SKIP_BYTE2);
+        buffer.reset();
     }
 
-    /**
-     * Return the next TAG
-     *
-     * @return tag
-     * @throws BufferUnderflowException
-     */
-    private int getTAG(ByteBuffer buffer) throws BufferUnderflowException {
-        int tag;
-        int b = buffer.get() & 0xff;
-        // Skip padding chars
-        if (b == SKIP_BYTE1 || b == SKIP_BYTE2) {
-            do {
-                if (hasNext(buffer)) {
-                    b = buffer.get() & 0xff;
-                } else {
-                    break;
-                }
-            } while (b == SKIP_BYTE1 || b == SKIP_BYTE2);
-        }
+    private int readTagID(ByteBuffer buffer) throws BufferUnderflowException {
         // Get first byte of Tag Identifier
-        tag = b;
-        // Get rest of Tag identifier if required
+        int b = buffer.get() & 0xff;
+        int tag = b;
         if (isExtTagByte(b)) {
+            // Get rest of Tag identifier
             do {
                 tag <<= 8;
-                b = buffer.get();
-                tag |= b & 0xFF;
+                b = buffer.get() & 0xff;
+                tag |= b;
             } while ((b & EXT_LEN_MASK) == EXT_LEN_MASK);
         }
         return tag;
+    }
+
+    /**
+     * Return the next Tag identifier.
+     *
+     * @param buffer contains TLV data
+     * @return tag identifier
+     * @throws BufferUnderflowException
+     */
+    private int getTAG(ByteBuffer buffer) throws BufferUnderflowException {
+        skipBytes(buffer);
+        return readTagID(buffer);
     }
 
     /**

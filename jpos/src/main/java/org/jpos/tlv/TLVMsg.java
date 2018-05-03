@@ -81,24 +81,22 @@ public class TLVMsg implements Loggeable {
      * @return tag + length + value of the TLV Message
      */
     public byte[] getTLV() {
-        String hexVal = Integer.toHexString(tag);
-        byte[] bTag = ISOUtil.hex2byte(hexVal);
+        String hexTag = Integer.toHexString(tag);
+        byte[] bTag = ISOUtil.hex2byte(hexTag);
         byte[] bLen = getL();
-        if (value != null) {
-            int tLength = bTag.length + bLen.length + value.length;
-            byte[] out = new byte[tLength];
-            System.arraycopy(bTag, 0, out, 0, bTag.length);
-            System.arraycopy(bLen, 0, out, bTag.length, bLen.length);
-            System.arraycopy(value, 0, out, bTag.length + bLen.length,
-                    value.length);
-            return out;
-        } else {//Length can be 0
-            int tLength = bTag.length + bLen.length;
-            byte[] out = new byte[tLength];
-            System.arraycopy(bTag, 0, out, 0, bTag.length);
-            System.arraycopy(bLen, 0, out, bTag.length, bLen.length);
-            return out;
-        }
+        byte[] bVal = getValue();
+        if (bVal == null)
+            //Value can be null
+            bVal = new byte[0];
+
+        int tLength = bTag.length + bLen.length + bVal.length;
+        byte[] out = new byte[tLength];
+        System.arraycopy(bTag, 0, out, 0, bTag.length);
+        System.arraycopy(bLen, 0, out, bTag.length, bLen.length);
+        System.arraycopy(bVal, 0, out, bTag.length + bLen.length,
+                bVal.length
+        );
+        return out;
     }
 
     /**
