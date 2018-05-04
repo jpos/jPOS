@@ -60,6 +60,17 @@ public class TLVListTest {
         assertFalse(instance.getTags().isEmpty());
     }
 
+    @Test(expected = NullPointerException.class)
+    public void testAppendThrowsNPE() {
+        instance.append(TEST_TAG1, new byte[2]);
+        try {
+            instance.append(null);
+        } catch (RuntimeException ex) {
+            assertFalse(instance.getTags().isEmpty());
+            throw ex;
+        }
+    }
+
     @Test
     public void testConstructor() {
         assertTrue(instance.getTags().isEmpty());
@@ -103,43 +114,6 @@ public class TLVListTest {
         instance.append(TEST_TAG2, new byte[0]);
         instance.deleteByTag(TEST_TAG2);
         assertTrue(instance.getTags().isEmpty());
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void testDeleteByTagThrowsNullPointerException() {
-        instance.append(TEST_TAG1, new byte[1]);
-        instance.append(null);
-        try {
-            instance.deleteByTag(TEST_TAG3);
-        } catch (RuntimeException ex) {
-            assertFalse(instance.getTags().isEmpty());
-            throw ex;
-        }
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void testDeleteByTagThrowsNullPointerException2() {
-        instance.append(new TLVMsg());
-        instance.append(TEST_TAG1, new byte[2]);
-        instance.append(null);
-        try {
-            instance.deleteByTag(TEST_TAG1);
-        } catch (RuntimeException ex) {
-            assertFalse(instance.getTags().isEmpty());
-            throw ex;
-        }
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void testDeleteByTagThrowsNullPointerException3() {
-        instance.append(TEST_TAG1, new byte[1]);
-        instance.append(null);
-        try {
-            instance.deleteByTag(TEST_TAG1);
-        } catch (RuntimeException ex) {
-            assertFalse(instance.getTags().isEmpty());
-            throw ex;
-        }
     }
 
     @Test
@@ -200,19 +174,6 @@ public class TLVListTest {
         assertEquals(0, result);
     }
 
-    @Test(expected = NullPointerException.class)
-    public void testFindIndexThrowsNullPointerException() {
-        instance.append(new TLVMsg());
-        instance.append(null);
-        instance.findIndex(TEST_TAG1);
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void testFindIndexThrowsNullPointerException1() {
-        instance.append(null);
-        instance.findIndex(TEST_TAG1);
-    }
-
     @Test
     public void testFindNextTLV() {
         instance.findIndex(TEST_TAG1);
@@ -243,33 +204,6 @@ public class TLVListTest {
         assertNull(result);
     }
 
-    @Test(expected = NullPointerException.class)
-    public void testFindNextTLVThrowsNullPointerException() {
-        instance.append(null);
-        instance.findNextTLV();
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void testFindNextTLVThrowsNullPointerException1() {
-        instance.findIndex(TEST_TAG1);
-        instance.append(new TLVMsg());
-        instance.append(null);
-        instance.findNextTLV();
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void testFindThrowsNullPointerException() {
-        instance.append(null);
-        instance.find(TEST_TAG1);
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void testFindThrowsNullPointerException1() {
-        instance.append(new TLVMsg());
-        instance.append(null);
-        instance.find(TEST_TAG1);
-    }
-
     @Test
     public void testIndex() {
         TLVMsg expected = new TLVMsg(TEST_TAG1, null);
@@ -289,14 +223,12 @@ public class TLVListTest {
         instance.deleteByIndex(0);
         instance.append(new TLVMsg());
         instance.append(1, new byte[3]);
-        instance.append(null);
         instance.append(0x0a, new byte[0]);
         instance.append(new TLVMsg());
         instance.append(0x2710, new byte[2]);
         instance.append(0x0186a0, new byte[1]);
-        instance.append(null);
-        TLVMsg result = instance.index(12);
-        assertNull(result);
+        TLVMsg result = instance.index(10);
+        assertEquals(0x0186a0, result.getTag());
     }
 
     @Test(expected = IndexOutOfBoundsException.class)
@@ -308,12 +240,6 @@ public class TLVListTest {
     public void testPack() {
         byte[] result = instance.pack();
         assertEquals(0, result.length);
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void testPackThrowsNullPointerException() {
-        instance.append(null);
-        instance.pack();
     }
 
     @Test

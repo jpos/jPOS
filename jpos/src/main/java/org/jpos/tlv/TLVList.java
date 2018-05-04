@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author bharavi
@@ -107,9 +108,14 @@ public class TLVList implements Serializable, Loggeable {
     }
 
     /**
-     * Append TLVMsg to the TLVList.
+     * Append TLVMsg to the TLV list.
+     *
+     * @param tlv the TLV message
+     * @throws NullPointerException if {@code tlv} is {@code null}
      */
-    public void append(TLVMsg tlv) {
+    public void append(TLVMsg tlv) throws NullPointerException {
+        Objects.requireNonNull(tlv, "TLV message cannot be null");
+
         tags.add(tlv);
     }
 
