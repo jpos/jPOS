@@ -25,7 +25,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
-import java.nio.BufferUnderflowException;
 import java.util.List;
 
 import org.jpos.iso.ISOException;
@@ -441,23 +440,23 @@ public class TLVListTest {
         assertFalse(instance.getTags().isEmpty());
     }
 
-    @Test(expected = BufferUnderflowException.class)
-    public void testUnpackInvalidLengthThrowsBufferUnderflowException() throws Throwable {
+    @Test(expected = IllegalArgumentException.class)
+    public void testUnpackInvalidLengthThrowsIllegalArgumentException() throws Throwable {
         byte[] buf = ISOUtil.hex2byte("14830000");
         try {
             instance.unpack(buf);
-        } catch (RuntimeException ex) {
+        } catch (IllegalArgumentException ex) {
             assertTrue(instance.getTags().isEmpty());
             throw ex;
         }
     }
 
-    @Test(expected = BufferUnderflowException.class)
-    public void testUnpackInvalidTagThrowsBufferUnderflowException() throws Throwable {
+    @Test(expected = IllegalArgumentException.class)
+    public void testUnpackInvalidTagThrowsIllegalArgumentException() throws Throwable {
         byte[] buf = ISOUtil.hex2byte("007f");
         try {
             instance.unpack(buf);
-        } catch (BufferUnderflowException ex) {
+        } catch (IllegalArgumentException ex) {
             assertTrue(instance.getTags().isEmpty());
             throw ex;
         }

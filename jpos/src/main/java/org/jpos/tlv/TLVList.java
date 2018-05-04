@@ -69,9 +69,9 @@ public class TLVList implements Serializable, Loggeable {
      *
      * @param buf raw message
      * @throws ISOException
-     * @throws BufferUnderflowException
+     * @throws IllegalArgumentException
      */
-    public void unpack(byte[] buf) throws ISOException, BufferUnderflowException {
+    public void unpack(byte[] buf) throws ISOException, IllegalArgumentException {
         unpack(buf, 0);
     }
 
@@ -95,10 +95,10 @@ public class TLVList implements Serializable, Loggeable {
      * @param buf raw message
      * @param offset the offset
      * @throws ISOException
-     * @throws BufferUnderflowException
      * @throws IndexOutOfBoundsException if {@code offset} exceeds {code buf.length}
+     * @throws IllegalArgumentException
      */
-    public void unpack(byte[] buf, int offset) throws ISOException, BufferUnderflowException
+    public void unpack(byte[] buf, int offset) throws ISOException, IllegalArgumentException
             , IndexOutOfBoundsException {
         ByteBuffer buffer = ByteBuffer.wrap(buf, offset, buf.length - offset);
         TLVMsg currentNode;
@@ -247,9 +247,10 @@ public class TLVList implements Serializable, Loggeable {
      *
      * @param buffer the buffer
      * @return TLVMsg
-     * @throws BufferUnderflowException
+     * @throws ISOException
+     * @throws IllegalArgumentException
      */
-    private TLVMsg getTLVMsg(ByteBuffer buffer) throws ISOException, BufferUnderflowException {
+    private TLVMsg getTLVMsg(ByteBuffer buffer) throws ISOException, IllegalArgumentException {
         int tag = getTAG(buffer);  // tag id 0x00 if tag not found
         if (tag == SKIP_BYTE1)
             return null;
@@ -294,7 +295,7 @@ public class TLVList implements Serializable, Loggeable {
         buffer.reset();
     }
 
-    private int readTagID(ByteBuffer buffer) throws BufferUnderflowException {
+    private int readTagID(ByteBuffer buffer) throws IllegalArgumentException {
         // Get first byte of Tag Identifier
         int b = buffer.get() & 0xff;
         int tag = b;
@@ -302,7 +303,11 @@ public class TLVList implements Serializable, Loggeable {
             // Get rest of Tag identifier
             do {
                 tag <<= 8;
-                b = buffer.get() & 0xff;
+                try {
+                    b = buffer.get() & 0xff;
+                } catch (BufferUnderflowException ex) {
+                    throw new IllegalArgumentException("BAD TLV FORMAT: encoded tag id is too short", ex);
+                }
                 tag |= b;
             } while ((b & EXT_LEN_MASK) == EXT_LEN_MASK);
         }
@@ -314,9 +319,9 @@ public class TLVList implements Serializable, Loggeable {
      *
      * @param buffer contains TLV data
      * @return tag identifier
-     * @throws BufferUnderflowException
+     * @throws IllegalArgumentException
      */
-    private int getTAG(ByteBuffer buffer) throws BufferUnderflowException {
+    private int getTAG(ByteBuffer buffer) throws IllegalArgumentException {
         skipBytes(buffer);
         return readTagID(buffer);
     }
@@ -325,9 +330,9 @@ public class TLVList implements Serializable, Loggeable {
      * Read length bytes and return the int value
      * @param buffer buffer
      * @return value length
-     * @throws BufferUnderflowException
+     * @throws IllegalArgumentException
      */
-    protected int getValueLength(ByteBuffer buffer) throws BufferUnderflowException {
+    protected int getValueLength(ByteBuffer buffer) throws IllegalArgumentException {
         byte b = buffer.get();
         int count = b & LEN_SIZE_MASK;
         // check first byte for more bytes to follow
@@ -336,7 +341,11 @@ public class TLVList implements Serializable, Loggeable {
 
         //fetch rest of bytes
         byte[] bb = new byte[count];
-        buffer.get(bb);
+        try {
+            buffer.get(bb);
+        } catch (BufferUnderflowException ex) {
+            throw new IllegalArgumentException("BAD TLV FORMAT: encoded tag length is too short", ex);
+        }
         //adjust buffer if first bit is turn on
         //important for BigInteger reprsentation
         if ((bb[0] & 0x80) > 0)
