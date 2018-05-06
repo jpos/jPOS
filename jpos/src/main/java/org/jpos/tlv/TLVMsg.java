@@ -43,7 +43,22 @@ public class TLVMsg implements Loggeable {
      *
      * @param tag id
      * @param value tag value
+     * @deprecated In most cases, a message is created to attach it to the list.
+     * <br>
+     * It can be done by:
+     * <pre>{@code
+     *   TLVList tl = ...;
+     *   tl.append(tag, value);
+     * }</pre>
+     * If for some reason this is not possible then a message can be created:
+     * <pre>{@code
+     *   TLVList tl = new TLVList();
+     *   tl.append(tag, value);
+     *   TLVMsg tm = tl.find(tag);
+     * }</pre>
+     * The intention is to not promote the use of TLVMsg outside
      */
+    @Deprecated
     public TLVMsg(int tag, byte[] value) {
         this.tag = tag;
         this.value = value;

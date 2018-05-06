@@ -56,7 +56,7 @@ public class TLVListTest {
 
     @Test
     public void testAppend1() {
-        instance.append(new TLVMsg(TEST_TAG1, new byte[0]));
+        instance.append(instance.createTLVMsg(TEST_TAG1, new byte[0]));
         assertFalse(instance.getTags().isEmpty());
     }
 
@@ -125,7 +125,7 @@ public class TLVListTest {
     @Test
     public void testFind() {
         instance.append(TEST_TAG1, new byte[1]);
-        TLVMsg expected = new TLVMsg(0x07, null);
+        TLVMsg expected = instance.createTLVMsg(0x07, null);
         instance.append(expected);
         TLVMsg result = instance.find(0x07);
         assertSame(expected, result);
@@ -186,7 +186,7 @@ public class TLVListTest {
     public void testFindNextTLV1() {
         instance.append(TEST_TAG1, new byte[2]);
         instance.append(TEST_TAG2, new byte[2]);
-        TLVMsg expected = instance.getTLVMsg(TEST_TAG1, null);
+        TLVMsg expected = instance.createTLVMsg(TEST_TAG1, null);
         instance.append(expected);
         assertEquals(0, instance.findIndex(TEST_TAG1));
         TLVMsg result = instance.findNextTLV();
@@ -197,7 +197,7 @@ public class TLVListTest {
     public void testFindNextTLV2() {
         instance.append(TEST_TAG1, new byte[2]);
         instance.append(TEST_TAG2, new byte[2]);
-        TLVMsg expected = instance.getTLVMsg(TEST_TAG1, null);
+        TLVMsg expected = instance.createTLVMsg(TEST_TAG1, null);
         instance.append(expected);
         instance.find(TEST_TAG1);
         TLVMsg result = instance.findNextTLV();
@@ -217,7 +217,7 @@ public class TLVListTest {
 
     @Test
     public void testIndex() {
-        TLVMsg expected = new TLVMsg(TEST_TAG1, null);
+        TLVMsg expected = instance.createTLVMsg(TEST_TAG1, null);
         instance.append(expected);
         TLVMsg result = instance.index(0);
         assertSame(expected, result);
@@ -225,7 +225,7 @@ public class TLVListTest {
 
     @Test
     public void testIndex1() {
-        instance.append(new TLVMsg(TEST_TAG1, "testString".getBytes()));
+        instance.append(instance.createTLVMsg(TEST_TAG1, "testString".getBytes()));
         instance.append(TEST_TAG1, new byte[1]);
         instance.append(new TLVMsg());
         instance.append(TEST_TAG3, new byte[3]);

@@ -20,6 +20,7 @@ package org.jpos.tlv;
 
 import org.jpos.iso.ISOUtil;
 import static org.junit.Assert.*;
+import org.junit.Before;
 import org.junit.Test;
 
 public class TLVMsgTest {
@@ -28,13 +29,11 @@ public class TLVMsgTest {
     static final int TEST_TAG3      = 0x03e8;
 
     TLVMsg msg;
+    TLVList tl;
 
-    @Test
-    public void testConstructor() {
-        byte[] value = new byte[2];
-        msg = new TLVMsg(TEST_TAG1, value);
-        assertSame(value, msg.getValue());
-        assertEquals(TEST_TAG1, msg.getTag());
+    @Before
+    public void setUp() {
+        tl = new TLVList();
     }
 
     @Test
@@ -46,82 +45,82 @@ public class TLVMsgTest {
     @Test
     public void testGetL() {
         byte[] value = new byte[3];
-        byte[] result = new TLVMsg(TEST_TAG1, value).getL();
+        byte[] result = tl.createTLVMsg(TEST_TAG1, value).getL();
         assertArrayEquals(ISOUtil.hex2byte("03"), result);
     }
 
     @Test
     public void testGetL1() {
         byte[] value = new byte[1];
-        byte[] result = new TLVMsg(TEST_TAG1, value).getL();
+        byte[] result = tl.createTLVMsg(TEST_TAG1, value).getL();
         assertArrayEquals(ISOUtil.hex2byte("01"), result);
     }
 
     @Test
     public void testGetL2() {
-        byte[] result = new TLVMsg(TEST_TAG1, null).getL();
+        byte[] result = tl.createTLVMsg(TEST_TAG1, null).getL();
         assertArrayEquals(ISOUtil.hex2byte("00"), result);
     }
 
     @Test
     public void testGetL3() {
         byte[] value = new byte[200];
-        byte[] result = new TLVMsg(TEST_TAG1, value).getL();
+        byte[] result = tl.createTLVMsg(TEST_TAG1, value).getL();
         assertArrayEquals(ISOUtil.hex2byte("81C8"), result);
     }
 
     @Test
     public void testGetL4() {
         byte[] value = new byte[0x7ff7];
-        byte[] result = new TLVMsg(TEST_TAG1, value).getL();
+        byte[] result = tl.createTLVMsg(TEST_TAG1, value).getL();
         assertArrayEquals(ISOUtil.hex2byte("827FF7"), result);
     }
 
     @Test
     public void testGetL5() {
         byte[] value = new byte[0x8ff8];
-        byte[] result = new TLVMsg(TEST_TAG1, value).getL();
+        byte[] result = tl.createTLVMsg(TEST_TAG1, value).getL();
         assertArrayEquals(ISOUtil.hex2byte("828FF8"), result);
     }
 
     @Test
     public void testGetL6() {
         byte[] value = new byte[0];
-        byte[] result = new TLVMsg(TEST_TAG1, value).getL();
+        byte[] result = tl.createTLVMsg(TEST_TAG1, value).getL();
         assertArrayEquals(ISOUtil.hex2byte("00"), result);
     }
 
     @Test
     public void testGetTLV() {
         byte[] value = new byte[1];
-        byte[] result = new TLVMsg(TEST_TAG1, value).getTLV();
+        byte[] result = tl.createTLVMsg(TEST_TAG1, value).getTLV();
         assertArrayEquals(ISOUtil.hex2byte("640100"), result);
     }
 
     @Test
     public void testGetTLV1() {
-        byte[] result = new TLVMsg(TEST_TAG1, null).getTLV();
+        byte[] result = tl.createTLVMsg(TEST_TAG1, null).getTLV();
         assertArrayEquals(ISOUtil.hex2byte("6400"), result);
     }
 
     @Test
     public void testGetTLVEmptyValue1() {
         byte[] value = new byte[0];
-        byte[] result = new TLVMsg(TEST_TAG1, value).getTLV();
+        byte[] result = tl.createTLVMsg(TEST_TAG1, value).getTLV();
         assertArrayEquals(ISOUtil.hex2byte("6400"), result);
     }
 
     @Test
     public void testGetTLVEmptyValue2() {
         byte[] value = new byte[0];
-        byte[] result = new TLVMsg(TEST_TAG3, value).getTLV();
+        byte[] result = tl.createTLVMsg(TEST_TAG3, value).getTLV();
         assertArrayEquals(ISOUtil.hex2byte("03E800"), result);
     }
 
     @Test
     public void testSetTag() {
         byte[] value = new byte[0];
-        msg = new TLVMsg(TEST_TAG1, value);
+        msg = tl.createTLVMsg(TEST_TAG1, value);
         msg.setTag(TEST_TAG3);
         assertEquals(TEST_TAG3, msg.getTag());
     }
@@ -136,14 +135,14 @@ public class TLVMsgTest {
 
     @Test
     public void testGetStringValue() {
-        msg = new TLVMsg(23, "987612".getBytes());
+        msg = tl.createTLVMsg(23, "987612".getBytes());
         String result = msg.getStringValue();
         assertEquals("393837363132", result);
     }
 
     @Test
     public void testLowTagID() {
-        msg = new TLVMsg(8, "987612".getBytes());
+        msg = tl.createTLVMsg(8, "987612".getBytes());
         String result = msg.getStringValue();
         assertEquals("393837363132", result);
         byte[] b = msg.getTLV();

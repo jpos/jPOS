@@ -126,7 +126,7 @@ public class TLVList implements Serializable, Loggeable {
      * @param value tag value
      */
     public void append(int tag, byte[] value) {
-        append(getTLVMsg(tag, value));
+        append(createTLVMsg(tag, value));
     }
 
     /**
@@ -136,7 +136,7 @@ public class TLVList implements Serializable, Loggeable {
      * @param value in hexadecimal character representation
      */
     public void append(int tag, String value) {
-        append(getTLVMsg(tag, ISOUtil.hex2byte(value)));
+        append(createTLVMsg(tag, ISOUtil.hex2byte(value)));
     }
 
     /**
@@ -274,10 +274,21 @@ public class TLVList implements Serializable, Loggeable {
         byte[] arrValue = new byte[length];
         buffer.get(arrValue);
 
-        return getTLVMsg(tag, arrValue);
+        return createTLVMsg(tag, arrValue);
     }
 
-    protected TLVMsg getTLVMsg(int tag, byte[] value) {
+    /**
+     * Create TLV message instance.
+     *
+     * @apiNote The protected scope is intended to not promote the use of TLVMsg
+     * outside.
+     *
+     * @param tag tag identifier
+     * @param value the value of tag
+     * @return TLV message instance
+     */
+    @SuppressWarnings("deprecation")
+    protected TLVMsg createTLVMsg(int tag, byte[] value) {
         return new TLVMsg(tag, value);
     }
 
