@@ -57,7 +57,7 @@ public class TLVList implements Serializable, Loggeable {
 
     private final List<TLVMsg> tags = new ArrayList<>();
 
-    private int tagToFind = 0;
+    private int tagToFind = -1;
     private int indexLastOccurrence = -1;
 
     public TLVList() {
@@ -201,9 +201,13 @@ public class TLVList implements Serializable, Loggeable {
      * Return the next TLVMsg of same TAG value.
      *
      * @return TLV message or {@code null} if not found.
+     * @throws IllegalStateException when the search has not been initiated
      */
-    public TLVMsg findNextTLV() {
-
+    public TLVMsg findNextTLV() throws IllegalStateException {
+        if (tagToFind < 0)
+            throw new IllegalStateException(
+                    "The initialization of the searched tag is required"
+            );
         for ( int i=indexLastOccurrence + 1 ; i < tags.size(); i++) {
             if (tags.get(i).getTag() == tagToFind) {
                 indexLastOccurrence = i;

@@ -185,23 +185,34 @@ public class TLVListTest {
     @Test
     public void testFindNextTLV1() {
         instance.append(TEST_TAG1, new byte[2]);
-        TLVMsg expected = new TLVMsg();
+        instance.append(TEST_TAG2, new byte[2]);
+        TLVMsg expected = instance.getTLVMsg(TEST_TAG1, null);
         instance.append(expected);
+        assertEquals(0, instance.findIndex(TEST_TAG1));
         TLVMsg result = instance.findNextTLV();
         assertSame(expected, result);
     }
 
     @Test
     public void testFindNextTLV2() {
-        instance.append(0x00, new byte[3]);
+        instance.append(TEST_TAG1, new byte[2]);
+        instance.append(TEST_TAG2, new byte[2]);
+        TLVMsg expected = instance.getTLVMsg(TEST_TAG1, null);
+        instance.append(expected);
+        instance.find(TEST_TAG1);
         TLVMsg result = instance.findNextTLV();
-        assertEquals(0x00, result.getTag());
+        assertSame(expected, result);
     }
 
-    @Test
-    public void testFindNextTLV3() {
-        TLVMsg result = instance.findNextTLV();
-        assertNull(result);
+    @Test(expected = IllegalStateException.class)
+    public void testFindNextTLVThrowsIllegalStateExeption1() {
+        instance.append(TEST_TAG1, new byte[3]);
+        instance.findNextTLV();
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testFindNextTLVThrowsIllegalStateExeption2() {
+        instance.findNextTLV();
     }
 
     @Test
