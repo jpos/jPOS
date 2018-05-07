@@ -121,7 +121,7 @@ public class Context implements Externalizable, Loggeable, Pausable, Cloneable {
     public synchronized <T> T remove(Object key) {
         getPMap().remove(key);
         @SuppressWarnings("unchecked")
-        T obj = (T) getMap().get(key);
+        T obj = (T) getMap().remove(key);
         return obj;
     }
 
