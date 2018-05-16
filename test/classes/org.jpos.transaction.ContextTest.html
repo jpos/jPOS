@@ -41,7 +41,7 @@
 </td>
 <td>
 <div class="infoBox" id="duration">
-<div class="counter">0.119s</div>
+<div class="counter">0.131s</div>
 <p>duration</p>
 </div>
 </td>
@@ -62,6 +62,9 @@
 <ul class="tabLinks">
 <li>
 <a href="#tab0">Tests</a>
+</li>
+<li>
+<a href="#tab1">Standard output</a>
 </li>
 </ul>
 <div id="tab0" class="tab">
@@ -86,12 +89,12 @@
 </tr>
 <tr>
 <td class="success">testCheckPointNull1</td>
-<td>0.001s</td>
+<td>0s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">testClone</td>
-<td>0.003s</td>
+<td>0s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
@@ -101,7 +104,7 @@
 </tr>
 <tr>
 <td class="success">testDump</td>
-<td>0.011s</td>
+<td>0.027s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
@@ -111,12 +114,12 @@
 </tr>
 <tr>
 <td class="success">testGet</td>
-<td>0.001s</td>
+<td>0s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">testGet1</td>
-<td>0.101s</td>
+<td>0.102s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
@@ -246,6 +249,154 @@
 </tr>
 </table>
 </div>
+<div id="tab1" class="tab">
+<h2>Standard output</h2>
+<span class="code">
+<pre>&lt;log realm=&quot;org.jpos.q2.qbean.SystemMonitor&quot; at=&quot;2018-05-16T16:05:46.746&quot; lifespan=&quot;17ms&quot;&gt;
+  &lt;info&gt;
+               OS: Linux (4.4.0-101-generic)
+             Java: 1.8.0_171 (Oracle Corporation) AES-secure
+     process name: 5265@travis-job-b106cebb-7a18-4e7f-a9a1-93b8553237d5
+             host: travis-job-b106cebb-7a18-4e7f-a9a1-93b8553237d5/127.0.1.1
+              cwd: /home/travis/build/jpos/jPOS/jpos
+       free space: 18.9 GiB
+     usable space: 17.6 GiB
+          version: 2.1.2-SNAPSHOT (ba48b9b)
+         instance: dcc85268-32b4-45b9-81a4-41225d3e3a3c
+           uptime: 00:00:05.025 (0.430000)
+       processors: 2
+           drift : 0
+    memory(t/u/f): 815/575/239
+         encoding: UTF-8
+         timezone: UTC (Coordinated Universal Time) Z
+    watch service: sun.nio.fs.LinuxWatchService
+            clock: 1526486746 2018-05-16T16:05:46.746Z
+     thread count: 48
+     peak threads: 141
+     user threads: 45
+            Thread[Reference Handler,10,system]
+            Thread[Finalizer,8,system]
+            Thread[Signal Dispatcher,9,system]
+            Thread[main,5,main]
+            Thread[Test worker,5,main]
+            Thread[/127.0.0.1:38354 to /127.0.0.1:34267 workers Thread 2,5,main]
+            Thread[/127.0.0.1:38354 to /127.0.0.1:34267 workers Thread 3,5,main]
+            Thread[pool-1-thread-1,5,main]
+            Thread[Timer-0,5,main]
+            Thread[INCompressor,5,main]
+            Thread[Cleaner-1,5,main]
+            Thread[Checkpointer,5,main]
+            Thread[StatCapture,5,main]
+            Thread[INCompressor,5,main]
+            Thread[Cleaner-1,5,main]
+            Thread[Checkpointer,5,main]
+            Thread[StatCapture,5,main]
+            Thread[txnmgr-empty-input-queue-monitor,5,main]
+            Thread[txnmgr-test-input-queue-monitor,5,main]
+            Thread[SystemMonitor,5,main]
+            Thread[ThreadPool.PooledThread-0,5,ThreadPool-0]
+            Thread[ThreadPool.PooledThread-1,5,ThreadPool-1]
+            Thread[ThreadPool.PooledThread-2,5,ThreadPool-2]
+            Thread[ThreadPool.PooledThread-3-idle,5,ThreadPool-3]
+            Thread[ThreadPool.PooledThread-4,5,ThreadPool-3]
+            Thread[ThreadPool.PooledThread-5-idle,5,ThreadPool-4]
+            Thread[ThreadPool.PooledThread-6,5,ThreadPool-4]
+            Thread[ThreadPool.PooledThread-7-idle,5,ThreadPool-5]
+            Thread[ThreadPool.PooledThread-8,5,ThreadPool-5]
+            Thread[ThreadPool.PooledThread-9-idle,5,ThreadPool-6]
+            Thread[ThreadPool.PooledThread-10,5,ThreadPool-6]
+            Thread[ThreadPool.PooledThread-11-idle,5,ThreadPool-7]
+            Thread[ThreadPool.PooledThread-12,5,ThreadPool-7]
+            Thread[ThreadPool.PooledThread-13,5,ThreadPool-8]
+            Thread[ThreadPool.PooledThread-14-idle,5,ThreadPool-8]
+            Thread[ThreadPool.PooledThread-15-idle,5,ThreadPool-9]
+            Thread[ThreadPool.PooledThread-16-idle,5,ThreadPool-10]
+            Thread[ThreadPool.PooledThread-17-idle,5,ThreadPool-11]
+            Thread[ThreadPool.PooledThread-18-idle,5,ThreadPool-12]
+            Thread[ThreadPool.PooledThread-19-idle,5,ThreadPool-12]
+            Thread[ThreadPool.PooledThread-20,5,ThreadPool-13]
+            Thread[ThreadPool.PooledThread-21,5,ThreadPool-14]
+            Thread[ThreadPool.PooledThread-22,5,ThreadPool-15]
+            Thread[ThreadPool.PooledThread-23,5,ThreadPool-16]
+            Thread[ThreadPool.PooledThread-24,5,ThreadPool-16]
+            Thread[ThreadPool.PooledThread-25-idle,5,ThreadPool-17]
+            Thread[ThreadPool.PooledThread-26-idle,5,ThreadPool-17]
+            Thread[ThreadPool.PooledThread-27,5,ThreadPool-18]
+    name-registrar:
+      Q2-1: org.jpos.q2.Q2
+      Q2: org.jpos.q2.Q2
+      Q2-3: org.jpos.q2.Q2
+      Q2-2: org.jpos.q2.Q2
+      logger.testLogLogName: org.jpos.util.Logger
+      Q2-9: org.jpos.q2.Q2
+      Q2-8: org.jpos.q2.Q2
+      Q2-5: org.jpos.q2.Q2
+      Q2-4: org.jpos.q2.Q2
+      Q2-7: org.jpos.q2.Q2
+      Q2-6: org.jpos.q2.Q2
+      thread.pool.executor.dummy: org.jpos.q2.qbean.QThreadPoolExecutorTest$DummyThreadPoolExecutor
+      je:txnmgrtest: org.jpos.space.JESpace
+        &lt;key size='1'&gt;$HEAD&lt;/key&gt;
+        &lt;key size='1'&gt;$TAIL&lt;/key&gt;
+        &lt;keycount&gt;2&lt;/keycount&gt;
+      tspace:txnmgrtest: org.jpos.space.TSpace
+         key-count: 0
+            gcinfo: 0,0
+      testTransactionManagerName: org.jpos.transaction.TransactionManager
+        in-transit=0/0, head=0, tail=0, paused=0, outstanding=-1, active-sessions=0/0
+      tspace:default: org.jpos.space.TSpace
+        &lt;key count='1'&gt;file:build/resources/test/org/jpos/util/fsd-base.xml&lt;/key&gt;
+        &lt;key count='1'&gt;file:build/resources/test/org/jpos/util/fsd-03.xml&lt;/key&gt;
+        &lt;key count='1'&gt;file:build/resources/test/org/jpos/util/msg-base.xml&lt;/key&gt;
+        &lt;key count='1'&gt;file:build/resources/test/org/jpos/util/msg-prop-axx.xml&lt;/key&gt;
+        &lt;key count='1'&gt;file:build/resources/test/org/jpos/util/eom-base.xml&lt;/key&gt;
+        &lt;key count='1'&gt;file:build/resources/test/org/jpos/util/msgDS-base.xml&lt;/key&gt;
+        &lt;key count='1'&gt;file:build/resources/test/org/jpos/util/DSmsg-base.xml&lt;/key&gt;
+        &lt;key count='1'&gt;test-base.xml&lt;/key&gt;
+        &lt;key count='1'&gt;file:build/resources/test/org/jpos/util/msg-prop-base.xml&lt;/key&gt;
+        &lt;key count='1'&gt;file:build/resources/test/org/jpos/util/msg-separator-base.xml&lt;/key&gt;
+        &lt;key count='1'&gt;$TAILLOCK.350084078&lt;/key&gt;
+        &lt;key count='1'&gt;$TAILLOCK.494514778&lt;/key&gt;
+        &lt;key count='1'&gt;jar:org/jpos/util/DSmsg-base.xml&lt;/key&gt;
+        &lt;key count='1'&gt;file:build/resources/test/org/jpos/util/fsd-99.xml&lt;/key&gt;
+         key-count: 14
+            gcinfo: 0,0
+      Q2-11: org.jpos.q2.Q2
+      Q2-12: org.jpos.q2.Q2
+      Q2-13: org.jpos.q2.Q2
+      Q2-14: org.jpos.q2.Q2
+      tspace:testSpaceAdaptor
+SpaceName: org.jpos.space.TSpace
+         key-count: 0
+            gcinfo: 0,0
+      Q2-10: org.jpos.q2.Q2
+      logger.testLinkLogger: org.jpos.util.Logger
+      tspace:testSpaceUtilSpaceUri: org.jpos.space.TSpace
+         key-count: 0
+            gcinfo: 0,0
+      tspace:org.jpos.transaction.TransactionManager@1d79b25a: org.jpos.space.TSpace
+        &lt;key count='1'&gt;$TAIL&lt;/key&gt;
+        &lt;key count='1'&gt;$HEAD&lt;/key&gt;
+         key-count: 2
+            gcinfo: 0,0
+      logger.Q2: org.jpos.util.Logger
+      transient:TestLink: org.jpos.space.TSpace
+        &lt;key count='1'&gt;TestSpace-send&lt;/key&gt;
+         key-count: 1
+            gcinfo: 0,0
+      logger.testLogName: org.jpos.util.Logger
+      Q2-15: org.jpos.q2.Q2
+      Q2-16: org.jpos.q2.Q2
+      mux.TEST: org.jpos.transaction.participant.QueryHostTest
+      Q2-17: org.jpos.q2.Q2
+      tspace:testString: org.jpos.space.TSpace
+         key-count: 0
+            gcinfo: 0,0
+  &lt;/info&gt;
+&lt;/log&gt;
+</pre>
+</span>
+</div>
 </div>
 <div id="footer">
 <p>
@@ -254,7 +405,7 @@
 <input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
 </label>
 </div>Generated by 
-<a href="http://www.gradle.org">Gradle 4.6</a> at May 7, 2018 11:51:59 PM</p>
+<a href="http://www.gradle.org">Gradle 4.6</a> at May 16, 2018 4:06:27 PM</p>
 </div>
 </div>
 </body>
