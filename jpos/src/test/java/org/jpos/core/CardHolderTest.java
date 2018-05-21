@@ -67,7 +67,7 @@ public class CardHolderTest extends EqualsHashCodeTestCase {
             new CardHolder("11Character", "3Ch");
             fail("Expected InvalidCardException to be thrown");
         } catch (InvalidCardException ex) {
-            assertEquals("ex.getMessage()", "11Character/3Ch", ex.getMessage());
+            assertEquals("ex.getMessage()", "exp length not 4", ex.getMessage());
         }
     }
 
@@ -77,7 +77,7 @@ public class CardHolderTest extends EqualsHashCodeTestCase {
             new CardHolder("11Character", "5Char");
             fail("Expected InvalidCardException to be thrown");
         } catch (InvalidCardException ex) {
-            assertEquals("ex.getMessage()", "11Character/5Char", ex.getMessage());
+            assertEquals("ex.getMessage()", "exp length not 4", ex.getMessage());
         }
     }
 
@@ -87,7 +87,7 @@ public class CardHolderTest extends EqualsHashCodeTestCase {
             new CardHolder("9Characte", "testCardHolderExp");
             fail("Expected InvalidCardException to be thrown");
         } catch (InvalidCardException ex) {
-            assertEquals("ex.getMessage()", "9Characte", ex.getMessage());
+            assertEquals("ex.getMessage()", "pan too short", ex.getMessage());
         }
     }
 
@@ -97,7 +97,7 @@ public class CardHolderTest extends EqualsHashCodeTestCase {
             new CardHolder("testCardHolderTrack2");
             fail("Expected InvalidCardException to be thrown");
         } catch (InvalidCardException ex) {
-            assertEquals("ex.getMessage()", "testCardHolderTrack2", ex.getMessage());
+            assertEquals("ex.getMessage()", "invalid track2", ex.getMessage());
         }
     }
 
@@ -543,7 +543,7 @@ public class CardHolderTest extends EqualsHashCodeTestCase {
             cardHolder.parseTrack2("D0");
             fail("Expected InvalidCardException to be thrown");
         } catch (InvalidCardException ex) {
-            assertEquals("ex.getMessage()", "D0", ex.getMessage());
+            assertEquals("ex.getMessage()", "invalid track2", ex.getMessage());
             assertEquals("cardHolder.exp", "4Cha", cardHolder.exp);
             assertEquals("cardHolder.pan", "testCardHolderPan", cardHolder.pan);
             assertNull("cardHolder.trailler", cardHolder.trailer);
@@ -557,7 +557,7 @@ public class CardHolderTest extends EqualsHashCodeTestCase {
             cardHolder.parseTrack2("testCardHolders");
             fail("Expected InvalidCardException to be thrown");
         } catch (InvalidCardException ex) {
-            assertEquals("ex.getMessage()", "testCardHolders", ex.getMessage());
+            assertEquals("ex.getMessage()", "invalid track2", ex.getMessage());
             assertNull("cardHolder.exp", cardHolder.exp);
             assertNull("cardHolder.pan", cardHolder.pan);
             assertNull("cardHolder.trailler", cardHolder.trailer);
@@ -614,7 +614,7 @@ public class CardHolderTest extends EqualsHashCodeTestCase {
             cardHolder.setEXP("5Char");
             fail("Expected InvalidCardException to be thrown");
         } catch (InvalidCardException ex) {
-            assertEquals("ex.getMessage()", "testCardHolderPan/5Char", ex.getMessage());
+            assertEquals("ex.getMessage()", "exp length not 4", ex.getMessage());
             assertEquals("cardHolder.exp", "4Cha", cardHolder.exp);
         }
     }
@@ -626,7 +626,7 @@ public class CardHolderTest extends EqualsHashCodeTestCase {
             cardHolder.setEXP("3Ch");
             fail("Expected InvalidCardException to be thrown");
         } catch (InvalidCardException ex) {
-            assertEquals("ex.getMessage()", "testCardHolderPan/3Ch", ex.getMessage());
+            assertEquals("ex.getMessage()", "exp length not 4", ex.getMessage());
             assertEquals("cardHolder.exp", "4Cha", cardHolder.exp);
         }
     }
@@ -664,7 +664,7 @@ public class CardHolderTest extends EqualsHashCodeTestCase {
             cardHolder.setPAN("9Characte");
             fail("Expected InvalidCardException to be thrown");
         } catch (InvalidCardException ex) {
-            assertEquals("ex.getMessage()", "9Characte", ex.getMessage());
+            assertEquals("ex.getMessage()", "pan too short", ex.getMessage());
             assertEquals("cardHolder.pan", "k'X9|", cardHolder.pan);
         }
     }
