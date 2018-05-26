@@ -13,7 +13,7 @@
 
     <xsl:param name="paper.type" select="'A4'"/>
     <xsl:param name="body.font.family" select="'serif'"/>
-    <xsl:param name="body.font.master">12</xsl:param>
+    <xsl:param name="body.font.master">10</xsl:param>
     <xsl:param name="body.font.size">
       <xsl:value-of select="$body.font.master"/><xsl:text>pt</xsl:text>
     </xsl:param>
@@ -230,7 +230,7 @@
                             <fo:block>
                                 <fo:external-graphic src="url(images/logo.jpg)"/>
                             </fo:block>
-                            <fo:block font-family="Helvetica" font-size="20pt" padding-before="10mm">
+                            <fo:block font-family="Helvetica" font-size="16pt" padding-before="10mm">
                                 <xsl:value-of select="/d:book/d:bookinfo/d:title"/>
                             </fo:block>
                             <fo:block font-family="Helvetica" font-size="12pt" padding="10mm">
