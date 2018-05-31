@@ -33,10 +33,11 @@ dependencies {
 }
 
 def archiveJarName="${project.name}-${project.version}.jar"
+def q2ArchiveJarName="${project.name}-${project.version}-q2.jar"
 def jposCopySpec = copySpec {
     def cfg = new Properties()
     def target = project.hasProperty('target') ? target : 'devel'
-    cfg.put('jarname', archiveJarName.toString())
+    cfg.put('jarname', q2ArchiveJarName.toString())
     cfg.put('target', target.toString())
     File cfgFile = file("${target}.properties")
     if (cfgFile.exists()) {
@@ -63,9 +64,8 @@ def jposCopySpec = copySpec {
         include 'cfg/authorized_keys'
         fileMode 0400
     }
-    from(jar) {
-        rename archiveJarName, "${cfg.jarname}"
-    }
+    from(file("${project.libsDir}/${q2ArchiveJarName}"))
+
     into("lib") {
         from(configurations.runtime)
     }
@@ -89,9 +89,7 @@ jar () {
     manifest {
         def manifestClasspath = configurations.runtime.collect { "lib/" + it.getName() }.join(' ') 
         attributes 'Implementation-Title': 'jPOS', 
-                   'Implementation-Version': version,
-                   'Main-Class': 'org.jpos.q2.Q2',
-                   'Class-Path': manifestClasspath
+                   'Implementation-Version': version
         instruction 'Bundle-Vendor', bundleVendor
         instruction 'Bundle-License', bundleLicense
         instruction 'Bundle-DocURL', bundleDocURL
@@ -100,6 +98,29 @@ jar () {
         instruction 'Import-Package', bundleImportPackage
         instruction 'Export-Package', bundleExportPackage
         // instruction 'Include-Resource', configurations.runtime.collect { 'lib/' + it.getName() }.join(' ')
+    } 
+}
+
+task q2jar (type: Jar) {
+    dependsOn jar
+    classifier = 'q2'
+    from sourceSets.main.output.classesDirs, sourceSets.main.output.resourcesDir
+    manifest = osgiManifest {
+        classesDir = new File(buildDir, 'classes/java/main') // sourceSets.main.output.classesDir deprecated
+        classpath = sourceSets.main.runtimeClasspath
+        def manifestClasspath = configurations.runtime.collect { "lib/" + it.getName() }.join(' ') 
+        attributes 'Implementation-Title': 'jPOS', 
+                   'Implementation-Version': version,
+                   'Main-Class': 'org.jpos.q2.Q2',
+                   'Class-Path': manifestClasspath
+        // instruction 'Include-Resource', configurations.runtime.collect { 'lib/' + it.getName() }.join(' ')
+        instruction 'Bundle-Vendor', bundleVendor
+        instruction 'Bundle-Description', bundleDescription + ' full'
+        // instruction 'Include-Resource', configurations.runtime.collect { 'lib/' + it.getName() }.join(' ')
+        instruction 'Bundle-Activator', bundleActivator
+        instruction 'Import-Package', bundleImportPackage
+        instruction 'Export-Package', bundleExportPackage
+        instruction 'Bundle-ClassPath', '.,' + configurations.runtime.collect { "lib/" + it.getName() }.join(',')
     } 
 }
 
@@ -147,7 +168,7 @@ artifacts {
 }
 
 task dist (type: Tar) { 
-    dependsOn 'assemble', 'sourceJar'
+    dependsOn 'q2jar', 'assemble', 'sourceJar'
     compression = Compression.GZIP
     includeEmptyDirs true
     with jposCopySpec
@@ -156,7 +177,7 @@ task dist (type: Tar) {
 }
 
 task zip (type: Zip) { 
-    dependsOn 'assemble', 'sourceJar'
+    dependsOn 'q2jar', 'assemble', 'sourceJar'
     includeEmptyDirs true
     includeEmptyDirs true
     with jposCopySpec
@@ -235,6 +256,7 @@ processResources.dependsOn createBuildTimestampPropertyFile, createRevisionPrope
 processResources.outputs.upToDateWhen{ false } // issue with Gradle 2.4 confused about UP-TO-DATE (works OK with 2.3)
 
 task installApp(type: Sync) {
+    dependsOn q2jar
     delete "${project.buildDir}/install/${project.name}/cfg"
     description 'Installs jPOS based application'
     into { file("${project.buildDir}/install/${project.name}") }
