@@ -33,10 +33,29 @@ public class IFAE_LLCHARTest extends TestCase
                             packager.pack(field));
     }
 
+    public void testPackWithPackagerWithoutDescription() throws Exception
+    {
+        ISOField field = new ISOField(12, "1234");
+        IFAE_LLCHAR packager = new IFAE_LLCHAR();
+        packager.setLength(12);
+        TestUtils.assertEquals(new byte[] {(byte)0x30, (byte)0x34, (byte)0xF1, (byte)0xF2, (byte)0xF3, (byte)0xF4},
+                            packager.pack(field));
+    }
+    
     public void testUnpack() throws Exception
     {
         byte[] raw = new byte[] {(byte)0x30, (byte)0x34, (byte)0xF1, (byte)0xF2, (byte)0xF3, (byte)0xF4};
         IFAE_LLCHAR packager = new IFAE_LLCHAR(10, "Should be 041234");
+        ISOField field = new ISOField(12);
+        packager.unpack(field, raw, 0);
+        assertEquals("1234", (String) field.getValue());
+    }
+
+    public void testUnpackWithPackagerWithoutDescription() throws Exception
+    {
+        byte[] raw = new byte[] {(byte)0x30, (byte)0x34, (byte)0xF1, (byte)0xF2, (byte)0xF3, (byte)0xF4};
+        IFAE_LLCHAR packager = new IFAE_LLCHAR();
+        packager.setLength(10);
         ISOField field = new ISOField(12);
         packager.unpack(field, raw, 0);
         assertEquals("1234", (String) field.getValue());
@@ -52,4 +71,5 @@ public class IFAE_LLCHARTest extends TestCase
         packager.unpack(unpack, packager.pack(field), 0);
         assertEquals(origin, (String) unpack.getValue());
     }
+
 }

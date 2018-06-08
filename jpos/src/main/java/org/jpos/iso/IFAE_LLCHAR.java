@@ -26,7 +26,7 @@ package org.jpos.iso;
  */
 public class IFAE_LLCHAR extends ISOStringFieldPackager {
     public IFAE_LLCHAR() {
-        super(NullPadder.INSTANCE, AsciiInterpreter.INSTANCE, EbcdicPrefixer.LL);
+        super(NullPadder.INSTANCE, EbcdicInterpreter.INSTANCE, AsciiPrefixer.LL);
     }
     /**
      * @param len - field len
