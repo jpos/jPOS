@@ -20,6 +20,8 @@ package org.jpos.q2.iso;
 
 import org.jdom2.Element;
 import org.jpos.core.ConfigurationException;
+import org.jpos.core.handlers.exception.ExceptionHandlerAware;
+import org.jpos.core.handlers.exception.ExceptionHandlerConfigAware;
 import org.jpos.iso.*;
 import org.jpos.q2.QBeanSupport;
 import org.jpos.q2.QFactory;
@@ -42,7 +44,7 @@ import java.util.Date;
 @SuppressWarnings("unchecked")
 public class ChannelAdaptor
     extends QBeanSupport
-    implements ChannelAdaptorMBean, Channel, Loggeable
+    implements ChannelAdaptorMBean, Channel, Loggeable, ExceptionHandlerConfigAware
 {
     protected Space sp;
     private ISOChannel channel;
@@ -205,6 +207,11 @@ public class ChannelAdaptor
         if (channel instanceof FilteredChannel) {
             addFilters ((FilteredChannel) channel, e, f);
         }
+
+        if (channel instanceof ExceptionHandlerAware) {
+            addExceptionHandlers((ExceptionHandlerAware) channel, e, f);
+        }
+
         if (getName () != null)
             channel.setName (getName ());
         return channel;
@@ -232,6 +239,9 @@ public class ChannelAdaptor
             }
         }
     }
+
+
+
     protected ISOChannel initChannel () throws ConfigurationException {
         Element persist = getPersist ();
         Element e = persist.getChild ("channel");

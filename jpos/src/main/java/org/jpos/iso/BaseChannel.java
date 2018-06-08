@@ -21,6 +21,8 @@ package org.jpos.iso;
 import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
+import org.jpos.core.handlers.exception.ExceptionHandler;
+import org.jpos.core.handlers.exception.ExceptionHandlerAware;
 import org.jpos.iso.ISOFilter.VetoException;
 import org.jpos.iso.header.BaseHeader;
 import org.jpos.util.LogEvent;
@@ -33,7 +35,9 @@ import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Observable;
 
 /*
@@ -43,16 +47,16 @@ import java.util.Observable;
 
 /**
  * ISOChannel is an abstract class that provides functionality that
- * allows the transmision and reception of ISO 8583 Messages
+ * allows the transmission and reception of ISO 8583 Messages
  * over a TCP/IP session.
  * <p>
  * This class is not thread-safe.
  * <p>
- * ISOChannel is Observable in order to suport GUI components
+ * ISOChannel is Observable in order to support GUI components
  * such as ISOChannelPanel.
  * <br>
  * It now support the new Logger architecture so we will
- * probably setup ISOChannelPanel to be a LogListener insteado
+ * probably setup ISOChannelPanel to be a LogListener instead
  * of being an Observer in future releases.
  * 
  * @author Alejandro P. Revilla
@@ -68,7 +72,7 @@ import java.util.Observable;
 @SuppressWarnings("unchecked")
 public abstract class BaseChannel extends Observable
     implements FilteredChannel, ClientChannel, ServerChannel, FactoryChannel, 
-               LogSource, Configurable, BaseChannelMBean, Cloneable
+               LogSource, Configurable, BaseChannelMBean, Cloneable, ExceptionHandlerAware
 {
     private Socket socket;
     private String host, localIface;
@@ -104,6 +108,10 @@ public abstract class BaseChannel extends Observable
     private static final int DEFAULT_TIMEOUT = 300000;
     private int nextHostPort = 0;
     private boolean roundRobin = false;
+
+    // Exception handlers
+    private final List<ExceptionHandler> defaultExceptionHandlers = new ArrayList<>();
+    private final Map<Class<? extends Exception>, List<ExceptionHandler>> targetedExceptionHandlers = new HashMap<>();
 
     /**
      * constructor shared by server and client
@@ -229,6 +237,16 @@ public abstract class BaseChannel extends Observable
         setHost (null, 0);
         this.serverSocket = sock;
         name = "";
+    }
+
+    @Override
+    public List<ExceptionHandler> getDefaultExceptionHandlers() {
+        return defaultExceptionHandlers;
+    }
+
+    @Override
+    public Map<Class<? extends Exception>, List<ExceptionHandler>> getTargetedExceptionHandlers() {
+        return targetedExceptionHandlers;
     }
 
     /**

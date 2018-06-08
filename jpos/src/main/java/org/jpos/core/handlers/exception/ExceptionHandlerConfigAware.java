@@ -33,7 +33,7 @@ public interface ExceptionHandlerConfigAware {
     default void addExceptionHandlers(ExceptionHandlerAware receiver, Element elem, QFactory fact)
             throws ConfigurationException
     {
-        for (Element o : elem.getChildren("exception-handlers")) {
+        for (Element o : elem.getChildren("exception-handler")) {
             String clazz = o.getAttributeValue("class");
             ExceptionHandler handler = (ExceptionHandler) fact.newInstance(clazz);
             fact.setLogger(handler, o);

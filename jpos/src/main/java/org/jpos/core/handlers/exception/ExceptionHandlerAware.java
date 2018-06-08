@@ -19,7 +19,6 @@
 package org.jpos.core.handlers.exception;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -46,16 +45,24 @@ import java.util.Map;
  */
 public interface ExceptionHandlerAware {
 
-    // Instantiate pipeline containers, these are static final by convention.
-    List<ExceptionHandler> defaultHandlers = new ArrayList<>();
-    Map<Class<? extends Exception>, List<ExceptionHandler>> specificHandlers = new HashMap<>();
+    /**
+     *
+     * @return A list of exception handlers that are always executed.
+     */
+    List<ExceptionHandler> getDefaultExceptionHandlers();
+
+    /**
+     *
+     * @return A map of exception classes to exception handlers.  These handlers only execute if the exception matches.
+     */
+    Map<Class<? extends Exception>, List<ExceptionHandler>> getTargetedExceptionHandlers();
 
     /**
      * Add a handler to the default pipeline.
      * @param handler ExceptionHandler to add.
      */
     default void addHandler(ExceptionHandler handler) {
-        defaultHandlers.add(handler);
+        getDefaultExceptionHandlers().add(handler);
     }
 
     /**
@@ -64,7 +71,7 @@ public interface ExceptionHandlerAware {
      * @param clazz Exception handler pipeline to add it to.
      */
     default void addHandler(ExceptionHandler handler, Class<? extends Exception> clazz) {
-        List<ExceptionHandler> handlers = specificHandlers.computeIfAbsent(clazz, f -> new ArrayList<>() );
+        List<ExceptionHandler> handlers = getTargetedExceptionHandlers().computeIfAbsent(clazz, f -> new ArrayList<>() );
         if (handler != null) {
             handlers.add(handler);
         }
@@ -75,7 +82,7 @@ public interface ExceptionHandlerAware {
      * @param handler ExceptionHandler to remove.
      */
     default void removeHandler(ExceptionHandler handler) {
-        defaultHandlers.remove(handler);
+        getDefaultExceptionHandlers().remove(handler);
     }
 
     /**
@@ -84,7 +91,7 @@ public interface ExceptionHandlerAware {
      * @param clazz Exception pipeline to remove it from.
      */
     default void removeHandler(ExceptionHandler handler, Class<? extends Exception> clazz) {
-        final List<ExceptionHandler> exceptionHandlers = specificHandlers.get(clazz);
+        final List<ExceptionHandler> exceptionHandlers = getTargetedExceptionHandlers().get(clazz);
         if (exceptionHandlers != null) {
             exceptionHandlers.remove(handler);
         }
@@ -95,7 +102,7 @@ public interface ExceptionHandlerAware {
      * @param clazz Exception pipeline to remove.
      */
     default void removeHandlers(Class<? extends Exception> clazz) {
-        specificHandlers.remove(clazz);
+        getTargetedExceptionHandlers().remove(clazz);
     }
 
     /**
@@ -110,7 +117,7 @@ public interface ExceptionHandlerAware {
     default Exception handle(Exception e) throws Exception {
         int strike = 1;
         Exception exception = e;
-        final List<ExceptionHandler> exceptionHandlers = specificHandlers.get(e.getClass());
+        final List<ExceptionHandler> exceptionHandlers = getTargetedExceptionHandlers().get(e.getClass());
 
         if (exceptionHandlers != null) {
             for (ExceptionHandler handler : exceptionHandlers) {
@@ -120,11 +127,11 @@ public interface ExceptionHandlerAware {
             strike++;
         }
 
-        if (defaultHandlers.isEmpty() && (++strike == 3)) {
+        if (getDefaultExceptionHandlers().isEmpty() && (++strike == 3)) {
             throw e;
         }
 
-        for (ExceptionHandler handler : defaultHandlers) {
+        for (ExceptionHandler handler : getDefaultExceptionHandlers()) {
             exception = handler.handle(exception);
         }
 
