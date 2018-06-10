@@ -879,10 +879,11 @@ public class ISOUtil {
      * "40000101010001D020128375" is converted to "400001____0001D0201_____"
      * "123" is converted to "___"
      * </pre>
-     * @param s string to be protected 
+     * @param s string to be protected
+     * @param mask char used to protect the string
      * @return 'protected' String
      */
-    public static String protect (String s) {
+    public static String protect (String s, char mask) {
         StringBuilder sb = new StringBuilder();
         int len   = s.length();
         int clear = len > 6 ? 6 : 0;
@@ -905,7 +906,7 @@ public class ISOUtil {
             }
             else if (i == lastFourIndex)
                 clear = 4;
-            sb.append (clear-- > 0 ? s.charAt(i) : '_');
+            sb.append (clear-- > 0 ? s.charAt(i) : mask);
         }
         s = sb.toString();
         try {
@@ -913,12 +914,15 @@ public class ISOUtil {
             int charCount = s.replaceAll("[^\\^]", "").length();
             if (charCount == 2 ) {
                 s = s.substring(0, s.lastIndexOf("^")+1);
-                s = ISOUtil.padright(s, len, '_');
+                s = ISOUtil.padright(s, len, mask);
             }
         } catch (ISOException e){
             //cannot PAD - should never get here
         }
         return s;
+    }
+    public static String protect(String s) {
+        return protect(s, '_');
     }
     public static int[] toIntArray(String s) {
         StringTokenizer st = new StringTokenizer (s);
