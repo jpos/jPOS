@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pmd version="5.6.1" timestamp="2018-06-09T22:45:05.473">
+<pmd version="5.6.1" timestamp="2018-06-10T19:15:23.738">
 <file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/iso/ISOUtilTest.java">
 <violation beginline="4638" endline="4638" begincolumn="32" endcolumn="81" rule="AvoidDecimalLiteralsInBigDecimalConstructor" ruleset="Basic" package="org.jpos.iso" class="ISOUtilTest" method="testParseAmtConvRate" externalInfoUrl="https://pmd.github.io/pmd-5.6.1/pmd-java/rules/java/basic.html#AvoidDecimalLiteralsInBigDecimalConstructor" priority="3">
 Avoid creating BigDecimal with a decimal (float/double) literal. Use a String literal
