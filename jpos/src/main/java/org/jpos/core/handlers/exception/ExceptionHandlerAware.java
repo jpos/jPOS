@@ -28,7 +28,7 @@ import java.util.Map;
  * <p>
  *     The main pipeline consists of multiple sub-pipelines:
  *     <ul>
- *         <li>A pipeline for which handlers are called regardless of the type of exception handled.</li>
+ *         <li>A pipeline for which handlers are called regardless of the type of exception handled.  Stored under a null key.</li>
  *         <li>A pipeline per targeted exception type.</li>
  *     </ul>
  *     The targeted pipeline always executes before the default pipeline.
@@ -47,22 +47,16 @@ public interface ExceptionHandlerAware {
 
     /**
      *
-     * @return A list of exception handlers that are always executed.
-     */
-    List<ExceptionHandler> getDefaultExceptionHandlers();
-
-    /**
-     *
      * @return A map of exception classes to exception handlers.  These handlers only execute if the exception matches.
      */
-    Map<Class<? extends Exception>, List<ExceptionHandler>> getTargetedExceptionHandlers();
+    Map<Class<? extends Exception>, List<ExceptionHandler>> getExceptionHandlers();
 
     /**
      * Add a handler to the default pipeline.
      * @param handler ExceptionHandler to add.
      */
     default void addHandler(ExceptionHandler handler) {
-        getDefaultExceptionHandlers().add(handler);
+        addHandler(handler, null);
     }
 
     /**
@@ -71,7 +65,7 @@ public interface ExceptionHandlerAware {
      * @param clazz Exception handler pipeline to add it to.
      */
     default void addHandler(ExceptionHandler handler, Class<? extends Exception> clazz) {
-        List<ExceptionHandler> handlers = getTargetedExceptionHandlers().computeIfAbsent(clazz, f -> new ArrayList<>() );
+        List<ExceptionHandler> handlers = getExceptionHandlers().computeIfAbsent(clazz, f -> new ArrayList<>() );
         if (handler != null) {
             handlers.add(handler);
         }
@@ -82,18 +76,23 @@ public interface ExceptionHandlerAware {
      * @param handler ExceptionHandler to remove.
      */
     default void removeHandler(ExceptionHandler handler) {
-        getDefaultExceptionHandlers().remove(handler);
+        removeHandler(handler, null);
     }
 
     /**
-     * Remove a handler from an exception specific handler pipeline.
+     * Remove a handler from an exception specific handler pipeline.  The list of exception
+     * handlers is removed once the last handler has been removed.
+     *
      * @param handler ExceptionHandler to remove.
      * @param clazz Exception pipeline to remove it from.
      */
     default void removeHandler(ExceptionHandler handler, Class<? extends Exception> clazz) {
-        final List<ExceptionHandler> exceptionHandlers = getTargetedExceptionHandlers().get(clazz);
+        final List<ExceptionHandler> exceptionHandlers = getExceptionHandlers().get(clazz);
         if (exceptionHandlers != null) {
             exceptionHandlers.remove(handler);
+            if (exceptionHandlers.isEmpty()) {
+                removeHandlers(clazz);
+            }
         }
     }
 
@@ -102,7 +101,7 @@ public interface ExceptionHandlerAware {
      * @param clazz Exception pipeline to remove.
      */
     default void removeHandlers(Class<? extends Exception> clazz) {
-        getTargetedExceptionHandlers().remove(clazz);
+        getExceptionHandlers().remove(clazz);
     }
 
     /**
@@ -115,24 +114,24 @@ public interface ExceptionHandlerAware {
      * @throws Exception In the event of a handler throwing an exception.  Processing by further handlers would be cancelled.
      */
     default Exception handle(Exception e) throws Exception {
-        int strike = 1;
         Exception exception = e;
-        final List<ExceptionHandler> exceptionHandlers = getTargetedExceptionHandlers().get(e.getClass());
+        final List<ExceptionHandler> defaultExceptionHandlers = getExceptionHandlers().get(null);
+        final List<ExceptionHandler> targetedExceptionHandlers = getExceptionHandlers().get(e.getClass());
 
-        if (exceptionHandlers != null) {
-            for (ExceptionHandler handler : exceptionHandlers) {
-                exception = handler.handle(exception);
-            }
-        } else {
-            strike++;
-        }
-
-        if (getDefaultExceptionHandlers().isEmpty() && (++strike == 3)) {
+        if (targetedExceptionHandlers == null && defaultExceptionHandlers == null) {
             throw e;
         }
 
-        for (ExceptionHandler handler : getDefaultExceptionHandlers()) {
-            exception = handler.handle(exception);
+        if (targetedExceptionHandlers != null) {
+            for (ExceptionHandler handler : targetedExceptionHandlers) {
+                exception = handler.handle(exception);
+            }
+        }
+
+        if (defaultExceptionHandlers != null) {
+            for (ExceptionHandler handler : defaultExceptionHandlers) {
+                exception = handler.handle(exception);
+            }
         }
 
         return exception;
