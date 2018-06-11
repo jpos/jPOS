@@ -109,9 +109,7 @@ public abstract class BaseChannel extends Observable
     private int nextHostPort = 0;
     private boolean roundRobin = false;
 
-    // Exception handlers
-    private final List<ExceptionHandler> defaultExceptionHandlers = new ArrayList<>();
-    private final Map<Class<? extends Exception>, List<ExceptionHandler>> targetedExceptionHandlers = new HashMap<>();
+    private final Map<Class<? extends Exception>, List<ExceptionHandler>> exceptionHandlers = new HashMap<>();
 
     /**
      * constructor shared by server and client
@@ -240,13 +238,8 @@ public abstract class BaseChannel extends Observable
     }
 
     @Override
-    public List<ExceptionHandler> getDefaultExceptionHandlers() {
-        return defaultExceptionHandlers;
-    }
-
-    @Override
-    public Map<Class<? extends Exception>, List<ExceptionHandler>> getTargetedExceptionHandlers() {
-        return targetedExceptionHandlers;
+    public Map<Class<? extends Exception>, List<ExceptionHandler>> getExceptionHandlers() {
+        return exceptionHandlers;
     }
 
     /**

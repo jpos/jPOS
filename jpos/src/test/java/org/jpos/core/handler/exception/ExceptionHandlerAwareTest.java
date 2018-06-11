@@ -9,7 +9,6 @@ import org.junit.Test;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,32 +24,30 @@ import static org.mockito.Mockito.when;
 
 public class ExceptionHandlerAwareTest implements ExceptionHandlerAware {
 
-    private final Map<Class<? extends Exception>,List<ExceptionHandler>> targetedExceptionHandlers = new HashMap<>();
-    private final List<ExceptionHandler> defaultExceptionHandlers = new ArrayList<>();
+    private final Map<Class<? extends Exception>,List<ExceptionHandler>> exceptionHandlers = new HashMap<>();
 
     @Before
     public void clearHandlers() {
-        getDefaultExceptionHandlers().clear();
-        getTargetedExceptionHandlers().clear();
+        getExceptionHandlers().clear();
     }
 
     @Test
     public void testAddDefaultHandler() {
         addHandler(e -> null);
-        assertEquals(1, getDefaultExceptionHandlers().size());
+        assertEquals(1, getExceptionHandlers().get(null).size());
     }
 
     @Test
     public void testAddFirstTargetedHandler() {
         addHandler(e -> null, ISOException.class);
-        assertEquals(1, getTargetedExceptionHandlers().get(ISOException.class).size());
+        assertEquals(1, getExceptionHandlers().get(ISOException.class).size());
     }
 
     @Test
     public void testAddAdditionalTargetedHandler() {
         addHandler(e -> null, ISOException.class);
         addHandler(e -> null, ISOException.class);
-        assertEquals(2, getTargetedExceptionHandlers().get(ISOException.class).size());
+        assertEquals(2, getExceptionHandlers().get(ISOException.class).size());
     }
 
     @Test
@@ -58,15 +55,17 @@ public class ExceptionHandlerAwareTest implements ExceptionHandlerAware {
         ExceptionHandler handler = e -> null;
         addHandler(handler);
         removeHandler(handler);
-        assertEquals(0, getDefaultExceptionHandlers().size());
+        assertEquals(0, this.getExceptionHandlers().size());
     }
 
     @Test
     public void testRemoveTargetedHandler() {
         ExceptionHandler handler = e -> null;
         addHandler(handler, ISOException.class);
+        addHandler(e -> null, ISOException.class);
+        assertEquals(2, getExceptionHandlers().get(ISOException.class).size());
         removeHandler(handler, ISOException.class);
-        assertEquals(0, getTargetedExceptionHandlers().get(ISOException.class).size());
+        assertEquals(1, getExceptionHandlers().get(ISOException.class).size());
     }
 
     @Test
@@ -74,7 +73,7 @@ public class ExceptionHandlerAwareTest implements ExceptionHandlerAware {
         ExceptionHandler handler = e -> null;
         addHandler(handler, ISOException.class);
         removeHandlers(ISOException.class);
-        assertNull(getTargetedExceptionHandlers().get(ISOException.class));
+        assertNull(getExceptionHandlers().get(ISOException.class));
     }
 
     @Test(expected = ISOException.class)
@@ -147,12 +146,7 @@ public class ExceptionHandlerAwareTest implements ExceptionHandlerAware {
     }
 
     @Override
-    public List<ExceptionHandler> getDefaultExceptionHandlers() {
-        return defaultExceptionHandlers;
-    }
-
-    @Override
-    public Map<Class<? extends Exception>, List<ExceptionHandler>> getTargetedExceptionHandlers() {
-        return targetedExceptionHandlers;
+    public Map<Class<? extends Exception>, List<ExceptionHandler>> getExceptionHandlers() {
+        return exceptionHandlers;
     }
 }
