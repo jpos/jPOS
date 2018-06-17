@@ -19,6 +19,7 @@
 package org.jpos.util;
 
 import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 
 public class StopWatch {
     long end;
@@ -38,5 +39,16 @@ public class StopWatch {
     }
     public boolean isFinished() {
         return System.currentTimeMillis() >= end;
+    }
+
+    public static <T> T get(long period, TimeUnit unit, Supplier<T> f) {
+        StopWatch w = new StopWatch(period, unit);
+        T t = f.get();
+        w.finish();
+        return t;
+    }
+
+    public static <T> T get(long period, Supplier<T> f) {
+        return get(period, TimeUnit.MILLISECONDS, f);
     }
 }

@@ -21,6 +21,7 @@ package org.jpos.util;
 import org.junit.Test;
 
 import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -34,5 +35,12 @@ public class StopWatchTest {
         sw.finish();
         assertTrue(System.currentTimeMillis() - now >= 500);
         assertTrue (sw.isFinished());
+    }
+
+    @Test
+    public void testStopWatchStatic() throws Throwable {
+        long now = System.currentTimeMillis();
+        String s = StopWatch.get(500, TimeUnit.MILLISECONDS, () -> "The Quick Brown Fox jumps over the laxy dog");
+        assertTrue(System.currentTimeMillis() - now >= 500);
     }
 }
