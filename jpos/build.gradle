@@ -71,6 +71,7 @@ def jposCopySpec = copySpec {
     }
 }
 
+def moduleName='org.jpos.jpos'
 def bundleVendor='jPOS.org'
 def bundleDescription="jPOS ${project.version}"
 def bundleActivator = 'org.jpos.q2.Activator'
@@ -89,7 +90,8 @@ jar () {
     manifest {
         def manifestClasspath = configurations.runtime.collect { "lib/" + it.getName() }.join(' ') 
         attributes 'Implementation-Title': 'jPOS', 
-                   'Implementation-Version': version
+                   'Implementation-Version': version,
+                   'Automatic-Module-Name': moduleName
         instruction 'Bundle-Vendor', bundleVendor
         instruction 'Bundle-License', bundleLicense
         instruction 'Bundle-DocURL', bundleDocURL
@@ -111,6 +113,7 @@ task q2jar (type: Jar) {
         def manifestClasspath = configurations.runtime.collect { "lib/" + it.getName() }.join(' ') 
         attributes 'Implementation-Title': 'jPOS', 
                    'Implementation-Version': version,
+                   'Automatic-Module-Name': moduleName,
                    'Main-Class': 'org.jpos.q2.Q2',
                    'Class-Path': manifestClasspath
         // instruction 'Include-Resource', configurations.runtime.collect { 'lib/' + it.getName() }.join(' ')
