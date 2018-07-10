@@ -32,7 +32,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -208,7 +207,10 @@ public class FSDMsg implements Loggeable, Cloneable {
                 readCount = 0;
             }
         } catch (EOFException e) {
-            fields.put ("EOF", "true");
+            if (!fields.isEmpty())
+                fields.put ("EOF", "true");         // some fields were read, but unexpected EOF found
+            else                                    // nothing new since last msg, fields were read; no more msgs from this stream
+                throw e;                            // just rethrow the exception
         }
     }
     /**
@@ -454,16 +456,18 @@ public class FSDMsg implements Loggeable, Cloneable {
         char[] c = new char[1];
         boolean expectSeparator = isSeparated(separator);
         boolean separated = expectSeparator;
+        char separatorChar= expectSeparator ? getSeparator(separator) : '\0';
 
         if (EOM_SEPARATOR.equals(separator)) {
             // Grab what's left.
             char[] rest = new char[32];
-            int con = 0;
+            int con;
             while ((con = r.read(rest, 0, rest.length)) >= 0) {
-              if (rest.length == con)
-                sb.append(rest);
-              else
-                sb.append(Arrays.copyOf(rest, con));
+                readCount += con;
+                if (rest.length == con)
+                    sb.append(rest);
+                else
+                    sb.append(Arrays.copyOf(rest, con));
             }
         } else if (isDummySeparator(separator)) {
             /*
@@ -474,6 +478,7 @@ public class FSDMsg implements Loggeable, Cloneable {
                 if (r.read(c) < 0) {
                     break; // end of stream indicates end of field?
                 }
+                readCount++;
                 sb.append(c[0]);
             }
         } else {
@@ -486,18 +491,28 @@ public class FSDMsg implements Loggeable, Cloneable {
                         break;
                     }
                 }
-                if (expectSeparator && c[0] == getSeparator(separator)) {
+                readCount++;
+                if (expectSeparator && c[0] == separatorChar) {
                     separated = false;
                     break;
                 }
                 sb.append(c[0]);
             }
 
-            if (separated && !"EOF".equals(separator) && r.read(c) < 0) {
-                throw new EOFException();
+            if (separated && !"EOF".equals(separator)) {
+                // we still need to read the separator and account for it under readCount
+                if (r.read(c) < 0) {
+                    throw new EOFException();
+                } else {
+                    readCount++;
+                    // BBB extra check, left commented out for now (we don't want to break existing code
+//                    if (c[0] != separatorChar)
+//                        throw new IOException("Separator '"+separatorChar+"' expected "+
+//                              "but found character '"+c[0]+"' instead.");
+                }
             }
         }
-        readCount += sb.length();
+
         return sb.toString();
     }
 
