@@ -3,6 +3,31 @@
 <logger name="Q2" class="org.jpos.q2.qbean.LoggerAdaptor">
   <property name="redirect" value="stdout, stderr" />
   <log-listener class="org.jpos.util.SimpleLogListener" />
+  <log-listener class="org.jpos.util.BufferedLogListener">
+    <property name="max-size" value="100" />
+    <property name="name" value="logger.Q2.buffered" />
+  </log-listener>
+
+  <log-listener class="org.jpos.util.KafkaLogListener">
+    <property name="topic" value="jpos" />
+    <property name="KafkaProducer.bootstrap.servers" value="localhost:9092" />
+    <property name="KafkaProducer.acks" value="all" />
+    <property name="KafkaProducer.key.serializer" value="org.apache.kafka.common.serialization.StringSerializer" />
+    <property name="KafkaProducer.value.serializer" value="org.apache.kafka.common.serialization.StringSerializer" />
+    <property name="KafkaProducer.retries" value="0" />
+    <property name="KafkaProducer.batch.size" value="16384" />
+    <property name="KafkaProducer.linger.ms" value="1" />
+    <property name="KafkaProducer.buffer.memory" value="33554432" />
+  </log-listener>
+
+  <!--
+  <log-listener class="org.jpos.util.SysLogListener">
+     <property name="facility" value="21" />
+     <property name="severity" value="5" />
+     <property name="tags" value="audit, syslog" />
+     <property name="prefix" value="[jPOS]" />
+  </log-listener>
+  -->
 
   <log-listener class="org.jpos.util.DailyLogListener">
     <property name="window" value="86400" /> <!-- optional, default one day -->

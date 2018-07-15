@@ -14,6 +14,8 @@ dependencies {
     compile libraries.slf4j_api
     compile libraries.javassist
     compile libraries.hdrhistogram
+    compile libraries.kafka
+    compile libraries.jacksonDatabind
 
     testCompile libraries.hamcrest
     testCompile libraries.fest_assert
@@ -24,10 +26,10 @@ dependencies {
     }
 
     //  JSONPackager on hold
-    //    compile (libraries.jsonsimple) {
-    //        exclude(module: 'junit')
-    //        exclude(module: 'hamcrest-core')
-    //    }
+    compile (libraries.jsonsimple) {
+        exclude(module: 'junit')
+        exclude(module: 'hamcrest-core')
+    }
     // Integrated OSGI framework
     // compile 'org.apache.felix:org.apache.felix.framework:5.0.0'
 }
