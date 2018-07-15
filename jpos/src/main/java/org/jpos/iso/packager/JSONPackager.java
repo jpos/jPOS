@@ -35,9 +35,15 @@ public class JSONPackager implements ISOPackager
 {
     private ByteArrayOutputStream out;
     private PrintStream p;
+    private ISOPackager packager;
 
     public JSONPackager() throws ISOException {
         super();
+    }
+
+    public JSONPackager(ISOPackager extpackager) throws ISOException {
+        super();
+        packager = extpackager;
     }
 
     public byte[] pack (ISOComponent m) throws ISOException {
@@ -87,9 +93,26 @@ public class JSONPackager implements ISOPackager
                 put (map, cc, c.getFieldNumber() > 0 ? prefix + Integer.toString(c.getFieldNumber()) + "." : prefix);
             }
         }
-        else if (c instanceof ISOField)
-            map.put(prefix + c.getKey(), ((ISOField)c).getValue());
-        else if (c instanceof ISOBinaryField)
+        else if (c instanceof ISOField){
+            if (packager==null){
+                map.put(prefix + c.getKey(), ((ISOField)c).getValue());
+            }else {
+                Map field = new LinkedHashMap();
+                if((((ISOBasePackager) packager).getFieldPackager((int) c.getKey()).getClass().getName()).contains("NUMERIC")) {
+                    try {
+                        field.put("value", Integer.valueOf((String) (((ISOField) c).getValue())));
+                    }catch (NumberFormatException e){
+                        field.put("value", ((ISOField) c).getValue());
+                    }
+                }else{
+                    field.put("value", ((ISOField) c).getValue());
+                }
+                field.put("description",((ISOBasePackager) packager).getFieldPackager((int) c.getKey()).getDescription());
+                field.put("class",((ISOBasePackager) packager).getFieldPackager((int) c.getKey()).getClass().getName());
+
+                map.put(prefix + c.getKey(), field);
+            }
+        }else if (c instanceof ISOBinaryField)
             map.put(prefix + c.getKey() + "b", ISOUtil.hexString(((ISOBinaryField) c).getBytes()));
     }
 }
