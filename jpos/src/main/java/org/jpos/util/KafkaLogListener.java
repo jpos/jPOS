@@ -62,52 +62,70 @@ public class KafkaLogListener implements LogListener, Configurable {
             synchronized (payload) {
                 int i = 0;
                 for (Object o : payload) {
-                    m.put("ElementType" + i, o.getClass());
+                    m.put("ElementType_" + i, o.getClass());
                     if (o instanceof String) {
-
-                    }else if (o instanceof ISOMsg){
-                        m.put("ISOMsgOriginalPackager" + i,((ISOMsg)o).getPackager().getDescription());
+                        m.put("ElementContent_" + i, o.toString());
+                    }
+                    else if (o instanceof ISOMsg){
                         ISOMsg msg = (ISOMsg)o;
                         ISOPackager p = msg.getPackager();
-                        m.put("ISOMsg" + i, o.toString());
-                        try {
-                            //msg.setPackager(new JSONPackager(new Base1Packager()));
-                            msg.setPackager(new JSONPackager(new XMLPackager()));
-                            //m.put("ISOMsgNewPackager" + i,((ISOMsg)o).getPackager().getDescription());
-                        }catch(Exception e){
-                            m.put("ISOMsgPackException_setPackager" + i, ((Throwable) e).getMessage());
+                        m.put("ISOMsgPackager_" + i, p.getDescription());
+                        // Temporaly set JSONPackager
+                        if (p instanceof ISOBasePackager){
+                            try {
+                                msg.setPackager(new JSONPackager(p));
+                            }
+                            catch(Exception e){
+                                m.put("ISOMsgPackException_" + i, ((Throwable) e).getMessage());
+                            }
+                        }
+                        else{
+                            try {
+                                msg.setPackager(new JSONPackager());
+                            }
+                            catch(Exception e){
+                                m.put("ISOMsgPackException_" + i, ((Throwable) e).getMessage());
+                            }
                         }
                         try {
-                            m.put("ISOMsgPack" + i, JSONValue.parse(new String(msg.pack())));
-                        }catch(Exception e){
-                            m.put("ElementContent" + i, o.toString());
+                            m.put("ISOMsg_" + p.getDescription() + "_" + i, JSONValue.parse(new String(msg.pack())));
                         }
+                        catch(Exception e){
+                            m.put("ISOMsgString_" + i, o.toString());
+                        }
+                        // Restore original package
                         try {
                             msg.setPackager(p);
-                        }catch(Exception e){
-                            m.put("ISOMsgPackException_restorePackager" + i, ((Throwable) e).getMessage());
                         }
-                    }else if (o instanceof SystemMonitor ){
+                        catch(Exception e){
+                            m.put("ISOMsgSetPackagerException_" + i, o.toString());
+                        }
+                    }
+                    else if (o instanceof SystemMonitor ){
                         // ignore SystemMonitor
                         assert true;
-                    }else if (o instanceof Throwable){
+                    }
+                    else if (o instanceof Throwable){
                         m.put("Exception" + i, ((Throwable) o).getMessage());
                         StringWriter errors = new StringWriter();
                         ((Throwable) o).printStackTrace(new PrintWriter(errors));
-                        m.put("StackTrace" + i,errors.toString());
-                    }else{
-                        m.put("NonStringContent" + i, o.toString());
+                        m.put("StackTrace_" + i,errors.toString());
+                    }
+                    else{
+                        m.put("NonStringContent_" + i, o.toString());
                     }
                     i = i + 1;
                 }
             }
-        } else if (payload.size() == 0){
+        }
+        else if (payload.size() == 0){
             m.put("EventDump", ev.toString());
         }
 
         try {
             producer.send(new ProducerRecord<String, String>(topic, objectMapper.writeValueAsString(m)));
-        } catch (JsonProcessingException e) {
+        }
+        catch (JsonProcessingException e) {
             producer.send(new ProducerRecord<String, String>(topic, e.toString()));;
         }
         return ev;
@@ -133,7 +151,8 @@ public class KafkaLogListener implements LogListener, Configurable {
             }
             producer = new KafkaProducer<>(props);
             producer.send(new ProducerRecord<String, String>(topic, "{\"message\":\"KafkaLogListener started\"}"));
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw new ConfigurationException (e);
         }
     }
