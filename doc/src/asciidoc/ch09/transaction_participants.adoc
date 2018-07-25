@@ -9,4 +9,5 @@ include::participants/select_destination.adoc[]
 include::participants/query_host.adoc[]
 include::participants/send_response.adoc[]
 include::participants/jsparticipant.adoc[]
+include::participants/pause.adoc[]
 
