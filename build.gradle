@@ -132,7 +132,3 @@ task aggregatedJavadoc (type: Javadoc, description: "Aggregated Javadocs") {
     failOnError = false
 }
 
-task wrapper( type: Wrapper ) {
-    gradleVersion = '4.7'
-}
-
