@@ -939,6 +939,26 @@
           class="org.jpos.iso.IFB_LLCHAR" />
       <isofield
           id="21"
+          length="16"
+          name="Card Product ID"
+          class="org.jpos.iso.IFB_LLNUM" />
+      <isofield
+          id="22"
+          length="221"
+          name="UUIDs"
+          class="org.jpos.iso.IFB_LLCHAR" />
+      <isofield
+          id="23"
+          length="11"
+          name="SSN"
+          class="org.jpos.iso.IF_CHAR" />
+      <isofield
+          id="24"
+          length="4"
+          name="Installments Information"
+          class="org.jpos.iso.IFB_NUMERIC" />
+      <isofield
+          id="25"
           length="64"
           name="Network Name"
           class="org.jpos.iso.IFB_LLCHAR" />
