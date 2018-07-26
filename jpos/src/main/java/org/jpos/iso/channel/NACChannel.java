@@ -41,6 +41,8 @@ public class NACChannel extends BaseChannel {
      * Public constructor 
      */
     boolean tpduSwap = true;
+    int lenlen = 0;
+
     public NACChannel () {
         super();
     }
@@ -82,13 +84,14 @@ public class NACChannel extends BaseChannel {
         this.header = TPDU;
     }
     protected void sendMessageLength(int len) throws IOException {
+        len += lenlen;
         serverOut.write (len >> 8);
         serverOut.write (len);
     }
     protected int getMessageLength() throws IOException, ISOException {
         byte[] b = new byte[2];
         serverIn.readFully(b,0,2);
-        return ((int)b[0] &0xFF) << 8 | (int)b[1] &0xFF;
+        return (((int)b[0] &0xFF) << 8 | (int)b[1] &0xFF) + lenlen;
     }
     protected void sendMessageHeader(ISOMsg m, int len) throws IOException { 
         byte[] h = m.getHeader();
@@ -118,6 +121,7 @@ public class NACChannel extends BaseChannel {
     {
         super.setConfiguration (cfg);
         tpduSwap = cfg.getBoolean ("tpdu-swap", true);
+        lenlen = cfg.getBoolean ("include-header-length", false) ? 2 : 0;
     }
 }
 
