@@ -127,7 +127,7 @@ public class SslChannelIntegrationTest {
         props.put("keystore", "src/test/resources/keystore.jks");
         props.put("storepassword", "password");
         props.put("keypassword", "password");
-        props.put("addEnabledCipherSuite", "SSL_RSA_WITH_3DES_EDE_CBC_SHA");
+        // props.put("addEnabledCipherSuite", "SSL_RSA_WITH_3DES_EDE_CBC_SHA");
         return new SimpleConfiguration(props);
     }
 
@@ -137,7 +137,7 @@ public class SslChannelIntegrationTest {
         props.put("serverauth", "false");
         props.put("storepassword", "password");
         props.put("keypassword", "password");
-        props.put("addEnabledCipherSuite", "SSL_RSA_WITH_3DES_EDE_CBC_SHA");
+        // props.put("addEnabledCipherSuite", "SSL_RSA_WITH_3DES_EDE_CBC_SHA");
         props.put("timeout", "1000");
         props.put("connect-timeout", "1000");
         return new SimpleConfiguration(props);
