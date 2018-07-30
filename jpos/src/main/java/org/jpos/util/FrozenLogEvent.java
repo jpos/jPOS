@@ -22,25 +22,20 @@ import java.io.PrintStream;
 import java.io.Serializable;
 
 public class FrozenLogEvent extends LogEvent implements Serializable {
-    String frozen;
-    String realm;
+    private String frozen;
     public FrozenLogEvent (LogEvent evt) {
-        super();
+        super(evt.getSource(), evt.getTag(), evt.getRealm());
         frozen = evt.toString();
-        realm = evt.getRealm();
     }
     @Override
     public void dump (PrintStream ps, String indent) {
         ps.print (frozen);
     }
-    @Override
-    public String getRealm () {
-        return realm;
-    }
+
     @Override
     public String toString () {
         return frozen;
     }
 
-    private static final long serialVersionUID = -5090836627480784404L;
+    private static final long serialVersionUID = -8672445411081885024L;
 }
