@@ -946,7 +946,7 @@
           id="22"
           length="221"
           name="UUIDs"
-          class="org.jpos.iso.IFB_LLCHAR" />
+          class="org.jpos.iso.IFB_LLLCHAR" />
       <isofield
           id="23"
           length="11"
