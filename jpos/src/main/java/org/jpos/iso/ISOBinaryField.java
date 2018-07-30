@@ -129,7 +129,7 @@ public class ISOBinaryField
      */
     public void setValue (Object obj) throws ISOException {
         if (obj instanceof String)
-            value = ((String) obj).getBytes();
+            value = ((String) obj).getBytes(ISOUtil.CHARSET);
         else
             value = (byte[]) obj;
     }
