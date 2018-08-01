@@ -22,6 +22,9 @@ import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -42,6 +45,8 @@ import java.util.zip.ZipOutputStream;
 public class DailyLogListener extends RotateLogListener{
     private static final String DEF_SUFFIX = ".log";
     private static final int DEF_WIN = 24*3600;
+    private static final int DEF_MAXAGE = 7*24*3600;
+    private static final int DEF_MAXDEPTH = 1;
     private static final long DEF_MAXSIZE = -1;
     private static final String DEF_DATE_FMT = "-yyyy-MM-dd";
     private static final int NONE = 0;
@@ -88,7 +93,12 @@ public class DailyLogListener extends RotateLogListener{
             sleepTime = DEF_WIN;
         sleepTime*=1000;
         DateFormat fmt = new SimpleDateFormat(cfg.get("date-format",DEF_DATE_FMT));
-        
+
+		maxAge = cfg.getLong("maxage", DEF_MAXAGE);
+		if (maxAge > 0) {
+			maxAge *= 1000;
+		}
+
         setDateFmt(fmt);
         setLastDate(fmt.format(new Date()));
         Date time;
@@ -122,7 +132,7 @@ public class DailyLogListener extends RotateLogListener{
         }
         //here cal contains the first execution, let/s calculate the next one
         calTemp.setTime(new Date());
-        //if first executiontime already happened
+        //if first execution time already happened
         if (cal.before(calTemp)){
             //how many windows between cal and now
             long n = (calTemp.getTimeInMillis() - cal.getTimeInMillis()) / 
@@ -148,6 +158,34 @@ public class DailyLogListener extends RotateLogListener{
         openLogFile();
         compress(dest);
     }
+
+	public synchronized void deleteOldLogs() throws IOException {
+
+		if (maxAge <= 0) {
+			logDebug("maxage feature is disabled.");
+			return;
+		}
+
+		long currentSystemTime = System.currentTimeMillis();
+		Path logPath = Paths.get(prefix + suffix);
+		try {
+			Files.find(logPath.getParent(), DEF_MAXDEPTH,
+					(path, attributes) ->
+							!path.toString().equals(logPath.toString())
+							&& attributes.isRegularFile()
+							&& currentSystemTime - attributes.lastModifiedTime().toMillis() >= maxAge)
+					.forEach(path -> {
+						try {
+							Files.delete(path);
+						} catch (IOException e) {
+							e.printStackTrace(System.err);
+						}
+					});
+		} catch (IOException e) {
+			e.printStackTrace(System.err);
+		}
+	}
+
     /**
      * Holds value of property suffix.
      */
@@ -275,9 +313,30 @@ public class DailyLogListener extends RotateLogListener{
     }
 
     /**
+     * Holds value of property maxAge.
+     */
+	private long maxAge;
+
+    /**
+     * Getter for property maxAge.
+     * @return Value of property maxAge.
+     */
+    public long getMaxAge() {
+        return this.maxAge;
+    }
+
+    /**
+     * Setter for property maxAge.
+     * @param maxAge new value of property maxAge.
+     */
+    public void setMaxAge(long maxAge) {
+        this.maxAge = maxAge;
+    }
+
+    /**
      * Hook method that creates a thread to compress the file f.
      * @param f the file name
-     * @return a thread to compress the file and null if it is not necesary
+     * @return a thread to compress the file and null if it is not necessary
      */
     protected Thread getCompressorThread(File f){
         return new Thread(new Compressor(f),"DailyLogListener-Compressor");
@@ -316,8 +375,7 @@ public class DailyLogListener extends RotateLogListener{
     }
     
     protected class Compressor implements Runnable{
-        
-        
+
         File f;
         public Compressor(File f) {
             this.f = f;
@@ -429,6 +487,11 @@ public class DailyLogListener extends RotateLogListener{
     final class DailyRotate extends Rotate {
         public void run() {
             super.run();
+            try {
+				deleteOldLogs();
+			} catch (IOException e) {
+				e.printStackTrace(System.err);
+			}
             setLastDate(getDateFmt().format(new Date(scheduledExecutionTime())));
         }
         

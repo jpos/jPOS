@@ -23,6 +23,10 @@ import static org.jpos.util.LogFileTestUtils.getStringFromFile;
 import static org.junit.Assert.*;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -277,6 +281,14 @@ public class DailyLogListenerTest {
         assertEquals("dailyLogListener.getSuffix()", "testDailyLogListenerSuffix", dailyLogListener.getSuffix());
     }
 
+	@Test
+	public void testSetMaxAge() throws Throwable {
+		DailyLogListener dailyLogListener = new DailyLogListener();
+		long maxAge = 7*24*3600*1000;
+		dailyLogListener.setMaxAge(maxAge);
+		assertEquals("dailyLogListener.getMaxAge()", maxAge, dailyLogListener.getMaxAge());
+	}
+
     @Test
     public void testLogRotationAndCompressionWorks() throws Exception {
         String logFileName = "RotateWorksTestLog";
@@ -305,6 +317,31 @@ public class DailyLogListenerTest {
         assertTrue("Logger element should have been opened in the archived file", archivedLogFileContents.contains("<logger "));
         assertTrue("Logger element should have been closed in the archived file", archivedLogFileContents.contains("</logger>"));
     }
+
+	@Test
+	public void testMaxAgeWorks() throws Exception {
+		String logFileName = "MaxAgeWorksTestLog";
+		DailyLogListener listener = createCompressingDailyLogListenerWithIsoDateFormat(logFileName);
+
+		// a short max age value (100ms) is set for testing purpose
+		listener.setMaxAge(100);
+		listener.log(new LogEvent("Message 1"));
+
+		// when: rotation is executed
+		listener.logRotate();
+
+		// and: the rotated log gets old
+		Thread.sleep(1000);
+
+		// then: the rotate file should be deleted
+		listener.deleteOldLogs();
+
+		String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+		Path rotateLogPath = Paths.get(logFileName + "." + date + ".log.gz");
+		assertFalse("Rotated log should be deleted", Files.exists(rotateLogPath, LinkOption.NOFOLLOW_LINKS));
+
+		listener.destroy();
+	}
 
     @Test
     @Ignore("This feature doesn't work in Windows so we reverted the patch c94ff02f2")
