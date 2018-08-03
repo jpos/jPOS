@@ -318,8 +318,27 @@ public class DailyLogListenerTest {
         assertTrue("Logger element should have been closed in the archived file", archivedLogFileContents.contains("</logger>"));
     }
 
+
+    @Test
+    public void testMaxAgeFeatureDisabledWithNegativeValue() throws Exception {
+		String logFileName = "MaxAgeWorksTestLog";
+		DailyLogListener listener = createCompressingDailyLogListenerWithIsoDateFormat(logFileName);
+
+		// when: maxage is a negative vale
+		listener.setMaxAge(-1L);
+
+		// then: the maxage feature should be disable
+		listener.deleteOldLogs();
+
+		String currentLogFileContents = getStringFromFile(logRotationTestDirectory.getFile(logFileName + ".log"));
+		assertTrue("Log file should contain a descriptive message about maxage feature disable",
+				currentLogFileContents.contains("maxage feature is disabled."));
+
+		listener.destroy();
+    }
+
 	@Test
-	public void testMaxAgeWorks() throws Exception {
+	public void testMaxAgeFeature() throws Exception {
 		String logFileName = "MaxAgeWorksTestLog";
 		DailyLogListener listener = createCompressingDailyLogListenerWithIsoDateFormat(logFileName);
 
@@ -343,33 +362,61 @@ public class DailyLogListenerTest {
 		listener.destroy();
 	}
 
-    @Test
-    @Ignore("This feature doesn't work in Windows so we reverted the patch c94ff02f2")
-    public void testLogRotateAbortsWhenCreatingNewFileFails() throws Exception {
-        String logFileName = "RotateAbortsTestLog";
-        DailyLogListener listener = createCompressingDailyLogListenerWithIsoDateFormat(logFileName);
+	@Test
+	public void testMaxAgeFeatureWhenThereIsNonLogFiles() throws Exception {
+		String logFileName = "MaxAgeWorksTestLog";
+		DailyLogListener listener = createCompressingDailyLogListenerWithIsoDateFormat(logFileName);
+		File emptyFile = createEmptyFile("EmptyFile.txt");
 
-        listener.log(new LogEvent("Message 1"));
+		// a short max age value (100ms) is set for testing purpose
+		listener.setMaxAge(100);
+		listener.log(new LogEvent("Message 1"));
 
-        // when: a rotation is required but a new file cannot be created
-        logRotationTestDirectory.preventNewFileCreation();
-        listener.logRotate();
+		// when: rotation is executed
+		listener.logRotate();
 
-        // then: no error should escape and the existing log file should continue being written to
-        listener.log(new LogEvent("Message 2"));
-        logRotationTestDirectory.allowNewFileCreation();
+		// and: the rotated log gets old
+		Thread.sleep(1000);
 
-        String logFileContents = getStringFromFile(logRotationTestDirectory.getFile(logFileName + ".log"));
-        assertTrue("Log file should contain first message", logFileContents.contains("Message 1"));
-        assertTrue("Log file should contain second message", logFileContents.contains("Message 2"));
-        assertFalse("Logger element should not have been closed", logFileContents.contains("</logger>"));
+		// then: the rotate file should be deleted but empty file still is in path
+		listener.deleteOldLogs();
 
-        Thread.sleep(1000); // to allow compressor thread to run
+		String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+		Path rotateLogPath = Paths.get(logFileName + "." + date + ".log.gz");
+		assertFalse("Rotated log should be deleted", Files.exists(rotateLogPath, LinkOption.NOFOLLOW_LINKS));
+		assertTrue("Empty file should exist", Files.exists(emptyFile.toPath(), LinkOption.NOFOLLOW_LINKS));
+
 		listener.destroy();
-        String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
-        File archiveFile = logRotationTestDirectory.getFile(logFileName + ".log." + date + ".gz");
-        assertFalse("Archive file should not exist", archiveFile.exists());
-    }
+	}
+
+	@Test
+	@Ignore("This feature doesn't work in Windows so we reverted the patch c94ff02f2")
+	public void testLogRotateAbortsWhenCreatingNewFileFails() throws Exception {
+		String logFileName = "RotateAbortsTestLog";
+		DailyLogListener listener = createCompressingDailyLogListenerWithIsoDateFormat(logFileName);
+
+		listener.log(new LogEvent("Message 1"));
+
+		// when: a rotation is required but a new file cannot be created
+		logRotationTestDirectory.preventNewFileCreation();
+		listener.logRotate();
+
+		// then: no error should escape and the existing log file should continue being
+		// written to
+		listener.log(new LogEvent("Message 2"));
+		logRotationTestDirectory.allowNewFileCreation();
+
+		String logFileContents = getStringFromFile(logRotationTestDirectory.getFile(logFileName + ".log"));
+		assertTrue("Log file should contain first message", logFileContents.contains("Message 1"));
+		assertTrue("Log file should contain second message", logFileContents.contains("Message 2"));
+		assertFalse("Logger element should not have been closed", logFileContents.contains("</logger>"));
+
+		Thread.sleep(1000); // to allow compressor thread to run
+		listener.destroy();
+		String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+		File archiveFile = logRotationTestDirectory.getFile(logFileName + ".log." + date + ".gz");
+		assertFalse("Archive file should not exist", archiveFile.exists());
+	}
 
     private DailyLogListener createCompressingDailyLogListenerWithIsoDateFormat(String logFileName) throws ConfigurationException {
         DailyLogListener listener = new DailyLogListener();
@@ -382,6 +429,13 @@ public class DailyLogListenerTest {
         listener.setConfiguration(new SimpleConfiguration(configuration));
         return listener;
     }
+
+	private File createEmptyFile(String fileName) throws IOException {
+		File emptyFile = new File(logRotationTestDirectory.getDirectory().getAbsolutePath() + "/" + fileName);
+		emptyFile.getParentFile().mkdirs();
+		emptyFile.createNewFile();
+		return emptyFile;
+	}
 
     @After
     public void cleanupLogRotateAbortsTestDir() {

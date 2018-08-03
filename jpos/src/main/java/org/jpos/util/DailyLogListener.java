@@ -166,12 +166,16 @@ public class DailyLogListener extends RotateLogListener{
 			return;
 		}
 
+		Path prefixPath = Paths.get(prefix);
+		Path logNamePath = prefixPath.subpath(prefixPath.getNameCount() - 1, prefixPath.getNameCount());
+
+		String rotatedLogRegex = ".*" + logNamePath.toString() + ".+\\" + suffix + "\\" + compressedSuffix;
 		long currentSystemTime = System.currentTimeMillis();
-		Path logPath = Paths.get(prefix + suffix);
+
 		try {
-			Files.find(logPath.getParent(), DEF_MAXDEPTH,
+			Files.find(prefixPath.getParent(), DEF_MAXDEPTH,
 					(path, attributes) ->
-							!path.toString().equals(logPath.toString())
+							path.toString().matches(rotatedLogRegex)
 							&& attributes.isRegularFile()
 							&& currentSystemTime - attributes.lastModifiedTime().toMillis() >= maxAge)
 					.forEach(path -> {
