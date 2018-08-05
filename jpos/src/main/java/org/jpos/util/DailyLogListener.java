@@ -98,6 +98,7 @@ public class DailyLogListener extends RotateLogListener{
 		if (maxAge > 0) {
 			maxAge *= 1000;
 		}
+		deleteRegex = cfg.get("delete-regex", defaultDeleteRegex());
 
         setDateFmt(fmt);
         setLastDate(fmt.format(new Date()));
@@ -143,7 +144,12 @@ public class DailyLogListener extends RotateLogListener{
                 rotate = new DailyRotate(), cal.getTime(), sleepTime);
     }
 
-    public synchronized  void logRotate() throws IOException {
+	private String defaultDeleteRegex() {
+		Path prefixPath = Paths.get(prefix);
+		return "^" + prefixPath.getFileName().toString() + ".+\\" + suffix + "\\" + compressedSuffix + "$";
+	}
+
+	public synchronized  void logRotate() throws IOException {
         closeLogFile ();
         super.close ();
         setPrintStream (null);
@@ -160,22 +166,18 @@ public class DailyLogListener extends RotateLogListener{
     }
 
 	public synchronized void deleteOldLogs() throws IOException {
-
 		if (maxAge <= 0) {
 			logDebug("maxage feature is disabled.");
 			return;
 		}
 
-		Path prefixPath = Paths.get(prefix);
-		Path logNamePath = prefixPath.subpath(prefixPath.getNameCount() - 1, prefixPath.getNameCount());
-
-		String rotatedLogRegex = ".*" + logNamePath.toString() + ".+\\" + suffix + "\\" + compressedSuffix;
+		Path logBasePath = Paths.get(prefix).getParent();
 		long currentSystemTime = System.currentTimeMillis();
 
 		try {
-			Files.find(prefixPath.getParent(), DEF_MAXDEPTH,
+			Files.find(logBasePath, DEF_MAXDEPTH,
 					(path, attributes) ->
-							path.toString().matches(rotatedLogRegex)
+							path.getFileName().toString().matches(deleteRegex)
 							&& attributes.isRegularFile()
 							&& currentSystemTime - attributes.lastModifiedTime().toMillis() >= maxAge)
 					.forEach(path -> {
@@ -337,7 +339,28 @@ public class DailyLogListener extends RotateLogListener{
         this.maxAge = maxAge;
     }
 
-    /**
+	/**
+	 * Holds custom regular expression for old logs to be deleted.
+	 */
+	private String deleteRegex;
+
+	/**
+	 * Getter for property deleteRegex.
+	 * @return Value of property deleteRegex.
+	 */
+	public String getDeleteRegex() {
+		return deleteRegex;
+	}
+
+	/**
+	 * Setter for property deleteRegex.
+	 * @param deleteRegex new value of property deleteRegex.
+	 */
+	public void setDeleteRegex(String deleteRegex) {
+		this.deleteRegex = deleteRegex;
+	}
+
+	/**
      * Hook method that creates a thread to compress the file f.
      * @param f the file name
      * @return a thread to compress the file and null if it is not necessary
