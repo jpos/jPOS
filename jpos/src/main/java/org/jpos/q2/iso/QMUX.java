@@ -401,7 +401,8 @@ public class QMUX
     }
 
     protected void processUnhandled (ISOMsg m) {
-        ISOSource source = m.getSource () != null ? m.getSource() : this;
+        ISOSource source = m.getSource();
+        source = source != null ? source : this;
         Iterator iter = listeners.iterator();
         if (iter.hasNext())
             synchronized (this) { rxForwarded++; }
