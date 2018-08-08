@@ -5,7 +5,7 @@ jdk:
 - oraclejdk8
 before_script:
 - echo $JAVA_OPTS
-- export JAVA_OPTS=-Xmx1G
+- export JAVA_OPTS=-Xmx2G
 install: true
 script:
 - sudo apt-get update && sudo apt-get install oracle-java8-installer
