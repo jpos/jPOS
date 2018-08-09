@@ -165,7 +165,7 @@ public class DailyLogListener extends RotateLogListener{
         compress(dest);
     }
 
-	public synchronized void deleteOldLogs() throws IOException {
+	public void deleteOldLogs() throws IOException {
 		if (maxAge <= 0) {
 			logDebug("maxage feature is disabled.");
 			return;
@@ -517,7 +517,7 @@ public class DailyLogListener extends RotateLogListener{
             try {
 				deleteOldLogs();
 			} catch (IOException e) {
-				e.printStackTrace(System.err);
+				logDebugEx("error deleting old logs",e);
 			}
             setLastDate(getDateFmt().format(new Date(scheduledExecutionTime())));
         }
