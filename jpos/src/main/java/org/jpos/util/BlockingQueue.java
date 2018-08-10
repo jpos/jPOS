@@ -36,7 +36,7 @@ public class BlockingQueue {
         private static final long serialVersionUID = 3404885702116373450L;
 
         public Closed() {
-            super ("queue closed");
+            super ("queue-closed");
         }
     }
 
