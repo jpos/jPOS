@@ -324,7 +324,7 @@ public class DailyLogListenerTest {
 		String logFileName = "MaxAgeWorksTestLog";
 		DailyLogListener listener = createCompressingDailyLogListenerWithIsoDateFormat(logFileName);
 
-		// when: maxage is a negative vale
+		// when: maxage is a negative value
 		listener.setMaxAge(-1L);
 
 		// then: the maxage feature should be disable
@@ -336,6 +336,24 @@ public class DailyLogListenerTest {
 
 		listener.destroy();
     }
+
+	@Test
+	public void testMaxAgeFeatureDisabledWithZeroValue() throws Exception {
+		String logFileName = "MaxAgeWorksTestLog";
+		DailyLogListener listener = createCompressingDailyLogListenerWithIsoDateFormat(logFileName);
+
+		// when: maxage is zero value
+		listener.setMaxAge(0L);
+
+		// then: the maxage feature should be disable
+		listener.deleteOldLogs();
+
+		String currentLogFileContents = getStringFromFile(logRotationTestDirectory.getFile(logFileName + ".log"));
+		assertTrue("Log file should contain a descriptive message about maxage feature disable",
+				currentLogFileContents.contains("maxage feature is disabled."));
+
+		listener.destroy();
+	}
 
 	@Test
 	public void testMaxAgeFeature() throws Exception {
