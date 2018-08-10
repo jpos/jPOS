@@ -45,7 +45,7 @@ import java.util.zip.ZipOutputStream;
 public class DailyLogListener extends RotateLogListener{
     private static final String DEF_SUFFIX = ".log";
     private static final int DEF_WIN = 24*3600;
-    private static final int DEF_MAXAGE = 7*24*3600;
+    private static final int DEF_MAXAGE = 0;
     private static final int DEF_MAXDEPTH = 1;
     private static final long DEF_MAXSIZE = -1;
     private static final String DEF_DATE_FMT = "-yyyy-MM-dd";
