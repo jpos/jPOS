@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2017 jPOS Software SRL
+ * Copyright (C) 2000-2018 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -42,16 +42,16 @@ public class Result implements Loggeable {
         return add(Type.WARN, null, source, format, args);
     }
     public Result success (IRC irc, String source, String format, Object ... args) {
-        if (!irc.isSuccess())
+        if (!irc.success())
             throw new IllegalArgumentException("Invalid success IRC " + irc);
-        return add(Type.SUCCESS, irc, source, format, args);
+        return add(Type.SUCCESS, irc, source, ""+format, args);
     }
     public Result fail (IRC irc, String source, String format, Object ... args) {
         synchronized (entries) {
             if (isSuccess()) {
-                format = format + " (inhibits " + success() + ")";
+                format = "" + format + " (inhibits " + success() + ")";
             }
-            return add(Type.FAIL, irc, source, format, args);
+            return add(Type.FAIL, irc, source, ""+format, args);
         }
     }
 
@@ -77,6 +77,12 @@ public class Result implements Loggeable {
             return entries.stream().anyMatch(e -> e.type == Type.FAIL);
         }
     }
+    public boolean hasInhibit() {
+        synchronized (entries) {
+            return entries.stream().anyMatch(e -> e.irc.inhibit());
+        }
+    }
+
     public boolean isSuccess() {
         synchronized (entries) {
             return isSuccess0() && !hasFailures();

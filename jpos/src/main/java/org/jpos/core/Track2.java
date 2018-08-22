@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2017 jPOS Software SRL
+ * Copyright (C) 2000-2018 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -77,14 +77,7 @@ public class Track2 {
 
     @Override
     public String toString() {
-        return "Track2[" +
-          "pan='" + (pan != null ? ISOUtil.protect(pan) : "null") + '\'' +
-          ", exp='" + (exp != null ? "____" : "null") + '\'' +
-          ", cvv='" + (cvv != null ? "___" : "null") + '\'' +
-          ", serviceCode='" + serviceCode + '\'' +
-          ", discretionaryData= '" + discretionaryData + '\'' +
-          ", track2= '" + (track != null ? ISOUtil.protect(track) : "null") + '\'' +
-          ']';
+        return pan != null ? ISOUtil.protect(pan) : "nil";
     }
 
     @Override

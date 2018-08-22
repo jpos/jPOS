@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2017 jPOS Software SRL
+ * Copyright (C) 2000-2018 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,6 +19,10 @@
 package org.jpos.util;
 
 import java.io.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 public class Serializer {
     public static byte[] serialize (Object obj) throws IOException {
@@ -36,7 +40,39 @@ public class Serializer {
     public static <T> T deserialize (byte[] b, Class<T> clazz) throws IOException, ClassNotFoundException {
         return (T) deserialize(b);
     }
+    @SuppressWarnings("unchecked")
     public static <T> T serializeDeserialize (T obj) throws IOException, ClassNotFoundException {
         return (T) deserialize (serialize(obj));
+    }
+
+    public static byte[] serializeStringMap (Map<String,String> m)
+      throws IOException
+    {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ObjectOutputStream     oos = new ObjectOutputStream (baos);
+        Set s = m.entrySet();
+        oos.writeInt (s.size());
+        for (Object value : s) {
+            Map.Entry entry = (Map.Entry) value;
+            oos.writeObject(entry.getKey());
+            oos.writeObject(entry.getValue());
+        }
+        oos.close();
+        return baos.toByteArray();
+    }
+    public static Map<String,String> deserializeStringMap (byte[] buf)
+      throws ClassNotFoundException, IOException
+    {
+        ByteArrayInputStream  bais = new ByteArrayInputStream (buf);
+        ObjectInputStream     ois  = new ObjectInputStream( bais );
+        Map<String,String> m = new HashMap<>();
+        int size = ois.readInt();
+        for (int i=0; i<size; i++) {
+            m.put (
+              (String) ois.readObject(),
+              (String) ois.readObject()
+            );
+        }
+        return m;
     }
 }

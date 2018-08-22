@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2017 jPOS Software SRL
+ * Copyright (C) 2000-2018 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -53,7 +53,7 @@ public class IF_TCHAR extends IF_TBASE {
     @Override
     public byte[] pack (ISOComponent c) throws ISOException {
         String s = c.getValue() + getToken() ;
-        return s.getBytes();
+        return s.getBytes(ISOUtil.CHARSET);
     }
     /**
      * @param c - the Component to unpack

@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2017 jPOS Software SRL
+ * Copyright (C) 2000-2018 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -37,14 +37,16 @@ public class PausedTransaction implements Loggeable {
     private TimerTask expirationMonitor;
     private Profiler prof;
     private LogEvent evt;
+    private TransactionParticipant participant;
     public PausedTransaction (
-            TransactionManager txnmgr, long id, List<TransactionParticipant> members
+            TransactionManager txnmgr, long id, TransactionParticipant participant, List<TransactionParticipant> members
            ,Iterator<TransactionParticipant> iter, boolean aborting
            ,TimerTask expirationMonitor, Profiler prof, LogEvent evt)
     {
         super();
         this.txnmgr = txnmgr;
         this.id = id;
+        this.participant = participant;
         this.members = members;
         this.iter = iter;
         this.aborting = aborting;
@@ -66,6 +68,11 @@ public class PausedTransaction implements Loggeable {
                 + (isAborting() ? " (aborting)" : ""));
 
     }
+
+    public TransactionParticipant getParticipant() {
+        return participant;
+    }
+
     public boolean isAborting() {
         return aborting;
     }

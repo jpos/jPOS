@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2017 jPOS Software SRL
+ * Copyright (C) 2000-2018 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -17,6 +17,9 @@
  */
 
 package org.jpos.rc;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public enum CMF implements IRC {
     // Approved
@@ -197,29 +200,48 @@ public enum CMF implements IRC {
     MISCONFIGURED_ENDPOINT(10004),
     INVALID_REQUEST(10005),
     HOST_UNREACHABLE(10006),
+    INTERNAL_ERROR(19999,false,true),
 
     // User specific result codes
     USER(90000);
 
     int irc;
     boolean success;
+    boolean inhibit;
+    private static Map<Integer,IRC> lookup = new HashMap<>();
+    static {
+        for (IRC irc : values())
+            lookup.put(irc.irc(), irc);
+    }
 
     CMF(int irc) {
-        this.irc = irc;
-        this.success = false;
+        this (irc, false, false);
     }
     CMF(int irc, boolean success) {
+        this(irc, success, false);
+    }
+    CMF(int irc, boolean success, boolean inhibit) {
         this.irc = irc;
         this.success = success;
+        this.inhibit = inhibit;
     }
-    
+
     @Override
     public int irc() {
         return irc;
     }
 
     @Override
-    public boolean isSuccess() {
+    public boolean success() {
         return success;
+    }
+
+    @Override
+    public boolean inhibit() {
+        return inhibit;
+    }
+
+    public static IRC valueOf(int i) {
+        return lookup.get(i);
     }
 }

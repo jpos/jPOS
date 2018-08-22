@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2017 jPOS Software SRL
+ * Copyright (C) 2000-2018 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,6 +23,7 @@ import org.jpos.iso.ISOUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
 
 @SuppressWarnings("unused")
 public class SystemSeed {
@@ -30,11 +31,14 @@ public class SystemSeed {
         return getSeed(0, l);
     }
     public static byte[] getSeed (int offset, int l) {
-        if (offset + l > seed.length)
-            throw new IllegalArgumentException ("Invalid offset/length");
-        byte[] b = new byte[l];
-        System.arraycopy (seed, offset, b, 0, l);
-        return b;
+        ByteBuffer buf = ByteBuffer.allocate(l);
+        while (buf.hasRemaining()) {
+            offset = offset % seed.length;
+            int i = Math.min(l-buf.position(), seed.length - offset);
+            buf.put(seed, offset, i);
+            offset += i;
+        }
+        return buf.array();
     }
 
     private static final byte[] seed;

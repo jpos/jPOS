@@ -13,7 +13,7 @@
 
     <xsl:param name="paper.type" select="'A4'"/>
     <xsl:param name="body.font.family" select="'serif'"/>
-    <xsl:param name="body.font.master">12</xsl:param>
+    <xsl:param name="body.font.master">10</xsl:param>
     <xsl:param name="body.font.size">
       <xsl:value-of select="$body.font.master"/><xsl:text>pt</xsl:text>
     </xsl:param>
@@ -228,13 +228,13 @@
                     <fo:table-row>
                         <fo:table-cell text-align="center">
                             <fo:block>
-                                <fo:external-graphic src="url(images/logo.jpg)"/>
+                                <fo:external-graphic src="url(images/logo.jpg)" content-height="scale-to-fit" height="4.00in"/>
                             </fo:block>
-                            <fo:block font-family="Helvetica" font-size="20pt" padding-before="10mm">
-                                <xsl:value-of select="/d:book/d:bookinfo/d:title"/>
+                            <fo:block font-family="Helvetica" font-size="16pt" padding-before="10mm">
+                                <xsl:value-of select="/d:book/d:info/d:title"/>
                             </fo:block>
-                            <fo:block font-family="Helvetica" font-size="12pt" padding="10mm">
-                                <xsl:value-of select="/d:book/d:bookinfo/d:releaseinfo"/>
+                            <fo:block font-family="Helvetica" font-size="10pt" padding="10mm">
+                                Revision: <xsl:value-of select="/d:book/d:info/d:revhistory/d:revision/d:revnumber"/>
                             </fo:block>
                         </fo:table-cell>
                     </fo:table-row>

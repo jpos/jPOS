@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2017 jPOS Software SRL
+ * Copyright (C) 2000-2018 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -118,69 +118,75 @@ public class LogEvent {
             p.println (indent + "</log>");
     }
     public void dump (PrintStream p, String outer) {
-        String indent = dumpHeader (p, outer);
-        if (payLoad.isEmpty()) {
-            if (tag != null)
-                p.println (indent + "<" + tag + "/>");
-        }
-        else {
-            String newIndent;
-            if (tag != null) {
-                p.println (indent + "<" + tag + ">");
-                newIndent = indent + "  ";
-            } else
-                newIndent = "";
-            synchronized (payLoad) {
-                for (Object o : payLoad) {
-                    if (o instanceof Loggeable)
-                        ((Loggeable) o).dump(p, newIndent);
-                    else if (o instanceof SQLException) {
-                        SQLException e = (SQLException) o;
-                        p.println(newIndent + "<SQLException>"
-                                + e.getMessage() + "</SQLException>");
-                        p.println(newIndent + "<SQLState>"
-                                + e.getSQLState() + "</SQLState>");
-                        p.println(newIndent + "<VendorError>"
-                                + e.getErrorCode() + "</VendorError>");
-                        ((Throwable) o).printStackTrace(p);
-                    } else if (o instanceof Throwable) {
-                        p.println(newIndent + "<exception name=\""
-                                + ((Throwable) o).getMessage() + "\">");
-                        p.print(newIndent);
-                        ((Throwable) o).printStackTrace(p);
-                        p.println(newIndent + "</exception>");
-                    } else if (o instanceof Object[]) {
-                        Object[] oa = (Object[]) o;
-                        p.print(newIndent + "[");
-                        for (int j = 0; j < oa.length; j++) {
-                            if (j > 0)
-                                p.print(",");
-                            p.print(oa[j].toString());
+        try {
+            String indent = dumpHeader (p, outer);
+            if (payLoad.isEmpty()) {
+                if (tag != null)
+                    p.println (indent + "<" + tag + "/>");
+            }
+            else {
+                String newIndent;
+                if (tag != null) {
+                    if (!tag.isEmpty())
+                        p.println (indent + "<" + tag + ">");
+                    newIndent = indent + "  ";
+                }
+                else
+                    newIndent = "";
+                synchronized (payLoad) {
+                    for (Object o : payLoad) {
+                        if (o instanceof Loggeable)
+                            ((Loggeable) o).dump(p, newIndent);
+                        else if (o instanceof SQLException) {
+                            SQLException e = (SQLException) o;
+                            p.println(newIndent + "<SQLException>"
+                              + e.getMessage() + "</SQLException>");
+                            p.println(newIndent + "<SQLState>"
+                              + e.getSQLState() + "</SQLState>");
+                            p.println(newIndent + "<VendorError>"
+                              + e.getErrorCode() + "</VendorError>");
+                            ((Throwable) o).printStackTrace(p);
+                        } else if (o instanceof Throwable) {
+                            p.println(newIndent + "<exception name=\""
+                              + ((Throwable) o).getMessage() + "\">");
+                            p.print(newIndent);
+                            ((Throwable) o).printStackTrace(p);
+                            p.println(newIndent + "</exception>");
+                        } else if (o instanceof Object[]) {
+                            Object[] oa = (Object[]) o;
+                            p.print(newIndent + "[");
+                            for (int j = 0; j < oa.length; j++) {
+                                if (j > 0)
+                                    p.print(",");
+                                p.print(oa[j].toString());
+                            }
+                            p.println("]");
+                        } else if (o instanceof Element) {
+                            p.println("");
+                            XMLOutputter out = new XMLOutputter(Format.getPrettyFormat());
+                            out.getFormat().setLineSeparator("\n");
+                            try {
+                                out.output((Element) o, p);
+                            } catch (IOException ex) {
+                                ex.printStackTrace(p);
+                            }
+                            p.println("");
+                        } else if (o != null) {
+                            p.println(newIndent + o.toString());
+                        } else {
+                            p.println(newIndent + "null");
                         }
-                        p.println("]");
-                    } else if (o instanceof Element) {
-                        p.println("");
-                        p.println(newIndent + "<![CDATA[");
-                        XMLOutputter out = new XMLOutputter(Format.getPrettyFormat());
-                        out.getFormat().setLineSeparator("\n");
-                        try {
-                            out.output((Element) o, p);
-                        } catch (IOException ex) {
-                            ex.printStackTrace(p);
-                        }
-                        p.println("");
-                        p.println(newIndent + "]]>");
-                    } else if (o != null) {
-                        p.println(newIndent + o.toString());
-                    } else {
-                        p.println(newIndent + "null");
                     }
+                }
+                if (tag != null && !tag.isEmpty())
+                    p.println (indent + "</" + tag + ">");
             }
-            }
-            if (tag != null)
-                p.println (indent + "</" + tag + ">");
+        } catch (Throwable t) {
+            t.printStackTrace(p);
+
+        } finally {
+            dumpTrailer (p, outer);
         }
-        dumpTrailer (p, outer);
     }
     public String getRealm() {
         return source != null ? source.getRealm() : "";
@@ -209,7 +215,9 @@ public class LogEvent {
     public String toString(String indent) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream p = new PrintStream (baos);
-        dump (p, indent);
+        synchronized (getPayLoad()) {
+            dump(p, indent);
+        }
         return baos.toString();
     }
     public String toString() {

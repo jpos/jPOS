@@ -1,0 +1,22 @@
+=== Pause
+
+The `org.jpos.transaction.participant.Pause` can be used to slow down
+the flow of selected transactions, without consuming TransactionManager's
+sessions (it pauses the transaction).
+
+Here is a sample use:
+
+[source,xml]
+------------
+<participant class="org.jpos.transaction.participant.Pause">
+ <property name="timeout" value="5000" />                       <1>
+</participant>
+------------
+<1> Pauses the transaction for 5 seconds
+
+[TIP]
+=====
+This can be used to slightly delay specific transactions that may
+come in bursts (i.e. during a SAF download), such as reversals.
+=====
+

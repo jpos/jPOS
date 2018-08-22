@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2017 jPOS Software SRL
+ * Copyright (C) 2000-2018 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,6 +20,8 @@ package org.jpos.q2.iso;
 
 import org.jdom2.Element;
 import org.jpos.core.ConfigurationException;
+import org.jpos.core.handlers.exception.ExceptionHandlerAware;
+import org.jpos.core.handlers.exception.ExceptionHandlerConfigAware;
 import org.jpos.iso.*;
 import org.jpos.q2.QBeanSupport;
 import org.jpos.q2.QFactory;
@@ -42,7 +44,7 @@ import java.util.Date;
 @SuppressWarnings("unchecked")
 public class ChannelAdaptor
     extends QBeanSupport
-    implements ChannelAdaptorMBean, Channel, Loggeable
+    implements ChannelAdaptorMBean, Channel, Loggeable, ExceptionHandlerConfigAware
 {
     protected Space sp;
     private ISOChannel channel;
@@ -205,6 +207,11 @@ public class ChannelAdaptor
         if (channel instanceof FilteredChannel) {
             addFilters ((FilteredChannel) channel, e, f);
         }
+
+        if (channel instanceof ExceptionHandlerAware) {
+            addExceptionHandlers((ExceptionHandlerAware) channel, e, f);
+        }
+
         if (getName () != null)
             channel.setName (getName ());
         return channel;
@@ -232,6 +239,9 @@ public class ChannelAdaptor
             }
         }
     }
+
+
+
     protected ISOChannel initChannel () throws ConfigurationException {
         Element persist = getPersist ();
         Element e = persist.getChild ("channel");
@@ -255,11 +265,14 @@ public class ChannelAdaptor
         sp = grabSpace (persist.getChild ("space"));
         in      = persist.getChildTextTrim ("in");
         out     = persist.getChildTextTrim ("out");
+        writeOnly = "yes".equalsIgnoreCase (getPersist().getChildTextTrim ("write-only"));
+        if (in == null || (out == null && !writeOnly)) {
+            throw new ConfigurationException ("Misconfigured channel. Please verify in/out queues");
+        }
         String s = persist.getChildTextTrim ("reconnect-delay");
         delay    = s != null ? Long.parseLong (s) : 10000; // reasonable default
         keepAlive = "yes".equalsIgnoreCase (persist.getChildTextTrim ("keep-alive"));
         ignoreISOExceptions = "yes".equalsIgnoreCase (persist.getChildTextTrim ("ignore-iso-exceptions"));
-        writeOnly = "yes".equalsIgnoreCase (getPersist().getChildTextTrim ("write-only"));
         String t = persist.getChildTextTrim("timeout");
         timeout = t != null && t.length() > 0 ? Long.parseLong(t) : 0l;
         ready   = getName() + ".ready";

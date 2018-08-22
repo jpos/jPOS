@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2017 jPOS Software SRL
+ * Copyright (C) 2000-2018 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -40,8 +40,8 @@ public class CheckFields implements TransactionParticipant, Configurable {
     private Configuration cfg;
     private String request;
     private Pattern PCODE_PATTERN = Pattern.compile("^[\\d|\\w]{6}$");
-    private Pattern TID_PATTERN = Pattern.compile("^\\w{1,16}");
-    private Pattern MID_PATTERN = Pattern.compile("^\\w{1,15}");
+    private Pattern TID_PATTERN = Pattern.compile("^[\\w\\s]{1,16}");
+    private Pattern MID_PATTERN = Pattern.compile("^[\\w\\s]{1,15}");
     private Pattern TIMESTAMP_PATTERN = Pattern.compile("^\\d{10}");
     private Pattern CAPTUREDATE_PATTERN = Pattern.compile("^\\d{4}");
     private Pattern ORIGINAL_DATA_ELEMENTS_PATTERN = Pattern.compile("^\\d{30,41}$");
@@ -196,7 +196,7 @@ public class CheckFields implements TransactionParticipant, Configurable {
             String s = m.getString(42);
             validFields.add("42");
             if (MID_PATTERN.matcher(s).matches()) {
-                ctx.put(ContextConstants.MID.toString(), m.getString(41));
+                ctx.put(ContextConstants.MID.toString(), m.getString(42));
             } else
                 rc.fail(CMF.INVALID_FIELD, Caller.info(), "Invalid MID '%s'", s);
         } else if (mandatory) {

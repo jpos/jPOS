@@ -1,0 +1,61 @@
+=== SelectDestination
+
+`org.jpos.transaction.participant.SelectDestination` can be used to select
+the proper destination for a given message based on BIN, extended BIN or
+full or partial PAN number.
+
+
+Sample configuration:
+
+[source,xml]
+------------
+ <participant class="org.jpos.transaction.participant.SelectDestination">
+  <endpoint destination="MyMux">
+     4                          <1>
+     5..7                       <2>
+     32..35                     <3>
+     366666                     <4>
+     366667
+     5111111111111111           <5>
+  </endpoint>
+  <endpoint destination="AnotherMux">
+     ...
+     ...
+  </endpoint>
+  <regexp destination="VISA">   <6>
+    ^4[\d]{15}?$
+   </regexp>
+ </participant>
+------------
+<1> All cards starting with 4 go to this destination
+<2> Cards starting with 5, 6 or 7
+<3> Cards starting with 32, 33, 34 or 35
+<4> Only cards starging with BIN 366666
+<5> Full PAN matching
+<6> Regular expression based matching (takes priority over the endpoint number matching)
+
+These BIN or BIN ranges have 1 to 19 digits. More specific ranges (more digits)
+get priority over less specific ones.
+
+If the Context has a `DESTINATION` entry already, and this participant finds an
+endpoint in its routing tables, then that `DESTINATION` will be overridden. On the
+other hand, if `DESTINATION` is not present in the context, and this participant
+doesn't find a route *and* there's a `default-destination` property present in
+the configuration, then the `default-destination` will be set.
+
+.SelectDestination Configuration Properties
+[cols="1,2,2", options="header"]
+|========================================================================================
+|Property            | Description                                       | Default Value
+|request             | ISOMsg used to derive destination                 | `REQUEST` 
+|destination         | Destination Context variable                      | `DESTINATION`
+|default-destination | If no routing found, route to this destination    | 
+|ignore-luhn         | Set to `true` to lift LUHN validation             | `false`
+|fail                | Set to `true` to fail if no route found           | `false`
+|========================================================================================
+
+`SelectDestination` may place CMF failure messages in the Context, i.e.:
+
+* *INVALID_CARD_OR_CARDHOLDER_NUMBER* when Card is present but invalid.
+* *ROUTING_ERROR* when no route could be found.
+

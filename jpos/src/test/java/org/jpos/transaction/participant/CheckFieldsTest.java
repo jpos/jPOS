@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2017 jPOS Software SRL
+ * Copyright (C) 2000-2018 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -195,6 +195,20 @@ public class CheckFieldsTest implements TransactionConstants {
         assertFalse(rc.hasWarnings());
         assertTrue(rc.hasFailures());
         assertEquals(2, rc.failureList().size());
+    }
+
+    @Test
+    public void testMidAndTidWithSpaces () {
+        Context ctx = new Context();
+        ISOMsg m = new ISOMsg();
+        m.set(41, "0001    ");
+        m.set(42, "0000000001     ");
+        ctx.put(ContextConstants.REQUEST.toString(), m);
+        cfg.put("mandatory", "MID, TID");
+        int action = cf.prepare(1L, ctx);
+        assertEquals(PREPARED | NO_JOIN | READONLY, action);
+        Result rc = ctx.getResult();
+        assertFalse(rc.hasFailures());
     }
 
     @Test

@@ -257,6 +257,7 @@ The ready available ones include:
 |OperatorLogListener|Applies some filtering and e-mails log-events to an operator
 |ProtectedLogListener|Protect sensitive data from ISOMsgs in LogEvents for PCI compliance
 |SysLogListener|Forward log events to the operating system syslog.
+|RealmLogFilter|Filter log events by their realm. Enabled or disabled realms can be defined.
 |===============
 
 

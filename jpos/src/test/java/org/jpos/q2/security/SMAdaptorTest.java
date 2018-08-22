@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2017 jPOS Software SRL
+ * Copyright (C) 2000-2018 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,17 +18,13 @@
 
 package org.jpos.q2.security;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import org.jpos.q2.Q2;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import static org.junit.Assert.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SMAdaptorTest {
@@ -54,7 +50,7 @@ public class SMAdaptorTest {
     @Test
     public void testGetImpl1() throws Throwable {
         String result = new SMAdaptor().getImpl();
-        assertNull("result", result);
+        assertNotNull("result", result);
     }
 
     @Test

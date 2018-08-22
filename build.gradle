@@ -12,7 +12,7 @@ subprojects {
     apply plugin: 'pmd'
 
     group = 'org.jpos'
-    version = '2.1.0-SNAPSHOT'
+    version = '2.1.2-SNAPSHOT'
     [ compileJava, compileTestJava, javadoc ]*.options*.encoding = 'UTF-8'
     def isSnapshot = version.contains("SNAPSHOT")
     def mavenCentralRepo = isSnapshot ?
@@ -109,8 +109,17 @@ subprojects {
 }
 
 // Configure IDEA to use Git
-idea.project.ipr {
-   withXml { provider -> provider.node.component.find { it.@name == 'VcsDirectoryMappings' }.mapping.@vcs = 'Git' }
+idea {
+    project {
+        ipr {
+            withXml { 
+                provider -> provider.node.component.find { 
+                    it.@name == 'VcsDirectoryMappings' 
+                }.mapping.@vcs = 'Git' 
+            }
+        }
+        languageLevel = '1.8'
+    }
 }
 
 task aggregatedJavadoc (type: Javadoc, description: "Aggregated Javadocs") {
@@ -121,9 +130,5 @@ task aggregatedJavadoc (type: Javadoc, description: "Aggregated Javadocs") {
     classpath = files(subprojects.collect {project ->
         project.sourceSets.main.compileClasspath})
     failOnError = false
-}
-
-task wrapper( type: Wrapper ) {
-    gradleVersion = '3.5'
 }
 

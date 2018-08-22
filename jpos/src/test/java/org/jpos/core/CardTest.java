@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2017 jPOS Software SRL
+ * Copyright (C) 2000-2018 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -63,7 +63,7 @@ public class CardTest  {
           .exp("2011")
           .cvv("123")
           .cvv2("4567")
-          .serviceCode("201")
+          .serviceCode("123")
           .track1(t1)
           .track2(t2)
           .build();
@@ -102,13 +102,15 @@ public class CardTest  {
         Card c = Card.builder()
           .isomsg(m)
           .cvv2("123")
-          .serviceCode("201")
+          .serviceCode("123")
           .build();
 
         assertEquals("not expired", false, c.isExpired(new Date()));
         assertEquals("pan", "4111111111111111", c.getPan());
         assertEquals("exp", "2011", c.getExp());
-        assertEquals("serviceCode", "201", c.getServiceCode());
+        assertEquals("serviceCode", "123", c.getServiceCode());
+        assertEquals("t1.serviceCode", "123", c.getTrack1().getServiceCode());
+        assertEquals("t2.serviceCode", "123", c.getTrack2().getServiceCode());
         assertEquals("cvv2", "123", c.getCvv2());
         assertEquals("t1.cvv", "4567", c.getTrack1().getCvv());
         assertEquals("t2.cvv", "4561", c.getTrack2().getCvv());

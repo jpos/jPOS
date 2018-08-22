@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2017 jPOS Software SRL
+ * Copyright (C) 2000-2018 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -37,8 +37,7 @@ public interface QBeanSupportMBean extends QBean, QPersist {
     void setRealm(String realm);
     String getRealm();
     String getLogger();
-    void shutdownQ2();
     URL[] getLoaderURLS();
     QClassLoader getLoader();
+    String getDump();
 }
-

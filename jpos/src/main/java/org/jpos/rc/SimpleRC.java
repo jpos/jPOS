@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2017 jPOS Software SRL
+ * Copyright (C) 2000-2018 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,9 +26,19 @@ import java.util.Objects;
 public class SimpleRC implements RC {
     private String rc;
     private String display;
-    public SimpleRC (String rc, String display) {
-        super();
+
+    private SimpleRC() {
+
+    }
+
+    public SimpleRC(String rc) {
         this.rc = rc;
+        if (rc == null)
+            throw new NullPointerException ();
+    }
+
+    public SimpleRC (String rc, String display) {
+        this(rc);
         this.display = display;
     }
     public String rc() {

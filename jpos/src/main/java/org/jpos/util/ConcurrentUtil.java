@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2017 jPOS Software SRL
+ * Copyright (C) 2000-2018 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,18 +20,15 @@ package org.jpos.util;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.ThreadFactory;
 
 public class ConcurrentUtil {
     public static ScheduledThreadPoolExecutor newScheduledThreadPoolExecutor() {
         ScheduledThreadPoolExecutor stpe = new ScheduledThreadPoolExecutor(1,
-            new ThreadFactory() {
-                @Override public Thread newThread(Runnable r) {
-                    Thread t = Executors.defaultThreadFactory().newThread(r);
-                    t.setDaemon(true);
-                    return t;
-                }
-            });
+          r -> {
+              Thread t = Executors.defaultThreadFactory().newThread(r);
+              t.setDaemon(true);
+              return t;
+          });
         stpe.setExecuteExistingDelayedTasksAfterShutdownPolicy(false);
         stpe.setContinueExistingPeriodicTasksAfterShutdownPolicy(false);
         return stpe;

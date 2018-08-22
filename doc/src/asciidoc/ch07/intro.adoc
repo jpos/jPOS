@@ -43,6 +43,6 @@ and *Q2 service* interchangeable.
 
 QBeans are MBeans (see JMX specs) that implement the Q2's lifecycle
 (init/start/stop/destroy) set of operations. Q2 takes care of 
-registering them with they system's MBeanServer. 
+registering them with the system's MBeanServer. 
 
 

@@ -44,7 +44,7 @@ c) A default timeout specified by the TransactionManager's +pause-timeout+ prope
 
 [NOTE]
 ======
-Despite the fact that a partipant may indicate that it doesn't want to
+Despite the fact that a participant may indicate that it doesn't want to
 JOIN a given transaction (by using the +NO_JOIN+ run-time modifier), 
 under certain recovery situations the TransactionManager
 may still call its +commit+ or +abort+ method, so the participant developer 

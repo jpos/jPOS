@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2017 jPOS Software SRL
+ * Copyright (C) 2000-2018 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,7 +19,8 @@
 package org.jpos.core;
 
 public class DefaultCardValidator implements CardValidator {
-    public static LUHNCalculator DEFAULT_LUHN_CALCULATOR = new DefaultLUHNCalculator();
+    private static LUHNCalculator DEFAULT_LUHN_CALCULATOR = new DefaultLUHNCalculator();
+    private LUHNCalculator luhnCalculator = DEFAULT_LUHN_CALCULATOR;
 
     public void validate (Card card) throws InvalidCardException {
         if (card != null) {
@@ -37,8 +38,36 @@ public class DefaultCardValidator implements CardValidator {
                 if (card.getTrack2() != null && !exp.equals(card.getTrack2().getExp()))
                     throw new InvalidCardException ("track2 EXP mismatch");
             }
-            if (!DEFAULT_LUHN_CALCULATOR.verify(pan))
-                throw new InvalidCardException ("Invalid LUHN");
+            if (card.getServiceCode() != null) {
+                int mismatch = 0;
+                if (card.hasBothTracks()) {
+                    if (card.getTrack2().getServiceCode() != null) {
+                        if (!card.getTrack2().getServiceCode().equals(card.getServiceCode()))
+                            mismatch++;
+                        if (!card.getTrack2().getServiceCode().equals(card.getTrack1().getServiceCode()))
+                            mismatch++;
+                    }
+                } else if (card.hasTrack2()) {
+                    if (card.getTrack2().getServiceCode() != null) {
+                        if (!card.getTrack2().getServiceCode().equals(card.getServiceCode()))
+                            mismatch++;
+                    }
+                } else if (card.hasTrack1()) {
+                    if (card.getTrack1().getServiceCode() != null) {
+                        if (!card.getTrack1().getServiceCode().equals(card.getServiceCode()))
+                            mismatch++;
+                    }
+                }
+                if (mismatch > 0) {
+                    throw new InvalidCardException(String.format("service code mismatch (%d)", mismatch));
+                }
+            }
+            if (luhnCalculator != null && !luhnCalculator.verify(pan))
+                throw new InvalidCardException ("invalid LUHN");
         }
+    }
+
+    public void setLuhnCalculator(LUHNCalculator luhnCalculator) {
+        this.luhnCalculator = luhnCalculator;
     }
 }

@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2017 jPOS Software SRL
+ * Copyright (C) 2000-2018 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,6 +18,8 @@
 
 package org.jpos.util;
 
+import org.jpos.iso.ISOUtil;
+
 import java.io.PrintStream;
 import java.util.Collection;
 import java.util.Iterator;
@@ -31,7 +33,7 @@ import java.util.LinkedHashMap;
  */
 public class Profiler implements Loggeable {
     long start, partial;
-    LinkedHashMap events;
+    LinkedHashMap<String, Entry> events;
     public static final int TO_MILLIS = 1000000;
 
     public Profiler () {
@@ -43,7 +45,7 @@ public class Profiler implements Loggeable {
      */
     public void reset() {
         start = partial = System.nanoTime();
-        events = new LinkedHashMap();
+        events = new LinkedHashMap<>();
     }
     /**
      * mark checkpoint
@@ -83,6 +85,9 @@ public class Profiler implements Loggeable {
     public long getPartial() {
         return System.nanoTime() - partial;
     }
+    public long getPartialInMillis() {
+        return getPartial() / TO_MILLIS;
+    }
     public void dump (PrintStream p, String indent) {
         String inner = indent + "  ";
         if (!events.containsKey("end"))
@@ -91,11 +96,14 @@ public class Profiler implements Loggeable {
         Iterator iter = c.iterator();
         p.println (indent + "<profiler>");
         while (iter.hasNext()) 
-            p.println (inner + iter.next().toString());
+            p.println (inner + ISOUtil.normalize(iter.next().toString()));
         p.println (indent + "</profiler>");
     }
+    public LinkedHashMap<String, Entry> getEvents() {
+        return events;
+    }
     public Entry getEntry(String eventName) {
-         return (Entry)events.get(eventName);         
+         return events.get(eventName);
     }
     public void reenable() {
         events.remove("end");

@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2017 jPOS Software SRL
+ * Copyright (C) 2000-2018 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -44,12 +44,10 @@ public class CMFTest {
         Result rc = new Result();
         rc.success(CMF.APPROVED, Caller.info(), "Approved");
         assertTrue(rc.isSuccess());
-        rc.dump (System.out, "");
         assertNotNull(rc.success());
         rc.fail(CMF.GENERAL_DECLINE, Caller.info(), "Decline");
         assertFalse(rc.isSuccess());
         assertNull(rc.success());
-        rc.dump (System.out, "");
     }
 
     @Test
@@ -71,5 +69,25 @@ public class CMFTest {
         assertEquals("Standard RC", new SimpleRC("0000", "APPROVED"), c.convert(CMF.APPROVED));
         assertEquals("ResourceBundle override", new SimpleRC("ZZZZ", "General Decline"), c.convert(CMF.GENERAL_DECLINE));
         assertEquals("Configuration override", new SimpleRC("----", "jPOS error message"), c.convert(CMF.JPOS));
+    }
+
+    @Test
+    public void testInhibit() {
+        Result rc = new Result();
+        rc.fail(CMF.INTERNAL_ERROR, Caller.info(), "Internal Error");
+        assertTrue(rc.hasInhibit());
+    }
+
+    @Test
+    public void testConvertToIRC() throws ConfigurationException {
+        CMFConverter c = new CMFConverter();
+        SimpleConfiguration cfg = new SimpleConfiguration();
+        cfg.put("10000","----,jPOS error message");
+        c.setConfiguration(cfg);
+
+        IRC irc =  c.convert(new SimpleRC("0000", ""));
+        assertEquals(c.convert(new SimpleRC("0000", "")), CMF.APPROVED);
+        assertEquals(c.convert(new SimpleRC("0001", "")), CMF.HONOR_WITH_ID);
+        assertEquals(c.convert(new SimpleRC("ZZZZ", "")), CMF.GENERAL_DECLINE);
     }
 }

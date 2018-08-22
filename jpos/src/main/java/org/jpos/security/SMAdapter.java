@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2017 jPOS Software SRL
+ * Copyright (C) 2000-2018 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -1298,7 +1298,6 @@ public interface SMAdapter {
             ,byte[] data) throws SMException;
 
 
-
     /**
      * Erase the key change storage area of memory
      *
@@ -1309,7 +1308,19 @@ public interface SMAdapter {
      */
     void eraseOldLMK() throws SMException;
 
+    /**
+     * Encrypt Data
+     * @param bdk base derivation key
+     * @param clearText clear Text
+     * @return cyphertext
+     */
+    byte[] dataEncrypt (SecureDESKey bdk, byte[] clearText) throws SMException;
+
+    /**
+     * Decrypt Data
+     * @param bdk base derivation key
+     * @param cypherText clear Text
+     * @return cleartext
+     */
+    byte[] dataDecrypt (SecureDESKey bdk, byte[] cypherText) throws SMException;
 }
-
-
-

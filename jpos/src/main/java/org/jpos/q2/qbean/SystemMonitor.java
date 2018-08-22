@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2017 jPOS Software SRL
+ * Copyright (C) 2000-2018 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,10 +23,9 @@ import org.jpos.core.ConfigurationException;
 import org.jpos.iso.ISOUtil;
 import org.jpos.q2.Q2;
 import org.jpos.q2.QBeanSupport;
-import org.jpos.util.Loggeable;
-import org.jpos.util.Logger;
-import org.jpos.util.NameRegistrar;
+import org.jpos.util.*;
 
+import javax.crypto.Cipher;
 import javax.management.MBeanServerConnection;
 import java.io.*;
 import java.lang.management.ManagementFactory;
@@ -35,6 +34,7 @@ import java.lang.management.RuntimeMXBean;
 import java.lang.management.ThreadMXBean;
 import java.net.InetAddress;
 import java.nio.charset.Charset;
+import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.TextStyle;
@@ -42,6 +42,7 @@ import java.time.zone.ZoneOffsetTransition;
 import java.time.zone.ZoneOffsetTransitionRule;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * Periodically dumps Thread and memory usage
@@ -99,14 +100,14 @@ public class SystemMonitor extends QBeanSupport
         return detailRequired;
     }
 
-    void dumpThreads(ThreadGroup g, PrintStream p, String indent) {
+    private void dumpThreads(ThreadGroup g, PrintStream p, String indent) {
         Thread[] list = new Thread[g.activeCount() + 5];
         int nthreads = g.enumerate(list);
         for (int i = 0; i < nthreads; i++)
             p.println(indent + list[i]);
     }
 
-    public void showThreadGroup(ThreadGroup g, PrintStream p, String indent) {
+    void showThreadGroup(ThreadGroup g, PrintStream p, String indent) {
         if (g.getParent() != null)
             showThreadGroup(g.getParent(), p, indent + "  ");
         else
@@ -130,6 +131,7 @@ public class SystemMonitor extends QBeanSupport
         if (frozenDump == null)
             frozenDump = generateFrozenDump(indent);
         p.print(frozenDump);
+        dumpMetrics();
     }
     @Override
     public void setConfiguration(Configuration cfg) throws ConfigurationException {
@@ -183,7 +185,17 @@ public class SystemMonitor extends QBeanSupport
         String usableSpace = ISOUtil.readableFileSize(cwd.getUsableSpace());
 
         p.printf ("%s           OS: %s (%s)%n", indent, System.getProperty("os.name"), System.getProperty("os.version"));
+        int maxKeyLength = 0;
+        try {
+            maxKeyLength = Cipher.getMaxAllowedKeyLength("AES");
+        } catch (NoSuchAlgorithmException ignored) { }
+        p.printf("%s         Java: %s (%s) AES-%s%n", indent,
+          System.getProperty("java.version"),
+          System.getProperty("java.vendor"),
+          maxKeyLength == Integer.MAX_VALUE ? "secure" : Integer.toString(maxKeyLength)
+        );
         p.printf ("%s process name: %s%n", indent, runtimeMXBean.getName());
+        p.printf ("%s    user name: %s%n", indent, System.getProperty("user.name"));
         p.printf ("%s         host: %s%n", indent, getLocalHost());
         p.printf ("%s          cwd: %s%n", indent, System.getProperty("user.dir"));
         p.printf ("%s   free space: %s%n", indent, freeSpace);
@@ -247,5 +259,18 @@ public class SystemMonitor extends QBeanSupport
             return osMBean.getSystemLoadAverage();
         } catch (Throwable ignored) { }
         return -1;
+    }
+
+    private void dumpMetrics() {
+        if (cfg.get("metrics-dir", null) != null) {
+            File dir = new File(cfg.get("metrics-dir"));
+            dir.mkdir();
+            NameRegistrar.getAsMap().forEach((key, value) -> {
+                if (value instanceof MetricsProvider) {
+                    Metrics metrics = ((MetricsProvider) value).getMetrics();
+                    metrics.dumpHistograms(dir, key + "-");
+                }
+            });
+        }
     }
 }

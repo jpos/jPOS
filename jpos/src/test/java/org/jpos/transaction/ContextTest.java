@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2017 jPOS Software SRL
+ * Copyright (C) 2000-2018 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,11 +26,13 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.PrintStream;
 import java.util.Locale;
 
 import org.jpos.util.LogEvent;
+import org.jpos.util.Serializer;
 import org.junit.Test;
 
 public class ContextTest {
@@ -273,5 +275,36 @@ public class ContextTest {
         } catch (NullPointerException ex) {
             assertNull("ex.getMessage()", ex.getMessage());
         }
+    }
+
+    @Test
+    public void testPersist() throws IOException, ClassNotFoundException {
+        Context context = new Context();
+        context.put ("A", "ABC");
+        context.put ("B", "BCD");
+        context.persist("A");
+        context.persist("B");
+        Context deser = Serializer.serializeDeserialize(context);
+        assertEquals(deser.get("A"), "ABC");
+        assertEquals(deser.get("B"), "BCD");
+        deser.evict("A");
+        deser = Serializer.serializeDeserialize(deser);
+        assertEquals(deser.get("B"), "BCD");
+        assertNull("A should be null", deser.get("A"));
+    }
+
+    @Test
+    public void testClone() throws IOException, ClassNotFoundException {
+        Context context = new Context();
+        context.put ("A", "ABC", true);
+        context.put ("B", "BCD");
+        Context cloned = context.clone();
+        assertEquals(cloned.get("A"), "ABC");
+        assertEquals(cloned.get("B"), "BCD");
+        assertEquals(context, cloned);
+
+        context = Serializer.serializeDeserialize(cloned);
+        assertEquals(context.get("A"), "ABC");
+        assertNull("A should be null", context.get("B"));
     }
 }

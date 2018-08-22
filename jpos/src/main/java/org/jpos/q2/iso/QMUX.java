@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2017 jPOS Software SRL
+ * Copyright (C) 2000-2018 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,17 +19,13 @@
 package org.jpos.q2.iso;
 
 import org.HdrHistogram.AtomicHistogram;
-import org.HdrHistogram.Histogram;
 import org.jdom2.Element;
 import org.jpos.core.ConfigurationException;
 import org.jpos.iso.*;
 import org.jpos.q2.QBeanSupport;
 import org.jpos.q2.QFactory;
 import org.jpos.space.*;
-import org.jpos.util.Chronometer;
-import org.jpos.util.Loggeable;
-import org.jpos.util.Metrics;
-import org.jpos.util.NameRegistrar;
+import org.jpos.util.*;
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -43,7 +39,7 @@ import java.util.concurrent.TimeUnit;
 @SuppressWarnings("unchecked")
 public class QMUX
     extends QBeanSupport
-    implements SpaceListener, MUX, QMUXMBean, Loggeable
+    implements SpaceListener, MUX, QMUXMBean, Loggeable, MetricsProvider
 {
     static final String nomap = "0123456789";
     static final String DEFAULT_KEY = "41, 11";
@@ -60,12 +56,12 @@ public class QMUX
     private Metrics metrics = new Metrics(new AtomicHistogram(60000, 2));
 
     List<ISORequestListener> listeners;
-    int rx, tx, rxExpired, txExpired, rxPending, rxUnhandled, rxForwarded;
-    long lastTxn = 0L;
-    boolean listenerRegistered;
+    private volatile int rx, tx, rxExpired, txExpired, rxPending, rxUnhandled, rxForwarded;
+    private volatile long lastTxn = 0L;
+    private boolean listenerRegistered;
     public QMUX () {
         super ();
-        listeners = new ArrayList<ISORequestListener>();
+        listeners = new ArrayList<>();
     }
     public void initService () throws ConfigurationException {
         Element e = getPersist ();
@@ -73,6 +69,9 @@ public class QMUX
         isp       = cfg.getBoolean("reuse-space", false) ? sp : new TSpace();
         in        = e.getChildTextTrim ("in");
         out       = e.getChildTextTrim ("out");
+        if (in == null || out == null) {
+            throw new ConfigurationException ("Misconfigured QMUX. Please verify in/out queues");
+        }
         ignorerc  = e.getChildTextTrim ("ignore-rc");
         key = toStringArray(DEFAULT_KEY, ", ", null);
         returnRejects = cfg.getBoolean("return-rejects", false);
@@ -131,9 +130,11 @@ public class QMUX
     public ISOMsg request (ISOMsg m, long timeout) throws ISOException {
         String key = getKey (m);
         String req = key + ".req";
-        if (isp.rdp (req) != null)
-            throw new ISOException ("Duplicate key '" + req + "' detected");
-        isp.out (req, m);
+        synchronized (isp) {
+            if (isp.rdp (req) != null)
+                throw new ISOException ("Duplicate key '" + req + "' detected");
+            isp.out (req, m);
+        }
         m.setDirection(0);
         Chronometer c = new Chronometer();
         if (timeout > 0)
@@ -179,15 +180,17 @@ public class QMUX
     {
         String key = getKey (m);
         String req = key + ".req";
-        if (isp.rdp (req) != null)
-            throw new ISOException ("Duplicate key '" + req + "' detected.");
-        m.setDirection(0);
-        AsyncRequest ar = new AsyncRequest (rl, handBack);
-        synchronized (ar) {
-            if (timeout > 0)
-                ar.setFuture(getScheduledThreadPoolExecutor().schedule(ar, timeout, TimeUnit.MILLISECONDS));
+        synchronized (isp) {
+            if (isp.rdp (req) != null)
+                throw new ISOException ("Duplicate key '" + req + "' detected.");
+            m.setDirection(0);
+            AsyncRequest ar = new AsyncRequest (rl, handBack);
+            synchronized (ar) {
+                if (timeout > 0)
+                    ar.setFuture(getScheduledThreadPoolExecutor().schedule(ar, timeout, TimeUnit.MILLISECONDS));
+            }
+            isp.out (req, ar, timeout);
         }
-        isp.out (req, ar, timeout);
         if (timeout > 0)
             sp.out (out, m, timeout);
         else
@@ -213,7 +216,10 @@ public class QMUX
                     }
                 }
             } catch (ISOException e) {
-                getLog().warn ("notify", e);
+                LogEvent evt = getLog().createLogEvent("notify");
+                evt.addMessage(e);
+                evt.addMessage(obj);
+                Logger.log(evt);
             }
             processUnhandled (m);
         }
@@ -251,8 +257,9 @@ public class QMUX
         return sb.toString();
     }
 
-    public Map<String, Histogram> getMetrics() {
-        return metrics.metrics();
+    @Override
+    public Metrics getMetrics() {
+        return metrics;
     }
 
     private String mapMTI (String mti) throws ISOException {
@@ -331,12 +338,12 @@ public class QMUX
         StringBuffer sb = new StringBuffer();
         append (sb, "tx=", tx);
         append (sb, ", rx=", rx);
-        append (sb, ", tx_expired=", txExpired);
-        append (sb, ", tx_pending=", sp.size(out));
-        append (sb, ", rx_expired=", rxExpired);
-        append (sb, ", rx_pending=", rxPending);
-        append (sb, ", rx_unhandled=", rxUnhandled);
-        append (sb, ", rx_forwarded=", rxForwarded);
+        append (sb, ", tx_expired=", getTXExpired());
+        append (sb, ", tx_pending=", getTXPending());
+        append (sb, ", rx_expired=", getRXExpired());
+        append (sb, ", rx_pending=", getRXPending());
+        append (sb, ", rx_unhandled=", getRXUnhandled());
+        append (sb, ", rx_forwarded=", getRXForwarded());
         sb.append (", connected=");
         sb.append (Boolean.toString(isConnected()));
         sb.append (", last=");
@@ -356,6 +363,36 @@ public class QMUX
         return rx;
     }
 
+    @Override
+    public int getTXExpired() {
+        return txExpired;
+    }
+
+    @Override
+    public int getTXPending() {
+        return sp.size(out);
+    }
+
+    @Override
+    public int getRXExpired() {
+        return rxExpired;
+    }
+
+    @Override
+    public int getRXPending() {
+        return rxPending;
+    }
+
+    @Override
+    public int getRXUnhandled() {
+        return rxUnhandled;
+    }
+
+    @Override
+    public int getRXForwarded() {
+        return rxForwarded;
+    }
+
     public long getLastTxnTimestampInMillis() {
         return lastTxn;
     }
@@ -364,7 +401,8 @@ public class QMUX
     }
 
     protected void processUnhandled (ISOMsg m) {
-        ISOSource source = m.getSource () != null ? m.getSource() : this;
+        ISOSource source = m.getSource();
+        source = source != null ? source : this;
         Iterator iter = listeners.iterator();
         if (iter.hasNext())
             synchronized (this) { rxForwarded++; }

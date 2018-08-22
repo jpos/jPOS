@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2017 jPOS Software SRL
+ * Copyright (C) 2000-2018 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -325,6 +325,19 @@ public class ISOMsg2Test {
     }
 
     @Test
+    public void testHasMTIThrowsISOException() throws Throwable {
+        ISOMsg iSOMsg = new ISOMsg("testISOMsgMti");
+        iSOMsg.setFieldNumber(0);
+        try {
+            iSOMsg.hasMTI();
+            fail("Expected ISOException to be thrown");
+        } catch (ISOException ex) {
+            assertEquals("ex.getMessage()", "can't hasMTI on inner message", ex.getMessage());
+            assertNull("ex.nested", ex.nested);
+        }
+    }
+
+    @Test
     public void testGetPackager() throws Throwable {
         ISOMsg iSOMsg = new ISOMsg("testISOMsgMti");
         ISOPackager p = new GenericValidatingPackager();
@@ -356,6 +369,12 @@ public class ISOMsg2Test {
         ISOMsg iSOVMsg = new ISOVMsg(new ISOMsg(), new ISOVError("testISOMsgDescription", "testISOMsgRejectCode"));
         ISOMsg result = (ISOMsg) iSOVMsg.getValue();
         assertSame("result", iSOVMsg, result);
+    }
+
+    @Test
+    public void testHasMTI() throws Throwable {
+        boolean result = new ISOMsg("testISOMsgMti").hasMTI();
+        assertTrue("result", result);
     }
 
     @Test
@@ -1161,7 +1180,7 @@ public class ISOMsg2Test {
     @Test
     public void testToString() throws Throwable {
         String result = new ISOMsg(100).toString();
-        assertEquals("result", "    null", result);
+        assertEquals("result", "     null", result);
     }
 
     @Test
@@ -1169,15 +1188,15 @@ public class ISOMsg2Test {
         ISOMsg iSOMsg = new ISOMsg("testISOMsgMti");
         iSOMsg.setDirection(100);
         String result = iSOMsg.toString();
-        assertEquals("result", "    testISOMsgMti", result);
+        assertEquals("result", "     testISOMsgMti", result);
     }
 
     @Test
     public void testToString2() throws Throwable {
         ISOMsg iSOMsg = new ISOMsg("testISOMsgMti");
-        iSOMsg.setDirection(1);
+        iSOMsg.setDirection(ISOMsg.INCOMING);
         String result = iSOMsg.toString();
-        assertEquals("result", "<-- testISOMsgMti", result);
+        assertEquals("result", " In: testISOMsgMti", result);
     }
 
     @Test

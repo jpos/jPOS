@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2017 jPOS Software SRL
+ * Copyright (C) 2000-2018 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -43,5 +43,10 @@ public interface IRC {
     /**
      * @return true if this IRC can be considered a 'success' (not necessarily an approval, could be a partial approval, advice accepted, etc.)
      */
-    boolean isSuccess();
+    boolean success();
+
+    /**
+     * @return true if error type should inhibit response back to client
+     */
+    boolean inhibit();
 }

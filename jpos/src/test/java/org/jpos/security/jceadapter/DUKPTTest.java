@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2017 jPOS Software SRL
+ * Copyright (C) 2000-2018 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -117,6 +117,19 @@ public class DUKPTTest extends TestCase
         test_DUKPT ("test-bdk", new KeySerialNumber ("987654", "3210", "F00000"), ISOUtil.hex2byte ("73EC88AD0AC5830E"), PAN,true);
     }
 
+    public void test_dataEncrypt() throws Exception {
+        SecureDESKey bdk = (SecureDESKey) ks.getKey("test-bdk");
+        byte[] original = "The quick brown fox jumps over the lazy dog".getBytes();
+        byte[] cryptogram = sm.dataEncrypt(bdk, original);
+        byte[] cleartext = sm.dataDecrypt(bdk, cryptogram);
+        assertEqual(original, cleartext);
+        cryptogram[0] = (byte) (cryptogram[0] ^ 0xAA);
+        try {
+            sm.dataDecrypt(bdk, cryptogram);
+            fail("SMException not raised");
+        } catch (Exception ignored) { }
+    }
+
     private void test_DUKPT(String keyName, KeySerialNumber ksn, byte[] pinUnderDukpt, String pan)
             throws Exception
     {
@@ -131,7 +144,7 @@ public class DUKPTTest extends TestCase
         EncryptedPIN pin = new EncryptedPIN(
                 pinUnderDukpt, SMAdapter.FORMAT01, pan
         );
-        SecureDESKey bdk = (SecureDESKey) ks.getKey(keyName);
+        SecureDESKey bdk = ks.getKey(keyName);
         evt.addMessage(pin);
         evt.addMessage(ksn);
         evt.addMessage(bdk);

@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2017 jPOS Software SRL
+ * Copyright (C) 2000-2018 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -89,7 +89,7 @@ public class QueryHost implements TransactionParticipant, ISOResponseListener, C
                 return result.fail(CMF.SYSTEM_ERROR, Caller.info(), e.getMessage()).FAIL();
             }
         } else {
-            return result.fail(CMF.HOST_UNREACHABLE, Caller.info(), "'%s' is null", muxName).FAIL();
+            return result.fail(CMF.HOST_UNREACHABLE, Caller.info(), "'%s' is not connected", muxName).FAIL();
         }
 
     }

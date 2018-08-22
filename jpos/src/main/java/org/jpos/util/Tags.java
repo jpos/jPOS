@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2017 jPOS Software SRL
+ * Copyright (C) 2000-2018 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,12 +21,11 @@ package org.jpos.util;
 import org.jpos.iso.ISOUtil;
 
 import java.io.*;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Tags implements Serializable {
+    private static final long serialVersionUID = -7749305134294641955L;
     private transient Set<String> ts;
 
     public Tags() {
@@ -34,25 +33,37 @@ public class Tags implements Serializable {
     }
     public Tags(String tags) {
         this();
-        setTags(tags);
+        if (tags != null)
+            setTags(tags);
     }
     public Tags(String... tags) {
         this();
-        Collections.addAll(ts, tags);
+        if (tags != null) {
+            for (String t : tags) {
+                t = t.trim();
+                if (t.length() > 0)
+                    ts.add(t);
+            }
+        }
     }
     public void setTags(String tags) {
         ts.clear();
-        if (tags != null)
-            Collections.addAll(ts, ISOUtil.commaDecode(tags));
+        if (tags != null) {
+            for (String t : ISOUtil.commaDecode(tags)) {
+                t = t.trim();
+                if (t.length() > 0)
+                    ts.add(t);
+            }
+        }
     }
     public boolean add (String t) {
-        return ts.add(t);
+        return t != null && ts.add(t.trim());
     }
     public boolean remove (String t) {
-        return ts.remove(t);
+        return t != null && ts.remove(t.trim());
     }
     public boolean contains (String t) {
-        return ts.contains(t);
+        return t != null && ts.contains(t.trim());
     }
     public Iterator<String> iterator() {
         return ts.iterator();
@@ -97,7 +108,6 @@ public class Tags implements Serializable {
         if (o == null || getClass() != o.getClass()) return false;
         Tags tagSet = (Tags) o;
         return ts.equals(tagSet.ts);
-
     }
 
     @Override
@@ -112,9 +122,8 @@ public class Tags implements Serializable {
     }
     private void readObject(ObjectInputStream is)
             throws java.io.IOException, ClassNotFoundException {
-        ts = new TreeSet<String>();
+        ts = new TreeSet<>();
         is.defaultReadObject();
         setTags((String) is.readObject());
     }
-    // private static final long serialVersionUID = -4722472968305933277L;
 }

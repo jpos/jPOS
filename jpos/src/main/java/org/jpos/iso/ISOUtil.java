@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2017 jPOS Software SRL
+ * Copyright (C) 2000-2018 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,6 +24,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * various functions needed to pack/unpack ISO-8583 fields
@@ -64,6 +65,7 @@ public class ISOUtil {
      * @deprecated use {@link #CHARSET} instead
      */
     public static final String ENCODING  = "ISO8859_1";
+    public static final Pattern unicodePattern = Pattern.compile("u00([0-9a-fA-F]{2})+");
 
     /**
      * Default charset for bytes transmissions over network
@@ -254,10 +256,16 @@ public class ISOUtil {
     public static byte[] str2bcd(String s, boolean padLeft, byte fill) {
         int len = s.length();
         byte[] d = new byte[ len+1 >> 1 ];
-        Arrays.fill (d, fill);
-        int start = (len & 1) == 1 && padLeft ? 1 : 0;
-        for (int i=start; i < len+start; i++) 
-            d [i >> 1] |= s.charAt(i-start)-'0' << ((i & 1) == 1 ? 0 : 4);
+        if (d.length > 0) {
+            if (padLeft)
+                d[0] = (byte) ((fill & 0xF) << 4);
+            int start = (len & 1) == 1 && padLeft ? 1 : 0;
+            int i;
+            for (i=start; i < len+start; i++)
+                d [i >> 1] |= s.charAt(i-start)-'0' << ((i & 1) == 1 ? 0 : 4);
+            if ((i & 1) == 1)
+                d [i >> 1] |= fill & 0xF;
+        }
         return d;
     }
     /**
@@ -813,9 +821,12 @@ public class ISOUtil {
                 case '"': 
                     str.append("&quot;");
                     break;
+                case '\'':
+                    str.append("&apos;");
+                    break;
                 case '\r':
-                case '\n': 
-                    if (canonical) {
+                case '\n':
+                    if (!canonical) {
                         str.append("&#");
                         str.append(Integer.toString(ch & 0xFF));
                         str.append(';');
@@ -824,17 +835,32 @@ public class ISOUtil {
                     // else, default append char
                 default: 
                     if (ch < 0x20) {
-                        str.append("&#");
-                        str.append(Integer.toString(ch & 0xFF));
-                        str.append(';');
-                    }
-                    else if (ch > 0xff00) {
-                        str.append((char) (ch & 0xFF));
-                    } else
+                        str.append(String.format("\\u%04x", (int) (ch & 0xFF)));
+                    } else {
                         str.append(ch);
+                    }
             }
         }
         return str.toString();
+    }
+
+    public static String stripUnicode (String s) {
+        StringBuilder sb = new StringBuilder();
+        int len = s != null ? s.length() : 0;
+        boolean escape = false;
+        for (int i = 0; i < len; i++) {
+            char ch = s.charAt(i);
+            if (ch == '\\' && i < len-5 && isInternalUnicodeSequence(s.substring(i+1, i+6))) {
+                sb.append((char) (Character.digit(s.charAt(i + 4), 16) << 4 | (Character.digit(s.charAt(i + 5), 16))));
+                i += 5;
+            } else
+                sb.append(ch);
+        }
+        return sb.toString();
+    }
+
+    private static boolean isInternalUnicodeSequence(String s) {
+        return unicodePattern.matcher(s).matches();
     }
     /**
      * XML normalizer (default canonical)
@@ -853,10 +879,11 @@ public class ISOUtil {
      * "40000101010001D020128375" is converted to "400001____0001D0201_____"
      * "123" is converted to "___"
      * </pre>
-     * @param s string to be protected 
+     * @param s string to be protected
+     * @param mask char used to protect the string
      * @return 'protected' String
      */
-    public static String protect (String s) {
+    public static String protect (String s, char mask) {
         StringBuilder sb = new StringBuilder();
         int len   = s.length();
         int clear = len > 6 ? 6 : 0;
@@ -879,7 +906,7 @@ public class ISOUtil {
             }
             else if (i == lastFourIndex)
                 clear = 4;
-            sb.append (clear-- > 0 ? s.charAt(i) : '_');
+            sb.append (clear-- > 0 ? s.charAt(i) : mask);
         }
         s = sb.toString();
         try {
@@ -887,12 +914,15 @@ public class ISOUtil {
             int charCount = s.replaceAll("[^\\^]", "").length();
             if (charCount == 2 ) {
                 s = s.substring(0, s.lastIndexOf("^")+1);
-                s = ISOUtil.padright(s, len, '_');
+                s = ISOUtil.padright(s, len, mask);
             }
         } catch (ISOException e){
             //cannot PAD - should never get here
         }
         return s;
+    }
+    public static String protect(String s) {
+        return protect(s, '_');
     }
     public static int[] toIntArray(String s) {
         StringTokenizer st = new StringTokenizer (s);
@@ -1579,4 +1609,57 @@ public class ISOUtil {
         int digitGroups = (int) (Math.log10(size)/Math.log10(1024));
         return new DecimalFormat("#,##0.#").format(size/Math.pow(1024, digitGroups)) + " " + units[digitGroups];
     }
+    
+    /**
+     * At times when the charset is not the default usual one the dump will have more unprintable characters than printable.
+     * The charset will allow printing of more printable character. Usually when your data is in EBCDIC format you will run into this.
+     * 
+     * The standard hexdump that exists would print a byte array of F0F1F2 as 
+     * F0 F1 F2        ...
+     * 
+     * This hexdump, if the Charset.forName("IBM1047") is passedin as charset will print
+     * F0 F1 F2       | 123      
+     * 
+     * 
+     * @param array
+     *            the array that needs to be dumped.
+     * @param offset
+     *            From where the data needs to be dumped.
+     * @param length
+     *            The number of byte that ned to be dumped.
+     * @param charSet
+     *            The Charset encoding the array is i.
+     * @return The hexdump string.
+     */
+    public static String hexDump(byte[] array, int offset, int length, Charset charSet) {
+        // https://gist.github.com/jen20/906db194bd97c14d91df
+        final int width = 16;
+
+        StringBuilder builder = new StringBuilder();
+
+        for (int rowOffset = offset; rowOffset < offset + length; rowOffset += width) {
+            builder.append(String.format("%06d:  ", rowOffset));
+
+            for (int index = 0; index < width; index++) {
+                if (rowOffset + index < array.length) {
+                    builder.append(String.format("%02x ", array[rowOffset + index]).toUpperCase());
+                }
+                else {
+                    builder.append("   ");
+                }
+            }
+
+            if (rowOffset < array.length) {
+                int asciiWidth = Math.min(width, array.length - rowOffset);
+                builder.append("  |  ");
+                builder.append(new String(array, rowOffset, asciiWidth, charSet).replaceAll("\r\n", " ")
+                        .replaceAll("\n", " "));
+            }
+
+            builder.append(String.format("%n"));
+        }
+
+        return builder.toString();
+    }
+
 }

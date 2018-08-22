@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2017 jPOS Software SRL
+ * Copyright (C) 2000-2018 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,23 +24,22 @@ package org.jpos.q2.iso;
  * @version $Revision: 2223 $ $Date: 2005-11-29 21:04:41 -0200 (Tue, 29 Nov 2005) $
  */
 public interface QMUXMBean extends org.jpos.q2.QBeanSupportMBean {
-
-  void setInQueue(java.lang.String in) ;
-
-  java.lang.String getInQueue() ;
-
-  void setOutQueue(java.lang.String out) ;
-
-  java.lang.String getOutQueue() ;
-
-  void setUnhandledQueue(java.lang.String unhandled) ;
-
-  java.lang.String getUnhandledQueue() ;
-
-  void resetCounters();
-  String getCountersAsString();
-  int getTXCounter();
-  int getRXCounter();
-  long getLastTxnTimestampInMillis();
-  long getIdleTimeInMillis();
+    void setInQueue(java.lang.String in) ;
+    String getInQueue() ;
+    void setOutQueue(java.lang.String out) ;
+    String getOutQueue() ;
+    void setUnhandledQueue(java.lang.String unhandled) ;
+    String getUnhandledQueue() ;
+    void resetCounters();
+    String getCountersAsString();
+    int getTXCounter();
+    int getRXCounter();
+    int getTXExpired();
+    int getTXPending();
+    int getRXExpired();
+    int getRXPending();
+    int getRXUnhandled();
+    int getRXForwarded();
+    long getLastTxnTimestampInMillis();
+    long getIdleTimeInMillis();
 }

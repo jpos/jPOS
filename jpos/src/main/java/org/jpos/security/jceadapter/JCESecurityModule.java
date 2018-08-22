@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2017 jPOS Software SRL
+ * Copyright (C) 2000-2018 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,6 +18,7 @@
 
 package  org.jpos.security.jceadapter;
 
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.javatuples.Pair;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
@@ -37,24 +38,12 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.security.InvalidKeyException;
-import java.security.Key;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.security.Provider;
-import java.security.SecureRandom;
-import java.security.Security;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Random;
-import java.util.TreeMap;
+import java.nio.ByteBuffer;
+import java.security.*;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.crypto.Cipher;
-
 
 /**
  * JCESecurityModule is an implementation of a security module in software.
@@ -78,7 +67,6 @@ import javax.crypto.Cipher;
  */
 @SuppressWarnings("unchecked")
 public class JCESecurityModule extends BaseSMAdapter {
-
     /**
      * Pattern representing key type string value.
      */
@@ -156,11 +144,13 @@ public class JCESecurityModule extends BaseSMAdapter {
      */
     public JCESecurityModule (String lmkFile) throws SMException
     {
+        Objects.requireNonNull(lmkFile);
         init(null, lmkFile, false);
     }
 
     public JCESecurityModule (String lmkFile, String jceProviderClassName) throws SMException
     {
+        Objects.requireNonNull(lmkFile);
         init(jceProviderClassName, lmkFile, false);
     }
 
@@ -190,7 +180,7 @@ public class JCESecurityModule extends BaseSMAdapter {
     public void setConfiguration (Configuration cfg) throws ConfigurationException {
         this.cfg = cfg;
         try {
-            init(cfg.get("provider"), cfg.get("lmk"), cfg.getBoolean("rebuildlmk"));
+            init(cfg.get("provider"), cfg.get("lmk", null), cfg.getBoolean("rebuildlmk"));
         } catch (SMException e) {
             throw  new ConfigurationException(e);
         }
@@ -1756,9 +1746,11 @@ public class JCESecurityModule extends BaseSMAdapter {
      * @throws SMException
      */
     private void init (String jceProviderClassName, String lmkFile, boolean lmkRebuild) throws SMException {
-        File lmk = new File(lmkFile);
+        File lmk = lmkFile != null ? new File(lmkFile) : null;
+        if (lmk == null && !lmkRebuild)
+            throw new SMException ("null lmkFile - needs rebuild");
         try {
-            keyTypeToLMKIndex = new TreeMap<String,Integer>();
+            keyTypeToLMKIndex = new TreeMap<>();
             keyTypeToLMKIndex.put(SMAdapter.TYPE_ZMK, 0x000);
             keyTypeToLMKIndex.put(SMAdapter.TYPE_ZPK, 0x001);
             keyTypeToLMKIndex.put(SMAdapter.TYPE_PVK, 0x002);
@@ -1780,11 +1772,10 @@ public class JCESecurityModule extends BaseSMAdapter {
             keyTypeToLMKIndex.put(SMAdapter.TYPE_RSA_SK, 0x00C);
             keyTypeToLMKIndex.put(SMAdapter.TYPE_HMAC,   0x10C);
             keyTypeToLMKIndex.put(SMAdapter.TYPE_RSA_PK, 0x00D);
-            Provider provider = null;
+            Provider provider;
             LogEvent evt = new LogEvent(this, "jce-provider");
             try {
-                if (jceProviderClassName == null || jceProviderClassName.compareTo("")
-                        == 0) {
+                if (jceProviderClassName == null || jceProviderClassName.isEmpty()) {
                     evt.addMessage("No JCE Provider specified. Attempting to load default provider (SunJCE).");
                     jceProviderClassName = "com.sun.crypto.provider.SunJCE";
                 }
@@ -1802,30 +1793,37 @@ public class JCESecurityModule extends BaseSMAdapter {
             if (lmkRebuild) {
                 // Creat new LMK file
                 evt = new LogEvent(this, "local-master-keys");
-                evt.addMessage("Rebuilding new Local Master Keys in file: \"" +
-                        lmk.getCanonicalPath() + "\".");
+                if (lmk != null)
+                    evt.addMessage("Rebuilding new Local Master Keys in file: \"" + lmk.getCanonicalPath() + "\".");
                 Logger.log(evt);
                 // Generate New random Local Master Keys
                 generateLMK();
                 // Write the new Local Master Keys to file
-                writeLMK(lmk);
                 evt = new LogEvent(this, "local-master-keys");
-                evt.addMessage("Local Master Keys built successfully in file: \""
-                        + lmk.getCanonicalPath() + "\".");
+                if (lmk != null) {
+                    writeLMK(lmk);
+                    evt.addMessage("Local Master Keys built successfully in file: \""
+                      + lmk.getCanonicalPath() + "\".");
+                } else {
+                    evt.addMessage("Local Master Keys built successfully");
+                }
                 Logger.log(evt);
             }
-            if (!lmk.exists()) {
-                // LMK File does not exist
-                throw  new SMException("Error loading Local Master Keys, file: \""
-                        + lmk.getCanonicalPath() + "\" does not exist." + " Please specify a valid LMK file, or rebuild a new one.");
-            }
-            else {
-                // Read LMK from file
-                readLMK(lmk);
-                evt = new LogEvent(this, "local-master-keys");
-                evt.addMessage("Loaded successfully from file: \"" + lmk.getCanonicalPath()
-                        + "\"");
-                Logger.log(evt);
+            if (lmk != null) {
+                if (!lmk.exists()) {
+                    // LMK File does not exist
+                    throw  new SMException("Error loading Local Master Keys, file: \""
+                      + lmk.getCanonicalPath() + "\" does not exist."
+                      + " Please specify a valid LMK file, or rebuild a new one.");
+                }
+                else {
+                    // Read LMK from file
+                    readLMK(lmk);
+                    evt = new LogEvent(this, "local-master-keys");
+                    evt.addMessage("Loaded successfully from file: \"" + lmk.getCanonicalPath()
+                      + "\"");
+                    Logger.log(evt);
+                }
             }
         } catch (Exception e) {
             if (e instanceof SMException) {
@@ -1962,7 +1960,7 @@ public class JCESecurityModule extends BaseSMAdapter {
     /**
      * The clear Local Master Keys
      */
-    private final Map<Integer,SecretKey> lmks = new TreeMap<Integer,SecretKey>();
+    private final Map<Integer,SecretKey> lmks = new TreeMap<>();
     /**
      * A index for the LMK used to encrypt the PINs
      */
@@ -2156,6 +2154,58 @@ public class JCESecurityModule extends BaseSMAdapter {
         return data;
     }
 
+
+    @Override
+    public byte[] dataEncrypt (SecureDESKey bdk, byte[] clearText) throws SMException {
+        try {
+            byte[] ksnB = jceHandler.generateDESKey ((short) 128).getEncoded();
+            KeySerialNumber ksn = getKSN (ISOUtil.hexString(ksnB));
+            byte[] derivedKey = calculateDerivedKey (ksn, bdk, true, true);
+            Key dk = jceHandler.formDESKey ((short) 128, derivedKey);
+            byte[] cypherText = jceHandler.encryptData (lpack(clearText), dk);
+
+            ByteBuffer bb = ByteBuffer.allocate (cypherText.length + 32);
+            bb.put (ksnB);
+            bb.put (cypherText);
+            bb.put (hash8 (new byte[][]{ ksnB, cypherText, derivedKey }));
+            return bb.array();
+        } catch (JCEHandlerException e) {
+            throw new SMException (e);
+        }
+    }
+
+    @Override
+    public byte[] dataDecrypt (SecureDESKey bdk, byte[] cypherText) throws SMException {
+        try {
+            if (cypherText.length < 32) {
+                throw new SMException (
+                  "Invalid key block '" + ISOUtil.hexString (cypherText) + "'"
+                );
+            }
+            byte[] ksnB          = new byte[24];
+            byte[] encryptedData = new byte[cypherText.length - 32];
+            byte[] mac           = new byte[8];
+
+            System.arraycopy (cypherText,  0, ksnB, 0, 24);
+            System.arraycopy (cypherText, 24, encryptedData, 0, encryptedData.length);
+            System.arraycopy (cypherText, cypherText.length-8, mac, 0, 8);
+
+            KeySerialNumber ksn = getKSN (ISOUtil.hexString(ksnB));
+
+            byte[] derivedKey = calculateDerivedKey (ksn, bdk, true, true);
+            Key dk = jceHandler.formDESKey ((short) 128, derivedKey);
+            byte[] clearText = jceHandler.decryptData (encryptedData, dk);
+            byte[] generatedMac = hash8 (
+              new byte[][] { ksnB, encryptedData, derivedKey }
+            );
+            if (!Arrays.equals (mac, generatedMac))
+                throw new SMException ("Invalid cyphertext.");
+            return lunpack (clearText);
+        } catch (JCEHandlerException e) {
+            throw new SMException (e);
+        }
+   }
+
     private byte[] calculateDerivedKey(KeySerialNumber ksn, SecureDESKey bdk, boolean tdes, boolean dataEncryption)
             throws SMException
     {
@@ -2288,7 +2338,7 @@ public class JCESecurityModule extends BaseSMAdapter {
         return new KeySerialNumber(
                 s.substring(0, 6),
                 s.substring(6, 10),
-                s.substring(10)
+                s.substring(10, Math.min(s.length(), 20))
         );
     }
 
@@ -2367,4 +2417,42 @@ public class JCESecurityModule extends BaseSMAdapter {
                                 accountNumber, false);
     }
 
+    /**
+     * places a length indicator in a byte array.
+     * @param b the byte array
+     * @return a byte array with a two-byte length indicator
+     */
+    private byte[] lpack (byte[] b) {
+        int l = b.length;
+        int adjustedLen = ((l+9) >> 3) << 3;
+        byte[] d = new byte[adjustedLen];
+        System.arraycopy (b, 0, d, 2, l);
+        d[0] = (byte) ((l >> 8) & 0xFF);
+        d[1] = (byte) (l & 0xFF);
+        return d;
+    }
+    /**
+     * Unpacks a byte array packed by lPack
+     * into the former byte[]
+     * @param b packed byte array
+     * @return original (unpacked) byte array
+     */
+    private byte[] lunpack (byte[] b) {
+        int l = ((((int)b[0])&0xFF) << 8) | (((int)b[1])&0xFF);
+        byte[] d = new byte[l];
+        System.arraycopy (b,2,d,0,l);
+        return d;
+    }
+
+    private byte[] hash8 (byte[][] bb) throws SMException {
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA");
+            for (byte[] b : bb) {
+                md.update(b);
+            }
+            return Arrays.copyOf(md.digest(), 8);
+        } catch (NoSuchAlgorithmException e) {
+            throw new SMException (e);
+        }
+    }
 }

@@ -5,7 +5,9 @@ can be used as-is or used as a reference to write your own.
 
 include::participants/switch.adoc[]
 include::participants/check_fields.adoc[]
+include::participants/select_destination.adoc[]
 include::participants/query_host.adoc[]
 include::participants/send_response.adoc[]
 include::participants/jsparticipant.adoc[]
+include::participants/pause.adoc[]
 

@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2017 jPOS Software SRL
+ * Copyright (C) 2000-2018 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -114,7 +114,7 @@ public class CLI implements Runnable {
                 String p = prompt;
                 if (line == null) {
                     String s;
-                    while ((s = reader.readLine(p, null, null, null)) != null) {
+                    while ((s = reader.readLine(p)) != null) {
                         if (s.endsWith("\\")) {
                             s = s.substring(0, s.length() -1);
                             p = "";

@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2017 jPOS Software SRL
+ * Copyright (C) 2000-2018 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -41,7 +41,7 @@ public class BlockingQueueTest {
     @Test
     public void testClosedConstructor() throws Throwable {
         BlockingQueue.Closed closed = new BlockingQueue.Closed();
-        assertEquals("closed.getMessage()", "queue closed", closed.getMessage());
+        assertEquals("closed.getMessage()", "queue-closed", closed.getMessage());
     }
 
     @Test
@@ -277,7 +277,7 @@ public class BlockingQueueTest {
             blockingQueue.enqueue(Integer.valueOf(-32));
             fail("Expected Closed to be thrown");
         } catch (BlockingQueue.Closed ex) {
-            assertEquals("ex.getMessage()", "queue closed", ex.getMessage());
+            assertEquals("ex.getMessage()", "queue-closed", ex.getMessage());
             assertEquals("blockingQueue.getQueue().size()", 0, blockingQueue.getQueue().size());
         }
     }
@@ -356,7 +356,7 @@ public class BlockingQueueTest {
             blockingQueue.requeue("");
             fail("Expected Closed to be thrown");
         } catch (BlockingQueue.Closed ex) {
-            assertEquals("ex.getMessage()", "queue closed", ex.getMessage());
+            assertEquals("ex.getMessage()", "queue-closed", ex.getMessage());
             assertEquals("blockingQueue.getQueue().size()", 0, blockingQueue.getQueue().size());
         }
     }

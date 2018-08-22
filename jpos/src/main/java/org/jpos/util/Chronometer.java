@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2017 jPOS Software SRL
+ * Copyright (C) 2000-2018 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -30,7 +30,7 @@ public class Chronometer {
     }
 
     public long elapsed() {
-        return System.currentTimeMillis() - start.get();
+        return Math.max(System.currentTimeMillis() - start.get(), 0L);
     }
 
     public void reset () {
@@ -38,9 +38,10 @@ public class Chronometer {
     }
 
     public long lap() {
-        long elapsed = System.currentTimeMillis() - lap.get();
-        lap.set(System.currentTimeMillis());
-        return elapsed;
+        long now = System.currentTimeMillis();
+        long elapsed = now - lap.get();
+        lap.set(now);
+        return Math.max(elapsed, 0L);
     }
 
     @Override

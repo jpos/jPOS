@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2017 jPOS Software SRL
+ * Copyright (C) 2000-2018 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,9 +22,7 @@ import org.jdom2.Element;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 import org.jpos.iso.ISOUtil;
-import org.jpos.util.LogEvent;
-import org.jpos.util.Loggeable;
-import org.jpos.util.Profiler;
+import org.jpos.util.*;
 import org.jpos.rc.Result;
 
 import java.io.*;
@@ -32,9 +30,10 @@ import java.util.*;
 
 import static org.jpos.transaction.ContextConstants.*;
 
-public class Context implements Externalizable, Loggeable, Pausable {
-    private transient Map<String,Object> map; // transient map
-    private Map<String,Object> pmap;          // persistent (serializable) map
+public class Context implements Externalizable, Loggeable, Pausable, Cloneable {
+    private static final long serialVersionUID = -764389940148411076L;
+    private transient Map<Object,Object> map; // transient map
+    private Map<Object,Object> pmap;          // persistent (serializable) map
     private long timeout;
     private boolean resumeOnPause = false;
     private transient boolean trace = false;
@@ -46,10 +45,10 @@ public class Context implements Externalizable, Loggeable, Pausable {
     /**
      * puts an Object in the transient Map
      */
-    public void put (String key, Object value) {
+    public void put (Object key, Object value) {
         if (trace) {
             getProfiler().checkPoint(
-                String.format("   %s='%s' [%s]", key, value, Thread.currentThread().getStackTrace()[2])
+                String.format("%s='%s' [%s]", getKeyName(key), value, Caller.info(1))
             );
         }
         getMap().put (key, value);
@@ -60,34 +59,73 @@ public class Context implements Externalizable, Loggeable, Pausable {
     /**
      * puts an Object in the transient Map
      */
-    public void put (String key, Object value, boolean persist) {
+    public void put (Object key, Object value, boolean persist) {
         if (trace) {
             getProfiler().checkPoint(
-                String.format("P: %s='%s' [%s]", key, value, new Throwable().getStackTrace()[1].toString())
+                String.format("%s(P)='%s' [%s]", getKeyName(key), value, Caller.info(1))
             );
         }
         if (persist && value instanceof Serializable)
             getPMap().put (key, value);
         getMap().put(key, value);
     }
+
     /**
-     * Get
+     * Persists a transient entry
+     * @param key the key
      */
-    public Object get (String key) {
-        return getMap().get (key);
+    public void persist (Object key) {
+        Object value = get(key);
+        if (value instanceof Serializable)
+            getPMap().put (key, value);
     }
-    public Object get (String key, Object defValue) {
-        Object obj = getMap().get (key);
+
+    /**
+     * Evicts a persistent entry
+     * @param key the key
+     */
+    public void evict (Object key) {
+        getPMap().remove (key);
+    }
+
+    /**
+     * Get object instance from transaction context.
+     *
+     * @param <T> desired type of object instance
+     * @param key the key of object instance
+     * @return object instance if exist in context or {@code null} otherwise
+     */
+    public <T> T get(Object key) {
+        @SuppressWarnings("unchecked")
+        T obj = (T) getMap().get(key);
+        return obj;
+    }
+
+    /**
+     * Get object instance from transaction context.
+     *
+     * @param <T> desired type of object instance
+     * @param key the key of object instance
+     * @param defValue default value returned if there is no value in context
+     * @return object instance if exist in context or {@code defValue} otherwise
+     */
+    public <T> T get(Object key, T defValue) {
+        @SuppressWarnings("unchecked")
+        T obj = (T) getMap().get(key);
         return obj != null ? obj : defValue;
     }
+
     /**
      * Transient remove
      */
-    public synchronized Object remove (Object key) {
-        getPMap().remove (key);
-        return getMap().remove (key);
+    public synchronized <T> T remove(Object key) {
+        getPMap().remove(key);
+        @SuppressWarnings("unchecked")
+        T obj = (T) getMap().remove(key);
+        return obj;
     }
-    public String getString (String key) {
+
+    public String getString (Object key) {
         Object obj = getMap().get (key);
         if (obj instanceof String)
             return (String) obj;
@@ -153,33 +191,68 @@ public class Context implements Externalizable, Loggeable, Pausable {
             pmap.put (k, v);
         }
     }
+    @Override
+    public Context clone() {
+        try {
+            Context context = (Context) super.clone();
+            if (map != null) {
+                context.map = Collections.synchronizedMap (new LinkedHashMap<>());
+                context.map.putAll(map);
+            }
+            if (pmap != null) {
+                context.pmap = Collections.synchronizedMap (new LinkedHashMap<>());
+                context.pmap.putAll(pmap);
+            }
+            return context;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError(); // Should not happen
+        }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Context context = (Context) o;
+        return timeout == context.timeout &&
+          resumeOnPause == context.resumeOnPause &&
+          trace == context.trace &&
+          Objects.equals(map, context.map) &&
+          Objects.equals(pmap, context.pmap);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(map, pmap, timeout, resumeOnPause, trace);
+    }
+
     /**
      * @return persistent map
      */
-    private synchronized Map<String,Object> getPMap() {
+    private synchronized Map<Object,Object> getPMap() {
         if (pmap == null)
-            pmap = Collections.synchronizedMap (new LinkedHashMap<String,Object> ());
+            pmap = Collections.synchronizedMap (new LinkedHashMap<> ());
         return pmap;
     }
     /**
      * @return transient map
      */
-    public synchronized Map<String,Object> getMap() {
+    public synchronized Map<Object,Object> getMap() {
         if (map == null)
-            map = Collections.synchronizedMap (new LinkedHashMap<String,Object>());
+            map = Collections.synchronizedMap (new LinkedHashMap<>());
         return map;
     }
     protected void dumpMap (PrintStream p, String indent) {
         if (map == null)
             return;
 
-        for (Map.Entry<String,Object> entry : map.entrySet()) {
+        for (Map.Entry<Object,Object> entry : map.entrySet()) {
             dumpEntry(p, indent, entry);
         }
     }
 
-    protected void dumpEntry (PrintStream p, String indent, Map.Entry<String,Object> entry) {
-        String key = entry.getKey().toString();
+    protected void dumpEntry (PrintStream p, String indent, Map.Entry<Object,Object> entry) {
+        String key = getKeyName(entry.getKey());
         if (key.startsWith(".") || key.startsWith("*"))
             return; // see jPOS-63
 
@@ -191,7 +264,6 @@ public class Context implements Externalizable, Loggeable, Pausable {
             p.print(indent);
         } else if (value instanceof Element) {
             p.println("");
-            p.println(indent + "<![CDATA[");
             XMLOutputter out = new XMLOutputter(Format.getPrettyFormat());
             out.getFormat().setLineSeparator(System.lineSeparator());
             try {
@@ -200,7 +272,6 @@ public class Context implements Externalizable, Loggeable, Pausable {
                 ex.printStackTrace(p);
             }
             p.println("");
-            p.println(indent + "]]>");
         } else if (value instanceof byte[]) {
             byte[] b = (byte[]) value;
             p.println("");
@@ -210,12 +281,7 @@ public class Context implements Externalizable, Loggeable, Pausable {
             ((LogEvent) value).dump(p, indent);
             p.print(indent);
         } else if (value != null) {
-            try {
-                p.print(ISOUtil.normalize(value.toString(), true));
-            } catch (Exception e) {
-                p.println(e.getMessage());
-                p.print(indent);
-            }
+            LogUtil.dump(p, indent, value.toString());
         }
         p.println();
     }
@@ -283,7 +349,6 @@ public class Context implements Externalizable, Loggeable, Pausable {
     }
     public PausedTransaction getPausedTransaction() {
         return (PausedTransaction) get (PAUSED_TRANSACTION.toString());
-
     }
     public void setTimeout (long timeout) {
         this.timeout = timeout;
@@ -308,5 +373,9 @@ public class Context implements Externalizable, Loggeable, Pausable {
             getProfiler();
         this.trace = trace;
     }
-    static final long serialVersionUID = 6056487212221438338L;
+
+    private String getKeyName(Object keyObject) {
+        return keyObject instanceof String ? (String) keyObject :
+          Caller.shortClassName(keyObject.getClass().getName())+"."+keyObject.toString();
+    }
 }

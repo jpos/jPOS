@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2017 jPOS Software SRL
+ * Copyright (C) 2000-2018 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -46,6 +46,15 @@ public class TagsTest {
     public void testEscape () {
         Tags ts = new Tags("d\\,ef,abc\\\\");
         assertEquals("abc\\\\,d\\,ef", ts.toString());
+    }
+
+    @Test
+    public void testNullTags() {
+        Tags ts = new Tags((String) null);
+        assertEquals("size=0", 0, ts.size());
+        assertEquals("empty tags", new Tags(), ts);
+        assertEquals("empty tags \"\"", new Tags(""), ts);
+        assertEquals("empty tags (blank)", new Tags(" "), ts);
     }
 
     @Test

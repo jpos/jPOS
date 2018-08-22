@@ -1,6 +1,6 @@
 /*
  * jPOS Project [http://jpos.org]
- * Copyright (C) 2000-2017 jPOS Software SRL
+ * Copyright (C) 2000-2018 jPOS Software SRL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,7 +19,6 @@
 package org.jpos.transaction;
 
 import org.HdrHistogram.AtomicHistogram;
-import org.HdrHistogram.Histogram;
 import org.jdom2.Element;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
@@ -31,6 +30,8 @@ import org.jpos.util.*;
 import java.io.PrintStream;
 import java.io.Serializable;
 import java.util.*;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import java.time.Instant;
@@ -39,10 +40,10 @@ import java.time.ZoneId;
 
 import org.jpos.iso.ISOUtil;
 
-@SuppressWarnings("unchecked unused")
+@SuppressWarnings("unchecked")
 public class TransactionManager 
     extends QBeanSupport 
-    implements Runnable, TransactionConstants, TransactionManagerMBean, Loggeable
+    implements Runnable, TransactionConstants, TransactionManagerMBean, Loggeable, MetricsProvider
 {
     public static final String  HEAD       = "$HEAD";
     public static final String  TAIL       = "$TAIL";
@@ -61,11 +62,14 @@ public class TransactionManager
     protected Map<String,List<TransactionParticipant>> groups;
     private static final ThreadLocal<Serializable> tlContext = new ThreadLocal<Serializable>();
     private static final ThreadLocal<Long> tlId = new ThreadLocal<Long>();
-    private Metrics metrics = new Metrics(new AtomicHistogram(60000, 2));
+    private Metrics metrics;
+    private static ScheduledThreadPoolExecutor loadMonitorExecutor;
+    private static Map<TransactionParticipant,String> names = new HashMap<>();
 
     Space sp;
     Space psp;
-    Space isp; // input space
+    Space isp;  // real input space
+    Space iisp; // internal input space
     String queue;
     String tailLock;
     List<Thread> threads;
@@ -80,11 +84,15 @@ public class TransactionManager
     int maxSessions;
     int threshold;
     int maxActiveSessions;
-    AtomicInteger activeSessions = new AtomicInteger();
-    long head, tail;
+    private AtomicInteger activeSessions = new AtomicInteger();
+    private AtomicInteger pausedCounter = new AtomicInteger();
+    private AtomicInteger activeTransactions = new AtomicInteger(0);
+
+    volatile long head, tail;
     long retryInterval = 5000L;
     long retryTimeout  = 60000L;
     long pauseTimeout  = 0L;
+    boolean abortOnPauseTimeout = true;
     Runnable retryTask = null;
     TPS tps;
     final Timer timer = DefaultTimer.getTimer();
@@ -94,14 +102,19 @@ public class TransactionManager
         queue = cfg.get ("queue", null);
         if (queue == null)
             throw new ConfigurationException ("queue property not specified");
-        sp   = SpaceFactory.getSpace (cfg.get ("space"));
-        isp  = SpaceFactory.getSpace (cfg.get ("input-space", cfg.get ("space")));
+        sp  = SpaceFactory.getSpace (cfg.get ("space"));
+        isp = SpaceFactory.getSpace (cfg.get ("input-space", cfg.get ("space")));
+        if (isp == sp)
+            iisp = isp;
+        else {
+            iisp = sp;
+        }
         psp  = SpaceFactory.getSpace (cfg.get ("persistent-space", this.toString()));
         tail = initCounter (TAIL, cfg.getLong ("initial-tail", 1));
         head = Math.max (initCounter (HEAD, tail), tail);
         initTailLock ();
 
-        groups = new HashMap<String,List<TransactionParticipant>>();
+        groups = new HashMap<>();
         initParticipants (getPersist());
         initStatusListeners (getPersist());
     }
@@ -119,16 +132,38 @@ public class TransactionManager
         }
         if (psp.rdp (RETRY_QUEUE) != null)
             checkRetryTask();
+
+        if (maxSessions > sessions) {
+            loadMonitorExecutor = ConcurrentUtil.newScheduledThreadPoolExecutor();
+            loadMonitorExecutor.scheduleAtFixedRate(
+              new Thread(() -> {
+                  int outstandingTransactions = getOutstandingTransactions();
+                  int activeSessions = getActiveSessions();
+                  if (activeSessions < maxSessions && outstandingTransactions > threshold) {
+                      int count = Math.min(outstandingTransactions, maxSessions - activeSessions);
+                      for (int i=0; i<count; i++)
+                          new Thread(this).start();
+                      getLog().info("Created " + count + " additional sessions");
+                  }
+              }), 5, 1, TimeUnit.SECONDS)
+            ;
+        }
+        if (iisp != isp) {
+            new Thread(new InputQueueMonitor()).start();
+        }
     }
 
     @Override
     public void stopService () throws Exception {
         NameRegistrar.unregister(getName());
-
+        if (loadMonitorExecutor != null)
+            loadMonitorExecutor.shutdown();
         Thread[] tt = threads.toArray(new Thread[threads.size()]);
-        for (int i=0; i < tt.length; i++) {
-            isp.out(queue, Boolean.FALSE, 60 * 1000);
-        }
+        if (iisp != isp)
+            for (Object o=iisp.inp(queue); o != null; o=iisp.inp(queue))
+                isp.out(queue, o); // push back to replicated space
+        for (Thread t : tt)
+            iisp.out(queue, Boolean.FALSE, 60 * 1000);
         for (Thread thread : tt) {
             try {
                 thread.join (60*1000);
@@ -141,10 +176,10 @@ public class TransactionManager
         tps.stop();
     }
     public void queue (Serializable context) {
-        isp.out(queue, context);
+        iisp.out(queue, context);
     }
     public void push (Serializable context) {
-        isp.push(queue, context);
+        iisp.push(queue, context);
     }
     @SuppressWarnings("unused")
     public String getQueueName() {
@@ -171,6 +206,7 @@ public class TransactionManager
         LogEvent evt = null;
         Profiler prof;
         boolean paused;
+        boolean transactionActive;
         Thread thread = Thread.currentThread();
         if (threads.size() < maxSessions) {
             threads.add(thread);
@@ -184,29 +220,25 @@ public class TransactionManager
         while (running()) {
             Serializable context = null;
             prof = null;
+            evt = null;
             paused = false;
+            transactionActive = false;
             thread.setName (getName() + "-" + session + ":idle");
             int action = -1;
             try {
                 if (hasStatusListeners)
                     notifyStatusListeners (session, TransactionStatusEvent.State.READY, id, "", null);
 
-                Object obj = isp.in (queue, MAX_WAIT);
+                Object obj = iisp.in (queue, MAX_WAIT);
                 if (obj == Boolean.FALSE)
                     continue;   // stopService ``hack''
 
                 if (obj == null) {
-                    if (session > sessions && getActiveSessions() > sessions)
+                    if (session+1 > sessions && getActiveSessions() > sessions)
                         break; // we are an extra session, exit
-                    else
+                    else {
                         continue;
-                }
-                if (session < sessions && // only initial sessions create extra sessions
-                    maxSessions > sessions &&
-                    getActiveSessions() < maxSessions &&
-                    getOutstandingTransactions() > threshold)
-                {
-                        new Thread(this).start();
+                    }
                 }
                 if (!(obj instanceof Serializable)) {
                     getLog().error (
@@ -227,14 +259,17 @@ public class TransactionManager
                         abort   = pt.isAborting();
                         evt     = pt.getLogEvent();
                         prof    = pt.getProfiler();
+                        if (metrics != null && prof != null)
+                            metrics.record(getName(pt.getParticipant()) + "-resume", prof.getPartialInMillis());
                         if (prof != null)
                             prof.reenable();
+                        pausedCounter.decrementAndGet();
                     }
                 } else 
                     pt = null;
 
                 if (pt == null) {
-                    int running = getRunningSessions();
+                    int running = getActiveTransactions();
                     if (maxActiveSessions > 0 && running >= maxActiveSessions) {
                         getLog().warn (
                             Thread.currentThread().getName() 
@@ -249,7 +284,9 @@ public class TransactionManager
                     id = nextId ();
                     members = new ArrayList ();
                     iter = getParticipants (DEFAULT_GROUP).iterator();
+                    activeTransactions.incrementAndGet();
                 }
+                transactionActive = true;
                 if (debug) {
                     if (evt == null) {
                         evt = getLog().createLogEvent("debug",
@@ -275,17 +312,22 @@ public class TransactionManager
                         paused = true;
                         if (id % TIMER_PURGE_INTERVAL == 0)
                             timer.purge();
+                        pausedCounter.incrementAndGet();
                         break;
                     case PREPARED:
-                        setState (id, COMMITTING);
-                        setThreadLocal(id, context);
-                        commit (session, id, context, members, false, evt, prof);
-                        removeThreadLocal();
+                        if (members.size() > 0) {
+                            setState(id, COMMITTING);
+                            setThreadLocal(id, context);
+                            commit(session, id, context, members, false, evt, prof);
+                            removeThreadLocal();
+                        }
                         break;
                     case ABORTED:
-                        setThreadLocal(id, context);
-                        abort (session, id, context, members, false, evt, prof);
-                        removeThreadLocal();
+                        if (members.size() > 0) {
+                            setThreadLocal(id, context);
+                            abort(session, id, context, members, false, evt, prof);
+                            removeThreadLocal();
+                        }
                         break;
                     case RETRY:
                         psp.out (RETRY_QUEUE, context);
@@ -310,16 +352,13 @@ public class TransactionManager
                     evt.addMessage (t);
             } finally {
                 removeThreadLocal();
+                if (transactionActive && !paused)
+                    activeTransactions.decrementAndGet();
                 if (hasStatusListeners) {
                     notifyStatusListeners (
                         session,
                         paused ? TransactionStatusEvent.State.PAUSED : TransactionStatusEvent.State.DONE, 
                         id, "", context);
-                }
-                if (getInTransit() > Math.max(maxActiveSessions, activeSessions.get()) * 100) {
-                    if (evt == null)
-                        evt = getLog().createLogEvent ("warn");
-                    evt.addMessage("WARNING: IN-TRANSIT TOO HIGH");
                 }
                 if (evt != null && (action == PREPARED || action == ABORTED || (action == -1 && prof != null))) {
                     switch (action) {
@@ -333,18 +372,23 @@ public class TransactionManager
                             evt.setTag ("undefined");
                             break;
                     }
+                    if (getInTransit() > Math.max(maxActiveSessions, activeSessions.get()) * 100) {
+                        evt.addMessage("WARNING: IN-TRANSIT TOO HIGH");
+                    }
                     evt.addMessage (
-                        String.format (" in-transit=%d, head=%d, tail=%d, outstanding=%d, active-sessions=%d/%d, %s, elapsed=%dms",
-                            getInTransit(), head, tail, getOutstandingTransactions(),
+                        String.format (" in-transit=%d, head=%d, tail=%d, paused=%d, outstanding=%d, active-sessions=%d/%d, %s, elapsed=%dms",
+                            getInTransit(), head, tail, pausedCounter.get(), getOutstandingTransactions(),
                             getActiveSessions(), maxSessions,
                             tps.toString(), prof != null ? prof.getElapsedInMillis() : -1
                         )
                     );
                     if (prof != null)
                         evt.addMessage (prof);
-
-                    Logger.log (new FrozenLogEvent(evt));
-                    evt = null;
+                    try {
+                        Logger.log(new FrozenLogEvent(evt));
+                    } catch (Throwable t) {
+                        getLog().error(t);
+                    }
                 }
             }
         }
@@ -364,7 +408,7 @@ public class TransactionManager
     }
 
     public long getInTransit () {
-        return head - tail;
+        return activeTransactions.get();
     }
 
     @Override
@@ -381,6 +425,7 @@ public class TransactionManager
         retryInterval = cfg.getLong ("retry-interval", retryInterval);
         retryTimeout  = cfg.getLong ("retry-timeout", retryTimeout);
         pauseTimeout  = cfg.getLong ("pause-timeout", pauseTimeout);
+        abortOnPauseTimeout = cfg.getBoolean("abort-on-pause-timeout", true);
         maxActiveSessions  = cfg.getInt  ("max-active-sessions", 0);
         sessions = cfg.getInt ("sessions", 1);
         threshold = cfg.getInt ("threshold", sessions / 2);
@@ -394,6 +439,8 @@ public class TransactionManager
                 throw new ConfigurationException("max-active-sessions < max-sessions");
         }
         callSelectorOnAbort = cfg.getBoolean("call-selector-on-abort", true);
+        if (profiler)
+            metrics = new Metrics(new AtomicHistogram(cfg.getLong("metrics-highest-trackable-value", 60000), 2));
     }
     public void addListener (TransactionStatusListener l) {
         synchronized (statusListeners) {
@@ -441,15 +488,22 @@ public class TransactionManager
         tps.reset();
     }
 
-    public Map<String, Histogram> getMetrics() {
-        return metrics.metrics();
+    @Override
+    public Metrics getMetrics() {
+        return metrics;
     }
 
     @Override
     public void dump (PrintStream ps, String indent) {
-        if (tps != null)
-            ps.println(indent + tps.toString());
-        metrics.dump (ps, indent);
+        ps.printf ("%sin-transit=%d/%d, head=%d, tail=%d, paused=%d, outstanding=%d, active-sessions=%d/%d%s%n",
+          indent,
+          getActiveTransactions(), getInTransit(), head, tail, pausedCounter.get(), getOutstandingTransactions(),
+          getActiveSessions(), maxSessions,
+          (tps != null ? ", " + tps.toString() : "")
+        );
+        if (metrics != null) {
+            metrics.dump(ps, indent);
+        }
     }
 
     protected void commit
@@ -459,17 +513,17 @@ public class TransactionManager
             if (recover && p instanceof ContextRecovery) {
                 context = ((ContextRecovery) p).recover (id, context, true);
                 if (evt != null)
-                    evt.addMessage (" commit-recover: " + p.getClass().getName());
+                    evt.addMessage (" commit-recover: " + getName(p));
             }
             if (hasStatusListeners)
                 notifyStatusListeners (
-                    session, TransactionStatusEvent.State.COMMITING, id, p.getClass().getName(), context
+                    session, TransactionStatusEvent.State.COMMITING, id, getName(p), context
                 );
             commit (p, id, context);
             if (evt != null) {
-                evt.addMessage ("         commit: " + p.getClass().getName());
+                evt.addMessage ("         commit: " + getName(p));
                 if (prof != null)
-                    prof.checkPoint (" commit: " + p.getClass().getName());
+                    prof.checkPoint (" commit: " + getName(p));
             }
         }
     }
@@ -480,18 +534,18 @@ public class TransactionManager
             if (recover && p instanceof ContextRecovery) {
                 context = ((ContextRecovery) p).recover (id, context, false);
                 if (evt != null)
-                    evt.addMessage ("  abort-recover: " + p.getClass().getName());
+                    evt.addMessage ("  abort-recover: " + getName(p));
             }
             if (hasStatusListeners)
                 notifyStatusListeners (
-                    session, TransactionStatusEvent.State.ABORTING, id, p.getClass().getName(), context
+                    session, TransactionStatusEvent.State.ABORTING, id, getName(p), context
                 );
 
             abort(p, id, context);
             if (evt != null) {
-                evt.addMessage ("          abort: " + p.getClass().getName());
+                evt.addMessage ("          abort: " + getName(p));
                 if (prof != null)
-                    prof.checkPoint ("  abort: " + p.getClass().getName());
+                    prof.checkPoint ("  abort: " + getName(p));
             }
         }
     }
@@ -507,7 +561,8 @@ public class TransactionManager
         } catch (Throwable t) {
             getLog().warn ("PREPARE-FOR-ABORT: " + Long.toString (id), t);
         } finally {
-            metrics.record(p.getClass().getName() + "-prepare-for-abort", c.elapsed());
+            if (metrics != null)
+                metrics.record(getName(p) + "-prepare-for-abort", c.elapsed());
         }
         return ABORTED | NO_JOIN;
     }
@@ -521,7 +576,8 @@ public class TransactionManager
         } catch (Throwable t) {
             getLog().warn ("PREPARE: " + Long.toString (id), t);
         } finally {
-            metrics.record(p.getClass().getName() + "-prepare", c.elapsed());
+            if (metrics != null)
+                metrics.record(getName(p) + "-prepare", c.elapsed());
         }
         return ABORTED;
     }
@@ -535,7 +591,8 @@ public class TransactionManager
         } catch (Throwable t) {
             getLog().warn ("COMMIT: " + Long.toString (id), t);
         }
-        metrics.record(p.getClass().getName() + "-commit", c.elapsed());
+        if (metrics != null)
+            metrics.record(getName(p) + "-commit", c.elapsed());
     }
     protected void abort 
         (TransactionParticipant p, long id, Serializable context) 
@@ -547,7 +604,8 @@ public class TransactionManager
         } catch (Throwable t) {
             getLog().warn ("ABORT: " + Long.toString (id), t);
         }
-        metrics.record(p.getClass().getName() + "-abort", c.elapsed());
+        if (metrics != null)
+            metrics.record(getName(p) + "-abort", c.elapsed());
     }
     protected int prepare
         (int session, long id, Serializable context, List<TransactionParticipant> members, Iterator<TransactionParticipant> iter, boolean abort, LogEvent evt, Profiler prof)
@@ -566,19 +624,19 @@ public class TransactionManager
             if (abort) {
                 if (hasStatusListeners)
                     notifyStatusListeners (
-                        session, TransactionStatusEvent.State.PREPARING_FOR_ABORT, id, p.getClass().getName(), context
+                        session, TransactionStatusEvent.State.PREPARING_FOR_ABORT, id, getName(p), context
                     );
                 action = prepareForAbort (p, id, context);
 
                 if (evt != null && p instanceof AbortParticipant) {
-                    evt.addMessage("prepareForAbort: " + p.getClass().getName());
+                    evt.addMessage("prepareForAbort: " + getName(p));
                     if (prof != null)
-                        prof.checkPoint ("prepareForAbort: " + p.getClass().getName());
+                        prof.checkPoint ("prepareForAbort: " + getName(p));
                 }
             } else {
                 if (hasStatusListeners)
                     notifyStatusListeners (
-                        session, TransactionStatusEvent.State.PREPARING, id, p.getClass().getName(), context
+                        session, TransactionStatusEvent.State.PREPARING, id, getName(p), context
                     );
                 action = prepare (p, id, context);
 
@@ -587,20 +645,21 @@ public class TransactionManager
                 pause  = (action & PAUSE) == PAUSE;
                 if (evt != null) {
                     evt.addMessage ("        prepare: "
-                            + p.getClass().getName() 
+                            + getName(p)
                             + (abort ? " ABORTED" : " PREPARED")
                             + (retry ? " RETRY" : "")
                             + (pause ? " PAUSE" : "")
                             + ((action & READONLY) == READONLY ? " READONLY" : "")
                             + ((action & NO_JOIN) == NO_JOIN ? " NO_JOIN" : ""));
                     if (prof != null)
-                        prof.checkPoint ("prepare: " + p.getClass().getName());
+                        prof.checkPoint ("prepare: " + getName(p));
                 }
             }
             if ((action & READONLY) == 0) {
                 Chronometer c = new Chronometer();
                 snapshot (id, context);
-                metrics.record(p.getClass().getName() + "-snapshot", c.elapsed());
+                if (metrics != null)
+                    metrics.record(getName(p) + "-snapshot", c.elapsed());
             }
             if ((action & NO_JOIN) == 0) {
                 members.add (p);
@@ -612,11 +671,12 @@ public class TransactionManager
                     groupName = ((GroupSelector)p).select (id, context);
                 } catch (Exception e) {
                     if (evt != null) 
-                        evt.addMessage ("       selector: " + p.getClass().getName() + " " + e.getMessage());
+                        evt.addMessage ("       selector: " + getName(p) + " " + e.getMessage());
                     else 
-                        getLog().error ("       selector: " + p.getClass().getName() + " " + e.getMessage());
+                        getLog().error ("       selector: " + getName(p) + " " + e.getMessage());
                 } finally {
-                    metrics.record(p.getClass().getName() + "-selector", c.lap());
+                    if (metrics != null)
+                        metrics.record(getName(p) + "-selector", c.lap());
                 }
                 if (evt != null) {
                     evt.addMessage ("       selector: " + groupName);
@@ -646,7 +706,7 @@ public class TransactionManager
                     if (t > 0)
                         expirationMonitor = new PausedMonitor (pausable);
                     PausedTransaction pt = new PausedTransaction (
-                        this, id, members, iter, abort, expirationMonitor, prof, evt
+                        this, id, p, members, iter, abort, expirationMonitor, prof, evt
                     );
                     pausable.setPausedTransaction (pt);
                     if (expirationMonitor != null) {
@@ -664,8 +724,7 @@ public class TransactionManager
                 return PAUSE;
             }
         }
-        return members.isEmpty() ? NO_JOIN :
-                abort ? retry ? RETRY : ABORTED : PREPARED;
+        return abort ? retry ? RETRY : ABORTED : PREPARED;
     }
     protected List<TransactionParticipant> getParticipants (String groupName) {
         List<TransactionParticipant> participants = groups.get (groupName);
@@ -735,13 +794,19 @@ public class TransactionManager
         factory.setLogger (participant, e);
         QFactory.invoke (participant, "setTransactionManager", this, TransactionManager.class);
         factory.setConfiguration (participant, e);
+        String realm = e.getAttributeValue("realm");
+        if (realm != null && realm.trim().length() > 0)
+            realm = ":" + realm;
+        else
+            realm = "";
+        names.put(participant, Caller.shortClassName(participant.getClass().getName())+realm);
         return participant;
     }
 
     @Override
     public int getOutstandingTransactions() {
-        if (isp instanceof LocalSpace)
-            return ((LocalSpace)isp).size(queue);
+        if (iisp instanceof LocalSpace)
+            return ((LocalSpace) iisp).size(queue);
         return -1;
     }
     protected String getKey (String prefix, long id) {
@@ -917,7 +982,9 @@ public class TransactionManager
         @Override
         public void run() {
             cancel();
-            context.getPausedTransaction().forceAbort();
+            PausedTransaction paused = context.getPausedTransaction();
+            if (paused.getTransactionManager().abortOnPauseTimeout)
+                paused.forceAbort();
             context.resume();
         }
     }
@@ -929,10 +996,37 @@ public class TransactionManager
             while (running()) {
                 for (Serializable context; (context = (Serializable)psp.rdp (RETRY_QUEUE)) != null;) 
                 {
-                    isp.out (queue, context, retryTimeout);
+                    iisp.out (queue, context, retryTimeout);
                     psp.inp (RETRY_QUEUE);
                 }
                 ISOUtil.sleep(retryInterval);
+            }
+        }
+    }
+
+    public class InputQueueMonitor implements Runnable {
+        @Override
+        public void run() {
+            Thread.currentThread().setName (getName()+"-input-queue-monitor");
+            while (running()) {
+                while (getOutstandingTransactions() > getActiveSessions() + threshold && running()) {
+                    ISOUtil.sleep(100L);
+                }
+                if (!running())
+                    break;
+                try {
+                    Object context = isp.in(queue, 1000L);
+                    if (context != null) {
+                        if (!running()) {
+                            isp.out(queue, context); // place it back
+                            break;
+                        }
+                        iisp.out(queue, context);
+                    }
+                } catch (SpaceError e) {
+                    getLog().error(e);
+                    ISOUtil.sleep(1000L); // relax on error
+                }
             }
         }
     }
@@ -962,10 +1056,15 @@ public class TransactionManager
     public int getActiveSessions() {
         return activeSessions.intValue();
     }
-    public int getRunningSessions() {
-        return (int) (head - tail);
+    public int getPausedCounter() {
+        return pausedCounter.intValue();
     }
-
+    public int getActiveTransactions() {
+        return activeTransactions.intValue();
+    }
+    public int getMaxSessions() {
+        return maxSessions;
+    }
     public static Serializable getSerializable() {
         return tlContext.get();
     }
@@ -987,7 +1086,7 @@ public class TransactionManager
     }
     private void setThreadName (long id, String method, TransactionParticipant p) {
         Thread.currentThread().setName(
-            String.format("%s:%d %s %s %s", getName(), id, method, p.getClass().getName(), 
+            String.format("%s:%d %s %s %s", getName(), id, method, p.getClass().getName(),
                 LocalDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()))
         );
     }
@@ -998,5 +1097,10 @@ public class TransactionManager
     private void removeThreadLocal() {
         tlId.remove();
         tlContext.remove();
+    }
+
+    private String getName(TransactionParticipant p) {
+        String name;
+        return ((name = names.get(p)) != null) ? name : p.getClass().getName();
     }
 }
