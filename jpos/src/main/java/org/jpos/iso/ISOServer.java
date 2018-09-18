@@ -795,8 +795,23 @@ public class ISOServer extends Observable
     }
 
     public synchronized void fireEvent(EventObject event) {
-        for (ISOServerEventListener l : serverListeners)
-            l.handleISOServerEvent(event);
+        for (ISOServerEventListener l : serverListeners) {
+            try {
+                l.handleISOServerEvent(event);
+            }
+            catch (Exception ignore) {
+                /*
+                 * Don't want an exception from a handler to exit the loop or
+                 * let it bubble up.
+                 * If it bubbles up it can cause side effects like getting caught
+                 * in the throwable catch leading to server trying to listen on
+                 * the same port.
+                 * We don't want a side effect in jpos caused by custom user
+                 * handler code.
+                 */
+            }
+
+        }
     }
 }
 
