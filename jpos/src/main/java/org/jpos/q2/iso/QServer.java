@@ -41,6 +41,8 @@ import org.jpos.util.ThreadPool;
 
 import java.util.Iterator;
 import java.util.StringTokenizer;
+import java.util.concurrent.atomic.AtomicInteger;
+
 /**
  * ISO Server wrapper.
  *
@@ -63,7 +65,7 @@ public class QServer
     private String inQueue;
     private String outQueue;
     private String sendMethod;
-
+    AtomicInteger msgn = new AtomicInteger();
     public QServer () {
         super ();
     }
@@ -370,6 +372,31 @@ public class QServer
                         } catch (Exception e) {
                             getLog().warn("notify", e);
                         }
+                    }
+                }
+            }
+            else if ("RR".equals(sendMethod)) {
+                String channelNames = getISOChannelNames();
+                int i =0;
+                String[] channelName;
+                if (channelNames != null) {
+                    StringTokenizer tok = new StringTokenizer(channelNames, " ");
+                    channelName = new String[tok.countTokens()];
+                    while (tok.hasMoreTokens()) {
+                        channelName[i] = tok.nextToken();
+                        i++;
+                    }
+                    try {
+                        ISOChannel c = server.getISOChannel(channelName[msgn.incrementAndGet() % channelName.length]);
+                        if (c == null) {
+                            throw new ISOException("Server has no active connections");
+                        }
+                        if (!c.isConnected()) {
+                            throw new ISOException("Client disconnected");
+                        }
+                        c.send(m);
+                    } catch (Exception e) {
+                        getLog().warn("notify", e);
                     }
                 }
             }
