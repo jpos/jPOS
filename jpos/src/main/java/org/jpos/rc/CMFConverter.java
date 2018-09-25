@@ -39,6 +39,10 @@ public class CMFConverter implements IRCConverter, Configurable {
         } catch (IOException ignored) { }
     }
 
+    public CMFConverter() {
+        super();
+    }
+
     public CMFConverter(Configuration cfg) {
         this.cfg = cfg;
     }
