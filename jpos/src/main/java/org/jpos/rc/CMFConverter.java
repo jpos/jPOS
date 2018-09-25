@@ -39,9 +39,13 @@ public class CMFConverter implements IRCConverter, Configurable {
         } catch (IOException ignored) { }
     }
 
+    public CMFConverter(Configuration cfg) {
+        this.cfg = cfg;
+    }
+
     @Override
     public RC convert(IRC irc) {
-        String s = cfg.get(Long.toString(irc.irc()), null);
+        String s = cfg != null ? cfg.get(Long.toString(irc.irc()), null) : null;
         if (s != null) {
             return buildRC(s);
         } else if (rcs.containsKey(irc.irc()))
