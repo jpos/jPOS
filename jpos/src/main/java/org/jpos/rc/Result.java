@@ -79,7 +79,7 @@ public class Result implements Loggeable {
     }
     public boolean hasInhibit() {
         synchronized (entries) {
-            return entries.stream().anyMatch(e -> e.irc.inhibit());
+            return entries.stream().anyMatch(e -> e.irc != null && e.irc.inhibit());
         }
     }
 
