@@ -7,7 +7,7 @@ ext {
         jline: 'org.jline:jline:3.9.0',
         beanshell: 'org.apache-extras.beanshell:bsh:2.0b6',
         javatuples: 'org.javatuples:javatuples:1.2',
-        javassist: 'org.javassist:javassist:3.21.0-GA',
+        javassist: 'org.javassist:javassist:3.23.1-GA',
         osgi_core: 'org.osgi:org.osgi.core:6.0.0',
         mockito: 'org.mockito:mockito-all:1.10.19',
         fest_assert: 'org.easytesting:fest-assert:1.4',
