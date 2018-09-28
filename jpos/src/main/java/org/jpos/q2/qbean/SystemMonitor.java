@@ -268,7 +268,8 @@ public class SystemMonitor extends QBeanSupport
             NameRegistrar.getAsMap().forEach((key, value) -> {
                 if (value instanceof MetricsProvider) {
                     Metrics metrics = ((MetricsProvider) value).getMetrics();
-                    metrics.dumpHistograms(dir, key + "-");
+                    if (metrics != null)
+                        metrics.dumpHistograms(dir, key + "-");
                 }
             });
         }
