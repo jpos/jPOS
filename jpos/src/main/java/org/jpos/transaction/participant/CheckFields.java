@@ -161,7 +161,8 @@ public class CheckFields implements TransactionParticipant, Configurable {
                   Caller.info(), e.getMessage());
             }
             else
-                rc.warn(Caller.info(), e.getMessage());
+                rc.fail((m.hasAny("2", "14", "35", "45") ? CMF.INVALID_CARD_NUMBER : CMF.MISSING_FIELD),
+                  Caller.info(), e.getMessage());
         }
     }
 
