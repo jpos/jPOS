@@ -46,6 +46,7 @@ public class QueryHost implements TransactionParticipant, ISOResponseListener, C
     private boolean continuations;
     private Configuration cfg;
     private String request;
+    private boolean ignoreUnreachable;
 
     public QueryHost () {
         super();
@@ -61,11 +62,11 @@ public class QueryHost implements TransactionParticipant, ISOResponseListener, C
             ).FAIL();
         }
         String muxName = cfg.get ("mux." + ds , "mux." + ds);
-        MUX mux =  (MUX) NameRegistrar.getIfExists (muxName);
+        MUX mux =  NameRegistrar.getIfExists (muxName);
         if (mux == null)
             return result.fail(CMF.MISCONFIGURED_ENDPOINT, Caller.info(), "MUX '%s' not found", muxName).FAIL();
 
-        ISOMsg m = (ISOMsg) ctx.get (requestName);
+        ISOMsg m = ctx.get (requestName);
         if (m == null)
             return result.fail(CMF.INVALID_REQUEST, Caller.info(), "'%s' is null", requestName).FAIL();
 
@@ -81,6 +82,8 @@ public class QueryHost implements TransactionParticipant, ISOResponseListener, C
                     if (resp != null) {
                         ctx.put(responseName, resp);
                         return PREPARED | READONLY | NO_JOIN;
+                    } else if (ignoreUnreachable) {
+                        ctx.log(String.format ("MUX '%s' no response", muxName));
                     } else {
                         return result.fail(CMF.HOST_UNREACHABLE, Caller.info(), "'%s' does not respond", muxName).FAIL();
                     }
@@ -88,10 +91,12 @@ public class QueryHost implements TransactionParticipant, ISOResponseListener, C
             } catch (ISOException e) {
                 return result.fail(CMF.SYSTEM_ERROR, Caller.info(), e.getMessage()).FAIL();
             }
+        } else if (ignoreUnreachable) {
+            ctx.log(String.format ("MUX '%s' not connected", muxName));
         } else {
             return result.fail(CMF.HOST_UNREACHABLE, Caller.info(), "'%s' is not connected", muxName).FAIL();
         }
-
+        return PREPARED | NO_JOIN | READONLY;
     }
 
     public void responseReceived (ISOMsg resp, Object handBack) {
@@ -111,6 +116,7 @@ public class QueryHost implements TransactionParticipant, ISOResponseListener, C
         responseName = cfg.get ("response", ContextConstants.RESPONSE.toString());
         destination = cfg.get ("destination", ContextConstants.DESTINATION.toString());
         continuations = cfg.getBoolean("continuations", true);
+        ignoreUnreachable = cfg.getBoolean("ignore-host-unreachable", false);
     }
 
     protected boolean isConnected (MUX mux) {
