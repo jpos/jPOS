@@ -140,6 +140,10 @@ public class CheckFields implements TransactionParticipant, Configurable {
     }
 
     private void putCard (Context ctx, ISOMsg m, boolean mandatory, Set<String> validFields, Result rc) {
+        boolean hasCard = m.hasAny("2", "14", "35", "45");
+        if (!mandatory && !hasCard)
+            return; // nothing to do, card is optional
+
         try {
             Card.Builder cb = Card.builder().isomsg(m);
             if (ignoreCardValidation)
@@ -156,19 +160,18 @@ public class CheckFields implements TransactionParticipant, Configurable {
                 validFields.add("14");
         } catch (InvalidCardException e) {
             validFields.addAll(Arrays.asList("2", "14", "35", "45"));
-            if (mandatory) {
-                rc.fail((m.hasAny("2", "14", "35", "45") ? CMF.INVALID_CARD_NUMBER : CMF.MISSING_FIELD),
-                  Caller.info(), e.getMessage());
+            if (hasCard) {
+                rc.fail(CMF.INVALID_CARD_NUMBER, Caller.info(), e.getMessage());
+            } else if (mandatory) {
+                rc.fail(CMF.MISSING_FIELD, Caller.info(), e.getMessage());
             }
-            else
-                rc.fail((m.hasAny("2", "14", "35", "45") ? CMF.INVALID_CARD_NUMBER : CMF.MISSING_FIELD),
-                  Caller.info(), e.getMessage());
         }
     }
 
     private void putPCode (Context ctx, ISOMsg m, boolean mandatory, Set<String> validFields, Result rc) {
         if (m.hasField(3)) {
             String s = m.getString(3);
+
             validFields.add("3");
             if (PCODE_PATTERN.matcher(s).matches()) {
                 ctx.put(ContextConstants.PCODE.toString(), m.getString(3));
