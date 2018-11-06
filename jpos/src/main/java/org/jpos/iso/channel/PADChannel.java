@@ -101,9 +101,9 @@ public class PADChannel extends BaseChannel {
             }
             m.setHeader (header);
             m.setDirection(ISOMsg.INCOMING);
+            evt.addMessage (m);
             m = applyIncomingFilters (m, evt);
             m.setDirection(ISOMsg.INCOMING);
-            evt.addMessage (m);
             cnt[RX]++;
             setChanged();
             notifyObservers(m);
