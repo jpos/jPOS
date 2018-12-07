@@ -66,7 +66,7 @@ public class RotateLogListenerTest {
     @Test
     public void testConstructorThrowsNullPointerException() throws Throwable {
         try {
-            new RotateLogListener(null, 100, 1000, 100L);
+            new RotateLogListener(null, 100, 1000, 100L, false);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
             // xpected
