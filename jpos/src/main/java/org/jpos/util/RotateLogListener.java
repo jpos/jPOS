@@ -46,6 +46,7 @@ public class RotateLogListener extends SimpleLogListener
     long sleepTime;
     long maxSize;
     int  msgCount;
+    boolean rotateOnStartup = false;
     Rotate rotate;
     public static final int CHECK_INTERVAL = 100;
     public static final long DEFAULT_MAXSIZE = 10000000;
@@ -57,8 +58,8 @@ public class RotateLogListener extends SimpleLogListener
      * @param maxSize in bytes 
      */
 
-    public RotateLogListener 
-        (String logName, int sleepTime, int maxCopies, long maxSize) 
+    public RotateLogListener
+        (String logName, int sleepTime, int maxCopies, long maxSize, boolean rotateOnStartup)
         throws IOException
     {
         super();
@@ -66,6 +67,7 @@ public class RotateLogListener extends SimpleLogListener
         this.maxCopies = maxCopies;
         this.sleepTime = sleepTime * 1000;
         this.maxSize   = maxSize;
+        this.rotateOnStartup = rotateOnStartup;
         f = null;
         openLogFile ();
         Timer timer = DefaultTimer.getTimer();
@@ -75,11 +77,11 @@ public class RotateLogListener extends SimpleLogListener
         }
     }
 
-    public RotateLogListener 
-        (String logName, int sleepTime, int maxCopies) 
+    public RotateLogListener
+        (String logName, int sleepTime, int maxCopies)
         throws IOException
     {
-        this (logName, sleepTime, maxCopies, DEFAULT_MAXSIZE); 
+        this (logName, sleepTime, maxCopies, DEFAULT_MAXSIZE, false);
     }
 
     public RotateLogListener () {
@@ -106,9 +108,14 @@ public class RotateLogListener extends SimpleLogListener
         logName   = cfg.get     ("file");
         maxSize   = cfg.getLong ("maxsize");
         maxSize   = maxSize <= 0 ? DEFAULT_MAXSIZE : maxSize;
+        rotateOnStartup = cfg.getBoolean("rotate-on-startup", false);
 
         try {
-            openLogFile();
+            if (rotateOnStartup) {
+                logRotate(rotateOnStartup);
+            } else {
+                openLogFile();
+            }
         } catch (IOException e) {
             throw new ConfigurationException (e);
         }
@@ -138,12 +145,19 @@ public class RotateLogListener extends SimpleLogListener
             f.close();
         f = null;
     }
-    public synchronized void logRotate ()
+    public void logRotate ()
         throws IOException
     {
-        closeLogFile ();
-        super.close ();
-        setPrintStream (null);
+        logRotate(false);
+    }
+
+    public synchronized void logRotate(boolean isStartup)
+    throws IOException {
+        if (!isStartup) {
+            closeLogFile();
+            super.close();
+            setPrintStream(null);
+        }
         for (int i=maxCopies; i>0; ) {
             File dest   = new File (logName + "." + i);
             File source = new File (logName + (--i > 0 ? "." + i : ""));
@@ -152,6 +166,7 @@ public class RotateLogListener extends SimpleLogListener
         }
         openLogFile();
     }
+
     protected synchronized void logDebug (String msg) {
         if (p != null) {
             p.println ("<log realm=\"rotate-log-listener\" at=\""+new Date().toString() +"\">");
