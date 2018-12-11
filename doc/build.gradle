@@ -23,7 +23,7 @@ task a2x(dependsOn: copySources) {
   doLast {
     def inFile = "${buildDir}/docbook/source/master.adoc"
     def outFile = "${buildDir}/docbook/source/master.xml"
-    def cmd = "asciidoctor --safe -a docinfo -a lang=en -d book -b docbook5 -o ${outFile} ${inFile}"
+    def cmd = "asciidoctor -r asciidoctor-diagram --safe -a docinfo -a lang=en -d book -b docbook5 -o ${outFile} ${inFile}"
     def proc = cmd.execute(null, file(inFile).parentFile)
     proc.in.eachLine { line -> println line }
     proc.err.eachLine {line -> println 'ERROR: '+line }
@@ -32,7 +32,9 @@ task a2x(dependsOn: copySources) {
 }
 
 task createPdf(type: DocbookPdf) {
-    setDescription('Generates PDF docbook output.')
+    group = 'Toolchain'
+    description = 'Generates PDF docbook output.'
+    
     extension = 'fo'
     dependsOn a2x
     sourceFileName 'master.xml'
@@ -42,7 +44,8 @@ task createPdf(type: DocbookPdf) {
 }
 
 task createHtml(type: DocbookHtml) {
-    setDescription('Generates HTML docbook output.')
+    group = 'Toolchain'
+    description = 'Generates HTML docbook output.'
     dependsOn a2x,copyWebResources
     sourceFileName "master.xml"
     sourceDirectory "${buildDir}/docbook/source/" as File
@@ -50,7 +53,7 @@ task createHtml(type: DocbookHtml) {
     stylesheet "${projectDir}/src/xslt/html.xsl" as File
 }
 
-task viewHtml (dependsOn: createHtml, description: 'Open HTML docbook outout in default browser') {
+task viewHtml (dependsOn: createHtml, description: 'Open HTML docbook outout in default browser', group: 'Toolchain') {
   doLast {
     Class.forName("java.awt.Desktop").newInstance().browse(
         new File("${buildDir}/docbook/html", 'master.html').toURI())
@@ -58,7 +61,7 @@ task viewHtml (dependsOn: createHtml, description: 'Open HTML docbook outout in 
 }
 
 
-task viewPdf (dependsOn: createPdf , description: 'Open PDF docbook outout in default viewer') {
+task viewPdf (dependsOn: createPdf , description: 'Open PDF docbook outout in default viewer', group: 'Toolchain') {
   doLast {
     Class.forName("java.awt.Desktop").newInstance().browse(
         new File("${buildDir}/docbook/pdf", this.project.rootProject.name + '.pdf').toURI())
