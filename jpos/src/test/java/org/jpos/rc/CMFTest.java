@@ -67,7 +67,8 @@ public class CMFTest {
         c.setConfiguration(cfg);
 
         assertEquals("Standard RC", new SimpleRC("0000", "APPROVED"), c.convert(CMF.APPROVED));
-        assertEquals("ResourceBundle override", new SimpleRC("ZZZZ", "General Decline"), c.convert(CMF.GENERAL_DECLINE));
+        assertEquals("ResourceBundle override", new SimpleRC("ZZZZ", "General decline"), c.convert(CMF.GENERAL_DECLINE));
+        assertEquals("ResourceBundle override", new SimpleRC("9999", "Internal error"), c.convert(CMF.INTERNAL_ERROR));
         assertEquals("Configuration override", new SimpleRC("----", "jPOS error message"), c.convert(CMF.JPOS));
     }
 
