@@ -26,7 +26,7 @@ import org.jdom2.Element;
  * @version $Revision$ $Date$
  * @since jPOS 1.4.9
  */
-public interface XmlConfigurable {
+public interface XmlConfigurable extends CommonConfigurable {
    /**
     * @param e Configuration element
     * @throws ConfigurationException on error

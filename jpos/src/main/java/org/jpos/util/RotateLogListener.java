@@ -43,49 +43,18 @@ public class RotateLogListener extends SimpleLogListener
     implements Configurable, Destroyable
 {
     FileOutputStream f;
-    String logName;
-    int maxCopies;
-    long sleepTime;
-    long maxSize;
+    String logName = null;
+    int maxCopies = 0;
+    long sleepTime = 0;
+    long maxSize = 0;
     int  msgCount;
     boolean rotateOnStartup = false;
-    boolean useFilePattern = false;
     Rotate rotate;
     public static final int CHECK_INTERVAL = 100;
     public static final long DEFAULT_MAXSIZE = 10000000;
 
-    /**
-     * @param logName base log filename
-     * @param sleepTime switch logs every t seconds
-     * @param maxCopies number of old logs
-     * @param maxSize in bytes 
-     */
-
-    public RotateLogListener
-        (String logName, int sleepTime, int maxCopies, long maxSize, boolean rotateOnStartup)
-        throws IOException
-    {
-        super();
-        this.logName   = logName;
-        this.maxCopies = maxCopies;
-        this.sleepTime = sleepTime * 1000;
-        this.maxSize   = maxSize;
-        this.rotateOnStartup = rotateOnStartup;
-        f = null;
-        openLogFile ();
-        Timer timer = DefaultTimer.getTimer();
-        if (sleepTime != 0) {
-            timer.schedule(rotate = new Rotate(),
-                    this.sleepTime, this.sleepTime);
-        }
-    }
-
-    public RotateLogListener
-        (String logName, int sleepTime, int maxCopies)
-        throws IOException
-    {
-        this (logName, sleepTime, maxCopies, DEFAULT_MAXSIZE, false);
-    }
+    ScheduleTimer timer = null;
+    RotationAlgo rotationAlgo = null;
 
     public RotateLogListener () {
         super();
@@ -100,8 +69,7 @@ public class RotateLogListener extends SimpleLogListener
     *  <li>[count]   number of copies (default 0 == single copy)</li>
     *  <li>[maxsize] max log size in bytes (approx)</li>
     *  <li>[rotate-on-startup] Rotate file on q2 startup (default: false)</li>
-    *  <li>[use-file-pattern] Replace tokens in the file property (default: false)</li>
-    *  <li>[file-pattern-codes] Comma-delimited codes for positional token replacement (case sensitive)</li>
+    *  <li>[file-name-pattern] Comma-delimited codes for positional token replacement (case sensitive)</li>
     * </ul>
     *
     * <p>
@@ -123,18 +91,48 @@ public class RotateLogListener extends SimpleLogListener
     public void setConfiguration (Configuration cfg)
         throws ConfigurationException
     {
-        maxCopies = cfg.getInt  ("copies");
-        sleepTime = cfg.getInt  ("window") * 1000;
-        logName   = cfg.get     ("file");
-        maxSize   = cfg.getLong ("maxsize");
-        maxSize   = maxSize <= 0 ? DEFAULT_MAXSIZE : maxSize;
-        rotateOnStartup = cfg.getBoolean("rotate-on-startup", false);
-        useFilePattern = cfg.getBoolean("use-file-pattern", false);
-
-        if (useFilePattern) {
-            logName = fileNameFromPattern(logName, cfg.get("file-pattern-codes", null));
+        if (maxCopies == 0) {
+            maxCopies = cfg.getInt("copies", 0);
         }
 
+        if (sleepTime == 0) {
+            sleepTime = cfg.getInt("window") * 1000;
+        }
+
+        if (logName == null) {
+            logName = cfg.get ("file");
+        }
+
+        // This check allows derived classes to have a different default.
+        if (maxSize == 0) {
+            maxSize = cfg.getLong("maxsize");
+            maxSize = maxSize <= 0 ? DEFAULT_MAXSIZE : maxSize;
+        }
+
+        rotateOnStartup = cfg.getBoolean("rotate-on-startup", false);
+        String fileNamePattern = cfg.get("file-name-pattern", null);
+
+        if (fileNamePattern != null && !fileNamePattern.isEmpty()) {
+            logName = fileNameFromPattern(logName, fileNamePattern);
+        }
+
+        timer = () -> {
+            Timer timer = DefaultTimer.getTimer();
+            if (sleepTime != 0) timer.schedule (rotate = new Rotate(), sleepTime, sleepTime);
+        };
+
+        rotationAlgo = () -> {
+            for (int i=maxCopies; i>0; ) {
+                File dest   = new File (logName + "." + i);
+                File source = new File (logName + (--i > 0 ? "." + i : ""));
+                dest.delete();
+                source.renameTo(dest);
+            }
+        };
+
+    }
+    @Override
+    public void runPostConfiguration() throws ConfigurationException {
         try {
             if (rotateOnStartup) {
                 logRotate(rotateOnStartup);
@@ -144,16 +142,15 @@ public class RotateLogListener extends SimpleLogListener
         } catch (IOException e) {
             throw new ConfigurationException (e);
         }
-        Timer timer = DefaultTimer.getTimer();
-        if (sleepTime != 0) 
-            timer.schedule (rotate = new Rotate(), sleepTime, sleepTime);
+        timer.schedule();
     }
+
     public synchronized LogEvent log (LogEvent ev) {
         if (msgCount++ > CHECK_INTERVAL) {
             checkSize();
             msgCount = 0;
         }
-        
+
         return super.log (ev);
     }
     protected synchronized void openLogFile() throws IOException {
@@ -183,12 +180,7 @@ public class RotateLogListener extends SimpleLogListener
             super.close();
             setPrintStream(null);
         }
-        for (int i=maxCopies; i>0; ) {
-            File dest   = new File (logName + "." + i);
-            File source = new File (logName + (--i > 0 ? "." + i : ""));
-            dest.delete();
-            source.renameTo(dest);
-        }
+        rotationAlgo.rotate();
         openLogFile();
     }
 
@@ -200,38 +192,39 @@ public class RotateLogListener extends SimpleLogListener
         }
     }
     protected void checkSize() {
-        File logFile = new File (logName);
-        if (logFile.length() > maxSize) {
-            try {
-                logDebug ("maxSize ("+maxSize+") threshold reached");
-                logRotate();
-            } catch (IOException e) {
-                e.printStackTrace (System.err);
+        if (maxSize > 0) {
+            File logFile = new File(logName);
+            if (logFile.length() > maxSize) {
+                try {
+                    logDebug("maxSize (" + maxSize + ") threshold reached");
+                    logRotate();
+                } catch (IOException e) {
+                    e.printStackTrace(System.err);
+                }
             }
         }
     }
 
-    protected String fileNameFromPattern(String inFileName, String patternCodes) throws ConfigurationException {
+    protected String fileNameFromPattern(String inFileName, String patternCodes) {
         String[] computedValues;
 
-        if (patternCodes != null && !patternCodes.isEmpty()) {
-            String[] codes = patternCodes.split(",");
-            computedValues = new String[codes.length];
-            for (int i = 0; i < codes.length; i++) {
-                switch (codes[i]) {
-                    case "h":
-                        try {
-                            computedValues[i] = InetAddress.getLocalHost().getHostName();
-                        } catch (UnknownHostException e) {
-                            computedValues[i] = "#h";
-                        }
-                        break;
-                    default:
-                        break;
+        String[] codes = patternCodes.split(",");
+        computedValues = new String[codes.length];
+        for (int i = 0; i < codes.length; i++) {
+            if (codes[i].equals("h")) {
+                try {
+                    computedValues[i] = InetAddress.getLocalHost().getHostName();
+                } catch (UnknownHostException e) {
+                    computedValues[i] = "#h";
+                }
+            } else if (codes[i].startsWith("e")) {
+                try {
+                    String envVar = codes[i].substring(2, codes[i].length()-1);
+                    computedValues[i] = System.getenv(envVar);
+                } catch (Exception e) {
+                    computedValues[i] = "#e";
                 }
             }
-        } else {
-            throw new ConfigurationException("use-file-pattern is enabled, but file-pattern-codes is null");
         }
 
         return String.format(inFileName, (Object[]) computedValues);
@@ -255,5 +248,15 @@ public class RotateLogListener extends SimpleLogListener
         } catch (IOException e) {
             logDebug(e.getMessage());
         }
+    }
+
+    @FunctionalInterface
+    interface ScheduleTimer {
+        void schedule() throws ConfigurationException;
+    }
+
+    @FunctionalInterface
+    interface RotationAlgo {
+        void rotate();
     }
 }

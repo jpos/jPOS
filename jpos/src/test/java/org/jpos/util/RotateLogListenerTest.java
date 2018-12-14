@@ -24,6 +24,7 @@ import static org.junit.Assert.*;
 import java.io.File;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Map;
 import java.util.Properties;
 
 import org.jpos.core.Configuration;
@@ -42,7 +43,7 @@ public class RotateLogListenerTest {
     public void testCheckSizeThrowsNullPointerException() throws Throwable {
         RotateLogListener rotateLogListener = new RotateLogListener();
         try {
-            rotateLogListener.checkSize();
+            rotateLogListener.openLogFile();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
             assertNull("ex.getMessage()", ex.getMessage());
@@ -63,26 +64,6 @@ public class RotateLogListenerTest {
     public void testConstructor() throws Throwable {
         RotateLogListener rotateLogListener = new RotateLogListener();
         assertNotNull("rotateLogListener.p", rotateLogListener.p);
-    }
-
-    @Test
-    public void testConstructorThrowsNullPointerException() throws Throwable {
-        try {
-            new RotateLogListener(null, 100, 1000, 100L, false);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            // xpected
-        }
-    }
-
-    @Test
-    public void testConstructorThrowsNullPointerException1() throws Throwable {
-        try {
-            new RotateLogListener(null, 100, 1000);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            // expected
-        }
     }
 
     @Test
@@ -259,11 +240,9 @@ public class RotateLogListenerTest {
     }
 
     @Test
-    public void testuseFilePatternFalseThenNoReplacement() throws ConfigurationException {
+    public void testNoFileNamePatternThenNoReplacement() throws ConfigurationException {
         String logFileName = "%s-important-log";
         Properties config = new Properties();
-        config.setProperty("use-file-pattern", String.valueOf(false));
-        config.setProperty("file-pattern-codes", "h");
         RotateLogListener listener = createRotateLogListenerWithIsoDateFormat(logFileName, config);
         assertEquals(
                 logRotationTestDirectory.getDirectory().getAbsolutePath() + "/%s-important-log",
@@ -271,7 +250,18 @@ public class RotateLogListenerTest {
     }
 
     @Test
-    public void testUseFilePatternHostNameReplacement() throws ConfigurationException {
+    public void testEmptyFileNamePatternThenNoReplacement() throws ConfigurationException {
+        String logFileName = "%s-important-log";
+        Properties config = new Properties();
+        config.setProperty("file-name-pattern", "");
+        RotateLogListener listener = createRotateLogListenerWithIsoDateFormat(logFileName, config);
+        assertEquals(
+                logRotationTestDirectory.getDirectory().getAbsolutePath() + "/%s-important-log",
+                listener.logName);
+    }
+
+    @Test
+    public void testFileNamePatternHostNameReplacement() throws ConfigurationException {
         String hostname;
         try {
             hostname = InetAddress.getLocalHost().getHostName();
@@ -280,8 +270,7 @@ public class RotateLogListenerTest {
         }
         String logFileName = "%s-important-log";
         Properties config = new Properties();
-        config.setProperty("use-file-pattern", String.valueOf(true));
-        config.setProperty("file-pattern-codes", "h");
+        config.setProperty("file-name-pattern", "h");
 
         RotateLogListener listener = createRotateLogListenerWithIsoDateFormat(logFileName, config);
         assertEquals(
@@ -290,27 +279,13 @@ public class RotateLogListenerTest {
     }
 
     @Test
-    public void testExceptionThrownWhenUseFilePatternEnabledWithNullPattern() {
-        testFilePatternCodeProperty(null);
-    }
-
-    @Test
-    public void testExceptionThrownWhenUseFilePatternEnabledWithEmptyPattern() {
-        testFilePatternCodeProperty("");
-    }
-
-    private void testFilePatternCodeProperty(String pattern) {
-        String logFileName = "UseFilePattern";
-        Properties config = new Properties();
-        config.setProperty("use-file-pattern", String.valueOf(true));
-        if (pattern != null) {
-            config.setProperty("file-pattern-codes", pattern);
-        }
-        try {
-            createRotateLogListenerWithIsoDateFormat(logFileName, config);
-            fail("ConfigurationException expected");
-        } catch (ConfigurationException e) {
-            assertEquals("use-file-pattern is enabled, but file-pattern-codes is null", e.getMessage());
+    public void testEnvironmentCodeParsing() {
+        Map<String, String> env = System.getenv();
+        RotateLogListener listener = new RotateLogListener();
+        for (Map.Entry<String,String> entry : env.entrySet()) {
+            String replaced = listener.fileNameFromPattern("%s-log", "e{" + entry.getKey() + "}");
+            assertEquals(entry.getValue() + "-log", replaced);
+            System.out.println(replaced);
         }
     }
 
@@ -331,6 +306,7 @@ public class RotateLogListenerTest {
         }
         logRotationTestDirectory.allowNewFileCreation();
         listener.setConfiguration(new SimpleConfiguration(configuration));
+        listener.runPostConfiguration();
         return listener;
     }
 
