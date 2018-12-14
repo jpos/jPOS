@@ -22,6 +22,8 @@ import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
 
 import java.io.*;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -81,6 +83,9 @@ public class DailyLogListener extends RotateLogListener{
         setCompressionBufferSize(cfg.getInt("compression-buffer-size", 
                 DEF_BUFFER_SIZE));
         logName = prefix + suffix;
+        if (cfg.getBoolean("prepend-machine-name", false)) {
+            prependMachineNameToLogName(cfg.get("prepend-machine-name-separator", "-"));
+        }
         maxSize = cfg.getLong("maxsize",DEF_MAXSIZE);
         try {
             openLogFile();
@@ -523,4 +528,25 @@ public class DailyLogListener extends RotateLogListener{
         }
         
     }
+	
+    protected void prependMachineNameToLogName(String separator) throws ConfigurationException {
+        InetAddress localMachine;
+        String node = "";
+        try {
+            localMachine = InetAddress.getLocalHost();
+            node = localMachine.getHostName();
+            Path p1 = Paths.get(logName);
+            Path fileName = p1.getFileName();
+            node = node + separator + fileName.toString();
+            Path parent = p1.getParent();
+            logName = Paths.get(parent.toString(), node)
+                           .toString();
+
+        }
+        catch (UnknownHostException e1) {
+            throw new ConfigurationException("error prepending hostname to: " + logName, e1);
+        }
+
+    }
+	
 }
