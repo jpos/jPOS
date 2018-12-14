@@ -26,6 +26,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -47,6 +49,7 @@ public class RotateLogListener extends SimpleLogListener
     long maxSize;
     int  msgCount;
     boolean rotateOnStartup = false;
+    boolean useFilePattern = false;
     Rotate rotate;
     public static final int CHECK_INTERVAL = 100;
     public static final long DEFAULT_MAXSIZE = 10000000;
@@ -92,11 +95,28 @@ public class RotateLogListener extends SimpleLogListener
     * Configure this RotateLogListener<br>
     * Properties:<br>
     * <ul>
-    *  <li>file      base log filename
-    *  <li>[window]  in seconds (default 0 - never rotate)
-    *  <li>[count]   number of copies (default 0 == single copy)
-    *  <li>[maxsize] max log size in bytes (aprox)
+    *  <li>file      base log filename</li>
+    *  <li>[window]  in seconds (default 0 - never rotate)</li>
+    *  <li>[count]   number of copies (default 0 == single copy)</li>
+    *  <li>[maxsize] max log size in bytes (approx)</li>
+    *  <li>[rotate-on-startup] Rotate file on q2 startup (default: false)</li>
+    *  <li>[use-file-pattern] Replace tokens in the file property (default: false)</li>
+    *  <li>[file-pattern-codes] Comma-delimited codes for positional token replacement (case sensitive)</li>
     * </ul>
+    *
+    * <p>
+    * Currently supported file-pattern-codes:
+    * <ul>
+    *     <li>h - hostname lookup</li>
+    * </ul>
+    * </p>
+    * <p>
+    * When code replacement fails, the token will be replaced by the code preceded by a # to give an indication
+    * of what failed.  This type of failure will not result in a startup failure.
+    * </p>
+    * <p>
+    * file is expected to contain %s tokens for replacement when enabled, as expected by String.format.
+    * </p>
     * @param cfg Configuration 
     * @throws ConfigurationException
     */
@@ -109,6 +129,11 @@ public class RotateLogListener extends SimpleLogListener
         maxSize   = cfg.getLong ("maxsize");
         maxSize   = maxSize <= 0 ? DEFAULT_MAXSIZE : maxSize;
         rotateOnStartup = cfg.getBoolean("rotate-on-startup", false);
+        useFilePattern = cfg.getBoolean("use-file-pattern", false);
+
+        if (useFilePattern) {
+            logName = fileNameFromPattern(logName, cfg.get("file-pattern-codes", null));
+        }
 
         try {
             if (rotateOnStartup) {
@@ -185,6 +210,33 @@ public class RotateLogListener extends SimpleLogListener
             }
         }
     }
+
+    protected String fileNameFromPattern(String inFileName, String patternCodes) throws ConfigurationException {
+        String[] computedValues;
+
+        if (patternCodes != null && !patternCodes.isEmpty()) {
+            String[] codes = patternCodes.split(",");
+            computedValues = new String[codes.length];
+            for (int i = 0; i < codes.length; i++) {
+                switch (codes[i]) {
+                    case "h":
+                        try {
+                            computedValues[i] = InetAddress.getLocalHost().getHostName();
+                        } catch (UnknownHostException e) {
+                            computedValues[i] = "#h";
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+        } else {
+            throw new ConfigurationException("use-file-pattern is enabled, but file-pattern-codes is null");
+        }
+
+        return String.format(inFileName, (Object[]) computedValues);
+    }
+
     public class Rotate extends TimerTask {
         public void run() {
             try {

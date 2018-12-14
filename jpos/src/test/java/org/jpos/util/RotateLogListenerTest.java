@@ -22,6 +22,8 @@ import static org.jpos.util.LogFileTestUtils.getStringFromFile;
 import static org.junit.Assert.*;
 
 import java.io.File;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Properties;
 
 import org.jpos.core.Configuration;
@@ -234,7 +236,7 @@ public class RotateLogListenerTest {
     @Ignore("This feature doesn't work in Windows so we reverted the patch c94ff02f2")
     public void testLogRotateAbortsWhenCreatingNewFileFails() throws Exception {
         String logFileName = "RotateAbortsTestLog";
-        RotateLogListener listener = createRotateLogListenerWithIsoDateFormat(logFileName);
+        RotateLogListener listener = createRotateLogListenerWithIsoDateFormat(logFileName, null);
 
         listener.log(new LogEvent("Message 1"));
 
@@ -256,12 +258,77 @@ public class RotateLogListenerTest {
         assertFalse("Archive file should not exist", archiveFile.exists());
     }
 
+    @Test
+    public void testuseFilePatternFalseThenNoReplacement() throws ConfigurationException {
+        String logFileName = "%s-important-log";
+        Properties config = new Properties();
+        config.setProperty("use-file-pattern", String.valueOf(false));
+        config.setProperty("file-pattern-codes", "h");
+        RotateLogListener listener = createRotateLogListenerWithIsoDateFormat(logFileName, config);
+        assertEquals(
+                logRotationTestDirectory.getDirectory().getAbsolutePath() + "/%s-important-log",
+                listener.logName);
+    }
+
+    @Test
+    public void testUseFilePatternHostNameReplacement() throws ConfigurationException {
+        String hostname;
+        try {
+            hostname = InetAddress.getLocalHost().getHostName();
+        } catch (UnknownHostException e) {
+            hostname = "#h";
+        }
+        String logFileName = "%s-important-log";
+        Properties config = new Properties();
+        config.setProperty("use-file-pattern", String.valueOf(true));
+        config.setProperty("file-pattern-codes", "h");
+
+        RotateLogListener listener = createRotateLogListenerWithIsoDateFormat(logFileName, config);
+        assertEquals(
+                logRotationTestDirectory.getDirectory().getAbsolutePath() + "/" + hostname + "-important-log",
+                listener.logName);
+    }
+
+    @Test
+    public void testExceptionThrownWhenUseFilePatternEnabledWithNullPattern() {
+        testFilePatternCodeProperty(null);
+    }
+
+    @Test
+    public void testExceptionThrownWhenUseFilePatternEnabledWithEmptyPattern() {
+        testFilePatternCodeProperty("");
+    }
+
+    private void testFilePatternCodeProperty(String pattern) {
+        String logFileName = "UseFilePattern";
+        Properties config = new Properties();
+        config.setProperty("use-file-pattern", String.valueOf(true));
+        if (pattern != null) {
+            config.setProperty("file-pattern-codes", pattern);
+        }
+        try {
+            createRotateLogListenerWithIsoDateFormat(logFileName, config);
+            fail("ConfigurationException expected");
+        } catch (ConfigurationException e) {
+            assertEquals("use-file-pattern is enabled, but file-pattern-codes is null", e.getMessage());
+        }
+    }
+
     private RotateLogListener createRotateLogListenerWithIsoDateFormat(String logFileName) throws ConfigurationException {
+        return createRotateLogListenerWithIsoDateFormat(logFileName, null);
+    }
+
+    private RotateLogListener createRotateLogListenerWithIsoDateFormat(
+            String logFileName,
+            Properties customConfig) throws ConfigurationException {
         RotateLogListener listener = new RotateLogListener();
         Properties configuration = new Properties();
         configuration.setProperty("file", logRotationTestDirectory.getDirectory().getAbsolutePath() + "/" + logFileName);
         configuration.setProperty("copies", "10");
         configuration.setProperty("maxsize", "1000000");
+        if (customConfig != null) {
+            configuration.putAll(customConfig);
+        }
         logRotationTestDirectory.allowNewFileCreation();
         listener.setConfiguration(new SimpleConfiguration(configuration));
         return listener;
