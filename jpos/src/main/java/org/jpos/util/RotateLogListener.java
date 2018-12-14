@@ -116,33 +116,25 @@ public class RotateLogListener extends SimpleLogListener
             logName = fileNameFromPattern(logName, fileNamePattern);
         }
 
-        timer = () -> {
-            Timer timer = DefaultTimer.getTimer();
-            if (sleepTime != 0) timer.schedule (rotate = new Rotate(), sleepTime, sleepTime);
-        };
-
-        rotationAlgo = () -> {
-            for (int i=maxCopies; i>0; ) {
-                File dest   = new File (logName + "." + i);
-                File source = new File (logName + (--i > 0 ? "." + i : ""));
-                dest.delete();
-                source.renameTo(dest);
-            }
-        };
-
-    }
-    @Override
-    public void runPostConfiguration() throws ConfigurationException {
-        try {
-            if (rotateOnStartup) {
-                logRotate(rotateOnStartup);
-            } else {
-                openLogFile();
-            }
-        } catch (IOException e) {
-            throw new ConfigurationException (e);
+        if (timer == null) {
+            timer = () -> {
+                Timer timer = DefaultTimer.getTimer();
+                if (sleepTime != 0) timer.schedule(rotate = new Rotate(), sleepTime, sleepTime);
+            };
         }
-        timer.schedule();
+
+        if (rotationAlgo == null) {
+            rotationAlgo = () -> {
+                for (int i = maxCopies; i > 0; ) {
+                    File dest = new File(logName + "." + i);
+                    File source = new File(logName + (--i > 0 ? "." + i : ""));
+                    dest.delete();
+                    source.renameTo(dest);
+                }
+            };
+        }
+
+        runPostConfiguration();
     }
 
     public synchronized LogEvent log (LogEvent ev) {
@@ -258,5 +250,18 @@ public class RotateLogListener extends SimpleLogListener
     @FunctionalInterface
     interface RotationAlgo {
         void rotate();
+    }
+
+    private void runPostConfiguration() throws ConfigurationException {
+        try {
+            if (rotateOnStartup) {
+                logRotate(rotateOnStartup);
+            } else {
+                openLogFile();
+            }
+        } catch (IOException e) {
+            throw new ConfigurationException (e);
+        }
+        timer.schedule();
     }
 }

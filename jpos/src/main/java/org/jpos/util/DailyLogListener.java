@@ -70,17 +70,17 @@ public class DailyLogListener extends RotateLogListener{
     public void setConfiguration(Configuration cfg) throws ConfigurationException {
         maxSize = cfg.getLong("maxsize",DEF_MAXSIZE);
         sleepTime = cfg.getLong("sleeptime", DEF_WIN) * 1000;
+
         String suffix = cfg.get("suffix", DEF_SUFFIX), prefix = cfg.get("prefix");
         setSuffix(suffix);
         setPrefix(prefix);
         logName = prefix + suffix;
 
-        super.setConfiguration(cfg);
-
 		maxAge = cfg.getLong("maxage", DEF_MAXAGE);
 		if (maxAge > 0) {
 			maxAge *= 1000;
 		}
+
         DateFormat fmt = new SimpleDateFormat(cfg.get("date-format",DEF_DATE_FMT));
         setDateFmt(fmt);
 		deleteRegex = cfg.get("delete-regex", defaultDeleteRegex());
@@ -151,6 +151,8 @@ public class DailyLogListener extends RotateLogListener{
             setLastDate(getDateFmt().format(new Date()));
             compress(dest);
         };
+
+        super.setConfiguration(cfg);
     }
 
     private String defaultDeleteRegex() {

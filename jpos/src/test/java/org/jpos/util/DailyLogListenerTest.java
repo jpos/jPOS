@@ -445,7 +445,6 @@ public class DailyLogListenerTest {
         configuration.setProperty("maxsize", "1000000");
         logRotationTestDirectory.allowNewFileCreation();
         listener.setConfiguration(new SimpleConfiguration(configuration));
-        listener.runPostConfiguration();
         return listener;
     }
 

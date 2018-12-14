@@ -304,7 +304,6 @@ public class RotateLogListenerTest {
         }
         logRotationTestDirectory.allowNewFileCreation();
         listener.setConfiguration(new SimpleConfiguration(configuration));
-        listener.runPostConfiguration();
         return listener;
     }
 

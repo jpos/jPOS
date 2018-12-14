@@ -80,7 +80,6 @@ public class LoggerAdaptor extends QBeanSupport {
                 ((Configurable) listener).setConfiguration (
                     factory.getConfiguration (e)
                 );
-                ((Configurable) listener).runPostConfiguration ();
             } catch (ConfigurationException ex) {
                 throw new ConfigurationException (ex);
             }
@@ -88,7 +87,6 @@ public class LoggerAdaptor extends QBeanSupport {
         if (listener instanceof XmlConfigurable) {
             try {
                 ((XmlConfigurable) listener).setConfiguration (e);
-                ((XmlConfigurable) listener).runPostConfiguration ();
             } catch (ConfigurationException ex) {
                 throw new ConfigurationException (ex);
             }

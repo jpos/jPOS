@@ -25,7 +25,7 @@ package org.jpos.core;
  * @version $Revision$ $Date$
  * @since jPOS 1.2
  */
-public interface Configurable extends CommonConfigurable {
+public interface Configurable {
    /**
     * @param cfg Configuration object
     * @throws ConfigurationException
