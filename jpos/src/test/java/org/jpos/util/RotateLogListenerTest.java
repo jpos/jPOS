@@ -282,11 +282,9 @@ public class RotateLogListenerTest {
     public void testEnvironmentCodeParsing() {
         Map<String, String> env = System.getenv();
         RotateLogListener listener = new RotateLogListener();
-        for (Map.Entry<String,String> entry : env.entrySet()) {
-            String replaced = listener.fileNameFromPattern("%s-log", "e{" + entry.getKey() + "}");
-            assertEquals(entry.getValue() + "-log", replaced);
-            System.out.println(replaced);
-        }
+        Map.Entry<String, String> entry = env.entrySet().iterator().next();
+        String replaced = listener.fileNameFromPattern("%s-log", "e{" + entry.getKey() + "}");
+        assertEquals(entry.getValue() + "-log", replaced);
     }
 
     private RotateLogListener createRotateLogListenerWithIsoDateFormat(String logFileName) throws ConfigurationException {
