@@ -49,6 +49,7 @@ public class RotateLogListener extends SimpleLogListener
     long maxSize = 0;
     int  msgCount;
     boolean rotateOnStartup = false;
+    String fileNamePattern = null;
     Rotate rotate;
     public static final int CHECK_INTERVAL = 100;
     public static final long DEFAULT_MAXSIZE = 10000000;
@@ -110,7 +111,10 @@ public class RotateLogListener extends SimpleLogListener
         }
 
         rotateOnStartup = cfg.getBoolean("rotate-on-startup", false);
-        String fileNamePattern = cfg.get("file-name-pattern", null);
+
+        if (fileNamePattern == null) {
+            fileNamePattern = cfg.get("file-name-pattern", null);
+        }
 
         if (fileNamePattern != null && !fileNamePattern.isEmpty()) {
             logName = fileNameFromPattern(logName, fileNamePattern);

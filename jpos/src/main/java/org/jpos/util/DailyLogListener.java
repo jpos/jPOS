@@ -140,9 +140,17 @@ public class DailyLogListener extends RotateLogListener{
                     rotate = new DailyRotate(), cal.getTime(), sleepTime);
         };
 
+        // This is needed or else the closure will not capture the file name pattern.
+        fileNamePattern = cfg.get("file-name-pattern", null);
+
         rotationAlgo = () -> {
             String compressedSuffix = getSuffix() + getCompressedSuffix();
-            String newName = getPrefix()+getLastDate();
+            String newName;
+            if (fileNamePattern != null && !fileNamePattern.isEmpty()) {
+                newName = fileNameFromPattern(getPrefix(), fileNamePattern) + getLastDate();
+            } else {
+                newName = getPrefix() + getLastDate();
+            }
             int i=0;
             File dest = new File (newName+compressedSuffix), source = new File(logName);
             while (dest.exists())
