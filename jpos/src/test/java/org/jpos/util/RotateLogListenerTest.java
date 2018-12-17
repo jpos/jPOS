@@ -22,6 +22,9 @@ import static org.jpos.util.LogFileTestUtils.getStringFromFile;
 import static org.junit.Assert.*;
 
 import java.io.File;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.Map;
 import java.util.Properties;
 
 import org.jpos.core.Configuration;
@@ -40,7 +43,7 @@ public class RotateLogListenerTest {
     public void testCheckSizeThrowsNullPointerException() throws Throwable {
         RotateLogListener rotateLogListener = new RotateLogListener();
         try {
-            rotateLogListener.checkSize();
+            rotateLogListener.openLogFile();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
             assertNull("ex.getMessage()", ex.getMessage());
@@ -61,26 +64,6 @@ public class RotateLogListenerTest {
     public void testConstructor() throws Throwable {
         RotateLogListener rotateLogListener = new RotateLogListener();
         assertNotNull("rotateLogListener.p", rotateLogListener.p);
-    }
-
-    @Test
-    public void testConstructorThrowsNullPointerException() throws Throwable {
-        try {
-            new RotateLogListener(null, 100, 1000, 100L, false);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            // xpected
-        }
-    }
-
-    @Test
-    public void testConstructorThrowsNullPointerException1() throws Throwable {
-        try {
-            new RotateLogListener(null, 100, 1000);
-            fail("Expected NullPointerException to be thrown");
-        } catch (NullPointerException ex) {
-            // expected
-        }
     }
 
     @Test
@@ -234,7 +217,7 @@ public class RotateLogListenerTest {
     @Ignore("This feature doesn't work in Windows so we reverted the patch c94ff02f2")
     public void testLogRotateAbortsWhenCreatingNewFileFails() throws Exception {
         String logFileName = "RotateAbortsTestLog";
-        RotateLogListener listener = createRotateLogListenerWithIsoDateFormat(logFileName);
+        RotateLogListener listener = createRotateLogListenerWithIsoDateFormat(logFileName, null);
 
         listener.log(new LogEvent("Message 1"));
 
@@ -256,12 +239,69 @@ public class RotateLogListenerTest {
         assertFalse("Archive file should not exist", archiveFile.exists());
     }
 
+    @Test
+    public void testNoFileNamePatternThenNoReplacement() throws ConfigurationException {
+        String logFileName = "%s-important-log";
+        Properties config = new Properties();
+        RotateLogListener listener = createRotateLogListenerWithIsoDateFormat(logFileName, config);
+        assertEquals(
+                logRotationTestDirectory.getDirectory().getAbsolutePath() + "/%s-important-log",
+                listener.logName);
+    }
+
+    @Test
+    public void testEmptyFileNamePatternThenNoReplacement() throws ConfigurationException {
+        String logFileName = "%s-important-log";
+        Properties config = new Properties();
+        config.setProperty("file-name-pattern", "");
+        RotateLogListener listener = createRotateLogListenerWithIsoDateFormat(logFileName, config);
+        assertEquals(
+                logRotationTestDirectory.getDirectory().getAbsolutePath() + "/%s-important-log",
+                listener.logName);
+    }
+
+    @Test
+    public void testFileNamePatternHostNameReplacement() throws ConfigurationException {
+        String hostname;
+        try {
+            hostname = InetAddress.getLocalHost().getHostName();
+        } catch (UnknownHostException e) {
+            hostname = "#h";
+        }
+        String logFileName = "%s-important-log";
+        Properties config = new Properties();
+        config.setProperty("file-name-pattern", "h");
+
+        RotateLogListener listener = createRotateLogListenerWithIsoDateFormat(logFileName, config);
+        assertEquals(
+                logRotationTestDirectory.getDirectory().getAbsolutePath() + "/" + hostname + "-important-log",
+                listener.logName);
+    }
+
+    @Test
+    public void testEnvironmentCodeParsing() {
+        Map<String, String> env = System.getenv();
+        RotateLogListener listener = new RotateLogListener();
+        Map.Entry<String, String> entry = env.entrySet().iterator().next();
+        String replaced = listener.fileNameFromPattern("%s-log", "e{" + entry.getKey() + "}");
+        assertEquals(entry.getValue() + "-log", replaced);
+    }
+
     private RotateLogListener createRotateLogListenerWithIsoDateFormat(String logFileName) throws ConfigurationException {
+        return createRotateLogListenerWithIsoDateFormat(logFileName, null);
+    }
+
+    private RotateLogListener createRotateLogListenerWithIsoDateFormat(
+            String logFileName,
+            Properties customConfig) throws ConfigurationException {
         RotateLogListener listener = new RotateLogListener();
         Properties configuration = new Properties();
         configuration.setProperty("file", logRotationTestDirectory.getDirectory().getAbsolutePath() + "/" + logFileName);
         configuration.setProperty("copies", "10");
         configuration.setProperty("maxsize", "1000000");
+        if (customConfig != null) {
+            configuration.putAll(customConfig);
+        }
         logRotationTestDirectory.allowNewFileCreation();
         listener.setConfiguration(new SimpleConfiguration(configuration));
         return listener;
