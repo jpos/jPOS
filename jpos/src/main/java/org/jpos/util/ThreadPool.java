@@ -68,23 +68,23 @@ public class ThreadPool extends ThreadGroup implements LogSource, Loggeable, Con
                     Object job = pool.dequeue();
                     if (job instanceof Runnable) {
                         setName (name + "-running");
-                        synchronized (this) {
+                        synchronized (ThreadPool.this) {
                             currentJob = job;
+                            active++;
                         }
                         try {
-                            active++;
                             ((Runnable) job).run();
                             setName (name + "-idle");
                         } catch (Throwable t) {
                             setName (name + "-idle-"+t.getMessage());
                         }
-                        synchronized (this) {
+                        synchronized (ThreadPool.this) {
                             currentJob = null;
                             available++;
                             active--;
                         }
                     } else {
-                        synchronized (this) {
+                        synchronized (ThreadPool.this) {
                             currentJob = null;
                             available++;
                         }

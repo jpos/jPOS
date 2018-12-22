@@ -21,6 +21,7 @@ package org.jpos.util;
 import org.jpos.iso.ISOUtil;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -151,6 +152,27 @@ public class ThreadPoolTest {
         pool.close();
     }
 
+    @Test
+    @SuppressWarnings("deprecation")
+    public void testIssue196 () {
+        ThreadPool pool = new ThreadPool(10, 20, "thepool");
+
+        int available = pool.getAvailableCount();
+        int active = pool.getActiveCount();
+
+        long end = System.currentTimeMillis() + 10000L; // run for 10 seconds top
+        int i = 0;
+        while (active >= 0 && System.currentTimeMillis() < end) {
+            while (available > 0) {
+                pool.execute(() -> { });
+                available = pool.getAvailableCount();
+            }
+            available = pool.getAvailableCount();
+            active = pool.getActiveCount();
+        }
+        assertTrue ("Active should be >= 0 but it is " + active, active >= 0);
+    }
+
     private static class Job implements Runnable {
         private final int jobId;
         private final Object monitor;
@@ -185,5 +207,7 @@ public class ThreadPoolTest {
             }
         }
     }
+
+
 
 }
