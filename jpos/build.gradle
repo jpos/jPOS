@@ -1,4 +1,13 @@
-apply plugin: 'osgi'
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'biz.aQute.bnd:biz.aQute.bnd.gradle:4.1.0'
+    }
+}
+apply plugin: 'biz.aQute.bnd.builder'
+import aQute.bnd.gradle.Bundle
 
 dependencies {
     compile libraries.jdom
@@ -76,7 +85,7 @@ def bundleVendor='jPOS.org'
 def bundleDescription="jPOS ${project.version}"
 def bundleActivator = 'org.jpos.q2.Activator'
 def bundleImportPackage = 'javax.crypto,javax.crypto.spec,javax.management,javax.naming,javax.net.ssl,javax.security.cert,javax.swing,javax.swing.border,javax.swing.event,javax.swing.table,javax.swing.text,javax.swing.text.html,javax.swing.tree,javax.xml.transform,javax.xml.transform.stream,org.osgi.framework;version="[1.6,2)",org.osgi.framework.launch;version="[1.0,2)",org.w3c.dom,org.xml.sax,org.xml.sax.helpers,org.xml.sax.ext'
-def bundleExportPackage = 'org.jpos.bsh,org.jpos.core,org.jpos.iso,org.jpos.iso.channel,org.jpos.iso.filter,org.jpos.iso.gui,org.jpos.iso.header,org.jpos.iso.packager,org.jpos.iso.validator,org.jpos.q2,org.jpos.q2.cli,org.jpos.q2.install,org.jpos.q2.iso,org.jpos.q2.qbean,org.jpos.q2.security,org.jpos.q2.ui,org.jpos.security,org.jpos.security.jceadapter,org.jpos.space,org.jpos.tlv,org.jpos.transaction,org.jpos.transaction.gui,org.jpos.transaction.participant,org.jpos.ui,org.jpos.ui.action,org.jpos.ui.factory,org.jpos.util,org.jpos.emv'
+def bundleExportPackage = 'org.jpos.bsh,org.jpos.core,org.jpos.iso,org.jpos.iso.channel,org.jpos.iso.filter,org.jpos.iso.gui,org.jpos.iso.header,org.jpos.iso.packager,org.jpos.iso.validator,org.jpos.q2,org.jpos.q2.cli,org.jpos.q2.install,org.jpos.q2.iso,org.jpos.q2.qbean,org.jpos.q2.security,org.jpos.q2.ui,org.jpos.security,org.jpos.security.jceadapter,org.jpos.space,org.jpos.tlv,org.jpos.transaction,org.jpos.transaction.gui,org.jpos.transaction.participant,org.jpos.ui,org.jpos.ui.action,org.jpos.ui.factory,org.jpos.util,org.jpos.emv,org.jpos.core.handlers.exception,org.jpos.rc'
 def bundleLicense = 'http://jpos.org/license'
 def bundleDocURL = 'http://jpos.org/doc/javadoc/index.html'
 
@@ -92,62 +101,68 @@ jar () {
         attributes 'Implementation-Title': 'jPOS', 
                    'Implementation-Version': version,
                    'Automatic-Module-Name': moduleName
-        instruction 'Bundle-Vendor', bundleVendor
-        instruction 'Bundle-License', bundleLicense
-        instruction 'Bundle-DocURL', bundleDocURL
-        instruction 'Bundle-Description', bundleDescription
-        instruction 'Bundle-Activator', bundleActivator
-        instruction 'Import-Package', bundleImportPackage
-        instruction 'Export-Package', bundleExportPackage
-        // instruction 'Include-Resource', configurations.runtime.collect { 'lib/' + it.getName() }.join(' ')
-    } 
+    }
+    bnd (
+        'Bundle-Vendor': bundleVendor,
+        'Bundle-License': bundleLicense,
+        'Bundle-DocURL': bundleDocURL,
+        'Bundle-Description': bundleDescription,
+        'Bundle-Activator': bundleActivator,
+        'Import-Package': bundleImportPackage,
+        'Export-Package': bundleExportPackage
+    )
 }
 
-task q2jar (type: Jar) {
+task q2jar (type: Bundle) {
     dependsOn jar
     classifier = 'q2'
     from sourceSets.main.output.classesDirs, sourceSets.main.output.resourcesDir
-    manifest = osgiManifest {
-        classesDir = new File(buildDir, 'classes/java/main') // sourceSets.main.output.classesDir deprecated
-        classpath = sourceSets.main.runtimeClasspath
+    manifest {
+        // classesDir = new File(buildDir, 'classes/java/main') // sourceSets.main.output.classesDir deprecated
+        // classpath = sourceSets.main.runtimeClasspath
         def manifestClasspath = configurations.runtime.collect { "lib/" + it.getName() }.join(' ') 
         attributes 'Implementation-Title': 'jPOS', 
                    'Implementation-Version': version,
                    'Automatic-Module-Name': moduleName,
                    'Main-Class': 'org.jpos.q2.Q2',
                    'Class-Path': manifestClasspath
-        // instruction 'Include-Resource', configurations.runtime.collect { 'lib/' + it.getName() }.join(' ')
-        instruction 'Bundle-Vendor', bundleVendor
-        instruction 'Bundle-Description', bundleDescription + ' full'
-        // instruction 'Include-Resource', configurations.runtime.collect { 'lib/' + it.getName() }.join(' ')
-        instruction 'Bundle-Activator', bundleActivator
-        instruction 'Import-Package', bundleImportPackage
-        instruction 'Export-Package', bundleExportPackage
-        instruction 'Bundle-ClassPath', '.,' + configurations.runtime.collect { "lib/" + it.getName() }.join(',')
-    } 
+    }
+    bnd (
+        'Bundle-Vendor': bundleVendor,
+        'Bundle-License': bundleLicense,
+        'Bundle-DocURL': bundleDocURL,
+        'Bundle-Description': bundleDescription,
+        'Bundle-Activator': bundleActivator,
+        'Import-Package': bundleImportPackage,
+        'Export-Package': bundleExportPackage,
+        'Include-Resource': configurations.runtime.collect { '-lib/' + it.getName() }.join(' ')
+    )
 }
 
-task bundleFull (type: Jar) {
+task bundleFull (type: Bundle) {
     dependsOn jar
     classifier = 'bundle-full'
     from sourceSets.main.output.classesDirs, sourceSets.main.output.resourcesDir
-    manifest = osgiManifest {
-        classesDir = new File(buildDir, 'classes/java/main') // sourceSets.main.output.classesDir deprecated
-        classpath = sourceSets.main.runtimeClasspath
+    manifest {
+        // classesDir = new File(buildDir, 'classes/java/main') // sourceSets.main.output.classesDir deprecated
+        // classpath = sourceSets.main.runtimeClasspath
         def manifestClasspath = configurations.runtime.collect { "lib/" + it.getName() }.join(' ') 
         attributes 'Implementation-Title': 'jPOS', 
                    'Implementation-Version': version,
+                   'Automatic-Module-Name': moduleName,
                    'Main-Class': 'org.jpos.q2.Q2',
                    'Class-Path': manifestClasspath
-        // instruction 'Include-Resource', configurations.runtime.collect { 'lib/' + it.getName() }.join(' ')
-        instruction 'Bundle-Vendor', bundleVendor
-        instruction 'Bundle-Description', bundleDescription + ' full'
-        // instruction 'Include-Resource', configurations.runtime.collect { 'lib/' + it.getName() }.join(' ')
-        instruction 'Bundle-Activator', bundleActivator
-        instruction 'Import-Package', bundleImportPackage
-        instruction 'Export-Package', bundleExportPackage
-        instruction 'Bundle-ClassPath', '.,' + configurations.runtime.collect { "lib/" + it.getName() }.join(',')
-    } 
+    }
+    bnd (
+            'Bundle-Vendor': bundleVendor,
+            'Bundle-License': bundleLicense,
+            'Bundle-DocURL': bundleDocURL,
+            'Bundle-Description': bundleDescription,
+            'Bundle-Activator': bundleActivator,
+            'Import-Package': bundleImportPackage,
+            'Export-Package': bundleExportPackage,
+            'Include-Resource': configurations.runtime.collect { '-lib/' + it.getName() }.join(' ')
+    )
     into ('lib') {
         from configurations.runtime {
             exclude 'org.osgi.core*.jar'
