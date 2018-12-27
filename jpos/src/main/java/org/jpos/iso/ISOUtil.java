@@ -1497,15 +1497,16 @@ public class ISOUtil {
         return bd.movePointLeft(pow).doubleValue();
     }
 
+
     /**
-     * Converts a string[] into a comma-delimited String.
+     * Converts a string[] or multiple strings into one comma-delimited String.
      *
      * Takes care of escaping commas using a backlash
      * @see org.jpos.iso.ISOUtil#commaDecode(String)
      * @param ss string array to be comma encoded
      * @return comma encoded string
      */
-    public static String commaEncode (String[] ss) {
+    public static String commaEncode (String... ss) {
         StringBuilder sb = new StringBuilder();
         for (String s : ss) {
             if (sb.length() > 0)
