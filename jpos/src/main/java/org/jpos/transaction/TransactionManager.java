@@ -60,11 +60,13 @@ public class TransactionManager
     public static final long    MAX_WAIT = 15000L;
     public static final long    TIMER_PURGE_INTERVAL = 1000L;
     protected Map<String,List<TransactionParticipant>> groups;
+    private Set<Destroyable> destroyables = new HashSet<>();
     private static final ThreadLocal<Serializable> tlContext = new ThreadLocal<Serializable>();
     private static final ThreadLocal<Long> tlId = new ThreadLocal<Long>();
     private Metrics metrics;
     private static ScheduledThreadPoolExecutor loadMonitorExecutor;
     private static Map<TransactionParticipant,String> names = new HashMap<>();
+
 
     Space sp;
     Space psp;
@@ -154,7 +156,7 @@ public class TransactionManager
     }
 
     @Override
-    public void stopService () throws Exception {
+    public void stopService () {
         NameRegistrar.unregister(getName());
         if (loadMonitorExecutor != null)
             loadMonitorExecutor.shutdown();
@@ -174,6 +176,13 @@ public class TransactionManager
             }
         }
         tps.stop();
+        for (Destroyable destroyable : destroyables) {
+            try {
+                destroyable.destroy();
+            } catch (Throwable t) {
+                getLog().warn (t);
+            }
+        }
     }
     public void queue (Serializable context) {
         iisp.out(queue, context);
@@ -800,6 +809,9 @@ public class TransactionManager
         else
             realm = "";
         names.put(participant, Caller.shortClassName(participant.getClass().getName())+realm);
+        if (participant instanceof Destroyable) {
+            destroyables.add((Destroyable) participant);
+        }
         return participant;
     }
 
