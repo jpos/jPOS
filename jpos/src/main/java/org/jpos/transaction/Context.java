@@ -31,7 +31,7 @@ import java.util.*;
 import static org.jpos.transaction.ContextConstants.*;
 
 public class Context implements Externalizable, Loggeable, Pausable, Cloneable {
-    private static final long serialVersionUID = -764389940148411076L;
+    private static final long serialVersionUID = -6441115276439791245L;
     private transient Map<Object,Object> map; // transient map
     private Map<Object,Object> pmap;          // persistent (serializable) map
     private long timeout;
@@ -153,16 +153,17 @@ public class Context implements Externalizable, Loggeable, Pausable, Cloneable {
      * @param timeout timeout
      * @return object (null on timeout)
      */
-    public synchronized Object get (Object key, long timeout) {
-        Object obj;
+    @SuppressWarnings("unchecked")
+    public synchronized <T> T get (Object key, long timeout) {
+        T obj;
         long now = System.currentTimeMillis();
         long end = now + timeout;
-        while ((obj = map.get (key)) == null &&
+        while ((obj = (T) map.get (key)) == null &&
                 (now = System.currentTimeMillis()) < end)
         {
             try {
                 this.wait (end - now);
-            } catch (InterruptedException e) { }
+            } catch (InterruptedException ignored) { }
         }
         return obj;
     }
