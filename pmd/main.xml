@@ -2,7 +2,7 @@
 <pmd xmlns="http://pmd.sourceforge.net/report/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/report/2.0.0 http://pmd.sourceforge.net/report_2_0_0.xsd"
-    version="6.8.0" timestamp="2018-12-31T23:38:32.932">
+    version="6.8.0" timestamp="2019-01-02T22:17:31.510">
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/bsh/BSHAction.java">
 <violation beginline="30" endline="30" begincolumn="15" endcolumn="16" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.bsh" class="BSHAction" variable="ui" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
 Found non-transient, non-static member. Please mark as transient or provide accessors.
@@ -7566,20 +7566,23 @@ Found non-transient, non-static member. Please mark as transient or provide acce
 <violation beginline="38" endline="38" begincolumn="21" endcolumn="33" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.transaction" class="Context" variable="resumeOnPause" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
 Found non-transient, non-static member. Please mark as transient or provide accessors.
 </violation>
-<violation beginline="160" endline="161" begincolumn="16" endcolumn="56" rule="AssignmentInOperand" ruleset="Error Prone" package="org.jpos.transaction" class="Context" method="get" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#assignmentinoperand" priority="3">
+<violation beginline="99" endline="99" begincolumn="27" endcolumn="37" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.transaction" class="Context" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;unchecked&quot; appears 4 times in this file; the first occurrence is on line 99
+</violation>
+<violation beginline="161" endline="162" begincolumn="16" endcolumn="56" rule="AssignmentInOperand" ruleset="Error Prone" package="org.jpos.transaction" class="Context" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#assignmentinoperand" priority="3">
 Avoid assignments in operands
 </violation>
-<violation beginline="160" endline="160" begincolumn="16" endcolumn="56" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.transaction" class="Context" method="get" variable="obj" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'obj' (lines '160'-'160').
+<violation beginline="161" endline="161" begincolumn="16" endcolumn="56" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.transaction" class="Context" variable="obj" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'obj' (lines '161'-'161').
 </violation>
-<violation beginline="160" endline="168" begincolumn="16" endcolumn="56" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.transaction" class="Context" method="get" variable="now" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'now' (lines '160'-'168').
+<violation beginline="161" endline="169" begincolumn="16" endcolumn="56" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.transaction" class="Context" variable="now" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'now' (lines '161'-'169').
 </violation>
-<violation beginline="195" endline="210" begincolumn="12" endcolumn="5" rule="CloneThrowsCloneNotSupportedException" ruleset="Error Prone" package="org.jpos.transaction" class="Context" method="clone" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#clonethrowsclonenotsupportedexception" priority="3">
+<violation beginline="196" endline="211" begincolumn="12" endcolumn="5" rule="CloneThrowsCloneNotSupportedException" ruleset="Error Prone" package="org.jpos.transaction" class="Context" method="clone" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#clonethrowsclonenotsupportedexception" priority="3">
 clone() method should throw CloneNotSupportedException
 </violation>
-<violation beginline="245" endline="250" begincolumn="13" endcolumn="39" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.transaction" class="Context" method="dumpMap" variable="entry" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'UR'-anomaly for variable 'entry' (lines '245'-'250').
+<violation beginline="246" endline="251" begincolumn="13" endcolumn="39" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.transaction" class="Context" method="dumpMap" variable="entry" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'UR'-anomaly for variable 'entry' (lines '246'-'251').
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/transaction/PausedTransaction.java">
