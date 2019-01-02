@@ -962,6 +962,26 @@
           length="64"
           name="Network Name"
           class="org.jpos.iso.IFB_LLCHAR" />
+      <isofield
+              id="26"
+              length="16"
+              name="Devide ID/IMEI"
+              class="org.jpos.iso.IFB_NUMERIC" />
+      <isofield
+              id="27"
+              length="64"
+              name="Geolocation"
+              class="org.jpos.iso.IFB_LLCHAR" />
+      <isofield
+              id="28"
+              length="64"
+              name="Cardholder Identification Data"
+              class="org.jpos.iso.IFB_LLCHAR" />
+      <isofield
+              id="29"
+              length="64"
+              name="Invoice"
+              class="org.jpos.iso.IFB_LLCHAR" />
   </isofieldpackager>
   <isofield
       id="114"
