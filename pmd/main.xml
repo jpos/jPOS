@@ -2,7 +2,7 @@
 <pmd xmlns="http://pmd.sourceforge.net/report/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/report/2.0.0 http://pmd.sourceforge.net/report_2_0_0.xsd"
-    version="6.8.0" timestamp="2019-01-02T22:30:02.062">
+    version="6.8.0" timestamp="2019-01-07T23:01:30.343">
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/bsh/BSHAction.java">
 <violation beginline="30" endline="30" begincolumn="15" endcolumn="16" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.bsh" class="BSHAction" variable="ui" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
 Found non-transient, non-static member. Please mark as transient or provide accessors.
@@ -9406,25 +9406,25 @@ Found 'DD'-anomaly for variable 'v' (lines '147'-'149').
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/util/RealmLogFilter.java">
-<violation beginline="62" endline="62" begincolumn="25" endcolumn="37" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.util" class="RealmLogFilter" variable="enabledRealms" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
+<violation beginline="80" endline="80" begincolumn="25" endcolumn="37" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.util" class="RealmLogFilter" variable="enabledRealms" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
 Found non-transient, non-static member. Please mark as transient or provide accessors.
 </violation>
-<violation beginline="63" endline="63" begincolumn="25" endcolumn="38" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.util" class="RealmLogFilter" variable="disabledRealms" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
+<violation beginline="81" endline="81" begincolumn="25" endcolumn="38" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.util" class="RealmLogFilter" variable="disabledRealms" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
 Found non-transient, non-static member. Please mark as transient or provide accessors.
 </violation>
-<violation beginline="64" endline="64" begincolumn="25" endcolumn="36" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.util" class="RealmLogFilter" variable="realmsMissed" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
+<violation beginline="82" endline="82" begincolumn="25" endcolumn="36" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.util" class="RealmLogFilter" variable="realmsMissed" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
 Found non-transient, non-static member. Please mark as transient or provide accessors.
 </violation>
-<violation beginline="65" endline="65" begincolumn="18" endcolumn="25" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.util" class="RealmLogFilter" variable="lastDump" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
+<violation beginline="83" endline="83" begincolumn="18" endcolumn="25" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.util" class="RealmLogFilter" variable="lastDump" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
 Found non-transient, non-static member. Please mark as transient or provide accessors.
 </violation>
-<violation beginline="66" endline="66" begincolumn="18" endcolumn="29" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.util" class="RealmLogFilter" variable="dumpInterval" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
+<violation beginline="84" endline="84" begincolumn="18" endcolumn="29" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.util" class="RealmLogFilter" variable="dumpInterval" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
 Found non-transient, non-static member. Please mark as transient or provide accessors.
 </violation>
-<violation beginline="70" endline="71" begincolumn="9" endcolumn="58" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="RealmLogFilter" method="log" variable="realm" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'realm' (lines '70'-'71').
+<violation beginline="88" endline="89" begincolumn="9" endcolumn="58" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="RealmLogFilter" method="log" variable="realm" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'realm' (lines '88'-'89').
 </violation>
-<violation beginline="94" endline="94" begincolumn="97" endcolumn="97" rule="EmptyStatementNotInLoop" ruleset="Error Prone" package="org.jpos.util" class="RealmLogFilter" method="setConfiguration" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#emptystatementnotinloop" priority="3">
+<violation beginline="112" endline="112" begincolumn="97" endcolumn="97" rule="EmptyStatementNotInLoop" ruleset="Error Prone" package="org.jpos.util" class="RealmLogFilter" method="setConfiguration" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#emptystatementnotinloop" priority="3">
 An empty statement (semicolon) not part of a loop
 </violation>
 </file>
