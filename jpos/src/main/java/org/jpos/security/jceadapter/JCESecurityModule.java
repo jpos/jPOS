@@ -1284,7 +1284,8 @@ public class JCESecurityModule extends BaseSMAdapter {
      * @return forms an SecureDESKey from two clear components
      * @throws SMException
      */
-    SecureDESKey formKEYfromThreeClearComponents (short keyLength, String keyType,
+    @Override
+    public SecureDESKey formKEYfromThreeClearComponents (short keyLength, String keyType,
             String clearComponent1HexString, String clearComponent2HexString, String clearComponent3HexString) throws SMException {
         SecureDESKey secureDESKey;
         LogEvent evt = new LogEvent(this, "s-m-operation");
