@@ -2,7 +2,7 @@
 <pmd xmlns="http://pmd.sourceforge.net/report/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/report/2.0.0 http://pmd.sourceforge.net/report_2_0_0.xsd"
-    version="6.8.0" timestamp="2019-01-09T03:18:42.632">
+    version="6.8.0" timestamp="2019-01-09T19:10:05.675">
 <file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/bsh/BSHActionTest.java">
 <violation beginline="36" endline="36" begincolumn="9" endcolumn="60" rule="UnnecessaryBooleanAssertion" ruleset="Error Prone" package="org.jpos.bsh" class="BSHActionTest" method="testActionPerformed" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#unnecessarybooleanassertion" priority="3">
 assertTrue(true) or similar statements are unnecessary
