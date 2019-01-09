@@ -1892,8 +1892,7 @@ public class BaseSMAdapter
     }
 
     @Override
-    public SecureDESKey formKEYfromThreeClearComponents(short keyLength, String keyType, String clearComponent1HexString, String clearComponent2HexString, String clearComponent3HexString) throws SMException {
+    public SecureDESKey formKEYfromClearComponents(short keyLength, String keyType, String... clearComponents) throws SMException {
         throw  new SMException("Operation not supported in: " + this.getClass().getName());
     }
 }
-

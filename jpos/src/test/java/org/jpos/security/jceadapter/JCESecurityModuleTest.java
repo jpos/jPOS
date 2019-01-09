@@ -1706,4 +1706,30 @@ public class JCESecurityModuleTest {
         Assert.assertArrayEquals(tpk.getKeyBytes(), conv.getKeyBytes());
     }
 
+    @Test
+    public void testFormKeyFromClearComponent() throws Throwable {
+        SecureDESKey sdk = jcesecmod
+          .formKEYfromThreeClearComponents((short) 128,
+            "ZPK",
+            "E09B073B4007541FAB76B04370451031",
+            "4CBF5D51EA8525EF045EFED6E386D9D9",
+            "00000000000000000000000000000000");
+        Assert.assertArrayEquals("1: KeyCheck was " + ISOUtil.hexString(sdk.getKeyCheckValue()), ISOUtil.hex2byte("40D522"), sdk.getKeyCheckValue());
+
+        sdk = jcesecmod
+          .formKEYfromClearComponents((short) 128,
+            "ZPK",
+            "E09B073B4007541FAB76B04370451031",
+            "4CBF5D51EA8525EF045EFED6E386D9D9",
+            "00000000000000000000000000000000");
+        Assert.assertArrayEquals("2: KeyCheck was " + ISOUtil.hexString(sdk.getKeyCheckValue()), ISOUtil.hex2byte("40D522"), sdk.getKeyCheckValue());
+
+        sdk = jcesecmod
+          .formKEYfromClearComponents((short) 128,
+            "ZPK",
+            "E09B073B4007541FAB76B04370451031",
+            "4CBF5D51EA8525EF045EFED6E386D9D9");
+        Assert.assertArrayEquals("3: KeyCheck was " + ISOUtil.hexString(sdk.getKeyCheckValue()), ISOUtil.hex2byte("40D522"), sdk.getKeyCheckValue());
+    }
+
 }

@@ -1329,12 +1329,9 @@ public interface SMAdapter {
      * The corresponding LMK is determined from the keyType
      * @param keyLength e.g. LENGTH_DES, LENGTH_DES3_2, LENGTH_DES3_3, ..
      * @param keyType possible values are those defined in the SecurityModule inteface. e.g., ZMK, TMK,...
-     * @param clearComponent1HexString HexString containing the first component
-     * @param clearComponent2HexString HexString containing the second component
-     * @param clearComponent3HexString HexString containing the second component
+     * @param clearComponent up to three HexStrings containing key components
      * @return forms an SecureDESKey from two clear components
      * @throws SMException
      */
-    SecureDESKey formKEYfromThreeClearComponents (short keyLength, String keyType,
-                                                  String clearComponent1HexString, String clearComponent2HexString, String clearComponent3HexString) throws SMException;
+    SecureDESKey formKEYfromClearComponents (short keyLength, String keyType, String... clearComponent) throws SMException;
 }

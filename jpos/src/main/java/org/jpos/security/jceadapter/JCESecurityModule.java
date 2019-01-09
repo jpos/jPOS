@@ -1284,16 +1284,15 @@ public class JCESecurityModule extends BaseSMAdapter {
      * @return forms an SecureDESKey from two clear components
      * @throws SMException
      */
-    @Override
-    public SecureDESKey formKEYfromThreeClearComponents (short keyLength, String keyType,
+    SecureDESKey formKEYfromThreeClearComponents (short keyLength, String keyType,
             String clearComponent1HexString, String clearComponent2HexString, String clearComponent3HexString) throws SMException {
         SecureDESKey secureDESKey;
         LogEvent evt = new LogEvent(this, "s-m-operation");
-        
+
         try {
             byte[] clearComponent1 = ISOUtil.hex2byte(clearComponent1HexString);
-            byte[] clearComponent2 = ISOUtil.hex2byte(clearComponent2HexString);
-            byte[] clearComponent3 = ISOUtil.hex2byte(clearComponent3HexString);
+            byte[] clearComponent2 = clearComponent2HexString != null ? ISOUtil.hex2byte(clearComponent2HexString) : new byte[keyLength >> 3];
+            byte[] clearComponent3 = clearComponent3HexString != null ? ISOUtil.hex2byte(clearComponent3HexString) : new byte[keyLength >> 3];
             byte[] clearKeyBytes = ISOUtil.xor(ISOUtil.xor(clearComponent1, clearComponent2),
                     clearComponent3);
             Key clearKey = jceHandler.formDESKey(keyLength, clearKeyBytes);
@@ -1315,6 +1314,21 @@ public class JCESecurityModule extends BaseSMAdapter {
         }
         return  secureDESKey;
     }
+
+    @Override
+    public SecureDESKey formKEYfromClearComponents (short keyLength, String keyType, String... components)
+      throws SMException
+    {
+        if (components.length < 1 || components.length > 3)
+            throw new SMException("Invalid number of clear key components");
+        String[] s = new String[3];
+        int i=0;
+        for (String component : components)
+            s[i++] = component;
+
+        return formKEYfromThreeClearComponents(keyLength, keyType, s[0], s[1], s[2]);
+    }
+
 
     /**
      * Calculates a key check value over a clear key
