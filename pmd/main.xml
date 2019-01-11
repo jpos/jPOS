@@ -2,7 +2,7 @@
 <pmd xmlns="http://pmd.sourceforge.net/report/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/report/2.0.0 http://pmd.sourceforge.net/report_2_0_0.xsd"
-    version="6.8.0" timestamp="2019-01-09T19:36:07.163">
+    version="6.8.0" timestamp="2019-01-11T22:13:59.307">
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/bsh/BSHAction.java">
 <violation beginline="30" endline="30" begincolumn="15" endcolumn="16" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.bsh" class="BSHAction" variable="ui" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
 Found non-transient, non-static member. Please mark as transient or provide accessors.
@@ -2097,14 +2097,23 @@ Found 'DU'-anomaly for variable 'padded' (lines '55'-'69').
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/PosDataCode.java">
-<violation beginline="28" endline="28" begincolumn="36" endcolumn="44" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.iso" class="PosDataCode$ReadingMethod" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;Unknown&quot; appears 4 times in this file; the first occurrence is on line 28
+<violation beginline="34" endline="34" begincolumn="36" endcolumn="44" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.iso" class="PosDataCode$ReadingMethod" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;Unknown&quot; appears 4 times in this file; the first occurrence is on line 34
 </violation>
-<violation beginline="143" endline="143" begincolumn="20" endcolumn="20" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.iso" class="PosDataCode" variable="b" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
+<violation beginline="174" endline="174" begincolumn="20" endcolumn="20" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.iso" class="PosDataCode" variable="b" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
 Found non-transient, non-static member. Please mark as transient or provide accessors.
 </violation>
-<violation beginline="217" endline="222" begincolumn="17" endcolumn="35" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="PosDataCode" method="dump" variable="m" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'UR'-anomaly for variable 'm' (lines '217'-'222').
+<violation beginline="250" endline="255" begincolumn="17" endcolumn="35" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="PosDataCode" method="dump" variable="m" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'UR'-anomaly for variable 'm' (lines '250'-'255').
+</violation>
+<violation beginline="298" endline="301" begincolumn="26" endcolumn="44" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="PosDataCode" method="setFlags" variable="flag" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'UR'-anomaly for variable 'flag' (lines '298'-'301').
+</violation>
+<violation beginline="301" endline="301" begincolumn="92" endcolumn="99" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="PosDataCode" method="setFlags" variable="offset" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'offset' (lines '301'-'301').
+</violation>
+<violation beginline="301" endline="313" begincolumn="92" endcolumn="99" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="PosDataCode" method="setFlags" variable="offset" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'offset' (lines '301'-'313').
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/RightPadder.java">

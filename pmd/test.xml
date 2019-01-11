@@ -2,7 +2,7 @@
 <pmd xmlns="http://pmd.sourceforge.net/report/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/report/2.0.0 http://pmd.sourceforge.net/report_2_0_0.xsd"
-    version="6.8.0" timestamp="2019-01-09T19:36:36.972">
+    version="6.8.0" timestamp="2019-01-11T22:14:34.935">
 <file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/bsh/BSHActionTest.java">
 <violation beginline="36" endline="36" begincolumn="9" endcolumn="60" rule="UnnecessaryBooleanAssertion" ruleset="Error Prone" package="org.jpos.bsh" class="BSHActionTest" method="testActionPerformed" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#unnecessarybooleanassertion" priority="3">
 assertTrue(true) or similar statements are unnecessary
@@ -2020,6 +2020,14 @@ The String literal &quot;new &quot; appears 4 times in this file; the first occu
 </violation>
 <violation beginline="147" endline="147" begincolumn="62" endcolumn="67" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.iso" class="PerformanceTesting" method="runPack" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
 The String literal &quot;old &quot; appears 4 times in this file; the first occurrence is on line 147
+</violation>
+</file>
+<file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/iso/PosDataCodeTest.java">
+<violation beginline="23" endline="23" begincolumn="17" endcolumn="19" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.iso" class="PosDataCodeTest" variable="pdc" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
+Found non-transient, non-static member. Please mark as transient or provide accessors.
+</violation>
+<violation beginline="32" endline="39" begincolumn="21" endcolumn="53" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="PosDataCodeTest" method="constructorWithParams" variable="pdc" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'pdc' (lines '32'-'39').
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/iso/RightPadder2Test.java">
