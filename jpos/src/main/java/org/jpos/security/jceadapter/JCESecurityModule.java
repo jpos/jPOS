@@ -1197,7 +1197,7 @@ public class JCESecurityModule extends BaseSMAdapter {
      * @return clear key componenet
      * @throws SMException
      */
-    String generateClearKeyComponent (short keyLength) throws SMException {
+    public String generateClearKeyComponent (short keyLength) throws SMException {
         String clearKeyComponenetHexString;
         SimpleMsg[] cmdParameters =  {
             new SimpleMsg("parameter", "Key Length", keyLength)
