@@ -18,21 +18,23 @@
 
 package org.jpos.iso;
 
+import java.lang.ref.WeakReference;
+
 public class ISOServerClientDisconnectEvent extends java.util.EventObject {
-    private String channelName;
-    public ISOServerClientDisconnectEvent(Object source, String channelName) {
+    private WeakReference<ISOChannel> channelRef;
+    public ISOServerClientDisconnectEvent(Object source,  ISOChannel channel) {
         super(source);
-        this.channelName = channelName;
+        this.channelRef = new WeakReference(channel);
     }
 
-    public String getChannelName() {
-        return channelName;
+    public ISOChannel getISOChannel() {
+        return channelRef.get();
     }
 
     @Override
     public String toString() {
         return "ISOServerClientDisconnectEvent{" +
-          "channelName='" + channelName + '\'' +
+          "channel='" + getISOChannel() + '\'' +
           ", source=" + source +
           '}';
     }

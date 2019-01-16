@@ -18,21 +18,23 @@
 
 package org.jpos.iso;
 
+import java.lang.ref.WeakReference;
+
 public class ISOServerAcceptEvent extends java.util.EventObject {
-    private String channelName;
-    public ISOServerAcceptEvent(ISOServer source, String channelName) {
+    private WeakReference<ISOChannel> channelRef;
+    public ISOServerAcceptEvent(ISOServer source, ISOChannel channel) {
         super(source);
-        this.channelName = channelName;
+        this.channelRef = new WeakReference(channel);
     }
 
-    public String getChannelName() {
-        return channelName;
+    public ISOChannel getISOChannel() {
+        return channelRef.get();
     }
 
     @Override
     public String toString() {
         return "ISOServerAcceptEvent{" +
-          "channelName='" + channelName + '\'' +
+          "channel=" + getISOChannel() +
           ", source=" + source +
           '}';
     }
