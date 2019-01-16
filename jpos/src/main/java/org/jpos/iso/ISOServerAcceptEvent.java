@@ -19,7 +19,21 @@
 package org.jpos.iso;
 
 public class ISOServerAcceptEvent extends java.util.EventObject {
-    public ISOServerAcceptEvent(Object source) {
+    private String channelName;
+    public ISOServerAcceptEvent(ISOServer source, String channelName) {
         super(source);
+        this.channelName = channelName;
+    }
+
+    public String getChannelName() {
+        return channelName;
+    }
+
+    @Override
+    public String toString() {
+        return "ISOServerAcceptEvent{" +
+          "channelName='" + channelName + '\'' +
+          ", source=" + source +
+          '}';
     }
 }

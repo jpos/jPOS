@@ -258,7 +258,7 @@ public class ISOServer extends Observable
             if (c != null) {
                 try {
                     c.disconnect ();
-                    fireEvent(new ISOServerClientDisconnectEvent(this));
+                    fireEvent(new ISOServerClientDisconnectEvent(this, c.getName()));
                 } catch (IOException e) {
                     Logger.log (new LogEvent (this, "shutdown", e));
                 }
@@ -378,10 +378,10 @@ public class ISOServer extends Observable
             }
             try {
                 channel.disconnect();
-                fireEvent(new ISOServerClientDisconnectEvent(ISOServer.this));
+                fireEvent(new ISOServerClientDisconnectEvent(ISOServer.this, channel.getName()));
             } catch (IOException ex) {
                 Logger.log (new LogEvent (this, "session-error", ex));
-                fireEvent(new ISOServerClientDisconnectEvent(ISOServer.this));
+                fireEvent(new ISOServerClientDisconnectEvent(ISOServer.this, channel.getName()));
             }
             Logger.log (new LogEvent (this, "session-end"));
         }
@@ -514,7 +514,7 @@ public class ISOServer extends Observable
                         pool.execute (createSession(channel));
                         setChanged ();
                         notifyObservers (this);
-                        fireEvent(new ISOServerAcceptEvent(this));
+                        fireEvent(new ISOServerAcceptEvent(this, channel.getName()));
                         if (channel instanceof Observable) {
                             ((Observable)channel).addObserver (this);
                         }
