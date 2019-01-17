@@ -1191,13 +1191,12 @@ public class JCESecurityModule extends BaseSMAdapter {
     }
 
     /**
-     * Generates a random clear key component.<br>
-     * Used by Console, that's why it is package protected.
+     * Generates a random clear key component.
      * @param keyLength
      * @return clear key componenet
      * @throws SMException
      */
-    String generateClearKeyComponent (short keyLength) throws SMException {
+    public String generateClearKeyComponent (short keyLength) throws SMException {
         String clearKeyComponenetHexString;
         SimpleMsg[] cmdParameters =  {
             new SimpleMsg("parameter", "Key Length", keyLength)

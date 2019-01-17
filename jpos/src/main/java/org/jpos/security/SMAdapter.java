@@ -1334,4 +1334,13 @@ public interface SMAdapter {
      * @throws SMException
      */
     SecureDESKey formKEYfromClearComponents (short keyLength, String keyType, String... clearComponent) throws SMException;
+    /**
+     * Generates a random clear key component.
+     * @param keyLength
+     * @return clear key componenet
+     * @throws SMException
+     */
+    default String generateClearKeyComponent (short keyLength) throws SMException{
+        throw new SMException("Operation not supported in: " + this.getClass().getName());
+    }
 }
