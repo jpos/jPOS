@@ -2,7 +2,7 @@
 <pmd xmlns="http://pmd.sourceforge.net/report/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/report/2.0.0 http://pmd.sourceforge.net/report_2_0_0.xsd"
-    version="6.8.0" timestamp="2019-01-17T16:54:57.788">
+    version="6.8.0" timestamp="2019-01-21T15:30:11.280">
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/bsh/BSHAction.java">
 <violation beginline="30" endline="30" begincolumn="15" endcolumn="16" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.bsh" class="BSHAction" variable="ui" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
 Found non-transient, non-static member. Please mark as transient or provide accessors.
@@ -944,8 +944,11 @@ Found 'DU'-anomaly for variable 'len' (lines '84'-'94').
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/IFEP_LLLBINARY.java">
-<violation beginline="62" endline="74" begincolumn="13" endcolumn="75" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="IFEP_LLLBINARY" method="unpack" variable="len" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'len' (lines '62'-'74').
+<violation beginline="26" endline="26" begincolumn="23" endcolumn="42" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.iso" class="IFEP_LLLBINARY" variable="prefixerPackedLength" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
+Found non-transient, non-static member. Please mark as transient or provide accessors.
+</violation>
+<violation beginline="80" endline="92" begincolumn="13" endcolumn="110" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="IFEP_LLLBINARY" method="unpack" variable="len" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'len' (lines '80'-'92').
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/IFEP_LLLCHAR.java">
