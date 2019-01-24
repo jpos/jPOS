@@ -48,7 +48,7 @@ public class XMLPackager extends DefaultHandler
     protected String realm = null;
     private ByteArrayOutputStream out;
     private PrintStream p;
-    private XMLReader reader = null;
+    private XMLReader reader;
     private Stack stk;
 
     public static final String ISOMSG_TAG    = "isomsg";
@@ -303,6 +303,9 @@ public class XMLPackager extends DefaultHandler
             );
         }
         reader.setFeature ("http://xml.org/sax/features/validation",false);
+        reader.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+        reader.setFeature("http://xml.org/sax/features/external-general-entities", false);
+        reader.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
         reader.setContentHandler(this);
         reader.setErrorHandler(this);
         return reader;
