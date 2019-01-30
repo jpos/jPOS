@@ -56,7 +56,7 @@ public class ISOMsg extends ISOComponent
      * Creates an ISOMsg
      */
     public ISOMsg () {
-        fields = new TreeMap<Integer,Object>();
+        fields = new TreeMap<>();
         maxField = -1;
         dirty = true;
         maxFieldDirty=true;
@@ -508,7 +508,7 @@ public class ISOMsg extends ISOComponent
         if (header instanceof Loggeable)
             ((Loggeable) header).dump (p, newIndent);
 
-        for (int i=0; i<=maxField; i++) {
+        for (int i : fields.keySet()) {
             if ((c = (ISOComponent) fields.get (i)) != null)
                 c.dump (p, newIndent);
             //
