@@ -29,7 +29,7 @@
 </td>
 <td>
 <div class="infoBox" id="failures">
-<div class="counter">1</div>
+<div class="counter">0</div>
 <p>failures</p>
 </div>
 </td>
@@ -41,7 +41,7 @@
 </td>
 <td>
 <div class="infoBox" id="duration">
-<div class="counter">10.410s</div>
+<div class="counter">10.447s</div>
 <p>duration</p>
 </div>
 </td>
@@ -50,8 +50,8 @@
 </div>
 </td>
 <td>
-<div class="infoBox failures" id="successRate">
-<div class="percent">93%</div>
+<div class="infoBox success" id="successRate">
+<div class="percent">100%</div>
 <p>successful</p>
 </div>
 </td>
@@ -61,75 +61,13 @@
 <div id="tabs">
 <ul class="tabLinks">
 <li>
-<a href="#tab0">Failed tests</a>
+<a href="#tab0">Tests</a>
 </li>
 <li>
-<a href="#tab1">Tests</a>
-</li>
-<li>
-<a href="#tab2">Standard output</a>
+<a href="#tab1">Standard output</a>
 </li>
 </ul>
 <div id="tab0" class="tab">
-<h2>Failed tests</h2>
-<div class="test">
-<a name="testXMLPackager"></a>
-<h3 class="failures">testXMLPackager</h3>
-<span class="code">
-<pre>junit.framework.AssertionFailedError: Arrays different lengths. Non-equal objects at index 67 expected:&lt;48&gt; but was:&lt;98&gt;
-	at junit.framework.Assert.fail(Assert.java:57)
-	at junit.framework.Assert.failNotEquals(Assert.java:329)
-	at junit.framework.Assert.assertEquals(Assert.java:78)
-	at junit.framework.Assert.assertEquals(Assert.java:189)
-	at org.jpos.iso.TestUtils.assertEquals(TestUtils.java:39)
-	at org.jpos.iso.packagers.PackagerTestCase.doTest(PackagerTestCase.java:214)
-	at org.jpos.iso.packagers.PackagerTestCase.testXMLPackager(PackagerTestCase.java:125)
-	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
-	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.lang.reflect.Method.invoke(Method.java:498)
-	at junit.framework.TestCase.runTest(TestCase.java:176)
-	at junit.framework.TestCase.runBare(TestCase.java:141)
-	at junit.framework.TestResult$1.protect(TestResult.java:122)
-	at junit.framework.TestResult.runProtected(TestResult.java:142)
-	at junit.framework.TestResult.run(TestResult.java:125)
-	at junit.framework.TestCase.run(TestCase.java:129)
-	at junit.framework.TestSuite.runTest(TestSuite.java:252)
-	at junit.framework.TestSuite.run(TestSuite.java:247)
-	at org.junit.internal.runners.JUnit38ClassRunner.run(JUnit38ClassRunner.java:86)
-	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecutor.runTestClass(JUnitTestClassExecutor.java:110)
-	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecutor.execute(JUnitTestClassExecutor.java:58)
-	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecutor.execute(JUnitTestClassExecutor.java:38)
-	at org.gradle.api.internal.tasks.testing.junit.AbstractJUnitTestClassProcessor.processTestClass(AbstractJUnitTestClassProcessor.java:66)
-	at org.gradle.api.internal.tasks.testing.SuiteTestClassProcessor.processTestClass(SuiteTestClassProcessor.java:51)
-	at sun.reflect.GeneratedMethodAccessor6.invoke(Unknown Source)
-	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.lang.reflect.Method.invoke(Method.java:498)
-	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:35)
-	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:24)
-	at org.gradle.internal.dispatch.ContextClassLoaderDispatch.dispatch(ContextClassLoaderDispatch.java:32)
-	at org.gradle.internal.dispatch.ProxyDispatchAdapter$DispatchingInvocationHandler.invoke(ProxyDispatchAdapter.java:93)
-	at com.sun.proxy.$Proxy2.processTestClass(Unknown Source)
-	at org.gradle.api.internal.tasks.testing.worker.TestWorker.processTestClass(TestWorker.java:118)
-	at sun.reflect.GeneratedMethodAccessor5.invoke(Unknown Source)
-	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.lang.reflect.Method.invoke(Method.java:498)
-	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:35)
-	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:24)
-	at org.gradle.internal.remote.internal.hub.MessageHubBackedObjectConnection$DispatchWrapper.dispatch(MessageHubBackedObjectConnection.java:175)
-	at org.gradle.internal.remote.internal.hub.MessageHubBackedObjectConnection$DispatchWrapper.dispatch(MessageHubBackedObjectConnection.java:157)
-	at org.gradle.internal.remote.internal.hub.MessageHub$Handler.run(MessageHub.java:404)
-	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:63)
-	at org.gradle.internal.concurrent.ManagedExecutorImpl$1.run(ManagedExecutorImpl.java:46)
-	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
-	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
-	at org.gradle.internal.concurrent.ThreadFactoryImpl$ManagedThreadRunnable.run(ThreadFactoryImpl.java:55)
-	at java.lang.Thread.run(Thread.java:748)
-</pre>
-</span>
-</div>
-</div>
-<div id="tab1" class="tab">
 <h2>Tests</h2>
 <table>
 <thead>
@@ -141,93 +79,93 @@
 </thead>
 <tr>
 <td class="success">testF64Binary</td>
-<td class="success">0.009s</td>
+<td class="success">0.006s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">testF64ascii</td>
-<td class="success">0.014s</td>
+<td class="success">0.006s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">testGeneric87ascii</td>
-<td class="success">0.012s</td>
-<td class="success">passed</td>
-</tr>
-<tr>
-<td class="success">testGeneric87asciiAsResource</td>
-<td class="success">0.032s</td>
-<td class="success">passed</td>
-</tr>
-<tr>
-<td class="success">testGeneric87binary</td>
-<td class="success">0.020s</td>
-<td class="success">passed</td>
-</tr>
-<tr>
-<td class="success">testGeneric93ascii</td>
-<td class="success">0.016s</td>
-<td class="success">passed</td>
-</tr>
-<tr>
-<td class="success">testGeneric93binary</td>
-<td class="success">0.016s</td>
-<td class="success">passed</td>
-</tr>
-<tr>
-<td class="success">testGeneric93ebcdic</td>
-<td class="success">0.026s</td>
-<td class="success">passed</td>
-</tr>
-<tr>
-<td class="success">testISO87APackager</td>
 <td class="success">0.007s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
-<td class="success">testISO87BPackager</td>
-<td class="success">0.017s</td>
+<td class="success">testGeneric87asciiAsResource</td>
+<td class="success">0.018s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
-<td class="success">testISO93APackager</td>
-<td class="success">0.009s</td>
+<td class="success">testGeneric87binary</td>
+<td class="success">0.007s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
-<td class="success">testISO93BPackager</td>
-<td class="success">0.004s</td>
+<td class="success">testGeneric93ascii</td>
+<td class="success">0.025s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
-<td class="success">testPerformance</td>
-<td class="success">10.223s</td>
+<td class="success">testGeneric93binary</td>
+<td class="success">0.011s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
-<td class="success">testPostPackager</td>
+<td class="success">testGeneric93ebcdic</td>
+<td class="success">0.012s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testISO87APackager</td>
 <td class="success">0.003s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
-<td class="failures">testXMLPackager</td>
-<td class="failures">0.002s</td>
-<td class="failures">failed</td>
+<td class="success">testISO87BPackager</td>
+<td class="success">0.012s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testISO93APackager</td>
+<td class="success">0.003s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testISO93BPackager</td>
+<td class="success">0.002s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testPerformance</td>
+<td class="success">10.331s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testPostPackager</td>
+<td class="success">0.002s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testXMLPackager</td>
+<td class="success">0.002s</td>
+<td class="success">passed</td>
 </tr>
 </table>
 </div>
-<div id="tab2" class="tab">
+<div id="tab1" class="tab">
 <h2>Standard output</h2>
 <span class="code">
 <pre>
 --- pack/unpack performance test ---
 
 &lt;profiler&gt;
-  PACK tps=57706, peak=57706, avg=57706.00 [1546.8/1546.8]
-  UNPACK tps=59463, peak=59463, avg=59463.00 [1569.7/3116.5]
-  PACK/UNPACK tps=36715, peak=37194, avg=36954.50 [2701.0/5817.6]
-  UPDATE/PACK/UNPACK tps=26676, peak=26676, avg=22410.00 [4385.1/10202.7]
-  end [0.0/10202.7]
+  PACK tps=27180, peak=27180, avg=27180.00 [1976.0/1976.0]
+  UNPACK tps=60568, peak=60568, avg=60568.00 [1551.4/3527.4]
+  PACK/UNPACK tps=37443, peak=37763, avg=37603.00 [2658.0/6185.4]
+  UPDATE/PACK/UNPACK tps=28439, peak=28439, avg=24215.25 [4107.9/10293.4]
+  end [0.0/10293.4]
 &lt;/profiler&gt;
 
 </pre>
@@ -241,7 +179,7 @@
 <input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
 </label>
 </div>Generated by 
-<a href="http://www.gradle.org">Gradle 5.0</a> at Jan 30, 2019 2:16:47 AM</p>
+<a href="http://www.gradle.org">Gradle 5.0</a> at Jan 30, 2019 2:41:14 AM</p>
 </div>
 </div>
 </body>
