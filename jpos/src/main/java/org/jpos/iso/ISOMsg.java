@@ -509,16 +509,10 @@ public class ISOMsg extends ISOComponent
             ((Loggeable) header).dump (p, newIndent);
 
         for (int i : fields.keySet()) {
-            if ((c = (ISOComponent) fields.get (i)) != null)
-                c.dump (p, newIndent);
-            //
-            // Uncomment to include bitmaps within logs
-            //
-            // if (i == 0) {
-            //  if ((c = (ISOComponent) fields.get (new Integer (-1))) != null)
-            //    c.dump (p, newIndent);
-            // }
-            //
+            if (i >= 0) {
+                if ((c = (ISOComponent) fields.get(i)) != null)
+                    c.dump(p, newIndent);
+            }
         }
 
         p.println (indent + "</" + XMLPackager.ISOMSG_TAG+">");
