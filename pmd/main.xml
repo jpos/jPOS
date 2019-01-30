@@ -2,7 +2,7 @@
 <pmd xmlns="http://pmd.sourceforge.net/report/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/report/2.0.0 http://pmd.sourceforge.net/report_2_0_0.xsd"
-    version="6.8.0" timestamp="2019-01-24T15:53:39.114">
+    version="6.8.0" timestamp="2019-01-30T02:13:40.986">
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/bsh/BSHAction.java">
 <violation beginline="30" endline="30" begincolumn="15" endcolumn="16" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.bsh" class="BSHAction" variable="ui" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
 Found non-transient, non-static member. Please mark as transient or provide accessors.
@@ -1389,6 +1389,9 @@ Found 'DU'-anomaly for variable 'lastm' (lines '394'-'409').
 </violation>
 <violation beginline="395" endline="409" begincolumn="21" endcolumn="36" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOMsg" method="unset" variable="m" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
 Found 'DU'-anomaly for variable 'm' (lines '395'-'409').
+</violation>
+<violation beginline="487" endline="512" begincolumn="17" endcolumn="59" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOMsg" method="dump" variable="i" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'UR'-anomaly for variable 'i' (lines '487'-'512').
 </violation>
 <violation beginline="501" endline="525" begincolumn="16" endcolumn="40" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOMsg" method="dump" variable="newIndent" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
 Found 'DU'-anomaly for variable 'newIndent' (lines '501'-'525').

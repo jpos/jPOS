@@ -29,7 +29,7 @@
 </td>
 <td>
 <div class="infoBox" id="failures">
-<div class="counter">0</div>
+<div class="counter">1</div>
 <p>failures</p>
 </div>
 </td>
@@ -41,7 +41,7 @@
 </td>
 <td>
 <div class="infoBox" id="duration">
-<div class="counter">0.100s</div>
+<div class="counter">0.055s</div>
 <p>duration</p>
 </div>
 </td>
@@ -50,8 +50,8 @@
 </div>
 </td>
 <td>
-<div class="infoBox success" id="successRate">
-<div class="percent">100%</div>
+<div class="infoBox failures" id="successRate">
+<div class="percent">95%</div>
 <p>successful</p>
 </div>
 </td>
@@ -61,13 +61,107 @@
 <div id="tabs">
 <ul class="tabLinks">
 <li>
-<a href="#tab0">Tests</a>
+<a href="#tab0">Failed tests</a>
 </li>
 <li>
-<a href="#tab1">Standard output</a>
+<a href="#tab1">Tests</a>
+</li>
+<li>
+<a href="#tab2">Standard output</a>
 </li>
 </ul>
 <div id="tab0" class="tab">
+<h2>Failed tests</h2>
+<div class="test">
+<a name="testPack"></a>
+<h3 class="failures">testPack</h3>
+<span class="code">
+<pre>java.lang.AssertionError: org.custommonkey.xmlunit.DetailedDiff
+[different] Expected number of child nodes '6' but was '7' - comparing &lt;isomsg...&gt; at /isomsg[1] to &lt;isomsg...&gt; at /isomsg[1]
+
+[different] Expected number of element attributes '2' but was '3' - comparing &lt;field...&gt; at /isomsg[1]/field[1] to &lt;field...&gt; at /isomsg[1]/field[1]
+
+[different] Expected attribute value '0' but was 'bitmap' - comparing &lt;field id=&quot;0&quot;...&gt; at /isomsg[1]/field[1]/@id to &lt;field id=&quot;bitmap&quot;...&gt; at /isomsg[1]/field[1]/@id
+
+[different] Expected attribute value '0800' but was '{7, 11, 12, 24}' - comparing &lt;field value=&quot;0800&quot;...&gt; at /isomsg[1]/field[1]/@value to &lt;field value=&quot;{7, 11, 12, 24}&quot;...&gt; at /isomsg[1]/field[1]/@value
+
+[not identical] Expected sequence of attributes 'value' but was 'type' - comparing &lt;field value=&quot;0800&quot;...&gt; at /isomsg[1]/field[1]/@value to &lt;field value=&quot;{7, 11, 12, 24}&quot;...&gt; at /isomsg[1]/field[1]/@value
+
+[different] Expected attribute name 'null' but was 'type' - comparing &lt;field...&gt; at /isomsg[1]/field[1] to &lt;field...&gt; at /isomsg[1]/field[1]/@type
+
+[different] Expected attribute value '7' but was '0' - comparing &lt;field id=&quot;7&quot;...&gt; at /isomsg[1]/field[2]/@id to &lt;field id=&quot;0&quot;...&gt; at /isomsg[1]/field[2]/@id
+
+[different] Expected attribute value '7654321' but was '0800' - comparing &lt;field value=&quot;7654321&quot;...&gt; at /isomsg[1]/field[2]/@value to &lt;field value=&quot;0800&quot;...&gt; at /isomsg[1]/field[2]/@value
+
+[different] Expected attribute value '11' but was '7' - comparing &lt;field id=&quot;11&quot;...&gt; at /isomsg[1]/field[3]/@id to &lt;field id=&quot;7&quot;...&gt; at /isomsg[1]/field[3]/@id
+
+[different] Expected attribute value '12345678' but was '7654321' - comparing &lt;field value=&quot;12345678&quot;...&gt; at /isomsg[1]/field[3]/@value to &lt;field value=&quot;7654321&quot;...&gt; at /isomsg[1]/field[3]/@value
+
+[different] Expected attribute value '12' but was '11' - comparing &lt;field id=&quot;12&quot;...&gt; at /isomsg[1]/field[4]/@id to &lt;field id=&quot;11&quot;...&gt; at /isomsg[1]/field[4]/@id
+
+[different] Expected attribute value '20110224112759' but was '12345678' - comparing &lt;field value=&quot;20110224112759&quot;...&gt; at /isomsg[1]/field[4]/@value to &lt;field value=&quot;12345678&quot;...&gt; at /isomsg[1]/field[4]/@value
+
+[different] Expected attribute value '24' but was '12' - comparing &lt;field id=&quot;24&quot;...&gt; at /isomsg[1]/field[5]/@id to &lt;field id=&quot;12&quot;...&gt; at /isomsg[1]/field[5]/@id
+
+[different] Expected attribute value '' but was '20110224112759' - comparing &lt;field value=&quot;&quot;...&gt; at /isomsg[1]/field[5]/@value to &lt;field value=&quot;20110224112759&quot;...&gt; at /isomsg[1]/field[5]/@value
+
+[different] Expected presence of child node 'null' but was 'field' - comparing  at null to &lt;field...&gt; at /isomsg[1]/field[6]
+ expected:&lt;0&gt; but was:&lt;15&gt;
+	at org.junit.Assert.fail(Assert.java:88)
+	at org.junit.Assert.failNotEquals(Assert.java:834)
+	at org.junit.Assert.assertEquals(Assert.java:645)
+	at org.jpos.iso.packager.XMLPackagerTest.testPack(XMLPackagerTest.java:179)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:47)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
+	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:325)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:78)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:57)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:363)
+	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecutor.runTestClass(JUnitTestClassExecutor.java:110)
+	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecutor.execute(JUnitTestClassExecutor.java:58)
+	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecutor.execute(JUnitTestClassExecutor.java:38)
+	at org.gradle.api.internal.tasks.testing.junit.AbstractJUnitTestClassProcessor.processTestClass(AbstractJUnitTestClassProcessor.java:66)
+	at org.gradle.api.internal.tasks.testing.SuiteTestClassProcessor.processTestClass(SuiteTestClassProcessor.java:51)
+	at sun.reflect.GeneratedMethodAccessor6.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:35)
+	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:24)
+	at org.gradle.internal.dispatch.ContextClassLoaderDispatch.dispatch(ContextClassLoaderDispatch.java:32)
+	at org.gradle.internal.dispatch.ProxyDispatchAdapter$DispatchingInvocationHandler.invoke(ProxyDispatchAdapter.java:93)
+	at com.sun.proxy.$Proxy2.processTestClass(Unknown Source)
+	at org.gradle.api.internal.tasks.testing.worker.TestWorker.processTestClass(TestWorker.java:118)
+	at sun.reflect.GeneratedMethodAccessor5.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:35)
+	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:24)
+	at org.gradle.internal.remote.internal.hub.MessageHubBackedObjectConnection$DispatchWrapper.dispatch(MessageHubBackedObjectConnection.java:175)
+	at org.gradle.internal.remote.internal.hub.MessageHubBackedObjectConnection$DispatchWrapper.dispatch(MessageHubBackedObjectConnection.java:157)
+	at org.gradle.internal.remote.internal.hub.MessageHub$Handler.run(MessageHub.java:404)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:63)
+	at org.gradle.internal.concurrent.ManagedExecutorImpl$1.run(ManagedExecutorImpl.java:46)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at org.gradle.internal.concurrent.ThreadFactoryImpl$ManagedThreadRunnable.run(ThreadFactoryImpl.java:55)
+	at java.lang.Thread.run(Thread.java:748)
+</pre>
+</span>
+</div>
+</div>
+<div id="tab1" class="tab">
 <h2>Tests</h2>
 <table>
 <thead>
@@ -79,17 +173,17 @@
 </thead>
 <tr>
 <td class="success">testCharactersThrowsEmptyStackException</td>
-<td class="success">0s</td>
-<td class="success">passed</td>
-</tr>
-<tr>
-<td class="success">testConstructor</td>
 <td class="success">0.001s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
+<td class="success">testConstructor</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
 <td class="success">testCreateISOMsg</td>
-<td class="success">0.025s</td>
+<td class="success">0.001s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
@@ -99,7 +193,7 @@
 </tr>
 <tr>
 <td class="success">testEndElementThrowsEmptyStackException1</td>
-<td class="success">0s</td>
+<td class="success">0.001s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
@@ -119,22 +213,22 @@
 </tr>
 <tr>
 <td class="success">testGetRealm</td>
-<td class="success">0.001s</td>
-<td class="success">passed</td>
-</tr>
-<tr>
-<td class="success">testGetRealm1</td>
 <td class="success">0.004s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
-<td class="success">testPack</td>
-<td class="success">0.062s</td>
+<td class="success">testGetRealm1</td>
+<td class="success">0s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
+<td class="failures">testPack</td>
+<td class="failures">0.043s</td>
+<td class="failures">failed</td>
+</tr>
+<tr>
 <td class="success">testPackException</td>
-<td class="success">0.002s</td>
+<td class="success">0.001s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
@@ -154,7 +248,7 @@
 </tr>
 <tr>
 <td class="success">testStartElementThrowsEmptyStackException</td>
-<td class="success">0s</td>
+<td class="success">0.001s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
@@ -164,7 +258,7 @@
 </tr>
 <tr>
 <td class="success">testStartElementThrowsNullPointerException1</td>
-<td class="success">0.001s</td>
+<td class="success">0s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
@@ -174,7 +268,7 @@
 </tr>
 <tr>
 <td class="success">testUnpackLargeXmlBytes</td>
-<td class="success">0.002s</td>
+<td class="success">0.001s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
@@ -184,10 +278,10 @@
 </tr>
 </table>
 </div>
-<div id="tab1" class="tab">
+<div id="tab2" class="tab">
 <h2>Standard output</h2>
 <span class="code">
-<pre>&lt;log realm=&quot;org.jpos.iso.packager.XMLPackager&quot; at=&quot;2019-01-24T15:56:48.884&quot; lifespan=&quot;1ms&quot;&gt;
+<pre>&lt;log realm=&quot;org.jpos.iso.packager.XMLPackager&quot; at=&quot;2019-01-30T02:16:47.067&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;unpack&gt;
     &lt;isomsg&gt;
       &lt;header&gt;686561646572&lt;/header&gt;
@@ -199,10 +293,11 @@
     &lt;/isomsg&gt;
   &lt;/unpack&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;org.jpos.iso.packager.XMLPackager&quot; at=&quot;2019-01-24T15:56:48.885&quot;&gt;
+&lt;log realm=&quot;org.jpos.iso.packager.XMLPackager&quot; at=&quot;2019-01-30T02:16:47.076&quot;&gt;
   &lt;pack&gt;
     &lt;isomsg&gt;
       &lt;!-- org.jpos.iso.packager.XMLPackager --&gt;
+      &lt;field id=&quot;bitmap&quot; value=&quot;{7, 11, 12, 24}&quot; type=&quot;bitmap&quot;/&gt;
       &lt;field id=&quot;0&quot; value=&quot;0800&quot;/&gt;
       &lt;field id=&quot;7&quot; value=&quot;7654321&quot;/&gt;
       &lt;field id=&quot;11&quot; value=&quot;12345678&quot;/&gt;
@@ -211,7 +306,7 @@
     &lt;/isomsg&gt;
   &lt;/pack&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;org.jpos.iso.packager.XMLPackager&quot; at=&quot;2019-01-24T15:56:48.948&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;org.jpos.iso.packager.XMLPackager&quot; at=&quot;2019-01-30T02:16:47.120&quot; lifespan=&quot;1ms&quot;&gt;
   &lt;unpack&gt;
     &lt;isomsg&gt;
       &lt;field id=&quot;0&quot; value=&quot;0800&quot;/&gt;
@@ -219,7 +314,7 @@
     &lt;/isomsg&gt;
   &lt;/unpack&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;org.jpos.iso.packager.XMLPackager&quot; at=&quot;2019-01-24T15:56:48.949&quot;&gt;
+&lt;log realm=&quot;org.jpos.iso.packager.XMLPackager&quot; at=&quot;2019-01-30T02:16:47.121&quot;&gt;
   &lt;pack&gt;
     &lt;iso-exception&gt;
       cannot pack class org.jpos.iso.ISOField
@@ -275,7 +370,7 @@
     &lt;/iso-exception&gt;
   &lt;/pack&gt;
 &lt;/log&gt;
-&lt;log realm=&quot;org.jpos.iso.packager.XMLPackager&quot; at=&quot;2019-01-24T15:56:48.951&quot; lifespan=&quot;1ms&quot;&gt;
+&lt;log realm=&quot;org.jpos.iso.packager.XMLPackager&quot; at=&quot;2019-01-30T02:16:47.123&quot;&gt;
   &lt;unpack&gt;
     &lt;isomsg&gt;
       &lt;header&gt;686561646572&lt;/header&gt;
@@ -298,7 +393,7 @@
 <input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
 </label>
 </div>Generated by 
-<a href="http://www.gradle.org">Gradle 5.0</a> at Jan 24, 2019 3:56:49 PM</p>
+<a href="http://www.gradle.org">Gradle 5.0</a> at Jan 30, 2019 2:16:47 AM</p>
 </div>
 </div>
 </body>
