@@ -2,7 +2,7 @@
 <pmd xmlns="http://pmd.sourceforge.net/report/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/report/2.0.0 http://pmd.sourceforge.net/report_2_0_0.xsd"
-    version="6.8.0" timestamp="2019-01-30T14:20:41.792">
+    version="6.8.0" timestamp="2019-02-01T22:44:21.509">
 <file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/bsh/BSHActionTest.java">
 <violation beginline="36" endline="36" begincolumn="9" endcolumn="60" rule="UnnecessaryBooleanAssertion" ruleset="Error Prone" package="org.jpos.bsh" class="BSHActionTest" method="testActionPerformed" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#unnecessarybooleanassertion" priority="3">
 assertTrue(true) or similar statements are unnecessary
@@ -1480,46 +1480,46 @@ The String literal &quot;Expected StringIndexOutOfBoundsException to be thrown&q
 <violation beginline="549" endline="549" begincolumn="45" endcolumn="74" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.iso" class="ISOMsg2Test" method="testIsRequestThrowsStringIndexOutOfBoundsException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
 The String literal &quot;String index out of range: 2&quot; appears 4 times in this file; the first occurrence is on line 549
 </violation>
-<violation beginline="656" endline="656" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.iso" class="ISOMsg2Test" method="testMergeThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
+<violation beginline="660" endline="660" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.iso" class="ISOMsg2Test" method="testMergeThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
 Avoid catching NullPointerException; consider removing the cause of the NPE.
 </violation>
-<violation beginline="681" endline="681" begincolumn="20" endcolumn="36" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.iso" class="ISOMsg2Test" method="testPack" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;iSOMsg.packager&quot; appears 7 times in this file; the first occurrence is on line 681
+<violation beginline="685" endline="685" begincolumn="20" endcolumn="36" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.iso" class="ISOMsg2Test" method="testPack" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;iSOMsg.packager&quot; appears 7 times in this file; the first occurrence is on line 685
 </violation>
-<violation beginline="713" endline="713" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.iso" class="ISOMsg2Test" method="testPackThrowsNegativeArraySizeException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
+<violation beginline="717" endline="717" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.iso" class="ISOMsg2Test" method="testPackThrowsNegativeArraySizeException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
 Avoid catching NullPointerException; consider removing the cause of the NPE.
 </violation>
-<violation beginline="729" endline="729" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.iso" class="ISOMsg2Test" method="testPackThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
+<violation beginline="733" endline="733" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.iso" class="ISOMsg2Test" method="testPackThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
 Avoid catching NullPointerException; consider removing the cause of the NPE.
 </violation>
-<violation beginline="746" endline="746" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.iso" class="ISOMsg2Test" method="testPackThrowsNullPointerException1" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
+<violation beginline="750" endline="750" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.iso" class="ISOMsg2Test" method="testPackThrowsNullPointerException1" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
 Avoid catching NullPointerException; consider removing the cause of the NPE.
 </violation>
-<violation beginline="762" endline="762" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.iso" class="ISOMsg2Test" method="testReadHeaderThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
+<violation beginline="766" endline="766" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.iso" class="ISOMsg2Test" method="testReadHeaderThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
 Avoid catching NullPointerException; consider removing the cause of the NPE.
 </violation>
-<violation beginline="1023" endline="1023" begincolumn="22" endcolumn="66" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.iso" class="ISOMsg2Test" method="testSetResponseMTI" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;iSOMsg.fields.get(Integer.valueOf(0)).value&quot; appears 4 times in this file; the first occurrence is on line 1,023
+<violation beginline="1027" endline="1027" begincolumn="22" endcolumn="66" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.iso" class="ISOMsg2Test" method="testSetResponseMTI" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;iSOMsg.fields.get(Integer.valueOf(0)).value&quot; appears 4 times in this file; the first occurrence is on line 1,027
 </violation>
-<violation beginline="1135" endline="1135" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.iso" class="ISOMsg2Test" method="testSetThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
+<violation beginline="1139" endline="1139" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.iso" class="ISOMsg2Test" method="testSetThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
 Avoid catching NullPointerException; consider removing the cause of the NPE.
 </violation>
-<violation beginline="1150" endline="1150" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.iso" class="ISOMsg2Test" method="testSetThrowsNullPointerException1" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
+<violation beginline="1154" endline="1154" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.iso" class="ISOMsg2Test" method="testSetThrowsNullPointerException1" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
 Avoid catching NullPointerException; consider removing the cause of the NPE.
 </violation>
-<violation beginline="1209" endline="1209" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.iso" class="ISOMsg2Test" method="testUnpackThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
+<violation beginline="1213" endline="1213" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.iso" class="ISOMsg2Test" method="testUnpackThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
 Avoid catching NullPointerException; consider removing the cause of the NPE.
 </violation>
-<violation beginline="1277" endline="1277" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.iso" class="ISOMsg2Test" method="testWriteExternalThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
+<violation beginline="1281" endline="1281" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.iso" class="ISOMsg2Test" method="testWriteExternalThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
 Avoid catching NullPointerException; consider removing the cause of the NPE.
 </violation>
-<violation beginline="1291" endline="1292" begincolumn="9" endcolumn="27" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOMsg2Test" method="testWriteHeader" variable="bytes" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'bytes' (lines '1,291'-'1,292').
+<violation beginline="1295" endline="1296" begincolumn="9" endcolumn="27" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOMsg2Test" method="testWriteHeader" variable="bytes" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'bytes' (lines '1,295'-'1,296').
 </violation>
-<violation beginline="1322" endline="1322" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.iso" class="ISOMsg2Test" method="testWriteHeaderThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
+<violation beginline="1326" endline="1326" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.iso" class="ISOMsg2Test" method="testWriteHeaderThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
 Avoid catching NullPointerException; consider removing the cause of the NPE.
 </violation>
-<violation beginline="1339" endline="1339" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.iso" class="ISOMsg2Test" method="testWritePackagerThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
+<violation beginline="1343" endline="1343" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.iso" class="ISOMsg2Test" method="testWritePackagerThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
 Avoid catching NullPointerException; consider removing the cause of the NPE.
 </violation>
 </file>
