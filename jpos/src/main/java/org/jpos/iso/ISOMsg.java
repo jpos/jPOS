@@ -799,13 +799,14 @@ public class ISOMsg extends ISOComponent
      */
     @SuppressWarnings("PMD.EmptyCatchBlock")
     public void merge (ISOMsg m) {
-        for (int i=0; i<=m.getMaxField(); i++)
+        for (int i : m.fields.keySet()) {
             try {
-                if (m.hasField(i))
-                    set (m.getComponent(i));
+                if (i >= 0 && m.hasField(i))
+                    set(m.getComponent(i));
             } catch (ISOException ignored) {
                 // should never happen
             }
+        }
     }
 
     /**

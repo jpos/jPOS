@@ -618,9 +618,13 @@ public class ISOMsg2Test {
     @Test
     public void testMerge() throws Throwable {
         ISOMsg m = new ISOMsg(100);
-        new ISOMsg().merge(m);
-        assertEquals("m.maxField", 0, m.maxField);
+        ISOMsg m1 = new ISOMsg();
+        m1.merge (m);
+        assertEquals("m.maxField", 0, m.getMaxField());
         assertFalse("m.maxFieldDirty", m.maxFieldDirty);
+        assertEquals("m1.maxField", 0, m1.getMaxField());
+        assertFalse("m1.maxFieldDirty", m1.maxFieldDirty);
+
     }
 
     @Test
@@ -642,8 +646,8 @@ public class ISOMsg2Test {
         ISOMsg m = new ISOMsg("testISOMsgMti");
         iSOMsg.merge(m);
         assertEquals("iSOMsg.fields.size()", 1, iSOMsg.fields.size());
-        assertEquals("iSOMsg.maxField", 0, iSOMsg.maxField);
-        assertFalse("m.maxFieldDirty", m.maxFieldDirty);
+        assertEquals("iSOMsg.maxField", 0, iSOMsg.getMaxField());
+        assertFalse("m.maxFieldDirty", iSOMsg.maxFieldDirty);
         assertTrue("iSOMsg.dirty", iSOMsg.dirty);
     }
 
