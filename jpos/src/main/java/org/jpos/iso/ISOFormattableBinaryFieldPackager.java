@@ -20,19 +20,17 @@ package org.jpos.iso;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Array;
 
 /**
  * Generic class for handling binary fields in Tag-Len-Value format
  * <code>
- * Format TTLL....
+ * Format is assemblied by header formatter
  * Where
  *       TT is the n>0 digit field number (Tag)
  *       LL is the n>=0 digit field length (if n=0 it's means fixed length field with prefixer)
  *       .. is the field content
  * </code>
- * @author joconnor
- * @author Robert Demski
+ * @author Mikolaj Sosna
  * @version $Revision: 2854 $ $Date: 2010-01-02 11:34:31 +0100 (sob) $
  */
 public class ISOFormattableBinaryFieldPackager extends ISOFieldPackager
@@ -41,7 +39,7 @@ public class ISOFormattableBinaryFieldPackager extends ISOFieldPackager
     private BinaryInterpreter interpreter;
     private Padder padder;
     private Prefixer prefixer;
-    private IsoFieldFormatter headerFormatter;
+    private IsoFieldHeaderFormatter headerFormatter;
 
     /**
      * Constructs a default ISOTagBinaryFieldPackager. There is ASCII tag L prefixer, no padding,
@@ -54,7 +52,7 @@ public class ISOFormattableBinaryFieldPackager extends ISOFieldPackager
         this.interpreter = LiteralBinaryInterpreter.INSTANCE;
         this.padder = NullPadder.INSTANCE;
         this.prefixer = NullPrefixer.INSTANCE;
-        this.headerFormatter = IsoFieldFormatter.TTLLvvvvv;
+        this.headerFormatter = IsoFieldHeaderFormatter.TAG_FIRST;
     }
 
     /**
@@ -72,7 +70,7 @@ public class ISOFormattableBinaryFieldPackager extends ISOFieldPackager
         this.padder = padder;
         this.interpreter = interpreter;
         this.prefixer = prefixer;
-        this.headerFormatter = IsoFieldFormatter.TTLLvvvvv;
+        this.headerFormatter = IsoFieldHeaderFormatter.TAG_FIRST;
     }
 
 /**
@@ -81,17 +79,17 @@ public class ISOFormattableBinaryFieldPackager extends ISOFieldPackager
      * @param tagPrefixer The type of tag prefixer used to encode tag.
      * @param padder The type of padding used.
      * @param interpreter The interpreter used to encode the field.
-     * @param prefixer The type of length prefixer used to encode this field.
+     * @param lengthPrefixer The type of length prefixer used to encode this field.
      * @param headerFormatter The format of TAG TT and Length LL part
      */
     public ISOFormattableBinaryFieldPackager(Prefixer tagPrefixer, Padder padder,
-                                             BinaryInterpreter interpreter, Prefixer prefixer,
-                                             IsoFieldFormatter headerFormatter) {
+                                             BinaryInterpreter interpreter, Prefixer lengthPrefixer,
+                                             IsoFieldHeaderFormatter headerFormatter) {
         super();
         this.tagPrefixer = tagPrefixer;
         this.padder = padder;
         this.interpreter = interpreter;
-        this.prefixer = prefixer;
+        this.prefixer = lengthPrefixer;
         this.headerFormatter = headerFormatter;
     }
 
@@ -102,17 +100,17 @@ public class ISOFormattableBinaryFieldPackager extends ISOFieldPackager
      * @param tagPrefixer The type of tag prefixer used to encode tag.
      * @param interpreter The interpreter used to encode the field.
      * @param padder The type of padding used.
-     * @param prefixer The type of length prefixer used to encode this field.
+     * @param lengthPrefixer The type of length prefixer used to encode this field.
      * @param headerFormatter The format of TAG TT and Length LL part
      */
     public ISOFormattableBinaryFieldPackager(int maxLength, String description, Prefixer tagPrefixer,
-                                             Padder padder, BinaryInterpreter interpreter, Prefixer prefixer,
-                                             IsoFieldFormatter headerFormatter) {
+                                             Padder padder, BinaryInterpreter interpreter, Prefixer lengthPrefixer,
+                                             IsoFieldHeaderFormatter headerFormatter) {
         super(maxLength, description);
         this.tagPrefixer = tagPrefixer;
         this.padder = padder;
         this.interpreter = interpreter;
-        this.prefixer = prefixer;
+        this.prefixer = lengthPrefixer;
         this.headerFormatter = headerFormatter;
     }
 
@@ -144,7 +142,7 @@ public class ISOFormattableBinaryFieldPackager extends ISOFieldPackager
      * Gets the formatter, which assembles tag TT and length LL parts in required format
      * @return the formatter of the header part (length and tag parts)
      */
-    public IsoFieldFormatter getHeaderFormatter() {
+    public IsoFieldHeaderFormatter getHeaderFormatter() {
         return headerFormatter;
     }
 
@@ -152,7 +150,7 @@ public class ISOFormattableBinaryFieldPackager extends ISOFieldPackager
      * Sets the formatter, which assembles tag TT and length LL parts in required format
      * @param headerFormatter the formatter of the header part (length and tag parts)
      */
-    public void setHeaderFormatter(IsoFieldFormatter headerFormatter) {
+    public void setHeaderFormatter(IsoFieldHeaderFormatter headerFormatter) {
         this.headerFormatter = headerFormatter;
     }
 
@@ -198,11 +196,11 @@ public class ISOFormattableBinaryFieldPackager extends ISOFieldPackager
             tagPrefixer.encodeLength(tag, rawTagData);
 
             byte[] rawLen = new byte[prefixer.getPackedLength()];
-            prefixer.encodeLength(paddedValueBytes.length, rawLen);
+            prefixer.encodeLength(!headerFormatter.isTagFirst() ? paddedValueBytes.length + tagPrefixer.getPackedLength() : paddedValueBytes.length, rawLen);
 
-            headerFormatter.format(rawTagData, rawLen, rawData);
+            headerFormatter.format(tagPrefixer, prefixer, rawTagData, rawLen, rawData);
 
-            interpreter.interpret(paddedValueBytes, rawData, headerFormatter.getTotalLength());
+            interpreter.interpret(paddedValueBytes, rawData, headerFormatter.getTotalLength(tagPrefixer, prefixer));
 
             return rawData;
         } catch(Exception e) {
@@ -221,8 +219,11 @@ public class ISOFormattableBinaryFieldPackager extends ISOFieldPackager
     public int unpack(ISOComponent c, byte[] b, int offset) throws ISOException {
         try{
             int tagLen = tagPrefixer.getPackedLength();
-            c.setFieldNumber(tagPrefixer.decodeLength(b, offset + headerFormatter.getTagIndex()));
-            int len = prefixer.decodeLength(b, offset + headerFormatter.getLengthIndex());
+            c.setFieldNumber(tagPrefixer.decodeLength(b, offset + headerFormatter.getTagIndex(prefixer)));
+            int len = prefixer.decodeLength(b, offset + headerFormatter.getLengthIndex(tagPrefixer));
+            if (!headerFormatter.isTagFirst()) {
+                len -= tagPrefixer.getPackedLength();
+            }
             if (len == -1) {
                 // The prefixer doesn't know how long the field is, so use
                 // maxLength instead
@@ -231,8 +232,13 @@ public class ISOFormattableBinaryFieldPackager extends ISOFieldPackager
                 throw new ISOException("Field length " + len + " too long. Max: " + getLength());
             }
             int lenLen = prefixer.getPackedLength();
-            byte[] unpacked = interpreter.uninterpret(b, offset + headerFormatter.getTotalLength(), len);
-            c.setValue(unpacked);
+            byte[] unpacked = interpreter.uninterpret(b, offset + tagPrefixer.getPackedLength() + prefixer.getPackedLength(), len);
+
+            byte[] paddedValueBytes = unpacked;
+            if (!(padder instanceof NullPadder)) //for save few cycles
+                paddedValueBytes = ISOUtil.hex2byte(padder.unpad(ISOUtil.hexString(unpacked)));
+
+            c.setValue(paddedValueBytes);
             return tagLen + lenLen + interpreter.getPackedLength(len);
         } catch(Exception e){
             throw new ISOException(makeExceptionMessage(c, "unpacking"), e);
@@ -253,7 +259,7 @@ public class ISOFormattableBinaryFieldPackager extends ISOFieldPackager
             int tagLen = tagPrefixer.getPackedLength();
             int lenLen = prefixer.getPackedLength() == 0 ? getLength() : prefixer.getPackedLength();
             int len = -1;
-            if (headerFormatter.getTagIndex() == 0) {
+            if (headerFormatter.getTagIndex(prefixer) == 0) {
                 c.setFieldNumber(tagPrefixer.decodeLength(readBytes(in, tagLen), 0));
                 len = prefixer.decodeLength(readBytes(in, lenLen), 0);
             } else {
