@@ -41,6 +41,22 @@ public class TLVMsg implements Loggeable {
 
     private static final int EXT_TAG_MASK   = 0x1F;
 
+    /**
+     * Enforces fixed tag size.
+     * <p>
+     * Zero means that the tag size will be determined in accordance with
+     * ISO/IEC 7816.
+     */
+    private final int tagSize;
+
+    /**
+     * Enforces fixed length size.
+     * <p>
+     * Zero means that the length size will be determined in accordance with
+     * ISO/IEC 7816.
+     */
+    private final int lengthSize;
+
     private final int tag;
     private final byte[] value;
 
@@ -58,17 +74,33 @@ public class TLVMsg implements Loggeable {
      * }</pre>
      * If for some reason this is not possible then a message can be created:
      * <pre>{@code
-     *   TLVList tl = new TLVList();
+     *   TLVList tl = TLVListBuilder.createInstance().build(); // or just new TLVList();
      *   tl.append(tag, value);
      *   TLVMsg tm = tl.find(tag);
      * }</pre>
-     * The intention is to not promote the use of TLVMsg outside
+     * The intention is to not promote the use of TLVMsg outside. Due to
+     * the lack of compatibility of various TLV types at TLVList.append(TLVMsg)
      */
     @Deprecated
     public TLVMsg(int tag, byte[] value) throws IllegalArgumentException {
+        this(tag, value, 0, 0);
+    }
+
+    protected TLVMsg(int tag, byte[] value, int tagSize, int lengthSize)
+            throws IllegalArgumentException {
         this.tag = tag;
         this.value = value;
-        verifyTag(tag);
+        this.tagSize = tagSize;
+        this.lengthSize = lengthSize;
+
+        if (tagSize == 0)
+            verifyTag(tag);
+        else
+            verifyTagLength(tag);
+
+        if (lengthSize > 0)
+            verifyValue(value);
+
     }
 
     private boolean isExtTagByte(int b) {
@@ -129,6 +161,26 @@ public class TLVMsg implements Loggeable {
         } while (idx < ba.length);
     }
 
+    private void verifyTagLength(int tag) throws IllegalArgumentException {
+        if (tag < 0)
+            throw new IllegalArgumentException("The tag id must be greater than or equals zero");
+
+        int maxTag = 1 << (tagSize << 3);
+        maxTag -= 1;
+        if (tag > maxTag)
+            throw new IllegalArgumentException("The tag id cannot be greater that: " + maxTag);
+    }
+
+    private void verifyValue(byte[] value) throws IllegalArgumentException {
+        if (value == null)
+            return;
+
+        int maxLength = 1 << (lengthSize << 3);
+        maxLength -= 1;
+        if (value.length > maxLength)
+            throw new IllegalArgumentException("The tag value length cannot exceed: " + maxLength);
+    }
+
     /**
      * @return tag
      */
@@ -149,6 +201,9 @@ public class TLVMsg implements Loggeable {
     public byte[] getTLV() {
         String hexTag = Integer.toHexString(tag);
         byte[] bTag = ISOUtil.hex2byte(hexTag);
+        if (tagSize > 0)
+            bTag = fitInArray(bTag, tagSize);
+
         byte[] bLen = getL();
         byte[] bVal = getValue();
         if (bVal == null)
@@ -165,6 +220,26 @@ public class TLVMsg implements Loggeable {
         return out;
     }
 
+    private byte[] fitInArray(byte[] bytes, int length) {
+        byte[] ret = new byte[length];
+        if (bytes.length <= length)
+            // copy bytes at end of ret
+            System.arraycopy(bytes, 0, ret, ret.length - bytes.length, bytes.length);
+        else
+            // copy last tagSize bytes of bytes
+            System.arraycopy(bytes, bytes.length - ret.length, ret, 0, ret.length);
+        return ret;
+    }
+
+    private byte[] getLengthArray() {
+        int length = 0;
+        if (value != null)
+            length = value.length;
+
+        byte[] ret = BigInteger.valueOf(length).toByteArray();
+        return fitInArray(ret, lengthSize);
+    }
+
     /**
      * Value up to 127 can be encoded in single byte and multiple bytes are
      * required for length bigger than 127
@@ -172,6 +247,9 @@ public class TLVMsg implements Loggeable {
      * @return encoded length
      */
     public byte[] getL() {
+
+        if (lengthSize > 0)
+            return getLengthArray();
 
         if (value == null)
             return new byte[1];
