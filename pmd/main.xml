@@ -2,7 +2,7 @@
 <pmd xmlns="http://pmd.sourceforge.net/report/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/report/2.0.0 http://pmd.sourceforge.net/report_2_0_0.xsd"
-    version="6.8.0" timestamp="2019-02-01T22:43:48.395">
+    version="6.8.0" timestamp="2019-02-11T21:07:29.174">
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/bsh/BSHAction.java">
 <violation beginline="30" endline="30" begincolumn="15" endcolumn="16" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.bsh" class="BSHAction" variable="ui" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
 Found non-transient, non-static member. Please mark as transient or provide accessors.
@@ -1285,6 +1285,70 @@ Avoid empty catch blocks
 Check the value returned by the skip() method of an InputStream to see if the requested number of bytes has been skipped.
 </violation>
 </file>
+<file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/ISOFormattableBinaryFieldPackager.java">
+<violation beginline="38" endline="38" begincolumn="22" endcolumn="32" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.iso" class="ISOFormattableBinaryFieldPackager" variable="tagPrefixer" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
+Found non-transient, non-static member. Please mark as transient or provide accessors.
+</violation>
+<violation beginline="39" endline="39" begincolumn="31" endcolumn="41" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.iso" class="ISOFormattableBinaryFieldPackager" variable="interpreter" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
+Found non-transient, non-static member. Please mark as transient or provide accessors.
+</violation>
+<violation beginline="40" endline="40" begincolumn="20" endcolumn="25" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.iso" class="ISOFormattableBinaryFieldPackager" variable="padder" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
+Found non-transient, non-static member. Please mark as transient or provide accessors.
+</violation>
+<violation beginline="41" endline="41" begincolumn="22" endcolumn="29" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.iso" class="ISOFormattableBinaryFieldPackager" variable="prefixer" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
+Found non-transient, non-static member. Please mark as transient or provide accessors.
+</violation>
+<violation beginline="170" endline="173" begincolumn="17" endcolumn="37" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOFormattableBinaryFieldPackager" method="makeExceptionMessage" variable="fieldKey" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'fieldKey' (lines '170'-'173').
+</violation>
+<violation beginline="174" endline="174" begincolumn="15" endcolumn="40" rule="EmptyCatchBlock" ruleset="Error Prone" package="org.jpos.iso" class="ISOFormattableBinaryFieldPackager" method="makeExceptionMessage" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#emptycatchblock" priority="3">
+Avoid empty catch blocks
+</violation>
+<violation beginline="189" endline="192" begincolumn="15" endcolumn="105" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOFormattableBinaryFieldPackager" method="pack" variable="paddedValueBytes" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'paddedValueBytes' (lines '189'-'192').
+</violation>
+<violation beginline="221" endline="246" begincolumn="17" endcolumn="54" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOFormattableBinaryFieldPackager" method="unpack" variable="tagLen" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'tagLen' (lines '221'-'246').
+</violation>
+<violation beginline="237" endline="239" begincolumn="17" endcolumn="94" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOFormattableBinaryFieldPackager" method="unpack" variable="paddedValueBytes" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'paddedValueBytes' (lines '237'-'239').
+</violation>
+<violation beginline="261" endline="264" begincolumn="17" endcolumn="69" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOFormattableBinaryFieldPackager" method="unpack" variable="len" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'len' (lines '261'-'264').
+</violation>
+<violation beginline="261" endline="266" begincolumn="17" endcolumn="69" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOFormattableBinaryFieldPackager" method="unpack" variable="len" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'len' (lines '261'-'266').
+</violation>
+</file>
+<file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/ISOFormattableStringFieldPackager.java">
+<violation beginline="37" endline="37" begincolumn="22" endcolumn="32" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.iso" class="ISOFormattableStringFieldPackager" variable="tagPrefixer" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
+Found non-transient, non-static member. Please mark as transient or provide accessors.
+</violation>
+<violation beginline="38" endline="38" begincolumn="25" endcolumn="35" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.iso" class="ISOFormattableStringFieldPackager" variable="interpreter" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
+Found non-transient, non-static member. Please mark as transient or provide accessors.
+</violation>
+<violation beginline="39" endline="39" begincolumn="20" endcolumn="25" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.iso" class="ISOFormattableStringFieldPackager" variable="padder" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
+Found non-transient, non-static member. Please mark as transient or provide accessors.
+</violation>
+<violation beginline="40" endline="40" begincolumn="22" endcolumn="29" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.iso" class="ISOFormattableStringFieldPackager" variable="prefixer" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
+Found non-transient, non-static member. Please mark as transient or provide accessors.
+</violation>
+<violation beginline="169" endline="172" begincolumn="17" endcolumn="37" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOFormattableStringFieldPackager" method="makeExceptionMessage" variable="fieldKey" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'fieldKey' (lines '169'-'172').
+</violation>
+<violation beginline="173" endline="173" begincolumn="15" endcolumn="40" rule="EmptyCatchBlock" ruleset="Error Prone" package="org.jpos.iso" class="ISOFormattableStringFieldPackager" method="makeExceptionMessage" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#emptycatchblock" priority="3">
+Avoid empty catch blocks
+</violation>
+<violation beginline="219" endline="242" begincolumn="17" endcolumn="54" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOFormattableStringFieldPackager" method="unpack" variable="tagLen" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'tagLen' (lines '219'-'242').
+</violation>
+<violation beginline="256" endline="259" begincolumn="17" endcolumn="69" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOFormattableStringFieldPackager" method="unpack" variable="len" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'len' (lines '256'-'259').
+</violation>
+<violation beginline="256" endline="261" begincolumn="17" endcolumn="69" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOFormattableStringFieldPackager" method="unpack" variable="len" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'len' (lines '256'-'261').
+</violation>
+</file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/ISOHeader.java">
 <violation beginline="77" endline="77" begincolumn="5" endcolumn="19" rule="CloneMethodReturnTypeMustMatchClassName" ruleset="Error Prone" package="org.jpos.iso" class="ISOHeader" method="clone" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#clonemethodreturntypemustmatchclassname" priority="3">
 The return type of the clone() method must be the class name when implements Cloneable
@@ -2098,6 +2162,14 @@ Found non-transient, non-static member. Please mark as transient or provide acce
 </violation>
 <violation beginline="44" endline="44" begincolumn="21" endcolumn="26" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.iso" class="IncomingListener" variable="remote" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
 Found non-transient, non-static member. Please mark as transient or provide accessors.
+</violation>
+</file>
+<file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/IsoFieldHeaderFormatter.java">
+<violation beginline="5" endline="5" begincolumn="21" endcolumn="28" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.iso" class="IsoFieldHeaderFormatter" variable="tagFirst" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
+Found non-transient, non-static member. Please mark as transient or provide accessors.
+</violation>
+<violation beginline="24" endline="31" begincolumn="12" endcolumn="5" rule="ReturnEmptyArrayRatherThanNull" ruleset="Error Prone" package="org.jpos.iso" class="IsoFieldHeaderFormatter" method="format" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#returnemptyarrayratherthannull" priority="1">
+Return an empty array rather than null.
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/LeftPadder.java">

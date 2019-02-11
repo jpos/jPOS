@@ -2,7 +2,7 @@
 <pmd xmlns="http://pmd.sourceforge.net/report/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/report/2.0.0 http://pmd.sourceforge.net/report_2_0_0.xsd"
-    version="6.8.0" timestamp="2019-02-01T22:44:21.509">
+    version="6.8.0" timestamp="2019-02-11T21:08:09.576">
 <file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/bsh/BSHActionTest.java">
 <violation beginline="36" endline="36" begincolumn="9" endcolumn="60" rule="UnnecessaryBooleanAssertion" ruleset="Error Prone" package="org.jpos.bsh" class="BSHActionTest" method="testActionPerformed" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#unnecessarybooleanassertion" priority="3">
 assertTrue(true) or similar statements are unnecessary
@@ -1402,6 +1402,11 @@ Avoid catching NullPointerException; consider removing the cause of the NPE.
 </violation>
 <violation beginline="188" endline="188" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.iso" class="ISOFieldTest" method="testWriteExternalThrowsNullPointerException1" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
 Avoid catching NullPointerException; consider removing the cause of the NPE.
+</violation>
+</file>
+<file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/iso/ISOFormattableStringFieldPackagerTest.java">
+<violation beginline="10" endline="10" begincolumn="43" endcolumn="47" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.iso" class="ISOFormattableStringFieldPackagerTest" method="packWithTagFirst" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;123&quot; appears 8 times in this file; the first occurrence is on line 10
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/iso/ISOMsg2Test.java">
