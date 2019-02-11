@@ -18,7 +18,6 @@
 
 package org.jpos.tlv;
 
-import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOUtil;
 import org.jpos.util.Loggeable;
 
@@ -68,10 +67,9 @@ public class TLVList implements Serializable, Loggeable {
      * Unpack a message.
      *
      * @param buf raw message
-     * @throws ISOException
      * @throws IllegalArgumentException
      */
-    public void unpack(byte[] buf) throws ISOException, IllegalArgumentException {
+    public void unpack(byte[] buf) throws IllegalArgumentException {
         unpack(buf, 0);
     }
 
@@ -94,11 +92,10 @@ public class TLVList implements Serializable, Loggeable {
      *
      * @param buf raw message
      * @param offset the offset
-     * @throws ISOException
      * @throws IndexOutOfBoundsException if {@code offset} exceeds {code buf.length}
      * @throws IllegalArgumentException
      */
-    public void unpack(byte[] buf, int offset) throws ISOException, IllegalArgumentException
+    public void unpack(byte[] buf, int offset) throws IllegalArgumentException
             , IndexOutOfBoundsException {
         ByteBuffer buffer = ByteBuffer.wrap(buf, offset, buf.length - offset);
         TLVMsg currentNode;
@@ -247,22 +244,21 @@ public class TLVList implements Serializable, Loggeable {
      *
      * @param buffer the buffer
      * @return TLVMsg
-     * @throws ISOException
      * @throws IllegalArgumentException
      */
-    private TLVMsg getTLVMsg(ByteBuffer buffer) throws ISOException, IllegalArgumentException {
+    private TLVMsg getTLVMsg(ByteBuffer buffer) throws IllegalArgumentException {
         int tag = getTAG(buffer);  // tag id 0x00 if tag not found
         if (tag == SKIP_BYTE1)
             return null;
 
         // Get Length if buffer remains!
         if (!buffer.hasRemaining())
-            throw new ISOException(String.format("BAD TLV FORMAT - tag (%x)"
+            throw new IllegalArgumentException(String.format("BAD TLV FORMAT: tag (%x)"
                     + " without length or value",tag)
             );
         int length = getValueLength(buffer);
         if (length > buffer.remaining())
-            throw new ISOException(String.format("BAD TLV FORMAT - tag (%x)"
+            throw new IllegalArgumentException(String.format("BAD TLV FORMAT: tag (%x)"
                     + " length (%d) exceeds available data", tag, length)
             );
         byte[] arrValue = new byte[length];

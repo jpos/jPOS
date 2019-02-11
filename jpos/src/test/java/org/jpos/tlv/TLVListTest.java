@@ -27,16 +27,15 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
-import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOUtil;
 import org.junit.Before;
 import org.junit.Test;
 
 public class TLVListTest {
 
-    static final String ISO_EXCEPT_EXCEEDS_AVAL = "BAD TLV FORMAT - tag (%x) length (%d) exceeds available data";
+    static final String EXCEPT_MSG_EXCEEDS_AVAL = "BAD TLV FORMAT: tag (%x) length (%d) exceeds available data";
 
-    static final String ISO_EXCEPT_WITHOUT_LEN  = "BAD TLV FORMAT - tag (%x) without length or value";
+    static final String EXCEPT_MSG_WITHOUT_LEN  = "BAD TLV FORMAT: tag (%x) without length or value";
 
     static final int TEST_TAG1      = 0x64;
     static final int TEST_TAG2      = 0x46;
@@ -318,7 +317,7 @@ public class TLVListTest {
     }
 
     @Test
-    public void testUnpack() throws Throwable {
+    public void testUnpack() {
         byte[] buf = ISOUtil.hex2byte("030100");
         instance.unpack(buf, 0);
         assertFalse(instance.getTags().isEmpty());
@@ -328,7 +327,7 @@ public class TLVListTest {
     }
 
     @Test
-    public void testUnpack1() throws Throwable {
+    public void testUnpack1() {
         byte[] buf = ISOUtil.hex2byte("000100");
         instance.unpack(buf, 0);
         assertFalse(instance.getTags().isEmpty());
@@ -338,7 +337,7 @@ public class TLVListTest {
     }
 
     @Test
-    public void testUnpack10() throws Throwable {
+    public void testUnpack10() {
         byte[] buf = ISOUtil.hex2byte("2080");
         instance.unpack(buf);
         assertFalse(instance.getTags().isEmpty());
@@ -348,7 +347,7 @@ public class TLVListTest {
     }
 
     @Test
-    public void testUnpack11() throws Throwable {
+    public void testUnpack11() {
         byte[] buf = ISOUtil.hex2byte("030100");
         instance.unpack(buf);
         assertFalse(instance.getTags().isEmpty());
@@ -358,14 +357,14 @@ public class TLVListTest {
     }
 
     @Test
-    public void testUnpack12() throws Throwable {
+    public void testUnpack12() {
         byte[] buf = ISOUtil.hex2byte("ff00");
         instance.unpack(buf);
         assertTrue(instance.getTags().isEmpty());
     }
 
     @Test
-    public void testUnpack2() throws Throwable {
+    public void testUnpack2() {
         byte[] buf = ISOUtil.hex2byte("000100");
         instance.unpack(buf);
         assertFalse(instance.getTags().isEmpty());
@@ -375,7 +374,7 @@ public class TLVListTest {
     }
 
     @Test
-    public void testUnpack3() throws Throwable {
+    public void testUnpack3() {
         byte[] buf = ISOUtil.hex2byte("0100");
         instance.unpack(buf);
         assertFalse(instance.getTags().isEmpty());
@@ -385,63 +384,63 @@ public class TLVListTest {
     }
 
     @Test
-    public void testUnpack4() throws Throwable {
+    public void testUnpack4() {
         byte[] buf = new byte[0];
         instance.unpack(buf);
         assertTrue(instance.getTags().isEmpty());
     }
 
     @Test
-    public void testUnpack5() throws Throwable {
+    public void testUnpack5() {
         byte[] buf = new byte[0];
         instance.unpack(buf, 0);
         assertTrue(instance.getTags().isEmpty());
     }
 
     @Test
-    public void testUnpack6() throws Throwable {
+    public void testUnpack6() {
         byte[] buf = ISOUtil.hex2byte("6000");
         instance.unpack(buf);
         assertFalse(instance.getTags().isEmpty());
     }
 
     @Test
-    public void testUnpack7() throws Throwable {
+    public void testUnpack7() {
         byte[] buf = new byte[2];
         instance.unpack(buf);
         assertTrue(instance.getTags().isEmpty());
     }
 
     @Test
-    public void testUnpack8() throws Throwable {
+    public void testUnpack8() {
         byte[] buf = new byte[3];
         instance.unpack(buf);
         assertTrue(instance.getTags().isEmpty());
     }
 
     @Test
-    public void testUnpack9() throws Throwable {
+    public void testUnpack9() {
         byte[] buf = ISOUtil.hex2byte("1e00");
         instance.unpack(buf);
         assertFalse(instance.getTags().isEmpty());
     }
 
     @Test
-    public void testUnpackWith0x00Padding() throws Throwable {
+    public void testUnpackWith0x00Padding() {
         byte[] buf = ISOUtil.hex2byte("fe0000");
         instance.unpack(buf, 0);
         assertFalse(instance.getTags().isEmpty());
     }
 
     @Test
-    public void testUnpackWith0x00Padding1() throws Throwable {
+    public void testUnpackWith0x00Padding1() {
         byte[] buf = ISOUtil.hex2byte("878000");
         instance.unpack(buf);
         assertFalse(instance.getTags().isEmpty());
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testUnpackInvalidLengthThrowsIllegalArgumentException() throws Throwable {
+    public void testUnpackInvalidLengthThrowsIllegalArgumentException() {
         byte[] buf = ISOUtil.hex2byte("14830000");
         try {
             instance.unpack(buf);
@@ -452,7 +451,7 @@ public class TLVListTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testUnpackInvalidTagThrowsIllegalArgumentException() throws Throwable {
+    public void testUnpackInvalidTagThrowsIllegalArgumentException() {
         byte[] buf = ISOUtil.hex2byte("007f");
         try {
             instance.unpack(buf);
@@ -463,7 +462,7 @@ public class TLVListTest {
     }
 
     @Test(expected = IndexOutOfBoundsException.class)
-    public void testUnpackThrowsIndexOutOfBounds() throws Throwable {
+    public void testUnpackThrowsIndexOutOfBounds() {
         byte[] buf = new byte[3];
         try {
             instance.unpack(buf, 100);
@@ -474,241 +473,241 @@ public class TLVListTest {
         }
     }
 
-    @Test(expected = ISOException.class)
-    public void testUnpackThrowsISOException() throws Throwable {
+    @Test(expected = IllegalArgumentException.class)
+    public void testUnpackThrowsIllegalArgumentException() {
         byte[] buf = ISOUtil.hex2byte("00ff80");
         try {
             instance.unpack(buf, 0);
-        } catch (ISOException ex) {
-            assertEquals(String.format(ISO_EXCEPT_WITHOUT_LEN, 0x80), ex.getMessage());
+        } catch (IllegalArgumentException ex) {
+            assertEquals(String.format(EXCEPT_MSG_WITHOUT_LEN, 0x80), ex.getMessage());
             assertTrue(instance.getTags().isEmpty());
             throw ex;
         }
     }
 
-    @Test(expected = ISOException.class)
-    public void testUnpackThrowsISOException1() throws Throwable {
+    @Test(expected = IllegalArgumentException.class)
+    public void testUnpackThrowsIllegalArgumentException1() {
         byte[] buf = ISOUtil.hex2byte("001e");
         try {
             instance.unpack(buf, 0);
-        } catch (ISOException ex) {
-            assertEquals(String.format(ISO_EXCEPT_WITHOUT_LEN, 0x1e), ex.getMessage());
+        } catch (IllegalArgumentException ex) {
+            assertEquals(String.format(EXCEPT_MSG_WITHOUT_LEN, 0x1e), ex.getMessage());
             assertTrue(instance.getTags().isEmpty());
             throw ex;
         }
     }
 
-    @Test(expected = ISOException.class)
-    public void testUnpackThrowsISOException10() throws Throwable {
+    @Test(expected = IllegalArgumentException.class)
+    public void testUnpackThrowsIllegalArgumentException10() {
         byte[] buf = ISOUtil.hex2byte("7f0007");
         try {
             instance.unpack(buf);
-        } catch (ISOException ex) {
-            assertEquals(String.format(ISO_EXCEPT_EXCEEDS_AVAL, 0x7f00, 0x07), ex.getMessage());
+        } catch (IllegalArgumentException ex) {
+            assertEquals(String.format(EXCEPT_MSG_EXCEEDS_AVAL, 0x7f00, 0x07), ex.getMessage());
             assertTrue(instance.getTags().isEmpty());
             throw ex;
         }
     }
 
-    @Test(expected = ISOException.class)
-    public void testUnpackThrowsISOException11() throws Throwable {
+    @Test(expected = IllegalArgumentException.class)
+    public void testUnpackThrowsIllegalArgumentException11() {
         byte[] buf = ISOUtil.hex2byte("ff1e");
         try {
             instance.unpack(buf, 0);
-        } catch (ISOException ex) {
-            assertEquals(String.format(ISO_EXCEPT_WITHOUT_LEN, 0x1e), ex.getMessage());
+        } catch (IllegalArgumentException ex) {
+            assertEquals(String.format(EXCEPT_MSG_WITHOUT_LEN, 0x1e), ex.getMessage());
             assertTrue(instance.getTags().isEmpty());
             throw ex;
         }
     }
 
-    @Test(expected = ISOException.class)
-    public void testUnpackThrowsISOException12() throws Throwable {
+    @Test(expected = IllegalArgumentException.class)
+    public void testUnpackThrowsIllegalArgumentException12() {
         byte[] buf = ISOUtil.hex2byte("fe2000");
         try {
             instance.unpack(buf, 0);
-        } catch (ISOException ex) {
-            assertEquals(String.format(ISO_EXCEPT_EXCEEDS_AVAL, 0xfe, 0x20), ex.getMessage());
+        } catch (IllegalArgumentException ex) {
+            assertEquals(String.format(EXCEPT_MSG_EXCEEDS_AVAL, 0xfe, 0x20), ex.getMessage());
             assertTrue(instance.getTags().isEmpty());
             throw ex;
         }
     }
 
-    @Test(expected = ISOException.class)
-    public void testUnpackThrowsISOException13() throws Throwable {
+    @Test(expected = IllegalArgumentException.class)
+    public void testUnpackThrowsIllegalArgumentException13() {
         byte[] buf = ISOUtil.hex2byte("000008");
         try {
             instance.unpack(buf, 0);
-        } catch (ISOException ex) {
-            assertEquals(String.format(ISO_EXCEPT_WITHOUT_LEN, 0x08), ex.getMessage());
+        } catch (IllegalArgumentException ex) {
+            assertEquals(String.format(EXCEPT_MSG_WITHOUT_LEN, 0x08), ex.getMessage());
             assertTrue(instance.getTags().isEmpty());
             throw ex;
         }
     }
 
-    @Test(expected = ISOException.class)
-    public void testUnpackThrowsISOException14() throws Throwable {
+    @Test(expected = IllegalArgumentException.class)
+    public void testUnpackThrowsIllegalArgumentException14() {
         byte[] buf = ISOUtil.hex2byte("7f00");
         try {
             instance.unpack(buf, 0);
-        } catch (ISOException ex) {
-            assertEquals(String.format(ISO_EXCEPT_WITHOUT_LEN, 0x7f00), ex.getMessage());
+        } catch (IllegalArgumentException ex) {
+            assertEquals(String.format(EXCEPT_MSG_WITHOUT_LEN, 0x7f00), ex.getMessage());
             assertTrue(instance.getTags().isEmpty());
             throw ex;
         }
     }
 
-    @Test(expected = ISOException.class)
-    public void testUnpackThrowsISOException15() throws Throwable {
+    @Test(expected = IllegalArgumentException.class)
+    public void testUnpackThrowsIllegalArgumentException15() {
         byte[] buf = ISOUtil.hex2byte("f8");
         try {
             instance.unpack(buf, 0);
-        } catch (ISOException ex) {
-            assertEquals(String.format(ISO_EXCEPT_WITHOUT_LEN, 0xf8), ex.getMessage());
+        } catch (IllegalArgumentException ex) {
+            assertEquals(String.format(EXCEPT_MSG_WITHOUT_LEN, 0xf8), ex.getMessage());
             assertTrue(instance.getTags().isEmpty());
             throw ex;
         }
     }
 
-    @Test(expected = ISOException.class)
-    public void testUnpackThrowsISOException16() throws Throwable {
+    @Test(expected = IllegalArgumentException.class)
+    public void testUnpackThrowsIllegalArgumentException16() {
         byte[] buf = ISOUtil.hex2byte("fe81ed");
         try {
             instance.unpack(buf);
-        } catch (ISOException ex) {
-            assertEquals(String.format(ISO_EXCEPT_EXCEEDS_AVAL, 0xfe, 0xed), ex.getMessage());
+        } catch (IllegalArgumentException ex) {
+            assertEquals(String.format(EXCEPT_MSG_EXCEEDS_AVAL, 0xfe, 0xed), ex.getMessage());
             assertTrue(instance.getTags().isEmpty());
             throw ex;
         }
     }
 
-    @Test(expected = ISOException.class)
-    public void testUnpackThrowsISOException17() throws Throwable {
+    @Test(expected = IllegalArgumentException.class)
+    public void testUnpackThrowsIllegalArgumentException17() {
         byte[] buf = ISOUtil.hex2byte("000001");
         try {
             instance.unpack(buf);
-        } catch (ISOException ex) {
-            assertEquals(String.format(ISO_EXCEPT_WITHOUT_LEN, 0x01), ex.getMessage());
+        } catch (IllegalArgumentException ex) {
+            assertEquals(String.format(EXCEPT_MSG_WITHOUT_LEN, 0x01), ex.getMessage());
             assertTrue(instance.getTags().isEmpty());
             throw ex;
         }
     }
 
-    @Test(expected = ISOException.class)
-    public void testUnpackThrowsISOException18() throws Throwable {
+    @Test(expected = IllegalArgumentException.class)
+    public void testUnpackThrowsIllegalArgumentException18() {
         byte[] buf = ISOUtil.hex2byte("878009");
         try {
             instance.unpack(buf);
-        } catch (ISOException ex) {
-            assertEquals(String.format(ISO_EXCEPT_WITHOUT_LEN, 0x09), ex.getMessage());
+        } catch (IllegalArgumentException ex) {
+            assertEquals(String.format(EXCEPT_MSG_WITHOUT_LEN, 0x09), ex.getMessage());
             assertFalse(instance.getTags().isEmpty());
             throw ex;
         }
     }
 
-    @Test(expected = ISOException.class)
-    public void testUnpackThrowsISOException2() throws Throwable {
+    @Test(expected = IllegalArgumentException.class)
+    public void testUnpackThrowsIllegalArgumentException2() {
         byte[] buf = ISOUtil.hex2byte("0001");
         try {
             instance.unpack(buf);
-        } catch (ISOException ex) {
-            assertEquals(String.format(ISO_EXCEPT_WITHOUT_LEN, 0x01), ex.getMessage());
+        } catch (IllegalArgumentException ex) {
+            assertEquals(String.format(EXCEPT_MSG_WITHOUT_LEN, 0x01), ex.getMessage());
             assertTrue(instance.getTags().isEmpty());
             throw ex;
         }
     }
 
-    @Test(expected = ISOException.class)
-    public void testUnpackThrowsISOException3() throws Throwable {
+    @Test(expected = IllegalArgumentException.class)
+    public void testUnpackThrowsIllegalArgumentException3() {
         byte[] buf = ISOUtil.hex2byte("fe00ed");
         try {
             instance.unpack(buf);
-        } catch (ISOException ex) {
-            assertEquals(String.format(ISO_EXCEPT_WITHOUT_LEN, 0xed), ex.getMessage());
+        } catch (IllegalArgumentException ex) {
+            assertEquals(String.format(EXCEPT_MSG_WITHOUT_LEN, 0xed), ex.getMessage());
             assertFalse(instance.getTags().isEmpty());
             throw ex;
         }
     }
 
-    @Test(expected = ISOException.class)
-    public void testUnpackThrowsISOException4() throws Throwable {
+    @Test(expected = IllegalArgumentException.class)
+    public void testUnpackThrowsIllegalArgumentException4() {
         byte[] buf = ISOUtil.hex2byte("00fe");
         try {
             instance.unpack(buf);
-        } catch (ISOException ex) {
-            assertEquals(String.format(ISO_EXCEPT_WITHOUT_LEN, 0xfe), ex.getMessage());
+        } catch (IllegalArgumentException ex) {
+            assertEquals(String.format(EXCEPT_MSG_WITHOUT_LEN, 0xfe), ex.getMessage());
             assertTrue(instance.getTags().isEmpty());
             throw ex;
         }
     }
 
-    @Test(expected = ISOException.class)
-    public void testUnpackThrowsISOException5() throws Throwable {
+    @Test(expected = IllegalArgumentException.class)
+    public void testUnpackThrowsISOException5() {
         byte[] buf = ISOUtil.hex2byte("fe7600");
         try {
             instance.unpack(buf);
-        } catch (ISOException ex) {
-            assertEquals(String.format(ISO_EXCEPT_EXCEEDS_AVAL, 0xfe, 0x76), ex.getMessage());
+        } catch (IllegalArgumentException ex) {
+            assertEquals(String.format(EXCEPT_MSG_EXCEEDS_AVAL, 0xfe, 0x76), ex.getMessage());
             assertTrue(instance.getTags().isEmpty());
             throw ex;
         }
     }
 
-    @Test(expected = ISOException.class)
-    public void testUnpackThrowsISOException6() throws Throwable {
+    @Test(expected = IllegalArgumentException.class)
+    public void testUnpackThrowsIllegalArgumentException6() {
         byte[] buf = ISOUtil.hex2byte("ff1e");
         try {
             instance.unpack(buf);
-        } catch (ISOException ex) {
-            assertEquals(String.format(ISO_EXCEPT_WITHOUT_LEN, 0x1e), ex.getMessage());
+        } catch (IllegalArgumentException ex) {
+            assertEquals(String.format(EXCEPT_MSG_WITHOUT_LEN, 0x1e), ex.getMessage());
             assertTrue(instance.getTags().isEmpty());
             throw ex;
         }
     }
 
-    @Test(expected = ISOException.class)
-    public void testUnpackThrowsISOException7() throws Throwable {
+    @Test(expected = IllegalArgumentException.class)
+    public void testUnpackThrowsIllegalArgumentException7() {
         byte[] buf = ISOUtil.hex2byte("01");
         try {
             instance.unpack(buf);
-        } catch (ISOException ex) {
-            assertEquals(String.format(ISO_EXCEPT_WITHOUT_LEN, 0x01), ex.getMessage());
+        } catch (IllegalArgumentException ex) {
+            assertEquals(String.format(EXCEPT_MSG_WITHOUT_LEN, 0x01), ex.getMessage());
             assertTrue(instance.getTags().isEmpty());
             throw ex;
         }
     }
 
-    @Test(expected = ISOException.class)
-    public void testUnpackThrowsISOException8() throws Throwable {
+    @Test(expected = IllegalArgumentException.class)
+    public void testUnpackThrowsIllegalArgumentException8() {
         byte[] buf = ISOUtil.hex2byte("7f00");
         try {
             instance.unpack(buf);
-        } catch (ISOException ex) {
-            assertEquals(String.format(ISO_EXCEPT_WITHOUT_LEN, 0x7f00), ex.getMessage());
+        } catch (IllegalArgumentException ex) {
+            assertEquals(String.format(EXCEPT_MSG_WITHOUT_LEN, 0x7f00), ex.getMessage());
             assertTrue(instance.getTags().isEmpty());
             throw ex;
         }
     }
 
-    @Test(expected = ISOException.class)
-    public void testUnpackThrowsISOException9() throws Throwable {
+    @Test(expected = IllegalArgumentException.class)
+    public void testUnpackThrowsIllegalArgumentException9() {
         byte[] buf = ISOUtil.hex2byte("00f801");
         try {
             instance.unpack(buf);
-        } catch (ISOException ex) {
-            assertEquals(String.format(ISO_EXCEPT_EXCEEDS_AVAL, 0xf8, 0x01), ex.getMessage());
+        } catch (IllegalArgumentException ex) {
+            assertEquals(String.format(EXCEPT_MSG_EXCEEDS_AVAL, 0xf8, 0x01), ex.getMessage());
             assertTrue(instance.getTags().isEmpty());
             throw ex;
         }
     }
 
     @Test(expected = NullPointerException.class)
-    public void testUnpackThrowsNullPointerException() throws Throwable {
+    public void testUnpackThrowsNullPointerException() {
         instance.unpack(null, 100);
     }
 
     @Test(expected = NullPointerException.class)
-    public void testUnpackThrowsNullPointerException1() throws Throwable {
+    public void testUnpackThrowsNullPointerException1() {
         instance.unpack(null);
     }
 
