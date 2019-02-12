@@ -2,7 +2,7 @@
 <pmd xmlns="http://pmd.sourceforge.net/report/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/report/2.0.0 http://pmd.sourceforge.net/report_2_0_0.xsd"
-    version="6.8.0" timestamp="2019-02-11T21:07:29.174">
+    version="6.8.0" timestamp="2019-02-12T00:12:09.660">
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/bsh/BSHAction.java">
 <violation beginline="30" endline="30" begincolumn="15" endcolumn="16" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.bsh" class="BSHAction" variable="ui" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
 Found non-transient, non-static member. Please mark as transient or provide accessors.
@@ -933,6 +933,11 @@ Found 'DD'-anomaly for variable 'tempLen' (lines '101'-'107').
 </violation>
 <violation beginline="106" endline="106" begincolumn="33" endcolumn="36" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.iso" class="IFEB_LLNUM" method="unpack" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
 Avoid using Literals in Conditional Statements
+</violation>
+</file>
+<file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/IFELPE_LLLCHAR.java">
+<violation beginline="68" endline="75" begincolumn="19" endcolumn="71" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="IFELPE_LLLCHAR" method="unpack" variable="len" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'len' (lines '68'-'75').
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/IFEP_LLCHAR.java">
