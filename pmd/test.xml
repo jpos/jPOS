@@ -2,7 +2,7 @@
 <pmd xmlns="http://pmd.sourceforge.net/report/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/report/2.0.0 http://pmd.sourceforge.net/report_2_0_0.xsd"
-    version="6.8.0" timestamp="2019-02-12T00:12:46.049">
+    version="6.8.0" timestamp="2019-02-13T22:52:09.030">
 <file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/bsh/BSHActionTest.java">
 <violation beginline="36" endline="36" begincolumn="9" endcolumn="60" rule="UnnecessaryBooleanAssertion" ruleset="Error Prone" package="org.jpos.bsh" class="BSHActionTest" method="testActionPerformed" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#unnecessarybooleanassertion" priority="3">
 assertTrue(true) or similar statements are unnecessary
@@ -3713,6 +3713,20 @@ Avoid catching NullPointerException; consider removing the cause of the NPE.
 </violation>
 <violation beginline="72" endline="72" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.iso.packager" class="ISOMsgFieldValidatingPackagerTest" method="testValidateThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
 Avoid catching NullPointerException; consider removing the cause of the NPE.
+</violation>
+</file>
+<file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/iso/packager/ISOStringFieldPackagerTruncateTest.java">
+<violation beginline="29" endline="29" begincolumn="25" endcolumn="25" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.iso.packager" class="ISOStringFieldPackagerTruncateTest" variable="p" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
+Found non-transient, non-static member. Please mark as transient or provide accessors.
+</violation>
+<violation beginline="32" endline="32" begincolumn="17" endcolumn="23" rule="JUnitSpelling" ruleset="Error Prone" package="org.jpos.iso.packager" class="ISOStringFieldPackagerTruncateTest" method="setup" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#junitspelling" priority="3">
+You may have misspelled a JUnit framework method (setUp or tearDown)
+</violation>
+<violation beginline="33" endline="33" begincolumn="70" endcolumn="70" rule="EmptyStatementNotInLoop" ruleset="Error Prone" package="org.jpos.iso.packager" class="ISOStringFieldPackagerTruncateTest" method="setup" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#emptystatementnotinloop" priority="3">
+An empty statement (semicolon) not part of a loop
+</violation>
+<violation beginline="42" endline="42" begincolumn="15" endcolumn="20" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.iso.packager" class="ISOStringFieldPackagerTruncateTest" method="test6" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;59.3&quot; appears 6 times in this file; the first occurrence is on line 42
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/iso/packager/NativePackagerTest.java">

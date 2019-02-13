@@ -2,7 +2,7 @@
 <pmd xmlns="http://pmd.sourceforge.net/report/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/report/2.0.0 http://pmd.sourceforge.net/report_2_0_0.xsd"
-    version="6.8.0" timestamp="2019-02-12T00:12:09.660">
+    version="6.8.0" timestamp="2019-02-13T22:51:30.296">
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/bsh/BSHAction.java">
 <violation beginline="30" endline="30" begincolumn="15" endcolumn="16" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.bsh" class="BSHAction" variable="ui" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
 Found non-transient, non-static member. Please mark as transient or provide accessors.
@@ -1243,7 +1243,10 @@ Found non-transient, non-static member. Please mark as transient or provide acce
 <violation beginline="63" endline="63" begincolumn="23" endcolumn="25" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.iso" class="ISOFieldPackager" variable="pad" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
 Found non-transient, non-static member. Please mark as transient or provide accessors.
 </violation>
-<violation beginline="71" endline="71" begincolumn="28" endcolumn="31" rule="NullAssignment" ruleset="Error Prone" package="org.jpos.iso" class="ISOFieldPackager" method="ISOFieldPackager" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#nullassignment" priority="3">
+<violation beginline="64" endline="64" begincolumn="23" endcolumn="26" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.iso" class="ISOFieldPackager" variable="trim" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
+Found non-transient, non-static member. Please mark as transient or provide accessors.
+</violation>
+<violation beginline="72" endline="72" begincolumn="28" endcolumn="31" rule="NullAssignment" ruleset="Error Prone" package="org.jpos.iso" class="ISOFieldPackager" method="ISOFieldPackager" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#nullassignment" priority="3">
 Assigning an Object to null is a code smell.  Consider refactoring.
 </violation>
 </file>
@@ -3073,32 +3076,35 @@ Found 'DD'-anomaly for variable 'res' (lines '358'-'361').
 <violation beginline="377" endline="377" begincolumn="31" endcolumn="40" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.iso.packager" class="GenericPackager$GenericContentHandler" variable="fieldStack" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
 Found non-transient, non-static member. Please mark as transient or provide accessors.
 </violation>
-<violation beginline="400" endline="475" begincolumn="24" endcolumn="49" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso.packager" class="GenericPackager$GenericContentHandler" method="startElement" variable="id" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'id' (lines '400'-'475').
+<violation beginline="400" endline="478" begincolumn="24" endcolumn="49" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso.packager" class="GenericPackager$GenericContentHandler" method="startElement" variable="id" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'id' (lines '400'-'478').
 </violation>
-<violation beginline="401" endline="475" begincolumn="24" endcolumn="52" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso.packager" class="GenericPackager$GenericContentHandler" method="startElement" variable="type" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'type' (lines '401'-'475').
+<violation beginline="401" endline="478" begincolumn="24" endcolumn="52" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso.packager" class="GenericPackager$GenericContentHandler" method="startElement" variable="type" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'type' (lines '401'-'478').
 </violation>
-<violation beginline="402" endline="475" begincolumn="24" endcolumn="51" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso.packager" class="GenericPackager$GenericContentHandler" method="startElement" variable="name" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'name' (lines '402'-'475').
+<violation beginline="402" endline="478" begincolumn="24" endcolumn="51" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso.packager" class="GenericPackager$GenericContentHandler" method="startElement" variable="name" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'name' (lines '402'-'478').
 </violation>
-<violation beginline="403" endline="475" begincolumn="24" endcolumn="53" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso.packager" class="GenericPackager$GenericContentHandler" method="startElement" variable="size" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'size' (lines '403'-'475').
+<violation beginline="403" endline="478" begincolumn="24" endcolumn="53" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso.packager" class="GenericPackager$GenericContentHandler" method="startElement" variable="size" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'size' (lines '403'-'478').
 </violation>
-<violation beginline="404" endline="475" begincolumn="24" endcolumn="50" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso.packager" class="GenericPackager$GenericContentHandler" method="startElement" variable="pad" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'pad' (lines '404'-'475').
+<violation beginline="404" endline="478" begincolumn="24" endcolumn="50" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso.packager" class="GenericPackager$GenericContentHandler" method="startElement" variable="pad" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'pad' (lines '404'-'478').
 </violation>
-<violation beginline="406" endline="475" begincolumn="24" endcolumn="53" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso.packager" class="GenericPackager$GenericContentHandler" method="startElement" variable="token" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'token' (lines '406'-'475').
+<violation beginline="406" endline="478" begincolumn="24" endcolumn="53" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso.packager" class="GenericPackager$GenericContentHandler" method="startElement" variable="token" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'token' (lines '406'-'478').
 </violation>
-<violation beginline="481" endline="487" begincolumn="21" endcolumn="43" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso.packager" class="GenericPackager$GenericContentHandler" method="makeFieldArray" variable="ent" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'UR'-anomaly for variable 'ent' (lines '481'-'487').
+<violation beginline="407" endline="478" begincolumn="24" endcolumn="51" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso.packager" class="GenericPackager$GenericContentHandler" method="startElement" variable="trim" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'trim' (lines '407'-'478').
 </violation>
-<violation beginline="491" endline="495" begincolumn="16" endcolumn="49" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso.packager" class="GenericPackager$GenericContentHandler" method="makeFieldArray" variable="fld" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'fld' (lines '491'-'495').
+<violation beginline="484" endline="490" begincolumn="21" endcolumn="43" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso.packager" class="GenericPackager$GenericContentHandler" method="makeFieldArray" variable="ent" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'UR'-anomaly for variable 'ent' (lines '484'-'490').
 </violation>
-<violation beginline="495" endline="495" begincolumn="16" endcolumn="49" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso.packager" class="GenericPackager$GenericContentHandler" method="makeFieldArray" variable="fld" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'fld' (lines '495'-'495').
+<violation beginline="494" endline="498" begincolumn="16" endcolumn="49" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso.packager" class="GenericPackager$GenericContentHandler" method="makeFieldArray" variable="fld" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'fld' (lines '494'-'498').
+</violation>
+<violation beginline="498" endline="498" begincolumn="16" endcolumn="49" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso.packager" class="GenericPackager$GenericContentHandler" method="makeFieldArray" variable="fld" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'fld' (lines '498'-'498').
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/packager/GenericSubFieldPackager.java">
