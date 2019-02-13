@@ -61,6 +61,7 @@ public abstract class ISOFieldPackager {
     private int len;
     private String description;
     protected boolean pad;
+    protected boolean trim;
 
     /**
      * Default Constructor
@@ -94,6 +95,10 @@ public abstract class ISOFieldPackager {
 
     public void setPad(boolean pad) {
         this.pad = pad;
+    }
+
+    public void setTrim(boolean trim) {
+        this.trim = trim;
     }
 
     public abstract int getMaxPackedLength();

@@ -404,6 +404,7 @@ public class GenericPackager
                 String pad  = atts.getValue("pad");
                 // Modified for using TaggedFieldPackager
                 String token = atts.getValue("token");
+                String trim = atts.getValue("trim");
 
                 if (localName.equals("isopackager"))
                 {
@@ -432,6 +433,7 @@ public class GenericPackager
                     f.setDescription(name);
                     f.setLength(Integer.parseInt(size));
                     f.setPad(Boolean.parseBoolean(pad));
+
                     // Modified for using TaggedFieldPackager
                     if( f instanceof TaggedFieldPackager){
                       ((TaggedFieldPackager)f).setToken( token );
@@ -458,6 +460,7 @@ public class GenericPackager
                     f.setDescription(name);
                     f.setLength(Integer.parseInt(size));
                     f.setPad(Boolean.parseBoolean(pad));
+                    f.setTrim(Boolean.parseBoolean(trim));
                     // Modified for using TaggedFieldPackager
                     if( f instanceof TaggedFieldPackager){
                       ((TaggedFieldPackager)f).setToken( token );

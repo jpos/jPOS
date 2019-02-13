@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE isopackager PUBLIC
+        "-//jPOS/jPOS Generic Packager DTD 1.0//EN"
+        "http://jpos.org/dtd/generic-packager-1.0.dtd">
+
+<isopackager>
+  <isofield
+      id="0"
+      length="4"
+      name="MESSAGE TYPE INDICATOR"
+      pad="true"
+      class="org.jpos.iso.IFB_NUMERIC"/>
+
+  <isofield
+      id="1"
+      length="16"
+      name="BIT MAP"
+      class="org.jpos.iso.IFB_BITMAP"/>
+
+   <isofieldpackager
+      id="59" 
+      length="14"
+      name="National Point-of-Service Geographic Data"
+      firstField="1"
+      pad="true"
+      class="org.jpos.iso.IFB_LLHBINARY"
+      emitBitmap="false"
+      packager="org.jpos.iso.packager.GenericSubFieldPackager">
+      <isofield
+          id="1"
+          length="2"
+          name="Field 59.1"
+          class="org.jpos.iso.IFE_CHAR"/>
+       <isofield
+          id="2"
+          length="3"
+          name="Field 59.2"
+          class="org.jpos.iso.IFE_CHAR"/>
+       <isofield
+          id="3"
+          length="9"
+          pad="true"
+          trim="true"
+          name="Field 59.3"
+          class="org.jpos.iso.IFE_CHAR"/>
+     </isofieldpackager>   
+</isopackager>
+

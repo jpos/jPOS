@@ -173,7 +173,7 @@ public class ISOStringFieldPackager extends ISOFieldPackager
             if (len == -1) {
                 // The prefixer doesn't know how long the field is, so use
                 // maxLength instead
-                len = getLength();
+                len = trim ? Math.min(getLength(),b.length-offset) : getLength();
             }
             else if (getLength() > 0 && len > getLength())
                 throw new ISOException("Field length " + len + " too long. Max: " + getLength());
@@ -217,6 +217,13 @@ public class ISOStringFieldPackager extends ISOFieldPackager
         {
             throw new ISOException(makeExceptionMessage(c, "unpacking"), e);
         }
+    }
+
+    @Override
+    public void setTrim (boolean trim) {
+        super.setTrim (trim);
+        if (trim)
+            padder = NullPadder.INSTANCE; // no padding
     }
 
     /**
