@@ -1252,6 +1252,69 @@ public class BaseSMAdapter
         return result;
     }
 
+    @Override
+    public byte[] encryptData(SecureKey encKey, byte[] data
+            , AlgorithmParameterSpec algspec, byte[] iv) throws SMException {
+        List<Loggeable> cmdParameters = new ArrayList<>();
+        cmdParameters.add(new SimpleMsg("parameter", "Encription Key", encKey));
+        cmdParameters.add(new SimpleMsg("parameter", "Data", ISOUtil.hexString(data)));
+        if (algspec != null)
+            cmdParameters.add(new SimpleMsg("parameter", "Algorithm Spec", algspec));
+        if (iv != null)
+            cmdParameters.add(new SimpleMsg("parameter", "Initialization Vector", ISOUtil.hexString(iv)));
+        LogEvent evt = new LogEvent(this, "s-m-operation");
+        evt.addMessage(new SimpleMsg("command", "Encrypt Data", cmdParameters));
+        byte[] result = null;
+        try {
+            result = encryptDataImpl(encKey, data, algspec, iv);
+            List<Loggeable> r = new ArrayList<>();
+            r.add(new SimpleMsg("result", "Encrypted Data", result));
+            if (iv != null)
+                r.add(new SimpleMsg("result", "Initialization Vector", iv));
+            evt.addMessage(new SimpleMsg("results", r));
+        } catch (SMException ex) {
+            evt.addMessage(ex);
+            throw ex;
+        } catch (RuntimeException ex) {
+            evt.addMessage(ex);
+            throw new SMException(ex);
+        } finally {
+            Logger.log(evt);
+        }
+        return result;
+    }
+
+    @Override
+    public byte[] decryptData(SecureKey privKey, byte[] data
+            , AlgorithmParameterSpec algspec, byte[] iv) throws SMException {
+        List<Loggeable> cmdParameters = new ArrayList<>();
+        cmdParameters.add(new SimpleMsg("parameter", "Decription Key", privKey));
+        cmdParameters.add(new SimpleMsg("parameter", "Encrypted Data", ISOUtil.hexString(data)));
+        if (algspec != null)
+            cmdParameters.add(new SimpleMsg("parameter", "Algorithm Spec", algspec));
+        if (iv != null)
+            cmdParameters.add(new SimpleMsg("parameter", "Initialization Vector", ISOUtil.hexString(iv)));
+        LogEvent evt = new LogEvent(this, "s-m-operation");
+        evt.addMessage(new SimpleMsg("command", "Decrypt Data", cmdParameters));
+        byte[] result = null;
+        try {
+            result = decryptDataImpl(privKey, data, algspec, iv);
+            List<Loggeable> r = new ArrayList<>();
+            r.add(new SimpleMsg("result", "Decrypted Data", result));
+            if (iv != null)
+                r.add(new SimpleMsg("result", "Initialization Vector", iv));
+            evt.addMessage(new SimpleMsg("results", r));
+        } catch (SMException ex) {
+            evt.addMessage(ex);
+            throw ex;
+        } catch (RuntimeException ex) {
+            evt.addMessage(ex);
+            throw new SMException(ex);
+        } finally {
+            Logger.log(evt);
+        }
+        return result;
+    }
 
     @Override
     public void eraseOldLMK () throws SMException {
@@ -1927,6 +1990,38 @@ public class BaseSMAdapter
     protected byte[] calculateSignatureImpl(MessageDigest hash, SecurePrivateKey privateKey
             ,byte[] data) throws SMException {
         throw  new SMException("Operation not supported in: " + this.getClass().getName());
+    }
+
+    /**
+     * Encrypts clear Data Block with specified cipher.
+     *
+     * @param encKey the data encryption key
+     * @param data data block to encrypt
+     * @param algspec algorithm specification
+     * @param iv the inital vector
+     * @return encrypted data block
+     * @throws SMException
+     */
+    protected byte[] encryptDataImpl(SecureKey encKey, byte[] data
+            , AlgorithmParameterSpec algspec, byte[] iv)
+            throws SMException {
+        throw new UnsupportedOperationException("Operation not supported in: " + this.getClass().getName());
+    }
+
+    /**
+     * Decrypts Data Block encrypted with assymetric cipher.
+     *
+     * @param decKey the data decryption key
+     * @param data data block to decrypt
+     * @param algspec algorithm specification
+     * @param iv the inital vector
+     * @return decrypted data block
+     * @throws SMException
+     */
+    protected byte[] decryptDataImpl(SecureKey decKey, byte[] data
+            , AlgorithmParameterSpec algspec, byte[] iv)
+            throws SMException {
+        throw new UnsupportedOperationException("Operation not supported in: " + this.getClass().getName());
     }
 
     /**

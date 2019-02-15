@@ -1358,6 +1358,58 @@ public interface SMAdapter {
 
 
     /**
+     * Encrypts clear Data Block with specified cipher.
+     * <p>
+     * NOTE: This is a more general version of the
+     * {@link #encryptData(CipherMode, SecureDESKey, Object, byte[], byte[])}
+     *
+     * @param encKey the data encryption key e.g:
+     *        <ul>
+     *          <li>when RSA public key encapsulated in {@code SecurePrivateKey}
+     *          <li>when DES/TDES DEK {@code SecureDESKey}
+     *        </ul>
+     * @param data clear data block to encrypt
+     * @param algspec algorithm specification or {@code null} if not required.
+     *        Used to pass additional algorithm parameters e.g:
+     *        {@code OAEPParameterSpec} or custom extension of
+     *        {@code AlgorithmParameterSpec} to pass symetric cipher mode ECB, CBC
+     * @param iv the inital vector or {@code null} if not used <i>(e.g: RSA
+     *        cipher or ECB mode)</i>. If used, after operation will contain new
+     *        {@code iv} value.
+     * @return encrypted data block
+     * @throws SMException
+     */
+    byte[] encryptData(SecureKey encKey, byte[] data
+            , AlgorithmParameterSpec algspec, byte[] iv) throws SMException;
+
+
+    /**
+     * Decrypts encrypted Data Block with specified cipher.
+     * <p>
+     * NOTE: This is a more general version of the
+     * {@link #decryptData(CipherMode, SecureDESKey, Object, byte[], byte[])}
+     *
+     * @param decKey the data decryption key e.g:
+     *        <ul>
+     *          <li>when RSA private key encapsulated in {@code SecurePrivateKey}
+     *          <li>when DES/TDES DEK {@code SecureDESKey}
+     *        </ul>
+     * @param data encrypted data block to decrypt
+     * @param algspec algorithm specification or {@code null} if not required.
+     *        Used to pass additional algorithm parameters e.g:
+     *        {@code OAEPParameterSpec} or custom extension of
+     *        {@code AlgorithmParameterSpec} to pass symetric cipher mode ECB, CBC
+     * @param iv the inital vector or {@code null} if not used <i>(e.g: RSA
+     *        cipher or ECB mode)</i>. If used, after operation will contain new
+     *        {@code iv} value.
+     * @return decrypted data block
+     * @throws SMException
+     */
+    byte[] decryptData(SecureKey decKey, byte[] data
+            , AlgorithmParameterSpec algspec, byte[] iv) throws SMException;
+
+
+    /**
      * Erase the key change storage area of memory
      *
      * It is recommended that this command is used after keys stored
