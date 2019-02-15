@@ -411,7 +411,7 @@ public class BaseSMAdapter
         cmdParameters.add(new SimpleMsg("parameter", "Excluded PINs list", excludes));
 
       LogEvent evt = new LogEvent(this, "s-m-operation");
-      evt.addMessage(new SimpleMsg("command", "Generate PIN", cmdParameters.toArray(new Loggeable[cmdParameters.size()])));
+      evt.addMessage(new SimpleMsg("command", "Generate PIN", cmdParameters));
       EncryptedPIN result = null;
       try {
         result = generatePINImpl(accountNumber, pinLen, excludes);
@@ -438,7 +438,7 @@ public class BaseSMAdapter
         cmdParameters.add(new SimpleMsg("parameter", "Fields", fields));
 
       LogEvent evt = new LogEvent(this, "s-m-operation");
-      evt.addMessage(new SimpleMsg("command", "Print PIN", cmdParameters.toArray(new Loggeable[0])));
+      evt.addMessage(new SimpleMsg("command", "Print PIN", cmdParameters));
       try {
           printPINImpl(accountNo, pinUnderKd1, kd1, template, fields);
       } catch (Exception e) {
@@ -468,7 +468,7 @@ public class BaseSMAdapter
       if(excludes != null && !excludes.isEmpty())
         cmdParameters.add(new SimpleMsg("parameter", "Excluded PINs list", excludes));
       LogEvent evt = new LogEvent(this, "s-m-operation");
-      evt.addMessage(new SimpleMsg("command", "Calculate PVV", cmdParameters.toArray(new Loggeable[cmdParameters.size()])));
+      evt.addMessage(new SimpleMsg("command", "Calculate PVV", cmdParameters));
       String result = null;
       try {
         result = calculatePVVImpl(pinUnderLMK, pvkA, pvkB, pvkIdx, excludes);
@@ -503,7 +503,7 @@ public class BaseSMAdapter
       if(excludes != null && !excludes.isEmpty())
         cmdParameters.add(new SimpleMsg("parameter", "Excluded PINs list", excludes));
       LogEvent evt = new LogEvent(this, "s-m-operation");
-      evt.addMessage(new SimpleMsg("command", "Calculate PVV", cmdParameters.toArray(new Loggeable[cmdParameters.size()])));
+      evt.addMessage(new SimpleMsg("command", "Calculate PVV", cmdParameters));
       String result = null;
       try {
         result = calculatePVVImpl(pinUnderKd1, kd1, pvkA, pvkB, pvkIdx, excludes);
@@ -566,7 +566,7 @@ public class BaseSMAdapter
       if(excludes != null && !excludes.isEmpty())
         cmdParameters.add(new SimpleMsg("parameter", "Excluded PINs list", excludes));
       LogEvent evt = new LogEvent(this, "s-m-operation");
-      evt.addMessage(new SimpleMsg("command", "Calculate PIN offset", cmdParameters.toArray(new Loggeable[cmdParameters.size()])));
+      evt.addMessage(new SimpleMsg("command", "Calculate PIN offset", cmdParameters));
       String result = null;
       try {
         result = calculateIBMPINOffsetImpl(pinUnderLmk, pvk,
@@ -604,7 +604,7 @@ public class BaseSMAdapter
       if(excludes != null && !excludes.isEmpty())
         cmdParameters.add(new SimpleMsg("parameter", "Excluded PINs list", excludes));
       LogEvent evt = new LogEvent(this, "s-m-operation");
-      evt.addMessage(new SimpleMsg("command", "Calculate PIN offset", cmdParameters.toArray(new Loggeable[cmdParameters.size()])));
+      evt.addMessage(new SimpleMsg("command", "Calculate PIN offset", cmdParameters));
       String result = null;
       try {
         result = calculateIBMPINOffsetImpl(pinUnderKd1, kd1, pvk,
@@ -1010,7 +1010,8 @@ public class BaseSMAdapter
       cmdParameters.add(new SimpleMsg("parameter", "Destination PIN Block Format", destinationPINBlockFormat));
       LogEvent evt = new LogEvent(this, "s-m-operation");
       evt.addMessage(new SimpleMsg("command", "Translate PIN block format and Generate Secure Messaging MAC"
-                    ,cmdParameters.toArray(new Loggeable[cmdParameters.size()])));
+                    ,cmdParameters)
+      );
       try {
         Pair<EncryptedPIN,byte[]> r = translatePINGenerateSM_MACImpl( mkdm, skdm
                 ,padm, imksmi, accountNo, acctSeqNo, atc, arqc, data, currentPIN
