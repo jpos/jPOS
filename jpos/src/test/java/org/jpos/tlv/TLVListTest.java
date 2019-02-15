@@ -18,732 +18,855 @@
 
 package org.jpos.tlv;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
-import java.nio.BufferUnderflowException;
-import java.util.Enumeration;
+import java.util.Arrays;
+import java.util.List;
 
-import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOUtil;
-import static org.junit.Assert.assertArrayEquals;
+import org.jpos.tlv.TLVList.TLVListBuilder;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 public class TLVListTest {
 
-    static final String ISO_EXCEPT_EXCEEDS_AVAL = "BAD TLV FORMAT - tag (%x) length (%d) exceeds available data.";
+    static final String EXCEPT_MSG_EXCEEDS_AVAL = "BAD TLV FORMAT: tag (%x) length (%d) exceeds available data";
 
-    static final String ISO_EXCEPT_WITHOUT_LEN  = "BAD TLV FORMAT - tag (%x) without length or value";
+    static final String EXCEPT_MSG_WITHOUT_LEN  = "BAD TLV FORMAT: tag (%x) without length or value";
 
-    @Rule public ExpectedException exception = ExpectedException.none();
+    static final TLVListBuilder BUILDER_DEFAULT = TLVListBuilder.createInstance();
 
-    TLVList tLVList;
+    static final TLVListBuilder BUILDER_FT1     = TLVListBuilder.createInstance()
+            .fixedTagSize(1);
+
+    static final TLVListBuilder BUILDER_FT2     = TLVListBuilder.createInstance()
+            .fixedTagSize(2);
+
+    static final TLVListBuilder BUILDER_FL1     = TLVListBuilder.createInstance()
+            .fixedLengthSize(1);
+
+    static final TLVListBuilder BUILDER_FL2     = TLVListBuilder.createInstance()
+            .fixedLengthSize(2);
+
+    static final TLVListBuilder BUILDER_FT1FL2  = TLVListBuilder.createInstance()
+            .fixedTagSize(1)
+            .fixedLengthSize(2);
+
+    static final int TEST_TAG1      = 0x64;
+    static final int TEST_TAG2      = 0x46;
+    static final int TEST_TAG3      = 0x1fe8;
+
+    TLVList instance;
 
     @Before
     public void beforeTest() {
-      tLVList = new TLVList();
+        instance = BUILDER_DEFAULT.build();
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testBuilderFixedTagSize() {
+        TLVListBuilder.createInstance().fixedTagSize(0);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testBuilderFixedLengthSize() {
+        TLVListBuilder.createInstance().fixedLengthSize(0);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testBuilderFixedLengthSize2() {
+        TLVListBuilder.createInstance().fixedLengthSize(5);
     }
 
     @Test
-    public void testAppend() throws Throwable {
-        tLVList.append(100, new byte[3]);
-        assertTrue("tLVList.elements().hasMoreElements()", tLVList.elements().hasMoreElements());
+    public void testAppend() {
+        instance.append(TEST_TAG1, new byte[3]);
+        assertFalse(instance.getTags().isEmpty());
     }
 
     @Test
-    public void testAppend1() throws Throwable {
-        tLVList.append(new TLVMsg(100, new byte[0]));
-        assertTrue("tLVList.elements().hasMoreElements()", tLVList.elements().hasMoreElements());
+    public void testAppend1() {
+        instance.append(instance.createTLVMsg(TEST_TAG1, new byte[0]));
+        assertFalse(instance.getTags().isEmpty());
     }
 
-    @Test
-    public void testConstructor() throws Throwable {
-        assertFalse("tLVList.elements().hasMoreElements()", tLVList.elements().hasMoreElements());
-    }
-
-    @Test
-    public void testDeleteByIndex() throws Throwable {
-        tLVList.append(100, new byte[0]);
-        tLVList.deleteByIndex(0);
-        assertFalse("tLVList.elements().hasMoreElements()", tLVList.elements().hasMoreElements());
-    }
-
-    @Test(expected=IndexOutOfBoundsException.class)
-    public void testDeleteByIndexThrowsIndexOutOfBoundsException() throws Throwable {
-        tLVList.deleteByIndex(100);
-    }
-
-    @Test
-    public void testDeleteByTag() throws Throwable {
-        tLVList.append(100, new byte[1]);
-        tLVList.append(0, new byte[0]);
-        tLVList.deleteByTag(100);
-        assertTrue("tLVList.elements().hasMoreElements()", tLVList.elements().hasMoreElements());
-    }
-
-    @Test
-    public void testDeleteByTag1() throws Throwable {
-        tLVList.append(100, new byte[0]);
-        tLVList.deleteByTag(1000);
-        assertTrue("tLVList.elements().hasMoreElements()", tLVList.elements().hasMoreElements());
-    }
-
-    @Test
-    public void testDeleteByTag2() throws Throwable {
-        tLVList.deleteByTag(100);
-        assertFalse("tLVList.elements().hasMoreElements()", tLVList.elements().hasMoreElements());
-    }
-
-    @Test
-    public void testDeleteByTag3() throws Throwable {
-        tLVList.append(0, new byte[0]);
-        tLVList.deleteByTag(0);
-        assertFalse("tLVList.elements().hasMoreElements()", tLVList.elements().hasMoreElements());
-    }
-
-    @Test
-    public void testDeleteByTagThrowsNullPointerException() throws Throwable {
-        tLVList.append(100, new byte[1]);
-        tLVList.append(null);
-        exception.expect(NullPointerException.class);
+    @Test(expected = NullPointerException.class)
+    public void testAppendThrowsNPE() {
+        instance.append(TEST_TAG1, new byte[2]);
         try {
-            tLVList.deleteByTag(1000);
+            instance.append(null);
         } catch (RuntimeException ex) {
-            assertTrue("tLVList.elements().hasMoreElements()", tLVList.elements().hasMoreElements());
+            assertFalse(instance.getTags().isEmpty());
             throw ex;
         }
     }
 
-    @Test
-    public void testDeleteByTagThrowsNullPointerException2() throws Throwable {
-        tLVList.append(new TLVMsg());
-        tLVList.append(100, new byte[2]);
-        tLVList.append(null);
-        exception.expect(NullPointerException.class);
-        try {
-            tLVList.deleteByTag(100);
-        } catch (RuntimeException ex) {
-            assertTrue("tLVList.elements().hasMoreElements()", tLVList.elements().hasMoreElements());
-            throw ex;
-        }
+    @Test(expected = IllegalArgumentException.class)
+    public void testAppendMinTagBelow() {
+        instance.append(0x00, new byte[0]);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testAppendMinTagAbove() {
+        instance.append(0xff, new byte[0]);
     }
 
     @Test
-    public void testDeleteByTagThrowsNullPointerException3() throws Throwable {
-        tLVList.append(100, new byte[1]);
-        tLVList.append(null);
-        exception.expect(NullPointerException.class);
-        try {
-            tLVList.deleteByTag(100);
-        } catch (RuntimeException ex) {
-            assertTrue("tLVList.elements().hasMoreElements()", tLVList.elements().hasMoreElements());
-            throw ex;
-        }
+    public void testAppendTwoBytesTag() {
+        byte[] expected = ISOUtil.hex2byte("37D47C");
+        instance.append(0x5f37, expected);
+        byte[] result = instance.pack();
+        assertEquals(6, result.length);
+        assertArrayEquals(ISOUtil.hex2byte("5F37"), Arrays.copyOf(result, 2));
+        assertArrayEquals(expected, Arrays.copyOfRange(result, 3, 6));
     }
 
     @Test
-    public void testElements() throws Throwable {
-        Enumeration result = tLVList.elements();
-        assertFalse("result.hasMoreElements()", result.hasMoreElements());
+    public void testAppendThreeBytesTag() {
+        byte[] expected = ISOUtil.hex2byte("37D47C");
+        instance.append(0xbf5f37, expected);
+        byte[] result = instance.pack();
+        assertEquals(7, result.length);
+        assertArrayEquals(ISOUtil.hex2byte("BF5F37"), Arrays.copyOf(result, 3));
+        assertArrayEquals(expected, Arrays.copyOfRange(result, 4, 7));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testAppendInvalidByteLow() {
+        instance.append(0x3f, new byte[0]);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testAppendInvalidByteHigh() {
+        instance.append(0x9f, new byte[0]);
     }
 
     @Test
-    public void testFind() throws Throwable {
-        tLVList.append(100, new byte[1]);
-        TLVMsg tlvToAppend = new TLVMsg(0x07, null);
-        tLVList.append(tlvToAppend);
-        TLVMsg result = tLVList.find(0x07);
-        assertSame("result", tlvToAppend, result);
+    public void testAppendFixedTagOneMinTag() {
+        instance = BUILDER_FT1.build();
+        instance.append(0x00, new byte[0]);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testAppendFixedTagOneMinTagBelow() {
+        instance = BUILDER_FT1.build();
+        instance.append(-0x01, new byte[0]);
     }
 
     @Test
-    public void testFind1() throws Throwable {
-        TLVMsg tlvToAppend = new TLVMsg();
-        tLVList.append(tlvToAppend);
-        TLVMsg result = tLVList.find(0);
-        assertSame("result", tlvToAppend, result);
+    public void testAppendFixedTagOneMaxTag() {
+        instance = BUILDER_FT1.build();
+        instance.append(0xff, new byte[0]);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testAppendFixedTagOneMaxTagAbove() {
+        instance = BUILDER_FT1.build();
+        instance.append(0x100, new byte[0]);
     }
 
     @Test
-    public void testFind2() throws Throwable {
-        tLVList.append(1000, new byte[0]);
-        TLVMsg result = tLVList.find(100);
-        assertNull("result", result);
+    public void testAppendFixedTagOneByteHigh() {
+        instance = BUILDER_FT1.build();
+        instance.append(0x9f, new byte[0]);
     }
 
     @Test
-    public void testFind3() throws Throwable {
-        TLVMsg result = tLVList.find(100);
-        assertNull("result", result);
+    public void testAppendFixedLengthOneNull() {
+        instance = BUILDER_FL1.build();
+        instance.append(TEST_TAG1, (byte[]) null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testAppendFixedLengthOneAbove() {
+        instance = BUILDER_FL1.build();
+        instance.append(TEST_TAG1, new byte[0x100]);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testAppendInvalidTwoBytesTagLow() {
+        instance.append(0x6f37, new byte[0]);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testAppendInvalidTwoBytesTagHigh() {
+        instance.append(0xaf37, new byte[0]);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testAppendInvalidTwoBytesTagHighEndZero() {
+        instance.append(0xbf00, new byte[0]);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testAppendInvalidThreeBytesTagHigh() {
+        instance.append(0xbf4f37, new byte[0]);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testAppendInvalidThreeBytesTagLow() {
+        instance.append(0x3f5fbf, new byte[0]);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testAppendInvalidThreeBytesTagHighEndFF() {
+        instance.append(0x3fff04, new byte[0]);
     }
 
     @Test
-    public void testFindIndex() throws Throwable {
-        tLVList.append(100, new byte[2]);
-        tLVList.append(0, new byte[2]);
-        int result = tLVList.findIndex(0);
-        assertEquals("result", 1, result);
+    public void testConstructor() {
+        instance = new TLVList();
+        assertTrue(instance.getTags().isEmpty());
     }
 
     @Test
-    public void testFindIndex1() throws Throwable {
-        tLVList.append(1000, new byte[3]);
-        int result = tLVList.findIndex(100);
-        assertEquals("result", -1, result);
+    public void testDeleteByIndex() {
+        instance.append(TEST_TAG1, new byte[0]);
+        instance.deleteByIndex(0);
+        assertTrue(instance.getTags().isEmpty());
+    }
+
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void testDeleteByIndexThrowsIndexOutOfBounds() {
+        instance.deleteByIndex(TEST_TAG1);
     }
 
     @Test
-    public void testFindIndex2() throws Throwable {
-        tLVList.append(new TLVMsg());
-        int result = tLVList.findIndex(0);
-        assertEquals("result", 0, result);
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void testFindIndexThrowsNullPointerException() throws Throwable {
-        tLVList.append(new TLVMsg());
-        tLVList.append(null);
-        tLVList.findIndex(100);
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void testFindIndexThrowsNullPointerException1() throws Throwable {
-        tLVList.append(null);
-        tLVList.findIndex(100);
+    public void testDeleteByTag() {
+        instance.append(TEST_TAG1, new byte[1]);
+        instance.append(TEST_TAG2, new byte[0]);
+        instance.deleteByTag(TEST_TAG1);
+        assertFalse(instance.getTags().isEmpty());
     }
 
     @Test
-    public void testFindNextTLV() throws Throwable {
-        tLVList.findIndex(100);
-        tLVList.append(1000, new byte[0]);
-        TLVMsg result = tLVList.findNextTLV();
-        assertNull("result", result);
+    public void testDeleteByTag1() {
+        instance.append(TEST_TAG1, new byte[0]);
+        instance.deleteByTag(TEST_TAG3);
+        assertFalse(instance.getTags().isEmpty());
     }
 
     @Test
-    public void testFindNextTLV1() throws Throwable {
-        tLVList.append(100,  new byte[2]);
-        TLVMsg tlvToAppend = new TLVMsg();
-        tLVList.append(tlvToAppend);
-        TLVMsg result = tLVList.findNextTLV();
-        assertSame("result", tlvToAppend, result);
+    public void testDeleteByTag2() {
+        instance.deleteByTag(TEST_TAG1);
+        assertTrue(instance.getTags().isEmpty());
     }
 
     @Test
-    public void testFindNextTLV2() throws Throwable {
-        tLVList.append(0, new byte[3]);
-        TLVMsg result = tLVList.findNextTLV();
-        assertEquals("result.getTag()", 0, result.getTag());
+    public void testDeleteByTag3() {
+        instance.append(TEST_TAG2, new byte[0]);
+        instance.deleteByTag(TEST_TAG2);
+        assertTrue(instance.getTags().isEmpty());
     }
 
     @Test
-    public void testFindNextTLV3() throws Throwable {
-        TLVMsg result = tLVList.findNextTLV();
-        assertNull("result", result);
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void testFindNextTLVThrowsNullPointerException() throws Throwable {
-        tLVList.append(null);
-        tLVList.findNextTLV();
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void testFindNextTLVThrowsNullPointerException1() throws Throwable {
-        tLVList.findIndex(100);
-        tLVList.append(new TLVMsg());
-        tLVList.append(null);
-        tLVList.findNextTLV();
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void testFindThrowsNullPointerException() throws Throwable {
-        tLVList.append(null);
-        tLVList.find(100);
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void testFindThrowsNullPointerException1() throws Throwable {
-        tLVList.append(new TLVMsg());
-        tLVList.append(null);
-        tLVList.find(100);
+    public void testTags() {
+        List<TLVMsg> result = instance.getTags();
+        assertTrue(result.isEmpty());
     }
 
     @Test
-    public void testIndex() throws Throwable {
-        TLVMsg tlvToAppend = new TLVMsg(100, null);
-        tLVList.append(tlvToAppend);
-        TLVMsg result = tLVList.index(0);
-        assertSame("result", tlvToAppend, result);
+    public void testFind() {
+        instance.append(TEST_TAG1, new byte[1]);
+        TLVMsg expected = instance.createTLVMsg(0x07, null);
+        instance.append(expected);
+        TLVMsg result = instance.find(0x07);
+        assertSame(expected, result);
     }
 
     @Test
-    public void testIndex1() throws Throwable {
-        tLVList.append(new TLVMsg(100, "testString".getBytes()));
-        tLVList.append(100, new byte[1]);
-        tLVList.append(new TLVMsg());
-        tLVList.append(1000, new byte[3]);
-        tLVList.append(0, new byte[1]);
-        tLVList.append(-1, new byte[0]);
-        tLVList.deleteByIndex(0);
-        tLVList.append(new TLVMsg());
-        tLVList.append(1, new byte[3]);
-        tLVList.append(null);
-        tLVList.append(10, new byte[0]);
-        tLVList.append(new TLVMsg());
-        tLVList.append(10000, new byte[2]);
-        tLVList.append(100000, new byte[1]);
-        tLVList.append(null);
-        TLVMsg result = tLVList.index(12);
-        assertNull("result", result);
-    }
-
-    @Test(expected=IndexOutOfBoundsException.class)
-    public void testIndexThrowsIndexOutOfBoundsException() throws Throwable {
-        tLVList.index(100);
+    public void testFind1() {
+        TLVMsg expected = instance.createTLVMsg(TEST_TAG1, null);
+        instance.append(expected);
+        TLVMsg result = instance.find(TEST_TAG1);
+        assertSame(expected, result);
     }
 
     @Test
-    public void testPack() throws Throwable {
-        byte[] result = tLVList.pack();
-        assertEquals("result.length", 0, result.length);
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void testPackThrowsNullPointerException() throws Throwable {
-        tLVList.append(null);
-        tLVList.pack();
+    public void testFind2() {
+        instance.append(TEST_TAG3, new byte[0]);
+        TLVMsg result = instance.find(TEST_TAG1);
+        assertNull(result);
     }
 
     @Test
-    public void testUnpack() throws Throwable {
+    public void testFind3() {
+        TLVMsg result = instance.find(TEST_TAG1);
+        assertNull(result);
+    }
+
+    @Test
+    public void testFindIndex() {
+        instance.append(TEST_TAG1, new byte[2]);
+        instance.append(TEST_TAG2, new byte[2]);
+        int result = instance.findIndex(TEST_TAG2);
+        assertEquals(1, result);
+    }
+
+    @Test
+    public void testFindIndex1() {
+        instance.append(TEST_TAG3, new byte[3]);
+        int result = instance.findIndex(TEST_TAG1);
+        assertEquals(-1, result);
+    }
+
+    @Test
+    public void testFindIndex2() {
+        instance.append(instance.createTLVMsg(TEST_TAG1, null));
+        int result = instance.findIndex(TEST_TAG1);
+        assertEquals(0, result);
+    }
+
+    @Test
+    public void testFindNextTLV() {
+        instance.findIndex(TEST_TAG1);
+        instance.append(TEST_TAG3, new byte[0]);
+        TLVMsg result = instance.findNextTLV();
+        assertNull(result);
+    }
+
+    @Test
+    public void testFindNextTLV1() {
+        instance.append(TEST_TAG1, new byte[2]);
+        instance.append(TEST_TAG2, new byte[2]);
+        TLVMsg expected = instance.createTLVMsg(TEST_TAG1, null);
+        instance.append(expected);
+        assertEquals(0, instance.findIndex(TEST_TAG1));
+        TLVMsg result = instance.findNextTLV();
+        assertSame(expected, result);
+    }
+
+    @Test
+    public void testFindNextTLV2() {
+        instance.append(TEST_TAG1, new byte[2]);
+        instance.append(TEST_TAG2, new byte[2]);
+        TLVMsg expected = instance.createTLVMsg(TEST_TAG1, null);
+        instance.append(expected);
+        instance.find(TEST_TAG1);
+        TLVMsg result = instance.findNextTLV();
+        assertSame(expected, result);
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testFindNextTLVThrowsIllegalStateExeption1() {
+        instance.append(TEST_TAG1, new byte[3]);
+        instance.findNextTLV();
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testFindNextTLVThrowsIllegalStateExeption2() {
+        instance.findNextTLV();
+    }
+
+    @Test
+    public void testIndex() {
+        TLVMsg expected = instance.createTLVMsg(TEST_TAG1, null);
+        instance.append(expected);
+        TLVMsg result = instance.index(0);
+        assertSame(expected, result);
+    }
+
+    @Test
+    public void testIndex1() {
+        instance.append(instance.createTLVMsg(TEST_TAG1, "testString".getBytes()));
+        instance.append(TEST_TAG1, new byte[1]);
+        instance.append(instance.createTLVMsg(0x0b, null));
+        instance.append(TEST_TAG3, new byte[3]);
+        instance.append(TEST_TAG2, new byte[1]);
+        instance.append(0x0f, new byte[0]);
+        instance.deleteByIndex(0);
+        instance.append(instance.createTLVMsg(0x0c, null));
+        instance.append(1, new byte[3]);
+        instance.append(0x0a, new byte[0]);
+        instance.append(instance.createTLVMsg(0x0d, null));
+        instance.append(0x3f10, new byte[2]);
+        instance.append(0x1f7fa0, new byte[1]);
+        TLVMsg result = instance.index(10);
+        assertEquals(0x1f7fa0, result.getTag());
+    }
+
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void testIndexThrowsIndexOutOfBounds() {
+        instance.index(TEST_TAG1);
+    }
+
+    @Test
+    public void testPack() {
+        byte[] result = instance.pack();
+        assertEquals(0, result.length);
+    }
+
+    @Test
+    public void testPackFixedTagSizeTwo() {
+        instance = BUILDER_FT2.build();
+        instance.append(TEST_TAG1, ISOUtil.hex2byte("F12E3D"));
+        byte[] result = instance.pack();
+        assertArrayEquals(ISOUtil.hex2byte("006403"), Arrays.copyOf(result, 3));
+    }
+
+    @Test
+    public void testPackFixedLengthSizeTwo() {
+        instance = BUILDER_FL2.build();
+        instance.append(TEST_TAG1, ISOUtil.hex2byte("F12E3D"));
+        byte[] result = instance.pack();
+        assertArrayEquals(ISOUtil.hex2byte("640003"), Arrays.copyOf(result, 3));
+    }
+
+    @Test
+    public void testPackFixedTagSizeOneAndFixedLengthSizeTwo() {
+        instance = BUILDER_FT1FL2.build();
+        instance.append(0x85, new byte[0x84]);
+        byte[] result = instance.pack();
+        assertEquals(0x87, result.length);
+        assertArrayEquals(ISOUtil.hex2byte("850084"), Arrays.copyOf(result, 3));
+    }
+
+    @Test
+    public void testPackFixedLengthSizeOne() {
+        instance = BUILDER_FL1.build();
+        instance.append(TEST_TAG1, new byte[0x84]);
+        byte[] result = instance.pack();
+        assertEquals(0x86, result.length);
+        assertArrayEquals(ISOUtil.hex2byte("6484"), Arrays.copyOf(result, 2));
+    }
+
+    @Test
+    public void testUnpack() {
         byte[] buf = ISOUtil.hex2byte("030100");
-        tLVList.unpack(buf, 0);
-        assertTrue("tLVList.elements().hasMoreElements()", tLVList.elements().hasMoreElements());
-        TLVMsg tm = tLVList.index(0);
-        assertEquals("tm.getTag()", 0x03, tm.getTag());
-        assertArrayEquals("tm.getValue()", ISOUtil.hex2byte("00"), tm.getValue());
+        instance.unpack(buf, 0);
+        assertFalse(instance.getTags().isEmpty());
+        TLVMsg tm = instance.index(0);
+        assertEquals(0x03, tm.getTag());
+        assertArrayEquals(ISOUtil.hex2byte("00"), tm.getValue());
     }
 
     @Test
-    public void testUnpack1() throws Throwable {
+    public void testUnpack1() {
         byte[] buf = ISOUtil.hex2byte("000100");
-        tLVList.unpack(buf, 0);
-        assertTrue("tLVList.elements().hasMoreElements()", tLVList.elements().hasMoreElements());
-        TLVMsg tm = tLVList.index(0);
-        assertEquals("tm.getTag()", 0x01, tm.getTag());
-        assertArrayEquals("tm.getValue()", new byte[0], tm.getValue());
+        instance.unpack(buf, 0);
+        assertFalse(instance.getTags().isEmpty());
+        TLVMsg tm = instance.index(0);
+        assertEquals(0x01, tm.getTag());
+        assertArrayEquals(new byte[0], tm.getValue());
     }
 
     @Test
-    public void testUnpack10() throws Throwable {
+    public void testUnpack10() {
         byte[] buf = ISOUtil.hex2byte("2080");
-        tLVList.unpack(buf);
-        assertTrue("tLVList.elements().hasMoreElements()", tLVList.elements().hasMoreElements());
-        TLVMsg tm = tLVList.index(0);
-        assertEquals("tm.getTag()", 0x20, tm.getTag());
-        assertArrayEquals("tm.getValue()", new byte[0], tm.getValue());
+        instance.unpack(buf);
+        assertFalse(instance.getTags().isEmpty());
+        TLVMsg tm = instance.index(0);
+        assertEquals(0x20, tm.getTag());
+        assertArrayEquals(new byte[0], tm.getValue());
     }
 
     @Test
-    public void testUnpack11() throws Throwable {
+    public void testUnpack11() {
         byte[] buf = ISOUtil.hex2byte("030100");
-        tLVList.unpack(buf);
-        assertTrue("tLVList.elements().hasMoreElements()", tLVList.elements().hasMoreElements());
-        TLVMsg tm = tLVList.index(0);
-        assertEquals("tm.getTag()", 0x03, tm.getTag());
-        assertArrayEquals("tm.getValue()", ISOUtil.hex2byte("00"), tm.getValue());
+        instance.unpack(buf);
+        assertFalse(instance.getTags().isEmpty());
+        TLVMsg tm = instance.index(0);
+        assertEquals(0x03, tm.getTag());
+        assertArrayEquals(ISOUtil.hex2byte("00"), tm.getValue());
     }
 
     @Test
-    public void testUnpack12() throws Throwable {
+    public void testUnpack12() {
         byte[] buf = ISOUtil.hex2byte("ff00");
-        tLVList.unpack(buf);
-        assertFalse("tLVList.elements().hasMoreElements()", tLVList.elements().hasMoreElements());
+        instance.unpack(buf);
+        assertTrue(instance.getTags().isEmpty());
     }
 
     @Test
-    public void testUnpack2() throws Throwable {
+    public void testUnpack2() {
         byte[] buf = ISOUtil.hex2byte("000100");
-        tLVList.unpack(buf);
-        assertTrue("tLVList.elements().hasMoreElements()", tLVList.elements().hasMoreElements());
-        TLVMsg tm = tLVList.index(0);
-        assertEquals("tm.getTag()", 0x01, tm.getTag());
-        assertArrayEquals("tm.getValue()", new byte[0], tm.getValue());
+        instance.unpack(buf);
+        assertFalse(instance.getTags().isEmpty());
+        TLVMsg tm = instance.index(0);
+        assertEquals(0x01, tm.getTag());
+        assertArrayEquals(new byte[0], tm.getValue());
     }
 
     @Test
-    public void testUnpack3() throws Throwable {
+    public void testUnpack3() {
         byte[] buf = ISOUtil.hex2byte("0100");
-        tLVList.unpack(buf);
-        assertTrue("tLVList.elements().hasMoreElements()", tLVList.elements().hasMoreElements());
-        TLVMsg tm = tLVList.index(0);
-        assertEquals("tm.getTag()", 0x01, tm.getTag());
-        assertArrayEquals("tm.getValue()", new byte[0], tm.getValue());
+        instance.unpack(buf);
+        assertFalse(instance.getTags().isEmpty());
+        TLVMsg tm = instance.index(0);
+        assertEquals(0x01, tm.getTag());
+        assertArrayEquals(new byte[0], tm.getValue());
     }
 
     @Test
-    public void testUnpack4() throws Throwable {
+    public void testUnpack4() {
         byte[] buf = new byte[0];
-        tLVList.unpack(buf);
-        assertFalse("tLVList.elements().hasMoreElements()", tLVList.elements().hasMoreElements());
+        instance.unpack(buf);
+        assertTrue(instance.getTags().isEmpty());
     }
 
     @Test
-    public void testUnpack5() throws Throwable {
+    public void testUnpack5() {
         byte[] buf = new byte[0];
-        tLVList.unpack(buf, 0);
-        assertFalse("tLVList.elements().hasMoreElements()", tLVList.elements().hasMoreElements());
+        instance.unpack(buf, 0);
+        assertTrue(instance.getTags().isEmpty());
     }
 
     @Test
-    public void testUnpack6() throws Throwable {
+    public void testUnpack6() {
         byte[] buf = ISOUtil.hex2byte("6000");
-        tLVList.unpack(buf);
-        assertTrue("tLVList.elements().hasMoreElements()", tLVList.elements().hasMoreElements());
+        instance.unpack(buf);
+        assertFalse(instance.getTags().isEmpty());
     }
 
     @Test
-    public void testUnpack7() throws Throwable {
+    public void testUnpack7() {
         byte[] buf = new byte[2];
-        tLVList.unpack(buf);
-        assertFalse("tLVList.elements().hasMoreElements()", tLVList.elements().hasMoreElements());
+        instance.unpack(buf);
+        assertTrue(instance.getTags().isEmpty());
     }
 
     @Test
-    public void testUnpack8() throws Throwable {
+    public void testUnpack8() {
         byte[] buf = new byte[3];
-        tLVList.unpack(buf);
-        assertFalse("tLVList.elements().hasMoreElements()", tLVList.elements().hasMoreElements());
+        instance.unpack(buf);
+        assertTrue(instance.getTags().isEmpty());
     }
 
     @Test
-    public void testUnpack9() throws Throwable {
+    public void testUnpack9() {
         byte[] buf = ISOUtil.hex2byte("1e00");
-        tLVList.unpack(buf);
-        assertTrue("tLVList.elements().hasMoreElements()", tLVList.elements().hasMoreElements());
+        instance.unpack(buf);
+        assertFalse(instance.getTags().isEmpty());
     }
 
     @Test
-    public void testUnpackWith0x00Padding() throws Throwable {
+    public void testUnpackWith0x00Padding() {
         byte[] buf = ISOUtil.hex2byte("fe0000");
-        tLVList.unpack(buf, 0);
-        assertTrue("tLVList.elements().hasMoreElements()", tLVList.elements().hasMoreElements());
+        instance.unpack(buf, 0);
+        assertFalse(instance.getTags().isEmpty());
     }
 
     @Test
-    public void testUnpackWith0x00Padding1() throws Throwable {
+    public void testUnpackWith0x00Padding1() {
         byte[] buf = ISOUtil.hex2byte("878000");
-        // buf[0] = (byte) -121;
-        // buf[1] = (byte) -128;
-        tLVList.unpack(buf);
-        assertTrue("tLVList.elements().hasMoreElements()", tLVList.elements().hasMoreElements());
+        instance.unpack(buf);
+        assertFalse(instance.getTags().isEmpty());
     }
 
     @Test
-    public void testUnpackThrowsBufferUnderflowException3() throws Throwable {
+    public void testUnpackFixedTagOne() {
+        instance = BUILDER_FT1.build();
+        instance.unpack(ISOUtil.hex2byte("0003112233"));
+
+        assertEquals(1, instance.getTags().size());
+        TLVMsg res = instance.find(0);
+        assertArrayEquals(ISOUtil.hex2byte("03"), res.getL());
+        assertArrayEquals(ISOUtil.hex2byte("112233"), res.getValue());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testUnpackFixeTagOneWith0x00Padding1() {
+        instance = BUILDER_FT1.build();
+        instance.unpack(ISOUtil.hex2byte("000003112233"));
+    }
+
+    @Test
+    public void testUnpackFixedLengthTwo() {
+        instance = BUILDER_FL2.build();
+        instance.unpack(ISOUtil.hex2byte("070003112233"));
+
+        assertEquals(1, instance.getTags().size());
+        TLVMsg res = instance.find(7);
+        assertArrayEquals(ISOUtil.hex2byte("0003"), res.getL());
+        assertArrayEquals(ISOUtil.hex2byte("112233"), res.getValue());
+    }
+
+    @Test
+    public void testUnpackFixedLengthTwoWith0x00Padding1() {
+        instance = BUILDER_FL2.build();
+        instance.unpack(ISOUtil.hex2byte("0007000311223300"));
+
+        assertEquals(1, instance.getTags().size());
+        TLVMsg res = instance.find(7);
+        assertArrayEquals(ISOUtil.hex2byte("0003"), res.getL());
+        assertArrayEquals(ISOUtil.hex2byte("112233"), res.getValue());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testUnpackInvalidLengthThrowsIllegalArgumentException() {
+        byte[] buf = ISOUtil.hex2byte("14830000");
+        try {
+            instance.unpack(buf);
+        } catch (IllegalArgumentException ex) {
+            assertTrue(instance.getTags().isEmpty());
+            throw ex;
+        }
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testUnpackInvalidTagThrowsIllegalArgumentException() {
         byte[] buf = ISOUtil.hex2byte("007f");
-        exception.expect(BufferUnderflowException.class);
         try {
-            tLVList.unpack(buf);
-        } catch (BufferUnderflowException ex) {
-            assertFalse("tLVList.elements().hasMoreElements()", tLVList.elements().hasMoreElements());
+            instance.unpack(buf);
+        } catch (IllegalArgumentException ex) {
+            assertTrue(instance.getTags().isEmpty());
             throw ex;
         }
     }
 
-    @Test
-    public void testUnpackThrowsIndexOutOfBoundsException() throws Throwable {
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void testUnpackThrowsIndexOutOfBounds() {
         byte[] buf = new byte[3];
-        exception.expect(IndexOutOfBoundsException.class);
         try {
-            tLVList.unpack(buf, 100);
+            instance.unpack(buf, 100);
         } catch (IndexOutOfBoundsException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertFalse("tLVList.elements().hasMoreElements()", tLVList.elements().hasMoreElements());
+            assertNull(ex.getMessage());
+            assertTrue(instance.getTags().isEmpty());
             throw ex;
         }
     }
 
-    @Test
-    public void testUnpackThrowsISOException() throws Throwable {
+    @Test(expected = IllegalArgumentException.class)
+    public void testUnpackThrowsIllegalArgumentException() {
         byte[] buf = ISOUtil.hex2byte("00ff80");
-        exception.expect(ISOException.class);
-        exception.expectMessage(String.format(ISO_EXCEPT_WITHOUT_LEN, 0x80));
         try {
-            tLVList.unpack(buf, 0);
-        } catch (ISOException ex) {
-            assertNull("ex.getNested()", ex.getNested());
-            assertFalse("tLVList.elements().hasMoreElements()", tLVList.elements().hasMoreElements());
+            instance.unpack(buf, 0);
+        } catch (IllegalArgumentException ex) {
+            assertEquals(String.format(EXCEPT_MSG_WITHOUT_LEN, 0x80), ex.getMessage());
+            assertTrue(instance.getTags().isEmpty());
             throw ex;
         }
     }
 
-    @Test
-    public void testUnpackThrowsISOException1() throws Throwable {
+    @Test(expected = IllegalArgumentException.class)
+    public void testUnpackThrowsIllegalArgumentException1() {
         byte[] buf = ISOUtil.hex2byte("001e");
-        exception.expect(ISOException.class);
-        exception.expectMessage(String.format(ISO_EXCEPT_WITHOUT_LEN, 0x1e));
         try {
-            tLVList.unpack(buf, 0);
-        } catch (ISOException ex) {
-            assertNull("ex.getNested()", ex.getNested());
-            assertFalse("tLVList.elements().hasMoreElements()", tLVList.elements().hasMoreElements());
+            instance.unpack(buf, 0);
+        } catch (IllegalArgumentException ex) {
+            assertEquals(String.format(EXCEPT_MSG_WITHOUT_LEN, 0x1e), ex.getMessage());
+            assertTrue(instance.getTags().isEmpty());
             throw ex;
         }
     }
 
-    @Test
-    public void testUnpackThrowsISOException10() throws Throwable {
+    @Test(expected = IllegalArgumentException.class)
+    public void testUnpackThrowsIllegalArgumentException10() {
         byte[] buf = ISOUtil.hex2byte("7f0007");
-        exception.expect(ISOException.class);
-        exception.expectMessage(String.format(ISO_EXCEPT_EXCEEDS_AVAL, 0x7f00, 0x07));
         try {
-            tLVList.unpack(buf);
-        } catch (ISOException ex) {
-            assertNull("ex.getNested()", ex.getNested());
-            assertFalse("tLVList.elements().hasMoreElements()", tLVList.elements().hasMoreElements());
+            instance.unpack(buf);
+        } catch (IllegalArgumentException ex) {
+            assertEquals(String.format(EXCEPT_MSG_EXCEEDS_AVAL, 0x7f00, 0x07), ex.getMessage());
+            assertTrue(instance.getTags().isEmpty());
             throw ex;
         }
     }
 
-    @Test
-    public void testUnpackThrowsISOException11() throws Throwable {
+    @Test(expected = IllegalArgumentException.class)
+    public void testUnpackThrowsIllegalArgumentException11() {
         byte[] buf = ISOUtil.hex2byte("ff1e");
-        exception.expect(ISOException.class);
-        exception.expectMessage(String.format(ISO_EXCEPT_WITHOUT_LEN, 0x1e));
         try {
-            tLVList.unpack(buf, 0);
-        } catch (ISOException ex) {
-            assertNull("ex.getNested()", ex.getNested());
-            assertFalse("tLVList.elements().hasMoreElements()", tLVList.elements().hasMoreElements());
+            instance.unpack(buf, 0);
+        } catch (IllegalArgumentException ex) {
+            assertEquals(String.format(EXCEPT_MSG_WITHOUT_LEN, 0x1e), ex.getMessage());
+            assertTrue(instance.getTags().isEmpty());
             throw ex;
         }
     }
 
-    @Test
-    public void testUnpackThrowsISOException12() throws Throwable {
+    @Test(expected = IllegalArgumentException.class)
+    public void testUnpackThrowsIllegalArgumentException12() {
         byte[] buf = ISOUtil.hex2byte("fe2000");
-        exception.expect(ISOException.class);
-        exception.expectMessage(String.format(ISO_EXCEPT_EXCEEDS_AVAL, 0xfe, 0x20));
         try {
-            tLVList.unpack(buf, 0);
-        } catch (ISOException ex) {
-            assertNull("ex.getNested()", ex.getNested());
-            assertFalse("tLVList.elements().hasMoreElements()", tLVList.elements().hasMoreElements());
+            instance.unpack(buf, 0);
+        } catch (IllegalArgumentException ex) {
+            assertEquals(String.format(EXCEPT_MSG_EXCEEDS_AVAL, 0xfe, 0x20), ex.getMessage());
+            assertTrue(instance.getTags().isEmpty());
             throw ex;
         }
     }
 
-    @Test
-    public void testUnpackThrowsISOException13() throws Throwable {
+    @Test(expected = IllegalArgumentException.class)
+    public void testUnpackThrowsIllegalArgumentException13() {
         byte[] buf = ISOUtil.hex2byte("000008");
-        exception.expect(ISOException.class);
-        exception.expectMessage(String.format(ISO_EXCEPT_WITHOUT_LEN, 0x08));
         try {
-            tLVList.unpack(buf, 0);
-        } catch (ISOException ex) {
-            assertNull("ex.getNested()", ex.getNested());
-            assertFalse("tLVList.elements().hasMoreElements()", tLVList.elements().hasMoreElements());
+            instance.unpack(buf, 0);
+        } catch (IllegalArgumentException ex) {
+            assertEquals(String.format(EXCEPT_MSG_WITHOUT_LEN, 0x08), ex.getMessage());
+            assertTrue(instance.getTags().isEmpty());
             throw ex;
         }
     }
 
-    @Test
-    public void testUnpackThrowsISOException14() throws Throwable {
+    @Test(expected = IllegalArgumentException.class)
+    public void testUnpackThrowsIllegalArgumentException14() {
         byte[] buf = ISOUtil.hex2byte("7f00");
-        exception.expect(ISOException.class);
-        exception.expectMessage(String.format(ISO_EXCEPT_WITHOUT_LEN, 0x7f00));
         try {
-            tLVList.unpack(buf, 0);
-        } catch (ISOException ex) {
-            assertNull("ex.getNested()", ex.getNested());
-            assertFalse("tLVList.elements().hasMoreElements()", tLVList.elements().hasMoreElements());
+            instance.unpack(buf, 0);
+        } catch (IllegalArgumentException ex) {
+            assertEquals(String.format(EXCEPT_MSG_WITHOUT_LEN, 0x7f00), ex.getMessage());
+            assertTrue(instance.getTags().isEmpty());
             throw ex;
         }
     }
 
-    @Test
-    public void testUnpackThrowsISOException15() throws Throwable {
+    @Test(expected = IllegalArgumentException.class)
+    public void testUnpackThrowsIllegalArgumentException15() {
         byte[] buf = ISOUtil.hex2byte("f8");
-        exception.expect(ISOException.class);
-        exception.expectMessage(String.format(ISO_EXCEPT_WITHOUT_LEN, 0xf8));
         try {
-            tLVList.unpack(buf, 0);
-        } catch (ISOException ex) {
-            assertNull("ex.getNested()", ex.getNested());
-            assertFalse("tLVList.elements().hasMoreElements()", tLVList.elements().hasMoreElements());
+            instance.unpack(buf, 0);
+        } catch (IllegalArgumentException ex) {
+            assertEquals(String.format(EXCEPT_MSG_WITHOUT_LEN, 0xf8), ex.getMessage());
+            assertTrue(instance.getTags().isEmpty());
             throw ex;
         }
     }
 
-    @Test
-    public void testUnpackThrowsISOException16() throws Throwable {
+    @Test(expected = IllegalArgumentException.class)
+    public void testUnpackThrowsIllegalArgumentException16() {
         byte[] buf = ISOUtil.hex2byte("fe81ed");
-        exception.expect(ISOException.class);
-        exception.expectMessage(String.format(ISO_EXCEPT_EXCEEDS_AVAL, 0xfe, 0xed));
         try {
-            tLVList.unpack(buf);
-        } catch (ISOException ex) {
-            assertNull("ex.getNested()", ex.getNested());
-            assertFalse("tLVList.elements().hasMoreElements()", tLVList.elements().hasMoreElements());
+            instance.unpack(buf);
+        } catch (IllegalArgumentException ex) {
+            assertEquals(String.format(EXCEPT_MSG_EXCEEDS_AVAL, 0xfe, 0xed), ex.getMessage());
+            assertTrue(instance.getTags().isEmpty());
             throw ex;
         }
     }
 
-    @Test
-    public void testUnpackThrowsISOException17() throws Throwable {
+    @Test(expected = IllegalArgumentException.class)
+    public void testUnpackThrowsIllegalArgumentException17() {
         byte[] buf = ISOUtil.hex2byte("000001");
-        exception.expect(ISOException.class);
-        exception.expectMessage(String.format(ISO_EXCEPT_WITHOUT_LEN, 0x01));
         try {
-            tLVList.unpack(buf);
-        } catch (ISOException ex) {
-            assertNull("ex.getNested()", ex.getNested());
-            assertFalse("tLVList.elements().hasMoreElements()", tLVList.elements().hasMoreElements());
+            instance.unpack(buf);
+        } catch (IllegalArgumentException ex) {
+            assertEquals(String.format(EXCEPT_MSG_WITHOUT_LEN, 0x01), ex.getMessage());
+            assertTrue(instance.getTags().isEmpty());
             throw ex;
         }
     }
 
-    @Test
-    public void testUnpackThrowsISOException18() throws Throwable {
+    @Test(expected = IllegalArgumentException.class)
+    public void testUnpackThrowsIllegalArgumentException18() {
         byte[] buf = ISOUtil.hex2byte("878009");
-        exception.expect(ISOException.class);
-        exception.expectMessage(String.format(ISO_EXCEPT_WITHOUT_LEN, 0x09));
         try {
-            tLVList.unpack(buf);
-        } catch (ISOException ex) {
-            assertTrue("tLVList.elements().hasMoreElements()", tLVList.elements().hasMoreElements());
-            assertNull("ex.getNested()", ex.getNested());
+            instance.unpack(buf);
+        } catch (IllegalArgumentException ex) {
+            assertEquals(String.format(EXCEPT_MSG_WITHOUT_LEN, 0x09), ex.getMessage());
+            assertFalse(instance.getTags().isEmpty());
             throw ex;
         }
     }
 
-    @Test
-    public void testUnpackThrowsISOException2() throws Throwable {
+    @Test(expected = IllegalArgumentException.class)
+    public void testUnpackThrowsIllegalArgumentException2() {
         byte[] buf = ISOUtil.hex2byte("0001");
-        exception.expect(ISOException.class);
-        exception.expectMessage(String.format(ISO_EXCEPT_WITHOUT_LEN, 0x01));
         try {
-            tLVList.unpack(buf);
-        } catch (ISOException ex) {
-            assertNull("ex.getNested()", ex.getNested());
-            assertFalse("tLVList.elements().hasMoreElements()", tLVList.elements().hasMoreElements());
+            instance.unpack(buf);
+        } catch (IllegalArgumentException ex) {
+            assertEquals(String.format(EXCEPT_MSG_WITHOUT_LEN, 0x01), ex.getMessage());
+            assertTrue(instance.getTags().isEmpty());
             throw ex;
         }
     }
 
-    @Test
-    public void testUnpackThrowsISOException3() throws Throwable {
+    @Test(expected = IllegalArgumentException.class)
+    public void testUnpackThrowsIllegalArgumentException3() {
         byte[] buf = ISOUtil.hex2byte("fe00ed");
-        exception.expect(ISOException.class);
-        exception.expectMessage(String.format(ISO_EXCEPT_WITHOUT_LEN, 0xed));
         try {
-            tLVList.unpack(buf);
-        } catch (ISOException ex) {
-            assertTrue("tLVList.elements().hasMoreElements()", tLVList.elements().hasMoreElements());
-            assertNull("ex.getNested()", ex.getNested());
+            instance.unpack(buf);
+        } catch (IllegalArgumentException ex) {
+            assertEquals(String.format(EXCEPT_MSG_WITHOUT_LEN, 0xed), ex.getMessage());
+            assertFalse(instance.getTags().isEmpty());
             throw ex;
         }
     }
 
-    @Test
-    public void testUnpackThrowsISOException4() throws Throwable {
+    @Test(expected = IllegalArgumentException.class)
+    public void testUnpackThrowsIllegalArgumentException4() {
         byte[] buf = ISOUtil.hex2byte("00fe");
-        exception.expect(ISOException.class);
-        exception.expectMessage(String.format(ISO_EXCEPT_WITHOUT_LEN, 0xfe));
         try {
-            tLVList.unpack(buf);
-        } catch (ISOException ex) {
-            assertNull("ex.getNested()", ex.getNested());
-            assertFalse("tLVList.elements().hasMoreElements()", tLVList.elements().hasMoreElements());
+            instance.unpack(buf);
+        } catch (IllegalArgumentException ex) {
+            assertEquals(String.format(EXCEPT_MSG_WITHOUT_LEN, 0xfe), ex.getMessage());
+            assertTrue(instance.getTags().isEmpty());
             throw ex;
         }
     }
 
-    @Test
-    public void testUnpackThrowsISOException5() throws Throwable {
+    @Test(expected = IllegalArgumentException.class)
+    public void testUnpackThrowsISOException5() {
         byte[] buf = ISOUtil.hex2byte("fe7600");
-        exception.expect(ISOException.class);
-        exception.expectMessage(String.format(ISO_EXCEPT_EXCEEDS_AVAL, 0xfe, 0x76));
         try {
-            tLVList.unpack(buf);
-        } catch (ISOException ex) {
-            assertNull("ex.getNested()", ex.getNested());
-            assertFalse("tLVList.elements().hasMoreElements()", tLVList.elements().hasMoreElements());
+            instance.unpack(buf);
+        } catch (IllegalArgumentException ex) {
+            assertEquals(String.format(EXCEPT_MSG_EXCEEDS_AVAL, 0xfe, 0x76), ex.getMessage());
+            assertTrue(instance.getTags().isEmpty());
             throw ex;
         }
-    } 
+    }
 
-    @Test
-    public void testUnpackThrowsISOException6() throws Throwable {
+    @Test(expected = IllegalArgumentException.class)
+    public void testUnpackThrowsIllegalArgumentException6() {
         byte[] buf = ISOUtil.hex2byte("ff1e");
-        exception.expect(ISOException.class);
-        exception.expectMessage(String.format(ISO_EXCEPT_WITHOUT_LEN, 0x1e));
         try {
-            tLVList.unpack(buf);
-        } catch (ISOException ex) {
-            assertNull("ex.getNested()", ex.getNested());
-            assertFalse("tLVList.elements().hasMoreElements()", tLVList.elements().hasMoreElements());
+            instance.unpack(buf);
+        } catch (IllegalArgumentException ex) {
+            assertEquals(String.format(EXCEPT_MSG_WITHOUT_LEN, 0x1e), ex.getMessage());
+            assertTrue(instance.getTags().isEmpty());
             throw ex;
         }
     }
 
-    @Test
-    public void testUnpackThrowsISOException7() throws Throwable {
+    @Test(expected = IllegalArgumentException.class)
+    public void testUnpackThrowsIllegalArgumentException7() {
         byte[] buf = ISOUtil.hex2byte("01");
-        exception.expect(ISOException.class);
-        exception.expectMessage(String.format(ISO_EXCEPT_WITHOUT_LEN, 0x01));
         try {
-            tLVList.unpack(buf);
-        } catch (ISOException ex) {
-            assertNull("ex.getNested()", ex.getNested());
-            assertFalse("tLVList.elements().hasMoreElements()", tLVList.elements().hasMoreElements());
+            instance.unpack(buf);
+        } catch (IllegalArgumentException ex) {
+            assertEquals(String.format(EXCEPT_MSG_WITHOUT_LEN, 0x01), ex.getMessage());
+            assertTrue(instance.getTags().isEmpty());
             throw ex;
         }
     }
 
-    @Test
-    public void testUnpackThrowsISOException8() throws Throwable {
+    @Test(expected = IllegalArgumentException.class)
+    public void testUnpackThrowsIllegalArgumentException8() {
         byte[] buf = ISOUtil.hex2byte("7f00");
-        exception.expect(ISOException.class);
-        exception.expectMessage(String.format(ISO_EXCEPT_WITHOUT_LEN, 0x7f00));
         try {
-            tLVList.unpack(buf);
-        } catch (ISOException ex) {
-            assertNull("ex.getNested()", ex.getNested());
-            assertFalse("tLVList.elements().hasMoreElements()", tLVList.elements().hasMoreElements());
+            instance.unpack(buf);
+        } catch (IllegalArgumentException ex) {
+            assertEquals(String.format(EXCEPT_MSG_WITHOUT_LEN, 0x7f00), ex.getMessage());
+            assertTrue(instance.getTags().isEmpty());
             throw ex;
         }
     }
 
-    @Test
-    public void testUnpackThrowsISOException9() throws Throwable {
+    @Test(expected = IllegalArgumentException.class)
+    public void testUnpackThrowsIllegalArgumentException9() {
         byte[] buf = ISOUtil.hex2byte("00f801");
-        exception.expect(ISOException.class);
-        exception.expectMessage(String.format(ISO_EXCEPT_EXCEEDS_AVAL, 0xf8, 0x01));
         try {
-            tLVList.unpack(buf);
-        } catch (ISOException ex) {
-            assertNull("ex.getNested()", ex.getNested());
-            assertFalse("tLVList.elements().hasMoreElements()", tLVList.elements().hasMoreElements());
+            instance.unpack(buf);
+        } catch (IllegalArgumentException ex) {
+            assertEquals(String.format(EXCEPT_MSG_EXCEEDS_AVAL, 0xf8, 0x01), ex.getMessage());
+            assertTrue(instance.getTags().isEmpty());
             throw ex;
         }
     }
 
     @Test(expected = NullPointerException.class)
-    public void testUnpackThrowsNullPointerException() throws Throwable {
-        tLVList.unpack(null, 100);
+    public void testUnpackThrowsNullPointerException() {
+        instance.unpack(null, 100);
     }
 
     @Test(expected = NullPointerException.class)
-    public void testUnpackThrowsNullPointerException1() throws Throwable {
-        tLVList.unpack(null);
+    public void testUnpackThrowsNullPointerException1() {
+        instance.unpack(null);
     }
+
 }
