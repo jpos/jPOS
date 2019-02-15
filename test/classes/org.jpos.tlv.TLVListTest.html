@@ -23,7 +23,7 @@
 <tr>
 <td>
 <div class="infoBox" id="tests">
-<div class="counter">73</div>
+<div class="counter">96</div>
 <p>tests</p>
 </div>
 </td>
@@ -41,7 +41,7 @@
 </td>
 <td>
 <div class="infoBox" id="duration">
-<div class="counter">0.021s</div>
+<div class="counter">0.020s</div>
 <p>duration</p>
 </div>
 </td>
@@ -76,11 +76,126 @@
 </thead>
 <tr>
 <td class="success">testAppend</td>
-<td class="success">0s</td>
+<td class="success">0.001s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">testAppend1</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testAppendFixedLengthOneAbove</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testAppendFixedLengthOneNull</td>
+<td class="success">0.001s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testAppendFixedTagOneByteHigh</td>
+<td class="success">0.003s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testAppendFixedTagOneMaxTag</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testAppendFixedTagOneMaxTagAbove</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testAppendFixedTagOneMinTag</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testAppendFixedTagOneMinTagBelow</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testAppendInvalidByteHigh</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testAppendInvalidByteLow</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testAppendInvalidThreeBytesTagHigh</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testAppendInvalidThreeBytesTagHighEndFF</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testAppendInvalidThreeBytesTagLow</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testAppendInvalidTwoBytesTagHigh</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testAppendInvalidTwoBytesTagHighEndZero</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testAppendInvalidTwoBytesTagLow</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testAppendMinTagAbove</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testAppendMinTagBelow</td>
+<td class="success">0.008s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testAppendThreeBytesTag</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testAppendThrowsNPE</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testAppendTwoBytesTag</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testBuilderFixedLengthSize</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testBuilderFixedLengthSize2</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testBuilderFixedTagSize</td>
 <td class="success">0s</td>
 <td class="success">passed</td>
 </tr>
@@ -95,7 +210,7 @@
 <td class="success">passed</td>
 </tr>
 <tr>
-<td class="success">testDeleteByIndexThrowsIndexOutOfBoundsException</td>
+<td class="success">testDeleteByIndexThrowsIndexOutOfBounds</td>
 <td class="success">0s</td>
 <td class="success">passed</td>
 </tr>
@@ -111,31 +226,11 @@
 </tr>
 <tr>
 <td class="success">testDeleteByTag2</td>
-<td class="success">0.003s</td>
+<td class="success">0s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">testDeleteByTag3</td>
-<td class="success">0s</td>
-<td class="success">passed</td>
-</tr>
-<tr>
-<td class="success">testDeleteByTagThrowsNullPointerException</td>
-<td class="success">0.001s</td>
-<td class="success">passed</td>
-</tr>
-<tr>
-<td class="success">testDeleteByTagThrowsNullPointerException2</td>
-<td class="success">0s</td>
-<td class="success">passed</td>
-</tr>
-<tr>
-<td class="success">testDeleteByTagThrowsNullPointerException3</td>
-<td class="success">0s</td>
-<td class="success">passed</td>
-</tr>
-<tr>
-<td class="success">testElements</td>
 <td class="success">0s</td>
 <td class="success">passed</td>
 </tr>
@@ -166,21 +261,11 @@
 </tr>
 <tr>
 <td class="success">testFindIndex1</td>
-<td class="success">0.001s</td>
-<td class="success">passed</td>
-</tr>
-<tr>
-<td class="success">testFindIndex2</td>
 <td class="success">0s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
-<td class="success">testFindIndexThrowsNullPointerException</td>
-<td class="success">0.001s</td>
-<td class="success">passed</td>
-</tr>
-<tr>
-<td class="success">testFindIndexThrowsNullPointerException1</td>
+<td class="success">testFindIndex2</td>
 <td class="success">0s</td>
 <td class="success">passed</td>
 </tr>
@@ -200,27 +285,12 @@
 <td class="success">passed</td>
 </tr>
 <tr>
-<td class="success">testFindNextTLV3</td>
+<td class="success">testFindNextTLVThrowsIllegalStateExeption1</td>
 <td class="success">0s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
-<td class="success">testFindNextTLVThrowsNullPointerException</td>
-<td class="success">0s</td>
-<td class="success">passed</td>
-</tr>
-<tr>
-<td class="success">testFindNextTLVThrowsNullPointerException1</td>
-<td class="success">0s</td>
-<td class="success">passed</td>
-</tr>
-<tr>
-<td class="success">testFindThrowsNullPointerException</td>
-<td class="success">0.001s</td>
-<td class="success">passed</td>
-</tr>
-<tr>
-<td class="success">testFindThrowsNullPointerException1</td>
+<td class="success">testFindNextTLVThrowsIllegalStateExeption2</td>
 <td class="success">0s</td>
 <td class="success">passed</td>
 </tr>
@@ -235,8 +305,8 @@
 <td class="success">passed</td>
 </tr>
 <tr>
-<td class="success">testIndexThrowsIndexOutOfBoundsException</td>
-<td class="success">0s</td>
+<td class="success">testIndexThrowsIndexOutOfBounds</td>
+<td class="success">0.001s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
@@ -245,7 +315,27 @@
 <td class="success">passed</td>
 </tr>
 <tr>
-<td class="success">testPackThrowsNullPointerException</td>
+<td class="success">testPackFixedLengthSizeOne</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testPackFixedLengthSizeTwo</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testPackFixedTagSizeOneAndFixedLengthSizeTwo</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testPackFixedTagSizeTwo</td>
+<td class="success">0.004s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testTags</td>
 <td class="success">0s</td>
 <td class="success">passed</td>
 </tr>
@@ -256,7 +346,7 @@
 </tr>
 <tr>
 <td class="success">testUnpack1</td>
-<td class="success">0.001s</td>
+<td class="success">0s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
@@ -291,7 +381,7 @@
 </tr>
 <tr>
 <td class="success">testUnpack5</td>
-<td class="success">0.001s</td>
+<td class="success">0s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
@@ -315,108 +405,133 @@
 <td class="success">passed</td>
 </tr>
 <tr>
-<td class="success">testUnpackThrowsBufferUnderflowException3</td>
+<td class="success">testUnpackFixeTagOneWith0x00Padding1</td>
 <td class="success">0s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
-<td class="success">testUnpackThrowsISOException</td>
+<td class="success">testUnpackFixedLengthTwo</td>
 <td class="success">0s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
-<td class="success">testUnpackThrowsISOException1</td>
-<td class="success">0.005s</td>
-<td class="success">passed</td>
-</tr>
-<tr>
-<td class="success">testUnpackThrowsISOException10</td>
+<td class="success">testUnpackFixedLengthTwoWith0x00Padding1</td>
 <td class="success">0s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
-<td class="success">testUnpackThrowsISOException11</td>
-<td class="success">0.001s</td>
-<td class="success">passed</td>
-</tr>
-<tr>
-<td class="success">testUnpackThrowsISOException12</td>
+<td class="success">testUnpackFixedTagOne</td>
 <td class="success">0s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
-<td class="success">testUnpackThrowsISOException13</td>
+<td class="success">testUnpackInvalidLengthThrowsIllegalArgumentException</td>
 <td class="success">0s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
-<td class="success">testUnpackThrowsISOException14</td>
-<td class="success">0s</td>
-<td class="success">passed</td>
-</tr>
-<tr>
-<td class="success">testUnpackThrowsISOException15</td>
-<td class="success">0s</td>
-<td class="success">passed</td>
-</tr>
-<tr>
-<td class="success">testUnpackThrowsISOException16</td>
-<td class="success">0.001s</td>
-<td class="success">passed</td>
-</tr>
-<tr>
-<td class="success">testUnpackThrowsISOException17</td>
-<td class="success">0s</td>
-<td class="success">passed</td>
-</tr>
-<tr>
-<td class="success">testUnpackThrowsISOException18</td>
-<td class="success">0s</td>
-<td class="success">passed</td>
-</tr>
-<tr>
-<td class="success">testUnpackThrowsISOException2</td>
-<td class="success">0s</td>
-<td class="success">passed</td>
-</tr>
-<tr>
-<td class="success">testUnpackThrowsISOException3</td>
-<td class="success">0.001s</td>
-<td class="success">passed</td>
-</tr>
-<tr>
-<td class="success">testUnpackThrowsISOException4</td>
+<td class="success">testUnpackInvalidTagThrowsIllegalArgumentException</td>
 <td class="success">0s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">testUnpackThrowsISOException5</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testUnpackThrowsIllegalArgumentException</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testUnpackThrowsIllegalArgumentException1</td>
 <td class="success">0.001s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
-<td class="success">testUnpackThrowsISOException6</td>
+<td class="success">testUnpackThrowsIllegalArgumentException10</td>
 <td class="success">0s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
-<td class="success">testUnpackThrowsISOException7</td>
+<td class="success">testUnpackThrowsIllegalArgumentException11</td>
 <td class="success">0s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
-<td class="success">testUnpackThrowsISOException8</td>
+<td class="success">testUnpackThrowsIllegalArgumentException12</td>
 <td class="success">0s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
-<td class="success">testUnpackThrowsISOException9</td>
+<td class="success">testUnpackThrowsIllegalArgumentException13</td>
 <td class="success">0s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
-<td class="success">testUnpackThrowsIndexOutOfBoundsException</td>
-<td class="success">0.003s</td>
+<td class="success">testUnpackThrowsIllegalArgumentException14</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testUnpackThrowsIllegalArgumentException15</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testUnpackThrowsIllegalArgumentException16</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testUnpackThrowsIllegalArgumentException17</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testUnpackThrowsIllegalArgumentException18</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testUnpackThrowsIllegalArgumentException2</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testUnpackThrowsIllegalArgumentException3</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testUnpackThrowsIllegalArgumentException4</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testUnpackThrowsIllegalArgumentException6</td>
+<td class="success">0.001s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testUnpackThrowsIllegalArgumentException7</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testUnpackThrowsIllegalArgumentException8</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testUnpackThrowsIllegalArgumentException9</td>
+<td class="success">0s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testUnpackThrowsIndexOutOfBounds</td>
+<td class="success">0s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
@@ -449,7 +564,7 @@
 <input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
 </label>
 </div>Generated by 
-<a href="http://www.gradle.org">Gradle 5.0</a> at Feb 13, 2019 10:54:34 PM</p>
+<a href="http://www.gradle.org">Gradle 5.0</a> at Feb 15, 2019 1:42:53 AM</p>
 </div>
 </div>
 </body>

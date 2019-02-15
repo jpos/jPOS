@@ -2,7 +2,7 @@
 <pmd xmlns="http://pmd.sourceforge.net/report/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/report/2.0.0 http://pmd.sourceforge.net/report_2_0_0.xsd"
-    version="6.8.0" timestamp="2019-02-13T22:52:09.030">
+    version="6.8.0" timestamp="2019-02-15T01:40:24.179">
 <file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/bsh/BSHActionTest.java">
 <violation beginline="36" endline="36" begincolumn="9" endcolumn="60" rule="UnnecessaryBooleanAssertion" ruleset="Error Prone" package="org.jpos.bsh" class="BSHActionTest" method="testActionPerformed" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#unnecessarybooleanassertion" priority="3">
 assertTrue(true) or similar statements are unnecessary
@@ -5702,37 +5702,16 @@ Found non-transient, non-static member. Please mark as transient or provide acce
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/tlv/TLVListTest.java">
-<violation beginline="44" endline="44" begincolumn="36" endcolumn="44" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.tlv" class="TLVListTest" variable="exception" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
+<violation beginline="64" endline="64" begincolumn="13" endcolumn="20" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.tlv" class="TLVListTest" variable="instance" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
 Found non-transient, non-static member. Please mark as transient or provide accessors.
-</violation>
-<violation beginline="46" endline="46" begincolumn="13" endcolumn="19" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.tlv" class="TLVListTest" variable="tLVList" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
-Found non-transient, non-static member. Please mark as transient or provide accessors.
-</violation>
-<violation beginline="56" endline="56" begincolumn="20" endcolumn="57" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.tlv" class="TLVListTest" method="testAppend" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;tLVList.elements().hasMoreElements()&quot; appears 47 times in this file; the first occurrence is on line 56
-</violation>
-<violation beginline="162" endline="162" begincolumn="20" endcolumn="27" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.tlv" class="TLVListTest" method="testFind" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;result&quot; appears 12 times in this file; the first occurrence is on line 162
-</violation>
-<violation beginline="330" endline="330" begincolumn="22" endcolumn="34" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.tlv" class="TLVListTest" method="testUnpack" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;tm.getTag()&quot; appears 6 times in this file; the first occurrence is on line 330
-</violation>
-<violation beginline="331" endline="331" begincolumn="27" endcolumn="41" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.tlv" class="TLVListTest" method="testUnpack" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;tm.getValue()&quot; appears 6 times in this file; the first occurrence is on line 331
-</violation>
-<violation beginline="482" endline="482" begincolumn="24" endcolumn="39" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.tlv" class="TLVListTest" method="testUnpackThrowsISOException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;ex.getNested()&quot; appears 19 times in this file; the first occurrence is on line 482
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/tlv/TLVMsgTest.java">
-<violation beginline="45" endline="45" begincolumn="22" endcolumn="36" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.tlv" class="TLVMsgTest" method="testGetL" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;result.length&quot; appears 11 times in this file; the first occurrence is on line 45
+<violation beginline="31" endline="31" begincolumn="12" endcolumn="14" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.tlv" class="TLVMsgTest" variable="msg" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
+Found non-transient, non-static member. Please mark as transient or provide accessors.
 </violation>
-<violation beginline="46" endline="46" begincolumn="22" endcolumn="32" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.tlv" class="TLVMsgTest" method="testGetL" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;result[0]&quot; appears 11 times in this file; the first occurrence is on line 46
-</violation>
-<violation beginline="70" endline="70" begincolumn="22" endcolumn="32" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.tlv" class="TLVMsgTest" method="testGetL3" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;result[1]&quot; appears 6 times in this file; the first occurrence is on line 70
+<violation beginline="32" endline="32" begincolumn="13" endcolumn="14" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.tlv" class="TLVMsgTest" variable="tl" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
+Found non-transient, non-static member. Please mark as transient or provide accessors.
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/tlv/packager/EMVTagSequenceTest.java">
