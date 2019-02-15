@@ -404,7 +404,7 @@ public class BaseSMAdapter
     @Override
     public EncryptedPIN generatePIN(String accountNumber, int pinLen, List<String> excludes)
             throws SMException {
-      List<Loggeable> cmdParameters = new ArrayList<Loggeable>();
+      List<Loggeable> cmdParameters = new ArrayList<>();
       cmdParameters.add(new SimpleMsg("parameter", "account number", accountNumber));
       cmdParameters.add(new SimpleMsg("parameter", "PIN length", pinLen));
       if(excludes != null && !excludes.isEmpty())
@@ -428,7 +428,7 @@ public class BaseSMAdapter
     @Override
     public void printPIN (String accountNo, EncryptedPIN pinUnderKd1, SecureDESKey kd1
                          ,String template, Map<String, String> fields) throws SMException {
-      List<Loggeable> cmdParameters = new ArrayList<Loggeable>();
+      List<Loggeable> cmdParameters = new ArrayList<>();
       cmdParameters.add(new SimpleMsg("parameter", "account number", accountNo == null ? "" : accountNo));
       cmdParameters.add(new SimpleMsg("parameter", "PIN under Key data 1", pinUnderKd1 == null ? "" : pinUnderKd1));
       if (kd1!=null)
@@ -459,7 +459,7 @@ public class BaseSMAdapter
     public String calculatePVV(EncryptedPIN pinUnderLMK, SecureDESKey pvkA,
                                SecureDESKey pvkB, int pvkIdx,
                                List<String> excludes) throws SMException {
-      List<Loggeable> cmdParameters = new ArrayList<Loggeable>();
+      List<Loggeable> cmdParameters = new ArrayList<>();
       cmdParameters.add(new SimpleMsg("parameter", "account number", pinUnderLMK.getAccountNumber()));
       cmdParameters.add(new SimpleMsg("parameter", "PIN under LMK", pinUnderLMK));
       cmdParameters.add(new SimpleMsg("parameter", "PVK-A", pvkA == null ? "" : pvkA));
@@ -493,7 +493,7 @@ public class BaseSMAdapter
     public String calculatePVV(EncryptedPIN pinUnderKd1, SecureDESKey kd1,
                                SecureDESKey pvkA, SecureDESKey pvkB, int pvkIdx,
                                List<String> excludes) throws SMException {
-      List<Loggeable> cmdParameters = new ArrayList<Loggeable>();
+      List<Loggeable> cmdParameters = new ArrayList<>();
       cmdParameters.add(new SimpleMsg("parameter", "account number", pinUnderKd1.getAccountNumber()));
       cmdParameters.add(new SimpleMsg("parameter", "PIN under Data Key 1", pinUnderKd1));
       cmdParameters.add(new SimpleMsg("parameter", "Data Key 1", kd1));
@@ -556,7 +556,7 @@ public class BaseSMAdapter
     public String calculateIBMPINOffset(EncryptedPIN pinUnderLmk, SecureDESKey pvk,
                            String decTab, String pinValData, int minPinLen,
                            List<String> excludes) throws SMException {
-      List<Loggeable> cmdParameters = new ArrayList<Loggeable>();
+      List<Loggeable> cmdParameters = new ArrayList<>();
       cmdParameters.add(new SimpleMsg("parameter", "account number", pinUnderLmk.getAccountNumber()));
       cmdParameters.add(new SimpleMsg("parameter", "PIN under LMK", pinUnderLmk));
       cmdParameters.add(new SimpleMsg("parameter", "PVK", pvk));
@@ -593,7 +593,7 @@ public class BaseSMAdapter
     public String calculateIBMPINOffset(EncryptedPIN pinUnderKd1, SecureDESKey kd1,
                            SecureDESKey pvk, String decTab, String pinValData, int minPinLen,
                            List<String> excludes) throws SMException {
-      List<Loggeable> cmdParameters = new ArrayList<Loggeable>();
+      List<Loggeable> cmdParameters = new ArrayList<>();
       cmdParameters.add(new SimpleMsg("parameter", "account number", pinUnderKd1.getAccountNumber()));
       cmdParameters.add(new SimpleMsg("parameter", "PIN under Data Key 1", pinUnderKd1));
       cmdParameters.add(new SimpleMsg("parameter", "Data Key 1", kd1));
@@ -707,7 +707,7 @@ public class BaseSMAdapter
     public String calculateCAVV(String accountNo, SecureDESKey cvk, String upn,
                                 String authrc, String sfarc) throws SMException {
 
-      List<Loggeable> cmdParameters = new ArrayList<Loggeable>();
+      List<Loggeable> cmdParameters = new ArrayList<>();
       cmdParameters.add(new SimpleMsg("parameter", "account number", accountNo));
       cmdParameters.add(new SimpleMsg("parameter", "cvk", cvk == null ? "" : cvk));
       cmdParameters.add(new SimpleMsg("parameter", "unpredictable number", upn));
@@ -758,7 +758,7 @@ public class BaseSMAdapter
     public boolean verifyCAVV(String accountNo, SecureDESKey cvk, String cavv,
                               String upn, String authrc, String sfarc) throws SMException {
 
-      List<Loggeable> cmdParameters = new ArrayList<Loggeable>();
+      List<Loggeable> cmdParameters = new ArrayList<>();
       cmdParameters.add(new SimpleMsg("parameter", "account number", accountNo));
       cmdParameters.add(new SimpleMsg("parameter", "cvk", cvk == null ? "" : cvk));
       cmdParameters.add(new SimpleMsg("parameter", "cavv", cavv == null ? "" : cavv));
@@ -990,7 +990,7 @@ public class BaseSMAdapter
            ,SecureDESKey kd1, SecureDESKey imksmc, SecureDESKey imkac
            ,byte destinationPINBlockFormat) throws SMException {
 
-      List<Loggeable> cmdParameters = new ArrayList<Loggeable>();
+      List<Loggeable> cmdParameters = new ArrayList<>();
       cmdParameters.add(new SimpleMsg("parameter", "mkd method", mkdm));
       cmdParameters.add(new SimpleMsg("parameter", "skd method", skdm));
       if (padm!=null)
@@ -1043,7 +1043,7 @@ public class BaseSMAdapter
     public byte[] encryptData(CipherMode cipherMode, SecureDESKey kd
             ,byte[] data, byte[] iv) throws SMException {
 
-        List<Loggeable> cmdParameters = new ArrayList<Loggeable>();
+        List<Loggeable> cmdParameters = new ArrayList<>();
         cmdParameters.add(new SimpleMsg("parameter", "Block Cipher Mode", cipherMode));
         if(kd != null)
             cmdParameters.add(new SimpleMsg("parameter", "Data key", kd));
@@ -1057,7 +1057,7 @@ public class BaseSMAdapter
         byte[] encData = null;
         try {
             encData = encryptDataImpl(cipherMode, kd, data, iv);
-            List<Loggeable> r = new ArrayList<Loggeable>();
+            List<Loggeable> r = new ArrayList<>();
             r.add(new SimpleMsg("result", "Encrypted Data", encData));
             if(iv != null)
                 r.add(new SimpleMsg("result", "Initialization Vector", iv));
@@ -1085,7 +1085,7 @@ public class BaseSMAdapter
     public byte[] decryptData(CipherMode cipherMode, SecureDESKey kd
             ,byte[] data, byte[] iv) throws SMException {
 
-        List<Loggeable> cmdParameters = new ArrayList<Loggeable>();
+        List<Loggeable> cmdParameters = new ArrayList<>();
         cmdParameters.add(new SimpleMsg("parameter", "Block Cipher Mode", cipherMode));
         if(kd != null)
             cmdParameters.add(new SimpleMsg("parameter", "Data key", kd));
@@ -1099,7 +1099,7 @@ public class BaseSMAdapter
         byte[] decData = null;
         try {
             decData = decryptDataImpl(cipherMode, kd, data, iv);
-            List<Loggeable> r = new ArrayList<Loggeable>();
+            List<Loggeable> r = new ArrayList<>();
             r.add(new SimpleMsg("result", "Decrypted Data", decData));
             if(iv != null)
                 r.add(new SimpleMsg("result", "Initialization Vector", iv));
@@ -1178,7 +1178,7 @@ public class BaseSMAdapter
     @Override
     public Pair<PublicKey, SecurePrivateKey> generateKeyPair(AlgorithmParameterSpec spec)
             throws SMException {
-        List<Loggeable> cmdParameters = new ArrayList<Loggeable>();
+        List<Loggeable> cmdParameters = new ArrayList<>();
         cmdParameters.add(new SimpleMsg("parameter", "Algorithm Parameter Spec", spec.getClass().getName()));
 
         LogEvent evt = new LogEvent(this, "s-m-operation");
@@ -1203,7 +1203,7 @@ public class BaseSMAdapter
     @Override
     public byte[] calculateSignature(MessageDigest hash, SecurePrivateKey privateKey
             ,byte[] data) throws SMException {
-        List<Loggeable> cmdParameters = new ArrayList<Loggeable>();
+        List<Loggeable> cmdParameters = new ArrayList<>();
         cmdParameters.add(new SimpleMsg("parameter", "Hash Identifier", hash));
         cmdParameters.add(new SimpleMsg("parameter", "Private Key", privateKey));
         cmdParameters.add(new SimpleMsg("parameter", "data", data));
