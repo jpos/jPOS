@@ -1,5 +1,6 @@
 [![][jpos-logo]][jpos-url]
 [![Build Status][badge-travis-image]][badge-travis-url]
+[![Javadocs](http://www.javadoc.io/badge/org.jpos/jpos.svg)](http://www.javadoc.io/doc/org.jpos/jpos)
 
 ## Documentation
 
@@ -7,7 +8,8 @@ Visit [http://jpos.org/learn](http://jpos.org/learn).
 
 ## Resources
 
-Visit [http://jpos.org/resources](http://jpos.org/resources).
+Visit [http://jpos.org/resources](http://jpos.org/resources) for additional information.
+
         
 ## License
 
