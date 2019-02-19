@@ -40,12 +40,11 @@ public class Recyclable<T> implements Supplier<T> {
     public Recyclable(Supplier<T> supplier, long maxCycles) {
         this.supplier = supplier;
         this.maxCycles = maxCycles;
-        this.obj = supplier.get();
     }
 
     @Override
     public T get() {
-        if (cycles.getAndIncrement() == maxCycles) {
+        if (cycles.getAndIncrement() == maxCycles || obj == null) {
             obj = supplier.get();
             cycles.set(0);
         }
