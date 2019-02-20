@@ -29,7 +29,7 @@ public class RecyclableTest {
         long maxCycles = 1000;
         Recyclable<Object> r = new Recyclable<>(Object::new, maxCycles);
         Object o = r.get();
-        for (int i=1; i < maxCycles; i++) {
+        for (int i=0; i < maxCycles; i++) {
             assertEquals("i=" + i, o, r.get());
         }
         assertNotEquals(o, r.get());
