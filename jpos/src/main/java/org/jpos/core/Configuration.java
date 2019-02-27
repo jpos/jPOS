@@ -33,7 +33,7 @@ public interface Configuration {
     String get(String propertyName);
     /**
      * @param propertyName  ditto
-     * @return all properties with a given name (or a zero length string)
+     * @return all properties with a given name (or a zero-length array)
      */
     String[] getAll(String propertyName);
     int[] getInts(String propertyName);
