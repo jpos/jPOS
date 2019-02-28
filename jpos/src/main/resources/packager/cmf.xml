@@ -965,7 +965,7 @@
       <isofield
               id="26"
               length="16"
-              name="Devide ID/IMEI"
+              name="Device ID/IMEI"
               class="org.jpos.iso.IFB_NUMERIC" />
       <isofield
               id="27"
