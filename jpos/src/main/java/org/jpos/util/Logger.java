@@ -126,7 +126,7 @@ public class Logger implements LogProducer,Configurable
     public synchronized static Logger getLogger (String name) {
         Logger l;
         try {
-            l = (Logger) NameRegistrar.get (NRPREFIX+name);
+            l = NameRegistrar.get (NRPREFIX+name);
         } catch (NameRegistrar.NotFoundException e) {
             l = new Logger();
             l.setName (name);
