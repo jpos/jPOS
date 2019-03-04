@@ -21,12 +21,7 @@ package org.jpos.iso.packager;
 import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
-import org.jpos.iso.TaggedFieldPackager;
-import org.jpos.iso.ISOBasePackager;
-import org.jpos.iso.ISOException;
-import org.jpos.iso.ISOFieldPackager;
-import org.jpos.iso.ISOMsgFieldPackager;
-import org.jpos.iso.ISOPackager;
+import org.jpos.iso.*;
 import org.jpos.util.LogSource;
 import org.jpos.util.Logger;
 import org.xml.sax.Attributes;
@@ -42,6 +37,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -405,6 +402,7 @@ public class GenericPackager
                 // Modified for using TaggedFieldPackager
                 String token = atts.getValue("token");
                 String trim = atts.getValue("trim");
+                String params = atts.getValue("params");
 
                 if (localName.equals("isopackager"))
                 {
@@ -417,7 +415,7 @@ public class GenericPackager
                 if (localName.equals("isofieldpackager"))
                 {
                     /*
-                    For a isofield packager node push the following fields
+                    For an isofield packager node push the following fields
                     onto the stack.
                     1) an Integer indicating the field ID
                     2) an instance of the specified ISOFieldPackager class
@@ -440,8 +438,7 @@ public class GenericPackager
                     }
                     fieldStack.push(f);
 
-                    ISOBasePackager p;
-                    p = (ISOBasePackager) Class.forName(packager).newInstance();
+                    ISOBasePackager p = (ISOBasePackager) instantiate(packager, params);
                     if (p instanceof GenericPackager)
                     {
                         GenericPackager gp = (GenericPackager) p;
@@ -451,12 +448,11 @@ public class GenericPackager
 
                     fieldStack.push(new TreeMap());
                 }
-
-                if (localName.equals("isofield"))
+                else if (localName.equals("isofield"))
                 {
                     Class c = Class.forName(type);
                     ISOFieldPackager f;
-                    f = (ISOFieldPackager) c.newInstance();     
+                    f = (ISOFieldPackager) instantiate(type, params);
                     f.setDescription(name);
                     f.setLength(Integer.parseInt(size));
                     f.setPad(Boolean.parseBoolean(pad));
@@ -555,5 +551,27 @@ public class GenericPackager
             return Integer.parseInt (firstField);
         else return super.getFirstField();
     }
-}
 
+    /**
+     * Helper class used to instantiate packagers
+     *
+     * @param clazz class name
+     * @param params If not null <code>constructor(String)</code> has to exist in packager implementation.
+     *
+     * @return newly created object
+     * @throws ClassNotFoundException
+     * @throws NoSuchMethodException
+     * @throws IllegalAccessException
+     * @throws InstantiationException
+     */
+    private Object instantiate (String clazz, String params)
+      throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InstantiationException, InvocationTargetException {
+        Object obj;
+        if (params != null)
+            obj = Class.forName(clazz).getConstructor(String.class).newInstance(params);
+        else
+            obj = Class.forName(clazz).newInstance();
+
+        return obj;
+    }
+}
