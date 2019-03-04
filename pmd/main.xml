@@ -2,7 +2,7 @@
 <pmd xmlns="http://pmd.sourceforge.net/report/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/report/2.0.0 http://pmd.sourceforge.net/report_2_0_0.xsd"
-    version="6.8.0" timestamp="2019-03-04T21:08:38.819">
+    version="6.8.0" timestamp="2019-03-04T23:39:32.125">
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/bsh/BSHAction.java">
 <violation beginline="30" endline="30" begincolumn="15" endcolumn="16" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.bsh" class="BSHAction" variable="ui" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
 Found non-transient, non-static member. Please mark as transient or provide accessors.
@@ -1411,7 +1411,7 @@ Found 'DU'-anomaly for variable 'st' (lines '289'-'313').
 <violation beginline="290" endline="313" begincolumn="17" endcolumn="24" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOMsg" method="set" variable="m" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
 Found 'DU'-anomaly for variable 'm' (lines '290'-'313').
 </violation>
-<violation beginline="292" endline="313" begincolumn="18" endcolumn="57" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOMsg" method="set" variable="fldno" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+<violation beginline="292" endline="313" begincolumn="18" endcolumn="49" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOMsg" method="set" variable="fldno" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
 Found 'DU'-anomaly for variable 'fldno' (lines '292'-'313').
 </violation>
 <violation beginline="296" endline="313" begincolumn="22" endcolumn="37" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOMsg" method="set" variable="m" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
