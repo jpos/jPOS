@@ -254,7 +254,7 @@ public class ISOMsg extends ISOComponent
         StringTokenizer st = new StringTokenizer (fpath, ".");
         ISOMsg m = this;
         for (;;) {
-            int fldno = Integer.parseInt(st.nextToken());
+            int fldno = parseInt(st.nextToken());
             if (st.hasMoreTokens()) {
                 Object obj = m.getValue(fldno);
                 if (obj instanceof ISOMsg)
@@ -289,7 +289,7 @@ public class ISOMsg extends ISOComponent
          StringTokenizer st = new StringTokenizer (fpath, ".");
          ISOMsg m = this;
          for (;;) {
-             int fldno = Integer.parseInt(st.nextToken());
+             int fldno = parseInt(st.nextToken());
              if (st.hasMoreTokens()) {
                  Object obj = m.getValue(fldno);
                  if (obj instanceof ISOMsg)
@@ -322,7 +322,7 @@ public class ISOMsg extends ISOComponent
         StringTokenizer st = new StringTokenizer (fpath, ".");
         ISOMsg m = this;
         for (;;) {
-            int fldno = Integer.parseInt(st.nextToken());
+            int fldno = parseInt(st.nextToken());
             if (st.hasMoreTokens()) {
                 Object obj = m.getValue(fldno);
                 if (obj instanceof ISOMsg)
@@ -387,7 +387,7 @@ public class ISOMsg extends ISOComponent
         int lastfldno ;
         for (;;) {
             lastfldno = fldno;
-            fldno = Integer.parseInt(st.nextToken());
+            fldno = parseInt(st.nextToken());
             if (st.hasMoreTokens()) {
                 Object obj = m.getValue(fldno);
                 if (obj instanceof ISOMsg) {
@@ -549,7 +549,7 @@ public class ISOMsg extends ISOComponent
         ISOMsg m = this;
         Object obj;
         for (;;) {
-            int fldno = Integer.parseInt(st.nextToken());
+            int fldno = parseInt(st.nextToken());
             obj = m.getValue (fldno);
             if (obj==null){
                 // The user will always get a null value for an incorrect path or path not present in the message
@@ -578,7 +578,7 @@ public class ISOMsg extends ISOComponent
         ISOMsg m = this;
         ISOComponent obj;
         for (;;) {
-            int fldno = Integer.parseInt(st.nextToken());
+            int fldno = parseInt(st.nextToken());
             obj = m.getComponent(fldno);
             if (st.hasMoreTokens()) {
                 if (obj instanceof ISOMsg) {
@@ -711,7 +711,7 @@ public class ISOMsg extends ISOComponent
          StringTokenizer st = new StringTokenizer (fpath, ".");
          ISOMsg m = this;
          for (;;) {
-             int fldno = Integer.parseInt(st.nextToken());
+             int fldno = parseInt(st.nextToken());
              if (st.hasMoreTokens()) {
                  Object obj = m.getValue(fldno);
                  if (obj instanceof ISOMsg) {
@@ -1103,6 +1103,9 @@ public class ISOMsg extends ISOComponent
     private void writeExternal (ObjectOutput out, char b, ISOComponent c) throws IOException {
         out.writeByte (b);
         ((Externalizable) c).writeExternal (out);
+    }
+    private int parseInt (String s) {
+        return s.startsWith("0x") ? Integer.parseInt(s.substring(2), 16) : Integer.parseInt(s);
     }
 }
 
