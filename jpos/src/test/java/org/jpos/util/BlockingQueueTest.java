@@ -32,14 +32,14 @@ import org.junit.Test;
 public class BlockingQueueTest {
 
     @Test
-    public void testClose() throws Throwable {
+    public void testClose() {
         BlockingQueue blockingQueue = new BlockingQueue();
         blockingQueue.close();
         assertFalse("blockingQueue.ready()", blockingQueue.ready());
     }
 
     @Test
-    public void testClosedConstructor() throws Throwable {
+    public void testClosedConstructor() {
         BlockingQueue.Closed closed = new BlockingQueue.Closed();
         assertEquals("closed.getMessage()", "queue-closed", closed.getMessage());
     }
