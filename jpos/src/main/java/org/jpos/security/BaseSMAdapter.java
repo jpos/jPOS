@@ -118,10 +118,9 @@ public class BaseSMAdapter
 
     @Override
     public SecureDESKey generateKey (short keyLength, String keyType) throws SMException {
-        SimpleMsg[] cmdParameters =  {
-            new SimpleMsg("parameter", "Key Length", keyLength), new SimpleMsg("parameter",
-                    "Key Type", keyType)
-        };
+        List<Loggeable> cmdParameters = new ArrayList<>();
+        cmdParameters.add(new SimpleMsg("parameter", "Key Length", keyLength));
+        cmdParameters.add(new SimpleMsg("parameter", "Key Type", keyType));
         LogEvent evt = new LogEvent(this, "s-m-operation");
         evt.addMessage(new SimpleMsg("command", "Generate Key", cmdParameters));
         SecureDESKey result = null;
@@ -139,9 +138,8 @@ public class BaseSMAdapter
 
     @Override
     public byte[] generateKeyCheckValue (SecureDESKey kd) throws SMException {
-        SimpleMsg[] cmdParameters =  {
-            new SimpleMsg("parameter", "Key with untrusted check value", kd)
-        };
+        List<Loggeable> cmdParameters = new ArrayList<>();
+        cmdParameters.add(new SimpleMsg("parameter", "Key with untrusted check value", kd));
         LogEvent evt = new LogEvent(this, "s-m-operation");
         evt.addMessage(new SimpleMsg("command", "Generate Key Check Value", cmdParameters));
         byte[] result = null;
@@ -160,10 +158,9 @@ public class BaseSMAdapter
     @Override
     public SecureDESKey translateKeyScheme (SecureDESKey key, KeyScheme destKeyScheme)
             throws SMException {
-        SimpleMsg[] cmdParameters =  {
-            new SimpleMsg("parameter", "Key", key)
-           ,new SimpleMsg("parameter", "Destination Key Scheme", destKeyScheme)
-        };
+        List<Loggeable> cmdParameters = new ArrayList<>();
+        cmdParameters.add(new SimpleMsg("parameter", "Key", key));
+        cmdParameters.add(new SimpleMsg("parameter", "Destination Key Scheme", destKeyScheme));
         LogEvent evt = new LogEvent(this, "s-m-operation");
         evt.addMessage(new SimpleMsg("command", "Translate Key Scheme", cmdParameters));
         SecureDESKey result = null;
@@ -182,11 +179,12 @@ public class BaseSMAdapter
     @Override
     public SecureDESKey importKey (short keyLength, String keyType, byte[] encryptedKey,
             SecureDESKey kek, boolean checkParity) throws SMException {
-        SimpleMsg[] cmdParameters =  {
-            new SimpleMsg("parameter", "Key Length", keyLength), new SimpleMsg("parameter",
-                    "Key Type", keyType), new SimpleMsg("parameter", "Encrypted Key",
-                    encryptedKey), new SimpleMsg("parameter", "Key-Encrypting Key", kek), new SimpleMsg("parameter", "Check Parity", checkParity)
-        };
+        List<Loggeable> cmdParameters = new ArrayList<>();
+        cmdParameters.add(new SimpleMsg("parameter", "Key Length", keyLength));
+        cmdParameters.add(new SimpleMsg("parameter", "Key Type", keyType));
+        cmdParameters.add(new SimpleMsg("parameter", "Encrypted Key", encryptedKey));
+        cmdParameters.add(new SimpleMsg("parameter", "Key-Encrypting Key", kek));
+        cmdParameters.add(new SimpleMsg("parameter", "Check Parity", checkParity));
         LogEvent evt = new LogEvent(this, "s-m-operation");
         evt.addMessage(new SimpleMsg("command", "Import Key", cmdParameters));
         SecureDESKey result = null;
@@ -204,10 +202,9 @@ public class BaseSMAdapter
 
     @Override
     public byte[] exportKey (SecureDESKey key, SecureDESKey kek) throws SMException {
-        SimpleMsg[] cmdParameters =  {
-            new SimpleMsg("parameter", "Key", key), new SimpleMsg("parameter", "Key-Encrypting Key",
-                    kek),
-        };
+        List<Loggeable> cmdParameters = new ArrayList<>();
+        cmdParameters.add(new SimpleMsg("parameter", "Key", key));
+        cmdParameters.add(new SimpleMsg("parameter", "Key-Encrypting Key", kek));
         LogEvent evt = new LogEvent(this, "s-m-operation");
         evt.addMessage(new SimpleMsg("command", "Export Key", cmdParameters));
         byte[] result = null;
@@ -226,10 +223,9 @@ public class BaseSMAdapter
     @Override
     public EncryptedPIN encryptPIN (String pin, String accountNumber, boolean extract) throws SMException {
         accountNumber = extract ? EncryptedPIN.extractAccountNumberPart(accountNumber) : accountNumber;
-        SimpleMsg[] cmdParameters =  {
-            new SimpleMsg("parameter", "clear pin", pin), new SimpleMsg("parameter", "account number",
-                    accountNumber)
-        };
+        List<Loggeable> cmdParameters = new ArrayList<>();
+        cmdParameters.add(new SimpleMsg("parameter", "clear pin", pin));
+        cmdParameters.add(new SimpleMsg("parameter", "account number", accountNumber));
         LogEvent evt = new LogEvent(this, "s-m-operation");
         evt.addMessage(new SimpleMsg("command", "Encrypt Clear PIN", cmdParameters));
         EncryptedPIN result = null;
@@ -251,9 +247,8 @@ public class BaseSMAdapter
 
     @Override
     public String decryptPIN (EncryptedPIN pinUnderLmk) throws SMException {
-        SimpleMsg[] cmdParameters =  {
-            new SimpleMsg("parameter", "PIN under LMK", pinUnderLmk),
-        };
+        List<Loggeable> cmdParameters = new ArrayList<>();
+        cmdParameters.add(new SimpleMsg("parameter", "PIN under LMK", pinUnderLmk));
         LogEvent evt = new LogEvent(this, "s-m-operation");
         evt.addMessage(new SimpleMsg("command", "Decrypt PIN", cmdParameters));
         String result = null;
@@ -271,10 +266,9 @@ public class BaseSMAdapter
 
     @Override
     public EncryptedPIN importPIN (EncryptedPIN pinUnderKd1, SecureDESKey kd1) throws SMException {
-        SimpleMsg[] cmdParameters =  {
-            new SimpleMsg("parameter", "PIN under Data Key 1", pinUnderKd1), new SimpleMsg("parameter",
-                    "Data Key 1", kd1),
-        };
+        List<Loggeable> cmdParameters = new ArrayList<>();
+        cmdParameters.add(new SimpleMsg("parameter", "PIN under Data Key 1", pinUnderKd1));
+        cmdParameters.add(new SimpleMsg("parameter", "Data Key 1", kd1));
         LogEvent evt = new LogEvent(this, "s-m-operation");
         evt.addMessage(new SimpleMsg("command", "Import PIN", cmdParameters));
         EncryptedPIN result = null;
@@ -293,11 +287,11 @@ public class BaseSMAdapter
     @Override
     public EncryptedPIN translatePIN (EncryptedPIN pinUnderKd1, SecureDESKey kd1,
             SecureDESKey kd2, byte destinationPINBlockFormat) throws SMException {
-        SimpleMsg[] cmdParameters =  {
-            new SimpleMsg("parameter", "PIN under Data Key 1", pinUnderKd1), new SimpleMsg("parameter",
-                    "Data Key 1", kd1), new SimpleMsg("parameter", "Data Key 2", kd2),
-                    new SimpleMsg("parameter", "Destination PIN Block Format", destinationPINBlockFormat)
-        };
+        List<Loggeable> cmdParameters = new ArrayList<>();
+        cmdParameters.add(new SimpleMsg("parameter", "PIN under Data Key 1", pinUnderKd1));
+        cmdParameters.add(new SimpleMsg("parameter", "Data Key 1", kd1));
+        cmdParameters.add(new SimpleMsg("parameter", "Data Key 2", kd2));
+        cmdParameters.add(new SimpleMsg("parameter", "Destination PIN Block Format", destinationPINBlockFormat));
         LogEvent evt = new LogEvent(this, "s-m-operation");
         evt.addMessage(new SimpleMsg("command", "Translate PIN from Data Key 1 to Data Key 2",
                 cmdParameters));
@@ -323,11 +317,10 @@ public class BaseSMAdapter
     @Override
     public EncryptedPIN importPIN (EncryptedPIN pinUnderDuk, KeySerialNumber ksn,
             SecureDESKey bdk, boolean tdes) throws SMException {
-        SimpleMsg[] cmdParameters =  {
-            new SimpleMsg("parameter", "PIN under Derived Unique Key", pinUnderDuk), new SimpleMsg("parameter",
-                    "Key Serial Number", ksn), new SimpleMsg("parameter", "Base Derivation Key",
-                    bdk)
-        };
+        List<Loggeable> cmdParameters = new ArrayList<>();
+        cmdParameters.add(new SimpleMsg("parameter", "PIN under Derived Unique Key", pinUnderDuk));
+        cmdParameters.add(new SimpleMsg("parameter", "Key Serial Number", ksn));
+        cmdParameters.add(new SimpleMsg("parameter", "Base Derivation Key", bdk));
         LogEvent evt = new LogEvent(this, "s-m-operation");
         evt.addMessage(new SimpleMsg("command", "Import PIN", cmdParameters));
         EncryptedPIN result = null;
@@ -352,12 +345,12 @@ public class BaseSMAdapter
     @Override
     public EncryptedPIN translatePIN (EncryptedPIN pinUnderDuk, KeySerialNumber ksn,
             SecureDESKey bdk, SecureDESKey kd2, byte destinationPINBlockFormat,boolean tdes) throws SMException {
-        SimpleMsg[] cmdParameters =  {
-            new SimpleMsg("parameter", "PIN under Derived Unique Key", pinUnderDuk), new SimpleMsg("parameter",
-                    "Key Serial Number", ksn), new SimpleMsg("parameter", "Base Derivation Key",
-                    bdk), new SimpleMsg("parameter", "Data Key 2", kd2), new SimpleMsg("parameter",
-                    "Destination PIN Block Format", destinationPINBlockFormat)
-        };
+        List<Loggeable> cmdParameters = new ArrayList<>();
+        cmdParameters.add(new SimpleMsg("parameter", "PIN under Derived Unique Key", pinUnderDuk));
+        cmdParameters.add(new SimpleMsg("parameter", "Key Serial Number", ksn));
+        cmdParameters.add(new SimpleMsg("parameter", "Base Derivation Key", bdk));
+        cmdParameters.add(new SimpleMsg("parameter", "Data Key 2", kd2));
+        cmdParameters.add(new SimpleMsg("parameter", "Destination PIN Block Format", destinationPINBlockFormat));
         LogEvent evt = new LogEvent(this, "s-m-operation");
         evt.addMessage(new SimpleMsg("command", "Translate PIN", cmdParameters));
         EncryptedPIN result = null;
@@ -375,11 +368,10 @@ public class BaseSMAdapter
 
     @Override
     public EncryptedPIN exportPIN (EncryptedPIN pinUnderLmk, SecureDESKey kd2, byte destinationPINBlockFormat) throws SMException {
-        SimpleMsg[] cmdParameters =  {
-            new SimpleMsg("parameter", "PIN under LMK", pinUnderLmk), new SimpleMsg("parameter",
-                    "Data Key 2", kd2), new SimpleMsg("parameter", "Destination PIN Block Format",
-                    destinationPINBlockFormat)
-        };
+        List<Loggeable> cmdParameters = new ArrayList<>();
+        cmdParameters.add(new SimpleMsg("parameter", "PIN under LMK", pinUnderLmk));
+        cmdParameters.add(new SimpleMsg("parameter", "Data Key 2", kd2));
+        cmdParameters.add(new SimpleMsg("parameter", "Destination PIN Block Format", destinationPINBlockFormat));
         LogEvent evt = new LogEvent(this, "s-m-operation");
         evt.addMessage(new SimpleMsg("command", "Export PIN", cmdParameters));
         EncryptedPIN result = null;
@@ -520,16 +512,14 @@ public class BaseSMAdapter
     @Override
     public boolean verifyPVV(EncryptedPIN pinUnderKd1, SecureDESKey kd1, SecureDESKey pvkA,
                           SecureDESKey pvkB, int pvki, String pvv) throws SMException {
-
-      SimpleMsg[] cmdParameters = {
-        new SimpleMsg("parameter", "account number", pinUnderKd1.getAccountNumber()),
-        new SimpleMsg("parameter", "PIN under Data Key 1", pinUnderKd1),
-        new SimpleMsg("parameter", "Data Key 1", kd1),
-        new SimpleMsg("parameter", "PVK-A", pvkA == null ? "" : pvkA),
-        new SimpleMsg("parameter", "PVK-B", pvkB == null ? "" : pvkB),
-        new SimpleMsg("parameter", "pvki", pvki),
-        new SimpleMsg("parameter", "pvv", pvv)
-      };
+        List<Loggeable> cmdParameters = new ArrayList<>();
+        cmdParameters.add(new SimpleMsg("parameter", "account number", pinUnderKd1.getAccountNumber()));
+        cmdParameters.add(new SimpleMsg("parameter", "PIN under Data Key 1", pinUnderKd1));
+        cmdParameters.add(new SimpleMsg("parameter", "Data Key 1", kd1));
+        cmdParameters.add(new SimpleMsg("parameter", "PVK-A", pvkA == null ? "" : pvkA));
+        cmdParameters.add(new SimpleMsg("parameter", "PVK-B", pvkB == null ? "" : pvkB));
+        cmdParameters.add(new SimpleMsg("parameter", "pvki", pvki));
+        cmdParameters.add(new SimpleMsg("parameter", "pvv", pvv));
       LogEvent evt = new LogEvent(this, "s-m-operation");
       evt.addMessage(new SimpleMsg("command", "Verify a PIN Using the VISA Method", cmdParameters));
 
@@ -623,17 +613,16 @@ public class BaseSMAdapter
     public boolean verifyIBMPINOffset(EncryptedPIN pinUnderKd1, SecureDESKey kd1, SecureDESKey pvk,
                                       String offset, String decTab, String pinValData,
                                       int minPinLen) throws SMException {
-      SimpleMsg[] cmdParameters = {
-        new SimpleMsg("parameter", "account number", pinUnderKd1.getAccountNumber()),
-        new SimpleMsg("parameter", "PIN under Data Key 1", pinUnderKd1),
-        new SimpleMsg("parameter", "Data Key 1", kd1),
-        new SimpleMsg("parameter", "PVK", pvk),
-        new SimpleMsg("parameter", "Pin block format", pinUnderKd1.getPINBlockFormat()),
-        new SimpleMsg("parameter", "decimalisation table", decTab),
-        new SimpleMsg("parameter", "PIN validation data", pinValData),
-        new SimpleMsg("parameter", "minimum PIN length", minPinLen),
-        new SimpleMsg("parameter", "offset", offset)
-      };
+        List<Loggeable> cmdParameters = new ArrayList<>();
+        cmdParameters.add(new SimpleMsg("parameter", "account number", pinUnderKd1.getAccountNumber()));
+        cmdParameters.add(new SimpleMsg("parameter", "PIN under Data Key 1", pinUnderKd1));
+        cmdParameters.add(new SimpleMsg("parameter", "Data Key 1", kd1));
+        cmdParameters.add(new SimpleMsg("parameter", "PVK", pvk));
+        cmdParameters.add(new SimpleMsg("parameter", "Pin block format", pinUnderKd1.getPINBlockFormat()));
+        cmdParameters.add(new SimpleMsg("parameter", "decimalisation table", decTab));
+        cmdParameters.add(new SimpleMsg("parameter", "PIN validation data", pinValData));
+        cmdParameters.add(new SimpleMsg("parameter", "minimum PIN length", minPinLen));
+        cmdParameters.add(new SimpleMsg("parameter", "offset", offset));
       LogEvent evt = new LogEvent(this, "s-m-operation");
       evt.addMessage(new SimpleMsg("command", "Verify PIN offset", cmdParameters));
 
@@ -654,14 +643,13 @@ public class BaseSMAdapter
     public EncryptedPIN deriveIBMPIN(String accountNo, SecureDESKey pvk,
                                      String decTab, String pinValData,
                                      int minPinLen, String offset) throws SMException {
-      SimpleMsg[] cmdParameters = {
-        new SimpleMsg("parameter", "account number", accountNo),
-        new SimpleMsg("parameter", "Offset", offset),
-        new SimpleMsg("parameter", "PVK", pvk), 
-        new SimpleMsg("parameter", "Decimalisation table", decTab),
-        new SimpleMsg("parameter", "PIN validation data", pinValData),
-        new SimpleMsg("parameter", "Minimum PIN length", minPinLen)
-      };
+        List<Loggeable> cmdParameters = new ArrayList<>();
+        cmdParameters.add(new SimpleMsg("parameter", "account number", accountNo));
+        cmdParameters.add(new SimpleMsg("parameter", "Offset", offset));
+        cmdParameters.add(new SimpleMsg("parameter", "PVK", pvk));
+        cmdParameters.add(new SimpleMsg("parameter", "Decimalisation table", decTab));
+        cmdParameters.add(new SimpleMsg("parameter", "PIN validation data", pinValData));
+        cmdParameters.add(new SimpleMsg("parameter", "Minimum PIN length", minPinLen));
       LogEvent evt = new LogEvent(this, "s-m-operation");
       evt.addMessage(new SimpleMsg("command", "Derive a PIN Using the IBM Method", cmdParameters));
       EncryptedPIN result = null;
@@ -681,13 +669,12 @@ public class BaseSMAdapter
     public String calculateCVV(String accountNo, SecureDESKey cvkA, SecureDESKey cvkB,
                                Date expDate, String serviceCode) throws SMException {
 
-      SimpleMsg[] cmdParameters = {
-            new SimpleMsg("parameter", "account number", accountNo),
-            new SimpleMsg("parameter", "cvk-a", cvkA == null ? "" : cvkA),
-            new SimpleMsg("parameter", "cvk-b", cvkB == null ? "" : cvkB),
-            new SimpleMsg("parameter", "Exp date", expDate),
-            new SimpleMsg("parameter", "Service code", serviceCode)
-      };
+        List<Loggeable> cmdParameters = new ArrayList<>();
+        cmdParameters.add(new SimpleMsg("parameter", "account number", accountNo));
+        cmdParameters.add(new SimpleMsg("parameter", "cvk-a", cvkA == null ? "" : cvkA));
+        cmdParameters.add(new SimpleMsg("parameter", "cvk-b", cvkB == null ? "" : cvkB));
+        cmdParameters.add(new SimpleMsg("parameter", "Exp date", expDate));
+        cmdParameters.add(new SimpleMsg("parameter", "Service code", serviceCode));
       LogEvent evt = new LogEvent(this, "s-m-operation");
       evt.addMessage(new SimpleMsg("command", "Calculate CVV/CVC", cmdParameters));
       String result = null;
@@ -732,14 +719,13 @@ public class BaseSMAdapter
     public boolean verifyCVV(String accountNo , SecureDESKey cvkA, SecureDESKey cvkB,
                             String cvv, Date expDate, String serviceCode) throws SMException {
 
-      SimpleMsg[] cmdParameters = {
-            new SimpleMsg("parameter", "account number", accountNo),
-            new SimpleMsg("parameter", "cvk-a", cvkA == null ? "" : cvkA),
-            new SimpleMsg("parameter", "cvk-b", cvkB == null ? "" : cvkB),
-            new SimpleMsg("parameter", "CVV/CVC", cvv),
-            new SimpleMsg("parameter", "Exp date", expDate),
-            new SimpleMsg("parameter", "Service code", serviceCode)
-      };
+        List<Loggeable> cmdParameters = new ArrayList<>();
+        cmdParameters.add(new SimpleMsg("parameter", "account number", accountNo));
+        cmdParameters.add(new SimpleMsg("parameter", "cvk-a", cvkA == null ? "" : cvkA));
+        cmdParameters.add(new SimpleMsg("parameter", "cvk-b", cvkB == null ? "" : cvkB));
+        cmdParameters.add(new SimpleMsg("parameter", "CVV/CVC", cvv));
+        cmdParameters.add(new SimpleMsg("parameter", "Exp date", expDate));
+        cmdParameters.add(new SimpleMsg("parameter", "Service code", serviceCode));
       LogEvent evt = new LogEvent(this, "s-m-operation");
       evt.addMessage(new SimpleMsg("command", "Verify CVV/CVC", cmdParameters));
       try {
@@ -785,15 +771,14 @@ public class BaseSMAdapter
                      Date expDate, String serviceCode, byte[] atc, MKDMethod mkdm)
                      throws SMException {
 
-      SimpleMsg[] cmdParameters = {
-            new SimpleMsg("parameter", "account number", accountNo),
-            new SimpleMsg("parameter", "imk-ac", imkac == null ? "" : imkac),
-            new SimpleMsg("parameter", "dCVV", dcvv),
-            new SimpleMsg("parameter", "Exp date", expDate),
-            new SimpleMsg("parameter", "Service code", serviceCode),
-            new SimpleMsg("parameter", "atc", atc == null ? "" : ISOUtil.hexString(atc)),
-            new SimpleMsg("parameter", "mkd method", mkdm)
-      };
+        List<Loggeable> cmdParameters = new ArrayList<>();
+        cmdParameters.add(new SimpleMsg("parameter", "account number", accountNo));
+        cmdParameters.add(new SimpleMsg("parameter", "imk-ac", imkac == null ? "" : imkac));
+        cmdParameters.add(new SimpleMsg("parameter", "dCVV", dcvv));
+        cmdParameters.add(new SimpleMsg("parameter", "Exp date", expDate));
+        cmdParameters.add(new SimpleMsg("parameter", "Service code", serviceCode));
+        cmdParameters.add(new SimpleMsg("parameter", "atc", atc == null ? "" : ISOUtil.hexString(atc)));
+        cmdParameters.add(new SimpleMsg("parameter", "mkd method", mkdm));
       LogEvent evt = new LogEvent(this, "s-m-operation");
       evt.addMessage(new SimpleMsg("command", "Verify dCVV", cmdParameters));
       try {
@@ -828,16 +813,15 @@ public class BaseSMAdapter
                      byte[] atc, byte[] upn, byte[] data, MKDMethod mkdm, String cvc3)
                      throws SMException {
 
-      SimpleMsg[] cmdParameters = {
-            new SimpleMsg("parameter", "imk-cvc3", imkcvc3 == null ? "" : imkcvc3),
-            new SimpleMsg("parameter", "account number", accountNo),
-            new SimpleMsg("parameter", "accnt seq no", acctSeqNo),
-            new SimpleMsg("parameter", "atc", atc == null ? "" : ISOUtil.hexString(atc)),
-            new SimpleMsg("parameter", "upn", upn == null ? "" : ISOUtil.hexString(upn)),
-            new SimpleMsg("parameter", "data", data == null ? "" : ISOUtil.hexString(data)),
-            new SimpleMsg("parameter", "mkd method", mkdm),
-            new SimpleMsg("parameter", "cvc3", cvc3)
-      };
+        List<Loggeable> cmdParameters = new ArrayList<>();
+        cmdParameters.add(new SimpleMsg("parameter", "imk-cvc3", imkcvc3 == null ? "" : imkcvc3));
+        cmdParameters.add(new SimpleMsg("parameter", "account number", accountNo));
+        cmdParameters.add(new SimpleMsg("parameter", "accnt seq no", acctSeqNo));
+        cmdParameters.add(new SimpleMsg("parameter", "atc", atc == null ? "" : ISOUtil.hexString(atc)));
+        cmdParameters.add(new SimpleMsg("parameter", "upn", upn == null ? "" : ISOUtil.hexString(upn)));
+        cmdParameters.add(new SimpleMsg("parameter", "data", data == null ? "" : ISOUtil.hexString(data)));
+        cmdParameters.add(new SimpleMsg("parameter", "mkd method", mkdm));
+        cmdParameters.add(new SimpleMsg("parameter", "cvc3", cvc3));
       LogEvent evt = new LogEvent(this, "s-m-operation");
       evt.addMessage(new SimpleMsg("command", "Verify CVC3", cmdParameters));
       try {
@@ -857,17 +841,16 @@ public class BaseSMAdapter
             ,String accoutNo, String acctSeqNo, byte[] arqc, byte[] atc
             ,byte[] upn, byte[] transData) throws SMException {
 
-      SimpleMsg[] cmdParameters = {
-            new SimpleMsg("parameter", "mkd method", mkdm),
-            new SimpleMsg("parameter", "skd method", skdm),
-            new SimpleMsg("parameter", "imk-ac", imkac),
-            new SimpleMsg("parameter", "account number", accoutNo),
-            new SimpleMsg("parameter", "accnt seq no", acctSeqNo),
-            new SimpleMsg("parameter", "arqc", arqc == null ? "" : ISOUtil.hexString(arqc)),
-            new SimpleMsg("parameter", "atc", atc == null ? "" : ISOUtil.hexString(atc)),
-            new SimpleMsg("parameter", "upn", upn == null ? "" : ISOUtil.hexString(upn)),
-            new SimpleMsg("parameter", "trans. data", transData == null ? "" : ISOUtil.hexString(transData))
-      };
+        List<Loggeable> cmdParameters = new ArrayList<>();
+        cmdParameters.add(new SimpleMsg("parameter", "mkd method", mkdm));
+        cmdParameters.add(new SimpleMsg("parameter", "skd method", skdm));
+        cmdParameters.add(new SimpleMsg("parameter", "imk-ac", imkac));
+        cmdParameters.add(new SimpleMsg("parameter", "account number", accoutNo));
+        cmdParameters.add(new SimpleMsg("parameter", "accnt seq no", acctSeqNo));
+        cmdParameters.add(new SimpleMsg("parameter", "arqc", arqc == null ? "" : ISOUtil.hexString(arqc)));
+        cmdParameters.add(new SimpleMsg("parameter", "atc", atc == null ? "" : ISOUtil.hexString(atc)));
+        cmdParameters.add(new SimpleMsg("parameter", "upn", upn == null ? "" : ISOUtil.hexString(upn)));
+        cmdParameters.add(new SimpleMsg("parameter", "txn data", transData == null ? "" : ISOUtil.hexString(transData)));
       LogEvent evt = new LogEvent(this, "s-m-operation");
       evt.addMessage(new SimpleMsg("command", "Verify ARQC/TC/AAC", cmdParameters));
       try {
@@ -888,20 +871,20 @@ public class BaseSMAdapter
             ,ARPCMethod arpcMethod, byte[] arc, byte[] propAuthData)
             throws SMException {
 
-      SimpleMsg[] cmdParameters = {
-            new SimpleMsg("parameter", "mkd method", mkdm),
-            new SimpleMsg("parameter", "skd method", skdm),
-            new SimpleMsg("parameter", "imk-ac", imkac),
-            new SimpleMsg("parameter", "account number", accoutNo),
-            new SimpleMsg("parameter", "accnt seq no", acctSeqNo),
-            new SimpleMsg("parameter", "arqc", arqc == null ? "" : ISOUtil.hexString(arqc)),
-            new SimpleMsg("parameter", "atc", atc == null ? "" : ISOUtil.hexString(atc)),
-            new SimpleMsg("parameter", "upn", upn == null ? "" : ISOUtil.hexString(upn)),
-            new SimpleMsg("parameter", "arpc gen. method", arpcMethod),
-            new SimpleMsg("parameter", "auth. rc", arc == null ? "" : ISOUtil.hexString(arc)),
-            new SimpleMsg("parameter", "prop auth. data", propAuthData == null
-                                       ? "" : ISOUtil.hexString(propAuthData))
-      };
+        List<Loggeable> cmdParameters = new ArrayList<>();
+        cmdParameters.add(new SimpleMsg("parameter", "mkd method", mkdm));
+        cmdParameters.add(new SimpleMsg("parameter", "skd method", skdm));
+        cmdParameters.add(new SimpleMsg("parameter", "imk-ac", imkac));
+        cmdParameters.add(new SimpleMsg("parameter", "account number", accoutNo));
+        cmdParameters.add(new SimpleMsg("parameter", "accnt seq no", acctSeqNo));
+        cmdParameters.add(new SimpleMsg("parameter", "arqc", arqc == null ? "" : ISOUtil.hexString(arqc)));
+        cmdParameters.add(new SimpleMsg("parameter", "atc", atc == null ? "" : ISOUtil.hexString(atc)));
+        cmdParameters.add(new SimpleMsg("parameter", "upn", upn == null ? "" : ISOUtil.hexString(upn)));
+        cmdParameters.add(new SimpleMsg("parameter", "arpc gen. method", arpcMethod));
+        cmdParameters.add(new SimpleMsg("parameter", "auth. rc", arc == null ? "" : ISOUtil.hexString(arc)));
+        cmdParameters.add(new SimpleMsg("parameter", "prop auth. data"
+                , propAuthData == null ? "" : ISOUtil.hexString(propAuthData))
+        );
       LogEvent evt = new LogEvent(this, "s-m-operation");
       evt.addMessage(new SimpleMsg("command", "Genarate ARPC", cmdParameters));
       try {
@@ -923,21 +906,21 @@ public class BaseSMAdapter
             ,byte[] transData, ARPCMethod arpcMethod, byte[] arc, byte[] propAuthData)
             throws SMException {
 
-      SimpleMsg[] cmdParameters = {
-            new SimpleMsg("parameter", "mkd method", mkdm),
-            new SimpleMsg("parameter", "skd method", skdm),
-            new SimpleMsg("parameter", "imk-ac", imkac),
-            new SimpleMsg("parameter", "account number", accoutNo),
-            new SimpleMsg("parameter", "accnt seq no", acctSeqNo),
-            new SimpleMsg("parameter", "arqc", arqc == null ? "" : ISOUtil.hexString(arqc)),
-            new SimpleMsg("parameter", "atc", atc == null ? "" : ISOUtil.hexString(atc)),
-            new SimpleMsg("parameter", "upn", upn == null ? "" : ISOUtil.hexString(upn)),
-            new SimpleMsg("parameter", "trans. data", transData == null ? "" : ISOUtil.hexString(transData)),
-            new SimpleMsg("parameter", "arpc gen. method", arpcMethod),
-            new SimpleMsg("parameter", "auth. rc", arc == null ? "" : ISOUtil.hexString(arc)),
-            new SimpleMsg("parameter", "prop auth. data", propAuthData == null
-                                       ? "" : ISOUtil.hexString(propAuthData))
-      };
+        List<Loggeable> cmdParameters = new ArrayList<>();
+        cmdParameters.add(new SimpleMsg("parameter", "mkd method", mkdm));
+        cmdParameters.add(new SimpleMsg("parameter", "skd method", skdm));
+        cmdParameters.add(new SimpleMsg("parameter", "imk-ac", imkac));
+        cmdParameters.add(new SimpleMsg("parameter", "account number", accoutNo));
+        cmdParameters.add(new SimpleMsg("parameter", "accnt seq no", acctSeqNo));
+        cmdParameters.add(new SimpleMsg("parameter", "arqc", arqc == null ? "" : ISOUtil.hexString(arqc)));
+        cmdParameters.add(new SimpleMsg("parameter", "atc", atc == null ? "" : ISOUtil.hexString(atc)));
+        cmdParameters.add(new SimpleMsg("parameter", "upn", upn == null ? "" : ISOUtil.hexString(upn)));
+        cmdParameters.add(new SimpleMsg("parameter", "txn data", transData == null ? "" : ISOUtil.hexString(transData)));
+        cmdParameters.add(new SimpleMsg("parameter", "arpc gen. method", arpcMethod));
+        cmdParameters.add(new SimpleMsg("parameter", "auth. rc", arc == null ? "" : ISOUtil.hexString(arc)));
+        cmdParameters.add(new SimpleMsg("parameter", "prop auth. data",
+                propAuthData == null ? "" : ISOUtil.hexString(propAuthData))
+        );
       LogEvent evt = new LogEvent(this, "s-m-operation");
       evt.addMessage(new SimpleMsg("command", "Genarate ARPC", cmdParameters));
       try {
@@ -958,16 +941,15 @@ public class BaseSMAdapter
             ,SecureDESKey imksmi, String accountNo, String acctSeqNo
             ,byte[] atc, byte[] arqc, byte[] data) throws SMException {
 
-      SimpleMsg[] cmdParameters = {
-            new SimpleMsg("parameter", "mkd method", mkdm),
-            new SimpleMsg("parameter", "skd method", skdm),
-            new SimpleMsg("parameter", "imk-smi", imksmi),
-            new SimpleMsg("parameter", "account number", accountNo),
-            new SimpleMsg("parameter", "accnt seq no", acctSeqNo),
-            new SimpleMsg("parameter", "atc", atc == null ? "" : ISOUtil.hexString(atc)),
-            new SimpleMsg("parameter", "arqc", arqc == null ? "" : ISOUtil.hexString(arqc)),
-            new SimpleMsg("parameter", "data", data == null ? "" : ISOUtil.hexString(data))
-      };
+        List<Loggeable> cmdParameters = new ArrayList<>();
+        cmdParameters.add(new SimpleMsg("parameter", "mkd method", mkdm));
+        cmdParameters.add(new SimpleMsg("parameter", "skd method", skdm));
+        cmdParameters.add(new SimpleMsg("parameter", "imk-smi", imksmi));
+        cmdParameters.add(new SimpleMsg("parameter", "account number", accountNo));
+        cmdParameters.add(new SimpleMsg("parameter", "accnt seq no", acctSeqNo));
+        cmdParameters.add(new SimpleMsg("parameter", "atc", atc == null ? "" : ISOUtil.hexString(atc)));
+        cmdParameters.add(new SimpleMsg("parameter", "arqc", arqc == null ? "" : ISOUtil.hexString(arqc)));
+        cmdParameters.add(new SimpleMsg("parameter", "data", data == null ? "" : ISOUtil.hexString(data)));
       LogEvent evt = new LogEvent(this, "s-m-operation");
       evt.addMessage(new SimpleMsg("command", "Generate Secure Messaging MAC", cmdParameters));
       try {
@@ -1013,15 +995,15 @@ public class BaseSMAdapter
                     ,cmdParameters)
       );
       try {
-        Pair<EncryptedPIN,byte[]> r = translatePINGenerateSM_MACImpl( mkdm, skdm
+            Pair<EncryptedPIN,byte[]> r = translatePINGenerateSM_MACImpl(mkdm, skdm
                 ,padm, imksmi, accountNo, acctSeqNo, atc, arqc, data, currentPIN
-                ,newPIN, kd1, imksmc, imkac, destinationPINBlockFormat);
-        SimpleMsg[] cmdResults = {
-              new SimpleMsg("result", "Translated PIN block", r.getValue0()),
-              new SimpleMsg("result", "Generated MAC", r.getValue1() == null ? "" : ISOUtil.hexString(r.getValue1()))
-        };
-        evt.addMessage(new SimpleMsg("results", "Complex results", cmdResults));
-        return r;
+                ,newPIN, kd1, imksmc, imkac, destinationPINBlockFormat
+            );
+            List<Loggeable> cmdResults = new ArrayList<>();
+            cmdResults.add(new SimpleMsg("result", "Translated PIN block", r.getValue0()));
+            cmdResults.add(new SimpleMsg("result", "Generated MAC", r.getValue1() == null ? "" : ISOUtil.hexString(r.getValue1())));
+            evt.addMessage(new SimpleMsg("results", "Complex results", cmdResults));
+            return r;
       } catch (Exception e) {
         evt.addMessage(e);
         throw e instanceof SMException ? (SMException) e : new SMException(e);
@@ -1116,10 +1098,9 @@ public class BaseSMAdapter
 
     @Override
     public byte[] generateCBC_MAC (byte[] data, SecureDESKey kd) throws SMException {
-        SimpleMsg[] cmdParameters =  {
-            new SimpleMsg("parameter", "data", data), new SimpleMsg("parameter", "data key",
-                    kd),
-        };
+        List<Loggeable> cmdParameters = new ArrayList<>();
+        cmdParameters.add(new SimpleMsg("parameter", "data", data));
+        cmdParameters.add(new SimpleMsg("parameter", "data key", kd));
         LogEvent evt = new LogEvent(this, "s-m-operation");
         evt.addMessage(new SimpleMsg("command", "Generate CBC-MAC", cmdParameters));
         byte[] result = null;
@@ -1137,10 +1118,9 @@ public class BaseSMAdapter
 
     @Override
     public byte[] generateEDE_MAC (byte[] data, SecureDESKey kd) throws SMException {
-        SimpleMsg[] cmdParameters =  {
-            new SimpleMsg("parameter", "data", data), new SimpleMsg("parameter", "data key",
-                    kd),
-        };
+        List<Loggeable> cmdParameters = new ArrayList<>();
+        cmdParameters.add(new SimpleMsg("parameter", "data", data));
+        cmdParameters.add(new SimpleMsg("parameter", "data key", kd));
         LogEvent evt = new LogEvent(this, "s-m-operation");
         evt.addMessage(new SimpleMsg("command", "Generate EDE-MAC", cmdParameters));
         byte[] result = null;
@@ -1158,9 +1138,8 @@ public class BaseSMAdapter
 
     @Override
     public SecureDESKey translateKeyFromOldLMK (SecureDESKey kd) throws SMException {
-        SimpleMsg[] cmdParameters =  {
-            new SimpleMsg("parameter", "Key under old LMK", kd)
-        };
+        List<Loggeable> cmdParameters = new ArrayList<>();
+        cmdParameters.add(new SimpleMsg("parameter", "Key under old LMK", kd));
         LogEvent evt = new LogEvent(this, "s-m-operation");
         evt.addMessage(new SimpleMsg("command", "Translate Key from old to new LMK", cmdParameters));
         SecureDESKey result = null;
@@ -1187,10 +1166,9 @@ public class BaseSMAdapter
         Pair<PublicKey, SecurePrivateKey> result = null;
         try {
             result = generateKeyPairImpl(spec);
-            SimpleMsg[] cmdResults = {
-                  new SimpleMsg("result", "Public Key", result.getValue0().getEncoded()),
-                  new SimpleMsg("result", "Private Key", result.getValue1().getKeyBytes())
-            };
+            List<Loggeable> cmdResults = new ArrayList<>();
+            cmdResults.add(new SimpleMsg("result", "Public Key", result.getValue0().getEncoded()));
+            cmdResults.add(new SimpleMsg("result", "Private Key", result.getValue1().getKeyBytes()));
             evt.addMessage(new SimpleMsg("results", "Complex results", cmdResults));
         } catch (Exception e) {
             evt.addMessage(e);
@@ -1227,8 +1205,7 @@ public class BaseSMAdapter
 
     @Override
     public void eraseOldLMK () throws SMException {
-        SimpleMsg[] cmdParameters =  {
-        };
+        List<Loggeable> cmdParameters = new ArrayList<>();
         LogEvent evt = new LogEvent(this, "s-m-operation");
         evt.addMessage(new SimpleMsg("command", "Erase the key change storage", cmdParameters));
         try {
