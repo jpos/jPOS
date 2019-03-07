@@ -29,7 +29,6 @@ subprojects {
     repositories {
         mavenCentral()
         maven { url 'http://jpos.org/maven' }
-        maven { url 'http://download.oracle.com/maven' }
         mavenLocal()
     }
     if (project.hasProperty("lint")) {
