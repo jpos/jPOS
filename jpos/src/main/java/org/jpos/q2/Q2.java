@@ -71,6 +71,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
 import static java.util.ResourceBundle.getBundle;
@@ -109,7 +110,7 @@ public class Q2 implements FileFilter, Runnable {
     private Log log;
     private volatile boolean started;
     private CountDownLatch ready = new CountDownLatch(1);
-    private volatile boolean shutdown;
+    private CountDownLatch shutdown = new CountDownLatch(1);
     private volatile boolean shuttingDown;
     private volatile Thread q2Thread;
     private String[] args;
@@ -128,6 +129,8 @@ public class Q2 implements FileFilter, Runnable {
     private long lastVersionLog;
     private String watchServiceClassname;
     private boolean enableSsh;
+    private boolean disableDeployScan;
+    private boolean disableDynamicClassloader;
     private int sshPort;
     private String sshAuthorizedKeys;
     private String sshUser;
@@ -166,7 +169,7 @@ public class Q2 implements FileFilter, Runnable {
         this(args, null);
     }
     public void start () {
-        if (shutdown)
+        if (shutdown.getCount() == 0)
             throw new IllegalStateException("Q2 has been stopped");
         new Thread (this).start();
     }
@@ -239,8 +242,12 @@ public class Q2 implements FileFilter, Runnable {
             }
 
             deployInternal();
-            for (int i = 1; !shutdown; i++) {
+            for (int i = 1; shutdown.getCount() > 0; i++) {
                 try {
+                    if (i > 1 && disableDeployScan) {
+                        shutdown.await();
+                        break;
+                    }
                     boolean forceNewClassLoader = scan() && i > 1;
                     QClassLoader oldClassLoader = loader;
                     loader = loader.scan(forceNewClassLoader);
@@ -293,10 +300,10 @@ public class Q2 implements FileFilter, Runnable {
         shutdown(false);
     }
     public boolean running() {
-        return started && !shutdown;
+        return started && shutdown.getCount() > 0;
     }
     public boolean ready() {
-        return ready.getCount() == 0 && !shutdown;
+        return ready.getCount() == 0 && shutdown.getCount() > 0;
     }
     public boolean ready (long millis) {
         try {
@@ -305,7 +312,7 @@ public class Q2 implements FileFilter, Runnable {
         return ready();
     }
     public void shutdown (boolean join) {
-        shutdown = true;
+        shutdown.countDown();
         if (q2Thread != null) {
             log.info ("shutting down");
             q2Thread.interrupt ();
@@ -378,7 +385,7 @@ public class Q2 implements FileFilter, Runnable {
         Iterator<Map.Entry<File,QEntry>> iter = dirMap.entrySet().iterator();
 
         try {
-            while (iter.hasNext() && !shutdown) {
+            while (iter.hasNext() && shutdown.getCount() > 0) {
                 Map.Entry<File,QEntry> entry = iter.next();
                 File   f        = entry.getKey ();
                 QEntry qentry   = entry.getValue ();
@@ -428,7 +435,7 @@ public class Q2 implements FileFilter, Runnable {
             new Thread ("Q2-ShutdownHook") {
                 public void run () {
                     shuttingDown = true;
-                    shutdown = true;
+                    shutdown.countDown();
                     if (q2Thread != null) {
                         log.info ("shutting down (hook)");
                         try {
@@ -712,10 +719,12 @@ public class Q2 implements FileFilter, Runnable {
         options.addOption ("p", "pid-file", true, "Store project's pid");
         options.addOption ("n", "name", true, "Optional name (defaults to 'Q2')");
         options.addOption ("s", "ssh", false, "Enable SSH server");
-        options.addOption ("sp", "ssh-port", true, "ssh port (defaults to 2222)");
+        options.addOption ("sp", "ssh-port", true, "SSH port (defaults to 2222)");
         options.addOption ("sa", "ssh-authorized-keys", true, "Path to authorized key file (defaults to 'cfg/authorized_keys')");
-        options.addOption ("su", "ssh-user", true, "ssh user (defaults to 'admin')");
-        options.addOption ("sh", "ssh-host-key-file", true, "ssh host key file, defaults to 'cfg/hostkeys.ser'");
+        options.addOption ("su", "ssh-user", true, "SSH user (defaults to 'admin')");
+        options.addOption ("sh", "ssh-host-key-file", true, "SSH host key file, defaults to 'cfg/hostkeys.ser'");
+        options.addOption ("Ns", "no-scan", false, "Disables deploy directory scan");
+        options.addOption ("Nd", "no-dynamic", false, "Disables dynamic classloader");
 
         try {
             CommandLine line = parser.parse (options, args);
@@ -750,6 +759,8 @@ public class Q2 implements FileFilter, Runnable {
                 pidFile = line.getOptionValue("p");
             if (line.hasOption("n"))
                 name = line.getOptionValue("n");
+            disableDeployScan = line.hasOption("Ns");
+            disableDynamicClassloader = line.hasOption("Nd");
             enableSsh = line.hasOption("s");
             sshPort = Integer.parseInt(line.getOptionValue("sp", "2222"));
             sshAuthorizedKeys = line.getOptionValue ("sa", "cfg/authorized_keys");
@@ -1008,6 +1019,9 @@ public class Q2 implements FileFilter, Runnable {
         } catch (MissingResourceException ignored) {
             return null;
         }
+    }
+    public boolean isDisableDynamicClassloader() {
+        return disableDynamicClassloader;
     }
     public static class QEntry {
         long deployed;

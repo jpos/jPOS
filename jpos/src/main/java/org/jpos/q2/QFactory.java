@@ -74,16 +74,13 @@ public class QFactory {
             }
         }
         MBeanServer mserver = server.getMBeanServer();
-        getExtraPath (server.getLoader (), e);
+        if (!q2.isDisableDynamicClassloader())
+            getExtraPath(server.getLoader(), e);
         return mserver.instantiate (clazz, loaderName);
     }
 
     public ObjectInstance createQBean (Q2 server, Element e, Object obj) 
-        throws ClassNotFoundException, 
-               InstantiationException,
-               IllegalAccessException,
-               MalformedObjectNameException,
-               MalformedURLException,
+        throws MalformedObjectNameException,
                InstanceAlreadyExistsException,
                InstanceNotFoundException,
                MBeanException,
@@ -131,7 +128,8 @@ public class QFactory {
     public Q2 getQ2() {
         return q2;
     }
-    public void getExtraPath (QClassLoader loader, Element e) {
+
+    private void getExtraPath (QClassLoader loader, Element e) {
         Element classpathElement = e.getChild ("classpath");
         if (classpathElement != null) {
             try {
