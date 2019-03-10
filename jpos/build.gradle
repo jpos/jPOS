@@ -73,7 +73,7 @@ def jposCopySpec = copySpec {
         include 'cfg/authorized_keys'
         fileMode 0400
     }
-    from(file("${project.libsDir}/${q2ArchiveJarName}"))
+    from(file("${project.libsDirName}/${q2ArchiveJarName}"))
 
     into("lib") {
         from(configurations.runtime)
