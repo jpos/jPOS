@@ -2,7 +2,7 @@
 <pmd xmlns="http://pmd.sourceforge.net/report/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/report/2.0.0 http://pmd.sourceforge.net/report_2_0_0.xsd"
-    version="6.8.0" timestamp="2019-03-11T13:07:31.703">
+    version="6.8.0" timestamp="2019-03-11T16:36:02.454">
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/bsh/BSHAction.java">
 <violation beginline="30" endline="30" begincolumn="15" endcolumn="16" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.bsh" class="BSHAction" variable="ui" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
 Found non-transient, non-static member. Please mark as transient or provide accessors.
@@ -3889,328 +3889,322 @@ Found 'UR'-anomaly for variable 'c' (lines '129'-'135').
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/q2/Q2.java">
-<violation beginline="104" endline="104" begincolumn="25" endcolumn="30" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2" variable="server" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
+<violation beginline="105" endline="105" begincolumn="25" endcolumn="30" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2" variable="server" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
 Found non-transient, non-static member. Please mark as transient or provide accessors.
 </violation>
-<violation beginline="105" endline="105" begincolumn="18" endcolumn="26" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2" variable="deployDir" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
+<violation beginline="106" endline="106" begincolumn="18" endcolumn="26" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2" variable="deployDir" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
 Found non-transient, non-static member. Please mark as transient or provide accessors.
 </violation>
-<violation beginline="105" endline="105" begincolumn="29" endcolumn="34" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2" variable="libDir" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
+<violation beginline="106" endline="106" begincolumn="29" endcolumn="34" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2" variable="libDir" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
 Found non-transient, non-static member. Please mark as transient or provide accessors.
 </violation>
-<violation beginline="106" endline="106" begincolumn="30" endcolumn="35" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2" variable="dirMap" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
+<violation beginline="107" endline="107" begincolumn="30" endcolumn="35" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2" variable="dirMap" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
 Found non-transient, non-static member. Please mark as transient or provide accessors.
 </violation>
-<violation beginline="107" endline="107" begincolumn="22" endcolumn="28" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2" variable="factory" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
+<violation beginline="108" endline="108" begincolumn="22" endcolumn="28" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2" variable="factory" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
 Found non-transient, non-static member. Please mark as transient or provide accessors.
 </violation>
-<violation beginline="108" endline="108" begincolumn="26" endcolumn="31" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2" variable="loader" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
+<violation beginline="109" endline="109" begincolumn="26" endcolumn="31" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2" variable="loader" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
 Found non-transient, non-static member. Please mark as transient or provide accessors.
 </violation>
-<violation beginline="109" endline="109" begincolumn="25" endcolumn="39" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2" variable="mainClassLoader" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
+<violation beginline="110" endline="110" begincolumn="25" endcolumn="39" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2" variable="mainClassLoader" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
 Found non-transient, non-static member. Please mark as transient or provide accessors.
 </violation>
-<violation beginline="110" endline="110" begincolumn="17" endcolumn="19" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2" variable="log" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
+<violation beginline="111" endline="111" begincolumn="17" endcolumn="19" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2" variable="log" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
 Found non-transient, non-static member. Please mark as transient or provide accessors.
 </violation>
-<violation beginline="110" endline="110" begincolumn="5" endcolumn="20" rule="ProperLogger" ruleset="Error Prone" package="org.jpos.q2" class="Q2" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#properlogger" priority="3">
+<violation beginline="111" endline="111" begincolumn="5" endcolumn="20" rule="ProperLogger" ruleset="Error Prone" package="org.jpos.q2" class="Q2" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#properlogger" priority="3">
 Logger should be defined private static final and have the correct class
 </violation>
-<violation beginline="111" endline="111" begincolumn="30" endcolumn="36" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2" variable="started" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
+<violation beginline="112" endline="112" begincolumn="30" endcolumn="36" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2" variable="started" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
 Found non-transient, non-static member. Please mark as transient or provide accessors.
 </violation>
-<violation beginline="112" endline="112" begincolumn="13" endcolumn="57" rule="AvoidFieldNameMatchingMethodName" ruleset="Error Prone" package="org.jpos.q2" class="Q2" variable="ready" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidfieldnamematchingmethodname" priority="3">
+<violation beginline="113" endline="113" begincolumn="13" endcolumn="57" rule="AvoidFieldNameMatchingMethodName" ruleset="Error Prone" package="org.jpos.q2" class="Q2" variable="ready" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidfieldnamematchingmethodname" priority="3">
 Field ready has the same name as a method
 </violation>
-<violation beginline="112" endline="112" begincolumn="28" endcolumn="32" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2" variable="ready" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
+<violation beginline="113" endline="113" begincolumn="28" endcolumn="32" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2" variable="ready" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
 Found non-transient, non-static member. Please mark as transient or provide accessors.
 </violation>
-<violation beginline="113" endline="113" begincolumn="13" endcolumn="60" rule="AvoidFieldNameMatchingMethodName" ruleset="Error Prone" package="org.jpos.q2" class="Q2" variable="shutdown" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidfieldnamematchingmethodname" priority="3">
+<violation beginline="114" endline="114" begincolumn="13" endcolumn="60" rule="AvoidFieldNameMatchingMethodName" ruleset="Error Prone" package="org.jpos.q2" class="Q2" variable="shutdown" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidfieldnamematchingmethodname" priority="3">
 Field shutdown has the same name as a method
 </violation>
-<violation beginline="113" endline="113" begincolumn="28" endcolumn="35" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2" variable="shutdown" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
+<violation beginline="114" endline="114" begincolumn="28" endcolumn="35" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2" variable="shutdown" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
 Found non-transient, non-static member. Please mark as transient or provide accessors.
 </violation>
-<violation beginline="114" endline="114" begincolumn="30" endcolumn="41" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2" variable="shuttingDown" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
+<violation beginline="115" endline="115" begincolumn="30" endcolumn="41" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2" variable="shuttingDown" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
 Found non-transient, non-static member. Please mark as transient or provide accessors.
 </violation>
-<violation beginline="115" endline="115" begincolumn="29" endcolumn="36" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2" variable="q2Thread" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
+<violation beginline="116" endline="116" begincolumn="29" endcolumn="36" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2" variable="q2Thread" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
 Found non-transient, non-static member. Please mark as transient or provide accessors.
 </violation>
-<violation beginline="116" endline="116" begincolumn="22" endcolumn="25" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2" variable="args" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
+<violation beginline="117" endline="117" begincolumn="22" endcolumn="25" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2" variable="args" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
 Found non-transient, non-static member. Please mark as transient or provide accessors.
 </violation>
-<violation beginline="117" endline="117" begincolumn="21" endcolumn="35" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2" variable="hasSystemLogger" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
+<violation beginline="118" endline="118" begincolumn="21" endcolumn="35" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2" variable="hasSystemLogger" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
 Found non-transient, non-static member. Please mark as transient or provide accessors.
 </violation>
-<violation beginline="118" endline="118" begincolumn="21" endcolumn="24" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2" variable="exit" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
+<violation beginline="119" endline="119" begincolumn="21" endcolumn="24" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2" variable="exit" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
 Found non-transient, non-static member. Please mark as transient or provide accessors.
 </violation>
-<violation beginline="119" endline="119" begincolumn="21" endcolumn="29" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2" variable="startTime" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
+<violation beginline="120" endline="120" begincolumn="21" endcolumn="29" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2" variable="startTime" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
 Found non-transient, non-static member. Please mark as transient or provide accessors.
 </violation>
-<violation beginline="120" endline="120" begincolumn="17" endcolumn="19" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2" variable="cli" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
+<violation beginline="121" endline="121" begincolumn="17" endcolumn="19" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2" variable="cli" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
 Found non-transient, non-static member. Please mark as transient or provide accessors.
 </violation>
-<violation beginline="121" endline="121" begincolumn="21" endcolumn="29" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2" variable="recursive" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
+<violation beginline="122" endline="122" begincolumn="21" endcolumn="29" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2" variable="recursive" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
 Found non-transient, non-static member. Please mark as transient or provide accessors.
 </violation>
-<violation beginline="122" endline="122" begincolumn="38" endcolumn="46" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2" variable="decorator" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
+<violation beginline="123" endline="123" begincolumn="38" endcolumn="46" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2" variable="decorator" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
 Found non-transient, non-static member. Please mark as transient or provide accessors.
 </violation>
-<violation beginline="123" endline="123" begincolumn="18" endcolumn="27" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2" variable="instanceId" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
+<violation beginline="124" endline="124" begincolumn="18" endcolumn="27" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2" variable="instanceId" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
 Found non-transient, non-static member. Please mark as transient or provide accessors.
 </violation>
-<violation beginline="124" endline="124" begincolumn="23" endcolumn="35" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2" variable="osgiFramework" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
+<violation beginline="125" endline="125" begincolumn="23" endcolumn="35" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2" variable="osgiFramework" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
 Found non-transient, non-static member. Please mark as transient or provide accessors.
 </violation>
-<violation beginline="125" endline="125" begincolumn="21" endcolumn="29" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2" variable="startOSGI" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
+<violation beginline="126" endline="126" begincolumn="21" endcolumn="29" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2" variable="startOSGI" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
 Found non-transient, non-static member. Please mark as transient or provide accessors.
 </violation>
-<violation beginline="126" endline="126" begincolumn="27" endcolumn="39" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2" variable="bundleContext" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
+<violation beginline="127" endline="127" begincolumn="27" endcolumn="39" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2" variable="bundleContext" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
 Found non-transient, non-static member. Please mark as transient or provide accessors.
 </violation>
-<violation beginline="127" endline="127" begincolumn="20" endcolumn="26" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2" variable="pidFile" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
+<violation beginline="128" endline="128" begincolumn="20" endcolumn="26" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2" variable="pidFile" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
 Found non-transient, non-static member. Please mark as transient or provide accessors.
 </violation>
-<violation beginline="128" endline="128" begincolumn="20" endcolumn="23" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2" variable="name" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
+<violation beginline="129" endline="129" begincolumn="20" endcolumn="23" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2" variable="name" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
 Found non-transient, non-static member. Please mark as transient or provide accessors.
 </violation>
-<violation beginline="129" endline="129" begincolumn="18" endcolumn="31" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2" variable="lastVersionLog" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
+<violation beginline="130" endline="130" begincolumn="18" endcolumn="31" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2" variable="lastVersionLog" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
 Found non-transient, non-static member. Please mark as transient or provide accessors.
 </violation>
-<violation beginline="130" endline="130" begincolumn="20" endcolumn="40" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2" variable="watchServiceClassname" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
+<violation beginline="131" endline="131" begincolumn="20" endcolumn="40" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2" variable="watchServiceClassname" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
 Found non-transient, non-static member. Please mark as transient or provide accessors.
 </violation>
-<violation beginline="131" endline="131" begincolumn="21" endcolumn="29" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2" variable="enableSsh" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
+<violation beginline="132" endline="132" begincolumn="21" endcolumn="29" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2" variable="enableSsh" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
 Found non-transient, non-static member. Please mark as transient or provide accessors.
 </violation>
-<violation beginline="132" endline="132" begincolumn="21" endcolumn="37" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2" variable="disableDeployScan" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
+<violation beginline="133" endline="133" begincolumn="21" endcolumn="37" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2" variable="disableDeployScan" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
 Found non-transient, non-static member. Please mark as transient or provide accessors.
 </violation>
-<violation beginline="133" endline="133" begincolumn="21" endcolumn="45" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2" variable="disableDynamicClassloader" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
+<violation beginline="134" endline="134" begincolumn="21" endcolumn="45" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2" variable="disableDynamicClassloader" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
 Found non-transient, non-static member. Please mark as transient or provide accessors.
 </violation>
-<violation beginline="134" endline="134" begincolumn="17" endcolumn="23" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2" variable="sshPort" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
+<violation beginline="135" endline="135" begincolumn="17" endcolumn="23" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2" variable="sshPort" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
 Found non-transient, non-static member. Please mark as transient or provide accessors.
 </violation>
-<violation beginline="135" endline="135" begincolumn="20" endcolumn="36" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2" variable="sshAuthorizedKeys" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
+<violation beginline="136" endline="136" begincolumn="20" endcolumn="36" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2" variable="sshAuthorizedKeys" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
 Found non-transient, non-static member. Please mark as transient or provide accessors.
 </violation>
-<violation beginline="136" endline="136" begincolumn="20" endcolumn="26" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2" variable="sshUser" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
+<violation beginline="137" endline="137" begincolumn="20" endcolumn="26" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2" variable="sshUser" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
 Found non-transient, non-static member. Please mark as transient or provide accessors.
 </violation>
-<violation beginline="137" endline="137" begincolumn="20" endcolumn="33" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2" variable="sshHostKeyFile" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
+<violation beginline="138" endline="138" begincolumn="20" endcolumn="33" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2" variable="sshHostKeyFile" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
 Found non-transient, non-static member. Please mark as transient or provide accessors.
 </violation>
-<violation beginline="146" endline="146" begincolumn="9" endcolumn="27" rule="ConstructorCallsOverridableMethod" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="Q2" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#constructorcallsoverridablemethod" priority="1">
+<violation beginline="147" endline="147" begincolumn="9" endcolumn="27" rule="ConstructorCallsOverridableMethod" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="Q2" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#constructorcallsoverridablemethod" priority="1">
 Overridable method 'displayVersion' called during object construction
 </violation>
-<violation beginline="150" endline="150" begincolumn="37" endcolumn="51" rule="UseProperClassLoader" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="Q2" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#useproperclassloader" priority="3">
+<violation beginline="151" endline="151" begincolumn="37" endcolumn="51" rule="UseProperClassLoader" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="Q2" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#useproperclassloader" priority="3">
 In J2EE, getClassLoader() might not work as expected.  Use Thread.currentThread().getContextClassLoader() instead.
 </violation>
-<violation beginline="179" endline="179" begincolumn="12" endcolumn="5" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="run" variable="fs" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'UR'-anomaly for variable 'fs' (lines '179'-'179').
+<violation beginline="180" endline="180" begincolumn="12" endcolumn="5" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="run" variable="fs" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'UR'-anomaly for variable 'fs' (lines '180'-'180').
 </violation>
-<violation beginline="179" endline="179" begincolumn="12" endcolumn="5" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="run" variable="fs" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'UR'-anomaly for variable 'fs' (lines '179'-'179').
+<violation beginline="180" endline="180" begincolumn="12" endcolumn="5" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="run" variable="fs" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'UR'-anomaly for variable 'fs' (lines '180'-'180').
 </violation>
-<violation beginline="184" endline="298" begincolumn="20" endcolumn="43" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="run" variable="fs" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'fs' (lines '184'-'298').
+<violation beginline="185" endline="299" begincolumn="20" endcolumn="43" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="run" variable="fs" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'fs' (lines '185'-'299').
 </violation>
-<violation beginline="184" endline="298" begincolumn="20" endcolumn="43" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="run" variable="fs" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'fs' (lines '184'-'298').
+<violation beginline="185" endline="299" begincolumn="20" endcolumn="43" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="run" variable="fs" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'fs' (lines '185'-'299').
 </violation>
-<violation beginline="221" endline="221" begincolumn="22" endcolumn="30" rule="AvoidCatchingThrowable" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="run" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingthrowable" priority="3">
+<violation beginline="222" endline="222" begincolumn="22" endcolumn="30" rule="AvoidCatchingThrowable" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="run" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingthrowable" priority="3">
 A catch statement should never catch throwable since it includes errors.
 </violation>
-<violation beginline="254" endline="254" begincolumn="25" endcolumn="48" rule="CompareObjectsWithEquals" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="run" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#compareobjectswithequals" priority="3">
+<violation beginline="255" endline="255" begincolumn="25" endcolumn="48" rule="CompareObjectsWithEquals" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="run" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#compareobjectswithequals" priority="3">
 Use equals() to compare object references.
 </violation>
-<violation beginline="255" endline="255" begincolumn="42" endcolumn="45" rule="NullAssignment" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="run" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#nullassignment" priority="3">
+<violation beginline="256" endline="256" begincolumn="42" endcolumn="45" rule="NullAssignment" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="run" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#nullassignment" priority="3">
 Assigning an Object to null is a code smell.  Consider refactoring.
 </violation>
-<violation beginline="256" endline="256" begincolumn="25" endcolumn="33" rule="DoNotCallGarbageCollectionExplicitly" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="run" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#donotcallgarbagecollectionexplicitly" priority="2">
+<violation beginline="257" endline="257" begincolumn="25" endcolumn="33" rule="DoNotCallGarbageCollectionExplicitly" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="run" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#donotcallgarbagecollectionexplicitly" priority="2">
 Do not explicitly trigger a garbage collection.
 </violation>
-<violation beginline="273" endline="273" begincolumn="26" endcolumn="34" rule="AvoidCatchingThrowable" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="run" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingthrowable" priority="3">
+<violation beginline="274" endline="274" begincolumn="26" endcolumn="34" rule="AvoidCatchingThrowable" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="run" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingthrowable" priority="3">
 A catch statement should never catch throwable since it includes errors.
 </violation>
-<violation beginline="282" endline="282" begincolumn="17" endcolumn="28" rule="UseCorrectExceptionLogging" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="run" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#usecorrectexceptionlogging" priority="3">
+<violation beginline="283" endline="283" begincolumn="17" endcolumn="28" rule="UseCorrectExceptionLogging" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="run" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#usecorrectexceptionlogging" priority="3">
 Use the correct logging statement for logging exceptions
 </violation>
-<violation beginline="288" endline="288" begincolumn="17" endcolumn="27" rule="DoNotCallSystemExit" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="run" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#donotcallsystemexit" priority="3">
+<violation beginline="289" endline="289" begincolumn="17" endcolumn="27" rule="DoNotCallSystemExit" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="run" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#donotcallsystemexit" priority="3">
 System.exit() should not be used in J2EE/JEE apps
 </violation>
-<violation beginline="296" endline="296" begincolumn="13" endcolumn="23" rule="DoNotCallSystemExit" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="run" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#donotcallsystemexit" priority="3">
+<violation beginline="297" endline="297" begincolumn="13" endcolumn="23" rule="DoNotCallSystemExit" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="run" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#donotcallsystemexit" priority="3">
 System.exit() should not be used in J2EE/JEE apps
 </violation>
-<violation beginline="324" endline="324" begincolumn="21" endcolumn="32" rule="UseCorrectExceptionLogging" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="shutdown" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#usecorrectexceptionlogging" priority="3">
+<violation beginline="325" endline="325" begincolumn="21" endcolumn="32" rule="UseCorrectExceptionLogging" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="shutdown" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#usecorrectexceptionlogging" priority="3">
 Use the correct logging statement for logging exceptions
 </violation>
-<violation beginline="328" endline="328" begincolumn="20" endcolumn="23" rule="NullAssignment" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="shutdown" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#nullassignment" priority="3">
+<violation beginline="329" endline="329" begincolumn="20" endcolumn="23" rule="NullAssignment" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="shutdown" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#nullassignment" priority="3">
 Assigning an Object to null is a code smell.  Consider refactoring.
 </violation>
-<violation beginline="361" endline="361" begincolumn="29" endcolumn="70" rule="UseLocaleWithCaseConversions" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="isXml" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#uselocalewithcaseconversions" priority="3">
+<violation beginline="362" endline="362" begincolumn="29" endcolumn="70" rule="UseLocaleWithCaseConversions" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="isXml" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#uselocalewithcaseconversions" priority="3">
 When doing a String.toLowerCase()/toUpperCase() call, use a Locale
 </violation>
-<violation beginline="364" endline="364" begincolumn="54" endcolumn="95" rule="UseLocaleWithCaseConversions" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="isBundle" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#uselocalewithcaseconversions" priority="3">
+<violation beginline="365" endline="365" begincolumn="54" endcolumn="95" rule="UseLocaleWithCaseConversions" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="isBundle" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#uselocalewithcaseconversions" priority="3">
 When doing a String.toLowerCase()/toUpperCase() call, use a Locale
 </violation>
-<violation beginline="366" endline="375" begincolumn="21" endcolumn="31" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="scan" variable="f" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'UR'-anomaly for variable 'f' (lines '366'-'375').
+<violation beginline="367" endline="376" begincolumn="21" endcolumn="31" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="scan" variable="f" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'UR'-anomaly for variable 'f' (lines '367'-'376').
 </violation>
-<violation beginline="367" endline="376" begincolumn="21" endcolumn="29" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="scan" variable="rc" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'rc' (lines '367'-'376').
+<violation beginline="368" endline="377" begincolumn="21" endcolumn="29" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="scan" variable="rc" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'rc' (lines '368'-'377').
 </violation>
-<violation beginline="367" endline="380" begincolumn="17" endcolumn="26" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="scan" variable="rc" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'rc' (lines '367'-'380').
+<violation beginline="368" endline="381" begincolumn="17" endcolumn="26" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="scan" variable="rc" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'rc' (lines '368'-'381').
 </violation>
-<violation beginline="376" endline="376" begincolumn="21" endcolumn="29" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="scan" variable="rc" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'rc' (lines '376'-'376').
+<violation beginline="377" endline="377" begincolumn="21" endcolumn="29" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="scan" variable="rc" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'rc' (lines '377'-'377').
 </violation>
-<violation beginline="382" endline="413" begincolumn="17" endcolumn="37" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="deploy" variable="f" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'UR'-anomaly for variable 'f' (lines '382'-'413').
+<violation beginline="383" endline="414" begincolumn="17" endcolumn="37" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="deploy" variable="f" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'UR'-anomaly for variable 'f' (lines '383'-'414').
 </violation>
-<violation beginline="382" endline="415" begincolumn="17" endcolumn="31" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="deploy" variable="instance" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'UR'-anomaly for variable 'instance' (lines '382'-'415').
+<violation beginline="383" endline="416" begincolumn="17" endcolumn="31" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="deploy" variable="instance" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'UR'-anomaly for variable 'instance' (lines '383'-'416').
 </violation>
-<violation beginline="426" endline="426" begincolumn="16" endcolumn="22" rule="AssignmentInOperand" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="undeploy" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#assignmentinoperand" priority="3">
+<violation beginline="427" endline="427" begincolumn="16" endcolumn="22" rule="AssignmentInOperand" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="undeploy" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#assignmentinoperand" priority="3">
 Avoid assignments in operands
 </violation>
-<violation beginline="445" endline="445" begincolumn="34" endcolumn="53" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="run" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
+<violation beginline="446" endline="446" begincolumn="34" endcolumn="53" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="run" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
 Avoid catching NullPointerException; consider removing the cause of the NPE.
 </violation>
-<violation beginline="462" endline="462" begincolumn="20" endcolumn="54" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="checkModified" variable="f" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'f' (lines '462'-'462').
+<violation beginline="463" endline="463" begincolumn="20" endcolumn="54" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="checkModified" variable="f" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'f' (lines '463'-'463').
 </violation>
-<violation beginline="462" endline="471" begincolumn="20" endcolumn="54" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="checkModified" variable="f" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'f' (lines '462'-'471').
+<violation beginline="463" endline="472" begincolumn="20" endcolumn="54" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="checkModified" variable="f" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'f' (lines '463'-'472').
 </violation>
-<violation beginline="474" endline="477" begincolumn="17" endcolumn="69" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="getState" variable="status" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'status' (lines '474'-'477').
+<violation beginline="475" endline="478" begincolumn="17" endcolumn="69" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="getState" variable="status" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'status' (lines '475'-'478').
 </violation>
-<violation beginline="485" endline="488" begincolumn="17" endcolumn="74" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="isModified" variable="modified" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'modified' (lines '485'-'488').
+<violation beginline="486" endline="489" begincolumn="17" endcolumn="74" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="isModified" variable="modified" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'modified' (lines '486'-'489').
 </violation>
-<violation beginline="496" endline="513" begincolumn="17" endcolumn="44" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="persist" variable="deployed" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'deployed' (lines '496'-'513').
+<violation beginline="497" endline="514" begincolumn="17" endcolumn="44" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="persist" variable="deployed" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'deployed' (lines '497'-'514').
 </violation>
-<violation beginline="542" endline="547" begincolumn="21" endcolumn="35" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="register" variable="aFile" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'UR'-anomaly for variable 'aFile' (lines '542'-'547').
+<violation beginline="543" endline="548" begincolumn="21" endcolumn="35" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="register" variable="aFile" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'UR'-anomaly for variable 'aFile' (lines '543'-'548').
 </violation>
-<violation beginline="543" endline="548" begincolumn="21" endcolumn="29" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="register" variable="rc" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'rc' (lines '543'-'548').
+<violation beginline="544" endline="549" begincolumn="21" endcolumn="29" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="register" variable="rc" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'rc' (lines '544'-'549').
 </violation>
-<violation beginline="543" endline="552" begincolumn="13" endcolumn="21" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="register" variable="rc" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'rc' (lines '543'-'552').
+<violation beginline="544" endline="553" begincolumn="13" endcolumn="21" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="register" variable="rc" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'rc' (lines '544'-'553').
 </violation>
-<violation beginline="548" endline="548" begincolumn="21" endcolumn="29" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="register" variable="rc" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'rc' (lines '548'-'548').
+<violation beginline="549" endline="549" begincolumn="21" endcolumn="29" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="register" variable="rc" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'rc' (lines '549'-'549').
 </violation>
-<violation beginline="558" endline="627" begincolumn="18" endcolumn="60" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="deploy" variable="evt" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'evt' (lines '558'-'627').
+<violation beginline="559" endline="628" begincolumn="18" endcolumn="60" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="deploy" variable="evt" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'evt' (lines '559'-'628').
 </violation>
-<violation beginline="560" endline="627" begincolumn="20" endcolumn="42" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="deploy" variable="qentry" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'qentry' (lines '560'-'627').
+<violation beginline="561" endline="628" begincolumn="20" endcolumn="42" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="deploy" variable="qentry" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'qentry' (lines '561'-'628').
 </violation>
-<violation beginline="582" endline="582" begincolumn="17" endcolumn="22" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="deploy" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
+<violation beginline="583" endline="583" begincolumn="17" endcolumn="22" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="deploy" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
 Avoid using Literals in Conditional Statements
 </violation>
-<violation beginline="582" endline="582" begincolumn="62" endcolumn="66" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="deploy" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
+<violation beginline="583" endline="583" begincolumn="62" endcolumn="66" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="deploy" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
 Avoid using Literals in Conditional Statements
 </violation>
-<violation beginline="682" endline="684" begincolumn="13" endcolumn="13" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="getVersionString" variable="vs" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'vs' (lines '682'-'684').
+<violation beginline="704" endline="706" begincolumn="13" endcolumn="39" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="getLicensee" variable="s" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 's' (lines '704'-'706').
 </violation>
-<violation beginline="682" endline="688" begincolumn="13" endcolumn="13" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="getVersionString" variable="vs" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'vs' (lines '682'-'688').
+<violation beginline="716" endline="716" begincolumn="32" endcolumn="40" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="parseCmdLine" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;version&quot; appears 4 times in this file; the first occurrence is on line 716
 </violation>
-<violation beginline="698" endline="700" begincolumn="13" endcolumn="39" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="getLicensee" variable="s" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 's' (lines '698'-'700').
-</violation>
-<violation beginline="710" endline="710" begincolumn="32" endcolumn="40" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="parseCmdLine" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;version&quot; appears 4 times in this file; the first occurrence is on line 710
-</violation>
-<violation beginline="733" endline="733" begincolumn="17" endcolumn="27" rule="DoNotCallSystemExit" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="parseCmdLine" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#donotcallsystemexit" priority="3">
+<violation beginline="739" endline="739" begincolumn="17" endcolumn="27" rule="DoNotCallSystemExit" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="parseCmdLine" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#donotcallsystemexit" priority="3">
 System.exit() should not be used in J2EE/JEE apps
 </violation>
-<violation beginline="738" endline="738" begincolumn="17" endcolumn="27" rule="DoNotCallSystemExit" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="parseCmdLine" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#donotcallsystemexit" priority="3">
+<violation beginline="744" endline="744" begincolumn="17" endcolumn="27" rule="DoNotCallSystemExit" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="parseCmdLine" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#donotcallsystemexit" priority="3">
 System.exit() should not be used in J2EE/JEE apps
 </violation>
-<violation beginline="745" endline="747" begincolumn="17" endcolumn="47" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="parseCmdLine" variable="dir" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'dir' (lines '745'-'747').
+<violation beginline="751" endline="753" begincolumn="17" endcolumn="47" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="parseCmdLine" variable="dir" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'dir' (lines '751'-'753').
 </violation>
-<violation beginline="745" endline="749" begincolumn="17" endcolumn="39" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="parseCmdLine" variable="dir" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'dir' (lines '745'-'749').
-</violation>
-<violation beginline="771" endline="771" begincolumn="13" endcolumn="23" rule="DoNotCallSystemExit" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="parseCmdLine" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#donotcallsystemexit" priority="3">
-System.exit() should not be used in J2EE/JEE apps
-</violation>
-<violation beginline="774" endline="774" begincolumn="13" endcolumn="23" rule="DoNotCallSystemExit" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="parseCmdLine" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#donotcallsystemexit" priority="3">
-System.exit() should not be used in J2EE/JEE apps
+<violation beginline="751" endline="755" begincolumn="17" endcolumn="39" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="parseCmdLine" variable="dir" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'dir' (lines '751'-'755').
 </violation>
 <violation beginline="777" endline="777" begincolumn="13" endcolumn="23" rule="DoNotCallSystemExit" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="parseCmdLine" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#donotcallsystemexit" priority="3">
 System.exit() should not be used in J2EE/JEE apps
 </violation>
-<violation beginline="787" endline="795" begincolumn="40" endcolumn="43" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="deployBundle" variable="i" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'i' (lines '787'-'795').
+<violation beginline="780" endline="780" begincolumn="13" endcolumn="23" rule="DoNotCallSystemExit" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="parseCmdLine" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#donotcallsystemexit" priority="3">
+System.exit() should not be used in J2EE/JEE apps
 </violation>
-<violation beginline="796" endline="796" begincolumn="12" endcolumn="5" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="deployElement" variable="qbean" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'UR'-anomaly for variable 'qbean' (lines '796'-'796').
+<violation beginline="783" endline="783" begincolumn="13" endcolumn="23" rule="DoNotCallSystemExit" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="parseCmdLine" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#donotcallsystemexit" priority="3">
+System.exit() should not be used in J2EE/JEE apps
 </violation>
-<violation beginline="804" endline="815" begincolumn="14" endcolumn="51" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="deployElement" variable="qbean" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'qbean' (lines '804'-'815').
+<violation beginline="793" endline="801" begincolumn="40" endcolumn="43" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="deployBundle" variable="i" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'i' (lines '793'-'801').
 </violation>
-<violation beginline="928" endline="928" begincolumn="32" endcolumn="46" rule="UseProperClassLoader" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="initConfigDecorator" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#useproperclassloader" priority="3">
+<violation beginline="802" endline="802" begincolumn="12" endcolumn="5" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="deployElement" variable="qbean" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'UR'-anomaly for variable 'qbean' (lines '802'-'802').
+</violation>
+<violation beginline="810" endline="821" begincolumn="14" endcolumn="51" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="deployElement" variable="qbean" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'qbean' (lines '810'-'821').
+</violation>
+<violation beginline="934" endline="934" begincolumn="32" endcolumn="46" rule="UseProperClassLoader" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="initConfigDecorator" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#useproperclassloader" priority="3">
 In J2EE, getClassLoader() might not work as expected.  Use Thread.currentThread().getContextClassLoader() instead.
 </violation>
-<violation beginline="936" endline="936" begincolumn="63" endcolumn="77" rule="UseProperClassLoader" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="initConfigDecorator" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#useproperclassloader" priority="3">
+<violation beginline="942" endline="942" begincolumn="63" endcolumn="77" rule="UseProperClassLoader" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="initConfigDecorator" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#useproperclassloader" priority="3">
 In J2EE, getClassLoader() might not work as expected.  Use Thread.currentThread().getContextClassLoader() instead.
 </violation>
-<violation beginline="969" endline="969" begincolumn="36" endcolumn="44" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="logVersion" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
+<violation beginline="975" endline="975" begincolumn="36" endcolumn="44" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="logVersion" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
 Avoid using Literals in Conditional Statements
 </violation>
-<violation beginline="1029" endline="1029" begincolumn="16" endcolumn="18" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2$QEntry" variable="obj" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
+<violation beginline="1035" endline="1035" begincolumn="16" endcolumn="18" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2$QEntry" variable="obj" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
 Found non-transient, non-static member. Please mark as transient or provide accessors.
 </violation>
-<violation beginline="1030" endline="1030" begincolumn="17" endcolumn="26" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2$QEntry" variable="osgiBundle" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
+<violation beginline="1036" endline="1036" begincolumn="17" endcolumn="26" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2$QEntry" variable="osgiBundle" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
 Found non-transient, non-static member. Please mark as transient or provide accessors.
 </violation>
-<violation beginline="1080" endline="1080" begincolumn="17" endcolumn="27" rule="DoNotCallSystemExit" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="writePidFile" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#donotcallsystemexit" priority="3">
+<violation beginline="1086" endline="1086" begincolumn="17" endcolumn="27" rule="DoNotCallSystemExit" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="writePidFile" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#donotcallsystemexit" priority="3">
 System.exit() should not be used in J2EE/JEE apps
 </violation>
-<violation beginline="1084" endline="1084" begincolumn="17" endcolumn="27" rule="DoNotCallSystemExit" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="writePidFile" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#donotcallsystemexit" priority="3">
+<violation beginline="1090" endline="1090" begincolumn="17" endcolumn="27" rule="DoNotCallSystemExit" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="writePidFile" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#donotcallsystemexit" priority="3">
 System.exit() should not be used in J2EE/JEE apps
 </violation>
-<violation beginline="1096" endline="1101" begincolumn="21" endcolumn="69" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="waitForChanges" variable="ev" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'UR'-anomaly for variable 'ev' (lines '1,096'-'1,101').
+<violation beginline="1102" endline="1107" begincolumn="21" endcolumn="69" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="waitForChanges" variable="ev" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'UR'-anomaly for variable 'ev' (lines '1,102'-'1,107').
 </violation>
-<violation beginline="1123" endline="1123" begincolumn="18" endcolumn="24" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="registerQ2" variable="i" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'i' (lines '1,123'-'1,123').
+<violation beginline="1129" endline="1129" begincolumn="18" endcolumn="24" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="registerQ2" variable="i" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'i' (lines '1,129'-'1,129').
 </violation>
-<violation beginline="1123" endline="1131" begincolumn="18" endcolumn="24" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="registerQ2" variable="i" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'i' (lines '1,123'-'1,131').
+<violation beginline="1129" endline="1137" begincolumn="18" endcolumn="24" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="registerQ2" variable="i" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'i' (lines '1,129'-'1,137').
 </violation>
-<violation beginline="1137" endline="1142" begincolumn="13" endcolumn="98" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="extractCfg" variable="resource" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'UR'-anomaly for variable 'resource' (lines '1,137'-'1,142').
+<violation beginline="1143" endline="1148" begincolumn="13" endcolumn="98" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="extractCfg" variable="resource" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'UR'-anomaly for variable 'resource' (lines '1,143'-'1,148').
 </violation>
-<violation beginline="1144" endline="1147" begincolumn="17" endcolumn="55" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="extractDeploy" variable="resource" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'UR'-anomaly for variable 'resource' (lines '1,144'-'1,147').
+<violation beginline="1150" endline="1153" begincolumn="17" endcolumn="55" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="extractDeploy" variable="resource" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'UR'-anomaly for variable 'resource' (lines '1,150'-'1,153').
 </violation>
-<violation beginline="1147" endline="1147" begincolumn="17" endcolumn="55" rule="UseLocaleWithCaseConversions" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="extractDeploy" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#uselocalewithcaseconversions" priority="3">
+<violation beginline="1153" endline="1153" begincolumn="17" endcolumn="55" rule="UseLocaleWithCaseConversions" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="extractDeploy" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#uselocalewithcaseconversions" priority="3">
 When doing a String.toLowerCase()/toUpperCase() call, use a Locale
 </violation>
-<violation beginline="1157" endline="1157" begincolumn="45" endcolumn="59" rule="UseProperClassLoader" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="copyResourceToFile" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#useproperclassloader" priority="3">
+<violation beginline="1163" endline="1163" begincolumn="45" endcolumn="59" rule="UseProperClassLoader" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="copyResourceToFile" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#useproperclassloader" priority="3">
 In J2EE, getClassLoader() might not work as expected.  Use Thread.currentThread().getContextClassLoader() instead.
 </violation>
-<violation beginline="1161" endline="1161" begincolumn="24" endcolumn="54" rule="AssignmentInOperand" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="copyResourceToFile" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#assignmentinoperand" priority="3">
+<violation beginline="1167" endline="1167" begincolumn="24" endcolumn="54" rule="AssignmentInOperand" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="copyResourceToFile" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#assignmentinoperand" priority="3">
 Avoid assignments in operands
 </violation>
-<violation beginline="1161" endline="1166" begincolumn="24" endcolumn="54" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="copyResourceToFile" variable="n" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'n' (lines '1,161'-'1,166').
+<violation beginline="1167" endline="1172" begincolumn="24" endcolumn="54" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="copyResourceToFile" variable="n" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'n' (lines '1,167'-'1,172').
 </violation>
-<violation beginline="1171" endline="1171" begincolumn="45" endcolumn="59" rule="UseProperClassLoader" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="deployResource" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#useproperclassloader" priority="3">
+<violation beginline="1177" endline="1177" begincolumn="45" endcolumn="59" rule="UseProperClassLoader" ruleset="Error Prone" package="org.jpos.q2" class="Q2" method="deployResource" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#useproperclassloader" priority="3">
 In J2EE, getClassLoader() might not work as expected.  Use Thread.currentThread().getContextClassLoader() instead.
 </violation>
 </file>
@@ -4578,17 +4572,26 @@ Found 'DU'-anomaly for variable 'n' (lines '112'-'130').
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/q2/install/ModuleUtils.java">
-<violation beginline="40" endline="61" begincolumn="22" endcolumn="51" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2.install" class="ModuleUtils" method="getModuleEntries" variable="result" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'result' (lines '40'-'61').
+<violation beginline="42" endline="63" begincolumn="22" endcolumn="51" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2.install" class="ModuleUtils" method="getModuleEntries" variable="result" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'result' (lines '42'-'63').
 </violation>
-<violation beginline="42" endline="42" begincolumn="50" endcolumn="64" rule="UseProperClassLoader" ruleset="Error Prone" package="org.jpos.q2.install" class="ModuleUtils" method="getModuleEntries" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#useproperclassloader" priority="3">
+<violation beginline="44" endline="44" begincolumn="50" endcolumn="64" rule="UseProperClassLoader" ruleset="Error Prone" package="org.jpos.q2.install" class="ModuleUtils" method="getModuleEntries" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#useproperclassloader" priority="3">
 In J2EE, getClassLoader() might not work as expected.  Use Thread.currentThread().getContextClassLoader() instead.
 </violation>
-<violation beginline="76" endline="83" begincolumn="16" endcolumn="33" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2.install" class="ModuleUtils" method="addFiles" variable="file" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'UR'-anomaly for variable 'file' (lines '76'-'83').
+<violation beginline="73" endline="77" begincolumn="13" endcolumn="39" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2.install" class="ModuleUtils" method="getSystemHash" variable="s" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'UR'-anomaly for variable 's' (lines '73'-'77').
 </violation>
-<violation beginline="96" endline="112" begincolumn="22" endcolumn="69" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2.install" class="ModuleUtils" method="resolveModuleEntriesFromJar" variable="prefix" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'prefix' (lines '96'-'112').
+<violation beginline="75" endline="78" begincolumn="13" endcolumn="26" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2.install" class="ModuleUtils" method="getSystemHash" variable="updated" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'updated' (lines '75'-'78').
+</violation>
+<violation beginline="78" endline="78" begincolumn="13" endcolumn="26" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2.install" class="ModuleUtils" method="getSystemHash" variable="updated" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'updated' (lines '78'-'78').
+</violation>
+<violation beginline="96" endline="103" begincolumn="16" endcolumn="33" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2.install" class="ModuleUtils" method="addFiles" variable="file" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'UR'-anomaly for variable 'file' (lines '96'-'103').
+</violation>
+<violation beginline="116" endline="132" begincolumn="22" endcolumn="69" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2.install" class="ModuleUtils" method="resolveModuleEntriesFromJar" variable="prefix" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'prefix' (lines '116'-'132').
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/q2/iso/ChannelAdaptor.java">
@@ -9342,173 +9345,176 @@ Found 'DU'-anomaly for variable 'inner' (lines '146'-'156').
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/util/PGPHelper.java">
-<violation beginline="50" endline="86" begincolumn="17" endcolumn="37" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="verifySignature" variable="verify" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'verify' (lines '50'-'86').
+<violation beginline="51" endline="87" begincolumn="17" endcolumn="37" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="verifySignature" variable="verify" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'verify' (lines '51'-'87').
 </violation>
-<violation beginline="51" endline="90" begincolumn="17" endcolumn="28" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="verifySignature" variable="newl" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'newl' (lines '51'-'90').
+<violation beginline="52" endline="91" begincolumn="17" endcolumn="28" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="verifySignature" variable="newl" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'newl' (lines '52'-'91').
 </violation>
-<violation beginline="54" endline="90" begincolumn="31" endcolumn="63" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="verifySignature" variable="out" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'out' (lines '54'-'90').
+<violation beginline="55" endline="91" begincolumn="31" endcolumn="63" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="verifySignature" variable="out" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'out' (lines '55'-'91').
 </violation>
-<violation beginline="56" endline="56" begincolumn="16" endcolumn="58" rule="AssignmentInOperand" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="verifySignature" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#assignmentinoperand" priority="3">
+<violation beginline="57" endline="57" begincolumn="16" endcolumn="58" rule="AssignmentInOperand" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="verifySignature" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#assignmentinoperand" priority="3">
 Avoid assignments in operands
 </violation>
-<violation beginline="56" endline="74" begincolumn="24" endcolumn="66" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="verifySignature" variable="ch" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'ch' (lines '56'-'74').
+<violation beginline="57" endline="75" begincolumn="24" endcolumn="66" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="verifySignature" variable="ch" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'ch' (lines '57'-'75').
 </violation>
-<violation beginline="56" endline="90" begincolumn="16" endcolumn="58" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="verifySignature" variable="ch" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'ch' (lines '56'-'90').
+<violation beginline="57" endline="91" begincolumn="16" endcolumn="58" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="verifySignature" variable="ch" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'ch' (lines '57'-'91').
 </violation>
-<violation beginline="59" endline="62" begincolumn="17" endcolumn="27" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="verifySignature" variable="newl" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'newl' (lines '59'-'62').
+<violation beginline="60" endline="63" begincolumn="17" endcolumn="27" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="verifySignature" variable="newl" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'newl' (lines '60'-'63').
 </violation>
-<violation beginline="59" endline="90" begincolumn="17" endcolumn="28" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="verifySignature" variable="newl" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'newl' (lines '59'-'90').
+<violation beginline="60" endline="91" begincolumn="17" endcolumn="28" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="verifySignature" variable="newl" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'newl' (lines '60'-'91').
 </violation>
-<violation beginline="61" endline="61" begincolumn="23" endcolumn="26" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="verifySignature" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
+<violation beginline="62" endline="62" begincolumn="23" endcolumn="26" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="verifySignature" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
 Avoid using Literals in Conditional Statements
 </violation>
-<violation beginline="62" endline="90" begincolumn="17" endcolumn="27" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="verifySignature" variable="newl" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'newl' (lines '62'-'90').
+<violation beginline="63" endline="91" begincolumn="17" endcolumn="27" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="verifySignature" variable="newl" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'newl' (lines '63'-'91').
 </violation>
-<violation beginline="74" endline="74" begincolumn="24" endcolumn="66" rule="AssignmentInOperand" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="verifySignature" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#assignmentinoperand" priority="3">
+<violation beginline="75" endline="75" begincolumn="24" endcolumn="66" rule="AssignmentInOperand" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="verifySignature" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#assignmentinoperand" priority="3">
 Avoid assignments in operands
 </violation>
-<violation beginline="74" endline="90" begincolumn="24" endcolumn="66" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="verifySignature" variable="ch" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'ch' (lines '74'-'90').
+<violation beginline="75" endline="91" begincolumn="24" endcolumn="66" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="verifySignature" variable="ch" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'ch' (lines '75'-'91').
 </violation>
-<violation beginline="77" endline="80" begincolumn="25" endcolumn="35" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="verifySignature" variable="newl" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'newl' (lines '77'-'80').
+<violation beginline="78" endline="81" begincolumn="25" endcolumn="35" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="verifySignature" variable="newl" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'newl' (lines '78'-'81').
 </violation>
-<violation beginline="77" endline="90" begincolumn="25" endcolumn="36" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="verifySignature" variable="newl" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'newl' (lines '77'-'90').
+<violation beginline="78" endline="91" begincolumn="25" endcolumn="36" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="verifySignature" variable="newl" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'newl' (lines '78'-'91').
 </violation>
-<violation beginline="79" endline="79" begincolumn="31" endcolumn="34" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="verifySignature" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
+<violation beginline="80" endline="80" begincolumn="31" endcolumn="34" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="verifySignature" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
 Avoid using Literals in Conditional Statements
 </violation>
-<violation beginline="80" endline="90" begincolumn="25" endcolumn="35" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="verifySignature" variable="newl" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'newl' (lines '80'-'90').
+<violation beginline="81" endline="91" begincolumn="25" endcolumn="35" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="verifySignature" variable="newl" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'newl' (lines '81'-'91').
 </violation>
-<violation beginline="96" endline="96" begincolumn="14" endcolumn="29" rule="UseLocaleWithCaseConversions" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="readPublicKey" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#uselocalewithcaseconversions" priority="3">
+<violation beginline="97" endline="97" begincolumn="14" endcolumn="29" rule="UseLocaleWithCaseConversions" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="readPublicKey" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#uselocalewithcaseconversions" priority="3">
 When doing a String.toLowerCase()/toUpperCase() call, use a Locale
 </violation>
-<violation beginline="109" endline="109" begincolumn="21" endcolumn="32" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="readPublicKey" variable="isId" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'isId' (lines '109'-'109').
+<violation beginline="110" endline="110" begincolumn="21" endcolumn="32" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="readPublicKey" variable="isId" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'isId' (lines '110'-'110').
 </violation>
-<violation beginline="109" endline="117" begincolumn="25" endcolumn="35" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="readPublicKey" variable="isId" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'isId' (lines '109'-'117').
+<violation beginline="110" endline="118" begincolumn="25" endcolumn="35" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="readPublicKey" variable="isId" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'isId' (lines '110'-'118').
 </violation>
-<violation beginline="109" endline="130" begincolumn="21" endcolumn="32" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="readPublicKey" variable="isId" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'isId' (lines '109'-'130').
+<violation beginline="110" endline="131" begincolumn="21" endcolumn="32" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="readPublicKey" variable="isId" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'isId' (lines '110'-'131').
 </violation>
-<violation beginline="116" endline="116" begincolumn="25" endcolumn="54" rule="UseLocaleWithCaseConversions" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="readPublicKey" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#uselocalewithcaseconversions" priority="3">
+<violation beginline="117" endline="117" begincolumn="25" endcolumn="54" rule="UseLocaleWithCaseConversions" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="readPublicKey" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#uselocalewithcaseconversions" priority="3">
 When doing a String.toLowerCase()/toUpperCase() call, use a Locale
 </violation>
-<violation beginline="132" endline="136" begincolumn="13" endcolumn="40" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="checkSignature" variable="ok" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'ok' (lines '132'-'136').
+<violation beginline="133" endline="137" begincolumn="13" endcolumn="40" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="checkSignature" variable="ok" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'ok' (lines '133'-'137').
 </violation>
-<violation beginline="134" endline="134" begincolumn="38" endcolumn="52" rule="UseProperClassLoader" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="checkSignature" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#useproperclassloader" priority="3">
+<violation beginline="135" endline="135" begincolumn="38" endcolumn="52" rule="UseProperClassLoader" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="checkSignature" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#useproperclassloader" priority="3">
 In J2EE, getClassLoader() might not work as expected.  Use Thread.currentThread().getContextClassLoader() instead.
 </violation>
-<violation beginline="149" endline="149" begincolumn="38" endcolumn="52" rule="UseProperClassLoader" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="checkLicense" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#useproperclassloader" priority="3">
+<violation beginline="150" endline="150" begincolumn="38" endcolumn="52" rule="UseProperClassLoader" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="checkLicense" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#useproperclassloader" priority="3">
 In J2EE, getClassLoader() might not work as expected.  Use Thread.currentThread().getContextClassLoader() instead.
 </violation>
-<violation beginline="156" endline="156" begincolumn="20" endcolumn="62" rule="AssignmentInOperand" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="checkLicense" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#assignmentinoperand" priority="3">
+<violation beginline="157" endline="157" begincolumn="20" endcolumn="62" rule="AssignmentInOperand" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="checkLicense" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#assignmentinoperand" priority="3">
 Avoid assignments in operands
 </violation>
-<violation beginline="156" endline="174" begincolumn="28" endcolumn="70" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="checkLicense" variable="ch" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'ch' (lines '156'-'174').
+<violation beginline="157" endline="175" begincolumn="28" endcolumn="70" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="checkLicense" variable="ch" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'ch' (lines '157'-'175').
 </violation>
-<violation beginline="159" endline="162" begincolumn="21" endcolumn="31" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="checkLicense" variable="newl" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'newl' (lines '159'-'162').
+<violation beginline="160" endline="163" begincolumn="21" endcolumn="31" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="checkLicense" variable="newl" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'newl' (lines '160'-'163').
 </violation>
-<violation beginline="161" endline="161" begincolumn="27" endcolumn="30" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="checkLicense" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
+<violation beginline="162" endline="162" begincolumn="27" endcolumn="30" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="checkLicense" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
 Avoid using Literals in Conditional Statements
 </violation>
-<violation beginline="174" endline="174" begincolumn="28" endcolumn="70" rule="AssignmentInOperand" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="checkLicense" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#assignmentinoperand" priority="3">
+<violation beginline="175" endline="175" begincolumn="28" endcolumn="70" rule="AssignmentInOperand" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="checkLicense" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#assignmentinoperand" priority="3">
 Avoid assignments in operands
 </violation>
-<violation beginline="174" endline="215" begincolumn="28" endcolumn="70" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="checkLicense" variable="ch" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'ch' (lines '174'-'215').
+<violation beginline="175" endline="220" begincolumn="28" endcolumn="70" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="checkLicense" variable="ch" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'ch' (lines '175'-'220').
 </violation>
-<violation beginline="177" endline="180" begincolumn="29" endcolumn="39" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="checkLicense" variable="newl" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'newl' (lines '177'-'180').
+<violation beginline="178" endline="181" begincolumn="29" endcolumn="39" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="checkLicense" variable="newl" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'newl' (lines '178'-'181').
 </violation>
-<violation beginline="177" endline="215" begincolumn="29" endcolumn="40" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="checkLicense" variable="newl" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'newl' (lines '177'-'215').
+<violation beginline="178" endline="220" begincolumn="29" endcolumn="40" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="checkLicense" variable="newl" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'newl' (lines '178'-'220').
 </violation>
-<violation beginline="179" endline="179" begincolumn="35" endcolumn="38" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="checkLicense" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
+<violation beginline="180" endline="180" begincolumn="35" endcolumn="38" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="checkLicense" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
 Avoid using Literals in Conditional Statements
 </violation>
-<violation beginline="180" endline="215" begincolumn="29" endcolumn="39" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="checkLicense" variable="newl" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'newl' (lines '180'-'215').
+<violation beginline="181" endline="220" begincolumn="29" endcolumn="39" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="checkLicense" variable="newl" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'newl' (lines '181'-'220').
 </violation>
-<violation beginline="191" endline="215" begincolumn="33" endcolumn="133" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="checkLicense" variable="p1" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'p1' (lines '191'-'215').
+<violation beginline="192" endline="220" begincolumn="33" endcolumn="133" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="checkLicense" variable="p1" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'p1' (lines '192'-'220').
 </violation>
-<violation beginline="192" endline="215" begincolumn="33" endcolumn="113" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="checkLicense" variable="p2" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'p2' (lines '192'-'215').
+<violation beginline="193" endline="220" begincolumn="33" endcolumn="113" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="checkLicense" variable="p2" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'p2' (lines '193'-'220').
 </violation>
-<violation beginline="193" endline="193" begincolumn="32" endcolumn="62" rule="AssignmentInOperand" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="checkLicense" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#assignmentinoperand" priority="3">
+<violation beginline="194" endline="220" begincolumn="32" endcolumn="62" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="checkLicense" variable="h" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'h' (lines '194'-'220').
+</violation>
+<violation beginline="195" endline="195" begincolumn="32" endcolumn="62" rule="AssignmentInOperand" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="checkLicense" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#assignmentinoperand" priority="3">
 Avoid assignments in operands
 </violation>
-<violation beginline="193" endline="215" begincolumn="32" endcolumn="62" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="checkLicense" variable="s" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 's' (lines '193'-'215').
+<violation beginline="195" endline="220" begincolumn="32" endcolumn="62" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="checkLicense" variable="s" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 's' (lines '195'-'220').
 </violation>
-<violation beginline="220" endline="220" begincolumn="84" endcolumn="98" rule="UseProperClassLoader" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="getLicenseeStream" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#useproperclassloader" priority="3">
+<violation beginline="225" endline="225" begincolumn="84" endcolumn="98" rule="UseProperClassLoader" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="getLicenseeStream" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#useproperclassloader" priority="3">
 In J2EE, getClassLoader() might not work as expected.  Use Thread.currentThread().getContextClassLoader() instead.
 </violation>
-<violation beginline="260" endline="295" begincolumn="13" endcolumn="74" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="encrypt" variable="pk" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'UR'-anomaly for variable 'pk' (lines '260'-'295').
+<violation beginline="265" endline="300" begincolumn="13" endcolumn="74" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="encrypt" variable="pk" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'UR'-anomaly for variable 'pk' (lines '265'-'300').
 </violation>
-<violation beginline="269" endline="271" begincolumn="13" endcolumn="46" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="encrypt" variable="out" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'out' (lines '269'-'271').
+<violation beginline="274" endline="276" begincolumn="13" endcolumn="46" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="encrypt" variable="out" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'out' (lines '274'-'276').
 </violation>
-<violation beginline="367" endline="372" begincolumn="13" endcolumn="55" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="decrypt" variable="pbe" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'pbe' (lines '367'-'372').
+<violation beginline="372" endline="377" begincolumn="13" endcolumn="55" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="decrypt" variable="pbe" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'pbe' (lines '372'-'377').
 </violation>
-<violation beginline="367" endline="396" begincolumn="35" endcolumn="44" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="decrypt" variable="pbe" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'pbe' (lines '367'-'396').
+<violation beginline="372" endline="401" begincolumn="35" endcolumn="44" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="decrypt" variable="pbe" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'pbe' (lines '372'-'401').
 </violation>
-<violation beginline="368" endline="396" begincolumn="36" endcolumn="65" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="decrypt" variable="pgpSec" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'pgpSec' (lines '368'-'396').
+<violation beginline="373" endline="401" begincolumn="36" endcolumn="65" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="decrypt" variable="pgpSec" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'pgpSec' (lines '373'-'401').
 </violation>
-<violation beginline="390" endline="390" begincolumn="16" endcolumn="37" rule="AssignmentInOperand" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="decrypt" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#assignmentinoperand" priority="3">
+<violation beginline="395" endline="395" begincolumn="16" endcolumn="37" rule="AssignmentInOperand" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="decrypt" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#assignmentinoperand" priority="3">
 Avoid assignments in operands
 </violation>
-<violation beginline="390" endline="396" begincolumn="16" endcolumn="37" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="decrypt" variable="ch" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'ch' (lines '390'-'396').
+<violation beginline="395" endline="401" begincolumn="16" endcolumn="37" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="decrypt" variable="ch" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'ch' (lines '395'-'401').
 </violation>
-<violation beginline="415" endline="442" begincolumn="29" endcolumn="76" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="readPublicKeys" variable="id" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'UR'-anomaly for variable 'id' (lines '415'-'442').
+<violation beginline="420" endline="447" begincolumn="29" endcolumn="76" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="readPublicKeys" variable="id" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'UR'-anomaly for variable 'id' (lines '420'-'447').
 </violation>
-<violation beginline="433" endline="443" begincolumn="29" endcolumn="39" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="readPublicKeys" variable="isId" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'isId' (lines '433'-'443').
+<violation beginline="438" endline="448" begincolumn="29" endcolumn="39" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="readPublicKeys" variable="isId" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'isId' (lines '438'-'448').
 </violation>
-<violation beginline="439" endline="439" begincolumn="28" endcolumn="53" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="readPublicKeys" variable="uid" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'uid' (lines '439'-'439').
+<violation beginline="444" endline="444" begincolumn="28" endcolumn="53" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="readPublicKeys" variable="uid" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'uid' (lines '444'-'444').
 </violation>
-<violation beginline="439" endline="457" begincolumn="28" endcolumn="53" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="readPublicKeys" variable="uid" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'uid' (lines '439'-'457').
+<violation beginline="444" endline="462" begincolumn="28" endcolumn="53" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="readPublicKeys" variable="uid" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'uid' (lines '444'-'462').
 </violation>
-<violation beginline="442" endline="442" begincolumn="29" endcolumn="71" rule="UseLocaleWithCaseConversions" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="readPublicKeys" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#uselocalewithcaseconversions" priority="3">
+<violation beginline="447" endline="447" begincolumn="29" endcolumn="71" rule="UseLocaleWithCaseConversions" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="readPublicKeys" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#uselocalewithcaseconversions" priority="3">
 When doing a String.toLowerCase()/toUpperCase() call, use a Locale
 </violation>
-<violation beginline="442" endline="442" begincolumn="55" endcolumn="70" rule="UseLocaleWithCaseConversions" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="readPublicKeys" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#uselocalewithcaseconversions" priority="3">
+<violation beginline="447" endline="447" begincolumn="55" endcolumn="70" rule="UseLocaleWithCaseConversions" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="readPublicKeys" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#uselocalewithcaseconversions" priority="3">
 When doing a String.toLowerCase()/toUpperCase() call, use a Locale
 </violation>
-<violation beginline="443" endline="443" begincolumn="29" endcolumn="39" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="readPublicKeys" variable="isId" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'isId' (lines '443'-'443').
+<violation beginline="448" endline="448" begincolumn="29" endcolumn="39" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="readPublicKeys" variable="isId" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'isId' (lines '448'-'448').
 </violation>
-<violation beginline="449" endline="433" begincolumn="21" endcolumn="32" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="readPublicKeys" variable="isId" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'isId' (lines '449'-'433').
+<violation beginline="454" endline="438" begincolumn="21" endcolumn="32" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="readPublicKeys" variable="isId" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'isId' (lines '454'-'438').
 </violation>
-<violation beginline="449" endline="443" begincolumn="29" endcolumn="39" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="readPublicKeys" variable="isId" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'isId' (lines '449'-'443').
+<violation beginline="454" endline="448" begincolumn="29" endcolumn="39" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="readPublicKeys" variable="isId" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'isId' (lines '454'-'448').
 </violation>
-<violation beginline="449" endline="457" begincolumn="21" endcolumn="32" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="readPublicKeys" variable="isId" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'isId' (lines '449'-'457').
+<violation beginline="454" endline="462" begincolumn="21" endcolumn="32" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="PGPHelper" method="readPublicKeys" variable="isId" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'isId' (lines '454'-'462').
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/util/Profiler.java">
