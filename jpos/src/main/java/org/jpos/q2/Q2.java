@@ -828,7 +828,7 @@ public class Q2 implements FileFilter, Runnable {
     protected byte[] getKey() {
         return
           ISOUtil.xor(SystemSeed.getSeed(8, 8),
-          ISOUtil.hex2byte("BD653F60F980F788"));
+          ISOUtil.hex2byte(System.getProperty("jpos.deploy.key", "BD653F60F980F788")));
     }
     protected Document encrypt (Document doc)
         throws GeneralSecurityException, IOException
@@ -966,7 +966,7 @@ public class Q2 implements FileFilter, Runnable {
     }
     private void logVersion () {
         long now = System.currentTimeMillis();
-        if (now - lastVersionLog > 3600000L) {
+        if (now - lastVersionLog > 86400000L) {
             LogEvent evt = getLog().createLogEvent("version");
             evt.addMessage(getVersionString());
             Logger.log(evt);
