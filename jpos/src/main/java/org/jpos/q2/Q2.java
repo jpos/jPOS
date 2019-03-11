@@ -73,6 +73,7 @@ import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import static java.util.ResourceBundle.getBundle;
 
@@ -635,7 +636,7 @@ public class Q2 implements FileFilter, Runnable {
     }
     public void relax (long sleep) {
         try {
-            Thread.sleep (sleep);
+            shutdown.await(sleep, TimeUnit.MILLISECONDS);
         } catch (InterruptedException ignored) { }
     }
     public void relax () {
@@ -679,19 +680,24 @@ public class Q2 implements FileFilter, Runnable {
         String appVersionString = getAppVersionString();
         int l = PGPHelper.checkLicense();
         String sl = l > 0 ? " " + Integer.toString(l,16) : "";
-        String vs = null;
+        StringBuilder vs = new StringBuilder();
         if (appVersionString != null) {
-            vs = String.format ("jPOS %s %s/%s%s (%s)%n%s%s",
+            vs.append(
+              String.format ("jPOS %s %s/%s%s (%s)%n%s%s",
                 getVersion(), getBranch(), getRevision(), sl, getBuildTimestamp(), appVersionString, getLicensee()
+              )
             );
         } else {
-            vs = String.format("jPOS %s %s/%s%s (%s) %s",
+            vs.append(
+              String.format("jPOS %s %s/%s%s (%s) %s",
                     getVersion(), getBranch(), getRevision(), sl, getBuildTimestamp(), getLicensee()
+              )
             );
         }
 //        if ((l & 0xE0000) > 0)
 //            throw new IllegalAccessError(vs);
-        return vs;
+
+        return vs.toString();
     }
 
     private static String getLicensee() {
@@ -971,8 +977,8 @@ public class Q2 implements FileFilter, Runnable {
             evt.addMessage(getVersionString());
             Logger.log(evt);
             lastVersionLog = now;
-            while ((PGPHelper.checkLicense() & 0xE0000) != 0)
-                relax();
+            while (running() && (PGPHelper.checkLicense() & 0xF0000) != 0)
+                relax(60000L);
         }
     }
     private void setExit (boolean exit) {
