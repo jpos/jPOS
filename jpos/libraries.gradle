@@ -24,7 +24,7 @@ ext {
         sshd: 'org.apache.sshd:sshd-core:1.7.0',
         slf4j_api: "org.slf4j:slf4j-api:1.7.26",
         slf4j_nop: "org.slf4j:slf4j-nop:1.7.26",
-        hdrhistogram: 'org.hdrhistogram:HdrHistogram:2.1.10'
+        hdrhistogram: 'org.hdrhistogram:HdrHistogram:2.1.11'
     ]
 }
 
