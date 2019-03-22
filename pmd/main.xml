@@ -2,7 +2,7 @@
 <pmd xmlns="http://pmd.sourceforge.net/report/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/report/2.0.0 http://pmd.sourceforge.net/report_2_0_0.xsd"
-    version="6.8.0" timestamp="2019-03-22T17:29:27.225">
+    version="6.8.0" timestamp="2019-03-22T22:35:22.255">
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/bsh/BSHAction.java">
 <violation beginline="30" endline="30" begincolumn="15" endcolumn="16" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.bsh" class="BSHAction" variable="ui" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
 Found non-transient, non-static member. Please mark as transient or provide accessors.
@@ -245,44 +245,44 @@ Found 'DU'-anomaly for variable 'crc' (lines '33'-'46').
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/core/SimpleConfiguration.java">
-<violation beginline="33" endline="33" begincolumn="24" endcolumn="28" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfiguration" variable="props" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
+<violation beginline="34" endline="34" begincolumn="24" endcolumn="28" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfiguration" variable="props" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
 Found non-transient, non-static member. Please mark as transient or provide accessors.
 </violation>
-<violation beginline="45" endline="45" begincolumn="9" endcolumn="23" rule="ConstructorCallsOverridableMethod" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfiguration" method="SimpleConfiguration" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#constructorcallsoverridablemethod" priority="1">
+<violation beginline="48" endline="48" begincolumn="9" endcolumn="23" rule="ConstructorCallsOverridableMethod" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfiguration" method="SimpleConfiguration" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#constructorcallsoverridablemethod" priority="1">
 Overridable method 'load' called during object construction
 </violation>
-<violation beginline="60" endline="60" begincolumn="45" endcolumn="48" rule="NullAssignment" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfiguration" method="get" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#nullassignment" priority="3">
+<violation beginline="69" endline="69" begincolumn="45" endcolumn="48" rule="NullAssignment" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfiguration" method="get" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#nullassignment" priority="3">
 Assigning an Object to null is a code smell.  Consider refactoring.
 </violation>
-<violation beginline="63" endline="63" begincolumn="45" endcolumn="48" rule="NullAssignment" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfiguration" method="get" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#nullassignment" priority="3">
+<violation beginline="72" endline="72" begincolumn="45" endcolumn="48" rule="NullAssignment" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfiguration" method="get" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#nullassignment" priority="3">
 Assigning an Object to null is a code smell.  Consider refactoring.
 </violation>
-<violation beginline="73" endline="74" begincolumn="13" endcolumn="33" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfiguration" method="getAll" variable="ret" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'ret' (lines '73'-'74').
+<violation beginline="82" endline="83" begincolumn="13" endcolumn="33" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfiguration" method="getAll" variable="ret" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'ret' (lines '82'-'83').
 </violation>
-<violation beginline="82" endline="84" begincolumn="13" endcolumn="50" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfiguration" method="getInts" variable="ii" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'ii' (lines '82'-'84').
+<violation beginline="92" endline="94" begincolumn="13" endcolumn="50" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfiguration" method="getInts" variable="ii" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'ii' (lines '92'-'94').
 </violation>
-<violation beginline="84" endline="84" begincolumn="13" endcolumn="50" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfiguration" method="getInts" variable="ii" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'ii' (lines '84'-'84').
+<violation beginline="94" endline="94" begincolumn="13" endcolumn="50" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfiguration" method="getInts" variable="ii" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'ii' (lines '94'-'94').
 </violation>
-<violation beginline="89" endline="91" begincolumn="13" endcolumn="48" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfiguration" method="getLongs" variable="ll" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'll' (lines '89'-'91').
+<violation beginline="99" endline="101" begincolumn="13" endcolumn="48" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfiguration" method="getLongs" variable="ll" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'll' (lines '99'-'101').
 </violation>
-<violation beginline="91" endline="91" begincolumn="13" endcolumn="48" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfiguration" method="getLongs" variable="ll" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'll' (lines '91'-'91').
+<violation beginline="101" endline="101" begincolumn="13" endcolumn="48" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfiguration" method="getLongs" variable="ll" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'll' (lines '101'-'101').
 </violation>
-<violation beginline="96" endline="98" begincolumn="13" endcolumn="48" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfiguration" method="getDoubles" variable="dd" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'dd' (lines '96'-'98').
+<violation beginline="106" endline="108" begincolumn="13" endcolumn="48" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfiguration" method="getDoubles" variable="dd" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'dd' (lines '106'-'108').
 </violation>
-<violation beginline="98" endline="98" begincolumn="13" endcolumn="48" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfiguration" method="getDoubles" variable="dd" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'dd' (lines '98'-'98').
+<violation beginline="108" endline="108" begincolumn="13" endcolumn="48" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfiguration" method="getDoubles" variable="dd" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'dd' (lines '108'-'108').
 </violation>
-<violation beginline="103" endline="105" begincolumn="13" endcolumn="83" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfiguration" method="getBooleans" variable="bb" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'bb' (lines '103'-'105').
+<violation beginline="113" endline="115" begincolumn="13" endcolumn="83" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfiguration" method="getBooleans" variable="bb" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'bb' (lines '113'-'115').
 </violation>
-<violation beginline="105" endline="105" begincolumn="13" endcolumn="83" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfiguration" method="getBooleans" variable="bb" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'bb' (lines '105'-'105').
+<violation beginline="115" endline="115" begincolumn="13" endcolumn="83" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfiguration" method="getBooleans" variable="bb" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'bb' (lines '115'-'115').
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/core/SubConfiguration.java">
