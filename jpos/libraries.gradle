@@ -14,8 +14,8 @@ ext {
         xmlunit: 'xmlunit:xmlunit:1.6',
         junit: 'junit:junit:4.12',
         bouncycastle: [
-            'org.bouncycastle:bcprov-jdk15on:1.57',
-            'org.bouncycastle:bcpg-jdk15on:1.57'
+            'org.bouncycastle:bcprov-jdk15on:1.61',
+            'org.bouncycastle:bcpg-jdk15on:1.61'
         ],
         hamcrest: [
             'org.hamcrest:hamcrest-core:1.3',
