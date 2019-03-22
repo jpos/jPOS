@@ -19,11 +19,7 @@
 package org.jpos.core;
 
 import static org.jpos.util.Serializer.serialize;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -458,4 +454,45 @@ public class SimpleConfigurationTest {
         assertEquals("cfg.A should equal cfg1.A", cfg.get("A"), cfg1.get("A"));
         assertEquals ("cfg should equal cfg1", cfg, cfg1);
     }
+
+    @Test
+    public void testSystemProperty() {
+        SimpleConfiguration cfg = new SimpleConfiguration();
+        System.setProperty("jpos.url", "http://jpos.org");
+        cfg.put("host", "sys:jpos.url");
+        assertEquals("http://jpos.org", cfg.get("host"));
+    }
+    @Test
+    public void testgetAllSystemProperty() {
+        SimpleConfiguration cfg = new SimpleConfiguration();
+        System.setProperty("jpos.url", "http://jpos.org");
+        cfg.put("host", "sys:jpos.url");
+        assertArrayEquals(new String[] { "http://jpos.org" }, cfg.getAll("host"));
+    }
+
+    @Test
+    public void testEnvironmentVariable() {
+        SimpleConfiguration cfg = new SimpleConfiguration();
+        String home = System.getenv("HOME");
+        cfg.put("home", "env:HOME");
+        assertEquals(home, cfg.get("home"));
+    }
+
+    @Test
+    public void testgetAllEnvironmentVariable() {
+        SimpleConfiguration cfg = new SimpleConfiguration();
+        String home = System.getenv("HOME");
+        cfg.put("home", "env:HOME");
+        assertArrayEquals(new String[] { home } , cfg.getAll("home"));
+    }
+
+    @Test
+    public void testChainedEnvironmentVariable() {
+        String home = System.getenv("HOME");
+        System.setProperty("jpos.home", "env:HOME");
+        SimpleConfiguration cfg = new SimpleConfiguration();
+        cfg.put("home", "sys:jpos.home");
+        assertEquals(home, cfg.get("home"));
+    }
+
 }

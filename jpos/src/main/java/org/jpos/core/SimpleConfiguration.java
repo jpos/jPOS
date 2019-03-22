@@ -23,6 +23,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.*;
+import java.util.stream.IntStream;
 
 /**
  * @author apr@cs.com.uy
@@ -31,6 +32,8 @@ import java.util.*;
  */
 public class SimpleConfiguration implements Configuration, Serializable {
     private Properties props;
+    private static final String SYSTEM_PREFIX = "sys:";
+    private static final String ENVIRONMENT_PREFIX = "env:";
 
     public SimpleConfiguration () {
         props = new Properties();
@@ -48,6 +51,12 @@ public class SimpleConfiguration implements Configuration, Serializable {
     /**
      * Returns the value of the configuration property named <tt>name</tt>, or the default value <tt>def</tt>.
      *
+     * If the property value starts with the arbitrary prefix <code>sys:</code>,
+     * then a system property is returned instead. In the same way, if the value starts with <code>env:</code>
+     * then a system's environment variable is returned instead.
+     *
+     * Both "sys:" and "env:" can be chained.
+     * 
      * @param name The configuration property key name.
      * @param def  The default value.
      * @return  The value stored under <tt>name</tt>,
@@ -62,7 +71,7 @@ public class SimpleConfiguration implements Configuration, Serializable {
             List l = (List) obj;
             obj = l.size() > 0 ? l.get(0) : null;
         }
-        return (obj instanceof String) ? (String)obj : def;
+        return (obj instanceof String) ? dereference((String) obj) : def;
     }
     public String[] getAll (String name) {
         String[] ret;
@@ -75,7 +84,8 @@ public class SimpleConfiguration implements Configuration, Serializable {
         } else
             ret = new String[0];
 
-        return ret;
+        IntStream.range(0, ret.length).forEachOrdered(i -> ret[i] = dereference(ret[i]));
+        return Arrays.stream(ret).filter(Objects::nonNull).toArray(String[]::new);
     }
     public int[] getInts (String name) {
         String[] ss = getAll (name);
@@ -172,6 +182,14 @@ public class SimpleConfiguration implements Configuration, Serializable {
         return "SimpleConfiguration{" +
           "props=" + props +
           '}';
+    }
+
+    private String dereference (String s) {
+        if (s.startsWith(SYSTEM_PREFIX))
+            s = System.getProperty(s.substring(SYSTEM_PREFIX.length()));
+        if (s != null && s.startsWith(ENVIRONMENT_PREFIX))
+            s = System.getenv(s.substring(ENVIRONMENT_PREFIX.length()));
+        return s;
     }
 
     private static final long serialVersionUID = -6361797037366246968L;

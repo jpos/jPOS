@@ -88,3 +88,13 @@ where one can call handy methods like  +String\[\] getAll(String)+.
 throw a +ConfigurationException+ in case a required property is not present or 
 is invalid. 
 
+[TIP]
+=====
+SimpleConfiguration understand two special prefixes: `sys:` and `env:`.
+If the value of a given property starts with `sys:`, it will be de-referenced
+from the System property under that name. Likewise, if it starts with `env:`,
+and environment variable under that name will be picked. 
+
+Both options can be chained.
+=====
+
