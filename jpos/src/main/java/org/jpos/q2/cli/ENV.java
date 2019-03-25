@@ -18,6 +18,7 @@
 
 package org.jpos.q2.cli;
 
+import org.jpos.core.Environment;
 import org.jpos.q2.CLICommand;
 import org.jpos.q2.CLIContext;
 import org.jline.terminal.Terminal;
@@ -27,5 +28,6 @@ public class ENV implements CLICommand {
     public void exec(CLIContext cli, String[] args) throws Exception {
         Terminal term = cli.getReader().getTerminal();
         cli.println("TERM=" + term.getClass().getSimpleName() + "/" + term.getType());
+        cli.println (Environment.getEnvironment().toString());
     }
 }

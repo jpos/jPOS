@@ -66,7 +66,6 @@ public class QClassLoader
         throws InstanceAlreadyExistsException,
                InstanceNotFoundException,
                NotCompliantMBeanException,
-               MalformedURLException,
                MBeanRegistrationException
     
     {

@@ -31,6 +31,7 @@ import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
+import org.jpos.core.Environment;
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOUtil;
 import org.jpos.q2.install.ModuleUtils;
@@ -580,7 +581,10 @@ public class Q2 implements FileFilter, Runnable {
                 }
             }
             String enabledAttribute = rootElement.getAttributeValue("enabled", "true");
-            if ("true".equalsIgnoreCase(enabledAttribute) || "yes".equalsIgnoreCase(enabledAttribute)) {
+            if ("true".equalsIgnoreCase(enabledAttribute) ||
+                 "yes".equalsIgnoreCase(enabledAttribute) ||
+                enabledAttribute.contains(Environment.getEnvironment().getName()))
+            {
                 if (evt != null)
                     evt.addMessage("deploy: " + f.getCanonicalPath());
                 Object obj = factory.instantiate (this, rootElement);
@@ -731,6 +735,7 @@ public class Q2 implements FileFilter, Runnable {
         options.addOption ("sh", "ssh-host-key-file", true, "SSH host key file, defaults to 'cfg/hostkeys.ser'");
         options.addOption ("Ns", "no-scan", false, "Disables deploy directory scan");
         options.addOption ("Nd", "no-dynamic", false, "Disables dynamic classloader");
+        options.addOption ("E", "environment", true, "Environment name");
 
         try {
             CommandLine line = parser.parse (options, args);
@@ -765,6 +770,10 @@ public class Q2 implements FileFilter, Runnable {
                 pidFile = line.getOptionValue("p");
             if (line.hasOption("n"))
                 name = line.getOptionValue("n");
+            if (line.hasOption("E")) {
+                System.setProperty("jpos.env", line.getOptionValue("E"));
+                Environment.getEnvironment();
+            }
             disableDeployScan = line.hasOption("Ns");
             disableDynamicClassloader = line.hasOption("Nd");
             enableSsh = line.hasOption("s");
@@ -1119,6 +1128,11 @@ public class Q2 implements FileFilter, Runnable {
                   deployDir.getAbsolutePath())
                 );
                 return false; // deploy directory no longer valid
+            }
+            try {
+                Environment.reload();
+            } catch (IOException e) {
+                getLog().warn(e);
             }
         }
         return true;

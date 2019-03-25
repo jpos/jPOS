@@ -23,6 +23,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.*;
+import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
 /**
@@ -32,8 +33,15 @@ import java.util.stream.IntStream;
  */
 public class SimpleConfiguration implements Configuration, Serializable {
     private Properties props;
-    private static final String SYSTEM_PREFIX = "sys:";
-    private static final String ENVIRONMENT_PREFIX = "env:";
+    private static final String SYSTEM_PREFIX = "sys";
+    private static final String ENVIRONMENT_PREFIX = "env";
+    private static final String VERBATIM_PREFIX = "verb";
+    private static Pattern valuePattern = Pattern.compile(
+      String.format("^(\\$)([%s|%s|%s]*)\\{([\\w\\W]+)\\}$",
+        SYSTEM_PREFIX,
+        ENVIRONMENT_PREFIX,
+        VERBATIM_PREFIX)
+    );
 
     public SimpleConfiguration () {
         props = new Properties();
@@ -51,12 +59,12 @@ public class SimpleConfiguration implements Configuration, Serializable {
     /**
      * Returns the value of the configuration property named <tt>name</tt>, or the default value <tt>def</tt>.
      *
-     * If the property value starts with the arbitrary prefix <code>sys:</code>,
-     * then a system property is returned instead. In the same way, if the value starts with <code>env:</code>
-     * then a system's environment variable is returned instead.
+     * If the property value has the format <code>${xxx}</code> then its value is taken from a system property
+     * if it exists, or an environment variable. System property takes priority over environment variable.
      *
-     * Both "sys:" and "env:" can be chained.
-     * 
+     * If the format is <code>$sys{...}</code> we read only a system property.
+     * if the format is <code>$env{...}</code> only an environment variable is used.
+     *
      * @param name The configuration property key name.
      * @param def  The default value.
      * @return  The value stored under <tt>name</tt>,
@@ -71,7 +79,7 @@ public class SimpleConfiguration implements Configuration, Serializable {
             List l = (List) obj;
             obj = l.size() > 0 ? l.get(0) : null;
         }
-        return (obj instanceof String) ? dereference((String) obj) : def;
+        return (obj instanceof String) ? Environment.getEnvironment().getProperty((String) obj) : def;
     }
     public String[] getAll (String name) {
         String[] ret;
@@ -84,7 +92,8 @@ public class SimpleConfiguration implements Configuration, Serializable {
         } else
             ret = new String[0];
 
-        IntStream.range(0, ret.length).forEachOrdered(i -> ret[i] = dereference(ret[i]));
+        Environment env = Environment.getEnvironment();
+        IntStream.range(0, ret.length).forEachOrdered(i -> ret[i] = env.getProperty(ret[i]));
         return Arrays.stream(ret).filter(Objects::nonNull).toArray(String[]::new);
     }
     public int[] getInts (String name) {
@@ -182,14 +191,6 @@ public class SimpleConfiguration implements Configuration, Serializable {
         return "SimpleConfiguration{" +
           "props=" + props +
           '}';
-    }
-
-    private String dereference (String s) {
-        if (s.startsWith(SYSTEM_PREFIX))
-            s = System.getProperty(s.substring(SYSTEM_PREFIX.length()));
-        if (s != null && s.startsWith(ENVIRONMENT_PREFIX))
-            s = System.getenv(s.substring(ENVIRONMENT_PREFIX.length()));
-        return s;
     }
 
     private static final long serialVersionUID = -6361797037366246968L;

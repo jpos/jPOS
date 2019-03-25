@@ -456,43 +456,46 @@ public class SimpleConfigurationTest {
     }
 
     @Test
-    public void testSystemProperty() {
+    public void testReadSystemProperty () {
         SimpleConfiguration cfg = new SimpleConfiguration();
         System.setProperty("jpos.url", "http://jpos.org");
-        cfg.put("host", "sys:jpos.url");
+        cfg.put("host", "${jpos.url}");
         assertEquals("http://jpos.org", cfg.get("host"));
+        cfg.put("host", "$sys{jpos.url}");
+        assertEquals("http://jpos.org", cfg.get("host"));
+        cfg.put("host", "$env{jpos.url}");
+        assertNull(cfg.get("host"));
+        cfg.put("host", "$invalid{jpos.url}");
+        assertEquals("$invalid{jpos.url}", cfg.get("host"));
+        cfg.put("host", "$invalid{${nested}}");
+        assertEquals("$invalid{${nested}}", cfg.get("host"));
+        
     }
+
     @Test
-    public void testgetAllSystemProperty() {
+    public void testReadVerbatimProperty () {
+        SimpleConfiguration cfg = new SimpleConfiguration();
+        cfg.put ("verbatim", "$verb{${verbatin.property}}");
+        assertEquals("${verbatin.property}", cfg.get("verbatim"));
+    }
+
+    @Test
+    public void testReadEnvironmentVariable () {
+        SimpleConfiguration cfg = new SimpleConfiguration();
+        cfg.put("home", "$env{HOME}");
+        assertEquals(System.getenv("HOME"), cfg.get("home"));
+        cfg.put("home", "${HOME}");
+        assertEquals(System.getenv("HOME"), cfg.get("home"));
+        cfg.put("home", "$sys{HOME}");
+        assertNull(cfg.get("home"));
+    }
+
+    @Test
+    public void testgetAllProperty() {
         SimpleConfiguration cfg = new SimpleConfiguration();
         System.setProperty("jpos.url", "http://jpos.org");
-        cfg.put("host", "sys:jpos.url");
+        cfg.put("host", "${jpos.url}");
         assertArrayEquals(new String[] { "http://jpos.org" }, cfg.getAll("host"));
     }
-
-    @Test
-    public void testEnvironmentVariable() {
-        SimpleConfiguration cfg = new SimpleConfiguration();
-        String home = System.getenv("HOME");
-        cfg.put("home", "env:HOME");
-        assertEquals(home, cfg.get("home"));
-    }
-
-    @Test
-    public void testgetAllEnvironmentVariable() {
-        SimpleConfiguration cfg = new SimpleConfiguration();
-        String home = System.getenv("HOME");
-        cfg.put("home", "env:HOME");
-        assertArrayEquals(new String[] { home } , cfg.getAll("home"));
-    }
-
-    @Test
-    public void testChainedEnvironmentVariable() {
-        String home = System.getenv("HOME");
-        System.setProperty("jpos.home", "env:HOME");
-        SimpleConfiguration cfg = new SimpleConfiguration();
-        cfg.put("home", "sys:jpos.home");
-        assertEquals(home, cfg.get("home"));
-    }
-
+    
 }

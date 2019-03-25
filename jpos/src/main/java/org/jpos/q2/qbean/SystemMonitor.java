@@ -20,6 +20,7 @@ package org.jpos.q2.qbean;
 
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
+import org.jpos.core.Environment;
 import org.jpos.iso.ISOUtil;
 import org.jpos.q2.Q2;
 import org.jpos.q2.QBeanSupport;
@@ -194,6 +195,7 @@ public class SystemMonitor extends QBeanSupport
           System.getProperty("java.vendor"),
           maxKeyLength == Integer.MAX_VALUE ? "secure" : Integer.toString(maxKeyLength)
         );
+        p.printf ("%s  environment: %s%n", indent, Environment.getEnvironment().getName());
         p.printf ("%s process name: %s%n", indent, runtimeMXBean.getName());
         p.printf ("%s    user name: %s%n", indent, System.getProperty("user.name"));
         p.printf ("%s         host: %s%n", indent, getLocalHost());

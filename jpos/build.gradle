@@ -26,6 +26,7 @@ dependencies {
     compile libraries.slf4j_api
     compile libraries.javassist
     compile libraries.hdrhistogram
+    compile libraries.yaml;
 
     testCompile libraries.hamcrest
     testCompile libraries.fest_assert
