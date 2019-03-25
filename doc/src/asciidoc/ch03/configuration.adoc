@@ -90,11 +90,14 @@ is invalid.
 
 [TIP]
 =====
-SimpleConfiguration understand two special prefixes: `sys:` and `env:`.
-If the value of a given property starts with `sys:`, it will be de-referenced
-from the System property under that name. Likewise, if it starts with `env:`,
-and environment variable under that name will be picked. 
+SimpleConfiguration recognizes and de-reference properties with the
+format: `${xxx}` and search for a system property, or operating system
+environment variable under the `xxx` name. 
 
-Both options can be chained.
+The format `$sys{xxx}` de-reference just from system properties, and
+`$env{xxx}` just from the operating system environment. 
+
+In the rare case where a value with the format `${...}` is required, the
+`$verb{${...}}` format (verbatim) can be used.
 =====
 
