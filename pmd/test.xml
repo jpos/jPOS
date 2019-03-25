@@ -2,7 +2,7 @@
 <pmd xmlns="http://pmd.sourceforge.net/report/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/report/2.0.0 http://pmd.sourceforge.net/report_2_0_0.xsd"
-    version="6.8.0" timestamp="2019-03-22T22:36:04.684">
+    version="6.8.0" timestamp="2019-03-25T20:13:35.572">
 <file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/bsh/BSHActionTest.java">
 <violation beginline="36" endline="36" begincolumn="9" endcolumn="60" rule="UnnecessaryBooleanAssertion" ruleset="Error Prone" package="org.jpos.bsh" class="BSHActionTest" method="testActionPerformed" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#unnecessarybooleanassertion" priority="3">
 assertTrue(true) or similar statements are unnecessary
@@ -632,14 +632,14 @@ Avoid empty catch blocks
 <violation beginline="444" endline="444" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfigurationTest" method="testPutThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
 Avoid catching NullPointerException; consider removing the cause of the NPE.
 </violation>
-<violation beginline="461" endline="461" begincolumn="40" endcolumn="56" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfigurationTest" method="testSystemProperty" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;http://jpos.org&quot; appears 4 times in this file; the first occurrence is on line 461
+<violation beginline="461" endline="461" begincolumn="40" endcolumn="56" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfigurationTest" method="testReadSystemProperty" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;http://jpos.org&quot; appears 5 times in this file; the first occurrence is on line 461
 </violation>
-<violation beginline="462" endline="462" begincolumn="17" endcolumn="22" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfigurationTest" method="testSystemProperty" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;host&quot; appears 4 times in this file; the first occurrence is on line 462
+<violation beginline="462" endline="462" begincolumn="17" endcolumn="22" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfigurationTest" method="testReadSystemProperty" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;host&quot; appears 12 times in this file; the first occurrence is on line 462
 </violation>
-<violation beginline="477" endline="477" begincolumn="17" endcolumn="22" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfigurationTest" method="testEnvironmentVariable" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;home&quot; appears 6 times in this file; the first occurrence is on line 477
+<violation beginline="485" endline="485" begincolumn="17" endcolumn="22" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfigurationTest" method="testReadEnvironmentVariable" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;home&quot; appears 6 times in this file; the first occurrence is on line 485
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/core/SubConfigurationTest.java">
