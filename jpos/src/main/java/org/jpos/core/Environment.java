@@ -33,7 +33,7 @@ public class Environment implements Loggeable {
     private static final String VERBATIM_PREFIX = "verb";
     private static final String BSH_PREFIX = "bsh";
     private static Pattern valuePattern = Pattern.compile(
-      String.format("^(\\$)([%s|%s|%s|%s]*)\\{([\\w\\W]+)\\}$",
+      String.format("^(\\$)(%s|%s|%s|%s)?\\{([\\w\\W]+)\\}$",
         SYSTEM_PREFIX,
         ENVIRONMENT_PREFIX,
         VERBATIM_PREFIX,
@@ -83,7 +83,9 @@ public class Environment implements Loggeable {
             Matcher m = valuePattern.matcher(s);
             if (m.matches() && m.groupCount() == 3) {
                 String g3 = m.group(3);
-                switch (m.group(2)) {
+                String g2 = m.group(2);
+                g2 = g2 != null ? g2 : "";
+                switch (g2) {
                     case SYSTEM_PREFIX:
                         r = System.getProperty(g3);
                         r = r == null ? propRef.get().getProperty(g3) : r;
