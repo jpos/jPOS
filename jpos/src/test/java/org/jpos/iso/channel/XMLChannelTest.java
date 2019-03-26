@@ -24,6 +24,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.fail;
 
+import java.io.EOFException;
 import java.net.Proxy;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -210,7 +211,11 @@ public class XMLChannelTest {
     @Test
     public void testStreamReceive() throws Throwable {
         XMLChannel xMLChannel = new XMLChannel(new PostPackager(), new ServerSocket());
-        byte[] result = xMLChannel.streamReceive();
-        assertEquals("result.length", 0, result.length);
+        try {
+            xMLChannel.streamReceive();
+        } catch (EOFException e) {
+            return;
+        }
+        fail ("EOFException should have been raised");
     }
 }
