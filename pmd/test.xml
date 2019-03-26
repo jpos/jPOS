@@ -2,7 +2,7 @@
 <pmd xmlns="http://pmd.sourceforge.net/report/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/report/2.0.0 http://pmd.sourceforge.net/report_2_0_0.xsd"
-    version="6.8.0" timestamp="2019-03-26T20:38:53.247">
+    version="6.8.0" timestamp="2019-03-26T22:44:29.027">
 <file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/bsh/BSHActionTest.java">
 <violation beginline="36" endline="36" begincolumn="9" endcolumn="60" rule="UnnecessaryBooleanAssertion" ruleset="Error Prone" package="org.jpos.bsh" class="BSHActionTest" method="testActionPerformed" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#unnecessarybooleanassertion" priority="3">
 assertTrue(true) or similar statements are unnecessary
@@ -2875,62 +2875,62 @@ Avoid catching NullPointerException; consider removing the cause of the NPE.
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/iso/channel/XMLChannelTest.java">
-<violation beginline="48" endline="48" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.iso.channel" class="XMLChannelTest" method="testConnectThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
+<violation beginline="49" endline="49" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.iso.channel" class="XMLChannelTest" method="testConnectThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
 Avoid catching NullPointerException; consider removing the cause of the NPE.
 </violation>
-<violation beginline="50" endline="50" begincolumn="24" endcolumn="47" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.iso.channel" class="XMLChannelTest" method="testConnectThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;xMLChannel.getLogger()&quot; appears 7 times in this file; the first occurrence is on line 50
+<violation beginline="51" endline="51" begincolumn="24" endcolumn="47" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.iso.channel" class="XMLChannelTest" method="testConnectThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;xMLChannel.getLogger()&quot; appears 7 times in this file; the first occurrence is on line 51
 </violation>
-<violation beginline="51" endline="51" begincolumn="59" endcolumn="91" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.iso.channel" class="XMLChannelTest" method="testConnectThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;org.jpos.iso.channel.XMLChannel&quot; appears 7 times in this file; the first occurrence is on line 51
+<violation beginline="52" endline="52" begincolumn="59" endcolumn="91" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.iso.channel" class="XMLChannelTest" method="testConnectThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;org.jpos.iso.channel.XMLChannel&quot; appears 7 times in this file; the first occurrence is on line 52
 </violation>
-<violation beginline="51" endline="51" begincolumn="26" endcolumn="56" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.iso.channel" class="XMLChannelTest" method="testConnectThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;xMLChannel.getOriginalRealm()&quot; appears 7 times in this file; the first occurrence is on line 51
+<violation beginline="52" endline="52" begincolumn="26" endcolumn="56" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.iso.channel" class="XMLChannelTest" method="testConnectThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;xMLChannel.getOriginalRealm()&quot; appears 7 times in this file; the first occurrence is on line 52
 </violation>
-<violation beginline="52" endline="52" begincolumn="24" endcolumn="42" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.iso.channel" class="XMLChannelTest" method="testConnectThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;xMLChannel.reader&quot; appears 8 times in this file; the first occurrence is on line 52
+<violation beginline="53" endline="53" begincolumn="24" endcolumn="42" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.iso.channel" class="XMLChannelTest" method="testConnectThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;xMLChannel.reader&quot; appears 8 times in this file; the first occurrence is on line 53
 </violation>
-<violation beginline="53" endline="53" begincolumn="24" endcolumn="47" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.iso.channel" class="XMLChannelTest" method="testConnectThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;xMLChannel.getSocket()&quot; appears 4 times in this file; the first occurrence is on line 53
+<violation beginline="54" endline="54" begincolumn="24" endcolumn="47" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.iso.channel" class="XMLChannelTest" method="testConnectThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;xMLChannel.getSocket()&quot; appears 4 times in this file; the first occurrence is on line 54
 </violation>
-<violation beginline="54" endline="54" begincolumn="26" endcolumn="58" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.iso.channel" class="XMLChannelTest" method="testConnectThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;xMLChannel.getCounters().length&quot; appears 7 times in this file; the first occurrence is on line 54
+<violation beginline="55" endline="55" begincolumn="26" endcolumn="58" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.iso.channel" class="XMLChannelTest" method="testConnectThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;xMLChannel.getCounters().length&quot; appears 7 times in this file; the first occurrence is on line 55
 </violation>
-<violation beginline="55" endline="55" begincolumn="24" endcolumn="46" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.iso.channel" class="XMLChannelTest" method="testConnectThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;xMLChannel.getRealm()&quot; appears 7 times in this file; the first occurrence is on line 55
+<violation beginline="56" endline="56" begincolumn="24" endcolumn="46" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.iso.channel" class="XMLChannelTest" method="testConnectThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;xMLChannel.getRealm()&quot; appears 7 times in this file; the first occurrence is on line 56
 </violation>
-<violation beginline="56" endline="56" begincolumn="25" endcolumn="50" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.iso.channel" class="XMLChannelTest" method="testConnectThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;xMLChannel.isConnected()&quot; appears 4 times in this file; the first occurrence is on line 56
+<violation beginline="57" endline="57" begincolumn="25" endcolumn="50" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.iso.channel" class="XMLChannelTest" method="testConnectThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;xMLChannel.isConnected()&quot; appears 4 times in this file; the first occurrence is on line 57
 </violation>
-<violation beginline="69" endline="69" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.iso.channel" class="XMLChannelTest" method="testConnectThrowsNullPointerException1" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
+<violation beginline="70" endline="70" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.iso.channel" class="XMLChannelTest" method="testConnectThrowsNullPointerException1" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
 Avoid catching NullPointerException; consider removing the cause of the NPE.
 </violation>
-<violation beginline="107" endline="107" begincolumn="22" endcolumn="61" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.iso.channel" class="XMLChannelTest" method="testConstructor" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;xMLChannel.getIncomingFilters().size()&quot; appears 4 times in this file; the first occurrence is on line 107
+<violation beginline="108" endline="108" begincolumn="22" endcolumn="61" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.iso.channel" class="XMLChannelTest" method="testConstructor" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;xMLChannel.getIncomingFilters().size()&quot; appears 4 times in this file; the first occurrence is on line 108
 </violation>
-<violation beginline="108" endline="108" begincolumn="22" endcolumn="43" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.iso.channel" class="XMLChannelTest" method="testConstructor" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;xMLChannel.getPort()&quot; appears 4 times in this file; the first occurrence is on line 108
+<violation beginline="109" endline="109" begincolumn="22" endcolumn="43" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.iso.channel" class="XMLChannelTest" method="testConstructor" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;xMLChannel.getPort()&quot; appears 4 times in this file; the first occurrence is on line 109
 </violation>
-<violation beginline="109" endline="109" begincolumn="20" endcolumn="43" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.iso.channel" class="XMLChannelTest" method="testConstructor" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;xMLChannel.getHeader()&quot; appears 4 times in this file; the first occurrence is on line 109
+<violation beginline="110" endline="110" begincolumn="20" endcolumn="43" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.iso.channel" class="XMLChannelTest" method="testConstructor" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;xMLChannel.getHeader()&quot; appears 4 times in this file; the first occurrence is on line 110
 </violation>
-<violation beginline="110" endline="110" begincolumn="20" endcolumn="50" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.iso.channel" class="XMLChannelTest" method="testConstructor" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;xMLChannel.getSocketFactory()&quot; appears 4 times in this file; the first occurrence is on line 110
+<violation beginline="111" endline="111" begincolumn="20" endcolumn="50" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.iso.channel" class="XMLChannelTest" method="testConstructor" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;xMLChannel.getSocketFactory()&quot; appears 4 times in this file; the first occurrence is on line 111
 </violation>
-<violation beginline="111" endline="111" begincolumn="20" endcolumn="49" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.iso.channel" class="XMLChannelTest" method="testConstructor" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;xMLChannel.getServerSocket()&quot; appears 5 times in this file; the first occurrence is on line 111
+<violation beginline="112" endline="112" begincolumn="20" endcolumn="49" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.iso.channel" class="XMLChannelTest" method="testConstructor" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;xMLChannel.getServerSocket()&quot; appears 5 times in this file; the first occurrence is on line 112
 </violation>
-<violation beginline="114" endline="114" begincolumn="20" endcolumn="41" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.iso.channel" class="XMLChannelTest" method="testConstructor" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;xMLChannel.getHost()&quot; appears 4 times in this file; the first occurrence is on line 114
+<violation beginline="115" endline="115" begincolumn="20" endcolumn="41" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.iso.channel" class="XMLChannelTest" method="testConstructor" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;xMLChannel.getHost()&quot; appears 4 times in this file; the first occurrence is on line 115
 </violation>
-<violation beginline="115" endline="115" begincolumn="22" endcolumn="54" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.iso.channel" class="XMLChannelTest" method="testConstructor" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;xMLChannel.getMaxPacketLength()&quot; appears 4 times in this file; the first occurrence is on line 115
+<violation beginline="116" endline="116" begincolumn="22" endcolumn="54" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.iso.channel" class="XMLChannelTest" method="testConstructor" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;xMLChannel.getMaxPacketLength()&quot; appears 4 times in this file; the first occurrence is on line 116
 </violation>
-<violation beginline="116" endline="116" begincolumn="22" endcolumn="43" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.iso.channel" class="XMLChannelTest" method="testConstructor" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;xMLChannel.getName()&quot; appears 4 times in this file; the first occurrence is on line 116
+<violation beginline="117" endline="117" begincolumn="22" endcolumn="43" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.iso.channel" class="XMLChannelTest" method="testConstructor" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;xMLChannel.getName()&quot; appears 4 times in this file; the first occurrence is on line 117
 </violation>
-<violation beginline="117" endline="117" begincolumn="22" endcolumn="61" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.iso.channel" class="XMLChannelTest" method="testConstructor" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;xMLChannel.getOutgoingFilters().size()&quot; appears 4 times in this file; the first occurrence is on line 117
+<violation beginline="118" endline="118" begincolumn="22" endcolumn="61" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.iso.channel" class="XMLChannelTest" method="testConstructor" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;xMLChannel.getOutgoingFilters().size()&quot; appears 4 times in this file; the first occurrence is on line 118
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/iso/filter/DelayFilterTest.java">
