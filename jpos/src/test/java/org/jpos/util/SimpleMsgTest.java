@@ -19,9 +19,11 @@
 package org.jpos.util;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import org.hamcrest.Matchers;
 import org.jpos.iso.ISOUtil;
 import org.junit.Before;
 
@@ -266,6 +268,24 @@ public class SimpleMsgTest {
                       "--||--  null" + NL +
                       "--||--</tag>" +  NL
                       ,os.toString());
+    }
+
+    @Test
+    public void testDumpExceptionStackTrace() {
+        Exception ex = new IllegalArgumentException("This value is illegal"
+                , new IllegalStateException("Some illegal state")
+        );
+        Loggeable msg = new SimpleMsg("unexpected-exception", ex);
+
+        msg.dump(p, "--||--");
+        String res = os.toString();
+
+        assertThat(res, Matchers.startsWith("--||--<unexpected-exception>" + NL));
+        assertThat(res, Matchers.endsWith("--||--</unexpected-exception>" + NL));
+
+        assertThat(res, Matchers.containsString(NL + "--||--    java.lang.IllegalArgumentException: This value is illegal" + NL));
+        assertThat(res, Matchers.containsString(NL + "--||--    Caused by: java.lang.IllegalStateException: Some illegal state" + NL));
+        assertThat(res, Matchers.containsString(NL + "--||--            at org.jpos.util.SimpleMsgTest.test"));
     }
 
     @Test
