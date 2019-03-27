@@ -762,7 +762,7 @@ public class TransactionManager
         while (iter.hasNext()) {
             final Element e = (Element) iter.next();
             final QFactory factory = getFactory();
-            final TransactionStatusListener listener = (TransactionStatusListener) factory.newInstance (e.getAttributeValue ("class"));
+            final TransactionStatusListener listener = (TransactionStatusListener) factory.newInstance (QFactory.getAttributeValue (e, "class"));
             factory.setConfiguration (listener, config);
             addListener(listener);
         }
@@ -773,7 +773,7 @@ public class TransactionManager
     {
         groups.put (DEFAULT_GROUP,  initGroup (config));
         for (Element e : config.getChildren("group")) {
-            String name = e.getAttributeValue ("name");
+            String name = QFactory.getAttributeValue (e, "name");
             if (name == null) 
                 throw new ConfigurationException ("missing group name");
             if (groups.containsKey(name)) {
@@ -798,12 +798,12 @@ public class TransactionManager
     {
         QFactory factory = getFactory();
         TransactionParticipant participant = (TransactionParticipant) 
-            factory.newInstance (e.getAttributeValue ("class")
+            factory.newInstance (QFactory.getAttributeValue (e, "class")
         );
         factory.setLogger (participant, e);
         QFactory.invoke (participant, "setTransactionManager", this, TransactionManager.class);
         factory.setConfiguration (participant, e);
-        String realm = e.getAttributeValue("realm");
+        String realm = QFactory.getAttributeValue(e, "realm");
         if (realm != null && realm.trim().length() > 0)
             realm = ":" + realm;
         else

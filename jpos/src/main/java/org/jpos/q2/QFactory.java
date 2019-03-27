@@ -370,7 +370,7 @@ public class QFactory {
         }
     }
 
-    public String getAttributeValue (Element e, String name) {
+    public static String getAttributeValue (Element e, String name) {
         String s = e.getAttributeValue(name);
         s = Environment.getEnvironment().getProperty(s, s);
         return s;

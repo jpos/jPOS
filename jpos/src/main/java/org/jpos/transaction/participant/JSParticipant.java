@@ -21,6 +21,7 @@ package org.jpos.transaction.participant;
 import org.jdom2.Element;
 import org.jpos.core.ConfigurationException;
 import org.jpos.core.XmlConfigurable;
+import org.jpos.q2.QFactory;
 import org.jpos.transaction.AbortParticipant;
 import org.jpos.transaction.Context;
 import org.jpos.transaction.TransactionParticipant;
@@ -105,8 +106,8 @@ public class JSParticipant extends Log
     }
 
     public void setConfiguration(Element e) throws ConfigurationException {
-	    try (FileReader src = new FileReader(e.getAttributeValue("src")))  {
-            trace = "yes".equals(e.getAttributeValue("trace"));
+	    try (FileReader src = new FileReader(QFactory.getAttributeValue(e, "src")))  {
+            trace = "yes".equals(QFactory.getAttributeValue(e, "trace"));
             ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
             engine.eval(src);
             js = (Invocable) engine;

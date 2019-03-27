@@ -277,7 +277,8 @@ public class QServer
         Element serverSocketFactoryElement = persist.getChild ("server-socket-factory");
 
         if (serverSocketFactoryElement != null) {
-            ISOServerSocketFactory serverSocketFactory = (ISOServerSocketFactory) factory.newInstance (serverSocketFactoryElement.getAttributeValue ("class"));
+            ISOServerSocketFactory serverSocketFactory = (ISOServerSocketFactory) factory.newInstance (
+                QFactory.getAttributeValue (serverSocketFactoryElement, "class"));
             factory.setLogger        (serverSocketFactory, serverSocketFactoryElement);
             factory.setConfiguration (serverSocketFactory, serverSocketFactoryElement);
             server.setSocketFactory(serverSocketFactory);
@@ -295,7 +296,7 @@ public class QServer
         while (iter.hasNext()) {
             Element l = (Element) iter.next();
             ISORequestListener listener = (ISORequestListener)
-                factory.newInstance (l.getAttributeValue ("class"));
+                factory.newInstance (QFactory.getAttributeValue (l, "class"));
             factory.setLogger        (listener, l);
             factory.setConfiguration (listener, l);
             server.addISORequestListener (listener);
@@ -313,7 +314,7 @@ public class QServer
         while (iter.hasNext()) {
             Element l = (Element) iter.next();
             ISOServerEventListener listener = (ISOServerEventListener)
-                factory.newInstance (l.getAttributeValue ("class"));
+                factory.newInstance (QFactory.getAttributeValue (l, "class"));
             factory.setLogger        (listener, l);
             factory.setConfiguration (listener, l);
             server.addServerEventListener(listener);

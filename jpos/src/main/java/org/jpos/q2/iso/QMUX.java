@@ -76,7 +76,7 @@ public class QMUX
         key = toStringArray(DEFAULT_KEY, ", ", null);
         returnRejects = cfg.getBoolean("return-rejects", false);
         for (Element keyElement : e.getChildren("key")) {
-            String mtiOverride = keyElement.getAttributeValue("mti");
+            String mtiOverride = QFactory.getAttributeValue(keyElement, "mti");
             if (mtiOverride != null && mtiOverride.length() >= 2) {
                 mtiKey.put (mtiOverride.substring(0,2), toStringArray(keyElement.getTextTrim(), ", ", null));
             } else {
@@ -318,7 +318,7 @@ public class QMUX
         while (iter.hasNext()) {
             Element l = (Element) iter.next();
             ISORequestListener listener = (ISORequestListener) 
-                factory.newInstance (l.getAttributeValue ("class"));
+                factory.newInstance (QFactory.getAttributeValue (l, "class"));
             factory.setLogger        (listener, l);
             factory.setConfiguration (listener, l);
             addISORequestListener (listener);

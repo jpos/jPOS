@@ -22,6 +22,7 @@ import bsh.EvalError;
 import org.jdom2.Element;
 import org.jpos.core.ConfigurationException;
 import org.jpos.core.XmlConfigurable;
+import org.jpos.q2.QFactory;
 import org.jpos.transaction.AbortParticipant;
 import org.jpos.transaction.TransactionParticipant;
 import org.jpos.util.LogEvent;
@@ -145,7 +146,7 @@ public class BSHTransactionParticipant extends SimpleLogSource
             prepareForAbortMethod = BSHMethod.createBshMethod(e.getChild("prepare-for-abort"));
             commitMethod = BSHMethod.createBshMethod(e.getChild("commit"));
             abortMethod = BSHMethod.createBshMethod(e.getChild("abort"));
-            trace = "yes".equals (e.getAttributeValue ("trace"));
+            trace = "yes".equals (QFactory.getAttributeValue (e, "trace"));
         } catch (Exception ex) {
             throw new ConfigurationException(ex.getMessage(), ex);
         }
