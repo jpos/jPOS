@@ -308,15 +308,14 @@ public class QMUX
     public String[] getReadyIndicatorNames() {
         return ready;
     }
-    private void addListeners () 
-        throws ConfigurationException
-    {
+
+    private void addListeners() throws ConfigurationException {
+        List<Element> rlisten = getPersist().getChildren("request-listener");
+        if (rlisten.isEmpty())
+            return;
+
         QFactory factory = getFactory ();
-        Iterator iter = getPersist().getChildren (
-            "request-listener"
-        ).iterator();
-        while (iter.hasNext()) {
-            Element l = (Element) iter.next();
+        for (Element l : rlisten) {
             ISORequestListener listener = (ISORequestListener) 
                 factory.newInstance (QFactory.getAttributeValue (l, "class"));
             factory.setLogger        (listener, l);

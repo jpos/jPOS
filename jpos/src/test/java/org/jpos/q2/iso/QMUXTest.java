@@ -18,13 +18,19 @@
 
 package org.jpos.q2.iso;
 
+import java.util.Arrays;
+
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import org.jdom2.Element;
+import org.jpos.core.Configuration;
+import org.jpos.core.SimpleConfiguration;
 import org.jpos.iso.Connector;
 import org.jpos.iso.ISOMsg;
 import org.jpos.iso.ISORequestListener;
@@ -83,6 +89,31 @@ public class QMUXTest {
     public void testGetUnhandledQueue() throws Throwable {
         String result = new QMUX().getUnhandledQueue();
         assertNull("result", result);
+    }
+
+    @Test
+    public void testInitServiceWithoutListeners() throws Throwable {
+        QMUX mux = new QMUX();
+        Configuration cfg = new SimpleConfiguration();
+        mux.setConfiguration(cfg);
+        Element persist = new Element("testQMUXName");
+        persist.addContent(new Element("in").addContent("queue-in"));
+        persist.addContent(new Element("out").addContent("queue-out"));
+        persist.addContent(new Element("unhandled").addContent("queue-unhandled"));
+        persist.addContent(new Element("ready").addContent("test-ready"));
+        persist.addContent(new Element("unhandled").addContent("queue-unhandled"));
+        mux.setPersist(persist);
+        mux.initService();
+
+        assertEquals("queue-unhandled", mux.unhandled);
+        assertEquals("queue-out", mux.out);
+        assertEquals("queue-in", mux.in);
+        assertNull(mux.ignorerc);
+        assertNotNull(mux.sp);
+        assertFalse(mux.isModified());
+        assertArrayEquals(new String[]{"test-ready"}, mux.ready);
+        assertArrayEquals(new String[]{"41", "11"}, mux.key);
+        assertEquals(0, mux.listeners.size());
     }
 
     @Test(expected = NullPointerException.class)
