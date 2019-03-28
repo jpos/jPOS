@@ -50,7 +50,6 @@ public class Environment implements Loggeable {
         name = System.getProperty ("jpos.env");
         name = name == null ? "default" : name;
         readConfig ();
-        System.out.printf("Pattern: " + valuePattern);
     }
 
     public String getName() {
