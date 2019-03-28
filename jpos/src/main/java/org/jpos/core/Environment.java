@@ -30,7 +30,6 @@ import java.util.regex.Pattern;
 public class Environment implements Loggeable {
     private static final String SYSTEM_PREFIX = "sys";
     private static final String ENVIRONMENT_PREFIX = "env";
-    private static final String VERBATIM_PREFIX = "verb";
     private static final String BSH_PREFIX = "bsh";
     private static Pattern valuePattern = Pattern.compile(
       String.format("(^[\\w\\W]*)(\\$)(%s|%s|%s)?\\{([\\w\\W]+)\\}([\\w\\W]*)$",
