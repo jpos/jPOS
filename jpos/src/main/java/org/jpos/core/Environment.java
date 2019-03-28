@@ -30,11 +30,7 @@ import java.util.regex.Pattern;
 public class Environment implements Loggeable {
     private static final String SYSTEM_PREFIX = "sys";
     private static final String ENVIRONMENT_PREFIX = "env";
-    private static Pattern valuePattern = Pattern.compile(
-      String.format("(^[\\w\\W]*)(\\$)(%s|%s)?\\{([\\w\\W]+)\\}([\\w\\W]*)$",
-        SYSTEM_PREFIX,
-        ENVIRONMENT_PREFIX
-      )
+    private static Pattern valuePattern = Pattern.compile("^(\\$*)(\\$)([\\w\\W]*)?\\{([\\w\\W]+)\\}([\\w\\W]*)$"
     );
     private static Pattern verbPattern = Pattern.compile("^\\$verb\\{([\\w\\W]+)\\}$");
     private static Environment INSTANCE;
@@ -54,6 +50,7 @@ public class Environment implements Loggeable {
         name = System.getProperty ("jpos.env");
         name = name == null ? "default" : name;
         readConfig ();
+        System.out.printf("Pattern: " + valuePattern);
     }
 
     public String getName() {

@@ -465,14 +465,20 @@ public class SimpleConfigurationTest {
         assertEquals("http://jpos.org", cfg.get("host"));
         cfg.put("host", "$env{jpos.url}");
         assertNull(cfg.get("host"));
+    }
 
-// new regexp that supports multiple substitutions in the same line
-// gets confused with the following invalid config.
-//        cfg.put("host", "$invalid{jpos.url}");
-//        assertEquals("$invalid{jpos.url}", cfg.get("host"));
-//        cfg.put("host", "$invalid{${nested}}");
-//        assertEquals("$invalid{${nested}}", cfg.get("host"));
-        
+    @Test
+    public void testInvalidProperty() {
+        SimpleConfiguration cfg = new SimpleConfiguration();
+        cfg.put("host", "$invalid{jpos.url}");
+        assertEquals("$invalid{jpos.url}", cfg.get("host"));
+    }
+
+    @Test
+    public void testInvalidNested() {
+        SimpleConfiguration cfg = new SimpleConfiguration();
+        cfg.put("invalid", "$invalid{${nested}}");
+        assertEquals("$invalid{${nested}}", cfg.get("invalid"));
     }
 
     @Test
