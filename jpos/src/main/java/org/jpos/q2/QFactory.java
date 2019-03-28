@@ -372,8 +372,7 @@ public class QFactory {
 
     public static String getAttributeValue (Element e, String name) {
         String s = e.getAttributeValue(name);
-        s = Environment.getEnvironment().getProperty(s, s);
-        return s;
+        return Environment.getEnvironment().getProperty(s, s);
     }
     public void setConfiguration (Object obj, Element e) 
         throws ConfigurationException 
