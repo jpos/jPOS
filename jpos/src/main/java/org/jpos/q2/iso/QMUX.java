@@ -197,12 +197,28 @@ public class QMUX
             sp.out (out, m);
         synchronized (this) { tx++; rxPending++; }
     }
+
+    protected boolean isNotifyEligible(ISOMsg msg) {
+        if (returnRejects)
+            return true;
+
+        try {
+            return msg.isResponse();
+        } catch (RuntimeException | ISOException ex) {
+            // * ArrayIndexOutOfBoundsException - It may occur for messages where
+            // MTI is not standard 4 characters (eg. FSDISOMsg), then notification is expected.
+            // * ISOException: When there is no field 0, the error should be logged
+            return true;
+        }
+    }
+
+    @Override
     public void notify (Object k, Object value) {
         Object obj = sp.inp (k);
         if (obj instanceof ISOMsg) {
             ISOMsg m = (ISOMsg) obj;
             try {
-                if (returnRejects || m.isResponse()) {
+                if (isNotifyEligible(m)) {
                     String key = getKey (m);
                     String req = key + ".req";
                     Object r = isp.inp (req);
