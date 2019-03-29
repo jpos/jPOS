@@ -50,15 +50,6 @@ public class SecurePrivateKey extends SecureVariantKey implements Serializable{
     }
 
     @Override
-    public void setKeyLength(short keyLength) {}
-
-    @Override
-    public short getKeyLength() {
-        throw new UnsupportedOperationException("Operation getKeyLength() not"
-                + " allowed for " + SecurePrivateKey.class.getName());
-    }
-
-    @Override
     public void setVariant(byte variant) {}
 
     @Override
