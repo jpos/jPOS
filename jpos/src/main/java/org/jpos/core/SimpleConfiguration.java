@@ -23,7 +23,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.*;
-import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
 /**
@@ -33,15 +32,6 @@ import java.util.stream.IntStream;
  */
 public class SimpleConfiguration implements Configuration, Serializable {
     private Properties props;
-    private static final String SYSTEM_PREFIX = "sys";
-    private static final String ENVIRONMENT_PREFIX = "env";
-    private static final String VERBATIM_PREFIX = "verb";
-    private static Pattern valuePattern = Pattern.compile(
-      String.format("^(\\$)([%s|%s|%s]*)\\{([\\w\\W]+)\\}$",
-        SYSTEM_PREFIX,
-        ENVIRONMENT_PREFIX,
-        VERBATIM_PREFIX)
-    );
 
     public SimpleConfiguration () {
         props = new Properties();
@@ -128,26 +118,22 @@ public class SimpleConfiguration implements Configuration, Serializable {
         return get(name, "");
     }
     public int getInt (String name) {
-        return Integer.parseInt(props.getProperty(name, "0").trim());
+        return Integer.parseInt(get(name, "0").trim());
     }
     public int getInt (String name, int def) {
-        return Integer.parseInt(
-                props.getProperty(name, Integer.toString(def)).trim());
+        return Integer.parseInt(get(name, Integer.toString(def)).trim());
     }
     public long getLong (String name) {
-        return Long.parseLong(props.getProperty(name, "0").trim());
+        return Long.parseLong(get(name, "0").trim());
     }
     public long getLong (String name, long def) {
-        return Long.parseLong(
-                props.getProperty(name, Long.toString(def)).trim());
+        return Long.parseLong(get(name, Long.toString(def)).trim());
     }
     public double getDouble(String name) {
-        return Double.valueOf(
-                props.getProperty(name, "0.00").trim());
+        return Double.valueOf(get(name, "0.00").trim());
     }
     public double getDouble(String name, double def) {
-        return Double.valueOf(
-                props.getProperty(name, Double.toString(def)).trim());
+        return Double.valueOf(get(name, Double.toString(def)).trim());
     }
     public boolean getBoolean (String name) {
         String v = get (name, "false").trim();
