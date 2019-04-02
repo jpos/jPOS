@@ -20,6 +20,7 @@ package org.jpos.q2.iso;
 
 import org.jdom2.Element;
 import org.jpos.core.ConfigurationException;
+import org.jpos.core.Environment;
 import org.jpos.core.handlers.exception.ExceptionHandlerAware;
 import org.jpos.core.handlers.exception.ExceptionHandlerConfigAware;
 import org.jpos.iso.*;
@@ -263,8 +264,8 @@ public class ChannelAdaptor
     protected void initSpaceAndQueues () throws ConfigurationException {
         Element persist = getPersist ();
         sp = grabSpace (persist.getChild ("space"));
-        in      = persist.getChildTextTrim ("in");
-        out     = persist.getChildTextTrim ("out");
+        in      = Environment.get(persist.getChildTextTrim ("in"));
+        out     = Environment.get(persist.getChildTextTrim ("out"));
         writeOnly = "yes".equalsIgnoreCase (getPersist().getChildTextTrim ("write-only"));
         if (in == null || (out == null && !writeOnly)) {
             throw new ConfigurationException ("Misconfigured channel. Please verify in/out queues");

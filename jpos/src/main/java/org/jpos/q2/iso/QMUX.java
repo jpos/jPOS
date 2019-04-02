@@ -21,6 +21,7 @@ package org.jpos.q2.iso;
 import org.HdrHistogram.AtomicHistogram;
 import org.jdom2.Element;
 import org.jpos.core.ConfigurationException;
+import org.jpos.core.Environment;
 import org.jpos.iso.*;
 import org.jpos.q2.QBeanSupport;
 import org.jpos.q2.QFactory;
@@ -67,8 +68,9 @@ public class QMUX
         Element e = getPersist ();
         sp        = grabSpace (e.getChild ("space"));
         isp       = cfg.getBoolean("reuse-space", false) ? sp : new TSpace();
-        in        = e.getChildTextTrim ("in");
-        out       = e.getChildTextTrim ("out");
+        in        = Environment.get(e.getChildTextTrim ("in"));
+        out       = Environment.get(e.getChildTextTrim ("out"));
+
         if (in == null || out == null) {
             throw new ConfigurationException ("Misconfigured QMUX. Please verify in/out queues");
         }

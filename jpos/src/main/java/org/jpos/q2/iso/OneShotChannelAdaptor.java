@@ -20,6 +20,7 @@ package org.jpos.q2.iso;
 
 import org.jdom2.Element;
 import org.jpos.core.ConfigurationException;
+import org.jpos.core.Environment;
 import org.jpos.iso.*;
 import org.jpos.q2.QBeanSupport;
 import org.jpos.q2.QFactory;
@@ -70,8 +71,8 @@ public class OneShotChannelAdaptor
     public void initAdaptor() {
         Element persist = getPersist ();
         sp = grabSpace (persist.getChild ("space"));
-        in = persist.getChildTextTrim ("in");
-        out = persist.getChildTextTrim ("out");
+        in = Environment.get(persist.getChildTextTrim ("in"));
+        out = Environment.get(persist.getChildTextTrim ("out"));
         delay = 5000;
 
         String s = persist.getChildTextTrim ("max-connections");

@@ -63,11 +63,16 @@ public class Environment implements Loggeable {
     public static Environment getEnvironment() {
         return INSTANCE;
     }
+    public static String get (String p) {
+        return getEnvironment().getProperty(p, p);
+    }
 
     public String getProperty (String p, String def) {
         String s = getProperty (p);
         return s != null ? s : def;
     }
+
+
 
     public String getProperty (String s) {
         String r = s;
