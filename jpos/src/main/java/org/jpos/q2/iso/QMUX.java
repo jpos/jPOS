@@ -74,7 +74,7 @@ public class QMUX
         if (in == null || out == null) {
             throw new ConfigurationException ("Misconfigured QMUX. Please verify in/out queues");
         }
-        ignorerc  = e.getChildTextTrim ("ignore-rc");
+        ignorerc  = Environment.get(e.getChildTextTrim ("ignore-rc"));
         key = toStringArray(DEFAULT_KEY, ", ", null);
         returnRejects = cfg.getBoolean("return-rejects", false);
         for (Element keyElement : e.getChildren("key")) {
@@ -85,12 +85,12 @@ public class QMUX
                 key = toStringArray(e.getChildTextTrim("key"), ", ", DEFAULT_KEY);
             }
         }
-        ready     = toStringArray(e.getChildTextTrim ("ready"));
-        mtiMapping = toStringArray(e.getChildTextTrim ("mtimapping"));
+        ready     = toStringArray(Environment.get(e.getChildTextTrim ("ready")));
+        mtiMapping = toStringArray(Environment.get(e.getChildTextTrim ("mtimapping")));
         if (mtiMapping == null || mtiMapping.length != 3) 
             mtiMapping = new String[] { nomap, nomap, "0022446789" };
         addListeners ();
-        unhandled = e.getChildTextTrim ("unhandled");
+        unhandled = Environment.get(e.getChildTextTrim ("unhandled"));
         NameRegistrar.register ("mux."+getName (), this);
     }
     public void startService () {

@@ -75,9 +75,9 @@ public class OneShotChannelAdaptor
         out = Environment.get(persist.getChildTextTrim ("out"));
         delay = 5000;
 
-        String s = persist.getChildTextTrim ("max-connections");
+        String s = Environment.get(persist.getChildTextTrim ("max-connections"));
         maxConnections = s!=null ? Integer.parseInt(s) : 1;  // reasonable default
-        s = persist.getChildTextTrim ("max-connect-attempts");
+        s = Environment.get(persist.getChildTextTrim ("max-connect-attempts"));
         maxConnectAttempts = s!=null ? Integer.parseInt(s) : 15;  // reasonable default
     }
     public void startService () {

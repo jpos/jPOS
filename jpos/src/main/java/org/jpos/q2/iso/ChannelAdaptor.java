@@ -270,15 +270,15 @@ public class ChannelAdaptor
         if (in == null || (out == null && !writeOnly)) {
             throw new ConfigurationException ("Misconfigured channel. Please verify in/out queues");
         }
-        String s = persist.getChildTextTrim ("reconnect-delay");
+        String s = Environment.get(persist.getChildTextTrim ("reconnect-delay"));
         delay    = s != null ? Long.parseLong (s) : 10000; // reasonable default
-        keepAlive = "yes".equalsIgnoreCase (persist.getChildTextTrim ("keep-alive"));
-        ignoreISOExceptions = "yes".equalsIgnoreCase (persist.getChildTextTrim ("ignore-iso-exceptions"));
-        String t = persist.getChildTextTrim("timeout");
+        keepAlive = "yes".equalsIgnoreCase (Environment.get(persist.getChildTextTrim ("keep-alive")));
+        ignoreISOExceptions = "yes".equalsIgnoreCase (Environment.get(persist.getChildTextTrim ("ignore-iso-exceptions")));
+        String t = Environment.get(persist.getChildTextTrim("timeout"));
         timeout = t != null && t.length() > 0 ? Long.parseLong(t) : 0l;
         ready   = getName() + ".ready";
         reconnect = getName() + ".reconnect";
-        waitForWorkersOnStop = "yes".equalsIgnoreCase(persist.getChildTextTrim ("wait-for-workers-on-stop"));
+        waitForWorkersOnStop = "yes".equalsIgnoreCase(Environment.get(persist.getChildTextTrim ("wait-for-workers-on-stop")));
     }
 
     @SuppressWarnings("unchecked")
