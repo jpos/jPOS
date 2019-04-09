@@ -310,15 +310,21 @@ public class QFactory {
         return tmp.toString();
     }
 
-    public Object newInstance (String clazz)
+    public <T> T newInstance (String clazz)
         throws ConfigurationException
     {
         try {
             MBeanServer mserver = q2.getMBeanServer();
-            return mserver.instantiate (clazz, loaderName);
+            return (T)mserver.instantiate (clazz, loaderName);
         } catch (Exception e) {
             throw new ConfigurationException (clazz, e);
         }
+    }
+
+    public <T> T newInstance (Class<T> clazz)
+            throws ConfigurationException
+    {
+        return newInstance(clazz.getName());
     }
 
     public Configuration getConfiguration (Element e)

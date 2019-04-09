@@ -61,8 +61,8 @@ public class TransactionManager
     public static final long    TIMER_PURGE_INTERVAL = 1000L;
     protected Map<String,List<TransactionParticipant>> groups;
     private Set<Destroyable> destroyables = new HashSet<>();
-    private static final ThreadLocal<Serializable> tlContext = new ThreadLocal<Serializable>();
-    private static final ThreadLocal<Long> tlId = new ThreadLocal<Long>();
+    private static final ThreadLocal<Serializable> tlContext = new ThreadLocal<>();
+    private static final ThreadLocal<Long> tlId = new ThreadLocal<>();
     private Metrics metrics;
     private static ScheduledThreadPoolExecutor loadMonitorExecutor;
     private static Map<TransactionParticipant,String> names = new HashMap<>();
@@ -75,7 +75,7 @@ public class TransactionManager
     String queue;
     String tailLock;
     List<Thread> threads;
-    final List<TransactionStatusListener> statusListeners = new ArrayList<TransactionStatusListener>();
+    final List<TransactionStatusListener> statusListeners = new ArrayList<>();
     boolean hasStatusListeners;
     boolean debug;
     boolean debugContext;
@@ -1080,8 +1080,8 @@ public class TransactionManager
     public static Serializable getSerializable() {
         return tlContext.get();
     }
-    public static Context getContext() {
-        return (Context) tlContext.get();
+    public static <T extends Serializable> T getContext() {
+        return (T) tlContext.get();
     }
     public static Long getId() {
         return tlId.get();
