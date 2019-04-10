@@ -336,6 +336,8 @@ public class ChannelAdaptor
                         sp.out (out, m, timeout);
                     else
                         sp.out (out, m);
+                } catch (ISOFilter.VetoException e) {
+                    getLog().warn ("channel-receiver-"+out+"-veto-exception", e.getMessage());
                 } catch (ISOException e) {
                     if (running()) {
                         getLog().warn ("channel-receiver-"+out, e);
