@@ -2,7 +2,7 @@
 <pmd xmlns="http://pmd.sourceforge.net/report/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/report/2.0.0 http://pmd.sourceforge.net/report_2_0_0.xsd"
-    version="6.8.0" timestamp="2019-04-10T19:33:12.288">
+    version="6.8.0" timestamp="2019-04-11T02:34:42.490">
 <file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/bsh/BSHActionTest.java">
 <violation beginline="36" endline="36" begincolumn="9" endcolumn="60" rule="UnnecessaryBooleanAssertion" ruleset="Error Prone" package="org.jpos.bsh" class="BSHActionTest" method="testActionPerformed" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#unnecessarybooleanassertion" priority="3">
 assertTrue(true) or similar statements are unnecessary
@@ -563,83 +563,83 @@ assertTrue(true) or similar statements are unnecessary
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/core/SimpleConfigurationTest.java">
-<violation beginline="58" endline="58" begincolumn="18" endcolumn="61" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfigurationTest" method="testConstructorThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;Expected NullPointerException to be thrown&quot; appears 14 times in this file; the first occurrence is on line 58
+<violation beginline="54" endline="54" begincolumn="18" endcolumn="61" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfigurationTest" method="testConstructorThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;Expected NullPointerException to be thrown&quot; appears 14 times in this file; the first occurrence is on line 54
 </violation>
-<violation beginline="59" endline="59" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfigurationTest" method="testConstructorThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
+<violation beginline="55" endline="55" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfigurationTest" method="testConstructorThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
 Avoid catching NullPointerException; consider removing the cause of the NPE.
 </violation>
-<violation beginline="59" endline="61" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfigurationTest" method="testConstructorThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#emptycatchblock" priority="3">
+<violation beginline="55" endline="57" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfigurationTest" method="testConstructorThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#emptycatchblock" priority="3">
 Avoid empty catch blocks
 </violation>
-<violation beginline="66" endline="66" begincolumn="71" endcolumn="99" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfigurationTest" method="testGet" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;testSimpleConfigurationName&quot; appears 26 times in this file; the first occurrence is on line 66
+<violation beginline="62" endline="62" begincolumn="71" endcolumn="99" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfigurationTest" method="testGet" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;testSimpleConfigurationName&quot; appears 26 times in this file; the first occurrence is on line 62
 </violation>
-<violation beginline="67" endline="67" begincolumn="20" endcolumn="27" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfigurationTest" method="testGet" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;result&quot; appears 23 times in this file; the first occurrence is on line 67
+<violation beginline="63" endline="63" begincolumn="20" endcolumn="27" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfigurationTest" method="testGet" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;result&quot; appears 23 times in this file; the first occurrence is on line 63
 </violation>
-<violation beginline="72" endline="72" begincolumn="102" endcolumn="129" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfigurationTest" method="testGet1" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;testSimpleConfigurationDef&quot; appears 4 times in this file; the first occurrence is on line 72
+<violation beginline="68" endline="68" begincolumn="102" endcolumn="129" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfigurationTest" method="testGet1" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;testSimpleConfigurationDef&quot; appears 4 times in this file; the first occurrence is on line 68
 </violation>
-<violation beginline="79" endline="79" begincolumn="33" endcolumn="44" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfigurationTest" method="testGet2" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;testString&quot; appears 32 times in this file; the first occurrence is on line 79
+<violation beginline="75" endline="75" begincolumn="33" endcolumn="44" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfigurationTest" method="testGet2" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;testString&quot; appears 32 times in this file; the first occurrence is on line 75
 </violation>
-<violation beginline="118" endline="118" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfigurationTest" method="testGetAllThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
+<violation beginline="114" endline="114" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfigurationTest" method="testGetAllThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
 Avoid catching NullPointerException; consider removing the cause of the NPE.
 </violation>
-<violation beginline="119" endline="119" begincolumn="24" endcolumn="40" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfigurationTest" method="testGetAllThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;ex.getMessage()&quot; appears 17 times in this file; the first occurrence is on line 119
+<violation beginline="115" endline="115" begincolumn="24" endcolumn="40" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfigurationTest" method="testGetAllThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;ex.getMessage()&quot; appears 17 times in this file; the first occurrence is on line 115
 </violation>
-<violation beginline="196" endline="196" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfigurationTest" method="testGetBooleanThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
+<violation beginline="192" endline="192" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfigurationTest" method="testGetBooleanThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
 Avoid catching NullPointerException; consider removing the cause of the NPE.
 </violation>
-<violation beginline="206" endline="206" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfigurationTest" method="testGetBooleanThrowsNullPointerException1" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
+<violation beginline="202" endline="202" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfigurationTest" method="testGetBooleanThrowsNullPointerException1" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
 Avoid catching NullPointerException; consider removing the cause of the NPE.
 </violation>
-<violation beginline="234" endline="234" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfigurationTest" method="testGetDoubleThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
+<violation beginline="230" endline="230" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfigurationTest" method="testGetDoubleThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
 Avoid catching NullPointerException; consider removing the cause of the NPE.
 </violation>
-<violation beginline="244" endline="244" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfigurationTest" method="testGetDoubleThrowsNullPointerException1" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
+<violation beginline="240" endline="240" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfigurationTest" method="testGetDoubleThrowsNullPointerException1" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
 Avoid catching NullPointerException; consider removing the cause of the NPE.
 </violation>
-<violation beginline="255" endline="255" begincolumn="18" endcolumn="62" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfigurationTest" method="testGetDoubleThrowsNumberFormatException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;Expected NumberFormatException to be thrown&quot; appears 5 times in this file; the first occurrence is on line 255
+<violation beginline="251" endline="251" begincolumn="18" endcolumn="62" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfigurationTest" method="testGetDoubleThrowsNumberFormatException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;Expected NumberFormatException to be thrown&quot; appears 5 times in this file; the first occurrence is on line 251
 </violation>
-<violation beginline="296" endline="296" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfigurationTest" method="testGetIntThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
+<violation beginline="292" endline="292" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfigurationTest" method="testGetIntThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
 Avoid catching NullPointerException; consider removing the cause of the NPE.
 </violation>
-<violation beginline="306" endline="306" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfigurationTest" method="testGetIntThrowsNullPointerException1" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
+<violation beginline="302" endline="302" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfigurationTest" method="testGetIntThrowsNullPointerException1" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
 Avoid catching NullPointerException; consider removing the cause of the NPE.
 </violation>
-<violation beginline="368" endline="368" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfigurationTest" method="testGetLongThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
+<violation beginline="364" endline="364" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfigurationTest" method="testGetLongThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
 Avoid catching NullPointerException; consider removing the cause of the NPE.
 </violation>
-<violation beginline="378" endline="378" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfigurationTest" method="testGetLongThrowsNullPointerException1" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
+<violation beginline="374" endline="374" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfigurationTest" method="testGetLongThrowsNullPointerException1" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
 Avoid catching NullPointerException; consider removing the cause of the NPE.
 </violation>
-<violation beginline="400" endline="400" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfigurationTest" method="testGetThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
+<violation beginline="396" endline="396" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfigurationTest" method="testGetThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
 Avoid catching NullPointerException; consider removing the cause of the NPE.
 </violation>
-<violation beginline="410" endline="410" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfigurationTest" method="testGetThrowsNullPointerException1" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
+<violation beginline="406" endline="406" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfigurationTest" method="testGetThrowsNullPointerException1" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
 Avoid catching NullPointerException; consider removing the cause of the NPE.
 </violation>
-<violation beginline="433" endline="433" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfigurationTest" method="testLoadThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
+<violation beginline="429" endline="429" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfigurationTest" method="testLoadThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
 Avoid catching NullPointerException; consider removing the cause of the NPE.
 </violation>
-<violation beginline="433" endline="435" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfigurationTest" method="testLoadThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#emptycatchblock" priority="3">
+<violation beginline="429" endline="431" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfigurationTest" method="testLoadThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#emptycatchblock" priority="3">
 Avoid empty catch blocks
 </violation>
-<violation beginline="444" endline="444" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfigurationTest" method="testPutThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
+<violation beginline="440" endline="440" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfigurationTest" method="testPutThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
 Avoid catching NullPointerException; consider removing the cause of the NPE.
 </violation>
-<violation beginline="461" endline="461" begincolumn="40" endcolumn="56" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfigurationTest" method="testReadSystemProperty" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;http://jpos.org&quot; appears 5 times in this file; the first occurrence is on line 461
+<violation beginline="457" endline="457" begincolumn="40" endcolumn="56" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfigurationTest" method="testReadSystemProperty" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;http://jpos.org&quot; appears 6 times in this file; the first occurrence is on line 457
 </violation>
-<violation beginline="462" endline="462" begincolumn="17" endcolumn="22" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfigurationTest" method="testReadSystemProperty" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;host&quot; appears 10 times in this file; the first occurrence is on line 462
+<violation beginline="458" endline="458" begincolumn="17" endcolumn="22" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfigurationTest" method="testReadSystemProperty" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;host&quot; appears 12 times in this file; the first occurrence is on line 458
 </violation>
-<violation beginline="494" endline="494" begincolumn="17" endcolumn="22" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfigurationTest" method="testReadEnvironmentVariable" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;home&quot; appears 6 times in this file; the first occurrence is on line 494
+<violation beginline="490" endline="490" begincolumn="17" endcolumn="22" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.core" class="SimpleConfigurationTest" method="testReadEnvironmentVariable" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;home&quot; appears 6 times in this file; the first occurrence is on line 490
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/core/SubConfigurationTest.java">
