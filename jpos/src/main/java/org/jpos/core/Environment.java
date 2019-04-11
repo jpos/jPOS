@@ -30,8 +30,7 @@ import java.util.regex.Pattern;
 public class Environment implements Loggeable {
     private static final String SYSTEM_PREFIX = "sys";
     private static final String ENVIRONMENT_PREFIX = "env";
-    private static Pattern valuePattern = Pattern.compile("^(\\$*)(\\$)([\\w\\W]*)?\\{([\\w\\W]+)\\}([\\w\\W]*)$"
-    );
+    private static Pattern valuePattern = Pattern.compile("^([\\w\\W]*)(\\$)([\\w\\W]*)?\\{([\\w\\W]+)\\}([\\w\\W]*)$");
     private static Pattern verbPattern = Pattern.compile("^\\$verb\\{([\\w\\W]+)\\}$");
     private static Environment INSTANCE;
     private String name;
@@ -52,6 +51,10 @@ public class Environment implements Loggeable {
         readConfig ();
     }
 
+    public boolean isProduction() {
+        return name.toLowerCase().startsWith(("prod"));
+    }
+
     public String getName() {
         return name;
     }
@@ -66,14 +69,32 @@ public class Environment implements Loggeable {
     public static String get (String p) {
         return getEnvironment().getProperty(p, p);
     }
-
+    public static String get (String p, String def) {
+        return getEnvironment().getProperty(p, def);
+    }
     public String getProperty (String p, String def) {
         String s = getProperty (p);
         return s != null ? s : def;
     }
 
 
-
+    /**
+     * If property name has the pattern <code>${propname}</code>, this method will
+     *
+     * <ul>
+     *     <li>Attempt to get it from an operating system environment variable called 'propname'</li>
+     *     <li>If not present, it will try to pick it from the a Java system.property</li>
+     *     <li>If not present either, it will try the target environment (either <code>.yml</code> or <code>.cfg</code></li>
+     *     <li>Otherwise it returns null</li>
+     * </ul>
+     *
+     * The special pattern <code>$env{propname}</code> would just try to pick it from the OS environment.
+     * <code>$sys{propname}</code> will just try to get it from a System.property and
+     * <code>$verb{propname}</code> will return a verbatim copy of the value.
+     *
+     * @param s property name
+     * @return property value
+     */
     public String getProperty (String s) {
         String r = s;
         if (s != null) {
@@ -81,27 +102,27 @@ public class Environment implements Loggeable {
             if (m.matches()) {
                 return m.group(1);
             }
-
             m = valuePattern.matcher(s);
+            if (!m.matches())
+                return s;
             while (m != null && m.matches()) {
-                String g3 = m.group(3);
-                String g4 = m.group(4);
-                g3 = g3 != null ? g3 : "";
-                switch (g3) {
+                String gPrefix = m.group(3);
+                String gValue = m.group(4);
+                gPrefix = gPrefix != null ? gPrefix : "";
+                switch (gPrefix) {
                     case SYSTEM_PREFIX:
-                        r = System.getProperty(g4);
-                        r = r == null ? propRef.get().getProperty(g4) : r;
+                        r = System.getProperty(gValue);
                         break;
                     case ENVIRONMENT_PREFIX:
-                        r = System.getenv(g4);
+                        r = System.getenv(gValue);
                         break;
                     default:
-                        if (g3.length() == 0) {
-                            r = System.getProperty(g4);
-                            r = r == null ? propRef.get().getProperty(g4) : r;
-                            r = r == null ? System.getenv(g4) : r;
+                        if (gPrefix.length() == 0) {
+                            r = System.getenv(gValue); // ENV has priority
+                            r = r == null ? System.getProperty(gValue) : r; // then System.property
+                            r = r == null ? propRef.get().getProperty(gValue) : r; // then jPOS --environment
                         } else {
-                            return s; // do nothing
+                            return s; // do nothing - unknown prefix
                         }
                 }
                 if (r != null) {

@@ -69,7 +69,7 @@ public class SimpleConfiguration implements Configuration, Serializable {
             List l = (List) obj;
             obj = l.size() > 0 ? l.get(0) : null;
         }
-        return (obj instanceof String) ? Environment.getEnvironment().getProperty((String) obj) : def;
+        return (obj instanceof String) ? Environment.get((String) obj, def) : def;
     }
     public String[] getAll (String name) {
         String[] ret;
