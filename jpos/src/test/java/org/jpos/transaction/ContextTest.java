@@ -29,7 +29,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.PrintStream;
+import java.util.ConcurrentModificationException;
 import java.util.Locale;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.jpos.util.LogEvent;
 import org.jpos.util.Serializer;
@@ -306,5 +309,42 @@ public class ContextTest {
         context = Serializer.serializeDeserialize(cloned);
         assertEquals(context.get("A"), "ABC");
         assertNull("A should be null", context.get("B"));
+    }
+
+    @Test
+    public void testConcurrentException() throws InterruptedException {
+        final Context ctx = new Context();
+        CountDownLatch latch = new CountDownLatch(1);
+        AtomicInteger errorsPut = new AtomicInteger();
+        AtomicInteger errorsDump = new AtomicInteger();
+        Runnable addEvent = () -> {
+            for (int i=0; i<10000; i++) {
+                try {
+                    ctx.put("Prop-" + i, i);
+                } catch (ConcurrentModificationException e) {
+                    errorsPut.incrementAndGet();
+                }
+                Thread.yield();
+            }
+            latch.countDown();
+        };
+
+        Runnable newFrozen = () -> {
+            while (latch.getCount() > 0) {
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                try {
+                    ctx.dumpMap(new PrintStream(baos), "");
+                } catch (ConcurrentModificationException e) {
+                    errorsDump.incrementAndGet();
+                }
+                Thread.yield();
+            }
+        };
+        new Thread(addEvent).start();
+        Thread t1 = new Thread(newFrozen);
+        t1.start();
+        t1.join();
+        if (errorsPut.get() + errorsDump.get() > 0)
+            fail ("Concurrent Exception has been raised " + errorsPut.get() + "/" + errorsDump.get() + " time(s)");
     }
 }

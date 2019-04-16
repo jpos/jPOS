@@ -48,7 +48,7 @@ public class LogEvent {
         super();
         this.tag = tag;
         createdAt = Instant.now();
-        this.payLoad = Collections.synchronizedList (new ArrayList<Object>());
+        this.payLoad = Collections.synchronizedList (new ArrayList<>());
     }
 
     public LogEvent () {

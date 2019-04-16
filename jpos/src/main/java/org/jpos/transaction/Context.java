@@ -27,6 +27,7 @@ import org.jpos.rc.Result;
 
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static org.jpos.transaction.ContextConstants.*;
 
@@ -243,12 +244,12 @@ public class Context implements Externalizable, Loggeable, Pausable, Cloneable {
             map = Collections.synchronizedMap (new LinkedHashMap<>());
         return map;
     }
-    protected void dumpMap (PrintStream p, String indent) {
-        if (map == null)
-            return;
 
-        for (Map.Entry<Object,Object> entry : map.entrySet()) {
-            dumpEntry(p, indent, entry);
+    protected void dumpMap (PrintStream p, String indent) {
+        if (map != null) {
+             synchronized(map) {
+                map.entrySet().forEach(e -> dumpEntry(p, indent, e));
+             }
         }
     }
 
@@ -293,7 +294,7 @@ public class Context implements Externalizable, Loggeable, Pausable, Cloneable {
      * @return LogEvent
      */
     synchronized public LogEvent getLogEvent () {
-        LogEvent evt = (LogEvent) get (LOGEVT.toString());
+        LogEvent evt = get (LOGEVT.toString());
         if (evt == null) {
             evt = new LogEvent ();
             evt.setNoArmor(true);
@@ -306,7 +307,7 @@ public class Context implements Externalizable, Loggeable, Pausable, Cloneable {
      * @return Profiler object
      */
     synchronized public Profiler getProfiler () {
-        Profiler prof = (Profiler) get (PROFILER.toString());
+        Profiler prof = get (PROFILER.toString());
         if (prof == null) {
             prof = new Profiler();
             put (PROFILER.toString(), prof);
