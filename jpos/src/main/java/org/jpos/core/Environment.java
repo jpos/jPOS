@@ -35,6 +35,9 @@ public class Environment implements Loggeable {
     private static Environment INSTANCE;
     private String name;
     private AtomicReference<Properties> propRef = new AtomicReference<>(new Properties());
+    private static String SP_PREFIX = "system.property.";
+    private static int SP_PREFIX_LENGTH = SP_PREFIX.length();
+
 
     static {
         try {
@@ -145,7 +148,18 @@ public class Environment implements Loggeable {
         if (name != null) {
             if (!readYAML())
                 readCfg();
+
+            extractSystemProperties();
         }
+    }
+
+    private void extractSystemProperties() {
+        Properties properties = propRef.get();
+        properties
+          .stringPropertyNames()
+          .stream()
+          .filter(e -> e.startsWith(SP_PREFIX))
+          .forEach(prop -> System.setProperty(prop.substring(SP_PREFIX_LENGTH), (String) properties.get(prop)));
     }
 
     private boolean readYAML () throws IOException {
