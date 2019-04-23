@@ -60,6 +60,13 @@ public abstract class SecureKey
      * Secure Key Bytes
      */
     protected byte[] keyBytes = null;
+
+    /**
+     * The keyCheckValue allows identifying which clear key does this
+     * secure key represent.
+     */
+    protected byte[] keyCheckValue;
+
     /**
      * This is the bit length of the key
      * This can be: LENGTH_DES, LENGTH_DES3_2KEY, ...
@@ -96,6 +103,28 @@ public abstract class SecureKey
      */
     public byte[] getKeyBytes () {
         return  keyBytes;
+    }
+
+    /**
+     * The Key Check Value is typically a 24-bits (3 bytes) formed by encrypting a
+     * block of zeros under the secure key when the secure key is clear
+     * (not in this class, but inside the security module).
+     * This check value allows identifying if two secure keys map to the
+     * same clear key.
+     * @param keyCheckValue
+     */
+    public void setKeyCheckValue (byte[] keyCheckValue) {
+        this.keyCheckValue = keyCheckValue;
+    }
+
+    /**
+     * The Key Check Value is typically a 24-bits (3 bytes) formed by encrypting a
+     * block of zeros under the secure key when the secure key is clear
+     * (not in this class, but inside the security module).
+     * @return the keyCheckValue that was set before by setKeyCheckValue()
+     */
+    public byte[] getKeyCheckValue () {
+        return  keyCheckValue;
     }
 
     /**
