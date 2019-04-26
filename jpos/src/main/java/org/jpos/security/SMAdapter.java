@@ -42,7 +42,7 @@ import java.util.Map;
  * @author Robert Demski
  * @version $Revision$ $Date$
  */
-public interface SMAdapter {
+public interface SMAdapter<T> {
     /**
      * DES Key Length <code>LENGTH_DES</code> = 64.
      */
@@ -280,11 +280,11 @@ public interface SMAdapter {
     /**
      * Generates key check value.
      *
-     * @param kd SecureDESKey with untrusted or fake Key Check Value
+     * @param kd the key with untrusted or fake Key Check Value
      * @return key check value bytes
      * @throws SMException
      */
-    byte[] generateKeyCheckValue(SecureDESKey kd) throws SMException;
+    byte[] generateKeyCheckValue(T kd) throws SMException;
 
 
 
@@ -372,7 +372,7 @@ public interface SMAdapter {
      * @return pin encrypted under LMK
      * @throws SMException
      */
-    EncryptedPIN importPIN(EncryptedPIN pinUnderKd1, SecureDESKey kd1) throws SMException;
+    EncryptedPIN importPIN(EncryptedPIN pinUnderKd1, T kd1) throws SMException;
 
 
 
@@ -386,8 +386,8 @@ public interface SMAdapter {
      * @return pin encrypted under KD2
      * @throws SMException
      */
-    EncryptedPIN translatePIN(EncryptedPIN pinUnderKd1, SecureDESKey kd1,
-                              SecureDESKey kd2, byte destinationPINBlockFormat) throws SMException;
+    EncryptedPIN translatePIN(EncryptedPIN pinUnderKd1, T kd1,
+                              T kd2, byte destinationPINBlockFormat) throws SMException;
 
 
 
@@ -403,8 +403,8 @@ public interface SMAdapter {
      * @return pin encrypted under LMK
      * @throws SMException
      */
-    EncryptedPIN importPIN(EncryptedPIN pinUnderDuk, KeySerialNumber ksn,
-                           SecureDESKey bdk) throws SMException;
+    EncryptedPIN importPIN(EncryptedPIN pinUnderDuk, KeySerialNumber ksn, T bdk)
+            throws SMException;
 
     /**
      * Imports a PIN from encryption under a transaction key to encryption
@@ -419,7 +419,7 @@ public interface SMAdapter {
      * @throws SMException
      */
     EncryptedPIN importPIN(EncryptedPIN pinUnderDuk, KeySerialNumber ksn,
-                           SecureDESKey bdk, boolean tdes) throws SMException;
+                           T bdk, boolean tdes) throws SMException;
 
 
 
@@ -438,7 +438,7 @@ public interface SMAdapter {
      * @throws SMException
      */
     EncryptedPIN translatePIN(EncryptedPIN pinUnderDuk, KeySerialNumber ksn,
-                              SecureDESKey bdk, SecureDESKey kd2, byte destinationPINBlockFormat) throws SMException;
+                              T bdk, T kd2, byte destinationPINBlockFormat) throws SMException;
 
 
     /**
@@ -456,7 +456,7 @@ public interface SMAdapter {
      * @throws SMException
      */
     EncryptedPIN translatePIN(EncryptedPIN pinUnderDuk, KeySerialNumber ksn,
-                              SecureDESKey bdk, SecureDESKey kd2, byte destinationPINBlockFormat, boolean tdes) throws SMException;
+                              T bdk, T kd2, byte destinationPINBlockFormat, boolean tdes) throws SMException;
 
 
 
@@ -470,7 +470,7 @@ public interface SMAdapter {
      * @return pin encrypted under kd2
      * @throws SMException
      */
-    EncryptedPIN exportPIN(EncryptedPIN pinUnderLmk, SecureDESKey kd2, byte destinationPINBlockFormat) throws SMException;
+    EncryptedPIN exportPIN(EncryptedPIN pinUnderLmk, T kd2, byte destinationPINBlockFormat) throws SMException;
 
 
 
@@ -522,8 +522,9 @@ public interface SMAdapter {
      *               in template. null if no solicitation data are passed
      * @throws SMException
      */
-    void printPIN(String accountNo, EncryptedPIN pinUnderKd1, SecureDESKey kd1
+    void printPIN(String accountNo, EncryptedPIN pinUnderKd1, T kd1
       , String template, Map<String, String> fields) throws SMException;
+
 
     /**
      * Calculate PVV (VISA PIN Verification Value of PIN under LMK)
@@ -539,9 +540,8 @@ public interface SMAdapter {
      * @return PVV (VISA PIN Verification Value)
      * @throws SMException if PIN is on exclude list {@link WeakPINException} is thrown
      */
-    String calculatePVV(EncryptedPIN pinUnderLmk, SecureDESKey pvkA,
-                        SecureDESKey pvkB, int pvkIdx) throws SMException;
-
+    String calculatePVV(EncryptedPIN pinUnderLmk, T pvkA, T pvkB, int pvkIdx)
+            throws SMException;
 
 
     /**
@@ -559,10 +559,8 @@ public interface SMAdapter {
      * @return PVV (VISA PIN Verification Value)
      * @throws SMException
      */
-    String calculatePVV(EncryptedPIN pinUnderLmk, SecureDESKey pvkA,
-                        SecureDESKey pvkB, int pvkIdx,
+    String calculatePVV(EncryptedPIN pinUnderLmk, T pvkA, T pvkB, int pvkIdx,
                         List<String> excludes) throws SMException;
-
 
 
     /**
@@ -579,10 +577,8 @@ public interface SMAdapter {
      * @return PVV (VISA PIN Verification Value)
      * @throws SMException
      */
-    String calculatePVV(EncryptedPIN pinUnderKd1, SecureDESKey kd1,
-                        SecureDESKey pvkA, SecureDESKey pvkB, int pvkIdx)
+    String calculatePVV(EncryptedPIN pinUnderKd1, T kd1, T pvkA, T pvkB, int pvkIdx)
             throws SMException;
-
 
 
     /**
@@ -602,10 +598,8 @@ public interface SMAdapter {
      * @throws WeakPINException if passed PIN is on {@code excludes} list
      * @throws SMException
      */
-    String calculatePVV(EncryptedPIN pinUnderKd1, SecureDESKey kd1,
-                        SecureDESKey pvkA, SecureDESKey pvkB, int pvkIdx,
+    String calculatePVV(EncryptedPIN pinUnderKd1, T kd1, T pvkA, T pvkB, int pvkIdx,
                         List<String> excludes) throws SMException;
-
 
 
     /**
@@ -623,9 +617,8 @@ public interface SMAdapter {
      * @return true if pin is valid false if not
      * @throws SMException
      */
-    boolean verifyPVV(EncryptedPIN pinUnderKd1, SecureDESKey kd1, SecureDESKey pvkA,
-                      SecureDESKey pvkB, int pvki, String pvv) throws SMException;
-
+    boolean verifyPVV(EncryptedPIN pinUnderKd1, T kd1, T pvkA,
+                      T pvkB, int pvki, String pvv) throws SMException;
 
 
     /**
@@ -646,7 +639,7 @@ public interface SMAdapter {
      * @return IBM PIN Offset
      * @throws SMException
      */
-    String calculateIBMPINOffset(EncryptedPIN pinUnderLmk, SecureDESKey pvk,
+    String calculateIBMPINOffset(EncryptedPIN pinUnderLmk, T pvk,
                                  String decTab, String pinValData,
                                  int minPinLen) throws SMException;
 
@@ -673,7 +666,7 @@ public interface SMAdapter {
      * @throws WeakPINException if passed PIN is on {@code excludes} list
      * @throws SMException
      */
-    String calculateIBMPINOffset(EncryptedPIN pinUnderLmk, SecureDESKey pvk,
+    String calculateIBMPINOffset(EncryptedPIN pinUnderLmk, T pvk,
                                  String decTab, String pinValData, int minPinLen,
                                  List<String> excludes) throws SMException;
 
@@ -698,8 +691,8 @@ public interface SMAdapter {
      * @return IBM PIN Offset
      * @throws SMException
      */
-    String calculateIBMPINOffset(EncryptedPIN pinUnderKd1, SecureDESKey kd1,
-                                 SecureDESKey pvk, String decTab, String pinValData,
+    String calculateIBMPINOffset(EncryptedPIN pinUnderKd1, T kd1,
+                                 T pvk, String decTab, String pinValData,
                                  int minPinLen) throws SMException;
 
 
@@ -726,8 +719,8 @@ public interface SMAdapter {
      * @throws WeakPINException if passed PIN is on {@code excludes} list
      * @throws SMException
      */
-    String calculateIBMPINOffset(EncryptedPIN pinUnderKd1, SecureDESKey kd1,
-                                 SecureDESKey pvk, String decTab, String pinValData,
+    String calculateIBMPINOffset(EncryptedPIN pinUnderKd1, T kd1,
+                                 T pvk, String decTab, String pinValData,
                                  int minPinLen, List<String> excludes) throws SMException;
 
 
@@ -750,7 +743,7 @@ public interface SMAdapter {
      * @return true if pin offset is valid false if not
      * @throws SMException
      */
-    boolean verifyIBMPINOffset(EncryptedPIN pinUnderKd1, SecureDESKey kd1, SecureDESKey pvk,
+    boolean verifyIBMPINOffset(EncryptedPIN pinUnderKd1, T kd1, T pvk,
                                String offset, String decTab, String pinValData,
                                int minPinLen) throws SMException;
 
@@ -778,7 +771,7 @@ public interface SMAdapter {
      * @return           PIN under LMK
      * @throws SMException
      */
-    EncryptedPIN deriveIBMPIN(String accountNo, SecureDESKey pvk
+    EncryptedPIN deriveIBMPIN(String accountNo, T pvk
       , String decTab, String pinValData, int minPinLen
       , String offset) throws SMException;
 
@@ -808,7 +801,7 @@ public interface SMAdapter {
      * solve problem. Use {@link #calculateCVV} with string version of {@code expDate}
      */
     @Deprecated
-    String calculateCVV(String accountNo, SecureDESKey cvkA, SecureDESKey cvkB,
+    String calculateCVV(String accountNo, T cvkA, T cvkB,
                         Date expDate, String serviceCode) throws SMException;
 
 
@@ -833,7 +826,7 @@ public interface SMAdapter {
      * @return Card Verification Code/Value
      * @throws SMException
      */
-    String calculateCVV(String accountNo, SecureDESKey cvkA, SecureDESKey cvkB,
+    String calculateCVV(String accountNo, T cvkA, T cvkB,
                         String expDate, String serviceCode) throws SMException;
 
 
@@ -858,13 +851,13 @@ public interface SMAdapter {
      *                    the Transaction Status (status) that will be used in
      *                    PARes. A 1 decimal digit value must be supplied.
      * @param sfarc       the Second Factor Authentication Results Code.
-     *                    A value based on the result of second factor authentication. 
+     *                    A value based on the result of second factor authentication.
      *                    A 2 decimal digits value must be suppiled.
      * @return Cardholder Authentication Verification Value/Accountholder
      *         Authentication Value
      * @throws SMException
      */
-    String calculateCAVV(String accountNo, SecureDESKey cvk, String upn,
+    String calculateCAVV(String accountNo, T cvk, String upn,
                          String authrc, String sfarc) throws SMException;
 
     /**
@@ -892,7 +885,7 @@ public interface SMAdapter {
      * solve problem. Use {@link #verifyCVV} with string version of {@code expDate}
      */
     @Deprecated
-    boolean verifyCVV(String accountNo, SecureDESKey cvkA, SecureDESKey cvkB,
+    boolean verifyCVV(String accountNo, T cvkA, T cvkB,
                       String cvv, Date expDate, String serviceCode) throws SMException;
 
 
@@ -917,7 +910,7 @@ public interface SMAdapter {
      * @return {@code true} if CVV/CVC is valid or {@code false} otherwise
      * @throws SMException
      */
-    boolean verifyCVV(String accountNo, SecureDESKey cvkA, SecureDESKey cvkB,
+    boolean verifyCVV(String accountNo, T cvkA, T cvkB,
                       String cvv, String expDate, String serviceCode) throws SMException;
 
 
@@ -943,12 +936,12 @@ public interface SMAdapter {
      *                    the Transaction Status (status) that will be used in
      *                    PARes. A 1 decimal digit value must be supplied.
      * @param sfarc       the Second Factor Authentication Results Code.
-     *                    A value based on the result of second factor authentication. 
+     *                    A value based on the result of second factor authentication.
      *                    A 2 decimal digits value must be suppiled.
      * @return true if CAVV/AAV is valid or false if not
      * @throws SMException
      */
-    boolean verifyCAVV(String accountNo, SecureDESKey cvk, String cavv,
+    boolean verifyCAVV(String accountNo, T cvk, String cavv,
                        String upn, String authrc, String sfarc) throws SMException;
 
 
@@ -976,7 +969,7 @@ public interface SMAdapter {
      * @return true if dcvv is valid false if not
      * @throws SMException
      */
-    boolean verifydCVV(String accountNo, SecureDESKey imkac, String dcvv,
+    boolean verifydCVV(String accountNo, T imkac, String dcvv,
                        Date expDate, String serviceCode, byte[] atc, MKDMethod mkdm)
                      throws SMException;
 
@@ -1025,7 +1018,7 @@ public interface SMAdapter {
      * @return true if cvc3 is valid false if not
      * @throws SMException
      */
-    boolean verifyCVC3(SecureDESKey imkcvc3, String accountNo, String acctSeqNo,
+    boolean verifyCVC3(T imkcvc3, String accountNo, String acctSeqNo,
                        byte[] atc, byte[] upn, byte[] data, MKDMethod mkdm, String cvc3)
                      throws SMException;
 
@@ -1053,7 +1046,7 @@ public interface SMAdapter {
      * @param upn unpredictable number. This is used for Session Key Generation
      *        A 4 byte value must be supplied. For {@code skdm} equals
      *        {@link SKDMethod#VSDC} is not used.
-     * @param transData transaction data. Transaction data elements and them
+     * @param txnData transaction data. Transaction data elements and them
      *        order is dependend to proper cryptogram version. If the data
      *        supplied is a multiple of 8 bytes, no extra padding is added.
      *        If it is not a multiple of 8 bytes, additional zero padding is added.
@@ -1062,9 +1055,9 @@ public interface SMAdapter {
      * @return true if ARQC/TC/AAC is passed or false if not
      * @throws SMException
      */
-    boolean verifyARQC(MKDMethod mkdm, SKDMethod skdm, SecureDESKey imkac
+    boolean verifyARQC(MKDMethod mkdm, SKDMethod skdm, T imkac
       , String accountNo, String acctSeqNo, byte[] arqc, byte[] atc
-      , byte[] upn, byte[] transData) throws SMException;
+      , byte[] upn, byte[] txnData) throws SMException;
 
 
 
@@ -1100,7 +1093,7 @@ public interface SMAdapter {
      *        {@link ARPCMethod#METHOD_2} 4 bytes ARPC
      * @throws SMException
      */
-    byte[] generateARPC(MKDMethod mkdm, SKDMethod skdm, SecureDESKey imkac
+    byte[] generateARPC(MKDMethod mkdm, SKDMethod skdm, T imkac
       , String accoutNo, String acctSeqNo, byte[] arqc, byte[] atc, byte[] upn
       , ARPCMethod arpcMethod, byte[] arc, byte[] propAuthData)
             throws SMException;
@@ -1129,7 +1122,7 @@ public interface SMAdapter {
      * @param upn unpredictable number. This is used for Session Key Generation
      *        A 4 byte value must be supplied. For {@code skdm} equals
      *        {@link SKDMethod#VSDC} is not used.
-     * @param transData transaction data. Transaction data elements and them
+     * @param txnData transaction data. Transaction data elements and them
      *        order is dependend to proper cryptogram version. If the data
      *        supplied is a multiple of 8 bytes, no extra padding is added.
      *        If it is not a multiple of 8 bytes, additional zero padding is added.
@@ -1139,7 +1132,7 @@ public interface SMAdapter {
      *        {@link SKDMethod#VSDC}, {@link SKDMethod#MCHIP},
      *        {@link SKDMethod#AEPIS_V40} only {@link ARPCMethod#METHOD_1} is valid
      * @param arc the Authorisation Response Code. A 2 byte value must be supplied.
-     *        For {@code arpcMethod} equals {@link ARPCMethod#METHOD_2} it is 
+     *        For {@code arpcMethod} equals {@link ARPCMethod#METHOD_2} it is
      *        csu - Card Status Update. Then a 4 byte value must be supplied.
      * @param propAuthData Proprietary Authentication Data. Up to 8 bytes.
      *        Contains optional issuer data for transmission to the card in
@@ -1151,9 +1144,9 @@ public interface SMAdapter {
      *         4 bytes ARPC, null in other case
      * @throws SMException
      */
-    byte[] verifyARQCGenerateARPC(MKDMethod mkdm, SKDMethod skdm, SecureDESKey imkac
+    byte[] verifyARQCGenerateARPC(MKDMethod mkdm, SKDMethod skdm, T imkac
       , String accountNo, String acctSeqNo, byte[] arqc, byte[] atc, byte[] upn
-      , byte[] transData, ARPCMethod arpcMethod, byte[] arc, byte[] propAuthData)
+      , byte[] txnData, ARPCMethod arpcMethod, byte[] arc, byte[] propAuthData)
             throws SMException;
 
 
@@ -1185,7 +1178,7 @@ public interface SMAdapter {
      * @throws SMException
      */
     byte[] generateSM_MAC(MKDMethod mkdm, SKDMethod skdm
-      , SecureDESKey imksmi, String accountNo, String acctSeqNo
+      , T imksmi, String accountNo, String acctSeqNo
       , byte[] atc, byte[] arqc, byte[] data) throws SMException;
 
 
@@ -1253,10 +1246,10 @@ public interface SMAdapter {
      * @throws SMException
      */
     Pair<EncryptedPIN,byte[]> translatePINGenerateSM_MAC(MKDMethod mkdm
-      , SKDMethod skdm, PaddingMethod padm, SecureDESKey imksmi
+      , SKDMethod skdm, PaddingMethod padm, T imksmi
       , String accountNo, String acctSeqNo, byte[] atc, byte[] arqc
       , byte[] data, EncryptedPIN currentPIN, EncryptedPIN newPIN
-      , SecureDESKey kd1, SecureDESKey imksmc, SecureDESKey imkac
+      , T kd1, T imksmc, T imkac
       , byte destinationPINBlockFormat) throws SMException;
 
 
@@ -1307,7 +1300,7 @@ public interface SMAdapter {
      * @return the MAC
      * @throws SMException
      */
-    byte[] generateCBC_MAC(byte[] data, SecureDESKey kd) throws SMException;
+    byte[] generateCBC_MAC(byte[] data, T kd) throws SMException;
 
     /**
      * Generates EDE-MAC (Encrypt Decrypt Encrypt Message Message Authentication Code)
@@ -1318,7 +1311,7 @@ public interface SMAdapter {
      * @return the MAC
      * @throws SMException
      */
-    byte[] generateEDE_MAC(byte[] data, SecureDESKey kd) throws SMException;
+    byte[] generateEDE_MAC(byte[] data, T kd) throws SMException;
 
     /**
      * Translate key from encryption under the LMK held in key change storage
@@ -1425,7 +1418,7 @@ public interface SMAdapter {
      * @param clearText clear Text
      * @return cyphertext
      */
-    byte[] dataEncrypt (SecureDESKey bdk, byte[] clearText) throws SMException;
+    byte[] dataEncrypt(T bdk, byte[] clearText) throws SMException;
 
     /**
      * Decrypt Data
@@ -1433,7 +1426,7 @@ public interface SMAdapter {
      * @param cypherText clear Text
      * @return cleartext
      */
-    byte[] dataDecrypt (SecureDESKey bdk, byte[] cypherText) throws SMException;
+    byte[] dataDecrypt(T bdk, byte[] cypherText) throws SMException;
 
     /**
      * Forms a key from 3 clear components and returns it encrypted under its corresponding LMK
@@ -1444,14 +1437,16 @@ public interface SMAdapter {
      * @return forms an SecureDESKey from two clear components
      * @throws SMException
      */
-    SecureDESKey formKEYfromClearComponents (short keyLength, String keyType, String... clearComponent) throws SMException;
+    SecureDESKey formKEYfromClearComponents(short keyLength, String keyType, String... clearComponent) throws SMException;
+
     /**
      * Generates a random clear key component.
      * @param keyLength
      * @return clear key componenet
      * @throws SMException
      */
-    default String generateClearKeyComponent (short keyLength) throws SMException{
+    default String generateClearKeyComponent(short keyLength) throws SMException {
         throw new SMException("Operation not supported in: " + this.getClass().getName());
     }
+
 }
