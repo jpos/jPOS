@@ -691,6 +691,31 @@ public class BaseSMAdapter
     }
 
     @Override
+    public String calculateCVV(String accountNo, SecureDESKey cvkA, SecureDESKey cvkB,
+                               String expDate, String serviceCode) throws SMException {
+
+        List<Loggeable> cmdParameters = new ArrayList<>();
+        cmdParameters.add(new SimpleMsg("parameter", "account number", accountNo));
+        cmdParameters.add(new SimpleMsg("parameter", "cvk-a", cvkA == null ? "" : cvkA));
+        cmdParameters.add(new SimpleMsg("parameter", "cvk-b", cvkB == null ? "" : cvkB));
+        cmdParameters.add(new SimpleMsg("parameter", "Exp date", expDate));
+        cmdParameters.add(new SimpleMsg("parameter", "Service code", serviceCode));
+        LogEvent evt = new LogEvent(this, "s-m-operation");
+        evt.addMessage(new SimpleMsg("command", "Calculate CVV/CVC", cmdParameters));
+        String result = null;
+        try {
+            result = calculateCVVImpl(accountNo, cvkA, cvkB, expDate, serviceCode);
+            evt.addMessage(new SimpleMsg("result", "Calculated CVV/CVC", result));
+        } catch (Exception e) {
+            evt.addMessage(e);
+            throw e instanceof SMException ? (SMException) e : new SMException(e);
+        } finally {
+            Logger.log(evt);
+        }
+        return result;
+    }
+
+    @Override
     public String calculateCAVV(String accountNo, SecureDESKey cvk, String upn,
                                 String authrc, String sfarc) throws SMException {
 
@@ -738,6 +763,31 @@ public class BaseSMAdapter
       } finally {
         Logger.log(evt);
       }
+    }
+
+    @Override
+    public boolean verifyCVV(String accountNo, SecureDESKey cvkA, SecureDESKey cvkB,
+                            String cvv, String expDate, String serviceCode) throws SMException {
+
+        List<Loggeable> cmdParameters = new ArrayList<>();
+        cmdParameters.add(new SimpleMsg("parameter", "account number", accountNo));
+        cmdParameters.add(new SimpleMsg("parameter", "cvk-a", cvkA == null ? "" : cvkA));
+        cmdParameters.add(new SimpleMsg("parameter", "cvk-b", cvkB == null ? "" : cvkB));
+        cmdParameters.add(new SimpleMsg("parameter", "CVV/CVC", cvv));
+        cmdParameters.add(new SimpleMsg("parameter", "Exp date", expDate));
+        cmdParameters.add(new SimpleMsg("parameter", "Service code", serviceCode));
+        LogEvent evt = new LogEvent(this, "s-m-operation");
+        evt.addMessage(new SimpleMsg("command", "Verify CVV/CVC", cmdParameters));
+        try {
+            boolean r = verifyCVVImpl(accountNo, cvkA, cvkB, cvv, expDate, serviceCode);
+            evt.addMessage(new SimpleMsg("result", "Verification status", r ? "valid" : "invalid"));
+            return r;
+        } catch (Exception e) {
+            evt.addMessage(e);
+            throw e instanceof SMException ? (SMException) e : new SMException(e);
+        } finally {
+            Logger.log(evt);
+        }
     }
 
     @Override
@@ -1563,6 +1613,22 @@ public class BaseSMAdapter
     /**
      * Your SMAdapter should override this method if it has this functionality
      * @param accountNo
+     * @param cvkA
+     * @param cvkB
+     * @param expDate
+     * @param serviceCode
+     * @return Card Verification Code/Value
+     * @throws SMException
+     */
+    protected String calculateCVVImpl(String accountNo, SecureDESKey cvkA, SecureDESKey cvkB,
+                                   String expDate, String serviceCode) throws SMException {
+        throw new UnsupportedOperationException("Operation not supported in: " + this.getClass().getName());
+    }
+
+
+    /**
+     * Your SMAdapter should override this method if it has this functionality
+     * @param accountNo
      * @param cvk
      * @param upn
      * @param authrc
@@ -1589,6 +1655,22 @@ public class BaseSMAdapter
     protected boolean verifyCVVImpl(String accountNo, SecureDESKey cvkA, SecureDESKey cvkB,
                         String cvv, Date expDate, String serviceCode) throws SMException {
         throw  new SMException("Operation not supported in: " + this.getClass().getName());
+    }
+
+    /**
+     * Your SMAdapter should override this method if it has this functionality
+     * @param accountNo
+     * @param cvkA
+     * @param cvkB
+     * @param cvv
+     * @param expDate
+     * @param serviceCode
+     * @return {@code true} if CVV/CVC is valid or {@code false} otherwise
+     * @throws SMException
+     */
+    protected boolean verifyCVVImpl(String accountNo, SecureDESKey cvkA, SecureDESKey cvkB,
+                        String cvv, String expDate, String serviceCode) throws SMException {
+        throw new UnsupportedOperationException("Operation not supported in: " + this.getClass().getName());
     }
 
     /**
