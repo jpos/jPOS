@@ -2,7 +2,7 @@
 <pmd xmlns="http://pmd.sourceforge.net/report/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/report/2.0.0 http://pmd.sourceforge.net/report_2_0_0.xsd"
-    version="6.8.0" timestamp="2019-04-25T18:25:47.387">
+    version="6.8.0" timestamp="2019-04-29T20:42:48.616">
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/bsh/BSHAction.java">
 <violation beginline="30" endline="30" begincolumn="15" endcolumn="16" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.bsh" class="BSHAction" variable="ui" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
 Found non-transient, non-static member. Please mark as transient or provide accessors.
@@ -5708,287 +5708,314 @@ Overridable method 'setLogger' called during object construction
 <violation beginline="68" endline="68" begincolumn="9" endcolumn="29" rule="ConstructorCallsOverridableMethod" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="BaseSMAdapter" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#constructorcallsoverridablemethod" priority="1">
 Overridable method 'setConfiguration' called during object construction
 </violation>
-<violation beginline="122" endline="122" begincolumn="27" endcolumn="37" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="generateKey" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;parameter&quot; appears 199 times in this file; the first occurrence is on line 122
+<violation beginline="122" endline="122" begincolumn="41" endcolumn="51" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="generateKey" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;parameter&quot; appears 218 times in this file; the first occurrence is on line 122
 </violation>
-<violation beginline="125" endline="125" begincolumn="43" endcolumn="57" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="generateKey" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;s-m-operation&quot; appears 40 times in this file; the first occurrence is on line 125
+<violation beginline="124" endline="124" begincolumn="43" endcolumn="57" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="generateKey" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;s-m-operation&quot; appears 44 times in this file; the first occurrence is on line 124
 </violation>
-<violation beginline="126" endline="126" begincolumn="38" endcolumn="46" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="generateKey" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;command&quot; appears 40 times in this file; the first occurrence is on line 126
+<violation beginline="125" endline="125" begincolumn="38" endcolumn="46" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="generateKey" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;command&quot; appears 44 times in this file; the first occurrence is on line 125
 </violation>
-<violation beginline="127" endline="129" begincolumn="13" endcolumn="56" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="generateKey" variable="result" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'result' (lines '127'-'129').
+<violation beginline="126" endline="128" begincolumn="13" endcolumn="56" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="generateKey" variable="result" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'result' (lines '126'-'128').
 </violation>
-<violation beginline="130" endline="130" begincolumn="42" endcolumn="49" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="generateKey" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;result&quot; appears 42 times in this file; the first occurrence is on line 130
+<violation beginline="129" endline="129" begincolumn="42" endcolumn="49" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="generateKey" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;result&quot; appears 48 times in this file; the first occurrence is on line 129
 </violation>
-<violation beginline="133" endline="133" begincolumn="20" endcolumn="20" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="generateKey" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
+<violation beginline="132" endline="132" begincolumn="20" endcolumn="20" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="generateKey" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
 An instanceof check is being performed on the caught exception.  Create a separate catch clause for this exception type.
 </violation>
-<violation beginline="147" endline="149" begincolumn="13" endcolumn="50" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="generateKeyCheckValue" variable="result" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'result' (lines '147'-'149').
+<violation beginline="145" endline="147" begincolumn="13" endcolumn="50" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="generateKeyCheckValue" variable="result" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'result' (lines '145'-'147').
 </violation>
-<violation beginline="153" endline="153" begincolumn="20" endcolumn="20" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="generateKeyCheckValue" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
+<violation beginline="151" endline="151" begincolumn="20" endcolumn="20" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="generateKeyCheckValue" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
 An instanceof check is being performed on the caught exception.  Create a separate catch clause for this exception type.
 </violation>
-<violation beginline="169" endline="171" begincolumn="13" endcolumn="63" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="translateKeyScheme" variable="result" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'result' (lines '169'-'171').
+<violation beginline="166" endline="168" begincolumn="13" endcolumn="63" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="translateKeyScheme" variable="result" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'result' (lines '166'-'168').
 </violation>
-<violation beginline="175" endline="175" begincolumn="20" endcolumn="20" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="translateKeyScheme" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
+<violation beginline="172" endline="172" begincolumn="20" endcolumn="20" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="translateKeyScheme" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
 An instanceof check is being performed on the caught exception.  Create a separate catch clause for this exception type.
 </violation>
-<violation beginline="192" endline="194" begincolumn="13" endcolumn="86" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="importKey" variable="result" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'result' (lines '192'-'194').
+<violation beginline="190" endline="192" begincolumn="13" endcolumn="86" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="importKey" variable="result" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'result' (lines '190'-'192').
 </violation>
-<violation beginline="198" endline="198" begincolumn="20" endcolumn="20" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="importKey" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
+<violation beginline="196" endline="196" begincolumn="20" endcolumn="20" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="importKey" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
 An instanceof check is being performed on the caught exception.  Create a separate catch clause for this exception type.
 </violation>
-<violation beginline="213" endline="215" begincolumn="13" endcolumn="44" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="exportKey" variable="result" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'result' (lines '213'-'215').
+<violation beginline="210" endline="212" begincolumn="13" endcolumn="44" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="exportKey" variable="result" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'result' (lines '210'-'212').
 </violation>
-<violation beginline="219" endline="219" begincolumn="20" endcolumn="20" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="exportKey" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
+<violation beginline="216" endline="216" begincolumn="20" endcolumn="20" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="exportKey" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
 An instanceof check is being performed on the caught exception.  Create a separate catch clause for this exception type.
 </violation>
-<violation beginline="230" endline="230" begincolumn="86" endcolumn="101" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="encryptPIN" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;account number&quot; appears 21 times in this file; the first occurrence is on line 230
+<violation beginline="228" endline="228" begincolumn="54" endcolumn="69" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="encryptPIN" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;account number&quot; appears 23 times in this file; the first occurrence is on line 228
 </violation>
-<violation beginline="235" endline="237" begincolumn="13" endcolumn="55" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="encryptPIN" variable="result" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'result' (lines '235'-'237').
+<violation beginline="231" endline="233" begincolumn="13" endcolumn="55" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="encryptPIN" variable="result" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'result' (lines '231'-'233').
 </violation>
-<violation beginline="238" endline="238" begincolumn="52" endcolumn="66" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="encryptPIN" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;PIN under LMK&quot; appears 7 times in this file; the first occurrence is on line 238
+<violation beginline="234" endline="234" begincolumn="52" endcolumn="66" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="encryptPIN" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;PIN under LMK&quot; appears 7 times in this file; the first occurrence is on line 234
 </violation>
-<violation beginline="241" endline="241" begincolumn="20" endcolumn="20" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="encryptPIN" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
+<violation beginline="237" endline="237" begincolumn="20" endcolumn="20" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="encryptPIN" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
 An instanceof check is being performed on the caught exception.  Create a separate catch clause for this exception type.
 </violation>
-<violation beginline="259" endline="261" begincolumn="13" endcolumn="48" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="decryptPIN" variable="result" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'result' (lines '259'-'261').
+<violation beginline="254" endline="256" begincolumn="13" endcolumn="48" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="decryptPIN" variable="result" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'result' (lines '254'-'256').
 </violation>
-<violation beginline="265" endline="265" begincolumn="20" endcolumn="20" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="decryptPIN" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
+<violation beginline="260" endline="260" begincolumn="20" endcolumn="20" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="decryptPIN" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
 An instanceof check is being performed on the caught exception.  Create a separate catch clause for this exception type.
 </violation>
-<violation beginline="275" endline="275" begincolumn="40" endcolumn="61" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="importPIN" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;PIN under Data Key 1&quot; appears 6 times in this file; the first occurrence is on line 275
+<violation beginline="270" endline="270" begincolumn="54" endcolumn="75" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="importPIN" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;PIN under Data Key 1&quot; appears 6 times in this file; the first occurrence is on line 270
 </violation>
-<violation beginline="276" endline="276" begincolumn="21" endcolumn="32" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="importPIN" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;Data Key 1&quot; appears 6 times in this file; the first occurrence is on line 276
+<violation beginline="271" endline="271" begincolumn="54" endcolumn="65" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="importPIN" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;Data Key 1&quot; appears 6 times in this file; the first occurrence is on line 271
 </violation>
-<violation beginline="280" endline="282" begincolumn="13" endcolumn="52" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="importPIN" variable="result" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'result' (lines '280'-'282').
+<violation beginline="274" endline="276" begincolumn="13" endcolumn="52" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="importPIN" variable="result" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'result' (lines '274'-'276').
 </violation>
-<violation beginline="286" endline="286" begincolumn="20" endcolumn="20" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="importPIN" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
+<violation beginline="280" endline="280" begincolumn="20" endcolumn="20" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="importPIN" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
 An instanceof check is being performed on the caught exception.  Create a separate catch clause for this exception type.
 </violation>
-<violation beginline="299" endline="299" begincolumn="48" endcolumn="77" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="translatePIN" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;Destination PIN Block Format&quot; appears 4 times in this file; the first occurrence is on line 299
+<violation beginline="294" endline="294" begincolumn="54" endcolumn="83" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="translatePIN" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;Destination PIN Block Format&quot; appears 4 times in this file; the first occurrence is on line 294
 </violation>
-<violation beginline="304" endline="306" begincolumn="13" endcolumn="87" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="translatePIN" variable="result" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'result' (lines '304'-'306').
+<violation beginline="298" endline="300" begincolumn="13" endcolumn="87" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="translatePIN" variable="result" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'result' (lines '298'-'300').
 </violation>
-<violation beginline="310" endline="310" begincolumn="20" endcolumn="20" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="translatePIN" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
+<violation beginline="304" endline="304" begincolumn="20" endcolumn="20" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="translatePIN" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
 An instanceof check is being performed on the caught exception.  Create a separate catch clause for this exception type.
 </violation>
-<violation beginline="333" endline="335" begincolumn="13" endcolumn="63" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="importPIN" variable="result" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'result' (lines '333'-'335').
+<violation beginline="326" endline="328" begincolumn="13" endcolumn="63" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="importPIN" variable="result" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'result' (lines '326'-'328').
 </violation>
-<violation beginline="339" endline="339" begincolumn="20" endcolumn="20" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="importPIN" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
+<violation beginline="332" endline="332" begincolumn="20" endcolumn="20" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="importPIN" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
 An instanceof check is being performed on the caught exception.  Create a separate catch clause for this exception type.
 </violation>
-<violation beginline="363" endline="365" begincolumn="13" endcolumn="97" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="translatePIN" variable="result" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'result' (lines '363'-'365').
+<violation beginline="356" endline="358" begincolumn="13" endcolumn="97" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="translatePIN" variable="result" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'result' (lines '356'-'358').
 </violation>
-<violation beginline="369" endline="369" begincolumn="20" endcolumn="20" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="translatePIN" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
+<violation beginline="362" endline="362" begincolumn="20" endcolumn="20" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="translatePIN" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
 An instanceof check is being performed on the caught exception.  Create a separate catch clause for this exception type.
 </violation>
-<violation beginline="385" endline="387" begincolumn="13" endcolumn="79" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="exportPIN" variable="result" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'result' (lines '385'-'387').
+<violation beginline="377" endline="379" begincolumn="13" endcolumn="79" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="exportPIN" variable="result" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'result' (lines '377'-'379').
 </violation>
-<violation beginline="391" endline="391" begincolumn="20" endcolumn="20" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="exportPIN" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
+<violation beginline="383" endline="383" begincolumn="20" endcolumn="20" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="exportPIN" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
 An instanceof check is being performed on the caught exception.  Create a separate catch clause for this exception type.
 </violation>
-<violation beginline="411" endline="411" begincolumn="54" endcolumn="73" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="generatePIN" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;Excluded PINs list&quot; appears 5 times in this file; the first occurrence is on line 411
+<violation beginline="403" endline="403" begincolumn="54" endcolumn="73" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="generatePIN" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;Excluded PINs list&quot; appears 5 times in this file; the first occurrence is on line 403
 </violation>
-<violation beginline="415" endline="417" begincolumn="9" endcolumn="65" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="generatePIN" variable="result" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'result' (lines '415'-'417').
+<violation beginline="407" endline="409" begincolumn="9" endcolumn="65" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="generatePIN" variable="result" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'result' (lines '407'-'409').
 </violation>
-<violation beginline="421" endline="421" begincolumn="15" endcolumn="15" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="generatePIN" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
+<violation beginline="413" endline="413" begincolumn="15" endcolumn="15" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="generatePIN" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
 An instanceof check is being performed on the caught exception.  Create a separate catch clause for this exception type.
 </violation>
-<violation beginline="446" endline="446" begincolumn="18" endcolumn="18" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="printPIN" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
+<violation beginline="438" endline="438" begincolumn="18" endcolumn="18" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="printPIN" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
 An instanceof check is being performed on the caught exception.  Create a separate catch clause for this exception type.
 </violation>
-<violation beginline="472" endline="474" begincolumn="9" endcolumn="76" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="calculatePVV" variable="result" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'result' (lines '472'-'474').
+<violation beginline="464" endline="466" begincolumn="9" endcolumn="76" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="calculatePVV" variable="result" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'result' (lines '464'-'466').
 </violation>
-<violation beginline="478" endline="478" begincolumn="15" endcolumn="15" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="calculatePVV" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
+<violation beginline="470" endline="470" begincolumn="15" endcolumn="15" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="calculatePVV" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
 An instanceof check is being performed on the caught exception.  Create a separate catch clause for this exception type.
 </violation>
-<violation beginline="507" endline="509" begincolumn="9" endcolumn="81" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="calculatePVV" variable="result" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'result' (lines '507'-'509').
+<violation beginline="499" endline="501" begincolumn="9" endcolumn="81" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="calculatePVV" variable="result" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'result' (lines '499'-'501').
 </violation>
-<violation beginline="513" endline="513" begincolumn="15" endcolumn="15" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="calculatePVV" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
+<violation beginline="505" endline="505" begincolumn="15" endcolumn="15" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="calculatePVV" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
 An instanceof check is being performed on the caught exception.  Create a separate catch clause for this exception type.
 </violation>
-<violation beginline="538" endline="538" begincolumn="48" endcolumn="68" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="verifyPVV" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;Verification status&quot; appears 7 times in this file; the first occurrence is on line 538
+<violation beginline="528" endline="528" begincolumn="48" endcolumn="68" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="verifyPVV" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;Verification status&quot; appears 8 times in this file; the first occurrence is on line 528
 </violation>
-<violation beginline="538" endline="538" begincolumn="85" endcolumn="93" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="verifyPVV" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;invalid&quot; appears 6 times in this file; the first occurrence is on line 538
+<violation beginline="528" endline="528" begincolumn="85" endcolumn="93" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="verifyPVV" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;invalid&quot; appears 7 times in this file; the first occurrence is on line 528
 </violation>
-<violation beginline="538" endline="538" begincolumn="75" endcolumn="81" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="verifyPVV" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;valid&quot; appears 6 times in this file; the first occurrence is on line 538
+<violation beginline="528" endline="528" begincolumn="75" endcolumn="81" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="verifyPVV" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;valid&quot; appears 7 times in this file; the first occurrence is on line 528
 </violation>
-<violation beginline="542" endline="542" begincolumn="15" endcolumn="15" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="verifyPVV" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
+<violation beginline="532" endline="532" begincolumn="15" endcolumn="15" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="verifyPVV" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
 An instanceof check is being performed on the caught exception.  Create a separate catch clause for this exception type.
 </violation>
-<violation beginline="562" endline="562" begincolumn="52" endcolumn="56" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="calculateIBMPINOffset" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;PVK&quot; appears 4 times in this file; the first occurrence is on line 562
+<violation beginline="552" endline="552" begincolumn="52" endcolumn="56" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="calculateIBMPINOffset" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;PVK&quot; appears 4 times in this file; the first occurrence is on line 552
 </violation>
-<violation beginline="564" endline="564" begincolumn="52" endcolumn="72" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="calculateIBMPINOffset" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;PIN validation data&quot; appears 4 times in this file; the first occurrence is on line 564
+<violation beginline="554" endline="554" begincolumn="52" endcolumn="72" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="calculateIBMPINOffset" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;PIN validation data&quot; appears 4 times in this file; the first occurrence is on line 554
 </violation>
-<violation beginline="570" endline="572" begincolumn="9" endcolumn="56" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="calculateIBMPINOffset" variable="result" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'result' (lines '570'-'572').
+<violation beginline="560" endline="562" begincolumn="9" endcolumn="56" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="calculateIBMPINOffset" variable="result" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'result' (lines '560'-'562').
 </violation>
-<violation beginline="577" endline="577" begincolumn="15" endcolumn="15" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="calculateIBMPINOffset" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
+<violation beginline="567" endline="567" begincolumn="15" endcolumn="15" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="calculateIBMPINOffset" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
 An instanceof check is being performed on the caught exception.  Create a separate catch clause for this exception type.
 </violation>
-<violation beginline="608" endline="610" begincolumn="9" endcolumn="56" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="calculateIBMPINOffset" variable="result" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'result' (lines '608'-'610').
+<violation beginline="598" endline="600" begincolumn="9" endcolumn="56" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="calculateIBMPINOffset" variable="result" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'result' (lines '598'-'600').
 </violation>
-<violation beginline="615" endline="615" begincolumn="15" endcolumn="15" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="calculateIBMPINOffset" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
+<violation beginline="605" endline="605" begincolumn="15" endcolumn="15" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="calculateIBMPINOffset" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
 An instanceof check is being performed on the caught exception.  Create a separate catch clause for this exception type.
 </violation>
-<violation beginline="647" endline="647" begincolumn="15" endcolumn="15" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="verifyIBMPINOffset" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
+<violation beginline="636" endline="636" begincolumn="15" endcolumn="15" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="verifyIBMPINOffset" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
 An instanceof check is being performed on the caught exception.  Create a separate catch clause for this exception type.
 </violation>
-<violation beginline="667" endline="669" begincolumn="9" endcolumn="90" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="deriveIBMPIN" variable="result" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'result' (lines '667'-'669').
+<violation beginline="655" endline="657" begincolumn="9" endcolumn="90" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="deriveIBMPIN" variable="result" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'result' (lines '655'-'657').
 </violation>
-<violation beginline="673" endline="673" begincolumn="15" endcolumn="15" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="deriveIBMPIN" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
+<violation beginline="661" endline="661" begincolumn="15" endcolumn="15" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="deriveIBMPIN" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
 An instanceof check is being performed on the caught exception.  Create a separate catch clause for this exception type.
 </violation>
-<violation beginline="693" endline="695" begincolumn="9" endcolumn="78" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="calculateCVV" variable="result" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'result' (lines '693'-'695').
+<violation beginline="674" endline="674" begincolumn="54" endcolumn="60" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="calculateCVV" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;cvk-a&quot; appears 4 times in this file; the first occurrence is on line 674
 </violation>
-<violation beginline="699" endline="699" begincolumn="15" endcolumn="15" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="calculateCVV" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
+<violation beginline="675" endline="675" begincolumn="54" endcolumn="60" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="calculateCVV" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;cvk-b&quot; appears 4 times in this file; the first occurrence is on line 675
+</violation>
+<violation beginline="676" endline="676" begincolumn="54" endcolumn="63" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="calculateCVV" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;Exp date&quot; appears 5 times in this file; the first occurrence is on line 676
+</violation>
+<violation beginline="677" endline="677" begincolumn="54" endcolumn="67" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="calculateCVV" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;Service code&quot; appears 5 times in this file; the first occurrence is on line 677
+</violation>
+<violation beginline="680" endline="682" begincolumn="9" endcolumn="78" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="calculateCVV" variable="result" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'result' (lines '680'-'682').
+</violation>
+<violation beginline="686" endline="686" begincolumn="15" endcolumn="15" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="calculateCVV" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
 An instanceof check is being performed on the caught exception.  Create a separate catch clause for this exception type.
 </violation>
-<violation beginline="718" endline="720" begincolumn="11" endcolumn="72" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="calculateCAVV" variable="result" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'result' (lines '718'-'720').
+<violation beginline="705" endline="707" begincolumn="13" endcolumn="82" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="calculateCVV" variable="result" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'result' (lines '705'-'707').
 </violation>
-<violation beginline="724" endline="724" begincolumn="17" endcolumn="17" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="calculateCAVV" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
+<violation beginline="711" endline="711" begincolumn="19" endcolumn="19" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="calculateCVV" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
 An instanceof check is being performed on the caught exception.  Create a separate catch clause for this exception type.
 </violation>
-<violation beginline="751" endline="751" begincolumn="15" endcolumn="15" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="verifyCVV" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
+<violation beginline="730" endline="732" begincolumn="11" endcolumn="72" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="calculateCAVV" variable="result" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'result' (lines '730'-'732').
+</violation>
+<violation beginline="736" endline="736" begincolumn="17" endcolumn="17" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="calculateCAVV" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
 An instanceof check is being performed on the caught exception.  Create a separate catch clause for this exception type.
 </violation>
-<violation beginline="770" endline="772" begincolumn="11" endcolumn="70" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="verifyCAVV" variable="r" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'r' (lines '770'-'772').
-</violation>
-<violation beginline="776" endline="776" begincolumn="17" endcolumn="17" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="verifyCAVV" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
+<violation beginline="762" endline="762" begincolumn="15" endcolumn="15" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="verifyCVV" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
 An instanceof check is being performed on the caught exception.  Create a separate catch clause for this exception type.
 </violation>
-<violation beginline="790" endline="790" begincolumn="40" endcolumn="47" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="verifydCVV" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;imk-ac&quot; appears 5 times in this file; the first occurrence is on line 790
-</violation>
-<violation beginline="794" endline="794" begincolumn="40" endcolumn="44" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="verifydCVV" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;atc&quot; appears 7 times in this file; the first occurrence is on line 794
-</violation>
-<violation beginline="795" endline="795" begincolumn="40" endcolumn="51" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="verifydCVV" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;mkd method&quot; appears 7 times in this file; the first occurrence is on line 795
-</violation>
-<violation beginline="805" endline="805" begincolumn="15" endcolumn="15" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="verifydCVV" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
+<violation beginline="787" endline="787" begincolumn="19" endcolumn="19" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="verifyCVV" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
 An instanceof check is being performed on the caught exception.  Create a separate catch clause for this exception type.
 </violation>
-<violation beginline="834" endline="834" begincolumn="40" endcolumn="53" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="verifyCVC3" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;accnt seq no&quot; appears 6 times in this file; the first occurrence is on line 834
+<violation beginline="806" endline="808" begincolumn="11" endcolumn="70" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="verifyCAVV" variable="r" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'r' (lines '806'-'808').
 </violation>
-<violation beginline="836" endline="836" begincolumn="40" endcolumn="44" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="verifyCVC3" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;upn&quot; appears 4 times in this file; the first occurrence is on line 836
-</violation>
-<violation beginline="837" endline="837" begincolumn="40" endcolumn="45" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="verifyCVC3" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;data&quot; appears 6 times in this file; the first occurrence is on line 837
-</violation>
-<violation beginline="849" endline="849" begincolumn="15" endcolumn="15" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="verifyCVC3" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
+<violation beginline="812" endline="812" begincolumn="17" endcolumn="17" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="verifyCAVV" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
 An instanceof check is being performed on the caught exception.  Create a separate catch clause for this exception type.
 </violation>
-<violation beginline="862" endline="862" begincolumn="40" endcolumn="51" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="verifyARQC" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;skd method&quot; appears 5 times in this file; the first occurrence is on line 862
+<violation beginline="826" endline="826" begincolumn="54" endcolumn="61" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="verifydCVV" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;imk-ac&quot; appears 5 times in this file; the first occurrence is on line 826
 </violation>
-<violation beginline="866" endline="866" begincolumn="40" endcolumn="45" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="verifyARQC" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;arqc&quot; appears 5 times in this file; the first occurrence is on line 866
+<violation beginline="830" endline="830" begincolumn="54" endcolumn="58" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="verifydCVV" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;atc&quot; appears 7 times in this file; the first occurrence is on line 830
 </violation>
-<violation beginline="879" endline="879" begincolumn="15" endcolumn="15" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="verifyARQC" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
+<violation beginline="831" endline="831" begincolumn="54" endcolumn="65" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="verifydCVV" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;mkd method&quot; appears 7 times in this file; the first occurrence is on line 831
+</violation>
+<violation beginline="840" endline="840" begincolumn="15" endcolumn="15" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="verifydCVV" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
 An instanceof check is being performed on the caught exception.  Create a separate catch clause for this exception type.
 </violation>
-<violation beginline="914" endline="914" begincolumn="15" endcolumn="15" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="generateARPC" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
+<violation beginline="869" endline="869" begincolumn="54" endcolumn="67" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="verifyCVC3" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;accnt seq no&quot; appears 6 times in this file; the first occurrence is on line 869
+</violation>
+<violation beginline="871" endline="871" begincolumn="54" endcolumn="58" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="verifyCVC3" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;upn&quot; appears 4 times in this file; the first occurrence is on line 871
+</violation>
+<violation beginline="872" endline="872" begincolumn="54" endcolumn="59" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="verifyCVC3" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;data&quot; appears 6 times in this file; the first occurrence is on line 872
+</violation>
+<violation beginline="883" endline="883" begincolumn="15" endcolumn="15" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="verifyCVC3" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
 An instanceof check is being performed on the caught exception.  Create a separate catch clause for this exception type.
 </violation>
-<violation beginline="950" endline="950" begincolumn="15" endcolumn="15" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="verifyARQCGenerateARPC" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
+<violation beginline="896" endline="896" begincolumn="54" endcolumn="65" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="verifyARQC" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;skd method&quot; appears 5 times in this file; the first occurrence is on line 896
+</violation>
+<violation beginline="900" endline="900" begincolumn="54" endcolumn="59" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="verifyARQC" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;arqc&quot; appears 5 times in this file; the first occurrence is on line 900
+</violation>
+<violation beginline="912" endline="912" begincolumn="15" endcolumn="15" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="verifyARQC" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
 An instanceof check is being performed on the caught exception.  Create a separate catch clause for this exception type.
 </violation>
-<violation beginline="979" endline="979" begincolumn="15" endcolumn="15" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="generateSM_MAC" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
+<violation beginline="947" endline="947" begincolumn="15" endcolumn="15" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="generateARPC" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
 An instanceof check is being performed on the caught exception.  Create a separate catch clause for this exception type.
 </violation>
-<violation beginline="1022" endline="1022" begincolumn="38" endcolumn="46" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="translatePINGenerateSM_MAC" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;results&quot; appears 4 times in this file; the first occurrence is on line 1,022
-</violation>
-<violation beginline="1026" endline="1026" begincolumn="15" endcolumn="15" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="translatePINGenerateSM_MAC" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
+<violation beginline="983" endline="983" begincolumn="15" endcolumn="15" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="verifyARQCGenerateARPC" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
 An instanceof check is being performed on the caught exception.  Create a separate catch clause for this exception type.
 </violation>
-<violation beginline="1053" endline="1053" begincolumn="58" endcolumn="80" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="encryptData" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;Initialization Vector&quot; appears 4 times in this file; the first occurrence is on line 1,053
-</violation>
-<violation beginline="1057" endline="1059" begincolumn="13" endcolumn="63" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="encryptData" variable="encData" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'encData' (lines '1,057'-'1,059').
-</violation>
-<violation beginline="1067" endline="1067" begincolumn="19" endcolumn="19" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="encryptData" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
+<violation beginline="1011" endline="1011" begincolumn="15" endcolumn="15" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="generateSM_MAC" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
 An instanceof check is being performed on the caught exception.  Create a separate catch clause for this exception type.
 </violation>
-<violation beginline="1099" endline="1101" begincolumn="13" endcolumn="63" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="decryptData" variable="decData" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'decData' (lines '1,099'-'1,101').
+<violation beginline="1055" endline="1055" begincolumn="42" endcolumn="50" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="translatePINGenerateSM_MAC" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;results&quot; appears 6 times in this file; the first occurrence is on line 1,055
 </violation>
-<violation beginline="1109" endline="1109" begincolumn="19" endcolumn="19" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="decryptData" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
+<violation beginline="1059" endline="1059" begincolumn="15" endcolumn="15" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="translatePINGenerateSM_MAC" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
 An instanceof check is being performed on the caught exception.  Create a separate catch clause for this exception type.
 </violation>
-<violation beginline="1124" endline="1126" begincolumn="13" endcolumn="50" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="generateCBC_MAC" variable="result" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'result' (lines '1,124'-'1,126').
+<violation beginline="1086" endline="1086" begincolumn="58" endcolumn="80" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="encryptData" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;Initialization Vector&quot; appears 8 times in this file; the first occurrence is on line 1,086
 </violation>
-<violation beginline="1130" endline="1130" begincolumn="20" endcolumn="20" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="generateCBC_MAC" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
+<violation beginline="1090" endline="1092" begincolumn="13" endcolumn="63" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="encryptData" variable="encData" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'encData' (lines '1,090'-'1,092').
+</violation>
+<violation beginline="1100" endline="1100" begincolumn="19" endcolumn="19" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="encryptData" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
 An instanceof check is being performed on the caught exception.  Create a separate catch clause for this exception type.
 </violation>
-<violation beginline="1145" endline="1147" begincolumn="13" endcolumn="50" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="generateEDE_MAC" variable="result" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'result' (lines '1,145'-'1,147').
+<violation beginline="1132" endline="1134" begincolumn="13" endcolumn="63" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="decryptData" variable="decData" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'decData' (lines '1,132'-'1,134').
 </violation>
-<violation beginline="1151" endline="1151" begincolumn="20" endcolumn="20" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="generateEDE_MAC" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
+<violation beginline="1142" endline="1142" begincolumn="19" endcolumn="19" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="decryptData" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
 An instanceof check is being performed on the caught exception.  Create a separate catch clause for this exception type.
 </violation>
-<violation beginline="1165" endline="1167" begincolumn="13" endcolumn="51" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="translateKeyFromOldLMK" variable="result" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'result' (lines '1,165'-'1,167').
+<violation beginline="1156" endline="1158" begincolumn="13" endcolumn="50" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="generateCBC_MAC" variable="result" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'result' (lines '1,156'-'1,158').
 </violation>
-<violation beginline="1171" endline="1171" begincolumn="20" endcolumn="20" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="translateKeyFromOldLMK" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
+<violation beginline="1162" endline="1162" begincolumn="20" endcolumn="20" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="generateCBC_MAC" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
 An instanceof check is being performed on the caught exception.  Create a separate catch clause for this exception type.
 </violation>
-<violation beginline="1186" endline="1188" begincolumn="13" endcolumn="46" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="generateKeyPair" variable="result" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'result' (lines '1,186'-'1,188').
+<violation beginline="1176" endline="1178" begincolumn="13" endcolumn="50" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="generateEDE_MAC" variable="result" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'result' (lines '1,176'-'1,178').
 </violation>
-<violation beginline="1196" endline="1196" begincolumn="20" endcolumn="20" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="generateKeyPair" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
+<violation beginline="1182" endline="1182" begincolumn="20" endcolumn="20" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="generateEDE_MAC" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
 An instanceof check is being performed on the caught exception.  Create a separate catch clause for this exception type.
 </violation>
-<violation beginline="1213" endline="1215" begincolumn="13" endcolumn="67" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="calculateSignature" variable="result" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'result' (lines '1,213'-'1,215').
+<violation beginline="1195" endline="1197" begincolumn="13" endcolumn="51" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="translateKeyFromOldLMK" variable="result" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'result' (lines '1,195'-'1,197').
 </violation>
-<violation beginline="1219" endline="1219" begincolumn="20" endcolumn="20" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="calculateSignature" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
+<violation beginline="1201" endline="1201" begincolumn="20" endcolumn="20" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="translateKeyFromOldLMK" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
 An instanceof check is being performed on the caught exception.  Create a separate catch clause for this exception type.
 </violation>
-<violation beginline="1237" endline="1237" begincolumn="20" endcolumn="20" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="eraseOldLMK" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
+<violation beginline="1216" endline="1218" begincolumn="13" endcolumn="46" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="generateKeyPair" variable="result" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'result' (lines '1,216'-'1,218').
+</violation>
+<violation beginline="1225" endline="1225" begincolumn="20" endcolumn="20" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="generateKeyPair" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
 An instanceof check is being performed on the caught exception.  Create a separate catch clause for this exception type.
 </violation>
-<violation beginline="1251" endline="1251" begincolumn="32" endcolumn="61" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="generateKeyImpl" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;Operation not supported in: &quot; appears 43 times in this file; the first occurrence is on line 1,251
+<violation beginline="1242" endline="1244" begincolumn="13" endcolumn="67" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="calculateSignature" variable="result" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'result' (lines '1,242'-'1,244').
+</violation>
+<violation beginline="1248" endline="1248" begincolumn="20" endcolumn="20" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="calculateSignature" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
+An instanceof check is being performed on the caught exception.  Create a separate catch clause for this exception type.
+</violation>
+<violation beginline="1267" endline="1269" begincolumn="13" endcolumn="63" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="encryptData" variable="result" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'result' (lines '1,267'-'1,269').
+</violation>
+<violation beginline="1299" endline="1301" begincolumn="13" endcolumn="64" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="decryptData" variable="result" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'result' (lines '1,299'-'1,301').
+</violation>
+<violation beginline="1328" endline="1328" begincolumn="20" endcolumn="20" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="eraseOldLMK" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
+An instanceof check is being performed on the caught exception.  Create a separate catch clause for this exception type.
+</violation>
+<violation beginline="1342" endline="1342" begincolumn="32" endcolumn="61" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security" class="BaseSMAdapter" method="generateKeyImpl" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;Operation not supported in: &quot; appears 47 times in this file; the first occurrence is on line 1,342
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/security/CryptographicServiceMessage.java">
@@ -6070,21 +6097,15 @@ Overridable method 'setTransactionCounter' called during object construction
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/security/SecureDESKey.java">
-<violation beginline="81" endline="81" begincolumn="9" endcolumn="39" rule="ConstructorCallsOverridableMethod" ruleset="Error Prone" package="org.jpos.security" class="SecureDESKey" method="SecureDESKey" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#constructorcallsoverridablemethod" priority="1">
-Overridable method 'setKeyCheckValue' called during object construction
-</violation>
-<violation beginline="97" endline="97" begincolumn="9" endcolumn="39" rule="ConstructorCallsOverridableMethod" ruleset="Error Prone" package="org.jpos.security" class="SecureDESKey" method="SecureDESKey" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#constructorcallsoverridablemethod" priority="1">
-Overridable method 'setKeyCheckValue' called during object construction
-</violation>
-<violation beginline="98" endline="98" begincolumn="9" endcolumn="20" rule="ConstructorCallsOverridableMethod" ruleset="Error Prone" package="org.jpos.security" class="SecureDESKey" method="SecureDESKey" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#constructorcallsoverridablemethod" priority="1">
+<violation beginline="92" endline="92" begincolumn="9" endcolumn="20" rule="ConstructorCallsOverridableMethod" ruleset="Error Prone" package="org.jpos.security" class="SecureDESKey" method="SecureDESKey" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#constructorcallsoverridablemethod" priority="1">
 Overridable method 'getVariant' called during object construction
 </violation>
-<violation beginline="99" endline="99" begincolumn="9" endcolumn="19" rule="ConstructorCallsOverridableMethod" ruleset="Error Prone" package="org.jpos.security" class="SecureDESKey" method="SecureDESKey" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#constructorcallsoverridablemethod" priority="1">
+<violation beginline="93" endline="93" begincolumn="9" endcolumn="19" rule="ConstructorCallsOverridableMethod" ruleset="Error Prone" package="org.jpos.security" class="SecureDESKey" method="SecureDESKey" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#constructorcallsoverridablemethod" priority="1">
 Overridable method 'getScheme' called during object construction
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/security/SecureKey.java">
-<violation beginline="57" endline="167" begincolumn="17" endcolumn="1" rule="MissingSerialVersionUID" ruleset="Error Prone" package="org.jpos.security" class="SecureKey" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#missingserialversionuid" priority="3">
+<violation beginline="57" endline="196" begincolumn="17" endcolumn="1" rule="MissingSerialVersionUID" ruleset="Error Prone" package="org.jpos.security" class="SecureKey" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#missingserialversionuid" priority="3">
 Classes implementing Serializable should set a serialVersionUID
 </violation>
 </file>
@@ -6261,403 +6282,403 @@ Classes implementing Serializable should set a serialVersionUID
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/security/jceadapter/JCESecurityModule.java">
-<violation beginline="160" endline="160" begincolumn="9" endcolumn="29" rule="ConstructorCallsOverridableMethod" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="JCESecurityModule" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#constructorcallsoverridablemethod" priority="1">
+<violation beginline="159" endline="159" begincolumn="9" endcolumn="29" rule="ConstructorCallsOverridableMethod" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="JCESecurityModule" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#constructorcallsoverridablemethod" priority="1">
 Overridable method 'setConfiguration' called during object construction
 </violation>
-<violation beginline="234" endline="239" begincolumn="17" endcolumn="53" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="getVariant" variable="variant" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'variant' (lines '234'-'239').
+<violation beginline="233" endline="238" begincolumn="17" endcolumn="53" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="getVariant" variable="variant" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'variant' (lines '233'-'238').
 </violation>
-<violation beginline="239" endline="244" begincolumn="17" endcolumn="53" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="getVariant" variable="variant" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'variant' (lines '239'-'244').
+<violation beginline="238" endline="243" begincolumn="17" endcolumn="53" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="getVariant" variable="variant" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'variant' (lines '238'-'243').
 </violation>
-<violation beginline="247" endline="250" begincolumn="17" endcolumn="36" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="getScheme" variable="scheme" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'scheme' (lines '247'-'250').
+<violation beginline="246" endline="249" begincolumn="17" endcolumn="36" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="getScheme" variable="scheme" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'scheme' (lines '246'-'249').
 </violation>
-<violation beginline="247" endline="252" begincolumn="17" endcolumn="36" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="getScheme" variable="scheme" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'scheme' (lines '247'-'252').
+<violation beginline="246" endline="251" begincolumn="17" endcolumn="36" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="getScheme" variable="scheme" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'scheme' (lines '246'-'251').
 </violation>
-<violation beginline="247" endline="254" begincolumn="17" endcolumn="36" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="getScheme" variable="scheme" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'scheme' (lines '247'-'254').
+<violation beginline="246" endline="253" begincolumn="17" endcolumn="36" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="getScheme" variable="scheme" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'scheme' (lines '246'-'253').
 </violation>
-<violation beginline="247" endline="262" begincolumn="17" endcolumn="54" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="getScheme" variable="scheme" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'scheme' (lines '247'-'262').
+<violation beginline="246" endline="261" begincolumn="17" endcolumn="54" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="getScheme" variable="scheme" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'scheme' (lines '246'-'261').
 </violation>
-<violation beginline="250" endline="262" begincolumn="17" endcolumn="54" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="getScheme" variable="scheme" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'scheme' (lines '250'-'262').
+<violation beginline="249" endline="261" begincolumn="17" endcolumn="54" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="getScheme" variable="scheme" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'scheme' (lines '249'-'261').
 </violation>
-<violation beginline="252" endline="262" begincolumn="17" endcolumn="54" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="getScheme" variable="scheme" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'scheme' (lines '252'-'262').
+<violation beginline="251" endline="261" begincolumn="17" endcolumn="54" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="getScheme" variable="scheme" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'scheme' (lines '251'-'261').
 </violation>
-<violation beginline="254" endline="262" begincolumn="17" endcolumn="54" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="getScheme" variable="scheme" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'scheme' (lines '254'-'262').
+<violation beginline="253" endline="261" begincolumn="17" endcolumn="54" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="getScheme" variable="scheme" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'scheme' (lines '253'-'261').
 </violation>
-<violation beginline="262" endline="267" begincolumn="17" endcolumn="54" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="getScheme" variable="scheme" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'scheme' (lines '262'-'267').
+<violation beginline="261" endline="266" begincolumn="17" endcolumn="54" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="getScheme" variable="scheme" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'scheme' (lines '261'-'266').
 </violation>
-<violation beginline="331" endline="343" begincolumn="15" endcolumn="62" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="generatePINImpl" variable="max2" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'max2' (lines '331'-'343').
+<violation beginline="330" endline="342" begincolumn="15" endcolumn="62" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="generatePINImpl" variable="max2" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'max2' (lines '330'-'342').
 </violation>
-<violation beginline="334" endline="334" begincolumn="26" endcolumn="26" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="generatePINImpl" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
+<violation beginline="333" endline="333" begincolumn="26" endcolumn="26" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="generatePINImpl" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
 Avoid using Literals in Conditional Statements
 </violation>
-<violation beginline="350" endline="356" begincolumn="15" endcolumn="19" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="decimalizeVisa" variable="c" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'UR'-anomaly for variable 'c' (lines '350'-'356').
+<violation beginline="349" endline="355" begincolumn="15" endcolumn="19" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="decimalizeVisa" variable="c" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'UR'-anomaly for variable 'c' (lines '349'-'355').
 </violation>
-<violation beginline="351" endline="351" begincolumn="22" endcolumn="69" rule="UseLocaleWithCaseConversions" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="decimalizeVisa" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#uselocalewithcaseconversions" priority="3">
+<violation beginline="350" endline="350" begincolumn="22" endcolumn="69" rule="UseLocaleWithCaseConversions" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="decimalizeVisa" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#uselocalewithcaseconversions" priority="3">
 When doing a String.toLowerCase()/toUpperCase() call, use a Locale
 </violation>
-<violation beginline="352" endline="357" begincolumn="13" endcolumn="24" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="decimalizeVisa" variable="bhc" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'bhc' (lines '352'-'357').
+<violation beginline="351" endline="356" begincolumn="13" endcolumn="24" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="decimalizeVisa" variable="bhc" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'bhc' (lines '351'-'356').
 </violation>
-<violation beginline="352" endline="362" begincolumn="13" endcolumn="40" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="decimalizeVisa" variable="bhc" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'bhc' (lines '352'-'362').
+<violation beginline="351" endline="361" begincolumn="13" endcolumn="40" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="decimalizeVisa" variable="bhc" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'bhc' (lines '351'-'361').
 </violation>
-<violation beginline="353" endline="364" begincolumn="13" endcolumn="17" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="decimalizeVisa" variable="k" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'k' (lines '353'-'364').
+<violation beginline="352" endline="363" begincolumn="13" endcolumn="17" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="decimalizeVisa" variable="k" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'k' (lines '352'-'363').
 </violation>
-<violation beginline="356" endline="356" begincolumn="17" endcolumn="19" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="decimalizeVisa" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
+<violation beginline="355" endline="355" begincolumn="17" endcolumn="19" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="decimalizeVisa" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
 Avoid using Literals in Conditional Statements
 </violation>
-<violation beginline="357" endline="357" begincolumn="13" endcolumn="24" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="decimalizeVisa" variable="bhc" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'bhc' (lines '357'-'357').
+<violation beginline="356" endline="356" begincolumn="13" endcolumn="24" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="decimalizeVisa" variable="bhc" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'bhc' (lines '356'-'356').
 </violation>
-<violation beginline="357" endline="362" begincolumn="13" endcolumn="40" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="decimalizeVisa" variable="bhc" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'bhc' (lines '357'-'362').
+<violation beginline="356" endline="361" begincolumn="13" endcolumn="40" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="decimalizeVisa" variable="bhc" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'bhc' (lines '356'-'361').
 </violation>
-<violation beginline="359" endline="364" begincolumn="14" endcolumn="29" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="decimalizeVisa" variable="adjust" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'adjust' (lines '359'-'364').
+<violation beginline="358" endline="363" begincolumn="14" endcolumn="29" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="decimalizeVisa" variable="adjust" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'adjust' (lines '358'-'363').
 </violation>
-<violation beginline="361" endline="361" begincolumn="18" endcolumn="20" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="decimalizeVisa" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
+<violation beginline="360" endline="360" begincolumn="18" endcolumn="20" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="decimalizeVisa" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
 Avoid using Literals in Conditional Statements
 </violation>
-<violation beginline="362" endline="362" begincolumn="13" endcolumn="40" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="decimalizeVisa" variable="bhc" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'bhc' (lines '362'-'362').
+<violation beginline="361" endline="361" begincolumn="13" endcolumn="40" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="decimalizeVisa" variable="bhc" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'bhc' (lines '361'-'361').
 </violation>
-<violation beginline="423" endline="423" begincolumn="29" endcolumn="29" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="checkCAVVArgs" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
+<violation beginline="428" endline="428" begincolumn="29" endcolumn="29" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="checkCAVVArgs" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
 Avoid using Literals in Conditional Statements
 </violation>
-<violation beginline="426" endline="426" begincolumn="32" endcolumn="32" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="checkCAVVArgs" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
+<violation beginline="431" endline="431" begincolumn="32" endcolumn="32" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="checkCAVVArgs" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
 Avoid using Literals in Conditional Statements
 </violation>
-<violation beginline="429" endline="429" begincolumn="31" endcolumn="31" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="checkCAVVArgs" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
+<violation beginline="434" endline="434" begincolumn="31" endcolumn="31" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="checkCAVVArgs" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
 Avoid using Literals in Conditional Statements
 </violation>
-<violation beginline="489" endline="489" begincolumn="30" endcolumn="30" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculateCVC3" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
+<violation beginline="501" endline="501" begincolumn="30" endcolumn="30" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculateCVC3" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
 Avoid using Literals in Conditional Statements
 </violation>
-<violation beginline="493" endline="494" begincolumn="9" endcolumn="34" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculateCVC3" variable="b" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'b' (lines '493'-'494').
+<violation beginline="505" endline="506" begincolumn="9" endcolumn="34" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculateCVC3" variable="b" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'b' (lines '505'-'506').
 </violation>
-<violation beginline="509" endline="514" begincolumn="9" endcolumn="54" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="verifyCVC3Impl" variable="calcCVC3" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'calcCVC3' (lines '509'-'514').
+<violation beginline="521" endline="526" begincolumn="9" endcolumn="54" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="verifyCVC3Impl" variable="calcCVC3" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'calcCVC3' (lines '521'-'526').
 </violation>
-<violation beginline="559" endline="563" begincolumn="13" endcolumn="66" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculateMACISO9797Alg3" variable="y_i" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'y_i' (lines '559'-'563').
+<violation beginline="571" endline="575" begincolumn="13" endcolumn="66" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculateMACISO9797Alg3" variable="y_i" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'y_i' (lines '571'-'575').
 </violation>
-<violation beginline="559" endline="565" begincolumn="9" endcolumn="45" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculateMACISO9797Alg3" variable="y_i" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'y_i' (lines '559'-'565').
+<violation beginline="571" endline="577" begincolumn="9" endcolumn="45" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculateMACISO9797Alg3" variable="y_i" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'y_i' (lines '571'-'577').
 </violation>
-<violation beginline="560" endline="568" begincolumn="16" endcolumn="32" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculateMACISO9797Alg3" variable="yi" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'yi' (lines '560'-'568').
+<violation beginline="572" endline="580" begincolumn="16" endcolumn="32" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculateMACISO9797Alg3" variable="yi" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'yi' (lines '572'-'580').
 </violation>
-<violation beginline="584" endline="584" begincolumn="38" endcolumn="39" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="formatPANPSN" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
+<violation beginline="596" endline="596" begincolumn="38" endcolumn="39" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="formatPANPSN" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
 Avoid using Literals in Conditional Statements
 </violation>
-<violation beginline="647" endline="647" begincolumn="29" endcolumn="30" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="formatPANPSNOptionA" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
+<violation beginline="659" endline="659" begincolumn="29" endcolumn="30" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="formatPANPSNOptionA" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
 Avoid using Literals in Conditional Statements
 </violation>
-<violation beginline="699" endline="701" begincolumn="9" endcolumn="42" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="deriveICCMasterKey" variable="l" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'l' (lines '699'-'701').
+<violation beginline="711" endline="713" begincolumn="9" endcolumn="42" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="deriveICCMasterKey" variable="l" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'l' (lines '711'-'713').
 </violation>
-<violation beginline="702" endline="704" begincolumn="9" endcolumn="59" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="deriveICCMasterKey" variable="r" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'r' (lines '702'-'704').
+<violation beginline="714" endline="716" begincolumn="9" endcolumn="59" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="deriveICCMasterKey" variable="r" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'r' (lines '714'-'716').
 </violation>
-<violation beginline="723" endline="724" begincolumn="9" endcolumn="42" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculatePVV" variable="b" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'b' (lines '723'-'724').
+<violation beginline="735" endline="736" begincolumn="9" endcolumn="42" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculatePVV" variable="b" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'b' (lines '735'-'736').
 </violation>
-<violation beginline="781" endline="793" begincolumn="15" endcolumn="77" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="translatePINExt" variable="clearPINBlock" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'clearPINBlock' (lines '781'-'793').
+<violation beginline="793" endline="805" begincolumn="15" endcolumn="77" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="translatePINExt" variable="clearPINBlock" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'clearPINBlock' (lines '793'-'805').
 </violation>
-<violation beginline="781" endline="798" begincolumn="15" endcolumn="66" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="translatePINExt" variable="clearPINBlock" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'clearPINBlock' (lines '781'-'798').
+<violation beginline="793" endline="810" begincolumn="15" endcolumn="66" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="translatePINExt" variable="clearPINBlock" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'clearPINBlock' (lines '793'-'810').
 </violation>
-<violation beginline="783" endline="793" begincolumn="15" endcolumn="77" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="translatePINExt" variable="clearPINBlock" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'clearPINBlock' (lines '783'-'793').
+<violation beginline="795" endline="805" begincolumn="15" endcolumn="77" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="translatePINExt" variable="clearPINBlock" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'clearPINBlock' (lines '795'-'805').
 </violation>
-<violation beginline="783" endline="798" begincolumn="15" endcolumn="66" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="translatePINExt" variable="clearPINBlock" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'clearPINBlock' (lines '783'-'798').
+<violation beginline="795" endline="810" begincolumn="15" endcolumn="66" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="translatePINExt" variable="clearPINBlock" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'clearPINBlock' (lines '795'-'810').
 </violation>
-<violation beginline="787" endline="793" begincolumn="15" endcolumn="77" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="translatePINExt" variable="clearPINBlock" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'clearPINBlock' (lines '787'-'793').
+<violation beginline="799" endline="805" begincolumn="15" endcolumn="77" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="translatePINExt" variable="clearPINBlock" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'clearPINBlock' (lines '799'-'805').
 </violation>
-<violation beginline="787" endline="798" begincolumn="15" endcolumn="66" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="translatePINExt" variable="clearPINBlock" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'clearPINBlock' (lines '787'-'798').
+<violation beginline="799" endline="810" begincolumn="15" endcolumn="66" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="translatePINExt" variable="clearPINBlock" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'clearPINBlock' (lines '799'-'810').
 </violation>
-<violation beginline="851" endline="852" begincolumn="7" endcolumn="24" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="deriveCommonSK_SM" variable="rl" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'rl' (lines '851'-'852').
+<violation beginline="863" endline="864" begincolumn="7" endcolumn="24" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="deriveCommonSK_SM" variable="rl" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'rl' (lines '863'-'864').
 </violation>
-<violation beginline="854" endline="855" begincolumn="7" endcolumn="24" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="deriveCommonSK_SM" variable="rr" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'rr' (lines '854'-'855').
+<violation beginline="866" endline="867" begincolumn="7" endcolumn="24" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="deriveCommonSK_SM" variable="rr" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'rr' (lines '866'-'867').
 </violation>
-<violation beginline="927" endline="934" begincolumn="17" endcolumn="48" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculateARQC" variable="skac" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'skac' (lines '927'-'934').
+<violation beginline="939" endline="946" begincolumn="17" endcolumn="48" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculateARQC" variable="skac" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'skac' (lines '939'-'946').
 </violation>
-<violation beginline="927" endline="937" begincolumn="17" endcolumn="51" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculateARQC" variable="skac" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'skac' (lines '927'-'937').
+<violation beginline="939" endline="949" begincolumn="17" endcolumn="51" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculateARQC" variable="skac" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'skac' (lines '939'-'949').
 </violation>
-<violation beginline="927" endline="944" begincolumn="13" endcolumn="23" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculateARQC" variable="skac" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'skac' (lines '927'-'944').
+<violation beginline="939" endline="956" begincolumn="13" endcolumn="23" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculateARQC" variable="skac" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'skac' (lines '939'-'956').
 </violation>
-<violation beginline="940" endline="940" begincolumn="70" endcolumn="85" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculateARQC" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot; not supported&quot; appears 6 times in this file; the first occurrence is on line 940
+<violation beginline="952" endline="952" begincolumn="70" endcolumn="85" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculateARQC" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot; not supported&quot; appears 6 times in this file; the first occurrence is on line 952
 </violation>
-<violation beginline="940" endline="940" begincolumn="39" endcolumn="63" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculateARQC" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;Session Key Derivation &quot; appears 5 times in this file; the first occurrence is on line 940
+<violation beginline="952" endline="952" begincolumn="39" endcolumn="63" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculateARQC" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;Session Key Derivation &quot; appears 5 times in this file; the first occurrence is on line 952
 </violation>
-<violation beginline="966" endline="977" begincolumn="17" endcolumn="53" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="generateARPCImpl" variable="skarpc" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'skarpc' (lines '966'-'977').
+<violation beginline="978" endline="989" begincolumn="17" endcolumn="53" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="generateARPCImpl" variable="skarpc" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'skarpc' (lines '978'-'989').
 </violation>
-<violation beginline="966" endline="984" begincolumn="13" endcolumn="25" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="generateARPCImpl" variable="skarpc" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'skarpc' (lines '966'-'984').
+<violation beginline="978" endline="996" begincolumn="13" endcolumn="25" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="generateARPCImpl" variable="skarpc" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'skarpc' (lines '978'-'996').
 </violation>
-<violation beginline="996" endline="1006" begincolumn="17" endcolumn="48" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="verifyARQCGenerateARPCImpl" variable="skac" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'skac' (lines '996'-'1,006').
+<violation beginline="1008" endline="1018" begincolumn="17" endcolumn="48" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="verifyARQCGenerateARPCImpl" variable="skac" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'skac' (lines '1,008'-'1,018').
 </violation>
-<violation beginline="996" endline="1009" begincolumn="17" endcolumn="58" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="verifyARQCGenerateARPCImpl" variable="skac" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'skac' (lines '996'-'1,009').
+<violation beginline="1008" endline="1021" begincolumn="17" endcolumn="58" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="verifyARQCGenerateARPCImpl" variable="skac" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'skac' (lines '1,008'-'1,021').
 </violation>
-<violation beginline="996" endline="1020" begincolumn="13" endcolumn="23" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="verifyARQCGenerateARPCImpl" variable="skac" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'skac' (lines '996'-'1,020').
+<violation beginline="1008" endline="1032" begincolumn="13" endcolumn="23" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="verifyARQCGenerateARPCImpl" variable="skac" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'skac' (lines '1,008'-'1,032').
 </violation>
-<violation beginline="997" endline="1010" begincolumn="17" endcolumn="29" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="verifyARQCGenerateARPCImpl" variable="skarpc" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'skarpc' (lines '997'-'1,010').
+<violation beginline="1009" endline="1022" begincolumn="17" endcolumn="29" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="verifyARQCGenerateARPCImpl" variable="skarpc" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'skarpc' (lines '1,009'-'1,022').
 </violation>
-<violation beginline="997" endline="1020" begincolumn="13" endcolumn="25" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="verifyARQCGenerateARPCImpl" variable="skarpc" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'skarpc' (lines '997'-'1,020').
+<violation beginline="1009" endline="1032" begincolumn="13" endcolumn="25" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="verifyARQCGenerateARPCImpl" variable="skarpc" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'skarpc' (lines '1,009'-'1,032').
 </violation>
-<violation beginline="1010" endline="1020" begincolumn="17" endcolumn="29" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="verifyARQCGenerateARPCImpl" variable="skarpc" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'skarpc' (lines '1,010'-'1,020').
+<violation beginline="1022" endline="1032" begincolumn="17" endcolumn="29" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="verifyARQCGenerateARPCImpl" variable="skarpc" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'skarpc' (lines '1,022'-'1,032').
 </violation>
-<violation beginline="1032" endline="1039" begincolumn="17" endcolumn="45" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculateARPC" variable="b" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'b' (lines '1,032'-'1,039').
+<violation beginline="1044" endline="1051" begincolumn="17" endcolumn="45" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculateARPC" variable="b" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'b' (lines '1,044'-'1,051').
 </violation>
-<violation beginline="1032" endline="1048" begincolumn="16" endcolumn="30" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculateARPC" variable="b" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'b' (lines '1,032'-'1,048').
+<violation beginline="1044" endline="1060" begincolumn="16" endcolumn="30" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculateARPC" variable="b" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'b' (lines '1,044'-'1,060').
 </violation>
-<violation beginline="1039" endline="1041" begincolumn="21" endcolumn="55" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculateARPC" variable="b" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'b' (lines '1,039'-'1,041').
+<violation beginline="1051" endline="1053" begincolumn="21" endcolumn="55" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculateARPC" variable="b" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'b' (lines '1,051'-'1,053').
 </violation>
-<violation beginline="1039" endline="1042" begincolumn="17" endcolumn="44" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculateARPC" variable="b" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'b' (lines '1,039'-'1,042').
+<violation beginline="1051" endline="1054" begincolumn="17" endcolumn="44" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculateARPC" variable="b" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'b' (lines '1,051'-'1,054').
 </violation>
-<violation beginline="1057" endline="1073" begincolumn="13" endcolumn="70" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="generateSM_MACImpl" variable="mksmi" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'mksmi' (lines '1,057'-'1,073').
+<violation beginline="1069" endline="1085" begincolumn="13" endcolumn="70" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="generateSM_MACImpl" variable="mksmi" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'mksmi' (lines '1,069'-'1,085').
 </violation>
-<violation beginline="1085" endline="1119" begincolumn="13" endcolumn="70" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="translatePINGenerateSM_MACImpl" variable="mksmc" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'mksmc' (lines '1,085'-'1,119').
+<violation beginline="1097" endline="1131" begincolumn="13" endcolumn="70" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="translatePINGenerateSM_MACImpl" variable="mksmc" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'mksmc' (lines '1,097'-'1,131').
 </violation>
-<violation beginline="1091" endline="1119" begincolumn="13" endcolumn="44" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="translatePINGenerateSM_MACImpl" variable="derivedPADM" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'derivedPADM' (lines '1,091'-'1,119').
+<violation beginline="1103" endline="1131" begincolumn="13" endcolumn="44" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="translatePINGenerateSM_MACImpl" variable="derivedPADM" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'derivedPADM' (lines '1,103'-'1,131').
 </violation>
-<violation beginline="1095" endline="1119" begincolumn="13" endcolumn="45" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="translatePINGenerateSM_MACImpl" variable="derivedPADM" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'derivedPADM' (lines '1,095'-'1,119').
+<violation beginline="1107" endline="1131" begincolumn="13" endcolumn="45" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="translatePINGenerateSM_MACImpl" variable="derivedPADM" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'derivedPADM' (lines '1,107'-'1,131').
 </violation>
-<violation beginline="1099" endline="1119" begincolumn="13" endcolumn="43" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="translatePINGenerateSM_MACImpl" variable="derivedPADM" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'derivedPADM' (lines '1,099'-'1,119').
+<violation beginline="1111" endline="1131" begincolumn="13" endcolumn="43" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="translatePINGenerateSM_MACImpl" variable="derivedPADM" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'derivedPADM' (lines '1,111'-'1,131').
 </violation>
-<violation beginline="1109" endline="1111" begincolumn="11" endcolumn="65" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="translatePINGenerateSM_MACImpl" variable="udk" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'udk' (lines '1,109'-'1,111').
+<violation beginline="1121" endline="1123" begincolumn="11" endcolumn="65" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="translatePINGenerateSM_MACImpl" variable="udk" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'udk' (lines '1,121'-'1,123').
 </violation>
-<violation beginline="1155" endline="1155" begincolumn="18" endcolumn="18" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="generateCBC_MACImpl" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
+<violation beginline="1167" endline="1167" begincolumn="18" endcolumn="18" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="generateCBC_MACImpl" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
 An instanceof check is being performed on the caught exception.  Create a separate catch clause for this exception type.
 </violation>
-<violation beginline="1175" endline="1175" begincolumn="18" endcolumn="18" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="generateEDE_MACImpl" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
+<violation beginline="1187" endline="1187" begincolumn="18" endcolumn="18" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="generateEDE_MACImpl" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
 An instanceof check is being performed on the caught exception.  Create a separate catch clause for this exception type.
 </violation>
-<violation beginline="1202" endline="1202" begincolumn="27" endcolumn="37" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="generateClearKeyComponent" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;parameter&quot; appears 6 times in this file; the first occurrence is on line 1,202
+<violation beginline="1214" endline="1214" begincolumn="27" endcolumn="37" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="generateClearKeyComponent" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;parameter&quot; appears 6 times in this file; the first occurrence is on line 1,214
 </violation>
-<violation beginline="1318" endline="1326" begincolumn="13" endcolumn="30" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="formKEYfromClearComponents" variable="component" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'UR'-anomaly for variable 'component' (lines '1,318'-'1,326').
+<violation beginline="1330" endline="1338" begincolumn="13" endcolumn="30" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="formKEYfromClearComponents" variable="component" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'UR'-anomaly for variable 'component' (lines '1,330'-'1,338').
 </violation>
-<violation beginline="1323" endline="1326" begincolumn="13" endcolumn="30" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="formKEYfromClearComponents" variable="s" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 's' (lines '1,323'-'1,326').
+<violation beginline="1335" endline="1338" begincolumn="13" endcolumn="30" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="formKEYfromClearComponents" variable="s" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 's' (lines '1,335'-'1,338').
 </violation>
-<violation beginline="1324" endline="1329" begincolumn="13" endcolumn="15" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="formKEYfromClearComponents" variable="i" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'i' (lines '1,324'-'1,329').
+<violation beginline="1336" endline="1341" begincolumn="13" endcolumn="15" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="formKEYfromClearComponents" variable="i" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'i' (lines '1,336'-'1,341').
 </violation>
-<violation beginline="1326" endline="1326" begincolumn="13" endcolumn="30" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="formKEYfromClearComponents" variable="s" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 's' (lines '1,326'-'1,326').
+<violation beginline="1338" endline="1338" begincolumn="13" endcolumn="30" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="formKEYfromClearComponents" variable="s" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 's' (lines '1,338'-'1,338').
 </violation>
-<violation beginline="1354" endline="1394" begincolumn="16" endcolumn="53" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="encryptToLMK" variable="bl" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'bl' (lines '1,354'-'1,394').
+<violation beginline="1366" endline="1406" begincolumn="16" endcolumn="53" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="encryptToLMK" variable="bl" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'bl' (lines '1,366'-'1,406').
 </violation>
-<violation beginline="1355" endline="1394" begincolumn="16" endcolumn="53" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="encryptToLMK" variable="bm" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'bm' (lines '1,355'-'1,394').
+<violation beginline="1367" endline="1406" begincolumn="16" endcolumn="53" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="encryptToLMK" variable="bm" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'bm' (lines '1,367'-'1,406').
 </violation>
-<violation beginline="1356" endline="1394" begincolumn="16" endcolumn="53" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="encryptToLMK" variable="br" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'br' (lines '1,356'-'1,394').
+<violation beginline="1368" endline="1406" begincolumn="16" endcolumn="53" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="encryptToLMK" variable="br" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'br' (lines '1,368'-'1,406').
 </violation>
-<violation beginline="1357" endline="1366" begincolumn="17" endcolumn="72" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="encryptToLMK" variable="encrypted" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'encrypted' (lines '1,357'-'1,366').
+<violation beginline="1369" endline="1378" begincolumn="17" endcolumn="72" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="encryptToLMK" variable="encrypted" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'encrypted' (lines '1,369'-'1,378').
 </violation>
-<violation beginline="1357" endline="1375" begincolumn="17" endcolumn="50" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="encryptToLMK" variable="encrypted" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'encrypted' (lines '1,357'-'1,375').
+<violation beginline="1369" endline="1387" begincolumn="17" endcolumn="50" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="encryptToLMK" variable="encrypted" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'encrypted' (lines '1,369'-'1,387').
 </violation>
-<violation beginline="1357" endline="1387" begincolumn="17" endcolumn="50" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="encryptToLMK" variable="encrypted" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'encrypted' (lines '1,357'-'1,387').
+<violation beginline="1369" endline="1399" begincolumn="17" endcolumn="50" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="encryptToLMK" variable="encrypted" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'encrypted' (lines '1,369'-'1,399').
 </violation>
-<violation beginline="1360" endline="1394" begincolumn="13" endcolumn="58" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="encryptToLMK" variable="lmkIndex" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'lmkIndex' (lines '1,360'-'1,394').
+<violation beginline="1372" endline="1406" begincolumn="13" endcolumn="58" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="encryptToLMK" variable="lmkIndex" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'lmkIndex' (lines '1,372'-'1,406').
 </violation>
-<violation beginline="1387" endline="1388" begincolumn="17" endcolumn="57" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="encryptToLMK" variable="encrypted" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'encrypted' (lines '1,387'-'1,388').
+<violation beginline="1399" endline="1400" begincolumn="17" endcolumn="57" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="encryptToLMK" variable="encrypted" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'encrypted' (lines '1,399'-'1,400').
 </violation>
-<violation beginline="1404" endline="1446" begincolumn="16" endcolumn="52" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="decryptFromLMK" variable="keyBytes" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'keyBytes' (lines '1,404'-'1,446').
+<violation beginline="1416" endline="1458" begincolumn="16" endcolumn="52" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="decryptFromLMK" variable="keyBytes" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'keyBytes' (lines '1,416'-'1,458').
 </violation>
-<violation beginline="1405" endline="1446" begincolumn="16" endcolumn="53" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="decryptFromLMK" variable="bl" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'bl' (lines '1,405'-'1,446').
+<violation beginline="1417" endline="1458" begincolumn="16" endcolumn="53" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="decryptFromLMK" variable="bl" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'bl' (lines '1,417'-'1,458').
 </violation>
-<violation beginline="1406" endline="1446" begincolumn="16" endcolumn="53" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="decryptFromLMK" variable="bm" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'bm' (lines '1,406'-'1,446').
+<violation beginline="1418" endline="1458" begincolumn="16" endcolumn="53" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="decryptFromLMK" variable="bm" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'bm' (lines '1,418'-'1,458').
 </violation>
-<violation beginline="1407" endline="1446" begincolumn="16" endcolumn="53" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="decryptFromLMK" variable="br" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'br' (lines '1,407'-'1,446').
+<violation beginline="1419" endline="1458" begincolumn="16" endcolumn="53" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="decryptFromLMK" variable="br" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'br' (lines '1,419'-'1,458').
 </violation>
-<violation beginline="1408" endline="1417" begincolumn="17" endcolumn="84" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="decryptFromLMK" variable="clearKeyBytes" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'clearKeyBytes' (lines '1,408'-'1,417').
+<violation beginline="1420" endline="1429" begincolumn="17" endcolumn="84" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="decryptFromLMK" variable="clearKeyBytes" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'clearKeyBytes' (lines '1,420'-'1,429').
 </violation>
-<violation beginline="1408" endline="1426" begincolumn="17" endcolumn="54" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="decryptFromLMK" variable="clearKeyBytes" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'clearKeyBytes' (lines '1,408'-'1,426').
+<violation beginline="1420" endline="1438" begincolumn="17" endcolumn="54" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="decryptFromLMK" variable="clearKeyBytes" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'clearKeyBytes' (lines '1,420'-'1,438').
 </violation>
-<violation beginline="1408" endline="1439" begincolumn="17" endcolumn="54" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="decryptFromLMK" variable="clearKeyBytes" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'clearKeyBytes' (lines '1,408'-'1,439').
+<violation beginline="1420" endline="1451" begincolumn="17" endcolumn="54" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="decryptFromLMK" variable="clearKeyBytes" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'clearKeyBytes' (lines '1,420'-'1,451').
 </violation>
-<violation beginline="1408" endline="1446" begincolumn="16" endcolumn="35" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="decryptFromLMK" variable="clearKeyBytes" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'clearKeyBytes' (lines '1,408'-'1,446').
+<violation beginline="1420" endline="1458" begincolumn="16" endcolumn="35" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="decryptFromLMK" variable="clearKeyBytes" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'clearKeyBytes' (lines '1,420'-'1,458').
 </violation>
-<violation beginline="1426" endline="1427" begincolumn="17" endcolumn="116" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="decryptFromLMK" variable="clearKeyBytes" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'clearKeyBytes' (lines '1,426'-'1,427').
+<violation beginline="1438" endline="1439" begincolumn="17" endcolumn="116" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="decryptFromLMK" variable="clearKeyBytes" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'clearKeyBytes' (lines '1,438'-'1,439').
 </violation>
-<violation beginline="1439" endline="1440" begincolumn="17" endcolumn="65" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="decryptFromLMK" variable="clearKeyBytes" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'clearKeyBytes' (lines '1,439'-'1,440').
+<violation beginline="1451" endline="1452" begincolumn="17" endcolumn="65" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="decryptFromLMK" variable="clearKeyBytes" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'clearKeyBytes' (lines '1,451'-'1,452').
 </violation>
-<violation beginline="1450" endline="1451" begincolumn="7" endcolumn="45" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="formatPINBlock" variable="pinLenHex" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'pinLenHex' (lines '1,450'-'1,451').
+<violation beginline="1462" endline="1463" begincolumn="7" endcolumn="45" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="formatPINBlock" variable="pinLenHex" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'pinLenHex' (lines '1,462'-'1,463').
 </violation>
-<violation beginline="1461" endline="1463" begincolumn="7" endcolumn="19" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="splitPins" variable="pin" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'pin' (lines '1,461'-'1,463').
+<violation beginline="1473" endline="1475" begincolumn="7" endcolumn="19" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="splitPins" variable="pin" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'pin' (lines '1,473'-'1,475').
 </violation>
-<violation beginline="1463" endline="1465" begincolumn="11" endcolumn="23" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="splitPins" variable="pin" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'pin' (lines '1,463'-'1,465').
+<violation beginline="1475" endline="1477" begincolumn="11" endcolumn="23" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="splitPins" variable="pin" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'pin' (lines '1,475'-'1,477').
 </violation>
-<violation beginline="1464" endline="1464" begincolumn="23" endcolumn="23" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="splitPins" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
+<violation beginline="1476" endline="1476" begincolumn="23" endcolumn="23" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="splitPins" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
 Avoid using Literals in Conditional Statements
 </violation>
-<violation beginline="1479" endline="1510" begincolumn="21" endcolumn="58" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculatePINBlock" variable="pinBlock" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'pinBlock' (lines '1,479'-'1,510').
+<violation beginline="1491" endline="1522" begincolumn="21" endcolumn="58" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculatePINBlock" variable="pinBlock" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'pinBlock' (lines '1,491'-'1,522').
 </violation>
-<violation beginline="1479" endline="1518" begincolumn="21" endcolumn="67" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculatePINBlock" variable="pinBlock" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'pinBlock' (lines '1,479'-'1,518').
+<violation beginline="1491" endline="1530" begincolumn="21" endcolumn="67" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculatePINBlock" variable="pinBlock" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'pinBlock' (lines '1,491'-'1,530').
 </violation>
-<violation beginline="1479" endline="1539" begincolumn="21" endcolumn="67" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculatePINBlock" variable="pinBlock" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'pinBlock' (lines '1,479'-'1,539').
+<violation beginline="1491" endline="1551" begincolumn="21" endcolumn="67" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculatePINBlock" variable="pinBlock" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'pinBlock' (lines '1,491'-'1,551').
 </violation>
-<violation beginline="1479" endline="1544" begincolumn="21" endcolumn="85" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculatePINBlock" variable="pinBlock" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'pinBlock' (lines '1,479'-'1,544').
+<violation beginline="1491" endline="1556" begincolumn="21" endcolumn="85" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculatePINBlock" variable="pinBlock" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'pinBlock' (lines '1,491'-'1,556').
 </violation>
-<violation beginline="1479" endline="1555" begincolumn="21" endcolumn="58" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculatePINBlock" variable="pinBlock" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'pinBlock' (lines '1,479'-'1,555').
+<violation beginline="1491" endline="1567" begincolumn="21" endcolumn="58" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculatePINBlock" variable="pinBlock" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'pinBlock' (lines '1,491'-'1,567').
 </violation>
-<violation beginline="1479" endline="1567" begincolumn="21" endcolumn="58" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculatePINBlock" variable="pinBlock" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'pinBlock' (lines '1,479'-'1,567').
+<violation beginline="1491" endline="1579" begincolumn="21" endcolumn="58" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculatePINBlock" variable="pinBlock" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'pinBlock' (lines '1,491'-'1,579').
 </violation>
-<violation beginline="1479" endline="1581" begincolumn="21" endcolumn="58" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculatePINBlock" variable="pinBlock" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'pinBlock' (lines '1,479'-'1,581').
+<violation beginline="1491" endline="1593" begincolumn="21" endcolumn="58" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculatePINBlock" variable="pinBlock" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'pinBlock' (lines '1,491'-'1,593').
 </violation>
-<violation beginline="1479" endline="1589" begincolumn="16" endcolumn="30" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculatePINBlock" variable="pinBlock" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'pinBlock' (lines '1,479'-'1,589').
+<violation beginline="1491" endline="1601" begincolumn="16" endcolumn="30" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculatePINBlock" variable="pinBlock" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'pinBlock' (lines '1,491'-'1,601').
 </violation>
-<violation beginline="1480" endline="1484" begincolumn="11" endcolumn="23" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculatePINBlock" variable="oldPin" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'oldPin' (lines '1,480'-'1,484').
+<violation beginline="1492" endline="1496" begincolumn="11" endcolumn="23" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculatePINBlock" variable="oldPin" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'oldPin' (lines '1,492'-'1,496').
 </violation>
-<violation beginline="1480" endline="1589" begincolumn="16" endcolumn="28" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculatePINBlock" variable="oldPin" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'oldPin' (lines '1,480'-'1,589').
+<violation beginline="1492" endline="1601" begincolumn="16" endcolumn="28" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculatePINBlock" variable="oldPin" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'oldPin' (lines '1,492'-'1,601').
 </violation>
-<violation beginline="1495" endline="1495" begincolumn="41" endcolumn="42" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculatePINBlock" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
+<violation beginline="1507" endline="1507" begincolumn="41" endcolumn="42" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculatePINBlock" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
 Avoid using Literals in Conditional Statements
 </violation>
-<violation beginline="1498" endline="1498" begincolumn="46" endcolumn="47" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculatePINBlock" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
+<violation beginline="1510" endline="1510" begincolumn="46" endcolumn="47" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculatePINBlock" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
 Avoid using Literals in Conditional Statements
 </violation>
-<violation beginline="1508" endline="1508" begincolumn="54" endcolumn="59" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculatePINBlock" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;0000&quot; appears 4 times in this file; the first occurrence is on line 1,508
+<violation beginline="1520" endline="1520" begincolumn="54" endcolumn="59" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculatePINBlock" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;0000&quot; appears 4 times in this file; the first occurrence is on line 1,520
 </violation>
-<violation beginline="1564" endline="1564" begincolumn="54" endcolumn="63" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculatePINBlock" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;00000000&quot; appears 4 times in this file; the first occurrence is on line 1,564
+<violation beginline="1576" endline="1576" begincolumn="54" endcolumn="63" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculatePINBlock" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;00000000&quot; appears 4 times in this file; the first occurrence is on line 1,576
 </violation>
-<violation beginline="1581" endline="1582" begincolumn="21" endcolumn="60" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculatePINBlock" variable="pinBlock" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'pinBlock' (lines '1,581'-'1,582').
+<violation beginline="1593" endline="1594" begincolumn="21" endcolumn="60" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculatePINBlock" variable="pinBlock" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'pinBlock' (lines '1,593'-'1,594').
 </violation>
-<violation beginline="1605" endline="1605" begincolumn="15" endcolumn="53" rule="AssignmentInOperand" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="validatePinBlock" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#assignmentinoperand" priority="3">
+<violation beginline="1617" endline="1617" begincolumn="15" endcolumn="53" rule="AssignmentInOperand" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="validatePinBlock" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#assignmentinoperand" priority="3">
 Avoid assignments in operands
 </violation>
-<violation beginline="1609" endline="1609" begincolumn="15" endcolumn="32" rule="AssignmentInOperand" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="validatePinBlock" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#assignmentinoperand" priority="3">
+<violation beginline="1621" endline="1621" begincolumn="15" endcolumn="32" rule="AssignmentInOperand" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="validatePinBlock" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#assignmentinoperand" priority="3">
 Avoid assignments in operands
 </violation>
-<violation beginline="1609" endline="1609" begincolumn="30" endcolumn="32" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="validatePinBlock" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
+<violation beginline="1621" endline="1621" begincolumn="30" endcolumn="32" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="validatePinBlock" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
 Avoid using Literals in Conditional Statements
 </violation>
-<violation beginline="1627" endline="1650" begincolumn="21" endcolumn="80" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculatePIN" variable="pin" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'pin' (lines '1,627'-'1,650').
+<violation beginline="1639" endline="1662" begincolumn="21" endcolumn="80" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculatePIN" variable="pin" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'pin' (lines '1,639'-'1,662').
 </violation>
-<violation beginline="1627" endline="1665" begincolumn="21" endcolumn="80" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculatePIN" variable="pin" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'pin' (lines '1,627'-'1,665').
+<violation beginline="1639" endline="1677" begincolumn="21" endcolumn="80" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculatePIN" variable="pin" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'pin' (lines '1,639'-'1,677').
 </violation>
-<violation beginline="1627" endline="1680" begincolumn="21" endcolumn="80" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculatePIN" variable="pin" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'pin' (lines '1,627'-'1,680').
+<violation beginline="1639" endline="1692" begincolumn="21" endcolumn="80" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculatePIN" variable="pin" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'pin' (lines '1,639'-'1,692').
 </violation>
-<violation beginline="1627" endline="1693" begincolumn="21" endcolumn="80" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculatePIN" variable="pin" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'pin' (lines '1,627'-'1,693').
+<violation beginline="1639" endline="1705" begincolumn="21" endcolumn="80" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculatePIN" variable="pin" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'pin' (lines '1,639'-'1,705').
 </violation>
-<violation beginline="1627" endline="1710" begincolumn="21" endcolumn="80" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculatePIN" variable="pin" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'pin' (lines '1,627'-'1,710').
+<violation beginline="1639" endline="1722" begincolumn="21" endcolumn="80" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculatePIN" variable="pin" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'pin' (lines '1,639'-'1,722').
 </violation>
-<violation beginline="1627" endline="1728" begincolumn="21" endcolumn="80" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculatePIN" variable="pin" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'pin' (lines '1,627'-'1,728').
+<violation beginline="1639" endline="1740" begincolumn="21" endcolumn="80" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculatePIN" variable="pin" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'pin' (lines '1,639'-'1,740').
 </violation>
-<violation beginline="1627" endline="1746" begincolumn="21" endcolumn="80" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculatePIN" variable="pin" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'pin' (lines '1,627'-'1,746').
+<violation beginline="1639" endline="1758" begincolumn="21" endcolumn="80" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculatePIN" variable="pin" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'pin' (lines '1,639'-'1,758').
 </violation>
-<violation beginline="1627" endline="1753" begincolumn="16" endcolumn="25" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculatePIN" variable="pin" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'pin' (lines '1,627'-'1,753').
+<violation beginline="1639" endline="1765" begincolumn="16" endcolumn="25" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculatePIN" variable="pin" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'pin' (lines '1,639'-'1,765').
 </violation>
-<violation beginline="1629" endline="1629" begincolumn="41" endcolumn="42" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculatePIN" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
+<violation beginline="1641" endline="1641" begincolumn="41" endcolumn="42" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculatePIN" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
 Avoid using Literals in Conditional Statements
 </violation>
-<violation beginline="1632" endline="1632" begincolumn="46" endcolumn="47" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculatePIN" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
+<violation beginline="1644" endline="1644" begincolumn="46" endcolumn="47" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="calculatePIN" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
 Avoid using Literals in Conditional Statements
 </violation>
-<violation beginline="1843" endline="1843" begincolumn="17" endcolumn="17" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="init" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
+<violation beginline="1855" endline="1855" begincolumn="17" endcolumn="17" rule="AvoidInstanceofChecksInCatchClause" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="init" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause" priority="3">
 An instanceof check is being performed on the caught exception.  Create a separate catch clause for this exception type.
 </violation>
-<violation beginline="1973" endline="1973" begincolumn="33" endcolumn="49" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" variable="keyTypeToLMKIndex" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
+<violation beginline="1985" endline="1985" begincolumn="33" endcolumn="49" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" variable="keyTypeToLMKIndex" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
 Found non-transient, non-static member. Please mark as transient or provide accessors.
 </violation>
-<violation beginline="1977" endline="1977" begincolumn="42" endcolumn="45" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" variable="lmks" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
+<violation beginline="1989" endline="1989" begincolumn="42" endcolumn="45" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" variable="lmks" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
 Found non-transient, non-static member. Please mark as transient or provide accessors.
 </violation>
-<violation beginline="2006" endline="2006" begincolumn="24" endcolumn="33" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" variable="jceHandler" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
+<violation beginline="2018" endline="2018" begincolumn="24" endcolumn="33" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" variable="jceHandler" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
 Found non-transient, non-static member. Please mark as transient or provide accessors.
 </violation>
-<violation beginline="2033" endline="2033" begincolumn="27" endcolumn="27" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="specialEncrypt" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
+<violation beginline="2045" endline="2045" begincolumn="27" endcolumn="27" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="specialEncrypt" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
 Avoid using Literals in Conditional Statements
 </violation>
-<violation beginline="2052" endline="2052" begincolumn="27" endcolumn="27" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="specialDecrypt" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
+<violation beginline="2064" endline="2064" begincolumn="27" endcolumn="27" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="specialDecrypt" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
 Avoid using Literals in Conditional Statements
 </violation>
-<violation beginline="2194" endline="2194" begincolumn="37" endcolumn="38" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="dataDecrypt" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
+<violation beginline="2206" endline="2206" begincolumn="37" endcolumn="38" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModule" method="dataDecrypt" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
 Avoid using Literals in Conditional Statements
 </violation>
 </file>

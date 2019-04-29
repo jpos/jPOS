@@ -2,7 +2,7 @@
 <pmd xmlns="http://pmd.sourceforge.net/report/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/report/2.0.0 http://pmd.sourceforge.net/report_2_0_0.xsd"
-    version="6.8.0" timestamp="2019-04-25T18:26:34.495">
+    version="6.8.0" timestamp="2019-04-29T20:43:30.966">
 <file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/bsh/BSHActionTest.java">
 <violation beginline="36" endline="36" begincolumn="9" endcolumn="60" rule="UnnecessaryBooleanAssertion" ruleset="Error Prone" package="org.jpos.bsh" class="BSHActionTest" method="testActionPerformed" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#unnecessarybooleanassertion" priority="3">
 assertTrue(true) or similar statements are unnecessary
@@ -5149,10 +5149,7 @@ Avoid catching NullPointerException; consider removing the cause of the NPE.
 <violation beginline="683" endline="683" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testTranslatePINImplThrowsNullPointerException2" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
 Avoid catching NullPointerException; consider removing the cause of the NPE.
 </violation>
-<violation beginline="702" endline="702" begincolumn="52" endcolumn="61" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testCalculateCVVImpl1" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;01000000&quot; appears 10 times in this file; the first occurrence is on line 702
-</violation>
-<violation beginline="702" endline="702" begincolumn="45" endcolumn="50" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testCalculateCVVImpl1" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+<violation beginline="702" endline="702" begincolumn="26" endcolumn="31" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testCalculateCVVImpl1" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
 The String literal &quot;1108&quot; appears 8 times in this file; the first occurrence is on line 702
 </violation>
 <violation beginline="703" endline="703" begincolumn="30" endcolumn="34" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testCalculateCVVImpl1" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
@@ -5169,6 +5166,9 @@ Found 'DU'-anomaly for variable 'result' (lines '793'-'794').
 </violation>
 <violation beginline="801" endline="801" begincolumn="27" endcolumn="32" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testCalculatePVVImpl1" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
 The String literal &quot;1226&quot; appears 4 times in this file; the first occurrence is on line 801
+</violation>
+<violation beginline="833" endline="833" begincolumn="52" endcolumn="61" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testVerifyDCVVImpl1" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;01000000&quot; appears 6 times in this file; the first occurrence is on line 833
 </violation>
 <violation beginline="833" endline="833" begincolumn="45" endcolumn="50" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testVerifyDCVVImpl1" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
 The String literal &quot;1310&quot; appears 6 times in this file; the first occurrence is on line 833
@@ -6943,68 +6943,65 @@ assertTrue(true) or similar statements are unnecessary
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/util/SimpleMsgTest.java">
-<violation beginline="34" endline="34" begincolumn="17" endcolumn="17" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.util" class="SimpleMsgTest" variable="p" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
+<violation beginline="36" endline="36" begincolumn="17" endcolumn="17" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.util" class="SimpleMsgTest" variable="p" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
 Found non-transient, non-static member. Please mark as transient or provide accessors.
 </violation>
-<violation beginline="35" endline="35" begincolumn="27" endcolumn="28" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.util" class="SimpleMsgTest" variable="os" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
+<violation beginline="37" endline="37" begincolumn="27" endcolumn="28" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.util" class="SimpleMsgTest" variable="os" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
 Found non-transient, non-static member. Please mark as transient or provide accessors.
 </violation>
-<violation beginline="46" endline="46" begincolumn="52" endcolumn="62" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.util" class="SimpleMsgTest" method="testConstructor" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;Some Name&quot; appears 28 times in this file; the first occurrence is on line 46
+<violation beginline="48" endline="48" begincolumn="52" endcolumn="62" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.util" class="SimpleMsgTest" method="testConstructor" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;Some Name&quot; appears 28 times in this file; the first occurrence is on line 48
 </violation>
-<violation beginline="46" endline="46" begincolumn="45" endcolumn="49" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.util" class="SimpleMsgTest" method="testConstructor" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;tag&quot; appears 32 times in this file; the first occurrence is on line 46
+<violation beginline="48" endline="48" begincolumn="45" endcolumn="49" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.util" class="SimpleMsgTest" method="testConstructor" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;tag&quot; appears 32 times in this file; the first occurrence is on line 48
 </violation>
-<violation beginline="47" endline="47" begincolumn="22" endcolumn="43" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.util" class="SimpleMsgTest" method="testConstructor" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;simpleMsg.msgContent&quot; appears 6 times in this file; the first occurrence is on line 47
+<violation beginline="49" endline="49" begincolumn="22" endcolumn="43" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.util" class="SimpleMsgTest" method="testConstructor" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;simpleMsg.msgContent&quot; appears 6 times in this file; the first occurrence is on line 49
 </violation>
-<violation beginline="48" endline="48" begincolumn="22" endcolumn="40" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.util" class="SimpleMsgTest" method="testConstructor" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;simpleMsg.tagName&quot; appears 6 times in this file; the first occurrence is on line 48
+<violation beginline="50" endline="50" begincolumn="22" endcolumn="40" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.util" class="SimpleMsgTest" method="testConstructor" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;simpleMsg.tagName&quot; appears 6 times in this file; the first occurrence is on line 50
 </violation>
-<violation beginline="49" endline="49" begincolumn="22" endcolumn="40" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.util" class="SimpleMsgTest" method="testConstructor" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;simpleMsg.msgName&quot; appears 6 times in this file; the first occurrence is on line 49
+<violation beginline="51" endline="51" begincolumn="22" endcolumn="40" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.util" class="SimpleMsgTest" method="testConstructor" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;simpleMsg.msgName&quot; appears 6 times in this file; the first occurrence is on line 51
 </violation>
-<violation beginline="95" endline="95" begincolumn="70" endcolumn="81" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.util" class="SimpleMsgTest" method="testDump" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;Inner Name&quot; appears 4 times in this file; the first occurrence is on line 95
+<violation beginline="97" endline="97" begincolumn="70" endcolumn="81" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.util" class="SimpleMsgTest" method="testDump" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;Inner Name&quot; appears 4 times in this file; the first occurrence is on line 97
 </violation>
-<violation beginline="95" endline="95" begincolumn="57" endcolumn="67" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.util" class="SimpleMsgTest" method="testDump" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;inner-tag&quot; appears 4 times in this file; the first occurrence is on line 95
+<violation beginline="97" endline="97" begincolumn="57" endcolumn="67" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.util" class="SimpleMsgTest" method="testDump" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;inner-tag&quot; appears 4 times in this file; the first occurrence is on line 97
 </violation>
-<violation beginline="96" endline="96" begincolumn="32" endcolumn="39" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.util" class="SimpleMsgTest" method="testDump" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;--||--&quot; appears 21 times in this file; the first occurrence is on line 96
+<violation beginline="98" endline="98" begincolumn="32" endcolumn="39" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.util" class="SimpleMsgTest" method="testDump" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;--||--&quot; appears 21 times in this file; the first occurrence is on line 98
 </violation>
-<violation beginline="97" endline="97" begincolumn="23" endcolumn="54" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.util" class="SimpleMsgTest" method="testDump" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;--||--&lt;tag name=\&quot;Some Name\&quot;&gt;&quot; appears 13 times in this file; the first occurrence is on line 97
+<violation beginline="99" endline="99" begincolumn="23" endcolumn="54" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.util" class="SimpleMsgTest" method="testDump" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;--||--&lt;tag name=\&quot;Some Name\&quot;&gt;&quot; appears 13 times in this file; the first occurrence is on line 99
 </violation>
-<violation beginline="98" endline="98" begincolumn="23" endcolumn="63" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.util" class="SimpleMsgTest" method="testDump" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;--||--  &lt;inner-tag name=\&quot;Inner Name\&quot;&gt;&quot; appears 4 times in this file; the first occurrence is on line 98
+<violation beginline="100" endline="100" begincolumn="23" endcolumn="63" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.util" class="SimpleMsgTest" method="testDump" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;--||--  &lt;inner-tag name=\&quot;Inner Name\&quot;&gt;&quot; appears 4 times in this file; the first occurrence is on line 100
 </violation>
-<violation beginline="100" endline="100" begincolumn="23" endcolumn="44" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.util" class="SimpleMsgTest" method="testDump" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;--||--  &lt;/inner-tag&gt;&quot; appears 4 times in this file; the first occurrence is on line 100
+<violation beginline="102" endline="102" begincolumn="23" endcolumn="44" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.util" class="SimpleMsgTest" method="testDump" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;--||--  &lt;/inner-tag&gt;&quot; appears 4 times in this file; the first occurrence is on line 102
 </violation>
-<violation beginline="101" endline="101" begincolumn="23" endcolumn="36" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.util" class="SimpleMsgTest" method="testDump" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;--||--&lt;/tag&gt;&quot; appears 13 times in this file; the first occurrence is on line 101
+<violation beginline="103" endline="103" begincolumn="23" endcolumn="36" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.util" class="SimpleMsgTest" method="testDump" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;--||--&lt;/tag&gt;&quot; appears 13 times in this file; the first occurrence is on line 103
 </violation>
-<violation beginline="109" endline="110" begincolumn="9" endcolumn="34" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="SimpleMsgTest" method="testDump1" variable="msgContent2" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'msgContent2' (lines '109'-'110').
+<violation beginline="111" endline="112" begincolumn="9" endcolumn="34" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="SimpleMsgTest" method="testDump1" variable="msgContent2" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'msgContent2' (lines '111'-'112').
 </violation>
-<violation beginline="110" endline="111" begincolumn="9" endcolumn="34" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="SimpleMsgTest" method="testDump1" variable="msgContent2" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'msgContent2' (lines '110'-'111').
+<violation beginline="112" endline="113" begincolumn="9" endcolumn="34" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="SimpleMsgTest" method="testDump1" variable="msgContent2" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'msgContent2' (lines '112'-'113').
 </violation>
-<violation beginline="125" endline="126" begincolumn="9" endcolumn="85" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="SimpleMsgTest" method="testDump2" variable="msgContent2" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'msgContent2' (lines '125'-'126').
-</violation>
-<violation beginline="126" endline="127" begincolumn="9" endcolumn="80" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="SimpleMsgTest" method="testDump2" variable="msgContent2" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'msgContent2' (lines '126'-'127').
-</violation>
-<violation beginline="127" endline="128" begincolumn="9" endcolumn="79" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="SimpleMsgTest" method="testDump2" variable="msgContent2" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+<violation beginline="127" endline="128" begincolumn="9" endcolumn="85" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="SimpleMsgTest" method="testDump2" variable="msgContent2" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
 Found 'DD'-anomaly for variable 'msgContent2' (lines '127'-'128').
 </violation>
-<violation beginline="265" endline="265" begincolumn="23" endcolumn="36" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.util" class="SimpleMsgTest" method="testDumpInnerNulls" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;--||--  null&quot; appears 7 times in this file; the first occurrence is on line 265
+<violation beginline="128" endline="129" begincolumn="9" endcolumn="80" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="SimpleMsgTest" method="testDump2" variable="msgContent2" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'msgContent2' (lines '128'-'129').
 </violation>
-<violation beginline="293" endline="294" begincolumn="9" endcolumn="69" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="SimpleMsgTest" method="testDumpInnerCompositeAndNulls" variable="msgContent" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'msgContent' (lines '293'-'294').
+<violation beginline="129" endline="130" begincolumn="9" endcolumn="79" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.util" class="SimpleMsgTest" method="testDump2" variable="msgContent2" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'msgContent2' (lines '129'-'130').
+</violation>
+<violation beginline="267" endline="267" begincolumn="23" endcolumn="36" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.util" class="SimpleMsgTest" method="testDumpInnerNulls" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;--||--  null&quot; appears 4 times in this file; the first occurrence is on line 267
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/util/StopWatchTest.java">
