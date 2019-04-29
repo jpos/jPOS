@@ -23,6 +23,8 @@ import static org.junit.Assert.assertThat;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.List;
 import org.hamcrest.Matchers;
 import org.jpos.iso.ISOUtil;
 import org.junit.Before;
@@ -290,16 +292,13 @@ public class SimpleMsgTest {
 
     @Test
     public void testDumpInnerCompositeAndNulls() throws Throwable {
-        SimpleMsg[] msgContent = new SimpleMsg[4];
-        msgContent[0] = new SimpleMsg("inner-tag", "Inner Name", 100);
+        List<Loggeable> msgContent = new ArrayList<>();
+        msgContent.add(new SimpleMsg("inner-tag", "Inner Name", 100));
         new SimpleMsg("tag", "Some Name", msgContent).dump(p, "--||--");
         assertEquals( "--||--<tag name=\"Some Name\">" + NL +
                       "--||--  <inner-tag name=\"Inner Name\">" + NL +
                       "--||--    100" + NL +
                       "--||--  </inner-tag>" + NL +
-                      "--||--  null" + NL +
-                      "--||--  null" + NL +
-                      "--||--  null" + NL +
                       "--||--</tag>" +  NL
                       ,os.toString());
     }

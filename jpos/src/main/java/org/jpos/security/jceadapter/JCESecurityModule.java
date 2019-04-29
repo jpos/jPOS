@@ -18,7 +18,6 @@
 
 package  org.jpos.security.jceadapter;
 
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.javatuples.Pair;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
@@ -411,6 +410,12 @@ public class JCESecurityModule extends BaseSMAdapter {
         return calculateCVV(accountNo,concatKeys(cvkA, cvkB),expDate,serviceCode);
     }
 
+    @Override
+    protected String calculateCVVImpl(String accountNo, SecureDESKey cvkA, SecureDESKey cvkB,
+                                   String expDate, String serviceCode) throws SMException {
+        return calculateCVD(accountNo, concatKeys(cvkA, cvkB), expDate, serviceCode);
+    }
+
     protected void checkCAVVArgs(String upn, String authrc, String sfarc)
             throws SMException {
         if (upn == null)
@@ -442,6 +447,13 @@ public class JCESecurityModule extends BaseSMAdapter {
     protected boolean verifyCVVImpl(String accountNo, SecureDESKey cvkA, SecureDESKey cvkB,
                      String cvv, Date expDate, String serviceCode) throws SMException {
         String result = calculateCVV(accountNo, concatKeys(cvkA, cvkB), expDate, serviceCode);
+        return result.equals(cvv);
+    }
+
+    @Override
+    protected boolean verifyCVVImpl(String accountNo, SecureDESKey cvkA, SecureDESKey cvkB,
+                     String cvv, String expDate, String serviceCode) throws SMException {
+        String result = calculateCVD(accountNo, concatKeys(cvkA, cvkB), expDate, serviceCode);
         return result.equals(cvv);
     }
 

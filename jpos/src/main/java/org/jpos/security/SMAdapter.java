@@ -803,9 +803,39 @@ public interface SMAdapter {
      *        </ul>
      * @return Card Verification Code/Value
      * @throws SMException
+     * @deprecated Issuers do not always follow the recommended 'yyMM' format.
+     * Using the {@code java.util.Date} prevents from format manipulating to
+     * solve problem. Use {@link #calculateCVV} with string version of {@code expDate}
      */
+    @Deprecated
     String calculateCVV(String accountNo, SecureDESKey cvkA, SecureDESKey cvkB,
                         Date expDate, String serviceCode) throws SMException;
+
+
+
+    /**
+     * Calaculate a Card Verification Code/Value
+     *
+     * <p>NOTE: {@code cvkA} and {@code cvkB} should be single
+     * length keys but at least one of them may be double length key
+     *
+     * @param accountNo The account number including BIN and the check digit
+     * @param cvkA        the first CVK in CVK pair
+     * @param cvkB        the second CVK in CVK pair
+     * @param expDate     the card expiration date
+     * @param serviceCode the card service code
+     *        Service code should be:
+     *        <ul>
+     *          <li>the value which will be placed onto card's magnetic stripe for encoding CVV1/CVC1</li>
+     *          <li>"000" for printing CVV2/CVC2 on card's signature stripe</li>
+     *          <li>"999" for inclusion iCVV/Chip CVC on EMV chip card</li>
+     *        </ul>
+     * @return Card Verification Code/Value
+     * @throws SMException
+     */
+    String calculateCVV(String accountNo, SecureDESKey cvkA, SecureDESKey cvkB,
+                        String expDate, String serviceCode) throws SMException;
+
 
 
     /**
@@ -857,9 +887,38 @@ public interface SMAdapter {
      *        </ul>
      * @return true if CVV/CVC is valid or false if not
      * @throws SMException
+     * @deprecated Issuers do not always follow the recommended 'yyMM' format.
+     * Using the {@code java.util.Date} prevents from format manipulating to
+     * solve problem. Use {@link #verifyCVV} with string version of {@code expDate}
      */
+    @Deprecated
     boolean verifyCVV(String accountNo, SecureDESKey cvkA, SecureDESKey cvkB,
                       String cvv, Date expDate, String serviceCode) throws SMException;
+
+
+    /**
+     * Verify a Card Verification Code/Value
+     *
+     * <p>NOTE: {@code cvkA} and {@code cvkB} should be single
+     * length keys but at least one of them may be double length key
+     *
+     * @param accountNo The account number including BIN and the check digit
+     * @param cvkA the first CVK in CVK pair
+     * @param cvkB the second CVK in CVK pair
+     * @param cvv Card Verification Code/Value
+     * @param expDate the card expiration date
+     * @param serviceCode the card service code
+     *        Service code should be:
+     *        <ul>
+     *         <li>taken from card's magnetic stripe for verifing CVV1/CVC1</li>
+     *         <li>"000" for verifing CVV2/CVC2 printed on card's signature stripe</li>
+     *         <li>"999" for verifing iCVV/Chip CVC included on EMV chip card</li>
+     *        </ul>
+     * @return {@code true} if CVV/CVC is valid or {@code false} otherwise
+     * @throws SMException
+     */
+    boolean verifyCVV(String accountNo, SecureDESKey cvkA, SecureDESKey cvkB,
+                      String cvv, String expDate, String serviceCode) throws SMException;
 
 
     /**
@@ -1296,6 +1355,58 @@ public interface SMAdapter {
      */
     byte[] calculateSignature(MessageDigest hash, SecurePrivateKey privateKey
             ,byte[] data) throws SMException;
+
+
+    /**
+     * Encrypts clear Data Block with specified cipher.
+     * <p>
+     * NOTE: This is a more general version of the
+     * {@link #encryptData(CipherMode, SecureDESKey, Object, byte[], byte[])}
+     *
+     * @param encKey the data encryption key e.g:
+     *        <ul>
+     *          <li>when RSA public key encapsulated in {@code SecurePrivateKey}
+     *          <li>when DES/TDES DEK {@code SecureDESKey}
+     *        </ul>
+     * @param data clear data block to encrypt
+     * @param algspec algorithm specification or {@code null} if not required.
+     *        Used to pass additional algorithm parameters e.g:
+     *        {@code OAEPParameterSpec} or custom extension of
+     *        {@code AlgorithmParameterSpec} to pass symetric cipher mode ECB, CBC
+     * @param iv the inital vector or {@code null} if not used <i>(e.g: RSA
+     *        cipher or ECB mode)</i>. If used, after operation will contain new
+     *        {@code iv} value.
+     * @return encrypted data block
+     * @throws SMException
+     */
+    byte[] encryptData(SecureKey encKey, byte[] data
+            , AlgorithmParameterSpec algspec, byte[] iv) throws SMException;
+
+
+    /**
+     * Decrypts encrypted Data Block with specified cipher.
+     * <p>
+     * NOTE: This is a more general version of the
+     * {@link #decryptData(CipherMode, SecureDESKey, Object, byte[], byte[])}
+     *
+     * @param decKey the data decryption key e.g:
+     *        <ul>
+     *          <li>when RSA private key encapsulated in {@code SecurePrivateKey}
+     *          <li>when DES/TDES DEK {@code SecureDESKey}
+     *        </ul>
+     * @param data encrypted data block to decrypt
+     * @param algspec algorithm specification or {@code null} if not required.
+     *        Used to pass additional algorithm parameters e.g:
+     *        {@code OAEPParameterSpec} or custom extension of
+     *        {@code AlgorithmParameterSpec} to pass symetric cipher mode ECB, CBC
+     * @param iv the inital vector or {@code null} if not used <i>(e.g: RSA
+     *        cipher or ECB mode)</i>. If used, after operation will contain new
+     *        {@code iv} value.
+     * @return decrypted data block
+     * @throws SMException
+     */
+    byte[] decryptData(SecureKey decKey, byte[] data
+            , AlgorithmParameterSpec algspec, byte[] iv) throws SMException;
 
 
     /**

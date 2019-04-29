@@ -699,7 +699,7 @@ public class JCESecurityModuleTest {
     @Test
     public void testCalculateCVVImpl1() throws Throwable {
         String accountNo = "123456789012";
-        Date expDate = ISODate.parseISODate("1108"+"01000000");
+        String expDate = "1108";
         String serviceCode = "000";
         String expected = "204";
         String cvv = jcesecmod.calculateCVV(accountNo, cvk, null, expDate, serviceCode);
@@ -709,7 +709,7 @@ public class JCESecurityModuleTest {
     @Test
     public void testVerifyCVVImpl1() throws Throwable {
         String accountNo = "123456789012";
-        Date expDate = ISODate.parseISODate("1108"+"01000000");
+        String expDate = "1108";
         String serviceCode = "000";
         String cvv = "204";
         boolean result = jcesecmod.verifyCVV(accountNo, cvk, null, cvv, expDate, serviceCode);
@@ -719,7 +719,7 @@ public class JCESecurityModuleTest {
     @Test
     public void testCalculateCVVImpl2() throws Throwable {
         String accountNo = "123456789012";
-        Date expDate = ISODate.parseISODate("1108"+"01000000");
+        String expDate = "1108";
         String serviceCode = "000";
         String expected = "453";
         String cvv = jcesecmod.calculateCVV(accountNo, cvkA, cvkB, expDate, serviceCode);
@@ -729,7 +729,7 @@ public class JCESecurityModuleTest {
     @Test
     public void testVerifyCVVImpl2() throws Throwable {
         String accountNo = "123456789012";
-        Date expDate = ISODate.parseISODate("1108"+"01000000");
+        String expDate = "1108";
         String serviceCode = "000";
         String cvv = "453";
         boolean result = jcesecmod.verifyCVV(accountNo, cvkA, cvkB, cvv, expDate, serviceCode);
