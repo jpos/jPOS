@@ -254,7 +254,7 @@ public class QFactory {
             type = "java.lang.Boolean";
 
         String value = childElement.getText();
-        value = Environment.getEnvironment().getProperty(value, value);
+        value = q2 != null ? q2.getEnvironment().getProperty(value, value) : value;
         try {
             Class attributeType = Class.forName(type);
             if(Collection.class.isAssignableFrom(attributeType))
@@ -334,7 +334,7 @@ public class QFactory {
         ConfigurationFactory cf = configurationFactoryClazz != null ?
             (ConfigurationFactory) newInstance(configurationFactoryClazz) : defaultConfigurationFactory;
 
-        Configuration cfg = cf.getConfiguration(e);
+        Configuration cfg = cf.getConfiguration(e, q2.getEnvironment());
         String merge = getAttributeValue(e, "merge-configuration");
         if (merge != null) {
             StringTokenizer st = new StringTokenizer(merge, ", ");
@@ -376,9 +376,9 @@ public class QFactory {
         }
     }
 
-    public static String getAttributeValue (Element e, String name) {
+    public String getAttributeValue (Element e, String name) {
         String s = e.getAttributeValue(name);
-        return Environment.getEnvironment().getProperty(s, s);
+        return q2.getEnvironment().getProperty(s, s);
     }
     public void setConfiguration (Object obj, Element e) 
         throws ConfigurationException 

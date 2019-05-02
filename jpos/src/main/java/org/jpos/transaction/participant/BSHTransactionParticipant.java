@@ -24,6 +24,7 @@ import org.jpos.core.ConfigurationException;
 import org.jpos.core.XmlConfigurable;
 import org.jpos.q2.QFactory;
 import org.jpos.transaction.AbortParticipant;
+import org.jpos.transaction.TransactionManager;
 import org.jpos.transaction.TransactionParticipant;
 import org.jpos.util.LogEvent;
 import org.jpos.util.Logger;
@@ -61,7 +62,8 @@ public class BSHTransactionParticipant extends SimpleLogSource
     protected BSHMethod commitMethod;
     protected BSHMethod abortMethod;
 
-    boolean trace;
+    private boolean trace;
+    protected TransactionManager tm;
     
     /** Creates a new instance of BSHTransactionParticipant */
     public BSHTransactionParticipant() {
@@ -135,18 +137,23 @@ public class BSHTransactionParticipant extends SimpleLogSource
             Logger.log(ev);
         return result;
     }
-    
+    @SuppressWarnings("unused")
+    public void setTransactionManager (TransactionManager tm) {
+        this.tm = tm;
+    }
+
+
     protected int defaultPrepare(long id, Serializable context, LogEvent ev) {
         return PREPARED | READONLY;
     }
     
     public void setConfiguration(Element e) throws ConfigurationException {
-	try {
-            prepareMethod = BSHMethod.createBshMethod(e.getChild("prepare"));
-            prepareForAbortMethod = BSHMethod.createBshMethod(e.getChild("prepare-for-abort"));
-            commitMethod = BSHMethod.createBshMethod(e.getChild("commit"));
-            abortMethod = BSHMethod.createBshMethod(e.getChild("abort"));
-            trace = "yes".equals (QFactory.getAttributeValue (e, "trace"));
+	    try {
+            prepareMethod = BSHMethod.createBshMethod(e.getChild("prepare"), tm.getFactory());
+            prepareForAbortMethod = BSHMethod.createBshMethod(e.getChild("prepare-for-abort"), tm.getFactory());
+            commitMethod = BSHMethod.createBshMethod(e.getChild("commit"), tm.getFactory());
+            abortMethod = BSHMethod.createBshMethod(e.getChild("abort"), tm.getFactory());
+            trace = "yes".equals (tm.getFactory().getAttributeValue (e, "trace"));
         } catch (Exception ex) {
             throw new ConfigurationException(ex.getMessage(), ex);
         }

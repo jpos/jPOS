@@ -68,29 +68,29 @@ public class QMUX
         Element e = getPersist ();
         sp        = grabSpace (e.getChild ("space"));
         isp       = cfg.getBoolean("reuse-space", false) ? sp : new TSpace();
-        in        = Environment.get(e.getChildTextTrim ("in"));
-        out       = Environment.get(e.getChildTextTrim ("out"));
+        in        = getEnvironment().get(e.getChildTextTrim ("in"));
+        out       = getEnvironment().get(e.getChildTextTrim ("out"));
 
         if (in == null || out == null) {
             throw new ConfigurationException ("Misconfigured QMUX. Please verify in/out queues");
         }
-        ignorerc  = Environment.get(e.getChildTextTrim ("ignore-rc"));
+        ignorerc  = getEnvironment().get(e.getChildTextTrim ("ignore-rc"));
         key = toStringArray(DEFAULT_KEY, ", ", null);
         returnRejects = cfg.getBoolean("return-rejects", false);
         for (Element keyElement : e.getChildren("key")) {
-            String mtiOverride = QFactory.getAttributeValue(keyElement, "mti");
+            String mtiOverride = getFactory().getAttributeValue(keyElement, "mti");
             if (mtiOverride != null && mtiOverride.length() >= 2) {
                 mtiKey.put (mtiOverride.substring(0,2), toStringArray(keyElement.getTextTrim(), ", ", null));
             } else {
                 key = toStringArray(e.getChildTextTrim("key"), ", ", DEFAULT_KEY);
             }
         }
-        ready     = toStringArray(Environment.get(e.getChildTextTrim ("ready")));
-        mtiMapping = toStringArray(Environment.get(e.getChildTextTrim ("mtimapping")));
+        ready     = toStringArray(getEnvironment().get(e.getChildTextTrim ("ready")));
+        mtiMapping = toStringArray(getEnvironment().get(e.getChildTextTrim ("mtimapping")));
         if (mtiMapping == null || mtiMapping.length != 3) 
             mtiMapping = new String[] { nomap, nomap, "0022446789" };
         addListeners ();
-        unhandled = Environment.get(e.getChildTextTrim ("unhandled"));
+        unhandled = getEnvironment().get(e.getChildTextTrim ("unhandled"));
         NameRegistrar.register ("mux."+getName (), this);
     }
     public void startService () {
@@ -334,8 +334,7 @@ public class QMUX
 
         QFactory factory = getFactory ();
         for (Element l : rlisten) {
-            ISORequestListener listener = (ISORequestListener) 
-                factory.newInstance (QFactory.getAttributeValue (l, "class"));
+            ISORequestListener listener = factory.newInstance (factory.getAttributeValue (l, "class"));
             factory.setLogger        (listener, l);
             factory.setConfiguration (listener, l);
             addISORequestListener (listener);

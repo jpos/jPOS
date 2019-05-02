@@ -65,7 +65,8 @@ public class QServer
     private String inQueue;
     private String outQueue;
     private String sendMethod;
-    AtomicInteger msgn = new AtomicInteger();
+    private AtomicInteger msgn = new AtomicInteger();
+
     public QServer () {
         super ();
     }
@@ -278,7 +279,7 @@ public class QServer
 
         if (serverSocketFactoryElement != null) {
             ISOServerSocketFactory serverSocketFactory = (ISOServerSocketFactory) factory.newInstance (
-                QFactory.getAttributeValue (serverSocketFactoryElement, "class"));
+                getFactory().getAttributeValue (serverSocketFactoryElement, "class"));
             factory.setLogger        (serverSocketFactory, serverSocketFactoryElement);
             factory.setConfiguration (serverSocketFactory, serverSocketFactoryElement);
             server.setSocketFactory(serverSocketFactory);
@@ -295,8 +296,7 @@ public class QServer
         ).iterator();
         while (iter.hasNext()) {
             Element l = (Element) iter.next();
-            ISORequestListener listener = (ISORequestListener)
-                factory.newInstance (QFactory.getAttributeValue (l, "class"));
+            ISORequestListener listener = factory.newInstance (getFactory().getAttributeValue (l, "class"));
             factory.setLogger        (listener, l);
             factory.setConfiguration (listener, l);
             server.addISORequestListener (listener);
@@ -313,8 +313,7 @@ public class QServer
         ).iterator();
         while (iter.hasNext()) {
             Element l = (Element) iter.next();
-            ISOServerEventListener listener = (ISOServerEventListener)
-                factory.newInstance (QFactory.getAttributeValue (l, "class"));
+            ISOServerEventListener listener = factory.newInstance (getFactory().getAttributeValue (l, "class"));
             factory.setLogger        (listener, l);
             factory.setConfiguration (listener, l);
             server.addServerEventListener(listener);

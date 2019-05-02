@@ -21,6 +21,7 @@ package org.jpos.q2;
 import org.jdom2.Element;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
+import org.jpos.core.Environment;
 import org.jpos.core.SimpleConfiguration;
 
 import java.io.File;
@@ -29,7 +30,7 @@ import java.util.Iterator;
 import java.util.Properties;
 
 public class SimpleConfigurationFactory implements ConfigurationFactory {
-    public Configuration getConfiguration(Element e) throws ConfigurationException {
+    public Configuration getConfiguration(Element e, Environment env) throws ConfigurationException {
         Properties props = new Properties ();
         Iterator iter = e.getChildren ("property").iterator();
         while (iter.hasNext()) {
@@ -60,6 +61,6 @@ public class SimpleConfigurationFactory implements ConfigurationFactory {
                     props.put (name, value);
             }
         }
-        return new SimpleConfiguration(props);
+        return new SimpleConfiguration(props, env);
     }
 }

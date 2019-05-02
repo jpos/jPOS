@@ -71,15 +71,15 @@ public class BSHMethod {
      *          &lt;routing file='cfg\files\routing1.bsh' cache='false'/>
      *  </pre>
      */ 
-    public static BSHMethod createBshMethod(Element e) throws IOException {
+    public static BSHMethod createBshMethod(Element e, QFactory factory) throws IOException {
         if (e == null) {
             return null;
         }
-        String file = QFactory.getAttributeValue(e, "file");
+        String file = factory.getAttributeValue(e, "file");
         String bsh;
         if (file != null) {
             boolean cache = false;
-            String cacheAtt = QFactory.getAttributeValue(e, "cache");
+            String cacheAtt = factory.getAttributeValue(e, "cache");
             if (cacheAtt != null) {
                 cache = cacheAtt.equalsIgnoreCase("true"); 
             }

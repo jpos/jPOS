@@ -39,6 +39,7 @@ import org.jpos.iso.ISOChannel;
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOMsg;
 import org.jpos.iso.ISOPackager;
+import org.jpos.q2.Q2;
 import org.jpos.space.Space;
 import org.jpos.space.TSpace;
 import org.jpos.util.*;
@@ -322,6 +323,7 @@ public class ChannelAdaptorTest {
         channelAdaptor.setName(LINK_NAME);
         channelAdaptor.setLogger(logger.getName());
         channelAdaptor.setPersist(createConfiguration());
+        channelAdaptor.setServer(new Q2());
         channelAdaptor.init();
         channelAdaptor.start();
         return channelAdaptor;

@@ -26,6 +26,7 @@ import org.jpos.q2.QFactory;
 import org.jpos.rc.CMF;
 import org.jpos.transaction.Context;
 import org.jpos.transaction.ContextConstants;
+import org.jpos.transaction.TransactionManager;
 import org.jpos.transaction.TransactionParticipant;
 import org.jpos.util.Caller;
 import org.jpos.util.Log;
@@ -47,6 +48,7 @@ public class SelectDestination implements TransactionParticipant, Configurable, 
     private CardValidator validator;
     private Set<BinRange> binranges = new TreeSet<>();
     private List<PanRegExp> regexps = new ArrayList<>();
+    private TransactionManager tm;
 
     @Override
     public int prepare(long id, Serializable context) {
@@ -74,7 +76,10 @@ public class SelectDestination implements TransactionParticipant, Configurable, 
 
         return PREPARED | NO_JOIN | READONLY;
     }
-    
+
+    public void setTransactionManager (TransactionManager tm) {
+        this.tm = tm;
+    }
     public void setConfiguration (Configuration cfg) {
         this.requestName = cfg.get("request", ContextConstants.REQUEST.toString());
         this.destinationName = cfg.get ("destination", ContextConstants.DESTINATION.toString());
@@ -100,7 +105,7 @@ public class SelectDestination implements TransactionParticipant, Configurable, 
      */
     public void setConfiguration(Element xml) throws ConfigurationException {
         for (Element ep : xml.getChildren("endpoint")) {
-            String destination = QFactory.getAttributeValue(ep, "destination");
+            String destination = tm.getFactory().getAttributeValue(ep, "destination");
             StringTokenizer st = new StringTokenizer(ep.getText());
             while (st.hasMoreElements()) {
                 BinRange br = new BinRange(destination, st.nextToken());
@@ -108,9 +113,9 @@ public class SelectDestination implements TransactionParticipant, Configurable, 
             }
         }
         for (Element re : xml.getChildren("regexp")) {
-            String destination = QFactory.getAttributeValue(re, "destination");
+            String destination = tm.getFactory().getAttributeValue(re, "destination");
             regexps.add(
-              new PanRegExp(QFactory.getAttributeValue(re, "destination"), re.getTextTrim())
+              new PanRegExp(tm.getFactory().getAttributeValue(re, "destination"), re.getTextTrim())
             );
         }
         LogEvent evt = Log.getLog(Q2.LOGGER_NAME, this.getClass().getName()).createLogEvent("config");

@@ -23,8 +23,12 @@ import static org.junit.Assert.*;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Properties;
+
+import org.jpos.q2.Q2;
 import org.jpos.util.Serializer;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -36,6 +40,13 @@ public class SimpleConfigurationTest {
 //        SimpleConfiguration simpleConfiguration = new SimpleConfiguration(props);
 //        assertEquals(props, PrivateAccessor.getField(simpleConfiguration, "props"));
 //    }
+
+    private Q2 q2;
+
+    @Before
+    public void onSetup() {
+        q2 = new Q2();
+    }
 
     @Test
     public void testConstructorThrowsFileNotFoundException() throws Throwable {

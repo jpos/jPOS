@@ -71,13 +71,13 @@ public class OneShotChannelAdaptor
     public void initAdaptor() {
         Element persist = getPersist ();
         sp = grabSpace (persist.getChild ("space"));
-        in = Environment.get(persist.getChildTextTrim ("in"));
-        out = Environment.get(persist.getChildTextTrim ("out"));
+        in = getEnvironment().get(persist.getChildTextTrim ("in"));
+        out = getEnvironment().get(persist.getChildTextTrim ("out"));
         delay = 5000;
 
-        String s = Environment.get(persist.getChildTextTrim ("max-connections"));
+        String s = getEnvironment().get(persist.getChildTextTrim ("max-connections"));
         maxConnections = s!=null ? Integer.parseInt(s) : 1;  // reasonable default
-        s = Environment.get(persist.getChildTextTrim ("max-connect-attempts"));
+        s = getEnvironment().get(persist.getChildTextTrim ("max-connect-attempts"));
         maxConnectAttempts = s!=null ? Integer.parseInt(s) : 15;  // reasonable default
     }
     public void startService () {
@@ -208,11 +208,11 @@ public class OneShotChannelAdaptor
         private ISOChannel newChannel (Element e, QFactory f) 
             throws ConfigurationException
         {
-            String channelName  = QFactory.getAttributeValue (e, "class");
+            String channelName  = getFactory().getAttributeValue (e, "class");
             if (channelName == null)
                 throw new ConfigurationException ("class attribute missing from channel element.");
             
-            String packagerName = QFactory.getAttributeValue (e, "packager");
+            String packagerName = getFactory().getAttributeValue (e, "packager");
 
             ISOChannel channel   = (ISOChannel) f.newInstance (channelName);
             ISOPackager packager;
@@ -221,7 +221,7 @@ public class OneShotChannelAdaptor
                 channel.setPackager (packager);
                 f.setConfiguration (packager, e);
             }
-            QFactory.invoke (channel, "setHeader", QFactory.getAttributeValue (e, "header"));
+            QFactory.invoke (channel, "setHeader", getFactory().getAttributeValue (e, "header"));
             f.setLogger        (channel, e);
             f.setConfiguration (channel, e);
 
@@ -238,11 +238,11 @@ public class OneShotChannelAdaptor
         {
             for (Object o : e.getChildren("filter")) {
                 Element f = (Element) o;
-                String clazz = QFactory.getAttributeValue(f, "class");
-                ISOFilter filter = (ISOFilter) fact.newInstance(clazz);
+                String clazz = getFactory().getAttributeValue(f, "class");
+                ISOFilter filter = fact.newInstance(clazz);
                 fact.setLogger(filter, f);
                 fact.setConfiguration(filter, f);
-                String direction = QFactory.getAttributeValue(f, "direction");
+                String direction = getFactory().getAttributeValue(f, "direction");
                 if (direction == null)
                     channel.addFilter(filter);
                 else if ("incoming".equalsIgnoreCase(direction))
