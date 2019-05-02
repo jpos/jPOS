@@ -1,0 +1,76 @@
+[[environment]]
+== Environment
+
+jPOS' Configuration typically use final values like this:
+
+[source,xml]
+============
+  <property name="host" value="localhost" />
+  <property name="port" value="8000" />
+============
+
+Since jPOS 2.1.3, Q2 has support for property expansion,
+using a simple convention like this:
+
+[source,xml]
+============
+  <property name="host" value="${my.host}" />
+  <property name="port" value="${my.port}" />
+============
+
+In this case, `my.host`, can be configured using System properties
+(i.e.: by starting Q2 with `-Dmy.host=localhost`), or operating 
+system environent variables (that can come very handy when deploying
+jPOS using containers).
+
+In addition to Java System Properties, and OS environment variables,
+jPOS reads a file called `default.yml` (or `default.cfg`) in the `cfg`
+directory.
+
+If one wants to configure `my.host` using a `cfg` file, `cfg/default.cfg`
+would look like this:
+
+[source,txt]
+------------
+q2.host=localhost
+q2.port=8000
+------------
+
+If, on the other hand, `cfg/default.yml` is preferred, it would
+look like this:
+
+[source,yml]
+------------
+q2:
+    host: localhost
+    port: 8000
+------------
+
+Q2 now supports a new `--environment` switch that can be used
+to change the default environment in order to override the `default`
+configuration.
+
+When we use the expression `${my.host}` in a property value, jPOS will
+search for `my.host` in the OS environment, then system property, and
+then de yml/cfg configuration.
+
+If one wants to use values taken from a system property only, the
+expression `$sys{my.host}` can be used. In the same way, if only
+the environment has to be considered, we can use `$env{my.host}`.
+
+For situations where the value has to be an expression `${...}`, we
+can use `$verb{...}` (verbatim), i.e.: `$verb{${my.host}}` and the literal
+`${my.host}` would be returned.
+
+In order to integrate with embedded systems that use system properties themselves
+as part of their configurations, the Environment class sets system properties
+defined under the `q2.properties`
+
+[source,yml]
+------------
+system:
+    property:
+        user.name: admin
+        file.encoding: UTF-8
+------------
+
