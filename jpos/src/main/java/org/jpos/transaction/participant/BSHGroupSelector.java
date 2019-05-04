@@ -36,7 +36,7 @@ public class BSHGroupSelector extends BSHTransactionParticipant implements Group
     public void setConfiguration(Element e) throws ConfigurationException {
         super.setConfiguration(e);
         try {
-            selectMethod = BSHMethod.createBshMethod(e.getChild("select"), tm.getFactory());
+            selectMethod = BSHMethod.createBshMethod(e.getChild("select"));
         } catch (Exception ex) {
             throw new ConfigurationException(ex.getMessage(), ex);
         }

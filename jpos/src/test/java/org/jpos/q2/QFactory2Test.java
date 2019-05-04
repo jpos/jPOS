@@ -216,6 +216,7 @@ public class QFactory2Test {
     public void testSetConfiguration3() throws Throwable {
         String[] args = new String[0];
         Element e = new Element("testQFactoryName", "testQFactoryPrefix", "testQFactoryUri");
+        new QFactory(null, new Q2(args)).setConfiguration(new BSHTransactionParticipant(), e);
         assertEquals("e.getName()", "testQFactoryName", e.getName());
     }
 

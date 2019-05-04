@@ -22,14 +22,11 @@ package org.jpos.transaction.participant;
 import org.jdom2.Element;
 import org.jpos.core.*;
 import org.jpos.iso.ISOMsg;
-import org.jpos.q2.Q2;
 import org.jpos.rc.CMF;
 import org.jpos.rc.Result;
 import org.jpos.transaction.Context;
 import org.jpos.transaction.ContextConstants;
 import org.jpos.transaction.TransactionConstants;
-import org.jpos.transaction.TransactionManager;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -42,24 +39,13 @@ import static org.junit.Assert.assertTrue;
 public class SelectDestinationTest implements TransactionConstants {
     private SelectDestination p;
     private Configuration cfg;
-    private Q2 q2;
 
     @Before
     public void setUp() throws ConfigurationException {
-        TransactionManager tm = new TransactionManager();
-        q2 = new Q2();
-        q2.start();
-        if (!q2.ready(10000L)) {
-            q2 = null;
-            throw new IllegalStateException("Unable to start dummy Q2");
-        }
-        tm.setServer(q2);
-
         cfg = new SimpleConfiguration();
         cfg.put ("default-destination", "LOCAL");
         p = new SelectDestination();
         p.setConfiguration(cfg);
-        p.setTransactionManager(tm);
 
         Element qbean = new Element("participant");
         Element endpoint = new Element("endpoint");
@@ -81,12 +67,6 @@ public class SelectDestinationTest implements TransactionConstants {
         qbean.addContent(endpoint);
 
         p.setConfiguration(qbean);
-    }
-
-    @After
-    public void tearDown() {
-        if (q2 != null)
-            q2.shutdown(true);
     }
 
     private Element regexp (String endpoint, String regexp) {

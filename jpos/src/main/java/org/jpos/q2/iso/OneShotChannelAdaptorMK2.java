@@ -322,23 +322,23 @@ public class OneShotChannelAdaptorMK2
     private ISOChannel newChannel(Element e, QFactory f)
             throws ConfigurationException
     {
-        String channelName = getFactory().getAttributeValue(e, "class");
+        String channelName = QFactory.getAttributeValue(e, "class");
         if (channelName == null)
         {
             throw new ConfigurationException("class attribute missing from channel element.");
         }
 
-        String packagerName = getFactory().getAttributeValue(e, "packager");
+        String packagerName = QFactory.getAttributeValue(e, "packager");
 
-        ISOChannel channel = f.newInstance(channelName);
+        ISOChannel channel = (ISOChannel) f.newInstance(channelName);
         ISOPackager packager;
         if (packagerName != null)
         {
-            packager = f.newInstance(packagerName);
+            packager = (ISOPackager) f.newInstance(packagerName);
             channel.setPackager(packager);
             f.setConfiguration(packager, e);
         }
-        QFactory.invoke(channel, "setHeader", getFactory().getAttributeValue(e, "header"));
+        QFactory.invoke(channel, "setHeader", QFactory.getAttributeValue(e, "header"));
         f.setLogger(channel, e);
         f.setConfiguration(channel, e);
 
@@ -350,7 +350,7 @@ public class OneShotChannelAdaptorMK2
         String socketFactoryString = getSocketFactory();
         if (socketFactoryString != null && channel instanceof FactoryChannel)
         {
-            ISOClientSocketFactory sFac = getFactory().newInstance(socketFactoryString);
+            ISOClientSocketFactory sFac = (ISOClientSocketFactory) getFactory().newInstance(socketFactoryString);
             if (sFac != null && sFac instanceof LogSource)
             {
                 ((LogSource) sFac).setLogger(log.getLogger(), getName() + ".socket-factory");
@@ -368,11 +368,11 @@ public class OneShotChannelAdaptorMK2
         for (Object o : e.getChildren("filter"))
         {
             Element f = (Element) o;
-            String clazz = getFactory().getAttributeValue(f, "class");
-            ISOFilter filter = fact.newInstance(clazz);
+            String clazz = QFactory.getAttributeValue(f, "class");
+            ISOFilter filter = (ISOFilter) fact.newInstance(clazz);
             fact.setLogger(filter, f);
             fact.setConfiguration(filter, f);
-            String direction = getFactory().getAttributeValue(f, "direction");
+            String direction = QFactory.getAttributeValue(f, "direction");
             if (direction == null)
             {
                 channel.addFilter(filter);

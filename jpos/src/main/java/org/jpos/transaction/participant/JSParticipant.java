@@ -24,7 +24,6 @@ import org.jpos.core.XmlConfigurable;
 import org.jpos.q2.QFactory;
 import org.jpos.transaction.AbortParticipant;
 import org.jpos.transaction.Context;
-import org.jpos.transaction.TransactionManager;
 import org.jpos.transaction.TransactionParticipant;
 import org.jpos.util.Log;
 
@@ -84,12 +83,11 @@ public class JSParticipant extends Log
     implements TransactionParticipant, AbortParticipant, XmlConfigurable 
 {
     private Invocable js;
-    private boolean trace;
-    private boolean hasPrepare;
-    private boolean hasPrepareForAbort;
-    private boolean hasCommit;
-    private boolean hasAbort;
-    private TransactionManager tm;
+    boolean trace;
+    boolean hasPrepare;
+    boolean hasPrepareForAbort;
+    boolean hasCommit;
+    boolean hasAbort;
 
     public int prepare (long id, Serializable context) {
         return hasPrepare ? invokeWithResult("prepare", id, context) : PREPARED | READONLY;
@@ -108,8 +106,8 @@ public class JSParticipant extends Log
     }
 
     public void setConfiguration(Element e) throws ConfigurationException {
-	    try (FileReader src = new FileReader(tm.getFactory().getAttributeValue(e, "src")))  {
-            trace = "yes".equals(tm.getFactory().getAttributeValue(e, "trace"));
+	    try (FileReader src = new FileReader(QFactory.getAttributeValue(e, "src")))  {
+            trace = "yes".equals(QFactory.getAttributeValue(e, "trace"));
             ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
             engine.eval(src);
             js = (Invocable) engine;
@@ -120,11 +118,6 @@ public class JSParticipant extends Log
         } catch (Exception ex) {
             throw new ConfigurationException(ex.getMessage(), ex);
         }
-    }
-
-    @SuppressWarnings("unused")
-    public void setTransactionManager (TransactionManager tm) {
-        this.tm = tm;
     }
 
     private boolean hasFunction (String functionName) throws ConfigurationException {

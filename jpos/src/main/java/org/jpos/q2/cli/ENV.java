@@ -22,14 +22,13 @@ import org.jpos.core.Environment;
 import org.jpos.q2.CLICommand;
 import org.jpos.q2.CLIContext;
 import org.jline.terminal.Terminal;
-import org.jpos.q2.Q2;
 
 @SuppressWarnings("unused")
 public class ENV implements CLICommand {
     public void exec(CLIContext cli, String[] args) throws Exception {
-        Q2 q2 = Q2.getQ2();
         Terminal term = cli.getReader().getTerminal();
         cli.println ("TERM=" + term.getClass().getSimpleName() + "/" + term.getType());
-        cli.println (q2.getEnvironment().toString());
+        cli.println ("PRODUCTION=" + Environment.getEnvironment().isProduction());
+        cli.println (Environment.getEnvironment().toString());
     }
 }

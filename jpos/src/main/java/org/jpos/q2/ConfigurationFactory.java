@@ -21,9 +21,8 @@ package org.jpos.q2;
 import org.jdom2.Element;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
-import org.jpos.core.Environment;
 
 public interface ConfigurationFactory {
-    Configuration getConfiguration(Element e, Environment env)
+    Configuration getConfiguration(Element e)
         throws ConfigurationException;
 }

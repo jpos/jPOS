@@ -29,7 +29,6 @@ import org.jpos.q2.QFactory;
 import org.jpos.space.Space;
 import org.jpos.space.SpaceFactory;
 import org.jpos.space.SpaceUtil;
-import org.jpos.transaction.TransactionManager;
 import org.jpos.util.LogSource;
 import org.jpos.util.Loggeable;
 import org.jpos.util.NameRegistrar;
@@ -192,8 +191,8 @@ public class ChannelAdaptor
     public ISOChannel newChannel (Element e, QFactory f) 
         throws ConfigurationException
     {
-        String channelName  = getFactory().getAttributeValue (e, "class");
-        String packagerName = getFactory().getAttributeValue (e, "packager");
+        String channelName  = QFactory.getAttributeValue (e, "class");
+        String packagerName = QFactory.getAttributeValue (e, "packager");
 
         ISOChannel channel   = (ISOChannel) f.newInstance (channelName);
         ISOPackager packager;
@@ -202,7 +201,7 @@ public class ChannelAdaptor
             channel.setPackager (packager);
             f.setConfiguration (packager, e);
         }
-        QFactory.invoke (channel, "setHeader", getFactory().getAttributeValue (e, "header"));
+        QFactory.invoke (channel, "setHeader", QFactory.getAttributeValue (e, "header"));
         f.setLogger        (channel, e);
         f.setConfiguration (channel, e);
 
@@ -219,17 +218,16 @@ public class ChannelAdaptor
         return channel;
     }
 
-
     protected void addFilters (FilteredChannel channel, Element e, QFactory fact)
         throws ConfigurationException
     {
         for (Object o : e.getChildren("filter")) {
             Element f = (Element) o;
-            String clazz = getFactory().getAttributeValue(f, "class");
+            String clazz = QFactory.getAttributeValue(f, "class");
             ISOFilter filter = (ISOFilter) fact.newInstance(clazz);
             fact.setLogger(filter, f);
             fact.setConfiguration(filter, f);
-            String direction = getFactory().getAttributeValue(f, "direction");
+            String direction = QFactory.getAttributeValue(f, "direction");
             if (direction == null)
                 channel.addFilter(filter);
             else if ("incoming".equalsIgnoreCase(direction))
@@ -266,21 +264,21 @@ public class ChannelAdaptor
     protected void initSpaceAndQueues () throws ConfigurationException {
         Element persist = getPersist ();
         sp = grabSpace (persist.getChild ("space"));
-        in      = getEnvironment().get(persist.getChildTextTrim ("in"));
-        out     = getEnvironment().get(persist.getChildTextTrim ("out"));
+        in      = Environment.get(persist.getChildTextTrim ("in"));
+        out     = Environment.get(persist.getChildTextTrim ("out"));
         writeOnly = "yes".equalsIgnoreCase (getPersist().getChildTextTrim ("write-only"));
         if (in == null || (out == null && !writeOnly)) {
             throw new ConfigurationException ("Misconfigured channel. Please verify in/out queues");
         }
-        String s = getEnvironment().get(persist.getChildTextTrim ("reconnect-delay"));
+        String s = Environment.get(persist.getChildTextTrim ("reconnect-delay"));
         delay    = s != null ? Long.parseLong (s) : 10000; // reasonable default
-        keepAlive = "yes".equalsIgnoreCase (getEnvironment().get(persist.getChildTextTrim ("keep-alive")));
-        ignoreISOExceptions = "yes".equalsIgnoreCase (getEnvironment().get(persist.getChildTextTrim ("ignore-iso-exceptions")));
-        String t = getEnvironment().get(persist.getChildTextTrim("timeout"));
+        keepAlive = "yes".equalsIgnoreCase (Environment.get(persist.getChildTextTrim ("keep-alive")));
+        ignoreISOExceptions = "yes".equalsIgnoreCase (Environment.get(persist.getChildTextTrim ("ignore-iso-exceptions")));
+        String t = Environment.get(persist.getChildTextTrim("timeout"));
         timeout = t != null && t.length() > 0 ? Long.parseLong(t) : 0l;
         ready   = getName() + ".ready";
         reconnect = getName() + ".reconnect";
-        waitForWorkersOnStop = "yes".equalsIgnoreCase(getEnvironment().get(persist.getChildTextTrim ("wait-for-workers-on-stop")));
+        waitForWorkersOnStop = "yes".equalsIgnoreCase(Environment.get(persist.getChildTextTrim ("wait-for-workers-on-stop")));
     }
 
     @SuppressWarnings("unchecked")

@@ -32,39 +32,18 @@ import java.util.stream.IntStream;
  */
 public class SimpleConfiguration implements Configuration, Serializable {
     private Properties props;
-    private transient Environment env;
 
     public SimpleConfiguration () {
         props = new Properties();
-        env = new Environment();
     }
-
-    public SimpleConfiguration(Environment env) {
-        Objects.requireNonNull(env, "Invalid environment");
-        this.env = env;
-    }
-
     public SimpleConfiguration (Properties props) {
         this.props = props;
-        env = new Environment();
     }
-    public SimpleConfiguration (String filename) throws IOException {
-        props = new Properties();
-        env = new Environment();
-        load (filename);
-    }
-
-    public SimpleConfiguration (String filename, Environment env) throws IOException {
-        this.env = env;
-        Objects.requireNonNull(env, "Invalid environment");
+    public SimpleConfiguration (String filename)
+        throws IOException
+    {
         props = new Properties();
         load (filename);
-    }
-
-    public SimpleConfiguration(Properties props, Environment env) {
-        this.props = props;
-        this.env = env;
-        Objects.requireNonNull(env, "Invalid environment");
     }
 
     /**
@@ -90,7 +69,7 @@ public class SimpleConfiguration implements Configuration, Serializable {
             List l = (List) obj;
             obj = l.size() > 0 ? l.get(0) : null;
         }
-        return (obj instanceof String) ? env.get((String) obj, def) : def;
+        return (obj instanceof String) ? Environment.get((String) obj, def) : def;
     }
     public String[] getAll (String name) {
         String[] ret;
@@ -103,6 +82,7 @@ public class SimpleConfiguration implements Configuration, Serializable {
         } else
             ret = new String[0];
 
+        Environment env = Environment.getEnvironment();
         IntStream.range(0, ret.length).forEachOrdered(i -> ret[i] = env.getProperty(ret[i]));
         return Arrays.stream(ret).filter(Objects::nonNull).toArray(String[]::new);
     }
@@ -199,10 +179,5 @@ public class SimpleConfiguration implements Configuration, Serializable {
           '}';
     }
 
-    Object readResolve() {
-        env = new Environment();
-        return this;
-    }
-
-    private static final long serialVersionUID = -9081631781490453993L;
+    private static final long serialVersionUID = -6361797037366246968L;
 }

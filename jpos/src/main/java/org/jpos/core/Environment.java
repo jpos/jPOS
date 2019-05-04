@@ -32,34 +32,54 @@ public class Environment implements Loggeable {
     private static final String ENVIRONMENT_PREFIX = "env";
     private static Pattern valuePattern = Pattern.compile("^([\\w\\W]*)(\\$)([\\w\\W]*)?\\{([\\w\\W]+)\\}([\\w\\W]*)$");
     private static Pattern verbPattern = Pattern.compile("^\\$verb\\{([\\w\\W]+)\\}$");
+    private static Environment INSTANCE;
     private String name;
     private AtomicReference<Properties> propRef = new AtomicReference<>(new Properties());
     private static String SP_PREFIX = "system.property.";
     private static int SP_PREFIX_LENGTH = SP_PREFIX.length();
 
-    public Environment() {
-        this(System.getProperty ("jpos.env"));
+
+    static {
+        try {
+            INSTANCE = new Environment();
+        } catch (Throwable e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
     }
 
-    public Environment(String name) {
-        this.name = name == null ? "default" : name;
+    private Environment() throws IOException {
+        name = System.getProperty ("jpos.env");
+        name = name == null ? "default" : name;
         readConfig ();
+    }
+
+    public boolean isProduction() {
+        return name.toLowerCase().startsWith(("prod"));
     }
 
     public String getName() {
         return name;
     }
 
-    public String get (String p) {
-        return getProperty(p, p);
+    public static Environment reload() throws IOException {
+        return (INSTANCE = new Environment());
     }
-    public String get (String p, String def) {
-        return getProperty(p, def);
+
+    public static Environment getEnvironment() {
+        return INSTANCE;
+    }
+    public static String get (String p) {
+        return getEnvironment().getProperty(p, p);
+    }
+    public static String get (String p, String def) {
+        return getEnvironment().getProperty(p, def);
     }
     public String getProperty (String p, String def) {
         String s = getProperty (p);
         return s != null ? s : def;
     }
+
 
     /**
      * If property name has the pattern <code>${propname}</code>, this method will
@@ -124,14 +144,11 @@ public class Environment implements Loggeable {
     }
 
     @SuppressWarnings("unchecked")
-    private void readConfig () {
+    private void readConfig () throws IOException {
         if (name != null) {
-            try {
-                if (!readYAML())
-                    readCfg();
-            } catch (IOException e) {
-                throw new RuntimeException (e);
-            }
+            if (!readYAML())
+                readCfg();
+
             extractSystemProperties();
         }
     }

@@ -36,7 +36,6 @@ import org.jpos.iso.ISOMsg;
 import org.jpos.iso.ISORequestListener;
 import org.jpos.iso.channel.PADChannel;
 import org.jpos.iso.packager.EuroSubFieldPackager;
-import org.jpos.q2.Q2;
 import org.jpos.util.NameRegistrar;
 import org.junit.Test;
 
@@ -95,7 +94,6 @@ public class QMUXTest {
     @Test
     public void testInitServiceWithoutListeners() throws Throwable {
         QMUX mux = new QMUX();
-        mux.setServer(new Q2());
         Configuration cfg = new SimpleConfiguration();
         mux.setConfiguration(cfg);
         Element persist = new Element("testQMUXName");

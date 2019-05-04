@@ -28,39 +28,13 @@ import java.io.StreamCorruptedException;
 
 import org.jdom2.Element;
 import org.jpos.core.ConfigurationException;
-import org.jpos.q2.Q2;
-import org.jpos.transaction.TransactionManager;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class BSHGroupSelectorTest {
-    private static Q2 q2;
-    private static TransactionManager tm;
-
-    @BeforeClass
-    public static void setUp() {
-        q2 = new Q2();
-        q2.start();
-        if (!q2.ready(10000L)) {
-            q2 = null;
-            throw new IllegalStateException("Unable to start dummy Q2");
-        }
-        tm = new TransactionManager();
-        tm.setServer(q2);
-    }
-
-    @AfterClass
-    public static void tearDown() {
-        if (q2 != null)
-            q2.shutdown(true);
-    }
-
 
     @Test
     public void testConstructor() throws Throwable {
         BSHGroupSelector bSHGroupSelector = new BSHGroupSelector();
-        bSHGroupSelector.setTransactionManager(tm);
         assertNull("bSHGroupSelector.getRealm()", bSHGroupSelector.getRealm());
         assertNull("bSHGroupSelector.getLogger()", bSHGroupSelector.getLogger());
     }
@@ -80,19 +54,18 @@ public class BSHGroupSelectorTest {
     @Test
     public void testSetConfiguration() throws Throwable {
         BSHGroupSelector bSHGroupSelector = new BSHGroupSelector();
-        bSHGroupSelector.setTransactionManager(tm);
         bSHGroupSelector.setConfiguration(new Element("testBSHGroupSelectorName", "testBSHGroupSelectorUri"));
         assertNull("bSHGroupSelector.prepareForAbortMethod", bSHGroupSelector.prepareForAbortMethod);
         assertNull("bSHGroupSelector.selectMethod", bSHGroupSelector.selectMethod);
         assertNull("bSHGroupSelector.commitMethod", bSHGroupSelector.commitMethod);
         assertNull("bSHGroupSelector.abortMethod", bSHGroupSelector.abortMethod);
         assertNull("bSHGroupSelector.prepareMethod", bSHGroupSelector.prepareMethod);
+        assertFalse("bSHGroupSelector.trace", bSHGroupSelector.trace);
     }
 
     @Test
     public void testSetConfigurationThrowsConfigurationException() throws Throwable {
         BSHGroupSelector bSHGroupSelector = new BSHGroupSelector();
-        bSHGroupSelector.setTransactionManager(tm);
         try {
             bSHGroupSelector.setConfiguration(null);
             fail("Expected ConfigurationException to be thrown");
@@ -104,6 +77,7 @@ public class BSHGroupSelectorTest {
             assertNull("bSHGroupSelector.commitMethod", bSHGroupSelector.commitMethod);
             assertNull("bSHGroupSelector.abortMethod", bSHGroupSelector.abortMethod);
             assertNull("bSHGroupSelector.prepareMethod", bSHGroupSelector.prepareMethod);
+            assertFalse("bSHGroupSelector.trace", bSHGroupSelector.trace);
         }
     }
 }

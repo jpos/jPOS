@@ -22,7 +22,6 @@ import org.jdom2.Element;
 import org.jpos.core.Configurable;
 import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
-import org.jpos.core.Environment;
 import org.jpos.util.*;
 
 import java.beans.BeanInfo;
@@ -64,15 +63,10 @@ public class QBeanSupport
         this.server = server;
     }
 
-    public Environment getEnvironment() {
-        return server.getEnvironment();
-    }
-
     @Override
     public Q2 getServer () {
         return server;
     }
-
     public QFactory getFactory () {
         return getServer().getFactory ();
     }

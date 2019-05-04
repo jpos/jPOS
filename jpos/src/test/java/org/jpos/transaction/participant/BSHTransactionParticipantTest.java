@@ -22,6 +22,7 @@ import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -36,51 +37,27 @@ import java.io.UnsupportedEncodingException;
 
 import org.jdom2.Element;
 import org.jpos.core.ConfigurationException;
-import org.jpos.q2.Q2;
-import org.jpos.transaction.TransactionManager;
 import org.jpos.util.LogEvent;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import bsh.EvalError;
 import bsh.ParseException;
 
 public class BSHTransactionParticipantTest {
-    private static Q2 q2;
-    private static TransactionManager tm;
-
-    @BeforeClass
-    public static void setUp() {
-        q2 = new Q2();
-        q2.start();
-        if (!q2.ready(10000L)) {
-            q2 = null;
-            throw new IllegalStateException("Unable to start dummy Q2");
-        }
-        tm = new TransactionManager();
-        tm.setServer(q2);
-    }
-
-    @AfterClass
-    public static void tearDown() {
-        if (q2 != null)
-            q2.shutdown(true);
-    }
-
-
     @Test
-    public void testAbort() {
+    public void testAbort() throws Throwable {
         BSHTransactionParticipant bSHTransactionParticipant = new BSHTransactionParticipant();
         bSHTransactionParticipant.abort(100L, new EOFException());
         assertNull("bSHTransactionParticipant.abortMethod", bSHTransactionParticipant.abortMethod);
+        assertFalse("bSHTransactionParticipant.trace", bSHTransactionParticipant.trace);
     }
 
     @Test
-    public void testCommit() {
+    public void testCommit() throws Throwable {
         BSHTransactionParticipant bSHTransactionParticipant = new BSHTransactionParticipant();
         bSHTransactionParticipant.commit(100L, Boolean.TRUE);
         assertNull("bSHTransactionParticipant.commitMethod", bSHTransactionParticipant.commitMethod);
+        assertFalse("bSHTransactionParticipant.trace", bSHTransactionParticipant.trace);
     }
 
     @Test
@@ -91,21 +68,21 @@ public class BSHTransactionParticipantTest {
     }
 
     @Test
-    public void testDefaultAbort() {
+    public void testDefaultAbort() throws Throwable {
         BSHTransactionParticipant bSHTransactionParticipant = new BSHTransactionParticipant();
         bSHTransactionParticipant.defaultAbort(100L, new File("testBSHTransactionParticipantParam1"), new LogEvent());
         assertTrue("Test completed without Exception", true);
     }
 
     @Test
-    public void testDefaultCommit() {
+    public void testDefaultCommit() throws Throwable {
         BSHTransactionParticipant bSHTransactionParticipant = new BSHTransactionParticipant();
         bSHTransactionParticipant.defaultCommit(100L, Long.valueOf(65L), new LogEvent("testBSHTransactionParticipantTag"));
         assertTrue("Test completed without Exception", true);
     }
 
     @Test
-    public void testDefaultPrepare() {
+    public void testDefaultPrepare() throws Throwable {
         BSHTransactionParticipant bSHTransactionParticipant = new BSHTransactionParticipant();
         int result = bSHTransactionParticipant.defaultPrepare(100L, new CharConversionException(), new LogEvent());
         assertEquals("result", 129, result);
@@ -193,14 +170,13 @@ public class BSHTransactionParticipantTest {
     @Test
     public void testSetConfiguration() throws Throwable {
         BSHTransactionParticipant bSHTransactionParticipant = new BSHTransactionParticipant();
-        bSHTransactionParticipant.setTransactionManager(tm);
-
         bSHTransactionParticipant.setConfiguration(new Element("testBSHTransactionParticipantName",
                 "testBSHTransactionParticipantUri"));
         assertNull("bSHTransactionParticipant.prepareForAbortMethod", bSHTransactionParticipant.prepareForAbortMethod);
         assertNull("bSHTransactionParticipant.abortMethod", bSHTransactionParticipant.abortMethod);
         assertNull("bSHTransactionParticipant.commitMethod", bSHTransactionParticipant.commitMethod);
         assertNull("bSHTransactionParticipant.prepareMethod", bSHTransactionParticipant.prepareMethod);
+        assertFalse("bSHTransactionParticipant.trace", bSHTransactionParticipant.trace);
     }
 
     @Test
@@ -216,6 +192,7 @@ public class BSHTransactionParticipantTest {
             assertNull("bSHTransactionParticipant.abortMethod", bSHTransactionParticipant.abortMethod);
             assertNull("bSHTransactionParticipant.commitMethod", bSHTransactionParticipant.commitMethod);
             assertNull("bSHTransactionParticipant.prepareMethod", bSHTransactionParticipant.prepareMethod);
+            assertFalse("bSHTransactionParticipant.trace", bSHTransactionParticipant.trace);
         }
     }
 }

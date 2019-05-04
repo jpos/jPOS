@@ -72,7 +72,9 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import static java.util.ResourceBundle.getBundle;
 
@@ -135,7 +137,6 @@ public class Q2 implements FileFilter, Runnable {
     private String sshAuthorizedKeys;
     private String sshUser;
     private String sshHostKeyFile;
-    private Environment env;
     private static String DEPLOY_PREFIX = "META-INF/q2/deploy/";
     private static String CFG_PREFIX = "META-INF/q2/cfg/";
     
@@ -356,9 +357,6 @@ public class Q2 implements FileFilter, Runnable {
     }
     public static Q2 getQ2(long timeout) {
         return (Q2) NameRegistrar.get(JMX_NAME, timeout);
-    }
-    public Environment getEnvironment() {
-        return env;
     }
 
     private boolean isXml(File f) {
@@ -585,7 +583,7 @@ public class Q2 implements FileFilter, Runnable {
             String enabledAttribute = rootElement.getAttributeValue("enabled", "true");
             if ("true".equalsIgnoreCase(enabledAttribute) ||
                  "yes".equalsIgnoreCase(enabledAttribute) ||
-                enabledAttribute.contains(env.getName()))
+                enabledAttribute.contains(Environment.getEnvironment().getName()))
             {
                 if (evt != null)
                     evt.addMessage("deploy: " + f.getCanonicalPath());
@@ -773,9 +771,8 @@ public class Q2 implements FileFilter, Runnable {
             if (line.hasOption("n"))
                 name = line.getOptionValue("n");
             if (line.hasOption("E")) {
-                env = new Environment (line.getOptionValue("E"));
-            } else {
-                env = new Environment();
+                System.setProperty("jpos.env", line.getOptionValue("E"));
+                Environment.getEnvironment();
             }
             disableDeployScan = line.hasOption("Ns");
             disableDynamicClassloader = line.hasOption("Nd");
@@ -1132,7 +1129,11 @@ public class Q2 implements FileFilter, Runnable {
                 );
                 return false; // deploy directory no longer valid
             }
-            env = new Environment(env.getName());
+            try {
+                Environment.reload();
+            } catch (IOException e) {
+                getLog().warn(e);
+            }
         }
         return true;
     }

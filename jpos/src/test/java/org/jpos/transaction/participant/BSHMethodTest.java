@@ -37,13 +37,7 @@ import java.util.Map;
 
 import org.jdom2.Element;
 import org.jdom2.Namespace;
-import org.jpos.core.Environment;
-import org.jpos.q2.Q2;
-import org.jpos.q2.QFactory;
-import org.jpos.transaction.TransactionManager;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -58,24 +52,7 @@ public class BSHMethodTest {
     @Mock
     Element e;
     private Map arguments;
-    private static Q2 q2;
 
-
-    @BeforeClass
-    public static void setUp() {
-        q2 = new Q2();
-        q2.start();
-        if (!q2.ready(10000L)) {
-            q2 = null;
-            throw new IllegalStateException("Unable to start dummy Q2");
-        }
-    }
-
-    @AfterClass
-    public static void tearDown() {
-        if (q2 != null)
-            q2.shutdown(true);
-    }
     @Before
     public void onSetup() {
         arguments = new HashMap();
@@ -83,13 +60,13 @@ public class BSHMethodTest {
 
     @Test
     public void testCreateBshMethod() throws Throwable {
-        BSHMethod result = BSHMethod.createBshMethod(null, q2.getFactory());
+        BSHMethod result = BSHMethod.createBshMethod(null);
         assertNull("result", result);
     }
 
     @Test
     public void testCreateBshMethod1() throws Throwable {
-        BSHMethod result = BSHMethod.createBshMethod(new Element("testBSHMethodName", Namespace.NO_NAMESPACE), q2.getFactory());
+        BSHMethod result = BSHMethod.createBshMethod(new Element("testBSHMethodName", Namespace.NO_NAMESPACE));
         assertNull("result", result);
     }
 
@@ -97,7 +74,7 @@ public class BSHMethodTest {
     public void testCreateBshMethod2() throws Throwable {
         when(e.getTextTrim()).thenReturn("testStringtestStringtestStringIll(gal Surrogate Pair");
         when(e.getAttributeValue("file")).thenReturn(null);
-        BSHMethod result = BSHMethod.createBshMethod(e, q2.getFactory());
+        BSHMethod result = BSHMethod.createBshMethod(e);
         assertNotNull("result", result);
     }
 
@@ -284,7 +261,7 @@ public class BSHMethodTest {
         Map<Integer, ?> arguments = new HashMap();
         Collection<?> returnNames = new ArrayList();
         try {
-            BSHMethod.createBshMethod(e, q2.getFactory()).execute(arguments, returnNames);
+            BSHMethod.createBshMethod(e).execute(arguments, returnNames);
             fail("Expected ParseException to be thrown");
         } catch (ParseException ex) {
             assertThat(ex.getMessage(), allOf(notNullValue(), containsString("line 1, column 19")));
@@ -297,7 +274,7 @@ public class BSHMethodTest {
         e.addContent("XXXXXXX XXXXXXXXX XXXX");
         e.setAttributes(new ArrayList());
         try {
-            BSHMethod.createBshMethod(e, q2.getFactory()).execute(arguments, "testBSHMethodResultName");
+            BSHMethod.createBshMethod(e).execute(arguments, "testBSHMethodResultName");
             fail("Expected ParseException to be thrown");
         } catch (ParseException ex) {
             assertThat(ex.getMessage(), allOf(notNullValue(), containsString("line 1, column 19")));
@@ -323,7 +300,7 @@ public class BSHMethodTest {
         Element e = new Element("testBSHMethodName", Namespace.NO_NAMESPACE);
         e.addContent("testBSHMethod\rStr");
         e.setAttributes(new ArrayList());
-        BSHMethod bshMethod = BSHMethod.createBshMethod(e, q2.getFactory());
+        BSHMethod bshMethod = BSHMethod.createBshMethod(e);
         try {
             bshMethod.initInterpreter(arguments);
             fail("Expected EvalError to be thrown");

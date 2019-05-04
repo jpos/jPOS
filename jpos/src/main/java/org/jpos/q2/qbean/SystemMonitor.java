@@ -195,7 +195,7 @@ public class SystemMonitor extends QBeanSupport
           System.getProperty("java.vendor"),
           maxKeyLength == Integer.MAX_VALUE ? "secure" : Integer.toString(maxKeyLength)
         );
-        p.printf ("%s  environment: %s%n", indent, getEnvironment().getName());
+        p.printf ("%s  environment: %s%n", indent, Environment.getEnvironment().getName());
         p.printf ("%s process name: %s%n", indent, runtimeMXBean.getName());
         p.printf ("%s    user name: %s%n", indent, System.getProperty("user.name"));
         p.printf ("%s         host: %s%n", indent, getLocalHost());
