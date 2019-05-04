@@ -70,7 +70,6 @@ include::ch07/writing_first_script.adoc[]
 include::ch07/qtest.adoc[]
 include::ch07/qbeansupport.adoc[]
 include::ch07/dynamic_classloading.adoc[]
-include::ch07/environment.adoc[]
 
 = Q2 jPOS Services
 include::ch08/intro.adoc[]
