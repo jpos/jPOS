@@ -54,10 +54,6 @@ public class Environment implements Loggeable {
         readConfig ();
     }
 
-    public boolean isProduction() {
-        return name.toLowerCase().startsWith(("prod"));
-    }
-
     public String getName() {
         return name;
     }

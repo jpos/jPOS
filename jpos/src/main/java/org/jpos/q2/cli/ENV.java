@@ -28,7 +28,6 @@ public class ENV implements CLICommand {
     public void exec(CLIContext cli, String[] args) throws Exception {
         Terminal term = cli.getReader().getTerminal();
         cli.println ("TERM=" + term.getClass().getSimpleName() + "/" + term.getType());
-        cli.println ("PRODUCTION=" + Environment.getEnvironment().isProduction());
         cli.println (Environment.getEnvironment().toString());
     }
 }
