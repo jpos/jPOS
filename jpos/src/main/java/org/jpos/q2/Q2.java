@@ -138,7 +138,6 @@ public class Q2 implements FileFilter, Runnable {
     private Environment env;
     private static String DEPLOY_PREFIX = "META-INF/q2/deploy/";
     private static String CFG_PREFIX = "META-INF/q2/cfg/";
-    private String nameRegistrarKey;
     
     public Q2 (String[] args, BundleContext bundleContext) {
         super();
@@ -315,7 +314,6 @@ public class Q2 implements FileFilter, Runnable {
     }
     public void shutdown (boolean join) {
         shutdown.countDown();
-        unregisterQ2();
         if (q2Thread != null) {
             log.info ("shutting down");
             q2Thread.interrupt ();
@@ -1145,21 +1143,10 @@ public class Q2 implements FileFilter, Runnable {
                 String key = name + (i > 0 ? "-" + i : "");
                 if (NameRegistrar.getIfExists(key) == null) {
                     NameRegistrar.register(key, this);
-                    this.nameRegistrarKey = key;
                     break;
                 }
             }
         }
-    }
-
-    private void unregisterQ2() {
-        synchronized (Q2.class) {
-            if (nameRegistrarKey != null) {
-                NameRegistrar.unregister(nameRegistrarKey);
-                nameRegistrarKey = null;
-            }
-        }
-
     }
 
     private void deployInternal() throws IOException, JDOMException, SAXException, ISOException, GeneralSecurityException {
