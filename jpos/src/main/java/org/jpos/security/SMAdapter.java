@@ -275,6 +275,16 @@ public interface SMAdapter<T> {
      */
     SecureDESKey generateKey(short keyLength, String keyType) throws SMException;
 
+    /**
+     * Generates a random Key.
+     *
+     * @param keySpec the specification of the key to be generated
+     *               (length, type, usage, algorithm, etc)
+     * @return the random key secured by the security module
+     * @throws SMException
+     * @see SecureKeySpec
+     */
+    SecureKey generateKey(SecureKeySpec keySpec) throws SMException;
 
 
     /**
@@ -319,6 +329,22 @@ public interface SMAdapter<T> {
     SecureDESKey importKey(short keyLength, String keyType, byte[] encryptedKey,
                            SecureDESKey kek, boolean checkParity) throws SMException;
 
+    /**
+     * Imports a key from encryption under a KEK (Key-Encrypting Key)
+     * to protection under the security module.
+     *
+     * @param kek the key-encrypting key
+     * @param key key to be imported and encrypted under KEK
+     * @param keySpec the specification of the key to be imported. It allows
+     *        passing or change key block attributes.
+     * @param checkParity if {@code true}, the key is not imported unless it has
+     *        adjusted parity
+     * @return imported key secured by the security module
+     * @throws SMException e.g: if the parity of the imported key is not adjusted
+     *         and {@code checkParity} is {@code true}
+     */
+    SecureKey importKey(SecureKey kek, SecureKey key, SecureKeySpec keySpec, boolean checkParity)
+            throws SMException;
 
 
     /**
@@ -329,6 +355,19 @@ public interface SMAdapter<T> {
      * @throws SMException
      */
     byte[] exportKey(SecureDESKey key, SecureDESKey kek) throws SMException;
+
+    /**
+     * Exports secure key to encryption under a KEK (Key-Encrypting Key).
+     *
+     * @param kek the key-encrypting key
+     * @param key the secure key to be exported
+     * @param keySpec the specification of the key to be exported. It allows
+     *        passing or change key block attributes.
+     * @return the exported key (key encrypted under kek)
+     * @throws SMException
+     */
+    SecureKey exportKey(SecureKey kek, SecureKey key, SecureKeySpec keySpec)
+            throws SMException;
 
     /**
      * Encrypts a clear pin under LMK.
@@ -1319,9 +1358,22 @@ public interface SMAdapter<T> {
      *
      * @param kd the key encrypted under old LMK
      * @return key encrypted under the new LMK
-     * @throws SMException if the parity of the imported key is not adjusted AND checkParity = true
+     * @throws SMException
      */
     SecureDESKey translateKeyFromOldLMK(SecureDESKey kd) throws SMException;
+
+
+    /**
+     * Translate key from encryption under the LMK held in key change storage
+     * to encryption under a new LMK.
+     *
+     * @param key the key encrypted under old LMK
+     * @param keySpec the specification of the key to be translated. It allows
+     *        passing new key block attributes.
+     * @return key encrypted under the new LMK
+     * @throws SMException
+     */
+    SecureKey translateKeyFromOldLMK(SecureKey key, SecureKeySpec keySpec) throws SMException;
 
 
     /**
@@ -1336,6 +1388,18 @@ public interface SMAdapter<T> {
       throws SMException;
 
 
+    /**
+     * Generate a public/private key pair.
+     *
+     * @param keySpec the specification of the key to be generated. It allows
+     *        passing key algorithm type, size and key block attributes.
+     *        NOTE: For pass an extra key usage of the RSA key, possible is use
+     *        e.g. {@code keySpec.setVariant()} or {@code keySpec.setReserved()}
+     * @return key pair generated according to passed parameters
+     * @throws SMException
+     */
+    Pair<PublicKey, SecureKey> generateKeyPair(SecureKeySpec keySpec) throws SMException;
+
 
     /**
      * Calculate signature of Data Block.
@@ -1346,7 +1410,7 @@ public interface SMAdapter<T> {
      * @return signature of passed data.
      * @throws SMException
      */
-    byte[] calculateSignature(MessageDigest hash, SecurePrivateKey privateKey
+    byte[] calculateSignature(MessageDigest hash, SecureKey privateKey
             ,byte[] data) throws SMException;
 
 
@@ -1354,7 +1418,7 @@ public interface SMAdapter<T> {
      * Encrypts clear Data Block with specified cipher.
      * <p>
      * NOTE: This is a more general version of the
-     * {@link #encryptData(CipherMode, SecureDESKey, Object, byte[], byte[])}
+     * {@link #encryptData(CipherMode, SecureDESKey, byte[], byte[])}
      *
      * @param encKey the data encryption key e.g:
      *        <ul>
@@ -1380,7 +1444,7 @@ public interface SMAdapter<T> {
      * Decrypts encrypted Data Block with specified cipher.
      * <p>
      * NOTE: This is a more general version of the
-     * {@link #decryptData(CipherMode, SecureDESKey, Object, byte[], byte[])}
+     * {@link #decryptData(CipherMode, SecureDESKey, byte[], byte[])}
      *
      * @param decKey the data decryption key e.g:
      *        <ul>

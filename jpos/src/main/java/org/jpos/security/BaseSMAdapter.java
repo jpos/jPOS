@@ -137,6 +137,25 @@ public class BaseSMAdapter<T>
     }
 
     @Override
+    public SecureKey generateKey(SecureKeySpec keySpec) throws SMException {
+        List<Loggeable> cmdParameters = new ArrayList<>();
+        cmdParameters.add(new SimpleMsg("parameter", "Key Specification", keySpec));
+        LogEvent evt = new LogEvent(this, "s-m-operation");
+        evt.addMessage(new SimpleMsg("command", "Generate Key", cmdParameters));
+        SecureKey result = null;
+        try {
+            result = generateKeyImpl(keySpec);
+            evt.addMessage(new SimpleMsg("result", "Generated Key", result));
+        } catch (Exception e) {
+            evt.addMessage(e);
+            throw e instanceof SMException ? (SMException) e : new SMException(e);
+        } finally {
+            Logger.log(evt);
+        }
+        return  result;
+    }
+
+    @Override
     public byte[] generateKeyCheckValue(T kd) throws SMException {
         List<Loggeable> cmdParameters = new ArrayList<>();
         cmdParameters.add(new SimpleMsg("parameter", "Key with untrusted check value", kd));
@@ -201,6 +220,29 @@ public class BaseSMAdapter<T>
     }
 
     @Override
+    public SecureKey importKey(SecureKey kek, SecureKey key, SecureKeySpec keySpec
+            , boolean checkParity) throws SMException {
+        List<Loggeable> cmdParameters = new ArrayList<>();
+        cmdParameters.add(new SimpleMsg("parameter", "Key-Encrypting Key", kek));
+        cmdParameters.add(new SimpleMsg("parameter", "Encrypted Key", key));
+        cmdParameters.add(new SimpleMsg("parameter", "Key Specification", keySpec));
+        cmdParameters.add(new SimpleMsg("parameter", "Check Parity", checkParity));
+        LogEvent evt = new LogEvent(this, "s-m-operation");
+        evt.addMessage(new SimpleMsg("command", "Import Key", cmdParameters));
+        SecureKey result = null;
+        try {
+            result = importKeyImpl(kek, key, keySpec, checkParity);
+            evt.addMessage(new SimpleMsg("result", "Imported Key", result));
+        } catch (Exception e) {
+            evt.addMessage(e);
+            throw  e instanceof SMException ? (SMException) e : new SMException(e);
+        } finally {
+            Logger.log(evt);
+        }
+        return  result;
+    }
+
+    @Override
     public byte[] exportKey (SecureDESKey key, SecureDESKey kek) throws SMException {
         List<Loggeable> cmdParameters = new ArrayList<>();
         cmdParameters.add(new SimpleMsg("parameter", "Key", key));
@@ -210,6 +252,28 @@ public class BaseSMAdapter<T>
         byte[] result = null;
         try {
             result = exportKeyImpl(key, kek);
+            evt.addMessage(new SimpleMsg("result", "Exported Key", result));
+        } catch (Exception e) {
+            evt.addMessage(e);
+            throw  e instanceof SMException ? (SMException) e : new SMException(e);
+        } finally {
+            Logger.log(evt);
+        }
+        return  result;
+    }
+
+    @Override
+    public SecureKey exportKey(SecureKey kek, SecureKey key, SecureKeySpec keySpec)
+            throws SMException {
+        List<Loggeable> cmdParameters = new ArrayList<>();
+        cmdParameters.add(new SimpleMsg("parameter", "Key-Encrypting Key", kek));
+        cmdParameters.add(new SimpleMsg("parameter", "Key", key));
+        cmdParameters.add(new SimpleMsg("parameter", "Key Specification", keySpec));
+        LogEvent evt = new LogEvent(this, "s-m-operation");
+        evt.addMessage(new SimpleMsg("command", "Export Key", cmdParameters));
+        SecureKey result = null;
+        try {
+            result = exportKeyImpl(kek, key, keySpec);
             evt.addMessage(new SimpleMsg("result", "Exported Key", result));
         } catch (Exception e) {
             evt.addMessage(e);
@@ -1208,6 +1272,26 @@ public class BaseSMAdapter<T>
     }
 
     @Override
+    public SecureKey translateKeyFromOldLMK(SecureKey key, SecureKeySpec keySpec) throws SMException {
+        List<Loggeable> cmdParameters = new ArrayList<>();
+        cmdParameters.add(new SimpleMsg("parameter", "Key under old LMK", key));
+        cmdParameters.add(new SimpleMsg("parameter", "Key Specification", keySpec));
+        LogEvent evt = new LogEvent(this, "s-m-operation");
+        evt.addMessage(new SimpleMsg("command", "Translate Key from old to new LMK", cmdParameters));
+        SecureKey result = null;
+        try {
+            result = translateKeyFromOldLMKImpl(key, keySpec);
+            evt.addMessage(new SimpleMsg("result", "Translated Key under new LMK", result));
+        } catch (Exception e) {
+            evt.addMessage(e);
+            throw  e instanceof SMException ? (SMException) e : new SMException(e);
+        } finally {
+            Logger.log(evt);
+        }
+        return  result;
+    }
+
+    @Override
     public Pair<PublicKey, SecurePrivateKey> generateKeyPair(AlgorithmParameterSpec spec)
             throws SMException {
         List<Loggeable> cmdParameters = new ArrayList<>();
@@ -1232,7 +1316,31 @@ public class BaseSMAdapter<T>
     }
 
     @Override
-    public byte[] calculateSignature(MessageDigest hash, SecurePrivateKey privateKey
+    public Pair<PublicKey, SecureKey> generateKeyPair(SecureKeySpec keySpec)
+            throws SMException {
+        List<Loggeable> cmdParameters = new ArrayList<>();
+        cmdParameters.add(new SimpleMsg("parameter", "Key Pair Specification", keySpec));
+
+        LogEvent evt = new LogEvent(this, "s-m-operation");
+        evt.addMessage(new SimpleMsg("command", "Generate public/private key pair", cmdParameters));
+        Pair<PublicKey, SecureKey> result = null;
+        try {
+            result = generateKeyPairImpl(keySpec);
+            List<Loggeable> cmdResults = new ArrayList<>();
+            cmdResults.add(new SimpleMsg("result", "Public Key", result.getValue0().getEncoded()));
+            cmdResults.add(new SimpleMsg("result", "Private Key", result.getValue1().getKeyBytes()));
+            evt.addMessage(new SimpleMsg("results", "Complex results", cmdResults));
+        } catch (Exception e) {
+            evt.addMessage(e);
+            throw  e instanceof SMException ? (SMException) e : new SMException(e);
+        } finally {
+            Logger.log(evt);
+        }
+        return result;
+    }
+
+    @Override
+    public byte[] calculateSignature(MessageDigest hash, SecureKey privateKey
             ,byte[] data) throws SMException {
         List<Loggeable> cmdParameters = new ArrayList<>();
         cmdParameters.add(new SimpleMsg("parameter", "Hash Identifier", hash));
@@ -1345,6 +1453,17 @@ public class BaseSMAdapter<T>
     }
 
     /**
+     * Your SMAdapter should override this method if it has this functionality.
+     *
+     * @param keySpec
+     * @return generated key
+     * @throws SMException
+     */
+    protected SecureKey generateKeyImpl(SecureKeySpec keySpec) throws SMException {
+        throw new UnsupportedOperationException("Operation not supported in: " + this.getClass().getName());
+    }
+
+    /**
      * Your SMAdapter should override this method if it has this functionality
      * @param kd
      * @return generated Key Check Value
@@ -1382,6 +1501,21 @@ public class BaseSMAdapter<T>
     }
 
     /**
+     * Your SMAdapter should override this method if it has this functionality.
+     *
+     * @param kek
+     * @param key
+     * @param keySpec
+     * @param checkParity
+     * @return imported key
+     * @throws SMException
+     */
+    protected SecureKey importKeyImpl(SecureKey kek, SecureKey key,
+            SecureKeySpec keySpec, boolean checkParity) throws SMException {
+        throw new UnsupportedOperationException("Operation not supported in: " + this.getClass().getName());
+    }
+
+    /**
      * Your SMAdapter should override this method if it has this functionality
      * @param key
      * @param kek
@@ -1390,6 +1524,20 @@ public class BaseSMAdapter<T>
      */
     protected byte[] exportKeyImpl(SecureDESKey key, SecureDESKey kek) throws SMException {
         throw  new SMException("Operation not supported in: " + this.getClass().getName());
+    }
+
+    /**
+     * Your SMAdapter should override this method if it has this functionality.
+     *
+     * @param kek
+     * @param key
+     * @param keySpec
+     * @return exported key
+     * @throws SMException
+     */
+    protected SecureKey exportKeyImpl(SecureKey kek, SecureKey key
+            , SecureKeySpec keySpec) throws SMException {
+        throw new UnsupportedOperationException("Operation not supported in: " + this.getClass().getName());
     }
 
     /**
@@ -1971,12 +2119,36 @@ public class BaseSMAdapter<T>
     }
 
     /**
+     * Your SMAdapter should override this method if it has this functionality.
+     *
+     * @param key
+     * @param keySpec
+     * @return key encrypted under the new LMK
+     * @throws SMException if the parity of the imported key is not adjusted AND checkParity = true
+     */
+    protected SecureKey translateKeyFromOldLMKImpl(SecureKey key, SecureKeySpec keySpec) throws SMException {
+        throw new UnsupportedOperationException("Operation not supported in: " + this.getClass().getName());
+    }
+
+    /**
      * Your SMAdapter should override this method if it has this functionality
      * @param spec algorithm specific parameters (contains e.g. key size)
      * @return key pair generated according to passed parameters
      * @throws SMException
      */
     protected Pair<PublicKey, SecurePrivateKey> generateKeyPairImpl(AlgorithmParameterSpec spec)
+            throws SMException {
+        throw new UnsupportedOperationException("Operation not supported in: " + this.getClass().getName());
+    }
+
+    /**
+     * Your SMAdapter should override this method if it has this functionality.
+     *
+     * @param keySpec
+     * @return key pair generated according to passed parameters
+     * @throws SMException
+     */
+    protected Pair<PublicKey, SecureKey> generateKeyPairImpl(SecureKeySpec keySpec)
             throws SMException {
         throw new UnsupportedOperationException("Operation not supported in: " + this.getClass().getName());
     }
@@ -1989,9 +2161,9 @@ public class BaseSMAdapter<T>
      * @return signature of passed data.
      * @throws SMException
      */
-    protected byte[] calculateSignatureImpl(MessageDigest hash, SecurePrivateKey privateKey
+    protected byte[] calculateSignatureImpl(MessageDigest hash, SecureKey privateKey
             ,byte[] data) throws SMException {
-        throw  new SMException("Operation not supported in: " + this.getClass().getName());
+        throw new UnsupportedOperationException("Operation not supported in: " + this.getClass().getName());
     }
 
     /**
