@@ -2,7 +2,7 @@
 <pmd xmlns="http://pmd.sourceforge.net/report/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/report/2.0.0 http://pmd.sourceforge.net/report_2_0_0.xsd"
-    version="6.8.0" timestamp="2019-05-04T18:45:27.251">
+    version="6.8.0" timestamp="2019-05-13T18:28:07.703">
 <file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/bsh/BSHActionTest.java">
 <violation beginline="36" endline="36" begincolumn="9" endcolumn="60" rule="UnnecessaryBooleanAssertion" ruleset="Error Prone" package="org.jpos.bsh" class="BSHActionTest" method="testActionPerformed" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#unnecessarybooleanassertion" priority="3">
 assertTrue(true) or similar statements are unnecessary
@@ -4846,6 +4846,42 @@ assertTrue(true) or similar statements are unnecessary
 </violation>
 <violation beginline="107" endline="107" begincolumn="9" endcolumn="60" rule="UnnecessaryBooleanAssertion" ruleset="Error Prone" package="org.jpos.security" class="SecureDESKeyTest" method="testDump" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#unnecessarybooleanassertion" priority="3">
 assertTrue(true) or similar statements are unnecessary
+</violation>
+</file>
+<file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/security/SecureKeyBlockBuilderTest.java">
+<violation beginline="44" endline="44" begincolumn="27" endcolumn="34" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.security" class="SecureKeyBlockBuilderTest" variable="instance" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
+Found non-transient, non-static member. Please mark as transient or provide accessors.
+</violation>
+<violation beginline="46" endline="46" begincolumn="20" endcolumn="22" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.security" class="SecureKeyBlockBuilderTest" variable="ret" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
+Found non-transient, non-static member. Please mark as transient or provide accessors.
+</violation>
+</file>
+<file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/security/SecureKeyBlockTest.java">
+<violation beginline="48" endline="48" begincolumn="17" endcolumn="18" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.security" class="SecureKeyBlockTest" variable="ps" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
+Found non-transient, non-static member. Please mark as transient or provide accessors.
+</violation>
+<violation beginline="49" endline="49" begincolumn="27" endcolumn="28" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.security" class="SecureKeyBlockTest" variable="os" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
+Found non-transient, non-static member. Please mark as transient or provide accessors.
+</violation>
+<violation beginline="51" endline="51" begincolumn="20" endcolumn="27" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.security" class="SecureKeyBlockTest" variable="instance" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
+Found non-transient, non-static member. Please mark as transient or provide accessors.
+</violation>
+</file>
+<file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/security/SecureKeySpecTest.java">
+<violation beginline="46" endline="46" begincolumn="17" endcolumn="18" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.security" class="SecureKeySpecTest" variable="ps" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
+Found non-transient, non-static member. Please mark as transient or provide accessors.
+</violation>
+<violation beginline="47" endline="47" begincolumn="27" endcolumn="28" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.security" class="SecureKeySpecTest" variable="os" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
+Found non-transient, non-static member. Please mark as transient or provide accessors.
+</violation>
+<violation beginline="49" endline="49" begincolumn="19" endcolumn="26" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.security" class="SecureKeySpecTest" variable="instance" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
+Found non-transient, non-static member. Please mark as transient or provide accessors.
+</violation>
+<violation beginline="64" endline="64" begincolumn="25" endcolumn="30" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security" class="SecureKeySpecTest" method="testDumpEmpty" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;____&quot; appears 4 times in this file; the first occurrence is on line 64
+</violation>
+<violation beginline="70" endline="70" begincolumn="34" endcolumn="53" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security" class="SecureKeySpecTest" method="testDumpEmpty" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;&lt;/secure-key-spec&gt;&quot; appears 4 times in this file; the first occurrence is on line 70
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/security/SecureKeyStoreTest.java">
