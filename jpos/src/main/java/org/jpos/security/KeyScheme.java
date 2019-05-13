@@ -54,6 +54,29 @@ public enum KeyScheme {
      * <p>
      * Used for encryption of keys under a variant LMK.
      */
-    T
+    T,
+
+    /**
+     * Encryption of single/double/triple-length DES & AES keys using the ANSI
+     * X9 TR-31 Key Block methods.
+     * <p>
+     * Only used for exporting keys <i>(e.g. under a KEK)</i>.
+     * <p>
+     * The ANSI X9 Committee published Technical Report 31 (TR-31) on
+     * <i>Interoperable Secure Key ExcKey Block Specification for Symmetric
+     * Algorithms</i> in 2010 to describe a method for secure key exchange which
+     * meets the needs of X9.24.
+     */
+    R,
+
+    /**
+     * Encryption of all DES, AES, HMAC & RSA keys using proprietary Key Block
+     * methods.
+     * <p>
+     * Used for encrypting keys for local use <i>(under a Key Block LMK)</i> or
+     * for importing/exporting keys <i>(e.g. under a KEK or ZMK)</i>.
+     */
+    S
+
 }
 

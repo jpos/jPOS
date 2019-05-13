@@ -65,7 +65,7 @@ import javax.crypto.Cipher;
  * @version $Revision$ $Date$
  */
 @SuppressWarnings("unchecked")
-public class JCESecurityModule extends BaseSMAdapter {
+public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
     /**
      * Pattern representing key type string value.
      */
