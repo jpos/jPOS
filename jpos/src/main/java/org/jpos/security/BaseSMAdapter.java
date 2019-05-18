@@ -1682,7 +1682,7 @@ public class BaseSMAdapter<T>
      * @param fields
      * @throws SMException
      */
-    public void printPINImpl(String accountNo, EncryptedPIN pinUnderKd1, T kd1
+    protected void printPINImpl(String accountNo, EncryptedPIN pinUnderKd1, T kd1
                              ,String template, Map<String, String> fields) throws SMException {
         throw  new SMException("Operation not supported in: " + this.getClass().getName());
     }
