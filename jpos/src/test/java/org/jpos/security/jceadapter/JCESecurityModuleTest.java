@@ -697,42 +697,42 @@ public class JCESecurityModuleTest {
     }
 
     @Test
-    public void testCalculateCVVImpl1() throws Throwable {
+    public void testCalculateCVDImpl1() throws Throwable {
         String accountNo = "123456789012";
         String expDate = "1108";
         String serviceCode = "000";
         String expected = "204";
-        String cvv = jcesecmod.calculateCVV(accountNo, cvk, null, expDate, serviceCode);
+        String cvv = jcesecmod.calculateCVD(accountNo, cvk, null, expDate, serviceCode);
         assertEquals(expected, cvv);
     }
 
     @Test
-    public void testVerifyCVVImpl1() throws Throwable {
+    public void testVerifyCVDImpl1() throws Throwable {
         String accountNo = "123456789012";
         String expDate = "1108";
         String serviceCode = "000";
         String cvv = "204";
-        boolean result = jcesecmod.verifyCVV(accountNo, cvk, null, cvv, expDate, serviceCode);
+        boolean result = jcesecmod.verifyCVD(accountNo, cvk, null, cvv, expDate, serviceCode);
         assertTrue(result);
     }
 
     @Test
-    public void testCalculateCVVImpl2() throws Throwable {
+    public void testCalculateCVDImpl2() throws Throwable {
         String accountNo = "123456789012";
         String expDate = "1108";
         String serviceCode = "000";
         String expected = "453";
-        String cvv = jcesecmod.calculateCVV(accountNo, cvkA, cvkB, expDate, serviceCode);
+        String cvv = jcesecmod.calculateCVD(accountNo, cvkA, cvkB, expDate, serviceCode);
         assertEquals(expected, cvv);
     }
 
     @Test
-    public void testVerifyCVVImpl2() throws Throwable {
+    public void testVerifyCVDImpl2() throws Throwable {
         String accountNo = "123456789012";
         String expDate = "1108";
         String serviceCode = "000";
         String cvv = "453";
-        boolean result = jcesecmod.verifyCVV(accountNo, cvkA, cvkB, cvv, expDate, serviceCode);
+        boolean result = jcesecmod.verifyCVD(accountNo, cvkA, cvkB, cvv, expDate, serviceCode);
         assertTrue(result);
     }
 

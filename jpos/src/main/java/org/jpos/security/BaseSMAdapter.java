@@ -755,7 +755,7 @@ public class BaseSMAdapter<T>
     }
 
     @Override
-    public String calculateCVV(String accountNo, T cvkA, T cvkB,
+    public String calculateCVD(String accountNo, T cvkA, T cvkB,
                                String expDate, String serviceCode) throws SMException {
 
         List<Loggeable> cmdParameters = new ArrayList<>();
@@ -768,7 +768,7 @@ public class BaseSMAdapter<T>
         evt.addMessage(new SimpleMsg("command", "Calculate CVV/CVC", cmdParameters));
         String result = null;
         try {
-            result = calculateCVVImpl(accountNo, cvkA, cvkB, expDate, serviceCode);
+            result = calculateCVDImpl(accountNo, cvkA, cvkB, expDate, serviceCode);
             evt.addMessage(new SimpleMsg("result", "Calculated CVV/CVC", result));
         } catch (Exception e) {
             evt.addMessage(e);
@@ -830,7 +830,7 @@ public class BaseSMAdapter<T>
     }
 
     @Override
-    public boolean verifyCVV(String accountNo, T cvkA, T cvkB,
+    public boolean verifyCVD(String accountNo, T cvkA, T cvkB,
                             String cvv, String expDate, String serviceCode) throws SMException {
 
         List<Loggeable> cmdParameters = new ArrayList<>();
@@ -1830,10 +1830,10 @@ public class BaseSMAdapter<T>
      * @param cvkB
      * @param expDate
      * @param serviceCode
-     * @return Card Verification Code/Value
+     * @return Card Verification Digit (Code/Value)
      * @throws SMException
      */
-    protected String calculateCVVImpl(String accountNo, T cvkA, T cvkB,
+    protected String calculateCVDImpl(String accountNo, T cvkA, T cvkB,
                                    String expDate, String serviceCode) throws SMException {
         throw new UnsupportedOperationException("Operation not supported in: " + this.getClass().getName());
     }

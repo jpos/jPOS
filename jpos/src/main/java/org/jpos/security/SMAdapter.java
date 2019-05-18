@@ -817,7 +817,7 @@ public interface SMAdapter<T> {
 
 
     /**
-     * Calaculate a Card Verification Code/Value
+     * Calaculate a Card Verification Code/Value.
      *
      * <p>NOTE: {@code cvkA} and {@code cvkB} should be single
      * length keys but at least one of them may be double length key
@@ -837,7 +837,7 @@ public interface SMAdapter<T> {
      * @throws SMException
      * @deprecated Issuers do not always follow the recommended 'yyMM' format.
      * Using the {@code java.util.Date} prevents from format manipulating to
-     * solve problem. Use {@link #calculateCVV} with string version of {@code expDate}
+     * solve problem. Use {@link #calculateCVD} with string version of {@code expDate}
      */
     @Deprecated
     String calculateCVV(String accountNo, T cvkA, T cvkB,
@@ -846,7 +846,7 @@ public interface SMAdapter<T> {
 
 
     /**
-     * Calaculate a Card Verification Code/Value
+     * Calaculate a Card Verification Digit (Code/Value).
      *
      * <p>NOTE: {@code cvkA} and {@code cvkB} should be single
      * length keys but at least one of them may be double length key
@@ -862,10 +862,10 @@ public interface SMAdapter<T> {
      *          <li>"000" for printing CVV2/CVC2 on card's signature stripe</li>
      *          <li>"999" for inclusion iCVV/Chip CVC on EMV chip card</li>
      *        </ul>
-     * @return Card Verification Code/Value
+     * @return Card Verification Digit (Code/Value)
      * @throws SMException
      */
-    String calculateCVV(String accountNo, T cvkA, T cvkB,
+    String calculateCVD(String accountNo, T cvkA, T cvkB,
                         String expDate, String serviceCode) throws SMException;
 
 
@@ -900,7 +900,7 @@ public interface SMAdapter<T> {
                          String authrc, String sfarc) throws SMException;
 
     /**
-     * Verify a Card Verification Code/Value
+     * Verify a Card Verification Code/Value.
      *
      * <p>NOTE: {@code cvkA} and {@code cvkB} should be single
      * length keys but at least one of them may be double length key
@@ -921,7 +921,7 @@ public interface SMAdapter<T> {
      * @throws SMException
      * @deprecated Issuers do not always follow the recommended 'yyMM' format.
      * Using the {@code java.util.Date} prevents from format manipulating to
-     * solve problem. Use {@link #verifyCVV} with string version of {@code expDate}
+     * solve problem. Use {@link #verifyCVD} with string version of {@code expDate}
      */
     @Deprecated
     boolean verifyCVV(String accountNo, T cvkA, T cvkB,
@@ -929,7 +929,7 @@ public interface SMAdapter<T> {
 
 
     /**
-     * Verify a Card Verification Code/Value
+     * Verify a Card Verification Digit (Code/Value).
      *
      * <p>NOTE: {@code cvkA} and {@code cvkB} should be single
      * length keys but at least one of them may be double length key
@@ -949,7 +949,7 @@ public interface SMAdapter<T> {
      * @return {@code true} if CVV/CVC is valid or {@code false} otherwise
      * @throws SMException
      */
-    boolean verifyCVV(String accountNo, T cvkA, T cvkB,
+    boolean verifyCVD(String accountNo, T cvkA, T cvkB,
                       String cvv, String expDate, String serviceCode) throws SMException;
 
 

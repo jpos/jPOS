@@ -411,7 +411,7 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
     }
 
     @Override
-    protected String calculateCVVImpl(String accountNo, SecureDESKey cvkA, SecureDESKey cvkB,
+    protected String calculateCVDImpl(String accountNo, SecureDESKey cvkA, SecureDESKey cvkB,
                                    String expDate, String serviceCode) throws SMException {
         return calculateCVD(accountNo, concatKeys(cvkA, cvkB), expDate, serviceCode);
     }
