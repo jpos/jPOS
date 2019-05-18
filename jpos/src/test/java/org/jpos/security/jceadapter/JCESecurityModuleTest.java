@@ -18,7 +18,6 @@
 
 package org.jpos.security.jceadapter;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import static org.junit.Assert.*;
@@ -30,7 +29,6 @@ import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
 import org.jpos.core.SimpleConfiguration;
 import org.jpos.core.SubConfiguration;
-import org.jpos.iso.ISODate;
 import org.jpos.iso.ISOUtil;
 import org.jpos.security.ARPCMethod;
 import org.jpos.security.CipherMode;
@@ -697,42 +695,42 @@ public class JCESecurityModuleTest {
     }
 
     @Test
-    public void testCalculateCVVImpl1() throws Throwable {
+    public void testCalculateCVDImpl1() throws Throwable {
         String accountNo = "123456789012";
         String expDate = "1108";
         String serviceCode = "000";
         String expected = "204";
-        String cvv = jcesecmod.calculateCVV(accountNo, cvk, null, expDate, serviceCode);
+        String cvv = jcesecmod.calculateCVD(accountNo, cvk, null, expDate, serviceCode);
         assertEquals(expected, cvv);
     }
 
     @Test
-    public void testVerifyCVVImpl1() throws Throwable {
+    public void testVerifyCVDImpl1() throws Throwable {
         String accountNo = "123456789012";
         String expDate = "1108";
         String serviceCode = "000";
         String cvv = "204";
-        boolean result = jcesecmod.verifyCVV(accountNo, cvk, null, cvv, expDate, serviceCode);
+        boolean result = jcesecmod.verifyCVD(accountNo, cvk, null, cvv, expDate, serviceCode);
         assertTrue(result);
     }
 
     @Test
-    public void testCalculateCVVImpl2() throws Throwable {
+    public void testCalculateCVDImpl2() throws Throwable {
         String accountNo = "123456789012";
         String expDate = "1108";
         String serviceCode = "000";
         String expected = "453";
-        String cvv = jcesecmod.calculateCVV(accountNo, cvkA, cvkB, expDate, serviceCode);
+        String cvv = jcesecmod.calculateCVD(accountNo, cvkA, cvkB, expDate, serviceCode);
         assertEquals(expected, cvv);
     }
 
     @Test
-    public void testVerifyCVVImpl2() throws Throwable {
+    public void testVerifyCVDImpl2() throws Throwable {
         String accountNo = "123456789012";
         String expDate = "1108";
         String serviceCode = "000";
         String cvv = "453";
-        boolean result = jcesecmod.verifyCVV(accountNo, cvkA, cvkB, cvv, expDate, serviceCode);
+        boolean result = jcesecmod.verifyCVD(accountNo, cvkA, cvkB, cvv, expDate, serviceCode);
         assertTrue(result);
     }
 
@@ -830,7 +828,7 @@ public class JCESecurityModuleTest {
     @Test
     public void testVerifyDCVVImpl1() throws Throwable {
         String accountNo = "1234567890123456";
-        Date expDate = ISODate.parseISODate("1310"+"01000000");
+        String expDate = "1310";
         String serviceCode = "226";
         String dcvv = "422";
         byte[] atc = ISOUtil.hex2byte("3210");
@@ -842,7 +840,7 @@ public class JCESecurityModuleTest {
     @Test
     public void testVerifyDCVVImpl2() throws Throwable {
         String accountNo = "123456789012";
-        Date expDate = ISODate.parseISODate("1310"+"01000000");
+        String expDate = "1310";
         String serviceCode = "226";
         String dcvv = "719";
         byte[] atc = ISOUtil.hex2byte("3210");
@@ -854,7 +852,7 @@ public class JCESecurityModuleTest {
     @Test
     public void testVerifyDCVVImpl3() throws Throwable {
         String accountNo = "123456789012";
-        Date expDate = ISODate.parseISODate("1310"+"01000000");
+        String expDate = "1310";
         String serviceCode = "226";
         String dcvv = "824";
         byte[] atc = ISOUtil.hex2byte("3210");
@@ -866,7 +864,7 @@ public class JCESecurityModuleTest {
     @Test
     public void testVerifyDCVVImpl4() throws Throwable {
         String accountNo = "1234567890123456789";
-        Date expDate = ISODate.parseISODate("1310"+"01000000");
+        String expDate = "1310";
         String serviceCode = "226";
         String dcvv = "562";
         byte[] atc = ISOUtil.hex2byte("3210");
@@ -878,7 +876,7 @@ public class JCESecurityModuleTest {
     @Test
     public void testVerifyDCVVImplException1() throws Throwable {
         String accountNo = "";
-        Date expDate = ISODate.parseISODate("1310"+"01000000");
+        String expDate = "1310";
         String serviceCode = "226";
         String dcvv = "562";
         byte[] atc = ISOUtil.hex2byte("3210");
@@ -894,7 +892,7 @@ public class JCESecurityModuleTest {
     @Test
     public void testVerifyDCVVImplException2() throws Throwable {
         String accountNo = null;
-        Date expDate = ISODate.parseISODate("1310"+"01000000");
+        String expDate = "1310";
         String serviceCode = "226";
         String dcvv = "562";
         byte[] atc = ISOUtil.hex2byte("3210");

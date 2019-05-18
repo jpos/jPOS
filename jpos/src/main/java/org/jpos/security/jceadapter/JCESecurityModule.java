@@ -411,7 +411,7 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
     }
 
     @Override
-    protected String calculateCVVImpl(String accountNo, SecureDESKey cvkA, SecureDESKey cvkB,
+    protected String calculateCVDImpl(String accountNo, SecureDESKey cvkA, SecureDESKey cvkB,
                                    String expDate, String serviceCode) throws SMException {
         return calculateCVD(accountNo, concatKeys(cvkA, cvkB), expDate, serviceCode);
     }
@@ -466,22 +466,35 @@ public class JCESecurityModule extends BaseSMAdapter<SecureDESKey> {
     }
 
     protected String calculatedCVV(String accountNo, SecureDESKey imkac,
-                     Date expDate, String serviceCode, byte[] atc, MKDMethod mkdm)
+                     String expDate, String serviceCode, byte[] atc, MKDMethod mkdm)
                      throws SMException {
 
         if (mkdm==null)
           mkdm = MKDMethod.OPTION_A;
+
         byte[] panpsn = formatPANPSN_dCVD(accountNo, null, mkdm);
         Key mkac = deriveICCMasterKey(decryptFromLMK(imkac), panpsn);
 
         String alteredPAN = ISOUtil.hexString(atc) + accountNo.substring(4);
 
-        return calculateCVV(alteredPAN, mkac, expDate, serviceCode);
+        return calculateCVD(alteredPAN, mkac, expDate, serviceCode);
     }
 
     @Override
     protected boolean verifydCVVImpl(String accountNo, SecureDESKey imkac, String dcvv,
                      Date expDate, String serviceCode, byte[] atc, MKDMethod mkdm)
+                     throws SMException {
+
+        String ed = ISODate.formatDate(expDate, "yyMM");
+        String res = calculatedCVV(accountNo, imkac, ed,
+                serviceCode, atc, mkdm
+        );
+        return res.equals(dcvv);
+    }
+
+    @Override
+    protected boolean verifydCVVImpl(String accountNo, SecureDESKey imkac, String dcvv,
+                     String expDate, String serviceCode, byte[] atc, MKDMethod mkdm)
                      throws SMException {
 
         String res = calculatedCVV(accountNo, imkac, expDate,

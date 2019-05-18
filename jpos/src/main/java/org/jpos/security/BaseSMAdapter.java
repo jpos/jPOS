@@ -755,7 +755,7 @@ public class BaseSMAdapter<T>
     }
 
     @Override
-    public String calculateCVV(String accountNo, T cvkA, T cvkB,
+    public String calculateCVD(String accountNo, T cvkA, T cvkB,
                                String expDate, String serviceCode) throws SMException {
 
         List<Loggeable> cmdParameters = new ArrayList<>();
@@ -768,7 +768,7 @@ public class BaseSMAdapter<T>
         evt.addMessage(new SimpleMsg("command", "Calculate CVV/CVC", cmdParameters));
         String result = null;
         try {
-            result = calculateCVVImpl(accountNo, cvkA, cvkB, expDate, serviceCode);
+            result = calculateCVDImpl(accountNo, cvkA, cvkB, expDate, serviceCode);
             evt.addMessage(new SimpleMsg("result", "Calculated CVV/CVC", result));
         } catch (Exception e) {
             evt.addMessage(e);
@@ -830,7 +830,7 @@ public class BaseSMAdapter<T>
     }
 
     @Override
-    public boolean verifyCVV(String accountNo, T cvkA, T cvkB,
+    public boolean verifyCVD(String accountNo, T cvkA, T cvkB,
                             String cvv, String expDate, String serviceCode) throws SMException {
 
         List<Loggeable> cmdParameters = new ArrayList<>();
@@ -905,6 +905,33 @@ public class BaseSMAdapter<T>
       } finally {
         Logger.log(evt);
       }
+    }
+
+    @Override
+    public boolean verifydCVV(String accountNo, T imkac, String dcvv,
+                     String expDate, String serviceCode, byte[] atc, MKDMethod mkdm)
+                     throws SMException {
+
+        List<Loggeable> cmdParameters = new ArrayList<>();
+        cmdParameters.add(new SimpleMsg("parameter", "account number", accountNo));
+        cmdParameters.add(new SimpleMsg("parameter", "imk-ac", imkac == null ? "" : imkac));
+        cmdParameters.add(new SimpleMsg("parameter", "dCVV", dcvv));
+        cmdParameters.add(new SimpleMsg("parameter", "Exp date", expDate));
+        cmdParameters.add(new SimpleMsg("parameter", "Service code", serviceCode));
+        cmdParameters.add(new SimpleMsg("parameter", "atc", atc == null ? "" : ISOUtil.hexString(atc)));
+        cmdParameters.add(new SimpleMsg("parameter", "mkd method", mkdm));
+        LogEvent evt = new LogEvent(this, "s-m-operation");
+        evt.addMessage(new SimpleMsg("command", "Verify dCVV", cmdParameters));
+        try {
+            boolean r = verifydCVVImpl(accountNo, imkac, dcvv, expDate, serviceCode, atc, mkdm);
+            evt.addMessage(new SimpleMsg("result", "Verification status", r ? "valid" : "invalid"));
+            return r;
+        } catch (Exception e) {
+            evt.addMessage(e);
+            throw e instanceof SMException ? (SMException) e : new SMException(e);
+        } finally {
+            Logger.log(evt);
+        }
     }
 
     /**
@@ -1682,7 +1709,7 @@ public class BaseSMAdapter<T>
      * @param fields
      * @throws SMException
      */
-    public void printPINImpl(String accountNo, EncryptedPIN pinUnderKd1, T kd1
+    protected void printPINImpl(String accountNo, EncryptedPIN pinUnderKd1, T kd1
                              ,String template, Map<String, String> fields) throws SMException {
         throw  new SMException("Operation not supported in: " + this.getClass().getName());
     }
@@ -1830,10 +1857,10 @@ public class BaseSMAdapter<T>
      * @param cvkB
      * @param expDate
      * @param serviceCode
-     * @return Card Verification Code/Value
+     * @return Card Verification Digit (Code/Value)
      * @throws SMException
      */
-    protected String calculateCVVImpl(String accountNo, T cvkA, T cvkB,
+    protected String calculateCVDImpl(String accountNo, T cvkA, T cvkB,
                                    String expDate, String serviceCode) throws SMException {
         throw new UnsupportedOperationException("Operation not supported in: " + this.getClass().getName());
     }
@@ -1916,6 +1943,24 @@ public class BaseSMAdapter<T>
      */
     protected boolean verifydCVVImpl(String accountNo, T imkac, String dcvv,
                      Date expDate, String serviceCode, byte[] atc, MKDMethod mkdm)
+                     throws SMException {
+        throw  new SMException("Operation not supported in: " + this.getClass().getName());
+    }
+
+    /**
+     * Your SMAdapter should override this method if it has this functionality
+     * @param accountNo
+     * @param imkac
+     * @param dcvv
+     * @param expDate
+     * @param serviceCode
+     * @param atc
+     * @param mkdm
+     * @return true if dcvv is valid false if not
+     * @throws SMException
+     */
+    protected boolean verifydCVVImpl(String accountNo, T imkac, String dcvv,
+                     String expDate, String serviceCode, byte[] atc, MKDMethod mkdm)
                      throws SMException {
         throw  new SMException("Operation not supported in: " + this.getClass().getName());
     }
