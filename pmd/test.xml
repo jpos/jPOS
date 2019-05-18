@@ -2,7 +2,7 @@
 <pmd xmlns="http://pmd.sourceforge.net/report/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/report/2.0.0 http://pmd.sourceforge.net/report_2_0_0.xsd"
-    version="6.8.0" timestamp="2019-05-13T18:28:07.703">
+    version="6.8.0" timestamp="2019-05-18T17:20:06.607">
 <file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/bsh/BSHActionTest.java">
 <violation beginline="36" endline="36" begincolumn="9" endcolumn="60" rule="UnnecessaryBooleanAssertion" ruleset="Error Prone" package="org.jpos.bsh" class="BSHActionTest" method="testActionPerformed" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#unnecessarybooleanassertion" priority="3">
 assertTrue(true) or similar statements are unnecessary
@@ -5053,272 +5053,269 @@ assertTrue(true) or similar statements are unnecessary
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/security/jceadapter/JCESecurityModuleTest.java">
-<violation beginline="59" endline="59" begincolumn="73" endcolumn="80" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;6FB1C8&quot; appears 12 times in this file; the first occurrence is on line 59
+<violation beginline="57" endline="57" begincolumn="73" endcolumn="80" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;6FB1C8&quot; appears 12 times in this file; the first occurrence is on line 57
 </violation>
-<violation beginline="59" endline="59" begincolumn="31" endcolumn="35" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;:0U&quot; appears 4 times in this file; the first occurrence is on line 59
+<violation beginline="57" endline="57" begincolumn="31" endcolumn="35" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;:0U&quot; appears 4 times in this file; the first occurrence is on line 57
 </violation>
-<violation beginline="159" endline="159" begincolumn="38" endcolumn="55" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;1234567890123456&quot; appears 7 times in this file; the first occurrence is on line 159
+<violation beginline="157" endline="157" begincolumn="38" endcolumn="55" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;1234567890123456&quot; appears 7 times in this file; the first occurrence is on line 157
 </violation>
-<violation beginline="200" endline="200" begincolumn="42" endcolumn="47" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="setUpClass" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;1234&quot; appears 7 times in this file; the first occurrence is on line 200
+<violation beginline="198" endline="198" begincolumn="42" endcolumn="47" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="setUpClass" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;1234&quot; appears 7 times in this file; the first occurrence is on line 198
 </violation>
-<violation beginline="208" endline="208" begincolumn="27" endcolumn="28" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest$EMVTxnData" variable="dm" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
+<violation beginline="206" endline="206" begincolumn="27" endcolumn="28" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest$EMVTxnData" variable="dm" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
 Found non-transient, non-static member. Please mark as transient or provide accessors.
 </violation>
-<violation beginline="226" endline="227" begincolumn="11" endcolumn="57" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest$EMVTxnData" method="getDataNoPad" variable="data" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'data' (lines '226'-'227').
+<violation beginline="224" endline="225" begincolumn="11" endcolumn="57" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest$EMVTxnData" method="getDataNoPad" variable="data" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'data' (lines '224'-'225').
 </violation>
-<violation beginline="274" endline="274" begincolumn="72" endcolumn="83" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testCalculateKeyCheckValueThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;testString&quot; appears 5 times in this file; the first occurrence is on line 274
+<violation beginline="272" endline="272" begincolumn="72" endcolumn="83" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testCalculateKeyCheckValueThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;testString&quot; appears 5 times in this file; the first occurrence is on line 272
 </violation>
-<violation beginline="275" endline="275" begincolumn="18" endcolumn="61" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testCalculateKeyCheckValueThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;Expected NullPointerException to be thrown&quot; appears 19 times in this file; the first occurrence is on line 275
+<violation beginline="273" endline="273" begincolumn="18" endcolumn="61" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testCalculateKeyCheckValueThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;Expected NullPointerException to be thrown&quot; appears 19 times in this file; the first occurrence is on line 273
 </violation>
-<violation beginline="276" endline="276" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testCalculateKeyCheckValueThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
+<violation beginline="274" endline="274" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testCalculateKeyCheckValueThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
 Avoid catching NullPointerException; consider removing the cause of the NPE.
 </violation>
-<violation beginline="277" endline="277" begincolumn="24" endcolumn="40" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testCalculateKeyCheckValueThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;ex.getMessage()&quot; appears 27 times in this file; the first occurrence is on line 277
+<violation beginline="275" endline="275" begincolumn="24" endcolumn="40" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testCalculateKeyCheckValueThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;ex.getMessage()&quot; appears 27 times in this file; the first occurrence is on line 275
 </violation>
-<violation beginline="291" endline="291" begincolumn="85" endcolumn="112" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testConstructorThrowsConfigurationException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;testJCESecurityModuleRealm&quot; appears 4 times in this file; the first occurrence is on line 291
+<violation beginline="289" endline="289" begincolumn="85" endcolumn="112" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testConstructorThrowsConfigurationException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;testJCESecurityModuleRealm&quot; appears 4 times in this file; the first occurrence is on line 289
 </violation>
-<violation beginline="292" endline="292" begincolumn="18" endcolumn="63" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testConstructorThrowsConfigurationException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;Expected ConfigurationException to be thrown&quot; appears 4 times in this file; the first occurrence is on line 292
+<violation beginline="290" endline="290" begincolumn="18" endcolumn="63" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testConstructorThrowsConfigurationException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;Expected ConfigurationException to be thrown&quot; appears 4 times in this file; the first occurrence is on line 290
 </violation>
-<violation beginline="294" endline="294" begincolumn="13" endcolumn="64" rule="UnnecessaryBooleanAssertion" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testConstructorThrowsConfigurationException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#unnecessarybooleanassertion" priority="3">
+<violation beginline="292" endline="292" begincolumn="13" endcolumn="64" rule="UnnecessaryBooleanAssertion" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testConstructorThrowsConfigurationException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#unnecessarybooleanassertion" priority="3">
 assertTrue(true) or similar statements are unnecessary
 </violation>
-<violation beginline="306" endline="308" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testConstructorThrowsConfigurationException1" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#emptycatchblock" priority="3">
+<violation beginline="304" endline="306" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testConstructorThrowsConfigurationException1" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#emptycatchblock" priority="3">
 Avoid empty catch blocks
 </violation>
-<violation beginline="316" endline="316" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testConstructorThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
+<violation beginline="314" endline="314" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testConstructorThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
 Avoid catching NullPointerException; consider removing the cause of the NPE.
 </violation>
-<violation beginline="326" endline="326" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testConstructorThrowsNullPointerException1" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
+<violation beginline="324" endline="324" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testConstructorThrowsNullPointerException1" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
 Avoid catching NullPointerException; consider removing the cause of the NPE.
 </violation>
-<violation beginline="337" endline="337" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testConstructorThrowsNullPointerException2" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
+<violation beginline="335" endline="335" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testConstructorThrowsNullPointerException2" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
 Avoid catching NullPointerException; consider removing the cause of the NPE.
 </violation>
-<violation beginline="346" endline="346" begincolumn="18" endcolumn="52" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testConstructorThrowsSMException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;Expected SMException to be thrown&quot; appears 11 times in this file; the first occurrence is on line 346
+<violation beginline="344" endline="344" begincolumn="18" endcolumn="52" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testConstructorThrowsSMException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;Expected SMException to be thrown&quot; appears 11 times in this file; the first occurrence is on line 344
 </violation>
-<violation beginline="347" endline="349" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testConstructorThrowsSMException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#emptycatchblock" priority="3">
+<violation beginline="345" endline="347" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testConstructorThrowsSMException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#emptycatchblock" priority="3">
 Avoid empty catch blocks
 </violation>
-<violation beginline="357" endline="359" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testConstructorThrowsSMException2" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#emptycatchblock" priority="3">
+<violation beginline="355" endline="357" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testConstructorThrowsSMException2" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#emptycatchblock" priority="3">
 Avoid empty catch blocks
 </violation>
-<violation beginline="367" endline="369" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testConstructorThrowsSMException3" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#emptycatchblock" priority="3">
+<violation beginline="365" endline="367" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testConstructorThrowsSMException3" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#emptycatchblock" priority="3">
 Avoid empty catch blocks
 </violation>
-<violation beginline="377" endline="377" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testDecryptPINImplThrowsNullPointerException1" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
+<violation beginline="375" endline="375" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testDecryptPINImplThrowsNullPointerException1" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
 Avoid catching NullPointerException; consider removing the cause of the NPE.
 </violation>
-<violation beginline="385" endline="385" begincolumn="74" endcolumn="87" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testDecryptPINImpl" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;12Characters&quot; appears 5 times in this file; the first occurrence is on line 385
+<violation beginline="383" endline="383" begincolumn="74" endcolumn="87" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testDecryptPINImpl" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;12Characters&quot; appears 5 times in this file; the first occurrence is on line 383
 </violation>
-<violation beginline="388" endline="388" begincolumn="27" endcolumn="40" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testDecryptPINImpl" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;123456789012&quot; appears 19 times in this file; the first occurrence is on line 388
+<violation beginline="386" endline="386" begincolumn="27" endcolumn="40" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testDecryptPINImpl" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;123456789012&quot; appears 19 times in this file; the first occurrence is on line 386
 </violation>
-<violation beginline="395" endline="395" begincolumn="58" endcolumn="93" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testEncryptPINImplThrowsNullPointerException5" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;testJCESecurityModuleAccountNumber&quot; appears 5 times in this file; the first occurrence is on line 395
+<violation beginline="393" endline="393" begincolumn="58" endcolumn="93" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testEncryptPINImplThrowsNullPointerException5" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;testJCESecurityModuleAccountNumber&quot; appears 5 times in this file; the first occurrence is on line 393
 </violation>
-<violation beginline="397" endline="397" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testEncryptPINImplThrowsNullPointerException5" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
+<violation beginline="395" endline="395" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testEncryptPINImplThrowsNullPointerException5" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
 Avoid catching NullPointerException; consider removing the cause of the NPE.
 </violation>
-<violation beginline="409" endline="409" begincolumn="24" endcolumn="39" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testEncryptPINImplThrowsSMException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;ex.getNested()&quot; appears 5 times in this file; the first occurrence is on line 409
+<violation beginline="407" endline="407" begincolumn="24" endcolumn="39" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testEncryptPINImplThrowsSMException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;ex.getNested()&quot; appears 5 times in this file; the first occurrence is on line 407
 </violation>
-<violation beginline="474" endline="474" begincolumn="87" endcolumn="116" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testExportKeyImplThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;testJCESecurityModuleKeyType&quot; appears 9 times in this file; the first occurrence is on line 474
+<violation beginline="472" endline="472" begincolumn="87" endcolumn="116" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testExportKeyImplThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;testJCESecurityModuleKeyType&quot; appears 9 times in this file; the first occurrence is on line 472
 </violation>
-<violation beginline="477" endline="477" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testExportKeyImplThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
+<violation beginline="475" endline="475" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testExportKeyImplThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
 Avoid catching NullPointerException; consider removing the cause of the NPE.
 </violation>
-<violation beginline="488" endline="488" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testExportKeyImplThrowsNullPointerException1" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
+<violation beginline="486" endline="486" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testExportKeyImplThrowsNullPointerException1" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
 Avoid catching NullPointerException; consider removing the cause of the NPE.
 </violation>
-<violation beginline="498" endline="498" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testExportPINImplThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
+<violation beginline="496" endline="496" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testExportPINImplThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
 Avoid catching NullPointerException; consider removing the cause of the NPE.
 </violation>
-<violation beginline="507" endline="507" begincolumn="44" endcolumn="61" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testExportPINImpl" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;3C0CA40863092C3A&quot; appears 4 times in this file; the first occurrence is on line 507
+<violation beginline="505" endline="505" begincolumn="44" endcolumn="61" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testExportPINImpl" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;3C0CA40863092C3A&quot; appears 4 times in this file; the first occurrence is on line 505
 </violation>
-<violation beginline="529" endline="529" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testGenerateKeyImplThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
+<violation beginline="527" endline="527" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testGenerateKeyImplThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
 Avoid catching NullPointerException; consider removing the cause of the NPE.
 </violation>
-<violation beginline="542" endline="542" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testImportKeyImplThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
+<violation beginline="540" endline="540" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testImportKeyImplThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
 Avoid catching NullPointerException; consider removing the cause of the NPE.
 </violation>
-<violation beginline="552" endline="552" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testImportKeyImplThrowsNullPointerException1" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
+<violation beginline="550" endline="550" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testImportKeyImplThrowsNullPointerException1" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
 Avoid catching NullPointerException; consider removing the cause of the NPE.
 </violation>
-<violation beginline="563" endline="563" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testImportPINImplThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
+<violation beginline="561" endline="561" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testImportPINImplThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
 Avoid catching NullPointerException; consider removing the cause of the NPE.
 </violation>
-<violation beginline="576" endline="576" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testImportPINImplThrowsNullPointerException1" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
+<violation beginline="574" endline="574" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testImportPINImplThrowsNullPointerException1" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
 Avoid catching NullPointerException; consider removing the cause of the NPE.
 </violation>
-<violation beginline="586" endline="586" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testImportPINImplThrowsNullPointerException2" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
+<violation beginline="584" endline="584" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testImportPINImplThrowsNullPointerException2" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
 Avoid catching NullPointerException; consider removing the cause of the NPE.
 </violation>
-<violation beginline="622" endline="624" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testSetConfigurationThrowsConfigurationException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#emptycatchblock" priority="3">
+<violation beginline="620" endline="622" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testSetConfigurationThrowsConfigurationException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#emptycatchblock" priority="3">
 Avoid empty catch blocks
 </violation>
-<violation beginline="635" endline="635" begincolumn="13" endcolumn="64" rule="UnnecessaryBooleanAssertion" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testSetConfigurationThrowsConfigurationException1" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#unnecessarybooleanassertion" priority="3">
+<violation beginline="633" endline="633" begincolumn="13" endcolumn="64" rule="UnnecessaryBooleanAssertion" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testSetConfigurationThrowsConfigurationException1" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#unnecessarybooleanassertion" priority="3">
 assertTrue(true) or similar statements are unnecessary
 </violation>
-<violation beginline="648" endline="648" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testSetConfigurationThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
+<violation beginline="646" endline="646" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testSetConfigurationThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
 Avoid catching NullPointerException; consider removing the cause of the NPE.
 </violation>
-<violation beginline="659" endline="659" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testTranslatePINImplThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
+<violation beginline="657" endline="657" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testTranslatePINImplThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
 Avoid catching NullPointerException; consider removing the cause of the NPE.
 </violation>
-<violation beginline="671" endline="671" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testTranslatePINImplThrowsNullPointerException1" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
+<violation beginline="669" endline="669" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testTranslatePINImplThrowsNullPointerException1" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
 Avoid catching NullPointerException; consider removing the cause of the NPE.
 </violation>
-<violation beginline="683" endline="683" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testTranslatePINImplThrowsNullPointerException2" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
+<violation beginline="681" endline="681" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testTranslatePINImplThrowsNullPointerException2" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
 Avoid catching NullPointerException; consider removing the cause of the NPE.
 </violation>
-<violation beginline="702" endline="702" begincolumn="26" endcolumn="31" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testCalculateCVVImpl1" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;1108&quot; appears 8 times in this file; the first occurrence is on line 702
+<violation beginline="700" endline="700" begincolumn="26" endcolumn="31" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testCalculateCVDImpl1" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;1108&quot; appears 8 times in this file; the first occurrence is on line 700
 </violation>
-<violation beginline="703" endline="703" begincolumn="30" endcolumn="34" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testCalculateCVVImpl1" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;000&quot; appears 4 times in this file; the first occurrence is on line 703
+<violation beginline="701" endline="701" begincolumn="30" endcolumn="34" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testCalculateCVDImpl1" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;000&quot; appears 4 times in this file; the first occurrence is on line 701
 </violation>
-<violation beginline="704" endline="704" begincolumn="27" endcolumn="31" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testCalculateCVVImpl1" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;204&quot; appears 4 times in this file; the first occurrence is on line 704
+<violation beginline="702" endline="702" begincolumn="27" endcolumn="31" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testCalculateCVDImpl1" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;204&quot; appears 4 times in this file; the first occurrence is on line 702
 </violation>
-<violation beginline="787" endline="788" begincolumn="16" endcolumn="79" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testCalculateCAVVImplSMException" variable="cavv" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'cavv' (lines '787'-'788').
+<violation beginline="785" endline="786" begincolumn="16" endcolumn="79" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testCalculateCAVVImplSMException" variable="cavv" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'cavv' (lines '785'-'786').
 </violation>
-<violation beginline="793" endline="794" begincolumn="17" endcolumn="85" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testVerifyCAVVImplSMException" variable="result" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'result' (lines '793'-'794').
+<violation beginline="791" endline="792" begincolumn="17" endcolumn="85" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testVerifyCAVVImplSMException" variable="result" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'result' (lines '791'-'792').
 </violation>
-<violation beginline="801" endline="801" begincolumn="27" endcolumn="32" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testCalculatePVVImpl1" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;1226&quot; appears 4 times in this file; the first occurrence is on line 801
+<violation beginline="799" endline="799" begincolumn="27" endcolumn="32" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testCalculatePVVImpl1" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;1226&quot; appears 4 times in this file; the first occurrence is on line 799
 </violation>
-<violation beginline="833" endline="833" begincolumn="52" endcolumn="61" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testVerifyDCVVImpl1" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;01000000&quot; appears 6 times in this file; the first occurrence is on line 833
+<violation beginline="831" endline="831" begincolumn="26" endcolumn="31" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testVerifyDCVVImpl1" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;1310&quot; appears 6 times in this file; the first occurrence is on line 831
 </violation>
-<violation beginline="833" endline="833" begincolumn="45" endcolumn="50" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testVerifyDCVVImpl1" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;1310&quot; appears 6 times in this file; the first occurrence is on line 833
+<violation beginline="832" endline="832" begincolumn="30" endcolumn="34" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testVerifyDCVVImpl1" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;226&quot; appears 6 times in this file; the first occurrence is on line 832
 </violation>
-<violation beginline="834" endline="834" begincolumn="30" endcolumn="34" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testVerifyDCVVImpl1" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;226&quot; appears 6 times in this file; the first occurrence is on line 834
+<violation beginline="834" endline="834" begincolumn="39" endcolumn="44" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testVerifyDCVVImpl1" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;3210&quot; appears 6 times in this file; the first occurrence is on line 834
 </violation>
-<violation beginline="836" endline="836" begincolumn="39" endcolumn="44" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testVerifyDCVVImpl1" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;3210&quot; appears 6 times in this file; the first occurrence is on line 836
+<violation beginline="914" endline="914" begincolumn="39" endcolumn="44" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testVerifyCVC3Impl1" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;2710&quot; appears 7 times in this file; the first occurrence is on line 914
 </violation>
-<violation beginline="916" endline="916" begincolumn="39" endcolumn="44" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testVerifyCVC3Impl1" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;2710&quot; appears 7 times in this file; the first occurrence is on line 916
+<violation beginline="915" endline="915" begincolumn="39" endcolumn="48" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testVerifyCVC3Impl1" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;00002710&quot; appears 7 times in this file; the first occurrence is on line 915
 </violation>
-<violation beginline="917" endline="917" begincolumn="39" endcolumn="48" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testVerifyCVC3Impl1" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;00002710&quot; appears 7 times in this file; the first occurrence is on line 917
+<violation beginline="1005" endline="1005" begincolumn="42" endcolumn="59" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testGenerateARPCImpl_VSDC_M1" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;26C8A1042D1CAF3E&quot; appears 5 times in this file; the first occurrence is on line 1,005
 </violation>
-<violation beginline="1007" endline="1007" begincolumn="42" endcolumn="59" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testGenerateARPCImpl_VSDC_M1" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;26C8A1042D1CAF3E&quot; appears 5 times in this file; the first occurrence is on line 1,007
+<violation beginline="1018" endline="1018" begincolumn="42" endcolumn="51" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testGenerateARPCImpl_VSDC_M2" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;00120000&quot; appears 11 times in this file; the first occurrence is on line 1,018
 </violation>
-<violation beginline="1020" endline="1020" begincolumn="42" endcolumn="51" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testGenerateARPCImpl_VSDC_M2" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;00120000&quot; appears 11 times in this file; the first occurrence is on line 1,020
+<violation beginline="1029" endline="1029" begincolumn="42" endcolumn="59" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testGenerateARPCImpl_MCHIP_M1" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;AC8074C9E62EE6EF&quot; appears 5 times in this file; the first occurrence is on line 1,029
 </violation>
-<violation beginline="1031" endline="1031" begincolumn="42" endcolumn="59" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testGenerateARPCImpl_MCHIP_M1" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;AC8074C9E62EE6EF&quot; appears 5 times in this file; the first occurrence is on line 1,031
+<violation beginline="1030" endline="1030" begincolumn="42" endcolumn="47" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testGenerateARPCImpl_MCHIP_M1" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;0012&quot; appears 10 times in this file; the first occurrence is on line 1,030
 </violation>
-<violation beginline="1032" endline="1032" begincolumn="42" endcolumn="47" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testGenerateARPCImpl_MCHIP_M1" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;0012&quot; appears 10 times in this file; the first occurrence is on line 1,032
+<violation beginline="1053" endline="1053" begincolumn="42" endcolumn="59" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testGenerateARPCImpl_CSKD_M1" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;55BE45DD2C9E0CBF&quot; appears 5 times in this file; the first occurrence is on line 1,053
 </violation>
-<violation beginline="1055" endline="1055" begincolumn="42" endcolumn="59" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testGenerateARPCImpl_CSKD_M1" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;55BE45DD2C9E0CBF&quot; appears 5 times in this file; the first occurrence is on line 1,055
+<violation beginline="1117" endline="1117" begincolumn="43" endcolumn="60" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testVerifyARQCImpl_CSKD_P00" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;36DBEE15F36B1E7F&quot; appears 5 times in this file; the first occurrence is on line 1,117
 </violation>
-<violation beginline="1119" endline="1119" begincolumn="43" endcolumn="60" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testVerifyARQCImpl_CSKD_P00" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;36DBEE15F36B1E7F&quot; appears 5 times in this file; the first occurrence is on line 1,119
+<violation beginline="1355" endline="1359" begincolumn="9" endcolumn="40" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testGenerateSM_MACImpl1" variable="apdu" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'apdu' (lines '1,355'-'1,359').
 </violation>
-<violation beginline="1357" endline="1361" begincolumn="9" endcolumn="40" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testGenerateSM_MACImpl1" variable="apdu" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'apdu' (lines '1,357'-'1,361').
+<violation beginline="1371" endline="1375" begincolumn="9" endcolumn="40" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testGenerateSM_MACImpl2" variable="apdu" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'apdu' (lines '1,371'-'1,375').
 </violation>
-<violation beginline="1373" endline="1377" begincolumn="9" endcolumn="40" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testGenerateSM_MACImpl2" variable="apdu" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'apdu' (lines '1,373'-'1,377').
+<violation beginline="1387" endline="1391" begincolumn="9" endcolumn="40" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testGenerateSM_MACImpl3" variable="apdu" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'apdu' (lines '1,387'-'1,391').
 </violation>
-<violation beginline="1389" endline="1393" begincolumn="9" endcolumn="40" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testGenerateSM_MACImpl3" variable="apdu" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'apdu' (lines '1,389'-'1,393').
+<violation beginline="1403" endline="1407" begincolumn="9" endcolumn="40" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testGenerateSM_MACImpl4" variable="apdu" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'apdu' (lines '1,403'-'1,407').
 </violation>
-<violation beginline="1405" endline="1409" begincolumn="9" endcolumn="40" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testGenerateSM_MACImpl4" variable="apdu" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'apdu' (lines '1,405'-'1,409').
+<violation beginline="1420" endline="1424" begincolumn="9" endcolumn="40" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testTranslatePINGenerateSM_MACImpl1" variable="apdu" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'apdu' (lines '1,420'-'1,424').
 </violation>
-<violation beginline="1422" endline="1426" begincolumn="9" endcolumn="40" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testTranslatePINGenerateSM_MACImpl1" variable="apdu" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'apdu' (lines '1,422'-'1,426').
+<violation beginline="1439" endline="1443" begincolumn="9" endcolumn="40" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testTranslatePINGenerateSM_MACImpl2" variable="apdu" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'apdu' (lines '1,439'-'1,443').
 </violation>
-<violation beginline="1441" endline="1445" begincolumn="9" endcolumn="40" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testTranslatePINGenerateSM_MACImpl2" variable="apdu" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'apdu' (lines '1,441'-'1,445').
+<violation beginline="1458" endline="1462" begincolumn="9" endcolumn="40" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testTranslatePINGenerateSM_MACImpl3" variable="apdu" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'apdu' (lines '1,458'-'1,462').
 </violation>
-<violation beginline="1460" endline="1464" begincolumn="9" endcolumn="40" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testTranslatePINGenerateSM_MACImpl3" variable="apdu" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'apdu' (lines '1,460'-'1,464').
+<violation beginline="1477" endline="1481" begincolumn="9" endcolumn="40" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testTranslatePINGenerateSM_MACImpl4" variable="apdu" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'apdu' (lines '1,477'-'1,481').
 </violation>
-<violation beginline="1479" endline="1483" begincolumn="9" endcolumn="40" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testTranslatePINGenerateSM_MACImpl4" variable="apdu" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'apdu' (lines '1,479'-'1,483').
+<violation beginline="1496" endline="1500" begincolumn="9" endcolumn="40" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testTranslatePINGenerateSM_MACImpl5" variable="apdu" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'apdu' (lines '1,496'-'1,500').
 </violation>
-<violation beginline="1498" endline="1502" begincolumn="9" endcolumn="40" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testTranslatePINGenerateSM_MACImpl5" variable="apdu" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'apdu' (lines '1,498'-'1,502').
+<violation beginline="1515" endline="1520" begincolumn="9" endcolumn="40" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testTranslatePINGenerateSM_MACImpl6" variable="apdu" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'apdu' (lines '1,515'-'1,520').
 </violation>
-<violation beginline="1517" endline="1522" begincolumn="9" endcolumn="40" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testTranslatePINGenerateSM_MACImpl6" variable="apdu" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'apdu' (lines '1,517'-'1,522').
+<violation beginline="1533" endline="1534" begincolumn="9" endcolumn="67" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testEncryptDataImplECB_8Bytes" variable="b" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'b' (lines '1,533'-'1,534').
 </violation>
-<violation beginline="1535" endline="1536" begincolumn="9" endcolumn="67" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testEncryptDataImplECB_8Bytes" variable="b" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'b' (lines '1,535'-'1,536').
+<violation beginline="1535" endline="1535" begincolumn="44" endcolumn="61" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testEncryptDataImplECB_8Bytes" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;ABFA6F3C28A8CB0C&quot; appears 5 times in this file; the first occurrence is on line 1,535
 </violation>
-<violation beginline="1537" endline="1537" begincolumn="44" endcolumn="61" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testEncryptDataImplECB_8Bytes" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;ABFA6F3C28A8CB0C&quot; appears 5 times in this file; the first occurrence is on line 1,537
+<violation beginline="1540" endline="1541" begincolumn="9" endcolumn="67" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testEncryptDataImplECB_16Bytes" variable="b" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'b' (lines '1,540'-'1,541').
 </violation>
-<violation beginline="1542" endline="1543" begincolumn="9" endcolumn="67" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testEncryptDataImplECB_16Bytes" variable="b" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'b' (lines '1,542'-'1,543').
+<violation beginline="1547" endline="1549" begincolumn="9" endcolumn="65" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testEncryptDataImplCBC_8Bytes" variable="b" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'b' (lines '1,547'-'1,549').
 </violation>
-<violation beginline="1549" endline="1551" begincolumn="9" endcolumn="65" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testEncryptDataImplCBC_8Bytes" variable="b" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'b' (lines '1,549'-'1,551').
+<violation beginline="1556" endline="1558" begincolumn="9" endcolumn="65" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testEncryptDataImplCBC_16Bytes" variable="b" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'b' (lines '1,556'-'1,558').
 </violation>
-<violation beginline="1558" endline="1560" begincolumn="9" endcolumn="65" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testEncryptDataImplCBC_16Bytes" variable="b" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'b' (lines '1,558'-'1,560').
+<violation beginline="1565" endline="1567" begincolumn="9" endcolumn="66" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testEncryptDataImplCFB8_8Bytes" variable="b" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'b' (lines '1,565'-'1,567').
 </violation>
-<violation beginline="1567" endline="1569" begincolumn="9" endcolumn="66" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testEncryptDataImplCFB8_8Bytes" variable="b" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'b' (lines '1,567'-'1,569').
+<violation beginline="1574" endline="1576" begincolumn="9" endcolumn="66" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testEncryptDataImplCFB8_16Bytes" variable="b" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'b' (lines '1,574'-'1,576').
 </violation>
-<violation beginline="1576" endline="1578" begincolumn="9" endcolumn="66" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testEncryptDataImplCFB8_16Bytes" variable="b" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'b' (lines '1,576'-'1,578').
+<violation beginline="1583" endline="1585" begincolumn="9" endcolumn="67" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testEncryptDataImplCFB64_8Bytes" variable="b" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'b' (lines '1,583'-'1,585').
 </violation>
-<violation beginline="1585" endline="1587" begincolumn="9" endcolumn="67" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testEncryptDataImplCFB64_8Bytes" variable="b" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'b' (lines '1,585'-'1,587').
+<violation beginline="1592" endline="1594" begincolumn="9" endcolumn="67" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testEncryptDataImplCFB64_16Bytes" variable="b" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'b' (lines '1,592'-'1,594').
 </violation>
-<violation beginline="1594" endline="1596" begincolumn="9" endcolumn="67" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testEncryptDataImplCFB64_16Bytes" variable="b" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'b' (lines '1,594'-'1,596').
+<violation beginline="1601" endline="1602" begincolumn="9" endcolumn="67" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testDecryptDataImplECB_8Bytes" variable="b" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'b' (lines '1,601'-'1,602').
 </violation>
-<violation beginline="1603" endline="1604" begincolumn="9" endcolumn="67" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testDecryptDataImplECB_8Bytes" variable="b" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'b' (lines '1,603'-'1,604').
+<violation beginline="1608" endline="1609" begincolumn="9" endcolumn="67" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testDecryptDataImplECB_16Bytes" variable="b" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'b' (lines '1,608'-'1,609').
 </violation>
-<violation beginline="1610" endline="1611" begincolumn="9" endcolumn="67" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testDecryptDataImplECB_16Bytes" variable="b" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'b' (lines '1,610'-'1,611').
+<violation beginline="1615" endline="1617" begincolumn="9" endcolumn="65" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testDecryptDataImplCBC_8Bytes" variable="b" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'b' (lines '1,615'-'1,617').
 </violation>
-<violation beginline="1617" endline="1619" begincolumn="9" endcolumn="65" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testDecryptDataImplCBC_8Bytes" variable="b" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'b' (lines '1,617'-'1,619').
+<violation beginline="1624" endline="1626" begincolumn="9" endcolumn="65" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testDecryptDataImplCBC_16Bytes" variable="b" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'b' (lines '1,624'-'1,626').
 </violation>
-<violation beginline="1626" endline="1628" begincolumn="9" endcolumn="65" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testDecryptDataImplCBC_16Bytes" variable="b" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'b' (lines '1,626'-'1,628').
+<violation beginline="1633" endline="1635" begincolumn="9" endcolumn="66" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testDecryptDataImplCFB8_8Bytes" variable="b" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'b' (lines '1,633'-'1,635').
 </violation>
-<violation beginline="1635" endline="1637" begincolumn="9" endcolumn="66" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testDecryptDataImplCFB8_8Bytes" variable="b" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'b' (lines '1,635'-'1,637').
+<violation beginline="1642" endline="1644" begincolumn="9" endcolumn="66" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testDecryptDataImplCFB8_16Bytes" variable="b" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'b' (lines '1,642'-'1,644').
 </violation>
-<violation beginline="1644" endline="1646" begincolumn="9" endcolumn="66" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testDecryptDataImplCFB8_16Bytes" variable="b" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'b' (lines '1,644'-'1,646').
+<violation beginline="1651" endline="1653" begincolumn="9" endcolumn="67" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testDecryptDataImplCFB64_8Bytes" variable="b" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'b' (lines '1,651'-'1,653').
 </violation>
-<violation beginline="1653" endline="1655" begincolumn="9" endcolumn="67" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testDecryptDataImplCFB64_8Bytes" variable="b" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'b' (lines '1,653'-'1,655').
-</violation>
-<violation beginline="1662" endline="1664" begincolumn="9" endcolumn="67" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testDecryptDataImplCFB64_16Bytes" variable="b" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'b' (lines '1,662'-'1,664').
+<violation beginline="1660" endline="1662" begincolumn="9" endcolumn="67" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.security.jceadapter" class="JCESecurityModuleTest" method="testDecryptDataImplCFB64_16Bytes" variable="b" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'b' (lines '1,660'-'1,662').
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/space/JDBMSpaceTest.java">
