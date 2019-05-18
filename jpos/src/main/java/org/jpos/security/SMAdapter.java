@@ -985,7 +985,7 @@ public interface SMAdapter<T> {
 
 
     /**
-     * Verify a Dynamic Card Verification Value (CVV)
+     * Verify a Dynamic Card Verification Value (dCVV).
      *
      * <p>The EMV "Track 2 Equivalent Data", provided in the authorisation
      * message and originating from the contactless smart card, is the source
@@ -1005,13 +1005,46 @@ public interface SMAdapter<T> {
      *        Key derivation. A 2 byte value must be supplied.
      * @param mkdm ICC Master Key Derivation Method. If {@code null} specified
      *        is assumed.
-     * @return true if dcvv is valid false if not
+     * @return {@code true} if {@code dcvv} is valid, or {@code false} if not
      * @throws SMException
+     * @deprecated Issuers do not always follow the recommended 'yyMM' format.
+     * Using the {@code java.util.Date} prevents from format manipulating to
+     * solve problem. Use {@link #verifydCVV} with string version of {@code expDate}
      */
+    @Deprecated
     boolean verifydCVV(String accountNo, T imkac, String dcvv,
                        Date expDate, String serviceCode, byte[] atc, MKDMethod mkdm)
                      throws SMException;
 
+    /**
+     * Verify a Dynamic Card Verification Value (dCVV).
+     * <p>
+     * The EMV "Track 2 Equivalent Data", provided in the authorisation
+     * message and originating from the contactless smart card, is the source
+     * for the following data elements used in this function:
+     * <ul>
+     *   <li> {@code accountNo}
+     *   <li> {@code expDate}
+     *   <li> {@code serviceCode}
+     *   <li> {@code atc}
+     *   <li> {@code dCVV}
+     * </ul>
+     *
+     * @param accountNo The account number including BIN and the check digit
+     * @param imkac the issuer master key for generating and verifying Application Cryptograms
+     * @param dcvv dynamic Card Verification Value
+     * @param expDate the card expiration date
+     * @param serviceCode the card service code
+     * @param atc application transactin counter. This is used for ICC Master
+     *        Key derivation. A 2 byte value must be supplied.
+     * @param mkdm ICC Master Key Derivation Method. If {@code null} specified
+     *        is assumed.
+     * @return {@code true} if {@code dcvv} is valid, or {@code false} if not
+     * @throws SMException
+     */
+    boolean verifydCVV(String accountNo, T imkac, String dcvv,
+                       String expDate, String serviceCode, byte[] atc, MKDMethod mkdm)
+                     throws SMException;
 
 
     /**
