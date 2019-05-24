@@ -72,9 +72,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 import static java.util.ResourceBundle.getBundle;
 
@@ -659,7 +657,11 @@ public class Q2 implements FileFilter, Runnable {
                 getLog().warn ("init-system-logger", e);
             }
         }
-        getLog().info("Q2 started, deployDir=" + deployDir.getAbsolutePath());
+        Environment env = Environment.getEnvironment();
+        getLog().info("Q2 started, deployDir=" + deployDir.getAbsolutePath() + ", environment=" + env.getName());
+        if (env.getErrorString() != null)
+            getLog().error(env.getErrorString());
+
     }
     public Log getLog () {
         if (log == null) {

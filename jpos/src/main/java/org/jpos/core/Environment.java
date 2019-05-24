@@ -20,6 +20,7 @@ package org.jpos.core;
 
 import org.jpos.util.Loggeable;
 import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.scanner.ScannerException;
 
 import java.io.*;
 import java.util.*;
@@ -37,6 +38,7 @@ public class Environment implements Loggeable {
     private AtomicReference<Properties> propRef = new AtomicReference<>(new Properties());
     private static String SP_PREFIX = "system.property.";
     private static int SP_PREFIX_LENGTH = SP_PREFIX.length();
+    private String errorString;
 
 
     static {
@@ -76,6 +78,9 @@ public class Environment implements Loggeable {
         return s != null ? s : def;
     }
 
+    public String getErrorString() {
+        return errorString;
+    }
 
     /**
      * If property name has the pattern <code>${propname}</code>, this method will
@@ -160,16 +165,21 @@ public class Environment implements Loggeable {
 
     private boolean readYAML () throws IOException {
         File f = new File("cfg/" + name + ".yml");
+        errorString = null;
         if (f.exists() && f.canRead()) {
             Properties properties = new Properties();
             try (InputStream fis = new FileInputStream(f)) {
                 Yaml yaml = new Yaml();
                 Iterable<Object> document = yaml.loadAll(fis);
-                document.forEach(d -> { flat(properties, null, (Map<String,Object>) d); });
+                document.forEach(d -> {
+                    flat(properties, null, (Map<String, Object>) d);
+                });
                 propRef.set(properties);
                 return true;
             } catch (IOException e) {
                 throw e;
+            } catch (ScannerException e) {
+                errorString = "Environment (" + getName() + ") error " + e.getMessage();
             }
         }
         return false;
