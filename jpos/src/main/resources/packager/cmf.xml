@@ -982,6 +982,16 @@
               length="64"
               name="Invoice"
               class="org.jpos.iso.IFB_LLCHAR" />
+      <isofield
+          id="39"
+          length="64"
+          name="Network Name"
+          class="org.jpos.iso.IFB_LLCHAR" />
+      <isofield
+          id="63"
+          length="9999"
+          name="Additional Data - reserved for private use"
+          class="org.jpos.iso.IFB_LLLLCHAR" />
   </isofieldpackager>
   <isofield
       id="114"
