@@ -152,12 +152,12 @@ public class CTCSubElementPackagerTest {
             fail("Expected ISOException to be thrown");
         } catch (ISOException ex) {
             assertEquals("ex.getMessage()", "org.jpos.iso.IFA_LCHAR: Problem unpacking field 0", ex.getMessage());
-            assertNull("ex.getNested().getMessage()", ex.getNested().getMessage());
+            assertEquals("ex.getNested().getMessage()", "Invalid character found. Expected digit.", ex.getNested().getMessage());
         }
     }
 
     @Test
-    public void testUnpackThrowsNegativeArraySizeException() throws Throwable {
+    public void testUnpackThrowsISOExceptionOnBadInputData() throws Throwable {
         byte[] b = new byte[3];
         ISOFieldPackager[] fld = new ISOFieldPackager[3];
         fld[0] = new IFA_LLBNUM();
@@ -166,8 +166,8 @@ public class CTCSubElementPackagerTest {
         try {
             cTCSubElementPackager.unpack(new ISOBinaryField(), b);
             fail("Expected NegativeArraySizeException to be thrown");
-        } catch (NegativeArraySizeException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+        } catch (ISOException ex) {
+            assertEquals("ex.getMessage()", "Invalid character found. Expected digit.", ex.getMessage());
         }
     }
 

@@ -116,7 +116,7 @@ public class GenericSubFieldPackagerTest {
             fail("Expected ISOException to be thrown");
         } catch (ISOException ex) {
             assertEquals("ex.getMessage()", "org.jpos.iso.IFA_LCHAR: Problem unpacking field -1", ex.getMessage());
-            assertNull("ex.getNested().getMessage()", ex.getNested().getMessage());
+            assertEquals("ex.getNested().getMessage()", "Invalid character found. Expected digit.", ex.getNested().getMessage());
         }
     }
 
@@ -190,7 +190,7 @@ public class GenericSubFieldPackagerTest {
             fail("Expected ISOException to be thrown");
         } catch (ISOException ex) {
             assertEquals("ex.getMessage()", "org.jpos.iso.IFA_LLLLCHAR: Problem unpacking field -1", ex.getMessage());
-            assertNull("ex.getNested().getMessage()", ex.getNested().getMessage());
+            assertEquals("ex.getNested().getMessage()", "Invalid character found. Expected digit.", ex.getNested().getMessage());
         }
     }
 
