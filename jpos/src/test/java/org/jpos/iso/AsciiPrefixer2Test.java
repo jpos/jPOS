@@ -35,8 +35,12 @@ public class AsciiPrefixer2Test {
     @Test
     public void testDecodeLength() throws Throwable {
         byte[] bytes = new byte[2];
-        int result = AsciiPrefixer.LL.decodeLength(bytes, 0);
-        assertEquals("result", -528, result);
+        try {
+            int result = AsciiPrefixer.LL.decodeLength(bytes, 0);
+            fail("Expected ISOException to be thrown");
+        } catch (ISOException ex) {
+            assertEquals("ex.getMessage()", "Invalid character found. Expected digit.", ex.getMessage());
+        }
     }
 
     @Test
@@ -47,8 +51,30 @@ public class AsciiPrefixer2Test {
     }
 
     @Test
+    public void testDecodeBadLength1DigitThrowsISOException() throws Throwable {
+        byte[] bytes = new byte[] {'9'+1};
+        try {
+            int result = AsciiPrefixer.L.decodeLength(bytes, 0);
+            fail("Expected ISOException to be thrown");
+        } catch (ISOException ex) {
+            assertEquals("ex.getMessage()", "Invalid character found. Expected digit.", ex.getMessage());
+        }
+    }
+
+    @Test
+    public void testDecodeBadLength2DigitsDoesntFail() throws Throwable {
+        byte[] bytes = new byte[] {'1', '0'-1, '0'};
+        try {
+            int result = AsciiPrefixer.LLL.decodeLength(bytes, 0);
+            fail("Expected ISOException to be thrown");
+        } catch (ISOException ex) {
+            assertEquals("ex.getMessage()", "Invalid character found. Expected digit.", ex.getMessage());
+        }
+    }
+
+    @Test
     public void testDecodeLengthThrowsArrayIndexOutOfBoundsException() throws Throwable {
-        byte[] b = new byte[3];
+        byte[] b = new byte[] {'0', '0', '0'};
         try {
             new AsciiPrefixer(100).decodeLength(b, 0);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
