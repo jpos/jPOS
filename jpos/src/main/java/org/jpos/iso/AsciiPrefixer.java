@@ -86,12 +86,16 @@ public class AsciiPrefixer implements Prefixer
     }
 
     @Override
-    public int decodeLength(byte[] b, int offset)
-    {
+    public int decodeLength(byte[] b, int offset) throws ISOException {
         int len = 0;
         for (int i = 0; i < nDigits; i++)
         {
-            len = len * 10 + b[offset + i] - (byte)'0';
+            byte d = b[offset + i];
+            if(d < '0' || d > '9')
+            {
+                throw new ISOException("Invalid character found. Expected digit.");
+            }
+            len = len * 10 + d - (byte)'0';
         }
         return len;
     }
