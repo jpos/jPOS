@@ -2,7 +2,7 @@
 <pmd xmlns="http://pmd.sourceforge.net/report/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/report/2.0.0 http://pmd.sourceforge.net/report_2_0_0.xsd"
-    version="6.8.0" timestamp="2019-05-26T17:30:47.239">
+    version="6.8.0" timestamp="2019-06-03T16:54:34.256">
 <file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/bsh/BSHActionTest.java">
 <violation beginline="36" endline="36" begincolumn="9" endcolumn="60" rule="UnnecessaryBooleanAssertion" ruleset="Error Prone" package="org.jpos.bsh" class="BSHActionTest" method="testActionPerformed" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#unnecessarybooleanassertion" priority="3">
 assertTrue(true) or similar statements are unnecessary
@@ -826,19 +826,28 @@ Found non-transient, non-static member. Please mark as transient or provide acce
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/iso/AsciiPrefixer2Test.java">
-<violation beginline="39" endline="39" begincolumn="22" endcolumn="29" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.iso" class="AsciiPrefixer2Test" method="testDecodeLength" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;result&quot; appears 4 times in this file; the first occurrence is on line 39
+<violation beginline="39" endline="44" begincolumn="17" endcolumn="64" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="AsciiPrefixer2Test" method="testDecodeLength" variable="result" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'result' (lines '39'-'44').
 </violation>
-<violation beginline="56" endline="56" begincolumn="26" endcolumn="42" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.iso" class="AsciiPrefixer2Test" method="testDecodeLengthThrowsArrayIndexOutOfBoundsException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;ex.getMessage()&quot; appears 7 times in this file; the first occurrence is on line 56
+<violation beginline="40" endline="40" begincolumn="18" endcolumn="53" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.iso" class="AsciiPrefixer2Test" method="testDecodeLength" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;Expected ISOException to be thrown&quot; appears 6 times in this file; the first occurrence is on line 40
 </violation>
-<violation beginline="65" endline="65" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.iso" class="AsciiPrefixer2Test" method="testDecodeLengthThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
+<violation beginline="42" endline="42" begincolumn="26" endcolumn="42" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.iso" class="AsciiPrefixer2Test" method="testDecodeLength" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;ex.getMessage()&quot; appears 10 times in this file; the first occurrence is on line 42
+</violation>
+<violation beginline="57" endline="62" begincolumn="17" endcolumn="63" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="AsciiPrefixer2Test" method="testDecodeBadLength1DigitThrowsISOException" variable="result" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'result' (lines '57'-'62').
+</violation>
+<violation beginline="68" endline="73" begincolumn="17" endcolumn="65" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="AsciiPrefixer2Test" method="testDecodeBadLength2DigitsDoesntFail" variable="result" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'result' (lines '68'-'73').
+</violation>
+<violation beginline="91" endline="91" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.iso" class="AsciiPrefixer2Test" method="testDecodeLengthThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
 Avoid catching NullPointerException; consider removing the cause of the NPE.
 </violation>
-<violation beginline="74" endline="74" begincolumn="22" endcolumn="31" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.iso" class="AsciiPrefixer2Test" method="testEncodeLength" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;b.length&quot; appears 4 times in this file; the first occurrence is on line 74
+<violation beginline="100" endline="100" begincolumn="22" endcolumn="31" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.iso" class="AsciiPrefixer2Test" method="testEncodeLength" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;b.length&quot; appears 4 times in this file; the first occurrence is on line 100
 </violation>
-<violation beginline="140" endline="140" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.iso" class="AsciiPrefixer2Test" method="testEncodeLengthThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
+<violation beginline="166" endline="166" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.iso" class="AsciiPrefixer2Test" method="testEncodeLengthThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
 Avoid catching NullPointerException; consider removing the cause of the NPE.
 </violation>
 </file>
@@ -3238,7 +3247,7 @@ The String literal &quot;Expected ISOException to be thrown&quot; appears 5 time
 <violation beginline="96" endline="96" begincolumn="26" endcolumn="42" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.iso.packager" class="CTCSubElementPackagerTest" method="testPackThrowsISOException1" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
 The String literal &quot;ex.getMessage()&quot; appears 9 times in this file; the first occurrence is on line 96
 </violation>
-<violation beginline="162" endline="163" begincolumn="9" endcolumn="33" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso.packager" class="CTCSubElementPackagerTest" method="testUnpackThrowsNegativeArraySizeException" variable="fld" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+<violation beginline="162" endline="163" begincolumn="9" endcolumn="33" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso.packager" class="CTCSubElementPackagerTest" method="testUnpackThrowsISOExceptionOnBadInputData" variable="fld" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
 Found 'DD'-anomaly for variable 'fld' (lines '162'-'163').
 </violation>
 <violation beginline="180" endline="180" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.iso.packager" class="CTCSubElementPackagerTest" method="testUnpackThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
