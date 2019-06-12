@@ -106,8 +106,12 @@ public class QueryHost implements TransactionParticipant, ISOResponseListener, C
     }
     public void expired (Object handBack) {
         Context ctx = (Context) handBack;
+        String ds = ctx.getString(destination);
+        String muxName = cfg.get ("mux." + ds , "mux." + ds);
+        ctx.getResult().fail(CMF.HOST_UNREACHABLE, Caller.info(), "'%s' does not respond", muxName).FAIL();
         ctx.resume();
     }
+
     public void setConfiguration (Configuration cfg) throws ConfigurationException {
         this.cfg = cfg;
         timeout = cfg.getLong ("timeout", DEFAULT_TIMEOUT);
