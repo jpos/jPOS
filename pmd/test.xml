@@ -2,7 +2,7 @@
 <pmd xmlns="http://pmd.sourceforge.net/report/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/report/2.0.0 http://pmd.sourceforge.net/report_2_0_0.xsd"
-    version="6.8.0" timestamp="2019-06-12T17:25:43.344">
+    version="6.8.0" timestamp="2019-06-14T15:48:35.025">
 <file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/bsh/BSHActionTest.java">
 <violation beginline="36" endline="36" begincolumn="9" endcolumn="60" rule="UnnecessaryBooleanAssertion" ruleset="Error Prone" package="org.jpos.bsh" class="BSHActionTest" method="testActionPerformed" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#unnecessarybooleanassertion" priority="3">
 assertTrue(true) or similar statements are unnecessary
@@ -3975,80 +3975,80 @@ The String literal &quot;arg3&quot; appears 9 times in this file; the first occu
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/q2/Q2Test.java">
-<violation beginline="47" endline="47" begincolumn="14" endcolumn="19" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2Test" variable="m_args" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
+<violation beginline="46" endline="46" begincolumn="14" endcolumn="19" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2Test" variable="m_args" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
 Found non-transient, non-static member. Please mark as transient or provide accessors.
 </violation>
-<violation beginline="48" endline="48" begincolumn="8" endcolumn="11" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2Test" variable="m_q2" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
+<violation beginline="47" endline="47" begincolumn="8" endcolumn="11" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.q2" class="Q2Test" variable="m_q2" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
 Found non-transient, non-static member. Please mark as transient or provide accessors.
+</violation>
+<violation beginline="56" endline="57" begincolumn="9" endcolumn="20" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2Test" method="testAccept" variable="args" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'args' (lines '56'-'57').
 </violation>
 <violation beginline="57" endline="58" begincolumn="9" endcolumn="20" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2Test" method="testAccept" variable="args" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
 Found 'DD'-anomaly for variable 'args' (lines '57'-'58').
 </violation>
-<violation beginline="58" endline="59" begincolumn="9" endcolumn="20" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2Test" method="testAccept" variable="args" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'args' (lines '58'-'59').
+<violation beginline="60" endline="60" begincolumn="21" endcolumn="28" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.q2" class="Q2Test" method="testAccept" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;result&quot; appears 17 times in this file; the first occurrence is on line 60
 </violation>
-<violation beginline="61" endline="61" begincolumn="21" endcolumn="28" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.q2" class="Q2Test" method="testAccept" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;result&quot; appears 17 times in this file; the first occurrence is on line 61
+<violation beginline="65" endline="66" begincolumn="9" endcolumn="20" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2Test" method="testAcceptThrowsNullPointerException" variable="args" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'args' (lines '65'-'66').
 </violation>
-<violation beginline="66" endline="67" begincolumn="9" endcolumn="20" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2Test" method="testAcceptThrowsNullPointerException" variable="args" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'args' (lines '66'-'67').
-</violation>
-<violation beginline="71" endline="71" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.q2" class="Q2Test" method="testAcceptThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
+<violation beginline="70" endline="70" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.q2" class="Q2Test" method="testAcceptThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
 Avoid catching NullPointerException; consider removing the cause of the NPE.
 </violation>
-<violation beginline="72" endline="72" begincolumn="24" endcolumn="40" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.q2" class="Q2Test" method="testAcceptThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;ex.getMessage()&quot; appears 5 times in this file; the first occurrence is on line 72
+<violation beginline="71" endline="71" begincolumn="24" endcolumn="40" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.q2" class="Q2Test" method="testAcceptThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;ex.getMessage()&quot; appears 5 times in this file; the first occurrence is on line 71
+</violation>
+<violation beginline="83" endline="84" begincolumn="9" endcolumn="30" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2Test" method="testDecrypt" variable="args" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'args' (lines '83'-'84').
 </violation>
 <violation beginline="84" endline="85" begincolumn="9" endcolumn="30" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2Test" method="testDecrypt" variable="args" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
 Found 'DD'-anomaly for variable 'args' (lines '84'-'85').
 </violation>
-<violation beginline="85" endline="86" begincolumn="9" endcolumn="30" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2Test" method="testDecrypt" variable="args" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'args' (lines '85'-'86').
+<violation beginline="84" endline="84" begincolumn="19" endcolumn="30" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.q2" class="Q2Test" method="testDecrypt" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;testString&quot; appears 13 times in this file; the first occurrence is on line 84
 </violation>
-<violation beginline="85" endline="85" begincolumn="19" endcolumn="30" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.q2" class="Q2Test" method="testDecrypt" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;testString&quot; appears 13 times in this file; the first occurrence is on line 85
+<violation beginline="107" endline="108" begincolumn="9" endcolumn="30" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2Test" method="testDecryptThrowsNullPointerException" variable="args" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'args' (lines '107'-'108').
 </violation>
-<violation beginline="108" endline="109" begincolumn="9" endcolumn="30" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2Test" method="testDecryptThrowsNullPointerException" variable="args" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'args' (lines '108'-'109').
-</violation>
-<violation beginline="114" endline="114" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.q2" class="Q2Test" method="testDecryptThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
+<violation beginline="113" endline="113" begincolumn="18" endcolumn="37" rule="AvoidCatchingNPE" ruleset="Error Prone" package="org.jpos.q2" class="Q2Test" method="testDecryptThrowsNullPointerException" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingnpe" priority="3">
 Avoid catching NullPointerException; consider removing the cause of the NPE.
 </violation>
-<violation beginline="131" endline="132" begincolumn="9" endcolumn="30" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2Test" method="testGetCommandLineArgs" variable="args" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'args' (lines '131'-'132').
+<violation beginline="130" endline="131" begincolumn="9" endcolumn="30" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2Test" method="testGetCommandLineArgs" variable="args" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'args' (lines '130'-'131').
+</violation>
+<violation beginline="146" endline="147" begincolumn="9" endcolumn="30" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2Test" method="testGetFactory" variable="args" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'args' (lines '146'-'147').
 </violation>
 <violation beginline="147" endline="148" begincolumn="9" endcolumn="30" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2Test" method="testGetFactory" variable="args" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
 Found 'DD'-anomaly for variable 'args' (lines '147'-'148').
 </violation>
-<violation beginline="148" endline="149" begincolumn="9" endcolumn="30" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2Test" method="testGetFactory" variable="args" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'args' (lines '148'-'149').
+<violation beginline="155" endline="156" begincolumn="9" endcolumn="30" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2Test" method="testGetKey" variable="args" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'args' (lines '155'-'156').
 </violation>
 <violation beginline="156" endline="157" begincolumn="9" endcolumn="30" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2Test" method="testGetKey" variable="args" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
 Found 'DD'-anomaly for variable 'args' (lines '156'-'157').
 </violation>
-<violation beginline="157" endline="158" begincolumn="9" endcolumn="30" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2Test" method="testGetKey" variable="args" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'args' (lines '157'-'158').
+<violation beginline="178" endline="179" begincolumn="9" endcolumn="30" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2Test" method="testGetLog2" variable="args" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'args' (lines '178'-'179').
 </violation>
 <violation beginline="179" endline="180" begincolumn="9" endcolumn="30" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2Test" method="testGetLog2" variable="args" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
 Found 'DD'-anomaly for variable 'args' (lines '179'-'180').
 </violation>
-<violation beginline="180" endline="181" begincolumn="9" endcolumn="30" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2Test" method="testGetLog2" variable="args" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'args' (lines '180'-'181').
+<violation beginline="196" endline="196" begincolumn="69" endcolumn="86" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.q2" class="Q2Test" method="testQEntryConstructor" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;testQEntryParam1&quot; appears 11 times in this file; the first occurrence is on line 196
 </violation>
-<violation beginline="197" endline="197" begincolumn="69" endcolumn="86" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.q2" class="Q2Test" method="testQEntryConstructor" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;testQEntryParam1&quot; appears 11 times in this file; the first occurrence is on line 197
+<violation beginline="196" endline="196" begincolumn="89" endcolumn="106" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.q2" class="Q2Test" method="testQEntryConstructor" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;testQEntryParam2&quot; appears 22 times in this file; the first occurrence is on line 196
 </violation>
-<violation beginline="197" endline="197" begincolumn="89" endcolumn="106" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.q2" class="Q2Test" method="testQEntryConstructor" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;testQEntryParam2&quot; appears 22 times in this file; the first occurrence is on line 197
+<violation beginline="196" endline="196" begincolumn="109" endcolumn="126" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.q2" class="Q2Test" method="testQEntryConstructor" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;testQEntryParam3&quot; appears 11 times in this file; the first occurrence is on line 196
 </violation>
-<violation beginline="197" endline="197" begincolumn="109" endcolumn="126" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.q2" class="Q2Test" method="testQEntryConstructor" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;testQEntryParam3&quot; appears 11 times in this file; the first occurrence is on line 197
+<violation beginline="314" endline="315" begincolumn="9" endcolumn="30" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2Test" method="testShutdown" variable="args" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'args' (lines '314'-'315').
 </violation>
-<violation beginline="315" endline="316" begincolumn="9" endcolumn="30" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2Test" method="testShutdown" variable="args" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'args' (lines '315'-'316').
-</violation>
-<violation beginline="323" endline="324" begincolumn="9" endcolumn="30" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2Test" method="testShutdown1" variable="args" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'args' (lines '323'-'324').
+<violation beginline="322" endline="323" begincolumn="9" endcolumn="30" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.q2" class="Q2Test" method="testShutdown1" variable="args" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'args' (lines '322'-'323').
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/test/java/org/jpos/q2/QFactory2Test.java">
