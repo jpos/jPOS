@@ -278,7 +278,8 @@ public class Q2 implements FileFilter, Runnable {
             }
             undeploy();
             try {
-                server.unregisterMBean(loaderName);
+                if (server.isRegistered(loaderName))
+                    server.unregisterMBean(loaderName);
             } catch (InstanceNotFoundException e) {
                 log.error(e);
             }

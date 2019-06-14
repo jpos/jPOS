@@ -42,7 +42,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 
-@Ignore
 public class Q2Test {
     String[] m_args = new String[0];
     Q2 m_q2;
@@ -116,7 +115,7 @@ public class Q2Test {
         }
     }
 
-    @Test
+    @Ignore @Test
     public void testEncryptThrowsIllegalStateException() throws Throwable {
         try {
             m_q2.encrypt(new Document());
@@ -299,7 +298,7 @@ public class Q2Test {
         assertSame("m_q2.getCommandLineArgs()", m_args, m_q2.getCommandLineArgs());
     }
 
-    @Test
+    @Ignore @Test
     public void testRelaxThrowsIllegalArgumentException() throws Throwable {
         String[] args = new String[0];
         try {
@@ -323,6 +322,17 @@ public class Q2Test {
         String[] args = new String[1];
         args[0] = "undeploed:";
         Q2 q2 = new Q2(args);
+        q2.shutdown();
+    }
+
+    @Test
+    public void testAdditionalInstance() {
+        m_q2.start();
+        m_q2.ready(5000L);
+        Q2 q2 = new Q2();
+        q2.start();
+        q2.ready(5000L);
+        m_q2.shutdown();
         q2.shutdown();
     }
 }
