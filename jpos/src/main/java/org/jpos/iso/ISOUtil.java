@@ -25,6 +25,7 @@ import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * various functions needed to pack/unpack ISO-8583 fields
@@ -1663,4 +1664,15 @@ public class ISOUtil {
         return builder.toString();
     }
 
+    public static byte[] decodeHexDump(String s) {
+        return hex2byte(
+            Arrays.stream(s.split("\\r\\n|[\\r\\n]"))
+                .map(x ->
+                         x.replaceAll("^.{4}  ", "").
+                             replaceAll("\\s\\s", " ").
+                             replaceAll("(([0-9A-F][0-9A-F]\\s){1,16}).*$", "$1").
+                             replaceAll("\\s", "")
+                ).collect(Collectors.joining()));
+    }
+    
 }
