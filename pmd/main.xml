@@ -2,7 +2,7 @@
 <pmd xmlns="http://pmd.sourceforge.net/report/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/report/2.0.0 http://pmd.sourceforge.net/report_2_0_0.xsd"
-    version="6.8.0" timestamp="2019-06-16T18:58:54.929">
+    version="6.8.0" timestamp="2019-06-20T17:11:42.036">
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/bsh/BSHAction.java">
 <violation beginline="30" endline="30" begincolumn="15" endcolumn="16" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.bsh" class="BSHAction" variable="ui" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
 Found non-transient, non-static member. Please mark as transient or provide accessors.
@@ -1955,190 +1955,190 @@ Avoid empty catch blocks
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/iso/ISOUtil.java">
-<violation beginline="124" endline="124" begincolumn="16" endcolumn="25" rule="AssignmentInOperand" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="padleft" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#assignmentinoperand" priority="3">
+<violation beginline="125" endline="125" begincolumn="16" endcolumn="25" rule="AssignmentInOperand" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="padleft" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#assignmentinoperand" priority="3">
 Avoid assignments in operands
 </violation>
-<violation beginline="149" endline="149" begincolumn="16" endcolumn="25" rule="AssignmentInOperand" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="padright" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#assignmentinoperand" priority="3">
+<violation beginline="150" endline="150" begincolumn="16" endcolumn="25" rule="AssignmentInOperand" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="padright" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#assignmentinoperand" priority="3">
 Avoid assignments in operands
 </violation>
-<violation beginline="266" endline="266" begincolumn="28" endcolumn="28" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="str2bcd" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
+<violation beginline="267" endline="267" begincolumn="28" endcolumn="28" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="str2bcd" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
 Avoid using Literals in Conditional Statements
 </violation>
-<violation beginline="288" endline="288" begincolumn="22" endcolumn="24" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="bcd2str" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
+<violation beginline="289" endline="289" begincolumn="22" endcolumn="24" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="bcd2str" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
 Avoid using Literals in Conditional Statements
 </violation>
-<violation beginline="323" endline="326" begincolumn="13" endcolumn="49" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="hexString" variable="aB" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'UR'-anomaly for variable 'aB' (lines '323'-'326').
+<violation beginline="324" endline="327" begincolumn="13" endcolumn="49" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="hexString" variable="aB" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'UR'-anomaly for variable 'aB' (lines '324'-'327').
 </violation>
-<violation beginline="335" endline="338" begincolumn="18" endcolumn="30" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="dumpString" variable="aB" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'UR'-anomaly for variable 'aB' (lines '335'-'338').
+<violation beginline="336" endline="339" begincolumn="18" endcolumn="30" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="dumpString" variable="aB" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'UR'-anomaly for variable 'aB' (lines '336'-'339').
 </violation>
-<violation beginline="424" endline="425" begincolumn="9" endcolumn="34" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="bitSet2String" variable="len" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'len' (lines '424'-'425').
+<violation beginline="425" endline="426" begincolumn="9" endcolumn="34" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="bitSet2String" variable="len" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'len' (lines '425'-'426').
 </violation>
-<violation beginline="448" endline="448" begincolumn="17" endcolumn="18" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="bitSet2byte" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
+<violation beginline="449" endline="449" begincolumn="17" endcolumn="18" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="bitSet2byte" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
 Avoid using Literals in Conditional Statements
 </violation>
-<violation beginline="450" endline="450" begincolumn="17" endcolumn="19" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="bitSet2byte" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
+<violation beginline="451" endline="451" begincolumn="17" endcolumn="19" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="bitSet2byte" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
 Avoid using Literals in Conditional Statements
 </violation>
-<violation beginline="475" endline="475" begincolumn="17" endcolumn="18" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="bitSet2byte" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
+<violation beginline="476" endline="476" begincolumn="17" endcolumn="18" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="bitSet2byte" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
 Avoid using Literals in Conditional Statements
 </violation>
-<violation beginline="477" endline="477" begincolumn="17" endcolumn="19" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="bitSet2byte" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
+<violation beginline="478" endline="478" begincolumn="17" endcolumn="19" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="bitSet2byte" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
 Avoid using Literals in Conditional Statements
 </violation>
-<violation beginline="489" endline="494" begincolumn="17" endcolumn="34" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="bitSet2Int" variable="value" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'value' (lines '489'-'494').
+<violation beginline="490" endline="495" begincolumn="17" endcolumn="34" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="bitSet2Int" variable="value" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'value' (lines '490'-'495').
 </violation>
-<violation beginline="489" endline="499" begincolumn="17" endcolumn="43" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="bitSet2Int" variable="value" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'value' (lines '489'-'499').
+<violation beginline="490" endline="500" begincolumn="17" endcolumn="43" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="bitSet2Int" variable="value" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'value' (lines '490'-'500').
 </violation>
-<violation beginline="703" endline="703" begincolumn="29" endcolumn="32" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="int2byte" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
+<violation beginline="704" endline="704" begincolumn="29" endcolumn="32" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="int2byte" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
 Avoid using Literals in Conditional Statements
 </violation>
-<violation beginline="705" endline="705" begincolumn="29" endcolumn="34" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="int2byte" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
+<violation beginline="706" endline="706" begincolumn="29" endcolumn="34" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="int2byte" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
 Avoid using Literals in Conditional Statements
 </violation>
-<violation beginline="707" endline="707" begincolumn="29" endcolumn="36" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="int2byte" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
+<violation beginline="708" endline="708" begincolumn="29" endcolumn="36" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="int2byte" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
 Avoid using Literals in Conditional Statements
 </violation>
-<violation beginline="770" endline="775" begincolumn="17" endcolumn="58" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="formatDouble" variable="prefix" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'prefix' (lines '770'-'775').
+<violation beginline="771" endline="776" begincolumn="17" endcolumn="58" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="formatDouble" variable="prefix" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'prefix' (lines '771'-'776').
 </violation>
-<violation beginline="771" endline="776" begincolumn="13" endcolumn="47" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="formatDouble" variable="suffix" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'suffix' (lines '771'-'776').
+<violation beginline="772" endline="777" begincolumn="13" endcolumn="47" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="formatDouble" variable="suffix" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'suffix' (lines '772'-'777').
 </violation>
-<violation beginline="774" endline="774" begincolumn="23" endcolumn="23" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="formatDouble" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
+<violation beginline="775" endline="775" begincolumn="23" endcolumn="23" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="formatDouble" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
 Avoid using Literals in Conditional Statements
 </violation>
-<violation beginline="777" endline="779" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="formatDouble" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#emptycatchblock" priority="3">
+<violation beginline="778" endline="780" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="formatDouble" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#emptycatchblock" priority="3">
 Avoid empty catch blocks
 </violation>
-<violation beginline="791" endline="793" begincolumn="13" endcolumn="33" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="formatAmount" variable="buf" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'buf' (lines '791'-'793').
+<violation beginline="792" endline="794" begincolumn="13" endcolumn="33" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="formatAmount" variable="buf" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'buf' (lines '792'-'794').
 </violation>
-<violation beginline="792" endline="792" begincolumn="17" endcolumn="19" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="formatAmount" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
+<violation beginline="793" endline="793" begincolumn="17" endcolumn="19" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="formatAmount" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
 Avoid using Literals in Conditional Statements
 </violation>
-<violation beginline="811" endline="842" begincolumn="13" endcolumn="13" rule="MissingBreakInSwitch" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="normalize" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#missingbreakinswitch" priority="3">
+<violation beginline="812" endline="843" begincolumn="13" endcolumn="13" rule="MissingBreakInSwitch" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="normalize" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#missingbreakinswitch" priority="3">
 A switch statement does not contain a break
 </violation>
-<violation beginline="837" endline="837" begincolumn="30" endcolumn="33" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="normalize" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
+<violation beginline="838" endline="838" begincolumn="30" endcolumn="33" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="normalize" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
 Avoid using Literals in Conditional Statements
 </violation>
-<violation beginline="850" endline="860" begincolumn="17" endcolumn="30" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="stripUnicode" variable="escape" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'escape' (lines '850'-'860').
+<violation beginline="851" endline="861" begincolumn="17" endcolumn="30" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="stripUnicode" variable="escape" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'escape' (lines '851'-'861').
 </violation>
-<violation beginline="890" endline="892" begincolumn="13" endcolumn="47" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="protect" variable="lastFourIndex" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'lastFourIndex' (lines '890'-'892').
+<violation beginline="891" endline="893" begincolumn="13" endcolumn="47" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="protect" variable="lastFourIndex" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'lastFourIndex' (lines '891'-'893').
 </violation>
-<violation beginline="890" endline="904" begincolumn="17" endcolumn="33" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="protect" variable="lastFourIndex" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'lastFourIndex' (lines '890'-'904').
+<violation beginline="891" endline="905" begincolumn="17" endcolumn="33" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="protect" variable="lastFourIndex" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'lastFourIndex' (lines '891'-'905').
 </violation>
-<violation beginline="890" endline="923" begincolumn="13" endcolumn="30" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="protect" variable="lastFourIndex" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'lastFourIndex' (lines '890'-'923').
+<violation beginline="891" endline="924" begincolumn="13" endcolumn="30" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="protect" variable="lastFourIndex" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'lastFourIndex' (lines '891'-'924').
 </violation>
-<violation beginline="898" endline="904" begincolumn="17" endcolumn="33" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="protect" variable="lastFourIndex" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'lastFourIndex' (lines '898'-'904').
+<violation beginline="899" endline="905" begincolumn="17" endcolumn="33" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="protect" variable="lastFourIndex" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'lastFourIndex' (lines '899'-'905').
 </violation>
-<violation beginline="898" endline="923" begincolumn="17" endcolumn="39" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="protect" variable="lastFourIndex" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'lastFourIndex' (lines '898'-'923').
+<violation beginline="899" endline="924" begincolumn="17" endcolumn="39" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="protect" variable="lastFourIndex" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'lastFourIndex' (lines '899'-'924').
 </violation>
-<violation beginline="903" endline="903" begincolumn="37" endcolumn="39" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="protect" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
+<violation beginline="904" endline="904" begincolumn="37" endcolumn="39" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="protect" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
 Avoid using Literals in Conditional Statements
 </violation>
-<violation beginline="904" endline="904" begincolumn="17" endcolumn="33" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="protect" variable="lastFourIndex" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'lastFourIndex' (lines '904'-'904').
+<violation beginline="905" endline="905" begincolumn="17" endcolumn="33" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="protect" variable="lastFourIndex" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'lastFourIndex' (lines '905'-'905').
 </violation>
-<violation beginline="904" endline="923" begincolumn="17" endcolumn="33" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="protect" variable="lastFourIndex" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'lastFourIndex' (lines '904'-'923').
+<violation beginline="905" endline="924" begincolumn="17" endcolumn="33" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="protect" variable="lastFourIndex" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'lastFourIndex' (lines '905'-'924').
 </violation>
-<violation beginline="915" endline="915" begincolumn="30" endcolumn="30" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="protect" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
+<violation beginline="916" endline="916" begincolumn="30" endcolumn="30" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="protect" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
 Avoid using Literals in Conditional Statements
 </violation>
-<violation beginline="919" endline="921" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="protect" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#emptycatchblock" priority="3">
+<violation beginline="920" endline="922" begincolumn="11" endcolumn="9" rule="EmptyCatchBlock" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="protect" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#emptycatchblock" priority="3">
 Avoid empty catch blocks
 </violation>
-<violation beginline="929" endline="931" begincolumn="13" endcolumn="56" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="toIntArray" variable="array" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'array' (lines '929'-'931').
+<violation beginline="930" endline="932" begincolumn="13" endcolumn="56" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="toIntArray" variable="array" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'array' (lines '930'-'932').
 </violation>
-<violation beginline="930" endline="933" begincolumn="43" endcolumn="45" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="toIntArray" variable="i" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'i' (lines '930'-'933').
+<violation beginline="931" endline="934" begincolumn="43" endcolumn="45" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="toIntArray" variable="i" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'i' (lines '931'-'934').
 </violation>
-<violation beginline="931" endline="931" begincolumn="13" endcolumn="56" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="toIntArray" variable="array" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'array' (lines '931'-'931').
+<violation beginline="932" endline="932" begincolumn="13" endcolumn="56" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="toIntArray" variable="array" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'array' (lines '932'-'932').
 </violation>
-<violation beginline="936" endline="938" begincolumn="13" endcolumn="37" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="toStringArray" variable="array" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'array' (lines '936'-'938').
+<violation beginline="937" endline="939" begincolumn="13" endcolumn="37" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="toStringArray" variable="array" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'array' (lines '937'-'939').
 </violation>
-<violation beginline="937" endline="940" begincolumn="43" endcolumn="45" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="toStringArray" variable="i" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'i' (lines '937'-'940').
+<violation beginline="938" endline="941" begincolumn="43" endcolumn="45" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="toStringArray" variable="i" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'i' (lines '938'-'941').
 </violation>
-<violation beginline="938" endline="938" begincolumn="13" endcolumn="37" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="toStringArray" variable="array" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'array' (lines '938'-'938').
+<violation beginline="939" endline="939" begincolumn="13" endcolumn="37" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="toStringArray" variable="array" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'array' (lines '939'-'939').
 </violation>
-<violation beginline="1067" endline="1072" begincolumn="13" endcolumn="20" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="unPadLeft" variable="fill" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'fill' (lines '1,067'-'1,072').
+<violation beginline="1068" endline="1073" begincolumn="13" endcolumn="20" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="unPadLeft" variable="fill" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'fill' (lines '1,068'-'1,073').
 </violation>
-<violation beginline="1152" endline="1152" begincolumn="22" endcolumn="22" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="parseInt" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
+<violation beginline="1153" endline="1153" begincolumn="22" endcolumn="22" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="parseInt" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
 Avoid using Literals in Conditional Statements
 </violation>
-<violation beginline="1197" endline="1197" begincolumn="22" endcolumn="22" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="parseInt" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
+<violation beginline="1198" endline="1198" begincolumn="22" endcolumn="22" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="parseInt" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
 Avoid using Literals in Conditional Statements
 </violation>
-<violation beginline="1242" endline="1242" begincolumn="22" endcolumn="22" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="parseInt" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
+<violation beginline="1243" endline="1243" begincolumn="22" endcolumn="22" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="parseInt" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
 Avoid using Literals in Conditional Statements
 </violation>
-<violation beginline="1309" endline="1349" begincolumn="23" endcolumn="50" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="hexdump" variable="ascii" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'ascii' (lines '1,309'-'1,349').
+<violation beginline="1310" endline="1350" begincolumn="23" endcolumn="50" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="hexdump" variable="ascii" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'ascii' (lines '1,310'-'1,350').
 </violation>
-<violation beginline="1310" endline="1349" begincolumn="16" endcolumn="33" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="hexdump" variable="sep" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'sep' (lines '1,310'-'1,349').
+<violation beginline="1311" endline="1350" begincolumn="16" endcolumn="33" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="hexdump" variable="sep" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'sep' (lines '1,311'-'1,350').
 </violation>
-<violation beginline="1311" endline="1349" begincolumn="16" endcolumn="66" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="hexdump" variable="lineSep" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'lineSep' (lines '1,311'-'1,349').
+<violation beginline="1312" endline="1350" begincolumn="16" endcolumn="66" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="hexdump" variable="lineSep" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'lineSep' (lines '1,312'-'1,350').
 </violation>
-<violation beginline="1333" endline="1349" begincolumn="21" endcolumn="48" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="hexdump" variable="ascii" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'ascii' (lines '1,333'-'1,349').
+<violation beginline="1334" endline="1350" begincolumn="21" endcolumn="48" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="hexdump" variable="ascii" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'ascii' (lines '1,334'-'1,350').
 </violation>
-<violation beginline="1371" endline="1371" begincolumn="24" endcolumn="31" rule="AssignmentInOperand" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="trimf" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#assignmentinoperand" priority="3">
+<violation beginline="1372" endline="1372" begincolumn="24" endcolumn="31" rule="AssignmentInOperand" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="trimf" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#assignmentinoperand" priority="3">
 Avoid assignments in operands
 </violation>
-<violation beginline="1372" endline="1372" begincolumn="41" endcolumn="43" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="trimf" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
+<violation beginline="1373" endline="1373" begincolumn="41" endcolumn="43" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="trimf" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
 Avoid using Literals in Conditional Statements
 </violation>
-<violation beginline="1472" endline="1472" begincolumn="25" endcolumn="48" rule="AvoidDecimalLiteralsInBigDecimalConstructor" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="formatAmountConversionRate" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoiddecimalliteralsinbigdecimalconstructor" priority="3">
+<violation beginline="1473" endline="1473" begincolumn="25" endcolumn="48" rule="AvoidDecimalLiteralsInBigDecimalConstructor" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="formatAmountConversionRate" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoiddecimalliteralsinbigdecimalconstructor" priority="3">
 Avoid creating BigDecimal with a decimal (float/double) literal. Use a String literal
 </violation>
-<violation beginline="1474" endline="1476" begincolumn="13" endcolumn="60" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="formatAmountConversionRate" variable="bds" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'bds' (lines '1,474'-'1,476').
+<violation beginline="1475" endline="1477" begincolumn="13" endcolumn="60" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="formatAmountConversionRate" variable="bds" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'bds' (lines '1,475'-'1,477').
 </violation>
-<violation beginline="1475" endline="1475" begincolumn="17" endcolumn="17" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="formatAmountConversionRate" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
+<violation beginline="1476" endline="1476" begincolumn="17" endcolumn="17" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="formatAmountConversionRate" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
 Avoid using Literals in Conditional Statements
 </violation>
-<violation beginline="1509" endline="1514" begincolumn="17" endcolumn="25" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="commaEncode" variable="s" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'UR'-anomaly for variable 's' (lines '1,509'-'1,514').
+<violation beginline="1510" endline="1515" begincolumn="17" endcolumn="25" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="commaEncode" variable="s" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'UR'-anomaly for variable 's' (lines '1,510'-'1,515').
 </violation>
-<violation beginline="1539" endline="1559" begincolumn="17" endcolumn="31" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="commaDecode" variable="escaped" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'escaped' (lines '1,539'-'1,559').
+<violation beginline="1540" endline="1560" begincolumn="17" endcolumn="31" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="commaDecode" variable="escaped" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'escaped' (lines '1,540'-'1,560').
 </violation>
-<violation beginline="1545" endline="1554" begincolumn="13" endcolumn="25" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="commaDecode" variable="escaped" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'escaped' (lines '1,545'-'1,554').
+<violation beginline="1546" endline="1555" begincolumn="13" endcolumn="25" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="commaDecode" variable="escaped" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'escaped' (lines '1,546'-'1,555').
 </violation>
-<violation beginline="1554" endline="1559" begincolumn="13" endcolumn="25" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="commaDecode" variable="escaped" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'escaped' (lines '1,554'-'1,559').
+<violation beginline="1555" endline="1560" begincolumn="13" endcolumn="25" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="commaDecode" variable="escaped" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'escaped' (lines '1,555'-'1,560').
 </violation>
-<violation beginline="1580" endline="1595" begincolumn="13" endcolumn="32" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="calcLUHN" variable="odd" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'odd' (lines '1,580'-'1,595').
+<violation beginline="1581" endline="1596" begincolumn="13" endcolumn="32" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="calcLUHN" variable="odd" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'odd' (lines '1,581'-'1,596').
 </violation>
-<violation beginline="1582" endline="1595" begincolumn="14" endcolumn="20" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="calcLUHN" variable="crc" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'crc' (lines '1,582'-'1,595').
+<violation beginline="1583" endline="1596" begincolumn="14" endcolumn="20" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="calcLUHN" variable="crc" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'crc' (lines '1,583'-'1,596').
 </violation>
-<violation beginline="1637" endline="1664" begincolumn="19" endcolumn="28" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="hexDump" variable="width" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'width' (lines '1,637'-'1,664').
+<violation beginline="1638" endline="1665" begincolumn="19" endcolumn="28" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="hexDump" variable="width" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'width' (lines '1,638'-'1,665').
 </violation>
-<violation beginline="1646" endline="1646" begincolumn="36" endcolumn="97" rule="UseLocaleWithCaseConversions" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="hexDump" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#uselocalewithcaseconversions" priority="3">
+<violation beginline="1647" endline="1647" begincolumn="36" endcolumn="97" rule="UseLocaleWithCaseConversions" ruleset="Error Prone" package="org.jpos.iso" class="ISOUtil" method="hexDump" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#uselocalewithcaseconversions" priority="3">
 When doing a String.toLowerCase()/toUpperCase() call, use a Locale
 </violation>
 </file>
