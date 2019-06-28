@@ -27,6 +27,7 @@ import org.jpos.iso.ISOFieldPackager;
 import org.jpos.iso.ISOMsg;
 import org.jpos.iso.X92_BITMAP;
 import org.jpos.util.Logger;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -50,6 +51,7 @@ public class Base1SubFieldPackagerTest {
         assertFalse("result", result);
     }
 
+    @Ignore
     @Test
     public void testEmitBitMapThrowsArrayIndexOutOfBoundsException() throws Throwable {
         Base1SubFieldPackager f126Packager = new Base1Packager.F126Packager();

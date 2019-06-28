@@ -30,6 +30,7 @@ import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class ISODateTest {
@@ -71,12 +72,14 @@ public class ISODateTest {
         assertThat(result.getTime(), allOf(is(expectedDateWithoutTime), is(not(unwantedDateIncludingTimeValue))));
     }
 
+    @Ignore
     @Test
     public void testParseStringTimeZoneAus() {
         java.util.Date result = ISODate.parseDateTime("27/12/2010 13:44:55", aus);
         assertThat(result.getTime(), is(1293421495000L));
     }
 
+    @Ignore
     @Test
     public void testParseStringTimeZoneAusNonsenseDateReturnsValue() {
         java.util.Date result = ISODate.parseDateTime("31/02/2011 13:44:55", aus);

@@ -366,6 +366,7 @@ public class GenericValidatingPackagerTest {
                 "testGenericValidatorContentHandlerLocalName", "testGenericValidatorContentHandlerQName", atts);
     }
 
+    @Ignore
     @Test
     public void testGenericValidatorContentHandlerStartElementThrowsSAXException() throws Throwable {
         GenericValidatingPackager.GenericValidatorContentHandler genericValidatorContentHandler = new GenericValidatingPackager().new GenericValidatorContentHandler();
@@ -381,6 +382,7 @@ public class GenericValidatingPackagerTest {
         }
     }
 
+    @Ignore
     @Test
     public void testGenericValidatorContentHandlerStartElementThrowsSAXException1() throws Throwable {
         GenericValidatingPackager.GenericValidatorContentHandler genericValidatorContentHandler = new GenericValidatingPackager().new GenericValidatorContentHandler();
@@ -396,6 +398,7 @@ public class GenericValidatingPackagerTest {
         }
     }
 
+    @Ignore
     @Test
     public void testGenericValidatorContentHandlerStartElementThrowsSAXException10() throws Throwable {
         GenericValidatingPackager.GenericValidatorContentHandler genericValidatorContentHandler = new GenericValidatingPackager().new GenericValidatorContentHandler();
@@ -410,6 +413,7 @@ public class GenericValidatingPackagerTest {
         }
     }
 
+    @Ignore
     @Test
     public void testGenericValidatorContentHandlerStartElementThrowsSAXException11() throws Throwable {
         GenericValidatingPackager.GenericValidatorContentHandler genericValidatorContentHandler = new GenericValidatingPackager().new GenericValidatorContentHandler();
@@ -423,6 +427,7 @@ public class GenericValidatingPackagerTest {
         }
     }
 
+    @Ignore
     @Test
     public void testGenericValidatorContentHandlerStartElementThrowsSAXException2() throws Throwable {
         GenericValidatingPackager.GenericValidatorContentHandler genericValidatorContentHandler = new GenericValidatingPackager().new GenericValidatorContentHandler();
@@ -437,6 +442,7 @@ public class GenericValidatingPackagerTest {
         }
     }
 
+    @Ignore
     @Test
     public void testGenericValidatorContentHandlerStartElementThrowsSAXException3() throws Throwable {
         GenericValidatingPackager.GenericValidatorContentHandler genericValidatorContentHandler = new GenericValidatingPackager().new GenericValidatorContentHandler();
@@ -450,6 +456,7 @@ public class GenericValidatingPackagerTest {
         }
     }
 
+    @Ignore
     @Test
     public void testGenericValidatorContentHandlerStartElementThrowsSAXException4() throws Throwable {
         GenericValidatingPackager.GenericValidatorContentHandler genericValidatorContentHandler = new GenericValidatingPackager().new GenericValidatorContentHandler();
@@ -463,6 +470,7 @@ public class GenericValidatingPackagerTest {
         }
     }
 
+    @Ignore
     @Test
     public void testGenericValidatorContentHandlerStartElementThrowsSAXException5() throws Throwable {
         GenericValidatingPackager.GenericValidatorContentHandler genericValidatorContentHandler = new GenericValidatingPackager().new GenericValidatorContentHandler();
@@ -478,6 +486,7 @@ public class GenericValidatingPackagerTest {
         }
     }
 
+    @Ignore
     @Test
     public void testGenericValidatorContentHandlerStartElementThrowsSAXException6() throws Throwable {
         GenericValidatingPackager.GenericValidatorContentHandler genericValidatorContentHandler = new GenericValidatingPackager().new GenericValidatorContentHandler();
@@ -491,6 +500,7 @@ public class GenericValidatingPackagerTest {
         }
     }
 
+    @Ignore
     @Test
     public void testGenericValidatorContentHandlerStartElementThrowsSAXException7() throws Throwable {
         GenericValidatingPackager.GenericValidatorContentHandler genericValidatorContentHandler = new GenericValidatingPackager().new GenericValidatorContentHandler();
@@ -506,6 +516,7 @@ public class GenericValidatingPackagerTest {
         }
     }
 
+    @Ignore
     @Test
     public void testGenericValidatorContentHandlerStartElementThrowsSAXException8() throws Throwable {
         GenericValidatingPackager.GenericValidatorContentHandler genericValidatorContentHandler = new GenericValidatingPackager().new GenericValidatorContentHandler();
@@ -520,6 +531,7 @@ public class GenericValidatingPackagerTest {
         }
     }
 
+    @Ignore
     @Test
     public void testGenericValidatorContentHandlerStartElementThrowsSAXException9() throws Throwable {
         GenericValidatingPackager.GenericValidatorContentHandler genericValidatorContentHandler = new GenericValidatingPackager().new GenericValidatorContentHandler();

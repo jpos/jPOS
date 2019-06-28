@@ -266,6 +266,7 @@ public class GenericPackagerTest {
                 "testGenericContentHandlerQName", atts);
     }
 
+    @Ignore
     @Test
     public void testGenericContentHandlerStartElementThrowsSAXException() throws Throwable {
         GenericPackager.GenericContentHandler genericContentHandler = new GenericPackager().new GenericContentHandler();
@@ -279,6 +280,7 @@ public class GenericPackagerTest {
         }
     }
 
+    @Ignore
     @Test
     public void testGenericContentHandlerStartElementThrowsSAXException1() throws Throwable {
         GenericPackager.GenericContentHandler genericContentHandler = new GenericValidatingPackager().new GenericContentHandler();
@@ -294,6 +296,7 @@ public class GenericPackagerTest {
         }
     }
 
+    @Ignore
     @Test
     public void testGenericContentHandlerStartElementThrowsSAXException2() throws Throwable {
         GenericPackager.GenericContentHandler genericContentHandler = new GenericSubFieldPackager().new GenericContentHandler();
@@ -308,6 +311,7 @@ public class GenericPackagerTest {
         }
     }
 
+    @Ignore
     @Test
     public void testGenericContentHandlerStartElementThrowsSAXException3() throws Throwable {
         GenericPackager.GenericContentHandler genericContentHandler = new GenericSubFieldPackager().new GenericContentHandler();
@@ -323,6 +327,7 @@ public class GenericPackagerTest {
         }
     }
 
+    @Ignore
     @Test
     public void testGenericContentHandlerStartElementThrowsSAXException4() throws Throwable {
         GenericPackager.GenericContentHandler genericContentHandler = new X92GenericPackager().new GenericContentHandler();
@@ -348,6 +353,7 @@ public class GenericPackagerTest {
         assertSame("result", iFA_AMOUNT, result);
     }
 
+    @Ignore
     @Test
     public void testGetBitMapfieldPackagerThrowsArrayIndexOutOfBoundsException() throws Throwable {
         ISOFieldPackager[] fld = new ISOFieldPackager[0];

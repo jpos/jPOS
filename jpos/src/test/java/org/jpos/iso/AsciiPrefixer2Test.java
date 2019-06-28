@@ -22,6 +22,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class AsciiPrefixer2Test {
@@ -72,6 +73,7 @@ public class AsciiPrefixer2Test {
         }
     }
 
+    @Ignore
     @Test
     public void testDecodeLengthThrowsArrayIndexOutOfBoundsException() throws Throwable {
         byte[] b = new byte[] {'0', '0', '0'};
@@ -107,6 +109,7 @@ public class AsciiPrefixer2Test {
         assertEquals("bytes[0]", (byte) 48, bytes[0]);
     }
 
+    @Ignore
     @Test
     public void testEncodeLengthThrowsArrayIndexOutOfBoundsException() throws Throwable {
         byte[] b = new byte[0];

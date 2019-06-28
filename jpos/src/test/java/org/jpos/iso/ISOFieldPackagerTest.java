@@ -32,6 +32,7 @@ import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 
 import org.jpos.iso.packager.Base1_BITMAP126;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class ISOFieldPackagerTest {
@@ -92,6 +93,7 @@ public class ISOFieldPackagerTest {
         }
     }
 
+    @Ignore
     @Test
     public void testReadBytesThrowsNegativeArraySizeException() throws Throwable {
         InputStream in = new ByteArrayInputStream("testString".getBytes());
@@ -148,6 +150,7 @@ public class ISOFieldPackagerTest {
         assertEquals("(ISOVField) c.value", "", ((ISOField) c).value);
     }
 
+    @Ignore
     @Test
     public void testUnpackThrowsArrayIndexOutOfBoundsException() throws Throwable {
         byte[] bytes = new byte[2];
@@ -178,6 +181,7 @@ public class ISOFieldPackagerTest {
         }
     }
 
+    @Ignore
     @Test
     public void testUnpackThrowsNegativeArraySizeException() throws Throwable {
         byte[] bytes = new byte[0];
@@ -203,6 +207,7 @@ public class ISOFieldPackagerTest {
         }
     }
 
+    @Ignore
     @Test
     public void testUnpackThrowsStringIndexOutOfBoundsException() throws Throwable {
         ISOFieldPackager iFB_AMOUNT = new IFB_AMOUNT();

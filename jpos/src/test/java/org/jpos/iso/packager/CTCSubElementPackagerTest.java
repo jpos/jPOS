@@ -35,6 +35,7 @@ import org.jpos.iso.ISOFieldPackager;
 import org.jpos.iso.ISOMsg;
 import org.jpos.iso.ISOVField;
 import org.jpos.util.Logger;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -109,6 +110,7 @@ public class CTCSubElementPackagerTest {
         }
     }
 
+    @Ignore
     @Test
     public void testUnpackThrowsArrayIndexOutOfBoundsException() throws Throwable {
         CTCSubElementPackager cTCSubElementPackager = new CTCSubElementPackager();

@@ -28,6 +28,7 @@ import org.jpos.iso.ISOBinaryField;
 import org.jpos.iso.ISOBitMap;
 import org.jpos.iso.ISOComponent;
 import org.jpos.iso.ISOMsg;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class Base1_BITMAP126Test {
@@ -86,6 +87,7 @@ public class Base1_BITMAP126Test {
         }
     }
 
+    @Ignore
     @Test
     public void testUnpackThrowsArrayIndexOutOfBoundsException() throws Throwable {
         byte[] b = new byte[0];

@@ -23,6 +23,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class QExecTest {
@@ -89,7 +90,7 @@ public class QExecTest {
         }
     }
 
-
+    @Ignore
     @Test
     public void testStopServiceThrowsArrayIndexOutOfBoundsException() throws Throwable {
         QExec qExec = new QExec();

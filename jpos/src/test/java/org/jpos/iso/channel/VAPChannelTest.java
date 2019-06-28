@@ -44,6 +44,7 @@ import org.jpos.iso.packager.GenericPackager;
 import org.jpos.iso.packager.ISO87BPackager;
 import org.jpos.iso.packager.ISO93APackager;
 import org.jpos.iso.packager.XMLPackager;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -147,6 +148,7 @@ public class VAPChannelTest {
         }
     }
 
+    @Ignore
     @Test
     public void testSendMessageHeaderThrowsArrayIndexOutOfBoundsException() throws Throwable {
         VAPChannel vAPChannel = new VAPChannel();
@@ -291,6 +293,7 @@ public class VAPChannelTest {
         assertFalse("result", result);
     }
 
+    @Ignore
     @Test
     public void testShouldIgnoreThrowsArrayIndexOutOfBoundsException() throws Throwable {
         VAPChannel vAPChannel = new VAPChannel();

@@ -66,6 +66,7 @@ import org.jpos.iso.packager.XMLPackager;
 import org.jpos.util.LogEvent;
 import org.jpos.util.Logger;
 import org.jpos.util.NameRegistrar;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -683,6 +684,7 @@ public class BaseChannelTest {
         }
     }
 
+    @Ignore
     @Test
     public void testReadHeaderThrowsNegativeArraySizeException() throws Throwable {
         BaseChannel nACChannel = new NACChannel();

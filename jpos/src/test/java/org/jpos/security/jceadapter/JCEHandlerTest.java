@@ -31,6 +31,7 @@ import java.security.Provider;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class JCEHandlerTest {
@@ -186,6 +187,7 @@ public class JCEHandlerTest {
         }
     }
 
+    @Ignore
     @Test
     public void testEncryptDESKeyThrowsArrayIndexOutOfBoundsException() throws Throwable {
         byte[] bytes = new byte[3];
@@ -231,6 +233,7 @@ public class JCEHandlerTest {
         }
     }
 
+    @Ignore
     @Test
     public void testExtractDESKeyMaterialThrowsArrayIndexOutOfBoundsException() throws Throwable {
         byte[] clearKeyBytes = new byte[1];
@@ -299,6 +302,7 @@ public class JCEHandlerTest {
         assertEquals("result.getAlgorithm()", "DESede", result.getAlgorithm());
     }
 
+    @Ignore
     @Test
     public void testFormDESKeyThrowsArrayIndexOutOfBoundsException() throws Throwable {
         byte[] clearKeyBytes = new byte[1];

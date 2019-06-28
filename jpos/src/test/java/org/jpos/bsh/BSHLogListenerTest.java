@@ -31,6 +31,7 @@ import org.jpos.core.Configuration;
 import org.jpos.core.SimpleConfiguration;
 import org.jpos.iso.channel.LogChannel;
 import org.jpos.util.LogEvent;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import bsh.NameSpace;
@@ -277,6 +278,7 @@ public class BSHLogListenerTest {
         assertEquals("result.length", 0, result.length);
     }
 
+    @Ignore
     @Test
     public void testReplaceThrowsArrayIndexOutOfBoundsException() throws Throwable {
         String[] src = new String[84];

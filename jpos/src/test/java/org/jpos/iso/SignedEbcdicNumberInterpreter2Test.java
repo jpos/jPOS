@@ -23,6 +23,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class SignedEbcdicNumberInterpreter2Test {
@@ -104,6 +105,7 @@ public class SignedEbcdicNumberInterpreter2Test {
         new SignedEbcdicNumberInterpreter().uninterpret(rawData, -48, 49);
     }
 
+    @Ignore
     @Test
     public void testUninterpretThrowsArrayIndexOutOfBoundsException1() throws Throwable {
         byte[] rawData = new byte[3];
