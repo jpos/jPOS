@@ -26,6 +26,9 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import static org.apache.commons.lang3.JavaVersion.JAVA_10;
+import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
+
 import java.io.ByteArrayInputStream;
 import java.util.EmptyStackException;
 import java.util.HashMap;
@@ -375,7 +378,11 @@ public class GenericValidatingPackagerTest {
                     "testGenericValidatorContentHandlerQName", atts);
             fail("Expected SAXException to be thrown");
         } catch (SAXException ex) {
-            assertEquals("ex.getMessage()", "null", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "null", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "java.lang.NumberFormatException: null", ex.getMessage());
+            }
             assertEquals("ex.getException().getMessage()", "null", ex.getException().getMessage());
             assertEquals("(AttributesImpl) atts.getLength()", 0, atts.getLength());
         }
@@ -390,7 +397,11 @@ public class GenericValidatingPackagerTest {
                     "testGenericValidatorContentHandlerQName", atts);
             fail("Expected SAXException to be thrown");
         } catch (SAXException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertNull("ex.getMessage()", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "java.lang.NullPointerException", ex.getMessage());
+            }
             assertNull("ex.getException().getMessage()", ex.getException().getMessage());
             assertEquals("(AttributesImpl) atts.getLength()", 0, atts.getLength());
         }
@@ -405,7 +416,11 @@ public class GenericValidatingPackagerTest {
                     "testGenericValidatorContentHandlerQName", atts);
             fail("Expected SAXException to be thrown");
         } catch (SAXException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertNull("ex.getMessage()", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "java.lang.NullPointerException", ex.getMessage());
+            }
             assertNull("ex.getException().getMessage()", ex.getException().getMessage());
         }
     }
@@ -418,7 +433,11 @@ public class GenericValidatingPackagerTest {
                     "testGenericValidatorContentHandlerQName", null);
             fail("Expected SAXException to be thrown");
         } catch (SAXException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertNull("ex.getMessage()", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "java.lang.NullPointerException", ex.getMessage());
+            }
             assertNull("ex.getException().getMessage()", ex.getException().getMessage());
         }
     }
@@ -432,7 +451,11 @@ public class GenericValidatingPackagerTest {
                     "testGenericValidatorContentHandlerQName", atts);
             fail("Expected SAXException to be thrown");
         } catch (SAXException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertNull("ex.getMessage()", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "java.lang.NullPointerException", ex.getMessage());
+            }
             assertNull("ex.getException().getMessage()", ex.getException().getMessage());
         }
     }
@@ -445,7 +468,11 @@ public class GenericValidatingPackagerTest {
                     "testGenericValidatorContentHandlerQName", null);
             fail("Expected SAXException to be thrown");
         } catch (SAXException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertNull("ex.getMessage()", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "java.lang.NullPointerException", ex.getMessage());
+            }
             assertNull("ex.getException().getMessage()", ex.getException().getMessage());
         }
     }
@@ -458,7 +485,11 @@ public class GenericValidatingPackagerTest {
                     "testGenericValidatorContentHandlerQName", null);
             fail("Expected SAXException to be thrown");
         } catch (SAXException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertNull("ex.getMessage()", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "java.lang.NullPointerException", ex.getMessage());
+            }
             assertNull("ex.getException().getMessage()", ex.getException().getMessage());
         }
     }
@@ -472,7 +503,11 @@ public class GenericValidatingPackagerTest {
                     "testGenericValidatorContentHandlerQName", atts);
             fail("Expected SAXException to be thrown");
         } catch (SAXException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertNull("ex.getMessage()", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "java.lang.NullPointerException", ex.getMessage());
+            }
             assertNull("ex.getException().getMessage()", ex.getException().getMessage());
             assertEquals("(AttributesImpl) atts.getLength()", 0, atts.getLength());
         }
@@ -486,7 +521,11 @@ public class GenericValidatingPackagerTest {
                     "testGenericValidatorContentHandlerQName", null);
             fail("Expected SAXException to be thrown");
         } catch (SAXException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertNull("ex.getMessage()", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "java.lang.NullPointerException", ex.getMessage());
+            }
             assertNull("ex.getException().getMessage()", ex.getException().getMessage());
         }
     }
@@ -500,7 +539,11 @@ public class GenericValidatingPackagerTest {
                     "testGenericValidatorContentHandlerQName", atts);
             fail("Expected SAXException to be thrown");
         } catch (SAXException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertNull("ex.getMessage()", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "java.lang.NullPointerException", ex.getMessage());
+            }
             assertNull("ex.getException().getMessage()", ex.getException().getMessage());
             assertEquals("(AttributesImpl) atts.getLength()", 0, atts.getLength());
         }
@@ -515,7 +558,11 @@ public class GenericValidatingPackagerTest {
                     "testGenericValidatorContentHandlerQName", null);
             fail("Expected SAXException to be thrown");
         } catch (SAXException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertNull("ex.getMessage()", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "java.lang.NullPointerException", ex.getMessage());
+            }
             assertNull("ex.getException().getMessage()", ex.getException().getMessage());
         }
     }
@@ -529,7 +576,11 @@ public class GenericValidatingPackagerTest {
                     "testGenericValidatorContentHandlerQName", atts);
             fail("Expected SAXException to be thrown");
         } catch (SAXException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertNull("ex.getMessage()", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "java.lang.NullPointerException", ex.getMessage());
+            }
             assertNull("ex.getException().getMessage()", ex.getException().getMessage());
             assertEquals("(AttributesImpl) atts.getLength()", 0, atts.getLength());
         }

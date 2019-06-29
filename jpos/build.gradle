@@ -28,10 +28,12 @@ dependencies {
     compile libraries.hdrhistogram
     compile libraries.yaml;
 
+    testCompile libraries.commons_lang3
     testCompile libraries.hamcrest
     testCompile libraries.fest_assert
     testCompile libraries.xmlunit
     testCompile libraries.junit
+    testRuntime libraries.junit_vintage
     testCompile(libraries.mockito) {
         exclude(module: 'hamcrest-core')
     }

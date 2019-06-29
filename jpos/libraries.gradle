@@ -4,6 +4,7 @@ ext {
         jdbm: 'jdbm:jdbm:1.0',
         sleepycat_je: 'com.sleepycat:je:18.3.12',
         commons_cli: 'commons-cli:commons-cli:1.4',
+        commons_lang3: 'org.apache.commons:commons-lang3:3.9',
         jline: 'org.jline:jline:3.9.0',
         beanshell: 'org.apache-extras.beanshell:bsh:2.0b6',
         javatuples: 'org.javatuples:javatuples:1.2',
@@ -13,6 +14,7 @@ ext {
         fest_assert: 'org.easytesting:fest-assert:1.4',
         xmlunit: 'xmlunit:xmlunit:1.6',
         junit: 'junit:junit:4.12',
+        junit_vintage: 'org.junit.vintage:junit-vintage-engine:5.4.2',
         bouncycastle: [
             'org.bouncycastle:bcprov-jdk15on:1.61',
             'org.bouncycastle:bcpg-jdk15on:1.61'

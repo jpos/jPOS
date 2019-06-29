@@ -23,6 +23,9 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import static org.apache.commons.lang3.JavaVersion.JAVA_10;
+import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
+
 import org.junit.Test;
 
 public class AsciiInterpreter2Test {
@@ -88,7 +91,11 @@ public class AsciiInterpreter2Test {
             new AsciiInterpreter().uninterpret(rawData, 100, -1);
             fail("Expected NegativeArraySizeException to be thrown");
         } catch (NegativeArraySizeException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertNull("ex.getMessage()", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "-1", ex.getMessage());
+            }
         }
     }
 

@@ -25,6 +25,9 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 
+import static org.apache.commons.lang3.JavaVersion.JAVA_10;
+import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
+
 import java.security.Key;
 import java.security.Provider;
 
@@ -196,7 +199,11 @@ public class JCEHandlerTest {
             new JCEHandler((Provider) null).encryptDESKey((short) 64, clearDESKey, encryptingKey);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertNull("ex.getMessage()", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "arraycopy: last source index 8 out of bounds for byte[1]", ex.getMessage());
+            }
             assertEquals("(SecretKeySpec) clearDESKey.getAlgorithm()", "DESde", clearDESKey.getAlgorithm());
             assertEquals("(SecretKeySpec) encryptingKey.getAlgorithm()", "testJCEHandlerParam2",
                     encryptingKey.getAlgorithm());
@@ -240,7 +247,11 @@ public class JCEHandlerTest {
             jCEHandler2.extractDESKeyMaterial((short) 128, clearDESKey);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertNull("ex.getMessage()", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "arraycopy: last source index 16 out of bounds for byte[1]", ex.getMessage());
+            }
             assertEquals("(SecretKeySpec) clearDESKey.getAlgorithm()", "DESede", clearDESKey.getAlgorithm());
         }
     }
@@ -306,7 +317,11 @@ public class JCEHandlerTest {
             jCEHandler.formDESKey((short) 128, clearKeyBytes);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertNull("ex.getMessage()", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "arraycopy: last source index 16 out of bounds for byte[1]", ex.getMessage());
+            }
         }
     }
 

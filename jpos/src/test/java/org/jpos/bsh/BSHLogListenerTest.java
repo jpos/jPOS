@@ -23,6 +23,9 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.fail;
 
+import static org.apache.commons.lang3.JavaVersion.JAVA_10;
+import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Properties;
@@ -291,7 +294,11 @@ public class BSHLogListenerTest {
             BSHLogListener.replace(src, patterns, to);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "0", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "0", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index 0 out of bounds for length 0", ex.getMessage());
+            }
         }
     }
 

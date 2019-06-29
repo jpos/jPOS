@@ -26,6 +26,9 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.*;
 
+import static org.apache.commons.lang3.JavaVersion.JAVA_10;
+import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.*;
@@ -690,7 +693,11 @@ public class BaseChannelTest {
             nACChannel.readHeader(-1);
             fail("Expected NegativeArraySizeException to be thrown");
         } catch (NegativeArraySizeException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertNull("ex.getMessage()", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "-1", ex.getMessage());
+            }
             assertNull("(NACChannel) nACChannel.serverIn", ((NACChannel) nACChannel).serverIn);
         }
     }

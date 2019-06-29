@@ -107,8 +107,7 @@ public class ISODate {
     public static Date parseDateTime(String s, TimeZone timeZone) {
         Date d = null;
         SimpleDateFormat df =
-            (SimpleDateFormat) DateFormat.getDateTimeInstance(
-                DateFormat.SHORT, DateFormat.MEDIUM, Locale.UK);
+            new SimpleDateFormat("dd/MM/yy hh:mm:ss", Locale.UK);
 
         df.setTimeZone (timeZone);
         try {

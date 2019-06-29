@@ -22,6 +22,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
+import static org.apache.commons.lang3.JavaVersion.JAVA_1_8;
+import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
+
 import org.junit.Test;
 
 public class RightTPadderTest {
@@ -61,7 +64,11 @@ public class RightTPadderTest {
             new RightTPadder(' ').pad("testRightTPadderData", -1);
             fail("Expected StringIndexOutOfBoundsException to be thrown");
         } catch (StringIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "String index out of range: -1", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_1_8)) {
+                assertEquals("ex.getMessage()", "String index out of range: -1", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "begin 0, end -1, length 20", ex.getMessage());
+            }
         }
     }
 }

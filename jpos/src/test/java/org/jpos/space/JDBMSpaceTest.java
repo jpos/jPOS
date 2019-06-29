@@ -24,6 +24,9 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import static org.apache.commons.lang3.JavaVersion.JAVA_10;
+import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
+
 import org.junit.Test;
 
 public class JDBMSpaceTest {
@@ -49,7 +52,11 @@ public class JDBMSpaceTest {
             JDBMSpace.getLong(b, -1);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "-1", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "-1", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index -1 out of bounds for length 9", ex.getMessage());
+            }
         }
     }
 
@@ -60,7 +67,11 @@ public class JDBMSpaceTest {
             JDBMSpace.getLong(b, -4);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "-1", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "-1", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index -1 out of bounds for length 7", ex.getMessage());
+            }
         }
     }
 
@@ -71,7 +82,11 @@ public class JDBMSpaceTest {
             JDBMSpace.getLong(b, -6);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "-1", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "-1", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index -1 out of bounds for length 5", ex.getMessage());
+            }
         }
     }
 
@@ -82,7 +97,11 @@ public class JDBMSpaceTest {
             JDBMSpace.getLong(b, -7);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "-1", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "-1", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index -1 out of bounds for length 2", ex.getMessage());
+            }
         }
     }
 
@@ -93,7 +112,11 @@ public class JDBMSpaceTest {
             JDBMSpace.getLong(b, -2);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "-1", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "-1", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index -1 out of bounds for length 8", ex.getMessage());
+            }
         }
     }
 
@@ -104,7 +127,11 @@ public class JDBMSpaceTest {
             JDBMSpace.getLong(b, -3);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "-1", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "-1", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index -1 out of bounds for length 5", ex.getMessage());
+            }
         }
     }
 
@@ -115,7 +142,11 @@ public class JDBMSpaceTest {
             JDBMSpace.getLong(b, -5);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "-1", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "-1", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index -1 out of bounds for length 3", ex.getMessage());
+            }
         }
     }
 
@@ -181,7 +212,11 @@ public class JDBMSpaceTest {
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
             assertEquals("b[0]", (byte) 0, b[0]);
-            assertEquals("ex.getMessage()", "-1", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "-1", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index -1 out of bounds for length 2", ex.getMessage());
+            }
             assertEquals("b.length", 2, b.length);
         }
     }
@@ -193,7 +228,11 @@ public class JDBMSpaceTest {
             JDBMSpace.putLong(b, 100, 100L);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "107", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "107", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index 107 out of bounds for length 3", ex.getMessage());
+            }
             assertEquals("b.length", 3, b.length);
         }
     }
@@ -241,7 +280,11 @@ public class JDBMSpaceTest {
             ref.deserialize(serialized);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "7", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "7", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index 7 out of bounds for length 2", ex.getMessage());
+            }
             assertEquals("ref.recid", 100L, ref.recid);
             assertEquals("ref.expires", 1000L, ref.expires);
             assertEquals("ref.next", -1L, ref.next);

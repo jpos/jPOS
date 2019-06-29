@@ -27,6 +27,9 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.BDDMockito.given;
 
+import static org.apache.commons.lang3.JavaVersion.JAVA_10;
+import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
+
 import java.net.ServerSocket;
 
 import org.jpos.core.Configuration;
@@ -161,7 +164,11 @@ public class VAPChannelTest {
             vAPChannel.sendMessageHeader(m, 100);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "3", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "3", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index 3 out of bounds for length 2", ex.getMessage());
+            }
         }
     }
 
@@ -299,7 +306,11 @@ public class VAPChannelTest {
             vAPChannel.shouldIgnore(b);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "2", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "2", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index 2 out of bounds for length 0", ex.getMessage());
+            }
         }
     }
 }

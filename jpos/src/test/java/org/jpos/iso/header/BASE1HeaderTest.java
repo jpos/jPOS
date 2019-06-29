@@ -18,6 +18,9 @@
 
 package org.jpos.iso.header;
 
+import static org.apache.commons.lang3.JavaVersion.JAVA_10;
+import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
+
 import org.jpos.iso.ISOUtil;
 import org.junit.Test;
 
@@ -52,7 +55,11 @@ public class BASE1HeaderTest {
             new BASE1Header("testBASE1HeaderSource", "");
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertNull("ex.getMessage()", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "arraycopy: last source index 3 out of bounds for byte[0]", ex.getMessage());
+            }
         }
     }
 
@@ -62,7 +69,11 @@ public class BASE1HeaderTest {
             new BASE1Header("", "testBASE1HeaderDestination");
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertNull("ex.getMessage()", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "arraycopy: last source index 3 out of bounds for byte[0]", ex.getMessage());
+            }
         }
     }
 
@@ -110,7 +121,11 @@ public class BASE1HeaderTest {
             bASE1Header.getFormat();
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "2", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "2", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index 2 out of bounds for length 2", ex.getMessage());
+            }
         }
     }
 
@@ -129,7 +144,11 @@ public class BASE1HeaderTest {
             bASE1Header.getHLen();
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "0", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "0", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index 0 out of bounds for length 0", ex.getMessage());
+            }
         }
     }
 
@@ -227,7 +246,11 @@ public class BASE1HeaderTest {
             bASE1Header.setBatchNumber(100);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "17", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "17", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index 17 out of bounds for length 3", ex.getMessage());
+            }
             assertTrue("bASE1Header.header", Arrays.equals(header, bASE1Header.header));
         }
     }
@@ -247,7 +270,11 @@ public class BASE1HeaderTest {
             new BASE1Header().setDestination("");
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertNull("ex.getMessage()", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "arraycopy: last source index 3 out of bounds for byte[0]", ex.getMessage());
+            }
         }
     }
 
@@ -277,7 +304,11 @@ public class BASE1HeaderTest {
             bASE1Header.setFlags(100);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "12", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "12", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index 12 out of bounds for length 9", ex.getMessage());
+            }
             assertTrue("bASE1Header.header", Arrays.equals(header, bASE1Header.header));
         }
     }
@@ -291,7 +322,11 @@ public class BASE1HeaderTest {
             bASE1Header.setFlags(100);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "13", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "13", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index 13 out of bounds for length 13", ex.getMessage());
+            }
             assertNotEquals("bASE1Header.header", header, bASE1Header.header);
         }
     }
@@ -312,7 +347,11 @@ public class BASE1HeaderTest {
             bASE1Header.setFormat(100);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "2", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "2", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index 2 out of bounds for length 2", ex.getMessage());
+            }
             assertNotEquals("bASE1Header.header", header, bASE1Header.header);
         }
     }
@@ -340,7 +379,11 @@ public class BASE1HeaderTest {
             bASE1Header.setLen(100);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "4", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "4", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index 4 out of bounds for length 4", ex.getMessage());
+            }
             assertTrue("bASE1Header.header", Arrays.equals(header, bASE1Header.header));
         }
     }
@@ -354,7 +397,11 @@ public class BASE1HeaderTest {
             clone.setLen(100);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "3", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "3", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index 3 out of bounds for length 3", ex.getMessage());
+            }
             assertTrue("clone.header", Arrays.equals(header, clone.header));
         }
     }
@@ -377,7 +424,11 @@ public class BASE1HeaderTest {
             bASE1Header.setRtCtl(100);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "11", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "11", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index 11 out of bounds for length 2", ex.getMessage());
+            }
             assertTrue("bASE1Header.header", Arrays.equals(header, bASE1Header.header));
         }
     }
@@ -397,7 +448,11 @@ public class BASE1HeaderTest {
             new BASE1Header().setSource("");
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertNull("ex.getMessage()", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "arraycopy: last source index 3 out of bounds for byte[0]", ex.getMessage());
+            }
         }
     }
 
@@ -429,7 +484,11 @@ public class BASE1HeaderTest {
             bASE1Header.setStatus(100);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "15", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "15", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index 15 out of bounds for length 15", ex.getMessage());
+            }
         }
     }
 
@@ -442,7 +501,11 @@ public class BASE1HeaderTest {
             bASE1Header.setStatus(100);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "14", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "14", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index 14 out of bounds for length 3", ex.getMessage());
+            }
         }
     }
 
