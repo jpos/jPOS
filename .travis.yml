@@ -1,17 +1,19 @@
 sudo: required
-dist: trusty
+dist: xenial
 language: java
 jdk:
-- oraclejdk8
+  - oraclejdk8
+  - openjdk8
+  - openjdk11
+  - openjdk12
 before_script:
-- echo $JAVA_OPTS
-- export JAVA_OPTS=-Xmx4G
+  - echo $JAVA_OPTS
+  - export JAVA_OPTS=-Xmx4G
 install: true
 script:
-- sudo apt-get update && sudo apt-get install oracle-java8-installer
-- java -version
-- ulimit -a
-- TERM=dumb ./gradlew jpos:assemble jpos:check --info
+  - java -version
+  - ulimit -a
+  - TERM=dumb ./gradlew jpos:assemble jpos:check --info
 after_success: .travis/update-gh-pages.sh
 after_failure: .travis/update-gh-pages.sh
 env:
@@ -20,3 +22,7 @@ env:
 notifications:
   slack:
     secure: opKU+4jJWYuhq5STCVW2cvxEq/1/xY17xpxGKoJXWA+RbhPo+viT5uJLmb67HwdmvQNwUVAW6uOLO7SDOmpGh5oAwpI74DrA0y6uEzN6GgzutZDBY5oCMRYCGi/5xNOuzDdsryDtSJvXWLxyCysnTrAqqQ9XdOnRK/ZqSIeQg+s=
+matrix:
+  allow_failures:
+    - jdk: openjdk11
+    - jdk: openjdk12
