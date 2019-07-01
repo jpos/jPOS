@@ -247,9 +247,12 @@ public class Context implements Externalizable, Loggeable, Pausable, Cloneable {
 
     protected void dumpMap (PrintStream p, String indent) {
         if (map != null) {
-             synchronized(map) {
-                map.entrySet().forEach(e -> dumpEntry(p, indent, e));
-             }
+            Map<Object,Object> cloned;
+            cloned = Collections.synchronizedMap (new LinkedHashMap<>());
+            synchronized(map) {
+                cloned.putAll(map);
+            }
+            cloned.entrySet().forEach(e -> dumpEntry(p, indent, e));
         }
     }
 
