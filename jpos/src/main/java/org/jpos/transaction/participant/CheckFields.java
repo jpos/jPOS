@@ -46,12 +46,13 @@ public class CheckFields implements TransactionParticipant, Configurable {
     private Pattern CAPTUREDATE_PATTERN = Pattern.compile("^\\d{4}");
     private Pattern ORIGINAL_DATA_ELEMENTS_PATTERN = Pattern.compile("^\\d{30,41}$");
     private boolean ignoreCardValidation = false;
+    private boolean allowExtraFields = false;
 
     public int prepare (long id, Serializable context) {
         Context ctx = (Context) context;
         Result rc = ctx.getResult();
         try {
-            ISOMsg m = (ISOMsg) ctx.get (request);
+            ISOMsg m = ctx.get (request);
             if (m == null) {
                 ctx.getResult().fail(CMF.INVALID_TRANSACTION, Caller.info(), "'%s' not available in Context", request);
                 return ABORTED | NO_JOIN | READONLY;
@@ -59,7 +60,7 @@ public class CheckFields implements TransactionParticipant, Configurable {
             Set<String> validFields = new HashSet<>();
             assertFields (ctx, m, cfg.get ("mandatory", ""), true, validFields, rc);
             assertFields (ctx, m, cfg.get ("optional", ""), false, validFields, rc);
-            assertNoExtraFields (m, validFields, rc);
+            if (!allowExtraFields) assertNoExtraFields (m, validFields, rc);
         } catch (Throwable t) {
             rc.fail(CMF.SYSTEM_ERROR, Caller.info(), t.getMessage());
             ctx.log(t);
@@ -71,6 +72,7 @@ public class CheckFields implements TransactionParticipant, Configurable {
         this.cfg = cfg;
         request = cfg.get ("request", ContextConstants.REQUEST.toString());
         ignoreCardValidation = cfg.getBoolean("ignore-card-validation", false);
+        allowExtraFields = cfg.getBoolean("allow-extra-fields", false);
     }
 
     private void assertFields(Context ctx, ISOMsg m, String fields, boolean mandatory, Set<String> validFields, Result rc) {
@@ -126,7 +128,7 @@ public class CheckFields implements TransactionParticipant, Configurable {
         }
     }
     private void assertNoExtraFields (ISOMsg m, Set validFields, Result rc) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         for (int i=1; i<=m.getMaxField(); i++) { // we start at 1, MTI is always valid
             String s = Integer.toString (i);
             if (m.hasField(i) && !validFields.contains (s)) {
