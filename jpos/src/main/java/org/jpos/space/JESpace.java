@@ -26,6 +26,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.Semaphore;
 
 import com.sleepycat.je.*;
+import com.sleepycat.je.config.EnvironmentParams;
 import com.sleepycat.persist.EntityStore; 
 import com.sleepycat.persist.StoreConfig; 
 import com.sleepycat.persist.EntityCursor;
@@ -78,6 +79,7 @@ public class JESpace<K,V> extends Log implements LocalSpace<K,V>, Loggeable, Run
             String path = p[0];
             envConfig.setAllowCreate (true);
             envConfig.setTransactional(true);
+            envConfig.setConfigParam(EnvironmentParams.LOG_DETECT_FILE_DELETE.getName(), "false");
             envConfig.setLockTimeout(getParam("lock.timeout", p, DEFAULT_LOCK_TIMEOUT), TimeUnit.MILLISECONDS);
             envConfig.setTxnTimeout(getParam("txn.timeout", p, DEFAULT_TXN_TIMEOUT), TimeUnit.MILLISECONDS);
             storeConfig.setAllowCreate (true);
