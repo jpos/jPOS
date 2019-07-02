@@ -62,6 +62,7 @@ public class JESpace<K,V> extends Log implements LocalSpace<K,V>, Loggeable, Run
     LocalSpace<Object,SpaceListener> sl;
     private static final long NRD_RESOLUTION = 500L;
     public static final long GC_DELAY = 15*1000L;
+    public static final int DEFAULT_CACHE_PERCENT = 25;
     public static final long DEFAULT_TXN_TIMEOUT = 30*1000L;
     public static final long DEFAULT_LOCK_TIMEOUT = 120*1000L;
     private Future gcTask;
@@ -78,6 +79,7 @@ public class JESpace<K,V> extends Log implements LocalSpace<K,V>, Loggeable, Run
             String path = p[0];
             envConfig.setAllowCreate (true);
             envConfig.setTransactional(true);
+            envConfig.setCachePercent(getParam("cache.percent", p, DEFAULT_CACHE_PERCENT));
             envConfig.setLockTimeout(getParam("lock.timeout", p, DEFAULT_LOCK_TIMEOUT), TimeUnit.MILLISECONDS);
             envConfig.setTxnTimeout(getParam("txn.timeout", p, DEFAULT_TXN_TIMEOUT), TimeUnit.MILLISECONDS);
             storeConfig.setAllowCreate (true);
@@ -592,6 +594,17 @@ public class JESpace<K,V> extends Log implements LocalSpace<K,V>, Loggeable, Run
             p.printf ("%s<key size='%d'>%s</key>\n", indent, count, key);
         else
             p.printf ("%s<key>%s</key>\n", indent, key);
+    }
+
+    private int getParam (String name, String[] params, int defaultValue) {
+        for (String s : params) {
+            if (s.contains(name)) {
+                int pos = s.indexOf('=');
+                if (pos >=0 && s.length() > pos)
+                    return Integer.valueOf(s.substring(pos+1).trim());
+            }
+        }
+        return defaultValue;
     }
 
     private long getParam (String name, String[] params, long defaultValue) {
