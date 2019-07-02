@@ -2,7 +2,7 @@
 <pmd xmlns="http://pmd.sourceforge.net/report/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/report/2.0.0 http://pmd.sourceforge.net/report_2_0_0.xsd"
-    version="6.8.0" timestamp="2019-06-20T17:11:42.036">
+    version="6.8.0" timestamp="2019-07-02T09:36:45.721">
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/bsh/BSHAction.java">
 <violation beginline="30" endline="30" begincolumn="15" endcolumn="16" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.bsh" class="BSHAction" variable="ui" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
 Found non-transient, non-static member. Please mark as transient or provide accessors.
@@ -8454,32 +8454,35 @@ Found non-transient, non-static member. Please mark as transient or provide acce
 <violation beginline="48" endline="48" begincolumn="21" endcolumn="40" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.transaction.participant" class="CheckFields" variable="ignoreCardValidation" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
 Found non-transient, non-static member. Please mark as transient or provide accessors.
 </violation>
-<violation beginline="52" endline="68" begincolumn="16" endcolumn="35" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.transaction.participant" class="CheckFields" method="prepare" variable="rc" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DU'-anomaly for variable 'rc' (lines '52'-'68').
+<violation beginline="49" endline="49" begincolumn="21" endcolumn="36" rule="BeanMembersShouldSerialize" ruleset="Error Prone" package="org.jpos.transaction.participant" class="CheckFields" variable="allowExtraFields" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#beanmembersshouldserialize" priority="3">
+Found non-transient, non-static member. Please mark as transient or provide accessors.
 </violation>
-<violation beginline="63" endline="63" begincolumn="18" endcolumn="26" rule="AvoidCatchingThrowable" ruleset="Error Prone" package="org.jpos.transaction.participant" class="CheckFields" method="prepare" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingthrowable" priority="3">
+<violation beginline="53" endline="69" begincolumn="16" endcolumn="35" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.transaction.participant" class="CheckFields" method="prepare" variable="rc" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DU'-anomaly for variable 'rc' (lines '53'-'69').
+</violation>
+<violation beginline="64" endline="64" begincolumn="18" endcolumn="26" rule="AvoidCatchingThrowable" ruleset="Error Prone" package="org.jpos.transaction.participant" class="CheckFields" method="prepare" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidcatchingthrowable" priority="3">
 A catch statement should never catch throwable since it includes errors.
 </violation>
-<violation beginline="80" endline="82" begincolumn="17" endcolumn="47" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.transaction.participant" class="CheckFields" method="assertFields" variable="k" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'k' (lines '80'-'82').
+<violation beginline="82" endline="84" begincolumn="17" endcolumn="47" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.transaction.participant" class="CheckFields" method="assertFields" variable="k" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'k' (lines '82'-'84').
 </violation>
-<violation beginline="85" endline="118" begincolumn="17" endcolumn="17" rule="MissingBreakInSwitch" ruleset="Error Prone" package="org.jpos.transaction.participant" class="CheckFields" method="assertFields" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#missingbreakinswitch" priority="3">
+<violation beginline="87" endline="120" begincolumn="17" endcolumn="17" rule="MissingBreakInSwitch" ruleset="Error Prone" package="org.jpos.transaction.participant" class="CheckFields" method="assertFields" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#missingbreakinswitch" priority="3">
 A switch statement does not contain a break
 </violation>
-<violation beginline="117" endline="117" begincolumn="29" endcolumn="32" rule="NullAssignment" ruleset="Error Prone" package="org.jpos.transaction.participant" class="CheckFields" method="assertFields" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#nullassignment" priority="3">
+<violation beginline="119" endline="119" begincolumn="29" endcolumn="32" rule="NullAssignment" ruleset="Error Prone" package="org.jpos.transaction.participant" class="CheckFields" method="assertFields" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#nullassignment" priority="3">
 Assigning an Object to null is a code smell.  Consider refactoring.
 </violation>
-<violation beginline="217" endline="217" begincolumn="59" endcolumn="75" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.transaction.participant" class="CheckFields" method="putTimestamp" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
-The String literal &quot;Invalid %s '%s'&quot; appears 4 times in this file; the first occurrence is on line 217
+<violation beginline="219" endline="219" begincolumn="59" endcolumn="75" rule="AvoidDuplicateLiterals" ruleset="Error Prone" package="org.jpos.transaction.participant" class="CheckFields" method="putTimestamp" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidduplicateliterals" priority="3">
+The String literal &quot;Invalid %s '%s'&quot; appears 4 times in this file; the first occurrence is on line 219
 </violation>
-<violation beginline="240" endline="240" begincolumn="29" endcolumn="30" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.transaction.participant" class="CheckFields" method="putPDC" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
+<violation beginline="242" endline="242" begincolumn="29" endcolumn="30" rule="AvoidLiteralsInIfCondition" ruleset="Error Prone" package="org.jpos.transaction.participant" class="CheckFields" method="putPDC" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#avoidliteralsinifcondition" priority="3">
 Avoid using Literals in Conditional Statements
 </violation>
-<violation beginline="259" endline="262" begincolumn="13" endcolumn="31" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.transaction.participant" class="CheckFields" method="putAmount" variable="a4" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'a4' (lines '259'-'262').
+<violation beginline="261" endline="264" begincolumn="13" endcolumn="31" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.transaction.participant" class="CheckFields" method="putAmount" variable="a4" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'a4' (lines '261'-'264').
 </violation>
-<violation beginline="260" endline="266" begincolumn="13" endcolumn="31" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.transaction.participant" class="CheckFields" method="putAmount" variable="a5" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
-Found 'DD'-anomaly for variable 'a5' (lines '260'-'266').
+<violation beginline="262" endline="268" begincolumn="13" endcolumn="31" rule="DataflowAnomalyAnalysis" ruleset="Error Prone" package="org.jpos.transaction.participant" class="CheckFields" method="putAmount" variable="a5" externalInfoUrl="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis" priority="5">
+Found 'DD'-anomaly for variable 'a5' (lines '262'-'268').
 </violation>
 </file>
 <file name="/home/travis/build/jpos/jPOS/jpos/src/main/java/org/jpos/transaction/participant/CheckPoint.java">
