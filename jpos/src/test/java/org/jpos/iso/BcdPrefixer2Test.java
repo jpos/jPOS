@@ -22,6 +22,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
+import static org.apache.commons.lang3.JavaVersion.JAVA_10;
+import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
+
 import org.junit.Test;
 
 public class BcdPrefixer2Test {
@@ -54,7 +57,11 @@ public class BcdPrefixer2Test {
             new BcdPrefixer(100).decodeLength(b, 0);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "1", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "1", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index 1 out of bounds for length 1", ex.getMessage());
+            }
         }
     }
 
@@ -89,7 +96,11 @@ public class BcdPrefixer2Test {
             BcdPrefixer.LLL.encodeLength(100, b);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "1", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "1", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index 1 out of bounds for length 1", ex.getMessage());
+            }
             assertEquals("b.length", 1, b.length);
         }
     }

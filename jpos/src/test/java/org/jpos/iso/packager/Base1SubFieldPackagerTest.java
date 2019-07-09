@@ -23,6 +23,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
+import static org.apache.commons.lang3.JavaVersion.JAVA_10;
+import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
+
 import org.jpos.iso.ISOFieldPackager;
 import org.jpos.iso.ISOMsg;
 import org.jpos.iso.X92_BITMAP;
@@ -60,8 +63,11 @@ public class Base1SubFieldPackagerTest {
             f126Packager.emitBitMap();
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "0", ex.getMessage());
-
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "0", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index 0 out of bounds for length 0", ex.getMessage());
+            }
         }
     }
 

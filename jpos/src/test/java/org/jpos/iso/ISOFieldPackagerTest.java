@@ -24,6 +24,10 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import static org.apache.commons.lang3.JavaVersion.JAVA_1_8;
+import static org.apache.commons.lang3.JavaVersion.JAVA_10;
+import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.EOFException;
@@ -100,7 +104,11 @@ public class ISOFieldPackagerTest {
             iFEB_LLLNUM.readBytes(in, -1);
             fail("Expected NegativeArraySizeException to be thrown");
         } catch (NegativeArraySizeException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertNull("ex.getMessage()", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "-1", ex.getMessage());
+            }
             assertEquals("(ByteArrayInputStream) in.available()", 10, in.available());
         }
     }
@@ -156,7 +164,11 @@ public class ISOFieldPackagerTest {
             new IFEB_LLLNUM().unpack(new ISOMsg("testISOFieldPackagerMti"), in);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "2", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "2", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index 2 out of bounds for length 2", ex.getMessage());
+            }
             assertEquals("(ByteArrayInputStream) in.available()", 0, in.available());
         }
     }
@@ -186,7 +198,11 @@ public class ISOFieldPackagerTest {
             new Base1_BITMAP126(-1, "testISOFieldPackagerDescription").unpack(new IFB_AMOUNT().createComponent(100), in);
             fail("Expected NegativeArraySizeException to be thrown");
         } catch (NegativeArraySizeException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertNull("ex.getMessage()", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "-1", ex.getMessage());
+            }
             assertEquals("(ByteArrayInputStream) in.available()", 0, in.available());
         }
     }
@@ -212,7 +228,11 @@ public class ISOFieldPackagerTest {
             iFB_AMOUNT.unpack(new ISOMsg(), in);
             fail("Expected StringIndexOutOfBoundsException to be thrown");
         } catch (StringIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "String index out of range: 1", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_1_8)) {
+                assertEquals("ex.getMessage()", "String index out of range: 1", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "offset 0, count 1, length 0", ex.getMessage());
+            }
             assertEquals("(ByteArrayInputStream) in.available()", 10, in.available());
         }
     }

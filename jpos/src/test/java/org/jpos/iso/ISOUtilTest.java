@@ -31,6 +31,9 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import static org.apache.commons.lang3.JavaVersion.JAVA_10;
+import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
+
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.nio.ByteBuffer;
@@ -477,7 +480,11 @@ public class ISOUtilTest {
             ISOUtil.byte2BitSet(b, 62, true);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "71", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "71", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index 71 out of bounds for length 71", ex.getMessage());
+            }
         }
     }
 
@@ -489,7 +496,11 @@ public class ISOUtilTest {
             ISOUtil.byte2BitSet(b, 0, true);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "3", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "3", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index 3 out of bounds for length 3", ex.getMessage());
+            }
         }
     }
 
@@ -500,7 +511,11 @@ public class ISOUtilTest {
             ISOUtil.byte2BitSet(b, 100, 64);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "100", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "100", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index 100 out of bounds for length 3", ex.getMessage());
+            }
         }
     }
 
@@ -512,7 +527,11 @@ public class ISOUtilTest {
             ISOUtil.byte2BitSet(b, 0, false);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "1", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "1", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index 1 out of bounds for length 1", ex.getMessage());
+            }
         }
     }
 
@@ -523,7 +542,11 @@ public class ISOUtilTest {
             ISOUtil.byte2BitSet(b, 0, false);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "1", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "1", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index 1 out of bounds for length 1", ex.getMessage());
+            }
         }
     }
 
@@ -534,7 +557,11 @@ public class ISOUtilTest {
             ISOUtil.byte2BitSet(b, 0, true);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "1", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "1", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index 1 out of bounds for length 1", ex.getMessage());
+            }
         }
     }
 
@@ -545,7 +572,11 @@ public class ISOUtilTest {
             ISOUtil.byte2BitSet(b, 100, false);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "100", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "100", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index 100 out of bounds for length 0", ex.getMessage());
+            }
         }
     }
 
@@ -556,7 +587,11 @@ public class ISOUtilTest {
             ISOUtil.byte2BitSet(b, 100, true);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "100", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "100", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index 100 out of bounds for length 0", ex.getMessage());
+            }
         }
     }
 
@@ -588,7 +623,11 @@ public class ISOUtilTest {
             ISOUtil.byte2BitSet(b, 1, 1000);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "12", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "12", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index 12 out of bounds for length 12", ex.getMessage());
+            }
         }
     }
 
@@ -600,7 +639,11 @@ public class ISOUtilTest {
             ISOUtil.byte2BitSet(b, 0, 128);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "2", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "2", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index 2 out of bounds for length 2", ex.getMessage());
+            }
         }
     }
 
@@ -612,7 +655,11 @@ public class ISOUtilTest {
             ISOUtil.byte2BitSet(b, 1, 129);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "2", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "2", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index 2 out of bounds for length 2", ex.getMessage());
+            }
         }
     }
 
@@ -624,7 +671,11 @@ public class ISOUtilTest {
             ISOUtil.byte2BitSet(b, 1, 127);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "2", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "2", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index 2 out of bounds for length 2", ex.getMessage());
+            }
         }
     }
 
@@ -636,7 +687,11 @@ public class ISOUtilTest {
             ISOUtil.byte2BitSet(b, 0, 63);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "1", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "1", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index 1 out of bounds for length 1", ex.getMessage());
+            }
         }
     }
 
@@ -648,7 +703,11 @@ public class ISOUtilTest {
             ISOUtil.byte2BitSet(b, 0, 129);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "1", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "1", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index 1 out of bounds for length 1", ex.getMessage());
+            }
         }
     }
 
@@ -660,7 +719,11 @@ public class ISOUtilTest {
             ISOUtil.byte2BitSet(b, 0, 64);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "1", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "1", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index 1 out of bounds for length 1", ex.getMessage());
+            }
         }
     }
 
@@ -671,7 +734,11 @@ public class ISOUtilTest {
             ISOUtil.byte2BitSet(b, 0, 128);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "2", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "2", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index 2 out of bounds for length 2", ex.getMessage());
+            }
         }
     }
 
@@ -682,7 +749,11 @@ public class ISOUtilTest {
             ISOUtil.byte2BitSet(b, 0, 63);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "1", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "1", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index 1 out of bounds for length 1", ex.getMessage());
+            }
         }
     }
 
@@ -693,7 +764,11 @@ public class ISOUtilTest {
             ISOUtil.byte2BitSet(b, 0, 129);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "1", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "1", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index 1 out of bounds for length 1", ex.getMessage());
+            }
         }
     }
 
@@ -2535,7 +2610,11 @@ public class ISOUtilTest {
             ISOUtil.hex2BitSet(b, 0, true);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "19", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "19", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index 19 out of bounds for length 19", ex.getMessage());
+            }
         }
     }
 
@@ -2547,7 +2626,11 @@ public class ISOUtilTest {
             ISOUtil.hex2BitSet(b, 0, false);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "2", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "2", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index 2 out of bounds for length 2", ex.getMessage());
+            }
         }
     }
 
@@ -2559,7 +2642,11 @@ public class ISOUtilTest {
             ISOUtil.hex2BitSet(b, 0, 65);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "19", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "19", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index 19 out of bounds for length 19", ex.getMessage());
+            }
         }
     }
 
@@ -2571,7 +2658,11 @@ public class ISOUtilTest {
             ISOUtil.hex2BitSet(b, 66, 127);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "83", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "83", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index 83 out of bounds for length 83", ex.getMessage());
+            }
         }
     }
 
@@ -2582,7 +2673,11 @@ public class ISOUtilTest {
             ISOUtil.hex2BitSet(b, 0, 65);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "19", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "19", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index 19 out of bounds for length 19", ex.getMessage());
+            }
         }
     }
 
@@ -2594,7 +2689,11 @@ public class ISOUtilTest {
             ISOUtil.hex2BitSet(b, 0, 100);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "20", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "20", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index 20 out of bounds for length 20", ex.getMessage());
+            }
         }
     }
 
@@ -2605,7 +2704,11 @@ public class ISOUtilTest {
             ISOUtil.hex2BitSet(b, 0, 1000);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "18", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "18", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index 18 out of bounds for length 18", ex.getMessage());
+            }
         }
     }
 
@@ -2617,7 +2720,11 @@ public class ISOUtilTest {
             ISOUtil.hex2BitSet(b, 0, 64);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "3", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "3", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index 3 out of bounds for length 3", ex.getMessage());
+            }
         }
     }
 
@@ -2628,7 +2735,11 @@ public class ISOUtilTest {
             ISOUtil.hex2BitSet(b, 0, 65);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "3", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "3", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index 3 out of bounds for length 3", ex.getMessage());
+            }
         }
     }
 
@@ -2639,7 +2750,11 @@ public class ISOUtilTest {
             ISOUtil.hex2BitSet(b, 0, 63);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "3", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "3", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index 3 out of bounds for length 3", ex.getMessage());
+            }
         }
     }
 
@@ -2650,7 +2765,11 @@ public class ISOUtilTest {
             ISOUtil.hex2BitSet(b, 0, true);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "3", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "3", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index 3 out of bounds for length 3", ex.getMessage());
+            }
         }
     }
 
@@ -2661,7 +2780,11 @@ public class ISOUtilTest {
             ISOUtil.hex2BitSet(b, 0, false);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "1", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "1", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index 1 out of bounds for length 1", ex.getMessage());
+            }
         }
     }
 
@@ -2672,7 +2795,11 @@ public class ISOUtilTest {
             ISOUtil.hex2BitSet(b, 100, false);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "100", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "100", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index 100 out of bounds for length 2", ex.getMessage());
+            }
         }
     }
 
@@ -2683,7 +2810,11 @@ public class ISOUtilTest {
             ISOUtil.hex2BitSet(b, 100, true);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "100", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "100", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index 100 out of bounds for length 0", ex.getMessage());
+            }
         }
     }
 
@@ -2770,7 +2901,11 @@ public class ISOUtilTest {
             ISOUtil.hex2byte(b, 0, 100);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "3", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "3", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index 3 out of bounds for length 3", ex.getMessage());
+            }
         }
     }
 
@@ -3008,7 +3143,11 @@ public class ISOUtilTest {
             ISOUtil.hexdump(b, 0, 100);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "19", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "19", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index 19 out of bounds for length 19", ex.getMessage());
+            }
         }
     }
 
@@ -3021,7 +3160,11 @@ public class ISOUtilTest {
             ISOUtil.hexdump(b, 0, 100);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "34", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "34", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index 34 out of bounds for length 34", ex.getMessage());
+            }
         }
     }
 
@@ -3032,7 +3175,11 @@ public class ISOUtilTest {
             ISOUtil.hexdump(b, 0, 100);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "2", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "2", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index 2 out of bounds for length 2", ex.getMessage());
+            }
         }
     }
 
@@ -3044,7 +3191,11 @@ public class ISOUtilTest {
             ISOUtil.hexdump(b, 0, 100);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "1", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "1", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index 1 out of bounds for length 1", ex.getMessage());
+            }
         }
     }
 
@@ -3056,7 +3207,11 @@ public class ISOUtilTest {
             ISOUtil.hexdump(b, 0, 100);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "10", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "10", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index 10 out of bounds for length 10", ex.getMessage());
+            }
         }
     }
 
@@ -3069,7 +3224,11 @@ public class ISOUtilTest {
             ISOUtil.hexdump(b, 0, 100);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "3", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "3", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index 3 out of bounds for length 3", ex.getMessage());
+            }
         }
     }
 
@@ -3081,7 +3240,11 @@ public class ISOUtilTest {
             ISOUtil.hexdump(b, 0, 100);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "9", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "9", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index 9 out of bounds for length 9", ex.getMessage());
+            }
         }
     }
 
@@ -3093,7 +3256,11 @@ public class ISOUtilTest {
             ISOUtil.hexdump(b, 0, 100);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "3", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "3", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index 3 out of bounds for length 3", ex.getMessage());
+            }
         }
     }
 
@@ -3105,7 +3272,11 @@ public class ISOUtilTest {
             ISOUtil.hexdump(b, 10, 100);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "18", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "18", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index 18 out of bounds for length 18", ex.getMessage());
+            }
         }
     }
 
@@ -3118,7 +3289,11 @@ public class ISOUtilTest {
             ISOUtil.hexdump(b, 0, 100);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "12", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "12", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index 12 out of bounds for length 12", ex.getMessage());
+            }
         }
     }
 
@@ -3131,7 +3306,11 @@ public class ISOUtilTest {
             ISOUtil.hexdump(b, 0, 100);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "3", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "3", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index 3 out of bounds for length 3", ex.getMessage());
+            }
         }
     }
 
@@ -3143,7 +3322,11 @@ public class ISOUtilTest {
             ISOUtil.hexdump(b, 0, 100);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "1", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "1", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index 1 out of bounds for length 1", ex.getMessage());
+            }
         }
     }
 
@@ -3156,7 +3339,11 @@ public class ISOUtilTest {
             ISOUtil.hexdump(b, 7, 100);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "9", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "9", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index 9 out of bounds for length 9", ex.getMessage());
+            }
         }
     }
 
@@ -3217,7 +3404,11 @@ public class ISOUtilTest {
             ISOUtil.hexString(b, 100, 1000);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "100", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "100", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index 100 out of bounds for length 3", ex.getMessage());
+            }
         }
     }
 
@@ -3228,7 +3419,11 @@ public class ISOUtilTest {
             ISOUtil.hexString(b, 0, 100);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "1", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "1", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index 1 out of bounds for length 1", ex.getMessage());
+            }
         }
     }
 
@@ -3655,7 +3850,11 @@ public class ISOUtilTest {
             ISOUtil.parseInt(cArray, 100);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "0", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "0", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index 0 out of bounds for length 0", ex.getMessage());
+            }
         }
     }
 
@@ -3666,7 +3865,11 @@ public class ISOUtilTest {
             ISOUtil.parseInt(cArray);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "0", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "0", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index 0 out of bounds for length 0", ex.getMessage());
+            }
         }
     }
 
@@ -3677,7 +3880,11 @@ public class ISOUtilTest {
             ISOUtil.parseInt(bArray, 100);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "0", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "0", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index 0 out of bounds for length 0", ex.getMessage());
+            }
         }
     }
 
@@ -3688,7 +3895,11 @@ public class ISOUtilTest {
             ISOUtil.parseInt(bArray);
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "0", ex.getMessage());
+            if (isJavaVersionAtMost(JAVA_10)) {
+                assertEquals("ex.getMessage()", "0", ex.getMessage());
+            } else {
+                assertEquals("ex.getMessage()", "Index 0 out of bounds for length 0", ex.getMessage());
+            }
         }
     }
 
