@@ -19,13 +19,13 @@
 package org.jpos.iso;
 
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.junit.Assume.assumeThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -53,15 +53,15 @@ import org.jpos.iso.packager.GenericValidatingPackager;
 import org.jpos.iso.packager.ISO87APackager;
 import org.jpos.iso.packager.ISO87APackagerBBitmap;
 import org.jpos.iso.packager.X92Packager;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ISOMsg2Test {
 
-    @BeforeClass
+    @BeforeAll
     public static void onClassSetup() {
         assumeThat(System.getProperty("executeQuickRunningTestsOnly", "false"), is("false"));
     }
@@ -73,17 +73,17 @@ public class ISOMsg2Test {
         ISOMsg iSOMsg = new ISOMsg();
         iSOMsg.setHeader(header2);
         ISOMsg result = (ISOMsg) iSOMsg.clone();
-        assertEquals("result.getDirection()", 0, result.getDirection());
-        assertEquals("iSOMsg.fields.size()", 0, iSOMsg.fields.size());
-        assertSame("iSOMsg.header", header2, iSOMsg.header);
+        assertEquals(0, result.getDirection(), "result.getDirection()");
+        assertEquals(0, iSOMsg.fields.size(), "iSOMsg.fields.size()");
+        assertSame(header2, iSOMsg.header, "iSOMsg.header");
     }
 
     @Test
     public void testClone1() throws Throwable {
         ISOMsg iSOVMsg = new ISOVMsg(new ISOMsg(), new ISOVError("testISOMsgDescription", "testISOMsgRejectCode"));
         ISOVMsg result = (ISOVMsg) iSOVMsg.clone();
-        assertNotNull("result", result);
-        assertEquals("(ISOVMsg) iSOVMsg.fields.size()", 0, ((ISOVMsg) iSOVMsg).fields.size());
+        assertNotNull(result, "result");
+        assertEquals(0, ((ISOVMsg) iSOVMsg).fields.size(), "(ISOVMsg) iSOVMsg.fields.size()");
     }
 
     @Test
@@ -91,8 +91,8 @@ public class ISOMsg2Test {
         ISOMsg iSOMsg = new ISOMsg();
         int[] fields = new int[5];
         ISOMsg result = (ISOMsg) iSOMsg.clone(fields);
-        assertEquals("result.getDirection()", 0, result.getDirection());
-        assertEquals("iSOMsg.fields.size()", 0, iSOMsg.fields.size());
+        assertEquals(0, result.getDirection(), "result.getDirection()");
+        assertEquals(0, iSOMsg.fields.size(), "iSOMsg.fields.size()");
     }
 
     @Test
@@ -100,8 +100,8 @@ public class ISOMsg2Test {
         ISOMsg iSOMsg = new ISOMsg();
         int[] fields = new int[0];
         ISOMsg result = (ISOMsg) iSOMsg.clone(fields);
-        assertEquals("result.getDirection()", 0, result.getDirection());
-        assertEquals("iSOMsg.fields.size()", 0, iSOMsg.fields.size());
+        assertEquals(0, result.getDirection(), "result.getDirection()");
+        assertEquals(0, iSOMsg.fields.size(), "iSOMsg.fields.size()");
     }
 
     @Test
@@ -111,45 +111,45 @@ public class ISOMsg2Test {
             iSOMsg.clone(null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertEquals("iSOMsg.fields.size()", 0, iSOMsg.fields.size());
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertEquals(0, iSOMsg.fields.size(), "iSOMsg.fields.size()");
         }
     }
 
     @Test
     public void testConstructor() throws Throwable {
         ISOMsg iSOMsg = new ISOMsg("testISOMsgMti");
-        assertEquals("iSOMsg.fields.size()", 1, iSOMsg.fields.size());
-        assertEquals("iSOMsg.direction", 0, iSOMsg.direction);
-        assertNull("iSOMsg.header", iSOMsg.header);
-        assertEquals("iSOMsg.maxField", 0, iSOMsg.maxField);
-        assertTrue("iSOMsg.dirty", iSOMsg.dirty);
-        assertEquals("iSOMsg.fieldNumber", -1, iSOMsg.fieldNumber);
-        assertTrue("iSOMsg.maxFieldDirty", iSOMsg.maxFieldDirty);
+        assertEquals(1, iSOMsg.fields.size(), "iSOMsg.fields.size()");
+        assertEquals(0, iSOMsg.direction, "iSOMsg.direction");
+        assertNull(iSOMsg.header, "iSOMsg.header");
+        assertEquals(0, iSOMsg.maxField, "iSOMsg.maxField");
+        assertTrue(iSOMsg.dirty, "iSOMsg.dirty");
+        assertEquals(-1, iSOMsg.fieldNumber, "iSOMsg.fieldNumber");
+        assertTrue(iSOMsg.maxFieldDirty, "iSOMsg.maxFieldDirty");
     }
 
     @Test
     public void testConstructor1() throws Throwable {
         ISOMsg iSOMsg = new ISOMsg(100);
-        assertEquals("iSOMsg.fields.size()", 0, iSOMsg.fields.size());
-        assertEquals("iSOMsg.direction", 0, iSOMsg.direction);
-        assertNull("iSOMsg.header", iSOMsg.header);
-        assertEquals("iSOMsg.maxField", -1, iSOMsg.maxField);
-        assertTrue("iSOMsg.dirty", iSOMsg.dirty);
-        assertEquals("iSOMsg.fieldNumber", 100, iSOMsg.fieldNumber);
-        assertTrue("iSOMsg.maxFieldDirty", iSOMsg.maxFieldDirty);
+        assertEquals(0, iSOMsg.fields.size(), "iSOMsg.fields.size()");
+        assertEquals(0, iSOMsg.direction, "iSOMsg.direction");
+        assertNull(iSOMsg.header, "iSOMsg.header");
+        assertEquals(-1, iSOMsg.maxField, "iSOMsg.maxField");
+        assertTrue(iSOMsg.dirty, "iSOMsg.dirty");
+        assertEquals(100, iSOMsg.fieldNumber, "iSOMsg.fieldNumber");
+        assertTrue(iSOMsg.maxFieldDirty, "iSOMsg.maxFieldDirty");
     }
 
     @Test
     public void testConstructor2() throws Throwable {
         ISOMsg iSOMsg = new ISOMsg();
-        assertEquals("iSOMsg.fields.size()", 0, iSOMsg.fields.size());
-        assertEquals("iSOMsg.direction", 0, iSOMsg.direction);
-        assertNull("iSOMsg.header", iSOMsg.header);
-        assertEquals("iSOMsg.maxField", -1, iSOMsg.maxField);
-        assertTrue("iSOMsg.dirty", iSOMsg.dirty);
-        assertTrue("iSOMsg.maxFieldDirty", iSOMsg.maxFieldDirty);
-        assertEquals("iSOMsg.fieldNumber", -1, iSOMsg.fieldNumber);
+        assertEquals(0, iSOMsg.fields.size(), "iSOMsg.fields.size()");
+        assertEquals(0, iSOMsg.direction, "iSOMsg.direction");
+        assertNull(iSOMsg.header, "iSOMsg.header");
+        assertEquals(-1, iSOMsg.maxField, "iSOMsg.maxField");
+        assertTrue(iSOMsg.dirty, "iSOMsg.dirty");
+        assertTrue(iSOMsg.maxFieldDirty, "iSOMsg.maxFieldDirty");
+        assertEquals(-1, iSOMsg.fieldNumber, "iSOMsg.fieldNumber");
     }
 
     @Test
@@ -158,7 +158,7 @@ public class ISOMsg2Test {
         iSOMsg.setFieldNumber(100);
         PrintStream p = new PrintStream(new ByteArrayOutputStream(), true, "US-ASCII");
         iSOMsg.dump(p, "testISOMsgIndent");
-        assertTrue("Test completed without Exception", true);
+        assertTrue(true, "Test completed without Exception");
     }
 
     @SuppressWarnings("unchecked")
@@ -166,21 +166,21 @@ public class ISOMsg2Test {
     public void testGetChildren() throws Throwable {
         ISOMsg iSOMsg = new ISOMsg();
         Map result = iSOMsg.getChildren();
-        assertEquals("result.size()", 0, result.size());
-        assertEquals("iSOMsg.fields.size()", 0, iSOMsg.fields.size());
+        assertEquals(0, result.size(), "result.size()");
+        assertEquals(0, iSOMsg.fields.size(), "iSOMsg.fields.size()");
     }
 
     @Test
     public void testGetComponent() throws Throwable {
         ISOComponent result = new ISOMsg().getComponent(100);
-        assertNull("result", result);
+        assertNull(result, "result");
     }
 
     @Test
     public void testGetComposite() throws Throwable {
         ISOMsg iSOMsg = new ISOMsg();
         ISOMsg result = (ISOMsg) iSOMsg.getComposite();
-        assertSame("result", iSOMsg, result);
+        assertSame(iSOMsg, result, "result");
     }
 
     @Test
@@ -188,7 +188,7 @@ public class ISOMsg2Test {
         ISOMsg iSOMsg = new ISOMsg("testISOMsgMti");
         iSOMsg.setDirection(100);
         int result = iSOMsg.getDirection();
-        assertEquals("result", 100, result);
+        assertEquals(100, result, "result");
     }
 
     @Test
@@ -198,17 +198,17 @@ public class ISOMsg2Test {
         ISOMsg iSOMsg = new ISOMsg();
         iSOMsg.setHeader(header2);
         byte[] result = iSOMsg.getHeader();
-        assertTrue (ISOUtil.hexString(header) + "/" + ISOUtil.hexString(result), Arrays.equals(header, result));
-        assertEquals("header[0]", (byte) 0, header[0]);
-        assertSame("iSOMsg.header", header2, iSOMsg.header);
+        assertTrue (Arrays.equals(header, result), ISOUtil.hexString(header) + "/" + ISOUtil.hexString(result));
+        assertEquals((byte) 0, header[0], "header[0]");
+        assertSame(header2, iSOMsg.header, "iSOMsg.header");
     }
 
     @Test
     public void testGetHeader1() throws Throwable {
         ISOMsg iSOVMsg = new ISOVMsg(mock(ISOVMsg.class));
         byte[] result = iSOVMsg.getHeader();
-        assertNull("result", result);
-        assertNull("(ISOVMsg) iSOVMsg.header", ((ISOVMsg) iSOVMsg).header);
+        assertNull(result, "result");
+        assertNull(((ISOVMsg) iSOVMsg).header, "(ISOVMsg) iSOVMsg.header");
     }
 
     @Test
@@ -218,13 +218,13 @@ public class ISOMsg2Test {
         ISOMsg iSOMsg = new ISOMsg();
         iSOMsg.setHeader(header2);
         ISOHeader result = iSOMsg.getISOHeader();
-        assertSame("result", header2, result);
+        assertSame(header2, result, "result");
     }
 
     @Test
     public void testGetISOHeader1() throws Throwable {
         ISOHeader result = new ISOMsg().getISOHeader();
-        assertNull("result", result);
+        assertNull(result, "result");
     }
 
     @Test
@@ -232,7 +232,7 @@ public class ISOMsg2Test {
         ISOMsg iSOMsg = new ISOMsg("testISOMsgMti");
         iSOMsg.setFieldNumber(-2);
         Integer result = (Integer) iSOMsg.getKey();
-        assertEquals("result", -2, result.intValue());
+        assertEquals(-2, result.intValue(), "result");
     }
 
     @Test
@@ -240,7 +240,7 @@ public class ISOMsg2Test {
         ISOMsg iSOMsg = new ISOMsg("testISOMsgMti");
         iSOMsg.setFieldNumber(0);
         Integer result = (Integer) iSOMsg.getKey();
-        assertEquals("result", 0, result.intValue());
+        assertEquals(0, result.intValue(), "result");
     }
 
     @Test
@@ -249,8 +249,8 @@ public class ISOMsg2Test {
             new ISOMsg("testISOMsgMti").getKey();
             fail("Expected ISOException to be thrown");
         } catch (ISOException ex) {
-            assertEquals("ex.getMessage()", "This is not a subField", ex.getMessage());
-            assertNull("ex.nested", ex.nested);
+            assertEquals("This is not a subField", ex.getMessage(), "ex.getMessage()");
+            assertNull(ex.nested, "ex.nested");
         }
     }
 
@@ -262,9 +262,9 @@ public class ISOMsg2Test {
         iSOMsg.set(new ISOBinaryField(100, v));
         iSOMsg.set(1000, (byte[]) null);
         int result = iSOMsg.getMaxField();
-        assertFalse("iSOMsg.maxFieldDirty", iSOMsg.maxFieldDirty);
-        assertEquals("result", 100, result);
-        assertEquals("iSOMsg.maxField", 100, iSOMsg.maxField);
+        assertFalse(iSOMsg.maxFieldDirty, "iSOMsg.maxFieldDirty");
+        assertEquals(100, result, "result");
+        assertEquals(100, iSOMsg.maxField, "iSOMsg.maxField");
     }
 
     @Test
@@ -272,22 +272,22 @@ public class ISOMsg2Test {
         ISOMsg iSOMsg = new ISOMsg("testISOMsgMti");
         int maxField = iSOMsg.getMaxField();
         int result = iSOMsg.getMaxField();
-        assertEquals("result", maxField, result);
+        assertEquals(maxField, result, "result");
     }
 
     @Test
     public void testGetMaxField2() throws Throwable {
         ISOMsg iSOMsg = new ISOMsg();
         int result = iSOMsg.getMaxField();
-        assertEquals("iSOMsg.maxField", 0, iSOMsg.maxField);
-        assertFalse("iSOMsg.maxFieldDirty", iSOMsg.maxFieldDirty);
-        assertEquals("result", 0, result);
+        assertEquals(0, iSOMsg.maxField, "iSOMsg.maxField");
+        assertFalse(iSOMsg.maxFieldDirty, "iSOMsg.maxFieldDirty");
+        assertEquals(0, result, "result");
     }
 
     @Test
     public void testGetMTI() throws Throwable {
         String result = new ISOMsg("testISOMsgMti").getMTI();
-        assertEquals("result", "testISOMsgMti", result);
+        assertEquals("testISOMsgMti", result, "result");
     }
 
     @Test
@@ -295,7 +295,7 @@ public class ISOMsg2Test {
         ISOMsg iSOMsg = new ISOMsg("testISOMsgMti");
         iSOMsg.setFieldNumber(-2);
         String result = iSOMsg.getMTI();
-        assertEquals("result", "testISOMsgMti", result);
+        assertEquals("testISOMsgMti", result, "result");
     }
 
     @Test
@@ -306,8 +306,8 @@ public class ISOMsg2Test {
             iSOMsg.getMTI();
             fail("Expected ISOException to be thrown");
         } catch (ISOException ex) {
-            assertEquals("ex.getMessage()", "MTI not available", ex.getMessage());
-            assertNull("ex.nested", ex.nested);
+            assertEquals("MTI not available", ex.getMessage(), "ex.getMessage()");
+            assertNull(ex.nested, "ex.nested");
         }
     }
 
@@ -319,8 +319,8 @@ public class ISOMsg2Test {
             iSOMsg.getMTI();
             fail("Expected ISOException to be thrown");
         } catch (ISOException ex) {
-            assertEquals("ex.getMessage()", "can't getMTI on inner message", ex.getMessage());
-            assertNull("ex.nested", ex.nested);
+            assertEquals("can't getMTI on inner message", ex.getMessage(), "ex.getMessage()");
+            assertNull(ex.nested, "ex.nested");
         }
     }
 
@@ -332,8 +332,8 @@ public class ISOMsg2Test {
             iSOMsg.hasMTI();
             fail("Expected ISOException to be thrown");
         } catch (ISOException ex) {
-            assertEquals("ex.getMessage()", "can't hasMTI on inner message", ex.getMessage());
-            assertNull("ex.nested", ex.nested);
+            assertEquals("can't hasMTI on inner message", ex.getMessage(), "ex.getMessage()");
+            assertNull(ex.nested, "ex.nested");
         }
     }
 
@@ -343,58 +343,58 @@ public class ISOMsg2Test {
         ISOPackager p = new GenericValidatingPackager();
         iSOMsg.setPackager(p);
         ISOPackager result = iSOMsg.getPackager();
-        assertSame("result", p, result);
+        assertSame(p, result, "result");
     }
 
     @Test
     public void testGetSource() throws Throwable {
         ISOSource result = new ISOMsg().getSource();
-        assertNull("result", result);
+        assertNull(result, "result");
     }
 
     @Test
     public void testGetString() throws Throwable {
         String result = new ISOMsg().getString(100);
-        assertNull("result", result);
+        assertNull(result, "result");
     }
 
     @Test
     public void testGetValue() throws Throwable {
         Object result = new ISOMsg("testISOMsgMti").getValue(100);
-        assertNull("result", result);
+        assertNull(result, "result");
     }
 
     @Test
     public void testGetValue1() throws Throwable {
         ISOMsg iSOVMsg = new ISOVMsg(new ISOMsg(), new ISOVError("testISOMsgDescription", "testISOMsgRejectCode"));
         ISOMsg result = (ISOMsg) iSOVMsg.getValue();
-        assertSame("result", iSOVMsg, result);
+        assertSame(iSOVMsg, result, "result");
     }
 
     @Test
     public void testHasMTI() throws Throwable {
         boolean result = new ISOMsg("testISOMsgMti").hasMTI();
-        assertTrue("result", result);
+        assertTrue(result, "result");
     }
 
     @Test
     public void testHasField() throws Throwable {
         int[] fields = new int[2];
         boolean result = ((ISOMsg) new ISOMsg().clone(fields)).hasField(100);
-        assertFalse("result", result);
+        assertFalse(result, "result");
     }
 
     @Test
     public void testHasField1() throws Throwable {
         boolean result = new ISOMsg("testISOMsgMti").hasField(0);
-        assertTrue("result", result);
+        assertTrue(result, "result");
     }
 
     @Test
     public void testHasFields() throws Throwable {
         int[] fields = new int[0];
         boolean result = new ISOMsg().hasFields(fields);
-        assertTrue("result", result);
+        assertTrue(result, "result");
     }
 
     @Test
@@ -402,7 +402,7 @@ public class ISOMsg2Test {
         int[] fields = new int[4];
         fields[1] = Integer.MIN_VALUE;
         boolean result = new ISOMsg("testISOMsgMti").hasFields(fields);
-        assertFalse("result", result);
+        assertFalse(result, "result");
     }
 
     @Test
@@ -412,7 +412,7 @@ public class ISOMsg2Test {
         iSOMsg.setMTI("testISOMsgMti");
         int[] fields = new int[2];
         boolean result = iSOMsg.hasFields(fields);
-        assertTrue("result", result);
+        assertTrue(result, "result");
     }
 
     @Test
@@ -420,7 +420,7 @@ public class ISOMsg2Test {
         int[] fields = new int[2];
         fields[0] = -2;
         boolean result = new ISOMsg("testISOMsgMti").hasFields(fields);
-        assertFalse("result", result);
+        assertFalse(result, "result");
     }
 
     @Test
@@ -429,7 +429,7 @@ public class ISOMsg2Test {
             new ISOMsg("testISOMsgMti").hasFields(null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -438,13 +438,13 @@ public class ISOMsg2Test {
         ISOMsg iSOMsg = new ISOMsg("testISOMsgMti");
         iSOMsg.setDirection(1);
         boolean result = iSOMsg.isIncoming();
-        assertTrue("result", result);
+        assertTrue(result, "result");
     }
 
     @Test
     public void testIsIncoming1() throws Throwable {
         boolean result = new ISOMsg("testISOMsgMti").isIncoming();
-        assertFalse("result", result);
+        assertFalse(result, "result");
     }
 
     @Test
@@ -452,7 +452,7 @@ public class ISOMsg2Test {
         ISOMsg iSOMsg = new ISOMsg("testISOMsgMti");
         iSOMsg.setDirection(2);
         boolean result = iSOMsg.isIncoming();
-        assertFalse("result", result);
+        assertFalse(result, "result");
     }
 
     @Test
@@ -460,7 +460,7 @@ public class ISOMsg2Test {
         ISOMsg iSOMsg = new ISOMsg("testISOMsgMti");
         iSOMsg.setFieldNumber(0);
         boolean result = iSOMsg.isInner();
-        assertTrue("result", result);
+        assertTrue(result, "result");
     }
 
     @Test
@@ -468,13 +468,13 @@ public class ISOMsg2Test {
         ISOMsg iSOMsg = new ISOMsg("testISOMsgMti");
         iSOMsg.setFieldNumber(-2);
         boolean result = iSOMsg.isInner();
-        assertFalse("result", result);
+        assertFalse(result, "result");
     }
 
     @Test
     public void testIsInner2() throws Throwable {
         boolean result = new ISOMsg("testISOMsgMti").isInner();
-        assertFalse("result", result);
+        assertFalse(result, "result");
     }
 
     @Test
@@ -482,13 +482,13 @@ public class ISOMsg2Test {
         ISOMsg iSOMsg = new ISOMsg("testISOMsgMti");
         iSOMsg.setDirection(2);
         boolean result = iSOMsg.isOutgoing();
-        assertTrue("result", result);
+        assertTrue(result, "result");
     }
 
     @Test
     public void testIsOutgoing1() throws Throwable {
         boolean result = new ISOMsg().isOutgoing();
-        assertFalse("result", result);
+        assertFalse(result, "result");
     }
 
     @Test
@@ -496,7 +496,7 @@ public class ISOMsg2Test {
         ISOMsg iSOMsg = new ISOMsg("testISOMsgMti");
         iSOMsg.setFieldNumber(-7);
         boolean result = iSOMsg.isRequest();
-        assertTrue("result", result);
+        assertTrue(result, "result");
     }
 
     @Test
@@ -505,13 +505,13 @@ public class ISOMsg2Test {
         iSOMsg.setMTI("testISOMsgMti");
         iSOMsg.setFieldNumber(-2);
         boolean result = iSOMsg.isRequest();
-        assertTrue("result", result);
+        assertTrue(result, "result");
     }
 
     @Test
     public void testIsRequest2() throws Throwable {
         boolean result = new ISOMsg("   ").isRequest();
-        assertFalse("result", result);
+        assertFalse(result, "result");
     }
 
     @Test
@@ -520,8 +520,8 @@ public class ISOMsg2Test {
             new ISOMsg().isRequest();
             fail("Expected ISOException to be thrown");
         } catch (ISOException ex) {
-            assertEquals("ex.getMessage()", "MTI not available", ex.getMessage());
-            assertNull("ex.nested", ex.nested);
+            assertEquals("MTI not available", ex.getMessage(), "ex.getMessage()");
+            assertNull(ex.nested, "ex.nested");
         }
     }
 
@@ -533,8 +533,8 @@ public class ISOMsg2Test {
             iSOMsg.isRequest();
             fail("Expected ISOException to be thrown");
         } catch (ISOException ex) {
-            assertEquals("ex.getMessage()", "can't getMTI on inner message", ex.getMessage());
-            assertNull("ex.nested", ex.nested);
+            assertEquals("can't getMTI on inner message", ex.getMessage(), "ex.getMessage()");
+            assertNull(ex.nested, "ex.nested");
         }
     }
 
@@ -546,20 +546,20 @@ public class ISOMsg2Test {
             iSOMsg.isRequest();
             fail("Expected StringIndexOutOfBoundsException to be thrown");
         } catch (StringIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "String index out of range: 2", ex.getMessage());
+            assertEquals("String index out of range: 2", ex.getMessage(), "ex.getMessage()");
         }
     }
 
     @Test
     public void testIsResponse() throws Throwable {
         boolean result = new ISOMsg("XXX X XXXXXXXX").isResponse();
-        assertTrue("result", result);
+        assertTrue(result, "result");
     }
 
     @Test
     public void testIsResponse1() throws Throwable {
         boolean result = new ISOMsg("testISOMsgMti").isResponse();
-        assertFalse("result", result);
+        assertFalse(result, "result");
     }
 
     @Test
@@ -567,7 +567,7 @@ public class ISOMsg2Test {
         ISOMsg iSOMsg = new ISOMsg("testISOMsgMti");
         iSOMsg.setFieldNumber(-2);
         boolean result = iSOMsg.isResponse();
-        assertFalse("result", result);
+        assertFalse(result, "result");
     }
 
     @Test
@@ -576,8 +576,8 @@ public class ISOMsg2Test {
             new ISOMsg().isResponse();
             fail("Expected ISOException to be thrown");
         } catch (ISOException ex) {
-            assertEquals("ex.getMessage()", "MTI not available", ex.getMessage());
-            assertNull("ex.nested", ex.nested);
+            assertEquals("MTI not available", ex.getMessage(), "ex.getMessage()");
+            assertNull(ex.nested, "ex.nested");
         }
     }
 
@@ -587,8 +587,8 @@ public class ISOMsg2Test {
             new ISOMsg(0).isResponse();
             fail("Expected ISOException to be thrown");
         } catch (ISOException ex) {
-            assertEquals("ex.getMessage()", "can't getMTI on inner message", ex.getMessage());
-            assertNull("ex.nested", ex.nested);
+            assertEquals("can't getMTI on inner message", ex.getMessage(), "ex.getMessage()");
+            assertNull(ex.nested, "ex.nested");
         }
     }
 
@@ -598,7 +598,7 @@ public class ISOMsg2Test {
             new ISOMsg("").isResponse();
             fail("Expected StringIndexOutOfBoundsException to be thrown");
         } catch (StringIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "String index out of range: 2", ex.getMessage());
+            assertEquals("String index out of range: 2", ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -610,8 +610,8 @@ public class ISOMsg2Test {
             iSOMsg.isRetransmission();
             fail("Expected ISOException to be thrown");
         } catch (ISOException ex) {
-            assertEquals("ex.getMessage()", "can't getMTI on inner message", ex.getMessage());
-            assertNull("ex.nested", ex.nested);
+            assertEquals("can't getMTI on inner message", ex.getMessage(), "ex.getMessage()");
+            assertNull(ex.nested, "ex.nested");
         }
     }
 
@@ -620,10 +620,10 @@ public class ISOMsg2Test {
         ISOMsg m = new ISOMsg(100);
         ISOMsg m1 = new ISOMsg();
         m1.merge (m);
-        assertEquals("m.maxField", 0, m.getMaxField());
-        assertFalse("m.maxFieldDirty", m.maxFieldDirty);
-        assertEquals("m1.maxField", 0, m1.getMaxField());
-        assertFalse("m1.maxFieldDirty", m1.maxFieldDirty);
+        assertEquals(0, m.getMaxField(), "m.maxField");
+        assertFalse(m.maxFieldDirty, "m.maxFieldDirty");
+        assertEquals(0, m1.getMaxField(), "m1.maxField");
+        assertFalse(m1.maxFieldDirty, "m1.maxFieldDirty");
 
     }
 
@@ -635,9 +635,9 @@ public class ISOMsg2Test {
         byte[] value = new byte[0];
         m.set(3, value);
         iSOMsg.merge(m);
-        assertEquals("iSOMsg.fields.size()", 2, iSOMsg.fields.size());
-        assertEquals("iSOMsg.maxField", 3, iSOMsg.maxField);
-        assertTrue("iSOMsg.dirty", iSOMsg.dirty);
+        assertEquals(2, iSOMsg.fields.size(), "iSOMsg.fields.size()");
+        assertEquals(3, iSOMsg.maxField, "iSOMsg.maxField");
+        assertTrue(iSOMsg.dirty, "iSOMsg.dirty");
     }
 
     @Test
@@ -645,10 +645,10 @@ public class ISOMsg2Test {
         ISOMsg iSOMsg = new ISOMsg();
         ISOMsg m = new ISOMsg("testISOMsgMti");
         iSOMsg.merge(m);
-        assertEquals("iSOMsg.fields.size()", 1, iSOMsg.fields.size());
-        assertEquals("iSOMsg.maxField", 0, iSOMsg.getMaxField());
-        assertFalse("m.maxFieldDirty", iSOMsg.maxFieldDirty);
-        assertTrue("iSOMsg.dirty", iSOMsg.dirty);
+        assertEquals(1, iSOMsg.fields.size(), "iSOMsg.fields.size()");
+        assertEquals(0, iSOMsg.getMaxField(), "iSOMsg.maxField");
+        assertFalse(iSOMsg.maxFieldDirty, "m.maxFieldDirty");
+        assertTrue(iSOMsg.dirty, "iSOMsg.dirty");
     }
 
     @Test
@@ -658,10 +658,10 @@ public class ISOMsg2Test {
             iSOMsg.merge(null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertEquals("iSOMsg.fields.size()", 0, iSOMsg.fields.size());
-            assertEquals("iSOMsg.maxField", -1, iSOMsg.maxField);
-            assertTrue("iSOMsg.dirty", iSOMsg.dirty);
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertEquals(0, iSOMsg.fields.size(), "iSOMsg.fields.size()");
+            assertEquals(-1, iSOMsg.maxField, "iSOMsg.maxField");
+            assertTrue(iSOMsg.dirty, "iSOMsg.dirty");
         }
     }
 
@@ -669,7 +669,7 @@ public class ISOMsg2Test {
     public void testMove() throws Throwable {
         ISOMsg iSOMsg = new ISOMsg();
         iSOMsg.move(100, 1000);
-        assertEquals("iSOMsg.fields.size()", 0, iSOMsg.fields.size());
+        assertEquals(0, iSOMsg.fields.size(), "iSOMsg.fields.size()");
     }
 
     @Test
@@ -679,10 +679,10 @@ public class ISOMsg2Test {
         iSOMsg.setPackager(p);
         iSOMsg.getMaxField();
         byte[] result = iSOMsg.pack();
-        assertEquals("iSOMsg.fields.size()", 1, iSOMsg.fields.size());
-        assertFalse("iSOMsg.dirty", iSOMsg.dirty);
-        assertEquals("result.length", 0, result.length);
-        assertSame("iSOMsg.packager", p, iSOMsg.packager);
+        assertEquals(1, iSOMsg.fields.size(), "iSOMsg.fields.size()");
+        assertFalse(iSOMsg.dirty, "iSOMsg.dirty");
+        assertEquals(0, result.length, "result.length");
+        assertSame(p, iSOMsg.packager, "iSOMsg.packager");
     }
 
     @Test
@@ -696,13 +696,13 @@ public class ISOMsg2Test {
             iSOMsg.pack();
             fail("Expected ISOException to be thrown");
         } catch (ISOException ex) {
-            assertEquals("iSOMsg.fields.size()", 2, iSOMsg.fields.size());
-            assertFalse("iSOMsg.dirty", iSOMsg.dirty);
-            assertFalse("iSOMsg.maxFieldDirty", iSOMsg.maxFieldDirty);
-            assertEquals("ex.getMessage()", "java.lang.NullPointerException", ex.getMessage());
-            assertNull("ex.nested.getMessage()", ex.nested.getMessage());
-            assertEquals("iSOMsg.maxField", 100, iSOMsg.maxField);
-            assertSame("iSOMsg.packager", p, iSOMsg.packager);
+            assertEquals(2, iSOMsg.fields.size(), "iSOMsg.fields.size()");
+            assertFalse(iSOMsg.dirty, "iSOMsg.dirty");
+            assertFalse(iSOMsg.maxFieldDirty, "iSOMsg.maxFieldDirty");
+            assertEquals("java.lang.NullPointerException", ex.getMessage(), "ex.getMessage()");
+            assertNull(ex.nested.getMessage(), "ex.nested.getMessage()");
+            assertEquals(100, iSOMsg.maxField, "iSOMsg.maxField");
+            assertSame(p, iSOMsg.packager, "iSOMsg.packager");
         }
     }
 
@@ -715,11 +715,11 @@ public class ISOMsg2Test {
             iSOMsg.pack();
             fail("Expected NegativeArraySizeException to be thrown");
         } catch (NullPointerException ex) {
-            assertFalse("iSOMsg.maxFieldDirty", iSOMsg.maxFieldDirty);
-            assertEquals("iSOMsg.maxField", Integer.MAX_VALUE, iSOMsg.maxField);
-            assertNull("iSOMsg.packager", iSOMsg.packager);
-            assertEquals("iSOMsg.fields.size()", 2, iSOMsg.fields.size());
-            assertFalse("iSOMsg.dirty", iSOMsg.dirty);
+            assertFalse(iSOMsg.maxFieldDirty, "iSOMsg.maxFieldDirty");
+            assertEquals(Integer.MAX_VALUE, iSOMsg.maxField, "iSOMsg.maxField");
+            assertNull(iSOMsg.packager, "iSOMsg.packager");
+            assertEquals(2, iSOMsg.fields.size(), "iSOMsg.fields.size()");
+            assertFalse(iSOMsg.dirty, "iSOMsg.dirty");
         }
     }
 
@@ -731,12 +731,12 @@ public class ISOMsg2Test {
             iSOMsg.pack();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertEquals("iSOMsg.fields.size()", 2, iSOMsg.fields.size());
-            assertFalse("iSOMsg.dirty", iSOMsg.dirty);
-            assertFalse("iSOMsg.maxFieldDirty", iSOMsg.maxFieldDirty);
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertEquals("iSOMsg.maxField", 0, iSOMsg.maxField);
-            assertNull("iSOMsg.packager", iSOMsg.packager);
+            assertEquals(2, iSOMsg.fields.size(), "iSOMsg.fields.size()");
+            assertFalse(iSOMsg.dirty, "iSOMsg.dirty");
+            assertFalse(iSOMsg.maxFieldDirty, "iSOMsg.maxFieldDirty");
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertEquals(0, iSOMsg.maxField, "iSOMsg.maxField");
+            assertNull(iSOMsg.packager, "iSOMsg.packager");
         }
     }
 
@@ -748,12 +748,12 @@ public class ISOMsg2Test {
             iSOMsg.pack();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertNull("iSOMsg.packager", iSOMsg.packager);
-            assertEquals("iSOMsg.fields.size()", 1, iSOMsg.fields.size());
-            assertEquals("iSOMsg.maxField", 0, iSOMsg.maxField);
-            assertFalse("iSOMsg.dirty", iSOMsg.dirty);
-            assertFalse("iSOMsg.maxFieldDirty", iSOMsg.maxFieldDirty);
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertNull(iSOMsg.packager, "iSOMsg.packager");
+            assertEquals(1, iSOMsg.fields.size(), "iSOMsg.fields.size()");
+            assertEquals(0, iSOMsg.maxField, "iSOMsg.maxField");
+            assertFalse(iSOMsg.dirty, "iSOMsg.dirty");
+            assertFalse(iSOMsg.maxFieldDirty, "iSOMsg.maxFieldDirty");
         }
     }
 
@@ -764,8 +764,8 @@ public class ISOMsg2Test {
             iSOVMsg.readHeader(null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertNull("(ISOVMsg) iSOVMsg.header", ((ISOVMsg) iSOVMsg).header);
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertNull(((ISOVMsg) iSOVMsg).header, "(ISOVMsg) iSOVMsg.header");
         }
     }
 
@@ -773,10 +773,10 @@ public class ISOMsg2Test {
     public void testRecalcBitMap() throws Throwable {
         ISOMsg iSOMsg = new ISOMsg("testISOMsgMti");
         iSOMsg.recalcBitMap();
-        assertEquals("iSOMsg.fields.size()", 2, iSOMsg.fields.size());
-        assertFalse("iSOMsg.dirty", iSOMsg.dirty);
-        assertFalse("iSOMsg.maxFieldDirty", iSOMsg.maxFieldDirty);
-        assertEquals("iSOMsg.maxField", 0, iSOMsg.maxField);
+        assertEquals(2, iSOMsg.fields.size(), "iSOMsg.fields.size()");
+        assertFalse(iSOMsg.dirty, "iSOMsg.dirty");
+        assertFalse(iSOMsg.maxFieldDirty, "iSOMsg.maxFieldDirty");
+        assertEquals(0, iSOMsg.maxField, "iSOMsg.maxField");
     }
 
     @Test
@@ -785,10 +785,10 @@ public class ISOMsg2Test {
         iSOMsg.set(100, "testISOMsgValue");
         iSOMsg.set(1000, (byte[]) null);
         iSOMsg.recalcBitMap();
-        assertEquals("iSOMsg.fields.size()", 2, iSOMsg.fields.size());
-        assertFalse("iSOMsg.dirty", iSOMsg.dirty);
-        assertFalse("iSOMsg.maxFieldDirty", iSOMsg.maxFieldDirty);
-        assertEquals("iSOMsg.maxField", 100, iSOMsg.maxField);
+        assertEquals(2, iSOMsg.fields.size(), "iSOMsg.fields.size()");
+        assertFalse(iSOMsg.dirty, "iSOMsg.dirty");
+        assertFalse(iSOMsg.maxFieldDirty, "iSOMsg.maxFieldDirty");
+        assertEquals(100, iSOMsg.maxField, "iSOMsg.maxField");
     }
 
     @Test
@@ -797,8 +797,8 @@ public class ISOMsg2Test {
         iSOMsg.recalcBitMap();
         iSOMsg.set(0, "testISOMsgValue");
         iSOMsg.recalcBitMap();
-        assertFalse("iSOMsg.dirty", iSOMsg.dirty);
-        assertEquals("iSOMsg.fields.size()", 2, iSOMsg.fields.size());
+        assertFalse(iSOMsg.dirty, "iSOMsg.dirty");
+        assertEquals(2, iSOMsg.fields.size(), "iSOMsg.fields.size()");
     }
 
     @Test
@@ -809,18 +809,18 @@ public class ISOMsg2Test {
         m.set(1, "testISOMsgValue");
         iSOMsg.merge(m);
         iSOMsg.recalcBitMap();
-        assertFalse("iSOMsg.dirty", iSOMsg.dirty);
-        assertEquals("iSOMsg.fields.size()", 3, iSOMsg.fields.size());
+        assertFalse(iSOMsg.dirty, "iSOMsg.dirty");
+        assertEquals(3, iSOMsg.fields.size(), "iSOMsg.fields.size()");
     }
 
     @Test
     public void testRecalcBitMap4() throws Throwable {
         ISOMsg iSOMsg = new ISOMsg(100);
         iSOMsg.recalcBitMap();
-        assertEquals("iSOMsg.fields.size()", 1, iSOMsg.fields.size());
-        assertEquals("iSOMsg.maxField", 0, iSOMsg.maxField);
-        assertFalse("iSOMsg.dirty", iSOMsg.dirty);
-        assertFalse("iSOMsg.maxFieldDirty", iSOMsg.maxFieldDirty);
+        assertEquals(1, iSOMsg.fields.size(), "iSOMsg.fields.size()");
+        assertEquals(0, iSOMsg.maxField, "iSOMsg.maxField");
+        assertFalse(iSOMsg.dirty, "iSOMsg.dirty");
+        assertFalse(iSOMsg.maxFieldDirty, "iSOMsg.maxFieldDirty");
     }
 
     @Test
@@ -831,8 +831,8 @@ public class ISOMsg2Test {
         byte[] value = new byte[2];
         iSOMsg.set(Integer.valueOf(100), value);
         iSOMsg.recalcBitMap();
-        assertFalse("iSOMsg.dirty", iSOMsg.dirty);
-        assertEquals("iSOMsg.fields.size()", 2, iSOMsg.fields.size());
+        assertFalse(iSOMsg.dirty, "iSOMsg.dirty");
+        assertEquals(2, iSOMsg.fields.size(), "iSOMsg.fields.size()");
     }
 
     @Test
@@ -841,10 +841,10 @@ public class ISOMsg2Test {
         ISOMsg iSOMsg = new ISOMsg();
         iSOMsg.set(1, value);
         iSOMsg.recalcBitMap();
-        assertEquals("iSOMsg.fields.size()", 2, iSOMsg.fields.size());
-        assertFalse("iSOMsg.dirty", iSOMsg.dirty);
-        assertFalse("iSOMsg.maxFieldDirty", iSOMsg.maxFieldDirty);
-        assertEquals("iSOMsg.maxField", 1, iSOMsg.maxField);
+        assertEquals(2, iSOMsg.fields.size(), "iSOMsg.fields.size()");
+        assertFalse(iSOMsg.dirty, "iSOMsg.dirty");
+        assertFalse(iSOMsg.maxFieldDirty, "iSOMsg.maxFieldDirty");
+        assertEquals(1, iSOMsg.maxField, "iSOMsg.maxField");
     }
 
     @Test
@@ -860,7 +860,7 @@ public class ISOMsg2Test {
         ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(buffer.toByteArray()));
         ISOMsg dest = (ISOMsg) in.readObject();
         in.close();
-        assertEquals("obj != deserialize(serialize(obj))", msg.getMTI(), dest.getMTI());
+        assertEquals(msg.getMTI(), dest.getMTI(), "obj != deserialize(serialize(obj))");
     }
 
     @Test
@@ -868,18 +868,18 @@ public class ISOMsg2Test {
         ISOMsg iSOMsg = new ISOMsg();
         iSOMsg.setPackager(new ISO87APackagerBBitmap());
         iSOMsg.set(100, "testISOMsgValue");
-        assertEquals("iSOMsg.fields.size()", 1, iSOMsg.fields.size());
-        assertEquals("iSOMsg.maxField", 100, iSOMsg.maxField);
-        assertTrue("iSOMsg.dirty", iSOMsg.dirty);
+        assertEquals(1, iSOMsg.fields.size(), "iSOMsg.fields.size()");
+        assertEquals(100, iSOMsg.maxField, "iSOMsg.maxField");
+        assertTrue(iSOMsg.dirty, "iSOMsg.dirty");
     }
 
     @Test
     public void testSet1() throws Throwable {
         ISOMsg iSOMsg = new ISOMsg();
         iSOMsg.set(100, "testISOMsgValue");
-        assertEquals("iSOMsg.fields.size()", 1, iSOMsg.fields.size());
-        assertEquals("iSOMsg.maxField", 100, iSOMsg.maxField);
-        assertTrue("iSOMsg.dirty", iSOMsg.dirty);
+        assertEquals(1, iSOMsg.fields.size(), "iSOMsg.fields.size()");
+        assertEquals(100, iSOMsg.maxField, "iSOMsg.maxField");
+        assertTrue(iSOMsg.dirty, "iSOMsg.dirty");
     }
 
     @Test
@@ -887,24 +887,24 @@ public class ISOMsg2Test {
         ISOMsg iSOMsg = new ISOMsg("testISOMsgMti");
         iSOMsg.setPackager(new X92Packager());
         iSOMsg.set(64, "testISOMsgValue1");
-        assertEquals("iSOMsg.fields.size()", 2, iSOMsg.fields.size());
-        assertEquals("iSOMsg.maxField", 64, iSOMsg.maxField);
-        assertTrue("iSOMsg.dirty", iSOMsg.dirty);
+        assertEquals(2, iSOMsg.fields.size(), "iSOMsg.fields.size()");
+        assertEquals(64, iSOMsg.maxField, "iSOMsg.maxField");
+        assertTrue(iSOMsg.dirty, "iSOMsg.dirty");
     }
 
     @Test
     public void testSet3() throws Throwable {
         ISOMsg iSOMsg = new ISOMsg();
         iSOMsg.set(100, (String) null);
-        assertEquals("iSOMsg.fields.size()", 0, iSOMsg.fields.size());
+        assertEquals(0, iSOMsg.fields.size(), "iSOMsg.fields.size()");
     }
 
     @Test
     public void testSet4() throws Throwable {
         ISOMsg iSOMsg = new ISOMsg();
         iSOMsg.set(new ISOMsg(-2));
-        assertEquals("iSOMsg.fields.size()", 1, iSOMsg.fields.size());
-        assertTrue("iSOMsg.dirty", iSOMsg.dirty);
+        assertEquals(1, iSOMsg.fields.size(), "iSOMsg.fields.size()");
+        assertTrue(iSOMsg.dirty, "iSOMsg.dirty");
     }
 
     @Test
@@ -916,24 +916,24 @@ public class ISOMsg2Test {
         int[] fields = new int[2];
         ISOMsg clone = (ISOMsg) iSOMsg2.clone(fields);
         clone.set((ISOComponent) iSOMsg.clone());
-        assertEquals("clone.fields.size()", 1, clone.fields.size());
-        assertTrue("clone.dirty", clone.dirty);
+        assertEquals(1, clone.fields.size(), "clone.fields.size()");
+        assertTrue(clone.dirty, "clone.dirty");
     }
 
     @Test
     public void testSet6() throws Throwable {
         ISOMsg iSOMsg = new ISOMsg("testISOMsgMti");
         iSOMsg.set(new ISOMsg(100));
-        assertEquals("iSOMsg.fields.size()", 2, iSOMsg.fields.size());
-        assertEquals("iSOMsg.maxField", 100, iSOMsg.maxField);
-        assertTrue("iSOMsg.dirty", iSOMsg.dirty);
+        assertEquals(2, iSOMsg.fields.size(), "iSOMsg.fields.size()");
+        assertEquals(100, iSOMsg.maxField, "iSOMsg.maxField");
+        assertTrue(iSOMsg.dirty, "iSOMsg.dirty");
     }
 
     @Test
     public void testSet7() throws Throwable {
         ISOMsg iSOMsg = new ISOMsg();
         iSOMsg.set(100, (byte[]) null);
-        assertEquals("iSOMsg.fields.size()", 0, iSOMsg.fields.size());
+        assertEquals(0, iSOMsg.fields.size(), "iSOMsg.fields.size()");
     }
 
     @Test
@@ -941,23 +941,23 @@ public class ISOMsg2Test {
         ISOMsg iSOMsg = new ISOMsg();
         byte[] value = new byte[2];
         iSOMsg.set(100, value);
-        assertEquals("iSOMsg.fields.size()", 1, iSOMsg.fields.size());
-        assertEquals("iSOMsg.maxField", 100, iSOMsg.maxField);
-        assertTrue("iSOMsg.dirty", iSOMsg.dirty);
+        assertEquals(1, iSOMsg.fields.size(), "iSOMsg.fields.size()");
+        assertEquals(100, iSOMsg.maxField, "iSOMsg.maxField");
+        assertTrue(iSOMsg.dirty, "iSOMsg.dirty");
     }
 
     @Test
     public void testSetDirection() throws Throwable {
         ISOMsg iSOMsg = new ISOMsg("testISOMsgMti");
         iSOMsg.setDirection(100);
-        assertEquals("iSOMsg.direction", 100, iSOMsg.direction);
+        assertEquals(100, iSOMsg.direction, "iSOMsg.direction");
     }
 
     @Test
     public void testSetFieldNumber() throws Throwable {
         ISOMsg iSOMsg = new ISOMsg();
         iSOMsg.setFieldNumber(100);
-        assertEquals("iSOMsg.fieldNumber", 100, iSOMsg.fieldNumber);
+        assertEquals(100, iSOMsg.fieldNumber, "iSOMsg.fieldNumber");
     }
 
     @Test
@@ -966,7 +966,7 @@ public class ISOMsg2Test {
         ISOHeader header2 = new BASE1Header(header);
         ISOMsg iSOMsg = new ISOMsg();
         iSOMsg.setHeader(header2);
-        assertSame("iSOMsg.header", header2, iSOMsg.header);
+        assertSame(header2, iSOMsg.header, "iSOMsg.header");
     }
 
     @Test
@@ -974,16 +974,16 @@ public class ISOMsg2Test {
         byte[] b = new byte[2];
         ISOMsg iSOMsg = new ISOMsg();
         iSOMsg.setHeader(b);
-        assertNull("iSOMsg.header.getDestination()", iSOMsg.header.getDestination());
+        assertNull(iSOMsg.header.getDestination(), "iSOMsg.header.getDestination()");
     }
 
     @Test
     public void testSetMTI() throws Throwable {
         ISOMsg iSOMsg = new ISOMsg();
         iSOMsg.setMTI("testISOMsgMti");
-        assertEquals("iSOMsg.fields.size()", 1, iSOMsg.fields.size());
-        assertEquals("iSOMsg.maxField", 0, iSOMsg.maxField);
-        assertTrue("iSOMsg.dirty", iSOMsg.dirty);
+        assertEquals(1, iSOMsg.fields.size(), "iSOMsg.fields.size()");
+        assertEquals(0, iSOMsg.maxField, "iSOMsg.maxField");
+        assertTrue(iSOMsg.dirty, "iSOMsg.dirty");
     }
 
     @Test
@@ -991,8 +991,8 @@ public class ISOMsg2Test {
         ISOMsg iSOMsg = new ISOMsg("testISOMsgMti");
         iSOMsg.setFieldNumber(-2);
         iSOMsg.setMTI("testISOMsgMti");
-        assertEquals("iSOMsg.fields.size()", 1, iSOMsg.fields.size());
-        assertTrue("iSOMsg.dirty", iSOMsg.dirty);
+        assertEquals(1, iSOMsg.fields.size(), "iSOMsg.fields.size()");
+        assertTrue(iSOMsg.dirty, "iSOMsg.dirty");
     }
 
     @Test
@@ -1003,11 +1003,11 @@ public class ISOMsg2Test {
             iSOMsg.setMTI("testISOMsgMti");
             fail("Expected ISOException to be thrown");
         } catch (ISOException ex) {
-            assertEquals("ex.getMessage()", "can't setMTI on inner message", ex.getMessage());
-            assertNull("ex.nested", ex.nested);
-            assertEquals("iSOMsg.fields.size()", 1, iSOMsg.fields.size());
-            assertEquals("iSOMsg.maxField", 0, iSOMsg.maxField);
-            assertTrue("iSOMsg.dirty", iSOMsg.dirty);
+            assertEquals("can't setMTI on inner message", ex.getMessage(), "ex.getMessage()");
+            assertNull(ex.nested, "ex.nested");
+            assertEquals(1, iSOMsg.fields.size(), "iSOMsg.fields.size()");
+            assertEquals(0, iSOMsg.maxField, "iSOMsg.maxField");
+            assertTrue(iSOMsg.dirty, "iSOMsg.dirty");
         }
     }
 
@@ -1016,7 +1016,7 @@ public class ISOMsg2Test {
         ISOMsg iSOMsg = new ISOMsg("testISOMsgMti");
         ISOPackager p = new GenericValidatingPackager();
         iSOMsg.setPackager(p);
-        assertSame("iSOMsg.packager", p, iSOMsg.packager);
+        assertSame(p, iSOMsg.packager, "iSOMsg.packager");
     }
 
     @Test
@@ -1024,10 +1024,10 @@ public class ISOMsg2Test {
         ISOMsg iSOMsg = new ISOMsg();
         iSOMsg.setMTI("testISOMsgMti");
         iSOMsg.setResponseMTI();
-        assertEquals("iSOMsg.fields.get(Integer.valueOf(0)).value", "te290",
-                ((ISOField) iSOMsg.fields.get(Integer.valueOf(0))).value);
-        assertEquals("iSOMsg.fields.size()", 1, iSOMsg.fields.size());
-        assertTrue("iSOMsg.dirty", iSOMsg.dirty);
+        assertEquals("te290", ((ISOField) iSOMsg.fields.get(Integer.valueOf(0))).value,
+                "iSOMsg.fields.get(Integer.valueOf(0)).value");
+        assertEquals(1, iSOMsg.fields.size(), "iSOMsg.fields.size()");
+        assertTrue(iSOMsg.dirty, "iSOMsg.dirty");
     }
 
     @Test
@@ -1035,10 +1035,10 @@ public class ISOMsg2Test {
         ISOMsg iSOMsg = new ISOMsg();
         iSOMsg.setMTI(" di2rection=\"outgoing\"");
         iSOMsg.setResponseMTI();
-        assertEquals("iSOMsg.fields.get(Integer.valueOf(0)).value", " d192",
-                ((ISOField) iSOMsg.fields.get(Integer.valueOf(0))).value);
-        assertEquals("iSOMsg.fields.size()", 1, iSOMsg.fields.size());
-        assertTrue("iSOMsg.dirty", iSOMsg.dirty);
+        assertEquals(" d192", ((ISOField) iSOMsg.fields.get(Integer.valueOf(0))).value,
+                "iSOMsg.fields.get(Integer.valueOf(0)).value");
+        assertEquals(1, iSOMsg.fields.size(), "iSOMsg.fields.size()");
+        assertTrue(iSOMsg.dirty, "iSOMsg.dirty");
     }
 
     @Test
@@ -1049,11 +1049,11 @@ public class ISOMsg2Test {
             iSOMsg.setResponseMTI();
             fail("Expected ISOException to be thrown");
         } catch (ISOException ex) {
-            assertEquals("ex.getMessage()", "can't getMTI on inner message", ex.getMessage());
-            assertNull("ex.nested", ex.nested);
-            assertEquals("iSOMsg.fields.size()", 0, iSOMsg.fields.size());
-            assertEquals("iSOMsg.maxField", -1, iSOMsg.maxField);
-            assertTrue("iSOMsg.dirty", iSOMsg.dirty);
+            assertEquals("can't getMTI on inner message", ex.getMessage(), "ex.getMessage()");
+            assertNull(ex.nested, "ex.nested");
+            assertEquals(0, iSOMsg.fields.size(), "iSOMsg.fields.size()");
+            assertEquals(-1, iSOMsg.maxField, "iSOMsg.maxField");
+            assertTrue(iSOMsg.dirty, "iSOMsg.dirty");
         }
     }
 
@@ -1064,10 +1064,10 @@ public class ISOMsg2Test {
             iSOMsg.setResponseMTI();
             fail("Expected StringIndexOutOfBoundsException to be thrown");
         } catch (StringIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "String index out of range: 2", ex.getMessage());
-            assertEquals("iSOMsg.fields.size()", 1, iSOMsg.fields.size());
-            assertEquals("iSOMsg.maxField", 0, iSOMsg.maxField);
-            assertTrue("iSOMsg.dirty", iSOMsg.dirty);
+            assertEquals("String index out of range: 2", ex.getMessage(), "ex.getMessage()");
+            assertEquals(1, iSOMsg.fields.size(), "iSOMsg.fields.size()");
+            assertEquals(0, iSOMsg.maxField, "iSOMsg.maxField");
+            assertTrue(iSOMsg.dirty, "iSOMsg.dirty");
         }
     }
 
@@ -1076,9 +1076,9 @@ public class ISOMsg2Test {
         ISOMsg iSOMsg = new ISOMsg();
         iSOMsg.setMTI("testISOMsgMti");
         iSOMsg.setRetransmissionMTI();
-        assertEquals("iSOMsg.fields.get(Integer.valueOf(0)).value", "tes1", ((ISOField) iSOMsg.fields.get(Integer.valueOf(0))).value);
-        assertEquals("iSOMsg.fields.size()", 1, iSOMsg.fields.size());
-        assertTrue("iSOMsg.dirty", iSOMsg.dirty);
+        assertEquals("tes1", ((ISOField) iSOMsg.fields.get(Integer.valueOf(0))).value, "iSOMsg.fields.get(Integer.valueOf(0)).value");
+        assertEquals(1, iSOMsg.fields.size(), "iSOMsg.fields.size()");
+        assertTrue(iSOMsg.dirty, "iSOMsg.dirty");
     }
 
     @Test
@@ -1086,9 +1086,9 @@ public class ISOMsg2Test {
         ISOMsg iSOMsg = new ISOMsg("testISOMsgMti");
         iSOMsg.setFieldNumber(-2);
         iSOMsg.setRetransmissionMTI();
-        assertEquals("iSOMsg.fields.get(Integer.valueOf(0)).value", "tes1", ((ISOField) iSOMsg.fields.get(Integer.valueOf(0))).value);
-        assertEquals("iSOMsg.fields.size()", 1, iSOMsg.fields.size());
-        assertTrue("iSOMsg.dirty", iSOMsg.dirty);
+        assertEquals("tes1", ((ISOField) iSOMsg.fields.get(Integer.valueOf(0))).value, "iSOMsg.fields.get(Integer.valueOf(0)).value");
+        assertEquals(1, iSOMsg.fields.size(), "iSOMsg.fields.size()");
+        assertTrue(iSOMsg.dirty, "iSOMsg.dirty");
     }
 
     @Test
@@ -1099,10 +1099,10 @@ public class ISOMsg2Test {
             iSOMsg.setRetransmissionMTI();
             fail("Expected StringIndexOutOfBoundsException to be thrown");
         } catch (StringIndexOutOfBoundsException ex) {
-            assertEquals("ex.getMessage()", "String index out of range: 2", ex.getMessage());
-            assertEquals("iSOMsg.fields.size()", 1, iSOMsg.fields.size());
-            assertEquals("iSOMsg.maxField", 0, iSOMsg.maxField);
-            assertTrue("iSOMsg.dirty", iSOMsg.dirty);
+            assertEquals("String index out of range: 2", ex.getMessage(), "ex.getMessage()");
+            assertEquals(1, iSOMsg.fields.size(), "iSOMsg.fields.size()");
+            assertEquals(0, iSOMsg.maxField, "iSOMsg.maxField");
+            assertTrue(iSOMsg.dirty, "iSOMsg.dirty");
         }
     }
 
@@ -1111,7 +1111,7 @@ public class ISOMsg2Test {
         ISOMsg iSOMsg = new ISOMsg();
         ISOSource source = new LogChannel("testISOMsgHost", 100, new ISO87APackager());
         iSOMsg.setSource(source);
-        assertSame("iSOMsg.getSource()", source, iSOMsg.getSource());
+        assertSame(source, iSOMsg.getSource(), "iSOMsg.getSource()");
     }
 
     @Test
@@ -1121,11 +1121,11 @@ public class ISOMsg2Test {
             iSOMsg.set(new ISOMsg());
             fail("Expected ISOException to be thrown");
         } catch (ISOException ex) {
-            assertEquals("ex.getMessage()", "This is not a subField", ex.getMessage());
-            assertNull("ex.nested", ex.nested);
-            assertEquals("iSOMsg.fields.size()", 0, iSOMsg.fields.size());
-            assertEquals("iSOMsg.maxField", -1, iSOMsg.maxField);
-            assertTrue("iSOMsg.dirty", iSOMsg.dirty);
+            assertEquals("This is not a subField", ex.getMessage(), "ex.getMessage()");
+            assertNull(ex.nested, "ex.nested");
+            assertEquals(0, iSOMsg.fields.size(), "iSOMsg.fields.size()");
+            assertEquals(-1, iSOMsg.maxField, "iSOMsg.maxField");
+            assertTrue(iSOMsg.dirty, "iSOMsg.dirty");
         }
     }
 
@@ -1137,11 +1137,11 @@ public class ISOMsg2Test {
             iSOMsg.set(100, "testISOMsgValue");
             // fixed in 1.6.8 fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertEquals("iSOMsg.fields.size()", 0, iSOMsg.fields.size());
-            assertEquals("iSOMsg.maxField", -1, iSOMsg.maxField);
-            assertTrue("iSOMsg.dirty", iSOMsg.dirty);
-            assertTrue("iSOMsg.maxFieldDirty", iSOMsg.maxFieldDirty);
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertEquals(0, iSOMsg.fields.size(), "iSOMsg.fields.size()");
+            assertEquals(-1, iSOMsg.maxField, "iSOMsg.maxField");
+            assertTrue(iSOMsg.dirty, "iSOMsg.dirty");
+            assertTrue(iSOMsg.maxFieldDirty, "iSOMsg.maxFieldDirty");
         }
     }
 
@@ -1152,10 +1152,10 @@ public class ISOMsg2Test {
             iSOMsg.set(null);
             // fixed in 1.6.8fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertEquals("iSOMsg.fields.size()", 0, iSOMsg.fields.size());
-            assertEquals("iSOMsg.maxField", -1, iSOMsg.maxField);
-            assertTrue("iSOMsg.dirty", iSOMsg.dirty);
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertEquals(0, iSOMsg.fields.size(), "iSOMsg.fields.size()");
+            assertEquals(-1, iSOMsg.maxField, "iSOMsg.maxField");
+            assertTrue(iSOMsg.dirty, "iSOMsg.dirty");
         }
     }
 
@@ -1165,8 +1165,8 @@ public class ISOMsg2Test {
             new ISOMsg().setValue(new ISOField(100, "testISOMsgv"));
             fail("Expected ISOException to be thrown");
         } catch (ISOException ex) {
-            assertEquals("ex.getMessage()", "setValue N/A in ISOMsg", ex.getMessage());
-            assertNull("ex.nested", ex.nested);
+            assertEquals("setValue N/A in ISOMsg", ex.getMessage(), "ex.getMessage()");
+            assertNull(ex.nested, "ex.nested");
         }
     }
 
@@ -1184,7 +1184,7 @@ public class ISOMsg2Test {
     @Test
     public void testToString() throws Throwable {
         String result = new ISOMsg(100).toString();
-        assertEquals("result", "     null", result);
+        assertEquals("     null", result, "result");
     }
 
     @Test
@@ -1192,7 +1192,7 @@ public class ISOMsg2Test {
         ISOMsg iSOMsg = new ISOMsg("testISOMsgMti");
         iSOMsg.setDirection(100);
         String result = iSOMsg.toString();
-        assertEquals("result", "     testISOMsgMti", result);
+        assertEquals("     testISOMsgMti", result, "result");
     }
 
     @Test
@@ -1200,7 +1200,7 @@ public class ISOMsg2Test {
         ISOMsg iSOMsg = new ISOMsg("testISOMsgMti");
         iSOMsg.setDirection(ISOMsg.INCOMING);
         String result = iSOMsg.toString();
-        assertEquals("result", " In: testISOMsgMti", result);
+        assertEquals(" In: testISOMsgMti", result, "result");
     }
 
     @Test
@@ -1211,8 +1211,8 @@ public class ISOMsg2Test {
             iSOMsg.unpack(b);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertNull("iSOMsg.packager", iSOMsg.packager);
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertNull(iSOMsg.packager, "iSOMsg.packager");
         }
     }
 
@@ -1220,7 +1220,7 @@ public class ISOMsg2Test {
     public void testUnset() throws Throwable {
         ISOMsg iSOMsg = new ISOMsg();
         iSOMsg.unset(100);
-        assertEquals("iSOMsg.fields.size()", 0, iSOMsg.fields.size());
+        assertEquals(0, iSOMsg.fields.size(), "iSOMsg.fields.size()");
     }
 
     @Test
@@ -1229,11 +1229,11 @@ public class ISOMsg2Test {
         iSOMsg.setMTI("testISOMsgMti");
         iSOMsg.move(0, -2147483647);
         iSOMsg.unset(-2147483647);
-        assertEquals("iSOMsg.fields.size()", 0, iSOMsg.fields.size());
-        assertFalse("iSOMsg.fields.containsKey(Integer.valueOf(-2147483647))",
-                iSOMsg.fields.containsKey(Integer.valueOf(-2147483647)));
-        assertTrue("iSOMsg.dirty", iSOMsg.dirty);
-        assertTrue("iSOMsg.maxFieldDirty", iSOMsg.maxFieldDirty);
+        assertEquals(0, iSOMsg.fields.size(), "iSOMsg.fields.size()");
+        assertFalse(iSOMsg.fields.containsKey(Integer.valueOf(-2147483647)),
+                "iSOMsg.fields.containsKey(Integer.valueOf(-2147483647))");
+        assertTrue(iSOMsg.dirty, "iSOMsg.dirty");
+        assertTrue(iSOMsg.maxFieldDirty, "iSOMsg.maxFieldDirty");
     }
 
     @Test
@@ -1241,9 +1241,9 @@ public class ISOMsg2Test {
         ISOMsg iSOMsg = new ISOMsg();
         int[] flds = new int[0];
         iSOMsg.unset(flds);
-        assertEquals("iSOMsg.fields.size()", 0, iSOMsg.fields.size());
-        assertTrue("iSOMsg.dirty", iSOMsg.dirty);
-        assertTrue("iSOMsg.maxFieldDirty", iSOMsg.maxFieldDirty);
+        assertEquals(0, iSOMsg.fields.size(), "iSOMsg.fields.size()");
+        assertTrue(iSOMsg.dirty, "iSOMsg.dirty");
+        assertTrue(iSOMsg.maxFieldDirty, "iSOMsg.maxFieldDirty");
     }
 
     @Test
@@ -1251,7 +1251,7 @@ public class ISOMsg2Test {
         ISOMsg iSOMsg = new ISOMsg();
         int[] flds = new int[1];
         iSOMsg.unset(flds);
-        assertEquals("iSOMsg.fields.size()", 0, iSOMsg.fields.size());
+        assertEquals(0, iSOMsg.fields.size(), "iSOMsg.fields.size()");
     }
 
     @Test
@@ -1268,7 +1268,7 @@ public class ISOMsg2Test {
         ISOMsg iSOMsg = new ISOMsg("testISOMsgMti");
         iSOMsg.setPackager(new GenericPackager());
         iSOMsg.writeExternal(out);
-        assertNull("iSOMsg.header", iSOMsg.header);
+        assertNull(iSOMsg.header, "iSOMsg.header");
         // int actual = ;
     }
 
@@ -1279,8 +1279,8 @@ public class ISOMsg2Test {
             iSOMsg.writeExternal(null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertNull("iSOMsg.header", iSOMsg.header);
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertNull(iSOMsg.header, "iSOMsg.header");
         }
     }
 
@@ -1299,7 +1299,7 @@ public class ISOMsg2Test {
         given(header.pack()).willReturn(bytes);
 
         iSOVMsg.writeHeader(out);
-        assertSame("(ISOVMsg) iSOVMsg.header", header, ((ISOVMsg) iSOVMsg).header);
+        assertSame(header, ((ISOVMsg) iSOVMsg).header, "(ISOVMsg) iSOVMsg.header");
         verify(out).write(bytes);
         verify(out).writeByte(72);
         verify(out).writeShort(1);
@@ -1313,7 +1313,7 @@ public class ISOMsg2Test {
         ObjectOutputStream out = mock(ObjectOutputStream.class);
         given(header.getLength()).willReturn(0);
         iSOMsg.writeHeader(out);
-        assertSame("iSOMsg.header", header, iSOMsg.header);
+        assertSame(header, iSOMsg.header, "iSOMsg.header");
     }
 
     @Test
@@ -1324,8 +1324,8 @@ public class ISOMsg2Test {
             iSOVMsg.writeHeader(out);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertNull("(ISOVMsg) iSOVMsg.header", ((ISOVMsg) iSOVMsg).header);
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertNull(((ISOVMsg) iSOVMsg).header, "(ISOVMsg) iSOVMsg.header");
         }
     }
 
@@ -1341,7 +1341,7 @@ public class ISOMsg2Test {
             iSOVMsg.writePackager(null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 

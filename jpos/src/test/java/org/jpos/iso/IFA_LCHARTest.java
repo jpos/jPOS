@@ -18,13 +18,15 @@
 
 package org.jpos.iso;
 
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * @author joconnor
  */
-public class IFA_LCHARTest extends TestCase
-{
+public class IFA_LCHARTest {
+    @Test
     public void testPack() throws Exception
     {
         ISOField field = new ISOField(12, "ABCD");
@@ -32,6 +34,7 @@ public class IFA_LCHARTest extends TestCase
         TestUtils.assertEquals("4ABCD".getBytes(), packager.pack(field));
     }
 
+    @Test
     public void testUnpack() throws Exception
     {
         byte[] raw = "4ABCD".getBytes();
@@ -41,6 +44,7 @@ public class IFA_LCHARTest extends TestCase
         assertEquals("ABCD", (String) field.getValue());
     }
 
+    @Test
     public void testReversability() throws Exception
     {
         String origin = "Abc123";

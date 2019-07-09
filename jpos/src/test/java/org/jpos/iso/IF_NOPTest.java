@@ -18,13 +18,17 @@
 
 package org.jpos.iso;
 
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * @author joconnor
  */
-public class IF_NOPTest extends TestCase
-{
+public class IF_NOPTest {
+    @Test
     public void testPack() throws Exception
     {
         ISOField field = new ISOField(12, "ABCD");
@@ -32,6 +36,7 @@ public class IF_NOPTest extends TestCase
         assertTrue(packager.pack(field).length == 0);
     }
 
+    @Test
     public void testUnpack() throws Exception
     {
         byte[] raw = new byte[]{};

@@ -18,22 +18,27 @@
 
 package org.jpos.iso;
 
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 
 /**
  * @author joconnor
  */
-public class AsciiHexInterpreterTest extends TestCase {
+public class AsciiHexInterpreterTest {
     private AsciiHexInterpreter inter;
 
     /*
 	 * @see TestCase#setUp()
 	 */
-    protected void setUp() throws Exception {
+    @BeforeEach
+    public void setUp() throws Exception {
         inter = AsciiHexInterpreter.INSTANCE;
     }
 
+    @Test
     public void testInterpret() throws Exception {
         byte[] data = new byte[] {(byte)0xFF, (byte)0x12};
         byte[] b = new byte[4];
@@ -41,16 +46,19 @@ public class AsciiHexInterpreterTest extends TestCase {
         TestUtils.assertEquals(new byte[] {0x46, 0x46, 0x31, 0x32}, b);
     }
 
+    @Test
     public void testUninterpret() throws Exception {
         byte[] data = new byte[] {(byte)0xFF, (byte)0x12};
         byte[] b = new byte[] {0x46, 0x46, 0x31, 0x32};
         TestUtils.assertEquals(data, inter.uninterpret(b, 0, 2));
     }
 
+    @Test
     public void testGetPackedLength() {
         assertEquals(6, inter.getPackedLength(3));
     }
     
+    @Test
     public void testReversability() throws Exception {
         byte data[] = new byte[] {0x01, 0x23, 0x45, 0x67, (byte)0x89,
                 (byte)0xAB, (byte)0xCD, (byte)0xEF};
@@ -60,6 +68,7 @@ public class AsciiHexInterpreterTest extends TestCase {
         TestUtils.assertEquals(data, inter.uninterpret(b, 0, data.length));
     }
 
+    @Test
     public void testISOUtilCompatibility() throws Exception {
         byte[] b=ISOUtil.hex2byte("66656637656236643736323431653438");
         AsciiHexInterpreter as=AsciiHexInterpreter.INSTANCE;

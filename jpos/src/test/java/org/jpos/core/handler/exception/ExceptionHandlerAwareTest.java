@@ -22,8 +22,8 @@ import org.jpos.core.InvalidCardException;
 import org.jpos.core.handlers.exception.ExceptionHandler;
 import org.jpos.core.handlers.exception.ExceptionHandlerAware;
 import org.jpos.iso.ISOException;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
 
@@ -31,9 +31,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -44,7 +45,7 @@ public class ExceptionHandlerAwareTest implements ExceptionHandlerAware {
 
     private final Map<Class<? extends Exception>,List<ExceptionHandler>> exceptionHandlers = new HashMap<>();
 
-    @Before
+    @BeforeEach
     public void clearHandlers() {
         getExceptionHandlers().clear();
     }
@@ -94,13 +95,15 @@ public class ExceptionHandlerAwareTest implements ExceptionHandlerAware {
         assertNull(getExceptionHandlers().get(ISOException.class));
     }
 
-    @Test(expected = ISOException.class)
+    @Test
     public void testFallbackHandler() throws Exception {
-        try {
-            throw new ISOException();
-        } catch (Exception e) {
-            handle(e);
-        }
+        assertThrows(ISOException.class, () -> {
+            try {
+                throw new ISOException();
+            } catch (Exception e) {
+                handle(e);
+            }
+        });
     }
 
     @Test

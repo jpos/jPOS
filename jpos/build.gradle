@@ -33,10 +33,12 @@ dependencies {
     testCompile libraries.fest_assert
     testCompile libraries.xmlunit
     testCompile libraries.junit
+    testImplementation libraries.junit_jupiter
     testRuntime libraries.junit_vintage
     testCompile(libraries.mockito) {
         exclude(module: 'hamcrest-core')
     }
+    testCompile libraries.mockito_jupiter
 
     //  JSONPackager on hold
     //    compile (libraries.jsonsimple) {

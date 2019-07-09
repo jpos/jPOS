@@ -18,21 +18,21 @@
 
 package org.jpos.iso;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import static org.apache.commons.lang3.JavaVersion.JAVA_10;
 import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class BinaryPrefixer2Test {
 
     @Test
     public void testConstructor() throws Throwable {
         BinaryPrefixer binaryPrefixer = new BinaryPrefixer(100);
-        assertEquals("binaryPrefixer.getPackedLength()", 100, binaryPrefixer.getPackedLength());
+        assertEquals(100, binaryPrefixer.getPackedLength(), "binaryPrefixer.getPackedLength()");
     }
 
     @Test
@@ -40,14 +40,14 @@ public class BinaryPrefixer2Test {
         byte[] b = new byte[2];
         b[1] = (byte) -1;
         int result = new BinaryPrefixer(1).decodeLength(b, 1);
-        assertEquals("result", 255, result);
+        assertEquals(255, result, "result");
     }
 
     @Test
     public void testDecodeLength1() throws Throwable {
         byte[] b = new byte[3];
         int result = new BinaryPrefixer(0).decodeLength(b, 100);
-        assertEquals("result", 0, result);
+        assertEquals(0, result, "result");
     }
 
     @Test
@@ -58,9 +58,9 @@ public class BinaryPrefixer2Test {
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
             if (isJavaVersionAtMost(JAVA_10)) {
-                assertEquals("ex.getMessage()", "3", ex.getMessage());
+                assertEquals("3", ex.getMessage(), "ex.getMessage()");
             } else {
-                assertEquals("ex.getMessage()", "Index 3 out of bounds for length 3", ex.getMessage());
+                assertEquals("Index 3 out of bounds for length 3", ex.getMessage(), "ex.getMessage()");
             }
         }
     }
@@ -73,9 +73,9 @@ public class BinaryPrefixer2Test {
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
             if (isJavaVersionAtMost(JAVA_10)) {
-                assertEquals("ex.getMessage()", "100", ex.getMessage());
+                assertEquals("100", ex.getMessage(), "ex.getMessage()");
             } else {
-                assertEquals("ex.getMessage()", "Index 100 out of bounds for length 3", ex.getMessage());
+                assertEquals("Index 100 out of bounds for length 3", ex.getMessage(), "ex.getMessage()");
             }
         }
     }
@@ -86,7 +86,7 @@ public class BinaryPrefixer2Test {
             new BinaryPrefixer(100).decodeLength(null, 100);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -94,14 +94,14 @@ public class BinaryPrefixer2Test {
     public void testEncodeLength() throws Throwable {
         byte[] b = new byte[4];
         new BinaryPrefixer(2).encodeLength(100, b);
-        assertEquals("b[1]", (byte) 100, b[1]);
+        assertEquals((byte) 100, b[1], "b[1]");
     }
 
     @Test
     public void testEncodeLength1() throws Throwable {
         byte[] b = new byte[0];
         new BinaryPrefixer(0).encodeLength(100, b);
-        assertEquals("b.length", 0, b.length);
+        assertEquals(0, b.length, "b.length");
     }
 
     @Test
@@ -112,11 +112,11 @@ public class BinaryPrefixer2Test {
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
             if (isJavaVersionAtMost(JAVA_10)) {
-                assertEquals("ex.getMessage()", "0", ex.getMessage());
+                assertEquals("0", ex.getMessage(), "ex.getMessage()");
             } else {
-                assertEquals("ex.getMessage()", "Index 0 out of bounds for length 0", ex.getMessage());
+                assertEquals("Index 0 out of bounds for length 0", ex.getMessage(), "ex.getMessage()");
             }
-            assertEquals("b.length", 0, b.length);
+            assertEquals(0, b.length, "b.length");
         }
     }
 
@@ -126,13 +126,13 @@ public class BinaryPrefixer2Test {
             new BinaryPrefixer(2).encodeLength(100, null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
     @Test
     public void testGetPackedLength() throws Throwable {
         int result = new BinaryPrefixer(100).getPackedLength();
-        assertEquals("result", 100, result);
+        assertEquals(100, result, "result");
     }
 }

@@ -18,13 +18,15 @@
 
 package org.jpos.iso;
 
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * @author gregorioosorio
  */
-public class IFAE_LLCHARTest extends TestCase
-{
+public class IFAE_LLCHARTest {
+    @Test
     public void testPack() throws Exception
     {
         ISOField field = new ISOField(12, "1234");
@@ -33,6 +35,7 @@ public class IFAE_LLCHARTest extends TestCase
                             packager.pack(field));
     }
 
+    @Test
     public void testPackWithPackagerWithoutDescription() throws Exception
     {
         ISOField field = new ISOField(12, "1234");
@@ -42,6 +45,7 @@ public class IFAE_LLCHARTest extends TestCase
                             packager.pack(field));
     }
     
+    @Test
     public void testUnpack() throws Exception
     {
         byte[] raw = new byte[] {(byte)0x30, (byte)0x34, (byte)0xF1, (byte)0xF2, (byte)0xF3, (byte)0xF4};
@@ -51,6 +55,7 @@ public class IFAE_LLCHARTest extends TestCase
         assertEquals("1234", (String) field.getValue());
     }
 
+    @Test
     public void testUnpackWithPackagerWithoutDescription() throws Exception
     {
         byte[] raw = new byte[] {(byte)0x30, (byte)0x34, (byte)0xF1, (byte)0xF2, (byte)0xF3, (byte)0xF4};
@@ -61,6 +66,7 @@ public class IFAE_LLCHARTest extends TestCase
         assertEquals("1234", (String) field.getValue());
     }
 
+    @Test
     public void testReversability() throws Exception
     {
         String origin = "Abc123:.-";

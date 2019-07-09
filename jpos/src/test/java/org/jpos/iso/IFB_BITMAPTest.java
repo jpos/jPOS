@@ -17,14 +17,14 @@
  */
 
 package org.jpos.iso;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.BitSet;
 
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author joconnor
@@ -38,7 +38,7 @@ public class IFB_BITMAPTest
     IFB_BITMAP twentyfourBytes;
     byte[] inBytes, eightByteBitMapIn24Bytes, sixteenByteBitMapIn24Bytes, testbytes, outBytes;
     
-    @Before
+    @BeforeEach
     public void setUp() {
         oneByte = new IFB_BITMAP(1,"1 byte bitmap");
         eightBytes = new IFB_BITMAP(8,"8 byte bitmap");
@@ -54,29 +54,30 @@ public class IFB_BITMAPTest
         
     }
     
-    @Test public void test01ByteBitmap() throws Exception
+    @Test
+    public void test01ByteBitmap() throws Exception
     {
 
         ISOComponent c = new ISOBitMap(1);
         int consumed = oneByte.unpack(c, inBytes,0);
-        assertEquals("1 byte should be consumed irrespective of 2nd, 3rd or any bitmap indicators",1,consumed);
-        assertEquals("1 byte can only result in a bitmap holding fields up to 8",8,((BitSet)c.getValue()).length() - 1);
+        assertEquals(1,consumed, "1 byte should be consumed irrespective of 2nd, 3rd or any bitmap indicators");
+        assertEquals(8,((BitSet)c.getValue()).length() - 1, "1 byte can only result in a bitmap holding fields up to 8");
         
         outBytes = oneByte.pack(c);
-        assertEquals("1 byte bitmap pack should reflect unpack",ISOUtil.hexString(inBytes,0,1),ISOUtil.hexString(outBytes));
+        assertEquals(ISOUtil.hexString(inBytes,0,1),ISOUtil.hexString(outBytes), "1 byte bitmap pack should reflect unpack");
     }
     
-    @Ignore("test currently failing - debug action required TODO: CCB")
+    @Disabled("test currently failing - debug action required TODO: CCB")
     @Test public void test08ByteBitmap() throws Exception
     {
 
         ISOComponent c = new ISOBitMap(1);
         int consumed = eightBytes.unpack(c, inBytes,0);
-        assertEquals("8 bytes should be consumed irrespective of 2nd and 3rd bitmap indicators",8,consumed);
-        assertEquals("8 byte can only result in a bitmap holding fields up to 64",64,((BitSet)c.getValue()).length() - 1);
+        assertEquals(8,consumed, "8 bytes should be consumed irrespective of 2nd and 3rd bitmap indicators");
+        assertEquals(64,((BitSet)c.getValue()).length() - 1, "8 byte can only result in a bitmap holding fields up to 64");
         
         outBytes = eightBytes.pack(c);
-        assertEquals("8 byte bitmap pack should reflect unpack",ISOUtil.hexString(inBytes,0,8),ISOUtil.hexString(outBytes));
+        assertEquals(ISOUtil.hexString(inBytes,0,8),ISOUtil.hexString(outBytes), "8 byte bitmap pack should reflect unpack");
         
         try {
             outBytes = oneByte.pack(c);
@@ -92,24 +93,24 @@ public class IFB_BITMAPTest
 
         ISOComponent c = new ISOBitMap(1);
         int consumed = sixteenBytes.unpack(c, eightByteBitMapIn24Bytes,0);
-        assertEquals("8 bytes should be consumed as the 2nd bitmap indicator if off",8,consumed);
-        assertEquals("16 byte bitmap with just 8 bytes used should have a maximum field of ",64,((BitSet)c.getValue()).length() - 1);
+        assertEquals(8,consumed, "8 bytes should be consumed as the 2nd bitmap indicator if off");
+        assertEquals(64,((BitSet)c.getValue()).length() - 1, "16 byte bitmap with just 8 bytes used should have a maximum field of ");
         
         outBytes = sixteenBytes.pack(c);
-        assertEquals("16 Byte (8 bytes used) bitmap pack should reflect unpack",ISOUtil.hexString(eightByteBitMapIn24Bytes,0,8),ISOUtil.hexString(outBytes));
+        assertEquals(ISOUtil.hexString(eightByteBitMapIn24Bytes,0,8),ISOUtil.hexString(outBytes), "16 Byte (8 bytes used) bitmap pack should reflect unpack");
         
     }
     
-    @Ignore("test currently failing - debug action required TODO: CCB")
+    @Disabled("test currently failing - debug action required TODO: CCB")
     @Test public void test16ByteBitmap() throws Exception
     {
         ISOComponent c = new ISOBitMap(1);
         int consumed = sixteenBytes.unpack(c, inBytes,0);
-        assertEquals("16 Bytes should be consumed irrespective of 3rd bitmap indicators",16,consumed);
-        assertEquals("16 byte can only result in a bitmap holding fields up to 128",128,((BitSet)c.getValue()).length() - 1);
+        assertEquals(16,consumed, "16 Bytes should be consumed irrespective of 3rd bitmap indicators");
+        assertEquals(128,((BitSet)c.getValue()).length() - 1, "16 byte can only result in a bitmap holding fields up to 128");
         
         outBytes = sixteenBytes.pack(c);
-        assertEquals("16 byte bitmap pack should reflect unpack",ISOUtil.hexString(inBytes,0,16),ISOUtil.hexString(outBytes));
+        assertEquals(ISOUtil.hexString(inBytes,0,16),ISOUtil.hexString(outBytes), "16 byte bitmap pack should reflect unpack");
         
         try {
             outBytes = eightBytes.pack(c);
@@ -133,37 +134,38 @@ public class IFB_BITMAPTest
 
         ISOComponent c = new ISOBitMap(1);
         int consumed = twentyfourBytes.unpack(c, eightByteBitMapIn24Bytes,0);
-        assertEquals("8 bytes should be consumed as the 2nd bitmap indicator if off",8,consumed);
-        assertEquals("24 byte bitmap with just 8 bytes used should have a maximum field of ",64,((BitSet)c.getValue()).length() - 1);
+        assertEquals(8,consumed, "8 bytes should be consumed as the 2nd bitmap indicator if off");
+        assertEquals(64,((BitSet)c.getValue()).length() - 1, "24 byte bitmap with just 8 bytes used should have a maximum field of ");
         
         outBytes = twentyfourBytes.pack(c);
-        assertEquals("24 Byte (8 bytes used) bitmap pack should reflect unpack",ISOUtil.hexString(eightByteBitMapIn24Bytes,0,8),ISOUtil.hexString(outBytes));
+        assertEquals(ISOUtil.hexString(eightByteBitMapIn24Bytes,0,8),ISOUtil.hexString(outBytes), "24 Byte (8 bytes used) bitmap pack should reflect unpack");
         
     }
     
-    @Test public void test24ByteBitmapWithOnly16BytesUsed() throws Exception
+    @Test
+    public void test24ByteBitmapWithOnly16BytesUsed() throws Exception
     {
 
         ISOComponent c = new ISOBitMap(1);
         int consumed = twentyfourBytes.unpack(c, sixteenByteBitMapIn24Bytes,0);
-        assertEquals("16 bytes should be consumed as the 2nd bitmap indicator is on, 3rd is off",16,consumed);
-        assertEquals("24 byte bitmap with just 16 bytes used should have a maximum field of ",128,((BitSet)c.getValue()).length() - 1);
+        assertEquals(16,consumed, "16 bytes should be consumed as the 2nd bitmap indicator is on, 3rd is off");
+        assertEquals(128,((BitSet)c.getValue()).length() - 1, "24 byte bitmap with just 16 bytes used should have a maximum field of ");
         
         outBytes = twentyfourBytes.pack(c);
-        assertEquals("24 Byte (16 bytes used) bitmap pack should reflect unpack",ISOUtil.hexString(sixteenByteBitMapIn24Bytes,0,16),ISOUtil.hexString(outBytes));
+        assertEquals(ISOUtil.hexString(sixteenByteBitMapIn24Bytes,0,16),ISOUtil.hexString(outBytes), "24 Byte (16 bytes used) bitmap pack should reflect unpack");
         
     }
 
-    @Ignore("test currently failing - debug action required TODO: CCB")
+    @Disabled("test currently failing - debug action required TODO: CCB")
     @Test public void test24ByteBitmap() throws Exception
     {
         ISOComponent c = new ISOBitMap(1);
         int consumed = twentyfourBytes.unpack(c, inBytes,0);
-        assertEquals("All 24 Bytes should be consumed",24,consumed);
-        assertEquals("24 byte can only result in a bitmap holding fields up to 192",192,((BitSet)c.getValue()).length() - 1);
+        assertEquals(24,consumed, "All 24 Bytes should be consumed");
+        assertEquals(192,((BitSet)c.getValue()).length() - 1, "24 byte can only result in a bitmap holding fields up to 192");
 
         outBytes = twentyfourBytes.pack(c);
-        assertEquals("24 byte bitmap pack should reflect unpack",ISOUtil.hexString(inBytes,0,24),ISOUtil.hexString(outBytes));
+        assertEquals(ISOUtil.hexString(inBytes,0,24),ISOUtil.hexString(outBytes), "24 byte bitmap pack should reflect unpack");
         
         try {
             outBytes = sixteenBytes.pack(c);
@@ -197,6 +199,6 @@ public class IFB_BITMAPTest
         bmap.setValue(bs1);
         IFB_BITMAP ifb = new IFB_BITMAP(24, "BITMAP");
         byte[] b1 = ifb.pack(bmap);
-        assertEquals ("Pack should be equal to unpack", ISOUtil.hexString(b), ISOUtil.hexString(b1));
+        assertEquals (ISOUtil.hexString(b), ISOUtil.hexString(b1), "Pack should be equal to unpack");
     }
 }

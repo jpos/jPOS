@@ -18,13 +18,15 @@
 
 package org.jpos.iso;
 
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * @author joconnor
  */
-public class IFA_LLNUMTest extends TestCase
-{
+public class IFA_LLNUMTest {
+    @Test
     public void testPack() throws Exception
     {
         ISOField field = new ISOField(12, "1234");
@@ -32,6 +34,7 @@ public class IFA_LLNUMTest extends TestCase
         TestUtils.assertEquals("041234".getBytes(), packager.pack(field));
     }
 
+    @Test
     public void testUnpack() throws Exception
     {
         byte[] raw = "041234".getBytes();
@@ -41,6 +44,7 @@ public class IFA_LLNUMTest extends TestCase
         assertEquals("1234", (String) field.getValue());
     }
 
+    @Test
     public void testReversability() throws Exception
     {
         String origin = "1234567890";

@@ -19,12 +19,12 @@
 package org.jpos.core;
 
 import org.jpos.iso.ISOMsg;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Date;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class CardTest  {
 
@@ -33,11 +33,11 @@ public class CardTest  {
         Track2 t2 = Track2.builder()
           .track("4111111111111111=201112345612345678901").build();
 
-        assertEquals("pan", "4111111111111111", t2.getPan());
-        assertEquals("exp", "2011", t2.getExp());
-        assertEquals("serviceCode", "123", t2.getServiceCode());
-        assertEquals("cvv", "4561", t2.getCvv());
-        assertEquals("discretionaryData", "2345678901", t2.getDiscretionaryData());
+        assertEquals("4111111111111111", t2.getPan(), "pan");
+        assertEquals("2011", t2.getExp(), "exp");
+        assertEquals("123", t2.getServiceCode(), "serviceCode");
+        assertEquals("4561", t2.getCvv(), "cvv");
+        assertEquals("2345678901", t2.getDiscretionaryData(), "discretionaryData");
     }
 
     @Test
@@ -45,11 +45,11 @@ public class CardTest  {
         Track1 t1 = Track1.builder()
           .track("%B4111111111111111^FAT ALBERT                ^201112345671234567890?").build();
 
-        assertEquals("pan", "4111111111111111", t1.getPan());
-        assertEquals("exp", "2011", t1.getExp());
-        assertEquals("serviceCode", "123", t1.getServiceCode());
-        assertEquals("cvv", "4567", t1.getCvv());
-        assertEquals("discretionaryData", "1234567890", t1.getDiscretionaryData());
+        assertEquals("4111111111111111", t1.getPan(), "pan");
+        assertEquals("2011", t1.getExp(), "exp");
+        assertEquals("123", t1.getServiceCode(), "serviceCode");
+        assertEquals("4567", t1.getCvv(), "cvv");
+        assertEquals("1234567890", t1.getDiscretionaryData(), "discretionaryData");
     }
 
     @Test
@@ -68,7 +68,7 @@ public class CardTest  {
           .track2(t2)
           .build();
 
-        assertEquals("not expired", false, c.isExpired(new Date()));
+        assertEquals(false, c.isExpired(new Date()), "not expired");
     }
 
     @Test
@@ -105,16 +105,16 @@ public class CardTest  {
           .serviceCode("123")
           .build();
 
-        assertEquals("not expired", false, c.isExpired(new Date()));
-        assertEquals("pan", "4111111111111111", c.getPan());
-        assertEquals("exp", "2011", c.getExp());
-        assertEquals("serviceCode", "123", c.getServiceCode());
-        assertEquals("t1.serviceCode", "123", c.getTrack1().getServiceCode());
-        assertEquals("t2.serviceCode", "123", c.getTrack2().getServiceCode());
-        assertEquals("cvv2", "123", c.getCvv2());
-        assertEquals("t1.cvv", "4567", c.getTrack1().getCvv());
-        assertEquals("t2.cvv", "4561", c.getTrack2().getCvv());
-        assertEquals("discretionaryData", "1234567890", c.getTrack1().getDiscretionaryData());
-        assertEquals("discretionaryData", "2345678901", c.getTrack2().getDiscretionaryData());
+        assertEquals(false, c.isExpired(new Date()), "not expired");
+        assertEquals("4111111111111111", c.getPan(), "pan");
+        assertEquals("2011", c.getExp(), "exp");
+        assertEquals("123", c.getServiceCode(), "serviceCode");
+        assertEquals("123", c.getTrack1().getServiceCode(), "t1.serviceCode");
+        assertEquals("123", c.getTrack2().getServiceCode(), "t2.serviceCode");
+        assertEquals("123", c.getCvv2(), "cvv2");
+        assertEquals("4567", c.getTrack1().getCvv(), "t1.cvv");
+        assertEquals("4561", c.getTrack2().getCvv(), "t2.cvv");
+        assertEquals("1234567890", c.getTrack1().getDiscretionaryData(), "discretionaryData");
+        assertEquals("2345678901", c.getTrack2().getDiscretionaryData(), "discretionaryData");
     }
 }
