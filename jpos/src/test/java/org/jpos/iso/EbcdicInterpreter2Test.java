@@ -18,35 +18,40 @@
 
 package org.jpos.iso;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class EbcdicInterpreter2Test {
 
     @Test
     public void testConstructor() throws Throwable {
         new EbcdicInterpreter();
-        assertTrue("Test completed without Exception", true);
+        assertTrue(true, "Test completed without Exception");
     }
 
     @Test
     public void testGetPackedLength() throws Throwable {
         int result = new EbcdicInterpreter().getPackedLength(100);
-        assertEquals("result", 100, result);
+        assertEquals(100, result, "result");
     }
 
-    @Test(expected=ArrayIndexOutOfBoundsException.class)
+    @Test
     public void testInterpret() throws Throwable {
-        new EbcdicInterpreter().interpret("", new byte[2], 100);
+        assertThrows(ArrayIndexOutOfBoundsException.class, () -> {
+            new EbcdicInterpreter().interpret("", new byte[2], 100);
+        });
     }
 
-    @Test(expected=ArrayIndexOutOfBoundsException.class)
+    @Test
     public void testInterpretThrowsArrayIndexOutOfBoundsException() throws Throwable {
-        new EbcdicInterpreter().interpret("testEbcdicInterpreterData", new byte[1], 100);
+        assertThrows(ArrayIndexOutOfBoundsException.class, () -> {
+            new EbcdicInterpreter().interpret("testEbcdicInterpreterData", new byte[1], 100);
+        });
     }
 
     @Test
@@ -55,25 +60,31 @@ public class EbcdicInterpreter2Test {
             EbcdicInterpreter.INSTANCE.interpret("testEbcdicInterpreterData", null, 100);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
-    @Test(expected=IndexOutOfBoundsException.class)
+    @Test
     public void testUninterpret() throws Throwable {
-        byte[] rawData = new byte[0];
-        String result = EbcdicInterpreter.INSTANCE.uninterpret(rawData, 100, 0);
-        assertEquals("result", "", result);
+        assertThrows(IndexOutOfBoundsException.class, () -> {
+            byte[] rawData = new byte[0];
+            String result = EbcdicInterpreter.INSTANCE.uninterpret(rawData, 100, 0);
+            assertEquals("", result, "result");
+        });
     }
 
-    @Test(expected=IndexOutOfBoundsException.class)
+    @Test
     public void testUninterpretThrowsArrayIndexOutOfBoundsException() throws Throwable {
-        new EbcdicInterpreter().uninterpret(new byte[0], 100, 1000);
+        assertThrows(IndexOutOfBoundsException.class, () -> {
+            new EbcdicInterpreter().uninterpret(new byte[0], 100, 1000);
+        });
     }
 
-    @Test(expected=IndexOutOfBoundsException.class)
+    @Test
     public void testUninterpretThrowsNegativeArraySizeException() throws Throwable {
-        new EbcdicInterpreter().uninterpret(new byte[2], 100, -1);
+        assertThrows(IndexOutOfBoundsException.class, () -> {
+            new EbcdicInterpreter().uninterpret(new byte[2], 100, -1);
+        });
     }
 
     @Test
@@ -82,7 +93,7 @@ public class EbcdicInterpreter2Test {
             new EbcdicInterpreter().uninterpret(null, 100, 1000);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 }

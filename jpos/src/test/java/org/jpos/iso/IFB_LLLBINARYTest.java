@@ -18,13 +18,13 @@
 
 package org.jpos.iso;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author joconnor
  */
-public class IFB_LLLBINARYTest extends TestCase
-{
+public class IFB_LLLBINARYTest {
+    @Test
     public void testPack() throws Exception
     {
         ISOBinaryField field = new ISOBinaryField(12, new byte[] {0x12, 0x34});
@@ -32,6 +32,7 @@ public class IFB_LLLBINARYTest extends TestCase
         TestUtils.assertEquals(new byte[] {0x00, 0x02, 0x12, 0x34}, packager.pack(field));
     }
 
+    @Test
     public void testUnpack() throws Exception
     {
         byte[] raw = new byte[] {0x00, 0x02, 0x12, 0x34};
@@ -41,6 +42,7 @@ public class IFB_LLLBINARYTest extends TestCase
         TestUtils.assertEquals(new byte[] {0x12, 0x34}, (byte[])field.getValue());
     }
 
+    @Test
     public void testReversability() throws Exception
     {
         byte[] origin = new byte[] {0x12, 0x34, 0x56, 0x78};
@@ -52,6 +54,7 @@ public class IFB_LLLBINARYTest extends TestCase
         TestUtils.assertEquals(origin, (byte[])unpack.getValue());
     }
     
+    @Test
     public void testPackGreaterThan16() throws Exception
     {
         ISOBinaryField field = new ISOBinaryField(1, new byte[] {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 ,0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0x10, 0x11});
@@ -59,6 +62,7 @@ public class IFB_LLLBINARYTest extends TestCase
         TestUtils.assertEquals(new byte[] {0x00, 0x17, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 ,0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0x10, 0x11}, packager.pack(field));
     }
 
+    @Test
     public void testUnpackGreaterThan16() throws Exception
     {
         byte[] raw = new byte[] {0x00, 0x17, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 ,0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0x10, 0x11};
@@ -68,6 +72,7 @@ public class IFB_LLLBINARYTest extends TestCase
         TestUtils.assertEquals(new byte[] {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 ,0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0x10, 0x11}, (byte[])field.getValue());
     }
 
+    @Test
     public void testReversabilityGreaterThan16() throws Exception
     {
         byte[] origin = new byte[] {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 ,0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0x10, 0x11};

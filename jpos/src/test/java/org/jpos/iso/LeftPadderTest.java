@@ -18,26 +18,34 @@
 
 package org.jpos.iso;
 
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author joconnor
  */
-public class LeftPadderTest extends TestCase {
+public class LeftPadderTest {
     private LeftPadder padder;
     
-    protected void setUp() {
+    @BeforeEach
+    public void setUp() {
         padder = LeftPadder.ZERO_PADDER;
     }
     
+    @Test
     public void testPaddingNeeded() throws Exception {
         assertEquals("000123", padder.pad("123", 6));
     }
 
+    @Test
     public void testNoPaddingNeeded() throws Exception {
         assertEquals("123", padder.pad("123", 3));
     }
 
+    @Test
     public void testPadLengthTooShort() throws Exception {
         try {
             padder.pad("123", 2);
@@ -46,14 +54,17 @@ public class LeftPadderTest extends TestCase {
         }
     }
 
+    @Test
     public void testUnpad() throws Exception {
         assertEquals("123", padder.unpad("000123"));
     }
 
+    @Test
     public void testUnpadAllPadding() throws Exception {
         assertEquals("", padder.unpad("000"));
     }
 
+    @Test
     public void testReversability() throws Exception {
         String origin = "Abc";
         assertEquals(origin, padder.unpad(padder.pad(origin, 6)));

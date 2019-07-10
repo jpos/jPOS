@@ -18,41 +18,41 @@
 
 package org.jpos.iso;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import static org.apache.commons.lang3.JavaVersion.JAVA_10;
 import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class AsciiInterpreter2Test {
 
     @Test
     public void testConstructor() throws Throwable {
         new AsciiInterpreter();
-        assertTrue("Test completed without Exception", true);
+        assertTrue(true, "Test completed without Exception");
     }
 
     @Test
     public void testGetPackedLength() throws Throwable {
         int result = new AsciiInterpreter().getPackedLength(0);
-        assertEquals("result", 0, result);
+        assertEquals(0, result, "result");
     }
 
     @Test
     public void testGetPackedLength1() throws Throwable {
         int result = new AsciiInterpreter().getPackedLength(100);
-        assertEquals("result", 100, result);
+        assertEquals(100, result, "result");
     }
 
     @Test
     public void testInterpret() throws Throwable {
         byte[] b = new byte[10];
         new AsciiInterpreter().interpret("10Characte", b, 0);
-        assertEquals("b[0]", (byte) 49, b[0]);
+        assertEquals((byte) 49, b[0], "b[0]");
     }
 
     @Test
@@ -61,7 +61,7 @@ public class AsciiInterpreter2Test {
             new AsciiInterpreter().interpret("testAsciiInterpreterData", null, 100);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -72,8 +72,8 @@ public class AsciiInterpreter2Test {
             new AsciiInterpreter().interpret(null, b, 100);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertEquals("b.length", 2, b.length);
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertEquals(2, b.length, "b.length");
         }
     }
 
@@ -81,7 +81,7 @@ public class AsciiInterpreter2Test {
     public void testUninterpret() throws Throwable {
         byte[] rawData = new byte[2];
         String result = new AsciiInterpreter().uninterpret(rawData, 0, 1);
-        assertEquals("result", "\u0000", result);
+        assertEquals("\u0000", result, "result");
     }
 
     @Test
@@ -92,9 +92,9 @@ public class AsciiInterpreter2Test {
             fail("Expected NegativeArraySizeException to be thrown");
         } catch (NegativeArraySizeException ex) {
             if (isJavaVersionAtMost(JAVA_10)) {
-                assertNull("ex.getMessage()", ex.getMessage());
+                assertNull(ex.getMessage(), "ex.getMessage()");
             } else {
-                assertEquals("ex.getMessage()", "-1", ex.getMessage());
+                assertEquals("-1", ex.getMessage(), "ex.getMessage()");
             }
         }
     }
@@ -105,7 +105,7 @@ public class AsciiInterpreter2Test {
             new AsciiInterpreter().uninterpret(null, 100, 1000);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 }

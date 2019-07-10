@@ -18,14 +18,17 @@
 
 package org.jpos.iso;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author apr
  */
-public class ISOMsgTest extends TestCase
-{
+public class ISOMsgTest {
+    @Test
     public void testGetBytes() throws Exception {
         ISOMsg m = new ISOMsg("0800");
         m.set (3, "000000");
@@ -40,6 +43,7 @@ public class ISOMsgTest extends TestCase
         assertEquals ("CAFEBABE", new String(m.getBytes("63.2.4")));
     }
     
+    @Test
     public void testFPath() throws Exception {
         ISOMsg m = new ISOMsg("0100");
         
@@ -100,6 +104,7 @@ public class ISOMsgTest extends TestCase
 
     }
     
+    @Test
     public void testFPathISOComponent() throws Exception {
         ISOMsg m = new ISOMsg("0100");
 
@@ -152,6 +157,7 @@ public class ISOMsgTest extends TestCase
         assertNull(copy.getString("102.2"));
     }
     
+    @Test
     public void testFPathISOEcho() throws Exception {
         ISOMsg m = new ISOMsg("0100");
         

@@ -104,6 +104,10 @@ subprojects {
         }
     }
     test {
+        useJUnitPlatform()
+        testLogging {
+            events "passed", "skipped", "failed"
+        }
         systemProperty 'user.language', 'en'
     }
 }

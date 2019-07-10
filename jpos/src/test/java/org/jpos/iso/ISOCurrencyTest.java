@@ -23,16 +23,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.jpos.iso.Currency;
-import org.jpos.iso.ISOCurrency;
-import org.jpos.iso.ISOUtil;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-
-public class ISOCurrencyTest extends TestCase {
+public class ISOCurrencyTest {
 
     @Test
     public void testAllISOCurrenciesIncluded() {
@@ -45,14 +40,14 @@ public class ISOCurrencyTest extends TestCase {
                 
                 Currency currencyByCode = ISOCurrency.getCurrency(currencyCode);
                                 
-                assertEquals("jPOS currency does not match decimals", sc.getDefaultFractionDigits(), currencyByCode.getDecimals());
+                assertEquals(sc.getDefaultFractionDigits(), currencyByCode.getDecimals(), "jPOS currency does not match decimals");
             } catch (Throwable ignored) {
                 msg.append(sc.getCurrencyCode().toUpperCase() + "=" + 
                         ISOUtil.zeropad(sc.getNumericCode(), 3) + " " +  sc.getDefaultFractionDigits() + 
                         " //" + sc.getDisplayName() + ":" + ignored.getMessage() + "\n");
             }
         }
-        assertEquals(msg.toString(), msg.length(), 0);
+        assertEquals(msg.length(), 0, msg.toString());
     }
     
     @Test
@@ -329,27 +324,27 @@ public class ISOCurrencyTest extends TestCase {
         for (String code: c.keySet()) {
             try {
                 Currency currencyByCode = ISOCurrency.getCurrency(code);
-                assertEquals("Decimal digits do not match for " + currencyByCode, cD.get(code).intValue(), currencyByCode.getDecimals());
-                assertEquals("Name does not match for " + currencyByCode,  c.get(code), currencyByCode.getAlphaCode());
+                assertEquals(cD.get(code).intValue(), currencyByCode.getDecimals(), "Decimal digits do not match for " + currencyByCode);
+                assertEquals(c.get(code), currencyByCode.getAlphaCode(), "Name does not match for " + currencyByCode);
             } catch (Throwable ignored) {
                 msg.append(c.get(code) + "=" +
                         code + " " +  cD.get(code) +
                         " //"  + ignored.getMessage() + "\n");
             }
         }
-        assertEquals(msg.toString(), msg.length(), 0);
+        assertEquals(msg.length(), 0, msg.toString());
     }
 
     @Test
     public void testparseFromISO87String () {
-        assertEquals("2 decimals",  new BigDecimal("12.34"), ISOCurrency.parseFromISO87String("000000001234", "840"));
-        assertEquals("3 decimals",  new BigDecimal("1.234"), ISOCurrency.parseFromISO87String("000000001234", "048"));
-        assertEquals("no decimals", new BigDecimal("1234"),  ISOCurrency.parseFromISO87String("000000001234", "020"));
+        assertEquals(new BigDecimal("12.34"), ISOCurrency.parseFromISO87String("000000001234", "840"), "2 decimals");
+        assertEquals(new BigDecimal("1.234"), ISOCurrency.parseFromISO87String("000000001234", "048"), "3 decimals");
+        assertEquals(new BigDecimal("1234"), ISOCurrency.parseFromISO87String("000000001234", "020"), "no decimals");
     }
     @Test
     public void testtoISO87String () {
-        assertEquals("2 decimals",  "000000001234", ISOCurrency.toISO87String(new BigDecimal("12.34"), "840"));
-        assertEquals("3 decimals",  "000000001234", ISOCurrency.toISO87String(new BigDecimal("1.234"), "048"));
-        assertEquals("no decimals", "000000001234", ISOCurrency.toISO87String(new BigDecimal("1234"),  "020"));
+        assertEquals("000000001234", ISOCurrency.toISO87String(new BigDecimal("12.34"), "840"), "2 decimals");
+        assertEquals("000000001234", ISOCurrency.toISO87String(new BigDecimal("1.234"), "048"), "3 decimals");
+        assertEquals("000000001234", ISOCurrency.toISO87String(new BigDecimal("1234"), "020"), "no decimals");
     }
 }

@@ -10,19 +10,18 @@ ext {
         javatuples: 'org.javatuples:javatuples:1.2',
         javassist: 'org.javassist:javassist:3.23.1-GA',
         osgi_core: 'org.osgi:org.osgi.core:6.0.0',
-        mockito: 'org.mockito:mockito-all:1.10.19',
+        mockito: 'org.mockito:mockito-core:3.0.0',
+        mockito_jupiter: 'org.mockito:mockito-junit-jupiter:3.0.0',
         fest_assert: 'org.easytesting:fest-assert:1.4',
         xmlunit: 'xmlunit:xmlunit:1.6',
         junit: 'junit:junit:4.12',
-        junit_vintage: 'org.junit.vintage:junit-vintage-engine:5.4.2',
+        junit_jupiter: 'org.junit.jupiter:junit-jupiter:5.5.0',
+        junit_vintage: 'org.junit.vintage:junit-vintage-engine:5.5.0',
         bouncycastle: [
             'org.bouncycastle:bcprov-jdk15on:1.61',
             'org.bouncycastle:bcpg-jdk15on:1.61'
         ],
-        hamcrest: [
-            'org.hamcrest:hamcrest-core:1.3',
-            'org.hamcrest:hamcrest-library:1.3'
-        ],
+        hamcrest: 'org.hamcrest:hamcrest:2.1',
         sshd: 'org.apache.sshd:sshd-core:1.7.0',
         slf4j_api: "org.slf4j:slf4j-api:1.7.26",
         slf4j_nop: "org.slf4j:slf4j-nop:1.7.26",

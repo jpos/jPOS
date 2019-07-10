@@ -18,21 +18,27 @@
 
 package org.jpos.iso;
 
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 
 /**
  * @author: Nigel Smith (nsmith at moneyswitch.net)
  */
-public class SignedEbcdicNumberInterpreterTest extends TestCase {
+public class SignedEbcdicNumberInterpreterTest {
 
     private SignedEbcdicNumberInterpreter signedEbcdicNumberInterpreter;
     
-    protected void setUp() throws Exception {
+    @BeforeEach
+    public void setUp() throws Exception {
         signedEbcdicNumberInterpreter = new SignedEbcdicNumberInterpreter();
     }
     
+    @Test
     public void testUninterpretNegative() throws Exception {
         byte[] rawData = new byte[] { (byte) 0x34, (byte) 0x56, (byte) 0x78, (byte) 0xf1, (byte) 0xf3, (byte) 0xf5, (byte) 0xf7, (byte) 0xf8, (byte) 0xd6, (byte) 0x12, (byte) 0x9a };
         int offset = 3;
@@ -42,6 +48,7 @@ public class SignedEbcdicNumberInterpreterTest extends TestCase {
         assertEquals(expectedString, signedEbcdicNumberInterpreter.uninterpret(rawData, offset, length));
     }
 
+    @Test
     public void testUninterpretPositive() throws Exception {
         byte[] rawData = new byte[] { (byte) 0x34, (byte) 0x56, (byte) 0x78, (byte) 0xf1, (byte) 0xf3, (byte) 0xf5, (byte) 0xf7, (byte) 0xf8, (byte) 0xc6, (byte) 0x12, (byte) 0x9a };
         int offset = 3;
@@ -51,6 +58,7 @@ public class SignedEbcdicNumberInterpreterTest extends TestCase {
         assertEquals(expectedString, signedEbcdicNumberInterpreter.uninterpret(rawData, offset, length));
     }
     
+    @Test
     public void testUninterpretUnsigned() throws Exception {
         byte[] rawData = new byte[] { (byte) 0x34, (byte) 0x56, (byte) 0x78, (byte) 0xf1, (byte) 0xf3, (byte) 0xf5, (byte) 0xf7, (byte) 0xf8, (byte) 0xf6, (byte) 0x12, (byte) 0x9a };
         int offset = 3;
@@ -60,6 +68,7 @@ public class SignedEbcdicNumberInterpreterTest extends TestCase {
         assertEquals(expectedString, signedEbcdicNumberInterpreter.uninterpret(rawData, offset, length));
     }
     
+    @Test
     public void testInterpretNegative() throws Exception {
         byte[] expectedRawData = new byte[] { (byte) 0x34, (byte) 0x56, (byte) 0x78, (byte) 0xf1, (byte) 0xf3, (byte) 0xf5, (byte) 0xf7, (byte) 0xf8, (byte) 0xd6, (byte) 0x12, (byte) 0x9a };
         byte[] rawData = new byte[] { (byte) 0x34, (byte) 0x56, (byte) 0x78, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x12, (byte) 0x9a };
@@ -67,9 +76,10 @@ public class SignedEbcdicNumberInterpreterTest extends TestCase {
         String string = "-135786";
         
         signedEbcdicNumberInterpreter.interpret(string, rawData, offset);
-        assertTrue("Expected " + ISOUtil.hexdump(expectedRawData) + " but was " + ISOUtil.hexdump(rawData), Arrays.equals(expectedRawData, rawData));
+        assertTrue(Arrays.equals(expectedRawData, rawData), "Expected " + ISOUtil.hexdump(expectedRawData) + " but was " + ISOUtil.hexdump(rawData));
     }
     
+    @Test
     public void testInterpretPositive() throws Exception {
         byte[] expectedRawData = new byte[] { (byte) 0x34, (byte) 0x56, (byte) 0x78, (byte) 0xf1, (byte) 0xf3, (byte) 0xf5, (byte) 0xf7, (byte) 0xf8, (byte) 0xf6, (byte) 0x12, (byte) 0x9a };
         byte[] rawData = new byte[] { (byte) 0x34, (byte) 0x56, (byte) 0x78, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x12, (byte) 0x9a };
@@ -77,7 +87,7 @@ public class SignedEbcdicNumberInterpreterTest extends TestCase {
         String string = "135786";
         
         signedEbcdicNumberInterpreter.interpret(string, rawData, offset);
-        assertTrue("Expected " + ISOUtil.hexdump(expectedRawData) + " but was " + ISOUtil.hexdump(rawData), Arrays.equals(expectedRawData, rawData));
+        assertTrue(Arrays.equals(expectedRawData, rawData), "Expected " + ISOUtil.hexdump(expectedRawData) + " but was " + ISOUtil.hexdump(rawData));
     }
 }
 

@@ -18,7 +18,7 @@
 
 package org.jpos.iso;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author mouslih.abdelhakim@gmail.com

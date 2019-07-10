@@ -18,25 +18,25 @@
 
 package org.jpos.iso;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class RightPadder2Test {
 
     @Test
     public void testPad() throws Throwable {
         String result = new RightPadder(' ').pad("", 100);
-        assertEquals("result",
-                "                                                                                                    ", result);
+        assertEquals("                                                                                                    ",
+                result, "result");
     }
 
     @Test
     public void testPad1() throws Throwable {
         String result = new RightPadder(' ').pad("", 0);
-        assertEquals("result", "", result);
+        assertEquals("", result, "result");
     }
 
     @Test
@@ -45,8 +45,8 @@ public class RightPadder2Test {
             new RightPadder(' ').pad("testRightPadderData", 0);
             fail("Expected ISOException to be thrown");
         } catch (ISOException ex) {
-            assertEquals("ex.getMessage()", "Data is too long. Max = 0", ex.getMessage());
-            assertNull("ex.nested", ex.nested);
+            assertEquals("Data is too long. Max = 0", ex.getMessage(), "ex.getMessage()");
+            assertNull(ex.nested, "ex.nested");
         }
     }
 
@@ -56,32 +56,32 @@ public class RightPadder2Test {
             new RightPadder(' ').pad(null, 100);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
     @Test
     public void testUnpad() throws Throwable {
         String result = RightPadder.SPACE_PADDER.unpad(" ");
-        assertEquals("result", "", result);
+        assertEquals("", result, "result");
     }
 
     @Test
     public void testUnpad1() throws Throwable {
         String result = RightTPadder.SPACE_PADDER.unpad("X ");
-        assertEquals("result", "X", result);
+        assertEquals("X", result, "result");
     }
 
     @Test
     public void testUnpad2() throws Throwable {
         String result = new RightPadder(' ').unpad("1");
-        assertEquals("result", "1", result);
+        assertEquals("1", result, "result");
     }
 
     @Test
     public void testUnpad3() throws Throwable {
         String result = new RightPadder(' ').unpad("");
-        assertEquals("result", "", result);
+        assertEquals("", result, "result");
     }
 
     @Test
@@ -90,7 +90,7 @@ public class RightPadder2Test {
             new RightPadder(' ').unpad(null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 }

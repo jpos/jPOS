@@ -18,13 +18,15 @@
 
 package org.jpos.iso;
 
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.fail;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * @author joconnor
  */
-public class IF_UNUSEDTest extends TestCase
-{
+public class IF_UNUSEDTest {
+    @Test
     public void testPack() throws Exception
     {
         ISOField field = new ISOField(12, "ABCD");
@@ -38,6 +40,7 @@ public class IF_UNUSEDTest extends TestCase
         }
     }
 
+    @Test
     public void testUnpack() throws Exception
     {
         byte[] raw = new byte[]{};
