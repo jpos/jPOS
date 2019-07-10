@@ -18,12 +18,16 @@
 
 package org.jpos.space;
 
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import org.junit.jupiter.api.Test;
 
 public class SpaceProxyTest {
 
-    @Test(expected=NullPointerException.class)
+    @Test
     public void testConstructor() throws Throwable {
+        assertThrows(NullPointerException.class, () -> {
             new SpaceProxy("Inval*d space: ");
+        });
     }
 }

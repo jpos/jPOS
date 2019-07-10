@@ -18,10 +18,10 @@
 
 package org.jpos.iso.packager;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.ByteArrayInputStream;
 import java.util.Vector;
@@ -32,7 +32,7 @@ import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOField;
 import org.jpos.iso.ISOMsg;
 import org.jpos.iso.VISA1ResponseFilter;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class VISA1PackagerTest {
 
@@ -41,13 +41,13 @@ public class VISA1PackagerTest {
         int[] sequence = new int[0];
         VISA1Packager vISA1Packager = new VISA1Packager(sequence, 100, "testVISA1PackagerBadResultCode",
                 "testVISA1PackagerOkPattern");
-        assertNull("vISA1Packager.getRealm()", vISA1Packager.getRealm());
-        assertSame("vISA1Packager.filter", vISA1Packager, vISA1Packager.filter);
-        assertNull("vISA1Packager.getLogger()", vISA1Packager.getLogger());
-        assertEquals("vISA1Packager.badResultCode", "testVISA1PackagerBadResultCode", vISA1Packager.badResultCode);
-        assertSame("vISA1Packager.sequence", sequence, vISA1Packager.sequence);
-        assertEquals("vISA1Packager.okPattern", "testVISA1PackagerOkPattern", vISA1Packager.okPattern);
-        assertEquals("vISA1Packager.respField", 100, vISA1Packager.respField);
+        assertNull(vISA1Packager.getRealm(), "vISA1Packager.getRealm()");
+        assertSame(vISA1Packager, vISA1Packager.filter, "vISA1Packager.filter");
+        assertNull(vISA1Packager.getLogger(), "vISA1Packager.getLogger()");
+        assertEquals("testVISA1PackagerBadResultCode", vISA1Packager.badResultCode, "vISA1Packager.badResultCode");
+        assertSame(sequence, vISA1Packager.sequence, "vISA1Packager.sequence");
+        assertEquals("testVISA1PackagerOkPattern", vISA1Packager.okPattern, "vISA1Packager.okPattern");
+        assertEquals(100, vISA1Packager.respField, "vISA1Packager.respField");
     }
 
     @Test
@@ -55,7 +55,7 @@ public class VISA1PackagerTest {
         int[] sequence = new int[0];
         ISOMsg result = new VISA1Packager(sequence, 100, "testVISA1PackagerBadResultCode", "testVISA1PackagerOkPattern")
                 .createISOMsg();
-        assertEquals("result.getDirection()", 0, result.getDirection());
+        assertEquals(0, result.getDirection(), "result.getDirection()");
     }
 
     @Test
@@ -64,7 +64,7 @@ public class VISA1PackagerTest {
         VISA1Packager vISA1Packager = new VISA1Packager(sequence, 100, "testVISA1PackagerBadResultCode",
                 "testVISA1PackagerOkPattern");
         String result = vISA1Packager.getFieldDescription(new ISOMsg(100), 100);
-        assertEquals("result", "VISA 1 fld 100", result);
+        assertEquals("VISA 1 fld 100", result, "result");
     }
 
     @Test
@@ -72,7 +72,7 @@ public class VISA1PackagerTest {
         int[] sequence = new int[0];
         String result = new VISA1Packager(sequence, 100, "testVISA1PackagerBadResultCode", "testVISA1PackagerOkPattern")
                 .guessAutNumber("testVISA1Packagers");
-        assertEquals("result", "000001", result);
+        assertEquals("000001", result, "result");
     }
 
     @Test
@@ -80,7 +80,7 @@ public class VISA1PackagerTest {
         int[] sequence = new int[2];
         String result = new VISA1Packager(sequence, 100, "testVISA1PackagerBadResultCode", "testVISA1PackagerOkPattern")
                 .guessAutNumber(" ");
-        assertNull("result", result);
+        assertNull(result, "result");
     }
 
     @Test
@@ -88,7 +88,7 @@ public class VISA1PackagerTest {
         int[] sequence = new int[2];
         String result = new VISA1Packager(sequence, 100, "testVISA1PackagerBadResultCode", "testVISA1PackagerOkPattern")
                 .guessAutNumber("");
-        assertNull("result", result);
+        assertNull(result, "result");
     }
 
     @Test
@@ -96,7 +96,7 @@ public class VISA1PackagerTest {
         int[] sequence = new int[1];
         String result = new VISA1Packager(sequence, 100, "testVISA1PackagerBadResultCode", "testVISA1PackagerOkPattern")
                 .guessAutNumber("1");
-        assertEquals("result", "000001", result);
+        assertEquals("000001", result, "result");
     }
 
     @Test
@@ -106,7 +106,7 @@ public class VISA1PackagerTest {
             new VISA1Packager(sequence, 100, "testVISA1PackagerBadResultCode", "testVISA1PackagerOkPattern").guessAutNumber(null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -118,7 +118,7 @@ public class VISA1PackagerTest {
                 "testVISA1PackagerOkPattern");
         Vector v = new Vector(100, 1000);
         int result = vISA1Packager.handleSpecialField35(new ISOMsg(100), v);
-        assertEquals("result", 0, result);
+        assertEquals(0, result, "result");
     }
 
     @SuppressWarnings("unchecked")
@@ -132,8 +132,8 @@ public class VISA1PackagerTest {
             vISA1Packager.handleSpecialField35(null, v);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertEquals("v.size()", 0, v.size());
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertEquals(0, v.size(), "v.size()");
         }
     }
 
@@ -143,8 +143,8 @@ public class VISA1PackagerTest {
             new VISA1Packager(sequence, 100, "testVISA1PackagerBadResultCode", "testVISA1PackagerOkPattern").pack(new ISOField());
             fail("Expected ISOException to be thrown");
         } catch (ISOException ex) {
-            assertEquals("ex.getMessage()", "Can't call VISA1 packager on non ISOMsg", ex.getMessage());
-            assertNull("ex.getNested()", ex.getNested());
+            assertEquals("Can't call VISA1 packager on non ISOMsg", ex.getMessage(), "ex.getMessage()");
+            assertNull(ex.getNested(), "ex.getNested()");
         }
     }
 
@@ -156,12 +156,12 @@ public class VISA1PackagerTest {
         VISA1Packager vISA1Packager = new VISA1Packager(sequence2, 1000, "testVISA1PackagerBadResultCode1",
                 "testVISA1PackagerOkPattern1");
         vISA1Packager.setVISA1ResponseFilter(filter);
-        assertEquals("vISA1Packager.filter.respField", 100, ((VISA1Packager) vISA1Packager.filter).respField);
-        assertEquals("vISA1Packager.filter.badResultCode", "testVISA1PackagerBadResultCode",
-                ((VISA1Packager) vISA1Packager.filter).badResultCode);
-        assertEquals("vISA1Packager.filter.okPattern", "testVISA1PackagerOkPattern",
-                ((VISA1Packager) vISA1Packager.filter).okPattern);
-        assertSame("vISA1Packager.filter", filter, vISA1Packager.filter);
+        assertEquals(100, ((VISA1Packager) vISA1Packager.filter).respField, "vISA1Packager.filter.respField");
+        assertEquals("testVISA1PackagerBadResultCode", ((VISA1Packager) vISA1Packager.filter).badResultCode,
+                "vISA1Packager.filter.badResultCode");
+        assertEquals("testVISA1PackagerOkPattern", ((VISA1Packager) vISA1Packager.filter).okPattern,
+                "vISA1Packager.filter.okPattern");
+        assertSame(filter, vISA1Packager.filter, "vISA1Packager.filter");
     }
 
     @Test
@@ -171,9 +171,9 @@ public class VISA1PackagerTest {
         VISA1Packager vISA1Packager = new VISA1Packager(sequence, 100, "testVISA1PackagerBadResultCode", "");
         byte[] b = new byte[1];
         int result = vISA1Packager.unpack(m, b);
-        assertEquals("(ISOMsg) m.getMaxField()", 100, m.getMaxField());
-        assertEquals("result", 1, result);
-        assertSame("vISA1Packager.filter", vISA1Packager, vISA1Packager.filter);
+        assertEquals(100, m.getMaxField(), "(ISOMsg) m.getMaxField()");
+        assertEquals(1, result, "result");
+        assertSame(vISA1Packager, vISA1Packager.filter, "vISA1Packager.filter");
     }
 
     @Test
@@ -184,8 +184,8 @@ public class VISA1PackagerTest {
         ISOComponent m = new ISOMsg(100);
         byte[] b = new byte[0];
         int result = vISA1Packager.unpack(m, b);
-        assertEquals("(ISOVMsg) m.getMaxField()", 100, m.getMaxField());
-        assertEquals("result", 0, result);
+        assertEquals(100, m.getMaxField(), "(ISOVMsg) m.getMaxField()");
+        assertEquals(0, result, "result");
     }
 
     @Test
@@ -198,8 +198,8 @@ public class VISA1PackagerTest {
             vISA1Packager.unpack(new ISOMsg(100), new ByteArrayInputStream(bytes));
             fail("Expected ISOException to be thrown");
         } catch (ISOException ex) {
-            assertEquals("ex.getMessage()", "not implemented", ex.getMessage());
-            assertNull("ex.getNested()", ex.getNested());
+            assertEquals("not implemented", ex.getMessage(), "ex.getMessage()");
+            assertNull(ex.getNested(), "ex.getNested()");
         }
     }
 
@@ -213,9 +213,9 @@ public class VISA1PackagerTest {
             vISA1Packager.unpack(new ISOBitMap(100), b);
             fail("Expected ISOException to be thrown");
         } catch (ISOException ex) {
-            assertEquals("ex.getMessage()", "Can't add to Leaf", ex.getMessage());
-            assertNull("ex.getNested()", ex.getNested());
-            assertSame("vISA1Packager.filter", vISA1Packager, vISA1Packager.filter);
+            assertEquals("Can't add to Leaf", ex.getMessage(), "ex.getMessage()");
+            assertNull(ex.getNested(), "ex.getNested()");
+            assertSame(vISA1Packager, vISA1Packager.filter, "vISA1Packager.filter");
         }
     }
 
@@ -229,8 +229,8 @@ public class VISA1PackagerTest {
             vISA1Packager.unpack(null, b);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertSame("vISA1Packager.filter", vISA1Packager, vISA1Packager.filter);
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertSame(vISA1Packager, vISA1Packager.filter, "vISA1Packager.filter");
         }
     }
 
@@ -244,9 +244,9 @@ public class VISA1PackagerTest {
             vISA1Packager.unpack(m, b);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertEquals("(ISOMsg) m.getMaxField()", 100, m.getMaxField());
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertSame("vISA1Packager.filter", vISA1Packager, vISA1Packager.filter);
+            assertEquals(100, m.getMaxField(), "(ISOMsg) m.getMaxField()");
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertSame(vISA1Packager, vISA1Packager.filter, "vISA1Packager.filter");
         }
     }
 
@@ -259,8 +259,8 @@ public class VISA1PackagerTest {
             vISA1Packager.unpack(new ISOBitMap(100), (byte[]) null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertSame("vISA1Packager.filter", vISA1Packager, vISA1Packager.filter);
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertSame(vISA1Packager, vISA1Packager.filter, "vISA1Packager.filter");
         }
     }
 }

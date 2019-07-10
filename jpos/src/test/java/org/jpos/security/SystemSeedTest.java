@@ -19,23 +19,20 @@
 package org.jpos.security;
 
 import org.jpos.iso.ISOUtil;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 public class SystemSeedTest {
     @Test
     public void testWellKnownSeeds() throws Throwable {
-        assertEquals("Invalid seed 0",
-                "371B4CF737319AC15BD6B18DE9E8B8537D2D2CC6323B4E728C8A06C654FBBA06",
-                ISOUtil.hexString(ISOUtil.xor(SystemSeed.getSeed(16,32), SystemSeed.getSeed(4064-32))));
-        assertEquals("Invalid seed 1",
-                "6835BEFB07E7965940A99D46C7FAC87561DCB1FD7BF4932DB5ACC1E0529B1AE891B0368E14D5F9BFFC74E380426C3A7B",
-                ISOUtil.hexString(ISOUtil.xor(SystemSeed.getSeed(0,1024), SystemSeed.getSeed(2048,48))));
-        assertEquals("Invalid seed 3",
-          "6835BEFB07E7965940A99D46C7FAC87561DCB1FD7BF4932DB5ACC1E0529B1AE891B0368E14D5F9BFFC74E380426C3A7B",
-          ISOUtil.hexString(ISOUtil.xor(SystemSeed.getSeed(0,1024), SystemSeed.getSeed(6144,48))));
+        assertEquals("371B4CF737319AC15BD6B18DE9E8B8537D2D2CC6323B4E728C8A06C654FBBA06",
+                ISOUtil.hexString(ISOUtil.xor(SystemSeed.getSeed(16,32), SystemSeed.getSeed(4064-32))), "Invalid seed 0");
+        assertEquals("6835BEFB07E7965940A99D46C7FAC87561DCB1FD7BF4932DB5ACC1E0529B1AE891B0368E14D5F9BFFC74E380426C3A7B",
+                ISOUtil.hexString(ISOUtil.xor(SystemSeed.getSeed(0,1024), SystemSeed.getSeed(2048,48))), "Invalid seed 1");
+        assertEquals("6835BEFB07E7965940A99D46C7FAC87561DCB1FD7BF4932DB5ACC1E0529B1AE891B0368E14D5F9BFFC74E380426C3A7B",
+          ISOUtil.hexString(ISOUtil.xor(SystemSeed.getSeed(0,1024), SystemSeed.getSeed(6144,48))), "Invalid seed 3");
 
-         assertEquals("Invalid seed 3", ISOUtil.hexString(new byte[8192]), ISOUtil.hexString(ISOUtil.xor(SystemSeed.getSeed(1,8192), SystemSeed.getSeed(4097,16384))));
+         assertEquals(ISOUtil.hexString(new byte[8192]), ISOUtil.hexString(ISOUtil.xor(SystemSeed.getSeed(1,8192), SystemSeed.getSeed(4097,16384))), "Invalid seed 3");
 
     }
 }

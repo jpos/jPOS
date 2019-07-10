@@ -18,12 +18,12 @@
 
 package org.jpos.q2;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
@@ -37,16 +37,16 @@ import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jpos.q2.qbean.SystemMonitor;
 import org.jpos.util.Log;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 
 public class Q2Test {
     String[] m_args = new String[0];
     Q2 m_q2;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         m_q2 = new Q2(m_args);
     }
@@ -57,7 +57,7 @@ public class Q2Test {
         args[0] = "";
         args[1] = "";
         boolean result = new Q2(args).accept(new File("testQ2Param1"));
-        assertFalse("result", result);
+        assertFalse(result, "result");
     }
 
     @Test
@@ -68,14 +68,14 @@ public class Q2Test {
             new Q2(args).accept(null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
     @Test
     public void testConstructor() throws Throwable {
-        assertEquals("m_q2.getDeployDir().getName()", "deploy", m_q2.getDeployDir().getName());
-        assertSame("m_q2.getCommandLineArgs()", m_args, m_q2.getCommandLineArgs());
+        assertEquals("deploy", m_q2.getDeployDir().getName(), "m_q2.getDeployDir().getName()");
+        assertSame(m_args, m_q2.getCommandLineArgs(), "m_q2.getCommandLineArgs()");
     }
 
     @Test
@@ -89,7 +89,7 @@ public class Q2Test {
         given(doc.getRootElement()).willReturn(element);
         given(element.getName()).willReturn("testString");
         Document result = m_q2.decrypt(doc);
-        assertSame("result", doc, result);
+        assertSame(doc, result, "result");
     }
 
     @Test
@@ -98,7 +98,7 @@ public class Q2Test {
             m_q2.decrypt(new Document());
             fail("Expected IllegalStateException to be thrown");
         } catch (IllegalStateException ex) {
-            assertEquals("ex.getMessage()", "Root element not set", ex.getMessage());
+            assertEquals("Root element not set", ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -111,17 +111,18 @@ public class Q2Test {
             q2.decrypt(null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
-    @Ignore @Test
+    @Disabled
+    @Test
     public void testEncryptThrowsIllegalStateException() throws Throwable {
         try {
             m_q2.encrypt(new Document());
             fail("Expected IllegalStateException to be thrown");
         } catch (IllegalStateException ex) {
-            assertEquals("ex.getMessage()", "Root element not set", ex.getMessage());
+            assertEquals("Root element not set", ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -130,15 +131,15 @@ public class Q2Test {
         String[] args = new String[1];
         args[0] = "testString";
         String[] result = new Q2(args).getCommandLineArgs();
-        assertSame("result", args, result);
-        assertEquals("m_args[0]", "testString", args[0]);
+        assertSame(args, result, "result");
+        assertEquals("testString", args[0], "m_args[0]");
     }
 
     @Test
     public void testGetDeployDir() throws Throwable {
         String[] args = new String[0];
         File result = new Q2(args).getDeployDir();
-        assertEquals("result.getName()", "deploy", result.getName());
+        assertEquals("deploy", result.getName(), "result.getName()");
     }
 
     @Test
@@ -147,7 +148,7 @@ public class Q2Test {
         args[0] = "testString";
         args[1] = "testString";
         QFactory result = new Q2(args).getFactory();
-        assertNull("result", result);
+        assertNull(result, "result");
     }
 
     @Test
@@ -157,20 +158,20 @@ public class Q2Test {
         args[1] = "testString";
         Q2 q2 = new Q2(args);
         byte[] result = q2.getKey();
-        assertEquals("result.length", 8, result.length);
-        assertEquals("result[0]", (byte) 67, result[0]);
+        assertEquals(8, result.length, "result.length");
+        assertEquals((byte) 67, result[0], "result[0]");
     }
 
     @Test
     public void testGetLoader() throws Throwable {
         QClassLoader result = m_q2.getLoader();
-        assertNull("result", result);
+        assertNull(result, "result");
     }
 
     @Test
     public void testGetLog() throws Throwable {
         Log result = m_q2.getLog();
-        assertEquals("result.getRealm()", "Q2.system", result.getRealm());
+        assertEquals("Q2.system", result.getRealm(), "result.getRealm()");
     }
 
     @Test
@@ -181,14 +182,14 @@ public class Q2Test {
         m_q2 = new Q2(args);
         Log log = m_q2.getLog();
         Log result = m_q2.getLog();
-        assertSame("result", log, result);
+        assertSame(log, result, "result");
     }
 
     @Test
     public void testGetMBeanServer() throws Throwable {
         String[] args = new String[0];
         MBeanServer result = new Q2(args).getMBeanServer();
-        assertNull("result", result);
+        assertNull(result, "result");
     }
 
     @Test
@@ -196,8 +197,8 @@ public class Q2Test {
         ObjectInstance instance = new ObjectInstance(new ObjectName("testQEntryParam1", "testQEntryParam2", "testQEntryParam3"),
                 "testQEntryParam2");
         Q2.QEntry qEntry = new Q2.QEntry(100L, instance);
-        assertEquals("qEntry.deployed", 100L, qEntry.deployed);
-        assertSame("qEntry.instance", instance, qEntry.instance);
+        assertEquals(100L, qEntry.deployed, "qEntry.deployed");
+        assertSame(instance, qEntry.instance, "qEntry.instance");
     }
 
 
@@ -205,14 +206,14 @@ public class Q2Test {
     public void testQEntryGetDeployed() throws Throwable {
         long result = new Q2.QEntry(0L, new ObjectInstance(
                 new ObjectName("testQEntryParam1", "testQEntryParam2", "testQEntryParam3"), "testQEntryParam2")).getDeployed();
-        assertEquals("result", 0L, result);
+        assertEquals(0L, result, "result");
     }
 
     @Test
     public void testQEntryGetDeployed1() throws Throwable {
         long result = new Q2.QEntry(100L, new ObjectInstance(new ObjectName("testQEntryParam1", "testQEntryParam2",
                 "testQEntryParam3"), "testQEntryParam2")).getDeployed();
-        assertEquals("result", 100L, result);
+        assertEquals(100L, result, "result");
     }
 
     @Test
@@ -220,13 +221,13 @@ public class Q2Test {
         ObjectInstance instance = new ObjectInstance(new ObjectName("testQEntryParam1", "testQEntryParam2", "testQEntryParam3"),
                 "testQEntryParam2");
         ObjectInstance result = new Q2.QEntry(100L, instance).getInstance();
-        assertSame("result", instance, result);
+        assertSame(instance, result, "result");
     }
 
     @Test
     public void testQEntryGetObject() throws Throwable {
         Object result = new Q2.QEntry(100L, null).getObject();
-        assertNull("result", result);
+        assertNull(result, "result");
     }
 
     @Test
@@ -236,27 +237,27 @@ public class Q2Test {
         Object obj = new Object();
         qEntry.setObject(obj);
         Object result = qEntry.getObject();
-        assertSame("result", obj, result);
+        assertSame(obj, result, "result");
     }
 
     @Test
     public void testQEntryGetObjectName() throws Throwable {
         ObjectName result = new Q2.QEntry(100L, null).getObjectName();
-        assertNull("result", result);
+        assertNull(result, "result");
     }
 
     @Test
     public void testQEntryGetObjectName1() throws Throwable {
         ObjectName objectName = new ObjectName("testQEntryParam1", "testQEntryParam2", "testQEntryParam3");
         ObjectName result = new Q2.QEntry(100L, new ObjectInstance(objectName, "testQEntryParam2")).getObjectName();
-        assertSame("result", objectName, result);
+        assertSame(objectName, result, "result");
     }
 
     @Test
     public void testQEntryIsQBean() throws Throwable {
         boolean result = new Q2.QEntry(100L, new ObjectInstance(new ObjectName("testQEntryParam1", "testQEntryParam2",
                 "testQEntryParam3"), "testQEntryParam2")).isQBean();
-        assertFalse("result", result);
+        assertFalse(result, "result");
     }
 
     @Test
@@ -265,14 +266,14 @@ public class Q2Test {
                 "testQEntryParam3"), "testQEntryParam2"));
         qEntry.setObject(new SystemMonitor());
         boolean result = qEntry.isQBean();
-        assertTrue("result", result);
+        assertTrue(result, "result");
     }
 
     @Test
     public void testQEntryIsQPersist1() throws Throwable {
         boolean result = new Q2.QEntry(100L, new ObjectInstance(new ObjectName("testQEntryParam1", "testQEntryParam2",
                 "testQEntryParam3"), "testQEntryParam2")).isQPersist();
-        assertFalse("result", result);
+        assertFalse(result, "result");
     }
 
     @Test
@@ -281,7 +282,7 @@ public class Q2Test {
                 "testQEntryParam2");
         Q2.QEntry qEntry = new Q2.QEntry(100L, instance);
         qEntry.setInstance(instance);
-        assertSame("qEntry.instance", instance, qEntry.instance);
+        assertSame(instance, qEntry.instance, "qEntry.instance");
     }
 
     @Test
@@ -289,23 +290,24 @@ public class Q2Test {
         Q2.QEntry qEntry = new Q2.QEntry(100L, new ObjectInstance(new ObjectName("testQEntryParam1", "testQEntryParam2",
                 "testQEntryParam3"), "testQEntryParam2"));
         qEntry.setObject("");
-        assertEquals("qEntry.obj", "", qEntry.obj);
+        assertEquals("", qEntry.obj, "qEntry.obj");
     }
 
     @Test
     public void testRelax() throws Throwable {
         m_q2.relax(0L);
-        assertSame("m_q2.getCommandLineArgs()", m_args, m_q2.getCommandLineArgs());
+        assertSame(m_args, m_q2.getCommandLineArgs(), "m_q2.getCommandLineArgs()");
     }
 
-    @Ignore @Test
+    @Disabled
+    @Test
     public void testRelaxThrowsIllegalArgumentException() throws Throwable {
         String[] args = new String[0];
         try {
             new Q2(args).relax(-100L);
             fail("Expected IllegalArgumentException to be thrown");
         } catch (IllegalArgumentException ex) {
-            assertEquals("ex.getMessage()", "timeout value is negative", ex.getMessage());
+            assertEquals("timeout value is negative", ex.getMessage(), "ex.getMessage()");
         }
     }
 

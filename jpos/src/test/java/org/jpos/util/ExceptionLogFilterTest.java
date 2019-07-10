@@ -18,23 +18,23 @@
 
 package org.jpos.util;
 
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ExceptionLogFilterTest {
 
     @Test
     public void testConstructor() throws Throwable {
         new ExceptionLogFilter();
-        assertTrue("Test completed without Exception", true);
+        assertTrue(true, "Test completed without Exception");
     }
 
     @Test
     public void testLog() throws Throwable {
         LogEvent result = new ExceptionLogFilter().log(new LogEvent());
-        assertNull("result", result);
+        assertNull(result, "result");
     }
 
 }

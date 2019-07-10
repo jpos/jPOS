@@ -24,13 +24,13 @@ import java.security.Key;
 import java.security.Provider;
 
 import org.jpos.testhelpers.EqualsHashCodeTestCase;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 public class JCEHandlerMacEngineKeyTest extends EqualsHashCodeTestCase {
     private Provider provider;
     private Key macKey;
 
-    @Before
+    @BeforeEach
     public void onSetup() {
         provider = mock(Provider.class);
         macKey = mock(Key.class);

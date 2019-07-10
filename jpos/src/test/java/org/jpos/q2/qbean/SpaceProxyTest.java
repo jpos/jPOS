@@ -18,25 +18,25 @@
 
 package org.jpos.q2.qbean;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import org.jdom2.Element;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class SpaceProxyTest {
 
     @Test
     public void testConstructor() throws Throwable {
         SpaceProxyAdaptor spaceProxyAdaptor = new SpaceProxyAdaptor();
-        assertNull("spaceProxyAdaptor.getSpaceName()", spaceProxyAdaptor.getSpaceName());
-        assertEquals("spaceProxyAdaptor.getLog().getRealm()", "org.jpos.q2.qbean.SpaceProxyAdaptor", spaceProxyAdaptor.getLog()
-                .getRealm());
-        assertEquals("spaceProxyAdaptor.getState()", -1, spaceProxyAdaptor.getState());
-        assertTrue("spaceProxyAdaptor.isModified()", spaceProxyAdaptor.isModified());
+        assertNull(spaceProxyAdaptor.getSpaceName(), "spaceProxyAdaptor.getSpaceName()");
+        assertEquals("org.jpos.q2.qbean.SpaceProxyAdaptor", spaceProxyAdaptor.getLog()
+                .getRealm(), "spaceProxyAdaptor.getLog().getRealm()");
+        assertEquals(-1, spaceProxyAdaptor.getState(), "spaceProxyAdaptor.getState()");
+        assertTrue(spaceProxyAdaptor.isModified(), "spaceProxyAdaptor.isModified()");
     }
 
     @Test
@@ -45,7 +45,7 @@ public class SpaceProxyTest {
             new SpaceProxyAdaptor().getKeys();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -54,8 +54,8 @@ public class SpaceProxyTest {
         SpaceProxyAdaptor spaceProxyAdaptor = new SpaceProxyAdaptor();
         spaceProxyAdaptor.setPersist(new Element("testSpaceProxyAdaptorName"));
         spaceProxyAdaptor.setSpaceName("testSpaceProxyAdaptorSpaceName");
-        assertEquals("spaceProxyAdaptor.getSpaceName()", "testSpaceProxyAdaptorSpaceName", spaceProxyAdaptor.getSpaceName());
-        assertTrue("spaceProxyAdaptor.isModified()", spaceProxyAdaptor.isModified());
+        assertEquals("testSpaceProxyAdaptorSpaceName", spaceProxyAdaptor.getSpaceName(), "spaceProxyAdaptor.getSpaceName()");
+        assertTrue(spaceProxyAdaptor.isModified(), "spaceProxyAdaptor.isModified()");
     }
 
     @Test
@@ -65,9 +65,9 @@ public class SpaceProxyTest {
             spaceProxyAdaptor.setSpaceName("testSpaceProxyAdaptorSpaceName");
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertEquals("spaceProxyAdaptor.getSpaceName()", "testSpaceProxyAdaptorSpaceName", spaceProxyAdaptor.getSpaceName());
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertFalse("spaceProxyAdaptor.isModified()", spaceProxyAdaptor.isModified());
+            assertEquals("testSpaceProxyAdaptorSpaceName", spaceProxyAdaptor.getSpaceName(), "spaceProxyAdaptor.getSpaceName()");
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertFalse(spaceProxyAdaptor.isModified(), "spaceProxyAdaptor.isModified()");
         }
     }
 
@@ -78,7 +78,7 @@ public class SpaceProxyTest {
             spaceProxyAdaptor.stopService();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 }

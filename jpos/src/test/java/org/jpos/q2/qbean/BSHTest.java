@@ -18,22 +18,22 @@
 
 package org.jpos.q2.qbean;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class BSHTest {
 
     @Test
     public void testConstructor() throws Throwable {
         BSH bSH = new BSH();
-        assertEquals("bSH.getLog().getRealm()", "org.jpos.q2.qbean.BSH", bSH.getLog().getRealm());
-        assertEquals("bSH.getState()", -1, bSH.getState());
-        assertTrue("bSH.isModified()", bSH.isModified());
+        assertEquals("org.jpos.q2.qbean.BSH", bSH.getLog().getRealm(), "bSH.getLog().getRealm()");
+        assertEquals(-1, bSH.getState(), "bSH.getState()");
+        assertTrue(bSH.isModified(), "bSH.isModified()");
     }
 
     @Test
@@ -43,7 +43,7 @@ public class BSHTest {
             bSH.initService();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -51,14 +51,14 @@ public class BSHTest {
     public void testRun() throws Throwable {
         BSH bSH = new BSH();
         bSH.run();
-        assertNull("bSH.bsh", bSH.bsh);
-        assertFalse("bSH.isModified()", bSH.isModified());
+        assertNull(bSH.bsh, "bSH.bsh");
+        assertFalse(bSH.isModified(), "bSH.isModified()");
     }
 
     @Test
     public void testStartService() throws Throwable {
         BSH bSH = new BSH();
         bSH.startService();
-        assertNull("bSH.getName()", bSH.getName());
+        assertNull(bSH.getName(), "bSH.getName()");
     }
 }

@@ -19,15 +19,15 @@
 package org.jpos.util;
 
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class DirPollOperationTest {
 
@@ -44,7 +44,7 @@ public class DirPollOperationTest {
     private String basePath;
     public static final String DATE_FORMAT_STRING = "yyyyMMddHHmmss";
 
-    @Before
+    @BeforeEach
     public void createDirPoll() throws Exception {
         basePath = createTempDir();
         dirPoll = new DirPoll();
@@ -68,7 +68,7 @@ public class DirPollOperationTest {
         return temp.getAbsolutePath();
     }
 
-	@After
+	@AfterEach
     public void destroyDirPoll() throws Exception {
         dirPoll.destroy();
         emptyDirectories();

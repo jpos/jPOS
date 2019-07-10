@@ -18,10 +18,10 @@
 
 package org.jpos.iso.channel;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.net.ServerSocket;
 
@@ -30,7 +30,7 @@ import org.jpos.iso.packager.Base1Packager;
 import org.jpos.iso.packager.CTCSubFieldPackager;
 import org.jpos.iso.packager.GenericPackager;
 import org.jpos.iso.packager.GenericValidatingPackager;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class GZIPChannelTest {
 
@@ -39,78 +39,78 @@ public class GZIPChannelTest {
         ISOPackager p = new CTCSubFieldPackager();
         ServerSocket serverSocket = new ServerSocket();
         GZIPChannel gZIPChannel = new GZIPChannel(p, serverSocket);
-        assertEquals("gZIPChannel.getIncomingFilters().size()", 0, gZIPChannel.getIncomingFilters().size());
-        assertEquals("gZIPChannel.getMaxPacketLength()", 100000, gZIPChannel.getMaxPacketLength());
-        assertSame("gZIPChannel.getPackager()", p, gZIPChannel.getPackager());
-        assertEquals("gZIPChannel.getPort()", 0, gZIPChannel.getPort());
-        assertEquals("gZIPChannel.getName()", "", gZIPChannel.getName());
-        assertEquals("gZIPChannel.getCounters().length", 3, gZIPChannel.getCounters().length);
-        assertNull("gZIPChannel.getLogger()", gZIPChannel.getLogger());
-        assertNull("gZIPChannel.getSocketFactory()", gZIPChannel.getSocketFactory());
-        assertNull("gZIPChannel.getHeader()", gZIPChannel.getHeader());
-        assertEquals("gZIPChannel.getOutgoingFilters().size()", 0, gZIPChannel.getOutgoingFilters().size());
-        assertSame("gZIPChannel.getServerSocket()", serverSocket, gZIPChannel.getServerSocket());
-        assertEquals("gZIPChannel.getOriginalRealm()", "org.jpos.iso.channel.GZIPChannel", gZIPChannel.getOriginalRealm());
-        assertNull("gZIPChannel.getRealm()", gZIPChannel.getRealm());
-        assertNull("gZIPChannel.getHost()", gZIPChannel.getHost());
+        assertEquals(0, gZIPChannel.getIncomingFilters().size(), "gZIPChannel.getIncomingFilters().size()");
+        assertEquals(100000, gZIPChannel.getMaxPacketLength(), "gZIPChannel.getMaxPacketLength()");
+        assertSame(p, gZIPChannel.getPackager(), "gZIPChannel.getPackager()");
+        assertEquals(0, gZIPChannel.getPort(), "gZIPChannel.getPort()");
+        assertEquals("", gZIPChannel.getName(), "gZIPChannel.getName()");
+        assertEquals(3, gZIPChannel.getCounters().length, "gZIPChannel.getCounters().length");
+        assertNull(gZIPChannel.getLogger(), "gZIPChannel.getLogger()");
+        assertNull(gZIPChannel.getSocketFactory(), "gZIPChannel.getSocketFactory()");
+        assertNull(gZIPChannel.getHeader(), "gZIPChannel.getHeader()");
+        assertEquals(0, gZIPChannel.getOutgoingFilters().size(), "gZIPChannel.getOutgoingFilters().size()");
+        assertSame(serverSocket, gZIPChannel.getServerSocket(), "gZIPChannel.getServerSocket()");
+        assertEquals("org.jpos.iso.channel.GZIPChannel", gZIPChannel.getOriginalRealm(), "gZIPChannel.getOriginalRealm()");
+        assertNull(gZIPChannel.getRealm(), "gZIPChannel.getRealm()");
+        assertNull(gZIPChannel.getHost(), "gZIPChannel.getHost()");
     }
 
     @Test
     public void testConstructor1() throws Throwable {
         GZIPChannel gZIPChannel = new GZIPChannel();
-        assertEquals("gZIPChannel.getIncomingFilters().size()", 0, gZIPChannel.getIncomingFilters().size());
-        assertEquals("gZIPChannel.getMaxPacketLength()", 100000, gZIPChannel.getMaxPacketLength());
-        assertEquals("gZIPChannel.getPort()", 0, gZIPChannel.getPort());
-        assertEquals("gZIPChannel.getName()", "", gZIPChannel.getName());
-        assertEquals("gZIPChannel.getCounters().length", 3, gZIPChannel.getCounters().length);
-        assertNull("gZIPChannel.getLogger()", gZIPChannel.getLogger());
-        assertNull("gZIPChannel.getSocketFactory()", gZIPChannel.getSocketFactory());
-        assertNull("gZIPChannel.getHeader()", gZIPChannel.getHeader());
-        assertEquals("gZIPChannel.getOutgoingFilters().size()", 0, gZIPChannel.getOutgoingFilters().size());
-        assertNull("gZIPChannel.getServerSocket()", gZIPChannel.getServerSocket());
-        assertEquals("gZIPChannel.getOriginalRealm()", "org.jpos.iso.channel.GZIPChannel", gZIPChannel.getOriginalRealm());
-        assertNull("gZIPChannel.getRealm()", gZIPChannel.getRealm());
-        assertNull("gZIPChannel.getHost()", gZIPChannel.getHost());
+        assertEquals(0, gZIPChannel.getIncomingFilters().size(), "gZIPChannel.getIncomingFilters().size()");
+        assertEquals(100000, gZIPChannel.getMaxPacketLength(), "gZIPChannel.getMaxPacketLength()");
+        assertEquals(0, gZIPChannel.getPort(), "gZIPChannel.getPort()");
+        assertEquals("", gZIPChannel.getName(), "gZIPChannel.getName()");
+        assertEquals(3, gZIPChannel.getCounters().length, "gZIPChannel.getCounters().length");
+        assertNull(gZIPChannel.getLogger(), "gZIPChannel.getLogger()");
+        assertNull(gZIPChannel.getSocketFactory(), "gZIPChannel.getSocketFactory()");
+        assertNull(gZIPChannel.getHeader(), "gZIPChannel.getHeader()");
+        assertEquals(0, gZIPChannel.getOutgoingFilters().size(), "gZIPChannel.getOutgoingFilters().size()");
+        assertNull(gZIPChannel.getServerSocket(), "gZIPChannel.getServerSocket()");
+        assertEquals("org.jpos.iso.channel.GZIPChannel", gZIPChannel.getOriginalRealm(), "gZIPChannel.getOriginalRealm()");
+        assertNull(gZIPChannel.getRealm(), "gZIPChannel.getRealm()");
+        assertNull(gZIPChannel.getHost(), "gZIPChannel.getHost()");
     }
 
     @Test
     public void testConstructor2() throws Throwable {
         ISOPackager p = new GenericValidatingPackager();
         GZIPChannel gZIPChannel = new GZIPChannel("testGZIPChannelHost", 100, p);
-        assertEquals("gZIPChannel.getIncomingFilters().size()", 0, gZIPChannel.getIncomingFilters().size());
-        assertEquals("gZIPChannel.getMaxPacketLength()", 100000, gZIPChannel.getMaxPacketLength());
-        assertSame("gZIPChannel.getPackager()", p, gZIPChannel.getPackager());
-        assertEquals("gZIPChannel.getPort()", 100, gZIPChannel.getPort());
-        assertEquals("gZIPChannel.getName()", "", gZIPChannel.getName());
-        assertEquals("gZIPChannel.getCounters().length", 3, gZIPChannel.getCounters().length);
-        assertNull("gZIPChannel.getLogger()", gZIPChannel.getLogger());
-        assertNull("gZIPChannel.getSocketFactory()", gZIPChannel.getSocketFactory());
-        assertNull("gZIPChannel.getHeader()", gZIPChannel.getHeader());
-        assertEquals("gZIPChannel.getOutgoingFilters().size()", 0, gZIPChannel.getOutgoingFilters().size());
-        assertNull("gZIPChannel.getServerSocket()", gZIPChannel.getServerSocket());
-        assertEquals("gZIPChannel.getOriginalRealm()", "org.jpos.iso.channel.GZIPChannel", gZIPChannel.getOriginalRealm());
-        assertNull("gZIPChannel.getRealm()", gZIPChannel.getRealm());
-        assertEquals("gZIPChannel.getHost()", "testGZIPChannelHost", gZIPChannel.getHost());
+        assertEquals(0, gZIPChannel.getIncomingFilters().size(), "gZIPChannel.getIncomingFilters().size()");
+        assertEquals(100000, gZIPChannel.getMaxPacketLength(), "gZIPChannel.getMaxPacketLength()");
+        assertSame(p, gZIPChannel.getPackager(), "gZIPChannel.getPackager()");
+        assertEquals(100, gZIPChannel.getPort(), "gZIPChannel.getPort()");
+        assertEquals("", gZIPChannel.getName(), "gZIPChannel.getName()");
+        assertEquals(3, gZIPChannel.getCounters().length, "gZIPChannel.getCounters().length");
+        assertNull(gZIPChannel.getLogger(), "gZIPChannel.getLogger()");
+        assertNull(gZIPChannel.getSocketFactory(), "gZIPChannel.getSocketFactory()");
+        assertNull(gZIPChannel.getHeader(), "gZIPChannel.getHeader()");
+        assertEquals(0, gZIPChannel.getOutgoingFilters().size(), "gZIPChannel.getOutgoingFilters().size()");
+        assertNull(gZIPChannel.getServerSocket(), "gZIPChannel.getServerSocket()");
+        assertEquals("org.jpos.iso.channel.GZIPChannel", gZIPChannel.getOriginalRealm(), "gZIPChannel.getOriginalRealm()");
+        assertNull(gZIPChannel.getRealm(), "gZIPChannel.getRealm()");
+        assertEquals("testGZIPChannelHost", gZIPChannel.getHost(), "gZIPChannel.getHost()");
     }
 
     @Test
     public void testConstructor3() throws Throwable {
         ISOPackager p = new GenericPackager();
         GZIPChannel gZIPChannel = new GZIPChannel(p);
-        assertEquals("gZIPChannel.getIncomingFilters().size()", 0, gZIPChannel.getIncomingFilters().size());
-        assertEquals("gZIPChannel.getMaxPacketLength()", 100000, gZIPChannel.getMaxPacketLength());
-        assertSame("gZIPChannel.getPackager()", p, gZIPChannel.getPackager());
-        assertEquals("gZIPChannel.getPort()", 0, gZIPChannel.getPort());
-        assertEquals("gZIPChannel.getName()", "", gZIPChannel.getName());
-        assertEquals("gZIPChannel.getCounters().length", 3, gZIPChannel.getCounters().length);
-        assertNull("gZIPChannel.getLogger()", gZIPChannel.getLogger());
-        assertNull("gZIPChannel.getSocketFactory()", gZIPChannel.getSocketFactory());
-        assertNull("gZIPChannel.getHeader()", gZIPChannel.getHeader());
-        assertEquals("gZIPChannel.getOutgoingFilters().size()", 0, gZIPChannel.getOutgoingFilters().size());
-        assertNull("gZIPChannel.getServerSocket()", gZIPChannel.getServerSocket());
-        assertEquals("gZIPChannel.getOriginalRealm()", "org.jpos.iso.channel.GZIPChannel", gZIPChannel.getOriginalRealm());
-        assertNull("gZIPChannel.getRealm()", gZIPChannel.getRealm());
-        assertNull("gZIPChannel.getHost()", gZIPChannel.getHost());
+        assertEquals(0, gZIPChannel.getIncomingFilters().size(), "gZIPChannel.getIncomingFilters().size()");
+        assertEquals(100000, gZIPChannel.getMaxPacketLength(), "gZIPChannel.getMaxPacketLength()");
+        assertSame(p, gZIPChannel.getPackager(), "gZIPChannel.getPackager()");
+        assertEquals(0, gZIPChannel.getPort(), "gZIPChannel.getPort()");
+        assertEquals("", gZIPChannel.getName(), "gZIPChannel.getName()");
+        assertEquals(3, gZIPChannel.getCounters().length, "gZIPChannel.getCounters().length");
+        assertNull(gZIPChannel.getLogger(), "gZIPChannel.getLogger()");
+        assertNull(gZIPChannel.getSocketFactory(), "gZIPChannel.getSocketFactory()");
+        assertNull(gZIPChannel.getHeader(), "gZIPChannel.getHeader()");
+        assertEquals(0, gZIPChannel.getOutgoingFilters().size(), "gZIPChannel.getOutgoingFilters().size()");
+        assertNull(gZIPChannel.getServerSocket(), "gZIPChannel.getServerSocket()");
+        assertEquals("org.jpos.iso.channel.GZIPChannel", gZIPChannel.getOriginalRealm(), "gZIPChannel.getOriginalRealm()");
+        assertNull(gZIPChannel.getRealm(), "gZIPChannel.getRealm()");
+        assertNull(gZIPChannel.getHost(), "gZIPChannel.getHost()");
     }
 
     @Test
@@ -120,7 +120,7 @@ public class GZIPChannelTest {
             gZIPChannel.getMessageLength();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -132,7 +132,7 @@ public class GZIPChannelTest {
             gZIPChannel.getMessage(b, 100, 1000);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -143,7 +143,7 @@ public class GZIPChannelTest {
             gZIPChannel.sendMessageLength(100);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -155,7 +155,7 @@ public class GZIPChannelTest {
             gZIPChannel.sendMessage(b, 100, 1000);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 }

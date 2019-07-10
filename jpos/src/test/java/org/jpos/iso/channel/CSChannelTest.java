@@ -18,10 +18,10 @@
 
 package org.jpos.iso.channel;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.net.ServerSocket;
 
@@ -31,7 +31,7 @@ import org.jpos.iso.packager.Base1Packager;
 import org.jpos.iso.packager.GenericValidatingPackager;
 import org.jpos.iso.packager.ISO87BPackager;
 import org.jpos.iso.packager.PostPackager;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class CSChannelTest {
 
@@ -40,85 +40,85 @@ public class CSChannelTest {
         ISOPackager p = new Base1Packager();
         ServerSocket serverSocket = new ServerSocket();
         CSChannel cSChannel = new CSChannel(p, serverSocket);
-        assertEquals("cSChannel.getIncomingFilters().size()", 0, cSChannel.getIncomingFilters().size());
-        assertEquals("cSChannel.getMaxPacketLength()", 100000, cSChannel.getMaxPacketLength());
-        assertSame("cSChannel.getPackager()", p, cSChannel.getPackager());
-        assertEquals("cSChannel.getPort()", 0, cSChannel.getPort());
-        assertEquals("cSChannel.getName()", "", cSChannel.getName());
-        assertEquals("cSChannel.getCounters().length", 3, cSChannel.getCounters().length);
-        assertNull("cSChannel.getLogger()", cSChannel.getLogger());
-        assertNull("cSChannel.getSocketFactory()", cSChannel.getSocketFactory());
-        assertNull("cSChannel.getHeader()", cSChannel.getHeader());
-        assertEquals("cSChannel.getOutgoingFilters().size()", 0, cSChannel.getOutgoingFilters().size());
-        assertSame("cSChannel.getServerSocket()", serverSocket, cSChannel.getServerSocket());
-        assertEquals("cSChannel.getOriginalRealm()", "org.jpos.iso.channel.CSChannel", cSChannel.getOriginalRealm());
-        assertNull("cSChannel.getRealm()", cSChannel.getRealm());
-        assertNull("cSChannel.getHost()", cSChannel.getHost());
+        assertEquals(0, cSChannel.getIncomingFilters().size(), "cSChannel.getIncomingFilters().size()");
+        assertEquals(100000, cSChannel.getMaxPacketLength(), "cSChannel.getMaxPacketLength()");
+        assertSame(p, cSChannel.getPackager(), "cSChannel.getPackager()");
+        assertEquals(0, cSChannel.getPort(), "cSChannel.getPort()");
+        assertEquals("", cSChannel.getName(), "cSChannel.getName()");
+        assertEquals(3, cSChannel.getCounters().length, "cSChannel.getCounters().length");
+        assertNull(cSChannel.getLogger(), "cSChannel.getLogger()");
+        assertNull(cSChannel.getSocketFactory(), "cSChannel.getSocketFactory()");
+        assertNull(cSChannel.getHeader(), "cSChannel.getHeader()");
+        assertEquals(0, cSChannel.getOutgoingFilters().size(), "cSChannel.getOutgoingFilters().size()");
+        assertSame(serverSocket, cSChannel.getServerSocket(), "cSChannel.getServerSocket()");
+        assertEquals("org.jpos.iso.channel.CSChannel", cSChannel.getOriginalRealm(), "cSChannel.getOriginalRealm()");
+        assertNull(cSChannel.getRealm(), "cSChannel.getRealm()");
+        assertNull(cSChannel.getHost(), "cSChannel.getHost()");
     }
 
     @Test
     public void testConstructor1() throws Throwable {
         ISOPackager p = new GenericValidatingPackager();
         CSChannel cSChannel = new CSChannel("testCSChannelHost", 100, p);
-        assertEquals("cSChannel.getIncomingFilters().size()", 0, cSChannel.getIncomingFilters().size());
-        assertEquals("cSChannel.getMaxPacketLength()", 100000, cSChannel.getMaxPacketLength());
-        assertSame("cSChannel.getPackager()", p, cSChannel.getPackager());
-        assertEquals("cSChannel.getPort()", 100, cSChannel.getPort());
-        assertEquals("cSChannel.getName()", "", cSChannel.getName());
-        assertEquals("cSChannel.getCounters().length", 3, cSChannel.getCounters().length);
-        assertNull("cSChannel.getLogger()", cSChannel.getLogger());
-        assertNull("cSChannel.getSocketFactory()", cSChannel.getSocketFactory());
-        assertNull("cSChannel.getHeader()", cSChannel.getHeader());
-        assertEquals("cSChannel.getOutgoingFilters().size()", 0, cSChannel.getOutgoingFilters().size());
-        assertNull("cSChannel.getServerSocket()", cSChannel.getServerSocket());
-        assertEquals("cSChannel.getOriginalRealm()", "org.jpos.iso.channel.CSChannel", cSChannel.getOriginalRealm());
-        assertNull("cSChannel.getRealm()", cSChannel.getRealm());
-        assertEquals("cSChannel.getHost()", "testCSChannelHost", cSChannel.getHost());
+        assertEquals(0, cSChannel.getIncomingFilters().size(), "cSChannel.getIncomingFilters().size()");
+        assertEquals(100000, cSChannel.getMaxPacketLength(), "cSChannel.getMaxPacketLength()");
+        assertSame(p, cSChannel.getPackager(), "cSChannel.getPackager()");
+        assertEquals(100, cSChannel.getPort(), "cSChannel.getPort()");
+        assertEquals("", cSChannel.getName(), "cSChannel.getName()");
+        assertEquals(3, cSChannel.getCounters().length, "cSChannel.getCounters().length");
+        assertNull(cSChannel.getLogger(), "cSChannel.getLogger()");
+        assertNull(cSChannel.getSocketFactory(), "cSChannel.getSocketFactory()");
+        assertNull(cSChannel.getHeader(), "cSChannel.getHeader()");
+        assertEquals(0, cSChannel.getOutgoingFilters().size(), "cSChannel.getOutgoingFilters().size()");
+        assertNull(cSChannel.getServerSocket(), "cSChannel.getServerSocket()");
+        assertEquals("org.jpos.iso.channel.CSChannel", cSChannel.getOriginalRealm(), "cSChannel.getOriginalRealm()");
+        assertNull(cSChannel.getRealm(), "cSChannel.getRealm()");
+        assertEquals("testCSChannelHost", cSChannel.getHost(), "cSChannel.getHost()");
     }
 
     @Test
     public void testConstructor2() throws Throwable {
         CSChannel cSChannel = new CSChannel();
-        assertEquals("cSChannel.getIncomingFilters().size()", 0, cSChannel.getIncomingFilters().size());
-        assertEquals("cSChannel.getMaxPacketLength()", 100000, cSChannel.getMaxPacketLength());
-        assertEquals("cSChannel.getPort()", 0, cSChannel.getPort());
-        assertEquals("cSChannel.getName()", "", cSChannel.getName());
-        assertEquals("cSChannel.getCounters().length", 3, cSChannel.getCounters().length);
-        assertNull("cSChannel.getLogger()", cSChannel.getLogger());
-        assertNull("cSChannel.getSocketFactory()", cSChannel.getSocketFactory());
-        assertNull("cSChannel.getHeader()", cSChannel.getHeader());
-        assertEquals("cSChannel.getOutgoingFilters().size()", 0, cSChannel.getOutgoingFilters().size());
-        assertNull("cSChannel.getServerSocket()", cSChannel.getServerSocket());
-        assertEquals("cSChannel.getOriginalRealm()", "org.jpos.iso.channel.CSChannel", cSChannel.getOriginalRealm());
-        assertNull("cSChannel.getRealm()", cSChannel.getRealm());
-        assertNull("cSChannel.getHost()", cSChannel.getHost());
+        assertEquals(0, cSChannel.getIncomingFilters().size(), "cSChannel.getIncomingFilters().size()");
+        assertEquals(100000, cSChannel.getMaxPacketLength(), "cSChannel.getMaxPacketLength()");
+        assertEquals(0, cSChannel.getPort(), "cSChannel.getPort()");
+        assertEquals("", cSChannel.getName(), "cSChannel.getName()");
+        assertEquals(3, cSChannel.getCounters().length, "cSChannel.getCounters().length");
+        assertNull(cSChannel.getLogger(), "cSChannel.getLogger()");
+        assertNull(cSChannel.getSocketFactory(), "cSChannel.getSocketFactory()");
+        assertNull(cSChannel.getHeader(), "cSChannel.getHeader()");
+        assertEquals(0, cSChannel.getOutgoingFilters().size(), "cSChannel.getOutgoingFilters().size()");
+        assertNull(cSChannel.getServerSocket(), "cSChannel.getServerSocket()");
+        assertEquals("org.jpos.iso.channel.CSChannel", cSChannel.getOriginalRealm(), "cSChannel.getOriginalRealm()");
+        assertNull(cSChannel.getRealm(), "cSChannel.getRealm()");
+        assertNull(cSChannel.getHost(), "cSChannel.getHost()");
     }
 
     @Test
     public void testConstructor3() throws Throwable {
         ISOPackager p = new ISO87BPackager();
         CSChannel cSChannel = new CSChannel(p);
-        assertEquals("cSChannel.getIncomingFilters().size()", 0, cSChannel.getIncomingFilters().size());
-        assertEquals("cSChannel.getMaxPacketLength()", 100000, cSChannel.getMaxPacketLength());
-        assertSame("cSChannel.getPackager()", p, cSChannel.getPackager());
-        assertEquals("cSChannel.getPort()", 0, cSChannel.getPort());
-        assertEquals("cSChannel.getName()", "", cSChannel.getName());
-        assertEquals("cSChannel.getCounters().length", 3, cSChannel.getCounters().length);
-        assertNull("cSChannel.getLogger()", cSChannel.getLogger());
-        assertNull("cSChannel.getSocketFactory()", cSChannel.getSocketFactory());
-        assertNull("cSChannel.getHeader()", cSChannel.getHeader());
-        assertEquals("cSChannel.getOutgoingFilters().size()", 0, cSChannel.getOutgoingFilters().size());
-        assertNull("cSChannel.getServerSocket()", cSChannel.getServerSocket());
-        assertEquals("cSChannel.getOriginalRealm()", "org.jpos.iso.channel.CSChannel", cSChannel.getOriginalRealm());
-        assertNull("cSChannel.getRealm()", cSChannel.getRealm());
-        assertNull("cSChannel.getHost()", cSChannel.getHost());
+        assertEquals(0, cSChannel.getIncomingFilters().size(), "cSChannel.getIncomingFilters().size()");
+        assertEquals(100000, cSChannel.getMaxPacketLength(), "cSChannel.getMaxPacketLength()");
+        assertSame(p, cSChannel.getPackager(), "cSChannel.getPackager()");
+        assertEquals(0, cSChannel.getPort(), "cSChannel.getPort()");
+        assertEquals("", cSChannel.getName(), "cSChannel.getName()");
+        assertEquals(3, cSChannel.getCounters().length, "cSChannel.getCounters().length");
+        assertNull(cSChannel.getLogger(), "cSChannel.getLogger()");
+        assertNull(cSChannel.getSocketFactory(), "cSChannel.getSocketFactory()");
+        assertNull(cSChannel.getHeader(), "cSChannel.getHeader()");
+        assertEquals(0, cSChannel.getOutgoingFilters().size(), "cSChannel.getOutgoingFilters().size()");
+        assertNull(cSChannel.getServerSocket(), "cSChannel.getServerSocket()");
+        assertEquals("org.jpos.iso.channel.CSChannel", cSChannel.getOriginalRealm(), "cSChannel.getOriginalRealm()");
+        assertNull(cSChannel.getRealm(), "cSChannel.getRealm()");
+        assertNull(cSChannel.getHost(), "cSChannel.getHost()");
     }
 
     @Test
     public void testGetHeaderLength() throws Throwable {
         CSChannel cSChannel = new CSChannel("testCSChannelHost", 100, new PostPackager());
         int result = cSChannel.getHeaderLength();
-        assertEquals("result", 0, result);
+        assertEquals(0, result, "result");
     }
 
     @Test
@@ -128,7 +128,7 @@ public class CSChannelTest {
             cSChannel.getMessageLength();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -136,7 +136,7 @@ public class CSChannelTest {
     public void testSendMessageHeader() throws Throwable {
         CSChannel cSChannel = new CSChannel();
         cSChannel.sendMessageHeader(new ISOMsg(), 100);
-        assertEquals("cSChannel.getHeaderLength()", 0, cSChannel.getHeaderLength());
+        assertEquals(0, cSChannel.getHeaderLength(), "cSChannel.getHeaderLength()");
     }
 
     @Test
@@ -146,7 +146,7 @@ public class CSChannelTest {
             cSChannel.sendMessageLength(100);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 }

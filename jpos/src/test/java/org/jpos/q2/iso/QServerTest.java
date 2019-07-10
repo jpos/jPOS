@@ -18,26 +18,26 @@
 
 package org.jpos.q2.iso;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import org.jdom2.Element;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class QServerTest {
 
     @Test
     public void testConstructor() throws Throwable {
         QServer qServer = new QServer();
-        assertEquals("qServer.getLog().getRealm()", "org.jpos.q2.iso.QServer", qServer.getLog().getRealm());
-        assertEquals("qServer.getState()", -1, qServer.getState());
-        assertEquals("qServer.getMaxSessions()", 100, qServer.getMaxSessions());
-        assertEquals("qServer.getMinSessions()", 1, qServer.getMinSessions());
-        assertTrue("qServer.isModified()", qServer.isModified());
-        assertEquals("qServer.getPort()", 0, qServer.getPort());
+        assertEquals("org.jpos.q2.iso.QServer", qServer.getLog().getRealm(), "qServer.getLog().getRealm()");
+        assertEquals(-1, qServer.getState(), "qServer.getState()");
+        assertEquals(100, qServer.getMaxSessions(), "qServer.getMaxSessions()");
+        assertEquals(1, qServer.getMinSessions(), "qServer.getMinSessions()");
+        assertTrue(qServer.isModified(), "qServer.isModified()");
+        assertEquals(0, qServer.getPort(), "qServer.getPort()");
     }
 
     @Test
@@ -45,8 +45,8 @@ public class QServerTest {
         QServer qServer = new QServer();
         qServer.setPersist(new Element("testQServerName", "testQServerUri"));
         qServer.setChannel("testQServerChannel");
-        assertEquals("qServer.getChannel()", "testQServerChannel", qServer.getChannel());
-        assertTrue("qServer.isModified()", qServer.isModified());
+        assertEquals("testQServerChannel", qServer.getChannel(), "qServer.getChannel()");
+        assertTrue(qServer.isModified(), "qServer.isModified()");
     }
 
     @Test
@@ -56,9 +56,9 @@ public class QServerTest {
             qServer.setChannel("testQServerChannel");
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertEquals("qServer.getChannel()", "testQServerChannel", qServer.getChannel());
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertFalse("qServer.isModified()", qServer.isModified());
+            assertEquals("testQServerChannel", qServer.getChannel(), "qServer.getChannel()");
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertFalse(qServer.isModified(), "qServer.isModified()");
         }
     }
 
@@ -67,8 +67,8 @@ public class QServerTest {
         QServer qServer = new QServer();
         qServer.setPersist(new Element("testQServerName", "testQServerUri"));
         qServer.setMaxSessions(1000);
-        assertEquals("qServer.getMaxSessions()", 1000, qServer.getMaxSessions());
-        assertTrue("qServer.isModified()", qServer.isModified());
+        assertEquals(1000, qServer.getMaxSessions(), "qServer.getMaxSessions()");
+        assertTrue(qServer.isModified(), "qServer.isModified()");
     }
 
     @Test
@@ -78,9 +78,9 @@ public class QServerTest {
             qServer.setMaxSessions(100);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertEquals("qServer.getMaxSessions()", 100, qServer.getMaxSessions());
-            assertFalse("qServer.isModified()", qServer.isModified());
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertEquals(100, qServer.getMaxSessions(), "qServer.getMaxSessions()");
+            assertFalse(qServer.isModified(), "qServer.isModified()");
         }
     }
 
@@ -89,8 +89,8 @@ public class QServerTest {
         QServer qServer = new QServer();
         qServer.setPersist(new Element("testQServerName", "testQServerUri"));
         qServer.setMinSessions(100);
-        assertEquals("qServer.getMinSessions()", 100, qServer.getMinSessions());
-        assertTrue("qServer.isModified()", qServer.isModified());
+        assertEquals(100, qServer.getMinSessions(), "qServer.getMinSessions()");
+        assertTrue(qServer.isModified(), "qServer.isModified()");
     }
 
     @Test
@@ -100,9 +100,9 @@ public class QServerTest {
             qServer.setMinSessions(100);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertEquals("qServer.getMinSessions()", 100, qServer.getMinSessions());
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertFalse("qServer.isModified()", qServer.isModified());
+            assertEquals(100, qServer.getMinSessions(), "qServer.getMinSessions()");
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertFalse(qServer.isModified(), "qServer.isModified()");
         }
     }
 
@@ -111,8 +111,8 @@ public class QServerTest {
         QServer qServer = new QServer();
         qServer.setPersist(new Element("testQServerName", "testQServerUri"));
         qServer.setPackager("testQServerPackager");
-        assertEquals("qServer.getPackager()", "testQServerPackager", qServer.getPackager());
-        assertTrue("qServer.isModified()", qServer.isModified());
+        assertEquals("testQServerPackager", qServer.getPackager(), "qServer.getPackager()");
+        assertTrue(qServer.isModified(), "qServer.isModified()");
     }
 
     @Test
@@ -122,9 +122,9 @@ public class QServerTest {
             qServer.setPackager("testQServerPackager");
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertEquals("qServer.getPackager()", "testQServerPackager", qServer.getPackager());
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertFalse("qServer.isModified()", qServer.isModified());
+            assertEquals("testQServerPackager", qServer.getPackager(), "qServer.getPackager()");
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertFalse(qServer.isModified(), "qServer.isModified()");
         }
     }
 
@@ -133,8 +133,8 @@ public class QServerTest {
         QServer qServer = new QServer();
         qServer.setPersist(new Element("testQServerName", "testQServerUri"));
         qServer.setPort(100);
-        assertEquals("qServer.getPort()", 100, qServer.getPort());
-        assertTrue("qServer.isModified()", qServer.isModified());
+        assertEquals(100, qServer.getPort(), "qServer.getPort()");
+        assertTrue(qServer.isModified(), "qServer.isModified()");
     }
 
     @Test
@@ -144,9 +144,9 @@ public class QServerTest {
             qServer.setPort(100);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertEquals("qServer.getPort()", 100, qServer.getPort());
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertFalse("qServer.isModified()", qServer.isModified());
+            assertEquals(100, qServer.getPort(), "qServer.getPort()");
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertFalse(qServer.isModified(), "qServer.isModified()");
         }
     }
 
@@ -155,8 +155,8 @@ public class QServerTest {
         QServer qServer = new QServer();
         qServer.setPersist(new Element("testQServerName", "testQServerUri"));
         qServer.setSocketFactory("testQServerSFactory");
-        assertEquals("qServer.getSocketFactory()", "testQServerSFactory", qServer.getSocketFactory());
-        assertTrue("qServer.isModified()", qServer.isModified());
+        assertEquals("testQServerSFactory", qServer.getSocketFactory(), "qServer.getSocketFactory()");
+        assertTrue(qServer.isModified(), "qServer.isModified()");
     }
 
     @Test
@@ -166,9 +166,9 @@ public class QServerTest {
             qServer.setSocketFactory("testQServerSFactory");
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertEquals("qServer.getSocketFactory()", "testQServerSFactory", qServer.getSocketFactory());
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertFalse("qServer.isModified()", qServer.isModified());
+            assertEquals("testQServerSFactory", qServer.getSocketFactory(), "qServer.getSocketFactory()");
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertFalse(qServer.isModified(), "qServer.isModified()");
         }
     }
 
@@ -176,7 +176,7 @@ public class QServerTest {
     public void testStartService() throws Throwable {
         QServer qServer = new QServer();
         qServer.startService();
-        assertTrue("qServer.isModified()", qServer.isModified());
+        assertTrue(qServer.isModified(), "qServer.isModified()");
     }
 
     @Test
@@ -185,7 +185,7 @@ public class QServerTest {
         qServer.setPersist(new Element("testQServerName", "testQServerUri"));
         qServer.setPort(100);
         qServer.startService();
-        assertFalse("qServer.isModified()", qServer.isModified());
+        assertFalse(qServer.isModified(), "qServer.isModified()");
     }
 
     @Test

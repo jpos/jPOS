@@ -18,14 +18,19 @@
 
 package org.jpos.transaction;
 
-import junit.framework.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
+import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-public class ContextTestCase extends TestCase {
+public class ContextTestCase {
+    @Test
     public void testExternalizable () throws Exception {
         Context ctx = new Context();
         ctx.put ("volatile", "the quick brown fox");

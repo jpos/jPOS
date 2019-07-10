@@ -27,12 +27,12 @@ import java.util.concurrent.TimeUnit;
 import org.jpos.iso.ISOUtil;
 
 import org.jpos.util.TPS;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  *
@@ -132,7 +132,7 @@ public class TSpacePerformanceTest  {
         }
     }
 
-    @Before
+    @BeforeEach
     public void setUp () {
         sp1 = new TSpace<String,Object>();
         sp2 = new TSpace<String,Object>();
@@ -200,7 +200,7 @@ public class TSpacePerformanceTest  {
         es.awaitTermination(5, TimeUnit.SECONDS);
     }
 
-    @Ignore("Remove it when TSpace can pass it")
+    @Disabled("Remove it when TSpace can pass it")
     @Test
     public void testStolenEntryAtNotify() throws Throwable {
         int size = 10;
@@ -215,7 +215,7 @@ public class TSpacePerformanceTest  {
         for (int i=0; i<size; i++)
           es.execute(new ReadSpaceTask("WriteTask-"+i));
 
-        assertNull("Detected stolen entry at notify",sp2.in("lost-entry", 200));
+        assertNull(sp2.in("lost-entry", 200), "Detected stolen entry at notify");
 
         es.shutdownNow();
 //        es.awaitTermination(5, TimeUnit.SECONDS);

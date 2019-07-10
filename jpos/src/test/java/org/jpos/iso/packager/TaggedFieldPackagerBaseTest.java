@@ -18,11 +18,14 @@
 
 package org.jpos.iso.packager;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import java.io.BufferedInputStream;
-import junit.framework.TestCase;
+
 import org.jpos.iso.ISOField;
 import org.jpos.iso.ISOMsg;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -33,7 +36,7 @@ import java.util.Map;
 /**
  *
  */
-public class TaggedFieldPackagerBaseTest extends TestCase {
+public class TaggedFieldPackagerBaseTest {
 
     @Test
     public void testPack() throws Exception {

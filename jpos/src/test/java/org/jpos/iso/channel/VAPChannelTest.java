@@ -18,13 +18,13 @@
 
 package org.jpos.iso.channel;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.BDDMockito.given;
 
 import static org.apache.commons.lang3.JavaVersion.JAVA_10;
@@ -47,12 +47,12 @@ import org.jpos.iso.packager.GenericPackager;
 import org.jpos.iso.packager.ISO87BPackager;
 import org.jpos.iso.packager.ISO93APackager;
 import org.jpos.iso.packager.XMLPackager;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class VAPChannelTest {
 
     @Mock
@@ -61,21 +61,21 @@ public class VAPChannelTest {
     @Test
     public void testConstructor() throws Throwable {
         VAPChannel vAPChannel = new VAPChannel();
-        assertEquals("vAPChannel.getIncomingFilters().size()", 0, vAPChannel.getIncomingFilters().size());
-        assertEquals("vAPChannel.getMaxPacketLength()", 100000, vAPChannel.getMaxPacketLength());
-        assertEquals("vAPChannel.getPort()", 0, vAPChannel.getPort());
-        assertEquals("vAPChannel.getName()", "", vAPChannel.getName());
-        assertEquals("vAPChannel.getCounters().length", 3, vAPChannel.getCounters().length);
-        assertEquals("vAPChannel.srcid", "000000", vAPChannel.srcid);
-        assertNull("vAPChannel.getLogger()", vAPChannel.getLogger());
-        assertNull("vAPChannel.getSocketFactory()", vAPChannel.getSocketFactory());
-        assertNull("vAPChannel.getHeader()", vAPChannel.getHeader());
-        assertEquals("vAPChannel.getOutgoingFilters().size()", 0, vAPChannel.getOutgoingFilters().size());
-        assertNull("vAPChannel.getServerSocket()", vAPChannel.getServerSocket());
-        assertEquals("vAPChannel.getOriginalRealm()", "org.jpos.iso.channel.VAPChannel", vAPChannel.getOriginalRealm());
-        assertNull("vAPChannel.getRealm()", vAPChannel.getRealm());
-        assertEquals("vAPChannel.dstid", "000000", vAPChannel.dstid);
-        assertNull("vAPChannel.getHost()", vAPChannel.getHost());
+        assertEquals(0, vAPChannel.getIncomingFilters().size(), "vAPChannel.getIncomingFilters().size()");
+        assertEquals(100000, vAPChannel.getMaxPacketLength(), "vAPChannel.getMaxPacketLength()");
+        assertEquals(0, vAPChannel.getPort(), "vAPChannel.getPort()");
+        assertEquals("", vAPChannel.getName(), "vAPChannel.getName()");
+        assertEquals(3, vAPChannel.getCounters().length, "vAPChannel.getCounters().length");
+        assertEquals("000000", vAPChannel.srcid, "vAPChannel.srcid");
+        assertNull(vAPChannel.getLogger(), "vAPChannel.getLogger()");
+        assertNull(vAPChannel.getSocketFactory(), "vAPChannel.getSocketFactory()");
+        assertNull(vAPChannel.getHeader(), "vAPChannel.getHeader()");
+        assertEquals(0, vAPChannel.getOutgoingFilters().size(), "vAPChannel.getOutgoingFilters().size()");
+        assertNull(vAPChannel.getServerSocket(), "vAPChannel.getServerSocket()");
+        assertEquals("org.jpos.iso.channel.VAPChannel", vAPChannel.getOriginalRealm(), "vAPChannel.getOriginalRealm()");
+        assertNull(vAPChannel.getRealm(), "vAPChannel.getRealm()");
+        assertEquals("000000", vAPChannel.dstid, "vAPChannel.dstid");
+        assertNull(vAPChannel.getHost(), "vAPChannel.getHost()");
     }
 
     @Test
@@ -83,40 +83,40 @@ public class VAPChannelTest {
         ISOPackager p = new ISO93APackager();
         ServerSocket serverSocket = new ServerSocket();
         VAPChannel vAPChannel = new VAPChannel(p, serverSocket);
-        assertEquals("vAPChannel.getIncomingFilters().size()", 0, vAPChannel.getIncomingFilters().size());
-        assertEquals("vAPChannel.getMaxPacketLength()", 100000, vAPChannel.getMaxPacketLength());
-        assertSame("vAPChannel.getPackager()", p, vAPChannel.getPackager());
-        assertEquals("vAPChannel.getPort()", 0, vAPChannel.getPort());
-        assertEquals("vAPChannel.getName()", "", vAPChannel.getName());
-        assertEquals("vAPChannel.getCounters().length", 3, vAPChannel.getCounters().length);
-        assertNull("vAPChannel.getLogger()", vAPChannel.getLogger());
-        assertNull("vAPChannel.getSocketFactory()", vAPChannel.getSocketFactory());
-        assertNull("vAPChannel.getHeader()", vAPChannel.getHeader());
-        assertEquals("vAPChannel.getOutgoingFilters().size()", 0, vAPChannel.getOutgoingFilters().size());
-        assertSame("vAPChannel.getServerSocket()", serverSocket, vAPChannel.getServerSocket());
-        assertEquals("vAPChannel.getOriginalRealm()", "org.jpos.iso.channel.VAPChannel", vAPChannel.getOriginalRealm());
-        assertNull("vAPChannel.getRealm()", vAPChannel.getRealm());
-        assertNull("vAPChannel.getHost()", vAPChannel.getHost());
+        assertEquals(0, vAPChannel.getIncomingFilters().size(), "vAPChannel.getIncomingFilters().size()");
+        assertEquals(100000, vAPChannel.getMaxPacketLength(), "vAPChannel.getMaxPacketLength()");
+        assertSame(p, vAPChannel.getPackager(), "vAPChannel.getPackager()");
+        assertEquals(0, vAPChannel.getPort(), "vAPChannel.getPort()");
+        assertEquals("", vAPChannel.getName(), "vAPChannel.getName()");
+        assertEquals(3, vAPChannel.getCounters().length, "vAPChannel.getCounters().length");
+        assertNull(vAPChannel.getLogger(), "vAPChannel.getLogger()");
+        assertNull(vAPChannel.getSocketFactory(), "vAPChannel.getSocketFactory()");
+        assertNull(vAPChannel.getHeader(), "vAPChannel.getHeader()");
+        assertEquals(0, vAPChannel.getOutgoingFilters().size(), "vAPChannel.getOutgoingFilters().size()");
+        assertSame(serverSocket, vAPChannel.getServerSocket(), "vAPChannel.getServerSocket()");
+        assertEquals("org.jpos.iso.channel.VAPChannel", vAPChannel.getOriginalRealm(), "vAPChannel.getOriginalRealm()");
+        assertNull(vAPChannel.getRealm(), "vAPChannel.getRealm()");
+        assertNull(vAPChannel.getHost(), "vAPChannel.getHost()");
     }
 
     @Test
     public void testConstructor2() throws Throwable {
         ISOPackager p = new GenericPackager();
         VAPChannel vAPChannel = new VAPChannel(p);
-        assertEquals("vAPChannel.getIncomingFilters().size()", 0, vAPChannel.getIncomingFilters().size());
-        assertEquals("vAPChannel.getMaxPacketLength()", 100000, vAPChannel.getMaxPacketLength());
-        assertSame("vAPChannel.getPackager()", p, vAPChannel.getPackager());
-        assertEquals("vAPChannel.getPort()", 0, vAPChannel.getPort());
-        assertEquals("vAPChannel.getName()", "", vAPChannel.getName());
-        assertEquals("vAPChannel.getCounters().length", 3, vAPChannel.getCounters().length);
-        assertNull("vAPChannel.getLogger()", vAPChannel.getLogger());
-        assertNull("vAPChannel.getSocketFactory()", vAPChannel.getSocketFactory());
-        assertNull("vAPChannel.getHeader()", vAPChannel.getHeader());
-        assertEquals("vAPChannel.getOutgoingFilters().size()", 0, vAPChannel.getOutgoingFilters().size());
-        assertNull("vAPChannel.getServerSocket()", vAPChannel.getServerSocket());
-        assertEquals("vAPChannel.getOriginalRealm()", "org.jpos.iso.channel.VAPChannel", vAPChannel.getOriginalRealm());
-        assertNull("vAPChannel.getRealm()", vAPChannel.getRealm());
-        assertNull("vAPChannel.getHost()", vAPChannel.getHost());
+        assertEquals(0, vAPChannel.getIncomingFilters().size(), "vAPChannel.getIncomingFilters().size()");
+        assertEquals(100000, vAPChannel.getMaxPacketLength(), "vAPChannel.getMaxPacketLength()");
+        assertSame(p, vAPChannel.getPackager(), "vAPChannel.getPackager()");
+        assertEquals(0, vAPChannel.getPort(), "vAPChannel.getPort()");
+        assertEquals("", vAPChannel.getName(), "vAPChannel.getName()");
+        assertEquals(3, vAPChannel.getCounters().length, "vAPChannel.getCounters().length");
+        assertNull(vAPChannel.getLogger(), "vAPChannel.getLogger()");
+        assertNull(vAPChannel.getSocketFactory(), "vAPChannel.getSocketFactory()");
+        assertNull(vAPChannel.getHeader(), "vAPChannel.getHeader()");
+        assertEquals(0, vAPChannel.getOutgoingFilters().size(), "vAPChannel.getOutgoingFilters().size()");
+        assertNull(vAPChannel.getServerSocket(), "vAPChannel.getServerSocket()");
+        assertEquals("org.jpos.iso.channel.VAPChannel", vAPChannel.getOriginalRealm(), "vAPChannel.getOriginalRealm()");
+        assertNull(vAPChannel.getRealm(), "vAPChannel.getRealm()");
+        assertNull(vAPChannel.getHost(), "vAPChannel.getHost()");
     }
 
     @Test
@@ -125,7 +125,7 @@ public class VAPChannelTest {
         byte[] image = new byte[0];
         BASE1Header result = (BASE1Header) vAPChannel.getDynamicHeader(image);
         assertNotNull(result);
-        assertTrue("Test completed without Exception", true);
+        assertTrue(true, "Test completed without Exception");
     }
 
     @Test
@@ -135,7 +135,7 @@ public class VAPChannelTest {
             vAPChannel.getMessageLength();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -146,7 +146,7 @@ public class VAPChannelTest {
             vAPChannel.readHeader(100);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -165,9 +165,9 @@ public class VAPChannelTest {
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
             if (isJavaVersionAtMost(JAVA_10)) {
-                assertEquals("ex.getMessage()", "3", ex.getMessage());
+                assertEquals("3", ex.getMessage(), "ex.getMessage()");
             } else {
-                assertEquals("ex.getMessage()", "Index 3 out of bounds for length 2", ex.getMessage());
+                assertEquals("Index 3 out of bounds for length 2", ex.getMessage(), "ex.getMessage()");
             }
         }
     }
@@ -182,8 +182,8 @@ public class VAPChannelTest {
             vAPChannel.sendMessageHeader(m, 100);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertEquals("m.getDirection()", 0, m.getDirection());
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertEquals(0, m.getDirection(), "m.getDirection()");
         }
     }
 
@@ -196,7 +196,7 @@ public class VAPChannelTest {
             vAPChannel.sendMessageHeader(m, 100);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -209,8 +209,8 @@ public class VAPChannelTest {
             vAPChannel.sendMessageHeader(m, 100);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertEquals("m.getDirection()", 0, m.getDirection());
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertEquals(0, m.getDirection(), "m.getDirection()");
         }
     }
 
@@ -221,7 +221,7 @@ public class VAPChannelTest {
             vAPChannel.sendMessageHeader(null, 100);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -230,28 +230,28 @@ public class VAPChannelTest {
         VAPChannel vAPChannel = new VAPChannel(new Base1Packager());
         vAPChannel.setSocketFactory(new SunJSSESocketFactory());
         vAPChannel.setConfiguration(new SimpleConfiguration());
-        assertEquals("vAPChannel.srcid", "000000", vAPChannel.srcid);
-        assertEquals("vAPChannel.dstid", "000000", vAPChannel.dstid);
-        assertEquals("vAPChannel.getMaxPacketLength()", 100000, vAPChannel.getMaxPacketLength());
-        assertEquals("vAPChannel.getPort()", 0, vAPChannel.getPort());
-        assertNull("vAPChannel.getSocket()", vAPChannel.getSocket());
-        assertEquals("vAPChannel.getTimeout()", 300000, vAPChannel.getTimeout());
-        assertFalse("vAPChannel.isOverrideHeader()", vAPChannel.isOverrideHeader());
-        assertNull("vAPChannel.getHost()", vAPChannel.getHost());
+        assertEquals("000000", vAPChannel.srcid, "vAPChannel.srcid");
+        assertEquals("000000", vAPChannel.dstid, "vAPChannel.dstid");
+        assertEquals(100000, vAPChannel.getMaxPacketLength(), "vAPChannel.getMaxPacketLength()");
+        assertEquals(0, vAPChannel.getPort(), "vAPChannel.getPort()");
+        assertNull(vAPChannel.getSocket(), "vAPChannel.getSocket()");
+        assertEquals(300000, vAPChannel.getTimeout(), "vAPChannel.getTimeout()");
+        assertFalse(vAPChannel.isOverrideHeader(), "vAPChannel.isOverrideHeader()");
+        assertNull(vAPChannel.getHost(), "vAPChannel.getHost()");
     }
 
     @Test
     public void testSetConfiguration1() throws Throwable {
         VAPChannel vAPChannel = new VAPChannel(new Base1SubFieldPackager());
         vAPChannel.setConfiguration(new SimpleConfiguration());
-        assertEquals("vAPChannel.srcid", "000000", vAPChannel.srcid);
-        assertEquals("vAPChannel.dstid", "000000", vAPChannel.dstid);
-        assertEquals("vAPChannel.getMaxPacketLength()", 100000, vAPChannel.getMaxPacketLength());
-        assertEquals("vAPChannel.getPort()", 0, vAPChannel.getPort());
-        assertNull("vAPChannel.getSocket()", vAPChannel.getSocket());
-        assertEquals("vAPChannel.getTimeout()", 300000, vAPChannel.getTimeout());
-        assertFalse("vAPChannel.isOverrideHeader()", vAPChannel.isOverrideHeader());
-        assertNull("vAPChannel.getHost()", vAPChannel.getHost());
+        assertEquals("000000", vAPChannel.srcid, "vAPChannel.srcid");
+        assertEquals("000000", vAPChannel.dstid, "vAPChannel.dstid");
+        assertEquals(100000, vAPChannel.getMaxPacketLength(), "vAPChannel.getMaxPacketLength()");
+        assertEquals(0, vAPChannel.getPort(), "vAPChannel.getPort()");
+        assertNull(vAPChannel.getSocket(), "vAPChannel.getSocket()");
+        assertEquals(300000, vAPChannel.getTimeout(), "vAPChannel.getTimeout()");
+        assertFalse(vAPChannel.isOverrideHeader(), "vAPChannel.isOverrideHeader()");
+        assertNull(vAPChannel.getHost(), "vAPChannel.getHost()");
     }
 
     @Test
@@ -262,15 +262,15 @@ public class VAPChannelTest {
             vAPChannel.setConfiguration(cfg);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertEquals("vAPChannel.getMaxPacketLength()", 100000, vAPChannel.getMaxPacketLength());
-            assertEquals("vAPChannel.getPort()", 0, vAPChannel.getPort());
-            assertNull("vAPChannel.getSocket()", vAPChannel.getSocket());
-            assertEquals("vAPChannel.getTimeout()", 0, vAPChannel.getTimeout());
-            assertEquals("vAPChannel.srcid", "000000", vAPChannel.srcid);
-            assertFalse("vAPChannel.isOverrideHeader()", vAPChannel.isOverrideHeader());
-            assertNull("vAPChannel.getHost()", vAPChannel.getHost());
-            assertEquals("vAPChannel.dstid", "000000", vAPChannel.dstid);
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertEquals(100000, vAPChannel.getMaxPacketLength(), "vAPChannel.getMaxPacketLength()");
+            assertEquals(0, vAPChannel.getPort(), "vAPChannel.getPort()");
+            assertNull(vAPChannel.getSocket(), "vAPChannel.getSocket()");
+            assertEquals(0, vAPChannel.getTimeout(), "vAPChannel.getTimeout()");
+            assertEquals("000000", vAPChannel.srcid, "vAPChannel.srcid");
+            assertFalse(vAPChannel.isOverrideHeader(), "vAPChannel.isOverrideHeader()");
+            assertNull(vAPChannel.getHost(), "vAPChannel.getHost()");
+            assertEquals("000000", vAPChannel.dstid, "vAPChannel.dstid");
         }
     }
 
@@ -280,7 +280,7 @@ public class VAPChannelTest {
         byte[] b = new byte[3];
         b[2] = (byte) 3;
         boolean result = vAPChannel.shouldIgnore(b);
-        assertTrue("result", result);
+        assertTrue(result, "result");
     }
 
     @Test
@@ -288,14 +288,14 @@ public class VAPChannelTest {
         byte[] b = new byte[3];
         VAPChannel vAPChannel = new VAPChannel();
         boolean result = vAPChannel.shouldIgnore(b);
-        assertFalse("result", result);
+        assertFalse(result, "result");
     }
 
     @Test
     public void testShouldIgnore2() throws Throwable {
         VAPChannel vAPChannel = new VAPChannel(new GenericPackager());
         boolean result = vAPChannel.shouldIgnore(null);
-        assertFalse("result", result);
+        assertFalse(result, "result");
     }
 
     @Test
@@ -307,9 +307,9 @@ public class VAPChannelTest {
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
             if (isJavaVersionAtMost(JAVA_10)) {
-                assertEquals("ex.getMessage()", "2", ex.getMessage());
+                assertEquals("2", ex.getMessage(), "ex.getMessage()");
             } else {
-                assertEquals("ex.getMessage()", "Index 2 out of bounds for length 0", ex.getMessage());
+                assertEquals("Index 2 out of bounds for length 0", ex.getMessage(), "ex.getMessage()");
             }
         }
     }

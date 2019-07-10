@@ -18,10 +18,10 @@
 
 package org.jpos.security;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class SecureKeyTest {
 
@@ -31,15 +31,15 @@ public class SecureKeyTest {
         byte[] keyBytes = new byte[0];
         secureDESKey.setKeyBytes(keyBytes);
         byte[] result = secureDESKey.getKeyBytes();
-        assertSame("result", keyBytes, result);
+        assertSame(keyBytes, result, "result");
     }
 
     @Test
     public void testGetKeyBytes1() throws Throwable {
         byte[] keyBytes = new byte[3];
         byte[] result = new SecureDESKey((short) 100, "testSecureKeyKeyType", keyBytes, keyBytes).getKeyBytes();
-        assertSame("result", keyBytes, result);
-        assertEquals("keyBytes[0]", (byte) 0, keyBytes[0]);
+        assertSame(keyBytes, result, "result");
+        assertEquals((byte) 0, keyBytes[0], "keyBytes[0]");
     }
 
     @Test
@@ -47,7 +47,7 @@ public class SecureKeyTest {
         SecureKey secureDESKey = new SecureDESKey();
         secureDESKey.setKeyLength((short) 100);
         short result = secureDESKey.getKeyLength();
-        assertEquals("result", (short) 100, result);
+        assertEquals((short) 100, result, "result");
     }
 
     @Test
@@ -55,7 +55,7 @@ public class SecureKeyTest {
         SecureKey secureDESKey = new SecureDESKey();
         secureDESKey.setKeyType("testSecureKeyKeyType");
         String result = secureDESKey.getKeyType();
-        assertEquals("result", "testSecureKeyKeyType", result);
+        assertEquals("testSecureKeyKeyType", result, "result");
     }
 
     @Test
@@ -63,7 +63,7 @@ public class SecureKeyTest {
         byte[] keyBytes = new byte[3];
         SecureKey secureDESKey = new SecureDESKey((short) 100, "testSecureKeyKeyType", keyBytes, keyBytes);
         secureDESKey.setKeyBytes(keyBytes);
-        assertSame("(SecureDESKey) secureDESKey.keyBytes", keyBytes, ((SecureDESKey) secureDESKey).keyBytes);
+        assertSame(keyBytes, ((SecureDESKey) secureDESKey).keyBytes, "(SecureDESKey) secureDESKey.keyBytes");
     }
 
     @Test
@@ -72,7 +72,7 @@ public class SecureKeyTest {
         new SecureDESKey((short) 100, "testSecureKeyKeyType", keyBytes, keyBytes).getKeyBytes();
         SecureKey secureDESKey = new SecureDESKey((short) 1000, "testSecureKeyKeyType1", "3check-value>".getBytes(), keyBytes);
         secureDESKey.setKeyLength((short) 100);
-        assertEquals("(SecureDESKey) secureDESKey.keyLength", (short) 100, ((SecureDESKey) secureDESKey).keyLength);
+        assertEquals((short) 100, ((SecureDESKey) secureDESKey).keyLength, "(SecureDESKey) secureDESKey.keyLength");
     }
 
     @Test
@@ -81,6 +81,6 @@ public class SecureKeyTest {
         new SecureDESKey((short) 100, "testSecureKeyKeyType", keyBytes, keyBytes).getKeyBytes();
         SecureKey secureDESKey = new SecureDESKey((short) 1000, "testSecureKeyKeyType1", "3check-value>".getBytes(), keyBytes);
         secureDESKey.setKeyType("testSecureKeyKeyType");
-        assertEquals("(SecureDESKey) secureDESKey.keyType", "testSecureKeyKeyType", ((SecureDESKey) secureDESKey).keyType);
+        assertEquals("testSecureKeyKeyType", ((SecureDESKey) secureDESKey).keyType, "(SecureDESKey) secureDESKey.keyType");
     }
 }

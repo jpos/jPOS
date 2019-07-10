@@ -18,10 +18,10 @@
 
 package org.jpos.iso.channel;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.mock;
 
 import java.net.ServerSocket;
@@ -31,29 +31,29 @@ import org.jpos.iso.packager.BASE24Packager;
 import org.jpos.iso.packager.ISOBaseValidatingPackager;
 import org.jpos.iso.packager.VISA1Packager;
 import org.jpos.iso.packager.XMLPackager;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class RawChannelTest {
 
     @Test
     public void testConstructor() throws Throwable {
         RawChannel rawChannel = new RawChannel();
-        assertEquals("rawChannel.getIncomingFilters().size()", 0, rawChannel.getIncomingFilters().size());
-        assertEquals("rawChannel.getMaxPacketLength()", 100000, rawChannel.getMaxPacketLength());
-        assertEquals("rawChannel.getPort()", 0, rawChannel.getPort());
-        assertEquals("rawChannel.getName()", "", rawChannel.getName());
-        assertEquals("rawChannel.getCounters().length", 3, rawChannel.getCounters().length);
-        assertNull("rawChannel.getLogger()", rawChannel.getLogger());
-        assertNull("rawChannel.getSocketFactory()", rawChannel.getSocketFactory());
-        assertNull("rawChannel.getHeader()", rawChannel.getHeader());
-        assertEquals("rawChannel.getOutgoingFilters().size()", 0, rawChannel.getOutgoingFilters().size());
-        assertNull("rawChannel.getServerSocket()", rawChannel.getServerSocket());
-        assertEquals("rawChannel.getOriginalRealm()", "org.jpos.iso.channel.RawChannel", rawChannel.getOriginalRealm());
-        assertNull("rawChannel.getRealm()", rawChannel.getRealm());
-        assertNull("rawChannel.getHost()", rawChannel.getHost());
+        assertEquals(0, rawChannel.getIncomingFilters().size(), "rawChannel.getIncomingFilters().size()");
+        assertEquals(100000, rawChannel.getMaxPacketLength(), "rawChannel.getMaxPacketLength()");
+        assertEquals(0, rawChannel.getPort(), "rawChannel.getPort()");
+        assertEquals("", rawChannel.getName(), "rawChannel.getName()");
+        assertEquals(3, rawChannel.getCounters().length, "rawChannel.getCounters().length");
+        assertNull(rawChannel.getLogger(), "rawChannel.getLogger()");
+        assertNull(rawChannel.getSocketFactory(), "rawChannel.getSocketFactory()");
+        assertNull(rawChannel.getHeader(), "rawChannel.getHeader()");
+        assertEquals(0, rawChannel.getOutgoingFilters().size(), "rawChannel.getOutgoingFilters().size()");
+        assertNull(rawChannel.getServerSocket(), "rawChannel.getServerSocket()");
+        assertEquals("org.jpos.iso.channel.RawChannel", rawChannel.getOriginalRealm(), "rawChannel.getOriginalRealm()");
+        assertNull(rawChannel.getRealm(), "rawChannel.getRealm()");
+        assertNull(rawChannel.getHost(), "rawChannel.getHost()");
     }
 
     @Test
@@ -61,20 +61,20 @@ public class RawChannelTest {
         byte[] header = new byte[3];
         ISOPackager p = new ISOBaseValidatingPackager();
         RawChannel rawChannel = new RawChannel("testRawChannelHost", 100, p, header);
-        assertEquals("rawChannel.getIncomingFilters().size()", 0, rawChannel.getIncomingFilters().size());
-        assertEquals("rawChannel.getMaxPacketLength()", 100000, rawChannel.getMaxPacketLength());
-        assertSame("rawChannel.getPackager()", p, rawChannel.getPackager());
-        assertEquals("rawChannel.getPort()", 100, rawChannel.getPort());
-        assertEquals("rawChannel.getName()", "", rawChannel.getName());
-        assertEquals("rawChannel.getCounters().length", 3, rawChannel.getCounters().length);
-        assertNull("rawChannel.getLogger()", rawChannel.getLogger());
-        assertNull("rawChannel.getSocketFactory()", rawChannel.getSocketFactory());
-        assertSame("rawChannel.getHeader()", header, rawChannel.getHeader());
-        assertEquals("rawChannel.getOutgoingFilters().size()", 0, rawChannel.getOutgoingFilters().size());
-        assertNull("rawChannel.getServerSocket()", rawChannel.getServerSocket());
-        assertEquals("rawChannel.getOriginalRealm()", "org.jpos.iso.channel.RawChannel", rawChannel.getOriginalRealm());
-        assertNull("rawChannel.getRealm()", rawChannel.getRealm());
-        assertEquals("rawChannel.getHost()", "testRawChannelHost", rawChannel.getHost());
+        assertEquals(0, rawChannel.getIncomingFilters().size(), "rawChannel.getIncomingFilters().size()");
+        assertEquals(100000, rawChannel.getMaxPacketLength(), "rawChannel.getMaxPacketLength()");
+        assertSame(p, rawChannel.getPackager(), "rawChannel.getPackager()");
+        assertEquals(100, rawChannel.getPort(), "rawChannel.getPort()");
+        assertEquals("", rawChannel.getName(), "rawChannel.getName()");
+        assertEquals(3, rawChannel.getCounters().length, "rawChannel.getCounters().length");
+        assertNull(rawChannel.getLogger(), "rawChannel.getLogger()");
+        assertNull(rawChannel.getSocketFactory(), "rawChannel.getSocketFactory()");
+        assertSame(header, rawChannel.getHeader(), "rawChannel.getHeader()");
+        assertEquals(0, rawChannel.getOutgoingFilters().size(), "rawChannel.getOutgoingFilters().size()");
+        assertNull(rawChannel.getServerSocket(), "rawChannel.getServerSocket()");
+        assertEquals("org.jpos.iso.channel.RawChannel", rawChannel.getOriginalRealm(), "rawChannel.getOriginalRealm()");
+        assertNull(rawChannel.getRealm(), "rawChannel.getRealm()");
+        assertEquals("testRawChannelHost", rawChannel.getHost(), "rawChannel.getHost()");
     }
 
     @Test
@@ -82,20 +82,20 @@ public class RawChannelTest {
         byte[] header = new byte[0];
         ISOPackager p = new BASE24Packager();
         RawChannel rawChannel = new RawChannel(p, header);
-        assertEquals("rawChannel.getIncomingFilters().size()", 0, rawChannel.getIncomingFilters().size());
-        assertEquals("rawChannel.getMaxPacketLength()", 100000, rawChannel.getMaxPacketLength());
-        assertSame("rawChannel.getPackager()", p, rawChannel.getPackager());
-        assertEquals("rawChannel.getPort()", 0, rawChannel.getPort());
-        assertEquals("rawChannel.getName()", "", rawChannel.getName());
-        assertEquals("rawChannel.getCounters().length", 3, rawChannel.getCounters().length);
-        assertNull("rawChannel.getLogger()", rawChannel.getLogger());
-        assertNull("rawChannel.getSocketFactory()", rawChannel.getSocketFactory());
-        assertSame("rawChannel.getHeader()", header, rawChannel.getHeader());
-        assertEquals("rawChannel.getOutgoingFilters().size()", 0, rawChannel.getOutgoingFilters().size());
-        assertNull("rawChannel.getServerSocket()", rawChannel.getServerSocket());
-        assertEquals("rawChannel.getOriginalRealm()", "org.jpos.iso.channel.RawChannel", rawChannel.getOriginalRealm());
-        assertNull("rawChannel.getRealm()", rawChannel.getRealm());
-        assertNull("rawChannel.getHost()", rawChannel.getHost());
+        assertEquals(0, rawChannel.getIncomingFilters().size(), "rawChannel.getIncomingFilters().size()");
+        assertEquals(100000, rawChannel.getMaxPacketLength(), "rawChannel.getMaxPacketLength()");
+        assertSame(p, rawChannel.getPackager(), "rawChannel.getPackager()");
+        assertEquals(0, rawChannel.getPort(), "rawChannel.getPort()");
+        assertEquals("", rawChannel.getName(), "rawChannel.getName()");
+        assertEquals(3, rawChannel.getCounters().length, "rawChannel.getCounters().length");
+        assertNull(rawChannel.getLogger(), "rawChannel.getLogger()");
+        assertNull(rawChannel.getSocketFactory(), "rawChannel.getSocketFactory()");
+        assertSame(header, rawChannel.getHeader(), "rawChannel.getHeader()");
+        assertEquals(0, rawChannel.getOutgoingFilters().size(), "rawChannel.getOutgoingFilters().size()");
+        assertNull(rawChannel.getServerSocket(), "rawChannel.getServerSocket()");
+        assertEquals("org.jpos.iso.channel.RawChannel", rawChannel.getOriginalRealm(), "rawChannel.getOriginalRealm()");
+        assertNull(rawChannel.getRealm(), "rawChannel.getRealm()");
+        assertNull(rawChannel.getHost(), "rawChannel.getHost()");
     }
 
     @Test
@@ -104,20 +104,20 @@ public class RawChannelTest {
         ISOPackager p = new XMLPackager();
         ServerSocket serverSocket = new ServerSocket();
         RawChannel rawChannel = new RawChannel(p, header, serverSocket);
-        assertEquals("rawChannel.getIncomingFilters().size()", 0, rawChannel.getIncomingFilters().size());
-        assertEquals("rawChannel.getMaxPacketLength()", 100000, rawChannel.getMaxPacketLength());
-        assertSame("rawChannel.getPackager()", p, rawChannel.getPackager());
-        assertEquals("rawChannel.getPort()", 0, rawChannel.getPort());
-        assertEquals("rawChannel.getName()", "", rawChannel.getName());
-        assertEquals("rawChannel.getCounters().length", 3, rawChannel.getCounters().length);
-        assertNull("rawChannel.getLogger()", rawChannel.getLogger());
-        assertNull("rawChannel.getSocketFactory()", rawChannel.getSocketFactory());
-        assertSame("rawChannel.getHeader()", header, rawChannel.getHeader());
-        assertEquals("rawChannel.getOutgoingFilters().size()", 0, rawChannel.getOutgoingFilters().size());
-        assertSame("rawChannel.getServerSocket()", serverSocket, rawChannel.getServerSocket());
-        assertEquals("rawChannel.getOriginalRealm()", "org.jpos.iso.channel.RawChannel", rawChannel.getOriginalRealm());
-        assertNull("rawChannel.getRealm()", rawChannel.getRealm());
-        assertNull("rawChannel.getHost()", rawChannel.getHost());
+        assertEquals(0, rawChannel.getIncomingFilters().size(), "rawChannel.getIncomingFilters().size()");
+        assertEquals(100000, rawChannel.getMaxPacketLength(), "rawChannel.getMaxPacketLength()");
+        assertSame(p, rawChannel.getPackager(), "rawChannel.getPackager()");
+        assertEquals(0, rawChannel.getPort(), "rawChannel.getPort()");
+        assertEquals("", rawChannel.getName(), "rawChannel.getName()");
+        assertEquals(3, rawChannel.getCounters().length, "rawChannel.getCounters().length");
+        assertNull(rawChannel.getLogger(), "rawChannel.getLogger()");
+        assertNull(rawChannel.getSocketFactory(), "rawChannel.getSocketFactory()");
+        assertSame(header, rawChannel.getHeader(), "rawChannel.getHeader()");
+        assertEquals(0, rawChannel.getOutgoingFilters().size(), "rawChannel.getOutgoingFilters().size()");
+        assertSame(serverSocket, rawChannel.getServerSocket(), "rawChannel.getServerSocket()");
+        assertEquals("org.jpos.iso.channel.RawChannel", rawChannel.getOriginalRealm(), "rawChannel.getOriginalRealm()");
+        assertNull(rawChannel.getRealm(), "rawChannel.getRealm()");
+        assertNull(rawChannel.getHost(), "rawChannel.getHost()");
     }
 
     @Test
@@ -127,7 +127,7 @@ public class RawChannelTest {
             rawChannel.getMessageLength();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -138,7 +138,7 @@ public class RawChannelTest {
             rawChannel.sendMessageLength(100);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -146,7 +146,7 @@ public class RawChannelTest {
     public void testSetHeader() throws Throwable {
         RawChannel rawChannel = new RawChannel();
         rawChannel.setHeader("testRawChannelHeader");
-        assertEquals("rawChannel.getHeader().length", 10, rawChannel.getHeader().length);
+        assertEquals(10, rawChannel.getHeader().length, "rawChannel.getHeader().length");
     }
 
     @Test
@@ -157,8 +157,8 @@ public class RawChannelTest {
             rawChannel.setHeader((String) null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertSame("rawChannel.getHeader()", header, rawChannel.getHeader());
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertSame(header, rawChannel.getHeader(), "rawChannel.getHeader()");
         }
     }
 }
