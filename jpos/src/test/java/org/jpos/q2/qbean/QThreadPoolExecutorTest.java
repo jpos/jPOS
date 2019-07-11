@@ -19,9 +19,9 @@
 package org.jpos.q2.qbean;
 
 import static org.fest.assertions.Assertions.assertThat;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -43,9 +43,9 @@ import org.jpos.core.ConfigurationException;
 import org.jpos.util.Log;
 import org.jpos.util.NameRegistrar;
 import org.jpos.util.NameRegistrar.NotFoundException;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 /**
@@ -72,7 +72,7 @@ public class QThreadPoolExecutorTest {
 
     }
 
-    @Before
+    @BeforeEach
     public void setUp() {
 
         mockedLog = mock(Log.class);
@@ -97,7 +97,7 @@ public class QThreadPoolExecutorTest {
         NameRegistrar.getAsMap().clear();
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         NameRegistrar.getAsMap().clear();
         if (null != executor) {

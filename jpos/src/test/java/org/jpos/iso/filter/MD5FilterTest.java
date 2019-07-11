@@ -18,11 +18,11 @@
 
 package org.jpos.iso.filter;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.Properties;
 
@@ -43,14 +43,14 @@ import org.jpos.iso.packager.ISOBaseValidatingPackager;
 import org.jpos.iso.packager.PostPackager;
 import org.jpos.iso.packager.XMLPackager;
 import org.jpos.util.LogEvent;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class MD5FilterTest {
 
     @Test
     public void testConstructor() throws Throwable {
         new MD5Filter();
-        assertTrue("Test completed without Exception", true);
+        assertTrue(true, "Test completed without Exception");
     }
 
     @Test
@@ -60,8 +60,8 @@ public class MD5FilterTest {
         ISOMsg m = new ISOMsg("testMD5FilterMti");
         m.setDirection(2);
         ISOMsg result = mD5Filter.filter(new ASCIIChannel(new EuroSubFieldPackager()), m, new LogEvent());
-        assertEquals("m.getMaxField()", 128, m.getMaxField());
-        assertSame("result", m, result);
+        assertEquals(128, m.getMaxField(), "m.getMaxField()");
+        assertSame(m, result, "result");
     }
 
     @Test
@@ -74,8 +74,8 @@ public class MD5FilterTest {
         ISOMsg m = new ISOMsg("testMD5FilterMti");
         m.setDirection(2);
         ISOMsg result = mD5Filter.filter(new ASCIIChannel(new ISOBaseValidatingPackager()), m, new LogEvent("testMD5FilterTag"));
-        assertEquals("m.getMaxField()", 128, m.getMaxField());
-        assertSame("result", m, result);
+        assertEquals(128, m.getMaxField(), "m.getMaxField()");
+        assertSame(m, result, "result");
     }
 
     @Test
@@ -87,8 +87,8 @@ public class MD5FilterTest {
         ISOMsg m = new ISOMsg("testMD5FilterMti");
         m.setDirection(2);
         ISOMsg result = mD5Filter.filter(new ASCIIChannel(new ISOBaseValidatingPackager()), m, new LogEvent("testMD5FilterTag"));
-        assertEquals("m.getMaxField()", 128, m.getMaxField());
-        assertSame("result", m, result);
+        assertEquals(128, m.getMaxField(), "m.getMaxField()");
+        assertSame(m, result, "result");
     }
 
     @Test
@@ -102,8 +102,8 @@ public class MD5FilterTest {
             mD5Filter.filter(new GZIPChannel(new XMLPackager()), m, null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertEquals("m.getDirection()", 0, m.getDirection());
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertEquals(0, m.getDirection(), "m.getDirection()");
         }
     }
 
@@ -118,7 +118,7 @@ public class MD5FilterTest {
             mD5Filter.filter(new PostChannel(new CTCSubFieldPackager()), null, evt);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -131,8 +131,8 @@ public class MD5FilterTest {
             mD5Filter.filter(new ASCIIChannel(new GenericValidatingPackager()), m, null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertEquals("m.getDirection()", 0, m.getDirection());
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertEquals(0, m.getDirection(), "m.getDirection()");
         }
     }
 
@@ -148,8 +148,8 @@ public class MD5FilterTest {
             mD5Filter.filter(new GZIPChannel(new XMLPackager()), m, null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertEquals("m.getDirection()", 0, m.getDirection());
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertEquals(0, m.getDirection(), "m.getDirection()");
         }
     }
 
@@ -162,7 +162,7 @@ public class MD5FilterTest {
             mD5Filter.filter(new BASE24TCPChannel(), null, evt);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -179,10 +179,10 @@ public class MD5FilterTest {
             mD5Filter.filter(new ASCIIChannel(null), m, evt);
             fail("Expected VetoException to be thrown");
         } catch (ISOFilter.VetoException ex) {
-            assertEquals("evt.payLoad.size()", 4, evt.getPayLoad().size());
-            assertEquals("ex.getMessage()", "org.jpos.iso.ISOFilter$VetoException: invalid MAC", ex.getMessage());
-            assertEquals("ex.getNested().getMessage()", "invalid MAC", ex.getNested().getMessage());
-            assertEquals("m.getDirection()", 0, m.getDirection());
+            assertEquals(4, evt.getPayLoad().size(), "evt.payLoad.size()");
+            assertEquals("org.jpos.iso.ISOFilter$VetoException: invalid MAC", ex.getMessage(), "ex.getMessage()");
+            assertEquals("invalid MAC", ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            assertEquals(0, m.getDirection(), "m.getDirection()");
         }
     }
 
@@ -197,10 +197,10 @@ public class MD5FilterTest {
             mD5Filter.filter(new PostChannel("testMD5FilterHost", 100, new PostPackager()), m, evt);
             fail("Expected VetoException to be thrown");
         } catch (ISOFilter.VetoException ex) {
-            assertEquals("evt.payLoad.size()", 3, evt.getPayLoad().size());
-            assertEquals("ex.getMessage()", "org.jpos.iso.ISOFilter$VetoException: invalid MAC", ex.getMessage());
-            assertEquals("ex.getNested().getMessage()", "invalid MAC", ex.getNested().getMessage());
-            assertEquals("m.getDirection()", 3, m.getDirection());
+            assertEquals(3, evt.getPayLoad().size(), "evt.payLoad.size()");
+            assertEquals("org.jpos.iso.ISOFilter$VetoException: invalid MAC", ex.getMessage(), "ex.getMessage()");
+            assertEquals("invalid MAC", ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            assertEquals(3, m.getDirection(), "m.getDirection()");
         }
     }
 
@@ -218,10 +218,10 @@ public class MD5FilterTest {
             mD5Filter.filter(new ASCIIChannel(new ISOBaseValidatingPackager()), m, evt);
             fail("Expected VetoException to be thrown");
         } catch (ISOFilter.VetoException ex) {
-            assertEquals("evt.payLoad.size()", 3, evt.getPayLoad().size());
-            assertEquals("ex.getMessage()", "org.jpos.iso.ISOFilter$VetoException: invalid MAC", ex.getMessage());
-            assertEquals("ex.getNested().getMessage()", "invalid MAC", ex.getNested().getMessage());
-            assertEquals("m.getDirection()", 3, m.getDirection());
+            assertEquals(3, evt.getPayLoad().size(), "evt.payLoad.size()");
+            assertEquals("org.jpos.iso.ISOFilter$VetoException: invalid MAC", ex.getMessage(), "ex.getMessage()");
+            assertEquals("invalid MAC", ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            assertEquals(3, m.getDirection(), "m.getDirection()");
         }
     }
 
@@ -237,10 +237,10 @@ public class MD5FilterTest {
             mD5Filter.filter(new BASE24TCPChannel("testMD5FilterHost", 100, new PostPackager()), m, evt);
             fail("Expected VetoException to be thrown");
         } catch (ISOFilter.VetoException ex) {
-            assertEquals("evt.payLoad.size()", 3, evt.getPayLoad().size());
-            assertEquals("ex.getMessage()", "org.jpos.iso.ISOFilter$VetoException: invalid MAC", ex.getMessage());
-            assertEquals("ex.getNested().getMessage()", "invalid MAC", ex.getNested().getMessage());
-            assertEquals("m.getDirection()", 0, m.getDirection());
+            assertEquals(3, evt.getPayLoad().size(), "evt.payLoad.size()");
+            assertEquals("org.jpos.iso.ISOFilter$VetoException: invalid MAC", ex.getMessage(), "ex.getMessage()");
+            assertEquals("invalid MAC", ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            assertEquals(0, m.getDirection(), "m.getDirection()");
         }
     }
 
@@ -258,10 +258,10 @@ public class MD5FilterTest {
             mD5Filter.filter(new ASCIIChannel(new ISOBaseValidatingPackager()), m, evt);
             fail("Expected VetoException to be thrown");
         } catch (ISOFilter.VetoException ex) {
-            assertEquals("evt.payLoad.size()", 3, evt.getPayLoad().size());
-            assertEquals("ex.getMessage()", "org.jpos.iso.ISOFilter$VetoException: invalid MAC", ex.getMessage());
-            assertEquals("ex.getNested().getMessage()", "invalid MAC", ex.getNested().getMessage());
-            assertEquals("m.getDirection()", 1, m.getDirection());
+            assertEquals(3, evt.getPayLoad().size(), "evt.payLoad.size()");
+            assertEquals("org.jpos.iso.ISOFilter$VetoException: invalid MAC", ex.getMessage(), "ex.getMessage()");
+            assertEquals("invalid MAC", ex.getNested().getMessage(), "ex.getNested().getMessage()");
+            assertEquals(1, m.getDirection(), "m.getDirection()");
         }
     }
 
@@ -273,9 +273,9 @@ public class MD5FilterTest {
             new MD5Filter().filter(new PostChannel(), m, evt);
             fail("Expected VetoException to be thrown");
         } catch (ISOFilter.VetoException ex) {
-            assertEquals("ex.getMessage()", "MD5Filter not configured", ex.getMessage());
-            assertNull("ex.getNested()", ex.getNested());
-            assertEquals("m.getDirection()", 0, m.getDirection());
+            assertEquals("MD5Filter not configured", ex.getMessage(), "ex.getMessage()");
+            assertNull(ex.getNested(), "ex.getNested()");
+            assertEquals(0, m.getDirection(), "m.getDirection()");
         }
     }
 
@@ -288,8 +288,8 @@ public class MD5FilterTest {
             mD5Filter.filter(new PADChannel(new PostPackager()), null, null);
             fail("Expected VetoException to be thrown");
         } catch (ISOFilter.VetoException ex) {
-            assertEquals("ex.getMessage()", "MD5Filter not configured", ex.getMessage());
-            assertNull("ex.getNested()", ex.getNested());
+            assertEquals("MD5Filter not configured", ex.getMessage(), "ex.getMessage()");
+            assertNull(ex.getNested(), "ex.getNested()");
         }
     }
 
@@ -299,8 +299,8 @@ public class MD5FilterTest {
         MD5Filter mD5Filter = new MD5Filter();
         mD5Filter.setFields(fields);
         int[] result = mD5Filter.getFields(new ISOMsg("testMD5FilterMti"));
-        assertSame("result", fields, result);
-        assertEquals("fields[0]", 0, fields[0]);
+        assertSame(fields, result, "result");
+        assertEquals(0, fields[0], "fields[0]");
     }
 
     @Test
@@ -308,7 +308,7 @@ public class MD5FilterTest {
         MD5Filter mD5Filter = new MD5Filter();
         mD5Filter.setConfiguration(new SimpleConfiguration());
         byte[] result = mD5Filter.getKey();
-        assertEquals("result.length", 0, result.length);
+        assertEquals(0, result.length, "result.length");
     }
 
     @Test
@@ -318,7 +318,7 @@ public class MD5FilterTest {
             mD5Filter.getKey();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -326,8 +326,8 @@ public class MD5FilterTest {
     public void testSetConfiguration() throws Throwable {
         MD5Filter mD5Filter = new MD5Filter();
         mD5Filter.setConfiguration(new SimpleConfiguration());
-        assertEquals("mD5Filter.key", "", mD5Filter.key);
-        assertEquals("mD5Filter.fields.length", 0, mD5Filter.fields.length);
+        assertEquals("", mD5Filter.key, "mD5Filter.key");
+        assertEquals(0, mD5Filter.fields.length, "mD5Filter.fields.length");
     }
 
     @Test
@@ -338,9 +338,9 @@ public class MD5FilterTest {
             mD5Filter.setConfiguration(cfg);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertNull("mD5Filter.key", mD5Filter.key);
-            assertNull("mD5Filter.fields", mD5Filter.fields);
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertNull(mD5Filter.key, "mD5Filter.key");
+            assertNull(mD5Filter.fields, "mD5Filter.fields");
         }
     }
 
@@ -349,6 +349,6 @@ public class MD5FilterTest {
         int[] fields = new int[3];
         MD5Filter mD5Filter = new MD5Filter();
         mD5Filter.setFields(fields);
-        assertSame("mD5Filter.fields", fields, mD5Filter.fields);
+        assertSame(fields, mD5Filter.fields, "mD5Filter.fields");
     }
 }

@@ -18,18 +18,18 @@
 
 package org.jpos.iso.packager;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ISO87APackagerTest {
 
     @Test
     public void testConstructor() throws Throwable {
         ISO87APackager iSO87APackager = new ISO87APackager();
-        assertNull("iSO87APackager.getLogger()", iSO87APackager.getLogger());
-        assertNull("iSO87APackager.getRealm()", iSO87APackager.getRealm());
-        assertEquals("iSO87APackager.fld.length", 129, iSO87APackager.fld.length);
+        assertNull(iSO87APackager.getLogger(), "iSO87APackager.getLogger()");
+        assertNull(iSO87APackager.getRealm(), "iSO87APackager.getRealm()");
+        assertEquals(129, iSO87APackager.fld.length, "iSO87APackager.fld.length");
     }
 }

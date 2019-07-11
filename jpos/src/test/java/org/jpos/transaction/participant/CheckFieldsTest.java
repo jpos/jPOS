@@ -30,22 +30,22 @@ import org.jpos.rc.Result;
 import org.jpos.transaction.Context;
 import org.jpos.transaction.ContextConstants;
 import org.jpos.transaction.TransactionConstants;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.util.Date;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 public class CheckFieldsTest implements TransactionConstants {
     private CheckFields cf;
     private Configuration cfg;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         cfg = new SimpleConfiguration();
         cf = new CheckFields();
@@ -56,10 +56,10 @@ public class CheckFieldsTest implements TransactionConstants {
     public void testInvalidTransaction () {
         Context ctx = new Context();
         int action = cf.prepare(1L, ctx);
-        assertEquals ("Action should be ABORTED|NO_JOIN|READONLY", ABORTED | NO_JOIN | READONLY, action);
+        assertEquals (ABORTED | NO_JOIN | READONLY, action, "Action should be ABORTED|NO_JOIN|READONLY");
         Result rc = ctx.getResult();
-        assertTrue("RC should have failures", rc.hasFailures());
-        assertEquals("IRC should be INVALID_TRANSACTION", CMF.INVALID_TRANSACTION, rc.failure().getIrc());
+        assertTrue(rc.hasFailures(), "RC should have failures");
+        assertEquals(CMF.INVALID_TRANSACTION, rc.failure().getIrc(), "IRC should be INVALID_TRANSACTION");
     }
 
     @Test
@@ -69,12 +69,12 @@ public class CheckFieldsTest implements TransactionConstants {
         ctx.put(ContextConstants.REQUEST.toString(), m);
         cfg.put("mandatory", "3");
         int action = cf.prepare(1L, ctx);
-        assertEquals ("Action should be ABORTED|NO_JOIN|READONLY", ABORTED | NO_JOIN | READONLY, action);
+        assertEquals (ABORTED | NO_JOIN | READONLY, action, "Action should be ABORTED|NO_JOIN|READONLY");
         Result rc = ctx.getResult();
-        assertFalse("RC should have no info", rc.hasInfo());
-        assertFalse("RC should have no warnings", rc.hasWarnings());
-        assertTrue("RC should have failures", rc.hasFailures());
-        assertEquals("IRC should be MISSING_FIELD", CMF.MISSING_FIELD, rc.failure().getIrc());
+        assertFalse(rc.hasInfo(), "RC should have no info");
+        assertFalse(rc.hasWarnings(), "RC should have no warnings");
+        assertTrue(rc.hasFailures(), "RC should have failures");
+        assertEquals(CMF.MISSING_FIELD, rc.failure().getIrc(), "IRC should be MISSING_FIELD");
     }
     @Test
     public void testOptionalPCodeNotPresent () {
@@ -82,11 +82,11 @@ public class CheckFieldsTest implements TransactionConstants {
         ISOMsg m = new ISOMsg();
         ctx.put(ContextConstants.REQUEST.toString(), m);
         int action = cf.prepare(1L, ctx);
-        assertEquals ("Action should be PREPARED|NO_JOIN|READONLY", PREPARED | NO_JOIN | READONLY, action);
+        assertEquals (PREPARED | NO_JOIN | READONLY, action, "Action should be PREPARED|NO_JOIN|READONLY");
         Result rc = ctx.getResult();
-        assertFalse("RC should have no info", rc.hasInfo());
-        assertFalse("RC should have no warnings", rc.hasWarnings());
-        assertFalse("RC should have no failures", rc.hasFailures());
+        assertFalse(rc.hasInfo(), "RC should have no info");
+        assertFalse(rc.hasWarnings(), "RC should have no warnings");
+        assertFalse(rc.hasFailures(), "RC should have no failures");
     }
 
     @Test
@@ -99,11 +99,11 @@ public class CheckFieldsTest implements TransactionConstants {
         cfg.put("mandatory", "11");
         cfg.put("optional", "3");
         int action = cf.prepare(1L, ctx);
-        assertEquals ("Action should be PREPARED|NO_JOIN|READONLY", PREPARED | NO_JOIN | READONLY, action);
+        assertEquals (PREPARED | NO_JOIN | READONLY, action, "Action should be PREPARED|NO_JOIN|READONLY");
         Result rc = ctx.getResult();
-        assertFalse("RC should have no info", rc.hasInfo());
-        assertFalse("RC should have no warnings", rc.hasWarnings());
-        assertFalse("RC should have no failures", rc.hasFailures());
+        assertFalse(rc.hasInfo(), "RC should have no info");
+        assertFalse(rc.hasWarnings(), "RC should have no warnings");
+        assertFalse(rc.hasFailures(), "RC should have no failures");
     }
 
     @Test
@@ -118,7 +118,7 @@ public class CheckFieldsTest implements TransactionConstants {
         cfg.put("mandatory", "11");
         cfg.put("optional", "3");
         int action = cf.prepare(1L, ctx);
-        assertEquals ("Action should be ABORTED|NO_JOIN|READONLY", ABORTED | NO_JOIN | READONLY, action);
+        assertEquals (ABORTED | NO_JOIN | READONLY, action, "Action should be ABORTED|NO_JOIN|READONLY");
         Result rc = ctx.getResult();
         assertEquals(CMF.EXTRA_FIELD, rc.failure().getIrc());
         assertFalse(rc.hasInfo());
@@ -136,7 +136,7 @@ public class CheckFieldsTest implements TransactionConstants {
         ctx.put(ContextConstants.REQUEST.toString(), m);
         cfg.put("optional", "PCODE");
         int action = cf.prepare(1L, ctx);
-        assertEquals ("Action should be ABORTED|NO_JOIN|READONLY", ABORTED | NO_JOIN | READONLY, action);
+        assertEquals (ABORTED | NO_JOIN | READONLY, action, "Action should be ABORTED|NO_JOIN|READONLY");
         Result rc = ctx.getResult();
         assertEquals(CMF.INVALID_FIELD, rc.failure().getIrc());
         assertFalse(rc.hasInfo());

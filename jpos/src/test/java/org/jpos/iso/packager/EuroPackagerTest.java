@@ -18,30 +18,30 @@
 
 package org.jpos.iso.packager;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 import org.jpos.util.Logger;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class EuroPackagerTest {
 
     @Test
     public void testConstructor() throws Throwable {
         EuroPackager euroPackager = new EuroPackager();
-        assertNull("euroPackager.getLogger()", euroPackager.getLogger());
-        assertNotNull("euroPackager.f48Packager", euroPackager.f48Packager);
-        assertEquals("euroPackager.fld.length", 129, euroPackager.fld.length);
-        assertNull("euroPackager.getRealm()", euroPackager.getRealm());
+        assertNull(euroPackager.getLogger(), "euroPackager.getLogger()");
+        assertNotNull(euroPackager.f48Packager, "euroPackager.f48Packager");
+        assertEquals(129, euroPackager.fld.length, "euroPackager.fld.length");
+        assertNull(euroPackager.getRealm(), "euroPackager.getRealm()");
     }
 
     @Test
     public void testEuro48PackagerConstructor() throws Throwable {
         EuroPackager.Euro48Packager euro48Packager = new EuroPackager.Euro48Packager();
-        assertNull("euro48Packager.getLogger()", euro48Packager.getLogger());
-        assertNull("euro48Packager.getRealm()", euro48Packager.getRealm());
+        assertNull(euro48Packager.getLogger(), "euro48Packager.getLogger()");
+        assertNull(euro48Packager.getRealm(), "euro48Packager.getRealm()");
     }
 
     @Test
@@ -49,8 +49,8 @@ public class EuroPackagerTest {
         EuroPackager euroPackager = new EuroPackager();
         Logger logger = Logger.getLogger("testEuroPackagerName");
         euroPackager.setLogger(logger, "testEuroPackagerRealm");
-        assertSame("euroPackager.getLogger()", logger, euroPackager.getLogger());
-        assertNotNull("euroPackager.f48Packager", euroPackager.f48Packager);
-        assertEquals("euroPackager.getRealm()", "testEuroPackagerRealm", euroPackager.getRealm());
+        assertSame(logger, euroPackager.getLogger(), "euroPackager.getLogger()");
+        assertNotNull(euroPackager.f48Packager, "euroPackager.f48Packager");
+        assertEquals("testEuroPackagerRealm", euroPackager.getRealm(), "euroPackager.getRealm()");
     }
 }

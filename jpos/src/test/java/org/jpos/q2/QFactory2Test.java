@@ -18,12 +18,12 @@
 
 package org.jpos.q2;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.mock;
 
 import java.util.Hashtable;
@@ -38,7 +38,7 @@ import org.jpos.iso.IVA_ALPHANUM;
 import org.jpos.q2.iso.ChannelAdaptor;
 import org.jpos.transaction.participant.BSHTransactionParticipant;
 import org.jpos.transaction.participant.Join;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class QFactory2Test {
     @Test
@@ -47,10 +47,10 @@ public class QFactory2Test {
         String[] args = new String[0];
         Q2 q2 = mock(Q2.class);
         QFactory qFactory = new QFactory(loaderName, q2);
-        assertTrue("qFactory.classMapping.getKeys().hasMoreElements()", qFactory.classMapping.getKeys()
-                .hasMoreElements());
-        assertSame("qFactory.loaderName", loaderName, qFactory.loaderName);
-        assertSame("qFactory.q2", q2, qFactory.q2);
+        assertTrue(qFactory.classMapping.getKeys().hasMoreElements(),
+                "qFactory.classMapping.getKeys().hasMoreElements()");
+        assertSame(loaderName, qFactory.loaderName, "qFactory.loaderName");
+        assertSame(q2, qFactory.q2, "qFactory.q2");
     }
 
     @Test
@@ -60,8 +60,8 @@ public class QFactory2Test {
             new QFactory(new ObjectName(""), null).createQBean(null, e, new Join());
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertEquals("e.getName()", "testQFactoryName", e.getName());
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertEquals("testQFactoryName", e.getName(), "e.getName()");
         }
     }
 
@@ -76,7 +76,7 @@ public class QFactory2Test {
             new QFactory(null, new Q2(args)).createQBean(new Q2(args2), null, new Join());
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -90,14 +90,14 @@ public class QFactory2Test {
                     "testQFactoryParam1", "testQFactoryParam2", "testQFactoryParam3"), new ChannelAdaptor());
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
     @Test
     public void testGetAttributeName() throws Throwable {
         String result = new QFactory(new ObjectName(""), null).getAttributeName("testQFactoryName");
-        assertEquals("result", "TestQFactoryName", result);
+        assertEquals("TestQFactoryName", result, "result");
     }
 
     @Test
@@ -106,7 +106,7 @@ public class QFactory2Test {
             new QFactory(new ObjectName(""), null).getAttributeName(null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -114,7 +114,7 @@ public class QFactory2Test {
     public void testGetObject() throws Throwable {
         QFactory qFactory = new QFactory(new ObjectName(""), null);
         String result = (String) qFactory.getObject(new Element("testQFactoryName", "testQFactoryPrefix", "testQFactoryUri"));
-        assertEquals("result", "", result);
+        assertEquals("", result, "result");
     }
 
     @Test
@@ -124,7 +124,7 @@ public class QFactory2Test {
             qFactory.getObject(null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -138,11 +138,11 @@ public class QFactory2Test {
             qFactory.instantiate(null, e);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertTrue("qFactory.classMapping.getKeys().hasMoreElements()", qFactory.classMapping
-                    .getKeys().hasMoreElements());
-            assertSame("qFactory.q2", q2, qFactory.q2);
-            assertEquals("e.getName()", "testQFactoryName", e.getName());
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertTrue(qFactory.classMapping.getKeys().hasMoreElements(),
+                    "qFactory.classMapping.getKeys().hasMoreElements()");
+            assertSame(q2, qFactory.q2, "qFactory.q2");
+            assertEquals("testQFactoryName", e.getName(), "e.getName()");
         }
     }
 
@@ -163,37 +163,37 @@ public class QFactory2Test {
             qFactory.instantiate(server, e);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertTrue("qFactory.classMapping.getKeys().hasMoreElements()", qFactory.classMapping
-                    .getKeys().hasMoreElements());
-            assertSame("qFactory.q2", q2, qFactory.q2);
-            assertEquals("e.getName()", "testQFactoryName", e.getName());
-            assertSame("server.getCommandLineArgs()", args2, server.getCommandLineArgs());
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertTrue(qFactory.classMapping.getKeys().hasMoreElements(),
+                    "qFactory.classMapping.getKeys().hasMoreElements()");
+            assertSame(q2, qFactory.q2, "qFactory.q2");
+            assertEquals("testQFactoryName", e.getName(), "e.getName()");
+            assertSame(args2, server.getCommandLineArgs(), "server.getCommandLineArgs()");
         }
     }
 
     @Test
     public void testInvoke() throws Throwable {
         QFactory.invoke("", "testQFactorym", "testString", Integer.class);
-        assertTrue("Test completed without Exception", true);
+        assertTrue(true, "Test completed without Exception");
     }
 
     @Test
     public void testInvoke1() throws Throwable {
         QFactory.invoke(null, "testQFactorym", "testString", Integer.class);
-        assertTrue("Test completed without Exception", true);
+        assertTrue(true, "Test completed without Exception");
     }
 
     @Test
     public void testInvoke2() throws Throwable {
         QFactory.invoke("", "testQFactorym", null);
-        assertTrue("Test completed without Exception", true);
+        assertTrue(true, "Test completed without Exception");
     }
 
     @Test
     public void testInvoke3() throws Throwable {
         QFactory.invoke("", "testQFactorym", "");
-        assertTrue("Test completed without Exception", true);
+        assertTrue(true, "Test completed without Exception");
     }
 
     @Test
@@ -201,7 +201,7 @@ public class QFactory2Test {
         String[] args = new String[0];
         Element e = new Element("testQFactoryName");
         new QFactory(new ObjectName(""), new Q2(args)).setConfiguration("", e);
-        assertEquals("e.getName()", "testQFactoryName", e.getName());
+        assertEquals("testQFactoryName", e.getName(), "e.getName()");
     }
 
     @Test
@@ -209,7 +209,7 @@ public class QFactory2Test {
         String[] args = new String[0];
         ISOFieldValidator obj = new ISOFieldValidator(true);
         new QFactory(new ObjectName(""), new Q2(args)).setConfiguration(obj, new Element("testQFactoryName"));
-        assertFalse("obj.breakOnError()", obj.breakOnError());
+        assertFalse(obj.breakOnError(), "obj.breakOnError()");
     }
 
     @Test
@@ -217,7 +217,7 @@ public class QFactory2Test {
         String[] args = new String[0];
         Element e = new Element("testQFactoryName", "testQFactoryPrefix", "testQFactoryUri");
         new QFactory(null, new Q2(args)).setConfiguration(new BSHTransactionParticipant(), e);
-        assertEquals("e.getName()", "testQFactoryName", e.getName());
+        assertEquals("testQFactoryName", e.getName(), "e.getName()");
     }
 
     @Test
@@ -227,8 +227,8 @@ public class QFactory2Test {
             new QFactory(null, new Q2(args)).setConfiguration(new BSHTransactionParticipant(), null);
             fail("Expected ConfigurationException to be thrown");
         } catch (ConfigurationException ex) {
-            assertEquals("ex.getMessage()", "org.jpos.core.ConfigurationException (java.lang.NullPointerException)", ex.getMessage());
-            assertNull("ex.getNested().getMessage()", ex.getNested().getMessage());
+            assertEquals("org.jpos.core.ConfigurationException (java.lang.NullPointerException)", ex.getMessage(), "ex.getMessage()");
+            assertNull(ex.getNested().getMessage(), "ex.getNested().getMessage()");
         }
     }
 
@@ -240,7 +240,7 @@ public class QFactory2Test {
                     "testQFactoryDescription"), null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -249,7 +249,7 @@ public class QFactory2Test {
         String[] args = new String[0];
         Element e = new Element("testQFactoryName");
         new QFactory(new ObjectName(""), new Q2(args)).setLogger(new Object(), e);
-        assertEquals("e.getName()", "testQFactoryName", e.getName());
+        assertEquals("testQFactoryName", e.getName(), "e.getName()");
     }
 
     @Test
@@ -260,7 +260,7 @@ public class QFactory2Test {
             new QFactory(null, q2).startQBean(q2, new ObjectName(""));
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 }

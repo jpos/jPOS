@@ -19,11 +19,11 @@
 package org.jpos.iso.packager;
 
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -40,8 +40,8 @@ import org.jpos.iso.ISOMsg;
 import org.jpos.iso.ISOUtil;
 import org.jpos.util.Logger;
 import org.jpos.util.SimpleLogListener;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.ext.Attributes2Impl;
@@ -56,7 +56,7 @@ public class XMLPackagerTest {
         return ISOUtil.hex2byte(hexString.replaceAll(" ", ""));
     }
 
-    @Before
+    @BeforeEach
     public void onSetup() throws ISOException, NoSuchFieldException {
         // PrintStream p = new PrintStream(new ByteArrayOutputStream())
         xMLPackager = new XMLPackager();
@@ -75,7 +75,7 @@ public class XMLPackagerTest {
             new XMLPackager().characters(ch, 100, 1000);
             fail("Expected EmptyStackException to be thrown");
         } catch (EmptyStackException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -88,7 +88,7 @@ public class XMLPackagerTest {
     @Test
     public void testCreateISOMsg() throws Throwable {
         ISOMsg result = new XMLPackager().createISOMsg();
-        assertEquals("result.getDirection()", 0, result.getDirection());
+        assertEquals(0, result.getDirection(), "result.getDirection()");
     }
 
     @Test
@@ -97,7 +97,7 @@ public class XMLPackagerTest {
             xMLPackager.endElement("testXMLPackagerNs", "header", "testXMLPackagerQname");
             fail("Expected EmptyStackException to be thrown");
         } catch (EmptyStackException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -107,7 +107,7 @@ public class XMLPackagerTest {
             xMLPackager.endElement("testXMLPackagerNs", "isomsg", "testXMLPackagerQname");
             fail("Expected EmptyStackException to be thrown");
         } catch (EmptyStackException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -117,7 +117,7 @@ public class XMLPackagerTest {
             xMLPackager.endElement("testXMLPackagerNs", null, "testXMLPackagerQname");
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -125,7 +125,7 @@ public class XMLPackagerTest {
     public void testGetFieldDescription() throws Throwable {
         ISOComponent m = new ISOMsg(100);
         String result = xMLPackager.getFieldDescription(m, 100);
-        assertEquals("result", "<notavailable/>", result);
+        assertEquals("<notavailable/>", result, "result");
     }
 
     @Test
@@ -133,20 +133,20 @@ public class XMLPackagerTest {
         Logger logger = Logger.getLogger("testXMLPackagerName");
         xMLPackager.setLogger(logger, "testXMLPackagerRealm");
         Logger result = xMLPackager.getLogger();
-        assertSame("result", logger, result);
+        assertSame(logger, result, "result");
     }
 
     @Test
     public void testGetRealm() throws Throwable {
         String result = new XMLPackager().getRealm();
-        assertNull("result", result);
+        assertNull(result, "result");
     }
 
     @Test
     public void testGetRealm1() throws Throwable {
         xMLPackager.setLogger(Logger.getLogger("testXMLPackagerName"), "testXMLPackagerRealm");
         String result = xMLPackager.getRealm();
-        assertEquals("result", "testXMLPackagerRealm", result);
+        assertEquals("testXMLPackagerRealm", result, "result");
     }
 
     @Test
@@ -176,7 +176,7 @@ public class XMLPackagerTest {
         // XMLAssert.assertXMLEqual(expected, new String(data));
         DetailedDiff myDiff = new DetailedDiff(XMLUnit.compareXML(expected, new String(data)));
         List allDifferences = myDiff.getAllDifferences();
-        assertEquals(myDiff.toString(), 0, allDifferences.size());
+        assertEquals(0, allDifferences.size(), myDiff.toString());
     }
 
     @Test
@@ -239,14 +239,14 @@ public class XMLPackagerTest {
     public void testSetLogger() throws Throwable {
         Logger logger = Logger.getLogger("testXMLPackagerName");
         xMLPackager.setLogger(logger, "testXMLPackagerRealm");
-        assertSame("xMLPackager.logger", logger, xMLPackager.logger);
-        assertEquals("xMLPackager.realm", "testXMLPackagerRealm", xMLPackager.realm);
+        assertSame(logger, xMLPackager.logger, "xMLPackager.logger");
+        assertEquals("testXMLPackagerRealm", xMLPackager.realm, "xMLPackager.realm");
     }
 
     @Test
     public void testStartElement1() throws Throwable {
         xMLPackager.startElement("testXMLPackagerNs", "testXMLPackagerName", "testXMLPackagerQName", atts);
-        assertEquals("(AttributesImpl) atts.getLength()", 0, atts.getLength());
+        assertEquals(0, atts.getLength(), "(AttributesImpl) atts.getLength()");
     }
 
     @Test
@@ -260,7 +260,7 @@ public class XMLPackagerTest {
             xMLPackager.startElement("testXMLPackagerNs", "field", "testXMLPackagerQName", atts);
             fail("Expected EmptyStackException to be thrown");
         } catch (EmptyStackException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -271,7 +271,7 @@ public class XMLPackagerTest {
             xMLPackager.startElement("testXMLPackagerNs", null, "testXMLPackagerQName", atts);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -281,7 +281,7 @@ public class XMLPackagerTest {
             xMLPackager.startElement("testXMLPackagerNs", "testXMLPackagerName", "testXMLPackagerQName", null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 }

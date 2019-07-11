@@ -20,7 +20,7 @@ package org.jpos.util;
 
 import static org.jpos.util.LogFileTestUtils.getStringFromCompressedFile;
 import static org.jpos.util.LogFileTestUtils.getStringFromFile;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -38,9 +38,9 @@ import org.jpos.core.Configuration;
 import org.jpos.core.ConfigurationException;
 import org.jpos.core.SimpleConfiguration;
 import org.jpos.core.SubConfiguration;
-import org.junit.After;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 public class DailyLogListenerTest {
 
@@ -50,8 +50,8 @@ public class DailyLogListenerTest {
     public void testCheckSize() throws Throwable {
         DailyLogListener dailyLogListener = new DailyLogListener();
         dailyLogListener.checkSize();
-        assertNull("dailyLogListener.f", dailyLogListener.f);
-        assertNotNull("dailyLogListener.p", dailyLogListener.p);
+        assertNull(dailyLogListener.f, "dailyLogListener.f");
+        assertNotNull(dailyLogListener.p, "dailyLogListener.p");
     }
 
     @Test
@@ -59,7 +59,7 @@ public class DailyLogListenerTest {
         OutputStream os = new DeflaterOutputStream(new PrintStream(new ByteArrayOutputStream()), new Deflater());
         DailyLogListener dailyLogListener = new DailyLogListener();
         dailyLogListener.closeCompressedOutputStream(os);
-        assertTrue("Test completed without Exception", true);
+        assertTrue(true, "Test completed without Exception");
     }
 
     @Test
@@ -67,7 +67,7 @@ public class DailyLogListenerTest {
         DailyLogListener dailyLogListener = new DailyLogListener();
         OutputStream os = new DataOutputStream(new ByteArrayOutputStream());
         dailyLogListener.closeCompressedOutputStream(os);
-        assertEquals("(DataOutputStream) os.size()", 0, ((DataOutputStream) os).size());
+        assertEquals(0, ((DataOutputStream) os).size(), "(DataOutputStream) os.size()");
     }
 
     @Test
@@ -77,7 +77,7 @@ public class DailyLogListenerTest {
             dailyLogListener.closeCompressedOutputStream(null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -85,50 +85,50 @@ public class DailyLogListenerTest {
     public void testCompress() throws Throwable {
         DailyLogListener dailyLogListener = new DailyLogListener();
         dailyLogListener.compress(new File("testDailyLogListenerParam1"));
-        assertEquals("dailyLogListener.getCompressionFormat()", 0, dailyLogListener.getCompressionFormat());
+        assertEquals(0, dailyLogListener.getCompressionFormat(), "dailyLogListener.getCompressionFormat()");
     }
 
     @Test
     public void testCompressorConstructor() throws Throwable {
         File f = new File("testCompressorParam1");
         DailyLogListener.Compressor compressor = new DailyLogListener().new Compressor(f);
-        assertSame("compressor.f", f, compressor.f);
+        assertSame(f, compressor.f, "compressor.f");
     }
 
-    @Ignore("test fails because file testCompressorParam1 does not exists")
+    @Disabled("test fails because file testCompressorParam1 does not exists")
     @Test
     public void testCompressorRun() throws Throwable {
         File f = new File(new File("testCompressorParam1"), "testCompressorParam2");
         DailyLogListener.Compressor compressor = new DailyLogListener().new Compressor(f);
         compressor.run();
-        assertSame("compressor.f", f, compressor.f);
+        assertSame(f, compressor.f, "compressor.f");
     }
 
     @Test
     public void testConstructor() throws Throwable {
         DailyLogListener dailyLogListener = new DailyLogListener();
-        assertEquals("dailyLogListener.getCompressionBufferSize()", 131072, dailyLogListener.getCompressionBufferSize());
-        assertNotNull("dailyLogListener.p", dailyLogListener.p);
-        assertEquals("dailyLogListener.getCompressedSuffix()", "", dailyLogListener.getCompressedSuffix());
-        assertEquals("dailyLogListener.getSuffix()", ".log", dailyLogListener.getSuffix());
-        assertEquals("dailyLogListener.getCompressionFormat()", 0, dailyLogListener.getCompressionFormat());
-        assertTrue("dailyLogListener.getDateFmt().isLenient()", dailyLogListener.getDateFmt().isLenient());
+        assertEquals(131072, dailyLogListener.getCompressionBufferSize(), "dailyLogListener.getCompressionBufferSize()");
+        assertNotNull(dailyLogListener.p, "dailyLogListener.p");
+        assertEquals("", dailyLogListener.getCompressedSuffix(), "dailyLogListener.getCompressedSuffix()");
+        assertEquals(".log", dailyLogListener.getSuffix(), "dailyLogListener.getSuffix()");
+        assertEquals(0, dailyLogListener.getCompressionFormat(), "dailyLogListener.getCompressionFormat()");
+        assertTrue(dailyLogListener.getDateFmt().isLenient(), "dailyLogListener.getDateFmt().isLenient()");
     }
 
     @Test
     public void testDailyRotateConstructor() throws Throwable {
         new DailyLogListener().new DailyRotate();
-        assertTrue("Test completed without Exception", true);
+        assertTrue(true, "Test completed without Exception");
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void testDailyRotateRunThrowsNullPointerException() throws Throwable {
         try {
             new DailyLogListener().new DailyRotate().run();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -147,7 +147,7 @@ public class DailyLogListenerTest {
     public void testGetCompressorThread() throws Throwable {
         DailyLogListener dailyLogListener = new DailyLogListener();
         dailyLogListener.getCompressorThread(new File("testDailyLogListenerParam1"));
-        assertTrue("Test completed without Exception", true);
+        assertTrue(true, "Test completed without Exception");
         // dependencies on static and environment state led to removal of 1
         // assertion
     }
@@ -156,7 +156,7 @@ public class DailyLogListenerTest {
     public void testLogDebugEx() throws Throwable {
         DailyLogListener dailyLogListener = new DailyLogListener();
         dailyLogListener.logDebugEx("testDailyLogListenerMsg", new NullPointerException("testDailyLogListenerParam1"));
-        assertNotNull("dailyLogListener.p", dailyLogListener.p);
+        assertNotNull(dailyLogListener.p, "dailyLogListener.p");
     }
 
     @Test
@@ -166,22 +166,22 @@ public class DailyLogListenerTest {
             dailyLogListener.logDebugEx("testDailyLogListenerMsg", null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertNotNull("dailyLogListener.p", dailyLogListener.p);
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertNotNull(dailyLogListener.p, "dailyLogListener.p");
         }
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void testLogRotateThrowsNullPointerException() throws Throwable {
         DailyLogListener dailyLogListener = new DailyLogListener();
         try {
             dailyLogListener.logRotate();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertNull("dailyLogListener.f", dailyLogListener.f);
-            assertNull("dailyLogListener.p", dailyLogListener.p);
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertNull(dailyLogListener.f, "dailyLogListener.f");
+            assertNull(dailyLogListener.p, "dailyLogListener.p");
         }
     }
 
@@ -189,36 +189,36 @@ public class DailyLogListenerTest {
     public void testSetCompressedSuffix() throws Throwable {
         DailyLogListener dailyLogListener = new DailyLogListener();
         dailyLogListener.setCompressedSuffix("testDailyLogListenerCompressedSuffix");
-        assertEquals("dailyLogListener.getCompressedSuffix()", "testDailyLogListenerCompressedSuffix",
-                dailyLogListener.getCompressedSuffix());
+        assertEquals("testDailyLogListenerCompressedSuffix", dailyLogListener.getCompressedSuffix(),
+                "dailyLogListener.getCompressedSuffix()");
     }
 
     @Test
     public void testSetCompressionBufferSize() throws Throwable {
         DailyLogListener dailyLogListener = new DailyLogListener();
         dailyLogListener.setCompressionBufferSize(-1);
-        assertEquals("dailyLogListener.getCompressionBufferSize()", 131072, dailyLogListener.getCompressionBufferSize());
+        assertEquals(131072, dailyLogListener.getCompressionBufferSize(), "dailyLogListener.getCompressionBufferSize()");
     }
 
     @Test
     public void testSetCompressionBufferSize1() throws Throwable {
         DailyLogListener dailyLogListener = new DailyLogListener();
         dailyLogListener.setCompressionBufferSize(1);
-        assertEquals("dailyLogListener.getCompressionBufferSize()", 1, dailyLogListener.getCompressionBufferSize());
+        assertEquals(1, dailyLogListener.getCompressionBufferSize(), "dailyLogListener.getCompressionBufferSize()");
     }
 
     @Test
     public void testSetCompressionBufferSize2() throws Throwable {
         DailyLogListener dailyLogListener = new DailyLogListener();
         dailyLogListener.setCompressionBufferSize(0);
-        assertEquals("dailyLogListener.getCompressionBufferSize()", 0, dailyLogListener.getCompressionBufferSize());
+        assertEquals(0, dailyLogListener.getCompressionBufferSize(), "dailyLogListener.getCompressionBufferSize()");
     }
 
     @Test
     public void testSetCompressionFormat() throws Throwable {
         DailyLogListener dailyLogListener = new DailyLogListener();
         dailyLogListener.setCompressionFormat(100);
-        assertEquals("dailyLogListener.getCompressionFormat()", 100, dailyLogListener.getCompressionFormat());
+        assertEquals(100, dailyLogListener.getCompressionFormat(), "dailyLogListener.getCompressionFormat()");
     }
 
     @Test
@@ -229,19 +229,19 @@ public class DailyLogListenerTest {
             dailyLogListener.setConfiguration(cfg);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertNull("dailyLogListener.rotate", dailyLogListener.rotate);
-            assertEquals("dailyLogListener.getCompressionBufferSize()", 131072, dailyLogListener.getCompressionBufferSize());
-            assertNotNull("dailyLogListener.p", dailyLogListener.p);
-            assertNull("dailyLogListener.getPrefix()", dailyLogListener.getPrefix());
-            assertEquals("dailyLogListener.getSuffix()", ".log", dailyLogListener.getSuffix());
-            assertNull("dailyLogListener.f", dailyLogListener.f);
-            assertEquals("dailyLogListener.getCompressedSuffix()", "", dailyLogListener.getCompressedSuffix());
-            assertNull("dailyLogListener.logName", dailyLogListener.logName);
-            assertEquals("dailyLogListener.sleepTime", 0L, dailyLogListener.sleepTime);
-            assertEquals("dailyLogListener.maxSize", 0L, dailyLogListener.maxSize);
-            assertEquals("dailyLogListener.getCompressionFormat()", 0, dailyLogListener.getCompressionFormat());
-            assertTrue("dailyLogListener.getDateFmt().isLenient()", dailyLogListener.getDateFmt().isLenient());
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertNull(dailyLogListener.rotate, "dailyLogListener.rotate");
+            assertEquals(131072, dailyLogListener.getCompressionBufferSize(), "dailyLogListener.getCompressionBufferSize()");
+            assertNotNull(dailyLogListener.p, "dailyLogListener.p");
+            assertNull(dailyLogListener.getPrefix(), "dailyLogListener.getPrefix()");
+            assertEquals(".log", dailyLogListener.getSuffix(), "dailyLogListener.getSuffix()");
+            assertNull(dailyLogListener.f, "dailyLogListener.f");
+            assertEquals("", dailyLogListener.getCompressedSuffix(), "dailyLogListener.getCompressedSuffix()");
+            assertNull(dailyLogListener.logName, "dailyLogListener.logName");
+            assertEquals(0L, dailyLogListener.sleepTime, "dailyLogListener.sleepTime");
+            assertEquals(0L, dailyLogListener.maxSize, "dailyLogListener.maxSize");
+            assertEquals(0, dailyLogListener.getCompressionFormat(), "dailyLogListener.getCompressionFormat()");
+            assertTrue(dailyLogListener.getDateFmt().isLenient(), "dailyLogListener.getDateFmt().isLenient()");
         }
     }
 
@@ -250,35 +250,35 @@ public class DailyLogListenerTest {
         DateFormat dateFmt = DateFormat.getInstance();
         DailyLogListener dailyLogListener = new DailyLogListener();
         dailyLogListener.setDateFmt(dateFmt);
-        assertSame("dailyLogListener.getDateFmt()", dateFmt, dailyLogListener.getDateFmt());
+        assertSame(dateFmt, dailyLogListener.getDateFmt(), "dailyLogListener.getDateFmt()");
     }
 
     @Test
     public void testSetLastDate() throws Throwable {
         DailyLogListener dailyLogListener = new DailyLogListener();
         dailyLogListener.setLastDate("testDailyLogListenerLastDate");
-        assertEquals("dailyLogListener.getLastDate()", "testDailyLogListenerLastDate", dailyLogListener.getLastDate());
+        assertEquals("testDailyLogListenerLastDate", dailyLogListener.getLastDate(), "dailyLogListener.getLastDate()");
     }
 
     @Test
     public void testSetPrefix() throws Throwable {
         DailyLogListener dailyLogListener = new DailyLogListener();
         dailyLogListener.setPrefix("testDailyLogListenerPrefix");
-        assertEquals("dailyLogListener.getPrefix()", "testDailyLogListenerPrefix", dailyLogListener.getPrefix());
+        assertEquals("testDailyLogListenerPrefix", dailyLogListener.getPrefix(), "dailyLogListener.getPrefix()");
     }
 
     @Test
     public void testSetRotateCount() throws Throwable {
         DailyLogListener dailyLogListener = new DailyLogListener();
         dailyLogListener.setRotateCount(100);
-        assertEquals("dailyLogListener.getRotateCount()", 100, dailyLogListener.getRotateCount());
+        assertEquals(100, dailyLogListener.getRotateCount(), "dailyLogListener.getRotateCount()");
     }
 
     @Test
     public void testSetSuffix() throws Throwable {
         DailyLogListener dailyLogListener = new DailyLogListener();
         dailyLogListener.setSuffix("testDailyLogListenerSuffix");
-        assertEquals("dailyLogListener.getSuffix()", "testDailyLogListenerSuffix", dailyLogListener.getSuffix());
+        assertEquals("testDailyLogListenerSuffix", dailyLogListener.getSuffix(), "dailyLogListener.getSuffix()");
     }
 
 	@Test
@@ -286,7 +286,7 @@ public class DailyLogListenerTest {
 		DailyLogListener dailyLogListener = new DailyLogListener();
 		long maxAge = 7*24*3600*1000;
 		dailyLogListener.setMaxAge(maxAge);
-		assertEquals("dailyLogListener.getMaxAge()", maxAge, dailyLogListener.getMaxAge());
+		assertEquals(maxAge, dailyLogListener.getMaxAge(), "dailyLogListener.getMaxAge()");
 	}
 
     @Test
@@ -303,19 +303,19 @@ public class DailyLogListenerTest {
         listener.log(new LogEvent("Message 2"));
 
         String currentLogFileContents = getStringFromFile(logRotationTestDirectory.getFile(logFileName + ".log"));
-        assertFalse("Current log file should not contain the first message", currentLogFileContents.contains("Message 1"));
-        assertTrue("Current log file should contain the second message", currentLogFileContents.contains("Message 2"));
-        assertTrue("Logger element should not have been opened in the current file", currentLogFileContents.contains("<logger "));
-        assertFalse("Logger element should not have been closed in the current file", currentLogFileContents.contains("</logger>"));
+        assertFalse(currentLogFileContents.contains("Message 1"), "Current log file should not contain the first message");
+        assertTrue(currentLogFileContents.contains("Message 2"), "Current log file should contain the second message");
+        assertTrue(currentLogFileContents.contains("<logger "), "Logger element should not have been opened in the current file");
+        assertFalse(currentLogFileContents.contains("</logger>"), "Logger element should not have been closed in the current file");
 
         Thread.sleep(1000); // to allow compressor thread to run
 		listener.destroy();
         String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
         String archivedLogFileContents = getStringFromCompressedFile(logRotationTestDirectory.getFile(logFileName + "." + date + ".log.gz"));
-        assertTrue("Archived log file should contain the first message", archivedLogFileContents.contains("Message 1"));
-        assertFalse("Archived log file should not contain the second message", archivedLogFileContents.contains("Message 2"));
-        assertTrue("Logger element should have been opened in the archived file", archivedLogFileContents.contains("<logger "));
-        assertTrue("Logger element should have been closed in the archived file", archivedLogFileContents.contains("</logger>"));
+        assertTrue(archivedLogFileContents.contains("Message 1"), "Archived log file should contain the first message");
+        assertFalse(archivedLogFileContents.contains("Message 2"), "Archived log file should not contain the second message");
+        assertTrue(archivedLogFileContents.contains("<logger "), "Logger element should have been opened in the archived file");
+        assertTrue(archivedLogFileContents.contains("</logger>"), "Logger element should have been closed in the archived file");
     }
 
 
@@ -331,8 +331,8 @@ public class DailyLogListenerTest {
 		listener.deleteOldLogs();
 
 		String currentLogFileContents = getStringFromFile(logRotationTestDirectory.getFile(logFileName + ".log"));
-		assertTrue("Log file should contain a descriptive message about maxage feature disable",
-				currentLogFileContents.contains("maxage feature is disabled."));
+		assertTrue(currentLogFileContents.contains("maxage feature is disabled."),
+                               "Log file should contain a descriptive message about maxage feature disable");
 
 		listener.destroy();
     }
@@ -349,8 +349,8 @@ public class DailyLogListenerTest {
 		listener.deleteOldLogs();
 
 		String currentLogFileContents = getStringFromFile(logRotationTestDirectory.getFile(logFileName + ".log"));
-		assertTrue("Log file should contain a descriptive message about maxage feature disable",
-				currentLogFileContents.contains("maxage feature is disabled."));
+		assertTrue(currentLogFileContents.contains("maxage feature is disabled."),
+                               "Log file should contain a descriptive message about maxage feature disable");
 
 		listener.destroy();
 	}
@@ -375,7 +375,7 @@ public class DailyLogListenerTest {
 
 		String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
 		Path rotateLogPath = Paths.get(logFileName + "." + date + ".log.gz");
-		assertFalse("Rotated log should be deleted", Files.exists(rotateLogPath, LinkOption.NOFOLLOW_LINKS));
+		assertFalse(Files.exists(rotateLogPath, LinkOption.NOFOLLOW_LINKS), "Rotated log should be deleted");
 
 		listener.destroy();
 	}
@@ -401,14 +401,14 @@ public class DailyLogListenerTest {
 
 		String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
 		Path rotateLogPath = Paths.get(logFileName + "." + date + ".log.gz");
-		assertFalse("Rotated log should be deleted", Files.exists(rotateLogPath, LinkOption.NOFOLLOW_LINKS));
-		assertTrue("Empty file should exist", Files.exists(emptyFile.toPath(), LinkOption.NOFOLLOW_LINKS));
+		assertFalse(Files.exists(rotateLogPath, LinkOption.NOFOLLOW_LINKS), "Rotated log should be deleted");
+		assertTrue(Files.exists(emptyFile.toPath(), LinkOption.NOFOLLOW_LINKS), "Empty file should exist");
 
 		listener.destroy();
 	}
 
 	@Test
-	@Ignore("This feature doesn't work in Windows so we reverted the patch c94ff02f2")
+	@Disabled("This feature doesn't work in Windows so we reverted the patch c94ff02f2")
 	public void testLogRotateAbortsWhenCreatingNewFileFails() throws Exception {
 		String logFileName = "RotateAbortsTestLog";
 		DailyLogListener listener = createCompressingDailyLogListenerWithIsoDateFormat(logFileName);
@@ -425,15 +425,15 @@ public class DailyLogListenerTest {
 		logRotationTestDirectory.allowNewFileCreation();
 
 		String logFileContents = getStringFromFile(logRotationTestDirectory.getFile(logFileName + ".log"));
-		assertTrue("Log file should contain first message", logFileContents.contains("Message 1"));
-		assertTrue("Log file should contain second message", logFileContents.contains("Message 2"));
-		assertFalse("Logger element should not have been closed", logFileContents.contains("</logger>"));
+		assertTrue(logFileContents.contains("Message 1"), "Log file should contain first message");
+		assertTrue(logFileContents.contains("Message 2"), "Log file should contain second message");
+		assertFalse(logFileContents.contains("</logger>"), "Logger element should not have been closed");
 
 		Thread.sleep(1000); // to allow compressor thread to run
 		listener.destroy();
 		String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
 		File archiveFile = logRotationTestDirectory.getFile(logFileName + ".log." + date + ".gz");
-		assertFalse("Archive file should not exist", archiveFile.exists());
+		assertFalse(archiveFile.exists(), "Archive file should not exist");
 	}
 
     private DailyLogListener createCompressingDailyLogListenerWithIsoDateFormat(String logFileName) throws ConfigurationException {
@@ -455,7 +455,7 @@ public class DailyLogListenerTest {
 		return emptyFile;
 	}
 
-    @After
+    @AfterEach
     public void cleanupLogRotateAbortsTestDir() {
         logRotationTestDirectory.delete();
     }

@@ -21,11 +21,11 @@ package org.jpos.iso.packager;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import org.jpos.iso.ISOException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class LogPackagerTest {
 
@@ -43,7 +43,7 @@ public class LogPackagerTest {
         } catch (ISOException ex) {
             assertMatch("ex.getMessage()", ".*java.lang.ClassNotFoundException: org.apache.crimson.parser.XMLReaderImpl",
                     ex.getMessage());
-            assertNull("ex.getNested()", ex.getNested());
+            assertNull(ex.getNested(), "ex.getNested()");
         }
     }
 }

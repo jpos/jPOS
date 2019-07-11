@@ -19,22 +19,23 @@
 package org.jpos.q2.qbean;
 
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
 import org.jpos.q2.Q2;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class SystemMonitorTest {
     @Mock
     Q2 q2;
@@ -46,7 +47,7 @@ public class SystemMonitorTest {
     ByteArrayOutputStream baos;
     PrintStream printStream;
 
-    @Before
+    @BeforeEach
     public void onSetup() throws Exception {
 	baos = new ByteArrayOutputStream();
 	printStream = new PrintStream(baos, true, "US-ASCII");
@@ -55,24 +56,26 @@ public class SystemMonitorTest {
     @Test
     public void testSetDetailRequired() throws Throwable {
 	systemMonitor.setDetailRequired(true);
-	assertTrue("systemMonitor.getDetailRequired()",
-		systemMonitor.getDetailRequired());
-	assertTrue("systemMonitor.isModified()", systemMonitor.isModified());
+	assertTrue(systemMonitor.getDetailRequired(),
+               "systemMonitor.getDetailRequired()");
+	assertTrue(systemMonitor.isModified(), "systemMonitor.isModified()");
     }
 
     @Test
     public void testSetSleepTime() throws Throwable {
 	systemMonitor.setSleepTime(1L);
-	assertEquals("systemMonitor.getSleepTime()", 1L,
-		systemMonitor.getSleepTime());
-	assertTrue("systemMonitor.isModified()", systemMonitor.isModified());
+	assertEquals(1L, systemMonitor.getSleepTime(),
+               "systemMonitor.getSleepTime()");
+	assertTrue(systemMonitor.isModified(), "systemMonitor.isModified()");
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testShowThreadGroupThrowsNullPointerException()
 	    throws Throwable {
-	String indent = "++";
-	systemMonitor.showThreadGroup(null, printStream, indent);
+	assertThrows(NullPointerException.class, () -> {
+	    String indent = "++";
+	    systemMonitor.showThreadGroup(null, printStream, indent);
+	});
     }
 
     @Test

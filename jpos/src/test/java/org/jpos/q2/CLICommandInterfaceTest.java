@@ -23,8 +23,8 @@ import static org.fest.assertions.Assertions.assertThat;
 import java.io.IOException;
 import java.util.Arrays;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import static org.mockito.Mockito.mock;
 
 /**
@@ -35,7 +35,7 @@ public class CLICommandInterfaceTest {
 
     private CLICommandInterface cliCommandInterface;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         CLIContext ctx = mock(CLIContext.class);
         cliCommandInterface = new CLICommandInterface(ctx);

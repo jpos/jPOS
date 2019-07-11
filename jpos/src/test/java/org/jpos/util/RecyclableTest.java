@@ -18,10 +18,10 @@
 
 package org.jpos.util;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 public class RecyclableTest {
     @Test
@@ -30,7 +30,7 @@ public class RecyclableTest {
         Recyclable<Object> r = new Recyclable<>(Object::new, maxCycles);
         Object o = r.get();
         for (int i=0; i < maxCycles; i++) {
-            assertEquals("i=" + i, o, r.get());
+            assertEquals(o, r.get(), "i=" + i);
         }
         assertNotEquals(o, r.get());
     }

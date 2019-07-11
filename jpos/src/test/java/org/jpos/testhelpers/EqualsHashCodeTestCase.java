@@ -21,15 +21,15 @@ package org.jpos.testhelpers;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
 import junit.framework.AssertionFailedError;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Extend me in order to test a class's functional compliance with the
@@ -81,7 +81,7 @@ public abstract class EqualsHashCodeTestCase {
 	 * 
 	 * @throws Exception
 	 */
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		eq1 = createInstance();
 		eq2 = createInstance();
@@ -89,23 +89,22 @@ public abstract class EqualsHashCodeTestCase {
 		neq = createNotEqualInstance();
 		// We want these assertions to yield errors, not failures.
 		try {
-			assertNotNull("createInstance() returned null", eq1);
-			assertNotNull("2nd createInstance() returned null", eq2);
-			assertNotNull("3rd createInstance() returned null", eq3);
-			assertNotNull("createNotEqualInstance() returned null", neq);
-			Assert.assertNotSame(eq1, eq2);
-			Assert.assertNotSame(eq1, eq3);
-			Assert.assertNotSame(eq1, neq);
-			Assert.assertNotSame(eq2, eq3);
-			Assert.assertNotSame(eq2, neq);
-			Assert.assertNotSame(eq3, neq);
-			assertEquals("1st and 2nd equal instances of different classes",
-					eq1.getClass(), eq2.getClass());
-			assertEquals("1st and 3rd equal instances of different classes",
-					eq1.getClass(), eq3.getClass());
-			assertEquals(
-					"1st equal instance and not-equal instance of different classes",
-					eq1.getClass(), neq.getClass());
+			assertNotNull(eq1, "createInstance() returned null");
+			assertNotNull(eq2, "2nd createInstance() returned null");
+			assertNotNull(eq3, "3rd createInstance() returned null");
+			assertNotNull(neq, "createNotEqualInstance() returned null");
+			Assertions.assertNotSame(eq1, eq2);
+			Assertions.assertNotSame(eq1, eq3);
+			Assertions.assertNotSame(eq1, neq);
+			Assertions.assertNotSame(eq2, eq3);
+			Assertions.assertNotSame(eq2, neq);
+			Assertions.assertNotSame(eq3, neq);
+			assertEquals(eq1.getClass(), eq2.getClass(),
+					"1st and 2nd equal instances of different classes");
+			assertEquals(eq1.getClass(), eq3.getClass(),
+					"1st and 3rd equal instances of different classes");
+			assertEquals(eq1.getClass(), neq.getClass(),
+					"1st equal instance and not-equal instance of different classes");
 		} catch (AssertionFailedError ex) {
 			throw new IllegalArgumentException(ex.getMessage());
 		}
@@ -179,10 +178,10 @@ public abstract class EqualsHashCodeTestCase {
 	 */
 	@Test
 	public final void testEqualsIsReflexive() {
-		assertEquals("1st equal instance", eq1, eq1);
-		assertEquals("2nd equal instance", eq2, eq2);
-		assertEquals("3rd equal instance", eq3, eq3);
-		assertEquals("not-equal instance", neq, neq);
+		assertEquals(eq1, eq1, "1st equal instance");
+		assertEquals(eq2, eq2, "2nd equal instance");
+		assertEquals(eq3, eq3, "3rd equal instance");
+		assertEquals(neq, neq, "not-equal instance");
 	}
 
 	/**
@@ -191,12 +190,12 @@ public abstract class EqualsHashCodeTestCase {
 	 */
 	@Test
 	public final void testEqualsIsSymmetricAndTransitive() {
-		assertEquals("1st vs. 2nd", eq1, eq2);
-		assertEquals("2nd vs. 1st", eq2, eq1);
-		assertEquals("1st vs. 3rd", eq1, eq3);
-		assertEquals("3rd vs. 1st", eq3, eq1);
-		assertEquals("2nd vs. 3rd", eq2, eq3);
-		assertEquals("3rd vs. 2nd", eq3, eq2);
+		assertEquals(eq1, eq2, "1st vs. 2nd");
+		assertEquals(eq2, eq1, "2nd vs. 1st");
+		assertEquals(eq1, eq3, "1st vs. 3rd");
+		assertEquals(eq3, eq1, "3rd vs. 1st");
+		assertEquals(eq2, eq3, "2nd vs. 3rd");
+		assertEquals(eq3, eq2, "3rd vs. 2nd");
 	}
 
 	/**
@@ -204,9 +203,9 @@ public abstract class EqualsHashCodeTestCase {
 	 */
 	@Test
 	public final void testHashCodeContract() {
-		assertEquals("1st vs. 2nd", eq1.hashCode(), eq2.hashCode());
-		assertEquals("1st vs. 3rd", eq1.hashCode(), eq3.hashCode());
-		assertEquals("2nd vs. 3rd", eq2.hashCode(), eq3.hashCode());
+		assertEquals(eq1.hashCode(), eq2.hashCode(), "1st vs. 2nd");
+		assertEquals(eq1.hashCode(), eq3.hashCode(), "1st vs. 3rd");
+		assertEquals(eq2.hashCode(), eq3.hashCode(), "2nd vs. 3rd");
 	}
 
 	/**
@@ -219,10 +218,10 @@ public abstract class EqualsHashCodeTestCase {
 		int eq3Hash = eq3.hashCode();
 		int neqHash = neq.hashCode();
 		for (int i = 0; i < NUM_ITERATIONS; ++i) {
-			assertEquals("1st equal instance", eq1Hash, eq1.hashCode());
-			assertEquals("2nd equal instance", eq2Hash, eq2.hashCode());
-			assertEquals("3rd equal instance", eq3Hash, eq3.hashCode());
-			assertEquals("not-equal instance", neqHash, neq.hashCode());
+			assertEquals(eq1Hash, eq1.hashCode(), "1st equal instance");
+			assertEquals(eq2Hash, eq2.hashCode(), "2nd equal instance");
+			assertEquals(eq3Hash, eq3.hashCode(), "3rd equal instance");
+			assertEquals(neqHash, neq.hashCode(), "not-equal instance");
 		}
 	}
 }

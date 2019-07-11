@@ -18,9 +18,9 @@
 
 package org.jpos.iso.packager;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import static org.apache.commons.lang3.JavaVersion.JAVA_10;
 import static org.apache.commons.lang3.SystemUtils.isJavaVersionAtMost;
@@ -31,34 +31,34 @@ import org.jpos.iso.ISOBinaryField;
 import org.jpos.iso.ISOBitMap;
 import org.jpos.iso.ISOComponent;
 import org.jpos.iso.ISOMsg;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class Base1_BITMAP126Test {
 
     @Test
     public void testConstructor() throws Throwable {
         Base1_BITMAP126 base1_BITMAP126 = new Base1_BITMAP126();
-        assertNull("base1_BITMAP126.getDescription()", base1_BITMAP126.getDescription());
-        assertEquals("base1_BITMAP126.getLength()", -1, base1_BITMAP126.getLength());
+        assertNull(base1_BITMAP126.getDescription(), "base1_BITMAP126.getDescription()");
+        assertEquals(-1, base1_BITMAP126.getLength(), "base1_BITMAP126.getLength()");
     }
 
     @Test
     public void testConstructor1() throws Throwable {
         Base1_BITMAP126 base1_BITMAP126 = new Base1_BITMAP126(100, "testBase1_BITMAP126Description");
-        assertEquals("base1_BITMAP126.getDescription()", "testBase1_BITMAP126Description", base1_BITMAP126.getDescription());
-        assertEquals("base1_BITMAP126.getLength()", 100, base1_BITMAP126.getLength());
+        assertEquals("testBase1_BITMAP126Description", base1_BITMAP126.getDescription(), "base1_BITMAP126.getDescription()");
+        assertEquals(100, base1_BITMAP126.getLength(), "base1_BITMAP126.getLength()");
     }
 
     @Test
     public void testGetMaxPackedLength() throws Throwable {
         int result = new Base1_BITMAP126(100, "testBase1_BITMAP126Description").getMaxPackedLength();
-        assertEquals("result", 12, result);
+        assertEquals(12, result, "result");
     }
 
     @Test
     public void testGetMaxPackedLength1() throws Throwable {
         int result = new Base1_BITMAP126(0, "testBase1_BITMAP126Description").getMaxPackedLength();
-        assertEquals("result", 0, result);
+        assertEquals(0, result, "result");
     }
 
     @Test
@@ -66,7 +66,7 @@ public class Base1_BITMAP126Test {
         BitSet v = new BitSet(100);
         Base1_BITMAP126 base1_BITMAP126 = new Base1_BITMAP126(100, "testBase1_BITMAP126Description");
         byte[] result = base1_BITMAP126.pack(new ISOBitMap(100, v));
-        assertEquals("result.length", 0, result.length);
+        assertEquals(0, result.length, "result.length");
     }
 
     @Test
@@ -75,7 +75,7 @@ public class Base1_BITMAP126Test {
             new Base1_BITMAP126(100, "testBase1_BITMAP126Description").pack(new ISOMsg("testBase1_BITMAP126Mti"));
             fail("Expected ClassCastException to be thrown");
         } catch (ClassCastException ex) {
-            assertEquals("ex.getClass()", ClassCastException.class, ex.getClass());
+            assertEquals(ClassCastException.class, ex.getClass(), "ex.getClass()");
         }
     }
 
@@ -85,7 +85,7 @@ public class Base1_BITMAP126Test {
             new Base1_BITMAP126(100, "testBase1_BITMAP126Description").pack(new ISOBinaryField());
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 
@@ -98,11 +98,11 @@ public class Base1_BITMAP126Test {
             fail("Expected ArrayIndexOutOfBoundsException to be thrown");
         } catch (ArrayIndexOutOfBoundsException ex) {
             if (isJavaVersionAtMost(JAVA_10)) {
-                assertEquals("ex.getMessage()", "100", ex.getMessage());
+                assertEquals("100", ex.getMessage(), "ex.getMessage()");
             } else {
-                assertEquals("ex.getMessage()", "Index 100 out of bounds for length 0", ex.getMessage());
+                assertEquals("Index 100 out of bounds for length 0", ex.getMessage(), "ex.getMessage()");
             }
-            assertEquals("(ISOMsg) c.getDirection()", 0, ((ISOMsg) c).getDirection());
+            assertEquals(0, ((ISOMsg) c).getDirection(), "(ISOMsg) c.getDirection()");
         }
     }
 
@@ -114,8 +114,8 @@ public class Base1_BITMAP126Test {
             base1_BITMAP126.unpack(c, null, 100);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertNull("(ISOBinaryField) c.getBytes()", ((ISOBinaryField) c).getBytes());
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertNull(((ISOBinaryField) c).getBytes(), "(ISOBinaryField) c.getBytes()");
         }
     }
 }

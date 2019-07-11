@@ -18,19 +18,19 @@
 
 package org.jpos.q2.qbean;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import org.jpos.q2.Q2;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ShutdownTest {
     @Mock
     Q2 server;
@@ -38,9 +38,9 @@ public class ShutdownTest {
     @Test
     public void testConstructor() throws Throwable {
         Shutdown shutdown = new Shutdown();
-        assertEquals("shutdown.getLog().getRealm()", "org.jpos.q2.qbean.Shutdown", shutdown.getLog().getRealm());
-        assertEquals("shutdown.getState()", -1, shutdown.getState());
-        assertTrue("shutdown.isModified()", shutdown.isModified());
+        assertEquals("org.jpos.q2.qbean.Shutdown", shutdown.getLog().getRealm(), "shutdown.getLog().getRealm()");
+        assertEquals(-1, shutdown.getState(), "shutdown.getState()");
+        assertTrue(shutdown.isModified(), "shutdown.isModified()");
     }
 
     @Test
@@ -51,7 +51,7 @@ public class ShutdownTest {
         args[1] = "testString";
         shutdown.setServer(server);
         shutdown.startService();
-        assertSame("shutdown.getServer()", server, shutdown.getServer());
+        assertSame(server, shutdown.getServer(), "shutdown.getServer()");
     }
 
     @Test
@@ -60,7 +60,7 @@ public class ShutdownTest {
             new Shutdown().startService();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
+            assertNull(ex.getMessage(), "ex.getMessage()");
         }
     }
 }

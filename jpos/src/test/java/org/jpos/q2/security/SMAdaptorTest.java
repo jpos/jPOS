@@ -19,14 +19,14 @@
 package org.jpos.q2.security;
 
 import org.jpos.q2.Q2;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class SMAdaptorTest {
     @Mock
     Q2 q2;
@@ -34,9 +34,9 @@ public class SMAdaptorTest {
     @Test
     public void testConstructor() throws Throwable {
         SMAdaptor sMAdaptor = new SMAdaptor();
-        assertEquals("sMAdaptor.getLog().getRealm()", "org.jpos.q2.security.SMAdaptor", sMAdaptor.getLog().getRealm());
-        assertEquals("sMAdaptor.getState()", -1, sMAdaptor.getState());
-        assertTrue("sMAdaptor.isModified()", sMAdaptor.isModified());
+        assertEquals("org.jpos.q2.security.SMAdaptor", sMAdaptor.getLog().getRealm(), "sMAdaptor.getLog().getRealm()");
+        assertEquals(-1, sMAdaptor.getState(), "sMAdaptor.getState()");
+        assertTrue(sMAdaptor.isModified(), "sMAdaptor.isModified()");
     }
 
     @Test
@@ -44,13 +44,13 @@ public class SMAdaptorTest {
         SMAdaptor sMAdaptor = new SMAdaptor();
         sMAdaptor.setImpl("testSMAdaptorClazz");
         String result = sMAdaptor.getImpl();
-        assertEquals("result", "testSMAdaptorClazz", result);
+        assertEquals("testSMAdaptorClazz", result, "result");
     }
 
     @Test
     public void testGetImpl1() throws Throwable {
         String result = new SMAdaptor().getImpl();
-        assertNotNull("result", result);
+        assertNotNull(result, "result");
     }
 
     @Test
@@ -63,9 +63,9 @@ public class SMAdaptorTest {
             sMAdaptor.initService();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertNull("sMAdaptor.sm", sMAdaptor.sm);
-            assertFalse("sMAdaptor.isModified()", sMAdaptor.isModified());
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertNull(sMAdaptor.sm, "sMAdaptor.sm");
+            assertFalse(sMAdaptor.isModified(), "sMAdaptor.isModified()");
         }
     }
 
@@ -76,9 +76,9 @@ public class SMAdaptorTest {
             sMAdaptor.initService();
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
-            assertNull("ex.getMessage()", ex.getMessage());
-            assertNull("sMAdaptor.sm", sMAdaptor.sm);
-            assertFalse("sMAdaptor.isModified()", sMAdaptor.isModified());
+            assertNull(ex.getMessage(), "ex.getMessage()");
+            assertNull(sMAdaptor.sm, "sMAdaptor.sm");
+            assertFalse(sMAdaptor.isModified(), "sMAdaptor.isModified()");
         }
     }
 
@@ -86,7 +86,7 @@ public class SMAdaptorTest {
     public void testSetImpl() throws Throwable {
         SMAdaptor sMAdaptor = new SMAdaptor();
         sMAdaptor.setImpl("testSMAdaptorClazz");
-        assertEquals("sMAdaptor.clazz", "testSMAdaptorClazz", sMAdaptor.clazz);
+        assertEquals("testSMAdaptorClazz", sMAdaptor.clazz, "sMAdaptor.clazz");
     }
 
     @Test
@@ -94,7 +94,7 @@ public class SMAdaptorTest {
         SMAdaptor sMAdaptor = new SMAdaptor();
         sMAdaptor.setName("testSMAdaptorName");
         sMAdaptor.stopService();
-        assertEquals("sMAdaptor.getName()", "testSMAdaptorName", sMAdaptor.getName());
+        assertEquals("testSMAdaptorName", sMAdaptor.getName(), "sMAdaptor.getName()");
     }
 
 }

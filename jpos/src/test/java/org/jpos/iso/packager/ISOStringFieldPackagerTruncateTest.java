@@ -18,17 +18,17 @@
 
 package org.jpos.iso.packager;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.jpos.iso.*;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ISOStringFieldPackagerTruncateTest {
     private ISOPackager p;
 
-    @Before
+    @BeforeEach
     public void setup() throws ISOException {
         p = new GenericPackager("jar:packager/field59-truncate.xml");;
     }
