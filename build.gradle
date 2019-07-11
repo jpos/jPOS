@@ -105,10 +105,25 @@ subprojects {
     }
     test {
         useJUnitPlatform()
+        maxHeapSize = "4g"
         testLogging {
             events "passed", "skipped", "failed"
         }
         systemProperty 'user.language', 'en'
+        exclude '**/JESpaceTestCase.*'
+        exclude '**/TransactionManagerTestCase.*'
+        dependsOn "JESpaceTest"
+    }
+    task JESpaceTest(type: Test) {
+        useJUnitPlatform()
+        maxHeapSize = "4g"
+        testLogging {
+            events "passed", "skipped", "failed"
+        }
+        systemProperty 'user.language', 'en'
+        include '**/JESpaceTestCase.*'
+        include '**/TransactionManagerTestCase.*'
+        forkEvery = 1
     }
 }
 

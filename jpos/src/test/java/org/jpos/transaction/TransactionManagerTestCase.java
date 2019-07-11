@@ -62,5 +62,7 @@ public class TransactionManagerTestCase {
     public void tearDown() throws Exception {
         Thread.sleep (5000); // let the thing run
         q2.stop();
+        q2 = null;
+        System.gc();
     }
 }

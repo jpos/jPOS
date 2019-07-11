@@ -924,6 +924,7 @@ public class Q2 implements FileFilter, Runnable {
             try {
                 osgiFramework.stop();
                 osgiFramework.waitForStop(0L);
+                osgiFramework.uninstall();
             } catch (Exception e) {
                 getLog().warn(e);
             }

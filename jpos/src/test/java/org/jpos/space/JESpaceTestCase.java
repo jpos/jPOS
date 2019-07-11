@@ -28,10 +28,13 @@ import org.jpos.iso.ISOMsg;
 import org.jpos.transaction.Context;
 import org.jpos.util.Profiler;
 import org.jpos.iso.ISOUtil;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("unchecked")
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class JESpaceTestCase {
     public static final int COUNT = 100;
     JESpace<String,Object> sp;
@@ -39,6 +42,13 @@ public class JESpaceTestCase {
     public void setUp () {
         sp = (JESpace<String,Object>) 
             JESpace.getSpace ("space-test", "build/resources/test/space-test");
+    }
+    @AfterAll
+    public void tearDown() {
+        sp.gc();
+        sp.close();
+        sp = null;
+        System.gc();
     }
     @Test
     public void testSimpleOut() throws Exception {

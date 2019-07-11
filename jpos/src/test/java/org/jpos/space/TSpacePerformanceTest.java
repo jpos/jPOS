@@ -19,14 +19,15 @@
 package org.jpos.space;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.SynchronousQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.Set;
+import java.util.concurrent.*;
+
 import org.jpos.iso.ISOUtil;
 
 import org.jpos.util.TPS;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -41,8 +42,8 @@ import static org.junit.jupiter.api.Assertions.fail;
 @SuppressWarnings("unchecked")
 public class TSpacePerformanceTest  {
 
-    LocalSpace<String,Object> sp1;
-    LocalSpace<String,Object> sp2;
+    TSpace<String,Object> sp1;
+    TSpace<String,Object> sp2;
     List<Long> t1 = new ArrayList();
     List<Long> t2 = new ArrayList();
 //    List t1 = Collections.synchronizedCollection(new ArrayList());
@@ -89,11 +90,11 @@ public class TSpacePerformanceTest  {
     @SuppressWarnings("unchecked")
     class WriteSpaceWithNotifyTask implements Runnable, SpaceListener<String,Object> {
         String key;
-        LocalSpace sp1;
-        LocalSpace sp2;
+        TSpace sp1;
+        TSpace sp2;
         int count = 0;
         
-        WriteSpaceWithNotifyTask(String key, LocalSpace sp1, LocalSpace sp2){
+        WriteSpaceWithNotifyTask(String key, TSpace sp1, TSpace sp2){
           this.key = key;
           this.sp1 = sp1;
           this.sp2 = sp2;
@@ -140,6 +141,23 @@ public class TSpacePerformanceTest  {
         t2.clear();
     }
 
+    @AfterEach
+    public void tearDown() {
+        Set keySet1 = new HashSet(sp1.getKeySet());
+        Set keySet2 = new HashSet(sp2.getKeySet());
+        for (Object key : keySet1) {
+            sp1.inp(key);
+        }
+        for (Object key : keySet2) {
+            sp2.inp(key);
+        }
+        sp1.gc();
+        sp2.gc();
+        sp1 = null;
+        sp2 = null;
+        System.gc();
+    }
+
     private void printAvg(List<Long> times, String prefix){
         long avg = 0;
         for (Long t :times)
@@ -151,6 +169,15 @@ public class TSpacePerformanceTest  {
         System.out.println(prefix + avg);
     }
 
+    private boolean isFutureListDone(List<Future<Object>> futures){
+        for (Future<?> fut : futures){
+            if (!fut.isDone()){
+                return false;
+            }
+        }
+        return true;
+    }
+
     @Test
     public void testReadPerformance() throws Throwable {
         int size = 10;
@@ -158,14 +185,20 @@ public class TSpacePerformanceTest  {
                               30, TimeUnit.SECONDS, new SynchronousQueue());
         ((ThreadPoolExecutor)es).prestartAllCoreThreads();
 
+        List<Callable<Object>> writers = new ArrayList<>();
         for (int i=0; i<size; i++)
-          es.execute(new WriteSpaceTask("PerformTask-"+i));
-        ISOUtil.sleep(500);
+          writers.add(Executors.callable(new WriteSpaceTask("PerformTask-"+i)));
+        List<Future<Object>> writerfuters = es.invokeAll(writers);
+        for (Future<?> writefut : writerfuters)
+          writefut.get();
         printAvg(t1, "Avg. write: ");
 
+        List<Callable<Object>> readers = new ArrayList<>();
         for (int i=0; i<size; i++)
-          es.execute(new ReadSpaceTask("PerformTask-"+i));
-        ISOUtil.sleep(500);
+          readers.add(Executors.callable(new ReadSpaceTask("PerformTask-"+i)));
+        List<Future<Object>> readerfuters = es.invokeAll(readers);
+        for (Future<?> readerfut : readerfuters)
+          readerfut.get();
         es.shutdown();
         printAvg(t2, "Avg. read : ");
     }
@@ -176,14 +209,16 @@ public class TSpacePerformanceTest  {
         final ExecutorService es = new ThreadPoolExecutor(size*2, Integer.MAX_VALUE,
                               30, TimeUnit.SECONDS, new SynchronousQueue());
         ((ThreadPoolExecutor)es).prestartAllCoreThreads();
-        
-        for (int i=0; i<size; i++)
-          es.execute(new WriteSpaceWithNotifyTask("WriteTask1-"+i,sp1,sp2));
-        for (int i=0; i<size; i++)
-          es.execute(new WriteSpaceWithNotifyTask("WriteTask2-"+i,sp2,sp1));
 
+        List<Callable<Object>> tasks = new ArrayList<>();
+        for (int i=0; i<size; i++)
+          tasks.add(Executors.callable(new WriteSpaceWithNotifyTask("WriteTask1-"+i,sp1,sp2)));
+        for (int i=0; i<size; i++)
+          tasks.add(Executors.callable(new WriteSpaceWithNotifyTask("WriteTask2-"+i,sp2,sp1)));
+
+        List<Future<Object>> tasksfut = es.invokeAll(tasks, 10, TimeUnit.SECONDS);
         long stamp = System.currentTimeMillis();
-        while (((ThreadPoolExecutor)es).getActiveCount() > 0) {
+        while (!isFutureListDone(tasksfut)) {
           if (System.currentTimeMillis() - stamp < 10000){
             ISOUtil.sleep(100);
             continue;

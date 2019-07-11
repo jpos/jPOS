@@ -48,6 +48,7 @@ public class TSpaceTestCase implements SpaceListener {
         }
         sp.gc();
         sp = null;
+        System.gc();
     }
 
     @Test

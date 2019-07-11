@@ -99,7 +99,8 @@ public class QMUXTestCase implements ISOResponseListener {
     public void tearDown() throws Exception {
         Thread.sleep(2000L); // let the thing run
         q2.shutdown(true);
-        Thread.sleep(2000L);
+        q2 = null;
+        System.gc();
     }
 
     private ISOMsg createMsg(String stan) throws ISOException {

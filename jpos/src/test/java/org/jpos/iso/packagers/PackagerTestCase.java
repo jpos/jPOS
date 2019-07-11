@@ -27,7 +27,9 @@ import org.jpos.iso.TestUtils;
 import org.jpos.iso.packager.*;
 import org.jpos.util.Profiler;
 import org.jpos.util.TPS;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
@@ -37,6 +39,7 @@ import java.io.FileOutputStream;
 import java.util.Arrays;
 import java.util.Date;
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class PackagerTestCase {
     private XMLPackager xmlPackager;
     public static final String PREFIX = "build/resources/test/org/jpos/iso/packagers/";
@@ -76,9 +79,14 @@ public class PackagerTestCase {
         }
     }
 
-    @BeforeEach
+    @BeforeAll
     public void setUp () throws Exception {
         xmlPackager = new XMLPackager();
+    }
+    @AfterAll
+    public void tearDown() {
+        xmlPackager = null;
+        System.gc();
     }
     @Test
     public void testPostPackager () throws Exception {
