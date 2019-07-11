@@ -33,13 +33,12 @@ import org.jpos.q2.Q2;
 import org.jpos.space.Space;
 import org.jpos.space.SpaceFactory;
 import org.jpos.util.NameRegistrar;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.lang.reflect.Field;
 
 @SuppressWarnings("unchecked")
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class QMUXTestCase implements ISOResponseListener {
     Q2 q2;
     Space sp;
@@ -48,19 +47,23 @@ public class QMUXTestCase implements ISOResponseListener {
     ISOMsg responseMsg;
     Object receivedHandback;
 
-    @BeforeEach
+    @BeforeAll
     public void setUp() throws Exception {
         sp = SpaceFactory.getSpace();
         q2 = new Q2("build/resources/test/org/jpos/q2/iso");
-        expiredCalled = false;
         q2.start();
         Thread.sleep(2000L);
         try {
-            mux = (MUX) NameRegistrar.get("mux.mux");
+            mux = NameRegistrar.get("mux.mux");
         } catch (NameRegistrar.NotFoundException e) {
             fail("MUX not found");
         }
         receivedHandback = null;
+    }
+
+    @BeforeEach
+    public void initExpired() {
+        expiredCalled = false;
     }
 
     @Test
@@ -92,7 +95,7 @@ public class QMUXTestCase implements ISOResponseListener {
         assertEquals("Handback Two", receivedHandback, "Handback Two not received");
     }
 
-    @AfterEach
+    @AfterAll
     public void tearDown() throws Exception {
         Thread.sleep(2000L); // let the thing run
         q2.shutdown(true);
