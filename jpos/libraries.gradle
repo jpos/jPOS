@@ -14,9 +14,7 @@ ext {
         mockito_jupiter: 'org.mockito:mockito-junit-jupiter:3.0.0',
         fest_assert: 'org.easytesting:fest-assert:1.4',
         xmlunit: 'xmlunit:xmlunit:1.6',
-        junit: 'junit:junit:4.12',
         junit_jupiter: 'org.junit.jupiter:junit-jupiter:5.5.0',
-        junit_vintage: 'org.junit.vintage:junit-vintage-engine:5.5.0',
         bouncycastle: [
             'org.bouncycastle:bcprov-jdk15on:1.61',
             'org.bouncycastle:bcpg-jdk15on:1.61'
