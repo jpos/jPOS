@@ -28,7 +28,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
-import junit.framework.AssertionFailedError;
+import org.opentest4j.AssertionFailedError;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

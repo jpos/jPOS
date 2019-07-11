@@ -18,7 +18,6 @@
 
 package org.jpos.iso;
 
-import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -26,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
-import static org.junit.Assume.assumeThat;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -63,7 +62,7 @@ public class ISOMsg2Test {
 
     @BeforeAll
     public static void onClassSetup() {
-        assumeThat(System.getProperty("executeQuickRunningTestsOnly", "false"), is("false"));
+        assumeTrue(System.getProperty("executeQuickRunningTestsOnly", "false").equals("false"));
     }
 
     @Test
