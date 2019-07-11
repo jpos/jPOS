@@ -37,18 +37,22 @@ import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jpos.q2.qbean.SystemMonitor;
 import org.jpos.util.Log;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class Q2Test {
     String[] m_args = new String[0];
     Q2 m_q2;
 
-    @BeforeEach
+    @BeforeAll
     public void setUp() {
         m_q2 = new Q2(m_args);
+    }
+
+    @AfterAll
+    public void tearDown() throws Exception {
+        m_q2.shutdown(true);
     }
 
     @Test
@@ -83,7 +87,7 @@ public class Q2Test {
         String[] args = new String[2];
         args[0] = "testString";
         args[1] = "testString";
-        m_q2 = new Q2(args);
+        Q2 m_q2 = new Q2(args);
         Document doc = mock(Document.class);
         Element element = mock(Element.class);
         given(doc.getRootElement()).willReturn(element);
@@ -179,9 +183,9 @@ public class Q2Test {
         String[] args = new String[2];
         args[0] = "testString";
         args[1] = "testString";
-        m_q2 = new Q2(args);
-        Log log = m_q2.getLog();
-        Log result = m_q2.getLog();
+        Q2 q2 = new Q2(args);
+        Log log = q2.getLog();
+        Log result = q2.getLog();
         assertSame(log, result, "result");
     }
 
