@@ -60,19 +60,24 @@ public class Q2Test {
         String[] args = new String[2];
         args[0] = "";
         args[1] = "";
-        boolean result = new Q2(args).accept(new File("testQ2Param1"));
+        Q2 q2 = new Q2(args);
+        boolean result = q2.accept(new File("testQ2Param1"));
         assertFalse(result, "result");
+        q2.stop();
     }
 
     @Test
     public void testAcceptThrowsNullPointerException() throws Throwable {
         String[] args = new String[1];
         args[0] = "";
+        Q2 q2 = new Q2(args);
         try {
-            new Q2(args).accept(null);
+            q2.accept(null);
             fail("Expected NullPointerException to be thrown");
         } catch (NullPointerException ex) {
             assertNull(ex.getMessage(), "ex.getMessage()");
+        } finally {
+            q2.stop();
         }
     }
 
@@ -87,13 +92,14 @@ public class Q2Test {
         String[] args = new String[2];
         args[0] = "testString";
         args[1] = "testString";
-        Q2 m_q2 = new Q2(args);
+        Q2 q2 = new Q2(args);
         Document doc = mock(Document.class);
         Element element = mock(Element.class);
         given(doc.getRootElement()).willReturn(element);
         given(element.getName()).willReturn("testString");
-        Document result = m_q2.decrypt(doc);
+        Document result = q2.decrypt(doc);
         assertSame(doc, result, "result");
+        q2.stop();
     }
 
     @Test
@@ -117,6 +123,7 @@ public class Q2Test {
         } catch (NullPointerException ex) {
             assertNull(ex.getMessage(), "ex.getMessage()");
         }
+        q2.stop();
     }
 
     @Disabled
@@ -134,16 +141,20 @@ public class Q2Test {
     public void testGetCommandLineArgs() throws Throwable {
         String[] args = new String[1];
         args[0] = "testString";
-        String[] result = new Q2(args).getCommandLineArgs();
+        Q2 q2 = new Q2(args);
+        String[] result = q2.getCommandLineArgs();
         assertSame(args, result, "result");
         assertEquals("testString", args[0], "m_args[0]");
+        q2.stop();
     }
 
     @Test
     public void testGetDeployDir() throws Throwable {
         String[] args = new String[0];
-        File result = new Q2(args).getDeployDir();
+        Q2 q2 = new Q2(args);
+        File result = q2.getDeployDir();
         assertEquals("deploy", result.getName(), "result.getName()");
+        q2.stop();
     }
 
     @Test
@@ -151,8 +162,10 @@ public class Q2Test {
         String[] args = new String[2];
         args[0] = "testString";
         args[1] = "testString";
-        QFactory result = new Q2(args).getFactory();
+        Q2 q2 = new Q2(args);
+        QFactory result = q2.getFactory();
         assertNull(result, "result");
+        q2.stop();
     }
 
     @Test
@@ -187,13 +200,16 @@ public class Q2Test {
         Log log = q2.getLog();
         Log result = q2.getLog();
         assertSame(log, result, "result");
+        q2.stop();
     }
 
     @Test
     public void testGetMBeanServer() throws Throwable {
         String[] args = new String[0];
-        MBeanServer result = new Q2(args).getMBeanServer();
+        Q2 q2 = new Q2(args);
+        MBeanServer result = q2.getMBeanServer();
         assertNull(result, "result");
+        q2.stop();
     }
 
     @Test
