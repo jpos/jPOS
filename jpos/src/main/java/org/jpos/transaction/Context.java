@@ -336,7 +336,8 @@ public class Context implements Externalizable, Loggeable, Pausable, Cloneable {
      * @param msg trace information
      */
     public void log (Object msg) {
-        getLogEvent().addMessage (msg);
+        if (msg != getMap()) // prevent recursive call to dump (and StackOverflow)
+            getLogEvent().addMessage (msg);
     }
     /**
      * add a checkpoint to the profiler
