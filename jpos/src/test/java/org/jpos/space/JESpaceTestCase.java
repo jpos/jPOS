@@ -126,6 +126,36 @@ public class JESpaceTestCase {
         assertNull (sp.rdp ("PUSH"));
     }
     @Test
+    public void testOutExpire() {
+        sp.out ("OUT", "ONE", 1000L);
+        sp.out ("OUT", "TWO", 2000L);
+        sp.out ("OUT", "THREE", 3000L);
+        sp.out  ("OUT", "FOUR", 4000L);
+        assertEquals ("ONE", sp.rdp ("OUT"));
+        ISOUtil.sleep (1500L);
+        assertEquals ("TWO", sp.rdp ("OUT"));
+        ISOUtil.sleep (1000L);
+        assertEquals ("THREE", sp.rdp ("OUT"));
+        assertEquals ("THREE", sp.inp ("OUT"));
+        assertEquals ("FOUR", sp.inp ("OUT"));
+        assertNull (sp.rdp ("OUT"));
+    }
+    @Test
+    public void testPushExpire() {
+        sp.push ("PUSH", "FOUR", 4000L);
+        sp.push ("PUSH", "THREE", 3000L);
+        sp.push ("PUSH", "TWO", 2000L);
+        sp.push  ("PUSH", "ONE", 1000L);
+        assertEquals ("ONE", sp.rdp ("PUSH"));
+        ISOUtil.sleep (1500L);
+        assertEquals ("TWO", sp.rdp ("PUSH"));
+        ISOUtil.sleep (1000L);
+        assertEquals ("THREE", sp.rdp ("PUSH"));
+        assertEquals ("THREE", sp.inp ("PUSH"));
+        assertEquals ("FOUR", sp.inp ("PUSH"));
+        assertNull (sp.rdp ("PUSH"));
+    }
+    @Test
     public void testExist() {
         sp.out ("KEYA", Boolean.TRUE);
         sp.out ("KEYB", Boolean.TRUE);
